@@ -201,7 +201,7 @@ function (_Component) {
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Last Attempted', 'learnpress')), hasAttempts && React.createElement("table", null, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Date', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Spend', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Marks', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Passing Grade', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Result', 'learnpress')))), React.createElement("tbody", null, attempts.map(function (row) {
         return React.createElement("tr", {
           key: "attempt-".concat(row.id)
-        }, React.createElement("td", null, row.startTime), React.createElement("td", null, row.questionCorrect, " / ", row.questionCount), React.createElement("td", null, _this.getTimeSpendLabel(row), " / ", _this.getDurationLabel(row)), React.createElement("td", null, row.userMark, " / ", row.mark), React.createElement("td", null, row.passingGrade || Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("td", null, parseFloat(row.result).toFixed(2), "% ", React.createElement("label", null, row.gradeText)));
+        }, React.createElement("td", null, row.startTime), React.createElement("td", null, row.questionCorrect, " / ", row.questionCount), React.createElement("td", null, _this.getTimeSpendLabel(row), " / ", _this.getDurationLabel(row)), React.createElement("td", null, row.userMark, " / ", row.mark), React.createElement("td", null, row.passingGrade || Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("td", null, parseFloat(row.result).toFixed(2), "% ", React.createElement("label", null, row.graduationText)));
       })))));
     }
   }]);
@@ -213,10 +213,10 @@ function (_Component) {
   var _select = select('learnpress/quiz'),
       getData = _select.getData;
 
-  var lastAttempted = getData('attempts[0]');
+  var attempts = getData('attempts') || [];
   return {
     id: getData('id'),
-    attempts: lastAttempted ? [lastAttempted] : [],
+    attempts: attempts,
     attemptsCount: getData('attemptsCount'),
     status: getData('status'),
     questionIds: getData('questionIds'),
@@ -614,28 +614,24 @@ function (_Component) {
   }
 
   _createClass(Buttons, [{
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      if (nextProps.keyPressed === this.props.keyPressed) {
-        return;
-      }
+    key: "pageNumbers",
+    // componentWillReceiveProps(nextProps) {
+    //     if (nextProps.keyPressed === this.props.keyPressed) {
+    //         return;
+    //     }
+    //     switch (nextProps.keyPressed) {
+    //         case 'left':
+    //             return this.nav('prev')();
+    //         case 'right':
+    //             return this.nav('next')()
+    //     }
+    // }
 
-      switch (nextProps.keyPressed) {
-        case 'left':
-          return this.nav('prev')();
-
-        case 'right':
-          return this.nav('next')();
-      }
-    }
     /**
      * Displays pagination with numbers from min to max.
      *
      * @return {string}
      */
-
-  }, {
-    key: "pageNumbers",
     value: function pageNumbers(args) {
       var _this2 = this;
 
@@ -720,8 +716,7 @@ function (_Component) {
           numPages = _this$props6.numPages,
           question = _this$props6.question,
           questionsPerPage = _this$props6.questionsPerPage,
-          pages = _this$props6.pages,
-          currentPage = _this$props6.currentPage;
+          canRetry = _this$props6.canRetry;
       var classNames = ['quiz-buttons align-center'];
 
       if (questionNav === 'questionNav') {
@@ -740,7 +735,7 @@ function (_Component) {
         className: classNames.join(' ')
       }, React.createElement("div", {
         className: "button-left" + (status === 'started' ? ' fixed' : '')
-      }, -1 !== ['', 'completed'].indexOf(status) && !isReviewing && React.createElement("button", {
+      }, -1 !== ['', 'completed', 'viewed'].indexOf(status) && !isReviewing && canRetry && React.createElement("button", {
         className: "lp-button start",
         onClick: this.startQuiz
       }, status === 'completed' ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Retry', 'label button retry quiz', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Start', 'label button start quiz', 'learnpress')), ('started' === status || isReviewing) && numPages > 1 && React.createElement(React.Fragment, null, React.createElement("div", {
@@ -853,7 +848,8 @@ var MaybeShowButton = Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["co
     currentPage: getData('currentPage'),
     questionsPerPage: getData('questionsPerPage'),
     pageNumbers: getData('pageNumbers'),
-    keyPressed: getData('keyPressed')
+    keyPressed: getData('keyPressed'),
+    canRetry: (getData('attempts') || []).length < getData('attemptsCount')
   };
 
   if (data.questionsPerPage === 1) {
@@ -1286,26 +1282,36 @@ function (_Component) {
     });
 
     _this.needToTop = false;
+    _this.state = {
+      isReviewing: null,
+      currentPage: 0,
+      self: _assertThisInitialized(_this)
+    };
     return _this;
   }
 
   _createClass(Questions, [{
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      var checkProps = ['isReviewing', 'currentPage'];
-
-      for (var i = 0; i < checkProps.length; i++) {
-        if (this.props[checkProps[i]] !== nextProps[checkProps[i]]) {
-          this.needToTop = true;
-          return;
-        }
-      }
-    }
-  }, {
     key: "componentDidUpdate",
+    // componentWillReceiveProps(nextProps){
+    //     const checkProps = ['isReviewing', 'currentPage'];
+    //
+    //     for(let i = 0; i < checkProps.length; i++){
+    //         if(this.props[checkProps[i]] !== nextProps[checkProps[i]]){
+    //             this.needToTop = true;
+    //             return;
+    //         }
+    //     }
+    //
+    // }
+    // componentWillUpdate() {
+    //     this.needToTop = this.state.needToTop;
+    //     this.setState({needToTop: false});
+    // }
     value: function componentDidUpdate() {
       if (this.needToTop) {
         jQuery('#popup-content').animate({
+          scrollTop: 0
+        }).find('.content-item-scrollable:last').animate({
           scrollTop: 0
         });
         this.needToTop = false;
@@ -1356,6 +1362,27 @@ function (_Component) {
           question: question
         }) : '';
       }))));
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      var checkProps = ['isReviewing', 'currentPage'];
+      var changedProps = {};
+
+      for (var i = 0; i < checkProps.length; i++) {
+        if (props[checkProps[i]] !== state[checkProps[i]]) {
+          changedProps[checkProps[i]] = props[checkProps[i]];
+        }
+      } // If has prop changed then update state and re-render UI
+
+
+      if (Object.values(changedProps).length) {
+        state.self.needToTop = true;
+        return changedProps;
+      } // No state update necessary
+
+
+      return null;
     }
   }]);
 
@@ -1731,7 +1758,7 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Result).apply(this, arguments));
 
     _defineProperty(_assertThisInitialized(_this), "getResultMessage", function (results) {
-      return Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your grade is <strong>%s</strong>', 'learnpress'), results.gradeText);
+      return Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your grade is <strong>%s</strong>', 'learnpress'), results.graduationText);
     });
 
     _defineProperty(_assertThisInitialized(_this), "getResultPercentage", function (results) {
@@ -1846,7 +1873,7 @@ function (_Component) {
         percentage = parseFloat(percentage).toFixed(2);
       }
 
-      var classNames = ['quiz-result', results.grade];
+      var classNames = ['quiz-result', results.graduation];
       var border = 10;
       var width = 200;
       var percent = this.getResultPercentage(results);
@@ -2490,17 +2517,6 @@ function (_Component) {
       setQuizData(settings);
     }
   }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      var questionIds = nextProps.questionIds,
-          questionsPerPage = nextProps.questionsPerPage,
-          setQuizData = nextProps.setQuizData;
-      var chunks = chunk(questionIds, questionsPerPage); // setQuizData({
-      //     numPages: chunks.length,
-      //     pages: chunks
-      // });
-    }
-  }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {}
   }, {
@@ -2509,7 +2525,7 @@ function (_Component) {
       var _this$props2 = this.props,
           status = _this$props2.status,
           isReviewing = _this$props2.isReviewing;
-      var isA = -1 !== ['', 'completed'].indexOf(status); // Just render content if status !== undefined (meant all data loaded)
+      var isA = -1 !== ['', 'completed', 'viewed'].indexOf(status) || !status; // Just render content if status !== undefined (meant all data loaded)
 
       return undefined !== status && React.createElement(React.Fragment, null, React.createElement(MyContext.Provider, {
         value: this.props

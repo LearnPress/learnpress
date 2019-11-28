@@ -268,19 +268,11 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		if ( $success ) {
-			$course     = LP_Course::get_course( $course_id );
-			$quiz       = LP_Quiz::get_quiz( $item_id );
-			$showHint   = $quiz->get_show_hint();
-			$showCheck  = $quiz->get_show_check_answer();
-			$userCourse = $user->get_course_data( $course->get_id() );
-			//$userQuiz         = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
-			$answered         = array();
-			$status           = '';
-			$checkedQuestions = array();
-			$hintedQuestions  = array();
-			$questionIds      = array();
-			$results          = array();
-			$duration         = $quiz->get_duration();
+			$course    = LP_Course::get_course( $course_id );
+			$quiz      = LP_Quiz::get_quiz( $item_id );
+			$showHint  = $quiz->get_show_hint();
+			$showCheck = $quiz->get_show_check_answer();
+			$duration  = $quiz->get_duration();
 
 			//if ( $userQuiz ) {
 			$status           = $userQuiz->get_status();
@@ -328,7 +320,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['answered']     = $quizResults->getQuestions();
 			$results['status']       = $quizResults->get( 'status' );
 			$results['results']      = $quizResults->get();
-			$results['attempts']     = $userQuiz->get_attempts( array( 'limit' => 1, 'offset' => 1 ) );
+			$results['attempts']     = $userQuiz->get_attempts(
+				array(
+					'limit'  => learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() ),
+					'offset' => 1
+				)
+			);
 			$results['user_item_id'] = $userQuiz->get_user_item_id();
 
 			$response['results'] = $results;
@@ -377,7 +374,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['answered'] = $quizResults->getQuestions();
 			$results['status']   = $quizResults->get( 'status' );
 			$results['results']  = $quizResults->get();
-			$results['attempts'] = $userQuiz->get_attempts( array( 'limit' => 1, 'offset' => 1 ) );
+			$results['attempts'] = $userQuiz->get_attempts(
+				array(
+					'limit'  => learn_press_get_quiz_max_retrying( $item_id, $course_id ),
+					'offset' => 1
+				)
+			);
 
 			$response['results'] = $results;
 		}

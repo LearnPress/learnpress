@@ -193,12 +193,24 @@ var QuestionBase =
 function (_Component) {
   _inherits(QuestionBase, _Component);
 
-  function QuestionBase(props) {
+  function QuestionBase(_props) {
     var _this;
 
     _classCallCheck(this, QuestionBase);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(QuestionBase).apply(this, arguments));
+
+    _defineProperty(_assertThisInitialized(_this), "prepare", function (props, state) {
+      var question = props.question;
+
+      if (question && question.id !== state.questionId) {
+        return {
+          options: state.self.parseOptions(question.options)
+        };
+      }
+
+      return null;
+    });
 
     _defineProperty(_assertThisInitialized(_this), "setInputRef", function (el, k) {
       if (!_this.inputs) {
@@ -352,14 +364,16 @@ function (_Component) {
       }, sprintf(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('%d/%d point', 'learnpress'), isCorrect ? question.point : 0, question.point)));
     });
 
-    var _question = props.question;
+    var _question = _props.question;
     _this.state = {
       optionClass: ['answer-option'],
-      options: _question ? _this.parseOptions(_question.options) : []
+      questionId: 0,
+      options: _question ? _this.parseOptions(_question.options) : [],
+      self: _assertThisInitialized(_this)
     };
 
-    if (props.$wrap) {
-      _this.$wrap = props.$wrap;
+    if (_props.$wrap) {
+      _this.$wrap = _props.$wrap;
     }
 
     return _this;
@@ -368,28 +382,10 @@ function (_Component) {
   _createClass(QuestionBase, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.componentWillReceiveProps(this.props);
-    }
-  }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      if (nextProps.$wrap) {
-        this.$wrap = nextProps.$wrap;
-      }
+      var newState = this.prepare(this.props, this.state);
 
-      if (nextProps.question) {
-        this.setState({
-          options: this.parseOptions(nextProps.question.options)
-        });
-      }
-
-      if (nextProps.keyPressed === this.props.keyPressed) {
-        return;
-      }
-
-      if (nextProps.keyPressed >= 1 && nextProps.keyPressed <= 9) {
-        var input = Object.values(this.inputs)[nextProps.keyPressed - 1];
-        input && input.click();
+      if (newState) {
+        this.setState(newState);
       }
     }
   }, {
@@ -430,6 +426,11 @@ function (_Component) {
           }
         }));
       })), !this.isDefaultType() && this.getWarningMessage(), this.getCorrectLabel());
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      return state.self.prepare(props, state);
     }
   }]);
 
@@ -957,7 +958,7 @@ function (_QuestionBase) {
 /*!********************************************************!*\
   !*** ./assets/src/js/frontend/question-types/index.js ***!
   \********************************************************/
-/*! exports provided: default, QuestionBase, SingleChoice, MultipleChoices, TrueOrFalse, FillInBlanks */
+/*! exports provided: QuestionBase, SingleChoice, MultipleChoices, TrueOrFalse, FillInBlanks, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

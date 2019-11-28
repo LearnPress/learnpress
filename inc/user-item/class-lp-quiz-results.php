@@ -65,6 +65,8 @@ class LP_Quiz_Results implements ArrayAccess {
 
 			$this->results = $results;
 		}
+
+		die( __CLASS__ . '::' . __FUNCTION__ );
 	}
 
 	/**

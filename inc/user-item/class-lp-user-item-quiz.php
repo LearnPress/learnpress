@@ -156,29 +156,33 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return int|LP_Question
 	 */
 	public function get_current_question( $return = '' ) {
-		$question_id = $this->get_meta( '_current_question', true );
-		$question    = false;
-		if ( learn_press_get_post_type( $question_id ) === LP_QUESTION_CPT ) {
-			$question = learn_press_get_question( $question_id );
-		}
+		_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
 
-		if ( ! $question || ! $question->is_publish() ) {
-			if ( $questions = $this->get_quiz()->get_questions() ) {
-				$question_id = reset( $questions );
-				$this->set_meta( '_current_question', $question_id );
-				$this->update_meta();
-			} else {
-				$question_id = 0;
-			}
-		}
+		learn_press_error_log( sprintf( 'Deprecated %s::%s', __CLASS__, __FUNCTION__ ) );
 
-		if ( $question_id ) {
-			if ( $return == 'object' ) {
-				return learn_press_get_question( $question_id );
-			}
-		}
-
-		return $question_id;
+//		$question_id = $this->get_meta( '_current_question', true );
+//		$question    = false;
+//		if ( learn_press_get_post_type( $question_id ) === LP_QUESTION_CPT ) {
+//			$question = learn_press_get_question( $question_id );
+//		}
+//
+//		if ( ! $question || ! $question->is_publish() ) {
+//			if ( $questions = $this->get_quiz()->get_questions() ) {
+//				$question_id = reset( $questions );
+//				$this->set_meta( '_current_question', $question_id );
+//				$this->update_meta();
+//			} else {
+//				$question_id = 0;
+//			}
+//		}
+//
+//		if ( $question_id ) {
+//			if ( $return == 'object' ) {
+//				return learn_press_get_question( $question_id );
+//			}
+//		}
+//
+//		return $question_id;
 	}
 
 	/**
@@ -227,11 +231,37 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
 		}
-		$result['user_item_id'] = $this->get_user_item_id();
-		$result['interval'] = [$this->get_start_time(), $this->get_end_time()];
-		$result                 = new LP_Quiz_Results( $result );
+		$result['user_item_id']   = $this->get_user_item_id();
+		$result['interval']       = [ $this->get_start_time(), $this->get_end_time() ];
+		$result['graduation']     = $this->get_graduation();
+		$result['graduationText'] = $this->get_graduation_text();
+		$result                   = new LP_Quiz_Results( $result );
 
 		return $prop ? $result[ $prop ] : $result;
+	}
+
+	/**
+	 * Get user quiz graduation. [passed, failed, null]
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public function get_graduation() {
+		return apply_filters( 'learn-press/user-quiz-graduation', $this->get_data( 'graduation' ), $this->get_item_id(), $this->get_course_id(), $this->get_user() );
+	}
+
+	/**
+	 * Get user quiz graduation text for displaying purpose. [Passed, Failed, null]
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return mixed
+	 */
+	public function get_graduation_text() {
+		$graduation = $this->get_graduation();
+
+		return apply_filters( 'learn-press/user-quiz-graduation-text', learn_press_get_graduation_text( $graduation ) );
 	}
 
 	/**
@@ -291,6 +321,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				} else {
 					$results = array();
 				}
+				$graduation = property_exists( $row, 'graduation' ) ? $row->graduation : learn_press_get_user_item_meta( $row->user_item_id, 'grade', true );
 
 				$attempts[] = array_merge(
 					array(
@@ -298,7 +329,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						'start_time'      => $row->start_time,
 						'end_time'        => $row->end_time,
 						'expiration_time' => $row->expiration_time,
-						'grade'           => learn_press_get_user_item_meta( $row->user_item_id, 'grade', true )
+						'graduation'      => $graduation,
+						'graduation_text' => learn_press_get_graduation_text( $graduation )
 					),
 					$results
 				);
@@ -354,7 +386,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'question_wrong'    => 0,
 			'question_correct'  => 0,
 			'status'            => $this->get_status(),
-			'grade'             => '',
+			//'grade'             => '',
 			'result'            => 0,
 			'time_spend'        => $this->get_time_interval( 'display' ),
 			'retake_count'      => 0,
@@ -407,20 +439,30 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
 			$result['result'] = $percent;
+			$grade            = '';
 
 			if ( $this->get_status() === 'completed' ) {
-				$result['grade']      = $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed';
-				$result['grade_text'] = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
-			} else {
-				$result['grade']      = 'ungraded';
-				$result['grade_text'] = __( 'Ungraded', 'learnpress' );
+				$grade = $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed';
+				//$result['grade_text'] = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
 			}
+//			else {
+//				$result['grade']      = 'ungraded';
+//				$result['grade_text'] = __( 'Ungraded', 'learnpress' );
+//			}
 			$result['question_count'] = sizeof( $questions );
 
-			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
-				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
-			}
+//			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
+//				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
+//			}
 
+			learn_press_update_user_item_field(
+				array(
+					'graduation' => $grade
+				),
+				array(
+					'user_item_id' => $this->get_user_item_id()
+				)
+			);
 		}
 
 		$this->update_meta( 'results', $result );

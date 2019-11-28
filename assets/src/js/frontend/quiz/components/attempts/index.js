@@ -20,7 +20,7 @@ class Attempts extends Component {
         return milliseconds ? formatDuration(milliseconds / 1000) : '';
     }
 
-    getTimeSpendLabel(attempt){
+    getTimeSpendLabel(attempt) {
         const {formatDuration} = LP.singleCourse;
         const milliseconds = new Date(attempt.endTime).getTime() - new Date(attempt.startTime).getTime();
         return milliseconds ? formatDuration(milliseconds / 1000) : '';
@@ -35,41 +35,41 @@ class Attempts extends Component {
 
         return !hasAttempts ? false : <React.Fragment>
             <div className="quiz-attempts">
-            <h4 className="attempts-heading">{ __('Last Attempted', 'learnpress') }</h4>
-            {
-                hasAttempts &&
-                <table>
-                    <thead>
-                    <tr>
-                        <th>{ __('Date', 'learnpress') }</th>
-                        <th>{ __('Questions', 'learnpress') }</th>
-                        <th>{ __('Spend', 'learnpress') }</th>
-                        <th>{ __('Marks', 'learnpress') }</th>
-                        <th>{ __('Passing Grade', 'learnpress') }</th>
-                        <th>{ __('Result', 'learnpress') }</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        attempts.map((row) => {
-                            return <tr key={ `attempt-${row.id}` }>
-                                <td>{row.startTime}</td>
-                                <td>{row.questionCorrect} / {row.questionCount}</td>
-                                <td>{ this.getTimeSpendLabel(row) } / {this.getDurationLabel(row)}</td>
-                                <td>{row.userMark} / {row.mark}</td>
-                                <td>{row.passingGrade || _x('-', 'unknown passing grade value', 'learnpress')}</td>
-                                <td>{parseFloat(row.result).toFixed(2)}% <label>{row.gradeText}</label></td>
-                            </tr>
-                        })
-                    }
-                    </tbody>
-                </table>
-            }
+                <h4 className="attempts-heading">{ __('Last Attempted', 'learnpress') }</h4>
+                {
+                    hasAttempts &&
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>{ __('Date', 'learnpress') }</th>
+                            <th>{ __('Questions', 'learnpress') }</th>
+                            <th>{ __('Spend', 'learnpress') }</th>
+                            <th>{ __('Marks', 'learnpress') }</th>
+                            <th>{ __('Passing Grade', 'learnpress') }</th>
+                            <th>{ __('Result', 'learnpress') }</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            attempts.map((row) => {
+                                return <tr key={ `attempt-${row.id}` }>
+                                    <td>{row.startTime}</td>
+                                    <td>{row.questionCorrect} / {row.questionCount}</td>
+                                    <td>{ this.getTimeSpendLabel(row) } / {this.getDurationLabel(row)}</td>
+                                    <td>{row.userMark} / {row.mark}</td>
+                                    <td>{row.passingGrade || _x('-', 'unknown passing grade value', 'learnpress')}</td>
+                                    <td>{parseFloat(row.result).toFixed(2)}% <label>{row.graduationText}</label></td>
+                                </tr>
+                            })
+                        }
+                        </tbody>
+                    </table>
+                }
 
-            {/*{*/}
+                {/*{*/}
                 {/*!hasAttempts &&*/}
                 {/*<p className="no-attempts-message">{ __('There is no attempt now.', 'learnpress') }</p>*/}
-            {/*}*/}
+                {/*}*/}
             </div>
         </React.Fragment>
     }
@@ -80,11 +80,11 @@ export default compose([
         const {
             getData
         } = select('learnpress/quiz');
-        const lastAttempted = getData('attempts[0]');
+        const attempts = getData('attempts') || [];
 
         return {
             id: getData('id'),
-            attempts: lastAttempted ? [lastAttempted] : [],
+            attempts: attempts,
             attemptsCount: getData('attemptsCount'),
             status: getData('status'),
             questionIds: getData('questionIds'),

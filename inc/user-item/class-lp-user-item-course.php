@@ -1133,7 +1133,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	public function add_item( $item_id, $user_id = 0 ) {
 		echo __FUNCTION__;
-		die();
+		/*
 		$this->read_items();
 
 		if ( empty( $this->_items[ $item_id ] ) ) {
@@ -1166,6 +1166,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		$this->_items[ $item_id ] = LP_User_Item::get_item_object( $item_data );
 
 		return $this->_items[ $item_id ];
+		*/
 	}
 
 	/**

@@ -22,7 +22,7 @@ class Result extends Component {
      * @return {*|string}
      */
     getResultMessage = (results) => {
-        return sprintf(__('Your grade is <strong>%s</strong>', 'learnpress'), results.gradeText);
+        return sprintf(__('Your grade is <strong>%s</strong>', 'learnpress'), results.graduationText);
     };
 
     /**
@@ -124,7 +124,7 @@ class Result extends Component {
             percentage = parseFloat(percentage).toFixed(2)
         }
 
-        const classNames = ['quiz-result', results.grade];
+        const classNames = ['quiz-result', results.graduation];
         const border = 10;
         const width = 200;
         const percent = this.getResultPercentage(results);

@@ -155,7 +155,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					throw new Exception( $data->get_error_message() );
 				} else {
 
-					$redirect           = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question', true ) );
+					//$redirect           = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question', true ) );
+					$redirect           = learn_press_get_course( $course_id )->get_item_link( $quiz_id );
 					$result['result']   = 'success';
 					$result['redirect'] = apply_filters( 'learn-press/quiz/started-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 				}
@@ -186,7 +187,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 */
 		public static function nav_question() {
 			$return = self::maybe_save_questions( 'nav-question' );
-			$nav      = LP_Request::get( 'nav-type' );
+			$nav    = LP_Request::get( 'nav-type' );
 			if ( is_array( $return ) ) {
 				$quiz     = learn_press_get_quiz( $return['quiz_id'] );
 				$redirect = false;
@@ -195,24 +196,24 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				} elseif ( ! empty( $return['next_question'] ) ) {
 					$redirect = $quiz->get_question_link( $return['next_question'] );
 				}
-				if($redirect){
-					wp_safe_redirect($redirect);
+				if ( $redirect ) {
+					wp_safe_redirect( $redirect );
 					exit();
 				}
 			} else {
-				$quiz_id 		= LP_Request::get('quiz-id');
-				$question_id 	= LP_Request::get('question-id');
-				$quiz = learn_press_get_quiz( $quiz_id );
-				
+				$quiz_id     = LP_Request::get( 'quiz-id' );
+				$question_id = LP_Request::get( 'question-id' );
+				$quiz        = learn_press_get_quiz( $quiz_id );
+
 				if ( $nav === 'prev-question' && $question_id ) {
-					$prev_question_id = $quiz->get_prev_question($question_id);
-					$redirect = $quiz->get_question_link( $prev_question_id );
+					$prev_question_id = $quiz->get_prev_question( $question_id );
+					$redirect         = $quiz->get_question_link( $prev_question_id );
 				} else {
-					$next_question_id = $quiz->get_next_question($question_id);
-					$redirect = $quiz->get_question_link( $next_question_id );
+					$next_question_id = $quiz->get_next_question( $question_id );
+					$redirect         = $quiz->get_question_link( $next_question_id );
 				}
-				if($redirect){
-					wp_safe_redirect($redirect);
+				if ( $redirect ) {
+					wp_safe_redirect( $redirect );
 					exit();
 				}
 			}
@@ -286,57 +287,58 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function hint_answer() {
-			$user        = LP_Global::user();
-			$course_id   = LP_Request::get_int( 'course-id' );
-			$quiz_id     = LP_Request::get_int( 'quiz-id' );
-			$question_id = LP_Request::get_int( 'question-id' );
-			try {
-				$result = array( 'result' => 'failure' );
-
-				$check = self::maybe_save_questions( 'show-hint' );
-				// PHP Exception
-				if ( learn_press_is_exception( $check ) ) {
-					throw $check;
-				}
-
-				$remain = $user->hint( $question_id, $quiz_id, $course_id );
-
-				if ( is_wp_error( $remain ) ) {
-					throw new Exception( $remain->get_error_message(), $remain->get_error_code() );
-				} else {
-					if ( $course = learn_press_get_course( $course_id ) ) {
-						$quiz      = $course->get_item( $quiz_id );
-						$quiz_data = $user->get_item_data( $quiz_id, $course_id );
-						$redirect  = $quiz->get_question_link( $quiz_data->get_current_question() );
-
-						$result['result']   = 'success';
-						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
-						$result['remain']   = $remain;
-						$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
-
-					}
-				}
-			}
-			catch ( Exception $ex ) {
-				$result['message'] = $ex->getMessage();
-				$result['code']    = $ex->getCode();
-			}
-			//LP_Debug::rollbackTransaction();
-			$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id, $user->get_id() );
-
-			// Send json if the ajax is calling
-			learn_press_maybe_send_json( $result );
-
-			// Message
-			if ( ! empty( $result['message'] ) ) {
-				learn_press_add_message( $result['message'] );
-			}
-
-			// Redirecting...
-			if ( ! empty( $result['redirect'] ) ) {
-				wp_redirect( $result['redirect'] );
-				exit();
-			}
+			learn_press_error_log( sprintf( 'Deprecated %s::%s', __CLASS__, __FUNCTION__ ) );
+//			$user        = LP_Global::user();
+//			$course_id   = LP_Request::get_int( 'course-id' );
+//			$quiz_id     = LP_Request::get_int( 'quiz-id' );
+//			$question_id = LP_Request::get_int( 'question-id' );
+//			try {
+//				$result = array( 'result' => 'failure' );
+//
+//				$check = self::maybe_save_questions( 'show-hint' );
+//				// PHP Exception
+//				if ( learn_press_is_exception( $check ) ) {
+//					throw $check;
+//				}
+//
+//				$remain = $user->hint( $question_id, $quiz_id, $course_id );
+//
+//				if ( is_wp_error( $remain ) ) {
+//					throw new Exception( $remain->get_error_message(), $remain->get_error_code() );
+//				} else {
+//					if ( $course = learn_press_get_course( $course_id ) ) {
+//						$quiz      = $course->get_item( $quiz_id );
+//						$quiz_data = $user->get_item_data( $quiz_id, $course_id );
+//						$redirect  = $quiz->get_question_link( $quiz_data->get_current_question() );
+//
+//						$result['result']   = 'success';
+//						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+//						$result['remain']   = $remain;
+//						$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
+//
+//					}
+//				}
+//			}
+//			catch ( Exception $ex ) {
+//				$result['message'] = $ex->getMessage();
+//				$result['code']    = $ex->getCode();
+//			}
+//			//LP_Debug::rollbackTransaction();
+//			$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id, $user->get_id() );
+//
+//			// Send json if the ajax is calling
+//			learn_press_maybe_send_json( $result );
+//
+//			// Message
+//			if ( ! empty( $result['message'] ) ) {
+//				learn_press_add_message( $result['message'] );
+//			}
+//
+//			// Redirecting...
+//			if ( ! empty( $result['redirect'] ) ) {
+//				wp_redirect( $result['redirect'] );
+//				exit();
+//			}
 		}
 
 		/**
@@ -425,8 +427,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				if ( is_wp_error( $data ) ) {
 					throw new LP_Exception( $data->get_error_message(), $data->get_error_code() );
 				} else {
-					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ) );
-
+					//$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ) );
+					$redirect           = learn_press_get_course( $course_id )->get_item_link( $quiz_id );
 					$result['result']   = 'success';
 					$result['redirect'] = apply_filters( 'learn-press/quiz/retaken-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 					$result['data']     = $data;
@@ -499,65 +501,65 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function maybe_save_questions( $action = '', $nonce = '' ) {
-
-			try {
-
-				$nav_type    = LP_Request::get_string( 'nav-type' );
-				$course_id   = LP_Request::get_int( 'course-id' );
-				$quiz_id     = LP_Request::get_int( 'quiz-id' );
-				$question_id = LP_Request::get_int( 'question-id' );
-
-				learn_press_setup_object_data( get_post( $course_id ) );
-
-				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce, $quiz_id, $course_id ) ) {
-					throw new LP_Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
-				}
-
-				if ( ! $questions = self::get_answers_posted() ) {
-					$questions = array();
-				}
-
-				$user        = learn_press_get_current_user();
-				$course      = learn_press_get_course( $course_id );
-				$quiz        = learn_press_get_quiz( $quiz_id );
-				$course_data = $user->get_course_data( $course->get_id() );
-
-				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
-
-					if ( 'completed' === $quiz_data->get_status() ) {
-						throw new LP_Exception( LP_Strings::get( 'you_have_completed_quiz' ), 'user_completed_quiz' );
-					}
-
-					// If user click 'Skip' button
-					if ( $nav_type === 'skip-question' ) {
-						if ( $quiz_data->get_question_answer( $question_id ) == '' ) {
-							$questions[ $question_id ] = '__SKIPPED__';
-						} else {
-							unset( $questions[ $question_id ] );
-						}
-					} else {
-						if ( ! array_key_exists( $question_id, $questions ) ) {
-							$questions[ $question_id ] = array();
-						}
-					}
-
-					$quiz_data->add_question_answer( $questions );
-					$quiz_data->update_meta( '_current_question', $question_id );
-					$quiz_data->update();
-				}
-
-				$return = array(
-					'quiz_id'       => $quiz_id,
-					'course_id'     => $course_id,
-					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
-					'next_question' => $user->get_next_question( $quiz_id, $course_id )
-				);
-			}
-			catch ( LP_Exception $ex ) {
-				$return = $ex;
-			}
-
-			return $return;
+			learn_press_error_log( sprintf( 'Deprecated %s::%s', __CLASS__, __FUNCTION__ ) );
+//			try {
+//
+//				$nav_type    = LP_Request::get_string( 'nav-type' );
+//				$course_id   = LP_Request::get_int( 'course-id' );
+//				$quiz_id     = LP_Request::get_int( 'quiz-id' );
+//				$question_id = LP_Request::get_int( 'question-id' );
+//
+//				learn_press_setup_object_data( get_post( $course_id ) );
+//
+//				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce, $quiz_id, $course_id ) ) {
+//					throw new LP_Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+//				}
+//
+//				if ( ! $questions = self::get_answers_posted() ) {
+//					$questions = array();
+//				}
+//
+//				$user        = learn_press_get_current_user();
+//				$course      = learn_press_get_course( $course_id );
+//				$quiz        = learn_press_get_quiz( $quiz_id );
+//				$course_data = $user->get_course_data( $course->get_id() );
+//
+//				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
+//
+//					if ( 'completed' === $quiz_data->get_status() ) {
+//						throw new LP_Exception( LP_Strings::get( 'you_have_completed_quiz' ), 'user_completed_quiz' );
+//					}
+//
+//					// If user click 'Skip' button
+//					if ( $nav_type === 'skip-question' ) {
+//						if ( $quiz_data->get_question_answer( $question_id ) == '' ) {
+//							$questions[ $question_id ] = '__SKIPPED__';
+//						} else {
+//							unset( $questions[ $question_id ] );
+//						}
+//					} else {
+//						if ( ! array_key_exists( $question_id, $questions ) ) {
+//							$questions[ $question_id ] = array();
+//						}
+//					}
+//
+//					$quiz_data->add_question_answer( $questions );
+//					$quiz_data->update_meta( '_current_question', $question_id );
+//					$quiz_data->update();
+//				}
+//
+//				$return = array(
+//					'quiz_id'       => $quiz_id,
+//					'course_id'     => $course_id,
+//					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
+//					'next_question' => $user->get_next_question( $quiz_id, $course_id )
+//				);
+//			}
+//			catch ( LP_Exception $ex ) {
+//				$return = $ex;
+//			}
+//
+//			return $return;
 		}
 
 		/**
@@ -568,14 +570,16 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @param int $user_id
 		 */
 		public static function update_user_current_question( $quiz_id, $course_id, $user_id ) {
-			$user   = learn_press_get_user( $user_id );
-			$quiz   = learn_press_get_quiz( $quiz_id );
-			$return = $user->get_item_archive( $quiz_id, $course_id, true );
+			learn_press_error_log( sprintf( 'Deprecated %s', __FUNCTION__ ) );
 
-			if ( ! empty( $return['user_item_id'] ) && $questions = $quiz->get_questions() ) {
-				$question_id = reset( $questions );
-				learn_press_update_user_item_meta( $return['user_item_id'], '_current_question', $question_id );
-			}
+//			$user   = learn_press_get_user( $user_id );
+//			$quiz   = learn_press_get_quiz( $quiz_id );
+//			$return = $user->get_item_archive( $quiz_id, $course_id, true );
+//
+//			if ( ! empty( $return['user_item_id'] ) && $questions = $quiz->get_questions() ) {
+//				$question_id = reset( $questions );
+//				learn_press_update_user_item_meta( $return['user_item_id'], '_current_question', $question_id );
+//			}
 		}
 
 		/**

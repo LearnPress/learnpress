@@ -12,23 +12,56 @@ class Questions extends Component {
         super(...arguments);
 
         this.needToTop = false;
+        this.state = {
+            isReviewing: null,
+            currentPage: 0,
+            self: this
+        };
     }
 
-    componentWillReceiveProps(nextProps){
+    static getDerivedStateFromProps(props, state) {
         const checkProps = ['isReviewing', 'currentPage'];
+        const changedProps = {};
 
-        for(let i = 0; i < checkProps.length; i++){
-            if(this.props[checkProps[i]] !== nextProps[checkProps[i]]){
-                this.needToTop = true;
-                return;
+        for (let i = 0; i < checkProps.length; i++) {
+            if (props[checkProps[i]] !== state[checkProps[i]]) {
+                changedProps[checkProps[i]] = props[checkProps[i]];
             }
         }
 
+        // If has prop changed then update state and re-render UI
+        if (Object.values(changedProps).length) {
+            state.self.needToTop = true;
+            return changedProps;
+        }
+
+        // No state update necessary
+        return null;
     }
 
-    componentDidUpdate(){
-        if(this.needToTop){
-            jQuery('#popup-content').animate({scrollTop: 0});
+    // componentWillReceiveProps(nextProps){
+    //     const checkProps = ['isReviewing', 'currentPage'];
+    //
+    //     for(let i = 0; i < checkProps.length; i++){
+    //         if(this.props[checkProps[i]] !== nextProps[checkProps[i]]){
+    //             this.needToTop = true;
+    //             return;
+    //         }
+    //     }
+    //
+    // }
+
+    // componentWillUpdate() {
+    //     this.needToTop = this.state.needToTop;
+    //     this.setState({needToTop: false});
+    // }
+
+    componentDidUpdate() {
+        if (this.needToTop) {
+            jQuery('#popup-content')
+                .animate({scrollTop: 0})
+                .find('.content-item-scrollable:last')
+                .animate({scrollTop: 0});
             this.needToTop = false;
         }
     }
@@ -57,7 +90,7 @@ class Questions extends Component {
         } = this.props;
         console.log(event.keyCode)
 
-        switch (event.keyCode){
+        switch (event.keyCode) {
             case 37: // left
                 return sendKey('left');
             case 38: // up
@@ -68,7 +101,7 @@ class Questions extends Component {
                 return;
             default:
                 // 1 ... 9
-                if(event.keyCode >= 49 && event.keyCode <=57){
+                if (event.keyCode >= 49 && event.keyCode <= 57) {
                     sendKey(event.keyCode - 48);
                 }
         }
@@ -95,21 +128,21 @@ class Questions extends Component {
 
         return <React.Fragment>
             <div tabIndex={100} onKeyUp={ this.nav }>
-            <div className="quiz-questions" style={ {display: isShow ? '' : 'none'} }>
-                {
-                    questions.map((question, index) => {
-                        const isCurrent = questionsPerPage ? false : currentQuestion === question.id;
-                        const isRendered = questionsRendered && questionsRendered.indexOf(question.id) !== -1;
-                        const isVisible = this.isInVisibleRange(question.id, index + 1);
-                        return ( isRendered || !isRendered /*&& isCurrent*/ ) || isVisible ?
-                            <Question isCurrent={ isCurrent } key={ `loop-question-${question.id}` }
-                                      isShow={isVisible }
-                                      isShowIndex={questionsPerPage ? index + 1 : false}
-                                      questionsPerPage={questionsPerPage}
-                                      question={ question }/> : '';
-                    })
-                }
-            </div>
+                <div className="quiz-questions" style={ {display: isShow ? '' : 'none'} }>
+                    {
+                        questions.map((question, index) => {
+                            const isCurrent = questionsPerPage ? false : currentQuestion === question.id;
+                            const isRendered = questionsRendered && questionsRendered.indexOf(question.id) !== -1;
+                            const isVisible = this.isInVisibleRange(question.id, index + 1);
+                            return ( isRendered || !isRendered /*&& isCurrent*/ ) || isVisible ?
+                                <Question isCurrent={ isCurrent } key={ `loop-question-${question.id}` }
+                                          isShow={isVisible }
+                                          isShowIndex={questionsPerPage ? index + 1 : false}
+                                          questionsPerPage={questionsPerPage}
+                                          question={ question }/> : '';
+                        })
+                    }
+                </div>
             </div>
         </React.Fragment>
     }

@@ -907,9 +907,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'item_id'        => '%d',
 			'ref_id'         => '%d',
 			'start_time'     => '%s',
-			'start_time_gmt' => '%s',
+			//'start_time_gmt' => '%s',
 			'end_time'       => '%s',
-			'end_time_gmt'   => '%s',
+			//'end_time_gmt'   => '%s',
 			'item_type'      => '%s',
 			'status'         => '%s',
 			'ref_type'       => '%s',
@@ -927,17 +927,17 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			unset( $item_data['status'] );
 		}
 
-		if ( ! empty( $item_data['start_time'] ) && empty( $item_data['start_time_gmt'] ) ) {
-			$start_time = new LP_Datetime( $item_data['start_time'] );
-
-			$item_data['start_time_gmt'] = $start_time->toSql( false );
-		}
-
-		if ( ! empty( $item_data['end_time'] ) && empty( $item_data['end_time_gmt'] ) ) {
-			$start_time = new LP_Datetime( $item_data['end_time'] );
-
-			$item_data['end_time_gmt'] = $start_time->toSql( false );
-		}
+//		if ( ! empty( $item_data['start_time'] ) && empty( $item_data['start_time_gmt'] ) ) {
+//			$start_time = new LP_Datetime( $item_data['start_time'] );
+//
+//			$item_data['start_time_gmt'] = $start_time->toSql( false );
+//		}
+//
+//		if ( ! empty( $item_data['end_time'] ) && empty( $item_data['end_time_gmt'] ) ) {
+//			$start_time = new LP_Datetime( $item_data['end_time'] );
+//
+//			$item_data['end_time_gmt'] = $start_time->toSql( false );
+//		}
 
 		// Build data and data format
 		foreach ( $item_data as $field => $value ) {
@@ -1080,8 +1080,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'user_id'        => $this->get_id(),
 					'item_id'        => $item_id,
 					'item_type'      => $item->get_item_type(),
-					'start_time'     => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql() : '0000-00-00 00:00:00',
-					'start_time_gmt' => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql( false ) : '0000-00-00 00:00:00',
+					'start_time'     => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql(false) : '0000-00-00 00:00:00',
+					//'start_time_gmt' => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql( false ) : '0000-00-00 00:00:00',
 					'status'         => learn_press_default_user_item_status( $item_id ),
 					'ref_id'         => $course_id,
 					'ref_type'       => LP_COURSE_CPT,

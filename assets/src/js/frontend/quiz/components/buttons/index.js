@@ -138,17 +138,17 @@ class Buttons extends Component {
         return isReviewing
     };
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.keyPressed === this.props.keyPressed) {
-            return;
-        }
-        switch (nextProps.keyPressed) {
-            case 'left':
-                return this.nav('prev')();
-            case 'right':
-                return this.nav('next')()
-        }
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     if (nextProps.keyPressed === this.props.keyPressed) {
+    //         return;
+    //     }
+    //     switch (nextProps.keyPressed) {
+    //         case 'left':
+    //             return this.nav('prev')();
+    //         case 'right':
+    //             return this.nav('next')()
+    //     }
+    // }
 
     /**
      * Displays pagination with numbers from min to max.
@@ -188,7 +188,7 @@ class Buttons extends Component {
         return <div className="nav-links">
             {
                 args.prevNext && !this.isFirst() && <a className="page-numbers prev" data-type="question-navx"
-                                         onClick={ this.nav('prev') }>{__('', 'learnpress') }</a>
+                                                       onClick={ this.nav('prev') }>{__('', 'learnpress') }</a>
             }
 
             {
@@ -213,7 +213,7 @@ class Buttons extends Component {
 
             {
                 args.prevNext && !this.isLast() && <a className="page-numbers next" data-type="question-navx"
-                                         onClick={ this.nav('next') }>{ __('', 'learnpress') }</a>
+                                                      onClick={ this.nav('next') }>{ __('', 'learnpress') }</a>
             }
         </div>
     }
@@ -232,8 +232,7 @@ class Buttons extends Component {
             numPages,
             question,
             questionsPerPage,
-            pages,
-            currentPage
+            canRetry
         } = this.props;
 
         const classNames = ['quiz-buttons align-center'];
@@ -254,7 +253,7 @@ class Buttons extends Component {
             <div className={ `button-left` + (status === 'started' ? ' fixed' : '') }>
 
                 {
-                    -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&
+                    -1 !== ['', 'completed', 'viewed'].indexOf(status) && !isReviewing && canRetry &&
                     <button className="lp-button start"
                             onClick={ this.startQuiz }>{ status === 'completed' ? _x('Retry', 'label button retry quiz', 'learnpress') : _x('Start', 'label button start quiz', 'learnpress') }</button>
                 }
@@ -405,7 +404,8 @@ export default compose([
             currentPage: getData('currentPage'),
             questionsPerPage: getData('questionsPerPage'),
             pageNumbers: getData('pageNumbers'),
-            keyPressed: getData('keyPressed')
+            keyPressed: getData('keyPressed'),
+            canRetry: (getData('attempts') || []).length < getData('attemptsCount')
         };
 
         if (data.questionsPerPage === 1) {

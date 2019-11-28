@@ -204,39 +204,39 @@ class LP_Page_Controller {
 				$redirect    = false;
 				$quiz_status = $quiz_data ? $quiz_data->get_status() : false;
 
-				if ( $quiz_status == 'started' ) {
-					$current_question = 0;
-					if ( empty( $vars['question'] ) ) {
-						$current_question = learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true );
-					} elseif ( $question ) {
-						$current_question = $question->ID;
-					}
-
-					if ( $current_question && ! $lp_course_item->has_question( $current_question ) ) {
-						$this->set_404( true );
-						throw new Exception( '404' );
-					}
-
-					if ( ! $current_question ) {
-						$current_question = $lp_course_item->get_question_at( 0 );
-						learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $current_question );
-					}
-
-					if ( ! $question && $current_question ) {
-						$redirect = $lp_course_item->get_question_link( $current_question );
-					}
-				} elseif ( $quiz_status === 'completed' ) {
-					$current_question = $question ? $question->ID : null;
-				} elseif ( $quiz_status !== 'completed' ) {
-					if ( $question ) {
-						$this->set_404( true );
-						throw new Exception( '404' );
-					}
-				}
-
-				if ( isset( $current_question ) && $current_question ) {
-					$lp_quiz_question = learn_press_get_question( $current_question );
-				}
+//				if ( $quiz_status == 'started' ) {
+//					$current_question = 0;
+//					if ( empty( $vars['question'] ) ) {
+//						$current_question = learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true );
+//					} elseif ( $question ) {
+//						$current_question = $question->ID;
+//					}
+//
+//					if ( $current_question && ! $lp_course_item->has_question( $current_question ) ) {
+//						$this->set_404( true );
+//						throw new Exception( '404' );
+//					}
+//
+//					if ( ! $current_question ) {
+//						$current_question = $lp_course_item->get_question_at( 0 );
+//						learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $current_question );
+//					}
+//
+//					if ( ! $question && $current_question ) {
+//						$redirect = $lp_course_item->get_question_link( $current_question );
+//					}
+//				} elseif ( $quiz_status === 'completed' ) {
+//					$current_question = $question ? $question->ID : null;
+//				} elseif ( $quiz_status !== 'completed' ) {
+//					if ( $question ) {
+//						$this->set_404( true );
+//						throw new Exception( '404' );
+//					}
+//				}
+//
+//				if ( isset( $current_question ) && $current_question ) {
+//					$lp_quiz_question = learn_press_get_question( $current_question );
+//				}
 
 				if ( $redirect ) {
 					//var_dump($redirect);

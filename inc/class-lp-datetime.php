@@ -216,7 +216,7 @@ class LP_Datetime extends DateTime {
 	 * @param   string  $format The date format specification string (see {@link PHP_MANUAL#date})
 	 * @param   boolean $local  True to return the date string in the local time zone, false to return it in GMT.
 	 *
-	 * @return  string   The date string in the specified format format.
+	 * @return string The date string in the specified format format.
 	 */
 	public function format( $format, $local = true ) {
 		if ( '0000-00-00 00:00:00' === $this->raw_date ) {
@@ -274,6 +274,26 @@ class LP_Datetime extends DateTime {
 	 */
 	public function toSql( $local = true ) {
 		return $this->format( 'Y-m-d H:i:s', $local );
+	}
+
+	/**
+	 * Consider the date is in GMT and convert to local time with
+	 * gmt_offset option of WP Core.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $format
+	 *
+	 * @return int|string
+	 */
+	public function toLocal( $format = 'Y-m-d H:i:s' ) {
+		$time = $this->getTimestamp() + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+
+		if ( $format ) {
+			return date( $format, $time );
+		}
+
+		return $time;
 	}
 
 	/**

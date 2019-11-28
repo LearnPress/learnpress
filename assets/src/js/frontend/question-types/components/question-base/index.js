@@ -12,7 +12,9 @@ class QuestionBase extends Component {
 
         this.state = {
             optionClass: ['answer-option'],
-            options: question ? this.parseOptions(question.options) : []
+            questionId: 0,
+            options: question ? this.parseOptions(question.options) : [],
+            self: this
         };
 
         if (props.$wrap) {
@@ -20,32 +22,52 @@ class QuestionBase extends Component {
         }
     }
 
+    static getDerivedStateFromProps(props, state) {
+        return state.self.prepare(props, state);
+    }
+
     componentDidMount() {
-        this.componentWillReceiveProps(this.props);
+        const newState = this.prepare(this.props, this.state);
+
+        if (newState) {
+            this.setState(newState);
+        }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.$wrap) {
-            this.$wrap = nextProps.$wrap;
+    prepare = (props, state) => {
+        const {question} = props;
+
+        if (question && question.id !== state.questionId) {
+            return {
+                options: state.self.parseOptions(question.options)
+            }
         }
 
-        if (nextProps.question) {
-            this.setState({
-                options: this.parseOptions(nextProps.question.options)
-            });
-        }
-
-        if (nextProps.keyPressed === this.props.keyPressed) {
-            return;
-        }
-        if (nextProps.keyPressed >= 1 && nextProps.keyPressed <= 9) {
-            const input = Object.values(this.inputs)[nextProps.keyPressed - 1];
-            input && input.click();
-        }
+        return null;
     }
+
+    // componentWillReceiveProps(nextProps) {
+    //     if (nextProps.$wrap) {
+    //         this.$wrap = nextProps.$wrap;
+    //     }
+    //
+    //     if (nextProps.question) {
+    //         this.setState({
+    //             options: this.parseOptions(nextProps.question.options)
+    //         });
+    //     }
+    //
+    //     if (nextProps.keyPressed === this.props.keyPressed) {
+    //         return;
+    //     }
+    //     if (nextProps.keyPressed >= 1 && nextProps.keyPressed <= 9) {
+    //         const input = Object.values(this.inputs)[nextProps.keyPressed - 1];
+    //         input && input.click();
+    //     }
+    // }
 
     setInputRef = (el, k) => {
-        if(!this.inputs){
+        if (!this.inputs) {
             this.inputs = {}
         }
 

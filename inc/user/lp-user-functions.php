@@ -1815,22 +1815,83 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 
 	do_action( 'learn-press/before-user-start-quiz', $quiz_id, $user_id, $course_id );
 
+	$user        = learn_press_get_user( $user_id );
+	$course_data = $user->get_course_data( $course_id );
+	$quiz_data   = $course_data->get_item( $quiz_id );
+
 	$quiz     = LP_Quiz::get_quiz( $quiz_id );
 	$duration = $quiz->get_duration();
 	$userQuiz = learn_press_create_user_item_for_quiz(
 		array(
-			'item_id'   => $quiz->get_id(),
-			'duration'  => $duration ? $duration->get() : 0,
-			'user_id'   => $user_id,
-			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
-			'ref_type'  => $parent ? $parent->type : '',
-			'ref_id'    => $parent ? $parent->id : ''
+			'user_item_id' => $quiz_data ? $quiz_data->get_user_item_id() : 0,
+			'item_id'      => $quiz->get_id(),
+			'duration'     => $duration ? $duration->get() : 0,
+			'user_id'      => $user_id,
+			'parent_id'    => $parent ? absint( $parent->user_item_id ) : 0,
+			'ref_type'     => $parent ? $parent->type : '',
+			'ref_id'       => $parent ? $parent->id : ''
 		),
 		$wp_error
 	);
 
 	if ( $userQuiz && ! is_wp_error( $userQuiz ) ) {
 		do_action( 'learn-press/user-started-quiz', $userQuiz, $quiz_id, $user_id, $course_id );
+	}
+
+	return $userQuiz;
+}
+
+/**
+ * Create new user item prepare for user starts a quiz
+ *
+ * @since 3.3.0
+ *
+ * @param int  $quiz_id
+ * @param int  $user_id
+ * @param int  $course_id
+ * @param bool $wp_error
+ *
+ * @return array|bool|LP_User_Item|WP_Error
+ */
+function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	global $wpdb;
+
+	// Get user item parent id
+	$query  = $wpdb->prepare( "
+	    SELECT user_item_id, item_id id, item_type type
+	    FROM {$wpdb->learnpress_user_items} 
+	    WHERE user_item_id = (SELECT max(user_item_id)
+	    FROM {$wpdb->learnpress_user_items}
+	    WHERE user_id = %d AND item_id = %d AND status = %s)
+	", $user_id, $course_id, 'enrolled' );
+	$parent = $wpdb->get_row( $query );
+
+	do_action( 'learn-press/before-user-retry-quiz', $quiz_id, $user_id, $course_id );
+
+	$user        = learn_press_get_user( $user_id );
+	$course_data = $user->get_course_data( $course_id );
+	$quiz_data   = $course_data->get_item( $quiz_id );
+
+	$quiz     = LP_Quiz::get_quiz( $quiz_id );
+	$duration = $quiz->get_duration();
+	$userQuiz = learn_press_create_user_item_for_quiz(
+		array(
+			'item_id'      => $quiz->get_id(),
+			'duration'     => $duration ? $duration->get() : 0,
+			'user_id'      => $user_id,
+			'parent_id'    => $parent ? absint( $parent->user_item_id ) : 0,
+			'ref_type'     => $parent ? $parent->type : '',
+			'ref_id'       => $parent ? $parent->id : ''
+		),
+		$wp_error
+	);
+
+	if ( $userQuiz && ! is_wp_error( $userQuiz ) ) {
+		do_action( 'learn-press/user-retried-quiz', $userQuiz, $quiz_id, $user_id, $course_id );
 	}
 
 	return $userQuiz;

@@ -18,7 +18,6 @@ $quiz = LP_Global::course_item_quiz();
 ?>
 
 <div id="content-item-quiz" class="content-item-summary">
-
 	<?php
 	/**
 	 * @see learn_press_content_item_summary_title()

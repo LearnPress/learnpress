@@ -839,6 +839,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool|LP_Question
 		 */
 		public function get_current_question( $user_id = 0, $course_id = 0 ) {
+			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
+
 			$user = learn_press_get_user( $user_id );
 			$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
 

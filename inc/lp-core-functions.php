@@ -2501,7 +2501,8 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			$return = learn_press_update_user_item_field( array(
 				'user_id'    => $user->get_id(),
 				'item_id'    => $course->get_id(),
-				'start_time' => current_time( 'mysql' ),
+				//'start_time' => current_time( 'mysql' ),
+				'start_time' => learn_press_mysql_time( true ),
 				'status'     => 'enrolled',
 				'end_time'   => '0000-00-00 00:00:00',
 				'ref_id'     => $order->id, //$course->get_id(),
@@ -3600,7 +3601,7 @@ function learn_press_course_evaluation_methods( $return = '' ) {
 		'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
 	);
 
-	return apply_filters( 'learn-press/course-evaluation-methods', $return==='keys' ? array_keys( $methods ) : $methods, $return );
+	return apply_filters( 'learn-press/course-evaluation-methods', $return === 'keys' ? array_keys( $methods ) : $methods, $return );
 }
 
 /**
@@ -3617,6 +3618,72 @@ function learn_press_course_evaluation_method_quiz_options() {
 	);
 
 	return $methods;
+}
+
+/**
+ * Wrap WP Core function current_time with mysql format.
+ *
+ * @since 4.0.0
+ *
+ * @param bool $gmt
+ *
+ * @return int|string
+ */
+function learn_press_mysql_time( $gmt = true ) {
+	return current_time( 'mysql', $gmt );
+}
+
+/**
+ * Wrap WP Core function current_time with timestamp format.
+ *
+ * @since 4.0.0
+ *
+ * @param bool $gmt
+ *
+ * @return int|string
+ */
+function learn_press_timestamp( $gmt = true ) {
+	return current_time( 'timestamp', $gmt );
+}
+
+/**
+ * Convert time from GMT to local.
+ *
+ * @since 4.0.0
+ *
+ * @param string|int|LP_Datetime $gmt_time
+ * @param string                 $format
+ *
+ * @return false|int|string
+ */
+function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
+	if ( is_string( $gmt_time ) ) {
+		$gmt_time = strtotime( $gmt_time );
+	} elseif ( $gmt_time instanceof LP_Datetime ) {
+		$gmt_time = strtotime( $gmt_time . '' );
+	}
+
+	$current_time = $gmt_time + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+
+	if ( $format ) {
+		return date( $format, $current_time );
+	}
+
+	return $current_time;
+}
+
+/**
+ * Get max retrying quiz allowed.
+ *
+ * @since 4.0.0
+ *
+ * @param int $quiz_id
+ * @param int $course_id
+ *
+ * @return int
+ */
+function learn_press_get_quiz_max_retrying( $quiz_id = 0, $course_id = 0 ) {
+	return apply_filters( 'learn-press/max-retry-quiz-allowed', 1, $quiz_id, $course_id );
 }
 
 include_once dirname( __FILE__ ) . '/lp-custom-hooks.php';

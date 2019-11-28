@@ -572,7 +572,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				}
 
 				if ( $item_data = $course_item_data->get_item( $course_item ) ) {
-					if ( $item_data->get_access_level() > 0 && $item_data->get_access_level() < 50 ) {
+					$access_level = $item_data->get_access_level();
+					if ( $access_level > 0 && $access_level < 50 ) {
 						$blocked_items[ $course_item ] = 'yes';
 					}
 				}

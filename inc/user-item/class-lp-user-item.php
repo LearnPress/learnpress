@@ -63,7 +63,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['start_time'] ) ) {
 			$this->set_start_time( $item['start_time'] );
 		} else {
-			$this->set_start_time( current_time( 'mysql' ) );
+			//$this->set_start_time( current_time( 'mysql' ) );
+			$this->set_start_time( learn_press_mysql_time(true) );
 		}
 
 		if ( ! empty( $item['end_time'] ) ) {
@@ -221,7 +222,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function set_start_time_gmt( $time ) {
 		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-		$this->_set_data_date( 'start_time_gmt', $time );
+		//$this->_set_data_date( 'start_time_gmt', $time );
 	}
 
 	/**
@@ -234,12 +235,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	public function get_start_time_gmt( $format = '' ) {
 		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
 
-		$date = $this->get_data_date( 'start_time_gmt' );
-		if ( $format ) {
-			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
-		}
-
-		return $date;
+//		$date = $this->get_data_date( 'start_time_gmt' );
+//		if ( $format ) {
+//			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
+//		}
+//
+//		return $date;
 	}
 
 	/**
@@ -287,11 +288,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	public function set_end_time_gmt( $time ) {
 		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
 
-		if ( $time && $time !== '0000-00-00 00:00:00' ) {
-			$this->_set_data_date( 'end_time_gmt', $time );
-		} else {
-			$this->_set_data( 'end_time_gmt', '' );
-		}
+//		if ( $time && $time !== '0000-00-00 00:00:00' ) {
+//			$this->_set_data_date( 'end_time_gmt', $time );
+//		} else {
+//			$this->_set_data( 'end_time_gmt', '' );
+//		}
 	}
 
 	/**
@@ -306,14 +307,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	public function get_end_time_gmt( $format = '' ) {
 		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
 
-		$date = $this->get_data( 'end_time_gmt' );
-		$date = $date ? new LP_Datetime( $date ) : false;
-
-		if ( $format && $date instanceof LP_Datetime ) {
-			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
-		}
-
-		return $date;
+//		$date = $this->get_data( 'end_time_gmt' );
+//		$date = $date ? new LP_Datetime( $date ) : false;
+//
+//		if ( $format && $date instanceof LP_Datetime ) {
+//			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
+//		}
+//
+//		return $date;
 	}
 
 	/**
@@ -605,20 +606,20 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				case 'end_time':
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
-				case 'start_time_gmt':
-					if ( ! $v ) {
-						$v = new LP_Datetime( $v );
-					}
-
-					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
-					break;
-				case 'end_time_gmt':
+//				case 'start_time_gmt':
 //					if ( ! $v ) {
 //						$v = new LP_Datetime( $v );
 //					}
-
-					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
-					break;
+//
+//					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
+//					break;
+//				case 'end_time_gmt':
+////					if ( ! $v ) {
+////						$v = new LP_Datetime( $v );
+////					}
+//
+//					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
+//					break;
 			}
 			$columns[ $k ] = $v;
 		}

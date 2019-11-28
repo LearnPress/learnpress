@@ -51,22 +51,6 @@ class Quiz extends Component {
         setQuizData(settings);
     }
 
-    componentWillReceiveProps(nextProps) {
-
-        const {
-            questionIds,
-            questionsPerPage,
-            setQuizData
-        } = nextProps;
-
-        const chunks = chunk(questionIds, questionsPerPage);
-
-        // setQuizData({
-        //     numPages: chunks.length,
-        //     pages: chunks
-        // });
-    }
-
     componentDidUpdate() {
     }
 
@@ -80,7 +64,7 @@ class Quiz extends Component {
             isReviewing
         } = this.props;
 
-        const isA = -1 !== ['', 'completed'].indexOf(status);
+        const isA = -1 !== ['', 'completed', 'viewed'].indexOf(status) || !status;
 
         // Just render content if status !== undefined (meant all data loaded)
         return undefined !== status && (

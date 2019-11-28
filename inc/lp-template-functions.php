@@ -1002,7 +1002,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 	if ( ! file_exists( $located ) ) {
 		_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $located ), '2.1' );
 
-		$log = sprintf( 'Template %s doesn\'t exists.', $template_name );
+		$log = sprintf( 'TEMPLATE MISSING: Template %s doesn\'t exists.', $template_name );
 		error_log( $log );
 
 		if ( learn_press_is_debug() ) {

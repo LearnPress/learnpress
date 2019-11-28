@@ -19,8 +19,8 @@ $showCheck = $quiz->get_instant_check();
 $userJS    = array();
 
 
-$userCourse = $user->get_course_data( $course->get_id() );
-$userQuiz   = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
+$userCourse       = $user->get_course_data( $course->get_id() );
+$userQuiz         = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
 /// get_attempts($quiz->get_id(), $course->get_id(), $user->get_id());
 $answered         = array();
 $status           = '';
@@ -29,22 +29,20 @@ $checkedQuestions = array();
 
 $cryptoJsAes = false;//function_exists( 'openssl_decrypt' );
 $editable    = $user->is_admin() || get_post_field( $user->is_author_of( $course->get_id() ) );
-$maxRetrying = learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() );
-
 if ( $userQuiz ) {
 	$status           = $userQuiz->get_status();
 	$quizResults      = $userQuiz->get_results( '' );
 	$checkedQuestions = $userQuiz->get_checked_questions();
 	//$hintedQuestions  = $userQuiz->get_hint_questions();
-	$expirationTime = $userQuiz->get_expiration_time();
+	$expirationTime   = $userQuiz->get_expiration_time();
 
 	// If expiration time is specific then calculate total time
 	if ( $expirationTime && ! $expirationTime->is_null() ) {
 		$totalTime = strtotime( $userQuiz->get_expiration_time() ) - strtotime( $userQuiz->get_start_time() );
 	}
 
-	$attempts = $userQuiz->get_attempts( array(
-		'limit'  => $maxRetrying,
+	$attempts         = $userQuiz->get_attempts( array(
+		'limit'  => 1,
 		'offset' => 1
 	) );
 
@@ -99,7 +97,7 @@ $js = array(
 	'question_nav'       => '',
 	'status'             => '',
 	'attempts'           => array(),
-	'attempts_count'     => $maxRetrying,
+	'attempts_count'     => 10,
 	'answered'           => $answered ? (object) $answered : new stdClass(),
 	'passing_grade'      => $quiz->get_passing_grade(),
 	'negative_marking'   => $quiz->get_negative_marking(),

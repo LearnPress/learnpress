@@ -68,6 +68,9 @@ function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
 }
 
 function learn_press_question_class( $question = null, $args = array() /*, $classes = null, $user_id = null, $context = null*/ ) {
+
+	_deprecated_function( sprintf( '%s', __FUNCTION__ ), '4.0.0' );
+
 	$course  = LP()->global['course'];
 	$args    = wp_parse_args(
 		$args,
@@ -134,6 +137,8 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
  * @return bool|int
  */
 function learn_press_get_current_question( $quiz_id = null, $course_id = 0, $user_id = 0 ) {
+	_deprecated_function( sprintf( '%s', __FUNCTION__ ), '4.0.0' );
+
 	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
 	} else {
@@ -228,6 +233,8 @@ function learn_press_get_quiz_time_remaining( $user_id = null, $quiz_id = null )
  * @return string
  */
 function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, $user_id = 0 ) {
+	_deprecated_function( sprintf( '%s', __FUNCTION__ ), '4.0.0' );
+
 	if ( ! $current_question_id ) {
 		$current_question_id = learn_press_get_current_question( $quiz_id, $user_id );
 	}
