@@ -17,7 +17,7 @@ $s       = LP_Request::get( 's' );
     <form class="search-courses" method="post">
         <input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>" name="s"
                value="<?php echo esc_attr( $s ); ?>">
-        <button type="submit"><i class="fa fa-search"></i></button>
+        <button type="submit"><i class="fas fa-search"></i></button>
     </form>
 
     <div class="switch-layout">

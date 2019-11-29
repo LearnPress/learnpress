@@ -2,116 +2,120 @@
     width: calc(10000px);
 }
 
-.course-summary-sidebar {
-    .course-sidebar-preview {
-        border: 1px solid #d9e0f1;
-        background: #fbfcff;
-        padding: 20px;
-        overflow: hidden;
-        @include border-radius(4px);
-
-        .course-price {
-            text-align: center;
-            .origin-price {
-                font-size: 15px;
-                color: #999;
-                margin: 0;
+#learn-press-course {
+    .course-summary-sidebar {
+        box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
+        .course-sidebar-preview {
+            background: #fff;
+            padding: 20px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            .course-price {
+                text-align: center;
+                .origin-price {
+                    font-size: 18px;
+                    color: #666;
+                    font-weight: 300;
+                    font-style: unset;
+                }
+                .price {
+                    font-weight: 500;
+                    color: #333;
+                    font-size: 26px;
+                }
             }
-            .price {
-                color: #00adff;
-            }
-        }
 
-        .media-preview {
-            margin: -20px -20px 20px;
-            img {
-                max-width: 100%;
-                height: auto;
-                vertical-align: top;
+            .media-preview {
+                margin: -20px -20px 20px;
+                img {
+                    max-width: 100%;
+                    height: auto;
+                    vertical-align: top;
+                }
             }
-        }
 
-        .lp-course-buttons {
+            .lp-course-buttons {
+                > * {
+                    margin-bottom: 10px;
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+                form, button {
+                    width: 100%;
+                }
+            }
+
             > * {
-                margin-bottom: 10px;
+                margin-bottom: 20px;
                 &:last-child {
                     margin-bottom: 0;
                 }
             }
-            form, button {
-                width: 100%;
-            }
         }
 
-        > * {
-            margin-bottom: 20px;
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
-    }
-
-    .course-extras {
-        display: block;
-        .course-extras__title {
-            font-weight: normal;
-            font-size: 18px;
-        }
-
-        .course-extras__content {
-            font-size: 14px;
-            color: #777;
-            ul {
-                list-style: none;
+        .course-extras {
+            display: block;
+            .course-extras__title {
+                font-weight: normal;
+                font-size: 18px;
             }
 
-            ol {
-                list-style-position: inside;
-            }
-
-            ul, ol {
-                li {
-                    border: none;
-                    position: relative;
+            .course-extras__content {
+                font-size: 14px;
+                color: #777;
+                ul {
+                    list-style: none;
                 }
-            }
-        }
 
-        &.style-checks {
-            ul, ol {
-                li {
-                    padding-left: 20px;
-                    &:before {
-                        content: '';
-                        border: 2px solid #8794b9;
-                        display: inline-block;
-                        width: 12px;
-                        height: 7px;
-                        border-top: none;
-                        border-right: none;
-                        transform: rotate(-54deg);
-                        position: absolute;
-                        left: 0;
-                        top: 13px;
+                ol {
+                    list-style-position: inside;
+                }
+
+                ul, ol {
+                    li {
+                        border: none;
+                        position: relative;
                     }
                 }
             }
-        }
 
-        &.style-radios {
-            ul, ol {
-                li {
-                    padding-left: 20px;
-                    &:before {
-                        content: '';
-                        border: 2px solid #8794b9;
-                        display: inline-block;
-                        width: 12px;
-                        height: 12px;
-                        position: absolute;
-                        left: 0;
-                        top: 12px;
-                        border-radius: 50%;
+            &.style-checks {
+                ul, ol {
+                    li {
+                        padding-left: 20px;
+                        &:before {
+                            content: '';
+                            border: 2px solid #8794b9;
+                            display: inline-block;
+                            width: 12px;
+                            height: 7px;
+                            border-top: none;
+                            border-right: none;
+                            transform: rotate(-54deg);
+                            position: absolute;
+                            left: 0;
+                            top: 13px;
+                        }
+                    }
+                }
+            }
+
+            &.style-radios {
+                ul, ol {
+                    li {
+                        padding-left: 20px;
+                        &:before {
+                            content: '';
+                            border: 2px solid #8794b9;
+                            display: inline-block;
+                            width: 12px;
+                            height: 12px;
+                            position: absolute;
+                            left: 0;
+                            top: 12px;
+                            border-radius: 50%;
+                        }
                     }
                 }
             }

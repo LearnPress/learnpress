@@ -18,6 +18,5 @@ $course = LP_Global::course();
 ?>
 
 <span class="course-instructor">
-    <?php echo get_avatar($course->get_instructor('id'));?>
 	<?php echo $course->get_instructor_html(); ?>
 </span>

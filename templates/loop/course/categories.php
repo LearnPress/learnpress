@@ -10,5 +10,5 @@
 defined( 'ABSPATH' ) or die();
 ?>
 <div class="course-categories">
-	<?php echo get_the_term_list( '', 'course_category', sprintf( '<span>%s</span>', __( 'in', 'learnpress' ) ), '|', '' ) ?>
+	<?php echo get_the_term_list( '', 'course_category') ?>
 </div>

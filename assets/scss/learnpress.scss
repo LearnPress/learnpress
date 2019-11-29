@@ -1,6 +1,7 @@
 // Global variables
-$primary-color: #00adff;
-$second-color: #e7f7ff;
+$primary-color :#ffb606;
+$second-color  :#442e66;
+$item-preview  :#059de9;
 $primary-bg-color: #000;
 $primary-bg-color-before: #000;
 $primary-bg-color-after: #000;
@@ -47,19 +48,27 @@ input[type="password"] {
 }
 
 .learn-press-breadcrumb {
-    margin-bottom: 50px;
+    margin-bottom: 45px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+    a {
+        font-weight: 300;
+        color: #666;
+    }
 }
 
 .learnpress-page {
     .lp-button {
-        padding: 12px 24px;
-        font-weight: normal;
+        padding: 16px 24px;
+        background: transparent;
+        color: #333;
+        font-weight: 400;
+        border: 1px solid #ccc;
         font-size: 16px;
         line-height: 1;
-        color: #FFF;
-        background: #00adff;
         vertical-align: middle;
-        height: 40px;
+        text-transform: capitalize;
         @include box-sizing(border-box);
 
         &.large {
@@ -74,8 +83,19 @@ input[type="password"] {
             background: #849096;
         }
 
+        &.button-enroll-course {
+            background: $primary-color;
+            border-color: $primary-color;
+            color: #fff;
+            &:hover {
+                background: darken($primary-color, 15%);
+            }
+        }
+
         &:hover {
-            background: #0387c5;
+            background: $primary-color;
+            border-color: $primary-color;
+            color: #fff;
         }
     }
 }
@@ -333,12 +353,8 @@ ul.list-table-nav {
     }
 
     .course-summary-sidebar {
-        flex: 0 0 250px;
-        margin-left: 30px;
         position: relative;
-        .course-summary-sidebar__inner {
-            width: 250px;
-        }
+
         &.slide-down {
             .course-summary-sidebar__inner {
                 position: fixed;
@@ -362,13 +378,13 @@ ul.list-table-nav {
 }
 
 .lp-badge {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     line-height: 1;
-    height: 20px;
+    height: 40px;
     padding: 0;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
 
     &:before,
     &:after {
@@ -399,14 +415,12 @@ ul.list-table-nav {
     }
 
     &.featured {
-        background: #FF5722;
+        background: $primary-color;
         &:before {
-            font-size: 10px;
+            font-size: 12px;
             content: attr(data-text);
             text-transform: uppercase;
-        }
-        &:after {
-            background: #ff5722;
+            font-weight: 500;
         }
     }
 }
@@ -419,9 +433,11 @@ ul.list-table-nav {
 
     .course-nav {
         label {
-            font-weight: normal;
+            padding: 18px 10px;
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
             margin: 0;
-            padding: 10px;
             cursor: pointer;
             text-align: center;
         }
@@ -431,6 +447,25 @@ ul.list-table-nav {
         input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .course-tab-panels {
             .course-tab-panel:nth-child(#{$i}) {
                 display: block;
+            }
+        }
+
+        input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .learn-press-nav-tabs {
+            .course-nav:nth-child(#{$i}) {
+                border-bottom: 0;
+                &:before {
+                    content: '';
+                    position: absolute;
+                    top:0;
+                    left: 0;
+                    background: $primary-color;
+                    height: 4px;
+                    width: 100%;
+                }
+
+                label {
+                    color: $primary-color;
+                }
             }
         }
     }

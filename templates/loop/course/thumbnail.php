@@ -30,8 +30,5 @@ $course = LP_Global::course();
             </div>
 
         </div>
-
     </a>
-
-	<?php echo $course->get_instructor_html( 34, 'course-instructor' ); ?>
 </div>
