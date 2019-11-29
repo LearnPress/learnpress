@@ -94,8 +94,8 @@ add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->f
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content --> <div class="course-footer">' ), 40 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_students' ), 40 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_price' ), 50 );
-//add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'course_readmore' ), 50 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content -->' ), 50 );
+add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'course_readmore' ), 55 );
 
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_info_end' ), 60 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'loop_item_user_progress' ), 70 );

@@ -16,12 +16,13 @@ defined( 'ABSPATH' ) or die;
 ?>
 
 <div class="course-featured-review margin-bottom">
+    <h4 class="featured-review__title"><?php echo esc_html('Featured Review','learnpress'); ?></h4>
     <div class="featured-review__stars">
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
     </div>
     <div class="featured-review__content">
 		<?php echo $review_content; ?>
