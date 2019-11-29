@@ -43,8 +43,14 @@ $instructor = $course->get_instructor();
 			}
 
 			?>
-
         </div>
+
+        <?php if( $socials = $instructor->get_profile_socials()) { ?>
+            <div class="author-socials">
+                <?php echo join( '', $socials ); ?>
+            </div>
+        <?php } ?>
+
     </div>
 
     <div class="course-author__pull-right">
@@ -80,15 +86,7 @@ $instructor = $course->get_instructor();
 		do_action( 'learn-press/after-course-instructor-description', $instructor );
 		?>
 
-		<?php if ( $socials = $instructor->get_profile_socials() ) { ?>
-
-            <div class="author-socials">
-
-				<?php echo join( '', $socials ); ?>
-
-            </div>
-
-		<?php }
+		<?php
 
 		/**
 		 * LP Hook

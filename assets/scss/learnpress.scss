@@ -440,6 +440,7 @@ ul.list-table-nav {
             margin: 0;
             cursor: pointer;
             text-align: center;
+            background:#f1f2f8;
         }
     }
 
@@ -465,6 +466,7 @@ ul.list-table-nav {
 
                 label {
                     color: $primary-color;
+                    background: transparent;
                 }
             }
         }
