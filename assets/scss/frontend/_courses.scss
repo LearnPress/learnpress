@@ -27,6 +27,9 @@
 
     .learn-press-courses-header {
         float: left;
+        h1 {
+            font-weight: 500;
+        }
     }
 
     ul.learn-press-courses {
@@ -237,6 +240,18 @@
                 .separator {
                     display: none;
                 }
+
+                .course-wishlist {
+                    &:before {
+                        content: '\f004';
+                        font-weight: 900;
+                        font-family:"Font Awesome 5 Free";
+                        padding: 9px;
+                        border: 1px solid #ccc;
+                        border-radius: 50%;
+                        color: $primary-color;
+                    }
+                }
             }
         }
 
@@ -346,15 +361,6 @@
 
                     .course-wishlist {
                         float: left;
-                        &:before {
-                            content: '\f004';
-                            font-weight: 900;
-                            font-family:"Font Awesome 5 Free";
-                            padding: 9px;
-                            border: 1px solid #ccc;
-                            border-radius: 50%;
-                            color: $primary-color;
-                        }
                         .course-wishlist__btn {
                             font-size: 14px;
                             font-weight: 300;
@@ -409,12 +415,10 @@
                 }
 
                 .course-content {
-                    padding: 15px 20px 20px 20px;
-                    display: flex;
-                    flex-direction: column;
+                    padding: 20px;
                     flex-grow: 1;
                     .course-permalink {
-                        margin-bottom: 16px;
+                        margin-bottom: 20px;
                     }
                     .course-wrap-meta  {
                         display: none;
@@ -442,6 +446,18 @@
                                     color: $primary-color;
                                 }
                             }
+                        }
+
+                        .course-wishlist {
+                            display: none;
+                            &:before {
+                                padding: 0;
+                                border: unset;
+                            }
+                        }
+
+                        .course-readmore {
+                            display: none;
                         }
                     }
                 }
