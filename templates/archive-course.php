@@ -22,48 +22,50 @@ do_action( 'learn-press/template-header' );
 do_action( 'learn-press/before-main-content' );
 
 ?>
+<div class="content-area">
+    <?php if ( $page_title = learn_press_page_title( false ) ) { ?>
+        <header class="learn-press-courses-header">
+            <h1><?php echo $page_title; ?></h1>
+        </header>
+    <?php } ?>
 
-<?php if ( $page_title = learn_press_page_title( false ) ) { ?>
-    <header class="learn-press-courses-header">
-        <h1><?php echo $page_title; ?></h1>
-    </header>
-<?php } ?>
+    <?php
 
+    /**
+     * LP Hook
+     */
+    do_action( 'learn-press/before-courses-loop' );
+
+    LP()->template( 'course' )->begin_courses_loop();
+
+    while ( have_posts() ) : the_post();
+
+        learn_press_get_template_part( 'content', 'course' );
+
+    endwhile;
+
+    LP()->template( 'course' )->end_courses_loop();
+
+    /**
+     * @since 3.0.0
+     */
+    do_action( 'learn-press/after-courses-loop' );
+
+
+    /**
+     * LP Hook
+     */
+    do_action( 'learn-press/after-main-content' );
+
+    /**
+     * LP Hook
+     *
+     * @since 4.0.0
+     */
+    do_action( 'learn-press/sidebar' );
+?>
+</div>
 <?php
-
-/**
- * LP Hook
- */
-do_action( 'learn-press/before-courses-loop' );
-
-LP()->template( 'course' )->begin_courses_loop();
-
-while ( have_posts() ) : the_post();
-
-	learn_press_get_template_part( 'content', 'course' );
-
-endwhile;
-
-LP()->template( 'course' )->end_courses_loop();
-
-/**
- * @since 3.0.0
- */
-do_action( 'learn-press/after-courses-loop' );
-
-
-/**
- * LP Hook
- */
-do_action( 'learn-press/after-main-content' );
-
-/**
- * LP Hook
- *
- * @since 4.0.0
- */
-do_action( 'learn-press/sidebar' );
-
 /**
  * @since 4.0.0
  *

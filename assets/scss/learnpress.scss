@@ -48,10 +48,16 @@ input[type="password"] {
 }
 
 .learn-press-breadcrumb {
-    margin-bottom: 45px;
+    width: 1170px;
+    max-width: 100%;
+    margin: 0 auto 45px auto;
     font-size: 14px;
     font-weight: 400;
     color: #333;
+    @media (max-width: 1024px) {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
     a {
         font-weight: 300;
         color: #666;
@@ -346,11 +352,11 @@ ul.list-table-nav {
 }
 
 .course-summary {
-    display: flex;
+   /* display: flex;
     .course-landing-summary,
     .course-learning-summary {
         flex: 1;
-    }
+    }*/
 
     .course-summary-sidebar {
         position: relative;

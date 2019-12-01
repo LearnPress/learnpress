@@ -43,18 +43,24 @@
         margin-bottom: 40px;
         display: flex;
         padding: 0 40px;
-        .course-author__pull-left,
-        .course-author__pull-right {
-            flex: 1;
+        @media (max-width: 767px) {
+            padding: 0 15px;
+            flex-direction: column;
+
         }
 
         .course-author__pull-left {
-            flex: 0 0 20%;
+            width: 210px;
             margin-right: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            @media (max-width: 767px) {
+                width: 100%;
+                margin-right: 0;
+              margin-bottom: 30px;
+            }
             img {
                 border-radius: 50%;
                 margin-bottom: 20px;
@@ -87,6 +93,10 @@
         }
 
         .course-author__pull-right {
+             width: calc(100% - 210px);
+             @media (max-width: 767px) {
+                width: 100%;
+             }
             .author-title {
                 a {
                     box-shadow: none;
@@ -261,6 +271,11 @@ ul.learn-press-nav-tabs {
 
     &:after {
         @include clear-fix();
+    }
+  
+    @media (max-width: 767px) {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
     }
 
 }
@@ -985,18 +1000,15 @@ body {
         display: flex;
     }
     .course-meta__pull-left {
-
+        /*@media (max-width: 1024px) {
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 15px;
+            display: grid;
+        }*/
     }
     .course-meta__pull-right {
 
     }
-
-    //&.two-columns{
-    //    .course-meta__pull-left,
-    //    .course-meta__pull-right {
-    //        flex: 1;
-    //    }
-    //}
 
 
     .course-meta__pull-left {
@@ -1126,6 +1138,9 @@ input[name="course-extra-box-ratio"] {
 // FAQs toggle boxe
 .course-tab-panel-faqs {
      padding: 0 40px;
+    @media (max-width: 767px) {
+        padding: 0 15px;
+    }
     .course-faqs-box {
         border: 1px solid rgba(204,204,204,0.6);
         margin-bottom: 20px;

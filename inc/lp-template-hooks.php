@@ -116,13 +116,13 @@ add_action( 'learn-press/single-course-summary', LP()->template( 'course' )->cal
 //add_action( 'learn-press/single-course-summary', LP()->template( 'course' )->callback( 'single-course/sidebar' ), 20 );
 
 // Content
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="course-detail-info"> <div class="course-info-left">' ), 10 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="course-detail-info"> <div class="content-area"> <div class="course-info-left">' ), 10 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/meta-primary' ), 10 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/title' ), 10 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/meta-secondary' ), 10 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( ' </div> </div>' ), 15 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( ' </div> </div> </div>' ), 15 );
 
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content">' ), 30 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content content-area">' ), 30 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content-left">' ), 35 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/progress' ), 40 );
