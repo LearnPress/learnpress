@@ -72,6 +72,22 @@
                         text-align: center;
                     }
                 }
+                .course-thumbnail {
+                    a {
+                        display: block;
+                        overflow: hidden;
+                        img {
+                            display: block;
+                            width: 100%;
+                            transition: all .5s ease;
+                        }
+                    }
+                }
+                &:hover {
+                    .course-thumbnail a img {
+                        transform: scale(1.05);
+                    }
+                }
             }
 
             .course-thumbnail,
@@ -165,13 +181,16 @@
                         margin: 0 10px;
                         color: #666;
                         display: none;
-
                         &:first-child{
                             padding: 5px 9px 4px 9px;
                             border-radius: 5px;
                             background: #f0f0f0;
                             margin-left:0;
                             display: block;
+                        }
+                        &:hover {
+                            background: $primary-color;
+                            color: #fff;
                         }
                     }
                     &:after {
@@ -196,6 +215,9 @@
                     text-transform: capitalize;
                     a {
                         color: #666;
+                        &:hover {
+                            color: $primary-color;
+                        }
                     }
                 }
 
@@ -295,13 +317,16 @@
                     .course-permalink {
                         -webkit-line-clamp: 1;
                         height: 25px;
-                        margin-bottom: 30px;
+                        margin-bottom: 5px;
                         overflow: hidden;
                         .course-title {
                             font-size: 18px;
                             font-weight: 600;
                             color: #333;
                             line-height: 24px;
+                            &:hover {
+                                color: $primary-color;
+                            }
                         }
                     }
 
@@ -320,7 +345,7 @@
                                 margin-right: 8px;
                                 top: -1px;
                                 position: relative;
-                                color: $second-color;
+                                color: #666;
                             }
                         }
 
@@ -646,7 +671,7 @@
                                     margin-right: 0;
                                 }
                                 &:before {
-                                    font-weight: 900;
+                                    font-weight: 400;
                                     font-family:"Font Awesome 5 Free";
                                     margin-right: 8px;
                                     color: $primary-color;
@@ -692,15 +717,17 @@
                                 }
                                 &.meta-item-level:before {
                                     content:'\f012';
+                                    font-weight: 900;
                                 }
                                 &.meta-item-lesson:before {
-                                    content:'\f022';
+                                    content:'\f15c';
                                 }
                                 &.meta-item-quiz:before {
-                                    content:'\f022';
+                                    content:'\f0c5';
                                 }
                                 &.meta-item-student:before {
                                     content: '\f19d';
+                                    font-weight: 900;
                                 }
 
                                 @media (max-width: 1024px) {
@@ -740,7 +767,7 @@
                 .entry-content-right {
                     width: calc( 100% - 70% - 40px );
                     float: right;
-                    margin-top: -295px;
+                    margin-top: -282px;
                     .learn-press-course-wishlist {
                         display: none;
                     }

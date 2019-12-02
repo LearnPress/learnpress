@@ -107,7 +107,7 @@ input[type="password"] {
 }
 
 .course-meta {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 
     .course-students {
         &:before {
@@ -352,12 +352,6 @@ ul.list-table-nav {
 }
 
 .course-summary {
-   /* display: flex;
-    .course-landing-summary,
-    .course-learning-summary {
-        flex: 1;
-    }*/
-
     .course-summary-sidebar {
         position: relative;
 
@@ -387,7 +381,6 @@ ul.list-table-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     line-height: 1;
     height: 40px;
     padding: 0;
@@ -407,18 +400,6 @@ ul.list-table-nav {
         z-index: 10;
     }
 
-    &:after {
-        display: inline-block;
-        content: '';
-        position: absolute;
-        top: 2px;
-        width: 16px;
-        height: 16px;
-        transform: rotate(45deg);
-        right: -7px;
-        border-radius: 4px;
-        z-index: 0;
-    }
 
     &.featured {
         background: $primary-color;
@@ -426,7 +407,6 @@ ul.list-table-nav {
             font-size: 12px;
             content: attr(data-text);
             text-transform: uppercase;
-            font-weight: 500;
         }
     }
 }
