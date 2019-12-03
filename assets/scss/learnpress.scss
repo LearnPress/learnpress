@@ -97,7 +97,19 @@ input[type="password"] {
         @include transition(all 0.25s);
 
         &.gray {
-            background: #849096;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0;
+            border:0;
+            &:hover {
+                background: transparent;
+                text-decoration: none;
+            }
+            &:focus {
+                border: 0;
+                outline: 0;
+            }
         }
 
         &.button-enroll-course {

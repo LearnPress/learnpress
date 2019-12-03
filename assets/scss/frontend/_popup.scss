@@ -35,19 +35,14 @@
             width: 20px;
             height: 20px;
             position: absolute;
-            /* background: #FF0000; */
-            bottom: 7px;
+            top: 50%;
+            right: 30px;
+            transform: translate(0,-50%);
             &:before {
-                content: '';
-                display: inline-block;
-                width: 0;
-                height: 0;
-                border: 6px solid transparent;
-                border-top-color: #DDD;
-                /* border-right: 10px solid #DDD; */
-                position: absolute;
-                top: 7px;
-                left: 4px;
+                content: '\f107';
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                font-size: 18px;
             }
             &:hover {
                 &:before {

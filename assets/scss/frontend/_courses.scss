@@ -676,18 +676,15 @@ a {
                                             text-transform: capitalize;
                                             color: #fff;
                                         }
-                                        /*span {
-                                            padding: 0 5px;
-                                        }*/
                                     }
                                 }
                                 &.meta-item-categories {
                                     &:before {
-                                        content: '';
-                                        background: url(../images/course-categories-icon.png);
-                                        background-repeat: no-repeat;
+                                        content: '\f02e';
+                                        font-weight: 400;
+                                        font-family: "Font Awesome 5 Free";
                                         margin-right: 10px;
-                                        width: 25px;
+                                        font-size: 36px;
                                     }
                                     .meta-item__value {
                                         div {
@@ -705,13 +702,15 @@ a {
                                     font-weight: 900;
                                 }
                                 &.meta-item-lesson:before {
-                                    content:'\f15c';
+                                    content:'\f0c5';
+                                    font-weight: 900;
                                 }
                                 &.meta-item-quiz:before {
-                                    content:'\f0c5';
+                                    content:'\f12e';
+                                    font-weight: 900;
                                 }
                                 &.meta-item-student:before {
-                                    content: '\f19d';
+                                    content: '\f501';
                                     font-weight: 900;
                                 }
 
@@ -756,10 +755,16 @@ a {
                     max-width: 100%;
                     margin-top: -282px;
                     .learn-press-course-wishlist {
-                        display: none;
+                        color: $primary-color;
+                        &:before {
+                            content: '\f004';
+                            font-weight: 900;
+                            font-family: "Font Awesome 5 Free";
+                        }
                     }
                     .course-summary-sidebar__inner {
                         box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
+                        position: relative;
                     }
                     @media (max-width: 768px) {
                         margin-top: 0;
