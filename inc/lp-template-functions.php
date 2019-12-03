@@ -67,11 +67,13 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/instructor.php' )
 		);
 
-		$defaults['faqs'] = array(
-			'title'    => __( 'FAQs', 'learnpress' ),
-			'priority' => 50,
-			'callback' => LP()->template( 'course' )->func( 'faqs' )
-		);
+		if ( $course->get_faqs() ) {
+			$defaults['faqs'] = array(
+				'title'    => __( 'FAQs', 'learnpress' ),
+				'priority' => 50,
+				'callback' => LP()->template( 'course' )->func( 'faqs' )
+			);
+		}
 
 
 		// Filter
@@ -357,11 +359,11 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 	 * Custom document title depending on LP current page.
 	 * E.g: Single course, profile, etc...
 	 *
-	 * @since 3.0.0
-	 *
 	 * @param array $title
 	 *
 	 * @return array
+	 * @since 3.0.0
+	 *
 	 */
 	function learn_press_single_document_title_parts( $title ) {
 		// Single course page
@@ -731,10 +733,11 @@ function learn_press_get_message( $message, $type = 'success' ) {
 /**
  * Remove message added into queue by id and/or type.
  *
- * @since 3.0.0
- *
  * @param string       $id
  * @param string|array $type
+ *
+ * @since 3.0.0
+ *
  */
 function learn_press_remove_message( $id = '', $type = '' ) {
 	if ( ! $groups = learn_press_session_get( learn_press_session_message_id() ) ) {
@@ -823,7 +826,7 @@ if ( ! function_exists( 'learn_press_page_controller' ) ) {
 	/**
 	 * Check permission to view page
 	 *
-	 * @param  file $template
+	 * @param file $template
 	 *
 	 * @return file
 	 */
@@ -891,7 +894,7 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 	/**
 	 * learn_press_page_title function.
 	 *
-	 * @param  boolean $echo
+	 * @param boolean $echo
 	 *
 	 * @return string
 	 */
@@ -941,8 +944,8 @@ add_action( 'template_redirect', 'learn_press_template_redirect' );
 /**
  * get template part
  *
- * @param   string $slug
- * @param   string $name
+ * @param string $slug
+ * @param string $name
  *
  * @return  string
  */
@@ -1026,14 +1029,14 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 /**
  * Get template content
  *
- * @uses learn_press_get_template();
- *
  * @param        $template_name
  * @param array  $args
  * @param string $template_path
  * @param string $default_path
  *
  * @return string
+ * @uses learn_press_get_template();
+ *
  */
 function learn_press_get_template_content( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
 	ob_start();
@@ -1643,9 +1646,9 @@ add_filter( 'body_class', 'learn_press_body_classes', 10 );
  *
  * @param int $course_id
  *
+ * @return bool|mixed
  * @since 3.0
  *
- * @return bool|mixed
  */
 function learn_press_is_learning_course( $course_id = 0 ) {
 	$user        = learn_press_get_current_user();
@@ -1903,9 +1906,9 @@ function learn_press_redirect_search() {
 /**
  * Return TRUE if current user has already enroll course in single view.
  *
+ * @return bool
  * @since 3.0.0
  *
- * @return bool
  */
 function learn_press_current_user_enrolled_course() {
 	$user   = learn_press_get_current_user();
@@ -1921,12 +1924,12 @@ function learn_press_current_user_enrolled_course() {
 /**
  * Check if an user can access content of a course.
  *
- * @since 3.x.x
- *
  * @param int $course_id
  * @param int $user_id
  *
  * @return bool
+ * @since 3.x.x
+ *
  */
 function learn_press_user_can_access_course( $course_id, $user_id = 0 ) {
 	if ( ! $user_id ) {
@@ -2088,9 +2091,9 @@ function learn_press_courses_layouts() {
 /**
  * Get layout template for archive course page.
  *
+ * @return mixed
  * @since 3.3.0
  *
- * @return mixed
  */
 function learn_press_get_courses_layout() {
 	$layouts = learn_press_courses_layouts();
@@ -2190,12 +2193,12 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 }
 
 /**
- * @since 4.x.x
- *
  * @param LP_Question $question
  * @param array       $args
  *
  * @return array
+ * @since 4.x.x
+ *
  */
 function learn_press_get_question_options_for_js( $question, $args = array() ) {
 	$args = wp_parse_args(
@@ -2238,12 +2241,12 @@ function learn_press_custom_excerpt_length( $length ) {
 /**
  * Get post meta with key _lp_duration and translate.
  *
- * @since 4.0.0
- *
  * @param int    $post_id
  * @param string $default
  *
  * @return string
+ * @since 4.0.0
+ *
  */
 function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
 	if ( ! $duration = get_post_meta( $post_id, '_lp_duration', true ) ) {

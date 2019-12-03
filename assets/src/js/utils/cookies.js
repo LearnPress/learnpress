@@ -21,8 +21,6 @@ const Cookies = {
     },
 
     set: function (name, value, expires, path, domain, secure) {
-        console.log(arguments)
-        ;
         if (arguments.length > 2) {
             wpCookies.set(name, value, expires, path, domain, secure)
         } else {

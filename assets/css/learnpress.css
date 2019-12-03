@@ -730,10 +730,6 @@
         font-weight: 500; }
     #learn-press-course .course-author .course-author__pull-left .course-author__meta .courses {
       display: none; }
-    #learn-press-course .course-author .course-author__pull-left .author-socials a i:before {
-      content: "\f39e";
-      font-weight: 900;
-      font-family: "Font Awesome 5 Free"; }
   #learn-press-course .course-author .course-author__pull-right {
     width: calc(100% - 210px); }
     @media (max-width: 767px) {

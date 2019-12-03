@@ -919,7 +919,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					section_description longtext NOT NULL,
 					PRIMARY KEY (section_id),
 					KEY section_course_id (section_course_id),
-					KEY section_name (section_name);
+					KEY section_name (section_name)
 				) $collate;";
 			}
 
