@@ -1,7 +1,7 @@
 #learn-press-course-tabs {
     .course-tab-panels {
         .course-tab-panel {
-            padding-top: 56px;
+            padding-top: 32px;
             display: none;
             &.active {
                 display: block;
@@ -1100,6 +1100,9 @@ body {
                 content: "\f00c";
                 margin-right: 12px;
                 color: $primary-color;
+            }
+            &:last-child {
+                border-bottom: 0;
             }
         }
     }

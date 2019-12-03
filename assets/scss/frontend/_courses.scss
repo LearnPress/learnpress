@@ -643,6 +643,9 @@ a {
                                 margin-right: 50px;
                                 font-weight: 300;
                                 font-size: 16px;
+                                span {
+                                    padding-right: 4px;
+                                }
                                 &:last-child {
                                     margin-right: 0;
                                 }
