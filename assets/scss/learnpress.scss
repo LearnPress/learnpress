@@ -54,6 +54,17 @@ input[type="password"] {
     font-size: 14px;
     font-weight: 400;
     color: #333;
+    a {
+        color: #666;
+        font-weight: 300;
+        &:hover {
+            color: $primary-color;
+        }
+    }
+    i {
+        color: #666;
+        font-size: 12px;
+    }
     @media (max-width: 1024px) {
         padding-right: 15px;
         padding-left: 15px;

@@ -82,8 +82,8 @@ add_action( 'learn-press/courses-loop-item-title', LP()->template( 'course' )->c
  */
 /* */
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content --> <div class="course-wrap-meta">' ), 20 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/duration' ), 20 );
+add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'count_object' ), 20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content -->' ), 20 );
 

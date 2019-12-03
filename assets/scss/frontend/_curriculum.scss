@@ -19,10 +19,14 @@
 
             .course-description {
                 h4 {
+                    font-size: 18px;
                     font-weight: 500;
                     color: #333;
+                    margin-top: 0;
+                    margin-bottom: 1.125rem;
                 }
                 p {
+                    font-size: 16px;
                     font-weight: 300;
                     color: #666;
                     line-height: 26px;
@@ -181,17 +185,21 @@
     .course-featured-review {
         padding: 0 20px 40px 20px;
         .featured-review__title {
+            font-size: 18px;
             font-weight: 500;
             margin-bottom: 2px;
+            margin-top: 0;
         }
         .featured-review__stars {
             color: $primary-color;
             padding-bottom: 12px;
+            font-size: 16px;
         }
         .featured-review__content {
             line-height: 24px;
             font-weight: 300;
             color: #666;
+            font-size: 16px;
         }
     }
 
@@ -221,7 +229,7 @@ ul.learn-press-nav-tabs {
     padding: 0;
     display: flex;
     border-bottom: 0;
-    margin-bottom: 0;
+    margin: 0;
     .course-nav {
         float: left;
         position: relative;
