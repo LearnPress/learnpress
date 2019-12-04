@@ -381,6 +381,8 @@ ul.learn-press-nav-tabs {
                             }
                         }
                         &:before {
+                            display: table-cell;
+                            vertical-align: middle;
                             font-weight: 400;
                             font-family: "Font Awesome 5 Free";
                             font-size: 18px;
@@ -390,6 +392,16 @@ ul.learn-press-nav-tabs {
                             width: 20px;
                             padding: 15px 0;
                             color: $primary-color;
+                        }
+                        @media (max-width: 767px) {
+                            .course-item-meta {
+                                display: flex;
+                                flex-direction: column-reverse;
+                                align-items: flex-end;
+                                .duration {
+                                    margin-bottom: 5px;
+                                }
+                            }
                         }
                     }
                 .item-icon,

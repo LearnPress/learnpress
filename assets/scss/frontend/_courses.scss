@@ -464,33 +464,33 @@ a {
                         .course-wrap-meta  {
                             display: none;
                         }
-                      .course-info {
-                        display: flex;
-                        flex-direction: column;
-                        flex-grow: 1;
-                        .course-excerpt {
-                          display: none;
-                        }
-                        .course-footer {
-                          padding-top: 20px;
-                          border-top: 1px solid rgba(153,153,153,0.2);
-                          .course-students {
-                            float: left;
-                            &:before {
-                              content: '\f501';
-                              font-weight: 900;
-                              font-family:"Font Awesome 5 Free";
-                              margin-right: 8px;
-                              top: -1px;
-                              position: relative;
-                              color: $primary-color;
+                        .course-info {
+                            display: flex;
+                            flex-direction: column;
+                            flex-grow: 1;
+                            .course-excerpt {
+                                display: none;
                             }
-                          }
+                            .course-footer {
+                                padding-top: 20px;
+                                border-top: 1px solid rgba(153,153,153,0.2);
+                                .course-students {
+                                    float: left;
+                                    &:before {
+                                        content: '\f501';
+                                        font-weight: 900;
+                                        font-family:"Font Awesome 5 Free";
+                                        margin-right: 8px;
+                                        top: -1px;
+                                        position: relative;
+                                        color: $primary-color;
+                                    }
+                                  }
+                            }
+                            .course-readmore {
+                                display: none;
+                            }
                         }
-                        .course-readmore {
-                          display: none;
-                        }
-                      }
                     }
 
                 }
@@ -622,8 +622,6 @@ a {
 */
 .lp-archive-courses {
     .course-summary {
-        /*display: flex;
-        justify-content: space-between;*/
         .course-summary-content {
             .course-detail-info {
                 padding: 40px 0;
@@ -784,16 +782,18 @@ a {
                     }
                     @media (max-width: 768px) {
                         margin-top: 0;
+                        padding-left: 20px;
                     }
                     @media (max-width: 767px) {
                         width: 100%;
                         padding-left: 0;
                     }
                 }
+
+                @media (max-width: 676px) {
+                    flex-direction: column;
+                }
             }
         }
-        /*&>.course-summary-sidebar {
-            width: 400px;
-        }*/
     }
 }
