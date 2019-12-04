@@ -20,11 +20,11 @@ defined( 'ABSPATH' ) || exit();
  */
 
 $unique_key = uniqid();
-
 ?>
 <input type="checkbox" name="course-faqs-box-ratio"
        id="course-faqs-box-ratio-<?php echo sanitize_key( $unique_key ); ?>"/>
 
+<?php if($question && $answer ): ?>
 <div class="course-faqs-box">
     <label class="course-faqs-box__title" for="course-faqs-box-ratio-<?php echo sanitize_key( $unique_key ); ?>">
 		<?php echo esc_html( $question ); ?>
@@ -36,3 +36,4 @@ $unique_key = uniqid();
         </div>
     </div>
 </div>
+<?php endif ?>

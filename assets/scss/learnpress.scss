@@ -55,6 +55,17 @@ input[type="password"] {
     font-size: 14px;
     font-weight: 400;
     color: #333;
+    a {
+        color: #666;
+        font-weight: 300;
+        &:hover {
+            color: $primary-color;
+        }
+    }
+    i {
+        color: #666;
+        font-size: 12px;
+    }
     @media (max-width: 1024px) {
         padding-right: 15px;
         padding-left: 15px;
@@ -87,7 +98,19 @@ input[type="password"] {
         @include transition(all 0.25s);
 
         &.gray {
-            background: #849096;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0;
+            border:0;
+            &:hover {
+                background: transparent;
+                text-decoration: none;
+            }
+            &:focus {
+                border: 0;
+                outline: 0;
+            }
         }
 
         &.button-enroll-course {

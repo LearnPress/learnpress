@@ -82,8 +82,8 @@ add_action( 'learn-press/courses-loop-item-title', LP()->template( 'course' )->c
  */
 /* */
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content --> <div class="course-wrap-meta">' ), 20 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/duration' ), 20 );
+add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'count_object' ), 20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content -->' ), 20 );
 
@@ -132,9 +132,7 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->ca
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tags' ), 80 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<!-- end entry content left --> </div>' ), 80 );
 
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content-right">' ), 80 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/sidebar' ), 85 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<!-- end entry content right --> </div>' ), 90 );
 
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( ' </div>' ), 100 );
 

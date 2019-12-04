@@ -92,7 +92,9 @@ $items       = $section->get_items();
 		?>
         <ul class="section-content">
 
-			<?php foreach ( $items as $item ) { ?>
+			<?php
+                $i = 1;
+                foreach ( $items as $item ) { ?>
 
 				<?php
 				if ( $item->is_visible() ) {
@@ -107,6 +109,7 @@ $items       = $section->get_items();
 						$item_link = $user->can_view_item( $item->get_id() ) ? $item->get_permalink() : 'javascript:void(0);';
 
 						?>
+                        <span><?php echo $i; ?></span>
                         <a class="section-item-link"
                            href="<?php echo apply_filters( 'learn-press/section-item-permalink', $item_link, $item, $section, $course ); ?>">
 
@@ -151,7 +154,9 @@ $items       = $section->get_items();
 				}
 				?>
 
-			<?php } // End foreach $items ?>
+			<?php
+                   $i++;
+                } // End foreach $items ?>
 
         </ul>
 
