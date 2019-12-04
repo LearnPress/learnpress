@@ -11,5 +11,7 @@
 
 	LP()->template('course')->course_content_item();
 
+	LP()->template('course')->course_item_comments();
+
 	?>
 </div>

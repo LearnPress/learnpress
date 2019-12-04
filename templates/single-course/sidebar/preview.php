@@ -22,6 +22,10 @@ defined( 'ABSPATH' ) or die;
 	// Buttons
 	LP()->template( 'course' )->course_buttons();
 
+	LP()->template( 'course' )->user_time();
+
+	LP()->template( 'course' )->user_progress();
+
 	// Target audiences
 	//LP()->template('course')->course_extra_target_audiences();
 	?>

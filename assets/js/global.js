@@ -444,6 +444,45 @@ var Hook = {
 
 /***/ }),
 
+/***/ "./assets/src/js/utils/iframe-submit.js":
+/*!**********************************************!*\
+  !*** ./assets/src/js/utils/iframe-submit.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var iframeCounter = 1;
+var $ = window.jQuery;
+
+var IframeSubmit = function IframeSubmit(form) {
+  var iframeId = 'ajax-iframe-' + iframeCounter;
+  var $iframe = $('form[name="' + iframeId + '"]');
+
+  if (!$iframe.length) {
+    $iframe = $('<iframe />').appendTo(document.body).attr({
+      name: iframeId,
+      src: '#'
+    }).on('load', function () {
+      console.log('Loaded');
+    });
+  }
+
+  $(form).on('submit', function () {
+    var $form = $(form).clone().appendTo(document.body);
+    $form.attr('target', iframeId);
+    $form.find('#submit').remove(); //$form.submit();
+
+    return false;
+  });
+  iframeCounter++;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (IframeSubmit);
+
+/***/ }),
+
 /***/ "./assets/src/js/utils/index.js":
 /*!**************************************!*\
   !*** ./assets/src/js/utils/index.js ***!
@@ -465,6 +504,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vendor_jquery_jquery_scrollbar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../vendor/jquery/jquery.scrollbar */ "./assets/src/js/vendor/jquery/jquery.scrollbar.js");
 /* harmony import */ var _vendor_jquery_jquery_scrollbar__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_vendor_jquery_jquery_scrollbar__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var _jquery_plugins__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./jquery.plugins */ "./assets/src/js/utils/jquery.plugins.js");
+/* harmony import */ var _iframe_submit__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./iframe-submit */ "./assets/src/js/utils/iframe-submit.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -476,6 +516,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  *
  * @version 3.2.6
  */
+
 
 
 
@@ -990,7 +1031,8 @@ var _default = {
     }
 
     return obj;
-  }
+  },
+  IframeSubmit: _iframe_submit__WEBPACK_IMPORTED_MODULE_10__["default"]
 };
 $(document).ready(function () {
   if (typeof $.alerts !== 'undefined') {

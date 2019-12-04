@@ -87,6 +87,129 @@ this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /************************************************************************/
 /******/ ({
 
+/***/ "./assets/src/js/frontend/data-controls.js":
+/*!*************************************************!*\
+  !*** ./assets/src/js/frontend/data-controls.js ***!
+  \*************************************************/
+/*! exports provided: apiFetch, select, dispatch, controls */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apiFetch", function() { return apiFetch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select", function() { return select; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return dispatch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "controls", function() { return controls; });
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+ //import { createRegistryControl } from '@wordpress/data';
+
+var createRegistryControl = function createRegistryControl(registryControl) {
+  registryControl.isRegistryControl = true;
+  return registryControl;
+};
+
+var apiFetch = function apiFetch(request) {
+  return {
+    type: 'API_FETCH',
+    request: request
+  };
+};
+function select(storeKey, selectorName) {
+  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+
+  return {
+    type: 'SELECT',
+    storeKey: storeKey,
+    selectorName: selectorName,
+    args: args
+  };
+}
+function dispatch(storeKey, actionName) {
+  for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+    args[_key2 - 2] = arguments[_key2];
+  }
+
+  return {
+    type: 'DISPATCH',
+    storeKey: storeKey,
+    actionName: actionName,
+    args: args
+  };
+}
+
+var resolveSelect = function resolveSelect(registry, _ref) {
+  var storeKey = _ref.storeKey,
+      selectorName = _ref.selectorName,
+      args = _ref.args;
+  return new Promise(function (resolve) {
+    var hasFinished = function hasFinished() {
+      return registry.select('').hasFinishedResolution(storeKey, selectorName, args);
+    };
+
+    var getResult = function getResult() {
+      return registry.select(storeKey)[selectorName].apply(null, args);
+    }; // trigger the selector (to trigger the resolver)
+
+
+    var result = getResult();
+
+    if (hasFinished()) {
+      return resolve(result);
+    }
+
+    var unsubscribe = registry.subscribe(function () {
+      if (hasFinished()) {
+        unsubscribe();
+        resolve(getResult());
+      }
+    });
+  });
+};
+
+var controls = {
+  API_FETCH: function API_FETCH(_ref2) {
+    var request = _ref2.request;
+    return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()(request);
+  },
+  SELECT: createRegistryControl(function (registry) {
+    return function (_ref3) {
+      var _registry$select;
+
+      var storeKey = _ref3.storeKey,
+          selectorName = _ref3.selectorName,
+          args = _ref3.args;
+      return registry.select(storeKey)[selectorName].hasResolver ? resolveSelect(registry, {
+        storeKey: storeKey,
+        selectorName: selectorName,
+        args: args
+      }) : (_registry$select = registry.select(storeKey))[selectorName].apply(_registry$select, _toConsumableArray(args));
+    };
+  }),
+  DISPATCH: createRegistryControl(function (registry) {
+    return function (_ref4) {
+      var _registry$dispatch;
+
+      var storeKey = _ref4.storeKey,
+          actionName = _ref4.actionName,
+          args = _ref4.args;
+      return (_registry$dispatch = registry.dispatch(storeKey))[actionName].apply(_registry$dispatch, _toConsumableArray(args));
+    };
+  })
+};
+
+/***/ }),
+
 /***/ "./assets/src/js/frontend/single-course.js":
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
@@ -101,6 +224,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseTabs", function() { return initCourseTabs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseSidebar", function() { return initCourseSidebar; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
+/* harmony import */ var _data_controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./data-controls */ "./assets/src/js/frontend/data-controls.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -112,6 +236,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 var $ = jQuery;
@@ -297,6 +422,47 @@ var initCourseSidebar = function initCourseSidebar() {
   $window.on('scroll.fixed-course-sidebar', onScroll).trigger('scroll.fixed-course-sidebar');
 };
 
+var initItemComments = function initItemComments() {
+  var $toggle = $('#learn-press-item-comments-toggle');
+  $toggle.on('change',
+  /*#__PURE__*/
+  _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee2() {
+    var response;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            console.log(this.checked);
+
+            if ($toggle[0].checked) {
+              _context2.next = 3;
+              break;
+            }
+
+            return _context2.abrupt("return");
+
+          case 3:
+            _context2.next = 5;
+            return wp.apiFetch({
+              path: 'lp/v1/courses/14242/item-comments/14266'
+            });
+
+          case 5:
+            response = _context2.sent;
+            $('.learn-press-comments').html(response.comments);
+            new LP.IframeSubmit('#commentform');
+
+          case 8:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  })));
+};
+
 
 $(window).on('load', function () {
   var $popup = $('#popup-course');
@@ -329,6 +495,7 @@ $(window).on('load', function () {
   });
   initCourseTabs();
   initCourseSidebar();
+  initItemComments();
   LP.Hook.doAction('course-ready'); // if (window.location.hash) {
   //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
   // }
@@ -419,6 +586,17 @@ function (_Component) {
 /***/ (function(module, exports) {
 
 (function() { module.exports = this["LP"]["quiz"]; }());
+
+/***/ }),
+
+/***/ "@wordpress/api-fetch":
+/*!*******************************************!*\
+  !*** external {"this":["wp","apiFetch"]} ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["wp"]["apiFetch"]; }());
 
 /***/ }),
 

@@ -44,7 +44,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( $user->has_finished_course( $course->get_id() ) ) {
 			echo apply_filters( 'learn-press/finished-course-message', __( 'You finished course', 'learnpress' ) );
 
-			if ( $user->can_retake_course( $course->get_id() ) ) {
+			if ( $user->can_retry_course( $course->get_id() ) ) {
 				learn_press_get_template( 'single-course/buttons/retry' );
 			}
 		}
@@ -713,13 +713,66 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	// button readmore in archive courses
-    public function course_readmore() {
-	    ?>
-            <div class="course-readmore">
-                <a href="<?php the_permalink(); ?>"><?php echo esc_html('Read More','learnpress'); ?></a>
-            </div>
-        <?php
-    }
+	public function course_readmore() {
+		?>
+        <div class="course-readmore">
+            <a href="<?php the_permalink(); ?>"><?php echo esc_html( 'Read More', 'learnpress' ); ?></a>
+        </div>
+		<?php
+	}
+
+	public function course_item_comments() {
+		global $post;
+
+		if ( ! $course = LP_Global::course() ) {
+			return;
+		}
+
+		if ( ! $item = LP_Global::course_item() ) {
+			return;
+		}
+
+		$user = learn_press_get_current_user();
+
+// 	if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
+// 		return;
+// 	}
+
+		if ( $item->setup_postdata() ) {
+
+			if ( comments_open() || get_comments_number() ) {
+				learn_press_get_template( 'single-course/item-comments' );
+			}
+			$item->reset_postdata();
+		}
+	}
+
+	public function user_time() {
+		$user        = LP_Global::user();
+		$course_data = $user->get_course_data( $this->course->get_id() );
+
+		//$course_data->set_start_time( current_time( 'timestamp' ) - 8*3600 );
+
+		$status = $user->get_course_status( $this->course->get_id() );
+
+		if ( ! in_array( $status, array( 'enrolled', 'finished' ) ) ) {
+			return;
+		}
+
+		$start_time      = $course_data->get_start_time();
+		$end_time        = $course_data->get_end_time();
+		$expiration_time = $course_data->get_expiration_time();
+
+		learn_press_get_template( 'single-course/sidebar/user-time', compact( 'status', 'start_time', 'end_time', 'expiration_time', 'start_time_local' ) );
+	}
+
+	public function user_progress() {
+		$user = LP_Global::user();
+
+		$course_status = $user->get_course_status( $this->course->get_id() );
+
+		learn_press_get_template( 'single-course/sidebar/user-progress', array( 'status' => $course_status ) );
+	}
 }
 
 return new LP_Template_Course();

@@ -17,7 +17,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 			),
 
-			'(?P<key>[\w]+)' => array(
+			'(?P<key>[\w]+)'                                        => array(
 				'args'   => array(
 					'id' => array(
 						'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
@@ -41,10 +41,48 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
+			),
+			'(?P<course_id>[\w]+)/item-comments/(?P<item_id>[\w]+)' => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item_comments' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				)
 			)
 		);
 
 		parent::register_routes();
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function get_item_comments( $request ) {
+		ob_start();
+
+		$item = LP_Course_Item::get_item( $request['item_id'] );
+
+		if ( $item->setup_postdata() ) {
+
+			if ( comments_open() || get_comments_number() ) {
+				global $withcomments;
+				// Force to load comments
+				$withcomments = true;
+				comments_template();
+			}
+
+			$item->reset_postdata();
+		}
+
+		$comments = ob_get_clean();
+
+		$response = array(
+			'comments' => $comments
+		);
+
+		return rest_ensure_response( $response );
 	}
 
 	public function check_admin_permission() {

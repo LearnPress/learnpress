@@ -2717,8 +2717,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				// Added since 3.3.0
 				if ( $course_duration ) {
 					// Expiration is GTM time
-					$expiration = new LP_Datetime( $date->getPeriod( $course_duration ) );
-					$user_course->set_expiration_time( $expiration->toSql() );
+					$expiration = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
+					$user_course->set_expiration_time( $expiration->toSql(false) );
 				}
 
 				if ( ! $user_course->update() ) {

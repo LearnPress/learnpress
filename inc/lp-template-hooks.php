@@ -242,7 +242,7 @@ add_action( 'learn-press/course-item-content', LP()->template( 'course' )->func(
 /**
  * @see LP_Template_Course::lesson_comment_form()
  */
-add_action( 'learn-press/after-course-item-content', LP()->template( 'course' )->func( 'lesson_comment_form' ), 10 );
+//add_action( 'learn-press/after-course-item-content', LP()->template( 'course' )->func( 'lesson_comment_form' ), 10 );
 
 /** BEGIN: User profile */
 
@@ -324,12 +324,12 @@ add_action( 'learn-press/after-empty-cart-message', LP()->template( 'general' )-
 
 // ******************************************************************************************************************* //
 
-add_action( 'learn-press/course-buttons', function () {
-	$user = LP_Global::user();
-	if ( $user->has_finished_course( get_the_ID() ) ) {
-		echo 'You finished course';
-	}
-} );
+//add_action( 'learn-press/course-buttons', function () {
+////	$user = LP_Global::user();
+////	if ( $user->has_finished_course( get_the_ID() ) ) {
+////		echo 'You finished course';
+////	}
+////} );
 
 add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
 add_action( 'learn-press/before-content-item-summary/lp_quiz', LP()->template( 'course' )->callback( 'content-quiz/title.php' ), 5 );

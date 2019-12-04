@@ -128,8 +128,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Get post object assigned to this class.
 		 *
-		 * @since 3.0.0
 		 * @return array|null|WP_Post
+		 * @since 3.0.0
 		 */
 		public function get_post() {
 			return get_post( $this->get_id() );
@@ -138,9 +138,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Get global $post object and set it up with new data
 		 *
+		 * @return bool|WP_Post
 		 * @since 3.0.0
 		 *
-		 * @return bool|WP_Post
 		 */
 		public function setup_postdata() {
 			global $post;
@@ -158,9 +158,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Reset global $post to WP default.
 		 *
+		 * @return bool
 		 * @since 3.0.0
 		 *
-		 * @return bool
 		 */
 		public function reset_postdata() {
 			if ( $this->_setup_postdata ) {
@@ -204,11 +204,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Get data as LP_Datetime object
 		 *
-		 * @since 3.2.0
-		 *
 		 * @param string $name
 		 *
 		 * @return array|LP_Datetime|mixed
+		 * @since 3.2.0
+		 *
 		 */
 		public function get_data_date( $name ) {
 			$data = $this->get_data( $name );
@@ -303,7 +303,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $value
 		 */
 		public function set_data_date( $key, $value ) {
-			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
+			if ( /*LP_Datetime::getSqlNullDate() !== $value && ?*/ ! $value instanceof LP_Datetime ) {
 				$value = new LP_Datetime( $value );
 			}
 
@@ -315,7 +315,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $value
 		 */
 		protected function _set_data_date( $key, $value, $extra = false ) {
-			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
+			if ( /*LP_Datetime::getSqlNullDate() !== $value &&*/ ! $value instanceof LP_Datetime ) {
 				$value = new LP_Datetime( $value );
 			}
 
@@ -403,6 +403,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		public function is_support( $feature, $type = '' ) {
 			$feature = $this->_sanitize_feature_key( $feature );
+
 			return LP_Global::object_is_support_feature( $this->object_type, $feature, $type );
 		}
 

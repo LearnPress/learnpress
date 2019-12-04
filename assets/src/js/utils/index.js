@@ -14,6 +14,7 @@ import Cookies from './cookies';
 import _localStorage from './local-storage';
 import jQueryScrollbar from '../vendor/jquery/jquery.scrollbar';
 import * as jplugins from './jquery.plugins';
+import IframeSubmit from './iframe-submit';
 
 const $ = jQuery;
 
@@ -477,7 +478,8 @@ const _default = {
         }
 
         return obj;
-    }
+    },
+    IframeSubmit
 }
 
 $(document).ready(function () {

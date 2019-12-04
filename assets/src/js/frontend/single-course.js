@@ -1,4 +1,5 @@
 import SingleCourse from './single-course/index';
+import {apiFetch} from "./data-controls";
 
 const $ = jQuery;
 const {
@@ -102,8 +103,8 @@ const AjaxSearchCourses = function (el) {
             if (num_pages > 1) {
                 $ul.append(`<li class="search-results__pagination">
                   ` + ([...Array(num_pages).keys()].map((i) => {
-                        return i === paged - 1 ? '<span>' + (i + 1) + '</span>' : '<a data-page="' + (i + 1) + '">' + (i + 1) + '</a>'
-                    })).join('') + `
+                    return i === paged - 1 ? '<span>' + (i + 1) + '</span>' : '<a data-page="' + (i + 1) + '">' + (i + 1) + '</a>'
+                })).join('') + `
                 </li>`)
             }
         } else {
@@ -183,6 +184,24 @@ const initCourseSidebar = function initCourseSidebar() {
     $window.on('scroll.fixed-course-sidebar', onScroll).trigger('scroll.fixed-course-sidebar');
 }
 
+const initItemComments = function initItemComments() {
+    var $toggle = $('#learn-press-item-comments-toggle');
+    $toggle.on('change',async function () {
+        console.log(this.checked)
+        if (!$toggle[0].checked) {
+            return;
+        }
+
+        var response = await wp.apiFetch({
+            path: 'lp/v1/courses/14242/item-comments/14266'
+        });
+
+        $('.learn-press-comments').html(response.comments);
+
+        new LP.IframeSubmit('#commentform')
+    });
+}
+
 export {
     initCourseTabs,
     initCourseSidebar
@@ -225,6 +244,7 @@ $(window).on('load', () => {
 
     initCourseTabs();
     initCourseSidebar();
+    initItemComments();
 
     LP.Hook.doAction('course-ready');
 

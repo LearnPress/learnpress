@@ -996,7 +996,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$parts        = explode( '?', $permalink );
 					$is_permalink = '' !== get_option( 'permalink_structure' );
 					$is_draft     = 'draft' === get_post_status( $this->get_id() );
-
 					$custom_prefixes = array(
 						LP_QUIZ_CPT   => LP()->settings->get( 'quiz_slug' ),
 						LP_LESSON_CPT => LP()->settings->get( 'lesson_slug' )
@@ -1047,6 +1046,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 						}
 						$item_links[ $item_id ] = $item_permalink;
 					}
+
 				}
 				LP_Object_Cache::set( 'course-' . $this->get_id(), $item_links, 'learn-press/course-item-links' );
 			}

@@ -9,9 +9,10 @@
 
 defined( 'ABSPATH' ) or die;
 
-$course = LP_Global::course();
-
+if ( ! $level = learn_press_get_post_level( get_the_ID() ) ) {
+	return;
+}
 ?>
 
-<div class="meta-item meta-item-level"><?php echo learn_press_get_post_level( get_the_ID() ); ?></div>
+<div class="meta-item meta-item-level"><?php echo $level; ?></div>
 

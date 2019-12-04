@@ -1,0 +1,40 @@
+#learn-press-item-comments {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFF;
+    > label{
+        margin: 0;
+        position: absolute;
+        right: 10px;
+        top: -50px;
+        border: 1px solid #DDD;
+        padding: 0 10px;
+        z-index: 1000000000;
+        height: 40px;
+        line-height: 40px;
+        font-weight: normal;
+    }
+    .learn-press-comments {
+        display: none;
+        width: 800px;
+        margin: 20px auto;
+        max-width: 90%;
+        padding: 50px;
+    }
+}
+
+#learn-press-item-comments-toggle {
+    &:checked + #learn-press-item-comments {
+        top: 0;
+        > label {
+            color: #FF0;
+            top: 10px;
+        }
+
+        .learn-press-comments {
+            display: block;
+        }
+    }
+}

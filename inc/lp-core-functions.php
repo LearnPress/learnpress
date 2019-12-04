@@ -3189,6 +3189,10 @@ function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
 	return date_i18n( $format, $timestamp, $gmt );
 }
 
+function learn_press_date(){
+
+}
+
 /**
  * Remove user items.
  *
