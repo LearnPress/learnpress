@@ -132,9 +132,7 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->ca
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tags' ), 80 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<!-- end entry content left --> </div>' ), 80 );
 
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content-right">' ), 80 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/sidebar' ), 85 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<!-- end entry content right --> </div>' ), 90 );
 
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( ' </div>' ), 100 );
 

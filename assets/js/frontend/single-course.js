@@ -270,6 +270,7 @@ var initCourseSidebar = function initCourseSidebar() {
   var offset = $sidebar.offset();
   var scrollTop = 0;
   var maxHeight = $sidebar.height();
+  var maxwidth = $sidebar.width();
   var scrollHeight = $scrollable.height();
   var options = {
     offsetTop: 32
@@ -288,9 +289,11 @@ var initCourseSidebar = function initCourseSidebar() {
     if (top > maxHeight - scrollHeight) {
       $sidebar.removeClass('slide-down').addClass('slide-top');
       $scrollable.css('top', maxHeight - scrollHeight);
+      $scrollable.css('width', maxwidth);
     } else {
       $sidebar.removeClass('slide-top').addClass('slide-down');
       $scrollable.css('top', options.offsetTop);
+      $scrollable.css('width', maxwidth);
     }
   };
 
