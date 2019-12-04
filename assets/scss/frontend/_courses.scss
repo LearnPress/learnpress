@@ -758,11 +758,17 @@ a {
                     max-width: 100%;
                     margin-top: -282px;
                     .learn-press-course-wishlist {
-                        color: $primary-color;
+                        color: #fff;
+                        font-size: 0;
+                        background: transparent !important;
+                        &.on {
+                            color: $primary-color;
+                        }
                         &:before {
                             content: '\f004';
                             font-weight: 900;
                             font-family: "Font Awesome 5 Free";
+                            font-size: 26px;
                         }
                     }
                     .course-summary-sidebar__inner {
