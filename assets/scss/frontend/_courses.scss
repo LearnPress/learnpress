@@ -41,6 +41,9 @@ a {
             font-size: 30px;
             margin: 0;
         }
+        @media (max-width: 767px) {
+            margin-bottom: 20px;
+        }
     }
 
     ul.learn-press-courses {
@@ -185,7 +188,7 @@ a {
                             &:first-child{
                                 padding: 5px 9px 4px 9px;
                                 border-radius: 5px;
-                                background: #f0f0f0;
+                                background: rgba(204,204,204,0.3);
                                 margin-left:0;
                                 display: block;
                             }
@@ -336,8 +339,8 @@ a {
                         .course-wrap-meta {
                             display: flex;
                             font-size: 14px;
-                            font-weight: 300;
-                            color: #666;
+                            font-weight: 400;
+                            color: #333;
                             padding-top: 12px;
                             padding-bottom: 18px;
                             .meta-item {
@@ -535,6 +538,7 @@ a {
             }
         }
         button {
+            font-size: 16px;
             border: none;
             height: 30px;
             background: transparent;
@@ -546,6 +550,10 @@ a {
             line-height: 1;
             padding: 0;
             transform: translate(0,-50%);
+            &:focus {
+                border: 0;
+                outline: 0;
+            }
         }
 
         ::-webkit-input-placeholder {

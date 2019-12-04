@@ -2232,6 +2232,9 @@ a {
       font-weight: 500;
       font-size: 30px;
       margin: 0; }
+    @media (max-width: 767px) {
+      .lp-archive-courses .learn-press-courses-header {
+        margin-bottom: 20px; } }
   .lp-archive-courses ul.learn-press-courses {
     clear: both;
     list-style: none;
@@ -2357,7 +2360,7 @@ a {
               .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories a:first-child {
                 padding: 5px 9px 4px 9px;
                 border-radius: 5px;
-                background: #f0f0f0;
+                background: rgba(204, 204, 204, 0.3);
                 margin-left: 0;
                 display: block; }
               .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories a:hover {
@@ -2477,8 +2480,8 @@ a {
             .lp-archive-courses ul.learn-press-courses[data-layout="list"] .course .course-item .course-content .course-wrap-meta {
               display: flex;
               font-size: 14px;
-              font-weight: 300;
-              color: #666;
+              font-weight: 400;
+              color: #333;
               padding-top: 12px;
               padding-bottom: 18px; }
               .lp-archive-courses ul.learn-press-courses[data-layout="list"] .course .course-item .course-content .course-wrap-meta .meta-item {
@@ -2616,6 +2619,7 @@ a {
         border: 0;
         outline: 0; }
     .lp-courses-bar .search-courses button {
+      font-size: 16px;
       border: none;
       height: 30px;
       background: transparent;
@@ -2627,6 +2631,9 @@ a {
       line-height: 1;
       padding: 0;
       transform: translate(0, -50%); }
+      .lp-courses-bar .search-courses button:focus {
+        border: 0;
+        outline: 0; }
     .lp-courses-bar .search-courses ::-webkit-input-placeholder {
       color: #999; }
     .lp-courses-bar .search-courses :-ms-input-placeholder {
