@@ -716,7 +716,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function course_readmore() {
 		?>
         <div class="course-readmore">
-            <a href="<?php the_permalink(); ?>"><?php echo esc_html( 'Read More', 'learnpress' ); ?></a>
+            <a href="<?php the_permalink(); ?>"><?php echo esc_html( 'View More', 'learnpress' ); ?></a>
         </div>
 		<?php
 	}

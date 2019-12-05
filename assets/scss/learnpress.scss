@@ -87,6 +87,7 @@ input[type="password"] {
         line-height: 1;
         vertical-align: middle;
         text-transform: capitalize;
+        font-family: inherit;
         @include box-sizing(border-box);
 
         &.large {
@@ -155,8 +156,8 @@ input[type="password"] {
 .learn-press-progress {
     position: relative;
     .progress-bg {
-        background: #DDD;
-        height: 10px;
+        background: #ccc;
+        height: 6px;
         position: relative;
         overflow: hidden;
         @include border-radius(5px);
@@ -166,7 +167,7 @@ input[type="password"] {
             position: absolute;
             left: 50%;
             margin-left: -100%;
-            background: #00adff;
+            background: $primary-color;
             @include border-radius(5px);
         }
     }

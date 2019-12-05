@@ -8,7 +8,11 @@
  */
 
 defined( 'ABSPATH' ) or die();
+
+$categories = get_the_term_list( '', 'course_category');
 ?>
+<?php if(!empty($categories)): ?>
 <div class="course-categories">
-	<?php echo get_the_term_list( '', 'course_category') ?>
+	<?php echo $categories; ?>
 </div>
+<?php endif; ?>

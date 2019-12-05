@@ -22,13 +22,13 @@ $course = LP_Global::course();
 <div class="course-time">
     <p class="course-time-row">
         <strong><?php esc_html_e( 'You started on:', 'learnpress' ); ?></strong>
-		<?php echo $start_time->format( 'Y-m-d H:i:s' ); ?>
+        <time date-time="<?php echo $start_time->format( 'Y-m-d H:i:s' ); ?>"> <?php echo $start_time->format( 'd/m/Y ' ); ?> </time>
     </p>
 	<?php if ( $status === 'enrolled' ) { ?>
 		<?php if ( $expiration_time ) { ?>
             <p class="course-time-row">
                 <strong><?php esc_html_e( 'You will end:', 'learnpress' ); ?></strong>
-				<?php echo $expiration_time->format( 'i18n' ); ?>
+                <time datetime="<?php echo $expiration_time->format( 'Y-m-d H:i:s' ); ?>"><?php echo $expiration_time->format( 'd/m/Y' ); ?></time>
             </p>
 		<?php } else { ?>
             <p class="course-time-row">
