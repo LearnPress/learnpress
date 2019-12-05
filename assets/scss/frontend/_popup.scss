@@ -92,24 +92,24 @@
     display: flex;
     #popup-header {
         position: fixed;
-        left: 399px;
+        left: 475px;
         right: 0;
-        background: #5383F7;
+        background: $second-color;
         z-index: 100;
         border-bottom: 1px solid #d9e0f1;
         padding: 0;
-        height: 60px;
-        border-left: 1px solid #5379d6;
+        height: 70px;
         display: flex;
         @include transition(left 0.25s);
         .course-title {
-            flex: 1;
-            margin: 0;
             padding: 0;
+            width: 792px;
+            margin: 0 auto;
+            line-height: 70px;
             a {
-                font-size: 18px;
+                font-size: 16px;
+                font-weight: 400;
                 color: #FFF;
-                margin: 16px;
                 display: -webkit-box;
                 -webkit-line-clamp: 1;
                 -webkit-box-orient: vertical;
@@ -141,43 +141,44 @@
     }
 
     #popup-sidebar {
-        flex: 0 0 400px;
+        flex: 0 0 475px;
         position: relative;
         overflow: auto;
-        border-right: 1px solid #d9e0f1;
+        box-shadow: 0px 15px 30px 0px rgba(0, 0, 0, 0.1);
         @include transition(0.25s);
         .search-course {
             display: flex;
-            height: 60px;
-            background: #4274ef;
+            height: 70px;
+            background: #f9fafc;
             position: relative;
             input[name="s"] {
                 background: transparent;
                 border: none;
                 color: #DDD;
-                margin: 6px 0 6px 30px;
+                margin: 6px 0;
                 line-height: 1;
                 font-size: 16px;
                 @include box-sizing(border-box);
-                @include placeholder-color(#DDD);
+                @include placeholder-color(#999);
                 @include placeholder-fontStyle(italic);
             }
 
             button {
                 position: absolute;
                 top: 0;
-                height: 32px;
+                height: 70px;
                 width: 16px;
-                margin: 14px 10px;
+                margin: 0 10px;
                 padding: 0;
-                font-family: Fontawesome;
                 background: transparent;
                 line-height: 1px;
-
+                right: 10px;
                 &:before {
                     content: "\f002";
-                    font-size: 24px;
-                    color: #DDD;
+                    font-size: 16px;
+                    color: #666;
+                    font-weight: 900;
+                    font-family: "Font Awesome 5 Free";
                 }
 
                 &.clear {
@@ -303,12 +304,11 @@
             }
         }
         .course-curriculum {
-            width: 400px;
+            width: 475px;
             position: absolute;
-            top: 59px;
+            top: 70px;
             bottom: 0;
             overflow: auto;
-            border-top: 1px solid #d9e0f1;
 
             .section {
                 position: relative;
@@ -328,6 +328,14 @@
                     top: 0;
                     z-index: 1000;
                     padding: 10px;
+
+                    .section-left {
+                        .section-title {
+                            font-size: 20px;
+                            font-weight: 400;
+                            color: #000;
+                        }
+                    }
                 }
 
                 .section-content {
@@ -425,7 +433,7 @@
         #learn-press-content-item {
             .content-item-wrap {
                 margin: 0 auto;
-                max-width: 1000px;
+                max-width: 792px;
                 width: 90%;
                 padding: 40px 0 80px 0;
             }
@@ -808,7 +816,7 @@
         display: inline-block;
         width: 24px;
         height: 40px;
-        left: 399px;
+        left: 475px;
         top: 66px;
         z-index: 100;
         -webkit-appearance: none;

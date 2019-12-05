@@ -375,7 +375,7 @@ ul.learn-press-nav-tabs {
                         width: 100%;
                         line-height: 1.5;
                         &:hover {
-                            span {
+                            .item-name {
                                 color: $primary-color;
                             }
                         }
@@ -448,10 +448,10 @@ ul.learn-press-nav-tabs {
                         }
                     }
                     .count-questions {
-                        background: #3db748;
+                        background: $primary-bg-questions;
                     }
                     .duration {
-                        background: $primary-color;
+                        background: $primary-bg-duration;
                     }
                     .course-item-status {
                         color: #DDD;
@@ -549,7 +549,7 @@ ul.learn-press-nav-tabs {
                   &.status-completed,
                   &.status-started {
                     .course-item-status {
-                      border-color: #00adff;
+                      border-color: $primary-color-course-item-status;
                       color: #DDD;
                       &:before {
                         content: "\f00c";
@@ -558,7 +558,7 @@ ul.learn-press-nav-tabs {
                   }
                   &.status-completed {
                     .course-item-status {
-                      color: #00adff;
+                      color: $primary-color-course-item-status;
                     }
                   }
                   &.passed {
@@ -570,8 +570,8 @@ ul.learn-press-nav-tabs {
                   &.item-failed,
                   &.failed {
                     .course-item-status {
-                      border-color: #FF0000;
-                      color: #FF0000;
+                      border-color: #f02425;
+                      color: #f02425;
                       &:before {
                         content: "\f00d";
                       }
