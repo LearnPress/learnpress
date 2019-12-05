@@ -244,6 +244,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * User starts a quiz.
 	 *
+	 * @throws
+	 *
 	 * @param WP_REST_Request $request
 	 *
 	 * @return WP_REST_Response
@@ -284,6 +286,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$answered    = $quizResults->getAnswered();
 
 			$expirationTime = $userQuiz->get_expiration_time();
+
+			learn_press_error_log($expirationTime);
 
 			// If expiration time is specific then calculate total time
 			if ( $expirationTime && ! $expirationTime->is_null() ) {

@@ -2005,20 +2005,20 @@ function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id
 }
 
 
-function learn_press_get_link_current_question_instead_of_continue_button( $link, $item ) {
-	if ( get_post_type( $item->get_id() ) === LP_QUIZ_CPT ) {
-		$user      = LP_Global::user();
-		$course    = $item->get_course();
-		$quiz_data = $user->get_item_data( $item->get_id(), $course->get_id() );
-		if ( $quiz_data && $quiz_data->get_status() === 'started' ) {
-			$link = $item->get_question_link( $quiz_data->get_current_question() );
-		}
-	}
+//function learn_press_get_link_current_question_instead_of_continue_button( $link, $item ) {
+//	if ( get_post_type( $item->get_id() ) === LP_QUIZ_CPT ) {
+//		$user      = LP_Global::user();
+//		$course    = $item->get_course();
+//		$quiz_data = $user->get_item_data( $item->get_id(), $course->get_id() );
+//		if ( $quiz_data && $quiz_data->get_status() === 'started' ) {
+//			$link = $item->get_question_link( $quiz_data->get_current_question() );
+//		}
+//	}
+//
+//	return $link;
+//}
 
-	return $link;
-}
-
-add_filter( 'learn-press/course-item-link', 'learn_press_get_link_current_question_instead_of_continue_button', 10, 2 );
+//add_filter( 'learn-press/course-item-link', 'learn_press_get_link_current_question_instead_of_continue_button', 10, 2 );
 
 /** 3.3.0 */
 add_filter( 'learn-press/can-view-item', function ( $viewable, $item_id, $course_id ) {

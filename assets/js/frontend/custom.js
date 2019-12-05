@@ -1,3 +1,4 @@
+this["LP"] = this["LP"] || {}; this["LP"]["custom"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -119,7 +120,7 @@ Hook.addAction('quiz-started', function (results, id) {
   };
 });
 Hook.addAction('quiz-submitted', function (response, id) {
-  $(".course-item-".concat(id)).removeClass('status-started').addClass("has-status status-completed ".concat(response.results.grade));
+  $(".course-item-".concat(id)).removeClass('status-started passed failed').addClass("has-status status-completed ".concat(response.results.graduation));
   window.onbeforeunload = null;
 });
 $(document).ready(function () {

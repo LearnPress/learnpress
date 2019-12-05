@@ -23,7 +23,7 @@ Hook.addAction('quiz-started', function (results, id) {
 });
 
 Hook.addAction('quiz-submitted', function (response, id) {
-    $(`.course-item-${id}`).removeClass('status-started').addClass(`has-status status-completed ${response.results.grade}`);
+    $(`.course-item-${id}`).removeClass('status-started passed failed').addClass(`has-status status-completed ${response.results.graduation}`);
     window.onbeforeunload = null;
 });
 

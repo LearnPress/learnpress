@@ -876,18 +876,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-add_action( 'wp_head', function () {
-	//var_dump(learn_press_get_current_user()->count_quiz_attempts(10779, 10748));die();
-} );
-
-add_filter( 'learn-press/max-retry-quiz-allowed', function () {
-	return 100;
-} );
-
-add_filter( 'learn-press/max-retry-course-allowed', function () {
-	return 100;
-} );
-//$d = new LP_Datetime(current_time('mysql', true));
-//$d2 = new LP_Datetime();
-//var_dump( current_time('mysql', true), (new LP_Datetime())->toSql(false));

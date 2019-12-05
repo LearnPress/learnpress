@@ -212,7 +212,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param string $prop
 	 * @param bool   $force - Optional. Force to refresh cache.
 	 *
-	 * @return mixed|array|LP_Quiz_Results
+	 * @return LP_Quiz_Results|array|bool
 	 */
 	public function get_results( $prop = 'result', $force = false ) {
 		/**

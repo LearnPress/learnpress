@@ -22,7 +22,7 @@ $course = LP_Global::course();
 <div class="course-time">
     <p class="course-time-row">
         <strong><?php esc_html_e( 'You started on:', 'learnpress' ); ?></strong>
-		<?php echo $start_time->format( 'Y-m-d H:i:s' ); ?>
+		<?php echo $start_time->format( 'i18n' ); ?>
     </p>
 	<?php if ( $status === 'enrolled' ) { ?>
 		<?php if ( $expiration_time ) { ?>

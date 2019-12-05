@@ -280,6 +280,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * @param string|int|LP_Datetime $date
 	 * @param string                 $format
+	 * @param bool                   $local
 	 *
 	 * @return bool|float|int|LP_Datetime|string
 	 */
@@ -288,13 +289,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			return false;
 		}
 
-		if ( empty( $format ) ) {
-			if ( is_numeric( $date ) ) {
-				$format = 'timestamp';
-			} elseif ( is_string( $date ) ) {
-				$format = 'mysql';
-			}
-		}
+//		if ( empty( $format ) ) {
+//			if ( is_numeric( $date ) ) {
+//				$format = 'timestamp';
+//			} elseif ( is_string( $date ) ) {
+//				$format = 'mysql';
+//			}
+//		}
 
 		if ( ! $date instanceof LP_Datetime ) {
 			$date = new LP_Datetime( $date );
@@ -632,6 +633,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			switch ( $k ) {
 				case 'start_time':
 				case 'end_time':
+				case 'expiration_time':
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql( false ) : $v;
 					break;
 			}
@@ -663,7 +665,21 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$item_type = learn_press_get_post_type( $item_id );
 		switch ( $item_type ) {
 			case LP_LESSON_CPT:
+
 				$item = new LP_User_Item( $data );
+
+				if ( ! $start_time = $item->get_start_time() ) {
+					$start_time = new LP_Datetime();
+					$item->set_start_time( $start_time->toSql( false ) );
+				}
+
+				if ( $item->get_expiration_time() ) {
+					if ( $duration = get_post_meta( $item_id, '_lp_duration', true ) ) {
+						// Expiration is GTM time
+						$expiration = new LP_Datetime( $start_time->getPeriod( $duration, false ) );
+						$item->set_expiration_time( $expiration->toSql( true ) );
+					}
+				}
 				break;
 			case LP_QUIZ_CPT:
 				$item = new LP_User_Item_Quiz( $data );
@@ -671,6 +687,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		return apply_filters( 'learn-press/user-item-object', $item, $data, $item_type );
+	}
+
+	public function set_graduation( $graduation ) {
+		$this->_set_data( 'graduation', $graduation );
 	}
 
 	/**

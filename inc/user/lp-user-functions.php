@@ -377,9 +377,9 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 /**
  * Get queried user in profile link
  *
+ * @return false|WP_User
  * @since 3.0.0
  *
- * @return false|WP_User
  */
 function learn_press_get_profile_user() {
 	return LP_Profile::get_queried_user();
@@ -1526,9 +1526,9 @@ function learn_press_default_user_item_status( $item_id ) {
 /**
  * Get current state of distraction mode
  *
+ * @return mixed
  * @since 3.1.0
  *
- * @return mixed
  */
 function learn_press_get_user_distraction() {
 	if ( is_user_logged_in() ) {
@@ -1585,12 +1585,6 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		$itemData['item_type'] = $post_type;
 	}
 
-	// Calculate the expiration time if duration is specific.
-	if ( ! empty( $itemData['duration'] ) ) {
-		$itemData['expiration_time'] = learn_press_date_end_from( $itemData['duration'], time() );
-		unset( $itemData['duration'] );
-	}
-
 	// Get id and type of ref if they are null
 	if ( ! empty( $itemData['parent_id'] ) && ( empty( $itemData['ref_id'] ) || ( empty( $itemData['ref_type'] ) ) ) ) {
 		$parent = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->learnpress_user_items} WHERE %d", $itemData['parent_id'] ) );
@@ -1623,8 +1617,19 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		unset( $itemData['create_meta'] );
 	}
 
+	// Calculate the expiration time if duration is specific.
+	if ( ! empty( $itemData['duration'] ) ) {
+		$expiration = new LP_Datetime( $currentTime->getPeriod( $itemData['duration'], false ) );
+		unset( $itemData['duration'] );
+	}
+
 	$userItem = new LP_User_Item( $itemData );
-	$result   = $userItem->update( true, false );
+
+	if ( isset( $expiration ) ) {
+		$userItem->set_expiration_time( $expiration->toSql( true ) );
+	}
+
+	$result = $userItem->update( true, false );
 
 	if ( ! $result || is_wp_error( $result ) ) {
 
@@ -1787,14 +1792,14 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 /**
  * Create new user item prepare for user starts a quiz
  *
- * @since 3.3.0
- *
  * @param int  $quiz_id
  * @param int  $user_id
  * @param int  $course_id
  * @param bool $wp_error
  *
  * @return array|bool|LP_User_Item|WP_Error
+ * @since 3.3.0
+ *
  */
 function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
@@ -1844,14 +1849,14 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 /**
  * Create new user item prepare for user starts a quiz
  *
- * @since 3.3.0
- *
  * @param int  $quiz_id
  * @param int  $user_id
  * @param int  $course_id
  * @param bool $wp_error
  *
  * @return array|bool|LP_User_Item|WP_Error
+ * @since 3.3.0
+ *
  */
 function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
@@ -1880,12 +1885,12 @@ function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	$duration = $quiz->get_duration();
 	$userQuiz = learn_press_create_user_item_for_quiz(
 		array(
-			'item_id'      => $quiz->get_id(),
-			'duration'     => $duration ? $duration->get() : 0,
-			'user_id'      => $user_id,
-			'parent_id'    => $parent ? absint( $parent->user_item_id ) : 0,
-			'ref_type'     => $parent ? $parent->type : '',
-			'ref_id'       => $parent ? $parent->id : ''
+			'item_id'   => $quiz->get_id(),
+			'duration'  => $duration ? $duration->get() : 0,
+			'user_id'   => $user_id,
+			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
+			'ref_type'  => $parent ? $parent->type : '',
+			'ref_id'    => $parent ? $parent->id : ''
 		),
 		$wp_error
 	);
@@ -1900,12 +1905,12 @@ function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 /**
  * Prepares list of questions for rest api.
  *
- * @since 3.3.0
- *
  * @param int[] $question_ids
  * @param array $args
  *
  * @return array
+ * @since 3.3.0
+ *
  */
 function learn_press_rest_prepare_user_questions( $question_ids, $args = array() ) {
 
@@ -2064,9 +2069,10 @@ add_action( 'edit_user_profile', 'learn_press_append_user_profile_fields' );
 /**
  * Update extra profile data upon update user.
  *
+ * @param int $user_id
+ *
  * @since 4.0.0
  *
- * @param int $user_id
  */
 function learn_press_update_extra_user_profile_fields( $user_id ) {
 
@@ -2085,11 +2091,11 @@ add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_f
 /**
  * Get extra profile info data
  *
- * @since 4.0.0
- *
  * @param int $user_id
  *
  * @return array
+ * @since 4.0.0
+ *
  */
 function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 	if ( ! $user_id ) {
@@ -2110,9 +2116,9 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 /**
  * Get extra profile fields will be registered in backend profile.
  *
+ * @return array
  * @since 4.0.0
  *
- * @return array
  */
 function learn_press_get_user_extra_profile_fields() {
 	return apply_filters( 'learn-press/user-extra-profile-fields',

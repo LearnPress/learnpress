@@ -13,8 +13,12 @@ defined( 'ABSPATH' ) or die;
  * @var WP_User $user
  */
 
+if ( empty( $user ) ) {
+	return;
+}
+
 $extra_profile_fields = learn_press_get_user_extra_profile_fields();
-$extra_profile        = learn_press_get_user_extra_profile_info();
+$extra_profile        = learn_press_get_user_extra_profile_info( $user->ID );
 
 ?>
 <h3><?php esc_html_e( 'LearnPress User Profile', 'eduma' ); ?></h3>

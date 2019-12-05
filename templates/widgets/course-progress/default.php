@@ -24,9 +24,9 @@ if ( ! $course = LP_Global::course() ) {
 
     <div class="widget-body">
 
-		<?php learn_press_get_template( 'single-course/progress.php' ); ?>
+		<?php learn_press_get_template( 'single-course/sidebar/user-progress.php' ); ?>
 
-		<?php learn_press_course_remaining_time(); ?>
+		<?php //learn_press_course_remaining_time(); ?>
 
     </div>
 

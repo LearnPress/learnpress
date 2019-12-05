@@ -145,7 +145,7 @@ function learn_press_get_current_question( $quiz_id = null, $course_id = 0, $use
 		$user = learn_press_get_current_user();
 	}
 
-	return $user->get_current_question( $quiz_id, $course_id );
+	return false;//$user->get_current_question( $quiz_id, $course_id );
 }
 
 /**

@@ -125,8 +125,8 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->te
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content content-area">' ), 30 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content-left">' ), 35 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/progress' ), 40 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'remaining_time' ), 50 );
+//add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/progress' ), 40 );
+//add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'remaining_time' ), 50 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tabs/tabs' ), 60 );
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/buttons' ), 70 );
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tags' ), 80 );

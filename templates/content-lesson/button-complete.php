@@ -25,7 +25,7 @@ $completed = $user->has_completed_item( $item->get_id(), $course->get_id() );
 
 if ( $completed ) {
 
-    echo 'You have completed this lesson at ' . $user->get_item_data($item->get_id(), $course->get_id(), 'end_time')->toLocal();
+    echo 'You have completed this lesson at ' . $user->get_item_data($item->get_id(), $course->get_id(), 'end_time');
 	?>
     <button class="lp-button completed" disabled><i class="fa fa-check"></i><?php esc_html_e( 'Completed', 'learnpress' ); ?></button>
     <?php
