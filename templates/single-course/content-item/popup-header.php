@@ -16,25 +16,40 @@ defined( 'ABSPATH' ) || exit();
 
 $user   = learn_press_get_current_user();
 $course = LP_Global::course();
+if ( ! $course || ! $user ) {
+	return;
+}
 
+if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
+	return;
+}
+
+$course_data    = $user->get_course_data( $course->get_id() );
+$course_results = $course_data->get_results( false );
+$percentage     = $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0;
 ?>
 
 <div id="popup-header">
 
-    <!--    <div class="course-item-search">-->
-    <!--        <form>-->
-    <!--            <input type="text" placeholder="--><?php //esc_attr_e( 'Search item', 'learnpress' ); ?><!--"/>-->
-    <!--            <button type="button"></button>-->
-    <!--        </form>-->
-    <!--    </div>-->
+    <div class="popup-header__inner">
 
-    <h2 class="course-title">
-        <a href="<?php echo esc_url( $course->get_permalink() ) ?>"><?php echo $course->get_title(); ?></a>
-    </h2>
+        <h2 class="course-title">
+            <a href="<?php echo esc_url( $course->get_permalink() ) ?>"><?php echo $course->get_title(); ?></a>
+        </h2>
 
-	<?php if ( $user->can_finish_course( $course->get_id() ) ) {
-		LP()->template( 'course' )->course_finish_button();
+        <div class="items-progress">
 
-	} ?>
+            <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items( '', true ) ); ?></span>
 
+            <div class="learn-press-progress">
+                <div class="learn-press-progress__active" data-value="<?php echo $percentage; ?>%;">
+                </div>
+            </div>
+
+        </div>
+
+		<?php if ( $user->can_finish_course( $course->get_id() ) ) {
+			LP()->template( 'course' )->course_finish_button();
+		} ?>
+    </div>
 </div>

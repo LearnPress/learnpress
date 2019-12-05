@@ -123,7 +123,7 @@ var Cookies = {
 
       if (ck) {
         ck = JSON.parse(ck);
-        ret = ck[name];
+        ret = name ? ck[name] : ck;
       }
     }
 
@@ -136,7 +136,7 @@ var Cookies = {
   set: function set(name, value, expires, path, domain, secure) {
     if (arguments.length > 2) {
       wpCookies.set(name, value, expires, path, domain, secure);
-    } else {
+    } else if (arguments.length == 2) {
       var ck = wpCookies.get('LP');
 
       if (ck) {
@@ -147,7 +147,27 @@ var Cookies = {
 
       ck[name] = value;
       wpCookies.set('LP', JSON.stringify(ck), '', '/');
+    } else {
+      wpCookies.set('LP', JSON.stringify(name), '', '/');
     }
+  },
+  remove: function remove(name) {
+    var allCookies = Cookies.get();
+    var reg = new RegExp(name, 'g');
+    var newCookies = {};
+    var useRegExp = name.match(/\*/);
+
+    for (var i in allCookies) {
+      if (useRegExp) {
+        if (!i.match(reg)) {
+          newCookies[i] = allCookies[i];
+        }
+      } else if (name != i) {
+        newCookies[i] = allCookies[i];
+      }
+    }
+
+    Cookies.set(newCookies);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (Cookies);

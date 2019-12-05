@@ -61,12 +61,16 @@ $items       = $section->get_items();
 				}
 				echo $title;
 				?>
+
+	            <?php if ( $description = $section->get_description() ) { ?>
+                    <p class="section-desc"><?php echo $description; ?></p>
+	            <?php } ?>
             </h5>
 
-			<?php if ( $description = $section->get_description() ) { ?>
-                <p class="section-desc"><?php echo $description; ?></p>
-			<?php } ?>
-
+            <span class="section-toggle">
+                <i class="fas fa-caret-down"></i>
+	            <i class="fas fa-caret-up"></i>
+            </span>
         </div>
 
 		<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) { ?>
@@ -74,8 +78,11 @@ $items       = $section->get_items();
 			<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
 
             <div class="section-meta">
-                <div class="section-progress"
-                     title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ), round( $percent, 2 ) ) ); ?>"><?php learn_press_circle_progress_html( $percent, 24, 6 ); ?></div>
+                <div class="learn-press-progress"
+                     title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ), round( $percent, 2 ) ) ); ?>">
+                    <div class="learn-press-progress__active" data-value="<?php echo $percent;?>"></div>
+                    <?php //learn_press_circle_progress_html( $percent, 24, 6 ); ?>
+                </div>
             </div>
 
 		<?php } ?>

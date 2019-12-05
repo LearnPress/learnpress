@@ -6,10 +6,9 @@ const Cookies = {
             ret = wpCookies.get(name);
         } else {
             var ck = wpCookies.get('LP');
-
             if (ck) {
                 ck = JSON.parse(ck);
-                ret = ck[name];
+                ret = name ? ck[name] : ck;
             }
         }
 
@@ -23,7 +22,7 @@ const Cookies = {
     set: function (name, value, expires, path, domain, secure) {
         if (arguments.length > 2) {
             wpCookies.set(name, value, expires, path, domain, secure)
-        } else {
+        } else if (arguments.length == 2) {
             var ck = wpCookies.get('LP');
 
             if (ck) {
@@ -35,7 +34,28 @@ const Cookies = {
             ck[name] = value;
 
             wpCookies.set('LP', JSON.stringify(ck), '', '/')
+        } else {
+            wpCookies.set('LP', JSON.stringify(name), '', '/')
         }
+    },
+
+    remove: function (name) {
+        const allCookies = Cookies.get();
+        const reg = new RegExp(name, 'g');
+        const newCookies = {};
+        const useRegExp = name.match(/\*/);
+
+        for (let i in allCookies) {
+            if (useRegExp) {
+                if (!i.match(reg)) {
+                    newCookies[i] = allCookies[i];
+                }
+            } else if (name != i) {
+                newCookies[i] = allCookies[i];
+            }
+        }
+
+        Cookies.set(newCookies)
     }
 };
 

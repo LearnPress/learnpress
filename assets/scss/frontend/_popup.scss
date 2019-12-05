@@ -401,7 +401,7 @@
 
             &.scrolling {
                 .section-header {
-                    background: rgba(255, 255, 255, 0.5);
+                    //background: rgba(255, 255, 255, 0.5);
                 }
             }
         }
@@ -1153,35 +1153,35 @@ body {
         .section-meta {
             position: relative;
         }
-        .section-progress {
-            width: 24px;
-            height: 24px;
-            position: absolute;
-            right: 0;
-            top: 50%;
-            margin-top: -12px;
-            .circle-progress-bar {
-                position: relative;
-                width: 24px;
-                height: 24px;
-                stroke: #5383f7;
-                display: inline-block;
-                .circle-progress-bar__circle {
-                    transition: 0.35s stroke-dashoffset;
-                    transform: rotate(-90deg);
-                    transform-origin: 50% 50%;
-                }
-            }
-            &:before {
-                content: '';
-                display: block;
-                border: 6px solid #d9e0f1;
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border-radius: 50%;
-            }
-        }
+        //.section-progress {
+        //    width: 24px;
+        //    height: 24px;
+        //    position: absolute;
+        //    right: 0;
+        //    top: 50%;
+        //    margin-top: -12px;
+        //    .circle-progress-bar {
+        //        position: relative;
+        //        width: 24px;
+        //        height: 24px;
+        //        stroke: #5383f7;
+        //        display: inline-block;
+        //        .circle-progress-bar__circle {
+        //            transition: 0.35s stroke-dashoffset;
+        //            transform: rotate(-90deg);
+        //            transform-origin: 50% 50%;
+        //        }
+        //    }
+        //    &:before {
+        //        content: '';
+        //        display: block;
+        //        border: 6px solid #d9e0f1;
+        //        position: absolute;
+        //        width: 100%;
+        //        height: 100%;
+        //        border-radius: 50%;
+        //    }
+        //}
     }
 }
 

@@ -43,10 +43,10 @@ class LP_Assets extends LP_Abstract_Assets {
 			'learn-press/frontend-default-styles',
 			array(
 				//'font-awesome'     => self::url( 'css/font-awesome.min.css' ),
-                'font-awesome-5'  => array(
-                    'url'     => self::url( 'css/vendor/font-awesome-5.min.css' ),
-                    'screens' => array( 'learnpress' )
-                ),
+				'font-awesome-5' => array(
+					'url'     => self::url( 'css/vendor/font-awesome-5.min.css' ),
+					'screens' => array( 'learnpress' )
+				),
 
 				'lp-bundle'  => array(
 					'url'     => ( $url = $this->get_bundle_css_url() ) ? $url : self::url( 'css/bundle.min.css' ),
@@ -68,6 +68,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'siteurl'     => site_url(),
 				'ajax'        => admin_url( 'admin-ajax.php' ),
 				'courses_url' => learn_press_get_page_link( 'courses' ),
+				'post_id'     => get_the_ID(),
 				'theme'       => get_stylesheet(),
 				'localize'    => array(
 					'button_ok'     => __( 'OK', 'learnpress' ),
@@ -216,8 +217,8 @@ class LP_Assets extends LP_Abstract_Assets {
 //					)
 //				),
 				'lp-custom'           => array(
-					'url'     => self::url( 'js/frontend/custom' . $min . '.js' ),
-					'deps'    => array(
+					'url'  => self::url( 'js/frontend/custom' . $min . '.js' ),
+					'deps' => array(
 						'jquery'
 					)
 				),
@@ -290,11 +291,11 @@ class LP_Assets extends LP_Abstract_Assets {
 	/**
 	 * Check is currently in a screen required.
 	 *
-	 * @since 3.3.0
-	 *
 	 * @param array $screens
 	 *
 	 * @return bool
+	 * @since 3.3.0
+	 *
 	 */
 	public function is_screen( $screens ) {
 		$pages                              = array(

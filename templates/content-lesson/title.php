@@ -14,11 +14,13 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+$course = LP_Global::course();
 $lesson = LP_Global::course_item();
 
 if ( ! $title = $lesson->get_title( 'display' ) ) {
 	return;
 }
+
 ?>
 
 <h3 class="course-item-title question-title"><?php echo $title; ?></h3>
