@@ -313,7 +313,7 @@ ul.learn-press-nav-tabs {
                 border-bottom: 0;
                 @include box-sizing(border-box);
                 .section-left {
-                    display: table-cell;
+                    display: block;
                     vertical-align: top;
                     cursor: pointer;
                     .section-title {
@@ -339,9 +339,8 @@ ul.learn-press-nav-tabs {
                     font-style: italic;
                 }
                 .section-meta {
-                    display: table-cell;
+                    display: block;
                     white-space: nowrap;
-                    padding-left: 20px;
                     text-align: right;
                     font-size: 14px;
                     vertical-align: middle;
@@ -1011,9 +1010,9 @@ body {
     position: relative;
     .lp-passing-conditional {
         position: absolute;
-        height: 10px;
+        height: 6px;
         width: 3px;
-        background: #FF0000;
+        background: $second-color;
         top: 0;
         margin-left: -1px;
     }
