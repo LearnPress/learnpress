@@ -101,27 +101,46 @@
         height: 70px;
         display: flex;
         @include transition(left 0.25s);
-        .course-title {
-            padding: 0;
+        .popup-header__inner {
             width: 792px;
+            display: flex;
+            justify-content: space-between;
             margin: 0 auto;
-            line-height: 70px;
-            a {
-                font-size: 16px;
-                font-weight: 400;
-                color: #FFF;
-                display: -webkit-box;
-                -webkit-line-clamp: 1;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
             @media (max-width: 1024px) {
                 padding-left: 15px;
                 padding-right: 15px;
                 width: 100%;
             }
+
+            .course-title {
+                padding: 0;
+                line-height: 70px;
+                margin: 0;
+                a {
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #FFF;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            .items-progress {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .number {
+                    color: #fff;
+                    font-size: 14px;
+                    font-weight: 300;
+                    padding-right: 10px;
+                }
+            }
         }
+
         .lp-button {
             margin: 9px;
         }
@@ -332,7 +351,7 @@
                     position: sticky;
                     top: 0;
                     z-index: 1000;
-                    padding: 10px;
+                    padding: 26px 10px 30px 10px;
 
                     .section-left {
                         .section-title {
@@ -347,6 +366,9 @@
                                     font-size: 18px;
                                 }
                             }
+                        }
+                        .section-toggle {
+                            justify-content: center;
                         }
                     }
                 }
@@ -482,6 +504,7 @@
                         font-weight: 500;
                         color: #333;
                         margin-bottom: 24px;
+                        margin-top: 0;
                     }
                     .content-item-description {
                         p {
@@ -1122,7 +1145,6 @@
         }
         .btn-show-hint {
             background: transparent;
-            //color: #d9e0f1;
             color: #00adff;
             padding: 0;
             margin: 0 0 0 10px;

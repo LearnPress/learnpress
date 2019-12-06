@@ -30,6 +30,7 @@
             }
 
             .lp-course-buttons {
+                margin-bottom: 34px;
                 > * {
                     margin-bottom: 10px;
                     &:last-child {
@@ -41,12 +42,25 @@
                     text-decoration: none;
                 }
 
+                button {
+                    border-color: $second-color;
+                    &:hover {
+                        border-color: $primary-color;
+                    }
+                }
+
             }
 
             .course-time {
+                padding-bottom: 8px;
+                border-bottom: 1px solid rgba(204,204,204,0.3);
+                margin-bottom: 26px;
                 .course-time-row {
                     display: flex;
                     justify-content: space-between;
+                    font-size: 16px;
+                    font-weight: 300;
+                    color: #666;
                     strong {
                         font-size: 18px;
                         font-weight: 400;
@@ -70,6 +84,7 @@
                         color: #333;
                         float: left;
                         margin-bottom: 12px;
+                        margin-top: 0;
                     }
                     .number {
                         float: right;
@@ -80,6 +95,7 @@
                     }
                     .learn-press-progress {
                         clear: both;
+                        width: 100%;
                     }
                 }
 
@@ -89,7 +105,7 @@
             }
 
             > * {
-                margin-bottom: 20px;
+                //margin-bottom: 20px;
                 &:last-child {
                     margin-bottom: 0;
                 }
