@@ -49,7 +49,7 @@ a {
     ul.learn-press-courses {
         clear: both;
         list-style: none;
-        margin: 0 -15px 30px -15px;
+        margin: 0 -15px 0 -15px;
         padding: 0;
         @include flex();
         @include flex-wrap(wrap);
@@ -217,6 +217,7 @@ a {
                         font-size: 14px;
                         font-weight: 300;
                         text-transform: capitalize;
+                        margin-bottom: 20px;
                         a {
                             color: #666;
                             &:hover {
@@ -365,7 +366,6 @@ a {
 
                             .meta-item-duration:before {
                                 content:'\f017';
-                                font-weight: 400;
                             }
 
                             .meta-item-lesson:before {
@@ -464,6 +464,7 @@ a {
                         border-top: 0;
                         .course-permalink {
                             margin-bottom: 20px;
+                            height: 48px;
                         }
                         .course-wrap-meta  {
                             display: none;
@@ -520,22 +521,24 @@ a {
         flex: 1;
         position: relative;
         line-height: 1;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 6px 32px 6px 10px;
-        max-width: 306px;
+        //border: 1px solid #ccc;
+        //border-radius: 5px;
+        //padding: 6px 32px 6px 10px;
+        width: 306px;
+        max-width: 100%;
         margin-right: 20px;
         input[type="text"] {
-            border: 0 solid #DDD;
-            padding: 5px 10px;
-            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 6px 32px 6px 18px;
+            height: 44px;
             font-size: 14px;
             line-height: 1;
             font-style: italic;
             background: #FFF;
             width: 100%;
             &:focus {
-                border: 0;
+                border-color: $primary-color;
                 outline: 0;
             }
         }
@@ -634,7 +637,7 @@ a {
     .course-summary {
         .course-summary-content {
             .course-detail-info {
-                padding: 40px 0;
+                padding: 40px 0 22px 0;
                 background: $second-color;
                 color: #fff;
                 margin-bottom: 60px;
@@ -643,9 +646,16 @@ a {
                     .course-title {
                         font-size: 30px;
                         font-weight: 500;
-                        margin-bottom: 40px;
+                        margin-bottom: 32px;
+                        line-height: 1;
                     }
                     .course-meta {
+                        &.course-meta-primary {
+                            margin-bottom: 36px;
+                        }
+                        &.course-meta-secondary {
+                            margin-bottom: 0;
+                        }
                         .course-meta__pull-left {
                             .meta-item {
                                 display: flex;
@@ -653,6 +663,7 @@ a {
                                 font-weight: 300;
                                 font-size: 16px;
                                 text-transform: capitalize;
+                                height: 46px;
                                 span {
                                     padding-right: 4px;
                                 }
@@ -660,7 +671,7 @@ a {
                                     margin-right: 0;
                                 }
                                 &:before {
-                                    font-weight: 400;
+                                    font-weight: 900;
                                     font-family:"Font Awesome 5 Free";
                                     margin-right: 8px;
                                     color: $primary-color;
@@ -695,12 +706,11 @@ a {
                                     }
                                 }
                                 &.meta-item-categories {
+                                    align-items: center;
                                     &:before {
                                         content: '\f02e';
                                         margin-right: 10px;
                                         font-size: 36px;
-                                        position: relative;
-                                        top: -5px;
                                     }
                                     .meta-item__value {
                                         div {
@@ -731,19 +741,15 @@ a {
                                 }
                                 &.meta-item-level:before {
                                     content:'\f012';
-                                    font-weight: 900;
                                 }
                                 &.meta-item-lesson:before {
                                     content:'\f0c5';
-                                    font-weight: 900;
                                 }
                                 &.meta-item-quiz:before {
                                     content:'\f12e';
-                                    font-weight: 900;
                                 }
                                 &.meta-item-student:before {
                                     content: '\f501';
-                                    font-weight: 900;
                                 }
 
                                 @media (max-width: 1024px) {
@@ -761,6 +767,7 @@ a {
                                 grid-gap: 20px;
                             }
                         }
+
                     }
 
                     @media (max-width: 768px) {
@@ -789,7 +796,7 @@ a {
                 .course-summary-sidebar {
                     width: 300px;
                     max-width: 100%;
-                    margin-top: -282px;
+                    margin-top: -272px;
                     .course-summary-sidebar__inner {
                         box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
                         width: 300px;

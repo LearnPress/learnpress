@@ -28,8 +28,8 @@ if ( $wp_query->max_num_pages <= 1 ) {
 		'add_args'  => '',
 		'current'   => max( 1, get_query_var( 'paged' ) ),
 		'total'     => $wp_query->max_num_pages,
-		'prev_text' => '<',
-		'next_text' => '>',
+		'prev_text' => '<i class="fas fa-angle-left"></i>',
+		'next_text' => '<i class="fas fa-angle-right"></i>',
 		'type'      => 'list',
 		'end_size'  => 3,
 		'mid_size'  => 3
