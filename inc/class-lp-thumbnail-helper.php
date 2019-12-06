@@ -52,7 +52,7 @@ class LP_Thumbnail_Helper {
 			if ( 'course_thumbnail' == $size ) {
 				$image = LP()->image( 'no-image.png' );
 			} else {
-				$image = LP()->image( 'placeholder-800x450' );
+				$image = LP()->image( 'placeholder-500x300' );
 			}
 			$image = sprintf( '<img src="%s" %s />', $image, '' );
 		}

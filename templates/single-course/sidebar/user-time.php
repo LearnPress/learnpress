@@ -27,18 +27,18 @@ $course = LP_Global::course();
 	<?php if ( $status === 'enrolled' ) { ?>
 		<?php if ( $expiration_time ) { ?>
             <p class="course-time-row">
-                <strong><?php esc_html_e( 'You will end:', 'learnpress' ); ?></strong>
+                <strong><?php esc_html_e( 'Course will end:', 'learnpress' ); ?></strong>
 				<?php echo $expiration_time->format( 'i18n' ); ?>
             </p>
 		<?php } else { ?>
             <p class="course-time-row">
-                <strong><?php esc_html_e( 'Course access:', 'learnpress' ); ?></strong>
+                <strong><?php esc_html_e( 'Duration:', 'learnpress' ); ?></strong>
 				<?php esc_html_e( 'Lifetime', 'learnpress' ); ?>
             </p>
 		<?php } ?>
 	<?php } elseif ( $status === 'finished' && $end_time ) { ?>
         <p class="course-time-row">
-            <strong><?php esc_html_e( 'You ended:', 'learnpress' ); ?></strong>
+            <strong><?php esc_html_e( 'You finished on:', 'learnpress' ); ?></strong>
 			<?php echo $end_time->format( 'human' ); ?>
         </p>
 	<?php } ?>
