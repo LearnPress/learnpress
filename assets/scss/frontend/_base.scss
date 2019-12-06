@@ -1,0 +1,80 @@
+#popup-header{
+    .popup-header__inner{
+        width: 1000px;
+        display: flex;
+        margin: 0 auto;
+
+    }
+}
+.learn-press-progress {
+    height: 6px;
+    width: 150px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 3px;
+
+    .learn-press-progress__active {
+        width: 100%;
+        height: 6px;
+        background: #ffb606;
+        z-index: 1;
+        position: absolute;
+        left: -100%;
+        border-radius: 3px;
+        @include transition(0.5s);
+    }
+
+    &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #DDD;
+        top: 0;
+        z-index: 0;
+    }
+}
+
+.course-curriculum {
+    .section-header {
+        .section-left {
+            display: flex;
+
+            .section-title {
+                flex: 1;
+            }
+
+            .section-toggle {
+                flex: 0 0 30px;
+
+                .fa-caret-up {
+                    display: none;
+                }
+            }
+        }
+
+        .learn-press-progress {
+            width: 50%;
+        }
+    }
+
+    .section {
+        &.closed {
+            .section-toggle {
+                .fa-caret-up {
+                    display: block;
+                }
+
+                .fa-caret-down {
+                    display: none;
+                }
+            }
+
+            .section-content {
+                height: 0;
+                overflow: hidden;
+            }
+        }
+    }
+}

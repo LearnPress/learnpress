@@ -186,7 +186,7 @@ const initCourseSidebar = function initCourseSidebar() {
 
 const initItemComments = function initItemComments() {
     var $toggle = $('#learn-press-item-comments-toggle');
-    $toggle.on('change',async function () {
+    $toggle.on('change', async function () {
         console.log(this.checked)
         if (!$toggle[0].checked) {
             return;
@@ -245,6 +245,41 @@ $(window).on('load', () => {
     initCourseTabs();
     initCourseSidebar();
     initItemComments();
+
+    $('.section').each(function () {
+        const $section = $(this),
+            $toggle = $section.find('.section-toggle');
+        $toggle.on('click', function () {
+            const isClose = $section.toggleClass('closed').hasClass('closed');
+            const sections = LP.Cookies.get('closed-section-' + lpGlobalSettings.post_id) || [];
+            const sectionId = parseInt($section.data('section-id'));
+            const at = sections.findIndex((id) => {
+                return id == sectionId;
+            });
+
+            if (isClose) {
+                sections.push(parseInt($section.data('section-id')));
+            } else {
+                sections.splice(at, 1);
+            }
+
+            LP.Cookies.remove('closed-section-(.*)');
+            LP.Cookies.set('closed-section-' + lpGlobalSettings.post_id, [...new Set(sections)]);
+            //$section.find('.section-content').slideToggle();
+        })
+    });
+
+    $('.learn-press-progress').each(function () {
+        const $progress = $(this);
+        const $active = $progress.find('.learn-press-progress__active');
+        const value = $active.data('value');
+
+        if (value === undefined) {
+            return;
+        }
+
+        $active.css('left', -(100 - parseInt(value)) + '%');
+    });
 
     LP.Hook.doAction('course-ready');
 

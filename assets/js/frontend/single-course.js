@@ -496,6 +496,38 @@ $(window).on('load', function () {
   initCourseTabs();
   initCourseSidebar();
   initItemComments();
+  $('.section').each(function () {
+    var $section = $(this),
+        $toggle = $section.find('.section-toggle');
+    $toggle.on('click', function () {
+      var isClose = $section.toggleClass('closed').hasClass('closed');
+      var sections = LP.Cookies.get('closed-section-' + lpGlobalSettings.post_id) || [];
+      var sectionId = parseInt($section.data('section-id'));
+      var at = sections.findIndex(function (id) {
+        return id == sectionId;
+      });
+
+      if (isClose) {
+        sections.push(parseInt($section.data('section-id')));
+      } else {
+        sections.splice(at, 1);
+      }
+
+      LP.Cookies.remove('closed-section-(.*)');
+      LP.Cookies.set('closed-section-' + lpGlobalSettings.post_id, _toConsumableArray(new Set(sections))); //$section.find('.section-content').slideToggle();
+    });
+  });
+  $('.learn-press-progress').each(function () {
+    var $progress = $(this);
+    var $active = $progress.find('.learn-press-progress__active');
+    var value = $active.data('value');
+
+    if (value === undefined) {
+      return;
+    }
+
+    $active.css('left', -(100 - parseInt(value)) + '%');
+  });
   LP.Hook.doAction('course-ready'); // if (window.location.hash) {
   //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
   // }

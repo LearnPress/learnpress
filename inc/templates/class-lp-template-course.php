@@ -681,6 +681,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		$user = LP_Global::user();
+
+		if ( LP_COURSE_ACCESS_LEVEL_60 <= $user->get_course_access_level( $this->course->get_id() ) ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/featured-review', array(
 			'review_content' => $review_content,
 			'review_value'   => 5
