@@ -652,6 +652,11 @@ a {
                     .course-meta {
                         &.course-meta-primary {
                             margin-bottom: 36px;
+                            .course-meta__pull-left {
+                                .meta-item-categories:before {
+                                    font-weight: 400;
+                                }
+                            }
                         }
                         &.course-meta-secondary {
                             margin-bottom: 0;

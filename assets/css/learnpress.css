@@ -2742,6 +2742,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       line-height: 1; }
     .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-meta.course-meta-primary {
       margin-bottom: 36px; }
+      .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-meta.course-meta-primary .course-meta__pull-left .meta-item-categories:before {
+        font-weight: 400; }
     .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-meta.course-meta-secondary {
       margin-bottom: 0; }
     .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-meta .course-meta__pull-left .meta-item {
