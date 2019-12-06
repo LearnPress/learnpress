@@ -207,7 +207,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				if ( 'course_thumbnail' == $size ) {
 					$url = LP()->image( 'no-image.png' );
 				} else {
-					$url = LP()->image( 'placeholder-800x450' );
+					$url = LP()->image( 'placeholder-500x300' );
 				}
 			}
 
