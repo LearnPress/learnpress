@@ -3078,6 +3078,11 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis; }
+      @media (max-width: 1024px) {
+        #popup-course #popup-header .course-title {
+          padding-left: 15px;
+          padding-right: 15px;
+          width: 100%; } }
     #popup-course #popup-header .lp-button {
       margin: 9px; }
     #popup-course #popup-header .lp-button-back {
@@ -3268,14 +3273,34 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
             font-size: 20px;
             font-weight: 400;
             color: #000; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-header .section-left .section-title .show-desc:before {
+              content: '\f0d7';
+              font-family: "Font Awesome 5 Free";
+              font-weight: 900;
+              font-size: 18px; }
         #popup-course #popup-sidebar .course-curriculum .section .section-content {
           margin-bottom: 0; }
           #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item {
-            border-bottom: 1px solid #d9e0f1;
             padding: 0 10px;
-            background: #fbfcff; }
-            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .item-name {
-              padding: 10px 10px 10px 5px; }
+            background: #f9fafc;
+            margin-bottom: 4px; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item > span {
+              display: none; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link:before {
+              vertical-align: unset; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .item-name {
+              padding: 10px 10px 10px 5px;
+              display: block;
+              width: 100%; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta {
+              display: block;
+              width: 100%;
+              text-align: left;
+              padding: 0 0 15px 0; }
+              #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta i {
+                position: absolute;
+                top: 20px;
+                right: 20px; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item:before {
               background: transparent;
               top: -1px;
@@ -3284,9 +3309,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item:after {
               content: ''; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.current {
-              background: #f4f7ff; }
-              #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.current:before {
-                background: #789fff; }
+              background: #eaeaea; }
         #popup-course #popup-sidebar .course-curriculum .section.section-empty .section-header {
           margin: 0; }
         #popup-course #popup-sidebar .course-curriculum .section.section-empty .learn-press-message {
@@ -3325,16 +3348,37 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     margin: 60px 0 50px 0;
     overflow: auto; }
     #popup-course #popup-content .lp-button {
-      margin: 0 10px 0 0; }
+      margin: 0 10px 0 0;
+      font-size: 14px;
+      border-color: #442e66;
+      padding: 12px 29px; }
       #popup-course #popup-content .lp-button.instant-check:before {
         font-family: Fontawesome;
         content: "\f058";
         margin-right: 5px; }
+      #popup-course #popup-content .lp-button:hover {
+        border-color: #ffb606; }
     #popup-course #popup-content #learn-press-content-item .content-item-wrap {
       margin: 0 auto;
-      max-width: 792px;
-      width: 90%;
+      width: 792px;
+      max-width: 100%;
       padding: 40px 0 80px 0; }
+      @media (max-width: 1024px) {
+        #popup-course #popup-content #learn-press-content-item .content-item-wrap {
+          padding-left: 15px;
+          padding-right: 15px;
+          width: 100%; } }
+      #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .course-item-title {
+        font-size: 30px;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 24px; }
+      #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .content-item-description p {
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 26px;
+        margin: 0 0 1.5em;
+        color: #666; }
     #popup-course #popup-content #learn-press-quiz-app {
       margin-bottom: 40px; }
       #popup-course #popup-content #learn-press-quiz-app .quiz-buttons {
@@ -3530,7 +3574,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         padding: 5px 0; }
   #popup-course #popup-footer {
     position: fixed;
-    left: 400px;
+    width: 792px;
+    margin: 0 auto;
+    left: 475px;
     right: 0;
     bottom: 0;
     height: 50px;
@@ -3542,6 +3588,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     -ms-transition: left 0.25s;
     -o-transition: left 0.25s;
     transition: left 0.25s; }
+    @media (max-width: 1024px) {
+      #popup-course #popup-footer {
+        width: 100%; } }
     #popup-course #popup-footer .course-item-nav .prev,
     #popup-course #popup-footer .course-item-nav .next {
       line-height: 50px;
@@ -3588,37 +3637,36 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     position: absolute;
     background: #FFF;
     display: inline-block;
-    width: 24px;
-    height: 40px;
+    width: 25px;
+    height: 56px;
     left: 475px;
-    top: 66px;
+    top: 225px;
     z-index: 100;
     -webkit-appearance: none;
     transition: 0.25s;
-    border: 1px solid #d9e0f1;
-    border-left: none;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px; }
+    box-shadow: 0px 15px 30px 0px rgba(0, 0, 0, 0.1);
+    cursor: pointer; }
     #popup-course #sidebar-toggle:before {
+      content: '\f0d9';
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
       display: inline-block;
-      width: 10px;
-      height: 10px;
-      border: 2px solid #d9e0f1;
-      content: '';
-      border-bottom-color: transparent;
-      border-left-color: transparent;
       position: absolute;
-      top: 14px;
-      transform: rotate(225deg);
+      top: 50%;
       transition: 0.25s;
-      left: 8px; }
+      left: 50%;
+      font-size: 18px;
+      color: #ffb606;
+      transform: translate(-50%, -50%); }
+    #popup-course #sidebar-toggle:focus {
+      border: 0;
+      outline: 0; }
   #popup-course #sidebar-toggle:checked {
     left: 0;
-    background: #5383f7;
-    border-color: #5383f7; }
+    /*background: #5383f7;
+            border-color: #5383f7;*/ }
     #popup-course #sidebar-toggle:checked:before {
-      transform: rotate(45deg);
-      left: 4px; }
+      content: '\f0da'; }
   #popup-course #sidebar-toggle:checked ~ #popup-sidebar {
     flex: 0 0 0; }
   #popup-course #sidebar-toggle:checked ~ #popup-footer,
