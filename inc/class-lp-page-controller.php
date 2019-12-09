@@ -57,11 +57,11 @@ class LP_Page_Controller {
 	 * Auto inserting a registered shortcode to a specific page
 	 * if that page is viewing in single mode.
 	 *
-	 * @since 3.3.0
-	 *
 	 * @param string $template
 	 *
 	 * @return string;
+	 * @since 3.3.0
+	 *
 	 */
 	public function auto_shortcode( $template ) {
 		global $post;
@@ -348,13 +348,22 @@ class LP_Page_Controller {
 		if ( $default_template ) {
 			$templates = $this->get_page_templates( $default_template );
 
-			if ( ! $template = locate_template( $templates ) ) {
-				$template = LP_TEMPLATE_PATH . $default_template;
+			/**
+			 * Disable override templates in theme by default since LP 4.0.0
+			 */
+			if ( learn_press_override_templates() ) {
+				$new_template = locate_template( $templates );
 			}
+
+			if ( ! isset( $new_template ) || ! $new_template ) {
+				$new_template = LP_TEMPLATE_PATH . $default_template;
+			}
+
+			$template = $new_template;
 		}
 
 		return $template;
-
+		/*
 		if ( $this->_is_archive() || learn_press_is_course() ) {
 			// If there is no template is valid in theme or plugin
 			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
@@ -381,8 +390,8 @@ class LP_Page_Controller {
 			}
 		}
 
-
 		return $template;
+		*/
 	}
 
 	private function get_page_template() {
@@ -406,6 +415,8 @@ class LP_Page_Controller {
 			}
 		} elseif ( is_post_type_archive( LP_COURSE_CPT ) || is_page( learn_press_get_page_id( 'courses' ) ) ) {
 			$page_template = 'archive-course.php';
+		} elseif ( learn_press_is_profile() ) {
+			$page_template = 'profile.php';
 		} else {
 			$page_template = '';
 		}
@@ -447,11 +458,11 @@ class LP_Page_Controller {
 	 * Filter to allow search more templates in theme for wp page template hierarchy.
 	 * Theme twentytwenty used 'singular.php' instead of 'page.php'
 	 *
-	 * @since 3.x.x
-	 *
 	 * @param array $templates
 	 *
 	 * @return array
+	 * @since 3.x.x
+	 *
 	 */
 	public function page_template_hierarchy( $templates ) {
 		$templates = array_merge( $templates, array( 'singular.php' ) );

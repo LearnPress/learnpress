@@ -45,15 +45,8 @@ $user = $profile->get_user();
 		do_action( 'learn_press_before_' . $section . '_edit_fields' );
 		?>
 
-        <li class="form-field">
-            <label for="description"><?php _e( 'Biographical Info', 'learnpress' ); ?></label>
-            <div class="form-field-input">
-                <textarea name="description" id="description" rows="5"
-                          cols="30"><?php esc_html_e( $user->get_data( 'description' ) ); ?></textarea>
-                <p class="description"><?php _e( 'Share a little biographical information to fill out your profile. This may be shown publicly.', 'learnpress' ); ?></p>
-            </div>
-        </li>
-        <li class="form-field">
+
+        <li class="form-field form-field__first-name">
             <label for="first_name"><?php _e( 'First Name', 'learnpress' ); ?></label>
             <div class="form-field-input">
                 <input type="text" name="first_name" id="first_name"
@@ -61,7 +54,7 @@ $user = $profile->get_user();
                        class="regular-text">
             </div>
         </li>
-        <li class="form-field">
+        <li class="form-field form-field__last-name">
             <label for="last_name"><?php _e( 'Last Name', 'learnpress' ); ?></label>
             <div class="form-field-input">
                 <input type="text" name="last_name" id="last_name"
@@ -69,6 +62,16 @@ $user = $profile->get_user();
                        class="regular-text">
             </div>
         </li>
+
+        <li class="form-field form-field__bio">
+            <label for="description"><?php _e( 'Biographical Info', 'learnpress' ); ?></label>
+            <div class="form-field-input">
+                <textarea name="description" id="description" rows="5"
+                          cols="30"><?php esc_html_e( $user->get_data( 'description' ) ); ?></textarea>
+                <p class="description"><?php _e( 'Share a little biographical information to fill out your profile. This may be shown publicly.', 'learnpress' ); ?></p>
+            </div>
+        </li>
+
         <li class="form-field">
             <label for="nickname"><?php _e( 'Nickname', 'learnpress' ); ?></label>
             <div class="form-field-input">

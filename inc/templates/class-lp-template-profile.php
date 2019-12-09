@@ -15,7 +15,29 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		learn_press_get_template( 'profile/profile-cover.php', array( 'user' => $user ) );
+		learn_press_get_template( 'profile/header.php', array( 'user' => $user ) );
+	}
+
+	public function sidebar(){
+		learn_press_get_template( 'profile/sidebar.php' );
+	}
+
+	public function content( $user ) {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
+	}
+
+	public function avatar(){
+		learn_press_get_template( 'profile/avatar.php');
+	}
+
+	public function socials(){
+		learn_press_get_template( 'profile/socials.php');
 	}
 
 	public function tabs( $user = null ) {
@@ -28,15 +50,16 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
 	}
 
-	public function content( $user ) {
-		$profile = LP_Global::profile();
-
-		if ( $profile->get_user()->is_guest() ) {
-			return;
-		}
-
-		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
+	public function dashboard_statistic(){
+		learn_press_get_template( 'profile/dashboard/general-statistic');
 	}
+
+	public function dashboard_featured_courses(){
+		learn_press_get_template( 'profile/dashboard/featured-courses');
+	}
+
+	////////////
+
 
 	public function order_details() {
 		$profile = LP_Profile::instance();

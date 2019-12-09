@@ -20,7 +20,6 @@ if ( $profile->is_public() ) {
 	?>
 
     <div id="learn-press-user-profile"<?php $profile->main_class(); ?>>
-
 		<?php
 
 

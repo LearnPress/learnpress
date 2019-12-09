@@ -24,22 +24,41 @@ if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
 <aside class="course-summary-sidebar">
 
     <div class="course-summary-sidebar__inner">
+
         <div class="course-sidebar-top">
-            <?php
+			<?php
 
-            do_action( 'learn-press/before-course-summary-sidebar' );
+			/**
+			 * LP Hook
+			 *
+			 * @since 4.0.0
+			 */
+			do_action( 'learn-press/before-course-summary-sidebar' );
 
-            if ( ! $output ) {
-                do_action( 'learn-press/course-summary-sidebar' );
-            } else {
-                echo $output;
-            }
-            ?>
+			/**
+			 * LP Hook
+			 *
+			 * @since 4.0.0
+			 *
+			 * @see   LP_Template_Course::course_sidebar_preview() - 10
+			 * @see   LP_Template_Course::course_featured_review() - 20
+			 */
+			do_action( 'learn-press/course-summary-sidebar' );
+
+			/**
+			 * LP Hook
+			 *
+			 * @since 4.0.0
+			 */
+			do_action( 'learn-press/after-course-summary-sidebar' );
+
+			?>
         </div>
 
-        <?php
-		    do_action( 'learn-press/after-course-summary-sidebar' );
-		?>
-
+        <div class="course-sidebar-secondary">
+			<?php
+			echo $output;
+			?>
+        </div>
     </div>
 </aside>

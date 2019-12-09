@@ -23,7 +23,7 @@ $tabs    = $profile->get_tabs();
 $current = $profile->get_current_tab();
 
 ?>
-<div id="learn-press-profile-content" class="lp-profile-content">
+<article id="profile-content" class="lp-profile-content">
 
 	<?php foreach ( $tabs as $tab_key => $tab_data ) {
 
@@ -60,4 +60,4 @@ $current = $profile->get_current_tab();
 
 	<?php } ?>
 
-</div>
+</article>

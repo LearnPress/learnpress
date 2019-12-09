@@ -17,11 +17,11 @@ defined( 'ABSPATH' ) || exit();
 $profile = LP_Profile::instance();
 ?>
 
-<div id="learn-press-profile-nav">
+<div id="profile-nav">
 
 	<?php do_action( 'learn-press/before-profile-nav', $profile ); ?>
 
-    <ul class="learn-press-tabs tabs">
+    <ul class="lp-profile-nav-tabs">
 
 		<?php
 		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
@@ -52,6 +52,11 @@ $profile = LP_Profile::instance();
             <li class="<?php echo join( ' ', $tab_classes ) ?>">
                 <!--tabs-->
                 <a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
+					<?php
+					if ( ! empty( $tab_data['icon'] ) ) {
+						echo $tab_data['icon'];
+					}
+					?>
 					<?php echo esc_html( apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $tab_data['title'], $tab_key ) ); ?>
                 </a>
                 <!--section-->
