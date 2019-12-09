@@ -639,7 +639,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 
 		?>
-        <div>
 		<?php
 		$is_checked = 0;
 		foreach ( $boxes as $box ) {
@@ -655,7 +654,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 			learn_press_get_template( 'single-course/extra-info', $box );
 		}
-		?></div><?php
+		?>
+        <?php
 	}
 
 	public function faqs() {

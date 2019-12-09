@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+
     <div class="course-item">
         <?php
 

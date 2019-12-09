@@ -178,12 +178,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Add new task to a background process.
 		 *
-		 * @since 3.0.8
-		 *
 		 * @param mixed  $data
 		 * @param string $background
 		 *
 		 * @return LP_Abstract_Background_Process|bool
+		 * @since 3.0.8
+		 *
 		 */
 		public function add_background_task( $data, $background = 'global' ) {
 			if ( isset( $this->backgrounds[ $background ] ) ) {
@@ -198,11 +198,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Return a background instance.
 		 *
-		 * @since 3.0.8
-		 *
 		 * @param string $name
 		 *
 		 * @return LP_Abstract_Background_Process|bool
+		 * @since 3.0.8
+		 *
 		 */
 		public function background( $name ) {
 
@@ -466,9 +466,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @param $key
 		 *
+		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
 		 * @deprecated since 3.0.0
 		 *
-		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
 		 */
 		public function __get( $key ) {
 			return false;
@@ -540,29 +540,31 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( LP_COURSE_CPT, 'thumbnail' );
 
-			$sizes = learn_press_get_custom_thumbnail_sizes();
-
-			foreach ( $sizes as $k => $image_size ) {
-
-				// If the key is not a string consider it is an option can be turn on/off
-				if ( ! is_numeric( $k ) ) {
-					$enabled = LP()->settings->get( $k );
-
-					if ( $enabled !== 'yes' ) {
-						continue;
-					}
-				}
-
-				if ( ! $size = LP()->settings->get( $image_size . '_image_size', array() ) ) {
-					$size = array();
-				}
-
-				$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
-				$size['height'] = isset( $size['height'] ) ? $size['height'] : '300';
-				$size['crop']   = isset( $size['crop'] ) ? $size['crop'] : 0;
-
-				add_image_size( $image_size, $size['width'], $size['height'], $size['crop'] );
-			}
+			add_image_size( 'course_thumbnail', 500, 300, true );
+//			$sizes = learn_press_get_custom_thumbnail_sizes();
+//
+//			var_dump($sizes);
+//			foreach ( $sizes as $k => $image_size ) {
+//
+//				// If the key is not a string consider it is an option can be turn on/off
+//				if ( ! is_numeric( $k ) ) {
+//					$enabled = LP()->settings->get( $k );
+//
+//					if ( $enabled !== 'yes' ) {
+//						continue;
+//					}
+//				}
+//
+//				if ( ! $size = LP()->settings->get( $image_size . '_image_size', array() ) ) {
+//					$size = array();
+//				}
+//
+//				$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
+//				$size['height'] = isset( $size['height'] ) ? $size['height'] : '300';
+//				$size['crop']   = isset( $size['crop'] ) ? $size['crop'] : 0;
+//var_dump($size);
+//				add_image_size( $image_size, $size['width'], $size['height'], $size['crop'] );
+//			}
 		}
 
 		/**
@@ -601,13 +603,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Get instance of class LP_Template.
 		 *
-		 * @since 3.3.0
-		 *
 		 * @param string $type
 		 *
 		 * @return LP_Template_Course|LP_Template_Profile|LP_Template_General|LP_Abstract_Template|LP_Template
 		 *
 		 * @throws Exception
+		 * @since 3.3.0
+		 *
 		 */
 		public function template( $type = '' ) {
 			if ( ! $this->template ) {

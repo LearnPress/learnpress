@@ -1071,16 +1071,21 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 		$default_path = LP_PLUGIN_PATH . 'templates/';
 	}
 
-	// Look within passed path within the theme - this is priority
-	$template = locate_template(
-		array(
-			trailingslashit( $template_path ) . $template_name,
-			$template_name
-		)
-	);
+	/**
+	 * Disable override templates in theme by default since LP 4.0.0
+	 */
+	if ( learn_press_override_templates() ) {
+		// Look within passed path within the theme - this is priority
+		$template = locate_template(
+			array(
+				trailingslashit( $template_path ) . $template_name,
+				$template_name
+			)
+		);
+	}
 
 	// Get default template
-	if ( ! $template ) {
+	if ( ! isset( $template ) || ! $template ) {
 		$template = trailingslashit( $default_path ) . $template_name;
 	}
 
@@ -1099,6 +1104,16 @@ function learn_press_template_path( $slash = false ) {
 	return apply_filters( 'learn_press_template_path', 'learnpress', $slash ) . ( $slash ? '/' : '' );
 }
 
+/**
+ * Disable override templates in theme by default
+ *
+ * @return bool
+ * @since 4.0.0
+ *
+ */
+function learn_press_override_templates() {
+	return apply_filters( 'learn-press/override-templates', false );
+}
 
 if ( ! function_exists( 'learn_press_is_404' ) ) {
 	/**

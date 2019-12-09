@@ -98,7 +98,7 @@ add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->t
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'course_readmore' ), 55 );
 
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_info_end' ), 60 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'loop_item_user_progress' ), 70 );
+//add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'loop_item_user_progress' ), 70 );
 
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content -->' ), 1000 );
 
@@ -156,7 +156,7 @@ add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )
  * @see LP_Template_Course::course_extra_requirements()
  */
 add_action( 'learn-press/course-summary-sidebar', LP()->template( 'course' )->func( 'course_sidebar_preview' ), 10 );
-add_action( 'learn-press/course-summary-sidebar', LP()->template( 'course' )->func( 'course_featured_review' ), 10 );
+add_action( 'learn-press/course-summary-sidebar', LP()->template( 'course' )->func( 'course_featured_review' ), 20 );
 //add_action( 'learn-press/course-summary-sidebar', LP()->template( 'course' )->func( 'course_extra_key_features' ), 20 );
 //add_action( 'learn-press/course-summary-sidebar', LP()->template( 'course' )->func( 'course_extra_requirements' ), 30 );
 
