@@ -803,8 +803,10 @@ a {
                     max-width: 100%;
                     margin-top: -272px;
                     .course-summary-sidebar__inner {
-                        box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
                         width: 300px;
+                        .course-sidebar-top {
+                            box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
+                        }
                         .learn-press-course-wishlist {
                             color: #fff;
                             font-size: 0;

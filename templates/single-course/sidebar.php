@@ -24,18 +24,21 @@ if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
 <aside class="course-summary-sidebar">
 
     <div class="course-summary-sidebar__inner">
+        <div class="course-sidebar-top">
+            <?php
 
-		<?php
+            do_action( 'learn-press/before-course-summary-sidebar' );
 
-		do_action( 'learn-press/before-course-summary-sidebar' );
+            if ( ! $output ) {
+                do_action( 'learn-press/course-summary-sidebar' );
+            } else {
+                echo $output;
+            }
+            ?>
+        </div>
 
-		if ( ! $output ) {
-			do_action( 'learn-press/course-summary-sidebar' );
-		} else {
-			echo $output;
-		}
-
-		do_action( 'learn-press/after-course-summary-sidebar' );
+        <?php
+		    do_action( 'learn-press/after-course-summary-sidebar' );
 		?>
 
     </div>

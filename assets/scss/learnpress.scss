@@ -212,6 +212,8 @@ input[type="password"] {
                 font-size: 16px;
                 font-weight: 300;
                 color: #666;
+                float: unset;
+                background: transparent;
                 &.current {
                     font-weight: 400;
                     color: $primary-color;
