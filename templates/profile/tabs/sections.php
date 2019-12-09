@@ -21,38 +21,63 @@ if ( ! isset( $tab_key, $tab_data ) ) {
 	return;
 }
 
-if ( empty( $tab_data['sections'] ) || (sizeof( $tab_data['sections']) < 2 ) ) {
+if ( empty( $tab_data['sections'] ) || ( sizeof( $tab_data['sections'] ) < 2 ) ) {
 	return;
 }
 
-$link = $profile->get_tab_link( $tab_key ); ?>
+$link         = $profile->get_tab_link( $tab_key );
+$unique_group = uniqid( 'course-tab-' );
+$sections     = $tab_data['sections'];
+$visible_tabs = array();
+$active_tab   = '';
+?>
+<div class="learn-press-tabs">
 
-<ul class="lp-tab-sections">
-
-	<?php foreach ( $tab_data['sections'] as $section_key => $section_data ) {
-
+	<?php
+	// Print radio input
+	foreach ( $sections as $section_key => $section_data ) {
 		if ( $profile->is_hidden( $section_data ) ) {
 			continue;
 		}
 
-		$classes = array( 'section-tab', esc_attr( $section_key ) );
+		$visible_tabs[] = $section_key;
+		$checked        = '';
+
 		if ( $profile->is_current_section( $section_key, $section_key ) ) {
-			$classes[] = 'active';
+			$active_tab = $section_key;
+			$checked    = checked( true, true, false );
 		}
 
-		$section_slug = $profile->get_slug( $section_data, $section_key );
-		$section_link = $profile->get_tab_link( $tab_key, $section_slug );
 		?>
-
-        <li class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( $profile->is_current_section( $section_key, $section_key ) ) { ?>
-                <span><?php echo $section_data['title']; ?></span>
-			<?php } else { ?>
-                <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>
-			<?php } ?>
-        </li>
-
+        <input type="radio" name="<?php echo $unique_group; ?>>" class="learn-press-tabs__checker"
+			<?php echo $checked; ?>
+               id="<?php echo $unique_group . '__' . $section_key; ?>"/>
 	<?php } ?>
 
-</ul>
+    <ul class="learn-press-tabs__nav" data-tabs="<?php echo sizeof( $visible_tabs ); ?>">
+		<?php foreach ( $sections as $section_key => $section_data ) {
+
+			if ( ! in_array( $section_key, $visible_tabs ) ) {
+				continue;
+			}
+
+			$classes = array( 'learn-press-tabs__tab', esc_attr( $section_key ) );
+
+			if ( $active_tab == $section_key ) {
+				$classes[] = 'active';
+			}
+
+			$section_slug = $profile->get_slug( $section_data, $section_key );
+			$section_link = $profile->get_tab_link( $tab_key, $section_slug );
+			?>
+
+            <li class="<?php echo join( ' ', $classes ); ?>">
+                <label for="<?php echo $unique_group . '__' . $section_key; ?>"><?php echo $section_data['title']; ?></label>
+            </li>
+
+		<?php } ?>
+
+    </ul>
+
+</div>
 

@@ -12,6 +12,7 @@ $primary-bg-color-after: #000;
 // Import
 @import "mixin.scss";
 @import "ajaxload";
+@import "frontend/tabs";
 @import "frontend/checkout";
 @import "frontend/form";
 @import "frontend/profile";

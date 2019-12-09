@@ -415,6 +415,8 @@ class LP_Page_Controller {
 			}
 		} elseif ( is_post_type_archive( LP_COURSE_CPT ) || is_page( learn_press_get_page_id( 'courses' ) ) ) {
 			$page_template = 'archive-course.php';
+		} elseif ( learn_press_is_profile() ) {
+			$page_template = 'profile.php';
 		} else {
 			$page_template = '';
 		}

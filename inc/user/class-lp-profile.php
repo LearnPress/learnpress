@@ -84,7 +84,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					'basic-information' => __( 'Account information updated successful.', 'learnpress' ),
 					'avatar'            => __( 'Account avatar updated successful.', 'learnpress' ),
 					'password'          => __( 'Password updated successful.', 'learnpress' ),
-					'privacy'         => __( 'Account privacy updated successful.', 'learnpress' ),
+					'privacy'           => __( 'Account privacy updated successful.', 'learnpress' ),
 				)
 			);
 
@@ -227,7 +227,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$this->_user = learn_press_get_current_user();
 				}
 
-				$settings         = LP()->settings;
+				$settings       = LP()->settings;
 				$this->_privacy = apply_filters( 'learn-press/check-privacy-setting', array(
 					'view-tab-dashboard'         => $this->get_privacy( 'my-dashboard' ) == 'yes',
 					'view-tab-basic-information' => $this->get_privacy( 'dashboard' ) == 'yes',
@@ -273,18 +273,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$settings        = LP()->settings;
 				$course_sections = array();
 
-				$course_sections['owned'] = array(
-					'title'    => __( 'Owned', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.own-courses', 'owned' ),
+				$course_sections['enrolled'] = array(
+					'title'    => __( 'Enrolled', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.purchased-courses', 'purchased' ),
 					'callback' => array( $this, 'tab_order_details' ),
 					'priority' => 10
 				);
 
-				$course_sections['purchased'] = array(
-					'title'    => __( 'Purchased', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.purchased-courses', 'purchased' ),
+				$course_sections['created'] = array(
+					'title'    => __( 'Created', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.own-courses', 'created' ),
 					'callback' => array( $this, 'tab_order_details' ),
-					'priority' => 15
+					'priority' => 20
 				);
 
 
@@ -293,26 +293,30 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'title'    => __( 'Dashboard', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
 						'callback' => array( $this, 'tab_dashboard' ),
-						'priority' => 10
+						'priority' => 10,
+						'icon'     => '<i class="fas fa-chalkboard-teacher"></i>'
 					),
 					'courses'       => array(
 						'title'    => __( 'Courses', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.profile-courses', 'courses' ),
 						'callback' => array( $this, 'tab_courses' ),
 						'priority' => 15,
-						'sections' => $course_sections
+						'sections' => $course_sections,
+						'icon'     => '<i class="fas fa-book-open"></i>'
 					),
 					'quizzes'       => array(
 						'title'    => __( 'Quizzes', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.profile-quizzes', 'quizzes' ),
 						'callback' => array( $this, 'tab_quizzes' ),
-						'priority' => 20
+						'priority' => 20,
+						'icon'     => '<i class="far fa-clock"></i>'
 					),
 					'orders'        => array(
 						'title'    => __( 'Orders', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.profile-orders', 'orders' ),
 						'callback' => array( $this, 'tab_orders' ),
-						'priority' => 25
+						'priority' => 25,
+						'icon'     => '<i class="fas fa-shopping-cart"></i>'
 					),
 					'order-details' => array(
 						'title'    => __( 'Order details', 'learnpress' ),
@@ -339,7 +343,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 								'priority' => 30
 							)
 						),
-						'priority' => 35
+						'priority' => 35,
+						'icon'     => '<i class="fas fa-cog"></i>'
+					),
+					'logout'        => array(
+						'title'    => __( 'Logout', 'learnpress' ),
+						'slug'     => 'logout',
+						'icon'     => '<i class="fas fa-sign-out-alt"></i>',
+						'priority' => 40
 					)
 				);
 
@@ -355,7 +366,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				if ( 'yes' === $settings->get( 'publish_profile' ) ) {
 					$this->_default_settings['settings']['sections']['privacy'] = array(
 						'title'    => __( 'Privacy', 'learnpress' ),
-						'slug'     =>  $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
+						'slug'     => $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
 						'priority' => 40,
 						'callback' => array( $this, 'tab_order_details' )
 					);
@@ -397,7 +408,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool $key Optional. True if return the key instead of value.
+		 * @param bool   $key     Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -409,7 +420,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool $key
+		 * @param bool   $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -457,8 +468,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get current link of profile
 		 *
-		 * @param string $args - Optional. Add more query args to url.
-		 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
+		 * @param string $args           - Optional. Add more query args to url.
+		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
 		 *
 		 * @return mixed|string
 		 */
@@ -612,11 +623,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get privacy profile settings.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param string $tab
 		 *
 		 * @return array|mixed
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_privacy( $tab = '' ) {
 
@@ -649,9 +660,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @param mixed $args
 		 *
+		 * @return array
 		 * @since 3.0.0
 		 *
-		 * @return array
 		 */
 		public function get_user_orders( $args = '' ) {
 
@@ -759,7 +770,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Query user's courses
 		 *
 		 * @param string $type - Optional. [own, purchased, enrolled, etc]
-		 * @param mixed $args - Optional.
+		 * @param mixed  $args - Optional.
 		 *
 		 * @return array|LP_Query_List_Table
 		 */
@@ -926,7 +937,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Echo class for main div.
 		 *
-		 * @param bool $echo
+		 * @param bool   $echo
 		 * @param string $more
 		 *
 		 * @return string
@@ -959,7 +970,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the tab is visible for current user.
 		 *
 		 * @param string $tab_key
-		 * @param array $tab_data
+		 * @param array  $tab_data
 		 *
 		 * @return bool
 		 */
@@ -971,7 +982,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the section is visible for current user.
 		 *
 		 * @param string $section_key
-		 * @param array $section_data
+		 * @param array  $section_data
 		 *
 		 * @return bool
 		 */
@@ -1014,11 +1025,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get queried user in profile link.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param string $return
 		 *
 		 * @return false|WP_User
+		 * @since 3.0.0
+		 *
 		 */
 		public static function get_queried_user( $return = '' ) {
 			global $wp_query;
@@ -1078,7 +1089,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$user->set_data( 'profile_picture_src', $profile_picture_src );
 			}
 
-			$avatar = get_avatar( $user->get_id(), $size, '', esc_attr__('User Avatar', 'learnpress'), array( 'gravatar' => false ) );
+			$avatar = get_avatar( $user->get_id(), $size, '', esc_attr__( 'User Avatar', 'learnpress' ), array( 'gravatar' => false ) );
 
 			if ( $type == 'gravatar' ) {
 				add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
