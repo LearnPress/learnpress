@@ -215,6 +215,7 @@ input[type="password"] {
                 color: #666;
                 float: unset;
                 background: transparent;
+                padding: 0;
                 &.current {
                     font-weight: 400;
                     color: $primary-color;
@@ -355,7 +356,7 @@ ul.list-table-nav {
 .course-item-nav {
     display: flex;
     .prev, .next {
-        flex: 1;
+       /* flex: 1;*/
         span {
             display: block;
             font-weight: bold;

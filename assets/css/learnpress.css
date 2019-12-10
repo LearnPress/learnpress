@@ -2762,9 +2762,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     max-width: 100%;
     margin-top: -272px; }
     .lp-archive-courses .course-summary .course-summary-content .entry-content.content-area .course-summary-sidebar .course-summary-sidebar__inner {
+      box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
       width: 300px; }
-      .lp-archive-courses .course-summary .course-summary-content .entry-content.content-area .course-summary-sidebar .course-summary-sidebar__inner .course-sidebar-top {
-        box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05); }
       .lp-archive-courses .course-summary .course-summary-content .entry-content.content-area .course-summary-sidebar .course-summary-sidebar__inner .learn-press-course-wishlist {
         color: #fff;
         font-size: 0;
@@ -3373,7 +3372,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right {
           flex: 1; }
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-left .lp-button {
-          margin: 0 5px 10px 5px; }
+          padding: 13px 36px; }
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right {
           text-align: right; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right .lp-button {
@@ -3412,7 +3411,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center {
           display: block; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-left {
-            text-align: center; }
+            text-align: left; }
             #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-left.fixed {
               position: fixed;
               bottom: 0px;
@@ -3441,65 +3440,32 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
           display: inline-block; }
           #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers {
             display: inline-block;
-            padding: 10px;
-            background: #FFF;
+            padding: 10px 16px;
             line-height: 1;
-            border: 1px solid #d9e0f1;
-            color: #7b7b7b;
             cursor: pointer;
-            font-size: 14px;
-            margin: 0 -1px 0 -1px;
-            min-width: 20px; }
-            #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.current {
-              border-color: #DDD;
-              background: #f5f5f5; }
+            font-size: 16px;
+            font-weight: 300;
+            color: #666; }
             #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.next, #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.prev {
+              background: transparent;
               display: inline-block;
               padding: 8px; }
               #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.next:before, #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.prev:before {
-                content: '';
-                border: 2px solid #B7B7B7;
-                border-top-color: transparent;
-                border-left-color: transparent;
-                display: inline-block;
-                width: 10px;
-                height: 10px;
-                margin-top: 2px;
-                -webkit-transform: rotate(-45deg);
-                -moz-transform: rotate(-45deg);
-                -ms-transform: rotate(-45deg);
-                -o-transform: rotate(-45deg);
-                transform: rotate(-45deg); }
+                content: '\f104';
+                font-weight: 900;
+                font-family: "Font Awesome 5 Free";
+                font-size: 14px;
+                color: #999; }
             #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.next:before {
-              margin-right: 7px; }
-            #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.prev:before {
-              margin-left: 7px;
-              -webkit-transform: rotate(135deg);
-              -moz-transform: rotate(135deg);
-              -ms-transform: rotate(135deg);
-              -o-transform: rotate(135deg);
-              transform: rotate(135deg); }
-            #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers:first-child {
-              border-top-left-radius: 4px;
-              border-bottom-left-radius: 4px; }
-            #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers:last-child {
-              border-top-right-radius: 4px;
-              border-bottom-right-radius: 4px; }
-          #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links a:hover {
-            background: #d9e0f1;
-            color: #5383f7; }
-            #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links a:hover.prev:before, #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links a:hover.next:before {
-              border-right-color: #5383f7;
-              border-bottom-color: #5383f7; }
-          #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links span {
-            cursor: not-allowed;
-            pointer-events: none; }
+              content: '\f105'; }
+            #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.current, #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers:hover {
+              color: #ffb606; }
     #popup-course #popup-content .quiz-status {
       position: sticky;
       top: 0;
       left: 0;
       right: 0;
-      margin: 0 0 20px 0;
+      margin: 0 0 35px 0;
       z-index: 99; }
       #popup-course #popup-content .quiz-status > div {
         display: flex;
@@ -3514,12 +3480,12 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         box-sizing: border-box;
         border-radius: 4px; }
         #popup-course #popup-content .quiz-status > div > div {
-          flex: 0 0 33.3333%;
+          flex: 0 0 50%;
           display: flex;
           align-items: center;
           flex-direction: row-reverse; }
         #popup-course #popup-content .quiz-status > div .current-point {
-          text-align: center; }
+          display: none; }
       #popup-course #popup-content .quiz-status .questions-index {
         display: inline-block; }
       #popup-course #popup-content .quiz-status .countdown {
@@ -3564,10 +3530,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       #popup-course #popup-content .quiz-status.submitting #button-submit-quiz {
         background: #DDD; }
     #popup-course #popup-content.fixed-quiz-status .quiz-status {
-      background: #ffb606;
-      /*> div {
-                    padding: 5px 0;
-                }*/ }
+      background: #ffb606; }
   #popup-course #popup-footer {
     position: fixed;
     width: 792px;
@@ -3578,7 +3541,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     height: 50px;
     background: #FFF;
     z-index: 999;
-    border-top: 1px solid #d9e0f1;
+    border-top: 1px solid #ebebeb;
     -webkit-transition: left 0.25s;
     -moz-transition: left 0.25s;
     -ms-transition: left 0.25s;
@@ -3587,29 +3550,33 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     @media (max-width: 1024px) {
       #popup-course #popup-footer {
         width: 100%; } }
-    #popup-course #popup-footer .course-item-nav .prev,
-    #popup-course #popup-footer .course-item-nav .next {
-      display: flex;
-      line-height: 50px; }
-      #popup-course #popup-footer .course-item-nav .prev a,
-      #popup-course #popup-footer .course-item-nav .next a {
-        display: block; }
-      #popup-course #popup-footer .course-item-nav .prev:before,
-      #popup-course #popup-footer .course-item-nav .next:before {
-        font-weight: 900;
-        font-family: "Font Awesome 5 Free";
-        font-size: 12px; }
-        #popup-course #popup-footer .course-item-nav .prev:before:hover,
-        #popup-course #popup-footer .course-item-nav .next:before:hover {
+    #popup-course #popup-footer .course-item-nav {
+      justify-content: space-between; }
+      #popup-course #popup-footer .course-item-nav .prev,
+      #popup-course #popup-footer .course-item-nav .next {
+        display: flex;
+        line-height: 50px; }
+        #popup-course #popup-footer .course-item-nav .prev a,
+        #popup-course #popup-footer .course-item-nav .next a {
+          display: block; }
+        #popup-course #popup-footer .course-item-nav .prev:before,
+        #popup-course #popup-footer .course-item-nav .next:before {
+          font-weight: 900;
+          font-family: "Font Awesome 5 Free";
+          font-size: 12px;
+          color: #999; }
+        #popup-course #popup-footer .course-item-nav .prev:hover a, #popup-course #popup-footer .course-item-nav .prev:hover:before,
+        #popup-course #popup-footer .course-item-nav .next:hover a,
+        #popup-course #popup-footer .course-item-nav .next:hover:before {
           color: #ffb606; }
-    #popup-course #popup-footer .course-item-nav .next {
-      flex-direction: row-reverse; }
-      #popup-course #popup-footer .course-item-nav .next:before {
-        content: '\f0da';
-        margin-left: 10px; }
-    #popup-course #popup-footer .course-item-nav .prev:before {
-      content: '\f0d9';
-      margin-right: 10px; }
+      #popup-course #popup-footer .course-item-nav .next {
+        flex-direction: row-reverse; }
+        #popup-course #popup-footer .course-item-nav .next:before {
+          content: '\f0da';
+          margin-left: 10px; }
+      #popup-course #popup-footer .course-item-nav .prev:before {
+        content: '\f0d9';
+        margin-right: 10px; }
   #popup-course #sidebar-toggle {
     margin: 0;
     position: absolute;
@@ -3715,7 +3682,10 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       position: absolute;
       top: 50%;
       margin: -16px 0 0 10px;
-      border-color: #d9e0f1; }
+      border-color: #d9e0f1;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px; }
       #popup-course .question .answer-option input[type="radio"]:after,
       #popup-course .question .answer-option input[type="checkbox"]:after {
         border-color: #d9e0f1; }
@@ -3760,7 +3730,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     font-weight: normal;
     font-size: 18px;
     font-weight: 500;
-    color: #333; }
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 18px; }
     #popup-course .question .question-title .edit-link {
       font-weight: normal;
       float: right;
@@ -4171,7 +4143,8 @@ input[type="password"] {
         font-weight: 300;
         color: #666;
         float: unset;
-        background: transparent; }
+        background: transparent;
+        padding: 0; }
         .learn-press-pagination .page-numbers > li .page-numbers.current {
           font-weight: 400;
           color: #ffb606; }
@@ -4272,7 +4245,7 @@ ul.list-table-nav {
 .course-item-nav {
   display: flex; }
   .course-item-nav .prev, .course-item-nav .next {
-    flex: 1; }
+    /* flex: 1;*/ }
     .course-item-nav .prev span, .course-item-nav .next span {
       display: block;
       font-weight: bold; }
