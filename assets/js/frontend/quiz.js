@@ -1915,25 +1915,22 @@ function (_Component) {
         className: "result-achieved"
       }, percentage, "%"), React.createElement("span", {
         className: "result-require"
-      }, passingGradeValue ? passingGradeValue : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), done && React.createElement("p", {
-        className: "result-message",
-        dangerouslySetInnerHTML: {
-          __html: this.getResultMessage(results)
-        }
-      })), React.createElement("ul", {
+      }, passingGradeValue ? passingGradeValue : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress'))), done && React.createElement("p", {
+        className: "result-message"
+      }, results.graduationText), React.createElement("ul", {
         className: "result-statistic"
       }, React.createElement("li", {
-        className: "result-statistic-field"
+        className: "result-statistic-field result-time-spend"
       }, React.createElement("label", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Time spend', 'learnpress')), React.createElement("p", null, results.timeSpend)), React.createElement("li", {
-        className: "result-statistic-field"
+        className: "result-statistic-field result-point"
       }, React.createElement("label", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Point', 'learnpress')), React.createElement("p", null, results.userMark, " / ", results.mark)), React.createElement("li", {
-        className: "result-statistic-field"
+        className: "result-statistic-field result-questions"
       }, React.createElement("label", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress')), React.createElement("p", null, results.questionCount)), React.createElement("li", {
-        className: "result-statistic-field"
+        className: "result-statistic-field result-questions-correct"
       }, React.createElement("label", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Correct', 'learnpress')), React.createElement("p", null, results.questionCorrect)), React.createElement("li", {
-        className: "result-statistic-field"
+        className: "result-statistic-field result-questions-wrong"
       }, React.createElement("label", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Wrong', 'learnpress')), React.createElement("p", null, results.questionWrong)), React.createElement("li", {
-        className: "result-statistic-field"
+        className: "result-statistic-field result-questions-skipped"
       }, React.createElement("label", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Skipped', 'learnpress')), React.createElement("p", null, results.questionEmpty))));
     }
   }]);
@@ -2540,7 +2537,7 @@ function (_Component) {
 
       return undefined !== status && React.createElement(React.Fragment, null, React.createElement(MyContext.Provider, {
         value: this.props
-      }),  true && React.createElement("div", null, !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && notStarted && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && isA && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null)));
+      }),  true && React.createElement("div", null, !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && notStarted && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && notStarted && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null)));
     }
   }]);
 

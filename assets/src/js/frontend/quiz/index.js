@@ -90,7 +90,7 @@ class Quiz extends Component {
                     { 1===1 && <div>
                     { !isReviewing && 'completed' === status && <Result/> }
                     { !isReviewing && notStarted && <Meta /> }
-                    { !isReviewing && isA && <Content /> }
+                    { !isReviewing && notStarted && <Content /> }
 
                     { 'started' === status && <Status /> }
 
