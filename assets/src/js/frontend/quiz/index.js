@@ -65,7 +65,7 @@ class Quiz extends Component {
         } = this.props;
 
         const isA = -1 !== ['', 'completed', 'viewed'].indexOf(status) || !status;
-
+        const notStarted = -1!==['', 'viewed', undefined].indexOf(status) || !status;
         // Just render content if status !== undefined (meant all data loaded)
         return undefined !== status && (
                 <React.Fragment>
@@ -89,7 +89,7 @@ class Quiz extends Component {
 
                     { 1===1 && <div>
                     { !isReviewing && 'completed' === status && <Result/> }
-                    { !isReviewing && !status && <Meta /> }
+                    { !isReviewing && notStarted && <Meta /> }
                     { !isReviewing && isA && <Content /> }
 
                     { 'started' === status && <Status /> }
