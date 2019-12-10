@@ -199,7 +199,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 						LP_LESSON_CPT   => __( 'Lesson', 'learnpress' ),
 						LP_QUESTION_CPT => __( 'Question', 'learnpress' )
 					),
-					'desc'            => __( 'Enable Gutenberg editor for custom posts.', 'learnpress' )
+					'desc'            => __( 'Enable Gutenberg editor.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Enable custom colors', 'learnpress' ),
