@@ -14,6 +14,10 @@
             pointer-events: none;
         }
     }
+
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 #learn-press-course-curriculum {
@@ -545,24 +549,6 @@
 
         #learn-press-quiz-app {
             margin-bottom: 40px;
-            .learn-press-quiz-meta {
-                display: flex;
-                margin-bottom: 26px;
-                .meta-item {
-                    display: flex;
-                    font-size: 16px;
-                    font-weight: 300;
-                    color: #333;
-                    padding-right: 40px;
-                    &:last-child {
-                        padding-right: 0;
-                    }
-                    i {
-                        margin-right: 10px;
-                        color: $primary-color;
-                    }
-                }
-            }
 
             .quiz-content {
                 font-size: 16px;
@@ -721,7 +707,7 @@
             z-index: 99;
             > div {
                 display: flex;
-                height: 82px;
+                height: 60px;
                 justify-content: center;
                 align-items: center;
                 margin: 0 auto;
@@ -793,6 +779,9 @@
                 margin: 0 0 0 10px;
                 background: #fff;
                 text-transform: uppercase;
+                &:hover {
+                    color: $primary-color;
+                }
             }
 
             &.submitting {

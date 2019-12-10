@@ -1801,18 +1801,38 @@ button[data-counter] {
   list-style: none;
   margin: 0 0 20px;
   padding: 0;
-  display: table; }
+  display: flex; }
   .quiz-intro li {
-    margin: 0;
-    display: table-row; }
-    .quiz-intro li label, .quiz-intro li span {
-      display: table-cell; }
+    margin: 0 40px 0 0;
+    display: flex;
+    align-items: center; }
+    .quiz-intro li:before {
+      font-weight: 900;
+      font-family: "Font Awesome 5 Free";
+      color: #ffb606;
+      font-size: 16px;
+      margin-right: 10px;
+      position: relative;
+      top: -2px; }
+    .quiz-intro li.quiz-intro-item-0:before {
+      content: '\f017'; }
+    .quiz-intro li.quiz-intro-item-1:before {
+      content: '\f012'; }
+    .quiz-intro li.quiz-intro-item-2:before {
+      content: '\f12e'; }
     .quiz-intro li label {
-      font-weight: bold;
-      padding: 0 20px 10px 0px;
-      line-height: 1; }
+      font-size: 16px;
+      font-weight: 300;
+      color: #333;
+      padding: 0 8px 0 0;
+      line-height: 1;
+      margin: 0; }
     .quiz-intro li span {
-      text-align: left; }
+      font-size: 16px;
+      font-weight: 300;
+      color: #333; }
+    .quiz-intro li:last-child {
+      margin: 0; }
 
 .question-explanation-content,
 .question-hint-content {
@@ -2921,6 +2941,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     background: #DDD;
     pointer-events: none; }
 
+.learnpress-page:hover {
+  text-decoration: none; }
+
 #learn-press-course-curriculum .section-header {
   background: #FFF;
   border-bottom: 1px solid #d9e0f1;
@@ -3346,20 +3369,6 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         color: #666; }
     #popup-course #popup-content #learn-press-quiz-app {
       margin-bottom: 40px; }
-      #popup-course #popup-content #learn-press-quiz-app .learn-press-quiz-meta {
-        display: flex;
-        margin-bottom: 26px; }
-        #popup-course #popup-content #learn-press-quiz-app .learn-press-quiz-meta .meta-item {
-          display: flex;
-          font-size: 16px;
-          font-weight: 300;
-          color: #333;
-          padding-right: 40px; }
-          #popup-course #popup-content #learn-press-quiz-app .learn-press-quiz-meta .meta-item:last-child {
-            padding-right: 0; }
-          #popup-course #popup-content #learn-press-quiz-app .learn-press-quiz-meta .meta-item i {
-            margin-right: 10px;
-            color: #ffb606; }
       #popup-course #popup-content #learn-press-quiz-app .quiz-content {
         font-size: 16px;
         font-weight: 300;
@@ -3469,7 +3478,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       z-index: 99; }
       #popup-course #popup-content .quiz-status > div {
         display: flex;
-        height: 82px;
+        height: 60px;
         justify-content: center;
         align-items: center;
         margin: 0 auto;
@@ -3527,6 +3536,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         margin: 0 0 0 10px;
         background: #fff;
         text-transform: uppercase; }
+        #popup-course #popup-content .quiz-status #button-submit-quiz:hover {
+          color: #ffb606; }
       #popup-course #popup-content .quiz-status.submitting #button-submit-quiz {
         background: #DDD; }
     #popup-course #popup-content.fixed-quiz-status .quiz-status {

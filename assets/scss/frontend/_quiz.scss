@@ -399,20 +399,46 @@ button[data-counter] {
     list-style: none;
     margin: 0 0 20px;
     padding: 0;
-    display: table;
+    display: flex;
     li {
-        margin: 0;
-        display: table-row;
-        label, span {
-            display: table-cell;
+        margin: 0 40px 0 0;
+        display: flex;
+        align-items: center;
+        &:before {
+            font-weight: 900;
+            font-family: "Font Awesome 5 Free";
+            color: $primary-color;
+            font-size: 16px;
+            margin-right: 10px;
+            position: relative;
+            top: -2px;
         }
+        &.quiz-intro-item-0:before {
+            content: '\f017';
+        }
+        &.quiz-intro-item-1:before {
+            content: '\f012';
+        }
+        &.quiz-intro-item-2:before {
+            content: '\f12e';
+        }
+
         label {
-            font-weight: bold;
-            padding: 0 20px 10px 0px;
+            font-size: 16px;
+            font-weight: 300;
+            color: #333;
+            padding: 0 8px 0 0;
             line-height: 1;
+            margin: 0;
         }
         span {
-            text-align: left;
+            font-size: 16px;
+            font-weight: 300;
+            color: #333;
+        }
+
+        &:last-child {
+            margin: 0;
         }
     }
 }
