@@ -103,6 +103,7 @@ class Status extends Component {
 
         let start = (currentPage - 1) * questionsPerPage + 1;
         let end = start + questionsPerPage - 1;
+        let indexHtml = '';
 
         end = Math.min(end, questionsCount);
 
@@ -110,20 +111,15 @@ class Status extends Component {
             classNames.push('submitting');
         }
 
+        indexHtml = end < questionsCount ? (
+            questionsPerPage > 1
+                ? sprintf(__('Question <span>%d to %d of %d</span>', 'learnpress'), start, end, questionsCount)
+                : sprintf(__('Question <span>%d of %d</span>', 'learnpress'), start, questionsCount)
+        ) : sprintf(__('Question <span>%d to %d</span>', 'learnpress'), start, end);
+
         return <div className={ classNames.join(' ') }>
             <div>
-                <div className="questions-index">
-                    {
-                        end < questionsCount && (
-                            questionsPerPage > 1
-                                ? sprintf(__('Question %d to %d of %d', 'learnpress'), start, end, questionsCount)
-                                : sprintf(__('Question %d of %d', 'learnpress'), start, questionsCount)
-                        )
-                    }
-
-                    {
-                        end === questionsCount && sprintf(__('Question %d to %d', 'learnpress'), start, end)
-                    }
+                <div className="questions-index" dangerouslySetInnerHTML={{__html: indexHtml}}>
                 </div>
 
                 <div className="current-point">{sprintf(__('Earned Point: %s', 'learnpress'), userMark)}</div>

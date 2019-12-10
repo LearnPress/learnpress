@@ -12,19 +12,20 @@ class Meta extends Component {
         } = this.props;
 
         return metaFields && <React.Fragment>
-                <ul className="quiz-intro">
-                    {
-                        Object.values(metaFields).map((field, i) => {
-                            return <li key={`quiz-intro-field-${i}`}>
-                                <label dangerouslySetInnerHTML={{__html: field.title}}>
-                                </label>
-                                <span dangerouslySetInnerHTML={{__html: field.content}}>
+            <ul className="quiz-intro">
+                {
+                    Object.values(metaFields).map((field, i) => {
+                        const id = field.name || i;
+                        return <li key={`quiz-intro-field-${i}`} className={`quiz-intro-item quiz-intro-item__${id}`}>
+                            <label dangerouslySetInnerHTML={{__html: field.title}}>
+                            </label>
+                            <span dangerouslySetInnerHTML={{__html: field.content}}>
                             </span>
-                            </li>
-                        })
-                    }
-                </ul>
-            </React.Fragment>
+                        </li>
+                    })
+                }
+            </ul>
+        </React.Fragment>
     }
 }
 
@@ -45,14 +46,17 @@ export default compose(
                 // },
                 duration: {
                     title: __('Duration', 'learnpress'),
+                    name: 'duration',
                     content: singleCourse.formatDuration(getData('duration'))
                 },
                 passingGrade: {
                     title: __('Passing grade', 'learnpress'),
+                    name: 'passing-grade',
                     content: getData('passingGrade')
                 },
                 questionsCount: {
                     title: __('Questions', 'learnpress'),
+                    name: 'questions-count',
                     content: (function () {
                         const ids = getData('questionIds');
                         return ids ? ids.length : 0;
