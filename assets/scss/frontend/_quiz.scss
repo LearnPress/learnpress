@@ -55,7 +55,7 @@
     margin: 0;
     padding: 0;
     .answer-option {
-        margin: 0 0 15px 0;
+        margin: 0 0 18px 0;
         position: relative;
         background: #F5F5F5;
         padding: 10px;
@@ -93,45 +93,28 @@
             @include appearance(initial);
             margin: 0 10px 0 3px;
             position: relative;
-            border: 1px solid #eaeaea;
+            border: 1px solid #cfcfcf;
             z-index: 10;
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-            background: #FFF;
+            width: 35px;
+            height: 35px;
+            min-width: 35px;
+            background: #f9fafc;
             @include border-radius(4px);
             &:focus {
                 outline: none;
             }
-            &:before {
-                //width: 30px;
-                //height: 30px;
-                //background: #fff;
-                //border-radius: 4px;
-                //outline: none;
-                //position: relative;
-                //border: 1px solid #eaeaea;
-                //content: '';
-                //display: block;
-                //top: 50%;
-                //margin-top: -16px;
-            }
+
             &:after {
-                content: '';
-                border: 2px solid #00adff;
-                display: inline-block;
-                width: 7px;
-                height: 15px;
-                border-top: none;
-                border-left: none;
+                content: '\f00c';
+                font-weight: 900;
+                font-family: "Font Awesome 5 Free";
                 position: absolute;
                 top: 50%;
                 left: 10px;
                 box-sizing: content-box;
                 opacity: 0;
                 margin-top: -10px;
-                @include transform(rotate(36deg) scale(0));
-                @include transition(all 0.25s);
+                color: #3db748;
             }
             &:checked {
                 ~ .option-title {
@@ -144,7 +127,6 @@
                 }
                 &:after {
                     opacity: 1;
-                    @include transform(rotate(36deg) scale(1));
                 }
             }
 

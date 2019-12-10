@@ -21,18 +21,16 @@ if ( ! isset( $prev_item ) && ! isset( $next_item ) ) {
 <div class="course-item-nav">
 	<?php if ( $prev_item ) { ?>
         <div class="prev">
-            <span><?php echo esc_html_x( 'Prev', 'course-item-navigation', 'learnpress' ); ?></span>
             <a href="<?php echo $prev_item->get_permalink(); ?>">
-				<?php echo $prev_item->get_title(); ?>
+                <?php echo esc_html_x( 'Prev', 'course-item-navigation', 'learnpress' ); ?>
             </a>
         </div>
 	<?php } ?>
 
 	<?php if ( $next_item ) { ?>
         <div class="next">
-            <span><?php echo esc_html_x( 'Next', 'course-item-navigation', 'learnpress' ); ?></span>
             <a href="<?php echo $next_item->get_permalink(); ?>">
-				<?php echo $next_item->get_title(); ?>
+                <?php echo esc_html_x( 'Next', 'course-item-navigation', 'learnpress' ); ?>
             </a>
         </div>
 	<?php } ?>
