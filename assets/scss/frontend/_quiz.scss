@@ -251,6 +251,9 @@ button[data-counter] {
     margin: 20px auto 20px;
     text-align: center;
     .result-heading {
+        display: none;
+    }
+    .result-message {
         padding: 10px 0;
         @include border-radius(4px);
         background: #f02425;
@@ -264,7 +267,6 @@ button[data-counter] {
             font-family: "Font Awesome 5 Free";
             margin-left: 10px;
         }
-
     }
     .result-grade {
         .result-achieved,
@@ -336,25 +338,24 @@ button[data-counter] {
                 line-height: 35px;
                 color: #333;
             }
-
-            &.field-time-spend label:before {
+            &.result-time-spend label:before {
                 content:'\f017';
             }
-            &.field-point label:before {
+            &.result-point label:before {
                 content:'\f005';
             }
-            &.field-questions label:before {
+            &.result-questions label:before {
                 content:'\f059';
             }
-            &.field-correct label:before {
+            &.result-questions-correct label:before {
                 content:'\f00c';
                 color: #3db748;
             }
-            &.field-wrong label:before {
+            &.result-questions-wrong label:before {
                 content: '\f00d';
                 color: #f02425;
             }
-            &.field-skipped label:before {
+            &.result-questions-skipped label:before {
                 content: '\f2f5';
             }
         }
