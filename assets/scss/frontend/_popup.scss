@@ -474,7 +474,7 @@
     #popup-content {
         flex: 1;
         position: relative;
-        margin: 60px 0 50px 0;
+        margin: 70px 0 50px 0;
         overflow: auto;
         .lp-button {
             margin: 0 10px 0 0;
@@ -714,7 +714,7 @@
                 max-width: 100%;
                 width: 792px;
                 background: $primary-color;
-                padding: 5px 10px;
+                padding: 5px 10px 5px 30px;
                 box-sizing: border-box;
                 border-radius: 4px;
                 > div {
@@ -730,6 +730,14 @@
 
             .questions-index {
                 display: inline-block;
+                font-size: 16px;
+                line-height: 26px;
+                font-weight: 400;
+                color: #666;
+                span {
+                    font-weight: 500;
+                    color: #333;
+                }
             }
 
             .countdown {
@@ -794,6 +802,9 @@
         &.fixed-quiz-status {
             .quiz-status {
                 background: $primary-color;
+                & > div {
+                    padding: 0;
+                }
             }
         }
     }

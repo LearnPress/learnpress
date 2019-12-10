@@ -413,14 +413,23 @@ button[data-counter] {
             position: relative;
             top: -2px;
         }
-        &.quiz-intro-item-0:before {
-            content: '\f017';
+        &.quiz-intro-item__duration {
+            order: 2;
+            &:before {
+                content: '\f017';
+            }
         }
-        &.quiz-intro-item-1:before {
-            content: '\f012';
+        &.quiz-intro-item__passing-grade {
+            order: 2;
+            &:before {
+                content: '\f012';
+            }
         }
-        &.quiz-intro-item-2:before {
-            content: '\f12e';
+        &.quiz-intro-item__questions-count {
+            order: 1;
+            &:before {
+                content: '\f12e';
+            }
         }
 
         label {
@@ -437,7 +446,7 @@ button[data-counter] {
             color: #333;
         }
 
-        &:last-child {
+        &:first-child {
             margin: 0;
         }
     }
