@@ -1,9 +1,105 @@
+.lp-checkout-form__before,
+.lp-checkout-form__after {
+    width: 45%;
+    width: -webkit-calc(50% - 30px);
+    width: -moz-calc(50% - 30px);
+    width: calc(50% - 30px);
+    margin: 0 15px 40px 15px;
+}
+
+.lp-checkout-form__before {
+    float: right;
+}
+
+.lp-checkout-form__after {
+    float: left;
+}
+
+#learn-press-checkout-form {
+    margin: 0 -15px;
+
+    input[name="xxxx"] {
+        display: none;
+        + .lp-checkout-block {
+            display: none;
+        }
+
+        &:checked{
+            + .lp-checkout-block {
+                display: block;
+            }
+        }
+    }
+
+    &:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+}
+
+#checkout-order {
+    .lp-checkout-order__inner {
+        border: 1px solid #DDD;
+        border-radius: 4px;
+        padding: 0 20px;
+
+        td,
+        th {
+            padding: 20px 20px 20px 0;
+            box-sizing: content-box;
+            line-height: 1;
+
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+
+        .course-thumbnail {
+            width: 100px;
+        }
+
+        .col-number {
+            text-align: right;
+            min-width: 50px;
+            font-weight: 600;
+        }
+
+        .order-total {
+            .col-number {
+                font-size: 24px;
+            }
+        }
+
+        tfoot {
+            tr:last-child {
+                border-width: 0;
+
+                td,
+                th {
+                    border-width: 0;
+                }
+            }
+        }
+    }
+}
+
+#checkout-account {
+
+}
+
+#checkout-payment {
+
+}
+
+////////////////////
 .learn-press-checkout {
     &.guest-checkout {
         display: none;
     }
 }
-.button-continue-guest-checkout{
+
+.button-continue-guest-checkout {
     clear: both;
 }
 
@@ -12,29 +108,35 @@
         list-style: none;
         margin: 0;
         padding: 0;
+
         .lp-payment-method {
             margin-bottom: 20px;
+
             > label {
                 display: block;
                 background: #F5F5F5;
                 padding: 10px 20px;
                 line-height: 40px;
+
                 img {
                     vertical-align: middle;
                 }
             }
+
             &.selected {
                 > label {
                     background: $second-color;
                 }
             }
         }
+
         .payment-method-form {
             display: none;
             background: #F9f9f9;
             padding: 15px 20px;
             border-top: 1px solid #DDD;
         }
+
         .selected {
             .payment-method-form {
             }
@@ -68,8 +170,9 @@
 #checkout-form-login,
 #checkout-form-register {
     _display: none;
+
     .learn-press-form-register,
-    .learn-press-form-login{
+    .learn-press-form-login {
         display: none;
     }
 }
@@ -78,6 +181,7 @@
     border: 1px solid #DDD;
     padding: 20px;
     margin: 0 0 20px 0;
+
     .form-heading {
         margin: 0;
     }
@@ -99,6 +203,7 @@
         #checkout-existing-account {
             display: block;
         }
+
         #checkout-new-account {
             display: none;
         }

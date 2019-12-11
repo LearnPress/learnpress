@@ -310,22 +310,32 @@ add_action( 'learn-press/after-become-teacher-form', LP()->template( 'general' )
  * @see LP_Template_General::checkout_form_login()
  * @see LP_Template_General::checkout_form_register()
  */
-add_action( 'learn-press/before-checkout-form', LP()->template( 'general' )->func( 'checkout_form_login' ), 5 );
-add_action( 'learn-press/before-checkout-form', LP()->template( 'general' )->func( 'checkout_form_register' ), 10 );
-add_action( 'learn-press/checkout-order-review', LP()->template( 'general' )->callback( 'checkout/review-order.php' ), 5 );
+//add_action( 'learn-press/before-checkout-form', LP()->template( 'general' )->func( 'checkout_form_login' ), 5 );
+//add_action( 'learn-press/before-checkout-form', LP()->template( 'general' )->func( 'checkout_form_register' ), 10 );
+//add_action( 'learn-press/checkout-order-review', LP()->template( 'general' )->callback( 'checkout/review-order.php' ), 5 );
 
-add_action( 'learn-press/after-checkout-order-review', LP()->template( 'general' )->callback( 'checkout/order-comment.php' ), 5 );
-add_action( 'learn-press/after-checkout-order-review', LP()->template( 'general' )->func( 'order_payment' ), 10 );
+//add_action( 'learn-press/after-checkout-order-review', LP()->template( 'general' )->callback( 'checkout/order-comment.php' ), 5 );
+//add_action( 'learn-press/after-checkout-order-review', LP()->template( 'general' )->func( 'order_payment' ), 10 );
+
+/** BEGIN: Checkout page */
+add_action('learn-press/before-checkout-form',LP()->template( 'checkout' )->func('review_order'), 10);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_logged_in'), 20);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_login'), 30);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_register'), 40);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('payment'), 50);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('terms'), 60);
+
+
 
 /**
  * @see LP_Template_General::order_guest_email()
  * @see LP_Template_General::term_conditions_template()
  * @see LP_Template_Course::back_to_class_button()
  */
-add_action( 'learn-press/payment-form', LP()->template( 'general' )->func( 'order_guest_email' ), 15 );
-add_action( 'learn-press/after-payment-methods', LP()->template( 'general' )->func( 'term_conditions_template' ) );
-add_action( 'learn-press/after-checkout-form', LP()->template( 'general' )->func( 'back_to_class_button' ) );
-add_action( 'learn-press/after-empty-cart-message', LP()->template( 'general' )->func( 'back_to_class_button' ) );
+//add_action( 'learn-press/payment-form', LP()->template( 'general' )->func( 'order_guest_email' ), 15 );
+//add_action( 'learn-press/after-payment-methods', LP()->template( 'general' )->func( 'term_conditions_template' ) );
+//add_action( 'learn-press/after-checkout-form', LP()->template( 'general' )->func( 'back_to_class_button' ) );
+//add_action( 'learn-press/after-empty-cart-message', LP()->template( 'general' )->func( 'back_to_class_button' ) );
 
 
 // ******************************************************************************************************************* //

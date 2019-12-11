@@ -57,13 +57,13 @@ function learn_press_get_theme_name( $folder ) {
 /**
  * Display HTML of element for building QuickTip JS.
  *
- * @since 3.0.0
- *
  * @param string $tip
  * @param bool   $echo
  * @param array  $options
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
 	$atts = '';
@@ -777,7 +777,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 				<?php echo $links; ?>
             </div>
             <!-- .pagination -->
-			<?php
+		<?php
 		endif;
 		$output = ob_get_clean();
 		if ( $args['echo'] ) {
@@ -1037,9 +1037,9 @@ function learn_press_currency_positions( $currency = false ) {
 }
 
 /**
+ * @return array
  * @deprecated
  *
- * @return array
  */
 function learn_press_get_payment_currencies() {
 	//_deprecated_function( __FUNCTION__, '3.0.0', 'learn_press_currencies' );
@@ -1050,10 +1050,10 @@ function learn_press_get_payment_currencies() {
 /**
  * Get the list of currencies with code and name.
  *
- * @author  ThimPress
+ * @return  array
  * @version 3.0.0
  *
- * @return  array
+ * @author  ThimPress
  */
 function learn_press_currencies() {
 
@@ -1445,6 +1445,23 @@ function learn_press_get_page_link( $key ) {
 	return apply_filters( 'learn-press/get-page-' . $key . '-link', trailingslashit( $link ), $page_id );
 }
 
+/**
+ * Get static page for LP page by name.
+ *
+ * @param string $key
+ *
+ * @return string
+ */
+function learn_press_get_page_title( $key ) {
+	$page_id = LP()->settings->get( $key . '_page_id' );
+	$title   = '';
+
+	if ( get_post_status( $page_id ) == 'publish' ) {
+		$title = apply_filters( 'learn-press/get-page-title', get_the_title( $page_id ), $page_id, $key );
+	}
+
+	return apply_filters( 'learn-press/get-page-' . $key . '-title', $title, $page_id );
+}
 
 /**
  * get the ID of a course by order ID
@@ -1804,9 +1821,10 @@ if ( ! function_exists( 'learn_press_send_json' ) ) {
 /**
  * Send json with success signal to browser.
  *
+ * @param array|object|WP_Error $data
+ *
  * @since 3.0.1
  *
- * @param array|object|WP_Error $data
  */
 function learn_press_send_json_error( $data = '' ) {
 	$response = array( 'success' => false );
@@ -1832,9 +1850,10 @@ function learn_press_send_json_error( $data = '' ) {
 /**
  * Send json with error signal to browser.
  *
+ * @param array|object|WP_Error $data
+ *
  * @since 3.0.0
  *
- * @param array|object|WP_Error $data
  */
 function learn_press_send_json_success( $data = '' ) {
 	$response = array( 'success' => true );
@@ -1969,7 +1988,7 @@ if ( ! function_exists( 'learn_press_is_course_category' ) ) {
 	/**
 	 * Returns true when viewing a course category.
 	 *
-	 * @param  string
+	 * @param string
 	 *
 	 * @return bool
 	 */
@@ -1984,7 +2003,7 @@ if ( ! function_exists( 'learn_press_is_course_tag' ) ) {
 	/**
 	 * Returns true when viewing a course tag.
 	 *
-	 * @param  string
+	 * @param string
 	 *
 	 * @return bool
 	 */
@@ -2783,11 +2802,11 @@ if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
 	/**
 	 * Check negative value.
 	 *
-	 * @since 3.0.0
-	 *
 	 * @param $value
 	 *
 	 * @return bool
+	 * @since 3.0.0
+	 *
 	 */
 	function learn_press_is_negative_value( $value ) {
 		$return = in_array( $value, array( 'no', 'off', 'false', '0' ) ) || ! $value || $value == '' || $value == null;
@@ -2885,9 +2904,9 @@ function learn_press_tooltip( $tooltip, $html = false ) {
 /**
  * Get timezone offset from wp settings.
  *
+ * @return float|int
  * @since 3.0.0
  *
- * @return float|int
  */
 function learn_press_timezone_offset() {
 	if ( $tz = get_option( 'timezone_string' ) ) {
@@ -3058,11 +3077,11 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
 /**
  * Get all items are unassigned to any course.
  *
- * @since 3.0.0
- *
  * @param string|array $type - Optional. Types of items to get, default is all.
  *
  * @return array
+ * @since 3.0.0
+ *
  */
 function learn_press_get_unassigned_items( $type = '' ) {
 	global $wpdb;
@@ -3101,9 +3120,9 @@ function learn_press_get_unassigned_items( $type = '' ) {
 /**
  * Get all questions are unassigned to any quiz.
  *
+ * @return array
  * @since 3.0.0
  *
- * @return array
  */
 function learn_press_get_unassigned_questions() {
 	global $wpdb;
@@ -3132,12 +3151,12 @@ function learn_press_get_unassigned_questions() {
 /**
  * Callback function for sorting to array|object by key|prop priority.
  *
- * @since 3.0.0
- *
  * @param array|object $a
  * @param array|object $b
  *
  * @return int
+ * @since 3.0.0
+ *
  */
 function learn_press_sort_list_by_priority_callback( $a, $b ) {
 	$a_priority = null;
@@ -3173,13 +3192,13 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
 /**
  * Localize date with custom format.
  *
- * @since 3.0.0
- *
  * @param string $timestamp
  * @param string $format
  * @param bool   $gmt
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
 	if ( ! $format ) {
@@ -3189,19 +3208,20 @@ function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
 	return date_i18n( $format, $timestamp, $gmt );
 }
 
-function learn_press_date(){
+function learn_press_date() {
 
 }
 
 /**
  * Remove user items.
  *
- * @since 3.0.8
- *
  * @param int $item_id
  * @param int $course_id
  * @param int $user_id
  * @param int $keep
+ *
+ * @since 3.0.8
+ *
  */
 function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, $keep = 10 ) {
 
@@ -3233,9 +3253,9 @@ function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, 
 /**
  * Get item types of course support for blocking. Default is lp_lesson
  *
+ * @return array
  * @since 3.0.0
  *
- * @return array
  */
 function learn_press_get_block_course_item_types() {
 	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
@@ -3246,11 +3266,11 @@ function learn_press_get_block_course_item_types() {
  * If there is no data stored in cache then
  * get it from WP API.
  *
- * @since 3.1.0
- *
  * @param int|WP_Post $post
  *
  * @return string
+ * @since 3.1.0
+ *
  */
 function learn_press_get_post_type( $post ) {
 	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
@@ -3277,10 +3297,11 @@ function learn_press_get_post_type( $post ) {
 /**
  * Add post type of a post into cache
  *
- * @since 3.1.0
- *
  * @param int|array $id
  * @param string    $type
+ *
+ * @since 3.1.0
+ *
  */
 function learn_press_cache_add_post_type( $id, $type = '' ) {
 	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
@@ -3333,9 +3354,9 @@ function learn_press_show_log() {
 }
 
 /**
+ * @return array
  * @since 3.2.6
  *
- * @return array
  */
 function learn_press_global_script_params() {
 	$js = array(
@@ -3358,9 +3379,9 @@ function learn_press_global_script_params() {
 /**
  * Get url for setup cron job on server.
  *
+ * @return string
  * @since 3.3.0
  *
- * @return string
  */
 function learn_press_get_cron_url() {
 	$nonce = get_option( 'learnpress_cron_url_nonce' );
@@ -3377,9 +3398,9 @@ function learn_press_get_cron_url() {
 /**
  * Get courses expired.
  *
+ * @return array
  * @since 3.3.0
  *
- * @return array
  */
 function learn_press_get_expired_courses() {
 	global $wpdb;
@@ -3409,12 +3430,13 @@ function learn_press_get_expired_courses() {
 /**
  * Add debug log
  *
- * @since 4.0.0
- *
  * @param mixed  $message
  * @param string $handle
  * @param bool   $clear
  * @param bool   $force
+ *
+ * @since 4.0.0
+ *
  */
 function learn_press_debug_add( $message, $handle = 'log', $clear = false, $force = false ) {
 	LP_Debug::instance()->add( $message, $handle, $clear, $force );
@@ -3424,9 +3446,10 @@ function learn_press_debug_add( $message, $handle = 'log', $clear = false, $forc
  * Add new error log. Support message as an array|object.
  * Convert message to string if it is not a string.
  *
+ * @param mixed $value
+ *
  * @since 4.0.0
  *
- * @param mixed $value
  */
 function learn_press_error_log( $value ) {
 	if ( is_array( $value ) || is_object( $value ) ) {
@@ -3441,12 +3464,12 @@ function learn_press_error_log( $value ) {
 /**
  * Get status of global course for current user.
  *
- * @since 3.3.0
- *
  * @param int $user_id
  * @param int $course_id
  *
  * @return bool|string
+ * @since 3.3.0
+ *
  */
 function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
 	if ( ! $user = learn_press_get_user( $user_id ? $user_id : get_current_user_id() ) ) {
@@ -3463,9 +3486,9 @@ function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
 /**
  * Return list types of questions that support answer options.
  *
+ * @return array
  * @since 3.3.0
  *
- * @return array
  */
 function learn_press_get_question_support_answer_options() {
 	$questions = learn_press_get_question_support_feature( 'answer-options' );
@@ -3476,11 +3499,11 @@ function learn_press_get_question_support_answer_options() {
 /**
  * Return list types of question that support a feature.
  *
- * @since 3.3.0
- *
  * @param string $feature
  *
  * @return array
+ * @since 3.3.0
+ *
  */
 function learn_press_get_question_support_feature( $feature ) {
 	$questions = array();
@@ -3499,12 +3522,13 @@ function learn_press_get_question_support_feature( $feature ) {
 /**
  * Helper function to output html for rendering a 'circle progress bar'
  *
- * @since 3.3.0
- *
  * @param int    $percent
  * @param int    $width
  * @param int    $border
  * @param string $color
+ *
+ * @since 3.3.0
+ *
  */
 function learn_press_circle_progress_html( $percent = 0, $width = 32, $border = 4, $color = '' ) {
 	$radius        = $width / 2;
@@ -3531,12 +3555,12 @@ function learn_press_is_page( $page_name ) {
 /**
  * Get end-date from start date with a duration.
  *
- * @since 3.x.x
- *
  * @param string|int $duration
  * @param string|int $start
  *
  * @return false|string
+ * @since 3.x.x
+ *
  */
 function learn_press_date_end_from( $duration, $start = '' ) {
 	$format = 'Y-m-d H:i:s';
@@ -3575,9 +3599,9 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 /**
  * Get list of levels support in course.
  *
+ * @return array
  * @since 3.x.x
  *
- * @return array
  */
 function learn_press_default_course_levels() {
 	$levels = array(
@@ -3593,11 +3617,11 @@ function learn_press_default_course_levels() {
 /**
  * Get default methods to evaluate course results.
  *
- * @since 3.x.x
- *
  * @param string $return - Optional. 'keys' will return keys instead of all.
  *
  * @return array
+ * @since 3.x.x
+ *
  */
 function learn_press_course_evaluation_methods( $return = '' ) {
 	$methods = array(
@@ -3611,9 +3635,9 @@ function learn_press_course_evaluation_methods( $return = '' ) {
 /**
  * Get default methods to evaluate course results.
  *
+ * @return array
  * @since 3.x.x
  *
- * @return array
  */
 function learn_press_course_evaluation_method_quiz_options() {
 	$methods = array(
@@ -3627,11 +3651,11 @@ function learn_press_course_evaluation_method_quiz_options() {
 /**
  * Wrap WP Core function current_time with mysql format.
  *
- * @since 4.0.0
- *
  * @param bool $gmt
  *
  * @return int|string
+ * @since 4.0.0
+ *
  */
 function learn_press_mysql_time( $gmt = true ) {
 	return current_time( 'mysql', $gmt );
@@ -3640,11 +3664,11 @@ function learn_press_mysql_time( $gmt = true ) {
 /**
  * Wrap WP Core function current_time with timestamp format.
  *
- * @since 4.0.0
- *
  * @param bool $gmt
  *
  * @return int|string
+ * @since 4.0.0
+ *
  */
 function learn_press_timestamp( $gmt = true ) {
 	return current_time( 'timestamp', $gmt );
@@ -3653,12 +3677,12 @@ function learn_press_timestamp( $gmt = true ) {
 /**
  * Convert time from GMT to local.
  *
- * @since 4.0.0
- *
  * @param string|int|LP_Datetime $gmt_time
  * @param string                 $format
  *
  * @return false|int|string
+ * @since 4.0.0
+ *
  */
 function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
 	if ( is_string( $gmt_time ) ) {
@@ -3679,12 +3703,12 @@ function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
 /**
  * Get max retrying quiz allowed.
  *
- * @since 4.0.0
- *
  * @param int $quiz_id
  * @param int $course_id
  *
  * @return int
+ * @since 4.0.0
+ *
  */
 function learn_press_get_quiz_max_retrying( $quiz_id = 0, $course_id = 0 ) {
 	return apply_filters( 'learn-press/max-retry-quiz-allowed', 1, $quiz_id, $course_id );
@@ -3693,11 +3717,11 @@ function learn_press_get_quiz_max_retrying( $quiz_id = 0, $course_id = 0 ) {
 /**
  * Get max retrying course allowed.
  *
- * @since 4.0.0
- *
  * @param int $course_id
  *
  * @return int
+ * @since 4.0.0
+ *
  */
 function learn_press_get_course_max_retrying( $course_id ) {
 	return apply_filters( 'learn-press/max-retry-course-allowed', 1, $course_id );

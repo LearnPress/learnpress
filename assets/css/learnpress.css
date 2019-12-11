@@ -269,6 +269,59 @@
   .learn-press-filters > li:last-child:after {
     display: none; }
 
+.lp-checkout-form__before,
+.lp-checkout-form__after {
+  width: 45%;
+  width: -webkit-calc(50% - 30px);
+  width: -moz-calc(50% - 30px);
+  width: calc(50% - 30px);
+  margin: 0 15px 40px 15px; }
+
+.lp-checkout-form__before {
+  float: right; }
+
+.lp-checkout-form__after {
+  float: left; }
+
+#learn-press-checkout-form {
+  margin: 0 -15px; }
+  #learn-press-checkout-form input[name="xxxx"] {
+    display: none; }
+    #learn-press-checkout-form input[name="xxxx"] + .lp-checkout-block {
+      display: none; }
+    #learn-press-checkout-form input[name="xxxx"]:checked + .lp-checkout-block {
+      display: block; }
+  #learn-press-checkout-form:after {
+    content: '';
+    display: block;
+    clear: both; }
+
+#checkout-order .lp-checkout-order__inner {
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  padding: 0 20px; }
+  #checkout-order .lp-checkout-order__inner td,
+  #checkout-order .lp-checkout-order__inner th {
+    padding: 20px 20px 20px 0;
+    box-sizing: content-box;
+    line-height: 1; }
+    #checkout-order .lp-checkout-order__inner td:last-child,
+    #checkout-order .lp-checkout-order__inner th:last-child {
+      padding-right: 0; }
+  #checkout-order .lp-checkout-order__inner .course-thumbnail {
+    width: 100px; }
+  #checkout-order .lp-checkout-order__inner .col-number {
+    text-align: right;
+    min-width: 50px;
+    font-weight: 600; }
+  #checkout-order .lp-checkout-order__inner .order-total .col-number {
+    font-size: 24px; }
+  #checkout-order .lp-checkout-order__inner tfoot tr:last-child {
+    border-width: 0; }
+    #checkout-order .lp-checkout-order__inner tfoot tr:last-child td,
+    #checkout-order .lp-checkout-order__inner tfoot tr:last-child th {
+      border-width: 0; }
+
 .learn-press-checkout.guest-checkout {
   display: none; }
 
@@ -4122,6 +4175,11 @@ input[type="password"] {
   clear: both;
   display: block;
   content: ''; }
+
+.lp-content-wrap {
+  width: 1170px;
+  max-width: 90%;
+  margin: 0 auto; }
 
 .learn-press-breadcrumb {
   width: 1170px;
