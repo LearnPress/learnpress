@@ -22,10 +22,11 @@ $profile = LP_Global::profile();
 $fields  = $profile->get_login_fields();
 
 ?>
-<input type="radio" id="xxxx" name="xxxx" />
+<input type="radio" id="checkout-account-switch-to-register" name="checkout-account-switch-form"/>
 <div id="checkout-account-login" class="lp-checkout-block left">
+    <h4><?php esc_html_e( 'Sign in', 'learnpress' ); ?></h4>
 
-    <ul class="form-fields">
+    <ul class="lp-form-fields">
 		<?php foreach ( $fields as $field ) { ?>
             <li class="form-field">
 				<?php LP_Meta_Box_Helper::show_field( $field ); ?>
@@ -44,7 +45,7 @@ $fields  = $profile->get_login_fields();
 
     <input type="hidden" name="learn-press-login-nonce"
            value="<?php echo wp_create_nonce( 'learn-press-login' ); ?>">
-    <p>
+    <p class="lp-checkout-remember">
         <label>
             <input type="checkbox" name="rememberme"/>
 			<?php _e( 'Remember me', 'learnpress' ); ?>
@@ -56,6 +57,8 @@ $fields  = $profile->get_login_fields();
 
     <p class="lp-checkout-sign-up-link">
 		<?php esc_html_e( 'Don\'t have an account?', 'learnpress' ); ?>
-        <label for="yyyy"><?php echo _x( 'Sign up.', 'checkout sign up link', 'learnpress' ); ?></label>
+        <a href="javascript: void(0);">
+            <label for="checkout-account-switch-to-login"><?php echo _x( 'Sign up.', 'checkout sign up link', 'learnpress' ); ?></label>
+        </a>
     </p>
 </div>

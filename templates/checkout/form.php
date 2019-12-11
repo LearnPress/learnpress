@@ -22,9 +22,6 @@ $checkout = LP()->checkout();
 // Prints message
 learn_press_print_messages();
 
-// TODO: check if no payment set
-learn_press_display_message(__( 'No payment method is available.', 'learnpress' ), 'error');
-
 /**
  * @deprecated
  */

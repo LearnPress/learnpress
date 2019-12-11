@@ -22,9 +22,9 @@ $profile = LP_Global::profile();
 $fields  = $profile->get_register_fields();
 
 ?>
-<input type="radio" id="yyyy" name="xxxx" checked="checked"/>
+<input type="radio" id="checkout-account-switch-to-login" name="checkout-account-switch-form" checked="checked"/>
 <div id="checkout-account-register" class="lp-checkout-block left">
-
+	<h4><?php esc_html_e( 'Sign up', 'learnpress' ); ?></h4>
 
 	<?php
 	/**
@@ -33,7 +33,7 @@ $fields  = $profile->get_register_fields();
 	do_action( 'learn-press/before-form-register-fields' );
 	?>
 
-    <ul class="form-fields">
+    <ul class="lp-form-fields">
 		<?php foreach ( $fields as $field ) { ?>
             <li class="form-field">
 				<?php LP_Meta_Box_Helper::show_field( $field ); ?>
@@ -52,7 +52,9 @@ $fields  = $profile->get_register_fields();
 
     <p class="lp-checkout-sign-in-link">
 		<?php esc_html_e( 'Already had an account?', 'learnpress' ); ?>
-        <label for="xxxx"><?php esc_html_e( 'Sign in', 'learnpress' ); ?></label>
+        <a href="javascript: void(0);">
+            <label for="checkout-account-switch-to-register"><?php esc_html_e( 'Sign in', 'learnpress' ); ?></label>
+        </a>
     </p>
 
 	<?php

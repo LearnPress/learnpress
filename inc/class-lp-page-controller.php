@@ -43,14 +43,27 @@ class LP_Page_Controller {
 		}
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
-		add_filter( 'template_include', array( $this, 'template_loader' ) );
+		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
-		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ) );
+		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
+		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
+		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
+
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
-		add_filter( 'template_include', array( $this, 'auto_shortcode' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+	}
+
+	public function check_pages( $template ) {
+
+		if ( learn_press_is_checkout() ) {
+			if ( ! $available_gateways = LP_Gateways::instance()->get_available_payment_gateways() ) {
+				learn_press_add_message( __( 'No payment method is available.', 'learnpress' ), 'error' );
+			}
+		}
+
+		return $template;
 	}
 
 	/**

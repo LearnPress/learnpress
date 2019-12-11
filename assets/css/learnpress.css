@@ -285,11 +285,11 @@
 
 #learn-press-checkout-form {
   margin: 0 -15px; }
-  #learn-press-checkout-form input[name="xxxx"] {
+  #learn-press-checkout-form input[name="checkout-account-switch-form"] {
     display: none; }
-    #learn-press-checkout-form input[name="xxxx"] + .lp-checkout-block {
+    #learn-press-checkout-form input[name="checkout-account-switch-form"] + .lp-checkout-block {
       display: none; }
-    #learn-press-checkout-form input[name="xxxx"]:checked + .lp-checkout-block {
+    #learn-press-checkout-form input[name="checkout-account-switch-form"]:checked + .lp-checkout-block {
       display: block; }
   #learn-press-checkout-form:after {
     content: '';
@@ -321,6 +321,43 @@
     #checkout-order .lp-checkout-order__inner tfoot tr:last-child td,
     #checkout-order .lp-checkout-order__inner tfoot tr:last-child th {
       border-width: 0; }
+
+#checkout-account-register,
+#checkout-account-login {
+  border-bottom: 1px solid #DDD;
+  margin-bottom: 35px;
+  padding-bottom: 55px; }
+  #checkout-account-register .form-field .rwmb-label,
+  #checkout-account-register .form-field .rwmb-input .description,
+  #checkout-account-login .form-field .rwmb-label,
+  #checkout-account-login .form-field .rwmb-input .description {
+    display: none; }
+  #checkout-account-register .lp-checkout-remember label,
+  #checkout-account-login .lp-checkout-remember label {
+    display: inline-block;
+    font-weight: normal;
+    color: inherit; }
+  #checkout-account-register .lp-checkout-remember a,
+  #checkout-account-login .lp-checkout-remember a {
+    float: right; }
+  #checkout-account-register .lp-checkout-sign-in-link,
+  #checkout-account-register .lp-checkout-sign-up-link,
+  #checkout-account-login .lp-checkout-sign-in-link,
+  #checkout-account-login .lp-checkout-sign-up-link {
+    margin: 0; }
+    #checkout-account-register .lp-checkout-sign-in-link label,
+    #checkout-account-register .lp-checkout-sign-up-link label,
+    #checkout-account-login .lp-checkout-sign-in-link label,
+    #checkout-account-login .lp-checkout-sign-up-link label {
+      display: inline-block;
+      float: right;
+      font-weight: normal;
+      color: inherit; }
+
+#checkout-payment {
+  margin-bottom: 30px; }
+  #checkout-payment #checkout-order-action button {
+    width: 100%; }
 
 .learn-press-checkout.guest-checkout {
   display: none; }
@@ -4150,6 +4187,14 @@ input[type="password"] {
   display: block;
   content: ''; }
 
+.lp-form-fields {
+  list-style: none;
+  margin: 0;
+  padding: 0; }
+  .lp-form-fields .form-field {
+    list-style: none;
+    margin: 0 0 20px 0; }
+
 .lp-content-wrap {
   width: 1170px;
   max-width: 90%;
@@ -4201,6 +4246,7 @@ input[type="password"] {
             background: $primary-color;
             border-color: $primary-color;
             color: #fff;
+
             &:hover {
                 background: darken($primary-color, 15%);
             }

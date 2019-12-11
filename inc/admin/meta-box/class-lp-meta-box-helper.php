@@ -62,7 +62,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				if ( preg_match( '/class="(.*)"/iSU', $output, $matches ) ) {
 					if ( preg_match( '/required/', $matches[0] ) ) {
 						$class  = preg_replace( '/\s+/', ' ', str_replace( 'required', '', $matches[0] ) );
-						$output = preg_replace( '/class="(.*)"/iSU', $class, $output );
+						$output = str_replace($matches[0], $class, $output);
 					}
 				}
 				echo $output;

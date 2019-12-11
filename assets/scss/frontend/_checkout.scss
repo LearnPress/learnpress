@@ -18,13 +18,14 @@
 #learn-press-checkout-form {
     margin: 0 -15px;
 
-    input[name="xxxx"] {
+    input[name="checkout-account-switch-form"] {
         display: none;
+
         + .lp-checkout-block {
             display: none;
         }
 
-        &:checked{
+        &:checked {
             + .lp-checkout-block {
                 display: block;
             }
@@ -84,12 +85,50 @@
     }
 }
 
-#checkout-account {
+#checkout-account-register,
+#checkout-account-login {
+    border-bottom: 1px solid #DDD;
+    margin-bottom: 35px;
+    padding-bottom: 55px;
 
+    .form-field {
+        .rwmb-label,
+        .rwmb-input .description {
+            display: none;
+        }
+    }
+
+    .lp-checkout-remember{
+        label {
+            display: inline-block;
+            font-weight: normal;
+            color: inherit;
+        }
+        a{
+            float: right;
+        }
+    }
+
+    .lp-checkout-sign-in-link,
+    .lp-checkout-sign-up-link {
+        margin: 0;
+        label {
+            display: inline-block;
+            float: right;
+            font-weight: normal;
+            color: inherit;
+        }
+    }
 }
 
 #checkout-payment {
+    margin-bottom: 30px;
 
+    #checkout-order-action {
+        button {
+            width: 100%;
+        }
+    }
 }
 
 ////////////////////

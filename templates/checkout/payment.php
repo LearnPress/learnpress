@@ -16,7 +16,6 @@ defined( 'ABSPATH' ) || exit();
 
 $order_button_text  = learn_press_get_checkout_process_button_text();
 $available_gateways = ! empty( $available_gateways ) ? $available_gateways : false;
-$count_gateways     = $available_gateways ? sizeof( $available_gateways ) : 0;
 ?>
 <div id="checkout-payment" class="lp-checkout-block left">
 
@@ -28,7 +27,7 @@ $count_gateways     = $available_gateways ? sizeof( $available_gateways ) : 0;
 	do_action( 'learn-press/before-payment-methods' );
 
 	// Show payments if cart total > 0 and have at least one payment method.
-	if ( LP()->cart->needs_payment() && $count_gateways ) { ?>
+	if ( LP()->cart->needs_payment() && $available_gateways ) { ?>
 
         <h4><?php _e( 'Payment', 'learnpress' ); ?></h4>
 
