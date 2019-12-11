@@ -242,7 +242,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	if ( $allow_create ) {
 		ob_start(); ?>
         <button class="button button-quick-add-page" data-id="<?php echo $id; ?>"
-                type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
+                type="button"><?php _e( 'Create New', 'learnpress' ); ?></button>
 		<?php echo '</div>'; ?>
         <p class="quick-add-page-inline <?php echo $id; ?> hide-if-js">
             <input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>"/>

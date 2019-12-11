@@ -84,12 +84,11 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'title'             => __( 'Courses Per Page', 'learnpress' ),
 							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
 							'id'                => 'archive_course_limit',
-							'default'           => '10',
+							'default'           => '8',
 							'type'              => 'number',
 							'custom_attributes' => array(
 								'min' => '1'
 							),
-							'placeholder'       => '10'
 						),
 //						array(
 //							'title'      => __( 'Enable editing published course', 'learnpress' ),
