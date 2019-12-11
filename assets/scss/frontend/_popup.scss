@@ -14,6 +14,10 @@
             pointer-events: none;
         }
     }
+
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 #learn-press-course-curriculum {
@@ -470,7 +474,7 @@
     #popup-content {
         flex: 1;
         position: relative;
-        margin: 60px 0 50px 0;
+        margin: 70px 0 50px 0;
         overflow: auto;
         .lp-button {
             margin: 0 10px 0 0;
@@ -545,24 +549,6 @@
 
         #learn-press-quiz-app {
             margin-bottom: 40px;
-            .learn-press-quiz-meta {
-                display: flex;
-                margin-bottom: 26px;
-                .meta-item {
-                    display: flex;
-                    font-size: 16px;
-                    font-weight: 300;
-                    color: #333;
-                    padding-right: 40px;
-                    &:last-child {
-                        padding-right: 0;
-                    }
-                    i {
-                        margin-right: 10px;
-                        color: $primary-color;
-                    }
-                }
-            }
 
             .quiz-content {
                 font-size: 16px;
@@ -721,14 +707,14 @@
             z-index: 99;
             > div {
                 display: flex;
-                height: 82px;
+                height: 60px;
                 justify-content: center;
                 align-items: center;
                 margin: 0 auto;
                 max-width: 100%;
                 width: 792px;
                 background: $primary-color;
-                padding: 5px 10px;
+                padding: 5px 10px 5px 30px;
                 box-sizing: border-box;
                 border-radius: 4px;
                 > div {
@@ -744,6 +730,14 @@
 
             .questions-index {
                 display: inline-block;
+                font-size: 16px;
+                line-height: 26px;
+                font-weight: 400;
+                color: #666;
+                span {
+                    font-weight: 500;
+                    color: #333;
+                }
             }
 
             .countdown {
@@ -793,6 +787,9 @@
                 margin: 0 0 0 10px;
                 background: #fff;
                 text-transform: uppercase;
+                &:hover {
+                    color: $primary-color;
+                }
             }
 
             &.submitting {
@@ -805,6 +802,9 @@
         &.fixed-quiz-status {
             .quiz-status {
                 background: $primary-color;
+                & > div {
+                    padding: 0;
+                }
             }
         }
     }

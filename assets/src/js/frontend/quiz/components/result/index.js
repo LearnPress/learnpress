@@ -150,32 +150,33 @@ class Result extends Component {
                 <span className="result-achieved">{ percentage }%</span>
                 <span
                     className="result-require">{ passingGradeValue ? passingGradeValue : _x('-', 'unknown passing grade value', 'learnpress') }</span>
-                { done && <p className="result-message"
-                             dangerouslySetInnerHTML={ {__html: this.getResultMessage(results)} }></p> }
+
             </div>
 
+            { done && <p className="result-message">{results.graduationText}</p> }
+
             <ul className="result-statistic">
-                <li className="result-statistic-field">
+                <li className="result-statistic-field result-time-spend">
                     <label>{ __('Time spend', 'learnpress') }</label>
                     <p>{results.timeSpend}</p>
                 </li>
-                <li className="result-statistic-field">
+                <li className="result-statistic-field result-point">
                     <label>{ __('Point', 'learnpress') }</label>
                     <p>{ results.userMark } / { results.mark }</p>
                 </li>
-                <li className="result-statistic-field">
+                <li className="result-statistic-field result-questions">
                     <label>{ __('Questions', 'learnpress') }</label>
                     <p>{ results.questionCount }</p>
                 </li>
-                <li className="result-statistic-field">
+                <li className="result-statistic-field result-questions-correct">
                     <label>{ __('Correct', 'learnpress') }</label>
                     <p>{ results.questionCorrect }</p>
                 </li>
-                <li className="result-statistic-field">
+                <li className="result-statistic-field result-questions-wrong">
                     <label>{ __('Wrong', 'learnpress') }</label>
                     <p>{ results.questionWrong }</p>
                 </li>
-                <li className="result-statistic-field">
+                <li className="result-statistic-field result-questions-skipped">
                     <label>{ __('Skipped', 'learnpress') }</label>
                     <p>{ results.questionEmpty }</p>
                 </li>
