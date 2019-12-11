@@ -248,9 +248,12 @@ button[data-counter] {
 
 .quiz-result {
     max-width: 320px;
-    margin: 20px auto 20px;
+    margin: 20px auto 48px;
     text-align: center;
     .result-heading {
+        display: none;
+    }
+    .result-message {
         padding: 10px 0;
         @include border-radius(4px);
         background: #f02425;
@@ -264,7 +267,6 @@ button[data-counter] {
             font-family: "Font Awesome 5 Free";
             margin-left: 10px;
         }
-
     }
     .result-grade {
         .result-achieved,
@@ -273,11 +275,20 @@ button[data-counter] {
             margin: 0 auto;
         }
         .result-achieved {
-            font-size: 36px;
-            border-bottom: 2px solid #04adff;
+            font-size: 28px;
+            font-weight: 500;
+            color: #333;
+            border-bottom: 1px solid #999;
+            line-height: 1;
+            padding-bottom: 7px;
         }
         .result-require {
             display: block;
+            font-size: 16px;
+            font-weight: 400;
+            color: #666;
+            line-height: 1;
+            padding-top: 5px;
         }
         .result-message {
             font-size: 14px;
@@ -336,26 +347,27 @@ button[data-counter] {
                 line-height: 35px;
                 color: #333;
             }
-
-            &.field-time-spend label:before {
+            &.result-time-spend label:before {
                 content:'\f017';
             }
-            &.field-point label:before {
+            &.result-point label:before {
                 content:'\f005';
             }
-            &.field-questions label:before {
+            &.result-questions label:before {
                 content:'\f059';
+                font-weight: 400;
             }
-            &.field-correct label:before {
+            &.result-questions-correct label:before {
                 content:'\f00c';
                 color: #3db748;
             }
-            &.field-wrong label:before {
+            &.result-questions-wrong label:before {
                 content: '\f00d';
                 color: #f02425;
             }
-            &.field-skipped label:before {
+            &.result-questions-skipped label:before {
                 content: '\f2f5';
+                color: #ddd;
             }
         }
     }

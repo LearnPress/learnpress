@@ -1763,9 +1763,11 @@ button[data-counter] {
 
 .quiz-result {
   max-width: 320px;
-  margin: 20px auto 20px;
+  margin: 20px auto 48px;
   text-align: center; }
   .quiz-result .result-heading {
+    display: none; }
+  .quiz-result .result-message {
     padding: 10px 0;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -1775,7 +1777,7 @@ button[data-counter] {
     font-size: 16px;
     font-weight: 400;
     margin-bottom: 30px; }
-    .quiz-result .result-heading:after {
+    .quiz-result .result-message:after {
       content: '\f00d';
       font-weight: 900;
       font-family: "Font Awesome 5 Free";
@@ -1785,10 +1787,19 @@ button[data-counter] {
     display: inline-block;
     margin: 0 auto; }
   .quiz-result .result-grade .result-achieved {
-    font-size: 36px;
-    border-bottom: 2px solid #04adff; }
+    font-size: 28px;
+    font-weight: 500;
+    color: #333;
+    border-bottom: 1px solid #999;
+    line-height: 1;
+    padding-bottom: 7px; }
   .quiz-result .result-grade .result-require {
-    display: block; }
+    display: block;
+    font-size: 16px;
+    font-weight: 400;
+    color: #666;
+    line-height: 1;
+    padding-top: 5px; }
   .quiz-result .result-grade .result-message {
     font-size: 14px; }
   .quiz-result.failed {
@@ -1831,20 +1842,22 @@ button[data-counter] {
         font-weight: 500;
         line-height: 35px;
         color: #333; }
-      .quiz-result .result-statistic .result-statistic-field.field-time-spend label:before {
+      .quiz-result .result-statistic .result-statistic-field.result-time-spend label:before {
         content: '\f017'; }
-      .quiz-result .result-statistic .result-statistic-field.field-point label:before {
+      .quiz-result .result-statistic .result-statistic-field.result-point label:before {
         content: '\f005'; }
-      .quiz-result .result-statistic .result-statistic-field.field-questions label:before {
-        content: '\f059'; }
-      .quiz-result .result-statistic .result-statistic-field.field-correct label:before {
+      .quiz-result .result-statistic .result-statistic-field.result-questions label:before {
+        content: '\f059';
+        font-weight: 400; }
+      .quiz-result .result-statistic .result-statistic-field.result-questions-correct label:before {
         content: '\f00c';
         color: #3db748; }
-      .quiz-result .result-statistic .result-statistic-field.field-wrong label:before {
+      .quiz-result .result-statistic .result-statistic-field.result-questions-wrong label:before {
         content: '\f00d';
         color: #f02425; }
-      .quiz-result .result-statistic .result-statistic-field.field-skipped label:before {
-        content: '\f2f5'; }
+      .quiz-result .result-statistic .result-statistic-field.result-questions-skipped label:before {
+        content: '\f2f5';
+        color: #ddd; }
 
 .question-numbers {
   list-style: none;
@@ -2948,6 +2961,12 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       border-color: #442e66; }
       #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button:hover {
         border-color: #ffb606; }
+      #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button.button-enroll-course {
+        background: #ffb606;
+        border-color: #ffb606;
+        color: #fff; }
+        #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button.button-enroll-course:hover {
+          background: #b98200; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-time {
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(204, 204, 204, 0.3);
@@ -3524,7 +3543,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center {
           display: block; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-left {
-            text-align: left; }
+            text-align: center; }
             #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-left.fixed {
               position: fixed;
               bottom: 0px;
@@ -3756,8 +3775,11 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     height: 200px;
     padding: 50px;
     box-sizing: border-box;
-    margin-bottom: 20px;
-    color: #777; }
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; }
     #popup-course .quiz-result .result-grade:before, #popup-course .quiz-result .result-grade svg {
       width: 200px;
       height: 200px;
@@ -3769,7 +3791,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       -moz-border-radius: 50%;
       border-radius: 50%; }
     #popup-course .quiz-result .result-grade:before {
-      border: 10px solid #d9e0f1;
+      border: 10px solid #ccc;
       padding: 30px;
       box-sizing: border-box;
       content: ''; }
@@ -3780,9 +3802,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       -o-transform: rotate(-90deg);
       transform: rotate(-90deg); }
       #popup-course .quiz-result .result-grade svg circle {
-        stroke: #c55757; }
-    #popup-course .quiz-result .result-grade .result-achieved {
-      border-bottom-color: #b9b9b9; }
+        stroke: #ffb606; }
   #popup-course .quiz-result.passed .result-grade svg {
     -webkit-transform: rotate(-90deg);
     -moz-transform: rotate(-90deg);
@@ -4176,7 +4196,15 @@ input[type="password"] {
   -moz-transition: all 0.25s;
   -ms-transition: all 0.25s;
   -o-transition: all 0.25s;
-  transition: all 0.25s; }
+  transition: all 0.25s;
+  /*&.button-enroll-course {
+            background: $primary-color;
+            border-color: $primary-color;
+            color: #fff;
+            &:hover {
+                background: darken($primary-color, 15%);
+            }
+        }*/ }
   .learnpress-page .lp-button.large {
     font-size: 18px;
     padding: 18px 30px;
@@ -4193,12 +4221,6 @@ input[type="password"] {
     .learnpress-page .lp-button.gray:focus {
       border: 0;
       outline: 0; }
-  .learnpress-page .lp-button.button-enroll-course {
-    background: #ffb606;
-    border-color: #ffb606;
-    color: #fff; }
-    .learnpress-page .lp-button.button-enroll-course:hover {
-      background: #b98200; }
   .learnpress-page .lp-button:hover {
     background: #ffb606;
     border-color: #ffb606;

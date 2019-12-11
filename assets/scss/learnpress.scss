@@ -131,7 +131,7 @@ input[type="password"] {
             }
         }
 
-        &.button-enroll-course {
+        /*&.button-enroll-course {
             background: $primary-color;
             border-color: $primary-color;
             color: #fff;
@@ -139,7 +139,7 @@ input[type="password"] {
             &:hover {
                 background: darken($primary-color, 15%);
             }
-        }
+        }*/
 
         &:hover {
             background: $primary-color;
