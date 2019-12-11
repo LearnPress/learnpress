@@ -1,10 +1,10 @@
 // Global variables
-$primary-color :#ffb606;
-$second-color  :#442e66;
-$item-preview  :#059de9;
-$primary-bg-duration : #c0c0c0;
-$primary-bg-questions : #9672cf;
-$primary-color-course-item-status:#3bb54a;
+$primary-color: #ffb606;
+$second-color: #442e66;
+$item-preview: #059de9;
+$primary-bg-duration: #c0c0c0;
+$primary-bg-questions: #9672cf;
+$primary-color-course-item-status: #3bb54a;
 $primary-bg-color: #000;
 $primary-bg-color-before: #000;
 $primary-bg-color-after: #000;
@@ -52,6 +52,12 @@ input[type="password"] {
     }
 }
 
+.lp-content-wrap {
+    width: 1170px;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
 .learn-press-breadcrumb {
     width: 1170px;
     max-width: 100%;
@@ -59,21 +65,26 @@ input[type="password"] {
     font-size: 14px;
     font-weight: 400;
     color: #333;
+
     a {
         color: #666;
         font-weight: 300;
+
         &:hover {
             color: $primary-color;
         }
     }
+
     i {
         color: #666;
         font-size: 12px;
     }
+
     @media (max-width: 1024px) {
         padding-right: 15px;
         padding-left: 15px;
     }
+
     a {
         font-weight: 300;
         color: #666;
@@ -107,11 +118,13 @@ input[type="password"] {
             top: 10px;
             right: 10px;
             padding: 0;
-            border:0;
+            border: 0;
+
             &:hover {
                 background: transparent;
                 text-decoration: none;
             }
+
             &:focus {
                 border: 0;
                 outline: 0;
@@ -122,6 +135,7 @@ input[type="password"] {
             background: $primary-color;
             border-color: $primary-color;
             color: #fff;
+
             &:hover {
                 background: darken($primary-color, 15%);
             }
@@ -159,12 +173,14 @@ input[type="password"] {
 
 .learn-press-progress {
     position: relative;
+
     .progress-bg {
         background: #ccc;
         height: 6px;
         position: relative;
         overflow: hidden;
         @include border-radius(5px);
+
         .progress-active {
             height: 100%;
             width: 100%;
@@ -189,6 +205,7 @@ input[type="password"] {
 /* */
 .table-orders {
     font-size: 16px;
+
     th, td {
         padding: 5px 10px;
     }
@@ -201,14 +218,17 @@ input[type="password"] {
 .learn-press-pagination {
     text-align: center;
     padding-bottom: 20px;
+
     .page-numbers {
         display: inline-block;
         list-style: none;
         margin: 0;
+
         > li {
             display: inline-block;
             margin: 0;
             padding: 0 14px;
+
             .page-numbers {
                 font-size: 16px;
                 font-weight: 300;
@@ -216,6 +236,7 @@ input[type="password"] {
                 float: unset;
                 background: transparent;
                 padding: 0;
+
                 &.current {
                     font-weight: 400;
                     color: $primary-color;
@@ -232,8 +253,10 @@ input[type="password"] {
     margin: 0 0 20px 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+
     &.icon {
         padding-left: 45px;
+
         &:after {
             font-size: 20px;
             vertical-align: baseline;
@@ -252,6 +275,7 @@ input[type="password"] {
             font-family: FontAwesome;
         }
     }
+
     &:before,
     &:after {
         position: absolute;
@@ -260,11 +284,13 @@ input[type="password"] {
         //border-top-left-radius: 5px;
         //border-bottom-left-radius: 5px;
     }
+
     &:before {
         right: 20px;
         width: 20px;
         height: 30px;
     }
+
     &:after {
         width: 0;
         height: 0;
@@ -273,30 +299,38 @@ input[type="password"] {
         right: 20px;
         top: 10px;
     }
+
     &.error {
         border-top: 5px solid #d85554;
+
         &:before {
             background: #d85554;
         }
+
         &.icon {
             &:before {
                 background: #d85554;
             }
+
             &:after {
                 content: "\f00d";
                 background: #d85554;
             }
         }
     }
+
     &.success {
         border-top: 5px solid #00adff;
+
         &:before {
             background: #00adff;
         }
+
         &.icon {
             &:before {
                 background: #00adff;
             }
+
             &:after {
                 content: "\f129";
                 background: #00adff;
@@ -309,13 +343,16 @@ ul.list-table-nav {
     display: flex;
     list-style: none;
     margin-left: 0;
+
     .nav-text {
         flex: 1;
         text-align: left;
     }
+
     .nav-pages {
         flex: 1;
         text-align: right;
+
         .learn-press-pagination {
             display: inline-block;
             margin-bottom: 0;
@@ -355,16 +392,19 @@ ul.list-table-nav {
 
 .course-item-nav {
     display: flex;
+
     .prev, .next {
-       /* flex: 1;*/
+        /* flex: 1;*/
         span {
             display: block;
             font-weight: bold;
         }
+
         a {
             color: #999999;
         }
     }
+
     .next {
         text-align: right;
     }
@@ -374,6 +414,7 @@ ul.list-table-nav {
     #comments {
         margin-left: 0;
         margin-right: 0;
+
         #comment {
             @include box-sizing(border-box);
         }
@@ -390,6 +431,7 @@ ul.list-table-nav {
                 top: 0;
             }
         }
+
         &.slide-top {
             .course-summary-sidebar__inner {
                 position: absolute;
@@ -432,6 +474,7 @@ ul.list-table-nav {
 
     &.featured {
         background: $primary-color;
+
         &:before {
             font-size: 12px;
             content: attr(data-text);
@@ -455,7 +498,7 @@ ul.list-table-nav {
             margin: 0;
             cursor: pointer;
             text-align: center;
-            background:#f1f2f8;
+            background: #f1f2f8;
             text-transform: capitalize;
 
         }
@@ -471,10 +514,11 @@ ul.list-table-nav {
         input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .learn-press-nav-tabs {
             .course-nav:nth-child(#{$i}) {
                 border-bottom: 0;
+
                 &:before {
                     content: '';
                     position: absolute;
-                    top:0;
+                    top: 0;
                     left: 0;
                     background: $primary-color;
                     height: 4px;
@@ -502,6 +546,7 @@ ul.list-table-nav {
 @media screen and (max-width: 600px) {
     ul.learn-press-courses {
         margin-right: 0;
+
         .course {
             width: 100%;
             margin-right: 0;

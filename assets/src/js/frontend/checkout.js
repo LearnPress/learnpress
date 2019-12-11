@@ -264,6 +264,7 @@
             e && (e.preventDefault(), _toggleRegisterForm(null, !toggle));
         }
 
+
         /**
          * Place order action
          */

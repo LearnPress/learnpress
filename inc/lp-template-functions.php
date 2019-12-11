@@ -2289,3 +2289,14 @@ function learn_press_is_preview_course() {
 
 	return $course_id && get_post_type( $course_id ) === LP_COURSE_CPT;
 }
+
+/**
+ * Get text of button 'Process' in checkout page.
+ *
+ * @return string
+ * @since 4.0.0
+ *
+ */
+function learn_press_get_checkout_process_button_text() {
+	return apply_filters( 'learn-press/checkout-process-button-text', __( 'Process', 'learnpress' ) );
+}
