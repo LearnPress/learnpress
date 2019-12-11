@@ -612,7 +612,7 @@
                 &.align-center {
                     display: block;
                     .button-left {
-                        text-align: left;
+                        text-align: center;
 
                         &.fixed {
                             position: fixed;
@@ -941,8 +941,11 @@
             height: 200px;
             padding: 50px;
             box-sizing: border-box;
-            margin-bottom: 20px;
-            color: #777;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             &:before, svg {
                 width: 200px;
                 height: 200px;
@@ -954,7 +957,7 @@
             }
 
             &:before {
-                border: 10px solid #d9e0f1;
+                border: 10px solid #ccc;
                 padding: 30px;
                 box-sizing: border-box;
                 content: '';
@@ -962,12 +965,8 @@
             svg {
                 @include transform(rotate(-90deg));
                 circle {
-                    stroke: #c55757;
+                    stroke: $primary-color;
                 }
-            }
-
-            .result-achieved {
-                border-bottom-color: #b9b9b9;
             }
         }
 

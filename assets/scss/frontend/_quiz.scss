@@ -248,7 +248,7 @@ button[data-counter] {
 
 .quiz-result {
     max-width: 320px;
-    margin: 20px auto 20px;
+    margin: 20px auto 48px;
     text-align: center;
     .result-heading {
         display: none;
@@ -275,11 +275,20 @@ button[data-counter] {
             margin: 0 auto;
         }
         .result-achieved {
-            font-size: 36px;
-            border-bottom: 2px solid #04adff;
+            font-size: 28px;
+            font-weight: 500;
+            color: #333;
+            border-bottom: 1px solid #999;
+            line-height: 1;
+            padding-bottom: 7px;
         }
         .result-require {
             display: block;
+            font-size: 16px;
+            font-weight: 400;
+            color: #666;
+            line-height: 1;
+            padding-top: 5px;
         }
         .result-message {
             font-size: 14px;
@@ -346,6 +355,7 @@ button[data-counter] {
             }
             &.result-questions label:before {
                 content:'\f059';
+                font-weight: 400;
             }
             &.result-questions-correct label:before {
                 content:'\f00c';
@@ -357,6 +367,7 @@ button[data-counter] {
             }
             &.result-questions-skipped label:before {
                 content: '\f2f5';
+                color: #ddd;
             }
         }
     }
