@@ -12,47 +12,42 @@
 
 #lp-modal-window {
     position: fixed;
-    min-width: 300px;
     background: #FFF;
     z-index: 999999;
     display: none;
-    padding: 20px;
+    padding: 35px 60px 28px 60px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     @include border-radius(4px);
-
     #lp-modal-content {
-        margin: 0 0 20px 0;
+        margin: 0 0 24px 0;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 400;
+        color: #333;
+        line-height: 26px;
         > * {
             margin: 0 0 0.5em;
+        }
+        #lp-modal-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row-reverse;
         }
     }
 
     #lp-modal-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row-reverse;
         .lp-button {
-            float: right;
-            margin: 0 0 0 10px;
+            margin: 0 10px 0 10px;
             position: relative;
             &.modal-button-cancel {
-                position: absolute;
-                top: 0;
-                right: 20px;
-                padding: 0;
-                background: transparent;
-                color: #777;
-                span {
-                    display: none;
-                }
 
-                &:after {
-                    content: "\f00d";
-                    font-family: Fontawesome;
-                }
-
-                &:hover {
-                    color: #00adff;
-                }
             }
         }
     }

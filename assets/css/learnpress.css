@@ -2597,6 +2597,11 @@ a {
   display: flex;
   margin-bottom: 30px;
   float: right; }
+  @media (max-width: 767px) {
+    .lp-courses-bar {
+      justify-content: space-between;
+      flex-direction: row;
+      width: 100%; } }
   .lp-courses-bar .search-courses {
     flex: 1;
     position: relative;
@@ -2639,6 +2644,9 @@ a {
       color: #999; }
     .lp-courses-bar .search-courses ::placeholder {
       color: #999; }
+    @media (max-width: 767px) {
+      .lp-courses-bar .search-courses {
+        width: 100%; } }
   .lp-courses-bar .switch-layout {
     flex: 0 0 40px;
     text-align: right;
@@ -3081,7 +3089,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     z-index: 100;
     border-bottom: 1px solid #d9e0f1;
     padding: 0;
-    height: 70px;
+    /*height: 70px;*/
     display: flex;
     -webkit-transition: left 0.25s;
     -moz-transition: left 0.25s;
@@ -3098,6 +3106,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
           padding-left: 15px;
           padding-right: 15px;
           width: 100%; } }
+      @media (max-width: 767px) {
+        #popup-course #popup-header .popup-header__inner {
+          flex-direction: column; } }
       #popup-course #popup-header .popup-header__inner .course-title {
         padding: 0;
         line-height: 70px;
@@ -3112,10 +3123,20 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
           -webkit-box-orient: vertical;
           overflow: hidden;
           text-overflow: ellipsis; }
+        @media (max-width: 768px) {
+          #popup-course #popup-header .popup-header__inner .course-title {
+            flex: 1; } }
       #popup-course #popup-header .popup-header__inner .items-progress {
         display: flex;
         justify-content: center;
         align-items: center; }
+        @media (max-width: 768px) {
+          #popup-course #popup-header .popup-header__inner .items-progress {
+            flex: 1; } }
+        @media (max-width: 767px) {
+          #popup-course #popup-header .popup-header__inner .items-progress {
+            justify-content: end;
+            padding-bottom: 20px; } }
         #popup-course #popup-header .popup-header__inner .items-progress .number {
           color: #fff;
           font-size: 14px;
@@ -3417,8 +3438,6 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       padding: 56px 0 80px 0; }
       @media (max-width: 1024px) {
         #popup-course #popup-content #learn-press-content-item .content-item-wrap {
-          padding-left: 15px;
-          padding-right: 15px;
           width: 100%; } }
       #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .course-item-title {
         font-size: 30px;
@@ -3426,6 +3445,13 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         color: #333;
         margin-bottom: 24px;
         margin-top: 0; }
+        @media (max-width: 1024px) {
+          #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .course-item-title {
+            padding-left: 15px;
+            padding-right: 15px; } }
+        @media (max-width: 767px) {
+          #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .course-item-title {
+            text-align: center; } }
       #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .content-item-description h2, #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .content-item-description h3, #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .content-item-description h4, #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .content-item-description h5, #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .content-item-description h6 {
         margin-bottom: 18px;
         font-size: 18px;
@@ -3639,7 +3665,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     transition: left 0.25s; }
     @media (max-width: 1024px) {
       #popup-course #popup-footer {
-        width: 100%; } }
+        width: 100%;
+        padding: 0 15px; } }
     #popup-course #popup-footer .course-item-nav {
       justify-content: space-between; }
       #popup-course #popup-footer .course-item-nav .prev,
@@ -3959,11 +3986,10 @@ body.admin-bar #popup-course {
 
 #lp-modal-window {
   position: fixed;
-  min-width: 300px;
   background: #FFF;
   z-index: 999999;
   display: none;
-  padding: 20px;
+  padding: 35px 60px 28px 60px;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -3971,27 +3997,27 @@ body.admin-bar #popup-course {
   -moz-border-radius: 4px;
   border-radius: 4px; }
   #lp-modal-window #lp-modal-content {
-    margin: 0 0 20px 0; }
+    margin: 0 0 24px 0;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
+    line-height: 26px; }
     #lp-modal-window #lp-modal-content > * {
       margin: 0 0 0.5em; }
-  #lp-modal-window #lp-modal-buttons .lp-button {
-    float: right;
-    margin: 0 0 0 10px;
-    position: relative; }
-    #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel {
-      position: absolute;
-      top: 0;
-      right: 20px;
-      padding: 0;
-      background: transparent;
-      color: #777; }
-      #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel span {
-        display: none; }
-      #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel:after {
-        content: "\f00d";
-        font-family: Fontawesome; }
-      #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel:hover {
-        color: #00adff; }
+    #lp-modal-window #lp-modal-content #lp-modal-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row-reverse; }
+  #lp-modal-window #lp-modal-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row-reverse; }
+    #lp-modal-window #lp-modal-buttons .lp-button {
+      margin: 0 10px 0 10px;
+      position: relative; }
 
 #learn-press-item-comments {
   position: absolute;

@@ -580,14 +580,16 @@ a {
     display: flex;
     margin-bottom: 30px;
     float: right;
+    @media (max-width: 767px) {
+        justify-content: space-between;
+        flex-direction: row;
+        width: 100%;
+    }
 
     .search-courses {
         flex: 1;
         position: relative;
         line-height: 1;
-        //border: 1px solid #ccc;
-        //border-radius: 5px;
-        //padding: 6px 32px 6px 10px;
         width: 306px;
         max-width: 100%;
         margin-right: 20px;
@@ -639,6 +641,10 @@ a {
 
         ::placeholder {
             color: #999;
+        }
+
+        @media (max-width: 767px) {
+            width: 100%;
         }
     }
 

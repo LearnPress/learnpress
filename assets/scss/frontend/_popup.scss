@@ -102,7 +102,7 @@
         z-index: 100;
         border-bottom: 1px solid #d9e0f1;
         padding: 0;
-        height: 70px;
+        /*height: 70px;*/
         display: flex;
         @include transition(left 0.25s);
         .popup-header__inner {
@@ -114,6 +114,9 @@
                 padding-left: 15px;
                 padding-right: 15px;
                 width: 100%;
+            }
+            @media (max-width: 767px) {
+                flex-direction: column;
             }
 
             .course-title {
@@ -131,12 +134,23 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
+                @media (max-width: 768px) {
+                    flex: 1;
+                }
             }
 
             .items-progress {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                @media (max-width: 768px) {
+                    flex: 1;
+                }
+                
+                @media (max-width: 767px) {
+                    justify-content: end;
+                    padding-bottom: 20px;
+                }
                 .number {
                     color: #fff;
                     font-size: 14px;
@@ -516,8 +530,6 @@
                 max-width: 100%;
                 padding: 56px 0 80px 0;
                 @media (max-width: 1024px) {
-                    padding-left:15px;
-                    padding-right:15px;
                     width: 100%;
                 }
                 .content-item-summary {
@@ -527,6 +539,13 @@
                         color: #333;
                         margin-bottom: 24px;
                         margin-top: 0;
+                        @media (max-width: 1024px) {
+                            padding-left: 15px;
+                            padding-right: 15px;
+                        }
+                        @media (max-width: 767px) {
+                            text-align: center;
+                        }
                     }
                     .content-item-description {
                         h2, h3, h4, h5, h6 {
@@ -823,6 +842,7 @@
         @include transition(left 0.25s);
         @media (max-width: 1024px) {
             width: 100%;
+            padding: 0 15px;
         }
         .course-item-nav {
             justify-content: space-between;
