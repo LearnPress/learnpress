@@ -318,9 +318,9 @@ ul.learn-press-nav-tabs {
                     .section-title {
                         font-size: 26px;
                         color: #666;
-                        font-weight: 300;
+                        font-weight: 500;
                         text-transform: capitalize;
-                        letter-spacing: 1px;
+                        letter-spacing: 0;
                     }
                 }
                 .section-title,
@@ -360,7 +360,7 @@ ul.learn-press-nav-tabs {
                     & > span {
                         display: flex;
                         align-items: center;
-                        margin-right: 10px;
+                        margin-right: 4px;
                         font-size: 16px;
                         font-weight: 300;
                         color: #666;
@@ -489,7 +489,7 @@ ul.learn-press-nav-tabs {
                         }
                     }
                     .section-item-link:before {
-                        content: "\f017";
+                        content: '\f059';
                     }
                 }
                 &.course-item-lp_lesson {
@@ -1067,7 +1067,7 @@ body {
     margin-bottom: 3px;
     .course-extra-box__title {
         font-size: 18px;
-        font-weight: 500;
+        font-weight: 600;
         background: rgba(181,187,211,0.15);
         padding: 18px 38px 15px 38px;
         margin: 0;
@@ -1099,7 +1099,7 @@ body {
 
         li {
             font-size: 16px;
-            font-weight: 300;
+            font-weight: 500;
             color: #666;
             padding: 22px 38px 14px 38px;
             border-bottom: 1px solid rgba(204,204,204,0.3);
