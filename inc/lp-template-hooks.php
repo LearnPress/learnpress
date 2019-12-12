@@ -38,7 +38,7 @@ add_action( 'learn-press/template-footer', LP()->template( 'general' )->func( 't
  *
  * @see LP_Template_General::breadcrumb()
  */
-add_action( 'learn-press/before-main-content', LP()->template( 'general' )->text('<div class="lp-archive-courses"') ,-100);
+add_action( 'learn-press/before-main-content', LP()->template( 'general' )->text('<div class="lp-archive-courses">') ,-100);
 add_action( 'learn-press/before-main-content', LP()->template( 'general' )->func( 'breadcrumb' ) );
 
 add_action( 'learn-press/after-main-content', LP()->template( 'general' )->text('</div>'), 100 );
