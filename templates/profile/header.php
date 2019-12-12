@@ -22,7 +22,7 @@ if ( ! isset( $user ) ) {
 
 ?>
 
-<header id="profile-header">
+<header id="profile-header" class="content-area">
     <div class="lp-profile-header__inner">
         <div class="lp-profile-username">
 			<?php echo $user->get_display_name(); ?>

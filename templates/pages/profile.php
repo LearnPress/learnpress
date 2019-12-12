@@ -22,26 +22,29 @@ if ( $profile->is_public() ) {
 	?>
 
     <div id="learn-press-profile"<?php $profile->main_class(); ?>>
-		<?php
+        <div class="wrapper-profile-header">
+            <?php
+                /**
+                 * @since 3.0.0
+                 */
+                do_action( 'learn-press/before-user-profile', $profile );
+            ?>
+        </div>
 
+        <div class="wrapper-profile-container content-area">
+            <?php
+            /**
+             * @since 3.0.0
+             */
+            do_action( 'learn-press/user-profile', $profile );
 
-		/**
-		 * @since 3.0.0
-		 */
-		do_action( 'learn-press/before-user-profile', $profile );
+            /**
+             * @since 3.0.0
+             */
+            do_action( 'learn-press/after-user-profile', $profile );
 
-		/**
-		 * @since 3.0.0
-		 */
-		do_action( 'learn-press/user-profile', $profile );
-
-		/**
-		 * @since 3.0.0
-		 */
-		do_action( 'learn-press/after-user-profile', $profile );
-
-		?>
-
+            ?>
+        </div>
     </div>
 
 <?php } else {
