@@ -309,7 +309,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'slug'     => $settings->get( 'profile_endpoints.quizzes', 'quizzes' ),
 						'callback' => array( $this, 'tab_quizzes' ),
 						'priority' => 20,
-						'icon'     => '<i class="far fa-clock"></i>'
+						'icon'     => '<i class="fas fa-puzzle-piece"></i>'
 					),
 					'orders'        => array(
 						'title'    => __( 'Orders', 'learnpress' ),

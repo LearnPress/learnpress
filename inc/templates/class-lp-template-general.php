@@ -36,9 +36,9 @@ class LP_Template_General extends LP_Abstract_Template{
 
 	public function breadcrumb( $args = array() ) {
 		$args = wp_parse_args( $args, apply_filters( 'learn_press_breadcrumb_defaults', array(
-			'delimiter'   => '&nbsp; <i class="fas fa-chevron-right"></i> &nbsp;',
-			'wrap_before' => '<nav class="learn-press-breadcrumb " ' . ( is_single() ? 'itemprop="breadcrumb"' : '' ) . '>',
-			'wrap_after'  => '</nav>',
+			'delimiter'   => '',
+			'wrap_before' => '<ul class="learn-press-breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">',
+			'wrap_after'  => '</ul>',
 			'before'      => '',
 			'after'       => '',
 			'home'        => _x( 'Home', 'breadcrumb', 'learnpress' )

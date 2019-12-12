@@ -5,18 +5,18 @@ a {
     text-decoration: none;
 }
 
+.content-area {
+    width: 1170px;
+    max-width: 100%;
+    margin: 0 auto;
+    @media (max-width: 1024px) {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+}
+
 .lp-archive-courses {
     background: #fff;
-
-    .content-area {
-        width: 1170px;
-        max-width: 100%;
-        margin: 0 auto;
-        @media (max-width: 1024px) {
-            padding-right: 15px;
-            padding-left: 15px;
-        }
-    }
 
     form[name="search-course"] {
         margin-bottom: 20px;
@@ -570,6 +570,10 @@ a {
         &[data-size="3"] {
             .course {
                 width: 33.3333%;
+                @media (max-width: 767px) {
+                    width: 100%;
+
+                }
             }
         }
 
