@@ -52,7 +52,7 @@ $fields  = $profile->get_login_fields();
         </label>
 
         <a class="lp-lost-password-link"
-           href="<?php echo wp_lostpassword_url(); ?>"><?php _e( 'Lost your password?', 'learnpress' ); ?></a>
+           href="<?php echo wp_lostpassword_url(); ?>"><?php _e( 'Lost password?', 'learnpress' ); ?></a>
     </p>
 
     <p class="lp-checkout-sign-up-link">

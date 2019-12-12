@@ -14,8 +14,8 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$order_button_text  = learn_press_get_checkout_process_button_text();
-$available_gateways = ! empty( $available_gateways ) ? $available_gateways : false;
+$order_button_text  = learn_press_get_checkout_proceed_button_text();
+$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 ?>
 <div id="checkout-payment" class="lp-checkout-block left">
 
@@ -29,7 +29,13 @@ $available_gateways = ! empty( $available_gateways ) ? $available_gateways : fal
 	// Show payments if cart total > 0 and have at least one payment method.
 	if ( LP()->cart->needs_payment() && $available_gateways ) { ?>
 
-        <h4><?php _e( 'Payment', 'learnpress' ); ?></h4>
+        <h4>
+			<?php _e( 'Payment', 'learnpress' ); ?>
+            <span class="secure-connection">
+                <i class="fas fa-lock"></i>
+	            <?php echo _x( 'Secure Connection', 'payment method', 'learnpress' ); ?>
+            </span>
+        </h4>
 
         <ul class="payment-methods">
 			<?php
@@ -71,8 +77,8 @@ $available_gateways = ! empty( $available_gateways ) ? $available_gateways : fal
 		do_action( 'learn-press/before-checkout-submit-button' );
 
 		// Allow to custom html of 'Process' button, default false.
-		if ( $button_process = apply_filters( 'learn-press/checkout-process-button-html', false ) ) {
-			echo $button_process;
+		if ( $button_proceed = apply_filters( 'learn-press/checkout-proceed-button-html', false ) ) {
+			echo $button_proceed;
 		} else {
 			?>
             <button type="submit" class="lp-button button alt" name="learn_press_checkout_place_order"

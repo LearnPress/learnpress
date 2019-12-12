@@ -22,7 +22,7 @@ if ( ! $price = $course->get_price_html() ) {
 }
 ?>
 
-<div class="course-price">
+<div class="course-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 
 	<?php if ( $course->has_sale_price() ) { ?>
 
@@ -30,7 +30,7 @@ if ( ! $price = $course->get_price_html() ) {
 
 	<?php } ?>
 
-    <span class="price"><?php echo $price; ?></span>
-
+    <span class="price" itemprop="price" content="69.00"><?php echo $price; ?></span>
+	<meta itemprop="priceCurrency" content="USD">
 </div>
 

@@ -391,6 +391,32 @@
 
 #checkout-payment {
   margin-bottom: 30px; }
+  #checkout-payment .secure-connection {
+    font-size: 12px;
+    color: #999;
+    font-weight: normal;
+    float: right;
+    margin-top: 5px; }
+    #checkout-payment .secure-connection i {
+      margin-right: 5px;
+      font-size: 16px; }
+  #checkout-payment .payment-methods {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0; }
+    #checkout-payment .payment-methods .lp-payment-method {
+      position: relative;
+      padding-left: 20px; }
+      #checkout-payment .payment-methods .lp-payment-method .gateway-input,
+      #checkout-payment .payment-methods .lp-payment-method .gateway-icon {
+        vertical-align: middle; }
+      #checkout-payment .payment-methods .lp-payment-method .gateway-icon {
+        max-height: 32px; }
+      #checkout-payment .payment-methods .lp-payment-method .gateway-input {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%); }
   #checkout-payment #checkout-order-action button {
     width: 100%; }
 
@@ -783,19 +809,165 @@
   color: #333;
   text-transform: capitalize; }
 
+#learn-press-profile-basic-information .form-fields {
+  margin: 0 -10px; }
+  #learn-press-profile-basic-information .form-fields:after {
+    content: '';
+    display: block;
+    clear: both; }
+
 #learn-press-profile-basic-information .form-field {
-  margin-bottom: 30px; }
+  margin: 0 10px 30px 10px; }
 
-#learn-press-profile-basic-information .form-field__first-name {
+#learn-press-profile-basic-information .form-field__50 {
   float: left;
-  width: calc(50% - 10px); }
+  width: calc(50% - 20px);
+  margin-right: 10px; }
 
-#learn-press-profile-basic-information .form-field__last-name {
-  float: right;
-  width: calc(50% - 10px); }
-
-#learn-press-profile-basic-information .form-field__bio {
+#learn-press-profile-basic-information .form-field__clear {
   clear: both; }
+
+#lp-user-edit-avatar {
+  margin-bottom: 50px;
+  position: relative; }
+  #lp-user-edit-avatar img {
+    vertical-align: top; }
+  #lp-user-edit-avatar .lp-avatar-preview {
+    position: relative;
+    margin: 0 auto; }
+  #lp-user-edit-avatar .lp-avatar-crop-image {
+    position: absolute;
+    background: #DDD;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; }
+    #lp-user-edit-avatar .lp-avatar-crop-image .crop-container {
+      overflow: hidden;
+      height: 100%;
+      position: absolute;
+      width: 100%; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .crop-container img {
+        line-height: 1;
+        vertical-align: middle;
+        max-width: none;
+        margin-left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+        left: 0 !important; }
+    #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      height: 40px;
+      opacity: 0; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls:before {
+        background: rgba(255, 255, 255, 0.53);
+        height: 40px;
+        width: 100%;
+        content: '';
+        display: block; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-zoom {
+        left: 20px;
+        right: 100px;
+        position: absolute;
+        top: 50%;
+        margin-top: -1px; }
+        #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider {
+          position: absolute;
+          width: 100%;
+          height: 2px;
+          background: #6d6d6d;
+          cursor: move; }
+          #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider .ui-slider-handle {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffb608;
+            margin-left: -10px;
+            margin-top: -9px;
+            position: absolute; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-save-upload,
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-cancel-upload {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        font-size: 24px;
+        line-height: 40px;
+        height: 40px;
+        width: 40px;
+        text-align: center;
+        color: #F02425;
+        background: #ffffff59;
+        cursor: pointer;
+        opacity: 0.7; }
+        #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-save-upload:hover,
+        #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-cancel-upload:hover {
+          opacity: 1; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-controls .lp-save-upload {
+        right: 40px;
+        color: #3DB748; }
+    #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-area {
+      border: 2px dashed #999;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      box-sizing: border-box; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-area:before, #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-area:after {
+        content: '';
+        display: block;
+        width: 1000px;
+        top: -2px;
+        bottom: -2px;
+        position: absolute;
+        background: #000;
+        opacity: 0.6; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-area:before {
+        transform: translateX(-100%);
+        left: -2px; }
+      #lp-user-edit-avatar .lp-avatar-crop-image .lp-crop-area:after {
+        left: 100%;
+        margin-left: 2px; }
+  #lp-user-edit-avatar:hover .lp-crop-controls {
+    opacity: 1; }
+  #lp-user-edit-avatar .profile-picture {
+    float: left;
+    margin-right: -100%;
+    width: 100%; }
+    #lp-user-edit-avatar .profile-picture img {
+      width: 100%;
+      height: 100%;
+      border-radius: 0; }
+    #lp-user-edit-avatar .profile-picture.profile-avatar {
+      display: none; }
+    #lp-user-edit-avatar .profile-picture.profile-avatar-current {
+      display: block; }
+  #lp-user-edit-avatar #lp-avatar-actions {
+    position: absolute;
+    top: 50%;
+    margin-top: -20px;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center; }
+    #lp-user-edit-avatar #lp-avatar-actions a {
+      display: inline-block;
+      flex: 0 0 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background: #FFF;
+      margin: 0 1px 0 0;
+      z-index: 10; }
+  #lp-user-edit-avatar #lp-upload-photo {
+    color: #ffb608; }
+  #lp-user-edit-avatar #lp-remove-upload-photo {
+    color: #F02425;
+    display: none; }
+  #lp-user-edit-avatar[data-custom="yes"] #lp-remove-upload-photo {
+    display: block; }
 
 #learn-press-course-tabs .course-tab-panels .course-tab-panel {
   padding-top: 32px;
@@ -4288,16 +4460,16 @@ body.admin-bar #popup-course {
     flex: 0 0 40px;
     display: flex;
     align-items: center; }
-    .course-curriculum .section-header .section-left .section-toggle .fa-caret-up {
+    .course-curriculum .section-header .section-left .section-toggle .fa-caret-down {
       display: none; }
 
 .course-curriculum .section-header .learn-press-progress {
   width: 80px; }
 
-.course-curriculum .section.closed .section-toggle .fa-caret-up {
+.course-curriculum .section.closed .section-toggle .fa-caret-down {
   display: block; }
 
-.course-curriculum .section.closed .section-toggle .fa-caret-down {
+.course-curriculum .section.closed .section-toggle .fa-caret-up {
   display: none; }
 
 .course-curriculum .section.closed .section-content {

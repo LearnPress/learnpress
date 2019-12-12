@@ -41,7 +41,7 @@
                 flex: 0 0 40px;
                 display: flex;
                 align-items: center;
-                .fa-caret-up {
+                .fa-caret-down {
                     display: none;
                 }
             }
@@ -55,11 +55,11 @@
     .section {
         &.closed {
             .section-toggle {
-                .fa-caret-up {
+                .fa-caret-down {
                     display: block;
                 }
 
-                .fa-caret-down {
+                .fa-caret-up {
                     display: none;
                 }
             }

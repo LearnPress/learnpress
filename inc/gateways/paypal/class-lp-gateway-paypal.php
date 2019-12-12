@@ -390,15 +390,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		/**
 		 * Handle a pending payment
 		 *
-		 * @param  LP_Order
-		 * @param  Paypal IPN params
+		 * @param LP_Order
+		 * @param Paypal IPN params
 		 */
 		protected function payment_status_pending( $order, $request ) {
 			$this->payment_status_completed( $order, $request );
 		}
 
 		/**
-		 * @param        LP_Order
+		 * @param LP_Order
 		 * @param string $txn_id
 		 * @param string $note - not use
 		 */
@@ -562,12 +562,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 		}
 
-		public function get_icon() {
+		public function get_icon( $size = null ) {
 			if ( empty( $this->icon ) ) {
-				$this->icon = LP()->plugin_url( 'assets/images/paypal.png' );
+				$this->icon = LP()->plugin_url( 'assets/images/paypal-logo-preview.png' );
 			}
 
-			return parent::get_icon();
+			return parent::get_icon( $size );
 		}
 	}
 }

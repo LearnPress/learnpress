@@ -185,17 +185,19 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Get the icon of payment displays in front end.
 	 *
+	 * @param array $size
+	 *
 	 * @return mixed
 	 */
-	public function get_icon() {
+	public function get_icon( $size = array( 51, 32 ) ) {
 
-		if ( $size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', array( 51, 32 ) ) ) {
+		if ( $size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', $size ) ) {
 			$icon_size = sprintf( 'width: %dpx; height: %dpx', $size[0], $size[1] );
 		} else {
 			$icon_size = '';
 		}
 
-		$icon = $this->icon ? '<img src="' . $this->icon . '" alt="' . esc_attr( $this->get_title() ) . '" style="' . $icon_size . '" />' : '';
+		$icon = $this->icon ? '<img class="gateway-icon" src="' . $this->icon . '" alt="' . esc_attr( $this->get_title() ) . '" style="' . $icon_size . '" />' : '';
 
 		return apply_filters( 'learn_press_gateway_icon', $icon, $this->id );
 	}

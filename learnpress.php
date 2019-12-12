@@ -540,31 +540,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( LP_COURSE_CPT, 'thumbnail' );
 
-			add_image_size( 'course_thumbnail', 500, 300, true );
-//			$sizes = learn_press_get_custom_thumbnail_sizes();
-//
-//			var_dump($sizes);
-//			foreach ( $sizes as $k => $image_size ) {
-//
-//				// If the key is not a string consider it is an option can be turn on/off
-//				if ( ! is_numeric( $k ) ) {
-//					$enabled = LP()->settings->get( $k );
-//
-//					if ( $enabled !== 'yes' ) {
-//						continue;
-//					}
-//				}
-//
-//				if ( ! $size = LP()->settings->get( $image_size . '_image_size', array() ) ) {
-//					$size = array();
-//				}
-//
-//				$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
-//				$size['height'] = isset( $size['height'] ) ? $size['height'] : '300';
-//				$size['crop']   = isset( $size['crop'] ) ? $size['crop'] : 0;
-//var_dump($size);
-//				add_image_size( $image_size, $size['width'], $size['height'], $size['crop'] );
-//			}
+
+			if ( ! $size = $this->settings()->get( 'course_thumbnail_dimensions' ) ) {
+				$size = array( 500, 300 );
+			}
+
+			$size = array_values( (array) $size );
+
+			add_image_size( 'course_thumbnail', $size[0], $size[1], true );
 		}
 
 		/**

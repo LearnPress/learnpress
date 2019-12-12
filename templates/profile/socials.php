@@ -8,10 +8,10 @@
  */
 
 defined( 'ABSPATH' ) or die;
+$socials = LP_Profile::instance()->get_user()->get_profile_socials();
 ?>
 <div class="lp-user-profile-socials">
-    <a href="https://facebook.com/ThimPress"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://twitter.com/ThimPress"><i class="fab fa-twitter"></i></a>
-    <a href="https://google.com/ThimPress"><i class="fab fa-google-plus-g"></i></a>
-    <a href="https://youtube.com/ThimPress"><i class="fab fa-youtube"></i></a>
+	<?php
+	print_r( join( "\n", $socials ) );
+	?>
 </div>

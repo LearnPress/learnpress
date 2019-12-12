@@ -15,33 +15,36 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	}
 
 	public function save() {
-		if ( ! empty( $_POST['learn_press_course_base'] ) ) {
-			$course_permalink = $_POST['learn_press_course_base'];
-			if ( $course_permalink == 'custom' ) {
-				$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
+		$course_permalink = empty( $_POST['learn_press_course_base'] ) ? '' : $_POST['learn_press_course_base'];
 
-				if ( '%course_category%' == $course_permalink ) {
-					$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
-				}
+		if ( ! $course_permalink ) {
+			return;
+		}
 
-				$course_permalink = '/' . $course_permalink;
-				update_option( 'learn_press_course_base_type', 'custom' );
+		if ( $course_permalink == 'custom' ) {
+			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
 
-			} else {
-				delete_option( 'learn_press_course_base_type' );
+			if ( '%course_category%' == $course_permalink ) {
+				$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
 			}
 
-			$course_base = untrailingslashit( $course_permalink );
+			$course_permalink = '/' . $course_permalink;
+			update_option( 'learn_press_course_base_type', 'custom' );
 
-			update_option( 'learn_press_course_base', $course_base );
-			$courses_page_id   = learn_press_get_page_id( 'courses' );
-			$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
+		} else {
+			delete_option( 'learn_press_course_base_type' );
+		}
 
-			if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
-				update_option( 'learn_press_use_verbose_page_rules', 'yes' );
-			} else {
-				delete_option( 'learn_press_use_verbose_page_rules' );
-			}
+		$course_base = untrailingslashit( $course_permalink );
+
+		update_option( 'learn_press_course_base', $course_base );
+		$courses_page_id   = learn_press_get_page_id( 'courses' );
+		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
+
+		if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
+			update_option( 'learn_press_use_verbose_page_rules', 'yes' );
+		} else {
+			delete_option( 'learn_press_use_verbose_page_rules' );
 		}
 	}
 
@@ -90,6 +93,12 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 								'min' => '1'
 							),
 						),
+						array(
+							'title'   => __( 'Thumbnail Dimensions', 'learnpress' ),
+							'id'      => 'course_thumbnail_dimensions',
+							'default' => array( 500, 300, 'yes' ),
+							'type'    => 'image-dimensions'
+						)
 //						array(
 //							'title'      => __( 'Enable editing published course', 'learnpress' ),
 //							'desc'       => __( 'Allow instructors to edit the course which were published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
@@ -216,18 +225,18 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'placeholder' => 'quizzes'
 						),
 						array(
-							'title'   => __( 'Category Base', 'learnpress' ),
-							'id'      => 'course_category_base',
-							'default' => 'course-category',
-							'type'    => 'text',
+							'title'       => __( 'Category Base', 'learnpress' ),
+							'id'          => 'course_category_base',
+							'default'     => 'course-category',
+							'type'        => 'text',
 							'placeholder' => 'course-category',
 							'desc'        => __( sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-category</code>' ), 'learnpress' ),
 						),
 						array(
-							'title'   => __( 'Tag Base', 'learnpress' ),
-							'id'      => 'course_tag_base',
-							'default' => 'course-tag',
-							'type'    => 'text',
+							'title'       => __( 'Tag Base', 'learnpress' ),
+							'id'          => 'course_tag_base',
+							'default'     => 'course-tag',
+							'type'        => 'text',
 							'placeholder' => 'course-tag',
 							'desc'        => __( sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-tag</code>' ), 'learnpress' ),
 						),
@@ -254,7 +263,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 //						),
 					)
 				)
-				// Thumbnail
+			// Thumbnail
 //				apply_filters( 'learn-press/course-settings-fields/thumbnails', array(
 //						array(
 //							'title' => __( 'Course thumbnails', 'learnpress' ),
