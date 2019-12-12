@@ -567,13 +567,7 @@ function learn_press_format_price( $price, $args = array() ) {
 	}
 
 	$price =
-		$before
-		. number_format(
-			$price,
-			$number_of_decimals,
-			$decimals_separator,
-			$thousands_separator
-		) . $after;
+		$before . number_format( $price, $number_of_decimals, $decimals_separator, $thousands_separator ) . $after;
 
 	return $price;
 }
