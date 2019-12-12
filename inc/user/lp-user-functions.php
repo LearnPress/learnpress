@@ -1158,53 +1158,83 @@ function learn_press_update_user_profile() {
  */
 function learn_press_update_user_profile_avatar() {
 	$upload_dir = learn_press_user_profile_picture_upload_dir();
+
 	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
 		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
-	} else {
-		$data = learn_press_get_request( 'lp-user-avatar-crop' );
-		if ( $data && ( $path = $upload_dir['basedir'] . $data['name'] ) && file_exists( $path ) ) {
-			$filetype = wp_check_filetype( $path );
-			if ( 'jpg' == $filetype['ext'] ) {
-				$im = imagecreatefromjpeg( $path );
-			} elseif ( 'png' == $filetype['ext'] ) {
-				$im = imagecreatefrompng( $path );
-			} else {
-				return;
-			}
-			$points  = explode( ',', $data['points'] );
-			$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
-			if ( $im !== false ) {
-				$user  = wp_get_current_user();
-				$dst_x = 0;
-				$dst_y = 0;
-				$dst_w = $data['width'];
-				$dst_h = $data['height'];
-				$src_x = $points[0];
-				$src_y = $points[1];
-				$src_w = $points[2] - $points[0];
-				$src_h = $points[3] - $points[1];
-				imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
-				$newname = md5( $user->user_login . microtime( true ) );
-				$output  = dirname( $path );
-				if ( 'jpg' == $filetype['ext'] ) {
-					$newname .= '.jpg';
-					$output  .= '/' . $newname;
-					imagejpeg( $im_crop, $output );
-				} elseif ( 'png' == $filetype['ext'] ) {
-					$newname .= '.png';
-					$output  .= '/' . $newname;
-					imagepng( $im_crop, $output );
-				}
-				if ( file_exists( $output ) ) {
-					update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
-					update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
-				}
-			}
-			@unlink( $path );
-		}
+
+		return false;
 	}
 
-	return true;
+	$data = learn_press_get_request( 'lp-user-avatar-crop' );
+
+	if ( ! $data || ! ( $path = $upload_dir['basedir'] . $data['name'] ) && file_exists( $path ) ) {
+		return false;
+	}
+
+	$filetype = wp_check_filetype( $path );
+
+	if ( 'jpg' == $filetype['ext'] ) {
+		$im = imagecreatefromjpeg( $path );
+	} elseif ( 'png' == $filetype['ext'] ) {
+		$im = imagecreatefrompng( $path );
+	}
+
+	if ( ! isset( $im ) ) {
+		return false;
+	}
+
+	$points  = explode( ',', $data['points'] );
+	$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+
+	if ( ! $im ) {
+		return false;
+	}
+
+	$user_id = get_current_user_id();
+	$dst_x   = 0;
+	$dst_y   = 0;
+	$dst_w   = $data['width'];
+	$dst_h   = $data['height'];
+	$src_x   = $points[0];
+	$src_y   = $points[1];
+	$src_w   = $points[2] - $points[0];
+	$src_h   = $points[3] - $points[1];
+
+	imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
+
+	$newname = md5( $user_id . microtime( true ) );
+	$output  = dirname( $path );
+
+	if ( 'jpg' == $filetype['ext'] ) {
+		$newname .= '.jpg';
+		$output  .= '/' . $newname;
+		imagejpeg( $im_crop, $output );
+	} elseif ( 'png' == $filetype['ext'] ) {
+		$newname .= '.png';
+		$output  .= '/' . $newname;
+		imagepng( $im_crop, $output );
+	}
+
+	$new_avatar = false;
+
+	if ( file_exists( $output ) ) {
+
+		$old_avatar = get_user_meta( $user_id, '_lp_profile_picture', true );
+
+		if ( file_exists( $upload_dir['basedir'] . '/' . $old_avatar ) ) {
+			@unlink( $upload_dir['basedir'] . '/' . $old_avatar );
+		}
+
+		$new_avatar = preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname;
+		update_user_meta( $user_id, '_lp_profile_picture', $new_avatar );
+		update_user_meta( $user_id, '_lp_profile_picture_changed', 'yes' );
+
+		$new_avatar = $upload_dir['baseurl'] . '/' . $new_avatar;
+	}
+
+	@unlink( $path );
+
+	return $new_avatar;
 }
 
 //add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
@@ -1221,16 +1251,20 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	$user_id = get_current_user_id();
 
 	$update_data = array(
-		'ID'           => $user_id,
-		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
-		'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
-		'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
-		'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
-		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING )
+		'ID'          => $user_id,
+		'first_name'  => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
+		'last_name'   => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
+		//'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
+		//'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
+		'description' => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 	);
 
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
 	$return      = wp_update_user( $update_data );
+	$socials     = LP_Request::get_array( 'user_profile_social' );
+	$extra_data  = get_user_meta( $user_id, '_lp_extra_info', true );
+
+	update_user_meta( $user_id, '_lp_extra_info', array_merge( $extra_data, $socials ) );
 
 	if ( is_wp_error( $return ) ) {
 		return $wp_error ? $return : false;
@@ -1299,7 +1333,9 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 
 function learn_press_get_avatar_thumb_size() {
 	$avatar_size_settings = LP()->settings->get( 'profile_picture_thumbnail_size' );
-	$avatar_size          = array();
+	$avatar_size_settings = LP()->settings->get( 'avatar_dimensions' );
+
+	$avatar_size = array();
 	if ( ! empty( $avatar_size_settings['width'] ) ) {
 		$avatar_size['width'] = absint( $avatar_size_settings['width'] );
 	} elseif ( ! empty( $avatar_size_settings[0] ) ) {
@@ -2113,6 +2149,57 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 	return apply_filters( 'learn-press/user-extra-profile-info', $extra_profile_info, $user_id );
 }
 
+function learn_press_social_profiles() {
+	return apply_filters( 'learn-press/social-profiles', array(
+		'facebook',
+		'twitter',
+		'youtube',
+		'linkedin'
+	) );
+}
+
+/**
+ * Check extra user data is a social profile.
+ *
+ * @param $key
+ *
+ * @return bool
+ * @since 4.0.0
+ *
+ */
+function learn_press_is_social_profile( $key ) {
+	$is_socials = learn_press_social_profiles();
+
+	return in_array( $key, $is_socials );
+}
+
+function learn_press_social_profile_name( $key ) {
+	$name = '';
+	switch ( $key ) {
+		case 'facebook':
+			$name = __( 'Facebook Profile', 'learnpress' );
+			break;
+		case 'twitter':
+			$name = __( 'Twitter Profile', 'learnpress' );
+			break;
+		case
+		'googleplus':
+			$name = __( 'Google Profile', 'learnpress' );
+			break;
+		case
+		'youtube':
+			$name = __( 'Youtube Channel', 'learnpress' );
+			break;
+		case'linkedin':
+			$name = __( 'Linkedin Profile', 'learnpress' );
+			break;
+		default:
+			$name = ucfirst( $key );
+	}
+
+	return apply_filters( 'learn-press/social-profile-name', $name, $key );
+}
+
 /**
  * Get extra profile fields will be registered in backend profile.
  *
@@ -2121,13 +2208,12 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
  *
  */
 function learn_press_get_user_extra_profile_fields() {
-	return apply_filters( 'learn-press/user-extra-profile-fields',
-		array(
-			'facebook'   => __( 'Facebook', 'learnpress' ),
-			'twitter'    => __( 'Twitter', 'learnpress' ),
-			'googleplus' => __( 'Google+', 'learnpress' ),
-			'youtube'    => __( 'Youtube', 'learnpress' ),
-			'linkedin'   => __( 'Linkedin', 'learnpress' ),
-		)
-	);
+	$socials = learn_press_social_profiles();
+	$fields  = array();
+
+	foreach ( $socials as $social ) {
+		$fields[ $social ] = learn_press_social_profile_name( $social );
+	}
+
+	return apply_filters( 'learn-press/user-extra-profile-fields', $fields );
 }

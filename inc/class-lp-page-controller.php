@@ -61,6 +61,15 @@ class LP_Page_Controller {
 			if ( ! $available_gateways = LP_Gateways::instance()->get_available_payment_gateways() ) {
 				learn_press_add_message( __( 'No payment method is available.', 'learnpress' ), 'error' );
 			}
+		} elseif ( learn_press_is_profile() ) {
+			global $wp_query;
+			$logout_slug = learn_press_profile_logout_slug();
+
+			if ( $logout_slug && ( $wp_query->get( 'view' ) === $logout_slug ) ) {
+				wp_logout();
+				wp_redirect( learn_press_get_page_link( 'profile' ) );
+				die;
+			}
 		}
 
 		return $template;

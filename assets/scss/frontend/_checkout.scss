@@ -98,13 +98,14 @@
         }
     }
 
-    .lp-checkout-remember{
+    .lp-checkout-remember {
         label {
             display: inline-block;
             font-weight: normal;
             color: inherit;
         }
-        a{
+
+        a {
             float: right;
         }
     }
@@ -112,6 +113,7 @@
     .lp-checkout-sign-in-link,
     .lp-checkout-sign-up-link {
         margin: 0;
+
         label {
             display: inline-block;
             float: right;
@@ -123,6 +125,45 @@
 
 #checkout-payment {
     margin-bottom: 30px;
+
+    .secure-connection {
+        font-size: 12px;
+        color: #999;
+        font-weight: normal;
+        float: right;
+        margin-top: 5px;
+        i {
+            margin-right: 5px;
+            font-size: 16px;
+        }
+    }
+
+    .payment-methods {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+
+        .lp-payment-method {
+            position: relative;
+            padding-left: 20px;
+
+            .gateway-input,
+            .gateway-icon {
+                vertical-align: middle;
+            }
+
+            .gateway-icon {
+                max-height: 32px;
+            }
+
+            .gateway-input {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translateY(-50%);
+            }
+        }
+    }
 
     #checkout-order-action {
         button {

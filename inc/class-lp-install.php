@@ -52,26 +52,36 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			add_action( 'admin_init', array( __CLASS__, 'subscription_button' ) );
 
 			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
-			return;
-			add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
-			add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
-			add_action( 'wp_ajax_lp_repair_database', array( __CLASS__, 'repair_database' ) );
-			add_action( 'wp_ajax_lp_rollback_database', array( __CLASS__, 'rollback_database' ) );
-			add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
-			add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
-			add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
+//			return;
+//			add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
+//			add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
+//			add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
+//			add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
+//			add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
+//			add_action( 'wp_ajax_lp_repair_database', array( __CLASS__, 'repair_database' ) );
+//			add_action( 'wp_ajax_lp_rollback_database', array( __CLASS__, 'rollback_database' ) );
+//			add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
+//			add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
+//			add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		}
 
 		/**
-		 * Update status to run installer later
+		 * Do something after LP is activated.
 		 *
-		 * @since 3.x.x
+		 * @since 4.0.0
 		 */
 		public static function on_activate() {
 			update_option( 'learn_press_status', 'activated' );
+
+			// Force option permalink to 'postname'
+			if ( ! get_option( 'permalink_structure' ) ) {
+				update_option( 'permalink_structure', '/%postname%/' );
+			}
+
+			// Force option users_can_register to ON
+			if ( ! get_option( 'users_can_register' ) ) {
+				update_option( 'users_can_register', 1 );
+			}
 		}
 
 		/**
@@ -426,7 +436,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			// Just delete duplicated pages
 			$created_page = self::_remove_pages();
-			$pages = self::$_pages;
+			$pages        = self::$_pages;
 
 			foreach ( $pages as $page ) {
 
@@ -464,9 +474,18 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					}
 
 					if ( ! $page_id ) {
+
+						if ( $page === 'courses' ) {
+							$page_title = 'All Courses';
+						} else {
+							$page_title = ucwords( str_replace( '_', ' ', $page ) );
+						}
+						$page_slug = 'lp-' . str_replace( '_', '-', $page );
+
 						$inserted = wp_insert_post(
 							array(
-								'post_title'     => 'LP ' . ucwords( str_replace( '_', ' ', $page ) ),
+								'post_title'     => $page_title,
+								'post_name'      => $page_slug,
 								'post_status'    => 'publish',
 								'post_type'      => 'page',
 								'comment_status' => 'closed',

@@ -17,35 +17,37 @@ defined( 'ABSPATH' ) || exit();
 get_header( 'profile' );
 
 $profile = LP_Global::profile();
-
-if ( $profile->is_public() ) {
-	?>
-
-    <div id="learn-press-profile"<?php $profile->main_class(); ?>>
+?>
+    <div id="learn-press-profile"<?php $profile->main_class(); ?> class="lp-content-wrap">
 		<?php
+		if ( $profile->is_public() ) {
+			?>
+
+			<?php
 
 
-		/**
-		 * @since 3.0.0
-		 */
-		do_action( 'learn-press/before-user-profile', $profile );
+			/**
+			 * @since 3.0.0
+			 */
+			do_action( 'learn-press/before-user-profile', $profile );
 
-		/**
-		 * @since 3.0.0
-		 */
-		do_action( 'learn-press/user-profile', $profile );
+			/**
+			 * @since 3.0.0
+			 */
+			do_action( 'learn-press/user-profile', $profile );
 
-		/**
-		 * @since 3.0.0
-		 */
-		do_action( 'learn-press/after-user-profile', $profile );
+			/**
+			 * @since 3.0.0
+			 */
+			do_action( 'learn-press/after-user-profile', $profile );
 
+			?>
+
+
+		<?php } else {
+			_e( 'This user does not public their profile.', 'learnpress' );
+		}
 		?>
-
     </div>
-
-<?php } else {
-	_e( 'This user does not public their profile.', 'learnpress' );
-}
-
+<?php
 get_footer( 'profile' );

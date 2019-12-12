@@ -290,15 +290,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 				$this->_default_settings = array(
 					'dashboard'     => array(
-						'title'    => __( 'Dashboard', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
+						'title'    => __( 'Overview', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.dashboard', 'overview' ),
 						'callback' => array( $this, 'tab_dashboard' ),
 						'priority' => 10,
 						'icon'     => '<i class="fas fa-chalkboard-teacher"></i>'
 					),
 					'courses'       => array(
 						'title'    => __( 'Courses', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.profile-courses', 'courses' ),
+						'slug'     => $settings->get( 'profile_endpoints.courses', 'courses' ),
 						'callback' => array( $this, 'tab_courses' ),
 						'priority' => 15,
 						'sections' => $course_sections,
@@ -306,28 +306,28 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					),
 					'quizzes'       => array(
 						'title'    => __( 'Quizzes', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.profile-quizzes', 'quizzes' ),
+						'slug'     => $settings->get( 'profile_endpoints.quizzes', 'quizzes' ),
 						'callback' => array( $this, 'tab_quizzes' ),
 						'priority' => 20,
 						'icon'     => '<i class="far fa-clock"></i>'
 					),
 					'orders'        => array(
 						'title'    => __( 'Orders', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.profile-orders', 'orders' ),
+						'slug'     => $settings->get( 'profile_endpoints.orders', 'orders' ),
 						'callback' => array( $this, 'tab_orders' ),
 						'priority' => 25,
 						'icon'     => '<i class="fas fa-shopping-cart"></i>'
 					),
 					'order-details' => array(
 						'title'    => __( 'Order details', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.profile-order-details', 'order-details' ),
+						'slug'     => $settings->get( 'profile_endpoints.order-details', 'order-details' ),
 						'hidden'   => true,
 						'callback' => array( $this, 'tab_order_details' ),
 						'priority' => 30
 					),
 					'settings'      => array(
 						'title'    => __( 'Settings', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.profile-settings', 'settings' ),
+						'slug'     => $settings->get( 'profile_endpoints.settings', 'settings' ),
 						'callback' => array( $this, 'tab_settings' ),
 						'sections' => array(
 							'basic-information' => array(
@@ -348,7 +348,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					),
 					'logout'        => array(
 						'title'    => __( 'Logout', 'learnpress' ),
-						'slug'     => 'logout',
+						'slug'     => learn_press_profile_logout_slug(),
 						'icon'     => '<i class="fas fa-sign-out-alt"></i>',
 						'priority' => 40
 					)

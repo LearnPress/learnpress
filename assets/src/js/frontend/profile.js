@@ -11,7 +11,8 @@
         events: {
             'click #lp-remove-upload-photo': '_removePhoto',
             'click #lp-upload-photo': '_upload',
-            'click .lp-cancel-upload': '_cancel'
+            'click .lp-cancel-upload': '_cancel',
+            'click .lp-save-upload': '_save',
         },
         el: '#lp-user-edit-avatar',
         uploader: null,
@@ -19,11 +20,40 @@
             _.bindAll(this, 'filesAdded', 'uploadProgress', 'uploadError', 'fileUploaded', 'crop');
             this._getUploader();
         },
+        _save: function (e) {
+            e.preventDefault();
+            var self = this;
+            $.ajax({
+                url: '?lp-ajax=save-uploaded-user-avatar',
+                data: this.$('.lp-avatar-crop-image').serializeJSON(),
+                type: 'post',
+                success: function (response) {
+                    response = LP.parseJSON(response);
+                    if (!response.success) {
+                        return;
+                    }
+
+                    // try to find avatar element and change the image
+                    $('.lp-user-profile-avatar').html(response.avatar);
+                    self.$('.lp-avatar-crop-image').remove();
+                }
+            })
+        },
         _removePhoto: function (e) {
             e.preventDefault();
-            this.$('.profile-picture').toggle().filter('.profile-avatar-current').remove();
+
+            if (!confirm('Remove?')) {
+                return;
+            }
+
+            // TODO: ajax to remove
+
+            this.$().removeAttr('data-custom');
+            this.$('.profile-picture').toggleClass('profile-avatar-current');
             this.$('#lp-remove-upload-photo').hide();
             this.$('#submit').prop('disabled', false);
+
+            $('.lp-user-profile-avatar').html(this.$('.profile-avatar-current').find('img').clone());
         },
         _upload: function (e) {
             e.preventDefault();
@@ -103,7 +133,9 @@
         var self = this,
             data = $view.model.toJSON(),
             $crop = $(LP.template('tmpl-crop-user-avatar')(data));
-        $crop.appendTo($view.$('.lp-avatar-preview').addClass('croping'));
+        $crop.appendTo($view.$('#profile-avatar-uploader'));
+
+        //$crop.appendTo($view.$('.lp-avatar-preview').addClass('croping'));
         $view.$crop = $crop;
         var $img = $crop.find('img'),
             wx = 0,
@@ -111,7 +143,8 @@
             lx = 0,
             tx = 0,
             nw = 0,
-            nh = 0;
+            nh = 0,
+            maxWidth = 870;
         this.initCrop = function () {
             var r1 = data.viewWidth / data.viewHeight,
                 r2 = data.width / data.height;
@@ -177,6 +210,7 @@
                     nh = hx + (ui.value / 100) * data.height * 2;
                     var nl = data.viewWidth / 2 - (nw * dd),// parseInt((data.viewWidth - nw) / 2),
                         nt = data.viewHeight / 2 - nh * bb;//parseInt((data.viewHeight - nh) / 2);
+
                     if (nl > 0) {
                         nl = 0;
                     }
@@ -185,6 +219,7 @@
                     }
                     var xx = parseInt(data.viewWidth - nw),
                         yy = parseInt(data.viewHeight - nh);
+
                     if (xx > nl) {
                         nl = lx = xx;
                     }
@@ -207,6 +242,7 @@
             });
         }
         this.update = function (args) {
+
             $img.css({
                 width: args.width,
                 height: args.height,
@@ -227,7 +263,8 @@
             $crop.find('input[name^="lp-user-avatar-crop"]').each(function () {
                 var $input = $(this),
                     name = $input.data('name');
-                if (name != 'name') {
+
+                if (name != 'name' && cropData[name] !== undefined) {
                     $input.val(cropData[name]);
                 }
             });

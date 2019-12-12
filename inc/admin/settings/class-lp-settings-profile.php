@@ -54,6 +54,12 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
 						),
+						array(
+							'title'   => __( 'Avatar Dimensions', 'learnpress' ),
+							'id'      => 'avatar_dimensions',
+							'default' => array( 250, 250, 'yes' ),
+							'type'    => 'image-dimensions'
+						)
 //						array(
 //							'title'   => __( 'Profile page', 'learnpress' ),
 //							'id'      => 'profile_page_id',
@@ -137,16 +143,16 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 						),
 						array(
-							'title'       => __( 'Dashboard', 'learnpress' ),
-							'id'          => 'profile_endpoints[profile-dashboard]',
+							'title'       => __( 'Overview', 'learnpress' ),
+							'id'          => 'profile_endpoints[overview]',
 							'type'        => 'text',
-							'default'     => 'dashboard',
-							'placeholder' => 'dashboard',
-							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.dashboard', 'dashboard' ) . "</code>" )
+							'default'     => 'overview',
+							'placeholder' => 'overview',
+							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.dashboard', 'overview' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Courses', 'learnpress' ),
-							'id'          => 'profile_endpoints[profile-courses]',
+							'id'          => 'profile_endpoints[courses]',
 							'type'        => 'text',
 							'default'     => 'courses',
 							'placeholder' => 'courses',
@@ -154,7 +160,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'       => __( 'Quizzes', 'learnpress' ),
-							'id'          => 'profile_endpoints[profile-quizzes]',
+							'id'          => 'profile_endpoints[quizzes]',
 							'type'        => 'text',
 							'default'     => 'quizzes',
 							'placeholder' => 'quizzes',
@@ -162,7 +168,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'       => __( 'Orders', 'learnpress' ),
-							'id'          => 'profile_endpoints[profile-orders]',
+							'id'          => 'profile_endpoints[orders]',
 							'type'        => 'text',
 							'default'     => 'orders',
 							'placeholder' => 'orders',
@@ -170,7 +176,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'       => __( 'Order details', 'learnpress' ),
-							'id'          => 'profile_endpoints[profile-order-details]',
+							'id'          => 'profile_endpoints[order-details]',
 							'type'        => 'text',
 							'default'     => 'order-details',
 							'placeholder' => 'order-details',
@@ -184,7 +190,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 					array(
 						array(
 							'title'       => __( 'Settings', 'learnpress' ),
-							'id'          => 'profile_endpoints[profile-settings]',
+							'id'          => 'profile_endpoints[settings]',
 							'type'        => 'text',
 							'default'     => 'settings',
 							'placeholder' => 'settings',
