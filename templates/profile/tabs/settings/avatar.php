@@ -19,6 +19,7 @@ $user         = $profile->get_user();
 $custom_img   = $user->get_upload_profile_src();
 $gravatar_img = $user->get_profile_picture( 'gravatar' );
 $thumb_size   = learn_press_get_avatar_thumb_size();
+
 ?>
 
 <form name="profile-avatar" method="post" enctype="multipart/form-data">
@@ -30,36 +31,50 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
 	do_action( 'learn-press/before-profile-avatar-fields', $profile );
 	?>
 
-    <div id="lp-user-edit-avatar" class="lp-edit-profile lp-edit-avatar">
-        <div class="lp-avatar-preview"
-             style="width: <?php echo $thumb_size['width']; ?>px;height: <?php echo $thumb_size['height']; ?>px;">
-            <div class="profile-picture profile-avatar-current">
-				<?php if ( $custom_img ) { ?>
-                    <img src="<?php echo $custom_img; ?>"/>
-				<?php } else { ?>
-					<?php echo $gravatar_img; ?>
-				<?php } ?>
-            </div>
-			<?php if ( $custom_img ) { ?>
-                <div class="profile-picture profile-avatar-hidden">
-					<?php echo $gravatar_img; ?>
+    <div id="lp-user-edit-avatar" class="lp-edit-profile lp-edit-avatar"
+         data-custom="<?php echo $custom_img ? 'yes' : 'no'; ?>">
+        <div id="profile-avatar-uploader" style="height: <?php echo $thumb_size['height']; ?>px;">
+            <div class="lp-avatar-preview"
+                 style="width: <?php echo $thumb_size['width']; ?>px;height: <?php echo $thumb_size['height']; ?>px;">
+
+                <div class="profile-picture profile-avatar-current">
+					<?php if ( $custom_img ) { ?>
+                        <img src="<?php echo $custom_img; ?>"/>
+					<?php } else { ?>
+						<?php echo $gravatar_img; ?>
+					<?php } ?>
                 </div>
-			<?php } ?>
 
-            <div class="lp-avatar-upload-progress">
-                <div class="lp-avatar-upload-progress-value"></div>
-            </div>
+				<?php if ( $custom_img ) { ?>
+                    <div class="profile-picture">
+						<?php echo $gravatar_img; ?>
+                    </div>
+				<?php } ?>
 
-            <div class="lp-avatar-upload-error">
+                <div class="lp-avatar-upload-progress">
+                    <div class="lp-avatar-upload-progress-value"></div>
+                </div>
+
+                <div class="lp-avatar-upload-error">
+                </div>
+
+                <p id="lp-avatar-actions">
+                    <a href="" id="lp-upload-photo"><i class="fas fa-upload"></i></a>
+                    <!--		            <a href=""><i class="fas fa-plus"></i></a>-->
+                    <!--		            <a href="" id="lp-save-remove-upload-photo"><i class="fas fa-check"></i></a>-->
+                    <a href="" id="lp-remove-upload-photo"><i class="fas fa-times"></i></a>
+
+                    <!--		            <button id="lp-upload-photo" type="button">-->
+					<?php //_e( 'Upload', 'learnpress' ); ?><!--</button>-->
+                    <!--		            <button id="lp-remove-upload-photo">-->
+					<?php //_e( 'Remove', 'learnpress' ); ?><!--</button>-->
+                    <!--		            <button id="lp-update">-->
+					<?php //_e( 'Remove', 'learnpress' ); ?><!--</button>-->
+                </p>
             </div>
         </div>
         <div class="clearfix"></div>
-        <p id="lp-avatar-actions">
-            <button id="lp-upload-photo" type="button"><?php _e( 'Upload', 'learnpress' ); ?></button>
-			<?php if ( $custom_img != '' ): ?>
-                <button id="lp-remove-upload-photo"><?php _e( 'Remove', 'learnpress' ); ?></button>
-			<?php endif; ?>
-        </p>
+
     </div>
 
 	<?php
@@ -73,23 +88,34 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
         <input type="hidden" name="save-profile-avatar"
                value="<?php echo wp_create_nonce( 'learn-press-save-profile-avatar' ); ?>">
     </p>
-    <button type="submit" id="submit" name="submit"><?php _e( 'Save changes', 'learnpress' ); ?></button>
 
 </form>
 
 <script type="text/html" id="tmpl-crop-user-avatar">
-    <div class="lp-avatar-crop-image" style="width: {{data.viewWidth}}px; height: {{data.viewHeight}}px;">
-        <img src="{{data.url}}?r={{data.r}}"/>
+    <div class="lp-avatar-crop-image">
+        <div class="crop-container">
+            <img src="{{data.url}}?r={{data.r}}"/>
+        </div>
+
+        <div class="lp-crop-area" style="width: {{data.viewWidth}}px; height: {{data.viewHeight}}px;"></div>
+
         <div class="lp-crop-controls">
             <div class="lp-zoom">
                 <div></div>
             </div>
-            <a href="" class="lp-cancel-upload dashicons dashicons-no-alt"></a>
+            <a href="" class="lp-save-upload">
+                <i class="fas fa-check"></i>
+            </a>
+            <a href="" class="lp-cancel-upload">
+                <i class="fas fa-times"></i>
+            </a>
         </div>
         <input type="hidden" name="lp-user-avatar-crop[name]" data-name="name" value="{{data.name}}"/>
         <input type="hidden" name="lp-user-avatar-crop[width]" data-name="width" value=""/>
         <input type="hidden" name="lp-user-avatar-crop[height]" data-name="height" value=""/>
         <input type="hidden" name="lp-user-avatar-crop[points]" data-name="points" value=""/>
+        <input type="hidden" name="lp-user-avatar-crop[nonce]"
+               value="<?php echo wp_create_nonce( 'save-uploaded-profile-' . $user->get_id() ); ?>"/>
         <input type="hidden" name="lp-user-avatar-custom" value="yes"/>
     </div>
 </script>

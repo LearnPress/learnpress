@@ -14,23 +14,31 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_Gateway_Abstract $gateway
+ */
+
 if ( ! isset( $gateway ) || ! $gateway->is_display() ) {
 	return;
 }
-
+$icon = $gateway->get_icon();
 ?>
 <li class="lp-payment-method lp-payment-method-<?php echo $gateway->id; ?><?php echo $gateway->is_selected ? ' selected' : ''; ?>"
     id="learn-press-payment-method-<?php echo $gateway->id; ?>">
     <label for="payment_method_<?php echo $gateway->id; ?>">
-        <input type="radio" class="input-radio" name="payment_method"
+        <input type="radio" class="gateway-input" name="payment_method"
                id="payment_method_<?php echo $gateway->id; ?>"
                value="<?php echo esc_attr( $gateway->id ); ?>" <?php checked( $gateway->is_selected, true ); ?>
                data-order_button_text="<?php echo esc_attr( $gateway->order_button_text ); ?>"/>
-		<?php echo $gateway->get_title(); ?>
-		<?php echo $gateway->get_icon(); ?>
+		<?php
+		if ( $icon ) {
+			echo $icon;
+		} else {
+			echo $gateway->get_title();
+		} ?>
     </label>
 
-	<?php if ( ( $payment_form = $gateway->get_payment_form() ) || ( $payment_form = $gateway->get_description() ) ) { ?>
+	<?php if ( ( $payment_form = $gateway->get_payment_form() )/* || ( $payment_form = $gateway->get_description() )*/ ) { ?>
         <div class="payment-method-form payment_method_<?php echo $gateway->id; ?>">
 			<?php echo $payment_form; ?>
         </div>

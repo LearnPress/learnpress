@@ -53,7 +53,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'complete-lesson',
 				'finish-course',
 				'retake-course',
-				'external-link:nopriv'
+				'external-link:nopriv',
+				'save-uploaded-user-avatar'
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -78,6 +79,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
+			//add_action( 'save-uploaded-user-avatar', array( __CLASS__, 'save_uploaded_user_avatar' ) );
 
 			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
@@ -247,6 +249,38 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				);
 			}
 			learn_press_send_json( $result );
+		}
+
+		public static function save_uploaded_user_avatar() {
+			$avatar_data = wp_parse_args(
+				LP_Request::get( 'lp-user-avatar-crop' ),
+				array(
+					'name'   => '',
+					'width'  => '',
+					'height' => '',
+					'points' => '',
+					'nonce'  => ''
+				)
+			);
+
+			$current_user_id = get_current_user_id();
+
+			if ( ! wp_verify_nonce( $avatar_data['nonce'], 'save-uploaded-profile-' . $current_user_id ) ) {
+				die( 'ERROR' );
+			}
+
+			if ( $url = learn_press_update_user_profile_avatar() ) {
+				$user = learn_press_get_current_user();
+
+				learn_press_send_json(
+					array(
+						'success' => true,
+						'avatar'  => sprintf( '<img src="%s" />', $url )
+					)
+				);
+			};
+
+			die();
 		}
 
 		public static function _user_avatar_upload_dir( $dir ) {

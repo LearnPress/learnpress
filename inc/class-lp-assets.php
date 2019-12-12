@@ -194,7 +194,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp-profile-user'     => array(
 					'url'     => self::url( 'js/frontend/profile' . $min . '.js' ),
 					'deps'    => array(
-						'global',
+						'lp-global',
 						'plupload',
 						'backbone',
 						'jquery-ui-slider',

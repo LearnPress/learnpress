@@ -23,10 +23,28 @@ class LP_Update_400 extends LP_Update_Base {
 			//'remove_time_gmt',
 			'update_question_answers',
 			'update_quiz_settings',
+			'update_settings'
 			//'delete_table_columns'
 		);
 
 		parent::__construct();
+	}
+
+	public function update_settings() {
+		if ( $profile_settings = get_option( 'learn_press_profile_endpoints' ) ) {
+			$new_profile_settings = array();
+			foreach ( $profile_settings as $k => $v ) {
+				$new_k = preg_replace( '/^profile-/', '', $k );
+
+				if ( $new_k === 'dashboard' ) {
+					$new_k = 'overview';
+				}
+
+				$new_profile_settings[ $new_k ] = $v;
+			}
+
+			update_option( 'learn_press_profile_endpoints', $new_profile_settings );
+		}
 	}
 
 	/**
@@ -341,7 +359,7 @@ class LP_Update_400 extends LP_Update_Base {
 
 			foreach ( $user_items as $user_item ) {
 				$expiration_time = '0000-00-00 00:00:00';
-				$query = "
+				$query           = "
 						UPDATE {$wpdb->learnpress_user_items}
 						SET expiration_time = %s,
 							access_level = %d,
@@ -350,7 +368,7 @@ class LP_Update_400 extends LP_Update_Base {
 					";
 
 				// Ignore if duration is not set and ensure we have swapped start_time and start_time_gmt values
-				if ( $user_item->duration && !(! $user_item->start_time || $user_item->start_time == '0000-00-00 00:00:00')) {
+				if ( $user_item->duration && ! ( ! $user_item->start_time || $user_item->start_time == '0000-00-00 00:00:00' ) ) {
 					// Expiration time = Start time + Duration
 					$duration        = new LP_Duration( $user_item->duration );
 					$expiration_time = learn_press_date_end_from( $duration->get(), strtotime( $user_item->start_time ) );
@@ -379,10 +397,10 @@ class LP_Update_400 extends LP_Update_Base {
 		return false;
 	}
 
-	public function update_item_graduation(){
+	public function update_item_graduation() {
 		global $wpdb;
 
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			UPDATE {$wpdb->learnpress_user_items} ui
 			SET graduation = (
 				SELECT meta_value
@@ -391,10 +409,10 @@ class LP_Update_400 extends LP_Update_Base {
 				AND learnpress_user_item_id = ui.user_item_id
 			)
 			WHERE ui.u = %d
-		", 'grade', 1);
-		$wpdb->query($query);
+		", 'grade', 1 );
+		$wpdb->query( $query );
 
-		$wpdb->query("ALTER TABLE {$wpdb->learnpress_user_items} DROP COLUMN u");
+		$wpdb->query( "ALTER TABLE {$wpdb->learnpress_user_items} DROP COLUMN u" );
 
 		return true;
 	}

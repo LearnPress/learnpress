@@ -2297,6 +2297,17 @@ function learn_press_is_preview_course() {
  * @since 4.0.0
  *
  */
-function learn_press_get_checkout_process_button_text() {
-	return apply_filters( 'learn-press/checkout-process-button-text', __( 'Process', 'learnpress' ) );
+function learn_press_get_checkout_proceed_button_text() {
+	return apply_filters( 'learn-press/checkout-proceed-button-text', __( 'Proceed', 'learnpress' ) );
+}
+
+/**
+ * Get slug for logout action in user profile.
+ *
+ * @return string
+ * @since 4.0.0
+ *
+ */
+function learn_press_profile_logout_slug() {
+	return apply_filters( 'learn-press/profile-logout-slug', 'logout' );
 }
