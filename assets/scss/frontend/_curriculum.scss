@@ -6,11 +6,8 @@
             &.active {
                 display: block;
             }
-            &.course-tab-panel-instructor,
-            &.course-tab-panel-faqs,
-            &.course-tab-panel-reviews {
-                border:1px solid rgba(204, 204, 204, 0.3);
-                border-top:0;
+            &.course-tab-panel-instructor {
+                padding-top: 60px;
             }
 
             &.course-tab-panel-reviews {
@@ -355,7 +352,7 @@ ul.learn-press-nav-tabs {
                     transition: padding-left linear 0.15s;
                     background: rgba(241,242,248,0.4);
                     margin:0 0 2px 0;
-                    padding: 0 30px 0 28px;
+                    padding: 0 30px;
                     display: flex;
                     & > span {
                         display: flex;
@@ -371,7 +368,7 @@ ul.learn-press-nav-tabs {
                         display: table;
                         box-shadow: none;
                         outline: none;
-                        width: 100%;
+                        width: calc(100% - 28px);
                         line-height: 1.5;
                         &:hover {
                             .item-name {

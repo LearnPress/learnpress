@@ -73,21 +73,24 @@ input[type="password"] {
     max-width: 100%;
     margin: 0 auto 45px auto;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 500;
     color: #333;
-
-    a {
-        color: #666;
-        font-weight: 300;
-
-        &:hover {
-            color: $primary-color;
+    list-style: none;
+    li {
+        display: inline-block;
+        a {
+            color: #666;
+            font-weight: 300;
+            &:hover {
+                color: $primary-color;
+            }
         }
     }
 
     i {
         color: #666;
         font-size: 12px;
+        margin: 0 5px;
     }
 
     @media (max-width: 1024px) {
