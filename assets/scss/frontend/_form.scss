@@ -1,39 +1,43 @@
 .lp-list-table {
-    border: none;
+    border: 1px solid rgba(204,204,204,0.3);
     width: 100%;
     margin-bottom: 20px;
     th, td {
-        border: 0 solid #DDD;
+        border: 0 solid rgba(204,204,204,0.3);
         border-bottom-width: 1px;
         line-height: 1;
         font-size: 16px;
-        padding: 15px 15px;
         background: #FFF;
         text-align: left;
+        padding: 20px;
     }
-    tr {
-        border: 0;
-    }
+
     thead {
+
         tr {
-            color: #444;
             th {
-                background: #00adff;
-                color: #FFF;
+                background: #f1f2f8;
+                color: #333;
                 border-bottom: none;
+                font-size: 18px;
             }
         }
     }
     tbody {
         tr {
-            color: #777;
             td, th {
-                border-bottom: 1px solid #DDD;
-                font-size: 14px;
+                border-bottom: 1px solid rgba(204,204,204,0.3);
                 background: #FFF;
+                font-size: 16px;
+                color: #666;
+                font-weight: 300;
                 a {
                     text-decoration: none;
                     border-bottom: none;
+                    color: #666;
+                    &:hover {
+                        color: $primary-color;
+                    }
                 }
             }
 

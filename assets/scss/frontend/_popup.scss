@@ -133,6 +133,9 @@
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    &:hover {
+                        color: $primary-color;
+                    }
                 }
                 @media (max-width: 768px) {
                     flex: 1;

@@ -227,8 +227,30 @@ ul.learn-press-nav-tabs {
         list-style: none;
         border-bottom: 1px solid rgba(204, 204, 204, 0.3);
         border-right: 1px solid rgba(204, 204, 204, 0.3);
+        &:first-child {
+           &:after {
+               content: '';
+               position: absolute;
+               top: 0;
+               left: -1px;
+               width: 1px;
+               height: 100%;
+               background: #fff;
+
+           }
+        }
         &:last-child {
             border-right: 0;
+            &:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: -2px;
+                width: 1px;
+                height: 100%;
+                background: #fff;
+
+            }
         }
         &.active {
             border-bottom: 0;
@@ -241,13 +263,10 @@ ul.learn-press-nav-tabs {
                 height: 4px;
                 width: 100%;
             }
-
             label {
                 color: $primary-color;
             }
         }
-
-
         a {
             display: inline-block;
             padding: 10px 20px;
@@ -1160,7 +1179,7 @@ input[name="course-extra-box-ratio"] {
 
 // FAQs toggle boxe
 .course-tab-panel-faqs {
-     padding: 0 40px;
+    padding-top: 64px;
     @media (max-width: 767px) {
         padding: 0 15px;
     }
@@ -1170,6 +1189,7 @@ input[name="course-extra-box-ratio"] {
         border-radius: 5px;
 
         .course-faqs-box__title {
+            display: block;
             padding: 25px 28px 27px 28px;
             font-weight: 500;
             margin: 0;
@@ -1209,6 +1229,13 @@ input[name="course-extra-box-ratio"] {
         }
         &:last-child {
           margin-bottom: 40px;
+        }
+
+        &:hover {
+            background: rgba(241, 242, 248, 0.4);
+            .course-faqs-box__title {
+                color: $primary-color;
+            }
         }
 
     }
