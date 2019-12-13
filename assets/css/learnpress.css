@@ -3750,7 +3750,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link:before {
               vertical-align: unset; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .item-name {
-              padding: 10px 10px 0 5px;
+              padding: 10px 12px 0 12px;
               display: block;
               width: 100%; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta {
