@@ -1037,6 +1037,8 @@
         color: #333;
         font-weight: 500;
         text-transform: capitalize; }
+        #learn-press-course .course-author .course-author__pull-right .author-title a:hover {
+          color: #ffb606; }
     #learn-press-course .course-author .course-author__pull-right .author-description {
       font-weight: 300;
       color: #666;
