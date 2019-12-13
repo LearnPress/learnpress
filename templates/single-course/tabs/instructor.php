@@ -23,7 +23,7 @@ $course     = LP_Global::course();
 $instructor = $course->get_instructor();
 ?>
 
-<div class="course-author">
+<div class="course-author" itemprop="provider" itemscope itemtype="http://schema.org/Person">
 
 	<?php do_action( 'learn-press/before-single-course-instructor' ); ?>
 
@@ -54,7 +54,7 @@ $instructor = $course->get_instructor();
     </div>
 
     <div class="course-author__pull-right">
-        <div class="author-title"><?php echo $course->get_instructor_html(); ?></div>
+        <div class="author-title" itemprop="name"><?php echo $course->get_instructor_html(); ?></div>
         <div class="author-description margin-bottom">
 			<?php
 

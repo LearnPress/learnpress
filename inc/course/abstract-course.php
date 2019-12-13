@@ -588,7 +588,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$instructor = $this->get_instructor_name();
 
 			$html = sprintf(
-				'<a href="%s"%s>%s<span itemprop="provider">%s</span></a>',
+				'<a href="%s"%s>%s<span>%s</span></a>',
 				learn_press_user_profile_link( get_post_field( 'post_author', $this->get_id() ) ),
 				$link_class ? sprintf( 'class="%s"', $link_class ) : '',
 				$with_avatar ? get_avatar( $this->get_instructor( 'id' ), $with_avatar === true ? 48 : $with_avatar ) : '',
