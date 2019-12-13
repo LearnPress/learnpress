@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) or die;
 <div id="popup-sidebar">
     <form method="post" class="search-course">
         <input type="text" name="s" autocomplete="off"
-               placeholder="<?php echo esc_attr( _x( 'Search course...', 'search course input placeholder', 'learnpress' ) ); ?>">
+               placeholder="<?php echo esc_attr( _x( 'Search courses content', 'search course input placeholder', 'learnpress' ) ); ?>">
         <button name="submit"></button>
         <button type="button" class="clear"></button>
     </form>

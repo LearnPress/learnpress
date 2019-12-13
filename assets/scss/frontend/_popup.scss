@@ -205,6 +205,9 @@
                 @include box-sizing(border-box);
                 @include placeholder-color(#999);
                 @include placeholder-fontStyle(italic);
+                &:focus {
+                    color: #222;
+                }
             }
 
             button {
@@ -233,11 +236,11 @@
                     }
                 }
 
-                &:hover {
+                /*&:hover {
                     &:before {
                         color: #FFF;
                     }
-                }
+                }*/
             }
 
             .search-results {
@@ -376,8 +379,9 @@
                     .section-left {
                         .section-title {
                             font-size: 20px;
-                            font-weight: 400;
+                            font-weight: 500;
                             color: #000;
+                            padding: 0 0 10px 0;
                             .show-desc {
                                 &:before {
                                     content: '\f0d7';
@@ -418,18 +422,14 @@
                                 .course-item-status{
                                     background: transparent;
                                     font-size: 12px;
-                                    font-weight: 400;
                                     margin-left: 0;
-                                    &:before {
+                                    /*&:before {
                                         color: #999;
-                                    }
+                                    }*/
                                     &.trans {
                                         position: absolute;
                                         top: 20px;
                                         right: 20px;
-                                        &:before {
-                                            color: $second-color;
-                                        }
                                     }
                                 }
                                 span.item-meta {
@@ -457,6 +457,16 @@
 
                         &.current {
                             background: #eaeaea;
+                        }
+
+                        &.item-preview {
+                            .section-item-link {
+                                .course-item-meta {
+                                    .item-meta:before {
+                                        color: #999;
+                                    }
+                                }
+                            }
                         }
 
                     }
