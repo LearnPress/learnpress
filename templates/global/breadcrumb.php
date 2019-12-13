@@ -31,7 +31,7 @@ if ( !empty( $breadcrumb ) ) {
 		} else {
 			echo '<span itemprop="name">' . esc_html( $crumb[0] ) . '</span>';
 		}
-		echo '<meta itemprop="position" content="' . ( $key + 1 ) . '" />';
+		echo '<meta itemprop="position" content="' . esc_attr( $key + 1 ) . '" />';
 		echo '</li>';
 
 		echo $after;
