@@ -900,13 +900,12 @@
   #lp-user-edit-avatar .profile-picture {
     float: left;
     margin-right: -100%;
-    width: 100%; }
+    width: 100%;
+    display: none; }
     #lp-user-edit-avatar .profile-picture img {
       width: 100%;
       height: 100%;
       border-radius: 0; }
-    #lp-user-edit-avatar .profile-picture.profile-avatar {
-      display: none; }
     #lp-user-edit-avatar .profile-picture.profile-avatar-current {
       display: block; }
   #lp-user-edit-avatar #lp-avatar-actions {
@@ -926,12 +925,12 @@
       background: #FFF;
       margin: 0 1px 0 0;
       z-index: 10; }
+      #lp-user-edit-avatar #lp-avatar-actions a#lp-remove-upload-photo {
+        color: #F02425;
+        display: none; }
   #lp-user-edit-avatar #lp-upload-photo {
     color: #ffb608; }
-  #lp-user-edit-avatar #lp-remove-upload-photo {
-    color: #F02425;
-    display: none; }
-  #lp-user-edit-avatar[data-custom="yes"] #lp-remove-upload-photo {
+  #lp-user-edit-avatar[data-custom="yes"] #lp-avatar-actions #lp-remove-upload-photo {
     display: block; }
 
 #learn-press-course-tabs .course-tab-panels .course-tab-panel {

@@ -45,11 +45,11 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
 					<?php } ?>
                 </div>
 
-				<?php if ( $custom_img ) { ?>
+				<?php //if ( $custom_img ) { ?>
                     <div class="profile-picture">
 						<?php echo $gravatar_img; ?>
                     </div>
-				<?php } ?>
+				<?php //} ?>
 
                 <div class="lp-avatar-upload-progress">
                     <div class="lp-avatar-upload-progress-value"></div>

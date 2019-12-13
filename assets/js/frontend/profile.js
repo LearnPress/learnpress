@@ -95,7 +95,7 @@
 
 ;
 
-(function ($) {
+(function (_$) {
   'use strict';
 
   var UserProfile = function UserProfile(args) {
@@ -121,7 +121,8 @@
     _save: function _save(e) {
       e.preventDefault();
       var self = this;
-      $.ajax({
+
+      _$.ajax({
         url: '?lp-ajax=save-uploaded-user-avatar',
         data: this.$('.lp-avatar-crop-image').serializeJSON(),
         type: 'post',
@@ -130,13 +131,20 @@
 
           if (!response.success) {
             return;
-          } // try to find avatar element and change the image
+          } // Remove crop element
 
 
-          $('.lp-user-profile-avatar').html(response.avatar);
-          self.$('.lp-avatar-crop-image').remove();
+          self.$('.lp-avatar-crop-image').remove(); // try to find avatar element and change the image
+
+          _$('.lp-user-profile-avatar').html(response.avatar);
+
+          self.$().attr('data-custom', 'yes');
+          self.$('.profile-picture').toggleClass('profile-avatar-current').filter('.profile-avatar-current').html(response.avatar);
         }
       });
+    },
+    $: function $(selector) {
+      return selector ? _$(this.$el).find(selector) : _$(this.$el);
     },
     _removePhoto: function _removePhoto(e) {
       e.preventDefault();
@@ -147,10 +155,11 @@
 
 
       this.$().removeAttr('data-custom');
-      this.$('.profile-picture').toggleClass('profile-avatar-current');
-      this.$('#lp-remove-upload-photo').hide();
+      this.$('.profile-picture').toggleClass('profile-avatar-current'); //this.$('#lp-remove-upload-photo').hide();
+
       this.$('#submit').prop('disabled', false);
-      $('.lp-user-profile-avatar').html(this.$('.profile-avatar-current').find('img').clone());
+
+      _$('.lp-user-profile-avatar').html(this.$('.profile-avatar-current').find('img').clone());
     },
     _upload: function _upload(e) {
       e.preventDefault();
@@ -181,9 +190,10 @@
 
       if (response.url) {
         this.avatar = response.url;
-        $("<img/>") // Make in memory copy of image to avoid css issues
+
+        _$("<img/>") // Make in memory copy of image to avoid css issues
         .attr("src", response.url).load(function () {
-          that.model.set($.extend(response, {
+          that.model.set(_$.extend(response, {
             width: this.width,
             height: this.height
           }));
@@ -204,7 +214,7 @@
       this.uploader = new plupload.Uploader({
         runtimes: 'html5,flash,silverlight,html4',
         browse_button: 'lp-upload-photo',
-        container: $('#lp-user-edit-avatar').get(0),
+        container: _$('#lp-user-edit-avatar').get(0),
         url: (typeof lpGlobalSettings !== 'undefined' ? lpGlobalSettings.ajax : '').addQueryVar('action', 'learnpress_upload-user-avatar'),
         filters: {
           max_file_size: '10mb',
@@ -231,7 +241,8 @@
   UserProfile.Crop = function ($view) {
     var self = this,
         data = $view.model.toJSON(),
-        $crop = $(LP.template('tmpl-crop-user-avatar')(data));
+        $crop = _$(LP.template('tmpl-crop-user-avatar')(data));
+
     $crop.appendTo($view.$('#profile-avatar-uploader')); //$crop.appendTo($view.$('.lp-avatar-preview').addClass('croping'));
 
     $view.$crop = $crop;
@@ -283,7 +294,7 @@
             ui.position.top = yy;
           }
 
-          $(document.body).addClass('profile-dragging');
+          _$(document.body).addClass('profile-dragging');
         },
         stop: function stop(e, ui) {
           lx = parseInt($img.css('left'));
@@ -296,7 +307,8 @@
             top: tx,
             left: lx
           });
-          $(document.body).removeClass('profile-dragging');
+
+          _$(document.body).removeClass('profile-dragging');
         }
       });
       var dd = (Math.abs(lx) + data.viewWidth / 2) / wx,
@@ -342,11 +354,13 @@
             top: nt,
             left: nl
           });
-          $(document.body).addClass('profile-resizing');
+
+          _$(document.body).addClass('profile-resizing');
+
           console.log(ui.value, data);
         },
         stop: function stop() {
-          $(document.body).removeClass('profile-resizing');
+          _$(document.body).removeClass('profile-resizing');
         }
       });
     };
@@ -363,14 +377,16 @@
           top = parseInt(Math.abs(args.top / r)),
           right = left + parseInt(data.viewWidth / r),
           bottom = top + parseInt(data.viewHeight / r);
-      var cropData = $.extend(args, {
+
+      var cropData = _$.extend(args, {
         width: data.viewWidth,
         height: data.viewHeight,
         r: r,
         points: [left, top, right, bottom].join(',')
       });
+
       $crop.find('input[name^="lp-user-avatar-crop"]').each(function () {
-        var $input = $(this),
+        var $input = _$(this),
             name = $input.data('name');
 
         if (name != 'name' && cropData[name] !== undefined) {
@@ -382,9 +398,10 @@
     this.initCrop();
   };
 
-  $(document).on('submit', '#learn-press-form-login', function (e) {
-    var $form = $(this),
+  _$(document).on('submit', '#learn-press-form-login', function (e) {
+    var $form = _$(this),
         data = $form.serialize();
+
     $form.find('.learn-press-error, .learn-press-notice, .learn-press-message').fadeOut();
     $form.find('input').attr('disabled', true);
     LP.doAjax({
@@ -397,7 +414,8 @@
 
         if (response.result == 'error') {
           $form.find('input').attr('disabled', false);
-          $('#learn-press-form-login input[type="text"]').focus();
+
+          _$('#learn-press-form-login input[type="text"]').focus();
         }
 
         if (response.redirect) {
@@ -407,15 +425,17 @@
       error: function error() {
         LP.showMessages('', $form, 'LOGIN_ERROR');
         $form.find('input').attr('disabled', false);
-        $('#learn-press-form-login input[type="text"]').focus();
+
+        _$('#learn-press-form-login input[type="text"]').focus();
       }
     });
     return false;
   });
-  $(document).on('click', '.table-orders .cancel-order', function (e) {
+
+  _$(document).on('click', '.table-orders .cancel-order', function (e) {
     e.preventDefault();
 
-    var _this = $(this),
+    var _this = _$(this),
         _href = _this.attr('href');
 
     LP.alert(learn_press_js_localize.confirm_cancel_order, function (confirm) {
@@ -425,8 +445,9 @@
     });
     return false;
   });
-  $(document).ready(function () {
-    var $form = $('#lp-user-profile-form form'),
+
+  _$(document).ready(function () {
+    var $form = _$('#lp-user-profile-form form'),
         oldData = $form.serialize(),
         timer = null,
         $passwordForm = $form.find('#lp-profile-edit-password-form');
@@ -446,12 +467,13 @@
       });
     } else {
       $passwordForm.on('change keyup', 'input', function (e) {
-        var $target = $(e.target),
+        var $target = _$(e.target),
             targetName = $target.attr('name'),
             $oldPass = $form.find('#pass0'),
             $newPass = $form.find('#pass1'),
             $confirmPass = $form.find('#pass2'),
             match = !(($newPass.val() || $confirmPass.val()) && $newPass.val() != $confirmPass.val());
+
         $form.find('#lp-password-not-match').toggleClass('hide-if-js', match);
         $form.find('#submit').prop('disabled', !match || !$oldPass.val() || !$newPass.val() || !$confirmPass.val());
       });
@@ -468,23 +490,25 @@
     new UserProfile(args);
     Profile.recoverOrder();
   });
+
   var Profile = {
     recoverOrder: function recoverOrder(e) {
-      var $wrap = $('.order-recover'),
+      var $wrap = _$('.order-recover'),
           $buttonRecoverOrder = $wrap.find('.button-recover-order'),
           $input = $wrap.find('input[name="order-key"]');
 
       function recoverOrder() {
         $buttonRecoverOrder.addClass('disabled').attr('disabled', 'disabled');
         $wrap.find('.learn-press-message').remove();
-        $.post({
+
+        _$.post({
           url: '',
           data: $wrap.serializeJSON(),
           success: function success(response) {
             response = LP.parseJSON(response);
 
             if (response.message) {
-              var $msg = $('<div class="learn-press-message icon"><i class="fa"></i> ' + response.message + '</div>');
+              var $msg = _$('<div class="learn-press-message icon"><i class="fa"></i> ' + response.message + '</div>');
 
               if (response.result == 'error') {
                 $msg.addClass('error');
