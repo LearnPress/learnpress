@@ -2,31 +2,31 @@
     .wrapper-profile-header {
         background: $second-color;
         color: #FFF;
-        #profile-header {
-            .lp-profile-header__inner {
-                padding: 82px 200px 30px 240px;
-                width: 90%;
-                margin: 0 auto;
-                min-height: 252px;
-                .lp-profile-username {
-                    font-size: 18px;
-                    font-weight: 500;
-                    text-transform: capitalize;
-                    padding-bottom: 18px
-                }
-                .lp-profile-user-bio {
-                    font-size: 16px;
-                    font-weight: 300;
-                    line-height: 26px;
-                }
-                @media (max-width: 990px) {
-                    padding: 65px 0 30px 0;
-                    width: 100%;
-                    text-align: center;
-                }
-                @media (max-width: 767px) {
-                    padding: 30px 0;
-                }
+    }
+    #profile-header {
+        .lp-profile-header__inner {
+            padding: 82px 200px 30px 240px;
+            width: 90%;
+            margin: 0 auto;
+            min-height: 252px;
+            .lp-profile-username {
+                font-size: 18px;
+                font-weight: 500;
+                text-transform: capitalize;
+                padding-bottom: 18px
+            }
+            .lp-profile-user-bio {
+                font-size: 16px;
+                font-weight: 300;
+                line-height: 26px;
+            }
+            @media (max-width: 990px) {
+                padding: 65px 0 30px 0;
+                width: 100%;
+                text-align: center;
+            }
+            @media (max-width: 767px) {
+                padding: 30px 0;
             }
         }
     }
@@ -257,7 +257,7 @@
             border-radius: 4px;
             text-align: center;
             padding: 27px 25px 14px 25px;
-            width: 33.33%;
+            width: 270px;
             @media (max-width: 990px) {
                 width: 45%;
             }

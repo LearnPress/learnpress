@@ -201,6 +201,7 @@
                 margin: 6px 0;
                 line-height: 1;
                 font-size: 16px;
+                padding-left: 20px;
                 @include box-sizing(border-box);
                 @include placeholder-color(#999);
                 @include placeholder-fontStyle(italic);
@@ -370,7 +371,7 @@
                     position: sticky;
                     top: 0;
                     z-index: 1000;
-                    padding: 26px 10px 30px 10px;
+                    padding: 26px 10px 30px 20px;
 
                     .section-left {
                         .section-title {
@@ -394,7 +395,7 @@
                 .section-content {
                     margin-bottom: 0;
                     .course-item {
-                        padding: 0 10px;
+                        padding: 0 10px 0 20px;
                         background: #f9fafc;
                         margin-bottom: 4px;
                         &>span {
