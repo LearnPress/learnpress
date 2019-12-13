@@ -33,11 +33,20 @@
                         return;
                     }
 
+                    // Remove crop element
+                    self.$('.lp-avatar-crop-image').remove();
+
                     // try to find avatar element and change the image
                     $('.lp-user-profile-avatar').html(response.avatar);
-                    self.$('.lp-avatar-crop-image').remove();
+
+                    self.$().attr('data-custom', 'yes');
+                    self.$('.profile-picture').toggleClass('profile-avatar-current').filter('.profile-avatar-current').html(response.avatar);
+
                 }
             })
+        },
+        $: function (selector) {
+            return selector ? $(this.$el).find(selector) : $(this.$el);
         },
         _removePhoto: function (e) {
             e.preventDefault();
@@ -47,10 +56,9 @@
             }
 
             // TODO: ajax to remove
-
             this.$().removeAttr('data-custom');
             this.$('.profile-picture').toggleClass('profile-avatar-current');
-            this.$('#lp-remove-upload-photo').hide();
+            //this.$('#lp-remove-upload-photo').hide();
             this.$('#submit').prop('disabled', false);
 
             $('.lp-user-profile-avatar').html(this.$('.profile-avatar-current').find('img').clone());

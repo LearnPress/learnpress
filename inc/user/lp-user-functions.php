@@ -1359,7 +1359,7 @@ function learn_press_get_avatar_thumb_size() {
  */
 function learn_press_set_user_cookie_for_guest() {
 	if ( ! is_admin() && ! headers_sent() ) {
-		$guest_key = 'wordpress_lp_guest';
+		$guest_key = '_wordpress_lp_guest';
 		if ( is_user_logged_in() ) {
 			if ( ! empty( $_COOKIE[ $guest_key ] ) ) {
 				//setcookie( $guest_key, md5( time() ), - 10000 );

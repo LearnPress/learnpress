@@ -107,7 +107,7 @@ class LP_Session_Handler implements ArrayAccess {
 	public function __construct() {
 		global $wpdb;
 
-		$this->_cookie = 'wp_learn_press_session_' . COOKIEHASH;
+		$this->_cookie = '_learn_press_session_' . COOKIEHASH;
 		$this->_table  = $wpdb->prefix . 'learnpress_sessions';
 
 		// Check cookie ...

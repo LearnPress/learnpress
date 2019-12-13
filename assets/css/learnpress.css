@@ -592,29 +592,28 @@
 #learn-press-profile .wrapper-profile-header {
   background: #442e66;
   color: #FFF; }
-
-#learn-press-profile #profile-header .lp-profile-header__inner {
-  padding: 82px 200px 30px 240px;
-  width: 90%;
-  margin: 0 auto;
-  min-height: 252px; }
-  #learn-press-profile #profile-header .lp-profile-header__inner .lp-profile-username {
-    font-size: 18px;
-    font-weight: 500;
-    text-transform: capitalize;
-    padding-bottom: 18px; }
-  #learn-press-profile #profile-header .lp-profile-header__inner .lp-profile-user-bio {
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 26px; }
-  @media (max-width: 990px) {
-    #learn-press-profile #profile-header .lp-profile-header__inner {
-      padding: 65px 0 30px 0;
-      width: 100%;
-      text-align: center; } }
-  @media (max-width: 767px) {
-    #learn-press-profile #profile-header .lp-profile-header__inner {
-      padding: 30px 0; } }
+  #learn-press-profile .wrapper-profile-header #profile-header .lp-profile-header__inner {
+    padding: 82px 200px 30px 240px;
+    width: 90%;
+    margin: 0 auto;
+    min-height: 252px; }
+    #learn-press-profile .wrapper-profile-header #profile-header .lp-profile-header__inner .lp-profile-username {
+      font-size: 18px;
+      font-weight: 500;
+      text-transform: capitalize;
+      padding-bottom: 18px; }
+    #learn-press-profile .wrapper-profile-header #profile-header .lp-profile-header__inner .lp-profile-user-bio {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 26px; }
+    @media (max-width: 990px) {
+      #learn-press-profile .wrapper-profile-header #profile-header .lp-profile-header__inner {
+        padding: 65px 0 30px 0;
+        width: 100%;
+        text-align: center; } }
+    @media (max-width: 767px) {
+      #learn-press-profile .wrapper-profile-header #profile-header .lp-profile-header__inner {
+        padding: 30px 0; } }
 
 #learn-press-profile #profile-sidebar {
   width: 270px;
@@ -936,13 +935,12 @@
   #lp-user-edit-avatar .profile-picture {
     float: left;
     margin-right: -100%;
-    width: 100%; }
+    width: 100%;
+    display: none; }
     #lp-user-edit-avatar .profile-picture img {
       width: 100%;
       height: 100%;
       border-radius: 0; }
-    #lp-user-edit-avatar .profile-picture.profile-avatar {
-      display: none; }
     #lp-user-edit-avatar .profile-picture.profile-avatar-current {
       display: block; }
   #lp-user-edit-avatar #lp-avatar-actions {
@@ -962,12 +960,12 @@
       background: #FFF;
       margin: 0 1px 0 0;
       z-index: 10; }
+      #lp-user-edit-avatar #lp-avatar-actions a#lp-remove-upload-photo {
+        color: #F02425;
+        display: none; }
   #lp-user-edit-avatar #lp-upload-photo {
     color: #ffb608; }
-  #lp-user-edit-avatar #lp-remove-upload-photo {
-    color: #F02425;
-    display: none; }
-  #lp-user-edit-avatar[data-custom="yes"] #lp-remove-upload-photo {
+  #lp-user-edit-avatar[data-custom="yes"] #lp-avatar-actions #lp-remove-upload-photo {
     display: block; }
 
 #learn-press-course-tabs .course-tab-panels .course-tab-panel {
