@@ -371,7 +371,7 @@
                     position: sticky;
                     top: 0;
                     z-index: 1000;
-                    padding: 26px 10px 30px 20px;
+                    padding: 26px 20px 30px 20px;
 
                     .section-left {
                         .section-title {
@@ -388,14 +388,14 @@
                             }
                         }
                         .section-toggle {
-                            justify-content: center;
+                            justify-content: flex-end;
                         }
                     }
                 }
                 .section-content {
                     margin-bottom: 0;
                     .course-item {
-                        padding: 0 10px 0 20px;
+                        padding: 0 20px;
                         background: #f9fafc;
                         margin-bottom: 4px;
                         &>span {
@@ -406,7 +406,7 @@
                                 vertical-align: unset;
                             }
                             .item-name {
-                                padding: 10px 10px 10px 5px;
+                                padding: 10px 10px 0 5px;
                                 display: block;
                                 width: 100%;
                             }
@@ -415,10 +415,31 @@
                                 width: 100%;
                                 text-align: left;
                                 padding: 0 0 15px 0;
-                                i {
-                                    position: absolute;
-                                    top: 20px;
-                                    right: 20px;
+                                .course-item-status{
+                                    background: transparent;
+                                    font-size: 12px;
+                                    font-weight: 400;
+                                    margin-left: 0;
+                                    &:before {
+                                        color: #999;
+                                    }
+                                    &.trans {
+                                        position: absolute;
+                                        top: 20px;
+                                        right: 20px;
+                                        &:before {
+                                            color: $second-color;
+                                        }
+                                    }
+                                }
+                                span.item-meta {
+                                    background: transparent;
+                                    font-size: 12px;
+                                    font-weight: 400;
+                                    color: #999;
+                                    &:first-child {
+                                        margin-left: 0;
+                                    }
                                 }
                             }
                         }
