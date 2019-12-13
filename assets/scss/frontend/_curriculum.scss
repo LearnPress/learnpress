@@ -6,11 +6,8 @@
             &.active {
                 display: block;
             }
-            &.course-tab-panel-instructor,
-            &.course-tab-panel-faqs,
-            &.course-tab-panel-reviews {
-                border:1px solid rgba(204, 204, 204, 0.3);
-                border-top:0;
+            &.course-tab-panel-instructor {
+                padding-top: 60px;
             }
 
             &.course-tab-panel-reviews {
@@ -318,9 +315,9 @@ ul.learn-press-nav-tabs {
                     .section-title {
                         font-size: 26px;
                         color: #666;
-                        font-weight: 300;
+                        font-weight: 500;
                         text-transform: capitalize;
-                        letter-spacing: 1px;
+                        letter-spacing: 0;
                     }
                 }
                 .section-title,
@@ -355,12 +352,11 @@ ul.learn-press-nav-tabs {
                     transition: padding-left linear 0.15s;
                     background: rgba(241,242,248,0.4);
                     margin:0 0 2px 0;
-                    padding: 0 30px 0 28px;
+                    padding: 0 30px;
                     display: flex;
                     & > span {
                         display: flex;
                         align-items: center;
-                        margin-right: 10px;
                         font-size: 16px;
                         font-weight: 300;
                         color: #666;
@@ -371,7 +367,7 @@ ul.learn-press-nav-tabs {
                         display: table;
                         box-shadow: none;
                         outline: none;
-                        width: 100%;
+                        width: calc(100% - 28px);
                         line-height: 1.5;
                         &:hover {
                             .item-name {
@@ -489,7 +485,7 @@ ul.learn-press-nav-tabs {
                         }
                     }
                     .section-item-link:before {
-                        content: "\f017";
+                        content: '\f059';
                     }
                 }
                 &.course-item-lp_lesson {
@@ -1067,7 +1063,7 @@ body {
     margin-bottom: 3px;
     .course-extra-box__title {
         font-size: 18px;
-        font-weight: 500;
+        font-weight: 600;
         background: rgba(181,187,211,0.15);
         padding: 18px 38px 15px 38px;
         margin: 0;
@@ -1099,7 +1095,7 @@ body {
 
         li {
             font-size: 16px;
-            font-weight: 300;
+            font-weight: 500;
             color: #666;
             padding: 22px 38px 14px 38px;
             border-bottom: 1px solid rgba(204,204,204,0.3);

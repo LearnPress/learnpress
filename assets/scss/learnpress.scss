@@ -73,21 +73,24 @@ input[type="password"] {
     max-width: 100%;
     margin: 0 auto 45px auto;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 500;
     color: #333;
-
-    a {
-        color: #666;
-        font-weight: 300;
-
-        &:hover {
-            color: $primary-color;
+    list-style: none;
+    li {
+        display: inline-block;
+        a {
+            color: #666;
+            font-weight: 300;
+            &:hover {
+                color: $primary-color;
+            }
         }
     }
 
     i {
         color: #666;
         font-size: 12px;
+        margin: 0 5px;
     }
 
     @media (max-width: 1024px) {
@@ -172,6 +175,9 @@ input[type="password"] {
 
 #learn-press-course-tabs {
     margin-bottom: 40px;
+    &.course-tabs {
+        margin-top: 54px;
+    }
 }
 
 /* Archive */
@@ -463,7 +469,7 @@ ul.list-table-nav {
     align-items: center;
     justify-content: center;
     line-height: 1;
-    height: 40px;
+    height: 30px;
     padding: 0;
 
     &:before,
@@ -473,7 +479,6 @@ ul.list-table-nav {
 
     &:before {
         display: inline-block;
-        padding: 5px;
         line-height: 1;
         color: #FFF;
         font-weight: bold;
@@ -503,8 +508,7 @@ ul.list-table-nav {
         label {
             padding: 18px 10px;
             font-size: 16px;
-            font-weight: 500;
-            text-transform: uppercase;
+            font-weight: 600;
             margin: 0;
             cursor: pointer;
             text-align: center;

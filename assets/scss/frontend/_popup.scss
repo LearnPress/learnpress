@@ -201,9 +201,13 @@
                 margin: 6px 0;
                 line-height: 1;
                 font-size: 16px;
+                padding-left: 20px;
                 @include box-sizing(border-box);
                 @include placeholder-color(#999);
                 @include placeholder-fontStyle(italic);
+                &:focus {
+                    color: #222;
+                }
             }
 
             button {
@@ -232,11 +236,11 @@
                     }
                 }
 
-                &:hover {
+                /*&:hover {
                     &:before {
                         color: #FFF;
                     }
-                }
+                }*/
             }
 
             .search-results {
@@ -370,13 +374,14 @@
                     position: sticky;
                     top: 0;
                     z-index: 1000;
-                    padding: 26px 10px 30px 10px;
+                    padding: 26px 20px 30px 20px;
 
                     .section-left {
                         .section-title {
                             font-size: 20px;
-                            font-weight: 400;
+                            font-weight: 500;
                             color: #000;
+                            padding: 0 0 10px 0;
                             .show-desc {
                                 &:before {
                                     content: '\f0d7';
@@ -387,14 +392,14 @@
                             }
                         }
                         .section-toggle {
-                            justify-content: center;
+                            justify-content: flex-end;
                         }
                     }
                 }
                 .section-content {
                     margin-bottom: 0;
                     .course-item {
-                        padding: 0 10px;
+                        padding: 0 20px;
                         background: #f9fafc;
                         margin-bottom: 4px;
                         &>span {
@@ -405,7 +410,7 @@
                                 vertical-align: unset;
                             }
                             .item-name {
-                                padding: 10px 10px 10px 5px;
+                                padding: 10px 10px 0 5px;
                                 display: block;
                                 width: 100%;
                             }
@@ -414,10 +419,27 @@
                                 width: 100%;
                                 text-align: left;
                                 padding: 0 0 15px 0;
-                                i {
-                                    position: absolute;
-                                    top: 20px;
-                                    right: 20px;
+                                .course-item-status{
+                                    background: transparent;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                    /*&:before {
+                                        color: #999;
+                                    }*/
+                                    &.trans {
+                                        position: absolute;
+                                        top: 20px;
+                                        right: 20px;
+                                    }
+                                }
+                                span.item-meta {
+                                    background: transparent;
+                                    font-size: 12px;
+                                    font-weight: 400;
+                                    color: #999;
+                                    &:first-child {
+                                        margin-left: 0;
+                                    }
                                 }
                             }
                         }
@@ -435,6 +457,16 @@
 
                         &.current {
                             background: #eaeaea;
+                        }
+
+                        &.item-preview {
+                            .section-item-link {
+                                .course-item-meta {
+                                    .item-meta:before {
+                                        color: #999;
+                                    }
+                                }
+                            }
                         }
 
                     }

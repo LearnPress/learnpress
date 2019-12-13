@@ -54,7 +54,7 @@ class LP_Thumbnail_Helper {
 			} else {
 				$image = LP()->image( 'placeholder-500x300' );
 			}
-			$image = sprintf( '<img src="%s" %s />', $image, '' );
+			$image = sprintf( '<img src="%s" %s itemprop="image">', $image, '' );
 		}
 
 		// @deprecated

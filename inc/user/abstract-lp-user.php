@@ -2998,7 +2998,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 
 					$icon          = apply_filters( 'learn-press/user-profile-social-icon', $i, $k, $this->get_id(), $this );
-					$socials[ $k ] = sprintf( '<a href="%s">%s</i></a>', $v, $icon );
+					$socials[ $k ] = sprintf( '<a href="%s" itemprop="sameAs">%s</i></a>', $v, $icon );
 				}
 			}
 

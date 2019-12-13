@@ -323,6 +323,7 @@ button[data-counter] {
         padding: 0;
         .result-statistic-field {
             display: flex;
+            margin: 0;
             label, p {
                 flex: 1;
                 margin: 0;
@@ -349,9 +350,12 @@ button[data-counter] {
             }
             &.result-time-spend label:before {
                 content:'\f017';
+                font-weight: 400;
+
             }
             &.result-point label:before {
                 content:'\f005';
+                font-weight: 400;
             }
             &.result-questions label:before {
                 content:'\f059';

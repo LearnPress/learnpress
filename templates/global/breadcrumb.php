@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/global/breadcrumb.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit();
 
 <?php
 
-if ( ! empty( $breadcrumb ) ) {
+if ( !empty( $breadcrumb ) ) {
 
 	echo $wrap_before;
 
@@ -26,14 +26,13 @@ if ( ! empty( $breadcrumb ) ) {
 		echo $before;
 
 		echo '<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">';
-		if ( ! empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
+		if ( !empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
 			echo '<a href="' . esc_url( $crumb[1] ) . '" itemprop="item"><span itemprop="name">' . esc_html( $crumb[0] ) . '</span></a>';
 		} else {
-			echo '<span itemprop="name">'.esc_html( $crumb[0] ).'</span>';
+			echo '<span itemprop="name">' . esc_html( $crumb[0] ) . '</span>';
 		}
-		echo '<meta itemprop="position" content="1" />';
+		echo '<meta itemprop="position" content="' . esc_attr( $key + 1 ) . '" />';
 		echo '</li>';
-
 
 		echo $after;
 

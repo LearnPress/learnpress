@@ -17,20 +17,32 @@ defined( 'ABSPATH' ) || exit();
 $user   = LP_Global::user();
 $course = LP_Global::course();
 
-if ( ! $price = $course->get_price_html() ) {
+if ( !$price = $course->get_price_html() ) {
 	return;
 }
+
+$content_price = 0;
+
+if ( $course->is_free() ) {
+	echo '<meta itemprop="isAccessibleForFree" content="true"/>';
+} else {
+	echo '<meta itemprop="isAccessibleForFree" content="false"/>';
+	$content_price = $course->get_price();
+}
+
+
 ?>
 
-<div class="course-price">
+
+<div class="course-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 
 	<?php if ( $course->has_sale_price() ) { ?>
 
-        <span class="origin-price"> <?php echo $course->get_origin_price_html(); ?></span>
+		<span class="origin-price"> <?php echo $course->get_origin_price_html(); ?></span>
 
 	<?php } ?>
 
-    <span class="price"><?php echo $price; ?></span>
-
+	<span class="price" itemprop="price" content="<?php echo esc_attr($content_price); ?>"><?php echo $price; ?></span>
+	<meta itemprop="priceCurrency" content="<?php echo esc_attr( learn_press_get_currency() ); ?>">
 </div>
 
