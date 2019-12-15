@@ -200,10 +200,10 @@
             input[name="s"] {
                 background: transparent;
                 border: none;
-                color: #DDD;
+                color: #999;
                 margin: 6px 0;
                 line-height: 1;
-                font-size: 16px;
+                font-size: 14px;
                 padding-left: 20px;
                 @include box-sizing(border-box);
                 @include placeholder-color(#999);
@@ -211,6 +211,7 @@
                 &:focus {
                     color: #222;
                 }
+
             }
 
             button {
@@ -377,14 +378,15 @@
                     position: sticky;
                     top: 0;
                     z-index: 1000;
-                    padding: 26px 20px 30px 20px;
+                    padding: 40px 20px 30px 20px;
 
                     .section-left {
                         .section-title {
                             font-size: 20px;
                             font-weight: 500;
                             color: #000;
-                            padding: 0 0 10px 0;
+                            /*padding: 0 0 10px 0;*/
+                            padding: 0 0 4px 0;
                             .show-desc {
                                 &:before {
                                     content: '\f0d7';
@@ -397,6 +399,11 @@
                         .section-toggle {
                             justify-content: flex-end;
                         }
+                    }
+
+                    .section-meta {
+                        padding-top: 4px;
+                        margin-bottom: -10px;
                     }
                 }
                 .section-content {
@@ -411,37 +418,41 @@
                         .section-item-link {
                             &:before {
                                 vertical-align: unset;
+                                padding: 9px 0;
                             }
                             .item-name {
-                                padding: 10px 12px 0 12px;
+                                padding: 0 12px;
                                 display: block;
                                 width: 100%;
+                                font-size: 14px;
                             }
                             .course-item-meta {
                                 display: block;
                                 width: 100%;
                                 text-align: left;
-                                padding: 0 0 15px 0;
+                                padding: 0 0 2px 0;
                                 .course-item-status{
                                     background: transparent;
                                     font-size: 12px;
                                     margin-left: 0;
-                                    /*&:before {
-                                        color: #999;
-                                    }*/
                                     &.trans {
                                         position: absolute;
                                         top: 20px;
                                         right: 20px;
                                     }
                                 }
-                                span.item-meta {
+                                .item-meta {
                                     background: transparent;
                                     font-size: 12px;
                                     font-weight: 400;
                                     color: #999;
+                                    line-height: 1.5;
                                     &:first-child {
                                         margin-left: 0;
+                                    }
+                                    &:before {
+                                        font-size: 12px;
+                                        font-weight: 400;
                                     }
                                 }
                             }

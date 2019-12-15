@@ -11,7 +11,7 @@
             }
 
             &.course-tab-panel-reviews {
-                padding: 56px 40px 0 40px;
+                padding: 56px 0 0 0;
             }
 
             .course-description {
@@ -43,11 +43,9 @@
     .course-author {
         margin-bottom: 40px;
         display: flex;
-        padding: 0 40px;
         @media (max-width: 767px) {
             padding: 0 15px;
             flex-direction: column;
-
         }
 
         .course-author__pull-left {
@@ -425,7 +423,7 @@ ul.learn-press-nav-tabs {
                     display: table-cell;
                     vertical-align: middle;
                     font-size: 16px;
-                    font-weight: 500;
+                    font-weight: 600;
                     color: #333;
                     padding: 17px 10px;
                 }
@@ -1187,17 +1185,18 @@ input[name="course-extra-box-ratio"] {
     @media (max-width: 767px) {
         padding: 0 15px;
     }
+
     .course-faqs-box {
         border: 1px solid rgba(204,204,204,0.6);
         margin-bottom: 20px;
         border-radius: 5px;
-
         .course-faqs-box__title {
             display: block;
             padding: 25px 28px 27px 28px;
             font-weight: 500;
             margin: 0;
             position: relative;
+            cursor: pointer;
             &:after {
                 content: '\f078';
                 font-weight: 900;
