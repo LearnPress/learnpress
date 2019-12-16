@@ -3444,7 +3444,6 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
 
 #learn-press-course .course-summary-sidebar .course-sidebar-preview {
   background: #fff;
-  padding: 20px;
   overflow: hidden;
   margin-bottom: 15px; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-price {

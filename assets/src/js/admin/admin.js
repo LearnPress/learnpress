@@ -199,7 +199,7 @@ var LP = LP || {};
     var autoCheckHideContentOption = function autoCheckHideContentOption(event) {
         var isChecked = $(event.target).is(':checked');
 
-        if(!isChecked){
+        if (!isChecked) {
             return;
         }
 
@@ -244,7 +244,9 @@ var LP = LP || {};
             if ($(document).find('input[name="post_type"]').val() === 'lp_course') {
                 $('input[name="_wp_http_referer"], input[name="referredby"], input[name="_wp_original_http_referer"]').val(url);
             }
-        })
+        });
+
+        $('input[name^="learn_press_enable_gutenberg"][value="-1"]').prop('checked', 'checked').closest('li').hide();
     };
 
     $(document).ready(onReady)

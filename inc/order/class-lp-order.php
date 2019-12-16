@@ -39,7 +39,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'total'            => 0,
 			'subtotal'         => 0,
 			'created_via'      => '',
-			'checkout_email'      => ''
+			'checkout_email'   => ''
 		);
 
 		/**
@@ -147,11 +147,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 							$time      = get_post_time( 'G', true, $post );
 							$time_diff = time() - $time;
 
-						if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-							$date = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
-						} else {
-							$date = mysql2date( get_option( 'date_format' ), $m_time );
-						}
+							if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
+								$date = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
+							} else {
+								$date = mysql2date( get_option( 'date_format' ), $m_time );
+							}
 
 					}
 				}
@@ -183,9 +183,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get confirm received text
 		 *
+		 * @return string
 		 * @since 3.0.0
 		 *
-		 * @return string
 		 */
 		public function get_confirm_order_received_text() {
 			$text = apply_filters( 'learn-press/confirm-order-received-text', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
@@ -199,9 +199,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get thank you message after the order is placed.
 		 *
+		 * @return mixed
 		 * @since 3.0.0
 		 *
-		 * @return mixed
 		 */
 		public function get_thankyou_message() {
 			/**
@@ -927,12 +927,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_profile_order_actions() {
-			$actions = array(
-				'view' => array(
-					'url'  => $this->get_view_order_url(),
-					'text' => __( 'View', 'learnpress' )
-				)
-			);
+			$actions = array();
 
 			if ( $cancel_url = $this->get_cancel_order_url() ) {
 				$actions['cancel'] = array(
@@ -989,9 +984,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Check to see if this order is for multi users
 		 *
+		 * @return bool
 		 * @since 2.1.5
 		 *
-		 * @return bool
 		 */
 		public function is_multi_users() {
 			return is_array( $this->get_data( 'user_id' ) );
@@ -1032,9 +1027,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Get email of user has bought this order.
 		 * In case this order is for multi users return an array with multi email addresses.
 		 *
+		 * @return mixed|array
 		 * @since 2.1.5
 		 *
-		 * @return mixed|array
 		 */
 		public function get_user_data() {
 			$data = array();
@@ -1213,7 +1208,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $the_id );
 				do_action( 'learn-press/order/status-changed', $the_id, $old_status, $new_status );
 
-				
+
 				return true;
 			}
 

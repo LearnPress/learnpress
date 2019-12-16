@@ -485,6 +485,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function is_current_tab( $key ) {
+			global $wp_query;
+
+//			$order_endpoint         = LP()->settings()->get( 'profile_endpoints.orders', 'orders' );
+//			$order_details_endpoint = LP()->settings()->get( 'profile_endpoints.order-details', 'order-details' );
+//
+//			if ( $wp_query->get( 'view' ) && $wp_query->get( 'view' ) === $order_details_endpoint ) {
+//				if ( $key === $order_endpoint ) {
+//					return true;
+//				}
+//			}
+
 			return $this->get_current_tab() === $key;
 		}
 

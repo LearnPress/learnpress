@@ -1890,9 +1890,24 @@ ul .clearfix {
     .post-type-lp_order #order_details .order-items table .order-item-row:hover .remove-order-item {
       display: inline-block; }
 
+#learn-press-toggle-settings-js-css {
+  display: none; }
+  #learn-press-toggle-settings-js-css + table {
+    display: none; }
+  #learn-press-toggle-settings-js-css:checked + table {
+    display: table; }
+
 .color-schemas {
   margin: 0 20px 20px 0;
   float: left; }
+  .color-schemas ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+    .color-schemas ul > li > label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 10px; }
   .color-schemas .wp-color-picker {
     width: 80px;
     height: 24px;

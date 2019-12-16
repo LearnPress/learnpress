@@ -259,17 +259,17 @@ add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->fun
 add_action( 'learn-press/user-profile-tabs', LP()->template( 'profile' )->func( 'tabs' ), 10 );
 
 
-//add_action( 'learn-press/profile/orders', LP()->template( 'profile' )->callback( 'profile/tabs/orders/list.php' ), 5 );
-//add_action( 'learn-press/profile/orders', LP()->template( 'profile' )->callback( 'profile/tabs/orders/recover-order.php' ), 10 );
+add_action( 'learn-press/profile/orders', LP()->template( 'profile' )->callback( 'profile/tabs/orders/list.php' ), 10 );
+add_action( 'learn-press/profile/orders', LP()->template( 'profile' )->callback( 'profile/tabs/orders/recover-order.php' ), 20 );
 
 /**
  * @see LP_Template_Profile::order_details()
  * @see LP_Template_Profile::order_recover()
  * @see LP_Template_Profile::order_message()
  */
-//add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->func( 'order_details' ), 5 );
-//add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->func( 'order_recover' ), 10 );
-//add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->func( 'order_message' ), 15 );
+add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->func( 'order_details' ), 5 );
+add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->func( 'order_recover' ), 10 );
+add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->func( 'order_message' ), 15 );
 
 /**
  * @see LP_Template_Profile::dashboard_logged_in()

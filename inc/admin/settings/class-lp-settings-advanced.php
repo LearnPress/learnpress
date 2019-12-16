@@ -189,17 +189,8 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 			'learn_press_profile_settings',
 			array(
 				array(
-					'title'           => __( 'Enable Gutenberg', 'learnpress' ),
-					'id'              => 'enable_gutenberg',
-					'default'         => 'no',
-					'type'            => 'checkbox_list',
-					'options'         => array(
-						'-1'          => __( 'Disable all', 'learnpress' ),
-						LP_QUIZ_CPT     => __( 'Quiz', 'learnpress' ),
-						LP_LESSON_CPT   => __( 'Lesson', 'learnpress' ),
-						LP_QUESTION_CPT => __( 'Question', 'learnpress' )
-					),
-					'desc'            => __( 'Enable Gutenberg editor.', 'learnpress' )
+					'type'=>'heading',
+					'title'=>__('Style', 'learnpress')
 				),
 				array(
 					'title'   => __( 'Enable custom colors', 'learnpress' ),
@@ -213,6 +204,23 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'id'      => 'color_schema',
 					'default' => '',
 					'type'    => 'color-schema'
+				),
+				array(
+					'type'=>'heading',
+					'title'=>__('Other', 'learnpress')
+				),
+				array(
+					'title'           => __( 'Enable Gutenberg', 'learnpress' ),
+					'id'              => 'enable_gutenberg',
+					'default'         => 'no',
+					'type'            => 'checkbox_list',
+					'options'         => array(
+						'-1'          => __( 'Disable all', 'learnpress' ),
+						LP_QUIZ_CPT     => __( 'Quiz', 'learnpress' ),
+						LP_LESSON_CPT   => __( 'Lesson', 'learnpress' ),
+						LP_QUESTION_CPT => __( 'Question', 'learnpress' )
+					),
+					'desc'            => __( 'Enable Gutenberg editor.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Load css', 'learnpress' ),
@@ -235,10 +243,10 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'html'  => learn_press_admin_view_content( 'settings-js-css' ),
 					'desc'  => __( 'Check the checkboxes to disable js/css from LearnPress (It must be loaded in other plugins or theme).', 'learnpress' )
 				),
-				array(
-					'title' => __( 'Hard cache', 'learnpress' ),
-					'type'  => 'heading',
-				),
+//				array(
+//					'title' => __( 'Hard cache', 'learnpress' ),
+//					'type'  => 'heading',
+//				),
 				array(
 					'title'   => __( 'Enable hard cache', 'learnpress' ),
 					'id'      => 'enable_hard_cache',
@@ -246,17 +254,17 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'type'    => 'yes-no',
 					'desc'    => sprintf( __( 'Enable cache for static content such as content and settings of course, lesson, quiz. <a href="%s">%s</a>', 'learnpress' ), admin_url( 'admin.php?page=learn-press-tools&tab=cache' ), __( 'Advanced', 'learnpress' ) )
 				),
-				array(
-					'title' => __( 'Others', 'learnpress' ),
-					'type'  => 'heading',
-				),
-				array(
-					'title'   => __( 'Enable lesson video', 'learnpress' ),
-					'id'      => 'enable_lesson_video',
-					'default' => 'no',
-					'type'    => 'yes-no',
-					'desc'    => __( 'When this option is enabled, the first video embed in lesson content will be detected and move to the top.', 'learnpress' )
-				),
+//				array(
+//					'title' => __( 'Others', 'learnpress' ),
+//					'type'  => 'heading',
+//				),
+//				array(
+//					'title'   => __( 'Enable lesson video', 'learnpress' ),
+//					'id'      => 'enable_lesson_video',
+//					'default' => 'no',
+//					'type'    => 'yes-no',
+//					'desc'    => __( 'When this option is enabled, the first video embed in lesson content will be detected and move to the top.', 'learnpress' )
+//				),
 			)
 		);
 	}

@@ -33,7 +33,7 @@ $user = LP_Profile::instance()->get_user();
             </ul>
         </div>
 		<?php
-		if ( isset( $max_num_pages ) ) {
+		if ( isset( $max_num_pages ) && $max_num_pages > 1 ) {
 			?>
             <button data-type="featured" data-user="<?php echo $user->get_id(); ?>"
                     data-num-pages="<?php echo $max_num_pages; ?>" data-container="learn-press-profile-featured-courses"
