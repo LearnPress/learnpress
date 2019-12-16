@@ -277,6 +277,7 @@ add_action( 'learn-press/user-profile-tabs', LP()->template( 'profile' )->func( 
  */
 add_action( 'learn-press/profile/before-dashboard', LP()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
 add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_featured_courses' ), 20 );
+add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_latest_courses' ), 30 );
 //add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_logged_in' ), 100 );
 //add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_user_bio' ), 1000 );
 

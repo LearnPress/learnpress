@@ -260,7 +260,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-post-data.php';
 			require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/abstracts/abstract-object-query.php';
-			require_once 'inc/class-lp-query-course.php';
+			require_once 'inc/class-lp-course-query.php';
 			require_once 'inc/class-lp-utils.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';

@@ -54,7 +54,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'finish-course',
 				'retake-course',
 				'external-link:nopriv',
-				'save-uploaded-user-avatar'
+				'save-uploaded-user-avatar',
+				'load-more-courses'
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -83,6 +84,31 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+		}
+
+		public static function load_more_courses() {
+			$type     = LP_Request::get( 'type' );
+			$user_id  = LP_Request::get_int( 'user', 0 );
+			$paged    = LP_Request::get_int( 'current_page', 1 );
+			$template = LP_Request::get( 'template' );
+
+			$user       = learn_press_get_user( $user_id );
+			$query_args = array(
+				'paginate' => true,
+				'return'   => 'ids',
+				'author'   => $user->get_id(),
+				'paged'    => $paged
+			);
+
+			if ( 'featured' === $type ) {
+				$query_args['featured'] = 1;
+			}
+
+			$query = new LP_Course_Query( $query_args );
+
+			learn_press_get_template( $template, (array) $query->get_courses() );
+
+			die();
 		}
 
 		public static function external_link() {

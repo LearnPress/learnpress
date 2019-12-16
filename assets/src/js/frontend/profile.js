@@ -362,6 +362,37 @@
 
         Profile.recoverOrder();
 
+    }).on('click', '.btn-load-more-courses', function (event) {
+        var $button = $(this);
+        var type = $button.data('type') || 1;
+        var user = $button.data('user') || 1;
+        var paged = $button.data('paged') || 1;
+        var num_pages = $button.data('num-pages') || 1;
+        var container = $button.data('container');
+        var template = $button.data('template');
+        var $container = $('#' + container);
+
+        paged++;
+        $button.data('paged', paged).prop('disabled', true);
+
+        $.ajax({
+            url: '?lp-ajax=load-more-courses',
+            data: {
+                type: type,
+                user: user,
+                current_page: paged,
+                template: template
+            },
+            success: function (response) {
+                $container.append($(response).find('#' + container).children());
+
+                if (paged >= num_pages) {
+                    $button.remove();
+                } else {
+                    $button.prop('disabled', false);
+                }
+            }
+        });
     });
 
     var Profile = {

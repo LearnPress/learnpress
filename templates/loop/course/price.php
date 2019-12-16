@@ -14,7 +14,9 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
+if ( ! $course = learn_press_get_course() ) {
+	return;
+}
 ?>
 
 <div class="course-price">

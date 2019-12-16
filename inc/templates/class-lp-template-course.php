@@ -591,7 +591,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function count_object() {
-		$course  = LP_Global::course();
+		if ( ! $course = learn_press_get_course() ) {
+			return;
+		}
+
 		$lessons = $course->get_items( LP_LESSON_CPT );
 		$quizzes = $course->get_items( LP_QUIZ_CPT );
 
@@ -655,7 +658,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			learn_press_get_template( 'single-course/extra-info', $box );
 		}
 		?>
-        <?php
+		<?php
 	}
 
 	public function faqs() {

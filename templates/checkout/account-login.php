@@ -56,9 +56,9 @@ $fields  = $profile->get_login_fields();
     </p>
 
     <p class="lp-checkout-sign-up-link">
-		<?php esc_html_e( 'Don\'t have an account?', 'learnpress' ); ?>
+		<?php esc_html_e( "Don't have an account?", 'learnpress' ); ?>
         <a href="javascript: void(0);">
-            <label for="checkout-account-switch-to-login"><?php echo _x( 'Sign up.', 'checkout sign up link', 'learnpress' ); ?></label>
+            <label for="checkout-account-switch-to-login"><?php echo _x( 'Sign up', 'checkout sign up link', 'learnpress' ); ?></label>
         </a>
     </p>
 </div>
