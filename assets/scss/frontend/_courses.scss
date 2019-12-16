@@ -173,6 +173,7 @@ a {
                         text-decoration: none;
                         border: none;
                         @include box-shadow(none);
+
                         .course-title {
                             font-size: 16px;
                             padding: 0;
@@ -180,6 +181,7 @@ a {
                             font-weight: 600;
                             color: #333;
                             line-height: 24px;
+
                             &:hover {
                                 color: $primary-color;
                             }
@@ -376,6 +378,7 @@ a {
                                 }
                             }
                         }
+
                         .course-wrap-meta {
                             display: flex;
                             font-size: 14px;

@@ -4,7 +4,8 @@
     left: 0;
     right: 0;
     background: #FFF;
-    > label{
+
+    > label {
         margin: 0;
         position: absolute;
         right: 10px;
@@ -16,6 +17,7 @@
         line-height: 40px;
         font-weight: normal;
     }
+
     .learn-press-comments {
         display: none;
         width: 800px;
@@ -28,6 +30,7 @@
 #learn-press-item-comments-toggle {
     &:checked + #learn-press-item-comments {
         top: 0;
+
         > label {
             color: #FF0;
             top: 10px;

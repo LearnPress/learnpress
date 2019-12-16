@@ -19,12 +19,15 @@
                 .learn-press-tabs__tab:nth-child(#{$i+1}) {
                     border-bottom: 0;
                     background: #FFF;
-                    label{
+
+                    label {
                         color: #ffb606;
                     }
+
                     &:before {
                         background: #ffb606;
                     }
+
                     &:after {
                         background: #fff;
                     }
@@ -74,15 +77,17 @@
             width: 100%;
             background: transparent;
         }
+
         &:after {
             content: '';
             position: absolute;
-            bottom:-1px;
+            bottom: -1px;
             left: 0;
             height: 4px;
             width: 100%;
             background: transparent;
         }
+
         &:last-child {
             border-right: 0;
         }
@@ -113,6 +118,7 @@
     > li {
         font-size: 16px;
         line-height: 24px;
+
         > a,
         > span {
             display: inline-block;
@@ -121,13 +127,16 @@
 
         > span.count {
             font-weight: 400;
+
             &:before,
             &:after {
                 display: inline-block;
             }
+
             &:before {
                 content: '(';
             }
+
             &:after {
                 content: ')';
             }

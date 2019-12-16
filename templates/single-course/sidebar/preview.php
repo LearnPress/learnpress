@@ -9,7 +9,13 @@ defined( 'ABSPATH' ) or die;
 ?>
 <div class="course-sidebar-preview margin-bottom">
     <div class="media-preview">
-		<?php LP()->template( 'course' )->course_media_preview(); ?>
+		<?php
+
+		LP()->template( 'course' )->course_media_preview();
+
+		learn_press_get_template( 'loop/course/badge-featured' );
+
+		?>
     </div>
 
 	<?php
