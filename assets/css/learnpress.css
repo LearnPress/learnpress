@@ -311,15 +311,63 @@
   width: -moz-calc(50% - 30px);
   width: calc(50% - 30px);
   margin: 0 15px 40px 15px; }
+  .lp-checkout-form__before .lp-checkout-block h4,
+  .lp-checkout-form__after .lp-checkout-block h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1;
+    margin-bottom: 18px;
+    margin-top: 0; }
+  @media (max-width: 815px) {
+    .lp-checkout-form__before,
+    .lp-checkout-form__after {
+      width: 100%;
+      margin: 0 0 40px 0; } }
 
 .lp-checkout-form__before {
   float: right; }
 
 .lp-checkout-form__after {
   float: left; }
+  .lp-checkout-form__after #checkout-account-logged-in {
+    display: none; }
+  .lp-checkout-form__after .lp-checkout-block .lp-form-fields {
+    padding: 0 0 14px 0; }
+    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input {
+      background-color: #fff;
+      font-style: italic;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 0 22px;
+      line-height: 43px;
+      height: 43px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      width: 100%; }
+      .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:focus {
+        border-color: #ffb606;
+        color: #222; }
+    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::placeholder {
+      color: #999;
+      opacity: 1; }
+    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input :-ms-input-placeholder {
+      color: #999; }
+    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::-ms-input-placeholder {
+      color: #999; }
+    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill,
+    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill:hover,
+    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+      -webkit-text-fill-color: #999 !important; }
 
 #learn-press-checkout-form {
   margin: 0 -15px; }
+  @media (max-width: 815px) {
+    #learn-press-checkout-form {
+      margin: 0;
+      display: flex;
+      flex-direction: column-reverse; } }
   #learn-press-checkout-form input[name="checkout-account-switch-form"] {
     display: none; }
     #learn-press-checkout-form input[name="checkout-account-switch-form"] + .lp-checkout-block {
@@ -332,25 +380,55 @@
     clear: both; }
 
 #checkout-order .lp-checkout-order__inner {
-  border: 1px solid #DDD;
+  border: 1px solid #ccc;
   border-radius: 4px;
   padding: 0 20px; }
   #checkout-order .lp-checkout-order__inner td,
   #checkout-order .lp-checkout-order__inner th {
-    padding: 20px 20px 20px 0;
     box-sizing: content-box;
     line-height: 1; }
     #checkout-order .lp-checkout-order__inner td:last-child,
     #checkout-order .lp-checkout-order__inner th:last-child {
       padding-right: 0; }
   #checkout-order .lp-checkout-order__inner .course-thumbnail {
-    width: 100px; }
+    width: 100px;
+    padding: 20px 13px 18px 0; }
+  #checkout-order .lp-checkout-order__inner .course-name {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 26px; }
+    #checkout-order .lp-checkout-order__inner .course-name a {
+      color: #666;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden; }
+      #checkout-order .lp-checkout-order__inner .course-name a:hover {
+        color: #ffb606; }
   #checkout-order .lp-checkout-order__inner .col-number {
     text-align: right;
     min-width: 50px;
-    font-weight: 600; }
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 26px;
+    color: #666; }
+  #checkout-order .lp-checkout-order__inner .order-total > th {
+    padding: 24px 20px 24px 0; }
   #checkout-order .lp-checkout-order__inner .order-total .col-number {
-    font-size: 24px; }
+    font-size: 26px;
+    color: #333; }
+  #checkout-order .lp-checkout-order__inner tfoot .cart-subtotal {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 26px;
+    color: #666; }
+    #checkout-order .lp-checkout-order__inner tfoot .cart-subtotal > th {
+      padding: 20px 20px 17px 0; }
+  #checkout-order .lp-checkout-order__inner tfoot .order-total th {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 26px;
+    color: #333; }
   #checkout-order .lp-checkout-order__inner tfoot tr:last-child {
     border-width: 0; }
     #checkout-order .lp-checkout-order__inner tfoot tr:last-child td,
@@ -359,9 +437,9 @@
 
 #checkout-account-register,
 #checkout-account-login {
-  border-bottom: 1px solid #DDD;
+  border-bottom: 1px solid rgba(204, 204, 204, 0.3);
   margin-bottom: 35px;
-  padding-bottom: 55px; }
+  padding-bottom: 19px; }
   #checkout-account-register .form-field .rwmb-label,
   #checkout-account-register .form-field .rwmb-input .description,
   #checkout-account-login .form-field .rwmb-label,
@@ -379,18 +457,36 @@
   #checkout-account-register .lp-checkout-sign-up-link,
   #checkout-account-login .lp-checkout-sign-in-link,
   #checkout-account-login .lp-checkout-sign-up-link {
-    margin: 0; }
-    #checkout-account-register .lp-checkout-sign-in-link label,
-    #checkout-account-register .lp-checkout-sign-up-link label,
-    #checkout-account-login .lp-checkout-sign-in-link label,
-    #checkout-account-login .lp-checkout-sign-up-link label {
-      display: inline-block;
-      float: right;
-      font-weight: normal;
-      color: inherit; }
+    margin: 0;
+    font-size: 16px;
+    font-weight: 400;
+    color: #666;
+    display: flex; }
+    #checkout-account-register .lp-checkout-sign-in-link a,
+    #checkout-account-register .lp-checkout-sign-up-link a,
+    #checkout-account-login .lp-checkout-sign-in-link a,
+    #checkout-account-login .lp-checkout-sign-up-link a {
+      color: #41abec;
+      margin-left: 5px; }
+      #checkout-account-register .lp-checkout-sign-in-link a:hover,
+      #checkout-account-register .lp-checkout-sign-up-link a:hover,
+      #checkout-account-login .lp-checkout-sign-in-link a:hover,
+      #checkout-account-login .lp-checkout-sign-up-link a:hover {
+        color: #ffb606; }
+      #checkout-account-register .lp-checkout-sign-in-link a label,
+      #checkout-account-register .lp-checkout-sign-up-link a label,
+      #checkout-account-login .lp-checkout-sign-in-link a label,
+      #checkout-account-login .lp-checkout-sign-up-link a label {
+        display: inline-block;
+        float: right;
+        font-weight: normal;
+        color: inherit;
+        cursor: pointer; }
 
 #checkout-payment {
-  margin-bottom: 30px; }
+  margin-bottom: 25px; }
+  #checkout-payment h4 {
+    margin-bottom: 24px; }
   #checkout-payment .secure-connection {
     font-size: 12px;
     color: #999;
@@ -399,26 +495,65 @@
     margin-top: 5px; }
     #checkout-payment .secure-connection i {
       margin-right: 5px;
-      font-size: 16px; }
+      font-size: 18px;
+      color: #ccc; }
+    @media (max-width: 767px) {
+      #checkout-payment .secure-connection {
+        margin-top: 0; } }
   #checkout-payment .payment-methods {
     list-style: none;
     padding: 0;
-    margin: 0 0 20px 0; }
+    margin: 0 0 24px 0; }
     #checkout-payment .payment-methods .lp-payment-method {
-      position: relative;
-      padding-left: 20px; }
+      position: relative; }
       #checkout-payment .payment-methods .lp-payment-method .gateway-input,
       #checkout-payment .payment-methods .lp-payment-method .gateway-icon {
         vertical-align: middle; }
       #checkout-payment .payment-methods .lp-payment-method .gateway-icon {
         max-height: 32px; }
       #checkout-payment .payment-methods .lp-payment-method .gateway-input {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        transform: translateY(-50%); }
+        width: 20px;
+        height: 20px;
+        position: relative;
+        -webkit-appearance: none;
+        background: #fff;
+        border: 1px solid #ccc;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        border-radius: 50%; }
+        #checkout-payment .payment-methods .lp-payment-method .gateway-input:before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 6px;
+          height: 6px;
+          -webkit-border-radius: 50%;
+          -moz-border-radius: 50%;
+          border-radius: 50%;
+          background: #41abec; }
+        #checkout-payment .payment-methods .lp-payment-method .gateway-input:focus {
+          outline: 0; }
   #checkout-payment #checkout-order-action button {
-    width: 100%; }
+    width: 100%;
+    font-weight: 500;
+    background: #ffb606;
+    border-color: #ffb606;
+    color: #fff; }
+    #checkout-payment #checkout-order-action button:hover {
+      background: #b98200;
+      border-color: #b98200; }
+
+.lp-terms-and-conditions {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 26px;
+  color: #666; }
+  .lp-terms-and-conditions a {
+    color: #41abec; }
+    .lp-terms-and-conditions a:hover {
+      color: #ffb606; }
 
 .learn-press-checkout.guest-checkout {
   display: none; }
@@ -3759,12 +3894,15 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
               font-size: 18px; }
           #popup-course #popup-sidebar .course-curriculum .section .section-header .section-left .section-toggle {
             justify-content: flex-end; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-header .section-left .section-toggle i {
+              color: #666; }
         #popup-course #popup-sidebar .course-curriculum .section .section-content {
           margin-bottom: 0; }
           #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item {
             padding: 0 20px;
             background: #f9fafc;
-            margin-bottom: 4px; }
+            margin-bottom: 4px;
+            height: 60px; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item > span {
               display: none; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link:before {
@@ -3784,8 +3922,10 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
                 margin-left: 0; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .course-item-status.trans {
                   position: absolute;
-                  top: 20px;
-                  right: 20px; }
+                  top: 15px;
+                  right: 22px; }
+                  #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .course-item-status.trans:before {
+                    font-weight: 900; }
               #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta {
                 background: transparent;
                 font-size: 12px;
@@ -3793,10 +3933,11 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
                 color: #999;
                 line-height: 1.5; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta:first-child {
-                  margin-left: 0; }
+                  margin-left: 0;
+                  padding-left: 12px; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta:before {
                   font-size: 12px;
-                  font-weight: 400; }
+                  font-weight: 500; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item:before {
               background: transparent;
               top: -1px;
@@ -3872,13 +4013,13 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       margin: 0 auto;
       width: 792px;
       max-width: 100%;
-      padding: 56px 0 80px 0; }
+      padding: 50px 0 80px 0; }
       @media (max-width: 1024px) {
         #popup-course #popup-content #learn-press-content-item .content-item-wrap {
           width: 100%; } }
       #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .course-item-title {
         font-size: 30px;
-        font-weight: 500;
+        font-weight: 600;
         color: #333;
         margin-bottom: 24px;
         margin-top: 0; }
@@ -4139,7 +4280,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     width: 25px;
     height: 56px;
     left: 475px;
-    top: 225px;
+    top: 198px;
     z-index: 100;
     -webkit-appearance: none;
     transition: 0.25s;
@@ -4572,6 +4713,12 @@ input[type="password"] {
   width: 1170px;
   max-width: 90%;
   margin: 0 auto; }
+  .lp-content-wrap > h2 {
+    font-size: 30px;
+    margin-top: 0;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 26px; }
 
 .learn-press-breadcrumb {
   width: 1170px;
