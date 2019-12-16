@@ -37,11 +37,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Get courses of an user.
 	 *
-	 * @since 3.3.0
-	 *
 	 * @param array $args
 	 *
 	 * @return array
+	 * @since 3.3.0
+	 *
 	 */
 	public function get_courses( $args = array() ) {
 
@@ -903,17 +903,17 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Table fields
 		$table_fields = array(
-			'user_id'        => '%d',
-			'item_id'        => '%d',
-			'ref_id'         => '%d',
-			'start_time'     => '%s',
+			'user_id'    => '%d',
+			'item_id'    => '%d',
+			'ref_id'     => '%d',
+			'start_time' => '%s',
 			//'start_time_gmt' => '%s',
-			'end_time'       => '%s',
+			'end_time'   => '%s',
 			//'end_time_gmt'   => '%s',
-			'item_type'      => '%s',
-			'status'         => '%s',
-			'ref_type'       => '%s',
-			'parent_id'      => '%d'
+			'item_type'  => '%s',
+			'status'     => '%s',
+			'ref_type'   => '%s',
+			'parent_id'  => '%d'
 		);
 
 		// Data and format
@@ -1077,15 +1077,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			apply_filters(
 				'learn-press/default-user-item-data',
 				array(
-					'user_id'        => $this->get_id(),
-					'item_id'        => $item_id,
-					'item_type'      => $item->get_item_type(),
-					'start_time'     => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql(false) : '0000-00-00 00:00:00',
+					'user_id'    => $this->get_id(),
+					'item_id'    => $item_id,
+					'item_type'  => $item->get_item_type(),
+					'start_time' => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql( false ) : '0000-00-00 00:00:00',
 					//'start_time_gmt' => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql( false ) : '0000-00-00 00:00:00',
-					'status'         => learn_press_default_user_item_status( $item_id ),
-					'ref_id'         => $course_id,
-					'ref_type'       => LP_COURSE_CPT,
-					'parent_id'      => $course_data->get_data( 'user_item_id' )
+					'status'     => learn_press_default_user_item_status( $item_id ),
+					'ref_id'     => $course_id,
+					'ref_type'   => LP_COURSE_CPT,
+					'parent_id'  => $course_data->get_data( 'user_item_id' )
 				)
 			)
 		);
@@ -1690,6 +1690,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 
+				if ( $args['limit'] > 0 ) {
+					$limit = "LIMIT {$offset}, {$limit}";
+				} else {
+					$limit = "";
+				}
 
 				$sql = "
 					SELECT SQL_CALC_FOUND_ROWS *
@@ -1704,7 +1709,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					) X 
 					GROUP BY item_id
 					{$orderby}
-					LIMIT {$offset}, {$limit}
+					$limit
 				";
 
 				$items = $wpdb->get_results( $sql );
@@ -1719,7 +1724,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					LP_Helper::cache_posts( $course_ids );
 
 					$courses['total'] = $count;
-					$courses['pages'] = ceil( $count / $args['limit'] );
+					$courses['pages'] = $args['limit'] > 0 ? ceil( $count / $args['limit'] ) : 1;
 					foreach ( $items as $item ) {
 						$item               = (array) $item;
 						$course_item        = new LP_User_Item_Course( $item );

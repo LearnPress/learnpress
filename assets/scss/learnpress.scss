@@ -52,11 +52,12 @@ input[type="password"] {
     }
 }
 
-.lp-form-fields{
+.lp-form-fields {
     list-style: none;
     margin: 0;
     padding: 0;
-    .form-field{
+
+    .form-field {
         list-style: none;
         margin: 0 0 20px 0;
     }
@@ -76,11 +77,14 @@ input[type="password"] {
     font-weight: 500;
     color: #333;
     list-style: none;
+
     li {
         display: inline-block;
+
         a {
             color: #666;
             font-weight: 300;
+
             &:hover {
                 color: $primary-color;
             }
@@ -175,6 +179,7 @@ input[type="password"] {
 
 #learn-press-course-tabs {
     margin-bottom: 40px;
+
     &.course-tabs {
         margin-top: 54px;
     }
@@ -496,6 +501,7 @@ ul.list-table-nav {
         left: -110px;
         transform: rotate(-45deg);
         text-align: center;
+
         &:before {
             font-size: 12px;
             content: attr(data-text);

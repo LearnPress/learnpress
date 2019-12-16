@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for displaying featured courses in user profile dashboard.
+ * Template for displaying latest courses in user profile dashboard.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
@@ -11,14 +11,14 @@ defined( 'ABSPATH' ) or die;
 
 $user = LP_Profile::instance()->get_user();
 ?>
-<div class="profile-courses featured-courses">
-    <h3><?php esc_html_e( 'Featured courses', 'learnpress' ); ?></h3>
+<div class="profile-courses newest-courses">
+    <h3><?php esc_html_e( 'Latest courses', 'learnpress' ); ?></h3>
 
 	<?php
 	if ( ! empty( $courses ) ) {
 		?>
         <div class="lp-archive-courses">
-            <ul class="learn-press-courses" data-size="3" data-layout="grid" id="learn-press-profile-featured-courses">
+            <ul class="learn-press-courses" data-size="3" data-layout="grid" id="learn-press-profile-latest-courses">
 				<?php
 				global $post;
 
@@ -35,13 +35,14 @@ $user = LP_Profile::instance()->get_user();
 		<?php
 		if ( isset( $max_num_pages ) ) {
 			?>
-            <button data-type="featured" data-user="<?php echo $user->get_id(); ?>"
-                    data-num-pages="<?php echo $max_num_pages; ?>" data-container="learn-press-profile-featured-courses"
-                    data-template="profile/dashboard/featured-courses"
+            <button data-type="latest" data-user="<?php echo $user->get_id(); ?>"
+                    data-num-pages="<?php echo $max_num_pages; ?>" data-container="learn-press-profile-latest-courses"
+                    data-template="profile/dashboard/latest-courses"
                     class="lp-button btn-load-more-courses"><?php esc_html_e( 'View More', 'learnpress' ); ?></button>
 			<?php
 		}
+
 	} else {
-		learn_press_display_message( __( 'There is no featured courses.', 'learnpress' ) );
+		learn_press_display_message( __( 'There is no courses.', 'learnpress' ) );
 	} // End if !empty( $courses ) ?>
 </div>

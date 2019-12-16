@@ -1801,6 +1801,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return in_array( 'administrator', $roles );
 		}
 
+
+		public function can_create_course() {
+			return $this->is_instructor() || $this->is_admin();
+		}
+
 		/**
 		 * Wrap function to check this user is author of a post.
 		 *

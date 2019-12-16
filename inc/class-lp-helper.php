@@ -200,7 +200,7 @@ class LP_Helper {
 	 *
 	 * @return array
 	 */
-	public static function array_merge_recursive( & $array1, & $array2 ) {
+	public static function array_merge_recursive( &$array1, &$array2 ) {
 		$merged = $array1;
 
 		if ( is_array( $array1 ) && is_array( $array2 ) ) {
@@ -303,12 +303,12 @@ class LP_Helper {
 	/**
 	 * Wrap function ksort of PHP itself and support recursive.
 	 *
-	 * @since 3.3.0
-	 *
-	 * @param  array $array
-	 * @param int    $sort_flags
+	 * @param array $array
+	 * @param int   $sort_flags
 	 *
 	 * @return bool
+	 * @since 3.3.0
+	 *
 	 */
 	public static function ksort( &$array, $sort_flags = SORT_REGULAR ) {
 		if ( ! is_array( $array ) ) {
@@ -346,5 +346,55 @@ class LP_Helper {
 		}
 
 		return $is_array ? $new_array : (object) $new_array;
+	}
+
+	public static function list_pluck( $list, $field, $index_key = null ) {
+		$newlist = array();
+
+		if ( ! $index_key ) {
+			/*
+			 * This is simple. Could at some point wrap array_column()
+			 * if we knew we had an array of arrays.
+			 */
+			foreach ( $list as $key => $value ) {
+				if ( is_callable( array( $value, $field ) ) ) {
+					$newlist[ $key ] = call_user_func( array( $value, $field ) );
+				} elseif ( is_object( $value ) ) {
+					$newlist[ $key ] = $value->$field;
+				} else {
+					$newlist[ $key ] = $value[ $field ];
+				}
+			}
+
+			return $newlist;
+		}
+
+		/*
+		 * When index_key is not set for a particular item, push the value
+		 * to the end of the stack. This is how array_column() behaves.
+		 */
+		foreach ( $list as $value ) {
+			if ( is_callable( array( $value, $field ) ) ) {
+				if ( isset( $value->$index_key ) ) {
+					$newlist[ $value->$index_key ] = call_user_func( array( $value, $field ) );
+				} else {
+					$newlist[] = call_user_func( array( $value, $field ) );
+				}
+			} elseif ( is_object( $value ) ) {
+				if ( isset( $value->$index_key ) ) {
+					$newlist[ $value->$index_key ] = $value->$field;
+				} else {
+					$newlist[] = $value->$field;
+				}
+			} else {
+				if ( isset( $value[ $index_key ] ) ) {
+					$newlist[ $value[ $index_key ] ] = $value[ $field ];
+				} else {
+					$newlist[] = $value[ $field ];
+				}
+			}
+		}
+
+		return $newlist;
 	}
 }

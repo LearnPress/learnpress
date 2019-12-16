@@ -3701,6 +3701,40 @@ function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
 }
 
 /**
+ * Count all users has enrolled to courses of an instructor.
+ *
+ * @param int $instructor_id
+ *
+ * @return float|int
+ * @since 4.0.0
+ *
+ */
+function learn_press_count_instructor_users( $instructor_id ) {
+	global $wpdb;
+	$curd        = new LP_User_CURD();
+	$own_courses = $curd->query_own_courses( $instructor_id );
+	$course_ids  = $own_courses->get_items();
+
+	$query = $wpdb->prepare( "
+        SELECT COUNT(user_id)
+		FROM ( 
+			SELECT item_id, user_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE item_type = %s
+			GROUP BY item_id, user_id
+			HAVING item_id IN(" . join( ',', $course_ids ) . ")
+		) X
+		GROUP BY item_id
+    ", LP_COURSE_CPT );
+
+	if ( $rows = $wpdb->get_col( $query ) ) {
+		return array_sum( $rows );
+	}
+
+	return 0;
+}
+
+/**
  * Get max retrying quiz allowed.
  *
  * @param int $quiz_id

@@ -18,7 +18,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/header.php', array( 'user' => $user ) );
 	}
 
-	public function sidebar(){
+	public function sidebar() {
 		learn_press_get_template( 'profile/sidebar.php' );
 	}
 
@@ -32,12 +32,12 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
 	}
 
-	public function avatar(){
-		learn_press_get_template( 'profile/avatar.php');
+	public function avatar() {
+		learn_press_get_template( 'profile/avatar.php' );
 	}
 
-	public function socials(){
-		learn_press_get_template( 'profile/socials.php');
+	public function socials() {
+		learn_press_get_template( 'profile/socials.php' );
 	}
 
 	public function tabs( $user = null ) {
@@ -50,12 +50,49 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
 	}
 
-	public function dashboard_statistic(){
-		learn_press_get_template( 'profile/dashboard/general-statistic');
+	public function dashboard_statistic() {
+		$user  = $this->get_user();
+		$query = LP_Profile::instance()->query_courses( 'purchased' );
+
+		$statistic = array(
+			'enrolled_courses'  => $query['counts']['all'],
+			'active_courses'    => $query['counts']['in-progress'],
+			'completed_courses' => $query['counts']['finished'],
+			'total_courses'     => count_user_posts( $user->get_id(), LP_COURSE_CPT ),
+			'total_users'       => learn_press_count_instructor_users( $user->get_id() ),
+		);
+
+		learn_press_get_template( 'profile/dashboard/general-statistic', compact( 'statistic' ) );
 	}
 
-	public function dashboard_featured_courses(){
-		learn_press_get_template( 'profile/dashboard/featured-courses');
+	public function dashboard_featured_courses() {
+
+		$user  = $this->get_user();
+		$query = new LP_Course_Query(
+			array(
+				'paginate' => true,
+				'featured' => 'yes',
+				'return'   => 'ids',
+				'author'   => $user->get_id()
+			)
+		);
+
+		$data = $query->get_courses();
+
+		learn_press_get_template( 'profile/dashboard/featured-courses', (array) $data );
+	}
+
+	public function dashboard_latest_courses() {
+		$user  = $this->get_user();
+		$query = new LP_Course_Query(
+			array(
+				'paginate' => true,
+				'return'   => 'ids',
+				'author'   => $user->get_id()
+			)
+		);
+
+		learn_press_get_template( 'profile/dashboard/latest-courses', (array) $query->get_courses() );
 	}
 
 	////////////
@@ -152,6 +189,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		}
 
 		learn_press_get_template( 'global/form-register.php', array( 'fields' => $fields ) );
+	}
+
+	/**
+	 * @return bool|LP_User|mixed
+	 */
+	protected function get_user() {
+		return LP_Profile::instance()->get_user();
 	}
 }
 

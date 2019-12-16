@@ -9,7 +9,9 @@
 
 defined( 'ABSPATH' ) or die;
 
-$course = LP_Global::course();
+if ( ! $course = learn_press_get_course() ) {
+	return;
+}
 
 if ( ! $course->is_featured() ) {
 	return;
