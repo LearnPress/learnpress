@@ -25,13 +25,12 @@ if ( !empty( $breadcrumb ) ) {
 
 		echo $before;
 
-		echo '<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">';
+		echo '<li>';
 		if ( !empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
-			echo '<a href="' . esc_url( $crumb[1] ) . '" itemprop="item"><span itemprop="name">' . esc_html( $crumb[0] ) . '</span></a>';
+			echo '<a href="' . esc_url( $crumb[1] ) . '"><span>' . esc_html( $crumb[0] ) . '</span></a>';
 		} else {
-			echo '<span itemprop="name">' . esc_html( $crumb[0] ) . '</span>';
+			echo '<span>' . esc_html( $crumb[0] ) . '</span>';
 		}
-		echo '<meta itemprop="position" content="' . esc_attr( $key + 1 ) . '" />';
 		echo '</li>';
 
 		echo $after;

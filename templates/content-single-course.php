@@ -29,7 +29,7 @@ if ( post_password_required() ) {
 do_action( 'learn-press/before-single-course' );
 
 ?>
-<div id="learn-press-course" class="course-summary" itemscope itemtype="http://schema.org/Course">
+<div id="learn-press-course" class="course-summary">
 	<?php
 	/**
 	 * @since 3.0.0

@@ -21,20 +21,10 @@ if ( !$price = $course->get_price_html() ) {
 	return;
 }
 
-$content_price = 0;
-
-if ( $course->is_free() ) {
-	echo '<meta itemprop="isAccessibleForFree" content="true"/>';
-} else {
-	echo '<meta itemprop="isAccessibleForFree" content="false"/>';
-	$content_price = $course->get_price();
-}
-
-
 ?>
 
 
-<div class="course-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+<div class="course-price">
 
 	<?php if ( $course->has_sale_price() ) { ?>
 
@@ -42,7 +32,6 @@ if ( $course->is_free() ) {
 
 	<?php } ?>
 
-	<span class="price" itemprop="price" content="<?php echo esc_attr($content_price); ?>"><?php echo $price; ?></span>
-	<meta itemprop="priceCurrency" content="<?php echo esc_attr( learn_press_get_currency() ); ?>">
+	<span class="price"><?php echo $price; ?></span>
 </div>
 

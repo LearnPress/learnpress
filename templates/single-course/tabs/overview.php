@@ -21,7 +21,7 @@ $course = LP_Global::course();
 
 ?>
 
-<div class="course-description" id="learn-press-course-description" itemprop="description">
+<div class="course-description" id="learn-press-course-description">
 
 	<?php
 	/**
