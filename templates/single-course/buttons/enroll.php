@@ -29,7 +29,7 @@ if ( ! isset( $course ) ) {
                value="<?php echo esc_attr( LP_Nonce_Helper::create_course( 'enroll' ) ); ?>"/>
 
         <button class="lp-button button button-enroll-course">
-			<?php echo esc_html( apply_filters( 'learn-press/enroll-course-button-text', __( 'Enroll', 'learnpress' ) ) ); ?>
+			<?php echo esc_html( apply_filters( 'learn-press/enroll-course-button-text', __( 'Enroll Now', 'learnpress' ) ) ); ?>
         </button>
 
 		<?php do_action( 'learn-press/after-enroll-button' ); ?>

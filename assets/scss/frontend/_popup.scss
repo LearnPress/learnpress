@@ -394,6 +394,9 @@
                         }
                         .section-toggle {
                             justify-content: flex-end;
+                            i {
+                                color: #666;
+                            }
                         }
                     }
                 }
@@ -403,6 +406,7 @@
                         padding: 0 20px;
                         background: #f9fafc;
                         margin-bottom: 4px;
+                        height: 60px;
                         &>span {
                             display: none;
                         }
@@ -426,8 +430,11 @@
                                     margin-left: 0;
                                     &.trans {
                                         position: absolute;
-                                        top: 20px;
-                                        right: 20px;
+                                        top: 15px;
+                                        right: 22px;
+                                        &:before {
+                                            font-weight: 900;
+                                        }
                                     }
                                 }
                                 .item-meta {
@@ -438,10 +445,11 @@
                                     line-height: 1.5;
                                     &:first-child {
                                         margin-left: 0;
+                                        padding-left: 12px;
                                     }
                                     &:before {
                                         font-size: 12px;
-                                        font-weight: 400;
+                                        font-weight: 500;
                                     }
                                 }
                             }
@@ -563,14 +571,14 @@
                 margin: 0 auto;
                 width: 792px;
                 max-width: 100%;
-                padding: 56px 0 80px 0;
+                padding: 50px 0 80px 0;
                 @media (max-width: 1024px) {
                     width: 100%;
                 }
                 .content-item-summary {
                     .course-item-title {
                         font-size: 30px;
-                        font-weight: 500;
+                        font-weight: 600;
                         color: #333;
                         margin-bottom: 24px;
                         margin-top: 0;
@@ -929,7 +937,7 @@
         width: 25px;
         height: 56px;
         left: 475px;
-        top: 225px;
+        top: 198px;
         z-index: 100;
         -webkit-appearance: none;
         transition: 0.25s;

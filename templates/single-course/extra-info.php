@@ -30,9 +30,9 @@ if ( !isset( $checked ) ) {
 	<div class="course-extra-box__content">
 		<div class="course-extra-box__content-inner">
 			<?php if ( sanitize_key( $title ) == 'targetaudiences' ): ?>
-				<ul itemprop="audience" itemscope itemtype="http://schema.org/Audience">
+				<ul>
 					<?php foreach ( $items as $item ) { ?>
-						<li itemprop="audienceType"><?php echo $item; ?></li>
+						<li><?php echo $item; ?></li>
 					<?php } ?>
 				</ul>
 			<?php else: ?>
