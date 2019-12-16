@@ -1955,7 +1955,7 @@ if ( ! function_exists( 'learn_press_breadcrumb' ) ) {
 	function learn_press_breadcrumb( $args = array() ) {
 		$args = wp_parse_args( $args, apply_filters( 'learn_press_breadcrumb_defaults', array(
 			'delimiter'   => '&nbsp;&#47;&nbsp;',
-			'wrap_before' => '<nav class="learn-press-breadcrumb" ' . ( is_single() ? 'itemprop="breadcrumb"' : '' ) . '>',
+			'wrap_before' => '<nav class="learn-press-breadcrumb">',
 			'wrap_after'  => '</nav>',
 			'before'      => '',
 			'after'       => '',

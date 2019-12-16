@@ -16,5 +16,5 @@ if ( ! $course->is_featured() ) {
 }
 
 ?>
-<span class="lp-badge featured"
+<span class="lp-badge featured-course"
       data-text="<?php echo _x( 'Featured', 'badge label featured', 'learnpress' ); ?>"></span>

@@ -487,9 +487,15 @@ ul.list-table-nav {
     }
 
 
-    &.featured {
+    &.featured-course {
         background: $primary-color;
-
+        position: absolute;
+        z-index: 100;
+        top: 28px;
+        width: 300px;
+        left: -110px;
+        transform: rotate(-45deg);
+        text-align: center;
         &:before {
             font-size: 12px;
             content: attr(data-text);
