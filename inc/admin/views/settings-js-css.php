@@ -40,6 +40,8 @@ $frontend_libraries = array(
 );
 
 ?>
+<input type="checkbox"
+       id="learn-press-toggle-settings-js-css" <?php checked( LP()->settings()->get( 'hide_admin_js_css' ), 'yes' ); ?>>
 <table width="100%">
     <tbody>
     <tr>
@@ -74,3 +76,24 @@ $frontend_libraries = array(
     </tr>
     </tbody>
 </table>
+
+<a href="javascript:void(0)">
+    <label for="learn-press-toggle-settings-js-css">
+		<?php esc_html_e( 'Show/Hide', 'learnpress' ); ?>
+    </label>
+</a>
+<script>
+    jQuery(function ($) {
+        $(document).on('change', '#learn-press-toggle-settings-js-css', function (e) {
+            e.preventDefault();
+            var hide = !$(this).is(':checked');
+            $.ajax({
+                url: '../wp-json/lp/v1/settings/hide_admin_js_css',
+                type: 'post',
+                data: {
+                    data: hide ? 'no' : 'yes'
+                }
+            });
+        });
+    })
+</script>

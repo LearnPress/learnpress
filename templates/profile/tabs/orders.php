@@ -16,7 +16,13 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="profile-orders">
-
-	<?php do_action( 'learn-press/profile/orders' ); ?>
-
+	<?php
+	/**
+	 * LP Hook
+     *
+     * @hooked profile/tabs/orders/list.php             - 10
+     * @hooked profile/tabs/orders/recover-order.php    - 20
+	 */
+    do_action( 'learn-press/profile/orders' );
+    ?>
 </div>

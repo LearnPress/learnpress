@@ -326,6 +326,7 @@ var LP = LP || {};
         $('input[name="_wp_http_referer"], input[name="referredby"], input[name="_wp_original_http_referer"]').val(url);
       }
     });
+    $('input[name^="learn_press_enable_gutenberg"][value="-1"]').prop('checked', 'checked').closest('li').hide();
   };
 
   $(document).ready(onReady);

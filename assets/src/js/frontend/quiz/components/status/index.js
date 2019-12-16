@@ -3,6 +3,7 @@ import {withSelect, withDispatch, select} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import Timer from '../timer';
 import {__, sprintf} from '@wordpress/i18n';
+
 const $ = jQuery;
 const {debounce} = lodash;
 
@@ -68,7 +69,7 @@ class Status extends Component {
         const {confirm} = select('learnpress/modal');
         const title = select('learnpress/quiz').getData('title');
 
-        if ('no' === confirm(sprintf(__('<p>Are you sure to submit quiz:</p><strong>%s</strong>?', 'learnpress'), title), this.submit)) {
+        if ('no' === confirm(__('Are you sure to submit quiz?', 'learnpress'), this.submit)) {
             return;
         }
 
@@ -117,7 +118,7 @@ class Status extends Component {
                 : sprintf(__('Question <span>%d of %d</span>', 'learnpress'), start, questionsCount)
         ) : sprintf(__('Question <span>%d to %d</span>', 'learnpress'), start, end);
 
-        return <div className={ classNames.join(' ') }>
+        return <div className={classNames.join(' ')}>
             <div>
                 <div className="questions-index" dangerouslySetInnerHTML={{__html: indexHtml}}>
                 </div>
@@ -127,10 +128,10 @@ class Status extends Component {
                 <div>
                     <div className="submit-quiz">
                         <button className="lp-button" id="button-submit-quiz"
-                                onClick={ this.submit }>{ !submitting ? __('Submit', 'learnpress') : __('Submitting...', 'learnpress') }</button>
+                                onClick={this.submit}>{!submitting ? __('Submit', 'learnpress') : __('Submitting...', 'learnpress')}</button>
                     </div>
 
-                    { totalTime && duration && <Timer  /> }
+                    {totalTime && duration && <Timer/>}
                 </div>
             </div>
         </div>

@@ -1688,148 +1688,157 @@ function learn_press_is_learning_course( $course_id = 0 ) {
 function learn_press_get_color_schemas() {
 	$colors = array(
 		array(
-			'title'     => __( 'Popup links color', 'learnpress' ),
-			'id'        => 'popup-links-color',
+			'title'     => __( 'Primary', 'learnpress' ),
+			'id'        => 'primary-color',
 			'selectors' => array(
 				'body.course-item-popup a' => "color"
 			),
-			'std'       => ''
+			'std'       => '#ffb606'
 		),
 		array(
-			'title'     => __( 'Popup heading background', 'learnpress' ),
-			'id'        => 'popup-heading-bg',
+			'title'     => __( 'Secondary', 'learnpress' ),
+			'id'        => 'secondary-color',
 			'selectors' => array(
-				'#course-item-content-header' => "background-color"
+				'body.course-item-popup a' => "color"
 			),
-			'std'       => '#e7f7ff'
+			'std'       => '#442e66'
 		),
-		array(
-			'title'     => __( 'Popup heading color', 'learnpress' ),
-			'id'        => 'popup-heading-color',
-			'selectors' => array(
-				'#course-item-content-header a'                                      => "color",
-				'#course-item-content-header .course-item-search input'              => "color",
-				'#course-item-content-header .course-item-search input:focus'        => "color",
-				'#course-item-content-header .course-item-search input::placeholder' => "color",
-				'#course-item-content-header .course-item-search button'             => "color",
-			),
-			'std'       => ''
-		),
-		array(
-			'title'     => __( 'Popup curriculum background', 'learnpress' ),
-			'id'        => 'popup-curriculum-background',
-			'selectors' => array(
-				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item' => "background-color",
-				'body.course-item-popup #learn-press-course-curriculum'                                          => "background-color",
-			),
-			'std'       => '#FFF'
-		),
-		array(
-			'title'     => __( 'Popup item color', 'learnpress' ),
-			'id'        => 'popup-item-color',
-			'selectors' => array(
-				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item a' => "color",
-			),
-			'std'       => ''
-		),
-		array(
-			'title'     => __( 'Popup active item background', 'learnpress' ),
-			'id'        => 'popup-active-item-background',
-			'selectors' => array(
-				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item.current' => "background-color",
-			),
-			'std'       => '#F9F9F9'
-		),
-		array(
-			'title'     => __( 'Popup active item color', 'learnpress' ),
-			'id'        => 'popup-active-item-color',
-			'selectors' => array(
-				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item.current a' => "color",
-			),
-			'std'       => ''
-		),
-		array(
-			'title'     => __( 'Popup content background', 'learnpress' ),
-			'id'        => 'popup-content-background',
-			'selectors' => array(
-				'body.course-item-popup #learn-press-content-item' => "background-color"
-			),
-			'std'       => '#FFF'
-		),
-		array(
-			'title'     => __( 'Popup content color', 'learnpress' ),
-			'id'        => 'popup-content-color',
-			'selectors' => array(
-				'body.course-item-popup #learn-press-content-item' => "color"
-			),
-			'std'       => ''
-		),
-		array(
-			'title'     => __( 'Section heading background', 'learnpress' ),
-			'id'        => 'section-heading-bg',
-			'selectors' => array(
-				'body.course-item-popup #learn-press-course-curriculum .section-header' => 'background'
-			)
-		),
-		array(
-			'title'     => __( 'Section heading color', 'learnpress' ),
-			'id'        => 'section-heading-color',
-			'selectors' => array(
-				'body.course-item-popup #learn-press-course-curriculum .section-header' => 'color'
-			)
-		),
-		array(
-			'title'     => __( 'Section heading bottom color', 'learnpress' ),
-			'id'        => 'section-heading-bottom-color',
-			'selectors' => array(
-				'.course-curriculum ul.curriculum-sections .section-header' => 'border-bottom: 1px solid %s'
-			),
-			'std'       => '#00adff'
-		),
-		array(
-			'title'     => __( 'Lines color', 'learnpress' ),
-			'id'        => 'lines-color',
-			'selectors' => array(
-				'#course-item-content-header'                                             => 'border-bottom: 1px solid %s',
-				'.course-curriculum ul.curriculum-sections .section-content .course-item' => 'border-bottom: 1px solid %s',
-				'body.course-item-popup #learn-press-course-curriculum'                   => 'border-right: 1px solid %s',
-				'#course-item-content-header .toggle-content-item'                        => 'border-left: 1px solid %s'
-			),
-			'std'       => 'DDD'
-		),
-		array(
-			'title'     => __( 'Profile cover background', 'learnpress' ),
-			'id'        => 'profile-cover-bg',
-			'selectors' => array(
-				'#learn-press-profile-header' => 'background-color'
-			),
-			'std'       => '#f0defb'
-		),
-		array(
-			'title'     => __( 'Scrollbar', 'learnpress' ),
-			'id'        => 'scroll-bar',
-			'selectors' => array(
-				'.scrollbar-light > .scroll-element.scroll-y .scroll-bar' => 'background-color',
-				'.scrollbar-light > .scroll-element .scroll-element_size' => 'background'
-			),
-			'std'       => '#12b3ff'
-		),
-		array(
-			'title'     => __( 'Progress bar color', 'learnpress' ),
-			'id'        => 'progress-bar-color',
-			'selectors' => array(
-				'.learn-press-progress .progress-bg' => 'background-color'
-			),
-			'std'       => '#DDDDDD'
-		),
-		array(
-			'title'     => __( 'Progress bar active color', 'learnpress' ),
-			'id'        => 'scroll-bar',
-			'selectors' => array(
-				'.learn-press-progress .progress-bg .progress-active' => 'background-color'
-			),
-			'std'       => '#00adff'
-		),
+
+//		array(
+//			'title'     => __( 'Popup heading background', 'learnpress' ),
+//			'id'        => 'popup-heading-bg',
+//			'selectors' => array(
+//				'#course-item-content-header' => "background-color"
+//			),
+//			'std'       => '#e7f7ff'
+//		),
+//		array(
+//			'title'     => __( 'Popup heading color', 'learnpress' ),
+//			'id'        => 'popup-heading-color',
+//			'selectors' => array(
+//				'#course-item-content-header a'                                      => "color",
+//				'#course-item-content-header .course-item-search input'              => "color",
+//				'#course-item-content-header .course-item-search input:focus'        => "color",
+//				'#course-item-content-header .course-item-search input::placeholder' => "color",
+//				'#course-item-content-header .course-item-search button'             => "color",
+//			),
+//			'std'       => ''
+//		),
+//		array(
+//			'title'     => __( 'Popup curriculum background', 'learnpress' ),
+//			'id'        => 'popup-curriculum-background',
+//			'selectors' => array(
+//				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item' => "background-color",
+//				'body.course-item-popup #learn-press-course-curriculum'                                          => "background-color",
+//			),
+//			'std'       => '#FFF'
+//		),
+//		array(
+//			'title'     => __( 'Popup item color', 'learnpress' ),
+//			'id'        => 'popup-item-color',
+//			'selectors' => array(
+//				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item a' => "color",
+//			),
+//			'std'       => ''
+//		),
+//		array(
+//			'title'     => __( 'Popup active item background', 'learnpress' ),
+//			'id'        => 'popup-active-item-background',
+//			'selectors' => array(
+//				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item.current' => "background-color",
+//			),
+//			'std'       => '#F9F9F9'
+//		),
+//		array(
+//			'title'     => __( 'Popup active item color', 'learnpress' ),
+//			'id'        => 'popup-active-item-color',
+//			'selectors' => array(
+//				'body.course-item-popup .course-curriculum ul.curriculum-sections .section-content .course-item.current a' => "color",
+//			),
+//			'std'       => ''
+//		),
+//		array(
+//			'title'     => __( 'Popup content background', 'learnpress' ),
+//			'id'        => 'popup-content-background',
+//			'selectors' => array(
+//				'body.course-item-popup #learn-press-content-item' => "background-color"
+//			),
+//			'std'       => '#FFF'
+//		),
+//		array(
+//			'title'     => __( 'Popup content color', 'learnpress' ),
+//			'id'        => 'popup-content-color',
+//			'selectors' => array(
+//				'body.course-item-popup #learn-press-content-item' => "color"
+//			),
+//			'std'       => ''
+//		),
+//		array(
+//			'title'     => __( 'Section heading background', 'learnpress' ),
+//			'id'        => 'section-heading-bg',
+//			'selectors' => array(
+//				'body.course-item-popup #learn-press-course-curriculum .section-header' => 'background'
+//			)
+//		),
+//		array(
+//			'title'     => __( 'Section heading color', 'learnpress' ),
+//			'id'        => 'section-heading-color',
+//			'selectors' => array(
+//				'body.course-item-popup #learn-press-course-curriculum .section-header' => 'color'
+//			)
+//		),
+//		array(
+//			'title'     => __( 'Section heading bottom color', 'learnpress' ),
+//			'id'        => 'section-heading-bottom-color',
+//			'selectors' => array(
+//				'.course-curriculum ul.curriculum-sections .section-header' => 'border-bottom: 1px solid %s'
+//			),
+//			'std'       => '#00adff'
+//		),
+//		array(
+//			'title'     => __( 'Lines color', 'learnpress' ),
+//			'id'        => 'lines-color',
+//			'selectors' => array(
+//				'#course-item-content-header'                                             => 'border-bottom: 1px solid %s',
+//				'.course-curriculum ul.curriculum-sections .section-content .course-item' => 'border-bottom: 1px solid %s',
+//				'body.course-item-popup #learn-press-course-curriculum'                   => 'border-right: 1px solid %s',
+//				'#course-item-content-header .toggle-content-item'                        => 'border-left: 1px solid %s'
+//			),
+//			'std'       => 'DDD'
+//		),
+//		array(
+//			'title'     => __( 'Profile cover background', 'learnpress' ),
+//			'id'        => 'profile-cover-bg',
+//			'selectors' => array(
+//				'#learn-press-profile-header' => 'background-color'
+//			),
+//			'std'       => '#f0defb'
+//		),
+//		array(
+//			'title'     => __( 'Scrollbar', 'learnpress' ),
+//			'id'        => 'scroll-bar',
+//			'selectors' => array(
+//				'.scrollbar-light > .scroll-element.scroll-y .scroll-bar' => 'background-color',
+//				'.scrollbar-light > .scroll-element .scroll-element_size' => 'background'
+//			),
+//			'std'       => '#12b3ff'
+//		),
+//		array(
+//			'title'     => __( 'Progress bar color', 'learnpress' ),
+//			'id'        => 'progress-bar-color',
+//			'selectors' => array(
+//				'.learn-press-progress .progress-bg' => 'background-color'
+//			),
+//			'std'       => '#DDDDDD'
+//		),
+//		array(
+//			'title'     => __( 'Progress bar active color', 'learnpress' ),
+//			'id'        => 'scroll-bar',
+//			'selectors' => array(
+//				'.learn-press-progress .progress-bg .progress-active' => 'background-color'
+//			),
+//			'std'       => '#00adff'
+//		),
 	);
 
 	return apply_filters( 'learn-press/color-schemas', $colors );

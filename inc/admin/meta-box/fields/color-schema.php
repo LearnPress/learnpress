@@ -74,37 +74,41 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		}
 
 		$schemas = array_values( $schemas );
-		$hide    = ( $v = $settings->get( 'hide_admin_color_schemas' ) ) === 'yes' || !$v ;
+		$hide    = ( $v = $settings->get( 'hide_admin_color_schemas' ) ) === 'yes' || ! $v;
 		?>
 
         <div id="color-schemas"
              class="clearfix-after <?php echo $hide ? 'hide-if-js' : ''; ?>">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
                 <div class="color-schemas<?php echo $k == 0 ? ' current' : ''; ?>">
-                    <table>
-                        <tbody>
+                    <ul>
 						<?php foreach ( $schema as $option ) {
 							$name = 'color_schema[' . $k . '][' . $option['id'] . ']';
 							$std  = ! empty( $option['std'] ) ? $option['std'] : '';
 							?>
-                            <tr>
-                                <th><?php echo $option['title']; ?></th>
-
-                                <td class="color-selector">
+                            <li>
+                                <label>
+									<?php echo $option['title']; ?>
+                                </label>
+                                <div class="color-selector">
                                     <input name="<?php echo $name; ?>" value="<?php echo $std; ?>">
-                                </td>
-                            </tr>
+                                </div>
+                            </li>
 						<?php } ?>
-                        </tbody>
-                    </table>
-                    <p class="buttons">
-                        <button class="button clone-schema"
-                                type="button"><?php _e( 'Save as new', 'learnpress' ); ?></button>
-                        <a class="button reset-schema"
-                           href="<?php echo add_query_arg( 'reset-color', wp_create_nonce( 'reset-color' ) ); ?>"><?php _e( 'Reset', 'learnpress' ); ?></a>
-                        <a class="apply-schema" href=""><?php _e( 'Use this colors', 'learnpress' ); ?></a>
-                        <a class="remove-schema" href=""><?php _e( 'Delete', 'learnpress' ); ?></a>
-                    </p>
+                    </ul>
+                    <!--                    <p class="buttons">-->
+                    <!--                        <button class="button clone-schema"-->
+                    <!--                                type="button">-->
+					<?php //_e( 'Save as new', 'learnpress' ); ?><!--</button>-->
+                    <!--                        <a class="button reset-schema"-->
+                    <!--                           href="-->
+					<?php //echo add_query_arg( 'reset-color', wp_create_nonce( 'reset-color' ) ); ?><!--">-->
+					<?php //_e( 'Reset', 'learnpress' ); ?><!--</a>-->
+                    <!--                        <a class="apply-schema" href="">-->
+					<?php //_e( 'Use this colors', 'learnpress' ); ?><!--</a>-->
+                    <!--                        <a class="remove-schema" href="">-->
+					<?php //_e( 'Delete', 'learnpress' ); ?><!--</a>-->
+                    <!--                    </p>-->
                 </div>
 			<?php } ?>
         </div>
