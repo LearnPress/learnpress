@@ -3266,9 +3266,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       color: #333;
       font-size: 26px; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .media-preview {
-    margin: -20px -20px 40px;
-    position: relative;
-    overflow: hidden; }
+    margin: -20px -20px 40px; }
     #learn-press-course .course-summary-sidebar .course-sidebar-preview .media-preview img {
       max-width: 100%;
       height: auto;
@@ -4823,16 +4821,9 @@ ul.list-table-nav {
     font-weight: bold;
     position: relative;
     z-index: 10; }
-  .lp-badge.featured-course {
-    background: #ffb606;
-    position: absolute;
-    z-index: 100;
-    top: 28px;
-    width: 300px;
-    left: -110px;
-    transform: rotate(-45deg);
-    text-align: center; }
-    .lp-badge.featured-course:before {
+  .lp-badge.featured {
+    background: #ffb606; }
+    .lp-badge.featured:before {
       font-size: 12px;
       content: attr(data-text);
       text-transform: uppercase; }

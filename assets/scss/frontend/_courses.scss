@@ -915,9 +915,8 @@ a {
                     margin-top: -272px;
 
                     .course-summary-sidebar__inner {
-                        box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
                         width: 300px;
-
+                        box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
                         .learn-press-course-wishlist {
                             color: #fff;
                             font-size: 0;
@@ -933,6 +932,32 @@ a {
                                 font-weight: 900;
                                 font-family: "Font Awesome 5 Free";
                                 font-size: 26px;
+                            }
+                        }
+
+                        &>div {
+                            background: #fff;
+                            padding: 20px;
+                            overflow: hidden;
+                            margin-bottom: 15px;
+                            .widgettitle {
+                                font-size: 18px;
+                                font-weight: 500;
+                                margin-bottom: 2px;
+                                margin-top: 0;
+                            }
+                            ul {
+                                list-style: none;
+                                li a {
+                                    line-height: 24px;
+                                    font-weight: 300;
+                                    color: #666;
+                                    font-size: 16px;
+                                    &:hover {
+                                        color: $primary-color;
+                                        box-shadow: unset;
+                                    }
+                                }
                             }
                         }
                     }
