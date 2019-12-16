@@ -3763,6 +3763,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
               font-size: 18px; }
           #popup-course #popup-sidebar .course-curriculum .section .section-header .section-left .section-toggle {
             justify-content: flex-end; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-header .section-left .section-toggle i {
+              color: #666; }
           #popup-course #popup-sidebar .course-curriculum .section .section-header .section-meta {
             padding-top: 4px;
             margin-bottom: -10px; }
@@ -3771,7 +3773,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
           #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item {
             padding: 0 20px;
             background: #f9fafc;
-            margin-bottom: 4px; }
+            margin-bottom: 4px;
+            height: 60px; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item > span {
               display: none; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link:before {
@@ -3793,8 +3796,10 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
                 margin-left: 0; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .course-item-status.trans {
                   position: absolute;
-                  top: 20px;
-                  right: 20px; }
+                  top: 15px;
+                  right: 22px; }
+                  #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .course-item-status.trans:before {
+                    font-weight: 900; }
               #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta {
                 background: transparent;
                 font-size: 12px;
@@ -3802,10 +3807,11 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
                 color: #999;
                 line-height: 1.5; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta:first-child {
-                  margin-left: 0; }
+                  margin-left: 0;
+                  padding-left: 12px; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta:before {
                   font-size: 12px;
-                  font-weight: 400; }
+                  font-weight: 500; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item:before {
               background: transparent;
               top: -1px;
@@ -3881,13 +3887,13 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       margin: 0 auto;
       width: 792px;
       max-width: 100%;
-      padding: 56px 0 80px 0; }
+      padding: 50px 0 80px 0; }
       @media (max-width: 1024px) {
         #popup-course #popup-content #learn-press-content-item .content-item-wrap {
           width: 100%; } }
       #popup-course #popup-content #learn-press-content-item .content-item-wrap .content-item-summary .course-item-title {
         font-size: 30px;
-        font-weight: 500;
+        font-weight: 600;
         color: #333;
         margin-bottom: 24px;
         margin-top: 0; }
@@ -4148,7 +4154,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     width: 25px;
     height: 56px;
     left: 475px;
-    top: 225px;
+    top: 198px;
     z-index: 100;
     -webkit-appearance: none;
     transition: 0.25s;
