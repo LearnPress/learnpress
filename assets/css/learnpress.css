@@ -888,6 +888,22 @@
   @media (max-width: 990px) {
     #learn-press-profile #profile-content {
       width: 100%; } }
+  #learn-press-profile #profile-content #profile-content-dashboard .profile-courses {
+    padding-bottom: 52px; }
+    #learn-press-profile #profile-content #profile-content-dashboard .profile-courses .lp-archive-courses ul.learn-press-courses .course {
+      margin: 0 0 40px 0; }
+    #learn-press-profile #profile-content #profile-content-dashboard .profile-courses .lp-button {
+      display: block;
+      margin: 0 auto;
+      -webkit-border-radius: 9px;
+      -moz-border-radius: 9px;
+      border-radius: 9px;
+      border-color: #442e66;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 13px 34px; }
+      #learn-press-profile #profile-content #profile-content-dashboard .profile-courses .lp-button:hover {
+        border-color: #ffb606; }
 
 #learn-press-profile #dashboard-general-statistic {
   margin-bottom: 60px;

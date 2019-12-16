@@ -246,6 +246,30 @@
         @media (max-width: 990px) {
             width: 100%;
         }
+        #profile-content-dashboard {
+            .profile-courses {
+                padding-bottom: 52px;
+                .lp-archive-courses {
+                    ul.learn-press-courses {
+                        .course {
+                            margin: 0 0 40px 0;
+                        }
+                    }
+                }
+                .lp-button {
+                    display: block;
+                    margin: 0 auto;
+                    @include border-radius(9px);
+                    border-color: $second-color;
+                    font-size: 14px;
+                    font-weight: 500;
+                    padding: 13px 34px;
+                    &:hover {
+                        border-color: $primary-color;
+                    }
+                }
+            }
+        }
     }
 
     #dashboard-general-statistic {
