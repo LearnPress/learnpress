@@ -3732,6 +3732,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
           -webkit-box-orient: vertical;
           overflow: hidden;
           text-overflow: ellipsis; }
+          #popup-course #popup-header .popup-header__inner .course-title a:hover {
+            color: #ffb606; }
         @media (max-width: 768px) {
           #popup-course #popup-header .popup-header__inner .course-title {
             flex: 1; } }
@@ -3780,10 +3782,10 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       #popup-course #popup-sidebar .search-course input[name="s"] {
         background: transparent;
         border: none;
-        color: #DDD;
+        color: #999;
         margin: 6px 0;
         line-height: 1;
-        font-size: 16px;
+        font-size: 14px;
         padding-left: 20px;
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
@@ -3942,12 +3944,11 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
           position: sticky;
           top: 0;
           z-index: 1000;
-          padding: 26px 20px 30px 20px; }
+          padding: 38px 20px 32px 20px; }
           #popup-course #popup-sidebar .course-curriculum .section .section-header .section-left .section-title {
             font-size: 20px;
             font-weight: 500;
             color: #000;
-            /*padding: 0 0 10px 0;*/
             padding: 0 0 4px 0; }
             #popup-course #popup-sidebar .course-curriculum .section .section-header .section-left .section-title .show-desc:before {
               content: '\f0d7';
@@ -3963,16 +3964,17 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
           #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item {
             padding: 0 20px;
             background: #f9fafc;
-            margin-bottom: 4px;
-            height: 60px; }
+            margin-bottom: 4px; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item > span {
               display: none; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link:before {
               vertical-align: unset; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .item-name {
-              padding: 10px 10px 0 5px;
+              padding: 0 10px 0 17px;
               display: block;
-              width: 100%; }
+              width: 100%;
+              font-size: 14px;
+              font-weight: 500; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta {
               display: block;
               width: 100%;
@@ -3996,7 +3998,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
                 line-height: 1.5; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta:first-child {
                   margin-left: 0;
-                  padding-left: 12px; }
+                  padding-left: 17px; }
                 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link .course-item-meta .item-meta:before {
                   font-size: 12px;
                   font-weight: 500; }
