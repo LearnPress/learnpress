@@ -3460,8 +3460,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       .lp-archive-courses .course-summary .course-summary-content .entry-content.content-area .course-summary-sidebar .course-summary-sidebar__inner > div {
         background: #fff;
         padding: 20px;
-        overflow: hidden;
-        margin-bottom: 15px; }
+        overflow: hidden; }
         .lp-archive-courses .course-summary .course-summary-content .entry-content.content-area .course-summary-sidebar .course-summary-sidebar__inner > div .widgettitle {
           font-size: 18px;
           font-weight: 500;
@@ -3493,7 +3492,6 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
 
 #learn-press-course .course-summary-sidebar .course-sidebar-preview {
   background: #fff;
-  overflow: hidden;
   margin-bottom: 15px; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-price {
     text-align: center; }
@@ -4848,7 +4846,8 @@ input[type="password"] {
     top: 10px;
     right: 10px;
     padding: 0;
-    border: 0; }
+    border: 0;
+    z-index: 1; }
     .learnpress-page .lp-button.gray:hover {
       background: transparent;
       text-decoration: none; }
