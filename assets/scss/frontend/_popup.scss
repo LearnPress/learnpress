@@ -408,12 +408,16 @@
                         padding: 0 20px;
                         background: #f9fafc;
                         margin-bottom: 4px;
+                        height: 60px;
                         &>span {
                             display: none;
                         }
                         .section-item-link {
+                            line-height: 1;
+                            height: 60px;
                             &:before {
                                 vertical-align: unset;
+                                padding: 12px 0;
                             }
                             .item-name {
                                 padding: 0 10px 0 17px;
@@ -426,7 +430,7 @@
                                 display: block;
                                 width: 100%;
                                 text-align: left;
-                                padding: 0 0 2px 0;
+                                padding: 6px 0 0 0;
                                 .course-item-status{
                                     background: transparent;
                                     font-size: 12px;
