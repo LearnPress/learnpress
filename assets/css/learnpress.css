@@ -4018,6 +4018,10 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
               background: #eaeaea; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.item-preview .section-item-link .course-item-meta .item-meta:before {
               color: #999; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.has-status.failed .section-item-link .course-item-meta .trans {
+              color: #f02425; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.status-completed .section-item-link .course-item-meta .trans {
+              color: #3bb54a; }
         #popup-course #popup-sidebar .course-curriculum .section.section-empty .section-header {
           margin: 0; }
         #popup-course #popup-sidebar .course-curriculum .section.section-empty .learn-press-message {

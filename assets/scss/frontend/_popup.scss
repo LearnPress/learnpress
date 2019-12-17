@@ -487,6 +487,25 @@
                             }
                         }
 
+                        &.has-status.failed {
+                            .section-item-link {
+                                .course-item-meta {
+                                    .trans {
+                                        color: #f02425;
+                                    }
+                                }
+                            }
+                        }
+                        &.status-completed {
+                            .section-item-link {
+                                .course-item-meta {
+                                    .trans {
+                                        color: $primary-color-course-item-status;
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
 
