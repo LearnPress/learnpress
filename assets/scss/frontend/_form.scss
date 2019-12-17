@@ -30,7 +30,7 @@
                 background: #FFF;
                 font-size: 16px;
                 color: #666;
-                font-weight: 300;
+                font-weight: 400;
                 a {
                     text-decoration: none;
                     border-bottom: none;
@@ -38,6 +38,15 @@
                     &:hover {
                         color: $primary-color;
                     }
+                }
+            }
+
+            .column-status {
+                .result-percent {
+                    font-weight: 500;
+                }
+                .lp-label {
+                    font-weight: 600;
                 }
             }
 
@@ -51,11 +60,9 @@
             font-size: 14px;
             &.nav-text {
                 text-align: left;
-                //padding-left: 0;
             }
             &.nav-pages {
                 text-align: right;
-                //padding-right: 0;
                 .learn-press-pagination {
                     text-align: right;
                 }
@@ -128,9 +135,6 @@
     }
 }
 
-.form-heading {
-
-}
 
 .form-desc {
     font-size: smaller;

@@ -38,7 +38,7 @@
     #profile-sidebar {
         width: 270px;
         float: left;
-        margin-top: -210px;
+        margin-top: -212px;
         box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.1);
         background: #FFF;
         border-radius: 4px;
@@ -273,7 +273,7 @@
     }
 
     #dashboard-general-statistic {
-        margin-bottom: 60px;
+        margin-bottom: 55px;
         border-bottom: 1px solid #DDD;
         padding-bottom: 20px;
     }
@@ -346,7 +346,7 @@
             line-height: 1;
             margin-bottom: 36px;
             font-size: 30px;
-            font-weight: 500;
+            font-weight: 600;
             color: #333;
             text-transform: capitalize;
         }
@@ -365,7 +365,51 @@
     }
 
     .form-field {
-        margin: 0 10px 30px 10px;
+        margin: 0 10px 24px 10px;
+        &>label {
+            font-size: 16px;
+            font-style: italic;
+            margin: 0 0 12px 0;
+        }
+        .form-field-input {
+            input {
+                padding: 8px 20px;
+                font-weight: 400;
+                height: 43px;
+            }
+            textarea {
+                font-weight: 300;
+                line-height: 24px;
+                padding: 9px 20px 16px 20px;
+            }
+            input,
+            textarea {
+                border-color: #ccc;
+                font-size: 14px;
+                color: #999;
+                font-style: italic;
+                &:focus {
+                    border-color: $primary-color;
+                    color: #222;
+                }
+            }
+
+            ::placeholder {
+                color: #999;
+                opacity: 1;
+            }
+
+            :-ms-input-placeholder {
+                color: #999;
+            }
+
+            ::-ms-input-placeholder {
+                color: #999;
+            }
+            .description {
+                margin-top: 15px;
+            }
+        }
     }
 
     .form-field__50 {
@@ -374,13 +418,25 @@
         margin-right: 10px;
     }
 
-    //.form-field__last-name {
-    //    float: right;
-    //    width: calc(50% - 10px);
-    //}
-
     .form-field__clear {
         clear: both;
+    }
+
+    button {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1;
+        padding: 16px 24px;
+        color: #fff;
+        border-radius: 3px;
+        background: $primary-color;
+        &:hover {
+            background: darken($primary-color, 15%);
+        }
+    }
+
+    p {
+        margin: 0;
     }
 }
 

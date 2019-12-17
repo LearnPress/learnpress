@@ -646,13 +646,17 @@
     background: #FFF;
     font-size: 16px;
     color: #666;
-    font-weight: 300; }
+    font-weight: 400; }
     .lp-list-table tbody tr td a, .lp-list-table tbody tr th a {
       text-decoration: none;
       border-bottom: none;
       color: #666; }
       .lp-list-table tbody tr td a:hover, .lp-list-table tbody tr th a:hover {
         color: #ffb606; }
+  .lp-list-table tbody tr .column-status .result-percent {
+    font-weight: 500; }
+  .lp-list-table tbody tr .column-status .lp-label {
+    font-weight: 600; }
   .lp-list-table tbody tr:nth-child(odd) {
     background: #F5F5F5; }
   .lp-list-table .list-table-nav td {
@@ -753,7 +757,7 @@
 #learn-press-profile #profile-sidebar {
   width: 270px;
   float: left;
-  margin-top: -210px;
+  margin-top: -212px;
   box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.1);
   background: #FFF;
   border-radius: 4px; }
@@ -906,7 +910,7 @@
         border-color: #ffb606; }
 
 #learn-press-profile #dashboard-general-statistic {
-  margin-bottom: 60px;
+  margin-bottom: 55px;
   border-bottom: 1px solid #DDD;
   padding-bottom: 20px; }
 
@@ -956,7 +960,7 @@
   line-height: 1;
   margin-bottom: 36px;
   font-size: 30px;
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
   text-transform: capitalize; }
 
@@ -968,7 +972,38 @@
     clear: both; }
 
 #learn-press-profile-basic-information .form-field {
-  margin: 0 10px 30px 10px; }
+  margin: 0 10px 24px 10px; }
+  #learn-press-profile-basic-information .form-field > label {
+    font-size: 16px;
+    font-style: italic;
+    margin: 0 0 12px 0; }
+  #learn-press-profile-basic-information .form-field .form-field-input input {
+    padding: 8px 20px;
+    font-weight: 400;
+    height: 43px; }
+  #learn-press-profile-basic-information .form-field .form-field-input textarea {
+    font-weight: 300;
+    line-height: 24px;
+    padding: 9px 20px 16px 20px; }
+  #learn-press-profile-basic-information .form-field .form-field-input input,
+  #learn-press-profile-basic-information .form-field .form-field-input textarea {
+    border-color: #ccc;
+    font-size: 14px;
+    color: #999;
+    font-style: italic; }
+    #learn-press-profile-basic-information .form-field .form-field-input input:focus,
+    #learn-press-profile-basic-information .form-field .form-field-input textarea:focus {
+      border-color: #ffb606;
+      color: #222; }
+  #learn-press-profile-basic-information .form-field .form-field-input ::placeholder {
+    color: #999;
+    opacity: 1; }
+  #learn-press-profile-basic-information .form-field .form-field-input :-ms-input-placeholder {
+    color: #999; }
+  #learn-press-profile-basic-information .form-field .form-field-input ::-ms-input-placeholder {
+    color: #999; }
+  #learn-press-profile-basic-information .form-field .form-field-input .description {
+    margin-top: 15px; }
 
 #learn-press-profile-basic-information .form-field__50 {
   float: left;
@@ -977,6 +1012,20 @@
 
 #learn-press-profile-basic-information .form-field__clear {
   clear: both; }
+
+#learn-press-profile-basic-information button {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 16px 24px;
+  color: #fff;
+  border-radius: 3px;
+  background: #ffb606; }
+  #learn-press-profile-basic-information button:hover {
+    background: #b98200; }
+
+#learn-press-profile-basic-information p {
+  margin: 0; }
 
 #lp-user-edit-avatar {
   margin-bottom: 50px;
@@ -5032,7 +5081,7 @@ ul.list-table-nav {
   .lp-badge.featured-course {
     background: #ffb606;
     position: absolute;
-    z-index: 100;
+    z-index: 1;
     top: 28px;
     width: 300px;
     left: -110px;

@@ -47,7 +47,7 @@ $user = $profile->get_user();
 
 
         <li class="form-field form-field__first-name form-field__50">
-            <label for="first_name"><?php _e( 'First Name', 'learnpress' ); ?></label>
+            <label for="first_name"><?php _e( 'First name', 'learnpress' ); ?></label>
             <div class="form-field-input">
                 <input type="text" name="first_name" id="first_name"
                        value="<?php echo esc_attr( $user->get_data( 'first_name' ) ); ?>"
@@ -55,7 +55,7 @@ $user = $profile->get_user();
             </div>
         </li>
         <li class="form-field form-field__last-name form-field__50">
-            <label for="last_name"><?php _e( 'Last Name', 'learnpress' ); ?></label>
+            <label for="last_name"><?php _e( 'Last name', 'learnpress' ); ?></label>
             <div class="form-field-input">
                 <input type="text" name="last_name" id="last_name"
                        value="<?php echo esc_attr( $user->get_data( 'last_name' ) ); ?>"

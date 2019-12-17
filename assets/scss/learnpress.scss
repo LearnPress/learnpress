@@ -502,7 +502,7 @@ ul.list-table-nav {
     &.featured-course {
         background: $primary-color;
         position: absolute;
-        z-index: 100;
+        z-index: 1;
         top: 28px;
         width: 300px;
         left: -110px;
