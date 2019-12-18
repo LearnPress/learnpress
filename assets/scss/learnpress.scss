@@ -269,6 +269,10 @@ input[type="password"] {
                     font-weight: 400;
                     color: $primary-color;
                 }
+
+                &:hover {
+                    color: $primary-color;
+                }
             }
         }
     }

@@ -362,6 +362,7 @@
 
             .section {
                 position: relative;
+                padding: 0 0 4px 0;
                 .circle-progress {
                     display: inline-block;
                     width: 24px;
@@ -377,8 +378,8 @@
                     position: sticky;
                     top: 0;
                     z-index: 1000;
-                    padding: 38px 20px 32px 20px;
-
+                    padding: 38px 20px 20px 20px;
+                    height: 94px;
                     .section-left {
                         .section-title {
                             font-size: 20px;
@@ -400,6 +401,11 @@
                                 color: #666;
                             }
                         }
+                    }
+
+                    .section-meta {
+                        padding-top: 6px;
+                        padding-bottom: 0px;
                     }
                 }
                 .section-content {
