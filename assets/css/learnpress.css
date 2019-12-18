@@ -892,31 +892,35 @@
   @media (max-width: 990px) {
     #learn-press-profile #profile-content {
       width: 100%; } }
-  #learn-press-profile #profile-content .profile-courses {
-    padding-bottom: 52px; }
-    #learn-press-profile #profile-content .profile-courses .lp-archive-courses ul.learn-press-courses .course {
-      margin: 0 0 40px 0; }
-      #learn-press-profile #profile-content .profile-courses .lp-archive-courses ul.learn-press-courses .course .course-item .course-content {
-        padding: 20px 20px 12px 20px; }
-        #learn-press-profile #profile-content .profile-courses .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories,
-        #learn-press-profile #profile-content .profile-courses .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-instructor {
-          margin-bottom: 14px; }
-        #learn-press-profile #profile-content .profile-courses .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories {
-          padding: 0; }
-          #learn-press-profile #profile-content .profile-courses .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories a:first-child {
-            padding: 2px 9px; }
-    #learn-press-profile #profile-content .profile-courses .lp-button {
-      display: block;
-      margin: 0 auto;
-      -webkit-border-radius: 9px;
-      -moz-border-radius: 9px;
-      border-radius: 9px;
-      border-color: #442e66;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 13px 34px; }
-      #learn-press-profile #profile-content .profile-courses .lp-button:hover {
-        border-color: #ffb606; }
+  @media (max-width: 767px) {
+    #learn-press-profile #profile-content .learn-press-tabs .learn-press-tabs__nav {
+      display: grid;
+      border: 0; }
+      #learn-press-profile #profile-content .learn-press-tabs .learn-press-tabs__nav .learn-press-tabs__tab {
+        border-right: 0; } }
+  #learn-press-profile #profile-content .lp-archive-courses ul.learn-press-courses .course {
+    margin: 0 0 40px 0; }
+    #learn-press-profile #profile-content .lp-archive-courses ul.learn-press-courses .course .course-item .course-content {
+      padding: 20px 20px 12px 20px; }
+      #learn-press-profile #profile-content .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories,
+      #learn-press-profile #profile-content .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-instructor {
+        margin-bottom: 14px; }
+      #learn-press-profile #profile-content .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories {
+        padding: 0; }
+        #learn-press-profile #profile-content .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories a:first-child {
+          padding: 2px 9px; }
+  #learn-press-profile #profile-content .lp-button {
+    display: block;
+    margin: 0 auto 52px auto;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+    border-color: #442e66;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 13px 34px; }
+    #learn-press-profile #profile-content .lp-button:hover {
+      border-color: #ffb606; }
 
 #learn-press-profile #dashboard-general-statistic {
   margin-bottom: 55px;
@@ -973,56 +977,74 @@
   color: #333;
   text-transform: capitalize; }
 
-#learn-press-profile-basic-information .form-fields {
-  margin: 0 -10px; }
-  #learn-press-profile-basic-information .form-fields:after {
-    content: '';
-    display: block;
-    clear: both; }
-
-#learn-press-profile-basic-information .form-field {
+#learn-press-profile-basic-information .form-field,
+form[name="profile-change-password"] .form-field {
   margin: 0 10px 24px 10px; }
-  #learn-press-profile-basic-information .form-field > label {
+  #learn-press-profile-basic-information .form-field > label,
+  form[name="profile-change-password"] .form-field > label {
     font-size: 16px;
     font-style: italic;
     margin: 0 0 12px 0; }
-  #learn-press-profile-basic-information .form-field .form-field-input input {
+  #learn-press-profile-basic-information .form-field .form-field-input input,
+  form[name="profile-change-password"] .form-field .form-field-input input {
     padding: 8px 20px;
     font-weight: 400;
     height: 43px; }
-  #learn-press-profile-basic-information .form-field .form-field-input textarea {
+  #learn-press-profile-basic-information .form-field .form-field-input textarea,
+  form[name="profile-change-password"] .form-field .form-field-input textarea {
     font-weight: 300;
     line-height: 24px;
     padding: 9px 20px 16px 20px; }
   #learn-press-profile-basic-information .form-field .form-field-input input,
-  #learn-press-profile-basic-information .form-field .form-field-input textarea {
+  #learn-press-profile-basic-information .form-field .form-field-input textarea,
+  form[name="profile-change-password"] .form-field .form-field-input input,
+  form[name="profile-change-password"] .form-field .form-field-input textarea {
     border-color: #ccc;
     font-size: 14px;
     color: #999;
     font-style: italic; }
     #learn-press-profile-basic-information .form-field .form-field-input input:focus,
-    #learn-press-profile-basic-information .form-field .form-field-input textarea:focus {
+    #learn-press-profile-basic-information .form-field .form-field-input textarea:focus,
+    form[name="profile-change-password"] .form-field .form-field-input input:focus,
+    form[name="profile-change-password"] .form-field .form-field-input textarea:focus {
       border-color: #ffb606;
       color: #222; }
-  #learn-press-profile-basic-information .form-field .form-field-input ::placeholder {
+  #learn-press-profile-basic-information .form-field .form-field-input ::placeholder,
+  form[name="profile-change-password"] .form-field .form-field-input ::placeholder {
     color: #999;
     opacity: 1; }
-  #learn-press-profile-basic-information .form-field .form-field-input :-ms-input-placeholder {
+  #learn-press-profile-basic-information .form-field .form-field-input :-ms-input-placeholder,
+  form[name="profile-change-password"] .form-field .form-field-input :-ms-input-placeholder {
     color: #999; }
-  #learn-press-profile-basic-information .form-field .form-field-input ::-ms-input-placeholder {
+  #learn-press-profile-basic-information .form-field .form-field-input ::-ms-input-placeholder,
+  form[name="profile-change-password"] .form-field .form-field-input ::-ms-input-placeholder {
     color: #999; }
-  #learn-press-profile-basic-information .form-field .form-field-input .description {
+  #learn-press-profile-basic-information .form-field .form-field-input .description,
+  form[name="profile-change-password"] .form-field .form-field-input .description {
     margin-top: 15px; }
+  @media (max-width: 767px) {
+    #learn-press-profile-basic-information .form-field,
+    form[name="profile-change-password"] .form-field {
+      margin: 0 0 24px 0; } }
 
-#learn-press-profile-basic-information .form-field__50 {
+#learn-press-profile-basic-information .form-field__50,
+form[name="profile-change-password"] .form-field__50 {
   float: left;
   width: calc(50% - 20px);
   margin-right: 10px; }
+  @media (max-width: 767px) {
+    #learn-press-profile-basic-information .form-field__50,
+    form[name="profile-change-password"] .form-field__50 {
+      width: 100%;
+      margin: 0 0 24px 0;
+      float: unset; } }
 
-#learn-press-profile-basic-information .form-field__clear {
+#learn-press-profile-basic-information .form-field__clear,
+form[name="profile-change-password"] .form-field__clear {
   clear: both; }
 
-#learn-press-profile-basic-information button {
+#learn-press-profile-basic-information button,
+form[name="profile-change-password"] button {
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
@@ -1030,11 +1052,23 @@
   color: #fff;
   border-radius: 3px;
   background: #ffb606; }
-  #learn-press-profile-basic-information button:hover {
+  #learn-press-profile-basic-information button:hover,
+  form[name="profile-change-password"] button:hover {
     background: #b98200; }
 
-#learn-press-profile-basic-information p {
+#learn-press-profile-basic-information p,
+form[name="profile-change-password"] p {
   margin: 0; }
+
+#learn-press-profile-basic-information .form-fields {
+  margin: 0 -10px; }
+  #learn-press-profile-basic-information .form-fields:after {
+    content: '';
+    display: block;
+    clear: both; }
+  @media (max-width: 767px) {
+    #learn-press-profile-basic-information .form-fields {
+      margin: 0; } }
 
 #lp-user-edit-avatar {
   margin-bottom: 50px;

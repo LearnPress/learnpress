@@ -246,41 +246,50 @@
         @media (max-width: 990px) {
             width: 100%;
         }
-        .profile-courses {
-            padding-bottom: 52px;
-            .lp-archive-courses {
-                ul.learn-press-courses {
-                    .course {
-                        margin: 0 0 40px 0;
-                        .course-item {
-                            .course-content {
-                                padding: 20px 20px 12px 20px;
-                                .course-categories,
-                                .course-instructor {
-                                    margin-bottom: 14px;
-                                }
-                                .course-categories {
-                                    padding: 0;
-                                    a:first-child {
-                                        padding: 2px 9px;
-                                    }
+        @media (max-width: 767px) {
+            .learn-press-tabs {
+                .learn-press-tabs__nav {
+                    display: grid;
+                    border: 0;
+                    .learn-press-tabs__tab {
+                        border-right: 0;
+                    }
+                }
+            }
+        }
+
+        .lp-archive-courses {
+            ul.learn-press-courses {
+                .course {
+                    margin: 0 0 40px 0;
+                    .course-item {
+                        .course-content {
+                            padding: 20px 20px 12px 20px;
+                            .course-categories,
+                            .course-instructor {
+                                margin-bottom: 14px;
+                            }
+                            .course-categories {
+                                padding: 0;
+                                a:first-child {
+                                    padding: 2px 9px;
                                 }
                             }
                         }
                     }
                 }
             }
-            .lp-button {
-                display: block;
-                margin: 0 auto;
-                @include border-radius(9px);
-                border-color: $second-color;
-                font-size: 14px;
-                font-weight: 500;
-                padding: 13px 34px;
-                &:hover {
-                    border-color: $primary-color;
-                }
+        }
+        .lp-button {
+            display: block;
+            margin: 0 auto 52px auto;
+            @include border-radius(9px);
+            border-color: $second-color;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 13px 34px;
+            &:hover {
+                border-color: $primary-color;
             }
         }
     }
@@ -366,16 +375,8 @@
     }
 }
 
-#learn-press-profile-basic-information {
-    .form-fields {
-        margin: 0 -10px;
-
-        &:after {
-            content: '';
-            display: block;
-            clear: both;
-        }
-    }
+#learn-press-profile-basic-information,
+form[name="profile-change-password"] {
 
     .form-field {
         margin: 0 10px 24px 10px;
@@ -423,12 +424,20 @@
                 margin-top: 15px;
             }
         }
+        @media (max-width: 767px) {
+            margin: 0 0 24px 0;
+        }
     }
 
     .form-field__50 {
         float: left;
         width: calc(50% - 20px);
         margin-right: 10px;
+        @media (max-width: 767px) {
+            width: 100%;
+            margin: 0 0 24px 0;
+            float: unset;
+        }
     }
 
     .form-field__clear {
@@ -453,6 +462,21 @@
     }
 }
 
+#learn-press-profile-basic-information {
+    .form-fields {
+        margin: 0 -10px;
+
+        &:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        @media (max-width: 767px) {
+            margin: 0;
+        }
+    }
+}
 #lp-user-edit-avatar {
     margin-bottom: 50px;
     position: relative;
