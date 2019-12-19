@@ -33,15 +33,15 @@ $user = LP_Profile::instance()->get_user();
             </ul>
         </div>
 		<?php
-		if ( isset( $max_num_pages ) ) {
+		if ( isset( $max_num_pages ) && $max_num_pages > 1 ) {
 			?>
-            <button data-type="latest" data-user="<?php echo $user->get_id(); ?>"
-                    data-num-pages="<?php echo $max_num_pages; ?>" data-container="learn-press-profile-latest-courses"
-                    data-template="profile/dashboard/latest-courses"
-                    class="lp-button btn-load-more-courses"><?php esc_html_e( 'View More', 'learnpress' ); ?></button>
-			<?php
-		}
-
+            <button data-container="learn-press-profile-latest-courses"
+                    data-pages="<?php echo $max_num_pages ?>"
+                    data-url="<?php echo esc_url( '?lp-ajax=load-more-courses&type=latest&user=' . $user->get_id() ); ?>"
+                    class="lp-button btn-load-more-courses btn-ajax-off">
+                <i class="fas fa-spinner icon"></i>
+				<?php esc_html_e( 'View More', 'learnpress' ); ?></button>
+		<?php }
 	} else {
 		learn_press_display_message( __( 'There is no courses.', 'learnpress' ) );
 	} // End if !empty( $courses ) ?>

@@ -49,11 +49,11 @@ class LP_Thumbnail_Helper {
 		}
 
 		if ( ! $image ) {
-			if ( 'course_thumbnail' == $size ) {
+			//if ( 'course_thumbnail' == $size ) {
 				$image = LP()->image( 'no-image.png' );
-			} else {
-				$image = LP()->image( 'placeholder-500x300' );
-			}
+			//} else {
+				//$image = LP()->image( 'placeholder-500x300' );
+			//}
 			$image = sprintf( '<img src="%s" %s>', $image, '' );
 		}
 

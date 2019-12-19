@@ -15,45 +15,42 @@
 defined( 'ABSPATH' ) || exit();
 
 $profile       = learn_press_get_profile();
+$user          = LP_Profile::instance()->get_user();
 $filter_status = LP_Request::get_string( 'filter-status' );
 $query         = $profile->query_courses( 'own', array( 'status' => $filter_status ) );
-
+$counts        = $query['counts'];
 ?>
 
 <div class="learn-press-subtab-content">
 
 	<?php if ( $filters = $profile->get_own_courses_filters( $filter_status ) ) { ?>
         <ul class="learn-press-filters">
-			<?php foreach ( $filters as $class => $link ) { ?>
-                <li class="<?php echo $class; ?>">
-					<?php
-					echo $link;
-					?>
-					<?php
-					$count = false;
-					if ( $class === 'all' ) {
-						$count = 0;
-						foreach ( $filters as $a => $b ) {
-							$count += $query[ $a ] !== false ? $query[ $a ] : 0;
+			<?php foreach ( $filters as $class => $link ) {
+				$count = ! empty( $counts[ $class ] ) ? absint( $counts[ $class ] ) : false;
 
-						}
-					} else {
-						$count = $query[ $class ];
-					}
-					if ( $count !== false ) {
-						printf( '<span class="count">%s</span>', $count );
-					}
+				if ( $class !== 'all' && $count === $counts['all'] ) {
+					continue;
+				}
+
+				if ( $count ) {
 					?>
-                </li>
-			<?php } ?>
+                    <li class="<?php echo $class; ?>">
+						<?php
+						printf( '%s <span class="count">%s</span>', $link, $count );
+						?>
+                    </li>
+				<?php }
+			} ?>
         </ul>
-	<?php } ?>
+		<?php
+	} ?>
 
 	<?php if ( ! $query['total'] ) {
 		learn_press_display_message( __( 'No courses!', 'learnpress' ) );
 	} else { ?>
         <div class="lp-archive-courses">
-            <ul class="learn-press-courses profile-courses-list" data-layout="grid" data-size="3">
+            <ul class="learn-press-courses profile-courses-list" id="learn-press-profile-created-courses"
+                data-layout="grid" data-size="3">
 				<?php
 				global $post;
 				foreach ( $query['items'] as $item ) {
@@ -66,7 +63,17 @@ $query         = $profile->query_courses( 'own', array( 'status' => $filter_stat
 				?>
             </ul>
         </div>
-		<?php $query->get_nav( '', true, $profile->get_current_url() ); ?>
 
+		<?php
+		$num_pages    = $query->get_pages();
+		$current_page = $query->get_paged();
+		if ( $num_pages > 1 && $current_page < $num_pages ) { ?>
+            <button data-container="learn-press-profile-enrolled-courses"
+                    data-pages="<?php echo $num_pages ?>"
+                    data-paged="<?php echo $current_page; ?>"
+                    class="lp-button btn-load-more-courses btn-ajax-off">
+                <i class="fas fa-spinner icon"></i>
+				<?php esc_html_e( 'View More', 'learnpress' ); ?></button>
+		<?php } ?>
 	<?php } ?>
 </div>

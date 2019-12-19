@@ -92,21 +92,32 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$paged    = LP_Request::get_int( 'current_page', 1 );
 			$template = LP_Request::get( 'template' );
 
-			$user       = learn_press_get_user( $user_id );
-			$query_args = array(
-				'paginate' => true,
-				'return'   => 'ids',
-				'author'   => $user->get_id(),
-				'paged'    => $paged
-			);
+			$user          = learn_press_get_user( $user_id );
+			$template_args = array();
 
-			if ( 'featured' === $type ) {
-				$query_args['featured'] = 1;
+			if ( in_array( $type, array( 'featured', 'latest' ) ) ) {
+				$query_args = array(
+					'paginate' => true,
+					'return'   => 'ids',
+					'author'   => $user->get_id(),
+					'paged'    => $paged
+				);
+
+				if ( 'featured' === $type ) {
+					$query_args['featured'] = 1;
+				}
+				$query         = new LP_Course_Query( $query_args );
+				$template_args = (array) $query->get_courses();
+				print_r($query->get_courses());
+				$template      = "profile/dashboard/{$type}-courses";
+
+			} else {
+				$profile       = LP_Profile::instance( $user_id );
+				$filter_status = LP_Request::get_string( 'filter-status' );
+				$query         = $profile->query_courses( 'purchased', array( 'status' => $filter_status ) );
 			}
 
-			$query = new LP_Course_Query( $query_args );
-
-			learn_press_get_template( $template, (array) $query->get_courses() );
+			learn_press_get_template( $template, $template_args );
 
 			die();
 		}

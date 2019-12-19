@@ -67,7 +67,8 @@ input[type="password"] {
     width: 1170px;
     max-width: 90%;
     margin: 0 auto;
-    &>h2 {
+
+    & > h2 {
         font-size: 30px;
         margin-top: 0;
         font-weight: 600;
@@ -169,6 +170,20 @@ input[type="password"] {
             background: $primary-color;
             border-color: $primary-color;
             color: #fff;
+        }
+
+        &.btn-ajax-off {
+            .icon {
+                display: none;
+            }
+        }
+
+        &.btn-ajax-on {
+            .icon {
+                display: inline-block;
+                margin-right: 5px;
+                @include animation(lp-rotating 1s linear infinite);
+            }
         }
     }
 }

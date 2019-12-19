@@ -1401,7 +1401,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$args  = wp_parse_args(
 			$args, array(
 				'paged'  => $paged,
-				'limit'  => 10,
+				'limit'  => LP()->settings()->get('archive_course_limit'),
 				'status' => ''
 			)
 		);
@@ -1454,19 +1454,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 
 				$where = $where . $wpdb->prepare( " AND post_type = %s AND post_author = %d", LP_COURSE_CPT, $user_id );
-				$sql   = "
+				$sql = "
 					SELECT SQL_CALC_FOUND_ROWS ID
 					FROM {$wpdb->posts} c
 					{$where} 
 					LIMIT {$offset}, {$limit}
 				";
 
-				$items = $wpdb->get_results( $sql );
-
+				$items       = $wpdb->get_results( $sql );
+				$count       = $wpdb->get_var( "SELECT FOUND_ROWS()" );
 				$all_courses = wp_count_posts( 'lp_course' );
 
 				if ( $items ) {
-					$count      = $wpdb->get_var( "SELECT FOUND_ROWS()" );
 					$course_ids = wp_list_pluck( $items, 'ID' );
 					LP_Helper::cache_posts( $course_ids );
 
@@ -1477,8 +1476,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 
-				$courses['publish'] = $all_courses->publish;
-				$courses['pending'] = $all_courses->pending;
+				$courses['counts'] = array(
+					'all'     => $all_courses->publish + $all_courses->pending,
+					'publish' => $all_courses->publish,
+					'pending' => $all_courses->pending
+				);
 			}
 			catch ( Exception $ex ) {
 				learn_press_add_message( $ex->getMessage() );
@@ -1513,7 +1515,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$args,
 			array(
 				'paged'  => $paged,
-				'limit'  => 10,
+				'limit'  => LP()->settings()->get('archive_course_limit'),
 				'status' => ''
 			)
 		);
