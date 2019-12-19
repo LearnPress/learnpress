@@ -95,6 +95,7 @@
             > li {
                 border-top: 1px solid rgba(204, 204, 204, 0.3);
                 position: relative;
+                margin: 0;
 
                 a {
                     font-size: 16px;
@@ -131,12 +132,15 @@
                 }
 
                 ul {
-                    a {
-                        border-bottom: 1px solid #F9F9F9;
+                    li {
+                        margin: 0;
+                        a {
+                            border-bottom: 1px solid #F9F9F9;
 
-                        &:hover {
-                            color: $primary-color;
-                            background: #FFF;
+                            &:hover {
+                                color: $primary-color;
+                                background: #FFF;
+                            }
                         }
                     }
                 }
@@ -377,7 +381,6 @@
 
 #learn-press-profile-basic-information,
 form[name="profile-change-password"] {
-
     .form-field {
         margin: 0 10px 24px 10px;
         &>label {
@@ -390,6 +393,10 @@ form[name="profile-change-password"] {
                 padding: 8px 20px;
                 font-weight: 400;
                 height: 43px;
+
+            }
+            input[type="password"] {
+                padding: 8px 20px;
             }
             textarea {
                 font-weight: 300;
@@ -405,6 +412,7 @@ form[name="profile-change-password"] {
                 &:focus {
                     border-color: $primary-color;
                     color: #222;
+                    outline: 0;
                 }
             }
 

@@ -804,7 +804,8 @@
   padding: 0; }
   #learn-press-profile #profile-nav .lp-profile-nav-tabs > li {
     border-top: 1px solid rgba(204, 204, 204, 0.3);
-    position: relative; }
+    position: relative;
+    margin: 0; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li a {
       font-size: 16px;
       display: block;
@@ -831,11 +832,13 @@
         font-size: 10px;
         float: right;
         margin-right: 4px; }
-    #learn-press-profile #profile-nav .lp-profile-nav-tabs > li ul a {
-      border-bottom: 1px solid #F9F9F9; }
-      #learn-press-profile #profile-nav .lp-profile-nav-tabs > li ul a:hover {
-        color: #ffb606;
-        background: #FFF; }
+    #learn-press-profile #profile-nav .lp-profile-nav-tabs > li ul li {
+      margin: 0; }
+      #learn-press-profile #profile-nav .lp-profile-nav-tabs > li ul li a {
+        border-bottom: 1px solid #F9F9F9; }
+        #learn-press-profile #profile-nav .lp-profile-nav-tabs > li ul li a:hover {
+          color: #ffb606;
+          background: #FFF; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.active > a:after, #learn-press-profile #profile-nav .lp-profile-nav-tabs > li:hover > a:after {
       content: "\f053"; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.active a {
@@ -990,6 +993,9 @@ form[name="profile-change-password"] .form-field {
     padding: 8px 20px;
     font-weight: 400;
     height: 43px; }
+  #learn-press-profile-basic-information .form-field .form-field-input input[type="password"],
+  form[name="profile-change-password"] .form-field .form-field-input input[type="password"] {
+    padding: 8px 20px; }
   #learn-press-profile-basic-information .form-field .form-field-input textarea,
   form[name="profile-change-password"] .form-field .form-field-input textarea {
     font-weight: 300;
@@ -1008,7 +1014,8 @@ form[name="profile-change-password"] .form-field {
     form[name="profile-change-password"] .form-field .form-field-input input:focus,
     form[name="profile-change-password"] .form-field .form-field-input textarea:focus {
       border-color: #ffb606;
-      color: #222; }
+      color: #222;
+      outline: 0; }
   #learn-press-profile-basic-information .form-field .form-field-input ::placeholder,
   form[name="profile-change-password"] .form-field .form-field-input ::placeholder {
     color: #999;
@@ -2857,7 +2864,8 @@ a {
       height: auto;
       line-height: 1px; }
   .lp-archive-courses .learn-press-courses-header {
-    float: left; }
+    float: left;
+    padding-top: 4px; }
     .lp-archive-courses .learn-press-courses-header h1 {
       font-weight: 600;
       font-size: 30px;
@@ -2989,7 +2997,7 @@ a {
               color: #666;
               display: none; }
               .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-categories a:first-child {
-                padding: 5px 9px 4px 9px;
+                padding: 2px 9px;
                 border-radius: 5px;
                 background: rgba(204, 204, 204, 0.3);
                 margin-left: 0;
@@ -3009,7 +3017,6 @@ a {
               opacity: 0.5; }
           .lp-archive-courses ul.learn-press-courses .course .course-item .course-content .course-instructor {
             float: left;
-            padding-top: 5px;
             font-size: 14px;
             font-weight: 300;
             text-transform: capitalize;
@@ -3084,6 +3091,7 @@ a {
               .lp-archive-courses ul.learn-press-courses[data-layout="list"] .course .course-item .course-wrap-thumbnail {
                 width: 100%; } }
           .lp-archive-courses ul.learn-press-courses[data-layout="list"] .course .course-item .course-content {
+            padding-top: 5px;
             width: calc(100% - 35.8% - 76px);
             float: right; }
             @media (max-width: 1200px) {
@@ -3188,7 +3196,7 @@ a {
       .lp-archive-courses ul.learn-press-courses[data-layout="grid"] .course .course-item:hover {
         box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.2); }
       .lp-archive-courses ul.learn-press-courses[data-layout="grid"] .course .course-item .course-content {
-        padding: 20px;
+        padding: 20px 20px 12px 20px;
         flex-grow: 1;
         border: 1px solid #f0f0f0;
         border-top: 0; }
@@ -3204,7 +3212,7 @@ a {
           .lp-archive-courses ul.learn-press-courses[data-layout="grid"] .course .course-item .course-content .course-info .course-excerpt {
             display: none; }
           .lp-archive-courses ul.learn-press-courses[data-layout="grid"] .course .course-item .course-content .course-info .course-footer {
-            padding-top: 20px;
+            padding-top: 18px;
             border-top: 1px solid rgba(153, 153, 153, 0.2); }
             .lp-archive-courses ul.learn-press-courses[data-layout="grid"] .course .course-item .course-content .course-info .course-footer .course-students {
               float: left;
@@ -3233,7 +3241,7 @@ a {
 
 .lp-courses-bar {
   display: flex;
-  margin-bottom: 30px;
+  margin-bottom: 48px;
   float: right; }
   @media (max-width: 767px) {
     .lp-courses-bar {
@@ -3310,12 +3318,12 @@ a {
         margin: 8px 6px;
         font-family: "Font Awesome 5 Free";
         font-weight: 900; }
-      .lp-courses-bar .switch-layout .switch-btn.grid {
-        margin-right: 10px; }
-        .lp-courses-bar .switch-layout .switch-btn.grid:before {
-          content: "\f00a"; }
-      .lp-courses-bar .switch-layout .switch-btn.list:before {
-        content: "\f03a"; }
+      .lp-courses-bar .switch-layout .switch-btn.grid:before {
+        content: "\f00a"; }
+      .lp-courses-bar .switch-layout .switch-btn.list {
+        margin-left: 3px; }
+        .lp-courses-bar .switch-layout .switch-btn.list:before {
+          content: "\f03a"; }
 
 input[type="radio"]:nth-child(1):checked ~ .switch-btn:nth-child(2) {
   background: #f5f5f5; }
@@ -3374,7 +3382,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
  *  Single courses page
 */
 .lp-archive-courses .course-summary .course-summary-content .course-detail-info {
-  padding: 40px 0 22px 0;
+  padding: 40px 0 10px 0;
   background: #442e66;
   color: #fff;
   margin-bottom: 60px; }
@@ -3383,7 +3391,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-title {
       font-size: 30px;
       font-weight: 500;
-      margin-bottom: 32px;
+      margin-bottom: 42px;
       line-height: 1; }
     .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-meta.course-meta-primary {
       margin-bottom: 36px; }
@@ -4855,7 +4863,8 @@ input[type="password"] {
   color: #333;
   list-style: none; }
   .learn-press-breadcrumb li {
-    display: inline-block; }
+    display: inline-block;
+    margin: 0; }
     .learn-press-breadcrumb li a {
       color: #666;
       font-weight: 300; }

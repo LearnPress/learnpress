@@ -41,6 +41,7 @@ a {
 
     .learn-press-courses-header {
         float: left;
+        padding-top: 4px;
 
         h1 {
             font-weight: 600;
@@ -213,7 +214,7 @@ a {
                             display: none;
 
                             &:first-child {
-                                padding: 5px 9px 4px 9px;
+                                padding: 2px 9px;
                                 border-radius: 5px;
                                 background: rgba(204, 204, 204, 0.3);
                                 margin-left: 0;
@@ -241,7 +242,6 @@ a {
 
                     .course-instructor {
                         float: left;
-                        padding-top: 5px;
                         font-size: 14px;
                         font-weight: 300;
                         text-transform: capitalize;
@@ -346,6 +346,7 @@ a {
                     }
 
                     .course-content {
+                        padding-top: 5px;
                         width: calc(100% - 35.8% - 76px);
                         float: right;
                         @media (max-width: 1200px) {
@@ -507,7 +508,7 @@ a {
                     }
 
                     .course-content {
-                        padding: 20px;
+                        padding: 20px 20px 12px 20px;
                         flex-grow: 1;
                         border: 1px solid #f0f0f0;
                         border-top: 0;
@@ -531,7 +532,7 @@ a {
                             }
 
                             .course-footer {
-                                padding-top: 20px;
+                                padding-top: 18px;
                                 border-top: 1px solid rgba(153, 153, 153, 0.2);
 
                                 .course-students {
@@ -582,7 +583,7 @@ a {
 
 .lp-courses-bar {
     display: flex;
-    margin-bottom: 30px;
+    margin-bottom: 48px;
     float: right;
     @media (max-width: 767px) {
         justify-content: space-between;
@@ -684,15 +685,16 @@ a {
             }
 
             &.grid {
-                margin-right: 10px;
-
                 &:before {
                     content: "\f00a";
                 }
             }
 
-            &.list:before {
-                content: "\f03a";
+            &.list {
+                margin-left: 3px;
+                &:before {
+                    content: "\f03a";
+                }
             }
         }
     }
@@ -721,7 +723,7 @@ a {
     .course-summary {
         .course-summary-content {
             .course-detail-info {
-                padding: 40px 0 22px 0;
+                padding: 40px 0 10px 0;
                 background: $second-color;
                 color: #fff;
                 margin-bottom: 60px;
@@ -732,7 +734,7 @@ a {
                     .course-title {
                         font-size: 30px;
                         font-weight: 500;
-                        margin-bottom: 32px;
+                        margin-bottom: 42px;
                         line-height: 1;
                     }
 
