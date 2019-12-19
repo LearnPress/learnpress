@@ -21,11 +21,6 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
 
 <div class="learn-press-subtab-content">
 	<?php if ( $filters = $profile->get_quizzes_filters( $filter_status ) ) { ?>
-<!--        <ul class="lp-sub-menu">-->
-<!--			--><?php //foreach ( $filters as $class => $link ) { ?>
-<!--                <li class="--><?php //echo $class; ?><!--">--><?php //echo $link; ?><!--</li>-->
-<!--			--><?php //} ?>
-<!--        </ul>-->
 
         <ul class="learn-press-filters">
 			<?php foreach ( $filters as $class => $link ) { ?>
@@ -51,7 +46,9 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
                 </li>
 			<?php } ?>
         </ul>
-	<?php } ?>
+	<?php
+	learn_press_debug($filters, $query);
+	} ?>
 
 	<?php if ( $query['items'] ) { ?>
         <table class="lp-list-table profile-list-quizzes profile-list-table">

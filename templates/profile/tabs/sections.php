@@ -72,7 +72,9 @@ $active_tab   = '';
 			?>
 
             <li class="<?php echo join( ' ', $classes ); ?>">
-                <label for="<?php echo $unique_group . '__' . $section_key; ?>"><?php echo $section_data['title']; ?></label>
+                <!--                <label for="--><?php //echo $unique_group . '__' . $section_key; ?><!--">-->
+				<?php //echo $section_data['title']; ?><!--</label>-->
+                <label><a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a></label>
             </li>
 
 		<?php } ?>

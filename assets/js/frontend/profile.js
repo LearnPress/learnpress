@@ -492,33 +492,36 @@
   }).on('click', '.btn-load-more-courses', function (event) {
     var $button = _$(this);
 
-    var type = $button.data('type') || 1;
-    var user = $button.data('user') || 1;
     var paged = $button.data('paged') || 1;
-    var num_pages = $button.data('num-pages') || 1;
+    var pages = $button.data('pages') || 1;
     var container = $button.data('container');
-    var template = $button.data('template');
 
     var $container = _$('#' + container);
 
+    var url = $button.data('url');
     paged++;
-    $button.data('paged', paged).prop('disabled', true);
+    $button.data('paged', paged).prop('disabled', true).removeClass('btn-ajax-off').addClass('btn-ajax-on');
+
+    if (!url) {
+      if (window.location.href.match(/\/([0-9]+)\//)) {
+        url = window.location.href.replace(/\/([0-9]+)\//, paged);
+      } else {
+        url = window.location.href + paged;
+      }
+    } else {
+      url = url.addQueryVar('current_page', paged);
+    }
 
     _$.ajax({
-      url: '?lp-ajax=load-more-courses',
-      data: {
-        type: type,
-        user: user,
-        current_page: paged,
-        template: template
-      },
+      url: url,
+      data: $button.data('args'),
       success: function success(response) {
         $container.append(_$(response).find('#' + container).children());
 
-        if (paged >= num_pages) {
+        if (paged >= pages) {
           $button.remove();
         } else {
-          $button.prop('disabled', false);
+          $button.prop('disabled', false).removeClass('btn-ajax-on').addClass('btn-ajax-off');
         }
       }
     });

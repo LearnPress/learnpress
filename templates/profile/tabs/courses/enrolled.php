@@ -26,34 +26,26 @@ $counts        = $query['counts'];
 
 	<?php if ( $filters = $profile->get_purchased_courses_filters( $filter_status ) ) { ?>
         <ul class="learn-press-filters">
-			<?php foreach ( $filters as $class => $link ) { ?>
-                <li class="<?php echo $class; ?>">
-					<?php
-					echo $link;
-					?>
-					<?php
-					$count = false;
-					if ( $class === 'all' ) {
-						$count = 0;
-						foreach ( $filters as $a => $b ) {
-							$count += $query[ $a ] !== false ? $query[ $a ] : 0;
+			<?php foreach ( $filters as $class => $link ) {
+				$count = ! empty( $counts[ $class ] ) ? $counts[ $class ] : false;
 
-						}
-					} else {
-						$count = $query[ $class ];
-					}
-					if ( $count !== false ) {
-						printf( '<span class="count">%s</span>', $count );
-					}
+				if ( $count !== false ) {
+
 					?>
-                </li>
-			<?php } ?>
+                    <li class="<?php echo $class; ?>">
+						<?php
+						echo sprintf( '%s <span class="count">%s</span>', $link, $count );
+						?>
+                    </li>
+				<?php }
+			} ?>
         </ul>
-	<?php } ?>
+		<?php
+	} ?>
 
 	<?php if ( $query['items'] ) { ?>
         <div class="lp-archive-courses">
-            <ul class="learn-press-courses profile-courses-list" data-layout="grid" data-size="3">
+            <ul class="learn-press-courses profile-courses-list" id="learn-press-profile-enrolled-courses" data-layout="grid" data-size="3">
 				<?php
 				global $post;
 				foreach ( $query['items'] as $item ) {
@@ -67,6 +59,17 @@ $counts        = $query['counts'];
             </ul>
         </div>
 
+		<?php
+		$num_pages    = $query->get_pages();
+		$current_page = $query->get_paged();
+		if ( $num_pages > 1 && $current_page < $num_pages ) { ?>
+            <button data-container="learn-press-profile-enrolled-courses"
+                    data-pages="<?php echo $num_pages ?>"
+                    data-paged="<?php echo $current_page; ?>"
+                    class="lp-button btn-load-more-courses btn-ajax-off">
+                <i class="fas fa-spinner icon"></i>
+                <?php esc_html_e( 'View More', 'learnpress' ); ?></button>
+		<?php } ?>
 	<?php } else {
 		learn_press_display_message( __( 'No courses!', 'learnpress' ) );
 	} ?>

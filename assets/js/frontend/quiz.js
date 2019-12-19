@@ -2024,7 +2024,7 @@ function (_Component) {
 
       var title = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getData('title');
 
-      if ('no' === confirm(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('<p>Are you sure to submit quiz:</p><strong>%s</strong>?', 'learnpress'), title), _this.submit)) {
+      if ('no' === confirm(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Are you sure to submit quiz?', 'learnpress'), _this.submit)) {
         return;
       }
 

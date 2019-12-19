@@ -35,12 +35,14 @@ $user = LP_Profile::instance()->get_user();
 		<?php
 		if ( isset( $max_num_pages ) && $max_num_pages > 1 ) {
 			?>
-            <button data-type="featured" data-user="<?php echo $user->get_id(); ?>"
-                    data-num-pages="<?php echo $max_num_pages; ?>" data-container="learn-press-profile-featured-courses"
-                    data-template="profile/dashboard/featured-courses"
-                    class="lp-button btn-load-more-courses"><?php esc_html_e( 'View More', 'learnpress' ); ?></button>
-			<?php
-		}
+            <button data-container="learn-press-profile-featured-courses"
+                    data-pages="<?php echo $max_num_pages ?>"
+                    data-url="<?php echo esc_url( '?lp-ajax=load-more-courses&type=featured&user=' . $user->get_id() ); ?>"
+                    class="lp-button btn-load-more-courses btn-ajax-off">
+                <i class="fas fa-spinner icon"></i>
+				<?php esc_html_e( 'View More', 'learnpress' ); ?></button>
+		<?php }
+
 	} else {
 		learn_press_display_message( __( 'There is no featured courses.', 'learnpress' ) );
 	} // End if !empty( $courses ) ?>

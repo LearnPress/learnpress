@@ -846,16 +846,6 @@
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li:last-child {
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px; }
-    #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.wishlist > a:before {
-      content: '\f004';
-      font-size: 12px;
-      position: absolute;
-      left: 25px;
-      color: #ffb606;
-      font-weight: 900;
-      font-family: "Font Awesome 5 Free"; }
-    #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.wishlist:hover a:before {
-      color: #fff; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.logout > a:after {
       display: none; }
   #learn-press-profile #profile-nav .lp-profile-nav-tabs li > a {
@@ -866,13 +856,13 @@
     position: absolute;
     left: 100%;
     background: #FFF;
-    box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.05);
     list-style: none;
     margin: 0;
     padding: 0;
     top: 0;
     min-width: 150px;
-    z-index: 10; }
+    z-index: 1000; }
   #learn-press-profile #profile-nav .lp-profile-nav-tabs li.active, #learn-press-profile #profile-nav .lp-profile-nav-tabs li:hover {
     background: #ffb606; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs li.active > a, #learn-press-profile #profile-nav .lp-profile-nav-tabs li:hover > a {
@@ -1218,6 +1208,11 @@ form[name="profile-change-password"] p {
     color: #ffb608; }
   #lp-user-edit-avatar[data-custom="yes"] #lp-avatar-actions #lp-remove-upload-photo {
     display: block; }
+
+.order-recover {
+  display: flex; }
+  .order-recover .button-recover-order {
+    margin-left: 20px; }
 
 #learn-press-course-tabs .course-tab-panels .course-tab-panel {
   padding-top: 56px;
@@ -4934,6 +4929,14 @@ input[type="password"] {
     background: #ffb606;
     border-color: #ffb606;
     color: #fff; }
+  .learnpress-page .lp-button.btn-ajax-off .icon {
+    display: none; }
+  .learnpress-page .lp-button.btn-ajax-on .icon {
+    display: inline-block;
+    margin-right: 5px;
+    -webkit-animation: lp-rotating 1s linear infinite;
+    -moz-animation: lp-rotating 1s linear infinite;
+    animation: lp-rotating 1s linear infinite; }
 
 .course-meta {
   margin-bottom: 14px; }
