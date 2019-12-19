@@ -1,14 +1,15 @@
 #learn-press-course-tabs {
     .course-tab-panels {
         .course-tab-panel {
-            padding-top: 32px;
+            padding-top: 56px;
             display: none;
 
             &.active {
                 display: block;
             }
 
-            &.course-tab-panel-instructor {
+            &.course-tab-panel-instructor,
+            &.course-tab-panel-faqs {
                 padding-top: 60px;
             }
 
@@ -330,7 +331,10 @@ ul.learn-press-nav-tabs {
             padding: 0;
             .section {
                 margin: 0;
-                padding: 0;
+                padding: 0 0 42px 0;
+                &:last-child {
+                    padding: 0;
+                }
                 &.section-empty {
                     .section-header {
                         margin-bottom: 20px;
@@ -344,7 +348,8 @@ ul.learn-press-nav-tabs {
             .section-header {
                 display: table;
                 width: 100%;
-                padding: 12px 0 42px 0;
+                //padding: 12px 0 42px 0;
+                padding: 0 0 26px 0;
                 border-bottom: 0;
                 @include box-sizing(border-box);
                 .section-left {
@@ -353,9 +358,10 @@ ul.learn-press-nav-tabs {
                     .section-title {
                         font-size: 26px;
                         color: #666;
-                        font-weight: 500;
+                        font-weight: 400;
                         text-transform: capitalize;
                         letter-spacing: 0;
+                        padding: 0;
                     }
                 }
                 .section-title,
@@ -373,6 +379,8 @@ ul.learn-press-nav-tabs {
                     font-style: italic;
                 }
                 .section-meta {
+                    padding-top: 17px;
+                    padding-bottom: 15px;
                     display: block;
                     white-space: nowrap;
                     text-align: right;

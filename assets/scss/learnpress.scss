@@ -88,7 +88,7 @@ input[type="password"] {
 
     li {
         display: inline-block;
-
+        margin: 0;
         a {
             color: #666;
             font-weight: 300;
@@ -144,7 +144,7 @@ input[type="password"] {
             right: 10px;
             padding: 0;
             border: 0;
-
+            z-index: 1;
             &:hover {
                 background: transparent;
                 text-decoration: none;
@@ -282,6 +282,10 @@ input[type="password"] {
 
                 &.current {
                     font-weight: 400;
+                    color: $primary-color;
+                }
+
+                &:hover {
                     color: $primary-color;
                 }
             }
@@ -517,7 +521,7 @@ ul.list-table-nav {
     &.featured-course {
         background: $primary-color;
         position: absolute;
-        z-index: 100;
+        z-index: 1;
         top: 28px;
         width: 300px;
         left: -110px;
