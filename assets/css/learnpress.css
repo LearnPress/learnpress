@@ -347,7 +347,8 @@
       width: 100%; }
       .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:focus {
         border-color: #ffb606;
-        color: #222; }
+        color: #222;
+        outline: 0; }
     .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::placeholder {
       color: #999;
       opacity: 1; }
@@ -383,10 +384,16 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 0 20px; }
+  #checkout-order .lp-checkout-order__inner table {
+    border: 0;
+    margin: 0; }
   #checkout-order .lp-checkout-order__inner td,
   #checkout-order .lp-checkout-order__inner th {
     box-sizing: content-box;
-    line-height: 1; }
+    line-height: 1;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0; }
     #checkout-order .lp-checkout-order__inner td:last-child,
     #checkout-order .lp-checkout-order__inner th:last-child {
       padding-right: 0; }
@@ -505,7 +512,11 @@
     padding: 0;
     margin: 0 0 24px 0; }
     #checkout-payment .payment-methods .lp-payment-method {
-      position: relative; }
+      position: relative;
+      margin: 0; }
+      #checkout-payment .payment-methods .lp-payment-method > label {
+        display: flex;
+        align-items: center; }
       #checkout-payment .payment-methods .lp-payment-method .gateway-input,
       #checkout-payment .payment-methods .lp-payment-method .gateway-icon {
         vertical-align: middle; }
@@ -520,7 +531,8 @@
         border: 1px solid #ccc;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
-        border-radius: 50%; }
+        border-radius: 50%;
+        margin: 0 8px 0 0; }
         #checkout-payment .payment-methods .lp-payment-method .gateway-input:before {
           content: '';
           position: absolute;

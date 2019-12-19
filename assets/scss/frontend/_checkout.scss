@@ -50,6 +50,7 @@
                         &:focus {
                             border-color: $primary-color;
                             color: #222;
+                            outline: 0;
                         }
                     }
                     ::placeholder {
@@ -110,12 +111,17 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         padding: 0 20px;
-
+        table {
+            border: 0;
+            margin: 0;
+        }
         td,
         th {
             box-sizing: content-box;
             line-height: 1;
-
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
             &:last-child {
                 padding-right: 0;
             }
@@ -270,7 +276,11 @@
 
         .lp-payment-method {
             position: relative;
-
+            margin: 0;
+            &>label {
+                display: flex;
+                align-items: center;
+            }
             .gateway-input,
             .gateway-icon {
                 vertical-align: middle;
@@ -288,6 +298,7 @@
                 background: #fff;
                 border: 1px solid #ccc;
                 @include border-radius(50%);
+                margin: 0 8px 0 0;
                 &:before {
                     content: '';
                     position: absolute;
