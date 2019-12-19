@@ -174,11 +174,9 @@
                 &:after {
                     content: '';
                 }
-
                 &:before {
                     border: 1px solid #DDD;
                 }
-
                 &:after {
                     border: 1px solid #DDD;
                 }
@@ -210,6 +208,7 @@
                 @include placeholder-fontStyle(italic);
                 &:focus {
                     color: #222;
+                    outline: 0;
                 }
             }
 

@@ -127,6 +127,7 @@ input[type="password"] {
         vertical-align: middle;
         text-transform: capitalize;
         font-family: inherit;
+        text-decoration: none;
         @include box-sizing(border-box);
 
         &.large {

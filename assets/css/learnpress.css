@@ -776,7 +776,7 @@
     height: auto; }
 
 #learn-press-profile .lp-user-profile-socials {
-  margin: -54px 0 0 0;
+  margin: -47px 0 0 0;
   display: flex;
   justify-content: center;
   padding-bottom: 30px; }
@@ -810,7 +810,7 @@
       font-size: 16px;
       display: block;
       padding: 0 20px;
-      line-height: 50px;
+      line-height: 53px;
       color: #333;
       font-weight: 500; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li > a {
@@ -823,7 +823,7 @@
         color: #ffb606;
         position: absolute;
         left: 24px;
-        line-height: 50px; }
+        line-height: 52px; }
       #learn-press-profile #profile-nav .lp-profile-nav-tabs > li > a:after {
         font-family: "Font Awesome 5 Free";
         font-weight: 900;
@@ -859,7 +859,8 @@
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.logout > a:after {
       display: none; }
   #learn-press-profile #profile-nav .lp-profile-nav-tabs li > a {
-    height: 50px; }
+    height: 53px;
+    box-sizing: border-box; }
   #learn-press-profile #profile-nav .lp-profile-nav-tabs li > ul {
     display: none;
     position: absolute;
@@ -3867,7 +3868,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         #popup-course #popup-sidebar .search-course input[name="s"]::placeholder {
           font-style: italic; }
         #popup-course #popup-sidebar .search-course input[name="s"]:focus {
-          color: #222; }
+          color: #222;
+          outline: 0; }
       #popup-course #popup-sidebar .search-course button {
         position: absolute;
         top: 0;
@@ -4893,6 +4895,7 @@ input[type="password"] {
   vertical-align: middle;
   text-transform: capitalize;
   font-family: inherit;
+  text-decoration: none;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
