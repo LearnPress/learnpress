@@ -2348,7 +2348,9 @@ function (_Component) {
       var content = this.props.content;
       return React.createElement("div", {
         className: "countdown"
-      }, React.createElement("span", null, this.formatTime()), this.getCircle());
+      }, React.createElement("i", {
+        className: "fas fa-stopwatch"
+      }), React.createElement("span", null, this.formatTime()));
     }
   }]);
 

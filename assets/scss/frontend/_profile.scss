@@ -1,6 +1,6 @@
 #learn-press-profile {
     .wrapper-profile-header {
-        background: $second-color;
+        background: $secondary-color;
         color: #FFF;
 
         #profile-header {
@@ -288,7 +288,7 @@
             display: block;
             margin: 0 auto 52px auto;
             @include border-radius(9px);
-            border-color: $second-color;
+            border-color: $secondary-color;
             font-size: 14px;
             font-weight: 500;
             padding: 13px 34px;

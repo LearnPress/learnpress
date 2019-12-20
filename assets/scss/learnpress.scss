@@ -1,6 +1,6 @@
 // Global variables
 $primary-color: #ffb606;
-$second-color: #442e66;
+$secondary-color: #442e66;
 $item-preview: #059de9;
 $primary-bg-duration: #c0c0c0;
 $primary-bg-questions: #9672cf;
@@ -89,6 +89,7 @@ input[type="password"] {
     li {
         display: inline-block;
         margin: 0;
+
         a {
             color: #666;
             font-weight: 300;
@@ -145,6 +146,7 @@ input[type="password"] {
             padding: 0;
             border: 0;
             z-index: 1;
+
             &:hover {
                 background: transparent;
                 text-decoration: none;
@@ -193,7 +195,7 @@ input[type="password"] {
 
     .course-students {
         &:before {
-            font-family: fontawesome;
+            font-family: "Font Awesome 5 Free";
             content: '';
         }
     }
@@ -319,7 +321,7 @@ input[type="password"] {
             text-align: center;
             border-radius: 50%;
             color: #FFF;
-            font-family: FontAwesome;
+            font-family: "Font Awesome 5 Free";
         }
     }
 
@@ -490,7 +492,7 @@ ul.list-table-nav {
 .learn-press-template-warning {
     &:before {
         content: "\f071";
-        font-family: Fontawesome;
+        font-family: "Font Awesome 5 Free";
         color: #FFC107;
     }
 }
@@ -585,6 +587,10 @@ ul.list-table-nav {
             }
         }
     }
+}
+
+.no-event {
+    pointer-events: none;
 }
 
 @media screen and (max-width: 768px) {

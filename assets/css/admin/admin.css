@@ -1392,7 +1392,7 @@ ul .clearfix {
 .post-type-lp_order .wp-list-table .order_status span {
   display: inline-block; }
   .post-type-lp_order .wp-list-table .order_status span:after {
-    font-family: fontawesome;
+    font-family: "Font Awesome 5 Free";
     display: inline-block;
     font-size: 20px;
     color: #FFF;
@@ -1449,7 +1449,7 @@ ul .clearfix {
     -o-transform: rotate(-180deg);
     transform: rotate(-180deg); }
     .wp-list-table .column-preview input[type="checkbox"]:before, .wp-list-table .column-preview input[type="checkbox"]:checked:before {
-      font: 400 21px/1 fontawesome;
+      font: 400 21px/1 "Font Awesome 5 Free";
       content: "\f205";
       font-size: 24px;
       width: 30px;
@@ -1963,6 +1963,11 @@ ul .clearfix {
     display: none; }
   .color-schemas.current .clone-schema {
     display: inline-block; }
+
+.wp-picker-container {
+  position: relative; }
+  .wp-picker-container .wp-picker-holder {
+    z-index: 99999; }
 
 /**
  * General style for admin editor.
@@ -3259,7 +3264,7 @@ body.lp-item-moving {
   .learn-press-tip.ready {
     display: inline-block; }
   .learn-press-tip:before {
-    font-family: Fontawesome;
+    font-family: "Font Awesome 5 Free";
     content: "\f059"; }
   .learn-press-tip:hover {
     color: #0073aa; }
@@ -3295,7 +3300,7 @@ body.lp-item-moving {
     border-radius: 50%; }
     .learn-press-tip-floating .close:before {
       content: "\f00d";
-      font-family: Fontawesome; }
+      font-family: "Font Awesome 5 Free"; }
   .learn-press-tip-floating p {
     margin: 0; }
   .learn-press-tip-floating:before {

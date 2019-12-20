@@ -1639,7 +1639,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 								if ( 'passed' === $args['status'] ) {
 									$having .= $wpdb->prepare( " AND grade = %s", 'passed' );
 								} else {
-									$having .= $wpdb->prepare( " AND ( grade IS NULL OR grade = %s )", 'failed' );
+									$having .= $wpdb->prepare( " AND ( grade = %s )", 'failed' );
 								}
 							}
 

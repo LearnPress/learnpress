@@ -503,10 +503,16 @@
     $button.data('paged', paged).prop('disabled', true).removeClass('btn-ajax-off').addClass('btn-ajax-on');
 
     if (!url) {
-      if (window.location.href.match(/\/([0-9]+)\//)) {
-        url = window.location.href.replace(/\/([0-9]+)\//, paged);
+      var seg = window.location.href.split('?');
+
+      if (seg[0].match(/\/([0-9]+)\//)) {
+        url = seg[0].replace(/\/([0-9]+)\//, paged);
       } else {
-        url = window.location.href + paged;
+        url = seg[0] + paged;
+      }
+
+      if (seg[1]) {
+        url += '?' + seg[1];
       }
     } else {
       url = url.addQueryVar('current_page', paged);

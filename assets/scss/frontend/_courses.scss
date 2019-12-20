@@ -54,7 +54,7 @@ a {
         }
     }
 
-    ul.learn-press-courses {
+    .learn-press-courses {
         clear: both;
         list-style: none;
         margin: 0 -15px 0 -15px;
@@ -127,11 +127,11 @@ a {
                         color: #fff;
                         cursor: pointer;
 
-                        &:before {
-                            content: '\f004';
-                            font-weight: 900;
-                            font-family: "Font Awesome 5 Free";
-                        }
+                        //&:before {
+                        //    content: '\f004';
+                        //    font-weight: 900;
+                        //    font-family: "Font Awesome 5 Free";
+                        //}
 
                         .course-wishlist__btn {
                             display: none;
@@ -142,18 +142,40 @@ a {
                         }
                     }
 
-                    &:hover {
-                        &:before {
-                            opacity: 1;
-                        }
+                    //&:hover {
+                    //    &:before {
+                    //        opacity: 1;
+                    //    }
+                    //
+                    //    .course-thumbnail a img {
+                    //        transform: scale(1.05);
+                    //    }
+                    //
+                    //    .course-wishlist {
+                    //        opacity: 1;
+                    //    }
+                    //}
+                }
 
-                        .course-thumbnail a img {
-                            transform: scale(1.05);
-                        }
+                // Should change effect when hovering on wrap element instead of thumbnail only.
+                &:hover {
+                    &:before {
+                        opacity: 1;
+                    }
 
-                        .course-wishlist {
-                            opacity: 1;
-                        }
+                    .course-thumbnail a img {
+                        transform: scale(1.05);
+                    }
+
+                    .course-wishlist {
+                        opacity: 1;
+                    }
+                }
+
+                // Show heart if course is already in wishlist
+                .course-wishlist {
+                    &.filled {
+                        opacity: 1;
                     }
                 }
 
@@ -692,6 +714,7 @@ a {
 
             &.list {
                 margin-left: 3px;
+
                 &:before {
                     content: "\f03a";
                 }
@@ -724,7 +747,7 @@ a {
         .course-summary-content {
             .course-detail-info {
                 padding: 40px 0 10px 0;
-                background: $second-color;
+                background: $secondary-color;
                 color: #fff;
                 margin-bottom: 60px;
 
@@ -918,7 +941,16 @@ a {
 
                     .course-summary-sidebar__inner {
                         width: 300px;
-                        box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
+
+                        .course-sidebar-top {
+                            box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.05);
+                        }
+
+                        .course-sidebar-secondary {
+                            margin-top: 30px;
+                            padding: 0;
+                        }
+
                         .learn-press-course-wishlist {
                             color: #fff;
                             font-size: 0;
@@ -937,23 +969,27 @@ a {
                             }
                         }
 
-                        &>div {
+                        & > div {
                             background: #fff;
                             padding: 20px;
                             overflow: hidden;
+
                             .widgettitle {
                                 font-size: 18px;
                                 font-weight: 500;
                                 margin-bottom: 2px;
                                 margin-top: 0;
                             }
+
                             ul {
                                 list-style: none;
+
                                 li a {
                                     line-height: 24px;
                                     font-weight: 300;
                                     color: #666;
                                     font-size: 16px;
+
                                     &:hover {
                                         color: $primary-color;
                                         box-shadow: unset;

@@ -134,6 +134,82 @@ const AjaxSearchCourses = function (el) {
     })
 }
 
+const AjaxSearchCourseContent = function AjaxSearchCourseContent(el) {
+    var $form = $(el);
+    var $list = $('#learn-press-course-curriculum');
+    var $input = $form.find('input[name="s"]');
+    var paged = 1;
+    var $sections = $list.find('.section');
+    var $items = $list.find('.course-item');
+    var isSearching = false;
+    var oldSearch = '';
+
+    var submit = async function (e) {
+        e.preventDefault();
+
+        if (isSearching) {
+            return false;
+        }
+
+        if ($input.val().length < 3) {
+            $items.removeClass('hide-if-js');
+            $sections.removeClass('hide-if-js');
+            return;
+        }
+
+        isSearching = true;
+        oldSearch = $input.val();
+        $form.addClass('searching');
+
+        const response = await wp.apiFetch({
+            path: 'lp/v1/courses/' + lpGlobalSettings.post_id + '/search-content?s=' + $input.val(),
+        });
+
+        $items.each(function () {
+            var $it = $(this);
+            if (response.items.indexOf($it.data('id')) !== -1) {
+                $it.removeClass('hide-if-js');
+            } else {
+                $it.addClass('hide-if-js');
+            }
+        });
+
+        $sections.each(function () {
+            var $section = $(this);
+            if ($section.find('.course-item:not(.hide-if-js)').length === 0) {
+                $section.addClass('hide-if-js');
+            } else {
+                $section.removeClass('hide-if-js');
+            }
+        });
+
+        isSearching = false;
+
+        if (oldSearch !== $input.val()) {
+            return submit(e);
+        }
+
+        return false;
+    };
+
+    $input.on('keyup', debounce(function (e) {
+        paged = 1;
+        submit(e);
+    }, 300));
+
+    $form.on('submit', submit);
+
+    $form.on('click', '.clear', (e) => {
+        $form.removeClass('searching');
+        $input.val('');
+        submit(e);
+    }).on('click', '.search-results__pagination a', (e) => {
+        e.preventDefault();
+        paged = $(e.target).data('page');
+        submit(e);
+    })
+}
+
 const initCourseTabs = function () {
     $('#learn-press-course-tabs').on('change', 'input[name="learn-press-course-tab-radio"]', function () {
         var selectedTab = $('input[name="learn-press-course-tab-radio"]:checked').val();
@@ -228,11 +304,11 @@ $(window).on('load', () => {
 
         $('#sidebar-toggle').on('change', toggleSidebarHandler);
 
-        new AjaxSearchCourses($popup.find('.search-course'));
+        new AjaxSearchCourseContent($popup.find('.search-course'));
 
         createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
 
-        LP.toElement('.course-item.current', {container: '.curriculum-scrollable:eq(1)', offset: 200})
+        LP.toElement('.course-item.current', {container: '.curriculum-scrollable:eq(1)', offset: 100, duration: 1})
     }
 
     $curriculum.find('.section-desc').each((i, el) => {

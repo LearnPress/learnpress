@@ -10,7 +10,7 @@
             span {
                 display: inline-block;
                 &:after {
-                    font-family: fontawesome;
+                    font-family: "Font Awesome 5 Free";
                     display: inline-block;
                     font-size: 20px;
                     color: #FFF;
@@ -82,7 +82,7 @@
             @include transform(rotate(-180deg));
             &:before,
             &:checked:before {
-                font: 400 21px/1 fontawesome;
+                font: 400 21px/1 "Font Awesome 5 Free";
                 content: "\f205";
                 font-size: 24px;
                 width: 30px;

@@ -309,7 +309,7 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 
 		// Add more assets into page that displaying content of an item
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
-		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
+		//add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
 	}
 }
 
@@ -1688,7 +1688,7 @@ function learn_press_is_learning_course( $course_id = 0 ) {
 function learn_press_get_color_schemas() {
 	$colors = array(
 		array(
-			'title'     => __( 'Primary', 'learnpress' ),
+			'title'     => __( 'Primary (#ffb606)', 'learnpress' ),
 			'id'        => 'primary-color',
 			'selectors' => array(
 				'body.course-item-popup a' => "color"
@@ -1696,7 +1696,7 @@ function learn_press_get_color_schemas() {
 			'std'       => '#ffb606'
 		),
 		array(
-			'title'     => __( 'Secondary', 'learnpress' ),
+			'title'     => __( 'Secondary (#442e66)', 'learnpress' ),
 			'id'        => 'secondary-color',
 			'selectors' => array(
 				'body.course-item-popup a' => "color"

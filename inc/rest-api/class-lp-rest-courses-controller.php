@@ -17,6 +17,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 			),
 
+			'(?P<course_id>[\w]+)/search-content' => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'search_course_content' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+
 			'(?P<key>[\w]+)'                                        => array(
 				'args'   => array(
 					'id' => array(
@@ -52,6 +60,42 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		parent::register_routes();
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function search_course_content( $request ) {
+		$s         = $request['s'];
+		$course_id = $request['course_id'];
+
+		$course = learn_press_get_course( $course_id );
+
+		$items = $course->get_items();
+
+
+		$query = new WP_Query(
+			array(
+				's'              => $s,
+				'post__in'       => $items,
+				'posts_per_page' => - 1
+			)
+		);
+
+		$response = array(
+			'success' => true,
+			'items'   => array()
+		);
+
+		if ( $query->posts ) {
+			foreach ( $query->posts as $post ) {
+				$response['items'][] = $post->ID;
+			}
+		}
+
+		return rest_ensure_response( $response );
 	}
 
 	/**

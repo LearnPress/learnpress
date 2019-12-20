@@ -275,18 +275,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 				$course_sections['enrolled'] = array(
 					'title'    => __( 'Enrolled', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.purchased-courses', 'purchased' ),
+					'slug'     => 'enrolled',
 					'callback' => array( $this, 'tab_order_details' ),
 					'priority' => 10
 				);
 
 				$course_sections['created'] = array(
 					'title'    => __( 'Created', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.own-courses', 'created' ),
+					'slug'     => 'created',
 					'callback' => array( $this, 'tab_order_details' ),
 					'priority' => 20
 				);
-
 
 				$this->_default_settings = array(
 					'dashboard'     => array(
@@ -831,7 +830,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_own_courses_filters( $current_filter = '' ) {
 
-			$url      = $this->get_current_url();
+			$url = $this->get_current_url();
+
 			$defaults = array(
 				'all'     => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
 				'publish' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'publish', $url ) ), __( 'Publish', 'learnpress' ) ),
