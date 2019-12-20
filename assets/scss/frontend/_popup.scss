@@ -189,11 +189,9 @@
                 &:after {
                     content: '';
                 }
-
                 &:before {
                     border: 1px solid #DDD;
                 }
-
                 &:after {
                     border: 1px solid #DDD;
                 }
@@ -228,6 +226,7 @@
 
                 &:focus {
                     color: #222;
+                    outline: 0;
                 }
             }
 

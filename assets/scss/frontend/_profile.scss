@@ -61,7 +61,7 @@
     }
 
     .lp-user-profile-socials {
-        margin: -54px 0 0 0;
+        margin: -47px 0 0 0;
         display: flex;
         justify-content: center;
         padding-bottom: 30px;
@@ -101,7 +101,7 @@
                     font-size: 16px;
                     display: block;
                     padding: 0 20px;
-                    line-height: 50px;
+                    line-height: 53px;
                     color: #333;
                     font-weight: 500;
                 }
@@ -117,7 +117,7 @@
                         color: $primary-color;
                         position: absolute;
                         left: 24px;
-                        line-height: 50px;
+                        line-height: 52px;
                     }
 
                     &:after {
@@ -190,7 +190,8 @@
 
             li {
                 > a {
-                    height: 50px;
+                    height: 53px;
+                    box-sizing: border-box;
                 }
 
                 > ul {

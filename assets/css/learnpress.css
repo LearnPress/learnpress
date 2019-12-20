@@ -347,7 +347,8 @@
       width: 100%; }
       .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:focus {
         border-color: #ffb606;
-        color: #222; }
+        color: #222;
+        outline: 0; }
     .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::placeholder {
       color: #999;
       opacity: 1; }
@@ -383,10 +384,16 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 0 20px; }
+  #checkout-order .lp-checkout-order__inner table {
+    border: 0;
+    margin: 0; }
   #checkout-order .lp-checkout-order__inner td,
   #checkout-order .lp-checkout-order__inner th {
     box-sizing: content-box;
-    line-height: 1; }
+    line-height: 1;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0; }
     #checkout-order .lp-checkout-order__inner td:last-child,
     #checkout-order .lp-checkout-order__inner th:last-child {
       padding-right: 0; }
@@ -505,7 +512,11 @@
     padding: 0;
     margin: 0 0 24px 0; }
     #checkout-payment .payment-methods .lp-payment-method {
-      position: relative; }
+      position: relative;
+      margin: 0; }
+      #checkout-payment .payment-methods .lp-payment-method > label {
+        display: flex;
+        align-items: center; }
       #checkout-payment .payment-methods .lp-payment-method .gateway-input,
       #checkout-payment .payment-methods .lp-payment-method .gateway-icon {
         vertical-align: middle; }
@@ -520,7 +531,8 @@
         border: 1px solid #ccc;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
-        border-radius: 50%; }
+        border-radius: 50%;
+        margin: 0 8px 0 0; }
         #checkout-payment .payment-methods .lp-payment-method .gateway-input:before {
           content: '';
           position: absolute;
@@ -776,7 +788,7 @@
     height: auto; }
 
 #learn-press-profile .lp-user-profile-socials {
-  margin: -54px 0 0 0;
+  margin: -47px 0 0 0;
   display: flex;
   justify-content: center;
   padding-bottom: 30px; }
@@ -810,7 +822,7 @@
       font-size: 16px;
       display: block;
       padding: 0 20px;
-      line-height: 50px;
+      line-height: 53px;
       color: #333;
       font-weight: 500; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li > a {
@@ -823,7 +835,7 @@
         color: #ffb606;
         position: absolute;
         left: 24px;
-        line-height: 50px; }
+        line-height: 52px; }
       #learn-press-profile #profile-nav .lp-profile-nav-tabs > li > a:after {
         font-family: "Font Awesome 5 Free";
         font-weight: 900;
@@ -849,7 +861,8 @@
     #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.logout > a:after {
       display: none; }
   #learn-press-profile #profile-nav .lp-profile-nav-tabs li > a {
-    height: 50px; }
+    height: 53px;
+    box-sizing: border-box; }
   #learn-press-profile #profile-nav .lp-profile-nav-tabs li > ul {
     display: none;
     position: absolute;
@@ -3867,7 +3880,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         #popup-course #popup-sidebar .search-course input[name="s"]::placeholder {
           font-style: italic; }
         #popup-course #popup-sidebar .search-course input[name="s"]:focus {
-          color: #222; }
+          color: #222;
+          outline: 0; }
       #popup-course #popup-sidebar .search-course button {
         position: absolute;
         top: 0;
@@ -4936,6 +4950,7 @@ input[type="password"] {
   vertical-align: middle;
   text-transform: capitalize;
   font-family: inherit;
+  text-decoration: none;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
