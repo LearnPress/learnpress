@@ -124,9 +124,10 @@ class Timer extends Component {
 
 
         return <div className="countdown">
+            <i className="fas fa-stopwatch"></i>
             <span>{ this.formatTime() }</span>
 
-            { this.getCircle() }
+            {/*{ this.getCircle() }*/}
         </div>
     }
 }

@@ -39,6 +39,13 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles() {
+		if ( $custom_css = get_option( '_lp_custom_css' ) ) {
+			$upload   = wp_upload_dir();
+			$main_css = $upload['baseurl'] . '/' . $custom_css;
+		} else {
+			$main_css = self::url( 'css/learnpress.css' );
+		}
+
 		return apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
@@ -53,7 +60,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'screens' => array( 'learnpress' )
 				),
 				'learnpress' => array(
-					'url'     => self::url( 'css/learnpress.css' ),
+					'url'     => $main_css,
 					'screens' => 'learnpress'
 				)
 				//'jquery-scrollbar' => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.css' )

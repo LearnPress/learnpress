@@ -62,9 +62,9 @@ $items       = $section->get_items();
 				echo $title;
 				?>
 
-	            <?php if ( $description = $section->get_description() ) { ?>
+				<?php if ( $description = $section->get_description() ) { ?>
                     <p class="section-desc"><?php echo $description; ?></p>
-	            <?php } ?>
+				<?php } ?>
             </h5>
 
             <span class="section-toggle">
@@ -80,8 +80,8 @@ $items       = $section->get_items();
             <div class="section-meta">
                 <div class="learn-press-progress"
                      title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ), round( $percent, 2 ) ) ); ?>">
-                    <div class="learn-press-progress__active" data-value="<?php echo $percent;?>"></div>
-                    <?php //learn_press_circle_progress_html( $percent, 24, 6 ); ?>
+                    <div class="learn-press-progress__active" data-value="<?php echo $percent; ?>"></div>
+					<?php //learn_press_circle_progress_html( $percent, 24, 6 ); ?>
                 </div>
             </div>
 
@@ -100,13 +100,13 @@ $items       = $section->get_items();
         <ul class="section-content">
 
 			<?php
-                $i = 1;
-                foreach ( $items as $item ) { ?>
+			$i = 1;
+			foreach ( $items as $item ) { ?>
 
 				<?php
 				if ( $item->is_visible() ) {
 					?>
-                    <li class="<?php echo join( ' ', $item->get_class() ); ?>">
+                    <li class="<?php echo join( ' ', $item->get_class() ); ?>" data-id="<?php echo $item->get_id(); ?>">
 						<?php
 						/**
 						 * @since 3.0.0
@@ -161,9 +161,9 @@ $items       = $section->get_items();
 				}
 				?>
 
-			<?php
-                   $i++;
-                } // End foreach $items ?>
+				<?php
+				$i ++;
+			} // End foreach $items ?>
 
         </ul>
 

@@ -140,3 +140,10 @@
         }
     }
 }
+
+.wp-picker-container {
+    position: relative;
+    .wp-picker-holder{
+        z-index: 99999;
+    }
+}

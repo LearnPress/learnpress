@@ -11,7 +11,7 @@
         display: inline-block;
     }
     &:before {
-        font-family: Fontawesome;
+        font-family: "Font Awesome 5 Free";
         content: "\f059";
     }
     &:hover {
@@ -46,7 +46,7 @@
         @include border-radius(50%);
         &:before {
             content: "\f00d";
-            font-family: Fontawesome;
+            font-family: "Font Awesome 5 Free";
         }
     }
     p{
