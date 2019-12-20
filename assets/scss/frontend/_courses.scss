@@ -127,11 +127,11 @@ a {
                         color: #fff;
                         cursor: pointer;
 
-                        //&:before {
-                        //    content: '\f004';
-                        //    font-weight: 900;
-                        //    font-family: "Font Awesome 5 Free";
-                        //}
+                        &:before {
+                            content: '\f004';
+                            font-weight: 900;
+                            font-family: "Font Awesome 5 Free";
+                        }
 
                         .course-wishlist__btn {
                             display: none;
@@ -142,19 +142,19 @@ a {
                         }
                     }
 
-                    //&:hover {
-                    //    &:before {
-                    //        opacity: 1;
-                    //    }
-                    //
-                    //    .course-thumbnail a img {
-                    //        transform: scale(1.05);
-                    //    }
-                    //
-                    //    .course-wishlist {
-                    //        opacity: 1;
-                    //    }
-                    //}
+                    &:hover {
+                        &:before {
+                            opacity: 1;
+                        }
+
+                        .course-thumbnail a img {
+                            transform: scale(1.05);
+                        }
+
+                        .course-wishlist {
+                            opacity: 1;
+                        }
+                    }
                 }
 
                 // Should change effect when hovering on wrap element instead of thumbnail only.

@@ -846,6 +846,7 @@
                         font-size: 16px;
                         font-weight: 300;
                         color: #666;
+                        margin: 0;
 
                         &.next,
                         &.prev {
@@ -935,13 +936,13 @@
                 min-width: 120px;
                 text-align: center;
                 position: relative;
-
                 .fas {
-                    font-size: 24px;
+                    font-size: 14px;
                     position: absolute;
+                    color: #333;
+                    top: 50%;
                     left: 10px;
-                    top: 6px;
-                    color: #8e8c8c;
+                    transform: translateY(-50%);
                 }
 
                 .clock {
@@ -1035,6 +1036,9 @@
 
                 a {
                     display: block;
+                    font-size: 16px;
+                    font-weight: 300;
+                    color: #666;
                 }
 
                 line-height: 50px;
@@ -1072,25 +1076,17 @@
             }
 
             .course-item-nav__name {
+                font-size: 14px;
+                font-weight: 300;
+                color: #666;
                 position: absolute;
-                top: -100%;
                 display: none;
                 background: #CCC;
-                padding: 10px;
+                padding: 10px 15px;
                 width: auto;
                 line-height: 1;
-                @include border-radius(4px);
-
-                &:before {
-                    content: '';
-                    width: 0;
-                    height: 0;
-                    border: 8px solid transparent;
-                    border-top-color: #CCC;
-                    position: absolute;
-                    bottom: -15px;
-                    right: 5px;
-                }
+                top: -20px;
+                right: -30px;
             }
 
             .next, .prev {
@@ -1268,7 +1264,7 @@
             input[type="checkbox"] {
                 position: absolute;
                 top: 50%;
-                margin: -16px 0 0 10px;
+                margin: -19px 0 0 10px;
                 border-color: #d9e0f1;
                 @include border-radius(4px);
 

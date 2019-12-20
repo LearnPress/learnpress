@@ -241,6 +241,8 @@ ul.learn-press-nav-tabs {
     display: flex;
     border-bottom: 0;
     margin: 0;
+    max-height: 60px;
+    background: #f1f2f8;
 
     .course-nav {
         float: left;
@@ -251,30 +253,33 @@ ul.learn-press-nav-tabs {
         border-right: 1px solid rgba(204, 204, 204, 0.3);
 
         &:first-child {
-            &:after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -1px;
-                width: 1px;
-                height: 100%;
-                background: #fff;
+            &.active {
+                &:after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -1px;
+                    width: 1px;
+                    height: 100%;
+                    background: #fff;
 
+                }
             }
         }
 
         &:last-child {
             border-right: 0;
+            &.active {
+                &:after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    right: -2px;
+                    width: 1px;
+                    height: 100%;
+                    background: #fff;
 
-            &:after {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: -2px;
-                width: 1px;
-                height: 100%;
-                background: #fff;
-
+                }
             }
         }
 
@@ -484,7 +489,7 @@ ul.learn-press-nav-tabs {
                         font-size: 16px;
                         font-weight: 600;
                         color: #333;
-                        padding: 17px 10px;
+                        padding: 17px 16px;
                     }
 
                     .item-icon {
@@ -1259,9 +1264,9 @@ body {
 
         li {
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 300;
             color: #666;
-            padding: 22px 38px 14px 38px;
+            padding: 22px 38px 14px;
             border-bottom: 1px solid rgba(204, 204, 204, 0.3);
             margin: 0;
 
@@ -1269,7 +1274,7 @@ body {
                 font-weight: 900;
                 font-family: "Font Awesome 5 Free";
                 content: "\f00c";
-                margin-right: 12px;
+                margin-right: 8px;
                 color: $primary-color;
             }
 
