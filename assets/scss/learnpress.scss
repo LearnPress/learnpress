@@ -523,7 +523,7 @@ ul.list-table-nav {
         background: $primary-color;
         position: absolute;
         z-index: 1;
-        top: 28px;
+        top: 25px;
         width: 300px;
         left: -110px;
         transform: rotate(-45deg);
@@ -552,7 +552,6 @@ ul.list-table-nav {
             margin: 0;
             cursor: pointer;
             text-align: center;
-            background: #f1f2f8;
             text-transform: capitalize;
 
         }
@@ -568,20 +567,9 @@ ul.list-table-nav {
         input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .learn-press-nav-tabs {
             .course-nav:nth-child(#{$i}) {
                 border-bottom: 0;
-
-                &:before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    background: $primary-color;
-                    height: 4px;
-                    width: 100%;
-                }
-
                 label {
                     color: $primary-color;
-                    background: transparent;
+                    background: #fff;
                 }
             }
         }

@@ -232,7 +232,7 @@
 }
 
 ul.learn-press-nav-tabs {
-    border: 1px solid rgba(204, 204, 204, 0.3);
+    border: 1px solid #e5e7f2;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     list-style: none;
@@ -240,36 +240,41 @@ ul.learn-press-nav-tabs {
     display: flex;
     border-bottom: 0;
     margin: 0;
+    background: #f1f2f8;
+    max-height: 60px;
     .course-nav {
         float: left;
         position: relative;
         margin: 0;
         list-style: none;
-        border-bottom: 1px solid rgba(204, 204, 204, 0.3);
-        border-right: 1px solid rgba(204, 204, 204, 0.3);
+        border-bottom: 1px solid #e5e7f2;
+        border-right: 1px solid #e5e7f2;
         &:first-child {
-           &:after {
-               content: '';
-               position: absolute;
-               top: 0;
-               left: -1px;
-               width: 1px;
-               height: 100%;
-               background: #fff;
+            &.active {
+                &:after {
+                    content: '';
+                    position: absolute;
+                    top: -1px;
+                    left: -1px;
+                    width: 1px;
+                    height: 100%;
+                    background: #fff;
 
-           }
+                }
+            }
         }
         &:last-child {
             border-right: 0;
-            &:after {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: -2px;
-                width: 1px;
-                height: 100%;
-                background: #fff;
-
+            &.active {
+                &:after {
+                    content: '';
+                    position: absolute;
+                    top: -1px;
+                    right: -2px;
+                    width: 2px;
+                    height: 100%;
+                    background: #fff;
+                }
             }
         }
         &.active {
@@ -277,7 +282,7 @@ ul.learn-press-nav-tabs {
             &:before {
                 content: '';
                 position: absolute;
-                top:0;
+                top:-1px;
                 left: 0;
                 background: $primary-color;
                 height: 4px;
@@ -331,7 +336,7 @@ ul.learn-press-nav-tabs {
             padding: 0;
             .section {
                 margin: 0;
-                padding: 0 0 42px 0;
+                padding: 0 0 38px 0;
                 &:last-child {
                     padding: 0;
                 }
@@ -1114,7 +1119,7 @@ body {
         background: rgba(181,187,211,0.15);
         padding: 18px 38px 15px 38px;
         margin: 0;
-
+        cursor: pointer;
     }
     .course-extra-box__content {
         display: none;
@@ -1142,7 +1147,7 @@ body {
 
         li {
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 300;
             color: #666;
             padding: 22px 38px 14px 38px;
             border-bottom: 1px solid rgba(204,204,204,0.3);

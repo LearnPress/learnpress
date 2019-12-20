@@ -125,6 +125,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(1):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(1) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(1):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(1) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(1):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(1):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(1):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(1):after {
@@ -134,6 +136,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(2):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(2) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(2):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(2) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(2):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(2):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(2):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(2):after {
@@ -143,6 +147,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(3):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(3) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(3):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(3) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(3):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(3):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(3):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(3):after {
@@ -152,6 +158,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(4):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(4) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(4):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(4) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(4):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(4):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(4):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(4):after {
@@ -161,6 +169,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(5):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(5) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(5):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(5) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(5):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(5):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(5):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(5):after {
@@ -170,6 +180,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(6):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(6) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(6):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(6) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(6):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(6):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(6):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(6):after {
@@ -179,6 +191,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(7):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(7) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(7):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(7) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(7):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(7):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(7):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(7):after {
@@ -188,6 +202,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(8):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(8) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(8):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(8) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(8):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(8):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(8):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(8):after {
@@ -197,6 +213,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(9):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(9) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(9):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(9) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(9):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(9):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(9):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(9):after {
@@ -206,6 +224,8 @@
       background: #FFF; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(10):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(10) label {
         color: #ffb606; }
+        .learn-press-tabs .learn-press-tabs__checker:nth-child(10):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(10) label a {
+          color: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(10):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(10):before {
         background: #ffb606; }
       .learn-press-tabs .learn-press-tabs__checker:nth-child(10):checked ~ .learn-press-tabs__nav .learn-press-tabs__tab:nth-child(10):after {
@@ -232,6 +252,8 @@
       margin: 0;
       cursor: pointer;
       text-align: center; }
+      .learn-press-tabs .learn-press-tabs__tab > label a {
+        color: #333; }
       @media (max-width: 767px) {
         .learn-press-tabs .learn-press-tabs__tab > label {
           padding: 20px 50px 14px 50px; } }
@@ -261,6 +283,7 @@
 .learn-press-filters {
   list-style: none;
   display: flex;
+  margin-left: 0;
   margin-bottom: 36px; }
   @media (max-width: 767px) {
     .learn-press-filters {
@@ -269,7 +292,8 @@
       grid-gap: 15px; } }
   .learn-press-filters > li {
     font-size: 16px;
-    line-height: 24px; }
+    line-height: 24px;
+    margin: 0; }
     .learn-press-filters > li > a,
     .learn-press-filters > li > span {
       display: inline-block;
@@ -1378,37 +1402,39 @@ form[name="profile-change-password"] p {
   margin-left: 5px; }
 
 ul.learn-press-nav-tabs {
-  border: 1px solid rgba(204, 204, 204, 0.3);
+  border: 1px solid #e5e7f2;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   list-style: none;
   padding: 0;
   display: flex;
   border-bottom: 0;
-  margin: 0; }
+  margin: 0;
+  background: #f1f2f8;
+  max-height: 60px; }
   ul.learn-press-nav-tabs .course-nav {
     float: left;
     position: relative;
     margin: 0;
     list-style: none;
-    border-bottom: 1px solid rgba(204, 204, 204, 0.3);
-    border-right: 1px solid rgba(204, 204, 204, 0.3); }
-    ul.learn-press-nav-tabs .course-nav:first-child:after {
+    border-bottom: 1px solid #e5e7f2;
+    border-right: 1px solid #e5e7f2; }
+    ul.learn-press-nav-tabs .course-nav:first-child.active:after {
       content: '';
       position: absolute;
-      top: 0;
+      top: -1px;
       left: -1px;
       width: 1px;
       height: 100%;
       background: #fff; }
     ul.learn-press-nav-tabs .course-nav:last-child {
       border-right: 0; }
-      ul.learn-press-nav-tabs .course-nav:last-child:after {
+      ul.learn-press-nav-tabs .course-nav:last-child.active:after {
         content: '';
         position: absolute;
-        top: 0;
+        top: -1px;
         right: -2px;
-        width: 1px;
+        width: 2px;
         height: 100%;
         background: #fff; }
     ul.learn-press-nav-tabs .course-nav.active {
@@ -1416,7 +1442,7 @@ ul.learn-press-nav-tabs {
       ul.learn-press-nav-tabs .course-nav.active:before {
         content: '';
         position: absolute;
-        top: 0;
+        top: -1px;
         left: 0;
         background: #ffb606;
         height: 4px;
@@ -1458,7 +1484,7 @@ ul.learn-press-nav-tabs {
   padding: 0; }
   #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section {
     margin: 0;
-    padding: 0 0 42px 0; }
+    padding: 0 0 38px 0; }
     #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section:last-child {
       padding: 0; }
     #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section.section-empty .section-header {
@@ -1989,7 +2015,8 @@ body .lp-quiz-buttons .form-button-finish-course {
     font-weight: 600;
     background: rgba(181, 187, 211, 0.15);
     padding: 18px 38px 15px 38px;
-    margin: 0; }
+    margin: 0;
+    cursor: pointer; }
   .course-extra-box .course-extra-box__content {
     display: none; }
     .course-extra-box .course-extra-box__content .course-extra-box__content-inner {
@@ -2010,7 +2037,7 @@ body .lp-quiz-buttons .form-button-finish-course {
       margin: 0; }
     .course-extra-box .course-extra-box__content li {
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 300;
       color: #666;
       padding: 22px 38px 14px 38px;
       border-bottom: 1px solid rgba(204, 204, 204, 0.3);
@@ -2307,8 +2334,8 @@ input[name="course-faqs-box-ratio"] {
         font-weight: 900;
         font-family: "Font Awesome 5 Free";
         position: absolute;
-        top: 50%;
-        left: 10px;
+        top: 22px;
+        left: 12px;
         box-sizing: content-box;
         opacity: 0;
         margin-top: -10px;
@@ -2936,8 +2963,8 @@ a {
               transition: all .5s ease; }
           .lp-archive-courses ul.learn-press-courses .course .course-item .course-wrap-thumbnail .course-wishlist {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 6px;
+            right: 6px;
             z-index: 2;
             opacity: 0;
             color: #fff;
@@ -3183,7 +3210,8 @@ a {
                   margin-bottom: 30px; } }
             .lp-archive-courses ul.learn-press-courses[data-layout="list"] .course .course-item .course-content .course-readmore {
               float: right;
-              line-height: 1; }
+              position: relative;
+              right: 4px; }
               .lp-archive-courses ul.learn-press-courses[data-layout="list"] .course .course-item .course-content .course-readmore a {
                 padding: 9px 24px;
                 background: #ffb606;
@@ -3586,7 +3614,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       width: 100%;
       text-decoration: none; }
     #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button {
-      border-color: #442e66; }
+      font-weight: 500; }
       #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button:hover {
         border-color: #ffb606; }
       #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button.button-enroll-course {
@@ -3598,7 +3626,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-time {
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(204, 204, 204, 0.3);
-    margin-bottom: 26px; }
+    margin-bottom: 28px; }
     #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-time .course-time-row {
       display: flex;
       justify-content: space-between;
@@ -3607,7 +3635,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       color: #666; }
       #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-time .course-time-row strong {
         font-size: 18px;
-        font-weight: 400;
+        font-weight: 500;
         color: #333; }
       #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-time .course-time-row time {
         font-size: 16px;
@@ -3617,7 +3645,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .items-progress .lp-course-progress-heading,
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .course-progress .lp-course-progress-heading {
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 500;
     color: #333;
     float: left;
     margin-bottom: 12px;
@@ -4271,7 +4299,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
             cursor: pointer;
             font-size: 16px;
             font-weight: 300;
-            color: #666; }
+            color: #666;
+            margin: 0; }
             #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.next, #popup-course #popup-content #learn-press-quiz-app .questions-pagination .nav-links .page-numbers.prev {
               background: transparent;
               display: inline-block;
@@ -4396,7 +4425,10 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         line-height: 50px; }
         #popup-course #popup-footer .course-item-nav .prev a,
         #popup-course #popup-footer .course-item-nav .next a {
-          display: block; }
+          display: block;
+          font-size: 16px;
+          font-weight: 300;
+          color: #666; }
         #popup-course #popup-footer .course-item-nav .prev:before,
         #popup-course #popup-footer .course-item-nav .next:before {
           font-weight: 900;
@@ -5174,7 +5206,7 @@ ul.list-table-nav {
     background: #ffb606;
     position: absolute;
     z-index: 1;
-    top: 28px;
+    top: 25px;
     width: 300px;
     left: -110px;
     transform: rotate(-45deg);
@@ -5196,7 +5228,6 @@ ul.list-table-nav {
   margin: 0;
   cursor: pointer;
   text-align: center;
-  background: #f1f2f8;
   text-transform: capitalize; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(1):checked ~ .course-tab-panels .course-tab-panel:nth-child(1) {
@@ -5204,153 +5235,81 @@ ul.list-table-nav {
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(1):checked ~ .learn-press-nav-tabs .course-nav:nth-child(1) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(1):checked ~ .learn-press-nav-tabs .course-nav:nth-child(1):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(1):checked ~ .learn-press-nav-tabs .course-nav:nth-child(1) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(2):checked ~ .course-tab-panels .course-tab-panel:nth-child(2) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(2):checked ~ .learn-press-nav-tabs .course-nav:nth-child(2) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(2):checked ~ .learn-press-nav-tabs .course-nav:nth-child(2):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(2):checked ~ .learn-press-nav-tabs .course-nav:nth-child(2) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(3):checked ~ .course-tab-panels .course-tab-panel:nth-child(3) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(3):checked ~ .learn-press-nav-tabs .course-nav:nth-child(3) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(3):checked ~ .learn-press-nav-tabs .course-nav:nth-child(3):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(3):checked ~ .learn-press-nav-tabs .course-nav:nth-child(3) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(4):checked ~ .course-tab-panels .course-tab-panel:nth-child(4) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(4):checked ~ .learn-press-nav-tabs .course-nav:nth-child(4) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(4):checked ~ .learn-press-nav-tabs .course-nav:nth-child(4):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(4):checked ~ .learn-press-nav-tabs .course-nav:nth-child(4) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(5):checked ~ .course-tab-panels .course-tab-panel:nth-child(5) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(5):checked ~ .learn-press-nav-tabs .course-nav:nth-child(5) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(5):checked ~ .learn-press-nav-tabs .course-nav:nth-child(5):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(5):checked ~ .learn-press-nav-tabs .course-nav:nth-child(5) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(6):checked ~ .course-tab-panels .course-tab-panel:nth-child(6) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(6):checked ~ .learn-press-nav-tabs .course-nav:nth-child(6) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(6):checked ~ .learn-press-nav-tabs .course-nav:nth-child(6):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(6):checked ~ .learn-press-nav-tabs .course-nav:nth-child(6) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(7):checked ~ .course-tab-panels .course-tab-panel:nth-child(7) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(7):checked ~ .learn-press-nav-tabs .course-nav:nth-child(7) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(7):checked ~ .learn-press-nav-tabs .course-nav:nth-child(7):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(7):checked ~ .learn-press-nav-tabs .course-nav:nth-child(7) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(8):checked ~ .course-tab-panels .course-tab-panel:nth-child(8) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(8):checked ~ .learn-press-nav-tabs .course-nav:nth-child(8) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(8):checked ~ .learn-press-nav-tabs .course-nav:nth-child(8):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(8):checked ~ .learn-press-nav-tabs .course-nav:nth-child(8) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(9):checked ~ .course-tab-panels .course-tab-panel:nth-child(9) {
   display: block; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(9):checked ~ .learn-press-nav-tabs .course-nav:nth-child(9) {
   border-bottom: 0; }
-  #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(9):checked ~ .learn-press-nav-tabs .course-nav:nth-child(9):before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb606;
-    height: 4px;
-    width: 100%; }
   #learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(9):checked ~ .learn-press-nav-tabs .course-nav:nth-child(9) label {
     color: #ffb606;
-    background: transparent; }
+    background: #fff; }
 
 @media screen and (max-width: 768px) {
   ul.learn-press-courses .course {

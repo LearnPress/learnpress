@@ -764,6 +764,7 @@
                         font-size: 16px;
                         font-weight: 300;
                         color: #666;
+                        margin: 0;
                         &.next,
                         &.prev {
                             background: transparent;
@@ -925,6 +926,9 @@
                 display: flex;
                 a {
                     display: block;
+                    font-size: 16px;
+                    font-weight: 300;
+                    color: #666;
                 }
                 line-height: 50px;
 

@@ -10,9 +10,11 @@
 defined( 'ABSPATH' ) or die;
 
 get_header();
+do_action( 'learn-press/before-main-content' );
 ?>
 
     <div id="learn-press-checkout" class="lp-content-wrap">
+
         <h2><?php echo get_the_title(); ?></h2>
 
 		<?php
