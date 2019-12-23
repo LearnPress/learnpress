@@ -385,6 +385,38 @@
     .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill:focus {
       -webkit-box-shadow: 0 0 0px 1000px #fff inset;
       -webkit-text-fill-color: #999 !important; }
+  .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label {
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: 300;
+    color: #666; }
+    .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"] {
+      -webkit-appearance: none;
+      width: 19px;
+      height: 19px;
+      border: 1px solid #ccc;
+      margin: 0 4px 0 0;
+      position: relative;
+      top: 3px;
+      cursor: pointer; }
+      .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"]:focus {
+        outline: 0; }
+    .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"]:checked:after {
+      content: '\f00c';
+      font-weight: 900;
+      font-family: "Font Awesome 5 Free";
+      font-size: 14px;
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      color: #41abec; }
+  .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember a {
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: 300;
+    color: #666;
+    text-decoration: underline;
+    text-decoration-color: #ccc; }
 
 #learn-press-checkout-form {
   margin: 0 -15px; }
@@ -479,8 +511,8 @@
   #checkout-account-register .lp-checkout-remember label,
   #checkout-account-login .lp-checkout-remember label {
     display: inline-block;
-    font-weight: normal;
-    color: inherit; }
+    /*font-weight: normal;
+            color: inherit;*/ }
   #checkout-account-register .lp-checkout-remember a,
   #checkout-account-login .lp-checkout-remember a {
     float: right; }
@@ -661,7 +693,6 @@
   display: none; }
 
 .lp-list-table {
-  border: 1px solid rgba(204, 204, 204, 0.3);
   width: 100%;
   margin-bottom: 20px; }
   .lp-list-table th, .lp-list-table td {
@@ -672,29 +703,47 @@
     background: #FFF;
     text-align: left;
     padding: 20px; }
-  .lp-list-table thead tr th {
-    background: #f1f2f8;
-    color: #333;
-    border-bottom: none;
-    font-size: 18px; }
-  .lp-list-table tbody tr td, .lp-list-table tbody tr th {
-    border-bottom: 1px solid rgba(204, 204, 204, 0.3);
-    background: #FFF;
-    font-size: 16px;
-    color: #666;
-    font-weight: 400; }
-    .lp-list-table tbody tr td a, .lp-list-table tbody tr th a {
-      text-decoration: none;
+  .lp-list-table thead {
+    box-sizing: border-box;
+    border: 1px solid #e5e7f2; }
+    .lp-list-table thead tr th {
+      background: #f1f2f8;
+      color: #333;
       border-bottom: none;
-      color: #666; }
-      .lp-list-table tbody tr td a:hover, .lp-list-table tbody tr th a:hover {
-        color: #ffb606; }
-  .lp-list-table tbody tr .column-status .result-percent {
-    font-weight: 500; }
-  .lp-list-table tbody tr .column-status .lp-label {
-    font-weight: 600; }
-  .lp-list-table tbody tr:nth-child(odd) {
-    background: #F5F5F5; }
+      font-size: 18px;
+      height: 60px; }
+  .lp-list-table tbody,
+  .lp-list-table tfoot {
+    border: 1px solid rgba(204, 204, 204, 0.3);
+    border-top: 0;
+    box-sizing: border-box; }
+    .lp-list-table tbody tr td, .lp-list-table tbody tr th,
+    .lp-list-table tfoot tr td,
+    .lp-list-table tfoot tr th {
+      background: #FFF;
+      font-size: 16px;
+      color: #666;
+      font-weight: 300;
+      height: 62px; }
+      .lp-list-table tbody tr td a, .lp-list-table tbody tr th a,
+      .lp-list-table tfoot tr td a,
+      .lp-list-table tfoot tr th a {
+        text-decoration: none;
+        border-bottom: none;
+        color: #666; }
+        .lp-list-table tbody tr td a:hover, .lp-list-table tbody tr th a:hover,
+        .lp-list-table tfoot tr td a:hover,
+        .lp-list-table tfoot tr th a:hover {
+          color: #ffb606; }
+    .lp-list-table tbody tr .column-status .result-percent,
+    .lp-list-table tfoot tr .column-status .result-percent {
+      font-weight: 500; }
+    .lp-list-table tbody tr .column-status .lp-label,
+    .lp-list-table tfoot tr .column-status .lp-label {
+      font-weight: 600; }
+    .lp-list-table tbody tr:nth-child(odd),
+    .lp-list-table tfoot tr:nth-child(odd) {
+      background: #F5F5F5; }
   .lp-list-table .list-table-nav td {
     font-size: 14px; }
     .lp-list-table .list-table-nav td.nav-text {
@@ -707,21 +756,31 @@
         margin-bottom: 0; }
 
 .lp-label {
-  font-size: 12px;
+  font-size: 16px;
   display: inline-block;
-  padding: 3px 5px;
-  background: #DDD;
-  border-radius: 4px;
+  font-weight: 300;
   line-height: 1;
-  color: #FFF; }
-  .lp-label.label-finished, .lp-label.label-completed {
-    background: #ffdc1e; }
-  .lp-label.label-passed {
-    background: #14c4ff; }
-  .lp-label.label-failed {
-    background: #ff4d66; }
-  .lp-label.label-enrolled, .lp-label.label-started {
-    background: #d243ff; }
+  color: #666;
+  /*padding: 3px 5px;
+    background: #DDD;
+    border-radius: 4px;*/
+  /*&.label-finished,
+    &.label-completed {
+        background: #ffdc1e;
+    }
+
+    &.label-passed {
+        background: #14c4ff;
+    }
+
+    &.label-failed {
+        background: #ff4d66;
+    }
+
+    &.label-enrolled,
+    &.label-started {
+        background: #d243ff;
+    }*/ }
 
 .learn-press-form .form-fields {
   list-style: none;
@@ -951,6 +1010,10 @@
     padding: 13px 34px; }
     #learn-press-profile #profile-content .lp-button:hover {
       border-color: #ffb606; }
+  #learn-press-profile #profile-content #profile-content-orders .profile-orders .profile-heading {
+    display: none; }
+  #learn-press-profile #profile-content #profile-content-orders .profile-orders table {
+    margin-top: 0; }
 
 #learn-press-profile #dashboard-general-statistic {
   margin-bottom: 55px;
@@ -968,7 +1031,7 @@
     margin: 0 15px 40px 15px;
     border-radius: 4px;
     text-align: center;
-    padding: 27px 25px 14px 25px;
+    padding: 27px 25px 15px 25px;
     width: 270px; }
     @media (max-width: 990px) {
       #learn-press-profile .dashboard-general-statistic__row .statistic-box {
@@ -1403,8 +1466,6 @@ form[name="profile-change-password"] p {
 
 ul.learn-press-nav-tabs {
   border: 1px solid rgba(204, 204, 204, 0.3);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
   list-style: none;
   padding: 0;
   display: flex;
@@ -1434,7 +1495,7 @@ ul.learn-press-nav-tabs {
         position: absolute;
         top: 0;
         right: -2px;
-        width: 1px;
+        width: 2px;
         height: 100%;
         background: #fff; }
     ul.learn-press-nav-tabs .course-nav.active {
@@ -4472,6 +4533,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       #popup-course #popup-footer .course-item-nav .prev:before {
         content: '\f0d9';
         margin-right: 10px; }
+      #popup-course #popup-footer .course-item-nav .prev .course-item-nav__name {
+        right: auto;
+        left: -30px; }
       #popup-course #popup-footer .course-item-nav .course-item-nav__name {
         font-size: 14px;
         font-weight: 300;
@@ -5031,6 +5095,8 @@ input[type="password"] {
     -webkit-animation: lp-rotating 1s linear infinite;
     -moz-animation: lp-rotating 1s linear infinite;
     animation: lp-rotating 1s linear infinite; }
+  .learnpress-page .lp-button:focus {
+    outline: 0; }
 
 .course-meta {
   margin-bottom: 14px; }

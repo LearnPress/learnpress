@@ -297,6 +297,17 @@
                 border-color: $primary-color;
             }
         }
+
+        #profile-content-orders {
+            .profile-orders {
+                .profile-heading {
+                    display: none;
+                }
+                table {
+                    margin-top: 0;
+                }
+            }
+        }
     }
 
     #dashboard-general-statistic {
@@ -317,7 +328,7 @@
             margin: 0 15px 40px 15px;
             border-radius: 4px;
             text-align: center;
-            padding: 27px 25px 14px 25px;
+            padding: 27px 25px 15px 25px;
             width: 270px;
             @media (max-width: 990px) {
                 width: 45%;

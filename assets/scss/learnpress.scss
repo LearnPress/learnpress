@@ -188,6 +188,10 @@ input[type="password"] {
                 @include animation(lp-rotating 1s linear infinite);
             }
         }
+
+        &:focus {
+            outline: 0;
+        }
     }
 }
 

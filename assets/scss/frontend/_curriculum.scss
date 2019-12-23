@@ -234,8 +234,6 @@
 
 ul.learn-press-nav-tabs {
     border: 1px solid rgba(204, 204, 204, 0.3);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
     list-style: none;
     padding: 0;
     display: flex;
@@ -275,7 +273,7 @@ ul.learn-press-nav-tabs {
                     position: absolute;
                     top: 0;
                     right: -2px;
-                    width: 1px;
+                    width: 2px;
                     height: 100%;
                     background: #fff;
 

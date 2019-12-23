@@ -74,6 +74,47 @@
                 }
             }
         }
+        .lp-checkout-remember {
+            label {
+                font-size: 16px;
+                line-height: 26px;
+                font-weight: 300;
+                color: #666;
+                input[type="checkbox"] {
+                    -webkit-appearance: none;
+                    width: 19px;
+                    height: 19px;
+                    border: 1px solid #ccc;
+                    margin: 0 4px 0 0;
+                    position: relative;
+                    top: 3px;
+                    cursor: pointer;
+                    &:focus{
+                        outline: 0;
+                    }
+                }
+
+                input[type="checkbox"]:checked:after {
+                    content: '\f00c';
+                    font-weight: 900;
+                    font-family: "Font Awesome 5 Free";
+                    font-size: 14px;
+                    position: absolute;
+                    left: 2px;
+                    top: 2px;
+                    color:#41abec;
+                }
+
+            }
+            a {
+                font-size: 16px;
+                line-height: 26px;
+                font-weight: 300;
+                color: #666;
+                text-decoration: underline;
+                text-decoration-color: #ccc;
+            }
+        }
     }
 }
 
@@ -214,8 +255,8 @@
     .lp-checkout-remember {
         label {
             display: inline-block;
-            font-weight: normal;
-            color: inherit;
+            /*font-weight: normal;
+            color: inherit;*/
         }
 
         a {

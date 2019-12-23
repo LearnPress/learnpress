@@ -1,5 +1,4 @@
 .lp-list-table {
-    border: 1px solid rgba(204,204,204,0.3);
     width: 100%;
     margin-bottom: 20px;
     th, td {
@@ -13,24 +12,30 @@
     }
 
     thead {
-
+        box-sizing: border-box;
+        border: 1px solid #e5e7f2;
         tr {
             th {
                 background: #f1f2f8;
                 color: #333;
                 border-bottom: none;
                 font-size: 18px;
+                height: 60px;
             }
         }
     }
-    tbody {
+    tbody,
+    tfoot {
+        border: 1px solid rgba(204,204,204,0.3);
+        border-top: 0;
+        box-sizing: border-box;
         tr {
             td, th {
-                border-bottom: 1px solid rgba(204,204,204,0.3);
                 background: #FFF;
                 font-size: 16px;
                 color: #666;
-                font-weight: 400;
+                font-weight: 300;
+                height: 62px;
                 a {
                     text-decoration: none;
                     border-bottom: none;
@@ -72,17 +77,20 @@
             }
         }
     }
+
 }
 
 .lp-label {
-    font-size: 12px;
+    font-size: 16px;
     display: inline-block;
-    padding: 3px 5px;
-    background: #DDD;
-    border-radius: 4px;
+    font-weight: 300;
     line-height: 1;
-    color: #FFF;
-    &.label-finished,
+    color: #666;
+    /*padding: 3px 5px;
+    background: #DDD;
+    border-radius: 4px;*/
+
+    /*&.label-finished,
     &.label-completed {
         background: #ffdc1e;
     }
@@ -98,7 +106,7 @@
     &.label-enrolled,
     &.label-started {
         background: #d243ff;
-    }
+    }*/
 }
 
 .learn-press-form {
