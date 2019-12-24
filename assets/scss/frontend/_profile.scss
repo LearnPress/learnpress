@@ -1,4 +1,5 @@
 #learn-press-profile {
+    background: #fff;
     .wrapper-profile-header {
         background: $secondary-color;
         color: #FFF;
@@ -247,7 +248,7 @@
     #profile-content {
         width: calc(100% - 300px);
         float: right;
-        margin-top: 58px;
+        padding-top: 58px;
         @media (max-width: 990px) {
             width: 100%;
         }
