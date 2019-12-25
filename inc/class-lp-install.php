@@ -513,10 +513,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 *
 		 * @return int|mixed
 		 */
-		protected
-		static function _search_page(
-			$type, $types
-		) {
+		protected static function _search_page( $type, $types ) {
 			static $pages = array();
 			if ( empty( $pages[ $type ] ) ) {
 				global $wpdb;
@@ -544,8 +541,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		/**********************************/
 
-		public
-		static function include_update() {
+		public static function include_update() {
 			if ( ! self::$_update_files ) {
 				return;
 			}
@@ -558,13 +554,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
-		public
-		static function hide_other_notices() {
+		public static function hide_other_notices() {
 			//remove_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 		}
 
-		public
-		static function update_from_09() {
+		public static function update_from_09() {
 
 			if ( ! self::_has_new_table() || version_compare( LEARNPRESS_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
 				self::install();
@@ -593,14 +587,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
-		public
-		static function admin_menu() {
+		public static function admin_menu() {
 			add_dashboard_page( '', '', 'manage_options', 'learn_press_upgrade_from_09', '' );
 
 		}
 
-		public
-		static function hide_upgrade_notice() {
+		public static function hide_upgrade_notice() {
 			$ask_again  = learn_press_get_request( 'ask_again' );
 			$expiration = DAY_IN_SECONDS;
 			if ( $ask_again == 'no' ) {
@@ -613,16 +605,14 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			) );
 		}
 
-		public
-		static function upgrade_wizard() {
+		public static function upgrade_wizard() {
 			require_once LP_PLUGIN_PATH . '/inc/updates/_update-from-0.9.php';
 		}
 
 		/**
 		 * Scan folder updates to get update patches.
 		 */
-		public
-		static function get_update_files() {
+		public static function get_update_files() {
 			if ( ! self::$_update_files ) {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 				if ( WP_Filesystem() ) {
@@ -667,8 +657,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		/**
 		 * Install update actions when user click update button
 		 */
-		public
-		static function update_actions() {
+		public static function update_actions() {
 			if ( ! empty( $_GET['upgrade_learnpress'] ) ) {
 				self::update();
 			}
@@ -677,29 +666,25 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		/**
 		 * Check for new database version and show notice
 		 */
-		public
-		static function db_update_notices() {
+		public static function db_update_notices() {
 			if ( get_option( 'learnpress_db_version' ) != LP()->version ) {
 				// code
 			}
 		}
 
 
-		private
-		static function _create_cron_jobs() {
+		private static function _create_cron_jobs() {
 			wp_clear_scheduled_hook( 'learn_press_cleanup_sessions' );
 			wp_schedule_event( time(), apply_filters( 'learn_press_cleanup_session_recurrence', 'twicedaily' ), 'learn_press_cleanup_sessions' );
 		}
 
-		public
-		static function _auto_update() {
+		public static function _auto_update() {
 			self::get_update_files();
 			self::update();
 		}
 
 
-		private
-		function _is_old_version() {
+		private function _is_old_version() {
 			if ( is_null( self::$_is_old_version ) ) {
 				$is_old_version = get_transient( 'learn_press_is_old_version' );
 
@@ -732,8 +717,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 *
 		 * @return mixed
 		 */
-		private
-		static function _has_old_posts() {
+		private static function _has_old_posts() {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 			SELECT DISTINCT p.ID, pm.meta_value as upgraded
@@ -747,8 +731,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return $wpdb->get_row( $query );
 		}
 
-		private
-		static function _has_new_table() {
+		private static function _has_new_table() {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 			SELECT COUNT(*)
@@ -760,13 +743,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return $wpdb->get_var( $query ) ? true : false;
 		}
 
-		private
-		static function _need_to_update() {
+		private static function _need_to_update() {
 			return self::_has_old_posts() || self::_has_old_teacher_role();
 		}
 
-		private
-		static function _has_old_teacher_role() {
+		private static function _has_old_teacher_role() {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 			SELECT um.*
@@ -779,8 +760,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return $wpdb->get_results( $query );
 		}
 
-		private
-		static function _has_new_posts() {
+		private static function _has_new_posts() {
 			$new_post = get_posts(
 				array(
 					'post_type'      => 'lp_course',
@@ -792,8 +772,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return sizeof( $new_post ) > 0;
 		}
 
-		public
-		static function update() {
+		public static function update() {
 			$learnpress_db_version = get_option( 'learnpress_db_version' );
 
 			foreach ( self::$_update_files as $version => $updater ) {
@@ -807,20 +786,14 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			self::update_version();
 		}
 
-		public
-		static function update_db_version(
-			$version = null
-		) {
+		public static function update_db_version( $version = null ) {
 			delete_option( 'learnpress_db_version' );
 			update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 
 			//LP_Debug::instance()->add( debug_backtrace(), 'update_db_version', false, true );
 		}
 
-		public
-		static function update_version(
-			$version = null
-		) {
+		public static function update_version( $version = null ) {
 			delete_option( 'learnpress_version' );
 			update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 		}
@@ -831,8 +804,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 *
 		 * @return string
 		 */
-		private
-		static function _get_schema() {
+		private static function _get_schema() {
 			global $wpdb;
 
 			$collate = '';

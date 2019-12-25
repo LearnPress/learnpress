@@ -44,7 +44,8 @@
 
             &.order-completed {
                 strong:before {
-                    content: '\f502';
+                    //content: '\f502';
+                    content: '\f058';
                     color: #0085ba;
                 }
             }

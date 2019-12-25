@@ -143,7 +143,7 @@
 
         &:not(:checked) {
             + .lp-checkout-block {
-                //display: none;
+                display: none;
                 height: 0;
                 overflow: hidden;
                 padding: 0;
@@ -160,7 +160,7 @@
 
         &:checked {
             + .lp-checkout-block {
-                //display: block;
+                display: block;
                 height: auto;
                 overflow: auto;
 

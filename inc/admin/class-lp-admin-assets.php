@@ -276,7 +276,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press/admin-default-styles',
 			array(
 				'select2'            => LP()->plugin_url( 'inc/libraries/meta-box/css/select2/select2.css' ),
-				//'font-awesome'      => $this->url( 'css/font-awesome.min.css' ),
+				'font-awesome'      => $this->url( 'css/vendor/font-awesome-5.min.css' ),
 				'learn-press-bundle' => ( $url = $this->get_bundle_css_url() ) ? $url : $this->url( 'css/bundle.min.css' ),
 				'learn-press-admin'  => array(
 					'url'  => $this->url( 'css/admin/admin.css' ),
