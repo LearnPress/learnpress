@@ -5,6 +5,7 @@
     width: -moz-calc(50% - 30px);
     width: calc(50% - 30px);
     margin: 0 15px 40px 15px;
+
     .lp-checkout-block {
         h4 {
             font-size: 18px;
@@ -28,12 +29,15 @@
 
 .lp-checkout-form__after {
     float: left;
+
     #checkout-account-logged-in {
-        display: none;
+        //display: none;
     }
+
     .lp-checkout-block {
         .lp-form-fields {
             padding: 0 0 14px 0;
+
             .form-field {
                 .rwmb-input {
                     input {
@@ -47,12 +51,14 @@
                         border: 1px solid #ccc;
                         border-radius: 3px;
                         width: 100%;
+
                         &:focus {
                             border-color: $primary-color;
                             color: #222;
                             outline: 0;
                         }
                     }
+
                     ::placeholder {
                         color: #999;
                         opacity: 1;
@@ -65,6 +71,7 @@
                     ::-ms-input-placeholder {
                         color: #999;
                     }
+
                     input:-webkit-autofill,
                     input:-webkit-autofill:hover,
                     input:-webkit-autofill:focus {
@@ -74,12 +81,14 @@
                 }
             }
         }
+
         .lp-checkout-remember {
             label {
                 font-size: 16px;
                 line-height: 26px;
                 font-weight: 300;
                 color: #666;
+
                 input[type="checkbox"] {
                     -webkit-appearance: none;
                     width: 19px;
@@ -89,7 +98,8 @@
                     position: relative;
                     top: 3px;
                     cursor: pointer;
-                    &:focus{
+
+                    &:focus {
                         outline: 0;
                     }
                 }
@@ -102,10 +112,11 @@
                     position: absolute;
                     left: 2px;
                     top: 2px;
-                    color:#41abec;
+                    color: #41abec;
                 }
 
             }
+
             a {
                 font-size: 16px;
                 line-height: 26px;
@@ -129,13 +140,34 @@
     input[name="checkout-account-switch-form"] {
         display: none;
 
-        + .lp-checkout-block {
-            display: none;
+
+        &:not(:checked) {
+            + .lp-checkout-block {
+                //display: none;
+                height: 0;
+                overflow: hidden;
+                padding: 0;
+                margin: 0;
+                opacity: 0;
+                border: 0;
+
+                > * {
+                    height: 0;
+                    overflow: hidden;
+                }
+            }
         }
 
         &:checked {
             + .lp-checkout-block {
-                display: block;
+                //display: block;
+                height: auto;
+                overflow: auto;
+
+                > * {
+                    height: auto;
+                    overflow: auto;
+                }
             }
         }
     }
@@ -152,10 +184,12 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         padding: 0 20px;
+
         table {
             border: 0;
             margin: 0;
         }
+
         td,
         th {
             box-sizing: content-box;
@@ -163,6 +197,7 @@
             border-left: 0;
             border-right: 0;
             border-top: 0;
+
             &:last-child {
                 padding-right: 0;
             }
@@ -177,12 +212,14 @@
             font-size: 16px;
             font-weight: 600;
             line-height: 26px;
+
             a {
                 color: #666;
                 display: -webkit-box;
                 -webkit-line-clamp: 1;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
+
                 &:hover {
                     color: $primary-color;
                 }
@@ -202,6 +239,7 @@
             & > th {
                 padding: 24px 20px 24px 0;
             }
+
             .col-number {
                 font-size: 26px;
                 color: #333;
@@ -214,7 +252,8 @@
                 font-weight: 600;
                 line-height: 26px;
                 color: #666;
-                &>th {
+
+                & > th {
                     padding: 20px 20px 17px 0;
                 }
             }
@@ -224,7 +263,7 @@
                     font-size: 16px;
                     font-weight: 600;
                     line-height: 26px;
-                    color:#333;
+                    color: #333;
                 }
             }
 
@@ -242,9 +281,10 @@
 
 #checkout-account-register,
 #checkout-account-login {
-    border-bottom: 1px solid rgba(204,204,204,0.3);
+    border-bottom: 1px solid rgba(204, 204, 204, 0.3);
     margin-bottom: 35px;
     padding-bottom: 19px;
+
     .form-field {
         .rwmb-label,
         .rwmb-input .description {
@@ -275,9 +315,11 @@
         a {
             color: #41abec;
             margin-left: 5px;
+
             &:hover {
                 color: $primary-color;
             }
+
             label {
                 display: inline-block;
                 float: right;
@@ -291,20 +333,24 @@
 
 #checkout-payment {
     margin-bottom: 25px;
+
     h4 {
         margin-bottom: 24px;
     }
+
     .secure-connection {
         font-size: 12px;
         color: #999;
         font-weight: normal;
         float: right;
         margin-top: 5px;
+
         i {
             margin-right: 5px;
             font-size: 18px;
             color: #ccc;
         }
+
         @media (max-width: 767px) {
             margin-top: 0;
         }
@@ -318,10 +364,12 @@
         .lp-payment-method {
             position: relative;
             margin: 0;
-            &>label {
+
+            & > label {
                 display: flex;
                 align-items: center;
             }
+
             .gateway-input,
             .gateway-icon {
                 vertical-align: middle;
@@ -335,24 +383,31 @@
                 width: 20px;
                 height: 20px;
                 position: relative;
-                -webkit-appearance:none;
+                -webkit-appearance: none;
                 background: #fff;
                 border: 1px solid #ccc;
                 @include border-radius(50%);
                 margin: 0 8px 0 0;
+
                 &:before {
-                    content: '';
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    transform: translate(-50%,-50%);
+                    transform: translate(-50%, -50%);
                     width: 6px;
                     height: 6px;
                     @include border-radius(50%);
                     background: #41abec;
                 }
+
+                &:checked {
+                    &:before {
+                        content: '';
+                    }
+                }
+
                 &:focus {
-                   outline: 0;
+                    outline: 0;
                 }
             }
         }
@@ -365,6 +420,7 @@
             background: $primary-color;
             border-color: $primary-color;
             color: #fff;
+
             &:hover {
                 background: darken($primary-color, 15%);
                 border-color: darken($primary-color, 15%);
@@ -378,8 +434,10 @@
     font-weight: 300;
     line-height: 26px;
     color: #666;
+
     a {
         color: #41abec;
+
         &:hover {
             color: $primary-color;
         }

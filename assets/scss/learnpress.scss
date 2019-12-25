@@ -307,10 +307,14 @@ input[type="password"] {
     margin: 0 0 20px 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    border-top: 5px solid #00adff;
 
     &.icon {
         padding-left: 45px;
+        &:before{
+            background: #00adff;
 
+        }
         &:after {
             font-size: 20px;
             vertical-align: baseline;
@@ -327,6 +331,7 @@ input[type="password"] {
             border-radius: 50%;
             color: #FFF;
             font-family: "Font Awesome 5 Free";
+            content: "\f129";
         }
     }
 
@@ -343,6 +348,7 @@ input[type="password"] {
         right: 20px;
         width: 20px;
         height: 30px;
+        background: #00adff;
     }
 
     &:after {

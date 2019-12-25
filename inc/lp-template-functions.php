@@ -1693,7 +1693,8 @@ function learn_press_get_color_schemas() {
 			'selectors' => array(
 				'body.course-item-popup a' => "color"
 			),
-			'std'       => '#ffb606'
+			'std'       => '#ffb606',
+			'value'     => '#ffb606'
 		),
 		array(
 			'title'     => __( 'Secondary (#442e66)', 'learnpress' ),
@@ -1701,7 +1702,8 @@ function learn_press_get_color_schemas() {
 			'selectors' => array(
 				'body.course-item-popup a' => "color"
 			),
-			'std'       => '#442e66'
+			'std'       => '#442e66',
+			'value'     => '#442e66'
 		),
 
 //		array(

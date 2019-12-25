@@ -17,7 +17,7 @@
              *
              * @type {form}
              */
-            $formCheckout = $('#learn-press-checkout-form'),
+            $formCheckout = $('#learn-press-checkout'),
 
             /**
              * Register form
@@ -86,38 +86,6 @@
         }
 
         /**
-         * Check to need make a payment if there is 'payment' form
-         */
-        var needPayment = function () {
-            return $payments.length > 0;
-        }
-
-        var selectedPayment = function () {
-            return $payments.find('input[name="payment_method"]:checked').val();
-        }
-
-        var isLoggedIn = function () {
-            return $formCheckout.find('input[name="checkout-account-switch-form"]:checked').length = 0;
-        }
-
-        var getLoginOrRegisterData = function () {
-            var formName = $formCheckout.find('input[name="checkout-account-switch-form"]:checked').val();
-            var $form = $('#checkout-account-' + formName);
-
-            return $form.serializeJSON();
-        }
-
-        var getPaymentData = function () {
-            return $('#checkout-payment').serializeJSON();
-        }
-
-        var showErrors = function (errors) {
-            showMessage(errors);
-            var firstId = Object.keys(errors)[0];
-
-            $('input[name="'+firstId+'"]').focus();
-        }
-        /**
          * Callback function for submitting form.
          *
          * @param e
@@ -127,53 +95,29 @@
         var _formSubmit = function (e) {
             e.preventDefault();
 
-            // if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
-            //     return;
-            // }
-
-            if (needPayment() && !selectedPayment()) {
-                showMessage('Please select payment method', true);
-                return false;
+            if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
+                return;
             }
 
-            var formData = {};
+            var $form = $payments.children('.selected'),
+                data = $formCheckout.serializeJSON();
 
-            if (!isLoggedIn()) {
-                formData = $.extend(formData, getLoginOrRegisterData());
-            }
-
-            formData = $.extend(formData, getPaymentData());
-
-            // console.log(formData);
-            //
-            // return false;
-            //
-            // var $form = $payments.children('.selected'),
-            //     data = $formCheckout.serializeJSON();
-            //
             removeMessage();
-            //
-            // if (options.i18n_processing) {
-            //     $buttonCheckout.html(options.i18n_processing);
-            // }
-            //
-            // $buttonCheckout.prop('disabled', true);
-            //
-            //
-            // return false;
+
+            if (options.i18n_processing) {
+                $buttonCheckout.html(options.i18n_processing);
+            }
+
+            $buttonCheckout.prop('disabled', true);
+
             //LP.blockContent();
             $.ajax({
                 url: options.ajaxurl + '/?lp-ajax=checkout',
                 dataType: 'html',
-                data: formData,
+                data: data,
                 type: 'post',
                 success: function (response) {
                     response = LP.parseJSON(response);
-
-                    if (response.messages) {
-                        showErrors(response.messages);
-                    }
-                    console.log(response)
                     try {
                         if ('success' === response.result) {
                             if (response.redirect.match(/https?/)) {
@@ -183,14 +127,14 @@
                             throw "ERROR";
                         }
                     } catch (error) {
-                        // if (!response.messages) {
-                        //     showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
-                        // } else {
-                        //     showMessage(response.messages);
-                        // }
-                        // $buttonCheckout.html(options.i18n_place_order);
-                        // $buttonCheckout.prop('disabled', false);
-                        // LP.unblockContent();
+                        if (!response.messages) {
+                            showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
+                        } else {
+                            showMessage(response.messages);
+                        }
+                        $buttonCheckout.html(options.i18n_place_order);
+                        $buttonCheckout.prop('disabled', false);
+                        LP.unblockContent();
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -238,28 +182,11 @@
          *
          * @param messages
          */
-        var showMessage = function (message, wrap = false) {
+        var showMessage = function (messages) {
             removeMessage();
-
-            if ($.isPlainObject(message)) {
-                Object.keys(message).reverse().map(function (id) {
-                    var m = message[id];
-                    var msg = $.isArray(m) ? m[0] : m;
-                    var type = $.isArray(m) ? m[1] : '';
-                    msg = '<div class="learn-press-message ' + (typeof (type) === 'string' ? type : '') + '">' + msg + '</div>';
-                    $formCheckout.prepend(msg);
-                });
-
-                return;
-            } else {
-                if (wrap) {
-                    message = '<div class="learn-press-message ' + (typeof (wrap) === 'string' ? wrap : '') + '">' + message + '</div>';
-                }
-                $formCheckout.prepend(message);
-            }
-
+            $formCheckout.prepend(messages);
             $('html, body').animate({
-                scrollTop: ($formCheckout.offset().top - 100)
+                scrollTop: ( $formCheckout.offset().top - 100 )
             }, 1000);
             $(document).trigger('learn-press/checkout-error');
         }
