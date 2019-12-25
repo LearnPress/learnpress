@@ -1,7 +1,5 @@
 .learn-press-tabs {
     background: #f1f2f8;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
     margin-bottom: 34px;
 
     .learn-press-tabs__checker {
@@ -43,11 +41,9 @@
 
     .learn-press-tabs__nav {
         border: 1px solid #e5e7f2;
-        border-top-right-radius: 5px;
         list-style: none;
         padding: 0;
         display: flex;
-        border-left: 0;
         margin: 0;
     }
 
@@ -94,8 +90,21 @@
             background: transparent;
         }
 
-        &:last-child {
-            border-right: 0;
+        &:first-child {
+            &.active {
+               label {
+                   position: relative;
+                   &:before {
+                       content: '';
+                       position: absolute;
+                       width: 1px;
+                       height: 100%;
+                       background: #fff;
+                       top: 0;
+                       left: -1px;
+                   }
+               }
+            }
         }
     }
 

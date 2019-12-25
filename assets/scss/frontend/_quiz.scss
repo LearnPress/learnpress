@@ -278,6 +278,15 @@ button[data-counter] {
         display: none;
     }
 
+    &.passed {
+        .result-message {
+            background: $primary-color-course-item-status;
+            &:after {
+                content: '\f00c';
+            }
+        }
+    }
+
     .result-message {
         padding: 10px 0;
         @include border-radius(4px);
