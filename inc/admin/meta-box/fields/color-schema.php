@@ -85,14 +85,16 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 						<?php foreach ( $schema as $option ) {
 							$name = 'color_schema[' . $k . '][' . $option['id'] . ']';
 							$std  = ! empty( $option['std'] ) ? $option['std'] : '';
+							$id = uniqid();
 							?>
                             <li>
                                 <label>
 									<?php echo $option['title']; ?>
                                 </label>
                                 <div class="color-selector">
-                                    <input name="<?php echo $name; ?>" value="<?php echo $std; ?>">
+                                    <input name="<?php echo $name; ?>" id="<?php echo $id;?>" value="<?php echo $std; ?>">
                                 </div>
+                                <a href="javascript:void(0)" onclick="jQuery('#<?php echo $id;?>').val('<?php echo $option['value'];?>').trigger('change');"><?php esc_html_e('Reset', 'learnpress');?></a>
                             </li>
 						<?php } ?>
                     </ul>

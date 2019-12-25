@@ -22,7 +22,7 @@ $profile = LP_Global::profile();
 $fields  = $profile->get_login_fields();
 
 ?>
-<input type="radio" id="checkout-account-switch-to-register" name="checkout-account-switch-form"/>
+<input type="radio" id="checkout-account-switch-to-login" name="checkout-account-switch-form" value="login"/>
 <div id="checkout-account-login" class="lp-checkout-block left">
     <h4><?php esc_html_e( 'Sign in', 'learnpress' ); ?></h4>
 
@@ -58,7 +58,7 @@ $fields  = $profile->get_login_fields();
     <p class="lp-checkout-sign-up-link">
 		<?php esc_html_e( "Don't have an account?", 'learnpress' ); ?>
         <a href="javascript: void(0);">
-            <label for="checkout-account-switch-to-login"><?php echo _x( 'Sign up', 'checkout sign up link', 'learnpress' ); ?></label>
+            <label for="checkout-account-switch-to-register"><?php echo _x( 'Sign up', 'checkout sign up link', 'learnpress' ); ?></label>
         </a>
     </p>
 </div>

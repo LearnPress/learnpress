@@ -41,6 +41,19 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 			call_user_func( array( $this, "build_{$page}_assets" ), $exclude_libraries );
 		}
 
+		if ( ! $this->is_enable_custom_css() ) {
+			return false;
+		}
+		$this->save_custom_css();
+
+		return true;
+	}
+
+	protected function is_enable_custom_css() {
+		return ! empty( $_POST['learn_press_enable_custom_colors'] ) && $_POST['learn_press_enable_custom_colors'] === 'yes';
+	}
+
+	protected function save_custom_css() {
 		$colors = ! empty( $_POST['color_schema'] ) ? $_POST['color_schema'] : false;
 
 		if ( ! $colors ) {
@@ -48,12 +61,14 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		}
 
 		$colors = $colors[0];
+
 		if ( $old_colors = get_option( 'learn_press_color_schemas' ) ) {
 			$old_colors = $old_colors[0];
 		} else {
 			$old_colors = array();
 		}
 
+		// Delete custom css file and option to generate new if needed.
 		if ( $custom_css = get_option( '_lp_custom_css' ) ) {
 			$upload     = wp_upload_dir();
 			$custom_css = $upload['basedir'] . '/' . $custom_css;
@@ -61,9 +76,16 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 			delete_option( '_lp_custom_css' );
 		}
 
-		if ( array_diff( $colors, $old_colors ) ) {
-			return;
+		if ( $this->is_default_colors( $colors ) ) {
+			return false;
 		}
+//		var_dump(array_diff( $colors, $old_colors ));
+//		if ( array_diff( $colors, $old_colors ) ) {
+//			echo "1234";
+//			die();
+//			return;
+//		}
+//		die();
 
 		if ( ! class_exists( 'scssc' ) ) {
 			include_once LP_PLUGIN_PATH . '/inc/libraries/scss.inc.php';
@@ -94,6 +116,27 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		file_put_contents( $custom_css . '/' . $custom_file, $css_content );
 		update_option( '_lp_custom_css', $custom_file );
 
+		return true;
+	}
+
+	/**
+	 * Return TRUE if all colors passed is equals with default colors.
+	 *
+	 * @param $colors
+	 *
+	 * @return bool
+	 */
+	protected function is_default_colors( $colors ) {
+		$color_schemas = learn_press_get_color_schemas();
+		foreach ( $color_schemas as $field ) {
+			if ( isset( $colors[ $field['id'] ] ) && $colors[ $field['id'] ] === $field['std'] ) {
+				continue;
+			}
+
+			return false;
+		}
+
+		return true;
 	}
 
 	protected function get_upload_path() {

@@ -66,7 +66,7 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 					'placeholder' => __( 'Username', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'reg_username' ),
 					'id'          => 'reg_username',
-					'required'    => true
+					//'required'    => true
 				),
 				'reg_email'    => array(
 					'title'       => __( 'Email', 'learnpress' ),
@@ -74,7 +74,7 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 					'placeholder' => __( 'Email', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'reg_email' ),
 					'id'          => 'reg_email',
-					'required'    => true
+					//'required'    => true
 				),
 				'reg_password' => array(
 					'title'       => __( 'Password', 'learnpress' ),
@@ -82,7 +82,7 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 					'placeholder' => __( 'Password', 'learnpress' ),
 					'saved'       => '',
 					'id'          => 'reg_password',
-					'required'    => true,
+					//'required'    => true,
 					'desc'        => __( 'The password should be at least twelve characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! " ? $ % ^ & )', 'learnpress' )
 				)
 			);

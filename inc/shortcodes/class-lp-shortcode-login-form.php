@@ -62,16 +62,16 @@ if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
 					'type'        => 'text',
 					'placeholder' => __( 'Username or email', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'username' ),
-					'id'          => 'username',
-					'required'    => true
+					'id'          => 'user_login',
+					//'required'    => true
 				),
 				'password' => array(
 					'title'       => __( 'Password', 'learnpress' ),
 					'type'        => 'password',
 					'placeholder' => __( 'Password', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'password' ),
-					'id'          => 'password',
-					'required'    => true
+					'id'          => 'user_password',
+					//'required'    => true
 				)
 			);
 			$fields = apply_filters( 'learn-press/login-fields', $fields );

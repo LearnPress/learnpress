@@ -115,7 +115,7 @@
      *
      * @type {form}
      */
-    $formCheckout = $('#learn-press-checkout'),
+    $formCheckout = $('#learn-press-checkout-form'),
 
     /**
      * Register form
@@ -182,6 +182,38 @@
       };
     }
     /**
+     * Check to need make a payment if there is 'payment' form
+     */
+
+
+    var needPayment = function needPayment() {
+      return $payments.length > 0;
+    };
+
+    var selectedPayment = function selectedPayment() {
+      return $payments.find('input[name="payment_method"]:checked').val();
+    };
+
+    var isLoggedIn = function isLoggedIn() {
+      return $formCheckout.find('input[name="checkout-account-switch-form"]:checked').length = 0;
+    };
+
+    var getLoginOrRegisterData = function getLoginOrRegisterData() {
+      var formName = $formCheckout.find('input[name="checkout-account-switch-form"]:checked').val();
+      var $form = $('#checkout-account-' + formName);
+      return $form.serializeJSON();
+    };
+
+    var getPaymentData = function getPaymentData() {
+      return $('#checkout-payment').serializeJSON();
+    };
+
+    var showErrors = function showErrors(errors) {
+      showMessage(errors);
+      var firstId = Object.keys(errors)[0];
+      $('input[name="' + firstId + '"]').focus();
+    };
+    /**
      * Callback function for submitting form.
      *
      * @param e
@@ -191,29 +223,53 @@
 
 
     var _formSubmit = function _formSubmit(e) {
-      e.preventDefault();
+      e.preventDefault(); // if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
+      //     return;
+      // }
 
-      if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
-        return;
+      if (needPayment() && !selectedPayment()) {
+        showMessage('Please select payment method', true);
+        return false;
       }
 
-      var $form = $payments.children('.selected'),
-          data = $formCheckout.serializeJSON();
-      removeMessage();
+      var formData = {};
 
-      if (options.i18n_processing) {
-        $buttonCheckout.html(options.i18n_processing);
+      if (!isLoggedIn()) {
+        formData = $.extend(formData, getLoginOrRegisterData());
       }
 
-      $buttonCheckout.prop('disabled', true); //LP.blockContent();
+      formData = $.extend(formData, getPaymentData()); // console.log(formData);
+      //
+      // return false;
+      //
+      // var $form = $payments.children('.selected'),
+      //     data = $formCheckout.serializeJSON();
+      //
+
+      removeMessage(); //
+      // if (options.i18n_processing) {
+      //     $buttonCheckout.html(options.i18n_processing);
+      // }
+      //
+      // $buttonCheckout.prop('disabled', true);
+      //
+      //
+      // return false;
+      //LP.blockContent();
 
       $.ajax({
         url: options.ajaxurl + '/?lp-ajax=checkout',
         dataType: 'html',
-        data: data,
+        data: formData,
         type: 'post',
         success: function success(response) {
           response = LP.parseJSON(response);
+
+          if (response.messages) {
+            showErrors(response.messages);
+          }
+
+          console.log(response);
 
           try {
             if ('success' === response.result) {
@@ -223,16 +279,14 @@
             } else {
               throw "ERROR";
             }
-          } catch (error) {
-            if (!response.messages) {
-              showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
-            } else {
-              showMessage(response.messages);
-            }
-
-            $buttonCheckout.html(options.i18n_place_order);
-            $buttonCheckout.prop('disabled', false);
-            LP.unblockContent();
+          } catch (error) {// if (!response.messages) {
+            //     showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
+            // } else {
+            //     showMessage(response.messages);
+            // }
+            // $buttonCheckout.html(options.i18n_place_order);
+            // $buttonCheckout.prop('disabled', false);
+            // LP.unblockContent();
           }
         },
         error: function error(jqXHR, textStatus, errorThrown) {
@@ -280,9 +334,27 @@
      */
 
 
-    var showMessage = function showMessage(messages) {
+    var showMessage = function showMessage(message) {
+      var wrap = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       removeMessage();
-      $formCheckout.prepend(messages);
+
+      if ($.isPlainObject(message)) {
+        Object.keys(message).reverse().map(function (id) {
+          var m = message[id];
+          var msg = $.isArray(m) ? m[0] : m;
+          var type = $.isArray(m) ? m[1] : '';
+          msg = '<div class="learn-press-message ' + (typeof type === 'string' ? type : '') + '">' + msg + '</div>';
+          $formCheckout.prepend(msg);
+        });
+        return;
+      } else {
+        if (wrap) {
+          message = '<div class="learn-press-message ' + (typeof wrap === 'string' ? wrap : '') + '">' + message + '</div>';
+        }
+
+        $formCheckout.prepend(message);
+      }
+
       $('html, body').animate({
         scrollTop: $formCheckout.offset().top - 100
       }, 1000);

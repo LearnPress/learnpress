@@ -354,8 +354,6 @@
 
 .lp-checkout-form__after {
   float: left; }
-  .lp-checkout-form__after #checkout-account-logged-in {
-    display: none; }
   .lp-checkout-form__after .lp-checkout-block .lp-form-fields {
     padding: 0 0 14px 0; }
     .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input {
@@ -427,10 +425,22 @@
       flex-direction: column-reverse; } }
   #learn-press-checkout-form input[name="checkout-account-switch-form"] {
     display: none; }
-    #learn-press-checkout-form input[name="checkout-account-switch-form"] + .lp-checkout-block {
-      display: none; }
+    #learn-press-checkout-form input[name="checkout-account-switch-form"]:not(:checked) + .lp-checkout-block {
+      height: 0;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+      opacity: 0;
+      border: 0; }
+      #learn-press-checkout-form input[name="checkout-account-switch-form"]:not(:checked) + .lp-checkout-block > * {
+        height: 0;
+        overflow: hidden; }
     #learn-press-checkout-form input[name="checkout-account-switch-form"]:checked + .lp-checkout-block {
-      display: block; }
+      height: auto;
+      overflow: auto; }
+      #learn-press-checkout-form input[name="checkout-account-switch-form"]:checked + .lp-checkout-block > * {
+        height: auto;
+        overflow: auto; }
   #learn-press-checkout-form:after {
     content: '';
     display: block;
@@ -590,7 +600,6 @@
         border-radius: 50%;
         margin: 0 8px 0 0; }
         #checkout-payment .payment-methods .lp-payment-method .gateway-input:before {
-          content: '';
           position: absolute;
           top: 50%;
           left: 50%;
@@ -601,6 +610,8 @@
           -moz-border-radius: 50%;
           border-radius: 50%;
           background: #41abec; }
+        #checkout-payment .payment-methods .lp-payment-method .gateway-input:checked:before {
+          content: ''; }
         #checkout-payment .payment-methods .lp-payment-method .gateway-input:focus {
           outline: 0; }
   #checkout-payment #checkout-order-action button {
@@ -5182,9 +5193,12 @@ input[type="password"] {
   position: relative;
   margin: 0 0 20px 0;
   border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px; }
+  border-bottom-right-radius: 5px;
+  border-top: 5px solid #00adff; }
   .learn-press-message.icon {
     padding-left: 45px; }
+    .learn-press-message.icon:before {
+      background: #00adff; }
     .learn-press-message.icon:after {
       font-size: 20px;
       vertical-align: baseline;
@@ -5200,7 +5214,8 @@ input[type="password"] {
       text-align: center;
       border-radius: 50%;
       color: #FFF;
-      font-family: "Font Awesome 5 Free"; }
+      font-family: "Font Awesome 5 Free";
+      content: "\f129"; }
   .learn-press-message:before, .learn-press-message:after {
     position: absolute;
     content: '';
@@ -5208,7 +5223,8 @@ input[type="password"] {
   .learn-press-message:before {
     right: 20px;
     width: 20px;
-    height: 30px; }
+    height: 30px;
+    background: #00adff; }
   .learn-press-message:after {
     width: 0;
     height: 0;
