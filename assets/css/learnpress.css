@@ -247,9 +247,13 @@
       text-transform: capitalize;
       margin: 0;
       cursor: pointer;
-      text-align: center; }
+      text-align: center;
+      display: block; }
       .learn-press-tabs .learn-press-tabs__tab > label a {
         color: #333; }
+        .learn-press-tabs .learn-press-tabs__tab > label a:focus {
+          outline: 0;
+          text-decoration: none; }
       @media (max-width: 767px) {
         .learn-press-tabs .learn-press-tabs__tab > label {
           padding: 20px 50px 14px 50px; } }
@@ -463,7 +467,9 @@
     line-height: 1;
     border-left: 0;
     border-right: 0;
-    border-top: 0; }
+    border-top: 0;
+    border-color: rgba(204, 204, 204, 0.3);
+    text-align: left; }
     #checkout-order .lp-checkout-order__inner td:last-child,
     #checkout-order .lp-checkout-order__inner th:last-child {
       padding-right: 0; }
@@ -718,6 +724,9 @@
     background: #FFF;
     text-align: left;
     padding: 20px; }
+    @media (max-width: 767px) {
+      .lp-list-table th, .lp-list-table td {
+        padding: 15px; } }
   .lp-list-table thead {
     box-sizing: border-box;
     border: 1px solid #e5e7f2; }
@@ -883,12 +892,15 @@
     margin: 25px; }
     #learn-press-profile .lp-user-profile-avatar img {
       width: 100%;
-      height: auto; }
+      height: auto;
+      border-radius: unset; }
   #learn-press-profile .lp-user-profile-socials {
     margin: -47px 0 0 0;
     display: flex;
     justify-content: center;
-    padding-bottom: 30px; }
+    padding-bottom: 30px;
+    position: relative;
+    z-index: 1; }
     #learn-press-profile .lp-user-profile-socials a {
       display: inline-block;
       width: 40px;
@@ -901,7 +913,8 @@
       text-align: center;
       line-height: 40px;
       color: #666;
-      margin: 0 7px; }
+      margin: 0 7px;
+      font-size: 16px; }
       #learn-press-profile .lp-user-profile-socials a:hover {
         background: #ffb606;
         border-color: #ffb606;
@@ -1366,6 +1379,8 @@ form[name="profile-change-password"] p {
         margin-right: 0;
         margin-bottom: 30px; } }
     #learn-press-course .course-author .course-author__pull-left img {
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
       margin-bottom: 20px; }
     #learn-press-course .course-author .course-author__pull-left .course-author__meta span {
@@ -2083,6 +2098,7 @@ body .lp-quiz-buttons .form-button-finish-course {
   border-radius: 5px;
   margin-bottom: 3px; }
   .course-extra-box .course-extra-box__title {
+    display: block;
     font-size: 18px;
     font-weight: 600;
     background: rgba(181, 187, 211, 0.15);
@@ -2166,7 +2182,8 @@ input[name="course-extra-box-ratio"] {
       font-weight: 500;
       margin: 0;
       position: relative;
-      cursor: pointer; }
+      cursor: pointer;
+      display: block; }
       .course-tab-panel-faqs .course-faqs-box .course-faqs-box__title:after {
         content: '\f078';
         font-weight: 900;
@@ -4990,6 +5007,10 @@ input[type="password"] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
+
+body h1:not(.site-title):before,
+body h2:before {
+  display: none; }
 
 .margin-bottom {
   margin-bottom: 20px; }

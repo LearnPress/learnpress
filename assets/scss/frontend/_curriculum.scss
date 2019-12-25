@@ -66,6 +66,8 @@
             }
 
             img {
+                width: 96px;
+                height: 96px;
                 border-radius: 50%;
                 margin-bottom: 20px;
             }
@@ -1225,6 +1227,7 @@ body {
     margin-bottom: 3px;
 
     .course-extra-box__title {
+        display: block;
         font-size: 18px;
         font-weight: 600;
         background: rgba(181, 187, 211, 0.15);
@@ -1346,7 +1349,7 @@ input[name="course-extra-box-ratio"] {
             margin: 0;
             position: relative;
             cursor: pointer;
-
+            display: block;
             &:after {
                 content: '\f078';
                 font-weight: 900;

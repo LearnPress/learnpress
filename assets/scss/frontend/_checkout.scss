@@ -197,7 +197,8 @@
             border-left: 0;
             border-right: 0;
             border-top: 0;
-
+            border-color:rgba(204,204,204,0.3);
+            text-align: left;
             &:last-child {
                 padding-right: 0;
             }

@@ -62,8 +62,13 @@
             margin: 0;
             cursor: pointer;
             text-align: center;
+            display: block;
             a {
                 color: #333;
+                &:focus {
+                    outline: 0;
+                    text-decoration: none;
+                }
             }
             @media (max-width: 767px) {
                 padding: 20px 50px 14px 50px;
