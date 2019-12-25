@@ -299,7 +299,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'  => 'no',
 					),
 					array(
-						'name' => __( 'Instant check', 'learnpress' ),
+						'name' => __( 'Instant Check', 'learnpress' ),
 						//'id'   => '_lp_show_check_answer',
 						'id'   => '_lp_instant_check',
 						'type' => 'yes_no',
