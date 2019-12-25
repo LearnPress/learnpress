@@ -338,9 +338,34 @@ class LP_Install_Sample_Data {
 			foreach ( $metas as $key => $value ) {
 				update_post_meta( $course_id, $key, $value );
 			}
+
+			$this->add_extra_info( $course_id );
 		}
 
 		return $course_id;
+	}
+
+	protected function add_extra_info( $course_id ) {
+		$features = array( 'requirements', 'target_audiences', 'key_features' );
+
+		// Requirements, Target audiences, Key Features
+		foreach ( $features as $feature ) {
+			$feature_data = array();
+			for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i ++ ) {
+				$feature_data[] = $this->generate_title();
+			}
+			update_post_meta( $course_id, '_lp_' . $feature, $feature_data );
+		}
+
+		// FAQs
+		$feature_data = array();
+		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i ++ ) {
+			$feature_data[] = array( $this->generate_title() . '?', $this->generate_content( 20, 30, 3 ) );
+		}
+		update_post_meta( $course_id, '_lp_faqs', $feature_data );
+
+		// Featured review
+		update_post_meta( $course_id, '_lp_featured_review', $this->generate_title( 30, 40 ) );
 	}
 
 	/**
@@ -574,9 +599,9 @@ class LP_Install_Sample_Data {
 
 			if ( $wpdb->insert_id ) {
 				$this->create_question_answers( $question_id, $type );
-			}else{
-			    error_log('create_quiz_questions => ', $wpdb->last_error);
-            }
+			} else {
+				error_log( 'create_quiz_questions => ', $wpdb->last_error );
+			}
 		}
 	}
 

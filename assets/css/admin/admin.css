@@ -1387,34 +1387,28 @@ ul .clearfix {
  * Order
  */
 .post-type-lp_order .wp-list-table .column-order_status {
-  width: 100px; }
+  width: 150px; }
 
 .post-type-lp_order .wp-list-table .order_status span {
-  display: inline-block; }
-  .post-type-lp_order .wp-list-table .order_status span:after {
-    font-family: "Font Awesome 5 Free";
-    display: inline-block;
-    font-size: 20px;
-    color: #FFF;
-    text-align: center;
-    line-height: 20px;
-    width: 20px;
-    height: 20px; }
-  .post-type-lp_order .wp-list-table .order_status span.completed:after {
-    content: "\f00c";
-    color: #0085ba; }
-  .post-type-lp_order .wp-list-table .order_status span.processing:after {
-    content: "\f251";
-    color: #563F7A; }
-  .post-type-lp_order .wp-list-table .order_status span.pending:after {
-    content: "\f017";
-    color: #AAA; }
-  .post-type-lp_order .wp-list-table .order_status span.cancelled:after {
-    content: "\f057";
-    color: #FF0000; }
-  .post-type-lp_order .wp-list-table .order_status span.draft:after {
-    content: "\f223";
-    color: #69b391; }
+  display: inline-block;
+  font-size: 12px;
+  padding: 3px 6px;
+  color: #FFF;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px; }
+  .post-type-lp_order .wp-list-table .order_status span.pending {
+    background: #BDBDBD; }
+  .post-type-lp_order .wp-list-table .order_status span.processing {
+    background: #FFC107; }
+  .post-type-lp_order .wp-list-table .order_status span.completed {
+    background: #4CAF50; }
+  .post-type-lp_order .wp-list-table .order_status span.cancelled {
+    background: #444444; }
+  .post-type-lp_order .wp-list-table .order_status span.failed {
+    background: #FF0000; }
+  .post-type-lp_order .wp-list-table .order_status span i {
+    display: inline-block; }
 
 .post-type-lp_order .wp-list-table .column-title,
 .post-type-lp_order .wp-list-table .column-order_total,
@@ -1703,7 +1697,7 @@ ul .clearfix {
         .lp-order-statuses li.counter-number .counter-inner p {
           text-transform: lowercase; }
       .lp-order-statuses li.counter-number.order-completed strong:before {
-        content: '\f502';
+        content: '\f058';
         color: #0085ba; }
       .lp-order-statuses li.counter-number.order-processing strong:before {
         content: "\f321";

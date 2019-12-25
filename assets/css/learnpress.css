@@ -434,6 +434,7 @@
   #learn-press-checkout-form input[name="checkout-account-switch-form"] {
     display: none; }
     #learn-press-checkout-form input[name="checkout-account-switch-form"]:not(:checked) + .lp-checkout-block {
+      display: none;
       height: 0;
       overflow: hidden;
       padding: 0;
@@ -444,6 +445,7 @@
         height: 0;
         overflow: hidden; }
     #learn-press-checkout-form input[name="checkout-account-switch-form"]:checked + .lp-checkout-block {
+      display: block;
       height: auto;
       overflow: auto; }
       #learn-press-checkout-form input[name="checkout-account-switch-form"]:checked + .lp-checkout-block > * {
@@ -967,6 +969,16 @@
       #learn-press-profile #profile-nav .lp-profile-nav-tabs > li:last-child {
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px; }
+      #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.wishlist > a:before {
+        content: '\f004';
+        font-size: 12px;
+        position: absolute;
+        left: 25px;
+        color: #ffb606;
+        font-weight: 900;
+        font-family: "Font Awesome 5 Free"; }
+      #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.wishlist:hover a:before {
+        color: #fff; }
       #learn-press-profile #profile-nav .lp-profile-nav-tabs > li.logout > a:after {
         display: none; }
     #learn-press-profile #profile-nav .lp-profile-nav-tabs li > a {
@@ -1459,22 +1471,22 @@ form[name="profile-change-password"] p {
 #learn-press-course .lp-course-buttons {
   margin-bottom: 20px; }
 
-#learn-press-course .course-featured-review {
-  padding: 0 20px 40px 20px; }
-  #learn-press-course .course-featured-review .featured-review__title {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 2px;
-    margin-top: 0; }
-  #learn-press-course .course-featured-review .featured-review__stars {
-    color: #ffb606;
-    padding-bottom: 12px;
-    font-size: 16px; }
-  #learn-press-course .course-featured-review .featured-review__content {
-    line-height: 24px;
-    font-weight: 300;
-    color: #666;
-    font-size: 16px; }
+#learn-press-course .course-featured-review .featured-review__title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  margin-top: 0; }
+
+#learn-press-course .course-featured-review .featured-review__stars {
+  color: #ffb606;
+  padding-bottom: 12px;
+  font-size: 16px; }
+
+#learn-press-course .course-featured-review .featured-review__content {
+  line-height: 24px;
+  font-weight: 300;
+  color: #666;
+  font-size: 16px; }
 
 #learn-press-course .course-tags a {
   display: inline-block;
@@ -3054,22 +3066,6 @@ a {
               display: block;
               width: 100%;
               transition: all .5s ease; }
-          .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-wishlist {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            z-index: 2;
-            opacity: 0;
-            color: #fff;
-            cursor: pointer; }
-            .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-wishlist:before {
-              content: '\f004';
-              font-weight: 900;
-              font-family: "Font Awesome 5 Free"; }
-            .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-wishlist .course-wishlist__btn {
-              display: none; }
-            .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-wishlist:hover {
-              color: #ffb606; }
           .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail:hover:before {
             opacity: 1; }
           .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail:hover .course-thumbnail a img {

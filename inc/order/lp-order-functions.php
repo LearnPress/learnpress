@@ -697,7 +697,7 @@ function learn_press_get_register_order_statuses() {
 	$order_statues = array();
 
 	$order_statues['lp-pending']    = array(
-		'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
+		'label'                     => _x( 'Pending', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
 		'show_in_admin_all_list'    => true,

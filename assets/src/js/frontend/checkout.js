@@ -115,7 +115,7 @@
             showMessage(errors);
             var firstId = Object.keys(errors)[0];
 
-            $('input[name="'+firstId+'"]').focus();
+            $('input[name="' + firstId + '"]').focus();
         }
         /**
          * Callback function for submitting form.
@@ -380,6 +380,10 @@
         } else if (!$formRegister.length && $formLogin.length) {
             _toggleLoginForm()
         }
+
+        setTimeout(function () {
+            $formCheckout.find('input:not([type="hidden"]):visible').first().focus();
+        }, 300)
     }
 
     $(document).ready(function () {
