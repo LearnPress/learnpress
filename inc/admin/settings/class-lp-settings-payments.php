@@ -79,13 +79,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 				apply_filters(
 					'learn-press/payment-settings/general',
 					array(
-						array(
-							'title'   => __( 'Auto Enroll', 'learnpress' ),
-							'id'      => 'auto_enroll',
-							'default' => 'yes',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Skip Enroll Button after users successfully purchased courses.', 'learnpress' )
-						),
+
 						array(
 							'title'   => __( 'Guest Checkout', 'learnpress' ),
 							'id'      => 'guest_checkout',
