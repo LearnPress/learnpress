@@ -38,6 +38,7 @@ learn_press_print_messages();
 
     <form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form"
           class="lp-checkout-form"
+          tabindex="0"
           action="<?php echo esc_url( learn_press_get_checkout_url() ); ?>" enctype="multipart/form-data">
 
 		<?php

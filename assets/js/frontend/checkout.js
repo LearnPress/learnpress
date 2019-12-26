@@ -473,6 +473,10 @@
     } else if (!$formRegister.length && $formLogin.length) {
       _toggleLoginForm();
     }
+
+    setTimeout(function () {
+      $formCheckout.find('input:not([type="hidden"]):visible').first().focus();
+    }, 300);
   };
 
   $(document).ready(function () {

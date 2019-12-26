@@ -48,11 +48,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Re-count enrolled users to the courses in current order
 		 * is being changed status
 		 *
-		 * @since 3.0.10
-		 *
 		 * @param int $post_id
 		 *
 		 * @return bool
+		 * @since 3.0.10
+		 *
 		 */
 		public function recount_enrolled_users( $post_id ) {
 			if ( LP_ORDER_CPT !== get_post_type( $post_id ) ) {
@@ -323,11 +323,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Delete all records related to order being deleted.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param int $post_id
 		 *
 		 * @return mixed
+		 * @since 3.0.0
+		 *
 		 */
 		public function delete_order_data( $post_id ) {
 
@@ -346,6 +346,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param LP_Order $order
 		 * @param array    $user_ids
 		 * @param bool     $trigger_action
+		 *
+		 * @throws Exception
 		 */
 		protected function _update_child( $order, $user_ids, $trigger_action = false ) {
 			$new_orders = array();
@@ -393,10 +395,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		/**
 		 * Save order data.
-         *
-         * @updated 15 Nov 2018
+		 *
+		 * @updated 15 Nov 2018
 		 *
 		 * @param int $post_id
+		 *
+		 * @throws Exception
 		 */
 		public function save_order( $post_id ) {
 			global $action, $wpdb;
@@ -507,9 +511,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! empty( $matches ) && isset( $matches[1] ) ) {
 
 				$author_id = intval( $matches[1] );
-				$sql   = " ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)";
+				$sql       = " ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)";
 
-				$sql       = " {$wpdb->posts}.ID IN ( SELECT 
+				$sql = " {$wpdb->posts}.ID IN ( SELECT 
 						IF( p.post_parent >0, p.post_parent, p.ID)
 					FROM
 						{$wpdb->posts} AS p
@@ -550,13 +554,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					) ";
 				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
 				# search order via course name
-				$sql .= " OR ".$wpdb->prepare( " {$wpdb->posts}.ID IN (
+				$sql .= " OR " . $wpdb->prepare( " {$wpdb->posts}.ID IN (
 						SELECT DISTINCT order_id FROM {$wpdb->learnpress_order_items} loi
 						INNER JOIN {$wpdb->learnpress_order_itemmeta} loim ON loi.order_item_id = loim.learnpress_order_item_id AND loim.meta_key LIKE %s
 						WHERE `order_item_name` LIKE %s OR loim.meta_value LIKE %s 
 					)", array( '_course_id', $s, $s ) );
 				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
-					$sql .= $wpdb->prepare(" OR loi.order_item_name LIKE %s",$s);
+					$sql   .= $wpdb->prepare( " OR loi.order_item_name LIKE %s", $s );
 					$where = str_replace( $matches2[0], $sql . ' OR ' . $matches2[0], $where );
 				} else {
 					$where .= " AND " . $sql;
@@ -568,7 +572,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		public function posts_fields( $fields ) {
 			global $wp_query;
-			
+
 			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
 				return $fields;
 			}
@@ -610,7 +614,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
-			$s = $wp_query->get( 's' );
+			$s    = $wp_query->get( 's' );
 			$join .= " INNER JOIN {$wpdb->postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
 			$join .= " INNER JOIN {$wpdb->postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
 			if ( $s ) {
@@ -696,9 +700,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param array   $actions
 		 * @param WP_Post $post
 		 *
+		 * @return mixed
 		 * @since 2.1.7
 		 *
-		 * @return mixed
 		 */
 		public function row_actions( $actions, $post ) {
 			if ( ! empty( $actions['inline hide-if-no-js'] ) ) {
@@ -838,8 +842,34 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					break;
 				case 'order_status' :
+					$icon = '';
+					switch ( $the_order->get_status() ) {
+						case 'pending':
+							$icon = '<i class="fas fa-flag"></i>';
+							break;
+						case 'processing':
+							$icon = '<i class="far fa-clock"></i>';
+							break;
+						case 'completed':
+							$icon = '<i class="far fa-check-circle"></i>';
+							break;
+						case 'failed':
+							$icon = '<i class="far fa-times-circle"></i>';
+							break;
+						case 'cancelled':
+							$icon = '<i class="fas fa-ban"></i>';
+							break;
+					}
 
-					echo sprintf( '<span class="learn-press-tooltip %s" data-tooltip="%s">%s</span>', $the_order->get_status(), learn_press_get_order_status_label( $the_order->get_id() ), '' );
+					$icon = apply_filters( 'learn-press/order-status-icon', $icon, $the_order->get_status() );
+					$label = learn_press_get_order_status_label( $the_order->get_id() );
+					echo sprintf(
+						'<span class="learn-press-tooltip %s" data-tooltip="%s">%s %s</span>',
+						$the_order->get_status(),
+						$label,
+						$icon,
+						$label
+					);
 					break;
 				case 'order_date' :
 
@@ -986,19 +1016,21 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Register new post status for order
 		 */
 		public function register_post_statues() {
-			if(isset($_GET['debug_x'])){
+			if ( isset( $_GET['debug_x'] ) ) {
 				global $wpdb;
 				$user_id = get_current_user_id();
 				if ( empty( $wpdb->learnpress_user_items ) ) {
 					return;
 				}
 				$user_id = 67975;
-				$query = $wpdb->prepare( "
+				$query   = $wpdb->prepare( "
 						SELECT oi.order_id FROM `{$wpdb->learnpress_order_items}` as oi
 						INNER JOIN `{$wpdb->posts}` as post ON oi.order_id = post.ID AND post.post_status LIKE %s 
 						",
 					'lp_completed' );
-				echo'<pre>';print_r($wpdb->get_col( $query ));die;
+				echo '<pre>';
+				print_r( $wpdb->get_col( $query ) );
+				die;
 			}
 			$statuses = learn_press_get_register_order_statuses();
 			foreach ( $statuses as $status => $args ) {

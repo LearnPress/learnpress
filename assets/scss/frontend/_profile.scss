@@ -58,6 +58,7 @@
         img {
             width: 100%;
             height: auto;
+            border-radius: unset;
         }
     }
 
@@ -66,7 +67,8 @@
         display: flex;
         justify-content: center;
         padding-bottom: 30px;
-
+        position: relative;
+        z-index: 1;
         a {
             display: inline-block;
             width: 40px;
@@ -78,7 +80,7 @@
             line-height: 40px;
             color: #666;
             margin: 0 7px;
-
+            font-size: 16px;
             &:hover {
                 background: $primary-color;
                 border-color: $primary-color;
@@ -166,21 +168,21 @@
                     border-bottom-right-radius: 4px;
                 }
 
-                //&.wishlist {
-                //    & > a:before {
-                //        content: '\f004';
-                //        font-size: 12px;
-                //        position: absolute;
-                //        left: 25px;
-                //        color: $primary-color;
-                //        font-weight: 900;
-                //        font-family: "Font Awesome 5 Free";
-                //    }
-                //
-                //    &:hover a:before {
-                //        color: #fff;
-                //    }
-                //}
+                &.wishlist {
+                    & > a:before {
+                        content: '\f004';
+                        font-size: 12px;
+                        position: absolute;
+                        left: 25px;
+                        color: $primary-color;
+                        font-weight: 900;
+                        font-family: "Font Awesome 5 Free";
+                    }
+
+                    &:hover a:before {
+                        color: #fff;
+                    }
+                }
 
                 &.logout {
                     & > a:after {

@@ -4,41 +4,64 @@
 .post-type-lp_order {
     .wp-list-table {
         .column-order_status {
-            width: 100px;
+            width: 150px;
         }
         .order_status {
             span {
                 display: inline-block;
-                &:after {
-                    font-family: "Font Awesome 5 Free";
+                font-size: 12px;
+                padding: 3px 6px;
+                color: #FFF;
+                @include border-radius(4px);
+                &.pending{
+                    background: #BDBDBD;
+                }
+                &.processing{
+                    background: #FFC107;
+                }
+                &.completed{
+                    background: #4CAF50;
+                }
+                &.cancelled{
+                    background: #444444;
+                }
+                &.failed{
+                    background: #FF0000;
+                }
+                i{
                     display: inline-block;
-                    font-size: 20px;
-                    color: #FFF;
-                    text-align: center;
-                    line-height: 20px;
-                    width: 20px;
-                    height: 20px;
                 }
-                &.completed:after {
-                    content: "\f00c";
-                    color: $primary-color;
-                }
-                &.processing:after {
-                    content: "\f251";
-                    color: #563F7A;
-                }
-                &.pending:after {
-                    content: "\f017";
-                    color: #AAA;
-                }
-                &.cancelled:after {
-                    content: "\f057";
-                    color: #FF0000;
-                }
-                &.draft:after {
-                    content: "\f223";
-                    color: #69b391;
-                }
+                //&:after {
+                //    font-family: "Font Awesome 5 Free";
+                //    display: inline-block;
+                //    font-size: 20px;
+                //    color: #FFF;
+                //    text-align: center;
+                //    line-height: 20px;
+                //    width: 20px;
+                //    height: 20px;
+                //}
+                //&.completed:after {
+                //    //content: "\f00c";
+                //    content: "\f058";
+                //    color: $primary-color;
+                //}
+                //&.processing:after {
+                //    content: "\f251";
+                //    color: #563F7A;
+                //}
+                //&.pending:after {
+                //    content: "\f017";
+                //    color: #AAA;
+                //}
+                //&.cancelled:after {
+                //    content: "\f057";
+                //    color: #FF0000;
+                //}
+                //&.failed:after {
+                //    content: "\f223";
+                //    color: #69b391;
+                //}
             }
         }
         .column-title,
