@@ -92,12 +92,6 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 							'default' => 'no',
 							'type'    => 'yes-no',
 						),
-						array(
-						'title'   => __( 'Terms & conditions page', 'learnpress' ),
-						'id'      => 'term_conditions_page_id',
-						'default' => '',
-						'type'    => 'pages-dropdown'
-						)
 					)
 				),
 				// Endpoint
