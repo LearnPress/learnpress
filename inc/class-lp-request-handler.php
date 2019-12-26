@@ -844,7 +844,6 @@ class LP_Request {
 		}
 
 		$cookie = isset( $_COOKIE['LP'] ) ? (array) json_decode( stripslashes( $_COOKIE['LP'] ) ) : array();
-
 		return isset( $cookie[ $name ] ) ? $cookie[ $name ] : $def;
 	}
 

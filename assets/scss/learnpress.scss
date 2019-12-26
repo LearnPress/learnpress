@@ -130,6 +130,7 @@ input[type="password"] {
         text-transform: capitalize;
         font-family: inherit;
         text-decoration: none;
+        text-align: center;
         @include box-sizing(border-box);
 
         &.large {
@@ -192,6 +193,13 @@ input[type="password"] {
         &:focus {
             outline: 0;
         }
+    }
+
+    .rwmb-field .description {
+        margin-top: 8px;
+        font-style: italic;
+        font-size: smaller;
+        color: #999;
     }
 }
 
@@ -311,10 +319,12 @@ input[type="password"] {
 
     &.icon {
         padding-left: 45px;
-        &:before{
+
+        &:before {
             background: #00adff;
 
         }
+
         &:after {
             font-size: 20px;
             vertical-align: baseline;
@@ -579,6 +589,7 @@ ul.list-table-nav {
         input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .learn-press-nav-tabs {
             .course-nav:nth-child(#{$i}) {
                 border-bottom: 0;
+
                 label {
                     color: $primary-color;
                     background: #fff;

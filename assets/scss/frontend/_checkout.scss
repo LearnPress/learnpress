@@ -137,6 +137,24 @@
         flex-direction: column-reverse;
     }
 
+    #btn-checkout-account-switch-to-guest {
+        margin-bottom: 60px;
+    }
+
+    .description {
+        float: left;
+    }
+
+    .lp-guest-checkout-switch-back {
+        float: right;
+
+        label {
+            font-size: smaller;
+            font-weight: normal;
+            margin-top: 8px;
+        }
+    }
+
     input[name="checkout-account-switch-form"] {
         display: none;
 
@@ -167,6 +185,16 @@
                 > * {
                     height: auto;
                     overflow: auto;
+                }
+            }
+
+
+        }
+
+        &[value="guest"] {
+            &:checked {
+                ~ #btn-checkout-account-switch-to-guest {
+                    display: none;
                 }
             }
         }
@@ -530,8 +558,8 @@
 }
 
 #checkout-guest-email {
-    border: 1px solid #DDD;
-    padding: 20px;
+    //border: 1px solid #DDD;
+    //padding: 20px;
     margin: 0 0 20px 0;
 
     .form-heading {

@@ -1434,7 +1434,7 @@ function learn_press_get_page_link( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
 	$link    = '';
 
-	if ( get_post_status( $page_id ) == 'publish' ) {
+	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
 		$permalink = trailingslashit( get_permalink( $page_id ) );
 		$permalink = apply_filters( 'learn_press_get_page_link', $permalink, $page_id, $key );
 		$link      = apply_filters( 'learn-press/get-page-link', $permalink, $page_id, $key );
@@ -1442,7 +1442,7 @@ function learn_press_get_page_link( $key ) {
 
 	$link = apply_filters( 'learn_press_get_page_' . $key . '_link', $link, $page_id );
 
-	return apply_filters( 'learn-press/get-page-' . $key . '-link', trailingslashit( $link ), $page_id );
+	return apply_filters( 'learn-press/get-page-' . $key . '-link', $link ? trailingslashit( $link ) : '', $page_id );
 }
 
 /**
@@ -1456,7 +1456,7 @@ function learn_press_get_page_title( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
 	$title   = '';
 
-	if ( get_post_status( $page_id ) == 'publish' ) {
+	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
 		$title = apply_filters( 'learn-press/get-page-title', get_the_title( $page_id ), $page_id, $key );
 	}
 

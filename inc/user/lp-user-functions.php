@@ -2217,3 +2217,10 @@ function learn_press_get_user_extra_profile_fields() {
 
 	return apply_filters( 'learn-press/user-extra-profile-fields', $fields );
 }
+
+function learn_press_user_profile_data( $user ) {
+	learn_press_admin_view( 'user/courses.php', array( 'user_id' => $user->ID ) );
+}
+
+add_action( 'show_user_profile', 'learn_press_user_profile_data', 1000 );
+add_action( 'edit_user_profile', 'learn_press_user_profile_data', 1000 );

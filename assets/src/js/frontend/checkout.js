@@ -100,7 +100,7 @@
             return $formCheckout.find('input[name="checkout-account-switch-form"]:checked').length = 0;
         }
 
-        var getLoginOrRegisterData = function () {
+        var getActiveFormData = function () {
             var formName = $formCheckout.find('input[name="checkout-account-switch-form"]:checked').val();
             var $form = $('#checkout-account-' + formName);
 
@@ -114,8 +114,8 @@
         var showErrors = function (errors) {
             showMessage(errors);
             var firstId = Object.keys(errors)[0];
-
-            $('input[name="' + firstId + '"]').focus();
+console.log('1111')
+            $('input[name="' + firstId + '"]:visible').focus();
         }
         /**
          * Callback function for submitting form.
@@ -139,7 +139,7 @@
             var formData = {};
 
             if (!isLoggedIn()) {
-                formData = $.extend(formData, getLoginOrRegisterData());
+                formData = $.extend(formData, getActiveFormData());
             }
 
             formData = $.extend(formData, getPaymentData());
@@ -380,6 +380,21 @@
         } else if (!$formRegister.length && $formLogin.length) {
             _toggleLoginForm()
         }
+
+        $formCheckout
+            .on('change', 'input[name="checkout-account-switch-form"]', function () {
+                console.log('2222')
+
+                $(this).next().find('input:not([type="hidden"]):visible').first().focus();
+                console.log('3333')
+
+            })
+            .on('change', '#guest_email', function () {
+                $formCheckout.find('#reg_email').val(this.value)
+            })
+            .on('change', '#reg_email', function () {
+                $formCheckout.find('#guest_email').val(this.value)
+            })
 
         setTimeout(function () {
             $formCheckout.find('input:not([type="hidden"]):visible').first().focus();

@@ -1125,6 +1125,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			if ( empty( self::$_instances[ $user_id ] ) ) {
+				error_log($user_id);
 				self::$_instances[ $user_id ] = new self( $user_id );
 			}
 

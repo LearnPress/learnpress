@@ -323,8 +323,9 @@ add_action('learn-press/before-checkout-form',LP()->template( 'checkout' )->func
 add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_logged_in'), 20);
 add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_login'), 30);
 add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_register'), 40);
-add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('payment'), 50);
-add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('terms'), 60);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('guest_checkout'), 50);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('payment'), 60);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('terms'), 70);
 
 
 

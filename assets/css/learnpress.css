@@ -427,6 +427,16 @@
       margin: 0;
       display: flex;
       flex-direction: column-reverse; } }
+  #learn-press-checkout-form #btn-checkout-account-switch-to-guest {
+    margin-bottom: 60px; }
+  #learn-press-checkout-form .description {
+    float: left; }
+  #learn-press-checkout-form .lp-guest-checkout-switch-back {
+    float: right; }
+    #learn-press-checkout-form .lp-guest-checkout-switch-back label {
+      font-size: smaller;
+      font-weight: normal;
+      margin-top: 8px; }
   #learn-press-checkout-form input[name="checkout-account-switch-form"] {
     display: none; }
     #learn-press-checkout-form input[name="checkout-account-switch-form"]:not(:checked) + .lp-checkout-block {
@@ -447,6 +457,8 @@
       #learn-press-checkout-form input[name="checkout-account-switch-form"]:checked + .lp-checkout-block > * {
         height: auto;
         overflow: auto; }
+    #learn-press-checkout-form input[name="checkout-account-switch-form"][value="guest"]:checked ~ #btn-checkout-account-switch-to-guest {
+      display: none; }
   #learn-press-checkout-form:after {
     content: '';
     display: block;
@@ -688,8 +700,6 @@
     display: none; }
 
 #checkout-guest-email {
-  border: 1px solid #DDD;
-  padding: 20px;
   margin: 0 0 20px 0; }
   #checkout-guest-email .form-heading {
     margin: 0; }
@@ -5057,6 +5067,7 @@ input[type="password"] {
   text-transform: capitalize;
   font-family: inherit;
   text-decoration: none;
+  text-align: center;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -5105,6 +5116,12 @@ input[type="password"] {
     animation: lp-rotating 1s linear infinite; }
   .learnpress-page .lp-button:focus {
     outline: 0; }
+
+.learnpress-page .rwmb-field .description {
+  margin-top: 8px;
+  font-style: italic;
+  font-size: smaller;
+  color: #999; }
 
 .course-meta {
   margin-bottom: 14px; }

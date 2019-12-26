@@ -14,16 +14,12 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( is_user_logged_in() ) {
-	//return;
-}
-
 $profile = LP_Global::profile();
 $fields  = $profile->get_register_fields();
 
 ?>
 <input type="radio" id="checkout-account-switch-to-register" name="checkout-account-switch-form" checked="checked" value="register"/>
-<div id="checkout-account-register" class="lp-checkout-block left">
+<div id="checkout-account-register" class="checkout-account-switch-form lp-checkout-block left">
 	<h4><?php esc_html_e( 'Sign up', 'learnpress' ); ?></h4>
 
 	<?php
@@ -47,7 +43,7 @@ $fields  = $profile->get_register_fields();
 	 */
 	do_action( 'learn-press/after-form-register-fields' );
 
-	wp_nonce_field( 'learn-press-register', 'learn-press-register-nonce' );
+	wp_nonce_field( 'learn-press-checkout-register', 'learn-press-checkout-nonce' );
 	?>
 
     <p class="lp-checkout-sign-in-link">
