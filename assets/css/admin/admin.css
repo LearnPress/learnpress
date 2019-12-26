@@ -3818,3 +3818,6 @@ body.post-type-lp_question #button-new-question {
     background: #ccc;
     top: 0;
     z-index: 0; }
+
+.learn-press-dropdown-pages .list-pages.select2-hidden-accessible {
+  min-width: 300px; }

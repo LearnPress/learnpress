@@ -138,7 +138,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * @param            $name
  * @param array      $args
  * @param bool|false $include_once
- * @param            bool
+ * @param bool
  *
  * @return bool
  */
@@ -241,6 +241,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 
 	if ( $allow_create ) {
 		ob_start(); ?>
+		<?php echo esc_html( _x( 'or', 'drop down pages', 'learnpress' ) ); ?>
         <button class="button button-quick-add-page" data-id="<?php echo $id; ?>"
                 type="button"><?php _e( 'Create New', 'learnpress' ); ?></button>
 		<?php echo '</div>'; ?>
@@ -476,12 +477,12 @@ if ( ! function_exists( 'learn_press_get_item_referral' ) ) {
 //		);
 
 		$affiliate_links = array(
-			14058034      => 'https://1.envato.market/Yx2YR', // eduma
-			22773871      => 'https://1.envato.market/akrzZ', // ivy-school
-			20370918      => 'https://1.envato.market/13Zkd', // wordpress-lms
-			17097658      => 'https://1.envato.market/Xq2Ra', // coach
-			23451388      => 'https://1.envato.market/oWov9',
-			11797847      => 'https://1.envato.market/zknvM',
+			14058034 => 'https://1.envato.market/Yx2YR', // eduma
+			22773871 => 'https://1.envato.market/akrzZ', // ivy-school
+			20370918 => 'https://1.envato.market/13Zkd', // wordpress-lms
+			17097658 => 'https://1.envato.market/Xq2Ra', // coach
+			23451388 => 'https://1.envato.market/oWov9',
+			11797847 => 'https://1.envato.market/zknvM',
 //			'Sailing'     => 'https://1.envato.market/G5Rkk',
 //			'Hotel'       => 'https://1.envato.market/VW2K3',
 //			'Megabuilder' => 'https://1.envato.market/03R5V',
@@ -1728,13 +1729,13 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	/**
 	 * Duplicate post.
 	 *
-	 * @since 3.0.0
-	 *
 	 * @param null  $post_id
 	 * @param array $args
 	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
+	 * @since 3.0.0
+	 *
 	 */
 	function learn_press_duplicate_post( $post_id = null, $args = array(), $meta = true ) {
 		$post = get_post( $post_id );
@@ -2259,12 +2260,12 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 /**
  * Filter to modal search items to void filter the posts by author.
  *
- * @since 3.0.4
- *
  * @param int|string $context_id
  * @param string     $context
  *
  * @return bool|int|string
+ * @since 3.0.4
+ *
  */
 function learn_press_modal_search_items_context( $context_id, $context ) {
 	if ( 'order-items' === $context ) {
@@ -2279,12 +2280,12 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
 /**
  * Filter to post link to change the link if it is an item inside course.
  *
- * @since 3.0.0
- *
  * @param string  $link
  * @param WP_Post $post
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_preview_post_link( $link, $post ) {
 	$items = learn_press_course_get_support_item_types( true );
@@ -2301,9 +2302,10 @@ add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
 /**
  * Sync post meta when saving post type.
  *
+ * @param int $post_id
+ *
  * @since 3.2.0
  *
- * @param int $post_id
  */
 function learn_press_maybe_sync_data( $post_id ) {
 	$post_type = get_post_type( $post_id );
@@ -2325,9 +2327,9 @@ add_action( 'save_post', 'learn_press_maybe_sync_data' );
 /**
  * Return id of current screen.
  *
+ * @return bool|string
  * @since 3.2.6
  *
- * @return bool|string
  */
 function learn_press_get_screen_id() {
 	global $current_screen;
@@ -2340,9 +2342,9 @@ function learn_press_get_screen_id() {
  * Check if current screen is a page of LP or
  * editing post type of LP such as course, lesson, etc...
  *
+ * @return bool
  * @since 3.2.6
  *
- * @return bool
  */
 function learn_press_is_admin_page() {
 	$screen_id     = learn_press_get_screen_id();
@@ -2440,13 +2442,13 @@ function learn_press_get_orders_status_chart_data() {
  * If option 'roles' is passed to field and current user does
  * not have the role in that then do not show the field.
  *
- * @since 3.x.x
- *
  * @param string $outer_html
  * @param array  $field
  * @param mixed  $value
  *
  * @return string
+ * @since 3.x.x
+ *
  */
 function learn_press_meta_box_field_outer_html( $outer_html, $field, $value ) {
 
@@ -2480,7 +2482,7 @@ function learn_press_option_course_evaluation_method( $method ) {
 					<?php esc_html_e( 'Only the final quiz', 'learnpress' ); ?>
                 </label>
             </p>
-			<?php
+		<?php
 	}
 }
 

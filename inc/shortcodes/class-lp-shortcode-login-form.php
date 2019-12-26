@@ -58,9 +58,9 @@ if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
 		public static function get_login_fields() {
 			$fields = array(
 				'username' => array(
-					'title'       => __( 'Username or email', 'learnpress' ),
+					'title'       => __( 'Email or username', 'learnpress' ),
 					'type'        => 'text',
-					'placeholder' => __( 'Username or email', 'learnpress' ),
+					'placeholder' => __( 'Email or username', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'username' ),
 					'id'          => 'user_login',
 					//'required'    => true

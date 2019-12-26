@@ -14,40 +14,44 @@ $settings = LP()->settings();
 ?>
 <table>
     <tr>
-        <th><?php _e( 'Enable', 'learnpress' ); ?></th>
-        <td>
-            <input type="checkbox" name="settings[paypal][enable]"
-                   value="yes" <?php checked( 'yes' == $settings->get( 'paypal.enable' ) ); ?>>
-        </td>
-    </tr>
-    <tr>
         <th><?php _e( 'Paypal Email', 'learnpress' ); ?></th>
         <td>
             <input class="regular-text" type="email" name="settings[paypal][paypal_email]"
+                   id="settings-paypal-email"
                    value="<?php echo $settings->get( 'paypal.paypal_email', '' ); ?>">
             <p class="description">
-		        <?php _e( 'Your Paypal email in live mode.', 'learnpress'  ); ?>
+				<?php _e( 'Your Paypal email in live mode.', 'learnpress' ); ?>
             </p>
+            <input type="hidden" name="settings[paypal][enable]"
+                   value="yes"/>
         </td>
     </tr>
+
     <tr>
-        <th><?php _e( 'Sandbox Mode', 'learnpress' ); ?></th>
+        <th><?php _e( 'Currency', 'learnpress' ); ?></th>
         <td>
-            <input type="checkbox" name="settings[paypal][paypal_sandbox]"
-                   value="yes" <?php checked( 'yes' == $settings->get( 'paypal.paypal_sandbox' ) ); ?>>
-            <p class="description">
-				<?php printf( __( 'For testing purpose with Paypal sandbox mode. Create an account <a href="%s">here</a>!', 'learnpress' ), 'https://developer.paypal.com/developer/accounts/' ); ?>
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <th><?php _e( 'Paypal Sandbox Email', 'learnpress' ); ?></th>
-        <td>
-            <input class="regular-text" type="email" name="settings[paypal][paypal_sandbox_email]"
-                   value="<?php echo $settings->get( 'paypal.paypal_sandbox_email', '' ); ?>">
-            <p class="description">
-		        <?php _e( 'Your Paypal email in sandbox mode.', 'learnpress'  ); ?>
-            </p>
+            <select id="currency" name="settings[currency][currency]" class="learn-press-select2">
+				<?php
+				if ( $payment_currencies = learn_press_currencies() ) {
+					foreach ( $payment_currencies as $code => $symbol ) {
+						?>
+                        <option value="<?php echo $code; ?>"
+                                data-symbol="<?php echo learn_press_get_currency_symbol( $code ); ?>" <?php selected( $code == $currency ); ?>><?php echo $symbol; ?></option>
+						<?php
+					}
+				} ?>
+            </select>
         </td>
     </tr>
 </table>
+
+<input type="hidden" name="settings[currency][currency_pos]" value="left"/>
+<input type="hidden" name="settings[currency][thousands_separator]" value=","/>
+<input type="hidden" name="settings[currency][decimals_separator]" value="."/>
+<input type="hidden" name="settings[currency][number_of_decimals]" value="2"/>
+
+<script>
+    jQuery(function ($) {
+        $('#settings-paypal-email').focus();
+    })
+</script>

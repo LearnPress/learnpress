@@ -18,6 +18,8 @@ defined( 'ABSPATH' ) || exit();
  * @var LP_Course_Item    $item
  * @var LP_Course_Section $section
  */
+
+$user = LP_Global::user();
 ?>
 
 <div class="course-item-meta">
@@ -31,12 +33,14 @@ defined( 'ABSPATH' ) || exit();
 	<?php
 	if ( $item->is_preview() ) {
 		?>
-        <i class="item-meta course-item-status"
-           data-preview="<?php esc_html_e( 'Preview', 'learnpress' ); ?>"></i>
+        <span class="item-meta course-item-preview"
+              data-preview="<?php esc_html_e( 'Preview', 'learnpress' ); ?>"></span>
 		<?php
 	} else {
+		$status_message = $item->get_status_title();
 		?>
-        <i class="fa item-meta course-item-status trans"></i>
+        <span class="item-meta course-item-status"
+              title="<?php echo isset( $status_message ) ? esc_attr( $status_message ) : ''; ?>"></span>
 		<?php
 	}
 	?>

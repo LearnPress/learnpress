@@ -59,6 +59,13 @@ $fields  = $profile->get_login_fields();
 		<?php esc_html_e( "Don't have an account?", 'learnpress' ); ?>
         <a href="javascript: void(0);">
             <label for="checkout-account-switch-to-register"><?php echo _x( 'Sign up', 'checkout sign up link', 'learnpress' ); ?></label>
-        </a>
+        </a>.
+
+		<?php
+		/**
+		 * Show guest checkout link to switch to form for a Guest
+		 */
+		learn_press_get_template( 'checkout/guest-checkout-link' );
+		?>
     </p>
 </div>

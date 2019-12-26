@@ -145,14 +145,23 @@
         float: left;
     }
 
-    .lp-guest-checkout-switch-back {
-        float: right;
+    a {
+        color: #41abec;
 
         label {
-            font-size: smaller;
+            display: inline-block;
             font-weight: normal;
-            margin-top: 8px;
+            color: inherit;
+            cursor: pointer;
         }
+
+        &:hover {
+            color: #ffb606;
+        }
+    }
+
+    .lp-guest-checkout-switch-back {
+        margin: 30px 0 0 0;
     }
 
     input[name="checkout-account-switch-form"] {
@@ -225,6 +234,8 @@
             border-left: 0;
             border-right: 0;
             border-top: 0;
+            border-color: rgba(204, 204, 204, 0.3);
+            text-align: left;
 
             &:last-child {
                 padding-right: 0;

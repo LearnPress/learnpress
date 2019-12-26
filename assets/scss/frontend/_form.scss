@@ -9,6 +9,9 @@
         background: #FFF;
         text-align: left;
         padding: 20px;
+        @media (max-width: 767px) {
+            padding: 15px;
+        }
     }
 
     thead {

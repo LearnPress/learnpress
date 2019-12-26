@@ -37,34 +37,32 @@ $wizard = LP_Setup_Wizard::instance();
 		<?php if ( ! $wizard->is_last_step() ) { ?>
             <div class="buttons">
 
-				<?php if ( ! $wizard->is_first_step() && ! ( array_key_exists( 'skip_prev_button', $step ) && $step['skip_prev_button'] === false ) ) { ?>
-                    <a class="button button-skip-prev ajax"
-                       href="<?php echo add_query_arg( 'skip', 'yes', $wizard->get_prev_url() ); ?>">
-						<?php
-						if ( ! empty( $step['skip_prev_button'] ) ) {
-							echo $step['skip_prev_button'];
-						} else {
-							_e( 'Skip to prev step', 'learnpress' );
-						}
-						?>
-                    </a>
-				<?php } ?>
+<!--				--><?php //if ( ! $wizard->is_first_step() && ! ( array_key_exists( 'skip_prev_button', $step ) && $step['skip_prev_button'] === false ) ) { ?>
+<!--                    <a class="button button-skip-prev ajax"-->
+<!--                       href="--><?php //echo add_query_arg( 'skip', 'yes', $wizard->get_prev_url() ); ?><!--">-->
+<!--						--><?php
+//						if ( ! empty( $step['skip_prev_button'] ) ) {
+//							echo $step['skip_prev_button'];
+//						} else {
+//							_e( 'Skip to prev step', 'learnpress' );
+//						}
+//						?>
+<!--                    </a>-->
+<!--				--><?php //} ?>
 
-				<?php if ( ! $wizard->is_first_step() && ! $wizard->is_last_step() && ! ( array_key_exists( 'skip_next_button', $step ) && $step['skip_next_button'] === false ) ) { ?>
-                    <a class="button button-skip-next"
-                       href="<?php echo add_query_arg( 'skip', 'yes', $wizard->get_next_url() ); ?>">
-						<?php
-						if ( ! empty( $step['skip_prev_button'] ) ) {
-							echo $step['skip_prev_button'];
-						} else {
-							_e( 'Skip', 'learnpress' );
-						}
-						?>
-                    </a>
-				<?php } ?>
+<!--				--><?php //if ( ! $wizard->is_first_step() && ! $wizard->is_last_step() && ! ( array_key_exists( 'skip_next_button', $step ) && $step['skip_next_button'] === false ) ) { ?>
+<!--                    <a class="button button-skip-next"-->
+<!--                       href="--><?php //echo add_query_arg( 'skip', 'yes', $wizard->get_next_url() ); ?><!--">-->
+<!--						--><?php
+//						if ( ! empty( $step['skip_prev_button'] ) ) {
+//							echo $step['skip_prev_button'];
+//						} else {
+//							_e( 'Skip', 'learnpress' );
+//						}
+//						?>
+<!--                    </a>-->
+<!--				--><?php //} ?>
 
-                <a class="button-dashboard-page"
-                   href="<?php echo admin_url( 'index.php' ); ?>"><?php _e( 'Back to Dashboard', 'learnpress' ); ?></a>
 
 				<?php if ( ! $wizard->is_first_step() && ! ( array_key_exists( 'back_button', $step ) && $step['back_button'] === false ) ) { ?>
                     <a class="button button-prev" href="<?php echo $wizard->get_prev_url(); ?>">
@@ -78,7 +76,7 @@ $wizard = LP_Setup_Wizard::instance();
                     </a>
 				<?php } ?>
 				<?php if ( ! $wizard->is_last_step() && ! ( array_key_exists( 'next_button', $step ) && $step['next_button'] === false ) ) { ?>
-                    <a class="button button-next" href="<?php echo $wizard->get_next_url(); ?>">
+                    <a class="button button-next button-primary" href="<?php echo $wizard->get_next_url(); ?>">
 						<?php
 						if ( ! empty( $step['next_button'] ) ) {
 							echo $step['next_button'];

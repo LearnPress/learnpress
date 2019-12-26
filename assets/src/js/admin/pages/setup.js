@@ -67,6 +67,7 @@ import isEmail from '../../utils/email-validator';
                 $setupForm = $('#learn-press-setup-form');
                 $('.learn-press-dropdown-pages').LP('DropdownPages');
                 $('.learn-press-tip').LP('QuickTip');
+                $('.learn-press-select2').select2();
                 $main.removeClass('loading');
             }
         });
@@ -151,6 +152,7 @@ import isEmail from '../../utils/email-validator';
 
         $main = $('#main');
         $setupForm = $('#learn-press-setup-form');
+        $('.learn-press-select2').select2();
 
         $(document)
             .on('click', '.buttons .button', navPages)

@@ -45,10 +45,15 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 		learn_press_get_template( 'checkout/account-register' );
 	}
 
-	public function guest_checkout(){
+	public function guest_checkout() {
 		if ( is_user_logged_in() ) {
 			return;
 		}
+
+		if ( !LP()->checkout()->is_enable_guest_checkout() ) {
+			return;
+		}
+
 		learn_press_get_template( 'checkout/guest-checkout' );
 	}
 

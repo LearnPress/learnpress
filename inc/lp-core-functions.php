@@ -1219,6 +1219,8 @@ function learn_press_currencies() {
 		'LYD' => __( 'Libyan dinar', 'learnpress' )
 	);
 
+	asort($currencies);
+
 	return apply_filters( 'learn-press/currencies', $currencies );
 }
 

@@ -64,6 +64,13 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
+
+				array(
+					'title'   => __( 'Terms & Conditions', 'learnpress' ),
+					'id'      => 'term_conditions_page_id',
+					'default' => '',
+					'type'    => 'pages-dropdown'
+				),
 // 3.x.x
 //				array(
 //					'title'   => __( 'Logout redirect', 'learnpress' ),

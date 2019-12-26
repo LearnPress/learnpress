@@ -197,6 +197,32 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			return apply_filters( 'learn-press/course-item-class-cached', $classes, $this->get_item_type(), $this->get_id(), $course_id );
 		}
 
+		public function get_status_title() {
+			$course_id      = get_the_ID();
+			$status_message = '';
+
+			if ( $this->is_blocked() ) {
+				$status_message = _x( 'Locked', 'course item status title', 'learnpress' );
+			} else {
+				$user = learn_press_get_current_user();
+				if ( $user->get_item_status( $this->get_id(), $course_id ) === 'completed' ) {
+					$item_grade = $user->get_item_grade( $this->get_id(), $course_id );
+
+					if ( $item_grade === 'failed' ) {
+						$status_message = _x( 'Failed', 'course item status title', 'learnpress' );
+					} elseif ( $item_grade === 'passed' ) {
+						$status_message = _x( 'Passed', 'course item status title', 'learnpress' );
+					} else {
+						$status_message = _x( 'Completed', 'course item status title', 'learnpress' );
+					}
+				} else {
+					$status_message = _x( 'Unread', 'course item status title', 'learnpress' );
+				}
+			}
+
+			return apply_filters( 'learn-press/course-item-status-title', $status_message, $this->get_id(), $course_id );
+		}
+
 		/**
 		 * Get permalink of item inside course.
 		 *
@@ -329,9 +355,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * To array.
 		 *
+		 * @return array
 		 * @since 3.0.0
 		 *
-		 * @return array
 		 */
 		public function to_array() {
 			$post = get_post( $this->get_id() );

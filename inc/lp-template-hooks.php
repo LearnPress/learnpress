@@ -321,9 +321,9 @@ add_action( 'learn-press/after-become-teacher-form', LP()->template( 'general' )
 /** BEGIN: Checkout page */
 add_action('learn-press/before-checkout-form',LP()->template( 'checkout' )->func('review_order'), 10);
 add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_logged_in'), 20);
-add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_login'), 30);
-add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_register'), 40);
-add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('guest_checkout'), 50);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_register'), 30);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('guest_checkout'), 40);
+add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('account_login'), 50);
 add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('payment'), 60);
 add_action('learn-press/after-checkout-form',LP()->template( 'checkout' )->func('terms'), 70);
 

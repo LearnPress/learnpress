@@ -437,7 +437,7 @@
 
                         .section-toggle {
                             justify-content: flex-end;
-
+                            flex: 0;
                             i {
                                 color: #666;
                             }
@@ -486,28 +486,29 @@
                                 text-align: left;
                                 padding: 6px 0 0 0;
 
-                                .course-item-status {
-                                    background: transparent;
-                                    font-size: 12px;
-                                    margin-left: 0;
-
-                                    &.trans {
-                                        position: absolute;
-                                        top: 15px;
-                                        right: 22px;
-
-                                        &:before {
-                                            font-weight: 900;
-                                        }
-                                    }
-                                }
+                                //.course-item-status {
+                                //    background: transparent;
+                                //    font-size: 12px;
+                                //    margin-left: 0;
+                                //
+                                //    &.trans {
+                                //        position: absolute;
+                                //        top: 15px;
+                                //        right: 22px;
+                                //
+                                //        &:before {
+                                //            font-weight: 900;
+                                //        }
+                                //    }
+                                //}
 
                                 .item-meta {
                                     background: transparent;
                                     font-size: 12px;
-                                    font-weight: 400;
+                                    //font-weight: 400;
                                     color: #999;
                                     line-height: 1.5;
+                                    padding: 0;
 
                                     &:first-child {
                                         margin-left: 0;
@@ -516,7 +517,14 @@
 
                                     &:before {
                                         font-size: 12px;
-                                        font-weight: 500;
+                                        //font-weight: 500;
+                                    }
+
+                                    &.course-item-status{
+                                        position: absolute;
+                                        right: 18px;
+                                        top: 50%;
+                                        margin-top: -10px;
                                     }
                                 }
                             }
@@ -779,6 +787,7 @@
 
                 &.align-center {
                     display: block;
+
 
                     .button-left {
                         text-align: center;

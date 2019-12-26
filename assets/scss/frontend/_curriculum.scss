@@ -66,6 +66,8 @@
             }
 
             img {
+                width: 96px;
+                height: 96px;
                 border-radius: 50%;
                 margin-bottom: 20px;
             }
@@ -266,6 +268,7 @@ ul.learn-press-nav-tabs {
 
         &:last-child {
             border-right: 0;
+
             &.active {
                 &:after {
                     content: '';
@@ -425,7 +428,8 @@ ul.learn-press-nav-tabs {
                     transition: padding-left linear 0.15s;
                     background: rgba(241, 242, 248, 0.4);
                     margin: 0 0 2px 0;
-                    padding: 0 30px;
+                    //padding: 0 30px;
+                    padding: 0 15px 0 30px;
                     display: flex;
 
                     & > span {
@@ -536,42 +540,57 @@ ul.learn-press-nav-tabs {
                         }
 
                         .course-item-status {
-                            color: #DDD;
-                            margin-left: 5px;
-                            display: none;
+                            color: #999;
+                            //display: none;
+                            padding: 0;
+
                             @include border-radius(50%);
                             @include box-sizing(border-box);
 
                             &:before {
+                                font-weight: 900;
+                                font-family: "Font Awesome 5 Free";
+                                content: "\f00c";
                                 vertical-align: middle;
                                 font-size: 14px;
                                 text-transform: lowercase;
                             }
-                        }
-                    }
-
-                    &.has-status {
-                        .course-item-status {
-                            display: inline-block;
-                        }
-                    }
-
-                    &.has-status {
-                        &.status-viewed {
-                            .course-item-status {
-                                display: none;
+                            &:after{
+                                //content: attr(title);
+                                //position: absolute;
+                                //font-weight: normal;
+                                //top: -100%;
+                                //right: 0;
+                                //background: #ffb608;
+                                //font-family: unset;
+                                //color: #FFF;
+                                //padding: 3px 5px;
                             }
                         }
                     }
+
+                    //&.has-status {
+                    //    .course-item-status {
+                    //        display: inline-block;
+                    //    }
+                    //}
+                    //
+                    //&.has-status {
+                    //    &.status-viewed {
+                    //        .course-item-status {
+                    //            display: none;
+                    //        }
+                    //    }
+                    //}
 
                     &.course-item-lp_quiz {
-                        &.status-started {
-                            .course-item-status {
-                                &:before {
-                                    content: "\f00c";
-                                }
-                            }
-                        }
+                        //&.status-started {
+                        //    .course-item-status {
+                        //        &:before {
+                        //            content: "\f00c";
+                        //        }
+                        //    }
+                        //}
 
                         .section-item-link:before {
                             content: '\f059';
@@ -603,7 +622,7 @@ ul.learn-press-nav-tabs {
                     }
 
                     &.item-preview {
-                        .course-item-status {
+                        .course-item-preview {
                             background: #00adff;
                             font-style: normal;
                             @include border-radius(3px);
@@ -618,13 +637,12 @@ ul.learn-press-nav-tabs {
 
                     &.item-locked {
                         .course-item-status {
-                            display: inline-block;
+                            //display: inline-block;
 
                             &:before {
                                 content: "\f023";
                                 color: $secondary-color;
-                                font-weight: 900;
-                                font-family: "Font Awesome 5 Free";
+
                             }
                         }
                     }
@@ -638,38 +656,41 @@ ul.learn-press-nav-tabs {
                             }
                         }
 
-                        &.status-completed,
-                        &.status-started {
-                            .course-item-status {
-                                border-color: $primary-color-course-item-status;
-                                color: #DDD;
-
-                                &:before {
-                                    content: "\f00c";
-                                }
-                            }
-                        }
+                        //&.status-completed,
+                        //&.status-started {
+                        //    .course-item-status {
+                        //        border-color: $primary-color-course-item-status;
+                        //        color: #DDD;
+                        //
+                        //        &:before {
+                        //            content: "\f00c";
+                        //        }
+                        //    }
+                        //}
 
                         &.status-completed {
                             .course-item-status {
-                                color: $primary-color-course-item-status;
+                                &:before {
+                                    color: $primary-color-course-item-status;
+                                }
                             }
                         }
 
                         &.passed {
                             .course-item-status {
-                                border-color: #00adff;
-                                color: #00adff;
+                                //&:before {
+                                //    border-color: #00adff;
+                                //    color: #00adff;
+                                //}
                             }
                         }
 
                         &.item-failed,
                         &.failed {
                             .course-item-status {
-                                border-color: #f02425;
-                                color: #f02425;
-
                                 &:before {
+                                    border-color: #f02425;
+                                    color: #f02425;
                                     content: "\f00d";
                                 }
                             }
@@ -703,12 +724,12 @@ ul.learn-press-nav-tabs {
                         }
                     }
 
-                    &:not(.item-preview) {
-                        .course-item-status {
-                            font-weight: 900;
-                            font-family: "Font Awesome 5 Free";
-                        }
-                    }
+                    //&:not(.item-preview) {
+                    //    .course-item-status {
+                    //        font-weight: 900;
+                    //        font-family: "Font Awesome 5 Free";
+                    //    }
+                    //}
                 }
             }
         }
@@ -1224,6 +1245,7 @@ body {
     margin-bottom: 3px;
 
     .course-extra-box__title {
+        display: block;
         font-size: 18px;
         font-weight: 600;
         background: rgba(181, 187, 211, 0.15);
@@ -1345,6 +1367,7 @@ input[name="course-extra-box-ratio"] {
             margin: 0;
             position: relative;
             cursor: pointer;
+            display: block;
 
             &:after {
                 content: '\f078';

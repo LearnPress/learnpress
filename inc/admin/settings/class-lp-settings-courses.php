@@ -84,6 +84,13 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'    => 'yes-no'
 						),
 						array(
+							'title'   => __( 'Auto Start', 'learnpress' ),
+							'id'      => 'auto_enroll',
+							'default' => 'yes',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Students will get started courses immediately after successfully purchased.', 'learnpress' )
+						),
+						array(
 							'title'             => __( 'Courses Per Page', 'learnpress' ),
 							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
 							'id'                => 'archive_course_limit',
@@ -92,6 +99,13 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'custom_attributes' => array(
 								'min' => '1'
 							),
+						),
+						array(
+							'title'   => __( 'Hide Sidebar', 'learnpress' ),
+							'desc'    => __( 'Hide sidebar area in All Courses Page.', 'learnpress' ),
+							'id'      => 'required_review',
+							'default' => 'no',
+							'type'    => 'yes-no'
 						),
 						array(
 							'title'   => __( 'Thumbnail Dimensions', 'learnpress' ),

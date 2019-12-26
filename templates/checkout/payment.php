@@ -87,6 +87,10 @@ $available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			<?php
 		}
 
+		if ( is_user_logged_in() ) {
+			wp_nonce_field( 'learn-press-user-logged', 'learn-press-checkout-nonce' );
+		}
+
 		/**
 		 * @since 3.0.0
 		 */

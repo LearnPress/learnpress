@@ -58,6 +58,7 @@
         img {
             width: 100%;
             height: auto;
+            border-radius: unset;
         }
     }
 
@@ -66,7 +67,8 @@
         display: flex;
         justify-content: center;
         padding-bottom: 30px;
-
+        position: relative;
+        z-index: 1;
         a {
             display: inline-block;
             width: 40px;
@@ -78,7 +80,7 @@
             line-height: 40px;
             color: #666;
             margin: 0 7px;
-
+            font-size: 16px;
             &:hover {
                 background: $primary-color;
                 border-color: $primary-color;

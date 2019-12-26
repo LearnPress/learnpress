@@ -269,7 +269,11 @@ class LP_Checkout {
 			return false;
 		}
 
-		$actions = array( 'guest-checkout', 'checkout-register', 'checkout-login' );
+		if ( ! is_user_logged_in() ) {
+			$actions = array( 'guest-checkout', 'checkout-register', 'checkout-login' );
+		} else {
+			$actions = array( 'guest-checkout', 'checkout-register', 'user-logged' );
+		}
 
 		foreach ( $actions as $action ) {
 			if ( wp_verify_nonce( $_REQUEST['learn-press-checkout-nonce'], "learn-press-{$action}" ) ) {
@@ -293,8 +297,8 @@ class LP_Checkout {
 		} else {
 			//if ( ! is_user_logged_in() ) {
 			if ( $this->checkout_action === 'checkout-register' ) {
-				$this->checkout_fields['reg_username'] = __( 'Username', 'learnpress' );
 				$this->checkout_fields['reg_email']    = __( 'Email', 'learnpress' );
+				$this->checkout_fields['reg_username'] = __( 'Username', 'learnpress' );
 				$this->checkout_fields['reg_password'] = __( 'Password', 'learnpress' );
 			} elseif ( $this->checkout_action === 'checkout-login' ) {
 				$this->checkout_fields['user_login']    = __( 'Username', 'learnpress' );
@@ -554,7 +558,7 @@ class LP_Checkout {
 				} elseif ( ! is_email( $_POST['guest_email'] ) ) {
 					return new WP_Error( 'email_invalid', __( 'Your email is not a valid.', 'learnpress' ) );
 				}
-				$this->guest_email = $_POST[ $name ];
+				$this->guest_email     = $_POST[ $name ];
 				$this->_checkout_email = $_POST[ $name ];
 		}
 //		if ( $field['name'] == 'user_login' && empty( $this->user_login ) ) {

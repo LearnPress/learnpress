@@ -18,25 +18,23 @@ $checkout  = LP()->checkout();
 $is_exists = $checkout->checkout_email_exists();
 ?>
 
-<input type="radio" id="checkout-account-switch-to-guest" name="checkout-account-switch-form" value="guest"/>
+<input type="radio" id="checkout-account-switch-to-guest" name="checkout-account-switch-form" value="guest"
+       checked="checked"/>
 <div id="checkout-account-guest" class="lp-checkout-block<?php echo $is_exists ? ' email-exists' : ''; ?>">
-    <h4><?php esc_html_e( 'Your email', 'learnpress' ); ?></h4>
+    <h4><?php esc_html_e( 'As Guest', 'learnpress' ); ?></h4>
     <ul class="lp-form-fields">
         <li class="form-field">
             <div class="rwmb-field rwmb-text-wrapper">
                 <div class="rwmb-input">
                     <input size="30" placeholder="Email" type="text" id="guest_email" class="rwmb-text"
                            name="guest_email" autocomplete="off">
-                    <p class="description">
-		                <?php esc_html_e( 'Your real email we will send the order code.', 'learnpress' ); ?>
-                    </p>
                     <div class="lp-guest-checkout-switch-back">
-<!--                        <label for="checkout-account-switch-to-login">-->
-<!--                            <a href="javascript:void(0)">--><?php //esc_html_e( 'Sign in', 'learnpress' ); ?><!--</a>-->
-<!--                        </label> -->
-                        <label for="checkout-account-switch-to-register">
-                            <a href="javascript:void(0)"><?php esc_html_e( 'Sign up', 'learnpress' ); ?></a>
-                        </label>
+						<?php
+						$html = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-register">%s</label></a>', esc_html( _x( 'sign up', 'checkout sign up link', 'learnpress' ) ) );
+
+						echo sprintf( esc_html__( 'An order key to activate the course will be sent to your email after the payment proceeded successfully. Or you can %s now.', 'learnpress' ), $html );
+						?>
+
                     </div>
                 </div>
             </div>
@@ -74,7 +72,7 @@ $is_exists = $checkout->checkout_email_exists();
     <!---->
     <!--    </ul>-->
 </div>
-<label for="checkout-account-switch-to-guest"
-       class="lp-button"
-       id="btn-checkout-account-switch-to-guest"><?php esc_html_e( 'Continue as Guest', 'learnpress' ); ?></label>
+<!--<label for="checkout-account-switch-to-guest"-->
+<!--       class="lp-button"-->
+<!--       id="btn-checkout-account-switch-to-guest">--><?php //esc_html_e( 'Continue as Guest', 'learnpress' ); ?><!--</label>-->
 

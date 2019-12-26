@@ -99,7 +99,7 @@
       position: relative; }
       .lp-setup .lp-setup-steps li.active span, .lp-update-database .lp-setup-steps li.active span {
         font-weight: bold;
-        color: #39a1e5; }
+        color: #564079; }
       .lp-setup .lp-setup-steps li.active:before, .lp-update-database .lp-setup-steps li.active:before {
         content: '';
         height: 6px;
@@ -107,7 +107,7 @@
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px;
         border-radius: 3px;
-        background: #05B3FF;
+        background: #ffc106;
         left: 0;
         position: absolute;
         bottom: -20px;
@@ -116,7 +116,7 @@
         width: 8px;
         height: 8px;
         position: absolute;
-        background: #41b3ff;
+        background: #ffc106;
         transform: rotate(45deg);
         left: 50%;
         bottom: -18px;
@@ -135,7 +135,7 @@
     -moz-border-radius: 3px;
     border-radius: 3px; }
   .lp-setup .lp-setup-progress .active, .lp-update-database .lp-setup-progress .active {
-    background: #00a1e6;
+    background: #ffc106;
     width: 50%; }
   .lp-setup footer, .lp-update-database footer {
     max-width: 900px;
@@ -146,6 +146,8 @@
     text-align: right;
     border-top: 1px solid #EEE;
     padding-top: 20px; }
+    .lp-setup .buttons .button-prev, .lp-update-database .buttons .button-prev {
+      float: left; }
   .lp-setup .button-skip-next,
   .lp-setup .button-skip-prev, .lp-update-database .button-skip-next,
   .lp-update-database .button-skip-prev {
@@ -189,17 +191,21 @@
         margin-left: 0px; }
       .lp-setup .browse-payments li.payment .payment-desc, .lp-update-database .browse-payments li.payment .payment-desc {
         font-style: italic; }
-  .lp-setup .finish-buttons .button, .lp-update-database .finish-buttons .button {
-    width: 300px;
-    display: block;
-    margin-bottom: 20px;
-    font-size: 18px;
-    height: 40px;
-    line-height: 40px;
-    color: #777;
-    text-align: center; }
-    .lp-setup .finish-buttons .button.button-primary, .lp-update-database .finish-buttons .button.button-primary {
-      color: #FFF; }
+  .lp-setup .finish-buttons, .lp-update-database .finish-buttons {
+    text-align: right; }
+    .lp-setup .finish-buttons .button, .lp-update-database .finish-buttons .button {
+      width: 300px;
+      display: inline-block;
+      margin-bottom: 20px;
+      font-size: 18px;
+      height: 40px;
+      line-height: 40px;
+      color: #777;
+      text-align: center; }
+      .lp-setup .finish-buttons .button.button-primary, .lp-update-database .finish-buttons .button.button-primary {
+        color: #FFF; }
+      .lp-setup .finish-buttons .button:nth-child(odd), .lp-update-database .finish-buttons .button:nth-child(odd) {
+        float: left; }
   .lp-setup .learn-press-message, .lp-update-database .learn-press-message {
     background: #FAFAFA;
     padding: 15px;

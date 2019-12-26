@@ -30,17 +30,20 @@
         color: #777;
         font-weight: normal;
     }
+
     h2 {
         font-size: 24px;
         border-bottom: 1px solid #EEE;
         padding-bottom: 20px;
     }
+
     p {
         &.large-text {
             font-size: 16px;
             margin: 0 0 20px 0;
         }
     }
+
     a {
         font-size: 13px;
     }
@@ -48,21 +51,25 @@
     .logo {
         text-align: center;
     }
+
     #content {
         max-width: 90%;
         width: 900px;
         margin: 40px auto 20px auto;
     }
+
     #main {
         background: #FFF;
         padding: 20px;
         border: 1px solid #ececec;
         margin-bottom: 20px;
         position: relative;
+
         .description {
             font-size: 13px;
             font-style: italic;
         }
+
         &.loading {
             &:after {
                 content: '';
@@ -75,6 +82,7 @@
                 background: #FFF;
                 opacity: 0.5;
             }
+
             .icon-loading {
                 display: block;
                 position: absolute;
@@ -85,6 +93,7 @@
                 margin-left: -10px;
                 margin-top: -10px;
                 z-index: 15;
+
                 &:before,
                 &:after {
                     width: 20px;
@@ -94,6 +103,7 @@
                     content: '';
                     position: absolute;
                 }
+
                 &:before {
                     background: #e2e2e2;
                     animation-name: spin;
@@ -101,6 +111,7 @@
                     animation-iteration-count: infinite;
                     animation-delay: 0s;
                 }
+
                 &:after {
                     background: #39a1e5;
                     animation-name: spin-back;
@@ -122,17 +133,20 @@
         padding: 0 0 20px 0;
         display: flex;
         position: relative;
+
         li {
             list-style: none;
             flex: 1;
             text-align: center;
             margin: 0;
             position: relative;
+
             &.active {
                 span {
                     font-weight: bold;
-                    color: #39a1e5;
+                    color: #564079;
                 }
+
                 &:before {
                     content: '';
                     height: 6px;
@@ -140,17 +154,18 @@
                     -webkit-border-radius: 3px;
                     -moz-border-radius: 3px;
                     border-radius: 3px;
-                    background: #05B3FF;
+                    background: #ffc106;
                     left: 0;
                     position: absolute;
                     bottom: -20px;
                     z-index: 10;
                 }
+
                 &:after {
                     width: 8px;
                     height: 8px;
                     position: absolute;
-                    background: #41b3ff;
+                    background: #ffc106;
                     transform: rotate(45deg);
                     left: 50%;
                     bottom: -18px;
@@ -176,7 +191,7 @@
 
     .lp-setup-progress {
         .active {
-            background: #00a1e6;
+            background: #ffc106;
             width: 50%;
         }
     }
@@ -192,6 +207,10 @@
         text-align: right;
         border-top: 1px solid #EEE;
         padding-top: 20px;
+
+        .button-prev {
+            float: left;
+        }
     }
 
     .button-skip-next,
@@ -199,10 +218,12 @@
         opacity: 0.7;
         float: left;
         margin-right: 4px;
+
         &:hover {
             opacity: 1;
         }
     }
+
 
     .button-dashboard-page {
         vertical-align: middle;
@@ -213,12 +234,14 @@
     table {
         width: 100%;
         font-size: 14px;
+
         th, td {
             padding: 8px 8px 8px 0;
             font-weight: normal;
             vertical-align: top;
             text-align: left;
         }
+
         th {
             width: 33%;
             text-align: left;
@@ -229,16 +252,20 @@
         list-style: none;
         margin: 0;
         padding: 0;
+
         li.payment {
             padding: 0 0 10px 0;
             margin: 0;
+
             > h3 {
                 padding: 20px 0;
                 margin: 0;
             }
+
             .payment-settings {
                 padding: 0 0 20px 0;
             }
+
             .payment-name {
                 img {
                     max-height: 32px;
@@ -246,6 +273,7 @@
                     margin-left: 0px;
                 }
             }
+
             .payment-desc {
                 font-style: italic;
             }
@@ -253,17 +281,24 @@
     }
 
     .finish-buttons {
+        text-align: right;
+
         .button {
             width: 300px;
-            display: block;
+            display: inline-block;
             margin-bottom: 20px;
             font-size: 18px;
             height: 40px;
             line-height: 40px;
             color: #777;
             text-align: center;
+
             &.button-primary {
                 color: #FFF;
+            }
+
+            &:nth-child(odd) {
+                float: left;
             }
         }
     }
@@ -275,6 +310,7 @@
         margin: 0 0 20px 0;
         font-size: 14px;
         border-radius: 4px;
+
         &.error {
             border-left-color: #FF0000;
         }
@@ -285,9 +321,9 @@
         color: #FF0000;
     }
 
-    .form-field{
-        th{
-            .learn-press-tip{
+    .form-field {
+        th {
+            .learn-press-tip {
                 float: right;
             }
         }

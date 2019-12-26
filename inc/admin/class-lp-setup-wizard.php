@@ -208,16 +208,16 @@ class LP_Setup_Wizard {
 						'callback'    => array( $this, 'step_welcome' ),
 						'next_button' => __( 'Run Setup Wizard', 'learnpress' )
 					),
-					'currency' => array(
-						'title'            => __( 'Currency', 'learnpress' ),
-						'callback'         => array( $this, 'step_currency' ),
-						'back_button'      => false,
-						'skip_prev_button' => false
-					),
 					'pages'    => array(
-						'title'    => __( 'Static Pages', 'learnpress' ),
+						'title'    => __( 'Pages', 'learnpress' ),
 						'callback' => array( $this, 'step_pages' ),
 					),
+//					'currency' => array(
+//						'title'            => __( 'Currency', 'learnpress' ),
+//						'callback'         => array( $this, 'step_currency' ),
+//						'back_button'      => false,
+//						'skip_prev_button' => false
+//					),
 					'payment'  => array(
 						'title'    => __( 'Payment', 'learnpress' ),
 						'callback' => array( $this, 'step_payment' )

@@ -37,6 +37,14 @@ input[type="number"],
 input[type="password"] {
     @include box-sizing(border-box);
 }
+body {
+    h1:not(.site-title),
+    h2 {
+        &:before {
+            display: none;
+        }
+    }
+}
 
 .margin-bottom {
     margin-bottom: 20px;
