@@ -60,20 +60,20 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 		 */
 		public static function get_register_fields() {
 			$fields = array(
-				'reg_username' => array(
-					'title'       => __( 'Username', 'learnpress' ),
-					'type'        => 'text',
-					'placeholder' => __( 'Username', 'learnpress' ),
-					'saved'       => LP_Request::get_string( 'reg_username' ),
-					'id'          => 'reg_username',
-					//'required'    => true
-				),
 				'reg_email'    => array(
 					'title'       => __( 'Email', 'learnpress' ),
 					'type'        => 'email',
 					'placeholder' => __( 'Email', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'reg_email' ),
 					'id'          => 'reg_email',
+					//'required'    => true
+				),
+				'reg_username' => array(
+					'title'       => __( 'Username', 'learnpress' ),
+					'type'        => 'text',
+					'placeholder' => __( 'Username', 'learnpress' ),
+					'saved'       => LP_Request::get_string( 'reg_username' ),
+					'id'          => 'reg_username',
 					//'required'    => true
 				),
 				'reg_password' => array(
