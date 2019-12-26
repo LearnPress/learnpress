@@ -54,7 +54,7 @@ $fields  = $profile->get_register_fields();
 		<?php esc_html_e( 'Already had an account?', 'learnpress' ); ?>
         <a href="javascript: void(0);">
             <label for="checkout-account-switch-to-login"><?php esc_html_e( 'Sign in', 'learnpress' ); ?></label>
-        </a>
+        </a>.
     </p>
 
 	<?php
