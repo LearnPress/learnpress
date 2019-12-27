@@ -5021,6 +5021,7 @@ input[type="password"] {
   box-shadow: unset;
   margin: 0; }
 
+/*  start reset css */
 body h1, body h2, body h3, body h4, body h5, body h6 {
   padding: 0;
   margin: 0;
@@ -5034,6 +5035,26 @@ body a:focus, body button:focus, body input:focus, body textarea:focus {
   outline: 0;
   border: 0; }
 
+body a:hover {
+  text-decoration: none; }
+
+body p {
+  word-break: break-word; }
+  body p:last-child {
+    margin-bottom: 0; }
+
+body label {
+  display: block;
+  outline: none;
+  margin: 0; }
+
+body img {
+  max-width: 100%;
+  height: auto; }
+
+body form {
+  margin: 0; }
+
 body .col-full {
   max-width: 100%;
   padding: 0;
@@ -5041,6 +5062,7 @@ body .col-full {
   body .col-full .woocommerce-breadcrumb {
     display: none; }
 
+/*  end reset css */
 footer {
   clear: both; }
 
@@ -5244,7 +5266,11 @@ footer {
   .learn-press-pagination .page-numbers {
     display: inline-block;
     list-style: none;
-    margin: 0; }
+    margin: 0;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 0; }
     .learn-press-pagination .page-numbers > li {
       display: inline-block;
       margin: 0;
