@@ -5,7 +5,7 @@ a {
     text-decoration: none;
 }
 
-.content-area {
+.lp-content-area {
     width: 1170px;
     max-width: 100%;
     margin: 0 auto;
@@ -114,6 +114,7 @@ a {
                                 display: block;
                                 width: 100%;
                                 transition: all .5s ease;
+                                height: auto;
                             }
                         }
                     }
@@ -682,6 +683,8 @@ a {
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 44px;
+        line-height: 1;
 
         input[type="radio"] {
             display: none;
@@ -760,6 +763,7 @@ a {
                         font-weight: 500;
                         margin-bottom: 42px;
                         line-height: 1;
+                        color: #fff;
                     }
 
                     .course-meta {
@@ -916,7 +920,7 @@ a {
                 }
             }
 
-            .entry-content.content-area {
+            .entry-content.lp-content-area {
                 display: flex;
                 flex-direction: row;
 

@@ -31,7 +31,7 @@ $profile = LP_Global::profile();
                 ?>
             </div>
 
-            <div class="content-area">
+            <div class="lp-content-area">
                 <?php
                 /**
                  * @since 3.0.0

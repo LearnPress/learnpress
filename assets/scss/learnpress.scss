@@ -36,6 +36,7 @@ input[type="email"],
 input[type="number"],
 input[type="password"] {
     @include box-sizing(border-box);
+    box-shadow: unset;
 }
 body {
     h1:not(.site-title),
@@ -44,7 +45,24 @@ body {
             display: none;
         }
     }
+
+    a, button, input, textarea {
+        &:focus {
+            outline: 0;
+
+        }
+    }
+
+    .col-full {
+        max-width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+        .woocommerce-breadcrumb {
+            display: none;
+        }
+    }
 }
+
 
 .margin-bottom {
     margin-bottom: 20px;
@@ -93,7 +111,7 @@ body {
     font-weight: 500;
     color: #333;
     list-style: none;
-
+    padding: 0;
     li {
         display: inline-block;
         margin: 0;
