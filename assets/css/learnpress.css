@@ -359,12 +359,14 @@
 
 .lp-checkout-form__before {
   float: right; }
+  .lp-checkout-form__before #checkout-order {
+    width: 100%; }
 
-.lp-checkout-form__after {
+#learn-press-checkout-form .lp-checkout-form__after {
   float: left; }
-  .lp-checkout-form__after .lp-checkout-block .lp-form-fields {
+  #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields {
     padding: 0 0 14px 0; }
-    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input {
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input {
       background-color: #fff;
       font-style: italic;
       font-size: 14px;
@@ -375,55 +377,61 @@
       border: 1px solid #ccc;
       border-radius: 3px;
       width: 100%; }
-      .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:focus {
+      #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:focus {
         border-color: #ffb606;
         color: #222;
         outline: 0; }
-    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::placeholder {
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::placeholder {
       color: #999;
       opacity: 1; }
-    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input :-ms-input-placeholder {
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input :-ms-input-placeholder {
       color: #999; }
-    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::-ms-input-placeholder {
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input ::-ms-input-placeholder {
       color: #999; }
-    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill,
-    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill:hover,
-    .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill:focus {
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill,
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill:hover,
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:-webkit-autofill:focus {
       -webkit-box-shadow: 0 0 0px 1000px #fff inset;
       -webkit-text-fill-color: #999 !important; }
-  .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label {
-    font-size: 16px;
-    line-height: 26px;
-    font-weight: 300;
-    color: #666; }
-    .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"] {
-      -webkit-appearance: none;
-      width: 19px;
-      height: 19px;
-      border: 1px solid #ccc;
-      margin: 0 4px 0 0;
-      position: relative;
-      top: 3px;
-      cursor: pointer; }
-      .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"]:focus {
-        outline: 0; }
-    .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"]:checked:after {
-      content: '\f00c';
-      font-weight: 900;
-      font-family: "Font Awesome 5 Free";
-      font-size: 14px;
-      position: absolute;
-      left: 2px;
-      top: 2px;
-      color: #41abec;
-      line-height: 1; }
-  .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember a {
-    font-size: 16px;
-    line-height: 26px;
-    font-weight: 300;
-    color: #666;
-    text-decoration: underline;
-    text-decoration-color: #ccc; }
+  #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember {
+    letter-spacing: 0; }
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label {
+      font-size: 16px;
+      line-height: 26px;
+      font-weight: 300;
+      color: #666;
+      width: auto; }
+      #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"] {
+        -webkit-appearance: none;
+        width: 19px;
+        height: 19px;
+        border: 1px solid #ccc;
+        margin: 0 4px 0 0;
+        position: relative;
+        top: 3px;
+        cursor: pointer; }
+        #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"]:focus {
+          outline: 0; }
+      #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember label input[type="checkbox"]:checked:after {
+        content: '\f00c';
+        font-weight: 900;
+        font-family: "Font Awesome 5 Free";
+        font-size: 14px;
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        color: #41abec;
+        line-height: 1; }
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember a {
+      font-size: 16px;
+      line-height: 26px;
+      font-weight: 300;
+      color: #666;
+      text-decoration: underline;
+      text-decoration-color: #ccc; }
+      #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-checkout-remember a:hover {
+        color: #ffb606;
+        text-decoration-color: #ffb606; }
 
 #learn-press-checkout-form {
   margin: 0 -15px; }
@@ -479,7 +487,8 @@
   padding: 0 20px; }
   #checkout-order .lp-checkout-order__inner table {
     border: 0;
-    margin: 0; }
+    margin: 0;
+    width: 100%; }
   #checkout-order .lp-checkout-order__inner td,
   #checkout-order .lp-checkout-order__inner th {
     box-sizing: content-box;
@@ -541,6 +550,7 @@
 
 #checkout-account-register,
 #checkout-account-login {
+  width: 100%;
   border-bottom: 1px solid rgba(204, 204, 204, 0.3);
   margin-bottom: 35px;
   padding-bottom: 19px; }
@@ -571,7 +581,8 @@
     #checkout-account-login .lp-checkout-sign-in-link a,
     #checkout-account-login .lp-checkout-sign-up-link a {
       color: #41abec;
-      margin-left: 5px; }
+      margin-left: 5px;
+      cursor: pointer; }
       #checkout-account-register .lp-checkout-sign-in-link a:hover,
       #checkout-account-register .lp-checkout-sign-up-link a:hover,
       #checkout-account-login .lp-checkout-sign-in-link a:hover,
@@ -588,6 +599,7 @@
         cursor: pointer; }
 
 #checkout-payment {
+  width: 100%;
   margin-bottom: 25px; }
   #checkout-payment h4 {
     margin-bottom: 24px; }
@@ -912,7 +924,8 @@
     #learn-press-profile .lp-user-profile-avatar img {
       width: 100%;
       height: auto;
-      border-radius: unset; }
+      border-radius: unset;
+      position: relative; }
   #learn-press-profile .lp-user-profile-socials {
     margin: -47px 0 0 0;
     display: flex;
@@ -1031,7 +1044,8 @@
   #learn-press-profile #profile-content {
     width: calc(100% - 300px);
     float: right;
-    padding-top: 58px; }
+    padding-top: 58px;
+    margin-bottom: 60px; }
     @media (max-width: 990px) {
       #learn-press-profile #profile-content {
         width: 100%; } }
@@ -1146,7 +1160,7 @@ form[name="profile-change-password"] .form-field {
   #learn-press-profile-basic-information .form-field .form-field-input textarea,
   form[name="profile-change-password"] .form-field .form-field-input input,
   form[name="profile-change-password"] .form-field .form-field-input textarea {
-    border-color: #ccc;
+    border: 1px solid #ccc;
     font-size: 14px;
     color: #999;
     font-style: italic; }
@@ -1193,6 +1207,7 @@ form[name="profile-change-password"] .form-field__clear {
 
 #learn-press-profile-basic-information button,
 form[name="profile-change-password"] button {
+  border: 0;
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
@@ -1411,7 +1426,8 @@ form[name="profile-change-password"] p {
       width: 96px;
       height: 96px;
       border-radius: 50%;
-      margin-bottom: 20px; }
+      margin-bottom: 20px;
+      position: relative; }
     #learn-press-course .course-author .course-author__pull-left .course-author__meta span {
       color: #333;
       font-weight: 300;
@@ -3056,14 +3072,20 @@ a {
             left: -110px;
             transform: rotate(-45deg);
             text-align: center; }
-          .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-thumbnail a {
-            display: block;
-            overflow: hidden; }
-            .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-thumbnail a img {
+          .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-thumbnail .thumbnail {
+            padding: 0;
+            margin: 0;
+            line-height: unset;
+            border: 0;
+            border-radius: unset; }
+            .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-thumbnail .thumbnail a {
               display: block;
-              width: 100%;
-              transition: all .5s ease;
-              height: auto; }
+              overflow: hidden; }
+              .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-thumbnail .thumbnail a img {
+                display: block;
+                width: 100%;
+                transition: all .5s ease;
+                height: auto; }
           .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail:hover:before {
             opacity: 1; }
           .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail:hover .course-thumbnail a img {
@@ -3553,6 +3575,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         flex: 0 0 46px;
         margin-right: 10px; }
         .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-meta .course-meta__pull-left .meta-item .meta-item__image img {
+          width: 46px;
+          height: 46px;
+          position: relative;
           border-radius: 50%;
           overflow: hidden; }
       .lp-archive-courses .course-summary .course-summary-content .course-detail-info .course-info-left .course-meta .course-meta__pull-left .meta-item .meta-item__value label {
@@ -3810,17 +3835,14 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       top: 12px;
       border-radius: 50%; }
 
-.learnpress-page .lp-button {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px; }
-  .learnpress-page .lp-button.secondary {
-    background: #9198ab; }
-    .learnpress-page .lp-button.secondary:hover {
-      background: #9ba6c5; }
-  .learnpress-page .lp-button:disabled, .learnpress-page .lp-button[disabled] {
-    background: #DDD;
-    pointer-events: none; }
+.learnpress-page .lp-button.secondary {
+  background: #9198ab; }
+  .learnpress-page .lp-button.secondary:hover {
+    background: #9ba6c5; }
+
+.learnpress-page .lp-button:disabled, .learnpress-page .lp-button[disabled] {
+  background: #DDD;
+  pointer-events: none; }
 
 .learnpress-page:hover {
   text-decoration: none; }
@@ -3855,7 +3877,8 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       border-top-color: #CCC; }
 
 #learn-press-course-curriculum .section-item-link {
-  color: #777; }
+  color: #777;
+  text-decoration: none; }
 
 #learn-press-course-curriculum .section-desc {
   display: none;
@@ -4017,11 +4040,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         background: transparent;
         line-height: 1px;
         right: 10px;
-        /*&:hover {
-                    &:before {
-                        color: #FFF;
-                    }
-                }*/ }
+        border: 0; }
         #popup-course #popup-sidebar .search-course button:before {
           content: "\f002";
           font-size: 16px;
@@ -4999,14 +5018,21 @@ input[type="password"] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  box-shadow: unset; }
+  box-shadow: unset;
+  margin: 0; }
+
+body h1, body h2, body h3, body h4, body h5, body h6 {
+  padding: 0;
+  margin: 0;
+  line-height: 1; }
 
 body h1:not(.site-title):before,
 body h2:before {
   display: none; }
 
 body a:focus, body button:focus, body input:focus, body textarea:focus {
-  outline: 0; }
+  outline: 0;
+  border: 0; }
 
 body .col-full {
   max-width: 100%;
@@ -5014,6 +5040,9 @@ body .col-full {
   box-sizing: border-box; }
   body .col-full .woocommerce-breadcrumb {
     display: none; }
+
+footer {
+  clear: both; }
 
 .margin-bottom {
   margin-bottom: 20px; }
@@ -5074,7 +5103,8 @@ body .col-full {
     font-weight: 300;
     color: #666; }
 
-.learnpress-page .lp-button {
+.learnpress-page .lp-button,
+.learnpress-page #lp-button {
   padding: 16px 24px;
   background: transparent;
   color: #333;
@@ -5090,6 +5120,10 @@ body .col-full {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  box-shadow: unset;
   -webkit-transition: all 0.25s;
   -moz-transition: all 0.25s;
   -ms-transition: all 0.25s;
@@ -5104,36 +5138,44 @@ body .col-full {
                 background: darken($primary-color, 15%);
             }
         }*/ }
-  .learnpress-page .lp-button.large {
+  .learnpress-page .lp-button.large,
+  .learnpress-page #lp-button.large {
     font-size: 18px;
     padding: 18px 30px;
     height: 52px; }
-  .learnpress-page .lp-button.gray {
+  .learnpress-page .lp-button.gray,
+  .learnpress-page #lp-button.gray {
     position: absolute;
     top: 8px;
     right: 5px;
     padding: 0;
     border: 0;
     z-index: 1; }
-    .learnpress-page .lp-button.gray:hover {
+    .learnpress-page .lp-button.gray:hover,
+    .learnpress-page #lp-button.gray:hover {
       background: transparent;
       text-decoration: none; }
-    .learnpress-page .lp-button.gray:focus {
+    .learnpress-page .lp-button.gray:focus,
+    .learnpress-page #lp-button.gray:focus {
       border: 0;
       outline: 0; }
-  .learnpress-page .lp-button:hover {
+  .learnpress-page .lp-button:hover,
+  .learnpress-page #lp-button:hover {
     background: #ffb606;
     border-color: #ffb606;
     color: #fff; }
-  .learnpress-page .lp-button.btn-ajax-off .icon {
+  .learnpress-page .lp-button.btn-ajax-off .icon,
+  .learnpress-page #lp-button.btn-ajax-off .icon {
     display: none; }
-  .learnpress-page .lp-button.btn-ajax-on .icon {
+  .learnpress-page .lp-button.btn-ajax-on .icon,
+  .learnpress-page #lp-button.btn-ajax-on .icon {
     display: inline-block;
     margin-right: 5px;
     -webkit-animation: lp-rotating 1s linear infinite;
     -moz-animation: lp-rotating 1s linear infinite;
     animation: lp-rotating 1s linear infinite; }
-  .learnpress-page .lp-button:focus {
+  .learnpress-page .lp-button:focus,
+  .learnpress-page #lp-button:focus {
     outline: 0; }
 
 .learnpress-page .rwmb-field .description {

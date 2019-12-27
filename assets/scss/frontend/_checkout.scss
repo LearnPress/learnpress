@@ -25,105 +25,107 @@
 
 .lp-checkout-form__before {
     float: right;
+    #checkout-order {
+        width: 100%;
+    }
 }
 
-.lp-checkout-form__after {
-    float: left;
+#learn-press-checkout-form {
+    .lp-checkout-form__after {
+        float: left;
+        .lp-checkout-block {
+            .lp-form-fields {
+                padding: 0 0 14px 0;
+                .form-field {
+                    .rwmb-input {
+                        input {
+                            background-color: #fff;
+                            font-style: italic;
+                            font-size: 14px;
+                            font-weight: 300;
+                            padding: 0 22px;
+                            line-height: 43px;
+                            height: 43px;
+                            border: 1px solid #ccc;
+                            border-radius: 3px;
+                            width: 100%;
 
-    #checkout-account-logged-in {
-        //display: none;
-    }
+                            &:focus {
+                                border-color: $primary-color;
+                                color: #222;
+                                outline: 0;
+                            }
+                        }
 
-    .lp-checkout-block {
-        .lp-form-fields {
-            padding: 0 0 14px 0;
+                        ::placeholder {
+                            color: #999;
+                            opacity: 1;
+                        }
 
-            .form-field {
-                .rwmb-input {
-                    input {
-                        background-color: #fff;
-                        font-style: italic;
-                        font-size: 14px;
-                        font-weight: 300;
-                        padding: 0 22px;
-                        line-height: 43px;
-                        height: 43px;
+                        :-ms-input-placeholder {
+                            color: #999;
+                        }
+
+                        ::-ms-input-placeholder {
+                            color: #999;
+                        }
+
+                        input:-webkit-autofill,
+                        input:-webkit-autofill:hover,
+                        input:-webkit-autofill:focus {
+                            -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+                            -webkit-text-fill-color: #999 !important;
+                        }
+                    }
+                }
+            }
+            .lp-checkout-remember {
+                letter-spacing: 0;
+                label {
+                    font-size: 16px;
+                    line-height: 26px;
+                    font-weight: 300;
+                    color: #666;
+                    width: auto;
+                    input[type="checkbox"] {
+                        -webkit-appearance: none;
+                        width: 19px;
+                        height: 19px;
                         border: 1px solid #ccc;
-                        border-radius: 3px;
-                        width: 100%;
+                        margin: 0 4px 0 0;
+                        position: relative;
+                        top: 3px;
+                        cursor: pointer;
 
                         &:focus {
-                            border-color: $primary-color;
-                            color: #222;
                             outline: 0;
                         }
                     }
 
-                    ::placeholder {
-                        color: #999;
-                        opacity: 1;
-                    }
-
-                    :-ms-input-placeholder {
-                        color: #999;
-                    }
-
-                    ::-ms-input-placeholder {
-                        color: #999;
-                    }
-
-                    input:-webkit-autofill,
-                    input:-webkit-autofill:hover,
-                    input:-webkit-autofill:focus {
-                        -webkit-box-shadow: 0 0 0px 1000px #fff inset;
-                        -webkit-text-fill-color: #999 !important;
+                    input[type="checkbox"]:checked:after {
+                        content: '\f00c';
+                        font-weight: 900;
+                        font-family: "Font Awesome 5 Free";
+                        font-size: 14px;
+                        position: absolute;
+                        left: 2px;
+                        top: 2px;
+                        color: #41abec;
+                        line-height: 1;
                     }
                 }
-            }
-        }
-
-        .lp-checkout-remember {
-            label {
-                font-size: 16px;
-                line-height: 26px;
-                font-weight: 300;
-                color: #666;
-
-                input[type="checkbox"] {
-                    -webkit-appearance: none;
-                    width: 19px;
-                    height: 19px;
-                    border: 1px solid #ccc;
-                    margin: 0 4px 0 0;
-                    position: relative;
-                    top: 3px;
-                    cursor: pointer;
-
-                    &:focus {
-                        outline: 0;
+                a {
+                    font-size: 16px;
+                    line-height: 26px;
+                    font-weight: 300;
+                    color: #666;
+                    text-decoration: underline;
+                    text-decoration-color: #ccc;
+                    &:hover {
+                        color: $primary-color;
+                        text-decoration-color: $primary-color;
                     }
                 }
-
-                input[type="checkbox"]:checked:after {
-                    content: '\f00c';
-                    font-weight: 900;
-                    font-family: "Font Awesome 5 Free";
-                    font-size: 14px;
-                    position: absolute;
-                    left: 2px;
-                    top: 2px;
-                    color: #41abec;
-                    line-height: 1;
-                }
-            }
-
-            a {
-                font-size: 16px;
-                line-height: 26px;
-                font-weight: 300;
-                color: #666;
-                text-decoration: underline;
-                text-decoration-color: #ccc;
             }
         }
     }
@@ -225,6 +227,7 @@
         table {
             border: 0;
             margin: 0;
+            width: 100%;
         }
 
         td,
@@ -321,6 +324,7 @@
 
 #checkout-account-register,
 #checkout-account-login {
+    width: 100%;
     border-bottom: 1px solid rgba(204, 204, 204, 0.3);
     margin-bottom: 35px;
     padding-bottom: 19px;
@@ -355,7 +359,8 @@
         a {
             color: #41abec;
             margin-left: 5px;
-
+            cursor: pointer;
+            
             &:hover {
                 color: $primary-color;
             }
@@ -372,6 +377,7 @@
 }
 
 #checkout-payment {
+    width: 100%;
     margin-bottom: 25px;
 
     h4 {

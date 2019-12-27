@@ -59,6 +59,7 @@
             width: 100%;
             height: auto;
             border-radius: unset;
+            position: relative;
         }
     }
 
@@ -251,6 +252,7 @@
         width: calc(100% - 300px);
         float: right;
         padding-top: 58px;
+        margin-bottom: 60px;
         @media (max-width: 990px) {
             width: 100%;
         }
@@ -420,7 +422,7 @@ form[name="profile-change-password"] {
             }
             input,
             textarea {
-                border-color: #ccc;
+                border:1px solid #ccc;
                 font-size: 14px;
                 color: #999;
                 font-style: italic;
@@ -468,6 +470,7 @@ form[name="profile-change-password"] {
     }
 
     button {
+        border: 0;
         font-size: 16px;
         font-weight: 400;
         line-height: 1;

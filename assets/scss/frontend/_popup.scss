@@ -1,6 +1,5 @@
 .learnpress-page {
     .lp-button {
-        @include border-radius(3px);
 
         &.secondary {
             background: #9198ab;
@@ -63,6 +62,7 @@
 
     .section-item-link {
         color: #777;
+        text-decoration: none;
     }
 
     .section-desc {
@@ -240,7 +240,7 @@
                 background: transparent;
                 line-height: 1px;
                 right: 10px;
-
+                border: 0;
                 &:before {
                     content: "\f002";
                     font-size: 16px;
@@ -250,19 +250,12 @@
                 }
 
                 &.clear {
-                    //right: 0;
                     display: none;
 
                     &:before {
                         content: "\f00d";
                     }
                 }
-
-                /*&:hover {
-                    &:before {
-                        color: #FFF;
-                    }
-                }*/
             }
 
             .search-results {
