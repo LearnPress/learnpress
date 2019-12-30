@@ -240,6 +240,8 @@
     list-style: none;
     border-right: 1px solid #e5e7f2;
     background: #f1f2f8; }
+    .learn-press-tabs .learn-press-tabs__tab:last-child {
+      border-right: 0; }
     .learn-press-tabs .learn-press-tabs__tab > label {
       padding: 20px 65px 14px 65px;
       font-size: 18px;
@@ -1142,7 +1144,8 @@ form[name="profile-change-password"] .form-field {
   form[name="profile-change-password"] .form-field > label {
     font-size: 16px;
     font-style: italic;
-    margin: 0 0 12px 0; }
+    margin: 0 0 12px 0;
+    font-weight: 500; }
   #learn-press-profile-basic-information .form-field .form-field-input input,
   form[name="profile-change-password"] .form-field .form-field-input input {
     padding: 8px 20px;
