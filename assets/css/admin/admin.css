@@ -2086,11 +2086,14 @@ ul .clearfix {
       margin-top: -4px;
       color: #999; }
     #admin-editor-lp_course .lp-course-curriculum .section .section-head .movable {
-      cursor: url("../../images/openhand.cur") 7 5, default; }
+      cursor: url("../../images/openhand.cur") 7 5, default;
+      margin-right: -1px; }
       #admin-editor-lp_course .lp-course-curriculum .section .section-head .movable:before {
         content: "\f333"; }
       #admin-editor-lp_course .lp-course-curriculum .section .section-head .movable:hover {
         color: #0085ba; }
+    #admin-editor-lp_course .lp-course-curriculum .section .section-head .section-item-counts {
+      right: 36px; }
     #admin-editor-lp_course .lp-course-curriculum .section .section-head .actions {
       position: absolute;
       top: 0;
@@ -2109,7 +2112,7 @@ ul .clearfix {
         width: 40px;
         font-size: 30px;
         font-family: Dashicons;
-        line-height: 42px;
+        line-height: 45px;
         color: #999; }
       #admin-editor-lp_course .lp-course-curriculum .section .section-head .actions .collapse.open:before {
         content: '\f142'; }
@@ -2184,6 +2187,7 @@ ul .clearfix {
       visibility: hidden;
       fill: #d5dce0;
       padding-top: 3px;
+      padding-left: 6px;
       flex: 0 0 18px; }
       #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .drag:hover {
         fill: #0085ba; }
@@ -2192,7 +2196,7 @@ ul .clearfix {
       align-items: center;
       justify-content: center; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .title {
-      margin-left: 5px;
+      margin-left: 2px;
       margin-right: 120px;
       flex-grow: 1;
       flex-basis: 100%; }
@@ -2201,7 +2205,7 @@ ul .clearfix {
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions {
       position: absolute;
       top: 0;
-      right: 0;
+      right: 2px;
       bottom: 0;
       display: flex;
       align-items: center;
@@ -2250,8 +2254,10 @@ ul .clearfix {
           font-size: 20px;
           position: relative;
           top: 2px; }
-        #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.lp_quiz:before {
-          content: '\f469'; }
+        #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.lp_quiz {
+          padding: 8px 6px 8px 0; }
+          #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.lp_quiz:before {
+            content: '\f469'; }
         #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.lp_lesson:before {
           content: '\f330'; }
         #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.empty-item:before {
@@ -2452,8 +2458,8 @@ ul .clearfix {
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .sort:hover {
         color: #0085ba; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order {
-      flex: 0 0 30px;
-      text-align: right;
+      flex: 0 0 25px;
+      text-align: left;
       font-size: 15px;
       padding: 12px 0; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order:after {
@@ -3412,7 +3418,7 @@ body.lp-item-moving {
   .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list,
   .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list-advanced {
     padding: 7px 10px;
-    width: calc(100% - 30px);
+    width: calc(100% - 58px);
     background: transparent;
     box-shadow: none;
     border: none;
@@ -3427,7 +3433,7 @@ body.lp-item-moving {
   .learnpress #field-_lp_faqs .rwmb-text-list-clone .remove-clone,
   .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .remove-clone {
     top: 50%;
-    right: 7px;
+    right: 36px;
     margin-top: -10px;
     background: #DDD;
     -webkit-transition: right 0.25s;
@@ -3435,64 +3441,60 @@ body.lp-item-moving {
     -ms-transition: right 0.25s;
     -o-transition: right 0.25s;
     transition: right 0.25s; }
-  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover:after,
-  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover:after,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover:after,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover:after,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover:after,
-  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover:after,
-  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover:after,
-  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover:after {
+  .learnpress #field-_lp_requirements .rwmb-text-list-clone:after,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:after,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:after,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:after,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone:after,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:after,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone:after,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:after {
     content: "\f329";
     font-family: Dashicons;
     font-size: 24px;
-    margin: 8px 0 0 22px;
+    margin: 8px 0 0 0;
     position: absolute;
     display: inline-block;
-    color: #777;
+    color: #DDD;
     top: 50%;
+    right: 6px;
     margin-top: -9px; }
-  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
-  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
-  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced,
-  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
-  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced {
-    width: calc(100% - 50px); }
-  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .remove-clone,
-  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .remove-clone,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .remove-clone,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .remove-clone,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .remove-clone,
-  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .remove-clone,
-  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .remove-clone,
-  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .remove-clone {
-    background: #e74c3c;
-    right: 27px; }
+  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover {
+    /*.rwmb-text-list,
+                .rwmb-text-list-advanced {
+                    width: calc(100% - 50px);
+                }*/ }
+    .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .remove-clone,
+    .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .remove-clone,
+    .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .remove-clone,
+    .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .remove-clone,
+    .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .remove-clone,
+    .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .remove-clone,
+    .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .remove-clone,
+    .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .remove-clone {
+      background: #e74c3c; }
 
 .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone {
   position: relative;
-  padding: 0 0 12px 0px; }
+  padding: 0 0 16px 0px; }
   .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list-label {
     display: block;
-    padding: 10px 10px 0 10px; }
+    padding: 10px 10px 0 12px; }
   .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list {
     border: 1px solid #DDD;
-    margin: 0 0 0 10px;
-    vertical-align: top; }
+    margin: 0 13px 0 13px;
+    vertical-align: top;
+    width: calc(100% - 25px); }
   .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .remove-clone {
-    top: 50%;
-    right: 7px;
+    top: 20px;
+    right: 36px;
     margin-top: -10px;
     background: #DDD;
     -webkit-transition: right 0.25s;
@@ -3500,6 +3502,8 @@ body.lp-item-moving {
     -ms-transition: right 0.25s;
     -o-transition: right 0.25s;
     transition: right 0.25s; }
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:after {
+    top: 20px; }
 
 .lp-notice,
 .learn-press-notice {

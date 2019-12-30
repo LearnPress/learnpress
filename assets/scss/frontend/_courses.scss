@@ -16,8 +16,6 @@ a {
 }
 
 .lp-archive-courses {
-    background: #fff;
-
     form[name="search-course"] {
         margin-bottom: 20px;
         position: relative;
@@ -120,34 +118,35 @@ a {
                                     width: 100%;
                                     transition: all .5s ease;
                                     height: auto;
+                                    transform: scale(1);
                                 }
                             }
                         }
                     }
 
-                    //.course-wishlist {
-                    //    position: absolute;
-                    //    top: 6px;
-                    //    right: 6px;
-                    //    z-index: 2;
-                    //    opacity: 0;
-                    //    color: #fff;
-                    //    cursor: pointer;
-                    //
-                    //    &:before {
-                    //        content: '\f004';
-                    //        font-weight: 900;
-                    //        font-family: "Font Awesome 5 Free";
-                    //    }
-                    //
-                    //    .course-wishlist__btn {
-                    //        display: none;
-                    //    }
-                    //
-                    //    &:hover {
-                    //        color: $primary-color;
-                    //    }
-                    //}
+                    .course-wishlist {
+                        position: absolute;
+                        top: 6px;
+                        right: 6px;
+                        z-index: 2;
+                        opacity: 0;
+                        color: #fff;
+                        cursor: pointer;
+
+                        &:before {
+                            content: '\f004';
+                            font-weight: 900;
+                            font-family: "Font Awesome 5 Free";
+                        }
+
+                        .course-wishlist__btn {
+                            display: none;
+                        }
+
+                        &:hover {
+                            color: $primary-color;
+                        }
+                    }
 
                     &:hover {
                         &:before {
@@ -706,7 +705,7 @@ a {
             line-height: 40px;
             text-align: center;
             border-radius: 5px;
-
+            cursor: pointer;
             &:before {
                 color: #333;
                 display: inline-block;
