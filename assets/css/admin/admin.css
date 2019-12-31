@@ -3134,14 +3134,15 @@ ul .clearfix {
             border-bottom: 0;
             border-right: 0; }
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab.active a {
-            color: #333; }
+            color: #0073aa; }
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab a {
             padding: 0 20px;
             text-decoration: none;
             display: inline-block;
             font-weight: 600;
             height: 44px;
-            line-height: 44px; }
+            line-height: 44px;
+            color: #333; }
             #lp-modal-choose-items .lp-choose-items .header .tabs .tab a:focus {
               box-shadow: none; }
       #lp-modal-choose-items .lp-choose-items .header .close {
