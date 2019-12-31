@@ -9,7 +9,7 @@
 <script type="text/x-template" id="tmpl-lp-quiz-question-actions">
     <div class="question-actions table-row" :class="status">
         <div class="sort lp-sortable-handle">
-            <i class="fa fa-bars"></i>
+            <span class="dashicons dashicons-menu"></span>
         </div>
         <div class="order">{{index +1}}</div>
         <div class="name" @dblclick="toggle">

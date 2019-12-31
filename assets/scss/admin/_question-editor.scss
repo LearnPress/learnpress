@@ -120,7 +120,9 @@
                         padding: 15px;
                         background: #F5F5F5;
                         border-bottom: 1px solid #DDD;
-
+                        &.answer-text {
+                            padding-left: 10px;
+                        }
                     }
                 }
             }
@@ -134,14 +136,14 @@
             .order {
                 text-align: right;
                 padding: 0;
-                width: 30px;
+                width: 10px;
             }
             .answer-correct {
                 width: 65px;
                 text-align: center;
             }
             .answer-text {
-                padding-left: 5px;
+                padding-left: 8px;
             }
             .actions {
                 padding-right: 0;
@@ -163,8 +165,7 @@
                             cursor: url("../../images/openhand.cur") 7 5, default;
                             padding: 0;
                             .svg-icon {
-                                visibility: hidden;
-                                fill: #d5dce0;
+                                fill: #999;
                                 height: 18px;
                                 vertical-align: middle;
                                 margin-top: -2px;
@@ -201,11 +202,6 @@
                                 .remove-answer {
                                     visibility: visible;
                                     height: 42px;
-                                }
-                            }
-                            &.sort {
-                                .svg-icon {
-                                    visibility: visible;
                                 }
                             }
                         }

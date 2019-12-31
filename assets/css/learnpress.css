@@ -1145,7 +1145,8 @@ form[name="profile-change-password"] .form-field {
     font-size: 16px;
     font-style: italic;
     margin: 0 0 12px 0;
-    font-weight: 500; }
+    font-weight: 500;
+    color: #333; }
   #learn-press-profile-basic-information .form-field .form-field-input input,
   form[name="profile-change-password"] .form-field .form-field-input input {
     padding: 8px 20px;

@@ -77,10 +77,9 @@
                 & > .sort {
                     flex: 0 0 15px;
                     cursor: url("../../images/openhand.cur") 7 5, default;
-                    visibility: hidden;
                     position: relative;
                     font-size: 18px;
-                    color: #d5dce0;
+                    color:#999;
                     &:hover {
                         color: #0085ba;
                     }
@@ -170,11 +169,11 @@
                                 padding: 8px 5px;
                             }
                             .answer-text {
-                                padding-left: 5px;
+                                padding-left: 9px;
                                 width: calc(100% - 100px);
                             }
                             .order {
-                                width: 30px;
+                                width: 10px;
                                 text-align: right;
                                 padding: 0;
                             }
@@ -216,8 +215,7 @@
                                     .svg-icon {
                                         height: 18px;
                                         vertical-align: middle;
-                                        visibility: hidden;
-                                        fill: #d5dce0;
+                                        fill: #999;
                                     }
                                     &:hover {
                                         .svg-icon {
@@ -400,6 +398,7 @@
                                     font-family: Dashicons;
                                     line-height: 42px;
                                     font-size: 16px;
+                                    padding-right: 3px;
                                     &.open {
                                         &::after {
                                             content: '\f343';
@@ -507,11 +506,13 @@
                 margin-top: -1px;
                 .order {
                     line-height: 28px;
+                    text-align: right;
                 }
                 .table-row {
                     text-align: left;
                     height: auto;
                     .add-new-question {
+                        padding-left: 11px;
                         .title {
                             position: relative;
                             display: inline-block;
