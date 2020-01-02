@@ -2531,7 +2531,7 @@ ul .clearfix {
             cursor: url("../../images/openhand.cur") 7 5, default;
             width: 12px; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-text {
-            padding-left: 5px; }
+            padding-left: 8px; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-correct {
             text-align: center; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr .svg-icon {
