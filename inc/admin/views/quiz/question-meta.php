@@ -16,11 +16,11 @@
                 <div class="rwmb-meta-box">
                     <div class="rwmb-field rwmb-textarea-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Describe More', 'learnpress' ); ?></label>
+                            <label :for="'content-'+question.id"><?php _e( 'Describe More', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
-                                   <textarea name="" id="" cols="60" rows="3" class="rwmb-textarea large-text"
+                                   <textarea name="" :id="'content-'+question.id" cols="60" rows="3" class="rwmb-textarea large-text"
                                              @change="updateContent"
                                              v-model="question.settings.content"></textarea>
                             </div>
@@ -28,11 +28,11 @@
                     </div>
                     <div class="rwmb-field rwmb-number-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Marking', 'learnpress' ); ?></label>
+                            <label :for="'marking-'+question.id"><?php _e( 'Marking', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
-                                <input name="mark" type="number" min="1" v-model="question.settings.mark"
+                                <input name="mark" :id="'marking-'+question.id" type="number" min="1" v-model="question.settings.mark"
                                        @change="updateMeta">
                                 <p class="description"><?php _e( 'Set question points.', 'learnpress' ); ?></p>
                             </div>
@@ -40,11 +40,11 @@
                     </div>
 	                <div class="rwmb-field rwmb-textarea-wrapper">
 		                <div class="rwmb-label">
-			                <label for=""><?php _e( 'Hint', 'learnpress' ); ?></label>
+			                <label :for="'hint-'+question.id"><?php _e( 'Hint', 'learnpress' ); ?></label>
 		                </div>
 		                <div class="rwml-input">
 			                <div>
-                                   <textarea name="hint" id="" cols="60" rows="3" class="rwmb-textarea large-text"
+                                   <textarea name="hint" :id="'hint-'+question.id" cols="60" rows="3" class="rwmb-textarea large-text"
                                              @change="updateMeta"
                                              v-model="question.settings.hint"></textarea>
 				                <p class="description"><?php _e( 'A little help for students to get the right answer.', 'learnpress' ); ?></p>
@@ -53,11 +53,11 @@
 	                </div>
                     <div class="rwmb-field rwmb-textarea-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Explanation', 'learnpress' ); ?></label>
+                            <label :for="'explanation-'+question.id"><?php _e( 'Explanation', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
-                                   <textarea name="explanation" id="" cols="60" rows="3"
+                                   <textarea name="explanation" :id="'explanation-'+question.id" cols="60" rows="3"
                                              class="rwmb-textarea large-text"
                                              @change="updateMeta"
                                              v-model="question.settings.explanation"></textarea>
