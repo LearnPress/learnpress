@@ -63,6 +63,9 @@
                 margin-top: -10px;
                 background: #DDD;
                 @include transition(right 0.25s);
+                &:hover {
+                    background: #e74c3c;
+                }
             }
 
             &:after {
@@ -77,17 +80,17 @@
                 right: 10px;
                 margin-top: -9px;
             }
+        }
+        .rwmb-text-list-clone {
+            &:focus-within {
+                border-color:#0085ba;
+            }
+        }
 
-
-            &:hover {
-
-                /*.rwmb-text-list,
-                .rwmb-text-list-advanced {
-                    width: calc(100% - 50px);
-                }*/
-
-                .remove-clone {
-                    background: #e74c3c;
+        .rwmb-text-list-advanced-clone {
+            .rwmb-text-list {
+                &:focus {
+                    border-color:#0085ba;
                 }
             }
         }
