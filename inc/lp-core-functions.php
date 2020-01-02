@@ -3627,8 +3627,8 @@ function learn_press_default_course_levels() {
  */
 function learn_press_course_evaluation_methods( $return = '' ) {
 	$methods = array(
-		'evaluate_lesson' => __( 'With lessons', 'learnpress' ),
-		'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
+		'evaluate_lesson' => __( 'Self-regulated learning by lessons', 'learnpress' ),
+		'evaluate_quiz'   => __( 'Quizzes result', 'learnpress' )
 	);
 
 	return apply_filters( 'learn-press/course-evaluation-methods', $return === 'keys' ? array_keys( $methods ) : $methods, $return );

@@ -11,7 +11,6 @@
         :data-answer-id="answer.question_answer_id"
         :data-order-answer="index">
         <td class="sort lp-sortable-handle"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
-        <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <input type="text" v-model="answer.title"
                    @change="changeTitle" @keyup.enter="updateTitle" @blur="updateTitle" @keyup="keyUp"/>
