@@ -344,7 +344,7 @@ class LP_Setup_Wizard {
 	public function get_payments() {
 		return array(
 			'paypal' => array(
-				'name'     => __( 'Paypal', 'learnpress' ),
+				'name'     => __( 'PayPal', 'learnpress' ),
 				'icon'     => LP()->plugin_url( '/assets/images/paypal-2.png' ),
 				'callback' => array( $this, 'setup_paypal' )
 			)
