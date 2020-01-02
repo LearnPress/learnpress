@@ -405,6 +405,17 @@
                 transition: all 200ms ease-out;
                 .drag {
                     cursor: default;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: Dashicons;
+                    font-size: 16px;
+                    vertical-align: middle;
+                    width: 30px;
+                    color: #999;
+                    &:before {
+                        content: "\f132";
+                    }
                 }
                 .title {
                     display: inline-block;
@@ -599,7 +610,7 @@
 
             .remove {
                 float: right;
-                color: #a00;
+                color: $remove-icon-color;
                 cursor: pointer;
                 display: none;
 

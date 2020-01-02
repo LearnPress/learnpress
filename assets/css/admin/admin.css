@@ -82,7 +82,7 @@
     .lp-toolbar-buttons .lp-toolbar-btn.lp-btn-remove {
       cursor: pointer; }
       .lp-toolbar-buttons .lp-toolbar-btn.lp-btn-remove:hover a, .lp-toolbar-buttons .lp-toolbar-btn.lp-btn-remove:hover span {
-        color: #d05d5d; }
+        color: #e74c3c; }
     .lp-toolbar-buttons .lp-toolbar-btn.lp-btn-toggle .dashicons-arrow-down,
     .lp-toolbar-buttons .lp-toolbar-btn.lp-btn-toggle .dashicons-arrow-down-alt2 {
       display: none; }
@@ -236,7 +236,7 @@
     .lp-list-options tbody td.lp-remove-list-option {
       cursor: pointer; }
       .lp-list-options tbody td.lp-remove-list-option:hover a {
-        color: #d05d5d; }
+        color: #e74c3c; }
 
 .lp-animation {
   -webkit-animation: spin 4s linear infinite;
@@ -2229,7 +2229,17 @@ ul .clearfix {
     align-items: center;
     transition: all 200ms ease-out; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .drag {
-      cursor: default; }
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Dashicons;
+      font-size: 16px;
+      vertical-align: middle;
+      width: 30px;
+      color: #999; }
+      #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .drag:before {
+        content: "\f132"; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .title {
       display: inline-block;
       margin: 0;
@@ -2354,7 +2364,7 @@ ul .clearfix {
   padding: 0 20px 20px 20px; }
   #admin-editor-lp_course .lp-course-curriculum .section-actions .remove {
     float: right;
-    color: #a00;
+    color: #e74c3c;
     cursor: pointer;
     display: none; }
     #admin-editor-lp_course .lp-course-curriculum .section-actions .remove .icon {
@@ -2446,20 +2456,20 @@ ul .clearfix {
     text-align: center; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > * {
       width: 100%;
-      padding: 12px 10px; }
+      padding: 12px 8px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .sort {
       flex: 0 0 15px;
       cursor: url("../../images/openhand.cur") 7 5, default;
       position: relative;
-      font-size: 18px;
       color: #999; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .sort:hover {
         color: #0085ba; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order {
       flex: 0 0 25px;
       text-align: left;
-      font-size: 15px;
-      padding: 12px 0; }
+      font-size: 1.2em;
+      padding: 12px 0;
+      color: #32373c; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order:after {
         content: '.'; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .type {
@@ -2501,9 +2511,9 @@ ul .clearfix {
       border: 1px solid #ddd; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .sort {
         width: 12px;
-        padding: 8px 5px; }
+        padding: 8px 6px; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .answer-text {
-        padding-left: 9px;
+        padding-left: 0;
         width: calc(100% - 100px); }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .order {
         width: 10px;
@@ -2518,10 +2528,10 @@ ul .clearfix {
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .actions .lp-toolbar-btn {
           height: 42px; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr {
-        background: #fff;
+        background: #f4fcff;
         border: 1px solid #DDD; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr:nth-child(2n) {
-          background: #f4fcff; }
+          background: #fff; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td {
           padding: 0 10px;
           background: inherit;
@@ -2531,7 +2541,7 @@ ul .clearfix {
             cursor: url("../../images/openhand.cur") 7 5, default;
             width: 12px; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-text {
-            padding-left: 8px; }
+            padding-left: 0; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-correct {
             text-align: center; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr .svg-icon {
@@ -2590,11 +2600,12 @@ ul .clearfix {
         color: #777;
         padding: 0; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item {
-    background: #fff;
+    background: #f4fcff;
     border-bottom: 1px solid #f1f1f1;
-    line-height: 18px; }
-    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item:nth-child(2n+1) {
-      background: #f4fcff; }
+    line-height: 18px;
+    /*&:nth-child(2n+1) {
+                        background: #f4fcff;
+                    }*/ }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.ui-sortable-helper {
       border-top: 1px solid #f1f1f1; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.ui-sortable-placeholder {
@@ -2635,13 +2646,14 @@ ul .clearfix {
       padding: 10px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-actions .name input {
       width: 100%;
-      font-size: 14px;
+      font-size: 1.2em;
       border: none;
       background: transparent;
       box-shadow: none;
       font-weight: normal;
-      color: #777;
-      padding: 0; }
+      color: #32373c;
+      padding: 0;
+      line-height: 18px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-actions .actions {
       padding: 0;
       margin: 0; }
@@ -2709,7 +2721,8 @@ ul .clearfix {
             top: 0;
             right: 0;
             line-height: 36px;
-            text-align: center; }
+            text-align: center;
+            cursor: pointer; }
             #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .toggle:after {
               font-family: Dashicons;
               content: "\f460";
@@ -2727,20 +2740,37 @@ ul .clearfix {
           content: "\f132"; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer {
     border-top: 1px solid #DDD;
-    margin-top: -1px; }
-    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .order {
-      line-height: 28px;
-      text-align: right; }
+    margin-top: -1px;
+    background: #f4fcff; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row {
       text-align: left;
       height: auto; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .lp-sortable-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Dashicons;
+        font-size: 20px;
+        vertical-align: middle;
+        width: 30px;
+        color: #999;
+        padding: 8px 6px 8px 10px; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .lp-sortable-handle:before {
+          content: "\f132"; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .order {
+        line-height: 28px;
+        padding: 8px 0;
+        text-align: left; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question {
-        padding-left: 11px; }
+        padding: 8px 10px 8px 5px; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title {
           position: relative;
           display: inline-block;
           min-width: 500px; }
-          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title input {
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title form input {
+            background: transparent;
+            font-size: 1.2em;
+            line-height: 18px;
             border: 0;
             width: 100%;
             margin: 0;
@@ -2751,14 +2781,14 @@ ul .clearfix {
             -webkit-border-radius: 3px;
             -moz-border-radius: 3px;
             border-radius: 3px; }
-            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title input:focus {
+            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title form input:focus {
               -webkit-box-shadow: none;
               -moz-box-shadow: none;
               box-shadow: none; }
-            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title input:focus {
+            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title form input:focus {
               border-color: #DDD; }
-            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title input::placeholder {
-              color: #999;
+            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title form input::placeholder {
+              color: #32373c;
               font-style: italic;
               border-bottom: 1px solid #DDD;
               display: inline-block; }
@@ -3436,7 +3466,7 @@ body.lp-item-moving {
     top: 50%;
     right: 41px;
     margin-top: -10px;
-    background: #DDD;
+    background: #999;
     -webkit-transition: right 0.25s;
     -moz-transition: right 0.25s;
     -ms-transition: right 0.25s;
@@ -3465,7 +3495,7 @@ body.lp-item-moving {
     margin: 8px 0 0 0;
     position: absolute;
     display: inline-block;
-    color: #DDD;
+    color: #999;
     top: 50%;
     right: 10px;
     margin-top: -9px; }
@@ -3497,7 +3527,7 @@ body.lp-item-moving {
     top: 20px;
     right: 36px;
     margin-top: -10px;
-    background: #DDD;
+    background: #999;
     -webkit-transition: right 0.25s;
     -moz-transition: right 0.25s;
     -ms-transition: right 0.25s;

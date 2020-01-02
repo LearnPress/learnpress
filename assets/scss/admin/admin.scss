@@ -61,10 +61,10 @@
                 top: 50%;
                 right: 41px;
                 margin-top: -10px;
-                background: #DDD;
+                background: #999;
                 @include transition(right 0.25s);
                 &:hover {
-                    background: #e74c3c;
+                    background: $remove-icon-color;
                 }
             }
 
@@ -75,7 +75,7 @@
                 margin: 8px 0 0 0;
                 position: absolute;
                 display: inline-block;
-                color: #DDD;
+                color: #999;
                 top: 50%;
                 right: 10px;
                 margin-top: -9px;
@@ -117,7 +117,7 @@
                 top: 20px;
                 right: 36px;
                 margin-top: -10px;
-                background: #DDD;
+                background: #999;
                 @include transition(right 0.25s);
             }
 

@@ -71,14 +71,13 @@
                 text-align: center;
                 & > * {
                     width: 100%;
-                    padding: 12px 10px
+                    padding: 12px 8px
                 }
 
                 & > .sort {
                     flex: 0 0 15px;
                     cursor: url("../../images/openhand.cur") 7 5, default;
                     position: relative;
-                    font-size: 18px;
                     color:#999;
                     &:hover {
                         color: #0085ba;
@@ -88,8 +87,9 @@
                 & > .order {
                     flex: 0 0 25px;
                     text-align: left;
-                    font-size: 15px;
+                    font-size: 1.2em;
                     padding: 12px 0;
+                    color: #32373c;
                     &:after {
                         content: '.';
                     }
@@ -166,10 +166,10 @@
                             border: 1px solid #ddd;
                             .sort {
                                 width: 12px;
-                                padding: 8px 5px;
+                                padding: 8px 6px;
                             }
                             .answer-text {
-                                padding-left: 9px;
+                                padding-left: 0;
                                 width: calc(100% - 100px);
                             }
                             .order {
@@ -190,10 +190,10 @@
                             }
                             tbody {
                                 tr {
-                                    background: #fff;
+                                    background: #f4fcff;
                                     border: 1px solid #DDD;
                                     &:nth-child(2n) {
-                                        background: #f4fcff;
+                                        background: #fff;
                                     }
                                     td {
                                         padding: 0 10px;
@@ -206,7 +206,7 @@
 
                                         }
                                         &.answer-text {
-                                            padding-left: 8px;
+                                            padding-left: 0;
                                         }
                                         &.answer-correct {
                                             text-align: center;
@@ -298,12 +298,12 @@
 
             .main {
                 .question-item {
-                    background: #fff;
+                    background: #f4fcff;
                     border-bottom: 1px solid #f1f1f1;
                     line-height: 18px;
-                    &:nth-child(2n+1) {
+                    /*&:nth-child(2n+1) {
                         background: #f4fcff;
-                    }
+                    }*/
                     &.ui-sortable-helper {
                         border-top: 1px solid #f1f1f1;
                     }
@@ -355,13 +355,14 @@
                         .name {
                             input {
                                 width: 100%;
-                                font-size: 14px;
+                                font-size: 1.2em;
                                 border: none;
                                 background: transparent;
                                 box-shadow: none;
                                 font-weight: normal;
-                                color: #777;
+                                color: #32373c;
                                 padding: 0;
+                                line-height: 18px;
                             }
                         }
                         .actions {
@@ -470,6 +471,7 @@
                                     right: 0;
                                     line-height: 36px;
                                     text-align: center;
+                                    cursor: pointer;
                                     &:after {
                                         font-family: Dashicons;
                                         content: "\f460";
@@ -504,34 +506,56 @@
             .footer {
                 border-top: 1px solid #DDD;
                 margin-top: -1px;
-                .order {
-                    line-height: 28px;
-                    text-align: right;
-                }
+                background: #f4fcff;
                 .table-row {
                     text-align: left;
                     height: auto;
+                    .lp-sortable-handle {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: Dashicons;
+                        font-size: 20px;
+                        vertical-align: middle;
+                        width: 30px;
+                        color: #999;
+                        padding: 8px 6px 8px 10px;
+                        &:before {
+                            content: "\f132";
+                        }
+                    }
+                    .order {
+                        line-height: 28px;
+                        padding: 8px 0;
+                        text-align: left;
+                    }
                     .add-new-question {
-                        padding-left: 11px;
+                        padding: 8px 10px 8px 5px;
                         .title {
                             position: relative;
                             display: inline-block;
                             min-width: 500px;
-                            input {
-                                border: 0;
-                                width: 100%;
-                                margin: 0;
-                                padding: 6px 0px;
-                                @include box-shadow(none);
-                                @include border-radius(3px);
-                                &:focus {
-                                    border-color: #DDD;
-                                }
-                                &::placeholder {
-                                    color: #999;
-                                    font-style: italic;
-                                    border-bottom: 1px solid #DDD;
-                                    display: inline-block;
+                            form {
+                                input {
+                                    background: transparent;
+
+                                    font-size: 1.2em;
+                                    line-height: 18px;
+                                    border: 0;
+                                    width: 100%;
+                                    margin: 0;
+                                    padding: 6px 0px;
+                                    @include box-shadow(none);
+                                    @include border-radius(3px);
+                                    &:focus {
+                                        border-color: #DDD;
+                                    }
+                                    &::placeholder {
+                                        color: #32373c;
+                                        font-style: italic;
+                                        border-bottom: 1px solid #DDD;
+                                        display: inline-block;
+                                    }
                                 }
                             }
                         }
