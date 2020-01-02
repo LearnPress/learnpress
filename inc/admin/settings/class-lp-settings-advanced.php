@@ -297,17 +297,24 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'desc'    => __( 'Use color schema for main colors.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Color schema', 'learnpress' ),
+					'title'   => __( 'Color Schema', 'learnpress' ),
 					'id'      => 'color_schema',
 					'default' => '',
 					'type'    => 'color-schema'
+				),
+				array(
+					'title'   => __( 'Load CSS', 'learnpress' ),
+					'id'      => 'load_css',
+					'default' => 'yes',
+					'type'    => 'yes-no',
+					'desc'    => __( 'Load default stylesheet for LearnPress.', 'learnpress' )
 				),
 				array(
 					'type'  => 'heading',
 					'title' => __( 'Other', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Enable Gutenberg', 'learnpress' ),
+					'title'   => __( 'Gutenberg', 'learnpress' ),
 					'id'      => 'enable_gutenberg',
 					'default' => 'no',
 					'type'    => 'checkbox_list',
@@ -320,21 +327,14 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'desc'    => __( 'Enable Gutenberg editor.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Load css', 'learnpress' ),
-					'id'      => 'load_css',
-					'default' => 'yes',
-					'type'    => 'yes-no',
-					'desc'    => __( 'Load default stylesheet for LearnPress.', 'learnpress' )
-				),
-				array(
-					'title'   => __( 'Debug mode', 'learnpress' ),
+					'title'   => __( 'Debug Mode', 'learnpress' ),
 					'id'      => 'debug',
 					'default' => 'no',
 					'type'    => 'yes-no',
 					'desc'    => __( 'Turn on/off debug mode for developer.', 'learnpress' )
 				),
 				array(
-					'title' => __( 'JS and CSS libraries', 'learnpress' ),
+					'title' => __( 'Script Libraries', 'learnpress' ),
 					'id'    => 'js_css_libraries',
 					'type'  => 'html',
 					'html'  => learn_press_admin_view_content( 'settings-js-css' ),
@@ -345,7 +345,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 //					'type'  => 'heading',
 //				),
 				array(
-					'title'   => __( 'Enable hard cache', 'learnpress' ),
+					'title'   => __( 'Hard Cache', 'learnpress' ),
 					'id'      => 'enable_hard_cache',
 					'default' => 'no',
 					'type'    => 'yes-no',
