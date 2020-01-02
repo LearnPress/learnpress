@@ -210,7 +210,7 @@
                         &:before {
                             display: inline-block;
                             width: 40px;
-                            font-size: 30px;
+                            font-size: 16px;
                             font-family: Dashicons;
                             line-height: 45px;
                             color: #999;
@@ -218,13 +218,13 @@
 
                         &.open {
                             &:before {
-                                content: '\f142';
+                                content: '\f343';
                             }
                         }
 
                         &.close {
                             &:before {
-                                content: '\f140';
+                                content: '\f347';
                             }
                         }
                     }
@@ -489,7 +489,7 @@
                             &.delete-item {
                                 > a {
                                     &:hover {
-                                        color: #d05d5d;
+                                        color: #e74c3c;
                                     }
                                 }
                                 ul {
@@ -513,7 +513,7 @@
                                             padding: 8px;
                                             display: block;
                                             &.delete-permanently {
-                                                color: #d05d5d;
+                                                color: #e74c3c;
                                             }
                                         }
                                         &:hover {

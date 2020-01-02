@@ -2110,14 +2110,14 @@ ul .clearfix {
       #admin-editor-lp_course .lp-course-curriculum .section .section-head .actions .collapse:before {
         display: inline-block;
         width: 40px;
-        font-size: 30px;
+        font-size: 16px;
         font-family: Dashicons;
         line-height: 45px;
         color: #999; }
       #admin-editor-lp_course .lp-course-curriculum .section .section-head .actions .collapse.open:before {
-        content: '\f142'; }
+        content: '\f343'; }
       #admin-editor-lp_course .lp-course-curriculum .section .section-head .actions .collapse.close:before {
-        content: '\f140'; }
+        content: '\f347'; }
   #admin-editor-lp_course .lp-course-curriculum .section .name {
     font-size: 24px;
     width: 100%;
@@ -2281,7 +2281,7 @@ ul .clearfix {
         #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action > a:hover {
           color: #0073aa; }
       #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item > a:hover {
-        color: #d05d5d; }
+        color: #e74c3c; }
       #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item ul {
         position: absolute;
         top: 100%;
@@ -2303,7 +2303,7 @@ ul .clearfix {
             padding: 8px;
             display: block; }
             #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item ul li a.delete-permanently {
-              color: #d05d5d; }
+              color: #e74c3c; }
           #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item ul li:hover {
             background: #dbf5ff; }
       #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item:hover ul {
@@ -3442,6 +3442,15 @@ body.lp-item-moving {
     -ms-transition: right 0.25s;
     -o-transition: right 0.25s;
     transition: right 0.25s; }
+    .learnpress #field-_lp_requirements .rwmb-text-list-clone .remove-clone:hover,
+    .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .remove-clone:hover,
+    .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .remove-clone:hover,
+    .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone .remove-clone:hover,
+    .learnpress #field-_lp_key_features .rwmb-text-list-clone .remove-clone:hover,
+    .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .remove-clone:hover,
+    .learnpress #field-_lp_faqs .rwmb-text-list-clone .remove-clone:hover,
+    .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .remove-clone:hover {
+      background: #e74c3c; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone:after,
   .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:after,
   .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:after,
@@ -3460,27 +3469,18 @@ body.lp-item-moving {
     top: 50%;
     right: 10px;
     margin-top: -9px; }
-  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover,
-  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover,
-  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover,
-  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover,
-  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover {
-    /*.rwmb-text-list,
-                .rwmb-text-list-advanced {
-                    width: calc(100% - 50px);
-                }*/ }
-    .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .remove-clone,
-    .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .remove-clone,
-    .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .remove-clone,
-    .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .remove-clone,
-    .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .remove-clone,
-    .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .remove-clone,
-    .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .remove-clone,
-    .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .remove-clone {
-      background: #e74c3c; }
+
+.learnpress #field-_lp_requirements .rwmb-text-list-clone:focus-within,
+.learnpress #field-_lp_target_audiences .rwmb-text-list-clone:focus-within,
+.learnpress #field-_lp_key_features .rwmb-text-list-clone:focus-within,
+.learnpress #field-_lp_faqs .rwmb-text-list-clone:focus-within {
+  border-color: #0085ba; }
+
+.learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .rwmb-text-list:focus,
+.learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone .rwmb-text-list:focus,
+.learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .rwmb-text-list:focus,
+.learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list:focus {
+  border-color: #0085ba; }
 
 .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone {
   position: relative;
