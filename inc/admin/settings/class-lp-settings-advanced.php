@@ -8,7 +8,7 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -30,9 +30,9 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		$pages = array( 'frontend', 'admin' );
 		foreach ( $pages as $page ) {
 			$key               = "{$page}_libraries";
-			$exclude_libraries = ! empty( $_REQUEST[ $key ] ) ? array_keys( $_REQUEST[ $key ] ) : '';
+			$exclude_libraries = !empty( $_REQUEST[$key] ) ? array_keys( $_REQUEST[$key] ) : '';
 
-			if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
+			if ( !$exclude_libraries || !sizeof( $exclude_libraries ) ) {
 				delete_option( 'learn_press_exclude_' . $key );
 			} else {
 				update_option( 'learn_press_exclude_' . $key, $exclude_libraries );
@@ -41,7 +41,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 			call_user_func( array( $this, "build_{$page}_assets" ), $exclude_libraries );
 		}
 
-		if ( ! $this->is_enable_custom_css() ) {
+		if ( !$this->is_enable_custom_css() ) {
 			return false;
 		}
 		$this->save_custom_css();
@@ -50,13 +50,13 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	}
 
 	protected function is_enable_custom_css() {
-		return ! empty( $_POST['learn_press_enable_custom_colors'] ) && $_POST['learn_press_enable_custom_colors'] === 'yes';
+		return !empty( $_POST['learn_press_enable_custom_colors'] ) && $_POST['learn_press_enable_custom_colors'] === 'yes';
 	}
 
 	protected function save_custom_css() {
-		$colors = ! empty( $_POST['color_schema'] ) ? $_POST['color_schema'] : false;
+		$colors = !empty( $_POST['color_schema'] ) ? $_POST['color_schema'] : false;
 
-		if ( ! $colors ) {
+		if ( !$colors ) {
 			return;
 		}
 
@@ -87,7 +87,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 //		}
 //		die();
 
-		if ( ! class_exists( 'scssc' ) ) {
+		if ( !class_exists( 'scssc' ) ) {
 			include_once LP_PLUGIN_PATH . '/inc/libraries/scss.inc.php';
 		}
 
@@ -102,12 +102,12 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 		// Rename inline variables to apply the new variables in our settings.
 		foreach ( $colors as $name => $value ) {
-			if ( ! $value ) {
+			if ( !$value ) {
 				continue;
 			}
 
-			$valid_colors[ $name ] = $value;
-			$scss_content          = str_replace( '$' . $name . ':', '$' . $name . '-' . uniqid() . ':', $scss_content );
+			$valid_colors[$name] = $value;
+			$scss_content        = str_replace( '$' . $name . ':', '$' . $name . '-' . uniqid() . ':', $scss_content );
 		}
 
 		$scss->setVariables( $valid_colors );
@@ -129,7 +129,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	protected function is_default_colors( $colors ) {
 		$color_schemas = learn_press_get_color_schemas();
 		foreach ( $color_schemas as $field ) {
-			if ( isset( $colors[ $field['id'] ] ) && $colors[ $field['id'] ] === $field['std'] ) {
+			if ( isset( $colors[$field['id']] ) && $colors[$field['id']] === $field['std'] ) {
 				continue;
 			}
 
@@ -151,7 +151,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 		$writeDir = $this->get_upload_path();
 
-		if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
+		if ( !$exclude_libraries || !sizeof( $exclude_libraries ) ) {
 			@unlink( $writeDir . '/admin.plugins.all.js' );
 			@unlink( $writeDir . '/admin.bundle.min.css' );
 
@@ -209,7 +209,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	public function build_frontend_assets( $exclude_libraries = array() ) {
 		$writeDir = $this->get_upload_path();
 
-		if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
+		if ( !$exclude_libraries || !sizeof( $exclude_libraries ) ) {
 			@unlink( $writeDir . '/plugins.all.js' );
 			@unlink( $writeDir . '/bundle.min.css' );
 
@@ -319,9 +319,10 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'default' => 'no',
 					'type'    => 'checkbox_list',
 					'options' => array(
-						'-1'            => __( 'Disable all', 'learnpress' ),
-						LP_QUIZ_CPT     => __( 'Quiz', 'learnpress' ),
+//						'-1'            => __( 'Enable all', 'learnpress' ),
+						LP_COURSE_CPT   => __( 'Course', 'learnpress' ),
 						LP_LESSON_CPT   => __( 'Lesson', 'learnpress' ),
+						LP_QUIZ_CPT     => __( 'Quiz', 'learnpress' ),
 						LP_QUESTION_CPT => __( 'Question', 'learnpress' )
 					),
 					'desc'    => __( 'Enable Gutenberg editor.', 'learnpress' )
