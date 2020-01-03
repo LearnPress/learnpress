@@ -56,4 +56,49 @@ class LP_Course_Utils {
 
 		return true;
 	}
+
+	/**
+	 * Return ids of all items inside a course from cache.
+	 *
+	 * @param int $course_id
+	 *
+	 * @return false|mixed
+	 */
+	public static function get_course_items( $course_id ) {
+		return LP_Object_Cache::get( $course_id, 'learn-press/course-item-ids' );
+	}
+
+	/**
+	 * Set ids of all items read from db of a course to cache.
+	 *
+	 * @param int   $course_id
+	 * @param array $items
+	 */
+	public static function set_course_items( $course_id, $items ) {
+		LP_Object_Cache::set( $course_id, $items, 'learn-press/course-item-ids' );
+	}
+
+	public static function set_course_item_types( $course_id, $items ) {
+		LP_Object_Cache::set( 'course-' . $course_id, $items, 'learn-press/course-item-types' );
+	}
+
+	public static function get_course_item_types( $course_id ) {
+		return LP_Object_Cache::get( 'course-' . $course_id, 'learn-press/course-item-types' );
+	}
+
+	public static function set_course_items_group_types( $course_id, $items ) {
+		LP_Object_Cache::set( 'course-' . $course_id, $items, 'learn-press/course-item-group-types' );
+	}
+
+	public static function get_course_items_group_types( $course_id ) {
+		return LP_Object_Cache::set( 'course-' . $course_id, 'learn-press/course-item-group-types' );
+	}
+
+	public static function set_section_items( $section_id, $items ) {
+		LP_Object_Cache::set( 'section-' . $section_id, $items, 'learn-press/section-items' );
+	}
+
+	public static function get_section_items( $section_id ) {
+		return LP_Object_Cache::set( 'section-' . $section_id, 'learn-press/section-items' );
+	}
 }

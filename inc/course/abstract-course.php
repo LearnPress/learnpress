@@ -174,12 +174,85 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			);
 		}
 
+		/**
+		 * Load course curriculum.
+		 */
 		public function load_curriculum() {
-			$this->_curd->load( $this );
+			$item_ids   = array();
+			$item_types = array();
+			$item_by_types = array();
+			$section_items = array();
+
+			if ( $items = $this->_curd->read_course_curriculum( $this->get_id() ) ) {
+				foreach ( $items as $item ) {
+					$item_ids[] = $item->id;
+
+					// Group items by it type
+					if ( empty( $item_types[ $item->type ] ) ) {
+						$item_types[ $item->type ] = array();
+					}
+
+					$item_types[ $item->type ][] = $item->id;
+
+					// Group items by it section
+					if ( empty( $section_items[ $item->section_id ] ) ) {
+						$section_items[ $item->section_id ] = array();
+					}
+
+					$section_items[ $item->section_id ][] = $item->id;
+					$item_by_types[$item->id] = $item->type;
+
+				}
+			}
+
+			LP_Course_Utils::set_course_items( $this->get_id(), $item_ids);
+			LP_Course_Utils::set_course_item_types( $this->get_id(), $item_by_types);
+			LP_Course_Utils::set_course_items_group_types( $this->get_id(), $item_types);
+
+			foreach ( $section_items as $section_id => $its ) {
+				LP_Course_Utils::set_section_items( $section_id, $its);
+			}
+
+			learn_press_cache_add_post_type( $items );
+
+			/*return ;
+			////
+			$item_types = array();
+			$items      = array();
+			$sections   = array();
+
+			if ( $all_items = $this->_curd->read_course_items( $this->get_id() ) ) {
+				foreach ( $all_items as $item ) {
+					if ( empty( $item_types[ $item->type ] ) ) {
+						$item_types[ $item->type ] = array();
+					}
+					$item_types[ $item->type ][] = $item->id;
+					$items[ $item->id ]          = $item->type;
+
+					if ( empty( $sections[ $item->section_id ] ) ) {
+						$sections[ $item->section_id ] = array();
+					}
+					$sections[ $item->section_id ][] = $item->id;
+				}
+			}
+
+			LP_Object_Cache::set( 'course-' . $this->get_id(), $item_types, 'learn-press/course-item-group-types' );
+			LP_Object_Cache::set( 'course-' . $this->get_id(), $items, 'learn-press/course-item-types' );
+
+			foreach ( $sections as $section_id => $section_items ) {
+				LP_Object_Cache::set( 'section-' . $section_id, $section_items, 'learn-press/section-items' );
+			}
+
+			learn_press_cache_add_post_type( $items );
+
+
+			//LP_Object_Cache::set( $this->get_id(), 'learn-press/course-curriculum' )
 
 			if ( $items = LP_Object_Cache::get( $this->get_id(), 'learn-press/course-curriculum' ) ) {
 				LP_Helper_CURD::cache_posts( $items );
 			}
+
+			return true;*/
 		}
 
 		/**
@@ -1874,7 +1947,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @since 3.2.0
 		 *
 		 */
-		public function prepare() {
+		/*public function preparex() {
 			global $wpdb;
 			$id        = $this->get_id();
 			$all_items = LP_Object_Cache::get( $id, 'course-raw-items' );
@@ -1927,7 +2000,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return compact( 'type_items', 'section_items', 'course_sections' );
-		}
+		}*/
 
 		/**
 		 * Get extra info of course.

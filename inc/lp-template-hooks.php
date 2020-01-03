@@ -123,7 +123,7 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->ca
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( ' </div> </div> </div>' ), 15 );
 
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="lp-entry-content lp-content-area">' ), 30 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="lp-entry-content-left">' ), 35 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content-left">' ), 35 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/progress' ), 40 );
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'remaining_time' ), 50 );
