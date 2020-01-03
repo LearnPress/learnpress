@@ -3193,7 +3193,8 @@ a {
           font-size: 14px;
           font-weight: 300;
           text-transform: capitalize;
-          margin-bottom: 20px; }
+          margin-bottom: 16px;
+          line-height: 25px; }
           .lp-archive-courses .learn-press-courses .course .course-item .course-content .course-instructor a {
             color: #666; }
             .lp-archive-courses .learn-press-courses .course .course-item .course-content .course-instructor a:hover {

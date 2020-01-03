@@ -3466,12 +3466,23 @@ body.lp-item-moving {
     top: 50%;
     right: 41px;
     margin-top: -10px;
-    background: #999;
+    background: transparent;
+    border-radius: unset;
+    color: #999;
     -webkit-transition: right 0.25s;
     -moz-transition: right 0.25s;
     -ms-transition: right 0.25s;
     -o-transition: right 0.25s;
     transition: right 0.25s; }
+    .learnpress #field-_lp_requirements .rwmb-text-list-clone .remove-clone i,
+    .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .remove-clone i,
+    .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .remove-clone i,
+    .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone .remove-clone i,
+    .learnpress #field-_lp_key_features .rwmb-text-list-clone .remove-clone i,
+    .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .remove-clone i,
+    .learnpress #field-_lp_faqs .rwmb-text-list-clone .remove-clone i,
+    .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .remove-clone i {
+      font-size: 20px; }
     .learnpress #field-_lp_requirements .rwmb-text-list-clone .remove-clone:hover,
     .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .remove-clone:hover,
     .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .remove-clone:hover,
@@ -3480,7 +3491,7 @@ body.lp-item-moving {
     .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .remove-clone:hover,
     .learnpress #field-_lp_faqs .rwmb-text-list-clone .remove-clone:hover,
     .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .remove-clone:hover {
-      background: #e74c3c; }
+      color: #e74c3c; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone:after,
   .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:after,
   .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:after,
@@ -3527,7 +3538,7 @@ body.lp-item-moving {
     top: 20px;
     right: 36px;
     margin-top: -10px;
-    background: #999;
+    color: #999;
     -webkit-transition: right 0.25s;
     -moz-transition: right 0.25s;
     -ms-transition: right 0.25s;
