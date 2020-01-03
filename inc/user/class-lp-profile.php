@@ -66,7 +66,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param string $role
 		 */
 		protected function __construct( $user, $role = '' ) {
-
 			$this->_curd = new LP_User_CURD();
 
 			$this->_user = $user;
@@ -108,17 +107,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				add_filter( 'learn-press/profile/class', array( $this, 'profile_class' ) );
 			}
 
-			add_filter( 'template_include', array( $this, 'parse_request' ) );
 		}
 
 		/**
 		 * Prevent access view owned course in non admin, instructor profile page.
-		 *
-		 * @param $template
-		 *
-		 * @return mixed
 		 */
-		public function parse_request( $template ) {
+		public function init() {
 			$profile = LP_Profile::instance();
 			$user    = $profile->get_user();
 			$role    = $user->get_role();
@@ -126,11 +120,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( ! in_array( $role, array( 'admin', 'instructor' ) ) ) {
 				unset( $this->_default_settings['courses']['sections']['owned'] );
 
-				$tabs           = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
-				$profile->_tabs = new LP_Profile_Tabs( $tabs, LP_Profile::instance() );
+				$data_tabs   = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
+				$this->_tabs = new LP_Profile_Tabs( $data_tabs, LP_Profile::instance() );
 			}
-
-			return $template;
 		}
 
 		/**
@@ -288,7 +280,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				);
 
 				$this->_default_settings = array(
-					'dashboard'     => array(
+					'overview'      => array(
 						'title'    => __( 'Overview', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.dashboard', 'overview' ),
 						'callback' => array( $this, 'tab_dashboard' ),
@@ -370,12 +362,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'callback' => array( $this, 'tab_order_details' )
 					);
 				}
-
-				$tabs        = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
-				$this->_tabs = new LP_Profile_Tabs( $tabs, LP_Profile::instance() );
 			}
 
-			return $this->_tabs;
+			$tabs = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
+
+			return $this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 		}
 
 		public function get_slug( $data, $default = '' ) {
@@ -525,6 +516,25 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $this->current_user_can( 'view-tab-dashboard' );
 		}
 
+		public function get_default_public_tabs() {
+			return apply_filters( 'learn-press/profile/privacy-tabs', array( 'overview' ) );
+		}
+
+		public function get_public_tabs() {
+			$privacy     = get_user_meta( $this->get_user_data( 'id' ), '_lp_profile_privacy', true );
+			$public_tabs = $this->get_default_public_tabs();
+
+			if ( $privacy ) {
+				foreach ( $privacy as $k => $is_yes ) {
+					if ( $is_yes === 'yes' ) {
+						$public_tabs[] = $k;
+					}
+				}
+			}
+
+			return $public_tabs;
+		}
+
 		/**
 		 * Check if user can with a capability.
 		 *
@@ -534,19 +544,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function current_user_can( $capability ) {
 			$tab         = substr( $capability, strlen( 'view-tab-' ) );
-			$public_tabs = apply_filters( 'learn-press/profile/privacy-tabs', array() );
-			// public profile courses and quizzes tab
-			if ( in_array( $tab, $public_tabs ) ) {
+			$public_tabs = $this->get_default_public_tabs();
+
+			// Tab is public or user is viewing their profile.
+			if ( in_array( $tab, $public_tabs ) || $this->is_current_user() ) {
 				$can = true;
 			} else {
-				if ( $this->_user && $this->_user->get_id() && ( get_current_user_id() === $this->_user->get_id() ) ) {
-					$can = true;
+				if ( empty( $this->_privacy['view-tab-dashboard'] ) || ( false === $this->_privacy['view-tab-dashboard'] ) ) {
+					$can = false;
 				} else {
-					if ( empty( $this->_privacy['view-tab-dashboard'] ) || ( false === $this->_privacy['view-tab-dashboard'] ) ) {
-						$can = false;
-					} else {
-						$can = ! empty( $this->_privacy[ $capability ] ) && ( $this->_privacy[ $capability ] == true );
-					}
+					$can = ! empty( $this->_privacy[ $capability ] ) && ( $this->_privacy[ $capability ] == true );
 				}
 			}
 
@@ -561,9 +568,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function save( $nonce ) {
-
-			$action  = '';
 			$message = '';
+
 			// Find the action by checking the nonce
 			foreach ( $this->_default_actions as $_action => $message ) {
 				if ( wp_verify_nonce( $nonce, 'learn-press-save-profile-' . $_action ) ) {
@@ -574,9 +580,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			// If none of actions found.
-			if ( ! $action ) {
+			if ( ! isset( $action ) ) {
 				return false;
 			}
+
 			$return = false;
 			switch ( $action ) {
 				case 'basic-information':
@@ -593,12 +600,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				case 'privacy':
 					$privacy = LP_Request::get_array( 'privacy' );
 
-					if ( empty( $privacy['my-dashboard'] ) ) {
-						$privacy = false;
-					} elseif ( 'yes' !== $privacy['my-dashboard'] ) {
-						$privacy = false;
-					}
-
 					if ( ! $privacy ) {
 						update_user_meta( get_current_user_id(), '_lp_profile_privacy', array() );
 					} else {
@@ -606,6 +607,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					}
 
 			}
+
 			if ( is_wp_error( $return ) ) {
 				learn_press_add_message( $return->get_error_message() );
 			} else {
@@ -631,6 +633,34 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * Get settings for profile privacy tab.
+		 *
+		 * @return array
+		 * @since 4.0.0
+		 *
+		 */
+		public function get_privacy_settings() {
+			$privacy = array(
+				array(
+					'name'        => __( 'Courses', 'learnpress' ),
+					'id'          => 'courses',
+					'default'     => 'yes',
+					'type'        => 'yes-no',
+					'description' => __( 'Public your profile courses.', 'learnpress' )
+				),
+				array(
+					'name'        => __( 'Quizzes', 'learnpress' ),
+					'id'          => 'quizzes',
+					'default'     => 'yes',
+					'type'        => 'yes-no',
+					'description' => __( 'Public your profile quizzes.', 'learnpress' )
+				)
+			);
+
+			return apply_filters( 'learn-press/profile-privacy-settings', $privacy );
+		}
+
+		/**
 		 * Get privacy profile settings.
 		 *
 		 * @param string $tab
@@ -640,29 +670,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 */
 		public function get_privacy( $tab = '' ) {
+			$privacy = get_user_meta( $this->get_user_data( 'id' ), '_lp_profile_privacy', true );
 
-			$privacy = false;
-			/**
-			 * For first time user did not save anything from profile then get default
-			 * from settings in admin.
-			 */
-			if ( ( $user = $this->get_user() ) && ( '' === ( $privacy = $user->get_data( 'profile_privacy' ) ) ) ) {
-				$privacy = apply_filters( 'learn-press/get-privacy-setting', array(
-					'my-dashboard' => LP()->settings()->get( 'profile_privacy.dashboard' ),
-					'courses'      => LP()->settings()->get( 'profile_privacy.courses' ),
-					'quizzes'      => LP()->settings()->get( 'profile_privacy.quizzes' )
-				) );
-			}
-
-			if ( $privacy && $tab ) {
-				if ( array_key_exists( $tab, $privacy ) ) {
-					return $privacy[ $tab ];
-				} else {
-					return false;
-				}
-			}
-
-			return $privacy ? $privacy : false;
+			return isset( $privacy[ $tab ] ) ? $privacy[ $tab ] : '';
 		}
 
 		/**
@@ -1125,7 +1135,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			if ( empty( self::$_instances[ $user_id ] ) ) {
-				error_log($user_id);
+				error_log( $user_id );
 				self::$_instances[ $user_id ] = new self( $user_id );
 			}
 
@@ -1133,3 +1143,22 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 	}
 }
+
+function learn_press_profile_init() {
+	$profile = LP_Profile::instance();
+	$user    = $profile->get_user();
+
+	if ( ! $profile->get_tabs()->current_user_can_view() ) {
+		global $wp_query;
+
+		if ( $user->is_guest() ) {
+			wp_redirect( $profile->get_login_url() );
+			exit;
+		}
+
+		add_filter( 'redirect_canonical', '__return_false' );
+		$wp_query->set_404();
+	}
+}
+
+add_filter( 'wp', 'learn_press_profile_init' );

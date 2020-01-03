@@ -49,7 +49,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param null $item
 	 */
 	public function __construct( $item ) {
-
 		parent::__construct( $item );
 		$this->_curd    = new LP_User_CURD();
 		$this->_changes = array();
@@ -139,9 +138,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get Id of course.
 	 *
+	 * @return int
 	 * @since 3.3.0
 	 *
-	 * @return int
 	 */
 	public function get_course_id() {
 		return $this->get_data( 'item_id' );
@@ -375,6 +374,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			array(
 				'count_items'     => $count_items,
 				'completed_items' => $completed_items,
+				'items'           => array(
+					'quiz'   => array(
+						'completed' => rand( 10, 20 ),
+						'total'     => rand( 20, 40 )
+					),
+					'lesson' => array(
+						'completed' => rand( 10, 20 ),
+						'total'     => rand( 20, 40 )
+					)
+				),
 				'skipped_items'   => $count_items - $completed_items,
 				'status'          => $this->get_status()
 			),
@@ -396,14 +405,68 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return $results;
 	}
 
+	public function count_items() {
+		global $wpdb;
+		$t               = microtime( true );
+		$course          = $this->get_course();
+		$item_ids        = $course->get_items();
+		$item_ids_format = LP_Helper::db_format_array( $item_ids, '%d' );
+
+		$query = LP_Helper::prepare( "
+			SELECT MAX(user_item_id) user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d 
+				AND item_id IN (" . $item_ids_format . ")
+				AND access_level > 0
+			GROUP BY item_id
+		", $this->get_user_id(), $item_ids );
+
+		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
+
+			$item_types        = learn_press_get_course_item_types();
+			$item_types_format = LP_Helper::db_format_array( $item_types, '%s' );
+
+			$query = LP_Helper::prepare( "
+				SELECT ui.*, p.post_type AS item_type, grade.meta_value as grade, data.meta_value as data, results.meta_value as results, version.meta_value as version
+				FROM {$wpdb->learnpress_user_items} ui
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} grade ON ui.user_item_id = grade.learnpress_user_item_id AND grade.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} data ON ui.user_item_id = data.learnpress_user_item_id AND data.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} results ON ui.user_item_id = results.learnpress_user_item_id AND results.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} version ON ui.user_item_id = version.learnpress_user_item_id AND version.meta_key = '%s'
+				INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id
+				WHERE user_item_id IN(" . LP_Helper::db_format_array( $user_item_ids ) . ")
+					AND  p.post_type IN(" . $item_types_format . ")
+			", 'grade', 'data', 'results', 'version', $user_item_ids, $item_types );
+
+			$user_items          = $wpdb->get_results( $query );
+			$user_items_by_types = array();
+
+			if ( $user_items ) {
+				foreach ( $user_items as $k => $user_item ) {
+					$user_items[ $k ]->data    = maybe_unserialize( $user_item->data );
+					$user_items[ $k ]->results = maybe_unserialize( $user_item->results );
+
+					if ( empty( $user_items_by_types[ $user_item->item_type ] ) ) {
+						$user_items_by_types[ $user_item->item_type ] = array();
+					}
+					$user_items_by_types[ $user_item->item_type ][] = $user_item->item_id;
+				}
+			}
+
+			learn_press_debug( $user_items, $user_items_by_types );
+
+		}
+
+	}
+
 	/**
 	 * Evaluate course results by count quizzes passed/all quizzes.
-	 *
-	 * @since 3.x.x
 	 *
 	 * @param bool $hard - Optional. TRUE will re-calculate results instead of get from cache
 	 *
 	 * @return array|mixed
+	 * @since 3.x.x
+	 *
 	 */
 	protected function _evaluate_results_by_passed_per_all_quizzes( $hard = false ) {
 
@@ -540,9 +603,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Complete all items of course.
 	 *
+	 * @return bool
 	 * @since 3.3.0
 	 *
-	 * @return bool
 	 */
 	public function complete_items() {
 
@@ -550,11 +613,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		 * Filters whether item types of course should be completed.
 		 * Only support lp_quiz by default.
 		 *
-		 * @since 3.3.0
-		 *
 		 * @param array $item_types
 		 * @param int   $course_id
 		 * @param int   $user_id
+		 *
+		 * @since 3.3.0
+		 *
 		 */
 		$item_types = apply_filters( 'learn-press/auto-complete-course-items-types', array( LP_QUIZ_CPT ), $this->get_item_id(), $this->get_user_id() );
 
@@ -574,12 +638,13 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			/**
 			 * Filters the item should be completed if has specific statuses.
 			 *
-			 * @since 3.3.0
-			 *
 			 * @param array $item_statuses
 			 * @param int   $item_id
 			 * @param int   $course_id
 			 * @param int   $user_id
+			 *
+			 * @since 3.3.0
+			 *
 			 */
 			$item_statuses = apply_filters( 'learn-press/auto-complete-course-item-has-statuses', array( 'started' ), $item->get_item_id(), $item->get_course( 'id' ), $item->get_user_id() );
 

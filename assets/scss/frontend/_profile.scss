@@ -1,5 +1,6 @@
 #learn-press-profile {
     background: #fff;
+
     .wrapper-profile-header {
         background: $secondary-color;
         color: #FFF;
@@ -63,12 +64,16 @@
     }
 
     .lp-user-profile-socials {
-        margin: -47px 0 0 0;
+        margin: -47px 26px 0 26px;
         display: flex;
         justify-content: center;
         padding-bottom: 30px;
         position: relative;
+        flex-wrap: wrap;
+        -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
         z-index: 1;
+
         a {
             display: inline-block;
             width: 40px;
@@ -81,6 +86,7 @@
             color: #666;
             margin: 0 7px;
             font-size: 16px;
+
             &:hover {
                 background: $primary-color;
                 border-color: $primary-color;
@@ -137,6 +143,7 @@
                 ul {
                     li {
                         margin: 0;
+
                         a {
                             border-bottom: 1px solid #F9F9F9;
 
@@ -259,6 +266,7 @@
                 .learn-press-tabs__nav {
                     display: grid;
                     border: 0;
+
                     .learn-press-tabs__tab {
                         border-right: 0;
                     }
@@ -270,15 +278,19 @@
             ul.learn-press-courses {
                 .course {
                     margin: 0 0 40px 0;
+
                     .course-item {
                         .course-content {
                             padding: 20px 20px 12px 20px;
+
                             .course-categories,
                             .course-instructor {
                                 margin-bottom: 14px;
                             }
+
                             .course-categories {
                                 padding: 0;
+
                                 a:first-child {
                                     padding: 2px 9px;
                                 }
@@ -288,6 +300,7 @@
                 }
             }
         }
+
         .lp-button {
             display: block;
             margin: 0 auto 52px auto;
@@ -296,6 +309,7 @@
             font-size: 14px;
             font-weight: 500;
             padding: 13px 34px;
+
             &:hover {
                 border-color: $primary-color;
             }
@@ -306,6 +320,7 @@
                 .profile-heading {
                     display: none;
                 }
+
                 table {
                     margin-top: 0;
                 }
@@ -398,11 +413,13 @@
 form[name="profile-change-password"] {
     .form-field {
         margin: 0 10px 24px 10px;
-        &>label {
+
+        & > label {
             font-size: 16px;
             font-style: italic;
             margin: 0 0 12px 0;
         }
+
         .form-field-input {
             input {
                 padding: 8px 20px;
@@ -410,20 +427,24 @@ form[name="profile-change-password"] {
                 height: 43px;
 
             }
+
             input[type="password"] {
                 padding: 8px 20px;
             }
+
             textarea {
                 font-weight: 300;
                 line-height: 24px;
                 padding: 9px 20px 16px 20px;
             }
+
             input,
             textarea {
                 border-color: #ccc;
                 font-size: 14px;
                 color: #999;
                 font-style: italic;
+
                 &:focus {
                     border-color: $primary-color;
                     color: #222;
@@ -443,10 +464,12 @@ form[name="profile-change-password"] {
             ::-ms-input-placeholder {
                 color: #999;
             }
+
             .description {
                 margin-top: 15px;
             }
         }
+
         @media (max-width: 767px) {
             margin: 0 0 24px 0;
         }
@@ -475,6 +498,7 @@ form[name="profile-change-password"] {
         color: #fff;
         border-radius: 3px;
         background: $primary-color;
+
         &:hover {
             background: darken($primary-color, 15%);
         }
@@ -500,6 +524,7 @@ form[name="profile-change-password"] {
         }
     }
 }
+
 #lp-user-edit-avatar {
     margin-bottom: 50px;
     position: relative;

@@ -27,17 +27,38 @@ if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 $course_data       = $user->get_course_data( $course->get_id() );
 $course_results    = $course_data->get_results( false );
 $passing_condition = $course->get_passing_condition();
+
 ?>
 
 <div class="course-results-progress">
 
     <div class="items-progress">
 
-		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/items-completed-heading', __( 'Items completed:', 'learnpress' ) ) ) ) { ?>
-            <h4 class="lp-course-progress-heading"><?php echo esc_html( $heading ); ?></h4>
-		<?php } ?>
+        <!--		--><?php //if ( false !== ( $heading = apply_filters( 'learn-press/course/items-completed-heading', __( 'Items completed:', 'learnpress' ) ) ) ) { ?>
+        <!--            <h4 class="lp-course-progress-heading">--><?php //echo esc_html( $heading ); ?><!--</h4>-->
+        <!--		--><?php //} ?>
 
-        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items('', true) ); ?></span>
+        <h4 class="items-progress__heading">
+			<?php esc_html_e( 'Lessons completed:', 'learnpress' ); ?>
+        </h4>
+        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['items']['quiz']['completed'], $course_results['items']['quiz']['total'] ); ?></span>
+
+        <div class="learn-press-progress lp-course-progress">
+            <div class="progress-bg lp-progress-bar">
+                <div class="progress-active lp-progress-value"
+                     style="left: <?php echo $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0; ?>%;">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="items-progress">
+
+        <h4 class="items-progress__heading">
+			<?php esc_html_e( 'Quizzes submitted:', 'learnpress' ); ?>
+        </h4>
+        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['items']['lesson']['completed'], $course_results['items']['lesson']['total'] ); ?></span>
 
         <div class="learn-press-progress lp-course-progress">
             <div class="progress-bg lp-progress-bar">
@@ -50,12 +71,9 @@ $passing_condition = $course->get_passing_condition();
     </div>
 
     <div class="course-progress">
-
-		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/result-heading', __( 'Course results:', 'learnpress' ) ) ) ) { ?>
-            <h4 class="lp-course-progress-heading">
-				<?php echo esc_html( $heading ); ?>
-            </h4>
-		<?php } ?>
+        <h4 class="items-progress__heading">
+			<?php esc_attr_e( 'Course results:', 'learnpress' ); ?>
+        </h4>
 
         <div class="lp-course-status">
             <span class="number"><?php echo round( $course_results['result'], 2 ); ?><span
@@ -69,7 +87,8 @@ $passing_condition = $course->get_passing_condition();
 
         <div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>"
              data-value="<?php echo $course_results['result']; ?>"
-             data-passing-condition="<?php echo $passing_condition; ?>">
+             data-passing-condition="<?php echo $passing_condition; ?>"
+             title="<?php echo esc_attr( learn_press_translate_course_result_required() ); ?>">
             <div class="progress-bg lp-progress-bar">
                 <div class="progress-active lp-progress-value" style="left: <?php echo $course_results['result']; ?>%;">
                 </div>

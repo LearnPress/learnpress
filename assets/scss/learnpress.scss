@@ -37,6 +37,7 @@ input[type="number"],
 input[type="password"] {
     @include box-sizing(border-box);
 }
+
 body {
     h1:not(.site-title),
     h2 {
@@ -44,6 +45,15 @@ body {
             display: none;
         }
     }
+
+    &.learnpress-page {
+        overflow-x: hidden;
+    }
+}
+
+.wrap-fullwidth {
+    margin-left: -1000px;
+    margin-right: -1000px;
 }
 
 .margin-bottom {

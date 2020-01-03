@@ -7,7 +7,7 @@
  *
  * @since 3.x.x
  */
-class LP_Template_General extends LP_Abstract_Template{
+class LP_Template_General extends LP_Abstract_Template {
 
 	public function filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
 		if ( $template_name == 'global/block-content.php' ) {
@@ -36,7 +36,7 @@ class LP_Template_General extends LP_Abstract_Template{
 
 	public function breadcrumb( $args = array() ) {
 		$args = wp_parse_args( $args, apply_filters( 'learn_press_breadcrumb_defaults', array(
-			'delimiter'   => '<i class="fas fa-chevron-right"></i>',
+			'delimiter'   => '<li class="breadcrumb-delimiter"><i class="fas fa-chevron-right"></i></li>',
 			'wrap_before' => '<ul class="learn-press-breadcrumb">',
 			'wrap_after'  => '</ul>',
 			'before'      => '',
@@ -80,7 +80,7 @@ class LP_Template_General extends LP_Abstract_Template{
 			return;
 		}
 		?>
-		<h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
+        <h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
 		<?php
 	}
 
@@ -149,26 +149,26 @@ class LP_Template_General extends LP_Abstract_Template{
 		<?php
 	}
 
-	public function preview_course_notice(){
-	    if(!learn_press_is_preview_course()){
-	        return;
-        }
+	public function preview_course_notice() {
+		if ( ! learn_press_is_preview_course() ) {
+			return;
+		}
 
-        learn_press_display_message(__('Your course is currently in preview mode.', 'learnpress'), 'error');
-    }
-
-	/**
-	 * Get header for course page
-	 */
-	public function template_header(){
-	    get_header('course');
-    }
+		learn_press_display_message( __( 'Your course is currently in preview mode.', 'learnpress' ), 'error' );
+	}
 
 	/**
 	 * Get header for course page
 	 */
-	public function template_footer(){
-		get_footer('course');
+	public function template_header() {
+		get_header( 'course' );
+	}
+
+	/**
+	 * Get header for course page
+	 */
+	public function template_footer() {
+		get_footer( 'course' );
 	}
 }
 

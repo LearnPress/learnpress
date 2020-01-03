@@ -5,7 +5,7 @@ a {
     text-decoration: none;
 }
 
-.content-area {
+.lp-content-area {
     width: 1170px;
     max-width: 100%;
     margin: 0 auto;
@@ -741,7 +741,7 @@ a {
 
 
 /**
- *  Single courses page
+ *  Single course page
 */
 .lp-archive-courses {
     .course-summary {
@@ -760,6 +760,7 @@ a {
                         font-weight: 500;
                         margin-bottom: 42px;
                         line-height: 1;
+                        color: #FFF;
                     }
 
                     .course-meta {
@@ -916,11 +917,11 @@ a {
                 }
             }
 
-            .entry-content.content-area {
+            .lp-entry-content.lp-content-area {
                 display: flex;
                 flex-direction: row;
 
-                .entry-content-left {
+                .lp-entry-content-left {
                     width: calc(100% - 300px);
                     max-width: 100%;
                     margin: 0;

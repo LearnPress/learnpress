@@ -22,7 +22,7 @@ do_action( 'learn-press/template-header' );
 do_action( 'learn-press/before-main-content' );
 
 ?>
-<div class="content-area">
+<div class="lp-content-area">
     <?php if ( $page_title = learn_press_page_title( false ) ) { ?>
         <header class="learn-press-courses-header">
             <h1><?php echo $page_title; ?></h1>

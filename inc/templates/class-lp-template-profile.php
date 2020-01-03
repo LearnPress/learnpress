@@ -51,13 +51,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function dashboard_statistic() {
-		$user  = $this->get_user();
-		$query = LP_Profile::instance()->query_courses( 'purchased' );
-
+		$user      = $this->get_user();
+		$query     = LP_Profile::instance()->query_courses( 'purchased' );
+		$counts    = $query['counts'];
 		$statistic = array(
-			'enrolled_courses'  => $query['counts']['all'],
-			'active_courses'    => $query['counts']['in-progress'],
-			'completed_courses' => $query['counts']['finished'],
+			'enrolled_courses'  => isset( $counts['all'] ) ? $counts['all'] : 0,
+			'active_courses'    => isset( $counts['in-progress'] ) ? $counts['in-progress'] : 0,
+			'completed_courses' => isset( $counts['finished'] ) ? $counts['finished'] : 0,
 			'total_courses'     => count_user_posts( $user->get_id(), LP_COURSE_CPT ),
 			'total_users'       => learn_press_count_instructor_users( $user->get_id() ),
 		);
@@ -157,7 +157,6 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	public function login_form() {
 		$profile = LP_Global::profile();
 
-		print_r( metadata_exists( 'user', $profile->get_user()->get_id(), '_lp_temp_user' ) );
 		if ( ! $profile->get_user()->is_guest() ) {
 			return;
 		}

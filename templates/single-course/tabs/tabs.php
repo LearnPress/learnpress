@@ -31,7 +31,7 @@ if ( ! $active_tab ) {
 
 <div id="learn-press-course-tabs" class="course-tabs">
 	<?php foreach ( $tabs as $key => $tab ) { ?>
-        <input type="radio" name="learn-press-course-tab-radio" id="tab-<?php echo $key; ?>"
+        <input type="radio" name="learn-press-course-tab-radio" id="tab-<?php echo $key; ?>-input"
 			<?php checked( $active_tab === $key ); ?>
                value="<?php echo $key; ?>"/>
 	<?php } ?>
@@ -49,7 +49,7 @@ if ( ! $active_tab ) {
 			?>
 
             <li class="<?php echo join( ' ', $classes ); ?>">
-                <label for="tab-<?php echo $key; ?>"><?php echo $tab['title']; ?></label>
+                <label for="tab-<?php echo $key; ?>-input"><?php echo $tab['title']; ?></label>
             </li>
 
 		<?php } ?>

@@ -68,6 +68,40 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		protected $_loaded = false;
 
 		/**
+		 * @var int
+		 */
+		protected $user_id = 0;
+
+		public function set_user( $user ) {
+			if ( is_numeric( $user ) ) {
+				$this->user_id = absint( $user );
+			} elseif ( $user instanceof LP_User ) {
+				$this->user_id = $user->get_id();
+			}
+		}
+
+		public function get_user( $return = 'id' ) {
+			if ( $return === 'id' ) {
+				return $this->user_id;
+			}
+
+			if ( $this->user_id ) {
+				return learn_press_get_user( $this->user_id );
+			}
+
+			return false;
+		}
+
+		public function get_items_4() {
+
+		}
+
+		public function get_user_course_data() {
+			return learn_press_get_user( $this->user_id )->get_course_data( $this->get_id() );
+		}
+		////////////////////////////
+
+		/**
 		 * Constructor gets the post object and sets the ID for the loaded course.
 		 *
 		 * @param mixed $the_course Course ID, post object, or course object
@@ -229,11 +263,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @deprecated
-		 *
 		 * @param string $field
 		 *
 		 * @return bool|int
+		 * @deprecated
+		 *
 		 */
 		public function get_request_item( $field = 'id' ) {
 
@@ -292,9 +326,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * @return mixed
 		 * @deprecated
 		 *
-		 * @return mixed
 		 */
 		public function is_require_enrollment() {
 			return $this->is_required_enroll();
@@ -326,12 +360,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Return list of item's ids in course's curriculum.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param string|array $type
 		 * @param bool         $preview - True for including 'Preview' item
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_items( $type = '', $preview = true ) {
 
@@ -457,9 +491,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get raw data curriculum.
 		 *
+		 * @return array
 		 * @since 3.0.0
 		 *
-		 * @return array
 		 */
 		public function get_curriculum_raw() {
 			$sections      = $this->get_sections( 'object' );
@@ -599,11 +633,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @deprecated
-		 *
 		 * @param null $user_id
 		 *
 		 * @return bool|mixed
+		 * @deprecated
+		 *
 		 */
 		public function get_course_info( $user_id = null ) {
 			if ( ! $user_id ) {
@@ -748,11 +782,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get all items in a course.
 		 *
-		 * @deprecated
-		 *
 		 * @param string $type . Type of items, eg: lp_lesson, lp_quiz...
 		 *
 		 * @return array
+		 * @deprecated
+		 *
 		 */
 		public function get_curriculum_items( $type = '' ) {
 			return $this->get_items( $type );
@@ -990,12 +1024,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 						LP_Helper_CURD::cache_posts( $items );
 					}
 
-					$permalink    = trailingslashit( $this->get_permalink() );
-					$post_types   = get_post_types( null, 'objects' );
-					$has_query    = strpos( $permalink, '?' ) !== false;
-					$parts        = explode( '?', $permalink );
-					$is_permalink = '' !== get_option( 'permalink_structure' );
-					$is_draft     = 'draft' === get_post_status( $this->get_id() );
+					$permalink       = trailingslashit( $this->get_permalink() );
+					$post_types      = get_post_types( null, 'objects' );
+					$has_query       = strpos( $permalink, '?' ) !== false;
+					$parts           = explode( '?', $permalink );
+					$is_permalink    = '' !== get_option( 'permalink_structure' );
+					$is_draft        = 'draft' === get_post_status( $this->get_id() );
 					$custom_prefixes = array(
 						LP_QUIZ_CPT   => LP()->settings->get( 'quiz_slug' ),
 						LP_LESSON_CPT => LP()->settings->get( 'lesson_slug' )
@@ -1139,12 +1173,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get item standing before and after an item.
 		 * If the item is not passed consider it is item viewing.
 		 *
-		 * @since 3.1.0
-		 *
 		 * @param bool $current_item
 		 * @param bool $viewable - Optional. TRUE will get next item is viewable.
 		 *
 		 * @return array|bool
+		 * @since 3.1.0
+		 *
 		 */
 		public function get_item_nav( $current_item = false, $viewable = false ) {
 			if ( false === $current_item ) {
@@ -1659,7 +1693,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get expired time of this course if user has enrolled
 		 *
 		 * @param int $user_id
-		 * @param     mixed
+		 * @param mixed
 		 *
 		 * @return mixed
 		 */
@@ -1687,7 +1721,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Checks if this course has expired
 		 *
 		 * @param int $user_id
-		 * @param     mixed
+		 * @param mixed
 		 *
 		 * @return mixed
 		 */
@@ -1735,9 +1769,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * @return int
 		 * @deprecated 4.0.0
 		 *
-		 * @return int
 		 */
 		public function get_retake_count() {
 			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
@@ -1761,9 +1795,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get author's display name
 		 *
+		 * @return string
 		 * @since 3.0.9
 		 *
-		 * @return string
 		 */
 		public function get_author_display_name() {
 			$display_name = '';
@@ -1788,33 +1822,31 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param string $return     - Optional.
 		 * @param int    $section_id - Optional.
 		 *
-		 * @return array|LP_Course_Section[]|LP_Course_Section
+		 * @return array|bool|LP_Course_Section[]|LP_Course_Section
 		 */
 		public function get_sections( $return = 'object', $section_id = 0 ) {
 
-			if ( false === ( $sections = LP_Object_Cache::get( 'course-' . $this->get_id(), 'learn-press/course-sections' ) ) ) {
-				$sections = $this->_curd->read_course_sections( $this->get_id() );
-				LP_Object_Cache::set( 'course-' . $this->get_id(), $sections, 'learn-press/course-sections' );
+			if ( false === ( $sections = LP_Course_Utils::get_cached_db_sections( $this->get_id() ) ) ) {
+				return false;
 			}
 
 			if ( $return == 'object' && $sections ) {
-				if ( empty( $this->sections ) ) {
+				$position        = 0;
+				$object_sections = array();
 
-					$position        = 0;
-					$object_sections = array();
+				foreach ( $sections as $k => $section_data ) {
+					$sid = $section_data->section_id;
 
-					foreach ( $sections as $k => $section ) {
-						$sid     = $section->section_id;
-						$section = new LP_Course_Section( $section );
+					if ( false === ( $section = LP_Course_Utils::get_cached_section( $sid ) ) ) {
+						$section = new LP_Course_Section( $section_data );
 						$section->set_position( ++ $position );
 
-						$object_sections[ $sid ] = $section;
+						LP_Course_Utils::set_cached_section( $sid, $section );
 					}
-					$sections       = $object_sections;
-					$this->sections = $sections;
-				} else {
-					$sections = $this->sections;
+
+					$object_sections[ $sid ] = $section;
 				}
+				$sections = $object_sections;
 			}
 
 			if ( $section_id ) {
@@ -1827,9 +1859,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Enable item link in case user can not view content of them
 		 *
+		 * @return bool
 		 * @since 3.1.0
 		 *
-		 * @return bool
 		 */
 		public function is_enable_item_link() {
 			return get_post_meta( $this->get_id(), '_lp_submission', true ) === 'yes';
@@ -1838,9 +1870,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Prepare course items.
 		 *
+		 * @return array
 		 * @since 3.2.0
 		 *
-		 * @return array
 		 */
 		public function prepare() {
 			global $wpdb;
@@ -1901,11 +1933,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get extra info of course.
 		 * Target Audience, Key Features, Requirements, etc...
 		 *
-		 * @since 3.x.x
-		 *
 		 * @param string $type [target_audience, key_features, requirements]
 		 *
 		 * @return string|array
+		 * @since 3.x.x
+		 *
 		 */
 		public function get_extra_info( $type ) {
 			$extra_info_meta = get_post_meta( $this->get_id(), '_lp_' . $type, true );
@@ -1926,9 +1958,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * @return array
 		 * @since 4.0.0
 		 *
-		 * @return array
 		 */
 		public function get_faqs() {
 
@@ -1949,9 +1981,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get evaluation results method of a course.
 		 *
+		 * @return string
 		 * @since 3.x.x
 		 *
-		 * @return string
 		 */
 		public function get_evaluation_results_method() {
 			if ( empty( $this->_data['evaluation_results'] ) ) {

@@ -50,11 +50,11 @@ class LP_Thumbnail_Helper {
 
 		if ( ! $image ) {
 			//if ( 'course_thumbnail' == $size ) {
-				$image = LP()->image( 'no-image.png' );
+			$image = LP()->image( 'no-image.png' );
 			//} else {
-				//$image = LP()->image( 'placeholder-500x300' );
+			//$image = LP()->image( 'placeholder-500x300' );
 			//}
-			$image = sprintf( '<img src="%s" %s>', $image, '' );
+			$image = sprintf( '<img src="%s" alt="%s">', $image, _x( 'course thumbnail', 'no course thumbnail', 'learnpress' ) );
 		}
 
 		// @deprecated

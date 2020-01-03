@@ -47,7 +47,6 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
 			<?php } ?>
         </ul>
 	<?php
-	learn_press_debug($filters, $query);
 	} ?>
 
 	<?php if ( $query['items'] ) { ?>

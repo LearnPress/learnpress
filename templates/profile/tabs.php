@@ -15,6 +15,7 @@
 defined( 'ABSPATH' ) || exit();
 
 $profile = LP_Profile::instance();
+//learn_press_debug($profile->get_tabs()->tabs());
 ?>
 
 <div id="profile-nav">
@@ -24,22 +25,21 @@ $profile = LP_Profile::instance();
     <ul class="lp-profile-nav-tabs">
 
 		<?php
-		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
-
+		foreach ( $profile->get_tabs()->tabs() as $tab_key => $profile_tab ) {
 			/**
-			 * @var $tab_data LP_Profile_Tab
+			 * @var $profile_tab LP_Profile_Tab
 			 */
-			if ( $tab_data->is_hidden() || ! $tab_data->user_can_view() ) {
+			if ( $profile_tab->is_hidden() || ! $profile_tab->user_can_view() ) {
 				continue;
 			}
 
-			$slug        = $profile->get_slug( $tab_data, $tab_key );
+			$slug        = $profile->get_slug( $profile_tab, $tab_key );
 			$link        = $profile->get_tab_link( $tab_key, true );
 			$tab_classes = array( esc_attr( $tab_key ) );
 			/**
-			 * @var $tab_data LP_Profile_Tab
+			 * @var $profile_tab LP_Profile_Tab
 			 */
-			$sections = $tab_data->sections();
+			$sections = $profile_tab->sections();
 
 			if ( $sections && sizeof( $sections ) > 1 ) {
 				$tab_classes[] = 'has-child';
@@ -53,11 +53,11 @@ $profile = LP_Profile::instance();
                 <!--tabs-->
                 <a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
 					<?php
-					if ( ! empty( $tab_data['icon'] ) ) {
-						echo $tab_data['icon'];
+					if ( ! empty( $profile_tab['icon'] ) ) {
+						echo $profile_tab['icon'];
 					}
 					?>
-					<?php echo esc_html( apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $tab_data['title'], $tab_key ) ); ?>
+					<?php echo esc_html( apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab['title'], $tab_key ) ); ?>
                 </a>
                 <!--section-->
 

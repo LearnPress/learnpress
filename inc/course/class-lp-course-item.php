@@ -52,6 +52,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 */
 		protected $_preview = '';
 
+
+
 		/**
 		 * LP_Course_Item constructor.
 		 *
