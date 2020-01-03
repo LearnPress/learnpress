@@ -93,7 +93,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'learn-press/payment-settings/checkout-endpoints',
 					array(
 						array(
-							'title'       => __( 'Order received slug', 'learnpress' ),
+							'title'       => __( 'Custom Order Slug', 'learnpress' ),
 							'id'          => 'checkout_endpoints[lp_order_received]',
 							'default'     => 'lp-order-received',
 							'placeholder' => __( 'lp-order-received', 'learnpress' ),

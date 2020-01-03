@@ -174,6 +174,7 @@
 
                 .movable {
                     cursor: url("../../images/openhand.cur") 7 5, default;
+                    margin-right: -1px;
 
                     &:before {
                         content: "\f333";
@@ -181,6 +182,10 @@
                     &:hover {
                         color: #0085ba;
                     }
+                }
+
+                .section-item-counts {
+                    right: 36px;
                 }
 
                 .actions {
@@ -205,21 +210,21 @@
                         &:before {
                             display: inline-block;
                             width: 40px;
-                            font-size: 30px;
+                            font-size: 16px;
                             font-family: Dashicons;
-                            line-height: 42px;
+                            line-height: 45px;
                             color: #999;
                         }
 
                         &.open {
                             &:before {
-                                content: '\f142';
+                                content: '\f343';
                             }
                         }
 
                         &.close {
                             &:before {
-                                content: '\f140';
+                                content: '\f347';
                             }
                         }
                     }
@@ -322,9 +327,9 @@
                 .drag {
                     height: 20px;
                     cursor: url("../../images/openhand.cur") 7 5, default;
-                    visibility: hidden;
-                    fill: #d5dce0;
+                    fill: #999;
                     padding-top: 3px;
+                    padding-left: 6px;
                     flex: 0 0 18px;
                     &:hover {
                         fill: #0085ba;
@@ -338,7 +343,7 @@
                 }
 
                 .title {
-                    margin-left: 5px;
+                    margin-left: 2px;
                     margin-right: 120px;
                     flex-grow: 1;
                     flex-basis: 100%;
@@ -351,7 +356,7 @@
                 .item-actions {
                     position: absolute;
                     top: 0;
-                    right: 0;
+                    right: 2px;
                     bottom: 0;
                     display: flex;
                     align-items: center;
@@ -400,6 +405,17 @@
                 transition: all 200ms ease-out;
                 .drag {
                     cursor: default;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: Dashicons;
+                    font-size: 16px;
+                    vertical-align: middle;
+                    width: 30px;
+                    color: #999;
+                    &:before {
+                        content: "\f132";
+                    }
                 }
                 .title {
                     display: inline-block;
@@ -438,6 +454,7 @@
                         }
 
                         &.lp_quiz {
+                            padding: 8px 6px 8px 0;
                             &:before {
                                 content: '\f469';
                             }
@@ -483,7 +500,7 @@
                             &.delete-item {
                                 > a {
                                     &:hover {
-                                        color: #d05d5d;
+                                        color: #e74c3c;
                                     }
                                 }
                                 ul {
@@ -507,7 +524,7 @@
                                             padding: 8px;
                                             display: block;
                                             &.delete-permanently {
-                                                color: #d05d5d;
+                                                color: #e74c3c;
                                             }
                                         }
                                         &:hover {
@@ -593,7 +610,7 @@
 
             .remove {
                 float: right;
-                color: #a00;
+                color: $remove-icon-color;
                 cursor: pointer;
                 display: none;
 
@@ -770,7 +787,7 @@
                         }
 
                         a {
-                            color: #333;
+                            color: #0073aa;
                         }
                     }
 
@@ -781,6 +798,7 @@
                         font-weight: 600;
                         height: 44px;
                         line-height: 44px;
+                        color: #333;
                         &:focus {
                             box-shadow: none;
                         }

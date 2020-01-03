@@ -36,9 +36,20 @@ input[type="email"],
 input[type="number"],
 input[type="password"] {
     @include box-sizing(border-box);
+    box-shadow: unset;
+    margin: 0;
 }
 
+/*  start reset css */
 body {
+    background: #fff;
+
+    h1, h2, h3, h4, h5, h6 {
+        padding: 0;
+        margin: 0;
+        line-height: 1;
+    }
+
     h1:not(.site-title),
     h2 {
         &:before {
@@ -54,6 +65,52 @@ body {
 .wrap-fullwidth {
     margin-left: -1000px;
     margin-right: -1000px;
+
+    a, button, input, textarea {
+        &:focus {
+            outline: 0;
+            border: 0;
+        }
+    }
+
+    a:hover {text-decoration: none;}
+
+    p {
+        word-break: break-word;
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    label {
+        display: block;
+        outline: none;
+        margin: 0;
+    }
+
+    img {
+        max-width: 100%;
+        height:auto;
+    }
+
+    form {
+        margin: 0;
+    }
+
+    .col-full {
+        max-width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+        .woocommerce-breadcrumb {
+            display: none;
+        }
+    }
+}
+
+/*  end reset css */
+
+footer {
+    clear: both;
 }
 
 .margin-bottom {
@@ -103,7 +160,7 @@ body {
     font-weight: 500;
     color: #333;
     list-style: none;
-
+    padding: 0;
     li {
         display: inline-block;
         margin: 0;
@@ -136,7 +193,8 @@ body {
 }
 
 .learnpress-page {
-    .lp-button {
+    .lp-button,
+    #lp-button {
         padding: 16px 24px;
         background: transparent;
         color: #333;
@@ -150,7 +208,8 @@ body {
         text-decoration: none;
         text-align: center;
         @include box-sizing(border-box);
-
+        @include border-radius(3px);
+        box-shadow:unset;
         &.large {
             font-size: 18px;
             padding: 18px 30px;
@@ -299,7 +358,10 @@ body {
         display: inline-block;
         list-style: none;
         margin: 0;
-
+        background: transparent;
+        border: 0;
+        outline: 0;
+        padding: 0;
         > li {
             display: inline-block;
             margin: 0;

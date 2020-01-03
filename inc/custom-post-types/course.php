@@ -51,10 +51,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
-			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
+			add_filter( 'rwmb__lpr_course_price_html', array( $this, 'currency_symbol' ), 5, 3 );
 			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
+			add_filter( 'rwmb_remove_clone_button_text', array( $this, 'clone_button_icon' ), 5, 2 );
 
 			if ( self::$_enable_review ) {
 				add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
@@ -1077,18 +1078,18 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							'Answer' => __( 'Answer', 'learnpress' ),
 						)
 					),
-					array(
-						'name' => __( 'Welcome Message', 'learnpress' ),
-						'id'   => '_lp_welcome_message',
-						'desc' => __( 'Show a welcome message for students when they enroll the course.', 'learnpress' ),
-						'type' => 'wysiwyg'
-					),
-					array(
-						'name' => __( 'Congratulations Message', 'learnpress' ),
-						'id'   => '_lp_congratulation_message',
-						'desc' => __( 'Show a congratulations message for students when they complete the course.', 'learnpress' ),
-						'type' => 'wysiwyg'
-					),
+//					array(
+//						'name' => __( 'Welcome Message', 'learnpress' ),
+//						'id'   => '_lp_welcome_message',
+//						'desc' => __( 'Show a welcome message for students when they enroll the course.', 'learnpress' ),
+//						'type' => 'wysiwyg'
+//					),
+//					array(
+//						'name' => __( 'Congratulations Message', 'learnpress' ),
+//						'id'   => '_lp_congratulation_message',
+//						'desc' => __( 'Show a congratulations message for students when they complete the course.', 'learnpress' ),
+//						'type' => 'wysiwyg'
+//					),
 
 				)
 			);
@@ -1597,6 +1598,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function currency_symbol( $input_html, $field, $sub_meta ) {
 			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
+		}
+
+		public function clone_button_icon( $icon, $field ) {
+			$icon = '<i class="dashicons dashicons-trash"></i>';
+			return $icon;
 		}
 
 		/**

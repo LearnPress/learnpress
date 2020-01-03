@@ -49,7 +49,7 @@
             .rwmb-text-list,
             .rwmb-text-list-advanced {
                 padding: 7px 10px;
-                width: calc(100% - 30px);
+                width: calc(100% - 65px);
                 background: transparent;
                 box-shadow: none;
                 border: none;
@@ -59,33 +59,43 @@
 
             .remove-clone {
                 top: 50%;
-                right: 7px;
+                right: 41px;
                 margin-top: -10px;
-                background: #DDD;
+                background: transparent;
+                border-radius: unset;
+                color: #999;
                 @include transition(right 0.25s);
+                i {
+                    font-size: 20px;
+                }
+                &:hover {
+                    color: $remove-icon-color;
+                }
             }
 
-            &:hover {
-                &:after {
-                    content: "\f329";
-                    font-family: Dashicons;
-                    font-size: 24px;
-                    margin: 8px 0 0 22px;
-                    position: absolute;
-                    display: inline-block;
-                    color: #777;
-                    top: 50%;
-                    margin-top: -9px;
-                }
+            &:after {
+                content: "\f333";
+                font-family: Dashicons;
+                font-size: 20px;
+                margin: 8px 0 0 0;
+                position: absolute;
+                display: inline-block;
+                color: #999;
+                top: 50%;
+                right: 10px;
+                margin-top: -9px;
+            }
+        }
+        .rwmb-text-list-clone {
+            &:focus-within {
+                border-color:#0085ba;
+            }
+        }
 
-                .rwmb-text-list,
-                .rwmb-text-list-advanced {
-                    width: calc(100% - 50px);
-                }
-
-                .remove-clone {
-                    background: #e74c3c;
-                    right: 27px;
+        .rwmb-text-list-advanced-clone {
+            .rwmb-text-list {
+                &:focus {
+                    border-color:#0085ba;
                 }
             }
         }
@@ -94,25 +104,30 @@
     #field-_lp_faqs {
         .rwmb-text-list-advanced-clone {
             position: relative;
-            padding: 0 0 12px 0px;
+            padding: 0 0 16px 0px;
 
             .rwmb-text-list-label {
                 display: block;
-                padding: 10px 10px 0 10px;
+                padding: 10px 10px 0 12px;
             }
 
             .rwmb-text-list {
                 border: 1px solid #DDD;
-                margin: 0 0 0 10px;
+                margin: 0 13px 0 13px;
                 vertical-align: top;
+                width: calc(100% - 25px);
             }
 
             .remove-clone {
-                top: 50%;
-                right: 7px;
+                top: 20px;
+                right: 36px;
                 margin-top: -10px;
-                background: #DDD;
+                color: #999;
                 @include transition(right 0.25s);
+            }
+
+            &:after {
+                top: 20px;
             }
         }
     }

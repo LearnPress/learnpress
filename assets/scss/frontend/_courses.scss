@@ -16,8 +16,6 @@ a {
 }
 
 .lp-archive-courses {
-    background: #fff;
-
     form[name="search-course"] {
         margin-bottom: 20px;
         position: relative;
@@ -106,14 +104,22 @@ a {
                     }
 
                     .course-thumbnail {
-                        a {
-                            display: block;
-                            overflow: hidden;
-
-                            img {
+                        .thumbnail {
+                            padding: 0;
+                            margin: 0;
+                            line-height: unset;
+                            border: 0;
+                            border-radius: unset;
+                            a {
                                 display: block;
-                                width: 100%;
-                                transition: all .5s ease;
+                                overflow: hidden;
+                                img {
+                                    display: block;
+                                    width: 100%;
+                                    transition: all .5s ease;
+                                    height: auto;
+                                    transform: scale(1);
+                                }
                             }
                         }
                     }
@@ -267,7 +273,8 @@ a {
                         font-size: 14px;
                         font-weight: 300;
                         text-transform: capitalize;
-                        margin-bottom: 20px;
+                        margin-bottom: 16px;
+                        line-height: 25px;
 
                         a {
                             color: #666;
@@ -682,6 +689,8 @@ a {
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 44px;
+        line-height: 1;
 
         input[type="radio"] {
             display: none;
@@ -697,7 +706,7 @@ a {
             line-height: 40px;
             text-align: center;
             border-radius: 5px;
-
+            cursor: pointer;
             &:before {
                 color: #333;
                 display: inline-block;
@@ -807,6 +816,9 @@ a {
                                     margin-right: 10px;
 
                                     img {
+                                        width: 46px;
+                                        height: 46px;
+                                        position: relative;
                                         border-radius: 50%;
                                         overflow: hidden;
                                     }
@@ -921,7 +933,7 @@ a {
                 display: flex;
                 flex-direction: row;
 
-                .lp-entry-content-left {
+                .entry-content-left {
                     width: calc(100% - 300px);
                     max-width: 100%;
                     margin: 0;

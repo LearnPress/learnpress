@@ -53,6 +53,9 @@
         list-style: none;
         border-right: 1px solid #e5e7f2;
         background: #f1f2f8;
+        &:last-child {
+            border-right: 0;
+        }
 
         > label {
             padding: 20px 65px 14px 65px;

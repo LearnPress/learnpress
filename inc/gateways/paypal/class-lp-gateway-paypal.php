@@ -88,12 +88,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		public function __construct() {
 			$this->id = 'paypal';
 
-			$this->method_title       = __( 'Paypal', 'learnpress' );
+			$this->method_title       = __( 'PayPal', 'learnpress' );
 			$this->method_description = __( 'Make payment via Paypal.', 'learnpress' );
 			$this->icon               = '';
 
-			$this->title       = __( 'Paypal', 'learnpress' );
-			$this->description = __( 'Pay with Paypal', 'learnpress' );
+			$this->title       = __( 'PayPal', 'learnpress' );
+			$this->description = __( 'Pay with PayPal', 'learnpress' );
 
 			// live
 			$this->paypal_live_url         = 'https://www.paypal.com/';

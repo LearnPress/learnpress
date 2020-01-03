@@ -9,7 +9,6 @@
 <script type="text/x-template" id="tmpl-lp-question-answer-option">
     <tr class="answer-option" :class="[isNew() || isUpdating() ? 'new-option' : '']" :data-answer-id="id">
         <td class="sort lp-sortable-handle"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
-        <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <form @submit.prevent="">
                 <input type="text" v-model="answer.title"
