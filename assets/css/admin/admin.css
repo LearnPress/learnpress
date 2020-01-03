@@ -2777,20 +2777,14 @@ ul .clearfix {
             padding: 6px 0px;
             -webkit-box-shadow: none;
             -moz-box-shadow: none;
-            box-shadow: none;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px; }
+            box-shadow: none; }
             #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title form input:focus {
               -webkit-box-shadow: none;
               -moz-box-shadow: none;
               box-shadow: none; }
             #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title form input:focus {
-              border-color: #DDD; }
+              color: #32373c; }
             #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title form input::placeholder {
-              color: #32373c;
-              font-style: italic;
-              border-bottom: 1px solid #DDD;
               display: inline-block; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .add-new {
           display: inline;

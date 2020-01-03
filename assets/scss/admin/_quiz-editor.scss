@@ -538,7 +538,6 @@
                             form {
                                 input {
                                     background: transparent;
-
                                     font-size: 1.2em;
                                     line-height: 18px;
                                     border: 0;
@@ -546,14 +545,10 @@
                                     margin: 0;
                                     padding: 6px 0px;
                                     @include box-shadow(none);
-                                    @include border-radius(3px);
                                     &:focus {
-                                        border-color: #DDD;
+                                        color: #32373c;
                                     }
                                     &::placeholder {
-                                        color: #32373c;
-                                        font-style: italic;
-                                        border-bottom: 1px solid #DDD;
                                         display: inline-block;
                                     }
                                 }
