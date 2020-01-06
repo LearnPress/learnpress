@@ -958,7 +958,7 @@ function (_QuestionBase) {
 /*!********************************************************!*\
   !*** ./assets/src/js/frontend/question-types/index.js ***!
   \********************************************************/
-/*! exports provided: default, QuestionBase, SingleChoice, MultipleChoices, TrueOrFalse, FillInBlanks */
+/*! exports provided: QuestionBase, SingleChoice, MultipleChoices, TrueOrFalse, FillInBlanks, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

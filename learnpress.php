@@ -339,6 +339,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/course/lp-course-functions.php';
 			require_once 'inc/course/abstract-course.php';
 			require_once 'inc/course/class-lp-course.php';
+			require_once 'inc/course/class-lp-course-utils.php';
 			require_once 'inc/quiz/lp-quiz-functions.php';
 			require_once 'inc/quiz/class-lp-quiz-factory.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
@@ -861,3 +862,31 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+add_action('template_includex', function (){
+	for($i = 0; $i<50;$i++) {
+		$sections = array_merge(isset($sections) ? $sections: array(), LP_Object_Cache::get( 'course-' . 14242, 'learn-press/course-sections' ));
+	}
+
+    $t = microtime(true);
+
+
+    for($i = 0; $i<100;$i++) {
+
+	    $xxxx = wp_list_pluck( $sections, 'section_id' );
+    }
+
+	echo microtime(true) - $t;
+    echo "\n";
+	$t = microtime(true);
+
+	for($i = 0; $i<100;$i++) {
+
+		LP_Object_Cache::get( 14242, 'learn-press/course-sections-ids' );
+
+	}
+
+	echo microtime(true) - $t;
+
+	learn_press_debug($xxxx);
+});

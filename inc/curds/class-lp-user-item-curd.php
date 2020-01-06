@@ -294,7 +294,6 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		return false;
 	}
 
-
 	/**
 	 * Get all questions in a quiz
 	 *

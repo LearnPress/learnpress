@@ -749,6 +749,44 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $items;
 	}
 
+	public function read_course_data( $course_id, $user_id ) {
+		global $wpdb;
+
+		$course                 = learn_press_get_course( $course_id );
+		$course_item_ids        = $course->get_items();
+		$course_item_ids_format = LP_Helper::db_format_array( $course_item_ids, '%d' );
+
+		$query = LP_Helper::prepare( "
+			SELECT MAX(user_item_id) user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d 
+				AND item_id IN (" . $course_item_ids_format . ")
+				AND access_level > 0
+			GROUP BY item_id
+		", $user_id, $course_item_ids );
+
+		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
+
+			$item_types        = learn_press_get_course_item_types();
+			$item_types_format = LP_Helper::db_format_array( $item_types, '%s' );
+			$query             = LP_Helper::prepare( "
+				SELECT ui.*, p.post_type AS item_type, grade.meta_value as grade, data.meta_value as data, results.meta_value as results, version.meta_value as version
+				FROM {$wpdb->learnpress_user_items} ui
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} grade ON ui.user_item_id = grade.learnpress_user_item_id AND grade.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} data ON ui.user_item_id = data.learnpress_user_item_id AND data.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} results ON ui.user_item_id = results.learnpress_user_item_id AND results.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} version ON ui.user_item_id = version.learnpress_user_item_id AND version.meta_key = '%s'
+				INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id
+				WHERE user_item_id IN(" . LP_Helper::db_format_array( $user_item_ids ) . ")
+					AND  p.post_type IN(" . $item_types_format . ")
+			", 'grade', 'data', 'results', 'version', $user_item_ids, $item_types );
+
+			return $wpdb->get_results( $query );
+		}
+
+		return false;
+	}
+
 	/**
 	 * Get a row in table user-items by user_item_id key
 	 *
@@ -1401,7 +1439,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$args  = wp_parse_args(
 			$args, array(
 				'paged'  => $paged,
-				'limit'  => LP()->settings()->get('archive_course_limit'),
+				'limit'  => LP()->settings()->get( 'archive_course_limit' ),
 				'status' => ''
 			)
 		);
@@ -1454,7 +1492,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 
 				$where = $where . $wpdb->prepare( " AND post_type = %s AND post_author = %d", LP_COURSE_CPT, $user_id );
-				$sql = "
+				$sql   = "
 					SELECT SQL_CALC_FOUND_ROWS ID
 					FROM {$wpdb->posts} c
 					{$where} 
@@ -1515,7 +1553,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$args,
 			array(
 				'paged'  => $paged,
-				'limit'  => LP()->settings()->get('archive_course_limit'),
+				'limit'  => LP()->settings()->get( 'archive_course_limit' ),
 				'status' => ''
 			)
 		);

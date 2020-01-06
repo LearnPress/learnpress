@@ -359,6 +359,12 @@ $(window).on('load', () => {
 
     LP.Hook.doAction('course-ready');
 
+    $(window).on('resize.popup-nav', debounce(() => {
+        const marginLeft = $('#popup-sidebar').width() / 2;
+        const width = $('#learn-press-quiz-app').width();
+
+        $('.quiz-buttons .button-left.fixed').css({width, marginLeft});
+    }, 300)).trigger('resize.popup-nav')
     // if (window.location.hash) {
     //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
     // }

@@ -9,7 +9,7 @@ body {
     &.learnpress-page {
         &.twentysixteen {
             #primary {
-                .entry-content {
+                .lp-entry-content {
                     float: none;
                     width: auto;
                     margin: 0 15%;
@@ -31,7 +31,7 @@ body {
                 display: none;
             }
 
-            .entry-content {
+            .lp-entry-content {
                 float: none;
                 width: auto;
             }
@@ -57,7 +57,7 @@ body {
                     display: none;
                 }
 
-                .entry-content {
+                .lp-entry-content {
                     float: none;
                     width: auto;
                 }
@@ -70,7 +70,7 @@ body {
                     display: none;
                 }
 
-                .entry-content {
+                .lp-entry-content {
                     float: none;
                     width: auto;
                 }
@@ -85,7 +85,7 @@ body.twentyseventeen.learnpress-page {
         article {
             &.page {
                 .entry-header,
-                .entry-content {
+                .lp-entry-content {
                     width: 100%;
                     float: none;
                 }
@@ -102,7 +102,7 @@ body.twentyseventeen.learnpress-page {
                     article {
                         &.page {
                             .entry-header,
-                            .entry-content {
+                            .lp-entry-content {
                                 width: 100%;
                                 float: none;
                             }

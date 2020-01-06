@@ -639,7 +639,15 @@ $(window).on('load', function () {
 
     $active.css('left', -(100 - parseInt(value)) + '%');
   });
-  LP.Hook.doAction('course-ready'); // if (window.location.hash) {
+  LP.Hook.doAction('course-ready');
+  $(window).on('resize.popup-nav', debounce(function () {
+    var marginLeft = $('#popup-sidebar').width() / 2;
+    var width = $('#learn-press-quiz-app').width();
+    $('.quiz-buttons .button-left.fixed').css({
+      width: width,
+      marginLeft: marginLeft
+    });
+  }, 300)).trigger('resize.popup-nav'); // if (window.location.hash) {
   //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
   // }
 });

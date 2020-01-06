@@ -20,7 +20,9 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     args = require('yargs').argv,
     cleanCSS = require('gulp-clean-css');
-
+gulp.task('testx', function () {
+    console.log('xs')
+})
 gulp.task('scss', function () {
     return gulp.src(['assets/scss/**/*.scss'])
         .pipe(sourceMaps.init())
@@ -211,7 +213,15 @@ gulp.task('mk-zip', gulp.series('replace', function () {
         .pipe(gulp.dest(zipPath));
 }));
 
-gulp.task('zip', gulp.series('mk-zip'));
+gulp.task('zip', gulp.series('mk-zip', function (done) {
+        if(args.r){
+            return gulp.src(releasePath + '/', {read: false, allowEmpty: true}).pipe(clean({force: true}));
+        }
+        done();
+    }
+), function () {
+    console.log('Y', arguments)
+});
 
 gulp.task('scss-popup', function () {
     return gulp.src(['assets/scss/frontend/_item-popup.scss'])

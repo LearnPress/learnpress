@@ -630,7 +630,7 @@ function learn_press_setup_object_data( $post ) {
 			unset( $GLOBALS['course'] );
 		}
 		$object = learn_press_get_course( $post );
-		$object->prepare();
+		//$object->prepare();
 		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
 

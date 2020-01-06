@@ -15,6 +15,7 @@
 defined( 'ABSPATH' ) || exit();
 
 $profile = LP_Profile::instance();
+$privacy = $profile->get_privacy_settings();
 ?>
 
 <form method="post" name="profile-privacy" enctype="multipart/form-data" class="learn-press-form">
@@ -32,36 +33,46 @@ $profile = LP_Profile::instance();
 		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/begin-profile-privacy-fields', $profile );
+
+		foreach ( $privacy as $item ) {
+			?>
+            <li class="form-field">
+                <label for="privacy-<?php echo esc_attr( $item['id'] ); ?>"><?php echo esc_html( $item['name'] ); ?></label>
+                <div class="form-field-input">
+                    <input type="hidden" name="privacy[<?php echo esc_attr( $item['id'] ); ?>]" value="no"/>
+                    <input type="checkbox" name="privacy[<?php echo esc_attr( $item['id'] ); ?>]" value="yes"
+                           id="privacy-<?php echo esc_attr( $item['id'] ); ?>" <?php checked( $profile->get_privacy( $item['id'] ), 'yes' ); ?>/>
+
+					<?php if ( ! empty( $item['description'] ) ) { ?>
+                        <p class="description"><?php echo esc_html( $item['description'] ); ?></p>
+					<?php } ?>
+                </div>
+            </li>
+			<?php
+		}
 		?>
 
-        <li class="form-field">
-            <label for="my-dashboard"><?php _e( 'My dashboard', 'learnpress' ); ?></label>
-            <div class="form-field-input">
-                <input type="checkbox" id="my-dashboard" name="privacy[my-dashboard]"
-                       value="yes" <?php checked( $profile->get_privacy( 'my-dashboard' ), 'yes' ); ?>/>
-                <p class="description">
-					<?php _e( 'Public user profile content, if this option is turn off then other sections in profile also become invisible.', 'learnpress' ); ?>
-                </p>
-            </div>
-        </li>
-
-        <li class="form-field">
-            <label for="my-courses"><?php _e( 'My courses', 'learnpress' ); ?></label>
-            <div class="form-field-input">
-                <input type="checkbox" name="privacy[courses]" value="yes"
-                       id="my-courses" <?php checked( $profile->get_privacy( 'courses' ), 'yes' ); ?>/>
-                <p class="description"><?php _e( 'Public your profile courses', 'learnpress' ); ?></p>
-            </div>
-        </li>
-
-        <li class="form-field">
-            <label for="my-quizzes"><?php _e( 'My quizzes', 'learnpress' ); ?></label>
-            <div class="form-field-input">
-                <input name="privacy[quizzes]" value="yes" type="checkbox"
-                       id="my-quizzes" <?php checked( $profile->get_privacy( 'quizzes' ), 'yes' ); ?>/>
-                <p class="description"><?php _e( 'Public your profile quizzes', 'learnpress' ); ?></p>
-            </div>
-        </li>
+        <!--        <li class="form-field">-->
+        <!--            <label for="my-courses">--><?php //_e( 'My courses', 'learnpress' ); ?><!--</label>-->
+        <!--            <div class="form-field-input">-->
+        <!--                <input type="checkbox" name="privacy[courses]" value="yes"-->
+        <!--                       id="my-courses" -->
+		<?php //checked( $profile->get_privacy( 'courses' ), 'yes' ); ?><!--/>-->
+        <!--                <p class="description">-->
+		<?php //_e( 'Public your profile courses', 'learnpress' ); ?><!--</p>-->
+        <!--            </div>-->
+        <!--        </li>-->
+        <!---->
+        <!--        <li class="form-field">-->
+        <!--            <label for="my-quizzes">--><?php //_e( 'My quizzes', 'learnpress' ); ?><!--</label>-->
+        <!--            <div class="form-field-input">-->
+        <!--                <input name="privacy[quizzes]" value="yes" type="checkbox"-->
+        <!--                       id="my-quizzes" -->
+		<?php //checked( $profile->get_privacy( 'quizzes' ), 'yes' ); ?><!--/>-->
+        <!--                <p class="description">-->
+		<?php //_e( 'Public your profile quizzes', 'learnpress' ); ?><!--</p>-->
+        <!--            </div>-->
+        <!--        </li>-->
 
 		<?php
 		/**

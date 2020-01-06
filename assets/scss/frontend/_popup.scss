@@ -99,7 +99,7 @@
     right: 0;
     bottom: 0;
     background: #FFF;
-    z-index: 99990;
+    z-index: 99999;
     display: flex;
 
     #popup-header {
@@ -189,9 +189,11 @@
                 &:after {
                     content: '';
                 }
+
                 &:before {
                     border: 1px solid #DDD;
                 }
+
                 &:after {
                     border: 1px solid #DDD;
                 }
@@ -220,6 +222,9 @@
                 line-height: 1;
                 font-size: 14px;
                 padding-left: 20px;
+                display: block;
+                width: 100%;
+                box-shadow: none;
                 @include box-sizing(border-box);
                 @include placeholder-color(#999);
                 @include placeholder-fontStyle(italic);
@@ -431,6 +436,7 @@
                         .section-toggle {
                             justify-content: flex-end;
                             flex: 0;
+
                             i {
                                 color: #666;
                             }
@@ -513,7 +519,7 @@
                                         //font-weight: 500;
                                     }
 
-                                    &.course-item-status{
+                                    &.course-item-status {
                                         position: absolute;
                                         right: 18px;
                                         top: 50%;
@@ -668,6 +674,7 @@
                 width: 792px;
                 max-width: 100%;
                 padding: 50px 0 80px 0;
+
                 @media (max-width: 1024px) {
                     width: 100%;
                 }
@@ -786,14 +793,24 @@
                         text-align: center;
 
                         &.fixed {
+                            //position: fixed;
+                            //bottom: 0px;
+                            //z-index: 99999;
+                            //_width: 200px;
+                            //left: 50%;
+                            //transform: translateX(-50%);
+                            //margin-left: 200px; // Course curriculum / 2
+                            //height: 50px;
+
+
                             position: fixed;
                             bottom: 0px;
                             z-index: 99999;
-                            _width: 200px;
                             left: 50%;
                             transform: translateX(-50%);
-                            margin-left: 200px; // Course curriculum / 2
+                            margin-left: 237px;
                             height: 50px;
+                            width: 792px;
                         }
                     }
 
@@ -835,10 +852,14 @@
 
             .questions-pagination {
                 text-align: center;
-                margin: 8px 0;
+                /* margin: 8px 0; */
+                height: 33px;
+                padding: 8px 0;
+                background: #FFF;
+                margin-top: 1px;
 
                 .nav-links {
-                    display: inline-block;
+                    //display: inline-block;
 
                     .page-numbers {
                         display: inline-block;
@@ -865,7 +886,13 @@
                             }
                         }
 
+                        &.prev {
+                            float: left;
+                        }
+
                         &.next {
+                            float: right;
+
                             &:before {
                                 content: '\f105';
                             }
@@ -938,6 +965,7 @@
                 min-width: 120px;
                 text-align: center;
                 position: relative;
+
                 .fas {
                     font-size: 14px;
                     position: absolute;
@@ -1075,6 +1103,7 @@
                     content: '\f0d9';
                     margin-right: 10px;
                 }
+
                 .course-item-nav__name {
                     right: auto;
                     left: -30px;

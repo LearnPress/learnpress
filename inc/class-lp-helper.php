@@ -397,4 +397,41 @@ class LP_Helper {
 
 		return $newlist;
 	}
+
+	/**
+	 * Wrap function $wpdb->prepare(...) to support arguments as
+	 * array.
+	 *
+	 * @param string      $query
+	 * @param array|mixed $args
+	 *
+	 * @return string
+	 * @example
+	 *
+	 * $this->prepare($sql, $one, $two, array($three, $four, $file))
+	 * => $wpdb->prepare($sql, $one, $two, $three, $four, $file)
+	 *
+	 */
+	public static function prepare( $query, $args ) {
+		global $wpdb;
+		$args = func_get_args();
+		array_shift( $args );
+		$new_args = array();
+
+		foreach ( $args as $arg ) {
+			if ( is_array( $arg ) ) {
+				$new_args = array_merge( $new_args, $arg );
+			} else {
+				$new_args[] = $arg;
+			}
+		}
+
+		return $wpdb->prepare( $query, $new_args );
+	}
+
+	public static function db_format_array( $arr, $format = '%d' ) {
+		$arr_formatted = array_fill( 0, sizeof( $arr ), $format );
+
+		return join( ',', $arr_formatted );
+	}
 }

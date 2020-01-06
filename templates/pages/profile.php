@@ -20,9 +20,9 @@ $profile = LP_Global::profile();
 ?>
     <div id="learn-press-profile"<?php $profile->main_class(); ?> class="lp-content-wrap">
 		<?php
-		if ( $profile->is_public() ) {
+		if ( $profile->is_public() || true ) {
 			?>
-            <div class="wrapper-profile-header">
+            <div class="wrapper-profile-header wrap-fullwidth">
                 <?php
                     /**
                      * @since 3.0.0

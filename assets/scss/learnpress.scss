@@ -57,6 +57,15 @@ body {
         }
     }
 
+    &.learnpress-page {
+        overflow-x: hidden;
+    }
+}
+
+.wrap-fullwidth {
+    margin-left: -1000px;
+    margin-right: -1000px;
+
     a, button, input, textarea {
         &:focus {
             outline: 0;
