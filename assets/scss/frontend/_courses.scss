@@ -68,7 +68,6 @@ a {
 
             .course-item {
                 position: relative;
-
                 transition: all .3s;
                 display: flex;
                 flex-direction: column;
@@ -104,22 +103,22 @@ a {
                     }
 
                     .course-thumbnail {
+                        a {
+                            display: block;
+                            overflow: hidden;
+                        }
                         .thumbnail {
                             padding: 0;
                             margin: 0;
                             line-height: unset;
                             border: 0;
                             border-radius: unset;
-                            a {
+                            img {
                                 display: block;
-                                overflow: hidden;
-                                img {
-                                    display: block;
-                                    width: 100%;
-                                    transition: all .5s ease;
-                                    height: auto;
-                                    transform: scale(1);
-                                }
+                                width: 100%;
+                                transition: all .5s ease;
+                                height: auto;
+                                transform: scale(1);
                             }
                         }
                     }
@@ -233,25 +232,22 @@ a {
                         position: relative;
                         margin-bottom: 16px;
                         margin-right: 10px;
-
                         a {
                             text-decoration: none;
                             display: inline-block;
                             margin: 0 10px;
-                            color: #666;
+                            color: #fff;
                             display: none;
 
                             &:first-child {
-                                padding: 2px 9px;
-                                border-radius: 5px;
-                                background: rgba(204, 204, 204, 0.3);
+                                padding: 2px 16px;
+                                background: $primary-color;
                                 margin-left: 0;
                                 display: block;
                             }
 
                             &:hover {
-                                background: $primary-color;
-                                color: #fff;
+                                color: #333;
                             }
                         }
 
@@ -275,10 +271,8 @@ a {
                         text-transform: capitalize;
                         margin-bottom: 16px;
                         line-height: 25px;
-
                         a {
-                            color: #666;
-
+                            color: #059de9;
                             &:hover {
                                 color: $primary-color;
                             }
@@ -389,6 +383,15 @@ a {
                         @media (max-width: 767px) {
                             width: 100%;
                             padding-top: 20px;
+                        }
+
+                        .course-categories {
+                            a{
+                                position: relative;
+                                padding: 2px 20px 2px 15px;
+                                clip-path: polygon(0% 0%, 100% 0, 88% 50%, 100% 100%, 0% 100%);
+                                -webkit-clip-path: polygon(0% 0%, 100% 0, 88% 50%, 100% 100%, 0% 100%);
+                            }
                         }
 
                         .course-permalink {
@@ -542,6 +545,26 @@ a {
                         flex-grow: 1;
                         border: 1px solid #f0f0f0;
                         border-top: 0;
+
+                        .course-categories {
+                            float: right;
+                            position: absolute;
+                            right: -1px;
+                            margin-right: 0;
+                            top: -34px;
+                            z-index: 1;
+                            &:after {
+                                display: none;
+                            }
+                            a{
+                                position: relative;
+                                padding: 2px 12px 2px 22px;
+                                margin: 0;
+                                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 12px 50%);
+                                -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 12px 50%);
+
+                            }
+                        }
 
                         .course-permalink {
                             margin-bottom: 20px;
