@@ -123,29 +123,29 @@ a {
                         }
                     }
 
-                    //.course-wishlist {
-                    //    position: absolute;
-                    //    top: 6px;
-                    //    right: 6px;
-                    //    z-index: 2;
-                    //    opacity: 0;
-                    //    color: #fff;
-                    //    cursor: pointer;
-                    //
-                    //    &:before {
-                    //        content: '\f004';
-                    //        font-weight: 900;
-                    //        font-family: "Font Awesome 5 Free";
-                    //    }
-                    //
-                    //    .course-wishlist__btn {
-                    //        display: none;
-                    //    }
-                    //
-                    //    &:hover {
-                    //        color: $primary-color;
-                    //    }
-                    //}
+                    .course-wishlist {
+                        position: absolute;
+                        top: 6px;
+                        right: 6px;
+                        z-index: 2;
+                        opacity: 0;
+                        color: #fff;
+                        cursor: pointer;
+
+                        &:before {
+                            content: '\f004';
+                            font-weight: 900;
+                            font-family: "Font Awesome 5 Free";
+                        }
+
+                        .course-wishlist__btn {
+                            display: none;
+                        }
+
+                        &:hover {
+                            color: $primary-color;
+                        }
+                    }
 
                     &:hover {
                         &:before {
@@ -541,10 +541,14 @@ a {
                     }
 
                     .course-content {
-                        padding: 20px 20px 12px 20px;
+                        padding: 15px 20px 12px 20px;
                         flex-grow: 1;
                         border: 1px solid #f0f0f0;
                         border-top: 0;
+
+                        .course-instructor {
+                            margin-bottom: 7px;
+                        }
 
                         .course-categories {
                             float: right;
