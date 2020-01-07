@@ -2366,7 +2366,8 @@ ul .clearfix {
     float: right;
     color: #e74c3c;
     cursor: pointer;
-    display: none; }
+    display: none;
+    padding-right: 8px; }
     #admin-editor-lp_course .lp-course-curriculum .section-actions .remove .icon {
       display: inline-block; }
     #admin-editor-lp_course .lp-course-curriculum .section-actions .remove .confirm {
