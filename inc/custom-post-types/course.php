@@ -344,9 +344,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Delete course sections before delete course.
 		 *
+		 * @param $post_id
+		 *
 		 * @since 3.0.0
 		 *
-		 * @param $post_id
 		 */
 		public function before_delete_course( $post_id ) {
 			// course curd
@@ -658,12 +659,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'roles' => 'administrator' // Admin only
 					),
 					array(
-						'name'  => __( 'Featured Review', 'learnpress' ),
-						'id'    => '_lp_featured_review',
-						'type'  => 'textarea',
-						'desc'  => __( 'A good review to promote the course.', 'learnpress' ),
-						'placeholder'   => 'e.g. This course is so great and helpful. Thank you the best teacher to explain and show us what LearnPress LMS is all about.',
-						'roles' => 'administrator' // Admin only
+						'name'        => __( 'Featured Review', 'learnpress' ),
+						'id'          => '_lp_featured_review',
+						'type'        => 'textarea',
+						'desc'        => __( 'A good review to promote the course.', 'learnpress' ),
+						'placeholder' => 'e.g. This course is so great and helpful. Thank you the best teacher to explain and show us what LearnPress LMS is all about.',
+						'roles'       => 'administrator' // Admin only
 					),
 					array(
 						'name'        => __( 'External Link', 'learnpress' ),
@@ -1075,7 +1076,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'clone'   => true,
 						'options' => array(
 							'Question' => __( 'Question', 'learnpress' ),
-							'Answer' => __( 'Answer', 'learnpress' ),
+							'Answer'   => __( 'Answer', 'learnpress' ),
 						)
 					),
 //					array(
@@ -1412,7 +1413,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Add columns to admin manage course page
 		 *
-		 * @param  array $columns
+		 * @param array $columns
 		 *
 		 * @return array
 		 */
@@ -1539,12 +1540,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 				case 'students' :
 					$count = LP()->utils->count_course_users( array(
-						'course_id' => $course->get_id(),
-						'status'    => array('finished', 'enrolled'),
-						'total_only'=>true
+						'course_id'  => $course->get_id(),
+						'status'     => learn_press_course_enrolled_slugs(),// array('finished', 'enrolled'),
+						'total_only' => true
 					) );
 
-					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . ($count ? $count : 0) . '</span>';
+					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . ( $count ? $count : 0 ) . '</span>';
 
 			}
 		}
@@ -1602,6 +1603,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function clone_button_icon( $icon, $field ) {
 			$icon = '<i class="dashicons dashicons-trash"></i>';
+
 			return $icon;
 		}
 

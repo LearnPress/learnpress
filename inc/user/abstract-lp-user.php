@@ -352,11 +352,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$access_level = $this->get_course_access_level( $course_id );
 
 				// If user has already finished the course
-				if ( $access_level === LP_COURSE_ACCESS_LEVEL_70 ) {
+				if ( $this->has_finished_course( $course_id ) /* $access_level === LP_COURSE_ACCESS_LEVEL_70*/ ) {
 					throw new Exception( __( 'You have already finished the course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
 				}
 
-				if ( $course->is_required_enroll() && $access_level < LP_COURSE_ACCESS_LEVEL_60 ) {
+				if ( $course->is_required_enroll() && ! $this->has_enrolled_course( $course_id ) /* $access_level < LP_COURSE_ACCESS_LEVEL_60*/ ) {
 					throw new Exception( __( 'Please enroll course before starting quiz.', 'learnpress' ), LP_COURSE_IS_FINISHED );
 				}
 

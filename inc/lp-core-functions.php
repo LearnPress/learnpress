@@ -1219,7 +1219,7 @@ function learn_press_currencies() {
 		'LYD' => __( 'Libyan dinar', 'learnpress' )
 	);
 
-	asort($currencies);
+	asort( $currencies );
 
 	return apply_filters( 'learn-press/currencies', $currencies );
 }
@@ -2524,7 +2524,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 				'item_id'    => $course->get_id(),
 				//'start_time' => current_time( 'mysql' ),
 				'start_time' => learn_press_mysql_time( true ),
-				'status'     => 'enrolled',
+				'status'     => learn_press_user_item_in_progress_slug(),// 'enrolled',
 				'end_time'   => '0000-00-00 00:00:00',
 				'ref_id'     => $order->id, //$course->get_id(),
 				'item_type'  => 'lp_course',
@@ -3761,6 +3761,86 @@ function learn_press_get_quiz_max_retrying( $quiz_id = 0, $course_id = 0 ) {
  */
 function learn_press_get_course_max_retrying( $course_id ) {
 	return apply_filters( 'learn-press/max-retry-course-allowed', 1, $course_id );
+}
+
+/**
+ * Get slug for status of course/lesson/quiz if user
+ * completed/finished and graduation is failed.
+ *
+ * @param string $type
+ *
+ * @return string
+ * @since 4.0.0
+ */
+function learn_press_user_item_failed_slug( $type = '' ) {
+	return apply_filters( 'learn-press/user-item-failed-slug', 'failed', $type );
+}
+
+/**
+ * Get slug for status of course/lesson/quiz if user
+ * completed/finished and graduation is passed.
+ *
+ * @param string $type
+ *
+ * @return string
+ * @since 4.0.0
+ */
+function learn_press_user_item_passed_slug( $type = '' ) {
+	return apply_filters( 'learn-press/user-item-passed-slug', 'passed', $type );
+}
+
+/**
+ * Get slug for status of course/lesson/quiz if user
+ * completed/finished and graduation is passed.
+ *
+ * @param string $type
+ *
+ * @return string
+ * @since 4.0.0
+ */
+function learn_press_user_item_in_progress_slug( $type = '' ) {
+	return apply_filters( 'learn-press/user-item-in-progress-slug', 'in-progress', $type );
+}
+
+/**
+ * Get slug for status of course/lesson/quiz if user
+ * completed/finished and result is under-evaluation
+ *
+ * @param string $item - Optional. Type of item
+ *
+ * @return string
+ * @since 4.0.0
+ *
+ */
+function learn_press_user_item_under_evaluation_slug( $item = '' ) {
+	return apply_filters( 'learn-press/user-item-under-evaluation-slug', 'in-progress', $item );
+}
+
+function learn_press_is_enrolled_slug( $slug ) {
+	return in_array(
+		$slug,
+		array(
+			'in-progress',
+			'enrolled'// deprecated
+		)
+	);
+}
+
+/**
+ * @return array
+ * @since 4.0.0
+ *
+ */
+function learn_press_course_enrolled_slugs() {
+	return apply_filters(
+		'learn-press/course-enrolled-slugs',
+		array(
+			learn_press_user_item_passed_slug(),
+			learn_press_user_item_failed_slug(),
+			'enrolled', // deprecated
+			'finished'// deprecated
+		)
+	);
 }
 
 include_once dirname( __FILE__ ) . '/lp-custom-hooks.php';

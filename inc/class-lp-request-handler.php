@@ -180,7 +180,7 @@ class LP_Request {
 							/**
 							 * Order is completed and course is finished/enrolled
 							 */
-							if ( $user->has_course_status( $course->get_id(), array( 'finished', 'enrolled' ) ) ) {
+							if ( $user->has_course_status( $course->get_id(), learn_press_course_enrolled_slugs() ) ) { // array( 'passed', 'failed', 'finished', 'enrolled' ) ) ) {
 								throw new Exception( __( 'You have finished course.', 'learnpress' ) );
 							} else {
 								// TODO: enroll
@@ -289,12 +289,12 @@ class LP_Request {
 		 * Redirect to checkout page if cart total is greater than 0
 		 */
 		//if ( 0 < $cart->total ) {
-			if ( $redirect = apply_filters( 'learn-press/add-to-cart-redirect', learn_press_get_page_link( 'checkout' ), $course_id, $cart_id, $action ) ) {
-				wp_redirect( $redirect );
-				exit();
-			}
+		if ( $redirect = apply_filters( 'learn-press/add-to-cart-redirect', learn_press_get_page_link( 'checkout' ), $course_id, $cart_id, $action ) ) {
+			wp_redirect( $redirect );
+			exit();
+		}
 
-			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
+		learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
 //		} else {
 //			/// Need?
 //			if ( 'enroll-course' == $action ) {
@@ -844,6 +844,7 @@ class LP_Request {
 		}
 
 		$cookie = isset( $_COOKIE['LP'] ) ? (array) json_decode( stripslashes( $_COOKIE['LP'] ) ) : array();
+
 		return isset( $cookie[ $name ] ) ? $cookie[ $name ] : $def;
 	}
 

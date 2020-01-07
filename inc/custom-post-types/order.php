@@ -307,7 +307,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					continue;
 				}
 				$order_status = $order->get_order_status();
-				$last_status  = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'enrolled';
+				$last_status  = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'in-progress';
 				$user_curd->update_user_item_status( $user_item_id, $last_status );
 				// Restore data
 				$user_curd->update_user_item_by_id(
