@@ -662,7 +662,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	public function is_enrolled() {
-		return in_array( $this->get_status(), array( 'enrolled', 'finished' ) );
+		return in_array( $this->get_status(), learn_press_course_enrolled_slugs() /* array( 'enrolled', 'finished' )*/ );
 	}
 
 	public function get_level() {

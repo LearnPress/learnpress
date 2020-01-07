@@ -242,7 +242,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 						}
 					}
 
-					if ( ( ( $exceeded = $item_course->is_exceeded() ) <= 0 ) && ( $item_course->get_status() === 'enrolled' ) ) {
+					if ( ( ( $exceeded = $item_course->is_exceeded() ) <= 0 ) && ( learn_press_is_enrolled_slug($item_course->get_status()) /*$item_course->get_status() === 'enrolled' */) ) {
 						$item_course->finish();
 
 						$start_time = $item_course->get_start_time()->getTimestamp();

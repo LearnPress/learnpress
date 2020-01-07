@@ -624,7 +624,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		protected function _item_is_blocked( $user, $course, $course_item_data ) {
 			if ( $is_admin = in_array( 'administrator', $user->get_roles() ) ) {
 				$blocked = 'no';
-			} else if ( $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
+			} else if ( $user->has_course_status( $course->get_id(), learn_press_course_enrolled_slugs() /* array( 'enrolled', 'finished' )*/ ) ) {
 				$blocked = 'no';
 
 				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() !== 'click'/*$course_item_data->is_exceeded() < 0*/ ) {

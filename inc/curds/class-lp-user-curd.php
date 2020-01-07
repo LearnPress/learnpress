@@ -1772,6 +1772,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 
+				$counts = array(
+					'all'      => 0,
+					'enrolled' => 0,
+					'finished' => 0
+				);
+
 				$sql = "
 					SELECT user_item_id
 					FROM
@@ -1784,22 +1790,19 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					GROUP BY item_id
 				";
 
-				$user_item_ids = $wpdb->get_col( $sql );
-				$rows          = $wpdb->get_results( "
-					SELECT status, COUNT(user_item_id) count 
-					FROM {$wpdb->learnpress_user_items}
-					WHERE user_item_id in(" . join( ',', $user_item_ids ) . ") 
-					GROUP BY status
-				" );
-				$counts        = array(
-					'all'      => 0,
-					'enrolled' => 0,
-					'finished' => 0
-				);
-				if ( $rows ) {
-					foreach ( $rows as $row ) {
-						$counts[ $row->status ] = $row->count;
-						$counts['all']          += $row->count;
+				if ( $user_item_ids = $wpdb->get_col( $sql ) ) {
+					$rows = $wpdb->get_results( "
+						SELECT status, COUNT(user_item_id) count 
+						FROM {$wpdb->learnpress_user_items}
+						WHERE user_item_id in(" . join( ',', $user_item_ids ) . ") 
+						GROUP BY status
+					" );
+
+					if ( $rows ) {
+						foreach ( $rows as $row ) {
+							$counts[ $row->status ] = $row->count;
+							$counts['all']          += $row->count;
+						}
 					}
 				}
 

@@ -357,7 +357,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 //			return;
 //		}
 
-		if ( $course_data->get_status() !== 'enrolled' ) {
+		//if ( $course_data->get_status() !== 'enrolled' ) {
+		if ( ! learn_press_is_enrolled_slug( $course_data->get_status() ) ) {
 			return;
 		}
 
@@ -698,7 +699,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$user = LP_Global::user();
 
-		if ( LP_COURSE_ACCESS_LEVEL_60 <= $user->get_course_access_level( $this->course->get_id() ) ) {
+		if ( $user->has_enrolled_course( $this->course->get_id() ) ) {
 			return;
 		}
 
@@ -776,7 +777,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$status = $user->get_course_status( $this->course->get_id() );
 
-		if ( ! in_array( $status, array( 'enrolled', 'finished' ) ) ) {
+		if ( ! in_array( $status, learn_press_course_enrolled_slugs() /* array( 'enrolled', 'finished' )*/ ) ) {
 			return;
 		}
 

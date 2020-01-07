@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) or die;
 	<?php
 
 	// Price box
-	if ( ! in_array( learn_press_user_course_status(), array( 'finished', 'enrolled', 'passed', 'failed' ) ) ) {
+	if ( ! in_array( learn_press_user_course_status(), learn_press_course_enrolled_slugs() /* array( 'finished', 'enrolled', 'passed', 'failed' )*/ ) ) {
 		LP()->template( 'course' )->course_pricing();
 	}
 

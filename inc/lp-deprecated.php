@@ -1586,7 +1586,7 @@ if ( ! function_exists( 'learn_press_quiz_start_button' ) ) {
 			return;
 		}
 
-		if ( ! $user->has_course_status( $course->get_id(), array( 'enrolled' ) ) && $course->is_required_enroll() && ! $quiz->get_preview() ) {
+		if ( ! $user->has_course_status( $course->get_id(), array( learn_press_user_item_in_progress_slug(), /* deprecated */ 'enrolled' ) ) && $course->is_required_enroll() && ! $quiz->get_preview() ) {
 			return;
 		}
 		learn_press_get_template( 'content-quiz/buttons/start.php' );
