@@ -2593,7 +2593,9 @@ button[data-counter] {
           font-family: "Font Awesome 5 Free";
           color: #ffb606;
           font-size: 16px;
-          margin-right: 10px; }
+          margin-right: 10px;
+          width: 15px;
+          display: inline-block; }
       .quiz-result .result-statistic .result-statistic-field p {
         text-align: right;
         font-size: 16px;
