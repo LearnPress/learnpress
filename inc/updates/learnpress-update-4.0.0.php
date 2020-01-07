@@ -45,6 +45,7 @@ class LP_Update_400 extends LP_Update_Base {
 
 			update_option( 'learn_press_profile_endpoints', $new_profile_settings );
 		}
+		return true;
 	}
 
 	/**
