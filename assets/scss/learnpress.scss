@@ -9,6 +9,9 @@ $primary-bg-color: #000;
 $primary-bg-color-before: #000;
 $primary-bg-color-after: #000;
 $bg-course-featured: #9933ff;
+$msg-color: #00adff;
+$msg-success: #059601;
+$msg-error: #d85554;
 // Import
 @import "mixin.scss";
 @import "ajaxload";
@@ -73,10 +76,13 @@ body {
         }
     }
 
-    a:hover {text-decoration: none;}
+    a:hover {
+        text-decoration: none;
+    }
 
     p {
         word-break: break-word;
+
         &:last-child {
             margin-bottom: 0;
         }
@@ -90,7 +96,7 @@ body {
 
     img {
         max-width: 100%;
-        height:auto;
+        height: auto;
     }
 
     form {
@@ -101,6 +107,7 @@ body {
         max-width: 100%;
         padding: 0;
         box-sizing: border-box;
+
         .woocommerce-breadcrumb {
             display: none;
         }
@@ -161,6 +168,7 @@ footer {
     color: #333;
     list-style: none;
     padding: 0;
+
     li {
         display: inline-block;
         margin: 0;
@@ -209,7 +217,8 @@ footer {
         text-align: center;
         @include box-sizing(border-box);
         @include border-radius(3px);
-        box-shadow:unset;
+        box-shadow: unset;
+
         &.large {
             font-size: 18px;
             padding: 18px 30px;
@@ -362,6 +371,7 @@ footer {
         border: 0;
         outline: 0;
         padding: 0;
+
         > li {
             display: inline-block;
             margin: 0;
@@ -395,13 +405,13 @@ footer {
     margin: 0 0 20px 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    border-top: 5px solid #00adff;
+    border-top: 5px solid $msg-color;
 
     &.icon {
         padding-left: 45px;
 
         &:before {
-            background: #00adff;
+            background: $msg-color;
 
         }
 
@@ -415,7 +425,7 @@ footer {
             margin-top: -13px;
             height: 26px;
             line-height: 26px;
-            background: #04adff;
+            background: $msg-color;
             width: 26px;
             text-align: center;
             border-radius: 50%;
@@ -438,7 +448,7 @@ footer {
         right: 20px;
         width: 20px;
         height: 30px;
-        background: #00adff;
+        background: $msg-color;
     }
 
     &:after {
@@ -451,39 +461,39 @@ footer {
     }
 
     &.error {
-        border-top: 5px solid #d85554;
+        border-top: 5px solid $msg-error;
 
         &:before {
-            background: #d85554;
+            background: $msg-error;
         }
 
         &.icon {
             &:before {
-                background: #d85554;
+                background: $msg-error;
             }
 
             &:after {
                 content: "\f00d";
-                background: #d85554;
+                background: $msg-error;
             }
         }
     }
 
     &.success {
-        border-top: 5px solid #00adff;
+        border-top: 5px solid $msg-success;
 
         &:before {
-            background: #00adff;
+            background: $msg-success;
         }
 
         &.icon {
             &:before {
-                background: #00adff;
+                background: $msg-success;
             }
 
             &:after {
                 content: "\f129";
-                background: #00adff;
+                background: $msg-success;
             }
         }
     }
@@ -588,6 +598,30 @@ ul.list-table-nav {
             }
         }
     }
+}
+
+.course-graduation {
+    span {
+        color: #999;
+    }
+
+    .icon {
+        font-size: 20px;
+        margin-right: 5px;
+    }
+
+    &.passed {
+        .icon {
+            color: #059601;
+        }
+    }
+
+    &.error {
+        .icon {
+            color: #d85554;
+        }
+    }
+
 }
 
 .learn-press-template-warning {

@@ -1196,7 +1196,7 @@ if ( ! function_exists( 'learn_press_course_buttons' ) ) {
 	 * Display course retake button
 	 */
 	function learn_press_course_buttons() {
-		learn_press_get_template( 'single-course/buttons.php' );
+		//learn_press_get_template( 'single-course/buttons.php' );
 	}
 }
 

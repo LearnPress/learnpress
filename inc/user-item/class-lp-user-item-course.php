@@ -522,7 +522,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return string
 	 */
 	public function get_grade( $context = '' ) {
-		$grade = $this->get_results( 'grade' );
+		//$grade = $this->get_results( 'grade' );
+
+		$grade = $this->get_status();
 
 		return $context == 'display' ? learn_press_course_grade_html( $grade, false ) : $grade;
 	}
@@ -589,15 +591,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return int
 	 */
 	public function finish( $complete_items = false ) {
-
 		if ( $complete_items ) {
 			$this->complete_items();
 		}
 
-		$return = parent::complete( 'finished' );
-		$this->calculate_course_results();
+		$results = $this->calculate_course_results();
+		$status  = $this->_is_passed( $results['result'] ) ? 'passed' : 'failed';
+		$status  = apply_filters( 'learn-press/finish-course-status', $status, $this->get_course_id(), $this->get_user(), $this );
 
-		return $return;
+		return parent::complete( $status );
 	}
 
 	/**
@@ -953,7 +955,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return bool
 	 */
 	public function is_finished() {
-		return $this->get_status() === 'finished';
+		//return $this->get_status() === 'finished';
+		// 4.0.0
+		return in_array( $this->get_status(), array( 'passed', 'failed', /* deprecated */ 'finished' ) );
 	}
 
 	/**

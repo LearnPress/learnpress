@@ -37,12 +37,21 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/buttons' );
 	}
 
+	public function course_graduation() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		if ( ! $user->has_finished_course( $course->get_id() ) ) {
+			return;
+		}
+		learn_press_get_template( 'single-course/graduation', array( 'graduation' => $user->get_course_grade( $course->get_id() ) ) );
+	}
+
 	public function button_retry() {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
 		if ( $user->has_finished_course( $course->get_id() ) ) {
-			echo apply_filters( 'learn-press/finished-course-message', __( 'You finished course', 'learnpress' ) );
 
 			if ( $user->can_retry_course( $course->get_id() ) ) {
 				learn_press_get_template( 'single-course/buttons/retry' );

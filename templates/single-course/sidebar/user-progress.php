@@ -27,7 +27,6 @@ if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 $course_data       = $user->get_course_data( $course->get_id() );
 $course_results    = $course_data->get_results( false );
 $passing_condition = $course->get_passing_condition();
-
 ?>
 
 <div class="course-results-progress">
@@ -78,11 +77,11 @@ $passing_condition = $course->get_passing_condition();
         <div class="lp-course-status">
             <span class="number"><?php echo round( $course_results['result'], 2 ); ?><span
                         class="percentage-sign">%</span></span>
-			<?php if ( $grade = $course_results['grade'] ) { ?>
-                <span class="lp-label grade <?php echo esc_attr( $grade ); ?>">
-				<?php learn_press_course_grade_html( $grade ); ?>
-				</span>
-			<?php } ?>
+<!--			--><?php //if ( $grade = $user->get_course_grade( $course->get_id() ) ) { ?>
+<!--                <span class="lp-label grade --><?php //echo esc_attr( $grade ); ?><!--">-->
+<!--				--><?php //learn_press_course_grade_html( $grade ); ?>
+<!--				</span>-->
+<!--			--><?php //} ?>
         </div>
 
         <div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>"

@@ -39,8 +39,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		public function load( &$quiz ) {
 			// quiz id
 			$id = $quiz->get_id();
-
 			if ( ! $id || learn_press_get_post_type( $id ) !== LP_QUIZ_CPT ) {
+
 				throw new Exception( sprintf( __( 'Invalid quiz with ID "%d".', 'learnpress' ), $id ) );
 			}
 

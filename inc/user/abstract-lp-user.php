@@ -1643,11 +1643,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function can_finish_course( $course_id ) {
 			$return = false;
+
 			if ( $course = learn_press_get_course( $course_id ) ) {
 
 				$access_level = $this->get_course_access_level( $course_id );
 
-				if ( $access_level === LP_COURSE_ACCESS_LEVEL_60 ) {
+				if ( $access_level === LP_COURSE_ACCESS_LEVEL_70 ) {
 					$result = $this->evaluate_course_results( $course_id );
 					$return = $result >= $course->get_passing_condition();
 				}
@@ -1749,7 +1750,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$return = false;
 
 			if ( $course = learn_press_get_course( $course_id ) ) {
-
 				if ( ! $this->can_finish_course( $course_id ) ) {
 					return false;
 				} else {
@@ -2343,10 +2343,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					// Access level of user item course
 					if ( $course_data->get_access_level() >= 50 ) {
 						switch ( $course_data->get_status() ) {
-							case 'enrolled':
+							case 'completed':
+							case 'failed':
 								$access_level = LP_COURSE_ACCESS_LEVEL_60;
 								break;
-							case 'finished':
+							case 'in-progress':
 								$access_level = LP_COURSE_ACCESS_LEVEL_70;
 								break;
 						}

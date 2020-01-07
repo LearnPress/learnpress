@@ -776,7 +776,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$this->complete( 'completed' );
 
 		// Force to re-calculate quiz results and update cache.
-		$this->get_results( '', true );
+		$r = $this->get_results( '', true );
 	}
 
 	public function is_review_questions() {

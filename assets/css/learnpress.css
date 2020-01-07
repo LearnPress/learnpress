@@ -5376,7 +5376,7 @@ footer {
       margin-top: -13px;
       height: 26px;
       line-height: 26px;
-      background: #04adff;
+      background: #00adff;
       width: 26px;
       text-align: center;
       border-radius: 50%;
@@ -5409,14 +5409,14 @@ footer {
       content: "\f00d";
       background: #d85554; }
   .learn-press-message.success {
-    border-top: 5px solid #00adff; }
+    border-top: 5px solid #059601; }
     .learn-press-message.success:before {
-      background: #00adff; }
+      background: #059601; }
     .learn-press-message.success.icon:before {
-      background: #00adff; }
+      background: #059601; }
     .learn-press-message.success.icon:after {
       content: "\f129";
-      background: #00adff; }
+      background: #059601; }
 
 ul.list-table-nav {
   display: flex;
@@ -5479,6 +5479,19 @@ ul.list-table-nav {
     top: 0; }
   .course-summary .course-summary-sidebar.slide-top .course-summary-sidebar__inner {
     position: absolute; }
+
+.course-graduation span {
+  color: #999; }
+
+.course-graduation .icon {
+  font-size: 20px;
+  margin-right: 5px; }
+
+.course-graduation.passed .icon {
+  color: #059601; }
+
+.course-graduation.error .icon {
+  color: #d85554; }
 
 .learn-press-template-warning:before {
   content: "\f071";

@@ -178,8 +178,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Load course curriculum.
 		 */
 		public function load_curriculum() {
-			$item_ids   = array();
-			$item_types = array();
+			$item_ids      = array();
+			$item_types    = array();
 			$item_by_types = array();
 			$section_items = array();
 
@@ -200,20 +200,20 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					}
 
 					$section_items[ $item->section_id ][] = $item->id;
-					$item_by_types[$item->id] = $item->type;
+					$item_by_types[ $item->id ]           = $item->type;
 
 				}
 			}
 
-			LP_Course_Utils::set_course_items( $this->get_id(), $item_ids);
-			LP_Course_Utils::set_course_item_types( $this->get_id(), $item_by_types);
-			LP_Course_Utils::set_course_items_group_types( $this->get_id(), $item_types);
+			LP_Course_Utils::set_course_items( $this->get_id(), $item_ids );
+			LP_Course_Utils::set_course_item_types( $this->get_id(), $item_by_types );
+			LP_Course_Utils::set_course_items_group_types( $this->get_id(), $item_types );
 
 			foreach ( $section_items as $section_id => $its ) {
-				LP_Course_Utils::set_section_items( $section_id, $its);
+				LP_Course_Utils::set_section_items( $section_id, $its );
 			}
 
-			learn_press_cache_add_post_type( $items );
+			learn_press_cache_add_post_type( $item_by_types );
 
 			/*return ;
 			////
@@ -509,7 +509,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					LP_Object_Cache::set( 'section-' . $section_id, $section_items, 'learn-press/section-items' );
 				}
 
-				learn_press_cache_add_post_type( $items );
+				//learn_press_cache_add_post_type( $items );
 
 				$items = $group ? $item_types : $items;
 			}
