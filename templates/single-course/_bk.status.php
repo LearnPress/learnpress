@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit();
 
 $course = learn_press_get_course();
 $user   = learn_press_get_current_user();
-
+die('XXXXXXXXXX');
 if ( ! $user->has_purchased_course( $course->get_id() ) ) {
 	return;
 }

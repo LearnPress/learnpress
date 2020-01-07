@@ -115,6 +115,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_pricing() {
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
+
+		if ( $user->has_enrolled_course( get_the_ID() ) ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/price' );
 	}
 
@@ -356,15 +363,15 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		if ( ! learn_press_user_can_access_course( $course->get_id() ) || $course->get_external_link() ) {
+		if ( $course->get_external_link() ) {
 			return;
 		}
 
-		if ( false === ( $course_data = $user->get_course_data( $course->get_id() ) ) ) {
+		if ( ! $user->is_course_in_progress( $course->get_id() ) ) {
 			return;
 		}
 
-		if ( ! $user->can_finish_course( $course->get_id() ) ) {
+		if ( ! $user->has_reached_passing_condition( $course->get_id() ) ) {
 			return;
 		}
 
@@ -552,11 +559,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 //			return;
 //		}
 
-		if ( $user->has_finished_course( $course->get_id() ) ) {
-			return;
-		}
-
-		if ( ! $user->can_access_course( $course->get_id() ) ) {
+		if ( ! $user->is_course_in_progress( $course->get_id() ) ) {
 			return;
 		}
 

@@ -441,6 +441,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $got_status;
 	}
 
+	public function has_finished() {
+		return in_array( $this->get_status(), array( 'failed', 'passed' ) );
+	}
+
 	public function is_exists() {
 		return ! ! $this->get_user_item_id();
 	}

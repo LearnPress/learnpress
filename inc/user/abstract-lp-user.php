@@ -1887,11 +1887,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function has_enrolled_course( $course_id, $force = false ) {
 
-
-			$enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_55;// $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
+			$course_item = $this->get_course_data( $course_id );
+			//$enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_55;// $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
 
 			// @deprecated
-			$enrolled = apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
+			//$enrolled = apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
+
+			$enrolled = $course_item && $course_item->get_user_item_id() > 0;
 
 			/**
 			 * @since 3.0.0
@@ -1912,7 +1914,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				_deprecated_argument( '$force', '3.0.0' );
 			}
 
-			$finished = $this->get_course_access_level( $course_id ) === LP_COURSE_ACCESS_LEVEL_70;
+			//$finished = $this->get_course_access_level( $course_id ) === LP_COURSE_ACCESS_LEVEL_70;
+
+			$course_item = $this->get_course_data( $course_id );
+			$finished    = $course_item && $course_item->has_finished();
 
 			return apply_filters( 'learn-press/user-has-finished-course', $finished, $this->get_id(), $course_id );
 		}
@@ -2673,34 +2678,46 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_item  = false;
 
 				if ( $course_items ) {
-					switch ( $course_items[0]->status ) {
-						case 'pending':
-						case 'enrolled':
+//					switch ( $course_items[0]->status ) {
+//						case 'pending':
+//						case 'passed':
+//						case 'failed':
+//						case 'enrolled':
+//
+//							if ( $course_items[0]->status === 'pending' && $course->is_required_enroll() ) {
+//								return false;
+//							}
+//
+//							/**
+//							 * If current status is 'enrolled' but it's order is not completed
+//							 * then mark it is completed.
+//							 */
+//							if ( $order_id ) {
+//								$order = learn_press_get_order( $order_id );
+//
+//								if ( $order && $order->get_status() !== 'completed' ) {
+//									$order->set_status( 'completed' );
+//									$order->save();
+//								}
+//							}
+//
+//							return $course_items[0]->user_item_id;
+//						case 'purchased':
+//							$course_item = (array) $course_items[0];
+//							break;
+//						case 'archived':
+//						case 'completed':
+//							break;
+//					}
 
-							if ( $course_items[0]->status === 'pending' && $course->is_required_enroll() ) {
-								return false;
-							}
+					// User is learning course or course result is under evaluation
+					if ( in_array( $course_items[0]->status, array( 'in-progress', 'under-evaluation' ) ) ) {
+						return $course_items[0]->user_item_id;
+					}
 
-							/**
-							 * If current status is 'enrolled' but it's order is not completed
-							 * then mark it is completed.
-							 */
-							if ( $order_id ) {
-								$order = learn_press_get_order( $order_id );
-
-								if ( $order && $order->get_status() !== 'completed' ) {
-									$order->set_status( 'completed' );
-									$order->save();
-								}
-							}
-
-							return $course_items[0]->user_item_id;
-						case 'purchased':
-							$course_item = (array) $course_items[0];
-							break;
-						case 'archived':
-						case 'completed':
-							break;
+					// User has finished course (passed or failed)
+					if ( ! in_array( $course_items[0]->status, array( 'passed', 'failed', 'enrolled' ) ) ) {
+						$course_item = $course_items[0];
 					}
 				}
 
@@ -2722,7 +2739,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_item['graduation']   = 'in-progress';
 
 				$user_course = new LP_User_Item_Course( $course_item );
-				$user_course->set_status( 'enrolled' );
+				$user_course->set_status( 'in-progress' );
 
 				// Added since 3.3.0
 				if ( $course_duration ) {
@@ -2736,6 +2753,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				$user_id = is_user_logged_in() ? $this->get_id() : 0;
+
+				global $wpdb;
+				$query = $wpdb->prepare( "
+					UPDATE {$wpdb->learnpress_user_items}
+					SET access_level = %d
+					WHERE user_id = %d 
+						AND item_id = %d 
+						AND user_item_id NOT IN(%d)
+				", 0, $user_id, $course_id, $user_course->get_user_item_id() );
+				$wpdb->query( $query );
 
 				// Trigger action
 				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
@@ -3039,6 +3066,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $accessible;
 		}
 
+		public function is_course_in_progress( $course_id ) {
+			if ( ! $course_data = $this->get_course_data( $course_id ) ) {
+				return false;
+			}
+
+			return $course_data->get_status() === 'in-progress';
+		}
+
 		/**
 		 * Return TRUE if user can do a quiz
 		 *
@@ -3068,6 +3103,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			LP_Debug::logTime( __FUNCTION__ );
 
 			return $result;
+		}
+
+		public function has_reached_passing_condition( $course_id ) {
+			$course = learn_press_get_course( $course_id );
+			$result = $this->evaluate_course_results( $course_id );
+
+			return $return = $result >= $course->get_passing_condition();
 		}
 
 		public function get_role() {
