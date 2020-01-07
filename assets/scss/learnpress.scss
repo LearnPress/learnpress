@@ -8,7 +8,7 @@ $primary-color-course-item-status: #3bb54a;
 $primary-bg-color: #000;
 $primary-bg-color-before: #000;
 $primary-bg-color-after: #000;
-
+$bg-course-featured: #9933ff;
 // Import
 @import "mixin.scss";
 @import "ajaxload";
@@ -622,7 +622,7 @@ ul.list-table-nav {
 
 
     &.featured-course {
-        background: $primary-color;
+        background: $bg-course-featured;
         position: absolute;
         z-index: 1;
         top: 25px;

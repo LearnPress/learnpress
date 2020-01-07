@@ -208,7 +208,7 @@ gulp.task('replace', gulp.series('copy-zip', () => {
 
 gulp.task('mk-zip', gulp.series('replace', function () {
     process.chdir(releasePath);
-    var zipPath = releasePath.replace(/learnpress/, '');
+    var zipPath = releasePath.replace(/learnpress$/, '');console.log(releasePath);
 
     return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
