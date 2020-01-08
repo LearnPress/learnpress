@@ -3830,17 +3830,19 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         color: #666; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .items-progress .items-progress__heading,
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .course-progress .items-progress__heading {
-    font-size: 18px;
     font-weight: 500;
     color: #333;
     margin-top: 0;
-    font-size: 16px; }
+    font-size: 16px;
+    float: left; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .items-progress .number,
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .course-progress .number {
+    float: right;
     font-size: 16px;
+    line-height: 16px;
     font-weight: 300;
     color: #666;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     text-align: right;
     display: block; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .items-progress .learn-press-progress,
@@ -3848,7 +3850,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
     clear: both;
     width: 100%; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .items-progress {
-    margin-bottom: 26px; }
+    margin-bottom: 27px; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview > *:last-child {
     margin-bottom: 0; }
 
