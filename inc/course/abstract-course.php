@@ -2021,9 +2021,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			 */
 			if ( $extra_info_meta && is_array( $extra_info_meta ) ) {
 				foreach ( $extra_info_meta as $item ) {
-					if ( $text = reset( $item ) ) {
-						$extra_info[] = $text;
-					}
+					$extra_info[] = is_string($item) ? $item : reset( $item );
 				}
 			}
 

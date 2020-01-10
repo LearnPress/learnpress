@@ -288,7 +288,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 			$results = $this->get_meta( 'course_results_' . $course_result );
 
-			if ( false === $results || ! array_key_exists( 'result', $results ) ) {
+			if ( false === $results || ! ( is_array( $results ) && array_key_exists( 'result', $results ) ) ) {
 				$results = $this->calculate_course_results();
 			}
 
@@ -376,12 +376,13 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				'completed_items' => $completed_items,
 				'items'           => array(
 					'quiz'   => array(
-						'completed' => rand( 10, 20 ),
-						'total'     => rand( 20, 40 )
+						'completed' => $this->get_completed_items( LP_QUIZ_CPT ),
+						'passed' => $this->get_passed_items( LP_QUIZ_CPT ),
+						'total'     => $course->count_items( LP_QUIZ_CPT )
 					),
 					'lesson' => array(
-						'completed' => rand( 10, 20 ),
-						'total'     => rand( 20, 40 )
+						'completed' => $this->get_completed_items( LP_LESSON_CPT ),
+						'total'     => $course->count_items( LP_LESSON_CPT )
 					)
 				),
 				'skipped_items'   => $count_items - $completed_items,
@@ -616,8 +617,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		 * Only support lp_quiz by default.
 		 *
 		 * @param array $item_types
-		 * @param int   $course_id
-		 * @param int   $user_id
+		 * @param int $course_id
+		 * @param int $user_id
 		 *
 		 * @since 3.3.0
 		 *
@@ -641,9 +642,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			 * Filters the item should be completed if has specific statuses.
 			 *
 			 * @param array $item_statuses
-			 * @param int   $item_id
-			 * @param int   $course_id
-			 * @param int   $user_id
+			 * @param int $item_id
+			 * @param int $course_id
+			 * @param int $user_id
 			 *
 			 * @since 3.3.0
 			 *
@@ -849,9 +850,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get completed items.
 	 *
-	 * @param string $type       - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool   $with_total - Optional. Include total if TRUE
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool $with_total - Optional. Include total if TRUE
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -913,8 +914,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get items completed by percentage.
 	 *
-	 * @param string $type       - Optional. Filter by type or not
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type or not
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return float|int
 	 */
@@ -1197,7 +1198,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Add new item
 	 *
 	 * @param int|array $item_id
-	 * @param int       $user_id
+	 * @param int $user_id
 	 *
 	 * @return bool
 	 */
@@ -1274,5 +1275,63 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get passed items.
+	 *
+	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool $with_total - Optional. Include total if TRUE
+	 * @param int $section_id - Optional. Get in specific section
+	 *
+	 * @return array|bool|mixed
+	 */
+	public function get_passed_items( $type = '', $with_total = false, $section_id = 0 ) {
+		$this->read_items();
+
+		$key = sprintf( '%d-%d-%s', $this->get_user_id(), $this->_course->get_id(), md5( build_query( func_get_args() ) ) );
+
+		if ( false === ( $completed_items = LP_Object_Cache::get( $key, 'learn-press/user-passed-items' ) ) ) {
+			$passed     = 0;
+			$total         = 0;
+			$section_items = array();
+
+			if ( $section_id && $section = $this->_course->get_sections( 'object', $section_id ) ) {
+				$section_items = $section->get_items();
+
+				if ( $section_items ) {
+					$section_items = array_keys( $section_items );
+				}
+			}
+
+			if ( $items = $this->get_items() ) {
+				foreach ( $items as $item ) {
+
+					if ( $section_id && ! in_array( $item->get_id(), $section_items ) ) {
+						continue;
+					}
+
+					if ( $type ) {
+						$item_type = $item->get_data( 'item_type' );
+					} else {
+						$item_type = '';
+					}
+
+					if ( $type === $item_type ) {
+						if ( $item->get_status( 'graduation' ) == 'passed' ) {
+							$passed ++;
+						}
+						$passed = apply_filters( 'learn-press/course-item/passed', $passed, $item, $item->get_status() );
+						//if ( ! $item->is_preview() ) {
+						$total ++;
+						//}
+					}
+				}
+			}
+			$passed_items = array( $passed, $total );
+			LP_Object_Cache::set( $key, $passed_items, 'learn-press/user-passed-items' );
+		}
+
+		return $with_total ? $passed_items : $passed_items[0];
 	}
 }

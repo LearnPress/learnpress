@@ -28,7 +28,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
-			add_action( 'admin_notices', array( $this, 'notice_setup_pages' ) );
+			//add_action( 'admin_notices', array( $this, 'notice_setup_pages' ) );//temporary no need check existing of these pages: profile and checkout.
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_editor' ), - 10 );

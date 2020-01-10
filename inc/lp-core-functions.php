@@ -3837,6 +3837,7 @@ function learn_press_course_enrolled_slugs() {
 		array(
 			learn_press_user_item_passed_slug(),
 			learn_press_user_item_failed_slug(),
+			'in-progress',
 			'enrolled', // deprecated
 			'finished'// deprecated
 		)

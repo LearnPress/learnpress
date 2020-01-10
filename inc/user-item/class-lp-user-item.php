@@ -418,8 +418,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return string
 	 */
-	public function get_status() {
-		$got_status = $this->get_data( 'status' );
+	public function get_status( $field = 'status' ) {
+		$got_status = $this->get_data( $field, false );
 
 		if ( ( false === $got_status ) && false !== ( $user_id = $this->get_extra_data( 'user_id' ) ) ) {
 			$user_item = learn_press_get_user_item( array(
@@ -430,12 +430,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			) );
 
 			if ( ! empty( $user_item ) ) {
-				$got_status = $user_item->status;
+				$got_status = $user_item->$field;
 			} else {
 				$got_status = '';
 			}
 
-			$this->set_data( 'status', $got_status );
+			$this->set_data( $field, $got_status );
 		}
 
 		return $got_status;
