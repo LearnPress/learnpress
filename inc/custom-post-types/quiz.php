@@ -291,20 +291,20 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'         => 80
 					),
 					array(
-						'name' => __( 'Negative Marking', 'learnpress' ),
-						//'id'   => '_lp_minus_points',
-						'id'   => '_lp_negative_marking',
-						'type' => 'yes_no',
-						'desc' => __( 'For each question which students answer wrongly, the total point is deducted exactly the question mark.', 'learnpress' ),
-						'std'  => 'no',
-					),
-					array(
 						'name' => __( 'Instant Check', 'learnpress' ),
 						//'id'   => '_lp_show_check_answer',
 						'id'   => '_lp_instant_check',
 						'type' => 'yes_no',
 						'desc' => __( 'Allow students to immediately check their answers while doing the quiz.', 'learnpress' ),
 						'std'  => 'no'
+					),
+					array(
+						'name' => __( 'Negative Marking', 'learnpress' ),
+						//'id'   => '_lp_minus_points',
+						'id'   => '_lp_negative_marking',
+						'type' => 'yes_no',
+						'desc' => __( 'For each question which students answer wrongly, the total point is deducted exactly the question mark.', 'learnpress' ),
+						'std'  => 'no',
 					),
 					array(
 						'name' => __( 'Retry', 'learnpress' ),
