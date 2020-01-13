@@ -26,7 +26,7 @@ $passing_condition = $course->get_passing_condition();
 
 	<div class="course-progress lp-progress-row">
 
-		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/result-heading', __( 'Course results:', 'learnpress' ) ) ) ) { ?>
+		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/result-heading', __( 'Course progress:', 'learnpress' ) ) ) ) { ?>
 			<h4 class="lp-course-progress-heading">
 				<?php echo esc_html( $heading ); ?>
 			</h4>
