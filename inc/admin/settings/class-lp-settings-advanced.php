@@ -40,17 +40,9 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 			call_user_func( array( $this, "build_{$page}_assets" ), $exclude_libraries );
 		}
-
-		if ( !$this->is_enable_custom_css() ) {
-			return false;
-		}
 		$this->save_custom_css();
 
 		return true;
-	}
-
-	protected function is_enable_custom_css() {
-		return !empty( $_POST['learn_press_enable_custom_colors'] ) && $_POST['learn_press_enable_custom_colors'] === 'yes';
 	}
 
 	protected function save_custom_css() {
@@ -71,7 +63,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		// Delete custom css file and option to generate new if needed.
 		if ( $custom_css = get_option( '_lp_custom_css' ) ) {
 			$upload     = wp_upload_dir();
-			$custom_css = $upload['basedir'] . '/' . $custom_css;
+			$custom_css = $upload['basedir'] . '/learnpress/' . $custom_css;
 			@unlink( $custom_css );
 			delete_option( '_lp_custom_css' );
 		}
@@ -113,7 +105,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		$scss->setVariables( $valid_colors );
 
 		$css_content = $scss_content = $scss->compile( $scss_content );
-		file_put_contents( $custom_css . '/' . $custom_file, $css_content );
+		file_put_contents( $custom_css . '/learnpress/' . $custom_file, $css_content );
 		update_option( '_lp_custom_css', $custom_file );
 
 		return true;
@@ -288,13 +280,6 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 				array(
 					'type'  => 'heading',
 					'title' => __( 'Style', 'learnpress' )
-				),
-				array(
-					'title'   => __( 'Enable custom colors', 'learnpress' ),
-					'id'      => 'enable_custom_colors',
-					'default' => 'no',
-					'type'    => 'yes-no',
-					'desc'    => __( 'Use color schema for main colors.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Color Schema', 'learnpress' ),

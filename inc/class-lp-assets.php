@@ -41,7 +41,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	protected function _get_styles() {
 		if ( $custom_css = get_option( '_lp_custom_css' ) ) {
 			$upload   = wp_upload_dir();
-			$main_css = $upload['baseurl'] . '/' . $custom_css;
+			$main_css = $upload['baseurl'] . '/learnpress/' . $custom_css;
 		} else {
 			$main_css = self::url( 'css/learnpress.css' );
 		}

@@ -3072,7 +3072,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				return false;
 			}
 
-			return $course_data->get_status() === 'in-progress';
+			return $course_data->get_status('graduation') === 'in-progress';
 		}
 
 		/**

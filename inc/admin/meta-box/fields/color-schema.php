@@ -78,7 +78,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		?>
 
         <div id="color-schemas"
-             class="clearfix-after <?php echo $hide ? 'hide-if-js' : ''; ?>">
+             class="clearfix-after">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
                 <div class="color-schemas<?php echo $k == 0 ? ' current' : ''; ?>">
                     <ul>
