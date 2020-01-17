@@ -361,7 +361,7 @@ add_filter( 'document_title_parts', 'learn_press_single_document_title_parts', 5
 
 add_filter( 'body_class', 'learn_press_body_classes', 10 );
 add_filter( 'post_class', 'learn_press_course_class', 15, 3 );
-add_action( 'learn-press/after-main-content', LP()->template( 'course' )->callback( 'global/after-main-content.php' ), 5 );
+//add_action( 'learn-press/after-main-content', LP()->template( 'course' )->callback( 'global/after-main-content.php' ), 5 );
 add_action( 'wp_head', 'learn_press_single_course_args', 5 );
 add_action( 'learn-press/before-checkout-order-review', LP()->template( 'course' )->callback( 'checkout/form-logged-in.php' ), 10 );
 add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
