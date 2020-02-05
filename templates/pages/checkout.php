@@ -40,4 +40,5 @@ do_action( 'learn-press/before-main-content' );
     </div>
 
 <?php
+do_action( 'learn-press/after-main-content' );
 get_footer();
