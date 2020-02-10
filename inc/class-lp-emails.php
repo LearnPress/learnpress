@@ -56,6 +56,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			}
 			include_once LP_PLUGIN_PATH . 'inc/emails/class-lp-email.php';
 
+			$this->register_emails();
 
 			add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
 			add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10, 2 );
@@ -71,7 +72,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			//add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
 			//add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
 
-			do_action( 'learn-press/emails-init', array( $this, 'register_emails' ) );
+			do_action( 'learn-press/emails-init', $this );
 		}
 
 		public function register_emails() {

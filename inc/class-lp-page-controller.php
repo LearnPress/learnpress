@@ -432,6 +432,9 @@ class LP_Page_Controller {
 
 			if ( is_tax( 'course_category' ) || is_tax( 'course_tag' ) ) {
 				$page_template = 'taxonomy-' . $object->taxonomy . '.php';
+				if ( ! file_exists( learn_press_locate_template( $page_template ) ) ) {
+					$page_template = 'archive-course.php';
+				}
 			} else {
 				$page_template = 'archive-course.php';
 			}
