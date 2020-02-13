@@ -13,11 +13,6 @@ class LP_Abstract_Template {
 	protected static $instance = null;
 
 	/**
-	 * @var array
-	 */
-	public $args = array();
-
-	/**
 	 * LP_Template constructor.
 	 */
 	public function __construct() {
@@ -53,10 +48,8 @@ class LP_Abstract_Template {
 	 *
 	 * @return array
 	 */
-	public function func( $callback, $args = array() ) {
-		$new_instance = new $this;
-		$new_instance->args = $args;
-		return array( $new_instance, $callback );
+	public function func( $callback ) {
+		return array( $this, $callback );
 	}
 
 	/**
@@ -160,10 +153,6 @@ class LP_Abstract_Template {
 		}
 
 		return self::$instance;
-	}
-
-	public function get_args() {
-		return $this->args;
 	}
 }
 

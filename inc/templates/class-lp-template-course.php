@@ -634,14 +634,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_extra_boxes() {
-		extract( $this->args );
 		$course = LP_Course::get_course( get_the_ID() );
-
-		$user     = LP_Global::user();
-		$enrolled = $user->has_enrolled_course( $course->get_id() );
-		if ( ( isset( $must_not_enroll ) && $must_not_enroll && $enrolled ) || ( isset( $must_enroll ) && $must_enroll && ! $enrolled ) ) {
-			return;
-		}
 		$boxes = apply_filters(
 			'learn-press/course-extra-boxes-data',
 			array(
@@ -801,6 +794,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		learn_press_get_template( 'single-course/sidebar/user-progress', array( 'status' => $course_status ) );
 	}
+
+	public function course_extra_boxes_position_control() {
+		$course = LP_Course::get_course( get_the_ID() );
+		$user     = LP_Global::user();
+		$enrolled = $user->has_enrolled_course( $course->get_id() );
+		if ( $enrolled ) {
+			remove_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
+		} else {
+			remove_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 70 );
+		}
+    }
 }
 
 return new LP_Template_Course();

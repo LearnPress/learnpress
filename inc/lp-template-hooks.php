@@ -124,12 +124,13 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->te
 
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="lp-entry-content lp-content-area">' ), 30 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content-left">' ), 35 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes', array( 'must_not_enroll' => 1 ) ), 40 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes_position_control' ), 39 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/progress' ), 40 );
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'remaining_time' ), 50 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tabs/tabs' ), 60 );
 //appear at bottom after enrolled
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes', array( 'must_enroll' => 1 ) ), 70 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 70 );
 
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/buttons' ), 70 );
 //add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tags' ), 80 );
