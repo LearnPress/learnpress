@@ -320,9 +320,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			$is_screen = true;
 		} else {
 			$screens = is_array( $screens ) ? $screens : array( $screens );
-			if ( is_tax( 'course_category' ) || is_tax( 'course_tag' ) ) {
-				$is_screen = true;
-			} else if ( in_array( 'learnpress', $screens ) ) {
+			if ( in_array( 'learnpress', $screens ) ) {
 				foreach ( $pages as $page ) {
 					if ( $page === 'courses' && learn_press_is_courses() ) {
 						$is_screen = true;
