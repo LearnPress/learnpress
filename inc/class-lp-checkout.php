@@ -776,7 +776,7 @@ class LP_Checkout {
 					// ensure that no order is waiting for payment
 					$order = new LP_Order( $order_id );
 					if ( $order && $order->payment_complete() ) {
-
+						$is_guest_checkout = $this->guest_email ? true : false;
 						/**
 						 * @see LP_Request_Handler::maybe_redirect_checkout()
 						 */
@@ -785,7 +785,7 @@ class LP_Checkout {
 								'result'   => 'success',
 								'redirect' => $order->get_checkout_order_received_url()
 							),
-							$order->get_id()
+							$order->get_id(), $is_guest_checkout
 						);
 
 						if ( learn_press_is_ajax() ) {

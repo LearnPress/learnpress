@@ -2168,6 +2168,17 @@ function learn_press_register_sidebars() {
 			'after_title'   => '</h2>',
 		)
 	);
+	register_sidebar(
+		array(
+			'name'          => __( 'All Courses', 'learnpress' ),
+			'id'            => 'archive-courses-sidebar',
+			'description'   => __( 'Widgets in this area will be shown in all courses page', 'learnpress' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h2 class="widgettitle">',
+			'after_title'   => '</h2>',
+		)
+	);
 }
 
 add_action( 'widgets_init', 'learn_press_register_sidebars' );

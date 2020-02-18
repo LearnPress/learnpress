@@ -103,7 +103,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						array(
 							'title'   => __( 'Hide Sidebar', 'learnpress' ),
 							'desc'    => __( 'Hide sidebar area in All Courses Page.', 'learnpress' ),
-							'id'      => 'required_review',
+							'id'      => 'hide_sidebar',
 							'default' => 'no',
 							'type'    => 'yes-no'
 						),

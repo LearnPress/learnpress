@@ -58,14 +58,17 @@ class LP_Request {
 		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 4 );
 
 		add_filter( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
-		add_filter( 'learn-press/checkout-no-payment-result', array( __CLASS__, 'maybe_redirect_checkout' ), 10, 2 );
+		add_filter( 'learn-press/checkout-no-payment-result', array( __CLASS__, 'maybe_redirect_checkout' ), 10, 3 );
 		add_filter( 'learn-press/purchase-course-id', array( __CLASS__, 'maybe_enroll_course' ), 10, 2 );
 		add_action( 'learn-press/add-to-cart-order-total-empty', array( __CLASS__, 'maybe_redirect_enroll' ), 10, 3 );
 
 		add_action( 'init', array( 'LP_Forms_Handler', 'init' ), 10 );
 	}
 
-	public static function maybe_redirect_checkout( $result, $order_id ) {
+	public static function maybe_redirect_checkout( $result, $order_id, $is_guest_checkout ) {
+		if ( $is_guest_checkout ) {
+			return $result;
+		}
 		$course_id = get_transient( 'checkout_enroll_course_id' );
 
 		if ( ! $course_id ) {
