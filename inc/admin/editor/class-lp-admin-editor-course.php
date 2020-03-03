@@ -222,7 +222,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		}
 
 		// remove item from course
-		$this->course_curd->remove_item( $item_id );
+		//$this->course_curd->remove_item( $item_id );	// This removed it from ALL courses instead of the current course
+		$this->section_curd->remove_section_item( $section_id, $item_id );
 
 		return true;
 	}
