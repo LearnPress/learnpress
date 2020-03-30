@@ -3,8 +3,8 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
-Tested up to: 5.0.2
-Stable tag: 3.2.6.4
+Tested up to: 5.3
+Stable tag: 3.2.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.6.7 (2020.03.16) =
+~ Fixed security issues (CVE-2020-7916 and CVE-2020-7917): uer logged can change role all users to Instructor
+~ Fixed error preview Assignment
+
+= 3.2.6.6 (-------) =
+~ Fixed option Block Lessons not working
 
 = 3.2.6.5 (20.11.2019) =
 ~ Fixed email doesn't send.

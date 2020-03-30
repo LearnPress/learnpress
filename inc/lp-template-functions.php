@@ -1301,11 +1301,11 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 	 * Custom document title depending on LP current page.
 	 * E.g: Single course, profile, etc...
 	 *
-	 * @since 3.0.0
-	 *
 	 * @param array $title
 	 *
 	 * @return array
+	 * @since 3.0.0
+	 *
 	 */
 	function learn_press_single_document_title_parts( $title ) {
 		// Single course page
@@ -3758,14 +3758,18 @@ function learn_press_filter_can_view_item( $view, $item_id, $user_id, $course_id
 add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
-    if ( $template_name == 'global/block-content.php' ) {
+	$item = LP_Global::course_item();
+	if ( $template_name == 'global/block-content.php' ) {
 		$can_view_item = false;
-		if ( ! is_user_logged_in() ) {
+		if ( !is_user_logged_in() ) {
 			$can_view_item = 'not-logged-in';
-		} elseif ( ! learn_press_current_user_enrolled_course() ) {
+		} elseif ( !learn_press_current_user_enrolled_course() ) {
 			$can_view_item = 'not-enrolled';
+		} elseif ( $item->is_blocked() ) {
+			$can_view_item = 'is_blocked';
 		}
 		$located = learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
+
 	}
 
 	return $located;

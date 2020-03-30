@@ -31,7 +31,7 @@ class LP_Preview_Course {
 
 			$ids = self::get_preview_courses();
 
-			if ( $ids === false ) {
+			if ( $ids === false || ( is_array( $ids ) && count( $ids ) <= 1 ) ) {
 				$title                 = __( 'Preview Course', 'learnpress' );
 				self::$_preview_course = wp_insert_post(
 					array(
@@ -121,6 +121,11 @@ class LP_Preview_Course {
 			self::$_item_id = $post_id;
 
 			$preview_course = self::get_preview_course();
+
+			if ( ! isset( $preview_course ) ) {
+				return;
+			}
+
 			$post_course    = get_post( $preview_course );
 
 			$post              = wp_cache_get( self::$_preview_course, 'posts' );

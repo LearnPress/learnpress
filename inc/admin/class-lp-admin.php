@@ -440,6 +440,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @param string $action
 		 */
 		public function filter_users( $action ) {
+			if ( ! current_user_can( 'administrator' ) ) {
+				return;
+			}
+
 			$user_id = LP_Request::get_int( 'user_id' );
 
 			if ( ! $user_id || ! get_user_by( 'id', $user_id ) ) {

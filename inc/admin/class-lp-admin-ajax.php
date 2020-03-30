@@ -38,13 +38,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'load_chart'              => false,
 				'search_course_category'  => false,
 				/////////////
-				'be_teacher'              => false,
+				//'be_teacher'              => false,
 				'custom_stats'            => false,
 				'ignore_setting_up'       => false,
 				'get_page_permalink'      => false,
 				'dummy_image'             => false,
 				'update_add_on_status'    => false,
-				'plugin_install'          => false,
+				//'plugin_install'          => false,
 				'bundle_activate_add_ons' => false,
 				'install_sample_data'     => false,
 
@@ -970,12 +970,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
+		/*
 		public static function plugin_install() {
+			if ( ! is_admin() ) {
+				return;
+			}
+
 			$plugin_name = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$response    = learn_press_install_add_on( $plugin_name );
 			learn_press_send_json( $response );
 			die();
-		}
+		}*/
 
 		public static function update_add_on_status() {
 			$plugin   = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
@@ -1032,12 +1037,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
+		/*
 		public static function be_teacher() {
 			$user_id    = get_current_user_id();
 			$be_teacher = new WP_User( $user_id );
 			$be_teacher->set_role( LP_TEACHER_ROLE );
 			die;
-		}
+		}*/
 
 		public static function ignore_setting_up() {
 			update_option( '_lpr_ignore_setting_up', 1, true );

@@ -575,8 +575,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			$blocked_items = apply_filters( 'learn-press/course-item/parse-block-statuses', $blocked_items, $course_id, $user_id );
 
 			LP_Object_Cache::set( $cache_key, $blocked_items, 'learn-press/blocked-items' );
-
-			return $blocked_items;
+ 			return $blocked_items;
 		}
 
 		/**
@@ -587,13 +586,16 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return string
 		 */
 		protected function _item_is_blocked( $user, $course, $course_item_data ) {
+
 			if ( $is_admin = in_array( 'administrator', $user->get_roles() ) ) {
 				$blocked = 'no';
 			} else if ( $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
 				$blocked = 'no';
 
-				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() !== 'click'/*$course_item_data->is_exceeded() < 0*/ ) {
+ 				// fixed option block lessons not working
+  				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() == 'click' /*$course_item_data->is_exceeded() < 0*/ &&  $user->has_course_status( $course->get_id(),'finished' )) {
 					$blocked = 'yes';
+
 				}
 			} else {
 				$blocked = 'yes';

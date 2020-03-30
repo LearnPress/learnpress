@@ -823,7 +823,7 @@ class LP_Request {
 
 LP_Request::init();
 
-// Backward compatibility for 2.x.x
+// Backward compatibility for 3.2.6.5
 class LP_Request_Handler extends LP_Request {
 
 }
