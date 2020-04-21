@@ -1,9 +1,9 @@
 === LearnPress - WordPress LMS Plugin ===  
 Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
-Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
+Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
-Tested up to: 5.3
+Tested up to: 5.4
 Stable tag: 3.2.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
