@@ -876,7 +876,8 @@ Object(_utils_extend__WEBPACK_IMPORTED_MODULE_0__["default"])('Utils', {
         url: lpGlobalSettings.ajax,
         data: {
           action: 'learnpress_create_page',
-          page_name: page_name
+          page_name: page_name,
+          'lp-settings-nonce': $('input[name=lp-settings-nonce]').val()
         },
         type: 'post',
         dataType: 'html',

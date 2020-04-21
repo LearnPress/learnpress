@@ -92,8 +92,8 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		protected function _get_items() {
 			global $wpdb;
 
-			$current_items          = array();
-			$current_items_in_order = learn_press_get_request( 'current_items' );
+			//$current_items          = array();
+			//$current_items_in_order = learn_press_get_request( 'current_items' );
 			$user                   = learn_press_get_current_user();
 
 			$term       = $this->_options['term'];
@@ -101,16 +101,17 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 			$context    = $this->_options['context'];
 			$context_id = $this->_options['context_id'];
 
+			/*
 			if ( $current_items_in_order ) {
 				foreach ( $current_items_in_order as $item ) {
-					$sql = "SELECT meta_value
+					$sql = $wpdb->prepare( "SELECT meta_value
                         FROM {$wpdb->prefix}learnpress_order_itemmeta 
                         WHERE meta_key = '_course_id' 
-                        AND learnpress_order_item_id = $item";
+                        AND learnpress_order_item_id = %d", $item );
 					$id  = $wpdb->get_results( $sql, OBJECT );
 					array_push( $current_items, $id[0]->meta_value );
 				}
-			}
+			}*/
 
 			// @since 3.0.0
 			$exclude = array_unique( (array) apply_filters( 'learn-press/modal-search-items/exclude', $this->_options['exclude'], $type, $context, $context_id ) );
@@ -266,7 +267,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		}
 
 		/**
-		 * @param array $args
+		 * @param array  $args
 		 * @param string $context
 		 * @param string $context_id
 		 *
@@ -289,7 +290,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */

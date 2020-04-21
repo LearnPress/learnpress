@@ -134,8 +134,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		public function get_format() {
 
 			if ( ! metadata_exists( 'post', $this->get_id(), 'post_format' ) ) {
-				$curd = new LP_Course_CURD();
-				$curd->update_items_format( $this->get_course()->get_id() );
+				$curd   = new LP_Course_CURD();
+				$course = $this->get_course();
+
+				if ( isset( $course ) ) {
+					$curd->update_items_format( $course->get_id() );
+				}
 			}
 			$format = get_post_meta( $this->get_id(), 'post_format', true );// ( false !== ( $format = LP_Object_Cache::get( 'item-format-' . $this->get_id(), 'learn-press/item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
 

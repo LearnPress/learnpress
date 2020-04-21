@@ -3,7 +3,7 @@
 /**
  * Class LP_User_CURD
  *
- * @since 3.0
+ * @since 3.0.1
  */
 class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
@@ -422,7 +422,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return bool
 	 */
 	public function read_course( $user_id = null, $course_id = null, $force = false ) {
-		LP_Debug::logTime( __FUNCTION__ );
+		#LP_Debug::logTime( __FUNCTION__ );
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
@@ -466,16 +466,22 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			LIMIT 0, 1
 		", LP_COURSE_CPT, $user_id, $course_id );
 
-		if ( $result = $wpdb->get_row( $query, ARRAY_A ) ) {
-			/*** TEST CACHE ***/
-			//$this->_read_course_items( $result, $force );
+		// Check is page single course
+		$isPageSingleCourse = false;
+
+		if ( learn_press_is_course() && is_single() ) {
+			$isPageSingleCourse = true;
+		}
+
+		if ( $isPageSingleCourse ) {
+			$result = $wpdb->get_row( $query, ARRAY_A );
 		} else {
 			$result = '';
 		}
 
 		LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $result, 'learn-press/user-item-courses' );
 
-		LP_Debug::logTime( __FUNCTION__ );
+		#LP_Debug::logTime( __FUNCTION__ );
 
 		return $result;
 	}
@@ -1205,13 +1211,13 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				//$orders = $this->get_orders( $user_id );
 				$query = array( 'total' => 0, 'pages' => 0, 'items' => false );
 
-//				//if ( ! $orders ) {
-//				//	throw new Exception( "Error", 0 );
-//				//}
-//
-//				//$course_ids   = array_keys( $orders );
-//				//$query_args   = $course_ids;
-//				$query_args[] = $user_id;
+				//				//if ( ! $orders ) {
+				//				//	throw new Exception( "Error", 0 );
+				//				//}
+				//
+				//				//$course_ids   = array_keys( $orders );
+				//				//$query_args   = $course_ids;
+				//				$query_args[] = $user_id;
 				$limit  = $args['limit'];
 				$where  = "WHERE 1";
 				$offset = ( $args['paged'] - 1 ) * $limit;
@@ -1325,10 +1331,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 				$query = array( 'total' => 0, 'pages' => 0, 'items' => false );
 
-//				$orders = $this->get_orders( $user_id, array(
-//					'status'         => 'completed processing cancelled',
-//					'group_by_order' => true
-//				) );
+				//				$orders = $this->get_orders( $user_id, array(
+				//					'status'         => 'completed processing cancelled',
+				//					'group_by_order' => true
+				//				) );
 
 				if ( ! $course_ids ) {
 					throw new Exception( "", 0 );
@@ -1359,27 +1365,27 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				// HAVING
 				$having = "HAVING 1";
 
-//				learn_press_debug( $wpdb->get_results( $query ) );
-//
-//				$order_format = array_fill( 0, sizeof( $valid_orders ), '%d' );
-//
-//				// SELECT
-//				$select = "SELECT ui.* ";
-//
-//				// FROM
-//				$from = "FROM {$wpdb->learnpress_user_items} ui";
-//
-//				// JOIN
-//				$join = $wpdb->prepare( "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s", LP_COURSE_CPT );
-//				$join .= $wpdb->prepare( "INNER JOIN {$wpdb->posts} o ON o.ID = ui.ref_id AND o.post_type = %s", LP_ORDER_CPT );
-//
-//				// WHERE
-//				$where = $wpdb->prepare( "WHERE 1 AND user_id = %d AND c.post_status = %s", $user_id, 'publish' );
-//				$where .= $wpdb->prepare( "AND o.post_status IN(%s)", 'lp-completed' );
-//
-//				// HAVING
-//				$having = "HAVING 1";
-//
+				//				learn_press_debug( $wpdb->get_results( $query ) );
+				//
+				//				$order_format = array_fill( 0, sizeof( $valid_orders ), '%d' );
+				//
+				//				// SELECT
+				//				$select = "SELECT ui.* ";
+				//
+				//				// FROM
+				//				$from = "FROM {$wpdb->learnpress_user_items} ui";
+				//
+				//				// JOIN
+				//				$join = $wpdb->prepare( "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s", LP_COURSE_CPT );
+				//				$join .= $wpdb->prepare( "INNER JOIN {$wpdb->posts} o ON o.ID = ui.ref_id AND o.post_type = %s", LP_ORDER_CPT );
+				//
+				//				// WHERE
+				//				$where = $wpdb->prepare( "WHERE 1 AND user_id = %d AND c.post_status = %s", $user_id, 'publish' );
+				//				$where .= $wpdb->prepare( "AND o.post_status IN(%s)", 'lp-completed' );
+				//
+				//				// HAVING
+				//				$having = "HAVING 1";
+				//
 				// ORDER BY
 				$orderby = "ORDER BY start_time DESC";
 
@@ -1518,17 +1524,17 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function query_courses_by_order( $user_id ) {
 		global $wpdb;
 
-//		$query = $wpdb->prepare( "
-//			SELECT course.ID AS course_id, `order`.ID AS order_id, `order`.post_parent AS order_parent
-//			FROM {$wpdb->posts} `order`
-//			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = `order`.ID
-//			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-//			INNER JOIN {$wpdb->posts} course ON course.ID = oim.meta_value
-//			INNER JOIN {$wpdb->postmeta} pmu ON pmu.post_id = `order`.ID AND pmu.meta_key = %s
-//			WHERE pmu.meta_value = %d
-//			ORDER BY order_id DESC
-//		", '_course_id', '_user_id', $user_id );
-//		$course_ids = $wpdb->get_col( $query );
+		//		$query = $wpdb->prepare( "
+		//			SELECT course.ID AS course_id, `order`.ID AS order_id, `order`.post_parent AS order_parent
+		//			FROM {$wpdb->posts} `order`
+		//			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = `order`.ID
+		//			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+		//			INNER JOIN {$wpdb->posts} course ON course.ID = oim.meta_value
+		//			INNER JOIN {$wpdb->postmeta} pmu ON pmu.post_id = `order`.ID AND pmu.meta_key = %s
+		//			WHERE pmu.meta_value = %d
+		//			ORDER BY order_id DESC
+		//		", '_course_id', '_user_id', $user_id );
+		//		$course_ids = $wpdb->get_col( $query );
 
 		$query         = $wpdb->prepare( "
 			SELECT item_id

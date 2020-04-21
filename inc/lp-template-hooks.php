@@ -373,7 +373,7 @@ add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_ite
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_price', 20 );
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_instructor', 25 );
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_end_meta', 30 );
-add_action( 'learn-press/after-courses-loop-item', 'learn_press_course_loop_item_buttons', 35 );
+//add_action( 'learn-press/after-courses-loop-item', 'learn_press_course_loop_item_buttons', 35 ); // Not show button action on archive courses page - tungnx
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_course_loop_item_user_progress', 40 );
 
 /**

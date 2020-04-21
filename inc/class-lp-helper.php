@@ -302,4 +302,10 @@ class LP_Helper {
 	public static function uniq(){
 
 	}
+
+	public static function getUrlCurrent() {
+		$schema = is_ssl() ? 'https://' : 'http://';
+
+		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( $_SERVER['REQUEST_URI'] );
+	}
 }

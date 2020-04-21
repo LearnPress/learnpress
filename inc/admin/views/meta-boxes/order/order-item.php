@@ -21,11 +21,11 @@
 
     </td>
     <td class="column-price align-right">
-		<?php echo learn_press_format_price( $item['total'], $currency_symbol ); ?>
+		<?php echo learn_press_format_price( isset( $item['total'] ) ? $item['total'] : 0, $currency_symbol ); ?>
     </td>
     <td class="column-quantity align-right">
         <small class="times">×</small>
-		<?php echo $item['quantity']; ?>
+		<?php echo isset( $item['quantity'] ) ? $item['quantity'] : 0; ?>
     </td>
-    <td class="column-total align-right"><?php echo learn_press_format_price( $item['total'], $currency_symbol ); ?></td>
+	<td class="column-total align-right"><?php echo learn_press_format_price( isset( $item['total'] ) ? $item['total'] : 0, $currency_symbol ); ?></td>
 </tr>

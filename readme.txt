@@ -4,7 +4,7 @@ Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
 Tested up to: 5.4
-Stable tag: 3.2.6.7
+Stable tag: 3.2.6.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,8 +199,17 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.6.8 =
+~ Fixed security: remove functions low security
+~ Fixed some minor bugs
+~ Fixed confusing "external link button" name default of course
+~ Fixed filter items of course
+~ Fixed create same name, slug page Checkout with Woo
+~ Improve performance
+
 = 3.2.6.7 (2020.03.16) =
-~ Fixed security issues (CVE-2020-7916 and CVE-2020-7917): uer logged can change role all users to Instructor
+~ Fixed security issues (CVE-2020-7916): uer logged can change role all users to Instructor
+~ Fixed security issues (CVE-2020-7917): remove function low security
 ~ Fixed error preview Assignment
 
 = 3.2.6.6 (-------) =

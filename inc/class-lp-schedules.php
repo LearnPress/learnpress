@@ -16,10 +16,10 @@ class LP_Schedules {
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
-
+		//Todo: can remove this class
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
-			add_filter( 'init', array( $this, '_update_current_user_course_expired' ) );
-			add_filter( 'init', array( $this, 'fix_bug_auto_finish_not_enrolled_course' ) );// remove this code on LP 3.2.3
+			//add_filter( 'init', array( $this, '_update_current_user_course_expired' ) );
+			//add_filter( 'init', array( $this, 'fix_bug_auto_finish_not_enrolled_course' ) );// remove this code on LP 3.2.3
 		}
 	}
 

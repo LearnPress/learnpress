@@ -345,14 +345,18 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_questions_answered( $percent = false ) {
 		$result = $this->get_results();
-		if ( $percent ) {
-			if ( $result['question_count'] ) {
-				$return = 0;
+		$return = 0;
+
+		if ( $result ) {
+			if ( $percent ) {
+				if ( $result['question_count'] ) {
+					$return = 0;
+				} else {
+					$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
+				}
 			} else {
-				$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
+				$return = $result['question_answered'];
 			}
-		} else {
-			$return = $result['question_answered'];
 		}
 
 		return $return;

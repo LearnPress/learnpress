@@ -31,27 +31,25 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$ajaxEvents = array(
 				'create_page'             => false,
-				'plugin_action'           => false,
+				//'plugin_action'           => false,
 				'modal_search_items'      => false,
 				'dismiss_notice'          => false,
 				'search_users'            => false,
 				'load_chart'              => false,
 				'search_course_category'  => false,
 				/////////////
-				//'be_teacher'              => false,
 				'custom_stats'            => false,
 				'ignore_setting_up'       => false,
 				'get_page_permalink'      => false,
 				'dummy_image'             => false,
-				'update_add_on_status'    => false,
-				//'plugin_install'          => false,
+				//'update_add_on_status'    => false,
 				'bundle_activate_add_ons' => false,
 				'install_sample_data'     => false,
 
 				// Remove Notice
 				'remove_notice_popup'     => false,
 				// Update order status
-				'update_order_status'     => false,
+				//'update_order_status'     => false,
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -315,9 +313,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
+		 * @param LP_Admin_Editor $editor
+		 *
 		 * @since 3.0.2
 		 *
-		 * @param LP_Admin_Editor $editor
 		 */
 		public static function admin_editor( &$editor ) {
 			$result = $editor->dispatch();
@@ -832,13 +831,25 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Create a new page with the title passed via $_REQUEST
 		 */
 		public static function create_page() {
-			$page_name = ! empty( $_REQUEST['page_name'] ) ? $_REQUEST['page_name'] : '';
-			$response  = array();
-			if ( $page_name ) {
+			$response = array( 'code' => 0, 'message' => '' );
 
+			# Verify
+			if ( ! is_admin() || ! isset( $_POST['lp-settings-nonce'] )
+				|| ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lp-settings-nonce'] ) ), 'lp-settings' )
+				|| empty( $_POST['page_name'] )
+			) {
+				$response['message'] = 'Request invalid';
+				learn_press_send_json( $response );
+			}
+
+			$page_name = sanitize_text_field( wp_unslash( $_POST['page_name'] ) );
+
+			if ( $page_name ) {
 				if ( $page_id = LP_Helper::create_page( $page_name ) ) {
-					$response['page'] = get_post( $page_id );
-					$html             = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
+					$response['code']    = 1;
+					$response['message'] = 'create page success';
+					$response['page']    = get_post( $page_id );
+					$html                = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
 					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
@@ -971,24 +982,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/*
-		public static function plugin_install() {
-			if ( ! is_admin() ) {
-				return;
-			}
-
-			$plugin_name = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
-			$response    = learn_press_install_add_on( $plugin_name );
-			learn_press_send_json( $response );
-			die();
-		}*/
-
 		public static function update_add_on_status() {
 			$plugin   = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$t        = ! empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
 			$response = array();
+
 			if ( ! current_user_can( 'activate_plugins' ) ) {
 				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.', 'learnpress' );
+				wp_send_json( $response );
 			}
+
 			if ( $plugin && $t ) {
 				if ( $t == 'activate' ) {
 					activate_plugin( $plugin, false, is_network_admin() );
@@ -997,11 +1000,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 				$is_activate        = is_plugin_active( $plugin );
 				$response['status'] = $is_activate ? 'activate' : 'deactivate';
-
 			}
+
 			wp_send_json( $response );
-			die();
-		}
+		}*/
 
 		/**
 		 * Output the image to browser with text and params passed via $_GET
@@ -1018,10 +1020,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = ! empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-            <a href="<?php echo get_edit_post_link( $page_id ); ?>"
-               target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-            <a href="<?php echo get_permalink( $page_id ); ?>"
-               target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_edit_post_link( $page_id ); ?>"
+			   target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_permalink( $page_id ); ?>"
+			   target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}
@@ -1037,14 +1039,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		/*
-		public static function be_teacher() {
-			$user_id    = get_current_user_id();
-			$be_teacher = new WP_User( $user_id );
-			$be_teacher->set_role( LP_TEACHER_ROLE );
-			die;
-		}*/
-
 		public static function ignore_setting_up() {
 			update_option( '_lpr_ignore_setting_up', 1, true );
 			die;
@@ -1053,8 +1047,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function remove_notice_popup() {
 
 			if ( isset( $_POST['action'] ) && $_POST['action'] === 'learnpress_remove_notice_popup'
-			     && isset( $_POST['slug'] ) && ! empty( $_POST['slug'] )
-			     && isset( $_POST['user'] ) && ! empty( $_POST['user'] )
+				&& isset( $_POST['slug'] ) && ! empty( $_POST['slug'] )
+				&& isset( $_POST['user'] ) && ! empty( $_POST['user'] )
 			) {
 
 				$slug = 'learnpress_notice_' . $_POST['slug'] . '_' . $_POST['user'];
@@ -1067,20 +1061,48 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function update_order_status() {
+			$response = array( 'success' => false, 'message' => 'Request invalid' );
+
+			if ( ! current_user_can( 'administrator' ) ) {
+				learn_press_send_json( $response );
+			}
 
 			$order_id = learn_press_get_request( 'order_id' );
 			$value    = learn_press_get_request( 'value' );
 
-			$order = array(
-				'ID'          => $order_id,
-				'post_status' => $value,
-			);
+			if ( empty( $order_id ) || empty( $value ) ) {
+				learn_press_send_json( $response );
+			}
+
+			$order_id = absint( $order_id );
+			$value    = sanitize_text_field( $value );
+
+			$lp_order = get_post( $order_id );
+
+			if ( ! ( $lp_order instanceof WP_Post ) ) {
+				learn_press_send_json( $response );
+			}
+
+			if ( $lp_order->post_type != 'lp_order' ) {
+				learn_press_send_json( $response );
+			}
+
+			$statusValidArr = array( 'lp-completed', 'lp-cancelled', 'lp-pending', 'lp-refunded', 'lp-cancelled', 'lp-processing' );
+
+			if ( ! in_array( $value, $statusValidArr ) ) {
+				learn_press_send_json( $response );
+			}
+
+			if ( $value ) {
+				$order = array(
+					'ID'          => $order_id,
+					'post_status' => $value,
+				);
+			}
 
 			wp_update_post( $order ) ? $response['success'] = true : $response['success'] = false;
 
 			learn_press_send_json( $response );
-
-			die();
 		}
 
 		public static function upload_user_avatar() {

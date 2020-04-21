@@ -282,7 +282,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 					$all_themes[ $theme['id'] ] = $theme;
 				}
 
-				if ( $education_themes = learn_press_get_education_themes() ) {
+				if ( function_exists('learn_press_get_education_themes') && $education_themes = learn_press_get_education_themes() ) {
 					$themes['other']     = array_diff_key( $all_themes, $education_themes );
 					$themes['education'] = array_diff_key( $all_themes, $themes['other'] );
 				} else {

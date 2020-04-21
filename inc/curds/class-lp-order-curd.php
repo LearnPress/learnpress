@@ -94,6 +94,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 */
+	/* old function - comment by tungnx
 	public function read_items( $order ) {
 		global $wpdb;
 		$screen = function_exists('get_current_screen')? get_current_screen():null;
@@ -126,6 +127,61 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $items;// apply_filters( 'learn_press_order_get_items', $items, $this );
+	} */
+
+	/**
+	 * Get order's items
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return mixed
+	 * @author tungnx
+	 */
+	public function read_items( $order ) {
+		global $wpdb;
+
+		$table_order_items     = $wpdb->learnpress_order_items;
+		$table_order_item_meta = $wpdb->learnpress_order_itemmeta;
+
+		$query = $wpdb->prepare( "SELECT o_item.order_item_id, o_item.order_item_name, o_itemmeta.meta_value, o_itemmeta.meta_key
+					From $table_order_items as o_item
+					INNER JOIN $table_order_item_meta as o_itemmeta
+					ON o_item.order_item_id = o_itemmeta.learnpress_order_item_id
+					WHERE o_item.order_id = %d 
+					LIMIT %d",
+			$order->get_id(), 4 * 50 );
+
+		//Todo: write query to function and call ajax load more
+		$order_item_metas = $wpdb->get_results( $query, OBJECT );
+
+		$items = array();
+
+		foreach ( $order_item_metas as $order_item_meta ) {
+			if ( ! array_key_exists( $order_item_meta->order_item_id, $items ) ) {
+				$items[ $order_item_meta->order_item_id ]         = array();
+				$items[ $order_item_meta->order_item_id ]['id']   = $order_item_meta->order_item_id;
+				$items[ $order_item_meta->order_item_id ]['name'] = isset( $order_item_meta->order_item_name ) ? $order_item_meta->order_item_name : '';
+			}
+
+			switch ( $order_item_meta->meta_key ) {
+				case '_course_id':
+					$items[ $order_item_meta->order_item_id ]['course_id'] = $order_item_meta->meta_value;
+					break;
+				case '_quantity':
+					$items[ $order_item_meta->order_item_id ]['quantity'] = $order_item_meta->meta_value;
+					break;
+				case '_subtotal':
+					$items[ $order_item_meta->order_item_id ]['subtotal'] = $order_item_meta->meta_value;
+					break;
+				case '_total':
+					$items[ $order_item_meta->order_item_id ]['total'] = $order_item_meta->meta_value;
+					break;
+				default:
+					$items[ $order_item_meta->order_item_id ][ $order_item_meta->meta_key ] = $order_item_meta->meta_value;
+			}
+		}
+
+		return $items; // apply_filters( 'learn_press_order_get_items', $items, $this );
 	}
 
 	public function get_item_meta( &$item ) {
@@ -364,13 +420,13 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			WHERE order_id = %d 
 		", $from );
 		if ( $items = $order->get_items() ) {
-//
-//
-//			$sql = $wpdb->prepare( "
-//				SELECT order_item_id, oim.meta_value AS course_id
-//				FROM {$wpdb->learnpress_order_itemmeta} oim
-//				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-//			", '_course_id' );
+			//
+			//
+			//			$sql = $wpdb->prepare( "
+			//				SELECT order_item_id, oim.meta_value AS course_id
+			//				FROM {$wpdb->learnpress_order_itemmeta} oim
+			//				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+			//			", '_course_id' );
 
 			if ( ! $to_order = learn_press_get_order( $to ) ) {
 				return false;
@@ -417,9 +473,9 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @param LP_Order $order
 	 *
+	 * @return mixed
 	 * @throws Exception
 	 *
-	 * @return mixed
 	 */
 	public function load( &$order ) {
 		$the_id = $order->get_id();

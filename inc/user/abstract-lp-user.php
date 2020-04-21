@@ -5,7 +5,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 /**
@@ -364,7 +364,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				 */
 				$do_start = apply_filters( 'learn-press/before-start-quiz', true, $quiz_id, $course_id, $this->get_id() );
 
-//				//@deprecated
+				//@deprecated
 				$do_start = apply_filters( 'learn_press_before_user_start_quiz', $do_start, $quiz_id, $course_id, $this->get_id() );
 
 				if ( ! $do_start ) {
@@ -506,7 +506,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! apply_filters( 'learn-press/user/before-retake-quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
 				return false;
 			}
-			
+
 			$return = false;
 			try {
 
@@ -580,7 +580,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-redone', $quiz_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 				do_action( 'learn-press/user/retake-quiz-failure', $quiz_id, $course_id, $this->get_id() );
 			}
@@ -723,9 +724,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $item_id
 		 * @param int $course_id
 		 *
+		 * @return mixed
 		 * @since 3.0.0
 		 *
-		 * @return mixed
 		 */
 		public function get_item_grade( $item_id, $course_id = 0 ) {
 			if ( ! $course_id ) {
@@ -997,8 +998,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Mark question that user has checked.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param int $question_id
 		 * @param int $quiz_id
 		 * @param int $course_id
@@ -1089,9 +1088,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Get history of a quiz for an user
 		 *
-		 * @param int $quiz_id
-		 * @param int $course_id
-		 * @param int $history_id
+		 * @param int  $quiz_id
+		 * @param int  $course_id
+		 * @param int  $history_id
 		 * @param bool $force
 		 *
 		 * @return mixed|null|void
@@ -2087,16 +2086,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * 60   => User has already enrolled course
 		 * 70   => User has already finished course
 		 *
-		 * @since 3.1.0
-		 *
 		 * @param int $course_id
 		 *
 		 * @return int
+		 * @since  3.2.6.8
+		 * @author tungnx
 		 */
-		public function get_course_access_level( $course_id ) {if(isset($_GET['db_pvt'])){echo'<pre>';print_r($course_id);die;}
-
+		public function get_course_access_level( $course_id ) {
 			$access_level = LP_Object_Cache::get( 'course-' . $course_id . '-' . $this->get_id(), 'learn-press/course-access-levels' );
-			if ( false === $access_level) {
+
+			if ( false === $access_level ) {
 
 				$course = learn_press_get_course( $course_id );
 
@@ -2113,12 +2112,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				// Default level
-				$access_level = apply_filters( 'learn-press/course-access-level-default', $access_level, $course_id, $this->get_id() );
+				$access_level       = apply_filters( 'learn-press/course-access-level-default', $access_level, $course_id, $this->get_id() );
+				$status_course_user = $this->get_status_course_of_user( $course_id );
 
-				if ( ( $order = $this->get_course_order( $course_id, 'object', true ) ) ) {
-
-					switch ( $order->get_status() ) {
-						case 'completed':
+				if ( ( $status_course_user && isset( $status_course_user->course_status ) && isset( $status_course_user->order_status ) ) ) {
+					switch ( $status_course_user->order_status ) {
+						case 'lp-completed':
 							$access_level = LP_COURSE_ACCESS_LEVEL_50;
 							break;
 						default:
@@ -2126,15 +2125,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 
 					if ( $access_level === LP_COURSE_ACCESS_LEVEL_50 ) {
-						if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
-							switch ( $course_data->get_status() ) {
-								case 'enrolled':
-									$access_level = LP_COURSE_ACCESS_LEVEL_60;
-									break;
-								case 'finished':
-									$access_level = LP_COURSE_ACCESS_LEVEL_70;
-									break;
-							}
+						switch ( $status_course_user->course_status ) {
+							case 'enrolled':
+								$access_level = LP_COURSE_ACCESS_LEVEL_60;
+								break;
+							case 'finished':
+								$access_level = LP_COURSE_ACCESS_LEVEL_70;
+								break;
 						}
 					}
 				}
@@ -2174,13 +2171,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return mixed
 		 */
+		/*
 		public function set_course_access_level( $access_level, $course_id ) {
 			if ( $access_level !== $this->get_course_access_level( $course_id ) ) {
 				LP_Object_Cache::set( 'course-' . $course_id . '-' . $this->get_id(), $access_level, 'learn-press/course-access-levels' );
 			}
 
 			return $access_level;
-		}
+		}*/
 
 		/**
 		 * Check if user have an access-level.
@@ -2621,7 +2619,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * @param string $type
-		 * @param int $size
+		 * @param int    $size
 		 *
 		 * @return false|string
 		 */
@@ -2794,6 +2792,47 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_display_name() {
 			return $this->get_data( 'display_name' );
+		}
+
+		/**
+		 * Get status course's user
+		 *
+		 * @param int $course_id
+		 *
+		 * @return array|object|void|null
+		 * @since 3.2.6.8
+		 * @author tungnx
+		 */
+		public function get_status_course_of_user( $course_id = 0 ) {
+			//Todo: add cache get_status_course_of_user
+			global $wpdb;
+
+			$user_id = get_current_user_id();
+
+			if ( $user_id > 0 ) {
+				$table_learnpress_user_items = $wpdb->prefix . 'learnpress_user_items';
+				$table_post                  = $wpdb->posts;
+
+				$query = $wpdb->prepare(
+					"SELECT u_it.status as course_status, p.post_status as order_status
+						FROM $table_learnpress_user_items AS u_it
+						INNER JOIN $table_post AS p
+						ON u_it.ref_id = p.ID
+						WHERE u_it.user_id = %d
+						AND u_it.item_id = %d
+						AND u_it.item_type = %s
+						AND u_it.ref_type = %s
+						ORDER BY p.ID DESC
+						LIMIT 1
+						"
+					, $user_id, $course_id, LP_COURSE_CPT, LP_ORDER_CPT );
+
+				$result = $wpdb->get_row( $query );
+
+				return $result;
+			}
+
+			return null;
 		}
 	}
 }

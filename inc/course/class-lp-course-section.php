@@ -192,7 +192,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			return $items;
 		}
 
-		if ( $type || ! $preview ) {
+		if ( ! empty( $type ) ) {
 			$filtered_items = array();
 
 			if ( $type ) {
@@ -207,7 +207,8 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 						continue;
 					}
 				}
-				if ( ! $type || $type && in_array( learn_press_get_post_type( $item->get_id() ), $type ) ) {
+
+				if ( in_array( learn_press_get_post_type( $item->get_id() ), $type ) ) {
 					$filtered_items[] = $item;
 				}
 			}

@@ -347,7 +347,11 @@ class LP_Plugins_Helper {
 	 * @return bool
 	 */
 	public static function _filter_plugin( $plugin ) {
-		return $plugin && preg_match( '!^learnpress-.*!', $plugin->slug );
+		if ( ! empty( $plugin ) ) {
+			return $plugin && preg_match( '!^learnpress-.*!', $plugin->slug );
+		} else {
+			return false;
+		}
 	}
 
 	/**

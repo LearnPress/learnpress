@@ -2978,9 +2978,9 @@ function learn_press_static_pages( $name = false ) {
 	$pages = apply_filters(
 		'learn-press/static-pages',
 		array(
-			'checkout'         => _x( 'Checkout', 'static-page-name', 'learnpress' ),
+			'checkout'         => _x( 'Lp Checkout', 'static-page-name', 'learnpress' ),
 			'courses'          => _x( 'Courses', 'static-page-name', 'learnpress' ),
-			'profile'          => _x( 'Profile', 'static-page-name', 'learnpress' ),
+			'profile'          => _x( 'Lp Profile', 'static-page-name', 'learnpress' ),
 			'become_a_teacher' => _x( 'Become a Teacher', 'static-page-name', 'learnpress' )
 		)
 	);
