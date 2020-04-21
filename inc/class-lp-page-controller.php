@@ -305,12 +305,15 @@ class LP_Page_Controller {
 			// If there is no template is valid in theme or plugin
 			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
 				// Get template of wp page.
-				$template = get_page_template();
+  				$template = get_page_template();
+				if(get_option( 'template' ) == 'twentytwenty' ){
+					$template = get_singular_template();
+				}
+
 			} else {
 				$template = $lp_template;
 			}
-
-			if ( $this->_is_single() ) {
+ 			if ( $this->_is_single() ) {
 				global $post;
 				setup_postdata( $post );
 				add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
@@ -530,9 +533,11 @@ class LP_Page_Controller {
 			// PHP 7
 			LP()->wp_query = clone $wp_query;
 
-			$template = get_page_template();
-
-			/**
+ 			$template = get_page_template();
+			if(get_option( 'template' ) == 'twentytwenty' ){
+				$template = get_singular_template();
+			}
+    			/**
 			 * Fix in case a static page is used for archive course page and
 			 * it's slug is the same with course archive slug (courses).
 			 * In this case, WP know it as a course archive page not a
