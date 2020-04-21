@@ -1942,6 +1942,12 @@ ul .clearfix {
   border-left: 0;
   border-right: 0;
   margin-bottom: -1px; }
+#admin-editor-lp_course .lp-course-curriculum .section.close{
+  color: inherit;
+  float: none;
+  font-size: inherit;
+  font-weight: inherit;
+}
   #admin-editor-lp_course .lp-course-curriculum .section:first-child {
     border-top: 0; }
   #admin-editor-lp_course .lp-course-curriculum .section.new-section {
