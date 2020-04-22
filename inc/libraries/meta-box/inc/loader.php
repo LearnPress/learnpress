@@ -102,18 +102,18 @@ class RWMB_Loader {
 		$wpml->init();
 
 		// Update.
-		$update_option  = new RWMB_Update_Option();
-		$update_checker = new RWMB_Update_Checker( $update_option );
-		$update_checker->init();
-		$update_settings = new RWMB_Update_Settings( $update_checker, $update_option );
-		$update_settings->init();
-		$update_notification = new RWMB_Update_Notification( $update_checker, $update_option );
-		$update_notification->init();
-
-		if ( is_admin() ) {
-			$about = new RWMB_About( $update_checker );
-			$about->init();
-		}
+//		$update_option  = new RWMB_Update_Option();
+//		$update_checker = new RWMB_Update_Checker( $update_option );
+//		$update_checker->init();
+//		$update_settings = new RWMB_Update_Settings( $update_checker, $update_option );
+//		$update_settings->init();
+//		$update_notification = new RWMB_Update_Notification( $update_checker, $update_option );
+//		$update_notification->init();
+//
+//		if ( is_admin() ) {
+//			$about = new RWMB_About( $update_checker );
+//			$about->init();
+//		}
 
 		// Public functions.
 		require_once RWMB_INC_DIR . 'functions.php';
