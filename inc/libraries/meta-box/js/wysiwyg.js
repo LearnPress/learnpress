@@ -1,46 +1,75 @@
-/* global tinymce, quicktags */
-
-jQuery( function ( $ ) {
+( function ( $, wp, window, rwmb ) {
 	'use strict';
 
 	/**
-	 * Update date picker element
-	 * Used for static & dynamic added elements (when clone)
+	 * Transform textarea into wysiwyg editor.
 	 */
-	function update() {
+	function transform() {
 		var $this = $( this ),
 			$wrapper = $this.closest( '.wp-editor-wrap' ),
-			id = $this.attr( 'id' );
+			id = $this.attr( 'id' ),
+			isInBlock = $this.closest( '.wp-block' ).length > 0;
 
 		// Ignore existing editor.
-		if ( tinyMCEPreInit.mceInit[id] ) {
+		if ( ! isInBlock && tinyMCEPreInit.mceInit[id] ) {
 			return;
 		}
 
-		// Get id of the original editor to get its tinyMCE and quick tags settings
-		var originalId = getOriginalId( $this );
-		if ( ! originalId ) {
-			return;
+		// Update the ID attribute if the editor is in a new block.
+		if ( isInBlock ) {
+			id = id + '_' + rwmb.uniqid();
+			$this.attr( 'id', id );
 		}
 
 		// Update the DOM
 		$this.show();
 		updateDom( $wrapper, id );
 
+		// Get id of the original editor to get its tinyMCE and quick tags settings
+		var originalId = getOriginalId( $this ),
+			settings = getEditorSettings( originalId );
+
 		// TinyMCE
-		if ( tinyMCEPreInit.mceInit.hasOwnProperty( originalId ) ) {
-			var settings = tinyMCEPreInit.mceInit[originalId],
-				editor = new tinymce.Editor(id, settings, tinymce.EditorManager);
+		if ( window.tinymce ) {
+			var editor = new tinymce.Editor(id, settings.tinymce, tinymce.EditorManager);
 			editor.render();
+
+			editor.on( 'keyup change', function() {
+				editor.save();
+				$this.trigger( 'change' );
+			} );
 		}
 
 		// Quick tags
-		if ( typeof quicktags === 'function' && tinyMCEPreInit.qtInit.hasOwnProperty( originalId ) ) {
-			var qtSettings = tinyMCEPreInit.qtInit[originalId];
-			qtSettings.id = id;
-			quicktags( qtSettings );
+		if ( window.quicktags ) {
+			settings.quicktags.id = id;
+			quicktags( settings.quicktags );
 			QTags._buttonsInit();
 		}
+	}
+
+	function getEditorSettings( id ) {
+		var settings = getDefaultEditorSettings();
+
+		if ( id && tinyMCEPreInit.mceInit.hasOwnProperty( id ) ) {
+			settings.tinymce = tinyMCEPreInit.mceInit[id];
+		}
+		if ( id && window.quicktags && tinyMCEPreInit.qtInit.hasOwnProperty( id ) ) {
+			settings.quicktags = tinyMCEPreInit.qtInit[id];
+		}
+
+		return settings;
+	}
+
+	function getDefaultEditorSettings() {
+		var settings = wp.editor.getDefaultSettings();
+
+		settings.tinymce.toolbar1 = 'formatselect,bold,italic,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,fullscreen,wp_adv';
+		settings.tinymce.toolbar2 = 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help';
+
+		settings.quicktags.buttons = 'strong,em,link,block,del,ins,img,ul,ol,li,code,more,close';
+
+		return settings;
 	}
 
 	/**
@@ -89,6 +118,37 @@ jQuery( function ( $ ) {
 		        .find( '.quicktags-toolbar' ).attr( 'id', 'qt_' + id + '_toolbar' ).html( '' );
 	}
 
-	$( '.rwmb-wysiwyg' ).each( update );
-	$( document ).on( 'clone', '.rwmb-wysiwyg', update );
-} );
+	/**
+	 * Handles updating tiny mce instances when saving a gutenberg post.
+	 * https://metabox.io/support/topic/data-are-not-saved-into-the-database/
+	 * https://github.com/WordPress/gutenberg/issues/7176
+	 */
+	function ensureSave() {
+		if ( ! wp.data || ! wp.data.hasOwnProperty( 'subscribe' ) || ! window.tinyMCE ) {
+			return;
+		}
+		wp.data.subscribe( function() {
+			var editor = wp.data.hasOwnProperty( 'select' ) ? wp.data.select( 'core/editor' ) : {};
+
+			if ( editor && editor.isSavingPost && editor.isSavingPost() ) {
+				window.tinyMCE.triggerSave();
+			}
+		} );
+	}
+
+	function init( e ) {
+		$( e.target ).find( '.rwmb-wysiwyg' ).each( transform );
+	}
+
+	ensureSave();
+	rwmb.$document
+		.on( 'mb_blocks_edit', init )
+		.on( 'mb_init_editors', init )
+		.on( 'clone', '.rwmb-wysiwyg', function() {
+			/*
+			 * Transform a textarea to an editor is a heavy task.
+			 * Moving it to the end of task queue with setTimeout makes cloning faster.
+			 */
+			setTimeout( transform.bind( this ), 0 );
+		} );
+} )( jQuery, wp, window, rwmb );

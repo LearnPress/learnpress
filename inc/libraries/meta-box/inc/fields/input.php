@@ -10,6 +10,13 @@
  */
 abstract class RWMB_Input_Field extends RWMB_Field {
 	/**
+	 * Enqueue scripts and styles.
+	 */
+	public static function admin_enqueue_scripts() {
+		wp_enqueue_style( 'rwmb-input', RWMB_CSS_URL . 'input.css', '', RWMB_VER );
+	}
+
+	/**
 	 * Get field HTML.
 	 *
 	 * @param mixed $meta  Meta value.
@@ -17,8 +24,33 @@ abstract class RWMB_Input_Field extends RWMB_Field {
 	 * @return string
 	 */
 	public static function html( $meta, $field ) {
+		$output = '';
+
+		$wrapper_class = 'rwmb-input-group';
+		if ( version_compare( get_bloginfo( 'version' ), '5.3', '>=' ) ) {
+			$wrapper_class .= ' rwmb-input-dark';
+		}
+
+		if ( $field['prepend'] || $field['append'] ) {
+			$output = "<div class='$wrapper_class'>";
+		}
+
+		if ( $field['prepend'] ) {
+			$output .= '<span class="rwmb-input-group-prepend">' . esc_html( $field['prepend'] ) . '</span>';
+		}
+
 		$attributes = self::call( 'get_attributes', $field, $meta );
-		return sprintf( '<input %s>%s', self::render_attributes( $attributes ), self::datalist( $field ) );
+		$output    .= sprintf( '<input %s>%s', self::render_attributes( $attributes ), self::datalist( $field ) );
+
+		if ( $field['append'] ) {
+			$output .= '<span class="rwmb-input-group-append">' . esc_html( $field['append'] ) . '</span>';
+		}
+
+		if ( $field['prepend'] || $field['append'] ) {
+			$output .= '</div>';
+		}
+
+		return $output;
 	}
 
 	/**
@@ -36,6 +68,8 @@ abstract class RWMB_Input_Field extends RWMB_Field {
 				'size'         => 30,
 				'datalist'     => false,
 				'readonly'     => false,
+				'prepend'      => '',
+				'append'       => '',
 			)
 		);
 		if ( $field['datalist'] ) {

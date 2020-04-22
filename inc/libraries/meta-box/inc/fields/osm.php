@@ -15,12 +15,13 @@ class RWMB_OSM_Field extends RWMB_Field {
 	 */
 	public static function admin_enqueue_scripts() {
 		// Because map is a hosted service, it's ok to use hosted Leaflet scripts.
-		wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css', array(), '1.3.1' );
-		wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js', array(), '1.3.1', true );
+		wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.5.1/dist/leaflet.css', array(), '1.5.1' );
+		wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.5.1/dist/leaflet.js', array(), '1.5.1', true );
 
 		wp_enqueue_style( 'rwmb-osm', RWMB_CSS_URL . 'osm.css', array( 'leaflet' ), RWMB_VER );
-		wp_enqueue_script( 'rwmb-osm', RWMB_JS_URL . 'osm.js', array( 'jquery', 'leaflet' ), RWMB_VER, true );
-		self::localize_script(
+		wp_enqueue_script( 'rwmb-osm', RWMB_JS_URL . 'osm.js', array( 'jquery', 'jquery-ui-autocomplete', 'leaflet' ), RWMB_VER, true );
+
+		RWMB_Helpers_Field::localize_script_once(
 			'rwmb-osm',
 			'RWMB_Osm',
 			array(
@@ -53,13 +54,6 @@ class RWMB_OSM_Field extends RWMB_Field {
 			esc_attr( $field['field_name'] ),
 			esc_attr( $meta )
 		);
-
-		if ( $field['address_field'] ) {
-			$html .= sprintf(
-				'<button class="button rwmb-osm-goto-address-button">%s</button>',
-				esc_html__( 'Find Address', 'meta-box' )
-			);
-		}
 
 		$html .= '</div>';
 
@@ -107,7 +101,7 @@ class RWMB_OSM_Field extends RWMB_Field {
 
 	/**
 	 * Output the field value.
-	 * Display Google maps.
+	 * Display Open Street Map using Leaflet
 	 *
 	 * @param  array    $field   Field parameters.
 	 * @param  array    $args    Additional arguments for the map.
@@ -145,22 +139,23 @@ class RWMB_OSM_Field extends RWMB_Field {
 				'marker_title' => '', // Marker title, when hover.
 				'info_window'  => '', // Content of info window (when click on marker). HTML allowed.
 				'js_options'   => array(),
+				'zoom'         => $zoom,
 			)
 		);
 
-		wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css', array(), '1.3.1' );
-		wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js', array(), '1.3.1', true );
+		wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.5.1/dist/leaflet.css', array(), '1.5.1' );
+		wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.5.1/dist/leaflet.js', array(), '1.5.1', true );
 		wp_enqueue_script( 'rwmb-osm-frontend', RWMB_JS_URL . 'osm-frontend.js', array( 'jquery', 'leaflet' ), RWMB_VER, true );
 
 		/*
 		 * More Open Street Map options
-		 * @link https://leafletjs.com/reference-1.3.0.html#map-option
+		 * @link https://leafletjs.com/reference-1.5.0.html#map-option
 		 */
 		$args['js_options'] = wp_parse_args(
 			$args['js_options'],
 			array(
 				// Default to 'zoom' level set in admin, but can be overwritten.
-				'zoom' => $zoom,
+				'zoom' => $args['zoom'],
 			)
 		);
 
