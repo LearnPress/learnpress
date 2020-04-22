@@ -303,6 +303,13 @@ class LP_Helper {
 
 	}
 
+	/**
+	 * Get the current url
+	 *
+	 * @return string
+	 * @since  3.2.6.8
+	 * @author tungnx
+	 */
 	public static function getUrlCurrent() {
 		$schema = is_ssl() ? 'https://' : 'http://';
 

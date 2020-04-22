@@ -818,6 +818,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
+		/*
+		 * comment by tungnnx
+		 * @reason not uses - low security
+		 * @since 3.2.6.8
 		public static function plugin_action() {
 			$url = learn_press_get_request( 'url' );
 			ob_start();
@@ -825,7 +829,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			ob_get_clean();
 			echo wp_remote_get( admin_url( 'admin.php?page=learn-press-addons&tab=installed' ) );
 			die();
-		}
+		}*/
 
 		/**
 		 * Create a new page with the title passed via $_REQUEST
@@ -833,8 +837,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function create_page() {
 			$response = array( 'code' => 0, 'message' => '' );
 
-			# Verify
-			if ( ! is_admin() || ! isset( $_POST['lp-settings-nonce'] )
+			/**
+			 * Check valid
+			 *
+			 * 1. Capability - user can edit pages (add\edit\delete)
+			 * 2. Check nonce return true
+			 * 3. param post page_name not empty
+			 *
+			 * @since  3.2.6.8
+			 * @author tungnx
+			 */
+			if ( ! current_user_can( 'edit_pages' ) || ! isset( $_POST['lp-settings-nonce'] )
 				|| ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lp-settings-nonce'] ) ), 'lp-settings' )
 				|| empty( $_POST['page_name'] )
 			) {
@@ -982,6 +995,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/*
+		 * comment by tungnnx
+		 * @reason not use
+		 * @since 3.2.6.8
 		public static function update_add_on_status() {
 			$plugin   = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$t        = ! empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
@@ -1060,6 +1076,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 		}
 
+		/**
+		 * @editBy tungnx
+		 * @reason fix security, anyone can modify status of any post
+		 *
+		 * @since  3.2.6.8
+		 */
 		public static function update_order_status() {
 			$response = array( 'success' => false, 'message' => 'Request invalid' );
 

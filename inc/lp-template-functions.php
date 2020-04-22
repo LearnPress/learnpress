@@ -1098,15 +1098,6 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 overflow: hidden;
             }
 
-            body {
-                opacity: 0;
-
-            }
-
-            body.course-item-popup #wpadminbar {
-                _display: none;
-            }
-
             body.course-item-popup #learn-press-course-curriculum {
                 position: fixed;
                 top: 60px;
