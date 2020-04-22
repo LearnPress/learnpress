@@ -33,9 +33,7 @@ jQuery( function( $ ) {
 
 			// Set marker icon
 			if ( options.marker_icon ) {
-				markerOptions.icon = L.icon( {
-					iconUrl: options.marker_icon
-				} );
+				markerOptions.icon = L.icon( options.marker_icon );
 			}
 
 			var marker = L.marker( center, markerOptions ).addTo( map )

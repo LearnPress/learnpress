@@ -1,4 +1,6 @@
-( function ( $, rwmb ) {
+window.rwmb = window.rwmb || {};
+
+jQuery( function ( $ ) {
 	'use strict';
 
 	var views = rwmb.views = rwmb.views || {},
@@ -27,25 +29,19 @@
 	 * Initialize image fields
 	 */
 	function initImageField() {
-		var $this = $( this ),
-			view = $this.data( 'view' );
-
-		if ( view ) {
-			return;
-		}
-
-		view = new ImageField( { input: this } );
-
-		$this.siblings( '.rwmb-media-view' ).remove();
-		$this.after( view.el );
-		$this.data( 'view', view );
+		var view = new ImageField( { input: this } );
+		$( this ).after( view.el );
 	}
 
-	function init( e ) {
-		$( e.target ).find( '.rwmb-image_advanced' ).each( initImageField );
+	/**
+	 * Remove views for uploaded images.
+	 */
+	function removeView() {
+		$( this ).siblings( '.rwmb-media-view' ).remove();
 	}
 
-	rwmb.$document
-		.on( 'mb_ready', init )
-		.on( 'clone', '.rwmb-image_advanced', initImageField );
-} )( jQuery, rwmb );
+	$( '.rwmb-image_advanced' ).each( initImageField );
+	$( document )
+		.on( 'clone', '.rwmb-image_advanced', removeView )
+		.on( 'after_clone', '.rwmb-image_advanced', initImageField );
+} );

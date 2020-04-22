@@ -124,10 +124,9 @@ class RWMB_Key_Value_Field extends RWMB_Text_Field {
 	 * @return array
 	 */
 	public static function normalize( $field ) {
-		$field['clone']    = true;
-		$field['multiple'] = true;
-		$field             = parent::normalize( $field );
-
+		$field                       = parent::normalize( $field );
+		$field['clone']              = true;
+		$field['multiple']           = true;
 		$field['attributes']['type'] = 'text';
 		$field['placeholder']        = wp_parse_args(
 			(array) $field['placeholder'],

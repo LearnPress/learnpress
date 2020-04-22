@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.6.9 =
+~ Revert library meta-box to v4.15.7
+
 = 3.2.6.8 =
 ~ Fixed security: remove functions low security
 ~ Fixed some minor bugs

@@ -1,8 +1,5 @@
 .rwmb-background-row {
 	margin-bottom: 5px;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
 }
 .rwmb-background-wrapper .wp-picker-container {
 	position: relative;
@@ -15,7 +12,6 @@
 	min-width: 255px;
 }
 .rwmb-background-wrapper .rwmb-select {
-	flex: 1;
-	margin-bottom: 5px;
-	max-width: 100%;
+	width: 49%;
+	max-width: 230px;
 }

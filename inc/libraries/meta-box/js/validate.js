@@ -7,15 +7,10 @@ jQuery( function ( $ ) {
 			$( '#publish' ).removeClass( 'button-primary-disabled' );
 			$( '#ajax-loading' ).attr( 'style', '' );
 			$form.siblings( '#message' ).remove();
-			$form.before( '<div id="message" class="notice notice-error is-dismissible"><p>' + rwmbValidate.summaryMessage + '</p></div>' );
-
-			// Custom event for showing error fields inside tabs/hidden divs. Use setTimeout() to run after error class is added to inputs.
-			setTimeout( function() {
-				$form.trigger( 'after_validate' );
-			}, 200 );
+			$form.before( '<div id="message" class="error"><p>' + rwmbValidate.summaryMessage + '</p></div>' );
 		},
-		ignore: ':not([class|="rwmb"]:visible)',
-		errorPlacement: function( error, element ) {
+		ignore: ':not([class|="rwmb"])',
+		errorPlacement: function(error, element) {
 			error.appendTo( element.closest( '.rwmb-input' ) );
 		},
 		errorClass: 'rwmb-error',
@@ -40,7 +35,7 @@ jQuery( function ( $ ) {
 		var subRules = $( this ).data( 'rules' );
 		$.extend( true, rules, subRules );
 
-		// Required field styling.
+		// Required field styling
 		$.each( subRules.rules, function ( k, v ) {
 			if ( ! v['required'] ) {
 				return;
@@ -49,15 +44,10 @@ jQuery( function ( $ ) {
 			if ( ! $el.length ) {
 				return;
 			}
-			$el.closest( '.rwmb-input' ).siblings( '.rwmb-label' ).find( 'label' ).append( '<span class="rwmb-required">*</span>' );
+			$el.closest( '.rwmb-input' ).siblings( '.rwmb-label' ).append( '<span class="rwmb-required">*</span>' );
 		} );
 	} );
 
 	// Execute.
-	$form.on( 'submit', function() {
-		// Update underlying textarea before submit validation.
-		if ( typeof tinyMCE !== 'undefined' ) {
-			tinyMCE.triggerSave();
-		}
-	} ).validate( rules );
+	$form.validate( rules );
 } );

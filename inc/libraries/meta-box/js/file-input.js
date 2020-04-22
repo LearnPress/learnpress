@@ -1,9 +1,10 @@
-( function ( $, rwmb ) {
+jQuery( function ( $ ) {
 	'use strict';
 
-	var frame;
+	var frame,
+		$doc = $( document );
 
-	function openSelectPopup( e ) {
+	$doc.on( 'click', '.rwmb-file-input-select', function ( e ) {
 		e.preventDefault();
 		var $el = $( this );
 
@@ -25,21 +26,18 @@
 		// Handle selection
 		frame.on( 'select', function () {
 			var url = frame.state().get( 'selection' ).first().toJSON().url;
-			$el.siblings( 'input' ).val( url ).trigger( 'change' ).siblings( 'a' ).removeClass( 'hidden' );
+			$el.siblings( 'input' ).val( url ).siblings( 'a' ).removeClass( 'hidden' );
 		} );
-	}
+	} );
 
-	function clearSelection( e ) {
+	// Clear selected images
+	$doc.on( 'click', '.rwmb-file-input-remove', function ( e ) {
 		e.preventDefault();
-		$( this ).addClass( 'hidden' ).siblings( 'input' ).val( '' ).trigger( 'change' );
-	}
+		$( this ).addClass( 'hidden' ).siblings( 'input' ).val( '' );
+	} );
 
-	function hideRemoveButtonWhenCloning() {
+	// Hide the Remove button when cloning
+	$doc.on( 'clone', '.rwmb-file_input', function () {
 		$( this ).siblings( '.rwmb-file-input-remove' ).addClass( 'hidden' );
-	}
-
-	rwmb.$document
-		.on( 'click', '.rwmb-file-input-select', openSelectPopup )
-		.on( 'click', '.rwmb-file-input-remove', clearSelection )
-		.on( 'clone', '.rwmb-file_input', hideRemoveButtonWhenCloning );
-} )( jQuery, rwmb );
+	} );
+} );

@@ -38,7 +38,7 @@ class RWMB_Text_List_Field extends RWMB_Multiple_Values_Field {
 				$label,
 				$field['field_name'],
 				isset( $meta[ $count ] ) ? esc_attr( $meta[ $count ] ) : '',
-				esc_attr( $placeholder )
+				$placeholder
 			);
 			$count ++;
 		}
@@ -59,22 +59,6 @@ class RWMB_Text_List_Field extends RWMB_Multiple_Values_Field {
 			$field['class'] .= ' rwmb-text_list-non-cloneable';
 		}
 		return $field;
-	}
-
-	/**
-	 * Set value of meta before saving into database.
-	 * Do not save if all inputs has no value.
-	 *
-	 * @param mixed $new     The submitted meta value.
-	 * @param mixed $old     The existing meta value.
-	 * @param int   $post_id The post ID.
-	 * @param array $field   The field parameters.
-	 *
-	 * @return mixed
-	 */
-	public static function value( $new, $old, $post_id, $field ) {
-		$filtered = array_filter( $new );
-		return count( $filtered ) ? $new : array();
 	}
 
 	/**
@@ -122,5 +106,22 @@ class RWMB_Text_List_Field extends RWMB_Multiple_Values_Field {
 		}
 		$output .= '</tr>';
 		return $output;
+	}
+
+	/**
+	 * Save meta value.
+	 *
+	 * @param mixed $new     The submitted meta value.
+	 * @param mixed $old     The existing meta value.
+	 * @param int   $post_id The post ID.
+	 * @param array $field   The field parameters.
+	 */
+	public static function save( $new, $old, $post_id, $field ) {
+		if ( empty( $field['id'] ) || ! $field['save_field'] ) {
+			return;
+		}
+		$storage = $field['storage'];
+		$storage->delete( $post_id, $field['id'] );
+		parent::save( $new, array(), $post_id, $field );
 	}
 }

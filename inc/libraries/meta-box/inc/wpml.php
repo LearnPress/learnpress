@@ -97,10 +97,9 @@ class RWMB_WPML {
 		}
 
 		// Get post ID.
-		$request = rwmb_request();
-		$post_id = $request->filter_get( 'post', FILTER_SANITIZE_NUMBER_INT );
+		$post_id = filter_input( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT );
 		if ( ! $post_id ) {
-			$post_id = $request->filter_post( 'post_ID', FILTER_SANITIZE_NUMBER_INT );
+			$post_id = filter_input( INPUT_POST, 'post_ID', FILTER_SANITIZE_NUMBER_INT );
 		}
 
 		// If the post is the original one: do nothing.

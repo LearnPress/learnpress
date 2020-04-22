@@ -58,7 +58,7 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 		wp_register_style( 'jquery-ui-core', "$url/jquery.ui.core.css", array(), '1.8.17' );
 		wp_register_style( 'jquery-ui-theme', "$url/jquery.ui.theme.css", array(), '1.8.17' );
 		wp_register_style( 'jquery-ui-datepicker', "$url/jquery.ui.datepicker.css", array( 'jquery-ui-core', 'jquery-ui-theme' ), '1.8.17' );
-		wp_register_style( 'rwmb-date', RWMB_CSS_URL . 'date.css', array( 'jquery-ui-datepicker' ), '1.8.17' );
+		wp_register_style( 'rwmb-date', RWMB_CSS_URL . 'datepicker.css', array( 'jquery-ui-datepicker' ), '1.8.17' );
 
 		wp_register_style( 'jquery-ui-slider', "$url/jquery.ui.slider.css", array( 'jquery-ui-core', 'jquery-ui-theme' ), '1.8.17' );
 		wp_register_style( 'jquery-ui-timepicker', "$url/jquery-ui-timepicker-addon.min.css", array( 'rwmb-date', 'jquery-ui-slider' ), '1.5.0' );
@@ -67,8 +67,8 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 		wp_register_script( 'jquery-ui-timepicker', "$url/jquery-ui-timepicker-addon.min.js", array( 'jquery-ui-datepicker', 'jquery-ui-slider' ), '1.5.0', true );
 		wp_register_script( 'jquery-ui-timepicker-i18n', "$url/jquery-ui-timepicker-addon-i18n.min.js", array( 'jquery-ui-timepicker' ), '1.5.0', true );
 
-		wp_register_script( 'rwmb-datetime', RWMB_JS_URL . 'datetime.js', array( 'jquery-ui-datepicker', 'jquery-ui-timepicker-i18n', 'underscore' ), RWMB_VER, true );
-		wp_register_script( 'rwmb-date', RWMB_JS_URL . 'date.js', array( 'jquery-ui-datepicker', 'underscore' ), RWMB_VER, true );
+		wp_register_script( 'rwmb-datetime', RWMB_JS_URL . 'datetime.js', array( 'jquery-ui-datepicker', 'jquery-ui-timepicker-i18n' ), RWMB_VER, true );
+		wp_register_script( 'rwmb-date', RWMB_JS_URL . 'date.js', array( 'jquery-ui-datepicker' ), RWMB_VER, true );
 		wp_register_script( 'rwmb-time', RWMB_JS_URL . 'time.js', array( 'jquery-ui-timepicker-i18n' ), RWMB_VER, true );
 
 		$handles      = array( 'datetime', 'time' );
@@ -79,7 +79,7 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 			'localeShort' => $locale_short,
 		);
 		foreach ( $handles as $handle ) {
-			RWMB_Helpers_Field::localize_script_once( "rwmb-$handle", 'RWMB_' . ucfirst( $handle ), $data );
+			self::localize_script( "rwmb-$handle", 'RWMB_' . ucfirst( $handle ), $data );
 		}
 	}
 
@@ -139,16 +139,7 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 	 * @return string|int
 	 */
 	public static function value( $new, $old, $post_id, $field ) {
-		if ( $field['timestamp'] ) {
-			return $new['timestamp'];
-		}
-
-		if ( $field['save_format'] ) {
-			$date = DateTime::createFromFormat( $field['php_format'], $new );
-			$new  = false === $date ? $new : $date->format( $field['save_format'] );
-		}
-
-		return $new;
+		return $field['timestamp'] ? $new['timestamp'] : $new;
 	}
 
 	/**
@@ -162,42 +153,30 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 	 */
 	public static function meta( $post_id, $saved, $field ) {
 		$meta = parent::meta( $post_id, $saved, $field );
-
 		if ( $field['timestamp'] ) {
-			return RWMB_Helpers_Array::map( $meta, __CLASS__ . '::from_timestamp', $field );
+			$meta = self::prepare_meta( $meta, $field );
 		}
-
-		if ( $field['save_format'] && $meta ) {
-			return RWMB_Helpers_Array::map( $meta, __CLASS__ . '::from_save_format', $field );
-		}
-
 		return $meta;
 	}
 
 	/**
 	 * Format meta value if set 'timestamp'.
 	 *
-	 * @param  string $meta  The meta value.
-	 * @param  array  $field Field parameters.
+	 * @param array|string $meta  The meta value.
+	 * @param array        $field Field parameters.
 	 * @return array
 	 */
-	public static function from_timestamp( $meta, $field ) {
+	protected static function prepare_meta( $meta, $field ) {
+		if ( is_array( $meta ) ) {
+			foreach ( $meta as $key => $value ) {
+				$meta[ $key ] = self::prepare_meta( $value, $field );
+			}
+			return $meta;
+		}
 		return array(
 			'timestamp' => $meta ? $meta : null,
-			'formatted' => $meta ? gmdate( $field['php_format'], intval( $meta ) ) : '',
+			'formatted' => $meta ? date( self::call( 'translate_format', $field ), intval( $meta ) ) : '',
 		);
-	}
-
-	/**
-	 * Transform meta value from save format to the JS format.
-	 *
-	 * @param  string $meta  The meta value.
-	 * @param  array  $field Field parameters.
-	 * @return array
-	 */
-	public static function from_save_format( $meta, $field ) {
-		$date = DateTime::createFromFormat( $field['save_format'], $meta );
-		return false === $date ? $meta : $date->format( $field['php_format'] );
 	}
 
 	/**
@@ -210,10 +189,9 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 		$field = wp_parse_args(
 			$field,
 			array(
-				'timestamp'   => false,
-				'inline'      => false,
-				'js_options'  => array(),
-				'save_format' => '',
+				'timestamp'  => false,
+				'inline'     => false,
+				'js_options' => array(),
 			)
 		);
 
@@ -237,8 +215,6 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 				)
 			);
 		}
-
-		$field['php_format'] = static::get_php_format( $field['js_options'] );
 
 		$field = parent::normalize( $field );
 
@@ -270,14 +246,14 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 	 * Returns a date() compatible format string from the JavaScript format.
 	 *
 	 * @link http://www.php.net/manual/en/function.date.php
-	 * @param array $js_options JavaScript options.
+	 * @param array $field The field parameters.
 	 *
 	 * @return string
 	 */
-	protected static function get_php_format( $js_options ) {
-		return strtr( $js_options['dateFormat'], self::$date_formats )
-		. $js_options['separator']
-		. strtr( $js_options['timeFormat'], self::$time_formats );
+	public static function translate_format( $field ) {
+		return strtr( $field['js_options']['dateFormat'], self::$date_formats )
+		. $field['js_options']['separator']
+		. strtr( $field['js_options']['timeFormat'], self::$time_formats );
 	}
 
 	/**
@@ -291,14 +267,12 @@ class RWMB_Datetime_Field extends RWMB_Text_Field {
 	 * @return string
 	 */
 	public static function format_single_value( $field, $value, $args, $post_id ) {
-		if ( $field['timestamp'] ) {
-			$value = self::from_timestamp( $value, $field );
-		} else {
-			$value = array(
-				'timestamp' => strtotime( $value ),
-				'formatted' => $value,
-			);
+		if ( empty( $args['format'] ) ) {
+			return $value;
 		}
-		return empty( $args['format'] ) ? $value['formatted'] : gmdate( $args['format'], $value['timestamp'] );
+		if ( ! $field['timestamp'] ) {
+			$value = strtotime( $value );
+		}
+		return date( $args['format'], $value );
 	}
 }

@@ -1,41 +1,35 @@
-( function ( $, rwmb ) {
+jQuery( function ( $ ) {
 	'use strict';
 
-	function transform() {
-		var $input  = $( this ),
-			$slider = $input.siblings( '.rwmb-slider-ui' ),
-			$label  = $slider.siblings( '.rwmb-slider-label' ).find( 'span' ),
-			value   = $input.val(),
+	function rwmb_update_slider() {
+		var $input = $( this ),
+			$slider = $input.siblings( '.rwmb-slider' ),
+			$valueLabel = $slider.siblings( '.rwmb-slider-value-label' ).find( 'span' ),
+			value = $input.val(),
 			options = $slider.data( 'options' );
 
-		$slider.html( '' );
-		$label.text( value );
 
-		if ( true === options.range ) {
-			value = value.split( '|' );
-			options.values = value;
-		} else {
-			options.value = value;
+		$slider.html( '' );
+
+		if ( ! value ) {
+			value = 0;
+			$input.val( 0 );
+			$valueLabel.text( '0' );
+		}
+		else {
+			$valueLabel.text( value );
 		}
 
+		// Assign field value and callback function when slide
+		options.value = value;
 		options.slide = function ( event, ui ) {
-			var value = ui.value;
-			if ( options.range === true ) {
-				value = ui.values[ 0 ] + '|' + ui.values[ 1 ];
-			}
-
-			$input.val( value ).trigger( 'change' );
-			$label.html( value );
+			$input.val( ui.value );
+			$valueLabel.text( ui.value );
 		};
 
 		$slider.slider( options );
 	}
 
-	function init( e ) {
-		$( e.target ).find( '.rwmb-slider' ).each( transform );
-	}
-
-	rwmb.$document
-		.on( 'mb_ready', init )
-		.on( 'clone', '.rwmb-slider', transform );
-} )( jQuery, rwmb );
+	$( '.rwmb-slider-value' ).each( rwmb_update_slider );
+	$( document ).on( 'clone', '.rwmb-slider-value', rwmb_update_slider );
+} );

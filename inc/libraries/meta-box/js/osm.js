@@ -1,5 +1,9 @@
-( function( $, L, rwmb, i18n ) {
+( function( $, L ) {
 	'use strict';
+
+	var osmTileLayer = L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	} );
 
 	// Use function construction to store map & DOM elements separately for each instance
 	var OsmField = function ( $container ) {
@@ -16,12 +20,6 @@
 			this.initMarkerPosition();
 			this.addListeners();
 			this.autocomplete();
-
-			// Make sure the map is displayed fully.
-			var map = this.map;
-			setTimeout( function() {
-				map.invalidateSize();
-			}, 0 );
 		},
 
 		// Initialize DOM elements
@@ -29,6 +27,7 @@
 			this.$canvas = this.$container.find( '.rwmb-osm-canvas' );
 			this.canvas = this.$canvas[0];
 			this.$coordinate = this.$container.find( '.rwmb-osm-coordinate' );
+			this.$findButton = this.$container.find( '.rwmb-osm-goto-address-button' );
 			this.addressField = this.$container.data( 'address-field' );
 		},
 
@@ -44,10 +43,7 @@
 				center: latLng,
 				zoom: 14
 			} );
-
-			L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-			} ).addTo( this.map );
+			this.map.addLayer( osmTileLayer );
 			this.marker = L.marker( latLng, {
 				draggable: true
 			} ).addTo( this.map );
@@ -69,28 +65,13 @@
 				this.map.panTo( latLng );
 				this.map.setZoom( zoom );
 			} else if ( this.addressField ) {
-				this.geocodeAddress( false );
+				this.geocodeAddress();
 			}
 		},
 
 		// Add event listeners for 'click' & 'drag'
 		addListeners: function () {
 			var that = this;
-
-			/*
-			 * Auto change the map when there's change in address fields.
-			 * Works only for multiple address fields as single address field has autocomplete functionality.
-			 */
-			if ( this.addressField.split( ',' ).length > 1 ) {
-				var geocodeAddress = that.geocodeAddress.bind( that );
-				var addressFields = this.addressField.split( ',' ).forEach( function( part ) {
-					var $field = that.findAddressField( part );
-					if ( null !== $field ) {
-						$field.on( 'change', geocodeAddress );
-					}
-				} );
-			}
-
 			this.map.on( 'click', function ( event ) {
 				that.marker.setLatLng( event.latlng );
 				that.updateCoordinate( event.latlng );
@@ -104,14 +85,29 @@
 				that.updateCoordinate( that.marker.getLatLng() );
 			} );
 
-			// Custom event to refresh maps when in hidden divs.
-			var refresh = that.refresh.bind( this );
-			$( window ).on( 'rwmb_map_refresh', refresh );
+			this.$findButton.on( 'click', function ( e ) {
+				e.preventDefault();
+				that.geocodeAddress();
+			} );
+
+			/**
+			 * Add a custom event that allows other scripts to refresh the maps when needed
+			 * For example: when maps is in tabs or hidden div (this is known issue of Google Maps)
+			 *
+			 * @see https://developers.google.com/maps/documentation/javascript/reference ('resize' Event)
+			 */
+			$( window ).on( 'rwmb_map_refresh', function () {
+				that.refresh();
+			} );
 
 			// Refresh on meta box hide and show
-			rwmb.$document.on( 'postbox-toggled', refresh );
+			$( document ).on( 'postbox-toggled', function () {
+				that.refresh();
+			} );
 			// Refresh on sorting meta boxes
-			$( '.meta-box-sortables' ).on( 'sortstop', refresh );
+			$( '.meta-box-sortables' ).on( 'sortstop', function () {
+				that.refresh();
+			} );
 		},
 
 		refresh: function () {
@@ -131,11 +127,10 @@
 				return;
 			}
 
-			// If Meta Box Geo Location installed. Do not run autocomplete.
+			// If Meta Box Geo Location installed. Do not run auto complete.
 			if ( $( '.rwmb-geo-binding' ).length ) {
-				var geocodeAddress = that.geocodeAddress.bind( that );
-				$address.on( 'selected_address', geocodeAddress );
-				return false;
+				$address.on( 'selected_address', that.geocodeAddress );
+				return;
 			}
 
 			$address.autocomplete( {
@@ -149,7 +144,7 @@
 						if ( ! results.length ) {
 							response( [ {
 								value: '',
-								label: i18n.no_results_string
+								label: RWMB_Osm.no_results_string
 							} ] );
 							return;
 						}
@@ -176,20 +171,17 @@
 		// Update coordinate to input field
 		updateCoordinate: function ( latLng ) {
 			var zoom = this.map.getZoom();
-			this.$coordinate.val( latLng.lat + ',' + latLng.lng + ',' + zoom ).trigger( 'change' );
+			this.$coordinate.val( latLng.lat + ',' + latLng.lng + ',' + zoom );
 		},
 
 		// Find coordinates by address
-		geocodeAddress: function ( notify ) {
+		geocodeAddress: function () {
 			var address = this.getAddress(),
 				that = this;
 			if ( ! address ) {
 				return;
 			}
 
-			if ( false !== notify ) {
-				notify = true;
-			}
 			$.get( 'https://nominatim.openstreetmap.org/search', {
 				format: 'json',
 				q: address,
@@ -198,9 +190,6 @@
 				"accept-language": that.$canvas.data( 'language' )
 			}, function( result ) {
 				if ( result.length !== 1 ) {
-					if ( notify ) {
-						alert( i18n.no_results_string );
-					}
 					return;
 				}
 				var latLng = L.latLng( result[0].lat, result[0].lon );
@@ -255,27 +244,23 @@
 		}
 	};
 
-	function createController() {
-		var $this = $( this ),
-			controller = $this.data( 'osmController' );
-		if ( controller ) {
-			return;
-		}
+	function update() {
+		$( '.rwmb-osm-field' ).each( function () {
+			var $this = $( this ),
+				controller = $this.data( 'osmController' );
+			if ( controller ) {
+				return;
+			}
 
-		controller = new OsmField( $this );
-		controller.init();
-		$this.data( 'osmController', controller );
+			controller = new OsmField( $this );
+			controller.init();
+			$this.data( 'osmController', controller );
+		} );
 	}
 
-	function init( e ) {
-		$( e.target ).find( '.rwmb-osm-field' ).each( createController );
-	}
+	$( function () {
+		update();
+		$( '.rwmb-input' ).on( 'clone', update );
+	} );
 
-	function restart() {
-		$( '.rwmb-osm-field' ).each( createController );
-	}
-
-	rwmb.$document
-		.on( 'mb_ready', init )
-		.on( 'clone', '.rwmb-input', restart );
-} )( jQuery, L, rwmb, RWMB_Osm );
+} )( jQuery, L );

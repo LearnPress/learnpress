@@ -11,18 +11,6 @@
 /**
  * The main meta box class.
  *
- * @property string $id             Meta Box ID.
- * @property string $title          Meta Box title.
- * @property array  $fields         List of fields.
- * @property array  $post_types     List of post types that the meta box is created for.
- * @property string $style          Meta Box style.
- * @property bool   $closed         Whether to collapse the meta box when page loads.
- * @property string $priority       The meta box priority.
- * @property string $context        Where the meta box is displayed.
- * @property bool   $default_hidden Whether the meta box is hidden by default.
- * @property bool   $autosave       Whether the meta box auto saves.
- * @property bool   $media_modal    Add custom fields to media modal when viewing/editing an attachment.
- *
  * @package Meta Box
  */
 class RW_Meta_Box {
@@ -46,7 +34,7 @@ class RW_Meta_Box {
 	 *
 	 * @var int
 	 */
-	public $object_id = null;
+	protected $object_id = null;
 
 	/**
 	 * The object type.
@@ -61,10 +49,15 @@ class RW_Meta_Box {
 	 * @param array $meta_box Meta box definition.
 	 */
 	public function __construct( $meta_box ) {
-		$meta_box       = static::normalize( $meta_box );
+		$meta_box       = self::normalize( $meta_box );
 		$this->meta_box = $meta_box;
 
-		$this->meta_box['fields'] = static::normalize_fields( $meta_box['fields'], $this->get_storage() );
+		$storage = $this->get_storage();
+		if ( ! $storage ) {
+			return;
+		}
+
+		$this->meta_box['fields'] = self::normalize_fields( $meta_box['fields'], $storage );
 
 		$this->meta_box = apply_filters( 'rwmb_meta_box_settings', $this->meta_box );
 
@@ -151,8 +144,6 @@ class RW_Meta_Box {
 			wp_enqueue_style( 'rwmb-rtl', RWMB_CSS_URL . 'style-rtl.css', array(), RWMB_VER );
 		}
 
-		wp_enqueue_script( 'rwmb', RWMB_JS_URL . 'script.js', array( 'jquery' ), RWMB_VER, true );
-
 		// Load clone script conditionally.
 		foreach ( $this->fields as $field ) {
 			if ( $field['clone'] ) {
@@ -205,10 +196,12 @@ class RW_Meta_Box {
 	 * @return array
 	 */
 	public function postbox_classes( $classes ) {
-		if ( $this->closed ) {
+		if ( $this->closed && ! in_array( 'closed', $classes ) ) {
 			$classes[] = 'closed';
 		}
-		$classes[] = "rwmb-{$this->style}";
+		if ( 'seamless' === $this->style ) {
+			$classes[] = 'rwmb-seamless';
+		}
 
 		return $classes;
 	}
@@ -234,17 +227,15 @@ class RW_Meta_Box {
 	 */
 	public function show() {
 		if ( null === $this->object_id ) {
-			$this->object_id = $this->get_current_object_id();
+			$this->set_object_id( $this->get_current_object_id() );
 		}
 		$saved = $this->is_saved();
 
 		// Container.
 		printf(
-			'<div class="%s" data-autosave="%s" data-object-type="%s" data-object-id="%s">',
-			esc_attr( trim( "rwmb-meta-box {$this->class}" ) ),
+			'<div class="rwmb-meta-box" data-autosave="%s" data-object-type="%s">',
 			esc_attr( $this->autosave ? 'true' : 'false' ),
-			esc_attr( $this->object_type ),
-			esc_attr( $this->object_id )
+			esc_attr( $this->object_type )
 		);
 
 		wp_nonce_field( "rwmb-save-{$this->id}", "nonce_{$this->id}" );
@@ -272,47 +263,63 @@ class RW_Meta_Box {
 	/**
 	 * Save data from meta box
 	 *
-	 * @param int $object_id Object ID.
+	 * @param int $post_id Post ID.
 	 */
-	public function save_post( $object_id ) {
+	public function save_post( $post_id ) {
 		if ( ! $this->validate() ) {
 			return;
 		}
 		$this->saved = true;
 
-		$object_id       = $this->get_real_object_id( $object_id );
-		$this->object_id = $object_id;
+		// Make sure meta is added to the post, not a revision.
+		if ( 'post' === $this->object_type ) {
+			$the_post = wp_is_post_revision( $post_id );
+			if ( $the_post ) {
+				$post_id = $the_post;
+			}
+		}
 
 		// Before save action.
-		do_action( 'rwmb_before_save_post', $object_id );
-		do_action( "rwmb_{$this->id}_before_save_post", $object_id );
+		do_action( 'rwmb_before_save_post', $post_id );
+		do_action( "rwmb_{$this->id}_before_save_post", $post_id );
 
-		array_map( array( $this, 'save_field' ), $this->fields );
+		$this->save_fields( $post_id, $this->fields );
 
 		// After save action.
-		do_action( 'rwmb_after_save_post', $object_id );
-		do_action( "rwmb_{$this->id}_after_save_post", $object_id );
+		do_action( 'rwmb_after_save_post', $post_id );
+		do_action( "rwmb_{$this->id}_after_save_post", $post_id );
 	}
 
 	/**
-	 * Save field.
+	 * Save fields data.
 	 *
-	 * @param array $field Field settings.
+	 * @param int   $post_id Post id.
+	 * @param array $fields  Fields data.
 	 */
-	public function save_field( $field ) {
-		$single  = $field['clone'] || ! $field['multiple'];
-		$default = $single ? '' : array();
-		$old     = RWMB_Field::call( $field, 'raw_meta', $this->object_id );
-		$new     = rwmb_request()->post( $field['id'], $default );
-		$new     = RWMB_Field::process_value( $new, $this->object_id, $field );
+	public function save_fields( $post_id, $fields ) {
+		foreach ( $fields as $field ) {
+			$single = $field['clone'] || ! $field['multiple'];
+			$old    = RWMB_Field::call( $field, 'raw_meta', $post_id );
+			// @codingStandardsIgnoreLine
+			$new    = isset( $_POST[ $field['id'] ] ) ? $_POST[ $field['id'] ] : ( $single ? '' : array() );
 
-		// Filter to allow the field to be modified.
-		$field = RWMB_Field::filter( 'field', $field, $field, $new, $old );
+			// Allow field class change the value.
+			if ( $field['clone'] ) {
+				$new = RWMB_Clone::value( $new, $old, $post_id, $field );
+			} else {
+				$new = RWMB_Field::call( $field, 'value', $new, $old, $post_id );
+				$new = RWMB_Field::filter( 'sanitize', $new, $field );
+			}
+			$new = RWMB_Field::filter( 'value', $new, $field, $old );
 
-		// Call defined method to save meta value, if there's no methods, call common one.
-		RWMB_Field::call( $field, 'save', $new, $old, $this->object_id );
+			// Filter to allow the field to be modified.
+			$field = RWMB_Field::filter( 'field', $field, $field, $new, $old );
 
-		RWMB_Field::filter( 'after_save_field', null, $field, $new, $old, $this->object_id );
+			// Call defined method to save meta value, if there's no methods, call common one.
+			RWMB_Field::call( $field, 'save', $new, $old, $post_id );
+
+			RWMB_Field::filter( 'after_save_field', null, $field, $new, $old, $post_id, $field );
+		}
 	}
 
 	/**
@@ -324,7 +331,7 @@ class RW_Meta_Box {
 	 * @return bool
 	 */
 	public function validate() {
-		$nonce = rwmb_request()->filter_post( "nonce_{$this->id}", FILTER_SANITIZE_STRING );
+		$nonce = filter_input( INPUT_POST, "nonce_{$this->id}", FILTER_SANITIZE_STRING );
 
 		return ! $this->saved
 			&& ( ! defined( 'DOING_AUTOSAVE' ) || $this->autosave )
@@ -350,8 +357,6 @@ class RW_Meta_Box {
 				'autosave'       => false,
 				'default_hidden' => false,
 				'style'          => 'default',
-				'class'          => '',
-				'fields'         => array(),
 			)
 		);
 
@@ -360,10 +365,10 @@ class RW_Meta_Box {
 		 *
 		 * @since 4.4.1
 		 */
-		RWMB_Helpers_Array::change_key( $meta_box, 'pages', 'post_types' );
+		rwmb_change_array_key( $meta_box, 'pages', 'post_types' );
 
 		// Make sure the post type is an array and is sanitized.
-		$meta_box['post_types'] = array_map( 'sanitize_key', RWMB_Helpers_Array::from_csv( $meta_box['post_types'] ) );
+		$meta_box['post_types'] = array_map( 'sanitize_key', rwmb_csv_to_array( $meta_box['post_types'] ) );
 
 		return $meta_box;
 	}
@@ -385,7 +390,10 @@ class RW_Meta_Box {
 			$field = apply_filters( "rwmb_normalize_{$field['type']}_field", $field );
 			$field = apply_filters( "rwmb_normalize_{$field['id']}_field", $field );
 
-			$field['storage'] = $storage;
+			// Add storage object to field.
+			if ( $storage ) {
+				$field['storage'] = $storage;
+			}
 
 			$fields[ $k ] = $field;
 		}
@@ -476,25 +484,9 @@ class RW_Meta_Box {
 	/**
 	 * Get current object id.
 	 *
-	 * @return int
+	 * @return int|string
 	 */
 	protected function get_current_object_id() {
 		return get_the_ID();
-	}
-
-	/**
-	 * Get real object ID when submitting.
-	 *
-	 * @param int $object_id Object ID.
-	 * @return int
-	 */
-	protected function get_real_object_id( $object_id ) {
-		// Make sure meta is added to the post, not a revision.
-		if ( 'post' !== $this->object_type ) {
-			return $object_id;
-		}
-		$parent = wp_is_post_revision( $object_id );
-
-		return $parent ? $parent : $object_id;
 	}
 }

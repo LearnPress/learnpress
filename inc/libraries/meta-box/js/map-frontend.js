@@ -69,10 +69,6 @@ jQuery( function ( $ ) {
 			google.maps.event.addListener( marker, 'click', function () {
 				infoWindow.open( map, marker );
 			} );
-
-			if ( true === mapOptions.openInfoWindow ) {
-				infoWindow.open( map, marker );
-			}
 		}
 	}
 

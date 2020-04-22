@@ -109,7 +109,7 @@ if ( ! function_exists( 'rwmb_meta_legacy' ) ) {
 
 		return RWMB_Field::call( $method, $field, $args, $post_id );
 	}
-}
+} // End if().
 
 if ( ! function_exists( 'rwmb_get_value' ) ) {
 	/**
@@ -182,7 +182,7 @@ if ( ! function_exists( 'rwmb_the_value' ) ) {
 
 		return $output;
 	}
-}
+} // End if().
 
 if ( ! function_exists( 'rwmb_get_object_fields' ) ) {
 	/**
@@ -235,20 +235,8 @@ if ( ! function_exists( 'rwmb_check_meta_box_supports' ) ) {
 				}
 				$prop = 'taxonomies';
 				break;
-			case 'user':
-				$type = 'user';
-				$prop = 'user';
-				break;
-			case 'setting':
-				$type = $type_or_id;
-				$prop = 'settings_pages';
-				break;
 		}
-		if ( ! $type ) {
-			$meta_box = false;
-			return;
-		}
-		if ( isset( $meta_box->meta_box[ $prop ] ) && ! in_array( $type, $meta_box->meta_box[ $prop ], true ) ) {
+		if ( ! $type || ! in_array( $type, $meta_box->meta_box[ $prop ], true ) ) {
 			$meta_box = false;
 		}
 	}
@@ -266,45 +254,18 @@ if ( ! function_exists( 'rwmb_meta_shortcode' ) ) {
 		$atts = wp_parse_args(
 			$atts,
 			array(
-				'id'        => '',
-				'object_id' => null,
-				'attribute' => '',
+				'post_id' => get_the_ID(),
 			)
 		);
-		RWMB_Helpers_Array::change_key( $atts, 'post_id', 'object_id' );
-		RWMB_Helpers_Array::change_key( $atts, 'meta_key', 'id' );
-
-		if ( empty( $atts['id'] ) ) {
+		if ( empty( $atts['meta_key'] ) ) {
 			return '';
 		}
 
-		$field_id  = $atts['id'];
-		$object_id = $atts['object_id'];
-		unset( $atts['id'], $atts['object_id'] );
+		$field_id = $atts['meta_key'];
+		$post_id  = $atts['post_id'];
+		unset( $atts['meta_key'], $atts['post_id'] );
 
-		$attribute = $atts['attribute'];
-		if ( ! $attribute ) {
-			return rwmb_the_value( $field_id, $atts, $object_id, false );
-		}
-
-		$value = rwmb_get_value( $field_id, $atts, $object_id );
-
-		if ( ! is_array( $value ) && ! is_object( $value ) ) {
-			return $value;
-		}
-
-		if ( is_object( $value ) ) {
-			return $value->$attribute;
-		}
-
-		if ( isset( $value[ $attribute ] ) ) {
-			return $value[ $attribute ];
-		}
-
-		$value = wp_list_pluck( $value, $attribute );
-		$value = implode( ',', array_filter( $value ) );
-
-		return $value;
+		return rwmb_the_value( $field_id, $atts, $post_id, false );
 	}
 
 	add_shortcode( 'rwmb_meta', 'rwmb_meta_shortcode' );
@@ -322,12 +283,35 @@ if ( ! function_exists( 'rwmb_get_registry' ) ) {
 	function rwmb_get_registry( $type ) {
 		static $data = array();
 
-		$class = 'RWMB_' . RWMB_Helpers_String::title_case( $type ) . '_Registry';
+		$type  = str_replace( array( '-', '_' ), ' ', $type );
+		$class = 'RWMB_' . ucwords( $type ) . '_Registry';
+		$class = str_replace( ' ', '_', $class );
 		if ( ! isset( $data[ $type ] ) ) {
 			$data[ $type ] = new $class();
 		}
 
 		return $data[ $type ];
+	}
+}
+
+if ( ! function_exists( 'rwmb_get_storage_class_name' ) ) {
+	/**
+	 * Get storage class name.
+	 *
+	 * @param string $object_type Object type. Use post or term.
+	 * @return string
+	 */
+	function rwmb_get_storage_class_name( $object_type ) {
+		$object_type = str_replace( array( '-', '_' ), ' ', $object_type );
+		$object_type = ucwords( $object_type );
+		$object_type = str_replace( ' ', '_', $object_type );
+		$class_name  = 'RWMB_' . $object_type . '_Storage';
+
+		if ( ! class_exists( $class_name ) ) {
+			$class_name = 'RWMB_Post_Storage';
+		}
+
+		return apply_filters( 'rwmb_storage_class_name', $class_name, $object_type );
 	}
 }
 
@@ -340,25 +324,62 @@ if ( ! function_exists( 'rwmb_get_storage' ) ) {
 	 * @return RWMB_Storage_Interface
 	 */
 	function rwmb_get_storage( $object_type, $meta_box = null ) {
-		$class   = 'RWMB_' . RWMB_Helpers_String::title_case( $object_type ) . '_Storage';
-		$class   = class_exists( $class ) ? $class : 'RWMB_Post_Storage';
-		$storage = rwmb_get_registry( 'storage' )->get( $class );
+		$class_name = rwmb_get_storage_class_name( $object_type );
+		$storage    = rwmb_get_registry( 'storage' )->get( $class_name );
 
 		return apply_filters( 'rwmb_get_storage', $storage, $object_type, $meta_box );
 	}
 }
 
-if ( ! function_exists( 'rwmb_request' ) ) {
+if ( ! function_exists( 'rwmb_get_meta_box' ) ) {
 	/**
-	 * Get request object.
+	 * Get meta box object from meta box data.
 	 *
-	 * @return RWMB_Request
+	 * @param  array $meta_box Array of meta box data.
+	 * @return RW_Meta_Box
 	 */
-	function rwmb_request() {
-		static $request;
-		if ( ! $request ) {
-			$request = new RWMB_Request();
+	function rwmb_get_meta_box( $meta_box ) {
+		/**
+		 * Allow filter meta box class name.
+		 *
+		 * @var string Meta box class name.
+		 * @var array  Meta box data.
+		 */
+		$class_name = apply_filters( 'rwmb_meta_box_class_name', 'RW_Meta_Box', $meta_box );
+
+		return new $class_name( $meta_box );
+	}
+}
+
+/**
+ * Helper functions
+ */
+
+if ( ! function_exists( 'rwmb_change_array_key' ) ) {
+	/**
+	 * Change array key.
+	 *
+	 * @param  array  $array Input array.
+	 * @param  string $from  From key.
+	 * @param  string $to    To key.
+	 */
+	function rwmb_change_array_key( &$array, $from, $to ) {
+		if ( isset( $array[ $from ] ) ) {
+			$array[ $to ] = $array[ $from ];
 		}
-		return $request;
+		unset( $array[ $from ] );
+	}
+}
+
+if ( ! function_exists( 'rwmb_csv_to_array' ) ) {
+	/**
+	 * Convert a comma separated string to array.
+	 *
+	 * @param string $string Comma separated string.
+	 *
+	 * @return array
+	 */
+	function rwmb_csv_to_array( $string ) {
+		return is_array( $string ) ? $string : array_filter( array_map( 'trim', explode( ',', $string . ',' ) ) );
 	}
 }
