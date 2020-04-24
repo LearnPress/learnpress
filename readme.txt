@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+== 3.2.6.10 ==
+~ Fix add-on GradeBook
+
 = 3.2.6.9 =
 ~ Revert library meta-box to v4.15.7
 

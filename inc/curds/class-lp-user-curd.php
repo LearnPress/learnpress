@@ -420,6 +420,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param bool      $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
+	 * @edittor tungnx
+	 * @since 3.2.6.10
 	 */
 	public function read_course( $user_id = null, $course_id = null, $force = false ) {
 		#LP_Debug::logTime( __FUNCTION__ );
@@ -457,27 +459,16 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * Get newest item-course in table user-items
 		 */
 		$query = $wpdb->prepare( "
-			SELECT ui.*
-			FROM {$wpdb->learnpress_user_items} ui
+			SELECT *
+			FROM {$wpdb->learnpress_user_items}
 			WHERE item_type = %s 
-				AND user_id = %d
-				AND item_id = %d
+			AND user_id = %d
+			AND item_id = %d
 			ORDER BY user_item_id DESC
 			LIMIT 0, 1
 		", LP_COURSE_CPT, $user_id, $course_id );
 
-		// Check is page single course
-		$isPageSingleCourse = false;
-
-		if ( learn_press_is_course() && is_single() ) {
-			$isPageSingleCourse = true;
-		}
-
-		if ( $isPageSingleCourse ) {
-			$result = $wpdb->get_row( $query, ARRAY_A );
-		} else {
-			$result = '';
-		}
+		$result = $wpdb->get_row( $query, ARRAY_A );
 
 		LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $result, 'learn-press/user-item-courses' );
 
