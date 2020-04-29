@@ -30,7 +30,8 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		$pages = array( 'frontend', 'admin' );
 		foreach ( $pages as $page ) {
 			$key               = "{$page}_libraries";
-			$exclude_libraries = ! empty( $_REQUEST[ $key ] ) ? array_keys( $_REQUEST[ $key ] ) : '';
+			$key_request       = array_map( 'sanitize_text_field', wp_unslash( $_REQUEST[ $key ] ) );
+			$exclude_libraries = ! empty( $_REQUEST[ $key ] ) && is_array( $key_request ) ? array_keys( $key_request ) : '';
 
 			if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
 				delete_option( 'learn_press_exclude_' . $key );

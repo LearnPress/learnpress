@@ -392,7 +392,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$action = $this->get_nonce_action( $action, $course_id, $user_id );
 
-			return wp_verify_nonce( $nonce, $action );
+			return wp_verify_nonce( sanitize_key( $nonce ), $action );
 		}
 
 		/**

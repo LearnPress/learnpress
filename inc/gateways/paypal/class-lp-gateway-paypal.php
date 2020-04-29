@@ -294,7 +294,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			if ( ! empty( $_REQUEST['learn-press-transaction-method'] ) && ( 'paypal-standard' == $_REQUEST['learn-press-transaction-method'] ) ) {
 				// if we have a paypal-nonce in $_REQUEST that meaning user has clicked go back to our site after finished the transaction
 				// so, create a new order
-				if ( ! empty( $_REQUEST['paypal-nonce'] ) && wp_verify_nonce( $_REQUEST['paypal-nonce'], 'learn-press-paypal-nonce' ) ) {
+				if ( ! empty( $_REQUEST['paypal-nonce'] )
+					&& wp_verify_nonce( sanitize_key( $_REQUEST['paypal-nonce'] ), 'learn-press-paypal-nonce' ) ) {
 					if ( ! empty( $_REQUEST['tx'] ) ) //if PDT is enabled
 					{
 						$transaction_id = $_REQUEST['tx'];
@@ -323,6 +324,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 						$transaction_status = null;
 					}
 
+					$transaction_id           = sanitize_text_field( wp_unslash( $transaction_id ) );
+					$transient_transaction_id = sanitize_text_field( wp_unslash( $transient_transaction_id ) );
+					$transaction_status       = sanitize_text_field( wp_unslash( $transaction_status ) );
 
 					if ( ! empty( $transaction_id ) && ! empty( $transient_transaction_id ) && ! empty( $transaction_status ) ) {
 						$user = learn_press_get_current_user();

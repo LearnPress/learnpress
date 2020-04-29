@@ -262,7 +262,7 @@ abstract class LP_Abstract_Submenu {
 	 */
 	public function get_active_page( $prefix = true ) {
 		if ( false === $this->page ) {
-			$this->page = ! empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
+			$this->page = ! empty ( $_REQUEST['page'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : null;
 		}
 
 		return $prefix ? $this->page : str_replace( 'learn-press-', '', $this->page );
@@ -278,7 +278,9 @@ abstract class LP_Abstract_Submenu {
 		if ( ! $sections ) {
 			return false;
 		}
-		$section = ! empty( $_REQUEST['section'] ) ? $_REQUEST['section'] : false;
+
+		$section = ! empty( $_REQUEST['section'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['section'] ) ) : false;
+
 		if ( ! $section || empty( $sections[ $section ] ) ) {
 			$section_keys = array_keys( $sections );
 			$section      = reset( $section_keys );

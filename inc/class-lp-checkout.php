@@ -155,7 +155,7 @@ class LP_Checkout {
 	 */
 	public function check_validate_fields( $errors, $fields, $checkout ) {
 		/* check guest email */
-		if ( wp_verify_nonce( LP_Request::get_string( 'guest-checkout' ), 'guest-checkout' ) ) {
+		if ( wp_verify_nonce( sanitize_key( LP_Request::get_string( 'guest-checkout' ) ), 'guest-checkout' ) ) {
 			if ( $this->is_enable_guest_checkout() && ! is_user_logged_in() && empty( $this->_checkout_email ) ) {
 				$errors[] = __( 'Please enter your email.', 'learnpress' );
 			}
@@ -420,7 +420,7 @@ class LP_Checkout {
 			learn_press_add_message( __( 'Please enter user password', 'learnpress' ) );
 		}
 
-		if ( wp_verify_nonce( 'guest-checkout', LP_Request::get_string( 'guest-checkout' ) ) ) {
+		if ( wp_verify_nonce( 'guest-checkout', sanitize_key( LP_Request::get_string( 'guest-checkout' ) ) ) ) {
 			if ( empty( $this->_checkout_email ) ) {
 				learn_press_add_message( __( 'Please enter your email.', 'learnpress' ) );
 			}

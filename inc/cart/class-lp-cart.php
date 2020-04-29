@@ -149,7 +149,7 @@ class LP_Cart {
 				throw new Exception( __( 'Sorry! The number of enrolled students has reached limit', 'learnpress' ) );
 			}
 
-			$item_data = apply_filters( 'learn-press/cart-item-data', $item_data, $course_id );
+			$item_data = apply_filters( 'learn-press/cart-item-data', sanitize_post( $item_data, 'raw' ), $course_id );
 
 			$cart_id = $this->generate_cart_id( $course_id, $item_data );
 
@@ -346,7 +346,7 @@ class LP_Cart {
 			}
 		}
 
-		return apply_filters( 'learn-press/cart-id', md5( join( '_', $cart_id ) ), $cart_id, $data );
+		return apply_filters( 'learn-press/cart-id', md5( join( '_', $cart_id ) ), $cart_id, sanitize_post( $data, 'raw' ) );
 	}
 
 	/**

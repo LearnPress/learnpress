@@ -72,7 +72,7 @@ class LP_Preview_Course {
 			return false;
 		}
 
-		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'lp-preview' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( '_wpnonce' ) ), 'lp-preview' ) ) {
 			return false;
 		}
 

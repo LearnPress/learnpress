@@ -176,7 +176,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		 */
 		public function ready() {
 			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
-				$this->_tax    = $_REQUEST['taxonomy'];
+				$this->_tax = sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ) );
 				$this->_screen = get_current_screen();
 				if ( $this->_screen->id == 'edit-' . LP_COURSE_ATTRIBUTE ) {
 					add_filter( "manage_{$this->_screen->id}_columns", array( $this, 'columns' ) );

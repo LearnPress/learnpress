@@ -137,7 +137,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Maybe logout wp if there is a logout sign
 		 */
 		public function maybe_logout_redirect() {
-			if ( ( 'true' !== LP_Request::get_string( 'lp-logout' ) ) || ! wp_verify_nonce( LP_Request::get_string( 'nonce' ), 'lp-logout' ) ) {
+			if ( ( 'true' !== LP_Request::get_string( 'lp-logout' ) )
+				|| ! wp_verify_nonce( sanitize_key( LP_Request::get_string( 'nonce' ) ), 'lp-logout' ) ) {
 				return;
 			}
 
@@ -545,7 +546,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$message = '';
 			// Find the action by checking the nonce
 			foreach ( $this->_default_actions as $_action => $message ) {
-				if ( wp_verify_nonce( $nonce, 'learn-press-save-profile-' . $_action ) ) {
+				if ( wp_verify_nonce( sanitize_key( $nonce ), 'learn-press-save-profile-' . $_action ) ) {
 					$action = $_action;
 					break;
 				}

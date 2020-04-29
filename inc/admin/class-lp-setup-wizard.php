@@ -36,7 +36,7 @@ class LP_Setup_Wizard {
 	 * Create static pages action
 	 */
 	public function create_pages() {
-		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce', 'setup-create-pages' ) ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( '_wpnonce', 'setup-create-pages' ) ) ) ) {
 			die();
 		}
 
@@ -148,7 +148,7 @@ class LP_Setup_Wizard {
 	public function save() {
 		$step = LP_Request::get_string( 'lp-setup-step' );
 
-		if ( ! wp_verify_nonce( LP_Request::get_string( 'lp-setup-nonce' ), 'lp-setup-step-' . $step ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( 'lp-setup-nonce' ) ), 'lp-setup-step-' . $step ) ) {
 			return;
 		}
 

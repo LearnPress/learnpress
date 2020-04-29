@@ -125,6 +125,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$api  = LP_Repair_Database::instance();
 			$sync = $_REQUEST['sync'];
 
+			if ( is_string( $sync ) ) {
+				$sync = sanitize_text_field( wp_unslash( $sync ) );
+			} elseif ( is_array( $sync ) ) {
+				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
+			}
+
 			if ( $sync === 'get-users' ) {
 				$query = $wpdb->prepare( "
                     SELECT ID
@@ -157,6 +163,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$api  = LP_Repair_Database::instance();
 			$sync = $_REQUEST['sync'];
 
+			if ( is_string( $sync ) ) {
+				$sync = sanitize_text_field( wp_unslash( $sync ) );
+			} elseif ( is_array( $sync ) ) {
+				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
+			}
+
 			if ( $sync === 'get-courses' ) {
 				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
 			}
@@ -180,6 +192,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			global $wpdb;
 			$api  = LP_Repair_Database::instance();
 			$sync = $_REQUEST['sync'];
+
+			if ( is_string( $sync ) ) {
+				$sync = sanitize_text_field( wp_unslash( $sync ) );
+			} elseif ( is_array( $sync ) ) {
+				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
+			}
 
 			if ( $sync === 'get-users' ) {
 				$query = $wpdb->prepare( "
@@ -212,6 +230,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			global $wpdb;
 			$api  = LP_Repair_Database::instance();
 			$sync = $_REQUEST['sync'];
+
+			if ( is_string( $sync ) ) {
+				$sync = sanitize_text_field( wp_unslash( $sync ) );
+			} elseif ( is_array( $sync ) ) {
+				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
+			}
 
 			if ( $sync === 'get-courses' ) {
 				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
@@ -506,7 +530,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
 					'lp_lesson',
 					'lp_quiz'
-				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
+				) ) ) && wp_verify_nonce( sanitize_key( learn_press_get_request( 'nonce' ) ), 'learn-press-toggle-item-preview' )
 			) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
@@ -591,7 +615,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			// verify nonce
 			$nonce = learn_press_get_request( 'remove_nonce' );
-			if ( ! wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $nonce ), 'remove_order_item' ) ) {
 				//die( __( 'Check nonce failed', 'learnpress' ) );
 			}
 
@@ -792,7 +816,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function json_search_customer_name( $query ) {
 			global $wpdb;
 
-			$term = stripslashes( $_REQUEST['term'] );
+			$term = sanitize_text_field( wp_unslash( $_REQUEST['term'] ) );
+
 			if ( method_exists( $wpdb, 'esc_like' ) ) {
 				$term = $wpdb->esc_like( $term );
 			} else {
@@ -1064,10 +1089,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			if ( isset( $_POST['action'] ) && $_POST['action'] === 'learnpress_remove_notice_popup'
 				&& isset( $_POST['slug'] ) && ! empty( $_POST['slug'] )
-				&& isset( $_POST['user'] ) && ! empty( $_POST['user'] )
-			) {
+				&& isset( $_POST['user'] ) && ! empty( $_POST['user'] ) ) {
+				$postSlug = sanitize_text_field( wp_unslash( $_POST['slug'] ) );
+				$postUser = sanitize_text_field( wp_unslash( $_POST['user'] ) );
 
-				$slug = 'learnpress_notice_' . $_POST['slug'] . '_' . $_POST['user'];
+				$slug = 'learnpress_notice_' . $postSlug . '_' . $postUser;
 
 				set_transient( $slug, true, 30 * DAY_IN_SECONDS );
 			}

@@ -49,7 +49,7 @@ class LP_Nonce_Helper {
 			$user_id = get_current_user_id();
 		}
 
-		return wp_verify_nonce( $nonce, sprintf( 'learn-press-%s-course-%s-%s', $action, $course_id, $user_id ) );
+		return wp_verify_nonce( sanitize_key( $nonce ), sprintf( 'learn-press-%s-course-%s-%s', $action, $course_id, $user_id ) );
 	}
 
 	public static function quiz_action( $action, $quiz_id, $course_id, $ajax = false ) {
@@ -80,6 +80,6 @@ class LP_Nonce_Helper {
 			$course_id = get_the_ID();
 		}
 
-		return wp_verify_nonce( $nonce, sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) );
+		return wp_verify_nonce( sanitize_key( $nonce ), sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) );
 	}
 }

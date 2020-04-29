@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 		public static function remove_data() {
 			global $wpdb;
 			$nonce = learn_press_get_request( 'remove-data-nonce' );
-			if ( ! wp_verify_nonce( $nonce, 'learn-press-remove-data' ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $nonce ), 'learn-press-remove-data' ) ) {
 				return;
 			}
 
@@ -133,7 +133,7 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 
 		public static function remove_old_data() {
 			$nonce = learn_press_get_request( 'remove-old-data-nonce' );
-			if ( ! wp_verify_nonce( $nonce, 'learn-press-remove-old-data' ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $nonce ), 'learn-press-remove-old-data' ) ) {
 				return;
 			}
 			global $wpdb;

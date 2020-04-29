@@ -1346,11 +1346,12 @@ function learn_press_config_chart() {
 
 function set_post_order_in_admin( $wp_query ) {
 	global $pagenow;
+	$post_type = '';
+
 	if ( isset( $_GET['post_type'] ) ) {
-		$post_type = $_GET['post_type'];
-	} else {
-		$post_type = '';
+		$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ) );
 	}
+
 	if ( is_admin() && 'edit.php' == $pagenow && $post_type == LP_COURSE_CPT && ! isset( $_GET['orderby'] ) ) {
 		$wp_query->set( 'orderby', 'date' );
 		$wp_query->set( 'order', 'DSC' );

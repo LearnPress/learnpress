@@ -412,7 +412,7 @@ function learn_press_get_request_args( $args = array() ) {
 	$request = array();
 	if ( $args ) {
 		foreach ( $args as $key ) {
-			$request[] = array_key_exists( $key, $_REQUEST ) ? $_REQUEST[ $key ] : false;
+			$request[] = array_key_exists( $key, $_REQUEST ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $key ] ) ) : false;
 		}
 	}
 

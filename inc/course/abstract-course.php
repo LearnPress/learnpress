@@ -206,6 +206,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param string $field
 		 *
 		 * @return bool|int
+		 * @deprecated 3.0.11 - can remove this function
 		 */
 		public function get_request_item( $field = 'id' ) {
 
@@ -213,13 +214,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			$return = LP()->global['course-item'];
 			if ( ! empty( $_REQUEST['course-item'] ) ) {
-				$type = $_REQUEST['course-item'];
+				$type = sanitize_text_field( wp_unslash( $_REQUEST['course-item'] ) );
+
 				if ( $field == 'type' ) {
 					$return = $type;
 				} elseif ( $field == 'id' ) {
-					$return = ! empty( $_REQUEST[ $type . '_id' ] ) ? $_REQUEST[ $type . '_id' ] : 0;
+					$return = ! empty( $_REQUEST[ $type . '_id' ] ) ? absint( $_REQUEST[ $type . '_id' ] ) : 0;
 				} elseif ( $field == 'name' ) {
-					$return = ! empty( $_REQUEST[ $type ] ) ? $_REQUEST[ $type ] : false;
+					$return = ! empty( $_REQUEST[ $type ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $type ] ) ) : false;
 				}
 			}
 

@@ -113,7 +113,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		// Verify nonce
 		$nonce = learn_press_get_request( 'lp-settings-nonce' );
 
-		if ( ! wp_verify_nonce( $nonce, 'lp-settings' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( $nonce ), 'lp-settings' ) ) {
 			return;
 		}
 
@@ -125,8 +125,16 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 			foreach ( $postdata as $key => $value ) {
 				if ( false !== strpos( $key, 'learn_press_' ) ) {
-					//
-					if ( apply_filters( 'learn-press/update-settings/' . $key, true ) ) {
+
+					$key = apply_filters( 'learn-press/update-settings/' . sanitize_text_field( wp_unslash( $key ) ), $key );
+
+					if ( is_string( $value ) ) {
+						$value = sanitize_text_field( $value );
+					} elseif ( is_array( $value ) ) {
+						$value = array_map( 'sanitize_text_field', wp_unslash( $value ) );
+					}
+
+					if ( ! empty( $key ) ) {
 						$value = apply_filters( 'learn-press/update-settings/settings-value', $value, $key, $postdata );
 						update_option( $key, $value );
 					}

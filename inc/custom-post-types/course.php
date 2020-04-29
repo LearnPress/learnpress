@@ -270,7 +270,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function add_course_tab_arg( $m ) {
 			if ( array_key_exists( '_lp_curriculum', $_POST ) && ! empty( $_POST['course-tab'] ) ) {
-				$m = add_query_arg( 'tab', $_POST['course-tab'], $m );
+				$m = add_query_arg( 'tab', sanitize_text_field( wp_unslash( $_POST['course-tab'] ) ), $m );
 			}
 
 			return $m;
@@ -288,7 +288,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			 * Update all course items if set Course Author option
 			 */
 			$course      = learn_press_get_course( $course_id );
-			$post_author = isset( $_POST['_lp_course_author'] ) ? $_POST['_lp_course_author'] : '';
+			$post_author = isset( $_POST['_lp_course_author'] ) ? sanitize_text_field( wp_unslash( $_POST['_lp_course_author'] ) ) : '';
 
 			if ( ! $curriculum = $course->get_items() ) {
 				if ( $post_author ) {
@@ -381,7 +381,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			// ensure that user can do this
 			if ( $delete_log && current_user_can( 'delete_others_lp_courses' ) ) {
 				$nonce = learn_press_get_request( '_wpnonce' );
-				if ( wp_verify_nonce( $nonce, 'delete_log_' . $post_id . '_' . $delete_log ) ) {
+				if ( wp_verify_nonce( sanitize_key( $nonce ), 'delete_log_' . $post_id . '_' . $delete_log ) ) {
 					global $wpdb;
 					$table = $wpdb->prefix . 'learnpress_review_logs';
 					if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
@@ -473,7 +473,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				if ( $_REQUEST['filter_price'] == 0 ) {
 					$where .= " AND ( pm_price.meta_value IS NULL || pm_price.meta_value = 0 )";
 				} else {
-					$where .= $wpdb->prepare( " AND ( pm_price.meta_value = %s )", $_REQUEST['filter_price'] );
+					$where .= $wpdb->prepare( " AND ( pm_price.meta_value = %s )", sanitize_text_field( wp_unslash( $_REQUEST['filter_price'] ) ) );
 				}
 			}
 
@@ -760,7 +760,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function payment_meta_box() {
 
-			$course_id = ! empty( $_GET['post'] ) ? $_GET['post'] : 0;
+			$course_id = ! empty( $_GET['post'] ) ? sanitize_text_field( wp_unslash( $_GET['post'] ) ) : 0;
 
 			$meta_box = array(
 				'id'       => 'course_payment',
@@ -786,9 +786,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$start_date = '';
 				$end_date   = '';
 
-				if ( isset( $_GET['post'] ) ) {
-					$course_id = $_GET['post'];
-
+				if ( $course_id ) {
 					if ( $payment != 'free' ) {
 						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						$course        = get_post( $course_id );

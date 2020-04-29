@@ -302,7 +302,7 @@ class LP_Plugins_Helper {
 	 * @return array
 	 */
 	public static function get_add_on_icons( $plugin_data, $plugin_file ) {
-		$plugin_path = ABSPATH . LP_WP_CONTENT . '/plugins/' . $plugin_file;
+		$plugin_path = ABSPATH . '/wp-content/plugins/' . $plugin_file;
 		$icon_path   = dirname( $plugin_path ) . '/assets/images';
 		$icons       = array(
 			'2x' => '',
@@ -412,7 +412,8 @@ class LP_Plugins_Helper {
 	public static function init() {
 		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
 
-		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' ) || ! wp_verify_nonce( LP_Request::get( '_wpnonce' ), 'lp-check-updates' ) ) {
+		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' )
+			|| ! wp_verify_nonce( sanitize_key( LP_Request::get( '_wpnonce' ) ), 'lp-check-updates' ) ) {
 			return;
 		}
 

@@ -913,7 +913,8 @@ add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_p
 function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	// Redirect to login page if user is not logged in
 	if ( ! is_user_logged_in() ) {
-		$return_url = add_query_arg( $_POST, get_the_permalink( $course_id ) );
+		$post 		= sanitize_post( $_POST, 'raw' );
+		$return_url = add_query_arg( $post, get_the_permalink( $course_id ) );
 		$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
 		$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect', learn_press_get_login_url( $return_url ) );
 		if ( $redirect !== false ) {
@@ -1106,7 +1107,7 @@ function learn_press_update_user_profile() {
 	}
 	$nonce = learn_press_get_request( 'profile-nonce' );
 
-	if ( ! wp_verify_nonce( $nonce, 'learn-press-update-user-profile-' . get_current_user_id() ) ) {
+	if ( ! wp_verify_nonce( sanitize_key( $nonce ), 'learn-press-update-user-profile-' . get_current_user_id() ) ) {
 		return;
 	}
 	$section = learn_press_get_request( 'lp-profile-section' );
