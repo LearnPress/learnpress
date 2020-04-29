@@ -782,7 +782,9 @@ class LP_Page_Controller {
 			$q->is_post_type_archive = true;
 			$q->is_archive           = true;
 			$q->is_page              = true;
-
+			if ( isset( $q->query['paged'] ) ) {
+				$q->set( 'paged', $q->query['paged'] );
+			}
 		}
 
 		// Set custom posts per page
@@ -790,11 +792,6 @@ class LP_Page_Controller {
 			if ( 0 < ( $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) ) {
 				$q->set( 'posts_per_page', $limit );
 			}
-
-			if ( isset( $q->query['page'] ) ) {
-				$q->set( 'paged', $q->query['page'] );
-			}
-
 		}
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
