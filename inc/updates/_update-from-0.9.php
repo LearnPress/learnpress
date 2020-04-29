@@ -1389,7 +1389,7 @@ class LP_Upgrade_From_09 {
 		if ( empty( $_REQUEST['page'] ) || $_REQUEST['page'] != 'learn_press_upgrade_from_09' ) {
 			return;
 		}
-		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'learn-press-upgrade-09' ) ) {
+		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'learn-press-upgrade-09' ) ) {
 			wp_redirect( admin_url() );
 			exit();
 		}
@@ -1408,7 +1408,7 @@ class LP_Upgrade_From_09 {
 		add_action( 'learn_press_update_step_welcome', array( $this, 'update_welcome' ) );
 		add_action( 'learn_press_update_step_upgraded', array( $this, 'update_upgraded' ) );
 
-		$step = ! empty( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'welcome';
+		$step = ! empty( $_REQUEST['step'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['step'] ) ) : 'welcome';
 		if ( ! in_array( $step, $this->_steps ) ) {
 			$step = reset( $this->_steps );
 		}

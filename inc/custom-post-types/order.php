@@ -662,8 +662,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function update_status() {
-			$order_id = ! empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0;
-			$status   = ! empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'Pending';
+			$order_id = ! empty( $_REQUEST['order_id'] ) ? absint( $_REQUEST['order_id'] ) : 0;
+			$status   = ! empty( $_REQUEST['status'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['status'] ) ) : 'Pending';
+
 			learn_press_update_order_status( $order_id, $status );
 
 			wp_send_json(

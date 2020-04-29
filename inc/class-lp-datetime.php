@@ -65,12 +65,12 @@ class LP_Datetime extends DateTime {
 			//$date = '1969-01-01 00:00:00';
 		}
 
-		date_default_timezone_set( 'UTC' );
+		//date_default_timezone_set( 'UTC' );
 		$date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date;
 
 		parent::__construct( $date, $tz );
 
-		date_default_timezone_set( self::$stz->getName() );
+		//date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
 	}

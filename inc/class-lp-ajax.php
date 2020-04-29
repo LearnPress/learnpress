@@ -93,7 +93,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			$link = $course->get_external_link();
 
-			if ( ! wp_verify_nonce( $nonce, 'external-link-' . $link ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $nonce ), 'external-link-' . $link ) ) {
 				return;
 			}
 
@@ -109,7 +109,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				wp_die( __( 'Sorry! Registration is not allowed on this site.', 'learnpress' ) );
 			}
 
-			if ( ! wp_verify_nonce( LP_Request::get( 'learn-press-register-nonce' ), 'learn-press-register' ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( LP_Request::get( 'learn-press-register-nonce' ) ), 'learn-press-register' ) ) {
 				wp_die( __( 'Bad request.', 'learnpress' ) );
 			}
 
@@ -265,7 +265,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$user      = learn_press_get_current_user();
 
 			$nonce_action = sprintf( 'finish-course-%d-%d', $course_id, $user->get_id() );
-			if ( ! $user->get_id() || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
+			if ( ! $user->get_id() || ! $course || ! wp_verify_nonce( sanitize_key( $nonce ), $nonce_action ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
 			$finished = $user->finish_course( $course_id );
@@ -310,7 +310,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$nonce_action = $item->get_nonce_action( 'complete', $course_id, $user->get_id() );
 			try {
 				// security check
-				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
+				if ( ! $post || ( $post && ! wp_verify_nonce( sanitize_key( $nonce ), $nonce_action ) ) ) {
 					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ), 8000 );
 				}
 
@@ -359,7 +359,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			$security_action = sprintf( 'retake-course-%d-%d', $course->get_id(), $user->get_id() );
 			// security check
-			if ( ! wp_verify_nonce( $security, $security_action ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $security ), $security_action ) ) {
 				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ), 'error' );
 			} else {
 				if ( $user->can_retake_course( $course_id ) ) {

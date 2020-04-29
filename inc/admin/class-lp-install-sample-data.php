@@ -78,7 +78,7 @@ class LP_Install_Sample_Data {
 	 * Install
 	 */
 	public function install() {
-		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'install-sample-course' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( '_wpnonce' ) ), 'install-sample-course' ) ) {
 			return;
 		}
 
@@ -147,7 +147,7 @@ class LP_Install_Sample_Data {
 	 * Un-install
 	 */
 	public function uninstall() {
-		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'uninstall-sample-course' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( '_wpnonce' ) ), 'uninstall-sample-course' ) ) {
 			return;
 		}
 

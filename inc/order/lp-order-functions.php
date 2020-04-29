@@ -780,7 +780,8 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	 * in their profile.
 	 */
 	function learn_press_cancel_order_process() {
-		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || ! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] )
+			|| ! wp_verify_nonce( sanitize_key( $_REQUEST['lp-nonce'] ), 'cancel-order' ) || is_admin() ) {
 			return;
 		}
 

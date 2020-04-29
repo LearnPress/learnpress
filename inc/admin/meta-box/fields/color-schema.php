@@ -13,7 +13,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 	}
 
 	public static function reset() {
-		if ( ( $nonce = LP_Request::get_string( 'reset-color' ) ) && wp_verify_nonce( $nonce, 'reset-color' ) ) {
+		if ( ( $nonce = LP_Request::get_string( 'reset-color' ) ) && wp_verify_nonce( sanitize_key( $nonce ), 'reset-color' ) ) {
 			if ( $schemas = get_option( 'learn_press_color_schemas' ) ) {
 				foreach ( $schemas as $k => $schema ) {
 
@@ -37,7 +37,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 
 	public static function update() {
 		if ( ! empty( $_REQUEST['color_schema'] ) ) {
-			update_option( 'learn_press_color_schemas', $_REQUEST['color_schema'] );
+			update_option( 'learn_press_color_schemas', sanitize_text_field( wp_unslash( $_REQUEST['color_schema'] ) ) );
 		}
 	}
 

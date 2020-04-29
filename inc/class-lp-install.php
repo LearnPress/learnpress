@@ -114,7 +114,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			 * For test upgrade
 			 */
 			if ( isset( $_REQUEST['test-upgrade'] ) ) {
-				$ver = $_REQUEST['test-upgrade'];
+				$ver = sanitize_text_field( wp_unslash( $_REQUEST['test-upgrade'] ) );
 				if ( ! empty( self::$_update_files[ $ver ] ) ) {
 					include_once LP_PLUGIN_PATH . '/inc/updates/' . self::$_update_files[ $ver ];
 				}

@@ -26,7 +26,9 @@ if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 			return $redirect;
 		}
 
-		return add_query_arg( 'content-item-only', 'yes', $_REQUEST['content-item-only-redirect'] );
+		$content_item_only_redirect = sanitize_text_field( wp_unslash( $_REQUEST['content-item-only-redirect'] ) );
+
+		return add_query_arg( 'content-item-only', 'yes', $content_item_only_redirect );
 	}
 }
 

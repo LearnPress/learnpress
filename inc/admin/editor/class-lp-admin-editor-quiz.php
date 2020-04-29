@@ -38,8 +38,9 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
 
 		// get quiz
-		$quiz_id = $args['id'];
+		$quiz_id = absint( $args['id'] );
 		$quiz    = learn_press_get_quiz( $quiz_id );
+		$type    = sanitize_text_field( wp_unslash( $args['type'] ) );
 
 		if ( ! $quiz ) {
 			return new WP_Error( 'INVALID_QUIZ', __( 'Invalid quiz', 'learnpress' ) );
@@ -50,7 +51,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$this->question_curd = new LP_Question_CURD();
 		$this->result        = array( 'status' => false );
 
-		$this->call( $args['type'], array( $args ) );
+		$this->call( $type, array( $args ) );
 
 		return $this->get_result();
 	}
@@ -400,8 +401,8 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function delete_question_answer( $args = array() ) {
-		$question_id = isset( $_POST['question_id'] ) ? $_POST['question_id'] : false;
-		$answer_id   = isset( $_POST['answer_id'] ) ? intval( $_POST['answer_id'] ) : false;
+		$question_id = isset( $_POST['question_id'] ) ? absint( $_POST['question_id'] ) : false;
+		$answer_id   = isset( $_POST['answer_id'] ) ? absint( $_POST['answer_id'] ) : false;
 
 		if ( ! ( $question_id && $answer_id ) ) {
 			return false;
@@ -562,8 +563,8 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 */
 	public function add_questions_to_quiz( $args = array() ) {
 		// added questions
-		$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
-		$questions = json_decode( wp_unslash( $questions ), true );
+		$questions = isset( $_POST['items'] ) ? sanitize_text_field( wp_unslash( $_POST['items'] ) ) : false;
+		$questions = json_decode( $questions, true );
 
 		if ( ! $questions ) {
 			return false;
@@ -573,9 +574,8 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 		// draft quiz
 		if ( get_post_status( $quiz_id ) == 'auto-draft' ) {
-
-			$draft_quiz = ! empty( $args['draft_quiz'] ) ? $args['draft_quiz'] : '';
-			$draft_quiz = (array) ( json_decode( wp_unslash( $draft_quiz ), '' ) );
+			$draft_quiz = ! empty( $args['draft_quiz'] ) ? sanitize_text_field( wp_unslash( $args['draft_quiz'] ) ) : '';
+			$draft_quiz = (array) ( json_decode( $draft_quiz, '' ) );
 
 			$quiz_args = array(
 				'id'      => $quiz_id,

@@ -786,7 +786,7 @@ function learn_press_force_refresh_course( $comment_id, $status ) {
 		return;
 	}
 
-	$course_id = $_POST['comment-post-item-course'];
+	$course_id = absint( $_POST['comment-post-item-course'] );
 	$course    = learn_press_get_course( $course_id );
 	$curd      = new LP_Course_CURD();
 	$curd->load( $course );

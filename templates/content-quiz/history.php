@@ -30,7 +30,7 @@ $limit   = 10;
 $history = $user->get_quiz_history( $quiz->id, $course->get_id() );
 reset( $history );
 $history_count = sizeof( $history );
-$view_id       = ! empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : key( $history );
+$view_id       = ! empty( $_REQUEST['history_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['history_id'] ) ) : key( $history );
 $heading       = sprintf( __( 'Other results (newest %d items)', 'learnpress' ), $limit );
 $heading       = apply_filters( 'learn_press_quiz_history_heading', $heading );
 ?>
