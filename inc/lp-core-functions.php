@@ -1641,7 +1641,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		$default_fields = array( 'bat_name', 'bat_email', 'bat_phone', 'bat_message' );
 		foreach ( $fields as $key => $field ) {
 			if ( isset( $_POST[ $key ] ) ) {
-				$fields[ $key ]['value'] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+				$fields[ $key ]['value'] = LP_Helper::sanitize_params_submitted( $_POST[ $key ] );
 			}
 		}
 		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields, $user );
@@ -1874,11 +1874,7 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
 		}
 	}
 
-	if ( is_string( $return ) ) {
-		$return = sanitize_text_field( wp_unslash( $return ) );
-	} elseif ( is_array( $return ) ) {
-		$return = array_map( 'sanitize_text_field', wp_unslash( $return ) );
-	}
+	$return = LP_Helper::sanitize_params_submitted( $return );
 
 	return $return;
 }

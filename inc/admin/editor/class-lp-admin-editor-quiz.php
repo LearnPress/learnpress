@@ -563,7 +563,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 */
 	public function add_questions_to_quiz( $args = array() ) {
 		// added questions
-		$questions = isset( $_POST['items'] ) ? sanitize_text_field( wp_unslash( $_POST['items'] ) ) : false;
+		$questions = isset( $_POST['items'] ) ? LP_Helper::sanitize_params_submitted( $_POST['items'] ) : false;
 		$questions = json_decode( $questions, true );
 
 		if ( ! $questions ) {

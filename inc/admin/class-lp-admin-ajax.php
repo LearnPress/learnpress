@@ -123,13 +123,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			global $wpdb;
 			$api  = LP_Repair_Database::instance();
-			$sync = $_REQUEST['sync'];
-
-			if ( is_string( $sync ) ) {
-				$sync = sanitize_text_field( wp_unslash( $sync ) );
-			} elseif ( is_array( $sync ) ) {
-				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
-			}
+			$sync = LP_Helper::sanitize_params_submitted( $_REQUEST['sync'] );
 
 			if ( $sync === 'get-users' ) {
 				$query = $wpdb->prepare( "
@@ -161,13 +155,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			global $wpdb;
 			$api  = LP_Repair_Database::instance();
-			$sync = $_REQUEST['sync'];
-
-			if ( is_string( $sync ) ) {
-				$sync = sanitize_text_field( wp_unslash( $sync ) );
-			} elseif ( is_array( $sync ) ) {
-				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
-			}
+			$sync = LP_Helper::sanitize_params_submitted( $_REQUEST['sync'] );
 
 			if ( $sync === 'get-courses' ) {
 				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
@@ -191,13 +179,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			global $wpdb;
 			$api  = LP_Repair_Database::instance();
-			$sync = $_REQUEST['sync'];
-
-			if ( is_string( $sync ) ) {
-				$sync = sanitize_text_field( wp_unslash( $sync ) );
-			} elseif ( is_array( $sync ) ) {
-				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
-			}
+			$sync = LP_Helper::sanitize_params_submitted( $_REQUEST['sync'] );
 
 			if ( $sync === 'get-users' ) {
 				$query = $wpdb->prepare( "
@@ -229,13 +211,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			global $wpdb;
 			$api  = LP_Repair_Database::instance();
-			$sync = $_REQUEST['sync'];
-
-			if ( is_string( $sync ) ) {
-				$sync = sanitize_text_field( wp_unslash( $sync ) );
-			} elseif ( is_array( $sync ) ) {
-				$sync = array_map( 'sanitize_text_field', wp_unslash( $sync ) );
-			}
+			$sync = LP_Helper::sanitize_params_submitted( $_REQUEST['sync'] );
 
 			if ( $sync === 'get-courses' ) {
 				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
@@ -1123,7 +1099,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			$order_id = absint( $order_id );
-			$value    = sanitize_text_field( $value );
 
 			$lp_order = get_post( $order_id );
 

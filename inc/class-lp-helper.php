@@ -315,4 +315,27 @@ class LP_Helper {
 
 		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( $_SERVER['REQUEST_URI'] );
 	}
+
+	/**
+	 * Sanitize string and array
+	 *
+	 * @param array|string $value
+	 *
+	 * @return array|string
+	 * @since  3.2.7.1
+	 * @author tungnx
+	 */
+	public static function sanitize_params_submitted( $value ) {
+		$value = wp_unslash( $value );
+
+		if ( is_string( $value ) ) {
+			$value = sanitize_text_field( $value );
+		} elseif ( is_array( $value ) ) {
+			foreach ( $value as $k => $v ) {
+				$value[ $k ] = self::sanitize_params_submitted( $v );
+			}
+		}
+
+		return $value;
+	}
 }

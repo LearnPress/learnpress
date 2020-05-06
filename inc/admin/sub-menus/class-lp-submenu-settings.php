@@ -128,11 +128,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 					$key = apply_filters( 'learn-press/update-settings/' . sanitize_text_field( wp_unslash( $key ) ), $key );
 
-					if ( is_string( $value ) ) {
-						$value = sanitize_text_field( $value );
-					} elseif ( is_array( $value ) ) {
-						$value = array_map( 'sanitize_text_field', wp_unslash( $value ) );
-					}
+					$value = LP_Helper::sanitize_params_submitted( $value );
 
 					if ( ! empty( $key ) ) {
 						$value = apply_filters( 'learn-press/update-settings/settings-value', $value, $key, $postdata );

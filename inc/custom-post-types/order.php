@@ -485,7 +485,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
-			if( is_admin() && $this->_is_archive() && !$wp_query->query['post_status'] ) {
+			if( is_admin() && $this->_is_archive() &&
+				( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
 				$statuses = array_keys(learn_press_get_register_order_statuses());
 				$search = "{$wpdb->posts}.post_status = 'publish' ";
 				$tmps = array($search);

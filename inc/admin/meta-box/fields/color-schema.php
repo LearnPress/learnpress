@@ -37,7 +37,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 
 	public static function update() {
 		if ( ! empty( $_REQUEST['color_schema'] ) ) {
-			update_option( 'learn_press_color_schemas', sanitize_text_field( wp_unslash( $_REQUEST['color_schema'] ) ) );
+			update_option( 'learn_press_color_schemas', LP_Helper::sanitize_params_submitted( $_REQUEST['color_schema'] ) );
 		}
 	}
 
