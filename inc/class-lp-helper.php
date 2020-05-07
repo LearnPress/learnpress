@@ -199,7 +199,7 @@ class LP_Helper {
 	 *
 	 * @return array
 	 */
-	public static function array_merge_recursive( & $array1, & $array2 ) {
+	public static function array_merge_recursive( &$array1, &$array2 ) {
 		$merged = $array1;
 
 		if ( is_array( $array1 ) && is_array( $array2 ) ) {
@@ -299,7 +299,7 @@ class LP_Helper {
 		return $page_id;
 	}
 
-	public static function uniq(){
+	public static function uniq() {
 
 	}
 
@@ -320,19 +320,29 @@ class LP_Helper {
 	 * Sanitize string and array
 	 *
 	 * @param array|string $value
+	 * @param string       $type_content
 	 *
 	 * @return array|string
 	 * @since  3.2.7.1
 	 * @author tungnx
 	 */
-	public static function sanitize_params_submitted( $value ) {
+	public static function sanitize_params_submitted( $value, $type_content = 'text' ) {
 		$value = wp_unslash( $value );
 
 		if ( is_string( $value ) ) {
-			$value = sanitize_text_field( $value );
+			switch ( $type_content ) {
+				case 'html':
+					$value = wp_kses_post( $value );
+					break;
+				case 'textarea' :
+					$value = sanitize_textarea_field( $value );
+					break;
+				default:
+					$value = sanitize_text_field( $value );
+			}
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
-				$value[ $k ] = self::sanitize_params_submitted( $v );
+				$value[ $k ] = self::sanitize_params_submitted( $v, $type_content );
 			}
 		}
 

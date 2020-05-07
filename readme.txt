@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.7.2 =
+~ Fixed email setting not save tag html
+
 = 3.2.7.1 =
 ~ Fix save settings
 
