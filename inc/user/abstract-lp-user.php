@@ -1362,31 +1362,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$view = apply_filters( 'learn_press_user_view_quiz', $view, $item_id, $this->get_id(), $course_id );
 
 			return apply_filters( 'learn-press/can-view-item', $view, $item_id, $this->get_id(), $course_id );
-
-//			$return    = false;
-//			$course_id = $this->_get_course( $course_id );
-//
-//			$course_author = learn_press_get_course_user( $course_id );
-//			if ( $course_author ) {
-//				$author_id = $course_author->get_id();
-//				if ( $author_id == $this->get_id() ) {
-//					return true;
-//				}
-//			}
-//
-//			switch ( learn_press_get_post_type( $item_id ) ) {
-//				case LP_QUIZ_CPT:
-//					$return = $this->can_view_quiz( $item_id, $course_id );
-//					break;
-//				case LP_LESSON_CPT:
-//					$return = $this->can_view_lesson( $item_id, $course_id );
-//					break;
-//			}
-//
-//			// @deprecated
-//			$return = apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
-//
-//			return apply_filters( 'learn-press/can-view-item', $return, $item_id, $course_id, $this->get_id() );
 		}
 
 		public function get_item_url( $item_id, $course_id = 0 ) {

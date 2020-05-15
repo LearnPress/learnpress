@@ -347,7 +347,11 @@ class LP_Plugins_Helper {
 	 * @return bool
 	 */
 	public static function _filter_plugin( $plugin ) {
-		if ( ! empty( $plugin ) ) {
+		/**
+		 * Editor tungnx
+		 * Check more case $plugin->slug null
+		 */
+		if ( ! empty( $plugin ) && isset( $plugin->slug ) ) {
 			return $plugin && preg_match( '!^learnpress-.*!', $plugin->slug );
 		} else {
 			return false;

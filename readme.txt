@@ -1,10 +1,10 @@
 === LearnPress - WordPress LMS Plugin ===  
-Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
+Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungnx
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
 Tested up to: 5.4
-Stable tag: 3.2.7.1
+Stable tag: 3.2.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 3.2.7.3 =
+~ Fixed error get_image() return bool not string on the file \templates\loop\course\thumbnail.php
+~ Modify description for the function 'External Link'
+~ Fixed LP_Datetime error with date = '0000-00-00 00:00:00'
+
 = 3.2.7.2 =
 ~ Fixed email setting not save tag html
 

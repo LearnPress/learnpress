@@ -627,7 +627,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'External Link', 'learnpress' ),
 						'id'   => '_lp_external_link_buy_course',
 						'type' => 'url',
-						'desc' => __( 'Redirect to this url when you press button buy this course.', 'learnpress' ),
+						'desc' => __( 'Redirect to this url when you press button buy this course. Not handle any task with the course (enroll, buy the course, v.v…). So if you want to user can learn courses you need to create an order manually', 'learnpress' ),
 						'std'  => '',
 					),
 					array(

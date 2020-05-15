@@ -65,6 +65,14 @@ class LP_Datetime extends DateTime {
 			//$date = '1969-01-01 00:00:00';
 		}
 
+		/**
+		 * addBy tungnx
+		 * reason: fix for end_time error (certificate)
+		 */
+		if ( $date === '0000-00-00 00:00:00' ) {
+			$date = date( 'Y-m-d H:i:s' );
+		}
+
 		//date_default_timezone_set( 'UTC' );
 		$date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date;
 

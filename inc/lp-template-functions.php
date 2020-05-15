@@ -3734,6 +3734,7 @@ function learn_press_filter_can_view_item( $view, $item_id, $user_id, $course_id
 	if ( ! get_post_meta( $course_id, '_lp_submission', true ) ) {
 		update_post_meta( $course_id, '_lp_submission', 'yes' );
 	}
+
 	$_lp_submission = get_post_meta( $course_id, '_lp_submission', true );
 	if ( $_lp_submission === 'yes' ) {
 		if ( ! $user->is_logged_in() ) {
@@ -3759,12 +3760,11 @@ function learn_press_filter_block_content_template( $located, $template_name, $a
 		} elseif ( $item->is_blocked() ) {
 			$can_view_item = 'is_blocked';
 		}
-		$located = learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
 
+		$located = learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
 	}
 
 	return $located;
-
 }
 
 function learn_press_term_conditions_template() {

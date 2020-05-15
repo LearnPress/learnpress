@@ -24,9 +24,9 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 
 	<?php do_action( 'learn-press/course-item-content-header' ); ?>
 
-    <div class="content-item-scrollable">
+	<div class="content-item-scrollable">
 
-        <div class="content-item-wrap">
+		<div class="content-item-wrap">
 
 			<?php
 			/**
@@ -40,7 +40,12 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 			 */
 			do_action( 'learn-press/before-course-item-content' );
 
-			if ( $can_view_item ) {
+			/**
+			 * Editor tungnx
+			 *
+			 * Check more case $can_view_item = 'not-enrolled'
+			 */
+			if ( $can_view_item && $can_view_item != 'not-enrolled' ) {
 				/**
 				 * @deprecated
 				 */
@@ -66,9 +71,9 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 			do_action( 'learn_press_after_content_item' );
 			?>
 
-        </div>
+		</div>
 
-    </div>
+	</div>
 
 	<?php do_action( 'learn-press/course-item-content-footer' ); ?>
 

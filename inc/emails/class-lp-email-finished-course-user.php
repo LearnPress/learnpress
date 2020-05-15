@@ -46,9 +46,9 @@ if ( ! class_exists( 'LP_Email_Finished_Course_User' ) ) {
 			parent::trigger( $course_id, $user_id, $user_item_id );
 
 			ob_start();
-			var_dump("Send mail", $this->enable);
+			//var_dump("Send mail", $this->enable);
 			$log = ob_get_clean();
-			error_log($log);
+			//error_log($log);
 
 			if ( ! $this->enable ) {
 				return;
