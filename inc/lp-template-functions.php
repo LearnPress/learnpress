@@ -3251,10 +3251,10 @@ function learn_press_item_meta_duration( $item ) {
 
 	if ( is_a( $duration, 'LP_Duration' ) && $duration->get() ) {
 		$format = array(
-			'day'    => _x( '%s day', 'duration', 'learnpress' ),
-			'hour'   => _x( '%s hour', 'duration', 'learnpress' ),
-			'minute' => _x( '%s min', 'duration', 'learnpress' ),
-			'second' => _x( '%s sec', 'duration', 'learnpress' ),
+			'day'    => '%s ' . _x( 'day', 'duration', 'learnpress' ),
+			'hour'   => '%s ' . _x( 'hour', 'duration', 'learnpress' ),
+			'minute' => '%s ' . _x( 'min', 'duration', 'learnpress' ),
+			'second' => '%s ' . _x( 'sec', 'duration', 'learnpress' ),
 		);
 		echo '<span class="item-meta duration">' . $duration->to_timer( $format, true ) . '</span>';
 	} elseif ( is_string( $duration ) && strlen( $duration ) ) {
