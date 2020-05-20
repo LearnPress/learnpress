@@ -205,6 +205,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modify description for the function 'External Link'
 ~ Fixed LP_Datetime error with date = '0000-00-00 00:00:00'
 ~ Fixed not show number Duration of Lession when translate text
+~ Fixed not send mail for instructor when have new order
 
 = 3.2.7.2 =
 ~ Fixed email setting not save tag html
