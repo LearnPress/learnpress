@@ -7705,6 +7705,10 @@ msgstr ""
 msgid "LearnPress update version %s"
 msgstr ""
 
+#: learnpress/inc/lp-template-functions.php:561
+msgid "Overview"
+msgstr ""
+
 #. Description of the plugin
 msgid ""
 "LearnPress is a WordPress complete solution for creating a Learning "

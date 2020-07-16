@@ -2341,3 +2341,7 @@ msgstr "Tempo restante"
 #: templates/quiz/time-counter.php:17
 msgid "mins/secs"
 msgstr "minuti/secondi"
+
+#: learnpress/inc/lp-template-functions.php:561
+msgid "Overview"
+msgstr ""

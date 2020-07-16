@@ -128,6 +128,10 @@ msgstr "Remplissez vos informations et envoyez-les nous pour devenir un professe
 msgid "Submit"
 msgstr "Envoyer"
 
+#: learnpress/inc/lp-template-functions.php:561
+msgid "Overview"
+msgstr ""
+
 #: inc/class.lpr-shortcodes.php:70
 msgid "Name"
 msgstr "Nom"

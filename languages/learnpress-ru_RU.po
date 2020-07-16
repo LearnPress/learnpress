@@ -2767,3 +2767,7 @@ msgstr "Обновить"
 #: ../learnpress.php:352
 msgid "Learning Management System"
 msgstr "Система дистанционного обучения"
+
+#: learnpress/inc/lp-template-functions.php:561
+msgid "Overview"
+msgstr ""
