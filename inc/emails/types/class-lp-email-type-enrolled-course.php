@@ -151,6 +151,10 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 
 		if ( $courses ) {
 			foreach ( $courses as $course ) {
+				if ( ! isset( $course['course_id'] ) ) {
+					return;
+				}
+
 				$course_id = $course['course_id'];
 
 				$course_data = new LP_User_Item_Course( $course_id );

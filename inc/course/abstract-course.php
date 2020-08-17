@@ -1767,9 +1767,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_enable_item_link() {
-			return get_post_meta( $this->get_id(), '_lp_submission', true ) === 'yes';
-		}
+//		public function is_enable_item_link() {
+//			return get_post_meta( $this->get_id(), '_lp_submission', true ) === 'yes';
+//		}
 
 		/**
 		 * Prepare course items.

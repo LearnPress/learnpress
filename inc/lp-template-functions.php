@@ -3726,40 +3726,47 @@ function learn_press_maybe_load_comment_js() {
 
 add_action( 'wp_enqueue_scripts', 'learn_press_maybe_load_comment_js' );
 
-add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
+//add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
+//
+//function learn_press_filter_can_view_item( $view, $item_id, $user_id, $course_id ) {
+//	$user = learn_press_get_user( $user_id );
+//
+//	if ( ! get_post_meta( $course_id, '_lp_submission', true ) ) {
+//		update_post_meta( $course_id, '_lp_submission', 'yes' );
+//	}
+//
+//	$_lp_submission = get_post_meta( $course_id, '_lp_submission', true );
+//	if ( $_lp_submission === 'yes' ) {
+//		if ( ! $user->is_logged_in() ) {
+//			return 'not-logged-in';
+//		} else if ( ! $user->has_enrolled_course( $course_id ) ) {
+//			return 'not-enrolled';
+//		}
+//	}
+//
+//	return $view;
+//}
 
-function learn_press_filter_can_view_item( $view, $item_id, $user_id, $course_id ) {
-	$user = learn_press_get_user( $user_id );
-
-	if ( ! get_post_meta( $course_id, '_lp_submission', true ) ) {
-		update_post_meta( $course_id, '_lp_submission', 'yes' );
-	}
-
-	$_lp_submission = get_post_meta( $course_id, '_lp_submission', true );
-	if ( $_lp_submission === 'yes' ) {
-		if ( ! $user->is_logged_in() ) {
-			return 'not-logged-in';
-		} else if ( ! $user->has_enrolled_course( $course_id ) ) {
-			return 'not-enrolled';
-		}
-	}
-
-	return $view;
-}
-
-add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );
+//add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
 	$item = LP_Global::course_item();
 	if ( $template_name == 'global/block-content.php' ) {
-		$can_view_item = false;
-		if ( !is_user_logged_in() ) {
-			$can_view_item = 'not-logged-in';
-		} elseif ( !learn_press_current_user_enrolled_course() ) {
-			$can_view_item = 'not-enrolled';
-		} elseif ( $item->is_blocked() ) {
-			$can_view_item = 'is_blocked';
-		}
+//		$can_view_item = false;
+//		if ( !is_user_logged_in() ) {
+//			$can_view_item = 'not-logged-in';
+//		} elseif ( !learn_press_current_user_enrolled_course() ) {
+//			$can_view_item = 'not-enrolled';
+//		} elseif ( $item->is_blocked() ) {
+//			$can_view_item = 'is_blocked';
+//		}
+
+		$user = learn_press_get_current_user();
+
+		$can_view_item = $user->can_view_item( $item->get_id(), 0);
+
+		var_dump($can_view_item);
+
 
 		$located = learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
 	}

@@ -398,7 +398,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool $key Optional. True if return the key instead of value.
+		 * @param bool   $key     Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -410,7 +410,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool $key
+		 * @param bool   $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -458,8 +458,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get current link of profile
 		 *
-		 * @param string $args - Optional. Add more query args to url.
-		 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
+		 * @param string $args           - Optional. Add more query args to url.
+		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
 		 *
 		 * @return mixed|string
 		 */
@@ -613,11 +613,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get publicity profile settings.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param string $tab
 		 *
 		 * @return array|mixed
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_publicity( $tab = '' ) {
 
@@ -650,9 +650,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @param mixed $args
 		 *
+		 * @return array
 		 * @since 3.0.0
 		 *
-		 * @return array
 		 */
 		public function get_user_orders( $args = '' ) {
 
@@ -760,7 +760,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Query user's courses
 		 *
 		 * @param string $type - Optional. [own, purchased, enrolled, etc]
-		 * @param mixed $args - Optional.
+		 * @param mixed  $args - Optional.
 		 *
 		 * @return array|LP_Query_List_Table
 		 */
@@ -926,7 +926,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Echo class for main div.
 		 *
-		 * @param bool $echo
+		 * @param bool   $echo
 		 * @param string $more
 		 *
 		 * @return string
@@ -959,7 +959,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the tab is visible for current user.
 		 *
 		 * @param string $tab_key
-		 * @param array $tab_data
+		 * @param array  $tab_data
 		 *
 		 * @return bool
 		 */
@@ -971,7 +971,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the section is visible for current user.
 		 *
 		 * @param string $section_key
-		 * @param array $section_data
+		 * @param array  $section_data
 		 *
 		 * @return bool
 		 */
@@ -1014,11 +1014,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get queried user in profile link.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param string $return
 		 *
 		 * @return false|WP_User
+		 * @since 3.0.0
+		 *
 		 */
 		public static function get_queried_user( $return = '' ) {
 			global $wp_query;
@@ -1068,7 +1068,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $uploaded_profile_src;
 		}
 
+		/**
+		 * @param string $type
+		 * @param int    $size
+		 *
+		 * @return bool|mixed|void
+		 */
 		public function get_profile_picture( $type = '', $size = 96 ) {
+			// Remove hook of ultimate member plugin
+			remove_filter( 'get_avatar', 'um_get_avatar', 99999 );
+
 			$user = $this->get_user();
 			if ( $type == 'gravatar' ) {
 				remove_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1 );
@@ -1078,13 +1087,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$user->set_data( 'profile_picture_src', $profile_picture_src );
 			}
 
-			$avatar = get_avatar( $user->get_id(), $size, '', esc_attr__('User Avatar', 'learnpress'), array( 'gravatar' => false ) );
+			$avatar = get_avatar( $user->get_id(), $size, '', esc_attr__( 'User Avatar', 'learnpress' ), array( 'gravatar' => false ) );
 
 			if ( $type == 'gravatar' ) {
 				add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
 			}
 
-			return $avatar;
+			return apply_filters( 'learn-press/profile-pucture', $avatar, $type, $user, $size );
 		}
 
 		/**

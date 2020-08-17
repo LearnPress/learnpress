@@ -7,7 +7,7 @@ Author: ThimPress
 Version: 3.2.7.3
 Author URI: http://thimpress.com
 Requires at least: 3.8
-Tested up to: 5.4
+Tested up to: 5.4.x
 
 Text Domain: learnpress
 Domain Path: /languages/
@@ -104,8 +104,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		/**
 		 * @var LP_Admin_Notice
-         *
-         * @since 3.2.6
+		 *
+		 * @since 3.2.6
 		 */
 		public $adminNotices = null;
 
@@ -153,12 +153,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Add new task to a background process.
 		 *
-		 * @since 3.0.8
-		 *
 		 * @param mixed  $data
 		 * @param string $background
 		 *
 		 * @return LP_Abstract_Background_Process|bool
+		 * @since 3.0.8
+		 *
 		 */
 		public function add_background_task( $data, $background = 'global' ) {
 			if ( isset( $this->backgrounds[ $background ] ) ) {
@@ -173,11 +173,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Return a background instance.
 		 *
-		 * @since 3.0.8
-		 *
 		 * @param string $name
 		 *
 		 * @return LP_Abstract_Background_Process|bool
+		 * @since 3.0.8
+		 *
 		 */
 		public function background( $name ) {
 
@@ -353,9 +353,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			/**
 			 * REST APIs
-             *
-             * @since 3.2.6
-             */
+			 *
+			 * @since 3.2.6
+			 */
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';
 			require_once 'inc/rest-api/class-lp-core-api.php';
@@ -409,9 +409,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @param $key
 		 *
+		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
 		 * @deprecated since 3.0.0
 		 *
-		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
 		 */
 		public function __get( $key ) {
 			return false;
@@ -474,8 +474,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					}
 				}
 
-				if ( ! $size = LP()->settings->get( $image_size . '_image_size', array() ) ) {
-					$size = array();
+				$size_tmp = LP()->settings->get( $image_size . '_image_size', array() );
+
+				if ( $size_tmp && is_array( $size_tmp ) ) {
+					$size = $size_tmp;
 				}
 
 				$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
@@ -527,9 +529,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
-			}else{
-			    $this->adminNotices = LP_Admin_Notice::instance();
-            }
+			} else {
+				$this->adminNotices = LP_Admin_Notice::instance();
+			}
 
 			// init email notification hooks
 			LP_Emails::init_email_notifications();

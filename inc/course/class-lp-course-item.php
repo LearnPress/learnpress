@@ -263,10 +263,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * Get instance of an item from post
 		 *
-		 * @param WP_Post|int                      $post
-		 * @param LP_Course|LP_Abstract_Course|int $course
+		 * @param WP_Post|int                           $post
+		 * @param LP_Course|LP_Abstract_Course|int|null $course
 		 *
-		 * @return LP_Course_Item
+		 * @return mixed|void|LP_Course_Item
 		 */
 		public static function get_item( $post, $course = null ) {
 			$item_type = '';
@@ -312,7 +312,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			}
 
-			if ( $course && $item) {
+			if ( $course && $item ) {
 				$item->set_course( $course );
 			}
 
@@ -333,9 +333,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * To array.
 		 *
+		 * @return array
 		 * @since 3.0.0
 		 *
-		 * @return array
 		 */
 		public function to_array() {
 			$post = get_post( $this->get_id() );
@@ -503,9 +503,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$key = 'course-item-' . $user_id . '-' . $course_id;
 
-			if ( false === ( $blocked_items = LP_Object_Cache::get( $key, 'learn-press/blocked-items' ) ) ) {
+			/*if ( false === ( $blocked_items = LP_Object_Cache::get( $key, 'learn-press/blocked-items' ) ) ) {
 				$blocked_items = $this->_parse_item_block_status( $course_id, $user_id, $key );
-			}
+			}*/
 
 			$is_blocked = isset( $blocked_items[ $this->get_id() ] ) ? $blocked_items[ $this->get_id() ] : false;
 
@@ -535,12 +535,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 					}
 				}
 
-				if ( ! is_array( $blocked_items ) ) {
+				/*if ( ! is_array( $blocked_items ) ) {
 					$blocked_items = array();
 				}
-				$blocked_items[ $this->get_id() ] = $blocked;
+				$blocked_items[ $this->get_id() ] = $blocked;*/
 
-				LP_Object_Cache::set( $key, $blocked_items, 'learn-press/blocked-items' );
+				//LP_Object_Cache::set( $key, $blocked_items, 'learn-press/blocked-items' );
 				$is_blocked = $blocked;
 			}
 
@@ -568,7 +568,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			foreach ( $course_items as $course_item ) {
 				if ( $item = $course->get_item( $course_item ) ) {
-					if ( $item->is_preview() /*|| get_post_meta( $item->get_id(), '_lp_preview', true ) */ ) {
+					if ( $item->is_preview() ) {
 						$blocked_items[ $course_item ] = 'no';
 					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array( $item->get_post_type(), $block_item_types ) ) {
 						$blocked_items[ $course_item ] = 'no';
@@ -579,7 +579,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			$blocked_items = apply_filters( 'learn-press/course-item/parse-block-statuses', $blocked_items, $course_id, $user_id );
 
 			LP_Object_Cache::set( $cache_key, $blocked_items, 'learn-press/blocked-items' );
- 			return $blocked_items;
+
+			return $blocked_items;
 		}
 
 		/**
@@ -596,10 +597,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			} else if ( $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
 				$blocked = 'no';
 
- 				// fixed option block lessons not working
-  				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() == 'click' /*$course_item_data->is_exceeded() < 0*/ &&  $user->has_course_status( $course->get_id(),'finished' )) {
+				// fixed option block lessons not working
+				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() == 'click' && $user->has_course_status( $course->get_id(), 'finished' ) ) {
 					$blocked = 'yes';
-
 				}
 			} else {
 				$blocked = 'yes';

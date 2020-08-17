@@ -3,7 +3,7 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungn
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
-Tested up to: 5.4
+Tested up to: 5.4.x
 Stable tag: 3.2.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -204,8 +204,11 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed error get_image() return bool not string on the file \templates\loop\course\thumbnail.php
 ~ Modify description for the function 'External Link'
 ~ Fixed LP_Datetime error with date = '0000-00-00 00:00:00'
-~ Fixed not show number Duration of Lession when translate text
+~ Fixed not show number Duration of Lesson when translate text
 ~ Fixed not send mail for instructor when have new order
+~ Remove hook get avatar of Ultimate member plugin
+~ Fixed get value with, height image_size on LP setting
+~ Fixed security, clear sanitize
 
 = 3.2.7.2 =
 ~ Fixed email setting not save tag html

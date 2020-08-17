@@ -147,9 +147,10 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 			return false;
 		}
 
-		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
+		if ( $force_new || ! isset( LP_Global::$users[ $user_id ] ) || empty( LP_Global::$users[ $user_id ] ) ) {
 			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
 		}
+
 		#LP_Debug::logTime( __FUNCTION__ );
 
 		return LP_Global::$users[ $user_id ];
@@ -365,9 +366,9 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 /**
  * Get queried user in profile link
  *
+ * @return false|WP_User
  * @since 3.0.0
  *
- * @return false|WP_User
  */
 function learn_press_get_profile_user() {
 	return LP_Profile::get_queried_user();
@@ -382,12 +383,12 @@ function learn_press_user_become_teacher_registration_form() {
 		return;
 	}
 	?>
-    <p>
-        <label for="become_teacher">
-            <input type="checkbox" name="become_teacher" id="become_teacher">
+	<p>
+		<label for="become_teacher">
+			<input type="checkbox" name="become_teacher" id="become_teacher">
 			<?php _e( 'Want to become an instructor?', 'learnpress' ) ?>
-        </label>
-    </p>
+		</label>
+	</p>
 	<?php
 }
 
@@ -587,10 +588,10 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 /**
  * Get user item row(s) from user items table by multiple WHERE conditional
  *
- * @param array|int $where
- * @param bool      $single
+ * @param      $where
+ * @param bool $single
  *
- * @return array
+ * @return array|bool|object|void|null
  */
 function learn_press_get_user_item( $where, $single = true ) {
 	global $wpdb;
@@ -627,6 +628,7 @@ function learn_press_get_user_item( $where, $single = true ) {
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE " . join( ' AND ', $where_str ) . "
+			ORDER BY `user_item_id` DESC
 		", $where );
 		if ( $single || ! empty( $where['user_item_id'] ) ) {
 			$item = $wpdb->get_row( $query );
@@ -698,21 +700,6 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 function learn_press_delete_user_item_meta( $object_id, $meta_key, $meta_value = '', $delete_all = false ) {
 	return delete_metadata( 'learnpress_user_item', $object_id, $meta_key, $meta_value, $delete_all );
 }
-
-/**
- * Exclude the temp users from query.
- *
- * @param WP_User_Query $q
- */
-function learn_press_filter_temp_users( $q ) {
-//	if ( $temp_users = learn_press_get_temp_users() ) {
-//		$exclude = (array) $q->get( 'exclude' );
-//		$exclude = array_merge( $exclude, $temp_users );
-//		$q->set( 'exclude', $exclude );
-//	}
-}
-
-//add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
 
 /**
  * Get temp users.
@@ -913,7 +900,7 @@ add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_p
 function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	// Redirect to login page if user is not logged in
 	if ( ! is_user_logged_in() ) {
-		$post 		= sanitize_post( $_POST, 'raw' );
+		$post       = sanitize_post( $_POST, 'raw' );
 		$return_url = add_query_arg( $post, get_the_permalink( $course_id ) );
 		$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
 		$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect', learn_press_get_login_url( $return_url ) );
@@ -1491,9 +1478,9 @@ function learn_press_default_user_item_status( $item_id ) {
 /**
  * Get current state of distraction mode
  *
+ * @return mixed
  * @since 3.1.0
  *
- * @return mixed
  */
 function learn_press_get_user_distraction() {
 	if ( is_user_logged_in() ) {

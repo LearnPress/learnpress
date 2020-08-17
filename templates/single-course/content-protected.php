@@ -13,24 +13,27 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
+
+if ( !isset( $can_view_item ) ) {
+	return;
+}
 ?>
 
 <div class="learn-press-content-protected-message">
 
-    <span class="icon"></span>
+	<span class="icon"></span>
 
 	<?php
- 	if( $can_view_item && $can_view_item == 'not-enrolled' ){
-	    echo apply_filters( 'learn_press_content_item_protected_message',
-		    __( 'This content is protected, please enroll course to view this content!', 'learnpress' ) );
-	    learn_press_course_enroll_button();
-    }elseif($can_view_item == 'is_blocked'){
+	if ( ! is_user_logged_in() ) {
+		echo apply_filters( 'learn_press_content_item_protected_message',
+			sprintf( __( 'This content is protected, please <a href="%s">login</a> and enroll course to view this content!', 'learnpress' ), learn_press_get_login_url( learn_press_get_current_url() ) ) );
+	} elseif ( $can_view_item == 'is_blocked' ) {
 		echo apply_filters( 'learn_press_content_item_locked_message',
 			__( 'This lesson has been locked', 'learnpress' ) );
- 	} else{
-	    echo apply_filters( 'learn_press_content_item_protected_message',
-		    sprintf( __( 'This content is protected, please <a href="%s">login</a> and enroll course to view this content!', 'learnpress' ), learn_press_get_login_url( learn_press_get_current_url() ) ) );
-    }
-    ?>
-
+	} elseif ( ! $can_view_item ) {
+		echo apply_filters( 'learn_press_content_item_protected_message',
+			__( 'This content is protected, please enroll course to view this content!', 'learnpress' ) );
+		learn_press_course_enroll_button();
+	}
+	?>
 </div>

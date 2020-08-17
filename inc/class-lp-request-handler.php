@@ -604,6 +604,8 @@ class LP_Request {
 				break;
 		}
 
+		LP_Helper::sanitize_params_submitted($return);
+
 		return $return;
 	}
 

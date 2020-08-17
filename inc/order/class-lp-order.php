@@ -39,7 +39,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'total'            => 0,
 			'subtotal'         => 0,
 			'created_via'      => '',
-			'checkout_email'      => ''
+			'checkout_email'   => ''
 		);
 
 		/**
@@ -179,9 +179,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get confirm received text
 		 *
+		 * @return string
 		 * @since 3.0.0
 		 *
-		 * @return string
 		 */
 		public function get_confirm_order_received_text() {
 			$text = apply_filters( 'learn-press/confirm-order-received-text', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
@@ -195,9 +195,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get thank you message after the order is placed.
 		 *
+		 * @return mixed
 		 * @since 3.0.0
 		 *
-		 * @return mixed
 		 */
 		public function get_thankyou_message() {
 			/**
@@ -261,14 +261,20 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Updates order to new status if needed
 		 *
 		 * @param mixed $new_status
-		 * @param bool  $force Force to update/trigger action even the status is not changed
+		 * @param bool  $manual Is this a manual order status change?.
 		 *
 		 * @return bool
 		 * @throws Exception
 		 */
-		public function update_status( $new_status = 'pending', $force = false ) {
+		public function update_status( $new_status = 'pending', $manual = false ) {
+			$old_status = $this->get_status();
+
+			do_action( 'learn-press/before-update-status-lp-order', $new_status, $old_status, $this, $manual );
+
 			$this->set_status( $new_status );
 			$this->save();
+
+			do_action( 'learn-press/after-update-status-lp-order', $new_status, $old_status, $this, $manual );
 
 			return false;
 		}
@@ -305,13 +311,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_order_status() {
-//		$the_id      = $this->get_id();
-//		$post_status = get_post_status( $the_id );
-//		$status      = preg_replace( '~^lp-~', '', $post_status );
+			//		$the_id      = $this->get_id();
+			//		$post_status = get_post_status( $the_id );
+			//		$status      = preg_replace( '~^lp-~', '', $post_status );
 			// Deprecated filter
-//		$status = apply_filters( 'learn_press_order_status', $status, $this );
-//
-//		return apply_filters( 'learn-press/order/status', $status, $the_id );
+			//		$status = apply_filters( 'learn_press_order_status', $status, $this );
+			//
+			//		return apply_filters( 'learn-press/order/status', $status, $the_id );
 
 			return $this->get_status();
 		}
@@ -328,13 +334,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_status() {
 
 			$status = $this->get_data( 'status' );
-// 			echo $status;
-// var_dump($status);
+			// 			echo $status;
+			// var_dump($status);
 			$status = apply_filters( 'learn_press_order_status', $status, $this );
-// 			var_dump($status);
+			// 			var_dump($status);
 			apply_filters( 'learn-press/order/status', $status, $this->get_id() );
 
-// 			var_dump($this);
+			// 			var_dump($this);
 			return $status;
 		}
 
@@ -515,6 +521,26 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$items = $this->_curd->read_items( $this );
 
 				LP_Object_Cache::set( 'order-' . $this->get_id(), $items, 'learn-press/order-items' );
+			}
+
+			return apply_filters( 'learn-press/order-items', $items );
+		}
+
+		/**
+		 * Get items of the order by filter
+		 *
+		 * @param array $filter
+		 *
+		 * @return mixed
+		 * @author tungnx
+		 */
+		public function get_items_filter( $filter = array() ) {
+			$key_item_cache = 'order-' . $this->get_id() . md5( json_encode( $filter ) );
+
+			if ( false === ( $items = LP_Object_Cache::get( $key_item_cache, 'learn-press/order-items' ) ) ) {
+				$items = $this->_curd->read_items_filter( $this, $filter );
+
+				LP_Object_Cache::set( $key_item_cache, $items, 'learn-press/order-items' );
 			}
 
 			return apply_filters( 'learn-press/order-items', $items );
@@ -860,7 +886,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$title = $this->payment_method_title;
 			}
 
-			return apply_filters( 'learn_press_display_payment_method_title', $title, $this->payment_method );
+			return $title;
 		}
 
 		public function get_view_order_url() {
@@ -985,9 +1011,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Check to see if this order is for multi users
 		 *
+		 * @return bool
 		 * @since 2.1.5
 		 *
-		 * @return bool
 		 */
 		public function is_multi_users() {
 			return is_array( $this->get_data( 'user_id' ) );
@@ -1028,14 +1054,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Get email of user has bought this order.
 		 * In case this order is for multi users return an array with multi email addresses.
 		 *
+		 * @return mixed|array
 		 * @since 2.1.5
 		 *
-		 * @return mixed|array
 		 */
 		public function get_user_data() {
 			$data = array();
 			if ( $user_ids = $this->get_data( 'user_id' ) ) {
-				$user_ids = (array)$user_ids;
+				$user_ids = (array) $user_ids;
 				if ( is_array( $user_ids ) ) {
 					foreach ( $user_ids as $user_id ) {
 						$user = learn_press_get_user( $user_id );
@@ -1055,14 +1081,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						}
 					}
 				}
-//			global $wpdb;
-//			$format = array_fill( 0, sizeof( $user_ids ), '%d' );
-//			$sql    = "
-//				SELECT ID, user_email as email, display_name as name
-//				FROM {$wpdb->users} u
-//				WHERE ID IN(" . join( ', ', $format ) . ")
-//			";
-//			$data   = $wpdb->get_results( $wpdb->prepare( $sql, $user_ids ), OBJECT_K );
 			}
 
 			return $data;

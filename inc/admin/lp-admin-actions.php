@@ -16,7 +16,11 @@ add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
 function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
-	if ( !did_action('plugin_loaded') || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
+	if ( ! function_exists( 'wp_get_current_user' ) ) {
+		include( ABSPATH . "wp-includes/pluggable.php" );
+	}
+
+	if ( ! did_action( 'plugin_loaded' ) || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
 		return $query;
 	}
 	if ( ! in_array( $post_type, apply_filters( 'learn-press/filter-user-access-types', array(
@@ -164,26 +168,26 @@ function learn_press_active_course_menu() {
 	}
 
 	?>
-    <script type="text/javascript">
-        jQuery(function ($) {
-            var $lpMainMenu = $('#toplevel_page_learn_press'),
-                href = 'edit.php?post_type=<?php echo esc_js( $_GET['post_type'] ); ?>',
-                $current = $('a[href="' + href + '"]', $lpMainMenu);
+	<script type="text/javascript">
+		jQuery(function ($) {
+			var $lpMainMenu = $('#toplevel_page_learn_press'),
+				href = 'edit.php?post_type=<?php echo esc_js( $_GET['post_type'] ); ?>',
+				$current = $('a[href="' + href + '"]', $lpMainMenu);
 
-            if ($current.length) {
-                $current.addClass('current');
-                $current.parent('li').addClass('current');
-            }
+			if ($current.length) {
+				$current.addClass('current');
+				$current.parent('li').addClass('current');
+			}
 
 			<?php if ( $post_type === LP_COURSE_CPT && LP_Request::get( 'taxonomy' ) === 'course_category' ) {?>
-            $("body").removeClass('sticky-menu');
-            $lpMainMenu.addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
-            $lpMainMenu.children('a').addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
+			$("body").removeClass('sticky-menu');
+			$lpMainMenu.addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
+			$lpMainMenu.children('a').addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
 			<?php
 			}
 			?>
-        });
-    </script>
+		});
+	</script>
 	<?php
 }
 

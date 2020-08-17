@@ -46,7 +46,7 @@ if ( isset( $order ) ) {
 						if ( $count > 1 ) {
 							$link = sprintf( '<li>%s</li>', $link );
 						}
-						$links[] = $link;
+						$links[] = apply_filters('learn-press/order-received-item-link', $link, $item);
 					}
 				}
 				if ( $count > 1 ) {
@@ -80,7 +80,7 @@ if ( isset( $order ) ) {
 		<?php endif; ?>
     </table>
 
-	<?php do_action( 'learn-press/order/received/' . $order->payment_method, $order->id ); ?>
+	<?php do_action( 'learn-press/order/received/' . $order->payment_method, $order->get_id() ); ?>
 	<?php do_action( 'learn-press/order/received', $order ); ?>
 
 <?php } else { ?>

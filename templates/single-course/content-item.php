@@ -45,7 +45,7 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 			 *
 			 * Check more case $can_view_item = 'not-enrolled'
 			 */
-			if ( $can_view_item && $can_view_item != 'not-enrolled' ) {
+			if ( $can_view_item && $can_view_item != 'is_blocked' ) {
 				/**
 				 * @deprecated
 				 */

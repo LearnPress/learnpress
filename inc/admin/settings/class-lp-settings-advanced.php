@@ -212,7 +212,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 				array(
 					'title'   => __( 'Debug mode', 'learnpress' ),
 					'id'      => 'debug',
-					'default' => 'yes',
+					'default' => 'no',
 					'type'    => 'yes-no',
 					'desc'    => __( 'Turn on/off debug mode for developer.', 'learnpress' )
 				),

@@ -59,7 +59,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 			add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_current_question' ), 10, 3 );
 			add_action( 'learn-press/before-start-quiz', array( __CLASS__, 'before_start_quiz' ), 10, 4 );
-			add_action( 'learn-press/user/before-retake-quiz', array( __CLASS__, 'before_retake_quiz' ), 10, 4 );
 		}
 
 		/**
@@ -98,32 +97,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			}
 
 			remove_action( 'learn-press/before-start-quiz', array( __CLASS__, 'maybe_guest_start_quiz' ) );
-
-			return $true;
-		}
-
-		/**
-		 * @param bool $true
-		 * @param int  $quiz_id
-		 * @param int  $course_id
-		 * @param int  $user_id
-		 *
-		 * @return bool
-		 */
-		public static function before_retake_quiz( $true, $quiz_id, $course_id, $user_id ) {
-			$user   = learn_press_get_user( $user_id );
-			$course = learn_press_get_course( $course_id );
-
-			if ( ! $course->is_required_enroll() ) {
-//
-//				if ( $ret ) {
-//					$true = true;
-//				} else {
-//					$true = false;
-//				}
-			}
-
-			remove_action( 'learn-press/user/before-retake-quiz', array( __CLASS__, 'before_retake_quiz' ) );
 
 			return $true;
 		}
@@ -186,7 +159,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 */
 		public static function nav_question() {
 			$return = self::maybe_save_questions( 'nav-question' );
-			$nav      = LP_Request::get( 'nav-type' );
+			$nav    = LP_Request::get( 'nav-type' );
 			if ( is_array( $return ) ) {
 				$quiz     = learn_press_get_quiz( $return['quiz_id'] );
 				$redirect = false;
@@ -195,24 +168,24 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				} elseif ( ! empty( $return['next_question'] ) ) {
 					$redirect = $quiz->get_question_link( $return['next_question'] );
 				}
-				if($redirect){
-					wp_safe_redirect($redirect);
+				if ( $redirect ) {
+					wp_safe_redirect( $redirect );
 					exit();
 				}
 			} else {
-				$quiz_id 		= LP_Request::get('quiz-id');
-				$question_id 	= LP_Request::get('question-id');
-				$quiz = learn_press_get_quiz( $quiz_id );
-				
+				$quiz_id     = LP_Request::get( 'quiz-id' );
+				$question_id = LP_Request::get( 'question-id' );
+				$quiz        = learn_press_get_quiz( $quiz_id );
+
 				if ( $nav === 'prev-question' && $question_id ) {
-					$prev_question_id = $quiz->get_prev_question($question_id);
-					$redirect = $quiz->get_question_link( $prev_question_id );
+					$prev_question_id = $quiz->get_prev_question( $question_id );
+					$redirect         = $quiz->get_question_link( $prev_question_id );
 				} else {
-					$next_question_id = $quiz->get_next_question($question_id);
-					$redirect = $quiz->get_question_link( $next_question_id );
+					$next_question_id = $quiz->get_next_question( $question_id );
+					$redirect         = $quiz->get_question_link( $next_question_id );
 				}
-				if($redirect){
-					wp_safe_redirect($redirect);
+				if ( $redirect ) {
+					wp_safe_redirect( $redirect );
 					exit();
 				}
 			}
@@ -424,8 +397,9 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				if ( is_wp_error( $data ) ) {
 					throw new LP_Exception( $data->get_error_message(), $data->get_error_code() );
-				} else {
-					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ) );
+				} elseif ( $data ) {
+					$current_question_id = learn_press_get_user_item_meta( $data->get_user_item_id(), '_current_question' );
+					$redirect            = $quiz->get_question_link( $current_question_id );
 
 					$result['result']   = 'success';
 					$result['redirect'] = apply_filters( 'learn-press/quiz/retaken-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
@@ -616,11 +590,11 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		/**
 		 * Get answers for questions from post data
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $post_data
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		protected static function _get_answer( $post_data ) {
 			$questions = array();

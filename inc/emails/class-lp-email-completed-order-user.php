@@ -64,7 +64,7 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 			$free = 0;
 			foreach ( $items as $item ) {
 				$course = learn_press_get_course( $item['course_id'] );
-				if ( $course->is_free() ) {
+				if ( ! empty( $course ) && $course->is_free() ) {
 					$free ++;
 				}
 			}

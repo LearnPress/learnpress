@@ -26,13 +26,13 @@ $user_ip      = $order->get_user_ip_address();
         <div class="order-data-field payment-method-title">
 			<?php
 			if ( $method_title && $user_ip ) {
-				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $user_ip );
+				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', apply_filters( 'learn-press/order-payment-method-title', $method_title, $order ), $user_ip );
 			} elseif ( $method_title ) {
-				printf( 'Pay via <strong>%s</strong>', $method_title );
+				printf( 'Pay via <strong>%s</strong>', apply_filters( 'learn-press/order-payment-method-title', $method_title, $order ) );
 			} elseif ( $user_ip ) {
 				printf( 'User IP <strong>%s</strong>', $user_ip );
 			} ?>
-        </div>
+		</div>
         <h3 class="order-data-heading"><?php _e( 'Order details', 'learnpress' ); ?></h3>
         <div class="order-data-field order-data-date">
             <label><?php _e( 'Date', 'learnpress' ); ?></label>
@@ -129,7 +129,12 @@ $user_ip      = $order->get_user_ip_address();
             </tr>
             </thead>
             <tbody>
-			<?php if ( $items = $order->get_items() ): ?>
+			<?php
+			$filter = array(
+				'p'     => 0,
+				'limit' => 10
+			);
+			if ( $items = $order->get_items_filter( $filter ) ): ?>
 				<?php foreach ( $items as $item ) : ?>
 					<?php include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' ); ?>
 				<?php endforeach; ?>

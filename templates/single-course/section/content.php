@@ -35,8 +35,6 @@ $user = LP_Global::user();
 					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/begin-section-loop-item', $item );
-
-					if ( $user->can_view_item( $item->get_id() ) ) {
 						?>
                         <a class="section-item-link" href="<?php echo $item->get_permalink(); ?>">
 							<?php learn_press_get_template( 'single-course/section/content-item.php', array(
@@ -44,15 +42,6 @@ $user = LP_Global::user();
 								'section' => $section
 							) ); ?>
                         </a>
-					<?php } else { ?>
-                        <div class="section-item-link">
-							<?php learn_press_get_template( 'single-course/section/content-item.php', array(
-								'item'    => $item,
-								'section' => $section
-							) ); ?>
-                        </div>
-					<?php } ?>
-
 					<?php
 					/**
 					 * @since 3.0.0

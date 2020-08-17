@@ -137,7 +137,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * @param            $name
  * @param array      $args
  * @param bool|false $include_once
- * @param            bool
+ * @param bool
  *
  * @return bool
  */
@@ -240,20 +240,20 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 
 	if ( $allow_create ) {
 		ob_start(); ?>
-        <button class="button button-quick-add-page" data-id="<?php echo $id; ?>"
-                type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
+		<button class="button button-quick-add-page" data-id="<?php echo $id; ?>"
+				type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
 		<?php echo '</div>'; ?>
-        <p class="quick-add-page-inline <?php echo $id; ?> hide-if-js">
-            <input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>"/>
-            <button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
-            <a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
-        </p>
-        <p class="quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
-            <a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>"
-               target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-            <a class="view-page" href="<?php echo get_permalink( $selected ); ?>"
-               target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
-        </p>
+		<p class="quick-add-page-inline <?php echo $id; ?> hide-if-js">
+			<input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>"/>
+			<button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
+			<a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
+		</p>
+		<p class="quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>"
+			   target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>"
+			   target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+		</p>
 		<?php $output .= ob_get_clean();
 	} else {
 		$output .= '</div>';
@@ -546,7 +546,7 @@ function learn_press_footer_advertisement() {
 
 	?>
 
-    <div id="learn-press-advertisement" class="learn-press-advertisement-slider">
+	<div id="learn-press-advertisement" class="learn-press-advertisement-slider">
 		<?php
 		foreach ( $list_themes as $theme ) {
 			if ( empty( $theme['url'] ) ) {
@@ -560,34 +560,34 @@ function learn_press_footer_advertisement() {
 			$url_demo = add_query_arg( $query_arg, $theme['attributes'][4]['value'] );
 
 			?>
-            <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="slide-item">
-                <div class="slide-thumbnail">
-                    <a href="<?php echo esc_url( $theme['url'] ); ?>">
-                        <img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>"/>
-                    </a>
-                </div>
+			<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="slide-item">
+				<div class="slide-thumbnail">
+					<a href="<?php echo esc_url( $theme['url'] ); ?>">
+						<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>"/>
+					</a>
+				</div>
 
-                <div class="slide-detail">
-                    <h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
-                    <p class="slide-description description-full">
+				<div class="slide-detail">
+					<h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
+					<p class="slide-description description-full">
 						<?php echo wp_kses_post( $full_description ); ?>
-                    </p>
-                    <p class="slide-description description-short">
+					</p>
+					<p class="slide-description description-short">
 						<?php echo wp_kses_post( $short_description ); ?>
-                    </p>
-                    <p class="slide-controls">
-                        <a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary"
-                           target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
-                        <a href="<?php echo esc_url( $url_demo ); ?>" class="button"
-                           target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
-                    </p>
-                </div>
+					</p>
+					<p class="slide-controls">
+						<a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary"
+						   target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+						<a href="<?php echo esc_url( $url_demo ); ?>" class="button"
+						   target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+					</p>
+				</div>
 
-            </div>
+			</div>
 			<?php
 		}
 		?>
-    </div>
+	</div>
 	<?php
 }
 
@@ -1067,8 +1067,8 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
  */
 function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 	global $wpdb;
-//	var_dump( current_user_can(LP_TEACHER_ROLE) );
-//	exit();
+	//	var_dump( current_user_can(LP_TEACHER_ROLE) );
+	//	exit();
 	$report_sales_by = learn_press_get_request( 'report_sales_by' );
 	$course_id       = learn_press_get_request( 'course_id' );
 	$cat_id          = learn_press_get_request( 'cat_id' );
@@ -1122,32 +1122,32 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 	$query_where = '';
 	if ( 'course' === $report_sales_by ) {
 		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
-		             . " ON o.ID=lpoi.order_id "
-		             . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
-		             . " ON lpoi.order_item_id=loim.learnpress_order_item_id "
-		             . " AND loim.meta_key='_course_id' "
-		             . " AND CAST(loim.meta_value AS SIGNED)=%d ";
+			. " ON o.ID=lpoi.order_id "
+			. " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
+			. " ON lpoi.order_item_id=loim.learnpress_order_item_id "
+			. " AND loim.meta_key='_course_id' "
+			. " AND CAST(loim.meta_value AS SIGNED)=%d ";
 		if ( current_user_can( LP_TEACHER_ROLE ) ) {
 			$user_id  = learn_press_get_current_user_id();
 			$sql_join .= $wpdb->prepare( " AND CAST(loim.meta_value AS SIGNED) IN "
-			                             . " ( "
-			                             . " SELECT ID FROM {$wpdb->posts} p WHERE p.ID = CAST(loim.meta_value AS SIGNED) AND `post_author`=" . intval( $user_id )
-			                             . " ) " );
+				. " ( "
+				. " SELECT ID FROM {$wpdb->posts} p WHERE p.ID = CAST(loim.meta_value AS SIGNED) AND `post_author`=" . intval( $user_id )
+				. " ) " );
 		}
 		$query_join .= $wpdb->prepare( $sql_join, $course_id );
 
 	} elseif ( 'category' === $report_sales_by ) {
 		$sql_join   .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
-		               . " ON o.ID=lpoi.order_id "
-		               . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
-		               . " ON lpoi.order_item_id=loim.learnpress_order_item_id "
-		               . " AND loim.meta_key='_course_id' "
-		               . " AND CAST(loim.meta_value AS SIGNED) IN("
-		               //sub query
-		               . " SELECT tr.object_id "
-		               . " FROM {$wpdb->prefix}term_taxonomy tt INNER JOIN {$wpdb->prefix}term_relationships tr "
-		               . " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
-		               . " WHERE tt.term_id=%d)";
+			. " ON o.ID=lpoi.order_id "
+			. " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
+			. " ON lpoi.order_item_id=loim.learnpress_order_item_id "
+			. " AND loim.meta_key='_course_id' "
+			. " AND CAST(loim.meta_value AS SIGNED) IN("
+			//sub query
+			. " SELECT tr.object_id "
+			. " FROM {$wpdb->prefix}term_taxonomy tt INNER JOIN {$wpdb->prefix}term_relationships tr "
+			. " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
+			. " WHERE tt.term_id=%d)";
 		$query_join .= $wpdb->prepare( $sql_join, $cat_id );
 	}
 	if ( current_user_can( LP_TEACHER_ROLE ) ) {
@@ -1172,10 +1172,10 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'lp_order', $_from, $_to );
-//	echo $query;
+	//	echo $query;
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
-//			$results['all'][$v->d] = $v;
+			//			$results['all'][$v->d] = $v;
 			$results['completed'][ $v->d ] = $v;
 		}
 	}
@@ -1189,10 +1189,10 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'lp_order', $_from, $_to );
-//	echo $query;
+	//	echo $query;
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
-//			$results['completed'][$v->d] = $v;
+			//			$results['completed'][$v->d] = $v;
 			$results['pending'][ $v->d ] = $v;
 		}
 	}
@@ -1624,13 +1624,13 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	/**
 	 * Duplicate post.
 	 *
-	 * @since 3.0.0
-	 *
 	 * @param null  $post_id
 	 * @param array $args
 	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
+	 * @since 3.0.0
+	 *
 	 */
 	function learn_press_duplicate_post( $post_id = null, $args = array(), $meta = true ) {
 		$post = get_post( $post_id );
@@ -1687,12 +1687,21 @@ if ( ! function_exists( 'learn_press_duplicate_post_meta' ) ) {
 	 */
 	function learn_press_duplicate_post_meta( $old_post_id, $new_post_id, $excerpt = array() ) {
 		global $wpdb;
-		$post_meta_infos = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$old_post_id" );
+
+		$query = $wpdb->prepare(
+			"SELECT meta_key, meta_value 
+					FROM $wpdb->postmeta 
+					WHERE post_id= %d",
+			$old_post_id );
+
+		$post_meta_infos = $wpdb->get_results( $query );
+
 		if ( count( $post_meta_infos ) != 0 ) {
 			$excerpt       = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
 			$excerpt       = apply_filters( 'learn_press_excerpt_duplicate_post_meta', $excerpt, $old_post_id, $new_post_id );
 			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
 			$sql_query_sel = array();
+
 			foreach ( $post_meta_infos as $meta ) {
 				if ( in_array( $meta->meta_key, $excerpt ) ) {
 					continue;
@@ -1730,7 +1739,7 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 				}
 				for ( $j = $i + 1; $j < count( $ktypes ); $j ++ ) {
 					if ( isset( $question_types[ $ktypes[ $j ] ], $question_types[ $ktypes[ $max ] ] )
-					     && $question_types[ $ktypes[ $j ] ] > $question_types[ $ktypes[ $max ] ]
+						&& $question_types[ $ktypes[ $j ] ] > $question_types[ $ktypes[ $max ] ]
 					) {
 						$max = $j;
 					}
@@ -2147,12 +2156,12 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 /**
  * Filter to modal search items to void filter the posts by author.
  *
- * @since 3.0.4
- *
  * @param int|string $context_id
  * @param string     $context
  *
  * @return bool|int|string
+ * @since 3.0.4
+ *
  */
 function learn_press_modal_search_items_context( $context_id, $context ) {
 	if ( 'order-items' === $context ) {
@@ -2167,12 +2176,12 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
 /**
  * Filter to post link to change the link if it is an item inside course.
  *
- * @since 3.0.0
- *
  * @param string  $link
  * @param WP_Post $post
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_preview_post_link( $link, $post ) {
 	$items = learn_press_course_get_support_item_types( true );
@@ -2189,9 +2198,10 @@ add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
 /**
  * Sync post meta when saving post type.
  *
+ * @param int $post_id
+ *
  * @since 3.2.0
  *
- * @param int $post_id
  */
 function learn_press_maybe_sync_data( $post_id ) {
 	$post_type = get_post_type( $post_id );
@@ -2213,9 +2223,9 @@ add_action( 'save_post', 'learn_press_maybe_sync_data' );
 /**
  * Return id of current screen.
  *
+ * @return bool|string
  * @since 3.2.6
  *
- * @return bool|string
  */
 function learn_press_get_screen_id() {
 	global $current_screen;
@@ -2228,9 +2238,9 @@ function learn_press_get_screen_id() {
  * Check if current screen is a page of LP or
  * editing post type of LP such as course, lesson, etc...
  *
+ * @return bool
  * @since 3.2.6
  *
- * @return bool
  */
 function learn_press_is_admin_page() {
 	$screen_id     = learn_press_get_screen_id();
@@ -2295,9 +2305,9 @@ function learn_press_get_orders_status_chart_data() {
 					)
 				)
 			),
-//			'legend' => array(
-//				'display' => false
-//			)
+			//			'legend' => array(
+			//				'display' => false
+			//			)
 		)
 	);
 

@@ -338,7 +338,7 @@ class LP_Helper {
 					$value = sanitize_textarea_field( $value );
 					break;
 				default:
-					$value = sanitize_text_field( $value );
+					$value = sanitize_text_field( wp_unslash( $value ) );
 			}
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {

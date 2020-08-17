@@ -2,17 +2,17 @@
 global $wp_meta_boxes, $post;
 
 $tabs = $this->get_tabs( 'tabs' );
-if ( !$tabs ) {
+if ( ! $tabs ) {
 	return;
 }
-$current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+$current_tab = ! empty( $_REQUEST['tab'] ) ? LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ) : '';
 ?>
 <div id="learn-press-admin-editor-metabox-settings" class="learn-press-tabs vertical initialize">
-    <div class="tabs-heading">
-        <h4><?php echo $this->opt( 'title' ); ?></h4>
-    </div>
-    <div class="tabs-container">
-        <ul class="tabs-nav">
+	<div class="tabs-heading">
+		<h4><?php echo $this->opt( 'title' ); ?></h4>
+	</div>
+	<div class="tabs-container">
+		<ul class="tabs-nav">
 			<?php
 			$remove_meta_boxes = array();
 			foreach ( $tabs as $k => $tab ) {
@@ -82,15 +82,15 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 				$classes = apply_filters( 'learn-press/admin/tab-class', $classes, $tab );
 				echo sprintf( '<li class="%s">', join( ' ', $classes ) );
 				?>
-                <a <?php echo ! empty( $tab['icon'] ) ? 'class="' . $tab['icon'] . '"' : ''; ?>
-                        href="<?php echo add_query_arg( 'tab', $tab['id'] ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
-                <?php
+				<a <?php echo ! empty( $tab['icon'] ) ? 'class="' . $tab['icon'] . '"' : ''; ?>
+					href="<?php echo add_query_arg( 'tab', $tab['id'] ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
+				<?php
 				echo '</li>';
 				$tabs[ $k ] = $tab;
 			}
 			?>
-        </ul>
-        <ul class="tabs-content-container" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
+		</ul>
+		<ul class="tabs-content-container" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
 			<?php
 			foreach ( $tabs as $tab ) {
 				if ( empty( $tab['title'] ) ) {
@@ -126,8 +126,8 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 			}
 
 			?>
-        </ul>
-    </div>
+		</ul>
+	</div>
 	<?php
 	if ( is_array( $current_tab ) ) {
 		echo '<input type="hidden" name="learn-press-meta-box-tab" value="' . $current_tab['id'] . '" />';

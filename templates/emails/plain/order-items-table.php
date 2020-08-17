@@ -45,9 +45,9 @@ foreach ( $items as $item_id => $item ):
 
 	echo apply_filters( 'learn-press/email-order-item-name', $item['name'], $item );
 
-	echo "\n" . sprintf( __( 'Quantity: %s', 'learnpress' ), apply_filters( 'learn-press/email-order-item-quantity', $item['quantity'], $item ) );
+	echo "\n" . sprintf( '%s: %s', __( 'Quantity', 'learnpress' ), apply_filters( 'learn-press/email-order-item-quantity', $item['quantity'], $item ) );
 
-	echo "\n" . sprintf( __( 'Cost: %s', 'learnpress' ), apply_filters( 'learn-press/email-order-item-cost', $item['total'] . " " . $order->get_currency(), $item ) );
+	echo "\n" . sprintf( '%s: %s', __( 'Cost', 'learnpress' ), apply_filters( 'learn-press/email-order-item-cost', $item['total'] . " " . $order->get_currency(), $item ) );
 
 	do_action( 'learn-press/after-email-order-item', $item_id, $item, $order );
 

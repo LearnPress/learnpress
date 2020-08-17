@@ -304,7 +304,7 @@ class LP_Checkout {
 			// Store the line items to the new/resumed order
 			foreach ( $cart->get_items() as $item ) {
 				if ( empty( $item['order_item_name'] ) && ! empty( $item['item_id'] ) && ( $course = learn_press_get_course( $item['item_id'] ) ) ) {
-					$item['order_item_name'] = $course->get_title();
+					$item['order_item_name'] = apply_filters( 'learn-press/checkout/oder_item_name', $course->get_title(), $item );
 				} else {
 					throw new Exception( sprintf( __( 'Item does not exist!', 'learnpress' ), 402 ) );
 				}
@@ -314,9 +314,6 @@ class LP_Checkout {
 				if ( ! $item_id ) {
 					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 402 ) );
 				}
-
-				// Allow plugins to add order item meta
-				do_action( 'learn_press_add_order_item_meta', $item_id, $item );
 
 				// @since 3.0.0
 				do_action( 'learn-press/checkout/add-order-item-meta', $item_id, $item );
@@ -331,9 +328,6 @@ class LP_Checkout {
 
 			// Third-party add meta data
 			do_action( 'learn-press/checkout/update-order-meta', $order_id );
-			// @deprecated
-			do_action( 'learn_press_checkout_update_order_meta', $order_id );
-
 
 			if ( ! $order_id || is_wp_error( $order_id ) ) {
 				learn_press_add_message( __( 'Unable to checkout. Order creation failed.', 'learnpress' ) );
@@ -356,9 +350,9 @@ class LP_Checkout {
 	/**
 	 * Guest checkout is enable?
 	 *
+	 * @return mixed
 	 * @since 3.0.0
 	 *
-	 * @return mixed
 	 */
 	public function is_enable_guest_checkout() {
 		return apply_filters(
@@ -370,9 +364,9 @@ class LP_Checkout {
 	/**
 	 * Enable user can login in checkout page?
 	 *
+	 * @return bool
 	 * @since 3.0.0
 	 *
-	 * @return bool
 	 */
 	public function is_enable_login() {
 		return apply_filters(
@@ -387,9 +381,9 @@ class LP_Checkout {
 	/**
 	 * Enable user can register in checkout page?
 	 *
+	 * @return bool
 	 * @since 3.0.0
 	 *
-	 * @return bool
 	 */
 	public function is_enable_register() {
 		return apply_filters(
@@ -487,9 +481,9 @@ class LP_Checkout {
 	/**
 	 * Validate checkout payment.
 	 *
+	 * @return bool
 	 * @throws Exception
 	 *
-	 * @return bool
 	 */
 	public function validate_payment() {
 		$cart     = LP()->cart;
@@ -544,18 +538,6 @@ class LP_Checkout {
 			if ( $cart->is_empty() ) {
 				throw new Exception( __( 'Your cart is currently empty.', 'learnpress' ) );
 			}
-
-//			if ( ! is_user_logged_in() && isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
-//				$creds                  = array();
-//				$creds['user_login']    = $this->user_login;
-//				$creds['user_password'] = $this->user_pass;
-//				$creds['remember']      = true;
-//				$user                   = wp_signon( $creds, is_ssl() );
-//				if ( is_wp_error( $user ) ) {
-//					throw new Exception( $user->get_error_message() );
-//					$success = 15;
-//				}
-//			}
 
 			// Validate courses
 			foreach ( $cart->get_items() as $item ) {
