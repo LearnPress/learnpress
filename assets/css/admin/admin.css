@@ -3393,3 +3393,47 @@ body.lp-item-moving {
 
 #learn-press-updater {
   display: none; }
+
+/*fix responsive for block Courses Setting
+
+ */
+@media only screen and (max-width: 900px) {
+  .learn-press-tabs.vertical .tabs-nav {
+    width: 10%;
+  }
+
+  .learn-press-tabs.vertical .tabs-nav li.active a {
+    width: 100%;
+  }
+
+  .learn-press-tabs.vertical .tabs-nav li a {
+    position: relative;
+    text-indent: -999px;
+    padding: 10px;
+  }
+
+  .learn-press-tabs.vertical .tabs-nav li a:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-indent: 0;
+    text-align: center;
+    line-height: 40px;
+    width: 100%;
+    height: 40px;
+  }
+
+  .learn-press-tabs.vertical .tabs-container:before {
+    width: 10%;
+  }
+
+  .learn-press-tabs.vertical .tabs-container .tabs-content-container {
+    margin: 0 0 0 10%;
+  }
+
+  .learn-press-tabs.vertical .tabs-container .tabs-content-container > li {
+    padding: 10px;
+  }
+}
