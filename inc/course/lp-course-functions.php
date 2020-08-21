@@ -1030,28 +1030,11 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 		}
 
 		if ( learn_press_is_support_course_item_type( $post->post_type ) ) {
-            // Check elementor installed and actived
-            if (did_action('elementor/loaded')) {
-                // do stuff for edit mode
-                if (!Elementor\Plugin::$instance->editor->is_edit_mode()) {
-                    if ($course) {
-                        $post_link = $course->get_item_link($post->ID);
-
-                    } else {
-
-                        $post_link = learn_press_get_sample_link_course_item_url($post->ID);
-
-                    }
-                }
-            } else {
-                if ($course) {
-                    $post_link = $course->get_item_link($post->ID);
-                } else {
-
-                    $post_link = learn_press_get_sample_link_course_item_url($post->ID);
-
-                }
-            }
+			if ( $course ) {
+				$post_link = $course->get_item_link( $post->ID );
+			} else {
+				$post_link = learn_press_get_sample_link_course_item_url( $post->ID );
+			}
 		}
 
 		add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );

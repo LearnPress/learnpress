@@ -890,22 +890,10 @@ class LP_Page_Controller {
 		$course_support_items = learn_press_get_course_item_types();
 
 		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $course_support_items ) ) {
-            // Check Elementor Installed & Actived
-            if (did_action('elementor/loaded')) {
-                // Check is elementor action
-                if (!strpos($_SERVER['REQUEST_URI'], 'elementor')) {
-                    // check user has edit &  is preview mode
-                    if(!is_preview() || current_user_can( 'edit_posts' ) == false):
-                        learn_press_404_page();
-                        $q->set('post_type', '__unknown');
-                        return $q;
-                    endif;
-                }
-            } else {
-                learn_press_404_page();
-                $q->set('post_type', '__unknown');
-                return $q;
-            }
+			learn_press_404_page();
+			$q->set( 'post_type', '__unknown' );
+
+			return $q;
 		}
 
 		remove_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
