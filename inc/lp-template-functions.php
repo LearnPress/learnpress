@@ -524,15 +524,7 @@ if ( ! function_exists( 'learn_press_course_item_content' ) ) {
 	 * @since 3.0.0
 	 */
 	function learn_press_course_item_content() {
-		global $lp_course, $lp_course_item;
-
 		$item = LP_Global::course_item();
-
-		if ( $item->is_blocked() ) {
-			learn_press_get_template( 'global/block-content.php' );
-
-			return;
-		}
 
 		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 
@@ -2880,9 +2872,9 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 	function learn_press_content_item_lesson_content() {
 		$item = LP_Global::course_item();
 
-		if ( $item->is_blocked() ) {
+		/*if ( $item->is_blocked() ) {
 			return;
-		}
+		}*/
 
 		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/content.php" ) ) ) {
 			include $format_template;

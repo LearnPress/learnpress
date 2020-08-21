@@ -30,27 +30,19 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 
 			<?php
 			/**
-			 * @deprecated
-			 */
-			do_action( 'learn_press_before_content_item' );
-
-			/**
 			 * @since 3.0.0
-			 *
 			 */
 			do_action( 'learn-press/before-course-item-content' );
 
 			/**
-			 * Editor tungnx
+			 * @editor  tungnx
 			 *
 			 * Check more case $can_view_item = 'not-enrolled'
 			 */
-			if ( $can_view_item && $can_view_item != 'is_blocked' ) {
-				/**
-				 * @deprecated
-				 */
-				do_action( 'learn_press_course_item_content' );
 
+			//var_dump( $can_view_item );
+
+			if ( ( is_bool( $can_view_item ) && $can_view_item ) || ( $can_view_item && $can_view_item != 'is_blocked' ) ) {
 				/**
 				 * @since 3.0.0
 				 */
@@ -64,11 +56,6 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/after-course-item-content' );
-
-			/**
-			 * @deprecated
-			 */
-			do_action( 'learn_press_after_content_item' );
 			?>
 
 		</div>

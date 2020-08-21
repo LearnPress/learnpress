@@ -248,6 +248,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//require_once 'inc/background-process/class-lp-background-installer.php';
 			//require_once 'inc/background-process/class-lp-background-global.php';
 
+			// Query Database
+			require_once 'inc/class-lp-database.php';
+			require_once 'inc/lesson/class-lp-lesson-database.php';
+			require_once 'inc/section/class-lp-section-database.php';
+
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';
 			require_once 'inc/curds/class-lp-course-curd.php';

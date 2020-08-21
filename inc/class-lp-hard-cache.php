@@ -237,12 +237,9 @@ class LP_Hard_Cache {
 	}
 
 	public static function flush( $group = false ) {
-		WP_Filesystem();
-		global $wp_filesystem;
+		$wp_filesystem = LP_Helper::get_wp_filesystem();
 
-		if ( ! $wp_filesystem ) {
-			return false;
-		}
+		//error_log(json_encode(debug_backtrace()));
 
 		if ( $group ) {
 			$return = $wp_filesystem->rmdir( self::get_path( $group ), true );

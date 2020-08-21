@@ -4,7 +4,7 @@ Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
 Tested up to: 5.4.x
-Stable tag: 3.2.7.2
+Stable tag: 3.2.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

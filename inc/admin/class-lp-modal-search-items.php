@@ -77,11 +77,6 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				$this,
 				'query_args'
 			), 10, 3 );
-
-//			add_filter( 'learn-press/modal-search-items/not-found', array(
-//				$this,
-//				'_modal_search_items_not_found'
-//			), 10, 2 );
 		}
 
 		/**
@@ -90,34 +85,15 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @return array
 		 */
 		protected function _get_items() {
-			global $wpdb;
-
-			//$current_items          = array();
-			//$current_items_in_order = learn_press_get_request( 'current_items' );
-			$user                   = learn_press_get_current_user();
+			$user_id = get_current_user_id();
 
 			$term       = $this->_options['term'];
 			$type       = $this->_options['type'];
 			$context    = $this->_options['context'];
 			$context_id = $this->_options['context_id'];
 
-			/*
-			if ( $current_items_in_order ) {
-				foreach ( $current_items_in_order as $item ) {
-					$sql = $wpdb->prepare( "SELECT meta_value
-                        FROM {$wpdb->prefix}learnpress_order_itemmeta 
-                        WHERE meta_key = '_course_id' 
-                        AND learnpress_order_item_id = %d", $item );
-					$id  = $wpdb->get_results( $sql, OBJECT );
-					array_push( $current_items, $id[0]->meta_value );
-				}
-			}*/
-
 			// @since 3.0.0
 			$exclude = array_unique( (array) apply_filters( 'learn-press/modal-search-items/exclude', $this->_options['exclude'], $type, $context, $context_id ) );
-
-			// @deprecated
-			$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
 
 			if ( is_array( $exclude ) ) {
 				$exclude = array_map( 'intval', $exclude );
@@ -136,7 +112,10 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 			);
 
 			if ( $context_id = apply_filters( 'learn-press/modal-search-items/context-id', $context_id, $context ) ) {
-				$args['author'] = get_post_field( 'post_author', $context_id );
+				// Admin can get all items
+				if ( ! user_can( $user_id, 'administrator' ) ) {
+					$args['author'] = get_post_field( 'post_author', $context_id );
+				}
 			}
 
 			if ( $term ) {
@@ -145,9 +124,6 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 
 			// @since 3.0.0
 			$this->_query_args = apply_filters( 'learn-press/modal-search-items/args', $args, $context, $context_id );
-
-			// @deprecated
-			$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $this->_query_args, $context, $context_id );
 
 			if ( $posts = get_posts( $this->_query_args ) ) {
 				$this->_items = wp_list_pluck( $posts, 'ID' );

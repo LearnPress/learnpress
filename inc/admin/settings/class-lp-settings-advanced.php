@@ -46,7 +46,8 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	protected function get_upload_path() {
 		$uploadDir = wp_upload_dir();
 		$uploadDir = $uploadDir['basedir'] . '/learnpress';
-		@mkdir( $uploadDir, '0777', true );
+
+		@wp_mkdir_p( $uploadDir);
 
 		return $uploadDir;
 	}

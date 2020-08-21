@@ -202,7 +202,7 @@ add_action( 'learn-press/after-course-item-content', 'learn_press_lesson_comment
  */
 add_action( 'learn-press/before-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_title', 10 );
 add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content', 10 );
-add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content_blocked', 15 );
+//add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content_blocked', 15 );
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_complete_button', 10 );
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_course_finish_button', 15 );
 

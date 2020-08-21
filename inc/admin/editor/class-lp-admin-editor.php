@@ -46,8 +46,9 @@ class LP_Admin_Editor {
 	public function call( $type, $args = array() ) {
 		$func     = str_replace( '-', '_', $type );
 		$callback = array( $this, $func );
+
 		if ( is_callable( $callback ) ) {
-			LP_Hard_Cache::flush();
+			//LP_Hard_Cache::flush();
 
 			return call_user_func_array( $callback, $args );
 		}

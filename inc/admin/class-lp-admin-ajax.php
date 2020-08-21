@@ -32,7 +32,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$ajaxEvents = array(
 				'create_page'             => false,
 				//'plugin_action'           => false,
-				'modal_search_items'      => false,
+				//'modal_search_items'      => false,
 				'dismiss_notice'          => false,
 				'search_users'            => false,
 				'load_chart'              => false,
@@ -63,7 +63,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn-press/ajax/admin-load', __CLASS__ );
 
 			$ajax_events = array(
-				'search_items' => 'modal_search_items',
+				//'search_items' => 'modal_search_items',
 				'update-payment-order',
 				'update-payment-status',
 				'toggle_item_preview',
@@ -78,7 +78,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_item_to_order',
 				'remove_order_item',
 
-				'modal_search_items',
+				//'modal_search_items',
 				'modal_search_users',
 				'add_items_to_order',
 				'remove_items_from_order',
@@ -518,8 +518,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 		/**
 		 * Search items by requesting params.
+		 *
+		 * @editor tungnx commented
 		 */
-		public static function modal_search_items() {
+		/*public static function modal_search_items() {
 			self::parsePhpInput( $_REQUEST );
 			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
 			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
@@ -536,7 +538,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'items' => $search->get_items()
 			) );
 
-		}
+		}*/
 
 		/**
 		 * Search items by requesting params.
@@ -568,10 +570,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function search_course_category() {
 			global $wpdb;
 			$sql   = "SELECT `t`.`term_id` as `id`, "
-			         . " `t`.`name` `text` "
-			         . " FROM {$wpdb->terms} t "
-			         . "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
-			         . " WHERE `t`.`name` LIKE %s";
+				. " `t`.`name` `text` "
+				. " FROM {$wpdb->terms} t "
+				. "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
+				. " WHERE `t`.`name` LIKE %s";
 			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
 			$items = $wpdb->get_results( $query );
