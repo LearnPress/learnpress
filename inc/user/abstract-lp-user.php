@@ -1346,13 +1346,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( $course && $course->is_publish() && $item ) {
 				$is_enrolled = $this->has_course_access_level( array( LP_COURSE_ACCESS_LEVEL_60, LP_COURSE_ACCESS_LEVEL_70 ), $course_id, 'any' );
 
-				if ( $is_enrolled ) {
-					$view = 'enrolled';
-
-					if ( $item->is_blocked() ) {
-						$view = 'is_blocked';
-					}
-				} elseif ( ! $course->is_required_enroll() ) {
+				if ( ! $course->is_required_enroll() ) {
 					$view = 'no-required-enroll';
 				} elseif ( $item->is_preview() ) {
 					$view = 'preview';
@@ -1360,6 +1354,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$view = 'admin';
 				} elseif ( $this->is_author_of( $item_id ) ) {
 					$view = 'author';
+				} elseif ( $is_enrolled ) {
+					$view = 'enrolled';
+
+					if ( $item->is_blocked() ) {
+						$view = 'is_blocked';
+					}
 				}
 			}
 

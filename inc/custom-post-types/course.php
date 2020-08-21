@@ -617,10 +617,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 'no',
 					),
 					array(
-						'name' => __( 'Block Lessons', 'learnpress' ),
+						'name' => __( 'Block content items course', 'learnpress' ),
 						'id'   => '_lp_block_lesson_content',
 						'type' => 'yes_no',
-						'desc' => __( 'Block lessons content when completed course.', 'learnpress' ),
+						'desc' => __( 'Block content item(lesson, quiz, v.v...) of course when completed course.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(

@@ -14,4 +14,4 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-learn_press_display_message( __( 'This lesson has been locked', 'learnpress' ), 'error' );
+learn_press_display_message( __( 'This content has been locked', 'learnpress' ), 'error' );
