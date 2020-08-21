@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit();
  */
 add_action( 'learn-press/course-buttons', 'learn_press_course_external_button', 5 );
 add_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button', 10 );
-//add_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 15 );
+add_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 15 );
 add_action( 'learn-press/course-buttons', 'learn_press_course_retake_button', 20 );
 add_action( 'learn-press/course-buttons', 'learn_press_course_continue_button', 25 );
 add_action( 'learn-press/course-buttons', 'learn_press_course_finish_button', 30 );
