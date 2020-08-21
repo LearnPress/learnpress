@@ -1332,6 +1332,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$curd            = new LP_Course_CURD();
 					$number_sections = $curd->count_sections( $post_id );
 					if ( $number_sections ) {
+						// translators: %s: name section.
 						$output     = sprintf( _n( '<strong>%d</strong> section', '<strong>%d</strong> sections', $number_sections, 'learnpress' ), $number_sections );
 						$html_items = array();
 						$post_types = get_post_types( null, 'objects' );

@@ -36,7 +36,7 @@ class LP_Forms_Handler {
 				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
 				$result['result']           = 'error';
 			} elseif ( ! $validate ) {
-				$result['message'][ $name ] = learn_press_get_message( sprintf( __( 'Field "%s" is required.', 'learnpress' ), $field['title'] ), 'error' );
+				$result['message'][ $name ] = learn_press_get_message( sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) ), 'error' );
 				$result['result']           = 'error';
 			}
 		}
@@ -62,8 +62,8 @@ class LP_Forms_Handler {
 	 * Basic filtering for become-teacher fields if it is required.
 	 *
 	 * @param string $name
-	 * @param array $field
-	 * @param mixed $value
+	 * @param array  $field
+	 * @param mixed  $value
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -76,7 +76,8 @@ class LP_Forms_Handler {
 					throw new Exception( __( 'Your email does not exist!', 'learnpress' ) );
 				}
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			$validate = new WP_Error( 'invalid_email', $ex->getMessage() );
 		}
 
@@ -113,7 +114,7 @@ class LP_Forms_Handler {
 				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
 				$result['result']           = 'error';
 			} elseif ( ! $validate ) {
-				$message = sprintf( __( 'Field "%s" is required.', 'learnpress' ), $field['title'] );
+				$message = sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) );
 
 				learn_press_add_message( $message, 'error' );
 
@@ -197,7 +198,7 @@ class LP_Forms_Handler {
 				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
 				$result['result']           = 'error';
 			} elseif ( ! $validate ) {
-				$message = sprintf( __( 'Field "%s" is required.', 'learnpress' ), $field['title'] );
+				$message = sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) );
 
 				learn_press_add_message( $message, 'error' );
 
@@ -283,7 +284,8 @@ class LP_Forms_Handler {
 				if ( ! preg_match( '#[~!@\#$%^&*()]#', $value ) ) {
 					throw new Exception( __( 'Password must include at least one of these characters ~!@#$%^&*() !', 'learnpress' ), 125 );
 				}
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$validate = new WP_Error( $ex->getCode(), $ex->getMessage() );
 			}
 		}

@@ -241,6 +241,7 @@ class LP_Addon {
 		}
 
 		if ( ! file_exists( $path ) ) {
+			// translators: %s: Name plugin.
 			self::$_admin_notices['add-on-file-no-exists'] = sprintf( __( '%s plugin file does not exist.', 'learnpress' ), $path );
 
 			return;
@@ -259,6 +260,7 @@ class LP_Addon {
 		}
 
 		if ( ! $addon_instance ) {
+			// translators: %s: Message.
 			self::$_admin_notices['add-on-class-no-exists'] = sprintf( __( '%s plugin class does not exist.', 'learnpress' ), $instance );
 
 			return;

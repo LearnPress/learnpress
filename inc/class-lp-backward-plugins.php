@@ -91,12 +91,8 @@ class LP_Backward_Addons {
 
 			if ( $invalid_slug ) {
 				wp_die(
-					sprintf(
-						__( 'LearnPress plugin slug should be <strong>%s</strong> to make sure it works properly. Currently, it is <strong>%s</strong>. Please correct it\'s name and active again. <a href="%s">Back</a>', 'learnpress' ),
-						'learnpress/learnpress.php',
-						$invalid_slug,
-						admin_url( 'plugins.php' )
-					)
+					sprintf('%s <strong>%s</strong> %s <strong>%s</strong>. %s <a href="%s">Back</a>',
+						__( 'LearnPress plugin slug should be', 'learnpress'), 'learnpress/learnpress.php',  __('to make sure it works properly. Currently, it is', 'learnpress'), $invalid_slug, __('Please correct it\'s name and active again', 'learnpress'), admin_url( 'plugins.php' ) )
 				);
 			}
 

@@ -5,7 +5,7 @@
  *
  * @since 2.1.4
  */
-if ( !class_exists( 'LP_Course_Attributes' ) ) {
+if ( ! class_exists( 'LP_Course_Attributes' ) ) {
 	/**
 	 * Class LP_Course_Attributes
 	 */
@@ -72,7 +72,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 			if ( $attributes ) {
 				$attributes = $attributes['course-attribute-values'];
 				foreach ( $attributes as $taxonomy_id => $values ) {
-					if ( !$values ) {
+					if ( ! $values ) {
 						continue;
 					}
 					$taxonomy = get_term( $taxonomy_id, LP_COURSE_ATTRIBUTE );
@@ -92,13 +92,13 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 			$name     = learn_press_get_request( 'name' );
 			$new      = learn_press_add_course_attribute_value( $name, $taxonomy );
 			$response = array();
-			if ( !is_wp_error( $new ) ) {
+			if ( ! is_wp_error( $new ) ) {
 				$term             = get_term_by( 'term_taxonomy_id', $new['term_taxonomy_id'] );
 				$response['slug'] = $term->slug;
 				$response['name'] = $term->name;
 
 				$response['result'] = 'success';
-			} elseif ( !$new ) {
+			} elseif ( ! $new ) {
 				$response['result'] = 'error';
 				$response['error']  = __( 'Unknown error', 'learnpress' );
 			} else {
@@ -137,6 +137,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				'title'    => __( 'Attributes', 'learnpress' ),
 				'callback' => array( $this, 'course_attributes' )
 			);
+
 			return $tabs;
 		}
 
@@ -164,6 +165,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 			if ( LP_COURSE_ATTRIBUTE != $taxonomy ) {
 				return false;
 			}
+
 			return learn_press_delete_attribute_terms( $deleted_term->slug );
 		}
 
@@ -175,8 +177,8 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		 *
 		 */
 		public function ready() {
-			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
-				$this->_tax = sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ) );
+			if ( ! empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
+				$this->_tax    = sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ) );
 				$this->_screen = get_current_screen();
 				if ( $this->_screen->id == 'edit-' . LP_COURSE_ATTRIBUTE ) {
 					add_filter( "manage_{$this->_screen->id}_columns", array( $this, 'columns' ) );
@@ -209,6 +211,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				$content .= '<div class="row-actions">' . $this->terms_row_actions( $attribute ) . '</div>';
 
 			}
+
 			return $content;
 		}
 
@@ -228,7 +231,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				'edit'   => sprintf(
 					'<a href="%s" aria-label="%s" >%s </a > ',
 					esc_url( $edit_link ),
-					esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;', 'learnpress' ), $tax->name ) ),
+					esc_attr( sprintf( '%s &#8220;%s&#8221', __( 'Edit', 'learnpress' ), $tax->name ) ),
 					__( 'Edit', 'learnpress' )
 				),
 				'delete' => sprintf(
@@ -238,6 +241,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 					__( 'Clear', 'learnpress' )
 				)
 			);
+
 			return join( ' | ', $terms_actions );
 		}
 
@@ -247,10 +251,11 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		 * @return mixed
 		 */
 		public function columns( $columns ) {
-			if ( $this->_tax == LP_COURSE_ATTRIBUTE && !empty( $columns['posts'] ) ) {
+			if ( $this->_tax == LP_COURSE_ATTRIBUTE && ! empty( $columns['posts'] ) ) {
 				unset( $columns['posts'] );
 			}
 			$columns['terms'] = __( 'Terms', 'learnpress' );
+
 			return $columns;
 		}
 
@@ -260,10 +265,11 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		 * @return array
 		 */
 		public function admin_tabs_pages( $pages ) {
-			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
+			if ( ! empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
 				$screen_id = get_current_screen()->id;
 				$pages[]   = $screen_id;
 			}
+
 			return $pages;
 		}
 
@@ -285,7 +291,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		 * @return array
 		 */
 		public function admin_tab( $tabs ) {
-			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
+			if ( ! empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
 				$screen_id = get_current_screen()->id;
 			} else {
 				$screen_id = 'edit-' . LP_COURSE_ATTRIBUTE;
@@ -295,6 +301,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				"name" => __( "Attributes", "learnpress" ),
 				"id"   => $screen_id,
 			);
+
 			return $tabs;
 		}
 
@@ -353,14 +360,23 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				'labels'                => array(
 					'name'              => $name,
 					'singular_name'     => $singular_name,
+					// translators: %s: name course.
 					'search_items'      => sprintf( __( 'Search Course %s', 'learnpress' ), $name ),
+					// translators: %s: name course.
 					'all_items'         => sprintf( __( 'All Course %s', 'learnpress' ), $name ),
+					// translators: %s: name course.
 					'parent_item'       => sprintf( __( 'Parent Course %s', 'learnpress' ), $singular_name ),
+					// translators: %s: name course.
 					'parent_item_colon' => sprintf( __( 'Parent Course %s:', 'learnpress' ), $singular_name ),
+					// translators: %s: name course.
 					'edit_item'         => sprintf( __( 'Edit Course %s', 'learnpress' ), $singular_name ),
+					// translators: %s: name course.
 					'update_item'       => sprintf( __( 'Update Course %s', 'learnpress' ), $singular_name ),
+					// translators: %s: name course.
 					'add_new_item'      => sprintf( __( 'Add New Course %s', 'learnpress' ), $singular_name ),
+					// translators: %s: name course.
 					'new_item_name'     => sprintf( __( 'New Course %s', 'learnpress' ), $singular_name ),
+					// translators: %s: name course.
 					'not_found'         => sprintf( __( 'No &quot;Course %s&quot; found', 'learnpress' ), $singular_name ),
 				),
 				'show_ui'               => true,
@@ -396,4 +412,5 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		}
 	}
 }
+
 return new LP_Course_Attributes();

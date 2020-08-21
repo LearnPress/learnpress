@@ -543,7 +543,7 @@ class LP_Checkout {
 			foreach ( $cart->get_items() as $item ) {
 				$course = learn_press_get_course( $item['item_id'] );
 				if ( ! $course || ! $course->is_purchasable() ) {
-					throw new Exception( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), $course->get_title() ) );
+					throw new Exception( sprintf( '%s "%s" %s', __( 'Item', 'learnpress' ), $course->get_title(), __( 'is not purchasable.', 'learnpress' ) ) );
 				}
 			}
 

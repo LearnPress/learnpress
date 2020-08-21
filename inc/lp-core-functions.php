@@ -1646,16 +1646,22 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		}
 		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields, $user );
 		if ( ! $notify_message ) {
+			// translators: 1: link user, 2: name user.
 			$notify_message = sprintf( __( 'The user <a href="%s">%s</a> wants to become a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->get_id() ), $user->user_login ) . "\r\n";
+			// translators: %s: Name.
 			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
+			// translators: %s: Email.
 			$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
+			// translators: %s: Phone.
 			$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
+			// translators: %s: Message.
 			$notify_message .= sprintf( __( 'Message: %s', 'learnpress' ), $args['message'] ) . "\r\n";
 			foreach ( $fields as $key => $field ) {
 				if ( ! in_array( $key, $default_fields ) ) {
 					$notify_message .= $field['title'] . ': ' . ( isset( $field['value'] ) ? $field['value'] : '' ) . "\r\n";
 				}
 			}
+			// translators: %s: Accept.
 			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->get_id() ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
 		}
 

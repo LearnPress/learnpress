@@ -306,7 +306,7 @@ class LP_Page_Controller {
 			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
 				// Get template of wp page.
 				$template = get_page_template();
-				if(get_option( 'template' ) == 'twentytwenty' ){
+				if ( get_option( 'template' ) == 'twentytwenty' ) {
 					$template = get_singular_template();
 				}
 
@@ -462,7 +462,7 @@ class LP_Page_Controller {
 
 		try {
 			if ( ! $viewing_user ) {
-				throw new Exception( sprintf( __( 'The user %s is not available!', 'learnpress' ), $wp->query_vars['user'] ) );
+				throw new Exception( sprintf( '%s %s %s', __( 'The user', 'learnpress' ), $wp->query_vars['user'], __( 'is not available!', 'learnpress' ) ) );
 			}
 		}
 		catch ( Exception $ex ) {
@@ -534,7 +534,7 @@ class LP_Page_Controller {
 			LP()->wp_query = clone $wp_query;
 
 			$template = get_page_template();
-			if(get_option( 'template' ) == 'twentytwenty' ){
+			if ( get_option( 'template' ) == 'twentytwenty' ) {
 				$template = get_singular_template();
 			}
 			/**
@@ -580,7 +580,7 @@ class LP_Page_Controller {
 				remove_filter( 'the_content', 'wpautop' );
 			}
 
-// 			$content = do_shortcode( $content );
+			// 			$content = do_shortcode( $content );
 
 			if ( $has_filter ) {
 				//add_filter( 'the_content', 'wpautop' );
@@ -651,6 +651,7 @@ class LP_Page_Controller {
 				$wp_query->is_post_type_archive = false;
 			}
 		}
+
 		return $template;
 	}
 
@@ -668,9 +669,9 @@ class LP_Page_Controller {
 		}
 
 		#@NOTE: make sure current page is not lesson or quiz before return cache content of single course page
-// 		if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = LP_Object_Cache::get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
-// 			return $_content;
-// 		}
+		// 		if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = LP_Object_Cache::get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
+		// 			return $_content;
+		// 		}
 
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
