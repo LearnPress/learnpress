@@ -96,11 +96,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add 'LearnPress' tab into views of plugins manage.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $views
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public function views_plugins( $views ) {
 			global $s;
@@ -136,11 +136,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Callback function for searching plugins have 'learnpress' inside.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $plugin
 		 *
 		 * @return bool
+		 * @since 3.0.0
+		 *
 		 */
 		public function _search_callback( $plugin ) {
 			foreach ( $plugin as $value ) {
@@ -523,9 +523,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				} ?>
 
-                <div class="updated notice">
-                    <p><?php echo sprintf( __( 'User has %s to become a teacher.', 'learnpress' ), $action == 'accepted-request' ? 'accepted' : 'denied' ); ?></p>
-                </div>
+				<div class="updated notice">
+					<p><?php echo sprintf( __( 'User has %s to become a teacher.', 'learnpress' ), $action == 'accepted-request' ? 'accepted' : 'denied' ); ?></p>
+				</div>
 
 				<?php
 			}
@@ -579,15 +579,15 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			$colors = $_wp_admin_css_colors[ $schema ]->colors;
 			?>
-            <style type="text/css">
-                .admin-color {
-                    color: <?php echo $colors[0];?>
-                }
+			<style type="text/css">
+				.admin-color {
+					color: <?php echo $colors[0];?>
+				}
 
-                .admin-background {
-                    color: <?php echo $colors[0];?>
-                }
-            </style>
+				.admin-background {
+					color: <?php echo $colors[0];?>
+				}
+			</style>
 			<?php
 		}
 
@@ -711,22 +711,22 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				if ( ! get_option( 'learn_press_message_user_rated' ) ) {
 					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks from LearnPress team for your generous.', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
 					ob_start(); ?>
-                    <script type="text/javascript">
-                        jQuery(function ($) {
-                            var $ratingLink = $('a.lp-rating-link').click(function (e) {
-                                $.ajax({
-                                    url: '<?php echo admin_url( 'admin-ajax.php' );?>',
-                                    data: {
-                                        action: 'learn_press_rated'
-                                    },
-                                    success: function () {
-                                        $ratingLink.parent().html($ratingLink.data('rated'));
-                                    }
-                                });
-                            });
-                        })
+					<script type="text/javascript">
+						jQuery(function ($) {
+							var $ratingLink = $('a.lp-rating-link').click(function (e) {
+								$.ajax({
+									url    : '<?php echo admin_url( 'admin-ajax.php' );?>',
+									data   : {
+										action: 'learn_press_rated'
+									},
+									success: function () {
+										$ratingLink.parent().html($ratingLink.data('rated'));
+									}
+								});
+							});
+						})
 
-                    </script>
+					</script>
 					<?php
 					echo ob_get_clean();
 				}
@@ -750,12 +750,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 		/**
 		 * Send data to join newsletter or dismiss.
-		 * @since 3.0.10
 		 *
 		 * @param array  $data
 		 * @param string $notice
 		 *
 		 * @return array
+		 * @since 3.0.10
+		 *
 		 */
 		public function on_dismissed_notice_response( $data, $notice ) {
 			switch ( $notice ) {
@@ -831,9 +832,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Get single instance of self
 		 *
+		 * @return bool|LP_Admin
 		 * @since 3.0.0
 		 *
-		 * @return bool|LP_Admin
 		 */
 		public static function instance() {
 			static $instance = false;

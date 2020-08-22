@@ -86,9 +86,9 @@ function learn_press_get_course_by_id( $id ) {
  * @param int    $course_id
  * @param int    $user_id
  *
+ * @return string
  * @since 3.0.0
  *
- * @return string
  */
 function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_id = 0 ) {
 	return LP_Nonce_Helper::create_course( $action, $course_id, $user_id );
@@ -102,9 +102,9 @@ function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_
  * @param int    $course_id
  * @param int    $user_id
  *
+ * @return bool
  * @since 3.0.0
  *
- * @return bool
  */
 function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0, $user_id = 0 ) {
 	return LP_Nonce_Helper::verify_course( $nonce, $action, $course_id, $user_id );
@@ -114,9 +114,9 @@ function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0
  * Get type of items are supported in course curriculum (post types).
  * Default: [lp_lesson, lp_quiz]
  *
+ * @return mixed
  * @since 3.0.0
  *
- * @return mixed
  */
 function learn_press_get_course_item_types() {
 	return apply_filters( 'learn-press/course-item-type', array(
@@ -288,11 +288,11 @@ function learn_press_course_item_format_exclude( $format, $item ) {
 /**
  * Get curriculum of a course
  *
- * @version 1.0
- *
  * @param $course_id
  *
  * @return mixed
+ * @version 1.0
+ *
  */
 function learn_press_get_course_curriculum( $course_id ) {
 	$course = learn_press_get_course( $course_id );
@@ -334,12 +334,12 @@ function learn_press_is_free_course( $course_id = null ) {
 /**
  * get current status of user's course
  *
- * @author  Tunn
- *
- * @param   int $user_id
- * @param   int $course_id
+ * @param int $user_id
+ * @param int $course_id
  *
  * @return  string
+ * @author  Tunn
+ *
  */
 function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
 	if ( $course = learn_press_get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
@@ -352,13 +352,13 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
 /**
  * Wrap function can-view-item of user object.
  *
- * @since 3.1.0
- *
  * @param int $item_id
  * @param int $course_id
  * @param int $user_id
  *
  * @return mixed
+ * @since 3.1.0
+ *
  */
 function learn_press_can_view_item( $item_id, $course_id = 0, $user_id = 0 ) {
 	if ( ! $user_id ) {
@@ -415,11 +415,11 @@ function learn_press_user_can_view_quiz( $quiz_id = null, $course_id = 0, $user_
 /**
  * Get course setting is enroll required or public
  *
- * @since 0.9.5
- *
  * @param int $course_id
  *
  * @return boolean
+ * @since 0.9.5
+ *
  */
 function learn_press_course_enroll_required( $course_id = null ) {
 	$course_id = learn_press_get_course_id( $course_id );
@@ -613,11 +613,11 @@ function learn_press_get_course_id() {
 /**
  * Get the permalink of a course
  *
- * @since 3.0.0
- *
  * @param int $course_id
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_get_course_permalink( $course_id = 0 ) {
 	if ( $course = learn_press_get_course( $course_id ) ) {
@@ -631,12 +631,12 @@ function learn_press_get_course_permalink( $course_id = 0 ) {
 /**
  * Get the permalink of a item in a course
  *
- * @since 3.0.0
- *
  * @param int $course_id
  * @param int $item_id
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_get_course_item_permalink( $course_id = 0, $item_id = 0 ) {
 	if ( $course = learn_press_get_course( $course_id ) ) {
@@ -725,9 +725,10 @@ if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
 /**
  * Add filter to WP comment form of lesson or quiz to output ID of current course.
  *
+ * @param $post_id
+ *
  * @since 3.0.10
  *
- * @param $post_id
  */
 function learn_press_comment_post_item_course( $post_id ) {
 	if ( ! $course = LP_Global::course() ) {
@@ -775,10 +776,11 @@ add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
 /**
  * Fix redirection invalid when SG Cache is installed
  *
- * @since 3.0.10
- *
  * @param int    $comment_id
  * @param string $status
+ *
+ * @since 3.0.10
+ *
  */
 function learn_press_force_refresh_course( $comment_id, $status ) {
 
@@ -865,9 +867,9 @@ if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 	function learn_press_edit_item_link( $item_id = null, $course_id = null, $content_only = false ) {
 		$user = learn_press_get_current_user();
 		if ( $user->can_edit_item( $item_id, $course_id ) ): ?>
-            <p class="edit-course-item-link">
-                <a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
-            </p>
+			<p class="edit-course-item-link">
+				<a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
+			</p>
 		<?php endif;
 	}
 }
@@ -976,11 +978,11 @@ add_filter( 'get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5 )
 /**
  * Get preview url for LP post type.
  *
- * @since 3.0.0
- *
  * @param int $post_id
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_get_preview_url( $post_id ) {
 	return
@@ -1010,10 +1012,6 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
-		// if ( learn_press_is_support_course_item_type( $post->post_type ) && $course = LP_Global::course() ) {
-// 			$post_link = $course->get_item_link( $post->ID );
-// 		}
-
 		$course = LP_Global::course();
 
 		if ( ! $course && ( $course_id = learn_press_get_item_course( $post->ID ) ) ) {
@@ -1021,10 +1019,22 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 		}
 
 		if ( learn_press_is_support_course_item_type( $post->post_type ) ) {
-			if ( $course ) {
-				$post_link = $course->get_item_link( $post->ID );
+			// Check elementor installed and activated
+			if ( did_action( 'elementor/loaded' ) ) {
+				// do stuff for edit mode
+				if ( ! Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+					if ( $course ) {
+						$post_link = $course->get_item_link( $post->ID );
+					} else {
+						$post_link = learn_press_get_sample_link_course_item_url( $post->ID );
+					}
+				}
 			} else {
-				$post_link = learn_press_get_sample_link_course_item_url( $post->ID );
+				if ( $course ) {
+					$post_link = $course->get_item_link( $post->ID );
+				} else {
+					$post_link = learn_press_get_sample_link_course_item_url( $post->ID );
+				}
 			}
 		}
 
@@ -1038,11 +1048,11 @@ add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
 /**
  * Get course of the item is assigned to.
  *
- * @since 3.2.1
- *
  * @param int $item_id
  *
  * @return int
+ * @since 3.2.1
+ *
  */
 function learn_press_get_item_course( $item_id ) {
 	global $wpdb;
@@ -1176,17 +1186,17 @@ function learn_press_enroll_course_from_url() {
 
 
 	?>
-    <div style="display: none;">
+	<div style="display: none;">
 		<?php learn_press_get_template( 'single-course/buttons/enroll.php', array( 'course' => $course ) ); ?>
-    </div>
-    <script>
-        setTimeout(function () {
-            var forms = document.getElementsByClassName('enroll-course');
-            if (forms.length) {
-                forms[0].submit();
-            }
-        }, 300);
-    </script>
+	</div>
+	<script>
+		setTimeout(function () {
+			var forms = document.getElementsByClassName('enroll-course');
+			if (forms.length) {
+				forms[0].submit();
+			}
+		}, 300);
+	</script>
 	<?php
 	die();
 }

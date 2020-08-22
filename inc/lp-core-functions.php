@@ -57,13 +57,13 @@ function learn_press_get_theme_name( $folder ) {
 /**
  * Display HTML of element for building QuickTip JS.
  *
- * @since 3.0.0
- *
  * @param string $tip
  * @param bool   $echo
  * @param array  $options
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
 	$atts = '';
@@ -195,9 +195,9 @@ function learn_press_get_ip() {
 	}
 	//Get the forwarded IP if it exists
 	if ( array_key_exists( 'X-Forwarded-For', $headers ) &&
-	     (
-		     filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-		     filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+		(
+			filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
+			filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 	) {
 		$the_ip = $headers['X-Forwarded-For'];
 	} elseif (
@@ -605,8 +605,8 @@ function learn_press_print_script() {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 	if ( ! empty( $learn_press_queued_js ) ) {
 		?>
-        <!-- LearnPress JavaScript -->
-        <script type="text/javascript">jQuery(function ($) {
+		<!-- LearnPress JavaScript -->
+		<script type="text/javascript">jQuery(function ($) {
 				<?php
 				// Sanitize
 				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
@@ -615,8 +615,8 @@ function learn_press_print_script() {
 
 				echo $learn_press_queued_js;
 				?>
-            });
-        </script>
+			});
+		</script>
 		<?php
 		unset( $learn_press_queued_js );
 	}
@@ -756,11 +756,11 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 		ob_start();
 		if ( $links ) :
 			?>
-            <div class="<?php echo $args['wrapper_class']; ?>">
+			<div class="<?php echo $args['wrapper_class']; ?>">
 				<?php echo $links; ?>
-            </div>
-            <!-- .pagination -->
-			<?php
+			</div>
+			<!-- .pagination -->
+		<?php
 		endif;
 		$output = ob_get_clean();
 		if ( $args['echo'] ) {
@@ -1020,9 +1020,9 @@ function learn_press_currency_positions( $currency = false ) {
 }
 
 /**
+ * @return array
  * @deprecated
  *
- * @return array
  */
 function learn_press_get_payment_currencies() {
 	//_deprecated_function( __FUNCTION__, '3.0.0', 'learn_press_currencies' );
@@ -1033,10 +1033,10 @@ function learn_press_get_payment_currencies() {
 /**
  * Get the list of currencies with code and name.
  *
- * @author  ThimPress
+ * @return  array
  * @version 3.0.0
  *
- * @return  array
+ * @author  ThimPress
  */
 function learn_press_currencies() {
 
@@ -1793,9 +1793,10 @@ if ( ! function_exists( 'learn_press_send_json' ) ) {
 /**
  * Send json with success signal to browser.
  *
+ * @param array|object|WP_Error $data
+ *
  * @since 3.0.1
  *
- * @param array|object|WP_Error $data
  */
 function learn_press_send_json_error( $data = '' ) {
 	$response = array( 'success' => false );
@@ -1821,9 +1822,10 @@ function learn_press_send_json_error( $data = '' ) {
 /**
  * Send json with error signal to browser.
  *
+ * @param array|object|WP_Error $data
+ *
  * @since 3.0.0
  *
- * @param array|object|WP_Error $data
  */
 function learn_press_send_json_success( $data = '' ) {
 	$response = array( 'success' => true );
@@ -1960,7 +1962,7 @@ if ( ! function_exists( 'learn_press_is_course_category' ) ) {
 	/**
 	 * Returns true when viewing a course category.
 	 *
-	 * @param  string
+	 * @param string
 	 *
 	 * @return bool
 	 */
@@ -1975,7 +1977,7 @@ if ( ! function_exists( 'learn_press_is_course_tag' ) ) {
 	/**
 	 * Returns true when viewing a course tag.
 	 *
-	 * @param  string
+	 * @param string
 	 *
 	 * @return bool
 	 */
@@ -2828,11 +2830,11 @@ if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
 	/**
 	 * Check negative value.
 	 *
-	 * @since 3.0.0
-	 *
 	 * @param $value
 	 *
 	 * @return bool
+	 * @since 3.0.0
+	 *
 	 */
 	function learn_press_is_negative_value( $value ) {
 		$return = in_array( $value, array( 'no', 'off', 'false', '0' ) ) || ! $value || $value == '' || $value == null;
@@ -2930,9 +2932,9 @@ function learn_press_tooltip( $tooltip, $html = false ) {
 /**
  * Get timezone offset from wp settings.
  *
+ * @return float|int
  * @since 3.0.0
  *
- * @return float|int
  */
 function learn_press_timezone_offset() {
 	if ( $tz = get_option( 'timezone_string' ) ) {
@@ -3103,11 +3105,11 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
 /**
  * Get all items are unassigned to any course.
  *
- * @since 3.0.0
- *
  * @param string|array $type - Optional. Types of items to get, default is all.
  *
  * @return array
+ * @since 3.0.0
+ *
  */
 function learn_press_get_unassigned_items( $type = '' ) {
 	global $wpdb;
@@ -3146,9 +3148,9 @@ function learn_press_get_unassigned_items( $type = '' ) {
 /**
  * Get all questions are unassigned to any quiz.
  *
+ * @return array
  * @since 3.0.0
  *
- * @return array
  */
 function learn_press_get_unassigned_questions() {
 	global $wpdb;
@@ -3177,12 +3179,12 @@ function learn_press_get_unassigned_questions() {
 /**
  * Callback function for sorting to array|object by key|prop priority.
  *
- * @since 3.0.0
- *
  * @param array|object $a
  * @param array|object $b
  *
  * @return int
+ * @since 3.0.0
+ *
  */
 function learn_press_sort_list_by_priority_callback( $a, $b ) {
 	$a_priority = null;
@@ -3218,13 +3220,13 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
 /**
  * Localize date with custom format.
  *
- * @since 3.0.0
- *
  * @param string $timestamp
  * @param string $format
  * @param bool   $gmt
  *
  * @return string
+ * @since 3.0.0
+ *
  */
 function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
 	if ( ! $format ) {
@@ -3237,12 +3239,13 @@ function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
 /**
  * Remove user items.
  *
- * @since 3.0.8
- *
  * @param int $item_id
  * @param int $course_id
  * @param int $user_id
  * @param int $keep
+ *
+ * @since 3.0.8
+ *
  */
 function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, $keep = 10 ) {
 
@@ -3274,9 +3277,9 @@ function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, 
 /**
  * Get item types of course support for blocking. Default is lp_lesson
  *
+ * @return array
  * @since 3.0.0
  *
- * @return array
  */
 function learn_press_get_block_course_item_types() {
 	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
@@ -3287,11 +3290,11 @@ function learn_press_get_block_course_item_types() {
  * If there is no data stored in cache then
  * get it from WP API.
  *
- * @since 3.1.0
- *
  * @param int|WP_Post $post
  *
  * @return string
+ * @since 3.1.0
+ *
  */
 function learn_press_get_post_type( $post ) {
 	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
@@ -3318,10 +3321,11 @@ function learn_press_get_post_type( $post ) {
 /**
  * Add post type of a post into cache
  *
- * @since 3.1.0
- *
  * @param int|array $id
  * @param string    $type
+ *
+ * @since 3.1.0
+ *
  */
 function learn_press_cache_add_post_type( $id, $type = '' ) {
 	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
@@ -3374,9 +3378,9 @@ function learn_press_show_log() {
 }
 
 /**
+ * @return array
  * @since 3.2.6
  *
- * @return array
  */
 function learn_press_global_script_params() {
 	$js = array(
