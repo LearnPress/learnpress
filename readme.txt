@@ -209,6 +209,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Remove hook get avatar of Ultimate member plugin
 ~ Fixed get value with, height image_size on LP setting
 ~ Fixed security, clear sanitize
+~ Wilfried, security ninja at Synacktiv
 
 = 3.2.7.2 =
 ~ Fixed email setting not save tag html
