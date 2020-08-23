@@ -199,6 +199,18 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 3.2.7.3 =
+~ Fixed error get_image() return bool not string on the file \templates\loop\course\thumbnail.php
+~ Modify description for the function 'External Link'
+~ Fixed LP_Datetime error with date = '0000-00-00 00:00:00'
+~ Fixed not show number Duration of Lesson when translate text
+~ Fixed not send mail for instructor when have new order
+~ Remove hook get avatar of Ultimate member plugin
+~ Fixed get value with, height image_size on LP setting
+~ Fixed security, clear sanitize
+~ Wilfried, security ninja at Synacktiv
+
 = 3.2.7.2 =
 ~ Fixed email setting not save tag html
 
