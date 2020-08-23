@@ -7728,3 +7728,7 @@ msgstr ""
 #. Author URI of the plugin
 msgid "http://thimpress.com"
 msgstr ""
+
+#: inc/lp-template-functions.php:553
+msgid "Overview"
+msgstr ""
