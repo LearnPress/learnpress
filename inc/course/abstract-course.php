@@ -806,7 +806,15 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( ! $price /* || 'yes' != $this->get_data('payment') */ ) {
 				$price = 0;
 			} else {
-				if ( false !== ( $sale_price = $this->get_sale_price() ) ) {
+				$hasPaid = learn_press_get_current_user()->is_returning();
+				$maybe_discount = LP()->settings->get( 'returning_customer_discount');
+				if ($hasPaid && $maybe_discount > 0){
+					$price = floatval($price);
+					$price = $price - (($maybe_discount*$price)/100);
+				}
+				$price      = floatval( $price );
+				$sale_price = $this->get_sale_price();
+				if ( is_numeric( $sale_price ) ) {
 					$price = $sale_price;
 				}
 			}

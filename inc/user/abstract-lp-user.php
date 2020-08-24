@@ -222,6 +222,23 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
+		 * 
+		 * @return Bool
+		 * Will return true or false depending on wheter the user is a 
+		 * returning customer or not
+		 */
+
+		public function is_returning($currentID){
+			$hasPaid = false;
+			$filter_status = LP_Request::get_string( 'filter-status' );
+			$query = $this->get_purchased_courses();
+			if(sizeof($query['items']) > 0){
+				$hasPaid = true;
+			}
+			return $hasPaid;
+		}
+
+		/**
 		 * Check if a course is exists then return it's ID.
 		 * Try to get it from global.
 		 *
