@@ -46,7 +46,7 @@ if ( isset( $order ) ) {
 						if ( $count > 1 ) {
 							$link = sprintf( '<li>%s</li>', $link );
 						}
-						$links[] = apply_filters('learn-press/order-received-item-link', $link, $item);
+						$links[] = apply_filters( 'learn-press/order-received-item-link', $link, $item );
 					}
 				}
 				if ( $count > 1 ) {

@@ -72,13 +72,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'admin_course_editor',
 				'admin_quiz_editor',
 				'admin_question_editor',
-				// duplicator
 				'duplicator',
-
 				'add_item_to_order',
 				'remove_order_item',
-
-				//'modal_search_items',
+				'modal_search_items',
 				'modal_search_users',
 				'add_items_to_order',
 				'remove_items_from_order',
@@ -521,7 +518,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @editor tungnx commented
 		 */
-		/*public static function modal_search_items() {
+		public static function modal_search_items() {
 			self::parsePhpInput( $_REQUEST );
 			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
 			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
@@ -538,7 +535,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'items' => $search->get_items()
 			) );
 
-		}*/
+		}
 
 		/**
 		 * Search items by requesting params.
