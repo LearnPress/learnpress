@@ -238,7 +238,7 @@ function learn_press_admin_course_tabs() {
 
 	$current_page_id = get_current_screen()->id;
 	$current_user    = wp_get_current_user();
-	if ( ! in_array( 'administrator', $current_user->roles ) ) {
+	if ( ! in_array( apply_filters( 'learn_press_admin_tabs_user_role', 'administrator' ), $current_user->roles ) ) {
 		return;
 	}
 	if ( ! empty( $admin_tabs_on_page[ $current_page_id ] ) && count( $admin_tabs_on_page[ $current_page_id ] ) ) {
