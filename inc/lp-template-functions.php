@@ -777,7 +777,9 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 				return;
 			}
 
-			if ( $user_quiz->has_checked_question( $question->get_id() ) || $user_quiz->is_answered_true( $question->get_id() ) ) {
+			if ( $user_quiz->has_checked_question( $question->get_id() ) ||
+				$user_quiz->is_answered_true( $question->get_id() ) ||
+				learn_press_is_review_questions() ) {
 				learn_press_get_template( 'content-question/explanation.php', array( 'question' => $question ) );
 			}
 		}
@@ -3748,7 +3750,7 @@ add_action( 'wp_enqueue_scripts', 'learn_press_maybe_load_comment_js' );
 //}
 
 /**
- * @editor tungnx | comment code
+ * @editor     tungnx | comment code
  * @deprecated 3.2.7.3
  */
 //add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );

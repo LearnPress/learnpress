@@ -142,10 +142,18 @@ class LP_Post_Type_Actions {
 	}
 
 	public function added_item_to_section( $item, $section_id, $course_id ) {
+		if ( ! isset( $item['id'] ) ) {
+			return;
+		}
+
 		do_action( 'learn-press/added-course-item', $item['id'], $course_id );
 	}
 
 	public function removed_item_from_section( $item, $course_id ) {
+		if ( ! isset( $item['id'] ) ) {
+			return;
+		}
+
 		do_action( 'learn-press/removed-course-item', $item['id'], $course_id );
 	}
 
