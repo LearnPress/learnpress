@@ -207,6 +207,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Add tag apply_filter 'learn-press/order-item-not-course-id' on received-order
 ~ Add tag apply_filter 'learn-press/tmpl-button-purchase-course' before return button purchase course
 ~ Optimize (permalink of items course)
+~ Show finish course button when items of course completed but course not passed.
 
 = 3.2.7.4 =
 ~ Fix can't load items when select on Order Backend

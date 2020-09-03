@@ -139,12 +139,13 @@ class LP_Page_Controller {
 
 			$user = learn_press_get_current_user();
 
-			if ( false === $user->can_view_item( $lp_course_item->get_id() ) && ! $user->get_item_url( $lp_course_item->get_id() ) ) {
+			// comment by tungnx
+			/*if ( false === $user->can_view_item( $lp_course_item->get_id() ) && ! $user->get_item_url( $lp_course_item->get_id() ) ) {
 				if ( false !== ( $redirect = apply_filters( 'learn-press/redirect-forbidden-access-item-url', $lp_course->get_permalink() ) ) ) {
 					wp_redirect( $redirect );
 					exit();
 				}
-			}
+			}*/
 
 			$lp_course->set_viewing_item( $lp_course_item );
 

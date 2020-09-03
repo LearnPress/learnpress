@@ -1318,7 +1318,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			//static $completed_lessons = array();
 			$key = $user_id . '-' . $this->get_id();
 
-			$completed_lessons = LP_Cache::get_completed_lessons( false, array() );
+			//$completed_lessons = LP_Cache::get_completed_lessons( false, array() );
+			$completed_lessons = array();
 
 			if ( ! array_key_exists( $key, $completed_lessons ) || $force ) {
 				global $wpdb;
@@ -1338,7 +1339,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				$completed_lessons[ $key ] = $wpdb->get_var( $query );
 
-				LP_Cache::set_completed_lessons( $key, $completed_lessons[ $key ] );
+				//LP_Cache::set_completed_lessons( $key, $completed_lessons[ $key ] );
 			}
 
 			return apply_filters( 'learn_press_user_completed_lessons', $completed_lessons[ $key ], $this->get_id(), $user_id );
