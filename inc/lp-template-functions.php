@@ -779,7 +779,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 
 			if ( $user_quiz->has_checked_question( $question->get_id() ) ||
 				$user_quiz->is_answered_true( $question->get_id() ) ||
-				learn_press_is_review_questions() ) {
+				( learn_press_is_review_questions() && ! $user->can_retake_quiz( $quiz->get_id(), $course->get_id() ) ) ) {
 				learn_press_get_template( 'content-question/explanation.php', array( 'question' => $question ) );
 			}
 		}

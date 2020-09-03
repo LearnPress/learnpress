@@ -242,7 +242,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'name' => __( 'Review Questions', 'learnpress' ),
 						'id'   => '_lp_review_questions',
 						'type' => 'yes-no',
-						'desc' => __( 'Allow re-viewing questions after completing quiz.', 'learnpress' ),
+						'desc' => __( 'Allow re-viewing questions after completing the quiz. Unless otherwise have Retake', 'learnpress' ),
 						'std'  => 'no'
 					),
 					array(
