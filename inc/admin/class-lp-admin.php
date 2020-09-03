@@ -53,10 +53,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
 
-			add_filter( 'learn-press/dismissed-notice-response', array(
-				$this,
-				'on_dismissed_notice_response'
-			), 10, 2 );
+			add_filter( 'learn-press/dismissed-notice-response', array( $this, 'on_dismissed_notice_response' ), 10, 2 );
+
+			// get list items course of user | tungnx
+			add_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10, 5 );
+
+			// Set link item course when edit on Backend | tungnx
+			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
 		}
 
 		/**
@@ -827,6 +830,85 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-updater.php';
 			include_once 'class-lp-install-sample-data.php';
 			include_once 'class-lp-reset-data.php';
+		}
+
+		public function get_course_items_of_user_backend( $query ) {
+			global $post_type, $pagenow, $wpdb;
+
+			if ( ! did_action( 'plugin_loaded' ) || current_user_can( 'manage_options' ) ||
+				! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
+				return $query;
+			}
+
+			$post_type_valid = apply_filters( 'learn-press/filter-user-access-types',
+				array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) );
+
+			if ( ! in_array( $post_type, $post_type_valid ) ) {
+				return $query;
+			}
+
+			$items = LP_Database::getInstance()->getListItem( $post_type, get_current_user_id() );
+
+			if ( count( $items ) == 0 ) {
+				$query->set( 'post_type', 'no-item-access' );
+			} else {
+				$query->set( 'post__in', $items );
+			}
+
+			add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
+		}
+
+		/**
+		 * Set link item of course when edit item on Backend
+		 *
+		 * @param string       $post_link
+		 * @param int          $post_id
+		 * @param string       $new_title
+		 * @param string       $new_slug
+		 * @param WP_Post|null $post
+		 *
+		 * @return array|int|mixed|string|void
+		 * @author tungnx
+		 * @since  3.2.7.5
+		 */
+		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
+			if ( ! in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
+				return $post_link;
+			}
+
+			$course            = null;
+			$course_id_of_item = LP_Course_DB::getInstance()->learn_press_get_item_course( $post->ID );
+
+			if ( $course_id_of_item ) {
+				$course = learn_press_get_course( $course_id_of_item );
+
+				if ( $course ) {
+					$link_item = $course->get_item_link( $post->ID );
+
+					$post_slug           = $post->post_name;
+					$link_item_edit_slug = preg_replace( '/' . $post_slug . '(\/)/', '', $link_item );
+
+					// For update new slug
+					if ( $new_slug ) {
+						$post_slug = $new_slug;
+					}
+
+					$post_link = '<strong>Permalink: </strong>';
+					$post_link .= '<span id="sample-permalink">';
+					$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
+					$post_link .= '</span>';
+					$post_link .= '&lrm;<span id="edit-slug-buttons">';
+					$post_link .= '<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">Edit</button>';
+					$post_link .= '</span>';
+					$post_link .= '<span id="editable-post-name-full">' . $post_slug . '</span>';
+				}
+			} else {
+				$post_link_preview = sprintf( '<a class="button" href="%s" target="_blank">%s</a>', learn_press_get_preview_url( $post_id ), __( 'Preview', 'learnpress' ) );
+				$post_link_message = '<span>' . __( 'Permalink only available if the item is already assigned to a course.', 'learnpress' ) . '</span>';
+				$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s %s</div>', $post_link_message, $post_link_preview );
+			}
+
+			return $post_link;
 		}
 
 		/**

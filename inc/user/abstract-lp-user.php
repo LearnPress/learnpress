@@ -1944,9 +1944,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				do_action( 'learn-press/before-complete-lesson', $lesson_id, $course_id, $this->get_id() );
 				$course_id = $this->_get_course( $course_id );
 
-				if ( $this->can_view_item( $lesson_id, $course_id ) == 'preview' ) {
+				/*if ( $this->can_view_item( $lesson_id, $course_id ) == 'preview' ) {
 					throw new Exception( __( 'You can not complete a preview lesson.', 'learnpress' ), LP_COMPLETE_ITEM_FAIL );
-				}
+				}*/
 
 				$course_data = $this->get_course_data( $course_id );
 
@@ -1964,6 +1964,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( $item->is_completed() ) {
 						throw new Exception( __( 'You have already completed this lesson.', 'learnpress' ), LP_COMPLETE_ITEM_FAIL );
 					}
+
 					$time = new LP_Datetime();
 					$item->set_end_time( $time->toSql(), true );
 					$item->set_status( 'completed' );

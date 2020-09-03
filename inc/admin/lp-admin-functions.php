@@ -2182,18 +2182,21 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
  * @return string
  * @since 3.0.0
  *
+ * @editor tungnx | comment code
+ * @deprecated 3.2.7.5
+ *
  */
-function learn_press_preview_post_link( $link, $post ) {
+/*function learn_press_preview_post_link( $link, $post ) {
 	$items = learn_press_course_get_support_item_types( true );
 
 	if ( in_array( $post->post_type, $items ) ) {
-		$link = learn_press_course_item_type_link( $link, $post, false, false );
+		$link = lp_course_set_link_backend( $link, $post->ID, false, false, $post );
 	}
 
 	return $link;
-}
+}*/
 
-add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
+//add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
 
 /**
  * Sync post meta when saving post type.

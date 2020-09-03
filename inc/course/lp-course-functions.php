@@ -119,10 +119,7 @@ function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0
  *
  */
 function learn_press_get_course_item_types() {
-	return apply_filters( 'learn-press/course-item-type', array(
-		'lp_lesson',
-		'lp_quiz'
-	) );
+	return apply_filters( 'learn-press/course-item-type', array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
 }
 
 /**
@@ -796,7 +793,11 @@ function learn_press_force_refresh_course( $comment_id, $status ) {
 
 add_action( 'comment_post', 'learn_press_force_refresh_course', 1000, 2 );
 
-if ( ! function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
+/**
+ * @editor     tungnx | comment code
+ * @deprecated 3.2.7.5
+ */
+/*if ( ! function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
 
 	function learn_press_get_sample_link_course_item_url( $item_id = null ) {
 
@@ -818,7 +819,7 @@ if ( ! function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
 		return $permalink;
 
 	}
-}
+}*/
 
 if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 	function learn_press_get_nav_course_item_url( $course_id = null, $item_id = null, $content_only = false ) {
@@ -941,7 +942,11 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 	}
 }
 
-function learn_press_item_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
+/**
+ * @editor tungnx | comment code
+ * @deprecated 3.2.7.5
+ */
+/*function learn_press_item_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
 	remove_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10 );
 
 	$return = sprintf(
@@ -953,10 +958,13 @@ function learn_press_item_sample_permalink_html( $return, $post_id, $new_title, 
 	$return .= '<span>' . __( 'Permalink only available if the item is already assigned to a course.', 'learnpress' ) . '</span>';
 
 	return sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $return );
-}
+}*/
 
-
-if ( ! function_exists( 'learn_press_item_sample_permalink' ) ) {
+/**
+ * @editor tungnx | comment code
+ * @deprecated 3.2.7.5
+ */
+/*if ( ! function_exists( 'learn_press_item_sample_permalink' ) ) {
 
 	function learn_press_item_sample_permalink( $permalink, $post_id, $title, $name, $post ) {
 		if ( ! in_array( $post->post_type, learn_press_course_get_support_item_types( true ) ) ) {
@@ -972,8 +980,8 @@ if ( ! function_exists( 'learn_press_item_sample_permalink' ) ) {
 		return $permalink;
 	}
 
-}
-add_filter( 'get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5 );
+}*/
+//add_filter( 'get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5 );
 
 /**
  * Get preview url for LP post type.
@@ -999,16 +1007,18 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 	 * Add filter to WP custom post-type-link to edit the link of item
 	 * with the link of it's course.
 	 *
-	 * @updated 12 Nov 2018
+	 * @updated    12 Nov 2018
 	 *
 	 * @param string  $post_link
 	 * @param WP_Post $post
 	 * @param bool    $leavename
 	 * @param bool    $sample
 	 *
+	 * @editor     tungnx | comment code
 	 * @return string
+	 * @deprecated 3.2.7.4
 	 */
-	function learn_press_course_item_type_link( $post_link, $post, $leavename, $sample ) {
+	/*function learn_press_course_item_type_link( $post_link, $post, $leavename, $sample ) {
 
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
@@ -1041,9 +1051,9 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 		add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
 
 		return $post_link;
-	}
+	}*/
 }
-add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
+//add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
 
 /**
  * Get course of the item is assigned to.
@@ -1051,10 +1061,12 @@ add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
  * @param int $item_id
  *
  * @return int
- * @since 3.2.1
+ * @since      3.2.1
  *
+ * @editor     tungnx | comment code
+ * @deprecated 3.2.7.5
  */
-function learn_press_get_item_course( $item_id ) {
+/*function learn_press_get_item_course( $item_id ) {
 	global $wpdb;
 	$query = $wpdb->prepare( "
         SELECT section_course_id
@@ -1064,7 +1076,7 @@ function learn_press_get_item_course( $item_id ) {
     ", $item_id );
 
 	return (int) $wpdb->get_var( $query );
-}
+}*/
 
 
 add_filter( 'template_include', 'learn_press_prepare_archive_courses' );

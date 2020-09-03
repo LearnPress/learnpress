@@ -856,23 +856,26 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			if ( ! $separated ) {
 
 				$return = wp_mail( $to, $subject, $message, $headers, $attachments );
-				ob_start();
-				var_dump( $return );
-				print_r( $to );
-				$log = ob_get_clean();
 
-				error_log( 'Sent mail to ' . $log );
+				if ( LP_DEBUG_STATUS ) {
+					ob_start();
+					var_dump( $return );
+					print_r( $to );
+					$log = ob_get_clean();
+					error_log( 'Sent mail to ' . $log );
+				}
 			} else {
 				if ( is_array( $to ) ) {
 					foreach ( $to as $t ) {
 						$return = wp_mail( $t, $subject, $message, $headers, $attachments );
 
-						ob_start();
-						var_dump( $return );
-						print_r( $to );
-						$log = ob_get_clean();
-
-						error_log( 'Sent mail to ' . $log );
+						if ( LP_DEBUG_STATUS ) {
+							ob_start();
+							var_dump( $return );
+							print_r( $to );
+							$log = ob_get_clean();
+							error_log( 'Sent mail to ' . $log );
+						}
 					}
 				}
 			}
@@ -1088,9 +1091,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		/**
 		 * Get settings in admin.
 		 *
+		 * @return bool|mixed
 		 * @since 3.0.0
 		 *
-		 * @return bool|mixed
 		 */
 		public function get_settings() {
 			return apply_filters(
@@ -1102,11 +1105,11 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		/**
 		 * Get instructors to send mail.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param null $order_id
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_order_instructors( $order_id ) {
 			if ( ! $order_id ) {

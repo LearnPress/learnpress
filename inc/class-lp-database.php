@@ -10,13 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LP_Database {
 	public static $_instance;
 	public $wpdb;
-	public $tb_lp_user_items;
-	public $tb_lp_user_itemmeta;
-	public $tb_lp_order_items;
-	public $tb_postmeta;
-	public $tb_posts;
-	public $tb_lp_section_items;
-	public $tb_lp_sections;
+	public $tb_lp_user_items, $tb_lp_user_itemmeta;
+	public $tb_posts, $tb_postmeta;
+	public $tb_lp_order_items, $tb_lp_order_itemmeta;
+	public $tb_lp_sections, $tb_lp_section_items;
+	public $tb_lp_quiz_questions;
 
 	protected function __construct() {
 		/**
@@ -33,6 +31,7 @@ class LP_Database {
 		$this->tb_lp_order_itemmeta = $this->wpdb->prefix . 'learnpress_order_itemmeta';
 		$this->tb_lp_section_items  = $this->wpdb->prefix . 'learnpress_section_items';
 		$this->tb_lp_sections       = $this->wpdb->prefix . 'learnpress_sections';
+		$this->tb_lp_quiz_questions = $this->wpdb->prefix . 'learnpress_quiz_questions';
 	}
 
 	public static function getInstance() {
@@ -41,6 +40,26 @@ class LP_Database {
 		}
 
 		return self::$_instance;
+	}
+
+	/**
+	 * Get list Item by post type and user id
+	 *
+	 * @param string $post_type
+	 * @param int    $user_id
+	 *
+	 * @return array
+	 */
+	public function getListItem( $post_type = '', $user_id = 0 ) {
+		$query = $this->wpdb->prepare( "
+			SELECT ID FROM $this->tb_posts
+			WHERE post_type = %s
+			AND post_author = %d",
+			$post_type,
+			$user_id
+		);
+
+		return $this->wpdb->get_col( $query );
 	}
 }
 

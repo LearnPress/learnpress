@@ -1,17 +1,18 @@
 <?php
-/*
-Plugin Name: LearnPress
-Plugin URI: http://thimpress.com/learnpress
-Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
-Author: ThimPress
-Version: 3.2.7.3
-Author URI: http://thimpress.com
-Requires at least: 3.8
-Tested up to: 5.4.x
-
-Text Domain: learnpress
-Domain Path: /languages/
-*/
+/**
+ * Plugin Name: LearnPress
+ * Plugin URI: http://thimpress.com/learnpress
+ * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
+ * Author: ThimPress
+ * Version: 3.2.7.5
+ * Author URI: http://thimpress.com
+ * Requires at least: 3.8
+ * Tested up to: 5.5
+ * Text Domain: learnpress
+ * Domain Path: /languages/
+ *
+ * @package LearnPress
+ */
 
 /**
  * Prevent loading this file directly
@@ -22,6 +23,8 @@ if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
 }
+
+define( 'LP_DEBUG_STATUS', 0 );
 
 if ( ! class_exists( 'LearnPress' ) ) {
 
@@ -250,8 +253,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Query Database
 			require_once 'inc/class-lp-database.php';
+			require_once 'inc/course/class-lp-course-database.php';
 			require_once 'inc/lesson/class-lp-lesson-database.php';
 			require_once 'inc/section/class-lp-section-database.php';
+			require_once 'inc/quiz/class-lp-quiz-database.php';
 
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';

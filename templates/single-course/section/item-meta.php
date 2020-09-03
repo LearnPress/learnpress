@@ -28,7 +28,7 @@ if ( ! isset( $item ) && ! isset( $section ) ) {
 		$course_id = $section->get_course_id();
 		if ( get_post_meta( $course_id, '_lp_required_enroll', true ) == 'yes' ) {
 			echo '<i class="item-meta course-item-status"
-			   data-preview="' . esc_html_e( 'Preview', 'learnpress' ) . '"></i>';
+			   data-preview="' . esc_html__( 'Preview', 'learnpress' ) . '"></i>';
 		}
 	} else {
 		echo '<i class="fa item-meta course-item-status trans"></i>';

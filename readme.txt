@@ -3,8 +3,9 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungn
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
-Tested up to: 5.4.3
-Stable tag: 3.2.7.3
+Tested up to: 5.5
+Requires PHP: 7.0
+Stable tag: 5.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +200,16 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 3.2.7.5 =
+~ Fix run Elementor with question
+~ Fix lesson preview not show button complete when user enrolled
+~ Add tag apply_filter 'learn-press/order-item-not-course-id' on received-order
+~ Add tag apply_filter 'learn-press/tmpl-button-purchase-course' before return button purchase course
+~ Optimize (permalink of items course)
+
+= 3.2.7.4 =
+~ Fix can't load items when select on Order Backend
 
 = 3.2.7.3 =
 ~ Fixed error get_image() return bool not string on the file \templates\loop\course\thumbnail.php

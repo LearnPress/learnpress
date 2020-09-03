@@ -12,8 +12,11 @@ add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
  * Filter post types the user can access in admin
  *
  * @param $query
+ *
+ * @deprecated 3.2.7.5
+ * @editor     tungnx | comment code
  */
-function _learn_press_set_user_items( $query ) {
+/*function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
 	if ( ! function_exists( 'wp_get_current_user' ) ) {
@@ -47,9 +50,9 @@ function _learn_press_set_user_items( $query ) {
 		$query->set( 'post__in', $items );
 	}
 	add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
-}
+}*/
 
-add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );
+//add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );
 
 /**
  * Restrict user views

@@ -716,30 +716,7 @@ class LP_Page_Controller {
 
 		// Handle 404 if user are viewing course item directly.
 		// Example: http://example.com/lesson/sample-lesson
-		$course_support_items = learn_press_get_course_item_types();
-
-		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $course_support_items ) ) {
-			// Check Elementor Installed & Activated
-			if ( did_action( 'elementor/loaded' ) ) {
-				//Check is elementor action
-				if ( ! strpos( $_SERVER['REQUEST_URI'], 'elementor' ) ) {
-					// check user has edit &  is preview mode
-					if ( ! is_preview() || current_user_can( 'edit_posts' ) == false ):
-						learn_press_404_page();
-						$q->set( 'post_type', '__unknown' );
-
-						return $q;
-					endif;
-				}
-			} else {
-				learn_press_404_page();
-				$q->set( 'post_type', '__unknown' );
-
-				return $q;
-			}
-		}
-
-		remove_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
+		$this->set_link_item_course_default_wp_to_page_404( $q );
 
 		$this->_queried_object = ! empty( $q->queried_object_id ) ? $q->queried_object : false;
 
@@ -814,9 +791,57 @@ class LP_Page_Controller {
 			}
 		}
 
-		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
-
 		return $q;
+	}
+
+	/**
+	 * Handle 404 if user are viewing course item directly.
+	 * Example: http://example.com/lesson/sample-lesson
+	 *
+	 * @param WP_Query $q
+	 *
+	 * @return mixed
+	 * @editor tungnx
+	 * @since  3.2.7.5
+	 */
+	public function set_link_item_course_default_wp_to_page_404( $q ) {
+		if ( ! $q->is_main_query() || is_admin() ) {
+			return $q;
+		}
+
+		$post_type_apply_404 = array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' );
+
+		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
+			if ( did_action( 'elementor/loaded' ) ) {
+				if ( ! strpos( $_SERVER['REQUEST_URI'], 'elementor' ) ) {
+					$flag_load_404 = true;
+					$user          = wp_get_current_user();
+
+					if ( isset( $_GET['preview_id'] ) && $user ) {
+						$post_id = $_GET['preview_id'];
+						$post    = get_post( $post_id );
+
+						if ( $user->has_cap( 'administrator' ) ) {
+							$flag_load_404 = false;
+						} elseif ( $user->has_cap( LP_TEACHER_ROLE ) ) {
+							if ( $post->post_author == $user->ID ) {
+								$flag_load_404 = false;
+							}
+						}
+					}
+
+					if ( $flag_load_404 ) {
+						learn_press_404_page();
+						$q->set( 'post_type', '' );
+					}
+				}
+			} else {
+				learn_press_404_page();
+				$q->set( 'post_type', '' );
+
+				return $q;
+			}
+		}
 	}
 
 	public function the_content_callback( $content ) {
