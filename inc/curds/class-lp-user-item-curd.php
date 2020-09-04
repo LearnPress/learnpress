@@ -417,12 +417,12 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Get single user item by values of fields.
 	 *
-	 * @since 3.1.0
-	 *
 	 * @param string|array $field
 	 * @param string       $value
 	 *
 	 * @return mixed
+	 * @since 3.1.0
+	 *
 	 */
 	public function get_item_by( $field, $value = '' ) {
 		if ( $rows = $this->get_items_by( $field, $value ) ) {
@@ -435,12 +435,12 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Get multiple rows of user item by values of fields.
 	 *
-	 * @since 3.1.0
-	 *
 	 * @param string|array $field
 	 * @param string       $value
 	 *
 	 * @return array
+	 * @since 3.1.0
+	 *
 	 */
 	public function get_items_by( $field, $value = '' ) {
 		global $wpdb;
@@ -485,12 +485,12 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Parse attribute 'preview' for all items in a course
 	 *
-	 * @since 3.2.0
-	 *
 	 * @param int $course_id
 	 * @param int $user_id
 	 *
 	 * @return array
+	 * @since 3.2.0
+	 *
 	 */
 	public function parse_items_preview( $course_id, $user_id = 0 ) {
 
@@ -531,13 +531,13 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Parse classes for all items in a course.
 	 *
-	 * @since 3.2.0
-	 *
 	 * @param int          $course_id
 	 * @param int          $user_id
 	 * @param array|string $more
 	 *
 	 * @return array
+	 * @since 3.2.0
+	 *
 	 */
 	public function parse_items_classes( $course_id, $user_id = 0, $more = array() ) {
 		$items = array();
@@ -550,7 +550,6 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			$user_id = get_current_user_id();
 		}
 
-		//$user            = learn_press_get_user( $user_id, false ); tested on client site and this function not work. Use the below line instead of!
 		$user            = learn_press_get_current_user();
 		$current_item    = LP_Global::course_item();
 		$get_item_ids    = $course->get_item_ids();
@@ -582,47 +581,79 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$defaults[] = 'current';
 				}
 
-				if ( $item->is_preview() ) {
-					$defaults[] = 'item-preview';
-					$defaults[] = 'has-status';
+				if ( $is_free && ! $required_enroll ) {
+					$defaults[] = 'item-free';
+				} elseif ( ! $user || ! $enrolled ) {
+					$defaults['item-locked'] = 'item-locked';
+
+					if ( $item->is_preview() ) {
+						$defaults['item-preview'] = 'item-preview';
+						$defaults['has-status']   = 'has-status';
+						unset( $defaults['item-locked'] );
+					}
 				} elseif ( $item->is_blocked() ) {
 					$defaults[] = 'item-locked';
 				} else {
-					if ( $course ) {
-						if ( $is_free && ! $required_enroll ) {
-							$defaults[] = 'item-free';
-						} else {
-							if ( $user ) {
-								if ( $enrolled ) {
-									$item_status = $user->get_item_status( $item_id, $course_id );
-									$item_grade  = $user->get_item_grade( $item_id, $course_id );
+					$item_status = $user->get_item_status( $item_id, $course_id );
+					$item_grade  = $user->get_item_grade( $item_id, $course_id );
 
-									if ( $item_status ) {
-										$defaults[] = 'has-status';
-										$defaults[] = 'status-' . $item_status;
-									}
-									switch ( $item_status ) {
-										case 'started':
-											break;
-										case 'completed':
-											$defaults[] = $item_grade;
-											break;
-										default:
-											if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status, $item_grade, $item->get_item_type(), $item_id, $course_id ) ) {
-												$defaults[] = $item_class;
-											}
-									}
-								}
+					if ( $item_status ) {
+						$defaults[] = 'has-status';
+						$defaults[] = 'status-' . $item_status;
+					}
+					switch ( $item_status ) {
+						case 'started':
+							break;
+						case 'completed':
+							$defaults[] = $item_grade;
+							break;
+						default:
+							if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status, $item_grade, $item->get_item_type(), $item_id, $course_id ) ) {
+								$defaults[] = $item_class;
 							}
+					}
+				}
 
-							if ( ! $enrolled ) {
+				/*if ( $item->is_preview() ) {
+					$defaults['item-preview'] = 'item-preview';
+					$defaults[]               = 'has-status';
+				}
+
+				if ( $item->is_blocked() ) {
+					$defaults[] = 'item-locked';
+				} else {
+					if ( $is_free && ! $required_enroll ) {
+						$defaults[] = 'item-free';
+					} else {
+						if ( $user ) {
+							if ( $enrolled ) {
+								$item_status = $user->get_item_status( $item_id, $course_id );
+								$item_grade  = $user->get_item_grade( $item_id, $course_id );
+
+								if ( $item_status ) {
+									$defaults[] = 'has-status';
+									$defaults[] = 'status-' . $item_status;
+								}
+								switch ( $item_status ) {
+									case 'started':
+										break;
+									case 'completed':
+										unset( $defaults['item-preview'] );
+
+										$defaults[] = $item_grade;
+										break;
+									default:
+										if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status, $item_grade, $item->get_item_type(), $item_id, $course_id ) ) {
+											$defaults[] = $item_class;
+										}
+								}
+							} else if ( ! $item->is_preview() ) {
 								$defaults[] = 'item-locked';
 							}
 						}
-					} else {
-						$defaults[] = 'item-locked';
 					}
-				}
+				}*/
+
 				$classes = apply_filters( 'learn-press/course-item-class', $defaults, $item->get_item_type(), $item_id, $course_id );
 
 				// Filter unwanted values

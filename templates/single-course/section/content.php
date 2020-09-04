@@ -14,34 +14,41 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_Course_Section $section
+ */
 if ( ! isset( $section ) ) {
 	return;
 }
 
-$user = LP_Global::user();
-
+$user  = LP_Global::user();
+$items = $section->get_items();
 ?>
 
-<?php if ( $items = $section->get_items() ) { ?>
+<?php if ( $items ) { ?>
 
-    <ul class="section-content">
+	<ul class="section-content">
 
 		<?php foreach ( $items as $item ) { ?>
 
-            <li class="<?php echo join( ' ', $item->get_class() ); ?>">
+			<li class="<?php echo join( ' ', $item->get_class() ); ?>">
 				<?php
 				if ( $item->is_visible() ) {
 					/**
 					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/begin-section-loop-item', $item );
-						?>
-                        <a class="section-item-link" href="<?php echo $item->get_permalink(); ?>">
-							<?php learn_press_get_template( 'single-course/section/content-item.php', array(
+					?>
+					<a class="section-item-link" href="<?php echo $item->get_permalink(); ?>">
+						<?php
+						learn_press_get_template( 'single-course/section/content-item.php',
+							array(
 								'item'    => $item,
 								'section' => $section
-							) ); ?>
-                        </a>
+							)
+						);
+						?>
+					</a>
 					<?php
 					/**
 					 * @since 3.0.0
@@ -50,11 +57,11 @@ $user = LP_Global::user();
 				}
 				?>
 
-            </li>
+			</li>
 
 		<?php } ?>
 
-    </ul>
+	</ul>
 
 <?php } else { ?>
 

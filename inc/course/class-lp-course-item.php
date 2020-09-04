@@ -485,6 +485,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
+
+				if ( ! $course_id ) {
+					return false;
+				}
 			}
 
 			$course_author = learn_press_get_course_user( $course_id );

@@ -216,6 +216,8 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			$items = $filtered_items;
 		}
 
+		//echo '<pre>'.print_r($items, true).'</pre>';die;
+
 		return $items;
 	}
 

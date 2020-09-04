@@ -201,11 +201,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @deprecated
-		 *
 		 * @param string $field
 		 *
 		 * @return bool|int
+		 * @deprecated
+		 *
 		 * @deprecated 3.0.11 - can remove this function
 		 */
 		public function get_request_item( $field = 'id' ) {
@@ -253,16 +253,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function is_required_enroll() {
 			$return = $this->get_data( 'required_enroll' ) == 'yes';
-			// @deprecated
-			$return = apply_filters( 'learn_press_course_required_enroll', $return, $this );
 
 			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
 		}
 
 		/**
+		 * @return mixed
 		 * @deprecated
 		 *
-		 * @return mixed
 		 */
 		public function is_require_enrollment() {
 			return $this->is_required_enroll();
@@ -294,12 +292,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Return list of item's ids in course's curriculum.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param string|array $type
 		 * @param bool         $preview - True for including 'Preview' item
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_items( $type = '', $preview = true ) {
 
@@ -319,12 +317,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
 				if ( false === ( $items = LP_Object_Cache::get( 'course-' . $key, 'learn-press/course-items' ) ) ) {
-					
-					$items = array();
-					$item_types = $this->get_item_types(true);
+
+					$items      = array();
+					$item_types = $this->get_item_types( true );
 					foreach ( $type as $t ) {
-						if( isset($item_types[$t]) && !empty($item_types[$t]) ) {
-							$items = array_merge( $items, $item_types[$t] );
+						if ( isset( $item_types[ $t ] ) && ! empty( $item_types[ $t ] ) ) {
+							$items = array_merge( $items, $item_types[ $t ] );
 						}
 					}
 
@@ -425,9 +423,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get raw data curriculum.
 		 *
+		 * @return array
 		 * @since 3.0.0
 		 *
-		 * @return array
 		 */
 		public function get_curriculum_raw() {
 			$sections      = $this->get_sections( 'object' );
@@ -553,11 +551,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @deprecated
-		 *
 		 * @param null $user_id
 		 *
 		 * @return bool|mixed
+		 * @deprecated
+		 *
 		 */
 		public function get_course_info( $user_id = null ) {
 			if ( ! $user_id ) {
@@ -574,9 +572,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool
 		 */
 		public function is_free() {
-
-			// @deprecated
-			$is_free = apply_filters( 'learn_press_is_free_course', $this->get_price() == 0, $this );
+			$is_free = $this->get_price() == 0;
 
 			return apply_filters( 'learn-press/course-is-free', $is_free, $this->get_id() );
 		}
@@ -702,11 +698,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get all items in a course.
 		 *
-		 * @deprecated
-		 *
 		 * @param string $type . Type of items, eg: lp_lesson, lp_quiz...
 		 *
 		 * @return array
+		 * @deprecated
+		 *
 		 */
 		public function get_curriculum_items( $type = '' ) {
 			return $this->get_items( $type );
@@ -1093,12 +1089,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get item standing before and after an item.
 		 * If the item is not passed consider it is item viewing.
 		 *
-		 * @since 3.1.0
-		 *
 		 * @param bool $current_item
 		 * @param bool $viewable - Optional. TRUE will get next item is viewable.
 		 *
 		 * @return array|bool
+		 * @since 3.1.0
+		 *
 		 */
 		public function get_item_nav( $current_item = false, $viewable = false ) {
 			if ( false === $current_item ) {
@@ -1597,7 +1593,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get expired time of this course if user has enrolled
 		 *
 		 * @param int $user_id
-		 * @param     mixed
+		 * @param mixed
 		 *
 		 * @return mixed
 		 */
@@ -1625,7 +1621,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Checks if this course has expired
 		 *
 		 * @param int $user_id
-		 * @param     mixed
+		 * @param mixed
 		 *
 		 * @return mixed
 		 */
@@ -1698,9 +1694,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get author's display name
 		 *
+		 * @return string
 		 * @since 3.0.9
 		 *
-		 * @return string
 		 */
 		public function get_author_display_name() {
 			$display_name = '';
@@ -1764,20 +1760,20 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Enable item link in case user can not view content of them
 		 *
+		 * @return bool
 		 * @since 3.1.0
 		 *
-		 * @return bool
 		 */
-//		public function is_enable_item_link() {
-//			return get_post_meta( $this->get_id(), '_lp_submission', true ) === 'yes';
-//		}
+		//		public function is_enable_item_link() {
+		//			return get_post_meta( $this->get_id(), '_lp_submission', true ) === 'yes';
+		//		}
 
 		/**
 		 * Prepare course items.
 		 *
+		 * @return array
 		 * @since 3.2.0
 		 *
-		 * @return array
 		 */
 		public function prepare() {
 			global $wpdb;
