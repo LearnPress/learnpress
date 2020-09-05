@@ -1411,7 +1411,7 @@ body .lp-quiz-buttons .form-button-finish-course {
     .answer-options .answer-option:hover {
       background: #e1f5ff; }
     .answer-options .answer-option.answer-correct {
-      background: #e1f5ff; }
+      background: #008000bf; color: white }
       .answer-options .answer-option.answer-correct input[type="radio"]:checked ~ .option-title:before,
       .answer-options .answer-option.answer-correct input[type="checkbox"]:checked ~ .option-title:before {
         background: #e1f5ff; }

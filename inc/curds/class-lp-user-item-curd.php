@@ -529,7 +529,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Parse classes for all items in a course.
+	 * Parse classes to show icon for all items in a course.
 	 *
 	 * @param int          $course_id
 	 * @param int          $user_id
@@ -581,6 +581,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$defaults[] = 'current';
 				}
 
+				// Edit by tungnx, rewrite class to show icon
 				if ( $is_free && ! $required_enroll ) {
 					$defaults[] = 'item-free';
 				} elseif ( ! $user || ! $enrolled ) {
@@ -601,6 +602,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 						$defaults[] = 'has-status';
 						$defaults[] = 'status-' . $item_status;
 					}
+
 					switch ( $item_status ) {
 						case 'started':
 							break;
@@ -608,12 +610,21 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 							$defaults[] = $item_grade;
 							break;
 						default:
+							if ( $item->is_preview() ) {
+								$defaults['item-preview'] = 'item-preview';
+								$defaults['has-status']   = 'has-status';
+							}
+
 							if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status, $item_grade, $item->get_item_type(), $item_id, $course_id ) ) {
 								$defaults[] = $item_class;
 							}
 					}
 				}
+				// End
 
+				/**
+				 * comment by tungnx
+				 */
 				/*if ( $item->is_preview() ) {
 					$defaults['item-preview'] = 'item-preview';
 					$defaults[]               = 'has-status';

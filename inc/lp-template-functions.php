@@ -652,8 +652,16 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_content' ) ) {
 
 	function learn_press_content_item_summary_quiz_content() {
 		$item = LP_Global::course_item();
+		$quiz = LP_Global::course_item_quiz();
+		$user = LP_Global::user();
 
-		if ( ! $item->get_viewing_question() ) {
+		/**
+		 * Check if not start quiz (is showing question)
+		 * and not completed quiz
+		 *
+		 * @editor tungnx
+		 */
+		if ( ! $item->get_viewing_question() && ! $user->has_completed_quiz( $quiz->get_id(), get_the_ID() ) ) {
 			learn_press_get_template( 'content-quiz/description.php' );
 		}
 	}
@@ -710,6 +718,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_result' ) ) {
 		if ( ! $user->has_completed_quiz( $quiz->get_id(), get_the_ID() ) ) {
 			return;
 		}
+
 		learn_press_get_template( 'content-quiz/result.php' );
 	}
 }
@@ -777,9 +786,21 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 				return;
 			}
 
+			/**
+			 * Show explanation of question if
+			 * 1. Click check answer check button (Option 'Show Check Answer' value > 1)
+			 * OR
+			 * 2. Question answered is true
+			 * OR
+			 * 3. Option 'Review Questions' enable
+			 * AND
+			 * 3.1 can't not retake OR Option 'Show Correct Answer' enable
+			 */
 			if ( $user_quiz->has_checked_question( $question->get_id() ) ||
 				$user_quiz->is_answered_true( $question->get_id() ) ||
-				( learn_press_is_review_questions() && ! $user->can_retake_quiz( $quiz->get_id(), $course->get_id() ) ) ) {
+				( learn_press_is_review_questions() &&
+					( ! $user->can_retake_quiz( $quiz->get_id(), $course->get_id() ) ||
+						$quiz->get_show_result() ) ) ) {
 				learn_press_get_template( 'content-question/explanation.php', array( 'question' => $question ) );
 			}
 		}
@@ -1095,30 +1116,30 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 		}
 		?>
 		<style type="text/css">
-			html, body {
-				overflow: hidden;
-			}
+            html, body {
+                overflow: hidden;
+            }
 
-			body.course-item-popup #learn-press-course-curriculum {
-				position: fixed;
-				top: 60px;
-				bottom: 0;
-				left: 0;
-				background: #FFF;
-				border-right: 1px solid #DDD;
-				overflow: auto;
-				z-index: 9999;
-			}
+            body.course-item-popup #learn-press-course-curriculum {
+                position: fixed;
+                top: 60px;
+                bottom: 0;
+                left: 0;
+                background: #FFF;
+                border-right: 1px solid #DDD;
+                overflow: auto;
+                z-index: 9999;
+            }
 
-			body.course-item-popup #learn-press-content-item {
-				position: fixed;
-				z-index: 9999;
-				background: #FFF;
-				top: 60px;
-				right: 0;
-				bottom: 0;
-				overflow: visible;
-			}
+            body.course-item-popup #learn-press-content-item {
+                position: fixed;
+                z-index: 9999;
+                background: #FFF;
+                top: 60px;
+                right: 0;
+                bottom: 0;
+                overflow: visible;
+            }
 		</style>
 		<?php
 	}

@@ -232,16 +232,16 @@ add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_
 add_action( 'learn-press/course-section-item/before-lp_lesson-meta', 'learn_press_item_meta_duration', 5 );
 
 /**
- * @see learn_press_content_item_summary_title
- * @see learn_press_content_item_summary_content
+ * @see learn_press_content_item_quiz_title
+ * @see learn_press_content_item_quiz_intro
  */
 add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_quiz_title', 5 );
 add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_quiz_intro', 10 );
 
 /**
- * @see learn_press_content_item_summary_quiz_content
  * @see learn_press_content_item_summary_quiz_progress
  * @see learn_press_content_item_summary_quiz_result
+ * @see learn_press_content_item_summary_quiz_content
  * @see learn_press_content_item_summary_quiz_countdown
  * @see learn_press_content_item_summary_quiz_question
  *

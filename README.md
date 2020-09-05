@@ -29,7 +29,7 @@ With BuddyPress support, LearnPress will help you to communicate with your stude
 *LearnPress provide a bunch of add-on*  
 Add-on is used to providing extra features for LearnPress and you can also write it.  
 
-<a href="http://docs.thimpress.com/learnpress" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
+<a href="http://docspress.thimpress.com/learnpress" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
 
 **LearnPress is free and always will be**  
 Education should be free and we want you to bring it to as many people as you can. Therefore, we create LearnPress as a tool for you to create course and share it. We'll continue developing it as long as we can and make it better and better.  
@@ -112,7 +112,7 @@ Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress
 LearnPress is a plugin to create a LMS website, to spread out course, or sell course.  
 
 **Where can I find LearnPress documentation and user guides?**  
-If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="http://docs.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>  
+If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="http://docspress.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>  
 And if you want to extending or theming LearnPress, see our <a href="https://github.com/LearnPress/LearnPress/wiki">Wiki</a>  
 
 **Where can I get support or talk to other users?**  
@@ -136,7 +136,7 @@ Yes, you can and we appreciate it. Join in our <a href="https://github.com/Learn
 https://www.transifex.com/projects/p/learnpress/  
 
 **Other note**  
-<a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  
+<a href="http://docspress.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  
 
 ##For DEVs
 1. <code>git clone https://github.com/LearnPress/learnpress.git</code>  

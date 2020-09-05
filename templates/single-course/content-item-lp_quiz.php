@@ -21,8 +21,8 @@ $quiz = LP_Global::course_item_quiz();
 
 	<?php
 	/**
-	 * @see learn_press_content_item_summary_title()
-	 * @see learn_press_content_item_summary_content()
+	 * @see learn_press_content_item_quiz_title()
+	 * @see learn_press_content_item_quiz_intro()
 	 */
 	do_action( 'learn-press/before-content-item-summary/' . $quiz->get_item_type() );
 

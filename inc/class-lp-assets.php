@@ -39,15 +39,20 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles() {
-		return apply_filters(
-			'learn-press/frontend-default-styles',
-			array(
-				//'font-awesome'     => self::url( 'css/font-awesome.min.css' ),
+
+		if ( LP_DEBUG_STATUS ) {
+			$styles = array(
 				'learn-press-bundle' => ( $url = $this->get_bundle_css_url() ) ? $url : self::url( 'css/bundle.min.css' ),
 				'learn-press'        => self::url( 'css/learnpress.css' ),
-				//'jquery-scrollbar' => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.css' )
-			)
-		);
+			);
+		} else {
+			$styles = array(
+				'learn-press-bundle' => ( $url = $this->get_bundle_css_url() ) ? $url : self::url( 'css/bundle.min.css' ),
+				'learn-press'        => self::url( 'css/learnpress.min.css' ),
+			);
+		}
+
+		return apply_filters( 'learn-press/frontend-default-styles', $styles );
 	}
 
 	public function _get_script_data() {
@@ -103,31 +108,31 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-//				'watchjs'          => self::url( 'js/vendor/watch.js' ),
-//				'jalerts'          => self::url( 'js/vendor/jquery.alert.js' ),
-//				'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
-//				'lp-vue'           => array(
-//					'url' => self::url( 'js/vendor/vue.min.js' ),
-//					'ver' => '2.5.16'
-//				),
+				//				'watchjs'          => self::url( 'js/vendor/watch.js' ),
+				//				'jalerts'          => self::url( 'js/vendor/jquery.alert.js' ),
+				//				'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
+				//				'lp-vue'           => array(
+				//					'url' => self::url( 'js/vendor/vue.min.js' ),
+				//					'ver' => '2.5.16'
+				//				),
 				'lp-plugins-all'   => array(
 					'url' => ( $url = $this->get_all_plugins_url( $min ) ) ? $url : self::url( 'js/vendor/plugins.all' . $min . '.js' ),
 				),
-//				'lp-vue-plugins'    => array(
-//					'url'  => self::url( 'js/vendor/vue-plugins' . $min . '.js' ),
-//					'ver'  => '3.1.0',
-//					'deps' => array( 'lp-vue' )
-//				),
-//				'lp-jquery-plugins' => array(
-//					'url'  => self::url( 'js/vendor/jquery-plugins' . $min . '.js' ),
-//					'ver'  => '3.1.0',
-//					'deps' => array( 'jquery' )
-//				),
-//				'lp-vue-resource'  => array(
-//					'url'     => self::url( 'js/vendor/vue-resource.js' ),
-//					'ver'     => '1.3.4',
-//					'enqueue' => false
-//				),
+				//				'lp-vue-plugins'    => array(
+				//					'url'  => self::url( 'js/vendor/vue-plugins' . $min . '.js' ),
+				//					'ver'  => '3.1.0',
+				//					'deps' => array( 'lp-vue' )
+				//				),
+				//				'lp-jquery-plugins' => array(
+				//					'url'  => self::url( 'js/vendor/jquery-plugins' . $min . '.js' ),
+				//					'ver'  => '3.1.0',
+				//					'deps' => array( 'jquery' )
+				//				),
+				//				'lp-vue-resource'  => array(
+				//					'url'     => self::url( 'js/vendor/vue-resource.js' ),
+				//					'ver'     => '1.3.4',
+				//					'enqueue' => false
+				//				),
 				'global'           => array(
 					'url'  => self::url( 'js/global' . $min . '.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils' )
@@ -137,10 +142,10 @@ class LP_Assets extends LP_Abstract_Assets {
 					'deps'    => array( 'jquery' ),
 					'screens' => '*'
 				),
-//				'jquery-scrollbar' => array(
-//					'url'  => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.js' ),
-//					'deps' => array( 'jquery' )
-//				),
+				//				'jquery-scrollbar' => array(
+				//					'url'  => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.js' ),
+				//					'deps' => array( 'jquery' )
+				//				),
 				'learnpress'       => array(
 					'url'  => self::url( 'js/frontend/learnpress' . $min . '.js' ),
 					'deps' => array( 'global' )
@@ -157,7 +162,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'quiz'             => array(
 					'url'     => self::url( 'js/frontend/quiz.js' ),
-					'deps'    => array( 'global'),//, 'jquery-scrollbar', 'watchjs' ),
+					'deps'    => array( 'global' ),//, 'jquery-scrollbar', 'watchjs' ),
 					'enqueue' => LP_Global::course_item_quiz() ? true : false
 				),
 				'profile-user'     => array(
@@ -172,12 +177,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					'enqueue' => learn_press_is_profile()
 				),
-//				'jquery-scrollto'   => array(
-//					'url'  => self::url( 'js/vendor/jquery.scrollTo.js' ),
-//					'deps' => array(
-//						'jquery'
-//					)
-//				),
+				//				'jquery-scrollto'   => array(
+				//					'url'  => self::url( 'js/vendor/jquery.scrollTo.js' ),
+				//					'deps' => array(
+				//						'jquery'
+				//					)
+				//				),
 				'become-a-teacher' => array(
 					'url'  => self::url( 'js/frontend/become-teacher.js' ),
 					'deps' => array(
