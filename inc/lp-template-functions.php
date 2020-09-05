@@ -788,13 +788,14 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 
 			/**
 			 * Show explanation of question if
+			 *
 			 * 1. Click check answer check button (Option 'Show Check Answer' value > 1)
 			 * OR
 			 * 2. Question answered is true
 			 * OR
 			 * 3. Option 'Review Questions' enable
 			 * AND
-			 * 3.1 can't not retake OR Option 'Show Correct Answer' enable
+			 * 3.1. Not retake OR Option 'Show Correct Answer' enable
 			 */
 			if ( $user_quiz->has_checked_question( $question->get_id() ) ||
 				$user_quiz->is_answered_true( $question->get_id() ) ||

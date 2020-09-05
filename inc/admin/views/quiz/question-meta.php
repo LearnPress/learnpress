@@ -4,6 +4,12 @@
  *
  * @since 3.0.0
  */
+
+$des_explanation = __( 'Explain why an option is true and other is false.', 'learnpress' );
+$des_explanation .= __( 'The text will be shown when:', 'learnpress' );
+$des_explanation .= sprintf('<br/> %s', __( '- User click on \'Check answer\' button.', 'learnpress' ));
+$des_explanation .= sprintf('<br/> %s', __( '- Answered question correct.', 'learnpress' ));
+$des_explanation .= sprintf('<br/> %s', __( '- Option \'Show Correct Answer\' is enable', 'learnpress' ));
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-meta">
@@ -48,7 +54,7 @@
                                              class="rwmb-textarea large-text"
                                              @change="updateMeta"
                                              v-model="question.settings.explanation"></textarea>
-                                <p class="description"><?php _e( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ); ?></p>
+                                <p class="description"><?php echo $des_explanation; ?></p>
                             </div>
                         </div>
                     </div>

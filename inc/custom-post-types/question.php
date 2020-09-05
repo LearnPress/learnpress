@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			$this->add_map_method( 'before_delete', 'before_delete_question' )
-			     ->add_map_method( 'save', 'save_question' );
+				->add_map_method( 'save', 'save_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -53,11 +53,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add filters to lesson view.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $views
 		 *
 		 * @return mixed
+		 * @since 3.0.0
+		 *
 		 */
 		public function views_pages( $views ) {
 			$unassigned_items = learn_press_get_unassigned_questions();
@@ -225,9 +225,10 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Remove question from quiz items.
 		 *
+		 * @param $question_id
+		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
 		 */
 		public function before_delete_question( $question_id ) {
 			// question curd
@@ -239,9 +240,10 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add default answer when save new question action.
 		 *
+		 * @param $question_id
+		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
 		 */
 		public function save_question( $question_id ) {
 			if ( get_post_status( $question_id ) == 'auto-draft' ) {
@@ -289,6 +291,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public static function settings_meta_box() {
+
+			$des_explanation = __( 'Explain why an option is true and other is false.', 'learnpress' );
+			$des_explanation .= __( 'The text will be shown when:', 'learnpress' );
+			$des_explanation .= sprintf( '<br/> %s', __( '- User click on \'Check answer\' button.', 'learnpress' ) );
+			$des_explanation .= sprintf( '<br/> %s', __( '- Answered question correct.', 'learnpress' ) );
+			$des_explanation .= sprintf( '<br/> %s', __( '- Option \'Show Correct Answer\' is enable', 'learnpress' ) );
+
 			$meta_box = array(
 				'id'     => 'question_settings',
 				'title'  => __( 'Settings', 'learnpress' ),
@@ -307,7 +316,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'name' => __( 'Question Explanation', 'learnpress' ),
 						'id'   => '_lp_explanation',
 						'type' => 'textarea',
-						'desc' => __( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
+						'desc' => $des_explanation,
 						'std'  => null
 					),
 					array(
@@ -326,19 +335,19 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add columns to admin manage question page
 		 *
-		 * @param  array $columns
+		 * @param array $columns
 		 *
 		 * @return array
 		 */
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'author' => __( 'Author', 'learnpress' ),
+				'author'    => __( 'Author', 'learnpress' ),
 				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
 				'type'      => __( 'Type', 'learnpress' )
 			);
 
-			if ( false !== $pos && !array_key_exists( LP_QUIZ_CPT, $columns ) ) {
+			if ( false !== $pos && ! array_key_exists( LP_QUIZ_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					$new_columns,
@@ -473,8 +482,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['author'] = 'author';
-			$columns[LP_QUIZ_CPT] = 'quiz-name';
+			$columns['author']      = 'author';
+			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
+
 			return $columns;
 		}
 
