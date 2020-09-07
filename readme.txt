@@ -201,6 +201,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 3.2.7.7 =
+~ Add Evaluate via questions
+~ Add Evaluate via mark
+
+= 3.2.7.6 =
+~ Fix missing file class-lp-course-database.php
+
 = 3.2.7.5 =
 ~ Fixed run Elementor with question.
 ~ Fixed lesson preview not show button complete when user enrolled.
