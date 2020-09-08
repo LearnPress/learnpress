@@ -405,4 +405,3 @@
 /***/ })
 
 /******/ });
-//# sourceMappingURL=statistic.js.map

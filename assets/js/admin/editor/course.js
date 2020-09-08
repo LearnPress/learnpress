@@ -1045,4 +1045,3 @@ var $ = jQuery;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=course.js.map

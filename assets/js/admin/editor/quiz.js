@@ -1169,4 +1169,3 @@ var Quiz = function Quiz(data) {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=quiz.js.map

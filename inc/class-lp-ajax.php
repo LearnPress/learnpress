@@ -341,6 +341,56 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				exit();
 			}
 		}
+
+		public static function recover_order() {
+			if ( ! LP_Request::verify_nonce( 'recover-order' ) ) {
+				return;
+			}
+
+			$factory   = LP_Factory::get_order_factory();
+			$user_id   = get_current_user_id();
+			$order_key = LP_Request::get_string( 'order-key' );
+			$order     = $factory->recover( $order_key, $user_id );
+			$result    = array( 'result' => 'success' );
+
+			if ( is_wp_error( $order ) ) {
+				$result['message'] = $order->get_error_message();
+				$result['result']  = 'error';
+			} else {
+				$result['message']  = sprintf( __( 'The order %s has been successfully recovered.', 'learnpress' ), $order_key );
+				$result['redirect'] = $order->get_view_order_url();
+			}
+
+			$result = apply_filters( 'learn-press/order/recover-result', $result, $order_key, $user_id );
+
+			learn_press_maybe_send_json( $result );
+
+			if ( ! empty( $result['message'] ) ) {
+				learn_press_add_message( $result['message'] );
+			}
+
+			if ( ! empty( $result['redirect'] ) ) {
+				wp_redirect( $result['redirect'] );
+				exit();
+			}
+		}
+
+		public static function checkout_user_email_exists() {
+			$email    = LP_Request::get_email( 'email' );
+			$response = array(
+				'exists' => 0
+			);
+
+			if ( $user = get_user_by( 'email', $email ) ) {
+				$response['exists'] = $email;
+			}
+
+			if ( $waiting_payment = LP()->checkout()->get_user_waiting_payment() ) {
+				$response['waiting_payment'] = $waiting_payment;
+			}
+
+			learn_press_maybe_send_json( $response );
+		}
 	}
 }
 // Call class

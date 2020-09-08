@@ -1119,4 +1119,3 @@ $(document).ready(onReady);
 /***/ })
 
 /******/ });
-//# sourceMappingURL=learnpress.js.map

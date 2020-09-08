@@ -179,12 +179,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		global $wpdb;
 		$meta_ids = array_keys( $item_ids );
 		$format   = array_fill( 0, sizeof( $meta_ids ), '%d' );
-		$sql      = $wpdb->prepare(
-			"
-			SELECT *
-			FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ')
-		',
+		$sql      = $wpdb->prepare( "
+			SELECT * FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ')',
 			$meta_ids
 		);
 
