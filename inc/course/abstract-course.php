@@ -47,22 +47,23 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @var array
 		 */
 		protected $_data = array(
-			'status'               => '',
-			'require_enrollment'   => '',
-			'price'                => '',
-			'sale_price'           => '',
-			'sale_start'           => '',
-			'sale_end'             => '',
-			'duration'             => 0,
-			'max_students'         => 0,
-			'students'             => 0,
-			'retake_count'         => 0,
-			'featured'             => '',
-			'block_lesson_content' => '',
-			'course_result'        => '',
-			'passing_conditional'  => '',
-			'external_link'        => '',
-			'payment'              => ''
+			'status'                     => '',
+			'require_enrollment'         => '',
+			'price'                      => '',
+			'sale_price'                 => '',
+			'sale_start'                 => '',
+			'sale_end'                   => '',
+			'duration'                   => 0,
+			'max_students'               => 0,
+			'students'                   => 0,
+			'retake_count'               => 0,
+			'featured'                   => '',
+			'block_lesson_content'       => '',
+			'block_course_item_duration' => '',
+			'course_result'              => '',
+			'passing_conditional'        => '',
+			'external_link'              => '',
+			'payment'                    => ''
 		);
 
 		protected $_loaded = false;
@@ -117,25 +118,26 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$post_object = get_post( $id );
 			$this->_set_data(
 				array(
-					'status'               => $post_object->post_status,
-					'required_enroll'      => get_post_meta( $id, '_lp_required_enroll', true ),
-					'price'                => get_post_meta( $id, '_lp_price', true ),
-					'sale_price'           => get_post_meta( $id, '_lp_sale_price', true ),
-					'sale_start'           => get_post_meta( $id, '_lp_sale_start', true ),
-					'sale_end'             => get_post_meta( $id, '_lp_sale_end', true ),
-					'duration'             => get_post_meta( $id, '_lp_duration', true ),
-					'max_students'         => get_post_meta( $id, '_lp_max_students', true ),
-					'students'             => false,
-					'fake_students'        => get_post_meta( $id, '_lp_students', true ),
-					'retake_count'         => get_post_meta( $id, '_lp_retake_count', true ),
-					'featured'             => get_post_meta( $id, '_lp_featured', true ),
-					'block_lesson_content' => get_post_meta( $id, '_lp_block_lesson_content', true ),
-					'course_result'        => get_post_meta( $id, '_lp_course_result', true ),
-					'passing_condition'    => get_post_meta( $id, '_lp_passing_condition', true ),
-					'payment'              => get_post_meta( $id, '_lp_payment', true ),
-					'final_quiz'           => get_post_meta( $id, '_lp_final_quiz', true ),
-					'external_link'        => get_post_meta( $id, '_lp_external_link_buy_course', true ),
-					'external_link_text'   => get_post_meta( $id, '_lp_external_link_text', true ),
+					'status'                     => $post_object->post_status,
+					'required_enroll'            => get_post_meta( $id, '_lp_required_enroll', true ),
+					'price'                      => get_post_meta( $id, '_lp_price', true ),
+					'sale_price'                 => get_post_meta( $id, '_lp_sale_price', true ),
+					'sale_start'                 => get_post_meta( $id, '_lp_sale_start', true ),
+					'sale_end'                   => get_post_meta( $id, '_lp_sale_end', true ),
+					'duration'                   => get_post_meta( $id, '_lp_duration', true ),
+					'max_students'               => get_post_meta( $id, '_lp_max_students', true ),
+					'students'                   => false,
+					'fake_students'              => get_post_meta( $id, '_lp_students', true ),
+					'retake_count'               => get_post_meta( $id, '_lp_retake_count', true ),
+					'featured'                   => get_post_meta( $id, '_lp_featured', true ),
+					'block_lesson_content'       => get_post_meta( $id, '_lp_block_lesson_content', true ),
+					'block_course_item_duration' => get_post_meta( $id, '_lp_block_course_item_duration_content', true ),
+					'course_result'              => get_post_meta( $id, '_lp_course_result', true ),
+					'passing_condition'          => get_post_meta( $id, '_lp_passing_condition', true ),
+					'payment'                    => get_post_meta( $id, '_lp_payment', true ),
+					'final_quiz'                 => get_post_meta( $id, '_lp_final_quiz', true ),
+					'external_link'              => get_post_meta( $id, '_lp_external_link_buy_course', true ),
+					'external_link_text'         => get_post_meta( $id, '_lp_external_link_text', true ),
 				)
 			);
 		}
@@ -1484,6 +1486,17 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * Return TRUE if option to block course's items after course is exceeded turn on.
+		 *
+		 * @return bool
+		 * @since  3.2.7.7
+		 * @author hungkv
+		 */
+		public function is_block_item_content_duration() {
+			return $this->get_data( 'block_course_item_duration' ) === 'yes';
+		}
+
+		/**
 		 * Calculate results of course by final quiz
 		 *
 		 * @param int     $user_id
@@ -1828,6 +1841,30 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return compact( 'type_items', 'section_items', 'course_sections' );
+		}
+
+		/**
+		 * Checks if this course has expired
+		 *
+		 * @param int $user_id
+		 * @param mixed
+		 *
+		 * @return mixed
+		 * @author hungkv
+		 * @since  3.2.7.7
+		 */
+		public function expires_to_milliseconds( $user_id = 0, $args = array() ) {
+			settype( $args, 'array' );
+
+			if ( ! $user_id ) {
+				$user_id = get_current_user_id();
+			}
+			$user           = learn_press_get_user( $user_id );
+			$expired        = ( $user->get_course_remaining_time_timestamp( $this->get_id(), $args ) );
+			$ms             = $expired * 1000;
+			$duration_value = number_format( $ms, 0, '.', '' );
+
+			return apply_filters( 'expires_to_milliseconds', $duration_value !== false ? $duration_value : false );
 		}
 	}
 }

@@ -2818,5 +2818,27 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			return null;
 		}
+
+		/**
+		 * Get the remaining time of a course for the user (timestamp).
+		 *
+		 * @param int $course_id
+		 *
+		 * @return bool|int|string
+		 * @since  3.2.7.7
+		 * @author hungkv
+		 */
+		public function get_course_remaining_time_timestamp( $course_id = 0 ) {
+			$course = learn_press_get_course( $course_id );
+			$remain = false;
+
+			if ( $course && $course->get_id() ) {
+				if ( $course_data = $this->get_course_data( $course_id, true ) ) {
+					$remain = $course_data->is_exceeded();
+				}
+			}
+
+			return $remain > 0 ? $remain : false;
+		}
 	}
 }

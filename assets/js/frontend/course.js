@@ -547,18 +547,26 @@
     }
 
 
-    $(document).ready(function () {
-        $(document).ready(function () {
-            new LP_Course({});
+	$(document).ready(function () {
+		new LP_Course({});
 
-            $(this).on('submit', 'form[name="course-external-link"]', function () {
-                var redirect = $(this).attr('action');
-                if (redirect) {
-                    window.location.href = redirect;
-                    return false;
-                }
-            })
-        });
-    });
+		$(this).on('submit', 'form[name="course-external-link"]', function () {
+			var redirect = $(this).attr('action');
+			if (redirect) {
+				window.location.href = redirect;
+				return false;
+			}
+		});
+
+		// Reload course page when course duration expired
+		var course_item_html = $('.course-item-is-blocked'),
+			course_item_value = course_item_html.val();
+
+		if (course_item_html.length) {
+			setTimeout(function () {
+				window.location.reload(true)
+			}, course_item_value);
+		}
+	});
 })
 (jQuery, LP, _);
