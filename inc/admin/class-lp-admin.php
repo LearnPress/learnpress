@@ -60,6 +60,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			// Set link item course when edit on Backend | tungnx
 			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
+
+			add_filter( 'preview_post_link', array( $this, 'set_link_preview_item_course' ), 11, 2 );
 		}
 
 		/**
@@ -909,6 +911,25 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $post_link;
+		}
+
+		public function set_link_preview_item_course($preview_link, $post) {
+			if ( ! in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
+				return $preview_link;
+			}
+
+			$course            = null;
+			$course_id_of_item = LP_Course_DB::getInstance()->learn_press_get_item_course( $post->ID );
+
+			if ( $course_id_of_item ) {
+				$course = learn_press_get_course( $course_id_of_item );
+
+				if ( $course ) {
+					$preview_link = $course->get_item_link( $post->ID );
+				}
+			}
+
+			return $preview_link;
 		}
 
 		/**

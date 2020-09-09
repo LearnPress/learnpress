@@ -204,6 +204,9 @@ https://www.transifex.com/projects/p/learnpress/
 = 3.2.7.7 =
 ~ Add Evaluate via questions
 ~ Add Evaluate via mark
+~ Fixed duration expire course
+~ Fixed link 'Preview change' button when edit item course
+~ Fixed title of course archive page
 
 = 3.2.7.6 =
 ~ Fix missing file class-lp-course-database.php

@@ -344,7 +344,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return float|int|mixed
 	 */
 	public function get_questions_answered( $percent = false ) {
-		$result = $this->get_results();
+		$result = $this->get_results('');
 		$return = 0;
 
 		if ( $result ) {

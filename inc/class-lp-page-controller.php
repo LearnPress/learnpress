@@ -50,6 +50,19 @@ class LP_Page_Controller {
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+		add_filter( 'pre_get_document_title', array( $this, 'title_course_archive_page' ), 11, 1 );
+	}
+
+	public function title_course_archive_page( $title ) {
+		global $wp_query;
+
+		$course_archive_page_id = LP()->settings()->get( 'courses_page_id', 0 );
+
+		if ( ! empty( $course_archive_page_id ) && $course_archive_page_id == $wp_query->post->ID ) {
+			$title = get_the_title( $course_archive_page_id ) . ' - ' . get_bloginfo();
+		}
+
+		return $title;
 	}
 
 	public function maybe_redirect_quiz( $template ) {
