@@ -1323,6 +1323,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$view   = false;
 			$course = learn_press_get_course( $course_id );
 
+			if ( ! $course ) {
+				return $view;
+			}
+
 			if ( ! $course_id ) {
 				$course_id = $course->get_id();
 			}
@@ -1330,7 +1334,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			// get item (quiz, assignment, v.v...)
 			$item = $course->get_item( $item_id );
 
-			if ( $course && $course->is_publish() && $item ) {
+			if ( $course->is_publish() && $item ) {
 				$is_enrolled = $this->has_course_access_level( array( LP_COURSE_ACCESS_LEVEL_60, LP_COURSE_ACCESS_LEVEL_70 ), $course_id, 'any' );
 
 				if ( $is_enrolled ) {
@@ -1348,6 +1352,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				} elseif ( $this->is_author_of( $item_id ) ) {
 					$view = 'author';
 				}
+			} elseif ( $this->is_admin() ) {
+				$view = 'admin';
+			} elseif ( $this->is_author_of( $item_id ) ) {
+				$view = 'author';
 			}
 
 			return apply_filters( 'learn-press/can-view-item', $view, $item_id, $this->get_id(), $course_id );
