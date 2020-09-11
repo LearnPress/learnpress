@@ -77,7 +77,7 @@ class LP_Reset_Data {
 			if ( $parents ) {
 				foreach ( $parents as $parent ) {
 					if ( $retaken_items = learn_press_get_user_item_meta( $parent->parent, '_retaken_items', true ) ) {
-						if ( !isset( $retaken_items[ $parent->item_id ] ) ) {
+						if ( ! isset( $retaken_items[ $parent->item_id ] ) ) {
 							continue;
 						}
 
@@ -104,10 +104,16 @@ class LP_Reset_Data {
 
 		$s     = LP_Request::get_string( 's' );
 		$where = '';
-		if ( $ids = LP_Preview_Course::get_preview_courses() ) {
+
+		/**
+		 * @editor     tungnx
+		 * @reason     not use
+		 * @deprecated 3.2.7.7
+		 */
+		/*if ( $ids = LP_Preview_Course::get_preview_courses() ) {
 			$format = array_fill( 0, sizeof( $ids ), '%d' );
 			$where  = $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ") ", $ids );
-		}
+		}*/
 		$query = $wpdb->prepare( "
 			SELECT ID as id, post_title AS title, 'students', '' AS status
 			FROM {$wpdb->posts}

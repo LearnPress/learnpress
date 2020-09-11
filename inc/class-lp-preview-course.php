@@ -126,7 +126,7 @@ class LP_Preview_Course {
 				return;
 			}
 
-			$post_course    = get_post( $preview_course );
+			$post_course = get_post( $preview_course );
 
 			$post              = wp_cache_get( self::$_preview_course, 'posts' );
 			$post->post_status = 'publish';
@@ -250,4 +250,9 @@ class LP_Preview_Course {
 
 }
 
-LP_Preview_Course::init();
+/**
+ * @editor     tungnx
+ * @deprecated 3.2.7.7
+ * @reason     not use
+ */
+//LP_Preview_Course::init();

@@ -39,8 +39,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
+			/**
+			 * @editor tungnx
+			 * Comment code
+			 * @since  3.2.7.7
+			 */
 			// hide View Quiz link if not assigned to Course
-			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link' ) );
+			//add_action( 'admin_footer', array( $this, 'hide_view_quiz_link' ) );
+
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 			add_action( 'edit_form_after_editor', array( $this, 'template_quiz_editor' ) );
 
@@ -53,11 +59,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		/**
 		 * Add filters to lesson view.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $views
 		 *
 		 * @return mixed
+		 * @since 3.0.0
+		 *
 		 */
 		public function views_pages( $views ) {
 			$unassigned_items = learn_press_get_unassigned_items( LP_QUIZ_CPT );
@@ -198,9 +204,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		/**
 		 * Delete all questions assign to quiz.
 		 *
+		 * @param $post_id
+		 *
 		 * @since 3.0.0
 		 *
-		 * @param $post_id
 		 */
 		public function before_delete_quiz( $post_id ) {
 			if ( get_post_type( $post_id ) !== LP_QUIZ_CPT ) {
@@ -357,7 +364,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		/**
 		 * Add columns to admin manage quiz page
 		 *
-		 * @param  array $columns
+		 * @param array $columns
 		 *
 		 * @return array
 		 */
@@ -391,7 +398,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;
@@ -552,6 +559,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		/**
 		 * Hide View Quiz link if not assigned to Course.
+		 *
+		 * @editor     tungnx
+		 * @deprecated 3.2.7.7
+		 * @todo       remove method after 3.2.7.7
 		 */
 		public function hide_view_quiz_link() {
 			$current_screen = get_current_screen();
@@ -561,22 +572,16 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 			if ( $current_screen->id === LP_QUIZ_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				?>
-                <style type="text/css">
-                    #wp-admin-bar-view {
-                        display: none;
-                    }
+				<style type="text/css">
 
-                    #sample-permalink a {
-                        pointer-events: none;
-                        cursor: default;
-                        text-decoration: none;
-                        color: #666;
-                    }
 
-                    #preview-action {
-                        display: none;
-                    }
-                </style>
+					#sample-permalink a {
+						pointer-events: none;
+						cursor: default;
+						text-decoration: none;
+						color: #666;
+					}
+				</style>
 				<?php
 			}
 		}

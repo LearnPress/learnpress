@@ -61,6 +61,26 @@ class LP_Database {
 
 		return $this->wpdb->get_col( $query );
 	}
+
+	/**
+	 * Get post by post_type and slug
+	 *
+	 * @param string $post_type
+	 * @param string $slug
+	 *
+	 * @return string
+	 */
+	public function getPostAuthorByTypeAndSlug( $post_type = '', $slug = '' ) {
+		$query = $this->wpdb->prepare( "
+			SELECT post_author FROM $this->tb_posts
+			WHERE post_type = %s
+			AND post_name = %s",
+			$post_type,
+			$slug
+		);
+
+		return $this->wpdb->get_var( $query );
+	}
 }
 
 LP_Database::getInstance();

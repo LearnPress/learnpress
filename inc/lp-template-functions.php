@@ -877,7 +877,25 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) 
 		if ( ! $quiz->get_viewing_question() ) {
 			return;
 		}
-		learn_press_get_template( 'content-quiz/question-numbers.php' );
+
+		$questions = $quiz->get_questions();
+
+		if ( ! $questions ) {
+			return;
+		}
+
+		$questions = array_values( $questions );
+
+		if ( count( $questions ) < 2 ) {
+			return;
+		}
+
+		$args = array(
+			'quiz'      => $quiz,
+			'questions' => $questions
+		);
+
+		learn_press_get_template( 'content-quiz/question-numbers.php', $args );
 	}
 }
 
@@ -1117,30 +1135,30 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 		}
 		?>
 		<style type="text/css">
-            html, body {
-                overflow: hidden;
-            }
+			html, body {
+				overflow: hidden;
+			}
 
-            body.course-item-popup #learn-press-course-curriculum {
-                position: fixed;
-                top: 60px;
-                bottom: 0;
-                left: 0;
-                background: #FFF;
-                border-right: 1px solid #DDD;
-                overflow: auto;
-                z-index: 9999;
-            }
+			body.course-item-popup #learn-press-course-curriculum {
+				position: fixed;
+				top: 60px;
+				bottom: 0;
+				left: 0;
+				background: #FFF;
+				border-right: 1px solid #DDD;
+				overflow: auto;
+				z-index: 9999;
+			}
 
-            body.course-item-popup #learn-press-content-item {
-                position: fixed;
-                z-index: 9999;
-                background: #FFF;
-                top: 60px;
-                right: 0;
-                bottom: 0;
-                overflow: visible;
-            }
+			body.course-item-popup #learn-press-content-item {
+				position: fixed;
+				z-index: 9999;
+				background: #FFF;
+				top: 60px;
+				right: 0;
+				bottom: 0;
+				overflow: visible;
+			}
 		</style>
 		<?php
 	}

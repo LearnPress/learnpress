@@ -45,9 +45,9 @@ class LP_Query {
 	/**
 	 * This function is cloned from wp core function
 	 *
+	 * @return string
 	 * @see WP()->parse_request()
 	 *
-	 * @return string
 	 */
 	public function get_request() {
 		global $wp_rewrite;
@@ -228,7 +228,7 @@ class LP_Query {
 
 			if ( ! empty( $pll_languages ) ) {
 				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
-			}else{
+			} else {
 				$pll_languages = '';
 			}
 
@@ -313,7 +313,12 @@ class LP_Query {
 			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
 		}
 
-		add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
+		/**
+		 * @editor     tungnx
+		 * @reason     not use
+		 * @deprecated 3.2.7.7
+		 */
+		// add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
 	}
 
 	/**
@@ -354,13 +359,17 @@ class LP_Query {
 	/**
 	 * Exclude 'Preview course' from main query.
 	 *
-	 * @since 3.0.0
-	 *
 	 * @param string $where
 	 *
+	 * @editor     tungnx
 	 * @return string
+	 * @deprecated 3.2.7.7
+	 * @reason     not use
+	 *
+	 * @since      3.0.0
+	 *
 	 */
-	public function exclude_preview_course( $where ) {
+	/*public function exclude_preview_course( $where ) {
 		global $wpdb;
 
 		if ( ! is_admin() && learn_press_is_courses() ) {
@@ -371,7 +380,7 @@ class LP_Query {
 		}
 
 		return $where;
-	}
+	}*/
 
 	/**
 	 * @param string $groupby

@@ -207,6 +207,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed duration expire course
 ~ Fixed link 'Preview change' button when edit item course
 ~ Fixed title of course archive page
+~ Fixed if quiz has only one question will not show paginate
 
 = 3.2.7.6 =
 ~ Fix missing file class-lp-course-database.php
