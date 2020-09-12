@@ -93,11 +93,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Log debug data.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param $data
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public static function log( $data ) {
 			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
@@ -124,9 +124,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get default quiz meta.
 		 *
+		 * @return mixed
 		 * @since 3.0.0
 		 *
-		 * @return mixed
 		 */
 		public static function get_default_meta() {
 			$meta = array(
@@ -167,9 +167,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Set quiz retake count.
 		 *
+		 * @param $count
+		 *
 		 * @since 3.0.0
 		 *
-		 * @param $count
 		 */
 		public function set_retake_count( $count ) {
 			$this->_set_data( 'retake_count', $count );
@@ -452,6 +453,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function count_questions() {
 			$size = 0;
+
 			if ( ( $questions = $this->get_questions() ) ) {
 				$size = sizeof( $questions );
 			}
@@ -462,11 +464,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get all question's ids of the quiz.
 		 *
-		 * @since 3.2.0
-		 *
 		 * @param string $context
 		 *
 		 * @return int[]
+		 * @since 3.2.0
+		 *
 		 */
 		public function get_question_ids( $context = 'display' ) {
 
@@ -813,7 +815,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @param  string $quiz_type
+		 * @param string $quiz_type
 		 *
 		 * @return string|false
 		 */
@@ -824,8 +826,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get the lesson class name
 		 *
-		 * @param  WP_Post $the_quiz
-		 * @param  array   $args (default: array())
+		 * @param WP_Post $the_quiz
+		 * @param array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -842,10 +844,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get the quiz object
 		 *
-		 * @param  mixed $the_quiz
+		 * @param mixed $the_quiz
 		 *
-		 * @uses   WP_Post
 		 * @return WP_Post|bool false on failure
+		 * @uses   WP_Post
 		 */
 		private static function get_quiz_object( $the_quiz ) {
 			if ( false === $the_quiz ) {

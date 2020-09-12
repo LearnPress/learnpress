@@ -1467,8 +1467,11 @@ function learn_press_seconds_to_weeks( $secs ) {
 	$weeks = 0;
 	// calculations
 	if ( $secs >= 60 ) {
-		$mins = (int) ( $secs / 60 );
-		$secs = $secs % 60;
+		$mins    = (int) ( $secs / 60 );
+		$message = false;
+	} elseif ( $secs < 60 && $secs > 0 ) {
+		$mins    = 1;
+		$message = true;
 	}
 	if ( $mins >= 60 ) {
 		$hours = (int) ( $mins / 60 );
@@ -1498,7 +1501,11 @@ function learn_press_seconds_to_weeks( $secs ) {
 
 		}
 		if ( $mins ) {
-			$result .= $mins . ' ' . _n( 'minute', 'minutes', $mins, 'learnpress' ) . ' ';
+			if ( $message == false ) {
+				$result .= $mins . ' ' . _n( 'minute', 'minutes', $mins, 'learnpress' ) . ' ';
+			} else {
+				$result .= 'less than a minute';
+			}
 		}
 	}
 	$result = rtrim( $result );

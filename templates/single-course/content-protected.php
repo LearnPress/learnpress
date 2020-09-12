@@ -14,11 +14,11 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( !isset( $can_view_item ) ) {
+if ( ! isset( $can_view_item ) ) {
 	return;
 }
 
-if ( !isset( $block_by_check ) ) {
+if ( ! isset( $block_by_check ) ) {
 	return;
 }
 ?>
@@ -32,10 +32,10 @@ if ( !isset( $block_by_check ) ) {
 		echo apply_filters( 'learn_press_content_item_protected_message',
 			sprintf( __( 'This content is protected, please <a href="%s">login</a> and enroll course to view this content!', 'learnpress' ), learn_press_get_login_url( learn_press_get_current_url() ) ) );
 	} elseif ( $can_view_item == 'is_blocked' ) {
-		if($block_by_check === 'by_duration_expires'){
+		if ( $block_by_check === 'by_duration_expires' ) {
 			echo apply_filters( 'learn_press_content_item_locked_message',
 				__( 'The course duration has run out. You cannot access the content of this course more.', 'learnpress' ) );
-		}else{
+		} else {
 			echo apply_filters( 'learn_press_content_item_locked_message',
 				__( 'This lesson has been locked', 'learnpress' ) );
 		}
