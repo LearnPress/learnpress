@@ -38,6 +38,4 @@ script.sh
 /yarn-error.log
 /yarn.lock
 .gitignore
-.eslintignoge
-.eslintrc
 
