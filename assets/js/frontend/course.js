@@ -561,7 +561,7 @@
 		// Reload course page when course duration expired
 		var course_item_html = $('.course-item-is-blocked'),
 			course_item_value = course_item_html.val();
-		if (course_item_html.length && course_item_value > 2147483647) {
+		if (course_item_html.length && course_item_value < 2147483647) {
 			setTimeout(function () {
 				window.location.reload(true)
 			}, course_item_value);
