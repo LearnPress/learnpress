@@ -8,9 +8,6 @@
  * @extends LP_Question
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
@@ -49,14 +46,14 @@ if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 					'question_answer_id' => - 1,
 					'is_true'            => 'yes',
 					'value'              => 'true',
-					'title'               => __( 'True', 'learnpress' )
+					'title'              => __( 'True', 'learnpress' ),
 				),
 				array(
 					'question_answer_id' => - 2,
 					'is_true'            => 'no',
 					'value'              => 'false',
-					'title'               => __( 'False', 'learnpress' )
-				)
+					'title'              => __( 'False', 'learnpress' ),
+				),
 			);
 
 			return $answers;
@@ -70,9 +67,10 @@ if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 		 * @return array
 		 */
 		public function check( $user_answer = null ) {
-			$return = parent::check();
+			$return  = parent::check();
+			$answers = $this->get_answers();
 
-			if ( $answers = $this->get_answers() ) {
+			if ( $answers ) {
 				foreach ( $answers as $key => $option ) {
 					if ( ( $option['is_true'] == 'yes' ) && ( $option['value'] == $user_answer ) ) {
 						$return['correct'] = true;

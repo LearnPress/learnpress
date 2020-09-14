@@ -9,22 +9,15 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
+
+if ( ! $messages ) {
+	return;
+}
 ?>
 
-<?php if ( ! $messages ) {
-	return;
-} ?>
-
 <ul class="learn-press-message error">
-
-	<?php foreach ( $messages as $message ) { ?>
-
-        <li><?php echo $message; ?></li>
-
-	<?php } ?>
-
+	<?php foreach ( $messages as $message ) : ?>
+		<li><?php echo $message; ?></li>
+	<?php endforeach; ?>
 </ul>

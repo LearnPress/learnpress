@@ -93,8 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-
 (function ($) {
   var _lodash = lodash,
       debounce = _lodash.debounce;
@@ -109,18 +107,20 @@
       $.ajax({
         url: url,
         data: $.extend({}, args || {}),
-        type: 'post',
+        type: 'POST',
         success: function success(response) {
-          var newEl = $(response).contents().find($wrapElement);
+          var newEl = $(response).filter($wrapElement);
 
-          if (newEl.length) {
+          if (newEl.length > 0) {
             $($wrapElement).replaceWith(newEl);
           } else {
-            $($wrapElement).html('');
+            $($wrapElement).html('LearnPress: No Content.');
           }
 
           bindEventCoursesLayout();
-          $.scrollTo($wrapElement);
+          $('html, body').animate({
+            scrollTop: $($wrapElement).offset().top - 100
+          }, 200);
           resolve(newEl);
         },
         error: function error(response) {
@@ -139,9 +139,9 @@
   var searchCourseHandler = debounce(function (event) {
     event.preventDefault();
     fetchCourses({
-      s: $(this).find('input[name="s"]').val()
+      s: $(event.target).val()
     });
-  });
+  }, 300);
   /**
    * Switch layout between Grid and List.
    *
@@ -195,8 +195,7 @@
   };
 
   $(document).ready(function () {
-    bindEventCoursesLayout(); //
-
+    bindEventCoursesLayout();
     selectCoursesLayout();
   });
 })(jQuery);

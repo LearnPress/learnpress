@@ -1,70 +1,66 @@
-import {Component} from '@wordpress/element';
-import {withSelect, withDispatch} from '@wordpress/data';
-import {compose} from '@wordpress/compose';
-import {_x} from '@wordpress/i18n';
+/**
+ * Create Modal popup.
+ * Edit: Use React Hook.
+ *
+ * @author Nhamdv - ThimPress.
+ */
 
 import store from './store';
+import { _x } from '@wordpress/i18n';
+import { useSelect, dispatch } from '@wordpress/data';
 
-class Modal extends Component {
-    confirm = (c) => (event) => {
-        const {
-            confirm
-        } = this.props;
+const Modal = ( { children } ) => {
+	const { show, hide, confirm } = dispatch( 'learnpress/modal' );
 
-        confirm(c);
-    };
+	const isShow = useSelect( ( select ) => {
+		const isOpen = select( 'learnpress/modal' ).isOpen();
+		return isOpen;
+	} );
 
-    render() {
-        const {
-            isShow,
-            message,
-            children
-        } = this.props;
+	const message = useSelect( ( select ) => {
+		const getMessage = select( 'learnpress/modal' ).getMessage();
+		return getMessage;
+	} );
 
-        const styles = {
-            display: isShow ? 'block' : 'none'
-        }
+	const dataConfirm = ( c ) => ( event ) => {
+		confirm( c );
+	};
 
-        return <React.Fragment>
-            <div>
-                <div id="lp-modal-overlay" style={styles}></div>
-                <div id="lp-modal-window" style={styles}>
-                    <div id="lp-modal-content" dangerouslySetInnerHTML={ {__html: message} }></div>
-                    <div id="lp-modal-buttons">
-                    <button className="lp-button modal-button-ok" onClick={ this.confirm('yes') }><span>{ _x('OK', 'button confirm ok', 'learnpress') }</span></button>
-                    <button className="lp-button modal-button-cancel"
-                            onClick={ this.confirm('no') }><span>{ _x('Cancel', 'button confirm cancel', 'learnpress') }</span></button>
-                    </div>
-                </div>
-            </div>
-            {children}
-        </React.Fragment>
-    }
-}
+	const styles = {
+		display: isShow ? 'block' : 'none',
+	};
 
-export default compose([
-    withSelect((select) => {
-        const {
-            isOpen,
-            getMessage
-        } = select('learnpress/modal');
+	return (
+		<>
+			<div>
+				<div id="lp-modal-overlay" style={ styles }></div>
+				<div id="lp-modal-window" style={ styles }>
+					<div id="lp-modal-content" dangerouslySetInnerHTML={ { __html: message } }></div>
+					<div id="lp-modal-buttons">
+						<button className="lp-button modal-button-ok" onClick={ dataConfirm( 'yes' ) }>
+							<span>
+								{ _x(
+									'OK',
+									'button confirm ok',
+									'learnpress'
+								) }
+							</span>
+						</button>
+						<button className="lp-button modal-button-cancel" onClick={ dataConfirm( 'no' ) }>
+							<span>
+								{ _x(
+									'Cancel',
+									'button confirm cancel',
+									'learnpress'
+								) }
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			{ children }
+		</>
+	);
+};
 
-        return {
-            isShow: isOpen(),
-            message: getMessage()
-        }
-    }),
-    withDispatch((dispatch) => {
-        const {
-            show,
-            hide,
-            confirm
-        } = dispatch('learnpress/modal');
-
-        return {
-            show,
-            hide,
-            confirm
-        }
-    })
-])(Modal);
+export default Modal;

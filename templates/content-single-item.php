@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit();
  *
  * @see LP_Template_General::template_header()
  */
-do_action('learn-press/template-header');
+do_action( 'learn-press/template-header' );
 
 /**
  * LP Hook
@@ -37,9 +37,9 @@ do_action( 'learn-press/before-single-item' );
  */
 $show_sidebar = learn_press_cookie_get( 'sidebar-toggle' );
 ?>
-    <div id="popup-course" class="course-summary">
+	<div id="popup-course" class="course-summary">
 
-        <input type="checkbox" id="sidebar-toggle" <?php checked( $show_sidebar, true ); ?> />
+		<input type="checkbox" id="sidebar-toggle" <?php checked( $show_sidebar, true ); ?> />
 
 		<?php
 		/**
@@ -49,7 +49,7 @@ $show_sidebar = learn_press_cookie_get( 'sidebar-toggle' );
 		 */
 		do_action( 'learn-press/single-item-summary' );
 		?>
-    </div>
+	</div>
 <?php
 
 /**
@@ -73,4 +73,4 @@ do_action( 'learn-press/after-single-course' );
  *
  * @see LP_Template_General::template_footer()
  */
-do_action('learn-press/template-footer');
+do_action( 'learn-press/template-footer' );

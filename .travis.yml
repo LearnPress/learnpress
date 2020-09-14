@@ -21,4 +21,5 @@ script:
 
 branches:
   only:
-  - lp-dev
+  - develop
+  - master

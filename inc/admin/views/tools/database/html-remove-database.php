@@ -5,7 +5,7 @@
  * @version 3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+defined( 'ABSPATH' ) || die();
 ?>
 
 <div class="card">

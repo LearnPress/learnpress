@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Clear_Temp_Users' ) ) {
 	/**
@@ -45,13 +43,16 @@ if ( ! class_exists( 'LP_Background_Clear_Temp_Users' ) ) {
 			parent::task( $data );
 
 			if ( ! empty( $data['action'] ) && 'clear_temp_users' == $data['action'] ) {
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
 					DELETE a.*, b.*
 					FROM {$wpdb->prefix}learnpress_user_items a
 					INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b
 					WHERE a.user_item_id = b.learnpress_user_item_id
 					AND a.user_id = %d
-				", $data['users'] );
+				",
+					$data['users']
+				);
 				$wpdb->query( $query );
 			}
 

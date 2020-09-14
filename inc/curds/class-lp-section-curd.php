@@ -236,7 +236,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$query = $wpdb->prepare( "
 			SELECT item_id id
-			FROM {$wpdb->learnpress_section_items} si 
+			FROM {$wpdb->learnpress_section_items} si
 			INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
 			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
 			INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
@@ -268,13 +268,13 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param $sections string[]
 	 *
 	 * @return array
-	 * @since 3.0.0
+	 * @version 4.0.0
 	 *
 	 */
 	public function sort_sections( $sections ) {
 		global $wpdb;
 
-		$current_sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );// LP_Object_Cache::get( 'course-' . $this->course_id, 'learn-press/course-sections' );
+		$current_sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
 		$new_sections     = array();
 
 		$orders = array();
@@ -299,7 +299,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$this->get_section_items( $section_id );
 		}
 
-		//LP_Object_Cache::set( 'course-' . $this->course_id, $new_sections, 'learn-press/course-sections' );
 		LP_Course_Utils::set_cache_db_sections( $this->course_id, $new_sections );
 
 		return $orders;
@@ -495,12 +494,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Update course final item.
 	 *
 	 * @return bool
-	 * @since 3.0.0
+	 * @version 4.0.0
 	 *
 	 */
 	public function update_final_item() {
-
-		$sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );// LP_Object_Cache::get( 'course-' . $this->course_id, 'learn-press/course-sections' );
+		$sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
 
 		if ( ! $sections ) {
 			return false;

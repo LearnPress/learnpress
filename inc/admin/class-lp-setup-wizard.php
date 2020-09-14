@@ -25,8 +25,9 @@ class LP_Setup_Wizard {
 
 		$actions = array(
 			'setup-create-pages' => 'create_pages',
-			'get-price-format'   => 'get_price_format'
+			'get-price-format'   => 'get_price_format',
 		);
+
 		foreach ( $actions as $action => $callback ) {
 			LP_Request::register_ajax( $action, array( $this, $callback ) );
 		}
@@ -54,7 +55,7 @@ class LP_Setup_Wizard {
 	 * Get sample format price
 	 */
 	public static function get_price_format() {
-		LP_Setup_Wizard::instance()->save();
+		self::instance()->save();
 		LP()->settings()->refresh();
 		echo learn_press_format_price( 1234.56, true );
 		die();
@@ -80,7 +81,7 @@ class LP_Setup_Wizard {
 			array(
 				'post_title'  => $page_titles[ $page ],
 				'post_status' => 'publish',
-				'post_type'   => 'page'
+				'post_type'   => 'page',
 			)
 		);
 	}
@@ -134,15 +135,20 @@ class LP_Setup_Wizard {
 		wp_enqueue_script( 'lp-select2', $assets->url( '../inc/libraries/meta-box/js/select2/select2.min.js' ) );
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'js/admin/admin.js' ) );
-		wp_enqueue_script( 'lp-setup', $assets->url( 'js/admin/pages/setup.js' ), array(
-			'learn-press-global',
-			'lp-select2',
-			'lp-admin',
-			'lp-utils'
-		) );
+		wp_enqueue_script(
+			'lp-setup',
+			$assets->url( 'js/admin/pages/setup.js' ),
+			array(
+				'learn-press-global',
+				'lp-select2',
+				'lp-admin',
+				'lp-utils',
+			)
+		);
 		learn_press_admin_view( 'setup/header' );
 		learn_press_admin_view( 'setup/content', array( 'steps' => $this->get_steps() ) );
 		learn_press_admin_view( 'setup/footer' );
+
 		die();
 	}
 
@@ -157,7 +163,6 @@ class LP_Setup_Wizard {
 		$steps    = array( 'payment', 'pages', 'currency', 'emails' );
 
 		if ( ( 'yes' !== LP_Request::get( 'skip' ) ) && in_array( $step, $steps ) ) {
-
 			if ( array_key_exists( 'paypal', $postdata ) ) {
 				update_option( 'learn_press_paypal', $postdata['paypal'] );
 			}
@@ -175,17 +180,15 @@ class LP_Setup_Wizard {
 			}
 
 			if ( array_key_exists( 'emails', $postdata ) ) {
-
 				if ( ! empty( $postdata['emails']['enable'] ) && ( $postdata['emails']['enable'] === 'yes' ) ) {
+					$emails = LP_Emails::instance()->emails;
 
-					if ( $emails = LP_Emails::instance()->emails ) {
+					if ( $emails ) {
 						foreach ( $emails as $email ) {
 							$response[ $email->id ] = $email->enable( true );
 						}
 					}
-
 				}
-
 			}
 		}
 
@@ -203,33 +206,33 @@ class LP_Setup_Wizard {
 			$steps = apply_filters(
 				'learn-press/setup-wizard/steps',
 				array(
-					'welcome'  => array(
+					'welcome'     => array(
 						'title'       => __( 'Welcome', 'learnpress' ),
 						'callback'    => array( $this, 'step_welcome' ),
-						'next_button' => __( 'Run Setup Wizard', 'learnpress' )
+						'next_button' => __( 'Run Setup Wizard', 'learnpress' ),
 					),
-					'pages'    => array(
+					'pages'       => array(
 						'title'    => __( 'Pages', 'learnpress' ),
 						'callback' => array( $this, 'step_pages' ),
 					),
-//					'currency' => array(
-//						'title'            => __( 'Currency', 'learnpress' ),
-//						'callback'         => array( $this, 'step_currency' ),
-//						'back_button'      => false,
-//						'skip_prev_button' => false
-//					),
-					'payment'  => array(
-						'title'    => __( 'Payment', 'learnpress' ),
-						'callback' => array( $this, 'step_payment' )
-					),
-//					'emails'   => array(
-//						'title'    => __( 'Emails', 'learnpress' ),
-//						'callback' => array( $this, 'step_emails' )
-//					),
-					'finish'   => array(
-						'title'    => __( 'Finish', 'learnpress' ),
-						'callback' => array( $this, 'step_finish' )
-					)
+					// 'currency' => array(
+					// 'title'            => __( 'Currency', 'learnpress' ),
+					// 'callback'         => array( $this, 'step_currency' ),
+					// 'back_button'      => false,
+					// 'skip_prev_button' => false
+					// ),
+						'payment' => array(
+							'title'    => __( 'Payment', 'learnpress' ),
+							'callback' => array( $this, 'step_payment' ),
+						),
+					// 'emails'   => array(
+					// 'title'    => __( 'Emails', 'learnpress' ),
+					// 'callback' => array( $this, 'step_emails' )
+					// ),
+						'finish'  => array(
+							'title'    => __( 'Finish', 'learnpress' ),
+							'callback' => array( $this, 'step_finish' ),
+						),
 				)
 			);
 		}
@@ -346,8 +349,8 @@ class LP_Setup_Wizard {
 			'paypal' => array(
 				'name'     => __( 'PayPal', 'learnpress' ),
 				'icon'     => LP()->plugin_url( '/assets/images/paypal-2.png' ),
-				'callback' => array( $this, 'setup_paypal' )
-			)
+				'callback' => array( $this, 'setup_paypal' ),
+			),
 		);
 	}
 
@@ -407,6 +410,4 @@ class LP_Setup_Wizard {
 		return $instance;
 	}
 }
-
-// Init
 return LP_Setup_Wizard::instance();

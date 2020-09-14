@@ -24,12 +24,11 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 */
 		public static function render_fields( $fields ) {
 			foreach ( $fields as $field ) {
-				// except heading options
 				if ( isset( $field['id'] ) ) {
 					$origin_id = $field['id'];
 				}
 
-				LP_Meta_Box_Helper::show_field( $field );
+				self::show_field( $field );
 			}
 		}
 
@@ -39,14 +38,15 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 * @param $field
 		 */
 		public static function show_field( $field ) {
-			$fields = RW_Meta_Box::normalize_fields( array( $field ) );
-			$field  = $fields[0];
-			if ( $class_name = self::include_field( $field ) ) {
+			$fields     = RW_Meta_Box::normalize_fields( array( $field ) );
+			$field      = $fields[0];
+			$class_name = self::include_field( $field );
+
+			if ( $class_name ) {
 				self::parse_conditional_logic( $field );
 
 				$field_title = self::get_field_title( $field );
 
-				// Add the "asterisk" to required field
 				if ( isset( $field['required'] ) && $field['required'] ) {
 					$field_name = sprintf( '%s <span class="asterisk">*</span>', $field_title );
 				}
@@ -62,9 +62,10 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				if ( preg_match( '/class="(.*)"/iSU', $output, $matches ) ) {
 					if ( preg_match( '/required/', $matches[0] ) ) {
 						$class  = preg_replace( '/\s+/', ' ', str_replace( 'required', '', $matches[0] ) );
-						$output = str_replace($matches[0], $class, $output);
+						$output = str_replace( $matches[0], $class, $output );
 					}
 				}
+
 				echo $output;
 				RWMB_Field::call( 'add_actions', $field );
 			}
@@ -109,7 +110,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				self::$conditional_logic[ $id ] = array(
 					'state'          => ! empty( $conditional['state'] ) ? $conditional['state'] : 'show',
 					'state_callback' => ! empty( $conditional['state_callback'] ) ? $conditional['state_callback'] : 'conditional_logic_gray_state',
-					'conditional'    => array()
+					'conditional'    => array(),
 				);
 			}
 
@@ -121,7 +122,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 						array(
 							'field'   => '',
 							'compare' => '',
-							'value'   => ''
+							'value'   => '',
 						)
 					);
 				}
@@ -131,7 +132,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 					array(
 						'field'   => '',
 						'compare' => '',
-						'value'   => ''
+						'value'   => '',
 					)
 				);
 			}
@@ -146,7 +147,6 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 * @return bool
 		 */
 		public static function include_field( $field ) {
-
 			$field = RWMB_Field::map_types( $field );
 
 			if ( is_array( $field ) && ! empty( $field['type'] ) ) {
@@ -154,9 +154,11 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 			} else {
 				$type = $field;
 			}
+
 			if ( empty( self::$types[ $type ] ) ) {
 				$class = str_replace( ' ', '_', ucwords( preg_replace( '~[_|-]+~', ' ', $type ) ) );
 				$class = "RWMB_{$class}_Field";
+
 				if ( ! class_exists( $class ) ) {
 					$file = LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/' . $type . '.php';
 					if ( file_exists( $file ) ) {
@@ -175,14 +177,12 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 * Init hooks
 		 */
 		public static function init() {
-
 			add_action( 'rwmb_before', array( __CLASS__, 'prepare_fields' ) );
 			add_action( 'admin_footer', array( __CLASS__, 'output_data' ) );
 			add_action( 'learn-press/meta-box-loaded', array( __CLASS__, 'load' ) );
 
 			add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
 			add_filter( 'rwmb_html', array( __CLASS__, 'begin_html' ), 10, 3 );
-			//add_filter( 'rwmb_outer_html', array( __CLASS__, 'outer_html' ), 10, 3 );
 			add_filter( 'rwmb_field_meta', array( __CLASS__, 'field_meta' ), 10, 3 );
 
 			if ( ! class_exists( 'RW_Meta_Box' ) ) {
@@ -212,7 +212,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				array(
 					'id'     => 'fake_metabox',
 					'title'  => '',
-					'fields' => array()
+					'fields' => array(),
 				)
 			);
 		}
@@ -225,7 +225,9 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 * @param RW_Meta_Box $box
 		 */
 		public static function prepare_fields( $box ) {
-			if ( $fields = $box->fields ) {
+			$fields = $box->fields;
+
+			if ( $fields ) {
 				foreach ( $fields as $field ) {
 					self::parse_conditional_logic( $field );
 				}
@@ -265,12 +267,10 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 			$min = learn_press_is_debug() ? '' : '.min';
 
-			// Enqueue js and localize settings.
 			wp_enqueue_script( 'lp-conditional-logic', LP()->plugin_url( 'assets/js/admin/conditional-logic' . $min . '.js' ) );
 			wp_localize_script( 'lp-conditional-logic', 'lp_conditional_logic', self::$conditional_logic );
 		}
 	}
 
-	// Init
 	LP_Meta_Box_Helper::init();
 }

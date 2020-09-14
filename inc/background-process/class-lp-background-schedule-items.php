@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 	/**
@@ -32,6 +30,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
+
 			add_action( 'learn_press_schedule_items', array( $this, 'xxx' ) );
 
 		}
@@ -39,16 +38,14 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		public function xxx() {
 			$this->run();
 
-			//LP_Debug::instance()->add( [ $_REQUEST ], 'a.' . date( 'Y.m.d-H.i.s' ) . '-' . microtime( true ) );
 			$t = date( 'H.i.s' );
 			sleep( 15 );
-			//LP_Debug::instance()->add( $_REQUEST, date( 'Y.m.d-H.i.s' ) . '__' . $t );
 		}
 
 		public function cron_schedules( $schedules ) {
 			$schedules['lp_cron_schedule'] = array(
 				'interval' => 15,
-				'display'  => __( 'Every 3 Minutes', 'learnpress' )
+				'display'  => __( 'Every 3 Minutes', 'learnpress' ),
 			);
 
 			return $schedules;
@@ -71,79 +68,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			}
 		}
 
-//		public function run() {
-//
-//			return;
-//			$requestId   = LP_Request::get( 'lp-background-process' );
-//			$scheduleId  = $this->get_id();
-//			$lockTime    = get_option( $scheduleId );
-//			$currentTime = microtime( true );
-//			$exceedTime  = $currentTime - $lockTime;
-//
-////			LP_Debug::instance()->add( [
-////				$requestId,
-////				$scheduleId,
-////				$exceedTime
-////			], '11111.' . date( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
-//
-//			//if ( $requestId !== $scheduleId ) {
-//			if ( ! $lockTime || ( $exceedTime >= 15 ) ) {
-//				update_option( $scheduleId, $currentTime, false );
-//
-//				//LP_Debug::instance()->add( $_REQUEST, '22222-' . date( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
-//
-//				if ( ! $this->has_queued() ) {
-//					$this->push_to_queue(
-//						array( 'x' => 100 )
-//					)->save()->dispatch();
-//				} else {
-//					$this->dispatch();
-//				}
-//
-//			} else {
-//				$this->next();
-//			}
-//
-//
-//			//} else {
-//			//$this->next();
-//			//}
-//		}
-//
-//		protected function next() {
-//			$requestId   = LP_Request::get( 'lp-background-process' );
-//			$scheduleId  = $this->get_id();
-//			$next        = get_option( "{$scheduleId}-next" );
-//			$currentTime = microtime( true );
-//
-//
-//			if ( $next !== 'yes' ) {
-//				update_option( "{$this->get_id()}-next", 'yes', false );
-//
-//				$lockTime   = get_option( $scheduleId );
-//				$exceedTime = $currentTime - $lockTime;
-//
-//				//LP_Debug::instance()->add( [15 - $exceedTime], '33333.' . date( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
-//
-//				//if($exceedTime >=15) {
-//				if ( $requestId !== $scheduleId ) {
-//					$exceedTime = $exceedTime % 15;
-//
-//					sleep( 15 - $exceedTime );
-//					$this->run();
-//				} else {
-//					if ( $exceedTime >= 15 ) {
-//						$this->run();
-//					}
-//				}
-//
-//
-//				//
-//				//}
-//			}
-//		}
-
-
 		/**
 		 * Update user-item status.
 		 * This function called in background by schedule event.
@@ -155,7 +79,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
-
 
 			$settings = LP_Settings::instance();
 
@@ -173,7 +96,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 					'expired'       => true,
 					'paginate'      => false,
 					'no_join_users' => true,
-					'limit'         => 100
+					'limit'         => 100,
 				)
 			);
 
@@ -185,16 +108,11 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$complete_items = 'yes' === $settings->get( 'force_complete_course_items', 'yes' );
 
 			foreach ( $course_items as $course_item ) {
-
 				$user        = learn_press_get_user( $course_item->user_id );
 				$course_data = $user->get_course_data( $course_item->course_id );
 
 				$course_data->finish( $complete_items );
-				//LP_Debug::instance()->add( '', $course_data->get_user_id() . '-' . $course_data->get_course_id() . '.completed' );
 			}
-
-			//update_option( '_lp_schedule_x', absint( get_option( '_lp_schedule_x', 0 ) ) + 1 );
-			//update_option( '_lp_schedule_z', [ $_REQUEST, $_SERVER ] );
 
 			return false;
 
@@ -203,15 +121,18 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$x = ! empty( $_REQUEST['xxx'] );
 			if ( $x ) {
 				$this->_get_items();
-				if ( ! $items = get_transient( $this->transient_key ) ) {
+				$items = get_transient( $this->transient_key );
+
+				if ( ! $items ) {
 					return false;
 				}
 
 				$curd = new LP_User_CURD();
 
 				foreach ( $items as $course_item_id => $item_data ) {
+					$item_course = $curd->get_user_item_course( $course_item_id );
 
-					if ( ! $item_course = $curd->get_user_item_course( $course_item_id ) ) {
+					if ( ! $item_course ) {
 						continue;
 					}
 
@@ -219,8 +140,9 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 
 					if ( ! empty( $item_data ) ) {
 						foreach ( $item_data as $user_item_id ) {
+							$user_item = $item_course->get_item_by_user_item_id( $user_item_id );
 
-							if ( ! $user_item = $item_course->get_item_by_user_item_id( $user_item_id ) ) {
+							if ( ! $user_item ) {
 								continue;
 							}
 							switch ( $user_item->get_post_type() ) {
@@ -242,7 +164,8 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 						}
 					}
 
-					if ( ( ( $exceeded = $item_course->is_exceeded() ) <= 0 ) && ( learn_press_is_enrolled_slug($item_course->get_status()) /*$item_course->get_status() === 'enrolled' */) ) {
+					$exceeded = $item_course->is_exceeded();
+					if ( $exceeded <= 0 && ( learn_press_is_enrolled_slug( $item_course->get_status() ) ) ) {
 						$item_course->finish();
 
 						$start_time = $item_course->get_start_time()->getTimestamp();
@@ -255,8 +178,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 
 				remove_action( 'shutdown', array( $this, 'dispatch_queue' ) );
 			}
-
-			//LP_Debug::instance()->add( 'Auto completing item', 'auto-complete-items', false, true );
 
 			return false;
 		}
@@ -271,19 +192,26 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$queued_items      = get_transient( $this->transient_key );
 			$queued_course_ids = $queued_items ? array_keys( $queued_items ) : false;
 			$queued_course_ids = array_unique( $queued_course_ids );
-			$exclude_items     = $queued_course_ids ? "AND user_item_id NOT IN(" . join( ',', $queued_course_ids ) . ")" : '';
+			$exclude_items     = $queued_course_ids ? 'AND user_item_id NOT IN(' . join( ',', $queued_course_ids ) . ')' : '';
 
 			$null_time = '0000-00-00 00:00:00';
-			$query     = $wpdb->prepare( "
+			$query     = $wpdb->prepare(
+				"
 				SELECT user_item_id, user_id
 				FROM {$wpdb->learnpress_user_items}
 				WHERE item_type = %s
 				AND ( end_time IS NULL OR end_time = %s OR status <> %s )
 				{$exclude_items}
 				LIMIT 0, 1
-			", LP_COURSE_CPT, $null_time, 'finished' );
+			",
+				LP_COURSE_CPT,
+				$null_time,
+				'finished'
+			);
 
-			if ( ! $item_courses = $wpdb->get_results( $query ) ) {
+			$item_courses = $wpdb->get_results( $query );
+
+			if ( ! $item_courses ) {
 				return false;
 			}
 
@@ -295,22 +223,28 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$format            = array_fill( 0, sizeof( $course_item_types ), '%s' );
 			$args              = $course_item_types;
 			$new_items         = array();
+
 			die();
+
 			foreach ( $item_courses as $item_course ) {
 				$new_items[ $item_course->user_item_id ] = array();
 
 				$args['end_time'] = $null_time;
 				$args['status']   = 'completed';
 				$args['parent']   = $item_course->user_item_id;
-				$query            = $wpdb->prepare( "
+				$query            = $wpdb->prepare(
+					"
 					SELECT user_item_id
 					FROM {$wpdb->learnpress_user_items}
-					WHERE item_type IN(" . join( ',', $format ) . ")
+					WHERE item_type IN(" . join( ',', $format ) . ')
 					AND ( end_time IS NULL OR end_time = %s OR status <> %s )
 					AND parent_id = %d
-				", $args );
+				',
+					$args
+				);
 
-				if ( $item_course_items = $wpdb->get_col( $query ) ) {
+				$item_course_items = $wpdb->get_col( $query );
+				if ( $item_course_items ) {
 					$new_items[ $item_course->user_item_id ] = $item_course_items;
 				}
 			}
@@ -333,11 +267,13 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		protected function finish_course( $item ) {
 
-			if ( ! $item_course = new LP_User_Item_Course( $item ) ) {
+			$item_course = new LP_User_Item_Course( $item );
+			if ( ! $item_course ) {
 				return;
 			}
 
-			if ( ! $user = $item_course->get_user() ) {
+			$user = $item_course->get_user();
+			if ( ! $user ) {
 				return;
 			}
 
@@ -347,12 +283,15 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 * @param array $item
 		 */
 		protected function complete_lesson( $item ) {
+			$item_course = new LP_User_Item_Course( $item );
 
-			if ( ! $item_course = new LP_User_Item_Course( $item ) ) {
+			if ( ! $item_course ) {
 				return;
 			}
 
-			if ( $user = $item_course->get_user() ) {
+			$user = $item_course->get_user();
+
+			if ( $user ) {
 				return;
 			}
 

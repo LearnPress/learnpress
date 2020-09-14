@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_REST_Question_Controller
  *
@@ -24,26 +23,26 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * @var LP_User_Item_Course
 	 */
-	protected $userCourse = null;
+	protected $user_course = null;
 
 	/**
 	 * @var LP_User_Item|LP_User_Item_Quiz
 	 */
-	protected $userItem = null;
+	protected $user_item = null;
 
 	public function __construct() {
 		$this->namespace = 'lp/a/v1';
 		$this->rest_base = 'question';
+
 		parent::__construct();
 
 		include_once LP_PLUGIN_PATH . '/inc/admin/editor/class-lp-admin-editor.php';
 		include_once LP_PLUGIN_PATH . '/inc/admin/editor/class-lp-admin-editor-question.php';
-		//add_filter( 'rest_pre_dispatch', array( $this, 'rest_pre_dispatch' ), 10, 3 );
 	}
 
 	public function register_routes() {
 		$this->routes = array(
-			'' => array(
+			''                            => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
@@ -51,63 +50,36 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 				),
 			),
 
-//			'(?P<key>[\w]+)' => array(
-//				'args'   => array(
-//					'id' => array(
-//						'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
-//						'type'        => 'string',
-//					),
-//				),
-//				array(
-//					'methods'             => WP_REST_Server::READABLE,
-//					'callback'            => array( $this, 'get_item' ),
-//					'permission_callback' => array( $this, 'check_admin_permission' ),
-//				),
-//				array(
-//					'methods'             => WP_REST_Server::EDITABLE,
-//					'callback'            => array( $this, 'update_item' ),
-//					'permission_callback' => array( $this, 'check_admin_permission' ),
-//					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
-//				),
-//				array(
-//					'methods'             => WP_REST_Server::DELETABLE,
-//					'callback'            => array( $this, 'delete_item' ),
-//					'permission_callback' => array( $this, 'check_admin_permission' ),
-//				),
-//				array(
-//					'methods'             => WP_REST_Server::EDITABLE,
-//					'callback'            => array( $this, 'enroll_course' ),
-//					'permission_callback' => array( $this, 'check_admin_permission' ),
-//				),
-//				'schema' => array( $this, 'get_public_item_schema' ),
-//			),
-
 			'update'                      => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'update' ),
-					//'permission_callback' => array( $this, 'check_admin_permission' ),
-					//'args'     => $this->get_item_endpoint_args()
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update' ),
+					'permission_callback' => '__return_true',
+					// 'permission_callback' => array( $this, 'check_admin_permission' ),
+					// 'args'     => $this->get_item_endpoint_args()
 				),
 			),
 			'(?P<id>[\d]+)/add-option'    => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'add_option' )
-				)
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'add_option' ),
+					'permission_callback' => '__return_true',
+				),
 			),
 			'(?P<id>[\d]+)/remove-option' => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'remove_option' )
-				)
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'remove_option' ),
+					'permission_callback' => '__return_true',
+				),
 			),
 			'(?P<id>[\d]+)/update-option' => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'update_option' )
-				)
-			)
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_option' ),
+					'permission_callback' => '__return_true',
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -121,7 +93,7 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 	public function update( $request ) {
 		$response = array(
 			$_REQUEST,
-			'xxxx' => $request
+			'xxxx' => $request,
 		);
 
 		return rest_ensure_response( $response );
@@ -145,7 +117,7 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 
 		$response = array(
 			'success' => $result !== false,
-			'result'  => $result
+			'result'  => $result,
 		);
 
 		return rest_ensure_response( $response );
@@ -169,7 +141,7 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 
 		$response = array(
 			'success' => $result !== false,
-			'result'  => $result
+			'result'  => $result,
 		);
 
 		return rest_ensure_response( $response );
@@ -197,7 +169,7 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 
 		$response = array(
 			'success' => $result !== false,
-			'result'  => $result
+			'result'  => $result,
 		);
 
 		return rest_ensure_response( $response );
@@ -214,14 +186,14 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 				'description'       => __( 'The ID of course item object.', 'learnpress' ),
 				'type'              => 'int',
 				'validate_callback' => array( $this, 'validate_arg' ),
-				'required'          => true
+				'required'          => true,
 			),
 			'course_id' => array(
 				'description'       => __( 'The ID of course object.', 'learnpress' ),
 				'type'              => 'int',
 				'validate_callback' => array( $this, 'validate_arg' ),
-				'required'          => true
-			)
+				'required'          => true,
+			),
 		);
 	}
 
@@ -238,7 +210,7 @@ class LP_REST_Admin_Question_Controller extends LP_Abstract_REST_Controller {
 		$attributes = $request->get_attributes();
 
 		if ( ! isset( $attributes['args'][ $param ] ) ) {
-			return new WP_Error( 'rest_invalid_param', sprintf( esc_html__( '%s was not registered as a request argument.', 'learnpress' ), $param ), array( 'status' => 400 ) );
+			return new WP_Error( 'rest_invalid_param', sprintf( __( '%s was not registered as a request argument.', 'learnpress' ), $param ), array( 'status' => 400 ) );
 		}
 
 		return true;

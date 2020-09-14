@@ -6,9 +6,8 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+
+defined( 'ABSPATH' ) || exit;
 
 class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 
@@ -43,6 +42,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		$settings = $this->get_settings( $section, $tab );
 		$settings = $this->sanitize_settings( $settings );
 		do_action( 'learn-press/settings-render' );
+
 		if ( $settings ) {
 			LP_Meta_Box_Helper::render_fields( $settings );
 		} else {
@@ -108,7 +108,6 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		return $return;
 	}
 }
-
 
 /**
  * Backward compatibility

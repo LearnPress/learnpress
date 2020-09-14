@@ -7,7 +7,7 @@
  * @package LearnPress/Templates
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * @since 4.0.0
@@ -21,49 +21,53 @@ do_action( 'learn-press/template-header' );
  */
 do_action( 'learn-press/before-main-content' );
 
+$page_title = learn_press_page_title( false );
 ?>
+
 <div class="lp-content-area">
-    <?php if ( $page_title = learn_press_page_title( false ) ) { ?>
-        <header class="learn-press-courses-header">
-            <h1><?php echo $page_title; ?></h1>
-        </header>
-    <?php } ?>
 
-    <?php
+	<?php if ( $page_title ) : ?>
+		<header class="learn-press-courses-header">
+			<h1><?php echo $page_title; ?></h1>
+		</header>
+	<?php endif; ?>
 
-    /**
-     * LP Hook
-     */
-    do_action( 'learn-press/before-courses-loop' );
+	<?php
 
-    LP()->template( 'course' )->begin_courses_loop();
+	/**
+	 * LP Hook
+	 */
+	do_action( 'learn-press/before-courses-loop' );
 
-    while ( have_posts() ) : the_post();
+	LP()->template( 'course' )->begin_courses_loop();
 
-        learn_press_get_template_part( 'content', 'course' );
+	while ( have_posts() ) :
+		the_post();
 
-    endwhile;
+		learn_press_get_template_part( 'content', 'course' );
 
-    LP()->template( 'course' )->end_courses_loop();
+	endwhile;
 
-    /**
-     * @since 3.0.0
-     */
-    do_action( 'learn-press/after-courses-loop' );
+	LP()->template( 'course' )->end_courses_loop();
+
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn-press/after-courses-loop' );
 
 
-    /**
-     * LP Hook
-     */
-    do_action( 'learn-press/after-main-content' );
+	/**
+	 * LP Hook
+	 */
+	do_action( 'learn-press/after-main-content' );
 
-    /**
-     * LP Hook
-     *
-     * @since 4.0.0
-     */
-    do_action( 'learn-press/sidebar' );
-?>
+	/**
+	 * LP Hook
+	 *
+	 * @since 4.0.0
+	 */
+	do_action( 'learn-press/sidebar' );
+	?>
 </div>
 <?php
 /**

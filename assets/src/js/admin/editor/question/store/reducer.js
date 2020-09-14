@@ -79,4 +79,4 @@ export const storeData = (state = STORE_DATA, action) => {
     return state;
 };
 
-export default storeData;//combineReducers({userQuiz});
+export default storeData;

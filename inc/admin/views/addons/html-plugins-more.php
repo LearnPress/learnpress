@@ -7,11 +7,10 @@
  * @version 3.0.0
  */
 
-defined( 'ABSPATH' ) or exit();
+defined( 'ABSPATH' ) || exit();
 
 $last_checked = LP_Background_Query_Items::instance()->get_last_checked( 'plugins_tp' );
 $check_url    = wp_nonce_url( add_query_arg( 'force-check-update', 'yes' ), 'lp-check-updates' );
-
 ?>
 
 <p><?php printf( __( 'Last checked %s. <a href="%s">Check again</a>', 'learnpress' ), human_time_diff( $last_checked ), $check_url ); ?></p>

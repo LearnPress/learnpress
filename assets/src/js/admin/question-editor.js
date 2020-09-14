@@ -17,6 +17,5 @@ export const init = function init(elem, settings) {
             blanksStyle: $('#_lp_blanks_style').val(),
             blankFillsStyle: $('#_lp_blank_fills_style').val()
         }, 'question');
-
     });
 }

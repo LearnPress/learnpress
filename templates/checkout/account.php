@@ -7,6 +7,5 @@
  * @version 4.0.0
  */
 
-defined('ABSPATH') or die;
-?>
+defined( 'ABSPATH' ) || exit;
 

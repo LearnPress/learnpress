@@ -1,10 +1,5 @@
 <?php
-/**
- * Send emails in background
- */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 	/**
@@ -57,17 +52,18 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 
 			delete_option( 'doing_' . $data['callback'] );
 
-
 			return false;
 		}
 
 		public function get_plugins_from_wp() {
-			$method = 'query_free_addons';
-			if ( ! ( $plugins = get_transient( 'lp_plugins_wp' ) ) && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
+			$method  = 'query_free_addons';
+			$plugins = get_transient( 'lp_plugins_wp' );
+
+			if ( ! $plugins && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
 				update_option( 'doing_' . $method, 'yes', 'no' );
 				$this->clear_queue()->push_to_queue(
 					array(
-						'callback' => $method
+						'callback' => $method,
 					)
 				)->save()->dispatch();
 			}
@@ -76,12 +72,14 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		}
 
 		public function get_plugins_from_tp() {
-			$method = 'query_premium_addons';
-			if ( ! ( $plugins = get_transient( 'lp_plugins_tp' ) ) && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
+			$method  = 'query_premium_addons';
+			$plugins = get_transient( 'lp_plugins_tp' );
+
+			if ( ! $plugins && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
 				update_option( 'doing_' . $method, 'yes', 'no' );
 				$this->clear_queue()->push_to_queue(
 					array(
-						'callback' => $method
+						'callback' => $method,
 					)
 				)->save()->dispatch();
 			}
@@ -91,12 +89,13 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 
 		public function get_related_themes() {
 			$method = 'query_related_themes';
+			$themes = get_transient( 'lp_related_themes' );
 
-			if ( ! ( $themes = get_transient( 'lp_related_themes' ) ) && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
+			if ( ! $themes && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
 				update_option( 'doing_' . $method, 'yes', 'no' );
 				$this->clear_queue()->push_to_queue(
 					array(
-						'callback' => $method
+						'callback' => $method,
 					)
 				)->save()->dispatch();
 			}
@@ -133,8 +132,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 */
 		public function query_free_addons() {
 			LP_Plugins_Helper::require_plugins_api();
-			// the number of plugins on each page queried,
-			// when we can reach to this figure?
+
 			$per_page = 20;
 			$paged    = 1;
 			$tag      = 'learnpress';
@@ -145,11 +143,11 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 				'fields'            => array(
 					'last_updated'    => true,
 					'icons'           => true,
-					'active_installs' => true
+					'active_installs' => true,
 				),
 				'locale'            => get_locale(),
 				'installed_plugins' => LP_Plugins_Helper::get_installed_plugin_slugs(),
-				'author'            => 'thimpress'
+				'author'            => 'thimpress',
 			);
 			$plugins    = array();
 
@@ -172,7 +170,12 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 
 				for ( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i -- ) {
 					$plugin = $_plugins[ $i ];
-					$key    = $plugin->slug;
+
+					if ( ! isset( $plugin->slug ) ) {
+						return;
+					}
+
+					$key = $plugin->slug;
 					foreach ( $all_plugins as $file => $p ) {
 						if ( strpos( $file, $plugin->slug ) !== false ) {
 							$key = $file;
@@ -184,11 +187,9 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 				}
 
 				if ( sizeof( $plugins ) ) {
-					// Cache in a half of day
 					set_transient( 'lp_plugins_wp', $plugins, $this->transient_time );
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 			}
 
 			return $plugins;
@@ -214,7 +215,6 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			$response = json_decode( $response, true );
 
 			if ( ! empty( $response ) ) {
-
 				$maps = array(
 					'authorize-net-add-on-learnpress'      => 'learnpress-authorizenet-payment',
 					'2checkout-add-learnpress'             => 'learnpress-2checkout-payment',
@@ -231,7 +231,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 					'stripe-add-on-for-learnpress'         => 'learnpress-stripe',
 					'certificates-add-on-for-learnpress'   => 'learnpress-certificates',
 					'assignments-add-on-for-learnpress'    => 'learnpress-assignments',
-					'announcement-add-on-for-learnpress'   => 'learnpress-announcements'
+					'announcement-add-on-for-learnpress'   => 'learnpress-announcements',
 				);
 
 				foreach ( $response as $key => $item ) {
@@ -243,7 +243,6 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 				}
 
 				if ( sizeof( $plugins ) ) {
-					// Cache in a half of day
 					set_transient( 'lp_plugins_tp', $plugins, $this->transient_time );
 				}
 			}
@@ -262,14 +261,13 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
 			$args     = array(
 				'headers' => array(
-					"Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
-				)
+					'Authorization' => 'Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP',
+				),
 			);
 			$response = wp_remote_request( $url, $args );
 
 			if ( is_wp_error( $response ) ) {
 				error_log( $response->get_error_message() );
-
 				return false;
 			}
 
@@ -278,17 +276,21 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 
 			if ( ! empty( $response ) && ! empty( $response['matches'] ) ) {
 				$all_themes = array();
+
 				foreach ( $response['matches'] as $theme ) {
 					$all_themes[ $theme['id'] ] = $theme;
 				}
 
-				if ( $education_themes = learn_press_get_education_themes() ) {
+				$education_themes = learn_press_get_education_themes();
+				if ( $education_themes ) {
 					$themes['other']     = array_diff_key( $all_themes, $education_themes );
 					$themes['education'] = array_diff_key( $all_themes, $themes['other'] );
 				} else {
 					$themes['other'] = $all_themes;
 				}
+
 				set_transient( 'lp_related_themes', $themes, $this->transient_time );
+
 			} elseif ( ! empty( $response['message'] ) ) {
 				set_transient( 'lp_related_themes', $response['message'], $this->transient_time );
 			}

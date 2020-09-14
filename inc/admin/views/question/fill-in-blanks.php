@@ -7,7 +7,7 @@
  * @package LearnPress/Views
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * @var LP_Question $question
@@ -21,28 +21,29 @@ if ( $question->get_type() !== 'fill_in_blanks' ) {
 }
 
 $settings = $question->get_editor_settings();
-
 ?>
+
 <div id="fill-in-blanks-editor">
-    <div class="lp-place-holder">
-        <div class="line-heading"></div>
+	<div class="lp-place-holder">
+		<div class="line-heading"></div>
 
-        <div class="line-sm"></div>
-        <div class="line-xs"></div>
+		<div class="line-sm"></div>
+		<div class="line-xs"></div>
 
-        <div class="line-df"></div>
-        <div class="line-lgx"></div>
-        <div class="line-lg"></div>
+		<div class="line-df"></div>
+		<div class="line-lgx"></div>
+		<div class="line-lg"></div>
 
-        <div class="line-df"></div>
-        <div class="line-lg"></div>
-        <div class="line-lgx"></div>
-    </div>
+		<div class="line-df"></div>
+		<div class="line-lg"></div>
+		<div class="line-lgx"></div>
+	</div>
 </div>
+
 <script>
-    jQuery(function ($) {
-        setTimeout(() => {
-            LP.questionEditor.init('#fill-in-blanks-editor', <?php echo json_encode( $settings );?>);
-        }, 1000)
-    })
+	jQuery( function($) {
+		setTimeout( () => {
+			LP.questionEditor.init('#fill-in-blanks-editor', <?php echo json_encode( $settings ); ?>);
+		}, 1000 );
+	});
 </script>

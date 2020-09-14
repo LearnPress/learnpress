@@ -73,7 +73,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 				'paginate' => true,
 				'featured' => 'yes',
 				'return'   => 'ids',
-				'author'   => $user->get_id()
+				'author'   => $user->get_id(),
 			)
 		);
 
@@ -88,14 +88,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			array(
 				'paginate' => true,
 				'return'   => 'ids',
-				'author'   => $user->get_id()
+				'author'   => $user->get_id(),
 			)
 		);
 
 		learn_press_get_template( 'profile/dashboard/latest-courses', (array) $query->get_courses() );
 	}
 
-	////////////
 
 
 	public function order_details() {

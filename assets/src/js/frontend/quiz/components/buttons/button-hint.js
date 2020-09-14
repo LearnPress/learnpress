@@ -1,42 +1,44 @@
-import {Component} from '@wordpress/element';
-import {withDispatch} from '@wordpress/data';
-import {compose} from '@wordpress/compose';
-import {__} from '@wordpress/i18n';
+import { Component } from '@wordpress/element';
+import { withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { __ } from '@wordpress/i18n';
 
 class ButtonHint extends Component {
-    /**
-     * Callback to show hint of question
-     */
-    showHint = () => {
-        const {
-            showHint,
-            question
-        } = this.props;
+	/**
+	 * Callback to show hint of question
+	 */
+	showHint = () => {
+		const {
+			showHint,
+			question,
+		} = this.props;
 
-        showHint(question.id, !question.showHint);
-    };
+		showHint( question.id, ! question.showHint );
+	};
 
-    render() {
-        const {
-            question
-        } = this.props;
+	render() {
+		const {
+			question,
+		} = this.props;
 
-        return question.hint ? <button className="btn-show-hint"
-                                       onClick={ this.showHint }>
-        </button> : '';
-    }
+		return (
+			question.hint ? <button className="btn-show-hint"
+				onClick={ this.showHint }>
+			</button> : ''
+		);
+	}
 }
 
 export default compose(
-    withDispatch((dispatch, {id}) => {
-        const {
-            showHint,
-        } = dispatch('learnpress/quiz');
+	withDispatch( ( dispatch, { id } ) => {
+		const {
+			showHint,
+		} = dispatch( 'learnpress/quiz' );
 
-        return {
-            showHint: function (id, show) {
-                showHint(id, show)
-            }
-        }
-    })
-)(ButtonHint);
+		return {
+			showHint( id, show ) {
+				showHint( id, show );
+			},
+		};
+	} )
+)( ButtonHint );

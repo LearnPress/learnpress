@@ -20,7 +20,7 @@ class LP_Course_Query extends LP_Object_Query {
 			'post_type'   => LP_COURSE_CPT,
 			'post_status' => array( 'draft', 'pending', 'private', 'publish' ),
 			'limit'       => LP()->settings()->get( 'archive_course_limit' ),
-			'author'      => ''
+			'author'      => '',
 		);
 
 		parent::__construct( $query );
@@ -44,7 +44,6 @@ class LP_Course_Query extends LP_Object_Query {
 	 *
 	 * @return array|mixed
 	 * @since 4.0.0
-	 *
 	 */
 	public function get_wp_query_vars( $query_vars = array() ) {
 		$query_vars = apply_filters( 'learn-press/course-object-query-args', wp_parse_args( $query_vars, $this->get_query_vars() ) );
@@ -68,7 +67,7 @@ class LP_Course_Query extends LP_Object_Query {
 		}
 
 		$custom_keys = array(
-			'featured' => ''
+			'featured' => '',
 		);
 
 		foreach ( $custom_keys as $key => $custom_key ) {
@@ -84,7 +83,8 @@ class LP_Course_Query extends LP_Object_Query {
 		}
 
 		// Featured
-		if ( '' !== ( $featured = $custom_keys['featured'] ) ) {
+		if ( '' !== $custom_keys['featured'] ) {
+			$featured = $custom_keys['featured'];
 
 			if ( $featured === 'yes' || $featured === 1 || $featured === true || $featured === '1' ) {
 				$query_vars['meta_query'] = array(
@@ -92,7 +92,7 @@ class LP_Course_Query extends LP_Object_Query {
 						'key'     => '_lp_featured',
 						'value'   => 'yes',
 						'compare' => '=',
-					)
+					),
 				);
 			} else {
 				$query_vars['meta_query'] = array(
@@ -100,24 +100,24 @@ class LP_Course_Query extends LP_Object_Query {
 						'key'     => '_lp_featured',
 						'value'   => 'yes',
 						'compare' => '!=',
-					)
+					),
 				);
 			}
 		}
 
-//		if ( $query_vars['post_status'] === 'enrolled' ) {
-//			$user_id                   = isset( $query_vars['user'] ) ? $query_vars['user'] : 0;
-//			$query_vars['post_status'] = array( 'publish' );
-//
-//			$curd      = new LP_User_CURD();
-//			$purchased = $curd->query_purchased_courses( 0, array( 'limit' => - 1 ) );
-//
-//			if ( $purchased->get_items() ) {
-//				$post_in = LP_Helper::list_pluck( $purchased->get_items(), 'get_course_id' );
-//
-//				$query_vars['post__in'] = $post_in;
-//			}
-//		}
+		// if ( $query_vars['post_status'] === 'enrolled' ) {
+		// $user_id                   = isset( $query_vars['user'] ) ? $query_vars['user'] : 0;
+		// $query_vars['post_status'] = array( 'publish' );
+		//
+		// $curd      = new LP_User_CURD();
+		// $purchased = $curd->query_purchased_courses( 0, array( 'limit' => - 1 ) );
+		//
+		// if ( $purchased->get_items() ) {
+		// $post_in = LP_Helper::list_pluck( $purchased->get_items(), 'get_course_id' );
+		//
+		// $query_vars['post__in'] = $post_in;
+		// }
+		// }
 
 		return apply_filters( 'learn-press/course-object-wp-query-args', $query_vars );
 	}
@@ -127,7 +127,6 @@ class LP_Course_Query extends LP_Object_Query {
 	 *
 	 * @return array|mixed
 	 * @since 4.0.0
-	 *
 	 */
 	public function get_courses() {
 		global $wpdb;

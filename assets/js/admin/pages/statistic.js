@@ -93,8 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-
 (function ($) {
   $.fn.LP_Chart_Line = function (data, config) {
     return $.each(this, function () {
@@ -103,7 +101,7 @@
       $elem.html('');
       $canvas.appendTo($elem);
       new Chart($canvas.get(0).getContext('2d')).Line(data, config);
-    }); //
+    });
   };
 
   $.fn.LP_Statistic_Users = function () {
@@ -235,7 +233,8 @@
     });
     /**
      * Upgrade Chart for Order Statistics
-     * @returns {Boolean}
+     *
+     * @return {boolean}
      */
 
     var LP_Statistic_Orders_Upgrade_Chart = function LP_Statistic_Orders_Upgrade_Chart() {
@@ -288,27 +287,29 @@
       });
     };
 
-    $('#report-by-course-id').select2({
-      placeholder: 'Select a course',
-      minimumInputLength: 1,
-      ajax: {
-        url: ajaxurl + '?action=learnpress_search_course',
-        dataType: 'json',
-        quietMillis: 250,
-        data: function data(term, page) {
-          return {
-            q: term // search term
+    if ($('#report-by-course-id').length > 0) {
+      $('#report-by-course-id').select2({
+        placeholder: 'Select a course',
+        minimumInputLength: 1,
+        ajax: {
+          url: ajaxurl + '?action=learnpress_search_course',
+          dataType: 'json',
+          quietMillis: 250,
+          data: function data(term, page) {
+            return {
+              q: term
+            };
+          },
+          results: function results(data, page) {
+            return {
+              results: data.items
+            };
+          },
+          cache: true
+        }
+      });
+    }
 
-          };
-        },
-        results: function results(data, page) {
-          return {
-            results: data.items
-          };
-        },
-        cache: true
-      }
-    });
     $('#report-by-course-id').on('change', function () {
       LP_Statistic_Orders_Upgrade_Chart();
     });
@@ -368,7 +369,7 @@
 
   $(document).ready(function () {
     if (typeof $.fn.datepicker != 'undefined') {
-      $(".date-picker").datepicker({
+      $('.date-picker').datepicker({
         dateFormat: 'yy/mm/dd'
       });
     }
@@ -381,24 +382,26 @@
   var student_chart;
 
   window.drawStudentsChart = drawStudentsChart = function drawStudentsChart(data, config) {
-    var $student_chart = $("#lpr-chart-students").clone().attr('style', '').removeAttr("width").removeAttr('height');
-    $("#lpr-chart-students").replaceWith($student_chart);
-    $student_chart = $student_chart[0].getContext("2d");
+    var $student_chart = $('#lpr-chart-students').clone().attr('style', '').removeAttr('width').removeAttr('height');
+    $('#lpr-chart-students').replaceWith($student_chart);
+    $student_chart = $student_chart[0].getContext('2d');
     student_chart = new Chart($student_chart).Line(data, config);
   };
 
-  if (typeof last_seven_days == 'undefined') return;
+  if (typeof last_seven_days == 'undefined') {}
+
   drawStudentsChart(last_seven_days, config);
   var courses_chart;
 
   window.drawCoursesChart = drawCoursesChart = function drawCoursesChart(data, config) {
-    var $courses_chart = $("#lpr-chart-courses").clone().attr('style', '').removeAttr("width").removeAttr('height');
-    $("#lpr-chart-courses").replaceWith($courses_chart);
-    $courses_chart = $courses_chart[0].getContext("2d");
+    var $courses_chart = $('#lpr-chart-courses').clone().attr('style', '').removeAttr('width').removeAttr('height');
+    $('#lpr-chart-courses').replaceWith($courses_chart);
+    $courses_chart = $courses_chart[0].getContext('2d');
     courses_chart = new Chart($courses_chart).Bar(data, config);
   };
 
-  if (typeof data == 'undefined') return;
+  if (typeof data == 'undefined') {}
+
   drawCoursesChart(data, config);
 })(jQuery);
 

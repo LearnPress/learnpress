@@ -1,9 +1,9 @@
 <?php
-
 /**
  * Class LP_Course_Utils
  */
 class LP_Course_Utils {
+
 	/**
 	 * Get section data from cache.
 	 *
@@ -38,6 +38,7 @@ class LP_Course_Utils {
 
 			return false;
 		}
+
 		LP_Object_Cache::set( 'course-' . $course_id, $sections, 'learn-press/course-sections' );
 		LP_Object_Cache::set( $course_id, wp_list_pluck( $sections, 'section_id' ), 'learn-press/course-sections-ids' );
 

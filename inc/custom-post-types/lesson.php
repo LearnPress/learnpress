@@ -59,24 +59,34 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			global $wpdb;
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
-				$where .= $wpdb->prepare( "
+				$where .= $wpdb->prepare(
+					"
                     AND {$wpdb->posts}.ID NOT IN(
-                        SELECT si.item_id 
+                        SELECT si.item_id
                         FROM {$wpdb->learnpress_section_items} si
                         INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
                         WHERE p.post_type = %s
                     )
-                ", LP_LESSON_CPT );
+                ",
+					LP_LESSON_CPT
+				);
 			}
 
-			if ( $preview = LP_Request::get( 'preview' ) ) {
-				$clause = $wpdb->prepare( "
+			$preview = LP_Request::get( 'preview' );
+
+			if ( $preview ) {
+				$clause = $wpdb->prepare(
+					"
                     SELECT ID
-                    FROM {$wpdb->posts} p 
+                    FROM {$wpdb->posts} p
                     INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
                     WHERE pm.meta_value = %s
                     AND p.post_type = %s
-                ", '_lp_preview', 'yes', LP_LESSON_CPT );
+                ",
+					'_lp_preview',
+					'yes',
+					LP_LESSON_CPT
+				);
 
 				$in = '';
 				if ( 'no' === $preview ) {
@@ -154,24 +164,33 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		public function get_preview_items() {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 		        SELECT COUNT(ID)
-		        FROM {$wpdb->posts} p 
+		        FROM {$wpdb->posts} p
 		        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
 		        WHERE pm.meta_value = %s
 		        AND p.post_type = %s
-		    ", '_lp_preview', 'yes', LP_LESSON_CPT );
+		    ",
+				'_lp_preview',
+				'yes',
+				LP_LESSON_CPT
+			);
 
 			return $wpdb->get_var( $query );
 		}
 
 		public function get_no_preview_items() {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+
+			$query = $wpdb->prepare(
+				"
 		        SELECT COUNT(ID)
-		        FROM {$wpdb->posts} p 
+		        FROM {$wpdb->posts} p
 		        WHERE p.post_type = %s AND p.post_status NOT LIKE 'auto-draft'
-		    ", LP_LESSON_CPT );
+		    ",
+				LP_LESSON_CPT
+			);
 
 			return $wpdb->get_var( $query ) - $this->get_preview_items();
 		}
@@ -181,44 +200,47 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function register() {
 
-			return
-				array(
-					'labels'             => array(
-						'name'               => __( 'Lessons', 'learnpress' ),
-						'menu_name'          => __( 'Lessons', 'learnpress' ),
-						'singular_name'      => __( 'Lesson', 'learnpress' ),
-						'add_new_item'       => __( 'Add New Lesson', 'learnpress' ),
-						'all_items'          => __( 'Lessons', 'learnpress' ),
-						'view_item'          => __( 'View Lesson', 'learnpress' ),
-						'add_new'            => __( 'Add New', 'learnpress' ),
-						'edit_item'          => __( 'Edit Lesson', 'learnpress' ),
-						'update_item'        => __( 'Update Lesson', 'learnpress' ),
-						'search_items'       => __( 'Search Lessons', 'learnpress' ),
-						'not_found'          => __( 'No lesson found', 'learnpress' ),
-						'not_found_in_trash' => __( 'No lesson found in Trash', 'learnpress' ),
-					),
-					'public'             => true, // no access directly via lesson permalink url
-					'query_var'          => true,
-					'taxonomies'         => array( 'lesson_tag' ),
-					'publicly_queryable' => true,
-					'show_ui'            => true,
-					'has_archive'        => false,
-					'capability_type'    => LP_LESSON_CPT,
-					'map_meta_cap'       => true,
-					'show_in_menu'       => 'learn_press',
-					'show_in_admin_bar'  => true,
-					'show_in_nav_menus'  => true,
-					'show_in_rest'       => $this->is_support_gutenberg(),
-					'supports'           => array(
-						'title',
-						'editor',
-						'post-formats',
-						'revisions',
-						'comments'
-					),
-					'hierarchical'       => true,
-					'rewrite'            => array( 'slug' => 'lessons', 'hierarchical' => true, 'with_front' => false )
-				);
+			return array(
+				'labels'             => array(
+					'name'               => esc_html__( 'Lessons', 'learnpress' ),
+					'menu_name'          => esc_html__( 'Lessons', 'learnpress' ),
+					'singular_name'      => esc_html__( 'Lesson', 'learnpress' ),
+					'add_new_item'       => esc_html__( 'Add New Lesson', 'learnpress' ),
+					'all_items'          => esc_html__( 'Lessons', 'learnpress' ),
+					'view_item'          => esc_html__( 'View Lesson', 'learnpress' ),
+					'add_new'            => esc_html__( 'Add New', 'learnpress' ),
+					'edit_item'          => esc_html__( 'Edit Lesson', 'learnpress' ),
+					'update_item'        => esc_html__( 'Update Lesson', 'learnpress' ),
+					'search_items'       => esc_html__( 'Search Lessons', 'learnpress' ),
+					'not_found'          => esc_html__( 'No lesson found', 'learnpress' ),
+					'not_found_in_trash' => esc_html__( 'No lesson found in Trash', 'learnpress' ),
+				),
+				'public'             => true,
+				'query_var'          => true,
+				'taxonomies'         => array( 'lesson_tag' ),
+				'publicly_queryable' => true,
+				'show_ui'            => true,
+				'has_archive'        => false,
+				'capability_type'    => LP_LESSON_CPT,
+				'map_meta_cap'       => true,
+				'show_in_menu'       => 'learn_press',
+				'show_in_admin_bar'  => true,
+				'show_in_nav_menus'  => true,
+				'show_in_rest'       => $this->is_support_gutenberg(),
+				'supports'           => array(
+					'title',
+					'editor',
+					'post-formats',
+					'revisions',
+					'comments',
+				),
+				'hierarchical'       => true,
+				'rewrite'            => array(
+					'slug'         => 'lessons',
+					'hierarchical' => true,
+					'with_front'   => false,
+				),
+			);
 
 		}
 
@@ -227,27 +249,28 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function add_meta_boxes() {
 
-			$meta_boxes = apply_filters( 'learn_press_lesson_meta_box_args',
+			$meta_boxes = apply_filters(
+				'learn_press_lesson_meta_box_args',
 				array(
 					'id'     => 'lesson_settings',
 					'title'  => __( 'Settings', 'learnpress' ),
 					'pages'  => array( LP_LESSON_CPT ),
 					'fields' => array(
 						array(
-							'name'         => __( 'Duration', 'learnpress' ),
+							'name'         => esc_html__( 'Duration', 'learnpress' ),
 							'id'           => '_lp_duration',
 							'type'         => 'duration',
 							'default_time' => 'minute',
 							'std'          => 30,
 						),
 						array(
-							'name' => __( 'Free View', 'learnpress' ),
+							'name' => esc_html__( 'Free View', 'learnpress' ),
 							'id'   => '_lp_preview',
 							'type' => 'yes-no',
-							'desc' => __( 'Allows any users to view the lesson content.', 'learnpress' ),
-							'std'  => 'no'
-						)
-					)
+							'desc' => esc_html__( 'Allows any users to view the lesson content.', 'learnpress' ),
+							'std'  => 'no',
+						),
+					),
 				)
 			);
 
@@ -263,9 +286,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @param $post_id
 		 */
 		public function before_delete_lesson( $post_id ) {
-			// lesson curd
 			$curd = new LP_Lesson_CURD();
-			// remove lesson from course items
 			$curd->delete( $post_id );
 		}
 
@@ -278,24 +299,26 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			if ( ! $post ) {
 				return;
 			}
+
 			if ( $current_screen->id === LP_LESSON_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				?>
-                <style type="text/css">
-                    #wp-admin-bar-view {
-                        display: none;
-                    }
+				<style type="text/css">
+					#wp-admin-bar-view {
+						display: none;
+					}
 
-                    #sample-permalink a {
-                        pointer-events: none;
-                        cursor: default;
-                        text-decoration: none;
-                        color: #666;
-                    }
+					#sample-permalink a {
+						pointer-events: none;
+						cursor: default;
+						text-decoration: none;
+						color: #666;
+					}
 
-                    #preview-action {
-                        display: none;
-                    }
-                </style>
+					#preview-action {
+						display: none;
+					}
+				</style>
+
 				<?php
 			}
 		}
@@ -312,16 +335,16 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			// append new column after title column
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'instructor'  => __( 'Author', 'learnpress' ),
-				LP_COURSE_CPT => $this->_get_course_column_title()
+				'instructor'  => esc_html__( 'Author', 'learnpress' ),
+				LP_COURSE_CPT => $this->_get_course_column_title(),
 			);
 
 			if ( current_theme_supports( 'post-formats' ) ) {
-				$new_columns['format']   = __( 'Format', 'learnpress' );
-				$new_columns['duration'] = __( 'Duration', 'learnpress' );
+				$new_columns['format']   = esc_html__( 'Format', 'learnpress' );
+				$new_columns['duration'] = esc_html__( 'Duration', 'learnpress' );
 			}
 
-			$new_columns['preview'] = __( 'Preview', 'learnpress' );
+			$new_columns['preview'] = esc_html__( 'Preview', 'learnpress' );
 
 			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
@@ -332,7 +355,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 			}
 
-			unset ( $columns['taxonomy-lesson-tag'] );
+			unset( $columns['taxonomy-lesson-tag'] );
 			$user = wp_get_current_user();
 
 			if ( in_array( LP_TEACHER_ROLE, $user->roles ) ) {
@@ -374,9 +397,9 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				case 'duration':
 					$duration = absint( get_post_meta( $post_id, '_lp_duration', true ) ) * 60;
 					if ( $duration >= 600 ) {
-						echo date( 'H:i:s', $duration );
+						echo gmdate( 'H:i:s', $duration );
 					} elseif ( $duration > 0 ) {
-						echo date( 'i:s', $duration );
+						echo gmdate( 'i:s', $duration );
 					} else {
 						echo '-';
 					}
@@ -431,24 +454,26 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			}
 			LP_Assets::enqueue_script( 'select2', LP_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
 			LP_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
+
 			ob_start();
 			?>
-            <script>
-                var form = $('#post');
-                form.submit(function (evt) {
-                    var $title = $('#title'),
-                        is_error = false;
-                    if (0 === $title.val().length) {
-                        alert('<?php _e( 'Please enter the title of the lesson', 'learnpress' );?>');
-                        $title.focus();
-                        is_error = true;
-                    }
-                    if (is_error) {
-                        evt.preventDefault();
-                        return false;
-                    }
-                });
-            </script>
+
+			<script>
+				var form = $('#post');
+				form.submit(function (evt) {
+					var $title = $('#title'),
+						is_error = false;
+					if (0 === $title.val().length) {
+						alert('<?php _e( 'Please enter the title of the lesson', 'learnpress' ); ?>');
+						$title.focus();
+						is_error = true;
+					}
+					if (is_error) {
+						evt.preventDefault();
+						return false;
+					}
+				});
+			</script>
 			<?php
 			$script = ob_get_clean();
 			$script = preg_replace( '!</?script>!', '', $script );
@@ -480,6 +505,5 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 	$lesson_post_type = LP_Lesson_Post_Type::instance();
 
 	// add meta box
-	$lesson_post_type
-		->add_meta_box( 'lesson_assigned', __( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
+	$lesson_post_type->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
 }

@@ -1,117 +1,118 @@
-;(function ($) {
-    const {debounce} = lodash;
+( function( $ ) {
+	const { debounce } = lodash;
 
-    const fetchCourses = function (args) {
-        var url = args.url || lpGlobalSettings.courses_url;
-        var $wrapElement = args.wrapElement || '.lp-archive-courses';
+	const fetchCourses = function( args ) {
+		const url = args.url || lpGlobalSettings.courses_url;
+		const $wrapElement = args.wrapElement || '.lp-archive-courses';
 
-        delete args.url;
-        delete args.wrapElement;
+		delete args.url;
+		delete args.wrapElement;
 
-        LP.setUrl(url);
+		LP.setUrl( url );
 
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: url,
-                data: $.extend({}, args || {}),
-                type: 'post',
-                success: (response) => {
-                    var newEl = $(response).contents().find($wrapElement);
+		return new Promise( ( resolve, reject ) => {
+			$.ajax( {
+				url,
+				data: $.extend( {}, args || {} ),
+				type: 'POST',
+				success: ( response ) => {
+					const newEl = $( response ).filter( $wrapElement );
 
-                    if (newEl.length) {
-                        $($wrapElement).replaceWith(newEl)
-                    } else {
-                        $($wrapElement).html('')
-                    }
+					if ( newEl.length > 0 ) {
+						$( $wrapElement ).replaceWith( newEl );
+					} else {
+						$( $wrapElement ).html( 'LearnPress: No Content.' );
+					}
 
-                    bindEventCoursesLayout();
-                    $.scrollTo($wrapElement);
-                    resolve(newEl);
-                },
-                error: (response) => {
-                    reject();
-                }
-            });
-        })
-    }
+					bindEventCoursesLayout();
 
-    /**
-     * Ajax searching when user typing on search-box.
-     *
-     * @param event
-     */
-    const searchCourseHandler = debounce(function (event) {
-        event.preventDefault();
+					$( 'html, body' ).animate( {
+						scrollTop: ( $( $wrapElement ).offset().top - 100 ),
+					}, 200 );
 
-        fetchCourses({
-            s: $(this).find('input[name="s"]').val()
-        });
-    });
+					resolve( newEl );
+				},
+				error: ( response ) => {
+					reject();
+				},
+			} );
+		} );
+	};
 
-    /**
-     * Switch layout between Grid and List.
-     *
-     * @param event
-     */
-    const switchCoursesLayoutHandler = function (event) {
-        var $target;
-        var $parent = $(this).parent();
+	/**
+	 * Ajax searching when user typing on search-box.
+	 *
+	 * @param event
+	 */
+	const searchCourseHandler = debounce( ( event ) => {
+		event.preventDefault();
 
-        while (!$target || !$target.length) {
-            $target = $parent.find('.learn-press-courses');
-            $parent = $parent.parent();
-        }
+		fetchCourses( {
+			s: $( event.target ).val(),
+		} );
+	}, 300 );
 
-        $target.attr('data-layout', this.value);
-        LP.Cookies.set('courses-layout', this.value);
-    };
+	/**
+	 * Switch layout between Grid and List.
+	 *
+	 * @param event
+	 */
+	const switchCoursesLayoutHandler = function( event ) {
+		let $target;
+		let $parent = $( this ).parent();
 
-    const selectCoursesLayout = function () {
-        var coursesLayout = LP.Cookies.get('courses-layout');
-        var switches = $('.lp-courses-bar .switch-layout')
-            .find('[name="lp-switch-layout-btn"]');
+		while ( ! $target || ! $target.length ) {
+			$target = $parent.find( '.learn-press-courses' );
+			$parent = $parent.parent();
+		}
 
-        if (coursesLayout) {
-            switches
-                .filter('[value="' + coursesLayout + '"]')
-                .prop('checked', true)
-                .trigger('change');
-        }
-    };
+		$target.attr( 'data-layout', this.value );
+		LP.Cookies.set( 'courses-layout', this.value );
+	};
 
-    const coursePaginationHandler = function (event) {
-        event.preventDefault();
+	const selectCoursesLayout = function() {
+		const coursesLayout = LP.Cookies.get( 'courses-layout' );
+		const switches = $( '.lp-courses-bar .switch-layout' )
+			.find( '[name="lp-switch-layout-btn"]' );
 
-        var permalink = $(event.target).attr('href');
-        var s = $('.search-courses input[name="s"]').val();
+		if ( coursesLayout ) {
+			switches
+				.filter( '[value="' + coursesLayout + '"]' )
+				.prop( 'checked', true )
+				.trigger( 'change' );
+		}
+	};
 
-        if (!permalink) {
-            return;
-        }
+	const coursePaginationHandler = function( event ) {
+		event.preventDefault();
 
-        if (s) {
-            permalink = permalink.addQueryVar('s', s);
-        } else {
-            permalink = permalink.removeQueryVar('s');
-        }
+		let permalink = $( event.target ).attr( 'href' );
+		const s = $( '.search-courses input[name="s"]' ).val();
 
-        fetchCourses({
-            url: permalink
-        })
-    };
+		if ( ! permalink ) {
+			return;
+		}
 
-    const bindEventCoursesLayout = function () {
-        $('.lp-archive-courses')
-            .on('keyup', '.search-courses input[name="s"]', searchCourseHandler)
-            .on('change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler)
-            .on('click', '.learn-press-pagination .page-numbers', coursePaginationHandler);
-    }
+		if ( s ) {
+			permalink = permalink.addQueryVar( 's', s );
+		} else {
+			permalink = permalink.removeQueryVar( 's' );
+		}
 
-    $(document).ready(function () {
-        bindEventCoursesLayout();
+		fetchCourses( {
+			url: permalink,
+		} );
+	};
 
-        //
-        selectCoursesLayout();
-    })
+	const bindEventCoursesLayout = function() {
+		$( '.lp-archive-courses' )
+			.on( 'keyup', '.search-courses input[name="s"]', searchCourseHandler )
+			.on( 'change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler )
+			.on( 'click', '.learn-press-pagination .page-numbers', coursePaginationHandler );
+	};
 
-})(jQuery);
+	$( document ).ready( function() {
+		bindEventCoursesLayout();
+		selectCoursesLayout();
+	} );
+}( jQuery ) );

@@ -2,92 +2,91 @@
  * Custom functions for frontend quiz.
  */
 
-const {
-    Hook
-} = LP;
+const { Hook } = LP;
 
-const $ = jQuery;
+const $ = window.jQuery || jQuery;
 
-Hook.addFilter('question-blocks', function (blocks) {
-    return blocks; ///[ 'answer-options', 'title', 'content', 'hint', 'explanation'];
-});
+Hook.addFilter( 'question-blocks', function( blocks ) {
+	return blocks; ///[ 'answer-options', 'title', 'content', 'hint', 'explanation'];
+} );
 
-Hook.addAction('before-start-quiz', function () {
-});
+Hook.addAction( 'before-start-quiz', function() {
+} );
 
-Hook.addAction('quiz-started', function (results, id) {
-    $(`.course-item-${id}`).removeClass('status-completed failed passed').addClass('has-status status-started');
-    window.onbeforeunload = function () {
-        return 'Warning!';
-    }
-});
+Hook.addAction( 'quiz-started', function( results, id ) {
+	$( `.course-item-${ id }` ).removeClass( 'status-completed failed passed' ).addClass( 'has-status status-started' );
 
-Hook.addAction('quiz-submitted', function (response, id) {
-    $(`.course-item-${id}`).removeClass('status-started passed failed').addClass(`has-status status-completed ${response.results.graduation}`);
-    window.onbeforeunload = null;
-});
+	window.onbeforeunload = function() {
+		return 'Warning!';
+	};
+} );
 
-$(document).ready(() => {
-    const CustomComponent = function () {
-        const [time, setTime] = React.useState(0);
-        let [t, setT] = React.useState();
+Hook.addAction( 'quiz-submitted', function( response, id ) {
+	$( `.course-item-${ id }` ).removeClass( 'status-started passed failed' ).addClass( `has-status status-completed ${ response.results.graduation }` );
+	window.onbeforeunload = null;
+} );
 
-        if (!t) {
-            t = setInterval(() => {
-                setTime(new Date().toString())
-            }, 1000);
+$( document ).ready( () => {
+	const CustomComponent = function() {
+		const [ time, setTime ] = React.useState( 0 );
+		let [ t, setT ] = React.useState();
 
-            setT(t)
-        }
+		if ( ! t ) {
+			t = setInterval( () => {
+				setTime( new Date().toString() );
+			}, 1000 );
 
-        return <div>
-            <LP.quiz.MyContext.Consumer>
-                {
-                    (a) => {
-                        return a.status;
-                    }
-                }
-            </LP.quiz.MyContext.Consumer>
+			setT( t );
+		}
 
-            {time}
-        </div>;
-    }
+		return <div>
+			<LP.quiz.MyContext.Consumer>
+				{
+					( a ) => {
+						return a.status;
+					}
+				}
+			</LP.quiz.MyContext.Consumer>
 
-    function CustomComponent2() {
-        const [time, setTime] = React.useState(0);
+			{ time }
+		</div>;
+	};
 
-        let [t, setT] = React.useState();
+	function CustomComponent2() {
+		const [ time, setTime ] = React.useState( 0 );
 
-        if (!t) {
-            t = setInterval(() => {
-                setTime(time+1);
-                console.log(time)
-            }, 1000);
+		let [ t, setT ] = React.useState();
 
-            setT(t)
-        }
+		if ( ! t ) {
+			t = setInterval( () => {
+				setTime( time + 1 );
+				console.log( time );
+			}, 1000 );
 
-        return <div>
-            <LP.quiz.MyContext.Consumer>
-                {
-                    (a) => {
-                        return a.status;
-                    }
-                }
-            </LP.quiz.MyContext.Consumer>
+			setT( t );
+		}
 
-            {time}
-        </div>;
-    }
+		return <div>
+			<LP.quiz.MyContext.Consumer>
+				{
+					( a ) => {
+						return a.status;
+					}
+				}
+			</LP.quiz.MyContext.Consumer>
 
-    // Hook.addAction('xxxx', () => {
-    //     return <CustomComponent key="1"/>
-    // })
-    // Hook.addAction('xxxx', () => {
-    //     return <CustomComponent2 key="2"/>
-    // })
-    // setTimeout(() => {
-    //     //wp.element.render(<CustomComponent />, jQuery('#test-element')[0])
-    //
-    // }, 1000)
-})
+			{ time }
+		</div>;
+	}
+
+	// Hook.addAction('xxxx', () => {
+	//     return <CustomComponent key="1"/>
+	// })
+	// Hook.addAction('xxxx', () => {
+	//     return <CustomComponent2 key="2"/>
+	// })
+	// setTimeout(() => {
+	//     //wp.element.render(<CustomComponent />, jQuery('#test-element')[0])
+	//
+	// }, 1000)
+} );

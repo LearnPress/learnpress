@@ -3,9 +3,9 @@ $type         = $options['type'];
 $option_value = self::get_option( $options['id'], $options['default'] );
 
 if ( $options['type'] == 'color' ) {
-	$type = 'text';
+	$type              = 'text';
 	$options['class'] .= 'colorpick';
-	$description .= '<div id="colorPickerDiv_' . esc_attr( $options['id'] ) . '" class="colorpickdiv" style="z-index: 100;background:#eee;border:1px solid #ccc;position:absolute;display:none;"></div>';
+	$description      .= '<div id="colorPickerDiv_' . esc_attr( $options['id'] ) . '" class="colorpickdiv" style="z-index: 100;background:#eee;border:1px solid #ccc;position:absolute;display:none;"></div>';
 }
 
 ?>
@@ -13,7 +13,7 @@ if ( $options['type'] == 'color' ) {
 	<th scope="row" class="titledesc">
 		<label for="<?php echo esc_attr( $options['id'] ); ?>"><?php echo esc_html( $options['title'] ); ?></label>
 	</th>
-	<td class="forminp forminp-<?php echo sanitize_title( $options['type'] ) ?>">
+	<td class="forminp forminp-<?php echo sanitize_title( $options['type'] ); ?>">
 		<?php
 		if ( 'color' == $options['type'] ) {
 			echo '<span class="colorpickpreview" style="background: ' . esc_attr( $option_value ) . ';"></span>';

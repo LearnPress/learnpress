@@ -9,17 +9,10 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="learn-press-checkout-comment">
-
-    <h4><?php _e( 'Additional Information', 'learnpress' ); ?></h4>
-
-    <textarea name="order_comments" class="order-comments"
-              placeholder="<?php _e( 'Note to administrator', 'learnpress' ); ?>"></textarea>
-
+	<h4><?php esc_html_e( 'Additional Information', 'learnpress' ); ?></h4>
+	<textarea name="order_comments" class="order-comments" placeholder="<?php esc_attr_e( 'Note to administrator', 'learnpress' ); ?>"></textarea>
 </div>

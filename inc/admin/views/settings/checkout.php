@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -21,5 +21,4 @@ $settings = LP()->settings;
 		$this->output_settings();
 	?>
 	</tbody>
-
 </table>

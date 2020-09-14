@@ -2,35 +2,42 @@
 global $wp_meta_boxes, $post;
 
 $tabs = $this->get_tabs( 'tabs' );
-if ( !$tabs ) {
+
+if ( ! $tabs ) {
 	return;
 }
-$current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+
+$current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 ?>
+
 <div id="learn-press-admin-editor-metabox-settings" class="learn-press-tabs vertical initialize">
-    <div class="tabs-heading">
-        <h4><?php echo $this->opt( 'title' ); ?></h4>
-    </div>
-    <div class="tabs-container">
-        <ul class="tabs-nav">
+	<div class="tabs-heading">
+		<h4><?php echo $this->opt( 'title' ); ?></h4>
+	</div>
+
+	<div class="tabs-container">
+		<ul class="tabs-nav">
 			<?php
 			$remove_meta_boxes = array();
+
 			foreach ( $tabs as $k => $tab ) {
 				if ( is_array( $tab ) ) {
 					$tab = wp_parse_args(
-						$tab, array(
+						$tab,
+						array(
 							'title'    => '',
 							'id'       => '',
 							'callback' => '',
 							'meta_box' => '',
-							'icon'     => ''
+							'icon'     => '',
 						)
 					);
+
 					if ( $tab['meta_box'] ) {
 						call_user_func( $tab['callback'] );
-
 						$page     = get_post_type();
 						$contexts = array( 'normal', 'advanced' );
+
 						foreach ( $contexts as $context ) {
 							if ( isset( $wp_meta_boxes[ $page ][ $context ] ) ) {
 								foreach ( array( 'high', 'sorted', 'core', 'default', 'low' ) as $priority ) {
@@ -44,7 +51,6 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 											$tab['content'] = ob_get_clean();
 											$tab['title']   = $box['title'];
 											$tab['id']      = $box['id'];
-											//$tab['icon']    = ! empty( $box['icon'] ) ? $box['icon'] : '';
 											unset( $wp_meta_boxes[ $page ][ $context ][ $priority ] );
 											break 3;
 										}
@@ -59,43 +65,52 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 						'title'    => $metabox->meta_box['title'],
 						'id'       => $metabox->meta_box['id'],
 						'icon'     => ! empty( $metabox->meta_box['icon'] ) ? $metabox->meta_box['icon'] : '',
-						'callback' => array( $tab, 'show' )
+						'callback' => array( $tab, 'show' ),
 					);
 					$remove_meta_boxes[] = $metabox;
 				}
+
 				if ( empty( $tab['title'] ) ) {
 					continue;
 				}
+
 				if ( empty( $tab['id'] ) ) {
 					$tab['id'] = sanitize_title( $tab['title'] );
 				}
+
 				if ( empty( $current_tab ) || ( $current_tab == $tab['id'] ) ) {
 					$current_tab = $tab;
 				}
+
 				$classes = array( $tab['id'] );
 				if ( is_array( $current_tab ) && $current_tab['id'] == $tab['id'] ) {
 					$classes[] = 'active';
 				}
+
 				if ( ! empty( $tab['icon'] ) ) {
 					$classes[] = 'icon';
 				}
+
 				$classes = apply_filters( 'learn-press/admin/tab-class', $classes, $tab );
 				echo sprintf( '<li class="%s" data-tab="%s">', join( ' ', $classes ), $tab['id'] );
 				?>
-                <a <?php echo ! empty( $tab['icon'] ) ? 'class="' . $tab['icon'] . '"' : ''; ?>
-                        href="<?php echo add_query_arg( 'tab', $tab['id'] ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
-                <?php
+
+				<a <?php echo ! empty( $tab['icon'] ) ? 'class="' . $tab['icon'] . '"' : ''; ?>
+						href="<?php echo add_query_arg( 'tab', $tab['id'] ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
+				<?php
 				echo '</li>';
 				$tabs[ $k ] = $tab;
 			}
 			?>
-        </ul>
-        <ul class="tabs-content-container" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
+		</ul>
+
+		<ul class="tabs-content-container" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
 			<?php
 			foreach ( $tabs as $tab ) {
 				if ( empty( $tab['title'] ) ) {
 					continue;
 				}
+
 				echo '<li id="meta-box-tab-' . $tab['id'] . '" class="' . $tab['id'] . ( is_array( $current_tab ) && $current_tab['id'] == $tab['id'] ? ' active' : '' ) . '">';
 				if ( ! empty( $tab['content'] ) ) {
 					echo $tab['content'];
@@ -106,6 +121,7 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 				}
 				echo '</li>';
 			}
+
 			if ( ! empty( $remove_meta_boxes ) ) {
 				$contexts = array( 'normal', 'side', 'advanced' );
 				foreach ( $remove_meta_boxes as $meta_box ) {
@@ -124,10 +140,10 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 					}
 				}
 			}
-
 			?>
-        </ul>
-    </div>
+		</ul>
+	</div>
+
 	<?php
 	if ( is_array( $current_tab ) ) {
 		echo '<input type="hidden" name="learn-press-meta-box-tab" value="' . $current_tab['id'] . '" />';

@@ -3,8 +3,8 @@ import Quiz from '@learnpress/quiz';
 
 import './store';
 
-class SingleCourse extends Component{
-    render(){
+class SingleCourse extends Component {
+    render() {
         return <React.Fragment>
             this is course
 

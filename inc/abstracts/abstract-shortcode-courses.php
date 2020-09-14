@@ -9,9 +9,6 @@
  * @extends  LP_Abstract_Shortcode
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
@@ -70,17 +67,19 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 		public function get_atts() {
 			$atts = parent::get_atts();
 
-			$atts = wp_parse_args( $atts, array(
-				'limit'    => 1,
-				'order_by' => 'post_date',
-				'order'    => 'DESC'
-			) );
+			$atts = wp_parse_args(
+				$atts,
+				array(
+					'limit'    => 1,
+					'order_by' => 'post_date',
+					'order'    => 'DESC',
+				)
+			);
 
 			$limit    = $atts['limit'];
 			$order_by = $atts['order_by'];
 			$order    = $atts['order'];
 
-			// valid atts
 			if ( ! absint( $limit ) ) {
 				$limit = 10;
 			}
@@ -94,13 +93,18 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 				}
 			}
 
-			$arr_orders    = array( 'DESC', 'ASC' );
-			$order         = strtoupper( $order );
+			$arr_orders = array( 'DESC', 'ASC' );
+			$order      = strtoupper( $order );
+
 			if ( ! in_array( $order, $arr_orders ) ) {
 				$order = 'DESC';
 			}
 
-			return array( 'limit' => $limit, 'order_by' => $order_by, 'order' => $order );
+			return array(
+				'limit'    => $limit,
+				'order_by' => $order_by,
+				'order'    => $order,
+			);
 		}
 
 		/**
@@ -108,6 +112,7 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 		 */
 		public function output() {
 			ob_start();
+
 			$this->query_courses();
 			$this->output_courses();
 
@@ -118,7 +123,6 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 		 * Loop course.
 		 */
 		public function output_courses() {
-
 			global $wpdb;
 
 			$post_ids = $wpdb->get_col( $this->_query );
@@ -127,13 +131,14 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 			if ( $query->have_posts() ) {
 				do_action( 'learn_press_before_courses_loop' );
 
-				LP()->template('course')->begin_courses_loop();
+				LP()->template( 'course' )->begin_courses_loop();
 
-				while ( $query->have_posts() ) : $query->the_post();
+				while ( $query->have_posts() ) :
+					$query->the_post();
 					learn_press_get_template_part( 'content', 'course' );
 				endwhile;
 
-				LP()->template('course')->end_courses_loop();
+				LP()->template( 'course' )->end_courses_loop();
 
 				do_action( 'learn_press_after_courses_loop' );
 

@@ -65,7 +65,7 @@ abstract class LP_Abstract_API {
 		foreach ( $this->controllers as $name => $controller ) {
 
 			if ( is_string( $controller ) ) {
-				$name                       = $controller;
+				$name                 = $controller;
 				$controllers[ $name ] = new $controller();
 			} else {
 				$controllers[ $name ] = $controller;

@@ -184,7 +184,7 @@ gulp.task('clr-zip', function () {
     return gulp.src(releasePath + '/', {read: false, allowEmpty: true}).pipe(clean({force: true}));
 });
 
-gulp.task('copy-zip', gulp.series('clr-zip', function () {
+gulp.task('copy-zip', gulp.series('clr-zip', function() {
     mkdirp(releasePath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');

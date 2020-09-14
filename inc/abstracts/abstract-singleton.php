@@ -1,9 +1,8 @@
 <?php
-
 /**
  * Class LP_Abstract_Singleton
  */
-abstract class LP_Abstract_Singleton{
+abstract class LP_Abstract_Singleton {
 
 	/**
 	 * Array of singleton classes.
@@ -22,8 +21,9 @@ abstract class LP_Abstract_Singleton{
 	 * @return mixed
 	 */
 	public static function instance() {
+		$name = self::_get_called_class();
 
-		if ( false === ( $name = self::_get_called_class() ) ) {
+		if ( false === $name ) {
 			return false;
 		}
 

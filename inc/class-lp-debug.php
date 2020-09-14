@@ -70,7 +70,7 @@ class LP_Debug {
 	}
 
 	public function init() {
-		//add_action( 'shutdown', array( $this, 'output' ) );
+		// add_action( 'shutdown', array( $this, 'output' ) );
 	}
 
 	public static function is_enable_log() {
@@ -88,13 +88,13 @@ class LP_Debug {
 					continue;
 				}
 				$time = array_sum( $times );
-				echo str_pad( ++ $i, 3, '-', STR_PAD_LEFT ) . '.' . str_pad( $func, 50, '-' ) . ' = ' . str_pad( sizeof( $times ), 5, '-' ) . "(" . $time . ')' . "\n";
+				echo str_pad( ++ $i, 3, '-', STR_PAD_LEFT ) . '.' . str_pad( $func, 50, '-' ) . ' = ' . str_pad( sizeof( $times ), 5, '-' ) . '(' . $time . ')' . "\n";
 				$total_time += $time;
 			}
 			echo '----' . str_pad( 'Total time', 50, '-' ) . ' = ' . $total_time . "\n";
 			echo microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'], ',', date( 'Y-m-d H:i:s' ), ',', date( 'Y-m-d H:i:s', $_SERVER['REQUEST_TIME_FLOAT'] );
 
-			echo "---->";
+			echo '---->';
 		}
 	}
 
@@ -144,8 +144,7 @@ class LP_Debug {
 
 				return true;
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			error_log( $ex->getMessage() );
 		}
 
@@ -180,7 +179,6 @@ class LP_Debug {
 			$this->_lock = ! ( LP_Settings::instance()->get( 'debug' ) == 'yes' );
 		}
 
-
 		if ( ( ! $force && ! $this->_lock || $force ) && $this->_can_log( $handle ) ) {
 			if ( $clear ) {
 				$this->clear( $handle );
@@ -197,7 +195,7 @@ class LP_Debug {
 			echo "\n\n";
 			foreach ( array( 'file', 'line', 'function', 'class' ) as $prop ) {
 				if ( isset( $backtrace[0][ $prop ] ) ) {
-					echo "=> " . str_pad( $prop, 10 ) . ':' . $backtrace[0][ $prop ] . "\n";
+					echo '=> ' . str_pad( $prop, 10 ) . ':' . $backtrace[0][ $prop ] . "\n";
 				}
 			}
 			$message .= ob_get_clean();
@@ -205,7 +203,7 @@ class LP_Debug {
 
 				$path = learn_press_get_log_file_path( $handle . '-temp' );
 				$f    = @fopen( $path, 'a' );
-				fwrite( $f, "----------" . $time . "----------\n" . $message . "-----------------------------------------\n\n\n" );
+				fwrite( $f, '----------' . $time . "----------\n" . $message . "-----------------------------------------\n\n\n" );
 				fseek( $this->_handles[ $handle ], 0 );
 				while ( ( $buffer = fgets( $this->_handles[ $handle ], 4096 ) ) !== false ) {
 					fwrite( $f, $buffer );
@@ -216,10 +214,9 @@ class LP_Debug {
 				unlink( learn_press_get_log_file_path( $handle ) );
 				rename( $path, learn_press_get_log_file_path( $handle ) );
 
-				//fwrite( $this->_handles[ $handle ], "----------" . $time . "----------\n" . $message . "\n--------------------" );
+				// fwrite( $this->_handles[ $handle ], "----------" . $time . "----------\n" . $message . "\n--------------------" );
 				do_action( 'learn_press_log_add', $handle, $message );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				error_log( 'LearnPress add log failed!' );
 			}
 		}
@@ -343,7 +340,7 @@ class LP_Debug {
 			return;
 		}
 
-		$wpdb->query( "START TRANSACTION;" );
+		$wpdb->query( 'START TRANSACTION;' );
 
 		self::$_transaction_started = true;
 	}
@@ -358,7 +355,7 @@ class LP_Debug {
 			return;
 		}
 
-		$wpdb->query( "ROLLBACK;" );
+		$wpdb->query( 'ROLLBACK;' );
 
 		self::$_transaction_started = false;
 	}
@@ -373,7 +370,7 @@ class LP_Debug {
 			return;
 		}
 
-		$wpdb->query( "COMMIT;" );
+		$wpdb->query( 'COMMIT;' );
 
 		self::$_transaction_started = false;
 	}

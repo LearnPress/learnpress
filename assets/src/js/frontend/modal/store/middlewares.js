@@ -3,19 +3,14 @@
  */
 import refx from 'refx';
 
-/**
- * Internal dependencies
- */
-//import effects from './effects';
-
 const effects = {
-    ENROLL_COURSE_X: (action, store) => {
-        enrollCourse:(action, store) => {
-            const { dispatch } = store;
+	ENROLL_COURSE_X: ( action, store ) => {
+		enrollCourse: ( action, store ) => {
+			const { dispatch } = store;
 
-            //dispatch()
-        }
-    }
+			//dispatch()
+		};
+	},
 };
 
 /**
@@ -25,23 +20,23 @@ const effects = {
  *
  * @return {Object} Update Store Object.
  */
-function applyMiddlewares(store) {
-    let enhancedDispatch = () => {
-        throw new Error(
-            'Dispatching while constructing your middleware is not allowed. ' +
-            'Other middleware would not be applied to this dispatch.'
-        );
-    };
+function applyMiddlewares( store ) {
+	let enhancedDispatch = () => {
+		throw new Error(
+			'Dispatching while constructing your middleware is not allowed. ' +
+				'Other middleware would not be applied to this dispatch.'
+		);
+	};
 
-    const middlewareAPI = {
-        getState: store.getState,
-        dispatch: (...args) => enhancedDispatch(...args),
-    };
+	const middlewareAPI = {
+		getState: store.getState,
+		dispatch: ( ...args ) => enhancedDispatch( ...args ),
+	};
 
-    enhancedDispatch = refx(effects)(middlewareAPI)(store.dispatch);
+	enhancedDispatch = refx( effects )( middlewareAPI )( store.dispatch );
 
-    store.dispatch = enhancedDispatch;
-    return store;
+	store.dispatch = enhancedDispatch;
+	return store;
 }
 
 export default applyMiddlewares;

@@ -7,11 +7,13 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
+
 $settings = LP_Settings::instance();
 ?>
+
 <h3 class=""><?php echo $this->section['title']; ?></h3>
 <table class="form-table">
 	<tbody>
@@ -22,18 +24,19 @@ $settings = LP_Settings::instance();
 	?>
 	</tbody>
 </table>
+
 <script type="text/javascript">
-	jQuery(function ($) {
-		$('input.learn-press-course-base').change(function () {
-			$('#course_permalink_structure').val($(this).val());
+	jQuery( function( $ ) {
+		$( 'input.learn-press-course-base' ).on( 'change', function() {
+			$( '#course_permalink_structure' ).val( $(this).val() );
 		});
 
-		$('#course_permalink_structure').focus(function () {
-			$('#learn_press_custom_permalink').click();
+		$( '#course_permalink_structure' ).on( 'focus', function() {
+			$( '#learn_press_custom_permalink' ).trigger( 'click' );
 		});
 
-		$('#learn_press_courses_page_id').change(function () {
-			$('tr.learn-press-courses-page-id').toggleClass('hide-if-js', !parseInt(this.value))
+		$( '#learn_press_courses_page_id' ).on( 'change', function() {
+			$( 'tr.learn-press-courses-page-id' ).toggleClass( 'hide-if-js',  !parseInt( this.value ) );
 		});
 	});
 </script>

@@ -4,8 +4,8 @@ switch ( $options['type'] ) {
 	case 'text':
 	case 'email':
 	case 'number':
-	case 'color' :
-	case 'password' :
+	case 'color':
+	case 'password':
 		break;
 
 	// Textarea
@@ -17,7 +17,7 @@ switch ( $options['type'] ) {
 			<label for="<?php echo esc_attr( $options['id'] ); ?>"><?php echo esc_html( $options['title'] ); ?></label>
 			<?php echo $tooltip_html; ?>
 		</th>
-		<td class="forminp forminp-<?php echo sanitize_title( $options['type'] ) ?>">
+		<td class="forminp forminp-<?php echo sanitize_title( $options['type'] ); ?>">
 			<?php echo $description; ?>
 
 			<textarea
@@ -29,18 +29,17 @@ switch ( $options['type'] ) {
 				<?php echo implode( ' ', $custom_attributes ); ?>
 				><?php echo esc_textarea( $option_value ); ?></textarea>
 		</td>
-		</tr><?php
+		</tr>
+		<?php
 		break;
 
 	// Select boxes
-	case 'select' :
-	case 'multiselect' :
-
+	case 'select':
+	case 'multiselect':
 		break;
 
 	// Radio inputs
-	case 'radio' :
-
+	case 'radio':
 		$option_value = self::get_option( $options['id'], $options['default'] );
 
 		?>
@@ -49,7 +48,7 @@ switch ( $options['type'] ) {
 			<label for="<?php echo esc_attr( $options['id'] ); ?>"><?php echo esc_html( $options['title'] ); ?></label>
 			<?php echo $tooltip_html; ?>
 		</th>
-		<td class="forminp forminp-<?php echo sanitize_title( $options['type'] ) ?>">
+		<td class="forminp forminp-<?php echo sanitize_title( $options['type'] ); ?>">
 			<fieldset>
 				<?php echo $description; ?>
 				<ul>
@@ -65,7 +64,7 @@ switch ( $options['type'] ) {
 									class="<?php echo esc_attr( $options['class'] ); ?>"
 									<?php echo implode( ' ', $custom_attributes ); ?>
 									<?php checked( $key, $option_value ); ?>
-									/> <?php echo $val ?></label>
+									/> <?php echo $val; ?></label>
 						</li>
 						<?php
 					}
@@ -73,16 +72,15 @@ switch ( $options['type'] ) {
 				</ul>
 			</fieldset>
 		</td>
-		</tr><?php
+		</tr>
+		<?php
 		break;
 
 	// Checkbox input
-	case 'checkbox' :
-
+	case 'checkbox':
 		break;
 		// Image width settings
-        case 'image_width' :
-
+	case 'image_width':
 		$image_size       = str_replace( '_image_size', '', $options['id'] );
 		$size             = learn_press_get_image_size( $image_size );
 		$width            = isset( $size['width'] ) ? $size['width'] : $options['default']['width'];
@@ -93,13 +91,17 @@ switch ( $options['type'] ) {
 
 		if ( has_filter( 'learn_press_get_image_size_' . $image_size ) ) {
 			$disabled_attr    = 'disabled="disabled"';
-			$disabled_message = "<p><small>" . __( 'The settings of this image size have been disabled because its values are being overwritten by a filter.', 'learnpress' ) . "</small></p>";
+			$disabled_message = '<p><small>' . __( 'The settings of this image size have been disabled because its values are being overwritten by a filter.', 'learnpress' ) . '</small></p>';
 		}
 
 		?>
 		<tr valign="top">
-		<th scope="row" class="titledesc"><?php echo esc_html( $options['title'] ) ?><?php echo $tooltip_html;
-			echo $disabled_message; ?></th>
+		<th scope="row" class="titledesc"><?php echo esc_html( $options['title'] ); ?>
+													 <?php
+														echo $tooltip_html;
+														echo $disabled_message;
+														?>
+			</th>
 		<td class="forminp image_width_settings">
 
 			<input name="<?php echo esc_attr( $options['id'] ); ?>[width]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-width" type="text" size="3" value="<?php echo $width; ?>" /> &times;
@@ -109,7 +111,8 @@ switch ( $options['type'] ) {
 			</label>
 
 		</td>
-		</tr><?php
+		</tr>
+		<?php
 		break;
 
 	default:

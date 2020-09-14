@@ -97,10 +97,9 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_email_validator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/email-validator */ "./assets/src/js/utils/email-validator.js");
 
-;
 
 (function ($) {
-  "use strict";
+  'use strict';
 
   var $main, $setupForm;
 
@@ -275,7 +274,6 @@ function isEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 }
-;
 
 /***/ })
 

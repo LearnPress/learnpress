@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <script type="text/javascript">
-    jQuery(function ($) {
-		<?php echo $code;?>
-    });
+	jQuery( function($) {
+		<?php echo $code; ?>
+	});
 </script>

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Course_Section
  *
@@ -44,7 +43,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 				'section_order'       => 1,
 				'section_description' => '',
 				'position'            => 0,
-				'items'               => array()
+				'items'               => array(),
 			)
 		);
 
@@ -76,7 +75,8 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		}
 
 		// All items
-		if ( false === ( $items = LP_Object_Cache::get( 'section-' . $this->get_id(), 'learn-press/section-items' ) ) ) {
+		$items = LP_Object_Cache::get( 'section-' . $this->get_id(), 'learn-press/section-items' );
+		if ( false === $items ) {
 			$items = $this->_curd->read_items( $this->get_id() );
 			LP_Object_Cache::set( 'section-' . $this->get_id(), $items, 'learn-press/section-items' );
 		}
@@ -85,7 +85,9 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 
 		foreach ( $items as $item ) {
 			// Create item
-			if ( $item_class = $this->_get_item( $item ) ) {
+			$item_class = $this->_get_item( $item );
+
+			if ( $item_class ) {
 				$item_class->set_course( $this->get_course_id() );
 				$item_class->set_section( $this );
 				$this->items[ $item ] = $item_class;
@@ -117,7 +119,6 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 *
 	 * @return array
 	 * @since 3.0.0
-	 *
 	 */
 	public function to_array() {
 		$data = array(
@@ -227,7 +228,6 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 *
 	 * @return array
 	 * @since 3.0.0
-	 *
 	 */
 	public function get_items_array() {
 		$items = $this->get_items();
@@ -277,8 +277,9 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 */
 	public function has_item( $item_id ) {
 		$found = false;
+		$items = $this->get_items();
 
-		if ( $items = $this->get_items() ) {
+		if ( $items ) {
 			$found = ! empty( $items[ $item_id ] );
 		}
 
@@ -302,9 +303,9 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			$class[] = 'closed';
 		}
 
-		$output = 'class="' . join( ' ', $class ) . '"';
+		$output = 'class="' . implode( ' ', $class ) . '"';
 
-		echo " " . $output;
+		echo ' ' . $output;
 
 		return $output;
 	}

@@ -30,11 +30,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		protected $_content = '';
 
 		/**
-		 * @var null
-		 */
-		protected $_video = null;
-
-		/**
 		 * LP_Abstract_Post_Data constructor.
 		 *
 		 * @since 3.0.0
@@ -136,10 +131,13 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 				if ( ! $this->_content ) {
 					global $post, $wp_query;
 
-					$posts = apply_filters_ref_array( 'the_posts', array(
-						array( get_post( $this->get_id() ) ),
-						&$wp_query
-					) );
+					$posts = apply_filters_ref_array(
+						'the_posts',
+						array(
+							array( get_post( $this->get_id() ) ),
+							&$wp_query,
+						)
+					);
 
 					if ( $posts ) {
 						$post = $posts[0];
@@ -161,35 +159,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 			}
 
 			return $this->_content;
-		}
-
-		public function get_video() {
-
-			if ( 'yes' !== LP()->settings->get( 'enable_lesson_video' ) ) {
-				return false;
-			}
-
-			if ( ( $content = $this->get_content() ) && ( $this->_video === null ) ) {
-				$video = get_media_embedded_in_content( $content, array( 'video', 'object', 'embed', 'iframe' ) );
-
-				if ( $video ) {
-					$this->_video = $video;
-				} else {
-					$this->_video = '';
-				}
-			}
-
-			return $this->_video;
-		}
-
-		public function get_content_video() {
-			$content = $this->get_content();
-
-			if ( $this->get_video() ) {
-				return str_replace( $this->_video[0], '', $content );
-			}
-
-			return $content;
 		}
 
 		/*

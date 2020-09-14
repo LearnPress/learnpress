@@ -6,8 +6,9 @@
  * @author     ThimPress
  * @version    1.0
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
 /**
@@ -16,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LP_Admin_Notice {
 	/**
 	 * Store all notices which added anywhere before show
+	 *
 	 * @var array
 	 */
 	protected static $_notices = array();
@@ -56,13 +58,13 @@ class LP_Admin_Notice {
 	protected function __construct() {
 		add_action( 'init', array( $this, 'dismiss_notice' ) );
 		add_action( 'init', array( $this, 'load' ) );
-		//add_action( 'admin_notices', array( __CLASS__, 'show_notices' ), 100000 );
 		add_action( 'admin_notices', array( $this, 'show_notices' ), 90 );
-		//LP_Request::register_ajax('dismiss-notice', array($this, 'dismiss_notice'));
 	}
 
 	public function load() {
-		if ( ! $notices = get_option( $this->option_id ) ) {
+		$notices = get_option( $this->option_id );
+
+		if ( ! $notices ) {
 			return false;
 		}
 
@@ -97,7 +99,7 @@ class LP_Admin_Notice {
 				'message'     => $message,
 				'type'        => $type ? $type : 'success',
 				'redirect'    => $redirect,
-				'dismissible' => $dismissible
+				'dismissible' => $dismissible,
 			);
 
 			return true;
@@ -138,13 +140,13 @@ class LP_Admin_Notice {
 				$notice['redirect']      = false;
 				$redirect_notices[ $id ] = $notice;
 			} else {
-
 				if ( ! $this->has_dismissed_notice( $id ) ) {
 					if ( preg_match( '/.php$/', $notice['message'] ) ) {
 						$view = $notice['message'];
 					} else {
 						$view = 'admin-notice.php';
 					}
+
 					learn_press_admin_view( $view, array_merge( $notice, array( 'id' => $id ) ) );
 				}
 			}
@@ -205,7 +207,8 @@ class LP_Admin_Notice {
 		}
 
 		// Also remove in db
-		if ( $redirects = get_option( $this->option_id ) ) {
+		$redirects = get_option( $this->option_id );
+		if ( $redirects ) {
 			foreach ( $notice as $id ) {
 				if ( ! empty( $redirects[ $id ] ) ) {
 					unset( $redirects[ $id ] );
@@ -232,11 +235,15 @@ class LP_Admin_Notice {
 	 * @since 3.2.6
 	 */
 	public function dismiss_notice() {
-		if ( ! $id = LP_Request::get( 'lp-dismiss-notice' ) ) {
+		$id = LP_Request::get( 'lp-dismiss-notice' );
+
+		if ( ! $id ) {
 			return;
 		}
 
-		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
+		$dismissed = get_option( $this->dismissed_option_id );
+
+		if ( ! $dismissed ) {
 			$dismissed = array();
 		}
 
@@ -253,7 +260,7 @@ class LP_Admin_Notice {
 			apply_filters(
 				'learn-press/dismissed-notice-response',
 				array(
-					'dismissed' => $id
+					'dismissed' => $id,
 				),
 				$id
 			)
@@ -295,22 +302,13 @@ class LP_Admin_Notice {
 	 */
 	public function has_dismissed_notice( $name ) {
 
-		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
+		$dismissed = get_option( $this->dismissed_option_id );
+
+		if ( ! $dismissed ) {
 			return false;
 		}
 
 		return array_search( $name, $dismissed ) !== false;
-
-//		if ( $transient = get_transient( 'lp_dismiss_notice' . $name ) ) {
-//			return $transient;
-//		}
-//
-//		$values = get_option( 'lp_dismiss_notice' );
-//		if ( ! $values ) {
-//			return false;
-//		}
-//
-//		return isset( $values[ $name ] ) ? $values[ $name ] : false;
 	}
 
 	/**
@@ -323,14 +321,18 @@ class LP_Admin_Notice {
 	 * @return bool
 	 */
 	public function restore_dismissed_notice( $notice ) {
-		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
+		$dismissed = get_option( $this->dismissed_option_id );
+
+		if ( ! $dismissed ) {
 			return false;
 		}
 
 		settype( $notice, 'array' );
 
 		foreach ( $notice as $id ) {
-			if ( false !== ( $at = array_search( $id, $dismissed ) ) ) {
+			$at = array_search( $id, $dismissed );
+
+			if ( false !== $at ) {
 				unset( $dismissed[ $at ] );
 			}
 		}
@@ -360,13 +362,14 @@ class LP_Admin_Notice {
 	 * @return bool
 	 */
 	public function remove_dismissed_notice( $name = '' ) {
-
 		if ( ! $name ) {
 			global $wpdb;
 
 			$query = $wpdb->prepare( "SELECT SUBSTR(option_name, 12) FROM {$wpdb->options} WHERE option_name LIKE %s", '%' . $wpdb->esc_like( '_transient_lp_dismiss_notice' ) . '%' );
 
-			if ( $all_notices = $wpdb->get_col( $query ) ) {
+			$all_notices = $wpdb->get_col( $query );
+
+			if ( $all_notices ) {
 				foreach ( $all_notices as $notice ) {
 					delete_transient( $notice );
 				}
@@ -375,6 +378,7 @@ class LP_Admin_Notice {
 			delete_option( 'lp_dismiss_notice' );
 
 			return true;
+
 		} elseif ( is_array( $name ) ) {
 			foreach ( $name as $notice ) {
 				$this->remove_dismissed_notice( $notice );
@@ -406,18 +410,22 @@ class LP_Admin_Notice {
 	 * @deprecated
 	 */
 	public function dismiss_notice_deprecated() {
-
 		$notice = learn_press_get_request( 'lp-hide-notice' );
+
 		if ( ! $notice ) {
 			return;
 		}
-		if ( $transient = learn_press_get_request( 't' ) ) {
+
+		$transient = learn_press_get_request( 't' );
+
+		if ( $transient ) {
 			set_transient( 'lp-hide-notice-' . $notice, 'yes', $transient );
 		} else {
 			learn_press_update_user_option( 'hide-notice-' . $notice, 'yes' );
 		}
 
-		if ( $redirect = apply_filters( 'learn_press_hide_notice_redirect', remove_query_arg( 'lp-hide-notice' ) ) ) {
+		$redirect = apply_filters( 'learn_press_hide_notice_redirect', remove_query_arg( 'lp-hide-notice' ) );
+		if ( $redirect ) {
 			wp_redirect( untrailingslashit( $redirect ) );
 			exit();
 		}
@@ -442,14 +450,14 @@ class LP_Admin_Notice {
 			$notices[] = array(
 				'type'    => $type,
 				'message' => $message,
-				'id'      => $id
+				'id'      => $id,
 			);
 			set_transient( 'learn_press_redirect_notices', $notices );
 		} else {
 			self::$_notices[] = array(
 				'type'    => $type,
 				'message' => $message,
-				'id'      => $id
+				'id'      => $id,
 			);
 		}
 	}
@@ -472,13 +480,17 @@ class LP_Admin_Notice {
 				learn_press_admin_view( 'admin-notice.php', $notice );
 			}
 		}
-		if ( $notices = get_transient( 'learn_press_redirect_notices' ) ) {
+
+		$notices = get_transient( 'learn_press_redirect_notices' );
+		if ( $notices ) {
 			foreach ( $notices as $notice ) {
 				if ( empty( $notice ) ) {
 					continue;
 				}
+
 				learn_press_admin_view( 'admin-notice.php', $notice );
 			}
+
 			delete_transient( 'learn_press_redirect_notices' );
 		}
 	}

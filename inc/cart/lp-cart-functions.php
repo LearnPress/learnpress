@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Return LP_Cart object instance
  *
@@ -22,6 +20,7 @@ function learn_press_enable_cart() {
 function learn_press_get_cart_description() {
 	$items       = LP()->cart->get_items();
 	$description = array();
+
 	if ( $items ) {
 		foreach ( $items as $item ) {
 			$description[] = apply_filters( 'learn_press_cart_item_description', get_the_title( $item['item_id'] ) );
@@ -34,6 +33,7 @@ function learn_press_get_cart_description() {
 function learn_press_get_cart_course_url() {
 	$products = learn_press_get_cart( 'products' );
 	$return   = '';
+
 	if ( $products ) {
 		foreach ( $products as $prop ) {
 			$return = get_permalink( $prop['id'] );
@@ -53,16 +53,15 @@ function learn_press_get_cart_total() {
 	return LP()->cart->total;
 }
 
-
 function learn_press_clear_cart_after_payment() {
 	global $wp;
 
 	if ( ! empty( $wp->query_vars['lp-order-received'] ) ) {
-
 		$order_id  = absint( $wp->query_vars['lp-order-received'] );
 		$order_key = isset( $_GET['key'] ) ? $_GET['key'] : '';
+		$order     = learn_press_get_order( $order_id );
 
-		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) ) {
+		if ( $order_id > 0 && $order ) {
 			if ( $order->order_key === $order_key ) {
 				LP()->cart->empty_cart();
 			}
@@ -80,7 +79,6 @@ function learn_press_clear_cart_after_payment() {
 		}
 	}
 }
-
 add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
 
 /**
@@ -103,5 +101,4 @@ function learn_press_custom_checkout_cart( $cart ) {
 
 	return $cart;
 }
-
 add_filter( 'learn_press_checkout_cart', 'learn_press_custom_checkout_cart' );

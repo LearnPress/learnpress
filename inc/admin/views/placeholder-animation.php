@@ -7,8 +7,9 @@
  * @version 3.0.7
  */
 
-defined( 'ABSPATH' ) or die();
+defined( 'ABSPATH' ) || die();
 ?>
+
 <div class="line-heading"></div>
 
 <div class="line-sm"></div>

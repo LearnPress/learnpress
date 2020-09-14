@@ -75,7 +75,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			'disable_answers'      => '',
 			'answered'             => '',
 			'explanation'          => '',
-			'hint'                 => ''
+			'hint'                 => '',
 		);
 
 		/**
@@ -178,7 +178,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$meta = array(
 				'mark'        => 1,
 				'explanation' => null,
-				'hint'        => null
+				'hint'        => null,
 			);
 
 			return apply_filters( 'learn-press/question/default-meta', $meta );
@@ -299,7 +299,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$args,
 				array(
 					'exclude' => '',
-					'map'     => ''
+					'map'     => '',
 				)
 			);
 
@@ -316,7 +316,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			// Remove key if it present in $exclude.
 			if ( $options && ( $exclude || $map ) ) {
 				$exclude = array_flip( $exclude );
-
 
 				foreach ( $options as $k => $option ) {
 
@@ -367,7 +366,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return mixed
 		 */
 		public static function get_types() {
-			$types = apply_filters( 'learn-press/question-types', array(
+			$types = apply_filters(
+				'learn-press/question-types',
+				array(
 					'true_or_false'  => __( 'True Or False', 'learnpress' ),
 					'multi_choice'   => __( 'Multi Choice', 'learnpress' ),
 					'single_choice'  => __( 'Single Choice', 'learnpress' ),
@@ -390,7 +391,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$post_data = array(
 				'post_title' => $this->get_data( 'title' ),
 				'post_type'  => LP_QUESTION_CPT,
-				'ID'         => $id
+				'ID'         => $id,
 			);
 			if ( $is_update ) {
 				$updated = wp_update_post( $post_data, true );
@@ -417,7 +418,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 							continue;
 						}
 					}
-					$qry = $query . $wpdb->prepare( "(%d, %d)", $id, $question_order ++ );
+					$qry = $query . $wpdb->prepare( '(%d, %d)', $id, $question_order ++ );
 					do_action( 'learn-press/question/insert-answer-option', $id, $answer_option );
 					if ( $wpdb->query( $qry ) ) {
 						$inserted_id = $wpdb->insert_id;
@@ -442,11 +443,14 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$id         = absint( $this->get_id() );
 			$table_meta = $wpdb->learnpress_question_answermeta;
 			$table_main = $wpdb->learnpress_question_answers;
-			$query      = $wpdb->prepare( "
+			$query      = $wpdb->prepare(
+				"
 				DELETE FROM t1, t2
 				USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
 				WHERE t1.question_id = %d
-			", $id );
+			",
+				$id
+			);
 
 			// deprecated
 			do_action( 'learn_press_before_delete_question_answers', $id );
@@ -494,12 +498,14 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$meta_box_settings['post_id'] = $this->get_id();// Store the ID of current question for some purpose.
 
 			// Add new field to beginning of list for displaying content
-			array_unshift( $meta_box_settings['fields'], array(
+			array_unshift(
+				$meta_box_settings['fields'],
+				array(
 					'id'      => 'question-content',
-					'type'    => 'textarea', //'wysiwyg',
+					'type'    => 'textarea', // 'wysiwyg',
 					'name'    => __( 'taibeoQuestion Content', 'learnpress' ),
 					'default' => '',
-					'context' => 'quiz-list-questions'
+					'context' => 'quiz-list-questions',
 				)
 			);
 
@@ -507,12 +513,19 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$box = new LP_Quiz_Question_Meta_Box( $meta_box_settings );
 
 			// Add this manually because the hook is already done!!!
-			add_meta_box( $box->id, $box->title, array(
-				$box,
-				'show'
-			), LP_QUESTION_CPT, $box->context, $box->priority );
+			add_meta_box(
+				$box->id,
+				$box->title,
+				array(
+					$box,
+					'show',
+				),
+				LP_QUESTION_CPT,
+				$box->context,
+				$box->priority
+			);
 
-			//remove_filter( 'default_hidden_meta_boxes', '');
+			// remove_filter( 'default_hidden_meta_boxes', '');
 			// Show meta box
 			do_meta_boxes( $screen, 'normal', $post );
 
@@ -576,17 +589,22 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 */
 		public function update_answer_orders( $orders ) {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 			    SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
 	            FROM {$wpdb->learnpress_question_answers} qa
 	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
 	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
 	            WHERE qa.question_id = %d
 	            ORDER BY `order`
-			", 'value', 'text', $this->get_id() );
+			",
+				'value',
+				'text',
+				$this->get_id()
+			);
 			if ( $answers = $wpdb->get_results( $query ) ) {
 				$query = "
-                UPDATE {$wpdb->learnpress_question_answers} 
+                UPDATE {$wpdb->learnpress_question_answers}
                 SET `order` = CASE
             ";
 				for ( $order = 0, $n = sizeof( $orders ); $order < $n; $order ++ ) {
@@ -600,9 +618,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					if ( $found_answer === false ) {
 						continue;
 					}
-					$query .= $wpdb->prepare( "WHEN question_answer_id = %d THEN %d", $found_answer->question_answer_id, $order + 1 ) . "\n";
+					$query .= $wpdb->prepare( 'WHEN question_answer_id = %d THEN %d', $found_answer->question_answer_id, $order + 1 ) . "\n";
 				}
-				$query .= sprintf( "ELSE `order` END WHERE question_id = %d", $this->get_id() );
+				$query .= sprintf( 'ELSE `order` END WHERE question_id = %d', $this->get_id() );
 				$wpdb->query( $query );
 			}
 		}
@@ -655,7 +673,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				'question_answer_id' => - 1,
 				'title'              => '',
 				'is_true'            => '',
-				'value'              => learn_press_random_value()
+				'value'              => learn_press_random_value(),
 			);
 
 			return $answer;
@@ -672,20 +690,20 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					'question_answer_id' => - 1,
 					'is_true'            => 'yes',
 					'value'              => learn_press_random_value(),
-					'title'              => __( 'First option', 'learnpress' )
+					'title'              => __( 'First option', 'learnpress' ),
 				),
 				array(
 					'question_answer_id' => - 2,
 					'is_true'            => 'no',
 					'value'              => learn_press_random_value(),
-					'title'              => __( 'Second option', 'learnpress' )
+					'title'              => __( 'Second option', 'learnpress' ),
 				),
 				array(
 					'question_answer_id' => - 3,
 					'is_true'            => 'no',
 					'value'              => learn_press_random_value(),
-					'title'              => __( 'Third option', 'learnpress' )
-				)
+					'title'              => __( 'Third option', 'learnpress' ),
+				),
 			);
 
 			return $answers;
@@ -699,11 +717,12 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return LP_Question_Answers
 		 */
 		public function get_answers( $field = null, $exclude = null ) {
-			$answers = array();
+			$answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' );
 
-			if ( false === ( $answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' ) ) ) {
+			if ( false === $answers ) {
+				$answers = $this->_curd->load_answer_options( $this->get_id() );
 
-				if ( ! $answers = $this->_curd->load_answer_options( $this->get_id() ) ) {
+				if ( ! $answers ) {
 					$answers = $this->get_default_answers();
 				}
 
@@ -736,7 +755,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					'title'       => $answer['title'],
 					'value'       => isset( $answer['value'] ) ? $answer['value'] : '',
 					'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-					'order'       => $index + 1
+					'order'       => $index + 1,
 				);
 
 				$wpdb->insert(
@@ -793,6 +812,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}
 
 			$show_correct = false;
+
 			if ( $user && $quiz && $course ) {
 				if ( $user_quiz = $user->get_quiz_data( $quiz->get_id(), $course->get_id() ) ) {
 					$has_checked  = $user->has_checked_answer( $this->get_id(), $quiz->get_id(), $course->get_id() );
@@ -826,10 +846,16 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return string
 		 */
 		public function get_name() {
-			return isset( $this->_options['name'] ) ? $this->_options['name'] : ucfirst( preg_replace_callback( '!_([a-z])!', array(
-				$this,
-				'sanitize_name_callback'
-			), $this->get_type() ) );
+			return isset( $this->_options['name'] ) ? $this->_options['name'] : ucfirst(
+				preg_replace_callback(
+					'!_([a-z])!',
+					array(
+						$this,
+						'sanitize_name_callback',
+					),
+					$this->get_type()
+				)
+			);
 		}
 
 		/**
@@ -908,7 +934,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				}
 			}
 
-
 			if ( $type == 'object' ) {
 				settype( $return, 'object' );
 			} elseif ( $type == 'array' ) {
@@ -942,7 +967,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *
 		 * @param      $answer
 		 * @param      $quiz_id
-		 * @param null $user_id
+		 * @param null    $user_id
 		 */
 		public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
 			if ( $user_id ) {
@@ -951,7 +976,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$user = learn_press_get_current_user();
 			}
 
-			if ( $progress = $user->get_quiz_progress( $quiz_id ) ) {
+			$progress = $user->get_quiz_progress( $quiz_id );
+
+			if ( $progress ) {
 				if ( ! isset( $progress->question_answers ) ) {
 					$question_answers = array();
 				} else {
@@ -961,7 +988,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 				$question_answers = apply_filters( 'learn_press_update_user_question_answers', $question_answers, $progress->history_id, $user_id, $this, $quiz_id );
 
-				//learn_press_update_user_quiz_meta( $progress->history_id, 'question_answers', $question_answers );
+				// learn_press_update_user_quiz_meta( $progress->history_id, 'question_answers', $question_answers );
 			}
 		}
 
@@ -984,7 +1011,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public function check( $args = null ) {
 			$return = array(
 				'correct' => false,
-				'mark'    => 0
+				'mark'    => 0,
 			);
 
 			return $return;
@@ -1017,7 +1044,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					'history_id' => 0,
 					'quiz_id'    => 0,
 					'course_id'  => 0,
-					'force'      => false
+					'force'      => false,
 				)
 			);
 			$answered = null;
@@ -1064,7 +1091,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$force = false;
 			}
 
-			$key_args = wp_parse_args( $args, array( 'id' => $the_question->ID, 'type' => $the_question->post_type ) );
+			$key_args = wp_parse_args(
+				$args,
+				array(
+					'id'   => $the_question->ID,
+					'type' => $the_question->post_type,
+				)
+			);
 
 			$key = LP_Helper::array_to_md5( $key_args );
 
@@ -1174,7 +1207,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				array(
 					'id'       => $this->get_id(),
 					'type'     => $this->get_type(),
-					'duration' => $this->get_duration()
+					'duration' => $this->get_duration(),
 				)
 			);
 		}

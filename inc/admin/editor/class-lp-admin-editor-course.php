@@ -37,7 +37,13 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	public function dispatch() {
 		check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-		$args      = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+		$args      = wp_parse_args(
+			$_REQUEST,
+			array(
+				'id'   => false,
+				'type' => '',
+			)
+		);
 		$course_id = $args['id'];
 		$course    = learn_press_get_course( $course_id );
 
@@ -75,7 +81,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'id'      => $this->course->get_id(),
 			'status'  => 'draft',
 			'title'   => $title,
-			'content' => $content
+			'content' => $content,
 		);
 
 		$this->course_curd->create( $args );
@@ -87,9 +93,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @param array $args
 	 */
 	public function hidden_sections( $args ) {
-		// get hidden sections id
 		$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
-		// update course post meta
 		update_post_meta( $this->course->get_id(), '_admin_hidden_sections', $hidden );
 	}
 
@@ -171,8 +175,6 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'items'               => array(),
 		);
 
-
-		// create section
 		$section = $this->section_curd->create( $args );
 
 		$this->result = array(
@@ -311,15 +313,17 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			}
 		}
 
-		$search = new LP_Modal_Search_Items( array(
-			'type'       => $type,
-			'context'    => 'course',
-			'context_id' => $this->course->get_id(),
-			'term'       => $query,
-			'limit'      => apply_filters( 'learn-press/course-editor/choose-items-limit', 10 ),
-			'paged'      => $page,
-			'exclude'    => $ids_exclude,
-		) );
+		$search = new LP_Modal_Search_Items(
+			array(
+				'type'       => $type,
+				'context'    => 'course',
+				'context_id' => $this->course->get_id(),
+				'term'       => $query,
+				'limit'      => apply_filters( 'learn-press/course-editor/choose-items-limit', 10 ),
+				'paged'      => $page,
+				'exclude'    => $ids_exclude,
+			)
+		);
 
 		$id_items = $search->get_items();
 
@@ -336,7 +340,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 
 		$this->result = array(
 			'items'      => $items,
-			'pagination' => $search->get_pagination( false )
+			'pagination' => $search->get_pagination( false ),
 		);
 
 		return true;

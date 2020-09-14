@@ -12,7 +12,7 @@ class LP_Plugins_Helper {
 	public static $plugins = array(
 		'installed' => false,
 		'free'      => false,
-		'premium'   => false
+		'premium'   => false,
 	);
 
 	/**
@@ -25,13 +25,14 @@ class LP_Plugins_Helper {
 	 */
 	public static $themes = array(
 		'education' => false,
-		'other'     => false
+		'other'     => false,
 	);
 
 	public static function require_plugins_api() {
 		global $pagenow;
+
 		if ( ! function_exists( 'plugins_api' ) && 'plugin-install.php' !== $pagenow ) {
-			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+			include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 		}
 	}
 
@@ -48,7 +49,7 @@ class LP_Plugins_Helper {
 		$plugins = array();
 
 		if ( ! function_exists( 'get_plugins' ) ) {
-			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			require_once ABSPATH . '/wp-admin/includes/plugin.php';
 		}
 		/*
 		 * Delete cache so hook for extra plugin headers works
@@ -65,7 +66,7 @@ class LP_Plugins_Helper {
 		$wp_installed      = array();
 		$premium_installed = array();
 
-		//learn_press_debug( wp_list_pluck( $wp_plugins, 'name' ) );
+		// learn_press_debug( wp_list_pluck( $wp_plugins, 'name' ) );
 		foreach ( $all_plugins as $plugin_file => $plugin_data ) {
 
 			// If there is a tag
@@ -86,7 +87,7 @@ class LP_Plugins_Helper {
 				$plugins[ $plugin_file ]['source'] = 'wp';
 
 				$wp_installed[ $plugin_file ] = true;
-			} else if ( isset( $premium_plugins[ $plugin_file ] ) ) {
+			} elseif ( isset( $premium_plugins[ $plugin_file ] ) ) {
 				$plugins[ $plugin_file ]           = (array) $premium_plugins[ $plugin_file ];
 				$plugins[ $plugin_file ]['source'] = 'tp';
 				$premium_installed[ $plugin_file ] = true;
@@ -101,7 +102,7 @@ class LP_Plugins_Helper {
 					'contributors'      => array(),
 					'homepage'          => $plugin_data['PluginURI'],
 					'short_description' => $plugin_data['Description'],
-					'icons'             => self::get_add_on_icons( $plugin_data, $plugin_file )
+					'icons'             => self::get_add_on_icons( $plugin_data, $plugin_file ),
 				);
 				if ( ! empty( $plugin_data['Requires at least'] ) ) {
 					$plugins[ $plugin_file ]['requires'] = $plugin_data['Requires at least'];
@@ -175,6 +176,7 @@ class LP_Plugins_Helper {
 		if ( $type && self::$themes && array_key_exists( $type, self::$themes ) ) {
 			$themes = self::$themes[ $type ];
 			$args   = wp_parse_args( $args, array( 'include' => '' ) );
+
 			if ( $themes && $args['include'] ) {
 				$search_results = array();
 				foreach ( $themes as $theme ) {
@@ -182,12 +184,12 @@ class LP_Plugins_Helper {
 						$search_results[] = $theme;
 					}
 				}
+
 				$themes = $search_results;
 			}
 		} else {
 			$themes = self::$themes;
 		}
-
 
 		return $themes;
 	}
@@ -201,9 +203,10 @@ class LP_Plugins_Helper {
 	 * @return int
 	 */
 	public static function count_themes( $type = '' ) {
-		$count = 0;
+		$count  = 0;
+		$themes = self::get_related_themes();
 
-		if ( $themes = self::get_related_themes() ) {
+		if ( $themes ) {
 			if ( array_key_exists( $type, $themes ) ) {
 				$count = ! empty( $themes[ $type ] ) ? sizeof( $themes[ $type ] ) : 0;
 			} else {
@@ -254,7 +257,6 @@ class LP_Plugins_Helper {
 						$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
 					}
 				}
-
 			} else {
 				// action links for premium add-ons installed
 				if ( learn_press_is_plugin_install( $file ) ) {
@@ -306,9 +308,12 @@ class LP_Plugins_Helper {
 		$icon_path   = dirname( $plugin_path ) . '/assets/images';
 		$icons       = array(
 			'2x' => '',
-			'1x' => ''
+			'1x' => '',
 		);
-		foreach ( array( '2x' => 'icon-256x256', '1x' => 'icon-128x128' ) as $s => $name ) {
+		foreach ( array(
+			'2x' => 'icon-256x256',
+			'1x' => 'icon-128x128',
+		) as $s => $name ) {
 			foreach ( array( 'png', 'svg' ) as $t ) {
 				if ( file_exists( $icon_path . "/{$name}.{$t}" ) ) {
 					$icons[ $s ] = plugins_url( '/', $plugin_path ) . "assets/images/{$name}.{$t}";
@@ -411,13 +416,14 @@ class LP_Plugins_Helper {
 	 * Initialize
 	 */
 	public static function init() {
-		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
+		require_once LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php';
 
 		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' ) || ! wp_verify_nonce( LP_Request::get( '_wpnonce' ), 'lp-check-updates' ) ) {
 			return;
 		}
 
 		LP_Background_Query_Items::instance()->force_update();
+
 		wp_redirect( remove_query_arg( array( 'force-check-update', '_wpnonce' ) ) );
 		exit();
 	}

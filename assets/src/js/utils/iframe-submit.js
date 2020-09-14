@@ -1,31 +1,29 @@
 let iframeCounter = 1;
-let $ = window.jQuery;
+let $ = window.jQuery || jQuery;
 
-const IframeSubmit = function (form) {
-    let iframeId = 'ajax-iframe-' + iframeCounter;
-    let $iframe = $('form[name="' + iframeId + '"]');
+const IframeSubmit = function( form ) {
+	let iframeId = 'ajax-iframe-' + iframeCounter;
+	let $iframe = $( 'form[name="' + iframeId + '"]' );
 
-    if (!$iframe.length) {
-        $iframe = $('<iframe />').appendTo(document.body).attr({
-            name: iframeId,
-            src: '#'
-        }).on('load', function () {
-            console.log('Loaded')
-        });
-    }
+	if ( ! $iframe.length ) {
+		$iframe = $( '<iframe />' ).appendTo( document.body ).attr( {
+			name: iframeId,
+			src: '#',
+		} ).on( 'load', function() {
+			console.log( 'Loaded' );
+		} );
+	}
 
-    $(form).on('submit', function () {
+	$( form ).on( 'submit', function() {
+		const $form = $( form ).clone().appendTo( document.body );
 
-        const $form = $(form).clone().appendTo(document.body);
+		$form.attr( 'target', iframeId );
+		$form.find( '#submit' ).remove();
 
+		return false;
+	} );
 
-        $form.attr('target', iframeId);
-        $form.find('#submit').remove()
-        //$form.submit();
-        return false;
-    });
-
-    iframeCounter++;
-}
+	iframeCounter++;
+};
 
 export default IframeSubmit;

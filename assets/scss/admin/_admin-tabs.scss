@@ -1,94 +1,116 @@
 .learn-press-tabs {
-    &.vertical {
-        .tabs-heading {
-            background: #FFF;
-            border: 1px solid #DDD;
-            h4 {
-                padding: 15px;
-                margin: 0;
-            }
-        }
-        .tabs-nav {
-            float: left;
-            width: 220px;
-            margin: 10px 0;
-            background: #F5F5F5;
-            position: relative;
-            z-index: 100;
-            li {
-                margin: 0;
-                position: relative;
-                a {
-                    display: block;
-                    padding: 10px 15px;
-                    text-decoration: none;
-                    background: #F5F5F5;
-                    box-shadow: none;
-                    box-sizing: border-box;
-                    border-top: 1px solid transparent;
-                    border-bottom: 1px solid transparent;
-                    text-transform: capitalize;
-                }
-                &.icon {
-                    a{
-                        padding-left: 35px;
-                    }
-                    a:before {
-                        font-family: dashicons;
-                        font-size: 18px;
-                        vertical-align: top;
-                        margin-right: 8px;
-                        position: absolute;
-                        left: 10px;
-                    }
-                }
-                &.active {
-                    a {
-                        background: #FFF;
-                        font-weight: bold;
-                        width: 221px;
-                        border-color: #DDD;
-                        color: #777;
-                    }
-                }
-            }
-        }
-        .tabs-container {
-            overflow: hidden;
-            background: #F5F5F5;
-            border: 1px solid #DDD;
-            border-top: none;
-            position: relative;
-            .tabs-content-container {
-                margin: 0 0 0 220px;
-                > li {
-                    padding: 20px;
-                    float: left;
-                    width: 100%;
-                    margin-right: -100%;
-                    background: #FFF;
-                    border-left: 1px solid #DDD;
-                    margin-bottom: 0;
-                    display: none;
-                    @include box-sizing(border-box);
-                }
-            }
-        }
-        &:after {
-            @include clear-fix();
-        }
-    }
+
+	&.vertical {
+
+		.tabs-heading {
+			border: 1px solid #ddd;
+			background: #fff;
+
+			h4 {
+				margin: 0;
+				padding: 15px;
+			}
+		}
+
+		.tabs-nav {
+			float: left;
+			position: relative;
+			z-index: 100;
+			box-sizing: border-box;
+			width: 270px;
+			margin: 0;
+			background-color: #fafafa;
+
+			li {
+				display: block;
+				position: relative;
+				margin: 0;
+				padding: 0;
+
+				a {
+					display: block;
+					box-sizing: border-box;
+					margin: 0;
+					padding: 10px;
+					border-bottom: 1px solid #eee;
+					box-shadow: none;
+					line-height: 20px !important;
+					text-decoration: none;
+					text-transform: capitalize;
+				}
+
+				&.icon {
+
+					a {
+						padding-left: 35px;
+					}
+
+					a::before {
+						position: absolute;
+						left: 10px;
+						margin-right: 8px;
+						font-family: Dashicons;
+						font-size: 16px;
+						vertical-align: top;
+					}
+				}
+
+				&.active {
+
+					a {
+						position: relative;
+						color: #555;
+						background-color: #eee;
+					}
+				}
+			}
+		}
+
+		.tabs-container {
+			overflow: hidden;
+			position: relative;
+			border: 1px solid #ddd;
+			border-top: none;
+			background: #fafafa;
+
+			.tabs-content-container {
+				margin: 0 0 0 270px;
+
+				> li {
+					display: none;
+					float: left;
+					width: 100%;
+					margin-right: -100%;
+					margin-bottom: 0;
+					padding: 20px;
+					border-left: 1px solid #eee;
+					background: #fff;
+
+					@include box-sizing(border-box);
+				}
+			}
+		}
+
+		&::after {
+
+			@include clear-fix();
+		}
+	}
 }
 
 @media screen and (max-width: 1280px) {
-    .learnpress {
-        .rwmb-field {
-            .rwmb-label {
-                float: none;
-            }
-            .rwmb-input {
-                margin-left: 0;
-            }
-        }
-    }
+
+	.learnpress {
+
+		.rwmb-field {
+
+			.rwmb-label {
+				float: none;
+			}
+
+			.rwmb-input {
+				margin-left: 0;
+			}
+		}
+	}
 }

@@ -2,190 +2,221 @@
  * Order
  */
 .post-type-lp_order {
-    .wp-list-table {
-        .column-order_status {
-            width: 150px;
-        }
-        .order_status {
-            span {
-                display: inline-block;
-                font-size: 12px;
-                padding: 3px 6px;
-                color: #FFF;
-                @include border-radius(4px);
-                &.pending{
-                    background: #BDBDBD;
-                }
-                &.processing{
-                    background: #FFC107;
-                }
-                &.completed{
-                    background: #4CAF50;
-                }
-                &.cancelled{
-                    background: #444444;
-                }
-                &.failed{
-                    background: #FF0000;
-                }
-                i{
-                    display: inline-block;
-                }
-                //&:after {
-                //    font-family: "Font Awesome 5 Free";
-                //    display: inline-block;
-                //    font-size: 20px;
-                //    color: #FFF;
-                //    text-align: center;
-                //    line-height: 20px;
-                //    width: 20px;
-                //    height: 20px;
-                //}
-                //&.completed:after {
-                //    //content: "\f00c";
-                //    content: "\f058";
-                //    color: $primary-color;
-                //}
-                //&.processing:after {
-                //    content: "\f251";
-                //    color: #563F7A;
-                //}
-                //&.pending:after {
-                //    content: "\f017";
-                //    color: #AAA;
-                //}
-                //&.cancelled:after {
-                //    content: "\f057";
-                //    color: #FF0000;
-                //}
-                //&.failed:after {
-                //    content: "\f223";
-                //    color: #69b391;
-                //}
-            }
-        }
-        .column-title,
-        .column-order_total,
-        .column-order_date {
-            width: 150px;
-        }
-        .column-order_items {
-            ol {
-                margin: 0;
-                padding: 0;
-                list-style-position: inside;
-            }
-        }
-    }
+
+	.wp-list-table {
+
+		.column-order_status {
+			width: 150px;
+		}
+
+		.order_status {
+
+			span {
+				display: inline-block;
+				padding: 3px 6px;
+				color: #fff;
+				font-size: 12px;
+
+				@include border-radius(4px);
+
+				&.pending {
+					background: #bdbdbd;
+				}
+
+				&.processing {
+					background: #ffc107;
+				}
+
+				&.completed {
+					background: #4caf50;
+				}
+
+				&.cancelled {
+					background: #444;
+				}
+
+				&.failed {
+					background: #f00;
+				}
+
+				i {
+					display: inline-block;
+				}
+				//&:after {
+				//    font-family: "Font Awesome 5 Free";
+				//    display: inline-block;
+				//    font-size: 20px;
+				//    color: #FFF;
+				//    text-align: center;
+				//    line-height: 20px;
+				//    width: 20px;
+				//    height: 20px;
+				//}
+				//&.completed:after {
+				//    //content: "\f00c";
+				//    content: "\f058";
+				//    color: $primary-color;
+				//}
+				//&.processing:after {
+				//    content: "\f251";
+				//    color: #563F7A;
+				//}
+				//&.pending:after {
+				//    content: "\f017";
+				//    color: #AAA;
+				//}
+				//&.cancelled:after {
+				//    content: "\f057";
+				//    color: #FF0000;
+				//}
+				//&.failed:after {
+				//    content: "\f223";
+				//    color: #69b391;
+				//}
+			}
+		}
+
+		.column-title,
+		.column-order_total,
+		.column-order_date {
+			width: 150px;
+		}
+
+		.column-order_items {
+
+			ol {
+				margin: 0;
+				padding: 0;
+				list-style-position: inside;
+			}
+		}
+	}
 }
 
 .post-type-lp_course {
-    .column-price {
-        .origin-price {
-            font-size: 12px;
-            text-decoration: line-through;
-            margin-right: 10px;
-            color: #FF0000;
-        }
-    }
+
+	.column-price {
+
+		.origin-price {
+			margin-right: 10px;
+			color: #f00;
+			font-size: 12px;
+			text-decoration: line-through;
+		}
+	}
 }
 
 .wp-list-table {
-    .column-preview {
-        text-align: left;
-        float: none;
-        input[type="checkbox"] {
-            border: none;
-            width: 30px;
-            height: auto;
-            box-shadow: none;
-            margin: 0;
-            text-align: center;
-            background: transparent;
-            @include transform(rotate(-180deg));
-            &:before,
-            &:checked:before {
-                font: 400 21px/1 "Font Awesome 5 Free";
-                content: "\f205";
-                font-size: 24px;
-                width: 30px;
-                margin: 0;
-                text-align: center;
-            }
 
-            &:checked {
-                @include transform(rotate(0deg));
-                &:before {
-                    margin-top: -1px;
-                }
-            }
-        }
-    }
+	.column-preview {
+		float: none;
+		text-align: left;
 
-    .column-instructor {
-        width: 150px;
-        .post-author {
-            display: inline-block;
-            img {
-                border-radius: 50%;
-                width: 30px;
-                height: 30px;
-                vertical-align: middle;
-                margin-right: 5px;
-            }
-            a {
-                display: inline-block;
-                vertical-align: middle;
-            }
-        }
-    }
+		input[type="checkbox"] {
+			width: 30px;
+			height: auto;
+			margin: 0;
+			border: none;
+			background: transparent;
+			box-shadow: none;
+			text-align: center;
 
-    .column-students {
-        width: 80px;
-    }
-    .column-price {
-        width: 120px;
-    }
+			@include transform(rotate(-180deg));
 
-    .column-thumbnail {
-        width: 100px;
-        padding-top: 11px;
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-    }
+			&::before,
+			&:checked::before {
+				width: 30px;
+				margin: 0;
+				font: 400 21px/1 "Font Awesome 5 Free";
+				font-size: 24px;
+				text-align: center;
+				content: "\f205";
+			}
+
+			&:checked {
+
+				@include transform(rotate(0deg));
+
+				&::before {
+					margin-top: -1px;
+				}
+			}
+		}
+	}
+
+	.column-instructor {
+		width: 150px;
+
+		.post-author {
+			display: inline-block;
+
+			img {
+				width: 30px;
+				height: 30px;
+				margin-right: 5px;
+				border-radius: 50%;
+				vertical-align: middle;
+			}
+
+			a {
+				display: inline-block;
+				vertical-align: middle;
+			}
+		}
+	}
+
+	.column-students {
+		width: 80px;
+	}
+
+	.column-price {
+		width: 120px;
+	}
+
+	.column-thumbnail {
+		width: 100px;
+		padding-top: 11px;
+
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+	}
 }
 
 .post-type-page {
-    .column-lp-page {
-        width: 200px;
-    }
-    .for-plugin-page {
-        color: #FF0000;
-        font-size: 11px;
-        margin: 0;
-    }
+
+	.column-lp-page {
+		width: 200px;
+	}
+
+	.for-plugin-page {
+		margin: 0;
+		color: #f00;
+		font-size: 11px;
+	}
 }
 
 .post-state {
-    .post-author {
-        font-weight: normal;
-        font-size: 14px;
-        font-style: italic;
-    }
+
+	.post-author {
+		font-size: 14px;
+		font-weight: normal;
+		font-style: italic;
+	}
 }
 
 #learn-press-box-edit-slug {
-    background: #FFF;
-    padding: 10px;
-    border: 1px solid #DDD;
-    margin: 0 -10px;
-    overflow: hidden;
-    color: #b79186;
-    .button {
-        float: right;
-        height: 24px;
-        line-height: 22px;
-    }
+	overflow: hidden;
+	margin: 0 -10px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	color: #b79186;
+	background: #fff;
+
+	.button {
+		float: right;
+		height: 24px;
+		line-height: 22px;
+	}
 }

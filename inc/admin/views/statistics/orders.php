@@ -1,10 +1,10 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$sections       = array(
+$sections = array(
 	'students'    => __( 'Students', 'learnpress' ),
 	'instructors' => __( 'Instructors', 'learnpress' ),
 );
@@ -13,6 +13,7 @@ $section        = 'students';
 $sections_count = sizeof( $sections );
 $count          = 0;
 ?>
+
 <div id="learn-press-statistic" class="learn-press-statistic-orders">
 	<ul class="subsubsub chart-buttons">
 		<li>
@@ -29,9 +30,9 @@ $count          = 0;
 		</li>
 		<li>
 			<form id="order-custom-time">
-				<span><?php _e( 'From', 'learnpress' ) ?></span>
+				<span><?php _e( 'From', 'learnpress' ); ?></span>
 				<input type="text" placeholder="Y/m/d" name="from" class="date-picker" readonly="readonly">
-				<span><?php _e( 'To', 'learnpress' ) ?></span>
+				<span><?php _e( 'To', 'learnpress' ); ?></span>
 				<input type="text" placeholder="Y/m/d" name="to" class="date-picker" readonly="readonly">
 				<input type="hidden" name="action" value="learnpress_custom_stats">
 				<button class="button button-primary" data-type="order-custom-time" type="submit" disabled="disabled"><?php _e( 'Go', 'learnpress' ); ?></button>
@@ -48,11 +49,11 @@ $count          = 0;
 			<option value="category"><?php _e( 'Course Category', 'learnpress' ); ?></option>
 		</select>
 		<span id="panel_report_sales_by_course" class="panel_report_option">
-			<?php _e( 'Select a course', 'learnpress' );?>
+			<?php _e( 'Select a course', 'learnpress' ); ?>
 			<input id="report-by-course-id" class="statistics-search-course" />
 		</span>
 		<span id="panel_report_sales_by_category" class="panel_report_option">
-			<?php _e( 'Select a course category', 'learnpress' );?>
+			<?php _e( 'Select a course category', 'learnpress' ); ?>
 			<input id="report-by-course-category-id" class="statistics-search-course-category" />
 		</span>
 	</div>
@@ -67,9 +68,9 @@ $count          = 0;
 	</div>
 
 	<script type="text/javascript">
-		var LP_Chart_Config =  <?php learn_press_config_chart();?>;
+		var LP_Chart_Config =  <?php learn_press_config_chart(); ?>;
 		jQuery(document).ready(function ($) {
-			$('#learn-press-chart').LP_Chart_Line(<?php echo json_encode( learn_press_get_chart_orders( null, 'days', 7 ) );?>, LP_Chart_Config);
+			$('#learn-press-chart').LP_Chart_Line(<?php echo json_encode( learn_press_get_chart_orders( null, 'days', 7 ) ); ?>, LP_Chart_Config);
 		});
 	</script>
 </div>

@@ -6,30 +6,17 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 $lesson = LP_Global::course_item();
 
-// lesson no content
 if ( ! $lesson->get_content() ) {
 	learn_press_get_template( 'content-lesson/no-content.php' );
-
 	return;
-}
-
-if ( $video = $lesson->get_video() ) {
-	?>
-    <div class="entry-video ">
-        <?php echo $video[0];?>
-    </div>
-	<?php
 }
 ?>
 
-<div class="content-item-description lesson-description"><?php echo $lesson->get_content_video(); ?></div>
+<div class="content-item-description lesson-description"><?php echo $lesson->get_content(); ?></div>

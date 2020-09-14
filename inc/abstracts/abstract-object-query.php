@@ -28,7 +28,6 @@ abstract class LP_Object_Query {
 	 *
 	 * @return array
 	 * @since 3.3.0
-	 *
 	 */
 	public function get_query_vars() {
 		return $this->query_vars;
@@ -42,7 +41,6 @@ abstract class LP_Object_Query {
 	 *
 	 * @return mixed|string
 	 * @since 3.3.0
-	 *
 	 */
 	public function get( $var_name, $default = '' ) {
 		if ( isset( $this->query_vars[ $var_name ] ) ) {
@@ -60,7 +58,6 @@ abstract class LP_Object_Query {
 	 * @param bool   $overwrite
 	 *
 	 * @since 3.3.0
-	 *
 	 */
 	public function set( $var_name, $value, $overwrite = false ) {
 
@@ -74,7 +71,6 @@ abstract class LP_Object_Query {
 	 *
 	 * @return array
 	 * @since 3.3.0
-	 *
 	 */
 	protected function get_default_query_vars() {
 		return array(
@@ -88,7 +84,7 @@ abstract class LP_Object_Query {
 			'paginate'       => false,
 			'order'          => 'DESC',
 			'orderby'        => 'date',
-			'return'         => 'objects'
+			'return'         => 'objects',
 		);
 	}
 }

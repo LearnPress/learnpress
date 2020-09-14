@@ -1,62 +1,62 @@
 const Cookies = {
-    get: (name, def, global) => {
-        var ret;
+	get: ( name, def, global ) => {
+		var ret;
 
-        if (global) {
-            ret = wpCookies.get(name);
-        } else {
-            var ck = wpCookies.get('LP');
-            if (ck) {
-                ck = JSON.parse(ck);
-                ret = name ? ck[name] : ck;
-            }
-        }
+		if ( global ) {
+			ret = wpCookies.get( name );
+		} else {
+			var ck = wpCookies.get( 'LP' );
+			if ( ck ) {
+				ck = JSON.parse( ck );
+				ret = name ? ck[name] : ck;
+			}
+		}
 
-        if (!ret && ret !== def) {
-            ret = def;
-        }
+		if ( ! ret && ret !== def ) {
+			ret = def;
+		}
 
-        return ret;
-    },
+		return ret;
+	},
 
-    set: function (name, value, expires, path, domain, secure) {
-        if (arguments.length > 2) {
-            wpCookies.set(name, value, expires, path, domain, secure)
-        } else if (arguments.length == 2) {
-            var ck = wpCookies.get('LP');
+	set: function( name, value, expires, path, domain, secure ) {
+		if ( arguments.length > 2 ) {
+			wpCookies.set( name, value, expires, path, domain, secure );
+		} else if ( arguments.length == 2 ) {
+			var ck = wpCookies.get( 'LP' );
 
-            if (ck) {
-                ck = JSON.parse(ck);
-            } else {
-                ck = {};
-            }
+			if ( ck ) {
+				ck = JSON.parse( ck );
+			} else {
+				ck = {};
+			}
 
-            ck[name] = value;
+			ck[name] = value;
 
-            wpCookies.set('LP', JSON.stringify(ck), '', '/')
-        } else {
-            wpCookies.set('LP', JSON.stringify(name), '', '/')
-        }
-    },
+			wpCookies.set( 'LP', JSON.stringify( ck ), '', '/' );
+		} else {
+			wpCookies.set( 'LP', JSON.stringify( name ), '', '/' );
+		}
+	},
 
-    remove: function (name) {
-        const allCookies = Cookies.get();
-        const reg = new RegExp(name, 'g');
-        const newCookies = {};
-        const useRegExp = name.match(/\*/);
+	remove: function( name ) {
+		const allCookies = Cookies.get();
+		const reg = new RegExp( name, 'g' );
+		const newCookies = {};
+		const useRegExp = name.match( /\*/ );
 
-        for (let i in allCookies) {
-            if (useRegExp) {
-                if (!i.match(reg)) {
-                    newCookies[i] = allCookies[i];
-                }
-            } else if (name != i) {
-                newCookies[i] = allCookies[i];
-            }
-        }
+		for ( let i in allCookies ) {
+			if ( useRegExp ) {
+				if ( ! i.match( reg ) ) {
+					newCookies[i] = allCookies[i];
+				}
+			} else if ( name != i ) {
+				newCookies[i] = allCookies[i];
+			}
+		}
 
-        Cookies.set(newCookies)
-    }
+		Cookies.set( newCookies );
+	},
 };
 
 export default Cookies;

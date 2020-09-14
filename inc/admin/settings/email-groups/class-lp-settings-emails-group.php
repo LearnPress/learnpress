@@ -41,10 +41,13 @@ class LP_Settings_Emails_Group extends LP_Settings {
 
 		$this->items = $ids;
 
-		add_action( 'learn-press/admin/setting-payments/admin-options-' . $this->group_id, array(
-			$this,
-			'admin_page'
-		) );
+		add_action(
+			'learn-press/admin/setting-payments/admin-options-' . $this->group_id,
+			array(
+				$this,
+				'admin_page',
+			)
+		);
 	}
 
 	public function admin_page() {

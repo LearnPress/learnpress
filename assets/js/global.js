@@ -185,9 +185,10 @@ var Cookies = {
 __webpack_require__.r(__webpack_exports__);
 /**
  * Manage event callbacks.
- * Allow add/remove a callback function into custom event of an object.
+Allow add/remove a callback function into custom event of an object.
  *
- * @constructor
+ * @class
+ * @param self
  */
 var Event_Callback = function Event_Callback(self) {
   var callbacks = {};
@@ -417,20 +418,21 @@ var Hook = {
     return this;
   },
   doHook: function doHook(hookType, action, args) {
-    // splice args from object into array and remove first index which is the hook name
     args = Array.prototype.slice.call(args, 1);
 
     if (undefined !== this.hooks[hookType][action]) {
       var hooks = this.hooks[hookType][action],
-          hook; //sort by priority
-
+          hook;
       hooks.sort(function (a, b) {
-        return a["priority"] - b["priority"];
+        return a.priority - b.priority;
       });
 
       for (var i = 0; i < hooks.length; i++) {
         hook = hooks[i].callable;
-        if (typeof hook !== 'function') hook = window[hook];
+
+        if (typeof hook !== 'function') {
+          hook = window[hook];
+        }
 
         if ('action' === hookType) {
           args[i] = hook.apply(null, args);
@@ -474,7 +476,7 @@ var Hook = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var iframeCounter = 1;
-var $ = window.jQuery;
+var $ = window.jQuery || jQuery;
 
 var IframeSubmit = function IframeSubmit(form) {
   var iframeId = 'ajax-iframe-' + iframeCounter;
@@ -492,8 +494,7 @@ var IframeSubmit = function IframeSubmit(form) {
   $(form).on('submit', function () {
     var $form = $(form).clone().appendTo(document.body);
     $form.attr('target', iframeId);
-    $form.find('#submit').remove(); //$form.submit();
-
+    $form.find('#submit').remove();
     return false;
   });
   iframeCounter++;
@@ -527,7 +528,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _iframe_submit__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./iframe-submit */ "./assets/src/js/utils/iframe-submit.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1161,9 +1162,9 @@ Object(_extend__WEBPACK_IMPORTED_MODULE_0__["default"])(_objectSpread({
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var $ = window.jQuery;
+var $ = window.jQuery || jQuery;
 
 var serializeJSON = function serializeJSON(path) {
   var isInput = $(this).is('input') || $(this).is('select') || $(this).is('textarea');
@@ -1212,17 +1213,17 @@ var serializeJSON = function serializeJSON(path) {
 
         try {
           if (i == keys.length - 1) {
-            objExp = objPath + "=that.value;";
+            objExp = objPath + '=that.value;';
             end = true;
           } else {
-            objExp = objPath + "={}";
+            objExp = objPath + '={}';
             end = false;
           }
 
-          var evalString = "" + "if( typeof " + objPath + " == 'undefined'){" + objExp + ";" + "}else{" + "if(end){" + "if(typeof " + preObjPath + "!='object'){" + preObjPath + "={};}" + objExp + "}" + "}";
+          var evalString = '' + 'if( typeof ' + objPath + " == 'undefined'){" + objExp + ';' + '}else{' + 'if(end){' + 'if(typeof ' + preObjPath + "!='object'){" + preObjPath + '={};}' + objExp + '}' + '}';
           eval(evalString);
         } catch (e) {
-          console.log('Error:' + e + "\n" + objExp);
+          console.log('Error:' + e + '\n' + objExp);
         }
       });
     } else {
@@ -1311,7 +1312,7 @@ var dataToJSON = function dataToJSON() {
 
 var rows = function rows() {
   var h = $(this).height();
-  var lh = $(this).css('line-height').replace("px", "");
+  var lh = $(this).css('line-height').replace('px', '');
   $(this).attr({
     height: h,
     'line-height': lh
@@ -1404,7 +1405,7 @@ var _localStorage = {
     localStorage.setItem(_localStorage.__key, JSON.stringify(data));
   },
   get: function get(name, def) {
-    var data = JSON.parse(localStorage.getItem(_localStorage.__key) || "{}");
+    var data = JSON.parse(localStorage.getItem(_localStorage.__key) || '{}');
     var _lodash2 = lodash,
         get = _lodash2.get;
     var value = get(data, name);
@@ -1426,7 +1427,7 @@ var _localStorage = {
     return localStorage.getItem(_localStorage.__key);
   },
   __set: function __set(data) {
-    localStorage.setItem(_localStorage.__key, JSON.stringify(data || "{}"));
+    localStorage.setItem(_localStorage.__key, JSON.stringify(data || '{}'));
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (_localStorage);
@@ -1445,8 +1446,8 @@ __webpack_require__.r(__webpack_exports__);
 var $ = window.jQuery;
 var MessageBox = {
   /*
-   *
-   */
+      *
+      */
   $block: null,
   $window: null,
   events: {},
@@ -1492,7 +1493,7 @@ var MessageBox = {
           $div.find('span').html(' (' + n + ')');
         }, 1000);
         timerHide = setInterval(function () {
-          if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
+          if (!$elem.is(':visible') || $elem.css('visibility') == 'hidden') {
             stop();
             $div.remove();
             $div.parent().css('position', '');
@@ -1598,10 +1599,8 @@ var MessageBox = {
       }
 
       $(window).unbind('resize.message-box', this.update).unbind('scroll.message-box', this.update);
-    } else {
-      if (this.instance) {
-        this._createWindow(this.instance.message, this.instance.title, this.instance.buttons);
-      }
+    } else if (this.instance) {
+      this._createWindow(this.instance.message, this.instance.title, this.instance.buttons);
     }
   },
   update: function update(force) {
@@ -1610,7 +1609,7 @@ var MessageBox = {
         timer = $wrap.data('timer'),
         _update = function _update() {
       LP.Hook.doAction('learn_press_message_box_before_resize', that);
-      var $content = $wrap.find('.message-box-content').css("height", "").css('overflow', 'hidden'),
+      var $content = $wrap.find('.message-box-content').css('height', '').css('overflow', 'hidden'),
           width = $wrap.outerWidth(),
           height = $wrap.outerHeight(),
           contentHeight = $content.height(),
@@ -1623,7 +1622,7 @@ var MessageBox = {
         });
         height = $wrap.outerHeight();
       } else {
-        $content.css("height", "").css('overflow', '');
+        $content.css('height', '').css('overflow', '');
       }
 
       $wrap.css({
@@ -1632,7 +1631,10 @@ var MessageBox = {
       LP.Hook.doAction('learn_press_message_box_resize', height, that);
     };
 
-    if (force) _update();
+    if (force) {
+      _update();
+    }
+
     timer && clearTimeout(timer);
     timer = setTimeout(_update, 250);
   },
@@ -1720,8 +1722,6 @@ var MessageBox = {
   \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
-
-;
 
 (function ($) {
   function QuickTip(el, options) {
@@ -2016,8 +2016,8 @@ var MessageBox = {
       }; // do not init if in ignorable browser
 
       if (browser.mobile && o.ignoreMobile || browser.overlay && o.ignoreOverlay || browser.macosx && !browser.webkit // still required to ignore nonWebKit browsers on Mac
-      ) {} //return false;
-        // init scroll container
+      ) {//return false;
+        } // init scroll container
 
 
       if (!w) {

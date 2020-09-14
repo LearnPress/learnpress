@@ -202,7 +202,7 @@ var LP = LP || {};
 
   var ajaxCreateQuestionType = function ajaxCreateQuestionType(e) {
     var type = $(e.target).data('type') || $(this).find('li:first').data('type');
-    var ajaxUrl = window['lpAdminSettings'].ajax;
+    var ajaxUrl = window.lpAdminSettings.ajax;
     $.ajax({
       url: ajaxUrl,
       data: {
@@ -223,16 +223,18 @@ var LP = LP || {};
       return;
     }
 
-    var types = window['lpAdminSettings'].questionTypes;
+    var types = window.lpAdminSettings.questionTypes;
+    var supportType = window.lpAdminSettings.supportAnswerOptions;
     var $newButton = $('<div id="button-new-question" class="page-title-action"><div></div></div>');
     var url = $addNew.attr('href');
 
     for (var type in types) {
-      $newButton.find('div').append("<a href=\"".concat(url.addQueryVar('question-type', type), "\">").concat(types[type], "</a>"));
+      if (supportType.includes(type)) {
+        $newButton.find('div').append("<a href=\"".concat(url.addQueryVar('question-type', type), "\">").concat(types[type], "</a>"));
+      }
     }
 
-    $newButton.find('span').html($addNew.text()); //$addNew.append($newButton);
-
+    $newButton.find('span').html($addNew.text());
     $newButton.insertBefore($addNew);
     $newButton.prepend($addNew.removeClass('page-title-action'));
   };
@@ -242,7 +244,7 @@ var LP = LP || {};
    *
    * If there is an empty item then focus it and remove the new item added.
    *
-   * @param event
+   * @param event Doc.
    */
 
 

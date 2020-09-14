@@ -102,7 +102,7 @@ abstract class LP_Abstract_Post_Type {
 			$args,
 			array(
 				'auto_save'    => 'no',
-				'default_meta' => false
+				'default_meta' => false,
 			)
 		);
 
@@ -154,60 +154,63 @@ abstract class LP_Abstract_Post_Type {
 
 		if ( $pagenow === 'edit.php' ) {
 			$option = sprintf( '<option value="">%s</option>', __( 'Search by user', 'learnpress' ) );
+			$user   = get_user_by( 'id', LP_Request::get_int( 'author' ) );
 
-			if ( $user = get_user_by( 'id', LP_Request::get_int( 'author' ) ) ) {
+			if ( $user ) {
 				$option = sprintf( '<option value="%d" selected="selected">%s</option>', $user->ID, $user->user_login );
 			}
 			?>
-            <script>
-                jQuery(function ($) {
-                    var $input = $('#post-search-input');
 
-                    if (!$input.length) {
-                        return;
-                    }
+			<script>
+				jQuery(function ($) {
+					var $input = $('#post-search-input');
 
-                    var $form = $($input[0].form),
-                        $select = $('<select name="author" id="author"></select>').append($('<?php echo $option;?>')).insertAfter($input).select2({
-                            ajax: {
-                                url: window.location.href + '&lp-ajax=search-authors',
-                                dataType: 'json',
-                                s: ''
-                            },
-                            placeholder: '<?php echo __( 'Search by user', 'learnpress' );?>',
-                            minimumInputLength: 3,
-                            allowClear: true
-                        }).on('select2:select', function () {
-                            $('input[name="author"]').val($select.val())
-                        });
+					if (!$input.length) {
+						return;
+					}
 
-                    $form.on('submit', function () {
-                        var url = window.location.href.removeQueryVar('author').addQueryVar('author', $select.val());
+					var $form = $($input[0].form),
+						$select = $('<select name="author" id="author"></select>').append($('<?php echo $option; ?>')).insertAfter($input).select2({
+							ajax: {
+								url: window.location.href + '&lp-ajax=search-authors',
+								dataType: 'json',
+								s: ''
+							},
+							placeholder: '<?php echo __( 'Search by user', 'learnpress' ); ?>',
+							minimumInputLength: 3,
+							allowClear: true
+						}).on('select2:select', function () {
+							$('input[name="author"]').val($select.val())
+						});
 
-                    })
-                })</script>
+					$form.on('submit', function () {
+						var url = window.location.href.removeQueryVar('author').addQueryVar('author', $select.val());
+
+					});
+				});
+				</script>
 			<?php
 		}
 
 		if ( $pagenow === 'post.php' ) {
 			?>
-            <script>
-                jQuery(function ($) {
-                    var isAssigned = '<?php echo esc_js( $this->is_assigned() );?>',
-                        $postStatus = $('#post_status'),
-                        $message = $('<p class="learn-press-notice-assigned-item"></p>').html(isAssigned),
-                        currentStatus = $postStatus.val();
+			<script>
+				jQuery(function ($) {
+					var isAssigned = '<?php echo esc_js( $this->is_assigned() ); ?>',
+						$postStatus = $('#post_status'),
+						$message = $('<p class="learn-press-notice-assigned-item"></p>').html(isAssigned),
+						currentStatus = $postStatus.val();
 
-                    (currentStatus === 'publish') && isAssigned && $postStatus.on('change', function () {
-                        if (this.value !== 'publish') {
-                            $message.insertBefore($('#post-status-select'));
-                        } else {
-                            $message.remove();
-                        }
-                    });
+					(currentStatus === 'publish') && isAssigned && $postStatus.on('change', function() {
+						if (this.value !== 'publish') {
+							$message.insertBefore($('#post-status-select'));
+						} else {
+							$message.remove();
+						}
+					});
 
-                })
-            </script>
+				})
+			</script>
 			<?php
 		}
 	}
@@ -216,26 +219,34 @@ abstract class LP_Abstract_Post_Type {
 		global $wpdb;
 		$post_type = $this->get_post_type();
 		if ( learn_press_is_support_course_item_type( $post_type ) ) {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
                 SELECT s.section_course_id
                 FROM {$wpdb->learnpress_section_items} si
                 INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
                 INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
                 WHERE p.ID = %d
-	        ", get_the_ID() );
+	        ",
+				get_the_ID()
+			);
 
-			if ( $course_id = $wpdb->get_var( $query ) ) {
+			$course_id = $wpdb->get_var( $query );
+			if ( $course_id ) {
 				return __( 'This item has already assigned to course. It will be removed from course if it is not published.', 'learnpress' );
 			}
 		} elseif ( LP_QUESTION_CPT === $post_type ) {
-			$query = $wpdb->prepare( "
-		        SELECT p.ID 
-                FROM {$wpdb->posts} p 
+			$query = $wpdb->prepare(
+				"
+		        SELECT p.ID
+                FROM {$wpdb->posts} p
                 INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON p.ID = qq.quiz_id
                 WHERE qq.question_id = %d
-		    ", get_the_ID() );
+		    ",
+				get_the_ID()
+			);
 
-			if ( $quiz_id = $wpdb->get_var( $query ) ) {
+			$quiz_id = $wpdb->get_var( $query );
+			if ( $quiz_id ) {
 				return __( 'This question has already assigned to quiz. It will be removed from quiz if it is not published.', 'learnpress' );
 			}
 		}
@@ -302,7 +313,9 @@ abstract class LP_Abstract_Post_Type {
 	 * new post type with WP.
 	 */
 	public function _do_register() {
-		if ( $args = $this->register() ) {
+		$args = $this->register();
+
+		if ( $args ) {
 			register_post_type( $this->_post_type, $args );
 		}
 	}
@@ -351,22 +364,26 @@ abstract class LP_Abstract_Post_Type {
 
 			// If question is not published then delete it from quizzes
 			if ( $post_status !== 'publish' ) {
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
                     DELETE FROM {$wpdb->learnpress_quiz_questions}
                     WHERE question_id = %d
-                ", $post_id );
+                ",
+					$post_id
+				);
 				$wpdb->query( $query );
 			}
-
-		} // Else
-        elseif ( learn_press_is_support_course_item_type( $post_type ) ) {
+		} elseif ( learn_press_is_support_course_item_type( $post_type ) ) {
 
 			// If item is not published then delete it from courses
 			if ( $post_status !== 'publish' ) {
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
                     DELETE FROM {$wpdb->learnpress_section_items}
                     WHERE item_id = %d
-                ", $post_id );
+                ",
+					$post_id
+				);
 				$wpdb->query( $query );
 			}
 		}
@@ -374,23 +391,29 @@ abstract class LP_Abstract_Post_Type {
 
 	protected function _get_quizzes_by_question( $question_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 	        SELECT quiz_id
             FROM {$wpdb->learnpress_quiz_questions}
             WHERE question_id = %d
-	    ", $question_id );
+	    ",
+			$question_id
+		);
 
 		return $wpdb->get_col( $query );
 	}
 
 	protected function _get_courses_by_item( $item_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 	        SELECT section_course_id
             FROM {$wpdb->learnpress_sections} s
             INNER JOIN {$wpdb->learnpress_section_items} si ON s.section_id = si.section_id
             WHERE si.item_id = %d
-	    ", $item_id );
+	    ",
+			$item_id
+		);
 
 		return $wpdb->get_col( $query );
 	}
@@ -434,8 +457,8 @@ abstract class LP_Abstract_Post_Type {
 		if ( ! $this->_check_post() ) {
 			return;
 		}
-		$func_args = func_get_args();
 
+		$func_args = func_get_args();
 		return $this->_call_method( 'before_delete', $func_args );
 	}
 
@@ -444,7 +467,6 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	protected function _flush_cache() {
-		// Flush the Hard Cache to applies new changes
 		LP_Hard_Cache::flush();
 		wp_cache_flush();
 	}
@@ -484,11 +506,7 @@ abstract class LP_Abstract_Post_Type {
 	public function _check_post() {
 		global $pagenow, $post_type;
 
-		if ( ! is_admin() || ( ! in_array( $pagenow, array(
-				'edit.php',
-				'post.php'
-			) ) ) || ( $this->_post_type != $post_type )
-		) {
+		if ( ! is_admin() || ( ! in_array( $pagenow, array( 'edit.php', 'post.php' ) ) ) || ( $this->_post_type != $post_type ) ) {
 			return false;
 		}
 
@@ -509,14 +527,17 @@ abstract class LP_Abstract_Post_Type {
 		if ( $this->_post_type != learn_press_get_requested_post_type() ) {
 			return;
 		}
+
 		do_action( 'learn_press_add_meta_boxes', $this->_post_type, $this );
 		do_action( "learn_press_{$this->_post_type}_add_meta_boxes", $this );
+
 		if ( ! $this->_meta_boxes ) {
 			return;
 		}
 
 		foreach ( $this->_meta_boxes as $k => $meta_box ) {
 			$size = sizeof( $meta_box );
+
 			if ( ( $size == 2 ) || ( $size == 3 && ! $meta_box[2] ) ) {
 				$func        = 'output_' . preg_replace( '/[-]+/', '_', $meta_box[0] );
 				$meta_box[2] = array( $this, $func );
@@ -571,13 +592,16 @@ abstract class LP_Abstract_Post_Type {
 			return false;
 		}
 
-		$title = __( 'Course', 'learnpress' );
+		$title     = esc_html__( 'Course', 'learnpress' );
+		$course_id = $this->_filter_items_by_course();
 
-		if ( $course_id = $this->_filter_items_by_course() ) {
-			if ( $course = learn_press_get_course( $course_id ) ) {
+		if ( $course_id ) {
+			$course = learn_press_get_course( $course_id );
+
+			if ( $course ) {
 				$count       = $course->count_items( $this->_post_type );
 				$post_object = get_post_type_object( $post_type );
-				$title       = sprintf( _n( 'Course (%d %s)', 'Course (%d %s)', $count, 'learnpress' ), $count, $count > 1 ? $post_object->label : $post_object->labels->singular_name );
+				$title       = sprintf( _n( 'Course (%1$d %2$s)', 'Course (%1$d %2$s)', $count, 'learnpress' ), $count, $count > 1 ? $post_object->label : $post_object->labels->singular_name );
 			}
 		}
 
@@ -596,19 +620,24 @@ abstract class LP_Abstract_Post_Type {
 				echo '<div><a href="' . esc_url( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 				echo '<div class="row-actions">';
 				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
-				echo "&nbsp;|&nbsp;";
+				echo '&nbsp;|&nbsp;';
 				printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
 
 				if ( $this->_filter_items_by_course() ) {
-					echo "&nbsp;|&nbsp;";
-					printf( '<a href="%s">%s</a>', remove_query_arg( array(
-						'course',
-						'orderby'
-					) ), __( 'Remove Filter', 'learnpress' ) );
+					echo '&nbsp;|&nbsp;';
+					printf(
+						'<a href="%s">%s</a>',
+						remove_query_arg(
+							array(
+								'course',
+								'orderby',
+							)
+						),
+						__( 'Remove Filter', 'learnpress' )
+					);
 				}
 				echo '</div></div>';
 			}
-
 		} else {
 			_e( 'Not assigned yet', 'learnpress' );
 		}
@@ -783,7 +812,7 @@ abstract class LP_Abstract_Post_Type {
 				// translators: Publish box date format, see http://php.net/date
 				date_i18n( __( 'M j, Y @ G:i', 'learnpress' ), strtotime( $post->post_date ) )
 			),
-			10 => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'draft updated.', 'learnpress' ) )
+			10 => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'draft updated.', 'learnpress' ) ),
 		);
 
 		if ( $post_type_object->publicly_queryable ) {
@@ -810,7 +839,7 @@ abstract class LP_Abstract_Post_Type {
 
 			$preview_permalink = learn_press_get_preview_url( $post->ID );
 
-			$preview_link                      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$preview_link                       = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			$messages[ $this->_post_type ][8]  .= $preview_link;
 			$messages[ $this->_post_type ][10] .= $preview_link;
 		}

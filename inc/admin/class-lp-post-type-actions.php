@@ -28,54 +28,7 @@ class LP_Post_Type_Actions {
 		add_filter( 'pre_trash_post', array( $this, 'pre_trash_post' ), 10, 2 );
 		add_filter( 'trashed_post', array( $this, 'trashed_post' ), 1000, 1 );
 
-		// add_filter( 'before_delete_post', array( $this, 'before_delete_post' ), 1000, 1 );
-		//add_filter( 'deleted_post', array( $this, 'deleted_post' ), 1000, 1 );
-		add_action( 'save_post', array( $this, 'create_default_section' ), - 1000 );
-
 		add_filter( 'transition_post_status', array( $this, 'transition_post_status' ), 1000, 3 );
-	}
-
-	/**
-	 * Create default section for an auto-draft course.
-	 *
-	 * @since 3.x.x
-	 *
-	 * @return mixed
-	 */
-	public function create_default_section($post) {
-
-		if ( 'auto-draft' !== get_post_status( $post ) ) {
-			return false;
-		}
-
-		if ( LP_COURSE_CPT !== get_post_type( $post ) ) {
-			return false;
-		}
-
-		if ( ! $course = LP_Course::get_course( $post ) ) {
-
-			return false;
-		}
-
-		if ( $course->get_curriculum_raw() ) {
-			return false;
-		}
-
-		$curd = new LP_Section_CURD( $post );
-		$args = array(
-			'section_course_id'   => $post,
-			'section_description' => '',
-			'section_name'        => apply_filters( 'learn-press/default-section-name', __( 'Section 1', 'learnpress' ) ),
-			'items'               => array(),
-		);
-
-
-		// create section
-		$section = $curd->create( $args );
-
-		LP_Object_Cache::flush();
-
-		return $section;
 	}
 
 	public function __get( $key ) {
@@ -131,12 +84,11 @@ class LP_Post_Type_Actions {
 	 * @return mixed
 	 */
 	public function pre_trash_post( $null, $post ) {
-
-		//LP_Debug::startTransaction();
 		if ( $this->is_course_item( $post ) ) {
-			$curd = new LP_Course_CURD();
+			$curd       = new LP_Course_CURD();
+			$course_ids = $curd->get_course_by_item( $post->ID );
 
-			if ( $course_ids = $curd->get_course_by_item( $post->ID ) ) {
+			if ( $course_ids ) {
 				$this->add( 'item-courses-' . $post->ID, $course_ids );
 			}
 		} elseif ( $this->is_course( $post ) ) {
@@ -148,11 +100,13 @@ class LP_Post_Type_Actions {
 
 	public function trashed_post( $post_id ) {
 		if ( $this->is_course_item( $post_id ) ) {
-			if ( $course_ids = $this->get( 'item-courses-' . $post_id ) ) {
+			$course_ids = $this->get( 'item-courses-' . $post_id );
+
+			if ( $course_ids ) {
 				$curd = new LP_Course_CURD();
 				foreach ( $course_ids as $course_id ) {
 					$curd->remove_item( $post_id, $course_id );
-					do_action( 'learn-press/removed-course-item', $post_id, $course_id );
+					do_action( 'learn-press/removed-course-item', $course_id );
 				}
 
 				$this->delete( 'item-courses-' . $post_id );
@@ -161,23 +115,18 @@ class LP_Post_Type_Actions {
 			do_action( 'learn-press/trashed-course', $post_id );
 		} elseif ( get_post_type( $post_id ) == LP_QUESTION_CPT ) {
 			global $wpdb;
-			// Delete the question trashed from quizzes
 			$wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', array( 'question_id' => $post_id ), array( '%d' ) );
 		}
-
-		//echo 'trashed';
-		//LP_Debug::rollbackTransaction();
-
-		//die();
 	}
 
 	public function transition_post_status( $old, $new, $post ) {
 		if ( $this->is_course( $post ) ) {
 
 		} elseif ( $this->is_course_item( $post ) ) {
-			$curd = new LP_Course_CURD();
+			$curd       = new LP_Course_CURD();
+			$course_ids = $curd->get_course_by_item( $post->ID );
 
-			if ( $course_ids = $curd->get_course_by_item( $post->ID ) ) {
+			if ( $course_ids ) {
 				foreach ( $course_ids as $course_id ) {
 					do_action( 'learn-press/transition-course-item-status', $post->ID, $course_id, $old, $new );
 				}
@@ -190,11 +139,12 @@ class LP_Post_Type_Actions {
 	}
 
 	public function removed_item_from_section( $item, $course_id ) {
-		do_action( 'learn-press/removed-course-item', $item['id'], $course_id );
+		do_action( 'learn-press/removed-course-item', $course_id );
 	}
 
 	public function save_post( $post_id ) {
 		$post_type = get_post_type( $post_id );
+
 		if ( LP_COURSE_CPT === $post_type ) {
 			do_action( 'learn-press/save-course', $post_id );
 		} elseif ( learn_press_is_support_course_item_type( $post_type ) ) {

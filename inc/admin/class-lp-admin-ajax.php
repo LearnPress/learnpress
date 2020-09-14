@@ -29,7 +29,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				return;
 			}
 
-			$ajaxEvents = array(
+			$ajax_events = array(
 				'create_page'             => false,
 				'plugin_action'           => false,
 				'modal_search_items'      => false,
@@ -37,7 +37,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'search_users'            => false,
 				'load_chart'              => false,
 				'search_course_category'  => false,
-				/////////////
 				'be_teacher'              => false,
 				'custom_stats'            => false,
 				'ignore_setting_up'       => false,
@@ -53,12 +52,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				// Update order status
 				'update_order_status'     => false,
 			);
-			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
-				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
+
+			foreach ( $ajax_events as $ajax_event => $nopriv ) {
+				add_action( 'wp_ajax_learnpress_' . $ajax_event, array( __CLASS__, $ajax_event ) );
 
 				// enable for non-logged in users
 				if ( $nopriv ) {
-					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
+					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_event ) );
 				}
 			}
 
@@ -98,8 +98,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'sync-course-final-quiz',
 				'sync-remove-older-data',
 				'sync-calculate-course-results',
-				'create-question-type'
-				//'sync-user-courses',
+				'create-question-type',
+				// 'sync-user-courses',
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -119,11 +119,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		public static function create_question_type(){
-		    $type = LP_Request::get('type');
+		public static function create_question_type() {
+			$type = LP_Request::get( 'type' );
 
-		    //wp_insert_post()
-        }
+			// wp_insert_post()
+		}
 
 		public static function sync_calculate_course_results() {
 			if ( empty( $_REQUEST['sync'] ) ) {
@@ -135,11 +135,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$sync = $_REQUEST['sync'];
 
 			if ( $sync === 'get-users' ) {
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
                     SELECT ID
                     FROM {$wpdb->users}
                     WHERE 1
-                ", 1 );
+                ",
+					1
+				);
 
 				$users = $wpdb->get_col( $query );
 
@@ -191,11 +194,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$sync = $_REQUEST['sync'];
 
 			if ( $sync === 'get-users' ) {
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
                     SELECT ID
                     FROM {$wpdb->users}
                     WHERE 1
-                ", 1 );
+                ",
+					1
+				);
 
 				$users = $wpdb->get_col( $query );
 
@@ -263,22 +269,24 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'orderby'        => 'name',
 				'order'          => 'ASC',
 				'search'         => sprintf( '*%s*', esc_attr( LP_Request::get_string( 'term' ) ) ),
-				'search_columns' => array( 'user_login', 'user_email' )
+				'search_columns' => array( 'user_login', 'user_email' ),
 			);
 			$q     = new WP_User_Query( $args );
 			$users = array();
 
-			if ( $results = $q->get_results() ) {
+			$results = $q->get_results();
+
+			if ( $results ) {
 				foreach ( $results as $result ) {
 					$users[] = array(
 						'id'   => $result->ID,
-						'text' => learn_press_get_profile_display_name( $result->ID )
+						'text' => learn_press_get_profile_display_name( $result->ID ),
 					);
 				}
 			}
 			echo json_encode(
 				array(
-					'results' => $users
+					'results' => $users,
 				)
 			);
 			die();
@@ -363,7 +371,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				learn_press_send_json_error( __( 'Fail while joining newsletter! Please try again!', 'learnpress' ) );
 			}
 			$url      = 'https://thimpress.com/mailster/subscribe';
-			$response = wp_remote_post( $url, array(
+			$response = wp_remote_post(
+				$url,
+				array(
 					'method'      => 'POST',
 					'timeout'     => 45,
 					'redirection' => 5,
@@ -377,7 +387,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'email'    => $user->get_email(),
 						'website'  => site_url(),
 					),
-					'cookies'     => array()
+					'cookies'     => array(),
 				)
 			);
 			if ( is_wp_error( $response ) ) {
@@ -411,18 +421,21 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
 						$curd        = new LP_Course_CURD();
-						$new_item_id = $curd->duplicate( $post_id, array(
-							'exclude_meta' => array(
-								'order-pending',
-								'order-processing',
-								'order-completed',
-								'order-cancelled',
-								'order-failed',
-								'count_enrolled_users',
-								'_lp_sample_data',
-								'_lp_retake_count'
+						$new_item_id = $curd->duplicate(
+							$post_id,
+							array(
+								'exclude_meta' => array(
+									'order-pending',
+									'order-processing',
+									'order-completed',
+									'order-cancelled',
+									'order-failed',
+									'count_enrolled_users',
+									'_lp_sample_data',
+									'_lp_retake_count',
+								),
 							)
-						) );
+						);
 						break;
 					case LP_LESSON_CPT:
 						$curd        = new LP_Lesson_CURD();
@@ -445,7 +458,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				} else {
 					learn_press_send_json_success( admin_url( 'post.php?post=' . $new_item_id . '&action=edit' ) );
 				}
-
 			}
 		}
 
@@ -511,10 +523,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function toggle_item_preview() {
 			$id = learn_press_get_request( 'item_id' );
-			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
-					'lp_lesson',
-					'lp_quiz'
-				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
+			if ( in_array(
+				get_post_type( $id ),
+				apply_filters(
+					'learn-press/reviewable-post-types',
+					array(
+						'lp_lesson',
+						'lp_quiz',
+					)
+				)
+			) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
 			) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
@@ -538,11 +556,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged', 'exclude' ) );
 
-			learn_press_send_json( array(
-				'html'  => $search->get_html_items(),
-				'nav'   => $search->get_pagination(),
-				'items' => $search->get_items()
-			) );
+			learn_press_send_json(
+				array(
+					'html'  => $search->get_html_items(),
+					'nav'   => $search->get_pagination(),
+					'items' => $search->get_items(),
+				)
+			);
 
 		}
 
@@ -562,11 +582,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple', 'text_format', 'exclude' ) );
 
-			learn_press_send_json( array(
-				'html'  => $search->get_html_items(),
-				'nav'   => $search->get_pagination(),
-				'users' => $search->get_items()
-			) );
+			learn_press_send_json(
+				array(
+					'html'  => $search->get_html_items(),
+					'nav'   => $search->get_pagination(),
+					'users' => $search->get_items(),
+				)
+			);
 
 		}
 
@@ -575,11 +597,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function search_course_category() {
 			global $wpdb;
-			$sql   = "SELECT `t`.`term_id` as `id`, "
-			         . " `t`.`name` `text` "
-			         . " FROM {$wpdb->terms} t "
-			         . "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
-			         . " WHERE `t`.`name` LIKE %s";
+			$sql   = 'SELECT `t`.`term_id` as `id`, '
+					 . ' `t`.`name` `text` '
+					 . " FROM {$wpdb->terms} t "
+					 . "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
+					 . ' WHERE `t`.`name` LIKE %s';
 			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
 			$items = $wpdb->get_results( $query );
@@ -600,7 +622,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// verify nonce
 			$nonce = learn_press_get_request( 'remove_nonce' );
 			if ( ! wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
-				//die( __( 'Check nonce failed', 'learnpress' ) );
+				// die( __( 'Check nonce failed', 'learnpress' ) );
 			}
 
 			// validate order
@@ -638,7 +660,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				array(
 					'result'     => 'success',
 					'item_html'  => $html,
-					'order_data' => $order_data
+					'order_data' => $order_data,
 				)
 			);
 		}
@@ -666,10 +688,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			global $wpdb;
 
 			$response = array(
-				'result' => 'error'
+				'result' => 'error',
 			);
 
-			if ( $order_item_ids = $order->add_items( $item_ids ) ) {
+			$order_item_ids = $order->add_items( $item_ids );
+
+			if ( $order_item_ids ) {
 				$html        = '';
 				$order_items = $order->get_items();
 
@@ -691,11 +715,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 				}
 
-
 				$response = array(
 					'result'     => 'success',
 					'item_html'  => $html,
-					'order_data' => $order_data
+					'order_data' => $order_data,
 				);
 			}
 
@@ -709,15 +732,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @return array|bool|mixed|object
 		 */
-		public static function getPhpInput( $params = '' ) {
+		public static function get_php_input( $params = '' ) {
 			static $data = false;
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
+
 			if ( $data && func_num_args() > 0 ) {
 				$params = is_array( func_get_arg( 0 ) ) ? func_get_arg( 0 ) : func_get_args();
 				if ( $params ) {
@@ -740,14 +763,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param $var
 		 */
 		public static function parsePhpInput( &$var ) {
-			if ( $data = self::getPhpInput() ) {
+			$data = self::get_php_input();
+
+			if ( $data ) {
 				foreach ( $data as $k => $v ) {
 					$var[ $k ] = $v;
 				}
 			}
 		}
-
-		/*************/
 
 		public static function load_chart() {
 			if ( ! class_exists( 'LP_Submenu_Statistics' ) ) {
@@ -766,19 +789,25 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$term = stripslashes( $_REQUEST['term'] );
 
 			if ( empty( $term ) ) {
-				die( __FILE__ . '::' . __FUNCTION__ );;
+				die( __FILE__ . '::' . __FUNCTION__ );
+
 			}
 
 			$found_customers = array();
 
 			add_action( 'pre_user_query', array( __CLASS__, 'json_search_customer_name' ) );
 
-			$customers_query = new WP_User_Query( apply_filters( 'learn_press_search_customers_query', array(
-				'fields'         => 'all',
-				'orderby'        => 'display_name',
-				'search'         => '*' . $term . '*',
-				'search_columns' => array( 'ID', 'user_login', 'user_email', 'user_nicename' )
-			) ) );
+			$customers_query = new WP_User_Query(
+				apply_filters(
+					'learn_press_search_customers_query',
+					array(
+						'fields'         => 'all',
+						'orderby'        => 'display_name',
+						'search'         => '*' . $term . '*',
+						'search_columns' => array( 'ID', 'user_login', 'user_email', 'user_nicename' ),
+					)
+				)
+			);
 
 			remove_action( 'pre_user_query', array( __CLASS__, 'json_search_customer_name' ) );
 
@@ -788,7 +817,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				foreach ( $customers as $customer ) {
 					$found_customers[] = array(
 						'label' => $customer->display_name . ' (#' . $customer->ID . ' &ndash; ' . sanitize_email( $customer->user_email ) . ')',
-						'value' => $customer->ID
+						'value' => $customer->ID,
 					);
 				}
 			}
@@ -808,7 +837,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			$query->query_from  .= " INNER JOIN {$wpdb->usermeta} AS user_name ON {$wpdb->users}.ID = user_name.user_id AND ( user_name.meta_key = 'first_name' OR user_name.meta_key = 'last_name' ) ";
-			$query->query_where .= $wpdb->prepare( " OR user_name.meta_value LIKE %s ", '%' . $term . '%' );
+			$query->query_where .= $wpdb->prepare( ' OR user_name.meta_value LIKE %s ', '%' . $term . '%' );
 		}
 
 		/**
@@ -821,7 +850,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$value   = learn_press_get_request( 'value' );
 			$expired = learn_press_get_request( 'expired' );
 
-			//LP_Admin_Notice::instance()->dismiss_notice_2( $name, $value, $expired );
+			// LP_Admin_Notice::instance()->dismiss_notice_2( $name, $value, $expired );
 
 			die();
 		}
@@ -842,14 +871,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$page_name = ! empty( $_REQUEST['page_name'] ) ? $_REQUEST['page_name'] : '';
 			$response  = array();
 			if ( $page_name ) {
+				$page_id = LP_Helper::create_page( $page_name );
 
-				if ( $page_id = LP_Helper::create_page( $page_name ) ) {
+				if ( $page_id ) {
 					$response['page'] = get_post( $page_id );
 					$html             = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
 					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
-					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
+					$response['html']     .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
 				} else {
 					$response['error'] = __( 'Error! Page creation failed. Please try again.', 'learnpress' );
 				}
@@ -904,7 +934,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( 'no' == $yes ) {
 				set_transient( 'learn_press_install_sample_data', 'off', 12 * HOUR_IN_SECONDS );
 			} else {
-				$result = array( 'status' => 'activate' );//learn_press_install_and_active_add_on( 'learnpress-import-export' );
+				$result = array( 'status' => 'activate' );// learn_press_install_and_active_add_on( 'learnpress-import-export' );
 				if ( 'activate' == $result['status'] ) {
 					// copy dummy-data.xml to import folder of the add-on
 					lpie_mkdir( lpie_import_path() );
@@ -920,7 +950,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 								'action'      => 'learn_press_import',
 								'import-file' => 'import/' . $file,
 								'nonce'       => wp_create_nonce( 'lpie-import-file' ),
-								'x'           => 1
+								'x'           => 1,
 							);
 							$response['url']     = $url = $url . '&' . http_build_query( $postdata ) . "\n";
 							$response['result']  = 'success';
@@ -944,7 +974,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function bundle_activate_add_ons() {
 			global $learn_press_add_ons;
-			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+			include_once ABSPATH . 'wp-admin/includes/plugin-install.php'; // for plugins_api..
 			$response = array( 'addons' => array() );
 
 			if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -967,7 +997,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function bundle_activate_add_on() {
 			$response = array();
-			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+			include_once ABSPATH . 'wp-admin/includes/plugin-install.php'; // for plugins_api..
 			if ( ! current_user_can( 'activate_plugins' ) ) {
 				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.', 'learnpress' );
 			} else {
@@ -1020,10 +1050,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = ! empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-            <a href="<?php echo get_edit_post_link( $page_id ); ?>"
-               target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-            <a href="<?php echo get_permalink( $page_id ); ?>"
-               target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+
+			<a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+
 			<?php
 			die();
 		}
@@ -1052,19 +1082,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function remove_notice_popup() {
-
-			if ( isset( $_POST['action'] ) && $_POST['action'] === 'learnpress_remove_notice_popup'
-			     && isset( $_POST['slug'] ) && ! empty( $_POST['slug'] )
-			     && isset( $_POST['user'] ) && ! empty( $_POST['user'] )
-			) {
-
+			if ( isset( $_POST['action'] ) && $_POST['action'] === 'learnpress_remove_notice_popup' && isset( $_POST['slug'] ) && ! empty( $_POST['slug'] ) && isset( $_POST['user'] ) && ! empty( $_POST['user'] ) ) {
 				$slug = 'learnpress_notice_' . $_POST['slug'] . '_' . $_POST['user'];
-
 				set_transient( $slug, true, 30 * DAY_IN_SECONDS );
 			}
 
 			wp_die();
-
 		}
 
 		public static function update_order_status() {
@@ -1090,9 +1113,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
 
-			$result = wp_handle_upload( $file,
+			$result = wp_handle_upload(
+				$file,
 				array(
-					'test_form' => false
+					'test_form' => false,
 				)
 			);
 
@@ -1102,7 +1126,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				unset( $result['file'] );
 			} else {
 				$result = array(
-					'error' => __( 'Profile picture upload failed', 'learnpress' )
+					'error' => __( 'Profile picture upload failed', 'learnpress' ),
 				);
 			}
 			learn_press_send_json( $result );

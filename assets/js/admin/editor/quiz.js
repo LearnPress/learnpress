@@ -175,9 +175,10 @@ var ModalQuizItems = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+var $ = window.jQuery;
 var QuestionList = {
   toggleAll: function toggleAll(context) {
-    var hidden = context.getters['isHiddenListQuestions'];
+    var hidden = context.getters.isHiddenListQuestions;
 
     if (hidden) {
       context.commit('OPEN_LIST_QUESTIONS');
@@ -187,7 +188,7 @@ var QuestionList = {
 
     LP.Request({
       type: 'hidden-questions',
-      hidden: context.getters['hiddenQuestions']
+      hidden: context.getters.hiddenQuestions
     });
   },
   updateQuizQuestionsHidden: function updateQuizQuestionsHidden(context, data) {
@@ -207,11 +208,9 @@ var QuestionList = {
       var result = response.body;
 
       if (result.success) {
-        // update new question type
         context.commit('UPDATE_NEW_QUESTION_TYPE', payload.question.type, {
           root: true
-        }); // update list quiz questions
-
+        });
         context.commit('ADD_NEW_QUESTION', result.data);
         context.commit('CLOSE_LIST_QUESTIONS');
         context.commit('OPEN_QUESTION', result.data);
@@ -325,7 +324,7 @@ var QuestionList = {
 
     LP.Request({
       type: 'hidden-questions',
-      hidden: context.getters['hiddenQuestions']
+      hidden: context.getters.hiddenQuestions
     });
   },
   updateQuestionAnswersOrder: function updateQuestionAnswersOrder(context, payload) {
@@ -407,8 +406,8 @@ var QuestionList = {
     context.commit('ADD_QUESTION_ANSWER', {
       question_id: question_id,
       answer: {
-        'text': LP_Quiz_Store.getters['i18n/all'].new_option,
-        'question_answer_id': temp_id
+        text: LP_Quiz_Store.getters['i18n/all'].new_option,
+        question_answer_id: temp_id
       }
     });
     LP.Request({
@@ -579,8 +578,8 @@ var QuestionList = {
     });
   },
   isHiddenListQuestions: function isHiddenListQuestions(state, getters) {
-    var questions = getters['listQuestions'];
-    var hiddenQuestions = getters['hiddenQuestions'];
+    var questions = getters.listQuestions;
+    var hiddenQuestions = getters.hiddenQuestions;
     return questions.length === hiddenQuestions.length;
   },
   disableUpdateList: function disableUpdateList(state) {
@@ -650,7 +649,7 @@ var Quiz = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return HTTP; });
 function HTTP(options) {
-  var $ = window.jQuery;
+  var $ = window.jQuery || jQuery;
   var $VueHTTP = Vue.http;
   options = $.extend({
     ns: 'LPRequest',
@@ -660,24 +659,24 @@ function HTTP(options) {
 
   LP.Request = function (payload) {
     $publishingAction = $('#publishing-action');
-    payload['id'] = options.store.getters.id;
-    payload['nonce'] = options.store.getters.nonce;
+    payload.id = options.store.getters.id;
+    payload.nonce = options.store.getters.nonce;
     payload['lp-ajax'] = options.store.getters.action;
-    payload['code'] = options.store.getters.code;
+    payload.code = options.store.getters.code;
     $publishingAction.find('#publish').addClass('disabled');
     $publishingAction.find('.spinner').addClass('is-active');
-    $publishingAction.addClass('code-' + payload['code']);
+    $publishingAction.addClass('code-' + payload.code);
     return $VueHTTP.post(options.store.getters.urlAjax, payload, {
       emulateJSON: true,
       params: {
         namespace: options.ns,
-        code: payload['code']
+        code: payload.code
       }
     });
   };
 
   $VueHTTP.interceptors.push(function (request, next) {
-    if (request.params['namespace'] !== options.ns) {
+    if (request.params.namespace !== options.ns) {
       next();
       return;
     }
@@ -719,39 +718,39 @@ function HTTP(options) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var ModalQuizItems = {
-  'TOGGLE': function TOGGLE(state) {
+  TOGGLE: function TOGGLE(state) {
     state.open = !state.open;
   },
-  'SET_QUIZ': function SET_QUIZ(state, quizId) {
+  SET_QUIZ: function SET_QUIZ(state, quizId) {
     state.quizId = quizId;
   },
-  'SET_LIST_ITEMS': function SET_LIST_ITEMS(state, items) {
+  SET_LIST_ITEMS: function SET_LIST_ITEMS(state, items) {
     state.items = items;
   },
-  'ADD_ITEM': function ADD_ITEM(state, item) {
+  ADD_ITEM: function ADD_ITEM(state, item) {
     state.addedItems.push(item);
   },
-  'REMOVE_ADDED_ITEM': function REMOVE_ADDED_ITEM(state, item) {
+  REMOVE_ADDED_ITEM: function REMOVE_ADDED_ITEM(state, item) {
     state.addedItems.forEach(function (_item, index) {
       if (_item.id === item.id) {
         state.addedItems.splice(index, 1);
       }
     });
   },
-  'RESET': function RESET(state) {
+  RESET: function RESET(state) {
     state.addedItems = [];
     state.items = [];
   },
-  'UPDATE_PAGINATION': function UPDATE_PAGINATION(state, pagination) {
+  UPDATE_PAGINATION: function UPDATE_PAGINATION(state, pagination) {
     state.pagination = pagination;
   },
-  'SEARCH_ITEM_REQUEST': function SEARCH_ITEM_REQUEST(state) {
+  SEARCH_ITEM_REQUEST: function SEARCH_ITEM_REQUEST(state) {
     state.status = 'loading';
   },
-  'SEARCH_ITEM_SUCCESS': function SEARCH_ITEM_SUCCESS(state) {
+  SEARCH_ITEM_SUCCESS: function SEARCH_ITEM_SUCCESS(state) {
     state.status = 'successful';
   },
-  'SEARCH_ITEM_FAIL': function SEARCH_ITEM_FAIL(state) {
+  SEARCH_ITEM_FAIL: function SEARCH_ITEM_FAIL(state) {
     state.status = 'fail';
   }
 };
@@ -770,19 +769,19 @@ var ModalQuizItems = {
 __webpack_require__.r(__webpack_exports__);
 var $ = window.jQuery;
 var QuestionList = {
-  'SORT_QUESTIONS': function SORT_QUESTIONS(state, orders) {
+  SORT_QUESTIONS: function SORT_QUESTIONS(state, orders) {
     state.questions = state.questions.map(function (question) {
       question.order = orders[question.id];
       return question;
     });
   },
-  'SORT_QUESTION_ANSWERS': function SORT_QUESTION_ANSWERS(state, orders) {
+  SORT_QUESTION_ANSWERS: function SORT_QUESTION_ANSWERS(state, orders) {
     state.questions = state.questions.map(function (question) {
       question.answers.answer_order = orders[question.answers.question_answer_id];
       return question;
     });
   },
-  'ADD_QUESTION_ANSWER': function ADD_QUESTION_ANSWER(state, payload) {
+  ADD_QUESTION_ANSWER: function ADD_QUESTION_ANSWER(state, payload) {
     state.questions = state.questions.map(function (question) {
       if (question.id === payload.question_id) {
         var found = false;
@@ -798,12 +797,12 @@ var QuestionList = {
 
         !found && question.answers.push(payload.answer);
         return question;
-      } else {
-        return question;
       }
+
+      return question;
     });
   },
-  'CHANGE_QUESTION_CORRECT_ANSWERS': function CHANGE_QUESTION_CORRECT_ANSWERS(state, data) {
+  CHANGE_QUESTION_CORRECT_ANSWERS: function CHANGE_QUESTION_CORRECT_ANSWERS(state, data) {
     state.questions = state.questions.map(function (question) {
       if (parseInt(question.id) === data.id) {
         question.answers = data.answers;
@@ -812,10 +811,10 @@ var QuestionList = {
       return question;
     });
   },
-  'SET_QUESTIONS': function SET_QUESTIONS(state, questions) {
+  SET_QUESTIONS: function SET_QUESTIONS(state, questions) {
     state.questions = questions;
   },
-  'ADD_NEW_QUESTION': function ADD_NEW_QUESTION(state, question) {
+  ADD_NEW_QUESTION: function ADD_NEW_QUESTION(state, question) {
     var found = false;
 
     if (question.temp_id) {
@@ -842,7 +841,7 @@ var QuestionList = {
       state.questions.push(question);
     }
   },
-  'CHANGE_QUESTION_TYPE': function CHANGE_QUESTION_TYPE(state, data) {
+  CHANGE_QUESTION_TYPE: function CHANGE_QUESTION_TYPE(state, data) {
     state.questions = state.questions.map(function (question) {
       if (parseInt(question.id) === data.id) {
         question.answers = data.answers;
@@ -853,7 +852,7 @@ var QuestionList = {
       return question;
     });
   },
-  'REMOVE_QUESTION': function REMOVE_QUESTION(state, item) {
+  REMOVE_QUESTION: function REMOVE_QUESTION(state, item) {
     var questions = state.questions,
         index = questions.indexOf(item);
 
@@ -863,7 +862,7 @@ var QuestionList = {
       state.questions.splice(index, 1);
     }
   },
-  'DELETE_QUESTION_ANSWER': function DELETE_QUESTION_ANSWER(state, payload) {
+  DELETE_QUESTION_ANSWER: function DELETE_QUESTION_ANSWER(state, payload) {
     var question_id = payload.question_id,
         answer_id = payload.answer_id;
     state.questions = state.questions.map(function (question) {
@@ -880,53 +879,53 @@ var QuestionList = {
       return question;
     });
   },
-  'REMOVE_QUESTIONS': function REMOVE_QUESTIONS() {// code
+  REMOVE_QUESTIONS: function REMOVE_QUESTIONS() {// code
   },
-  'CLOSE_QUESTION': function CLOSE_QUESTION(state, question) {
+  CLOSE_QUESTION: function CLOSE_QUESTION(state, question) {
     state.questions.forEach(function (_question, index) {
       if (question.id === _question.id) {
         state.questions[index].open = false;
       }
     });
   },
-  'OPEN_QUESTION': function OPEN_QUESTION(state, question) {
+  OPEN_QUESTION: function OPEN_QUESTION(state, question) {
     state.questions.forEach(function (_question, index) {
       if (question.id === _question.id) {
         state.questions[index].open = true;
       }
     });
   },
-  'CLOSE_LIST_QUESTIONS': function CLOSE_LIST_QUESTIONS(state) {
+  CLOSE_LIST_QUESTIONS: function CLOSE_LIST_QUESTIONS(state) {
     state.questions = state.questions.map(function (_question) {
       _question.open = false;
       return _question;
     });
   },
-  'OPEN_LIST_QUESTIONS': function OPEN_LIST_QUESTIONS(state) {
+  OPEN_LIST_QUESTIONS: function OPEN_LIST_QUESTIONS(state) {
     state.questions = state.questions.map(function (_question) {
       _question.open = true;
       return _question;
     });
   },
-  'UPDATE_QUESTION_REQUEST': function UPDATE_QUESTION_REQUEST(state, questionId) {
+  UPDATE_QUESTION_REQUEST: function UPDATE_QUESTION_REQUEST(state, questionId) {
     $Vue.set(state.statusUpdateQuestionItem, questionId, 'updating');
   },
-  'UPDATE_QUESTION_SUCCESS': function UPDATE_QUESTION_SUCCESS(state, questionID) {
+  UPDATE_QUESTION_SUCCESS: function UPDATE_QUESTION_SUCCESS(state, questionID) {
     $Vue.set(state.statusUpdateQuestionItem, questionID, 'successful');
   },
-  'UPDATE_QUESTION_FAILURE': function UPDATE_QUESTION_FAILURE(state, questionID) {
+  UPDATE_QUESTION_FAILURE: function UPDATE_QUESTION_FAILURE(state, questionID) {
     $Vue.set(state.statusUpdateQuestionItem, questionID, 'failed');
   },
-  'UPDATE_QUESTION_ANSWER_REQUEST': function UPDATE_QUESTION_ANSWER_REQUEST(state, question_id) {
+  UPDATE_QUESTION_ANSWER_REQUEST: function UPDATE_QUESTION_ANSWER_REQUEST(state, question_id) {
     $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'updating');
   },
-  'UPDATE_QUESTION_ANSWER_SUCCESS': function UPDATE_QUESTION_ANSWER_SUCCESS(state, question_id) {
+  UPDATE_QUESTION_ANSWER_SUCCESS: function UPDATE_QUESTION_ANSWER_SUCCESS(state, question_id) {
     $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'successful');
   },
-  'UPDATE_QUESTION_ANSWER_FAIL': function UPDATE_QUESTION_ANSWER_FAIL(state, question_id) {
+  UPDATE_QUESTION_ANSWER_FAIL: function UPDATE_QUESTION_ANSWER_FAIL(state, question_id) {
     $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
   },
-  'DELETE_ANSWER': function DELETE_ANSWER(state, data) {
+  DELETE_ANSWER: function DELETE_ANSWER(state, data) {
     state.questions.map(function (question, index) {
       if (question.id == data.question_id) {
         for (var i = 0, n = question.answers.length; i < n; i++) {
@@ -956,19 +955,19 @@ var QuestionList = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var Quiz = {
-  'UPDATE_HEART_BEAT': function UPDATE_HEART_BEAT(state, status) {
+  UPDATE_HEART_BEAT: function UPDATE_HEART_BEAT(state, status) {
     state.heartbeat = !!status;
   },
-  'UPDATE_STATUS': function UPDATE_STATUS(state, status) {
+  UPDATE_STATUS: function UPDATE_STATUS(state, status) {
     state.status = status;
   },
-  'UPDATE_NEW_QUESTION_TYPE': function UPDATE_NEW_QUESTION_TYPE(state, type) {
+  UPDATE_NEW_QUESTION_TYPE: function UPDATE_NEW_QUESTION_TYPE(state, type) {
     state.default_new = type;
   },
-  'INCREASE_NUMBER_REQUEST': function INCREASE_NUMBER_REQUEST(state) {
+  INCREASE_NUMBER_REQUEST: function INCREASE_NUMBER_REQUEST(state) {
     state.countCurrentRequest++;
   },
-  'DECREASE_NUMBER_REQUEST': function DECREASE_NUMBER_REQUEST(state) {
+  DECREASE_NUMBER_REQUEST: function DECREASE_NUMBER_REQUEST(state) {
     state.countCurrentRequest--;
   }
 };
@@ -1022,7 +1021,7 @@ window.jQuery(document).ready(function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var $ = window.jQuery;
+var $ = window.jQuery || jQuery;
 
 var i18n = function i18n(i18n) {
   var state = $.extend({}, i18n);
@@ -1057,7 +1056,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var $ = window.jQuery;
+var $ = window.jQuery || jQuery;
 
 var Quiz = function Quiz(data) {
   var state = $.extend({
@@ -1093,7 +1092,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var $ = window.jQuery;
+var $ = window.jQuery || jQuery;
 
 var QuestionList = function QuestionList(data) {
   var listQuestions = data.listQuestions;
@@ -1144,7 +1143,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var $ = window.jQuery;
+var $ = window.jQuery || jQuery;
 
 var Quiz = function Quiz(data) {
   var state = $.extend({

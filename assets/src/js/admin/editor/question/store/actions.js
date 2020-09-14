@@ -11,13 +11,7 @@ const getEditorNonce = function getEditorNonce() {
  * @param data
  * @return {{type: string, data: *}}
  */
-export function setData(data, key ) {
-    // if (typeof key === 'string') {
-    //     data = {[key]: data}
-    // } else {
-    //     data = key;
-    // }
-
+export function setData( data, key ) {
     return {
         type: 'SET_DATA',
         data,

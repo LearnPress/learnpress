@@ -9,22 +9,19 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
+
+if ( ! $messages ) {
+	return;
+}
 ?>
 
-<?php if ( ! $messages ) {
-	return;
-} ?>
+<?php foreach ( $messages as $message ) : ?>
 
-<?php foreach ( $messages as $message ) { ?>
-
-    <div class="learn-press-message notice">
+	<div class="learn-press-message notice">
 
 		<?php echo $message; ?>
 
-    </div>
+	</div>
 
-<?php } ?>
+<?php endforeach; ?>

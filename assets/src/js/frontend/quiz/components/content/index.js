@@ -1,37 +1,17 @@
-import {Component} from '@wordpress/element';
-import {withSelect, withDispatch} from '@wordpress/data';
-import {compose} from '@wordpress/compose';
+/**
+ * Quizz Content.
+ * Edit: Use React hook.
+ *
+ * @author nhamdv - ThimPress
+ */
+import { select } from '@wordpress/data';
 
-class Content extends Component {
-    render() {
-        const {
-            content
-        } = this.props;
+const Content = () => {
+	const content = select( 'learnpress/quiz' ).getData( 'content' );
 
-        return <div className="quiz-content" dangerouslySetInnerHTML={ {__html: content} }>
-            </div>
-    }
-}
+	return (
+		<div className="quiz-content" dangerouslySetInnerHTML={ { __html: content } } />
+	);
+};
 
-export default compose([
-    withSelect((select) => {
-        const {
-            getData
-        } = select('learnpress/quiz');
-
-        return {
-            content: getData('content')
-        }
-    }),
-    withDispatch((dispatch) => {
-        const {
-            setQuizData,
-            startQuiz
-        } = dispatch('learnpress/quiz');
-
-        return {
-            setQuizData,
-            startQuiz
-        }
-    })
-])(Content);
+export default Content;

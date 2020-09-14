@@ -1,2 +1,3 @@
-import Modal from  './modal/index';
+import Modal from './modal/index';
+
 export default Modal;

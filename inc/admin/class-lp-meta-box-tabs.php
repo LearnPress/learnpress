@@ -31,11 +31,10 @@ if ( ! class_exists( 'LP_Meta_Box_Tabs' ) ) {
 				'post_type' => '',
 				'context'   => 'normal',
 				'priority'  => 'high',
-				'tabs'      => array()
+				'tabs'      => array(),
 			);
 			$this->args = wp_parse_args( $args, $defaults );
 
-			// Display tabs after post type content editor
 			add_action( 'edit_form_after_editor', array( $this, 'display' ), 10 );
 			add_filter( 'get_edit_post_link', array( $this, 'add_tab_arg' ) );
 		}
@@ -73,6 +72,7 @@ if ( ! class_exists( 'LP_Meta_Box_Tabs' ) ) {
 			if ( ! in_array( get_post_type(), $this->args['post_type'] ) ) {
 				return;
 			}
+
 			include learn_press_get_admin_view( 'meta-boxes/tabs' );
 		}
 
@@ -96,6 +96,7 @@ if ( ! class_exists( 'LP_Meta_Box_Tabs' ) ) {
 					$this->opt( 'context' ),
 					$this->opt( 'priority' )
 				);
+
 				add_filter( "postbox_classes_{$post_type}_" . $this->opt( 'id' ), array( $this, 'postbox_classes' ) );
 			}
 		}

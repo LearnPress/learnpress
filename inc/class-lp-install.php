@@ -399,8 +399,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			// Get all pages
 			$sql = $wpdb->prepare( "
-				SELECT * 
-	            FROM {$wpdb->posts} p 
+				SELECT *
+	            FROM {$wpdb->posts} p
 	            INNER JOIN  {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key= %s AND p.post_type = %s
 	        ", '_learn_press_page', 'page' );
 
@@ -414,7 +414,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			$query = $wpdb->prepare( "
 				DELETE FROM p, pm
 				USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type = %s
-				WHERE p.post_status = %s 
+				WHERE p.post_status = %s
 				AND p.ID IN(" . implode( ',', $page_ids ) . ")
 			", 'page', 'publish' );
 
@@ -549,13 +549,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			$latest_version = end( $versions );
 			// Update LearnPress from 0.9.x to 1.0
 			if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
-				add_action( 'admin_notices', array( __CLASS__, 'hide_other_notices' ), - 100 );
 				learn_press_include( 'updates/' . self::$_update_files[ $latest_version ] );
 			}
-		}
-
-		public static function hide_other_notices() {
-			//remove_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 		}
 
 		public static function update_from_09() {

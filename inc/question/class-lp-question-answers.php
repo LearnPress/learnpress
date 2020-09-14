@@ -7,9 +7,6 @@
  * @version 3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question_Answers' ) ) {
@@ -53,7 +50,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 * LP_Question_Answers constructor.
 		 *
 		 * @param LP_Question $question
-		 * @param mixed $raw
+		 * @param mixed       $raw
 		 *
 		 * @param             $raw
 		 */
@@ -109,7 +106,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 * Set new option for an answer
 		 *
 		 * @param int|array $id
-		 * @param mixed $options
+		 * @param mixed     $options
 		 */
 		public function set_answer_option( $id, $options = '' ) {
 			if ( is_array( $id ) && func_num_args() == 1 ) {
@@ -185,7 +182,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 * Set answer option by offset.
 		 *
 		 * @param int|string $offset
-		 * @param mixed $value
+		 * @param mixed      $value
 		 */
 		public function offsetSet( $offset, $value ) {
 			$this->_answers[ $offset ] = $value;
@@ -324,7 +321,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * LP_Question_Answer_Option constructor.
 		 *
 		 * @param LP_Question $question
-		 * @param mixed $data
+		 * @param mixed       $data
 		 */
 		public function __construct( $question, $data ) {
 			$this->_data     = $data;
@@ -360,6 +357,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 
 		/**
 		 * Return true if option is TRUE
+		 *
 		 * @return bool
 		 */
 		public function is_true() {
@@ -406,8 +404,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 				} elseif ( ! $is_checked && $is_true ) {
 					$classes[] = 'answered-wrong';
 				}
-
-			} else if ( learn_press_is_review_questions() ) {
+			} elseif ( learn_press_is_review_questions() ) {
 				if ( $is_checked && $is_true ) {
 					$classes[] = 'answered-correct';
 				} elseif ( $is_checked && ! $is_true ) {

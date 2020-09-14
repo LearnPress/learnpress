@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Installer' ) ) {
 	/**
@@ -34,7 +32,7 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		public function check() {
 			$this->push_to_queue(
 				array(
-					'check_tables' => 'yes'
+					'check_tables' => 'yes',
 				)
 			)->save()->dispatch();
 		}
@@ -67,9 +65,12 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		 */
 		protected function get_missing_tables() {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				'
 				SHOW TABLES LIKE %s
-			", '%' . $wpdb->esc_like( 'learnpress' ) . '%' );
+			',
+				'%' . $wpdb->esc_like( 'learnpress' ) . '%'
+			);
 
 			$tables = $wpdb->get_col( $query );
 

@@ -76,7 +76,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'' => array(
+			''               => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
@@ -115,41 +115,45 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			),
 
-			'start-quiz' => array(
+			'start-quiz'     => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'start_quiz' ),
-					//'permission_callback' => array( $this, 'check_admin_permission' ),
-					'args'     => $this->get_item_endpoint_args()
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'start_quiz' ),
+					// 'permission_callback' => array( $this, 'check_admin_permission' ),
+					'permission_callback' => '__return_true',
+					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
 
-			'submit-quiz' => array(
+			'submit-quiz'    => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'submit_quiz' ),
-					//'permission_callback' => array( $this, 'check_admin_permission' ),
-					'args'     => $this->get_item_endpoint_args()
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'submit_quiz' ),
+					// 'permission_callback' => array( $this, 'check_admin_permission' ),
+					'permission_callback' => '__return_true',
+					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
 
-			'hint-answer' => array(
+			'hint-answer'    => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'hint_answer' ),
-					//'permission_callback' => array( $this, 'check_admin_permission' ),
-					'args'     => $this->get_item_endpoint_args()
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'hint_answer' ),
+					// 'permission_callback' => array( $this, 'check_admin_permission' ),
+					'permission_callback' => '__return_true',
+					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
 
-			'check-answer' => array(
+			'check-answer'   => array(
 				array(
-					'methods'  => WP_REST_Server::EDITABLE,
-					'callback' => array( $this, 'check_answer' ),
-					//'permission_callback' => array( $this, 'check_admin_permission' ),
-					'args'     => $this->get_item_endpoint_args()
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'check_answer' ),
+					// 'permission_callback' => array( $this, 'check_admin_permission' ),
+					'permission_callback' => '__return_true',
+					'args'                => $this->get_item_endpoint_args(),
 				),
-			)
+			),
 		);
 
 		parent::register_routes();
@@ -162,24 +166,24 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function get_item_endpoint_args() {
 		return array(
-//			'user_id'   => array(
-//				'description'       => __( 'The ID of user object.', 'learnpress' ),
-//				'type'              => 'int',
-//				'validate_callback' => array( $this, 'validate_arg' ),
-//				//'required'          => true
-//			),
-			'item_id'   => array(
-				'description'       => __( 'The ID of course item object.', 'learnpress' ),
-				'type'              => 'int',
-				'validate_callback' => array( $this, 'validate_arg' ),
-				'required'          => true
-			),
-			'course_id' => array(
+			// 'user_id'   => array(
+			// 'description'       => __( 'The ID of user object.', 'learnpress' ),
+			// 'type'              => 'int',
+			// 'validate_callback' => array( $this, 'validate_arg' ),
+			// 'required'          => true
+			// ),
+				'item_id' => array(
+					'description'       => __( 'The ID of course item object.', 'learnpress' ),
+					'type'              => 'int',
+					'validate_callback' => array( $this, 'validate_arg' ),
+					'required'          => true,
+				),
+			'course_id'   => array(
 				'description'       => __( 'The ID of course object.', 'learnpress' ),
 				'type'              => 'int',
 				'validate_callback' => array( $this, 'validate_arg' ),
-				'required'          => true
-			)
+				'required'          => true,
+			),
 		);
 	}
 
@@ -196,7 +200,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$attributes = $request->get_attributes();
 
 		if ( ! isset( $attributes['args'][ $param ] ) ) {
-			return new WP_Error( 'rest_invalid_param', sprintf( esc_html__( '%s was not registered as a request argument.', 'learnpress' ), $param ), array( 'status' => 400 ) );
+			return new WP_Error( 'rest_invalid_param', sprintf( __( '%s was not registered as a request argument.', 'learnpress' ), $param ), array( 'status' => 400 ) );
 		}
 
 		return true;
@@ -235,7 +239,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function enroll_course( $request ) {
 		$response = array(
-			$_REQUEST
+			$_REQUEST,
 		);
 
 		return rest_ensure_response( $response );
@@ -266,7 +270,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		$response = array(
 			'success' => $success,
-			'message' => ! $success ? $userQuiz->get_error_message() : __( 'Success!', 'learnpress' )
+			'message' => ! $success ? $userQuiz->get_error_message() : __( 'Success!', 'learnpress' ),
 		);
 
 		if ( $success ) {
@@ -276,7 +280,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$showCheck = $quiz->get_show_check_answer();
 			$duration  = $quiz->get_duration();
 
-			//if ( $userQuiz ) {
+			// if ( $userQuiz ) {
 			$status           = $userQuiz->get_status();
 			$checkedQuestions = $userQuiz->get_checked_questions();
 			$hintedQuestions  = $userQuiz->get_hint_questions();
@@ -287,7 +291,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$expirationTime = $userQuiz->get_expiration_time();
 
-			learn_press_error_log($expirationTime);
+			learn_press_error_log( $expirationTime );
 
 			// If expiration time is specific then calculate total time
 			if ( $expirationTime && ! $expirationTime->is_null() ) {
@@ -295,7 +299,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// @deprecated
-			//$answered         = $userQuiz->get_meta( '_question_answers' );
+			// $answered         = $userQuiz->get_meta( '_question_answers' );
 
 			$questions = learn_press_rest_prepare_user_questions(
 				$questionIds,
@@ -305,20 +309,20 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'quiz_status'       => $status,
 					'checked_questions' => $checkedQuestions,
 					'hinted_questions'  => $hintedQuestions,
-					'answered'          => $answered
+					'answered'          => $answered,
 				)
 			);
 
 			$results = array(
 				'question_ids' => $questionIds,
-				'questions'    => $questions
+				'questions'    => $questions,
 			);
 
 			if ( isset( $totalTime ) ) {
 				$results['total_time'] = $totalTime;
 				$results['end_time']   = $expirationTime->toSql();
 			}
-			//}
+			// }
 
 			$results['duration']     = $duration ? $duration->get() : false;
 			$results['answered']     = $quizResults->getQuestions();
@@ -327,7 +331,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['attempts']     = $userQuiz->get_attempts(
 				array(
 					'limit'  => learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() ),
-					'offset' => 1
+					'offset' => 1,
 				)
 			);
 			$results['user_item_id'] = $userQuiz->get_user_item_id();
@@ -345,7 +349,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return mixed|WP_REST_Response
 	 */
 	public function submit_quiz( $request ) {
-		//LP_Debug::startTransaction();
+		// LP_Debug::startTransaction();
 		$user_id     = get_current_user_id();
 		$item_id     = $request['item_id'];
 		$course_id   = $request['course_id'];
@@ -368,9 +372,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		$response = array(
 			'success' => $success,
-			'message' => ! $success ? $finished->get_error_message() : __( 'Success!', 'learnpress' )
+			'message' => ! $success ? $finished->get_error_message() : __( 'Success!', 'learnpress' ),
 		);
-
 
 		if ( $success ) {
 			$userQuiz            = $user_course->get_item( $item_id );
@@ -381,14 +384,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['attempts'] = $userQuiz->get_attempts(
 				array(
 					'limit'  => learn_press_get_quiz_max_retrying( $item_id, $course_id ),
-					'offset' => 1
+					'offset' => 1,
 				)
 			);
 
 			$response['results'] = $results;
 		}
 
-		//LP_Debug::rollbackTransaction();
+		// LP_Debug::rollbackTransaction();
 
 		return rest_ensure_response( $response );
 	}
@@ -407,7 +410,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		// Response
 		$response = array(
-			'hint' => $question->get_hint()
+			'hint' => $question->get_hint(),
 		);
 
 		return rest_ensure_response( $response );
@@ -424,7 +427,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$response = array(
 			'explanation' => $question->get_explanation(),
 			'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true ) ),
-			'result'      => $checked
+			'result'      => $checked,
 		);
 
 		return rest_ensure_response( $response );
@@ -438,7 +441,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	public function get_items( $request ) {
 		$settings = LP()->settings();
 		$response = array(
-			'result' => $settings->get()
+			'result' => $settings->get(),
 		);
 
 		return rest_ensure_response( $response );
@@ -452,7 +455,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	public function get_item( $request ) {
 		$settings = LP()->settings();
 		$response = array(
-			'result' => $settings->get( $request['key'] )
+			'result' => $settings->get( $request['key'] ),
 		);
 
 		return rest_ensure_response( $response );

@@ -7,9 +7,6 @@
  * @version 3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Course' ) ) {
@@ -47,10 +44,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return int|LP_Course_Item
 		 */
 		public function set_viewing_item( $item ) {
-
 			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
 				return 0;
 			}
+
 			$user = learn_press_get_current_user();
 
 			$this->_viewing_item = $item;
@@ -84,7 +81,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				'sale_start'               => '',
 				'sale_end'                 => '',
 				'required_enroll'          => 'yes',
-				'course_author'            => learn_press_get_current_user_id()
+				'course_author'            => learn_press_get_current_user_id(),
 			);
 
 			return apply_filters( 'learn-press/course/default-meta', $meta );
@@ -99,7 +96,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return bool|LP_Course
 		 */
 		public static function get_course( $the_course = false, $args = array() ) {
-
 			if ( is_numeric( $the_course ) && isset( LP_Global::$courses[ $the_course ] ) ) {
 				return LP_Global::$courses[ $the_course ];
 			}
@@ -118,7 +114,13 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$force = false;
 			}
 
-			$key_args = wp_parse_args( $args, array( 'id' => $the_course->ID, 'type' => $the_course->post_type ) );
+			$key_args = wp_parse_args(
+				$args,
+				array(
+					'id'   => $the_course->ID,
+					'type' => $the_course->post_type,
+				)
+			);
 
 			$key = LP_Helper::array_to_md5( $key_args );
 

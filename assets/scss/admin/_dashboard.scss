@@ -1,140 +1,167 @@
 .lp-order-statuses {
-    margin: 0;
-    li {
-        float: left;
-        width: 100%;
-        background: #FFF;
-        margin: 0;
-        strong {
-            font-size: 20px;
-            font-weight: normal;
-            color: #0073aa;
-            margin-bottom: 5px;
-            display: block;
-            &:before {
-                display: inline-block;
-                width: 25px;
-                height: 25px;
-                font-family: dashicons;
-                font-size: 25px;
-                line-height: 25px;
-                vertical-align: middle;
-                content: '';
-            }
-        }
-        p {
-            font-size: 12px;
-            color: #adadad;
-            padding: 0;
-            margin: 0;
-        }
-        &.counter-number {
-            padding: 10px 0 0;
-            text-align: center;
-            width: 50%;
-            .counter-inner {
-                margin: 0 5px;
-                background: #F9F9F9;
-                padding: 10px 0;
-                border: 1px solid #f3f3f3;
-                p {
-                    text-transform: lowercase;
-                }
-            }
+	margin: 0;
 
-            &.order-completed {
-                strong:before {
-                    //content: '\f502';
-                    content: '\f058';
-                    color: #0085ba;
-                }
-            }
-            &.order-processing {
-                strong:before {
-                    content: "\f321";
-                    color: #563F7A;
-                    margin-left: -1px;
-                }
-            }
-            &.order-pending {
-                strong:before {
-                    content: "\f534";
-                    color: #AAA;
-                }
-            }
-            &.order-cancelled {
-                strong:before {
-                    content: "\f153";
-                    color: #FF0000;
-                }
-            }
-            &:hover {
-            }
-        }
-        &.clear {
-            float: none;
-        }
-        &.featured-theme {
-            margin: 12px -12px 0 -12px;
-            border-top: 1px solid #EEE;
-            float: none;
-            clear: both;
-            width: auto;
-            padding: 8px 12px 0 12px;
+	li {
+		float: left;
+		width: 100%;
+		margin: 0;
+		background: #fff;
 
-            .star-rating {
-                display: inline-block;
-                line-height: 14px;
-                vertical-align: middle;
-                .star {
-                    font-size: 14px;
-                    width: 14px;
-                    height: 14px;
-                }
-            }
+		strong {
+			display: block;
+			margin-bottom: 5px;
+			color: #0073aa;
+			font-size: 20px;
+			font-weight: normal;
 
-            > div {
-                margin-bottom: 3px;
-                span {
-                    font-size: 12px;
-                    vertical-align: middle;
-                    color: #999;
-                }
-            }
-        }
-        &:nth-child(even) {
-            .counter-inner {
-                margin-left: 0;
-            }
-        }
-        &:nth-child(odd) {
-            .counter-inner {
-                margin-right: 0;
-            }
-        }
-        &.total-raised {
-            text-align: center;
-            background: #F9F9F9;
-            border: 1px solid #F3F3F3;
-            padding: 10px 0;
-            box-sizing: border-box;
-            strong {
-                margin-bottom: 10px;
-                font-size: 26px;
-                &:before {
-                    content: '\f185';
-                    font-size: 30px;
-                    width: 30px;
-                    height: 30px;
-                    line-height: 30px;
-                    margin-right: 7px;
-                    margin-top: -3px;
-                }
-            }
-        }
-    }
+			&::before {
+				display: inline-block;
+				width: 25px;
+				height: 25px;
+				font-family: dashicons;
+				font-size: 25px;
+				line-height: 25px;
+				vertical-align: middle;
+				content: "";
+			}
+		}
 
-    &:after {
-        @include clear-fix();
-    }
+		p {
+			margin: 0;
+			padding: 0;
+			color: #adadad;
+			font-size: 12px;
+		}
+
+		&.counter-number {
+			width: 50%;
+			padding: 10px 0 0;
+			text-align: center;
+
+			.counter-inner {
+				margin: 0 5px;
+				padding: 10px 0;
+				border: 1px solid #f3f3f3;
+				background: #f9f9f9;
+
+				p {
+					text-transform: lowercase;
+				}
+			}
+
+			&.order-completed {
+
+				strong::before {
+					color: #0085ba;
+					//content: '\f502';
+					content: "\f058";
+				}
+			}
+
+			&.order-processing {
+
+				strong::before {
+					margin-left: -1px;
+					color: #563f7a;
+					content: "\f321";
+				}
+			}
+
+			&.order-pending {
+
+				strong::before {
+					color: #aaa;
+					content: "\f534";
+				}
+			}
+
+			&.order-cancelled {
+
+				strong::before {
+					color: #f00;
+					content: "\f153";
+				}
+			}
+
+			&:hover {
+			}
+		}
+
+		&.clear {
+			float: none;
+		}
+
+		&.featured-theme {
+			float: none;
+			clear: both;
+			width: auto;
+			margin: 12px -12px 0 -12px;
+			padding: 8px 12px 0 12px;
+			border-top: 1px solid #eee;
+
+			.star-rating {
+				display: inline-block;
+				line-height: 14px;
+				vertical-align: middle;
+
+				.star {
+					width: 14px;
+					height: 14px;
+					font-size: 14px;
+				}
+			}
+
+			> div {
+				margin-bottom: 3px;
+
+				span {
+					color: #999;
+					font-size: 12px;
+					vertical-align: middle;
+				}
+			}
+		}
+
+		&:nth-child(even) {
+
+			.counter-inner {
+				margin-left: 0;
+			}
+		}
+
+		&:nth-child(odd) {
+
+			.counter-inner {
+				margin-right: 0;
+			}
+		}
+
+		&.total-raised {
+			box-sizing: border-box;
+			padding: 10px 0;
+			border: 1px solid #f3f3f3;
+			background: #f9f9f9;
+			text-align: center;
+
+			strong {
+				margin-bottom: 10px;
+				font-size: 26px;
+
+				&::before {
+					width: 30px;
+					height: 30px;
+					margin-top: -3px;
+					margin-right: 7px;
+					font-size: 30px;
+					line-height: 30px;
+					content: "\f185";
+				}
+			}
+		}
+	}
+
+	&::after {
+
+		@include clear-fix();
+	}
 }

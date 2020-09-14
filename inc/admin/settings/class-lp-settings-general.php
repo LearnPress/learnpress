@@ -44,45 +44,37 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'title'   => __( 'All Courses', 'learnpress' ),
 					'id'      => 'courses_page_id',
 					'default' => '',
-					'type'    => 'pages-dropdown'
+					'type'    => 'pages-dropdown',
 				),
 				array(
 					'title'   => __( 'Profile', 'learnpress' ),
 					'id'      => 'profile_page_id',
 					'default' => '',
-					'type'    => 'pages-dropdown'
+					'type'    => 'pages-dropdown',
 				),
 				array(
 					'title'   => __( 'Checkout', 'learnpress' ),
 					'id'      => 'checkout_page_id',
 					'default' => '',
-					'type'    => 'pages-dropdown'
+					'type'    => 'pages-dropdown',
 				),
 				array(
 					'title'   => __( 'Become Instructors', 'learnpress' ),
 					'id'      => 'become_a_teacher_page_id',
 					'default' => '',
-					'type'    => 'pages-dropdown'
+					'type'    => 'pages-dropdown',
 				),
 
 				array(
 					'title'   => __( 'Terms & Conditions', 'learnpress' ),
 					'id'      => 'term_conditions_page_id',
 					'default' => '',
-					'type'    => 'pages-dropdown'
+					'type'    => 'pages-dropdown',
 				),
-// 3.x.x
-//				array(
-//					'title'   => __( 'Logout redirect', 'learnpress' ),
-//					'id'      => 'logout_redirect_page_id',
-//					'default' => '',
-//					'type'    => 'pages-dropdown',
-//					'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
-//				),
 				array(
 					'title' => __( 'Currency', 'learnpress' ),
 					'type'  => 'heading',
-					'desc'  => __( 'Setting up your currency unit and its formatting.', 'learnpress' )
+					'desc'  => __( 'Setting up your currency unit and its formatting.', 'learnpress' ),
 				),
 				array(
 					'title'   => __( 'Currency', 'learnpress' ),
@@ -90,32 +82,32 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'default' => 'USD',
 					'type'    => 'select',
 					'class'   => 'lp-select-2',
-					'options' => $currencies
+					'options' => $currencies,
 				),
 				array(
 					'title'   => __( 'Currency Position', 'learnpress' ),
 					'id'      => 'currency_pos',
 					'default' => 'left',
 					'type'    => 'select',
-					'options' => learn_press_currency_positions()
+					'options' => learn_press_currency_positions(),
 				),
 				array(
 					'title'   => __( 'Thousands Separator', 'learnpress' ),
 					'id'      => 'thousands_separator',
 					'default' => ',',
-					'type'    => 'text'
+					'type'    => 'text',
 				),
 				array(
 					'title'   => __( 'Decimals Separator', 'learnpress' ),
 					'id'      => 'decimals_separator',
 					'default' => '.',
-					'type'    => 'text'
+					'type'    => 'text',
 				),
 				array(
 					'title'   => __( 'Number Of Decimals', 'learnpress' ),
 					'id'      => 'number_of_decimals',
 					'default' => '2',
-					'type'    => 'number'
+					'type'    => 'number',
 				),
 				array(
 					'title' => __( 'Other', 'learnpress' ),
@@ -126,34 +118,22 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'id'      => 'publish_profile',
 					'default' => 'no',
 					'type'    => 'yes-no',
-					'desc'    => __( 'User course data will be public.', 'learnpress' )
+					'desc'    => __( 'User course data will be public.', 'learnpress' ),
 				),
 				array(
 					'title'   => __( 'Instructor Registration', 'learnpress' ),
 					'desc'    => __( 'Enable the option in all registration forms.', 'learnpress' ),
-					'id' => 'instructor_registration',
+					'id'      => 'instructor_registration',
 					'default' => 'no',
-					'type'    => 'yes-no'
-				)
-					/*,
-				array(
-					'title' => __( 'Logout', 'learnpress' ),
-					'type'  => 'title'
+					'type'    => 'yes-no',
 				),
-				array(
-					'title'   => __( 'Redirect to page', 'learnpress' ),
-					'id' => 'logout_redirect_page_id',
-					'default' => '',
-					'type'    => 'pages-dropdown'
-				),*/
 			)
 		);
-		// Deprecated
+
 		$settings = apply_filters( 'learn_press_general_settings', $settings );
 
 		return $settings;
 	}
 
 }
-
 return new LP_Settings_General();

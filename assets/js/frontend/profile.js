@@ -93,8 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-
 (function (_$) {
   'use strict';
 
@@ -177,7 +175,7 @@
       that.uploader.start();
     },
     uploadProgress: function uploadProgress(up, file) {
-      this.$('.lp-avatar-upload-progress-value').css('width', file.percent + "%");
+      this.$('.lp-avatar-upload-progress-value').css('width', file.percent + '%');
     },
     uploadError: function uploadError(up, err) {
       this.$('.lp-avatar-preview').addClass('upload-error').removeClass('uploading');
@@ -191,8 +189,8 @@
       if (response.url) {
         this.avatar = response.url;
 
-        _$("<img/>") // Make in memory copy of image to avoid css issues
-        .attr("src", response.url).load(function () {
+        _$('<img/>') // Make in memory copy of image to avoid css issues
+        .attr('src', response.url).load(function () {
           that.model.set(_$.extend(response, {
             width: this.width,
             height: this.height
@@ -219,8 +217,8 @@
         filters: {
           max_file_size: '10mb',
           mime_types: [{
-            title: "Image",
-            extensions: "png,jpg,bmp,gif"
+            title: 'Image',
+            extensions: 'png,jpg,bmp,gif'
           }]
         },
         file_data_name: 'lp-upload-avatar',
@@ -482,8 +480,8 @@
     var args = {};
 
     if (typeof lpProfileUserSettings !== 'undefined') {
-      args.viewWidth = parseInt(lpProfileUserSettings.avatar_size['width']);
-      args.viewHeight = parseInt(lpProfileUserSettings.avatar_size['height']);
+      args.viewWidth = parseInt(lpProfileUserSettings.avatar_size.width);
+      args.viewHeight = parseInt(lpProfileUserSettings.avatar_size.height);
     } // avatar
 
 

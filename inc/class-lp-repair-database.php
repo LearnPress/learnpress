@@ -27,20 +27,17 @@ class LP_Repair_Database {
 	 */
 	protected function __construct() {
 		add_action( 'save_post', array( $this, 'save_post' ), 0 );
-		//add_action( 'deleted_post', array( $this, 'save_post' ), 0 );
-		//add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 5000, 3 );
-		//add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_course' ), 5000, 2 );
+		// add_action( 'deleted_post', array( $this, 'save_post' ), 0 );
+		// add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 5000, 3 );
+		// add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_course' ), 5000, 2 );
 		add_action( 'learn-press/save-course', array( $this, 'save_course' ), 5000, 1 );
 		add_action( 'learn-press/added-course-item', array( $this, 'added_course_item' ), 10, 2 );
-		add_action( 'learn-press/removed-course-item', array( $this, 'removed_course_item' ), 10, 2 );
-		add_action( 'learn-press/transition-course-item-status', array(
-			$this,
-			'transition_course_item_status'
-		), 10, 4 );
+		add_action( 'learn-press/removed-course-item', array( $this, 'removed_course_item' ), 10 );
+		add_action( 'learn-press/transition-course-item-status', array( $this, 'transition_course_item_status' ), 10, 4 );
 
 		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
 		add_action( 'deleted_post', array( $this, 'deleted_post' ) );
-		//add_action( 'save_post', array( $this, 'save_post' ) );
+		// add_action( 'save_post', array( $this, 'save_post' ) );
 	}
 
 	/**
@@ -50,19 +47,17 @@ class LP_Repair_Database {
 	 * @param int $post_id
 	 *
 	 * @since 3.1.0
-	 *
 	 */
 	public function before_delete_post( $post_id ) {
 		global $wpdb;
-		//LP_Debug::startTransaction();
+		// LP_Debug::startTransaction();
 		$post_type = get_post_type( $post_id );
 		$data      = array(
-			'post_type' => $post_type
+			'post_type' => $post_type,
 		);
 
 		switch ( $post_type ) {
 			case LP_ORDER_CPT:
-
 				$order         = learn_press_get_order( $post_id );
 				$data['users'] = $order->get_users();
 				$data['child'] = $order->get_child_orders();
@@ -79,7 +74,6 @@ class LP_Repair_Database {
 	 * @param int $post_id
 	 *
 	 * @since 3.1.0
-	 *
 	 */
 	public function deleted_post( $post_id ) {
 		try {
@@ -102,13 +96,12 @@ class LP_Repair_Database {
 						break;
 				}
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			echo $ex->getMessage();
 		}
 
-		//LP_Debug::rollbackTransaction();
-		//die();
+		// LP_Debug::rollbackTransaction();
+		// die();
 	}
 
 	/**
@@ -120,7 +113,6 @@ class LP_Repair_Database {
 	 *
 	 * @return bool|int[]
 	 * @since 3.1.0
-	 *
 	 */
 	public function remove_order_items( $order_id ) {
 		global $wpdb;
@@ -142,19 +134,25 @@ class LP_Repair_Database {
 		$format = array_fill( 0, sizeof( $order_item_id ), '%d' );
 
 		// Delete rows from order-items and order-itemmeta
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			DELETE
 			FROM {$wpdb->learnpress_order_itemmeta}
-			WHERE learnpress_order_item_id IN(" . join( ',', $format ) . ")
-		", $order_item_id );
+			WHERE learnpress_order_item_id IN(" . join( ',', $format ) . ')
+		',
+			$order_item_id
+		);
 
 		$wpdb->query( $query );
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			DELETE
 			FROM {$wpdb->learnpress_order_items}
-			WHERE order_item_id  IN(" . join( ',', $format ) . ")
-		", $order_item_id );
+			WHERE order_item_id  IN(" . join( ',', $format ) . ')
+		',
+			$order_item_id
+		);
 
 		$wpdb->query( $query );
 
@@ -183,7 +181,6 @@ class LP_Repair_Database {
 	 *
 	 * @return bool
 	 * @since 3.1.0
-	 *
 	 */
 	public function remove_user_items_by_order_id( $order_id ) {
 
@@ -196,11 +193,15 @@ class LP_Repair_Database {
 		}
 
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE ref_id = %d AND ref_type = %s
-		", $order_id, LP_ORDER_CPT );
+		",
+			$order_id,
+			LP_ORDER_CPT
+		);
 
 		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
 			return false;
@@ -219,7 +220,6 @@ class LP_Repair_Database {
 	 * @param bool  $remove_child - Optional. TRUE will remove it's child
 	 *
 	 * @since 3.1.0
-	 *
 	 */
 	public function remove_user_items_by_user_item_id( $user_item_id, $remove_child = true ) {
 		global $wpdb;
@@ -231,19 +231,25 @@ class LP_Repair_Database {
 			$this->remove_user_items_by_user_item_id( $child_user_item_ids, $remove_child );
 		}
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			DELETE
 			FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ")
-		", $user_item_id );
+			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ')
+		',
+			$user_item_id
+		);
 
 		$wpdb->query( $query );
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			DELETE
 			FROM {$wpdb->learnpress_user_items}
-			WHERE user_item_id IN(" . join( ',', $format ) . ")
-		", $user_item_id );
+			WHERE user_item_id IN(" . join( ',', $format ) . ')
+		',
+			$user_item_id
+		);
 
 		$wpdb->query( $query );
 	}
@@ -256,18 +262,21 @@ class LP_Repair_Database {
 	 *
 	 * @return array|bool
 	 * @since 3.1.0
-	 *
 	 */
 	public function remove_user_item( $user_id, $item_id ) {
 		global $wpdb;
 
 		// Find user-item-id for passed user-id and item-id
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_id = %d
 				AND item_id = %d
-		", $user_id, $item_id );
+		",
+			$user_id,
+			$item_id
+		);
 
 		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
 			return false;
@@ -288,7 +297,6 @@ class LP_Repair_Database {
 	 *
 	 * @return bool
 	 * @since 3.1.0
-	 *
 	 */
 	public function remove_user_item_by_user( $user_id ) {
 		global $wpdb;
@@ -302,11 +310,14 @@ class LP_Repair_Database {
 			return true;
 		}
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_id = %d
-		", $user_id );
+		",
+			$user_id
+		);
 
 		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
 			return false;
@@ -326,16 +337,18 @@ class LP_Repair_Database {
 	 *
 	 * @return array|bool
 	 * @since 3.1.0
-	 *
 	 */
 	public function remove_user_item_by_item_id( $item_id ) {
 		global $wpdb;
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE item_id = %d
-		", $item_id );
+		",
+			$item_id
+		);
 
 		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
 			return false;
@@ -353,18 +366,20 @@ class LP_Repair_Database {
 	 *
 	 * @return array
 	 * @since 3.1.0
-	 *
 	 */
 	public function get_user_items_by_parent_id( $parent_ids ) {
 		global $wpdb;
 		settype( $parent_ids, 'array' );
 		$format = array_fill( 0, sizeof( $parent_ids ), '%d' );
 
-		$query = $wpdb->prepare( "
-			SELECT user_item_id 
+		$query = $wpdb->prepare(
+			"
+			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
-			WHERE parent_id IN(" . join( ',', $format ) . ")
-		", $parent_ids );
+			WHERE parent_id IN(" . join( ',', $format ) . ')
+		',
+			$parent_ids
+		);
 
 		return $wpdb->get_col( $query );
 	}
@@ -376,7 +391,6 @@ class LP_Repair_Database {
 	 * @param int   $order_id
 	 *
 	 * @since 3.1.0
-	 *
 	 */
 	public function remove_order_from_user_meta( $user_ids, $order_id ) {
 		if ( ! $user_ids ) {
@@ -399,7 +413,6 @@ class LP_Repair_Database {
 					} else {
 						$user_orders[ $course_id ] = $course_orders;
 					}
-
 				}
 			}
 
@@ -408,12 +421,16 @@ class LP_Repair_Database {
 	}
 
 	public function add_order_to_user_meta( $order_id ) {
-		if ( ! $order = learn_press_get_order( $order_id ) ) {
+		$order = learn_press_get_order( $order_id );
+
+		if ( ! $order ) {
 			return false;
 		}
 
 		if ( $order->is_multi_users() ) {
-			if ( ! $child = $order->get_child_orders() ) {
+
+			$child = $order->get_child_orders();
+			if ( ! $child ) {
 				return false;
 			}
 
@@ -431,7 +448,9 @@ class LP_Repair_Database {
 		if ( $user_orders ) {
 			foreach ( $user_orders as $course_id => $course_orders ) {
 				$course_orders = array_unique( $course_orders );
-				if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
+				$in_pos        = array_search( $order_id, $course_orders );
+
+				if ( false !== $in_pos ) {
 					unset( $course_orders[ $in_pos ] );
 				}
 
@@ -440,7 +459,6 @@ class LP_Repair_Database {
 				} else {
 					$user_orders[ $course_id ] = $course_orders;
 				}
-
 			}
 		}
 
@@ -451,9 +469,8 @@ class LP_Repair_Database {
 		$this->sync_course_data( $course_id );
 	}
 
-	public function removed_course_item( $item_id, $course_id ) {
+	public function removed_course_item( $course_id ) {
 		$this->sync_course_data( $course_id );
-		//$this->remove_user_item( $item_id );
 	}
 
 	/**
@@ -482,12 +499,15 @@ class LP_Repair_Database {
 	public function get_user_item_type( $item_id ) {
 		global $wpdb;
 		if ( ! $item_type = get_post_type( $item_id ) ) {
-			$query     = $wpdb->prepare( "
+			$query     = $wpdb->prepare(
+				"
 				SELECT item_type
 				FROM {$wpdb->learnpress_user_items}
 				WHERE item_id = %d
 				LIMIT 0,1
-			", $item_id );
+			",
+				$item_id
+			);
 			$item_type = $wpdb->get_var( $query );
 		}
 
@@ -503,26 +523,32 @@ class LP_Repair_Database {
 			INNER JOIN {$wpdb->learnpress_user_itemmeta} meta ON items.user_item_id = meta.learnpress_user_item_id
 		";
 
-		$where = "";
+		$where = '';
 
 		if ( $this->get_user_item_type( $item_id ) === LP_COURSE_CPT ) {
-			$_query = $wpdb->prepare( "
+			$_query = $wpdb->prepare(
+				"
 				SELECT user_item_id
 				FROM {$wpdb->learnpress_user_items}
-				WHERE item_id = %d 
+				WHERE item_id = %d
 				AND parent_id = 0
-			", $item_id );
+			",
+				$item_id
+			);
 
 			$user_item_ids = $wpdb->get_col( $_query );
 			$format        = array_fill( 0, sizeof( $user_item_ids ), '%d' );
 
-			$where = $wpdb->prepare( "
-				WHERE parent_id IN(" . join( ',', $format ) . ")
-			", $user_item_ids );
+			$where = $wpdb->prepare(
+				'
+				WHERE parent_id IN(' . join( ',', $format ) . ')
+			',
+				$user_item_ids
+			);
 
-			$where .= $wpdb->prepare( "AND ref_id = %d", $item_id );
+			$where .= $wpdb->prepare( 'AND ref_id = %d', $item_id );
 		} else {
-			$where = $wpdb->prepare( "item_id = %d", $item_id );
+			$where = $wpdb->prepare( 'item_id = %d', $item_id );
 		}
 
 		$query .= $where;
@@ -549,7 +575,6 @@ class LP_Repair_Database {
 				break;
 			case LP_COURSE_CPT:
 			default:
-
 				// Course is support type of this item?
 				if ( learn_press_is_support_course_item_type( $post_type ) ) {
 
@@ -571,14 +596,14 @@ class LP_Repair_Database {
 	 * @param int $course_id
 	 *
 	 * @since 3.1.0
-	 *
 	 */
 	public function sync_course_data( $course_id ) {
 		$user_curd   = new LP_User_CURD();
 		$course_curd = new LP_Course_CURD();
 
 		$count_items = 0;
-		if ( $counts = $course_curd->count_items( $course_id ) ) {
+		$counts      = $course_curd->count_items( $course_id );
+		if ( $counts ) {
 			$count_items = array_sum( $counts );
 		}
 
@@ -612,11 +637,14 @@ class LP_Repair_Database {
 
 	public function queue_sync_user_course_results( $course_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT DISTINCT user_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE item_id = %d
-		", $course_id );
+		",
+			$course_id
+		);
 
 		if ( $user_ids = $wpdb->get_col( $query ) ) {
 			$queue_user_ids = get_option( 'sync-user-course-results' );
@@ -644,7 +672,7 @@ class LP_Repair_Database {
 					array(
 						'action'     => 'sync-user-course-results',
 						'course_id'  => $course_id,
-						'option_key' => $option_key
+						'option_key' => $option_key,
 					)
 				)->save()->dispatch();
 				$bg->reset_safe();
@@ -661,7 +689,6 @@ class LP_Repair_Database {
 	 *
 	 * @return bool|array
 	 * @since 3.1.0
-	 *
 	 */
 	public function sync_course_orders( $courses = '*' ) {
 		global $wpdb;
@@ -671,12 +698,16 @@ class LP_Repair_Database {
 		}
 
 		if ( $courses === '*' ) {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT ID
 				FROM {$wpdb->posts}
 				WHERE post_type = %s
 					AND post_status = %s
-			", LP_COURSE_CPT, 'publish' );
+			",
+				LP_COURSE_CPT,
+				'publish'
+			);
 
 			$courses = $wpdb->get_col( $query );
 
@@ -693,21 +724,25 @@ class LP_Repair_Database {
 		$statuses_format = $wpdb->prepare( join( ',', $statuses_format ), $statuses );
 		$courses_format  = $wpdb->prepare( join( ',', $courses_format ), $courses );
 		$wpdb->query( 'SET SESSION group_concat_max_len = 18446744073709551615' );
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 				SELECT cid, status, orders
 				FROM(
 					SELECT oim.meta_value cid, concat(oim.meta_value, ' ', o.post_status)  a, post_status `status`, GROUP_CONCAT(o.ID) orders
-					FROM {$wpdb->learnpress_order_itemmeta} oim 
+					FROM {$wpdb->learnpress_order_itemmeta} oim
 					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id 
-					INNER JOIN {$wpdb->postmeta} om ON o.ID = om.post_id AND `om`.`meta_key`='_user_id' 
+					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
+					INNER JOIN {$wpdb->postmeta} om ON o.ID = om.post_id AND `om`.`meta_key`='_user_id'
 					INNER JOIN {$wpdb->users} `u` ON u.ID = `om`.`meta_value`
 					WHERE o.post_type = %s
-					AND o.post_status IN ($statuses_format) 
+					AND o.post_status IN ($statuses_format)
 					AND oim.meta_value IN ($courses_format)
 					GROUP BY a, cid
 				) X
-			", '_course_id', 'lp_order' );
+			",
+			'_course_id',
+			'lp_order'
+		);
 
 		foreach ( $courses as $course_id ) {
 			foreach ( $statuses as $status ) {
@@ -749,8 +784,7 @@ class LP_Repair_Database {
 	 * @since 3.1.0
 	 */
 	public function sync_user_courses() {
-		//echo __FUNCTION__;
-
+		// echo __FUNCTION__;
 	}
 
 
@@ -798,13 +832,17 @@ class LP_Repair_Database {
 		global $wpdb;
 
 		foreach ( $user_id as $uid ) {
-			$query = $wpdb->prepare( "
-				SELECT DISTINCT item_id 
+			$query = $wpdb->prepare(
+				"
+				SELECT DISTINCT item_id
 				FROM {$wpdb->learnpress_user_items} ui
-				INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id 
+				INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id
 				WHERE user_id = %d
 				AND p.post_type = %s
-			", $uid, LP_COURSE_CPT );
+			",
+				$uid,
+				LP_COURSE_CPT
+			);
 
 			if ( $course_ids = $wpdb->get_col( $query ) ) {
 				$user = learn_press_get_user( $uid );
@@ -826,20 +864,25 @@ class LP_Repair_Database {
 					}
 				}
 			}
-
 		}
 	}
 
 	public function remove_older_post_meta() {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s
-		", $wpdb->esc_like( '_lpr_' ) . '%' );
+		",
+			$wpdb->esc_like( '_lpr_' ) . '%'
+		);
 		$wpdb->query( $query );
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s
-		", '%' . $wpdb->esc_like( '_lpr_' ) . '%' );
+		",
+			'%' . $wpdb->esc_like( '_lpr_' ) . '%'
+		);
 		$wpdb->query( $query );
 	}
 
@@ -850,12 +893,16 @@ class LP_Repair_Database {
 	 */
 	public function get_all_courses() {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
             SELECT ID
             FROM {$wpdb->posts}
             WHERE post_type = %s
                 AND post_status = %s
-        ", LP_COURSE_CPT, 'publish' );
+        ",
+			LP_COURSE_CPT,
+			'publish'
+		);
 
 		return $wpdb->get_col( $query );
 	}

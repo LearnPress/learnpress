@@ -1,7 +1,8 @@
 <?php
-
 /**
  * Class LP_Settings_Courses
+ *
+ * @author ThimPress <email@email.com>
  */
 class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	/**
@@ -61,7 +62,6 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 		$settings = apply_filters(
 			'learn-press/courses-settings-fields',
 			array_merge(
-			// General
 				apply_filters(
 					'learn-press/course-settings-fields/general',
 					array(
@@ -69,26 +69,19 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
 						),
-//						array(
-//							'title'   => __( 'Review course before publishing', 'learnpress' ),
-//							'desc'    => __( 'The course needs to be reviewed by admin before it can be published.', 'learnpress' ),
-//							'id'      => 'required_review',
-//							'default' => 'yes',
-//							'type'    => 'yes-no'
-//						),
 						array(
 							'title'   => __( 'Review Courses', 'learnpress' ),
 							'desc'    => __( 'Courses created by instructors will be pending in review first.', 'learnpress' ),
 							'id'      => 'required_review',
 							'default' => 'yes',
-							'type'    => 'yes-no'
+							'type'    => 'yes-no',
 						),
 						array(
 							'title'   => __( 'Auto Start', 'learnpress' ),
 							'id'      => 'auto_enroll',
 							'default' => 'yes',
 							'type'    => 'yes-no',
-							'desc'    => __( 'Students will get started courses immediately after successfully purchased.', 'learnpress' )
+							'desc'    => __( 'Students will get started courses immediately after successfully purchased.', 'learnpress' ),
 						),
 						array(
 							'title'             => __( 'Courses Per Page', 'learnpress' ),
@@ -97,7 +90,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'default'           => '8',
 							'type'              => 'number',
 							'custom_attributes' => array(
-								'min' => '1'
+								'min' => '1',
 							),
 						),
 						array(
@@ -105,109 +98,94 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'desc'    => __( 'Hide sidebar area in All Courses Page.', 'learnpress' ),
 							'id'      => 'hide_sidebar',
 							'default' => 'no',
-							'type'    => 'yes-no'
+							'type'    => 'yes-no',
 						),
 						array(
 							'title'   => __( 'Thumbnail Dimensions', 'learnpress' ),
 							'id'      => 'course_thumbnail_dimensions',
 							'default' => array( 500, 300, 'yes' ),
-							'type'    => 'image-dimensions'
-						)
-//						array(
-//							'title'      => __( 'Enable editing published course', 'learnpress' ),
-//							'desc'       => __( 'Allow instructors to edit the course which were published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
-//							'id'         => 'enable_edit_published',
-//							'default'    => 'yes',
-//							'type'       => 'yes-no',
-//							'visibility' => array(
-//								'state'       => 'show',
-//								'conditional' => array(
-//									'field'   => 'required_review',
-//									'compare' => '=',
-//									'value'   => 'yes'
-//								)
-//							)
-//						),
+							'type'    => 'image-dimensions',
+						),
 						// @since 3.3.0
-//						array(
-//							'name'    => __( 'Auto finish course', 'learnpress' ),
-//							'id'      => 'auto_finish_course',
-//							'type'    => 'yes-no',
-//							'desc'    => __( 'Auto finish course if duration of course expire.', 'learnpress' ),
-//							'default' => 'yes',
-//							'inline'  => false
-//						),
-//						array(
-//							'name'    => __( 'Force complete items', 'learnpress' ),
-//							'id'      => 'force_complete_course_items',
-//							'type'    => 'yes-no',
-//							'desc'    => __( 'Force to complete items (e.g quizzes) in current progress before finish course.', 'learnpress' ),
-//							'default' => 'no'
-//						),
-//						array(
-//							'name'    => __( 'Block course', 'learnpress' ),
-//							'id'      => 'course_blocking',
-//							'type'    => 'radio',
-//							'options' => array(
-//								'no'                                 => __( 'No.', 'learnpress' ),
-//								'duration_expire'                    => __( 'Block if duration expire.', 'learnpress' ),
-//								'course_finished'                    => __( 'Block if course is finished.', 'learnpress' ),
-//								'duration_expire_or_course_finished' => __( 'Block if duration expire or course is finished.', 'learnpress' ),
-//							),
-//							'desc'    => __( 'Action when course is finished.', 'learnpress' ),
-//							'default' => 'no',
-//							'std'     => 'no',
-//							'inline'  => false
-//						),
-//						array(
-//							'name'       => __( 'Block content', 'learnpress' ),
-//							'id'         => 'course_content_blocking',
-//							'type'       => 'radio',
-//							'options'    => array(
-//								'content_items'     => __( 'Block content of items.', 'learnpress' ),
-//								'course_curriculum' => __( 'Block course curriculum.', 'learnpress' )
-//							),
-//							'default'    => 'content_items',
-//							'std'        => 'content_items',
-//							'inline'     => false,
-//							'visibility' => array(
-//								'state'       => 'hide',
-//								'conditional' => array(
-//									'field'   => 'course_blocking',
-//									'compare' => '=',
-//									'value'   => 'no'
-//								)
-//							)
-//						),
+					// array(
+					// 'name'    => __( 'Auto finish course', 'learnpress' ),
+					// 'id'      => 'auto_finish_course',
+					// 'type'    => 'yes-no',
+					// 'desc'    => __( 'Auto finish course if duration of course expire.', 'learnpress' ),
+					// 'default' => 'yes',
+					// 'inline'  => false
+					// ),
+					// array(
+					// 'name'    => __( 'Force complete items', 'learnpress' ),
+					// 'id'      => 'force_complete_course_items',
+					// 'type'    => 'yes-no',
+					// 'desc'    => __( 'Force to complete items (e.g quizzes) in current progress before finish course.', 'learnpress' ),
+					// 'default' => 'no'
+					// ),
+					// array(
+					// 'name'    => __( 'Block course', 'learnpress' ),
+					// 'id'      => 'course_blocking',
+					// 'type'    => 'radio',
+					// 'options' => array(
+					// 'no'                                 => __( 'No.', 'learnpress' ),
+					// 'duration_expire'                    => __( 'Block if duration expire.', 'learnpress' ),
+					// 'course_finished'                    => __( 'Block if course is finished.', 'learnpress' ),
+					// 'duration_expire_or_course_finished' => __( 'Block if duration expire or course is finished.', 'learnpress' ),
+					// ),
+					// 'desc'    => __( 'Action when course is finished.', 'learnpress' ),
+					// 'default' => 'no',
+					// 'std'     => 'no',
+					// 'inline'  => false
+					// ),
+					// array(
+					// 'name'       => __( 'Block content', 'learnpress' ),
+					// 'id'         => 'course_content_blocking',
+					// 'type'       => 'radio',
+					// 'options'    => array(
+					// 'content_items'     => __( 'Block content of items.', 'learnpress' ),
+					// 'course_curriculum' => __( 'Block course curriculum.', 'learnpress' )
+					// ),
+					// 'default'    => 'content_items',
+					// 'std'        => 'content_items',
+					// 'inline'     => false,
+					// 'visibility' => array(
+					// 'state'       => 'hide',
+					// 'conditional' => array(
+					// 'field'   => 'course_blocking',
+					// 'compare' => '=',
+					// 'value'   => 'no'
+					// )
+					// )
+					// ),
 					)
 				),
 				// Archive
-//				apply_filters(
-//					'learn-press/course-settings-fields/archive',
-//					array(
-//						array(
-//							'title' => __( 'Archive', 'learnpress' ),
-//							'type'  => 'heading',
-//							'desc'  => __( 'Those settings are applied to archive course page.', 'learnpress' )
-//						),
-////						array(
-////							'title'   => __( 'Courses Page', 'learnpress' ),
-////							'id'      => 'courses_page_id',
-////							'default' => '',
-////							'type'    => 'pages-dropdown'
-////						),
-//						array(
-//							'title'             => __( 'Courses per page', 'learnpress' ),
-//							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
-//							'id'                => 'archive_course_limit',
-//							'default'           => '10',
-//							'type'              => 'number',
-//							'custom_attributes' => array(
-//								'min' => '1'
-//							)
-//						)
-//					)
-//				),
+				// apply_filters(
+				// 'learn-press/course-settings-fields/archive',
+				// array(
+				// array(
+				// 'title' => __( 'Archive', 'learnpress' ),
+				// 'type'  => 'heading',
+				// 'desc'  => __( 'Those settings are applied to archive course page.', 'learnpress' )
+				// ),
+				// array(
+				// 'title'   => __( 'Courses Page', 'learnpress' ),
+				// 'id'      => 'courses_page_id',
+				// 'default' => '',
+				// 'type'    => 'pages-dropdown'
+				// ),
+				// array(
+				// 'title'             => __( 'Courses per page', 'learnpress' ),
+				// 'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
+				// 'id'                => 'archive_course_limit',
+				// 'default'           => '10',
+				// 'type'              => 'number',
+				// 'custom_attributes' => array(
+				// 'min' => '1'
+				// )
+				// )
+				// )
+				// ),
 				// Single course
 				apply_filters(
 					'learn-press/course-settings-fields/single',
@@ -220,7 +198,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'title'   => __( 'Course', 'learnpress' ),
 							'type'    => 'course-permalink',
 							'default' => '',
-							'id'      => 'course_base'
+							'id'      => 'course_base',
 						),
 						array(
 							'title'       => __( 'Lesson', 'learnpress' ),
@@ -228,7 +206,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'id'          => 'lesson_slug',
 							'desc'        => __( sprintf( 'e.g. %s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
 							'default'     => 'lessons',
-							'placeholder' => 'lesson'
+							'placeholder' => 'lesson',
 						),
 						array(
 							'title'       => __( 'Quiz', 'learnpress' ),
@@ -236,7 +214,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'id'          => 'quiz_slug',
 							'desc'        => __( sprintf( 'e.g. %s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
 							'default'     => 'quizzes',
-							'placeholder' => 'quizzes'
+							'placeholder' => 'quizzes',
 						),
 						array(
 							'title'       => __( 'Category Base', 'learnpress' ),
@@ -254,89 +232,89 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'placeholder' => 'course-tag',
 							'desc'        => __( sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-tag</code>' ), 'learnpress' ),
 						),
-//						array(
-//							'title'   => __( 'Lesson', 'learnpress' ),
-//							'type'    => 'text',
-//							'id'      => 'lesson_slug',
-//							'desc'    => __( sprintf( '%s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
-//							'default' => 'lessons'
-//						),
-//						array(
-//							'title'   => __( 'Quiz', 'learnpress' ),
-//							'type'    => 'text',
-//							'id'      => 'quiz_slug',
-//							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
-//							'default' => 'quizzes'
-//						),
-//						array(
-//							'title'   => __( 'Enrolled students number', 'learnpress' ),
-//							'type'    => 'yes_no',
-//							'id'      => 'enrolled_students_number',
-//							'desc'    => __( 'Displays a fake numbers of enrolled students. Disable to show the real value.', 'learnpress' ),
-//							'default' => 'quizzes'
-//						),
+					// array(
+					// 'title'   => __( 'Lesson', 'learnpress' ),
+					// 'type'    => 'text',
+					// 'id'      => 'lesson_slug',
+					// 'desc'    => __( sprintf( '%s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
+					// 'default' => 'lessons'
+					// ),
+					// array(
+					// 'title'   => __( 'Quiz', 'learnpress' ),
+					// 'type'    => 'text',
+					// 'id'      => 'quiz_slug',
+					// 'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
+					// 'default' => 'quizzes'
+					// ),
+					// array(
+					// 'title'   => __( 'Enrolled students number', 'learnpress' ),
+					// 'type'    => 'yes_no',
+					// 'id'      => 'enrolled_students_number',
+					// 'desc'    => __( 'Displays a fake numbers of enrolled students. Disable to show the real value.', 'learnpress' ),
+					// 'default' => 'quizzes'
+					// ),
 					)
 				)
-			// Thumbnail
-//				apply_filters( 'learn-press/course-settings-fields/thumbnails', array(
-//						array(
-//							'title' => __( 'Course thumbnails', 'learnpress' ),
-//							'type'  => 'heading',
-//							'desc'  => __( 'Thumbnail generation for archive/single course.', 'learnpress' )
-//						),
-////						array(
-////							'title'   => __( 'Single course', 'learnpress' ),
-////							'id'      => 'generate_course_thumbnail',
-////							'default' => 'yes',
-////							'type'    => 'yes-no',
-////							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
-////						),
-////						array(
-////							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-////							'id'         => 'single_course_image_size',
-////							'default'    => array( 800, 450, 'yes' ),
-////							'type'       => 'image-dimensions',
-////							'visibility' => array(
-////								'state' => 'show',
-////
-////								'conditional' => array(
-////									'field'   => 'generate_course_thumbnail',
-////									'compare' => '=',
-////									'value'   => 'yes'
-////								)
-////							)
-////						),
-//						array(
-//							'title'   => __( 'Archive course', 'learnpress' ),
-//							'id'      => 'archive_course_thumbnail',
-//							'default' => 'yes',
-//							'type'    => 'yes-no',
-//							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
-//						),
-//						array(
-//							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-//							'id'         => 'course_thumbnail_image_size',
-//							'default'    => array( 400, 250, 'yes' ),
-//							'type'       => 'image-dimensions',
-//							'visibility' => array(
-//								'state' => 'show',
-//
-//								'conditional' => array(
-//									array(
-//										'field'   => 'archive_course_thumbnail',
-//										'compare' => '=',
-//										'value'   => 'yes'
-//									)
-//								)
-//							)
-//						)
-//					)
+				// Thumbnail
+				// apply_filters( 'learn-press/course-settings-fields/thumbnails', array(
+				// array(
+				// 'title' => __( 'Course thumbnails', 'learnpress' ),
+				// 'type'  => 'heading',
+				// 'desc'  => __( 'Thumbnail generation for archive/single course.', 'learnpress' )
+				// ),
+				// array(
+				// 'title'   => __( 'Single course', 'learnpress' ),
+				// 'id'      => 'generate_course_thumbnail',
+				// 'default' => 'yes',
+				// 'type'    => 'yes-no',
+				// 'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
+				// ),
+				// array(
+				// 'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
+				// 'id'         => 'single_course_image_size',
+				// 'default'    => array( 800, 450, 'yes' ),
+				// 'type'       => 'image-dimensions',
+				// 'visibility' => array(
+				// 'state' => 'show',
+				//
+				// 'conditional' => array(
+				// 'field'   => 'generate_course_thumbnail',
+				// 'compare' => '=',
+				// 'value'   => 'yes'
+				// )
+				// )
+				// ),
+				// array(
+				// 'title'   => __( 'Archive course', 'learnpress' ),
+				// 'id'      => 'archive_course_thumbnail',
+				// 'default' => 'yes',
+				// 'type'    => 'yes-no',
+				// 'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
+				// ),
+				// array(
+				// 'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
+				// 'id'         => 'course_thumbnail_image_size',
+				// 'default'    => array( 400, 250, 'yes' ),
+				// 'type'       => 'image-dimensions',
+				// 'visibility' => array(
+				// 'state' => 'show',
+				//
+				// 'conditional' => array(
+				// array(
+				// 'field'   => 'archive_course_thumbnail',
+				// 'compare' => '=',
+				// 'value'   => 'yes'
+				// )
+				// )
+				// )
+				// )
+				// )
 			)
 		);
 
-
 		// Removed from 2.1.4
-		/*array(
+		/*
+		array(
 			'title'   => __( 'Show list of question in quiz', 'learnpress' ),
 			'desc'    => __( 'Show/Hide list questions in quiz.', 'learnpress' ),
 			'id' => 'disable_question_in_quiz',
@@ -344,7 +322,8 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 			'type'    => 'checkbox'
 		),*/
 
-		/* Temporary remove from 2.1.4
+		/*
+		 Temporary remove from 2.1.4
 		array(
 			'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
 			'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),

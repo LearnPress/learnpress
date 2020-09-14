@@ -3,8 +3,9 @@ if ( empty( $options['default'] ) ) {
 	$options['default'] = array( null, null, null );
 }
 ?>
+
 <tr>
-	<th scope="row" class="titledesc"><?php echo esc_html( $options['title'] ) ?></th>
+	<th scope="row" class="titledesc"><?php echo esc_html( $options['title'] ); ?></th>
 	<td>
 		<div class="lp-setting-field lp-setting-field-image-size">
 			<input type="text" size="4" name="<?php echo $options['id']; ?>[width]" value="<?php echo $this->get_option( $options['id'] . '.width', $options['default'][0] ); ?>" placeholder="" />

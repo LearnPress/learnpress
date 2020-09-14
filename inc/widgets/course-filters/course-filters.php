@@ -1,5 +1,5 @@
 <?php
-if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
+if ( ! class_exists( 'LP_Widget_Course_Filters' ) ) {
 	/**
 	 * Class LP_Widget_Course_Filters
 	 */
@@ -11,14 +11,14 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 					'name' => __( 'Title', 'learnpress' ),
 					'id'   => "{$prefix}title",
 					'type' => 'text',
-					'std'  => __( 'Course filters', 'learnpress' )
+					'std'  => __( 'Course filters', 'learnpress' ),
 				),
 				'filter_by'           => array(
 					'name'    => __( 'Filter by', 'learnpress' ),
 					'id'      => "{$prefix}filter_by",
 					'type'    => 'checkbox_list',
 					'std'     => '',
-					'options' => ''
+					'options' => '',
 				),
 				'attribute_operation' => array(
 					'name'    => __( 'Attribute operation', 'learnpress' ),
@@ -27,8 +27,8 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 					'std'     => 'and',
 					'options' => array(
 						'and' => __( 'And', 'learnpress' ),
-						'or'  => __( 'Or', 'learnpress' )
-					)
+						'or'  => __( 'Or', 'learnpress' ),
+					),
 				),
 				'value_operation'     => array(
 					'name'    => __( 'Value operation', 'learnpress' ),
@@ -37,27 +37,30 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 					'std'     => 'and',
 					'options' => array(
 						'and' => __( 'And', 'learnpress' ),
-						'or'  => __( 'Or', 'learnpress' )
-					)
+						'or'  => __( 'Or', 'learnpress' ),
+					),
 				),
 				'ajax_filter'         => array(
 					'name' => __( 'Ajax filter', 'learnpress' ),
 					'id'   => "{$prefix}ajax_filter",
 					'type' => 'checkbox',
 					'std'  => '0',
-					'desc' => __( 'Use ajax to fetch content while filtering', 'learnpress' )
+					'desc' => __( 'Use ajax to fetch content while filtering', 'learnpress' ),
 				),
 				'button_filter'       => array(
 					'name' => __( 'Button filter', 'learnpress' ),
 					'id'   => "{$prefix}button_filter",
 					'type' => 'checkbox',
 					'std'  => '0',
-					'desc' => __( 'If checked, user has to click this button to start filtering', 'learnpress' )
-				)
+					'desc' => __( 'If checked, user has to click this button to start filtering', 'learnpress' ),
+				),
 			);
+
 			parent::__construct();
+
 			add_filter( 'learn_press_widget_display_content-' . $this->id_base, 'learn_press_is_courses' );
-			if ( !is_admin() ) {
+
+			if ( ! is_admin() ) {
 				LP_Assets::enqueue_script( 'course-filter', LP_Assets::url( 'js/frontend/course-filters.js' ) );
 			}
 		}
@@ -71,7 +74,7 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 			$options = array();
 			if ( $attributes = learn_press_get_attributes() ) {
 				foreach ( $attributes as $attribute ) {
-					$options[LP_COURSE_ATTRIBUTE . '-' . $attribute->slug] = $attribute->name;
+					$options[ LP_COURSE_ATTRIBUTE . '-' . $attribute->slug ] = $attribute->name;
 				}
 			}
 			return $options;
@@ -102,8 +105,8 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 			settype( $taxonomy, 'array' );
 			if ( 'or' === $query_type ) {
 				foreach ( $tax_query as $key => $query ) {
-					if ( in_array( $query['taxonomy'], $taxonomy ) ) {//} === $query['taxonomy'] ) {
-						unset( $tax_query[$key] );
+					if ( in_array( $query['taxonomy'], $taxonomy ) ) {// } === $query['taxonomy'] ) {
+						unset( $tax_query[ $key ] );
 					}
 				}
 			}
@@ -125,14 +128,14 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 			$query['where'] = "
 				WHERE {$wpdb->posts}.post_type IN ( 'lp_course' )
 				AND {$wpdb->posts}.post_status = 'publish'
-			" . $tax_query_sql['where'] . $meta_query_sql['where'] . "
-				AND terms.term_id IN (" . implode( ',', array_map( 'absint', $term_ids ) ) . ")
-			";
+			" . $tax_query_sql['where'] . $meta_query_sql['where'] . '
+				AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')
+			';
 
 			if ( $search = $this->get_main_search_query_sql() ) {
 				$query['where'] .= ' AND ' . $search;
 			}
-			$query['group_by'] = "GROUP BY terms.term_id";
+			$query['group_by'] = 'GROUP BY terms.term_id';
 			$query             = apply_filters( 'learn_press_get_filtered_term_course_counts_query', $query );
 			$query             = implode( ' ', $query );
 			$results           = $wpdb->get_results( $query );
@@ -164,7 +167,7 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 				$sql[] = $wpdb->prepare( "(($wpdb->posts.post_title $like_op %s) $andor_op ($wpdb->posts.post_excerpt $like_op %s) $andor_op ($wpdb->posts.post_content $like_op %s))", $like, $like, $like );
 			}
 
-			if ( !empty( $sql ) && !is_user_logged_in() ) {
+			if ( ! empty( $sql ) && ! is_user_logged_in() ) {
 				$sql[] = "($wpdb->posts.post_password = '')";
 			}
 

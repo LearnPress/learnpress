@@ -32,10 +32,6 @@ if ( ! class_exists( 'LP_Background_Sync_Data' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
-
-			//add_action( 'shutdown', array( $this, 'dispatch' ), 100000 );
-
-			//print_r($this->data);echo "XXXXXX";
 		}
 
 		public function test() {
@@ -48,7 +44,9 @@ if ( ! class_exists( 'LP_Background_Sync_Data' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
-			if ( $queue_user_ids = get_option( $data['option_key'] ) ) {
+			$queue_user_ids = get_option( $data['option_key'] );
+
+			if ( $queue_user_ids ) {
 				$user_ids  = array_splice( $queue_user_ids, 0, 1 );
 				$course_id = $data['course_id'];
 

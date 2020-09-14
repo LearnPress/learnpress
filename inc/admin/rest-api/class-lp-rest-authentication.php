@@ -19,8 +19,8 @@ class LP_REST_Authentication {
 
 	public function __construct() {
 		add_action( 'rest_authentication_errors', array( $this, 'rest_cookie_check_errors' ), 0 );
-		//add_filter( 'determine_current_user', array( $this, 'authenticate' ), 15 );
-		//add_filter( 'rest_pre_dispatch', array( $this, 'check_user_permissions' ), 10, 3 );
+		// add_filter( 'determine_current_user', array( $this, 'authenticate' ), 15 );
+		// add_filter( 'rest_pre_dispatch', array( $this, 'check_user_permissions' ), 10, 3 );
 	}
 
 	/**
@@ -78,20 +78,20 @@ class LP_REST_Authentication {
 		return $this->perform_oauth_authentication();
 	}
 
-	public function perform_basic_authentication(){
+	public function perform_basic_authentication() {
 		return 2;
 	}
 
-	public function perform_oauth_authentication(){
+	public function perform_oauth_authentication() {
 
 		return 2;
 
 		$params = $this->get_oauth_parameters();
+
 		if ( empty( $params ) ) {
 			return false;
 		}
 
-		//var_dump(__FILE__, $params);
 		// Fetch WP user by consumer key.
 		$this->user = $this->get_user_data_by_consumer_key( $params['oauth_consumer_key'] );
 
@@ -117,7 +117,7 @@ class LP_REST_Authentication {
 		return $this->user->user_id;
 	}
 
-	public function get_user_by_consumer_key(){
+	public function get_user_by_consumer_key() {
 
 	}
 

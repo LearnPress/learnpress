@@ -1,20 +1,20 @@
-import {select} from '@wordpress/data';
-const {get, isArray} = lodash;
+import { select } from '@wordpress/data';
+const { get, isArray } = lodash;
 
-const getQuestionOptions = function getQuestionOptions(state, id) {
-    console.time('parseOptions');
+const getQuestionOptions = function getQuestionOptions( state, id ) {
+	console.time( 'parseOptions' );
 
-    const question = getQuestion(state, id);
-    let options = question.options;
+	const question = getQuestion( state, id );
+	let options = question.options;
 
-    options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)) : options;
-    options = !isArray(options) ? JSON.parse(options) : options;
+	options = ! isArray( options ) ? JSON.parse( CryptoJS.AES.decrypt( options.data, options.key, { format: CryptoJSAesJson } ).toString( CryptoJS.enc.Utf8 ) ) : options;
+	options = ! isArray( options ) ? JSON.parse( options ) : options;
 
-    console.timeEnd('parseOptions')
-    return options;
+	console.timeEnd( 'parseOptions' );
+	return options;
 };
 
-export {getQuestionOptions}
+export { getQuestionOptions };
 
 /**
  * Get current status of an item in course.
@@ -22,13 +22,13 @@ export {getQuestionOptions}
  * @param state
  * @param itemId
  */
-export function getItemStatus(state, itemId) {
-    const item = select('course-learner/user').getItemById(itemId);
-    return item ? get(item, 'userSettings.status') : '';
+export function getItemStatus( state, itemId ) {
+	const item = select( 'course-learner/user' ).getItemById( itemId );
+	return item ? get( item, 'userSettings.status' ) : '';
 }
 
-export function getProp(state, prop, defaultValue) {
-    return state[prop] || defaultValue;
+export function getProp( state, prop, defaultValue ) {
+	return state[ prop ] || defaultValue;
 }
 
 /**
@@ -38,9 +38,9 @@ export function getProp(state, prop, defaultValue) {
  * @param itemId
  * @return {Array}
  */
-export function getQuizAttempts(state, itemId) {
-    const item = select('course-learner/user').getItemById(itemId);
-    return item ? get(item, 'userSettings.attempts') : [];
+export function getQuizAttempts( state, itemId ) {
+	const item = select( 'course-learner/user' ).getItemById( itemId );
+	return item ? get( item, 'userSettings.attempts' ) : [];
 }
 
 /**
@@ -50,9 +50,9 @@ export function getQuizAttempts(state, itemId) {
  * @param itemId
  * @return {{}}
  */
-export function getQuizAnswered(state, itemId) {
-    const item = select('course-learner/user').getItemById(itemId);
-    return item ? get(item, 'userSettings.answered', {}) : {};
+export function getQuizAnswered( state, itemId ) {
+	const item = select( 'course-learner/user' ).getItemById( itemId );
+	return item ? get( item, 'userSettings.answered', {} ) : {};
 }
 
 /**
@@ -61,10 +61,10 @@ export function getQuizAnswered(state, itemId) {
  * @param state
  * @return {*}
  */
-export function getQuestions(state) {
-    const {userQuiz} = state;
-    const questions = get(userQuiz, 'questions');
-    return questions ? Object.values(questions) : [];
+export function getQuestions( state ) {
+	const { userQuiz } = state;
+	const questions = get( userQuiz, 'questions' );
+	return questions ? Object.values( questions ) : [];
 }
 
 /**
@@ -74,47 +74,47 @@ export function getQuestions(state) {
  * @param prop - Optional. NULL will return all data.
  * @return {*}
  */
-export function getData(state, prop) {
-    const {userQuiz} = state;
+export function getData( state, prop ) {
+	const { userQuiz } = state;
 
-    if (prop) {
-        return get(userQuiz, prop);
-    }
+	if ( prop ) {
+		return get( userQuiz, prop );
+	}
 
-    return userQuiz;
+	return userQuiz;
 }
 
-export function getDefaultRestArgs(state) {
-    const {userQuiz} = state;
+export function getDefaultRestArgs( state ) {
+	const { userQuiz } = state;
 
-    return {
-        itemId: userQuiz.id,
-        courseId: userQuiz.courseId
-    }
+	return {
+		itemId: userQuiz.id,
+		courseId: userQuiz.courseId,
+	};
 }
 
-export function getQuestionAnswered(state, id) {
-    const {userQuiz} = state;
+export function getQuestionAnswered( state, id ) {
+	const { userQuiz } = state;
 
-    return get(userQuiz, `answered.${id}.answered`) || undefined;
+	return get( userQuiz, `answered.${ id }.answered` ) || undefined;
 }
 
 /**
  * Get current question is doing.
  *
- * @param {object} state
+ * @param {Object} state
  * @param {string} ret
  * @return {*}
  */
-export function getCurrentQuestion(state, ret = '') {
-    const questionsPerPage = get(state, 'userQuiz.questionsPerPage') || 1;
+export function getCurrentQuestion( state, ret = '' ) {
+	const questionsPerPage = get( state, 'userQuiz.questionsPerPage' ) || 1;
 
-    if (questionsPerPage > 1) {
-        return false;
-    }
+	if ( questionsPerPage > 1 ) {
+		return false;
+	}
 
-    const currentPage = get(state, 'userQuiz.currentPage') || 1;
-    return ret === 'object' ? get(state, `userQuiz.questions[${currentPage - 1}]`) : get(state, `userQuiz.questionIds[${currentPage - 1}]`)
+	const currentPage = get( state, 'userQuiz.currentPage' ) || 1;
+	return ret === 'object' ? get( state, `userQuiz.questions[${ currentPage - 1 }]` ) : get( state, `userQuiz.questionIds[${ currentPage - 1 }]` );
 }
 
 /**
@@ -123,67 +123,67 @@ export function getCurrentQuestion(state, ret = '') {
  * @param state
  * @param theId
  */
-const getQuestion = function getQuestion(state, theId) {
-    const {userQuiz} = state;
-    const s = select('learnpress/quiz');
-    const questions = s.getQuestions();
+const getQuestion = function getQuestion( state, theId ) {
+	const { userQuiz } = state;
+	const s = select( 'learnpress/quiz' );
+	const questions = s.getQuestions();
 
-    return questions.find((q) => {
-        return q.id == theId;
-    })
+	return questions.find( ( q ) => {
+		return q.id == theId;
+	} );
 };
 
-export {getQuestion};
+export { getQuestion };
 
 /**
  * If user has used 'Instant check' for a question.
  *
- * @param {object} state - Global state for app.
+ * @param {Object} state - Global state for app.
  * @param {number} id
  * @return {boolean}
  */
-export function isCheckedAnswer(state, id) {
-    const checkedQuestions = get(state, 'userQuiz.checkedQuestions') || [];
+export function isCheckedAnswer( state, id ) {
+	const checkedQuestions = get( state, 'userQuiz.checkedQuestions' ) || [];
 
-    return checkedQuestions.indexOf(id) !== -1;
+	return checkedQuestions.indexOf( id ) !== -1;
 }
 
-export function isCorrect(state, id) {
+export function isCorrect( state, id ) {
 
 }
 
 /**
  * Get questions user has selected answers.
  *
- * @param {object} state. Global app state
+ * @param {Object} state. Global app state
+ * @param state
  * @param {number} questionId
  * @return {{}}
  */
-const getQuestionsSelectedAnswers = function (state, questionId) {
-    const data = get(state, 'userQuiz.answered');
-    const returnData = {};
+const getQuestionsSelectedAnswers = function( state, questionId ) {
+	const data = get( state, 'userQuiz.answered' );
+	const returnData = {};
 
-    for (let loopId in data) {
-        if (!data.hasOwnProperty(loopId)) {
-            continue;
-        }
+	for ( const loopId in data ) {
+		if ( ! data.hasOwnProperty( loopId ) ) {
+			continue;
+		}
 
-        // Answer filled by user
-        if (data[loopId].temp) {
+		// Answer filled by user
+		if ( data[ loopId ].temp ) {
+			// If specific a question then return it only.
+			if ( questionId && loopId === questionId ) {
+				return data[ loopId ].answered;
+			}
 
-            // If specific a question then return it only.
-            if (questionId && loopId === questionId) {
-                return data[loopId].answered;
-            }
+			returnData[ loopId ] = data[ loopId ].answered;
+		}
+	}
 
-            returnData[loopId] = data[loopId].answered;
-        }
-    }
+	return returnData;
+};
 
-    return returnData;
-}
-
-export {getQuestionsSelectedAnswers};
+export { getQuestionsSelectedAnswers };
 
 /**
  * Get mark user earned.
@@ -192,47 +192,45 @@ export {getQuestionsSelectedAnswers};
  * @param state
  * @return {number}
  */
-export function getUserMark(state) {
-    const userQuiz = state.userQuiz || {};
-    const {
-        answered,
-        negativeMarking,
-        questions,
-        checkedQuestions
-    } = userQuiz;
-    let totalMark = 0;
+export function getUserMark( state ) {
+	const userQuiz = state.userQuiz || {};
+	const {
+		answered,
+		negativeMarking,
+		questions,
+		checkedQuestions,
+	} = userQuiz;
+	let totalMark = 0;
 
-    for (let id in answered) {
-        if (!answered.hasOwnProperty(id)) {
-            continue;
-        }
+	for ( let id in answered ) {
+		if ( ! answered.hasOwnProperty( id ) ) {
+			continue;
+		}
 
-        id = parseInt(id);
-        const data = answered[id];
-        const questionMark = data.questionMark ? data.questionMark : (function () {
-            const question = questions.find((q) => {
-                return q.id === id;
-            });
+		id = parseInt( id );
+		const data = answered[ id ];
+		const questionMark = data.questionMark ? data.questionMark : ( function() {
+			const question = questions.find( ( q ) => {
+				return q.id === id;
+			} );
 
-            return question ? question.point : 0;
-        })();
-        const isChecked = checkedQuestions.indexOf(id) !== -1;
+			return question ? question.point : 0;
+		}() );
+		const isChecked = checkedQuestions.indexOf( id ) !== -1;
 
-        // User checked option but not submit or check
-        if (data.temp) {
-            continue;
-        }
+		// User checked option but not submit or check
+		if ( data.temp ) {
+			continue;
+		}
 
-        if (negativeMarking) {
-            if (data.answered) {
-                totalMark = data.correct ? totalMark + data.mark : totalMark - questionMark;
-            }
-        } else {
-            if (data.answered && data.correct) {
-                totalMark += data.mark;
-            }
-        }
-    }
+		if ( negativeMarking ) {
+			if ( data.answered ) {
+				totalMark = data.correct ? totalMark + data.mark : totalMark - questionMark;
+			}
+		} else if ( data.answered && data.correct ) {
+			totalMark += data.mark;
+		}
+	}
 
-    return totalMark > 0 ? totalMark : 0;
+	return totalMark > 0 ? totalMark : 0;
 }

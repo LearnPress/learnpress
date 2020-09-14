@@ -50,7 +50,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			$this->add_map_method( 'before_delete', 'before_delete_question' )
-			     ->add_map_method( 'save', 'save_question' );
+				 ->add_map_method( 'save', 'save_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -66,8 +66,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				array(
 					'true_or_false',
 					'single_choice',
-					'multi_choice'
-				) );
+					'multi_choice',
+				)
+			);
 
 			foreach ( $default_support_options as $type ) {
 				LP_Global::add_object_feature( 'question.' . $type, 'answer-options', 'yes' );
@@ -114,7 +115,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				return;
 			}
 
-			//learn_press_admin_view( 'question/editor' );
+			// learn_press_admin_view( 'question/editor' );
 		}
 
 		/**
@@ -132,45 +133,47 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			$question = LP_Question::get_question( $post->ID );
 
 			// add default answer for new question
-//			if ( $pagenow === 'post-new.php' ) {
-//				$answers = $question->get_default_answers();
-//				global $wpdb;
-////				foreach ( $answers as $order => $answer ) {
-////					$insert_id = $wpdb->insert(
-////						$wpdb->learnpress_question_answers,
-////						array(
-////							'question_id'  => $post->ID,
-////							'answer_title' => $answer['text'],
-////							'answer_value' => $answer['value'],
-////							'is_true'      => $answer['is_true'],
-////							'answer_order' => $order + 1
-////						)
-////					);
-////
-////					$answers[ $order ]['question_answer_id'] = $insert_id;
-////				}
-//
-//			} else {
+			// if ( $pagenow === 'post-new.php' ) {
+			// $answers = $question->get_default_answers();
+			// global $wpdb;
+			// foreach ( $answers as $order => $answer ) {
+			// $insert_id = $wpdb->insert(
+			// $wpdb->learnpress_question_answers,
+			// array(
+			// 'question_id'  => $post->ID,
+			// 'answer_title' => $answer['text'],
+			// 'answer_value' => $answer['value'],
+			// 'is_true'      => $answer['is_true'],
+			// 'answer_order' => $order + 1
+			// )
+			// );
+			//
+			// $answers[ $order ]['question_answer_id'] = $insert_id;
+			// }
+			//
+			// } else {
 			$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 
-//			if ( $pagenow === 'post-new.php' ) {
-//				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
-//				$answers  = $question->get_default_answers();
-//			} else {
-//				$question = LP_Question::get_question( $post->ID );
-//				$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
-//			}
+			// if ( $pagenow === 'post-new.php' ) {
+			// $question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
+			// $answers  = $question->get_default_answers();
+			// } else {
+			// $question = LP_Question::get_question( $post->ID );
+			// $answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+			// }
 
 			if ( empty( $answers ) ) {
 				$answers = array(
 					array(
 						'question_answer_id' => 0,
-						'title'              => ''
-					)
+						'title'              => '',
+					),
 				);
 			}
 
-			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor',
+			wp_localize_script(
+				'learn-press-admin-question-editor',
+				'lp_question_editor',
 				apply_filters(
 					'learn-press/question-editor/localize-script',
 					array(
@@ -181,22 +184,21 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 							'title'                => get_the_title( $post->ID ),
 							'type'                 => array(
 								'key'   => $question->get_type(),
-								'label' => $question->get_type_label()
+								'label' => $question->get_type_label(),
 							),
 							'answers'              => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID, 0 ),
 							'ajax'                 => admin_url( '' ),
 							'action'               => 'admin_question_editor',
 							'nonce'                => wp_create_nonce( 'learnpress_admin_question_editor' ),
 							'questionTypes'        => LP_Question::get_types(),
-							//'supportAnswerOptions' => learn_press_get_question_type_support()// apply_filters( 'learn-press/admin/external-js-component', array() )
-							'supportAnswerOptions' => learn_press_get_question_support_answer_options()
-							// apply_filters( 'learn-press/admin/external-js-component', array() )
+							'supportAnswerOptions' => learn_press_get_question_support_answer_options(),
 						),
-						'i18n' => apply_filters( 'learn-press/question-editor/i18n',
+						'i18n' => apply_filters(
+							'learn-press/question-editor/i18n',
 							array(
-								'new_option_label' => __( 'New Option', 'learnpress' )
+								'new_option_label' => __( 'New Option', 'learnpress' ),
 							)
-						)
+						),
 					)
 				)
 			);
@@ -206,14 +208,16 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * Register question post type.
 		 */
 		public function register() {
-			register_taxonomy( 'question_tag', array( LP_QUESTION_CPT ),
+			register_taxonomy(
+				'question_tag',
+				array( LP_QUESTION_CPT ),
 				array(
 					'labels'            => array(
 						'name'          => __( 'Question Tag', 'learnpress' ),
 						'menu_name'     => __( 'Tag', 'learnpress' ),
 						'singular_name' => __( 'Tag', 'learnpress' ),
 						'add_new_item'  => __( 'Add New Tag', 'learnpress' ),
-						'all_items'     => __( 'All Tags', 'learnpress' )
+						'all_items'     => __( 'All Tags', 'learnpress' ),
 					),
 					'public'            => true,
 					'hierarchical'      => false,
@@ -223,7 +227,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'rewrite'           => array(
 						'slug'         => 'question-tag',
 						'hierarchical' => false,
-						'with_front'   => false
+						'with_front'   => false,
 					),
 				)
 			);
@@ -256,7 +260,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'show_in_rest'       => $this->is_support_gutenberg(),
 				'supports'           => array( 'title', 'editor', 'revisions' ),
 				'hierarchical'       => false,
-				'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
+				'rewrite'            => array(
+					'slug'         => 'questions',
+					'hierarchical' => true,
+					'with_front'   => false,
+				),
 			);
 		}
 
@@ -307,7 +315,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			update_post_meta( $question_id, '_lp_type', $question_type );
-			//get_user_meta( $user_id, '_learn_press_memorize_question_types', $question_type );
+			// get_user_meta( $user_id, '_learn_press_memorize_question_types', $question_type );
 
 			$question = LP_Question::get_question( $question_id );
 
@@ -315,25 +323,25 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$question->create_default_answers();
 			}
 
-//			//$question->set_type( $question_type );
-//
-//			//$answers = $question->get_default_answers();
-//
-//			// insert answers data in new question
-//			foreach ( $answers as $index => $answer ) {
-//				$insert = array(
-//					'question_id'  => $question_id,
-//					/* @since 4.0 */
-//					//'answer_data'  => serialize( array(
-//					'answer_title' => stripslashes( $answer['text'] ),
-//					'answer_value' => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-//					'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-//					//	)
-//					//),
-//					'answer_order' => $index + 1
-//				);
-//				$curd->add_answer( $question_type, $insert );
-//			}
+			// $question->set_type( $question_type );
+			//
+			// $answers = $question->get_default_answers();
+			//
+			// insert answers data in new question
+			// foreach ( $answers as $index => $answer ) {
+			// $insert = array(
+			// 'question_id'  => $question_id,
+			// * @since 4.0 */
+			// 'answer_data'  => serialize( array(
+			// 'answer_title' => stripslashes( $answer['text'] ),
+			// 'answer_value' => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+			// 'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+			// )
+			// ),
+			// 'answer_order' => $index + 1
+			// );
+			// $curd->add_answer( $question_type, $insert );
+			// }
 		}
 
 		/**
@@ -349,9 +357,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'fields' => array(
 						array(
 							'type'     => 'custom_html',
-							'callback' => array( $this, 'admin_editor' )
-						)
-					)
+							'callback' => array( $this, 'admin_editor' ),
+						),
+					),
 				)
 			);
 
@@ -398,26 +406,25 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'clone' => false,
 						'desc'  => __( 'Set question points.', 'learnpress' ),
 						'min'   => 1,
-						'std'   => 1
+						'std'   => 1,
 					),
 					array(
 						'name' => __( 'Hint', 'learnpress' ),
 						'id'   => '_lp_hint',
 						'type' => 'textarea',
 						'desc' => __( 'A little help for students to get the right answer.', 'learnpress' ),
-						'std'  => null
+						'std'  => null,
 					),
 					array(
 						'name' => __( 'Explanation', 'learnpress' ),
 						'id'   => '_lp_explanation',
 						'type' => 'textarea',
 						'desc' => __( 'Explanation will be showed after students Instant Check.', 'learnpress' ),
-						'std'  => null
+						'std'  => null,
 					),
 
-				)
+				),
 			);
-
 
 			$meta_box = apply_filters( 'learn_press_question_meta_box_args', $meta_box );
 
@@ -436,7 +443,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			$new_columns = array(
 				'instructor' => __( 'Author', 'learnpress' ),
 				LP_QUIZ_CPT  => __( 'Quiz', 'learnpress' ),
-				'type'       => __( 'Type', 'learnpress' )
+				'type'       => __( 'Type', 'learnpress' ),
 			);
 
 			if ( false !== $pos && ! array_key_exists( LP_QUIZ_CPT, $columns ) ) {
@@ -481,7 +488,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
 						echo '<div class="row-actions">';
 						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learnpress' ) );
-						echo "&nbsp;|&nbsp;";
+						echo '&nbsp;|&nbsp;';
 						printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learnpress' ) );
 						echo '</div></div>';
 					} else {
@@ -531,19 +538,22 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			global $wpdb;
 
 			if ( $quiz_id = $this->_filter_quiz() ) {
-				$where .= $wpdb->prepare( " AND (q.ID = %d)", $quiz_id );
+				$where .= $wpdb->prepare( ' AND (q.ID = %d)', $quiz_id );
 			}
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				global $wpdb;
-				$where .= $wpdb->prepare( "
+				$where .= $wpdb->prepare(
+					"
                     AND {$wpdb->posts}.ID NOT IN(
-                        SELECT qq.question_id 
+                        SELECT qq.question_id
                         FROM {$wpdb->learnpress_quiz_questions} qq
                         INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
                         WHERE p.post_type = %s
                     )
-                ", LP_QUESTION_CPT );
+                ",
+					LP_QUESTION_CPT
+				);
 			}
 
 			$posts_where_paged = true;
@@ -624,8 +634,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$args            = array(
 					'default_meta' => array(
 						'_lp_mark' => 1,
-						'_lp_type' => 'true_or_false'
-					)
+						'_lp_type' => 'true_or_false',
+					),
 				);
 				self::$_instance = new self( LP_QUESTION_CPT, $args );
 			}

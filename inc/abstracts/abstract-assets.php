@@ -38,15 +38,13 @@ abstract class LP_Abstract_Assets {
 	 * LP_Abstract_Assets constructor.
 	 */
 	public function __construct() {
-
 		$priory = 1000;
+
 		if ( is_admin() ) {
-			//add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
 			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_admin_scripts' ), $priory + 10 );
 
 		} else {
-			//add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
 			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
@@ -82,7 +80,6 @@ abstract class LP_Abstract_Assets {
 		}
 
 		foreach ( $this->_scripts as $handle => $data ) {
-			// Enqueue script if handle is in the queue
 			if ( in_array( $handle, $this->_enqueue_scripts ) ) {
 				call_user_func_array( 'wp_enqueue_script', $data );
 			} else {
@@ -100,7 +97,6 @@ abstract class LP_Abstract_Assets {
 		}
 
 		foreach ( $this->_styles as $handle => $data ) {
-			// Enqueue style if handle is in the queue
 			if ( in_array( $handle, $this->_enqueue_styles ) ) {
 				call_user_func_array( 'wp_enqueue_style', $data );
 			} else {
@@ -137,9 +133,9 @@ abstract class LP_Abstract_Assets {
 	 *
 	 * @param       $handle
 	 * @param       $src
-	 * @param array $deps
-	 * @param bool  $ver
-	 * @param bool  $in_footer
+	 * @param array  $deps
+	 * @param bool   $ver
+	 * @param bool   $in_footer
 	 */
 	public function register_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false ) {
 		if ( ! isset( $this->_scripts[ $handle ] ) ) {
@@ -158,6 +154,7 @@ abstract class LP_Abstract_Assets {
 	 */
 	public function enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
 		$this->register_style( $handle, $src, $deps, $ver, $media );
+
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
 			call_user_func_array( 'wp_enqueue_style', $this->_styles[ $handle ] );
 		} else {
@@ -170,12 +167,13 @@ abstract class LP_Abstract_Assets {
 	 *
 	 * @param       $handle
 	 * @param       $src
-	 * @param array $deps
-	 * @param bool  $ver
-	 * @param bool  $in_footer
+	 * @param array  $deps
+	 * @param bool   $ver
+	 * @param bool   $in_footer
 	 */
 	public function enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
 		$this->register_script( $handle, $src, $deps, $ver, $in_footer );
+
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
 			call_user_func_array( 'wp_enqueue_script', $this->_scripts[ $handle ] );
 		} else {
@@ -228,7 +226,8 @@ abstract class LP_Abstract_Assets {
 			$no_cache = microtime( true );
 		}
 
-		if ( $default_scripts = $this->_get_scripts() ) {
+		$default_scripts = $this->_get_scripts();
+		if ( $default_scripts ) {
 
 			foreach ( $default_scripts as $handle => $data ) {
 				if ( is_string( $data ) ) {
@@ -242,9 +241,9 @@ abstract class LP_Abstract_Assets {
 				$data = wp_parse_args(
 					$data,
 					array(
-						'deps'   => null,
-						'ver'    => LEARNPRESS_VERSION,
-						'in_footer' => false
+						'deps'      => null,
+						'ver'       => LEARNPRESS_VERSION,
+						'in_footer' => false,
 					)
 				);
 
@@ -254,12 +253,12 @@ abstract class LP_Abstract_Assets {
 					$data['deps'],
 					$data['ver'],
 					$data['in_footer']
-				 );
+				);
 			}
-
 		}
 
-		if ( $default_styles = $this->_get_styles() ) {
+		$default_styles = $this->_get_styles();
+		if ( $default_styles ) {
 
 			foreach ( $default_styles as $handle => $data ) {
 				if ( is_string( $data ) ) {
@@ -270,12 +269,11 @@ abstract class LP_Abstract_Assets {
 					$data,
 					array(
 						'deps' => null,
-						'ver'  => LEARNPRESS_VERSION
+						'ver'  => LEARNPRESS_VERSION,
 					)
 				);
 				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
 			}
-
 		}
 	}
 
@@ -292,31 +290,39 @@ abstract class LP_Abstract_Assets {
 
 	public function localize_printed_scripts( $side = '' ) {
 		$scripts_data = ( $side == 'admin' ) ? $this->_get_script_data() : $this->_get_script_data();
-
 		if ( is_array( $scripts_data ) && is_array( $this->_script_data ) ) {
 			$scripts_data = LP_Helper::array_merge_recursive( $scripts_data, $this->_script_data );
 		} elseif ( is_array( $this->_script_data ) ) {
 			$scripts_data = $this->_script_data;
 		}
+
 		if ( ! $scripts_data ) {
 			return;
 		}
+
 		global $wp_scripts;
 
 		if ( ! $wp_scripts ) {
 			$wp_scripts = new WP_Scripts();
 		}
+
 		foreach ( $scripts_data as $handle => $data ) {
 			$data = apply_filters( 'learn-press/script-data', $data, $handle );
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
-					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
-							$this,
-							'_valid_json_number'
-						), $data );
+
+					$data = $wp_scripts->registered[ $handle ]->extra['data'];
+					if ( $data ) {
+						$data = preg_replace_callback(
+							'~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~',
+							array(
+								$this,
+								'_valid_json_number',
+							),
+							$data
+						);
 
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}

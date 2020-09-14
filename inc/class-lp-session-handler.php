@@ -70,9 +70,9 @@ class LP_Session_Handler implements ArrayAccess {
 	 * @param mixed $value
 	 */
 	public function __set( $key, $value ) {
-		//if ( $key === 'order_awaiting_payment' ) {
+		// if ( $key === 'order_awaiting_payment' ) {
 
-		//}
+		// }
 		$this->set( $key, $value );
 	}
 
@@ -120,7 +120,7 @@ class LP_Session_Handler implements ArrayAccess {
 		add_action( $this->schedule_id, array( $this, 'cleanup_sessions' ), 10 );
 
 		if ( ! is_user_logged_in() ) {
-			//add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
+			// add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
 		}
 	}
 
@@ -139,7 +139,8 @@ class LP_Session_Handler implements ArrayAccess {
 			$this->_has_browser_cookie = false;
 		}
 
-		if ( $cookie = $this->get_session_cookie() ) {
+		$cookie = $this->get_session_cookie();
+		if ( $cookie ) {
 			$this->_customer_id        = $cookie[0];
 			$this->_session_expiration = $cookie[1];
 			$this->_has_cookie         = true;
@@ -147,7 +148,6 @@ class LP_Session_Handler implements ArrayAccess {
 				$this->set_session_expiration();
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
-
 		} else {
 			$this->set_session_expiration();
 			$this->_customer_id = $this->generate_customer_id();
@@ -191,7 +191,7 @@ class LP_Session_Handler implements ArrayAccess {
 		if ( is_user_logged_in() ) {
 			return get_current_user_id();
 		} else {
-			require_once( ABSPATH . 'wp-includes/class-phpass.php' );
+			require_once ABSPATH . 'wp-includes/class-phpass.php';
 			$hasher = new PasswordHash( 12, false );
 
 			return md5( $hasher->get_random_bytes( 32 ) );
@@ -209,14 +209,14 @@ class LP_Session_Handler implements ArrayAccess {
 		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 
-//		//LP_Debug::instance()->add( array(
-//			$this->_customer_id,
-//			$_COOKIE,
-//			$_REQUEST,
-//			$_POST,
-//			$_GET,
-//			$_SERVER
-//		), 'sessions-cookie' );
+		// LP_Debug::instance()->add( array(
+		// $this->_customer_id,
+		// $_COOKIE,
+		// $_REQUEST,
+		// $_POST,
+		// $_GET,
+		// $_SERVER
+		// ), 'sessions-cookie' );
 
 		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
 			return false;
@@ -251,7 +251,7 @@ class LP_Session_Handler implements ArrayAccess {
 
 
 	public function save_data() {
-//var_dump($this->_changed , $this->has_session() , $this->has_cookie() );
+		// var_dump($this->_changed , $this->has_session() , $this->has_cookie() );
 		if ( $this->_changed && $this->has_session() && $this->has_cookie() ) {
 			global $wpdb;
 			$wpdb->replace(
@@ -259,22 +259,22 @@ class LP_Session_Handler implements ArrayAccess {
 				array(
 					'session_key'    => $this->_customer_id,
 					'session_value'  => maybe_serialize( $this->_data ),
-					'session_expiry' => $this->_session_expiration
+					'session_expiry' => $this->_session_expiration,
 				),
 				array(
 					'%s',
 					'%s',
-					'%d'
+					'%d',
 				)
 			);
-//			//LP_Debug::instance()->add( array(
-//				$this->_customer_id,
-//				$_COOKIE,
-//				$_REQUEST,
-//				$_POST,
-//				$_GET,
-//				$_SERVER
-//			), __FUNCTION__ );
+			// LP_Debug::instance()->add( array(
+			// $this->_customer_id,
+			// $_COOKIE,
+			// $_REQUEST,
+			// $_POST,
+			// $_GET,
+			// $_SERVER
+			// ), __FUNCTION__ );
 
 			// Set cache
 			LP_Object_Cache::set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
@@ -285,7 +285,8 @@ class LP_Session_Handler implements ArrayAccess {
 	}
 
 	public function destroy_session() {
-		if ( $id = $this->get( 'temp_user' ) ) {
+		$id = $this->get( 'temp_user' );
+		if ( $id ) {
 			delete_user_meta( $id, '_lp_expiration' );
 		}
 
@@ -330,7 +331,7 @@ class LP_Session_Handler implements ArrayAccess {
 
 		// Try get it from the cache, it will return false if not present or if object cache not in use
 		$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
-		///echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
+		// echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
 		if ( false === $value ) {
 			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id );
 			$value = $wpdb->get_var( $q );
@@ -352,7 +353,7 @@ class LP_Session_Handler implements ArrayAccess {
 		$wpdb->delete(
 			$this->_table,
 			array(
-				'session_key' => $customer_id
+				'session_key' => $customer_id,
 			)
 		);
 	}
@@ -362,16 +363,16 @@ class LP_Session_Handler implements ArrayAccess {
 		$wpdb->update(
 			$this->_table,
 			array(
-				'session_expiry' => $timestamp
+				'session_expiry' => $timestamp,
 			),
 			array(
-				'session_key' => $customer_id
+				'session_key' => $customer_id,
 			),
 			array(
-				'%d'
+				'%d',
 			)
 		);
-		////LP_Debug::instance()->add( $customer_id, __FUNCTION__ );
+		// LP_Debug::instance()->add( $customer_id, __FUNCTION__ );
 	}
 
 	/**

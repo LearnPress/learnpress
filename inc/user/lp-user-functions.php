@@ -27,20 +27,25 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 		$query_args[] = $course_id;
 	}
 
-	$query = $wpdb->prepare( "
+	$query = $wpdb->prepare(
+		"
         SELECT user_item_id
         FROM {$wpdb->prefix}learnpress_user_items
         WHERE user_id = %d
-        " . ( $course_id ? " AND item_id = %d" : "" ) . "
-    ", $query_args );
+        " . ( $course_id ? ' AND item_id = %d' : '' ) . '
+    ',
+		$query_args
+	);
 
 	// delete all courses user has enrolled
-	$query = $wpdb->prepare( "
+	$query = $wpdb->prepare(
+		"
         DELETE FROM {$wpdb->prefix}learnpress_user_items
         WHERE user_id = %d
-        " . ( $course_id ? " AND item_id = %d" : "" ) . "
-    ", $query_args );
-
+        " . ( $course_id ? ' AND item_id = %d' : '' ) . '
+    ',
+		$query_args
+	);
 
 	@$wpdb->query( $query );
 }
@@ -109,8 +114,8 @@ function learn_press_get_current_user( $create_temp = true, $force_new = false )
 
 	return learn_press_get_user( 0 );
 
-	//return $create_temp ? new LP_User_Guest( 0 ) : false;
-	//return $create_temp ? LP_User_Factory::get_temp_user() : false;
+	// return $create_temp ? new LP_User_Guest( 0 ) : false;
+	// return $create_temp ? LP_User_Factory::get_temp_user() : false;
 }
 
 if ( ! function_exists( 'learn_press_get_user' ) ) {
@@ -170,7 +175,6 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 
 /**
  * Add more 2 user roles teacher and student
- *
  */
 function learn_press_add_user_roles() {
 
@@ -184,7 +188,6 @@ function learn_press_add_user_roles() {
 		'LP Instructor',
 		array()
 	);
-
 
 	$course_cap = LP_COURSE_CPT . 's';
 	$lesson_cap = LP_LESSON_CPT . 's';
@@ -351,27 +354,36 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 }
 
 function learn_press_profile_tab_courses_content( $current, $tab, $user ) {
-	learn_press_get_template( 'profile/tabs/courses.php', array(
-		'user'    => $user,
-		'current' => $current,
-		'tab'     => $tab
-	) );
+	learn_press_get_template(
+		'profile/tabs/courses.php',
+		array(
+			'user'    => $user,
+			'current' => $current,
+			'tab'     => $tab,
+		)
+	);
 }
 
 function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
-	learn_press_get_template( 'profile/tabs/quizzes.php', array(
-		'user'    => $user,
-		'current' => $current,
-		'tab'     => $tab
-	) );
+	learn_press_get_template(
+		'profile/tabs/quizzes.php',
+		array(
+			'user'    => $user,
+			'current' => $current,
+			'tab'     => $tab,
+		)
+	);
 }
 
 function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
-	learn_press_get_template( 'profile/tabs/orders.php', array(
-		'user'    => $user,
-		'current' => $current,
-		'tab'     => $tab
-	) );
+	learn_press_get_template(
+		'profile/tabs/orders.php',
+		array(
+			'user'    => $user,
+			'current' => $current,
+			'tab'     => $tab,
+		)
+	);
 }
 
 /**
@@ -379,7 +391,6 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
  *
  * @return false|WP_User
  * @since 3.0.0
- *
  */
 function learn_press_get_profile_user() {
 	return LP_Profile::get_queried_user();
@@ -394,12 +405,12 @@ function learn_press_user_become_teacher_registration_form() {
 		return;
 	}
 	?>
-    <p>
-        <label for="become_teacher">
-            <input type="checkbox" name="become_teacher" id="become_teacher">
-			<?php _e( 'Want to become an instructor?', 'learnpress' ) ?>
-        </label>
-    </p>
+	<p>
+		<label for="become_teacher">
+			<input type="checkbox" name="become_teacher" id="become_teacher">
+			<?php _e( 'Want to become an instructor?', 'learnpress' ); ?>
+		</label>
+	</p>
 	<?php
 }
 
@@ -456,7 +467,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		'item_type'       => '%s',
 		'status'          => '%s',
 		'ref_type'        => '%s',
-		'parent_id'       => '%d'
+		'parent_id'       => '%d',
 	);
 
 	/**
@@ -506,14 +517,13 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		);
 	}
 
-	//
 	if ( $where && empty( $where['user_id'] ) ) {
 		$where['user_id'] = ! empty( $fields['user_id'] ) ? $fields['user_id'] : learn_press_get_current_user_id();
 	}
 
 	$where_format = array();
 
-	/// Build where and where format
+	// Build where and where format
 	if ( $where ) {
 		foreach ( $where as $field => $value ) {
 			if ( ! empty( $table_fields[ $field ] ) ) {
@@ -571,7 +581,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	// Get the item we just have updated or inserted.
 	if ( $inserted ) {
 		$updated_item = learn_press_get_user_item( $inserted );
-	} else if ( $updated ) {
+	} elseif ( $updated ) {
 		$updated_item = learn_press_get_user_item( $where );
 	}
 
@@ -642,7 +652,7 @@ function learn_press_get_user_item( $where, $single = true ) {
 		'item_type'    => '%s',
 		'status'       => '%s',
 		'ref_type'     => '%s',
-		'parent_id'    => '%d'
+		'parent_id'    => '%d',
 	);
 
 	// If $where is a number consider we are searching the record with unique user_item_id
@@ -659,11 +669,14 @@ function learn_press_get_user_item( $where, $single = true ) {
 	$item = false;
 
 	if ( $where_str ) {
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE " . join( ' AND ', $where_str ) . "
-		", $where );
+			WHERE " . join( ' AND ', $where_str ) . '
+		',
+			$where
+		);
 		if ( $single || ! empty( $where['user_item_id'] ) ) {
 			$item = $wpdb->get_row( $query );
 		} else {
@@ -741,14 +754,14 @@ function learn_press_delete_user_item_meta( $object_id, $meta_key, $meta_value =
  * @param WP_User_Query $q
  */
 function learn_press_filter_temp_users( $q ) {
-//	if ( $temp_users = learn_press_get_temp_users() ) {
-//		$exclude = (array) $q->get( 'exclude' );
-//		$exclude = array_merge( $exclude, $temp_users );
-//		$q->set( 'exclude', $exclude );
-//	}
+	// if ( $temp_users = learn_press_get_temp_users() ) {
+	// $exclude = (array) $q->get( 'exclude' );
+	// $exclude = array_merge( $exclude, $temp_users );
+	// $q->set( 'exclude', $exclude );
+	// }
 }
 
-//add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
+// add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
 
 /**
  * Get temp users.
@@ -759,12 +772,17 @@ function learn_press_get_temp_users() {
 	return false;
 	if ( false === ( $temp_users = LP_Object_Cache::get( 'learn-press/temp-users' ) ) ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT ID
-			FROM {$wpdb->users} u 
+			FROM {$wpdb->users} u
 			INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
 			LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
-		", '_lp_temp_user', 'yes', '_lp_expiration' );
+		",
+			'_lp_temp_user',
+			'yes',
+			'_lp_expiration'
+		);
 
 		$temp_users = $wpdb->get_col( $query );
 
@@ -795,7 +813,7 @@ function _learn_press_update_created_time_user_item_meta( $meta_id, $object_id, 
 	);
 }
 
-///add_action( 'added_learnpress_user_item_meta', '_learn_press_update_created_time_user_item_meta', 10, 4 );
+// add_action( 'added_learnpress_user_item_meta', '_learn_press_update_created_time_user_item_meta', 10, 4 );
 
 /**
  * Update field updated_time after updated user item meta
@@ -818,13 +836,13 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 	);
 }
 
-//add_action( 'updated_learnpress_user_item_meta', '_learn_press_update_updated_time_user_item_meta', 10, 4 );
+// add_action( 'updated_learnpress_user_item_meta', '_learn_press_update_updated_time_user_item_meta', 10, 4 );
 
 /**
  * @param     $status
- * @param int $quiz_id
- * @param int $user_id
- * @param int $course_id
+ * @param int    $quiz_id
+ * @param int    $user_id
+ * @param int    $course_id
  *
  * @return bool|mixed
  */
@@ -959,7 +977,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 				learn_press_send_json(
 					array(
 						'redirect' => $redirect,
-						'result'   => 'success'
+						'result'   => 'success',
 					)
 				);
 			} else {
@@ -1000,35 +1018,16 @@ function learn_press_user_is( $role, $user_id = 0 ) {
 	return $role;
 }
 
-//function learn_press_profile_tab_endpoints_edit_profile( $endpoints ) {
-//	$endpoints['edit'] = 'edit';
-//	print_r($endpoints);
-//	return $endpoints;
-//}
-//
-//add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoints_edit_profile' );
-
 function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
-	learn_press_get_template( 'profile/tabs/edit.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
+	learn_press_get_template(
+		'profile/tabs/edit.php',
+		array(
+			'user'    => $user,
+			'current' => $current,
+			'tab'     => $tab,
+		)
+	);
 }
-
-function _learn_press_redirect_logout_redirect() {
-	$redirect_to = LP_Request::get_string( 'redirect_to' );
-	$admin_url   = admin_url();
-	$pos         = strpos( $redirect_to, $admin_url );
-
-	if ( $pos !== false ) {
-		return;
-	}
-
-	if ( ( $page_id = LP()->settings->get( 'logout_redirect_page_id' ) ) && get_post( $page_id ) ) {
-		$page_url = get_page_link( $page_id );
-		wp_redirect( $page_url );
-		exit();
-	}
-}
-
-add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
 
 function learn_press_get_profile_endpoints() {
 	$endpoints = (array) LP()->settings->get( 'profile_endpoints' );
@@ -1056,7 +1055,7 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1078,7 +1077,7 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1121,8 +1120,7 @@ function learn_press_get_display_name_publicly( $user_id ) {
 		$public_display['display_lastfirst'] = $user_info->get_data( 'last_name' ) . ' ' . $user_info->get_data( 'first_name' );
 	}
 
-	if ( ! in_array( $user_info->get_data( 'display_name' ), $public_display ) ) // Only add this if it isn't duplicated elsewhere
-	{
+	if ( ! in_array( $user_info->get_data( 'display_name' ), $public_display ) ) {
 		$public_display = array( 'display_displayname' => $user_info->get_data( 'display_name' ) ) + $public_display;
 	}
 
@@ -1151,7 +1149,7 @@ function learn_press_update_user_profile() {
 	do_action( 'learn_press_update_user_profile', $section );
 }
 
-//add_action( 'init', 'learn_press_update_user_profile' );
+// add_action( 'init', 'learn_press_update_user_profile' );
 
 /**
  * Update user avatar
@@ -1237,7 +1235,7 @@ function learn_press_update_user_profile_avatar() {
 	return $new_avatar;
 }
 
-//add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
+// add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
 
 /**
  * Update user basic information.
@@ -1247,15 +1245,12 @@ function learn_press_update_user_profile_avatar() {
  * @return bool|mixed|WP_Error
  */
 function learn_press_update_user_profile_basic_information( $wp_error = false ) {
-
 	$user_id = get_current_user_id();
 
 	$update_data = array(
 		'ID'          => $user_id,
 		'first_name'  => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
 		'last_name'   => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
-		//'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
-		//'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
 		'description' => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 	);
 
@@ -1264,7 +1259,11 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	$socials     = LP_Request::get_array( 'user_profile_social' );
 	$extra_data  = get_user_meta( $user_id, '_lp_extra_info', true );
 
-	update_user_meta( $user_id, '_lp_extra_info', array_merge( $extra_data, $socials ) );
+	if ( ! empty( $extra_data ) ) {
+		$socials = array_merge( $extra_data, $socials );
+	}
+
+	update_user_meta( $user_id, '_lp_extra_info', $socials );
 
 	if ( is_wp_error( $return ) ) {
 		return $wp_error ? $return : false;
@@ -1274,8 +1273,6 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 
 }
 
-//add_action( 'learn_press_update_user_profile_basic-information', 'learn_press_update_user_profile_basic_information' );
-
 /**
  * Update new password.
  *
@@ -1284,14 +1281,14 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
  * @return WP_Error|bool
  */
 function learn_press_update_user_profile_change_password( $wp_error = false ) {
-	# check and update pass word
+	// check and update pass word
 	// check old pass
 	$old_pass       = filter_input( INPUT_POST, 'pass0' );
 	$check_old_pass = false;
 
 	if ( $old_pass ) {
 		$cuser = wp_get_current_user();
-		require_once( ABSPATH . 'wp-includes/class-phpass.php' );
+		require_once ABSPATH . 'wp-includes/class-phpass.php';
 		$wp_hasher = new PasswordHash( 8, true );
 
 		if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
@@ -1312,7 +1309,7 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 			} else {
 				$update_data = array(
 					'user_pass' => $new_pass,
-					'ID'        => get_current_user_id()
+					'ID'        => get_current_user_id(),
 				);
 				$return      = wp_update_user( $update_data );
 
@@ -1323,13 +1320,12 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 				return $return;
 			}
 		}
-	}
-	catch ( Exception $ex ) {
+	} catch ( Exception $ex ) {
 		return $wp_error ? new WP_Error( 'UPDATE_PROFILE_ERROR', $ex->getMessage() ) : false;
 	}
 }
 
-//add_action( 'learn_press_update_user_profile_change-password', 'learn_press_update_user_profile_change_password' );
+// add_action( 'learn_press_update_user_profile_change-password', 'learn_press_update_user_profile_change_password' );
 
 function learn_press_get_avatar_thumb_size() {
 	$avatar_size_settings = LP()->settings->get( 'profile_picture_thumbnail_size' );
@@ -1362,12 +1358,12 @@ function learn_press_set_user_cookie_for_guest() {
 		$guest_key = '_wordpress_lp_guest';
 		if ( is_user_logged_in() ) {
 			if ( ! empty( $_COOKIE[ $guest_key ] ) ) {
-				//setcookie( $guest_key, md5( time() ), - 10000 );
+				// setcookie( $guest_key, md5( time() ), - 10000 );
 				learn_press_remove_cookie( $guest_key );
 			}
 		} else {
 			if ( empty( $_COOKIE[ $guest_key ] ) ) {
-				///setcookie( $guest_key, md5( time() ), time() + 3600 );
+				// setcookie( $guest_key, md5( time() ), time() + 3600 );
 				learn_press_setcookie( $guest_key, md5( time() ), time() + 3600 );
 			}
 		}
@@ -1395,12 +1391,15 @@ function learn_press_get_profile( $for_user = 0 ) {
 
 function learn_press_profile_list_display_names( $args = '' ) {
 
-	$args = wp_parse_args( $args, array(
-		'id'      => 'display_name',
-		'name'    => 'display_name',
-		'user_id' => get_current_user_id(),
-		'echo'    => true
-	) );
+	$args = wp_parse_args(
+		$args,
+		array(
+			'id'      => 'display_name',
+			'name'    => 'display_name',
+			'user_id' => get_current_user_id(),
+			'echo'    => true,
+		)
+	);
 
 	$output         = sprintf( '<select name="%s" id="%s">', $args['name'], $args['id'] );
 	$public_display = learn_press_get_display_name_publicly( $args['user_id'] );
@@ -1419,7 +1418,6 @@ function learn_press_profile_list_display_names( $args = '' ) {
 	return $output;
 }
 
-///////////////////
 /**
  * Remove items from learnpress_user_items.
  *
@@ -1441,22 +1439,25 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 
 	if ( $course_id ) {
 		$args[] = $course_id;
-		$where  = "AND ref_id = %d";
+		$where  = 'AND ref_id = %d';
 	}
 
 	if ( $include_course ) {
-		$where  .= " OR ( item_id = %d AND item_type = %s )";
+		$where .= ' OR ( item_id = %d AND item_type = %s )';
 		$args[] = $course_id;
 		$args[] = LP_COURSE_CPT;
 	}
 
-	$query = $wpdb->prepare( "
+	$query = $wpdb->prepare(
+		"
         DELETE
         FROM {$wpdb->learnpress_user_items}
-        WHERE user_id = %d 
+        WHERE user_id = %d
         AND ( item_id IN(" . join( ',', $format ) . ")
         $where )
-    ", $args );
+    ",
+		$args
+	);
 }
 
 /**
@@ -1494,7 +1495,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 
 	global $wp_query;
 	$args = array(
-		'user' => $user->get_username()
+		'user' => $user->get_username(),
 	);
 
 	if ( isset( $args['user'] ) ) {
@@ -1517,14 +1518,13 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 	if ( $profile_link ) {
 		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
-			$url = trailingslashit( $profile_link . join( "/", array_values( $args ) ) );
+			$url = trailingslashit( $profile_link . join( '/', array_values( $args ) ) );
 		} else {
 			$url = add_query_arg( $args, $profile_link );
 		}
 	} else {
 		$url = get_author_posts_url( $user_id );
 	}
-
 
 	return apply_filters( 'learn_press_user_profile_link', $url, $user_id, $tab );
 }
@@ -1564,7 +1564,6 @@ function learn_press_default_user_item_status( $item_id ) {
  *
  * @return mixed
  * @since 3.1.0
- *
  */
 function learn_press_get_user_distraction() {
 	if ( is_user_logged_in() ) {
@@ -1603,7 +1602,7 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		'ref_id'          => 0,
 		'ref_type'        => 0,
 		'parent_id'       => 0,
-		'create_meta'     => true
+		'create_meta'     => true,
 	);
 
 	$itemData = wp_parse_args( $args, $defaults );
@@ -1710,7 +1709,7 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 		array(
 			'item_type' => LP_QUIZ_CPT,
 			'status'    => 'started',
-			'user_id'   => get_current_user_id()
+			'user_id'   => get_current_user_id(),
 		)
 	);
 
@@ -1733,17 +1732,20 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 			'data'    => array(
 				'duration'        => $duration ? $quiz->get_duration()->get() : 'unlimited',
 				'passingGrade'    => $quiz->get_passing_grade(),
-				'negativeMarking' => $quiz->get_negative_marking()
+				'negativeMarking' => $quiz->get_negative_marking(),
 			),
 			'grade'   => '',
 			'results' => array(
-				'questions' => array_fill_keys( $questionIds, array(
-					'answered' => '',
-					'correct'  => '',
-					'mark'     => 0
-				) )
+				'questions' => array_fill_keys(
+					$questionIds,
+					array(
+						'answered' => '',
+						'correct'  => '',
+						'mark'     => 0,
+					)
+				),
 			),
-			'version' => LEARNPRESS_VERSION
+			'version' => LEARNPRESS_VERSION,
 		),
 		$createMeta
 	);
@@ -1759,70 +1761,70 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 
 	return $userItem;
 
-//	$quiz      = learn_press_get_quiz( $quiz_id );
-//	$quiz_data = $course_data->get_item( $quiz_id );
-//	if ( ! $quiz_data ) {
-//		$user_item_api = new LP_User_Item_CURD();
-//		$course_item   = $user_item_api->get_item_by( array(
-//			'item_id' => $course_id,
-//			'user_id' => $user->get_id()
-//		) );
-//
-//		$quiz_item              = LP_User_Item::get_empty_item();
-//		$quiz_item['user_id']   = $user->get_id();
-//		$quiz_item['item_id']   = $quiz_id;
-//		$quiz_item['item_type'] = learn_press_get_post_type( $quiz_id );
-//		$quiz_item['ref_id']    = $course_id;
-//		$quiz_item['ref_type']  = learn_press_get_post_type( $course_id );
-//		$quiz_item['parent_id'] = $course_item->user_item_id;
-//
-//		$quiz_data = new LP_User_Item_Quiz( $quiz_item );
-//	}
-//
-//	if ( ! $enable_history = $quiz->enable_archive_history() ) {
-//		if ( $quiz_data->get_user_item_id() ) {
-//			global $wpdb;
-//			$query = $wpdb->prepare( "
-//							DELETE FROM {$wpdb->learnpress_user_items}
-//							WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-//						", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
-//
-//			$wpdb->query( $query );
-//		} else {
-//			$course_data->update_item_retaken_count( $quiz_id, 0 );
-//		}
-//	} else {
-//		$count_history = $course_data->count_history_items( $quiz_id );
-//	}
-//
-//	$course_data->update_item_retaken_count( $quiz_id, '+1' );
-//	$quiz_data->set_status( 'started' );
-//	$quiz_data->set_user_id( $user->get_id() );
-//
-//	$date = new LP_Datetime();
-//	$quiz_data->set_start_time( $date->toSql(), true );
-//
-//	/**
-//	 * If enable duration for quiz then update the expiration time
-//	 * otherwise, consider quiz is lifetime access.
-//	 */
-//	$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
-//
-////				if ( $quiz->get_duration()->get_seconds() ) {
-////					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds(), false ) );
-////				} else {
-////					$quiz_data->set_expiration_time( null );
-////					//$quiz_data->set_expiration_time_gmt( null );
-////				}
-//
-//	if ( $quiz_data->update() ) {
-//		$course_data->set_item( $quiz_data );
-//	}
-//
-//	if ( $questions = $quiz->get_questions() ) {
-//		$question_id = reset( $questions );
-//		learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
-//	}
+	// $quiz      = learn_press_get_quiz( $quiz_id );
+	// $quiz_data = $course_data->get_item( $quiz_id );
+	// if ( ! $quiz_data ) {
+	// $user_item_api = new LP_User_Item_CURD();
+	// $course_item   = $user_item_api->get_item_by( array(
+	// 'item_id' => $course_id,
+	// 'user_id' => $user->get_id()
+	// ) );
+	//
+	// $quiz_item              = LP_User_Item::get_empty_item();
+	// $quiz_item['user_id']   = $user->get_id();
+	// $quiz_item['item_id']   = $quiz_id;
+	// $quiz_item['item_type'] = learn_press_get_post_type( $quiz_id );
+	// $quiz_item['ref_id']    = $course_id;
+	// $quiz_item['ref_type']  = learn_press_get_post_type( $course_id );
+	// $quiz_item['parent_id'] = $course_item->user_item_id;
+	//
+	// $quiz_data = new LP_User_Item_Quiz( $quiz_item );
+	// }
+	//
+	// if ( ! $enable_history = $quiz->enable_archive_history() ) {
+	// if ( $quiz_data->get_user_item_id() ) {
+	// global $wpdb;
+	// $query = $wpdb->prepare( "
+	// DELETE FROM {$wpdb->learnpress_user_items}
+	// WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
+	// ", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
+	//
+	// $wpdb->query( $query );
+	// } else {
+	// $course_data->update_item_retaken_count( $quiz_id, 0 );
+	// }
+	// } else {
+	// $count_history = $course_data->count_history_items( $quiz_id );
+	// }
+	//
+	// $course_data->update_item_retaken_count( $quiz_id, '+1' );
+	// $quiz_data->set_status( 'started' );
+	// $quiz_data->set_user_id( $user->get_id() );
+	//
+	// $date = new LP_Datetime();
+	// $quiz_data->set_start_time( $date->toSql(), true );
+	//
+	// **
+	// * If enable duration for quiz then update the expiration time
+	// * otherwise, consider quiz is lifetime access.
+	// */
+	// $expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
+	//
+	// if ( $quiz->get_duration()->get_seconds() ) {
+	// $quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds(), false ) );
+	// } else {
+	// $quiz_data->set_expiration_time( null );
+	// $quiz_data->set_expiration_time_gmt( null );
+	// }
+	//
+	// if ( $quiz_data->update() ) {
+	// $course_data->set_item( $quiz_data );
+	// }
+	//
+	// if ( $questions = $quiz->get_questions() ) {
+	// $question_id = reset( $questions );
+	// learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
+	// }
 }
 
 /**
@@ -1835,7 +1837,6 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
  *
  * @return array|bool|LP_User_Item|WP_Error
  * @since 3.3.0
- *
  */
 function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
@@ -1845,13 +1846,18 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	global $wpdb;
 
 	// Get user item parent id
-	$query  = $wpdb->prepare( "
+	$query  = $wpdb->prepare(
+		"
 	    SELECT user_item_id, item_id id, item_type type
-	    FROM {$wpdb->learnpress_user_items} 
+	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_item_id = (SELECT max(user_item_id)
 	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_id = %d AND item_id = %d AND status = %s)
-	", $user_id, $course_id, 'enrolled' );
+	",
+		$user_id,
+		$course_id,
+		'enrolled'
+	);
 	$parent = $wpdb->get_row( $query );
 
 	do_action( 'learn-press/before-user-start-quiz', $quiz_id, $user_id, $course_id );
@@ -1870,7 +1876,7 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 			'user_id'      => $user_id,
 			'parent_id'    => $parent ? absint( $parent->user_item_id ) : 0,
 			'ref_type'     => $parent ? $parent->type : '',
-			'ref_id'       => $parent ? $parent->id : ''
+			'ref_id'       => $parent ? $parent->id : '',
 		),
 		$wp_error
 	);
@@ -1892,7 +1898,6 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
  *
  * @return array|bool|LP_User_Item|WP_Error
  * @since 3.3.0
- *
  */
 function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
@@ -1902,13 +1907,18 @@ function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	global $wpdb;
 
 	// Get user item parent id
-	$query  = $wpdb->prepare( "
+	$query  = $wpdb->prepare(
+		"
 	    SELECT user_item_id, item_id id, item_type type
-	    FROM {$wpdb->learnpress_user_items} 
+	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_item_id = (SELECT max(user_item_id)
 	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_id = %d AND item_id = %d AND status = %s)
-	", $user_id, $course_id, 'enrolled' );
+	",
+		$user_id,
+		$course_id,
+		'enrolled'
+	);
 	$parent = $wpdb->get_row( $query );
 
 	do_action( 'learn-press/before-user-retry-quiz', $quiz_id, $user_id, $course_id );
@@ -1926,7 +1936,7 @@ function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 			'user_id'   => $user_id,
 			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
 			'ref_type'  => $parent ? $parent->type : '',
-			'ref_id'    => $parent ? $parent->id : ''
+			'ref_id'    => $parent ? $parent->id : '',
 		),
 		$wp_error
 	);
@@ -1946,10 +1956,8 @@ function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
  *
  * @return array
  * @since 3.3.0
- *
  */
 function learn_press_rest_prepare_user_questions( $question_ids, $args = array() ) {
-
 
 	if ( is_numeric( $args ) ) {
 
@@ -1961,7 +1969,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				'instant_check'     => true,
 				'quiz_status'       => '',
 				'checked_questions' => array(),
-				'hinted_questions'  => array()
+				'hinted_questions'  => array(),
 			)
 		);
 	}
@@ -1974,8 +1982,8 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 	$questions        = array();
 
 	if ( $question_ids ) {
-		//$checkedQuestions = isset( $userJS['checked_questions'] ) ? $userJS['checked_questions'] : array();
-		//$hintedQuestions  = isset( $userJS['hinted_questions'] ) ? $userJS['hinted_questions'] : array();
+		// $checkedQuestions = isset( $userJS['checked_questions'] ) ? $userJS['checked_questions'] : array();
+		// $hintedQuestions  = isset( $userJS['hinted_questions'] ) ? $userJS['hinted_questions'] : array();
 
 		foreach ( $question_ids as $id ) {
 			$question       = learn_press_get_question( $id );
@@ -1987,11 +1995,11 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 			$theHint        = $question->get_hint();
 			$theExplanation = '';
 
-//			if ( $instantHint ) {
-//				$theHint = $question->get_hint();
-//				$hinted  = in_array( $id, $hintedQuestions );
-//				$hasHint = ! ! $theHint;
-//			}
+			// if ( $instantHint ) {
+			// $theHint = $question->get_hint();
+			// $hinted  = in_array( $id, $hintedQuestions );
+			// $hasHint = ! ! $theHint;
+			// }
 
 			if ( $instantCheck ) {
 				$theExplanation = $question->get_explanation();
@@ -2003,9 +2011,9 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				'id'    => absint( $id ),
 				'title' => $question->get_title(),
 				'type'  => $question->get_type(),
-				//'hint'        => $theHint,//$hinted ? $theHint : '',
-				//'explanation' => $checked ? $theExplanation : '',
-				'point' => ( $mark = $question->get_mark() ) ? $mark : 1
+				// 'hint'        => $theHint,//$hinted ? $theHint : '',
+				// 'explanation' => $checked ? $theExplanation : '',
+				'point' => ( $mark = $question->get_mark() ) ? $mark : 1,
 			);
 
 			if ( $content = $question->get_content() ) {
@@ -2022,13 +2030,13 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				$questionData['explanation'] = $theExplanation;
 			}
 
-//			if ( $hasHint ) {
-//				$questionData['has_hint'] = $hasHint;
-//
-//				if ( $hinted ) {
-//					$questionData['hint'] = $theHint;
-//				}
-//			}
+			// if ( $hasHint ) {
+			// $questionData['has_hint'] = $hasHint;
+			//
+			// if ( $hinted ) {
+			// $questionData['hint'] = $theHint;
+			// }
+			// }
 
 			if ( $hasExplanation ) {
 				$questionData['has_explanation'] = $hasExplanation;
@@ -2108,7 +2116,6 @@ add_action( 'edit_user_profile', 'learn_press_append_user_profile_fields' );
  * @param int $user_id
  *
  * @since 4.0.0
- *
  */
 function learn_press_update_extra_user_profile_fields( $user_id ) {
 
@@ -2131,7 +2138,6 @@ add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_f
  *
  * @return array
  * @since 4.0.0
- *
  */
 function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 	if ( ! $user_id ) {
@@ -2150,12 +2156,15 @@ function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
 }
 
 function learn_press_social_profiles() {
-	return apply_filters( 'learn-press/social-profiles', array(
-		'facebook',
-		'twitter',
-		'youtube',
-		'linkedin'
-	) );
+	return apply_filters(
+		'learn-press/social-profiles',
+		array(
+			'facebook',
+			'twitter',
+			'youtube',
+			'linkedin',
+		)
+	);
 }
 
 /**
@@ -2165,7 +2174,6 @@ function learn_press_social_profiles() {
  *
  * @return bool
  * @since 4.0.0
- *
  */
 function learn_press_is_social_profile( $key ) {
 	$is_socials = learn_press_social_profiles();
@@ -2182,15 +2190,13 @@ function learn_press_social_profile_name( $key ) {
 		case 'twitter':
 			$name = __( 'Twitter Profile', 'learnpress' );
 			break;
-		case
-		'googleplus':
+		case 'googleplus':
 			$name = __( 'Google Profile', 'learnpress' );
 			break;
-		case
-		'youtube':
+		case 'youtube':
 			$name = __( 'Youtube Channel', 'learnpress' );
 			break;
-		case'linkedin':
+		case 'linkedin':
 			$name = __( 'Linkedin Profile', 'learnpress' );
 			break;
 		default:
@@ -2205,7 +2211,6 @@ function learn_press_social_profile_name( $key ) {
  *
  * @return array
  * @since 4.0.0
- *
  */
 function learn_press_get_user_extra_profile_fields() {
 	$socials = learn_press_social_profiles();

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Modal_Search_Users
  */
@@ -50,9 +49,10 @@ class LP_Modal_Search_Users {
 				'close_button' => __( 'Close', 'learnpress' ),
 				'title'        => __( 'Search users', 'learnpress' ),
 				'number'       => 10,
-				'paged'        => 1
+				'paged'        => 1,
 			)
 		);
+
 		if ( is_string( $this->_options['exclude'] ) ) {
 			$this->_options['exclude'] = explode( ',', $this->_options['exclude'] );
 		}
@@ -73,7 +73,7 @@ class LP_Modal_Search_Users {
 		$args = array(
 			'number'  => $this->_options['number'],
 			'offset'  => ( $this->_options['paged'] - 1 ) * $this->_options['number'],
-			'exclude' => $exclude
+			'exclude' => $exclude,
 		);
 		if ( $term ) {
 			$args['search']         = sprintf( '*%s*', esc_attr( $term ) );
@@ -85,7 +85,8 @@ class LP_Modal_Search_Users {
 		$this->_query = new WP_User_Query( $args );
 		$this->_items = array();
 
-		if ( $results = $this->_query->get_results() ) {
+		$results = $this->_query->get_results();
+		if ( $results ) {
 			foreach ( $results as $user ) {
 				$this->_items[ $user->ID ] = $user->user_login;
 			}
@@ -105,11 +106,14 @@ class LP_Modal_Search_Users {
 	function get_pagination() {
 
 		$pagination = '';
-		if ( $items = $this->get_items() && $this->_options['number'] > 0 ) {
+		$items      = $this->get_items();
+
+		if ( $items && $this->_options['number'] > 0 ) {
 
 			$number        = $this->_options['number'];
 			$total         = $this->_query->get_total();
 			$max_num_pages = intval( $total / $number );
+
 			if ( $total % $number ) {
 				$max_num_pages ++;
 			}
@@ -126,16 +130,19 @@ class LP_Modal_Search_Users {
 
 				$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
 				$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
-				$pagination   = paginate_links( array(
-					'base'      => $pagenum_link,
-					'total'     => $max_num_pages,
-					'current'   => max( 1, $this->_options['paged'] ),
-					'mid_size'  => 1,
-					'add_args'  => array_map( 'urlencode', $query_args ),
-					'prev_text' => __( '<', 'learnpress' ),
-					'next_text' => __( '>', 'learnpress' ),
-					'type'      => ''
-				) );
+
+				$pagination = paginate_links(
+					array(
+						'base'      => $pagenum_link,
+						'total'     => $max_num_pages,
+						'current'   => max( 1, $this->_options['paged'] ),
+						'mid_size'  => 1,
+						'add_args'  => array_map( 'urlencode', $query_args ),
+						'prev_text' => __( '<', 'learnpress' ),
+						'next_text' => __( '>', 'learnpress' ),
+						'type'      => '',
+					)
+				);
 			}
 		}
 
@@ -156,7 +163,10 @@ class LP_Modal_Search_Users {
 		);
 
 		ob_start();
-		if ( $items = $this->get_items() ) {
+
+		$items = $this->get_items();
+
+		if ( $items ) {
 			foreach ( $items as $id => $item ) {
 				$the_user = learn_press_get_user( $id );
 				$text     = str_replace( '{{id}}', $the_user->get_id(), $this->_options['text_format'] );
@@ -168,14 +178,21 @@ class LP_Modal_Search_Users {
 				$data['id'] = $id;
 				printf( '<li class="%s" data-id="%d" data-data="%s"><label>', 'lp-result-item user-' . $id, $id, esc_attr( wp_json_encode( $data ) ) );
 				if ( $this->_options['multiple'] ) {
-					printf( '
+					printf(
+						'
                    		<input type="checkbox" value="%d" name="selectedItems[]">
                         <span class="lp-item-text">%s</span>
-                    ', $id, esc_attr( $text ) );
+                    ',
+						$id,
+						esc_attr( $text )
+					);
 				} else {
-					printf( '
+					printf(
+						'
                         <a href=""><span class="lp-item-text">%s</span></a>
-                    ', esc_attr( $text ) );
+                    ',
+						esc_attr( $text )
+					);
 				}
 
 				echo '</li>';

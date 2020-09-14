@@ -1,36 +1,5 @@
 <?php
 /**
- * Translate strings
- */
-
-/**
- * Backup $string variable if it is already defined elsewhere.
- */
-if ( isset( $strings ) ) {
-	$__strings = $strings;
-}
-
-if ( false === ( $strings = LP_Object_Cache::get( 'strings', 'learn-press' ) ) ) {
-
-	$strings = array(
-		'confirm-redo-quiz'       => __( 'Do you want to redo quiz "%s"?', 'learnpress' ),
-		'confirm-complete-quiz'   => __( 'Do you want to complete quiz "%s"?', 'learnpress' ),
-		'confirm-complete-lesson' => __( 'Do you want to complete lesson "%s"?', 'learnpress' ),
-		'confirm-finish-course'   => __( 'Do you want to finish course "%s"?', 'learnpress' ),
-		'confirm-retake-course'   => __( 'Do you want to retake course "%s"?', 'learnpress' ),
-	);
-
-	LP_Object_Cache::set( 'strings', $strings, 'learn-press' );
-}
-
-/**
- * Restore $string
- */
-if ( isset( $__strings ) ) {
-	$strings = $__strings;
-}
-
-/**
  * Class LP_Strings
  */
 class LP_Strings {
@@ -46,8 +15,18 @@ class LP_Strings {
 	 * @since 3.2.0
 	 */
 	public static function load() {
-		$strings = array();
-		include_once "lp-strings.php";
+		$strings = apply_filters(
+			'learnpress/strings',
+			array(
+				'you_have_completed_quiz' => __( 'You\'ve already completed quiz.', 'learnpress' ),
+				'confirm-redo-quiz'       => __( 'Do you want to redo quiz "%s"?', 'learnpress' ),
+				'confirm-complete-quiz'   => __( 'Do you want to complete quiz "%s"?', 'learnpress' ),
+				'confirm-complete-lesson' => __( 'Do you want to complete lesson "%s"?', 'learnpress' ),
+				'confirm-finish-course'   => __( 'Do you want to finish course "%s"?', 'learnpress' ),
+				'confirm-retake-course'   => __( 'Do you want to retake course "%s"?', 'learnpress' ),
+			)
+		);
+
 		self::$strings = $strings;
 	}
 
@@ -60,13 +39,16 @@ class LP_Strings {
 	 */
 	public static function get( $str, $context = '', $args = '' ) {
 		$string = $str;
-		if ( $strings = self::$strings ) {
+
+		$strings = self::$strings;
+
+		if ( $strings ) {
 			if ( array_key_exists( $str, $strings ) ) {
 				$texts = $strings[ $str ];
 
 				if ( is_string( $texts ) ) {
 					$string = $texts;
-				} else if ( $context && array_key_exists( $context, $texts ) ) {
+				} elseif ( $context && array_key_exists( $context, $texts ) ) {
 					$string = $texts[ $context ];
 				} else {
 					$string = reset( $texts );

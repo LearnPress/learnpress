@@ -6,8 +6,8 @@
  */
 ?>
 
-<div id="admin-editor-<?php esc_attr_e( $post_type ); ?>">
-    <div class="lp-place-holder">
+<div id="admin-editor-<?php echo esc_attr( $post_type ); ?>">
+	<div class="lp-place-holder">
 		<?php learn_press_admin_view( 'placeholder-animation' ); ?>
-    </div>
+	</div>
 </div>

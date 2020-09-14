@@ -2,9 +2,7 @@
 /**
  * Send emails in background
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Global' ) ) {
 	/**
@@ -40,7 +38,7 @@ if ( ! class_exists( 'LP_Background_Global' ) ) {
 			$item = array(
 				'action'   => $action,
 				'callback' => $callback,
-				'args'     => $args
+				'args'     => $args,
 			);
 
 			$instance = self::instance();
@@ -60,14 +58,11 @@ if ( ! class_exists( 'LP_Background_Global' ) ) {
 				try {
 
 					if ( is_callable( $callback['callback'] ) ) {
-						//call_user_func_array( $callback['callback'], $args );
 						call_user_func( $callback['callback'], $callback );
 					}
 
-					//do_action_ref_array( 'learn-press/background/' . $callback['action'], $args );
 					do_action( 'learn-press/background/' . $callback['action'], $callback );
-				}
-				catch ( Exception $e ) {
+				} catch ( Exception $e ) {
 
 				}
 			}

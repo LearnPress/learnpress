@@ -5,9 +5,9 @@
  * @version 3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+defined( 'ABSPATH' ) || die();
 
-include_once "database/html-repair-database.php";
-include_once "database/html-upgrade-database.php";
-include_once "database/html-remove-database.php";
-include_once "database/html-remove-outdated-data.php";
+require_once 'database/html-repair-database.php';
+require_once 'database/html-upgrade-database.php';
+require_once 'database/html-remove-database.php';
+require_once 'database/html-remove-outdated-data.php';

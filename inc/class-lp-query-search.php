@@ -22,7 +22,7 @@ class LP_Query_Search {
 				'exclude'    => '',
 				'fields'     => array(),
 				'limit'      => - 1,
-				'paged'      => 0
+				'paged'      => 0,
 			)
 		);
 
@@ -34,18 +34,6 @@ class LP_Query_Search {
 		$include    = array();
 		$exclude    = array();
 		$authors    = array();
-		/*$current_items_in_order = learn_press_get_request( 'current_items' );
-		$current_items          = array();
-
-		foreach ( $current_items_in_order as $item ) {
-			$sql = "SELECT meta_value
-                        FROM {$wpdb->prefix}learnpress_order_itemmeta
-                        WHERE meta_key = '_course_id'
-                        AND learnpress_order_item_id = $item";
-			$id  = $wpdb->get_results( $sql, OBJECT );
-			array_push( $current_items, $id[0]->meta_value );
-		}*/
-
 
 		if ( ! empty( $args['exclude'] ) ) {
 			if ( is_string( $args['exclude'] ) ) {
@@ -64,7 +52,6 @@ class LP_Query_Search {
 		$exclude = apply_filters( 'learn-press/search-items/exclude', $exclude, $type, $context, $context_id );
 		$include = apply_filters( 'learn-press/search-items/include', $include, $type, $context, $context_id );
 
-
 		if ( ! $user->is_admin() ) {
 			$authors[] = $user->get_id();
 		}
@@ -73,6 +60,7 @@ class LP_Query_Search {
 			if ( get_post_type( $context_id ) == $context ) {
 				$post_author = get_post_field( 'post_author', $context_id );
 				$authors[]   = $post_author;
+
 				if ( $post_author != $user->get_id() ) {
 					$authors[] = $user->get_id();
 				}
@@ -85,9 +73,9 @@ class LP_Query_Search {
 			'post_status'    => 'publish',
 			'order'          => 'ASC',
 			'orderby'        => 'parent title',
-			'post__not_in'        => $exclude,
+			'post__not_in'   => $exclude,
 			'include'        => $include,
-			'author'         => $authors
+			'author'         => $authors,
 		);
 
 		if ( $term ) {
@@ -98,13 +86,17 @@ class LP_Query_Search {
 			$query_args['offset'] = ( $args['paged'] - 1 ) * $args['limit'];
 		}
 
-
 		$query_args = apply_filters( 'learn-press/search-items/args', $query_args, $type, $context, $context_id );
+
 		global $wp_query, $wpdb;
+
 		$posts = get_posts( $query_args );
 		$q     = new WP_Query( $query_args );
-		print_r($q);
 
-		return array( 'items' => $posts, 'total' => $q->found_posts, 'pages' => $q->max_num_pages );
+		return array(
+			'items' => $posts,
+			'total' => $q->found_posts,
+			'pages' => $q->max_num_pages,
+		);
 	}
 }

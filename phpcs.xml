@@ -2,10 +2,8 @@
 <ruleset name="LearnPress ruleset">
     <description>LearnPress rules for PHP_CodeSniffer</description>
 
+    <arg value="ps"/>
     <arg name="extensions" value="php"/>
-
-    <!-- Run against the PHPCompatibility ruleset -->
-    <rule ref="PHPCompatibility" />
 
     <file>./inc/</file>
     <file>./templates/</file>
@@ -14,4 +12,30 @@
 
     <exclude-pattern>./inc/admin/includes/class-markdown-parse.php</exclude-pattern>
     <exclude-pattern>*/inc/libraries/*</exclude-pattern>
+    <exclude-pattern type="relative">vendor</exclude-pattern>
+    <exclude-pattern type="relative">node_modules</exclude-pattern>
+    <exclude-pattern type="relative">tests</exclude-pattern>
+
+    <rule ref="WordPress-Core">
+        <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="WordPress.DB.PreparedSQL.NotPrepared"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar"/>
+        <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+        <exclude name="Squiz.Commenting.FileComment.SpacingAfterComment"/>
+        <exclude name="WordPress.WP.I18n.MissingTranslatorsComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamName"/>
+        <exclude name="Squiz.Commenting.VariableComment.EmptyVar"/>
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+        <exclude name="WordPress.PHP.StrictComparisons.LooseComparison"/>
+        <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict"/>
+        <exclude name="WordPress.PHP.RestrictedPHPFunctions.date_date"/>
+        <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
+        <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
+    </rule>
 </ruleset>

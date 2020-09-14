@@ -111,126 +111,70 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./store */ "./assets/src/js/frontend/modal/store/index.js");
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store */ "./assets/src/js/frontend/modal/store/index.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/**
+ * Create Modal popup.
+ * Edit: Use React Hook.
+ *
+ * @author Nhamdv - ThimPress.
+ */
 
 
 
 
+var Modal = function Modal(_ref) {
+  var children = _ref.children;
 
-
-
-var Modal =
-/*#__PURE__*/
-function (_Component) {
-  _inherits(Modal, _Component);
-
-  function Modal() {
-    var _getPrototypeOf2;
-
-    var _this;
-
-    _classCallCheck(this, Modal);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Modal)).call.apply(_getPrototypeOf2, [this].concat(args)));
-
-    _defineProperty(_assertThisInitialized(_this), "confirm", function (c) {
-      return function (event) {
-        var confirm = _this.props.confirm;
-        confirm(c);
-      };
-    });
-
-    return _this;
-  }
-
-  _createClass(Modal, [{
-    key: "render",
-    value: function render() {
-      var _this$props = this.props,
-          isShow = _this$props.isShow,
-          message = _this$props.message,
-          children = _this$props.children;
-      var styles = {
-        display: isShow ? 'block' : 'none'
-      };
-      return React.createElement(React.Fragment, null, React.createElement("div", null, React.createElement("div", {
-        id: "lp-modal-overlay",
-        style: styles
-      }), React.createElement("div", {
-        id: "lp-modal-window",
-        style: styles
-      }, React.createElement("div", {
-        id: "lp-modal-content",
-        dangerouslySetInnerHTML: {
-          __html: message
-        }
-      }), React.createElement("div", {
-        id: "lp-modal-buttons"
-      }, React.createElement("button", {
-        className: "lp-button modal-button-ok",
-        onClick: this.confirm('yes')
-      }, React.createElement("span", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('OK', 'button confirm ok', 'learnpress'))), React.createElement("button", {
-        className: "lp-button modal-button-cancel",
-        onClick: this.confirm('no')
-      }, React.createElement("span", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Cancel', 'button confirm cancel', 'learnpress')))))), children);
-    }
-  }]);
-
-  return Modal;
-}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
-
-/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
-  var _select = select('learnpress/modal'),
-      isOpen = _select.isOpen,
-      getMessage = _select.getMessage;
-
-  return {
-    isShow: isOpen(),
-    message: getMessage()
-  };
-}), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
-  var _dispatch = dispatch('learnpress/modal'),
+  var _dispatch = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["dispatch"])('learnpress/modal'),
       show = _dispatch.show,
       hide = _dispatch.hide,
       confirm = _dispatch.confirm;
 
-  return {
-    show: show,
-    hide: hide,
-    confirm: confirm
+  var isShow = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["useSelect"])(function (select) {
+    var isOpen = select('learnpress/modal').isOpen();
+    return isOpen;
+  });
+  var message = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["useSelect"])(function (select) {
+    var getMessage = select('learnpress/modal').getMessage();
+    return getMessage;
+  });
+
+  var dataConfirm = function dataConfirm(c) {
+    return function (event) {
+      confirm(c);
+    };
   };
-})])(Modal));
+
+  var styles = {
+    display: isShow ? 'block' : 'none'
+  };
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    id: "lp-modal-overlay",
+    style: styles
+  }), /*#__PURE__*/React.createElement("div", {
+    id: "lp-modal-window",
+    style: styles
+  }, /*#__PURE__*/React.createElement("div", {
+    id: "lp-modal-content",
+    dangerouslySetInnerHTML: {
+      __html: message
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    id: "lp-modal-buttons"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "lp-button modal-button-ok",
+    onClick: dataConfirm('yes')
+  }, /*#__PURE__*/React.createElement("span", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["_x"])('OK', 'button confirm ok', 'learnpress'))), /*#__PURE__*/React.createElement("button", {
+    className: "lp-button modal-button-cancel",
+    onClick: dataConfirm('no')
+  }, /*#__PURE__*/React.createElement("span", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["_x"])('Cancel', 'button confirm cancel', 'learnpress')))))), children);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Modal);
 
 /***/ }),
 
@@ -246,12 +190,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "show", function() { return show; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hide", function() { return hide; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "confirm", function() { return confirm; });
-/* harmony import */ var _learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @learnpress/data-controls */ "@learnpress/data-controls");
-/* harmony import */ var _learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
-
-
 function show(message, cb) {
   return {
     type: 'SHOW_MODAL',
@@ -290,7 +228,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _middlewares__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./middlewares */ "./assets/src/js/frontend/modal/store/middlewares.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -325,11 +263,6 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * External dependencies
  */
-
-/**
- * Internal dependencies
- */
-//import effects from './effects';
 
 var effects = {
   ENROLL_COURSE_X: function ENROLL_COURSE_X(action, store) {
@@ -376,14 +309,11 @@ function applyMiddlewares(store) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Modal", function() { return Modal; });
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 var STORE_DATA = {};
 var Modal = function Modal() {
@@ -392,14 +322,14 @@ var Modal = function Modal() {
 
   switch (action.type) {
     case 'SHOW_MODAL':
-      return _objectSpread({}, state, {
+      return _objectSpread(_objectSpread({}, state), {}, {
         isOpen: true,
         message: action.message,
         cb: action.cb
       });
 
     case 'HIDE_MODAL':
-      return _objectSpread({}, state, {
+      return _objectSpread(_objectSpread({}, state), {}, {
         isOpen: false,
         message: false,
         cb: null
@@ -409,9 +339,7 @@ var Modal = function Modal() {
       state.cb && setTimeout(function () {
         state.cb();
       }, 10);
-      return _objectSpread({}, state, {
-        //isOpen: false,
-        //message: false,
+      return _objectSpread(_objectSpread({}, state), {}, {
         confirm: action.value
       });
   }
@@ -437,10 +365,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
 
-var _lodash = lodash,
-    get = _lodash.get,
-    isArray = _lodash.isArray;
-
 function isOpen(state) {
   return state.isOpen;
 }
@@ -448,9 +372,9 @@ function getMessage(state) {
   return state.message;
 }
 function confirm(state, message, cb) {
-  var _wpDispatch = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/modal'),
-      show = _wpDispatch.show,
-      hide = _wpDispatch.hide;
+  var _dispatch = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/modal'),
+      show = _dispatch.show,
+      hide = _dispatch.hide;
 
   if (!state.message) {
     show(message, cb);
@@ -524,28 +448,6 @@ module.exports = refx;
 
 /***/ }),
 
-/***/ "@learnpress/data-controls":
-/*!***********************************************!*\
-  !*** external {"this":["LP","dataControls"]} ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-(function() { module.exports = this["LP"]["dataControls"]; }());
-
-/***/ }),
-
-/***/ "@wordpress/compose":
-/*!******************************************!*\
-  !*** external {"this":["wp","compose"]} ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-(function() { module.exports = this["wp"]["compose"]; }());
-
-/***/ }),
-
 /***/ "@wordpress/data":
 /*!***************************************!*\
   !*** external {"this":["wp","data"]} ***!
@@ -554,17 +456,6 @@ module.exports = refx;
 /***/ (function(module, exports) {
 
 (function() { module.exports = this["wp"]["data"]; }());
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!******************************************!*\
-  !*** external {"this":["wp","element"]} ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-(function() { module.exports = this["wp"]["element"]; }());
 
 /***/ }),
 

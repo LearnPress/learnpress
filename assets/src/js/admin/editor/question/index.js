@@ -79,15 +79,16 @@ class Editor extends Component {
                 ...blanks,
                 [option.question_answer_id]: optionBlanks ? optionBlanks[0] : []
             }
-        };
+		};
+
         setData(newState, 'question');
         this.queue = this.queue || {};
         this.queue[option.question_answer_id] = [{
             text,
             blanks: newState.blanks[option.question_answer_id]
-        }, option.question_answer_id, id];
+		}, option.question_answer_id, id];
+
         this.updateOption();
-        //updateOption();
     };
 
     updateOption = debounce(() => {

@@ -3,7 +3,8 @@
  * @since 3.2.6
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || die;
+
 $exclude_admin_libraries    = LP()->settings()->get( 'exclude_admin_libraries' );
 $exclude_frontend_libraries = LP()->settings()->get( 'exclude_frontend_libraries' );
 
@@ -40,60 +41,57 @@ $frontend_libraries = array(
 );
 
 ?>
-<input type="checkbox"
-       id="learn-press-toggle-settings-js-css" <?php checked( LP()->settings()->get( 'hide_admin_js_css' ), 'yes' ); ?>>
+<input type="checkbox" id="learn-press-toggle-settings-js-css" <?php checked( LP()->settings()->get( 'hide_admin_js_css' ), 'yes' ); ?>>
 <table width="100%">
-    <tbody>
-    <tr>
-        <td valign="top">
-            <h4><?php esc_html_e( 'Frontend', 'learnpress' ); ?></h4>
-            <ul>
+	<tbody>
+	<tr>
+		<td valign="top">
+			<h4><?php esc_html_e( 'Frontend', 'learnpress' ); ?></h4>
+			<ul>
 				<?php foreach ( $frontend_libraries as $k => $v ) { ?>
-                    <li>
-                        <label>
-                            <input type="checkbox"
-                                   name="frontend_libraries[<?php echo $k; ?>]" <?php checked( in_array( $k, $exclude_frontend_libraries ) ); ?>>
+					<li>
+						<label>
+							<input type="checkbox" name="frontend_libraries[<?php echo $k; ?>]" <?php checked( in_array( $k, $exclude_frontend_libraries ) ); ?>>
 							<?php echo $v; ?>
-                        </label>
-                    </li>
+						</label>
+					</li>
 				<?php } ?>
-            </ul>
-        </td>
-        <td valign="top">
-            <h4><?php esc_html_e( 'Admin', 'learnpress' ); ?></h4>
-            <ul>
+			</ul>
+		</td>
+		<td valign="top">
+			<h4><?php esc_html_e( 'Admin', 'learnpress' ); ?></h4>
+			<ul>
 				<?php foreach ( $admin_libraries as $k => $v ) { ?>
-                    <li>
-                        <label>
-                            <input type="checkbox"
-                                   name="admin_libraries[<?php echo $k; ?>]" <?php checked( in_array( $k, $exclude_admin_libraries ) ); ?>>
+					<li>
+						<label>
+							<input type="checkbox" name="admin_libraries[<?php echo $k; ?>]" <?php checked( in_array( $k, $exclude_admin_libraries ) ); ?>>
 							<?php echo $v; ?>
-                        </label>
-                    </li>
+						</label>
+					</li>
 				<?php } ?>
-            </ul>
-        </td>
-    </tr>
-    </tbody>
+			</ul>
+		</td>
+	</tr>
+	</tbody>
 </table>
 
 <a href="javascript:void(0)">
-    <label for="learn-press-toggle-settings-js-css">
+	<label for="learn-press-toggle-settings-js-css">
 		<?php esc_html_e( 'Show/Hide', 'learnpress' ); ?>
-    </label>
+	</label>
 </a>
 <script>
-    jQuery(function ($) {
-        $(document).on('change', '#learn-press-toggle-settings-js-css', function (e) {
-            e.preventDefault();
-            var hide = !$(this).is(':checked');
-            $.ajax({
-                url: '../wp-json/lp/v1/settings/hide_admin_js_css',
-                type: 'post',
-                data: {
-                    data: hide ? 'no' : 'yes'
-                }
-            });
-        });
-    })
+	jQuery(function($) {
+		$(document).on('change', '#learn-press-toggle-settings-js-css', function (e) {
+			e.preventDefault();
+			var hide = !$(this).is(':checked');
+			$.ajax({
+				url: '../wp-json/lp/v1/settings/hide_admin_js_css',
+				type: 'post',
+				data: {
+					data: hide ? 'no' : 'yes'
+				}
+			});
+		});
+	});
 </script>

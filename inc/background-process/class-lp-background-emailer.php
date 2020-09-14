@@ -2,9 +2,7 @@
 /**
  * Send emails in background
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 	/**
@@ -42,8 +40,7 @@ if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 			if ( isset( $callback['filter'], $callback['args'] ) ) {
 				try {
 					LP_Emails::send_email( $callback['filter'], $callback['args'] );
-				}
-				catch ( Exception $e ) {
+				} catch ( Exception $e ) {
 
 				}
 			}

@@ -273,7 +273,7 @@ var Question = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return HTTP; });
 function HTTP(options) {
-  var $ = window.jQuery;
+  var $ = window.jQuery || jQuery;
   var $VueHTTP = Vue.http;
   options = $.extend({
     ns: 'LPRequest',
@@ -283,24 +283,24 @@ function HTTP(options) {
 
   LP.Request = function (payload) {
     $publishingAction = $('#publishing-action');
-    payload['id'] = options.store.getters.id;
-    payload['nonce'] = options.store.getters.nonce;
+    payload.id = options.store.getters.id;
+    payload.nonce = options.store.getters.nonce;
     payload['lp-ajax'] = options.store.getters.action;
-    payload['code'] = options.store.getters.code;
+    payload.code = options.store.getters.code;
     $publishingAction.find('#publish').addClass('disabled');
     $publishingAction.find('.spinner').addClass('is-active');
-    $publishingAction.addClass('code-' + payload['code']);
+    $publishingAction.addClass('code-' + payload.code);
     return $VueHTTP.post(options.store.getters.urlAjax, payload, {
       emulateJSON: true,
       params: {
         namespace: options.ns,
-        code: payload['code']
+        code: payload.code
       }
     });
   };
 
   $VueHTTP.interceptors.push(function (request, next) {
-    if (request.params['namespace'] !== options.ns) {
+    if (request.params.namespace !== options.ns) {
       next();
       return;
     }
@@ -342,20 +342,20 @@ function HTTP(options) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var Question = {
-  'UPDATE_STATUS': function UPDATE_STATUS(state, status) {
+  UPDATE_STATUS: function UPDATE_STATUS(state, status) {
     state.status = status;
   },
-  'UPDATE_AUTO_DRAFT_STATUS': function UPDATE_AUTO_DRAFT_STATUS(state, status) {
+  UPDATE_AUTO_DRAFT_STATUS: function UPDATE_AUTO_DRAFT_STATUS(state, status) {
     state.auto_draft = status;
   },
-  'CHANGE_QUESTION_TYPE': function CHANGE_QUESTION_TYPE(state, question) {
+  CHANGE_QUESTION_TYPE: function CHANGE_QUESTION_TYPE(state, question) {
     state.answers = question.answers;
     state.type = question.type;
   },
-  'SET_ANSWERS': function SET_ANSWERS(state, answers) {
+  SET_ANSWERS: function SET_ANSWERS(state, answers) {
     state.answers = answers;
   },
-  'DELETE_ANSWER': function DELETE_ANSWER(state, id) {
+  DELETE_ANSWER: function DELETE_ANSWER(state, id) {
     for (var i = 0, n = state.answers.length; i < n; i++) {
       if (state.answers[i].question_answer_id == id) {
         state.answers[i].question_answer_id = LP.uniqueId();
@@ -363,16 +363,16 @@ var Question = {
       }
     }
   },
-  'ADD_NEW_ANSWER': function ADD_NEW_ANSWER(state, answer) {
+  ADD_NEW_ANSWER: function ADD_NEW_ANSWER(state, answer) {
     state.answers.push(answer);
   },
-  'UPDATE_ANSWERS': function UPDATE_ANSWERS(state, answers) {
+  UPDATE_ANSWERS: function UPDATE_ANSWERS(state, answers) {
     state.answers = answers;
   },
-  'INCREASE_NUMBER_REQUEST': function INCREASE_NUMBER_REQUEST(state) {
+  INCREASE_NUMBER_REQUEST: function INCREASE_NUMBER_REQUEST(state) {
     state.countCurrentRequest++;
   },
-  'DECREASE_NUMBER_REQUEST': function DECREASE_NUMBER_REQUEST(state) {
+  DECREASE_NUMBER_REQUEST: function DECREASE_NUMBER_REQUEST(state) {
     state.countCurrentRequest--;
   }
 };
@@ -435,7 +435,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var $ = window.jQuery;
+var $ = window.jQuery || jQuery;
 
 var Question = function Question(data) {
   var state = $.extend({

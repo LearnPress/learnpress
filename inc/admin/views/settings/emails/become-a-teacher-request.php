@@ -6,8 +6,9 @@
  * @package LearnPress/Admin/Views/Emails
  * @version 1.0
  */
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 $settings = LP()->settings;
@@ -18,6 +19,7 @@ $default_message = '<strong>Dear Administrator</strong>,
 <p>An user want to be a teacher and has requested. Below is the information about requester</p>
 ';
 ?>
+
 <table class="form-table">
 	<tbody>
 	<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>

@@ -6,7 +6,7 @@
 class LP_Page_Controller {
 
 	protected $_shortcode_exists = false;
-	protected $_shortcode_tag = '[learn_press_archive_course]';
+	protected $_shortcode_tag    = '[learn_press_archive_course]';
 	protected $_archive_contents = null;
 
 	/**
@@ -58,17 +58,20 @@ class LP_Page_Controller {
 	public function check_pages( $template ) {
 
 		if ( learn_press_is_checkout() ) {
-			if ( ! $available_gateways = LP_Gateways::instance()->get_available_payment_gateways() ) {
+			$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
+			if ( ! $available_gateways ) {
 				learn_press_add_message( __( 'No payment method is available.', 'learnpress' ), 'error' );
 			}
 		} elseif ( learn_press_is_profile() ) {
 			global $wp_query;
+
 			$logout_slug = learn_press_profile_logout_slug();
 
 			if ( $logout_slug && ( $wp_query->get( 'view' ) === $logout_slug ) ) {
 				wp_logout();
 				wp_redirect( learn_press_get_page_link( 'profile' ) );
-				die;
+				wp_die();
 			}
 		}
 
@@ -83,7 +86,6 @@ class LP_Page_Controller {
 	 *
 	 * @return string;
 	 * @since 3.3.0
-	 *
 	 */
 	public function auto_shortcode( $template ) {
 		global $post;
@@ -226,49 +228,47 @@ class LP_Page_Controller {
 				$redirect    = false;
 				$quiz_status = $quiz_data ? $quiz_data->get_status() : false;
 
-//				if ( $quiz_status == 'started' ) {
-//					$current_question = 0;
-//					if ( empty( $vars['question'] ) ) {
-//						$current_question = learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true );
-//					} elseif ( $question ) {
-//						$current_question = $question->ID;
-//					}
-//
-//					if ( $current_question && ! $lp_course_item->has_question( $current_question ) ) {
-//						$this->set_404( true );
-//						throw new Exception( '404' );
-//					}
-//
-//					if ( ! $current_question ) {
-//						$current_question = $lp_course_item->get_question_at( 0 );
-//						learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $current_question );
-//					}
-//
-//					if ( ! $question && $current_question ) {
-//						$redirect = $lp_course_item->get_question_link( $current_question );
-//					}
-//				} elseif ( $quiz_status === 'completed' ) {
-//					$current_question = $question ? $question->ID : null;
-//				} elseif ( $quiz_status !== 'completed' ) {
-//					if ( $question ) {
-//						$this->set_404( true );
-//						throw new Exception( '404' );
-//					}
-//				}
-//
-//				if ( isset( $current_question ) && $current_question ) {
-//					$lp_quiz_question = learn_press_get_question( $current_question );
-//				}
+				// if ( $quiz_status == 'started' ) {
+				// $current_question = 0;
+				// if ( empty( $vars['question'] ) ) {
+				// $current_question = learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true );
+				// } elseif ( $question ) {
+				// $current_question = $question->ID;
+				// }
+				//
+				// if ( $current_question && ! $lp_course_item->has_question( $current_question ) ) {
+				// $this->set_404( true );
+				// throw new Exception( '404' );
+				// }
+				//
+				// if ( ! $current_question ) {
+				// $current_question = $lp_course_item->get_question_at( 0 );
+				// learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $current_question );
+				// }
+				//
+				// if ( ! $question && $current_question ) {
+				// $redirect = $lp_course_item->get_question_link( $current_question );
+				// }
+				// } elseif ( $quiz_status === 'completed' ) {
+				// $current_question = $question ? $question->ID : null;
+				// } elseif ( $quiz_status !== 'completed' ) {
+				// if ( $question ) {
+				// $this->set_404( true );
+				// throw new Exception( '404' );
+				// }
+				// }
+				//
+				// if ( isset( $current_question ) && $current_question ) {
+				// $lp_quiz_question = learn_press_get_question( $current_question );
+				// }
 
 				if ( $redirect ) {
-					//var_dump($redirect);
+					// var_dump($redirect);
 					wp_redirect( $redirect );
 					exit();
 				}
 			}
-
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 		}
 
@@ -306,7 +306,6 @@ class LP_Page_Controller {
 				}
 				do_action( 'learn-press/parse-course-item', $lp_course_item, $lp_course );
 			}
-
 		}
 
 		return $template;
@@ -361,7 +360,9 @@ class LP_Page_Controller {
 		$this->_maybe_redirect_courses_page();
 		$this->_maybe_redirect_course_item();
 
-		if ( false !== ( $tmpl = $this->_is_profile() ) ) {
+		$tmpl = $this->_is_profile();
+
+		if ( false !== $tmpl ) {
 			return $tmpl;
 		}
 
@@ -385,37 +386,14 @@ class LP_Page_Controller {
 		}
 
 		return $template;
-		/*
-		if ( $this->_is_archive() || learn_press_is_course() ) {
-			// If there is no template is valid in theme or plugin
-			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
-				add_filter( 'page_template_hierarchy', array( $this, 'page_template_hierarchy' ) );
-				// Get template of wp page.
-				$template = get_page_template();
-				remove_filter( 'page_template_hierarchy', array( $this, 'page_template_hierarchy' ) );
-			} else {
-				$template = $lp_template;
-			}
-
-			if ( $this->_is_single() ) {
-				global $post;
-				setup_postdata( $post );
-				if ( $course_item = LP_Global::course_item() ) {
-					return learn_press_locate_template( 'content-single-item.php' );
-				} else {
-					return learn_press_locate_template( 'single-lp_course.php' );
-
-					//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
-				}
-			} elseif ( $this->_is_archive() ) {
-				$this->_load_archive_courses( $template );
-			}
-		}
-
-		return $template;
-		*/
 	}
 
+	/**
+	 * Get the default filename for a template.
+	 *
+	 * @since  4.0.0
+	 * @return string
+	 */
 	private function get_page_template() {
 		if ( is_singular( LP_COURSE_CPT ) ) {
 			$page_template = 'single-course.php';
@@ -423,7 +401,9 @@ class LP_Page_Controller {
 			if ( $this->_is_single() ) {
 				global $post;
 				setup_postdata( $post );
-				if ( $course_item = LP_Global::course_item() ) {
+
+				$course_item = LP_Global::course_item();
+				if ( $course_item ) {
 					$page_template = 'content-single-item.php';
 				}
 			}
@@ -432,6 +412,7 @@ class LP_Page_Controller {
 
 			if ( is_tax( 'course_category' ) || is_tax( 'course_tag' ) ) {
 				$page_template = 'taxonomy-' . $object->taxonomy . '.php';
+
 				if ( ! file_exists( learn_press_locate_template( $page_template ) ) ) {
 					$page_template = 'archive-course.php';
 				}
@@ -455,15 +436,26 @@ class LP_Page_Controller {
 		$templates = apply_filters( 'learn-press/page-templates', array(), $default_template );
 
 		if ( is_page_template() ) {
-			$templates[] = get_page_template_slug();
+			$page_template = get_page_template_slug();
+
+			if ( $page_template ) {
+				$validated_file = validate_file( $page_template );
+				if ( 0 === $validated_file ) {
+					$templates[] = $page_template;
+				} else {
+					error_log( "LearnPress: Unable to validate template path: \"$page_template\". Error Code: $validated_file." );
+				}
+			}
 		}
 
 		if ( is_singular( LP_COURSE_CPT ) ) {
 			$object       = get_queried_object();
 			$name_decoded = urldecode( $object->post_name );
+
 			if ( $name_decoded !== $object->post_name ) {
 				$templates[] = "single-course-{$name_decoded}.php";
 			}
+
 			$templates[] = "single-product-{$object->post_name}.php";
 		}
 
@@ -489,51 +481,11 @@ class LP_Page_Controller {
 	 *
 	 * @return array
 	 * @since 3.x.x
-	 *
 	 */
 	public function page_template_hierarchy( $templates ) {
 		$templates = array_merge( $templates, array( 'singular.php' ) );
 
 		return $templates;
-	}
-
-	/**
-	 * Find template for archive or single course in theme.
-	 * If there is no template then load default from plugin.
-	 *
-	 * @param string $template
-	 *
-	 * @return string
-	 */
-	protected function _find_template( $template ) {
-		$file           = '';
-		$find           = array();
-		$theme_template = learn_press_template_path();
-
-		/**
-		 * Find template for archive or single course page in theme.
-		 */
-		if ( $this->_is_archive() ) {
-			$file   = 'archive-course.php';
-			$find[] = $file;
-			$find[] = "{$theme_template}/{$file}";
-		} elseif ( learn_press_is_course() ) {
-			$file   = 'single-course.php';
-			$find[] = $file;
-			$find[] = "{$theme_template}/{$file}";
-		}
-
-		if ( $file ) {
-			$_template = locate_template( array_unique( $find ) );
-
-			if ( ! $_template && ! in_array( $file, array( 'single-course.php', 'archive-course.php' ) ) ) {
-				$_template = learn_press_plugin_path( 'templates/' ) . $file;
-			}
-
-			$template = $_template;
-		}
-
-		return $template;
 	}
 
 	/**
@@ -553,7 +505,10 @@ class LP_Page_Controller {
 		 * @var WP_Rewrite $wp_rewrite
 		 */
 		global $wp_query, $wp_rewrite;
-		if ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && ( empty( $wp_query->queried_object_id ) || ! empty( $wp_query->queried_object_id ) && $page_id != $wp_query->queried_object_id ) ) {
+
+		$page_id = learn_press_get_page_id( 'courses' );
+
+		if ( $page_id && ( empty( $wp_query->queried_object_id ) || ! empty( $wp_query->queried_object_id ) && $page_id != $wp_query->queried_object_id ) ) {
 			$redirect = trailingslashit( learn_press_get_page_link( 'courses' ) );
 
 			if ( ! empty( $wp_query->query['paged'] ) ) {
@@ -563,13 +518,14 @@ class LP_Page_Controller {
 					$redirect = add_query_arg( 'paged', $wp_query->query['paged'], $redirect );
 				}
 			}
-			if ( $_GET ) {
+
+			if ( isset( $_GET ) ) {
 				$_GET = array_map( 'stripslashes_deep', $_GET );
 				foreach ( $_GET as $k => $v ) {
 					$redirect = add_query_arg( $k, urlencode( $v ), $redirect );
 				}
 			}
-			// Prevent loop redirect
+
 			if ( $page_id != get_option( 'page_on_front' ) && ! learn_press_is_current_url( $redirect ) ) {
 				wp_redirect( $redirect );
 				exit();
@@ -591,8 +547,10 @@ class LP_Page_Controller {
 			return false;
 		}
 
-		if ( ! empty( LP()->global['course-item'] ) && $course_item = LP()->global['course-item'] ) {
-			$user = learn_press_get_current_user();
+		if ( ! empty( LP()->global['course-item'] ) && ( LP()->global['course-item'] ) ) {
+			$course_item = LP()->global['course-item'];
+			$user        = learn_press_get_current_user();
+
 			if ( ! $user->can_view_item( $course_item->id ) ) {
 				wp_redirect( get_the_permalink() );
 				exit();
@@ -620,12 +578,14 @@ class LP_Page_Controller {
 
 		$profile = learn_press_get_profile();
 
-		// If empty query user consider you are viewing of yours.
 		if ( empty( $wp->query_vars['user'] ) ) {
 			$viewing_user = $current_user;
 		} else {
-			if ( $wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) ) ) {
+			$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );
+
+			if ( $wp_user ) {
 				$viewing_user = learn_press_get_user( $wp_user->ID );
+
 				if ( $viewing_user->is_guest() ) {
 					$viewing_user = false;
 				}
@@ -636,9 +596,9 @@ class LP_Page_Controller {
 			if ( ! $viewing_user ) {
 				throw new Exception( sprintf( __( 'The user %s is not available!', 'learnpress' ), $wp->query_vars['user'] ) );
 			}
-		}
-		catch ( Exception $ex ) {
-			if ( $message = $ex->getMessage() ) {
+		} catch ( Exception $ex ) {
+			$message = $ex->getMessage();
+			if ( $message ) {
 				learn_press_add_message( $message, 'error' );
 			} else {
 				return get_404_template();
@@ -738,6 +698,7 @@ class LP_Page_Controller {
 
 			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
 			$this->_shortcode_exists = ! empty( $results );
+
 			if ( empty( $results ) ) {
 				$content = wpautop( $content ) . $this->_shortcode_tag;
 			} else {
@@ -750,24 +711,24 @@ class LP_Page_Controller {
 				remove_filter( 'the_content', 'wpautop' );
 			}
 
-// 			$content = do_shortcode( $content );
+			// $content = do_shortcode( $content );
 
 			if ( $has_filter ) {
-				//add_filter( 'the_content', 'wpautop' );
+				// add_filter( 'the_content', 'wpautop' );
 			}
 
 			$this->_archive_contents = do_shortcode( $this->_shortcode_tag );
 			if ( class_exists( 'SiteOrigin_Panels' ) ) {
-				if ( class_exists( 'SiteOrigin_Panels' ) && has_filter( 'the_content', array(
-						SiteOrigin_Panels::single(),
-						'generate_post_content'
-					) )
-				) {
+				if ( class_exists( 'SiteOrigin_Panels' ) && has_filter( 'the_content', array( SiteOrigin_Panels::single(), 'generate_post_content' ) ) ) {
 					remove_shortcode( 'learn_press_archive_course' );
-					add_filter( 'the_content', array(
-						$this,
-						'the_content_callback'
-					), $this->_filter_content_priority );
+					add_filter(
+						'the_content',
+						array(
+							$this,
+							'the_content_callback',
+						),
+						$this->_filter_content_priority
+					);
 				}
 			} else {
 				$content = do_shortcode( $content );
@@ -838,10 +799,10 @@ class LP_Page_Controller {
 			return $content;
 		}
 
-		#@NOTE: make sure current page is not lesson or quiz before return cache content of single course page
-// 		if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = LP_Object_Cache::get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
-// 			return $_content;
-// 		}
+		// @NOTE: make sure current page is not lesson or quiz before return cache content of single course page
+		// if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = LP_Object_Cache::get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
+		// return $_content;
+		// }
 
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
@@ -903,7 +864,8 @@ class LP_Page_Controller {
 		/**
 		 * If current page is used for courses page
 		 */
-		if ( $q->is_main_query() && $q->is_page() && ( $q->queried_object_id == ( $page_id = learn_press_get_page_id( 'courses' ) ) && $page_id ) ) {
+		$page_id = learn_press_get_page_id( 'courses' );
+		if ( $q->is_main_query() && $q->is_page() && ( $q->queried_object_id == $page_id && $page_id ) ) {
 			$q->set( 'post_type', LP_COURSE_CPT );
 			$q->set( 'page', '' );
 			$q->set( 'pagename', '' );
@@ -916,20 +878,21 @@ class LP_Page_Controller {
 
 		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
 			$_query = wp_parse_args( $q->query );
-			if ( empty( $_query ) || ! array_diff( array_keys( $_query ), array(
+			if ( empty( $_query ) || ! array_diff(
+				array_keys( $_query ),
+				array(
 					'preview',
 					'page',
 					'paged',
 					'cpage',
-					'orderby'
-				) )
-			) {
+					'orderby',
+				)
+			) ) {
 				$q->is_page = true;
 				$q->is_home = false;
 				$q->set( 'page_id', get_option( 'page_on_front' ) );
 				$q->set( 'post_type', LP_COURSE_CPT );
 			}
-
 		}
 
 		/**
@@ -957,16 +920,17 @@ class LP_Page_Controller {
 
 		}
 
-		// Set custom posts per page
+		// Set custom posts per page.
 		if ( $this->_is_archive() ) {
-			if ( 0 < ( $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) ) {
+			$limit = absint( LP()->settings->get( 'archive_course_limit' ) );
+
+			if ( 0 < $limit ) {
 				$q->set( 'posts_per_page', $limit );
 			}
 
 			if ( isset( $q->query['page'] ) ) {
 				$q->set( 'paged', $q->query['page'] );
 			}
-
 		}
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );

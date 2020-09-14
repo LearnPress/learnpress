@@ -9,7 +9,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'search' => array(
+			'search'                              => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'search_courses' ),
@@ -25,7 +25,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 			),
 
-			'(?P<key>[\w]+)'                                        => array(
+			'(?P<key>[\w]+)'                      => array(
 				'args'   => array(
 					'id' => array(
 						'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
@@ -55,8 +55,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_item_comments' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
-				)
-			)
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -75,18 +75,17 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		$items = $course->get_items();
 
-
 		$query = new WP_Query(
 			array(
 				's'              => $s,
 				'post__in'       => $items,
-				'posts_per_page' => - 1
+				'posts_per_page' => - 1,
 			)
 		);
 
 		$response = array(
 			'success' => true,
-			'items'   => array()
+			'items'   => array(),
 		);
 
 		if ( $query->posts ) {
@@ -109,10 +108,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$item = LP_Course_Item::get_item( $request['item_id'] );
 
 		if ( $item->setup_postdata() ) {
-
 			if ( comments_open() || get_comments_number() ) {
 				global $withcomments;
-				// Force to load comments
 				$withcomments = true;
 				comments_template();
 			}
@@ -123,7 +120,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$comments = ob_get_clean();
 
 		$response = array(
-			'comments' => $comments
+			'comments' => $comments,
 		);
 
 		return rest_ensure_response( $response );
@@ -141,7 +138,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$order    = $request['order'];
 		$orderby  = $request['orderby'];
 		$response = array(
-			'success' => true
+			'success' => true,
 		);
 
 		$limit  = $limit ? absint( $limit ) : 10;
@@ -156,7 +153,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			's'              => $s,
 			'posts_per_page' => $limit,
 			'offset'         => $offset,
-			'post_type'      => LP_COURSE_CPT
+			'post_type'      => LP_COURSE_CPT,
 		);
 
 		if ( $orderby ) {
@@ -164,7 +161,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$args['order']   = $order;
 		}
 
-		$count_posts = new WP_Query( array_merge( $args, array( 'posts_per_page' => - 1, 'offset' => 0 ) ) );
+		$count_posts = new WP_Query(
+			array_merge(
+				$args,
+				array(
+					'posts_per_page' => - 1,
+					'offset'         => 0,
+				)
+			)
+		);
 		$query       = new WP_Query( $args );
 		$num_pages   = $count_posts->post_count / $limit;
 		$courses     = array();
@@ -178,26 +183,23 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				if ( has_post_thumbnail() ) {
 					$thumbnail = array(
 						'full'  => get_the_post_thumbnail_url(),
-						'small' => get_the_post_thumbnail_url( null, 'thumbnail' )
+						'small' => get_the_post_thumbnail_url( null, 'thumbnail' ),
 					);
 				} else {
 					$thumbnail = array(
-						'small' => $course->get_image_url()
+						'small' => $course->get_image_url(),
 					);
 				}
 
 				ob_start(); ?>
-                <div class="course-price">
 
+				<div class="course-price">
 					<?php if ( $course->has_sale_price() ) { ?>
-
-                        <span class="origin-price"> <?php echo $course->get_origin_price_html(); ?></span>
-
+						<span class="origin-price"> <?php echo $course->get_origin_price_html(); ?></span>
 					<?php } ?>
+					<span class="price"><?php echo $course->get_price_html(); ?></span>
+				</div>
 
-                    <span class="price"><?php echo $course->get_price_html(); ?></span>
-
-                </div>
 				<?php
 				$price_html = ob_get_clean();
 
@@ -208,9 +210,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'content'    => get_the_content(),
 					'thumbnail'  => $thumbnail,
 					'author'     => $course->get_author_display_name(),
-					'price_html' => $price_html
+					'price_html' => $price_html,
 				);
 			}
+
 			wp_reset_postdata();
 		}
 
@@ -219,7 +222,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			'count'     => $query->post_count,
 			'total'     => $count_posts->post_count,
 			'page'      => $page,
-			'num_pages' => $count_posts->post_count % $limit ? floor( $num_pages ) + 1 : absint( $num_pages )
+			'num_pages' => $count_posts->post_count % $limit ? floor( $num_pages ) + 1 : absint( $num_pages ),
 		);
 
 		return rest_ensure_response( $response );
@@ -233,7 +236,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	public function get_items( $request ) {
 		$settings = LP()->settings();
 		$response = array(
-			'result' => $settings->get()
+			'result' => $settings->get(),
 		);
 
 		return rest_ensure_response( $response );
@@ -247,7 +250,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	public function get_item( $request ) {
 		$settings = LP()->settings();
 		$response = array(
-			'result' => $settings->get( $request['key'] )
+			'result' => $settings->get( $request['key'] ),
 		);
 
 		return rest_ensure_response( $response );
@@ -283,4 +286,5 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		return rest_ensure_response( $response );
 	}
+
 }

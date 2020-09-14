@@ -5,55 +5,53 @@ $passing_condition = $course->get_passing_condition();
 ?>
 
 <div class="course-results-progress">
-
 	<div class="items-progress lp-progress-row">
 
-		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/items-completed-heading', __( 'Items completed:', 'learnpress' ) ) ) ) { ?>
-			<h4 class="lp-course-progress-heading"><?php echo esc_html( $heading ); ?></h4>
-		<?php } ?>
+		<?php $heading = apply_filters( 'learn-press/course/items-completed-heading', esc_html__( 'Items completed:', 'learnpress' ) ); ?>
 
-		<span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items('', true) ); ?></span>
+		<?php if ( $heading ) : ?>
+			<h4 class="lp-course-progress-heading"><?php echo esc_html__( 'Items completed:', 'learnpress' ); ?></h4>
+		<?php endif; ?>
+
+		<span class="number"><?php printf( __( '%1$d of %2$d items', 'learnpress' ), $course_results['completed_items'], $course->count_items( '', true ) ); ?></span>
 
 		<div class="learn-press-progress lp-course-progress">
 			<div class="progress-bg lp-progress-bar">
-				<div class="progress-active lp-progress-value"
-				     style="left: <?php echo $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0; ?>%;">
+				<div class="progress-active lp-progress-value" style="left: <?php echo $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0; ?>%;">
 				</div>
 			</div>
 		</div>
-
 	</div>
 
 	<div class="course-progress lp-progress-row">
 
-		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/result-heading', __( 'Course progress:', 'learnpress' ) ) ) ) { ?>
+		<?php $heading = apply_filters( 'learn-press/course/result-heading', esc_html__( 'Course progress:', 'learnpress' ) ); ?>
+
+		<?php if ( $heading ) : ?>
 			<h4 class="lp-course-progress-heading">
 				<?php echo esc_html( $heading ); ?>
 			</h4>
-		<?php } ?>
+		<?php endif; ?>
 
 		<div class="lp-course-status">
-            <span class="number"><?php echo round( $course_results['result'], 2 ); ?><span
-		            class="percentage-sign">%</span></span>
-			<?php if ( $grade = $course_results['grade'] ) { ?>
+			<span class="number">
+				<?php echo round( $course_results['result'], 2 ); ?>
+				<span class="percentage-sign">%</span>
+			</span>
+
+			<?php $grade = $course_results['grade']; ?>
+			<?php if ( $grade ) : ?>
 				<span class="lp-label grade <?php echo esc_attr( $grade ); ?>">
 				<?php learn_press_course_grade_html( $grade ); ?>
 				</span>
-			<?php } ?>
+			<?php endif; ?>
 		</div>
 
-		<div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>"
-		     data-value="<?php echo $course_results['result']; ?>"
-		     data-passing-condition="<?php echo $passing_condition; ?>">
+		<div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>" data-value="<?php echo $course_results['result']; ?>" data-passing-condition="<?php echo $passing_condition; ?>">
 			<div class="progress-bg lp-progress-bar">
-				<div class="progress-active lp-progress-value" style="left: <?php echo $course_results['result']; ?>%;">
-				</div>
+				<div class="progress-active lp-progress-value" style="left: <?php echo esc_attr( $course_results['result'] ); ?>%;"></div>
 			</div>
-			<div class="lp-passing-conditional"
-			     data-content="<?php printf( esc_html__( 'Passing condition: %s%%', 'learnpress' ), $passing_condition ); ?>"
-			     style="left: <?php echo $passing_condition; ?>%;">
-			</div>
+			<div class="lp-passing-conditional" data-content="<?php printf( esc_html__( 'Passing condition: %s%%', 'learnpress' ), $passing_condition ); ?>" style="left: <?php echo esc_attr( $passing_condition ); ?>%;"></div>
 		</div>
 	</div>
-
 </div>

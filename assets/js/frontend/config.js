@@ -120,7 +120,7 @@ var questionCheckers = {
   true_or_false: function true_or_false() {}
 };
 var isQuestionCorrect = {
-  'fill_in_blank': function fill_in_blank() {
+  fill_in_blank: function fill_in_blank() {
     return true;
   }
 };
@@ -149,7 +149,7 @@ var quizStartBlocks = function quizStartBlocks() {
   var blocks = Hook.applyFilters('quiz-start-blocks', {
     meta: true,
     description: true,
-    custom: "Hello"
+    custom: 'Hello'
   });
 };
 

@@ -7,9 +7,6 @@
  * @version 3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
@@ -140,12 +137,13 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 *
 		 * @return bool|WP_Post
 		 * @since 3.0.0
-		 *
 		 */
 		public function setup_postdata() {
 			global $post;
 
-			if ( $post = $this->get_post() ) {
+			$post = $this->get_post();
+
+			if ( $post ) {
 				setup_postdata( $post );
 				$this->_setup_postdata = true;
 
@@ -160,7 +158,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 *
 		 * @return bool
 		 * @since 3.0.0
-		 *
 		 */
 		public function reset_postdata() {
 			if ( $this->_setup_postdata ) {
@@ -186,8 +183,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		public function get_data( $name = '', $default = '' ) {
 			if ( is_string( $name ) && $name ) {
 				// Check in data first then check in extra data
-				return
-					array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
+				return array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
 						( array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default );
 			} elseif ( is_array( $name ) ) {
 				$data = array();
@@ -208,7 +204,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 *
 		 * @return array|LP_Datetime|mixed
 		 * @since 3.2.0
-		 *
 		 */
 		public function get_data_date( $name ) {
 			$data = $this->get_data( $name );
@@ -260,12 +255,12 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 				if ( $key_or_data === 'total' ) {
 				}
+
 				if ( $extra ) {
 					// Do not allow to add extra data with the same key in data
 					if ( ! array_key_exists( $key_or_data, $this->_data ) ) {
 						$this->_extra_data[ $key_or_data ] = $value;
 					}
-
 				} else {
 					try {
 						if ( ! is_string( $key_or_data ) && ! is_numeric( $key_or_data ) ) {
@@ -277,9 +272,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 						} else {
 							$this->_extra_data[ $key_or_data ] = $value;
 						}
-
-					}
-					catch ( Exception $ex ) {
+					} catch ( Exception $ex ) {
 						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
 						die( __FILE__ . '::' . __FUNCTION__ );
@@ -352,7 +345,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			// If there is at least one method failed
 			if ( $errors ) {
 				$errors = array_map( array( $this, 'prefix_set_method' ), $errors );
-				throw new Exception( sprintf( __( 'The following these functions %s do not exists in %s', 'learnpress' ), join( ',', $errors ), get_class( $this ) ) );
+				throw new Exception( sprintf( __( 'The following these functions %1$s do not exists in %2$s', 'learnpress' ), join( ',', $errors ), get_class( $this ) ) );
 			}
 		}
 
@@ -411,7 +404,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * Add a feature that question is supported
 		 *
 		 * @param        $feature
-		 * @param string $type
+		 * @param string  $type
 		 */
 		public function add_support( $feature, $type = 'yes' ) {
 
@@ -455,8 +448,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * Read all metas and set to object
 		 */
 		public function read_meta() {
-			if ( $meta_data = $this->_curd->read_meta( $this ) ) {
+			$meta_data = $this->_curd->read_meta( $this );
 
+			if ( $meta_data ) {
 				$external_metas = array_filter( $meta_data, array( $this, 'exclude_metas' ) );
 
 				foreach ( $external_metas as $meta ) {
@@ -492,7 +486,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			} elseif ( is_string( $key_or_array ) ) {
 				$this->_meta_data[] = (object) array(
 					'meta_key'   => $key_or_array,
-					'meta_value' => $value
+					'meta_value' => $value,
 				);
 			} else {
 				$this->_meta_data[] = $key_or_array;
@@ -576,7 +570,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				if ( ! is_bool( $update ) && $update ) {
 					$this->_meta_data = (object) array(
 						'meta_key'   => $key,
-						'meta_value' => $value
+						'meta_value' => $value,
 					);
 				}
 			}

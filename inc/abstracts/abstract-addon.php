@@ -77,17 +77,14 @@ class LP_Addon {
 
 		foreach ( self::$_admin_notices as $notice ) {
 			?>
-            <div class="error"><p><?php echo $notice; ?></p></div>
+			<div class="error"><p><?php echo $notice; ?></p></div>
 			<?php
 		}
 	}
 
 	public function _plugin_links( $links ) {
-		if ( is_callable( array( $this, 'plugin_links' ) ) && ( $plugin_links = call_user_func( array(
-				$this,
-				'plugin_links'
-			) ) )
-		) {
+		$plugin_links = call_user_func( array( $this, 'plugin_links' ) );
+		if ( is_callable( array( $this, 'plugin_links' ) ) && $plugin_links ) {
 			$links = array_merge( $links, $plugin_links );
 		}
 
@@ -104,11 +101,13 @@ class LP_Addon {
 
 		$this->load_text_domain();
 
-		add_filter( "plugin_action_links_{$this->get_plugin_slug()}", array(
-			$this,
-			'_plugin_links'
-		) );
-
+		add_filter(
+			"plugin_action_links_{$this->get_plugin_slug()}",
+			array(
+				$this,
+				'_plugin_links',
+			)
+		);
 
 		$this->_init_hooks();
 		$this->_enqueue_assets();
@@ -183,9 +182,9 @@ class LP_Addon {
 	 */
 	public function _admin_notices() {
 		?>
-        <div class="error">
-            <p><?php printf( __( '<strong>%s</strong> add-on version %s requires <strong>LearnPress</strong> version %s or higher', 'learnpress' ), $this->get_name(), $this->version, $this->require_version ); ?></p>
-        </div>
+		<div class="error">
+			<p><?php printf( __( '<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher', 'learnpress' ), $this->get_name(), $this->version, $this->require_version ); ?></p>
+		</div>
 		<?php
 	}
 
@@ -218,18 +217,19 @@ class LP_Addon {
 			if ( ! file_exists( $file ) ) {
 				continue;
 			}
+
 			load_textdomain( $text_domain, $file );
 		}
 
 		if ( $text_domain ) {
-			load_plugin_textdomain( $text_domain, false, plugin_basename( $plugin_path ) . "/languages" );
+			load_plugin_textdomain( $text_domain, false, plugin_basename( $plugin_path ) . '/languages' );
 		}
 	}
 
 	/**
 	 * @param        $instance
 	 * @param        $path
-	 * @param string $plugin_file
+	 * @param string   $plugin_file
 	 */
 	public static function load( $instance, $path, $plugin_file = '' ) {
 		$plugin_folder = '';
@@ -269,8 +269,6 @@ class LP_Addon {
 		$addon_instance->plugin_file = $plugin_file;
 
 		self::$instances[ $instance ] = $addon_instance;
-
-		//LP_Multi_Language::load_plugin_text_domain( $plugin_file );
 	}
 
 	public function get_plugin_url( $sub = '/' ) {
@@ -345,8 +343,8 @@ class LP_Addon {
 	 * @return mixed
 	 */
 	public static function instance() {
-
-		if ( false === ( $name = self::_get_called_class() ) ) {
+		$name = self::_get_called_class();
+		if ( false === $name ) {
 			return false;
 		}
 
@@ -378,5 +376,4 @@ class LP_Addon {
 		return $backtrace[2]['args'][0];
 	}
 }
-
 add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );

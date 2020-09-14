@@ -7,11 +7,12 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 $settings = LP()->settings;
 ?>
+
 <?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
 	<tr>
 		<th scope="row"><label for="learn_press_paypal_enable"><?php _e( 'Enable', 'learnpress' ); ?></label></th>
@@ -36,7 +37,7 @@ $settings = LP()->settings;
 			<input type="email" class="regular-text" name="<?php echo $this->get_field_name( 'paypal_email' ); ?>" value="<?php echo $settings->get( 'paypal_email', '' ); ?>" />
 		</td>
 	</tr>
- 	<!--
+	 <!--
 	<tr data-learn_press_paypal_enable="yes" class="learn_press_paypal_type_security<?php echo $settings->get( 'paypal_type' ) != 'security' ? ' hide-if-js' : ''; ?>">
 		<th scope="row">
 			<label for="learn_press_paypal_api_name"><?php _e( 'API Username', 'learnpress' ); ?></label></th>

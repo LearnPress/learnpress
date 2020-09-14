@@ -1,6 +1,6 @@
 .rwmb-select.rwmb-select {
 	min-width: 160px;
-	padding: 0;
+	padding: 0 24px 0 8px;
 }
 .rwmb-select option {
 	padding: 4px 8px;

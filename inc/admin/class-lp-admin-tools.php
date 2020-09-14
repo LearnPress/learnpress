@@ -12,9 +12,11 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 		 */
 		public static function init() {
 			$action = learn_press_get_request( 'action' );
+
 			if ( ! $action ) {
 				return;
 			}
+
 			if ( current_user_can( 'manage_options' ) ) {
 				switch ( $action ) {
 					case 'learn-press-remove-data':
@@ -34,7 +36,9 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 		 */
 		public static function remove_data() {
 			global $wpdb;
+
 			$nonce = learn_press_get_request( 'remove-data-nonce' );
+
 			if ( ! wp_verify_nonce( $nonce, 'learn-press-remove-data' ) ) {
 				return;
 			}
@@ -50,13 +54,9 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 				'learnpress_user_quizmeta',
 				'learnpress_user_quizzes',
 				'learnpress_order_itemmeta',
-				'learnpress_order_items'
+				'learnpress_order_items',
 			);
 
-
-			# ----------------------------
-			# drop all data in our tables
-			# ----------------------------
 			foreach ( $tables as $table ) {
 				$table = $wpdb->prefix . $table;
 				if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
@@ -64,86 +64,95 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 				}
 			}
 
-
-			# ----------------------------
-			# Get id of learnpress posts
-			# ----------------------------
 			$query = "
-							SELECT p.ID
-							FROM {$wpdb->posts} p
-							WHERE p.post_type IN ('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
-						";
-			$ids   = $wpdb->get_col( $query );
+				SELECT p.ID
+				FROM {$wpdb->posts} p
+				WHERE p.post_type IN ('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
+			";
 
-			// delete all custom post types and meta data
+			$ids = $wpdb->get_col( $query );
+
+			// delete all custom post types and meta data.
 			if ( ! empty( $ids ) ) {
-				# REMOVE post and post meta
-				$q = $wpdb->prepare( "
-								DELETE FROM p, pm
-								USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
-								WHERE %d AND p.ID IN (" . join( ',', $ids ) . ");
-						", 1 );
+				$q = $wpdb->prepare(
+					"
+					DELETE FROM p, pm
+					USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
+					WHERE %d AND p.ID IN (" . join( ',', $ids ) . ');
+					',
+					1
+				);
 				$wpdb->query( $q );
 
 				$wpdb->query(
-					$wpdb->prepare( "
-										DELETE FROM {$wpdb->postmeta} WHERE meta_key = %s
-								", '_learn_press_upgraded' )
+					$wpdb->prepare(
+						"
+						DELETE FROM {$wpdb->postmeta} WHERE meta_key = %s
+						",
+						'_learn_press_upgraded'
+					)
 				);
 			}
 
-			# REMOVE TERMS
-			# 1 REMOVE term_relationships of posts
+			// 1 REMOVE term_relationships of posts
 			$q = "
-						DELETE FROM `tr`
-							USING {$wpdb->term_relationships} AS `tr` INNER JOIN {$wpdb->term_taxonomy} AS `tt` ON `tr`.`term_taxonomy_id`=`tt`.`term_taxonomy_id`
-						WHERE `tt`.`taxonomy` IN ('course_tag', 'course_category')
+				DELETE FROM `tr`
+					USING {$wpdb->term_relationships} AS `tr` INNER JOIN {$wpdb->term_taxonomy} AS `tt` ON `tr`.`term_taxonomy_id`=`tt`.`term_taxonomy_id`
+				WHERE `tt`.`taxonomy` IN ('course_tag', 'course_category')
 				";
 			$wpdb->query( $q );
 
-			# 2 Remove categories and tags
+			// 2 Remove categories and tags
 			$q = "
 					DELETE
 					FROM tt, t
 						USING {$wpdb->term_taxonomy} AS tt
 							INNER JOIN
-						{$wpdb->terms} AS t ON tt.term_id = t.term_id 
+						{$wpdb->terms} AS t ON tt.term_id = t.term_id
 					WHERE
 						tt.taxonomy IN('course_category','course_tag')";
 			$wpdb->query( $q );
 
-			# END REMOVE TERMS
+			// END REMOVE TERMS
 
-
-			# DELETE all options
-			$q = $wpdb->prepare( "
+			// DELETE all options
+			$q = $wpdb->prepare(
+				"
 						DELETE FROM {$wpdb->options}
 						WHERE
 								option_name LIKE %s
 								OR option_name LIKE %s;
-				", '%' . $wpdb->esc_like( 'learn_press' ) . '%', '%' . $wpdb->esc_like( 'learnpress' ) . '%' );
+				",
+				'%' . $wpdb->esc_like( 'learn_press' ) . '%',
+				'%' . $wpdb->esc_like( 'learnpress' ) . '%'
+			);
 			$wpdb->query( $q );
 			delete_option( 'learnpress_db_version' );
 			delete_option( 'learnpress_version' );
 
 			LP_Admin_Notice::instance()->add( __( 'All courses, lessons, quizzes and questions have been removed', 'learnpress' ), 'updated', '', true );
+
 			wp_redirect( admin_url( 'admin.php?page=learn-press-tools&learn-press-remove-data=1' ) );
 			exit();
 		}
 
 		public static function remove_old_data() {
 			$nonce = learn_press_get_request( 'remove-old-data-nonce' );
+
 			if ( ! wp_verify_nonce( $nonce, 'learn-press-remove-old-data' ) ) {
 				return;
 			}
+
 			global $wpdb;
+
 			$query = $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ( %s, %s, %s, %s, %s, %s )", 'lpr_course', 'lpr_lesson', 'lpr_quiz', 'lpr_question', 'lpr_order', 'lpr_certificate' );
-			// delete all custom post types and meta data
-			if ( $ids = $wpdb->get_col( $query ) ) {
+			$ids   = $wpdb->get_col( $query );
+
+			if ( $ids ) {
 				$object_terms = array();
 				foreach ( $ids as $post_id ) {
-					// get all terms
 					$terms = wp_get_object_terms( $post_id, array( 'course_tag', 'course_category' ) );
+
 					if ( $terms ) {
 						foreach ( $terms as $term ) {
 							$object_terms[ $term->term_id ] = $term->term_id;
@@ -152,11 +161,14 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 				}
 
 				$wpdb->query(
-					$wpdb->prepare( "
+					$wpdb->prepare(
+						"
 					DELETE FROM p, pm
 					USING {$wpdb->posts} AS p INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('lpr_course', 'lpr_lesson', 'lpr_quiz', 'lpr_question', 'lpr_order', 'lpr_certificate')
-					WHERE %d AND p.ID IN (" . join( ',', $ids ) . ")
-				", 1 )
+					WHERE %d AND p.ID IN (" . join( ',', $ids ) . ')
+				',
+						1
+					)
 				);
 
 				if ( $object_terms ) {
@@ -169,24 +181,33 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 					}
 				}
 			}
+
 			// delete all options
 			$wpdb->query(
-				$wpdb->prepare( "
+				$wpdb->prepare(
+					"
 				DELETE FROM {$wpdb->options}
 				WHERE
 					option_name LIKE %s
 					OR option_name LIKE %s
-			", '%' . $wpdb->esc_like( '_lpr_' ) . '%', $wpdb->esc_like( 'lpr_' ) . '%' )
+			",
+					'%' . $wpdb->esc_like( '_lpr_' ) . '%',
+					$wpdb->esc_like( 'lpr_' ) . '%'
+				)
 			);
 
 			// delete all user meta
 			$wpdb->query(
-				$wpdb->prepare( "
+				$wpdb->prepare(
+					"
 				DELETE FROM {$wpdb->usermeta}
 				WHERE
 					meta_key LIKE %s
 					OR meta_key LIKE %s
-			", '%' . $wpdb->esc_like( 'lpr_' ) . '%', $wpdb->esc_like( 'lpr_' ) . '%' )
+			",
+					'%' . $wpdb->esc_like( 'lpr_' ) . '%',
+					$wpdb->esc_like( 'lpr_' ) . '%'
+				)
 			);
 
 			LP_Admin_Notice::instance()->add( __( 'Outdated data from version older than 1.0 has been removed', 'learnpress' ), 'updated', '', true );

@@ -25,27 +25,31 @@ $counts        = $query['counts'];
 <div class="learn-press-subtab-content">
 
 	<?php if ( $filters = $profile->get_purchased_courses_filters( $filter_status ) ) { ?>
-        <ul class="learn-press-filters">
-			<?php foreach ( $filters as $class => $link ) {
+		<ul class="learn-press-filters">
+			<?php
+			foreach ( $filters as $class => $link ) {
 				$count = ! empty( $counts[ $class ] ) ? $counts[ $class ] : false;
 
 				if ( $count !== false ) {
 
 					?>
-                    <li class="<?php echo $class; ?>">
+					<li class="<?php echo $class; ?>">
 						<?php
 						echo sprintf( '%s <span class="count">%s</span>', $link, $count );
 						?>
-                    </li>
-				<?php }
-			} ?>
-        </ul>
+					</li>
+					<?php
+				}
+			}
+			?>
+		</ul>
 		<?php
-	} ?>
+	}
+	?>
 
 	<?php if ( $query['items'] ) { ?>
-        <div class="lp-archive-courses">
-            <ul class="learn-press-courses profile-courses-list" id="learn-press-profile-enrolled-courses" data-layout="grid" data-size="3">
+		<div class="lp-archive-courses">
+			<ul class="learn-press-courses profile-courses-list" id="learn-press-profile-enrolled-courses" data-layout="grid" data-size="3">
 				<?php
 				global $post;
 				foreach ( $query['items'] as $item ) {
@@ -56,21 +60,24 @@ $counts        = $query['counts'];
 				}
 				wp_reset_postdata();
 				?>
-            </ul>
-        </div>
+			</ul>
+		</div>
 
 		<?php
 		$num_pages    = $query->get_pages();
 		$current_page = $query->get_paged();
-		if ( $num_pages > 1 && $current_page < $num_pages ) { ?>
-            <button data-container="learn-press-profile-enrolled-courses"
-                    data-pages="<?php echo $num_pages ?>"
-                    data-paged="<?php echo $current_page; ?>"
-                    class="lp-button btn-load-more-courses btn-ajax-off">
-                <i class="fas fa-spinner icon"></i>
-                <?php esc_html_e( 'View More', 'learnpress' ); ?></button>
+		if ( $num_pages > 1 && $current_page < $num_pages ) {
+			?>
+			<button data-container="learn-press-profile-enrolled-courses"
+					data-pages="<?php echo $num_pages; ?>"
+					data-paged="<?php echo $current_page; ?>"
+					class="lp-button btn-load-more-courses btn-ajax-off">
+				<i class="fas fa-spinner icon"></i>
+				<?php esc_html_e( 'View More', 'learnpress' ); ?></button>
 		<?php } ?>
-	<?php } else {
+		<?php
+	} else {
 		learn_press_display_message( __( 'No courses!', 'learnpress' ) );
-	} ?>
+	}
+	?>
 </div>

@@ -20,7 +20,8 @@ if ( ! $course || ! $user ) {
 	return;
 }
 
-/*if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
+/*
+if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 	return;
 }*/
 
@@ -30,30 +31,25 @@ $percentage     = $course_results['count_items'] ? absint( $course_results['comp
 ?>
 
 <div id="popup-header">
+	<div class="popup-header__inner">
+		<h2 class="course-title">
+			<a href="<?php echo esc_url( $course->get_permalink() ); ?>"><?php echo $course->get_title(); ?></a>
+		</h2>
 
-    <div class="popup-header__inner">
+		<?php if ( $user->has_enrolled_course( $course->get_id() ) ) : ?>
+			<div class="items-progress">
+				<span class="number"><?php printf( __( '%1$d of %2$d items', 'learnpress' ), $course_results['completed_items'], $course->count_items( '', true ) ); ?></span>
+				<div class="learn-press-progress">
+					<div class="learn-press-progress__active" data-value="<?php echo $percentage; ?>%;">
+					</div>
+				</div>
+			</div>
+		<?php endif; ?>
 
-        <h2 class="course-title">
-            <a href="<?php echo esc_url( $course->get_permalink() ) ?>"><?php echo $course->get_title(); ?></a>
-        </h2>
-
-        <?php
-            if($user->has_enrolled_course( $course->get_id())) :
-        ?>
-            <div class="items-progress">
-
-                <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items( '', true ) ); ?></span>
-
-                <div class="learn-press-progress">
-                    <div class="learn-press-progress__active" data-value="<?php echo $percentage; ?>%;">
-                    </div>
-                </div>
-
-            </div>
-        <?php endif; ?>
-
-		<?php if ( $user->can_finish_course( $course->get_id() ) ) {
+		<?php
+		if ( $user->can_finish_course( $course->get_id() ) ) {
 			LP()->template( 'course' )->course_finish_button();
-		} ?>
-    </div>
+		}
+		?>
+	</div>
 </div>

@@ -1,23 +1,20 @@
-import {dispatch, select, apiFetch} from '@learnpress/data-controls';
-import {select as wpSelect} from '@wordpress/data';
-
-export function show(message, cb) {
-    return {
-        type: 'SHOW_MODAL',
-        message,
-        cb
-    }
+export function show( message, cb ) {
+	return {
+		type: 'SHOW_MODAL',
+		message,
+		cb,
+	};
 }
 
 export function hide() {
-    return {
-        type: 'HIDE_MODAL'
-    }
+	return {
+		type: 'HIDE_MODAL',
+	};
 }
 
-export function confirm(value) {
-    return {
-        type: 'CONFIRM',
-        value
-    }
+export function confirm( value ) {
+	return {
+		type: 'CONFIRM',
+		value,
+	};
 }

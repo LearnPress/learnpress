@@ -8,9 +8,6 @@
  * @extend  LP_Question
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
@@ -57,8 +54,9 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 		public function check( $user_answer = null ) {
 			$return = parent::check();
 			settype( $user_answer, 'array' );
+			$answers = $this->get_answers();
 
-			if ( $answers = $this->get_answers() ) {
+			if ( $answers ) {
 				$correct = true;
 				foreach ( $answers as $key => $option ) {
 					$selected = $this->is_selected_option( $option, $user_answer );
@@ -66,8 +64,7 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 					// If the option is FALSE but user selected => WRONG
 					if ( $selected && ! $option->is_true() ) {
 						$correct = false;
-					} // If option is TRUE but user did not select => WRONG
-					elseif ( ! $selected && $option->is_true() ) {
+					} elseif ( ! $selected && $option->is_true() ) { // If option is TRUE but user did not select => WRONG
 						$correct = false;
 					}
 
@@ -76,10 +73,11 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 						break;
 					}
 				}
+
 				if ( $correct ) {
 					$return = array(
 						'correct' => true,
-						'mark'    => floatval( $this->get_mark() )
+						'mark'    => floatval( $this->get_mark() ),
 					);
 				}
 			}

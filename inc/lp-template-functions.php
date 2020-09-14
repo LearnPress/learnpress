@@ -7,7 +7,7 @@
  * @version 1.0
  */
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
 
@@ -1989,14 +1989,6 @@ function learn_press_content_item_summary_classes( $classes ) {
 
 	if ( $item->get_post_type() !== LP_LESSON_CPT ) {
 		return $classes;
-	}
-
-	if ( 'yes' !== LP()->settings->get( 'enable_lesson_video' ) ) {
-		return $classes;
-	}
-
-	if ( $item->get_video() ) {
-		$classes[] = 'content-item-video';
 	}
 
 	return $classes;

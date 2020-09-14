@@ -1,66 +1,60 @@
-import {Component} from '@wordpress/element';
-import {__} from '@wordpress/i18n';
+/* eslint-disable no-mixed-spaces-and-tabs */
+import { Component } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import QuestionBase from '../../question-base';
 
-const {isBoolean} = lodash;
+const { isBoolean } = lodash;
 
 class QuestionMultipleChoices extends QuestionBase {
-
     isCorrect = () => {
-        const {
-            answered
-        } = this.props;
+    	const {
+    		answered,
+    	} = this.props;
 
-        if (isBoolean(answered) || !answered) {
-            return false;
-        }
+    	if ( isBoolean( answered ) || ! answered ) {
+    		return false;
+    	}
 
-        let i, option, options;
+    	let i, option, options;
 
-        for (i = 0, options = this.getOptions(); i < options.length; i++) {
-            option = options[i];
+    	for ( i = 0, options = this.getOptions(); i < options.length; i++ ) {
+    		option = options[ i ];
 
-            if (option.isTrue === 'yes') {
-                if (answered.indexOf(option.value) === -1) {
-                    return false;
-                }
-            } else {
-                if (answered.indexOf(option.value) !== -1) {
-                    return false;
-                }
-            }
-        }
+    		if ( option.isTrue === 'yes' ) {
+    			if ( answered.indexOf( option.value ) === -1 ) {
+    				return false;
+    			}
+    		} else if ( answered.indexOf( option.value ) !== -1 ) {
+    			return false;
+    		}
+    	}
 
-        return true;
+    	return true;
     };
 
-    getOptionClass = (option) => {
-        const {
-            answered
-        } = this.props;
+    getOptionClass = ( option ) => {
+    	const {
+    		answered,
+    	} = this.props;
 
-        const optionClass = [...this.state.optionClass];
+    	const optionClass = [ ...this.state.optionClass ];
 
-        if (this.maybeShowCorrectAnswer()) {
-            if (option.isTrue === 'yes') {
-                optionClass.push('answer-correct');
-            }
+    	if ( this.maybeShowCorrectAnswer() ) {
+    		if ( option.isTrue === 'yes' ) {
+    			optionClass.push( 'answer-correct' );
+    		}
 
-            if (answered) {
-                if (option.isTrue === 'yes') {
-                    answered.indexOf(option.value) !== -1 && optionClass.push('answered-correct');
-                } else {
-                    answered.indexOf(option.value) !== -1 && optionClass.push('answered-wrong');
-                }
-            }
-        }
+    		if ( answered ) {
+    			if ( option.isTrue === 'yes' ) {
+    				answered.indexOf( option.value ) !== -1 && optionClass.push( 'answered-correct' );
+    			} else {
+    				answered.indexOf( option.value ) !== -1 && optionClass.push( 'answered-wrong' );
+    			}
+    		}
+    	}
 
-        return optionClass;
+    	return optionClass;
     };
-
-    // render(){
-    //     {super.render()}
-    // }
 }
 
 export default QuestionMultipleChoices;

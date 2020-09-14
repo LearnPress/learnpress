@@ -1,225 +1,223 @@
-import {combineReducers} from '@wordpress/data';
+import { combineReducers } from '@wordpress/data';
 
-const {omit, flow, isArray, chunk} = lodash;
-const {camelCaseDashObjectKeys} = LP;
-const {get: storageGet, set: storageSet} = LP.localStorage;
+const { omit, flow, isArray, chunk } = lodash;
+const { camelCaseDashObjectKeys } = LP;
+const { get: storageGet, set: storageSet } = LP.localStorage;
 const STORE_DATA = {};
 
-export const setItemStatus = (item, status) => {
-    const userSettings = {
-        ...item.userSettings,
-        status
-    }
+export const setItemStatus = ( item, status ) => {
+	const userSettings = {
+		...item.userSettings,
+		status,
+	};
 
-    return {
-        ...item,
-        userSettings
-    }
-}
-
-const updateUserQuestionAnswer = (state, action) => {
-    const {answered} = state;
-    const newAnswer = {
-        ...(answered[action.questionId] || {}),
-        answered: action.answers,
-        temp: true
-    };
-
-    return {
-        ...state,
-        answered: {
-            ...state.answered,
-            [action.questionId]: newAnswer
-        }
-    }
+	return {
+		...item,
+		userSettings,
+	};
 };
 
-const markQuestionRendered = (state, action) => {
-    const {
-        questionsRendered
-    } = state;
+const updateUserQuestionAnswer = ( state, action ) => {
+	const { answered } = state;
+	const newAnswer = {
+		...( answered[ action.questionId ] || {} ),
+		answered: action.answers,
+		temp: true,
+	};
 
-    if (isArray(questionsRendered)) {
-        questionsRendered.push(action.questionId);
-        return {
-            ...state,
-            questionsRendered: [...questionsRendered]
-        }
-    } else {
-        return {
-            ...state,
-            questionsRendered: [action.questionId]
-        }
-    }
+	return {
+		...state,
+		answered: {
+			...state.answered,
+			[ action.questionId ]: newAnswer,
+		},
+	};
 };
 
-const resetCurrentPage = (state, args) => {
-    if (args.currentPage) {
-        storageSet(`Q${state.id}.currentPage`, args.currentPage)
-    }
+const markQuestionRendered = ( state, action ) => {
+	const {
+		questionsRendered,
+	} = state;
 
-    return {
-        ...state,
-        ...args
-    }
+	if ( isArray( questionsRendered ) ) {
+		questionsRendered.push( action.questionId );
+		return {
+			...state,
+			questionsRendered: [ ...questionsRendered ],
+		};
+	}
+	return {
+		...state,
+		questionsRendered: [ action.questionId ],
+	};
 };
 
-const updateAttempt = (attempts, newAttempt) => {
-    const at = attempts.findIndex((attempt) => {
-        return attempt.id == newAttempt.id;
-    });
+const resetCurrentPage = ( state, args ) => {
+	if ( args.currentPage ) {
+		storageSet( `Q${ state.id }.currentPage`, args.currentPage );
+	}
 
-    if (at !== -1) {
-        attempts[at] = newAttempt;
-    } else {
-        attempts.unshift(newAttempt);
-    }
-
-    return attempts;
+	return {
+		...state,
+		...args,
+	};
 };
 
-const setQuestionHint = (state, action) => {
-    const questions = state.questions.map((question) => {
-        return question.id == action.questionId ? {...question, showHint: action.showHint} : question;
-    });
+const updateAttempt = ( attempts, newAttempt ) => {
+	const at = attempts.findIndex( ( attempt ) => {
+		return attempt.id == newAttempt.id;
+	} );
 
-    return {
-        ...state,
-        questions: [...questions],
-        //hintedQuestions: [...state.hintedQuestions, action.questionId]
-    }
+	if ( at !== -1 ) {
+		attempts[ at ] = newAttempt;
+	} else {
+		attempts.unshift( newAttempt );
+	}
+
+	return attempts;
 };
 
-const checkAnswer = (state, action) => {
-    const questions = state.questions.map((question) => {
-        if (question.id !== action.questionId) {
-            return question;
-        }
+const setQuestionHint = ( state, action ) => {
+	const questions = state.questions.map( ( question ) => {
+		return question.id == action.questionId ? { ...question, showHint: action.showHint } : question;
+	} );
 
-        const newArgs = {
-            explanation: action.explanation
-        };
-
-        if (action.options) {
-            newArgs.options = action.options;
-        }
-
-        return {...question, ...newArgs};
-    });
-
-    return {
-        ...state,
-        questions: [...questions],
-        answered: {
-            ...state.answered,
-            [action.questionId]: action.result
-        },
-        checkedQuestions: [...state.checkedQuestions, action.questionId]
-    }
+	return {
+		...state,
+		questions: [ ...questions ],
+		//hintedQuestions: [...state.hintedQuestions, action.questionId]
+	};
 };
 
-export const userQuiz = (state = STORE_DATA, action) => {
-    switch (action.type) {
-        case 'SET_QUIZ_DATA':
-            if (1 > action.data.questionsPerPage) {
-                action.data.questionsPerPage = 1;
-            }
+const checkAnswer = ( state, action ) => {
+	const questions = state.questions.map( ( question ) => {
+		if ( question.id !== action.questionId ) {
+			return question;
+		}
 
-            const chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsPerPage);
+		const newArgs = {
+			explanation: action.explanation,
+		};
 
-            action.data.numPages = chunks.length;
-            action.data.pages = chunks;
+		if ( action.options ) {
+			newArgs.options = action.options;
+		}
 
-            return {
-                ...state,
-                ...action.data,
-                currentPage: storageGet(`Q${action.data.id}.currentPage`) || action.data.currentPage
-            };
-        case 'SUBMIT_QUIZ':
-            return {
-                ...state,
-                submitting: true
-            }
-        case 'START_QUIZ':
-        case 'START_QUIZ_SUCCESS':
-            return resetCurrentPage(state, {
-                checkedQuestions: [],
-                hintedQuestions: [],
-                mode: '',
-                currentPage: 1,
-                ...action.results
-            });
-        case 'SET_CURRENT_QUESTION':
-            storageSet(`Q${state.id}.currentQuestion`, action.questionId);
-            return {
-                ...state,
-                currentQuestion: action.questionId
-            };
-        case 'SET_CURRENT_PAGE':
-            storageSet(`Q${state.id}.currentPage`, action.currentPage);
+		return { ...question, ...newArgs };
+	} );
 
-            return {
-                ...state,
-                currentPage: action.currentPage
-            }
-        case 'SUBMIT_QUIZ_SUCCESS':
-            return resetCurrentPage(state, {
-                attempts: updateAttempt(state.attempts, action.results),
-                submitting: false,
-                currentPage: 1,
-                ...action.results
-            });
-        case 'UPDATE_USER_QUESTION_ANSWERS':
-            return state.status === 'started' ? updateUserQuestionAnswer(state, action) : state;
-        case 'MARK_QUESTION_RENDERED':
-            return markQuestionRendered(state, action);
-        case 'SET_QUIZ_MODE':
-            if (action.mode == 'reviewing') {
-                return resetCurrentPage(state, {
-                    mode: action.mode
-                })
-            }
-            return {
-                ...state,
-                mode: action.mode
-            };
-        case 'SET_QUESTION_HINT':
-            return setQuestionHint(state, action);
-        case 'CHECK_ANSWER':
-            return checkAnswer(state, action);
-        case 'SEND_KEY':
-            return {
-                ...state,
-                keyPressed: action.keyPressed
-            }
+	return {
+		...state,
+		questions: [ ...questions ],
+		answered: {
+			...state.answered,
+			[ action.questionId ]: action.result,
+		},
+		checkedQuestions: [ ...state.checkedQuestions, action.questionId ],
+	};
+};
 
-    }
-    return state;
+export const userQuiz = ( state = STORE_DATA, action ) => {
+	switch ( action.type ) {
+	case 'SET_QUIZ_DATA':
+		if ( 1 > action.data.questionsPerPage ) {
+			action.data.questionsPerPage = 1;
+		}
+
+		const chunks = chunk( state.questionIds || action.data.questionIds, action.data.questionsPerPage );
+
+		action.data.numPages = chunks.length;
+		action.data.pages = chunks;
+
+		return {
+			...state,
+			...action.data,
+			currentPage: storageGet( `Q${ action.data.id }.currentPage` ) || action.data.currentPage,
+		};
+	case 'SUBMIT_QUIZ':
+		return {
+			...state,
+			submitting: true,
+		};
+	case 'START_QUIZ':
+	case 'START_QUIZ_SUCCESS':
+		return resetCurrentPage( state, {
+			checkedQuestions: [],
+			hintedQuestions: [],
+			mode: '',
+			currentPage: 1,
+			...action.results,
+		} );
+	case 'SET_CURRENT_QUESTION':
+		storageSet( `Q${ state.id }.currentQuestion`, action.questionId );
+		return {
+			...state,
+			currentQuestion: action.questionId,
+		};
+	case 'SET_CURRENT_PAGE':
+		storageSet( `Q${ state.id }.currentPage`, action.currentPage );
+
+		return {
+			...state,
+			currentPage: action.currentPage,
+		};
+	case 'SUBMIT_QUIZ_SUCCESS':
+		return resetCurrentPage( state, {
+			attempts: updateAttempt( state.attempts, action.results ),
+			submitting: false,
+			currentPage: 1,
+			...action.results,
+		} );
+	case 'UPDATE_USER_QUESTION_ANSWERS':
+		return state.status === 'started' ? updateUserQuestionAnswer( state, action ) : state;
+	case 'MARK_QUESTION_RENDERED':
+		return markQuestionRendered( state, action );
+	case 'SET_QUIZ_MODE':
+		if ( action.mode == 'reviewing' ) {
+			return resetCurrentPage( state, {
+				mode: action.mode,
+			} );
+		}
+		return {
+			...state,
+			mode: action.mode,
+		};
+	case 'SET_QUESTION_HINT':
+		return setQuestionHint( state, action );
+	case 'CHECK_ANSWER':
+		return checkAnswer( state, action );
+	case 'SEND_KEY':
+		return {
+			...state,
+			keyPressed: action.keyPressed,
+		};
+	}
+	return state;
 };
 
 export const blocks = flow(
-    combineReducers,
-    (reducer) => (state, action) => {
-        //console.log('1', state)
-        return reducer(state, action)
-    },
-    (reducer) => (state, action) => {
-        //console.log('2')
-        return reducer(state, action)
-    },
-    (reducer) => (state, action) => {
-        //console.log('3')
-        return reducer(state, action)
-    }
-)({
-    a(state = {a: 1}, action){
-        //console.log('a', action)
-        return state;
-    },
-    b(state = {b: 2}, action){
-        //console.log('b',action);
-        return state;
-    }
-});
+	combineReducers,
+	( reducer ) => ( state, action ) => {
+		//console.log('1', state)
+		return reducer( state, action );
+	},
+	( reducer ) => ( state, action ) => {
+		//console.log('2')
+		return reducer( state, action );
+	},
+	( reducer ) => ( state, action ) => {
+		//console.log('3')
+		return reducer( state, action );
+	}
+)( {
+	a( state = { a: 1 }, action ) {
+		//console.log('a', action)
+		return state;
+	},
+	b( state = { b: 2 }, action ) {
+		//console.log('b',action);
+		return state;
+	},
+} );
 
-export default combineReducers({blocks, userQuiz});
+export default combineReducers( { blocks, userQuiz } );

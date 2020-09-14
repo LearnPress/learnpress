@@ -10,7 +10,6 @@
  * @version 3.0.0
  */
 class LP_Updater {
-
 	/**
 	 * Array of update patches.
 	 *
@@ -49,7 +48,8 @@ class LP_Updater {
 		}
 
 		learn_press_send_json( $response );
-		die();
+
+		wp_die();
 	}
 
 	public function update_message() {
@@ -58,7 +58,6 @@ class LP_Updater {
 	}
 
 	public function do_update() {
-
 		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
 			return $this->_do_update();
 		}
@@ -74,7 +73,8 @@ class LP_Updater {
 		} else {
 			learn_press_print_messages();
 		}
-		die();
+
+		wp_die();
 	}
 
 	protected function _do_update() {
@@ -90,9 +90,13 @@ class LP_Updater {
 				}
 
 				$file = LP_PLUGIN_PATH . '/inc/updates/' . $file;
+
 				include_once $file;
+
 				update_option( 'learnpress_updater', $version, 'yes' );
+
 				$latest_version = false;
+
 				break;
 			}
 
@@ -103,8 +107,7 @@ class LP_Updater {
 				remove_action( 'admin_notices', array( $this, 'update_message' ), 10 );
 				LP()->session->set( 'do-update-learnpress', 'yes' );
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 		}
 
@@ -115,7 +118,6 @@ class LP_Updater {
 	 * Includes all update patches by version priority.
 	 */
 	public function include_update() {
-
 		if ( ! $this->get_update_files() ) {
 			return;
 		}
@@ -123,10 +125,7 @@ class LP_Updater {
 		$versions       = array_keys( $this->_update_files );
 		$latest_version = end( $versions );
 
-		// Update LearnPress from 0.9.x to 1.0
 		if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
-			add_action( 'admin_notices', array( __CLASS__, 'hide_other_notices' ), - 100 );
-
 			learn_press_include( 'updates/' . $this->_update_files[ $latest_version ] );
 		}
 	}
@@ -155,7 +154,9 @@ class LP_Updater {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
-				if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' ) ) {
+
+				$files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' );
+				if ( $files ) {
 					foreach ( $files as $file ) {
 						if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
 							$this->_update_files [ $matches[1] ] = $file['name'];
@@ -163,6 +164,7 @@ class LP_Updater {
 					}
 				}
 			}
+
 			/**
 			 * Sort files by version
 			 */
@@ -178,7 +180,6 @@ class LP_Updater {
 	 * Add an empty menu for passing permission check
 	 */
 	public function admin_menu() {
-		// Permission
 		if ( 'lp-database-updater' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
@@ -202,21 +203,30 @@ class LP_Updater {
 		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
 		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
 
-		wp_enqueue_script( 'lp-global', $assets->url( 'js/global.js' ), array(
-			'jquery',
-			'jquery-ui-sortable',
-			'underscore'
-		) );
+		wp_enqueue_script(
+			'lp-global',
+			$assets->url( 'js/global.js' ),
+			array(
+				'jquery',
+				'jquery-ui-sortable',
+				'underscore',
+			)
+		);
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'js/admin/admin.js' ) );
-		wp_enqueue_script( 'lp-update', $assets->url( 'js/admin/update.js' ), array(
-			'lp-global',
-			'lp-admin',
-			'lp-utils'
-		) );
+		wp_enqueue_script(
+			'lp-update',
+			$assets->url( 'js/admin/update.js' ),
+			array(
+				'lp-global',
+				'lp-admin',
+				'lp-utils',
+			)
+		);
 
 		learn_press_admin_view( 'updates/update-screen' );
-		die(); // Ignore all thing in the rest.
+
+		die();
 	}
 
 	/**

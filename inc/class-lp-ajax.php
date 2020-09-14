@@ -12,7 +12,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Init common ajax events
 		 */
 		public static function init() {
-			/*$ajaxEvents = array(
+			/*
+			$ajaxEvents = array(
 				'load_quiz_question'  => true,
 				'load_prev_question'  => false,
 				'load_next_question'  => false,
@@ -23,7 +24,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'load_next_lesson'    => false,
 				'load_prev_lesson'    => false,
 				'finish_course'       => false,
-				'not_going'           => false,
+				'not_going'           => false,load_more_courses
 				'take_course'         => true,
 				'start_quiz'          => true,
 				'fetch_question'      => true,
@@ -44,7 +45,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			 *      :nopriv => Allows calling AJAX with user is not logged in
 			 *      :nonce  => Requires checking nonce with value of request param action-name-nonce before doing AJAX
 			 */
-			$ajaxEvents = array(
+			$ajax_events = array(
 				'checkout-user-email-exists:nopriv',
 				'recover-order',
 				'request-become-a-teacher:nonce',
@@ -55,14 +56,14 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'retake-course',
 				'external-link:nopriv',
 				'save-uploaded-user-avatar',
-				'load-more-courses'
-				//'register-user:nopriv',
-				//'login-user:nopriv'
+				'load-more-courses',
+				// 'register-user:nopriv',
+				// 'login-user:nopriv'
 			);
 
-			$ajaxEvents = apply_filters( 'learn-press/ajax/events', $ajaxEvents );
+			$ajax_events = apply_filters( 'learn-press/ajax/events', $ajax_events );
 
-			foreach ( $ajaxEvents as $action => $callback ) {
+			foreach ( $ajax_events as $action => $callback ) {
 
 				if ( is_numeric( $action ) ) {
 					$action = $callback;
@@ -80,10 +81,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
-			//add_action( 'save-uploaded-user-avatar', array( __CLASS__, 'save_uploaded_user_avatar' ) );
+			// add_action( 'save-uploaded-user-avatar', array( __CLASS__, 'save_uploaded_user_avatar' ) );
 
-			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
-			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+			// LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
+			// LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
 		}
 
 		public static function load_more_courses() {
@@ -100,7 +101,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					'paginate' => true,
 					'return'   => 'ids',
 					'author'   => $user->get_id(),
-					'paged'    => $paged
+					'paged'    => $paged,
 				);
 
 				if ( 'featured' === $type ) {
@@ -108,8 +109,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				}
 				$query         = new LP_Course_Query( $query_args );
 				$template_args = (array) $query->get_courses();
-				print_r($query->get_courses());
-				$template      = "profile/dashboard/{$type}-courses";
+				print_r( $query->get_courses() );
+				$template = "profile/dashboard/{$type}-courses";
 
 			} else {
 				$profile       = LP_Profile::instance( $user_id );
@@ -123,10 +124,11 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function external_link() {
-			$nonce = LP_Request::get( 'nonce' );
-			$id    = LP_Request::get( 'id' );
+			$nonce  = LP_Request::get( 'nonce' );
+			$id     = LP_Request::get( 'id' );
+			$course = learn_press_get_course( $id );
 
-			if ( ! $course = learn_press_get_course( $id ) ) {
+			if ( ! $course ) {
 				return;
 			}
 
@@ -174,8 +176,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				$current_user = get_user_by( 'id', $new_user );
 				wp_set_auth_cookie( $new_user, true );
 
-			}
-			catch ( Exception $e ) {
+			} catch ( Exception $e ) {
 				learn_press_add_message( $e->getMessage(), 'error' );
 			}
 
@@ -188,7 +189,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$response = array(
 				'result'   => learn_press_message_count( 'error' ) ? 'error' : 'success',
 				'message'  => learn_press_get_messages( true ),
-				'redirect' => $redirect
+				'redirect' => $redirect,
 			);
 
 			learn_press_send_json( $response );
@@ -200,8 +201,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		public static function login_user() {
 			LP_Forms_Handler::process_login();
 			print_r( learn_press_message_count( 'error' ) );
-			//print_r( learn_press_get_messages() );
-			//print_r( $_REQUEST );
+			// print_r( learn_press_get_messages() );
+			// print_r( $_REQUEST );
 			die();
 		}
 
@@ -250,7 +251,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			$email    = LP_Request::get_email( 'email' );
 			$response = array(
-				'exists' => 0
+				'exists' => 0,
 			);
 
 			if ( $user = get_user_by( 'email', $email ) ) {
@@ -270,9 +271,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
 
-			$result = wp_handle_upload( $file,
+			$result = wp_handle_upload(
+				$file,
 				array(
-					'test_form' => false
+					'test_form' => false,
 				)
 			);
 
@@ -282,7 +284,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				unset( $result['file'] );
 			} else {
 				$result = array(
-					'error' => __( 'Profile picture upload failed', 'learnpress' )
+					'error' => __( 'Profile picture upload failed', 'learnpress' ),
 				);
 			}
 			learn_press_send_json( $result );
@@ -296,28 +298,29 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					'width'  => '',
 					'height' => '',
 					'points' => '',
-					'nonce'  => ''
+					'nonce'  => '',
 				)
 			);
 
 			$current_user_id = get_current_user_id();
 
 			if ( ! wp_verify_nonce( $avatar_data['nonce'], 'save-uploaded-profile-' . $current_user_id ) ) {
-				die( 'ERROR' );
+				die( 'ERROR VERIFY NONCE!' );
 			}
 
-			if ( $url = learn_press_update_user_profile_avatar() ) {
+			$url = learn_press_update_user_profile_avatar();
+			if ( $url ) {
 				$user = learn_press_get_current_user();
 
 				learn_press_send_json(
 					array(
 						'success' => true,
-						'avatar'  => sprintf( '<img src="%s" />', $url )
+						'avatar'  => sprintf( '<img src="%s" />', $url ),
 					)
 				);
 			};
 
-			die();
+			wp_die();
 		}
 
 		public static function _user_avatar_upload_dir( $dir ) {
@@ -336,12 +339,14 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$user      = learn_press_get_current_user();
 
 			$nonce_action = sprintf( 'finish-course-%d-%d', $course_id, $user->get_id() );
+
 			if ( ! $user->get_id() || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
+
 			$finished = $user->finish_course( $course_id );
 			$response = array(
-				'redirect' => apply_filters( 'learn-press/finish-course-redirect', get_the_permalink( $course_id ), $course_id )
+				'redirect' => apply_filters( 'learn-press/finish-course-redirect', get_the_permalink( $course_id ), $course_id ),
 			);
 
 			if ( $finished ) {
@@ -374,7 +379,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$course   = learn_press_get_course( $course_id );
 			$response = array(
 				'result'   => 'success',
-				'redirect' => $course->get_item_link( $item_id )
+				'redirect' => $course->get_item_link( $item_id ),
 			);
 
 			$item         = $course->get_item( $item_id );
@@ -388,7 +393,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				$result = $user->complete_lesson( $item_id );
 
 				if ( ! is_wp_error( $result ) ) {
-					if ( $next = $course->get_next_item() ) {
+					if ( $course->get_next_item() ) {
+						$next                 = $course->get_next_item();
 						$response['redirect'] = $course->get_item_link( $next );
 					}
 
@@ -398,8 +404,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				}
 
 				$response = apply_filters( 'learn-press/user-completed-lesson-result', $response, $item_id, $course_id, $user->get_id() );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				learn_press_add_message( $ex->getMessage(), 'error' );
 			}
 
@@ -425,7 +430,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$user      = learn_press_get_current_user();
 			$course    = learn_press_get_course( $course_id );
 			$response  = array(
-				'result' => 'error'
+				'result' => 'error',
 			);
 
 			$security_action = sprintf( 'retake-course-%d-%d', $course->get_id(), $user->get_id() );
@@ -444,7 +449,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					learn_press_add_message( __( 'Error! You can not retake the course', 'learnpress' ), 'error' );
 				}
 			}
-
 
 			if ( learn_press_message_count( 'error' ) == 0 ) {
 				if ( $item = $course->get_item_at( 0 ) ) {
@@ -468,5 +472,5 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		}
 	}
 }
-// Call class
+
 LP_AJAX::init();
