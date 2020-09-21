@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.9
+ * @version  3.1.0
  */
 
 /**
@@ -19,16 +19,16 @@ defined( 'ABSPATH' ) || exit();
 if ( isset( $order ) ) {
 
 	if ( is_int( $order ) ) {
-		$order = learn_press_get_order( $order );
+		$order_received = learn_press_get_order( $order );
 	}
 	?>
-	<p><?php echo apply_filters( 'learn-press/order/received-order-message', __( 'Thank you. Your order has been received.', 'learnpress' ), $order ); ?></p>
+	<p><?php echo apply_filters( 'learn-press/order/received-order-message', __( 'Thank you. Your order has been received.', 'learnpress' ), $order_received ); ?></p>
 
 	<table class="order_details">
 		<tr class="order">
 			<th><?php _e( 'Order Number', 'learnpress' ); ?></th>
 			<td>
-				<?php echo $order->get_order_number(); ?>
+				<?php echo $order_received->get_order_number(); ?>
 			</td>
 		</tr>
 		<tr class="item">
@@ -36,7 +36,7 @@ if ( isset( $order ) ) {
 			<td>
 				<?php
 				$links = array();
-				$items = $order->get_items();
+				$items = $order_received->get_items();
 				$count = sizeof( $items );
 				foreach ( $items as $item ) {
 					if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
@@ -61,16 +61,16 @@ if ( isset( $order ) ) {
 		<tr class="date">
 			<th><?php _e( 'Date', 'learnpress' ); ?></th>
 			<td>
-				<?php echo date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date() ) ); ?>
+				<?php echo date_i18n( get_option( 'date_format' ), strtotime( $order_received->get_order_date() ) ); ?>
 			</td>
 		</tr>
 		<tr class="total">
 			<th><?php _e( 'Total', 'learnpress' ); ?></th>
 			<td>
-				<?php echo $order->get_formatted_order_total(); ?>
+				<?php echo $order_received->get_formatted_order_total(); ?>
 			</td>
 		</tr>
-		<?php if ( $method_title = $order->get_payment_method_title() ) : ?>
+		<?php if ( $method_title = $order_received->get_payment_method_title() ) : ?>
 			<tr class="method">
 				<th><?php _e( 'Payment Method', 'learnpress' ); ?></th>
 				<td>
@@ -80,8 +80,8 @@ if ( isset( $order ) ) {
 		<?php endif; ?>
 	</table>
 
-	<?php do_action( 'learn-press/order/received/' . $order->payment_method, $order->get_id() ); ?>
-	<?php do_action( 'learn-press/order/received', $order ); ?>
+	<?php do_action( 'learn-press/order/received/' . $order_received->payment_method, $order_received->get_id() ); ?>
+	<?php do_action( 'learn-press/order/received', $order_received ); ?>
 
 <?php } else { ?>
 

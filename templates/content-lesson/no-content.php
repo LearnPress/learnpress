@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -14,7 +14,9 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$lesson = LP_Global::course_item();
+if ( ! isset( $lesson ) ) {
+	return;
+}
 
 $message = __( 'Lesson content is empty.', 'learnpress' );
 

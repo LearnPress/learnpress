@@ -47,7 +47,8 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 				if ( LP()->cart->is_empty() ) {
 					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
-					learn_press_get_template( 'checkout/form.php' );
+					$checkout = LP()->checkout();
+					learn_press_get_template( 'checkout/form.php', array( 'checkout' => $checkout ) );
 				}
 			}
 
@@ -62,7 +63,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		private function _order_received( $order_id = 0 ) {
 			// Get the order
 			$order_id  = absint( $order_id );
-			$order_key = ! empty( $_GET['key'] ) ? $_GET['key'] : '';
+			$order_key = ! empty( $_GET['key'] ) ? LP_Helper::sanitize_params_submitted( $_GET['key'] ) : '';
 			$order     = null;
 
 			if ( $order_id > 0 && ( $origin_order = learn_press_get_order( $order_id ) ) && ! $origin_order->is_trashed() ) {

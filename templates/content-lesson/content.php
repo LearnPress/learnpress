@@ -1,24 +1,25 @@
 <?php
 /**
- * Template for displaying description of lesson.
+ * Template for displaying content of lesson.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/content-lesson/description.php.
+ * This template can be overridden by copying it to yourtheme/learnpress/content-lesson/content.php.
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
-$lesson = LP_Global::course_item();
+if ( ! isset( $item ) || ! isset( $content ) ) {
+	return;
+}
 
 // lesson no content
-if ( ! $content = $lesson->get_content() ) {
-	learn_press_get_template( 'content-lesson/no-content.php' );
+if ( ! $content ) {
+	learn_press_get_template( 'content-lesson/no-content.php', array( 'lesson' => $item ) );
 
 	return;
 }

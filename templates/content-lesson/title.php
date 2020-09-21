@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -14,9 +14,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$lesson = LP_Global::course_item();
-
-if ( ! $title = $lesson->get_title( 'display' ) ) {
+if ( ! isset( $title ) ) {
 	return;
 }
 ?>

@@ -6,16 +6,18 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $cart = learn_press_get_checkout_cart(); ?>
+if ( ! isset( $cart ) ) {
+	return;
+}
+?>
 
 <h4><?php _e( 'Your order', 'learnpress' ) ?></h4>
 

@@ -18,16 +18,16 @@ $lesson = LP_Global::course_item();
 
 // lesson no content
 if ( ! $lesson->get_content() ) {
-	learn_press_get_template( 'content-lesson/no-content.php' );
+	learn_press_get_template( 'content-lesson/no-content.php', array( 'lesson' => $lesson ) );
 
 	return;
 }
 
 if ( $video = $lesson->get_video() ) {
 	?>
-    <div class="entry-video ">
-        <?php echo $video[0];?>
-    </div>
+	<div class="entry-video ">
+		<?php echo $video[0]; ?>
+	</div>
 	<?php
 }
 ?>
