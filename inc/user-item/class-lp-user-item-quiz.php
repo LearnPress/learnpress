@@ -80,15 +80,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Get list of data to update to database
 	 *
+	 * @return array
 	 * @since 3.1.0
 	 *
-	 * @return array
 	 */
 	public function get_mysql_data() {
 		$columns = parent::get_mysql_data();
-//		$columns['_question_answers'] = false;
-//		$columns['_grade']            = false;
-//		$columns['results']           = false;
 
 		return apply_filters( 'learn-press/update-user-item-quiz-data', $columns, $this->get_item_id(), $this->get_course_id(), $this->get_user_id() );
 	}
@@ -171,8 +168,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return array|bool|mixed
 	 */
 	public function get_results( $prop = 'result', $force = false ) {
-		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
-
 		/**
 		 * Do nothing if user is not started quiz
 		 */
@@ -190,7 +185,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			}
 			LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
 		}
-		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 
 		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
 	}
@@ -198,9 +192,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Calculate results of quiz.
 	 *
+	 * @return array
 	 * @since 3.1.0
 	 *
-	 * @return array
 	 */
 	public function calculate_results() {
 		$quiz = learn_press_get_quiz( $this->get_item_id() );
@@ -226,6 +220,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			foreach ( $questions as $question_id ) {
 
 				$question = LP_Question::get_question( $question_id );
+
+				if ( ! $question ) {
+					continue;
+				}
 
 				$answered          = $this->get_question_answer( $question_id );
 				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
@@ -344,7 +342,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return float|int|mixed
 	 */
 	public function get_questions_answered( $percent = false ) {
-		$result = $this->get_results('');
+		$result = $this->get_results( '' );
 		$return = 0;
 
 		if ( $result ) {

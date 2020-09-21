@@ -2382,37 +2382,32 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Enroll this user to a course.
 		 *
-		 * @param int $course_id
-		 * @param int $order_id
-		 *
-		 * @return mixed|WP_Error
-		 * @throws Exception
-		 */
-		/**
-		 * Enroll this user to a course.
-		 *
-		 * @param      $course_id
-		 * @param      $order_id
+		 * @param int  $course_id
+		 * @param int  $order_id
 		 * @param bool $force | Force create db record for preview quiz case
 		 *
 		 * @return bool|mixed|WP_Error
 		 */
-		public function enroll( $course_id, $order_id, $force = false ) {
+		public function enroll( $course_id = 0, $order_id = 0, $force = false ) {
 			$return = false;
-			try {
-				global $wpdb;
 
-				$course  = learn_press_get_course( $course_id );
+			try {
+				$course = learn_press_get_course( $course_id );
+
+				if ( ! $course ) {
+					return $return;
+				}
+
 				$user_id = $this->get_id();
 
 				if ( $course->is_required_enroll() && ! $force ) {
 
 					if ( ! $order = learn_press_get_order( $order_id ) ) {
-						throw new Exception( __( 'Failed to enroll course.', 'learnpress' ), 10000 );
+						throw new Exception( __( "Failed to enroll course. Order $order_id is not valid", 'learnpress' ), 10000 );
 					}
 
 					if ( ! $this->can_enroll_course( $course_id ) ) {
-						throw new Exception( __( 'Failed to enroll course.', 'learnpress' ), 10001 );
+						throw new Exception( __( 'Failed to enroll course. You can\'t enroll course', 'learnpress' ), 10001 );
 					}
 
 					if ( ! $this->get_id() ) {

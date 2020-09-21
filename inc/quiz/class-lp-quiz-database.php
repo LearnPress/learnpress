@@ -32,7 +32,7 @@ class LP_Quiz_DB extends LP_Database {
 	 * @return int
 	 */
 	public function get_quiz_id_by_question( $question_id = 0 ) {
-		$query = $this->wpdb->prepare("
+		$query = $this->wpdb->prepare( "
 			SELECT quiz_id
 			FROM {$this->tb_lp_quiz_questions}
 			WHERE question_id = %d",

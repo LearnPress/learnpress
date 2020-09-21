@@ -835,8 +835,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function get_course_items_of_user_backend( $query ) {
 			global $post_type, $pagenow, $wpdb;
 
-			if ( ! did_action( 'plugin_loaded' ) || current_user_can( 'manage_options' ) ||
-				! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
+			if ( ! current_user_can( LP_TEACHER_ROLE ) ||
+				! current_user_can( 'administrator' ) || ( $pagenow != 'edit.php' ) ) {
 				return $query;
 			}
 

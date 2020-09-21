@@ -140,10 +140,6 @@ class LP_Session_Handler implements ArrayAccess {
 		add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
 		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
-
-		if ( ! is_user_logged_in() ) {
-			//add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
-		}
 	}
 
 	public function set_customer_session_cookie( $set ) {
@@ -287,10 +283,6 @@ class LP_Session_Handler implements ArrayAccess {
 		$this->_data        = array();
 		$this->_changed     = false;
 		$this->_customer_id = $this->generate_customer_id();
-	}
-
-	public function nonce_user_logged_out( $uid ) {
-		return $this->has_session() && $this->_customer_id ? $this->_customer_id : $uid;
 	}
 
 	public function cleanup_sessions() {

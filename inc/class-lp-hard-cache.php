@@ -25,52 +25,15 @@ class LP_Hard_Cache {
 	protected static $_lock = false;
 
 	/**
-	 * @var bool
-	 */
-	protected static $_hard_lock = false;
-
-	/**
 	 * Init
 	 */
 	public static function init() {
 		$upload_dir       = wp_upload_dir();
 		self::$_root_path = trailingslashit( $upload_dir['basedir'] ) . 'lp-cache';
 
-		if ( defined( 'LP_HARD_CACHE' ) ) {
-			self::$_lock = self::$_hard_lock = ! LP_HARD_CACHE;
-		} else {
-			self::$_lock = self::$_hard_lock = ! ( 'yes' === LP()->settings()->get( 'enable_hard_cache' ) );
-		}
-
-		if ( self::is_locked() ) {
-			return;
-		}
-
 		@wp_mkdir_p( self::$_root_path );
-	}
 
-	/**
-	 * Replace existing cache with new data.
-	 *
-	 * @param string $key
-	 * @param mixed  $data
-	 * @param string $group
-	 *
-	 * @return bool
-	 */
-	public static function replace( $key, $data, $group = '' ) {
-
-		if ( self::is_locked() ) {
-			return false;
-		}
-
-		$file = self::get_file( $key, $group );
-
-		if ( ! file_exists( $file ) ) {
-			return false;
-		}
-
-		return self::write( $key, $data, $group );
+		self::$_lock = self::get_option_enable();
 	}
 
 	/**
@@ -83,11 +46,6 @@ class LP_Hard_Cache {
 	 * @return bool
 	 */
 	public static function set( $key, $data, $group = '' ) {
-
-		if ( self::is_locked() ) {
-			return false;
-		}
-
 		return self::write( $key, $data, $group, true );
 	}
 
@@ -96,12 +54,13 @@ class LP_Hard_Cache {
 	 *
 	 * @param string $key
 	 * @param string $group
+	 * @param bool   $force | set true if want always cache
 	 *
 	 * @return bool
 	 */
-	public static function get( $key, $group = '' ) {
+	public static function get( $key, $group = '', $force = false ) {
 
-		if ( self::is_locked() ) {
+		if ( self::is_locked() && ! $force ) {
 			return false;
 		}
 
@@ -116,13 +75,9 @@ class LP_Hard_Cache {
 	 *
 	 * @return bool|mixed
 	 */
-	public static function read( $key, $group = '' ) {
-
-		if ( self::is_locked() ) {
-			return false;
-		}
-
+	protected static function read( $key, $group = '' ) {
 		$file = self::get_file( $key, $group );
+
 		if ( file_exists( $file ) ) {
 			$f       = @fopen( $file, 'r' );
 			$content = fread( $f, filesize( $file ) );
@@ -149,11 +104,6 @@ class LP_Hard_Cache {
 	 * @return bool
 	 */
 	protected static function write( $key, $data, $group = '', $overwrite = false ) {
-
-		if ( self::is_locked() ) {
-			return false;
-		}
-
 		$file = self::get_file( $key, $group );
 
 		/**
@@ -184,11 +134,6 @@ class LP_Hard_Cache {
 	 * @return string
 	 */
 	protected static function get_file( $key, $group = '' ) {
-
-		if ( self::is_locked() ) {
-			return false;
-		}
-
 		$path = array( self::$_root_path, $group );
 		$path = array_filter( $path );
 		$path = join( '/', $path );
@@ -207,27 +152,6 @@ class LP_Hard_Cache {
 	}
 
 	/**
-	 * Enable for updating cache temporary even it is locked.
-	 */
-	public static function unlock() {
-		self::$_lock = false;
-	}
-
-	/**
-	 * Disable for updating cache temporary event it is not locked.
-	 */
-	public static function lock() {
-		self::$_lock = true;
-	}
-
-	/**
-	 * Reset lock to default.
-	 */
-	public static function reset_lock() {
-		self::$_lock = self::$_hard_lock;
-	}
-
-	/**
 	 * Check if cache is locked
 	 *
 	 * @return bool
@@ -236,10 +160,19 @@ class LP_Hard_Cache {
 		return self::$_lock;
 	}
 
+	public static function get_option_enable() {
+		return 'yes' === get_option( 'learn_press_enable_hard_cache' );
+	}
+
+	/**
+	 * Clear cache
+	 *
+	 * @param false $group
+	 *
+	 * @return mixed
+	 */
 	public static function flush( $group = false ) {
 		$wp_filesystem = LP_Helper::get_wp_filesystem();
-
-		//error_log(json_encode(debug_backtrace()));
 
 		if ( $group ) {
 			$return = $wp_filesystem->rmdir( self::get_path( $group ), true );

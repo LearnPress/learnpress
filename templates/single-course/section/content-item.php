@@ -14,6 +14,10 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+if ( ! isset( $item ) || ! isset( $section ) ) {
+	return;
+}
+
 $args = array( 'item' => $item, 'section' => $section );
 
 /**
