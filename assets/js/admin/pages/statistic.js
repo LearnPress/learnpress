@@ -96,6 +96,20 @@
 ;
 
 (function ($) {
+  $(document).ready(function () {
+    // check input (from - to) has value active go button
+    var statistic_wrapper = $('#learn-press-statistic'),
+        from = $('input[name="from"]'),
+        to = $('input[name="to"]');
+    if (statistic_wrapper.length) {
+      to.change(function () {
+        if (from.val() && to.val()) {
+          $('button.button-primary').prop("disabled", false);
+        }
+      });
+    }
+  });
+
   $.fn.LP_Chart_Line = function (data, config) {
     return $.each(this, function () {
       var $elem = $(this),

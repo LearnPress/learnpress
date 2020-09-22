@@ -63,3 +63,33 @@
 
 .chart-description li.students:before {
   background: #D4D0CB; }
+#learn-press-statistic .chart-buttons{
+  display: flex;
+}
+#learn-press-statistic .chart-buttons li{
+  margin: 0 3px;
+}
+body.learnpress_page_learn-press-statistics #ui-datepicker-div {
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(238, 238, 238);
+  padding: 10px 16px;
+  display: block;
+}
+body.learnpress_page_learn-press-statistics #ui-datepicker-div .ui-datepicker-header .ui-datepicker-prev{
+  float: left;
+  background: #0000ff;
+  color: #fff;
+  padding: 3px;
+}
+body.learnpress_page_learn-press-statistics #ui-datepicker-div .ui-datepicker-header .ui-datepicker-next{
+  float: right;
+  background: #0000ff;
+  color: #fff;
+  padding: 3px;
+}
+body.learnpress_page_learn-press-statistics #ui-datepicker-div .ui-datepicker-header .ui-datepicker-title{
+  clear: both;
+}
+body.learnpress_page_learn-press-statistics #ui-datepicker-div .ui-datepicker-header a:hover{
+  cursor: pointer;
+}

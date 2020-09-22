@@ -454,8 +454,8 @@ $(document).ready(onReady);
         $buttons.not(this).not('[data-type="user-custom-time"]').prop('disabled', false);
 
         if (type == 'user-custom-time') {
-          from = $('#user-custom-time input[name="from"]').val();
-          to = $('#user-custom-time input[name="to"]').val();
+          from = $('input[name="from"]').val();
+          to = $('input[name="to"]').val();
 
           if (from == '' || to == '') {
             return false;

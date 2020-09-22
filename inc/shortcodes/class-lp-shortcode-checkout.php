@@ -62,14 +62,17 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		 */
 		private function _order_received( $order_id = 0 ) {
 			// Get the order
-			$order_id  = absint( $order_id );
-			$order_key = ! empty( $_GET['key'] ) ? LP_Helper::sanitize_params_submitted( $_GET['key'] ) : '';
-			$order     = null;
+			$order_id     = absint( $order_id );
+			$order_key    = ! empty( $_GET['key'] ) ? LP_Helper::sanitize_params_submitted( $_GET['key'] ) : '';
+			$order        = null;
+			$origin_order = learn_press_get_order( $order_id );
 
-			if ( $order_id > 0 && ( $origin_order = learn_press_get_order( $order_id ) ) && ! $origin_order->is_trashed() ) {
-				if ( $origin_order->get_order_key() == $order_key ) {
-					$order = $origin_order;
-				}
+			if ( ! $origin_order ) {
+				return;
+			}
+
+			if ( $origin_order->is_trashed() || $origin_order->get_order_key() != $order_key ) {
+				return;
 			}
 
 			LP()->session->remove( 'order_awaiting_payment' );
@@ -77,7 +80,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 
 			learn_press_print_messages();
 
-			learn_press_get_template( 'checkout/order-received.php', array( 'order' => $order ) );
+			learn_press_get_template( 'checkout/order-received.php', array( 'order' => $origin_order ) );
 		}
 	}
 }

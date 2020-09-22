@@ -99,9 +99,16 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 				$response = learn_press_get_chart_courses( null, 'months', 12 );
 				break;
 			case 'course-custom-time':
-				$range     = learn_press_get_request( 'range' );
-				$from_time = strtotime( $range[0] );
-				$to_time   = strtotime( $range[1] );
+				$range = learn_press_get_request( 'range' );
+
+				$from_time = date( 'd m Y' );
+				$to_time   = date( 'd m Y' );
+
+				if ( ! empty( $range ) && is_array( $range ) ) {
+					$from_time = strtotime( $range[0] );
+					$to_time   = strtotime( $range[1] );
+				}
+
 				list( $from_d, $from_m, $from_y ) = explode( ' ', date( 'd m Y', $from_time ) );
 				list( $to_d, $to_m, $to_y ) = explode( ' ', date( 'd m Y', $to_time ) );
 				if ( $from_y != $to_y ) {
