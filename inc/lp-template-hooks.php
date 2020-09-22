@@ -310,11 +310,6 @@ add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_cou
  */
 add_action( 'learn-press/after-single-course', 'learn_press_single_course_args', 5 );
 
-/**
- * @see learn_press_single_document_title_parts()
- */
-add_filter( 'document_title_parts', 'learn_press_single_document_title_parts', 5 );
-
 /***********************************/
 /*         BECOME A TEACHER        */
 /***********************************/

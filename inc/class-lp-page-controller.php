@@ -50,13 +50,15 @@ class LP_Page_Controller {
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
-		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 11, 1 );
+		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
 	}
 
 	/**
 	 * Set title of pages
 	 *
 	 * 1. Title course archive page
+	 * 2. Title item of course
+	 * 3. Title page Profile
 	 *
 	 * @param string $title
 	 *
@@ -66,16 +68,71 @@ class LP_Page_Controller {
 	 */
 	public function set_title_pages( $title = '' ) {
 		global $wp_query;
+		$flag_title_course = false;
 
 		$course_archive_page_id = LP()->settings()->get( 'courses_page_id', 0 );
 
 		// Set title course archive page
 		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&
 			$course_archive_page_id == $wp_query->post->ID ) {
-			$title = get_the_title( $course_archive_page_id ) . ' - ' . get_bloginfo();
+			$title             = get_the_title( $course_archive_page_id );
+			$flag_title_course = true;
+		} elseif ( learn_press_is_course() ) {
+			if ( $item = LP_Global::course_item() ) {
+				$title = join(
+					' ',
+					apply_filters(
+						'learn-press/document-course-title-parts',
+						array(
+							get_the_title(),
+							" &rarr; ",
+							$item->get_title()
+						)
+					)
+				);
+
+				$flag_title_course = true;
+			}
+		} elseif ( learn_press_is_courses() ) {
+			if ( learn_press_is_search() ) {
+				$title = __( 'Course Search Results', 'learnpress' );
+			} else {
+				$title = __( 'Courses', 'learnpress' );
+			}
+
+			$flag_title_course = true;
+		} elseif ( learn_press_is_profile() ) {
+			$profile  = LP_Profile::instance();
+			$tab_slug = $profile->get_current_tab();
+			$tab      = $profile->get_tab_at( $tab_slug );
+
+			if ( $page_id = learn_press_get_page_id( 'profile' ) ) {
+				$page_title = get_the_title( $page_id );
+			} else {
+				$page_title = '';
+			}
+			if ( $tab ) {
+				$title = join(
+					' ',
+					apply_filters(
+						'learn-press/document-profile-title-parts',
+						array(
+							$page_title,
+							'&rarr;',
+							$tab['title']
+						)
+					)
+				);
+			}
+
+			$flag_title_course = true;
 		}
 
-		return $title;
+		if ( $flag_title_course ) {
+			$title .= ' - ' . get_bloginfo( 'name', 'display' );
+		}
+
+		return apply_filters( 'learn-press/title-page', $title );
 	}
 
 	public function maybe_redirect_quiz( $template ) {
@@ -513,20 +570,6 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * @param $title
-	 *
-	 * @return mixed
-	 */
-	public function page_title( $title ) {
-		global $wp_query;
-		if ( ! empty( $wp_query->queried_object_id ) ) {
-			$title['title'] = get_the_title( $wp_query->queried_object_id );
-		}
-
-		return $title;
-	}
-
-	/**
 	 * Load archive courses content.
 	 *
 	 * @param string $template
@@ -563,19 +606,6 @@ class LP_Page_Controller {
 			$template = get_page_template();
 			if ( get_option( 'template' ) == 'twentytwenty' ) {
 				$template = get_singular_template();
-			}
-			/**
-			 * Fix in case a static page is used for archive course page and
-			 * it's slug is the same with course archive slug (courses).
-			 * In this case, WP know it as a course archive page not a
-			 * single page.
-			 */
-			if ( ! LEARNPRESS_IS_CATEGORY && ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
-				if ( $course_page_slug == 'courses' ) {
-					$wp_query->queried_object_id = $course_page_id;
-					$this->queried_object        = $wp_query->queried_object = get_post( $course_page_id );
-					add_filter( 'document_title_parts', array( $this, 'page_title' ) );
-				}
 			}
 
 			$wp_query->posts_per_page = 1;

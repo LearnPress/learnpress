@@ -203,6 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 3.2.7.8 =
 ~ Fix save author id when add item when edit course
+~ Fix title item course when install yoast seo plugin
 
 = 3.2.7.7 =
 ~ Add Evaluate via questions

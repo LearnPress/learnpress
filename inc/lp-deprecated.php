@@ -79,56 +79,6 @@ function learn_press_text_image( $text = null, $args = array() ) {
 	imagedestroy( $im );
 }
 
-/**
- * Get all lessons in a course
- *
- * @param $course_id
- *
- * @return array
- */
-function learn_press_get_lessons( $course_id ) {
-	_deprecated_function( __FUNCTION__, '1.0' );
-	$lessons    = array();
-	$curriculum = get_post_meta( $course_id, '_lpr_course_lesson_quiz', true );
-	if ( $curriculum ) {
-		foreach ( $curriculum as $lesson_quiz_s ) {
-			if ( array_key_exists( 'lesson_quiz', $lesson_quiz_s ) ) {
-				foreach ( $lesson_quiz_s['lesson_quiz'] as $lesson_quiz ) {
-					if ( get_post_type( $lesson_quiz ) == LP_LESSON_CPT ) {
-						$lessons[] = $lesson_quiz;
-					}
-				}
-			}
-		}
-	}
-
-	return $lessons;
-}
-
-/**
- * @param $course_id
- *
- * @return array
- */
-function learn_press_get_course_quizzes( $course_id ) {
-	_deprecated_function( __FUNCTION__, '1.0' );
-	$quizzes    = array();
-	$curriculum = get_post_meta( $course_id, '_lpr_course_lesson_quiz', true );
-	if ( $curriculum ) {
-		foreach ( $curriculum as $lesson_quiz_s ) {
-			if ( array_key_exists( 'lesson_quiz', $lesson_quiz_s ) ) {
-				foreach ( $lesson_quiz_s['lesson_quiz'] as $lesson_quiz ) {
-					if ( get_post_type( $lesson_quiz ) == LP_QUIZ_CPT ) {
-						$quizzes[] = $lesson_quiz;
-					}
-				}
-			}
-		}
-	}
-
-	return $quizzes;
-}
-
 // Deprecated template functions
 
 
