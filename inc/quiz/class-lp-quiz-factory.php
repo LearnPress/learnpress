@@ -219,7 +219,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				} else {
 					if ( $course = learn_press_get_course( $course_id ) ) {
 						$quiz      = $course->get_item( $quiz_id );
-						$quiz_data = $user->get_item_data( $quiz_id, $course_id );
+						//$quiz_data = $user->get_item_data( $quiz_id, $course_id );
 						$redirect  = $quiz->get_question_link( $question_id );
 						$question  = learn_press_get_question( $question_id );
 						$question->show_correct_answers( 'yes' );
@@ -227,7 +227,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['result']   = 'success';
 						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 						$result['remain']   = $remain;
-						$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
+						$result['html']     = learn_press_get_template_content( 'content-question/content.php', array( 'quiz' => $quiz ) );
 					}
 				}
 			}
@@ -285,8 +285,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['result']   = 'success';
 						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 						$result['remain']   = $remain;
-						$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
-
+						$result['html']     = learn_press_get_template_content( 'content-question/content.php', array( 'quiz' => $quiz ) );
 					}
 				}
 			}

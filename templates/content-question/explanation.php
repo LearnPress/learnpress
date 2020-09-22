@@ -4,9 +4,9 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-question/explanation.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -14,12 +14,12 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $explanation = $question->get_explanation() ) {
+if ( ! isset( $explanation ) ) {
 	return;
 }
 ?>
 
 <div class="question-explanation-content">
-    <strong class="explanation-title"><?php esc_html_e( 'Explanation:', 'learnpress' ); ?></strong>
+	<strong class="explanation-title"><?php esc_html_e( 'Explanation:', 'learnpress' ); ?></strong>
 	<?php echo $explanation; ?>
 </div>

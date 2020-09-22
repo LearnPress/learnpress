@@ -4,9 +4,9 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-question/hint.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -14,12 +14,12 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $hint = $question->get_hint() ) {
+if ( ! isset( $hint ) ) {
 	return;
 }
 ?>
 
 <div class="question-hint-content">
-    <strong class="hint-title"><?php esc_html_e( 'Hint:', 'learnpress' ); ?></strong>
+	<strong class="hint-title"><?php esc_html_e( 'Hint:', 'learnpress' ); ?></strong>
 	<?php echo $hint; ?>
 </div>

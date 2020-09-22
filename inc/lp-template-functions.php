@@ -705,7 +705,8 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_title' ) ) {
 		$quiz = LP_Global::course_item_quiz();
 
 		if ( $question = $quiz->get_viewing_question() ) {
-			learn_press_get_template( 'content-question/title.php' );
+			$title = $question->get_title( 'display' );
+			learn_press_get_template( 'content-question/title.php', array( 'title' => $title ) );
 		}
 	}
 }
@@ -761,7 +762,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_question' ) ) {
 		$quiz = LP_Global::course_item_quiz();
 
 		if ( $question = $quiz->get_viewing_question() ) {
-			learn_press_get_template( 'content-question/content.php' );
+			learn_press_get_template( 'content-question/content.php', array( 'quiz' => $quiz ) );
 		}
 	}
 }
@@ -772,7 +773,14 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_content' ) ) 
 		$quiz = LP_Global::course_item_quiz();
 
 		if ( $question = $quiz->get_viewing_question() ) {
-			learn_press_get_template( 'content-question/description.php' );
+
+			$content = $question->get_content();
+
+			if ( ! $content ) {
+				return;
+			}
+
+			learn_press_get_template( 'content-question/description.php', array( 'content' => $content ) );
 		}
 	}
 }
@@ -813,8 +821,9 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
+			$explanation = $question->get_explanation();
 
-			if ( ! $question->get_explanation() ) {
+			if ( ! $explanation ) {
 				return;
 			}
 
@@ -834,7 +843,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 				( learn_press_is_review_questions() &&
 					( ! $user->can_retake_quiz( $quiz->get_id(), $course->get_id() ) ||
 						$quiz->get_show_result() ) ) ) {
-				learn_press_get_template( 'content-question/explanation.php', array( 'question' => $question ) );
+				learn_press_get_template( 'content-question/explanation.php', array( 'explanation' => $explanation ) );
 			}
 		}
 	}
@@ -852,12 +861,13 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
+			$hint = $question->get_hint();
 
-			if ( ! $question->get_hint() || ! $user_quiz->has_hinted_question( $question->get_id() ) || $user_quiz->has_checked_question( $question->get_id() ) ) {
+			if ( ! $hint || ! $user_quiz->has_hinted_question( $question->get_id() ) || $user_quiz->has_checked_question( $question->get_id() ) ) {
 				return;
 			}
 
-			learn_press_get_template( 'content-question/hint.php', array( 'question' => $question ) );
+			learn_press_get_template( 'content-question/hint.php', array( 'hint' => $hint ) );
 		}
 
 	}
@@ -871,19 +881,26 @@ if ( ! function_exists( 'learn_press_content_item_summary_questions' ) ) {
 	function learn_press_content_item_summary_questions() {
 		return;
 		$quiz = LP_Global::course_item_quiz();
+
 		if ( $questions = $quiz->get_questions() ) {
 			$course      = LP_Global::course();
 			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
 			global $lp_quiz_question;
+
 			foreach ( $questions as $question_id ) {
 				$question         = LP_Question::get_question( $question_id );
 				$lp_quiz_question = $question;
 
+				$title = $question->get_title( 'display' );
+				learn_press_get_template( 'content-question/title.php', array( 'title' => $title ) );
 
-				learn_press_get_template( 'content-question/title.php' );
-				learn_press_get_template( 'content-question/description.php' );
+				$content = $question->get_content();
+				if ( $content ) {
+					learn_press_get_template( 'content-question/description.php', array( 'content' => $content ) );
+				}
+
 				$question->render( $quiz_data->get_question_answer( $question->get_id() ) );
 				//learn_press_get_template('single-course/content-item-lp_quiz.php');
 			}
@@ -1116,11 +1133,16 @@ if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 		$quiz     = LP_Global::course_item_quiz();
 		$question = LP_Global::quiz_question();
 
+		if ( ! $quiz ) {
+			return;
+		}
+
 		if ( ! $quiz->is_viewing_question() ) {
 			return;
 		}
 
-		if ( ! $question->get_hint() ) {
+		$hint = $question->get_hint();
+		if ( ! $hint ) {
 			return;
 		}
 
@@ -1138,7 +1160,7 @@ if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 			return;
 		}
 
-		learn_press_get_template( 'content-quiz/buttons/hint.php' );
+		learn_press_get_template( 'content-quiz/buttons/hint.php', array( 'hint' => $hint ) );
 	}
 }
 
@@ -3017,10 +3039,10 @@ if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
 		}
 
 		$args = array(
-			'course'       => $course,
-			'item'         => $item,
-			'completed'    => $completed,
-			'security'     => $security,
+			'course'    => $course,
+			'item'      => $item,
+			'completed' => $completed,
+			'security'  => $security,
 		);
 
 		learn_press_get_template( 'content-lesson/button-complete.php', $args );

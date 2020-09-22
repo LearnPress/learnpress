@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -14,13 +14,9 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $quiz = LP_Global::course_item_quiz() ) {
-	return;
-}
-
-if ( ! $question = LP_Global::quiz_question() ) {
+if ( ! isset( $title ) ) {
 	return;
 }
 ?>
 
-<h4 class="question-title"><?php echo $question->get_title( 'display' ); ?></h4>
+<h4 class="question-title"><?php echo $title; ?></h4>

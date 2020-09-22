@@ -126,11 +126,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Debug log.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param $data
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public static function log( $data ) {
 			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
@@ -165,9 +165,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Save question data.
 		 *
+		 * @return int|object|WP_Error
 		 * @since 3.0.0
 		 *
-		 * @return int|object|WP_Error
 		 */
 		public function save() {
 
@@ -676,7 +676,21 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					break;
 			}
 
-			learn_press_get_template( 'content-question/' . $type . '/answer-options.php', array( 'question' => $this ) );
+			$answers = $this->get_answers();
+
+			if ( ! $answers ) {
+				return;
+			}
+
+			$quiz = LP_Global::course_item_quiz();
+			$this->setup_data( $quiz->get_id() );
+
+			$args = array(
+				'question' => $this,
+				'answers'  => $answers,
+			);
+
+			learn_press_get_template( 'content-question/' . $type . '/answer-options.php', $args );
 		}
 
 		public function setup_data( $quiz_id, $course_id = 0, $user_id = 0 ) {
@@ -757,9 +771,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *          - $obj->a->b
 		 *          - or $obj->a['b']
 		 *
-		 * @param   null $key     string  Single or multiple level such as a.b.c
-		 * @param   null $default mixed   Return a default value if the key does not exists or is empty
-		 * @param   null $func    string  The function to apply the result before return
+		 * @param null $key     string  Single or multiple level such as a.b.c
+		 * @param null $default mixed   Return a default value if the key does not exists or is empty
+		 * @param null $func    string  The function to apply the result before return
 		 *
 		 * @return  mixed|null
 		 */
@@ -891,11 +905,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get answer at position
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param int $at
 		 *
 		 * @return LP_Question_Answer_Option|mixed
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_answer_at( $at ) {
 			return $this->get_answers()->get_answer_at( $at );
@@ -988,8 +1002,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get the question class name.
 		 *
-		 * @param  WP_Post $the_question
-		 * @param  array   $args (default: array())
+		 * @param WP_Post $the_question
+		 * @param array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -1010,7 +1024,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get question class from question type.
 		 *
-		 * @param  string $question_type
+		 * @param string $question_type
 		 *
 		 * @return string|false
 		 */
@@ -1026,12 +1040,12 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get the question object.
 		 *
+		 * @param mixed $the_question
+		 *
+		 * @return WP_Post|bool false on failure
+		 * @uses   WP_Post
 		 * @since  3.0.0
 		 *
-		 * @param  mixed $the_question
-		 *
-		 * @uses   WP_Post
-		 * @return WP_Post|bool false on failure
 		 */
 		private static function get_question_object( $the_question ) {
 			if ( false === $the_question ) {

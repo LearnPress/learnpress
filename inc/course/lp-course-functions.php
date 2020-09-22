@@ -26,6 +26,7 @@ function learn_press_get_course( $the_course = false, $args = '' ) {
 
 	return LP_Course::get_course( $the_course, $args );
 
+	// Todo: remove below code - tungnx
 	if ( is_numeric( $the_course ) ) {
 		if ( false !== ( $course = learn_press_get_course_by_id( $the_course ) ) ) {
 			return $course;
