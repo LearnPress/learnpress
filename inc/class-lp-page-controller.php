@@ -51,6 +51,10 @@ class LP_Page_Controller {
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
+
+		// Yoast seo
+		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 2 );
+		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 2 );
 	}
 
 	/**
@@ -79,17 +83,7 @@ class LP_Page_Controller {
 			$flag_title_course = true;
 		} elseif ( learn_press_is_course() ) {
 			if ( $item = LP_Global::course_item() ) {
-				$title = join(
-					' ',
-					apply_filters(
-						'learn-press/document-course-title-parts',
-						array(
-							get_the_title(),
-							" &rarr; ",
-							$item->get_title()
-						)
-					)
-				);
+				$title = apply_filters( 'learn-press/document-course-title-parts', get_the_title() . " &rarr; " . $item->get_title(), $item );
 
 				$flag_title_course = true;
 			}
@@ -133,6 +127,21 @@ class LP_Page_Controller {
 		}
 
 		return apply_filters( 'learn-press/title-page', $title );
+	}
+
+	public function lp_desc_item_yoast_seo( $desc, $tpresentation ) {
+		if ( learn_press_is_course() ) {
+
+			$item = LP_Global::course_item();
+
+			if ( empty( $item ) ) {
+				return $desc;
+			}
+
+			$desc = get_post_meta( $item->get_id(), '_yoast_wpseo_metadesc', true );
+		}
+
+		return $desc;
 	}
 
 	public function maybe_redirect_quiz( $template ) {

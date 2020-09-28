@@ -165,7 +165,8 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 			 * @author hungkv
 			 * @since  3.2.7.7
 			 */
-			if ( $course->expires_to_milliseconds() > 0 && $course->is_block_item_content_duration() === true ) {
+			if ( ! $course->is_block_item_content_duration() ||
+				( $course->is_block_item_content_duration() && $course->expires_to_milliseconds() > 0 ) ) {
 				return;
 			}
 		}
@@ -861,7 +862,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
-			$hint = $question->get_hint();
+			$hint        = $question->get_hint();
 
 			if ( ! $hint || ! $user_quiz->has_hinted_question( $question->get_id() ) || $user_quiz->has_checked_question( $question->get_id() ) ) {
 				return;
