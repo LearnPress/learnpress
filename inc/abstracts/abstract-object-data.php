@@ -182,7 +182,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		public function get_data( $name = '', $default = '' ) {
 			if ( is_string( $name ) && $name ) {
-				// Check in data first then check in extra data
 				return array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
 						( array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default );
 			} elseif ( is_array( $name ) ) {
@@ -220,7 +219,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		public function get_extra_data( $name = '', $default = '' ) {
 			if ( is_string( $name ) ) {
-				// Check in data first then check in extra data
 				return array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default;
 			} elseif ( is_array( $name ) ) {
 				$data = array();
@@ -296,7 +294,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $value
 		 */
 		public function set_data_date( $key, $value ) {
-			if ( /*LP_Datetime::getSqlNullDate() !== $value && ?*/ ! $value instanceof LP_Datetime ) {
+			if ( ! $value instanceof LP_Datetime ) {
 				$value = new LP_Datetime( $value );
 			}
 
@@ -308,7 +306,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $value
 		 */
 		protected function _set_data_date( $key, $value, $extra = false ) {
-			if ( /*LP_Datetime::getSqlNullDate() !== $value &&*/ ! $value instanceof LP_Datetime ) {
+			if ( ! $value instanceof LP_Datetime ) {
 				$value = new LP_Datetime( $value );
 			}
 
@@ -330,9 +328,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			$errors = array_keys( $data );
 			foreach ( $data as $prop => $value ) {
 				$setter = "set_$prop";
-				if ( /*! is_null( $value ) && */
-				is_callable( array( $this, $setter ) )
-				) {
+				if ( is_callable( array( $this, $setter ) ) ) {
 					$reflection = new ReflectionMethod( $this, $setter );
 
 					if ( $reflection->isPublic() ) {
@@ -427,7 +423,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return array
 		 */
 		public function get_supports() {
-			return LP_Global::get_object_supports( $this->object_type );// $this->_supports;
+			return LP_Global::get_object_supports( $this->object_type );
 		}
 
 		/**

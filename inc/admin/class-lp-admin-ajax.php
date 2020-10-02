@@ -910,15 +910,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 
 				$page_id = LP_Helper::create_page( isset( $page_names[ $id ] ) ? $page_names[ $id ] : ucfirst( $id ), $id );
-
-				// Add profile link into admin bar
-				if ( $page_id && $id == 'profile' ) {
-					LP_Settings::update_option( 'admin_bar_link', 'yes' );
-				}
 			}
+
 			LP()->flush_rewrite_rules();
 
-			echo __( 'The required pages are successfully created.', 'learnpress' );
+			echo esc_html__( 'The required pages are successfully created.', 'learnpress' );
+
 			die();
 		}
 

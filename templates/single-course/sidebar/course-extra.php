@@ -6,18 +6,18 @@ if ( ! isset( $type ) || ! isset( $content ) ) {
 ?>
 <div class="course-extras style-checks <?php echo $type; ?>">
 	<?php if ( isset( $title ) ) { ?>
-        <h4 class="course-extras__title"><?php echo esc_html( $title ); ?></h4>
+		<h4 class="course-extras__title"><?php echo esc_html( $title ); ?></h4>
 	<?php } ?>
 
-    <div class="course-extras__content">
+	<div class="course-extras__content">
 		<?php if ( is_array( $content ) ) { ?>
-            <ul>
+			<ul>
 				<?php foreach ( $content as $line ) { ?>
-                    <li><?php echo $line; ?></li>
+					<li><?php echo $line; ?></li>
 				<?php } ?>
-            </ul>
+			</ul>
 		<?php } else { ?>
 			<?php echo $content; ?>
 		<?php } ?>
-    </div>
+	</div>
 </div>

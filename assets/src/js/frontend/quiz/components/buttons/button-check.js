@@ -1,48 +1,63 @@
+import classNames from 'classnames';
+
 import { Component } from '@wordpress/element';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { _x } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 class ButtonCheck extends Component {
-	/**
-	 * Callback to check question answer
-	 */
-	checkAnswer = () => {
-		const {
-			checkAnswer,
-			question,
-		} = this.props;
+	constructor() {
+		super( ...arguments );
 
-		checkAnswer( question.id );
+		this.state = {
+			loading: false,
+		};
+	}
+
+	checkAnswer = () => {
+		const { checkAnswer, question, answered } = this.props;
+
+		if ( answered ) {
+			checkAnswer( question.id );
+
+			this.setState( {
+				loading: true,
+			} );
+		}
 	};
 
 	render() {
 		const { answered } = this.props;
 
 		return (
-			<button className="lp-button instant-check"
-				onClick={ this.checkAnswer }
-				disabled={ ! answered }>
-				{ _x( 'Check answer', 'label of button check answer', 'learnpress' ) }
-			</button>
+			<>
+				<button className={ classNames( 'lp-button', 'instant-check', {
+					loading: this.state.loading,
+					disable: ! answered,
+				} ) } onClick={ this.checkAnswer }
+				>
+					<span className="instant-check__icon" />
+					{ _x( 'Check answer', 'label of button check answer', 'learnpress' ) }
+
+					{ ! answered && (
+						<div className="instant-check__info" dangerouslySetInnerHTML={ { __html: __( 'You need to answer the question before check answer.', 'learnpress' ) } } />
+					) }
+				</button>
+			</>
 		);
 	}
 }
 
 export default compose(
 	withSelect( ( select, { question: { id } } ) => {
-		const {
-			getQuestionAnswered,
-		} = select( 'learnpress/quiz' );
+		const { getQuestionAnswered } = select( 'learnpress/quiz' );
 
 		return {
 			answered: getQuestionAnswered( id ),
 		};
 	} ),
 	withDispatch( ( dispatch, { id } ) => {
-		const {
-			checkAnswer,
-		} = dispatch( 'learnpress/quiz' );
+		const { checkAnswer } = dispatch( 'learnpress/quiz' );
 
 		return {
 			checkAnswer( id ) {

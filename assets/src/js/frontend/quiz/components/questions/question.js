@@ -4,6 +4,7 @@ import { compose } from '@wordpress/compose';
 import { __, sprintf } from '@wordpress/i18n';
 import Buttons from './buttons';
 import { MaybeShowButton } from '../buttons';
+import { default as ButtonCheck } from '../buttons/button-check';
 import { default as ButtonHint } from '../buttons/button-hint';
 
 const $ = window.jQuery;
@@ -55,10 +56,7 @@ class Question extends Component {
 	};
 
 	getWrapperClass = () => {
-		const {
-			question,
-			answered,
-		} = this.props;
+		const { question, answered } = this.props;
 
 		const classes = [ 'question', 'question-' + question.type ];
 		const options = this.parseOptions( question.options );
@@ -180,7 +178,7 @@ class Question extends Component {
 
 			buttons: () => {
 				return (
-					( 'started' === status ) /*&& (questionsPerPage > 1)*/ && <Buttons question={ question } />
+					( 'started' === status ) && <Buttons question={ question } />
 				);
 			},
 		};
@@ -212,7 +210,6 @@ export default compose( [
 		const {
 			getData,
 			getQuestionAnswered,
-			//isCorrect,
 		} = select( 'learnpress/quiz' );
 
 		return {
@@ -221,7 +218,6 @@ export default compose( [
 			answered: getQuestionAnswered( id ),
 			questionsRendered: getData( 'questionsRendered' ),
 			editPermalink: getData( 'editPermalink' ),
-			//isCorrect: isCorrect(id),
 			numPages: getData( 'numPages' ),
 		};
 	} ),

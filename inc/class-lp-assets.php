@@ -80,7 +80,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'button_yes'    => __( 'Yes', 'learnpress' ),
 					'button_no'     => __( 'No', 'learnpress' ),
 				),
-				'lp_rest_url'         => get_rest_url(),
+				'lp_rest_url' => get_rest_url(),
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'              => home_url(),

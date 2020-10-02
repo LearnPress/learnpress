@@ -93,10 +93,8 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-
 (function ($, settings) {
-  "use strict";
+  'use strict';
 
   if (window.LP === undefined) {
     window.LP = {};
@@ -218,7 +216,7 @@
      * Callback function for submitting form.
      *
      * @param e
-     * @returns {boolean}
+     * @return {boolean}
      * @private
      */
 
@@ -278,7 +276,7 @@
                 window.location = response.redirect;
               }
             } else {
-              throw "ERROR";
+              throw 'ERROR';
             }
           } catch (error) {// if (!response.messages) {
             //     showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
@@ -331,6 +329,8 @@
     /**
      * Append messages into document.
      *
+     * @param message
+     * @param wrap
      * @param messages
      */
 
@@ -348,14 +348,13 @@
           $formCheckout.prepend(msg);
         });
         return;
-      } else {
-        if (wrap) {
-          message = '<div class="learn-press-message ' + (typeof wrap === 'string' ? wrap : '') + '">' + message + '</div>';
-        }
-
-        $formCheckout.prepend(message);
       }
 
+      if (wrap) {
+        message = '<div class="learn-press-message ' + (typeof wrap === 'string' ? wrap : '') + '">' + message + '</div>';
+      }
+
+      $formCheckout.prepend(message);
       $('html, body').animate({
         scrollTop: $formCheckout.offset().top - 100
       }, 1000);

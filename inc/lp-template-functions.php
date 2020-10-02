@@ -779,6 +779,7 @@ function learn_press_remove_message( $id = '', $type = '' ) {
 function learn_press_print_messages( $clear = true ) {
 	$messages = learn_press_session_get( learn_press_session_message_id() );
 	learn_press_get_template( 'global/message.php', array( 'messages' => $messages ) );
+
 	if ( $clear ) {
 		learn_press_session_set( learn_press_session_message_id(), array() );
 	}
@@ -1075,7 +1076,6 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 	 * Disable override templates in theme by default since LP 4.0.0
 	 */
 	if ( learn_press_override_templates() ) {
-		// Look within passed path within the theme - this is priority
 		$template = locate_template(
 			array(
 				trailingslashit( $template_path ) . $template_name,
@@ -1084,12 +1084,10 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 		);
 	}
 
-	// Get default template
 	if ( ! isset( $template ) || ! $template ) {
 		$template = trailingslashit( $default_path ) . $template_name;
 	}
 
-	// Return what we found
 	return apply_filters( 'learn_press_locate_template', $template, $template_name, $template_path );
 }
 
@@ -2323,5 +2321,5 @@ function learn_press_get_checkout_proceed_button_text() {
  *
  */
 function learn_press_profile_logout_slug() {
-	return apply_filters( 'learn-press/profile-logout-slug', 'logout' );
+	return apply_filters( 'learn-press/profile-logout-slug', 'lp-logout' );
 }

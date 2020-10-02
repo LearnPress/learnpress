@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
 /**
@@ -18,4 +18,4 @@ if ( ! isset( $item ) ) {
 	return;
 } ?>
 
-<span class="item-name"><?php echo $item->get_title( 'display' ); ?></span>
+<span class="item-name"><?php echo esc_html( $item->get_title( 'display' ) ); ?></span>

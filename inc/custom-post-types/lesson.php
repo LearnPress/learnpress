@@ -331,8 +331,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @return array
 		 */
 		public function columns_head( $columns ) {
-
-			// append new column after title column
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
 				'instructor'  => esc_html__( 'Author', 'learnpress' ),

@@ -54,6 +54,14 @@ function learn_press_get_theme_name( $folder ) {
 	return ! empty( $theme['Name'] ) ? $theme['Name'] : '';
 }
 
+function learnpress_clean( $var ) {
+	if ( is_array( $var ) ) {
+		return array_map( 'learnpress_clean', $var );
+	} else {
+		return is_scalar( $var ) ? sanitize_text_field( $var ) : $var;
+	}
+}
+
 /**
  * Display HTML of element for building QuickTip JS.
  *
@@ -296,7 +304,7 @@ function learn_press_get_current_url() {
 	if ( ! $current_url ) {
 		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
 		if ( ! preg_match( '!^https?!', $url ) ) {
-			$siteurl    = trailingslashit( get_home_url() /* SITE_URL */ );
+			$siteurl    = trailingslashit( get_home_url() );
 			$home_query = '';
 
 			if ( strpos( $siteurl, '?' ) !== false ) {
@@ -1652,7 +1660,6 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 	);
 
 	if ( ! $error ) {
-
 		$args = wp_parse_args(
 			$args,
 			array(
@@ -1683,23 +1690,28 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 
 		$fields         = learn_press_get_become_a_teacher_form_fields();
 		$default_fields = array( 'bat_name', 'bat_email', 'bat_phone', 'bat_message' );
+
 		foreach ( $fields as $key => $field ) {
 			if ( isset( $_POST[ $key ] ) ) {
 				$fields[ $key ]['value'] = $_POST[ $key ];
 			}
 		}
+
 		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields, $user );
+
 		if ( ! $notify_message ) {
 			$notify_message  = sprintf( __( 'The user <a href="%1$s">%2$s</a> wants to become a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->get_id() ), $user->user_login ) . "\r\n";
 			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Message: %s', 'learnpress' ), $args['message'] ) . "\r\n";
+
 			foreach ( $fields as $key => $field ) {
 				if ( ! in_array( $key, $default_fields ) ) {
 					$notify_message .= $field['title'] . ': ' . ( isset( $field['value'] ) ? $field['value'] : '' ) . "\r\n";
 				}
 			}
+
 			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->get_id() ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
 		}
 
@@ -1711,6 +1723,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		);
 
 		@call_user_func_array( 'wp_mail', $args );
+
 		$return['message'][] = learn_press_get_message( __( 'Your request has been sent! We will get back to you soon!', 'learnpress' ) );
 
 		set_transient( 'learn_press_become_teacher_sent_' . $user->get_id(), 'yes', HOUR_IN_SECONDS * 2 );
@@ -1730,17 +1743,10 @@ function learn_press_become_teacher_sent( $user_id = 0 ) {
 }
 
 function _learn_press_translate_user_roles( $translations, $text, $context, $domain ) {
-
 	$plugin_domain = 'learnpress';
-	$roles         = array(
-		'LP Instructor',
-	);
+	$roles         = array( 'LP Instructor' );
 
-	if (
-		$context === 'User role'
-		&& in_array( $text, $roles )
-		&& $domain !== $plugin_domain
-	) {
+	if ( $context === 'User role' && in_array( $text, $roles ) && $domain !== $plugin_domain ) {
 		return translate_with_gettext_context( $text, $context, $plugin_domain );
 	}
 
@@ -2062,7 +2068,9 @@ if ( ! function_exists( 'learn_press_is_quiz' ) ) {
  * @return bool
  */
 function learn_press_is_profile() {
-	if ( ( $page_id = learn_press_get_page_id( 'profile' ) ) && is_page( $page_id ) ) {
+	$page_id = learn_press_get_page_id( 'profile' );
+
+	if ( $page_id && is_page( $page_id ) ) {
 		return true;
 	}
 
@@ -2075,7 +2083,9 @@ function learn_press_is_profile() {
  * @return bool
  */
 function learn_press_is_checkout() {
-	if ( ( $page_id = learn_press_get_page_id( 'checkout' ) ) && is_page( $page_id ) ) {
+	$page_id = learn_press_get_page_id( 'checkout' );
+
+	if ( $page_id && is_page( $page_id ) ) {
 		return true;
 	}
 
@@ -3778,23 +3788,27 @@ function learn_press_count_instructor_users( $instructor_id ) {
 	$own_courses = $curd->query_own_courses( $instructor_id );
 	$course_ids  = $own_courses->get_items();
 
-	$query = $wpdb->prepare(
-		"
-        SELECT COUNT(user_id)
-		FROM (
-			SELECT item_id, user_id
-			FROM {$wpdb->learnpress_user_items}
-			WHERE item_type = %s
-			GROUP BY item_id, user_id
-			HAVING item_id IN(" . join( ',', $course_ids ) . ')
-		) X
-		GROUP BY item_id
-    ',
-		LP_COURSE_CPT
-	);
+	if ( ! empty( $course_ids ) ) {
+		$query = $wpdb->prepare(
+			"
+			SELECT COUNT(user_id)
+			FROM (
+				SELECT item_id, user_id
+				FROM {$wpdb->learnpress_user_items}
+				WHERE item_type = %s
+				GROUP BY item_id, user_id
+				HAVING item_id IN(" . join( ',', $course_ids ) . ')
+			) X
+			GROUP BY item_id
+		',
+			LP_COURSE_CPT
+		);
 
-	if ( $rows = $wpdb->get_col( $query ) ) {
-		return array_sum( $rows );
+		$rows = $wpdb->get_col( $query );
+
+		if ( $rows ) {
+			return array_sum( $rows );
+		}
 	}
 
 	return 0;

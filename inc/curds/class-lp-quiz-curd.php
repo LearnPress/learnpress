@@ -37,7 +37,6 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * @throws Exception
 		 */
 		public function load( &$quiz ) {
-			// quiz id
 			$id = $quiz->get_id();
 			if ( ! $id || learn_press_get_post_type( $id ) !== LP_QUIZ_CPT ) {
 
@@ -57,7 +56,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					//'archive_history'      => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
 					//'count_hint'           => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
 					'pagination'         => get_post_meta( $quiz->get_id(), '_lp_pagination', true ),
-					'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
+					'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review', true ),
 					'preview'            => get_post_meta( $quiz->get_id(), '_lp_preview', true ),
 					//'minus_points'         => get_post_meta( $quiz->get_id(), '_lp_minus_points', true ),
 					//'minus_skip_questions' => get_post_meta( $quiz->get_id(), '_lp_minus_skip_questions', true ),
@@ -67,8 +66,6 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					'retry'            => get_post_meta( $quiz->get_id(), '_lp_retry', true ),
 				)
 			);
-			//$this->_load_questions( $quiz );
-			//$this->_update_meta_cache( $quiz );
 
 			return $quiz;
 		}
@@ -252,8 +249,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 			$query = $this->prepare( "
 				SELECT question_id
-				FROM {$wpdb->posts} p 
-				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.quiz_id = p.ID 
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.quiz_id = p.ID
 				INNER JOIN {$wpdb->posts} q ON qq.question_id = q.ID AND q.post_status <> %s
 				AND p.ID = %d
 				AND p.post_status IN(" . join( ',', $format ) . ")
@@ -291,7 +288,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT ID
-				FROM {$wpdb->posts} p 
+				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.quiz_id = p.ID
 				WHERE qq.question_id = %d
 			", $question_id );
@@ -312,8 +309,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			}
 
 			$query = $wpdb->prepare( "
-				SELECT ID, post_title, post_content, post_status, post_type, post_author, post_date, post_name 
-				FROM {$wpdb->posts} p 
+				SELECT ID, post_title, post_content, post_status, post_type, post_author, post_date, post_name
+				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
 				WHERE qq.quiz_id = %d
 				AND p.post_status = %s
@@ -439,7 +436,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				}
 			} else {
 				$query = "
-				UPDATE {$wpdb->learnpress_quiz_questions} 
+				UPDATE {$wpdb->learnpress_quiz_questions}
 				SET question_order = CASE
 			";
 				for ( $order = 0, $n = sizeof( $questions ); $order < $n; $order ++ ) {
@@ -552,8 +549,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			$questions_ids = implode( ', ', $ids );
 
 			$query = $wpdb->prepare( "
-			SELECT quiz_question_id 
-			FROM {$wpdb->learnpress_quiz_questions} 
+			SELECT quiz_question_id
+			FROM {$wpdb->learnpress_quiz_questions}
 			WHERE question_id IN( " . join( ',', $format ) . " )
 				AND quiz_id = %d
 		", $questions_ids, $the_id );

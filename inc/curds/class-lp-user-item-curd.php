@@ -30,9 +30,11 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$quiz ) {
 		$the_id = $quiz->get_id();
+
 		if ( ! $the_id || LP_QUIZ_CPT !== learn_press_get_post_type( $the_id ) ) {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
+
 		$quiz->set_data_via_methods(
 			array(
 				'retry'              => get_post_meta( $quiz->get_id(), '_lp_retry', true ),
@@ -44,9 +46,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				//'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
 				//'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
 				//'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
-				'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
+				'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review', true ),
 			)
 		);
+
 		$this->_load_questions( $quiz );
 		$this->_update_meta_cache( $quiz );
 
@@ -82,7 +85,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			$questions = array();
 			$query     = $wpdb->prepare( "
 				SELECT p.*, qq.question_order AS `order`
-				FROM {$wpdb->posts} p 
+				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
 				WHERE qq.quiz_id = %d
 				AND p.post_status = %s
@@ -280,7 +283,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 		} else {
 			$query = "
-				UPDATE {$wpdb->learnpress_quiz_questions} 
+				UPDATE {$wpdb->learnpress_quiz_questions}
 				SET question_order = CASE
 			";
 			for ( $order = 0, $n = sizeof( $questions ); $order < $n; $order ++ ) {
@@ -380,8 +383,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		$args   = $ids;
 		$args[] = $the_id;
 		$query  = $wpdb->prepare( "
-			SELECT quiz_question_id 
-			FROM {$wpdb->learnpress_quiz_questions} 
+			SELECT quiz_question_id
+			FROM {$wpdb->learnpress_quiz_questions}
 			WHERE question_id IN( " . join( ',', $format ) . " )
 				AND quiz_id = %d
 		", $args );

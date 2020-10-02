@@ -1,43 +1,44 @@
 #learn-press-item-comments {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #FFF;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: #fff;
 
-    > label {
-        margin: 0;
-        position: absolute;
-        right: 10px;
-        top: -50px;
-        border: 1px solid #DDD;
-        padding: 0 10px;
-        z-index: 1000000000;
-        height: 40px;
-        line-height: 40px;
-        font-weight: normal;
-    }
+	> label {
+		position: absolute;
+		z-index: 1000000000;
+		top: -50px;
+		right: 10px;
+		height: 40px;
+		margin: 0;
+		padding: 0 10px;
+		border: 1px solid #ddd;
+		font-weight: normal;
+		line-height: 40px;
+	}
 
-    .learn-press-comments {
-        display: none;
-        width: 800px;
-        margin: 20px auto;
-        max-width: 90%;
-        padding: 50px;
-    }
+	.learn-press-comments {
+		display: none;
+		width: 800px;
+		max-width: 90%;
+		margin: 20px auto;
+		padding: 50px;
+	}
 }
 
 #learn-press-item-comments-toggle {
-    &:checked + #learn-press-item-comments {
-        top: 0;
 
-        > label {
-            color: #FF0;
-            top: 10px;
-        }
+	&:checked + #learn-press-item-comments {
+		top: 0;
 
-        .learn-press-comments {
-            display: block;
-        }
-    }
+		> label {
+			top: 10px;
+			color: #ff0;
+		}
+
+		.learn-press-comments {
+			display: block;
+		}
+	}
 }

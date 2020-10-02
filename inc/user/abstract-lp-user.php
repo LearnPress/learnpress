@@ -182,7 +182,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function has_checked_question( $question_id, $quiz_id, $course_id = 0 ) {
 			$checked = false;
-			if ( $data = $this->get_quiz_data( $quiz_id, $course_id ) ) {
+
+			if ( $this->get_quiz_data( $quiz_id, $course_id ) ) {
+				$data    = $this->get_quiz_data( $quiz_id, $course_id );
 				$checked = $data->has_checked_question( $question_id );
 			}
 
@@ -818,8 +820,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$grade = false;
 
 			$course_data = $this->get_course_data( $course_id );
+			$item_result = $course_data->get_item_result( $item_id, false );
 
-			if ( $course_data && $item_result = $course_data->get_item_result( $item_id, false ) ) {
+			if ( $course_data && $item_result ) {
 				$grade = isset( $item_result['graduation'] ) ? $item_result['graduation'] : false;
 			}
 
@@ -1185,12 +1188,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 			$key = $this->get_id() . '-' . $course_id . '-' . $quiz_id;
 
-			$cached = LP_Cache::get_quiz_history( false, array() );// LP_Object_Cache::get( 'user-quiz-history', 'learnpress' );
+			$cached = LP_Cache::get_quiz_history( false, array() );
 
 			if ( ( ! array_key_exists( $key, $cached ) || $force ) && $quizzes && in_array( $quiz_id, $quizzes ) ) {
 				global $wpdb;
-				$t1             = $wpdb->learnpress_user_items; // {$wpdb->learnpress_user_quizzes}
-				$t2             = $wpdb->learnpress_user_itemmeta; // {$wpdb->learnpress_user_quizzes}
+				$t1             = $wpdb->learnpress_user_items;
+				$t2             = $wpdb->learnpress_user_itemmeta;
 				$in             = array_fill( 0, sizeof( $quizzes ), '%d' );
 				$prepare_params = array_merge(
 					array( 'lp_quiz', $this->get_id(), $course_id ),
@@ -2841,7 +2844,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$quiz_id = $this->get_quiz_by_question( $question_id );
 			}
 			if ( $quiz_id ) {
-				if ( $question = LP_Question::get_question( $question_id ) ) {
+				$question = LP_Question::get_question( $question_id );
+
+				if ( $question ) {
 					$quiz_results = $this->get_quiz_results( $quiz_id );
 					if ( ! empty( $quiz_results->question_answers ) ) {
 						$question_answer = array_key_exists( $question_id, $quiz_results->question_answers ) ? $quiz_results->question_answers[ $question_id ] : null;
@@ -2971,22 +2976,19 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				'reviews'  => sprintf( __( '<span class="meta-number">%d</span> reviews', 'learnpress' ), 4 ),
 			);
 
-			// if ( $extra_info = learn_press_get_user_extra_profile_info() ) {
-			// foreach ( $extra_info as $k => $v ) {
-			// $meta[ $k ] = sprintf( '<a href="%s"><i class="fa fa-%s"></i></a>', $v, $k );
-			// }
-			// }
-
 			return apply_filters( 'learn-press/user-profile-meta', $meta, $this->get_id(), $this );
 		}
 
 		public function get_profile_socials() {
-			$socials = array();
-			if ( $extra_info = learn_press_get_user_extra_profile_info() ) {
+			$socials    = array();
+			$extra_info = learn_press_get_user_extra_profile_info();
+
+			if ( $extra_info ) {
 				foreach ( $extra_info as $k => $v ) {
 					if ( empty( $v ) ) {
 						continue;
 					}
+
 					switch ( $k ) {
 						case 'facebook':
 							$i = '<i class="fab fa-facebook-f"></i>';
@@ -3005,7 +3007,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 
 					$icon          = apply_filters( 'learn-press/user-profile-social-icon', $i, $k, $this->get_id(), $this );
-					$socials[ $k ] = sprintf( '<a href="%s">%s</a>', $v, $icon );
+					$socials[ $k ] = sprintf( '<a href="%s">%s</a>', esc_url( $v ), $icon );
 				}
 			}
 
@@ -3030,12 +3032,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				'any'
 			);
 
-			// return apply_filters( 'learn-press/user-can-access-course', $accessible, $course_id, $user_id );
-			// $return = apply_filters( 'learn-press/user-can-access-course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
 			$accessible = apply_filters( 'learn-press/user-can-access-course', $accessible, $course_id, $this->get_id() );
-
-			// Deprecated since 3.0.0
-			$accessible = apply_filters( 'learn_press_user_can_access_course', $accessible, $course_id, $this->get_id() );
 
 			return $accessible;
 		}
@@ -3105,9 +3102,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return string|bool
 		 */
 		public function get_course_grade( $course_id ) {
-			$grade = false;
+			$grade       = false;
+			$course_data = $this->get_course_data( $course_id );
 
-			if ( $course_data = $this->get_course_data( $course_id ) ) {
+			if ( $course_data ) {
 				$grade = $course_data->get_grade();
 			}
 

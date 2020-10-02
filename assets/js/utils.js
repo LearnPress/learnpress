@@ -469,8 +469,6 @@ var IframeSubmit = function IframeSubmit(form) {
     $iframe = $('<iframe />').appendTo(document.body).attr({
       name: iframeId,
       src: '#'
-    }).on('load', function () {
-      console.log('Loaded');
     });
   }
 
@@ -534,10 +532,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var $ = jQuery;
 
 String.prototype.getQueryVar = function (name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
       results = regex.exec(this);
-  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
 String.prototype.addQueryVar = function (name, value) {
@@ -548,13 +546,11 @@ String.prototype.addQueryVar = function (name, value) {
   if (name.match(/\[/)) {
     url += url.match(/\?/) ? '&' : '?';
     url += name + '=' + value;
+  } else if (url.indexOf('&' + name + '=') != -1 || url.indexOf('?' + name + '=') != -1) {
+    url = url.replace(new RegExp(name + '=([^&#]*)', 'g'), name + '=' + value);
   } else {
-    if (url.indexOf('&' + name + '=') != -1 || url.indexOf('?' + name + '=') != -1) {
-      url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
-    } else {
-      url += url.match(/\?/) ? '&' : '?';
-      url += name + '=' + value;
-    }
+    url += url.match(/\?/) ? '&' : '?';
+    url += name + '=' + value;
   }
 
   return url + (m[1] ? '#' + m[1] : '');
@@ -564,13 +560,13 @@ String.prototype.removeQueryVar = function (name) {
   var url = this;
   var m = url.split('#');
   url = m[0];
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '([\[][^=]*)?=([^&#]*)', 'g');
   url = url.replace(regex, '');
   return url + (m[1] ? '#' + m[1] : '');
 };
 
-if ($.isEmptyObject("") == false) {
+if ($.isEmptyObject('') == false) {
   $.isEmptyObject = function (a) {
     var prop;
 
@@ -643,7 +639,7 @@ var _default = {
       response = m[1];
     }
 
-    return (type || "json") === "json" ? this.parseJSON(response) : response;
+    return (type || 'json') === 'json' ? this.parseJSON(response) : response;
   },
   parseJSON: function parseJSON(data) {
     if (typeof data !== 'string') {
@@ -784,9 +780,9 @@ var _default = {
 
       if (fullyInView === true) {
         return pageTop < elementTop && pageBottom > elementBottom;
-      } else {
-        return elementTop <= pageBottom && elementBottom >= pageTop;
       }
+
+      return elementTop <= pageBottom && elementBottom >= pageTop;
     }
 
     if (args.invisible && isElementInView(element, true)) {
@@ -918,12 +914,12 @@ var _default = {
     if (typeof localize === 'string') {
       message = localize;
     } else {
-      if (typeof localize['title'] !== 'undefined') {
-        title = localize['title'];
+      if (typeof localize.title !== 'undefined') {
+        title = localize.title;
       }
 
-      if (typeof localize['message'] !== 'undefined') {
-        message = localize['message'];
+      if (typeof localize.message !== 'undefined') {
+        message = localize.message;
       }
     }
 
@@ -942,12 +938,12 @@ var _default = {
     if (typeof localize === 'string') {
       message = localize;
     } else {
-      if (typeof localize['title'] !== 'undefined') {
-        title = localize['title'];
+      if (typeof localize.title !== 'undefined') {
+        title = localize.title;
       }
 
-      if (typeof localize['message'] !== 'undefined') {
-        message = localize['message'];
+      if (typeof localize.message !== 'undefined') {
+        message = localize.message;
       }
     }
 
@@ -968,7 +964,7 @@ var _default = {
     }, 250);
   },
   _on_alert_hide: function _on_alert_hide() {
-    var $holder = $("#popup_container_placeholder"),
+    var $holder = $('#popup_container_placeholder'),
         $container = $holder.data('xxx');
 
     if ($container) {

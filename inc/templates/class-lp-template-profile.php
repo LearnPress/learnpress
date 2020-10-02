@@ -1,11 +1,10 @@
 <?php
-
 /**
  * Class LP_Profile_Template
  *
  * Group templates related user profile.
  *
- * @since 3.x.x
+ * @since 4.0.0
  */
 class LP_Template_Profile extends LP_Abstract_Template {
 	public function header( $user ) {
@@ -19,6 +18,12 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function sidebar() {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
 		learn_press_get_template( 'profile/sidebar.php' );
 	}
 
@@ -66,7 +71,6 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function dashboard_featured_courses() {
-
 		$user  = $this->get_user();
 		$query = new LP_Course_Query(
 			array(
@@ -95,12 +99,12 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/dashboard/latest-courses', (array) $query->get_courses() );
 	}
 
-
-
 	public function order_details() {
 		$profile = LP_Profile::instance();
 
-		if ( false === ( $order = $profile->get_view_order() ) ) {
+		$order = $profile->get_view_order();
+
+		if ( false === $order ) {
 			return;
 		}
 
@@ -109,34 +113,24 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 	public function order_recover() {
 		$profile = LP_Profile::instance();
+		$order   = $profile->get_view_order();
 
-		if ( false === ( $order = $profile->get_view_order() ) ) {
+		if ( false === $order ) {
 			return;
 		}
+
 		learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'order' => $order ) );
 	}
 
 	public function order_message() {
 		$profile = LP_Profile::instance();
+		$order   = $profile->get_view_order();
 
-		if ( false === ( $order = $profile->get_view_order() ) ) {
+		if ( false === $order ) {
 			return;
 		}
+
 		learn_press_get_template( 'profile/tabs/orders/order-message.php', array( 'order' => $order ) );
-	}
-
-	public function dashboard_logged_in() {
-		learn_press_get_template( 'profile/dashboard-logged-in.php' );
-	}
-
-	public function dashboard_user_bio() {
-		$profile = LP_Profile::instance();
-
-		if ( ! $user = $profile->get_user() ) {
-			return;
-		}
-
-		learn_press_get_template( 'profile/user-bio.php' );
 	}
 
 	public function dashboard_not_logged_in() {
@@ -146,7 +140,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( 'yes' === LP()->settings()->get( 'enable_register_profile' ) || 'yes' === LP()->settings()->get( 'enable_login_profile' ) ) {
+		if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) || 'yes' === LP()->settings()->get( 'enable_register_profile' ) ) {
 			return;
 		}
 
@@ -160,11 +154,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( ! $fields = $profile->get_login_fields() ) {
+		if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
+		$fields = $profile->get_login_fields();
+
+		if ( ! $fields ) {
 			return;
 		}
 
@@ -178,11 +174,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( ! $fields = $profile->get_register_fields() ) {
+		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+		$fields = $profile->get_register_fields();
+
+		if ( ! $fields ) {
 			return;
 		}
 

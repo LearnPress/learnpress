@@ -29,7 +29,7 @@ class LP_Duration {
 					'hour'   => 3600,
 					'day'    => 3600 * 24,
 					'week'   => 3600 * 24 * 7,
-					'month'  => 3600 * 30 // ???
+					'month'  => 3600 * 30,
 				);
 				$this->_duration = $m[1] * $s[ $m[2] ];
 			}
@@ -94,7 +94,7 @@ class LP_Duration {
 	 * @return int|string
 	 */
 	public function get_seconds( $leading_zero = false ) {
-		return $this->_duration < 10 && $leading_zero ? "0" . $this->_duration : $this->_duration;
+		return $this->_duration < 10 && $leading_zero ? '0' . $this->_duration : $this->_duration;
 	}
 
 	/**
@@ -131,7 +131,6 @@ class LP_Duration {
 		}
 
 		if ( $format ) {
-
 			foreach ( array( 'day', 'hour', 'minute', 'second' ) as $p ) {
 				if ( $remove_empty && array_key_exists( $p, $parts ) && intval( $parts[ $p ] ) == 0 ) {
 					unset( $parts[ $p ] );

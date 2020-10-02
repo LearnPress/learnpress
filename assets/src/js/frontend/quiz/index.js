@@ -60,7 +60,7 @@ class Quiz extends Component {
 		// Just render content if status !== undefined (meant all data loaded)
 		return (
 			undefined !== status && (
-				<React.Fragment>
+				<>
 					<MyContext.Provider value={ this.props }>
 						{ /*<div id="test-element">*/ }
 						{ /*I am TEST*/ }
@@ -84,6 +84,7 @@ class Quiz extends Component {
 							{ ! isReviewing && 'completed' === status && (
 								<Result />
 							) }
+
 							{ ! isReviewing && notStarted && <Meta /> }
 							{ ! isReviewing && notStarted && <Content /> }
 
@@ -97,7 +98,7 @@ class Quiz extends Component {
 							{ isA && ! isReviewing && <Attempts /> }
 						</div>
 					) }
-				</React.Fragment>
+				</>
 			)
 		);
 	}
@@ -113,7 +114,6 @@ export default compose( [
 			store: getData(),
 			answered: getData( 'answered' ),
 			isReviewing: getData( 'mode' ) === 'reviewing',
-			//hintCount: getData('showHint'),
 			questionIds: getData( 'questionIds' ),
 			checkCount: getData( 'instantCheck' ),
 			questionsPerPage: getData( 'questionsPerPage' ) || 1,

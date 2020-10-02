@@ -91,7 +91,7 @@ function _learn_press_restrict_view_items( $views ) {
 
 		if ( $result->found_posts > 0 ) {
 			$views[ $view ] = sprintf(
-				'<a href="%s"' . $class . '>' . __( $name, 'learnpress' ) . ' <span class="count">(%d)</span></a>',
+				'<a href="%s"' . $class . '>' . $name . ' <span class="count">(%d)</span></a>',
 				esc_url( add_query_arg( $query, $url ) ),
 				$result->found_posts
 			);

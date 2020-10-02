@@ -9,9 +9,6 @@
  * @extends  LP_Abstract_Shortcode
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
@@ -36,11 +33,12 @@ if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
 		public function output() {
 			if ( is_user_logged_in() ) {
 				$user   = learn_press_get_current_user();
-				$output = sprintf( __( 'Your are logged in as %s. <a href="%s">Log out</a>?', 'learnpress' ), $user->get_display_name(), wp_logout_url() );
+				$output = sprintf( __( 'Your are logged in as %1$s. <a href="%2$s">Log out</a>?', 'learnpress' ), $user->get_display_name(), wp_logout_url() );
 			} else {
 				if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 					include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 				}
+
 				ob_start();
 				learn_press_print_messages();
 				learn_press_get_template( 'global/form-login.php', array( 'fields' => self::get_login_fields() ) );
@@ -58,22 +56,21 @@ if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
 		public static function get_login_fields() {
 			$fields = array(
 				'username' => array(
-					'title'       => __( 'Email or username', 'learnpress' ),
+					'title'       => esc_html__( 'Email or username', 'learnpress' ),
 					'type'        => 'text',
-					'placeholder' => __( 'Email or username', 'learnpress' ),
+					'placeholder' => esc_html__( 'Email or username', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'username' ),
-					'id'          => 'user_login',
-					//'required'    => true
+					'id'          => 'username',
 				),
 				'password' => array(
-					'title'       => __( 'Password', 'learnpress' ),
+					'title'       => esc_html__( 'Password', 'learnpress' ),
 					'type'        => 'password',
-					'placeholder' => __( 'Password', 'learnpress' ),
+					'placeholder' => esc_html__( 'Password', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'password' ),
-					'id'          => 'user_password',
-					//'required'    => true
-				)
+					'id'          => 'password',
+				),
 			);
+
 			$fields = apply_filters( 'learn-press/login-fields', $fields );
 
 			return $fields;

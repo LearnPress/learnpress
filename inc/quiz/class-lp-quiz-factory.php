@@ -46,7 +46,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				'show-result-quiz'  => 'show_result',
 				'show-review-quiz'  => 'show_review',
 
-				////
 				'retake-quiz'       => 'retake_quiz',
 				'check-question'    => 'check_question',
 				'fetch-question'    => 'fetch_question',

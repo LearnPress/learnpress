@@ -7,15 +7,16 @@
  * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 ?>
+
 <input type="checkbox" id="learn-press-item-comments-toggle">
 <div id="learn-press-item-comments">
-	<label for="learn-press-item-comments-toggle">Comments</label>
+	<label for="learn-press-item-comments-toggle"><?php esc_html_e( 'Comments', 'learnpress' ); ?></label>
+
 	<div class="learn-press-comments">
-		<!-- Place holder for loading comments -->
 	<?php
-	//comments_template();
+	comments_template();
 	?>
 	</div>
 </div>

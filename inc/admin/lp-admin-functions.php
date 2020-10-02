@@ -153,7 +153,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
 	if ( file_exists( $view ) ) {
 
 		ob_start();
-		// extract parameters as local variables if passed
+
 		is_array( $args ) && extract( $args );
 
 		do_action( 'learn_press_before_display_admin_view', $name, $args );
@@ -501,20 +501,37 @@ if ( ! function_exists( 'learn_press_get_item_referral' ) ) {
 	 * @return string
 	 */
 	function learn_press_get_item_referral( $item_id ) {
-
 		$affiliate_links = array(
-			14058034 => 'https://1.envato.market/Yx2YR', // eduma
-			22773871 => 'https://1.envato.market/akrzZ', // ivy-school
-			20370918 => 'https://1.envato.market/13Zkd', // wordpress-lms
-			17097658 => 'https://1.envato.market/Xq2Ra', // coach
-			23451388 => 'https://1.envato.market/oWov9',
-			11797847 => 'https://1.envato.market/zknvM',
-		// 'Sailing'     => 'https://1.envato.market/G5Rkk',
-		// 'Hotel'       => 'https://1.envato.market/VW2K3',
-		// 'Megabuilder' => 'https://1.envato.market/03R5V',
-		// 'GALAX'       => 'https://1.envato.market/qqO6y',
-		// 'MAGAZET'     => 'https://1.envato.market/xPz65',
-		// 'CHARITY'     => 'https://1.envato.market/jgJ65'
+			14058034 => 'https://1.envato.market/G5Ook', // Eduma
+			22773871 => 'https://1.envato.market/akrzZ', // Ivy-school
+			20370918 => 'https://1.envato.market/13Zkd', // Course Builder LMS
+			17097658 => 'https://1.envato.market/Xq2Ra', // Coach
+			23451388 => 'https://1.envato.market/oWov9', // StarKid
+			11797847 => 'https://1.envato.market/zknvM', // Epsilon
+			13321455 => 'https://1.envato.market/G5Rkk', // Sailing
+			19029758 => 'https://1.envato.market/mAYdZ', // Travel Tour Booking
+			12124219 => 'https://1.envato.market/qJYdO', // Resca
+			18828322 => 'https://1.envato.market/VW2K3', // LuxStay
+			8254575  => 'https://1.envato.market/xWYdO', // Squareroot
+			13782850 => 'https://1.envato.market/Qo71z',
+			14025178 => 'https://1.envato.market/9R0oQ',
+			17739078 => 'https://1.envato.market/jkYda',
+			16210005 => 'https://1.envato.market/56oJD',
+			11733602 => 'https://1.envato.market/keYdv',
+			13513609 => 'https://1.envato.market/aq7dQ',
+			19693761 => 'https://1.envato.market/A976D',
+			12532973 => 'https://1.envato.market/Ge79B',
+			19305239 => 'https://1.envato.market/10JAB',
+			23716060 => 'https://1.envato.market/ZO7WW',
+			20466233 => 'https://1.envato.market/gjYd0',
+			21070438 => 'https://1.envato.market/xPz65',
+			20794183 => 'https://1.envato.market/o1YdY',
+			20979215 => 'https://1.envato.market/03R5V',
+			11151269 => 'https://1.envato.market/Br7L4',
+			8905392  => 'https://1.envato.market/zEYd7',
+			23168294 => 'https://1.envato.market/Wn7on',
+			17719422 => 'https://1.envato.market/0WVaL',
+			21680592 => 'https://1.envato.market/qqO6y',
 		);
 
 		return isset( $affiliate_links[ $item_id ] ) ? $affiliate_links[ $item_id ] : 'https://themeforest.net/user/thimpress/portfolio/';

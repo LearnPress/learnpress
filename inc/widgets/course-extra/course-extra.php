@@ -36,16 +36,16 @@ if ( ! class_exists( 'LP_Widget_Course_Extra' ) ) {
 					'options' => array(
 						'key_features'    => __( 'Key features', 'learnpress' ),
 						'target_audience' => __( 'Target audience', 'learnpress' ),
-						'requirements'    => __( 'Requirements', 'learnpress' )
+						'requirements'    => __( 'Requirements', 'learnpress' ),
 					),
-					'std'     => __( '', 'learnpress' )
+					'std'     => '',
 				),
 				'css_class' => array(
 					'name' => __( 'CSS Class', 'learnpress' ),
-					'id'   => "css_class",
+					'id'   => 'css_class',
 					'type' => 'text',
-					'std'  => ''
-				)
+					'std'  => '',
+				),
 			);
 
 			// register widget
@@ -60,13 +60,13 @@ if ( ! class_exists( 'LP_Widget_Course_Extra' ) ) {
 		public function show() {
 			switch ( $this->instance['type'] ) {
 				case 'key_features':
-					LP()->template('course')->course_extra_key_features();
+					LP()->template( 'course' )->course_extra_key_features();
 					break;
 				case 'target_audience':
-					LP()->template('course')->course_extra_target_audiences();
+					LP()->template( 'course' )->course_extra_target_audiences();
 					break;
 				case 'requirements':
-					LP()->template('course')->course_extra_requirements();
+					LP()->template( 'course' )->course_extra_requirements();
 					break;
 			}
 		}

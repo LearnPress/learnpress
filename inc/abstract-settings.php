@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Abstract_Settings
  */
@@ -9,12 +8,12 @@ abstract class LP_Abstract_Settings {
 	 * LP_Abstract_Settings constructor.
 	 */
 	public function __construct() {
-		// TODO: init anything here
 		add_filter( 'learn-press/update-settings/redirect', array( $this, '_do_save' ) );
 	}
 
-	public function _do_save($url) {
+	public function _do_save( $url ) {
 		$this->save();
+
 		return $url;
 	}
 
@@ -40,6 +39,7 @@ abstract class LP_Abstract_Settings {
 		if ( empty( $name ) ) {
 			$name = md5( microtime( true ) );
 		}
+
 		$field_name = apply_filters( 'learn_press_settings_field_name_' . $name, "learn_press_{$name}" );
 
 		return $field_name;
@@ -62,7 +62,9 @@ abstract class LP_Abstract_Settings {
 	public function admin_options() {
 		$settings = $this->get_settings();
 		$settings = $this->sanitize_settings( $settings );
+
 		do_action( 'learn-press/settings-render' );
+
 		if ( $settings ) {
 			LP_Meta_Box_Helper::render_fields( $settings );
 		} else {
@@ -118,7 +120,6 @@ abstract class LP_Abstract_Settings {
 					$this->parse_conditional( $field );
 					$settings[ $k ] = $field;
 				}
-
 			}
 		}
 
@@ -132,7 +133,7 @@ abstract class LP_Abstract_Settings {
 
 			if ( ! array_key_exists( 0, $conditional['conditional'] ) ) {
 				$conditional['conditional'] = array(
-					$conditional['conditional']
+					$conditional['conditional'],
 				);
 			}
 			foreach ( $conditional['conditional'] as $kk => $conditional_field ) {
@@ -147,7 +148,7 @@ abstract class LP_Abstract_Settings {
 
 	/**
 	 * @param      $option_name
-	 * @param null $default
+	 * @param null        $default
 	 *
 	 * @return array|null|string
 	 */

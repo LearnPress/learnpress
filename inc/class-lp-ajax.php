@@ -58,7 +58,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'save-uploaded-user-avatar',
 				'load-more-courses',
 				// 'register-user:nopriv',
-				// 'login-user:nopriv'
 			);
 
 			$ajax_events = apply_filters( 'learn-press/ajax/events', $ajax_events );
@@ -81,10 +80,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
-			// add_action( 'save-uploaded-user-avatar', array( __CLASS__, 'save_uploaded_user_avatar' ) );
-
-			// LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
-			// LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
 		}
 
 		public static function load_more_courses() {
@@ -107,10 +102,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				if ( 'featured' === $type ) {
 					$query_args['featured'] = 1;
 				}
+
 				$query         = new LP_Course_Query( $query_args );
 				$template_args = (array) $query->get_courses();
-				print_r( $query->get_courses() );
-				$template = "profile/dashboard/{$type}-courses";
+				$template      = "profile/dashboard/{$type}-courses";
 
 			} else {
 				$profile       = LP_Profile::instance( $user_id );
@@ -120,7 +115,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			learn_press_get_template( $template, $template_args );
 
-			die();
+			wp_die();
 		}
 
 		public static function external_link() {
@@ -145,7 +140,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function register_user() {
-
 			if ( ! get_option( 'users_can_register' ) ) {
 				wp_die( __( 'Sorry! Registration is not allowed on this site.', 'learnpress' ) );
 			}
@@ -180,7 +174,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				learn_press_add_message( $e->getMessage(), 'error' );
 			}
 
-			if ( ! $redirect = LP_Request::get( 'redirect' ) ) {
+			$redirect = LP_Request::get( 'redirect' );
+			if ( ! $redirect ) {
 				if ( ! $redirect = wp_get_raw_referer() ) {
 					$redirect = learn_press_get_page_link( 'profile' );
 				}
@@ -196,14 +191,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			wp_redirect( wp_validate_redirect( apply_filters( 'learn-press/registration-redirect', $redirect ), learn_press_get_page_link( 'profile' ) ) );
 			exit;
-		}
-
-		public static function login_user() {
-			LP_Forms_Handler::process_login();
-			print_r( learn_press_message_count( 'error' ) );
-			// print_r( learn_press_get_messages() );
-			// print_r( $_REQUEST );
-			die();
 		}
 
 		public static function checkout() {
@@ -279,6 +266,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			);
 
 			remove_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
+
 			if ( is_array( $result ) ) {
 				$result['name'] = $upload_dir['subdir'] . '/' . basename( $result['file'] );
 				unset( $result['file'] );
@@ -287,6 +275,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					'error' => __( 'Profile picture upload failed', 'learnpress' ),
 				);
 			}
+
 			learn_press_send_json( $result );
 		}
 

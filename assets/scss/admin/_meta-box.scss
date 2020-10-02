@@ -1,198 +1,327 @@
 .learnpress {
-    .rwmb-field {
-        margin-bottom: 20px;
-        position: relative;
-        .rwmb-label {
-            display: block;
-            margin-bottom: 5px;
-            float: left;
-            width: 190px;
-            font-size: 14px;
-            _text-transform: capitalize;
-            label {
-                > small {
-                    display: block;
-                    color: #999;
-                    font-style: italic;
-                    font-weight: normal;
-                }
-            }
-        }
-        .rwmb-input {
-            margin-left: 190px;
-            float: none;
-            width: auto;
-            input[type="checkbox"],
-            input[type="radio"] {
-                margin: 1px 5px 0 0;
-            }
-            label {
-                > input[type="checkbox"],
-                > input[type="radio"] {
-                    margin-top: -1px;
-                }
-            }
-        }
-        .description {
-            margin-top: 8px;
-            color: #888;
-            code {
-                padding: 3px 3px 3px 0;
-            }
-            &.err {
-                color: #FF0000;
-            }
-        }
-        .rwmb-input-list {
-            margin-left: 0;
-        }
 
-        #course_evaluation_method_quiz_options {
-            margin-left: 25px;
-            position: relative;
-            &:after {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                opacity: 0.5;
-                content: '';
-                background: #FFF;
-                z-index: 10;
-            }
-        }
+	.rwmb-field {
+		position: relative;
+		margin-bottom: 20px;
 
-        input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options {
-            &:after {
-                display: none;
-            }
-        }
+		.rwmb-label {
+			display: block;
+			float: left;
+			width: 190px;
+			margin-bottom: 5px;
+			font-size: 14px;
+			_text-transform: capitalize;
 
-        &.rwmb-heading-wrapper {
-            h4 {
-                font-size: 16px;
-                margin: 0 0 5px 0;
-                padding: 0 0 0;
-                border-bottom: 2px solid #563d7c;
-                display: inline-block;
-                text-transform: initial;
-            }
-        }
-        &.disabled {
-            .field-overlay {
-                content: '';
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                left: 0;
-                top: 0;
-                z-index: 10;
-                background: #FFF;
-                opacity: 0.6;
-            }
-        }
-        &.rwmb-text-wrapper {
-            .rwmb-text {
-                width: 50%;
-                min-width: 200px;
-            }
-        }
-        &.rwmb-duration-wrapper {
-            .rwmb-input {
-                select, input {
-                    vertical-align: top;
-                }
-            }
-        }
-    }
+			label {
 
-    .lp-course-sale_start-field, .lp-course-sale_end-field {
-        &.hide {
-            display: none;
-        }
-    }
+				> small {
+					display: block;
+					color: #999;
+					font-weight: normal;
+					font-style: italic;
+				}
+			}
+		}
 
-    &.lp-submenu-settings {
-        .lp-admin-settings-buttons {
-            border-top: 1px solid #DDD;
-            padding-top: 20px;
-            margin-bottom: 0;
-            #learn-press-reset-settings {
-                float: right;
-            }
-        }
-        .rwmb-input {
-            color: #000;
-            margin-left: 270px;
-            float: none;
-            width: auto;
-        }
-    }
+		.rwmb-input {
+			float: none;
+			width: auto;
+			margin-left: 190px;
 
-    .rwmb-google-fonts-wrapper {
-        .rwmb-input {
-            label {
-                font-weight: bold;
-                display: block;
-                margin-bottom: 5px;
-            }
-            input {
-                width: 90%;
-            }
-        }
-    }
-    #learn-press-toggle-course-results {
-        display: block;
-    }
+			input[type="checkbox"],
+			input[type="radio"] {
+				margin: 1px 5px 0 0;
+			}
 
-    // lesson metaboxs
-    #postbox-container-2 {
-        .inside {
-            .rwmb-meta-box {
-                //margin: 20px 0 0;
-            }
-        }
-    }
-    .lp-item-assigned {
-        font-size: 14px;
-        a {
-            text-decoration: none;
-        }
-        ul {
-            margin-bottom: 0;
-            ul {
-                strong {
-                    font-weight: normal;
-                }
-            }
-        }
-        li {
-            margin: 0;
-            a {
-                margin-bottom: 10px;
-                display: inline-block;
-            }
-        }
-    }
+			label {
+
+				> input[type="checkbox"],
+				> input[type="radio"] {
+					margin-top: -1px;
+				}
+			}
+		}
+
+		.description {
+			margin-top: 8px;
+			color: #888;
+
+			code {
+				padding: 3px 3px 3px 0;
+			}
+
+			&.err {
+				color: #f00;
+			}
+		}
+
+		.rwmb-input-list {
+			margin-left: 0;
+		}
+
+		#course_evaluation_method_quiz_options {
+			position: relative;
+			margin-left: 25px;
+
+			&::after {
+				position: absolute;
+				z-index: 10;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				opacity: 0.5;
+				background: #fff;
+				content: "";
+			}
+		}
+
+		input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options {
+
+			&::after {
+				display: none;
+			}
+		}
+
+		&.rwmb-heading-wrapper {
+
+			h4 {
+				display: inline-block;
+				margin: 0 0 5px 0;
+				padding: 0 0 0;
+				border-bottom: 2px solid #563d7c;
+				font-size: 16px;
+				text-transform: initial;
+			}
+		}
+
+		&.disabled {
+
+			.field-overlay {
+				position: absolute;
+				z-index: 10;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0.6;
+				background: #fff;
+				content: "";
+			}
+		}
+
+		&.rwmb-text-wrapper {
+
+			.rwmb-text {
+				width: 50%;
+				min-width: 200px;
+			}
+		}
+
+		&.rwmb-duration-wrapper {
+
+			.rwmb-input {
+
+				select,
+				input {
+					vertical-align: top;
+				}
+			}
+		}
+	}
+
+	.lp-course-sale_start-field,
+	.lp-course-sale_end-field {
+
+		&.hide {
+			display: none;
+		}
+	}
+
+	&.lp-submenu-settings {
+
+		.lp-admin-settings-buttons {
+			margin-bottom: 0;
+			padding-top: 20px;
+			border-top: 1px solid #ddd;
+
+			#learn-press-reset-settings {
+				float: right;
+			}
+		}
+
+		.rwmb-input {
+			float: none;
+			width: auto;
+			margin-left: 270px;
+			color: #000;
+		}
+	}
+
+	.rwmb-google-fonts-wrapper {
+
+		.rwmb-input {
+
+			label {
+				display: block;
+				margin-bottom: 5px;
+				font-weight: bold;
+			}
+
+			input {
+				width: 90%;
+			}
+		}
+	}
+
+	#learn-press-toggle-course-results {
+		display: block;
+	}
+
+	// lesson metaboxs
+	#postbox-container-2 {
+
+		.inside {
+
+			.rwmb-meta-box {
+				//margin: 20px 0 0;
+			}
+		}
+	}
+
+	.lp-item-assigned {
+		font-size: 14px;
+
+		a {
+			text-decoration: none;
+		}
+
+		ul {
+			margin-bottom: 0;
+
+			ul {
+
+				strong {
+					font-weight: normal;
+				}
+			}
+		}
+
+		li {
+			margin: 0;
+
+			a {
+				display: inline-block;
+				margin-bottom: 10px;
+			}
+		}
+	}
 }
 
 @media screen and (max-width: 1280px) {
-    .learnpress {
-        .rwmb-meta-box {
-        }
-        #meta-box-tab-course_settings {
-            .rwmb-field {
-                .rwmb-label {
-                    width: auto;
-                    float: none;
-                }
-                .rwmb-input {
-                    margin-left: 0;
-                    width: 100%;
-                    float: left;
-                }
-            }
-        }
-    }
+
+	.learnpress {
+
+		.rwmb-meta-box {
+		}
+
+		#meta-box-tab-course_settings {
+
+			.rwmb-field {
+
+				.rwmb-label {
+					float: none;
+					width: auto;
+				}
+
+				.rwmb-input {
+					float: left;
+					width: 100%;
+					margin-left: 0;
+				}
+			}
+		}
+	}
+}
+
+// Use on LP4.
+.lp-metabox__custom-fields {
+
+	table {
+		width: 100%;
+		max-width: max-content;
+		padding: 0 !important;
+
+		th {
+			padding: 7px 0 7px 7px !important;
+
+			&.sort {
+				width: 17px;
+				padding: 7px !important;
+			}
+		}
+
+		td {
+			position: relative;
+			padding: 4px 0 4px 7px !important;
+			vertical-align: middle !important;
+
+			&.sort {
+				width: 17px;
+				padding-right: 7px !important;
+				background: #f9f9f9;
+				font-size: 15px;
+				text-align: center;
+				cursor: move;
+
+				&::before {
+					height: 100%;
+					color: #999;
+					font-family: Dashicons;
+					text-align: center;
+					content: "\f333";
+				}
+			}
+
+			.delete {
+				display: block;
+				position: relative;
+				width: 1em;
+				height: 1em;
+				font-size: 1.2em;
+				text-indent: -9999px;
+
+				&::before {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					margin: 0;
+					color: #999;
+					font-family: Dashicons;
+					font-weight: 400;
+					font-variant: normal;
+					line-height: 1;
+					text-align: center;
+					text-indent: 0;
+					text-transform: none;
+					content: "";
+					speak: none;
+					-webkit-font-smoothing: antialiased;
+				}
+
+				&:hover {
+
+					&::before {
+						color: #a00;
+					}
+				}
+			}
+
+			&:last-child {
+				padding-right: 7px !important;
+			}
+		}
+	}
 }

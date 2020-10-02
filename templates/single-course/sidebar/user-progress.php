@@ -9,9 +9,6 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
@@ -36,15 +33,14 @@ $quiz_false        = $course_results['items']['quiz']['completed'] - $course_res
 		<h4 class="items-progress__heading">
 			<?php esc_html_e( 'Lessons completed:', 'learnpress' ); ?>
 		</h4>
-		<span class="number"><?php printf( __( '%1$d/%2$d', 'learnpress' ), $course_results['items']['lesson']['completed'], $course_results['items']['lesson']['total'] ); ?></span>
+		<span class="number"><?php printf( '%1$d/%2$d', $course_results['items']['lesson']['completed'], $course_results['items']['lesson']['total'] ); ?></span>
 	</div>
 
 	<div class="items-progress">
-
 		<h4 class="items-progress__heading">
 			<?php esc_html_e( 'Quizzes submitted:', 'learnpress' ); ?>
 		</h4>
-		<span class="number" title="<?php esc_attr_e( sprintf( __( 'Failed %1$d, Passed %2$d', 'learnpress' ), $quiz_false, $course_results['items']['quiz']['passed'] ) ); ?>"><?php printf( __( '%1$d/%2$d', 'learnpress' ), $course_results['items']['quiz']['completed'], $course_results['items']['quiz']['total'] ); ?></span>
+		<span class="number" title="<?php esc_attr( sprintf( __( 'Failed %1$d, Passed %2$d', 'learnpress' ), $quiz_false, $course_results['items']['quiz']['passed'] ) ); ?>"><?php printf( __( '%1$d/%2$d', 'learnpress' ), $course_results['items']['quiz']['completed'], $course_results['items']['quiz']['total'] ); ?></span>
 	</div>
 
 	<?php do_action( 'learn-press/user-item-progress' ); ?>

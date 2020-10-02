@@ -8,23 +8,20 @@ class ButtonHint extends Component {
 	 * Callback to show hint of question
 	 */
 	showHint = () => {
-		const {
-			showHint,
-			question,
-		} = this.props;
+		const { showHint, question } = this.props;
 
 		showHint( question.id, ! question.showHint );
 	};
 
 	render() {
-		const {
-			question,
-		} = this.props;
+		const { question } = this.props;
 
 		return (
-			question.hint ? <button className="btn-show-hint"
-				onClick={ this.showHint }>
-			</button> : ''
+			question.hint ? (
+				<button className="btn-show-hint" onClick={ this.showHint }>
+					<span>{ __( 'Hint', 'learnpress' ) }</span>
+				</button>
+			) : ''
 		);
 	}
 }

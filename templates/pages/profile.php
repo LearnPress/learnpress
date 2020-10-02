@@ -2,53 +2,46 @@
 /**
  * Template for displaying main user profile page.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/profile/profile.php.
- *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 get_header( 'profile' );
 
 $profile = LP_Global::profile();
 ?>
-    <div id="learn-press-profile"<?php $profile->main_class(); ?> class="lp-content-wrap">
-		<?php
-		if ( $profile->is_public() || true ) {
+
+<div id="learn-press-profile" <?php $profile->main_class(); ?>>
+	<?php if ( $profile->is_public()  ) : ?>
+		<div class="wrapper-profile-header wrap-fullwidth">
+			<?php do_action( 'learn-press/before-user-profile', $profile ); ?>
+		</div>
+
+		<div class="lp-content-area">
+			<?php
+			if ( ! is_user_logged_in() ) {
+				learn_press_print_messages( true );  // Print error in login & register.
+			}
+
+			/**
+			 * @since 3.0.0
+			 */
+			do_action( 'learn-press/user-profile', $profile );
+
+			/**
+			 * @since 3.0.0
+			 */
+			do_action( 'learn-press/after-user-profile', $profile );
+
 			?>
-            <div class="wrapper-profile-header wrap-fullwidth">
-                <?php
-                    /**
-                     * @since 3.0.0
-                     */
-                    do_action( 'learn-press/before-user-profile', $profile );
-                ?>
-            </div>
+		</div>
+	<?php else : ?>
+		<?php esc_html_e( 'This user does not public their profile.', 'learnpress' ); ?>
+	<?php endif; ?>
+</div>
 
-            <div class="lp-content-area">
-                <?php
-                /**
-                 * @since 3.0.0
-                 */
-                do_action( 'learn-press/user-profile', $profile );
-
-                /**
-                 * @since 3.0.0
-                 */
-                do_action( 'learn-press/after-user-profile', $profile );
-
-                ?>
-            </div>
-		<?php } else {
-			_e( 'This user does not public their profile.', 'learnpress' );
-		}
-		?>
-    </div>
 <?php
 get_footer( 'profile' );

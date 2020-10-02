@@ -24,9 +24,14 @@ if ( ! class_exists( 'RWMB_Google_Fonts_Field' ) ) {
 		static function html( $meta, $field = '' ) {
 			$meta = wp_parse_args(
 				$meta,
-				array( 'families' => '', 'subsets' => '' )
+				array(
+					'families' => '',
+					'subsets'  => '',
+				)
 			);
+
 			ob_start();
+
 			echo '<label>' . __( 'Fonts', 'learnpress' ) . '</label>';
 			printf(
 				'<input type="text" class="rwmb-google-fonts" name="%s[families]" value="%s">',

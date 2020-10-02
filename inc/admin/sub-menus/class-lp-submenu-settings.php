@@ -28,6 +28,9 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		add_action( 'admin_init', array( $this, 'maybe_save_settings' ) );
 		add_filter( 'rwmb_field_meta', array( $this, 'field_meta' ), 10, 2 );
 
+		/** Save metabox in LP4 */
+		add_action( 'admin_init', array( $this, 'save_settings' ) );
+
 		parent::__construct();
 	}
 
@@ -64,21 +67,17 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	 */
 	public function page_content() {
 		parent::page_content();
-
-		/*
-		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
-		if ( $section_data instanceof LP_Abstract_Settings ) {
-			$section_data->admin_options();
-		} else if ( is_array( $section_data ) ) {
-
-		} else {
-			do_action( 'learn-press/admin/setting-payments/admin-options-' . $section );
-		}*/
 	}
 
 	public function page_contents() {
 		$active_tab = $this->get_active_tab();
-		$this->tabs[ $active_tab ]->admin_page( $this->get_active_section(), $this->get_sections() );
+
+		// Use custom metabox in LP4
+		if ( $active_tab === 'profile' ) {
+			$this->tabs[ $active_tab ]->admin_page_settings( $this->get_active_section(), $this->get_sections() );
+		} else {
+			$this->tabs[ $active_tab ]->admin_page( $this->get_active_section(), $this->get_sections() );
+		}
 		?>
 
 		<input type="hidden" name="lp-settings-nonce" value="<?php echo wp_create_nonce( 'lp-settings' ); ?>">
@@ -93,12 +92,59 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	}
 
 	/**
+	 * Update metabox setting
+	 *
+	 * @return void
+	 * @version 4.0.0
+	 * @author ThimPress <nhamdv>
+	 */
+	public function save_settings() {
+		if ( ! is_admin() || ! isset( $_GET['page'] ) || 'learn-press-settings' !== $_GET['page'] ) {
+			return;
+		}
+
+		$nonce = learn_press_get_request( 'lp-settings-nonce' );
+
+		if ( ! wp_verify_nonce( $nonce, 'lp-settings' ) ) {
+			return;
+		}
+
+		// Use custom metabox in LP4
+		$active_tab = $this->get_active_tab();
+
+		if ( $active_tab !== 'profile' ) {
+			return;
+		}
+
+		$this->tabs[ $active_tab ]->save_settings( $this->get_active_section(), $this->get_sections() );
+
+		flush_rewrite_rules();
+
+		do_action( 'learn-press/update-settings/updated', $this );
+
+		// Filter redirect
+		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );
+
+		if ( $redirect ) {
+			wp_redirect( $redirect );
+			exit();
+		}
+	}
+
+	/**
 	 * Save settings values upon admin init.
 	 */
 	public function maybe_save_settings() {
 		$nonce = learn_press_get_request( 'lp-settings-nonce' );
 
 		if ( ! wp_verify_nonce( $nonce, 'lp-settings' ) ) {
+			return;
+		}
+
+		$active_tab = $this->get_active_tab();
+
+		// Use custom metabox in LP4
+		if ( $active_tab === 'profile' ) {
 			return;
 		}
 

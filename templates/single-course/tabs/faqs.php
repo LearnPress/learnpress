@@ -9,31 +9,23 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
-
-/**
- * @var string $question
- * @var string $answer
- */
 
 $unique_key = uniqid();
 ?>
-<input type="checkbox" name="course-faqs-box-ratio"
-       id="course-faqs-box-ratio-<?php echo sanitize_key( $unique_key ); ?>"/>
 
-<?php if($question && $answer ): ?>
-<div class="course-faqs-box">
-    <label class="course-faqs-box__title" for="course-faqs-box-ratio-<?php echo sanitize_key( $unique_key ); ?>">
-		<?php echo esc_html( $question ); ?>
-    </label>
+<input type="checkbox" name="course-faqs-box-ratio" id="course-faqs-box-ratio-<?php echo sanitize_key( $unique_key ); ?>"/>
 
-    <div class="course-faqs-box__content">
-        <div class="course-faqs-box__content-inner">
-			<?php echo $answer; ?>
-        </div>
-    </div>
-</div>
+<?php if ( $question && $answer ) : ?>
+	<div class="course-faqs-box">
+		<label class="course-faqs-box__title" for="course-faqs-box-ratio-<?php echo sanitize_key( $unique_key ); ?>">
+			<?php echo esc_html( $question ); ?>
+		</label>
+
+		<div class="course-faqs-box__content">
+			<div class="course-faqs-box__content-inner">
+				<?php echo $answer; ?>
+			</div>
+		</div>
+	</div>
 <?php endif ?>

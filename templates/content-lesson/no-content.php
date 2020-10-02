@@ -16,10 +16,10 @@ defined( 'ABSPATH' ) || exit();
 
 $lesson = LP_Global::course_item();
 
-$message = __( 'Lesson content is empty.', 'learnpress' );
+$message = esc_html__( 'Lesson content is empty.', 'learnpress' );
 
 if ( $lesson->current_user_can_edit() ) {
-	$message .= sprintf( '<a href="%s" class="edit-content">%s</a>', $lesson->get_edit_link(), __( 'Edit', 'learnpress' ) );
+	$message .= sprintf( '<a href="%s" class="edit-content">%s</a>', $lesson->get_edit_link(), esc_html__( 'Edit', 'learnpress' ) );
 }
 
 learn_press_display_message( $message, 'notice' );

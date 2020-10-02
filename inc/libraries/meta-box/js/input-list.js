@@ -1,6 +1,6 @@
-jQuery( function ( $ ) {
+jQuery( function( $ ) {
 	function toggleTree() {
-		var $this = $( this ),
+		const $this = $( this ),
 			$children = $this.closest( 'li' ).children( 'ul' );
 
 		if ( $this.is( ':checked' ) ) {
@@ -16,10 +16,10 @@ jQuery( function ( $ ) {
 
 	$( '.rwmb-input-list.rwmb-collapse input[type="checkbox"]' ).each( toggleTree );
 
-	$( document ).on( 'click', '.rwmb-input-list-select-all-none', function(e) {
+	$( document ).on( 'click', '.rwmb-input-list-select-all-none', function( e ) {
 		e.preventDefault();
 
-		var $this = $( this ),
+		let $this = $( this ),
 			checked = $this.data( 'checked' );
 
 		if ( undefined === checked ) {

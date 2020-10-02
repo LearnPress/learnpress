@@ -7,10 +7,11 @@
  * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
 $user = LP_Profile::instance()->get_user();
 ?>
+
 <div class="lp-user-profile-avatar">
 	<?php echo $user->get_profile_picture(); ?>
 </div>

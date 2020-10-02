@@ -1,26 +1,31 @@
 import SingleCourse from './single-course/index';
-import { apiFetch } from './data-controls';
+
+export default SingleCourse;
+
+export const init = () => {
+	wp.element.render(
+		<SingleCourse />,
+	);
+};
 
 const $ = jQuery;
-const {
-	debounce,
-} = lodash;
+const { debounce, throttle } = lodash;
 
 const { _x } = wp.i18n;
 
 export function formatDuration( seconds ) {
-	let html;
-	let x, d;
-	const day_in_seconds = 3600 * 24;
+	let d;
 
-	if ( seconds > day_in_seconds ) {
-		d = ( seconds - seconds % day_in_seconds ) / day_in_seconds;
-		seconds = seconds % day_in_seconds;
-	} else if ( seconds == day_in_seconds ) {
+	const dayInSeconds = 3600 * 24;
+
+	if ( seconds > dayInSeconds ) {
+		d = ( seconds - ( seconds % dayInSeconds ) ) / dayInSeconds;
+		seconds = seconds % dayInSeconds;
+	} else if ( seconds == dayInSeconds ) {
 		return '24:00';
 	}
 
-	x = ( new Date( seconds * 1000 ).toUTCString() ).match( /\d{2}:\d{2}:\d{2}/ )[ 0 ].split( ':' );
+	const x = ( new Date( seconds * 1000 ).toUTCString() ).match( /\d{2}:\d{2}:\d{2}/ )[ 0 ].split( ':' );
 
 	if ( x[ 2 ] === '00' ) {
 		x.splice( 2, 1 );
@@ -31,10 +36,10 @@ export function formatDuration( seconds ) {
 	}
 
 	if ( d ) {
-		x[ 0 ] = parseInt( x[ 0 ] ) + d * 24;
+		x[ 0 ] = parseInt( x[ 0 ] ) + ( d * 24 );
 	}
 
-	html = x.join( ':' );
+	const html = x.join( ':' );
 
 	return html;
 }
@@ -132,82 +137,6 @@ const AjaxSearchCourses = function( el ) {
 	} );
 };
 
-const AjaxSearchCourseContent = function AjaxSearchCourseContent( el ) {
-	const $form = $( el );
-	const $list = $( '#learn-press-course-curriculum' );
-	const $input = $form.find( 'input[name="s"]' );
-	let paged = 1;
-	const $sections = $list.find( '.section' );
-	const $items = $list.find( '.course-item' );
-	let isSearching = false;
-	let oldSearch = '';
-
-	var submit = async function( e ) {
-		e.preventDefault();
-
-		if ( isSearching ) {
-			return false;
-		}
-
-		if ( $input.val().length < 3 ) {
-			$items.removeClass( 'hide-if-js' );
-			$sections.removeClass( 'hide-if-js' );
-			return;
-		}
-
-		isSearching = true;
-		oldSearch = $input.val();
-		$form.addClass( 'searching' );
-
-		const response = await wp.apiFetch( {
-			path: 'lp/v1/courses/' + lpGlobalSettings.post_id + '/search-content?s=' + $input.val(),
-		} );
-
-		$items.each( function() {
-			const $it = $( this );
-			if ( response.items.indexOf( $it.data( 'id' ) ) !== -1 ) {
-				$it.removeClass( 'hide-if-js' );
-			} else {
-				$it.addClass( 'hide-if-js' );
-			}
-		} );
-
-		$sections.each( function() {
-			const $section = $( this );
-			if ( $section.find( '.course-item:not(.hide-if-js)' ).length === 0 ) {
-				$section.addClass( 'hide-if-js' );
-			} else {
-				$section.removeClass( 'hide-if-js' );
-			}
-		} );
-
-		isSearching = false;
-
-		if ( oldSearch !== $input.val() ) {
-			return submit( e );
-		}
-
-		return false;
-	};
-
-	$input.on( 'keyup', debounce( function( e ) {
-		paged = 1;
-		submit( e );
-	}, 300 ) );
-
-	$form.on( 'submit', submit );
-
-	$form.on( 'click', '.clear', ( e ) => {
-		$form.removeClass( 'searching' );
-		$input.val( '' );
-		submit( e );
-	} ).on( 'click', '.search-results__pagination a', ( e ) => {
-		e.preventDefault();
-		paged = $( e.target ).data( 'page' );
-		submit( e );
-	} );
-};
-
 const initCourseTabs = function() {
 	$( '#learn-press-course-tabs' ).on( 'change', 'input[name="learn-press-course-tab-radio"]', function() {
 		const selectedTab = $( 'input[name="learn-press-course-tab-radio"]:checked' ).val();
@@ -258,24 +187,6 @@ const initCourseSidebar = function initCourseSidebar() {
 	$window.on( 'scroll.fixed-course-sidebar', onScroll ).trigger( 'scroll.fixed-course-sidebar' );
 };
 
-const initItemComments = function initItemComments() {
-	const $toggle = $( '#learn-press-item-comments-toggle' );
-	$toggle.on( 'change', async function() {
-		console.log( this.checked );
-		if ( ! $toggle[ 0 ].checked ) {
-			return;
-		}
-
-		const response = await wp.apiFetch( {
-			path: 'lp/v1/courses/14242/item-comments/14266',
-		} );
-
-		$( '.learn-press-comments' ).html( response.comments );
-
-		new LP.IframeSubmit( '#commentform' );
-	} );
-};
-
 export {
 	initCourseTabs,
 	initCourseSidebar,
@@ -288,19 +199,19 @@ $( window ).on( 'load', () => {
 
 	// Popup only
 	if ( $popup.length ) {
-		$curriculum.scroll( lodash.throttle( function() {
+		$curriculum.on( 'scroll', throttle( function() {
 			const $self = $( this );
 
 			$self.addClass( 'scrolling' );
+
 			timerClearScroll && clearTimeout( timerClearScroll );
+
 			timerClearScroll = setTimeout( () => {
 				$self.removeClass( 'scrolling' );
 			}, 1000 );
 		}, 500 ) );
 
 		$( '#sidebar-toggle' ).on( 'change', toggleSidebarHandler );
-
-		new AjaxSearchCourseContent( $popup.find( '.search-course' ) );
 
 		createCustomScrollbar( $curriculum.find( '.curriculum-scrollable' ), $( '#popup-content' ).find( '.content-item-scrollable' ) );
 
@@ -316,7 +227,6 @@ $( window ).on( 'load', () => {
 
 	initCourseTabs();
 	initCourseSidebar();
-	initItemComments();
 
 	$( '.section' ).each( function() {
 		const $section = $( this ),
@@ -337,7 +247,6 @@ $( window ).on( 'load', () => {
 
 			LP.Cookies.remove( 'closed-section-(.*)' );
 			LP.Cookies.set( 'closed-section-' + lpGlobalSettings.post_id, [ ...new Set( sections ) ] );
-			//$section.find('.section-content').slideToggle();
 		} );
 	} );
 
@@ -354,11 +263,4 @@ $( window ).on( 'load', () => {
 	} );
 
 	LP.Hook.doAction( 'course-ready' );
-
-	$( window ).on( 'resize.popup-nav', debounce( () => {
-		const marginLeft = $( '#popup-sidebar' ).width() / 2;
-		const width = $( '#learn-press-quiz-app' ).width();
-
-		$( '.quiz-buttons .button-left.fixed' ).css( { width, marginLeft } );
-	}, 300 ) ).trigger( 'resize.popup-nav' );
 } );

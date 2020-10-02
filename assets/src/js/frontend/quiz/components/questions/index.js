@@ -27,13 +27,11 @@ class Questions extends Component {
 			}
 		}
 
-		// If has prop changed then update state and re-render UI
 		if ( Object.values( changedProps ).length ) {
 			state.self.needToTop = true;
 			return changedProps;
 		}
 
-		// No state update necessary
 		return null;
 	}
 
@@ -83,21 +81,18 @@ class Questions extends Component {
 	};
 
 	nav = ( event ) => {
-		const {
-			sendKey,
-		} = this.props;
+		const { sendKey } = this.props;
 
 		switch ( event.keyCode ) {
-		case 37: // left
+		case 37:
 			return sendKey( 'left' );
-		case 38: // up
+		case 38:
 			return;
-		case 39: // right
+		case 39:
 			return sendKey( 'right' );
-		case 40: // down
+		case 40:
 			return;
 		default:
-			// 1 ... 9
 			if ( event.keyCode >= 49 && event.keyCode <= 57 ) {
 				sendKey( event.keyCode - 48 );
 			}
@@ -114,14 +109,11 @@ class Questions extends Component {
 			questionsPerPage,
 		} = this.props;
 
-		let viewMode = false,
-			isShow = true;
+		let isShow = true;
 
-		//if (!showAllQuestions) {
 		if ( status === 'completed' && ! isReviewing ) {
 			isShow = false;
 		}
-		//}
 
 		return (
 			<>
@@ -133,8 +125,10 @@ class Questions extends Component {
 							const isVisible = this.isInVisibleRange( question.id, index + 1 );
 
 							return (
-								( isRendered || ! isRendered /*&& isCurrent*/ ) || isVisible
-									? <Question isCurrent={ isCurrent } key={ `loop-question-${ question.id }` }
+								( isRendered || ! isRendered ) || isVisible
+									? <Question
+										key={ `loop-question-${ question.id }` }
+										isCurrent={ isCurrent }
 										isShow={ isVisible }
 										isShowIndex={ questionsPerPage ? index + 1 : false }
 										questionsPerPage={ questionsPerPage }
@@ -155,6 +149,7 @@ export default compose(
 			getData,
 			getQuestions,
 		} = select( 'learnpress/quiz' );
+
 		return {
 			status: getData( 'status' ),
 			currentQuestion: getData( 'currentQuestion' ),

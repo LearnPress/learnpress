@@ -70,14 +70,10 @@ export function __requestStartQuizSuccess( results, quizId, courseId, userId ) {
  * Request to api for starting a quiz.
  */
 const startQuiz = function*() {
-	const {
-		itemId,
-		courseId,
-	} = wpSelect( 'learnpress/quiz' ).getDefaultRestArgs();
+	const { itemId, courseId } = wpSelect( 'learnpress/quiz' ).getDefaultRestArgs();
 
 	const doStart = Hook.applyFilters( 'before-start-quiz', true, itemId, courseId );
 
-	// Allow third-party can ignore core action
 	if ( true !== doStart ) {
 		return;
 	}
@@ -93,9 +89,7 @@ const startQuiz = function*() {
 
 	response = Hook.applyFilters( 'request-start-quiz-response', response, itemId, courseId );
 
-	yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response.results ), itemId, courseId );
-
-	//yield _dispatch(wpDispatch('learnpress/quiz').__requestStartQuizSuccess(camelCaseDashObjectKeys(response['results']), itemId, courseId));
+	yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );
 };
 
 export { startQuiz };
@@ -168,28 +162,6 @@ export function __requestShowHintSuccess( id, showHint ) {
 
 export function* showHint( id, showHint ) {
 	yield _dispatch( 'learnpress/quiz', '__requestShowHintSuccess', id, showHint );
-
-	// const {
-	//     getDefaultRestArgs,
-	//     getData
-	// } = wpSelect('learnpress/quiz');
-	//
-	// const {
-	//     itemId,
-	//     courseId
-	// } = getDefaultRestArgs();
-	//
-	// const result = yield apiFetch({
-	//     path: 'lp/v1/users/hint-answer',
-	//     method: 'POST',
-	//     data: {
-	//         itemId,
-	//         courseId,
-	//         question_id: id
-	//     }
-	// });
-	//
-	// yield _dispatch('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
 }
 
 export function __requestCheckAnswerSuccess( id, result ) {

@@ -1,16 +1,14 @@
 let iframeCounter = 1;
-let $ = window.jQuery || jQuery;
+const $ = window.jQuery || jQuery;
 
 const IframeSubmit = function( form ) {
-	let iframeId = 'ajax-iframe-' + iframeCounter;
+	const iframeId = 'ajax-iframe-' + iframeCounter;
 	let $iframe = $( 'form[name="' + iframeId + '"]' );
 
 	if ( ! $iframe.length ) {
 		$iframe = $( '<iframe />' ).appendTo( document.body ).attr( {
 			name: iframeId,
 			src: '#',
-		} ).on( 'load', function() {
-			console.log( 'Loaded' );
 		} );
 	}
 

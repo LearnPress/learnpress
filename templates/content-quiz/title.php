@@ -9,15 +9,13 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 $quiz   = LP_Global::course_item_quiz();
 $course = LP_Global::course();
+$title  = $quiz->get_heading_title( 'display' );
 
-if ( ! $title = $quiz->get_heading_title( 'display' ) ) {
+if ( ! $title ) {
 	return;
 }
 ?>

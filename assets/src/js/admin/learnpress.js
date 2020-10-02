@@ -11,21 +11,21 @@ const makePaymentsSortable = function makePaymentsSortable() {
 	// Make payments sortable
 	$( '.learn-press-payments.sortable tbody' ).sortable( {
 		handle: '.dashicons-menu',
-		helper: function( e, ui ) {
+		helper( e, ui ) {
 			ui.children().each( function() {
 				$( this ).width( $( this ).width() );
 			} );
 			return ui;
 		},
 		axis: 'y',
-		start: function( event, ui ) {
+		start( event, ui ) {
 
 		},
-		stop: function( event, ui ) {
+		stop( event, ui ) {
 
 		},
-		update: function( event, ui ) {
-			var order = $( this ).children().map( function() {
+		update( event, ui ) {
+			const order = $( this ).children().map( function() {
 				return $( this ).find( 'input[name="payment-order"]' ).val();
 			} ).get();
 
@@ -33,18 +33,56 @@ const makePaymentsSortable = function makePaymentsSortable() {
 				url: '',
 				data: {
 					'lp-ajax': 'update-payment-order',
-					order: order,
+					order,
 				},
-				success: function( response ) {
+				success( response ) {
 				},
 			} );
 		},
 	} );
 };
 
+const lpMetaboxCustomFields = () => {
+	$( '.lp-metabox__custom-fields' ).on( 'click', '.lp-metabox-custom-field-button', function() {
+		const row = $( this ).data( 'row' ).replace( /lp_metabox_custom_fields_key/gi, Math.floor( Math.random() * 1000 ) + 1 );
+
+		$( this ).closest( 'table' ).find( 'tbody' ).append( row );
+		updateSort( $( this ).closest( '.lp-metabox__custom-fields' ) );
+		return false;
+	} );
+
+	$( '.lp-metabox__custom-fields' ).on( 'click', 'a.delete', function() {
+		$( this ).closest( 'tr' ).remove();
+		updateSort( $( this ).closest( '.lp-metabox__custom-fields' ) );
+		return false;
+	} );
+
+	$( '.lp-metabox__custom-fields tbody' ).sortable( {
+		items: 'tr',
+		cursor: 'move',
+		axis: 'y',
+		handle: 'td.sort',
+		scrollSensitivity: 40,
+		forcePlaceholderSize: true,
+		helper: 'clone',
+		opacity: 0.65,
+		update( event, ui ) {
+			updateSort( $( this ).closest( '.lp-metabox__custom-fields' ) );
+		},
+	} );
+
+	const updateSort = ( element ) => {
+		const items = element.find( 'tbody tr' );
+
+		items.each( function( i, item ) {
+			$( this ).find( '.sort .count' ).val( i );
+		} );
+	};
+};
+
 const initTooltips = function initTooltips() {
 	$( '.learn-press-tooltip' ).each( function() {
-		var $el = $( this ),
+		const $el = $( this ),
 			args = $.extend( { title: 'data-tooltip', offset: 10, gravity: 's' }, $el.data() );
 		$el.tipsy( args );
 	} );
@@ -59,7 +97,7 @@ const initSelect2 = function initSelect2() {
 const initSingleCoursePermalink = function initSingleCoursePermalink() {
 	$doc
 		.on( 'change', '.learn-press-single-course-permalink input[type="radio"]', function() {
-			var $check = $( this ),
+			const $check = $( this ),
 				$row = $check.closest( '.learn-press-single-course-permalink' );
 			if ( $row.hasClass( 'custom-base' ) ) {
 				$row.find( 'input[type="text"]' ).prop( 'readonly', false );
@@ -80,7 +118,7 @@ const initSingleCoursePermalink = function initSingleCoursePermalink() {
 
 const togglePaymentStatus = function togglePaymentStatus( e ) {
 	e.preventDefault();
-	var $row = $( this ).closest( 'tr' ),
+	const $row = $( this ).closest( 'tr' ),
 		$button = $( this ),
 		status = $row.find( '.status' ).hasClass( 'enabled' ) ? 'no' : 'yes';
 
@@ -88,13 +126,13 @@ const togglePaymentStatus = function togglePaymentStatus( e ) {
 		url: '',
 		data: {
 			'lp-ajax': 'update-payment-status',
-			status: status,
+			status,
 			id: $row.data( 'payment' ),
 		},
-		success: function( response ) {
+		success( response ) {
 			response = LP.parseJSON( response );
-			for ( var i in response ) {
-				$( '#payment-' + i + ' .status' ).toggleClass( 'enabled', response[i] );
+			for ( const i in response ) {
+				$( '#payment-' + i + ' .status' ).toggleClass( 'enabled', response[ i ] );
 			}
 		},
 	} );
@@ -112,8 +150,8 @@ const updateEmailStatus = function updateEmailStatus() {
 			dataType: 'text',
 			success: $.proxy( function( res ) {
 				res = LP.parseJSON( res );
-				for ( var i in res ) {
-					$( '#email-' + i + ' .status' ).toggleClass( 'enabled', res[i] );
+				for ( const i in res ) {
+					$( '#email-' + i + ' .status' ).toggleClass( 'enabled', res[ i ] );
 				}
 			}, this ),
 		} );
@@ -121,7 +159,7 @@ const updateEmailStatus = function updateEmailStatus() {
 };
 
 const toggleSalePriceSchedule = function toggleSalePriceSchedule() {
-	var $el = $( this ),
+	const $el = $( this ),
 		id = $el.attr( 'id' );
 
 	if ( id === '_lp_sale_price_schedule' ) {
@@ -138,13 +176,13 @@ const toggleSalePriceSchedule = function toggleSalePriceSchedule() {
 };
 
 const callbackFilterTemplates = function callbackFilterTemplates() {
-	var $link = $( this );
+	const $link = $( this );
 
 	if ( $link.hasClass( 'current' ) ) {
 		return false;
 	}
 
-	var $templatesList = $( '#learn-press-template-files' ),
+	const $templatesList = $( '#learn-press-template-files' ),
 		$templates = $templatesList.find( 'tr[data-template]' ),
 		template = $link.data( 'template' ),
 		filter = $link.data( 'filter' );
@@ -172,19 +210,19 @@ const callbackFilterTemplates = function callbackFilterTemplates() {
 
 const toggleEmails = function toggleEmails( e ) {
 	e.preventDefault();
-	var $button = $( this ),
+	const $button = $( this ),
 		status = $button.data( 'status' );
 
 	$.ajax( {
 		url: '',
 		data: {
 			'lp-ajax': 'update_email_status',
-			status: status,
+			status,
 		},
-		success: function( response ) {
+		success( response ) {
 			response = LP.parseJSON( response );
-			for ( var i in response ) {
-				$( '#email-' + i + ' .status' ).toggleClass( 'enabled', response[i] );
+			for ( const i in response ) {
+				$( '#email-' + i + ' .status' ).toggleClass( 'enabled', response[ i ] );
 			}
 		},
 	} );
@@ -193,7 +231,7 @@ const toggleEmails = function toggleEmails( e ) {
 const duplicatePost = function duplicatePost( e ) {
 	e.preventDefault();
 
-	var _self = $( this ),
+	const _self = $( this ),
 		_id = _self.data( 'post-id' );
 
 	$.ajax( {
@@ -202,7 +240,7 @@ const duplicatePost = function duplicatePost( e ) {
 			'lp-ajax': 'duplicator',
 			id: _id,
 		},
-		success: function( response ) {
+		success( response ) {
 			response = LP.parseJSON( response );
 
 			if ( response.success ) {
@@ -215,7 +253,7 @@ const duplicatePost = function duplicatePost( e ) {
 };
 
 const importCourses = function importCourses() {
-	var $container = $( '#learn-press-install-sample-data-notice' ),
+	const $container = $( '#learn-press-install-sample-data-notice' ),
 		action = $( this ).attr( 'data-action' );
 	if ( ! action ) {
 		return;
@@ -237,12 +275,12 @@ const importCourses = function importCourses() {
 			action: 'learnpress_install_sample_data',
 			yes: action,
 		},
-		success: function( response ) {
+		success( response ) {
 			response = LP.parseJSON( response );
 			if ( response.url ) {
 				$.ajax( {
 					url: response.url,
-					success: function() {
+					success() {
 						$container
 							.find( '.install-sample-data-notice' ).html( response.message ).slideDown()
 							.siblings( '.install-sample-data-loading' ).slideUp();
@@ -258,7 +296,7 @@ const importCourses = function importCourses() {
 };
 
 const onChangeCoursePrices = function onChangeCoursePrices( e ) {
-	var _self = $( this ),
+	const _self = $( this ),
 		_price = $( '#_lp_price' ),
 		_sale_price = $( '#_lp_sale_price' ),
 		_target = $( e.target ).attr( 'id' );
@@ -273,7 +311,7 @@ const onChangeCoursePrices = function onChangeCoursePrices( e ) {
 };
 
 const onChangeSaleStartDate = function onChangeSaleStartDate( e ) {
-	var _sale_start_date = $( this ),
+	const _sale_start_date = $( this ),
 		_sale_end_date = $( '#_lp_sale_end' ),
 		_start_date = Date.parse( _sale_start_date.val() ),
 		_end_date = Date.parse( _sale_end_date.val() ),
@@ -292,7 +330,7 @@ const onChangeSaleStartDate = function onChangeSaleStartDate( e ) {
 };
 
 const onChangeSaleEndDate = function onChangeSaleEndDate( e ) {
-	var _sale_end_date = $( this ),
+	const _sale_end_date = $( this ),
 		_sale_start_date = $( '#_lp_sale_start' ),
 		_start_date = Date.parse( _sale_start_date.val() ),
 		_end_date = Date.parse( _sale_end_date.val() ),
@@ -314,6 +352,7 @@ const onReady = function onReady() {
 	initSelect2();
 	initTooltips();
 	initSingleCoursePermalink();
+	lpMetaboxCustomFields();
 
 	$( '.learn-press-tabs' ).LP( 'AdminTab' );
 

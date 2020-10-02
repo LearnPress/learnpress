@@ -17,6 +17,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 
 		if ( $nonce && wp_verify_nonce( $nonce, 'reset-color' ) ) {
 			$schemas = get_option( 'learn_press_color_schemas' );
+
 			if ( $schemas ) {
 				foreach ( $schemas as $k => $schema ) {
 					$colors = self::get_colors();

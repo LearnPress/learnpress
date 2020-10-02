@@ -116,7 +116,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				array(
 					'title'   => __( 'Publish Profile', 'learnpress' ),
 					'id'      => 'publish_profile',
-					'default' => 'no',
+					'default' => 'yes',
 					'type'    => 'yes-no',
 					'desc'    => __( 'User course data will be public.', 'learnpress' ),
 				),

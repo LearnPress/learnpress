@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  * Mixin
  */
@@ -1050,24 +1051,24 @@ ul .clearfix {
     opacity: 1; }
 
 .learnpress .rwmb-field {
-  margin-bottom: 20px;
-  position: relative; }
+  position: relative;
+  margin-bottom: 20px; }
   .learnpress .rwmb-field .rwmb-label {
     display: block;
-    margin-bottom: 5px;
     float: left;
     width: 190px;
+    margin-bottom: 5px;
     font-size: 14px;
     _text-transform: capitalize; }
     .learnpress .rwmb-field .rwmb-label label > small {
       display: block;
       color: #999;
-      font-style: italic;
-      font-weight: normal; }
+      font-weight: normal;
+      font-style: italic; }
   .learnpress .rwmb-field .rwmb-input {
-    margin-left: 190px;
     float: none;
-    width: auto; }
+    width: auto;
+    margin-left: 190px; }
     .learnpress .rwmb-field .rwmb-input input[type="checkbox"],
     .learnpress .rwmb-field .rwmb-input input[type="radio"] {
       margin: 1px 5px 0 0; }
@@ -1080,67 +1081,69 @@ ul .clearfix {
     .learnpress .rwmb-field .description code {
       padding: 3px 3px 3px 0; }
     .learnpress .rwmb-field .description.err {
-      color: #FF0000; }
+      color: #f00; }
   .learnpress .rwmb-field .rwmb-input-list {
     margin-left: 0; }
   .learnpress .rwmb-field #course_evaluation_method_quiz_options {
-    margin-left: 25px;
-    position: relative; }
-    .learnpress .rwmb-field #course_evaluation_method_quiz_options:after {
+    position: relative;
+    margin-left: 25px; }
+    .learnpress .rwmb-field #course_evaluation_method_quiz_options::after {
       position: absolute;
+      z-index: 10;
       top: 0;
-      left: 0;
       right: 0;
       bottom: 0;
+      left: 0;
       opacity: 0.5;
-      content: '';
-      background: #FFF;
-      z-index: 10; }
-  .learnpress .rwmb-field input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options:after {
+      background: #fff;
+      content: ""; }
+  .learnpress .rwmb-field input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options::after {
     display: none; }
   .learnpress .rwmb-field.rwmb-heading-wrapper h4 {
-    font-size: 16px;
+    display: inline-block;
     margin: 0 0 5px 0;
     padding: 0 0 0;
     border-bottom: 2px solid #563d7c;
-    display: inline-block;
+    font-size: 16px;
     text-transform: initial; }
   .learnpress .rwmb-field.disabled .field-overlay {
-    content: '';
     position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 10;
-    background: #FFF;
-    opacity: 0.6; }
+    opacity: 0.6;
+    background: #fff;
+    content: ""; }
   .learnpress .rwmb-field.rwmb-text-wrapper .rwmb-text {
     width: 50%;
     min-width: 200px; }
-  .learnpress .rwmb-field.rwmb-duration-wrapper .rwmb-input select, .learnpress .rwmb-field.rwmb-duration-wrapper .rwmb-input input {
+  .learnpress .rwmb-field.rwmb-duration-wrapper .rwmb-input select,
+  .learnpress .rwmb-field.rwmb-duration-wrapper .rwmb-input input {
     vertical-align: top; }
 
-.learnpress .lp-course-sale_start-field.hide, .learnpress .lp-course-sale_end-field.hide {
+.learnpress .lp-course-sale_start-field.hide,
+.learnpress .lp-course-sale_end-field.hide {
   display: none; }
 
 .learnpress.lp-submenu-settings .lp-admin-settings-buttons {
-  border-top: 1px solid #DDD;
+  margin-bottom: 0;
   padding-top: 20px;
-  margin-bottom: 0; }
+  border-top: 1px solid #ddd; }
   .learnpress.lp-submenu-settings .lp-admin-settings-buttons #learn-press-reset-settings {
     float: right; }
 
 .learnpress.lp-submenu-settings .rwmb-input {
-  color: #000;
-  margin-left: 270px;
   float: none;
-  width: auto; }
+  width: auto;
+  margin-left: 270px;
+  color: #000; }
 
 .learnpress .rwmb-google-fonts-wrapper .rwmb-input label {
-  font-weight: bold;
   display: block;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  font-weight: bold; }
 
 .learnpress .rwmb-google-fonts-wrapper .rwmb-input input {
   width: 90%; }
@@ -1159,17 +1162,73 @@ ul .clearfix {
   .learnpress .lp-item-assigned li {
     margin: 0; }
     .learnpress .lp-item-assigned li a {
-      margin-bottom: 10px;
-      display: inline-block; }
+      display: inline-block;
+      margin-bottom: 10px; }
 
 @media screen and (max-width: 1280px) {
   .learnpress #meta-box-tab-course_settings .rwmb-field .rwmb-label {
-    width: auto;
-    float: none; }
+    float: none;
+    width: auto; }
   .learnpress #meta-box-tab-course_settings .rwmb-field .rwmb-input {
-    margin-left: 0;
+    float: left;
     width: 100%;
-    float: left; } }
+    margin-left: 0; } }
+
+.lp-metabox__custom-fields table {
+  width: 100%;
+  max-width: max-content;
+  padding: 0 !important; }
+  .lp-metabox__custom-fields table th {
+    padding: 7px 0 7px 7px !important; }
+    .lp-metabox__custom-fields table th.sort {
+      width: 17px;
+      padding: 7px !important; }
+  .lp-metabox__custom-fields table td {
+    position: relative;
+    padding: 4px 0 4px 7px !important;
+    vertical-align: middle !important; }
+    .lp-metabox__custom-fields table td.sort {
+      width: 17px;
+      padding-right: 7px !important;
+      background: #f9f9f9;
+      font-size: 15px;
+      text-align: center;
+      cursor: move; }
+      .lp-metabox__custom-fields table td.sort::before {
+        height: 100%;
+        color: #999;
+        font-family: Dashicons;
+        text-align: center;
+        content: "\f333"; }
+    .lp-metabox__custom-fields table td .delete {
+      display: block;
+      position: relative;
+      width: 1em;
+      height: 1em;
+      font-size: 1.2em;
+      text-indent: -9999px; }
+      .lp-metabox__custom-fields table td .delete::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        color: #999;
+        font-family: Dashicons;
+        font-weight: 400;
+        font-variant: normal;
+        line-height: 1;
+        text-align: center;
+        text-indent: 0;
+        text-transform: none;
+        content: "";
+        speak: none;
+        -webkit-font-smoothing: antialiased; }
+      .lp-metabox__custom-fields table td .delete:hover::before {
+        color: #a00; }
+    .lp-metabox__custom-fields table td:last-child {
+      padding-right: 7px !important; }
 
 .learn-press-tabs.vertical .tabs-heading {
   border: 1px solid #ddd;

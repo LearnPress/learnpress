@@ -16,12 +16,12 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * @var mixed|null
 	 */
-	//public $method_title = '';
+	// public $method_title = '';
 
 	/**
 	 * @var null
 	 */
-	//public $method_description = null;
+	// public $method_description = null;
 
 	/**
 	 * @var null
@@ -98,7 +98,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		if ( false !== ( $this->stored = get_option( 'learn_press_' . $this->id ) ) ) {
 			foreach ( $this->stored as $prop => $value ) {
 				$prop   = preg_replace( '~[-]+~', '_', $prop );
-				$setter = array( $this, "set_" . $prop );
+				$setter = array( $this, 'set_' . $prop );
 				if ( is_callable( $setter ) ) {
 					call_user_func_array( $setter, array( $value ) );
 				} elseif ( property_exists( $this, $prop ) ) {
@@ -262,14 +262,18 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 	public function admin_options() {
 		$settings = $this->get_settings();
-		array_unshift( $settings,
+
+		array_unshift(
+			$settings,
 			array(
 				'title' => $this->get_method_title(),
 				'desc'  => $this->get_method_description(),
-				'type'  => 'heading'
+				'type'  => 'heading',
 			)
 		);
+
 		$settings = $this->sanitize_settings( $settings );
+
 		LP_Meta_Box_Helper::render_fields( $settings );
 	}
 

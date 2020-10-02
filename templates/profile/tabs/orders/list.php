@@ -6,64 +6,72 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 $profile = LP_Profile::instance();
 
 $query_orders = $profile->query_orders( array( 'fields' => 'ids' ) );
+
 if ( ! $query_orders['items'] ) {
 	learn_press_display_message( __( 'No orders!', 'learnpress' ) );
-
 	return;
-} ?>
+}
+?>
 
-<h3 class="profile-heading"><?php _e( 'My Orders', 'learnpress' ); ?></h3>
+<h3 class="profile-heading"><?php esc_html_e( 'My Orders', 'learnpress' ); ?></h3>
 
 <table class="lp-list-table profile-list-orders profile-list-table">
+	<thead>
+		<tr class="order-row">
+			<th class="column-order-number"><?php esc_html_e( 'Order', 'learnpress' ); ?></th>
+			<th class="column-order-total"><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
+			<th class="column-order-status"><?php esc_html_e( 'Status', 'learnpress' ); ?></th>
+			<th class="column-order-date"><?php esc_html_e( 'Date', 'learnpress' ); ?></th>
+			<th class="column-order-actions"><?php esc_html_e( 'Actions', 'learnpress' ); ?></th>
+		</tr>
+	</thead>
 
-    <thead>
-    <tr class="order-row">
-        <th class="column-order-number"><?php _e( 'Order', 'learnpress' ); ?></th>
-        <th class="column-order-total"><?php _e( 'Total', 'learnpress' ); ?></th>
-        <th class="column-order-status"><?php _e( 'Status', 'learnpress' ); ?></th>
-        <th class="column-order-date"><?php _e( 'Date', 'learnpress' ); ?></th>
-    </tr>
-    </thead>
+	<tbody>
+		<?php
+		foreach ( $query_orders['items'] as $order_id ) {
+			$order = learn_press_get_order( $order_id );
+			?>
 
-    <tbody>
-	<?php foreach ( $query_orders['items'] as $order_id ) {
-		$order = learn_press_get_order( $order_id ); ?>
-        <tr class="order-row">
-            <td class="column-order-number">
-                <a href="<?php echo $order->get_view_order_url(); ?>"><?php echo $order->get_order_number(); ?></a>
-				<?php
-				if ( $actions = $order->get_profile_order_actions() ) {
-					foreach ( $actions as $action ) {
-						printf( '<a href="%s">%s</a>', $action['url'], $action['text'] );
+			<tr class="order-row">
+				<td class="column-order-number">
+					<a href="<?php echo esc_html( $order->get_view_order_url() ); ?>">
+						<?php echo esc_html( $order->get_order_number() ); ?>
+					</a>
+				</td>
+				<td class="column-order-total"><?php echo $order->get_formatted_order_total(); ?></td>
+				<td class="column-order-status">
+					<span class="lp-label label-<?php echo esc_attr( $order->get_status() ); ?>">
+						<?php echo $order->get_order_status_html(); ?>
+					</span>
+				</td>
+				<td class="column-order-date"><?php echo $order->get_order_date(); ?></td>
+				<td class="column-order-actions">
+					<?php
+					$actions = $order->get_profile_order_actions();
+
+					if ( $actions ) {
+						foreach ( $actions as $action ) {
+							printf( '<a href="%s">%s</a>', esc_url( $action['url'] ), $action['text'] );
+						}
 					}
-				}
-				?>
-            </td>
-            <td class="column-order-total"><?php echo $order->get_formatted_order_total(); ?></td>
-            <td class="column-order-status">
-                <span class="lp-label label-<?php echo esc_attr( $order->get_status() ); ?>"><?php echo $order->get_order_status_html(); ?></span>
-            </td>
-            <td class="column-order-date"><?php echo $order->get_order_date(); ?></td>
-        </tr>
-	<?php } ?>
-    </tbody>
+					?>
+				</td>
+			</tr>
+		<?php } ?>
+	</tbody>
 
-    <tfoot>
-    <tr class="list-table-nav">
-        <td colspan="2" class="nav-text"><?php echo $query_orders->get_offset_text(); ?></td>
-        <td colspan="2" class="nav-pages"><?php $query_orders->get_nav_numbers( true ); ?></td>
-    </tr>
-    </tfoot>
-
+	<tfoot>
+		<tr class="list-table-nav">
+			<td colspan="2" class="nav-text"><?php echo $query_orders->get_offset_text(); ?></td>
+			<td colspan="2" class="nav-pages"><?php $query_orders->get_nav_numbers( true ); ?></td>
+		</tr>
+	</tfoot>
 </table>

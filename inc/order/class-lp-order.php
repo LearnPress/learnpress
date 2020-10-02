@@ -925,8 +925,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_cancel_order_url( $force = false ) {
-
 			$url = false;
+
 			if ( $this->has_status( 'pending' ) ) {
 				$user = learn_press_get_current_user();
 				$url  = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
@@ -948,19 +948,21 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_profile_order_actions() {
-			$actions    = array();
-			$cancel_url = $this->get_cancel_order_url();
+			$actions = array(
+				'view' => array(
+					'url'  => $this->get_view_order_url(),
+					'text' => esc_html__( 'View', 'learnpress' ),
+				),
+			);
 
-			if ( $cancel_url ) {
+			if ( $this->get_cancel_order_url() ) {
 				$actions['cancel'] = array(
 					'url'  => $this->get_cancel_order_url(),
-					'text' => __( 'Cancel', 'learnpress' ),
+					'text' => esc_html__( 'Cancel', 'learnpress' ),
 				);
 			}
 
-			$actions = apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
-
-			return $actions;
+			return apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
 		}
 
 		public function add_note( $note = null ) {

@@ -151,7 +151,9 @@ class LP_Helper {
 		} elseif ( func_num_args() == 0 ) {
 			return null;
 		}
+
 		$classes = array();
+
 		foreach ( func_get_args() as $class ) {
 			if ( is_string( $class ) ) {
 				$cls     = explode( ' ', $class );
@@ -160,6 +162,7 @@ class LP_Helper {
 				$classes = array_merge( $classes, $class );
 			}
 		}
+
 		$classes = array_filter( $classes );
 		$classes = array_unique( $classes );
 

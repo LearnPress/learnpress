@@ -9,7 +9,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'search'                              => array(
+			'search'         => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'search_courses' ),
@@ -17,15 +17,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 			),
 
-			'(?P<course_id>[\w]+)/search-content' => array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'search_course_content' ),
-					'permission_callback' => array( $this, 'check_admin_permission' ),
-				),
-			),
-
-			'(?P<key>[\w]+)'                      => array(
+			'(?P<key>[\w]+)' => array(
 				'args'   => array(
 					'id' => array(
 						'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
@@ -50,80 +42,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			),
-			'(?P<course_id>[\w]+)/item-comments/(?P<item_id>[\w]+)' => array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_item_comments' ),
-					'permission_callback' => array( $this, 'check_admin_permission' ),
-				),
-			),
 		);
 
 		parent::register_routes();
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function search_course_content( $request ) {
-		$s         = $request['s'];
-		$course_id = $request['course_id'];
-
-		$course = learn_press_get_course( $course_id );
-
-		$items = $course->get_items();
-
-		$query = new WP_Query(
-			array(
-				's'              => $s,
-				'post__in'       => $items,
-				'posts_per_page' => - 1,
-			)
-		);
-
-		$response = array(
-			'success' => true,
-			'items'   => array(),
-		);
-
-		if ( $query->posts ) {
-			foreach ( $query->posts as $post ) {
-				$response['items'][] = $post->ID;
-			}
-		}
-
-		return rest_ensure_response( $response );
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function get_item_comments( $request ) {
-		ob_start();
-
-		$item = LP_Course_Item::get_item( $request['item_id'] );
-
-		if ( $item->setup_postdata() ) {
-			if ( comments_open() || get_comments_number() ) {
-				global $withcomments;
-				$withcomments = true;
-				comments_template();
-			}
-
-			$item->reset_postdata();
-		}
-
-		$comments = ob_get_clean();
-
-		$response = array(
-			'comments' => $comments,
-		);
-
-		return rest_ensure_response( $response );
 	}
 
 	public function check_admin_permission() {
@@ -176,6 +97,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		if ( $query->have_posts() ) {
 			global $post;
+
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				$course = learn_press_get_course( $post->ID );

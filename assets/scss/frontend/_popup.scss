@@ -666,6 +666,7 @@
 		flex: 1;
 
 		.lp-button {
+			position: relative;
 			margin: 0 10px 0 0;
 			padding: 12px 29px;
 			border-color: $secondary-color;
@@ -673,11 +674,61 @@
 
 			&.instant-check {
 
-				&::before {
-					margin-right: 5px;
-					font-family: "Font Awesome 5 Free";
-					content: "\f058";
+				.instant-check {
+
+					&__icon {
+
+						margin-right: 5px;
+
+						&::before {
+							font-family: "Font Awesome 5 Free";
+							content: "\f058";
+						}
+					}
+
+					&__info {
+						visibility: hidden;
+						position: absolute;
+						top: 100%;
+						left: 0;
+						margin-top: 3px;
+						padding: 11px 20px;
+						border-radius: 3px;
+						background: #eee;
+						white-space: nowrap;
+						text-transform: none;
+					}
 				}
+
+				&:hover {
+
+					.instant-check__info {
+						visibility: visible;
+						position: absolute;
+						top: 100%;
+						left: 0;
+						margin-top: 3px;
+						padding: 11px 11px;
+						border-radius: 3px;
+						color: #333;
+						background: #eee;
+						white-space: nowrap;
+					}
+				}
+
+				&.loading {
+
+					.instant-check__icon {
+						display: inline-block;
+						animation: lp-rotating 1s linear infinite;
+
+						&::before {
+							font-weight: 800;
+							content: "\f110";
+						}
+					}
+				}
+
 			}
 
 			&:hover {
@@ -772,24 +823,13 @@
 
 			.quiz-buttons {
 				display: flex;
-
-				.button-left,
-				.button-right {
-					flex: 1;
-				}
-
-				.button-left {
-
-					.lp-button {
-						padding: 13px 36px;
-					}
-				}
+				justify-content: center;
+				text-align: center;
 
 				.button-right {
-					text-align: right;
 
 					.lp-button {
-						margin: 0 0 10px 10px;
+						margin: 0 0 0 15px;
 					}
 				}
 
@@ -835,22 +875,13 @@
 
 				&.align-center {
 					display: block;
+					text-align: center;
 
 
 					.button-left {
 						text-align: center;
 
 						&.fixed {
-							//position: fixed;
-							//bottom: 0px;
-							//z-index: 99999;
-							//_width: 200px;
-							//left: 50%;
-							//transform: translateX(-50%);
-							//margin-left: 200px; // Course curriculum / 2
-							//height: 50px;
-
-
 							position: fixed;
 							z-index: 99999;
 							bottom: 0;
@@ -860,10 +891,6 @@
 							margin-left: 237px;
 							transform: translateX(-50%);
 						}
-					}
-
-					.button-right {
-						display: none;
 					}
 				}
 
@@ -1530,15 +1557,38 @@
 		}
 
 		.btn-show-hint {
+			position: relative;
 			margin: 0 0 0 10px;
 			padding: 0;
+			outline: none;
 			color: #00adff;
 			background: transparent;
-			font-size: 21px;
+			font-size: 0;
+			text-decoration: none;
 
 			&::before {
 				font-family: "Font Awesome 5 Free";
-				content: "\f05a";
+				font-size: 18px;
+				content: "\f059";
+			}
+
+			&:hover {
+
+				span {
+					position: absolute;
+					bottom: 100%;
+					left: 0;
+					width: auto;
+					padding: 6px 9px;
+					border-radius: 2px;
+					color: #333;
+					background: #eee;
+					font-size: 14px;
+					font-weight: 400;
+					line-height: 1;
+					white-space: nowrap;
+					text-transform: none;
+				}
 			}
 		}
 

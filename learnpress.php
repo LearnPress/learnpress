@@ -531,7 +531,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( LP_COURSE_CPT, 'thumbnail' );
 
-			if ( ! $size = $this->settings()->get( 'course_thumbnail_dimensions' ) ) {
+			$size = $this->settings()->get( 'course_thumbnail_dimensions' );
+
+			if ( ! $size ) {
 				$size = array( 500, 300 );
 			}
 

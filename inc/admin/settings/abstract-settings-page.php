@@ -41,12 +41,41 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	public function admin_page( $section = null, $tab = '' ) {
 		$settings = $this->get_settings( $section, $tab );
 		$settings = $this->sanitize_settings( $settings );
+
 		do_action( 'learn-press/settings-render' );
 
 		if ( $settings ) {
 			LP_Meta_Box_Helper::render_fields( $settings );
 		} else {
-			echo __( 'No setting available.', 'learnpress' );
+			echo esc_html__( 'No setting available.', 'learnpress' );
+		}
+	}
+
+	/**
+	 * Display admin page in LP4.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 */
+	public function admin_page_settings( $section = null, $tab = '' ) {
+		$settings = $this->get_settings( $section, $tab );
+		$settings = $this->sanitize_settings( $settings );
+
+		do_action( 'learn-press/settings-render' );
+
+		if ( $settings ) {
+			LP_Meta_Box_Helper::output_fields( $settings );
+		} else {
+			echo esc_html__( 'No setting available.', 'learnpress' );
+		}
+	}
+
+	public function save_settings( $section = null, $tab = '' ) {
+		$settings = $this->get_settings( $section, $tab );
+		$settings = $this->sanitize_settings( $settings );
+
+		if ( $settings ) {
+			LP_Meta_Box_Helper::save_fields( $settings );
 		}
 	}
 
@@ -86,7 +115,6 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	 * @return bool|mixed
 	 */
 	public function get_settings( $section = '', $tab = '' ) {
-
 		if ( ! $section ) {
 			$section = $this->get_sections();
 			$section = array_keys( $section );
@@ -99,6 +127,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		foreach ( $section as $sec ) {
 			if ( is_callable( array( $this, 'get_settings_' . $sec ) ) ) {
 				$settings = call_user_func( array( $this, 'get_settings_' . $sec ) );
+
 				if ( $settings ) {
 					$return = array_merge( $return, $settings );
 				}

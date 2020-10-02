@@ -9,9 +9,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * @deprecated
- */
 class LP_Settings_Checkout extends LP_Abstract_Settings_Page {
 
 	/**

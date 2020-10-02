@@ -129,10 +129,9 @@
 
           if (!response.success) {
             return;
-          } // Remove crop element
+          }
 
-
-          self.$('.lp-avatar-crop-image').remove(); // try to find avatar element and change the image
+          self.$('.lp-avatar-crop-image').remove();
 
           _$('.lp-user-profile-avatar').html(response.avatar);
 
@@ -145,16 +144,14 @@
       return selector ? _$(this.$el).find(selector) : _$(this.$el);
     },
     _removePhoto: function _removePhoto(e) {
-      e.preventDefault();
+      e.preventDefault(); // eslint-disable-next-line no-alert
 
-      if (!confirm('Remove?')) {
+      if (!confirm('Are you sure?')) {
         return;
-      } // TODO: ajax to remove
-
+      }
 
       this.$().removeAttr('data-custom');
-      this.$('.profile-picture').toggleClass('profile-avatar-current'); //this.$('#lp-remove-upload-photo').hide();
-
+      this.$('.profile-picture').toggleClass('profile-avatar-current');
       this.$('#submit').prop('disabled', false);
 
       _$('.lp-user-profile-avatar').html(this.$('.profile-avatar-current').find('img').clone());
@@ -189,8 +186,7 @@
       if (response.url) {
         this.avatar = response.url;
 
-        _$('<img/>') // Make in memory copy of image to avoid css issues
-        .attr('src', response.url).load(function () {
+        _$('<img/>').attr('src', response.url).load(function () {
           that.model.set(_$.extend(response, {
             width: this.width,
             height: this.height
@@ -241,8 +237,7 @@
         data = $view.model.toJSON(),
         $crop = _$(LP.template('tmpl-crop-user-avatar')(data));
 
-    $crop.appendTo($view.$('#profile-avatar-uploader')); //$crop.appendTo($view.$('.lp-avatar-preview').addClass('croping'));
-
+    $crop.appendTo($view.$('#profile-avatar-uploader'));
     $view.$crop = $crop;
     var $img = $crop.find('img'),
         wx = 0,
@@ -324,8 +319,7 @@
           nw = wx + ui.value / 100 * data.width * 2;
           nh = hx + ui.value / 100 * data.height * 2;
           var nl = data.viewWidth / 2 - nw * dd,
-              // parseInt((data.viewWidth - nw) / 2),
-          nt = data.viewHeight / 2 - nh * bb; //parseInt((data.viewHeight - nh) / 2);
+              nt = data.viewHeight / 2 - nh * bb;
 
           if (nl > 0) {
             nl = 0;
@@ -413,7 +407,7 @@
         if (response.result == 'error') {
           $form.find('input').attr('disabled', false);
 
-          _$('#learn-press-form-login input[type="text"]').focus();
+          _$('#learn-press-form-login input[type="text"]').trigger('focus');
         }
 
         if (response.redirect) {
@@ -424,7 +418,7 @@
         LP.showMessages('', $form, 'LOGIN_ERROR');
         $form.find('input').attr('disabled', false);
 
-        _$('#learn-press-form-login input[type="text"]').focus();
+        _$('#learn-press-form-login input[type="text"]').trigger('focus');
       }
     });
     return false;
@@ -482,8 +476,7 @@
     if (typeof lpProfileUserSettings !== 'undefined') {
       args.viewWidth = parseInt(lpProfileUserSettings.avatar_size.width);
       args.viewHeight = parseInt(lpProfileUserSettings.avatar_size.height);
-    } // avatar
-
+    }
 
     new UserProfile(args);
     Profile.recoverOrder();
@@ -533,11 +526,13 @@
 
   var Profile = {
     recoverOrder: function recoverOrder(e) {
+      var _this2 = this;
+
       var $wrap = _$('.order-recover'),
           $buttonRecoverOrder = $wrap.find('.button-recover-order'),
           $input = $wrap.find('input[name="order-key"]');
 
-      function recoverOrder() {
+      var recoverOrder = function recoverOrder() {
         $buttonRecoverOrder.addClass('disabled').attr('disabled', 'disabled');
         $wrap.find('.learn-press-message').remove();
 
@@ -564,11 +559,11 @@
             $buttonRecoverOrder.removeClass('disabled').removeAttr('disabled', '');
           }
         });
-      }
+      };
 
       $buttonRecoverOrder.on('click', recoverOrder);
       $input.on('change', function () {
-        $buttonRecoverOrder.prop('disabled', !this.value);
+        $buttonRecoverOrder.prop('disabled', !_this2.value);
       });
     }
   };

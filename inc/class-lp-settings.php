@@ -153,8 +153,10 @@ class LP_Settings {
 		if ( $this->_prefix && strpos( $var, $this->_prefix ) === false ) {
 			$var = $this->_prefix . $var;
 		}
+
 		$segs   = explode( '.', $var );
 		$return = $this->_get_option( $this->_options, $var, $default );
+
 		if ( $return == '' || is_null( $return ) ) {
 			$return = $default;
 		}
@@ -308,8 +310,8 @@ class LP_Settings {
 
 		$format = array_fill( 0, sizeof( $options ), '%s' );
 		$q      = $wpdb->prepare( "
-			SELECT option_name, option_value 
-			FROM $wpdb->options 
+			SELECT option_name, option_value
+			FROM $wpdb->options
 			WHERE 1
 			AND option_name IN(" . join( ',', $format ) . ")
 		", $options );

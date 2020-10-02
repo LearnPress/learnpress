@@ -87,147 +87,21 @@ this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /************************************************************************/
 /******/ ({
 
-/***/ "./assets/src/js/frontend/data-controls.js":
-/*!*************************************************!*\
-  !*** ./assets/src/js/frontend/data-controls.js ***!
-  \*************************************************/
-/*! exports provided: apiFetch, select, dispatch, controls */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apiFetch", function() { return apiFetch; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select", function() { return select; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return dispatch; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "controls", function() { return controls; });
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-
-
-var createRegistryControl = function createRegistryControl(registryControl) {
-  registryControl.isRegistryControl = true;
-  return registryControl;
-};
-
-var apiFetch = function apiFetch(request) {
-  return {
-    type: 'API_FETCH',
-    request: request
-  };
-};
-function select(storeKey, selectorName) {
-  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    args[_key - 2] = arguments[_key];
-  }
-
-  return {
-    type: 'SELECT',
-    storeKey: storeKey,
-    selectorName: selectorName,
-    args: args
-  };
-}
-function dispatch(storeKey, actionName) {
-  for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-    args[_key2 - 2] = arguments[_key2];
-  }
-
-  return {
-    type: 'DISPATCH',
-    storeKey: storeKey,
-    actionName: actionName,
-    args: args
-  };
-}
-
-var resolveSelect = function resolveSelect(registry, _ref) {
-  var storeKey = _ref.storeKey,
-      selectorName = _ref.selectorName,
-      args = _ref.args;
-  return new Promise(function (resolve) {
-    var hasFinished = function hasFinished() {
-      return registry.select('').hasFinishedResolution(storeKey, selectorName, args);
-    };
-
-    var getResult = function getResult() {
-      return registry.select(storeKey)[selectorName].apply(null, args);
-    };
-
-    var result = getResult();
-
-    if (hasFinished()) {
-      return resolve(result);
-    }
-
-    var unsubscribe = registry.subscribe(function () {
-      if (hasFinished()) {
-        unsubscribe();
-        resolve(getResult());
-      }
-    });
-  });
-};
-
-var controls = {
-  API_FETCH: function API_FETCH(_ref2) {
-    var request = _ref2.request;
-    return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()(request);
-  },
-  SELECT: createRegistryControl(function (registry) {
-    return function (_ref3) {
-      var _registry$select;
-
-      var storeKey = _ref3.storeKey,
-          selectorName = _ref3.selectorName,
-          args = _ref3.args;
-      return registry.select(storeKey)[selectorName].hasResolver ? resolveSelect(registry, {
-        storeKey: storeKey,
-        selectorName: selectorName,
-        args: args
-      }) : (_registry$select = registry.select(storeKey))[selectorName].apply(_registry$select, _toConsumableArray(args));
-    };
-  }),
-  DISPATCH: createRegistryControl(function (registry) {
-    return function (_ref4) {
-      var _registry$dispatch;
-
-      var storeKey = _ref4.storeKey,
-          actionName = _ref4.actionName,
-          args = _ref4.args;
-      return (_registry$dispatch = registry.dispatch(storeKey))[actionName].apply(_registry$dispatch, _toConsumableArray(args));
-    };
-  })
-};
-
-/***/ }),
-
 /***/ "./assets/src/js/frontend/single-course.js":
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
   \*************************************************/
-/*! exports provided: formatDuration, toggleSidebarHandler, initCourseTabs, initCourseSidebar */
+/*! exports provided: default, init, formatDuration, toggleSidebarHandler, initCourseTabs, initCourseSidebar */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggleSidebarHandler", function() { return toggleSidebarHandler; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseTabs", function() { return initCourseTabs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseSidebar", function() { return initCourseSidebar; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
-/* harmony import */ var _data_controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./data-controls */ "./assets/src/js/frontend/data-controls.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -245,24 +119,27 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
-
+/* harmony default export */ __webpack_exports__["default"] = (_single_course_index__WEBPACK_IMPORTED_MODULE_0__["default"]);
+var init = function init() {
+  wp.element.render( /*#__PURE__*/React.createElement(_single_course_index__WEBPACK_IMPORTED_MODULE_0__["default"], null));
+};
 var $ = jQuery;
 var _lodash = lodash,
-    debounce = _lodash.debounce;
+    debounce = _lodash.debounce,
+    throttle = _lodash.throttle;
 var _x = wp.i18n._x;
 function formatDuration(seconds) {
-  var html;
-  var x, d;
-  var day_in_seconds = 3600 * 24;
+  var d;
+  var dayInSeconds = 3600 * 24;
 
-  if (seconds > day_in_seconds) {
-    d = (seconds - seconds % day_in_seconds) / day_in_seconds;
-    seconds = seconds % day_in_seconds;
-  } else if (seconds == day_in_seconds) {
+  if (seconds > dayInSeconds) {
+    d = (seconds - seconds % dayInSeconds) / dayInSeconds;
+    seconds = seconds % dayInSeconds;
+  } else if (seconds == dayInSeconds) {
     return '24:00';
   }
 
-  x = new Date(seconds * 1000).toUTCString().match(/\d{2}:\d{2}:\d{2}/)[0].split(':');
+  var x = new Date(seconds * 1000).toUTCString().match(/\d{2}:\d{2}:\d{2}/)[0].split(':');
 
   if (x[2] === '00') {
     x.splice(2, 1);
@@ -276,7 +153,7 @@ function formatDuration(seconds) {
     x[0] = parseInt(x[0]) + d * 24;
   }
 
-  html = x.join(':');
+  var html = x.join(':');
   return html;
 }
 
@@ -378,112 +255,6 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
   });
 };
 
-var AjaxSearchCourseContent = function AjaxSearchCourseContent(el) {
-  var $form = $(el);
-  var $list = $('#learn-press-course-curriculum');
-  var $input = $form.find('input[name="s"]');
-  var paged = 1;
-  var $sections = $list.find('.section');
-  var $items = $list.find('.course-item');
-  var isSearching = false;
-  var oldSearch = '';
-
-  var submit = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-      var response;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              e.preventDefault();
-
-              if (!isSearching) {
-                _context2.next = 3;
-                break;
-              }
-
-              return _context2.abrupt("return", false);
-
-            case 3:
-              if (!($input.val().length < 3)) {
-                _context2.next = 7;
-                break;
-              }
-
-              $items.removeClass('hide-if-js');
-              $sections.removeClass('hide-if-js');
-              return _context2.abrupt("return");
-
-            case 7:
-              isSearching = true;
-              oldSearch = $input.val();
-              $form.addClass('searching');
-              _context2.next = 12;
-              return wp.apiFetch({
-                path: 'lp/v1/courses/' + lpGlobalSettings.post_id + '/search-content?s=' + $input.val()
-              });
-
-            case 12:
-              response = _context2.sent;
-              $items.each(function () {
-                var $it = $(this);
-
-                if (response.items.indexOf($it.data('id')) !== -1) {
-                  $it.removeClass('hide-if-js');
-                } else {
-                  $it.addClass('hide-if-js');
-                }
-              });
-              $sections.each(function () {
-                var $section = $(this);
-
-                if ($section.find('.course-item:not(.hide-if-js)').length === 0) {
-                  $section.addClass('hide-if-js');
-                } else {
-                  $section.removeClass('hide-if-js');
-                }
-              });
-              isSearching = false;
-
-              if (!(oldSearch !== $input.val())) {
-                _context2.next = 18;
-                break;
-              }
-
-              return _context2.abrupt("return", submit(e));
-
-            case 18:
-              return _context2.abrupt("return", false);
-
-            case 19:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-
-    return function submit(_x3) {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-
-  $input.on('keyup', debounce(function (e) {
-    paged = 1;
-    submit(e);
-  }, 300));
-  $form.on('submit', submit);
-  $form.on('click', '.clear', function (e) {
-    $form.removeClass('searching');
-    $input.val('');
-    submit(e);
-  }).on('click', '.search-results__pagination a', function (e) {
-    e.preventDefault();
-    paged = $(e.target).data('page');
-    submit(e);
-  });
-};
-
 var initCourseTabs = function initCourseTabs() {
   $('#learn-press-course-tabs').on('change', 'input[name="learn-press-course-tab-radio"]', function () {
     var selectedTab = $('input[name="learn-press-course-tab-radio"]:checked').val();
@@ -531,43 +302,6 @@ var initCourseSidebar = function initCourseSidebar() {
   $window.on('scroll.fixed-course-sidebar', onScroll).trigger('scroll.fixed-course-sidebar');
 };
 
-var initItemComments = function initItemComments() {
-  var $toggle = $('#learn-press-item-comments-toggle');
-  $toggle.on('change', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-    var response;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            console.log(this.checked);
-
-            if ($toggle[0].checked) {
-              _context3.next = 3;
-              break;
-            }
-
-            return _context3.abrupt("return");
-
-          case 3:
-            _context3.next = 5;
-            return wp.apiFetch({
-              path: 'lp/v1/courses/14242/item-comments/14266'
-            });
-
-          case 5:
-            response = _context3.sent;
-            $('.learn-press-comments').html(response.comments);
-            new LP.IframeSubmit('#commentform');
-
-          case 8:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, this);
-  })));
-};
-
 
 $(window).on('load', function () {
   var $popup = $('#popup-course');
@@ -575,7 +309,7 @@ $(window).on('load', function () {
   var $curriculum = $('#learn-press-course-curriculum'); // Popup only
 
   if ($popup.length) {
-    $curriculum.scroll(lodash.throttle(function () {
+    $curriculum.on('scroll', throttle(function () {
       var $self = $(this);
       $self.addClass('scrolling');
       timerClearScroll && clearTimeout(timerClearScroll);
@@ -584,7 +318,6 @@ $(window).on('load', function () {
       }, 1000);
     }, 500));
     $('#sidebar-toggle').on('change', toggleSidebarHandler);
-    new AjaxSearchCourseContent($popup.find('.search-course'));
     createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
     LP.toElement('.course-item.current', {
       container: '.curriculum-scrollable:eq(1)',
@@ -601,7 +334,6 @@ $(window).on('load', function () {
   });
   initCourseTabs();
   initCourseSidebar();
-  initItemComments();
   $('.section').each(function () {
     var $section = $(this),
         $toggle = $section.find('.section-toggle');
@@ -620,7 +352,7 @@ $(window).on('load', function () {
       }
 
       LP.Cookies.remove('closed-section-(.*)');
-      LP.Cookies.set('closed-section-' + lpGlobalSettings.post_id, _toConsumableArray(new Set(sections))); //$section.find('.section-content').slideToggle();
+      LP.Cookies.set('closed-section-' + lpGlobalSettings.post_id, _toConsumableArray(new Set(sections)));
     });
   });
   $('.learn-press-progress').each(function () {
@@ -635,15 +367,98 @@ $(window).on('load', function () {
     $active.css('left', -(100 - parseInt(value)) + '%');
   });
   LP.Hook.doAction('course-ready');
-  $(window).on('resize.popup-nav', debounce(function () {
-    var marginLeft = $('#popup-sidebar').width() / 2;
-    var width = $('#learn-press-quiz-app').width();
-    $('.quiz-buttons .button-left.fixed').css({
-      width: width,
-      marginLeft: marginLeft
-    });
-  }, 300)).trigger('resize.popup-nav');
 });
+
+/***/ }),
+
+/***/ "./assets/src/js/frontend/single-course/components/search.js":
+/*!*******************************************************************!*\
+  !*** ./assets/src/js/frontend/single-course/components/search.js ***!
+  \*******************************************************************/
+/*! exports provided: searchCourseContent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchCourseContent", function() { return searchCourseContent; });
+var searchCourseContent = function searchCourseContent() {
+  var popup = document.querySelector('#popup-course');
+  var list = document.querySelector('#learn-press-course-curriculum');
+
+  if (popup && list) {
+    var items = list.querySelector('.curriculum-sections');
+    var form = popup.querySelector('.search-course');
+    var search = popup.querySelector('.search-course input[type="text"]');
+
+    if (!search || !items || !form) {
+      return;
+    }
+
+    var sections = items.querySelectorAll('li.section');
+    var dataItems = items.querySelectorAll('li.course-item');
+    var dataSearch = [];
+    dataItems.forEach(function (item) {
+      var itemID = item.dataset.id;
+      var name = item.querySelector('.item-name');
+      dataSearch.push({
+        id: itemID,
+        name: name ? name.textContent.toLowerCase() : ''
+      });
+    });
+
+    var submit = function submit(event) {
+      event.preventDefault();
+      var inputVal = search.value;
+      form.classList.add('searching');
+
+      if (!inputVal) {
+        form.classList.remove('searching');
+      }
+
+      var outputs = [];
+      dataSearch.forEach(function (i) {
+        if (!inputVal || i.name.match(inputVal.toLowerCase())) {
+          outputs.push(i.id);
+          dataItems.forEach(function (c) {
+            if (outputs.indexOf(c.dataset.id) !== -1) {
+              c.classList.remove('hide-if-js');
+            } else {
+              c.classList.add('hide-if-js');
+            }
+          });
+        }
+      });
+      sections.forEach(function (section) {
+        var listItem = section.querySelectorAll('.course-item');
+        var isTrue = [];
+        listItem.forEach(function (a) {
+          if (outputs.includes(a.dataset.id)) {
+            isTrue.push(a.dataset.id);
+          }
+        });
+
+        if (isTrue.length === 0) {
+          section.classList.add('hide-if-js');
+        } else {
+          section.classList.remove('hide-if-js');
+        }
+      });
+    };
+
+    var clear = form.querySelector('.clear');
+
+    if (clear) {
+      clear.addEventListener('click', function (e) {
+        e.preventDefault();
+        search.value = '';
+        submit(e);
+      });
+    }
+
+    form.addEventListener('submit', submit);
+    search.addEventListener('keyup', submit);
+  }
+};
 
 /***/ }),
 
@@ -662,6 +477,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _learnpress_quiz__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_learnpress_quiz__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store */ "./assets/src/js/frontend/single-course/store/index.js");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_store__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/search */ "./assets/src/js/frontend/single-course/components/search.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -687,6 +503,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+ // import { commentForm } from './components/comment';
 
 var SingleCourse = /*#__PURE__*/function (_Component) {
   _inherits(SingleCourse, _Component);
@@ -702,7 +519,7 @@ var SingleCourse = /*#__PURE__*/function (_Component) {
   _createClass(SingleCourse, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, "this is course", /*#__PURE__*/React.createElement(_learnpress_quiz__WEBPACK_IMPORTED_MODULE_1___default.a, null));
+      return /*#__PURE__*/React.createElement(React.Fragment, null);
     }
   }]);
 
@@ -710,6 +527,14 @@ var SingleCourse = /*#__PURE__*/function (_Component) {
 }(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (SingleCourse);
+
+function run() {
+  Object(_components_search__WEBPACK_IMPORTED_MODULE_3__["searchCourseContent"])(); // commentForm();
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  run();
+});
 
 /***/ }),
 
@@ -734,17 +559,6 @@ var SingleCourse = /*#__PURE__*/function (_Component) {
 /***/ (function(module, exports) {
 
 (function() { module.exports = this["LP"]["quiz"]; }());
-
-/***/ }),
-
-/***/ "@wordpress/api-fetch":
-/*!*******************************************!*\
-  !*** external {"this":["wp","apiFetch"]} ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-(function() { module.exports = this["wp"]["apiFetch"]; }());
 
 /***/ }),
 

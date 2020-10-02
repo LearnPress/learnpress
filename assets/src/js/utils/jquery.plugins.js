@@ -1,42 +1,42 @@
 const $ = window.jQuery || jQuery;
 
 const serializeJSON = function serializeJSON( path ) {
-	var isInput = $( this ).is( 'input' ) || $( this ).is( 'select' ) || $( this ).is( 'textarea' );
-	var unIndexed = isInput ? $( this ).serializeArray() : $( this ).find( 'input, select, textarea' ).serializeArray(),
+	const isInput = $( this ).is( 'input' ) || $( this ).is( 'select' ) || $( this ).is( 'textarea' );
+	let unIndexed = isInput ? $( this ).serializeArray() : $( this ).find( 'input, select, textarea' ).serializeArray(),
 		indexed = {},
 		validate = /(\[([a-zA-Z0-9_-]+)?\]?)/g,
 		arrayKeys = {},
 		end = false;
 	$.each( unIndexed, function() {
-		var that = this,
+		const that = this,
 			match = this.name.match( /^([0-9a-zA-Z_-]+)/ );
 		if ( ! match ) {
 			return;
 		}
-		var keys = this.name.match( validate ),
-			objPath = "indexed['" + match[0] + "']";
+		let keys = this.name.match( validate ),
+			objPath = "indexed['" + match[ 0 ] + "']";
 
 		if ( keys ) {
-			if ( typeof indexed[match[0]] != 'object' ) {
-				indexed[match[0]] = {};
+			if ( typeof indexed[ match[ 0 ] ] != 'object' ) {
+				indexed[ match[ 0 ] ] = {};
 			}
 
 			$.each( keys, function( i, prop ) {
 				prop = prop.replace( /\]|\[/g, '' );
-				var rawPath = objPath.replace( /'|\[|\]/g, '' ),
+				let rawPath = objPath.replace( /'|\[|\]/g, '' ),
 					objExp = '',
 					preObjPath = objPath;
 
 				if ( prop == '' ) {
-					if ( arrayKeys[rawPath] == undefined ) {
-						arrayKeys[rawPath] = 0;
+					if ( arrayKeys[ rawPath ] == undefined ) {
+						arrayKeys[ rawPath ] = 0;
 					} else {
-						arrayKeys[rawPath]++;
+						arrayKeys[ rawPath ]++;
 					}
-					objPath += "['" + arrayKeys[rawPath] + "']";
+					objPath += "['" + arrayKeys[ rawPath ] + "']";
 				} else {
 					if ( ! isNaN( prop ) ) {
-						arrayKeys[rawPath] = prop;
+						arrayKeys[ rawPath ] = prop;
 					}
 					objPath += "['" + prop + "']";
 				}
@@ -49,7 +49,7 @@ const serializeJSON = function serializeJSON( path ) {
 						end = false;
 					}
 
-					var evalString = '' +
+					const evalString = '' +
                         'if( typeof ' + objPath + " == 'undefined'){" + objExp + ';' +
                         '}else{' +
                         'if(end){' +
@@ -63,12 +63,12 @@ const serializeJSON = function serializeJSON( path ) {
 				}
 			} );
 		} else {
-			indexed[match[0]] = this.value;
+			indexed[ match[ 0 ] ] = this.value;
 		}
 	} );
 	if ( path ) {
 		path = "['" + path.replace( '.', "']['" ) + "']";
-		var c = 'try{indexed = indexed' + path + '}catch(ex){console.log(c, ex);}';
+		const c = 'try{indexed = indexed' + path + '}catch(ex){console.log(c, ex);}';
 		eval( c );
 	}
 	return indexed;
@@ -79,19 +79,19 @@ const LP_Tooltip = function LP_Tooltip( options ) {
 		offset: [ 0, 0 ],
 	}, options || {} );
 	return $.each( this, function() {
-		var $el = $( this ),
+		const $el = $( this ),
 			content = $el.data( 'content' );
 		if ( ! content || ( $el.data( 'LP_Tooltip' ) !== undefined ) ) {
 			return;
 		}
 
-		var $tooltip = null;
+		let $tooltip = null;
 		$el.hover( function( e ) {
 			$tooltip = $( '<div class="learn-press-tooltip-bubble"/>' ).html( content ).appendTo( $( 'body' ) ).hide();
-			var position = $el.offset();
+			const position = $el.offset();
 			if ( $.isArray( options.offset ) ) {
-				var top = options.offset[1],
-					left = options.offset[0];
+				const top = options.offset[ 1 ],
+					left = options.offset[ 0 ];
 				if ( $.isNumeric( left ) ) {
 					position.left += left;
 				} else {
@@ -116,12 +116,12 @@ const LP_Tooltip = function LP_Tooltip( options ) {
 };
 
 const hasEvent = function hasEvent( name ) {
-	var events = $( this ).data( 'events' );
+	const events = $( this ).data( 'events' );
 	if ( typeof events.LP == 'undefined' ) {
 		return false;
 	}
 	for ( i = 0; i < events.LP.length; i++ ) {
-		if ( events.LP[i].namespace == name ) {
+		if ( events.LP[ i ].namespace == name ) {
 			return true;
 		}
 	}
@@ -129,26 +129,26 @@ const hasEvent = function hasEvent( name ) {
 };
 
 const dataToJSON = function dataToJSON() {
-	var json = {};
-	$.each( this[0].attributes, function() {
-		var m = this.name.match( /^data-(.*)/ );
+	const json = {};
+	$.each( this[ 0 ].attributes, function() {
+		const m = this.name.match( /^data-(.*)/ );
 		if ( m ) {
-			json[m[1]] = this.value;
+			json[ m[ 1 ] ] = this.value;
 		}
 	} );
 	return json;
 };
 
 const rows = function rows() {
-	var h = $( this ).height();
-	var lh = $( this ).css( 'line-height' ).replace( 'px', '' );
+	const h = $( this ).height();
+	const lh = $( this ).css( 'line-height' ).replace( 'px', '' );
 	$( this ).attr( { height: h, 'line-height': lh } );
 	return Math.floor( h / parseInt( lh ) );
 };
 
 const checkLines = function checkLines( p ) {
 	return this.each( function() {
-		var $e = $( this ),
+		const $e = $( this ),
 			rows = $e.rows();
 
 		p.call( this, rows );
@@ -156,7 +156,7 @@ const checkLines = function checkLines( p ) {
 };
 
 const findNext = function findNext( selector ) {
-	var $selector = $( selector ),
+	const $selector = $( selector ),
 		$root = this.first(),
 		index = $selector.index( $root ),
 		$next = $selector.eq( index + 1 );
@@ -164,7 +164,7 @@ const findNext = function findNext( selector ) {
 };
 
 const findPrev = function findPrev( selector ) {
-	var $selector = $( selector ),
+	const $selector = $( selector ),
 		$root = this.first(),
 		index = $selector.index( $root ),
 		$prev = $selector.eq( index - 1 );
@@ -173,7 +173,7 @@ const findPrev = function findPrev( selector ) {
 
 const progress = function progress( v ) {
 	return this.each( function() {
-		var t = parseInt( v / 100 * 360 ),
+		const t = parseInt( v / 100 * 360 ),
 			timer = null,
 			$this = $( this );
 

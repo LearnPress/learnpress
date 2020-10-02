@@ -50,7 +50,7 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( !LP()->checkout()->is_enable_guest_checkout() ) {
+		if ( ! LP()->checkout()->is_enable_guest_checkout() ) {
 			return;
 		}
 

@@ -1,73 +1,73 @@
 const Hook = {
 	hooks: { action: {}, filter: {} },
-	addAction: function( action, callable, priority, tag ) {
+	addAction( action, callable, priority, tag ) {
 		this.addHook( 'action', action, callable, priority, tag );
 		return this;
 	},
-	addFilter: function( action, callable, priority, tag ) {
+	addFilter( action, callable, priority, tag ) {
 		this.addHook( 'filter', action, callable, priority, tag );
 		return this;
 	},
-	doAction: function( action ) {
+	doAction( action ) {
 		return this.doHook( 'action', action, arguments );
 	},
-	applyFilters: function( action ) {
+	applyFilters( action ) {
 		return this.doHook( 'filter', action, arguments );
 	},
-	removeAction: function( action, tag ) {
+	removeAction( action, tag ) {
 		this.removeHook( 'action', action, tag );
 		return this;
 	},
-	removeFilter: function( action, priority, tag ) {
+	removeFilter( action, priority, tag ) {
 		this.removeHook( 'filter', action, priority, tag );
 		return this;
 	},
-	addHook: function( hookType, action, callable, priority, tag ) {
-		if ( undefined === this.hooks[hookType][action] ) {
-			this.hooks[hookType][action] = [];
+	addHook( hookType, action, callable, priority, tag ) {
+		if ( undefined === this.hooks[ hookType ][ action ] ) {
+			this.hooks[ hookType ][ action ] = [];
 		}
-		var hooks = this.hooks[hookType][action];
+		const hooks = this.hooks[ hookType ][ action ];
 		if ( undefined === tag ) {
 			tag = action + '_' + hooks.length;
 		}
-		this.hooks[hookType][action].push( { tag: tag, callable: callable, priority: priority } );
+		this.hooks[ hookType ][ action ].push( { tag, callable, priority } );
 		return this;
 	},
-	doHook: function( hookType, action, args ) {
+	doHook( hookType, action, args ) {
 		args = Array.prototype.slice.call( args, 1 );
 
-		if ( undefined !== this.hooks[hookType][action] ) {
-			var hooks = this.hooks[hookType][action],
+		if ( undefined !== this.hooks[ hookType ][ action ] ) {
+			let hooks = this.hooks[ hookType ][ action ],
 				hook;
 
 			hooks.sort( function( a, b ) {
 				return a.priority - b.priority;
 			} );
 
-			for ( var i = 0; i < hooks.length; i++ ) {
-				hook = hooks[i].callable;
+			for ( let i = 0; i < hooks.length; i++ ) {
+				hook = hooks[ i ].callable;
 				if ( typeof hook !== 'function' ) {
-					hook = window[hook];
+					hook = window[ hook ];
 				}
 
 				if ( 'action' === hookType ) {
-					args[i] = hook.apply( null, args );
+					args[ i ] = hook.apply( null, args );
 				} else {
-					args[0] = hook.apply( null, args );
+					args[ 0 ] = hook.apply( null, args );
 				}
 			}
 		}
 
 		if ( 'filter' === hookType ) {
-			return args[0];
+			return args[ 0 ];
 		}
 		return args;
 	},
-	removeHook: function( hookType, action, priority, tag ) {
-		if ( undefined !== this.hooks[hookType][action] ) {
-			var hooks = this.hooks[hookType][action];
-			for ( var i = hooks.length - 1; i >= 0; i-- ) {
-				if ( ( undefined === tag || tag === hooks[i].tag ) && ( undefined === priority || priority === hooks[i].priority ) ) {
+	removeHook( hookType, action, priority, tag ) {
+		if ( undefined !== this.hooks[ hookType ][ action ] ) {
+			const hooks = this.hooks[ hookType ][ action ];
+			for ( let i = hooks.length - 1; i >= 0; i-- ) {
+				if ( ( undefined === tag || tag === hooks[ i ].tag ) && ( undefined === priority || priority === hooks[ i ].priority ) ) {
 					hooks.splice( i, 1 );
 				}
 			}

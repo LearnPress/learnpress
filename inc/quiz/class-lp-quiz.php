@@ -69,9 +69,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param mixed $args
 		 */
 		public function __construct( $the_quiz, $args = array() ) {
-
-			// parent::__construct( $the_quiz, $args );
-
 			$this->_curd = new LP_Quiz_CURD();
 
 			if ( is_numeric( $the_quiz ) && $the_quiz > 0 ) {
@@ -818,16 +815,17 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$user = learn_press_get_user( $user_id );
 
 			$history = $user->get_quiz_results( $this->get_id() );
+
 			if ( ! $history ) {
 				return false;
 			}
-			$checked = array(); // learn_press_get_user_quiz_meta( $history->history_id, 'checked' );
+
+			$checked = array();
 			$checked = array_filter( $checked );
+
 			if ( ! in_array( $question_id, $checked ) ) {
 				$checked[] = $question_id;
 			}
-
-			// learn_press_update_user_quiz_meta( $history->history_id, 'checked', $checked );
 
 			return true;
 

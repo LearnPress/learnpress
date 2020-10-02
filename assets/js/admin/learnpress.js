@@ -138,6 +138,40 @@ var makePaymentsSortable = function makePaymentsSortable() {
   });
 };
 
+var lpMetaboxCustomFields = function lpMetaboxCustomFields() {
+  $('.lp-metabox__custom-fields').on('click', '.lp-metabox-custom-field-button', function () {
+    var row = $(this).data('row').replace(/lp_metabox_custom_fields_key/gi, Math.floor(Math.random() * 1000) + 1);
+    $(this).closest('table').find('tbody').append(row);
+    updateSort($(this).closest('.lp-metabox__custom-fields'));
+    return false;
+  });
+  $('.lp-metabox__custom-fields').on('click', 'a.delete', function () {
+    $(this).closest('tr').remove();
+    updateSort($(this).closest('.lp-metabox__custom-fields'));
+    return false;
+  });
+  $('.lp-metabox__custom-fields tbody').sortable({
+    items: 'tr',
+    cursor: 'move',
+    axis: 'y',
+    handle: 'td.sort',
+    scrollSensitivity: 40,
+    forcePlaceholderSize: true,
+    helper: 'clone',
+    opacity: 0.65,
+    update: function update(event, ui) {
+      updateSort($(this).closest('.lp-metabox__custom-fields'));
+    }
+  });
+
+  var updateSort = function updateSort(element) {
+    var items = element.find('tbody tr');
+    items.each(function (i, item) {
+      $(this).find('.sort .count').val(i);
+    });
+  };
+};
+
 var initTooltips = function initTooltips() {
   $('.learn-press-tooltip').each(function () {
     var $el = $(this),
@@ -411,6 +445,7 @@ var onReady = function onReady() {
   initSelect2();
   initTooltips();
   initSingleCoursePermalink();
+  lpMetaboxCustomFields();
   $('.learn-press-tabs').LP('AdminTab');
   $(document).on('click', '.learn-press-payments .status .dashicons', togglePaymentStatus).on('click', '.change-email-status', updateEmailStatus).on('click', '#_lp_sale_price_schedule', toggleSalePriceSchedule).on('click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule).on('click', '.learn-press-filter-template', callbackFilterTemplates).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails).on('click', '.lp-duplicate-row-action .lp-duplicate-post', duplicatePost).on('click', '#learn-press-install-sample-data-notice a', importCourses).on('input', '#meta-box-tab-course_payment', onChangeCoursePrices).on('change', '#_lp_sale_start', onChangeSaleStartDate).on('change', '#_lp_sale_end', onChangeSaleEndDate);
 };

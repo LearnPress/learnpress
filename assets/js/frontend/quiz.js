@@ -200,14 +200,16 @@ var Attempts = function Attempts() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -237,6 +239,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var ButtonCheck = /*#__PURE__*/function (_Component) {
   _inherits(ButtonCheck, _Component);
 
@@ -247,19 +250,26 @@ var ButtonCheck = /*#__PURE__*/function (_Component) {
 
     _classCallCheck(this, ButtonCheck);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
+    _this = _super.apply(this, arguments);
 
     _defineProperty(_assertThisInitialized(_this), "checkAnswer", function () {
       var _this$props = _this.props,
           checkAnswer = _this$props.checkAnswer,
-          question = _this$props.question;
-      checkAnswer(question.id);
+          question = _this$props.question,
+          answered = _this$props.answered;
+
+      if (answered) {
+        checkAnswer(question.id);
+
+        _this.setState({
+          loading: true
+        });
+      }
     });
 
+    _this.state = {
+      loading: false
+    };
     return _this;
   }
 
@@ -267,18 +277,27 @@ var ButtonCheck = /*#__PURE__*/function (_Component) {
     key: "render",
     value: function render() {
       var answered = this.props.answered;
-      return /*#__PURE__*/React.createElement("button", {
-        className: "lp-button instant-check",
-        onClick: this.checkAnswer,
-        disabled: !answered
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Check answer', 'label of button check answer', 'learnpress'));
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+        className: classnames__WEBPACK_IMPORTED_MODULE_0___default()('lp-button', 'instant-check', {
+          loading: this.state.loading,
+          disable: !answered
+        }),
+        onClick: this.checkAnswer
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "instant-check__icon"
+      }), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["_x"])('Check answer', 'label of button check answer', 'learnpress'), !answered && /*#__PURE__*/React.createElement("div", {
+        className: "instant-check__info",
+        dangerouslySetInnerHTML: {
+          __html: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('You need to answer the question before check answer.', 'learnpress')
+        }
+      })));
     }
   }]);
 
   return ButtonCheck;
-}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+}(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select, _ref) {
+/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_3__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["withSelect"])(function (select, _ref) {
   var id = _ref.question.id;
 
   var _select = select('learnpress/quiz'),
@@ -287,7 +306,7 @@ var ButtonCheck = /*#__PURE__*/function (_Component) {
   return {
     answered: getQuestionAnswered(id)
   };
-}), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch, _ref2) {
+}), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["withDispatch"])(function (dispatch, _ref2) {
   var id = _ref2.id;
 
   var _dispatch = dispatch('learnpress/quiz'),
@@ -381,7 +400,7 @@ var ButtonHint = /*#__PURE__*/function (_Component) {
       return question.hint ? /*#__PURE__*/React.createElement("button", {
         className: "btn-show-hint",
         onClick: this.showHint
-      }) : '';
+      }, /*#__PURE__*/React.createElement("span", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Hint', 'learnpress'))) : '';
     }
   }]);
 
@@ -421,8 +440,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _buttons_button_check__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../buttons/button-check */ "./assets/src/js/frontend/quiz/components/buttons/button-check.js");
-/* harmony import */ var _buttons_button_hint__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../buttons/button-hint */ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -462,8 +479,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
 
 
 
@@ -514,11 +529,25 @@ var Buttons = /*#__PURE__*/function (_Component) {
 
         switch (to) {
           case 'prev':
-            currentPage = currentPage > 1 ? currentPage - 1 : questionNav === 'infinity' ? numPages : 1;
+            if (currentPage > 1) {
+              currentPage = currentPage - 1;
+            } else if (questionNav === 'infinity') {
+              currentPage = numPages;
+            } else {
+              currentPage = 1;
+            }
+
             break;
 
           default:
-            currentPage = currentPage < numPages ? currentPage + 1 : questionNav === 'infinity' ? 1 : numPages;
+            if (currentPage < numPages) {
+              currentPage = currentPage + 1;
+            } else if (questionNav === 'infinity') {
+              currentPage = 1;
+            } else {
+              currentPage = numPages;
+            }
+
         }
 
         setCurrentPage(currentPage);
@@ -554,6 +583,14 @@ var Buttons = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this), "submit", function () {
       var submitQuiz = _this.props.submitQuiz;
+
+      var _select2 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/modal'),
+          confirm = _select2.confirm;
+
+      if ('no' === confirm(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Are you sure to submit quiz?', 'learnpress'), _this.submit)) {
+        return;
+      }
+
       submitQuiz();
     });
 
@@ -574,24 +611,6 @@ var Buttons = /*#__PURE__*/function (_Component) {
 
   _createClass(Buttons, [{
     key: "pageNumbers",
-    // componentWillReceiveProps(nextProps) {
-    //     if (nextProps.keyPressed === this.props.keyPressed) {
-    //         return;
-    //     }
-    //     switch (nextProps.keyPressed) {
-    //         case 'left':
-    //             return this.nav('prev')();
-    //         case 'right':
-    //             return this.nav('next')()
-    //     }
-    // }
-
-    /**
-     * Displays pagination with numbers from min to max.
-     *
-     * @return {string}
-     * @param args
-     */
     value: function pageNumbers(args) {
       var _this2 = this;
 
@@ -619,9 +638,9 @@ var Buttons = /*#__PURE__*/function (_Component) {
         args.midSize = 1;
       }
 
-      var numbers = _toConsumableArray(Array(numPages).keys()),
-          dots = false;
+      var numbers = _toConsumableArray(Array(numPages).keys());
 
+      var dots = false;
       return /*#__PURE__*/React.createElement("div", {
         className: "nav-links"
       }, args.prevNext && !this.isFirst() && /*#__PURE__*/React.createElement("button", {
@@ -661,11 +680,6 @@ var Buttons = /*#__PURE__*/function (_Component) {
         onClick: this.nav('next')
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Next', 'learnpress')));
     }
-    /**
-     * Render buttons
-     *
-     */
-
   }, {
     key: "render",
     value: function render() {
@@ -678,7 +692,11 @@ var Buttons = /*#__PURE__*/function (_Component) {
           question = _this$props6.question,
           questionsPerPage = _this$props6.questionsPerPage,
           canRetry = _this$props6.canRetry;
-      var classNames = ['quiz-buttons align-center'];
+      var classNames = ['quiz-buttons'];
+
+      if (status === 'started' || isReviewing) {
+        classNames.push('align-center');
+      }
 
       if (questionNav === 'questionNav') {
         classNames.push('infinity');
@@ -692,10 +710,24 @@ var Buttons = /*#__PURE__*/function (_Component) {
         classNames.push('is-last');
       }
 
-      return /*#__PURE__*/React.createElement("div", {
+      var popupSidebar = document.querySelector('#popup-sidebar');
+      var quizzApp = document.querySelector('#learn-press-quiz-app');
+      var styles = '';
+
+      if (status === 'started' || isReviewing) {
+        styles = {
+          marginLeft: popupSidebar && popupSidebar.offsetWidth / 2,
+          width: quizzApp && quizzApp.offsetWidth
+        };
+      } else {
+        styles = null;
+      }
+
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
         className: classNames.join(' ')
       }, /*#__PURE__*/React.createElement("div", {
-        className: "button-left" + (status === 'started' ? ' fixed' : '')
+        className: "button-left" + (status === 'started' || isReviewing ? ' fixed' : ''),
+        style: styles
       }, -1 !== ['', 'completed', 'viewed'].indexOf(status) && !isReviewing && canRetry && /*#__PURE__*/React.createElement("button", {
         className: "lp-button start",
         onClick: this.startQuiz
@@ -703,21 +735,7 @@ var Buttons = /*#__PURE__*/function (_Component) {
         className: "questions-pagination"
       }, this.pageNumbers()))), /*#__PURE__*/React.createElement("div", {
         className: "button-right"
-      }, 'started' === status
-      /*|| isReviewing*/
-      &&
-      /*#__PURE__*/
-      React.createElement(React.Fragment, null, questionsPerPage === 1 && [/*#__PURE__*/React.createElement(MaybeShowButton, {
-        key: "button-hint",
-        type: "hint",
-        Button: _buttons_button_hint__WEBPACK_IMPORTED_MODULE_5__["default"],
-        question: question
-      }), /*#__PURE__*/React.createElement(MaybeShowButton, {
-        key: "button-check",
-        type: "check",
-        Button: _buttons_button_check__WEBPACK_IMPORTED_MODULE_4__["default"],
-        question: question
-      })], ('infinity' === questionNav || this.isLast()) && !isReviewing && /*#__PURE__*/React.createElement("button", {
+      }, 'started' === status && /*#__PURE__*/React.createElement(React.Fragment, null, ('infinity' === questionNav || this.isLast()) && !isReviewing && /*#__PURE__*/React.createElement("button", {
         className: "lp-button submit-quiz",
         onClick: this.submit
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Submit', 'learnpress'))), isReviewing && showReview && /*#__PURE__*/React.createElement("button", {
@@ -726,7 +744,9 @@ var Buttons = /*#__PURE__*/function (_Component) {
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Result', 'learnpress')), 'completed' === status && showReview && !isReviewing && /*#__PURE__*/React.createElement("button", {
         className: "lp-button review-quiz",
         onClick: this.setQuizMode('reviewing')
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Review', 'learnpress'))));
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Review', 'learnpress')))), this.props.message && this.props.success !== true && /*#__PURE__*/React.createElement("div", {
+        className: "learn-press-message error"
+      }, this.props.message));
     }
   }]);
 
@@ -740,8 +760,8 @@ var Buttons = /*#__PURE__*/function (_Component) {
 
 
 var MaybeShowButton = Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
-  var _select2 = select('learnpress/quiz'),
-      getData = _select2.getData;
+  var _select3 = select('learnpress/quiz'),
+      getData = _select3.getData;
 
   return {
     status: getData('status'),
@@ -792,9 +812,9 @@ var MaybeShowButton = Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["co
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
-  var _select3 = select('learnpress/quiz'),
-      getData = _select3.getData,
-      getCurrentQuestion = _select3.getCurrentQuestion;
+  var _select4 = select('learnpress/quiz'),
+      getData = _select4.getData,
+      getCurrentQuestion = _select4.getCurrentQuestion;
 
   var data = {
     id: getData('id'),
@@ -812,7 +832,9 @@ var MaybeShowButton = Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["co
     questionsPerPage: getData('questionsPerPage'),
     pageNumbers: getData('pageNumbers'),
     keyPressed: getData('keyPressed'),
-    canRetry: (getData('attempts') || []).length < getData('attemptsCount')
+    canRetry: (getData('attempts') || []).length < getData('attemptsCount') && getData('retry'),
+    message: getData('messageResponse') || false,
+    success: getData('successResponse') !== undefined ? getData('successResponse') : true
   };
 
   if (data.questionsPerPage === 1) {
@@ -1132,23 +1154,18 @@ var Questions = /*#__PURE__*/function (_Component) {
 
       switch (event.keyCode) {
         case 37:
-          // left
           return sendKey('left');
 
         case 38:
-          // up
           return;
 
         case 39:
-          // right
           return sendKey('right');
 
         case 40:
-          // down
           return;
 
         default:
-          // 1 ... 9
           if (event.keyCode >= 49 && event.keyCode <= 57) {
             sendKey(event.keyCode - 48);
           }
@@ -1204,13 +1221,11 @@ var Questions = /*#__PURE__*/function (_Component) {
           questionsRendered = _this$props2.questionsRendered,
           isReviewing = _this$props2.isReviewing,
           questionsPerPage = _this$props2.questionsPerPage;
-      var viewMode = false,
-          isShow = true; //if (!showAllQuestions) {
+      var isShow = true;
 
       if (status === 'completed' && !isReviewing) {
         isShow = false;
-      } //}
-
+      }
 
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
         tabIndex: 100,
@@ -1226,11 +1241,9 @@ var Questions = /*#__PURE__*/function (_Component) {
 
         var isVisible = _this2.isInVisibleRange(question.id, index + 1);
 
-        return isRendered || !isRendered
-        /*&& isCurrent*/
-        || isVisible ? /*#__PURE__*/React.createElement(_question__WEBPACK_IMPORTED_MODULE_4__["default"], {
-          isCurrent: isCurrent,
+        return isRendered || !isRendered || isVisible ? /*#__PURE__*/React.createElement(_question__WEBPACK_IMPORTED_MODULE_4__["default"], {
           key: "loop-question-".concat(question.id),
+          isCurrent: isCurrent,
           isShow: isVisible,
           isShowIndex: questionsPerPage ? index + 1 : false,
           questionsPerPage: questionsPerPage,
@@ -1248,14 +1261,12 @@ var Questions = /*#__PURE__*/function (_Component) {
         if (props[checkProps[i]] !== state[checkProps[i]]) {
           changedProps[checkProps[i]] = props[checkProps[i]];
         }
-      } // If has prop changed then update state and re-render UI
-
+      }
 
       if (Object.values(changedProps).length) {
         state.self.needToTop = true;
         return changedProps;
-      } // No state update necessary
-
+      }
 
       return null;
     }
@@ -1311,7 +1322,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _buttons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./buttons */ "./assets/src/js/frontend/quiz/components/questions/buttons.js");
 /* harmony import */ var _buttons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../buttons */ "./assets/src/js/frontend/quiz/components/buttons/index.js");
-/* harmony import */ var _buttons_button_hint__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../buttons/button-hint */ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js");
+/* harmony import */ var _buttons_button_check__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../buttons/button-check */ "./assets/src/js/frontend/quiz/components/buttons/button-check.js");
+/* harmony import */ var _buttons_button_hint__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../buttons/button-hint */ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -1339,6 +1351,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -1464,7 +1477,7 @@ var Question = /*#__PURE__*/function (_Component) {
           return question.title;
         },
         hint: function hint() {
-          return /*#__PURE__*/React.createElement(_buttons_button_hint__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          return /*#__PURE__*/React.createElement(_buttons_button_hint__WEBPACK_IMPORTED_MODULE_7__["default"], {
             question: question
           });
         },
@@ -1523,11 +1536,7 @@ var Question = /*#__PURE__*/function (_Component) {
           })));
         },
         buttons: function buttons() {
-          return 'started' === status &&
-          /*#__PURE__*/
-
-          /*&& (questionsPerPage > 1)*/
-          React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          return 'started' === status && /*#__PURE__*/React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_4__["default"], {
             question: question
           });
         }
@@ -1564,7 +1573,6 @@ var Question = /*#__PURE__*/function (_Component) {
     answered: getQuestionAnswered(id),
     questionsRendered: getData('questionsRendered'),
     editPermalink: getData('editPermalink'),
-    //isCorrect: isCorrect(id),
     numPages: getData('numPages')
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
@@ -1607,6 +1615,12 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+/**
+ * Quizz Result.
+ * Edit: Use React hook.
+ *
+ * @author Nhamdv - ThimPress
+ */
 
 
 
@@ -1677,13 +1691,12 @@ var Result = function Result() {
    */
 
 
-  var percentResult = '';
+  var percentResult = percentage;
 
-  if (percentage < 100) {
+  if (!Number.isInteger(percentage)) {
     percentResult = parseFloat(percentage).toFixed(2);
   }
 
-  var classNames = ['quiz-result', results.graduation];
   var border = 10;
   var width = 200;
   var radius = width / 2;
@@ -1695,6 +1708,27 @@ var Result = function Result() {
     strokeDashoffset: offset
   };
   var passingGradeValue = results.passingGrade || passingGrade;
+  var graduation = '';
+
+  if (results.graduation) {
+    graduation = results.graduation;
+  } else if (percentResult >= passingGradeValue.replace(/[^0-9\.]+/g, '')) {
+    graduation = 'passed';
+  } else {
+    graduation = 'failed';
+  }
+
+  var message = '';
+
+  if (results.graduationText) {
+    message = results.graduationText;
+  } else if (graduation === 'passed') {
+    message = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Passed', 'learnpress');
+  } else {
+    message = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Failed', 'learnpress');
+  }
+
+  var classNames = ['quiz-result', graduation];
   return /*#__PURE__*/React.createElement("div", {
     className: classNames.join(' ')
   }, /*#__PURE__*/React.createElement("h3", {
@@ -1721,7 +1755,7 @@ var Result = function Result() {
     className: "result-require"
   }, passingGradeValue || Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["_x"])('-', 'unknown passing grade value', 'learnpress'))), done && /*#__PURE__*/React.createElement("p", {
     className: "result-message"
-  }, results.graduationText), /*#__PURE__*/React.createElement("ul", {
+  }, message), /*#__PURE__*/React.createElement("ul", {
     className: "result-statistic"
   }, /*#__PURE__*/React.createElement("li", {
     className: "result-statistic-field result-time-spend"
@@ -1755,36 +1789,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _timer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../timer */ "./assets/src/js/frontend/quiz/components/timer/index.js");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
+/* harmony import */ var _timer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../timer */ "./assets/src/js/frontend/quiz/components/timer/index.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
@@ -1793,161 +1800,124 @@ var $ = jQuery;
 var _lodash = lodash,
     debounce = _lodash.debounce;
 
-var Status = /*#__PURE__*/function (_Component) {
-  _inherits(Status, _Component);
+var Status = function Status() {
+  var _dispatch = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["dispatch"])('learnpress/quiz'),
+      submitQuiz = _dispatch.submitQuiz;
 
-  var _super = _createSuper(Status);
-
-  function Status() {
-    var _this;
-
-    _classCallCheck(this, Status);
-
-    _this = _super.apply(this, arguments);
-
-    _defineProperty(_assertThisInitialized(_this), "submit", function () {
-      var _select = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/modal'),
-          confirm = _select.confirm;
-
-      var title = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getData('title');
-
-      if ('no' === confirm(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Are you sure to submit quiz?', 'learnpress'), _this.submit)) {
-        return;
-      }
-
-      var submitQuiz = _this.props.submitQuiz;
-      submitQuiz();
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "getMark", function () {
-      var answered = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getData('answered');
-      return Object.values(answered).reduce(function (m, r) {
-        return m + r.mark;
-      }, 0);
-    });
-
-    _this.state = {
-      submitting: false
-    };
-    return _this;
-  }
-
-  _createClass(Status, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var $pc = $('#popup-content');
-      var $sc = $pc.find('.content-item-scrollable:eq(1)');
-      var $ciw = $pc.find('.content-item-wrap');
-      var $qs = $pc.find('.quiz-status');
-      var pcTop = $qs.offset().top - 92;
-      var isFixed = false;
-      var marginLeft = '-' + $ciw.css('margin-left');
-      $(window).on('resize.refresh-quiz-stauts-bar', debounce(function () {
-        marginLeft = '-' + $ciw.css('margin-left');
-        $qs.css({
-          'margin-left': marginLeft,
-          'margin-right': marginLeft
-        });
-      }, 100)).trigger('resize.refresh-quiz-stauts-bar');
-      /**
-       * Check when status bar is stopped in the top
-       * to add new class into html
-       */
-
-      $sc.scroll(function () {
-        if ($sc.scrollTop() >= pcTop) {
-          if (isFixed) {
-            return;
-          }
-
-          isFixed = true;
-        } else {
-          if (!isFixed) {
-            return;
-          }
-
-          isFixed = false;
-        }
-
-        if (isFixed) {
-          $pc.addClass('fixed-quiz-status');
-        } else {
-          $pc.removeClass('fixed-quiz-status');
-        }
+  Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var $pc = $('#popup-content');
+    var $sc = $pc.find('.content-item-scrollable:eq(1)');
+    var $ciw = $pc.find('.content-item-wrap');
+    var $qs = $pc.find('.quiz-status');
+    var pcTop = $qs.offset().top - 92;
+    var isFixed = false;
+    var marginLeft = '-' + $ciw.css('margin-left');
+    $(window).on('resize.refresh-quiz-stauts-bar', debounce(function () {
+      marginLeft = '-' + $ciw.css('margin-left');
+      $qs.css({
+        'margin-left': marginLeft,
+        'margin-right': marginLeft
       });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props = this.props,
-          currentPage = _this$props.currentPage,
-          questionsPerPage = _this$props.questionsPerPage,
-          questionsCount = _this$props.questionsCount,
-          submitting = _this$props.submitting,
-          totalTime = _this$props.totalTime,
-          duration = _this$props.duration,
-          userMark = _this$props.userMark; // const {
-      //     submitting
-      // } = this.state;
+    }, 100)).trigger('resize.refresh-quiz-stauts-bar');
+    /**
+     * Check when status bar is stopped in the top
+     * to add new class into html
+     */
 
-      var classNames = ['quiz-status'];
-      var start = (currentPage - 1) * questionsPerPage + 1;
-      var end = start + questionsPerPage - 1;
-      var indexHtml = '';
-      end = Math.min(end, questionsCount);
+    $sc.on('scroll', function () {
+      if ($sc.scrollTop() >= pcTop) {
+        if (isFixed) {
+          return;
+        }
 
-      if (submitting) {
-        classNames.push('submitting');
+        isFixed = true;
+      } else {
+        if (!isFixed) {
+          return;
+        }
+
+        isFixed = false;
       }
 
-      indexHtml = end < questionsCount ? questionsPerPage > 1 ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question <span>%d to %d of %d</span>', 'learnpress'), start, end, questionsCount) : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question <span>%d of %d</span>', 'learnpress'), start, questionsCount) : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question <span>%d to %d</span>', 'learnpress'), start, end);
-      return /*#__PURE__*/React.createElement("div", {
-        className: classNames.join(' ')
-      }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-        className: "questions-index",
-        dangerouslySetInnerHTML: {
-          __html: indexHtml
-        }
-      }), /*#__PURE__*/React.createElement("div", {
-        className: "current-point"
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Earned Point: %s', 'learnpress'), userMark)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-        className: "submit-quiz"
-      }, /*#__PURE__*/React.createElement("button", {
-        className: "lp-button",
-        id: "button-submit-quiz",
-        onClick: this.submit
-      }, !submitting ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Submit', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Submitting...', 'learnpress'))), totalTime && duration && /*#__PURE__*/React.createElement(_timer__WEBPACK_IMPORTED_MODULE_3__["default"], null))));
+      if (isFixed) {
+        $pc.addClass('fixed-quiz-status');
+      } else {
+        $pc.removeClass('fixed-quiz-status');
+      }
+    });
+  }, []);
+  /**
+   * Submit question to record results.
+   */
+
+  var submit = function submit() {
+    var _select = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/modal'),
+        confirm = _select.confirm;
+
+    if ('no' === confirm(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Are you sure to submit quiz?', 'learnpress'), submit)) {
+      return;
     }
-  }]);
 
-  return Status;
-}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+    submitQuiz();
+  };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
-  var _select2 = select('learnpress/quiz'),
+  var getMark = function getMark() {
+    var answered = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getData('answered');
+    return Object.values(answered).reduce(function (m, r) {
+      return m + r.mark;
+    }, 0);
+  };
+
+  var _select2 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'),
       getData = _select2.getData,
       getUserMark = _select2.getUserMark;
 
-  return {
-    currentPage: getData('currentPage'),
-    numPages: getData('numPages'),
-    questionsPerPage: getData('questionsPerPage'),
-    questionsCount: getData('questionIds').length,
-    submitting: getData('submitting'),
-    totalTime: getData('totalTime'),
-    duration: getData('duration'),
-    userMark: getUserMark()
-  };
-}), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
-  var _dispatch = dispatch('learnpress/quiz'),
-      submitQuiz = _dispatch.submitQuiz;
+  var currentPage = getData('currentPage');
+  var questionsPerPage = getData('questionsPerPage');
+  var questionsCount = getData('questionIds').length;
+  var submitting = getData('submitting');
+  var totalTime = getData('totalTime');
+  var duration = getData('duration');
+  var userMark = getUserMark();
+  var classNames = ['quiz-status'];
+  var start = (currentPage - 1) * questionsPerPage + 1;
+  var end = start + questionsPerPage - 1;
+  var indexHtml = '';
+  end = Math.min(end, questionsCount);
 
-  return {
-    //setQuizData,
-    submitQuiz: submitQuiz //startQuiz
+  if (submitting) {
+    classNames.push('submitting');
+  }
 
-  };
-})])(Status));
+  if (end < questionsCount) {
+    if (questionsPerPage > 1) {
+      indexHtml = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Question <span>%d to %d of %d</span>', 'learnpress'), start, end, questionsCount);
+    } else {
+      indexHtml = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Question <span>%d of %d</span>', 'learnpress'), start, questionsCount);
+    }
+  } else {
+    indexHtml = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Question <span>%d to %d</span>', 'learnpress'), start, end);
+  }
+
+  return /*#__PURE__*/React.createElement("div", {
+    className: classNames.join(' ')
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "questions-index",
+    dangerouslySetInnerHTML: {
+      __html: indexHtml
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "current-point"
+  }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Earned Point: %s', 'learnpress'), userMark)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "submit-quiz"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "lp-button",
+    id: "button-submit-quiz",
+    onClick: submit
+  }, !submitting ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Submit', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Submitting...', 'learnpress'))), totalTime && duration && /*#__PURE__*/React.createElement(_timer__WEBPACK_IMPORTED_MODULE_2__["default"], null))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Status);
 
 /***/ }),
 
@@ -1964,209 +1934,90 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+/**
+ * Edit: React hook.
+ *
+ * @author Nhamdv - ThimPress
+ */
 
 
 
-
-var _React = React,
-    useState = _React.useState;
-
-var Timer = /*#__PURE__*/function (_Component) {
-  _inherits(Timer, _Component);
-
-  var _super = _createSuper(Timer);
-
-  function Timer(_props) {
-    var _this;
-
-    _classCallCheck(this, Timer);
-
-    _this = _super.apply(this, arguments);
-
-    _defineProperty(_assertThisInitialized(_this), "init", function (props) {
-      var endTime = props.endTime,
-          totalTime = props.totalTime;
-      var d1 = new Date(endTime);
-      var d2 = new Date();
-      var tz = new Date().getTimezoneOffset();
-      var t = parseInt(d1.getTime() / 1000 - (d2.getTime() / 1000 + tz * 60));
-      _this.state = {
-        seconds: t,
-        totalTime: totalTime,
-        remainingSeconds: t > 0 ? t : 0,
-        currentTime: parseInt(new Date().getTime() / 1000),
-        percent: 100
-      };
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "submit", function () {
-      var submitQuiz = _this.props.submitQuiz;
-      submitQuiz();
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "formatTime", function () {
-      var separator = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ':';
-      var _this$state = _this.state,
-          seconds = _this$state.remainingSeconds,
-          totalTime = _this$state.totalTime;
-      var t = [];
-      var m;
-
-      if (totalTime < 3600) {
-        t.push((seconds - seconds % 60) / 60);
-        t.push(seconds % 60);
-      } else if (totalTime) {
-        t.push((seconds - seconds % 3600) / 3600);
-        m = seconds % 3600;
-        t.push((m - m % 60) / 60);
-        t.push(m % 60);
-      }
-
-      return t.map(function (a) {
-        return a < 10 ? "0".concat(a) : a;
-      }).join(separator);
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "getCircle", function () {
-      var percent = _this.state.percent;
-      var width = 40;
-      var border = 4;
-      var radius = width / 2;
-      var r = (width - border) / 2;
-      var circumference = r * 2 * Math.PI;
-      var offset = circumference - percent / 100 * circumference;
-      var styles = {
-        strokeDasharray: "".concat(circumference, " ").concat(circumference),
-        strokeDashoffset: offset
-      };
-      var className = ['clock'];
-
-      if (percent <= 5) {
-        className.push('x');
-      }
-
-      return /*#__PURE__*/React.createElement("div", {
-        className: className.join(' ')
-      }, /*#__PURE__*/React.createElement("svg", {
-        className: "circle-progress-bar",
-        width: width,
-        height: width
-      }, /*#__PURE__*/React.createElement("circle", {
-        className: "circle-progress-bar__circle",
-        strokeWidth: border,
-        style: styles,
-        fill: "transparent",
-        r: r,
-        cx: radius,
-        cy: radius
-      })));
-    });
-
-    _this.init(_props);
-
-    return _this;
-  }
-
-  _createClass(Timer, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      this.myInterval = setInterval(function () {
-        var _this2$state = _this2.state,
-            seconds = _this2$state.seconds,
-            currentTime = _this2$state.currentTime,
-            totalTime = _this2$state.totalTime; //const offset = parseInt(new Date().getTime() / 1000) - currentTime;
-        //let remainingSeconds = seconds - offset;
-
-        var remainingSeconds = _this2.state.remainingSeconds;
-        remainingSeconds -= 1;
-
-        if (remainingSeconds > 0) {
-          _this2.setState(function (_ref) {
-            var seconds = _ref.seconds;
-            return {
-              remainingSeconds: remainingSeconds,
-              percent: remainingSeconds / totalTime * 100
-            };
-          });
-        }
-
-        if (remainingSeconds <= 0) {
-          clearInterval(_this2.myInterval);
-
-          _this2.submit();
-        }
-      }, 1000);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      clearInterval(this.myInterval);
-    }
-    /**
-     * Submit question to record results.
-     */
-
-  }, {
-    key: "render",
-    value: function render() {
-      var content = this.props.content;
-      return /*#__PURE__*/React.createElement("div", {
-        className: "countdown"
-      }, /*#__PURE__*/React.createElement("i", {
-        className: "fas fa-stopwatch"
-      }), /*#__PURE__*/React.createElement("span", null, this.formatTime()));
-    }
-  }]);
-
-  return Timer;
-}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
-
-/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
-  var _select = select('learnpress/quiz'),
+var Timer = function Timer() {
+  var _select = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'),
       getData = _select.getData;
 
-  return {
-    submitting: getData('submitting'),
-    totalTime: getData('totalTime') ? getData('totalTime') : getData('duration'),
-    endTime: getData('endTime')
-  };
-}), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
-  var _dispatch = dispatch('learnpress/quiz'),
-      setQuizData = _dispatch.setQuizData,
+  var _dispatch = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["dispatch"])('learnpress/quiz'),
       submitQuiz = _dispatch.submitQuiz;
 
-  return {
-    setQuizData: setQuizData,
-    submitQuiz: submitQuiz
+  var totalTime = getData('totalTime') ? getData('totalTime') : getData('duration');
+  var endTime = getData('endTime');
+  var d1 = new Date(endTime);
+  var d2 = new Date();
+  var tz = new Date().getTimezoneOffset();
+  var t = parseInt(d1.getTime() / 1000 - (d2.getTime() / 1000 + tz * 60));
+
+  var _useState = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useState"])(t > 0 ? t : 0),
+      _useState2 = _slicedToArray(_useState, 2),
+      seconds = _useState2[0],
+      setSeconds = _useState2[1];
+
+  Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var myInterval = setInterval(function () {
+      var remainSeconds = seconds;
+      remainSeconds -= 1;
+
+      if (remainSeconds > 0) {
+        setSeconds(remainSeconds);
+      } else {
+        clearInterval(myInterval);
+        submitQuiz();
+      }
+    }, 1000);
+    return function () {
+      return clearInterval(myInterval);
+    };
+  }, [seconds]);
+
+  var formatTime = function formatTime() {
+    var separator = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ':';
+    var t = [];
+    var m;
+
+    if (totalTime < 3600) {
+      t.push((seconds - seconds % 60) / 60);
+      t.push(seconds % 60);
+    } else if (totalTime) {
+      t.push((seconds - seconds % 3600) / 3600);
+      m = seconds % 3600;
+      t.push((m - m % 60) / 60);
+      t.push(m % 60);
+    }
+
+    return t.map(function (a) {
+      return a < 10 ? "0".concat(a) : a;
+    }).join(separator);
   };
-})])(Timer));
+
+  return /*#__PURE__*/React.createElement("div", {
+    className: "countdown"
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-stopwatch"
+  }), /*#__PURE__*/React.createElement("span", null, formatTime()));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Timer);
 
 /***/ }),
 
@@ -2179,52 +2030,9 @@ var Timer = /*#__PURE__*/function (_Component) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-
-var Title = /*#__PURE__*/function (_Component) {
-  _inherits(Title, _Component);
-
-  var _super = _createSuper(Title);
-
-  function Title() {
-    _classCallCheck(this, Title);
-
-    return _super.apply(this, arguments);
-  }
-
-  _createClass(Title, [{
-    key: "render",
-    value: function render() {
-      return /*#__PURE__*/React.createElement("h3", null, "The title");
-    }
-  }]);
-
-  return Title;
-}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+var Title = function Title() {
+  return /*#__PURE__*/React.createElement("h3", null, "The title");
+};
 
 /* harmony default export */ __webpack_exports__["default"] = (Title);
 
@@ -2356,7 +2164,6 @@ var Quiz = /*#__PURE__*/function (_Component) {
     store: getData(),
     answered: getData('answered'),
     isReviewing: getData('mode') === 'reviewing',
-    //hintCount: getData('showHint'),
     questionIds: getData('questionIds'),
     checkCount: getData('instantCheck'),
     questionsPerPage: getData('questionsPerPage') || 1
@@ -2505,7 +2312,7 @@ var startQuiz = /*#__PURE__*/regeneratorRuntime.mark(function startQuiz() {
       switch (_context.prev = _context.next) {
         case 0:
           _wpSelect$getDefaultR = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getDefaultRestArgs(), itemId = _wpSelect$getDefaultR.itemId, courseId = _wpSelect$getDefaultR.courseId;
-          doStart = Hook.applyFilters('before-start-quiz', true, itemId, courseId); // Allow third-party can ignore core action
+          doStart = Hook.applyFilters('before-start-quiz', true, itemId, courseId);
 
           if (!(true !== doStart)) {
             _context.next = 4;
@@ -2529,7 +2336,7 @@ var startQuiz = /*#__PURE__*/regeneratorRuntime.mark(function startQuiz() {
           response = _context.sent;
           response = Hook.applyFilters('request-start-quiz-response', response, itemId, courseId);
           _context.next = 10;
-          return _dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response.results), itemId, courseId);
+          return _dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response), itemId, courseId);
 
         case 10:
         case "end":
@@ -2878,20 +2685,6 @@ var resetCurrentPage = function resetCurrentPage(state, args) {
   return _objectSpread(_objectSpread({}, state), args);
 };
 
-var updateAttempt = function updateAttempt(attempts, newAttempt) {
-  var at = attempts.findIndex(function (attempt) {
-    return attempt.id == newAttempt.id;
-  });
-
-  if (at !== -1) {
-    attempts[at] = newAttempt;
-  } else {
-    attempts.unshift(newAttempt);
-  }
-
-  return attempts;
-};
-
 var setQuestionHint = function setQuestionHint(state, action) {
   var questions = state.questions.map(function (question) {
     return question.id == action.questionId ? _objectSpread(_objectSpread({}, question), {}, {
@@ -2899,8 +2692,7 @@ var setQuestionHint = function setQuestionHint(state, action) {
     }) : question;
   });
   return _objectSpread(_objectSpread({}, state), {}, {
-    questions: _toConsumableArray(questions) //hintedQuestions: [...state.hintedQuestions, action.questionId]
-
+    questions: _toConsumableArray(questions)
   });
 };
 
@@ -2927,6 +2719,44 @@ var checkAnswer = function checkAnswer(state, action) {
   });
 };
 
+var submitQuiz = function submitQuiz(state, action) {
+  var questions = state.questions.map(function (question) {
+    var newArgs = {};
+
+    if (state.reviewQuestions) {
+      if (action.results.questions[question.id].explanation) {
+        newArgs.explanation = action.results.questions[question.id].explanation;
+      }
+
+      if (action.results.questions[question.id].options) {
+        newArgs.options = action.results.questions[question.id].options;
+      }
+    }
+
+    return _objectSpread(_objectSpread({}, question), newArgs);
+  });
+  return resetCurrentPage(state, _objectSpread(_objectSpread({
+    submitting: false,
+    currentPage: 1
+  }, action.results), {}, {
+    questions: _toConsumableArray(questions)
+  }));
+};
+
+var startQuizz = function startQuizz(state, action) {
+  var successResponse = action.results.success !== undefined ? action.results.success : false;
+  var messageResponse = action.results.message || false;
+  return resetCurrentPage(state, _objectSpread(_objectSpread({
+    checkedQuestions: [],
+    hintedQuestions: [],
+    mode: '',
+    currentPage: 1
+  }, action.results.results), {}, {
+    successResponse: successResponse,
+    messageResponse: messageResponse
+  }));
+};
+
 var userQuiz = function userQuiz() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : STORE_DATA;
   var action = arguments.length > 1 ? arguments[1] : undefined;
@@ -2951,12 +2781,7 @@ var userQuiz = function userQuiz() {
 
     case 'START_QUIZ':
     case 'START_QUIZ_SUCCESS':
-      return resetCurrentPage(state, _objectSpread({
-        checkedQuestions: [],
-        hintedQuestions: [],
-        mode: '',
-        currentPage: 1
-      }, action.results));
+      return startQuizz(state, action);
 
     case 'SET_CURRENT_QUESTION':
       storageSet("Q".concat(state.id, ".currentQuestion"), action.questionId);
@@ -2971,11 +2796,7 @@ var userQuiz = function userQuiz() {
       });
 
     case 'SUBMIT_QUIZ_SUCCESS':
-      return resetCurrentPage(state, _objectSpread({
-        attempts: updateAttempt(state.attempts, action.results),
-        submitting: false,
-        currentPage: 1
-      }, action.results));
+      return submitQuiz(state, action);
 
     case 'UPDATE_USER_QUESTION_ANSWERS':
       return state.status === 'started' ? updateUserQuestionAnswer(state, action) : state;
@@ -3010,17 +2831,14 @@ var userQuiz = function userQuiz() {
 };
 var blocks = flow(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["combineReducers"], function (reducer) {
   return function (state, action) {
-    //console.log('1', state)
     return reducer(state, action);
   };
 }, function (reducer) {
   return function (state, action) {
-    //console.log('2')
     return reducer(state, action);
   };
 }, function (reducer) {
   return function (state, action) {
-    //console.log('3')
     return reducer(state, action);
   };
 })({
@@ -3029,7 +2847,6 @@ var blocks = flow(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["combineReducers"
       a: 1
     };
     var action = arguments.length > 1 ? arguments[1] : undefined;
-    //console.log('a', action)
     return state;
   },
   b: function b() {
@@ -3037,7 +2854,6 @@ var blocks = flow(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["combineReducers"
       b: 2
     };
     var action = arguments.length > 1 ? arguments[1] : undefined;
-    //console.log('b',action);
     return state;
   }
 });
@@ -3284,7 +3100,7 @@ function getUserMark(state) {
       id = _id;
       return question ? question.point : 0;
     }();
-    var isChecked = checkedQuestions.indexOf(_id) !== -1; // User checked option but not submit or check
+    var isChecked = checkedQuestions.indexOf(_id) !== -1;
 
     if (data.temp) {
       id = _id;
@@ -3310,6 +3126,68 @@ function getUserMark(state) {
 
   return totalMark > 0 ? totalMark : 0;
 }
+
+/***/ }),
+
+/***/ "./node_modules/classnames/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/classnames/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
 
 /***/ }),
 

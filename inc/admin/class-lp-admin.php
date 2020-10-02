@@ -387,14 +387,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					'Paid Membership Pro' => array(),
 					'BuddyPress'          => array(),
 				);
+
 				$all_pages           = array(
 					'courses'          => __( 'Courses', 'learnpress' ),
 					'profile'          => __( 'Profile', 'learnpress' ),
 					'checkout'         => __( 'Checkout', 'learnpress' ),
 					'become_a_teacher' => __( 'Become a Teacher', 'learnpress' ),
 				);
+
 				foreach ( $all_pages as $name => $title ) {
 					$page_id = learn_press_get_page_id( $name );
+
 					if ( $page_id && 'publish' === get_post_status( $page_id ) ) {
 						$this->_static_pages['learnpress'][ $page_id ] = $title;
 
@@ -476,6 +479,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$this->_get_static_pages();
 
 			$pages = $this->_get_static_pages( 'learnpress' );
+
 			if ( $pages ) {
 				$text = sprintf( __( 'LearnPress Pages (%d)', 'learnpress' ), sizeof( $pages ) );
 				if ( 'yes' !== LP_Request::get( 'lp-page' ) ) {

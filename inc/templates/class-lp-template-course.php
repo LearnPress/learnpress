@@ -44,6 +44,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( ! $user->has_finished_course( $course->get_id() ) ) {
 			return;
 		}
+
 		learn_press_get_template( 'single-course/graduation', array( 'graduation' => $user->get_course_grade( $course->get_id() ) ) );
 	}
 
@@ -93,6 +94,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 				'minute' => _x( '%s min', 'duration', 'learnpress' ),
 				'second' => _x( '%s sec', 'duration', 'learnpress' ),
 			);
+
 			echo '<span class="item-meta duration">' . $duration->to_timer( $format, true ) . '</span>';
 		} elseif ( is_string( $duration ) && strlen( $duration ) ) {
 			echo '<span class="item-meta duration">' . $duration . '</span>';

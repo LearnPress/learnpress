@@ -35,17 +35,19 @@ class LP_Utils {
 		$all_statuses[] = 'total';
 		$init_values    = array_fill_keys( $all_statuses, 0 );
 
-		$query  = $wpdb->prepare( "
+		$query  = $wpdb->prepare(
+			"
 				SELECT item_id id, `status`, COUNT(user_item_id) `count`
 				FROM {$wpdb->learnpress_user_items}
 				WHERE 1 AND item_type = %s
 				GROUP BY item_id, `status`
 				ORDER BY item_id
-			", LP_COURSE_CPT );
+			",
+			LP_COURSE_CPT
+		);
 		$counts = array();
 
 		if ( $rows = $wpdb->get_results( $query ) ) {
-
 
 			foreach ( $rows as $row ) {
 				if ( empty( $counts[ $row->id ] ) ) {
@@ -53,7 +55,7 @@ class LP_Utils {
 				}
 
 				$counts[ $row->id ][ $row->status ] = $row->count;
-				$counts[ $row->id ]['total']        += $row->count;
+				$counts[ $row->id ]['total']       += $row->count;
 			}
 		}
 
@@ -76,7 +78,7 @@ class LP_Utils {
 	 */
 	public function count_course_users( $args = array(), $hard = false ) {
 
-		$counts = get_option( '_lp_count_course_users' );//LP_Object_Cache::get( 'count_course_users' );
+		$counts = get_option( '_lp_count_course_users' );
 
 		if ( is_numeric( $args ) ) {
 			$args = array( 'course_id' => $args );
@@ -89,7 +91,7 @@ class LP_Utils {
 			array(
 				'course_id'  => null,
 				'status'     => '',
-				'total_only' => false
+				'total_only' => false,
 			)
 		);
 

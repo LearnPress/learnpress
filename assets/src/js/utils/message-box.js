@@ -8,14 +8,14 @@ const MessageBox = {
 	events: {},
 	instances: [],
 	instance: null,
-	quickConfirm: function( elem, args ) {
-		var $e = $( elem );
+	quickConfirm( elem, args ) {
+		const $e = $( elem );
 		$( '[learn-press-quick-confirm]' ).each( function() {
-			var $ins;
+			let $ins;
 			( $ins = $( this ).data( 'quick-confirm' ) ) && ( console.log( $ins ), $ins.destroy() );
 		} );
 		! $e.attr( 'learn-press-quick-confirm' ) && $e.attr( 'learn-press-quick-confirm', 'true' ).data( 'quick-confirm',
-			new( function( elem, args ) {
+			new ( function( elem, args ) {
 				var $elem = $( elem ),
 					$div = $( '<span class="learn-press-quick-confirm"></span>' ).insertAfter( $elem ), //($(document.body)),
 					offset = $( elem ).position() || { left: 0, top: 0 },
@@ -37,7 +37,7 @@ const MessageBox = {
 					start = function() {
 						timerOut = setInterval( function() {
 							if ( --n == 0 ) {
-								hide.call( $div[0] );
+								hide.call( $div[ 0 ] );
 								$.isFunction( args.onCancel ) && args.onCancel( args.data );
 								stop();
 							}
@@ -84,7 +84,7 @@ const MessageBox = {
 			} )( elem, args )
 		);
 	},
-	show: function( message, args ) {
+	show( message, args ) {
 		//this.hide();
 		$.proxy( function() {
 			args = $.extend( {
@@ -92,7 +92,7 @@ const MessageBox = {
 				buttons: '',
 				events: false,
 				autohide: false,
-				message: message,
+				message,
 				data: false,
 				id: LP.uniqueId(),
 				onHide: null,
@@ -101,7 +101,7 @@ const MessageBox = {
 			this.instances.push( args );
 			this.instance = args;
 
-			var $doc = $( document ),
+			const $doc = $( document ),
 				$body = $( document.body );
 			if ( ! this.$block ) {
 				this.$block = $( '<div id="learn-press-message-box-block"></div>' ).appendTo( $body );
@@ -127,11 +127,11 @@ const MessageBox = {
 			}
 		}, this )();
 	},
-	blockUI: function( message ) {
+	blockUI( message ) {
 		message = ( message !== false ? ( message ? message : 'Wait a moment' ) : '' ) + '<div class="message-box-animation"></div>';
 		this.show( message );
 	},
-	hide: function( delay, instance ) {
+	hide( delay, instance ) {
 		if ( instance ) {
 			this._removeInstance( instance.id );
 		} else if ( this.instance ) {
@@ -151,13 +151,13 @@ const MessageBox = {
 			this._createWindow( this.instance.message, this.instance.title, this.instance.buttons );
 		}
 	},
-	update: function( force ) {
-		var that = this,
+	update( force ) {
+		let that = this,
 			$wrap = this.$window.find( '#message-box-wrap' ),
 			timer = $wrap.data( 'timer' ),
 			_update = function() {
 				LP.Hook.doAction( 'learn_press_message_box_before_resize', that );
-				var $content = $wrap.find( '.message-box-content' ).css( 'height', '' ).css( 'overflow', 'hidden' ),
+				let $content = $wrap.find( '.message-box-content' ).css( 'height', '' ).css( 'overflow', 'hidden' ),
 					width = $wrap.outerWidth(),
 					height = $wrap.outerHeight(),
 					contentHeight = $content.height(),
@@ -182,14 +182,14 @@ const MessageBox = {
 		timer && clearTimeout( timer );
 		timer = setTimeout( _update, 250 );
 	},
-	_removeInstance: function( id ) {
-		for ( var i = 0; i < this.instances.length; i++ ) {
-			if ( this.instances[i].id === id ) {
+	_removeInstance( id ) {
+		for ( let i = 0; i < this.instances.length; i++ ) {
+			if ( this.instances[ i ].id === id ) {
 				this.instances.splice( i, 1 );
 
-				var len = this.instances.length;
+				const len = this.instances.length;
 				if ( len ) {
-					this.instance = this.instances[len - 1];
+					this.instance = this.instances[ len - 1 ];
 					this.$window.attr( 'instance', this.instance.id );
 				} else {
 					this.instance = false;
@@ -199,21 +199,21 @@ const MessageBox = {
 			}
 		}
 	},
-	_getInstance: function( id ) {
-		for ( var i = 0; i < this.instances.length; i++ ) {
-			if ( this.instances[i].id === id ) {
-				return this.instances[i];
+	_getInstance( id ) {
+		for ( let i = 0; i < this.instances.length; i++ ) {
+			if ( this.instances[ i ].id === id ) {
+				return this.instances[ i ];
 			}
 		}
 	},
-	_createWindow: function( message, title, buttons ) {
-		var $wrap = this.$window.find( '#message-box-wrap' ).html( '' );
+	_createWindow( message, title, buttons ) {
+		const $wrap = this.$window.find( '#message-box-wrap' ).html( '' );
 		if ( title ) {
 			$wrap.append( '<h3 class="message-box-title">' + title + '</h3>' );
 		}
 		$wrap.append( $( '<div class="message-box-content"></div>' ).html( message ) );
 		if ( buttons ) {
-			var $buttons = $( '<div class="message-box-buttons"></div>' );
+			const $buttons = $( '<div class="message-box-buttons"></div>' );
 			switch ( buttons ) {
 			case 'yesNo':
 				$buttons.append( this._createButton( LP_Settings.localize.button_yes, 'yes' ) );
@@ -229,12 +229,12 @@ const MessageBox = {
 			$wrap.append( $buttons );
 		}
 	},
-	_createButton: function( title, type ) {
-		var $button = $( '<button type="button" class="button message-box-button message-box-button-' + type + '">' + title + '</button>' ),
+	_createButton( title, type ) {
+		const $button = $( '<button type="button" class="button message-box-button message-box-button-' + type + '">' + title + '</button>' ),
 			callback = 'on' + ( type.substr( 0, 1 ).toUpperCase() + type.substr( 1 ) );
 		$button.data( 'callback', callback ).click( function() {
-			var instance = $( this ).data( 'instance' ),
-				callback = instance.events[$( this ).data( 'callback' )];
+			const instance = $( this ).data( 'instance' ),
+				callback = instance.events[ $( this ).data( 'callback' ) ];
 			if ( $.type( callback ) === 'function' ) {
 				if ( callback.apply( LP.MessageBox, [ instance ] ) === false ) {
 					// return;

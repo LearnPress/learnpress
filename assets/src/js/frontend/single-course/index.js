@@ -1,16 +1,28 @@
-import {Component} from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import Quiz from '@learnpress/quiz';
 
 import './store';
 
-class SingleCourse extends Component {
-    render() {
-        return <React.Fragment>
-            this is course
+import { searchCourseContent } from './components/search';
+// import { commentForm } from './components/comment';
 
-            <Quiz />
-        </React.Fragment>
-    }
+class SingleCourse extends Component {
+	render() {
+		return (
+			<>
+			</>
+		);
+	}
 }
 
 export default SingleCourse;
+
+function run() {
+	searchCourseContent();
+	// commentForm();
+}
+
+window.addEventListener( 'DOMContentLoaded', () => {
+	run();
+} );
+

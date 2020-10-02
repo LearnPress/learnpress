@@ -83,7 +83,6 @@ abstract class LP_Abstract_Submenu {
 	public function __construct() {
 		add_action( 'learn-press/admin/page-content-sections', array( $this, 'output_section_nav' ) );
 		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
-		// add_action('admin_enqueue_scripts', array($this))
 
 		if ( $this->is_displaying() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -245,6 +244,7 @@ abstract class LP_Abstract_Submenu {
 	 */
 	public function get_sections() {
 		$active_tab = $this->get_active_tab();
+
 		if ( ! empty( $this->tabs[ $active_tab ] ) ) {
 			if ( is_callable( array( $this->tabs[ $active_tab ], 'get_sections' ) ) ) {
 				$this->sections = call_user_func( array( $this->tabs[ $active_tab ], 'get_sections' ) );
@@ -374,7 +374,6 @@ abstract class LP_Abstract_Submenu {
 				do_action( 'learn-press/admin/page-content-' . $page . '/' . $tab );
 			}
 
-			// @since 3.3.0
 			do_action( 'learn-press/admin/after-page-content-sections', $page, $tab, $this );
 		}
 

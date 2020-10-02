@@ -41,10 +41,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param array $item
 	 */
 	protected function set_default_data( $item ) {
-
-		// ksort( $item );
-
-		// $this->_data_key = md5( serialize( $item ) );
 		$this->_changes = array();
 		$item_id        = 0;
 
@@ -64,7 +60,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['start_time'] ) ) {
 			$this->set_start_time( $item['start_time'] );
 		} else {
-			// $this->set_start_time( current_time( 'mysql' ) );
 			$this->set_start_time( learn_press_mysql_time( true ) );
 		}
 
@@ -72,14 +67,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->set_end_time( $item['end_time'] );
 		} else {
 			$this->set_end_time( null );
-			// $this->set_end_time_gmt( null );
 		}
 
 		if ( ! empty( $item['expiration_time'] ) ) {
 			$this->set_expiration_time( $item['expiration_time'] );
 		} else {
 			$this->set_expiration_time( null );
-			// $this->set_end_time_gmt( null );
 		}
 
 		if ( ! empty( $item['user_id'] ) ) {
@@ -287,14 +280,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			return false;
 		}
 
-		// if ( empty( $format ) ) {
-		// if ( is_numeric( $date ) ) {
-		// $format = 'timestamp';
-		// } elseif ( is_string( $date ) ) {
-		// $format = 'mysql';
-		// }
-		// }
-
 		if ( ! $date instanceof LP_Datetime ) {
 			$date = new LP_Datetime( $date );
 		}
@@ -370,31 +355,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		return $this->format_time( $date, $format );
 	}
-
-	/**
-	 * Set expiration time gmt.
-	 *
-	 * @param string|LP_Datetime $time
-	 *
-	 * @since 3.3.0
-	 */
-	// public function set_expiration_time_gmt( $time ) {
-	// if ( $time && $time !== '0000-00-00 00:00:00' ) {
-	// $this->_set_data_date( 'expiration_time_gmt', $time, false );
-	// } else {
-	// $this->_set_data( 'expiration_time_gmt', '' );
-	// }
-	// }
-
-	/**
-	 * Get expiration time.
-	 *
-	 * @return string|LP_Datetime $time
-	 * @since 3.3.0
-	 */
-	// public function get_expiration_time_gmt() {
-	// return $this->get_data_date( 'expiration_time_gmt' );
-	// }
 
 	/**
 	 * Set item-status.
@@ -551,11 +511,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			'user_id'         => 0,
 			'item_id'         => 0,
 			'start_time'      => '',
-			// 'start_time_gmt'  => '', // removed since 4.0
 			'end_time'        => '',
-			// 'end_time_gmt'    => '',  // removed since 4.0
 			'expiration_time' => '',
-			// 'expiration_time_gmt' => '',
 			'item_type'       => '',
 			'status'          => '',
 			'graduation'      => '',

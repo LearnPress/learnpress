@@ -290,6 +290,7 @@ abstract class LP_Abstract_Assets {
 
 	public function localize_printed_scripts( $side = '' ) {
 		$scripts_data = ( $side == 'admin' ) ? $this->_get_script_data() : $this->_get_script_data();
+
 		if ( is_array( $scripts_data ) && is_array( $this->_script_data ) ) {
 			$scripts_data = LP_Helper::array_merge_recursive( $scripts_data, $this->_script_data );
 		} elseif ( is_array( $this->_script_data ) ) {

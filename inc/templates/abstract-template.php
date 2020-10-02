@@ -74,7 +74,6 @@ class LP_Abstract_Template {
 	public function remove( $tag, $function_to_remove, $priority = 10 ) {
 		global $wp_filter;
 
-		// remove filter text
 		if ( is_array( $function_to_remove ) ) {
 			if ( empty( $wp_filter[ $tag ] ) ) {
 				return;

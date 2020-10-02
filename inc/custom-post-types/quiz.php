@@ -315,7 +315,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Retry', 'learnpress' ),
-						// 'id'   => '_lp_retake_count',
 						'id'   => '_lp_retry',
 						'type' => 'yes_no',
 						'desc' => __( 'Allow students to try the quiz one more time.', 'learnpress' ),
@@ -324,7 +323,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					array(
 						'name' => __( 'Pagination', 'learnpress' ),
 						'desc' => __( 'Set a number of questions showed in each page.', 'learnpress' ),
-						// 'id'   => '_lp_show_hide_question',
 						'id'   => '_lp_pagination',
 						'type' => 'number',
 						'std'  => 1,
@@ -463,8 +461,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return array
 		 */
 		public function columns_head( $columns ) {
-
-			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
 			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
@@ -474,7 +470,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
 						'duration'        => __( 'Duration', 'learnpress' ),
-						// 'preview'         => __( 'Preview', 'learnpress' )
 					),
 					array_slice( $columns, $pos + 1 )
 				);

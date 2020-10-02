@@ -6,24 +6,17 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 $user   = learn_press_get_current_user();
 $course = LP_Global::course();
+
 if ( ! $course || ! $user ) {
 	return;
 }
-
-/*
-if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
-	return;
-}*/
 
 $course_data    = $user->get_course_data( $course->get_id() );
 $course_results = $course_data->get_results( false );

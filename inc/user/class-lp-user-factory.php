@@ -21,7 +21,7 @@ class LP_User_Factory {
 	/**
 	 * @var LP_Background_Clear_Temp_Users
 	 */
-	//protected static $_background_clear_users = null;
+	// protected static $_background_clear_users = null;
 
 	/**
 	 *
@@ -35,7 +35,7 @@ class LP_User_Factory {
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
 		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
-		///add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
+		// add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
 
 		/**
 		 * Filters into wp users manager
@@ -52,7 +52,7 @@ class LP_User_Factory {
 			LP()->background( 'clear-temp-users' )->push_to_queue(
 				array(
 					'action' => 'clear_temp_users',
-					'users'  => $users
+					'users'  => $users,
 				)
 			);
 		}
@@ -74,11 +74,13 @@ class LP_User_Factory {
 
 			if ( $users ) {
 				foreach ( $users as $user_id ) {
-					$curd->delete_user_item( array(
-						'item_id' => $course_id,
-						'ref_id'  => $order_id,
-						'user_id' => $user_id
-					) );
+					$curd->delete_user_item(
+						array(
+							'item_id' => $course_id,
+							'ref_id'  => $order_id,
+							'user_id' => $user_id,
+						)
+					);
 				}
 			}
 		}
@@ -86,11 +88,12 @@ class LP_User_Factory {
 	}
 
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
-		if ( ! $order = learn_press_get_order( $the_id ) ) {
+		$order = learn_press_get_order( $the_id );
+		if ( ! $order ) {
 			return;
 		}
 		remove_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10 );
-		//LP_Debug::startTransaction();
+
 		try {
 			switch ( $new_status ) {
 				case 'pending':
@@ -99,13 +102,12 @@ class LP_User_Factory {
 				case 'failed':
 					self::_update_user_item_pending( $order, $old_status, $new_status );
 					break;
-				case'completed':
+				case 'completed':
 					self::_update_user_item_purchased( $order, $old_status, $new_status );
 			}
-			//LP_Debug::commitTransaction();
-		}
-		catch ( Exception $ex ) {
-			//LP_Debug::rollbackTransaction();
+
+		} catch ( Exception $ex ) {
+
 		}
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 	}
@@ -175,20 +177,10 @@ class LP_User_Factory {
 						array(
 							'ref_id'    => $order->get_id(),
 							'ref_type'  => LP_ORDER_CPT,
-							'parent_id' => 0
+							'parent_id' => 0,
 						)
 					);
 				} else {
-//					$wpdb->insert(
-//						$wpdb->learnpress_user_items,
-//						array(
-//							'item_id'   => $item['course_id'],
-//							'ref_id'    => $order->get_id(),
-//							'ref_type'  => LP_ORDER_CPT,
-//							'user_id'   => $user_id,
-//							'item_type' => LP_COURSE_CPT
-//						)
-//					);
 
 					$user->enroll_course( $item['course_id'], $order->get_id(), false, false );
 
@@ -208,9 +200,8 @@ class LP_User_Factory {
 					if ( ! $last_status ) {
 						$args['status'] = $auto_enroll && $can_enroll ? 'enrolled' : 'purchased';
 						if ( 'enrolled' == $args['status'] ) {
-							$time                   = new LP_Datetime();
-							$args['start_time']     = $time->toSql(false);
-							//$args['start_time_gmt'] = $time->toSql( false );
+							$time               = new LP_Datetime();
+							$args['start_time'] = $time->toSql( false );
 						}
 					}
 
@@ -223,14 +214,20 @@ class LP_User_Factory {
 
 	protected static function _get_course_item( $order_id, $course_id, $user_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE ref_id = %d
 				AND ref_type = %s
 				AND item_id = %d
 				AND user_id = %d
-		", $order_id, LP_ORDER_CPT, $course_id, $user_id );
+		",
+			$order_id,
+			LP_ORDER_CPT,
+			$course_id,
+			$user_id
+		);
 
 		return $wpdb->get_var( $query );
 	}
@@ -243,7 +240,6 @@ class LP_User_Factory {
 	 * @return mixed
 	 */
 	public static function exclude_temp_users( $args ) {
-		//$args['exclude'] = self::_get_temp_user_ids();
 		if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
 			$args['include'] = self::get_pending_requests();
 		}
@@ -254,12 +250,16 @@ class LP_User_Factory {
 	public static function get_pending_requests() {
 		if ( false === ( $pending_requests = LP_Object_Cache::get( 'pending-requests', 'lp-users' ) ) ) {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT ID
-				FROM {$wpdb->users} u 
+				FROM {$wpdb->users} u
 				INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
 				WHERE um.meta_value = %s
-			", '_requested_become_teacher', 'yes' );
+			",
+				'_requested_become_teacher',
+				'yes'
+			);
 
 			$pending_requests = $wpdb->get_col( $query );
 			LP_Object_Cache::set( 'pending-requests', $pending_requests, 'lp-users' );
@@ -275,12 +275,17 @@ class LP_User_Factory {
 	 */
 	protected static function _get_temp_user_ids() {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT ID
-			FROM {$wpdb->users} u 
+			FROM {$wpdb->users} u
 			INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
 			LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
-		", '_lp_temp_user', 'yes', '_lp_expiration' );
+		",
+			'_lp_temp_user',
+			'yes',
+			'_lp_expiration'
+		);
 
 		return $wpdb->get_col( $query );
 	}
@@ -308,14 +313,19 @@ class LP_User_Factory {
 			LP()->session->set_customer_session_cookie( true );
 
 			// Find temp user is not used
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT ID
-				FROM {$wpdb->users} u 
+				FROM {$wpdb->users} u
 				INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
 				LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
 				WHERE um2.meta_value IS NULL
 				LIMIT 0, 1
-			", '_lp_temp_user', 'yes', '_lp_expiration' );
+			",
+				'_lp_temp_user',
+				'yes',
+				'_lp_expiration'
+			);
 
 			$id = $wpdb->get_var( $query );
 
@@ -339,7 +349,6 @@ class LP_User_Factory {
 				// Set session and temp user expiration time
 				update_user_meta( $id, '_lp_expiration', time() + DAY_IN_SECONDS * 2 );
 
-				//
 				delete_user_meta( $id, 'wp_capabilities' );
 
 				// Set session
@@ -368,7 +377,7 @@ class LP_User_Factory {
 	public static function cron_schedules( $schedules ) {
 		$schedules['every_three_minutes'] = array(
 			'interval' => self::$_guest_transient,
-			'display'  => __( 'Every 3 Minutes', 'learnpress' )
+			'display'  => __( 'Every 3 Minutes', 'learnpress' ),
 		);
 
 		return $schedules;
@@ -395,22 +404,30 @@ class LP_User_Factory {
 	 */
 	public static function schedule_cleanup_temp_users() {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT user_id
 			FROM {$wpdb->prefix}learnpress_user_items c
 			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta d ON c.user_item_id = d.learnpress_user_item_id AND d.meta_key = %s
 			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta e ON c.user_item_id = e.learnpress_user_item_id AND e.meta_key = %s AND e.meta_value < TIMESTAMPADD(SECOND, %d, NOW())
-		", 'temp_user_id', 'temp_user_time', self::$_guest_transient );
+		",
+			'temp_user_id',
+			'temp_user_time',
+			self::$_guest_transient
+		);
 
 		if ( $uids = $wpdb->get_col( $query ) ) {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				DELETE a.*, b.*
 				FROM {$wpdb->prefix}learnpress_user_items a
 				INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b
 				WHERE %d
 				AND a.user_item_id = b.learnpress_user_item_id
-				AND a.user_id IN (" . join( ',', $uids ) . ")
-			", 1 );
+				AND a.user_id IN (" . join( ',', $uids ) . ')
+			',
+				1
+			);
 			$wpdb->query( $query );
 		}
 	}
@@ -437,7 +454,7 @@ class LP_User_Factory {
 
 	/**
 	 * @param      $the_user
-	 * @param bool $force
+	 * @param bool     $force
 	 *
 	 * @return LP_Abstract_User
 	 */
@@ -507,21 +524,28 @@ class LP_User_Factory {
 
 			global $wpdb;
 
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT user_item_id
 				FROM {$wpdb->prefix}learnpress_user_items a
 				INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b ON a.user_item_id = b.learnpress_user_item_id AND b.meta_key = %s And b.meta_value = %s
-			", 'temp_user_id', 'yes' );
+			",
+				'temp_user_id',
+				'yes'
+			);
 
 			$user_item_ids = $wpdb->get_row( $query );
 			if ( $user_item_ids ) {
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
 					DELETE a.*, b.*
 					FROM {$wpdb->prefix}learnpress_user_items a
 					INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b
 					WHERE a.user_item_id = b.learnpress_user_item_id
 					AND a.user_id = %d
-				", $temp_id );
+				",
+					$temp_id
+				);
 				$wpdb->query( $query );
 			}
 		}
@@ -533,10 +557,10 @@ class LP_User_Factory {
 	 * @param int $user_id
 	 */
 	public static function start_quiz( $quiz_id, $course_id, $user_id ) {
-
-		if ( $user = learn_press_get_user( $user_id ) ) {
-			if ( $item = $user->get_item_data( $quiz_id, $course_id ) ) {
-				self::_update_user_item_meta( $item, $quiz_id, $course_id, $user_id );
+		if ( $user ) {
+			$user = learn_press_get_user( $user_id );
+			if ( $user->get_item_data( $quiz_id, $course_id ) ) {
+				self::_update_user_item_meta( $user->get_item_data( $quiz_id, $course_id ), $quiz_id, $course_id, $user_id );
 			}
 		}
 	}
@@ -567,7 +591,7 @@ class LP_User_Factory {
 		}
 
 		learn_press_add_user_item_meta( $item->get_user_item_id(), 'temp_user_id', 'yes' );
-		learn_press_add_user_item_meta( $item->get_user_item_id(), 'temp_user_time', date( 'Y-m-d H:i:s', time() ) );
+		learn_press_add_user_item_meta( $item->get_user_item_id(), 'temp_user_time', gmdate( 'Y-m-d H:i:s', time() ) );
 	}
 }
 

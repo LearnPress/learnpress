@@ -1,14 +1,14 @@
 const Cookies = {
 	get: ( name, def, global ) => {
-		var ret;
+		let ret;
 
 		if ( global ) {
 			ret = wpCookies.get( name );
 		} else {
-			var ck = wpCookies.get( 'LP' );
+			let ck = wpCookies.get( 'LP' );
 			if ( ck ) {
 				ck = JSON.parse( ck );
-				ret = name ? ck[name] : ck;
+				ret = name ? ck[ name ] : ck;
 			}
 		}
 
@@ -19,11 +19,11 @@ const Cookies = {
 		return ret;
 	},
 
-	set: function( name, value, expires, path, domain, secure ) {
+	set( name, value, expires, path, domain, secure ) {
 		if ( arguments.length > 2 ) {
 			wpCookies.set( name, value, expires, path, domain, secure );
 		} else if ( arguments.length == 2 ) {
-			var ck = wpCookies.get( 'LP' );
+			let ck = wpCookies.get( 'LP' );
 
 			if ( ck ) {
 				ck = JSON.parse( ck );
@@ -31,7 +31,7 @@ const Cookies = {
 				ck = {};
 			}
 
-			ck[name] = value;
+			ck[ name ] = value;
 
 			wpCookies.set( 'LP', JSON.stringify( ck ), '', '/' );
 		} else {
@@ -39,19 +39,19 @@ const Cookies = {
 		}
 	},
 
-	remove: function( name ) {
+	remove( name ) {
 		const allCookies = Cookies.get();
 		const reg = new RegExp( name, 'g' );
 		const newCookies = {};
 		const useRegExp = name.match( /\*/ );
 
-		for ( let i in allCookies ) {
+		for ( const i in allCookies ) {
 			if ( useRegExp ) {
 				if ( ! i.match( reg ) ) {
-					newCookies[i] = allCookies[i];
+					newCookies[ i ] = allCookies[ i ];
 				}
 			} else if ( name != i ) {
-				newCookies[i] = allCookies[i];
+				newCookies[ i ] = allCookies[ i ];
 			}
 		}
 

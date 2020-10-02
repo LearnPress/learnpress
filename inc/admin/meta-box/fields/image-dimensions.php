@@ -1,59 +1,14 @@
 <?php
-/**
- * Class RWMB_Thumbnail_Dimensions
- */
-class RWMB_Image_Dimensions_Field extends RWMB_Field {
-
-	/**
-	 * Get field HTML
-	 *
-	 * @param mixed $meta
-	 * @param mixed $field
-	 *
-	 * @return string
-	 */
-	public static function html( $meta, $field ) {
-		$meta = self::sanitize_meta( $meta );
-
-		$width  = array_key_exists( 'width', $meta ) ? $meta['width'] : 10;
-		$height = array_key_exists( 'height', $meta ) ? $meta['height'] : 10;
-
-		ob_start();
-		?>
-		<input type="text" size="4" name="<?php echo $field['id']; ?>[width]" value="<?php echo $width; ?>" placeholder=""/>
-		<span class="lp-sign-times">&times;</span>
-		<input type="text" size="4" name="<?php echo $field['id']; ?>[height]" value="<?php echo $height; ?>" placeholder=""/>
-		<span><?php esc_html_e( 'px', 'learnpress' ); ?></span>
-		<span class="lp-sign-times">&nbsp;&nbsp;&nbsp;</span>
-		<input type="hidden" name="<?php echo $field['id']; ?>[crop]" value="no"/>
-
-		<?php
-		return ob_get_clean();
-	}
-
-	public static function value( $new, $old, $post_id, $field ) {
-		return empty( $new ) ? 'no' : 'yes';
-	}
-
-	public static function begin_html( $html, $meta, $field = '' ) {
-		if ( is_array( $field ) && isset( $field['field_name'] ) ) {
-			return RW_Meta_Box::begin_html( $html, $meta, $field );
-		} else {
-			return RWMB_Field::begin_html( $html, $meta );
-		}
-
-	}
-
-	protected static function sanitize_meta( $meta ) {
-		settype( $meta, 'array' );
-		if ( sizeof( $meta ) === 3 && ! array_key_exists( 'width', $meta ) ) {
-			$meta = array(
-				'width'  => $meta[0],
-				'height' => $meta[1],
-				'crop'   => $meta[2],
-			);
-		}
-
-		return $meta;
-	}
-}
+$size   = $value['value'];
+$width  = isset( $size['width'] ) ? $size['width'] : $value['default'][0];
+$height = isset( $size['height'] ) ? $size['height'] : $value['default'][1];
+$crop   = isset( $size['crop'] ) ? $size['crop'] : $value['default'][2];
+?>
+<tr valign="top">
+	<th scope="row" class="titledesc">
+	<label><?php echo esc_html( $value['title'] ); ?> <?php echo $tooltip_html; ?></label>
+</th>
+	<td class="forminp image_width_settings">
+		<input name="<?php echo esc_attr( $value['id'] ); ?>[width]" id="<?php echo esc_attr( $value['id'] ); ?>-width" type="text" size="3" value="<?php echo esc_attr( $width ); ?>" /> &times; <input name="<?php echo esc_attr( $value['id'] ); ?>[height]" id="<?php echo esc_attr( $value['id'] ); ?>-height" type="text" size="3" value="<?php echo esc_attr( $height ); ?>" />px
+		</td>
+</tr>

@@ -1,39 +1,26 @@
 import QuestionBase from '../../question-base';
 
 class QuestionTrueOrFalse extends QuestionBase {
-    constructor() {
-        super(...arguments);
-    }
+	getOptionClass = ( option ) => {
+		const { answered } = this.props;
+		const optionClass = [ ...this.state.optionClass ];
 
-    componentDidMount() {
-        // this.setState({
-        //     optionClass: [...this.state.optionClass, "new-class"]
-        // })
-    }
+		if ( this.maybeShowCorrectAnswer() ) {
+			if ( option.isTrue === 'yes' ) {
+				optionClass.push( 'answer-correct' );
+			}
 
-    getOptionClass = (option) => {
-        const {
-            answered
-        } = this.props;
+			if ( answered ) {
+				if ( option.isTrue === 'yes' ) {
+					( answered === option.value ) && optionClass.push( 'answered-correct' );
+				} else {
+					( answered === option.value ) && optionClass.push( 'answered-wrong' );
+				}
+			}
+		}
 
-        const optionClass = [...this.state.optionClass, "XYZ"];
-        if (this.maybeShowCorrectAnswer()) {
-            if (option.isTrue === 'yes') {
-                optionClass.push('answer-correct');
-            }
-            if (answered) {
-                if (option.isTrue === 'yes') {
-                    (answered === option.value) && optionClass.push('answered-correct');
-                } else {
-                    (answered === option.value) && optionClass.push('answered-wrong');
-                }
-            } else {
-
-            }
-        }
-
-        return optionClass;
-    };
+		return optionClass;
+	};
 }
 
 export default QuestionTrueOrFalse;

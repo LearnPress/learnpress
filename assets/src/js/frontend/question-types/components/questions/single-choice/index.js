@@ -3,10 +3,7 @@ import QuestionBase from '../../question-base';
 
 class QuestionSingleChoice extends QuestionBase {
     getOptionClass = ( option ) => {
-    	const {
-    		answered,
-    	} = this.props;
-
+    	const { answered } = this.props;
     	const optionClass = [ ...this.state.optionClass ];
 
     	if ( this.maybeShowCorrectAnswer() ) {

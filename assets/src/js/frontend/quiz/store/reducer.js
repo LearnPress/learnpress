@@ -63,20 +63,6 @@ const resetCurrentPage = ( state, args ) => {
 	};
 };
 
-const updateAttempt = ( attempts, newAttempt ) => {
-	const at = attempts.findIndex( ( attempt ) => {
-		return attempt.id == newAttempt.id;
-	} );
-
-	if ( at !== -1 ) {
-		attempts[ at ] = newAttempt;
-	} else {
-		attempts.unshift( newAttempt );
-	}
-
-	return attempts;
-};
-
 const setQuestionHint = ( state, action ) => {
 	const questions = state.questions.map( ( question ) => {
 		return question.id == action.questionId ? { ...question, showHint: action.showHint } : question;
@@ -85,7 +71,6 @@ const setQuestionHint = ( state, action ) => {
 	return {
 		...state,
 		questions: [ ...questions ],
-		//hintedQuestions: [...state.hintedQuestions, action.questionId]
 	};
 };
 
@@ -117,6 +102,46 @@ const checkAnswer = ( state, action ) => {
 	};
 };
 
+const submitQuiz = ( state, action ) => {
+	const questions = state.questions.map( ( question ) => {
+		const newArgs = {};
+
+		if ( state.reviewQuestions ) {
+			if ( action.results.questions[ question.id ].explanation ) {
+				newArgs.explanation = action.results.questions[ question.id ].explanation;
+			}
+
+			if ( action.results.questions[ question.id ].options ) {
+				newArgs.options = action.results.questions[ question.id ].options;
+			}
+		}
+
+		return { ...question, ...newArgs };
+	} );
+
+	return resetCurrentPage( state, {
+		submitting: false,
+		currentPage: 1,
+		...action.results,
+		questions: [ ...questions ],
+	} );
+};
+
+const startQuizz = ( state, action ) => {
+	const successResponse = ( action.results.success ) !== undefined ? action.results.success : false;
+	const messageResponse = action.results.message || false;
+
+	return resetCurrentPage( state, {
+		checkedQuestions: [],
+		hintedQuestions: [],
+		mode: '',
+		currentPage: 1,
+		...action.results.results,
+		successResponse,
+		messageResponse,
+	} );
+};
+
 export const userQuiz = ( state = STORE_DATA, action ) => {
 	switch ( action.type ) {
 	case 'SET_QUIZ_DATA':
@@ -141,13 +166,7 @@ export const userQuiz = ( state = STORE_DATA, action ) => {
 		};
 	case 'START_QUIZ':
 	case 'START_QUIZ_SUCCESS':
-		return resetCurrentPage( state, {
-			checkedQuestions: [],
-			hintedQuestions: [],
-			mode: '',
-			currentPage: 1,
-			...action.results,
-		} );
+		return startQuizz( state, action );
 	case 'SET_CURRENT_QUESTION':
 		storageSet( `Q${ state.id }.currentQuestion`, action.questionId );
 		return {
@@ -162,12 +181,7 @@ export const userQuiz = ( state = STORE_DATA, action ) => {
 			currentPage: action.currentPage,
 		};
 	case 'SUBMIT_QUIZ_SUCCESS':
-		return resetCurrentPage( state, {
-			attempts: updateAttempt( state.attempts, action.results ),
-			submitting: false,
-			currentPage: 1,
-			...action.results,
-		} );
+		return submitQuiz( state, action );
 	case 'UPDATE_USER_QUESTION_ANSWERS':
 		return state.status === 'started' ? updateUserQuestionAnswer( state, action ) : state;
 	case 'MARK_QUESTION_RENDERED':
@@ -198,24 +212,19 @@ export const userQuiz = ( state = STORE_DATA, action ) => {
 export const blocks = flow(
 	combineReducers,
 	( reducer ) => ( state, action ) => {
-		//console.log('1', state)
 		return reducer( state, action );
 	},
 	( reducer ) => ( state, action ) => {
-		//console.log('2')
 		return reducer( state, action );
 	},
 	( reducer ) => ( state, action ) => {
-		//console.log('3')
 		return reducer( state, action );
 	}
 )( {
 	a( state = { a: 1 }, action ) {
-		//console.log('a', action)
 		return state;
 	},
 	b( state = { b: 2 }, action ) {
-		//console.log('b',action);
 		return state;
 	},
 } );

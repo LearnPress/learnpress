@@ -981,14 +981,6 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_buttons' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_profile_tab_orders' ) ) {
-	function learn_press_profile_tab_orders() {
-		_deprecated_function( __FUNCTION__, '3.3.0' );
-		learn_press_get_template( 'profile/tabs/orders/list.php' );
-	}
-}
-
-
 if ( ! function_exists( 'learn_press_profile_recover_order_form' ) ) {
 	function learn_press_profile_recover_order_form( $order ) {
 		learn_press_get_template( 'profile/tabs/orders/recover-order.php', array( 'order' => $order ) );
@@ -1377,19 +1369,6 @@ if ( ! function_exists( 'learn_press_course_instructor_tab' ) ) {
 	 */
 	function learn_press_course_instructor_tab() {
 		learn_press_get_template( 'single-course/tabs/instructor.php' );
-	}
-}
-
-
-if ( ! function_exists( 'learn_press_output_user_profile_order' ) ) {
-	/**
-	 * Display user profile tabs
-	 *
-	 * @param LP_User
-	 */
-	function learn_press_output_user_profile_order( $user, $current, $tabs ) {
-
-//		learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
 

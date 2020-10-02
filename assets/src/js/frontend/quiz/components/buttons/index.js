@@ -2,22 +2,12 @@ import { Component } from '@wordpress/element';
 import { withSelect, withDispatch, select } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { __, _x } from '@wordpress/i18n';
-import { default as ButtonCheck } from '../buttons/button-check';
-import { default as ButtonHint } from '../buttons/button-hint';
 
 class Buttons extends Component {
-	/**
-	 * Start or re-take quiz.
-	 *
-	 * @param event
-	 */
 	startQuiz = ( event ) => {
 		event && event.preventDefault();
 
-		const {
-			startQuiz,
-			status,
-		} = this.props;
+		const { startQuiz, status } = this.props;
 
 		if ( status === 'completed' ) {
 			const { confirm } = select( 'learnpress/modal' );
@@ -30,11 +20,6 @@ class Buttons extends Component {
 		startQuiz();
 	};
 
-	/**
-	 * Callback function for Prev/Next buttons to move question back or next.
-	 *
-	 * @param to JSDoc
-	 */
 	nav = ( to ) => ( event ) => {
 		let {
 			questionNav,
@@ -45,20 +30,27 @@ class Buttons extends Component {
 
 		switch ( to ) {
 		case 'prev':
-			currentPage = currentPage > 1 ? currentPage - 1 : ( questionNav === 'infinity' ? numPages : 1 );
+			if ( currentPage > 1 ) {
+				currentPage = currentPage - 1;
+			} else if ( questionNav === 'infinity' ) {
+				currentPage = numPages;
+			} else {
+				currentPage = 1;
+			}
 			break;
 		default:
-			currentPage = currentPage < numPages ? currentPage + 1 : ( questionNav === 'infinity' ? 1 : numPages );
+			if ( currentPage < numPages ) {
+				currentPage = currentPage + 1;
+			} else if ( questionNav === 'infinity' ) {
+				currentPage = 1;
+			} else {
+				currentPage = numPages;
+			}
 		}
 
 		setCurrentPage( currentPage );
 	};
 
-	/**
-	 * Move to a specific page
-	 *
-	 * @param pageNum
-	 */
 	moveTo = ( pageNum ) => ( event ) => {
 		event.preventDefault();
 
@@ -74,93 +66,44 @@ class Buttons extends Component {
 		setCurrentPage( pageNum );
 	};
 
-	/**
-	 * Check current question is in end of list.
-	 *
-	 * @return {boolean}
-	 */
 	isLast = () => {
-		const {
-			currentPage,
-			numPages,
-		} = this.props;
+		const { currentPage, numPages } = this.props;
 
 		return currentPage === numPages;
 	};
 
-	/**
-	 * Check current question is in begin of list.
-	 *
-	 * @return {boolean}
-	 */
 	isFirst = () => {
-		const {
-			currentPage,
-		} = this.props;
+		const { currentPage } = this.props;
 
 		return currentPage === 1;
 	};
 
-	/**
-	 * Submit question to record results.
-	 */
 	submit = () => {
-		const {
-			submitQuiz,
-		} = this.props;
+		const { submitQuiz } = this.props;
+
+		const { confirm } = select( 'learnpress/modal' );
+
+		if ( 'no' === confirm( __( 'Are you sure to submit quiz?', 'learnpress' ), this.submit ) ) {
+			return;
+		}
 
 		submitQuiz();
 	};
 
-	/**
-	 * Set viewing mode for quiz e.q: reviewing
-	 *
-	 * @param mode
-	 */
 	setQuizMode = ( mode ) => () => {
-		const {
-			setQuizMode,
-		} = this.props;
+		const { setQuizMode } = this.props;
 
 		setQuizMode( mode );
 	};
 
-	/**
-	 * Return TRUE if is reviewing mode
-	 *
-	 * @return {Component.props.isReviewing}
-	 */
 	isReviewing = () => {
-		const {
-			isReviewing,
-		} = this.props;
+		const { isReviewing } = this.props;
 
 		return isReviewing;
 	};
 
-	// componentWillReceiveProps(nextProps) {
-	//     if (nextProps.keyPressed === this.props.keyPressed) {
-	//         return;
-	//     }
-	//     switch (nextProps.keyPressed) {
-	//         case 'left':
-	//             return this.nav('prev')();
-	//         case 'right':
-	//             return this.nav('next')()
-	//     }
-	// }
-
-	/**
-	 * Displays pagination with numbers from min to max.
-	 *
-	 * @return {string}
-	 * @param args
-	 */
 	pageNumbers( args ) {
-		const {
-			numPages,
-			currentPage,
-		} = this.props;
+		const { numPages, currentPage } = this.props;
 
 		if ( numPages < 2 ) {
 			return '';
@@ -183,8 +126,8 @@ class Buttons extends Component {
 			args.midSize = 1;
 		}
 
-		let numbers = [ ...Array( numPages ).keys() ],
-			dots = false;
+		const numbers = [ ...Array( numPages ).keys() ];
+		let dots = false;
 
 		return (
 			<div className="nav-links">
@@ -246,10 +189,6 @@ class Buttons extends Component {
 		);
 	}
 
-	/**
-	 * Render buttons
-	 *
-	 */
 	render() {
 		const {
 			status,
@@ -262,7 +201,11 @@ class Buttons extends Component {
 			canRetry,
 		} = this.props;
 
-		const classNames = [ 'quiz-buttons align-center' ];
+		const classNames = [ 'quiz-buttons' ];
+
+		if ( status === 'started' || isReviewing ) {
+			classNames.push( 'align-center' );
+		}
 
 		if ( questionNav === 'questionNav' ) {
 			classNames.push( 'infinity' );
@@ -276,68 +219,80 @@ class Buttons extends Component {
 			classNames.push( 'is-last' );
 		}
 
+		const popupSidebar = document.querySelector( '#popup-sidebar' );
+		const quizzApp = document.querySelector( '#learn-press-quiz-app' );
+
+		let styles = '';
+
+		if ( status === 'started' || isReviewing ) {
+			styles = { marginLeft: popupSidebar && popupSidebar.offsetWidth / 2, width: quizzApp && quizzApp.offsetWidth };
+		} else {
+			styles = null;
+		}
+
 		return (
-			<div className={ classNames.join( ' ' ) }>
-				<div className={ `button-left` + ( status === 'started' ? ' fixed' : '' ) }>
+			<>
+				<div className={ classNames.join( ' ' ) }>
+					<div
+						className={ `button-left` + ( ( status === 'started' || isReviewing ) ? ' fixed' : '' ) }
+						style={ styles }
+					>
 
-					{ -1 !== [ '', 'completed', 'viewed' ].indexOf( status ) && ! isReviewing && canRetry && (
-						<button
-							className="lp-button start"
-							onClick={ this.startQuiz }
-						>
-							{ status === 'completed' ? _x( 'Retry', 'label button retry quiz', 'learnpress' ) :	_x( 'Start', 'label button start quiz', 'learnpress' ) }
-						</button>
-					) }
+						{ -1 !== [ '', 'completed', 'viewed' ].indexOf( status ) && ! isReviewing && canRetry && (
+							<button className="lp-button start" onClick={ this.startQuiz }>
+								{ status === 'completed' ? _x( 'Retry', 'label button retry quiz', 'learnpress' ) :	_x( 'Start', 'label button start quiz', 'learnpress' ) }
+							</button>
+						) }
 
-					{ ( 'started' === status || isReviewing ) && ( numPages > 1 ) && (
-						<>
-							<div className="questions-pagination">
-								{ this.pageNumbers() }
-							</div>
-						</>
-					) }
+						{ ( 'started' === status || isReviewing ) && ( numPages > 1 ) && (
+							<>
+								<div className="questions-pagination">
+									{ this.pageNumbers() }
+								</div>
+							</>
+						) }
+					</div>
+
+					<div className="button-right">
+						{ ( 'started' === status ) && (
+							<>
+								{ ( ( 'infinity' === questionNav || this.isLast() ) && ! isReviewing ) && (
+									<button
+										className="lp-button submit-quiz"
+										onClick={ this.submit }
+									>
+										{ __( 'Submit', 'learnpress' ) }
+									</button>
+								) }
+							</>
+						) }
+
+						{ isReviewing && showReview && (
+							<button
+								className="lp-button back-quiz"
+								onClick={ this.setQuizMode( '' ) }
+							>
+								{ __( 'Result', 'learnpress' ) }
+							</button>
+						) }
+
+						{ 'completed' === status && showReview && ! isReviewing && (
+							<button
+								className="lp-button review-quiz"
+								onClick={ this.setQuizMode( 'reviewing' ) }
+							>
+								{ __( 'Review', 'learnpress' ) }
+							</button>
+						) }
+					</div>
 				</div>
 
-				<div className="button-right">
-					{ ( 'started' === status /*|| isReviewing*/ ) && (
-						<>
-							{ questionsPerPage === 1 && [
-								<MaybeShowButton key="button-hint" type="hint" Button={ ButtonHint }
-									question={ question } />,
-								<MaybeShowButton key="button-check" type="check" Button={ ButtonCheck }
-									question={ question } />,
-							] }
-
-							{ ( ( 'infinity' === questionNav || this.isLast() ) && ! isReviewing ) && (
-								<button
-									className="lp-button submit-quiz"
-									onClick={ this.submit }
-								>
-									{ __( 'Submit', 'learnpress' ) }
-								</button>
-							) }
-						</>
-					) }
-
-					{ isReviewing && showReview && (
-						<button
-							className="lp-button back-quiz"
-							onClick={ this.setQuizMode( '' ) }
-						>
-							{ __( 'Result', 'learnpress' ) }
-						</button>
-					) }
-
-					{ 'completed' === status && showReview && ! isReviewing && (
-						<button
-							className="lp-button review-quiz"
-							onClick={ this.setQuizMode( 'reviewing' ) }
-						>
-							{ __( 'Review', 'learnpress' ) }
-						</button>
-					) }
-				</div>
-			</div>
+				{ this.props.message && this.props.success !== true && (
+					<div className="learn-press-message error">
+						{ this.props.message }
+					</div>
+				) }
+			</>
 		);
 	}
 }
@@ -428,7 +383,9 @@ export default compose( [
 			questionsPerPage: getData( 'questionsPerPage' ),
 			pageNumbers: getData( 'pageNumbers' ),
 			keyPressed: getData( 'keyPressed' ),
-			canRetry: ( getData( 'attempts' ) || [] ).length < getData( 'attemptsCount' ),
+			canRetry: ( getData( 'attempts' ) || [] ).length < getData( 'attemptsCount' ) && getData( 'retry' ),
+			message: getData( 'messageResponse' ) || false,
+			success: getData( 'successResponse' ) !== undefined ? getData( 'successResponse' ) : true,
 		};
 
 		if ( data.questionsPerPage === 1 ) {

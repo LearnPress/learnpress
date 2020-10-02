@@ -1,7 +1,7 @@
 ( function( $ ) {
 	'use strict';
 
-	var UserProfile = function( args ) {
+	const UserProfile = function( args ) {
 		this.view = new UserProfile.View( {
 			model: new UserProfile.Model( args ),
 		} );
@@ -16,27 +16,25 @@
 		},
 		el: '#lp-user-edit-avatar',
 		uploader: null,
-		initialize: function() {
+		initialize() {
 			_.bindAll( this, 'filesAdded', 'uploadProgress', 'uploadError', 'fileUploaded', 'crop' );
 			this._getUploader();
 		},
-		_save: function( e ) {
+		_save( e ) {
 			e.preventDefault();
-			var self = this;
+			const self = this;
 			$.ajax( {
 				url: '?lp-ajax=save-uploaded-user-avatar',
 				data: this.$( '.lp-avatar-crop-image' ).serializeJSON(),
 				type: 'post',
-				success: function( response ) {
+				success( response ) {
 					response = LP.parseJSON( response );
 					if ( ! response.success ) {
 						return;
 					}
 
-					// Remove crop element
 					self.$( '.lp-avatar-crop-image' ).remove();
 
-					// try to find avatar element and change the image
 					$( '.lp-user-profile-avatar' ).html( response.avatar );
 
 					self.$().attr( 'data-custom', 'yes' );
@@ -44,53 +42,52 @@
 				},
 			} );
 		},
-		$: function( selector ) {
+		$( selector ) {
 			return selector ? $( this.$el ).find( selector ) : $( this.$el );
 		},
-		_removePhoto: function( e ) {
+		_removePhoto( e ) {
 			e.preventDefault();
 
-			if ( ! confirm( 'Remove?' ) ) {
+			// eslint-disable-next-line no-alert
+			if ( ! confirm( 'Are you sure?' ) ) {
 				return;
 			}
 
-			// TODO: ajax to remove
 			this.$().removeAttr( 'data-custom' );
 			this.$( '.profile-picture' ).toggleClass( 'profile-avatar-current' );
-			//this.$('#lp-remove-upload-photo').hide();
 			this.$( '#submit' ).prop( 'disabled', false );
 
 			$( '.lp-user-profile-avatar' ).html( this.$( '.profile-avatar-current' ).find( 'img' ).clone() );
 		},
-		_upload: function( e ) {
+		_upload( e ) {
 			e.preventDefault();
 		},
-		_cancel: function( e ) {
+		_cancel( e ) {
 			e.preventDefault();
 			this.$crop && this.$crop.remove();
 			this.$( '.lp-avatar-preview' ).removeClass( 'croping' );
 		},
-		filesAdded: function( up, files ) {
-			var that = this;
+		filesAdded( up, files ) {
+			const that = this;
 			up.files.splice( 0, up.files.length - 1 );
 			that.$( '.lp-avatar-preview' ).addClass( 'uploading' );
 			that.$( '.lp-avatar-upload-progress-value' ).width( 0 );
 			that.uploader.start();
 		},
-		uploadProgress: function( up, file ) {
+		uploadProgress( up, file ) {
 			this.$( '.lp-avatar-upload-progress-value' ).css( 'width', file.percent + '%' );
 		},
-		uploadError: function( up, err ) {
+		uploadError( up, err ) {
 			this.$( '.lp-avatar-preview' ).addClass( 'upload-error' ).removeClass( 'uploading' );
 			this.$( '.lp-avatar-upload-error' ).html( err );
 		},
-		fileUploaded: function( up, file, info ) {
+		fileUploaded( up, file, info ) {
 			this.$( '.lp-avatar-preview' ).removeClass( 'upload-error' ).removeClass( 'uploading' );
-			var that = this,
+			const that = this,
 				response = LP.parseJSON( info.response );
 			if ( response.url ) {
 				this.avatar = response.url;
-				$( '<img/>' ) // Make in memory copy of image to avoid css issues
+				$( '<img/>' )
 					.attr( 'src', response.url )
 					.load( function() {
 						that.model.set( $.extend( response, {
@@ -101,12 +98,12 @@
 					} );
 			}
 		},
-		crop: function() {
+		crop() {
 			this.model.set( 'r', Math.random() );
 			new UserProfile.Crop( this );
 			this.$( '#submit' ).prop( 'disabled', false );
 		},
-		_getUploader: function() {
+		_getUploader() {
 			if ( this.uploader ) {
 				return this.uploader;
 			}
@@ -123,7 +120,7 @@
 				},
 				file_data_name: 'lp-upload-avatar',
 				init: {
-					PostInit: function() {
+					PostInit() {
 					},
 					FilesAdded: this.filesAdded,
 					UploadProgress: this.uploadProgress,
@@ -137,14 +134,13 @@
 	} );
 	UserProfile.Model = Backbone.Model.extend( {} );
 	UserProfile.Crop = function( $view ) {
-		var self = this,
+		const self = this,
 			data = $view.model.toJSON(),
 			$crop = $( LP.template( 'tmpl-crop-user-avatar' )( data ) );
 		$crop.appendTo( $view.$( '#profile-avatar-uploader' ) );
 
-		//$crop.appendTo($view.$('.lp-avatar-preview').addClass('croping'));
 		$view.$crop = $crop;
-		var $img = $crop.find( 'img' ),
+		let $img = $crop.find( 'img' ),
 			wx = 0,
 			hx = 0,
 			lx = 0,
@@ -153,7 +149,7 @@
 			nh = 0,
 			maxWidth = 870;
 		this.initCrop = function() {
-			var r1 = data.viewWidth / data.viewHeight,
+			const r1 = data.viewWidth / data.viewHeight,
 				r2 = data.width / data.height;
 
 			if ( r1 >= r2 ) {
@@ -170,14 +166,14 @@
 			nw = wx;
 			nh = hx;
 			$img.draggable( {
-				drag: function( e, ui ) {
+				drag( e, ui ) {
 					if ( ui.position.left > 0 ) {
 						ui.position.left = 0;
 					}
 					if ( ui.position.top > 0 ) {
 						ui.position.top = 0;
 					}
-					var xx = data.viewWidth - nw,
+					const xx = data.viewWidth - nw,
 						yy = data.viewHeight - nh;
 					if ( xx > ui.position.left ) {
 						ui.position.left = xx;
@@ -187,7 +183,7 @@
 					}
 					$( document.body ).addClass( 'profile-dragging' );
 				},
-				stop: function( e, ui ) {
+				stop( e, ui ) {
 					lx = parseInt( $img.css( 'left' ) );
 					tx = parseInt( $img.css( 'top' ) );
 					dd = ( Math.abs( lx ) + data.viewWidth / 2 ) / nw;
@@ -204,7 +200,7 @@
 			var dd = ( Math.abs( lx ) + data.viewWidth / 2 ) / wx,
 				bb = ( Math.abs( tx ) + data.viewHeight / 2 ) / hx;
 			$crop.find( '.lp-zoom > div' ).slider( {
-				create: function() {
+				create() {
 					self.update( {
 						width: wx,
 						height: hx,
@@ -212,11 +208,11 @@
 						left: lx,
 					} );
 				},
-				slide: function( e, ui ) {
+				slide( e, ui ) {
 					nw = wx + ( ui.value / 100 ) * data.width * 2;
 					nh = hx + ( ui.value / 100 ) * data.height * 2;
-					var nl = data.viewWidth / 2 - ( nw * dd ), // parseInt((data.viewWidth - nw) / 2),
-						nt = data.viewHeight / 2 - nh * bb;//parseInt((data.viewHeight - nh) / 2);
+					let nl = data.viewWidth / 2 - ( nw * dd ),
+						nt = data.viewHeight / 2 - nh * bb;
 
 					if ( nl > 0 ) {
 						nl = 0;
@@ -224,7 +220,7 @@
 					if ( nt > 0 ) {
 						nt = 0;
 					}
-					var xx = parseInt( data.viewWidth - nw ),
+					const xx = parseInt( data.viewWidth - nw ),
 						yy = parseInt( data.viewHeight - nh );
 
 					if ( xx > nl ) {
@@ -243,7 +239,7 @@
 
 					console.log( ui.value, data );
 				},
-				stop: function() {
+				stop() {
 					$( document.body ).removeClass( 'profile-resizing' );
 				},
 			} );
@@ -255,23 +251,23 @@
 				top: args.top,
 				left: args.left,
 			} );
-			var r = args.width / data.width,
+			const r = args.width / data.width,
 				left = parseInt( Math.abs( args.left / r ) ),
 				top = parseInt( Math.abs( args.top / r ) ),
 				right = left + parseInt( data.viewWidth / r ),
 				bottom = top + parseInt( data.viewHeight / r );
-			var cropData = $.extend( args, {
+			const cropData = $.extend( args, {
 				width: data.viewWidth,
 				height: data.viewHeight,
-				r: r,
+				r,
 				points: [ left, top, right, bottom ].join( ',' ),
 			} );
 			$crop.find( 'input[name^="lp-user-avatar-crop"]' ).each( function() {
-				var $input = $( this ),
+				const $input = $( this ),
 					name = $input.data( 'name' );
 
-				if ( name != 'name' && cropData[name] !== undefined ) {
-					$input.val( cropData[name] );
+				if ( name != 'name' && cropData[ name ] !== undefined ) {
+					$input.val( cropData[ name ] );
 				}
 			} );
 		};
@@ -279,29 +275,29 @@
 	};
 
 	$( document ).on( 'submit', '#learn-press-form-login', function( e ) {
-		var $form = $( this ),
+		const $form = $( this ),
 			data = $form.serialize();
 		$form.find( '.learn-press-error, .learn-press-notice, .learn-press-message' ).fadeOut();
 		$form.find( 'input' ).attr( 'disabled', true );
 		LP.doAjax( {
 			data: {
 				'lp-ajax': 'login',
-				data: data,
+				data,
 			},
-			success: function( response, raw ) {
+			success( response, raw ) {
 				LP.showMessages( response.message, $form, 'LOGIN_ERROR' );
 				if ( response.result == 'error' ) {
 					$form.find( 'input' ).attr( 'disabled', false );
-					$( '#learn-press-form-login input[type="text"]' ).focus();
+					$( '#learn-press-form-login input[type="text"]' ).trigger( 'focus' );
 				}
 				if ( response.redirect ) {
 					LP.reload( response.redirect );
 				}
 			},
-			error: function() {
+			error() {
 				LP.showMessages( '', $form, 'LOGIN_ERROR' );
 				$form.find( 'input' ).attr( 'disabled', false );
-				$( '#learn-press-form-login input[type="text"]' ).focus();
+				$( '#learn-press-form-login input[type="text"]' ).trigger( 'focus' );
 			},
 		} );
 		return false;
@@ -309,7 +305,7 @@
 
 	$( document ).on( 'click', '.table-orders .cancel-order', function( e ) {
 		e.preventDefault();
-		var _this = $( this ),
+		const _this = $( this ),
 			_href = _this.attr( 'href' );
 		LP.alert( learn_press_js_localize.confirm_cancel_order, function( confirm ) {
 			if ( confirm ) {
@@ -318,8 +314,9 @@
 		} );
 		return false;
 	} );
+
 	$( document ).ready( function() {
-		var $form = $( '#lp-user-profile-form form' ),
+		let $form = $( '#lp-user-profile-form form' ),
 			oldData = $form.serialize(),
 			timer = null,
 			$passwordForm = $form.find( '#lp-profile-edit-password-form' );
@@ -339,7 +336,7 @@
 			} );
 		} else {
 			$passwordForm.on( 'change keyup', 'input', function( e ) {
-				var $target = $( e.target ),
+				const $target = $( e.target ),
 					targetName = $target.attr( 'name' ),
 					$oldPass = $form.find( '#pass0' ),
 					$newPass = $form.find( '#pass1' ),
@@ -349,47 +346,49 @@
 				$form.find( '#submit' ).prop( 'disabled', ! match || ! $oldPass.val() || ! $newPass.val() || ! $confirmPass.val() );
 			} );
 		}
-		var args = {};
+
+		const args = {};
 		if ( typeof lpProfileUserSettings !== 'undefined' ) {
 			args.viewWidth = parseInt( lpProfileUserSettings.avatar_size.width );
 			args.viewHeight = parseInt( lpProfileUserSettings.avatar_size.height );
 		}
-		// avatar
+
 		new UserProfile( args );
 
 		Profile.recoverOrder();
 	} ).on( 'click', '.btn-load-more-courses', function( event ) {
-		var $button = $( this );
-		var paged = $button.data( 'paged' ) || 1;
-		var pages = $button.data( 'pages' ) || 1;
-		var container = $button.data( 'container' );
-		var $container = $( '#' + container );
-		var url = $button.data( 'url' );
+		const $button = $( this );
+		let paged = $button.data( 'paged' ) || 1;
+		const pages = $button.data( 'pages' ) || 1;
+		const container = $button.data( 'container' );
+		const $container = $( '#' + container );
+		let url = $button.data( 'url' );
 
 		paged++;
 		$button.data( 'paged', paged ).prop( 'disabled', true ).removeClass( 'btn-ajax-off' ).addClass( 'btn-ajax-on' );
 
 		if ( ! url ) {
-			var seg = window.location.href.split( '?' );
+			const seg = window.location.href.split( '?' );
 
-			if ( seg[0].match( /\/([0-9]+)\// ) ) {
-				url = seg[0].replace( /\/([0-9]+)\//, paged );
+			if ( seg[ 0 ].match( /\/([0-9]+)\// ) ) {
+				url = seg[ 0 ].replace( /\/([0-9]+)\//, paged );
 			} else {
-				url = seg[0] + paged;
+				url = seg[ 0 ] + paged;
 			}
 
-			if ( seg[1] ) {
-				url += '?' + seg[1];
+			if ( seg[ 1 ] ) {
+				url += '?' + seg[ 1 ];
 			}
 		} else {
 			url = url.addQueryVar( 'current_page', paged );
 		}
 
 		$.ajax( {
-			url: url,
+			url,
 			data: $button.data( 'args' ),
-			success: function( response ) {
+			success( response ) {
 				$container.append( $( response ).find( '#' + container ).children() );
+
 				if ( paged >= pages ) {
 					$button.remove();
 				} else {
@@ -399,39 +398,44 @@
 		} );
 	} );
 
-	var Profile = {
-		recoverOrder: function( e ) {
-			var $wrap = $( '.order-recover' ),
+	const Profile = {
+		recoverOrder( e ) {
+			const $wrap = $( '.order-recover' ),
 				$buttonRecoverOrder = $wrap.find( '.button-recover-order' ),
 				$input = $wrap.find( 'input[name="order-key"]' );
 
-			function recoverOrder() {
+			const recoverOrder = () => {
 				$buttonRecoverOrder.addClass( 'disabled' ).attr( 'disabled', 'disabled' );
 				$wrap.find( '.learn-press-message' ).remove();
+
 				$.post( {
 					url: '',
 					data: $wrap.serializeJSON(),
-					success: function( response ) {
+					success( response ) {
 						response = LP.parseJSON( response );
 
 						if ( response.message ) {
-							var $msg = $( '<div class="learn-press-message icon"><i class="fa"></i> ' + response.message + '</div>' );
+							const $msg = $( '<div class="learn-press-message icon"><i class="fa"></i> ' + response.message + '</div>' );
+
 							if ( response.result == 'error' ) {
 								$msg.addClass( 'error' );
 							}
+
 							$wrap.prepend( $msg );
 						}
 
 						if ( response.redirect ) {
 							window.location.href = response.redirect;
 						}
+
 						$buttonRecoverOrder.removeClass( 'disabled' ).removeAttr( 'disabled', '' );
 					},
 				} );
-			}
+			};
 
 			$buttonRecoverOrder.on( 'click', recoverOrder );
-			$input.on( 'change', function() {
+
+			$input.on( 'change', () => {
 				$buttonRecoverOrder.prop( 'disabled', ! this.value );
 			} );
 		},

@@ -249,11 +249,6 @@ add_action( 'learn-press/after-content-item-summary/lp_lesson', LP()->template( 
 add_action( 'learn-press/course-item-content', LP()->template( 'course' )->func( 'course_item_content' ), 5 );
 // add_action( 'learn-press/after-course-item-content', 'learn_press_content_item_nav', 5 );
 
-/**
- * @see LP_Template_Course::lesson_comment_form()
- */
-// add_action( 'learn-press/after-course-item-content', LP()->template( 'course' )->func( 'lesson_comment_form' ), 10 );
-
 /** BEGIN: User profile */
 
 /**
@@ -262,7 +257,6 @@ add_action( 'learn-press/course-item-content', LP()->template( 'course' )->func(
  * @see LP_Template_Profile::content()
  */
 add_action( 'learn-press/before-user-profile', LP()->template( 'profile' )->func( 'header' ), 10 );
-// add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'tabs' ), 5 );
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'sidebar' ), 10 );
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'content' ), 20 );
 
@@ -285,25 +279,19 @@ add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->fu
 
 /**
  * @see LP_Template_Profile::dashboard_logged_in()
- * @see LP_Template_Profile::dashboard_user_bio()
  */
 add_action( 'learn-press/profile/before-dashboard', LP()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
 add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_featured_courses' ), 20 );
 add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_latest_courses' ), 30 );
-// add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_logged_in' ), 100 );
-// add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_user_bio' ), 1000 );
 
 /**
  * @see LP_Template_Profile::dashboard_not_logged_in()
  * @see LP_Template_Profile::login_form()
  * @see LP_Template_Profile::register_form()
  */
-// add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'dashboard_not_logged_in' ), 5 );
-// add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'login_form' ), 10 );
-// add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'register_form' ), 15 );
-//
-// add_action( 'learn-press/before-profile-nav', LP()->template( 'profile' )->callback( 'profile/mobile-menu.php' ), 5 );
-/** END: User profile */
+add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'dashboard_not_logged_in' ), 5 );
+add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'login_form' ), 10 );
+add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'register_form' ), 15 );
 
 /** BEGIN: Become teacher form */
 

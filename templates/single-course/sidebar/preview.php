@@ -5,10 +5,11 @@
  * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 ?>
+
 <div class="course-sidebar-preview margin-bottom">
-    <div class="media-preview">
+	<div class="media-preview">
 		<?php
 
 		LP()->template( 'course' )->course_media_preview();
@@ -16,7 +17,7 @@ defined( 'ABSPATH' ) or die;
 		learn_press_get_template( 'loop/course/badge-featured' );
 
 		?>
-    </div>
+	</div>
 
 	<?php
 
@@ -36,6 +37,6 @@ defined( 'ABSPATH' ) or die;
 	LP()->template( 'course' )->user_progress();
 
 	// Target audiences
-	//LP()->template('course')->course_extra_target_audiences();
+	// LP()->template('course')->course_extra_target_audiences();
 	?>
 </div>

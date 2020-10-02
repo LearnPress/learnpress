@@ -421,8 +421,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool|LP_Course_Section[]
 		 */
 		public function get_curriculum( $section_id = 0, $force = false ) {
-			// _deprecated_function( __CLASS__ . '->get_curriculum()', '3.0.12', __CLASS__ . '->get_sections()' );
-
 			return $this->get_sections( 'object', $section_id );
 		}
 
@@ -979,7 +977,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function count_students() {
 			$count_users = LP()->utils->count_course_users( $this->get_id() );
-			$total       = $count_users['total'];
+			$total       = ! empty( $count_users['total'] ) ? $count_users['total'] : 0;
 
 			$append_students = LP()->settings()->get( 'enrolled_students_number' );
 

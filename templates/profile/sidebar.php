@@ -7,24 +7,13 @@
  * @version 4.0.0
  */
 
-defined('ABSPATH') or die;
+defined( 'ABSPATH' ) || exit;
 ?>
+
 <aside id="profile-sidebar">
 
-	<?php
-	/**
-	 * LP Hook
-	 */
+	<?php do_action( 'learn-press/user-profile-account' ); ?>
 
-	do_action('learn-press/user-profile-account');
-	?>
-
-	<?php
-	/**
-	 * LP Hook
-	 */
-
-	do_action('learn-press/user-profile-tabs');
-	?>
+	<?php do_action( 'learn-press/user-profile-tabs' ); ?>
 
 </aside>

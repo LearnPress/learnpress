@@ -7,11 +7,11 @@
  * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
+
 $socials = LP_Profile::instance()->get_user()->get_profile_socials();
 ?>
+
 <div class="lp-user-profile-socials">
-	<?php
-	print_r( join( "\n", $socials ) );
-	?>
+	<?php echo implode( "\n", $socials ); ?>
 </div>

@@ -32,6 +32,267 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 			}
 		}
 
+		public static function output_fields( $options ) {
+			foreach ( $options as $value ) {
+				if ( ! isset( $value['type'] ) ) {
+					continue;
+				}
+				if ( ! isset( $value['id'] ) ) {
+					$value['id'] = '';
+				}
+				if ( ! isset( $value['title'] ) ) {
+					$value['title'] = isset( $value['name'] ) ? $value['name'] : '';
+				}
+				if ( ! isset( $value['class'] ) ) {
+					$value['class'] = '';
+				}
+				if ( ! isset( $value['css'] ) ) {
+					$value['css'] = '';
+				}
+				if ( ! isset( $value['default'] ) ) {
+					$value['default'] = '';
+				}
+				if ( ! isset( $value['desc'] ) ) {
+					$value['desc'] = '';
+				}
+				if ( ! isset( $value['desc_tip'] ) ) {
+					$value['desc_tip'] = false;
+				}
+				if ( ! isset( $value['placeholder'] ) ) {
+					$value['placeholder'] = '';
+				}
+				if ( ! isset( $value['suffix'] ) ) {
+					$value['suffix'] = '';
+				}
+				if ( ! isset( $value['value'] ) ) {
+					$value['value'] = self::get_option( $value['id'], $value['default'] );
+				}
+
+				$custom_attributes = array();
+
+				if ( ! empty( $value['custom_attributes'] ) && is_array( $value['custom_attributes'] ) ) {
+					foreach ( $value['custom_attributes'] as $attribute => $attribute_value ) {
+						$custom_attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $attribute_value ) . '"';
+					}
+				}
+
+				$field_description = self::get_field_description( $value );
+				$description       = $field_description['description'];
+				$tooltip_html      = $field_description['tooltip_html'];
+
+				switch ( $value['type'] ) {
+					case 'text':
+					case 'password':
+					case 'datetime':
+					case 'datetime-local':
+					case 'date':
+					case 'month':
+					case 'time':
+					case 'week':
+					case 'number':
+					case 'email':
+					case 'url':
+					case 'tel':
+						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/text.php';
+						break;
+
+					case 'select':
+					case 'multiselect':
+						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/select.php';
+						break;
+
+					default:
+						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/' . $value['type'] . '.php';
+						break;
+				}
+			}
+		}
+
+		public static function save_fields( $options, $data = null ) {
+			if ( is_null( $data ) ) {
+				$data = $_POST;
+			}
+
+			if ( empty( $data ) ) {
+				return false;
+			}
+
+			$update_options   = array();
+			$autoload_options = array();
+
+			foreach ( $options as $option ) {
+				if ( ! isset( $option['id'] ) || ! isset( $option['type'] ) || ( isset( $option['is_option'] ) && false === $option['is_option'] ) ) {
+					continue;
+				}
+
+				if ( strstr( $option['id'], '[' ) ) {
+					parse_str( $option['id'], $option_name_array );
+					$option_name  = current( array_keys( $option_name_array ) );
+					$setting_name = key( $option_name_array[ $option_name ] );
+					$raw_value    = isset( $data[ $option_name ][ $setting_name ] ) ? wp_unslash( $data[ $option_name ][ $setting_name ] ) : null;
+				} else {
+					$option_name  = $option['id'];
+					$setting_name = '';
+					$raw_value    = isset( $data[ $option['id'] ] ) ? wp_unslash( $data[ $option['id'] ] ) : null;
+				}
+
+				switch ( $option['type'] ) {
+					case 'checkbox':
+						$value = '1' === $raw_value || 'yes' === $raw_value ? 'yes' : 'no';
+						break;
+					case 'textarea':
+						$value = wp_kses_post( trim( $raw_value ) );
+						break;
+					case 'multiselect':
+					case 'multi_select_countries':
+						$value = array_filter( array_map( 'learnpress_clean', (array) $raw_value ) );
+						break;
+					case 'image-dimensions':
+						$value = array();
+						if ( isset( $raw_value['width'] ) ) {
+							$value['width']  = learnpress_clean( $raw_value['width'] );
+							$value['height'] = learnpress_clean( $raw_value['height'] );
+							$value['crop']   = isset( $raw_value['crop'] ) ? 1 : 0;
+						} else {
+							$value['width']  = $option['default'][0];
+							$value['height'] = $option['default'][1];
+							$value['crop']   = $option['default'][2];
+						}
+						break;
+					case 'select':
+						$allowed_values = empty( $option['options'] ) ? array() : array_map( 'strval', array_keys( $option['options'] ) );
+						if ( empty( $option['default'] ) && empty( $allowed_values ) ) {
+							$value = null;
+							break;
+						}
+						$default = ( empty( $option['default'] ) ? $allowed_values[0] : $option['default'] );
+						$value   = in_array( $raw_value, $allowed_values, true ) ? $raw_value : $default;
+						break;
+					case 'custom-fields':
+						$value = array();
+
+						if ( is_array( $raw_value ) && ! empty( $raw_value ) ) {
+							foreach ( $raw_value as $feilds ) {
+								foreach ( $option['options'] as $cfkey => $cfoption ) {
+									if ( $cfoption['type'] === 'checkbox' ) {
+										$feilds[ $cfkey ] = ( isset( $feilds[ $cfkey ] ) && ( $feilds[ $cfkey ] === '1' || $feilds[ $cfkey ] === 'yes' ) ) ? 'yes' : 'no';
+									}
+								}
+
+								$cfsort = $feilds['sort'];
+								unset( $feilds['sort'] );
+								$value[ $cfsort ] = $feilds;
+							}
+						}
+						break;
+					default:
+						$value = learnpress_clean( $raw_value );
+						break;
+				}
+
+				/**
+				 * Sanitize the value of an option.
+				 *
+				 * @since 4.0.0
+				 */
+				$value = apply_filters( 'learnpress_metabox_settings_sanitize_option', $value, $option, $raw_value );
+
+				/**
+				 * Sanitize the value of an option by option name.
+				 *
+				 * @since 4.0.0
+				 */
+				$value = apply_filters( "learnpress_metabox_settings_sanitize_option_$option_name", $value, $option, $raw_value );
+
+				if ( is_null( $value ) ) {
+					continue;
+				}
+
+				if ( $option_name && $setting_name ) {
+					if ( ! isset( $update_options[ $option_name ] ) ) {
+						$update_options[ $option_name ] = get_option( $option_name, array() );
+					}
+					if ( ! is_array( $update_options[ $option_name ] ) ) {
+						$update_options[ $option_name ] = array();
+					}
+					$update_options[ $option_name ][ $setting_name ] = $value;
+				} else {
+					$update_options[ $option_name ] = $value;
+				}
+
+				$autoload_options[ $option_name ] = isset( $option['autoload'] ) ? (bool) $option['autoload'] : true;
+
+				do_action( 'learnpress_update_metabox_option', $option );
+
+				// Save all options in our array.
+				foreach ( $update_options as $name => $value ) {
+					update_option( $name, $value, $autoload_options[ $name ] ? 'yes' : 'no' );
+				}
+			}
+		}
+
+		public static function get_field_description( $value ) {
+			$description  = '';
+			$tooltip_html = '';
+
+			if ( true === $value['desc_tip'] ) {
+				$tooltip_html = $value['desc'];
+			} elseif ( ! empty( $value['desc_tip'] ) ) {
+				$description  = $value['desc'];
+				$tooltip_html = $value['desc_tip'];
+			} elseif ( ! empty( $value['desc'] ) ) {
+				$description = $value['desc'];
+			}
+
+			if ( $description && in_array( $value['type'], array( 'textarea', 'radio' ), true ) ) {
+				$description = '<p style="margin-top:0">' . wp_kses_post( $description ) . '</p>';
+			} elseif ( $description && in_array( $value['type'], array( 'checkbox' ), true ) ) {
+				$description = wp_kses_post( $description );
+			} elseif ( $description ) {
+				$description = '<p class="description">' . wp_kses_post( $description ) . '</p>';
+			}
+
+			if ( $tooltip_html && in_array( $value['type'], array( 'checkbox' ), true ) ) {
+				$tooltip_html = '<p class="description">' . $tooltip_html . '</p>';
+			} elseif ( $tooltip_html ) {
+				$tooltip_html = learn_press_quick_tip( $tooltip_html, false );
+			}
+
+			return array(
+				'description'  => $description,
+				'tooltip_html' => $tooltip_html,
+			);
+		}
+
+		public static function get_option( $option_name, $default = '' ) {
+			if ( strstr( $option_name, '[' ) ) {
+				parse_str( $option_name, $option_array );
+
+				// Option name is first key
+				$option_name = current( array_keys( $option_array ) );
+
+				// Get value
+				$option_values = get_option( $option_name, '' );
+
+				$key = key( $option_array[ $option_name ] );
+
+				if ( isset( $option_values[ $key ] ) ) {
+					$option_value = $option_values[ $key ];
+				} else {
+					$option_value = null;
+				}
+			} else {
+				// Single value
+				$option_value = LP()->settings->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
+			}
+
+			if ( ! is_array( $option_value ) && ! is_null( $option_value ) ) {
+				$option_value = stripslashes( $option_value );
+			}
+
+			return $option_value === null ? $default : $option_value;
+		}
+
 		/**
 		 * Show field
 		 *
@@ -160,7 +421,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				$class = "RWMB_{$class}_Field";
 
 				if ( ! class_exists( $class ) ) {
-					$file = LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/' . $type . '.php';
+					$file = LP_PLUGIN_PATH . '/inc/admin/meta-box/fields-v3/' . $type . '.php';
 					if ( file_exists( $file ) ) {
 						include_once $file;
 					}
@@ -269,6 +530,79 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 			wp_enqueue_script( 'lp-conditional-logic', LP()->plugin_url( 'assets/js/admin/conditional-logic' . $min . '.js' ) );
 			wp_localize_script( 'lp-conditional-logic', 'lp_conditional_logic', self::$conditional_logic );
+		}
+
+		/**
+		 * Use for Type: custom_fields in LP4.
+		 *
+		 * @param [type] $value
+		 * @param [type] $values
+		 * @param [type] $key
+		 * @return void
+		 */
+		public static function lp_metabox_custom_fields( $value, $values, $key ) {
+			?>
+			<tr>
+				<td class="sort">
+					<input class="count" type="hidden" value="<?php echo $key; ?>" name="<?php echo esc_attr( $value['id'] ) . '[' . $key . ']' . '[sort]'; ?>">
+				</td>
+				<?php
+				if ( $value['options'] ) {
+					foreach ( $value['options'] as $cfk => $val ) {
+						$name = $value['id'] . '[' . $key . ']' . '[' . $cfk . ']';
+
+						switch ( $val['type'] ) {
+							case 'text':
+							case 'password':
+							case 'datetime':
+							case 'datetime-local':
+							case 'date':
+							case 'month':
+							case 'time':
+							case 'week':
+							case 'number':
+							case 'email':
+							case 'url':
+							case 'tel':
+								?>
+								<td>
+									<input name="<?php echo esc_attr( $name ); ?>" type="<?php echo $val['type']; ?>" class="input-text" placeholder="<?php echo isset( $val['placeholder'] ) ? $val['placeholder'] : ''; ?>" value="<?php echo ! empty( $values[ $cfk ] ) ? $values[ $cfk ] : ''; ?>">
+								</td>
+								<?php
+								break;
+
+							case 'select':
+								?>
+								<td>
+									<select name="<?php echo esc_attr( $name ); ?>">
+										<?php
+										if ( isset( $val['options'] ) ) {
+											foreach ( $val['options'] as $cfks => $cfselect ) {
+												?>
+												<option value="<?php echo $cfks; ?>" <?php echo ! empty( $values[ $cfk ] ) ? selected( $values[ $cfk ], (string) $cfks ) : ''; ?>><?php echo $cfselect; ?></option>
+												<?php
+											}
+										}
+										?>
+									</select>
+								</td>
+								<?php
+								break;
+
+							case 'checkbox':
+								?>
+								<td>
+									<input name="<?php echo esc_attr( $name ); ?>" type="checkbox" name="" value="1" <?php echo ! empty( $values[ $cfk ] ) ? checked( $values[ $cfk ], 'yes' ) : ''; ?>>
+								</td>
+								<?php
+								break;
+						}
+					}
+				}
+				?>
+				<td width="2%"><a href="#" class="delete"></a></td>
+			</tr>
+			<?php
 		}
 	}
 

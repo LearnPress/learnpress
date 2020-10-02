@@ -12,6 +12,7 @@ class LP_Template_General extends LP_Abstract_Template {
 	public function filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
 		if ( $template_name == 'global/block-content.php' ) {
 			$can_view_item = false;
+
 			if ( ! is_user_logged_in() ) {
 				$can_view_item = 'not-logged-in';
 			} elseif ( ! learn_press_current_user_enrolled_course() ) {
@@ -35,14 +36,20 @@ class LP_Template_General extends LP_Abstract_Template {
 	}
 
 	public function breadcrumb( $args = array() ) {
-		$args = wp_parse_args( $args, apply_filters( 'learn_press_breadcrumb_defaults', array(
-			'delimiter'   => '<li class="breadcrumb-delimiter"><i class="fas fa-chevron-right"></i></li>',
-			'wrap_before' => '<ul class="learn-press-breadcrumb">',
-			'wrap_after'  => '</ul>',
-			'before'      => '',
-			'after'       => '',
-			'home'        => _x( 'Home', 'breadcrumb', 'learnpress' )
-		) ) );
+		$args = wp_parse_args(
+			$args,
+			apply_filters(
+				'learn_press_breadcrumb_defaults',
+				array(
+					'delimiter'   => '<li class="breadcrumb-delimiter"><i class="fas fa-chevron-right"></i></li>',
+					'wrap_before' => '<ul class="learn-press-breadcrumb">',
+					'wrap_after'  => '</ul>',
+					'before'      => '',
+					'after'       => '',
+					'home'        => _x( 'Home', 'breadcrumb', 'learnpress' ),
+				)
+			)
+		);
 
 		$breadcrumbs = new LP_Breadcrumb();
 
@@ -80,7 +87,7 @@ class LP_Template_General extends LP_Abstract_Template {
 			return;
 		}
 		?>
-        <h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
+		<h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
 		<?php
 	}
 
@@ -145,7 +152,7 @@ class LP_Template_General extends LP_Abstract_Template {
 		}
 		?>
 
-        <a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
+		<a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
 		<?php
 	}
 

@@ -1,172 +1,135 @@
-import {Component} from '@wordpress/element';
-import {withSelect, withDispatch, select} from '@wordpress/data';
-import {compose} from '@wordpress/compose';
+import { useEffect } from '@wordpress/element';
+import { dispatch, select } from '@wordpress/data';
 import Timer from '../timer';
-import {__, sprintf} from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 const $ = jQuery;
-const {debounce} = lodash;
+const { debounce } = lodash;
 
-class Status extends Component {
-    constructor() {
-        super(...arguments);
+const Status = () => {
+	const { submitQuiz } = dispatch( 'learnpress/quiz' );
 
-        this.state = {
-            submitting: false
-        }
-    }
+	useEffect( () => {
+		const $pc = $( '#popup-content' );
+		const $sc = $pc.find( '.content-item-scrollable:eq(1)' );
+		const $ciw = $pc.find( '.content-item-wrap' );
+		const $qs = $pc.find( '.quiz-status' );
+		const pcTop = $qs.offset().top - 92;
 
-    componentDidMount() {
-        const $pc = $('#popup-content');
-        const $sc = $pc.find('.content-item-scrollable:eq(1)');
-        const $ciw = $pc.find('.content-item-wrap');
-        const $qs = $pc.find('.quiz-status');
-        const pcTop = $qs.offset().top - 92;
+		let isFixed = false;
+		let marginLeft = '-' + $ciw.css( 'margin-left' );
 
-        let isFixed = false;
-        let marginLeft = '-' + $ciw.css('margin-left');
+		$( window ).on( 'resize.refresh-quiz-stauts-bar', debounce( function() {
+			marginLeft = '-' + $ciw.css( 'margin-left' );
 
-        $(window).on('resize.refresh-quiz-stauts-bar', debounce(function () {
-            marginLeft = '-' + $ciw.css('margin-left');
+			$qs.css( {
+				'margin-left': marginLeft,
+				'margin-right': marginLeft,
+			} );
+		}, 100 ) ).trigger( 'resize.refresh-quiz-stauts-bar' );
 
-            $qs.css({
-                'margin-left': marginLeft,
-                'margin-right': marginLeft
-            });
-        }, 100)).trigger('resize.refresh-quiz-stauts-bar');
+		/**
+		 * Check when status bar is stopped in the top
+		 * to add new class into html
+		 */
+		$sc.on( 'scroll', () => {
+			if ( $sc.scrollTop() >= pcTop ) {
+				if ( isFixed ) {
+					return;
+				}
+				isFixed = true;
+			} else {
+				if ( ! isFixed ) {
+					return;
+				}
+				isFixed = false;
+			}
 
-        /**
-         * Check when status bar is stopped in the top
-         * to add new class into html
-         */
-        $sc.scroll(() => {
+			if ( isFixed ) {
+				$pc.addClass( 'fixed-quiz-status' );
+			} else {
+				$pc.removeClass( 'fixed-quiz-status' );
+			}
+		} );
+	}, [] );
 
-            if ($sc.scrollTop() >= pcTop) {
-                if (isFixed) {
-                    return;
-                }
-                isFixed = true;
-            } else {
-                if (!isFixed) {
-                    return;
-                }
-                isFixed = false;
-            }
+	/**
+	 * Submit question to record results.
+	 */
+	const submit = () => {
+		const { confirm } = select( 'learnpress/modal' );
 
-            if (isFixed) {
-                $pc.addClass('fixed-quiz-status');
-            } else {
-                $pc.removeClass('fixed-quiz-status');
-            }
-        })
-    };
+		if ( 'no' === confirm( __( 'Are you sure to submit quiz?', 'learnpress' ), submit ) ) {
+			return;
+		}
 
-    /**
-     * Submit question to record results.
-     */
-    submit = () => {
+		submitQuiz();
+	};
 
-        const {confirm} = select('learnpress/modal');
-        const title = select('learnpress/quiz').getData('title');
+	const getMark = () => {
+		const answered = select( 'learnpress/quiz' ).getData( 'answered' );
 
-        if ('no' === confirm(__('Are you sure to submit quiz?', 'learnpress'), this.submit)) {
-            return;
-        }
+		return Object.values( answered ).reduce( ( m, r ) => {
+			return m + r.mark;
+		}, 0 );
+	};
 
-        const {
-            submitQuiz
-        } = this.props;
+	const { getData, getUserMark } = select( 'learnpress/quiz' );
 
-        submitQuiz();
-    };
+	const currentPage = getData( 'currentPage' );
+	const questionsPerPage = getData( 'questionsPerPage' );
+	const questionsCount = getData( 'questionIds' ).length;
+	const submitting = getData( 'submitting' );
+	const totalTime = getData( 'totalTime' );
+	const duration = getData( 'duration' );
+	const userMark = getUserMark();
 
-    getMark = () => {
-        const answered = select('learnpress/quiz').getData('answered');
-        return Object.values(answered).reduce((m, r) => {
-            return m + r.mark;
-        }, 0);
-    };
+	const classNames = [ 'quiz-status' ];
 
-    render() {
-        const {
-            currentPage,
-            questionsPerPage,
-            questionsCount,
-            submitting,
-            totalTime,
-            duration,
-            userMark
-        } = this.props;
-        // const {
-        //     submitting
-        // } = this.state;
-        const classNames = ['quiz-status'];
+	const start = ( ( currentPage - 1 ) * questionsPerPage ) + 1;
+	let end = start + questionsPerPage - 1;
+	let indexHtml = '';
 
-        let start = (currentPage - 1) * questionsPerPage + 1;
-        let end = start + questionsPerPage - 1;
-        let indexHtml = '';
+	end = Math.min( end, questionsCount );
 
-        end = Math.min(end, questionsCount);
+	if ( submitting ) {
+		classNames.push( 'submitting' );
+	}
 
-        if (submitting) {
-            classNames.push('submitting');
-        }
+	if ( end < questionsCount ) {
+		if ( questionsPerPage > 1 ) {
+			indexHtml = sprintf( __( 'Question <span>%d to %d of %d</span>', 'learnpress' ), start, end, questionsCount );
+		} else {
+			indexHtml = sprintf( __( 'Question <span>%d of %d</span>', 'learnpress' ), start, questionsCount );
+		}
+	} else {
+		indexHtml = sprintf( __( 'Question <span>%d to %d</span>', 'learnpress' ), start, end );
+	}
 
-        indexHtml = end < questionsCount ? (
-            questionsPerPage > 1
-                ? sprintf(__('Question <span>%d to %d of %d</span>', 'learnpress'), start, end, questionsCount)
-                : sprintf(__('Question <span>%d of %d</span>', 'learnpress'), start, questionsCount)
-        ) : sprintf(__('Question <span>%d to %d</span>', 'learnpress'), start, end);
+	return (
+		<div className={ classNames.join( ' ' ) }>
+			<div>
+				<div className="questions-index" dangerouslySetInnerHTML={ { __html: indexHtml } } />
 
-        return <div className={classNames.join(' ')}>
-            <div>
-                <div className="questions-index" dangerouslySetInnerHTML={{__html: indexHtml}}>
-                </div>
+				<div className="current-point">
+					{ sprintf( __( 'Earned Point: %s', 'learnpress' ), userMark ) }
+				</div>
 
-                <div className="current-point">{sprintf(__('Earned Point: %s', 'learnpress'), userMark)}</div>
+				<div>
+					<div className="submit-quiz">
+						<button
+							className="lp-button" id="button-submit-quiz"
+							onClick={ submit }
+						>
+							{ ! submitting ? __( 'Submit', 'learnpress' ) : __( 'Submitting...', 'learnpress' ) }
+						</button>
+					</div>
 
-                <div>
-                    <div className="submit-quiz">
-                        <button className="lp-button" id="button-submit-quiz"
-                                onClick={this.submit}>{!submitting ? __('Submit', 'learnpress') : __('Submitting...', 'learnpress')}</button>
-                    </div>
+					{ totalTime && duration && <Timer /> }
+				</div>
+			</div>
+		</div>
+	);
+};
 
-                    {totalTime && duration && <Timer/>}
-                </div>
-            </div>
-        </div>
-    }
-}
-
-export default compose([
-    withSelect((select) => {
-        const {
-            getData,
-            getUserMark
-        } = select('learnpress/quiz');
-
-        return {
-            currentPage: getData('currentPage'),
-            numPages: getData('numPages'),
-            questionsPerPage: getData('questionsPerPage'),
-            questionsCount: getData('questionIds').length,
-            submitting: getData('submitting'),
-            totalTime: getData('totalTime'),
-            duration: getData('duration'),
-            userMark: getUserMark()
-        }
-    }),
-    withDispatch((dispatch) => {
-        const {
-            //setQuizData,
-            submitQuiz,
-            //startQuiz
-        } = dispatch('learnpress/quiz');
-
-        return {
-            //setQuizData,
-            submitQuiz
-            //startQuiz
-        }
-    })
-])(Status);
+export default Status;

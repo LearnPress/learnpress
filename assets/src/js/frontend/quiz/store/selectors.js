@@ -200,6 +200,7 @@ export function getUserMark( state ) {
 		questions,
 		checkedQuestions,
 	} = userQuiz;
+
 	let totalMark = 0;
 
 	for ( let id in answered ) {
@@ -216,9 +217,9 @@ export function getUserMark( state ) {
 
 			return question ? question.point : 0;
 		}() );
+
 		const isChecked = checkedQuestions.indexOf( id ) !== -1;
 
-		// User checked option but not submit or check
 		if ( data.temp ) {
 			continue;
 		}

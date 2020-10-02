@@ -1,5 +1,4 @@
 <?php
-// Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'RWMB_LP_Duration_Field' ) ) {
@@ -88,7 +87,6 @@ if ( ! class_exists( 'RWMB_LP_Duration_Field' ) ) {
 		}
 	}
 
-	// Backward compatibility
 	class RWMB_Duration_Field extends RWMB_LP_Duration_Field {
 		public function __construct() {
 			learn_press_deprecated_function( __CLASS__, '', 'RWMB_LP_Duration_Field' );

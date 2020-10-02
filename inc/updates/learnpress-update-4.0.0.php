@@ -58,10 +58,10 @@ class LP_Update_400 extends LP_Update_Base {
 		global $wpdb;
 
 		$query = "
-			ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
-			CHANGE `start_time` `start_time` DATETIME NULL DEFAULT NULL, 
-			CHANGE `start_time_gmt` `start_time_gmt` DATETIME NULL DEFAULT NULL, 
-			CHANGE `end_time` `end_time` DATETIME NULL DEFAULT NULL, 
+			ALTER TABLE `{$wpdb->prefix}learnpress_user_items`
+			CHANGE `start_time` `start_time` DATETIME NULL DEFAULT NULL,
+			CHANGE `start_time_gmt` `start_time_gmt` DATETIME NULL DEFAULT NULL,
+			CHANGE `end_time` `end_time` DATETIME NULL DEFAULT NULL,
 			CHANGE `end_time_gmt` `end_time_gmt` DATETIME NULL DEFAULT NULL
 		";
 
@@ -161,7 +161,7 @@ class LP_Update_400 extends LP_Update_Base {
 		global $wpdb;
 
 		$query = "
-     		 ALTER TABLE `{$wpdb->prefix}learnpress_order_items` 
+     		 ALTER TABLE `{$wpdb->prefix}learnpress_order_items`
      		 ADD `order_item_type` varchar(200) NULL DEFAULT NULL AFTER `order_item_name`;
 		";
 		$wpdb->query( $query );
@@ -255,16 +255,16 @@ class LP_Update_400 extends LP_Update_Base {
 
 		$query = "
 			ALTER TABLE {$wpdb->learnpress_user_items}
-			
+
 		";
 		$wpdb->query( $query );
 
 		$query = "
-     		ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
+     		ALTER TABLE `{$wpdb->prefix}learnpress_user_items`
      		ADD COLUMN `expiration_time` DATETIME NULL DEFAULT NULL AFTER `end_time`,
      		ADD COLUMN `graduation` VARCHAR(20) NULL AFTER `status`,
-			ADD COLUMN `access_level` TINYINT(3) NULL DEFAULT 50 AFTER `graduation`, 
-			ADD COLUMN `u` TINYINT(3) NULL DEFAULT 0 AFTER `parent_id` 
+			ADD COLUMN `access_level` TINYINT(3) NULL DEFAULT 50 AFTER `graduation`,
+			ADD COLUMN `u` TINYINT(3) NULL DEFAULT 0 AFTER `parent_id`
 		";
 		$wpdb->query( $query );
 
@@ -339,11 +339,11 @@ class LP_Update_400 extends LP_Update_Base {
 
 			$query = $wpdb->prepare( "
 				SELECT ui.*, pm.meta_value as duration
-				FROM ( 
-					SELECT user_id, item_id, MAX(user_item_id) max_id 
+				FROM (
+					SELECT user_id, item_id, MAX(user_item_id) max_id
 					FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
 				 ) AS X
-				INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
+				INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id
 				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = ui.item_id AND pm.meta_key = %s
 				WHERE ui.start_time <> %s AND ui.start_time <> %s
 				ORDER BY user_item_id ASC
@@ -406,7 +406,7 @@ class LP_Update_400 extends LP_Update_Base {
 			SET graduation = (
 				SELECT meta_value
 				FROM {$wpdb->learnpress_user_itemmeta}
-				WHERE meta_key = %s 
+				WHERE meta_key = %s
 				AND learnpress_user_item_id = ui.user_item_id
 			)
 			WHERE ui.u = %d
@@ -429,8 +429,8 @@ class LP_Update_400 extends LP_Update_Base {
 		global $wpdb;
 
 		$query = $wpdb->prepare( "
-			UPDATE {$wpdb->learnpress_user_items} 
-			SET 
+			UPDATE {$wpdb->learnpress_user_items}
+			SET
 				start_time = (@temp:=start_time), start_time = start_time_gmt, start_time_gmt = @temp,
 				end_time = (@temp:=end_time), end_time = end_time_gmt, end_time_gmt = @temp
 			WHERE %d

@@ -61,6 +61,7 @@ class RWMB_Course_Permalink_Field extends RWMB_Field {
 		$base_type = get_option( 'learn_press_course_base_type' );
 		$is_custom = ( $base_type == 'custom' && $course_permalink != '' );
 		?>
+
 		<ul>
 			<?php foreach ( $structures as $k => $structure ) : ?>
 				<li class="learn-press-single-course-permalink
@@ -85,26 +86,14 @@ class RWMB_Course_Permalink_Field extends RWMB_Field {
 					</label>
 				</li>
 			<?php endforeach; ?>
+
 			<li class="learn-press-single-course-permalink custom-base">
 				<label>
 					<input name="<?php echo $field['id']; ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom, true ); ?> />
-					<?php _e( 'Custom Base', 'learnpress' ); ?>
-					<input name="course_permalink_structure" id="course_permalink_structure"
-					<?php
-					if ( ! $is_custom ) {
-						echo 'readonly="readonly"';
-					}
-					?>
-					  type="text" value="
-					<?php
-					if ( $course_permalink ) {
-						echo esc_attr( trailingslashit( $course_permalink ) );
-					}
-					?>
-					" class="regular-text code"/>
+					<?php esc_html_e( 'Custom Base', 'learnpress' ); ?>
+					<input name="course_permalink_structure" id="course_permalink_structure" readonly="<?php echo ! $is_custom ? 'readonly' : false; ?>" type="text" value="<?php echo $course_permalink ? esc_attr( trailingslashit( $course_permalink ) ) : ''; ?>" class="regular-text code"/>
 				</label>
-
-				<p class="description"><?php _e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default values instead.', 'learnpress' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default values instead.', 'learnpress' ); ?></p>
 			</li>
 		</ul>
 

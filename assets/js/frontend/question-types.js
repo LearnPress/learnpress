@@ -227,10 +227,9 @@ var QuestionBase = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this), "maybeShowCorrectAnswer", function () {
       var _this$props = _this.props,
-          answered = _this$props.answered,
           status = _this$props.status,
           isCheckedAnswer = _this$props.isCheckedAnswer;
-      return answered && status === 'completed' || isCheckedAnswer;
+      return status === 'completed' || isCheckedAnswer;
     });
 
     _defineProperty(_assertThisInitialized(_this), "maybeDisabledOption", function (option) {
@@ -249,7 +248,7 @@ var QuestionBase = /*#__PURE__*/function (_Component) {
             status = _this$props3.status;
 
         if (status !== 'started') {
-          return 'can not set answers';
+          return 'LP Error: can not set answers';
         }
 
         var $options = _this.$wrap.find('.option-check');
@@ -326,7 +325,6 @@ var QuestionBase = /*#__PURE__*/function (_Component) {
       var answered = _this.props.answered;
 
       if (!answered) {
-        ///}  answered === undefined || answered === '') {
         return false;
       }
 
@@ -343,9 +341,6 @@ var QuestionBase = /*#__PURE__*/function (_Component) {
       }
 
       return false;
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "getChecker", function () {//const checker = LP['questionChecker'][]
     });
 
     _defineProperty(_assertThisInitialized(_this), "isChecked", function () {
@@ -713,7 +708,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-/* eslint-disable no-mixed-spaces-and-tabs */
 
 
 
@@ -911,10 +905,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
@@ -943,11 +933,16 @@ var QuestionTrueOrFalse = /*#__PURE__*/function (_QuestionBase) {
 
     _classCallCheck(this, QuestionTrueOrFalse);
 
-    _this = _super.apply(this, arguments);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
 
     _defineProperty(_assertThisInitialized(_this), "getOptionClass", function (option) {
       var answered = _this.props.answered;
-      var optionClass = [].concat(_toConsumableArray(_this.state.optionClass), ["XYZ"]);
+
+      var optionClass = _toConsumableArray(_this.state.optionClass);
 
       if (_this.maybeShowCorrectAnswer()) {
         if (option.isTrue === 'yes') {
@@ -960,7 +955,7 @@ var QuestionTrueOrFalse = /*#__PURE__*/function (_QuestionBase) {
           } else {
             answered === option.value && optionClass.push('answered-wrong');
           }
-        } else {}
+        }
       }
 
       return optionClass;
@@ -968,14 +963,6 @@ var QuestionTrueOrFalse = /*#__PURE__*/function (_QuestionBase) {
 
     return _this;
   }
-
-  _createClass(QuestionTrueOrFalse, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {// this.setState({
-      //     optionClass: [...this.state.optionClass, "new-class"]
-      // })
-    }
-  }]);
 
   return QuestionTrueOrFalse;
 }(_question_base__WEBPACK_IMPORTED_MODULE_0__["default"]);

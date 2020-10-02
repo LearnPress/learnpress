@@ -56,22 +56,20 @@ class LP_Page_Controller {
 	}
 
 	public function check_pages( $template ) {
-
 		if ( learn_press_is_checkout() ) {
 			$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 
 			if ( ! $available_gateways ) {
 				learn_press_add_message( __( 'No payment method is available.', 'learnpress' ), 'error' );
 			}
-		} elseif ( learn_press_is_profile() ) {
+		} else {
 			global $wp_query;
 
 			$logout_slug = learn_press_profile_logout_slug();
 
 			if ( $logout_slug && ( $wp_query->get( 'view' ) === $logout_slug ) ) {
-				wp_logout();
-				wp_redirect( learn_press_get_page_link( 'profile' ) );
-				wp_die();
+				wp_safe_redirect( str_replace( '&amp;', '&', wp_logout_url( learn_press_get_page_link( 'profile' ) ) ) );
+				exit;
 			}
 		}
 
@@ -566,7 +564,6 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	protected function _is_profile() {
-
 		if ( ! learn_press_is_profile() ) {
 			return false;
 		}
@@ -574,7 +571,7 @@ class LP_Page_Controller {
 		global $wp;
 
 		$current_user = learn_press_get_current_user();
-		$viewing_user = false;
+		$viewing_user = true;
 
 		$profile = learn_press_get_profile();
 

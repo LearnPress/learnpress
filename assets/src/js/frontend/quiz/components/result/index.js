@@ -1,3 +1,9 @@
+/**
+ * Quizz Result.
+ * Edit: Use React hook.
+ *
+ * @author Nhamdv - ThimPress
+ */
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { __, _x } from '@wordpress/i18n';
@@ -25,7 +31,7 @@ const Result = () => {
 		setDone( false );
 
 		jQuery.easing._customEasing = function( e, f, a, h, g ) {
-			return h * Math.sqrt( 1 - ( f = f / g - 1 ) * f ) + a;
+			return ( h * Math.sqrt( 1 - ( ( f = ( f / g ) - 1 ) * f ) ) ) + a;
 		};
 
 		debounce( () => {
@@ -64,13 +70,12 @@ const Result = () => {
 	 *
 	 */
 
-	let percentResult = '';
+	let percentResult = percentage;
 
-	if ( percentage < 100 ) {
+	if ( ! Number.isInteger( percentage ) ) {
 		percentResult = parseFloat( percentage ).toFixed( 2 );
 	}
 
-	const classNames = [ 'quiz-result', results.graduation ];
 	const border = 10;
 	const width = 200;
 	const radius = width / 2;
@@ -82,6 +87,26 @@ const Result = () => {
 		strokeDashoffset: offset,
 	};
 	const passingGradeValue = results.passingGrade || passingGrade;
+
+	let graduation = '';
+	if ( results.graduation ) {
+		graduation = results.graduation;
+	} else if ( percentResult >= passingGradeValue.replace( /[^0-9\.]+/g, '' ) ) {
+		graduation = 'passed';
+	} else {
+		graduation = 'failed';
+	}
+
+	let message = '';
+	if ( results.graduationText ) {
+		message = results.graduationText;
+	} else if ( graduation === 'passed' ) {
+		message = __( 'Passed', 'learnpress' );
+	} else {
+		message = __( 'Failed', 'learnpress' );
+	}
+
+	const classNames = [ 'quiz-result', graduation ];
 
 	return (
 		<div className={ classNames.join( ' ' ) }>
@@ -99,7 +124,7 @@ const Result = () => {
 				</span>
 			</div>
 
-			{ done && <p className="result-message">{ results.graduationText }</p> }
+			{ done && <p className="result-message">{ message }</p> }
 
 			<ul className="result-statistic">
 				<li className="result-statistic-field result-time-spend">

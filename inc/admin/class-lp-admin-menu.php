@@ -47,7 +47,6 @@ class LP_Admin_Menu {
 	}
 
 	public function admin_bar_menus( $wp_admin_bar ) {
-
 		if ( ! is_admin() || ! is_user_logged_in() ) {
 			return;
 		}

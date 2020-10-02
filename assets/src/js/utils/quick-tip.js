@@ -1,6 +1,6 @@
 ( function( $ ) {
 	function QuickTip( el, options ) {
-		var $el = $( el ),
+		const $el = $( el ),
 			uniId = $el.attr( 'data-id' ) || LP.uniqueId();
 
 		options = $.extend( {
@@ -14,7 +14,7 @@
 
 		$el.attr( 'data-id', uniId );
 
-		var content = $el.attr( 'data-content-tip' ) || $el.html(),
+		let content = $el.attr( 'data-content-tip' ) || $el.html(),
 			$tip = $( '<div class="learn-press-tip-floating">' + content + '</div>' ),
 			t = null,
 			closeInterval = 0,
@@ -56,7 +56,7 @@
 			}
 
 			$tip.appendTo( document.body );
-			var pos = $el.offset();
+			const pos = $el.offset();
 
 			$tip.css( {
 				top: pos.top - $tip.outerHeight() - 8,
@@ -111,14 +111,14 @@
 			}
 		).addClass( 'ready' );
 		return {
-			close: close,
-			open: open,
+			close,
+			open,
 		};
 	}
 
 	$.fn.LP( 'QuickTip', function( options ) {
 		return $.each( this, function() {
-			var $tip = $( this ).data( 'quick-tip' );
+			let $tip = $( this ).data( 'quick-tip' );
 
 			if ( ! $tip ) {
 				$tip = new QuickTip( this, options );
@@ -126,7 +126,7 @@
 			}
 
 			if ( $.type( options ) === 'string' ) {
-				$tip[options] && $tip[options].apply( $tip );
+				$tip[ options ] && $tip[ options ].apply( $tip );
 			}
 		} );
 	} );

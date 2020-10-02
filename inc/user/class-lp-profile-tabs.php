@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Profile_Tabs
  */
@@ -22,7 +21,6 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile ) {
-
 		parent::__construct( $tabs );
 
 		$this->profile = $profile;
@@ -73,7 +71,6 @@ class LP_Profile_Tabs extends LP_Array_Access {
 					$tabs[ $slug ]['sections'][ $section_slug ]['priority'] = 10;
 				}
 			}
-			//$tabs[ $slug ]['sections']
 			uasort( $tabs[ $slug ]['sections'], array( $this, '_sort_tabs' ) );
 		}
 
@@ -101,10 +98,11 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		if ( ! empty( $_REQUEST['view'] ) ) {
 			$current = $_REQUEST['view'];
-		} else if ( ! empty( $wp->query_vars['view'] ) ) {
+		} elseif ( ! empty( $wp->query_vars['view'] ) ) {
 			$current = $wp->query_vars['view'];
 		} else {
-			if ( $tab = $this->get_tab_at() ) {
+			if ( $this->get_tab_at() ) {
+				$tab     = $this->get_tab_at();
 				$current = $tab['slug'];
 			}
 		}
@@ -125,10 +123,12 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 	public function get_current_section( $default = '', $key = true, $tab = '' ) {
 		global $wp;
+
 		$current = $default;
+
 		if ( ! empty( $_REQUEST['section'] ) ) {
 			$current = $_REQUEST['section'];
-		} else if ( ! empty( $wp->query_vars['section'] ) ) {
+		} elseif ( ! empty( $wp->query_vars['section'] ) ) {
 			$current = $wp->query_vars['section'];
 		} else {
 			if ( false === $tab ) {
@@ -136,7 +136,10 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			} else {
 				$current_tab = $tab;
 			}
-			if ( $tab = $this->get_tab_at( $current_tab ) ) {
+
+			if ( $this->get_tab_at( $current_tab ) ) {
+				$tab = $this->get_tab_at( $current_tab );
+
 				if ( ! empty( $tab['sections'] ) ) {
 					$sections = $tab['sections'];
 					$section  = reset( $sections );
@@ -150,14 +153,15 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			}
 		}
 
-		// If find the key instead of value from settings
 		if ( $key ) {
 			$current_display = $current;
 			$current         = false;
+
 			foreach ( $this->get() as $_slug => $data ) {
 				if ( empty( $data['sections'] ) ) {
 					continue;
 				}
+
 				foreach ( $data['sections'] as $_slug => $data ) {
 					if ( array_key_exists( 'slug', $data ) && ( $data['slug'] === $current_display ) ) {
 						$current = $_slug;
@@ -179,7 +183,6 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 * @return string
 	 */
 	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
-
 		if ( ( $tab || $with_section ) && empty( $user ) ) {
 			$current_user = learn_press_get_current_user();
 			$user         = $current_user->get_username();
@@ -210,11 +213,13 @@ class LP_Profile_Tabs extends LP_Array_Access {
 				$args['section'] = $with_section;
 			}
 		}
+
 		$args         = array_map( '_learn_press_urlencode', $args );
 		$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
+
 		if ( $profile_link ) {
 			if ( get_option( 'permalink_structure' ) ) {
-				$url = trailingslashit( $profile_link . join( "/", array_values( $args ) ) );
+				$url = trailingslashit( $profile_link . join( '/', array_values( $args ) ) );
 			} else {
 				$url = add_query_arg( $args, $profile_link );
 			}
@@ -260,11 +265,13 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		$current_section_slug = $this->get_current_section();
 		$section              = array();
+
 		if ( isset( $sections[ $current_section_slug ] ) ) {
 			$sections[ $current_section_slug ];
 		} elseif ( $sections && ! empty( $sections ) ) {
 			reset( $sections );
 		}
+
 		if ( array_key_exists( 'slug', $section ) ) {
 			$current_section_slug = $section['slug'];
 		}
@@ -275,10 +282,12 @@ class LP_Profile_Tabs extends LP_Array_Access {
 				$url = add_query_arg( $args, $url );
 			} else {
 				$parts = array();
+
 				foreach ( $args as $k => $v ) {
 					$parts[] = "{$k}/{$v}";
 				}
-				$url = trailingslashit( $url ) . join( "/", $parts ) . '/';
+
+				$url = trailingslashit( $url ) . join( '/', $parts ) . '/';
 			}
 		}
 
@@ -297,39 +306,25 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			$position = 0;
 		}
 
-		if ( $tabs = $this->get() ) {
+		if ( $this->get() ) {
+			$tabs = $this->get();
+
 			if ( is_numeric( $position ) ) {
 				$tabs = array_values( $tabs );
 				if ( ! empty( $tabs[ $position ] ) ) {
 					return $tabs[ $position ];
 				}
-
 			} else {
 				if ( ! empty( $tabs[ $position ] ) ) {
 					return $tabs[ $position ];
 				}
 			}
-
-
 		}
 
 		return false;
 	}
 
 	public function tabs() {
-//		$profile = $this->get_profile();
-//		$tabs    = array();
-//		if ( $all_tabs = $this->get() ) {
-//			foreach ( $all_tabs as $key => $tab ) {
-//				// If current user do not have permission and/or tab is invisible
-//				if ( $tab-> ) {
-//					continue;
-//				}
-//
-//				$tabs[ $key ] = $tab;
-//			}
-//		}
-
 		return $this->get();
 	}
 
@@ -360,6 +355,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 	public function current_user_can_view( $key = '' ) {
 		global $wp;
+
 		if ( ! $key ) {
 			$key = isset( $wp->query_vars['view'] ) ? $wp->query_vars['view'] : 'overview';
 		}
@@ -400,19 +396,19 @@ class LP_Profile_Tab extends LP_Array_Access {
 	 */
 	public function __construct( $id, $data, $profile ) {
 		parent::__construct( $data );
+
 		$this->profile = $profile;
 		$this->id      = $id;
-
-		//learn_press_debug($this->_data);
 	}
 
 	public function sections() {
-		$profile  = $this->get_profile();
-		$sections = array();
-		if ( $all_sections = $this->get( 'sections' ) ) {
+		$profile      = $this->get_profile();
+		$sections     = array();
+		$all_sections = $this->get( 'sections' );
+
+		if ( $all_sections ) {
 			foreach ( $all_sections as $section_key => $section ) {
 
-				// If current user do not have permission and/or tab is invisible
 				if ( $profile->is_hidden( $section ) ) {
 					continue;
 				}
@@ -450,11 +446,10 @@ class LP_Profile_Tab extends LP_Array_Access {
 	}
 
 	public function tab_is_visible_for_user() {
-		return $this->is_current();// && ( $this->is_public() || $this->get_profile()->current_user_can( "view-tab-{$this->id}" ) );
+		return $this->is_current();
 	}
 
 	public function is_current() {
-		//learn_press_debug($this->_data);
 		return isset( $this['is_current'] ) ? $this['is_current'] : false;
 	}
 
@@ -463,7 +458,6 @@ class LP_Profile_Tab extends LP_Array_Access {
 	 *
 	 * @return bool
 	 * @since 4.0.0
-	 *
 	 */
 	public function is_public() {
 		$public_tabs = $this->profile->get_public_tabs();

@@ -9,26 +9,20 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 $profile = LP_Profile::instance();
-//learn_press_debug($profile->get_tabs()->tabs());
 ?>
 
 <div id="profile-nav">
 
 	<?php do_action( 'learn-press/before-profile-nav', $profile ); ?>
 
-    <ul class="lp-profile-nav-tabs">
+	<ul class="lp-profile-nav-tabs">
 
 		<?php
 		foreach ( $profile->get_tabs()->tabs() as $tab_key => $profile_tab ) {
-			/**
-			 * @var $profile_tab LP_Profile_Tab
-			 */
+
 			if ( $profile_tab->is_hidden() || ! $profile_tab->user_can_view() ) {
 				continue;
 			}
@@ -36,9 +30,7 @@ $profile = LP_Profile::instance();
 			$slug        = $profile->get_slug( $profile_tab, $tab_key );
 			$link        = $profile->get_tab_link( $tab_key, true );
 			$tab_classes = array( esc_attr( $tab_key ) );
-			/**
-			 * @var $profile_tab LP_Profile_Tab
-			 */
+
 			$sections = $profile_tab->sections();
 
 			if ( $sections && sizeof( $sections ) > 1 ) {
@@ -47,24 +39,24 @@ $profile = LP_Profile::instance();
 
 			if ( $profile->is_current_tab( $tab_key ) ) {
 				$tab_classes[] = 'active';
-			} ?>
+			}
+			?>
 
-            <li class="<?php echo join( ' ', $tab_classes ) ?>">
-                <!--tabs-->
-                <a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
+			<li class="<?php echo implode( ' ', $tab_classes ); ?>">
+				<a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
 					<?php
 					if ( ! empty( $profile_tab['icon'] ) ) {
 						echo $profile_tab['icon'];
 					}
 					?>
 					<?php echo esc_html( apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab['title'], $tab_key ) ); ?>
-                </a>
-                <!--section-->
+				</a>
 
 				<?php if ( $sections && sizeof( $sections ) > 1 ) { ?>
 
-                    <ul class="profile-tab-sections">
-						<?php foreach ( $sections as $section_key => $section_data ) {
+					<ul class="profile-tab-sections">
+						<?php
+						foreach ( $sections as $section_key => $section_data ) {
 
 							$classes = array( esc_attr( $section_key ) );
 							if ( $profile->is_current_section( $section_key, $section_key ) ) {
@@ -75,20 +67,20 @@ $profile = LP_Profile::instance();
 							$section_link = $profile->get_tab_link( $tab_key, $section_slug );
 							?>
 
-                            <li class="<?php echo join( ' ', $classes ); ?>">
-                                <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>
-                            </li>
+							<li class="<?php echo implode( ' ', $classes ); ?>">
+								<a href="<?php echo esc_url( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a>
+							</li>
 
 						<?php } ?>
 
-                    </ul>
+					</ul>
 
 				<?php } ?>
 
-            </li>
+			</li>
 		<?php } ?>
 
-    </ul>
+	</ul>
 
 	<?php do_action( 'learn-press/after-profile-nav', $profile ); ?>
 
