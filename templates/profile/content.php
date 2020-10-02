@@ -34,6 +34,8 @@ $current = $profile->get_current_tab();
 
         <div id="profile-content-<?php echo esc_attr( $tab_key ); ?>">
 			<?php
+			learn_press_print_messages( true );
+
 			// show profile sections
 			do_action( 'learn-press/before-profile-content', $tab_key, $tab_data, $user ); ?>
 

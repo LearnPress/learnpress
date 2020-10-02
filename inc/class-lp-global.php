@@ -173,30 +173,7 @@ class LP_Global {
 	 * @return LP_Profile|WP_Error
 	 */
 	public static function profile( $global = false, $reset = false ) {
-		global $profile;
-
-		if ( ! $profile ) {
-			//self::$_profile = $profile = LP_Profile::instance( get_current_user_id() );
-		}
-
 		return LP_Profile::instance();
-
-		/**
-		 * Get origin global $profile (stored in class) if $global = TRUE
-		 */
-		if ( $global ) {
-
-			/**
-			 * If $reset = TRUE then set global $profile to origin global $profile (stored in class)
-			 */
-			if ( ! $reset ) {
-				return self::$_profile;
-			}
-
-			$profile = self::$_profile;
-		}
-
-		return $profile;
 	}
 
 	public static function init() {

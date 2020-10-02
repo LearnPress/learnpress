@@ -117,7 +117,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	/**
 	 * Get user by ID. Return false if the user does not exists.
 	 *
-	 * @param int  $user_id
+	 * @param int $user_id
 	 * @param bool $current
 	 *
 	 * @return LP_User|mixed
@@ -242,7 +242,7 @@ function learn_press_add_user_roles() {
 add_action( 'init', 'learn_press_add_user_roles' );
 
 /**
- * @param null  $user_id
+ * @param null $user_id
  * @param array $args
  *
  * @return mixed
@@ -383,49 +383,30 @@ function learn_press_user_become_teacher_registration_form() {
 		return;
 	}
 	?>
-	<p>
-		<label for="become_teacher">
-			<input type="checkbox" name="become_teacher" id="become_teacher">
+    <p>
+        <label for="become_teacher">
+            <input type="checkbox" name="become_teacher" id="become_teacher">
 			<?php _e( 'Want to become an instructor?', 'learnpress' ) ?>
-		</label>
-	</p>
+        </label>
+    </p>
 	<?php
 }
 
 add_action( 'register_form', 'learn_press_user_become_teacher_registration_form' );
 
 /**
- * Process instructor registration while user register new account
- *
- * @param $user_id
- */
-function learn_press_update_user_teacher_role( $user_id ) {
-	if ( LP()->settings->get( 'instructor_registration' ) != 'yes' ) {
-		return;
-	}
-	if ( ! isset( $_POST['become_teacher'] ) ) {
-		return;
-	}
-	$new_user = new WP_User( $user_id );
-	$new_user->set_role( LP_TEACHER_ROLE );
-}
-
-add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
-
-
-/**
  * Update data into table learnpress_user_items.
  *
- * @param array $fields                         - Fields and values to be updated.
+ * @param array $fields - Fields and values to be updated.
  *                                              Format: array(
  *                                              field_name_1 => value 1,
  *                                              field_name_2 => value 2,
  *                                              ....
  *                                              field_name_n => value n
  *                                              )
- * @param mixed $where                          - Optional. Fields with values for conditional update with the same format of $fields.
- * @param bool  $update_cache                   - Optional. Should be update to cache or not (since 3.0.0).
- * @param bool  $update_extra_fields_as_meta    - Optional. Update extra fields as item meta (since 3.1.0).
+ * @param mixed $where - Optional. Fields with values for conditional update with the same format of $fields.
+ * @param bool $update_cache - Optional. Should be update to cache or not (since 3.0.0).
+ * @param bool $update_extra_fields_as_meta - Optional. Update extra fields as item meta (since 3.1.0).
  *
  * @return mixed
  */
@@ -643,9 +624,9 @@ function learn_press_get_user_item( $where, $single = true ) {
 /**
  * Get user item meta from user_itemmeta table
  *
- * @param int    $user_item_id
+ * @param int $user_item_id
  * @param string $meta_key
- * @param bool   $single
+ * @param bool $single
  *
  * @return mixed
  */
@@ -661,9 +642,9 @@ function learn_press_get_user_item_meta( $user_item_id, $meta_key, $single = tru
 /**
  * Add user item meta into table user_itemmeta
  *
- * @param int    $user_item_id
+ * @param int $user_item_id
  * @param string $meta_key
- * @param mixed  $meta_value
+ * @param mixed $meta_value
  * @param string $prev_value
  *
  * @return false|int
@@ -675,9 +656,9 @@ function learn_press_add_user_item_meta( $user_item_id, $meta_key, $meta_value, 
 /**
  * Update user item meta to table user_itemmeta
  *
- * @param int    $user_item_id
+ * @param int $user_item_id
  * @param string $meta_key
- * @param mixed  $meta_value
+ * @param mixed $meta_value
  * @param string $prev_value
  *
  * @return bool|int
@@ -690,10 +671,10 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 /**
  * Update user item meta to table user_itemmeta
  *
- * @param int    $object_id
+ * @param int $object_id
  * @param string $meta_key
- * @param mixed  $meta_value
- * @param bool   $delete_all
+ * @param mixed $meta_value
+ * @param bool $delete_all
  *
  * @return bool|int
  */
@@ -791,7 +772,7 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 *
 	 * @param string $avatar
 	 * @param string $id_or_email
-	 * @param array  $size
+	 * @param array $size
 	 *
 	 * @return string
 	 */
@@ -1241,8 +1222,7 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 				return $return;
 			}
 		}
-	}
-	catch ( Exception $ex ) {
+	} catch ( Exception $ex ) {
 		return $wp_error ? new WP_Error( 'UPDATE_PROFILE_ERROR', $ex->getMessage() ) : false;
 	}
 }
@@ -1339,9 +1319,9 @@ function learn_press_profile_list_display_names( $args = '' ) {
 /**
  * Remove items from learnpress_user_items.
  *
- * @param int  $user_id
- * @param int  $item_id
- * @param int  $course_id
+ * @param int $user_id
+ * @param int $item_id
+ * @param int $course_id
  * @param bool $include_course - Optional. If TRUE then remove course and it's items
  */
 function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include_course = false ) {
@@ -1378,7 +1358,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 /**
  * Get user profile link
  *
- * @param int  $user_id
+ * @param int $user_id
  * @param null $tab
  *
  * @return mixed|string

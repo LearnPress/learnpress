@@ -41,7 +41,19 @@ if ( is_user_logged_in() ) {
 
     <div id="checkout-form-register">
 
-		<?php learn_press_get_template( 'global/form-register.php' ); ?>
+		<?php
+		$profile = LP_Global::profile();
+
+		if ( ! $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		if ( ! $fields = $profile->get_register_fields() ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/form-register.php', array( 'fields' => $fields ) );
+		?>
 
         <p>
             <a href="" class="checkout-form-register-toggle"

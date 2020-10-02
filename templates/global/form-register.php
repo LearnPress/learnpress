@@ -14,8 +14,9 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$profile = LP_Global::profile();
-$fields  = $profile->get_register_fields();
+if (! isset( $fields ) ) {
+	return;
+}
 ?>
 
 <div class="learn-press-form-register learn-press-form">
@@ -37,6 +38,8 @@ $fields  = $profile->get_register_fields();
         </ul>
 
 		<?php do_action( 'learn-press/after-form-register-fields' ); ?>
+
+		<?php do_action( 'register_form' ); ?>
 
         <p>
 			<?php wp_nonce_field( 'learn-press-register', 'learn-press-register-nonce' ); ?>

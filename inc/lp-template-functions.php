@@ -166,7 +166,7 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 			 * @since  3.2.7.7
 			 */
 			if ( ! $course->is_block_item_content_duration() ||
-				( $course->is_block_item_content_duration() && $course->expires_to_milliseconds() > 0 ) ) {
+			     ( $course->is_block_item_content_duration() && $course->expires_to_milliseconds() > 0 ) ) {
 				return;
 			}
 		}
@@ -840,10 +840,10 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 			 * 3.1. Not retake OR Option 'Show Correct Answer' enable
 			 */
 			if ( $user_quiz->has_checked_question( $question->get_id() ) ||
-				$user_quiz->is_answered_true( $question->get_id() ) ||
-				( learn_press_is_review_questions() &&
-					( ! $user->can_retake_quiz( $quiz->get_id(), $course->get_id() ) ||
-						$quiz->get_show_result() ) ) ) {
+			     $user_quiz->is_answered_true( $question->get_id() ) ||
+			     ( learn_press_is_review_questions() &&
+			       ( ! $user->can_retake_quiz( $quiz->get_id(), $course->get_id() ) ||
+			         $quiz->get_show_result() ) ) ) {
 				learn_press_get_template( 'content-question/explanation.php', array( 'explanation' => $explanation ) );
 			}
 		}
@@ -1200,32 +1200,32 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 			return;
 		}
 		?>
-		<style type="text/css">
-			html, body {
-				overflow: hidden;
-			}
+        <style type="text/css">
+          html, body {
+            overflow: hidden;
+          }
 
-			body.course-item-popup #learn-press-course-curriculum {
-				position: fixed;
-				top: 60px;
-				bottom: 0;
-				left: 0;
-				background: #FFF;
-				border-right: 1px solid #DDD;
-				overflow: auto;
-				z-index: 9999;
-			}
+          body.course-item-popup #learn-press-course-curriculum {
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            background: #FFF;
+            border-right: 1px solid #DDD;
+            overflow: auto;
+            z-index: 9999;
+          }
 
-			body.course-item-popup #learn-press-content-item {
-				position: fixed;
-				z-index: 9999;
-				background: #FFF;
-				top: 60px;
-				right: 0;
-				bottom: 0;
-				overflow: visible;
-			}
-		</style>
+          body.course-item-popup #learn-press-content-item {
+            position: fixed;
+            z-index: 9999;
+            background: #FFF;
+            top: 60px;
+            right: 0;
+            bottom: 0;
+            overflow: visible;
+          }
+        </style>
 		<?php
 	}
 }
@@ -1254,9 +1254,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 		 * Edit link for lesson/quiz or any other course's item.
 		 */
 		if ( $lp_course_item && ( $post_type_object = get_post_type_object( $lp_course_item->get_item_type() ) )
-			&& current_user_can( 'edit_post', $lp_course_item->get_id() )
-			&& $post_type_object->show_in_admin_bar
-			&& $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
+		     && current_user_can( 'edit_post', $lp_course_item->get_id() )
+		     && $post_type_object->show_in_admin_bar
+		     && $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
 		) {
 			$type = get_post_type( $lp_course_item->get_id() );
 
@@ -1274,9 +1274,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 		 */
 		if ( $lp_quiz_question ) {
 			if ( ( $post_type_object = get_post_type_object( $lp_quiz_question->get_item_type() ) )
-				&& current_user_can( 'edit_post', $lp_quiz_question->get_id() )
-				&& $post_type_object->show_in_admin_bar
-				&& $edit_post_link = get_edit_post_link( $lp_quiz_question->get_id() )
+			     && current_user_can( 'edit_post', $lp_quiz_question->get_id() )
+			     && $post_type_object->show_in_admin_bar
+			     && $edit_post_link = get_edit_post_link( $lp_quiz_question->get_id() )
 			) {
 				$type = get_post_type( $lp_quiz_question->get_id() );
 				$wp_admin_bar->add_menu( array(
@@ -1985,10 +1985,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $lesson_id
-	 * @param int          $course_id
+	 * @param int $lesson_id
+	 * @param int $course_id
 	 * @param array|string $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -2048,10 +2048,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $quiz_id
-	 * @param int          $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param string|array $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -2226,9 +2226,9 @@ function learn_press_get_messages( $clear = false ) {
 /**
  * Add new message into queue for displaying.
  *
- * @param string   $message
- * @param string   $type
- * @param array    $options
+ * @param string $message
+ * @param string $type
+ * @param array $options
  * @param int|bool $current_user . @since 3.0.9 - add for current user only
  */
 function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
@@ -2274,7 +2274,7 @@ function learn_press_get_message( $message, $type = 'success' ) {
 /**
  * Remove message added into queue by id and/or type.
  *
- * @param string       $id
+ * @param string $id
  * @param string|array $type
  *
  * @since 3.0.0
@@ -2526,9 +2526,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name
- * @param array  $args          (default: array())
+ * @param array $args (default: array())
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return void
  */
@@ -2563,7 +2563,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * Get template content
  *
  * @param        $template_name
- * @param array  $args
+ * @param array $args
  * @param string $template_path
  * @param string $default_path
  *
@@ -2591,7 +2591,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */
@@ -2705,20 +2705,20 @@ if ( ! function_exists( 'learn_press_item_meta_type' ) ) {
 
 		<?php if ( $item->post_type == 'lp_quiz' ) { ?>
 
-			<span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></span>
+            <span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></span>
 
 			<?php if ( $course->final_quiz == $item->ID ) { ?>
 
-				<span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' ); ?></span>
+                <span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' ); ?></span>
 
 			<?php } ?>
 
 		<?php } elseif ( $item->post_type == 'lp_lesson' ) { ?>
 
-			<span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
+            <span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
 			<?php if ( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' ) { ?>
 
-				<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
+                <span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 
 			<?php } ?>
 
@@ -2892,6 +2892,10 @@ if ( ! function_exists( 'learn_press_profile_login_form' ) ) {
 
 if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
 	function learn_press_profile_register_form() {
+		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+			return;
+		}
+
 		$profile = LP_Global::profile();
 
 		if ( ! $profile->get_user()->is_guest() ) {
@@ -2899,10 +2903,6 @@ if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
 		}
 
 		if ( ! $fields = $profile->get_register_fields() ) {
-			return;
-		}
-
-		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
 			return;
 		}
 
@@ -3028,7 +3028,7 @@ if ( ! function_exists( 'learn_press_become_teacher_heading' ) ) {
 			return;
 		}
 		?>
-		<h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
+        <h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
 		<?php
 	}
 }
@@ -3171,7 +3171,7 @@ function learn_press_is_content_item_only() {
 
 function learn_press_label_html( $label, $type = '' ) {
 	?>
-	<span class="lp-label label-<?php echo esc_attr( $type ? $type : $label ); ?>">
+    <span class="lp-label label-<?php echo esc_attr( $type ? $type : $label ); ?>">
          <?php echo $label; ?>
     </span>
 	<?php
@@ -3326,9 +3326,9 @@ function learn_press_item_meta_duration( $item ) {
 function learn_press_course_item_edit_link( $item_id, $course_id ) {
 	$user = learn_press_get_current_user();
 	if ( $user->can_edit_item( $item_id, $course_id ) ): ?>
-		<p class="edit-course-item-link">
-			<a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
-		</p>
+        <p class="edit-course-item-link">
+            <a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
+        </p>
 	<?php endif;
 }
 
@@ -3382,7 +3382,7 @@ if ( ! function_exists( 'learn_press_back_to_class_button' ) ) {
 		}
 		?>
 
-		<a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
+        <a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
 		<?php
 	}
 }
@@ -3700,13 +3700,13 @@ function learn_press_print_custom_styles() {
 	}
 
 	?>
-	<style id="learn-press-custom-css">
-		<?php
+    <style id="learn-press-custom-css">
+        <?php
 		foreach($css as $selector => $props){
 			echo "{$selector}{{$props}}\n";
 		}
 		?>
-	</style>
+    </style>
 	<?php
 }
 
@@ -3869,7 +3869,7 @@ function learn_press_define_debug_mode() {
 		return;
 	}
 	?>
-	<script>window.LP_DEBUG = true;</script>
+    <script>window.LP_DEBUG = true;</script>
 	<?php
 }
 
