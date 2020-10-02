@@ -15,7 +15,7 @@ $profile = LP_Global::profile();
 ?>
 
 <div id="learn-press-profile" <?php $profile->main_class(); ?>>
-	<?php if ( $profile->is_public()  ) : ?>
+	<?php if ( $profile->is_public() || $profile->get_user()->is_guest() ) : ?>
 		<div class="wrapper-profile-header wrap-fullwidth">
 			<?php do_action( 'learn-press/before-user-profile', $profile ); ?>
 		</div>
