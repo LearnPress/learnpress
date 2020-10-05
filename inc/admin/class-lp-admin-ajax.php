@@ -50,6 +50,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'remove_notice_popup'     => false,
 				// Update order status
 				//'update_order_status'     => false,
+				'update_order_exports'    => false,
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -567,10 +568,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function search_course_category() {
 			global $wpdb;
 			$sql   = "SELECT `t`.`term_id` as `id`, "
-				. " `t`.`name` `text` "
-				. " FROM {$wpdb->terms} t "
-				. "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
-				. " WHERE `t`.`name` LIKE %s";
+			         . " `t`.`name` `text` "
+			         . " FROM {$wpdb->terms} t "
+			         . "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
+			         . " WHERE `t`.`name` LIKE %s";
 			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
 			$items = $wpdb->get_results( $query );
@@ -705,8 +706,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -848,8 +848,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			 * @author tungnx
 			 */
 			if ( ! current_user_can( 'edit_pages' ) || ! isset( $_POST['lp-settings-nonce'] )
-				|| ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lp-settings-nonce'] ) ), 'lp-settings' )
-				|| empty( $_POST['page_name'] )
+			     || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lp-settings-nonce'] ) ), 'lp-settings' )
+			     || empty( $_POST['page_name'] )
 			) {
 				$response['message'] = 'Request invalid';
 				learn_press_send_json( $response );
@@ -1036,10 +1036,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = ! empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-			<a href="<?php echo get_edit_post_link( $page_id ); ?>"
-			   target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-			<a href="<?php echo get_permalink( $page_id ); ?>"
-			   target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_edit_post_link( $page_id ); ?>"
+               target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_permalink( $page_id ); ?>"
+               target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}
@@ -1063,8 +1063,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function remove_notice_popup() {
 
 			if ( isset( $_POST['action'] ) && $_POST['action'] === 'learnpress_remove_notice_popup'
-				&& isset( $_POST['slug'] ) && ! empty( $_POST['slug'] )
-				&& isset( $_POST['user'] ) && ! empty( $_POST['user'] ) ) {
+			     && isset( $_POST['slug'] ) && ! empty( $_POST['slug'] )
+			     && isset( $_POST['user'] ) && ! empty( $_POST['user'] ) ) {
 				$postSlug = sanitize_text_field( wp_unslash( $_POST['slug'] ) );
 				$postUser = sanitize_text_field( wp_unslash( $_POST['user'] ) );
 
@@ -1109,7 +1109,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				learn_press_send_json( $response );
 			}
 
-			$statusValidArr = array( 'lp-completed', 'lp-cancelled', 'lp-pending', 'lp-refunded', 'lp-cancelled', 'lp-processing' );
+			$statusValidArr = array(
+				'lp-completed',
+				'lp-cancelled',
+				'lp-pending',
+				'lp-refunded',
+				'lp-cancelled',
+				'lp-processing'
+			);
 
 			if ( ! in_array( $value, $statusValidArr ) ) {
 				learn_press_send_json( $response );
@@ -1157,6 +1164,32 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			return $dir;
 		}
 
+		/**
+		 * Export Order invoice to PDF
+		 * @since 3.2.7.8
+		 * @author hungkv
+		 */
+		public static function update_order_exports() {
+			$order_id        = absint( $_POST['order_id'] );
+			$site_title      = LP_Helper::sanitize_params_submitted( $_POST['site_title'] );
+			$order_date      = LP_Helper::sanitize_params_submitted( $_POST['order_date'] );
+			$invoice_no      = $_POST['invoice_no'];
+			$order_customer  = LP_Helper::sanitize_params_submitted( $_POST['order_customer'] );
+			$order_email     = LP_Helper::sanitize_params_submitted( $_POST['order_email'] );
+			$order_payment   = LP_Helper::sanitize_params_submitted( $_POST['order_payment'] );
+			$order           = learn_press_get_order( $order_id );
+			$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
+
+			ob_start();
+			learn_press_admin_view( 'meta-boxes/order/content-tab-preview-exports-invoice.php',
+				array(
+					'order'           => $order,
+					'currency_symbol' => $currency_symbol
+				) );
+			$html = ob_get_clean();
+			echo $html;
+			die();
+		}
 	}
 
 	if ( defined( 'DOING_AJAX' ) ) {

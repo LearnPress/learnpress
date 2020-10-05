@@ -215,6 +215,173 @@ __webpack_require__.r(__webpack_exports__);
       $('html, body').removeClass('lp-item-moving');
       $('.lp-sortable-handle').css('cursor', '');
     });
+
+    /**
+     * Function Export invoice LP Order
+     * @author hungkv
+     * @since 3.2.7.
+     */
+    if($('#order-export__section').length){
+      const tabs = document.querySelectorAll(".tabs");
+      const tab = document.querySelectorAll(".tab");
+      const panel = document.querySelectorAll(".panel");
+
+      function onTabClick(event) {
+
+        // deactivate existing active tabs and panel
+
+        for (let i = 0; i < tab.length; i++) {
+          tab[i].classList.remove("active");
+        }
+
+        for (let i = 0; i < panel.length; i++) {
+          panel[i].classList.remove("active");
+        }
+
+
+        // activate new tabs and panel
+        event.target.classList.add('active');
+        let classString = event.target.getAttribute('data-target');
+        document.getElementById('panels').getElementsByClassName(classString)[0].classList.add("active");
+      }
+
+      for (let i = 0; i < tab.length; i++) {
+        tab[i].addEventListener('click', onTabClick, false);
+      }
+
+      // modal export order to pdf
+
+      // Get the modal
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("order-export__button");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      if ($('#lp-invoice__content').length) {
+        $('#lp-invoice__export').click(function(){
+          var doc = new jsPDF('p', 'pt', 'letter');
+
+          // We'll make our own renderer to skip this editor
+          var specialElementHandlers = {
+            '#bypassme': function (element, renderer) {
+              return true;
+            }
+          };
+          var margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+          };
+
+          doc.fromHTML(
+              $('#lp-invoice__content')[0],
+              margins.left, // x coord
+              margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+              },
+              function (dispose) {
+                // dispose: object with X, Y of the last line add to the PDF
+                //          this allow the insertion of new lines after html
+                var blob = doc.output("blob");
+                window.open(URL.createObjectURL(blob));
+              }, margins);
+        });
+      }
+
+      // Script update option export to pdf
+      $('#lp-invoice__update').click(function () {
+        var order_id = $(this).data('id'),
+            site_title = $('input[name="site_title"]'),
+            order_date = $('input[name="order_date"]'),
+            invoice_no = $('input[name="invoice_no"]'),
+            order_customer = $('input[name="order_customer"]'),
+            order_email = $('input[name="order_email"]'),
+            order_payment = $('input[name="order_payment"]');
+        if(site_title.is(':checked')){
+          site_title = 'check';
+        }else{
+          site_title = 'uncheck';
+        }
+        if(order_date.is(':checked')){
+          order_date = 'check';
+        }else{
+          order_date = 'uncheck';
+        }
+        if(invoice_no.is(':checked')){
+          invoice_no = 'check';
+        }else{
+          invoice_no = 'uncheck';
+        }
+        if(order_customer.is(':checked')){
+          order_customer = 'check';
+        }else{
+          order_customer = 'uncheck';
+        }
+        if(order_email.is(':checked')){
+          order_email = 'check';
+        }else{
+          order_email = 'uncheck';
+        }
+        if(order_payment.is(':checked')){
+          order_payment = 'check';
+        }else{
+          order_payment = 'uncheck';
+        }
+
+        $.ajax({
+          type: "post",
+          dataType: "html",
+          url: 'admin-ajax.php',
+          data: {
+            site_title: site_title,
+            order_date: order_date,
+            invoice_no: invoice_no,
+            order_customer: order_customer,
+            order_email: order_email,
+            order_id: order_id,
+            order_payment: order_payment,
+            action: "learnpress_update_order_exports",
+          },
+          beforeSend: function () {
+            $('.export-options__loading').addClass('active');
+          },
+          success: function (response) {
+            $("#lp-invoice__content").html("");
+            $('#lp-invoice__content').append(response);
+            $('.export-options__loading').removeClass('active');
+            $('.options-tab').removeClass('active');
+            $('.preview-tab').addClass('active');
+            $('#panels .export-options').removeClass('active');
+            $('#panels .pdf-preview').addClass('active');
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log('The following error occured: ' + textStatus, errorThrown);
+          }
+        });
+      });
+    }
   };
 
   $(document).ready(onReady);

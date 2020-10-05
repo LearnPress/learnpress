@@ -132,8 +132,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				$current_user = get_user_by( 'id', $new_user );
 				wp_set_auth_cookie( $new_user, true );
 
-			}
-			catch ( Exception $e ) {
+			} catch ( Exception $e ) {
 				learn_press_add_message( $e->getMessage(), 'error' );
 			}
 
@@ -273,8 +272,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				}
 
 				$response = apply_filters( 'learn-press/user-completed-lesson-result', $response, $item_id, $course_id, $user->get_id() );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				learn_press_add_message( $ex->getMessage(), 'error' );
 			}
 

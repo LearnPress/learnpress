@@ -3394,6 +3394,168 @@ body.lp-item-moving {
 #learn-press-updater {
   display: none; }
 
+/*Export order function style*/
+#order-export__button:hover {
+  cursor: pointer;
+}
+/* The Modal (background) */
+.export-modal.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: #000000;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+/* Modal Content/Box */
+.export-modal .modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  /* Could be more or less, depending on screen size */
+  position: relative;
+}
+/* The Close Button */
+.export-modal .close {
+  color: #aaa;
+  position: absolute;
+  font-size: 28px;
+  font-weight: bold;
+  top: -5px;
+  right: 11px;
+}
+.export-modal .close:hover,
+.export-modal .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+/*tabs css*/
+#order-export__tabs.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 2px 40px 2px;
+  height: 40px;
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+#order-export__tabs.tabs > * {
+  width: 100%;
+  color: dimgray;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#order-export__tabs.tabs > *:hover:not(.active) {
+  background-color: #dcdcdc;
+}
+#order-export__tabs.tabs > .active {
+  color: white;
+  background-color: #4CAF50;
+}
+.export-modal .panel {
+  display: none;
+}
+.export-modal .panel.active {
+  display: block;
+}
+#lp-invoice__content thead th {
+  border-bottom: 1px solid #000;
+  border-top: 1px solid #000;
+  padding: 10px 20px;
+}
+#lp-invoice__content tbody td {
+  border-bottom: 1px solid #000;
+  text-align: center;
+  padding: 10px 20px;
+}
+#lp-invoice__content tfoot td {
+  border-bottom: 1px solid #000;
+  text-align: center;
+  padding: 10px 20px;
+}
+#lp-invoice__content,
+.export-options__content {
+  margin-bottom: 25px;
+}
+.export-options {
+  position: relative;
+}
+.export-options__loading {
+  opacity: 0;
+  z-index: -1;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.export-options__loading .spinner {
+  background: url("../../images/spinner.gif") no-repeat center center;
+  z-index: 9;
+  display: inline-block;
+  visibility: visible;
+}
+.export-options__loading.active {
+  opacity: 1;
+  z-index: 9;
+  visibility: visible;
+}
+#lp-invoice__export,
+#lp-invoice__update {
+  color: white;
+  background-color: #4CAF50;
+  border: 1px solid #4CAF50;
+  padding: 10px 20px;
+  transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+}
+#lp-invoice__export:hover,
+#lp-invoice__update:hover {
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #000;
+  transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  cursor: pointer;
+}
+#lp-invoice__actions,
+.export-options__actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.lp-invoice__body table{
+  border-spacing: 0;
+  width: 100%;
+}
+
 /*fix responsive for block Courses Setting
 
  */

@@ -1,4 +1,11 @@
-** 3.2.7.5 **
+**3.2.7.8**
+~ Fix save author id when add item when edit course
+~ Fix title, description item course when install yoast seo plugin
+~ Fix Retake when not enable duration expire
+~ Fix function 'Instructors Registration'
+~ Fix function Export order invoice PDF
+
+**3.2.7.5**
 + Fix run Elementor with question
 + Fix lesson preview not show button complete when user enrolled
 + Add tag apply_filter 'learn-press/order-item-not-course-id' on received-order

@@ -217,13 +217,13 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'type'    => 'yes-no',
 					'desc'    => __( 'Turn on/off debug mode for developer.', 'learnpress' )
 				),
-				array(
-					'title' => __( 'JS and CSS libraries', 'learnpress' ),
-					'id'    => 'js_css_libraries',
-					'type'  => 'html',
-					'html'  => learn_press_admin_view_content( 'settings-js-css' ),
-					'desc'  => __( 'Check the checkboxes to disable js/css from LearnPress (It must be loaded in other plugins or theme).', 'learnpress' )
-				),
+//				array(
+//					'title' => __( 'JS and CSS libraries', 'learnpress' ),
+//					'id'    => 'js_css_libraries',
+//					'type'  => 'html',
+//					'html'  => learn_press_admin_view_content( 'settings-js-css' ),
+//					'desc'  => __( 'Check the checkboxes to disable js/css from LearnPress (It must be loaded in other plugins or theme).', 'learnpress' )
+//				),
 				array(
 					'title' => __( 'Hard cache', 'learnpress' ),
 					'type'  => 'heading',

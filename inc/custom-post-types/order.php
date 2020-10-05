@@ -86,7 +86,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * order with post_parent is ID of main order. And, we do not
 		 * want to show these orders in the list.
 		 *
-		 * @param array  $counts
+		 * @param array $counts
 		 * @param string $type
 		 * @param string $perm
 		 *
@@ -252,8 +252,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Restore user course item when the order is stored (usually from trash).
 		 *
-		 * @param string  $new
-		 * @param string  $old
+		 * @param string $new
+		 * @param string $old
 		 * @param WP_Post $post
 		 */
 		public function restore_order( $new, $old, $post ) {
@@ -330,8 +330,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		/**
 		 * @param LP_Order $order
-		 * @param array    $user_ids
-		 * @param bool     $trigger_action
+		 * @param array $user_ids
+		 * @param bool $trigger_action
 		 */
 		protected function _update_child( $order, $user_ids, $trigger_action = false ) {
 			$new_orders = array();
@@ -411,7 +411,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$order->set_user_id( absint( $user_id ) );
 				}
 
-				$order->update_status(learn_press_get_request( 'order-status' ), true);
+				$order->update_status( learn_press_get_request( 'order-status' ), true );
 
 				$new_status = get_post_status( $order->get_id() );
 
@@ -454,11 +454,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			}
 			?>
-			<script type="text/javascript">
-				jQuery(function ($) {
-					$('#post-search-input').prop('placeholder', '<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>').css('width', 400)
-				});
-			</script>
+            <script type="text/javascript">
+              jQuery(function ($) {
+                $('#post-search-input').
+                  prop('placeholder',
+                    '<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>').
+                  css('width', 400)
+              })
+            </script>
 			<?php
 		}
 
@@ -472,7 +475,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
 			if ( is_admin() && $this->_is_archive() &&
-				( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
+			     ( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
 				$statuses = array_keys( learn_press_get_register_order_statuses() );
 				$search   = "{$wpdb->posts}.post_status = 'publish' ";
 				$tmps     = array( $search );
@@ -616,33 +619,32 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 			ob_start();
 			?>
-			<script>
-				$('#update-order-status').click(function () {
-					var $button = $(this).attr('disabled', 'disabled').html('<?php _e( 'Processing...', 'learnpress' ); ?>');
-					$.ajax({
-						url     : ajaxurl,
-						type    : 'POST',
-						dataType: 'json',
-						data    : {
-							action  : 'update_order_status',
-							order_id: '<?php echo $post->ID; ?>',
-							status  : $('select[name="learn_press_order_status"]').val()
-						},
-						success : function (res) {
-							if (res.status) {
-								$('.order-data-status')
-									.removeClass('pending completed')
-									.html(res.status)
-									.addClass(res.class);
-							}
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
-						},
-						error   : function () {
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
-						}
-					});
-				})
-			</script>
+            <script>
+              $('#update-order-status').click(function () {
+                var $button = $(this).
+                  attr('disabled', 'disabled').
+                  html('<?php _e( 'Processing...', 'learnpress' ); ?>')
+                $.ajax({
+                  url: ajaxurl,
+                  type: 'POST',
+                  dataType: 'json',
+                  data: {
+                    action: 'update_order_status',
+                    order_id: '<?php echo $post->ID; ?>',
+                    status: $('select[name="learn_press_order_status"]').val(),
+                  },
+                  success: function (res) {
+                    if (res.status) {
+                      $('.order-data-status').removeClass('pending completed').html(res.status).addClass(res.class)
+                    }
+                    $button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>')
+                  },
+                  error: function () {
+                    $button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>')
+                  },
+                })
+              })
+            </script>
 			<?php
 			$js = preg_replace( '!</?script>!', '', ob_get_clean() );
 			learn_press_enqueue_script( $js );
@@ -665,7 +667,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Custom row's actions.
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_Post $post
 		 *
 		 * @return mixed
@@ -861,9 +863,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					echo $the_order->get_formatted_order_total();// learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
 					if ( $title = $the_order->get_payment_method_title() ) {
 						?>
-						<div class="payment-method-title">
-							<?php echo $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters('learn-press/order-payment-method-title', $title, $the_order), $the_order ); ?>
-						</div>
+                        <div class="payment-method-title">
+							<?php echo $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $title, $the_order ), $the_order ); ?>
+                        </div>
 						<?php
 					}
 					break;
@@ -970,6 +972,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return self::$_instance;
 		}
 
+		/**
+		 * Order export view.
+		 *
+		 * @param WP_Post $post
+		 */
+		public static function order_exports( $post ) {
+			learn_press_admin_view( 'meta-boxes/order/exports-invoice.php', array( 'order' => new LP_Order( $post ) ) );
+		}
 	}
 
 	// end LP_Order_Post_Type
@@ -977,5 +987,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 	$order_post_type = LP_Order_Post_Type::instance();
 	$order_post_type
 		->add_meta_box( 'order_details', __( 'Order Details', 'learnpress' ), 'order_details', 'normal', 'high' )
-		->add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' );
+		->add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' )
+		->add_meta_box( 'order_export', __( 'Order Exports', 'learnpress' ), 'order_exports', 'side', 'high' );
 }

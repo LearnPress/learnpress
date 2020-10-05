@@ -61,6 +61,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'screens' => 'learnpress_page_learn-press-settings'
 				),
 				'select2'            => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
+				'jsautocomplete'            => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/autocomplete.js' ),
 //				'lp-vue'             => array(
 //					'url'     => self::url( 'js/vendor/vue.min.js' ),
 //					'ver'     => '2.5.16',
@@ -205,11 +206,11 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'screens' => array( LP_ORDER_CPT )
 				),
 				'learn-press-update'                => array(
-					'url'  => $this->url( 'js/admin/update.js' ),
+					'url' => $this->url( 'js/admin/update.js' ),
 					//'deps' => array( 'lp-vue' )
 				),
 				'learn-press-sync-data'             => array(
-					'url'  => $this->url( 'js/admin/sync-data.js' ),
+					'url' => $this->url( 'js/admin/sync-data.js' ),
 					//'deps' => array( 'lp-vue' )
 				),
 //				'learn-press-chartjs'               => array(
@@ -291,8 +292,27 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				wp_enqueue_style( $handle );
 			}
 		}
+		/**
+		 * @since 3.2.7.8
+		 * @author hungkv
+		 */
+		$v_rand = uniqid();
+		if ( LP_DEBUG_STATUS ) {
+			wp_register_script( 'learnpress-jspdf', LP_PLUGIN_URL . 'assets/js/admin/jspdf.js', false, $v_rand, true );
+		} else {
+			wp_register_script( 'learnpress-jspdf', LP_PLUGIN_URL . 'assets/js/admin/jspdf.min.js', false, LEARNPRESS_VERSION, true );
+		}
 
 		do_action( 'learn-press/admin/after-enqueue-scripts' );
+	}
+
+	/**
+	 * Register and enqueue a custom stylesheet in the WordPress admin.
+	 * @author
+	 */
+	public function wpdocs_enqueue_custom_admin_style() {
+		wp_register_style( 'custom_wp_admin_css', get_template_directory_uri() . '/admin-style.css', false, '1.0.0' );
+		wp_enqueue_style( 'custom_wp_admin_css' );
 	}
 }
 

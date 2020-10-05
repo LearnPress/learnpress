@@ -206,6 +206,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fix title, description item course when install yoast seo plugin
 ~ Fix Retake when not enable duration expire
 ~ Fix function 'Instructors Registration'
+~ Add function Export order invoice PDF
 
 = 3.2.7.7 =
 ~ Add Evaluate via questions
