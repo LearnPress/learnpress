@@ -1,74 +1,83 @@
 @keyframes lp-rotating {
-    from {
-        transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        -ms-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        -ms-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-    }
+
+	from {
+		-o-transform: rotate(0deg);
+		-ms-transform: rotate(0deg);
+		-moz-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	to {
+		-o-transform: rotate(360deg);
+		-ms-transform: rotate(360deg);
+		-moz-transform: rotate(360deg);
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
 
 @-webkit-keyframes lp-rotating {
-    from {
-        transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-    }
+
+	from {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	to {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
 
 .ajaxload {
-    background: #7b7b7b;
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    position: relative;
-    content: '';
-    @include border-radius(50%);
-    @include animation(lp-rotating 1s linear infinite);
-    &:after {
-        @include border-radius(50%);
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        background: #DEDEDE;
-        position: absolute;
-        content: '';
-        top: 2px;
-        left: 50%;
-        margin-left: -3px;
-    }
+	display: inline-block;
+	position: relative;
+	width: 30px;
+	height: 30px;
+	background: #7b7b7b;
+	content: "";
+
+	@include border-radius(50%);
+	@include animation(lp-rotating 1s linear infinite);
+
+	&::after {
+
+		@include border-radius(50%);
+		display: inline-block;
+		position: absolute;
+		top: 2px;
+		left: 50%;
+		width: 6px;
+		height: 6px;
+		margin-left: -3px;
+		background: #dedede;
+		content: "";
+	}
 }
 
-.lp-ajaxload-style-1{
-    position: relative;
-    width: 32px;
-    height: 32px;
-    display: inline-block;
-    &:before,
-    &:after{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border:3px solid #DDD;
-        top:0;
-        left:0;
-        content: '';
-    }
+.lp-ajaxload-style-1 {
+	display: inline-block;
+	position: relative;
+	width: 32px;
+	height: 32px;
 
-    &:after{
-        border-color: #2FA7FF;
-        clip: rect(0px, 32px, 16px, 16px);
-        @include border-radius(50%);
-        @include animation(lp-rotating 1s linear infinite);
-    }
+	&::before,
+	&::after {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border: 3px solid #ddd;
+		content: "";
+	}
+
+	&::after {
+		clip: rect(0, 32px, 16px, 16px);
+		border-color: #2fa7ff;
+
+		@include border-radius(50%);
+		@include animation(lp-rotating 1s linear infinite);
+	}
 }

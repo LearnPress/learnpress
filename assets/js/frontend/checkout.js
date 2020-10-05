@@ -240,8 +240,12 @@
         url: options.ajaxurl + '/?lp-ajax=checkout',
         dataType: 'html',
         data: formData,
-        type: 'post',
+        type: 'POST',
+        beforeSend: function beforeSend() {
+          $('#learn-press-checkout-place-order').addClass('loading');
+        },
         success: function success(response) {
+          $('#learn-press-checkout-place-order').removeClass('loading');
           response = LP.parseJSON(response);
 
           if (response.messages) {
@@ -259,6 +263,7 @@
           } catch (error) {}
         },
         error: function error(jqXHR, textStatus, errorThrown) {
+          $('#learn-press-checkout-place-order').removeClass('loading');
           showMessage('<div class="learn-press-message error">' + errorThrown + '</div>');
           $buttonCheckout.html(options.i18n_place_order);
           $buttonCheckout.prop('disabled', false);

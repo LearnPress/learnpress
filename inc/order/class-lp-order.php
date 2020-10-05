@@ -5,19 +5,12 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Order' ) ) {
-
-	/**
-	 * Class LP_Order
-	 */
 	class LP_Order extends LP_Abstract_Post_Data {
 
 		/**
@@ -186,12 +179,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @since 3.0.0
 		 */
 		public function get_confirm_order_received_text() {
-			$text = apply_filters( 'learn-press/confirm-order-received-text', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
-
-			// deprecated
-			$text = apply_filters( 'learn_press_confirm_order_received_text', $text, $this->get_id() );
-
-			return $text;
+			return apply_filters( 'learn-press/confirm-order-received-text', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
 		}
 
 		/**
@@ -201,15 +189,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @since 3.0.0
 		 */
 		public function get_thankyou_message() {
-			/**
-			 * @since 3.0.0
-			 */
-			$message = apply_filters( 'learn-press/', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
-
-			// @deprecated
-			$message = apply_filters( 'learn_press_confirm_order_received_text', $message, $this->get_id() );
-
-			return $message;
+			return apply_filters( 'learn-press/confirm-order-received-text', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
 		}
 
 		/**
@@ -282,7 +262,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param LP_Gateway_Abstract|string $payment_method
 		 */
 		public function set_payment_method( $payment_method ) {
-
 			if ( $payment_method instanceof LP_Gateway_Abstract ) {
 				update_post_meta( $this->get_id(), '_payment_method', $payment_method->get_id() );
 				update_post_meta( $this->get_id(), '_payment_method_title', $payment_method->get_title() );
@@ -306,14 +285,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_order_status() {
-			// $the_id      = $this->get_id();
-			// $post_status = get_post_status( $the_id );
-			// $status      = preg_replace( '~^lp-~', '', $post_status );
-			// Deprecated filter
-			// $status = apply_filters( 'learn_press_order_status', $status, $this );
-			//
-			// return apply_filters( 'learn-press/order/status', $status, $the_id );
-
 			return $this->get_status();
 		}
 
@@ -327,15 +298,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_status() {
-
 			$status = $this->get_data( 'status' );
-			// echo $status;
-			// var_dump($status);
 			$status = apply_filters( 'learn_press_order_status', $status, $this );
-			// var_dump($status);
+
 			apply_filters( 'learn-press/order/status', $status, $this->get_id() );
 
-			// var_dump($this);
 			return $status;
 		}
 
@@ -380,6 +347,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			} else {
 				$status = ucfirst( $order_status );
 			}
+
 			$class = 'order-status order-status-' . sanitize_title( $status );
 			$html  = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status, $this );
 
@@ -394,8 +362,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return bool
 		 */
 		public function payment_complete( $transaction_id = '' ) {
-			// do_action( 'learn_press_pre_payment_complete', $this->get_id() );
-
 			do_action( 'learn-press/payment-pre-complete', $this->get_id() );
 
 			LP()->session->order_awaiting_payment = null;
@@ -417,17 +383,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					add_post_meta( $this->get_id(), '_transaction_id', $transaction_id, true );
 				}
 
-				do_action( 'learn_press_payment_complete', $this->get_id() );
-
-				/**
-				 * @since 3.0.0
-				 */
 				do_action( 'learn-press/payment-complete', $this->get_id() );
+
 			} else {
-				do_action( 'learn_press_payment_complete_order_status_' . $this->get_status(), $this->get_id() );
-				/**
-				 * @since 3.0.0
-				 */
 				do_action( 'learn-press/payment-complete-order-status-' . $this->get_status(), $this->get_id() );
 			}
 
@@ -444,11 +402,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			$received_url = add_query_arg( 'key', $this->get_order_key(), $received_url );
 
-			$received_url = apply_filters( 'learn_press_get_checkout_order_received_url', $received_url, $this );
-
-			/**
-			 * @since 3.0.0
-			 */
 			return apply_filters( 'learn-press/checkout-order-received-url', $received_url, $this );
 		}
 
@@ -662,11 +615,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$item_id = absint( $wpdb->insert_id );
 
 			/**
-			 * @deprecated
-			 */
-			do_action( 'learn_press_new_order_item', $item_id, $item, $this->get_id() );
-
-			/**
 			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/added-order-item', $item_id, $item, $this->get_id() );
@@ -748,11 +696,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				return false;
 			}
 
-			do_action( 'learn_press_before_delete_order_item', $item_id );
-
-			/**
-			 * @since 3.0.0
-			 */
 			do_action( 'learn-press/before-delete-order-item', $item_id, $this->get_id() );
 
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
@@ -760,12 +703,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			LP_Object_Cache::delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
 
-			/**
-			 * @since 3.0.0
-			 */
 			do_action( 'learn-press/deleted-order-item', $item_id, $this->get_id() );
-
-			do_action( 'learn_press_delete_order_item', $item_id );
 
 			return true;
 		}
@@ -894,10 +832,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$view_order_url      = learn_press_get_endpoint_url( 'view-order', $this->get_id(), learn_press_get_page_link( 'profile' ) );
 						$user    = learn_press_get_current_user();
 			$view_order_endpoint = LP()->settings->get( 'profile_endpoints.profile-order-details' );
+
 			if ( ! $view_order_endpoint ) {
 				$view_order_endpoint = 'order-details';
 			}
+
 			$view_order_endpoint = urlencode( $view_order_endpoint );
+
 			if ( get_option( 'permalink_structure' ) ) {
 				$view_order_url = learn_press_get_page_link( 'profile' ) . $user->get_data( 'user_login' ) . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
 			} else {
@@ -930,6 +871,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( $this->has_status( 'pending' ) ) {
 				$user = learn_press_get_current_user();
 				$url  = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+
 				if ( ! $force ) {
 					$url = add_query_arg( 'cancel-order', $this->get_id(), $url );
 				} else {

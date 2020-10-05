@@ -146,8 +146,13 @@
 				url: options.ajaxurl + '/?lp-ajax=checkout',
 				dataType: 'html',
 				data: formData,
-				type: 'post',
+				type: 'POST',
+				beforeSend() {
+					$( '#learn-press-checkout-place-order' ).addClass( 'loading' );
+				},
 				success( response ) {
+					$( '#learn-press-checkout-place-order' ).removeClass( 'loading' );
+
 					response = LP.parseJSON( response );
 
 					if ( response.messages ) {
@@ -166,9 +171,13 @@
 					}
 				},
 				error( jqXHR, textStatus, errorThrown ) {
+					$( '#learn-press-checkout-place-order' ).removeClass( 'loading' );
+
 					showMessage( '<div class="learn-press-message error">' + errorThrown + '</div>' );
+
 					$buttonCheckout.html( options.i18n_place_order );
 					$buttonCheckout.prop( 'disabled', false );
+
 					LP.unblockContent();
 				},
 			} );

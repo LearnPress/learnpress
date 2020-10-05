@@ -408,8 +408,7 @@ class LP_Checkout {
 			$order->set_user_id( apply_filters( 'learn-press/checkout/default-user', $user_id ) );
 
 			if ( $this->is_enable_guest_checkout() && $this->get_checkout_email() ) {
-				$checkout_email = $this->get_checkout_email();
-				$order->set_checkout_email( $checkout_email );
+				$order->set_checkout_email( $this->get_checkout_email() );
 			}
 
 			$order_id = $order->save();
@@ -464,10 +463,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_guest_checkout() {
-		return apply_filters(
-			'learn-press/checkout/enable-guest',
-			LP()->settings()->get( 'guest_checkout' ) == 'yes'
-		);
+		return apply_filters( 'learn-press/checkout/enable-guest', LP()->settings()->get( 'guest_checkout' ) == 'yes' );
 	}
 
 	/**
@@ -477,13 +473,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_login() {
-		return apply_filters(
-			'learn-press/checkout/enable-login',
-			in_array(
-				LP()->settings()->get( 'enable_login_checkout' ),
-				array( '', 'yes' )
-			)
-		);
+		return apply_filters( 'learn-press/checkout/enable-login', in_array( LP()->settings()->get( 'enable_login_checkout' ), array( '', 'yes' ) ) );
 	}
 
 	/**
@@ -672,8 +662,10 @@ class LP_Checkout {
 		$has_error = false;
 
 		try {
-			// Prevent timeout
-			@set_time_limit( 0 );
+
+			if ( function_exists( 'set_time_limit' ) ) {
+				@set_time_limit( 0 ); // @codingStandardsIgnoreLine
+			}
 
 			do_action( 'learn-press/before-checkout' );
 
