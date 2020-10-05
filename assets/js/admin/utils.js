@@ -1810,6 +1810,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vendor_jquery_jquery_scrollbar__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_vendor_jquery_jquery_scrollbar__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var _jquery_plugins__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./jquery.plugins */ "./assets/src/js/utils/jquery.plugins.js");
 /* harmony import */ var _iframe_submit__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./iframe-submit */ "./assets/src/js/utils/iframe-submit.js");
+/* harmony import */ var _show_password__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./show-password */ "./assets/src/js/utils/show-password.js");
+/* harmony import */ var _show_password__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_show_password__WEBPACK_IMPORTED_MODULE_11__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -1821,6 +1823,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  *
  * @version 3.2.6
  */
+
 
 
 
@@ -2362,15 +2365,7 @@ $(document).ready(function () {
         }, options.delayOut + (options.delayIn || 0));
       }
     })($el, options);
-  }); // $('body')
-  //     .on('click', '.learn-press-nav-tabs li a', function (e) {
-  //         e.preventDefault();
-  //         var $tab = $(this), url = '';
-  //         $tab.closest('li').addClass('active').siblings().removeClass('active');
-  //         $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
-  //         $(document).trigger('learn-press/nav-tabs/clicked', $tab);
-  //     });
-
+  });
   setTimeout(function () {
     $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');
   }, 300);
@@ -2430,7 +2425,8 @@ Object(_extend__WEBPACK_IMPORTED_MODULE_0__["default"])(_objectSpread({
   fn: _fn__WEBPACK_IMPORTED_MODULE_1__["default"],
   QuickTip: _quick_tip__WEBPACK_IMPORTED_MODULE_2___default.a,
   Cookies: _cookies__WEBPACK_IMPORTED_MODULE_6__["default"],
-  localStorage: _local_storage__WEBPACK_IMPORTED_MODULE_7__["default"]
+  localStorage: _local_storage__WEBPACK_IMPORTED_MODULE_7__["default"],
+  showPass: _show_password__WEBPACK_IMPORTED_MODULE_11___default.a
 });
 
 /***/ }),
@@ -3132,6 +3128,31 @@ var MessageBox = {
     });
   });
 })(jQuery);
+
+/***/ }),
+
+/***/ "./assets/src/js/utils/show-password.js":
+/*!**********************************************!*\
+  !*** ./assets/src/js/utils/show-password.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var $ = jQuery;
+$(function () {
+  $('.rwmb-password-wrapper .rwmb-input input[type="password"]').wrap('<span class="lp-password-input"></span>');
+  $('.rwmb-password-wrapper .rwmb-input').filter(':password').parent('span').addClass('lp-password-input');
+  $('.lp-password-input').append('<span class="lp-show-password-input"></span>');
+  $('.lp-show-password-input').on('click', function () {
+    $(this).toggleClass('display-password');
+
+    if ($(this).hasClass('display-password')) {
+      $(this).siblings(['input[type="password"]']).prop('type', 'text');
+    } else {
+      $(this).siblings('input[type="text"]').prop('type', 'password');
+    }
+  });
+});
 
 /***/ }),
 

@@ -1,167 +1,206 @@
 .lp-list-table {
-    width: 100%;
-    margin-bottom: 20px;
-    th, td {
-        border: 0 solid rgba(204,204,204,0.3);
-        border-bottom-width: 1px;
-        line-height: 1;
-        font-size: 16px;
-        background: #FFF;
-        text-align: left;
-        padding: 20px;
-        @media (max-width: 767px) {
-            padding: 15px;
-        }
-    }
+	width: 100%;
+	margin-bottom: 20px;
 
-    thead {
-        box-sizing: border-box;
-        border: 1px solid #e5e7f2;
-        tr {
-            th {
-                background: #f1f2f8;
-                color: #333;
-                border-bottom: none;
-                font-size: 18px;
-                height: 60px;
-            }
-        }
-    }
-    tbody,
-    tfoot {
-        border: 1px solid rgba(204,204,204,0.3);
-        border-top: 0;
-        box-sizing: border-box;
-        tr {
-            td, th {
-                background: #FFF;
-                font-size: 16px;
-                color: #666;
-                font-weight: 300;
-                height: 62px;
-                a {
-                    text-decoration: none;
-                    border-bottom: none;
-                    color: #666;
-                    &:hover {
-                        color: $primary-color;
-                    }
-                }
-            }
+	th,
+	td {
+		padding: 20px;
+		border: 0 solid rgba(204, 204, 204, 0.3);
+		border-bottom-width: 1px;
+		background: #fff;
+		font-size: 16px;
+		line-height: 1;
+		text-align: left;
 
-            .column-status {
-                .result-percent {
-                    font-weight: 500;
-                }
-                .lp-label {
-                    font-weight: 600;
-                }
-            }
+		@media (max-width: 767px) {
+			padding: 15px;
+		}
+	}
 
-            &:nth-child(odd) {
-                background: #F5F5F5;
-            }
-        }
-    }
-    .list-table-nav {
-        td {
-            font-size: 14px;
-            &.nav-text {
-                text-align: left;
-            }
-            &.nav-pages {
-                text-align: right;
-                .learn-press-pagination {
-                    text-align: right;
-                }
-                .page-numbers {
-                    margin-bottom: 0;
-                }
-            }
-        }
-    }
+	thead {
+		box-sizing: border-box;
+		border: 1px solid #e5e7f2;
+
+		tr {
+
+			th {
+				height: 60px;
+				border-bottom: none;
+				color: #333;
+				background: #f1f2f8;
+				font-size: 18px;
+			}
+		}
+	}
+
+	tbody,
+	tfoot {
+		box-sizing: border-box;
+		border: 1px solid rgba(204, 204, 204, 0.3);
+		border-top: 0;
+
+		tr {
+
+			td,
+			th {
+				height: 62px;
+				color: #666;
+				background: #fff;
+				font-size: 16px;
+				font-weight: 300;
+
+				a {
+					border-bottom: none;
+					color: #666;
+					text-decoration: none;
+
+					&:hover {
+						color: $primary-color;
+					}
+				}
+			}
+
+			.column-status {
+
+				.result-percent {
+					font-weight: 500;
+				}
+
+				.lp-label {
+					font-weight: 600;
+				}
+			}
+
+			&:nth-child(odd) {
+				background: #f5f5f5;
+			}
+		}
+	}
+
+	.list-table-nav {
+
+		td {
+			font-size: 14px;
+
+			&.nav-text {
+				text-align: left;
+			}
+
+			&.nav-pages {
+				text-align: right;
+
+				.learn-press-pagination {
+					text-align: right;
+				}
+
+				.page-numbers {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
 
 }
 
 .lp-label {
-    font-size: 16px;
-    display: inline-block;
-    font-weight: 300;
-    line-height: 1;
-    color: #666;
-    /*padding: 3px 5px;
-    background: #DDD;
-    border-radius: 4px;*/
-
-    /*&.label-finished,
-    &.label-completed {
-        background: #ffdc1e;
-    }
-
-    &.label-passed {
-        background: #14c4ff;
-    }
-
-    &.label-failed {
-        background: #ff4d66;
-    }
-
-    &.label-enrolled,
-    &.label-started {
-        background: #d243ff;
-    }*/
+	display: inline-block;
+	color: #666;
+	font-size: 16px;
+	font-weight: 300;
+	line-height: 1;
 }
 
 .learn-press-form {
-    .form-fields {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        .form-field {
-            margin: 0 0 20px 0;
-            label {
-                display: block;
-                margin: 0 0 10px 0;
-            }
 
-            input[type="text"],
-            input[type="email"],
-            input[type="number"],
-            input[type="password"],
-            textarea {
-                padding: 8px;
-                width: 100%;
-                @include box-sizing(border-box);
-            }
-            .description {
-                font-style: italic;
-                margin-top: 10px;
-                font-size: 14px;
-                line-height: 1.4;
-            }
-            .asterisk {
-                color: #FF0000;
-            }
-        }
-    }
+	.form-fields {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		.form-field {
+			margin: 0 0 20px 0;
+
+			label {
+				display: block;
+				margin: 0 0 10px 0;
+			}
+
+			input[type="text"],
+			input[type="email"],
+			input[type="number"],
+			input[type="password"],
+			textarea {
+				width: 100%;
+				padding: 8px;
+
+				@include box-sizing(border-box);
+			}
+
+			.description {
+				margin-top: 10px;
+				font-size: 14px;
+				font-style: italic;
+				line-height: 1.4;
+			}
+
+			.asterisk {
+				color: #f00;
+			}
+
+		}
+	}
 }
 
+.lp-password-input {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+
+	input[type="password"] {
+		padding-right: 2.5rem;
+	}
+
+	input::-ms-reveal {
+		display: none;
+	}
+
+	.lp-show-password-input {
+		position: absolute;
+		top: 6px;
+		right: 10px;
+		cursor: pointer;
+	}
+
+	.lp-show-password-input::after {
+		font-family: "Font Awesome 5 Free";
+		font-weight: 900;
+		content: "\f06e";
+	}
+
+	.lp-show-password-input.display-password::after {
+		color: #585858;
+		content: "\f070";
+	}
+}
 
 .form-desc {
-    font-size: smaller;
-    font-style: italic;
+	font-size: smaller;
+	font-style: italic;
 }
 
 .become-teacher-form {
-    margin: 0 auto;
-    width: 90%;
-    max-width: 500px;
-    .form-field {
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        input[type="password"] {
-            width: 100%;
-        }
-    }
+	width: 90%;
+	max-width: 500px;
+	margin: 0 auto;
+
+	.form-field {
+
+		input[type="text"],
+		input[type="email"],
+		input[type="number"],
+		input[type="password"] {
+			width: 100%;
+		}
+	}
 }

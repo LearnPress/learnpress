@@ -121,7 +121,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 										'text'     => esc_html__( 'Text', 'learnpress' ),
 										'textarea' => esc_html__( 'Textarea', 'learnpress' ),
 										'checkbox' => esc_html__( 'Checkbox', 'learnpress' ),
-										'tel'      => esc_html__( 'Tel', 'learnpress' ),
 										'url'      => esc_html__( 'URL', 'learnpress' ),
 										'number'   => esc_html__( 'Number', 'learnpress' ),
 									),
@@ -137,7 +136,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type' => 'sectionend',
 							'id'   => 'lp_profile_general',
 						),
-					),
+					)
 				),
 				apply_filters(
 					'learn-press/profile-settings-fields/sub-tabs',
@@ -187,7 +186,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'placeholder' => 'order-details',
 							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.order-details', 'order-details' ) . '</code>/123' ),
 						),
-					),
+					)
 				),
 				apply_filters(
 					'learn-press/profile-settings-fields/settings-tab',
@@ -236,9 +235,9 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type' => 'sectionend',
 							'id'   => 'lp_profile_permalinks',
 						),
-					),
+					)
 				),
-			),
+			)
 		);
 
 		$settings = apply_filters( 'learn-press/settings/profile', $settings );

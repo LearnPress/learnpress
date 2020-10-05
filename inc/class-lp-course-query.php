@@ -15,7 +15,6 @@ class LP_Course_Query extends LP_Object_Query {
 	 * @param string $query
 	 */
 	public function __construct( $query = '' ) {
-		// Query vars supported for course
 		$this->course_query_vars = array(
 			'post_type'   => LP_COURSE_CPT,
 			'post_status' => array( 'draft', 'pending', 'private', 'publish' ),

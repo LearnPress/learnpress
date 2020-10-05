@@ -691,7 +691,6 @@ function learn_press_get_messages( $clear = false ) {
  * @param int|bool $current_user . @since 3.0.9 - add for current user only
  */
 function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
-
 	if ( is_string( $options ) ) {
 		$options = array( 'id' => $options );
 	}

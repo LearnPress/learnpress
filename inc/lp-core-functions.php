@@ -54,6 +54,12 @@ function learn_press_get_theme_name( $folder ) {
 	return ! empty( $theme['Name'] ) ? $theme['Name'] : '';
 }
 
+/**
+ * Clean.
+ *
+ * @param [type] $var
+ * @version 4.0.0
+ */
 function learnpress_clean( $var ) {
 	if ( is_array( $var ) ) {
 		return array_map( 'learnpress_clean', $var );

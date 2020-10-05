@@ -1188,8 +1188,6 @@ function learn_press_update_user_profile_avatar() {
 function learn_press_update_user_profile_basic_information( $wp_error = false ) {
 	$user_id = get_current_user_id();
 
-	$current_user = get_user_by( 'id', $user_id );
-
 	$update_data = array(
 		'ID'           => $user_id,
 		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
@@ -1199,22 +1197,14 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 		'user_email'   => filter_input( INPUT_POST, 'account_email', FILTER_SANITIZE_EMAIL ),
 	);
 
-	if ( is_email( $update_data['display_name'] ) ) {
-		return new WP_Error( 'error_display_name', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
-	}
-
-	if ( $update_data['user_email'] ) {
-		if ( ! is_email( $update_data['user_email'] ) ) {
-			return new WP_Error( 'error_email', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
-		} elseif ( email_exists( $update_data['user_email'] ) && $update_data['user_email'] !== $current_user->user_email ) {
-			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
-		}
-	}
-
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
-	$return      = wp_update_user( $update_data );
-	$socials     = LP_Request::get_array( 'user_profile_social' );
-	$extra_data  = get_user_meta( $user_id, '_lp_extra_info', true );
+	$update_meta = isset( $_POST['_lp_custom_register'] ) ? $_POST['_lp_custom_register'] : '';
+
+	$return = LP_Forms_Handler::update_user_data( $update_data, $update_meta );
+
+	// Update for social.
+	$socials    = LP_Request::get_array( 'user_profile_social' );
+	$extra_data = get_user_meta( $user_id, '_lp_extra_info', true );
 
 	if ( ! empty( $extra_data ) ) {
 		$socials = array_merge( $extra_data, $socials );
@@ -1227,7 +1217,6 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	}
 
 	return $return;
-
 }
 
 /**
@@ -1304,20 +1293,18 @@ function learn_press_get_avatar_thumb_size() {
 function learn_press_set_user_cookie_for_guest() {
 	if ( ! is_admin() && ! headers_sent() ) {
 		$guest_key = '_wordpress_lp_guest';
+
 		if ( is_user_logged_in() ) {
 			if ( ! empty( $_COOKIE[ $guest_key ] ) ) {
-				// setcookie( $guest_key, md5( time() ), - 10000 );
 				learn_press_remove_cookie( $guest_key );
 			}
 		} else {
 			if ( empty( $_COOKIE[ $guest_key ] ) ) {
-				// setcookie( $guest_key, md5( time() ), time() + 3600 );
 				learn_press_setcookie( $guest_key, md5( time() ), time() + 3600 );
 			}
 		}
 	}
 }
-
 add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );
 
 function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
@@ -2072,7 +2059,6 @@ function lp_add_default_fields( $fields ) {
 			'placeholder' => esc_html__( 'First name', 'learnpress' ),
 			'saved'       => LP_Request::get_string( 'reg_first_name' ),
 			'id'          => 'reg_first_name',
-			// 'required'    => true,
 		);
 	}
 
@@ -2085,7 +2071,6 @@ function lp_add_default_fields( $fields ) {
 			'placeholder' => esc_html__( 'Last name', 'learnpress' ),
 			'saved'       => LP_Request::get_string( 'reg_last_name' ),
 			'id'          => 'reg_last_name',
-			// 'required'    => true,
 		);
 	}
 
@@ -2098,13 +2083,58 @@ function lp_add_default_fields( $fields ) {
 			'placeholder' => esc_html__( 'Display name', 'learnpress' ),
 			'saved'       => LP_Request::get_string( 'reg_display_name' ),
 			'id'          => 'reg_display_name',
-			// 'required'    => true,
 		);
 	}
 
 	return $fields;
 }
 add_filter( 'learn-press/register-fields', 'lp_add_default_fields' );
+
+function lp_custom_register_fields_display() {
+	?>
+	<?php $custom_fields = LP()->settings()->get( 'register_profile_fields' ); ?>
+
+		<?php if ( $custom_fields ) : ?>
+			<ul class="lp-form-fields">
+				<?php foreach ( $custom_fields as $custom_field ) : ?>
+					<?php $value = sanitize_key( $custom_field['name'] ); ?>
+
+					<li class="form-field">
+					<?php
+					switch ( $custom_field['type'] ) {
+						case 'text':
+						case 'number':
+						case 'email':
+						case 'url':
+						case 'tel':
+							?>
+								<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
+								<input name="_lp_custom_register_form[<?php echo $value; ?>]" type="<?php echo $custom_field['type']; ?>" placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>" class="regular-text" value="">
+								<?php
+							break;
+						case 'textarea':
+							?>
+								<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
+								<textarea name="_lp_custom_register_form[<?php echo $value; ?>]" placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>"></textarea>
+								<?php
+							break;
+						case 'checkbox':
+							?>
+								<label>
+									<input name="_lp_custom_register_form[<?php echo $value; ?>]" type="<?php echo $custom_field['type']; ?>" value="1">
+								<?php echo esc_html( $custom_field['name'] ); ?>
+								</label>
+								<?php
+							break;
+					}
+					?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	<?php
+}
+add_action( 'learn-press/after-form-register-fields', 'lp_custom_register_fields_display' );
 
 /**
  * Custom register fields
@@ -2113,12 +2143,8 @@ add_filter( 'learn-press/register-fields', 'lp_add_default_fields' );
  * @return void
  */
 function lp_user_custom_register_fields( $user_id, $fields = array() ) {
-	if ( ! current_user_can( 'edit_user', $user_id ) ) {
-		return;
-	}
-
 	if ( ! empty( $fields ) ) {
-		update_user_meta( $user_id, '_lp_custom_register', $fields );
+		update_user_meta( $user_id, '_lp_custom_register', learnpress_clean( $fields ) );
 	} elseif ( isset( $_POST['_lp_custom_register'] ) ) {
 		update_user_meta( $user_id, '_lp_custom_register', $_POST['_lp_custom_register'] );
 	}
@@ -2146,7 +2172,7 @@ function lp_get_user_custom_fields() {
 
 	if ( $custom_fields ) {
 		foreach ( $custom_fields as $field ) {
-			$output[ sanitize_title( $field['name'] ) ] = '';
+			$output[ sanitize_key( $field['name'] ) ] = '';
 		}
 	}
 

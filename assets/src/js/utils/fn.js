@@ -8,7 +8,7 @@
  */
 
 const $ = window.jQuery;
-var exp;
+let exp;
 
 ( function() {
 	if ( $ === undefined ) {
@@ -17,16 +17,16 @@ var exp;
 
 	$.fn.LP = exp = function( widget, fn ) {
 		if ( $.isFunction( fn ) ) {
-			$.fn['LP_' + widget] = fn;
+			$.fn[ 'LP_' + widget ] = fn;
 		} else if ( widget ) {
-			var args = [];
+			const args = [];
 			if ( arguments.length > 1 ) {
-				for ( var i = 1; i < arguments.length; i++ ) {
-					args.push( arguments[i] );
+				for ( let i = 1; i < arguments.length; i++ ) {
+					args.push( arguments[ i ] );
 				}
 			}
 
-			return $.isFunction( $( this )['LP_' + widget] ) ? $( this )['LP_' + widget].apply( this, args ) : this;
+			return $.isFunction( $( this )[ 'LP_' + widget ] ) ? $( this )[ 'LP_' + widget ].apply( this, args ) : this;
 		}
 		return this;
 	};

@@ -279,6 +279,7 @@
 			data = $form.serialize();
 		$form.find( '.learn-press-error, .learn-press-notice, .learn-press-message' ).fadeOut();
 		$form.find( 'input' ).attr( 'disabled', true );
+
 		LP.doAjax( {
 			data: {
 				'lp-ajax': 'login',
@@ -300,6 +301,7 @@
 				$( '#learn-press-form-login input[type="text"]' ).trigger( 'focus' );
 			},
 		} );
+
 		return false;
 	} );
 
@@ -307,11 +309,13 @@
 		e.preventDefault();
 		const _this = $( this ),
 			_href = _this.attr( 'href' );
+
 		LP.alert( learn_press_js_localize.confirm_cancel_order, function( confirm ) {
 			if ( confirm ) {
 				window.location.href = _href;
 			}
 		} );
+
 		return false;
 	} );
 

@@ -135,7 +135,6 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 	}
 
 	public function build_admin_assets( $exclude_libraries = array() ) {
-
 		$write_dir = $this->get_upload_path();
 
 		if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {

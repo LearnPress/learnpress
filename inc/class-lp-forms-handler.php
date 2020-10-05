@@ -159,6 +159,7 @@ class LP_Forms_Handler {
 		$fields      = LP_Shortcode_Register_Form::get_register_fields();
 		$field_names = wp_list_pluck( $fields, 'id' );
 		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), $field_names );
+		$update_meta = isset( $_POST['_lp_custom_register_form'] ) ? $_POST['_lp_custom_register_form'] : array();
 
 		try {
 			$new_customer = self::learnpress_create_new_customer(
@@ -166,24 +167,21 @@ class LP_Forms_Handler {
 				$args['reg_username'],
 				$args['reg_password'],
 				array(
-					'first_name'   => $args['reg_first_name'],
-					'last_name'    => $args['reg_last_name'],
-					'display_name' => $args['reg_display_name'],
-				)
+					'first_name'   => isset( $args['reg_first_name'] ) ? $args['reg_first_name'] : '',
+					'last_name'    => isset( $args['reg_last_name'] ) ? $args['reg_last_name'] : '',
+					'display_name' => isset( $args['reg_display_name'] ) ? $args['reg_display_name'] : '',
+				),
+				$update_meta
 			);
 
 			if ( is_wp_error( $new_customer ) ) {
 				throw new Exception( $new_customer->get_error_message() );
 			}
 
-			// wp_new_user_notification( $new_customer );
 			wp_set_current_user( $new_customer );
 			wp_set_auth_cookie( $new_customer, true );
 
-			// Custom register fields.
-			if ( isset( $_POST['_lp_custom_register_form'] ) ) {
-				lp_user_custom_register_fields( $new_customer, $_POST['_lp_custom_register_form'] );
-			}
+			learn_press_add_message( $args['reg_username'] . __( ' was successfully created!', 'learnpress' ), 'success' );
 
 			// Send email when check enable Instructor.
 			if ( LP()->settings->get( 'instructor_registration' ) == 'yes' && isset( $_POST['become_teacher'] ) ) {
@@ -223,7 +221,7 @@ class LP_Forms_Handler {
 	 *
 	 * @author ThimPress <nhamdv>
 	 */
-	public static function learnpress_create_new_customer( $email, $username = '', $password = '', $args = array() ) {
+	public static function learnpress_create_new_customer( $email, $username = '', $password = '', $args = array(), $update_meta = array() ) {
 		if ( empty( $email ) || ! is_email( $email ) ) {
 			return new WP_Error( 'registration-error-invalid-email', __( 'Please provide a valid email address.', 'learnpress' ) );
 		}
@@ -258,6 +256,16 @@ class LP_Forms_Handler {
 			return new WP_Error( 'registration-error-spacing-password', __( 'Password can not have spacing!', 'learnpress' ) );
 		}
 
+		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+
+		if ( $custom_fields && ! empty( $update_meta ) ) {
+			foreach ( $custom_fields as $field ) {
+				if ( $field['required'] === 'yes' && empty( $update_meta[ sanitize_key( $field['name'] ) ] ) ) {
+					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
+				}
+			}
+		}
+
 		$errors = new WP_Error();
 
 		do_action( 'learnpress_register_post', $username, $email, $errors );
@@ -282,11 +290,62 @@ class LP_Forms_Handler {
 
 		$customer_id = wp_insert_user( $new_customer_data );
 
+		if ( ! empty( $update_meta ) ) {
+			lp_user_custom_register_fields( $customer_id, $update_meta );
+		}
+
 		if ( is_wp_error( $customer_id ) ) {
 			return $customer_id;
 		}
 
 		return $customer_id;
+	}
+
+	public static function update_user_data( $update_data, $update_meta ) {
+		$user_id      = get_current_user_id();
+		$current_user = get_user_by( 'id', $user_id );
+
+		if ( empty( $update_data['user_email'] ) ) {
+			return new WP_Error( 'exist_email', esc_html__( 'Email is required', 'learnpress' ) );
+		}
+
+		if ( empty( $update_data['display_name'] ) ) {
+			return new WP_Error( 'exist_display_name', esc_html__( 'Display name is required', 'learnpress' ) );
+		}
+
+		if ( is_email( $update_data['display_name'] ) ) {
+			return new WP_Error( 'error_display_name', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
+		}
+
+		if ( ! is_email( $update_data['user_email'] ) ) {
+			return new WP_Error( 'error_email', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
+		} elseif ( email_exists( $update_data['user_email'] ) && $update_data['user_email'] !== $current_user->user_email ) {
+			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
+		}
+
+		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+
+		if ( $custom_fields && ! empty( $update_meta ) ) {
+			foreach ( $custom_fields as $field ) {
+				if ( $field['required'] === 'yes' && empty( $update_meta[ sanitize_key( $field['name'] ) ] ) ) {
+					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
+				}
+			}
+		}
+
+		$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
+
+		$return = wp_update_user( $update_data );
+
+		if ( ! empty( $update_meta ) ) {
+			lp_user_custom_register_fields( $user_id, $update_meta );
+		}
+
+		if ( is_wp_error( $return ) ) {
+			return $return;
+		}
+
+		return $return;
 	}
 
 	public static function init() {

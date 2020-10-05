@@ -23,7 +23,8 @@ class LP_Helper {
 				$string = preg_replace_callback(
 					'!s:(\d+):"(.*?)";!s',
 					array( __CLASS__, '_unserialize_replace_callback' ),
-					$string );
+					$string
+				);
 
 				$unserialized = maybe_unserialize( $string );
 			}
@@ -99,9 +100,12 @@ class LP_Helper {
 
 		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$query  = $wpdb->prepare( "
-			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ")
-		", $ids );
+		$query  = $wpdb->prepare(
+			"
+			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ')
+		',
+			$ids
+		);
 
 		if ( $posts = $wpdb->get_results( $query ) ) {
 			foreach ( $posts as $post ) {
@@ -210,7 +214,7 @@ class LP_Helper {
 			foreach ( $array2 as $key => & $value ) {
 				if ( is_array( $value ) && isset( $merged[ $key ] ) && is_array( $merged[ $key ] ) ) {
 					$merged[ $key ] = self::array_merge_recursive( $merged[ $key ], $value );
-				} else if ( is_numeric( $key ) ) {
+				} elseif ( is_numeric( $key ) ) {
 					if ( ! in_array( $value, $merged ) ) {
 						$merged[] = $value;
 					}
@@ -247,10 +251,14 @@ class LP_Helper {
 	 */
 	public static function json_encode( $data ) {
 		$data = wp_json_encode( $data );
-		$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
-			__CLASS__,
-			'_valid_json_value'
-		), $data );
+		$data = preg_replace_callback(
+			'~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~',
+			array(
+				__CLASS__,
+				'_valid_json_value',
+			),
+			$data
+		);
 
 		return $data;
 	}
@@ -278,7 +286,7 @@ class LP_Helper {
 		$args = array(
 			'post_type'   => 'page',
 			'post_title'  => $name,
-			'post_status' => 'publish'
+			'post_status' => 'publish',
 		);
 
 		if ( ! $page_id = wp_insert_post( $args ) ) {
@@ -311,7 +319,6 @@ class LP_Helper {
 	 *
 	 * @return bool
 	 * @since 3.3.0
-	 *
 	 */
 	public static function ksort( &$array, $sort_flags = SORT_REGULAR ) {
 		if ( ! is_array( $array ) ) {
@@ -343,7 +350,7 @@ class LP_Helper {
 		foreach ( $props as $prop ) {
 			if ( $is_array && array_key_exists( $prop, $obj ) ) {
 				$new_array[ $prop ] = $obj[ $prop ];
-			} else if ( ! $is_array && property_exists( $obj, $prop ) ) {
+			} elseif ( ! $is_array && property_exists( $obj, $prop ) ) {
 				$new_array[ $prop ] = $obj->{$prop};
 			}
 		}
@@ -413,7 +420,6 @@ class LP_Helper {
 	 *
 	 * $this->prepare($sql, $one, $two, array($three, $four, $file))
 	 * => $wpdb->prepare($sql, $one, $two, $three, $four, $file)
-	 *
 	 */
 	public static function prepare( $query, $args ) {
 		global $wpdb;

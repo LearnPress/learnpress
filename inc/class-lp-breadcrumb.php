@@ -32,7 +32,7 @@ class LP_Breadcrumb {
 	public function add_crumb( $name, $link = '' ) {
 		$this->crumbs[] = array(
 			$name,
-			$link
+			$link,
 		);
 	}
 
@@ -148,11 +148,15 @@ class LP_Breadcrumb {
 		}
 		if ( LP_COURSE_CPT === get_post_type( $post ) ) {
 			$this->prepend_courses_page();
-			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array(
-				'orderby' => 'parent',
-				'order'   => 'DESC'
-			) )
-			) {
+
+			if ( $terms = learn_press_get_course_terms(
+				$post->ID,
+				'course_category',
+				array(
+					'orderby' => 'parent',
+					'order'   => 'DESC',
+				)
+			) ) {
 				$main_term = apply_filters( 'learn_press_breadcrumb_main_term', $terms[0], $terms );
 				$this->term_ancestors( $main_term->term_id, 'course_category' );
 				$this->add_crumb( $main_term->name, get_term_link( $main_term ) );
@@ -274,6 +278,7 @@ class LP_Breadcrumb {
 	 */
 	private function add_crumbs_tag() {
 		global $wp_query;
+
 		$queried_object = $this->get_queried_object();
 		$this->add_crumb( sprintf( __( 'Posts tagged &ldquo;%s&rdquo;', 'learnpress' ), single_tag_title( '', false ) ), get_tag_link( $queried_object->term_id ) );
 	}
@@ -298,6 +303,7 @@ class LP_Breadcrumb {
 	 */
 	private function add_crumbs_tax() {
 		global $wp_query;
+
 		$this_term = $this->get_queried_object();
 		$taxonomy  = get_taxonomy( $this_term->taxonomy );
 

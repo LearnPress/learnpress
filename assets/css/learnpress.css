@@ -750,46 +750,51 @@
 .lp-list-table {
   width: 100%;
   margin-bottom: 20px; }
-  .lp-list-table th, .lp-list-table td {
+  .lp-list-table th,
+  .lp-list-table td {
+    padding: 20px;
     border: 0 solid rgba(204, 204, 204, 0.3);
     border-bottom-width: 1px;
-    line-height: 1;
+    background: #fff;
     font-size: 16px;
-    background: #FFF;
-    text-align: left;
-    padding: 20px; }
+    line-height: 1;
+    text-align: left; }
     @media (max-width: 767px) {
-      .lp-list-table th, .lp-list-table td {
+      .lp-list-table th,
+      .lp-list-table td {
         padding: 15px; } }
   .lp-list-table thead {
     box-sizing: border-box;
     border: 1px solid #e5e7f2; }
     .lp-list-table thead tr th {
-      background: #f1f2f8;
-      color: #333;
+      height: 60px;
       border-bottom: none;
-      font-size: 18px;
-      height: 60px; }
+      color: #333;
+      background: #f1f2f8;
+      font-size: 18px; }
   .lp-list-table tbody,
   .lp-list-table tfoot {
+    box-sizing: border-box;
     border: 1px solid rgba(204, 204, 204, 0.3);
-    border-top: 0;
-    box-sizing: border-box; }
-    .lp-list-table tbody tr td, .lp-list-table tbody tr th,
+    border-top: 0; }
+    .lp-list-table tbody tr td,
+    .lp-list-table tbody tr th,
     .lp-list-table tfoot tr td,
     .lp-list-table tfoot tr th {
-      background: #FFF;
-      font-size: 16px;
+      height: 62px;
       color: #666;
-      font-weight: 300;
-      height: 62px; }
-      .lp-list-table tbody tr td a, .lp-list-table tbody tr th a,
+      background: #fff;
+      font-size: 16px;
+      font-weight: 300; }
+      .lp-list-table tbody tr td a,
+      .lp-list-table tbody tr th a,
       .lp-list-table tfoot tr td a,
       .lp-list-table tfoot tr th a {
-        text-decoration: none;
         border-bottom: none;
-        color: #666; }
-        .lp-list-table tbody tr td a:hover, .lp-list-table tbody tr th a:hover,
+        color: #666;
+        text-decoration: none; }
+        .lp-list-table tbody tr td a:hover,
+        .lp-list-table tbody tr th a:hover,
         .lp-list-table tfoot tr td a:hover,
         .lp-list-table tfoot tr th a:hover {
           color: #ffb606; }
@@ -801,7 +806,7 @@
       font-weight: 600; }
     .lp-list-table tbody tr:nth-child(odd),
     .lp-list-table tfoot tr:nth-child(odd) {
-      background: #F5F5F5; }
+      background: #f5f5f5; }
   .lp-list-table .list-table-nav td {
     font-size: 14px; }
     .lp-list-table .list-table-nav td.nav-text {
@@ -814,36 +819,16 @@
         margin-bottom: 0; }
 
 .lp-label {
-  font-size: 16px;
   display: inline-block;
-  font-weight: 300;
-  line-height: 1;
   color: #666;
-  /*padding: 3px 5px;
-    background: #DDD;
-    border-radius: 4px;*/
-  /*&.label-finished,
-    &.label-completed {
-        background: #ffdc1e;
-    }
-
-    &.label-passed {
-        background: #14c4ff;
-    }
-
-    &.label-failed {
-        background: #ff4d66;
-    }
-
-    &.label-enrolled,
-    &.label-started {
-        background: #d243ff;
-    }*/ }
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1; }
 
 .learn-press-form .form-fields {
-  list-style: none;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  list-style: none; }
   .learn-press-form .form-fields .form-field {
     margin: 0 0 20px 0; }
     .learn-press-form .form-fields .form-field label {
@@ -854,27 +839,49 @@
     .learn-press-form .form-fields .form-field input[type="number"],
     .learn-press-form .form-fields .form-field input[type="password"],
     .learn-press-form .form-fields .form-field textarea {
-      padding: 8px;
       width: 100%;
+      padding: 8px;
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       box-sizing: border-box; }
     .learn-press-form .form-fields .form-field .description {
-      font-style: italic;
       margin-top: 10px;
       font-size: 14px;
+      font-style: italic;
       line-height: 1.4; }
     .learn-press-form .form-fields .form-field .asterisk {
-      color: #FF0000; }
+      color: #f00; }
+
+.lp-password-input {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative; }
+  .lp-password-input input[type="password"] {
+    padding-right: 2.5rem; }
+  .lp-password-input input::-ms-reveal {
+    display: none; }
+  .lp-password-input .lp-show-password-input {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    cursor: pointer; }
+  .lp-password-input .lp-show-password-input::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f06e"; }
+  .lp-password-input .lp-show-password-input.display-password::after {
+    color: #585858;
+    content: "\f070"; }
 
 .form-desc {
   font-size: smaller;
   font-style: italic; }
 
 .become-teacher-form {
-  margin: 0 auto;
   width: 90%;
-  max-width: 500px; }
+  max-width: 500px;
+  margin: 0 auto; }
   .become-teacher-form .form-field input[type="text"],
   .become-teacher-form .form-field input[type="email"],
   .become-teacher-form .form-field input[type="number"],

@@ -64,7 +64,6 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 					'placeholder' => esc_html__( 'Email', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'reg_email' ),
 					'id'          => 'reg_email',
-					'required'    => true,
 				),
 				'reg_username' => array(
 					'title'       => esc_html__( 'Username', 'learnpress' ),
@@ -72,7 +71,6 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 					'placeholder' => esc_html__( 'Username', 'learnpress' ),
 					'saved'       => LP_Request::get_string( 'reg_username' ),
 					'id'          => 'reg_username',
-					'required'    => true,
 				),
 				'reg_password' => array(
 					'title'       => esc_html__( 'Password', 'learnpress' ),

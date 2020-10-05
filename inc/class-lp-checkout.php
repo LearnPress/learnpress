@@ -186,13 +186,22 @@ class LP_Checkout {
 	 * @return array
 	 */
 	public function check_validate_fields( $errors, $fields, $checkout ) {
-
 		if ( empty( $errors ) ) {
-
 			switch ( $this->checkout_action ) {
 				case 'checkout-login':
 					$this->checkout_form_data['remember'] = isset( $_POST['rememberme'] ) ? true : false;
-					$user                                 = wp_signon( $this->checkout_form_data, is_ssl() );
+
+					$login_info = $this->checkout_form_data;
+
+					$user = wp_signon(
+						array(
+							'user_login'    => $login_info['username'],
+							'user_password' => $login_info['password'],
+							'remember'      => $login_info['remember'],
+						),
+						is_ssl()
+					);
+
 					if ( is_wp_error( $user ) ) {
 						$errors['login_error'] = $user->get_error_message();
 					} else {
@@ -200,18 +209,35 @@ class LP_Checkout {
 					}
 					break;
 				case 'checkout-register':
-					$user_id = wp_create_user( $this->checkout_form_data['reg_username'], $this->checkout_form_data['reg_password'], $this->checkout_form_data['reg_email'] );
+					$default_fields = array();
+
+					if ( isset( $_POST['reg_first_name'] ) ) {
+						$default_fields['first_name'] = $_POST['reg_first_name'];
+					}
+
+					if ( isset( $_POST['reg_last_name'] ) ) {
+						$default_fields['last_name'] = $_POST['reg_last_name'];
+					}
+
+					if ( isset( $_POST['reg_display_name'] ) ) {
+						$default_fields['display_name'] = $_POST['reg_display_name'];
+					}
+
+					$update_meta = isset( $_POST['_lp_custom_register_form'] ) ? $_POST['_lp_custom_register_form'] : array();
+
+					$user_id = LP_Forms_Handler::learnpress_create_new_customer(
+						$this->checkout_form_data['reg_email'],
+						$this->checkout_form_data['reg_username'],
+						$this->checkout_form_data['reg_password'],
+						$default_fields,
+						$update_meta
+					);
 
 					if ( is_wp_error( $user_id ) ) {
 						$errors['create_user_error'] = $user_id->get_error_message();
 					} else {
-						$a = wp_signon(
-							array(
-								'user_login'    => $this->checkout_form_data['reg_username'],
-								'user_password' => $this->checkout_form_data['reg_password'],
-							)
-						);
-						wp_set_current_user( $a->ID );
+						wp_set_current_user( $user_id );
+						wp_set_auth_cookie( $user_id, true );
 					}
 					break;
 				case 'guest-checkout':
@@ -289,14 +315,14 @@ class LP_Checkout {
 			$this->checkout_fields['invalid_request'] = new WP_Error( 'invalid_request', __( 'Your session has expired.', 'learnpress' ) );
 		} else {
 			if ( $this->checkout_action === 'checkout-register' ) {
-				$this->checkout_fields['reg_email']    = __( 'Email', 'learnpress' );
-				$this->checkout_fields['reg_username'] = __( 'Username', 'learnpress' );
-				$this->checkout_fields['reg_password'] = __( 'Password', 'learnpress' );
+				$this->checkout_fields['reg_email']    = esc_html__( 'Email', 'learnpress' );
+				$this->checkout_fields['reg_username'] = esc_html__( 'Username', 'learnpress' );
+				$this->checkout_fields['reg_password'] = esc_html__( 'Password', 'learnpress' );
 			} elseif ( $this->checkout_action === 'checkout-login' ) {
-				$this->checkout_fields['user_login']    = __( 'Username', 'learnpress' );
-				$this->checkout_fields['user_password'] = __( 'Password', 'learnpress' );
+				$this->checkout_fields['username'] = esc_html__( 'Username', 'learnpress' );
+				$this->checkout_fields['password'] = esc_html__( 'Password', 'learnpress' );
 			} elseif ( $this->checkout_action === 'guest-checkout' ) {
-				$this->checkout_fields['guest_email'] = __( 'Email', 'learnpress' );
+				$this->checkout_fields['guest_email'] = esc_html__( 'Email', 'learnpress' );
 			}
 		}
 
@@ -333,9 +359,6 @@ class LP_Checkout {
 
 		$order_id = apply_filters( 'learn-press/checkout/create-order', null, $this );
 
-		// @deprecated
-		$order_id = apply_filters( 'learn_press_create_order', null, $this );
-
 		if ( $order_id ) {
 			return $order_id;
 		}
@@ -360,6 +383,7 @@ class LP_Checkout {
 
 			} else {
 				$order = new LP_Order();
+
 				if ( is_wp_error( $order ) ) {
 					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 400 ) );
 				}
@@ -406,10 +430,6 @@ class LP_Checkout {
 					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 402 ) );
 				}
 
-				// Allow plugins to add order item meta
-				do_action( 'learn_press_add_order_item_meta', $item_id, $item );
-
-				// @since 3.0.0
 				do_action( 'learn-press/checkout/add-order-item-meta', $item_id, $item );
 			}
 
@@ -420,12 +440,11 @@ class LP_Checkout {
 			}
 
 			do_action( 'learn-press/checkout/update-order-meta', $order_id );
-			// @deprecated
-			do_action( 'learn_press_checkout_update_order_meta', $order_id );
 
 			if ( ! $order_id || is_wp_error( $order_id ) ) {
 				learn_press_add_message( __( 'Unable to checkout. Order creation failed.', 'learnpress' ) );
 			}
+
 			$wpdb->query( 'COMMIT' );
 
 		} catch ( Exception $e ) {
@@ -521,12 +540,16 @@ class LP_Checkout {
 
 				break;
 			case 'checkout-login':
-				if ( $name === 'user_login' ) {
-					if ( ! username_exists( $_POST['user_login'] ) && ! email_exists( $_POST['user_login'] ) ) {
+				if ( $name === 'username' ) {
+					if ( empty( $_POST['username'] ) ) {
+						return new WP_Error( 'email_empty', sprintf( __( '%s is required field.', 'learnpress' ), $field ) );
+					}
+
+					if ( ! username_exists( $_POST['username'] ) && ! email_exists( $_POST['username'] ) ) {
 						return new WP_Error( 'username_exists', sprintf( __( '%s is not exists.', 'learnpress' ), $field ) );
 					}
-				} elseif ( $name === 'user_password' ) {
-					if ( empty( $_POST['user_password'] ) ) {
+				} elseif ( $name === 'password' ) {
+					if ( empty( $_POST['password'] ) ) {
 						return new WP_Error( 'email_empty', sprintf( __( '%s is required field.', 'learnpress' ), $field ) );
 					}
 				}
@@ -539,6 +562,7 @@ class LP_Checkout {
 				} elseif ( ! is_email( $_POST['guest_email'] ) ) {
 					return new WP_Error( 'email_invalid', __( 'Your email is not a valid.', 'learnpress' ) );
 				}
+
 				$this->guest_email     = $_POST[ $name ];
 				$this->_checkout_email = $_POST[ $name ];
 		}
@@ -558,11 +582,11 @@ class LP_Checkout {
 		}
 
 		/**
-		 * Set default fields from request
+		 * Set default fields from request.
 		 */
 		$this->payment_method  = LP_Request::get_string( 'payment_method' );
-		$this->user_login      = LP_Request::get_string( 'user_login' );
-		$this->user_pass       = LP_Request::get_string( 'user_password' );
+		$this->user_login      = LP_Request::get_string( 'username' );
+		$this->user_pass       = LP_Request::get_string( 'password' );
 		$this->order_comment   = LP_Request::get_string( 'order_comments' );
 		$this->_checkout_email = LP_Request::get_email( 'checkout-email' );
 
@@ -618,8 +642,8 @@ class LP_Checkout {
 	public function validate_payment() {
 		$cart     = LP()->cart;
 		$validate = true;
-		if ( $cart->needs_payment() ) {
 
+		if ( $cart->needs_payment() ) {
 			if ( ! $this->payment_method instanceof LP_Gateway_Abstract ) {
 				$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 
@@ -646,18 +670,11 @@ class LP_Checkout {
 	 */
 	public function process_checkout() {
 		$has_error = false;
+
 		try {
 			// Prevent timeout
 			@set_time_limit( 0 );
 
-			/**
-			 * @deprecated
-			 */
-			do_action( 'learn_press_before_checkout_process' );
-
-			/**
-			 * @since 3.0.0
-			 */
 			do_action( 'learn-press/before-checkout' );
 
 			$cart   = LP()->cart;
@@ -671,6 +688,7 @@ class LP_Checkout {
 
 			foreach ( $cart->get_items() as $item ) {
 				$course = learn_press_get_course( $item['item_id'] );
+
 				if ( ! $course || ! $course->is_purchasable() ) {
 					throw new Exception( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), $course->get_title() ) );
 				}
@@ -716,6 +734,7 @@ class LP_Checkout {
 				} else {
 					// ensure that no order is waiting for payment
 					$order = new LP_Order( $order_id );
+
 					if ( $order && $order->payment_complete() ) {
 						$is_guest_checkout = $this->guest_email ? true : false;
 						/**

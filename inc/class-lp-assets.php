@@ -20,8 +20,10 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	protected function get_bundle_css_url() {
 		$url = false;
+
 		if ( get_option( 'learn_press_exclude_frontend_libraries' ) ) {
 			$upload_dir = wp_upload_dir();
+
 			if ( file_exists( $upload_dir['basedir'] . '/learnpress/bundle.min.css' ) ) {
 				$url = $upload_dir['baseurl'] . '/learnpress/bundle.min.css';
 			}
@@ -147,11 +149,11 @@ class LP_Assets extends LP_Abstract_Assets {
 					'url'  => self::url( 'js/global' . $min . '.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils' ),
 				),
-				'lp-utils'            => array(
-					'url'     => self::url( 'js/utils' . $min . '.js' ),
-					'deps'    => array( 'jquery' ),
-					'screens' => 'learnpress',
-				),
+				// 'lp-utils'            => array(
+				// 	'url'     => self::url( 'js/utils' . $min . '.js' ),
+				// 	'deps'    => array( 'jquery' ),
+				// 	'screens' => 'learnpress',
+				// ),
 				'learnpress'          => array(
 					'url'  => self::url( 'js/frontend/learnpress' . $min . '.js' ),
 					'deps' => array( 'lp-global' ),
@@ -359,6 +361,7 @@ class LP_Assets extends LP_Abstract_Assets {
  */
 function learn_press_assets() {
 	static $assets = null;
+
 	if ( ! $assets ) {
 		$assets = new LP_Assets();
 	}

@@ -114,7 +114,7 @@
 		const showErrors = function( errors ) {
 			showMessage( errors );
 			const firstId = Object.keys( errors )[ 0 ];
-			console.log( '1111' );
+
 			$( 'input[name="' + firstId + '"]:visible' ).focus();
 		};
 		/**
@@ -126,10 +126,6 @@
 		 */
 		const _formSubmit = function( e ) {
 			e.preventDefault();
-
-			// if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
-			//     return;
-			// }
 
 			if ( needPayment() && ! selectedPayment() ) {
 				showMessage( 'Please select payment method', true );
@@ -144,24 +140,8 @@
 
 			formData = $.extend( formData, getPaymentData() );
 
-			// console.log(formData);
-			//
-			// return false;
-			//
-			// var $form = $payments.children('.selected'),
-			//     data = $formCheckout.serializeJSON();
-			//
 			removeMessage();
-			//
-			// if (options.i18n_processing) {
-			//     $buttonCheckout.html(options.i18n_processing);
-			// }
-			//
-			// $buttonCheckout.prop('disabled', true);
-			//
-			//
-			// return false;
-			//LP.blockContent();
+
 			$.ajax( {
 				url: options.ajaxurl + '/?lp-ajax=checkout',
 				dataType: 'html',
@@ -173,7 +153,7 @@
 					if ( response.messages ) {
 						showErrors( response.messages );
 					}
-					console.log( response );
+
 					try {
 						if ( 'success' === response.result ) {
 							if ( response.redirect.match( /https?/ ) ) {
@@ -183,14 +163,6 @@
 							throw 'ERROR';
 						}
 					} catch ( error ) {
-						// if (!response.messages) {
-						//     showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
-						// } else {
-						//     showMessage(response.messages);
-						// }
-						// $buttonCheckout.html(options.i18n_place_order);
-						// $buttonCheckout.prop('disabled', false);
-						// LP.unblockContent();
 					}
 				},
 				error( jqXHR, textStatus, errorThrown ) {
@@ -240,7 +212,7 @@
 		 * @param wrap
 		 * @param messages
 		 */
-		var showMessage = function( message, wrap = false ) {
+		const showMessage = function( message, wrap = false ) {
 			removeMessage();
 
 			if ( $.isPlainObject( message ) ) {
@@ -304,7 +276,7 @@
 		/**
 		 * Remove all messages
 		 */
-		var removeMessage = function() {
+		const removeMessage = function() {
 			$( '.learn-press-error, .learn-press-notice, .learn-press-message' ).remove();
 		};
 
@@ -380,10 +352,7 @@
 
 		$formCheckout
 			.on( 'change', 'input[name="checkout-account-switch-form"]', function() {
-				console.log( '2222' );
-
 				$( this ).next().find( 'input:not([type="hidden"]):visible' ).first().focus();
-				console.log( '3333' );
 			} )
 			.on( 'change', '#guest_email', function() {
 				$formCheckout.find( '#reg_email' ).val( this.value );
