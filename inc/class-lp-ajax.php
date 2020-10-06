@@ -235,19 +235,22 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function checkout_user_email_exists() {
-
 			$email    = LP_Request::get_email( 'email' );
 			$response = array(
 				'exists' => 0,
 			);
 
-			if ( $user = get_user_by( 'email', $email ) ) {
+			if ( email_exists( $email ) ) {
 				$response['exists'] = $email;
+				$output             = '<div class="lp-guest-checkout-output">' . __( 'Your email is already exists. Continue with this email?', 'learnpress' ) . '</div>';
+			} else {
+				$output = '<label class="lp-guest-checkout-output">
+					<input type="checkbox" name="checkout-email-option" value="new-account">
+				' . __( 'Create new account with this email? Account information will be sent to this email.', 'learnpress' ) . '
+				</label>';
 			}
 
-			if ( $waiting_payment = LP()->checkout()->get_user_waiting_payment() ) {
-				$response['waiting_payment'] = $waiting_payment;
-			}
+			$response['output'] = apply_filters( 'learnpress/guest_checkout_email_exist_output', $output, $email );
 
 			learn_press_maybe_send_json( $response );
 		}

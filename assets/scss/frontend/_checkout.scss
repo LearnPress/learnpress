@@ -46,7 +46,7 @@
 
 					.rwmb-input {
 
-						input {
+						input:not([type="checkbox"]) {
 							width: 100%;
 							height: 43px;
 							padding: 0 22px;
@@ -176,8 +176,43 @@
 		}
 	}
 
-	.lp-guest-checkout-switch-back {
+	#checkout-account-guest {
+		width: 100%;
+		margin-bottom: 35px;
+		padding-bottom: 19px;
+		border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+
+		.lp-form-fields,
+		.form-field {
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+	}
+
+	div.lp-guest-checkout-output {
+		margin-top: 10px;
+		padding: 8px 20px;
+		border: 2px solid #41abec;
+		border-radius: 4px;
+		font-size: 16px;
+		transition: all 0.2s ease;
+	}
+
+	label.lp-guest-checkout-output {
+		margin-top: 10px;
+		cursor: pointer;
+		user-select: none;
+	}
+
+	.lp-guest-checkout-notice {
 		margin: 30px 0 0 0;
+	}
+
+	.lp-guest-switch-login {
+		margin-top: 1em;
+		color: #666;
+		font-size: 16px;
+		font-weight: 400;
 	}
 
 	input[name="checkout-account-switch-form"] {

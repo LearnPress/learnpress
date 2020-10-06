@@ -409,12 +409,16 @@
 				$input = $wrap.find( 'input[name="order-key"]' );
 
 			const recoverOrder = () => {
-				$buttonRecoverOrder.addClass( 'disabled' ).attr( 'disabled', 'disabled' );
 				$wrap.find( '.learn-press-message' ).remove();
+
+				$( '.profile-recover-order' ).find( '.learn-press-message' ).remove();
 
 				$.post( {
 					url: '',
 					data: $wrap.serializeJSON(),
+					beforeSend() {
+						$buttonRecoverOrder.addClass( 'loading' ).attr( 'disabled', 'disabled' );
+					},
 					success( response ) {
 						response = LP.parseJSON( response );
 
@@ -425,23 +429,22 @@
 								$msg.addClass( 'error' );
 							}
 
-							$wrap.prepend( $msg );
+							$wrap.before( $msg );
 						}
 
 						if ( response.redirect ) {
 							window.location.href = response.redirect;
 						}
 
-						$buttonRecoverOrder.removeClass( 'disabled' ).removeAttr( 'disabled', '' );
+						$buttonRecoverOrder.removeClass( 'loading' ).removeAttr( 'disabled', '' );
+					},
+					error() {
+						$buttonRecoverOrder.removeClass( 'loading' ).removeAttr( 'disabled', '' );
 					},
 				} );
 			};
 
 			$buttonRecoverOrder.on( 'click', recoverOrder );
-
-			$input.on( 'change', () => {
-				$buttonRecoverOrder.prop( 'disabled', ! this.value );
-			} );
 		},
 	};
 }( jQuery ) );

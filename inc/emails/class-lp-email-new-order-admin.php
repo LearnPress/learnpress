@@ -53,11 +53,15 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 		public function init() {
 			// disable send mail for enable enroll course admin mail
 			$email = LP_Emails::get_email( 'enrolled-course-admin' );
+
 			if ( $email->enable() ) {
-				remove_action( 'learn-press/order/status-pending-to-completed/notification', array(
-					$this,
-					'trigger'
-				) );
+				remove_action(
+					'learn-press/order/status-pending-to-completed/notification',
+					array(
+						$this,
+						'trigger',
+					)
+				);
 			}
 		}
 

@@ -31,7 +31,8 @@ if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
 
 			parent::__construct();
-			// email for new order
+
+			// Email for guest new order.
 			add_action( 'learn-press/checkout-order-processed', array( $this, 'trigger' ) );
 			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 		}

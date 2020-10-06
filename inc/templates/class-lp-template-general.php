@@ -137,6 +137,7 @@ class LP_Template_General extends LP_Abstract_Template {
 
 	public function order_guest_email() {
 		$checkout = LP()->checkout();
+
 		if ( $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 			learn_press_get_template( 'checkout/guest-email.php' );
 		}

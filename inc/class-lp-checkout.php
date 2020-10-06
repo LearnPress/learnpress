@@ -2,7 +2,7 @@
 /**
  * Class LP_Checkout
  *
- * @author  ThimPress
+ * @author  ThimPress <Nhamdv>
  * @package LearnPress/Classes
  * @version 4.0.0
  */
@@ -122,21 +122,12 @@ class LP_Checkout {
 			$order->delete_meta( '_create_account' );
 
 			switch ( $checkout_option ) {
-				case 'existing-account':
-					$user_id = $this->checkout_email_exists();
-
-					if ( ! $user_id ) {
-						throw new Exception( '' );
-					}
-
-					break;
 				case 'new-account':
 					if ( $this->checkout_email_exists() ) {
 						throw new Exception( 'NEW ACCOUNT EMAIL IS EXISTED', 0 );
 					}
 
 					$order->set_meta( '_create_account', 'yes' );
-					LP()->session->set( 'user_waiting_payment', $this->get_checkout_email() );
 
 					$user_id = $this->_create_account();
 
@@ -151,6 +142,7 @@ class LP_Checkout {
 			}
 
 			$order->save();
+
 		} catch ( Exception $ex ) {
 			if ( $ex->getCode() && $ex->getMessage() ) {
 				$result['message'] = $ex->getMessage();
@@ -158,13 +150,6 @@ class LP_Checkout {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @return mixed|null
-	 */
-	public function get_user_waiting_payment() {
-		return LP()->session->get( 'user_waiting_payment' );
 	}
 
 	/**
@@ -483,13 +468,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_register() {
-		return apply_filters(
-			'learn-press/checkout/enable-register',
-			in_array(
-				LP()->settings()->get( 'enable_registration_checkout' ),
-				array( '', 'yes' )
-			) && get_option( 'users_can_register' )
-		);
+		return apply_filters( 'learn-press/checkout/enable-register', in_array( LP()->settings()->get( 'enable_registration_checkout' ), array( '', 'yes' ) ) && get_option( 'users_can_register' ) );
 	}
 
 	/**
@@ -704,7 +683,7 @@ class LP_Checkout {
 					throw new Exception( $order_id->get_error_message() );
 				}
 
-				// allow Third-party hook
+				// allow Third-party hook.
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
 				if ( $this->payment_method ) {
@@ -728,10 +707,9 @@ class LP_Checkout {
 					$order = new LP_Order( $order_id );
 
 					if ( $order && $order->payment_complete() ) {
+
 						$is_guest_checkout = $this->guest_email ? true : false;
-						/**
-						 * @see LP_Request_Handler::maybe_redirect_checkout()
-						 */
+
 						$result = apply_filters(
 							'learn-press/checkout-no-payment-result',
 							array(
@@ -775,7 +753,6 @@ class LP_Checkout {
 	 * @return LP_Checkout
 	 */
 	public static function instance() {
-
 		if ( empty( self::$_instance ) ) {
 			self::$_instance = new LP_Checkout();
 		}

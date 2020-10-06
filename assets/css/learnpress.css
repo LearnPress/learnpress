@@ -369,7 +369,7 @@
   float: left; }
   #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields {
     padding: 0 0 14px 0; }
-    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input {
+    #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:not([type="checkbox"]) {
       width: 100%;
       height: 43px;
       padding: 0 22px;
@@ -380,7 +380,7 @@
       font-weight: 300;
       font-style: italic;
       line-height: 43px; }
-      #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:focus {
+      #learn-press-checkout-form .lp-checkout-form__after .lp-checkout-block .lp-form-fields .form-field .rwmb-input input:not([type="checkbox"]):focus {
         border-color: #ffb606;
         outline: 0;
         color: #222; }
@@ -456,8 +456,33 @@
       cursor: pointer; }
     #learn-press-checkout-form a:hover {
       color: #ffb606; }
-  #learn-press-checkout-form .lp-guest-checkout-switch-back {
+  #learn-press-checkout-form #checkout-account-guest {
+    width: 100%;
+    margin-bottom: 35px;
+    padding-bottom: 19px;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.3); }
+    #learn-press-checkout-form #checkout-account-guest .lp-form-fields,
+    #learn-press-checkout-form #checkout-account-guest .form-field {
+      margin-bottom: 0;
+      padding-bottom: 0; }
+  #learn-press-checkout-form div.lp-guest-checkout-output {
+    margin-top: 10px;
+    padding: 8px 20px;
+    border: 2px solid #41abec;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: all 0.2s ease; }
+  #learn-press-checkout-form label.lp-guest-checkout-output {
+    margin-top: 10px;
+    cursor: pointer;
+    user-select: none; }
+  #learn-press-checkout-form .lp-guest-checkout-notice {
     margin: 30px 0 0 0; }
+  #learn-press-checkout-form .lp-guest-switch-login {
+    margin-top: 1em;
+    color: #666;
+    font-size: 16px;
+    font-weight: 400; }
   #learn-press-checkout-form input[name="checkout-account-switch-form"] {
     display: none; }
     #learn-press-checkout-form input[name="checkout-account-switch-form"]:not(:checked) + .lp-checkout-block {
@@ -1101,6 +1126,8 @@
       display: none; }
     #learn-press-profile #profile-content #profile-content-orders .profile-orders table {
       margin-top: 0; }
+    #learn-press-profile #profile-content #profile-content-orders .column-order-actions a {
+      margin-right: 6px; }
   #learn-press-profile #dashboard-general-statistic {
     margin-bottom: 55px;
     padding-bottom: 20px;
@@ -1399,10 +1426,41 @@ form[name="profile-change-password"] p {
   #lp-user-edit-avatar[data-custom="yes"] #lp-avatar-actions #lp-remove-upload-photo {
     display: block; }
 
-.order-recover {
+.recover-order__title {
+  margin-bottom: 5px; }
+
+.recover-order__description {
+  margin-bottom: 20px;
+  color: #999;
+  font-size: 0.8em;
+  font-style: italic; }
+
+div.order-recover {
   display: flex; }
-  .order-recover .button-recover-order {
-    margin-left: 20px; }
+  div.order-recover > .button-recover-order {
+    margin: 0;
+    margin-left: 20px;
+    flex: 0 0 auto; }
+    div.order-recover > .button-recover-order.loading::before {
+      display: inline-block;
+      margin-right: 5px;
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      content: "\f110";
+      animation: lp-rotating 1s linear infinite; }
+  div.order-recover input[type="text"] {
+    width: 100%;
+    height: 43px;
+    margin-right: 10px;
+    padding: 0 22px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+    font-size: 14px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 43px;
+    flex: 1 1 auto; }
 
 #learn-press-course-tabs .course-tab-panels .course-tab-panel {
   padding-top: 56px;

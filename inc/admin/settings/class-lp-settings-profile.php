@@ -236,7 +236,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'   => 'lp_profile_permalinks',
 						),
 					)
-				),
+				)
 			)
 		);
 

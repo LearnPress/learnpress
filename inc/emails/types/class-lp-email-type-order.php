@@ -29,7 +29,7 @@ class LP_Email_Type_Order extends LP_Email {
 				'{{order_items_table}}',
 				'{{order_detail_url}}',
 				'{{order_number}}',
-				'{{order_key}}'
+				'{{order_key}}',
 			)
 		);
 	}
@@ -66,7 +66,7 @@ class LP_Email_Type_Order extends LP_Email {
 	/**
 	 * Get template data object.
 	 *
-	 * @param int $order_id
+	 * @param int   $order_id
 	 * @param     array
 	 *
 	 * @return array
@@ -90,7 +90,7 @@ class LP_Email_Type_Order extends LP_Email {
 				'order_subtotal'    => $order->get_formatted_order_subtotal(),
 				'order_total'       => $order->get_formatted_order_total(),
 				'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date() ) ),
-				'order_key'         => $order->get_order_key()
+				'order_key'         => $order->get_order_key(),
 			)
 		);
 
@@ -148,7 +148,7 @@ class LP_Email_Type_Order extends LP_Email {
 			}
 		}
 
-		return $this->get_email_format() == 'html' ? learn_press_format_price( $total, learn_press_get_currency_symbol( $order->get_currency() ) ) : $total . " " . $order->get_currency();
+		return $this->get_email_format() == 'html' ? learn_press_format_price( $total, learn_press_get_currency_symbol( $order->get_currency() ) ) : $total . ' ' . $order->get_currency();
 	}
 
 	/**

@@ -2302,17 +2302,6 @@ function learn_press_is_preview_course() {
 }
 
 /**
- * Get text of button 'Process' in checkout page.
- *
- * @return string
- * @since 4.0.0
- *
- */
-function learn_press_get_checkout_proceed_button_text() {
-	return apply_filters( 'learn-press/checkout-proceed-button-text', __( 'Proceed', 'learnpress' ) );
-}
-
-/**
  * Get slug for logout action in user profile.
  *
  * @return string

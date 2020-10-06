@@ -13,7 +13,6 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$order_button_text  = learn_press_get_checkout_proceed_button_text();
 $available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 ?>
 
@@ -67,26 +66,13 @@ $available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 
 	<div id="checkout-order-action" class="place-order-action">
 
+		<?php do_action( 'learn-press/before-checkout-submit-button' ); ?>
+
+		<button type="submit" class="lp-button button alt" name="learn_press_checkout_place_order" id="learn-press-checkout-place-order">
+			<?php echo apply_filters( 'learn-press/checkout-proceed-button-text', esc_html__( 'Place order', 'learnpress' ) ); ?>
+		</button>
+
 		<?php
-		/**
-		 * @since 3.0.0
-		 */
-		do_action( 'learn-press/before-checkout-submit-button' );
-
-		$button_proceed = apply_filters( 'learn-press/checkout-proceed-button-html', false );
-
-		if ( $button_proceed ) {
-			echo $button_proceed;
-		} else {
-			?>
-
-			<button type="submit" class="lp-button button alt" name="learn_press_checkout_place_order" id="learn-press-checkout-place-order">
-				<?php echo esc_html( $order_button_text ); ?>
-			</button>
-
-			<?php
-		}
-
 		if ( is_user_logged_in() ) {
 			wp_nonce_field( 'learn-press-user-logged', 'learn-press-checkout-nonce' );
 		}

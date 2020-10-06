@@ -23,51 +23,20 @@ $is_exists = $checkout->checkout_email_exists();
 		<li class="form-field">
 			<div class="rwmb-field rwmb-text-wrapper">
 				<div class="rwmb-input">
-					<input size="30" placeholder="Email" type="text" id="guest_email" class="rwmb-text" name="guest_email" autocomplete="off">
-					<div class="lp-guest-checkout-switch-back">
-						<?php
-						$html = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-register">%s</label></a>', esc_html( _x( 'sign up', 'checkout sign up link', 'learnpress' ) ) );
-
-						echo sprintf( __( 'An order key to activate the course will be sent to your email after the payment proceeded successfully. Or you can %s now.', 'learnpress' ), $html );
-						?>
-
+					<input size="30" placeholder="<?php esc_attr_e( 'Enter your email...', 'learnpress' ); ?>" type="text" id="guest_email" class="rwmb-text" name="guest_email" autocomplete="off">
+					<div class="lp-guest-checkout-notice">
+						<?php esc_html_e( 'An order key to activate the course will be sent to your email after the payment proceeded successfully.', 'learnpress' ); ?>
 					</div>
+
+					<?php
+					$signin = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-login">%s</label></a>', esc_html( _x( 'Sign in', 'checkout sign in link', 'learnpress' ) ) );
+					$signup = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-register">%s</label></a>', esc_html( _x( 'Sign up', 'checkout sign up link', 'learnpress' ) ) );
+					?>
+
+					<div class="lp-guest-switch-login"><?php echo sprintf( __( 'Or you can %1$s, %2$s now.', 'learnpress' ), $signin, $signup ); ?></div>
 				</div>
 			</div>
 		</li>
 	</ul>
 	<input type="hidden" name="learn-press-checkout-nonce" value="<?php echo esc_attr( wp_create_nonce( 'learn-press-guest-checkout' ) ); ?>"/>
-
-
-	<!--    <h4 class="form-heading">--><?php // _e( 'Your email', 'learnpress' ); ?><!--</h4>-->
-	<!--    <p class="form-desc">-->
-	<?php // _e( 'Your real email we will send the order code.', 'learnpress' ); ?><!--</p>-->
-	<!--    <input type="email" value="-->
-	<?php // echo $checkout->get_checkout_email(); ?><!--" name="checkout-email"/>-->
-	<!---->
-	<!--    <input type="hidden" name="guest-checkout" value="-->
-	<?php // echo wp_create_nonce( 'guest-checkout' ); ?><!--">-->
-	<!--    <ul id="checkout-guest-options">-->
-	<!---->
-	<!--        <li id="checkout-existing-account">-->
-	<!--            <label>-->
-	<!--                <input type="checkbox" name="checkout-email-option"-->
-	<!--                       value="existing-account"-->
-	<?php // checked( $checkout->get_checkout_email() == $checkout->get_user_waiting_payment(), true ); ?>
-	<!--				--><?php // _e( 'Your email is already exists. Checkout as this account?', 'learnpress' ); ?>
-	<!--            </label>-->
-	<!--        </li>-->
-	<!---->
-	<!--        <li id="checkout-new-account">-->
-	<!--            <label>-->
-	<!--                <input type="checkbox" name="checkout-email-option" value="new-account">-->
-	<!--				--><?php // _e( 'Create new account with this email? Account information will be sent to this email.', 'learnpress' ); ?>
-	<!--            </label>-->
-	<!--        </li>-->
-	<!---->
-	<!--    </ul>-->
 </div>
-<!--<label for="checkout-account-switch-to-guest"-->
-<!--       class="lp-button"-->
-<!--       id="btn-checkout-account-switch-to-guest">--><?php // esc_html_e( 'Continue as Guest', 'learnpress' ); ?><!--</label>-->
-

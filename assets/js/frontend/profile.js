@@ -526,19 +526,21 @@
 
   var Profile = {
     recoverOrder: function recoverOrder(e) {
-      var _this2 = this;
-
       var $wrap = _$('.order-recover'),
           $buttonRecoverOrder = $wrap.find('.button-recover-order'),
           $input = $wrap.find('input[name="order-key"]');
 
       var recoverOrder = function recoverOrder() {
-        $buttonRecoverOrder.addClass('disabled').attr('disabled', 'disabled');
         $wrap.find('.learn-press-message').remove();
+
+        _$('.profile-recover-order').find('.learn-press-message').remove();
 
         _$.post({
           url: '',
           data: $wrap.serializeJSON(),
+          beforeSend: function beforeSend() {
+            $buttonRecoverOrder.addClass('loading').attr('disabled', 'disabled');
+          },
           success: function success(response) {
             response = LP.parseJSON(response);
 
@@ -549,22 +551,22 @@
                 $msg.addClass('error');
               }
 
-              $wrap.prepend($msg);
+              $wrap.before($msg);
             }
 
             if (response.redirect) {
               window.location.href = response.redirect;
             }
 
-            $buttonRecoverOrder.removeClass('disabled').removeAttr('disabled', '');
+            $buttonRecoverOrder.removeClass('loading').removeAttr('disabled', '');
+          },
+          error: function error() {
+            $buttonRecoverOrder.removeClass('loading').removeAttr('disabled', '');
           }
         });
       };
 
       $buttonRecoverOrder.on('click', recoverOrder);
-      $input.on('change', function () {
-        $buttonRecoverOrder.prop('disabled', !_this2.value);
-      });
     }
   };
 })(jQuery);
