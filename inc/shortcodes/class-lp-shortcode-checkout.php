@@ -64,14 +64,13 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			// Get the order
 			$order_id     = absint( $order_id );
 			$order_key    = ! empty( $_GET['key'] ) ? LP_Helper::sanitize_params_submitted( $_GET['key'] ) : '';
-			$order        = null;
-			$origin_order = learn_press_get_order( $order_id );
+			$order_received = learn_press_get_order( $order_id );
 
-			if ( ! $origin_order ) {
+			if ( ! $order_received ) {
 				return;
 			}
 
-			if ( $origin_order->is_trashed() || $origin_order->get_order_key() != $order_key ) {
+			if ( $order_received->is_trashed() || $order_received->get_order_key() != $order_key ) {
 				return;
 			}
 
@@ -80,7 +79,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 
 			learn_press_print_messages();
 
-			learn_press_get_template( 'checkout/order-received.php', array( 'order' => $origin_order ) );
+			learn_press_get_template( 'checkout/order-received.php', array( 'order_received' => $order_received ) );
 		}
 	}
 }

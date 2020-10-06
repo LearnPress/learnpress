@@ -16,24 +16,25 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <?php
-if ( isset( $order ) ) {
+if ( ! isset( $order_received ) ) {
+	echo wp_sprintf( '<p>%s</p>', esc_html( apply_filters( 'learn-press/order/received-invalid-order-message', __( 'Invalid order.', 'learnpress' ) ) ) );
 
-	if ( is_int( $order ) ) {
-		$order_received = learn_press_get_order( $order );
-	}
-	?>
-	<p><?php echo apply_filters( 'learn-press/order/received-order-message', __( 'Thank you. Your order has been received.', 'learnpress' ), $order_received ); ?></p>
+	return;
+}
 
-	<table class="order_details">
-		<tr class="order">
-			<th><?php _e( 'Order Number', 'learnpress' ); ?></th>
-			<td>
+echo wp_sprintf( '<p>%s</p>', esc_html( apply_filters( 'learn-press/order/received-order-message', __( 'Thank you. Your order has been received.', 'learnpress' ) ) ) );
+
+?>
+    <table class="order_details">
+        <tr class="order">
+            <th><?php _e( 'Order Number', 'learnpress' ); ?></th>
+            <td>
 				<?php echo $order_received->get_order_number(); ?>
-			</td>
-		</tr>
-		<tr class="item">
-			<th><?php _e( 'Item', 'learnpress' ); ?></th>
-			<td>
+            </td>
+        </tr>
+        <tr class="item">
+            <th><?php _e( 'Item', 'learnpress' ); ?></th>
+            <td>
 				<?php
 				$links = array();
 				$items = $order_received->get_items();
@@ -56,35 +57,29 @@ if ( isset( $order ) ) {
 				} else {
 					echo __( '(No item)', 'learnpress' );
 				} ?>
-			</td>
-		</tr>
-		<tr class="date">
-			<th><?php _e( 'Date', 'learnpress' ); ?></th>
-			<td>
+            </td>
+        </tr>
+        <tr class="date">
+            <th><?php _e( 'Date', 'learnpress' ); ?></th>
+            <td>
 				<?php echo date_i18n( get_option( 'date_format' ), strtotime( $order_received->get_order_date() ) ); ?>
-			</td>
-		</tr>
-		<tr class="total">
-			<th><?php _e( 'Total', 'learnpress' ); ?></th>
-			<td>
+            </td>
+        </tr>
+        <tr class="total">
+            <th><?php _e( 'Total', 'learnpress' ); ?></th>
+            <td>
 				<?php echo $order_received->get_formatted_order_total(); ?>
-			</td>
-		</tr>
+            </td>
+        </tr>
 		<?php if ( $method_title = $order_received->get_payment_method_title() ) : ?>
-			<tr class="method">
-				<th><?php _e( 'Payment Method', 'learnpress' ); ?></th>
-				<td>
+            <tr class="method">
+                <th><?php _e( 'Payment Method', 'learnpress' ); ?></th>
+                <td>
 					<?php echo $method_title; ?>
-				</td>
-			</tr>
+                </td>
+            </tr>
 		<?php endif; ?>
-	</table>
+    </table>
 
-	<?php do_action( 'learn-press/order/received/' . $order_received->payment_method, $order_received->get_id() ); ?>
-	<?php do_action( 'learn-press/order/received', $order_received ); ?>
-
-<?php } else { ?>
-
-	<p><?php echo apply_filters( 'learn-press/order/received-invalid-order-message', __( 'Invalid order.', 'learnpress' ) ); ?></p>
-
-<?php } ?>
+<?php do_action( 'learn-press/order/received/' . $order_received->payment_method, $order_received->get_id() ); ?>
+<?php do_action( 'learn-press/order/received', $order_received ); ?>

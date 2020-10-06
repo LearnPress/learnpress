@@ -85,7 +85,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				'avatar_size' => learn_press_get_avatar_thumb_size()
 			),
 			//'course'       => learn_press_single_course_args(), # lpCourseSettings => didn't see use
-			'quiz'         => learn_press_single_quiz_args() # lpQuizSettings is param object_name of wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
+			'quiz'         => learn_press_single_quiz_args()
+			# lpQuizSettings is param object_name of wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 		);
 
 	}
