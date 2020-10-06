@@ -201,6 +201,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 3.2.7.9 =
+~ Fix question not show description
+
 = 3.2.7.8 =
 ~ Fix save author id when add item when edit course
 ~ Fix title, description item course when install yoast seo plugin

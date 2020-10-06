@@ -23,10 +23,14 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 		parent::__construct();
 
-		add_action( 'learn-press/update-settings/updated', array( $this, 'update' ) );
+		//add_action( 'learn-press/update-settings/updated', array( $this, 'update' ) );
 	}
 
-	public function update() {
+	/*
+	 * @author tungnx
+	 * @deprecate 3.2.7.9
+	 * @reason not user
+	 * public function update() {
 		$pages = array( 'frontend', 'admin' );
 		foreach ( $pages as $page ) {
 			$key               = "{$page}_libraries";
@@ -41,142 +45,146 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 			call_user_func( array( $this, "build_{$page}_assets" ), $exclude_libraries );
 		}
-	}
+	}*/
 
-	protected function get_upload_path() {
-		$uploadDir = wp_upload_dir();
-		$uploadDir = $uploadDir['basedir'] . '/learnpress';
+//	protected function get_upload_path() {
+//		$uploadDir = wp_upload_dir();
+//		$uploadDir = $uploadDir['basedir'] . '/learnpress';
+//
+//		@wp_mkdir_p( $uploadDir);
+//
+//		return $uploadDir;
+//	}
 
-		@wp_mkdir_p( $uploadDir);
-
-		return $uploadDir;
-	}
-
-	public function build_admin_assets( $exclude_libraries = array() ) {
-
-		$writeDir = $this->get_upload_path();
-
-		if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
-			@unlink( $writeDir . '/admin.plugins.all.js' );
-			@unlink( $writeDir . '/admin.bundle.min.css' );
-
-			return;
-		}
-
-		$js = array(
-			'vue'           => 'assets/js/vendor/vue/vue',
-			'vuex'          => 'assets/js/vendor/vue/vuex',
-			'vue-resource'  => 'assets/js/vendor/vue/vue-resource',
-			'vue-draggable' => 'assets/js/vendor/vue/vue-draggable',
-
-			'chartjs'      => 'assets/js/vendor/chart.min',
-			'jquery-tipsy' => 'assets/js/vendor/jquery/jquery.tipsy',
-		);
-
-		$js_code = array();
-		foreach ( $js as $k => $v ) {
-			if ( in_array( $k, $exclude_libraries ) ) {
-				continue;
-			}
-
-			$file      = LP_PLUGIN_PATH . '/' . $v;
-			$js_code[] = "/***** {$k}.js *****/";
-			$js_code[] = file_exists( "{$file}.min.js" ) ? file_get_contents( "{$file}.min.js" ) : file_get_contents( "{$file}.js" );
-		}
-
-		if ( sizeof( $js_code ) ) {
-			@mkdir( $writeDir, '0777', true );
-			file_put_contents( $writeDir . '/admin.plugins.all.js', join( "\n", $js_code ) );
-		}
-
-		$css = array(
-			'font-awesome' => 'assets/css/vendor/font-awesome.min',
-			'jquery-tipsy' => '/assets/css/vendor/jquery.tipsy',
-		);
-
-		$css_code = array();
-		foreach ( $css as $k => $v ) {
-			if ( in_array( $k, $exclude_libraries ) ) {
-				continue;
-			}
-
-			$file       = LP_PLUGIN_PATH . '/' . $v;
-			$js_code[]  = "/***** {$k}.css *****/";
-			$css_code[] = file_exists( "{$file}.css" ) ? file_get_contents( "{$file}.css" ) : '';
-		}
-
-		if ( sizeof( $css_code ) ) {
-			file_put_contents( $writeDir . '/admin.bundle.min.css', join( "\n", $css_code ) );
-		}
-	}
-
-
-	public function build_frontend_assets( $exclude_libraries = array() ) {
-		$writeDir = $this->get_upload_path();
-
-		if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
-			@unlink( $writeDir . '/plugins.all.js' );
-			@unlink( $writeDir . '/bundle.min.css' );
-
-			return;
-		}
-
-		$js = array(
-			'vue'          => 'assets/js/vendor/vue/vue',
-			'vuex'         => 'assets/js/vendor/vue/vuex',
-			'vue-resource' => 'assets/js/vendor/vue/vue-resource',
-
-			'jquery-alert'     => 'assets/js/vendor/jquery/jquery-alert',
-			'jquery-appear'    => 'assets/js/vendor/jquery/jquery-appear',
-			'jquery-scrollto'  => 'assets/js/vendor/jquery/jquery-scrollTo',
-			'jquery-scrollbar' => 'assets/js/vendor/jquery/jquery.scrollbar',
-			'jquery-tipsy'     => 'assets/js/vendor/jquery/jquery.tipsy',
-			'jquery-timer'     => 'assets/js/vendor/jquery/jquery-timer',
-			'watch'            => 'assets/js/vendor/watch',
-		);
-
-		$js_code = array();
-		foreach ( $js as $k => $v ) {
-			if ( in_array( $k, $exclude_libraries ) ) {
-				continue;
-			}
-
-			$file      = LP_PLUGIN_PATH . '/' . $v;
-			$js_code[] = "/***** {$k}.js *****/";
-			$js_code[] = file_exists( "{$file}.min.js" ) ? file_get_contents( "{$file}.min.js" ) : file_get_contents( "{$file}.js" );
-		}
-
-		if ( $js_code ) {
-			file_put_contents( $writeDir . '/plugins.all.js', join( "\n", $js_code ) );
-		}
-
-		$css = array(
-			'font-awesome'     => 'assets/css/vendor/font-awesome.min',
-			'jquery-scrollbar' => '/assets/css/vendor/jquery.scrollbar.css',
-			'jquery-tipsy'     => '/assets/css/vendor/jquery.tipsy.css',
-			'jalert'           => 'assets/css/vendor/jalert',
-		);
-
-		$css_code = array();
-		foreach ( $css as $k => $v ) {
-			if ( in_array( $k, $exclude_libraries ) ) {
-				continue;
-			}
-
-			$file       = LP_PLUGIN_PATH . '/' . $v;
-			$js_code[]  = "/***** {$k}.css *****/";
-			$css_code[] = file_exists( "{$file}.css" ) ? file_get_contents( "{$file}.css" ) : '';
-		}
-
-		if ( $css_code ) {
-			file_put_contents( $writeDir . '/bundle.min.css', join( "\n", $css_code ) );
-		}
-	}
-
-	public function output() {
-		$view = learn_press_get_admin_view( 'settings/profile.php' );
-		include_once $view;
-	}
+	/**
+	 * @author tungnx
+	 * @deprecated 3.2.7.9
+	 * @reason not use
+	 */
+//	public function build_admin_assets( $exclude_libraries = array() ) {
+//
+//		$writeDir = $this->get_upload_path();
+//
+//		if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
+//			@unlink( $writeDir . '/admin.plugins.all.js' );
+//			@unlink( $writeDir . '/admin.bundle.min.css' );
+//
+//			return;
+//		}
+//
+//		$js = array(
+//			'vue'           => 'assets/js/vendor/vue/vue',
+//			'vuex'          => 'assets/js/vendor/vue/vuex',
+//			'vue-resource'  => 'assets/js/vendor/vue/vue-resource',
+//			'vue-draggable' => 'assets/js/vendor/vue/vue-draggable',
+//
+//			'chartjs'      => 'assets/js/vendor/chart.min',
+//			'jquery-tipsy' => 'assets/js/vendor/jquery/jquery.tipsy',
+//		);
+//
+//		$js_code = array();
+//		foreach ( $js as $k => $v ) {
+//			if ( in_array( $k, $exclude_libraries ) ) {
+//				continue;
+//			}
+//
+//			$file      = LP_PLUGIN_PATH . '/' . $v;
+//			$js_code[] = "/***** {$k}.js *****/";
+//			$js_code[] = file_exists( "{$file}.min.js" ) ? file_get_contents( "{$file}.min.js" ) : file_get_contents( "{$file}.js" );
+//		}
+//
+//		if ( sizeof( $js_code ) ) {
+//			@mkdir( $writeDir, '0777', true );
+//			file_put_contents( $writeDir . '/admin.plugins.all.js', join( "\n", $js_code ) );
+//		}
+//
+//		$css = array(
+//			'font-awesome' => 'assets/css/vendor/font-awesome.min',
+//			'jquery-tipsy' => '/assets/css/vendor/jquery.tipsy',
+//		);
+//
+//		$css_code = array();
+//		foreach ( $css as $k => $v ) {
+//			if ( in_array( $k, $exclude_libraries ) ) {
+//				continue;
+//			}
+//
+//			$file       = LP_PLUGIN_PATH . '/' . $v;
+//			$js_code[]  = "/***** {$k}.css *****/";
+//			$css_code[] = file_exists( "{$file}.css" ) ? file_get_contents( "{$file}.css" ) : '';
+//		}
+//
+//		if ( sizeof( $css_code ) ) {
+//			file_put_contents( $writeDir . '/admin.bundle.min.css', join( "\n", $css_code ) );
+//		}
+//	}
+//
+//	public function build_frontend_assets( $exclude_libraries = array() ) {
+//		$writeDir = $this->get_upload_path();
+//
+//		if ( ! $exclude_libraries || ! sizeof( $exclude_libraries ) ) {
+//			@unlink( $writeDir . '/plugins.all.js' );
+//			@unlink( $writeDir . '/bundle.min.css' );
+//
+//			return;
+//		}
+//
+//		$js = array(
+//			'vue'          => 'assets/js/vendor/vue/vue',
+//			'vuex'         => 'assets/js/vendor/vue/vuex',
+//			'vue-resource' => 'assets/js/vendor/vue/vue-resource',
+//
+//			'jquery-alert'     => 'assets/js/vendor/jquery/jquery-alert',
+//			'jquery-appear'    => 'assets/js/vendor/jquery/jquery-appear',
+//			'jquery-scrollto'  => 'assets/js/vendor/jquery/jquery-scrollTo',
+//			'jquery-scrollbar' => 'assets/js/vendor/jquery/jquery.scrollbar',
+//			'jquery-tipsy'     => 'assets/js/vendor/jquery/jquery.tipsy',
+//			'jquery-timer'     => 'assets/js/vendor/jquery/jquery-timer',
+//			'watch'            => 'assets/js/vendor/watch',
+//		);
+//
+//		$js_code = array();
+//		foreach ( $js as $k => $v ) {
+//			if ( in_array( $k, $exclude_libraries ) ) {
+//				continue;
+//			}
+//
+//			$file      = LP_PLUGIN_PATH . '/' . $v;
+//			$js_code[] = "/***** {$k}.js *****/";
+//			$js_code[] = file_exists( "{$file}.min.js" ) ? file_get_contents( "{$file}.min.js" ) : file_get_contents( "{$file}.js" );
+//		}
+//
+//		if ( $js_code ) {
+//			file_put_contents( $writeDir . '/plugins.all.js', join( "\n", $js_code ) );
+//		}
+//
+//		$css = array(
+//			'font-awesome'     => 'assets/css/vendor/font-awesome.min',
+//			'jquery-scrollbar' => '/assets/css/vendor/jquery.scrollbar.css',
+//			'jquery-tipsy'     => '/assets/css/vendor/jquery.tipsy.css',
+//			'jalert'           => 'assets/css/vendor/jalert',
+//		);
+//
+//		$css_code = array();
+//		foreach ( $css as $k => $v ) {
+//			if ( in_array( $k, $exclude_libraries ) ) {
+//				continue;
+//			}
+//
+//			$file       = LP_PLUGIN_PATH . '/' . $v;
+//			$js_code[]  = "/***** {$k}.css *****/";
+//			$css_code[] = file_exists( "{$file}.css" ) ? file_get_contents( "{$file}.css" ) : '';
+//		}
+//
+//		if ( $css_code ) {
+//			file_put_contents( $writeDir . '/bundle.min.css', join( "\n", $css_code ) );
+//		}
+//	}
+//
+//	public function output() {
+//		$view = learn_press_get_admin_view( 'settings/profile.php' );
+//		include_once $view;
+//	}
 
 	/**
 	 * Return fields for asset settings.

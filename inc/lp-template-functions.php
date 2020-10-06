@@ -763,7 +763,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_question' ) ) {
 		$quiz = LP_Global::course_item_quiz();
 
 		if ( $question = $quiz->get_viewing_question() ) {
-			learn_press_get_template( 'content-question/content.php', array( 'quiz' => $quiz ) );
+			learn_press_get_template( 'content-question/content.php', array( 'question' => $question ) );
 		}
 	}
 }
@@ -3869,7 +3869,7 @@ function learn_press_define_debug_mode() {
 		return;
 	}
 	?>
-    <script>window.LP_DEBUG = true;</script>
+    <script>window.LP_DEBUG = true</script>
 	<?php
 }
 
