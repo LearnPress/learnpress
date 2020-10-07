@@ -47,6 +47,7 @@
     "gulp-copy": "^1.1.0",
     "gulp-less": "^3.3.0",
     "gulp-livereload": "^3.8.1",
+    "gulp-postcss": "^9.0.0",
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^3.2.1",
     "gulp-sourcemaps": "^2.6.5",

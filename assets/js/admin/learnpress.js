@@ -172,6 +172,36 @@ var lpMetaboxCustomFields = function lpMetaboxCustomFields() {
   };
 };
 
+var lpMetaboxColorPicker = function lpMetaboxColorPicker() {
+  $('.lp-metabox__colorpick').iris({
+    change: function change(event, ui) {
+      $(this).parent().find('.colorpickpreview').css({
+        backgroundColor: ui.color.toString()
+      });
+    },
+    hide: true,
+    border: true
+  }).on('click focus', function (event) {
+    event.stopPropagation();
+    $('.iris-picker').hide();
+    $(this).closest('td').find('.iris-picker').show();
+    $(this).data('original-value', $(this).val());
+  }).on('change', function () {
+    if ($(this).is('.iris-error')) {
+      var originalValue = $(this).data('original-value');
+
+      if (originalValue.match(/^\#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)) {
+        $(this).val($(this).data('original-value')).trigger('change');
+      } else {
+        $(this).val('').trigger('change');
+      }
+    }
+  });
+  $('body').on('click', function () {
+    $('.iris-picker').hide();
+  });
+};
+
 var initTooltips = function initTooltips() {
   $('.learn-press-tooltip').each(function () {
     var $el = $(this),
@@ -446,6 +476,7 @@ var onReady = function onReady() {
   initTooltips();
   initSingleCoursePermalink();
   lpMetaboxCustomFields();
+  lpMetaboxColorPicker();
   $('.learn-press-tabs').LP('AdminTab');
   $(document).on('click', '.learn-press-payments .status .dashicons', togglePaymentStatus).on('click', '.change-email-status', updateEmailStatus).on('click', '#_lp_sale_price_schedule', toggleSalePriceSchedule).on('click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule).on('click', '.learn-press-filter-template', callbackFilterTemplates).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails).on('click', '.lp-duplicate-row-action .lp-duplicate-post', duplicatePost).on('click', '#learn-press-install-sample-data-notice a', importCourses).on('input', '#meta-box-tab-course_payment', onChangeCoursePrices).on('change', '#_lp_sale_start', onChangeSaleStartDate).on('change', '#_lp_sale_end', onChangeSaleEndDate);
 };

@@ -880,12 +880,14 @@ class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
 	 * @return bool
 	 */
 	public function is_support_gutenberg() {
-		$post_types = LP()->settings()->get( 'enable_gutenberg' );
-		$support    = false;
+		$post_types = array(
+			LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
+			LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
+			LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
+			LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
+		);
 
-		if ( $post_types ) {
-			$support = in_array( $this->_post_type, $post_types ) && ! in_array( '-1', $post_types );
-		}
+		$support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
 
 		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
 	}

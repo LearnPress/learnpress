@@ -4,7 +4,7 @@
 	<th scope="row" class="titledesc">
 		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo $value['title']; ?> <?php echo $tooltip_html; ?></label>
 	</th>
-	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
+	<td class="forminp lp-metabox-field__color forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
 		<span class="colorpickpreview" style="background: <?php echo esc_attr( $option_value ); ?>">&nbsp;</span>
 		<input
 			name="<?php echo esc_attr( $value['id'] ); ?>"
@@ -13,7 +13,7 @@
 			dir="ltr"
 			style="<?php echo esc_attr( $value['css'] ); ?>"
 			value="<?php echo esc_attr( $option_value ); ?>"
-			class="<?php echo esc_attr( $value['class'] ); ?>colorpick"
+			class="<?php echo esc_attr( $value['class'] ); ?> colorpick lp-metabox__colorpick"
 			placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>"
 			<?php echo implode( ' ', $custom_attributes ); ?>
 			/>&lrm; <?php echo $description; ?>

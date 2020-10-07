@@ -557,7 +557,7 @@ class LP_User_Factory {
 	 * @param int $user_id
 	 */
 	public static function start_quiz( $quiz_id, $course_id, $user_id ) {
-		if ( $user ) {
+		if ( learn_press_get_user( $user_id ) ) {
 			$user = learn_press_get_user( $user_id );
 			if ( $user->get_item_data( $quiz_id, $course_id ) ) {
 				self::_update_user_item_meta( $user->get_item_data( $quiz_id, $course_id ), $quiz_id, $course_id, $user_id );

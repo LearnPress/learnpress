@@ -121,7 +121,7 @@
 		left: 475px;
 		padding: 0;
 		border-bottom: 1px solid #d9e0f1;
-		background: $secondary-color;
+		background: var(--lp-secondary-color);
 
 		@include transition(left 0.25s);
 
@@ -158,7 +158,7 @@
 					-webkit-box-orient: vertical;
 
 					&:hover {
-						color: $primary-color;
+						color: var(--lp-primary-color);
 					}
 				}
 
@@ -599,7 +599,7 @@
 								.course-item-meta {
 
 									.trans {
-										color: $primary-color-course-item-status;
+										color: var(--lp-primary-color) -course-item-status;
 									}
 								}
 							}
@@ -669,7 +669,7 @@
 			position: relative;
 			margin: 0 10px 0 0;
 			padding: 12px 29px;
-			border-color: $secondary-color;
+			border-color: var(--lp-secondary-color);
 			font-size: 14px;
 
 			&.instant-check {
@@ -732,7 +732,7 @@
 			}
 
 			&:hover {
-				border-color: $primary-color;
+				border-color: var(--lp-primary-color);
 			}
 
 			&.completed {
@@ -985,7 +985,7 @@
 
 						&.current,
 						&:hover {
-							color: $primary-color;
+							color: var(--lp-primary-color);
 						}
 					}
 				}
@@ -1009,7 +1009,7 @@
 				margin: 0 auto;
 				padding: 5px 10px 5px 30px;
 				border-radius: 4px;
-				background: $primary-color;
+				background: var(--lp-primary-color);
 				justify-content: center;
 				align-items: center;
 
@@ -1042,7 +1042,7 @@
 				position: relative;
 				min-width: 120px;
 				padding: 12px 29px;
-				border: 1px solid $secondary-color;
+				border: 1px solid var(--lp-secondary-color);
 				border-radius: 3px;
 				color: #333;
 				background: #fff;
@@ -1105,7 +1105,7 @@
 				text-transform: uppercase;
 
 				&:hover {
-					color: $primary-color;
+					color: var(--lp-primary-color);
 				}
 			}
 
@@ -1120,7 +1120,7 @@
 		&.fixed-quiz-status {
 
 			.quiz-status {
-				background: $primary-color;
+				background: var(--lp-primary-color);
 
 				& > div {
 					padding: 0;
@@ -1175,7 +1175,7 @@
 
 					a,
 					&::before {
-						color: $primary-color;
+						color: var(--lp-primary-color);
 					}
 				}
 
@@ -1265,7 +1265,7 @@
 			position: absolute;
 			top: 50%;
 			left: 50%;
-			color: $primary-color;
+			color: var(--lp-primary-color);
 			font-family: "Font Awesome 5 Free";
 			font-size: 18px;
 			font-weight: 900;
@@ -1359,7 +1359,7 @@
 				@include transform(rotate(-90deg));
 
 				circle {
-					stroke: $primary-color;
+					stroke: var(--lp-primary-color);
 				}
 			}
 		}

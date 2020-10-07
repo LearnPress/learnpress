@@ -20,7 +20,7 @@ var LP = LP || {};
 				nonce: $( this ).attr( 'data-nonce' ),
 			},
 			dataType: 'text',
-			success: function( response ) {
+			success( response ) {
 				response = LP.parseJSON( response );
 			},
 		} );
@@ -32,7 +32,7 @@ var LP = LP || {};
 	 * @param {Event} e
 	 */
 	const createPages = function createPages( e ) {
-		var $button = $( this ).addClass( 'disabled' );
+		const $button = $( this ).addClass( 'disabled' );
 		e.preventDefault();
 		$.post( {
 			url: $button.attr( 'href' ),
@@ -40,8 +40,8 @@ var LP = LP || {};
 				'lp-ajax': 'create-pages',
 			},
 			dataType: 'text',
-			success: function( res ) {
-				var $message = $button.closest( '.lp-notice' ).html( '<p>' + res + '</p>' );
+			success( res ) {
+				const $message = $button.closest( '.lp-notice' ).html( '<p>' + res + '</p>' );
 				setTimeout( function() {
 					$message.fadeOut();
 				}, 2000 );
@@ -51,14 +51,14 @@ var LP = LP || {};
 
 	const hideUpgradeMessage = function hideUpgradeMessage( e ) {
 		e.preventDefault();
-		var $btn = $( this );
+		const $btn = $( this );
 		$btn.closest( '.lp-upgrade-notice' ).fadeOut();
 		$.post( {
 			url: '',
 			data: {
 				'lp-hide-upgrade-message': 'yes',
 			},
-			success: function( res ) {
+			success( res ) {
 			},
 		} );
 	};
@@ -71,7 +71,7 @@ var LP = LP || {};
 
 		e.preventDefault();
 
-		var $plugin = $( this ).closest( '.plugin-card' );
+		const $plugin = $( this ).closest( '.plugin-card' );
 		if ( $( this ).hasClass( 'updating-message' ) ) {
 			return;
 		}
@@ -79,11 +79,11 @@ var LP = LP || {};
 		$.ajax( {
 			url: $( this ).attr( 'href' ),
 			data: {},
-			success: function( r ) {
+			success( r ) {
 				$.ajax( {
 					url: window.location.href,
-					success: function( r ) {
-						var $p = $( r ).find( '#' + $plugin.attr( 'id' ) );
+					success( r ) {
+						const $p = $( r ).find( '#' + $plugin.attr( 'id' ) );
 						if ( $p.length ) {
 							$plugin.replaceWith( $p );
 						} else {
@@ -120,20 +120,20 @@ var LP = LP || {};
 			return;
 		}
 
-		var $addNew = $( document ).find( '.page-title-action' );
+		const $addNew = $( document ).find( '.page-title-action' );
 
 		if ( ! $addNew.length ) {
 			return;
 		}
 
-		var types = window.lpAdminSettings.questionTypes;
-		var supportType = window.lpAdminSettings.supportAnswerOptions;
-		var $newButton = $( '<div id="button-new-question" class="page-title-action"><div></div></div>' );
-		var url = $addNew.attr( 'href' );
+		const types = window.lpAdminSettings.questionTypes;
+		const supportType = window.lpAdminSettings.supportAnswerOptions;
+		const $newButton = $( '<div id="button-new-question" class="page-title-action"><div></div></div>' );
+		const url = $addNew.attr( 'href' );
 
-		for ( var type in types ) {
+		for ( const type in types ) {
 			if ( supportType.includes( type ) ) {
-				$newButton.find( 'div' ).append( `<a href="${url.addQueryVar( 'question-type', type )}">${types[type]}</a>` );
+				$newButton.find( 'div' ).append( `<a href="${ url.addQueryVar( 'question-type', type ) }">${ types[ type ] }</a>` );
 			}
 		}
 
@@ -151,14 +151,14 @@ var LP = LP || {};
 	 *
 	 * @param event Doc.
 	 */
-	var focusToInputWhenCloningTextList = function( event ) {
+	const focusToInputWhenCloningTextList = function( event ) {
 		setTimeout( () => {
-			var $container = $( event.target ).closest( '.rwmb-text-list-wrapper' );
-			var $siblings = $container.find( '.rwmb-text-list-clone' );
-			var $lastRow = $siblings.last();
+			const $container = $( event.target ).closest( '.rwmb-text-list-wrapper' );
+			const $siblings = $container.find( '.rwmb-text-list-clone' );
+			const $lastRow = $siblings.last();
 
 			$siblings.each( function() {
-				var $row = $( this );
+				const $row = $( this );
 
 				if ( ! $row.find( '.rwmb-text-list' ).val().length ) {
 					$row.find( '.rwmb-text-list' ).focus();
@@ -178,16 +178,16 @@ var LP = LP || {};
 	 *
 	 * @param event
 	 */
-	var addOptionToTextList = function addOptionToTextList( event ) {
+	const addOptionToTextList = function addOptionToTextList( event ) {
 		if ( event.keyCode !== 13 ) {
 			return;
 		}
 
 		event.preventDefault();
 
-		var $item = $( event.target ).closest( '.rwmb-text-list-clone' );
-		var $container = $( event.target ).closest( '.rwmb-text-list-wrapper' );
-		var $siblings = $container.find( '.rwmb-text-list-clone' );
+		const $item = $( event.target ).closest( '.rwmb-text-list-clone' );
+		const $container = $( event.target ).closest( '.rwmb-text-list-wrapper' );
+		const $siblings = $container.find( '.rwmb-text-list-clone' );
 
 		if ( $siblings.last().is( $item ) ) {
 			$container.find( '.add-clone' ).trigger( 'click' );
@@ -196,8 +196,8 @@ var LP = LP || {};
 		}
 	};
 
-	var autoCheckHideContentOption = function autoCheckHideContentOption( event ) {
-		var isChecked = $( event.target ).is( ':checked' );
+	const autoCheckHideContentOption = function autoCheckHideContentOption( event ) {
+		const isChecked = $( event.target ).is( ':checked' );
 
 		if ( ! isChecked ) {
 			return;
@@ -206,7 +206,7 @@ var LP = LP || {};
 		$( '#_lp_block_content' ).prop( 'checked', true );
 	};
 
-	var onReady = function onReady() {
+	const onReady = function onReady() {
 		$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
 		$( '.learn-press-advertisement-slider' ).LP( 'Advertisement', 'a', 's' ).appendTo( $( '#wpbody-content' ) );
 		$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );

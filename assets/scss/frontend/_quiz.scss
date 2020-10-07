@@ -300,7 +300,7 @@ button[data-counter] {
 	&.passed {
 
 		.result-message {
-			background: $primary-color-course-item-status;
+			background: var(--lp-primary-color) -course-item-status;
 
 			&::after {
 				content: "\f00c";
@@ -409,7 +409,7 @@ button[data-counter] {
 					display: inline-block;
 					width: 15px;
 					margin-right: 10px;
-					color: $primary-color;
+					color: var(--lp-primary-color);
 					font-family: "Font Awesome 5 Free";
 					font-size: 16px;
 					font-weight: 900;
@@ -579,7 +579,7 @@ button[data-counter] {
 			position: relative;
 			top: -2px;
 			margin-right: 10px;
-			color: $primary-color;
+			color: var(--lp-primary-color);
 			font-family: "Font Awesome 5 Free";
 			font-size: 16px;
 			font-weight: 900;

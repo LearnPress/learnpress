@@ -1,10 +1,10 @@
 ( function( $ ) {
 	'use strict';
 
-	var Package = function( data ) {
+	const Package = function( data ) {
 		this.data = data;
 
-		var currentIndex = -1,
+		let currentIndex = -1,
 			currentVersion = null,
 			currentPackage = null,
 			versions = Object.keys( this.data );
@@ -12,8 +12,8 @@
 		this.reset = function( current ) {
 			current = ( current === undefined || current > versions.length - 1 || current < 0 ) ? 0 : current;
 			currentIndex = current;
-			currentVersion = versions[current];
-			currentPackage = this.data[currentVersion];
+			currentVersion = versions[ current ];
+			currentPackage = this.data[ currentVersion ];
 
 			return currentPackage;
 		};
@@ -60,7 +60,7 @@
 
 		}
 	};
-	var UpdaterSettings = {
+	const UpdaterSettings = {
 		el: '#learn-press-updater',
 		data: {
 			packages: null,
@@ -68,18 +68,18 @@
 			force: false,
 		},
 		watch: {
-			packages: function( newPackages, oldPackages ) {
+			packages( newPackages, oldPackages ) {
 				if ( newPackages ) {
 
 				}
 			},
 		},
-		mounted: function() {
+		mounted() {
 			$( this.$el ).show();
 		},
 		methods: {
-			getUpdatePackages: function( callback ) {
-				var that = this;
+			getUpdatePackages( callback ) {
+				const that = this;
 				$.ajax( {
 					url: lpGlobalSettings.admin_url,
 					data: {
@@ -87,37 +87,37 @@
 						force: this.force,
 						_wpnonce: lpGlobalSettings._wpnonce,
 					},
-					success: function( res ) {
-						var packages = LP.parseJSON( res );
+					success( res ) {
+						const packages = LP.parseJSON( res );
 						that.packages = new Package( packages );
 						callback && callback.call( that );
 					},
 				} );
 			},
-			start: function( e, force ) {
+			start( e, force ) {
 				this.packages = null;
 				this.force = force;
 				this.getUpdatePackages( function() {
 					if ( this.packages.hasPackage() ) {
-						var p = this.packages.next();
+						const p = this.packages.next();
 						this.status = 'updating';
 						this.doUpdate( p );
 					}
 				} );
 			},
-			getPackages: function() {
+			getPackages() {
 				return this.packages ? this.packages.data : {};
 			},
-			hasPackage: function() {
+			hasPackage() {
 				return ! $.isEmptyObject( this.getPackages() );
 			},
-			updateButtonClass: function() {
+			updateButtonClass() {
 				return {
 					disabled: this.status === 'updating',
 				};
 			},
-			doUpdate: function( p, i ) {
-				var that = this;
+			doUpdate( p, i ) {
+				const that = this;
 
 				p = p ? p : this.packages.next();
 				i = i ? i : 1;
@@ -131,18 +131,18 @@
 							version: this.packages.currentVersion(),
 							_wpnonce: lpGlobalSettings._wpnonce,
 							force: this.force,
-							i: i,
+							i,
 						},
-						success: function( res ) {
-							var response = LP.parseJSON( res ),
+						success( res ) {
+							const response = LP.parseJSON( res ),
 								$status = $( that.$el ).find( '.updater-progress-status' );
 							if ( response.done === 'yes' ) {
 								that.update( that.packages.getPercentCompleted() * 100 );
 								that.doUpdate();
 							} else {
-								var newWidth = that.packages.getPercentCompleted() * 100;
+								let newWidth = that.packages.getPercentCompleted() * 100;
 								if ( response.percent ) {
-									var stepWidth = 1 / that.packages.getTotal();
+									const stepWidth = 1 / that.packages.getTotal();
 									newWidth += ( stepWidth * response.percent );
 								}
 
@@ -150,7 +150,7 @@
 								that.doUpdate( p, ++i );
 							}
 						},
-						error: function() {
+						error() {
 							that.doUpdate( p, i );
 						},
 					} );
@@ -161,7 +161,7 @@
 					}, 2000, this );
 				}
 			},
-			update: function( value ) {
+			update( value ) {
 				return $( this.$el ).find( '.updater-progress-status' ).css( 'width', value + '%' ).attr( 'data-value', parseInt( value ) );
 			},
 		},
@@ -171,7 +171,7 @@
 		window.lpGlobalSettings = window.lpGlobalSettings || {};
 
 		if ( $( '#learn-press-updater' ).length ) {
-			var Updater = new Vue( UpdaterSettings );
+			const Updater = new Vue( UpdaterSettings );
 		}
 	}
 

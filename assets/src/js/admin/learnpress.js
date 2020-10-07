@@ -80,6 +80,40 @@ const lpMetaboxCustomFields = () => {
 	};
 };
 
+const lpMetaboxColorPicker = () => {
+	$( '.lp-metabox__colorpick' )
+		.iris( {
+			change( event, ui ) {
+				$( this ).parent().find( '.colorpickpreview' ).css( { backgroundColor: ui.color.toString() } );
+			},
+			hide: true,
+			border: true,
+		} )
+
+		.on( 'click focus', function( event ) {
+			event.stopPropagation();
+			$( '.iris-picker' ).hide();
+			$( this ).closest( 'td' ).find( '.iris-picker' ).show();
+			$( this ).data( 'original-value', $( this ).val() );
+		} )
+
+		.on( 'change', function() {
+			if ( $( this ).is( '.iris-error' ) ) {
+				const originalValue = $( this ).data( 'original-value' );
+
+				if ( originalValue.match( /^\#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/ ) ) {
+					$( this ).val( $( this ).data( 'original-value' ) ).trigger( 'change' );
+				} else {
+					$( this ).val( '' ).trigger( 'change' );
+				}
+			}
+		} );
+
+	$( 'body' ).on( 'click', function() {
+		$( '.iris-picker' ).hide();
+	} );
+};
+
 const initTooltips = function initTooltips() {
 	$( '.learn-press-tooltip' ).each( function() {
 		const $el = $( this ),
@@ -353,6 +387,7 @@ const onReady = function onReady() {
 	initTooltips();
 	initSingleCoursePermalink();
 	lpMetaboxCustomFields();
+	lpMetaboxColorPicker();
 
 	$( '.learn-press-tabs' ).LP( 'AdminTab' );
 

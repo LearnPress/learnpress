@@ -3,7 +3,7 @@
 
 	.wrapper-profile-header {
 		color: #fff;
-		background: $secondary-color;
+		background: var(--lp-secondary-color);
 
 		#profile-header {
 
@@ -94,9 +94,9 @@
 			@include border-radius(50%);
 
 			&:hover {
-				border-color: $primary-color;
+				border-color: var(--lp-primary-color);
 				color: #fff;
-				background: $primary-color;
+				background: var(--lp-primary-color);
 			}
 		}
 	}
@@ -130,7 +130,7 @@
 						position: absolute;
 						left: 24px;
 						width: 28px;
-						color: $primary-color;
+						color: var(--lp-primary-color);
 						font-size: 12px;
 						line-height: 52px;
 						text-align: left;
@@ -156,7 +156,7 @@
 							border-bottom: 1px solid #f9f9f9;
 
 							&:hover {
-								color: $primary-color;
+								color: var(--lp-primary-color);
 								background: #fff;
 							}
 						}
@@ -191,7 +191,7 @@
 					& > a::before {
 						position: absolute;
 						left: 25px;
-						color: $primary-color;
+						color: var(--lp-primary-color);
 						font-family: "Font Awesome 5 Free";
 						font-size: 12px;
 						font-weight: 900;
@@ -234,7 +234,7 @@
 
 				&.active,
 				&:hover {
-					background: $primary-color;
+					background: var(--lp-primary-color);
 
 					> a {
 						color: #fff;
@@ -324,14 +324,14 @@
 			display: block;
 			margin: 0 auto 52px auto;
 			padding: 13px 34px;
-			border-color: $secondary-color;
+			border-color: var(--lp-secondary-color);
 			font-size: 14px;
 			font-weight: 500;
 
 			@include border-radius(9px);
 
 			&:hover {
-				border-color: $primary-color;
+				border-color: var(--lp-primary-color);
 			}
 		}
 
@@ -485,7 +485,7 @@ form[name="profile-change-password"] {
 				font-style: italic;
 
 				&:focus {
-					border-color: $primary-color;
+					border-color: var(--lp-primary-color);
 					outline: 0;
 					color: #222;
 				}
@@ -535,13 +535,14 @@ form[name="profile-change-password"] {
 		border: 0;
 		border-radius: 3px;
 		color: #fff;
-		background: $primary-color;
+		background: var(--lp-primary-color);
 		font-size: 16px;
 		font-weight: 400;
 		line-height: 1;
 
 		&:hover {
-			background: darken($primary-color, 15%);
+			opacity: 0.5;
+			background: var(--lp-primary-color);
 		}
 	}
 

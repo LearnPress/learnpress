@@ -1,210 +1,224 @@
 .learn-press-tabs {
-    background: #f1f2f8;
-    margin-bottom: 34px;
+	margin-bottom: 34px;
+	background: #f1f2f8;
 
-    .learn-press-tabs__checker {
-        display: none;
-        @for $i from 0 through 9 {
-            //input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
-            //    background: #f5f5f5;
-            //
-            //    &:before {
-            //        color: $primary-color;
-            //    }
-            //}
+	.learn-press-tabs__checker {
+		display: none;
 
-            &:nth-child(#{$i+1}):checked ~ .learn-press-tabs__nav {
-                .learn-press-tabs__tab:nth-child(#{$i+1}) {
-                    border-bottom: 0;
-                    background: #FFF;
+		@for $i from 0 through 9 {
+			//input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
+			//    background: #f5f5f5;
+			//
+			//    &:before {
+			//        color: var(--lp-primary-color);
+			//    }
+			//}
 
-                    label {
-                        a {
-                            color: #ffb606;
-                        }
-                        color: #ffb606;
-                    }
+			&:nth-child(#{$i+1}):checked ~ .learn-press-tabs__nav {
+				.learn-press-tabs__tab:nth-child(#{$i+1}) {
+					border-bottom: 0;
+					background: #fff;
 
-                    &:before {
-                        background: #ffb606;
-                    }
+					label {
 
-                    &:after {
-                        background: #fff;
-                    }
+						a {
+							color: #ffb606;
+						}
+						color: #ffb606;
+					}
 
-                }
-            }
-        }
+					&::before {
+						background: #ffb606;
+					}
 
-    }
+					&::after {
+						background: #fff;
+					}
 
-    .learn-press-tabs__nav {
-        border: 1px solid #e5e7f2;
-        list-style: none;
-        padding: 0;
-        display: flex;
-        margin: 0;
-    }
+				}
+			}
+		}
 
-    .learn-press-tabs__tab {
-        position: relative;
-        margin: 0;
-        list-style: none;
-        border-right: 1px solid #e5e7f2;
-        background: #f1f2f8;
-        &:last-child {
-            border-right: 0;
-        }
+	}
 
-        > label {
-            padding: 20px 65px 14px 65px;
-            font-size: 18px;
-            font-weight: 600;
-            text-transform: capitalize;
-            margin: 0;
-            cursor: pointer;
-            text-align: center;
-            display: block;
-            a {
-                color: #333;
-                &:focus {
-                    outline: 0;
-                    text-decoration: none;
-                }
-            }
-            @media (max-width: 767px) {
-                padding: 20px 50px 14px 50px;
-            }
-        }
+	.learn-press-tabs__nav {
+		display: flex;
+		margin: 0;
+		padding: 0;
+		border: 1px solid #e5e7f2;
+		list-style: none;
+	}
 
-        &:before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 0;
-            height: 4px;
-            width: 100%;
-            background: transparent;
-        }
+	.learn-press-tabs__tab {
+		position: relative;
+		margin: 0;
+		border-right: 1px solid #e5e7f2;
+		background: #f1f2f8;
+		list-style: none;
 
-        &:after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            height: 4px;
-            width: 100%;
-            background: transparent;
-        }
+		&:last-child {
+			border-right: 0;
+		}
 
-        &:first-child {
-            &.active {
-               label {
-                   position: relative;
-                   &:before {
-                       content: '';
-                       position: absolute;
-                       width: 1px;
-                       height: 100%;
-                       background: #fff;
-                       top: 0;
-                       left: -1px;
-                   }
-               }
-            }
-        }
-    }
+		> label {
+			display: block;
+			margin: 0;
+			padding: 20px 65px 14px 65px;
+			font-size: 18px;
+			font-weight: 600;
+			text-align: center;
+			text-transform: capitalize;
+			cursor: pointer;
 
-    &.stretch {
-        .learn-press-tabs__tab {
-            flex: 1;
+			a {
+				color: #333;
 
-            > label {
-                padding: 18px 10px;
-            }
-        }
-    }
+				&:focus {
+					outline: 0;
+					text-decoration: none;
+				}
+			}
+
+			@media (max-width: 767px) {
+				padding: 20px 50px 14px 50px;
+			}
+		}
+
+		&::before {
+			position: absolute;
+			top: -1px;
+			left: 0;
+			width: 100%;
+			height: 4px;
+			background: transparent;
+			content: "";
+		}
+
+		&::after {
+			position: absolute;
+			bottom: -1px;
+			left: 0;
+			width: 100%;
+			height: 4px;
+			background: transparent;
+			content: "";
+		}
+
+		&:first-child {
+
+			&.active {
+
+				label {
+					position: relative;
+
+					&::before {
+						position: absolute;
+						top: 0;
+						left: -1px;
+						width: 1px;
+						height: 100%;
+						background: #fff;
+						content: "";
+					}
+				}
+			}
+		}
+	}
+
+	&.stretch {
+
+		.learn-press-tabs__tab {
+			flex: 1;
+
+			> label {
+				padding: 18px 10px;
+			}
+		}
+	}
 
 }
 
 .learn-press-filters {
-    list-style: none;
-    display: flex;
-    margin-left: 0;
-    margin-bottom: 36px;
-    @media (max-width: 767px) {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 15px;
-    }
+	display: flex;
+	margin-bottom: 36px;
+	margin-left: 0;
+	list-style: none;
 
-    > li {
-        font-size: 16px;
-        line-height: 24px;
-        margin: 0;
-        > a,
-        > span {
-            display: inline-block;
-            font-weight: 600;
-        }
+	@media (max-width: 767px) {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		grid-gap: 15px;
+	}
 
-        > span.count {
-            font-weight: 400;
+	> li {
+		margin: 0;
+		font-size: 16px;
+		line-height: 24px;
 
-            &:before,
-            &:after {
-                display: inline-block;
-            }
+		> a,
+		> span {
+			display: inline-block;
+			font-weight: 600;
+		}
 
-            &:before {
-                content: '(';
-            }
+		> span.count {
+			font-weight: 400;
 
-            &:after {
-                content: ')';
-            }
-        }
+			&::before,
+			&::after {
+				display: inline-block;
+			}
 
-        span {
-            color: #ffb606;
+			&::before {
+				content: "(";
+			}
 
-            & + span {
-                color: #ffb606;
+			&::after {
+				content: ")";
+			}
+		}
 
-                &:before,
-                &:after {
-                    color: #ffb606;
-                }
-            }
-        }
+		span {
+			color: #ffb606;
 
-        a {
-            color: #333;
+			& + span {
+				color: #ffb606;
 
-            & + span {
-                color: #333;
+				&::before,
+				&::after {
+					color: #ffb606;
+				}
+			}
+		}
 
-                &:before,
-                &:after {
-                    color: #333;
-                }
-            }
-        }
+		a {
+			color: #333;
 
-        &:after {
-            content: '|';
-            margin: 0 35px;
-            color: #CCC;
-            @media (max-width: 767px) {
-                display: none;
-            }
-        }
+			& + span {
+				color: #333;
 
-        &:last-child {
-            &:after {
-                display: none;
-            }
-        }
-    }
+				&::before,
+				&::after {
+					color: #333;
+				}
+			}
+		}
+
+		&::after {
+			margin: 0 35px;
+			color: #ccc;
+			content: "|";
+
+			@media (max-width: 767px) {
+				display: none;
+			}
+		}
+
+		&:last-child {
+
+			&::after {
+				display: none;
+			}
+		}
+	}
 }

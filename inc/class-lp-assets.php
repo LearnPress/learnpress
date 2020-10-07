@@ -4,32 +4,15 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 4.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
 class LP_Assets extends LP_Abstract_Assets {
 
-	/**
-	 * Constructor
-	 */
 	public function __construct() {
 		parent::__construct();
-	}
-
-	protected function get_bundle_css_url() {
-		$url = false;
-
-		if ( get_option( 'learn_press_exclude_frontend_libraries' ) ) {
-			$upload_dir = wp_upload_dir();
-
-			if ( file_exists( $upload_dir['basedir'] . '/learnpress/bundle.min.css' ) ) {
-				$url = $upload_dir['baseurl'] . '/learnpress/bundle.min.css';
-			}
-		}
-
-		return $url;
 	}
 
 	/**
@@ -38,16 +21,6 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles() {
-		$custom_css = get_option( '_lp_custom_css' );
-		if ( $custom_css ) {
-			$upload   = wp_upload_dir();
-			$main_css = $upload['baseurl'] . '/learnpress/' . $custom_css;
-		} else {
-			$main_css = self::url( 'css/learnpress.css' );
-		}
-
-		$url = $this->get_bundle_css_url();
-
 		return apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
@@ -56,11 +29,11 @@ class LP_Assets extends LP_Abstract_Assets {
 					'screens' => array( 'learnpress' ),
 				),
 				'lp-bundle'      => array(
-					'url'     => $url ? $url : self::url( 'css/bundle.min.css' ),
+					'url'     => self::url( 'css/bundle.min.css' ),
 					'screens' => array( 'learnpress' ),
 				),
 				'learnpress'     => array(
-					'url'     => $main_css,
+					'url'     => self::url( 'css/learnpress.css' ),
 					'screens' => 'learnpress',
 				),
 			)
@@ -104,20 +77,6 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	}
 
-	protected function get_all_plugins_url( $min = '' ) {
-		$url = false;
-
-		if ( get_option( 'learn_press_exclude_frontend_libraries' ) ) {
-			$upload_dir = wp_upload_dir();
-
-			if ( file_exists( $upload_dir['basedir'] . '/learnpress/plugins.all' . $min . '.js' ) ) {
-				$url = $upload_dir['baseurl'] . '/learnpress/plugins.all' . $min . '.js';
-			}
-		}
-
-		return $url;
-	}
-
 	public function _get_scripts() {
 		$min   = learn_press_is_debug() ? '' : '.min';
 		$wp_js = array(
@@ -130,8 +89,6 @@ class LP_Assets extends LP_Abstract_Assets {
 			'lodash',
 		);
 
-		$url = $this->get_all_plugins_url( $min );
-
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
@@ -142,7 +99,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 				),
 				'lp-plugins-all'      => array(
-					'url' => $url ? $url : self::url( 'js/vendor/plugins.all' . $min . '.js' ),
+					'url' => self::url( 'js/vendor/plugins.all' . $min . '.js' ),
 				),
 				'lp-global'           => array(
 					'url'  => self::url( 'js/global' . $min . '.js' ),
@@ -234,12 +191,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Load assets
 	 */
 	public function load_scripts() {
-
 		$this->_register_scripts();
 
-		/**
-		 * Enqueue scripts
-		 */
 		$scripts = $this->_get_scripts();
 
 		if ( $scripts ) {
@@ -259,7 +212,6 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 
 		$styles = $this->_get_styles();
-
 		if ( $styles ) {
 			foreach ( $styles as $handle => $data ) {
 				$enqueue = false;

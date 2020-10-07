@@ -72,8 +72,8 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	public function page_contents() {
 		$active_tab = $this->get_active_tab();
 
-		// Use custom metabox in LP4
-		if ( $active_tab === 'profile' ) {
+		// Use custom metabox in LP4.
+		if ( $active_tab === 'profile' || $active_tab === 'advanced' ) {
 			$this->tabs[ $active_tab ]->admin_page_settings( $this->get_active_section(), $this->get_sections() );
 		} else {
 			$this->tabs[ $active_tab ]->admin_page( $this->get_active_section(), $this->get_sections() );
@@ -112,7 +112,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		// Use custom metabox in LP4
 		$active_tab = $this->get_active_tab();
 
-		if ( $active_tab !== 'profile' ) {
+		if ( $active_tab !== 'profile' && $active_tab !== 'advanced' ) {
 			return;
 		}
 
@@ -144,7 +144,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$active_tab = $this->get_active_tab();
 
 		// Use custom metabox in LP4
-		if ( $active_tab === 'profile' ) {
+		if ( $active_tab === 'profile' || $active_tab === 'advanced' ) {
 			return;
 		}
 

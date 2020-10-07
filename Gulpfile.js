@@ -21,17 +21,19 @@ const gulp = require( 'gulp' ),
 	mkdirp = require( 'mkdirp' ),
 	concat = require( 'gulp-concat' ),
 	args = require( 'yargs' ).argv,
+	postcss = require( 'gulp-postcss' ),
 	cleanCSS = require( 'gulp-clean-css' );
+
 gulp.task( 'testx', function() {
 	console.log( 'xs' );
 } );
+
 gulp.task( 'scss', function() {
 	return gulp.src( [ 'assets/scss/**/*.scss' ] )
 		.pipe( sourceMaps.init() )
 		.pipe( scss() )
-	//.pipe(sourceMaps.write())
+		// .pipe( postcss() )
 		.pipe( gulp.dest( 'assets/css' ) );
-	//.pipe(liveReload());
 } );
 
 gulp.task( 'watch', function() {

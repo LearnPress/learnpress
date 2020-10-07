@@ -1,233 +1,229 @@
-;(function ($) {
-    'use strict';
+( function( $ ) {
+	'use strict';
 
-    var Package = function (data) {
-        this.data = data;
+	const Package = function( data ) {
+		this.data = data;
 
-        var currentIndex = -1,
-            currentVersion = null,
-            currentPackage = null,
-            versions = Object.keys(this.data);
+		let currentIndex = -1,
+			currentVersion = null,
+			currentPackage = null,
+			versions = Object.keys( this.data );
 
-        this.reset = function (current) {
-            current = (current === undefined || current > versions.length - 1 || current < 0 ) ? 0 : current;
-            currentIndex = current;
-            currentVersion = versions[current];
-            currentPackage = this.data[currentVersion];
+		this.reset = function( current ) {
+			current = ( current === undefined || current > versions.length - 1 || current < 0 ) ? 0 : current;
+			currentIndex = current;
+			currentVersion = versions[ current ];
+			currentPackage = this.data[ currentVersion ];
 
-            return currentPackage;
-        }
+			return currentPackage;
+		};
 
-        this.next = function () {
-            if (currentIndex >= versions.length - 1) {
-                return false;
-            }
+		this.next = function() {
+			if ( currentIndex >= versions.length - 1 ) {
+				return false;
+			}
 
-            currentIndex++;
-            this.reset(currentIndex);
+			currentIndex++;
+			this.reset( currentIndex );
 
-            return currentPackage;
-        }
+			return currentPackage;
+		};
 
-        this.prev = function () {
-            if (currentIndex <= 0) {
-                return false;
-            }
+		this.prev = function() {
+			if ( currentIndex <= 0 ) {
+				return false;
+			}
 
-            currentIndex--;
-            this.reset(currentIndex);
+			currentIndex--;
+			this.reset( currentIndex );
 
-            return currentPackage;
-        }
+			return currentPackage;
+		};
 
-        this.currentVersion = function () {
-            return currentVersion;
-        }
+		this.currentVersion = function() {
+			return currentVersion;
+		};
 
-        this.hasPackage = function () {
-            return versions.length
-        }
+		this.hasPackage = function() {
+			return versions.length;
+		};
 
-        this.getPercentCompleted = function () {
-            return (currentIndex) / versions.length;
-        }
+		this.getPercentCompleted = function() {
+			return ( currentIndex ) / versions.length;
+		};
 
-        this.getTotal = function () {
-            return versions.length;
-        }
+		this.getTotal = function() {
+			return versions.length;
+		};
 
-        if (!this.data) {
-            return;
-        }
+		if ( ! this.data ) {
 
-    }
-    var UpdaterSettings = {
-        el: '#learn-press-updater',
-        data: {
-            packages: null,
-            status: '',
-            force: false,
-        },
-        watch: {
-            packages: function (newPackages, oldPackages) {
-                if (newPackages) {
+		}
+	};
+	const UpdaterSettings = {
+		el: '#learn-press-updater',
+		data: {
+			packages: null,
+			status: '',
+			force: false,
+		},
+		watch: {
+			packages( newPackages, oldPackages ) {
+				if ( newPackages ) {
 
-                }
-            }
-        },
-        mounted: function () {
-            $(this.$el).show();
-        },
-        methods: {
-            getUpdatePackages: function (callback) {
-                var that = this;
-                $.ajax({
-                    url: lpGlobalSettings.admin_url,
-                    data: {
-                        'lp-ajax': 'get-update-packages',
-                        force: this.force,
-                        _wpnonce: lpGlobalSettings._wpnonce
-                    },
-                    success: function (res) {
-                        var packages = LP.parseJSON(res);
-                        that.packages = new Package(packages);
-                        callback && callback.call(that)
-                    }
-                })
-            },
-            start: function (e, force) {
-                this.packages = null;
-                this.force = force;
-                this.getUpdatePackages(function () {
-                    if (this.packages.hasPackage()) {
-                        var p = this.packages.next();
-                        this.status = 'updating';
-                        this.doUpdate(p);
-                    }
-                });
-            },
-            getPackages: function () {
-                return this.packages ? this.packages.data : {};
-            },
-            hasPackage: function () {
-                return !$.isEmptyObject(this.getPackages());
-            },
-            updateButtonClass: function () {
-                return {
-                    'disabled': this.status === 'updating'
-                }
-            },
-            doUpdate: function (p, i) {
-                var that = this;
+				}
+			},
+		},
+		mounted() {
+			$( this.$el ).show();
+		},
+		methods: {
+			getUpdatePackages( callback ) {
+				const that = this;
+				$.ajax( {
+					url: lpGlobalSettings.admin_url,
+					data: {
+						'lp-ajax': 'get-update-packages',
+						force: this.force,
+						_wpnonce: lpGlobalSettings._wpnonce,
+					},
+					success( res ) {
+						const packages = LP.parseJSON( res );
+						that.packages = new Package( packages );
+						callback && callback.call( that );
+					},
+				} );
+			},
+			start( e, force ) {
+				this.packages = null;
+				this.force = force;
+				this.getUpdatePackages( function() {
+					if ( this.packages.hasPackage() ) {
+						const p = this.packages.next();
+						this.status = 'updating';
+						this.doUpdate( p );
+					}
+				} );
+			},
+			getPackages() {
+				return this.packages ? this.packages.data : {};
+			},
+			hasPackage() {
+				return ! $.isEmptyObject( this.getPackages() );
+			},
+			updateButtonClass() {
+				return {
+					disabled: this.status === 'updating',
+				};
+			},
+			doUpdate( p, i ) {
+				const that = this;
 
-                p = p ? p : this.packages.next();
-                i = i ? i : 1;
+				p = p ? p : this.packages.next();
+				i = i ? i : 1;
 
-                if (p) {
-                    $.ajax({
-                        url: lpGlobalSettings.admin_url,
-                        data: {
-                            'lp-ajax': 'do-update-package',
-                            package: p,
-                            version: this.packages.currentVersion(),
-                            _wpnonce: lpGlobalSettings._wpnonce,
-                            force: this.force,
-                            i: i
-                        },
-                        success: function (res) {
-                            var response = LP.parseJSON(res),
-                                $status = $(that.$el).find('.updater-progress-status');
-                            if (response.done === 'yes') {
-                                that.update(that.packages.getPercentCompleted() * 100);
-                                that.doUpdate();
-                            } else {
-                                var newWidth = that.packages.getPercentCompleted() * 100;
-                                if (response.percent) {
-                                    var stepWidth = 1 / that.packages.getTotal();
-                                    newWidth += (stepWidth * response.percent);
-                                }
+				if ( p ) {
+					$.ajax( {
+						url: lpGlobalSettings.admin_url,
+						data: {
+							'lp-ajax': 'do-update-package',
+							package: p,
+							version: this.packages.currentVersion(),
+							_wpnonce: lpGlobalSettings._wpnonce,
+							force: this.force,
+							i,
+						},
+						success( res ) {
+							const response = LP.parseJSON( res ),
+								$status = $( that.$el ).find( '.updater-progress-status' );
+							if ( response.done === 'yes' ) {
+								that.update( that.packages.getPercentCompleted() * 100 );
+								that.doUpdate();
+							} else {
+								let newWidth = that.packages.getPercentCompleted() * 100;
+								if ( response.percent ) {
+									const stepWidth = 1 / that.packages.getTotal();
+									newWidth += ( stepWidth * response.percent );
+								}
 
-                                that.update(newWidth);
-                                that.doUpdate(p, ++i);
-                            }
-                        },
-                        error: function () {
-                            that.doUpdate(p, i);
-                        }
-                    });
+								that.update( newWidth );
+								that.doUpdate( p, ++i );
+							}
+						},
+						error() {
+							that.doUpdate( p, i );
+						},
+					} );
+				} else {
+					that.update( 100 ).addClass( 'completed' );
+					setTimeout( function( x ) {
+						x.status = 'completed';
+					}, 2000, this );
+				}
+			},
+			update( value ) {
+				return $( this.$el ).find( '.updater-progress-status' ).css( 'width', value + '%' ).attr( 'data-value', parseInt( value ) );
+			},
+		},
+	};
 
-                } else {
-                    that.update(100).addClass('completed');
-                    setTimeout(function (x) {
-                        x.status = 'completed';
-                    }, 2000, this);
-                }
-            },
-            update: function (value) {
-                return $(this.$el).find('.updater-progress-status').css('width', value + '%').attr('data-value', parseInt(value));
-            }
-        }
-    };
+	function init() {
+		window.lpGlobalSettings = window.lpGlobalSettings || {};
 
-    function init() {
+		if ( $( '#learn-press-updater' ).length ) {
+			const Updater = new Vue( UpdaterSettings );
+		}
 
-        window.lpGlobalSettings = window.lpGlobalSettings || {};
+		const i18n = window.lpUpdateSettings || {};
+		$( document ).on( 'click', '#button-update', function( e ) {
+			e.preventDefault();
+			const $form = $( '#learn-press-update-form' ),
+				loadUrl = $( this ).attr( 'href' ),
+				$main = $( '#main' ).addClass( 'loading' );
+			$( '.learn-press-message' ).remove();
+			$.post( {
+				url: loadUrl,
+				data: $form.serializeJSON(),
+				success( res ) {
+					$( res ).insertBefore( $form );
+					$main.removeClass( 'loading' );
+				},
+			} );
+		} ).on( 'click', '.lp-button-upgrade', function( e ) {
+			e.preventDefault();
 
-        if($('#learn-press-updater').length) {
-            var Updater = new Vue(UpdaterSettings);
-        }
+			if ( ! confirm( i18n.i18n_confirm ) ) {
+				return false;
+			}
 
-        var i18n = window.lpUpdateSettings || {};
-        $(document).on('click', '#button-update', function (e) {
-            e.preventDefault();
-            var $form = $('#learn-press-update-form'),
-                loadUrl = $(this).attr('href'),
-                $main = $('#main').addClass('loading');
-            $('.learn-press-message').remove();
-            $.post({
-                url: loadUrl,
-                data: $form.serializeJSON(),
-                success: function (res) {
-                    $(res).insertBefore($form);
-                    $main.removeClass('loading');
-                }
-            });
-        }).on('click', '.lp-button-upgrade', function (e) {
-            e.preventDefault();
+			const $btn = $( this ),
+				url = $btn.addClass( 'disabled' ).attr( 'href' ),
+				context = $btn.data( 'context' );
+			$.post( {
+				url,
+				data: {
+					context,
+				},
+				success( res ) {
+					const $msg = $( res );
+					if ( context == 'message' ) {
+						$btn.closest( '.notice' ).replaceWith( $msg );
+					} else {
+						$msg.insertBefore( $btn );
+					}
+				},
+			} );
+		} ).on( 'click', '#skip-notice-install', function() {
+			$.post( {
+				url: '',
+				data: {
+					'lp-ajax': 'skip-notice-install',
+				},
+			} );
 
-            if (!confirm(i18n.i18n_confirm)) {
-                return false;
-            }
+			$( '#notice-install' ).fadeOut();
+		} );
+	}
 
-            var $btn = $(this),
-                url = $btn.addClass('disabled').attr('href'),
-                context = $btn.data('context');
-            $.post({
-                url: url,
-                data: {
-                    context: context
-                },
-                success: function (res) {
-                    var $msg = $(res);
-                    if (context == 'message') {
-                        $btn.closest('.notice').replaceWith($msg);
-                    } else {
-                        $msg.insertBefore($btn);
-                    }
-                }
-            });
-        }).on('click', '#skip-notice-install', function(){
-            $.post({
-                url: '',
-                data: {
-                    'lp-ajax': 'skip-notice-install'
-                }
-            });
-
-            $('#notice-install').fadeOut();
-        });
-    }
-
-    $(document).ready(init);
-
-})(jQuery);
+	$( document ).ready( init );
+}( jQuery ) );
