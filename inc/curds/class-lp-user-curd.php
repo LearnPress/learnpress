@@ -361,18 +361,19 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			/**
 			 * Get order checked out by Guest but with the email of the user are getting
+			 * Error when checkout with guest then register error Start Quiz - nhamdv.
 			 */
-			$sql_guest_orders = $wpdb->prepare(
-				"
-				SELECT p.*
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
-				LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
-			",
-				'_checkout_email',
-				$user->get_email(),
-				'_user_id'
-			);
+			// $sql_guest_orders = $wpdb->prepare(
+			// 	"
+			// 	SELECT p.*
+			// 	FROM {$wpdb->posts} p
+			// 	INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
+			// 	LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
+			// ",
+			// 	'_checkout_email',
+			// 	$user->get_email(),
+			// 	'_user_id'
+			// );
 
 			/**
 			 * The rest
@@ -391,13 +392,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				)
 			);
 
-			$sql = $sql_orders . ' UNION ' . $sql_guest_orders . $sql_rest;
+			$sql = $sql_orders /* . ' UNION ' . $sql_guest_orders */ . $sql_rest;
 
 			if ( $order_posts = $wpdb->get_results( $sql ) ) {
 				$order_ids = array();
-				foreach ( $order_posts as $order_post ) {
 
-					// Put post into cache to user later ... maybe.
+				foreach ( $order_posts as $order_post ) {
 					$_post = sanitize_post( $order_post, 'raw' );
 					wp_cache_add( $_post->ID, $_post, 'posts' );
 
@@ -1942,18 +1942,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function query_courses_by_order( $user_id ) {
 		global $wpdb;
-
-		// $query = $wpdb->prepare( "
-		// SELECT course.ID AS course_id, `order`.ID AS order_id, `order`.post_parent AS order_parent
-		// FROM {$wpdb->posts} `order`
-		// INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = `order`.ID
-		// INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-		// INNER JOIN {$wpdb->posts} course ON course.ID = oim.meta_value
-		// INNER JOIN {$wpdb->postmeta} pmu ON pmu.post_id = `order`.ID AND pmu.meta_key = %s
-		// WHERE pmu.meta_value = %d
-		// ORDER BY order_id DESC
-		// ", '_course_id', '_user_id', $user_id );
-		// $course_ids = $wpdb->get_col( $query );
 
 		$query         = $wpdb->prepare(
 			"
