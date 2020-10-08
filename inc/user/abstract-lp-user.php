@@ -383,74 +383,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					return false;
 				}
 
-				// if ( 1 === 0 ) {
-				// $course_data = $this->get_course_data( $course_id );
-				// $quiz        = learn_press_get_quiz( $quiz_id );
-				// $quiz_data   = $course_data->get_item( $quiz_id );
-				// if ( ! $quiz_data ) {
-				// $user_item_api = new LP_User_Item_CURD();
-				// $course_item   = $user_item_api->get_item_by( array(
-				// 'item_id' => $course_id,
-				// 'user_id' => $user->get_id()
-				// ) );
-				//
-				// $quiz_item              = LP_User_Item::get_empty_item();
-				// $quiz_item['user_id']   = $user->get_id();
-				// $quiz_item['item_id']   = $quiz_id;
-				// $quiz_item['item_type'] = learn_press_get_post_type( $quiz_id );
-				// $quiz_item['ref_id']    = $course_id;
-				// $quiz_item['ref_type']  = learn_press_get_post_type( $course_id );
-				// $quiz_item['parent_id'] = $course_item->user_item_id;
-				//
-				// $quiz_data = new LP_User_Item_Quiz( $quiz_item );
-				// }
-				//
-				// if ( ! $enable_history = $quiz->enable_archive_history() ) {
-				// if ( $quiz_data->get_user_item_id() ) {
-				// global $wpdb;
-				// $query = $wpdb->prepare( "
-				// DELETE FROM {$wpdb->learnpress_user_items}
-				// WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-				// ", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
-				//
-				// $wpdb->query( $query );
-				// } else {
-				// $course_data->update_item_retaken_count( $quiz_id, 0 );
-				// }
-				// } else {
-				// $count_history = $course_data->count_history_items( $quiz_id );
-				// }
-				//
-				// $course_data->update_item_retaken_count( $quiz_id, '+1' );
-				// $quiz_data->set_status( 'started' );
-				// $quiz_data->set_user_id( $user->get_id() );
-				//
-				// $date = new LP_Datetime();
-				// $quiz_data->set_start_time( $date->toSql() );
-				//
-				// **
-				// * If enable duration for quiz then update the expiration time
-				// * otherwise, consider quiz is lifetime access.
-				// */
-				// $expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
-				//
-				// if ( $quiz->get_duration()->get_seconds() ) {
-				// $quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds(), false ) );
-				// } else {
-				// $quiz_data->set_expiration_time( null );
-				// $quiz_data->set_expiration_time_gmt( null );
-				// }
-				//
-				// if ( $quiz_data->update() ) {
-				// $course_data->set_item( $quiz_data );
-				// }
-				//
-				// if ( $questions = $quiz->get_questions() ) {
-				// $question_id = reset( $questions );
-				// learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
-				// }
-				// }
-
 				$userQuiz = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
 
 				// @deprecated
@@ -480,7 +412,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return LP_User_Item_Quiz|bool|WP_Error
 		 */
 		public function finish_quiz( $quiz_id, $course_id, $wp_error = false ) {
-
 			if ( ! apply_filters( 'learn_press_before_user_finish_quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
 				return false;
 			}
@@ -506,11 +437,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$user_quiz = $this->get_item_data( $quiz_id, $course_id );
 
 				$user_quiz->finish();
-
-				/**
-				 * @deprecated
-				 */
-				do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
 
 				do_action( 'learn-press/user/quiz-finished', $quiz_id, $course_id, $this->get_id() );
 			} catch ( Exception $ex ) {
@@ -834,17 +760,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @param int  $item_id
 		 * @param int  $course_id
-		 * @param bool $force
 		 *
 		 * @return bool|mixed
 		 */
-		public function get_item_status( $item_id, $course_id = 0, $force = false ) {
-
-			// Deprecated third argument
-			if ( func_num_args() >= 3 ) {
-				_deprecated_argument( __FUNCTION__ . ' {$force}', '3.0.0' );
-			}
-
+		public function get_item_status( $item_id, $course_id = 0 ) {
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}

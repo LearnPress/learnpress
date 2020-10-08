@@ -61,7 +61,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'    => 'lp_profile_general',
 						),
 						array(
-							'title'   => __( 'Avatar Dimensions', 'learnpress' ),
+							'title'   => esc_html__( 'Avatar Dimensions', 'learnpress' ),
 							'id'      => 'avatar_dimensions',
 							'default' => array( 250, 250, 'yes' ),
 							'type'    => 'image-dimensions',
@@ -142,12 +142,12 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 					'learn-press/profile-settings-fields/sub-tabs',
 					array(
 						array(
-							'title' => __( 'Permalinks', 'learnpress' ),
+							'title' => esc_html__( 'Permalinks', 'learnpress' ),
 							'type'  => 'title',
 							'id'    => 'lp_profile_permalinks',
 						),
 						array(
-							'title'       => __( 'Overview', 'learnpress' ),
+							'title'       => esc_html__( 'Overview', 'learnpress' ),
 							'id'          => 'profile_endpoints[overview]',
 							'type'        => 'text',
 							'default'     => 'overview',
@@ -155,7 +155,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.dashboard', 'overview' ) . '</code>' ),
 						),
 						array(
-							'title'       => __( 'Courses', 'learnpress' ),
+							'title'       => esc_html__( 'Courses', 'learnpress' ),
 							'id'          => 'profile_endpoints[courses]',
 							'type'        => 'text',
 							'default'     => 'courses',
@@ -163,7 +163,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.courses', 'courses' ) . '</code>' ),
 						),
 						array(
-							'title'       => __( 'Quizzes', 'learnpress' ),
+							'title'       => esc_html__( 'Quizzes', 'learnpress' ),
 							'id'          => 'profile_endpoints[quizzes]',
 							'type'        => 'text',
 							'default'     => 'quizzes',
@@ -171,7 +171,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.quizzes', 'quizzes' ) . '</code>' ),
 						),
 						array(
-							'title'       => __( 'Orders', 'learnpress' ),
+							'title'       => esc_html__( 'Orders', 'learnpress' ),
 							'id'          => 'profile_endpoints[orders]',
 							'type'        => 'text',
 							'default'     => 'orders',
@@ -179,7 +179,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.orders', 'orders' ) . '</code>' ),
 						),
 						array(
-							'title'       => __( 'Order details', 'learnpress' ),
+							'title'       => esc_html__( 'Order details', 'learnpress' ),
 							'id'          => 'profile_endpoints[order-details]',
 							'type'        => 'text',
 							'default'     => 'order-details',
@@ -192,7 +192,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 					'learn-press/profile-settings-fields/settings-tab',
 					array(
 						array(
-							'title'       => __( 'Settings', 'learnpress' ),
+							'title'       => esc_html__( 'Settings', 'learnpress' ),
 							'id'          => 'profile_endpoints[settings]',
 							'type'        => 'text',
 							'default'     => 'settings',

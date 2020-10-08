@@ -1,15 +1,14 @@
 <?php
-
 /**
  * Class LP_Settings_Emails
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 4.0.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+
+defined( 'ABSPATH' ) || exit;
+
 require_once 'email-groups/class-lp-settings-emails-group.php';
 
 class LP_Settings_Emails extends LP_Abstract_Settings_Page {
@@ -23,7 +22,8 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id   = 'emails';
-		$this->text = __( 'Emails', 'learnpress' );
+		$this->text = esc_html__( 'Emails', 'learnpress' );
+
 		parent::__construct();
 
 		add_filter( 'learn-press/admin/submenu-section-title', array( $this, 'custom_section_title' ), 10, 2 );
@@ -39,12 +39,12 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 */
 	public function custom_section_title( $title, $slug ) {
 		$sections = $this->get_sections();
+
 		if ( ! empty( $sections[ $slug ] ) && $sections[ $slug ] instanceof LP_Email ) {
-			if ( $tooltip = $sections[ $slug ]->description ) {
-				$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $tooltip ) );
+			if ( $sections[ $slug ]->description ) {
+				$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $sections[ $slug ]->description ) );
 			}
 		}
-		$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( 'ádsadasdsadasd' ) );
 
 		return $title;
 	}
@@ -55,18 +55,16 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 * @return mixed
 	 */
 	public function get_sections() {
-
 		static $sections = false;
+
 		if ( ! $sections ) {
 			$emails = LP_Emails::instance()->emails;
 
 			$sections = array(
-				'general' => __( 'General', 'learnpress' ),
+				'general' => esc_html__( 'General', 'learnpress' ),
 			);
 
 			if ( $emails ) {
-
-				// Merge emails to group
 				$groups = array(
 					include 'email-groups/class-lp-settings-new-order-emails.php',
 					include 'email-groups/class-lp-settings-processing-order-emails.php',
@@ -90,6 +88,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 							continue 2;
 						}
 					}
+
 					$sections[ $email->id ] = $email;
 				}
 			}
@@ -108,58 +107,58 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 			'learn-press/emails-settings/general',
 			array(
 				array(
-					'title' => __( 'Sender Information', 'learnpress' ),
+					'title' => esc_html__( 'Sender Information', 'learnpress' ),
 					'type'  => 'heading',
-					'desc'  => __( 'For all outgoing LearnPress notification emails.', 'learnpress' ),
+					'desc'  => esc_html__( 'For all outgoing LearnPress notification emails.', 'learnpress' ),
 				),
 				array(
-					'title'   => __( 'Sender Name', 'learnpress' ),
+					'title'   => esc_html__( 'Sender Name', 'learnpress' ),
 					'id'      => 'emails_general[from_name]',
 					'default' => get_option( 'blogname' ),
 					'type'    => 'text',
 				),
 				array(
-					'title'   => __( 'Sender Email', 'learnpress' ),
+					'title'   => esc_html__( 'Sender Email', 'learnpress' ),
 					'id'      => 'emails_general[from_email]',
 					'default' => get_option( 'admin_email' ),
 					'type'    => 'email',
 				),
 				array(
-					'title'   => __( 'Background Email', 'learnpress' ),
+					'title'   => esc_html__( 'Background Email', 'learnpress' ),
 					'id'      => 'emails_general[send_email_background]',
 					'default' => 'no',
 					'type'    => 'yes-no',
-					'desc'    => __( 'Sending emails in the background.', 'learnpress' ),
+					'desc'    => esc_html__( 'Sending emails in the background.', 'learnpress' ),
 				),
 				array(
-					'title' => __( 'Template', 'learnpress' ),
+					'title' => esc_html__( 'Template', 'learnpress' ),
 					'type'  => 'heading',
 				),
 				array(
-					'title'   => __( 'Content Type', 'learnpress' ),
+					'title'   => esc_html__( 'Content Type', 'learnpress' ),
 					'id'      => 'emails_general[default_email_content]',
 					'default' => 'plain',
 					'type'    => 'select',
 					'options' => array(
-						'plain' => __( 'Plain Text', 'learnpress' ),
-						'html'  => __( 'HTML', 'learnpress' ),
+						'plain' => esc_html__( 'Plain Text', 'learnpress' ),
+						'html'  => esc_html__( 'HTML', 'learnpress' ),
 					),
 				),
 				array(
-					'title'            => __( 'Header Image', 'learnpress' ),
+					'title'            => esc_html__( 'Header Image', 'learnpress' ),
 					'id'               => 'emails_general[header_image]',
 					'default'          => '',
 					'type'             => 'image_advanced',
 					'max_file_uploads' => 1,
 				),
 				array(
-					'title'   => __( 'Footer Text', 'learnpress' ),
+					'title'   => esc_html__( 'Footer Text', 'learnpress' ),
 					'id'      => 'emails_general[footer_text]',
-					'default' => __( 'LearnPress', 'learnpress' ),
+					'default' => esc_html__( 'LearnPress', 'learnpress' ),
 					'type'    => 'textarea',
 				),
 				array(
-					'title'   => __( 'Emails', 'learnpress' ),
+					'title'   => esc_html__( 'Emails', 'learnpress' ),
 					'id'      => 'emails_general[list_emails]',
 					'default' => '',
 					'type'    => 'list-emails',
@@ -177,6 +176,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	public function admin_page( $section = null, $tab = null ) {
 		$sections = array();
 		$items    = LP_Admin_Menu::instance()->get_menu_items();
+
 		if ( ! empty( $items['settings'] ) ) {
 			$tab      = $items['settings']->get_active_tab();
 			$section  = $items['settings']->get_active_section();

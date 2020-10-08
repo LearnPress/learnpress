@@ -47,7 +47,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'type'           => 'true_or_false',
 					'title'          => __( 'New Question', 'learnpress' ),
 					'content'        => '',
-					'create_answers' => true, // some cases do not need create answers for new question
+					'create_answers' => true,
 				)
 			);
 
@@ -70,9 +70,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			);
 
 			if ( $question_id ) {
-
 				// add default meta for new lesson
 				$default_meta = LP_Question::get_default_meta();
+
 				if ( is_array( $default_meta ) ) {
 					foreach ( $default_meta as $key => $value ) {
 						update_post_meta( $question_id, '_lp_' . $key, $value );
@@ -87,27 +87,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 				if ( $args['create_answers'] ) {
 					$question->create_default_answers();
-					// $answers = $question->get_default_answers();
-					// insert answers data in new question
-					// foreach ( $answers as $index => $answer ) {
-					// $insert = array(
-					// 'question_id' => $question_id,
-					// **
-					// * @since 4.0
-					// */
-					// 'answer_data'  => serialize( array(
-					// 'text'    => stripslashes( $answer['title'] ),
-					// 'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-					// 'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
-					// )
-					// ),
-					// 'title'       => stripslashes( $answer['title'] ),
-					// 'value'       => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-					// 'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-					// 'order'       => $index + 1
-					// );
-					// $this->add_answer( $args['type'], $insert );
-					// }
 
 					// add question to quiz
 					if ( ! empty( $args['quiz_id'] ) ) {
@@ -116,7 +95,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					}
 				}
 
-				// hook
 				do_action( 'learn-press/after-create-question', $question );
 
 				return $question;
@@ -216,26 +194,20 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @param $new_question_id | new question
 		 */
 		public function duplicate_answer( $question_id, $new_question_id ) {
-
 			global $wpdb;
 
-			// duplicate question answer
 			$query          = $wpdb->prepare( " SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d", $question_id );
 			$answer_options = $wpdb->get_results( $query );
 
 			if ( $answer_options ) {
 				foreach ( $answer_options as $option ) {
-					$answer_data = maybe_unserialize( $option->answer_data );
 					$wpdb->insert(
 						$wpdb->learnpress_question_answers,
 						array(
 							'question_id' => $new_question_id,
-							/*
-							 @since 4.0 */
-							// 'answer_data'  => $option->answer_data,
-							'title'       => ! empty( $answer_data['title'] ) ? $answer_data['title'] : '',
-							'value'       => ! empty( $answer_data['value'] ) ? $answer_data['value'] : '',
-							'is_true'     => ! empty( $answer_data['is_true'] ) ? $answer_data['is_true'] : '',
+							'title'       => ! empty( $option->title ) ? $option->title : '',
+							'value'       => ! empty( $option->value ) ? $option->value : '',
+							'is_true'     => ! empty( $option->is_true ) ? $option->is_true  : '',
 							'order'       => $option->order,
 						),
 						array( '%d', '%s', '%s' )
@@ -396,7 +368,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|false|int
 		 */
 		public function update_answer_title( $question_id, $answer ) {
-
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
@@ -1051,7 +1022,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		protected function _load_answer_option_meta( &$answer_options ) {
 
-			global $wpdb;
 			if ( ! $answer_options ) {
 				return false;
 			}

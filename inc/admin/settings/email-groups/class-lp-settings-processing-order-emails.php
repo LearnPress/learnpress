@@ -19,7 +19,7 @@ class LP_Settings_Processing_Order_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __( 'Processing Order', 'learnpress' );
+		return esc_html__( 'Processing Order', 'learnpress' );
 	}
 }
 

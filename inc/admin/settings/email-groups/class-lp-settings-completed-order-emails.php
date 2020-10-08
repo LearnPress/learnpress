@@ -20,7 +20,7 @@ class LP_Settings_Completed_Order_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __( 'Completed Order', 'learnpress' );
+		return esc_html__( 'Completed Order', 'learnpress' );
 	}
 }
 

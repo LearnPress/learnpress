@@ -65,7 +65,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				} else {
 					$questions[ $id ] = array( 'answered' => $answer );
 				}
-			} else {
 			}
 		}
 

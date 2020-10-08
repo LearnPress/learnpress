@@ -75,7 +75,6 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			);
 		}
 
-
 		// Filter
 		if ( $tabs = apply_filters( 'learn-press/course-tabs', $defaults ) ) {
 			// Sort tabs by priority

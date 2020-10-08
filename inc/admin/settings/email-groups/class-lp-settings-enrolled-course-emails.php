@@ -25,7 +25,7 @@ class LP_Settings_Enrolled_Course_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __( 'Enrolled Course', 'learnpress' );
+		return esc_html__( 'Enrolled Course', 'learnpress' );
 	}
 }
 

@@ -25,7 +25,7 @@ class LP_Settings_Finished_Course_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __( 'Finished Course', 'learnpress' );
+		return esc_html__( 'Finished Course', 'learnpress' );
 	}
 }
 

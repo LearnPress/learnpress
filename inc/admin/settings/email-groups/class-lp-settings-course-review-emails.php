@@ -20,7 +20,7 @@ class LP_Settings_Course_Review_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __( 'Review Course', 'learnpress' );
+		return esc_html__( 'Review Course', 'learnpress' );
 	}
 }
 

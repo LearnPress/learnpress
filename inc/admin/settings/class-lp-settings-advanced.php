@@ -18,14 +18,6 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 		parent::__construct();
 	}
 
-	/**
-	 * Return fields for asset settings.
-	 *
-	 * @param string $section
-	 * @param string $tab
-	 *
-	 * @return mixed
-	 */
 	public function get_settings( $section = '', $tab = '' ) {
 		return apply_filters(
 			'learn_press_profile_settings',
@@ -36,7 +28,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'id'    => 'lp_metabox_setting_advanced',
 				),
 				array(
-					'title'    => __( 'Primary color', 'learnpress' ),
+					'title'    => esc_html__( 'Primary color', 'learnpress' ),
 					'desc'     => sprintf( __( 'Default: %s', 'learnpress' ), '<code>#ffb606</code>' ),
 					'id'       => 'primary_color',
 					'type'     => 'color',
@@ -46,7 +38,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'desc_tip' => true,
 				),
 				array(
-					'title'    => __( 'Secondary color', 'learnpress' ),
+					'title'    => esc_html__( 'Secondary color', 'learnpress' ),
 					'desc'     => sprintf( __( 'Default: %s', 'learnpress' ), '<code>#442e66</code>' ),
 					'id'       => 'secondary_color',
 					'type'     => 'color',
@@ -105,7 +97,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'id'      => 'enable_hard_cache',
 					'default' => 'no',
 					'type'    => 'checkbox',
-					'desc'    => sprintf( __( 'Enable cache for static content such as content and settings of course, lesson, quiz. <a href="%1$s">%2$s</a>', 'learnpress' ), admin_url( 'admin.php?page=learn-press-tools&tab=cache' ), __( 'Advanced', 'learnpress' ) ),
+					'desc'    => sprintf( __( 'Enable cache for static content such as content and settings of course, lesson, quiz. <a href="%1$s">%2$s</a>', 'learnpress' ), admin_url( 'admin.php?page=learn-press-tools&tab=cache' ), esc_html__( 'Advanced', 'learnpress' ) ),
 				),
 				array(
 					'type' => 'sectionend',

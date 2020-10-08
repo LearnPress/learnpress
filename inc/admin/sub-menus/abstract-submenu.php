@@ -301,20 +301,22 @@ abstract class LP_Abstract_Submenu {
 
 		<div class="<?php echo implode( ' ', $classes ); ?>">
 			<?php do_action( 'learn-press/admin/heading-icon', $active_tab ); ?>
+
 			<h1 class="wp-heading-inline">
 				<?php echo $this->get_menu_title(); ?>
 				<?php do_action( 'learn-press/admin/heading-title', $active_tab ); ?>
 			</h1>
+
 			<?php if ( $tabs ) { ?>
 				<h2 class="nav-tab-wrapper">
 					<?php foreach ( $tabs as $tab => $name ) { ?>
 						<?php
-						$objTab = false;
+						$obj_tab = false;
 
 						if ( is_object( $name ) ) {
-							$objTab = $name;
-							$name   = $objTab->text;
-							$tab    = $objTab->id;
+							$obj_tab = $name;
+							$name   = $obj_tab->text;
+							$tab    = $obj_tab->id;
 						}
 
 						$active_class = ( $tab == $active_tab ) ? ' nav-tab-active' : '';
@@ -360,7 +362,6 @@ abstract class LP_Abstract_Submenu {
 			$page = $this->_get_page();
 			$tab  = $this->get_active_tab();
 
-			// @since 3.3.0
 			do_action( 'learn-press/admin/before-page-content-sections', $page, $tab, $this );
 
 			// If I have a function named 'page_content_TAB_SLUG' then call it.
@@ -369,7 +370,6 @@ abstract class LP_Abstract_Submenu {
 			if ( is_callable( $callback ) ) {
 				call_user_func_array( $callback, array() );
 			} else {
-				// Otherwise, do a actions.
 				do_action( 'learn-press/admin/page-content-' . $page, $tab );
 				do_action( 'learn-press/admin/page-content-' . $page . '/' . $tab );
 			}
@@ -421,11 +421,13 @@ abstract class LP_Abstract_Submenu {
 	 */
 	public function display_section() {
 		$section = $this->get_active_section();
+
 		if ( ! $section ) {
 			return false;
 		}
 
 		$section_class = $this->sections[ $section ];
+
 		if ( ! $section_class ) {
 			return false;
 		}

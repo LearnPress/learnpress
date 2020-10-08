@@ -245,6 +245,22 @@
 }
 
 // Use on LP4.
+.lp-metabox__table {
+
+	.titledesc {
+
+		label {
+
+			>small {
+				display: block;
+				color: #999;
+				font-weight: normal;
+				font-style: italic;
+			}
+		}
+	}
+}
+
 .lp-metabox__custom-fields {
 
 	table {
