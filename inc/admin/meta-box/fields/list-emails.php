@@ -3,9 +3,10 @@
 <table class="learn-press-emails">
 	<thead>
 	<tr>
+		<th></th>
 		<th><?php esc_html_e( 'Email', 'learnpress' ); ?></th>
 		<th><?php esc_html_e( 'Description', 'learnpress' ); ?></th>
-		<th class="status"><?php esc_html_e( 'Status', 'learnpress' ); ?></th>
+		<th></th>
 	</tr>
 	</thead>
 
@@ -45,13 +46,13 @@
 					</a>
 				</td>
 				<td class="description"><?php echo $email->description; ?></td>
+				<td class="manage"><a class="button" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Manage', 'learnpress' ); ?></a></td>
 			</tr>
 		<?php } ?>
 	</tbody>
 </table>
 
 <p class="email-actions">
-	<?php learn_press_quick_tip( __( 'You can enable/disable each email by clicking on the status icon or apply status for all emails by clicking these buttons', 'learnpress' ) ); ?>
 	<button class="button" id="learn-press-enable-emails" data-status="yes"><?php esc_html_e( 'Enable all', 'learnpress' ); ?></button>
 	<button class="button" id="learn-press-disable-emails" data-status="no"><?php esc_html_e( 'Disable all', 'learnpress' ); ?></button>
 </p>

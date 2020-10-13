@@ -6,15 +6,13 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 global $post;
+
 $course      = learn_press_get_course();
 $video_embed = $course->get_video_embed();
 

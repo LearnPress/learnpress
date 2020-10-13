@@ -58,6 +58,8 @@ abstract class LP_Abstract_Settings {
 
 	/**
 	 * Print admin fields options.
+	 *
+	 * @todo: Remove in LP4
 	 */
 	public function admin_options() {
 		$settings = $this->get_settings();
@@ -68,7 +70,25 @@ abstract class LP_Abstract_Settings {
 		if ( $settings ) {
 			LP_Meta_Box_Helper::render_fields( $settings );
 		} else {
-			echo __( 'No setting available.', 'learnpress' );
+			echo esc_html__( 'No setting available.', 'learnpress' );
+		}
+	}
+
+	/**
+	 * Print admin fields options.
+	 *
+	 * @version 4.0.0
+	 */
+	public function admin_option_settings() {
+		$settings = $this->get_settings();
+		$settings = $this->sanitize_settings( $settings );
+
+		do_action( 'learn-press/settings-render' );
+
+		if ( $settings ) {
+			LP_Meta_Box_Helper::output_fields( $settings );
+		} else {
+			echo esc_html__( 'No setting available.', 'learnpress' );
 		}
 	}
 

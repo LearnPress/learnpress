@@ -3157,17 +3157,6 @@ a {
       .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail {
         overflow: hidden;
         position: relative; }
-        .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail::before {
-          position: absolute;
-          z-index: 1;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          opacity: 0;
-          background: rgba(0, 0, 0, 0.5);
-          content: "";
-          transition: all 0.3s; }
         .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .lp-badge.featured {
           position: absolute;
           z-index: 100;
@@ -3185,6 +3174,17 @@ a {
           border: 0;
           border-radius: unset;
           line-height: unset; }
+          .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-thumbnail .thumbnail::before {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            background: rgba(0, 0, 0, 0.5);
+            content: "";
+            transition: all 0.3s; }
           .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail .course-thumbnail .thumbnail img {
             display: block;
             width: 100%;
@@ -3213,7 +3213,7 @@ a {
           transform: scale(1.05); }
         .lp-archive-courses .learn-press-courses .course .course-item .course-wrap-thumbnail:hover .course-wishlist {
           opacity: 1; }
-      .lp-archive-courses .learn-press-courses .course .course-item:hover::before {
+      .lp-archive-courses .learn-press-courses .course .course-item:hover .course-thumbnail .thumbnail::before {
         opacity: 1; }
       .lp-archive-courses .learn-press-courses .course .course-item:hover .course-thumbnail a img {
         transform: scale(1.05); }

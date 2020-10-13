@@ -15,17 +15,15 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	 */
 	public function __construct() {
 		$this->id         = 'learn-press-settings';
-		$this->menu_title = __( 'Settings', 'learnpress' );
-		$this->page_title = __( 'LearnPress Settings', 'learnpress' );
+		$this->menu_title = esc_html__( 'Settings', 'learnpress' );
+		$this->page_title = esc_html__( 'LearnPress Settings', 'learnpress' );
 		$this->priority   = 30;
 
 		$this->tabs = learn_press_settings_tabs_array();
 
-		$this->init_tab();
-
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
 		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array( $this, 'section_content' ) );
-		add_action( 'admin_init', array( $this, 'maybe_save_settings' ) );
+		add_action( 'admin_init', array( $this, 'maybe_save_settings' ) ); // Todo: Remove in LP4.
 		add_filter( 'rwmb_field_meta', array( $this, 'field_meta' ), 10, 2 );
 
 		/** Save metabox in LP4 */
@@ -42,26 +40,6 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		return $meta;
 	}
 
-	protected function init_tab() {
-		$active_tab = $this->get_active_tab();
-
-		if ( $active_tab ) {
-			switch ( $active_tab ) {
-				case 'payments':
-					$this->sections = '';
-					break;
-				case 'emails':
-					$sections       = array(
-						'new_course' => esc_html__( 'New course', 'learnpress' ),
-					);
-					$this->sections = apply_filters( 'learn-press/admin/page-settings/emails/sections', $sections );
-					break;
-				default:
-					do_action( 'learn-press/admin/page-settings/init', $active_tab, $this );
-			}
-		}
-	}
-
 	/**
 	 * Display menu content
 	 */
@@ -73,7 +51,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$active_tab = $this->get_active_tab();
 
 		// Use custom metabox in LP4.
-		if ( $active_tab === 'profile' || $active_tab === 'advanced' ) {
+		if ( $active_tab === 'profile' || $active_tab === 'advanced' || $active_tab === 'emails' ) {
 			$this->tabs[ $active_tab ]->admin_page_settings( $this->get_active_section(), $this->get_sections() );
 		} else {
 			$this->tabs[ $active_tab ]->admin_page( $this->get_active_section(), $this->get_sections() );
@@ -112,7 +90,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		// Use custom metabox in LP4
 		$active_tab = $this->get_active_tab();
 
-		if ( $active_tab !== 'profile' && $active_tab !== 'advanced' ) {
+		if ( $active_tab !== 'profile' && $active_tab !== 'advanced' && $active_tab !== 'emails' ) {
 			return;
 		}
 
@@ -144,7 +122,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$active_tab = $this->get_active_tab();
 
 		// Use custom metabox in LP4
-		if ( $active_tab === 'profile' || $active_tab === 'advanced' ) {
+		if ( $active_tab === 'profile' || $active_tab === 'advanced' || $active_tab === 'emails' ) {
 			return;
 		}
 

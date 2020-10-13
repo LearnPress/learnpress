@@ -2105,3 +2105,15 @@ function learn_press_is_preview_course() {
 function learn_press_profile_logout_slug() {
 	return apply_filters( 'learn-press/profile-logout-slug', 'lp-logout' );
 }
+
+function lp_get_email_content( $format, $meta = array(), $field = array() ) {
+	if ( $meta && isset( $meta[ $format ] ) ) {
+		$content = stripslashes( $meta[ $format ] );
+	} else {
+		$template      = ! empty( $field[ "template_{$format}" ] ) ? $field[ "template_{$format}" ] : null;
+		$template_file = $field['template_base'] . $template;
+		$content       = LP_WP_Filesystem::get_contents( $template_file );
+	}
+
+	return $content;
+}

@@ -68,8 +68,8 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 				 * If the instructor also is admin and email for admin is enabled
 				 */
 				$instructor_email = $user->get_email();
-				$admin_email = apply_filters( 'learn-press/email/admin-email', get_option( 'admin_email' ));
-				$admin_email =LP()->settings->get( 'emails_cancelled-order-admin.recipients', $admin_email );
+				$admin_email      = apply_filters( 'learn-press/email/admin-email', get_option( 'admin_email' ) );
+				$admin_email      = LP()->settings->get( 'emails_cancelled-order-admin.recipients', $admin_email );
 				if ( $user->is_admin() && $admin_email == $instructor_email && LP_Emails::get_email( 'cancelled-order-admin' )->enable() ) {
 					continue;
 				}

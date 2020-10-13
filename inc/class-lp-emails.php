@@ -370,11 +370,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		public function get_image_header() {
 			$image = LP()->settings->get( 'emails_general.header_image' );
 
-			if ( is_array( $image ) ) {
-				$image = reset( $image );
-			}
-
-			if ( is_numeric( $image ) ) {
+			if ( ! empty( $image ) ) {
 				$image = wp_get_attachment_image_url( $image, 'full' );
 			}
 

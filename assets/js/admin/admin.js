@@ -343,8 +343,6 @@ var LP = LP || {};
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-
 (function ($) {
   'use strict';
 
@@ -399,9 +397,7 @@ var LP = LP || {};
       return versions.length;
     };
 
-    if (!this.data) {
-      return;
-    }
+    if (!this.data) {}
   };
 
   var UpdaterSettings = {
@@ -455,7 +451,7 @@ var LP = LP || {};
       },
       updateButtonClass: function updateButtonClass() {
         return {
-          'disabled': this.status === 'updating'
+          disabled: this.status === 'updating'
         };
       },
       doUpdate: function doUpdate(p, i) {

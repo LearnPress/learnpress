@@ -42,19 +42,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		);
 	}
 
-	protected function get_all_plugins_url( $min = '' ) {
-		$url = false;
-		if ( get_option( 'learn_press_exclude_admin_libraries' ) ) {
-			$upload_dir = wp_upload_dir();
-
-			if ( file_exists( $upload_dir['basedir'] . '/learnpress/admin.plugins.all' . $min . '.js' ) ) {
-				$url = $upload_dir['baseurl'] . '/learnpress/admin.plugins.all' . $min . '.js';
-			}
-		}
-
-		return $url;
-	}
-
 	/**
 	 * Get default scripts in admin.
 	 *
@@ -62,7 +49,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	protected function _get_scripts() {
 		$min = learn_press_is_debug() ? '' : '.min';
-		$url = $this->get_all_plugins_url( $min );
 
 		return apply_filters(
 			'learn-press/admin-default-scripts',
@@ -79,7 +65,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				// )
 				// ),
 					'lp-plugins-all'                => array(
-						'url'     => $url ? $url : self::url( 'js/vendor/admin.plugins.all' . $min . '.js' ),
+						'url'     => self::url( 'js/vendor/admin.plugins.all' . $min . '.js' ),
 						'screens' => array(
 							'learnpress',
 						),
@@ -250,33 +236,19 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		);
 	}
 
-	protected function get_bundle_css_url() {
-		$url = false;
-		if ( get_option( 'learn_press_exclude_admin_libraries' ) ) {
-			$upload_dir = wp_upload_dir();
-
-			if ( file_exists( $upload_dir['basedir'] . '/learnpress/admin.bundle.min.css' ) ) {
-				$url = $upload_dir['baseurl'] . '/learnpress/admin.bundle.min.css';
-			}
-		}
-
-		return $url;
-	}
-
 	/**
 	 * Get default styles in admin.
 	 *
 	 * @return mixed
 	 */
 	protected function _get_styles() {
-		$url = $this->get_bundle_css_url();
 
 		return apply_filters(
 			'learn-press/admin-default-styles',
 			array(
 				'select2'            => LP()->plugin_url( 'inc/libraries/meta-box/css/select2/select2.css' ),
 				'font-awesome'       => $this->url( 'css/vendor/font-awesome-5.min.css' ),
-				'learn-press-bundle' => $url ? $url : $this->url( 'css/bundle.min.css' ),
+				'learn-press-bundle' => $this->url( 'css/bundle.min.css' ),
 				'learn-press-admin'  => array(
 					'url'  => $this->url( 'css/admin/admin.css' ),
 					'deps' => array( 'wp-color-picker' ),
@@ -299,9 +271,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		 * TODO: check to show only scripts needed in specific pages
 		 */
 		$scripts = $this->_get_scripts();
+
 		if ( $scripts ) {
 			foreach ( $scripts as $handle => $data ) {
 				do_action( 'learn-press/enqueue-script/' . $handle );
+				wp_enqueue_media();
+
 				if ( ! empty( $data['screens'] ) ) {
 					if ( $screen_id === $data['screens'] || is_array( $data['screens'] ) && in_array( $screen_id, $data['screens'] ) ) {
 						wp_enqueue_script( $handle );

@@ -72,7 +72,6 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					include 'email-groups/class-lp-settings-cancelled-order-emails.php',
 					include 'email-groups/class-lp-settings-enrolled-course-emails.php',
 					include 'email-groups/class-lp-settings-finished-course-emails.php',
-					// include "email-groups/class-lp-settings-course-review-emails.php",
 					include 'email-groups/class-lp-settings-become-teacher-emails.php',
 				);
 
@@ -107,37 +106,43 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 			'learn-press/emails-settings/general',
 			array(
 				array(
-					'title' => esc_html__( 'Sender Information', 'learnpress' ),
-					'type'  => 'heading',
+					'title' => esc_html__( 'Email sender options', 'learnpress' ),
+					'type'  => 'title',
 					'desc'  => esc_html__( 'For all outgoing LearnPress notification emails.', 'learnpress' ),
 				),
 				array(
-					'title'   => esc_html__( 'Sender Name', 'learnpress' ),
+					'title'   => esc_html__( '"From" name', 'learnpress' ),
 					'id'      => 'emails_general[from_name]',
 					'default' => get_option( 'blogname' ),
 					'type'    => 'text',
+					'css'     => 'width:400px',
 				),
 				array(
-					'title'   => esc_html__( 'Sender Email', 'learnpress' ),
+					'title'   => esc_html__( '"From" address', 'learnpress' ),
 					'id'      => 'emails_general[from_email]',
 					'default' => get_option( 'admin_email' ),
 					'type'    => 'email',
+					'css'     => 'width:400px',
 				),
 				array(
-					'title'   => esc_html__( 'Background Email', 'learnpress' ),
+					'title'   => esc_html__( 'Background email', 'learnpress' ),
 					'id'      => 'emails_general[send_email_background]',
 					'default' => 'no',
-					'type'    => 'yes-no',
+					'type'    => 'checkbox',
 					'desc'    => esc_html__( 'Sending emails in the background.', 'learnpress' ),
 				),
 				array(
-					'title' => esc_html__( 'Template', 'learnpress' ),
-					'type'  => 'heading',
+					'type' => 'sectionend',
 				),
 				array(
-					'title'   => esc_html__( 'Content Type', 'learnpress' ),
+					'title' => esc_html__( 'Email template', 'learnpress' ),
+					'type'  => 'title',
+					'desc'  => esc_html__( 'This section lets you customize the LearnPress emails', 'learnpress' ),
+				),
+				array(
+					'title'   => esc_html__( 'Content type', 'learnpress' ),
 					'id'      => 'emails_general[default_email_content]',
-					'default' => 'plain',
+					'default' => 'html',
 					'type'    => 'select',
 					'options' => array(
 						'plain' => esc_html__( 'Plain Text', 'learnpress' ),
@@ -145,14 +150,13 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					),
 				),
 				array(
-					'title'            => esc_html__( 'Header Image', 'learnpress' ),
-					'id'               => 'emails_general[header_image]',
-					'default'          => '',
-					'type'             => 'image_advanced',
-					'max_file_uploads' => 1,
+					'title'   => esc_html__( 'Header image', 'learnpress' ),
+					'id'      => 'emails_general[header_image]',
+					'default' => '',
+					'type'    => 'image',
 				),
 				array(
-					'title'   => esc_html__( 'Footer Text', 'learnpress' ),
+					'title'   => esc_html__( 'Footer text', 'learnpress' ),
 					'id'      => 'emails_general[footer_text]',
 					'default' => esc_html__( 'LearnPress', 'learnpress' ),
 					'type'    => 'textarea',
@@ -163,6 +167,9 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'default' => '',
 					'type'    => 'list-emails',
 				),
+				array(
+					'type' => 'sectionend',
+				),
 			)
 		);
 	}
@@ -172,8 +179,9 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 *
 	 * @param string $section
 	 * @param string $tab
+	 * @version 4.0.0
 	 */
-	public function admin_page( $section = null, $tab = null ) {
+	public function admin_page_settings( $section = null, $tab = null ) {
 		$sections = array();
 		$items    = LP_Admin_Menu::instance()->get_menu_items();
 
@@ -184,23 +192,12 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 		}
 		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
 
-		// If current section is an instance of Settings just call to admin_options.
 		if ( $section_data instanceof LP_Email ) {
-			$section_data->admin_options();
-		} elseif ( is_array( $section_data ) ) {
+			$section_data->admin_option_settings();
 		} else {
-			// If I have a function point to current section with prefix 'admin_options_'.
-			// Then call to it.
 			if ( is_callable( array( $this, 'admin_options_' . $section ) ) ) {
-				call_user_func_array(
-					array( $this, 'admin_options_' . $section ),
-					array(
-						$section,
-						$tab,
-					)
-				);
+				call_user_func_array( array( $this, 'admin_options_' . $section ), array( $section, $tab ) );
 			} else {
-				// leave of all, do an action.
 				do_action( 'learn-press/admin/setting-payments/admin-options-' . $section, $tab );
 			}
 		}
@@ -213,7 +210,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 * @param string $tab
 	 */
 	public function admin_options_general( $section, $tab ) {
-		parent::admin_page( $section, $tab );
+		parent::admin_page_settings( $section, $tab );
 	}
 
 	public static function instance() {

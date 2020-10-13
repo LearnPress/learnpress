@@ -101,6 +101,10 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/select.php';
 						break;
 
+					case 'image_advanced':
+						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/image-advanced.php';
+						break;
+
 					default:
 						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/' . $value['type'] . '.php';
 						break;
@@ -184,6 +188,16 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 								$value[ $cfsort ] = $feilds;
 							}
 						}
+						break;
+
+					case 'image_advanced':
+						$value = ! empty( $raw_value ) ? array_filter( explode( ',', learnpress_clean( $raw_value ) ) ) : array();
+						break;
+					case 'image':
+						$value = ! empty( $raw_value ) ? absint( learnpress_clean( $raw_value ) ) : '';
+						break;
+					case 'email-content':
+						$value = ! empty( $raw_value ) ? $raw_value : array();
 						break;
 					default:
 						$value = learnpress_clean( $raw_value );

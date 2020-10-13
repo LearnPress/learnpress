@@ -446,8 +446,8 @@ function learn_press_email_formats_dropdown( $args = array() ) {
  */
 function learn_press_email_formats() {
 	$formats = array(
-		'plain' => __( 'Plain Text', 'learnpress' ),
-		'html'  => __( 'HTML', 'learnpress' ),
+		'plain' => esc_html__( 'Plain Text', 'learnpress' ),
+		'html'  => esc_html__( 'HTML', 'learnpress' ),
 	);
 
 	return apply_filters( 'learn-press/email-formats', $formats );

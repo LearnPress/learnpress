@@ -202,6 +202,138 @@ var lpMetaboxColorPicker = function lpMetaboxColorPicker() {
   });
 };
 
+var lpMetaboxImage = function lpMetaboxImage() {
+  $('.lp-metabox-field__image').each(function (i, ele) {
+    var lpImageFrame;
+    var addImage = $(ele).find('.lp-metabox-field__image--add');
+    var delImage = $(ele).find('.lp-metabox-field__image--delete');
+    var image = $(ele).find('.lp-metabox-field__image--image');
+    var inputVal = $(ele).find('.lp-metabox-field__image--id');
+
+    if (!inputVal.val()) {
+      addImage.show();
+      delImage.hide();
+    } else {
+      addImage.hide();
+      delImage.show();
+    }
+
+    addImage.on('click', function (event) {
+      event.preventDefault();
+
+      if (lpImageFrame) {
+        lpImageFrame.open();
+        return;
+      }
+
+      lpImageFrame = wp.media({
+        title: addImage.data('choose'),
+        button: {
+          text: addImage.data('update')
+        },
+        multiple: false
+      });
+      lpImageFrame.on('select', function () {
+        var attachment = lpImageFrame.state().get('selection').first().toJSON();
+        var attachmentImage = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+        image.append('<div class="lp-metabox-field__image--inner"><img src="' + attachmentImage + '" alt="" style="max-width:100%;"/></div>');
+        inputVal.val(attachment.id);
+        addImage.hide();
+        delImage.show();
+      });
+      lpImageFrame.open();
+    });
+    delImage.on('click', function (event) {
+      event.preventDefault();
+      image.html('');
+      addImage.show();
+      delImage.hide();
+      inputVal.val('');
+    });
+  });
+};
+
+var lpMetaboxImageAdvanced = function lpMetaboxImageAdvanced() {
+  $('.lp-metabox-field__image-advanced').each(function (i, element) {
+    var lpImageFrame;
+    var imageGalleryIds = $(element).find('#lp-gallery-images-ids');
+    var listImages = $(element).find('.lp-metabox-field__image-advanced-images');
+    var btnUpload = $(element).find('.lp-metabox-field__image-advanced-upload > a');
+    $(btnUpload).on('click', function (event) {
+      event.preventDefault();
+
+      if (lpImageFrame) {
+        lpImageFrame.open();
+        return;
+      }
+
+      lpImageFrame = wp.media({
+        title: btnUpload.data('choose'),
+        button: {
+          text: btnUpload.data('update')
+        },
+        states: [new wp.media.controller.Library({
+          title: btnUpload.data('choose'),
+          filterable: 'all',
+          multiple: true
+        })]
+      });
+      lpImageFrame.on('select', function () {
+        var selection = lpImageFrame.state().get('selection');
+        var attachmentIds = imageGalleryIds.val();
+        selection.forEach(function (attachment) {
+          attachment = attachment.toJSON();
+
+          if (attachment.id) {
+            attachmentIds = attachmentIds ? attachmentIds + ',' + attachment.id : attachment.id;
+            var attachmentImage = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+            listImages.append('<li class="image" data-attachment_id="' + attachment.id + '"><img src="' + attachmentImage + '" /><ul class="actions"><li><a href="#" class="delete" title="' + btnUpload.data('delete') + '">' + btnUpload.data('text') + '</a></li></ul></li>');
+          }
+        });
+        imageGalleryIds.val(attachmentIds);
+      });
+      lpImageFrame.open();
+    });
+    listImages.sortable({
+      items: 'li.image',
+      cursor: 'move',
+      scrollSensitivity: 40,
+      forcePlaceholderSize: true,
+      forceHelperSize: false,
+      helper: 'clone',
+      opacity: 0.65,
+      placeholder: 'lp-metabox-sortable-placeholder',
+      start: function start(event, ui) {
+        ui.item.css('background-color', '#f6f6f6');
+      },
+      stop: function stop(event, ui) {
+        ui.item.removeAttr('style');
+      },
+      update: function update() {
+        var attachmentIds = '';
+        listImages.find('li.image').css('cursor', 'default').each(function () {
+          var attachmentId = $(this).attr('data-attachment_id');
+          attachmentIds = attachmentIds + attachmentId + ',';
+        });
+        imageGalleryIds.val(attachmentIds);
+      }
+    });
+    $(listImages).find('li.image').each(function (i, ele) {
+      var del = $(ele).find('a.delete');
+      del.on('click', function () {
+        $(ele).remove();
+        var attachmentIds = '';
+        $(listImages).find('li.image').css('cursor', 'default').each(function () {
+          var attachmentId = $(this).attr('data-attachment_id');
+          attachmentIds = attachmentIds + attachmentId + ',';
+        });
+        imageGalleryIds.val(attachmentIds);
+        return false;
+      });
+    });
+  });
+};
+
 var initTooltips = function initTooltips() {
   $('.learn-press-tooltip').each(function () {
     var $el = $(this),
@@ -474,9 +606,12 @@ var onReady = function onReady() {
   makePaymentsSortable();
   initSelect2();
   initTooltips();
-  initSingleCoursePermalink();
+  initSingleCoursePermalink(); // lp Metabox in LP4.
+
   lpMetaboxCustomFields();
   lpMetaboxColorPicker();
+  lpMetaboxImageAdvanced();
+  lpMetaboxImage();
   $('.learn-press-tabs').LP('AdminTab');
   $(document).on('click', '.learn-press-payments .status .dashicons', togglePaymentStatus).on('click', '.change-email-status', updateEmailStatus).on('click', '#_lp_sale_price_schedule', toggleSalePriceSchedule).on('click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule).on('click', '.learn-press-filter-template', callbackFilterTemplates).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails).on('click', '.lp-duplicate-row-action .lp-duplicate-post', duplicatePost).on('click', '#learn-press-install-sample-data-notice a', importCourses).on('input', '#meta-box-tab-course_payment', onChangeCoursePrices).on('change', '#_lp_sale_start', onChangeSaleStartDate).on('change', '#_lp_sale_end', onChangeSaleEndDate);
 };

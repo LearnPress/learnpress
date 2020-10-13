@@ -327,17 +327,17 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$this->subject = $this->settings->get( 'subject', $this->default_subject );
 			$this->enable  = $this->settings->get( 'enable' ) === 'yes';
 
-			if ( $format = $this->settings->get( 'email_content.format' ) ) {
-				$this->email_format = $format == 'plain_text' ? 'plain' : 'html';
+			if ( $this->settings->get( 'email_content.format' ) ) {
+				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
 			} else {
-				if ( $format = LP()->settings->get( 'emails_general.default_email_content' ) ) {
-					$this->email_format = $format;
+				if ( LP()->settings->get( 'emails_general.default_email_content' ) ) {
+					$this->email_format = LP()->settings->get( 'emails_general.default_email_content' );
 				}
 			}
 
 			$email_formats = array( 'plain', 'html' );
 			if ( ! in_array( $this->email_format, $email_formats ) ) {
-				$this->email_format = 'plain';
+				$this->email_format = 'html';
 			}
 
 			$this->basic_variables = array(
@@ -387,8 +387,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 								'email_content',
 								array(
 									'format' => 'html',
-									'plain'  => RWMB_Email_Content_Field::get_email_content( 'plain', '', $field ),
-									'html'   => RWMB_Email_Content_Field::get_email_content( 'html', '', $field ),
+									'plain'  => lp_get_email_content( 'plain', '', $field ),
+									'html'   => lp_get_email_content( 'html', '', $field ),
 								)
 							);
 						} else {
@@ -847,7 +847,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				}
 			}
 
-						remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
+			remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 			remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 			remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
 
@@ -965,8 +965,11 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$default = array_merge(
 				array(
 					array(
-						'title'   => __( 'Enable', 'learnpress' ),
-						'type'    => 'yes-no',
+						'type' => 'title',
+					),
+					array(
+						'title'   => esc_html__( 'Enable/Disable', 'learnpress' ),
+						'type'    => 'checkbox',
 						'default' => 'no',
 						'id'      => $this->get_field_name( 'enable' ),
 						'desc'    => $this->description,
@@ -974,58 +977,30 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				),
 				$enable_recipients ? array(
 					array(
-						'title'      => __( 'Recipient(s)', 'learnpress' ),
-						'type'       => 'text',
-						'default'    => get_option( 'admin_email' ),
-						'id'         => $this->get_field_name( 'recipients' ),
-						'desc'       => __( 'Separate other recipients by comma.', 'learnpress' ),
-						'visibility' => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => $this->get_field_name( 'enable' ),
-									'compare' => '=',
-									'value'   => 'yes',
-								),
-							),
-						),
+						'title'   => esc_html__( 'Recipient(s)', 'learnpress' ),
+						'type'    => 'text',
+						'default' => get_option( 'admin_email' ),
+						'id'      => $this->get_field_name( 'recipients' ),
+						'desc'    => esc_html__( 'Separate other recipients by comma.', 'learnpress' ),
 					),
 				) : array(),
 				array(
 					array(
-						'title'      => __( 'Subject', 'learnpress' ),
-						'type'       => 'text',
-						'default'    => $this->default_subject,
-						'id'         => $this->get_field_name( 'subject' ),
-						'visibility' => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => $this->get_field_name( 'enable' ),
-									'compare' => '=',
-									'value'   => 'yes',
-								),
-							),
-						),
+						'title'   => esc_html__( 'Subject', 'learnpress' ),
+						'type'    => 'text',
+						'default' => $this->default_subject,
+						'id'      => $this->get_field_name( 'subject' ),
+						'css'     => 'width:400px',
 					),
 					array(
-						'title'      => __( 'Heading', 'learnpress' ),
-						'type'       => 'text',
-						'default'    => $this->default_heading,
-						'id'         => $this->get_field_name( 'heading' ),
-						'visibility' => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => $this->get_field_name( 'enable' ),
-									'compare' => '=',
-									'value'   => 'yes',
-								),
-							),
-						),
+						'title'   => esc_html__( 'Email heading', 'learnpress' ),
+						'type'    => 'text',
+						'default' => $this->default_heading,
+						'id'      => $this->get_field_name( 'heading' ),
+						'css'     => 'width:400px',
 					),
 					array(
-						'title'                => __( 'Content Type', 'learnpress' ),
+						'title'                => esc_html__( 'Content type', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
 						'id'                   => $this->get_field_name( 'email_content' ),
@@ -1036,16 +1011,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
 						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
 						'support_variables'    => $this->get_variables_support(),
-						'visibility'           => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => $this->get_field_name( 'enable' ),
-									'compare' => '=',
-									'value'   => 'yes',
-								),
-							),
-						),
+					),
+					array(
+						'type' => 'sectionend',
 					),
 				)
 			);
@@ -1061,10 +1029,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get_settings() {
-			return apply_filters(
-				'learn-press/email-settings/' . $this->id . '/settings',
-				$this->_default_settings()
-			);
+			return apply_filters( 'learn-press/email-settings/' . $this->id . '/settings', $this->_default_settings() );
 		}
 
 		/**

@@ -81,19 +81,6 @@ a {
 					overflow: hidden;
 					position: relative;
 
-					&::before {
-						position: absolute;
-						z-index: 1;
-						top: 0;
-						right: 0;
-						bottom: 0;
-						left: 0;
-						opacity: 0;
-						background: rgba(0, 0, 0, 0.5);
-						content: "";
-						transition: all 0.3s;
-					}
-
 					.lp-badge {
 
 						&.featured {
@@ -120,6 +107,19 @@ a {
 							border: 0;
 							border-radius: unset;
 							line-height: unset;
+
+							&::before {
+								position: absolute;
+								z-index: 1;
+								top: 0;
+								right: 0;
+								bottom: 0;
+								left: 0;
+								opacity: 0;
+								background: rgba(0, 0, 0, 0.5);
+								content: "";
+								transition: all 0.3s;
+							}
 
 							img {
 								display: block;
@@ -174,8 +174,14 @@ a {
 				// Should change effect when hovering on wrap element instead of thumbnail only.
 				&:hover {
 
-					&::before {
-						opacity: 1;
+					.course-thumbnail {
+
+						.thumbnail {
+
+							&::before {
+								opacity: 1;
+							}
+						}
 					}
 
 					.course-thumbnail a img {

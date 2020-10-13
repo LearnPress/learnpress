@@ -20,17 +20,13 @@ if ( ! $course = learn_press_get_course() ) {
 ?>
 
 <div class="course-thumbnail">
-    <a href="<?php the_permalink(); ?>">
-
-        <div class="thumbnail-preview">
-            <div class="thumbnail">
-
-                <div class="centered">
-	                <?php echo $course->get_image( 'course_thumbnail' ); ?>
-                </div>
-
-            </div>
-
-        </div>
-    </a>
+	<a href="<?php the_permalink(); ?>">
+		<div class="thumbnail-preview">
+			<div class="thumbnail">
+				<div class="centered">
+					<?php echo $course->get_image( 'course_thumbnail' ); ?>
+				</div>
+			</div>
+		</div>
+	</a>
 </div>

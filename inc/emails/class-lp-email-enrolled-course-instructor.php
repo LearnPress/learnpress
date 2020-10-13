@@ -58,9 +58,10 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Instructor' ) ) {
 			 * If the instructor also is admin and email for admin is enabled
 			 */
 			$instructor_email = $instructor->get_email();
-			$admin_email = apply_filters( 'learn-press/email/admin-email', get_option( 'admin_email' ));
-			$admin_email =LP()->settings->get( 'emails_enrolled-course-admin.recipients', $admin_email );
-			if ( $instructor->is_admin() && $admin_email== $instructor_email && LP_Emails::get_email( 'enrolled-course-admin' )->enable() ) {
+			$admin_email      = apply_filters( 'learn-press/email/admin-email', get_option( 'admin_email' ) );
+			$admin_email      = LP()->settings->get( 'emails_enrolled-course-admin.recipients', $admin_email );
+
+			if ( $instructor->is_admin() && $admin_email == $instructor_email && LP_Emails::get_email( 'enrolled-course-admin' )->enable() ) {
 				return false;
 			}
 

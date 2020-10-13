@@ -24,9 +24,9 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Admin' ) ) {
 		 * LP_Email_Finished_Course_Admin constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'finished-course-admin';
-			$this->title       = __( 'Admin', 'learnpress' );
-			$this->description = __( 'Send this email to admin when user has finished course.', 'learnpress' );
+			$this->id              = 'finished-course-admin';
+			$this->title           = __( 'Admin', 'learnpress' );
+			$this->description     = __( 'Send this email to admin when user has finished course.', 'learnpress' );
 			$this->default_subject = __( '{{user_display_name}} has finished course', 'learnpress' );
 			$this->default_heading = __( 'User has finished course', 'learnpress' );
 

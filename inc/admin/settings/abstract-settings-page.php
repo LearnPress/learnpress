@@ -37,6 +37,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	 *
 	 * @param string $section
 	 * @param string $tab
+	 * @todo Remove in LP4.
 	 */
 	public function admin_page( $section = null, $tab = '' ) {
 		$settings = $this->get_settings( $section, $tab );
@@ -56,6 +57,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	 *
 	 * @param string $section
 	 * @param string $tab
+	 * @version 4.0.0
 	 */
 	public function admin_page_settings( $section = null, $tab = '' ) {
 		$settings = $this->get_settings( $section, $tab );
@@ -70,8 +72,15 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		}
 	}
 
+	/**
+	 * Save option in LP4.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 * @version 4.0.0
+	 */
 	public function save_settings( $section = null, $tab = '' ) {
-		$settings = $this->get_settings( $section, $tab );
+		$settings = apply_filters( 'learn-press/admin/get-settings/admin-options-' . $section, $this->get_settings( $section, $tab ) );
 		$settings = $this->sanitize_settings( $settings );
 
 		if ( $settings ) {

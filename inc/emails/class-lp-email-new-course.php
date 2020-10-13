@@ -36,16 +36,19 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 
 			$this->recipient = LP()->settings->get( 'emails_new_course.recipient' );
 
-			$this->support_variables = array_merge( $this->general_variables, array(
-				'{{course_id}}',
-				'{{course_name}}',
-				'{{course_edit_url}}',
-				'{{course_user_id}}',
-				'{{course_user_name}}',
-				'{{course_user_email}}',
-			) );
+			$this->support_variables = array_merge(
+				$this->general_variables,
+				array(
+					'{{course_id}}',
+					'{{course_name}}',
+					'{{course_edit_url}}',
+					'{{course_user_id}}',
+					'{{course_user_name}}',
+					'{{course_user_email}}',
+				)
+			);
 
-			//$this->email_text_message_description = sprintf( '%s {{course_id}}, {{course_title}}, {{course_url}}, {{course_edit_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
+			// $this->email_text_message_description = sprintf( '%s {{course_id}}, {{course_title}}, {{course_url}}, {{course_edit_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 			parent::__construct();
 		}
 
@@ -73,7 +76,7 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 					'course_edit_url'   => admin_url( 'post.php?post=' . $course_id . '&action=edit' ),
 					'course_user_id'    => $user->get_id(),
 					'course_user_name'  => learn_press_get_profile_display_name( $user ),
-					'course_user_email' => $user->get_data( 'email' )
+					'course_user_email' => $user->get_data( 'email' ),
 				)
 			);
 
@@ -125,13 +128,13 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 					array(
 						'type'  => 'heading',
 						'title' => $this->title,
-						'desc'  => $this->description
+						'desc'  => $this->description,
 					),
 					array(
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => $this->get_field_name( 'enable' )
+						'id'      => $this->get_field_name( 'enable' ),
 					),
 					array(
 						'title'      => __( 'Recipient(s)', 'learnpress' ),
@@ -145,10 +148,10 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 								array(
 									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
+									'value'   => 'yes',
+								),
+							),
+						),
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
@@ -162,10 +165,10 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 								array(
 									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
+									'value'   => 'yes',
+								),
+							),
+						),
 					),
 					array(
 						'title'      => __( 'Heading', 'learnpress' ),
@@ -179,10 +182,10 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 								array(
 									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
+									'value'   => 'yes',
+								),
+							),
+						),
 					),
 					array(
 						'title'                => __( 'Email content', 'learnpress' ),
@@ -190,7 +193,7 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 						'default'              => '',
 						'id'                   => $this->get_field_name( 'email_content' ),
 						'template_base'        => $this->template_base,
-						'template_path'        => $this->template_path,//default learnpress
+						'template_path'        => $this->template_path, // default learnpress
 						'template_html'        => $this->template_html,
 						'template_plain'       => $this->template_plain,
 						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
@@ -202,10 +205,10 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 								array(
 									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
+									'value'   => 'yes',
+								),
+							),
+						),
 					),
 				)
 			);

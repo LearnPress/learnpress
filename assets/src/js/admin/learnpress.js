@@ -114,6 +114,173 @@ const lpMetaboxColorPicker = () => {
 	} );
 };
 
+const lpMetaboxImage = () => {
+	$( '.lp-metabox-field__image' ).each( ( i, ele ) => {
+		let lpImageFrame;
+
+		const addImage = $( ele ).find( '.lp-metabox-field__image--add' );
+		const delImage = $( ele ).find( '.lp-metabox-field__image--delete' );
+
+		const image = $( ele ).find( '.lp-metabox-field__image--image' );
+		const inputVal = $( ele ).find( '.lp-metabox-field__image--id' );
+
+		if ( ! inputVal.val() ) {
+			addImage.show();
+			delImage.hide();
+		} else {
+			addImage.hide();
+			delImage.show();
+		}
+
+		addImage.on( 'click', ( event ) => {
+			event.preventDefault();
+
+			if ( lpImageFrame ) {
+				lpImageFrame.open();
+				return;
+			}
+
+			lpImageFrame = wp.media( {
+				title: addImage.data( 'choose' ),
+				button: {
+					text: addImage.data( 'update' ),
+				},
+				multiple: false,
+			} );
+
+			lpImageFrame.on( 'select', function() {
+				const attachment = lpImageFrame.state().get( 'selection' ).first().toJSON();
+				const attachmentImage = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+
+				image.append( '<div class="lp-metabox-field__image--inner"><img src="' + attachmentImage + '" alt="" style="max-width:100%;"/></div>' );
+
+				inputVal.val( attachment.id );
+
+				addImage.hide();
+
+				delImage.show();
+			} );
+
+			lpImageFrame.open();
+		} );
+
+		delImage.on( 'click', ( event ) => {
+			event.preventDefault();
+
+			image.html( '' );
+
+			addImage.show();
+
+			delImage.hide();
+
+			inputVal.val( '' );
+		} );
+	} );
+};
+
+const lpMetaboxImageAdvanced = () => {
+	$( '.lp-metabox-field__image-advanced' ).each( ( i, element ) => {
+		let lpImageFrame;
+
+		const imageGalleryIds = $( element ).find( '#lp-gallery-images-ids' );
+		const listImages = $( element ).find( '.lp-metabox-field__image-advanced-images' );
+		const btnUpload = $( element ).find( '.lp-metabox-field__image-advanced-upload > a' );
+
+		$( btnUpload ).on( 'click', ( event ) => {
+			event.preventDefault();
+
+			if ( lpImageFrame ) {
+				lpImageFrame.open();
+				return;
+			}
+
+			lpImageFrame = wp.media( {
+				title: btnUpload.data( 'choose' ),
+				button: {
+					text: btnUpload.data( 'update' ),
+				},
+				states: [
+					new wp.media.controller.Library( {
+						title: btnUpload.data( 'choose' ),
+						filterable: 'all',
+						multiple: true,
+					} ),
+				],
+			} );
+
+			lpImageFrame.on( 'select', function() {
+				const selection = lpImageFrame.state().get( 'selection' );
+				let attachmentIds = imageGalleryIds.val();
+
+				selection.forEach( function( attachment ) {
+					attachment = attachment.toJSON();
+
+					if ( attachment.id ) {
+						attachmentIds = attachmentIds ? attachmentIds + ',' + attachment.id : attachment.id;
+						const attachmentImage = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+
+						listImages.append(
+							'<li class="image" data-attachment_id="' + attachment.id + '"><img src="' + attachmentImage +
+						'" /><ul class="actions"><li><a href="#" class="delete" title="' + btnUpload.data( 'delete' ) + '">' +
+						btnUpload.data( 'text' ) + '</a></li></ul></li>'
+						);
+					}
+				} );
+
+				imageGalleryIds.val( attachmentIds );
+			} );
+
+			lpImageFrame.open();
+		} );
+
+		listImages.sortable( {
+			items: 'li.image',
+			cursor: 'move',
+			scrollSensitivity: 40,
+			forcePlaceholderSize: true,
+			forceHelperSize: false,
+			helper: 'clone',
+			opacity: 0.65,
+			placeholder: 'lp-metabox-sortable-placeholder',
+			start( event, ui ) {
+				ui.item.css( 'background-color', '#f6f6f6' );
+			},
+			stop( event, ui ) {
+				ui.item.removeAttr( 'style' );
+			},
+			update() {
+				let attachmentIds = '';
+
+				listImages.find( 'li.image' ).css( 'cursor', 'default' ).each( function() {
+					const attachmentId = $( this ).attr( 'data-attachment_id' );
+					attachmentIds = attachmentIds + attachmentId + ',';
+				} );
+
+				imageGalleryIds.val( attachmentIds );
+			},
+		} );
+
+		$( listImages ).find( 'li.image' ).each( ( i, ele ) => {
+			const del = $( ele ).find( 'a.delete' );
+
+			del.on( 'click', () => {
+				$( ele ).remove();
+
+				let attachmentIds = '';
+
+				$( listImages ).find( 'li.image' ).css( 'cursor', 'default' ).each( function() {
+					const attachmentId = $( this ).attr( 'data-attachment_id' );
+					attachmentIds = attachmentIds + attachmentId + ',';
+				} );
+
+				imageGalleryIds.val( attachmentIds );
+
+				return false;
+			} );
+		} );
+	} );
+};
+
 const initTooltips = function initTooltips() {
 	$( '.learn-press-tooltip' ).each( function() {
 		const $el = $( this ),
@@ -386,8 +553,12 @@ const onReady = function onReady() {
 	initSelect2();
 	initTooltips();
 	initSingleCoursePermalink();
+
+	// lp Metabox in LP4.
 	lpMetaboxCustomFields();
 	lpMetaboxColorPicker();
+	lpMetaboxImageAdvanced();
+	lpMetaboxImage();
 
 	$( '.learn-press-tabs' ).LP( 'AdminTab' );
 
