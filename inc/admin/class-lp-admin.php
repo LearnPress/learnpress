@@ -42,7 +42,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
 			add_filter( 'manage_pages_custom_column', array( $this, 'page_columns_content' ), 10, 2 );
 			add_filter( 'views_edit-page', array( $this, 'views_pages' ), 10 );
-			add_filter( 'pre_get_posts', array( $this, 'filter_pages' ), 10 );
 			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
 			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
 			add_filter( 'get_pages', array( $this, 'add_empty_page' ), 1000, 2 );
@@ -53,10 +52,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
 
-			add_filter( 'learn-press/dismissed-notice-response', array( $this, 'on_dismissed_notice_response' ), 10, 2 );
+			add_filter( 'learn-press/dismissed-notice-response', array(
+				$this,
+				'on_dismissed_notice_response'
+			), 10, 2 );
 
 			// get list items course of user | tungnx
-			add_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10, 5 );
+			add_action( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
+			add_action( 'pre_get_posts', array( $this, 'get_pages_is_lp_page' ), 10 );
 
 			// Set link item course when edit on Backend | tungnx
 			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
@@ -360,7 +363,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int    $post
+		 * @param int $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -402,11 +405,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
+		 * Get pages set by LP with param url lp-page=yes
+		 *
 		 * @param WP_Query $q
 		 *
 		 * @return mixed
 		 */
-		public function filter_pages( $q ) {
+		public function get_pages_is_lp_page( $q ) {
 			if ( 'page' == LP_Request::get( 'post_type' ) && 'yes' == LP_Request::get( 'lp-page' ) ) {
 				if ( $ids = array_keys( $this->_get_static_pages( 'learnpress' ) ) ) {
 					$q->set( 'post__in', $ids );
@@ -419,7 +424,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -526,9 +531,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				} ?>
 
-				<div class="updated notice">
-					<p><?php echo sprintf( __( 'User has %s to become a teacher.', 'learnpress' ), $action == 'accepted-request' ? 'accepted' : 'denied' ); ?></p>
-				</div>
+                <div class="updated notice">
+                    <p><?php echo sprintf( __( 'User has %s to become a teacher.', 'learnpress' ), $action == 'accepted-request' ? 'accepted' : 'denied' ); ?></p>
+                </div>
 
 				<?php
 			}
@@ -582,15 +587,15 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			$colors = $_wp_admin_css_colors[ $schema ]->colors;
 			?>
-			<style type="text/css">
-				.admin-color {
-					color: <?php echo $colors[0];?>
-				}
+            <style type="text/css">
+              .admin-color {
+                color: <?php echo $colors[0];?>
+              }
 
-				.admin-background {
-					color: <?php echo $colors[0];?>
-				}
-			</style>
+              .admin-background {
+                color: <?php echo $colors[0];?>
+              }
+            </style>
 			<?php
 		}
 
@@ -714,22 +719,22 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				if ( ! get_option( 'learn_press_message_user_rated' ) ) {
 					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks from LearnPress team for your generous.', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
 					ob_start(); ?>
-					<script type="text/javascript">
-						jQuery(function ($) {
-							var $ratingLink = $('a.lp-rating-link').click(function (e) {
-								$.ajax({
-									url    : '<?php echo admin_url( 'admin-ajax.php' );?>',
-									data   : {
-										action: 'learn_press_rated'
-									},
-									success: function () {
-										$ratingLink.parent().html($ratingLink.data('rated'));
-									}
-								});
-							});
-						})
+                    <script type="text/javascript">
+                      jQuery(function ($) {
+                        var $ratingLink = $('a.lp-rating-link').click(function (e) {
+                          $.ajax({
+                            url: '<?php echo admin_url( 'admin-ajax.php' );?>',
+                            data: {
+                              action: 'learn_press_rated',
+                            },
+                            success: function () {
+                              $ratingLink.parent().html($ratingLink.data('rated'))
+                            },
+                          })
+                        })
+                      })
 
-					</script>
+                    </script>
 					<?php
 					echo ob_get_clean();
 				}
@@ -754,7 +759,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Send data to join newsletter or dismiss.
 		 *
-		 * @param array  $data
+		 * @param array $data
 		 * @param string $notice
 		 *
 		 * @return array
@@ -833,10 +838,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function get_course_items_of_user_backend( $query ) {
-			global $post_type, $pagenow, $wpdb;
+			global $post_type, $pagenow;
 
-			if ( ! current_user_can( LP_TEACHER_ROLE ) ||
-				! current_user_can( 'administrator' ) || ( $pagenow != 'edit.php' ) ) {
+			if ( current_user_can( 'administrator' ) ) {
+				return $query;
+			}
+
+			if ( ! current_user_can( LP_TEACHER_ROLE ) || ( $pagenow != 'edit.php' ) ) {
 				return $query;
 			}
 
@@ -861,10 +869,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Set link item of course when edit item on Backend
 		 *
-		 * @param string       $post_link
-		 * @param int          $post_id
-		 * @param string       $new_title
-		 * @param string       $new_slug
+		 * @param string $post_link
+		 * @param int $post_id
+		 * @param string $new_title
+		 * @param string $new_slug
 		 * @param WP_Post|null $post
 		 *
 		 * @return array|int|mixed|string|void
