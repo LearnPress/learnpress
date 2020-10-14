@@ -789,8 +789,6 @@ Object(_utils_extend__WEBPACK_IMPORTED_MODULE_0__["default"])('Utils', {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-
 (function () {
   var $ = window.jQuery;
 
@@ -811,7 +809,7 @@ Object(_utils_extend__WEBPACK_IMPORTED_MODULE_0__["default"])('Utils', {
 
     function addNewPageToList(args) {
       var $new_option = $('<option value="' + args.ID + '">' + args.name + '</option>');
-      var position = $.inArray(args.ID + "", args.positions);
+      var position = $.inArray(args.ID + '', args.positions);
       $('.learn-press-dropdown-pages select').each(function () {
         var $sel = $(this),
             $option = $new_option.clone();

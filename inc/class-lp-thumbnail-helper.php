@@ -26,34 +26,36 @@ class LP_Thumbnail_Helper {
 	 * @return string
 	 */
 	public function get_course_image( $course_id, $size = 'course_thumbnail', $attr = array() ) {
-		if ( ! $course = learn_press_get_course( $course_id ) ) {
+		$course = learn_press_get_course( $course_id );
+
+		if ( ! $course ) {
 			return '';
 		}
 
 		$attr  = wp_parse_args(
 			$attr,
 			array(
-				'alt' => $course->get_title()
+				'alt'   => $course->get_title(),
+				'title' => $course->get_title(),
 			)
 		);
 		$image = '';
 
-		if ( 'yes' !== LP()->settings->get( 'archive_course_thumbnail' ) && in_array( $size, learn_press_get_custom_thumbnail_sizes() ) ) {
+		$thumbnail = LP()->settings()->get( 'course_thumbnail_dimensions' );
+
+		if ( empty( $thumbnail['width'] ) || empty( $thumbnail['height'] ) ) {
 			$size = '';
 		}
 
 		if ( has_post_thumbnail( $course_id ) ) {
 			$image = get_the_post_thumbnail( $course_id, $size, $attr );
-		} elseif ( ( $parent_id = wp_get_post_parent_id( $course_id ) ) && has_post_thumbnail( $parent_id ) ) {
-			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
+		} elseif ( wp_get_post_parent_id( $course_id ) && has_post_thumbnail( $parent_id ) ) {
+			$parent_id = wp_get_post_parent_id( $course_id );
+			$image     = get_the_post_thumbnail( $parent_id, $size, $attr );
 		}
 
 		if ( ! $image ) {
-			//if ( 'course_thumbnail' == $size ) {
 			$image = LP()->image( 'no-image.png' );
-			//} else {
-			//$image = LP()->image( 'placeholder-500x300' );
-			//}
 			$image = sprintf( '<img src="%s" alt="%s">', $image, _x( 'course thumbnail', 'no course thumbnail', 'learnpress' ) );
 		}
 
@@ -82,13 +84,13 @@ class LP_Thumbnail_Helper {
 
 		if ( 'youtube' === $video_type ) {
 			$embed = '<iframe width="' . $width . '" height="' . $height . '" '
-			         . 'src="https://www.youtube.com/embed/' . $video_id . '" '
-			         . 'frameborder="0" allowfullscreen></iframe>';
+					 . 'src="https://www.youtube.com/embed/' . $video_id . '" '
+					 . 'frameborder="0" allowfullscreen></iframe>';
 
 		} elseif ( 'vimeo' === $video_type ) {
 			$embed = '<iframe width="' . $width . '" height="' . $height . '" '
-			         . ' src="https://player.vimeo.com/video/' . $video_id . '" '
-			         . 'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+					 . ' src="https://player.vimeo.com/video/' . $video_id . '" '
+					 . 'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
 		}
 
 		return $embed;

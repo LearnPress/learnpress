@@ -19,7 +19,7 @@ $profile = LP_Global::profile();
 $fields  = $profile->get_login_fields();
 ?>
 
-<input type="radio" id="checkout-account-switch-to-login" name="checkout-account-switch-form" value="login"/>
+<input type="radio" id="checkout-account-switch-to-login" checked="checked" name="checkout-account-switch-form" value="login"/>
 <div id="checkout-account-login" class="lp-checkout-block left">
 
 	<h4><?php esc_html_e( 'Sign in', 'learnpress' ); ?></h4>

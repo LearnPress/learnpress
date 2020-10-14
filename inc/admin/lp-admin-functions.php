@@ -258,7 +258,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		<?php echo esc_html( _x( 'or', 'drop down pages', 'learnpress' ) ); ?>
 
 		<button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button">
-			<?php esc_html_e( 'Create New', 'learnpress' ); ?>
+			<?php esc_html_e( 'Create new', 'learnpress' ); ?>
 		</button>
 		<?php echo '</div>'; ?>
 
@@ -271,9 +271,9 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		</p>
 
 		<p class="quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
-			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php esc_html_e( 'Edit Page', 'learnpress' ); ?></a>
+			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php esc_html_e( 'Edit page', 'learnpress' ); ?></a>
 			&#124;
-			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php esc_html_e( 'View Page', 'learnpress' ); ?></a>
+			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php esc_html_e( 'View page', 'learnpress' ); ?></a>
 		</p>
 
 		<?php

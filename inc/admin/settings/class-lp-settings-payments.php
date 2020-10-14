@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Admin/Classes
- * @version 1.0
+ * @version 4.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * Manage all payments are registered and settings to control order process.
  *
- * @extend LP_Abstract_Settings_Page
  */
 class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	/**
@@ -22,7 +21,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id   = 'payments';
-		$this->text = __( 'Payments', 'learnpress' );
+		$this->text = esc_html__( 'Payments', 'learnpress' );
 
 		parent::__construct();
 
@@ -51,7 +50,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		if ( ! $sections ) {
 			$gateways = LP_Gateways::instance()->get_gateways();
 			$sections = array(
-				'general' => __( 'General', 'learnpress' ),
+				'general' => esc_html__( 'General', 'learnpress' ),
 			);
 
 			if ( $gateways ) {
@@ -72,81 +71,83 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	public function get_settings_general() {
 		$checkout_url = learn_press_get_checkout_url();
 
-		return apply_filters(
-			'learn-press/payment-settings',
-			array_merge(
-				apply_filters(
-					'learn-press/payment-settings/general',
-					array(
-
-						array(
-							'title'   => __( 'Guest Checkout', 'learnpress' ),
-							'id'      => 'guest_checkout',
-							'default' => 'no',
-							'type'    => 'yes-no',
-						),
-					)
-				),
-				apply_filters(
-					'learn-press/payment-settings/checkout-endpoints',
-					array(
-						array(
-							'title'       => __( 'Custom Order Slug', 'learnpress' ),
-							'id'          => 'checkout_endpoints[lp_order_received]',
-							'default'     => 'lp-order-received',
-							'placeholder' => __( 'lp-order-received', 'learnpress' ),
-							'type'        => 'text',
-							'desc'        => sprintf( 'e.g. %s', "{$checkout_url}<code>" . LP()->settings()->get( 'checkout_endpoints.lp_order_received', 'lp-order-received' ) . '</code>' ),
-						),
-					)
+		$guest = apply_filters(
+			'learn-press/payment-settings/general',
+			array(
+				array(
+					'type' => 'title',
 				),
 				array(
-					array(
-						'title'   => __( 'Payments', 'learnpress' ),
-						'id'      => 'payment_order',
-						'default' => '',
-						'type'    => 'payment-order',
-					),
-				)
+					'title'   => esc_html__( 'Guest checkout', 'learnpress' ),
+					'id'      => 'guest_checkout',
+					'default' => 'no',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Enable guest checkout', 'learnpress' ),
+				),
+				array(
+					'title'   => esc_html__( 'Account login', 'learnpress' ),
+					'id'      => 'enable_login_checkout',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Enable login form in checkout', 'learnpress' ),
+				),
+				array(
+					'title'   => esc_html__( 'Account creation', 'learnpress' ),
+					'id'      => 'enable_registration_checkout',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Enable register form in checkout', 'learnpress' ),
+				),
 			)
 		);
+
+		$enpoints = apply_filters(
+			'learn-press/payment-settings/checkout-endpoints',
+			array(
+				array(
+					'title'       => esc_html__( 'Custom order slug', 'learnpress' ),
+					'id'          => 'checkout_endpoints[lp_order_received]',
+					'default'     => 'lp-order-received',
+					'placeholder' => 'lp-order-received',
+					'type'        => 'text',
+					'desc'        => sprintf( 'e.g. %s', "{$checkout_url}<code>" . LP()->settings()->get( 'checkout_endpoints.lp_order_received', 'lp-order-received' ) . '</code>' ),
+				),
+			)
+		);
+
+		$payment = array(
+			array(
+				'title'   => esc_html__( 'Payments', 'learnpress' ),
+				'id'      => 'payment_order',
+				'default' => '',
+				'type'    => 'payment-order',
+			),
+			array(
+				'type' => 'sectionend',
+			),
+		);
+
+		return apply_filters( 'learn-press/payment-settings', array_merge( $guest, $enpoints, $payment ) );
 	}
 
-	/**
-	 * Display admin page for payments settings tab.
-	 *
-	 * @param string $section
-	 * @param string $tab
-	 */
-	public function admin_page( $section = null, $tab = null ) {
+	public function admin_page_settings( $section = null, $tab = null ) {
 		$sections = array();
 		$items    = LP_Admin_Menu::instance()->get_menu_items();
+
 		if ( ! empty( $items['settings'] ) ) {
 			$tab      = $items['settings']->get_active_tab();
 			$section  = $items['settings']->get_active_section();
 			$sections = $items['settings']->get_sections();
 		}
+
 		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
 
-		// If current section is an instance of Settings just call to admin_options.
 		if ( $section_data instanceof LP_Abstract_Settings ) {
-			$section_data->admin_options();
-		} elseif ( is_array( $section_data ) ) {
+			$section_data->admin_option_settings();
+		} elseif ( is_callable( array( $this, 'admin_options_' . $section ) ) ) {
+			call_user_func_array( array( $this, 'admin_options_' . $section ), array( $section, $tab ) );
 		} else {
-			// If I have a function point to current section with prefix 'admin_options_'.
-			// Then call to it.
-			if ( is_callable( array( $this, 'admin_options_' . $section ) ) ) {
-				call_user_func_array(
-					array( $this, 'admin_options_' . $section ),
-					array(
-						$section,
-						$tab,
-					)
-				);
-			} else {
-				// leave of all, do an action.
-				do_action( 'learn-press/admin/setting-payments/admin-options-' . $section, $tab );
-			}
+			do_action( 'learn-press/admin/setting-payments/admin-options-' . $section, $tab );
 		}
 	}
 
@@ -157,7 +158,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	 * @param string $tab
 	 */
 	public function admin_options_general( $section, $tab ) {
-		parent::admin_page( $section, $tab );
+		parent::admin_page_settings( $section, $tab );
 	}
 }
 

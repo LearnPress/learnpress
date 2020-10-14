@@ -31,14 +31,13 @@ class LP_Settings {
 	/**
 	 * @var bool
 	 */
-	static protected $_instance = false;
+	protected static $_instance = false;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param array|mixed $data
 	 * @param string      $prefix
-	 *
 	 */
 	public function __construct( $data = false, $prefix = 'learn_press_' ) {
 
@@ -51,14 +50,14 @@ class LP_Settings {
 			settype( $data, 'array' );
 			$this->_options = $data;
 		}
-		//self::load_site_options();
-		//add_action( 'init', array( $this, 'init' ) );
+		// self::load_site_options();
+		// add_action( 'init', array( $this, 'init' ) );
 	}
 
 	public function init() {
 
-		//LP_Background_Global::add( 'load-site-options', '', array( __CLASS__, 'load_site_options' ) );
-		//LP_Settings::load_site_options();
+		// LP_Background_Global::add( 'load-site-options', '', array( __CLASS__, 'load_site_options' ) );
+		// LP_Settings::load_site_options();
 	}
 
 	/**
@@ -80,14 +79,17 @@ class LP_Settings {
 	 */
 	protected function _load_options( $force = false ) {
 
-		//$this->_options = wp_load_alloptions();
+		// $this->_options = wp_load_alloptions();
 
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT option_name, option_value
 			FROM {$wpdb->options}
 			WHERE option_name LIKE %s
-		", $wpdb->esc_like( $this->_prefix ) . '%' );
+		",
+			$wpdb->esc_like( $this->_prefix ) . '%'
+		);
 
 		if ( $options = $wpdb->get_results( $query ) ) {
 			foreach ( $options as $option ) {
@@ -304,17 +306,20 @@ class LP_Settings {
 			'pmpro_hide_footer_link',
 			'learn-press-flush-rewrite-rules',
 			'_lp_tabs_data',
-			'learn_press_permalinks'
+			'learn_press_permalinks',
 		);
 		global $wpdb;
 
 		$format = array_fill( 0, sizeof( $options ), '%s' );
-		$q      = $wpdb->prepare( "
+		$q      = $wpdb->prepare(
+			"
 			SELECT option_name, option_value
 			FROM $wpdb->options
 			WHERE 1
-			AND option_name IN(" . join( ',', $format ) . ")
-		", $options );
+			AND option_name IN(" . join( ',', $format ) . ')
+		',
+			$options
+		);
 
 		$alloptions_db = $wpdb->get_results( $q, OBJECT_K );
 		$notoptions    = wp_cache_get( 'notoptions', 'options' );
@@ -343,13 +348,17 @@ class LP_Settings {
 	 * @return array
 	 */
 	public function get_checkout_endpoints() {
-		if ( false === ( $endpoints = LP_Object_Cache::get( 'checkout', 'learn-press-endpoints' ) ) ) {
+		$endpoints = LP_Object_Cache::get( 'checkout', 'learn-press-endpoints' );
+
+		if ( false === $endpoints ) {
 			$defaults = array(
-				'lp-order-received' => 'lp-order-received'
+				'lp-order-received' => 'lp-order-received',
 			);
 
 			$endpoints = array();
-			if ( $settings = LP()->settings->get( 'checkout_endpoints' ) ) {
+			$settings  = LP()->settings->get( 'checkout_endpoints' );
+
+			if ( $settings ) {
 				foreach ( $settings as $k => $v ) {
 					$k               = preg_replace( '!_!', '-', $k );
 					$endpoints[ $k ] = $v;

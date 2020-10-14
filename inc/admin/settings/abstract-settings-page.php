@@ -33,26 +33,6 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Display admin page.
-	 *
-	 * @param string $section
-	 * @param string $tab
-	 * @todo Remove in LP4.
-	 */
-	public function admin_page( $section = null, $tab = '' ) {
-		$settings = $this->get_settings( $section, $tab );
-		$settings = $this->sanitize_settings( $settings );
-
-		do_action( 'learn-press/settings-render' );
-
-		if ( $settings ) {
-			LP_Meta_Box_Helper::render_fields( $settings );
-		} else {
-			echo esc_html__( 'No setting available.', 'learnpress' );
-		}
-	}
-
-	/**
 	 * Display admin page in LP4.
 	 *
 	 * @param string $section
@@ -87,7 +67,6 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 			LP_Meta_Box_Helper::save_fields( $settings );
 		}
 	}
-
 
 	/**
 	 * Get name for field

@@ -1218,12 +1218,8 @@ add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_
 function learn_press_mark_user_just_logged_in() {
 	LP()->session->set( 'user_just_logged_in', 'yes' );
 }
-
 add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
 
-function learn_press_get_custom_thumbnail_sizes() {
-	return apply_filters( 'learn-press/custom-thumbnail-sizes', array( 'archive_course_thumbnail' => 'course_thumbnail' ) );
-}
 
 function learn_press_translate_course_result_required( $passing_condition = null ) {
 	$course = learn_press_get_course();

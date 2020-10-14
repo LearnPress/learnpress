@@ -104,29 +104,12 @@ class LP_Template_General extends LP_Abstract_Template {
 
 	public function become_teacher_button() {
 		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+
 		if ( $messages ) {
 			return;
 		}
 
 		learn_press_get_template( 'global/become-teacher-form/button.php' );
-	}
-
-	function checkout_form_login() {
-
-		if ( ! LP()->checkout()->is_enable_login() ) {
-			return;
-		}
-
-		learn_press_get_template( 'checkout/form-login.php' );
-	}
-
-	public function checkout_form_register() {
-
-		if ( ! LP()->checkout()->is_enable_register() ) {
-			return;
-		}
-
-		learn_press_get_template( 'checkout/form-register.php' );
 	}
 
 	public function order_payment() {

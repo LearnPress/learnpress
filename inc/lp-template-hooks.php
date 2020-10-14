@@ -307,13 +307,6 @@ add_action( 'learn-press/become-teacher-form', LP()->template( 'general' )->func
 add_action( 'learn-press/after-become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_button' ), 10 );
 /** END: Become teacher form */
 
-/**
- * @see LP_Template_General::checkout_form_login()
- * @see LP_Template_General::checkout_form_register()
- */
-// add_action( 'learn-press/before-checkout-form', LP()->template( 'general' )->func( 'checkout_form_login' ), 5 );
-// add_action( 'learn-press/before-checkout-form', LP()->template( 'general' )->func( 'checkout_form_register' ), 10 );
-// add_action( 'learn-press/checkout-order-review', LP()->template( 'general' )->callback( 'checkout/review-order.php' ), 5 );
 
 // add_action( 'learn-press/after-checkout-order-review', LP()->template( 'general' )->callback( 'checkout/order-comment.php' ), 5 );
 // add_action( 'learn-press/after-checkout-order-review', LP()->template( 'general' )->func( 'order_payment' ), 10 );
@@ -322,8 +315,8 @@ add_action( 'learn-press/after-become-teacher-form', LP()->template( 'general' )
 add_action( 'learn-press/before-checkout-form', LP()->template( 'checkout' )->func( 'review_order' ), 10 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_logged_in' ), 20 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_register' ), 30 );
-add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'guest_checkout' ), 40 );
-add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_login' ), 50 );
+add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_login' ), 40 );
+add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'guest_checkout' ), 50 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'payment' ), 60 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'terms' ), 70 );
 

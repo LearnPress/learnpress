@@ -525,11 +525,42 @@ ul .clearfix {
   margin: 0;
   vertical-align: top; }
 
-.learn-press-dropdown-pages .select2-selection__rendered {
-  line-height: 26px !important; }
+.learn-press-dropdown-pages .select2-container {
+  min-width: 220px !important; }
+  .learn-press-dropdown-pages .select2-container .select2-selection--single {
+    height: 30px;
+    border-color: #7e8993; }
+  .learn-press-dropdown-pages .select2-container .select2-selection__rendered {
+    line-height: 28px !important; }
+  .learn-press-dropdown-pages .select2-container .select2-selection__arrow {
+    right: 1px;
+    width: 23px;
+    height: 28px;
+    background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 5px top 55%;
+    background-size: 16px 16px; }
+    .learn-press-dropdown-pages .select2-container .select2-selection__arrow b {
+      display: none; }
+
+.learn-press-dropdown-pages .quick-add-page-actions a {
+  font-size: 13px;
+  text-decoration: none; }
 
 .learn-press-dropdown-pages .quick-add-page-inline {
   margin-top: 0; }
+
+.lp-select-2 + .select2-container .select2-selection--single {
+  height: 30px;
+  border-color: #7e8993; }
+  .lp-select-2 + .select2-container .select2-selection--single .select2-selection__rendered {
+    line-height: 28px !important; }
+  .lp-select-2 + .select2-container .select2-selection--single .select2-selection__arrow {
+    right: 1px;
+    width: 23px;
+    height: 28px;
+    background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 5px top 55%;
+    background-size: 16px 16px; }
+  .lp-select-2 + .select2-container .select2-selection--single .select2-selection__arrow b {
+    display: none; }
 
 /* Tooltip */
 .learn-press-tooltip {
@@ -3590,30 +3621,31 @@ body.lp-item-moving {
 
 .learn-press-tip {
   display: none;
-  line-height: 1;
   margin: 0 5px;
-  font-size: 14px;
+  color: #444;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1;
   vertical-align: baseline;
-  cursor: pointer;
-  font-style: normal; }
+  cursor: pointer; }
   .learn-press-tip.ready {
     display: inline-block; }
-  .learn-press-tip:before {
+  .learn-press-tip::before {
     font-family: "Font Awesome 5 Free";
     content: "\f059"; }
   .learn-press-tip:hover {
     opacity: 0.8; }
 
 .learn-press-tip-floating {
-  background: #383838;
-  padding: .618em 1em;
-  line-height: 1.2em;
-  color: #FFF;
-  min-width: 20px;
   position: absolute;
-  margin-left: -1px;
-  font-size: 12px;
   z-index: 9999999;
+  min-width: 20px;
+  margin-left: -1px;
+  padding: 0.618em 1em;
+  color: #fff;
+  background: #383838;
+  font-size: 12px;
+  line-height: 1.2em;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px; }
@@ -3622,35 +3654,35 @@ body.lp-item-moving {
   .learn-press-tip-floating .close {
     display: inline-block;
     position: absolute;
+    top: -8px;
+    right: -8px;
     width: 16px;
     height: 16px;
-    right: -8px;
-    top: -8px;
-    border: 1px solid #FFF;
-    text-align: center;
-    line-height: 16px;
+    border: 1px solid #fff;
+    color: #fff;
     background: #468fbc;
-    color: #FFF;
+    line-height: 16px;
+    text-align: center;
     cursor: pointer;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%; }
-    .learn-press-tip-floating .close:before {
-      content: "\f00d";
-      font-family: "Font Awesome 5 Free"; }
+    .learn-press-tip-floating .close::before {
+      font-family: "Font Awesome 5 Free";
+      content: "\f00d"; }
   .learn-press-tip-floating p {
     margin: 0; }
-  .learn-press-tip-floating:before {
-    content: '';
+  .learn-press-tip-floating::before {
     position: absolute;
+    bottom: -6px;
+    left: 50%;
     width: 0;
     height: 0;
-    bottom: -6px;
+    margin-left: -6px;
     border: 6px solid transparent;
     border-top-color: #383838;
     border-bottom-width: 0;
-    left: 50%;
-    margin-left: -6px; }
+    content: ""; }
 
 @media screen and (max-width: 782px) {
   .learn-press-dropdown-pages .select2-container {
@@ -4167,6 +4199,3 @@ body.post-type-lp_question #button-new-question {
     height: 100%;
     background: #ccc;
     content: ""; }
-
-.learn-press-dropdown-pages .list-pages.select2-hidden-accessible {
-  min-width: 300px; }

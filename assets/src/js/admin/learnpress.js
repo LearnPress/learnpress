@@ -291,7 +291,7 @@ const initTooltips = function initTooltips() {
 
 const initSelect2 = function initSelect2() {
 	if ( $.fn.select2 ) {
-		$( '.lp-select-2 select' ).select2();
+		$( 'select.lp-select-2' ).select2();
 	}
 };
 

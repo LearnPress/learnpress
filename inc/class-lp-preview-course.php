@@ -39,7 +39,7 @@ class LP_Preview_Course {
 						'post_type'   => LP_COURSE_CPT,
 						'post_title'  => $title,
 						'post_status' => 'draft',
-						'post_name'   => sanitize_title( $title )
+						'post_name'   => sanitize_title( $title ),
 					)
 				);
 
@@ -58,9 +58,9 @@ class LP_Preview_Course {
 		global $wpdb;
 
 		if ( ! self::is_preview() ) {
-			if ( $ids = LP_Preview_Course::get_preview_courses() ) {
+			if ( $ids = self::get_preview_courses() ) {
 				$format = array_fill( 0, sizeof( $ids ), '%d' );
-				$where  .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ") ", $ids );
+				$where .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ') ', $ids );
 			}
 		}
 
@@ -110,7 +110,7 @@ class LP_Preview_Course {
 				wp_update_post(
 					array(
 						'ID'        => $post_id,
-						'post_name' => sanitize_title( $post_item->post_title )
+						'post_name' => sanitize_title( $post_item->post_title ),
 					)
 				);
 
@@ -145,10 +145,9 @@ class LP_Preview_Course {
 			// Edit button
 			add_action( 'learn-press/before-course-item-content', array( __CLASS__, 'edit_button' ) );
 
-			//learn_press_debug($_SERVER);die();
+			// learn_press_debug($_SERVER);die();
 
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 			wp_redirect( get_home_url() );
 			exit();
@@ -158,12 +157,16 @@ class LP_Preview_Course {
 	public static function get_preview_courses() {
 		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses' ) ) ) {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT post_id
 				FROM {$wpdb->postmeta} pm
 				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 				WHERE meta_key = %s AND meta_value = %s
-			", '_lp_preview_course', 'yes' );
+			",
+				'_lp_preview_course',
+				'yes'
+			);
 
 			$ids = $wpdb->get_col( $query );
 			LP_Object_Cache::set( 'preview-courses', $ids );
@@ -214,15 +217,15 @@ class LP_Preview_Course {
 				$slug,
 				$post_course->post_name,
 				$post_types[ $post_item->post_type ]->rewrite['slug'],
-				$post_item->post_name
+				$post_item->post_name,
 			)
 		);
 	}
 
 	public static function init() {
-//		add_action( 'init', array( __CLASS__, 'setup_preview' ) );
-//		add_filter( 'wp_count_posts', array( __CLASS__, 'reduce_counts' ), 10, 3 );
-//		add_filter( 'posts_where_paged', array( __CLASS__, 'exclude' ) );
+		// add_action( 'init', array( __CLASS__, 'setup_preview' ) );
+		// add_filter( 'wp_count_posts', array( __CLASS__, 'reduce_counts' ), 10, 3 );
+		// add_filter( 'posts_where_paged', array( __CLASS__, 'exclude' ) );
 
 		add_action( 'template_include', array( __CLASS__, 'template_include' ) );
 		add_action( 'wp_footer', array( __CLASS__, 'output_script' ), 1000 );
@@ -231,35 +234,35 @@ class LP_Preview_Course {
 	public static function output_script() {
 		if ( learn_press_is_preview_course() ) {
 			?>
-            <script>
-                jQuery(function ($) {
+			<script>
+				jQuery(function ($) {
 
-                    var $elements = $('form, a');
-                    var previewNonce = '<?php echo LP_Request::get( 'preview' );?>';
+					var $elements = $('form, a');
+					var previewNonce = '<?php echo LP_Request::get( 'preview' ); ?>';
 
-                    $elements.each(function () {
-                        var $element = $(this),
-                            link = $element.attr('href') || $element.attr('action') || '';
+					$elements.each(function () {
+						var $element = $(this),
+							link = $element.attr('href') || $element.attr('action') || '';
 
-                        if (link.match(/^http:\/\/localhost\/learnpress\/dev/) || !link.match(/^https?:\/\//)) {
-                            link = link.addQueryVar('preview', previewNonce);
-                        }
+						if (link.match(/^http:\/\/localhost\/learnpress\/dev/) || !link.match(/^https?:\/\//)) {
+							link = link.addQueryVar('preview', previewNonce);
+						}
 
-                        if ($element.is('a')) {
-                            $element.attr('href', link)
-                        } else {
-                            $element.attr('src', link)
-                        }
-                    })
+						if ($element.is('a')) {
+							$element.attr('href', link)
+						} else {
+							$element.attr('src', link)
+						}
+					})
 
-                    $.ajaxSetup({
-                        beforeSend: function (a, b) {
-                            b.url = b.url.addQueryVar('preview', previewNonce)
-                        }
-                    });
-                })
+					$.ajaxSetup({
+						beforeSend: function (a, b) {
+							b.url = b.url.addQueryVar('preview', previewNonce)
+						}
+					});
+				})
 
-            </script>
+			</script>
 			<?php
 		}
 	}

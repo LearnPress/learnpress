@@ -10,7 +10,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id   = 'courses';
-		$this->text = __( 'Courses', 'learnpress' );
+		$this->text = esc_html__( 'Courses', 'learnpress' );
 
 		parent::__construct();
 	}
@@ -66,45 +66,42 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 					'learn-press/course-settings-fields/general',
 					array(
 						array(
-							'title' => __( 'General', 'learnpress' ),
-							'type'  => 'heading',
+							'title' => esc_html__( 'General', 'learnpress' ),
+							'type'  => 'title',
 						),
 						array(
-							'title'   => __( 'Review Courses', 'learnpress' ),
-							'desc'    => __( 'Courses created by instructors will be pending in review first.', 'learnpress' ),
+							'title'   => esc_html__( 'Review courses', 'learnpress' ),
+							'desc'    => esc_html__( 'Courses created by instructors will be pending in review first.', 'learnpress' ),
 							'id'      => 'required_review',
 							'default' => 'yes',
-							'type'    => 'yes-no',
+							'type'    => 'checkbox',
 						),
 						array(
-							'title'   => __( 'Auto Start', 'learnpress' ),
+							'title'   => esc_html__( 'Auto start', 'learnpress' ),
 							'id'      => 'auto_enroll',
 							'default' => 'yes',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Students will get started courses immediately after successfully purchased.', 'learnpress' ),
+							'type'    => 'checkbox',
+							'desc'    => esc_html__( 'Students will get started courses immediately after successfully purchased.', 'learnpress' ),
 						),
 						array(
-							'title'             => __( 'Courses Per Page', 'learnpress' ),
-							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
+							'title'             => esc_html__( 'Courses per page', 'learnpress' ),
+							'desc'              => esc_html__( 'Number of courses displayed per page.', 'learnpress' ),
 							'id'                => 'archive_course_limit',
 							'default'           => '8',
 							'type'              => 'number',
 							'custom_attributes' => array(
 								'min' => '1',
 							),
+							'css'               => 'min-width: 50px; width: 50px;',
 						),
 						array(
-							'title'   => __( 'Hide Sidebar', 'learnpress' ),
-							'desc'    => __( 'Hide sidebar area in All Courses Page.', 'learnpress' ),
-							'id'      => 'hide_sidebar',
-							'default' => 'no',
-							'type'    => 'yes-no',
-						),
-						array(
-							'title'   => __( 'Thumbnail Dimensions', 'learnpress' ),
+							'title'   => esc_html__( 'Thumbnail dimensions', 'learnpress' ),
 							'id'      => 'course_thumbnail_dimensions',
 							'default' => array( 500, 300, 'yes' ),
 							'type'    => 'image-dimensions',
+						),
+						array(
+							'type' => 'sectionend',
 						),
 						// @since 3.3.0
 					// array(
@@ -159,49 +156,21 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 					// ),
 					)
 				),
-				// Archive
-				// apply_filters(
-				// 'learn-press/course-settings-fields/archive',
-				// array(
-				// array(
-				// 'title' => __( 'Archive', 'learnpress' ),
-				// 'type'  => 'heading',
-				// 'desc'  => __( 'Those settings are applied to archive course page.', 'learnpress' )
-				// ),
-				// array(
-				// 'title'   => __( 'Courses Page', 'learnpress' ),
-				// 'id'      => 'courses_page_id',
-				// 'default' => '',
-				// 'type'    => 'pages-dropdown'
-				// ),
-				// array(
-				// 'title'             => __( 'Courses per page', 'learnpress' ),
-				// 'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
-				// 'id'                => 'archive_course_limit',
-				// 'default'           => '10',
-				// 'type'              => 'number',
-				// 'custom_attributes' => array(
-				// 'min' => '1'
-				// )
-				// )
-				// )
-				// ),
-				// Single course
 				apply_filters(
 					'learn-press/course-settings-fields/single',
 					array(
 						array(
-							'title' => __( 'Permalinks', 'learnpress' ),
-							'type'  => 'heading',
+							'title' => esc_html__( 'Permalinks', 'learnpress' ),
+							'type'  => 'title',
 						),
 						array(
-							'title'   => __( 'Course', 'learnpress' ),
+							'title'   => esc_html__( 'Course', 'learnpress' ),
 							'type'    => 'course-permalink',
 							'default' => '',
 							'id'      => 'course_base',
 						),
 						array(
-							'title'       => __( 'Lesson', 'learnpress' ),
+							'title'       => esc_html__( 'Lesson', 'learnpress' ),
 							'type'        => 'text',
 							'id'          => 'lesson_slug',
 							'desc'        => __( sprintf( 'e.g. %s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
@@ -209,7 +178,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'placeholder' => 'lesson',
 						),
 						array(
-							'title'       => __( 'Quiz', 'learnpress' ),
+							'title'       => esc_html__( 'Quiz', 'learnpress' ),
 							'type'        => 'text',
 							'id'          => 'quiz_slug',
 							'desc'        => __( sprintf( 'e.g. %s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
@@ -217,7 +186,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'placeholder' => 'quizzes',
 						),
 						array(
-							'title'       => __( 'Category Base', 'learnpress' ),
+							'title'       => esc_html__( 'Category base', 'learnpress' ),
 							'id'          => 'course_category_base',
 							'default'     => 'course-category',
 							'type'        => 'text',
@@ -225,27 +194,16 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'desc'        => __( sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-category</code>' ), 'learnpress' ),
 						),
 						array(
-							'title'       => __( 'Tag Base', 'learnpress' ),
+							'title'       => esc_html__( 'Tag base', 'learnpress' ),
 							'id'          => 'course_tag_base',
 							'default'     => 'course-tag',
 							'type'        => 'text',
 							'placeholder' => 'course-tag',
 							'desc'        => __( sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-tag</code>' ), 'learnpress' ),
 						),
-					// array(
-					// 'title'   => __( 'Lesson', 'learnpress' ),
-					// 'type'    => 'text',
-					// 'id'      => 'lesson_slug',
-					// 'desc'    => __( sprintf( '%s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
-					// 'default' => 'lessons'
-					// ),
-					// array(
-					// 'title'   => __( 'Quiz', 'learnpress' ),
-					// 'type'    => 'text',
-					// 'id'      => 'quiz_slug',
-					// 'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
-					// 'default' => 'quizzes'
-					// ),
+						array(
+							'type' => 'sectionend',
+						),
 					// array(
 					// 'title'   => __( 'Enrolled students number', 'learnpress' ),
 					// 'type'    => 'yes_no',

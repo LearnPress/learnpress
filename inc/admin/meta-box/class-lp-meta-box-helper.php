@@ -19,19 +19,6 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 */
 		protected static $_screen = null;
 
-		/**
-		 * @param $fields
-		 */
-		public static function render_fields( $fields ) {
-			foreach ( $fields as $field ) {
-				if ( isset( $field['id'] ) ) {
-					$origin_id = $field['id'];
-				}
-
-				self::show_field( $field );
-			}
-		}
-
 		public static function output_fields( $options ) {
 			foreach ( $options as $value ) {
 				if ( ! isset( $value['type'] ) ) {

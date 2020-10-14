@@ -106,8 +106,6 @@ class LP_Query {
 	 * Add more custom rewrite rules
 	 */
 	function add_rewrite_rules() {
-
-		// lesson
 		$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
 		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );

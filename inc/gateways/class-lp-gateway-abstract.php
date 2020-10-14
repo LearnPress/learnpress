@@ -13,15 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LP_Gateway_Abstract extends LP_Abstract_Settings {
-	/**
-	 * @var mixed|null
-	 */
-	// public $method_title = '';
-
-	/**
-	 * @var null
-	 */
-	// public $method_description = null;
 
 	/**
 	 * @var null
@@ -75,7 +66,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * Constructor
 	 */
 	public function __construct() {
-
 		if ( ! $this->admin_name ) {
 			$this->admin_name = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
 		}
@@ -86,26 +76,8 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 
 		$this->settings = LP()->settings()->get_group( $this->id, '' );
 		$this->enabled  = $this->settings->get( 'enable' );
-		// Load settings
-		$this->_load();
-	}
 
-	/**
-	 * Load stored settings from database.
-	 */
-	protected function _load() {
-		return;
-		if ( false !== ( $this->stored = get_option( 'learn_press_' . $this->id ) ) ) {
-			foreach ( $this->stored as $prop => $value ) {
-				$prop   = preg_replace( '~[-]+~', '_', $prop );
-				$setter = array( $this, 'set_' . $prop );
-				if ( is_callable( $setter ) ) {
-					call_user_func_array( $setter, array( $value ) );
-				} elseif ( property_exists( $this, $prop ) ) {
-					$this->{$prop} = $value;
-				}
-			}
-		}
+		add_filter( 'learn-press/admin/get-settings/admin-options-' . $this->id, array( $this, 'get_settings' ) );
 	}
 
 	/**
@@ -160,6 +132,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	public function enable( $status ) {
 		if ( is_bool( $status ) ) {
 			$this->enabled = $status;
+
 			if ( ! $options = get_option( 'learn_press_' . $this->get_id() ) ) {
 				$options = array();
 			}
@@ -190,8 +163,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_icon( $size = array( 51, 32 ) ) {
+		$size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', $size );
 
-		if ( $size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', $size ) ) {
+		if ( $size ) {
 			$icon_size = sprintf( 'width: %dpx; height: %dpx', $size[0], $size[1] );
 		} else {
 			$icon_size = '';
@@ -227,7 +201,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_return_url( $order = null ) {
-
 		if ( $order ) {
 			$return_url = $order->get_checkout_order_received_url();
 		} else {
@@ -248,33 +221,6 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 			default:
 				return property_exists( $this, $prop ) ? $this->{$prop} : false;
 		}
-	}
-
-	public function get_admin_field_name( $name ) {
-		if ( strpos( $name, '[' ) === 0 ) {
-			$name = $this->id . $name;
-		} else {
-			$name = $this->id . '_' . $name;
-		}
-
-		return parent::get_admin_field_name( $name );
-	}
-
-	public function admin_options() {
-		$settings = $this->get_settings();
-
-		array_unshift(
-			$settings,
-			array(
-				'title' => $this->get_method_title(),
-				'desc'  => $this->get_method_description(),
-				'type'  => 'heading',
-			)
-		);
-
-		$settings = $this->sanitize_settings( $settings );
-
-		LP_Meta_Box_Helper::render_fields( $settings );
 	}
 
 	/**

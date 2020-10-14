@@ -23,21 +23,11 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
 		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array( $this, 'section_content' ) );
-		add_action( 'admin_init', array( $this, 'maybe_save_settings' ) ); // Todo: Remove in LP4.
-		add_filter( 'rwmb_field_meta', array( $this, 'field_meta' ), 10, 2 );
 
 		/** Save metabox in LP4 */
 		add_action( 'admin_init', array( $this, 'save_settings' ) );
 
 		parent::__construct();
-	}
-
-	public function field_meta( $meta, $field ) {
-		if ( ! empty( $field['learn-press-settings'] ) ) {
-			$meta = $field['std'];
-		}
-
-		return $meta;
 	}
 
 	/**
@@ -50,12 +40,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	public function page_contents() {
 		$active_tab = $this->get_active_tab();
 
-		// Use custom metabox in LP4.
-		if ( $active_tab === 'profile' || $active_tab === 'advanced' || $active_tab === 'emails' ) {
-			$this->tabs[ $active_tab ]->admin_page_settings( $this->get_active_section(), $this->get_sections() );
-		} else {
-			$this->tabs[ $active_tab ]->admin_page( $this->get_active_section(), $this->get_sections() );
-		}
+		$this->tabs[ $active_tab ]->admin_page_settings( $this->get_active_section(), $this->get_sections() );
 		?>
 
 		<input type="hidden" name="lp-settings-nonce" value="<?php echo wp_create_nonce( 'lp-settings' ); ?>">
@@ -87,12 +72,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 			return;
 		}
 
-		// Use custom metabox in LP4
 		$active_tab = $this->get_active_tab();
-
-		if ( $active_tab !== 'profile' && $active_tab !== 'advanced' && $active_tab !== 'emails' ) {
-			return;
-		}
 
 		$this->tabs[ $active_tab ]->save_settings( $this->get_active_section(), $this->get_sections() );
 
@@ -109,52 +89,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		}
 	}
 
-	/**
-	 * Save settings values upon admin init.
-	 */
-	public function maybe_save_settings() {
-		$nonce = learn_press_get_request( 'lp-settings-nonce' );
-
-		if ( ! wp_verify_nonce( $nonce, 'lp-settings' ) ) {
-			return;
-		}
-
-		$active_tab = $this->get_active_tab();
-
-		// Use custom metabox in LP4
-		if ( $active_tab === 'profile' || $active_tab === 'advanced' || $active_tab === 'emails' ) {
-			return;
-		}
-
-		if ( ! empty( $_POST ) ) {
-			$exclude_options = apply_filters( 'learn-press/update-settings/exclude-vars', array( 'lp-settings-nonce' ) );
-			settype( $exclude_options, 'array' );
-			$postdata = array_diff_key( $_POST, array_flip( $exclude_options ) );
-
-			foreach ( $postdata as $key => $value ) {
-				if ( false !== strpos( $key, 'learn_press_' ) ) {
-					if ( apply_filters( 'learn-press/update-settings/' . $key, true ) ) {
-						$value = apply_filters( 'learn-press/update-settings/settings-value', $value, $key, $postdata );
-						update_option( $key, $value );
-					}
-				}
-			}
-
-			flush_rewrite_rules();
-		}
-		do_action( 'learn-press/update-settings/updated', $this );
-
-		// Filter redirect
-		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );
-
-		if ( $redirect ) {
-			wp_redirect( $redirect );
-			exit();
-		}
-	}
-
 	public function save() {
-
 	}
 }
 

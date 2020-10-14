@@ -36,6 +36,22 @@ abstract class LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_admin_field_name( $name ) {
+		$items   = LP_Admin_Menu::instance()->get_menu_items();
+		$section = '';
+
+		if ( ! empty( $items['settings'] ) ) {
+			$tab     = $items['settings']->get_active_tab();
+			$section = $items['settings']->get_active_section();
+		}
+
+		if ( $tab === 'payments' && $section !== 'general' && ! empty( $name ) ) {
+			if ( strpos( $name, '[' ) === 0 ) {
+				$name = $section . $name;
+			} else {
+				$name = $section . '_' . $name;
+			}
+		}
+
 		if ( empty( $name ) ) {
 			$name = md5( microtime( true ) );
 		}
@@ -54,24 +70,6 @@ abstract class LP_Abstract_Settings {
 	 */
 	public function get_admin_field_id( $name ) {
 		return preg_replace( array( '!\[|(\]\[)!', '!\]!' ), array( '_', '' ), $this->get_field_name( $name ) );
-	}
-
-	/**
-	 * Print admin fields options.
-	 *
-	 * @todo: Remove in LP4
-	 */
-	public function admin_options() {
-		$settings = $this->get_settings();
-		$settings = $this->sanitize_settings( $settings );
-
-		do_action( 'learn-press/settings-render' );
-
-		if ( $settings ) {
-			LP_Meta_Box_Helper::render_fields( $settings );
-		} else {
-			echo esc_html__( 'No setting available.', 'learnpress' );
-		}
 	}
 
 	/**
@@ -156,6 +154,7 @@ abstract class LP_Abstract_Settings {
 					$conditional['conditional'],
 				);
 			}
+
 			foreach ( $conditional['conditional'] as $kk => $conditional_field ) {
 				$conditional['conditional'][ $kk ]['field'] = $this->get_admin_field_name( $conditional_field['field'] );
 			}

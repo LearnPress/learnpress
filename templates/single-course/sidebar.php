@@ -7,7 +7,7 @@
  * @package LearnPress/Templates
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
 ob_start();
 dynamic_sidebar( 'course-sidebar' );
@@ -19,13 +19,11 @@ $output = ob_get_clean();
 if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
 	return;
 }
-
 ?>
+
 <aside class="course-summary-sidebar">
-
-    <div class="course-summary-sidebar__inner">
-
-        <div class="course-sidebar-top">
+	<div class="course-summary-sidebar__inner">
+		<div class="course-sidebar-top">
 			<?php
 
 			/**
@@ -53,12 +51,12 @@ if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
 			do_action( 'learn-press/after-course-summary-sidebar' );
 
 			?>
-        </div>
+		</div>
 
-        <div class="course-sidebar-secondary">
+		<div class="course-sidebar-secondary">
 			<?php
 			echo $output;
 			?>
-        </div>
-    </div>
+		</div>
+	</div>
 </aside>
