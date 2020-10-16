@@ -241,7 +241,8 @@ function lp_meta_box_duration_field( $field ) {
 	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'short';
 	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
 	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-	$field['value']         = isset( $field['value'] ) ? $field['value'] : get_post_meta( $thepostid, $field['id'], true );
+	$field['default']       = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
+	$field['value']         = isset( $field['value'] ) ? $field['value'] : $field['default'];
 	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
 	$field['desc_tip']      = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
 	$data_type              = empty( $field['data_type'] ) ? '' : $field['data_type'];

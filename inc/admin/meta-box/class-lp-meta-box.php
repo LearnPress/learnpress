@@ -14,6 +14,7 @@ class LP_Meta_Box {
 
 		add_action( 'learnpress_save_lp_lesson_metabox', 'LP_Meta_Box_Lesson::save' );
 		add_action( 'learnpress_save_lp_question_metabox', 'LP_Meta_Box_Question::save' );
+		add_action( 'learnpress_save_lp_quiz_metabox', 'LP_Meta_Box_Quiz::save' );
 	}
 
 	public function save_meta_boxes( $post_id, $post ) {

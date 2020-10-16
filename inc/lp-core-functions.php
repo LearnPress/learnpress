@@ -866,10 +866,10 @@ function learn_press_get_course_duration_support() {
 	return apply_filters(
 		'learn_press_course_duration_support',
 		array(
-			'minute' => __( 'Minute(s)', 'learnpress' ),
-			'hour'   => __( 'Hour(s)', 'learnpress' ),
-			'day'    => __( 'Day(s)', 'learnpress' ),
-			'week'   => __( 'Week(s)', 'learnpress' ),
+			'minute' => esc_html__( 'Minute(s)', 'learnpress' ),
+			'hour'   => esc_html__( 'Hour(s)', 'learnpress' ),
+			'day'    => esc_html__( 'Day(s)', 'learnpress' ),
+			'week'   => esc_html__( 'Week(s)', 'learnpress' ),
 		)
 	);
 }

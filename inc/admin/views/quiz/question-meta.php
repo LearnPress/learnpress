@@ -9,50 +9,49 @@
 <script type="text/x-template" id="tmpl-lp-quiz-question-meta">
 	<div class="quiz-question-options">
 		<div class="postbox" @click="openSettings($event)">
-			<h2 class="hndle"><span><?php esc_html_e( 'Details', 'learnpress' ); ?></span>
-			</h2>
+			<h2 class="hndle"><span><?php esc_html_e( 'Details', 'learnpress' ); ?></span> </h2>
 			<a class="toggle" @click.prevent="openSettings($event)"></a>
 			<div class="inside">
-				<div class="rwmb-meta-box">
-					<div class="rwmb-field rwmb-textarea-wrapper">
-						<div class="rwmb-label">
+				<div class="lp-quiz-editor__detail">
+					<div class="lp-quiz-editor__detail-field">
+						<div class="lp-quiz-editor__detail-label">
 							<label :for="'content-'+question.id"><?php esc_html_e( 'Description', 'learnpress' ); ?></label>
 						</div>
-						<div class="rwml-input">
+						<div class="lp-quiz-editor__detail-input">
 							<div>
-								<textarea name="" :id="'content-'+question.id" cols="60" rows="3" class="rwmb-textarea large-text" @change="updateContent" v-model="question.settings.content"></textarea>
+								<textarea name="" :id="'content-'+question.id" cols="60" rows="3" class="lp-quiz-editor__detail-textarea large-text" @change="updateContent" v-model="question.settings.content"></textarea>
 							</div>
 						</div>
 					</div>
-					<div class="rwmb-field rwmb-number-wrapper">
-						<div class="rwmb-label">
+					<div class="lp-quiz-editor__detail-field">
+						<div class="lp-quiz-editor__detail-label">
 							<label :for="'marking-'+question.id"><?php esc_html_e( 'Marking', 'learnpress' ); ?></label>
 						</div>
-						<div class="rwml-input">
+						<div class="lp-quiz-editor__detail-input">
 							<div>
-								<input name="mark" :id="'marking-'+question.id" type="number" min="1" v-model="question.settings.mark" @change="updateMeta">
+								<input name="mark" :id="'marking-'+question.id" type="number" min="1" step="1" v-model="question.settings.mark" @change="updateMeta">
 								<p class="description"><?php esc_html_e( 'Set question points.', 'learnpress' ); ?></p>
 							</div>
 						</div>
 					</div>
-					<div class="rwmb-field rwmb-textarea-wrapper">
-						<div class="rwmb-label">
+					<div class="lp-quiz-editor__detail-field">
+						<div class="lp-quiz-editor__detail-label">
 							<label :for="'hint-'+question.id"><?php esc_html_e( 'Hint', 'learnpress' ); ?></label>
 						</div>
-						<div class="rwml-input">
+						<div class="lp-quiz-editor__detail-input">
 							<div>
-								<textarea name="hint" :id="'hint-'+question.id" cols="60" rows="3" class="rwmb-textarea large-text" @change="updateMeta" v-model="question.settings.hint"></textarea>
+								<textarea name="hint" :id="'hint-'+question.id" cols="60" rows="3" class="rlp-quiz-editor__detail-textarea large-text" @change="updateMeta" v-model="question.settings.hint"></textarea>
 								<p class="description"><?php esc_html_e( 'A little help for students to get the right answer.', 'learnpress' ); ?></p>
 							</div>
 						</div>
 					</div>
-					<div class="rwmb-field rwmb-textarea-wrapper">
-						<div class="rwmb-label">
+					<div class="lp-quiz-editor__detail-field">
+						<div class="lp-quiz-editor__detail-label">
 							<label :for="'explanation-'+question.id"><?php esc_html_e( 'Explanation', 'learnpress' ); ?></label>
 						</div>
-						<div class="rwml-input">
+						<div class="lp-quiz-editor__detail-input">
 							<div>
-								<textarea name="explanation" :id="'explanation-'+question.id" cols="60" rows="3" class="rwmb-textarea large-text" @change="updateMeta" v-model="question.settings.explanation"></textarea>
+								<textarea name="explanation" :id="'explanation-'+question.id" cols="60" rows="3" class="lp-quiz-editor__detail-textarea large-text" @change="updateMeta" v-model="question.settings.explanation"></textarea>
 								<p class="description"><?php esc_html_e( 'Explanation will be showed after students Instant Check.', 'learnpress' ); ?></p>
 							</div>
 						</div>

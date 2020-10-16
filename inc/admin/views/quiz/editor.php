@@ -29,7 +29,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 	<div id="admin-editor-lp_quiz" class="learn-press-box-data lp-admin-editor">
 		<div v-if="heartbeat">
 			<div class="lp-box-data-head heading">
-				<h3><?php echo esc_html__( 'Questions', 'learnpress' ); ?><span class="status"></span></h3>
+				<h3><?php echo esc_html__( 'Details', 'learnpress' ); ?><span class="status"></span></h3>
 				<div class="section-item-counts">
 					<span>{{textCountQuestions()}}</span>
 				</div>

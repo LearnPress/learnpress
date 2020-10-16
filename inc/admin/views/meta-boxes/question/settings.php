@@ -5,7 +5,7 @@ class LP_Meta_Box_Question {
 		wp_nonce_field( 'learnpress_save_meta_box', 'learnpress_meta_box_nonce' );
 		?>
 
-		<div class="lp-meta-box lp-meta-box--lesson">
+		<div class="lp-meta-box lp-meta-box--question">
 			<div class="lp-meta-box__inner">
 				<?php
 				do_action( 'lp_before_question_meta_box_settings' );

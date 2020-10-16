@@ -742,11 +742,9 @@
 }
 
 .section-item-counts {
-	position: absolute;
-	top: 0;
-	right: 41px;
+	margin: 0;
+	margin-left: auto;
 	font-size: 12px;
-	line-height: 44px;
 	white-space: nowrap;
 
 	span {
@@ -782,16 +780,20 @@
 
 		.lp-choose-items {
 
-			&::before {
-				display: block;
-				position: absolute;
-				z-index: 9;
-				top: 0;
-				right: 0;
-				bottom: 0;
-				left: 0;
-				background: url("../../images/spinner.gif") no-repeat center center;
-				content: "";
+			ul.list-items {
+
+				&::before {
+					display: block;
+					position: absolute;
+					z-index: 9;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+					background: url("../../images/spinner.gif") no-repeat center center;
+					background-color: #fff;
+					content: "";
+				}
 			}
 		}
 	}
@@ -935,14 +937,16 @@
 
 				input.modal-search-input {
 					width: 100%;
-					padding: 10px 14px;
-					font-size: 1.2em;
-					line-height: 1.5;
+					height: 36px;
+					padding: 0 14px;
+					font-size: 16px;
+					line-height: 36px;
 				}
 			}
 
 			.list-items {
 				overflow-y: auto;
+				position: relative;
 				min-height: 260px;
 				max-height: 460px;
 				margin: 0;

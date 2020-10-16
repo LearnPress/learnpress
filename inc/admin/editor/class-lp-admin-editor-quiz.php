@@ -458,7 +458,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 	public function update_quiz_questions_hidden( $args = array() ) {
 		$id        = $args['id'];
-		$questions = $args['hidden'];
+		$questions = isset( $args['hidden'] ) ? $args['hidden'] : false;
 
 		if ( $questions ) {
 			update_post_meta( $id, '_hidden_questions_settings', $questions );

@@ -884,6 +884,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/lp-meta-box-functions.php';
 			include_once learn_press_get_admin_view( 'meta-boxes/lesson/settings.php' );
 			include_once learn_press_get_admin_view( 'meta-boxes/question/settings.php' );
+			include_once learn_press_get_admin_view( 'meta-boxes/quiz/settings.php' );
 		}
 
 		/**

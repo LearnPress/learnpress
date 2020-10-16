@@ -17,7 +17,7 @@ learn_press_admin_view( 'quiz/pagination' );
 </script>
 
 <script type="text/javascript">
-	jQuery(function ($) {
+	jQuery( function($) {
 		var $Vue = window.$Vue || Vue;
 		var $store = window.LP_Quiz_Store;
 
@@ -30,26 +30,24 @@ learn_press_admin_view( 'quiz/pagination' );
 				}
 			},
 			methods: {
-				add: function () {
-					if (this.item.added) {
+				add: function() {
+					if ( this.item.added ) {
 						return this.remove();
 					}
 
 					this.$emit('add', this.item);
 				},
-				remove: function () {
+				remove: function() {
 					this.$emit('remove', this.item);
 				}
 			}
-		})
-
-	})
+		});
+	});
 </script>
 
 <script type="text/x-template" id="tmpl-lp-quiz-choose-items">
 	<div id="lp-modal-choose-items" :class="{show:show, loading: loading}">
 		<div class="lp-choose-items" :class="{'show-preview': showPreview}">
-
 			<div class="header">
 				<div class="preview-title"><span><?php esc_html_e( 'Selected items', 'learnpress' ); ?>
 						({{addedItems.length}})</span></div>
@@ -63,18 +61,15 @@ learn_press_admin_view( 'quiz/pagination' );
 
 			<div class="main">
 				<form class="search" @submit.prevent="">
-					<input type="text" class="modal-search-input"
-						   placeholder="<?php esc_attr_e( 'Type here to search question', 'learnpress' ); ?>"
-						   title="search" @input="onChangeQuery" v-model="query">
+					<input type="text" class="modal-search-input" placeholder="<?php esc_attr_e( 'Type here to search question', 'learnpress' ); ?>" @input="onChangeQuery" v-model="query">
 				</form>
+
 				<ul class="list-items">
 					<template v-if="!items.length">
 						<div><?php esc_html_e( 'No item found.', 'learnpress' ); ?></div>
 					</template>
-
 					<template v-for="item in items">
-						<lp-quiz-choose-item :added="item.added" :item="item" @add="addItem"
-											 @remove="removeItem"></lp-quiz-choose-item>
+						<lp-quiz-choose-item :added="item.added" :item="item" @add="addItem" @remove="removeItem"></lp-quiz-choose-item>
 					</template>
 				</ul>
 
@@ -84,28 +79,22 @@ learn_press_admin_view( 'quiz/pagination' );
 
 			<div class="footer">
 				<div class="cart">
-
-					<button type="button" class="button button-primary checkout" @click="checkout"
-							:disabled="!addedItems.length || adding">
+					<button type="button" class="button button-primary checkout" @click="checkout" :disabled="!addedItems.length || adding">
 						<span v-if="!adding"><?php esc_html_e( 'Add', 'learnpress' ); ?></span>
 						<span v-if="adding"><?php esc_html_e( 'Adding', 'learnpress' ); ?></span>
 					</button>
 
-					<button type="button" class="button button-secondary edit-selected"
-							@click.prevent="showPreview = !showPreview"
-							:disabled="adding || (!addedItems.length && !showPreview)">
+					<button type="button" class="button button-secondary edit-selected" @click.prevent="showPreview = !showPreview" :disabled="adding || (!addedItems.length && !showPreview)">
 						{{editCartButton}}
 					</button>
-
 				</div>
 			</div>
-
 		</div>
 	</div>
 </script>
 
 <script>
-	jQuery(function ($) {
+	jQuery( function($) {
 		var $Vue = window.$Vue || Vue;
 		var $store = window.LP_Quiz_Store;
 
@@ -122,7 +111,7 @@ learn_press_admin_view( 'quiz/pagination' );
 			},
 			created: function () {
 				var vm = this;
-				// hook to mutation
+
 				$store.subscribe(function (mutation) {
 					if (!mutation || mutation.type !== 'cqi/TOGGLE') {
 						return;
@@ -194,12 +183,10 @@ learn_press_admin_view( 'quiz/pagination' );
 						$input.focus();
 					}, 300)
 				},
-				// add items to quiz
 				checkout: function () {
 					this.adding = true;
 					this.$emit('addItems', this.page);
 				},
-
 				changePage: function (page) {
 					if (page === this.page) {
 						return;
@@ -207,40 +194,38 @@ learn_press_admin_view( 'quiz/pagination' );
 					this.page = page;
 					this.makeSearch();
 				},
-
-				addItem: function (item) {
+				addItem: function(item) {
 					$store.dispatch('cqi/addItem', item);
 				},
 
-				removeItem: function (item) {
+				removeItem: function(item) {
 					$store.dispatch('cqi/removeItem', item);
 				},
 
-				close: function () {
+				close: function() {
 					$store.dispatch('cqi/toggle');
 				},
 
-				onChangeQuery: function () {
+				onChangeQuery: function() {
 					var vm = this;
 
-					if (this.delayTimeOut) {
-						clearTimeout(this.delayTimeOut);
+					if ( this.delayTimeOut ) {
+						clearTimeout( this.delayTimeOut );
 					}
 
-					this.delayTimeOut = setTimeout(function () {
+					this.delayTimeOut = setTimeout( function() {
 						vm.page = 1;
 						vm.makeSearch();
-					}, 500);
+					}, 500 );
 				},
 
-				makeSearch: function () {
+				makeSearch: function() {
 					$store.dispatch('cqi/searchItems', {
 						query: this.query,
 						page: this.page
 					});
 				}
 			}
-		})
-
-	})
+		});
+	});
 </script>

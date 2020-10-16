@@ -4,12 +4,9 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
@@ -47,7 +44,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			// hide View Quiz link if not assigned to Course
 			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
-			add_action( 'edit_form_after_editor', array( $this, 'template_quiz_editor' ) );
 
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
@@ -67,6 +63,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public function views_pages( $views ) {
 			$unassigned_items = learn_press_get_unassigned_items( LP_QUIZ_CPT );
 			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$views['unassigned'] = sprintf(
 					'<a href="%s" class="current">%s</a>',
@@ -94,18 +91,18 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'lp_quiz_post_type_args',
 					array(
 						'labels'             => array(
-							'name'               => __( 'Quizzes', 'learnpress' ),
-							'menu_name'          => __( 'Quizzes', 'learnpress' ),
-							'singular_name'      => __( 'Quiz', 'learnpress' ),
-							'add_new_item'       => __( 'Add New Quiz', 'learnpress' ),
-							'edit_item'          => __( 'Edit Quiz', 'learnpress' ),
-							'all_items'          => __( 'Quizzes', 'learnpress' ),
-							'view_item'          => __( 'View Quiz', 'learnpress' ),
-							'add_new'            => __( 'New Quiz', 'learnpress' ),
-							'update_item'        => __( 'Update Quiz', 'learnpress' ),
-							'search_items'       => __( 'Search Quizzes', 'learnpress' ),
+							'name'               => esc_html__( 'Quizzes', 'learnpress' ),
+							'menu_name'          => esc_html__( 'Quizzes', 'learnpress' ),
+							'singular_name'      => esc_html__( 'Quiz', 'learnpress' ),
+							'add_new_item'       => esc_html__( 'Add New Quiz', 'learnpress' ),
+							'edit_item'          => esc_html__( 'Edit Quiz', 'learnpress' ),
+							'all_items'          => esc_html__( 'Quizzes', 'learnpress' ),
+							'view_item'          => esc_html__( 'View Quiz', 'learnpress' ),
+							'add_new'            => esc_html__( 'New Quiz', 'learnpress' ),
+							'update_item'        => esc_html__( 'Update Quiz', 'learnpress' ),
+							'search_items'       => esc_html__( 'Search Quizzes', 'learnpress' ),
 							'not_found'          => sprintf( __( 'You haven\'t had any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
-							'not_found_in_trash' => __( 'No quiz found in Trash', 'learnpress' ),
+							'not_found_in_trash' => esc_html__( 'No quiz found in Trash', 'learnpress' ),
 						),
 						'public'             => true,
 						'publicly_queryable' => true,
@@ -134,19 +131,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * Template quiz editor v2.
-		 *
-		 * @since 3.0.0
-		 */
-		public function template_quiz_editor() {
-			if ( LP_QUIZ_CPT !== get_post_type() ) {
-				return;
-			}
-
-			learn_press_admin_view( 'quiz/editor' );
-		}
-
-		/**
 		 * Load data for quiz editor.
 		 *
 		 * @since 3.0.0
@@ -157,9 +141,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 
 			global $post;
+
 			$quiz = LP_Quiz::get_quiz( $post->ID );
 
-			// trigger user memorize question types
 			$user_id                   = get_current_user_id();
 			$default_new_question_type = get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) ? get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) : 'true_or_false';
 
@@ -188,15 +172,15 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'i18n'          => apply_filters(
 							'learn-press/quiz-editor/i18n',
 							array(
-								'option'                 => __( 'Option', 'learnpress' ),
+								'option'                 => esc_html__( 'Option', 'learnpress' ),
 								'unique'                 => learn_press_uniqid(),
-								'back'                   => __( 'Back', 'learnpress' ),
-								'selected_items'         => __( 'Selected items', 'learnpress' ),
-								'new_option'             => __( 'New Option', 'learnpress' ),
-								'confirm_trash_question' => __( 'Do you want to move question "{{QUESTION_NAME}}" to trash?', 'learnpress' ),
+								'back'                   => esc_html__( 'Back', 'learnpress' ),
+								'selected_items'         => esc_html__( 'Selected items', 'learnpress' ),
+								'new_option'             => esc_html__( 'New Option', 'learnpress' ),
+								'confirm_trash_question' => esc_html__( 'Do you want to move question "{{QUESTION_NAME}}" to trash?', 'learnpress' ),
 								'question_labels'        => array(
-									'singular' => __( 'Question', 'learnpress' ),
-									'plural'   => __( 'Questions', 'learnpress' ),
+									'singular' => esc_html__( 'Question', 'learnpress' ),
+									'plural'   => esc_html__( 'Questions', 'learnpress' ),
 								),
 							)
 						),
@@ -206,7 +190,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'hidden_questions_settings' => $hidden_questions_settings ? $hidden_questions_settings : array(),
 							'disableUpdateList'         => false,
 							'supportAnswerOptions'      => learn_press_get_question_support_answer_options(),
-						// apply_filters( 'learn-press/admin/external-js-component', array() )
 						),
 					)
 				)
@@ -224,7 +207,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( get_post_type( $post_id ) !== LP_QUIZ_CPT ) {
 				return;
 			}
-			// quiz curd
+
 			$curd = new LP_Quiz_CURD();
 			// remove question from course items
 			$curd->delete( $post_id );
@@ -240,35 +223,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public function admin_editor() {
 			$quiz = LP_Quiz::get_quiz();
 
-			return learn_press_admin_view_content( 'quiz/editor' );
-		}
-
-		/**
-		 * Add question meta box settings.
-		 */
-		public function add_meta_boxes() {
-			if ( $this->is_support_gutenberg() ) {
-				self::$metaboxes['quiz-editor'] = new RW_Meta_Box(
-					array(
-						'id'     => 'quiz-editor',
-						'title'  => __( 'Questions', 'learnpress' ),
-						'pages'  => array( LP_QUIZ_CPT ),
-						'fields' => array(
-							array(
-								'type'     => 'custom_html',
-								'callback' => array( $this, 'admin_editor' ),
-							),
-						),
-					)
-				);
-			}
-
-			self::$metaboxes['quiz_settings'] = new RW_Meta_Box( self::settings_meta_box() );
-			parent::add_meta_boxes();
+			echo learn_press_admin_view_content( 'quiz/editor' );
 		}
 
 		/**
 		 * @return mixed
+		 * @author nhamdv
+		 * @todo Remove in LP4 because do not use Metabox.
 		 */
 		public static function settings_meta_box() {
 
@@ -462,18 +423,20 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function columns_head( $columns ) {
 			$pos = array_search( 'title', array_keys( $columns ) );
+
 			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
-						'instructor'      => __( 'Author', 'learnpress' ),
-						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
-						'num_of_question' => __( 'Questions', 'learnpress' ),
-						'duration'        => __( 'Duration', 'learnpress' ),
+						'instructor'      => esc_html__( 'Author', 'learnpress' ),
+						LP_COURSE_CPT     => esc_html__( 'Course', 'learnpress' ),
+						'num_of_question' => esc_html__( 'Questions', 'learnpress' ),
+						'duration'        => esc_html__( 'Duration', 'learnpress' ),
 					),
 					array_slice( $columns, $pos + 1 )
 				);
 			}
+
 			unset( $columns['taxonomy-lesson-tag'] );
 			$user = wp_get_current_user();
 
@@ -550,10 +513,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function posts_fields( $fields ) {
 			global $wpdb;
+
 			if ( ! $this->_is_archive() ) {
 				return $fields;
 			}
+
 			$fields = ' DISTINCT ' . $fields;
+
 			if ( $this->_get_orderby() == 'question-count' ) {
 				$fields .= ", (SELECT count(*) FROM {$wpdb->prefix}learnpress_quiz_questions qq WHERE {$wpdb->posts}.ID = qq.quiz_id ) as question_count";
 			}
@@ -580,7 +546,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return mixed|string
 		 */
 		public function posts_where_paged( $where ) {
-
 			if ( ! $this->_is_archive() ) {
 				return $where;
 			}
@@ -650,6 +615,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		private function _is_archive() {
 			global $pagenow, $post_type;
+
 			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUIZ_CPT != $post_type ) ) {
 				return false;
 			}
@@ -662,10 +628,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function hide_view_quiz_link() {
 			$current_screen = get_current_screen();
+
 			global $post;
+
 			if ( ! $post ) {
 				return;
 			}
+
 			if ( $current_screen->id === LP_QUIZ_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				?>
 				<style type="text/css">
@@ -715,5 +684,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 	// add meta box
 	$quiz_post_type
-		->add_meta_box( 'lesson_assigned', __( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' );
+		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' )
+		->add_meta_box( 'quiz-editor', esc_html__( 'Questions', 'learnpress' ), 'admin_editor', 'normal', 'high' )
+		->add_meta_box( 'quiz_settings', esc_html__( 'Quiz Settings', 'learnpress' ), 'LP_Meta_Box_Quiz::output', 'normal', 'high' );
 }

@@ -18,14 +18,29 @@
 	}
 }
 
+#quiz-editor {
+
+	.inside {
+		margin: 0;
+		padding: 0;
+	}
+}
+
 #admin-editor-lp_quiz {
+	margin: 0;
+	padding: 0;
+	border: none;
 
 	form {
 		margin: 0;
 	}
 
 	.lp-box-data-head {
-		padding: 12px 10px;
+		display: flex;
+		flex-direction: row;
+		margin: 0;
+		padding: 6px 0 6px 20px;
+		align-items: center;
 
 		h3 {
 			padding: 0;
@@ -52,12 +67,8 @@
 
 		.collapse-list-questions {
 			display: flex;
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
 			width: 40px;
-			height: 46px;
+			height: 30px;
 			color: #999;
 			font-family: Dashicons;
 			font-size: 30px;
@@ -114,13 +125,88 @@
 					}
 				}
 
-				& > .type {
-					width: 150px;
-					height: 34px;
-					padding: 0 5px;
+				> .type {
+					display: inline-flex;
+					position: relative;
+					width: 180px;
+					height: 32px;
+					padding: 0;
 					border-radius: 2px;
+					background-color: #eee;
 					box-shadow: 0 0 2px rgba($color: #000, $alpha: 0.22);
-					line-height: 34px;
+					line-height: 32px;
+					align-items: center;
+					cursor: pointer;
+
+					>a {
+						display: inline-flex;
+						width: 100%;
+						padding: 0 10px;
+						color: #666;
+						text-align: center;
+						cursor: pointer;
+						align-items: center;
+						justify-content: center;
+
+						&::after {
+							margin-left: 5px;
+							font-family: Dashicons;
+							font-size: 14px;
+							line-height: 30px;
+							content: "\f347";
+						}
+					}
+
+					ul {
+						visibility: hidden;
+						position: absolute;
+						z-index: 9999;
+						top: 100%;
+						right: 0;
+						height: auto;
+						margin: 0;
+						margin-top: -1px;
+						border: 1px solid #999;
+						border-radius: 2px;
+						opacity: 1;
+						background: #fdfeff;
+						pointer-events: none;
+
+						li {
+							margin: 0;
+
+							a {
+								display: block;
+								min-width: 110px;
+								padding: 10px 20px;
+								color: #757575;
+								line-height: 20px;
+								text-align: right;
+								white-space: nowrap;
+								text-decoration: none;
+
+								&:hover {
+									background-color: #eee;
+								}
+							}
+
+							&.disabled {
+								opacity: 0.4;
+								background-color: #fff;
+								user-select: none;
+								pointer-events: none;
+							}
+						}
+					}
+
+					&:hover {
+
+						ul {
+							visibility: visible;
+							opacity: 1;
+							pointer-events: visible;
+						}
+					}
 				}
 
 				& > .actions {
@@ -491,6 +577,16 @@
 
 									ul {
 										z-index: 9;
+
+										a {
+											padding: 8px 24px;
+											line-height: 24px;
+
+											&.remove {
+												border-bottom: 1px solid #eee;
+												color: #666;
+											}
+										}
 									}
 								}
 
@@ -513,30 +609,6 @@
 
 										&::after {
 											content: "\f347";
-										}
-									}
-								}
-
-								.lp-toolbar-btn-dropdown {
-
-									ul {
-
-										li {
-											border-bottom: 1px solid #eee;
-
-											a {
-												padding: 10px 25px;
-
-												&.remove {
-													color: #757575;
-												}
-											}
-
-											&.disabled {
-												opacity: 0.4;
-												background-color: #fff;
-												pointer-events: none;
-											}
 										}
 									}
 								}
@@ -569,14 +641,24 @@
 								margin: 0;
 								padding: 0;
 
-								.rwmb-meta-box {
+								.lp-quiz-editor {
 
-									.rwmb-field {
-										margin: 0;
-										padding: 20px;
+									&__detail {
 
-										&:nth-child(2n+1) {
-											background: #f4fcff;
+										&-field {
+											margin: 0;
+											padding: 20px;
+
+											&:nth-child(2n+1) {
+												background: #f4fcff;
+											}
+										}
+
+										&-label {
+											margin: 0;
+											margin-bottom: 10px;
+											color: #666;
+											font-weight: 600;
 										}
 									}
 								}
@@ -586,6 +668,7 @@
 								border: 1px solid #ddd;
 
 								.hndle {
+									font-weight: 600;
 									cursor: default;
 								}
 
