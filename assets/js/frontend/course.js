@@ -301,7 +301,9 @@
                 toggleEventShowCurriculum();
             }, 3000);
         }
-
+        
+        var direction = $('body').hasClass('rtl') ? 'right' : 'left';
+        
         function toggleContentItem(e) {
             e.preventDefault();
             var curriculumWidth = getCurriculumWidth();
@@ -309,17 +311,17 @@
             $curriculum
                 .stop()
                 .animate({
-                    left: fullScreen ? -curriculumWidth : 0
+                    direction: fullScreen ? -curriculumWidth : 0
                 });
 
             $contentItem
                 .stop()
                 .animate({
-                    left: fullScreen ? 0 : curriculumWidth
+                    direction: fullScreen ? 0 : curriculumWidth
                 });
 
             $footer.stop().animate({
-                left: fullScreen ? 0 : curriculumWidth
+                direction: fullScreen ? 0 : curriculumWidth
             }, function () {
                 $(document, window).trigger('learn-press/toggle-content-item');
             });
