@@ -701,7 +701,19 @@ class LP_Checkout {
 							wp_redirect( $result['redirect'] );
 							exit;
 						}
+					} else {
+
+						$messages = isset( $result['messages'] ) ? $result['messages'] : false;
+
+						if ( $messages ) {
+
+							foreach ( $messages as $message ) {
+
+								learn_press_add_message( $message, 'error' );
+							}
+						}
 					}
+
 				} else {
 					// ensure that no order is waiting for payment
 					$order = new LP_Order( $order_id );
