@@ -441,7 +441,6 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		public static function init() {
 			add_action( 'rwmb_before', array( __CLASS__, 'prepare_fields' ) );
 			add_action( 'admin_footer', array( __CLASS__, 'output_data' ) );
-			add_action( 'learn-press/meta-box-loaded', array( __CLASS__, 'load' ) );
 
 			add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
 			add_filter( 'rwmb_html', array( __CLASS__, 'begin_html' ), 10, 3 );
@@ -462,21 +461,6 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 			}
 
 			return $meta;
-		}
-
-		/**
-		 * Load a fake meta box instance
-		 */
-		public static function load() {
-			include_once 'class-lp-meta-box.php';
-
-			new LP_Meta_Box(
-				array(
-					'id'     => 'fake_metabox',
-					'title'  => '',
-					'fields' => array(),
-				)
-			);
 		}
 
 		/**
@@ -531,79 +515,6 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 			wp_enqueue_script( 'lp-conditional-logic', LP()->plugin_url( 'assets/js/admin/conditional-logic' . $min . '.js' ) );
 			wp_localize_script( 'lp-conditional-logic', 'lp_conditional_logic', self::$conditional_logic );
-		}
-
-		/**
-		 * Use for Type: custom_fields in LP4.
-		 *
-		 * @param [type] $value
-		 * @param [type] $values
-		 * @param [type] $key
-		 * @return void
-		 */
-		public static function lp_metabox_custom_fields( $value, $values, $key ) {
-			?>
-			<tr>
-				<td class="sort">
-					<input class="count" type="hidden" value="<?php echo $key; ?>" name="<?php echo esc_attr( $value['id'] ) . '[' . $key . ']' . '[sort]'; ?>">
-				</td>
-				<?php
-				if ( $value['options'] ) {
-					foreach ( $value['options'] as $cfk => $val ) {
-						$name = $value['id'] . '[' . $key . ']' . '[' . $cfk . ']';
-
-						switch ( $val['type'] ) {
-							case 'text':
-							case 'password':
-							case 'datetime':
-							case 'datetime-local':
-							case 'date':
-							case 'month':
-							case 'time':
-							case 'week':
-							case 'number':
-							case 'email':
-							case 'url':
-							case 'tel':
-								?>
-								<td>
-									<input name="<?php echo esc_attr( $name ); ?>" type="<?php echo $val['type']; ?>" class="input-text" placeholder="<?php echo isset( $val['placeholder'] ) ? $val['placeholder'] : ''; ?>" value="<?php echo ! empty( $values[ $cfk ] ) ? $values[ $cfk ] : ''; ?>">
-								</td>
-								<?php
-								break;
-
-							case 'select':
-								?>
-								<td>
-									<select name="<?php echo esc_attr( $name ); ?>">
-										<?php
-										if ( isset( $val['options'] ) ) {
-											foreach ( $val['options'] as $cfks => $cfselect ) {
-												?>
-												<option value="<?php echo $cfks; ?>" <?php echo ! empty( $values[ $cfk ] ) ? selected( $values[ $cfk ], (string) $cfks ) : ''; ?>><?php echo $cfselect; ?></option>
-												<?php
-											}
-										}
-										?>
-									</select>
-								</td>
-								<?php
-								break;
-
-							case 'checkbox':
-								?>
-								<td>
-									<input name="<?php echo esc_attr( $name ); ?>" type="checkbox" name="" value="1" <?php echo ! empty( $values[ $cfk ] ) ? checked( $values[ $cfk ], 'yes' ) : ''; ?>>
-								</td>
-								<?php
-								break;
-						}
-					}
-				}
-				?>
-				<td width="2%"><a href="#" class="delete"></a></td>
-			</tr>
-			<?php
 		}
 	}
 

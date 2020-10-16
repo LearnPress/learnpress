@@ -112,19 +112,20 @@ class LP_Utils {
 		if ( $args['status'] ) {
 			$statuses = (array) $args['status'];
 			$_counts  = array();
+
 			foreach ( $statuses as $status ) {
 				foreach ( $counts as $k => $value ) {
 					if ( empty( $_counts[ $k ] ) ) {
 						if ( $args['total_only'] ) {
-							$_counts[ $k ] = $value[ $status ];
+							$_counts[ $k ] = ! empty( $value[ $status ] ) ? $value[ $status ] : 0;
 						} else {
-							$_counts[ $k ] = array( $status => $value[ $status ] );
+							$_counts[ $k ] = array( $status => ! empty( $value[ $status ] ) ? $value[ $status ] : 0 );
 						}
 					} else {
 						if ( $args['total_only'] ) {
-							$_counts[ $k ] += $value[ $status ];
+							$_counts[ $k ] += ! empty( $value[ $status ] ) ? $value[ $status ] : 0;
 						} else {
-							$_counts[ $k ][ $status ] = $value[ $status ];
+							$_counts[ $k ][ $status ] = ! empty( $value[ $status ] ) ? $value[ $status ] : 0;
 						}
 					}
 				}

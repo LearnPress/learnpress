@@ -245,40 +245,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		/**
-		 * Meta boxes.
-		 */
-		public function add_meta_boxes() {
-
-			$meta_boxes = apply_filters(
-				'learn_press_lesson_meta_box_args',
-				array(
-					'id'     => 'lesson_settings',
-					'title'  => __( 'Settings', 'learnpress' ),
-					'pages'  => array( LP_LESSON_CPT ),
-					'fields' => array(
-						array(
-							'name'         => esc_html__( 'Duration', 'learnpress' ),
-							'id'           => '_lp_duration',
-							'type'         => 'duration',
-							'default_time' => 'minute',
-							'std'          => 30,
-						),
-						array(
-							'name' => esc_html__( 'Free View', 'learnpress' ),
-							'id'   => '_lp_preview',
-							'type' => 'yes-no',
-							'desc' => esc_html__( 'Allows any users to view the lesson content.', 'learnpress' ),
-							'std'  => 'no',
-						),
-					),
-				)
-			);
-
-			new RW_Meta_Box( $meta_boxes );
-			parent::add_meta_boxes();
-		}
-
-		/**
 		 * Remove lesson form course items.
 		 *
 		 * @since 3.0.0
@@ -296,6 +262,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		public function hide_view_lesson_link() {
 			$current_screen = get_current_screen();
 			global $post;
+
 			if ( ! $post ) {
 				return;
 			}
@@ -392,15 +359,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				case 'format':
 					learn_press_item_meta_format( $post_id, __( 'Standard', 'learnpress' ) );
 					break;
-				case 'duration':
-					$duration = absint( get_post_meta( $post_id, '_lp_duration', true ) ) * 60;
-					if ( $duration >= 600 ) {
-						echo gmdate( 'H:i:s', $duration );
-					} elseif ( $duration > 0 ) {
-						echo gmdate( 'i:s', $duration );
-					} else {
-						echo '-';
-					}
 			}
 		}
 
@@ -418,20 +376,12 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		private function _is_archive() {
 			global $pagenow, $post_type;
+
 			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_LESSON_CPT != LP_Request::get_string( 'post_type' ) ) ) {
 				return false;
 			}
 
 			return true;
-		}
-
-		/**
-		 * Admin scripts.
-		 */
-		public function admin_scripts() {
-			if ( in_array( get_post_type(), array( LP_LESSON_CPT ) ) ) {
-				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/vendor/jquery.caret.js' ) );
-			}
 		}
 
 		/**
@@ -450,6 +400,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			if ( LP_LESSON_CPT != get_post_type() ) {
 				return;
 			}
+
 			LP_Assets::enqueue_script( 'select2', LP_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
 			LP_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
 
@@ -472,6 +423,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					}
 				});
 			</script>
+
 			<?php
 			$script = ob_get_clean();
 			$script = preg_replace( '!</?script>!', '', $script );
@@ -499,9 +451,9 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 	}
 
-	// LP_Lesson_Post_Type
 	$lesson_post_type = LP_Lesson_Post_Type::instance();
 
-	// add meta box
-	$lesson_post_type->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
+	$lesson_post_type
+	->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' )
+	->add_meta_box( 'lesson_settings', esc_html__( 'Lesson Settings', 'learnpress' ), 'LP_Meta_Box_Lesson::output', 'normal', 'high' );
 }

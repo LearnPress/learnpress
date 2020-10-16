@@ -1408,6 +1408,62 @@ ul .clearfix {
 .lp-metabox-field__image--upload {
   padding-top: 10px; }
 
+.lp-meta-box__inner {
+  display: block;
+  position: relative; }
+  .lp-meta-box__inner .form-field {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin: 20px 0; }
+    .lp-meta-box__inner .form-field label {
+      width: 180px;
+      min-width: 180px;
+      max-width: 180px;
+      flex: 0 0 auto;
+      padding: 0;
+      font-weight: 500; }
+    .lp-meta-box__inner .form-field .checkbox {
+      margin: 2px 0 !important;
+      vertical-align: middle; }
+    .lp-meta-box__inner .form-field .description {
+      display: inline;
+      clear: none;
+      margin: 0 0 0 7px;
+      padding: 0; }
+
+.lp-meta-box__duration input[type="number"] {
+  width: 80px; }
+
+.lp-meta-box input[type="number"],
+.lp-meta-box input[type="email"],
+.lp-meta-box input[type="text"],
+.lp-meta-box input[type="password"],
+.lp-meta-box textarea {
+  width: 50%; }
+  .lp-meta-box input[type="number"] + .description,
+  .lp-meta-box input[type="email"] + .description,
+  .lp-meta-box input[type="text"] + .description,
+  .lp-meta-box input[type="password"] + .description,
+  .lp-meta-box textarea + .description {
+    flex-basis: 100%;
+    width: 100%;
+    margin-top: 8px !important;
+    margin-left: 180px !important; }
+
+.lp-meta-box .short {
+  width: 50%; }
+
+.lp-meta-box textarea {
+  height: 3.5em;
+  line-height: 1.5em;
+  vertical-align: top; }
+
+.lp-meta-box .learn-press-tip.ready {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px; }
+
 .learn-press-tabs.vertical .tabs-heading {
   border: 1px solid #ddd;
   background: #fff; }

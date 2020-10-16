@@ -30,6 +30,7 @@ if ( ! $order->is_multi_users() ) {
 		<?php foreach ( $child_orders as $child_order_id ) : ?>
 			<?php
 			$child_order = learn_press_get_order( $child_order_id );
+
 			if ( ! $child_order ) {
 				continue;
 			}

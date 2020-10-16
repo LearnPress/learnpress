@@ -1362,6 +1362,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'students':
+					// In ra so student da enroll.
 					$count = LP()->utils->count_course_users(
 						array(
 							'course_id'  => $course->get_id(),

@@ -25,7 +25,7 @@
 				<?php
 				if ( $option_value ) {
 					foreach ( $option_value as $key => $values ) {
-						LP_Meta_Box_Helper::lp_metabox_custom_fields( $value, $values, $key );
+						lp_metabox_custom_fields( $value, $values, $key );
 					}
 				}
 				?>
@@ -36,7 +36,7 @@
 						<a href="#" class="button insert lp-metabox-custom-field-button" data-row="
 							<?php
 							ob_start();
-							LP_Meta_Box_Helper::lp_metabox_custom_fields( $value, '', 'lp_metabox_custom_fields_key' );
+							lp_metabox_custom_fields( $value, '', 'lp_metabox_custom_fields_key' );
 							echo esc_attr( ob_get_clean() );
 							?>
 						"><?php esc_html_e( 'Add new', 'learnpress' ); ?></a>

@@ -238,9 +238,9 @@ class Buttons extends Component {
 						style={ styles }
 					>
 
-						{ -1 !== [ '', 'completed', 'viewed' ].indexOf( status ) && ! isReviewing && canRetry && (
+						{ ( ( status === 'completed' && canRetry ) || -1 !== [ '', 'viewed' ].indexOf( status ) ) && ! isReviewing && (
 							<button className="lp-button start" onClick={ this.startQuiz }>
-								{ status === 'completed' ? _x( 'Retry', 'label button retry quiz', 'learnpress' ) :	_x( 'Start', 'label button start quiz', 'learnpress' ) }
+								{ ( status === 'completed' ) ? _x( 'Retry', 'label button retry quiz', 'learnpress' ) :	_x( 'Start', 'label button start quiz', 'learnpress' ) }
 							</button>
 						) }
 

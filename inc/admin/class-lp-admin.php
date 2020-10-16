@@ -880,6 +880,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-updater.php';
 			include_once 'class-lp-install-sample-data.php';
 			include_once 'class-lp-reset-data.php';
+			include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box.php';
+			include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/lp-meta-box-functions.php';
+			include_once learn_press_get_admin_view( 'meta-boxes/lesson/settings.php' );
+			include_once learn_press_get_admin_view( 'meta-boxes/question/settings.php' );
 		}
 
 		/**

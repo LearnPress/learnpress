@@ -504,7 +504,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			}
 
 			if ( $order ) {
-
 				$question = LP_Question::get_question( $question_id );
 				$answers  = $question->get_data( 'answer_options' );
 
@@ -586,12 +585,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|false|int
 		 */
 		public function new_answer( $question_id, $new_answer ) {
-
 			if ( learn_press_get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
-
-			error_log( __CLASS__ . '::new_answer' );
 
 			$question = LP_Question::get_question( $question_id );
 

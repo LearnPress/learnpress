@@ -728,7 +728,7 @@ var Buttons = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/React.createElement("div", {
         className: "button-left" + (status === 'started' || isReviewing ? ' fixed' : ''),
         style: styles
-      }, -1 !== ['', 'completed', 'viewed'].indexOf(status) && !isReviewing && canRetry && /*#__PURE__*/React.createElement("button", {
+      }, (status === 'completed' && canRetry || -1 !== ['', 'viewed'].indexOf(status)) && !isReviewing && /*#__PURE__*/React.createElement("button", {
         className: "lp-button start",
         onClick: this.startQuiz
       }, status === 'completed' ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Retry', 'label button retry quiz', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Start', 'label button start quiz', 'learnpress')), ('started' === status || isReviewing) && numPages > 1 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
