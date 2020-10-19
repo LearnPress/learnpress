@@ -19,7 +19,11 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 	 */
 	function learn_press_course_purchase_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_user( get_current_user_id() );
+
+		if ( ! $user ) {
+			return;
+		}
 
 		if ( $course->get_external_link() ) {
 			return;
@@ -80,8 +84,12 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 	 * Enroll course button.
 	 */
 	function learn_press_course_enroll_button() {
-		$user   = LP_Global::user();
+		$user   = learn_press_get_user( get_current_user_id() );
 		$course = LP_Global::course();
+
+		if ( ! $user ) {
+			return;
+		}
 
 		if ( $course->get_external_link() ) {
 			learn_press_show_log( 'Course has external link' );
@@ -803,6 +811,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 				$answered = $user_quiz->get_question_answer( $question->get_id() );
 				$question->show_correct_answers( $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() ) ? 'yes' : false );
 				$question->disable_answers( $user_quiz->get_status() == 'completed' ? 'yes' : false );
+				$question->set_course( $course );
 			}
 
 			$question->render( $answered );
@@ -871,41 +880,6 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 			learn_press_get_template( 'content-question/hint.php', array( 'hint' => $hint ) );
 		}
 
-	}
-}
-
-if ( ! function_exists( 'learn_press_content_item_summary_questions' ) ) {
-
-	/**
-	 * Render content if quiz question.
-	 */
-	function learn_press_content_item_summary_questions() {
-		return;
-		$quiz = LP_Global::course_item_quiz();
-
-		if ( $questions = $quiz->get_questions() ) {
-			$course      = LP_Global::course();
-			$user        = LP_Global::user();
-			$course_data = $user->get_course_data( $course->get_id() );
-			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
-			global $lp_quiz_question;
-
-			foreach ( $questions as $question_id ) {
-				$question         = LP_Question::get_question( $question_id );
-				$lp_quiz_question = $question;
-
-				$title = $question->get_title( 'display' );
-				learn_press_get_template( 'content-question/title.php', array( 'title' => $title ) );
-
-				$content = $question->get_content();
-				if ( $content ) {
-					learn_press_get_template( 'content-question/description.php', array( 'content' => $content ) );
-				}
-
-				$question->render( $quiz_data->get_question_answer( $question->get_id() ) );
-				//learn_press_get_template('single-course/content-item-lp_quiz.php');
-			}
-		}
 	}
 }
 
