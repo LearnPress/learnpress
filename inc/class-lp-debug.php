@@ -144,8 +144,7 @@ class LP_Debug {
 
 				return true;
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			error_log( $ex->getMessage() );
 		}
 
@@ -168,14 +167,10 @@ class LP_Debug {
 	 *
 	 * @param string $handle
 	 * @param string $message
-	 * @param bool   $clear
-	 * @param bool   $force
+	 * @param bool $clear
+	 * @param bool $force
 	 */
 	public function add( $message, $handle = 'log', $clear = false, $force = false ) {
-		if ( ! $handle ) {
-			$handle = 'log';
-		}
-
 		if ( $this->_lock === null ) {
 			$this->_lock = ! ( LP_Settings::instance()->get( 'debug' ) == 'yes' );
 		}
@@ -218,8 +213,7 @@ class LP_Debug {
 
 				//fwrite( $this->_handles[ $handle ], "----------" . $time . "----------\n" . $message . "\n--------------------" );
 				do_action( 'learn_press_log_add', $handle, $message );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				error_log( 'LearnPress add log failed!' );
 			}
 		}
@@ -307,21 +301,21 @@ class LP_Debug {
 			$time = microtime( true );
 		} else {
 			self::$log_times[ $name ][] = microtime( true ) - $time;
-			$time                     = 0;
+			$time                       = 0;
 		}
 	}
 
-	public static function getLogTimes(){
+	public static function getLogTimes() {
 		return self::$log_times;
 	}
 
 	/**
 	 * Throw an exception.
 	 *
-	 * @param string    $message
-	 * @param int       $code
+	 * @param string $message
+	 * @param int $code
 	 * @param Throwable $prev
-	 * @param string    $type A class of an exception, default Exception.
+	 * @param string $type A class of an exception, default Exception.
 	 *
 	 * @throws Exception.
 	 */
@@ -400,6 +394,18 @@ class LP_Debug {
 			self::$_log_functions[ $func . '_func' ] = $func;
 		}
 
+	}
+
+	/**
+	 * Check enable debug mode
+	 *
+	 * @return bool
+	 * @since 3.2.8
+	 * @editor tungnx
+	 *
+	 */
+	public static function is_debug() {
+		return LP_Settings::get_option( 'debug' ) == 'yes';
 	}
 }
 

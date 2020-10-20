@@ -5,11 +5,15 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 1.0.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+if ( class_exists( 'LP_Settings' ) ) {
+	return;
 }
 
 class LP_Settings {
@@ -37,10 +41,10 @@ class LP_Settings {
 	 * Constructor.
 	 *
 	 * @param array|mixed $data
-	 * @param string      $prefix
+	 * @param string $prefix
 	 *
 	 */
-	public function __construct( $data = false, $prefix = 'learn_press_' ) {
+	protected function __construct( $data = false, $prefix = 'learn_press_' ) {
 
 		$this->_prefix = $prefix;
 
@@ -141,7 +145,7 @@ class LP_Settings {
 	 * Get option recurse separated by DOT
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return mixed
 	 */
@@ -217,7 +221,7 @@ class LP_Settings {
 	 * Update option with default prefix is learn_press_
 	 *
 	 * @param string $name
-	 * @param mixed  $value
+	 * @param mixed $value
 	 * @param string $prefix
 	 */
 	public static function update_option( $name, $value, $prefix = 'learn_press_' ) {
@@ -228,13 +232,15 @@ class LP_Settings {
 	 * Get option with default prefix is learn_press_
 	 *
 	 * @param string $name
-	 * @param mixed  $default
-	 * @param string $prefix
+	 * @param mixed $default
 	 *
 	 * @return mixed
+	 * @since 3.2.8
+	 * @editor tungnx
+	 *
 	 */
-	public static function get_option( $name, $default, $prefix = 'learn_press_' ) {
-		return get_option( "{$prefix}{$name}", $default );
+	public static function get_option( $name, $default = false ) {
+		return get_option( "learn_press_{$name}", $default );
 	}
 
 	public function get_int( $key ) {
@@ -336,9 +342,9 @@ class LP_Settings {
 	/**
 	 * Get settings endpoints for checkout page.
 	 *
+	 * @return array
 	 * @since 3.0.0
 	 *
-	 * @return array
 	 */
 	public function get_checkout_endpoints() {
 		if ( false === ( $endpoints = LP_Object_Cache::get( 'checkout', 'learn-press-endpoints' ) ) ) {
@@ -369,9 +375,9 @@ class LP_Settings {
 	/**
 	 * Get settings endpoints for profile page.
 	 *
+	 * @return array
 	 * @since 3.0.0
 	 *
-	 * @return array
 	 */
 	public function get_profile_endpoints() {
 		if ( false === ( $endpoints = LP_Object_Cache::get( 'profile', 'learn-press-endpoints' ) ) ) {
@@ -398,5 +404,11 @@ class LP_Settings {
 	}
 }
 
-
-return LP_Settings::instance();
+if ( ! function_exists( 'LP_Settings' ) ) {
+	/**
+	 * @return LP_Settings|null
+	 */
+	function LP_Settings() {
+		return LP_Settings::instance();
+	}
+}

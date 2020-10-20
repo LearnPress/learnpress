@@ -203,6 +203,8 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 3.2.7.9 =
 ~ Fix question not show description
+~ Fix query get posts (couses, items courses) on Backend
+~ Fix error not same param on hook of Yoast SEO vs Yoast SEO premium
 
 = 3.2.7.8 =
 ~ Fix save author id when add item when edit course

@@ -723,11 +723,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
                       jQuery(function ($) {
                         var $ratingLink = $('a.lp-rating-link').click(function (e) {
                           $.ajax({
-                            url: '<?php echo admin_url( 'admin-ajax.php' );?>',
-                            data: {
+                            url: '<?php echo admin_url( 'admin-ajax.php' );?>', data: {
                               action: 'learn_press_rated',
-                            },
-                            success: function () {
+                            }, success: function () {
                               $ratingLink.parent().html($ratingLink.data('rated'))
                             },
                           })
@@ -837,33 +835,39 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-reset-data.php';
 		}
 
+		/**
+		 * Get courses, item's courses on Backend page list posts
+		 *
+		 * @param WP_Query $query
+		 */
 		public function get_course_items_of_user_backend( $query ) {
+			if ( ! $query->is_main_query() ) {
+				return;
+			}
+
 			global $post_type, $pagenow;
 
 			if ( current_user_can( 'administrator' ) ) {
-				return $query;
+				return;
 			}
 
 			if ( ! current_user_can( LP_TEACHER_ROLE ) || ( $pagenow != 'edit.php' ) ) {
-				return $query;
+				return;
 			}
 
 			$post_type_valid = apply_filters( 'learn-press/filter-user-access-types',
 				array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) );
 
 			if ( ! in_array( $post_type, $post_type_valid ) ) {
-				return $query;
+				return;
 			}
 
-			$items = LP_Database::getInstance()->getListItem( $post_type, get_current_user_id() );
+			$query->set( 'author', get_current_user_id() );
 
-			if ( count( $items ) == 0 ) {
-				$query->set( 'post_type', 'no-item-access' );
-			} else {
-				$query->set( 'post__in', $items );
-			}
+			$query = apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
 
 			add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
+			remove_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
 		}
 
 		/**
@@ -917,6 +921,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $post_link;
+		}
+
+		/**
+		 * @return false|string
+		 * @since 3.2.8
+		 * @editor tungnx
+		 */
+		public function get_screen_id() {
+			global $current_screen;
+
+			return $current_screen ? $current_screen->id : false;
 		}
 
 		/**

@@ -3153,37 +3153,6 @@ function learn_press_get_unassigned_items( $type = '' ) {
 }
 
 /**
- * Get all questions are unassigned to any quiz.
- *
- * @return array
- * @since 3.0.0
- *
- */
-function learn_press_get_unassigned_questions() {
-	global $wpdb;
-
-	if ( false === ( $questions = LP_Object_Cache::get( 'questions', 'learn-press/unassigned' ) ) ) {
-		$query = $wpdb->prepare( "
-            SELECT p.ID
-            FROM {$wpdb->posts} p
-            WHERE p.post_type = %s
-            AND p.ID NOT IN(
-                SELECT qq.question_id 
-                FROM {$wpdb->learnpress_quiz_questions} qq
-                INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
-                WHERE p.post_type = %s
-            )
-            AND p.post_status NOT IN(%s, %s)
-        ", LP_QUESTION_CPT, LP_QUESTION_CPT, 'auto-draft', 'trash' );
-
-		$questions = $wpdb->get_col( $query );
-		LP_Object_Cache::set( 'questions', $questions, 'learn-press/unassigned' );
-	}
-
-	return $questions;
-}
-
-/**
  * Callback function for sorting to array|object by key|prop priority.
  *
  * @param array|object $a

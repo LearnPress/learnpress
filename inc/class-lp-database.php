@@ -46,7 +46,7 @@ class LP_Database {
 	 * Get list Item by post type and user id
 	 *
 	 * @param string $post_type
-	 * @param int    $user_id
+	 * @param int $user_id
 	 *
 	 * @return array
 	 */
@@ -60,6 +60,54 @@ class LP_Database {
 		);
 
 		return $this->wpdb->get_col( $query );
+	}
+
+	/**
+	 * Get total Item by post type and user id
+	 *
+	 * @param LP_Question_Filter $filter
+	 *
+	 * @return int
+	 * @since 3.2.8
+	 *
+	 */
+	public function get_count_post_of_user( $filter ) {
+		$query_append = '';
+
+		$cache_key = _count_posts_cache_key( $filter->_post_type, '' );
+
+		// Get cache
+		$counts = wp_cache_get( $cache_key, '' );
+		if ( false !== $counts ) {
+			return $counts;
+		}
+
+		if ( isset( $filter->_post_status ) && in_array( $filter->_post_status, array(
+				'publish',
+				'trash',
+				'pending',
+				'draft'
+			) ) ) {
+			$query_append .= ' AND post_status = \'' . $filter->_post_status . '\'';
+		}
+
+		$query = $this->wpdb->prepare( "
+			SELECT Count(ID) FROM $this->tb_posts
+			WHERE post_type = '%s'
+			AND post_author = %d
+			{$query_append}",
+			$filter->_post_type,
+			$filter->_user_id
+		);
+
+		$query = apply_filters( 'learnpress/query_get_total_post_of_user', $query );
+
+		$counts = (int) $this->wpdb->get_var( $query );
+
+		// Set cache
+		wp_cache_set( $cache_key, $counts );
+
+		return $counts;
 	}
 
 	/**
@@ -82,6 +130,3 @@ class LP_Database {
 		return $this->wpdb->get_var( $query );
 	}
 }
-
-LP_Database::getInstance();
-

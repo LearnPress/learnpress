@@ -201,13 +201,7 @@ class LP_Updater {
 		wp_enqueue_style( 'widgets' );
 		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
 		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
-
-		wp_enqueue_script( 'lp-global', $assets->url( 'js/global.js' ), array(
-			'jquery',
-			'jquery-ui-sortable',
-			'underscore'
-		) );
-		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
+//		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'js/admin/admin.js' ) );
 		wp_enqueue_script( 'lp-update', $assets->url( 'js/admin/update.js' ), array(
 			'lp-global',

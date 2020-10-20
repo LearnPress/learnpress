@@ -54,7 +54,7 @@ class LP_Page_Controller {
 
 		// Yoast seo
 		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 2 );
-		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 2 );
+		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 	}
 
 	/**
@@ -78,7 +78,7 @@ class LP_Page_Controller {
 
 		// Set title course archive page
 		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&
-			$course_archive_page_id == $wp_query->post->ID ) {
+		     $course_archive_page_id == $wp_query->post->ID ) {
 			$title             = get_the_title( $course_archive_page_id );
 			$flag_title_course = true;
 		} elseif ( learn_press_is_course() ) {
@@ -129,7 +129,7 @@ class LP_Page_Controller {
 		return apply_filters( 'learn-press/title-page', $title );
 	}
 
-	public function lp_desc_item_yoast_seo( $desc, $tpresentation ) {
+	public function lp_desc_item_yoast_seo( $desc ) {
 		if ( learn_press_is_course() ) {
 
 			$item = LP_Global::course_item();
@@ -172,11 +172,11 @@ class LP_Page_Controller {
 		static $courses = array();
 
 		/**
-		 * @var WP                               $wp
-		 * @var WP_Query                         $wp_query
-		 * @var LP_Course                        $lp_course
+		 * @var WP $wp
+		 * @var WP_Query $wp_query
+		 * @var LP_Course $lp_course
 		 * @var LP_Course_Item|LP_Quiz|LP_Lesson $lp_course_item
-		 * @var LP_Question                      $lp_quiz_question
+		 * @var LP_Question $lp_quiz_question
 		 */
 		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 
@@ -301,8 +301,7 @@ class LP_Page_Controller {
 				}
 			}
 
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 		}
 
@@ -320,9 +319,9 @@ class LP_Page_Controller {
 
 	public function template_content_item( $template ) {
 		/**
-		 * @var LP_Course      $lp_course
+		 * @var LP_Course $lp_course
 		 * @var LP_Course_Item $lp_course_item
-		 * @var LP_User        $lp_user
+		 * @var LP_User $lp_user
 		 */
 		global $lp_course, $lp_course_item, $lp_user;
 
@@ -470,7 +469,7 @@ class LP_Page_Controller {
 		}
 
 		/**
-		 * @var WP_Query   $wp_query
+		 * @var WP_Query $wp_query
 		 * @var WP_Rewrite $wp_rewrite
 		 */
 		global $wp_query, $wp_rewrite;
@@ -557,8 +556,7 @@ class LP_Page_Controller {
 			if ( ! $viewing_user ) {
 				throw new Exception( sprintf( '%s %s %s', __( 'The user', 'learnpress' ), $wp->query_vars['user'], __( 'is not available!', 'learnpress' ) ) );
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			if ( $message = $ex->getMessage() ) {
 				learn_press_add_message( $message, 'error' );
 			} else {

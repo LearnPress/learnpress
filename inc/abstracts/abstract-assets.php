@@ -37,7 +37,7 @@ abstract class LP_Abstract_Assets {
 	/**
 	 * LP_Abstract_Assets constructor.
 	 */
-	public function __construct() {
+	protected function __construct() {
 
 		$priory = 1000;
 		if ( is_admin() ) {

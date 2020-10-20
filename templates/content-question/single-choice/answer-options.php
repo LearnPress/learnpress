@@ -13,7 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
+/**
+ * @var $answers LP_Question_Answers
+ */
 if ( ! isset( $question ) || ! isset( $answers ) ) {
 	return;
 }

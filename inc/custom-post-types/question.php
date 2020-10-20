@@ -41,11 +41,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
-			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 10 );
+			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 11 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			$this->add_map_method( 'before_delete', 'before_delete_question' )
-				->add_map_method( 'save', 'save_question' );
+			     ->add_map_method( 'save', 'save_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -60,8 +60,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 */
 		public function views_pages( $views ) {
-			$unassigned_items = learn_press_get_unassigned_questions();
-			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+			$user_id          = get_current_user_id();
+			$unassigned_items = LP_Question_DB::getInstance()->get_total_question_unassigned();
+			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . $unassigned_items . ')</span>' );
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$views['unassigned'] = sprintf(
@@ -75,6 +76,27 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
 					$text
 				);
+			}
+
+			if ( ! current_user_can( 'administrator' ) ) {
+				$filter             = new LP_Question_Filter();
+				$filter->_post_type = LP_QUESTION_CPT;
+				$filter->_user_id   = $user_id;
+
+				$totalPostAllStatus = LP_Database::getInstance()->getCountPostOfUser( $filter );
+				$views['all']       = wp_sprintf( '<a href="edit.php?post_type=lp_question" class="current" aria-current="page">All <span class="count">(%d)</span></a>', $totalPostAllStatus );
+
+				if ( $totalPostAllStatus == 0 ) {
+					unset( $views['publish'] );
+					unset( $views['unassigned'] );
+					unset( $views['trash'] );
+					unset( $views['draft'] );
+					unset( $views['pending'] );
+				} elseif ( isset( $views['publish'] ) ) {
+					$filter->_post_status = 'publish';
+					$totalPostPublish     = LP_Database::getInstance()->getCountPostOfUser( $filter );
+					$views['publish']     = wp_sprintf( '<a href="edit.php?post_type=lp_question&post_status=publish" class="current" aria-current="page">Published <span class="count">(%d)</span></a>', $totalPostPublish );
+				}
 			}
 
 			return $views;

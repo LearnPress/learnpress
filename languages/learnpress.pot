@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Package Name\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-21 11:03+0000\n"
+"POT-Creation-Date: 2020-10-14 01:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: learnpress/inc/abstract-settings.php:69
-#: learnpress/inc/admin/settings/abstract-settings-page.php:49
-msgid "No setting available."
-msgstr ""
-
 #: learnpress/inc/class-lp-ajax.php:106
 msgid "Sorry! Registration is not allowed on this site."
 msgstr ""
@@ -31,104 +26,109 @@ msgstr ""
 msgid "Bad request."
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:192
-#: learnpress/inc/admin/class-lp-admin-ajax.php:1151
+#: learnpress/inc/class-lp-ajax.php:191
+#: learnpress/inc/admin/class-lp-admin-ajax.php:1155
 msgid "Profile picture upload failed"
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:215
+#: learnpress/inc/class-lp-ajax.php:214
 msgid "Access denied!"
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:224
+#: learnpress/inc/class-lp-ajax.php:223
 msgid "You have finished this course"
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:227
+#: learnpress/inc/class-lp-ajax.php:226
 msgid ""
 "Error! You cannot finish this course. Please contact your administrator for "
 "more information."
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:260
+#: learnpress/inc/class-lp-ajax.php:259
 msgid "Error! Invalid lesson or failed security check."
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:270
+#: learnpress/inc/class-lp-ajax.php:269
 msgid "Congrats! You have completed"
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:309
+#: learnpress/inc/class-lp-ajax.php:307
 msgid "Error! Invalid course or failed security check."
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:313
+#: learnpress/inc/class-lp-ajax.php:311
 msgid "Error!"
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:315
+#: learnpress/inc/class-lp-ajax.php:313
 msgid "You have retaken the course"
 msgstr ""
 
-#: learnpress/inc/class-lp-ajax.php:319
+#: learnpress/inc/class-lp-ajax.php:317
 msgid "Error! You can not retake the course"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:61
-#: learnpress/inc/lp-core-functions.php:2296
-#: learnpress/inc/lp-core-functions.php:3389
+#: learnpress/inc/class-lp-ajax.php:358
+#, php-format
+msgid "The order %s has been successfully recovered."
+msgstr ""
+
+#: learnpress/inc/class-lp-assets.php:66
+#: learnpress/inc/lp-core-functions.php:2305
+#: learnpress/inc/lp-core-functions.php:3400
 msgid "OK"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:62
+#: learnpress/inc/class-lp-assets.php:67
 #: learnpress/inc/class-lp-install.php:516
-#: learnpress/inc/lp-core-functions.php:2297
-#: learnpress/inc/lp-core-functions.php:3390
-#: learnpress/inc/admin/class-lp-admin-ajax.php:922
-#: learnpress/inc/admin/class-lp-admin.php:245
-#: learnpress/inc/custom-post-types/course.php:862
+#: learnpress/inc/lp-core-functions.php:2306
+#: learnpress/inc/lp-core-functions.php:3401
+#: learnpress/inc/admin/class-lp-admin-ajax.php:919
+#: learnpress/inc/admin/class-lp-admin.php:251
+#: learnpress/inc/custom-post-types/course.php:881
 #: learnpress/inc/order/class-lp-order.php:962
 #: learnpress/templates/checkout/form-login.php:103
 msgid "Cancel"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:63
+#: learnpress/inc/class-lp-assets.php:68
 #: learnpress/inc/class-lp-gdpr.php:426
-#: learnpress/inc/lp-core-functions.php:2298
-#: learnpress/inc/lp-core-functions.php:3391
+#: learnpress/inc/lp-core-functions.php:2307
+#: learnpress/inc/lp-core-functions.php:3402
 msgid "Yes"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:64
+#: learnpress/inc/class-lp-assets.php:69
 #: learnpress/inc/class-lp-gdpr.php:426
-#: learnpress/inc/lp-core-functions.php:2299
-#: learnpress/inc/lp-core-functions.php:3392
+#: learnpress/inc/lp-core-functions.php:2308
+#: learnpress/inc/lp-core-functions.php:3403
 #: learnpress/templates/content-quiz/intro.php:25
 msgid "No"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:71
-#: learnpress/inc/class-lp-assets.php:78
+#: learnpress/inc/class-lp-assets.php:76
+#: learnpress/inc/class-lp-assets.php:83
 #: learnpress/inc/shortcodes/class-lp-shortcode-become-a-teacher.php:124
 #: learnpress/templates/checkout/payment.php:20
 msgid "Processing"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:72
-#: learnpress/inc/class-lp-assets.php:79
+#: learnpress/inc/class-lp-assets.php:77
+#: learnpress/inc/class-lp-assets.php:84
 msgid "Redirecting"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:73
+#: learnpress/inc/class-lp-assets.php:78
 msgid "Invalid field"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:74
+#: learnpress/inc/class-lp-assets.php:79
 #: learnpress/inc/attributes/course.php:103
 msgid "Unknown error"
 msgstr ""
 
-#: learnpress/inc/class-lp-assets.php:75
+#: learnpress/inc/class-lp-assets.php:80
 #: learnpress/templates/checkout/payment.php:19
 msgid "Place order"
 msgstr ""
@@ -165,13 +165,13 @@ msgid "Posts tagged"
 msgstr ""
 
 #: learnpress/inc/class-lp-breadcrumb.php:355
-#: learnpress/inc/custom-post-types/course.php:937
-#: learnpress/inc/custom-post-types/course.php:949
-#: learnpress/inc/custom-post-types/course.php:1294
-#: learnpress/inc/custom-post-types/course.php:1301
-#: learnpress/inc/custom-post-types/lesson.php:310
-#: learnpress/inc/custom-post-types/question.php:336
-#: learnpress/inc/custom-post-types/quiz.php:372
+#: learnpress/inc/custom-post-types/course.php:956
+#: learnpress/inc/custom-post-types/course.php:968
+#: learnpress/inc/custom-post-types/course.php:1317
+#: learnpress/inc/custom-post-types/course.php:1325
+#: learnpress/inc/custom-post-types/lesson.php:331
+#: learnpress/inc/custom-post-types/question.php:345
+#: learnpress/inc/custom-post-types/quiz.php:379
 msgid "Author"
 msgstr ""
 
@@ -240,9 +240,10 @@ msgid "Your cart is currently empty."
 msgstr ""
 
 #: learnpress/inc/class-lp-checkout.php:546
-#: learnpress/inc/custom-post-types/course.php:105
-#: learnpress/templates/checkout/order-received.php:35
+#: learnpress/inc/custom-post-types/course.php:103
+#: learnpress/templates/checkout/order-received.php:36
 #: learnpress/inc/gateways/paypal/class-lp-gateway-paypal.php:436
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:71
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:125
 msgid "Item"
 msgstr ""
@@ -257,14 +258,14 @@ msgid "Cheatin&#8217; huh?"
 msgstr ""
 
 #: learnpress/inc/class-lp-forms-handler.php:39
-#: learnpress/inc/class-lp-forms-handler.php:117
-#: learnpress/inc/class-lp-forms-handler.php:201
+#: learnpress/inc/class-lp-forms-handler.php:116
+#: learnpress/inc/class-lp-forms-handler.php:200
 msgid "Field"
 msgstr ""
 
 #: learnpress/inc/class-lp-forms-handler.php:39
-#: learnpress/inc/class-lp-forms-handler.php:117
-#: learnpress/inc/class-lp-forms-handler.php:201
+#: learnpress/inc/class-lp-forms-handler.php:116
+#: learnpress/inc/class-lp-forms-handler.php:200
 msgid "is required."
 msgstr ""
 
@@ -276,35 +277,44 @@ msgstr ""
 msgid "Your email does not exist!"
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:151
+#: learnpress/inc/class-lp-forms-handler.php:150
 msgid "Login successfully."
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:240
+#: learnpress/inc/class-lp-forms-handler.php:239
 msgid "Register successfully."
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:265
+#: learnpress/inc/class-lp-forms-handler.php:257
+msgid "I need become a instructor"
+msgstr ""
+
+#: learnpress/inc/class-lp-forms-handler.php:261
+msgid ""
+"Your request become a instructor has been sent. We will get back to you soon!"
+msgstr ""
+
+#: learnpress/inc/class-lp-forms-handler.php:279
 msgid "Password is too short!"
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:269
+#: learnpress/inc/class-lp-forms-handler.php:283
 msgid "Password can not have spacing!"
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:273
+#: learnpress/inc/class-lp-forms-handler.php:287
 msgid "Password must include at least one letter!"
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:277
+#: learnpress/inc/class-lp-forms-handler.php:291
 msgid "Password must include at least one capitalized letter!"
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:281
+#: learnpress/inc/class-lp-forms-handler.php:295
 msgid "Password must include at least one number!"
 msgstr ""
 
-#: learnpress/inc/class-lp-forms-handler.php:285
+#: learnpress/inc/class-lp-forms-handler.php:299
 msgid "Password must include at least one of these characters ~!@#$%^&*() !"
 msgstr ""
 
@@ -333,6 +343,8 @@ msgid "Order ID"
 msgstr ""
 
 #: learnpress/inc/class-lp-gdpr.php:151
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:31
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:74
 msgid "Order Date"
 msgstr ""
 
@@ -345,9 +357,9 @@ msgid "Order Total"
 msgstr ""
 
 #: learnpress/inc/class-lp-gdpr.php:165
-#: learnpress/inc/custom-post-types/order.php:892
-#: learnpress/inc/custom-post-types/order.php:893
-#: learnpress/inc/custom-post-types/order.php:897
+#: learnpress/inc/custom-post-types/order.php:894
+#: learnpress/inc/custom-post-types/order.php:895
+#: learnpress/inc/custom-post-types/order.php:899
 #: learnpress/inc/user/class-lp-profile.php:313
 #: learnpress/inc/admin/settings/class-lp-settings-profile.php:165
 #: learnpress/inc/admin/sub-menus/class-lp-submenu-statistics.php:22
@@ -425,8 +437,8 @@ msgid "Purchased Course"
 msgstr ""
 
 #: learnpress/inc/class-lp-gdpr.php:415
-#: learnpress/inc/custom-post-types/order.php:761
-#: learnpress/inc/custom-post-types/order.php:761
+#: learnpress/inc/custom-post-types/order.php:763
+#: learnpress/inc/custom-post-types/order.php:763
 #: learnpress/templates/emails/order-items-table.php:53
 #: learnpress/templates/emails/plain/order-items-table.php:30
 #: learnpress/inc/admin/meta-box/fields/list-emails.php:30
@@ -442,9 +454,9 @@ msgstr ""
 
 #: learnpress/inc/class-lp-gdpr.php:425
 #: learnpress/inc/admin/lp-admin-functions.php:1224
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:107
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:104
 #: learnpress/inc/user-item/class-lp-user-item.php:566
-#: learnpress/templates/content-lesson/button-complete.php:36
+#: learnpress/templates/content-lesson/button-complete.php:30
 #: learnpress/inc/admin/views/statistics/orders.php:63
 msgid "Completed"
 msgstr ""
@@ -483,10 +495,10 @@ msgid "Thank you for using LearnPress"
 msgstr ""
 
 #: learnpress/inc/class-lp-multi-language.php:52
-#: learnpress/inc/custom-post-types/question.php:294
+#: learnpress/inc/custom-post-types/question.php:303
 #: learnpress/inc/user/class-lp-profile.php:326
 #: learnpress/inc/admin/sub-menus/class-lp-submenu-settings.php:14
-#: learnpress/inc/admin/views/quiz/question-meta.php:12
+#: learnpress/inc/admin/views/quiz/question-meta.php:18
 msgid "Settings"
 msgstr ""
 
@@ -499,15 +511,31 @@ msgstr ""
 msgid "Add-ons"
 msgstr ""
 
-#: learnpress/inc/class-lp-page-controller.php:129
-msgid "You can not view this item or it does not exist!"
+#: learnpress/inc/class-lp-page-controller.php:92
+msgid "Course Search Results"
 msgstr ""
 
-#: learnpress/inc/class-lp-page-controller.php:465
+#: learnpress/inc/class-lp-page-controller.php:94
+#: learnpress/inc/admin/class-lp-admin.php:313
+#: learnpress/inc/admin/lp-admin-actions.php:213
+#: learnpress/inc/custom-post-types/course.php:131
+#: learnpress/inc/custom-post-types/course.php:133
+#: learnpress/inc/user/class-lp-profile.php:300
+#: learnpress/inc/admin/settings/class-lp-settings-courses.php:12
+#: learnpress/inc/admin/settings/class-lp-settings-profile.php:149
+#: learnpress/inc/admin/settings/class-lp-settings-profile.php:274
+#: learnpress/inc/admin/sub-menus/class-lp-submenu-statistics.php:21
+#: learnpress/inc/admin/sub-menus/class-lp-submenu-statistics.php:28
+#: learnpress/inc/admin/views/setup/steps/pages.php:22
+#: learnpress/inc/admin/views/tools/course/html-user.php:30
+msgid "Courses"
+msgstr ""
+
+#: learnpress/inc/class-lp-page-controller.php:557
 msgid "The user"
 msgstr ""
 
-#: learnpress/inc/class-lp-page-controller.php:465
+#: learnpress/inc/class-lp-page-controller.php:557
 msgid "is not available!"
 msgstr ""
 
@@ -530,7 +558,7 @@ msgid "You are in preview mode. Continue <a href=\"%s\">editing</a>?"
 msgstr ""
 
 #: learnpress/inc/class-lp-query-list-table.php:28
-#: learnpress/inc/custom-post-types/course.php:99
+#: learnpress/inc/custom-post-types/course.php:97
 msgid "item"
 msgstr ""
 
@@ -579,7 +607,7 @@ msgid "You can not enroll course &quot;%s&quot"
 msgstr ""
 
 #: learnpress/inc/class-lp-request-handler.php:324
-#: learnpress/inc/course/lp-course-functions.php:1151
+#: learnpress/inc/course/lp-course-functions.php:1174
 msgid "Invalid request!"
 msgstr ""
 
@@ -603,34 +631,40 @@ msgstr ""
 msgid "Create new account"
 msgstr ""
 
-#: learnpress/inc/class-lp-strings.php:16
-#: learnpress/inc/lp-strings.php:7
+#: learnpress/inc/class-lp-strings.php:20
 #, php-format
 msgid "Do you want to redo quiz \"%s\"?"
 msgstr ""
 
-#: learnpress/inc/class-lp-strings.php:17
-#: learnpress/inc/lp-strings.php:8
+#: learnpress/inc/class-lp-strings.php:21
 #, php-format
 msgid "Do you want to complete quiz \"%s\"?"
 msgstr ""
 
-#: learnpress/inc/class-lp-strings.php:18
-#: learnpress/inc/lp-strings.php:9
+#: learnpress/inc/class-lp-strings.php:22
 #, php-format
 msgid "Do you want to complete lesson \"%s\"?"
 msgstr ""
 
-#: learnpress/inc/class-lp-strings.php:19
-#: learnpress/inc/lp-strings.php:10
+#: learnpress/inc/class-lp-strings.php:23
 #, php-format
 msgid "Do you want to finish course \"%s\"?"
 msgstr ""
 
-#: learnpress/inc/class-lp-strings.php:20
-#: learnpress/inc/lp-strings.php:11
+#: learnpress/inc/class-lp-strings.php:24
 #, php-format
 msgid "Do you want to retake course \"%s\"?"
+msgstr ""
+
+#: learnpress/inc/class-lp-strings.php:25
+#, php-format
+msgid ""
+"You have not passed the course' assessment (%s), are you sure to finish this "
+"course?"
+msgstr ""
+
+#: learnpress/inc/class-lp-strings.php:26
+msgid "You have completed quiz"
 msgstr ""
 
 #: learnpress/inc/class-lp-widget.php:213
@@ -639,16 +673,16 @@ msgid "Function %s should be overwritten in child class"
 msgstr ""
 
 #: learnpress/inc/lp-core-functions.php:376
-#: learnpress/inc/course/lp-course-functions.php:581
-#: learnpress/inc/custom-post-types/lesson.php:184
+#: learnpress/inc/course/lp-course-functions.php:579
+#: learnpress/inc/custom-post-types/lesson.php:200
 #: learnpress/inc/admin/settings/class-lp-settings-courses.php:150
 msgid "Lesson"
 msgstr ""
 
 #: learnpress/inc/lp-core-functions.php:377
-#: learnpress/inc/course/lp-course-functions.php:582
-#: learnpress/inc/custom-post-types/question.php:337
-#: learnpress/inc/custom-post-types/quiz.php:92
+#: learnpress/inc/course/lp-course-functions.php:580
+#: learnpress/inc/custom-post-types/question.php:346
+#: learnpress/inc/custom-post-types/quiz.php:98
 #: learnpress/inc/admin/settings/class-lp-settings-courses.php:157
 #: learnpress/templates/profile/tabs/quizzes.php:38
 msgid "Quiz"
@@ -1331,208 +1365,210 @@ msgstr ""
 msgid "Jersey pound"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1488
+#: learnpress/inc/lp-core-functions.php:1491
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: learnpress/inc/lp-core-functions.php:1492
+#: learnpress/inc/lp-core-functions.php:1495
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: learnpress/inc/lp-core-functions.php:1497
+#: learnpress/inc/lp-core-functions.php:1500
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: learnpress/inc/lp-core-functions.php:1501
+#: learnpress/inc/lp-core-functions.php:1505
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: learnpress/inc/lp-core-functions.php:1570
+#: learnpress/inc/lp-core-functions.php:1577
 #: learnpress/inc/admin/views/quiz/editor.php:29
 #: learnpress/inc/admin/views/tools/course/html-course.php:29
 #: learnpress/inc/admin/views/tools/course/html-user.php:29
 msgid "Name"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1572
+#: learnpress/inc/lp-core-functions.php:1579
 msgid "Your name"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1578
+#: learnpress/inc/lp-core-functions.php:1585
 #: learnpress/inc/shortcodes/class-lp-shortcode-register-form.php:72
 #: learnpress/inc/shortcodes/class-lp-shortcode-register-form.php:74
 #: learnpress/inc/admin/meta-box/fields/list-emails.php:28
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:40
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:80
 msgid "Email"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1580
+#: learnpress/inc/lp-core-functions.php:1587
 msgid "Your email address"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1586
+#: learnpress/inc/lp-core-functions.php:1593
 msgid "Phone"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1588
+#: learnpress/inc/lp-core-functions.php:1595
 msgid "Your phone number"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1592
+#: learnpress/inc/lp-core-functions.php:1599
 #: learnpress/inc/admin/views/settings/emails/become-a-teacher-request.php:41
 msgid "Message"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1594
+#: learnpress/inc/lp-core-functions.php:1601
 msgid "Your message"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1625
+#: learnpress/inc/lp-core-functions.php:1632
 msgid "Please enter your name"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1630
+#: learnpress/inc/lp-core-functions.php:1637
 msgid "Please enter your email address"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1638
+#: learnpress/inc/lp-core-functions.php:1645
 msgid "Please moderate"
 msgstr ""
 
 #. 1: link user, 2: name user.
-#: learnpress/inc/lp-core-functions.php:1650
+#: learnpress/inc/lp-core-functions.php:1657
 #, php-format
 msgid "The user <a href=\"%s\">%s</a> wants to become a teacher."
 msgstr ""
 
 #. %s: Name.
-#: learnpress/inc/lp-core-functions.php:1652
+#: learnpress/inc/lp-core-functions.php:1659
 #, php-format
 msgid "Name: %s"
 msgstr ""
 
 #. %s: Email.
-#: learnpress/inc/lp-core-functions.php:1654
+#: learnpress/inc/lp-core-functions.php:1661
 #, php-format
 msgid "Email: %s"
 msgstr ""
 
 #. %s: Phone.
-#: learnpress/inc/lp-core-functions.php:1656
+#: learnpress/inc/lp-core-functions.php:1663
 #, php-format
 msgid "Phone: %s"
 msgstr ""
 
 #. %s: Message.
-#: learnpress/inc/lp-core-functions.php:1658
+#: learnpress/inc/lp-core-functions.php:1665
 #, php-format
 msgid "Message: %s"
 msgstr ""
 
 #. %s: Accept.
-#: learnpress/inc/lp-core-functions.php:1665
+#: learnpress/inc/lp-core-functions.php:1672
 #, php-format
 msgid "Accept: %s"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:1676
+#: learnpress/inc/lp-core-functions.php:1683
 #: learnpress/inc/shortcodes/class-lp-shortcode-become-a-teacher.php:109
 msgid "Your request has been sent! We will get back to you soon!"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2544
+#: learnpress/inc/lp-core-functions.php:2553
 #, php-format
 msgid "Congrats! You've enrolled the course \"%s\"."
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2577
+#: learnpress/inc/lp-core-functions.php:2586
 msgid "Cart"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2581
+#: learnpress/inc/lp-core-functions.php:2590
 msgid "Enable cart"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2582
+#: learnpress/inc/lp-core-functions.php:2591
 msgid "Check this option to enable user purchase multiple courses at one time."
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2588
+#: learnpress/inc/lp-core-functions.php:2597
 msgid "Add to cart redirect"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2589
+#: learnpress/inc/lp-core-functions.php:2598
 msgid "Redirect to checkout immediately after adding course to cart."
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2595
+#: learnpress/inc/lp-core-functions.php:2604
 msgid "AJAX add to cart"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2596
+#: learnpress/inc/lp-core-functions.php:2605
 msgid "Using AJAX to add course to cart."
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2602
+#: learnpress/inc/lp-core-functions.php:2611
 msgid "Cart page"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2736
+#: learnpress/inc/lp-core-functions.php:2745
 msgid "Are you sure you want to cancel order?"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2737
+#: learnpress/inc/lp-core-functions.php:2746
 msgid "Cancel Order"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2792
-#: learnpress/inc/course/lp-course-functions.php:1083
+#: learnpress/inc/lp-core-functions.php:2801
+#: learnpress/inc/course/lp-course-functions.php:1106
 #: learnpress/inc/user/class-lp-profile.php:848
 #: learnpress/inc/user/class-lp-profile.php:882
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:108
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:105
 #: learnpress/inc/user-item/class-lp-user-item.php:568
 msgid "Passed"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2795
-#: learnpress/inc/course/lp-course-functions.php:1086
+#: learnpress/inc/lp-core-functions.php:2804
+#: learnpress/inc/course/lp-course-functions.php:1109
 #: learnpress/inc/user/class-lp-profile.php:849
 #: learnpress/inc/user/class-lp-profile.php:883
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:109
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:106
 #: learnpress/inc/user-item/class-lp-user-item.php:569
 msgid "Failed"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2989
+#: learnpress/inc/lp-core-functions.php:2998
 msgctxt "static-page-name"
 msgid "Lp Checkout"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2990
+#: learnpress/inc/lp-core-functions.php:2999
 msgctxt "static-page-name"
 msgid "Courses"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2991
+#: learnpress/inc/lp-core-functions.php:3000
 msgctxt "static-page-name"
 msgid "Lp Profile"
 msgstr ""
 
-#: learnpress/inc/lp-core-functions.php:2992
+#: learnpress/inc/lp-core-functions.php:3001
 msgctxt "static-page-name"
 msgid "Become a Teacher"
 msgstr ""
 
-#: learnpress/inc/lp-deprecated.php:370
-#: learnpress/inc/lp-deprecated.php:402
-#: learnpress/inc/admin/lp-admin-actions.php:64
+#: learnpress/inc/lp-deprecated.php:320
+#: learnpress/inc/lp-deprecated.php:352
+#: learnpress/inc/admin/lp-admin-actions.php:67
 #: learnpress/inc/admin/lp-admin-functions.php:852
 #: learnpress/inc/admin/lp-admin-functions.php:1017
 #: learnpress/inc/admin/lp-admin-functions.php:1219
@@ -1552,33 +1588,33 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: learnpress/inc/lp-deprecated.php:371
+#: learnpress/inc/lp-deprecated.php:321
 msgid "Learning"
 msgstr ""
 
-#: learnpress/inc/lp-deprecated.php:372
-#: learnpress/inc/custom-post-types/order.php:758
+#: learnpress/inc/lp-deprecated.php:322
+#: learnpress/inc/custom-post-types/order.php:760
 #: learnpress/inc/user/class-lp-profile.php:285
 msgid "Purchased"
 msgstr ""
 
-#: learnpress/inc/lp-deprecated.php:373
-#: learnpress/inc/lp-deprecated.php:404
+#: learnpress/inc/lp-deprecated.php:323
+#: learnpress/inc/lp-deprecated.php:354
 #: learnpress/inc/user/class-lp-profile.php:847
 #: learnpress/inc/user/class-lp-profile.php:881
 #: learnpress/inc/user-item/class-lp-user-item.php:567
 msgid "Finished"
 msgstr ""
 
-#: learnpress/inc/lp-deprecated.php:374
+#: learnpress/inc/lp-deprecated.php:324
 #: learnpress/inc/user/class-lp-profile.php:278
 msgid "Owned"
 msgstr ""
 
-#: learnpress/inc/lp-deprecated.php:403
-#: learnpress/inc/course/lp-course-functions.php:1089
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:105
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:106
+#: learnpress/inc/lp-deprecated.php:353
+#: learnpress/inc/course/lp-course-functions.php:1112
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:102
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:103
 #: learnpress/inc/user-item/class-lp-user-item.php:562
 #: learnpress/inc/user-item/class-lp-user-item.php:563
 #: learnpress/inc/user-item/class-lp-user-item.php:564
@@ -1587,10 +1623,6 @@ msgstr ""
 
 #: learnpress/inc/lp-js-template.php:11
 msgid "--Select a Lesson--"
-msgstr ""
-
-#: learnpress/inc/lp-strings.php:6
-msgid "You've already completed quiz."
 msgstr ""
 
 #: learnpress/inc/lp-webhooks.php:82
@@ -1643,97 +1675,97 @@ msgstr ""
 msgid "The following these functions %s do not exists in %s"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:351
+#: learnpress/inc/admin/class-lp-admin-ajax.php:349
 msgid "Dismissed!"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:355
-#: learnpress/inc/admin/class-lp-admin.php:773
+#: learnpress/inc/admin/class-lp-admin-ajax.php:353
+#: learnpress/inc/admin/class-lp-admin.php:782
 msgid "Fail while joining newsletter! Please try again!"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:377
-#: learnpress/inc/admin/class-lp-admin.php:796
+#: learnpress/inc/admin/class-lp-admin-ajax.php:375
+#: learnpress/inc/admin/class-lp-admin.php:805
 msgid "Something went wrong: "
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:380
-#: learnpress/inc/admin/class-lp-admin.php:798
+#: learnpress/inc/admin/class-lp-admin-ajax.php:378
+#: learnpress/inc/admin/class-lp-admin.php:807
 msgid ""
 "Thank you for subscribing! Please check and click the confirmation link from "
 "the email we've just sent to your mail box."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:396
+#: learnpress/inc/admin/class-lp-admin-ajax.php:394
 msgid "Ops! ID not found"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:436
+#: learnpress/inc/admin/class-lp-admin-ajax.php:434
 msgid "Duplicate post fail, please try again"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:591
+#: learnpress/inc/admin/class-lp-admin-ajax.php:589
 msgid "Access denied"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:603
-#: learnpress/inc/admin/class-lp-admin-ajax.php:653
+#: learnpress/inc/admin/class-lp-admin-ajax.php:601
+#: learnpress/inc/admin/class-lp-admin-ajax.php:651
 #: learnpress/templates/order/order-details.php:18
 msgid "Invalid order"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:647
+#: learnpress/inc/admin/class-lp-admin-ajax.php:645
 msgid "Permission denied"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:871
-#: learnpress/inc/admin/class-lp-admin-ajax.php:1043
+#: learnpress/inc/admin/class-lp-admin-ajax.php:868
+#: learnpress/inc/admin/class-lp-admin-ajax.php:1040
 #: learnpress/inc/admin/lp-admin-functions.php:253
 msgid "Edit Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:872
-#: learnpress/inc/admin/class-lp-admin-ajax.php:1045
+#: learnpress/inc/admin/class-lp-admin-ajax.php:869
+#: learnpress/inc/admin/class-lp-admin-ajax.php:1042
 #: learnpress/inc/admin/lp-admin-functions.php:255
 msgid "View Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:874
+#: learnpress/inc/admin/class-lp-admin-ajax.php:871
 msgid "Error! Page creation failed. Please try again."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:877
+#: learnpress/inc/admin/class-lp-admin-ajax.php:874
 msgid "Empty page name!"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:911
+#: learnpress/inc/admin/class-lp-admin-ajax.php:908
 msgid "The required pages are successfully created."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:921
+#: learnpress/inc/admin/class-lp-admin-ajax.php:918
 msgid "Please try again."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:947
+#: learnpress/inc/admin/class-lp-admin-ajax.php:944
 msgid "Successfully import sample data."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:947
+#: learnpress/inc/admin/class-lp-admin-ajax.php:944
 msgid "View courses"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:951
+#: learnpress/inc/admin/class-lp-admin-ajax.php:948
 msgid "Failed to import sample data. Please try again."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:955
+#: learnpress/inc/admin/class-lp-admin-ajax.php:952
 msgid ""
 "Unknown error when installing/activating Import/Export add-on. Please try "
 "again!"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin-ajax.php:971
-#: learnpress/inc/admin/class-lp-admin-ajax.php:992
+#: learnpress/inc/admin/class-lp-admin-ajax.php:968
+#: learnpress/inc/admin/class-lp-admin-ajax.php:989
 msgid "You do not have the permission to deactivate plugins on this site."
 msgstr ""
 
@@ -1794,8 +1826,8 @@ msgstr ""
 
 #. Name of the plugin
 #: learnpress/inc/admin/class-lp-admin-menu.php:90
-#: learnpress/inc/admin/class-lp-admin.php:122
-#: learnpress/inc/admin/class-lp-admin.php:124
+#: learnpress/inc/admin/class-lp-admin.php:128
+#: learnpress/inc/admin/class-lp-admin.php:130
 #: learnpress/inc/admin/lp-admin-functions.php:1517
 #: learnpress/inc/admin/settings/class-lp-settings-emails.php:161
 msgid "LearnPress"
@@ -1809,137 +1841,123 @@ msgstr ""
 msgid "Outdated data from version older than 1.0 has been removed"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:81
+#: learnpress/inc/admin/class-lp-admin.php:87
 msgid "Available Courses"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:210
+#: learnpress/inc/admin/class-lp-admin.php:216
 msgid "Shop Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:214
+#: learnpress/inc/admin/class-lp-admin.php:220
 msgid "Cart Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:218
-#: learnpress/inc/admin/class-lp-admin.php:636
+#: learnpress/inc/admin/class-lp-admin.php:224
+#: learnpress/inc/admin/class-lp-admin.php:644
 msgid "Checkout Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:222
+#: learnpress/inc/admin/class-lp-admin.php:228
 msgid "My Account Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:226
+#: learnpress/inc/admin/class-lp-admin.php:232
 msgid "Terms and Conditions Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:243
+#: learnpress/inc/admin/class-lp-admin.php:249
 msgid "Account"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:244
+#: learnpress/inc/admin/class-lp-admin.php:250
 msgid "Billing"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:246
-#: learnpress/inc/admin/class-lp-admin.php:309
+#: learnpress/inc/admin/class-lp-admin.php:252
+#: learnpress/inc/admin/class-lp-admin.php:315
 #: learnpress/inc/admin/settings/class-lp-settings-checkout.php:22
 #: learnpress/inc/admin/views/setup/steps/pages.php:40
 msgid "Checkout"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:247
+#: learnpress/inc/admin/class-lp-admin.php:253
 msgid "Confirmation"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:248
+#: learnpress/inc/admin/class-lp-admin.php:254
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:23
 msgid "Invoice"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:249
+#: learnpress/inc/admin/class-lp-admin.php:255
 msgid "Levels"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:277
+#: learnpress/inc/admin/class-lp-admin.php:283
 msgid "Members"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:278
+#: learnpress/inc/admin/class-lp-admin.php:284
 msgid "Activity"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:279
-#: learnpress/templates/checkout/form-register.php:48
-#: learnpress/templates/global/form-register.php:43
+#: learnpress/inc/admin/class-lp-admin.php:285
+#: learnpress/templates/checkout/form-register.php:60
+#: learnpress/templates/global/form-register.php:46
 msgid "Register"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:280
+#: learnpress/inc/admin/class-lp-admin.php:286
 msgid "Activate"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:307
-#: learnpress/inc/admin/lp-admin-actions.php:210
-#: learnpress/inc/custom-post-types/course.php:132
-#: learnpress/inc/custom-post-types/course.php:134
-#: learnpress/inc/user/class-lp-profile.php:300
-#: learnpress/inc/admin/settings/class-lp-settings-courses.php:12
-#: learnpress/inc/admin/settings/class-lp-settings-profile.php:149
-#: learnpress/inc/admin/settings/class-lp-settings-profile.php:274
-#: learnpress/inc/admin/sub-menus/class-lp-submenu-statistics.php:21
-#: learnpress/inc/admin/sub-menus/class-lp-submenu-statistics.php:28
-#: learnpress/inc/admin/views/setup/steps/pages.php:22
-#: learnpress/inc/admin/views/tools/course/html-user.php:30
-msgid "Courses"
-msgstr ""
-
-#: learnpress/inc/admin/class-lp-admin.php:308
+#: learnpress/inc/admin/class-lp-admin.php:314
 #: learnpress/inc/admin/settings/class-lp-settings-profile.php:22
 #: learnpress/inc/admin/views/setup/steps/pages.php:31
 msgid "Profile"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:310
+#: learnpress/inc/admin/class-lp-admin.php:316
 #: learnpress/inc/shortcodes/class-lp-shortcode-become-a-teacher.php:121
 #: learnpress/inc/admin/views/setup/steps/pages.php:49
 msgid "Become a Teacher"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:348
+#: learnpress/inc/admin/class-lp-admin.php:354
 msgid "LearnPress Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:390
+#: learnpress/inc/admin/class-lp-admin.php:396
 #, php-format
 msgid "LearnPress Pages (%d)"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:429
+#: learnpress/inc/admin/class-lp-admin.php:437
 msgctxt "pending-request"
 msgid "Accept"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:430
+#: learnpress/inc/admin/class-lp-admin.php:438
 msgctxt "pending-request"
 msgid "Deny"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:496
+#: learnpress/inc/admin/class-lp-admin.php:504
 #, php-format
 msgid "Pending Request %s"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:523
+#: learnpress/inc/admin/class-lp-admin.php:531
 msgid "Sorry, you are not allowed to edit this user."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:527
+#: learnpress/inc/admin/class-lp-admin.php:535
 #, php-format
 msgid "User has %s to become a teacher."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:612
+#: learnpress/inc/admin/class-lp-admin.php:620
 #, php-format
 msgid ""
 "LearnPress requires permalink option <strong>Post name</strong> is enabled. "
@@ -1947,16 +1965,16 @@ msgid ""
 "properly."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:632
+#: learnpress/inc/admin/class-lp-admin.php:640
 msgid "Profile Page"
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:661
+#: learnpress/inc/admin/class-lp-admin.php:669
 #, php-format
 msgid "The following required page(s) are currently missing: %s."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:662
+#: learnpress/inc/admin/class-lp-admin.php:670
 #, php-format
 msgid ""
 "To ensure all functions work properly, please click <a class=\"button\" "
@@ -1964,7 +1982,7 @@ msgid ""
 "automatically."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:712
+#: learnpress/inc/admin/class-lp-admin.php:720
 #, php-format
 msgid ""
 "If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;"
@@ -1972,8 +1990,12 @@ msgid ""
 "generous."
 msgstr ""
 
-#: learnpress/inc/admin/class-lp-admin.php:712
+#: learnpress/inc/admin/class-lp-admin.php:720
 msgid "Thanks :)"
+msgstr ""
+
+#: learnpress/inc/admin/class-lp-admin.php:915
+msgid "Permalink only available if the item is already assigned to a course."
 msgstr ""
 
 #: learnpress/inc/admin/class-lp-install-sample-data.php:64
@@ -1993,7 +2015,7 @@ msgstr ""
 #: learnpress/inc/custom-post-types/abstract.php:587
 #: learnpress/inc/custom-post-types/abstract.php:779
 #: learnpress/inc/custom-post-types/abstract.php:788
-#: learnpress/inc/custom-post-types/question.php:376
+#: learnpress/inc/custom-post-types/question.php:385
 #: learnpress/inc/order/class-lp-order.php:955
 #: learnpress/inc/admin/views/meta-boxes/course/assigned.php:22
 #: learnpress/inc/admin/views/meta-boxes/quiz/assigned.php:28
@@ -2005,8 +2027,8 @@ msgstr ""
 #: learnpress/inc/attributes/course.php:234
 #: learnpress/inc/attributes/course.php:235
 #: learnpress/inc/custom-post-types/abstract.php:585
-#: learnpress/inc/custom-post-types/question.php:374
-#: learnpress/templates/content-lesson/no-content.php:22
+#: learnpress/inc/custom-post-types/question.php:383
+#: learnpress/templates/content-lesson/no-content.php:24
 msgid "Edit"
 msgstr ""
 
@@ -2123,7 +2145,7 @@ msgid "Last Updated:"
 msgstr ""
 
 #: learnpress/inc/admin/class-lp-plugin-install-list-table.php:455
-#: learnpress/inc/custom-post-types/order.php:825
+#: learnpress/inc/custom-post-types/order.php:827
 #: learnpress/inc/order/class-lp-order.php:148
 #: learnpress/inc/user-item/class-lp-user-item.php:159
 #, php-format
@@ -2294,46 +2316,46 @@ msgstr ""
 msgid "Disabling Maintenance mode&#8230;"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:65
+#: learnpress/inc/admin/lp-admin-actions.php:68
 #: learnpress/inc/admin/views/dashboard/plugin-status/html-results.php:35
 msgid "Published"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:66
+#: learnpress/inc/admin/lp-admin-actions.php:69
 msgid "Private"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:67
+#: learnpress/inc/admin/lp-admin-actions.php:70
 msgid "Pending Review"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:68
+#: learnpress/inc/admin/lp-admin-actions.php:71
 msgid "Scheduled"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:69
+#: learnpress/inc/admin/lp-admin-actions.php:72
 msgid "Draft"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:70
+#: learnpress/inc/admin/lp-admin-actions.php:73
 msgid "Trash"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:148
+#: learnpress/inc/admin/lp-admin-actions.php:151
 msgid "LearnPress Plugin"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:152
+#: learnpress/inc/admin/lp-admin-actions.php:155
 msgid "LearnPress Status"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:216
-#: learnpress/inc/custom-post-types/course.php:1307
+#: learnpress/inc/admin/lp-admin-actions.php:219
+#: learnpress/inc/custom-post-types/course.php:1331
 msgid "Categories"
 msgstr ""
 
-#: learnpress/inc/admin/lp-admin-actions.php:221
-#: learnpress/inc/custom-post-types/course.php:224
+#: learnpress/inc/admin/lp-admin-actions.php:224
+#: learnpress/inc/custom-post-types/course.php:225
 msgid "Tags"
 msgstr ""
 
@@ -2343,8 +2365,8 @@ msgstr ""
 
 #: learnpress/inc/admin/lp-admin-functions.php:44
 #: learnpress/inc/custom-post-types/abstract.php:561
-#: learnpress/inc/custom-post-types/quiz.php:373
-#: learnpress/templates/checkout/review-order.php:32
+#: learnpress/inc/custom-post-types/quiz.php:380
+#: learnpress/templates/checkout/review-order.php:34
 #: learnpress/templates/emails/order-items-table.php:66
 #: learnpress/templates/order/order-details.php:28
 #: learnpress/inc/admin/sub-menus/class-lp-submenu-tools.php:22
@@ -2432,8 +2454,8 @@ msgid "Instructors"
 msgstr ""
 
 #: learnpress/inc/admin/lp-admin-functions.php:862
-#: learnpress/inc/custom-post-types/course.php:1296
-#: learnpress/inc/custom-post-types/course.php:1303
+#: learnpress/inc/custom-post-types/course.php:1319
+#: learnpress/inc/custom-post-types/course.php:1327
 #: learnpress/inc/admin/views/statistics/courses.php:8
 #: learnpress/inc/admin/views/statistics/general.php:8
 #: learnpress/inc/admin/views/statistics/orders.php:8
@@ -2469,8 +2491,8 @@ msgstr ""
 
 #: learnpress/inc/admin/lp-admin-functions.php:1037
 #: learnpress/inc/admin/lp-admin-functions.php:2059
-#: learnpress/inc/course/abstract-course.php:675
-#: learnpress/inc/custom-post-types/course.php:1375
+#: learnpress/inc/course/abstract-course.php:673
+#: learnpress/inc/custom-post-types/course.php:1397
 #: learnpress/inc/admin/views/statistics/courses.php:46
 #: learnpress/inc/admin/views/statistics/general.php:63
 msgid "Free"
@@ -2673,55 +2695,43 @@ msgstr[1] ""
 msgid "No student enrolled"
 msgstr ""
 
-#: learnpress/inc/course/abstract-course.php:756
-#: learnpress/inc/course/abstract-course.php:775
+#: learnpress/inc/course/abstract-course.php:754
+#: learnpress/inc/course/abstract-course.php:773
 #: learnpress/inc/lesson/class-lp-lesson.php:104
-#: learnpress/inc/quiz/class-lp-quiz.php:559
+#: learnpress/inc/quiz/class-lp-quiz.php:561
 #, php-format
 msgid "The function %s doesn't exist"
 msgstr ""
 
-#: learnpress/inc/course/abstract-course.php:1588
+#: learnpress/inc/course/abstract-course.php:1598
 #, php-format
 msgid "This course will end within next %s"
 msgstr ""
 
-#: learnpress/inc/course/abstract-course.php:1667
+#: learnpress/inc/course/abstract-course.php:1677
 msgctxt "Enroll with external link"
 msgid "Enroll"
 msgstr ""
 
-#: learnpress/inc/course/abstract-course.php:1718
+#: learnpress/inc/course/abstract-course.php:1728
 msgid "Tags: "
 msgstr ""
 
-#: learnpress/inc/course/lp-course-functions.php:187
+#: learnpress/inc/course/lp-course-functions.php:185
 msgctxt "slug"
 msgid "uncategorized"
 msgstr ""
 
-#: learnpress/inc/course/lp-course-functions.php:235
+#: learnpress/inc/course/lp-course-functions.php:233
 #, php-format
 msgid "The course %d does not exists"
 msgstr ""
 
-#: learnpress/inc/course/lp-course-functions.php:869
+#: learnpress/inc/course/lp-course-functions.php:873
 msgid "Edit this item"
 msgstr ""
 
-#: learnpress/inc/course/lp-course-functions.php:948
-#: learnpress/inc/custom-post-types/abstract.php:800
-#: learnpress/inc/custom-post-types/lesson.php:319
-#: learnpress/inc/custom-post-types/quiz.php:376
-#: learnpress/templates/single-course/section/item-meta.php:31
-msgid "Preview"
-msgstr ""
-
-#: learnpress/inc/course/lp-course-functions.php:951
-msgid "Permalink only available if the item is already assigned to a course."
-msgstr ""
-
-#: learnpress/inc/course/lp-course-functions.php:1169
+#: learnpress/inc/course/lp-course-functions.php:1192
 #, php-format
 msgid "Welcome back, %s"
 msgstr ""
@@ -2735,22 +2745,22 @@ msgstr ""
 msgid "New Course"
 msgstr ""
 
-#: learnpress/inc/curds/class-lp-course-curd.php:125
+#: learnpress/inc/curds/class-lp-course-curd.php:126
 #: learnpress/inc/curds/class-lp-lesson-curd.php:101
 #: learnpress/inc/curds/class-lp-question-curd.php:161
 #: learnpress/inc/curds/class-lp-quiz-curd.php:151
 msgid "<p>Op! ID not found</p>"
 msgstr ""
 
-#: learnpress/inc/curds/class-lp-course-curd.php:129
+#: learnpress/inc/curds/class-lp-course-curd.php:130
 msgid "<p>Op! The course does not exist</p>"
 msgstr ""
 
-#: learnpress/inc/curds/class-lp-course-curd.php:134
+#: learnpress/inc/curds/class-lp-course-curd.php:135
 msgid "<p>Sorry! You don't have permission to duplicate this course</p>"
 msgstr ""
 
-#: learnpress/inc/curds/class-lp-course-curd.php:140
+#: learnpress/inc/curds/class-lp-course-curd.php:141
 msgid "<p>Sorry! Failed to duplicate course!</p>"
 msgstr ""
 
@@ -2781,7 +2791,7 @@ msgid "Invalid order with ID \"%d\"."
 msgstr ""
 
 #: learnpress/inc/curds/class-lp-order-curd.php:606
-#: learnpress/templates/checkout/order-received.php:88
+#: learnpress/templates/checkout/order-received.php:20
 msgid "Invalid order."
 msgstr ""
 
@@ -2829,7 +2839,7 @@ msgid "Invalid quiz with ID \"%d\"."
 msgstr ""
 
 #: learnpress/inc/curds/class-lp-quiz-curd.php:85
-#: learnpress/inc/custom-post-types/quiz.php:97
+#: learnpress/inc/custom-post-types/quiz.php:103
 #: learnpress/inc/admin/editor/class-lp-admin-editor-quiz.php:148
 msgid "New Quiz"
 msgstr ""
@@ -2923,7 +2933,7 @@ msgid "Remove Filter"
 msgstr ""
 
 #: learnpress/inc/custom-post-types/abstract.php:600
-#: learnpress/inc/custom-post-types/question.php:379
+#: learnpress/inc/custom-post-types/question.php:388
 #: learnpress/inc/admin/views/meta-boxes/course/assigned.php:27
 #: learnpress/inc/admin/views/meta-boxes/quiz/assigned.php:49
 msgid "Not assigned yet"
@@ -2974,106 +2984,112 @@ msgstr ""
 msgid "draft updated."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:100
+#: learnpress/inc/custom-post-types/abstract.php:800
+#: learnpress/inc/custom-post-types/lesson.php:340
+#: learnpress/inc/custom-post-types/quiz.php:383
+#: learnpress/templates/single-course/section/item-meta.php:31
+msgid "Preview"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:98
 msgid "Create a new"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:101
-#: learnpress/inc/custom-post-types/quiz.php:178
-#: learnpress/templates/checkout/form.php:89
+#: learnpress/inc/custom-post-types/course.php:99
+#: learnpress/inc/custom-post-types/quiz.php:184
 #: learnpress/templates/checkout/payment.php:132
 #: learnpress/inc/admin/views/setup/content.php:75
 #: learnpress/inc/admin/views/updates/update-screen.php:47
 msgid "Back"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:102
-#: learnpress/inc/custom-post-types/quiz.php:179
+#: learnpress/inc/custom-post-types/course.php:100
+#: learnpress/inc/custom-post-types/quiz.php:185
 #: learnpress/inc/admin/views/course/modal-choose-items.php:58
 #: learnpress/inc/admin/views/quiz/modal-choose-items.php:54
 msgid "Selected items"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:103
+#: learnpress/inc/custom-post-types/course.php:101
 msgid "Do you want to remove item \"{{ITEM_NAME}}\" to trash?"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:106
+#: learnpress/inc/custom-post-types/course.php:104
 msgid "Items"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:108
+#: learnpress/inc/custom-post-types/course.php:106
 msgid "Course sale price must less than the regular price"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:109
+#: learnpress/inc/custom-post-types/course.php:107
 msgid "Course price must greater than the sale price"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:110
+#: learnpress/inc/custom-post-types/course.php:108
 msgid "Sale start date must before sale end date"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:111
+#: learnpress/inc/custom-post-types/course.php:109
 msgid "Sale end date must after sale start date"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:112
+#: learnpress/inc/custom-post-types/course.php:110
 msgid "Invalid date"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:130
+#: learnpress/inc/custom-post-types/course.php:129
 msgctxt "Post Type General Name"
 msgid "Courses"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:131
+#: learnpress/inc/custom-post-types/course.php:130
 msgctxt "Post Type Singular Name"
 msgid "Course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:133
+#: learnpress/inc/custom-post-types/course.php:132
 msgid "Parent Item:"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:135
+#: learnpress/inc/custom-post-types/course.php:134
 msgid "View Course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:136
+#: learnpress/inc/custom-post-types/course.php:135
 msgid "Add New Course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:137
-#: learnpress/inc/custom-post-types/lesson.php:188
-#: learnpress/inc/custom-post-types/order.php:899
+#: learnpress/inc/custom-post-types/course.php:136
+#: learnpress/inc/custom-post-types/lesson.php:204
+#: learnpress/inc/custom-post-types/order.php:901
 #: learnpress/inc/custom-post-types/question.php:191
 msgid "Add New"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:138
+#: learnpress/inc/custom-post-types/course.php:137
 msgid "Edit Course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:139
+#: learnpress/inc/custom-post-types/course.php:138
 msgid "Update Course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:140
+#: learnpress/inc/custom-post-types/course.php:139
 msgid "Search Courses"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:141
+#: learnpress/inc/custom-post-types/course.php:140
 #, php-format
 msgid ""
 "You haven't had any courses yet. Click <a href=\"%s\">Add new</a> to start"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:142
+#: learnpress/inc/custom-post-types/course.php:141
 msgid "No course found in Trash"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:145
+#: learnpress/inc/custom-post-types/course.php:144
 #: learnpress/inc/admin/settings/class-lp-settings-courses.php:24
 msgctxt "slug"
 msgid "courses"
@@ -3102,11 +3118,11 @@ msgctxt "slug"
 msgid "course-category"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:210
+#: learnpress/inc/custom-post-types/course.php:211
 msgid "Course Tags"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:211
+#: learnpress/inc/custom-post-types/course.php:212
 #: learnpress/inc/custom-post-types/question.php:164
 #: learnpress/inc/custom-post-types/question.php:165
 #: learnpress/inc/updates/_update-from-0.9.php:1194
@@ -3117,60 +3133,60 @@ msgstr ""
 msgid "Tag"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:212
+#: learnpress/inc/custom-post-types/course.php:213
 msgid "Search Course Tags"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:213
+#: learnpress/inc/custom-post-types/course.php:214
 msgid "Popular Course Tags"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:214
+#: learnpress/inc/custom-post-types/course.php:215
 msgid "All Course Tags"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:217
+#: learnpress/inc/custom-post-types/course.php:218
 msgid "Edit Course Tag"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:218
+#: learnpress/inc/custom-post-types/course.php:219
 msgid "Update Course Tag"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:219
+#: learnpress/inc/custom-post-types/course.php:220
 msgid "Add New Course Tag"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:220
+#: learnpress/inc/custom-post-types/course.php:221
 msgid "New Course Tag Name"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:221
+#: learnpress/inc/custom-post-types/course.php:222
 msgid "Separate tags with commas"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:222
+#: learnpress/inc/custom-post-types/course.php:223
 msgid "Add or remove tags"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:223
+#: learnpress/inc/custom-post-types/course.php:224
 msgid "Choose from the most used tags"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:233
+#: learnpress/inc/custom-post-types/course.php:234
 msgctxt "slug"
 msgid "course-tag"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:375
+#: learnpress/inc/custom-post-types/course.php:377
 msgid "Sorry! You can not update a course while it is being viewed!"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:562
+#: learnpress/inc/custom-post-types/course.php:565
 msgid "Course Settings"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:578
+#: learnpress/inc/custom-post-types/course.php:581
 #: learnpress/inc/user/class-lp-profile.php:331
 #: learnpress/inc/admin/settings/class-lp-settings-checkout.php:36
 #: learnpress/inc/admin/settings/class-lp-settings-courses.php:66
@@ -3182,449 +3198,474 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:584
-#: learnpress/inc/custom-post-types/lesson.php:316
-#: learnpress/inc/custom-post-types/quiz.php:266
-#: learnpress/inc/custom-post-types/quiz.php:375
+#: learnpress/inc/custom-post-types/course.php:587
+#: learnpress/inc/custom-post-types/lesson.php:337
+#: learnpress/inc/custom-post-types/quiz.php:273
+#: learnpress/inc/custom-post-types/quiz.php:382
 #: learnpress/templates/content-quiz/intro.php:28
 msgid "Duration"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:587
+#: learnpress/inc/custom-post-types/course.php:590
 msgid "The duration of the course."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:591
-msgid "Maximum Students"
-msgstr ""
-
 #: learnpress/inc/custom-post-types/course.php:594
-msgid "Maximum number of students who can enroll in this course."
+msgid "Block course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:598
-msgid "Students Enrolled"
+#: learnpress/inc/custom-post-types/course.php:597
+msgid "Block course when duration expires"
 msgstr ""
 
 #: learnpress/inc/custom-post-types/course.php:601
+msgid "Maximum Students"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:604
+msgid "Maximum number of students who can enroll in this course."
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:608
+msgid "Students Enrolled"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:611
 msgid "How many students have taken this course."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:605
+#: learnpress/inc/custom-post-types/course.php:615
 msgid "Re-take Course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:609
+#: learnpress/inc/custom-post-types/course.php:619
 msgid ""
 "How many times the user can re-take this course. Set to 0 to disable re-"
 "taking"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:613
+#: learnpress/inc/custom-post-types/course.php:623
 msgid "Featured"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:616
+#: learnpress/inc/custom-post-types/course.php:626
 msgid "Set course as featured."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:620
+#: learnpress/inc/custom-post-types/course.php:630
 msgid "Block content items course"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:623
+#: learnpress/inc/custom-post-types/course.php:633
 msgid ""
 "Block content item(lesson, quiz, v.v...) of course when completed course."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:627
+#: learnpress/inc/custom-post-types/course.php:637
 msgid "External Link"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:630
+#: learnpress/inc/custom-post-types/course.php:640
 msgid ""
 "Redirect to this url when you press button buy this course. Not handle any "
 "task with the course (enroll, buy the course, v.v…). So if you want to user "
 "can learn courses you need to create an order manually"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:665
+#: learnpress/inc/custom-post-types/course.php:675
 msgid "The method to assess the result of a student for a course."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:668
+#: learnpress/inc/custom-post-types/course.php:678
 msgid ""
 "<br /><strong>Note! </strong>No final quiz in course, please add a final quiz"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:685
+#: learnpress/inc/custom-post-types/course.php:695
 msgid ""
 "This is conditional \"passing grade\" of Final quiz will apply for result of "
 "this course. When you change it here, the \"passing grade\" also change with "
 "new value for the Final quiz."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:691
-msgid ""
-"<p>Evaluate by number of lessons completed per number of total lessons.</p>"
+#: learnpress/inc/custom-post-types/course.php:701
+msgid "Evaluate by number of lessons completed per number of total lessons."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:692
+#: learnpress/inc/custom-post-types/course.php:702
 msgid ""
 "E.g: Course has 10 lessons and user completed 5 lessons then the result = "
 "5/10 = 50.%"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:693
+#: learnpress/inc/custom-post-types/course.php:703
 msgid ""
 "Evaluate by results of final quiz in course. You have to add a quiz into end "
 "of course."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:694
+#: learnpress/inc/custom-post-types/course.php:704
 msgid ""
-"Evaluate by achieved points of completed quizzes per total point of all "
-"quizzes."
+"Evaluate as a percentage of completed quizzes on the total number of quizzes."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:695
+#: learnpress/inc/custom-post-types/course.php:705
 msgid ""
-"Evaluate by achieved points of quizzes passed per total point of all quizzes."
+"<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: "
+"50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:696
+#: learnpress/inc/custom-post-types/course.php:707
 msgid ""
 "<p>Evaluate by number of quizzes completed per number of total quizzes.</p>"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:697
+#: learnpress/inc/custom-post-types/course.php:708
 msgid ""
 "<p>E.g: Course has 10 quizzes and user completed 5 quizzes then the result = "
 "5/10 = 50%.</p>"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:704
-msgid "Assessment"
+#: learnpress/inc/custom-post-types/course.php:709
+msgid ""
+"Evaluate by achieved points of question passed per total point of all "
+"questions."
 msgstr ""
 
 #: learnpress/inc/custom-post-types/course.php:710
-msgid "Course result"
+msgid ""
+"E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:715
-msgid "Evaluate via lessons"
+#: learnpress/inc/custom-post-types/course.php:711
+msgid "Evaluate by achieved marks per total marks of all questions."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:717
-msgid "Evaluate via results of the final quiz"
-msgstr ""
-
-#: learnpress/inc/custom-post-types/course.php:720
-msgid "Evaluate via results of quizzes"
-msgstr ""
-
-#: learnpress/inc/custom-post-types/course.php:722
-msgid "Evaluate via results of quizzes passed"
+#: learnpress/inc/custom-post-types/course.php:718
+msgid "Assessment"
 msgstr ""
 
 #: learnpress/inc/custom-post-types/course.php:724
-msgid "Evaluate via quizzes"
+msgid "Course result"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:729
+msgid "Evaluate via lessons"
 msgstr ""
 
 #: learnpress/inc/custom-post-types/course.php:731
+msgid "Evaluate via results of the final quiz"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:734
+msgid "Evaluate via results of quizzes"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:738
+msgid "Evaluate via quizzes"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:740
+msgid "Evaluate via questions"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:742
+msgid "Evaluate via mark"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/course.php:749
 msgid "Passing condition value"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:736
+#: learnpress/inc/custom-post-types/course.php:754
 msgid ""
 "The percentage of quiz result or completed lessons to finish the course."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:767
+#: learnpress/inc/custom-post-types/course.php:785
 msgid "Pricing"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:797
+#: learnpress/inc/custom-post-types/course.php:816
 #, php-format
 msgid ""
 "This course requires enrollment and the suggested price is <strong>"
 "%s</strong>"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:805
+#: learnpress/inc/custom-post-types/course.php:824
 msgid "This course is free."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:812
+#: learnpress/inc/custom-post-types/course.php:831
 #, php-format
 msgid "Course price in <strong>%s</strong> currency."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:826
-#: learnpress/inc/custom-post-types/course.php:1297
-#: learnpress/inc/custom-post-types/course.php:1304
+#: learnpress/inc/custom-post-types/course.php:845
+#: learnpress/inc/custom-post-types/course.php:1320
+#: learnpress/inc/custom-post-types/course.php:1328
 #: learnpress/templates/emails/order-items-table.php:68
 msgid "Price"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:836
+#: learnpress/inc/custom-post-types/course.php:855
 msgid "Sale Price"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:843
+#: learnpress/inc/custom-post-types/course.php:862
 #, php-format
 msgid "Course sale price in <strong>%s</strong> currency."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:844
+#: learnpress/inc/custom-post-types/course.php:863
 msgid "Leave blank to remove sale price."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:846
+#: learnpress/inc/custom-post-types/course.php:865
 msgid "Schedule"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:851
+#: learnpress/inc/custom-post-types/course.php:870
 msgid "Sale start date"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:859
+#: learnpress/inc/custom-post-types/course.php:878
 msgid "Sale end date"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:871
+#: learnpress/inc/custom-post-types/course.php:890
 msgid "Price set by Admin"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:875
+#: learnpress/inc/custom-post-types/course.php:894
 msgid "Not set"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:878
+#: learnpress/inc/custom-post-types/course.php:897
 msgid "Course Suggestion Price"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:883
+#: learnpress/inc/custom-post-types/course.php:902
 msgid "The course price you want to suggest for admin to set."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:894
-#: learnpress/inc/custom-post-types/course.php:1378
+#: learnpress/inc/custom-post-types/course.php:913
+#: learnpress/inc/custom-post-types/course.php:1400
 msgid "No requirement enroll"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:897
+#: learnpress/inc/custom-post-types/course.php:916
 msgid "Require users logged in to study or public to all."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:969
+#: learnpress/inc/custom-post-types/course.php:989
 msgid "Review Logs"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1018
+#: learnpress/inc/custom-post-types/course.php:1038
 msgid "Course Video"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1023
+#: learnpress/inc/custom-post-types/course.php:1043
 msgid "Video ID"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1026
+#: learnpress/inc/custom-post-types/course.php:1046
 msgid "The ID of Youtube or Vimeo video"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1030
+#: learnpress/inc/custom-post-types/course.php:1050
 msgid "Video Type"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1033
+#: learnpress/inc/custom-post-types/course.php:1053
 msgid "Chose video type"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1036
+#: learnpress/inc/custom-post-types/course.php:1056
 msgid "Youtube"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1037
+#: learnpress/inc/custom-post-types/course.php:1057
 msgid "Vimeo"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1041
+#: learnpress/inc/custom-post-types/course.php:1061
 msgid "Embed width"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1044
+#: learnpress/inc/custom-post-types/course.php:1064
 msgid "Set width of embed"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1048
+#: learnpress/inc/custom-post-types/course.php:1068
 msgid "Embed height"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1051
+#: learnpress/inc/custom-post-types/course.php:1071
 msgid "Set height of embed"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1173
+#: learnpress/inc/custom-post-types/course.php:1193
 msgid "Course has been approved by Reviewer"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1178
+#: learnpress/inc/custom-post-types/course.php:1198
 msgid "Course has been rejected by Reviewer"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1183
+#: learnpress/inc/custom-post-types/course.php:1203
 #, php-format
 msgid "Course has been submitted by %s"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1188
+#: learnpress/inc/custom-post-types/course.php:1208
 msgid "Course has been updated by Reviewer"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/course.php:1295
-#: learnpress/inc/custom-post-types/course.php:1302
+#: learnpress/inc/custom-post-types/course.php:1318
+#: learnpress/inc/custom-post-types/course.php:1326
 msgid "Content"
 msgstr ""
 
-#. %s: name section.
-#: learnpress/inc/custom-post-types/course.php:1336
+#: learnpress/inc/custom-post-types/course.php:1358
 #, php-format
 msgid "<strong>%d</strong> section"
 msgid_plural "<strong>%d</strong> sections"
 msgstr[0] ""
 msgstr[1] ""
 
-#: learnpress/inc/custom-post-types/course.php:1358
+#: learnpress/inc/custom-post-types/course.php:1380
 msgid "No content"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:98
+#: learnpress/inc/custom-post-types/lesson.php:104
 #: learnpress/inc/custom-post-types/question.php:64
-#: learnpress/inc/custom-post-types/quiz.php:64
+#: learnpress/inc/custom-post-types/quiz.php:70
 #, php-format
 msgid "Unassigned %s"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:114
+#: learnpress/inc/custom-post-types/lesson.php:120
 #, php-format
 msgid "Preview %s"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:131
+#: learnpress/inc/custom-post-types/lesson.php:137
 #, php-format
 msgid "No Preview %s"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:182
-#: learnpress/inc/custom-post-types/lesson.php:183
-#: learnpress/inc/custom-post-types/lesson.php:186
+#: learnpress/inc/custom-post-types/lesson.php:198
+#: learnpress/inc/custom-post-types/lesson.php:199
+#: learnpress/inc/custom-post-types/lesson.php:202
 #: learnpress/templates/widgets/course-info/default.php:29
 msgid "Lessons"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:185
+#: learnpress/inc/custom-post-types/lesson.php:201
 msgid "Add New Lesson"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:187
+#: learnpress/inc/custom-post-types/lesson.php:203
 msgid "View Lesson"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:189
+#: learnpress/inc/custom-post-types/lesson.php:205
 msgid "Edit Lesson"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:190
+#: learnpress/inc/custom-post-types/lesson.php:206
 msgid "Update Lesson"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:191
+#: learnpress/inc/custom-post-types/lesson.php:207
 msgid "Search Lessons"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:192
+#: learnpress/inc/custom-post-types/lesson.php:208
 msgid "No lesson found"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:193
+#: learnpress/inc/custom-post-types/lesson.php:209
 msgid "No lesson found in Trash"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:227
+#: learnpress/inc/custom-post-types/lesson.php:243
 msgid "Lesson Settings"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:231
+#: learnpress/inc/custom-post-types/lesson.php:247
 msgid "Lesson Duration"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:235
+#: learnpress/inc/custom-post-types/lesson.php:251
 msgid "Duration of the lesson. Set 0 to disable."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:239
+#: learnpress/inc/custom-post-types/lesson.php:255
 msgid "Preview Lesson"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:242
+#: learnpress/inc/custom-post-types/lesson.php:258
 msgid ""
 "If this is a preview lesson, then student can view this lesson content "
 "without taking the course."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:315
+#: learnpress/inc/custom-post-types/lesson.php:336
 msgid "Format"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:359
+#: learnpress/inc/custom-post-types/lesson.php:380
 msgid "Standard"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:429
+#: learnpress/inc/custom-post-types/lesson.php:450
 msgid "Please enter the title of the lesson"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/lesson.php:471
-#: learnpress/inc/custom-post-types/question.php:532
-#: learnpress/inc/custom-post-types/quiz.php:611
+#: learnpress/inc/custom-post-types/lesson.php:492
+#: learnpress/inc/custom-post-types/question.php:542
+#: learnpress/inc/custom-post-types/quiz.php:616
 msgid "Assigned"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:459
+#: learnpress/inc/custom-post-types/order.php:461
 msgid "Order number, user name, user email, course name etc..."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:621
+#: learnpress/inc/custom-post-types/order.php:626
 msgid "Processing..."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:638
-#: learnpress/inc/custom-post-types/order.php:641
+#: learnpress/inc/custom-post-types/order.php:640
+#: learnpress/inc/custom-post-types/order.php:643
 msgid "Apply"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:680
-#: learnpress/inc/custom-post-types/order.php:898
+#: learnpress/inc/custom-post-types/order.php:682
+#: learnpress/inc/custom-post-types/order.php:900
 msgid "View Order"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:688
+#: learnpress/inc/custom-post-types/order.php:690
 msgid "View child orders"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:756
-#: learnpress/inc/custom-post-types/order.php:894
+#: learnpress/inc/custom-post-types/order.php:758
+#: learnpress/inc/custom-post-types/order.php:896
 #: learnpress/templates/profile/tabs/orders/list.php:32
 msgid "Order"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:757
+#: learnpress/inc/custom-post-types/order.php:759
 msgid "Student"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:759
-#: learnpress/templates/checkout/order-received.php:62
+#: learnpress/inc/custom-post-types/order.php:761
+#: learnpress/templates/checkout/order-received.php:63
 #: learnpress/templates/profile/tabs/courses.php:33
 #: learnpress/templates/profile/tabs/quizzes.php:39
 #: learnpress/inc/admin/views/statistics/orders.php:46
@@ -3634,75 +3675,80 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:760
-#: learnpress/templates/checkout/order-received.php:68
-#: learnpress/templates/checkout/review-order.php:33
-#: learnpress/templates/checkout/review-order.php:162
-#: learnpress/templates/emails/order-items-table.php:96
+#: learnpress/inc/custom-post-types/order.php:762
+#: learnpress/templates/checkout/order-received.php:69
+#: learnpress/templates/checkout/review-order.php:35
+#: learnpress/templates/checkout/review-order.php:164
+#: learnpress/templates/emails/order-items-table.php:100
 #: learnpress/templates/order/order-details.php:29
 #: learnpress/templates/order/order-details.php:85
 #: learnpress/templates/emails/plain/order-items-table.php:60
 #: learnpress/templates/profile/tabs/orders/list.php:35
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:104
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:163
 msgid "Total"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:809
+#: learnpress/inc/custom-post-types/order.php:811
 #: learnpress/inc/order/class-lp-order.php:503
 msgid "(Guest)"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:840
-#: learnpress/templates/checkout/order-received.php:43
+#: learnpress/inc/custom-post-types/order.php:842
+#: learnpress/templates/checkout/order-received.php:44
 msgid "Course does not exist"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:842
+#: learnpress/inc/custom-post-types/order.php:844
 msgid "Deleted"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:857
-#: learnpress/templates/checkout/order-received.php:57
+#: learnpress/inc/custom-post-types/order.php:859
+#: learnpress/templates/checkout/order-received.php:58
 msgid "(No item)"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:865
+#: learnpress/inc/custom-post-types/order.php:867
 #, php-format
 msgid "Pay via <strong>%s</strong>"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:895
+#: learnpress/inc/custom-post-types/order.php:897
 msgid "Add New Order"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:896
-#: learnpress/inc/custom-post-types/order.php:979
+#: learnpress/inc/custom-post-types/order.php:898
+#: learnpress/inc/custom-post-types/order.php:989
 #: learnpress/templates/order/order-details.php:23
 msgid "Order Details"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:900
+#: learnpress/inc/custom-post-types/order.php:902
 msgid "Update Order"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:901
+#: learnpress/inc/custom-post-types/order.php:903
 msgid "Search Orders"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:902
+#: learnpress/inc/custom-post-types/order.php:904
 msgid "No order found"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:903
+#: learnpress/inc/custom-post-types/order.php:905
 msgid "No order found in Trash"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/order.php:980
+#: learnpress/inc/custom-post-types/order.php:990
 msgid "Order Actions"
 msgstr ""
 
+#: learnpress/inc/custom-post-types/order.php:991
+msgid "Order Exports"
+msgstr ""
+
 #: learnpress/inc/custom-post-types/question.php:148
-#: learnpress/inc/custom-post-types/quiz.php:180
+#: learnpress/inc/custom-post-types/quiz.php:186
 #: learnpress/inc/question/class-lp-question.php:594
 msgid "New Option"
 msgstr ""
@@ -3730,14 +3776,14 @@ msgid "Question Bank"
 msgstr ""
 
 #: learnpress/inc/custom-post-types/question.php:187
-#: learnpress/inc/custom-post-types/quiz.php:183
+#: learnpress/inc/custom-post-types/quiz.php:189
 #: learnpress/templates/content-quiz/progress.php:43
 msgid "Question"
 msgstr ""
 
 #: learnpress/inc/custom-post-types/question.php:188
-#: learnpress/inc/custom-post-types/quiz.php:184
-#: learnpress/inc/custom-post-types/quiz.php:374
+#: learnpress/inc/custom-post-types/quiz.php:190
+#: learnpress/inc/custom-post-types/quiz.php:381
 #: learnpress/templates/content-quiz/intro.php:36
 #: learnpress/inc/admin/views/quiz/editor.php:16
 #: learnpress/inc/admin/views/quiz/modal-choose-items.php:57
@@ -3772,49 +3818,67 @@ msgstr ""
 msgid "No questions found in trash"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/question.php:298
-#: learnpress/inc/admin/views/quiz/question-meta.php:31
-msgid "Mark for this question"
+#: learnpress/inc/custom-post-types/question.php:295
+#: learnpress/inc/admin/views/quiz/question-meta.php:8
+msgid "Explain why an option is true and other is false."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/question.php:302
-#: learnpress/inc/admin/views/quiz/question-meta.php:37
-msgid "Mark for choosing the right answer."
+#: learnpress/inc/custom-post-types/question.php:296
+#: learnpress/inc/admin/views/quiz/question-meta.php:9
+msgid "The text will be shown when:"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/question.php:297
+#: learnpress/inc/admin/views/quiz/question-meta.php:10
+msgid "- User click on 'Check answer' button."
+msgstr ""
+
+#: learnpress/inc/custom-post-types/question.php:298
+#: learnpress/inc/admin/views/quiz/question-meta.php:11
+msgid "- Answered question correct."
+msgstr ""
+
+#: learnpress/inc/custom-post-types/question.php:299
+#: learnpress/inc/admin/views/quiz/question-meta.php:12
+msgid "- Option 'Show Correct Answer' is enable"
 msgstr ""
 
 #: learnpress/inc/custom-post-types/question.php:307
+#: learnpress/inc/admin/views/quiz/question-meta.php:37
+msgid "Mark for this question"
+msgstr ""
+
+#: learnpress/inc/custom-post-types/question.php:311
 #: learnpress/inc/admin/views/quiz/question-meta.php:43
+msgid "Mark for choosing the right answer."
+msgstr ""
+
+#: learnpress/inc/custom-post-types/question.php:316
+#: learnpress/inc/admin/views/quiz/question-meta.php:49
 msgid "Question Explanation"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/question.php:310
-#: learnpress/inc/admin/views/quiz/question-meta.php:51
-msgid ""
-"Explain why an option is true and other is false. The text will be shown "
-"when user click on 'Check answer' button."
-msgstr ""
-
-#: learnpress/inc/custom-post-types/question.php:314
-#: learnpress/inc/admin/views/quiz/question-meta.php:57
+#: learnpress/inc/custom-post-types/question.php:323
+#: learnpress/inc/admin/views/quiz/question-meta.php:63
 msgid "Question Hint"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/question.php:317
-#: learnpress/inc/admin/views/quiz/question-meta.php:64
+#: learnpress/inc/custom-post-types/question.php:326
+#: learnpress/inc/admin/views/quiz/question-meta.php:70
 msgid ""
 "Instruction for user to select the right answer. The text will be shown when "
 "users click the 'Hint' button."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/question.php:338
+#: learnpress/inc/custom-post-types/question.php:347
 #: learnpress/inc/admin/views/quiz/editor.php:30
 #: learnpress/inc/admin/views/settings/payments.php:24
 msgid "Type"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:90
-#: learnpress/inc/custom-post-types/quiz.php:91
-#: learnpress/inc/custom-post-types/quiz.php:95
+#: learnpress/inc/custom-post-types/quiz.php:96
+#: learnpress/inc/custom-post-types/quiz.php:97
+#: learnpress/inc/custom-post-types/quiz.php:101
 #: learnpress/inc/user/class-lp-profile.php:307
 #: learnpress/inc/admin/settings/class-lp-settings-profile.php:157
 #: learnpress/inc/admin/settings/class-lp-settings-profile.php:291
@@ -3822,146 +3886,146 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:93
+#: learnpress/inc/custom-post-types/quiz.php:99
 msgid "Add New Quiz"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:94
+#: learnpress/inc/custom-post-types/quiz.php:100
 msgid "Edit Quiz"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:96
+#: learnpress/inc/custom-post-types/quiz.php:102
 msgid "View Quiz"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:98
+#: learnpress/inc/custom-post-types/quiz.php:104
 msgid "Update Quiz"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:99
+#: learnpress/inc/custom-post-types/quiz.php:105
 msgid "Search Quizzes"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:100
+#: learnpress/inc/custom-post-types/quiz.php:106
 #, php-format
 msgid ""
 "You haven't had any quizzes yet. Click <a href=\"%s\">Add new</a> to start"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:101
+#: learnpress/inc/custom-post-types/quiz.php:107
 msgid "No quiz found in Trash"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:176
+#: learnpress/inc/custom-post-types/quiz.php:182
 msgid "Option"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:181
+#: learnpress/inc/custom-post-types/quiz.php:187
 msgid "Do you want to move question \"{{QUESTION_NAME}}\" to trash?"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:229
+#: learnpress/inc/custom-post-types/quiz.php:236
 msgid "General Settings"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:235
+#: learnpress/inc/custom-post-types/quiz.php:242
 msgid "Pagination Questions"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:236
+#: learnpress/inc/custom-post-types/quiz.php:243
 msgid ""
 "Show list of questions while doing quiz as ordered numbers (1, 2, 3, etc)."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:242
+#: learnpress/inc/custom-post-types/quiz.php:249
 msgid "Review Questions"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:245
-msgid "Allow re-viewing questions after completing quiz."
+#: learnpress/inc/custom-post-types/quiz.php:252
+msgid "Allow re-viewing questions after completing the quiz."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:249
+#: learnpress/inc/custom-post-types/quiz.php:256
 msgid "Show Correct Answer"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:252
+#: learnpress/inc/custom-post-types/quiz.php:259
 msgid "Show correct answer when reviewing questions."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:267
+#: learnpress/inc/custom-post-types/quiz.php:274
 msgid "Duration of the quiz. Set 0 to disable."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:275
+#: learnpress/inc/custom-post-types/quiz.php:282
 msgid "Minus Points"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:278
+#: learnpress/inc/custom-post-types/quiz.php:285
 msgid "How many points minus for each wrong question in quiz."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:282
+#: learnpress/inc/custom-post-types/quiz.php:289
 msgid "Minus For Skip"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:285
+#: learnpress/inc/custom-post-types/quiz.php:292
 msgid "Minus points for skip questions."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:299
+#: learnpress/inc/custom-post-types/quiz.php:306
 msgid "Passing Grade (<span>%</span>)"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:300
+#: learnpress/inc/custom-post-types/quiz.php:307
 msgid "Requires user reached this point to pass the quiz."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:309
+#: learnpress/inc/custom-post-types/quiz.php:316
 msgid "Re-take"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:312
+#: learnpress/inc/custom-post-types/quiz.php:319
 msgid ""
 "How many times the user can re-take this quiz. Set to 0 to disable re-taking."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:317
+#: learnpress/inc/custom-post-types/quiz.php:324
 msgid "Archive History"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:320
+#: learnpress/inc/custom-post-types/quiz.php:327
 msgid "Archive quiz results for each time."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:334
+#: learnpress/inc/custom-post-types/quiz.php:341
 msgid "Show Check Answer"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:337
+#: learnpress/inc/custom-post-types/quiz.php:344
 msgid ""
 "Show button to check answer while doing quiz ( 0 = Disabled, -1 = Unlimited, "
 "N = Number of check )."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:343
+#: learnpress/inc/custom-post-types/quiz.php:350
 msgid "Show Hint"
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:346
+#: learnpress/inc/custom-post-types/quiz.php:353
 msgid ""
 "Show button to hint answer while doing quiz ( 0 = Disabled, -1 = Unlimited, "
 "N = Number of check )."
 msgstr ""
 
-#: learnpress/inc/custom-post-types/quiz.php:413
+#: learnpress/inc/custom-post-types/quiz.php:420
 #, php-format
 msgid "%d question"
 msgid_plural "%d questions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: learnpress/inc/custom-post-types/quiz.php:413
+#: learnpress/inc/custom-post-types/quiz.php:420
 msgid "This quiz has no questions"
 msgstr ""
 
@@ -4187,7 +4251,7 @@ msgstr ""
 #: learnpress/inc/emails/class-lp-email-updated-course.php:164
 #: learnpress/inc/emails/class-lp-email-user-order-changed-status.php:136
 #: learnpress/inc/emails/class-lp-email-user-order-completed.php:137
-#: learnpress/inc/emails/class-lp-email.php:996
+#: learnpress/inc/emails/class-lp-email.php:999
 #: learnpress/inc/gateways/paypal/class-lp-gateway-paypal.php:500
 #: learnpress/inc/admin/views/settings/payments.php:17
 #: learnpress/inc/admin/views/setup/setup-paypal.php:17
@@ -4197,12 +4261,12 @@ msgid "Enable"
 msgstr ""
 
 #: learnpress/inc/emails/class-lp-email-new-course.php:137
-#: learnpress/inc/emails/class-lp-email.php:1002
+#: learnpress/inc/emails/class-lp-email.php:1005
 msgid "Recipient(s)"
 msgstr ""
 
 #: learnpress/inc/emails/class-lp-email-new-course.php:141
-#: learnpress/inc/emails/class-lp-email.php:1006
+#: learnpress/inc/emails/class-lp-email.php:1009
 #, php-format
 msgid "Email recipient(s) (separated by comma), default: <code>%s</code>."
 msgstr ""
@@ -4213,7 +4277,7 @@ msgstr ""
 #: learnpress/inc/emails/class-lp-email-updated-course.php:170
 #: learnpress/inc/emails/class-lp-email-user-order-changed-status.php:142
 #: learnpress/inc/emails/class-lp-email-user-order-completed.php:143
-#: learnpress/inc/emails/class-lp-email.php:1019
+#: learnpress/inc/emails/class-lp-email.php:1022
 #: learnpress/inc/admin/views/settings/emails/become-a-teacher-request.php:33
 msgid "Subject"
 msgstr ""
@@ -4224,7 +4288,7 @@ msgstr ""
 #: learnpress/inc/emails/class-lp-email-updated-course.php:174
 #: learnpress/inc/emails/class-lp-email-user-order-changed-status.php:146
 #: learnpress/inc/emails/class-lp-email-user-order-completed.php:147
-#: learnpress/inc/emails/class-lp-email.php:1023
+#: learnpress/inc/emails/class-lp-email.php:1026
 #, php-format
 msgid "Email subject, default: <code>%s</code>."
 msgstr ""
@@ -4235,7 +4299,7 @@ msgstr ""
 #: learnpress/inc/emails/class-lp-email-updated-course.php:187
 #: learnpress/inc/emails/class-lp-email-user-order-changed-status.php:159
 #: learnpress/inc/emails/class-lp-email-user-order-completed.php:160
-#: learnpress/inc/emails/class-lp-email.php:1036
+#: learnpress/inc/emails/class-lp-email.php:1039
 msgid "Heading"
 msgstr ""
 
@@ -4245,7 +4309,7 @@ msgstr ""
 #: learnpress/inc/emails/class-lp-email-updated-course.php:191
 #: learnpress/inc/emails/class-lp-email-user-order-changed-status.php:163
 #: learnpress/inc/emails/class-lp-email-user-order-completed.php:164
-#: learnpress/inc/emails/class-lp-email.php:1040
+#: learnpress/inc/emails/class-lp-email.php:1043
 #, php-format
 msgid "Email heading, default: <code>%s</code>."
 msgstr ""
@@ -4256,7 +4320,7 @@ msgstr ""
 #: learnpress/inc/emails/class-lp-email-updated-course.php:204
 #: learnpress/inc/emails/class-lp-email-user-order-changed-status.php:176
 #: learnpress/inc/emails/class-lp-email-user-order-completed.php:177
-#: learnpress/inc/emails/class-lp-email.php:1053
+#: learnpress/inc/emails/class-lp-email.php:1056
 #: learnpress/inc/admin/views/settings/emails/email-template.php:6
 #: learnpress/inc/admin/views/settings/emails/_email-template.php:3
 msgid "Email content"
@@ -4549,7 +4613,7 @@ msgid "Single Choice"
 msgstr ""
 
 #: learnpress/inc/question/class-lp-question.php:438
-#: learnpress/inc/admin/views/quiz/question-meta.php:19
+#: learnpress/inc/admin/views/quiz/question-meta.php:25
 msgid "Question Content"
 msgstr ""
 
@@ -4565,45 +4629,45 @@ msgstr ""
 msgid "Third option"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz-factory.php:487
+#: learnpress/inc/quiz/class-lp-quiz-factory.php:486
 msgid "Something went wrong!"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:442
+#: learnpress/inc/quiz/class-lp-quiz.php:443
 #: learnpress/templates/content-quiz/intro.php:25
 #: learnpress/templates/content-quiz/progress.php:47
 msgid "Unlimited"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:500
+#: learnpress/inc/quiz/class-lp-quiz.php:502
 msgid "Finish quiz"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:501
+#: learnpress/inc/quiz/class-lp-quiz.php:503
 msgid "Are you sure you want to finish this quiz?"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:504
+#: learnpress/inc/quiz/class-lp-quiz.php:506
 msgid "Retake quiz"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:505
+#: learnpress/inc/quiz/class-lp-quiz.php:507
 msgid "Are you sure you want to retake this quiz?"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:508
+#: learnpress/inc/quiz/class-lp-quiz.php:510
 msgid "Time's up!"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:509
+#: learnpress/inc/quiz/class-lp-quiz.php:511
 msgid "The time is up! Your quiz will automate come to finish"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:511
+#: learnpress/inc/quiz/class-lp-quiz.php:513
 msgid "Congrats! You have finished this quiz"
 msgstr ""
 
-#: learnpress/inc/quiz/class-lp-quiz.php:512
+#: learnpress/inc/quiz/class-lp-quiz.php:514
 msgid ""
 "Congrats! You have re-taken this quiz. Please wait a moment and the page "
 "will reload"
@@ -4683,84 +4747,79 @@ msgctxt "Permalink Slug"
 msgid "question-tag"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:331
+#: learnpress/inc/user/abstract-lp-user.php:326
 msgid "You cannot start a quiz in preview mode."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:338
+#: learnpress/inc/user/abstract-lp-user.php:333
 msgid "Course does not exist or does not contain the quiz"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:345
+#: learnpress/inc/user/abstract-lp-user.php:340
 msgid "You have already finished the course of this quiz"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:349
+#: learnpress/inc/user/abstract-lp-user.php:344
 msgid "Please enroll course before starting quiz."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:354
+#: learnpress/inc/user/abstract-lp-user.php:349
 msgid "User has started or completed quiz"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:359
+#: learnpress/inc/user/abstract-lp-user.php:354
 msgid "You have to login for starting quiz."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:463
+#: learnpress/inc/user/abstract-lp-user.php:457
 msgid "Course is not exists or does not contain the quiz"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:468
+#: learnpress/inc/user/abstract-lp-user.php:462
 msgid "User has already finished course of this quiz"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:474
+#: learnpress/inc/user/abstract-lp-user.php:468
 msgid "User has completed quiz"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:512
+#: learnpress/inc/user/abstract-lp-user.php:506
 msgid "Course does not exist or does not contain the quiz."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:517
+#: learnpress/inc/user/abstract-lp-user.php:511
 msgid "You can not redo a quiz in a finished course."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:523
+#: learnpress/inc/user/abstract-lp-user.php:517
 #, php-format
-msgid "%s::%s - User has not completed quiz."
+msgid "%1$s::%2$s - User has not completed quiz."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:1026
+#: learnpress/inc/user/abstract-lp-user.php:1020
 msgid "You can not hint question."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:1278
-#: learnpress/inc/user/abstract-lp-user.php:1686
-#: learnpress/inc/user/abstract-lp-user.php:1698
+#: learnpress/inc/user/abstract-lp-user.php:1266
+#: learnpress/inc/user/abstract-lp-user.php:1699
+#: learnpress/inc/user/abstract-lp-user.php:1711
 #, php-format
 msgid "The role %s for user doesn't exist"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:1948
-msgid "You can not complete a preview lesson."
-msgstr ""
-
-#: learnpress/inc/user/abstract-lp-user.php:1954
+#: learnpress/inc/user/abstract-lp-user.php:1961
 msgid "You have to enroll course to complete lesson."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:1965
+#: learnpress/inc/user/abstract-lp-user.php:1972
 msgid "You have already completed this lesson."
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:2409
-#: learnpress/inc/user/abstract-lp-user.php:2413
-msgid "Failed to enroll course."
+#: learnpress/inc/user/abstract-lp-user.php:2410
+msgid "Failed to enroll course. You can't enroll course"
 msgstr ""
 
-#: learnpress/inc/user/abstract-lp-user.php:2417
+#: learnpress/inc/user/abstract-lp-user.php:2414
 msgid "Please login to enroll course."
 msgstr ""
 
@@ -4788,6 +4847,7 @@ msgstr ""
 
 #: learnpress/inc/user/class-lp-profile.php:319
 #: learnpress/inc/admin/settings/class-lp-settings-profile.php:173
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:60
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:36
 msgid "Order details"
 msgstr ""
@@ -4819,43 +4879,43 @@ msgstr ""
 msgid "Want to become an instructor?"
 msgstr ""
 
-#: learnpress/inc/user/lp-user-functions.php:908
+#: learnpress/inc/user/lp-user-functions.php:889
 msgid "Please login to enroll this course"
 msgstr ""
 
-#: learnpress/inc/user/lp-user-functions.php:926
+#: learnpress/inc/user/lp-user-functions.php:907
 msgid "You have already finished course"
 msgstr ""
 
-#: learnpress/inc/user/lp-user-functions.php:929
+#: learnpress/inc/user/lp-user-functions.php:910
 msgid "You have already enrolled in this course"
 msgstr ""
 
-#: learnpress/inc/user/lp-user-functions.php:1222
+#: learnpress/inc/user/lp-user-functions.php:1203
 msgid "Old password incorrect!"
 msgstr ""
 
-#: learnpress/inc/user/lp-user-functions.php:1229
+#: learnpress/inc/user/lp-user-functions.php:1210
 msgid "Confirmation password incorrect!"
 msgstr ""
 
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:116
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:113
 msgid "Not Started"
 msgstr ""
 
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:265
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:263
 msgid "passed"
 msgstr ""
 
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:265
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:263
 msgid "failed"
 msgstr ""
 
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:462
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:460
 msgid "Check question has reached limit."
 msgstr ""
 
-#: learnpress/inc/user-item/class-lp-user-item-quiz.php:464
+#: learnpress/inc/user-item/class-lp-user-item-quiz.php:462
 msgid "You have already checked this question."
 msgstr ""
 
@@ -4905,32 +4965,32 @@ msgid ""
 "progress you have previously enrolled."
 msgstr ""
 
-#: learnpress/templates/checkout/form.php:96
+#: learnpress/templates/checkout/form.php:68
 #, php-format
 msgid "Please login to continue checkout. %s"
 msgstr ""
 
-#: learnpress/templates/checkout/form.php:96
+#: learnpress/templates/checkout/form.php:68
 msgid "Login?"
 msgstr ""
 
-#: learnpress/templates/checkout/form.php:103
+#: learnpress/templates/checkout/form.php:75
 msgid "Continue checkout as Guest?"
 msgstr ""
 
-#: learnpress/templates/checkout/guest-email.php:24
+#: learnpress/templates/checkout/guest-email.php:25
 msgid "Your email"
 msgstr ""
 
-#: learnpress/templates/checkout/guest-email.php:25
+#: learnpress/templates/checkout/guest-email.php:26
 msgid "Your real email we will send the order code."
 msgstr ""
 
-#: learnpress/templates/checkout/guest-email.php:35
+#: learnpress/templates/checkout/guest-email.php:36
 msgid "Your email is already exists. Checkout as this account?"
 msgstr ""
 
-#: learnpress/templates/checkout/guest-email.php:42
+#: learnpress/templates/checkout/guest-email.php:43
 msgid ""
 "Create new account with this email? Account information will be sent to this "
 "email."
@@ -4944,13 +5004,13 @@ msgstr ""
 msgid "Note to administrator"
 msgstr ""
 
-#: learnpress/templates/checkout/order-received.php:29
+#: learnpress/templates/checkout/order-received.php:30
 #: learnpress/templates/emails/order-items-table.php:41
 #: learnpress/templates/emails/plain/order-items-table.php:24
 msgid "Order Number"
 msgstr ""
 
-#: learnpress/templates/checkout/order-received.php:75
+#: learnpress/templates/checkout/order-received.php:76
 #: learnpress/templates/checkout/payment.php:40
 #: learnpress/templates/emails/order-items-table.php:49
 #: learnpress/templates/emails/plain/order-items-table.php:28
@@ -4961,16 +5021,16 @@ msgstr ""
 msgid "No payment method is available."
 msgstr ""
 
-#: learnpress/templates/checkout/review-order.php:20
+#: learnpress/templates/checkout/review-order.php:22
 msgid "Your order"
 msgstr ""
 
-#: learnpress/templates/checkout/review-order.php:130
+#: learnpress/templates/checkout/review-order.php:132
 #: learnpress/templates/order/order-details.php:81
 msgid "Subtotal"
 msgstr ""
 
-#: learnpress/templates/checkout/term-conditions.php:20
+#: learnpress/templates/checkout/term-conditions.php:24
 #, php-format
 msgid "I’ve read and accept the <a href=\"%s\">terms &amp; conditions.</a>"
 msgstr ""
@@ -4979,12 +5039,12 @@ msgstr ""
 msgid "This content has been locked"
 msgstr ""
 
-#: learnpress/templates/content-lesson/button-complete.php:46
+#: learnpress/templates/content-lesson/button-complete.php:39
 #: learnpress/templates/content-quiz/buttons/complete.php:29
 msgid "Complete"
 msgstr ""
 
-#: learnpress/templates/content-lesson/no-content.php:19
+#: learnpress/templates/content-lesson/no-content.php:21
 msgid "Lesson content is empty."
 msgstr ""
 
@@ -5100,6 +5160,7 @@ msgstr ""
 
 #: learnpress/templates/emails/order-items-table.php:67
 #: learnpress/templates/emails/plain/order-items-table.php:48
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:73
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:127
 msgid "Quantity"
 msgstr ""
@@ -5137,7 +5198,7 @@ msgstr ""
 msgid "Lost your password?"
 msgstr ""
 
-#: learnpress/templates/global/form-register.php:23
+#: learnpress/templates/global/form-register.php:24
 msgctxt "register-heading"
 msgid "Register"
 msgstr ""
@@ -5219,18 +5280,24 @@ msgstr ""
 msgid "This user does not public their profile."
 msgstr ""
 
-#: learnpress/templates/single-course/content-protected.php:29
+#: learnpress/templates/single-course/content-protected.php:33
 #, php-format
 msgid ""
 "This content is protected, please <a href=\"%s\">login</a> and enroll course "
 "to view this content!"
 msgstr ""
 
-#: learnpress/templates/single-course/content-protected.php:32
+#: learnpress/templates/single-course/content-protected.php:37
+msgid ""
+"The course duration has run out. You cannot access the content of this "
+"course more."
+msgstr ""
+
+#: learnpress/templates/single-course/content-protected.php:40
 msgid "This lesson has been locked"
 msgstr ""
 
-#: learnpress/templates/single-course/content-protected.php:35
+#: learnpress/templates/single-course/content-protected.php:45
 msgid "This content is protected, please enroll course to view this content!"
 msgstr ""
 
@@ -5326,72 +5393,62 @@ msgid ""
 msgstr ""
 
 #: learnpress/inc/admin/settings/class-lp-settings-advanced.php:22
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:236
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:244
 msgid "Advanced"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:194
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:202
 msgid "Enable custom colors"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:198
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:206
 msgid "Use color schema for main colors."
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:201
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:209
 msgid "Color schema"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:207
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:215
 msgid "Load css"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:211
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:219
 msgid "Load default stylesheet for LearnPress."
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:214
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:222
 msgid "Debug mode"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:218
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:226
 msgid "Turn on/off debug mode for developer."
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:221
-msgid "JS and CSS libraries"
-msgstr ""
-
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:225
-msgid ""
-"Check the checkboxes to disable js/css from LearnPress (It must be loaded in "
-"other plugins or theme)."
-msgstr ""
-
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:228
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:236
 msgid "Hard cache"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:232
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:240
 msgid "Enable hard cache"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:236
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:244
 #, php-format
 msgid ""
 "Enable cache for static content such as content and settings of course, "
 "lesson, quiz. <a href=\"%s\">%s</a>"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:239
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:247
 msgid "Others"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:243
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:251
 msgid "Enable lesson video"
 msgstr ""
 
-#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:247
+#: learnpress/inc/admin/settings/class-lp-settings-advanced.php:255
 msgid ""
 "When this option is enabled, the first video embed in lesson content will be "
 "detected and move to the top."
@@ -6156,11 +6213,6 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress/templates/content-question/multi-choice/answer-options.php:17
-#: learnpress/templates/content-question/single-choice/answer-options.php:17
-msgid "Invalid question!"
-msgstr ""
-
 #: learnpress/templates/content-quiz/buttons/check.php:24
 msgid "Checked"
 msgstr ""
@@ -6202,7 +6254,7 @@ msgstr ""
 msgid "Redo"
 msgstr ""
 
-#: learnpress/templates/content-quiz/buttons/start.php:27
+#: learnpress/templates/content-quiz/buttons/start.php:28
 msgid "Start"
 msgstr ""
 
@@ -6211,6 +6263,7 @@ msgid "Summary"
 msgstr ""
 
 #: learnpress/templates/emails/plain/order-items-table.php:50
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:72
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:126
 msgid "Cost"
 msgstr ""
@@ -6255,7 +6308,7 @@ msgstr ""
 msgid "Enroll"
 msgstr ""
 
-#: learnpress/templates/single-course/buttons/finish.php:24
+#: learnpress/templates/single-course/buttons/finish.php:31
 msgid "Finish course"
 msgstr ""
 
@@ -6286,7 +6339,7 @@ msgctxt "course-item-navigation"
 msgid "Next"
 msgstr ""
 
-#: learnpress/templates/single-course/section/content.php:61
+#: learnpress/templates/single-course/section/content.php:68
 msgid "No items in this section"
 msgstr ""
 
@@ -7172,10 +7225,27 @@ msgid "Move to Trash"
 msgstr ""
 
 #: learnpress/inc/admin/views/meta-boxes/order/child-order.php:21
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:37
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:82
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:200
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:209
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:78
 msgid "Customer"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:34
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:76
+msgid "Invoice No."
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:74
+#: learnpress/inc/admin/views/meta-boxes/order/details.php:128
+msgid "Amount"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:98
+#: learnpress/inc/admin/views/meta-boxes/order/details.php:149
+msgid "Sub Total"
 msgstr ""
 
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:25
@@ -7212,16 +7282,8 @@ msgstr ""
 msgid "Order Items"
 msgstr ""
 
-#: learnpress/inc/admin/views/meta-boxes/order/details.php:128
-msgid "Amount"
-msgstr ""
-
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:143
 msgid "No order items"
-msgstr ""
-
-#: learnpress/inc/admin/views/meta-boxes/order/details.php:149
-msgid "Sub Total"
 msgstr ""
 
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:179
@@ -7248,6 +7310,34 @@ msgstr ""
 
 #: learnpress/inc/admin/views/meta-boxes/order/details.php:244
 msgid "No results"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:29
+msgid "PDF Invoice"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:43
+msgid "PDF Preview"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:45
+msgid "Export Options"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:62
+msgid "Export to pdf"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:72
+msgid "Site Title"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:82
+msgid "Payment Medthod"
+msgstr ""
+
+#: learnpress/inc/admin/views/meta-boxes/order/exports-invoice.php:90
+msgid "Update"
 msgstr ""
 
 #: learnpress/inc/admin/views/settings/emails/become-a-teacher-request.php:29
