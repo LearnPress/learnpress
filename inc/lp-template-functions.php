@@ -2086,7 +2086,7 @@ function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
 function learn_press_get_post_level( $post_id ) {
 	$level = get_post_meta( $post_id, '_lp_level', true );
 
-	return apply_filters( 'learn-press/level-label', $level ? ucwords( $level ) : __( 'All levels', 'learnpress' ), $post_id );
+	return apply_filters( 'learn-press/level-label', ! empty( $level ) ? ucwords( $level ) : esc_html__( 'All levels', 'learnpress' ), $post_id );
 }
 
 function learn_press_is_preview_course() {

@@ -39,7 +39,7 @@
 		display: flex;
 		flex-direction: row;
 		margin: 0;
-		padding: 6px 0 6px 20px;
+		padding: 6px 20px;
 		align-items: center;
 
 		h3 {
@@ -79,6 +79,9 @@
 	}
 
 	.lp-box-data-content {
+		margin: 20px;
+		margin-top: 0;
+		border: 1px solid #ddd;
 
 		.lp-list-questions {
 			border-collapse: collapse;

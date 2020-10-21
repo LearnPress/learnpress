@@ -139,13 +139,15 @@ function lp_meta_box_select_field( $field ) {
 	global $thepostid, $post;
 
 	$thepostid = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field     = wp_parse_args(
+	$default   = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
+
+	$field = wp_parse_args(
 		$field,
 		array(
-			'class'             => 'select short',
+			'class'             => 'select',
 			'style'             => '',
 			'wrapper_class'     => '',
-			'value'             => get_post_meta( $thepostid, $field['id'], true ),
+			'value'             => isset( $field['value'] ) ? $field['value'] : $default,
 			'name'              => $field['id'],
 			'desc_tip'          => false,
 			'custom_attributes' => array(),
@@ -165,18 +167,19 @@ function lp_meta_box_select_field( $field ) {
 	$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
 	$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
 	?>
-	<p class="form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '">
-		<label for="' . esc_attr( $field['id'] ) . '"><?php echo wp_kses_post( $field['label'] ); ?></label>
-		<?php if ( $tooltip ) : ?>
-			<?php learn_press_quick_tip( $tooltip ); ?>
-		<?php endif; ?>
-		<select <?php echo implode( '', $field_attributes ); ?>>
+
+	<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>">
+		<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+		<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
 			<?php
 			foreach ( $field['options'] as $key => $value ) {
 				echo '<option value="' . esc_attr( $key ) . '"' . selected( $key, $field['value'], false ) . '>' . esc_html( $value ) . '</option>';
 			}
 			?>
 		</select>
+		<?php if ( $tooltip ) : ?>
+			<?php learn_press_quick_tip( $tooltip ); ?>
+		<?php endif; ?>
 		<?php if ( $description ) : ?>
 			<span class="description"><?php echo wp_kses_post( $description ); ?></span>
 		<?php endif; ?>
@@ -193,14 +196,15 @@ function lp_meta_box_radio_field( $field ) {
 	global $thepostid, $post;
 
 	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'select short';
+	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'select';
 	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
 	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-	$field['value']         = isset( $field['value'] ) ? $field['value'] : get_post_meta( $thepostid, $field['id'], true );
+	$field['default']       = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
+	$field['value']         = isset( $field['value'] ) ? $field['value'] : $field['default'];
 	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
 	$field['desc_tip']      = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
 
-	echo '<fieldset class="form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '"><legend>' . wp_kses_post( $field['label'] ) . '</legend>';
+	echo '<fieldset class="form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '"><h4>' . wp_kses_post( $field['label'] ) . '</h4>';
 
 	if ( ! empty( $field['description'] ) && false !== $field['desc_tip'] ) {
 		learn_press_quick_tip( $field['description'] );
@@ -216,7 +220,7 @@ function lp_meta_box_radio_field( $field ) {
 				class="' . esc_attr( $field['class'] ) . '"
 				style="' . esc_attr( $field['style'] ) . '"
 				' . checked( esc_attr( $field['value'] ), esc_attr( $key ), false ) . '
-				/> ' . esc_html( $value ) . '</label>
+				/> ' . ( $value ) . '</label>
 		</li>';
 	}
 	echo '</ul>';
@@ -362,4 +366,12 @@ function lp_metabox_custom_fields( $value, $values, $key ) {
 		<td width="2%"><a href="#" class="delete"></a></td>
 	</tr>
 	<?php
+}
+
+function lp_implode_html_attributes( $raw_attributes ) {
+	$attributes = array();
+	foreach ( $raw_attributes as $name => $value ) {
+		$attributes[] = esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
+	}
+	return implode( ' ', $attributes );
 }

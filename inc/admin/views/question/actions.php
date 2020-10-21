@@ -9,13 +9,11 @@
 
 <script type="text/x-template" id="tmpl-lp-question-actions">
 	<div class="lp-box-data-head lp-row">
-		<h3 class="heading">
-			<?php esc_html_e( 'Details', 'learnpress' ); ?>
-		</h3>
+		<h3 class="heading"><?php esc_html_e( 'Details', 'learnpress' ); ?></h3>
 		<div class="lp-question-editor lp-question-editor--right">
 			<div class="lp-question-editor__inner">
 				<div class="question-types">
-					<a href="">{{typeLabel()}}</a>
+					<a>{{typeLabel()}}</a>
 					<ul>
 						<li v-for="(type, key) in types" :data-type="key" :class="active(key)">
 							<a href="" @click.prevent="changeType(key)">{{type}}</a>

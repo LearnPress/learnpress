@@ -21,7 +21,7 @@
 		<div class="item-actions">
 			<div class="actions">
 				<?php do_action( 'learn_press_before_display_item_actions' ); ?>
-				<div class="action preview-item lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Switch Free View on/off', 'learnpress' ); ?>">
+				<div class="action preview-item lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Enable/Disable Preview', 'learnpress' ); ?>">
 					<a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
 				</div>
 				<div class="action edit-item lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Edit item', 'learnpress' ); ?>">

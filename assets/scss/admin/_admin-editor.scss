@@ -4,8 +4,7 @@
 
 .lp-admin-editor {
 	position: relative;
-	margin: 20px 0 0 0;
-	border: 1px solid #ddd;
+	margin: 0;
 	background-color: #fff;
 
 	.heading,
@@ -21,25 +20,35 @@
 /**
  *  Course admin editor.
  */
+#course-editor {
+
+	.inside {
+		margin: 0;
+		padding: 0;
+	}
+}
+
 #admin-editor-lp_course {
+
 
 	.lp-course-curriculum {
 
 		.heading {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
 			position: relative;
-			padding: 12px 10px;
+			padding: 8px 20px;
+			align-items: center;
+			line-height: 1;
 
 			h4 {
 				margin: 0;
-				font-size: 18px;
+				font-size: 16px;
 			}
 
 			.collapse-sections {
 				display: flex;
-				position: absolute;
-				top: 0;
-				right: 0;
-				bottom: 0;
 				width: 40px;
 				color: #999;
 				font-family: Dashicons;
@@ -79,15 +88,13 @@
 
 		.curriculum-sections {
 			margin: 0;
-			border-top: 1px solid #ddd;
+			margin: 0 20px 20px 20px;
+			border: 1px solid #ddd;
 		}
 
 		.section {
 			margin: 0;
-			margin-bottom: -1px;
-			border: 1px solid #e5e5e5;
-			border-right: 0;
-			border-left: 0;
+			border-bottom: 1px solid #e5e5e5;
 			opacity: 1;
 			background: #fff;
 
@@ -97,6 +104,7 @@
 
 			&.new-section {
 				margin-top: 1px;
+				border: none;
 
 				form {
 					margin: 0;
@@ -174,7 +182,7 @@
 			.section-head {
 				display: flex;
 				position: relative;
-				height: 40px;
+				height: 42px;
 				margin: 0;
 				padding: 0;
 				background-color: #f4fcff;
@@ -208,14 +216,10 @@
 				}
 
 				.section-item-counts {
-					right: 40px;
 					line-height: 40px;
 				}
 
 				.actions {
-					position: absolute;
-					top: 0;
-					right: 0;
 					height: 100%;
 					color: #444;
 
@@ -285,11 +289,11 @@
 			}
 
 			.title-input {
-				width: calc(100% - 200px);
 				padding-left: 0;
 				border: none;
 				font-size: 1.2em;
 				line-height: 30px;
+				flex: 1;
 			}
 
 			.description-input {

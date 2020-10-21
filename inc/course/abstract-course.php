@@ -1987,18 +1987,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_extra_info( $type ) {
 			$extra_info_meta = get_post_meta( $this->get_id(), '_lp_' . $type, true );
-			$extra_info      = array();
 
-			/**
-			 * Only get first item in two-dimensions array of Metabox Text list field.
-			 */
-			if ( $extra_info_meta && is_array( $extra_info_meta ) ) {
-				foreach ( $extra_info_meta as $item ) {
-					$extra_info[] = is_string( $item ) ? $item : reset( $item );
-				}
-			}
-
-			return apply_filters( 'learn-press/course-extra-info', $extra_info, $type, $this->get_id() );
+			return apply_filters( 'learn-press/course-extra-info', $extra_info_meta, $type, $this->get_id() );
 		}
 
 		/**

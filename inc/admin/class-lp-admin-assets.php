@@ -7,12 +7,8 @@
  */
 class LP_Admin_Assets extends LP_Abstract_Assets {
 
-	/**
-	 * Init Asset
-	 */
 	public function __construct() {
 		parent::__construct();
-
 	}
 
 	protected function _get_script_data() {
@@ -53,102 +49,38 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'wp-color-picker'                   => array(
-					'screens' => 'learnpress_page_learn-press-settings',
-				),
 				'select2'                           => self::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
-				// 'lp-vue'             => array(
-				// 'url'     => self::url( 'js/vendor/vue.min.js' ),
-				// 'ver'     => '2.5.16',
-				// 'screens' => array(
-				// 'learnpress'
-				// )
-				// ),
-					'lp-plugins-all'                => array(
-						'url'     => self::url( 'js/vendor/admin.plugins.all' . $min . '.js' ),
-						'screens' => array(
-							'learnpress',
-						),
+				'lp-plugins-all'                    => array(
+					'url'     => self::url( 'js/vendor/admin.plugins.all' . $min . '.js' ),
+					'screens' => array(
+						'learnpress',
 					),
-				// 'jquery-plugins'     => array(
-				// 'url'     => self::url( 'js/vendor/jquery-plugins' . $min . '.js' ),
-				// 'ver'     => '2.5.16',
-				// 'screens' => array(
-				// 'learnpress'
-				// )
-				// ),
-				// 'lp-vuex'            => array(
-				// 'url'     => self::url( 'js/vendor/vuex.js' ),
-				// 'ver'     => '3.1.0',
-				// 'deps'    => array( 'lp-vue' ),
-				// 'screens' => array(
-				// 'learnpress'
-				// )
-				// ),
-				// 'lp-vue-resource'    => array(
-				// 'url'     => self::url( 'js/vendor/vue-resource.js' ),
-				// 'ver'     => '1.3.4',
-				// 'deps'    => array( 'lp-vue' ),
-				// 'screens' => array(
-				// 'learnpress'
-				// )
-				// ),
-				// 'lp-sortable'        => array(
-				// 'url'     => self::url( 'js/vendor/sortable.js' ),
-				// 'ver'     => '1.6.0',
-				// 'deps'    => array( 'lp-vue' ),
-				// 'screens' => array(
-				// 'learnpress'
-				// )
-				// ),
-				// 'lp-vuedraggable'    => array(
-				// 'url'     => self::url( 'js/vendor/vuedraggable.js' ),
-				// 'ver'     => '2.14.1',
-				// 'deps'    => array( 'lp-vue', 'lp-sortable' ),
-				// 'screens' => array(
-				// 'learnpress'
-				// )
-				// ),
-					'learn-press-global'            => array(
-						'url'     => $this->url( 'js/global' . $min . '.js' ),
-						'deps'    => array(
-							'jquery',
-							'underscore',
-							'utils',
-							'jquery-ui-sortable',
-							'select2',
-						),
-						'screens' => array( 'learnpress' ),
+				),
+				'jquery-ui-timepicker-addon'        => array(
+					'url'     => $this->url( 'js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
+					'deps'    => array( 'jquery-ui-datepicker' ),
+					'screens' => array( LP_COURSE_CPT ),
+				),
+				'learn-press-global'                => array(
+					'url'     => $this->url( 'js/global' . $min . '.js' ),
+					'deps'    => array(
+						'jquery',
+						'underscore',
+						'utils',
+						'jquery-ui-sortable',
+						'select2',
 					),
+					'screens' => array( 'learnpress' ),
+				),
 				'learn-press-utils'                 => array(
 					'url'  => $this->url( 'js/admin/utils' . $min . '.js' ),
 					'deps' => array( 'jquery' ),
 				),
-				// 'admin'                             => array(
-				// 'url'     => $this->url( 'js/admin/admin.js' ),
-				// 'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
-				// 'screens' => array( 'learnpress' )
-				// ),
-				// 'admin-tabs'         => array(
-				// 'url'  => $this->url( 'js/admin/admin-tabs.js' ),
-				// 'deps' => array( 'jquery' )
-				// ),
-				//
-				// 'lp-admin-tabs' => array(
-				// 'url'  => $this->url( 'js/admin/admin-tabs.js' ),
-				// 'deps' => array( 'jquery' )
-				// ),
-				// 'tipsy'              => array(
-				// 'url'  => $this->url( 'js/vendor/jquery-tipsy'.$min.'.js' ),
-				// 'deps' => array( 'jquery' )
-				// ),
-
-					'lp-admin'                      => array(
-						'url'     => $this->url( 'js/admin/admin' . $min . '.js' ),
-						'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
-						'screens' => array( '*' ),
-					),
-
+				'lp-admin'                          => array(
+					'url'     => $this->url( 'js/admin/admin' . $min . '.js' ),
+					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
+					'screens' => array( '*' ),
+				),
 				'lp-admin-learnpress'               => array(
 					'url'     => $this->url( 'js/admin/learnpress' . $min . '.js' ),
 					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
@@ -161,45 +93,29 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-admin-quiz-editor'     => array(
 					'url'     => $this->url( 'js/admin/editor/quiz' . $min . '.js' ),
-					'deps'    => array(
-						// 'lp-vue',
-						// 'learn-press-modal-search-items'
-					),
+					'deps'    => array(),
 					'screens' => array( LP_QUIZ_CPT ),
 				),
 				'learn-press-admin-question-editor' => array(
 					'url'     => $this->url( 'js/admin/editor/question' . $min . '.js' ),
-					'deps'    => array(
-						// 'lp-vue',
-						// 'learn-press-modal-search-items'
-					),
+					'deps'    => array(),
 					'screens' => array( LP_QUESTION_CPT ),
 				),
-				// 'learn-press-modal-search-items'    => array(
-				// 'url'  => $this->url( 'js/admin/modal-search-items.js' ),
-				// 'deps' => array( 'learn-press-global', 'lp-vue' )
-				// ),
-				// 'learn-press-modal-search-users'    => array(
-				// 'url'  => $this->url( 'js/admin/modal-search-users.js' ),
-				// 'deps' => array( 'learn-press-global', 'lp-vue' )
-				// ),
-					'learn-press-meta-box-order'    => array(
-						'url'     => $this->url( 'js/admin/partial/meta-box-order' . $min . '.js' ),
-						'deps'    => array(
-							// 'learn-press-modal-search-items',
-							// 'learn-press-modal-search-users',
-							'learn-press-utils',
-							// 'lp-vue'
-						),
-						'screens' => array( LP_ORDER_CPT ),
+				'learn-press-meta-box-order'        => array(
+					'url'     => $this->url( 'js/admin/partial/meta-box-order' . $min . '.js' ),
+					'deps'    => array(
+						// 'learn-press-modal-search-items',
+						// 'learn-press-modal-search-users',
+						'learn-press-utils',
+						// 'lp-vue'
 					),
+					'screens' => array( LP_ORDER_CPT ),
+				),
 				'learn-press-update'                => array(
 					'url' => $this->url( 'js/admin/update.js' ),
-					// 'deps' => array( 'lp-vue' )
 				),
 				'learn-press-sync-data'             => array(
 					'url' => $this->url( 'js/admin/sync-data.js' ),
-					// 'deps' => array( 'lp-vue' )
 				),
 				'learn-press-data-controls'         => array(
 					'url'       => $this->url( 'js/frontend/data-controls.js' ),
@@ -213,7 +129,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-api-fetch',
 						'lodash',
 					),
-					// 'deps' => array( 'lp-vue' )
 				),
 				'learn-press-question-editor'       => array(
 					'url'       => $this->url( 'js/admin/question-editor.js' ),
@@ -228,10 +143,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'lodash',
 					),
 				),
-			// 'learn-press-chartjs'               => array(
-			// 'url'     => $this->url( 'js/vendor/chart.min.js' ),
-			// 'screens' => 'dashboard'
-			// )
 			)
 		);
 	}
@@ -242,14 +153,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles() {
-
 		return apply_filters(
 			'learn-press/admin-default-styles',
 			array(
-				'select2'            => LP()->plugin_url( 'inc/libraries/meta-box/css/select2/select2.css' ),
-				'font-awesome'       => $this->url( 'css/vendor/font-awesome-5.min.css' ),
-				'learn-press-bundle' => $this->url( 'css/bundle.min.css' ),
-				'learn-press-admin'  => array(
+				'select2'                    => LP()->plugin_url( 'inc/libraries/meta-box/css/select2/select2.css' ),
+				'font-awesome'               => $this->url( 'css/vendor/font-awesome-5.min.css' ),
+				'jquery-ui'                  => $this->url( 'css/vendor/jquery-ui/jquery-ui.min.css' ),
+				'jquery-ui-timepicker-addon' => $this->url( 'css/vendor/jquery-ui-timepicker-addon.css' ),
+				'learn-press-bundle'         => $this->url( 'css/bundle.min.css' ),
+				'learn-press-admin'          => array(
 					'url'  => $this->url( 'css/admin/admin.css' ),
 					'deps' => array( 'wp-color-picker' ),
 				),

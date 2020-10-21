@@ -34,7 +34,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function __construct( $post_type, $args = '' ) {
 			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
 			add_action( 'admin_head', array( $this, 'init' ) );
-			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
 			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 10 );
@@ -94,17 +93,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			return $views;
-		}
-
-		/**
-		 * JS template for admin question editor.
-		 *
-		 * @since 3.0.0
-		 */
-		public static function template_question_editor() {
-			if ( LP_QUESTION_CPT !== get_post_type() ) {
-				return;
-			}
 		}
 
 		/**
@@ -235,6 +223,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function init() {
 			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
+
 			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
 				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
 			}

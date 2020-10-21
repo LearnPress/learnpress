@@ -101,13 +101,13 @@ class LP_Meta_Box_Quiz {
 	}
 
 	public static function save( $post_id ) {
-		$duration         = ! empty( $_POST['_lp_duration'] ) ? implode( ' ', wp_unslash( $_POST['_lp_duration'] ) ) : '10 minute';
-		$passing_grade    = ! empty( $_POST['_lp_passing_grade'] ) ? absint( wp_unslash( $_POST['_lp_passing_grade'] ) ) : '80';
-		$instant_check    = ! empty( $_POST['_lp_instant_check'] ) ? 'yes' : 'no';
-		$negative_marking = ! empty( $_POST['_lp_negative_marking'] ) ? 'yes' : 'no';
-		$retry            = ! empty( $_POST['_lp_retry'] ) ? 'yes' : 'no';
+		$duration         = isset( $_POST['_lp_duration'][0] ) && $_POST['_lp_duration'][0] !== '' ? implode( ' ', wp_unslash( $_POST['_lp_duration'] ) ) : '0 minute';
+		$passing_grade    = isset( $_POST['_lp_passing_grade'] ) ? absint( wp_unslash( $_POST['_lp_passing_grade'] ) ) : '80';
+		$instant_check    = isset( $_POST['_lp_instant_check'] ) ? 'yes' : 'no';
+		$negative_marking = isset( $_POST['_lp_negative_marking'] ) ? 'yes' : 'no';
+		$retry            = isset( $_POST['_lp_retry'] ) ? 'yes' : 'no';
+		$review           = isset( $_POST['_lp_review'] ) ? 'yes' : 'no';
 		$pagination       = ! empty( $_POST['_lp_pagination'] ) ? absint( wp_unslash( $_POST['_lp_pagination'] ) ) : '1';
-		$review           = ! empty( $_POST['_lp_review'] ) ? 'yes' : 'no';
 
 		update_post_meta( $post_id, '_lp_duration', $duration );
 		update_post_meta( $post_id, '_lp_passing_grade', $passing_grade );

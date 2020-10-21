@@ -24,13 +24,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function __construct() {
 			$this->includes();
+
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-			add_action( 'edit_form_after_editor', array( $this, 'wrapper_editor' ), - 10 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_action( 'init', array( $this, 'init' ), 50 );
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
@@ -690,19 +690,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			<?php
 		}
 
-		/**
-		 * Wrapper admin editor.
-		 *
-		 * @since 3.0.0
-		 */
-		public function wrapper_editor() {
-			$post_type = get_post_type();
-
-			if ( in_array( $post_type, array( LP_COURSE_CPT ) ) ) {
-				learn_press_admin_view( 'editor-wrapper', array( 'post_type' => $post_type ) );
-			}
-		}
-
 		public function notice_required_permalink() {
 			if ( current_user_can( 'manage_options' ) ) {
 				if ( ! get_option( 'permalink_structure' ) ) {
@@ -885,6 +872,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once learn_press_get_admin_view( 'meta-boxes/lesson/settings.php' );
 			include_once learn_press_get_admin_view( 'meta-boxes/question/settings.php' );
 			include_once learn_press_get_admin_view( 'meta-boxes/quiz/settings.php' );
+			include_once learn_press_get_admin_view( 'meta-boxes/course/settings.php' );
 		}
 
 		/**

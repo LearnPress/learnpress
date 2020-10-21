@@ -80,6 +80,56 @@ const lpMetaboxCustomFields = () => {
 	};
 };
 
+const lpMetaboxExtraInfo = () => {
+	$( '.lp_course_extra_meta_box__add' ).on( 'click', function() {
+		$( this ).closest( '.lp_course_extra_meta_box__content' ).find( '.lp_course_extra_meta_box__fields' ).append( $( this ).data( 'add' ) );
+		$( this ).closest( '.lp_course_extra_meta_box__content' ).find( '.lp_course_extra_meta_box__field' ).last().find( 'input' ).trigger( 'focus' );
+
+		return false;
+	} );
+
+	$( '.lp_course_extra_meta_box__fields' ).on( 'click', 'a.delete', function() {
+		$( this ).closest( '.lp_course_extra_meta_box__field' ).remove();
+
+		return false;
+	} );
+
+	$( '.lp_course_extra_meta_box__fields' ).sortable( {
+		items: '.lp_course_extra_meta_box__field',
+		cursor: 'grab',
+		axis: 'y',
+		handle: '.sort',
+		scrollSensitivity: 40,
+		forcePlaceholderSize: true,
+		helper: 'clone',
+		opacity: 0.65,
+	} );
+
+	// FAQs metabox.
+	$( '.lp_course_faq_meta_box__add' ).on( 'click', function() {
+		$( this ).closest( '.lp_course_faq_meta_box__content' ).find( '.lp_course_faq_meta_box__fields' ).append( $( this ).data( 'add' ) );
+
+		return false;
+	} );
+
+	$( '.lp_course_faq_meta_box__fields' ).on( 'click', 'a.delete', function() {
+		$( this ).closest( '.lp_course_faq_meta_box__field' ).remove();
+
+		return false;
+	} );
+
+	$( '.lp_course_faq_meta_box__fields' ).sortable( {
+		items: '.lp_course_faq_meta_box__field',
+		cursor: 'grab',
+		axis: 'y',
+		handle: '.sort',
+		scrollSensitivity: 40,
+		forcePlaceholderSize: true,
+		helper: 'clone',
+		opacity: 0.65,
+	} );
+};
+
 const lpMetaboxColorPicker = () => {
 	$( '.lp-metabox__colorpick' )
 		.iris( {
@@ -281,6 +331,30 @@ const lpMetaboxImageAdvanced = () => {
 	} );
 };
 
+const lpMetaboxCourseTabs = () => {
+	$( document.body ).on( 'lp-metabox-course-tab-panels', function() {
+		$( 'ul.lp-meta-box__course-tab__tabs' ).show();
+
+		$( 'ul.lp-meta-box__course-tab__tabs a' ).on( 'click', function( e ) {
+			e.preventDefault();
+
+			const panelWrap = $( this ).closest( 'div.lp-meta-box__course-tab' );
+
+			$( 'ul.lp-meta-box__course-tab__tabs li', panelWrap ).removeClass( 'active' );
+
+			$( this ).parent().addClass( 'active' );
+
+			$( 'div.lp-meta-box-course-panels', panelWrap ).hide();
+
+			$( $( this ).attr( 'href' ) ).show();
+		} );
+
+		$( 'div.lp-meta-box__course-tab' ).each( function() {
+			$( this ).find( 'ul.lp-meta-box__course-tab__tabs li' ).eq( 0 ).find( 'a' ).trigger( 'click' );
+		} );
+	} ).trigger( 'lp-metabox-course-tab-panels' );
+};
+
 const initTooltips = function initTooltips() {
 	$( '.learn-press-tooltip' ).each( function() {
 		const $el = $( this ),
@@ -289,7 +363,7 @@ const initTooltips = function initTooltips() {
 	} );
 };
 
-const initSelect2 = function initSelect2() {
+const initSelect2 = () => {
 	if ( $.fn.select2 ) {
 		$( 'select.lp-select-2' ).select2();
 	}
@@ -357,6 +431,93 @@ const updateEmailStatus = function updateEmailStatus() {
 			}, this ),
 		} );
 	} ).apply( this );
+};
+
+const lpMetaboxsalePriceDate = () => {
+	$( '.lp_sale_dates_fields' ).each( function() {
+		const $this = $( this );
+		const $wrap = $this.closest( 'div.lp-meta-box-course-panels' );
+		let saleScheduleSet = false;
+
+		$this.find( 'input' ).each( function() {
+			if ( '' !== $( this ).val() ) {
+				saleScheduleSet = true;
+			}
+		} );
+
+		if ( saleScheduleSet ) {
+			$wrap.find( '.lp_sale_price_schedule' ).hide();
+			$wrap.find( '.lp_sale_dates_fields' ).show();
+		} else {
+			$wrap.find( '.lp_sale_price_schedule' ).show();
+			$wrap.find( '.lp_sale_dates_fields' ).hide();
+		}
+	} );
+
+	$( '.lp-meta-box-course-panels' ).on( 'click', '.lp_sale_price_schedule', function() {
+		const wrap = $( this ).closest( 'div.lp-meta-box-course-panels' );
+
+		$( this ).hide();
+
+		wrap.find( '.lp_cancel_sale_schedule' ).show();
+		wrap.find( '.lp_sale_dates_fields' ).show();
+
+		return false;
+	} );
+
+	$( '.lp-meta-box-course-panels' ).on( 'click', '.lp_cancel_sale_schedule', function() {
+		const wrap = $( this ).closest( 'div.lp-meta-box-course-panels' );
+
+		$( this ).hide();
+
+		wrap.find( '.lp_sale_price_schedule' ).show();
+		wrap.find( '.lp_sale_dates_fields' ).hide();
+		wrap.find( '.lp_sale_dates_fields' ).find( 'input' ).val( '' );
+
+		return false;
+	} );
+
+	$( document ).on( 'input', '#price_course_data', function( e ) {
+		const $this = $( this ),
+			regularPrice = $( '.lp_meta_box_regular_price' ),
+			salePrice = $( '.lp_meta_box_sale_price' ),
+			$target = $( e.target ).attr( 'id' );
+
+		$this.find( '.learn-press-tip-floating' ).remove();
+
+		if ( parseInt( salePrice.val() ) > parseInt( regularPrice.val() ) ) {
+			if ( $target === '_lp_price' ) {
+				regularPrice.parent( '.form-field' ).append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_price + '</div>' );
+			} else if ( $target === '_lp_sale_price' ) {
+				salePrice.parent( '.form-field' ).append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_price + '</div>' );
+			}
+		}
+	} );
+
+	const datePickerSelect = function( datepicker ) {
+		const option = $( datepicker ).is( '#_lp_sale_start' ) ? 'minDate' : 'maxDate',
+			otherDateField = 'minDate' === option ? $( '#_lp_sale_end' ) : $( '#_lp_sale_start' ),
+			date = $( datepicker ).datetimepicker( 'getDate' );
+
+		$( otherDateField ).datetimepicker( 'option', option, date );
+		$( datepicker ).trigger( 'change' );
+	};
+
+	$( '.lp_sale_dates_fields' ).each( function() {
+		$( this ).find( 'input' ).datetimepicker( {
+			timeFormat: 'HH:mm',
+			separator: ' ',
+			dateFormat: 'yy-mm-dd',
+			showButtonPanel: true,
+			onSelect() {
+				datePickerSelect( $( this ) );
+			},
+		} );
+
+		$( this ).find( 'input' ).each( function() {
+			datePickerSelect( $( this ) );
+		} );
+	} );
 };
 
 const toggleSalePriceSchedule = function toggleSalePriceSchedule() {
@@ -555,10 +716,13 @@ const onReady = function onReady() {
 	initSingleCoursePermalink();
 
 	// lp Metabox in LP4.
+	lpMetaboxCourseTabs();
 	lpMetaboxCustomFields();
 	lpMetaboxColorPicker();
 	lpMetaboxImageAdvanced();
 	lpMetaboxImage();
+	lpMetaboxsalePriceDate();
+	lpMetaboxExtraInfo();
 
 	$( '.learn-press-tabs' ).LP( 'AdminTab' );
 

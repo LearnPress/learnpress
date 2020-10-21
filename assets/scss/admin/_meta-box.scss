@@ -539,12 +539,15 @@
 		display: block;
 		position: relative;
 
-		.form-field {
+		.form-field:not(fieldset) {
 			display: flex;
-			flex-wrap: wrap;
 			flex-direction: row;
+			position: relative;
 			margin: 0;
 			padding: 15px 0;
+			flex-wrap: wrap;
+			align-items: flex-start;
+			justify-content: flex-start;
 
 			label {
 				width: 180px;
@@ -570,6 +573,36 @@
 				font-size: 14px;
 			}
 		}
+
+		fieldset.form-field {
+			display: grid;
+			grid-template-columns: 180px 1fr;
+			position: relative;
+			margin: 0;
+			padding: 15px 0;
+
+			h4 {
+				width: 180px;
+				min-width: 180px;
+				max-width: 180px;
+				margin: 0;
+				padding: 0;
+				color: #23282d;
+				font-size: 14px;
+				font-weight: 600;
+				flex: 0 0 auto;
+			}
+
+			ul {
+				margin: 0;
+				font-size: 14px;
+			}
+
+			.description {
+				grid-column-start: 2;
+				margin-top: 10px;
+			}
+		}
 	}
 
 	&__duration {
@@ -586,6 +619,17 @@
 		}
 	}
 
+	select {
+
+		+ .description {
+			flex-basis: 100%;
+			width: 100%;
+			margin-top: 8px !important;
+			margin-left: 180px !important;
+			color: #666;
+		}
+	}
+
 	input[type="number"],
 	input[type="email"],
 	input[type="text"],
@@ -598,6 +642,7 @@
 			width: 100%;
 			margin-top: 8px !important;
 			margin-left: 180px !important;
+			color: #666;
 		}
 	}
 
@@ -615,5 +660,269 @@
 		display: inline-flex;
 		align-items: center;
 		margin-left: 8px;
+	}
+}
+
+#course-settings {
+
+	.inside {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
+	.lp-meta-box {
+
+		&__course-tab {
+			display: grid;
+			grid-template-columns: 20% 80%;
+
+			&__tabs {
+				position: relative;
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0 0 10px;
+				border-right: 1px solid #eee;
+				background-color: #fafafa;
+				line-height: 1;
+
+				li {
+					display: block;
+					position: relative;
+					margin: 0;
+					padding: 0;
+
+					a {
+						display: block;
+						margin: 0;
+						padding: 10px;
+						border-bottom: 1px solid #eee;
+						box-shadow: none;
+						line-height: 20px !important;
+						text-decoration: none;
+
+						i {
+							margin-right: 5px;
+							font-weight: 400;
+							font-style: normal;
+							font-variant: normal;
+							line-height: 1;
+							text-decoration: none;
+							text-transform: none;
+
+							&[class^="dashicon"] {
+								font-family: "Dashicons";
+							}
+						}
+					}
+
+					&.active {
+
+						a {
+							position: relative;
+							color: #555;
+							background-color: #eee;
+						}
+					}
+				}
+			}
+
+			&__content {
+
+				>div {
+					padding: 20px;
+				}
+			}
+		}
+	}
+}
+
+#price_course_data {
+
+	._lp_sale_price_field,
+	._lp_price_field {
+		position: relative;
+
+		.learn-press-tip-floating {
+			top: 54px;
+			left: 92px;
+			opacity: 0.8;
+			background: #a00;
+
+			&::before {
+				top: -7px;
+				border: 7px solid transparent;
+				border-top-width: 0;
+				border-bottom-color: #a00;
+			}
+		}
+	}
+}
+
+.lp_course_extra_meta_box {
+
+	&__content {
+		flex: 1;
+	}
+
+	&__fields {
+		margin-bottom: 10px;
+	}
+
+	&__field {
+		position: relative;
+		max-width: 600px;
+		margin-bottom: 10px;
+
+		.sort {
+			display: flex;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 40px;
+			height: 100%;
+			color: #666;
+			text-decoration: none;
+			cursor: grab;
+			align-items: center;
+			justify-content: center;
+
+			&::after {
+				font-family: Dashicons;
+				font-size: 20px;
+				line-height: 1;
+				content: "\f333";
+			}
+		}
+
+		.delete {
+			display: flex;
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 40px;
+			height: 100%;
+			color: #666;
+			text-decoration: none;
+			align-items: center;
+			justify-content: center;
+
+			&::after {
+				font-family: Dashicons;
+				font-size: 20px;
+				line-height: 1;
+				content: "\f335";
+			}
+		}
+	}
+
+	&__input {
+		width: 100% !important;
+		padding-right: 40px !important;
+		padding-left: 40px !important;
+	}
+}
+
+.lp_course_faq_meta_box {
+
+	&__content {
+		flex: 1;
+	}
+
+	&__fields {
+		position: relative;
+		margin-bottom: 10px;
+	}
+
+	&__field {
+		display: grid;
+		position: relative;
+		margin-bottom: 10px;
+		padding: 20px;
+		border: 1px solid #c5c5c5;
+		border-radius: 4px;
+		grid-row-gap: 10px;
+
+		label {
+			display: grid;
+			width: 100% !important;
+			min-width: 100% !important;
+			max-width: 100% !important;
+			grid-template-rows: auto 1fr;
+
+			span {
+				margin-bottom: 5px;
+			}
+
+			textarea,
+			input {
+				width: 100% !important;
+			}
+		}
+
+		a.delete {
+			display: flex;
+			position: absolute;
+			top: 15px;
+			right: 50px;
+			width: 30px;
+			height: 30px;
+			color: #666;
+			text-decoration: none;
+			align-items: center;
+			justify-content: center;
+
+			&::after {
+				font-family: Dashicons;
+				font-size: 20px;
+				line-height: 1;
+				content: "\f335";
+			}
+		}
+
+		.sort {
+			display: flex;
+			position: absolute;
+			top: 15px;
+			right: 20px;
+			width: 30px;
+			height: 30px;
+			color: #666;
+			text-decoration: none;
+			align-items: center;
+			justify-content: center;
+			cursor: grab;
+
+			&::after {
+				font-family: Dashicons;
+				font-size: 20px;
+				line-height: 1;
+				content: "\f333";
+			}
+		}
+	}
+}
+
+input[name="_lp_course_result"] {
+
+	&:checked {
+
+		~ #passing-condition-quiz-result {
+			display: block;
+		}
+	}
+}
+
+#passing-condition-quiz-result {
+	display: none;
+
+	input {
+		width: 80px !important;
+		margin-top: 5px !important;
+	}
+
+	p {
+		padding: 10px 16px;
+		background-color: #eee;
+		font-size: 14px;
 	}
 }

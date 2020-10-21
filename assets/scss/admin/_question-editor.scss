@@ -46,6 +46,7 @@
 		.heading {
 			margin: 0;
 			padding: 0;
+			flex: 1;
 		}
 
 		.lp-question-editor {
@@ -67,6 +68,8 @@
 					line-height: 32px;
 					text-decoration: none;
 					align-items: center;
+					cursor: pointer;
+					user-select: none;
 
 					&::after {
 						margin-left: 5px;

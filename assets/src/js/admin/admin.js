@@ -33,7 +33,9 @@ var LP = LP || {};
 	 */
 	const createPages = function createPages( e ) {
 		const $button = $( this ).addClass( 'disabled' );
+
 		e.preventDefault();
+
 		$.post( {
 			url: $button.attr( 'href' ),
 			data: {

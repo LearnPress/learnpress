@@ -3700,17 +3700,11 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 	);
 
 	$methods = array(
-		'evaluate_lesson'     => __( 'Evaluate via lessons', 'learnpress' )
-		. learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
-		'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' )
-		. sprintf( $course_tip, $course_desc['evaluate_final_quiz'] )
-		. $final_quizz_passing,
-		'evaluate_quiz'       => __( 'Evaluate via quizzes', 'learnpress' )
-		. sprintf( $course_tip, $course_desc['evaluate_quiz'] ),
-		'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' )
-		. sprintf( $course_tip, $course_desc['evaluate_questions'] ),
-		'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' )
-		. sprintf( $course_tip, $course_desc['evaluate_mark'] ),
+		'evaluate_lesson'     => __( 'Evaluate via lessons', 'learnpress' ) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
+		'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_final_quiz'] ) . $final_quizz_passing,
+		'evaluate_quiz'       => __( 'Evaluate via quizzes', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_quiz'] ),
+		'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_questions'] ),
+		'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_mark'] ),
 	);
 
 	return apply_filters( 'learn-press/course-evaluation-methods', $return === 'keys' ? array_keys( $methods ) : $methods, $return );

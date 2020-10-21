@@ -11,7 +11,7 @@ learn_press_admin_view( 'course/sections' );
 <script type="text/x-template" id="tmpl-lp-course-curriculum">
 	<div class="lp-course-curriculum">
 		<div class="heading">
-			<h4><?php esc_html_e( 'Curriculum', 'learnpress' ); ?> <span :class="['status', status]"></span></h4>
+			<h4><?php esc_html_e( 'Details', 'learnpress' ); ?> <span :class="['status', status]"></span></h4>
 			<div class="section-item-counts"><span>{{countAllItems()}}</span></div>
 			<span class="collapse-sections" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
 		</div>

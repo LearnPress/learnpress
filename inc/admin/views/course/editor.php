@@ -8,8 +8,8 @@
 learn_press_admin_view( 'course/curriculum' );
 learn_press_admin_view( 'course/modal-choose-items' );
 ?>
- <!-- Use for Enable Gutenberg -->
-<!-- <div id="admin-editor-lp_course">
+
+<div id="admin-editor-lp_course">
 	<div class="lp-place-holder">
 		<div class="line-heading"></div>
 
@@ -24,11 +24,10 @@ learn_press_admin_view( 'course/modal-choose-items' );
 		<div class="line-lg"></div>
 		<div class="line-lgx"></div>
 	</div>
-</div> -->
+</div>
 
 <script type="text/x-template" id="tmpl-lp-course-editor">
-	<div id="admin-editor-lp_course" class='lp-admin-editor' xxxx>
-
+	<div id="admin-editor-lp_course" class='lp-admin-editor'>
 		<div v-if="heartbeat">
 			<form @submit.prevent="">
 				<lp-curriculum></lp-curriculum>
