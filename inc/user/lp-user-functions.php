@@ -2053,84 +2053,77 @@ function lp_add_default_fields( $fields ) {
 	$first_name = LP()->settings()->get( 'enable_register_first_name' );
 
 	if ( $first_name === 'yes' ) {
-		$fields[] = array(
-			'title'       => esc_html__( 'First name', 'learnpress' ),
-			'type'        => 'text',
-			'placeholder' => esc_html__( 'First name', 'learnpress' ),
-			'saved'       => LP_Request::get_string( 'reg_first_name' ),
-			'id'          => 'reg_first_name',
-		);
+		?>
+		<li class="form-field">
+			<label for="reg_first_name"><?php esc_html_e( 'First name', 'learnpress' ); ?></label>
+			<input id ="reg_first_name" name="reg_first_name" type="text" placeholder="<?php esc_attr_e( 'First name', 'learnpress' ); ?>" value="<?php echo ( ! empty( $_POST['reg_first_name'] ) ) ? esc_attr( wp_unslash( $_POST['reg_first_name'] ) ) : ''; ?>">
+		</li>
+		<?php
 	}
 
 	$last_name = LP()->settings()->get( 'enable_register_last_name' );
 
 	if ( $last_name === 'yes' ) {
-		$fields[] = array(
-			'title'       => esc_html__( 'Last name', 'learnpress' ),
-			'type'        => 'text',
-			'placeholder' => esc_html__( 'Last name', 'learnpress' ),
-			'saved'       => LP_Request::get_string( 'reg_last_name' ),
-			'id'          => 'reg_last_name',
-		);
+		?>
+		<li class="form-field">
+			<label for="reg_last_name"><?php esc_html_e( 'Last name', 'learnpress' ); ?></label>
+			<input id ="reg_last_name" name="reg_last_name" type="text" placeholder="<?php esc_attr_e( 'Last name', 'learnpress' ); ?>" value="<?php echo ( ! empty( $_POST['reg_last_name'] ) ) ? esc_attr( wp_unslash( $_POST['reg_last_name'] ) ) : ''; ?>">
+		</li>
+		<?php
 	}
 
 	$display_name = LP()->settings()->get( 'enable_register_display_name' );
 
 	if ( $display_name === 'yes' ) {
-		$fields[] = array(
-			'title'       => esc_html__( 'Display name', 'learnpress' ),
-			'type'        => 'text',
-			'placeholder' => esc_html__( 'Display name', 'learnpress' ),
-			'saved'       => LP_Request::get_string( 'reg_display_name' ),
-			'id'          => 'reg_display_name',
-		);
+		?>
+		<li class="form-field">
+			<label for="reg_display_name"><?php esc_html_e( 'Display name', 'learnpress' ); ?></label>
+			<input id ="reg_display_name" name="reg_display_name" type="text" placeholder="<?php esc_attr_e( 'Display name', 'learnpress' ); ?>" value="<?php echo ( ! empty( $_POST['reg_display_name'] ) ) ? esc_attr( wp_unslash( $_POST['reg_display_name'] ) ) : ''; ?>">
+		</li>
+		<?php
 	}
-
-	return $fields;
 }
-add_filter( 'learn-press/register-fields', 'lp_add_default_fields' );
+add_filter( 'learn-press/after-form-register-fields', 'lp_add_default_fields' );
 
 function lp_custom_register_fields_display() {
 	?>
 	<?php $custom_fields = LP()->settings()->get( 'register_profile_fields' ); ?>
 
 		<?php if ( $custom_fields ) : ?>
-			<ul class="lp-form-fields">
-				<?php foreach ( $custom_fields as $custom_field ) : ?>
-					<?php $value = sanitize_key( $custom_field['name'] ); ?>
+			<?php foreach ( $custom_fields as $custom_field ) : ?>
+				<?php $value = sanitize_key( $custom_field['name'] ); ?>
 
-					<li class="form-field">
-					<?php
-					switch ( $custom_field['type'] ) {
-						case 'text':
-						case 'number':
-						case 'email':
-						case 'url':
-						case 'tel':
-							?>
-								<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
-								<input name="_lp_custom_register_form[<?php echo $value; ?>]" type="<?php echo $custom_field['type']; ?>" placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>" class="regular-text" value="">
-								<?php
-							break;
-						case 'textarea':
-							?>
-								<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
-								<textarea name="_lp_custom_register_form[<?php echo $value; ?>]" placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>"></textarea>
-								<?php
-							break;
-						case 'checkbox':
-							?>
-								<label>
-									<input name="_lp_custom_register_form[<?php echo $value; ?>]" type="<?php echo $custom_field['type']; ?>" value="1">
+				<li class="form-field">
+				<?php
+				switch ( $custom_field['type'] ) {
+					case 'text':
+					case 'number':
+					case 'email':
+					case 'url':
+					case 'tel':
+						?>
+							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
+							<input name="_lp_custom_register_form[<?php echo $value; ?>]" type="<?php echo $custom_field['type']; ?>" placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>" class="regular-text" value="">
+							<?php
+						break;
+					case 'textarea':
+						?>
+							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
+							<textarea name="_lp_custom_register_form[<?php echo $value; ?>]" placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>"></textarea>
+							<?php
+						break;
+					case 'checkbox':
+						?>
+							<label>
+								<input name="_lp_custom_register_form[<?php echo $value; ?>]" type="<?php echo $custom_field['type']; ?>" value="1">
 								<?php echo esc_html( $custom_field['name'] ); ?>
-								</label>
-								<?php
-							break;
-					}
-					?>
-					</li>
-				<?php endforeach; ?>
-			</ul>
+							</label>
+							<?php
+						break;
+				}
+				?>
+				</li>
+			<?php endforeach; ?>
 		<?php endif; ?>
 	<?php
 }

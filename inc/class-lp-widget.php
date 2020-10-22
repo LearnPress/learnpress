@@ -1,445 +1,302 @@
 <?php
 /**
- * Base class of LearnPress widgets and helper function.
+ * Widget class
  *
- * @author   ThimPress
- * @category Widgets
- * @package  Learnpress/Shortcodes
- * @version  3.0.0
- * @extends  LP_Widget
+ * @class LP_Widget
+ * @package  Learnpress/Abstracts
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
- * Prevent loading this file directly
+ * LP_Widget
+ *
+ * @version  4.0.0
+ * @extends  WP_Widget
  */
-defined( 'ABSPATH' ) || exit();
+class LP_Widget extends WP_Widget {
 
-if ( ! class_exists( 'LP_Widget' ) ) {
 	/**
-	 * Class LP_Widget
+	 * CSS class.
 	 *
-	 * @extend WP_Widget
+	 * @var string
 	 */
-	class LP_Widget extends WP_Widget {
+	public $widget_cssclass;
 
-		/**
-		 * @var array
-		 */
-		private static $_widgets = array();
+	/**
+	 * Widget description.
+	 *
+	 * @var string
+	 */
+	public $widget_description;
 
-		/**
-		 * @var bool
-		 */
-		private static $_has_widget = false;
+	/**
+	 * Widget ID.
+	 *
+	 * @var string
+	 */
+	public $widget_id;
 
-		/**
-		 * @var bool
-		 */
-		private static $_has_registered = false;
+	/**
+	 * Widget name.
+	 *
+	 * @var string
+	 */
+	public $widget_name;
 
-		/**
-		 * Widget prefix
-		 *
-		 * @var string
-		 */
-		private $_id_prefix = 'lp-widget-';
+	/**
+	 * Settings.
+	 *
+	 * @var array
+	 */
+	public $settings;
 
-		/**
-		 * Widget name prefix
-		 *
-		 * @var string
-		 */
-		private $_name_prefix = 'LearnPress - ';
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$widget_ops = array(
+			'classname'                   => $this->widget_cssclass,
+			'description'                 => $this->widget_description,
+			'customize_selective_refresh' => true,
+		);
 
-		/**
-		 * @var string
-		 */
-		protected $_option_prefix = '';
+		parent::__construct( $this->widget_id, $this->widget_name, $widget_ops );
 
-		/**
-		 * @var array
-		 */
-		private $map_fields = array();
+		add_action( 'save_post', array( $this, 'flush_widget_cache' ) );
+		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
+		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
+	}
 
-		/**
-		 * Widget file name
-		 *
-		 * @var string
-		 */
-		public $file = '';
-
-		/**
-		 * Widget template path
-		 *
-		 * @var string
-		 */
-		public $template_path = '';
-
-		/**
-		 * Widget arguments
-		 *
-		 * @var array
-		 */
-		public $args = array();
-
-		/**
-		 * Widget options
-		 *
-		 * @var array
-		 */
-		public $instance = array();
-
-		/**
-		 *
-		 * @var array
-		 */
-		private $defaults = array();
-
-		/**
-		 * @var bool
-		 */
-		public $options = array();
-
-		/**
-		 * LP_Widget constructor.
-		 *
-		 * @param array
-		 */
-		public function __construct( $args = array() ) {
-			$defaults = array( 'id_base' => '', 'name' => '', 'widget_options' => '', 'control_options' => '' );
-			$args     = wp_parse_args( $args, $defaults );
-			$args     = $this->_parse_widget_args(
-				$args,
-				strtolower( str_replace( array( 'LP_Widget_', '_' ), array( '', '-' ), get_class( $this ) ) )
-			);
-			list( $id_base, $name, $widget_options, $control_options ) = $args;
-
-			// filter widget option prefix
-			$this->_option_prefix = apply_filters( 'learn-press/widget/option_prefix', '' );
-			// set prefix to widget option id
-			$this->options = array_map( array( $this, 'set_option_id' ), $this->options );
-
-			if ( is_array( $this->options ) ) {
-				// set default value for options
-				foreach ( $this->options as $id => $field ) {
-					if ( is_array( $field ) && array_key_exists( 'std', $field ) ) {
-						$this->defaults[ $id ] = $field['std'];
-					} else {
-						$this->defaults[ $id ] = null;
-					}
-				}
-			}
-
-			parent::__construct( $id_base, $this->_name_prefix . $name, $widget_options, $control_options );
+	/**
+	 * Get cached widget.
+	 */
+	public function get_cached_widget( $args ) {
+		if ( empty( $args['widget_id'] ) ) {
+			return false;
 		}
 
-		/**
-		 * Set prefix to widget option id
-		 *
-		 * @param $options
-		 *
-		 * @return mixed
-		 */
-		public function set_option_id( $options ) {
-			$options['id'] = $this->_option_prefix . $options['id'];
+		$cache = wp_cache_get( $this->get_widget_id_for_cache( $this->widget_id ), 'widget' );
 
-			return $options;
+		if ( ! is_array( $cache ) ) {
+			$cache = array();
 		}
 
-		public function before_checkbox_html( $begin, $field, $meta ) {
-			$begin .= sprintf(
-				'<input type="hidden" name="%s" value="0">',
-				$field['field_name']
-			);
-
-			return $begin;
-		}
-
-		public function field_data( $data, $object_id, $meta_key, $single ) {
-			global $post;
-			if ( $post->post_type == 'lp-post-widget' ) {
-				$key  = ! empty( $this->map_fields[ $meta_key ] ) ? $this->map_fields[ $meta_key ] : $meta_key;
-				$data = array_key_exists( $key, $this->instance ) ? $this->instance[ $key ] : '';
-			}
-
-			return $data;
-		}
-
-		public function update( $new_instance = array(), $old_instance = array() ) {
-			$new_instance = $this->sanitize_instance( $new_instance );
-
-			return $new_instance;
-		}
-
-		/**
-		 * Display widget content
-		 *
-		 * @param array $args
-		 * @param array $instance
-		 */
-		public function widget( $args, $instance ) {
-			$this->args     = $args;
-			$this->instance = $this->sanitize_instance( $instance );
-
-			if ( ! apply_filters( 'learn-press/widget/display', true, $this ) ) {
-				return;
-			}
-
-			if ( ! apply_filters( 'learn-press/widget/display-' . $this->id_base, true, $this ) ) {
-				return;
-			}
-
-			$this->before_widget();
-			$this->show();
-			$this->after_widget();
-		}
-
-		public function before_widget() {
-			echo $this->args['before_widget'];
-
-			if ( ! empty( $this->instance['title'] ) ) {
-				echo $this->args['before_title'];
-				echo $this->instance['title'];
-				echo $this->args['after_title'];
-			}
-		}
-
-		public function after_widget() {
-			echo $this->args['after_widget'];
-		}
-
-		/**
-		 * Show widget.
-		 */
-		public function show() {
-			printf( __( 'Function %s should be overwritten in child class', 'learnpress' ), __FUNCTION__ );
-		}
-
-		/**
-		 * Display widget settings with meta-box fields
-		 *
-		 * @param mixed $instance
-		 *
-		 * @return mixed
-		 */
-		public function form( $instance ) {
-			$this->instance = $this->sanitize_instance( $instance );
-
-			if ( ! $this->options ) {
-				?><p><?php esc_html_e( 'There is no options for this widget.', 'learnpress' ); ?></p><?php
-				return false;
-			}
-
-			global $post;
-
-			add_filter( 'get_post_metadata', array( $this, 'field_data' ), 10, 4 );
-			add_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
-			//
-
-			$post = (object) array( 'ID' => 1, 'post_type' => 'lp-post-widget' );
-
-			setup_postdata( $post );
-
-			if ( ! class_exists( 'RW_Meta_Box' ) ) {
-				require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
-			}
-
-			$this->options = RW_Meta_Box::normalize_fields( $this->options );
-
-			$this->options = $this->normalize_options();
-
-			foreach ( $this->options as $key => $field ) {
-				$origin_id           = $field['id'];
-				$field['field_name'] = $this->get_field_name( $field['id'] );
-				$field['id']         = $this->get_field_id( $field['id'] );
-
-				# If there is old value, bind it to field as init value
-				if ( $this->instance[ $key ] ) {
-					$field['saved'] = $this->instance[ $key ];
-				}
-				//$field['value']      = md5( $field['std'] );
-				$this->map_fields[ $field['id'] ] = $origin_id;
-				$this->_show_field( $field );
-			}
-			wp_reset_postdata();
-			remove_filter( 'get_post_metadata', array( $this, 'field_data' ) );
-			remove_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10 );
-
+		if ( isset( $cache[ $this->get_widget_id_for_cache( $args['widget_id'] ) ] ) ) {
+			echo $cache[ $this->get_widget_id_for_cache( $args['widget_id'] ) ];
 			return true;
 		}
 
-		/**
-		 * Find RMMB field and display it
-		 *
-		 * @param $field
-		 */
-		private function _show_field( $field ) {
-			$callable = array( 'RW_Meta_Box', 'get_class_name' );
-			if ( ! is_callable( $callable ) ) {
-				$callable = array( 'RWMB_Field', 'get_class_name' );
-			}
-			if ( is_callable( $callable ) ) {
-				$field_class = call_user_func( $callable, $field );
-			} else {
-				$field_class = false;
-			}
-			if ( $field_class ) {
-				call_user_func( array( $field_class, 'show' ), $field, true );
-			}
+		return false;
+	}
+
+	/**
+	 * Cache the widget.
+	 */
+	public function cache_widget( $args, $content ) {
+		if ( empty( $args['widget_id'] ) ) {
+			return $content;
 		}
 
-		/**
-		 * @return array|bool
-		 */
-		public function normalize_options() {
-			return ! is_array( $this->options ) ? array() : $this->options;
+		$cache = wp_cache_get( $this->get_widget_id_for_cache( $this->widget_id ), 'widget' );
+
+		if ( ! is_array( $cache ) ) {
+			$cache = array();
 		}
 
-		/**
-		 * Get slug of this widget from file
-		 *
-		 * @return mixed
-		 */
-		public function get_slug() {
-			$class = get_class( $this );
+		$cache[ $this->get_widget_id_for_cache( $args['widget_id'] ) ] = $content;
 
-			return str_replace( '_', '-', strtolower( str_replace( 'LP_Widget_', '', $class ) ) );
+		wp_cache_set( $this->get_widget_id_for_cache( $this->widget_id ), $cache, 'widget' );
+
+		return $content;
+	}
+
+	/**
+	 * Flush the cache.
+	 */
+	public function flush_widget_cache() {
+		foreach ( array( 'https', 'http' ) as $scheme ) {
+			wp_cache_delete( $this->get_widget_id_for_cache( $this->widget_id, $scheme ), 'widget' );
+		}
+	}
+
+	/**
+	 * Get this widgets title.
+	 */
+	protected function get_instance_title( $instance ) {
+		if ( isset( $instance['title'] ) ) {
+			return $instance['title'];
 		}
 
-		/**
-		 * Register new widget
-		 *
-		 * @param string|array
-		 * @param mixed
-		 */
-		public static function register( $type, $args = '' ) {
-			if ( is_array( $type ) ) {
-				foreach ( $type as $k => $t ) {
-					if ( is_array( $t ) ) {
-						self::register( $k, $t );
-					} else {
-						self::register( $t );
+		if ( isset( $this->settings, $this->settings['title'], $this->settings['title']['std'] ) ) {
+			return $this->settings['title']['std'];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Output the html at the start of a widget.
+	 *
+	 * @param array $args Arguments.
+	 * @param array $instance Instance.
+	 */
+	public function widget_start( $args, $instance ) {
+		echo $args['before_widget'];
+
+		$title = apply_filters( 'widget_title', $this->get_instance_title( $instance ), $instance, $this->id_base );
+
+		if ( $title ) {
+			echo $args['before_title'] . $title . $args['after_title'];
+		}
+	}
+
+	/**
+	 * Output the html at the end of a widget.
+	 *
+	 * @param  array $args Arguments.
+	 */
+	public function widget_end( $args ) {
+		echo $args['after_widget'];
+	}
+
+	/**
+	 * Updates a particular instance of a widget.
+	 */
+	public function update( $new_instance, $old_instance ) {
+
+		$instance = $old_instance;
+
+		if ( empty( $this->settings ) ) {
+			return $instance;
+		}
+
+		foreach ( $this->settings as $key => $setting ) {
+			if ( ! isset( $setting['type'] ) ) {
+				continue;
+			}
+
+			switch ( $setting['type'] ) {
+				case 'number':
+					$instance[ $key ] = absint( $new_instance[ $key ] );
+
+					if ( isset( $setting['min'] ) && '' !== $setting['min'] ) {
+						$instance[ $key ] = max( $instance[ $key ], $setting['min'] );
 					}
-				}
-			} else {
-				self::$_widgets[ $type ] = $args;
-				if ( ! self::$_has_registered ) {
-					add_action( 'widgets_init', array( __CLASS__, 'do_register' ) );
-					self::$_has_registered = true;
-				}
+
+					if ( isset( $setting['max'] ) && '' !== $setting['max'] ) {
+						$instance[ $key ] = min( $instance[ $key ], $setting['max'] );
+					}
+					break;
+				case 'textarea':
+					$instance[ $key ] = wp_kses( trim( wp_unslash( $new_instance[ $key ] ) ), wp_kses_allowed_html( 'post' ) );
+					break;
+				case 'checkbox':
+					$instance[ $key ] = empty( $new_instance[ $key ] ) ? 0 : 1;
+					break;
+				default:
+					$instance[ $key ] = isset( $new_instance[ $key ] ) ? sanitize_text_field( $new_instance[ $key ] ) : $setting['std'];
+					break;
 			}
+
+			/**
+			 * Sanitize the value of a setting.
+			 */
+			$instance[ $key ] = apply_filters( 'learnpress_widget_settings_sanitize_option', $instance[ $key ], $new_instance, $key, $setting );
 		}
 
-		/**
-		 * Tell WP register our widgets
-		 */
-		public static function do_register() {
+		$this->flush_widget_cache();
 
-			if ( ! self::$_widgets ) {
-				return;
-			}
-			global $wp_widget_factory;
+		return $instance;
+	}
 
-
-			foreach ( self::$_widgets as $type => $args ) {
-				$widget_file = LP_PLUGIN_PATH . "inc/widgets/{$type}/{$type}.php";
-
-				if ( ! file_exists( $widget_file ) ) {
-					continue;
-				}
-
-				include_once $widget_file;
-				$widget_class = self::get_widget_class( $type );
-
-				if ( class_exists( $widget_class ) ) {
-					register_widget( $widget_class );
-					if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
-						$wp_widget_factory->widgets[ $widget_class ]->file = $widget_file;
-					}
-				}
-			}
-
+	/**
+	 * Outputs the settings update form.
+	 */
+	public function form( $instance ) {
+		if ( empty( $this->settings ) ) {
+			echo '<p>' . esc_html_e( 'There is no options for this widget.', 'learnpress' ) . '</p>';
 			return;
 		}
 
-		/**
-		 * Display a template of a widget.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param string $slug
-		 * @param string $template_name
-		 *
-		 * @return string
-		 */
-		public function get_locate_template( $slug, $template_name = '' ) {
-			// get widget template
-			$template = "widgets/{$slug}/" . ( $template_name ? $template_name : 'default.php' );
+		foreach ( $this->settings as $key => $setting ) {
 
-			return learn_press_locate_template( $template );
-		}
+			$class = isset( $setting['class'] ) ? $setting['class'] : '';
+			$value = isset( $instance[ $key ] ) ? $instance[ $key ] : $setting['std'];
 
-		/**
-		 * Get class name of widget without LP_Widget prefix
-		 *
-		 * @param $slug
-		 *
-		 * @return string
-		 */
-		private static function get_widget_class( $slug ) {
-			return 'LP_Widget_' . preg_replace( '~\s+~', '_', ucwords( str_replace( '-', ' ', $slug ) ) );
-		}
+			switch ( $setting['type'] ) {
 
-		/**
-		 * Parse some default options
-		 *
-		 * @param $args
-		 * @param $type
-		 *
-		 * @return array
-		 */
-		private function _parse_widget_args( $args, $type ) {
-			$id_base         = ! empty( $args['id_base'] ) ? $args['id_base'] : $this->_id_prefix . $type;
-			$name            = ! empty( $args['name'] ) ? $args['name'] : ucwords( str_replace( '-', ' ', $type ) );
-			$widget_options  = ! empty( $args['widget_options'] ) ? $args['widget_options'] : array();
-			$control_options = ! empty( $args['control_options'] ) ? $args['control_options'] : array();
+				case 'text':
+					?>
+					<p>
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label><?php // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped ?>
+						<input class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" />
+					</p>
+					<?php
+					break;
 
-			return array( $id_base, $name, $widget_options, $control_options );
-		}
+				case 'number':
+					?>
+					<p>
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
+						<input class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="number" step="<?php echo isset( $setting['step'] ) ? esc_attr( $setting['step'] ) : '1'; ?>" min="<?php echo isset( $setting['min'] ) ? esc_attr( $setting['min'] ) : ''; ?>" max="<?php echo isset( $setting['max'] ) ? esc_attr( $setting['max'] ) : ''; ?>" value="<?php echo esc_attr( $value ); ?>" />
+					</p>
+					<?php
+					break;
 
-		/**
-		 * @param string $instance
-		 * @param string $more
-		 *
-		 * @return array|mixed
-		 */
-		public function get_class( $instance = '', $more = '' ) {
-			$classes = array( 'lp-widget' );
-			if ( is_array( $instance ) && ! empty( $instance['css_class'] ) ) {
-				$classes[] = $instance['css_class'];
+				case 'select':
+					?>
+					<p>
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+						<select class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>">
+							<?php foreach ( $setting['options'] as $option_key => $option_value ) : ?>
+								<option value="<?php echo esc_attr( $option_key ); ?>" <?php selected( $option_key, $value ); ?>><?php echo esc_html( $option_value ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</p>
+					<?php
+					break;
+
+				case 'textarea':
+					?>
+					<p>
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+						<textarea class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" cols="20" rows="3"><?php echo esc_textarea( $value ); ?></textarea>
+						<?php if ( isset( $setting['desc'] ) ) : ?>
+							<small><?php echo esc_html( $setting['desc'] ); ?></small>
+						<?php endif; ?>
+					</p>
+					<?php
+					break;
+
+				case 'checkbox':
+					?>
+					<p>
+						<input class="checkbox <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="checkbox" value="1" <?php checked( $value, 1 ); ?> />
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+					</p>
+					<?php
+					break;
+
+				default:
+					do_action( 'learnpress_widget_field_' . $setting['type'], $key, $value, $setting, $instance );
+					break;
 			}
-			$classes = LP_Helper::merge_class( $classes, $more );
-
-			if ( $classes ) {
-				echo ' class="' . join( ' ', $classes ) . '"';
-			}
-
-			return $classes;
-		}
-
-		private function sanitize_instance( $instance ) {
-			return wp_parse_args( $instance, $this->defaults );
 		}
 	}
-}
 
-// Register core widgets
-LP_Widget::register( array(
-	'featured-courses',
-	'popular-courses',
-	'recent-courses',
-	'course-progress',
-	'course-info',
-	'course-sidebar-preview',
-    'course-extra'
-) );
+	/**
+	 * Get widget id cached widgets.
+	 */
+	protected function get_widget_id_for_cache( $widget_id, $scheme = '' ) {
+		if ( $scheme ) {
+			$widget_id_for_cache = $widget_id . '-' . $scheme;
+		} else {
+			$widget_id_for_cache = $widget_id . '-' . ( is_ssl() ? 'https' : 'http' );
+		}
+
+		return apply_filters( 'learnpress_cached_widget_id', $widget_id_for_cache );
+	}
+}

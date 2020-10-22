@@ -10,9 +10,6 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-
-$profile = LP_Global::profile();
-$fields  = $profile->get_register_fields();
 ?>
 
 <div class="learn-press-form-register learn-press-form">
@@ -23,17 +20,25 @@ $fields  = $profile->get_register_fields();
 
 	<form name="learn-press-register" method="post" action="">
 
-		<?php do_action( 'learn-press/before-form-register-fields' ); ?>
-
 		<ul class="form-fields">
-			<?php foreach ( $fields as $field ) : ?>
-				<li class="form-field">
-					<?php LP_Meta_Box_Helper::show_field( $field ); ?>
-				</li>
-			<?php endforeach; ?>
-		</ul>
 
-		<?php do_action( 'learn-press/after-form-register-fields' ); ?>
+			<?php do_action( 'learn-press/before-form-register-fields' ); ?>
+
+			<li class="form-field">
+				<label for="reg_email"><?php esc_html_e( 'Email address', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+				<input id ="reg_email" name="reg_email" type="text" placeholder="<?php esc_attr_e( 'Email', 'learnpress' ); ?>" autocomplete="email" value="<?php echo ( ! empty( $_POST['reg_email'] ) ) ? esc_attr( wp_unslash( $_POST['reg_email'] ) ) : ''; ?>">
+			</li>
+			<li class="form-field">
+				<label for="reg_username"><?php esc_html_e( 'Usernanme', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+				<input id ="reg_username" name="reg_username" type="text" placeholder="<?php esc_attr_e( 'Username', 'learnpress' ); ?>" autocomplete="username" value="<?php echo ( ! empty( $_POST['reg_username'] ) ) ? esc_attr( wp_unslash( $_POST['reg_username'] ) ) : ''; ?>">
+			</li>
+			<li class="form-field">
+				<label for="reg_password"><?php esc_html_e( 'Password', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+				<input id ="reg_password" name="reg_password" type="password" placeholder="<?php esc_attr_e( 'Password', 'learnpress' ); ?>" autocomplete="new-password">
+			</li>
+
+			<?php do_action( 'learn-press/after-form-register-fields' ); ?>
+		</ul>
 
 		<?php do_action( 'register_form' ); ?>
 

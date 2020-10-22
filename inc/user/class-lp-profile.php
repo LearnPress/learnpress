@@ -981,20 +981,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
-		 * @return array
-		 */
-		public function get_login_fields() {
-			return LP_Shortcode_Login_Form::get_login_fields();
-		}
-
-		/**
-		 * @return array
-		 */
-		public function get_register_fields() {
-			return LP_Shortcode_Register_Form::get_register_fields();
-		}
-
-		/**
 		 * TRUE if enable show login form in user profile if user is not logged in.
 		 *
 		 * @return bool

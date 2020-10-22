@@ -1602,7 +1602,6 @@ function learn_press_course_question_permalink_friendly( $permalink, $lesson_id,
 
 add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
 
-
 function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	if ( ! $user ) {
 		$user = learn_press_get_current_user();
@@ -1619,125 +1618,6 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	}
 
 	return apply_filters( 'learn-press/user/is-teacher', $role, $user->get_id() );
-}
-
-function learn_press_get_become_a_teacher_form_fields() {
-	$user   = learn_press_get_current_user();
-	$fields = array(
-		'bat_name'    => array(
-			'title'       => __( 'Name', 'learnpress' ),
-			'type'        => 'text',
-			'placeholder' => __( 'Your name', 'learnpress' ),
-			'saved'       => $user->get_display_name(),
-			'id'          => 'bat_name',
-			'required'    => true,
-		),
-		'bat_email'   => array(
-			'title'       => __( 'Email', 'learnpress' ),
-			'type'        => 'email',
-			'placeholder' => __( 'Your email address', 'learnpress' ),
-			'saved'       => $user->get_email(),
-			'id'          => 'bat_email',
-			'required'    => true,
-		),
-		'bat_phone'   => array(
-			'title'       => __( 'Phone', 'learnpress' ),
-			'type'        => 'text',
-			'placeholder' => __( 'Your phone number', 'learnpress' ),
-			'id'          => 'bat_phone',
-		),
-		'bat_message' => array(
-			'title'       => __( 'Message', 'learnpress' ),
-			'type'        => 'textarea',
-			'placeholder' => __( 'Your message', 'learnpress' ),
-			'id'          => 'bat_message',
-		),
-	);
-	$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
-
-	return $fields;
-}
-
-function learn_press_process_become_a_teacher_form( $args = null ) {
-	$user   = learn_press_get_current_user();
-	$error  = false;
-	$return = array(
-		'result' => 'success',
-	);
-
-	if ( ! $error ) {
-		$args = wp_parse_args(
-			$args,
-			array(
-				'name'    => null,
-				'email'   => null,
-				'phone'   => null,
-				'message' => null,
-			)
-		);
-
-		$return['message'] = array();
-
-		if ( ! $args['name'] ) {
-			$return['message'][] = learn_press_get_message( __( 'Please enter your name', 'learnpress' ), 'error' );
-			$error               = true;
-		}
-
-		if ( ! $args['email'] ) {
-			$return['message'][] = learn_press_get_message( __( 'Please enter your email address', 'learnpress' ), 'error' );
-			$error               = true;
-		}
-	}
-
-	if ( ! $error ) {
-		$to_email        = array( get_option( 'admin_email' ) );
-		$message_headers = '';
-		$subject         = __( 'Please moderate', 'learnpress' );
-
-		$fields         = learn_press_get_become_a_teacher_form_fields();
-		$default_fields = array( 'bat_name', 'bat_email', 'bat_phone', 'bat_message' );
-
-		foreach ( $fields as $key => $field ) {
-			if ( isset( $_POST[ $key ] ) ) {
-				$fields[ $key ]['value'] = $_POST[ $key ];
-			}
-		}
-
-		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields, $user );
-
-		if ( ! $notify_message ) {
-			$notify_message  = sprintf( __( 'The user <a href="%1$s">%2$s</a> wants to become a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->get_id() ), $user->user_login ) . "\r\n";
-			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
-			$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
-			$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
-			$notify_message .= sprintf( __( 'Message: %s', 'learnpress' ), $args['message'] ) . "\r\n";
-
-			foreach ( $fields as $key => $field ) {
-				if ( ! in_array( $key, $default_fields ) ) {
-					$notify_message .= $field['title'] . ': ' . ( isset( $field['value'] ) ? $field['value'] : '' ) . "\r\n";
-				}
-			}
-
-			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->get_id() ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
-		}
-
-		$args = array(
-			$to_email,
-			( $subject ),
-			$notify_message,
-			$message_headers,
-		);
-
-		@call_user_func_array( 'wp_mail', $args );
-
-		$return['message'][] = learn_press_get_message( __( 'Your request has been sent! We will get back to you soon!', 'learnpress' ) );
-
-		set_transient( 'learn_press_become_teacher_sent_' . $user->get_id(), 'yes', HOUR_IN_SECONDS * 2 );
-	}
-
-	$return['result'] = $error ? 'error' : 'success';
-
-	return $return;
 }
 
 function learn_press_become_teacher_sent( $user_id = 0 ) {

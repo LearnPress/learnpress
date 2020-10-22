@@ -3138,8 +3138,7 @@ var MessageBox = {
 
 var $ = jQuery;
 $(function () {
-  $('.rwmb-password-wrapper .rwmb-input input[type="password"]').wrap('<span class="lp-password-input"></span>');
-  $('.rwmb-password-wrapper .rwmb-input').filter(':password').parent('span').addClass('lp-password-input');
+  $('.form-fields input[type="password"]').wrap('<span class="lp-password-input"></span>');
   $('.lp-password-input').append('<span class="lp-show-password-input"></span>');
   $('.lp-show-password-input').on('click', function () {
     $(this).toggleClass('display-password');

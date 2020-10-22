@@ -37,54 +37,13 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 				$user   = learn_press_get_current_user();
 				$output = sprintf( __( 'Your are logged in as %1$s. <a href="%2$s">Log out</a>?', 'learnpress' ), $user->get_display_name(), wp_logout_url() );
 			} else {
-
-				if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
-					include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-				}
-
 				ob_start();
 				learn_press_print_messages();
-				learn_press_get_template( 'global/form-register.php', array( 'fields' => self::get_register_fields() ) );
+				learn_press_get_template( 'global/form-register.php' );
 				$output = ob_get_clean();
 			}
 
 			return $output;
-		}
-
-		/**
-		 * Get fields for register form.
-		 *
-		 * @return array
-		 */
-		public static function get_register_fields() {
-			$fields = array(
-				'reg_email'    => array(
-					'title'       => esc_html__( 'Email', 'learnpress' ),
-					'type'        => 'text',
-					'placeholder' => esc_html__( 'Email', 'learnpress' ),
-					'saved'       => LP_Request::get_string( 'reg_email' ),
-					'id'          => 'reg_email',
-				),
-				'reg_username' => array(
-					'title'       => esc_html__( 'Username', 'learnpress' ),
-					'type'        => 'text',
-					'placeholder' => esc_html__( 'Username', 'learnpress' ),
-					'saved'       => LP_Request::get_string( 'reg_username' ),
-					'id'          => 'reg_username',
-				),
-				'reg_password' => array(
-					'title'       => esc_html__( 'Password', 'learnpress' ),
-					'type'        => 'password',
-					'placeholder' => esc_html__( 'Password', 'learnpress' ),
-					'saved'       => '',
-					'id'          => 'reg_password',
-					'desc'        => esc_html__( 'The password should be at least twelve characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! " ? $ % ^ & )', 'learnpress' ),
-				),
-			);
-
-			$fields = apply_filters( 'learn-press/register-fields', $fields );
-
-			return $fields;
 		}
 	}
 }

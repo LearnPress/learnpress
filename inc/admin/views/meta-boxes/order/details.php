@@ -243,9 +243,9 @@ $user_ip      = $order->get_user_ip_address();
 $assets = learn_press_admin_assets();
 $assets->add_localize( 'learn-press-meta-box-order', 'users', $order->get_user_data() );
 $assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{display_name}} ({{email}})' );
-RWMB_Datetime_Field::admin_enqueue_scripts();
+
 wp_enqueue_script( 'jquery-ui-datepicker' );
-wp_enqueue_style( 'jquery-ui-datepicker' );
+wp_enqueue_style( 'jquery-ui' );
 ?>
 
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">

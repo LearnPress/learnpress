@@ -129,10 +129,10 @@ class LP_Setup_Wizard {
 		wp_enqueue_style( 'widgets' );
 		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
 		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
-		wp_enqueue_style( 'lp-select2', $assets->url( '../inc/libraries/meta-box/css/select2/select2.css' ) );
+		wp_enqueue_style( 'lp-select2', $assets->url( 'css/vendor/select2.min.css' ) );
 
 		$assets->enqueue_script( 'learn-press-global' );
-		wp_enqueue_script( 'lp-select2', $assets->url( '../inc/libraries/meta-box/js/select2/select2.min.js' ) );
+		wp_enqueue_script( 'lp-select2', $assets->url( 'js/vendor/jquery/select2.full.min.js' ) );
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'js/admin/admin.js' ) );
 		wp_enqueue_script(

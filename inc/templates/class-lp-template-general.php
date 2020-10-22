@@ -93,13 +93,12 @@ class LP_Template_General extends LP_Abstract_Template {
 
 	public function become_teacher_form_fields() {
 		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+
 		if ( $messages ) {
 			return;
 		}
 
-		include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-
-		learn_press_get_template( 'global/become-teacher-form/form-fields.php', array( 'fields' => learn_press_get_become_a_teacher_form_fields() ) );
+		learn_press_get_template( 'global/become-teacher-form/form-fields.php' );
 	}
 
 	public function become_teacher_button() {

@@ -102,8 +102,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					'url' => self::url( 'js/vendor/plugins.all' . $min . '.js' ),
 				),
 				'lp-global'           => array(
-					'url'  => self::url( 'js/global' . $min . '.js' ),
-					'deps' => array( 'jquery', 'underscore', 'utils' ),
+					'url'     => self::url( 'js/global' . $min . '.js' ),
+					'deps'    => array( 'jquery', 'underscore', 'utils' ),
+					'screens' => '*',
 				),
 				// 'lp-utils'            => array(
 				// 'url'     => self::url( 'js/utils' . $min . '.js' ),

@@ -6,13 +6,10 @@
  * @author  ThimPress
  * @category Widgets
  * @package  Learnpress/Widgets
- * @version  3.0.0
+ * @version  4.0.0
  * @extends  LP_Widget
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Widget_Course_Sidebar_Preview' ) ) {
@@ -26,13 +23,11 @@ if ( ! class_exists( 'LP_Widget_Course_Sidebar_Preview' ) ) {
 		 * LP_Widget_Course_Sidebar_Preview constructor.
 		 */
 		public function __construct() {
+			$this->widget_cssclass    = 'learnpress widget_course_sidebar_preview';
+			$this->widget_description = esc_html__( 'Display the Course Sidebar Preview', 'learnpress' );
+			$this->widget_id          = 'learnpress_widget_course_sidebar_preview';
+			$this->widget_name        = esc_html__( 'LearnPress - Course Sidebar Preview', 'learnpress' );
 
-			// widget options
-			$this->options = array(
-
-			);
-
-			// register widget
 			parent::__construct();
 
 			add_filter( 'learn-press/widget/display-' . $this->id_base, 'learn_press_is_course' );
@@ -41,9 +36,12 @@ if ( ! class_exists( 'LP_Widget_Course_Sidebar_Preview' ) ) {
 		/**
 		 * Show widget in frontend.
 		 */
-		public function show() {
-			LP()->template('course')->course_sidebar_preview();
-		}
+		public function widget( $args, $instance ) {
+			if ( ! learn_press_is_course() ) {
+				return;
+			}
 
+			LP()->template( 'course' )->course_sidebar_preview();
+		}
 	}
 }

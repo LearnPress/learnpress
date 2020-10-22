@@ -10,9 +10,6 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-
-$profile = LP_Global::profile();
-$fields  = $profile->get_login_fields();
 ?>
 
 <div class="learn-press-form-login learn-press-form">
@@ -26,11 +23,14 @@ $fields  = $profile->get_login_fields();
 		<?php do_action( 'learn-press/before-form-login-fields' ); ?>
 
 		<ul class="form-fields">
-			<?php foreach ( $fields as $field ) : ?>
-				<li class="form-field">
-					<?php LP_Meta_Box_Helper::show_field( $field ); ?>
-				</li>
-			<?php endforeach; ?>
+			<li class="form-field">
+				<label for="username"><?php esc_html_e( 'Username or email', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+				<input type="text" name="username" id="username" placeholder="<?php esc_attr_e( 'Email or username', 'learnpress' ); ?>" autocomplete="username" />
+			</li>
+			<li class="form-field">
+				<label for="password"><?php esc_html_e( 'Password', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+				<input type="password" name="password" id="password" placeholder="<?php esc_attr_e( 'Password', 'learnpress' ); ?>" autocomplete="current-password" />
+			</li>
 		</ul>
 
 		<?php do_action( 'learn-press/after-form-login-fields' ); ?>

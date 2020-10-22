@@ -15,10 +15,13 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<?php if ( ! isset( $messages ) ) {
+<?php
+if ( ! isset( $messages ) ) {
 	return;
-} ?>
+}
+?>
 
-<?php foreach ( $messages as $code => $message ) {
+<?php
+foreach ( $messages as $code => $message ) {
 	learn_press_display_message( $message );
 }

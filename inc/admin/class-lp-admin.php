@@ -858,7 +858,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-admin-ajax.php';
 			include_once 'editor/class-lp-admin-editor.php';
 			include_once 'class-lp-admin-menu.php';
-			include_once 'class-lp-meta-box-tabs.php';
 			include_once 'helpers/class-lp-outdated-template-helper.php';
 			include_once 'helpers/class-lp-plugins-helper.php';
 			include_once 'class-lp-modal-search-items.php';

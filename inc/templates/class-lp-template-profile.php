@@ -158,13 +158,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		$fields = $profile->get_login_fields();
-
-		if ( ! $fields ) {
-			return;
-		}
-
-		learn_press_get_template( 'global/form-login.php', array( 'fields' => $fields ) );
+		learn_press_get_template( 'global/form-login.php' );
 	}
 
 	public function register_form() {
@@ -178,13 +172,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		$fields = $profile->get_register_fields();
-
-		if ( ! $fields ) {
-			return;
-		}
-
-		learn_press_get_template( 'global/form-register.php', array( 'fields' => $fields ) );
+		learn_press_get_template( 'global/form-register.php' );
 	}
 
 	/**

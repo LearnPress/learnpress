@@ -14,9 +14,6 @@ defined( 'ABSPATH' ) || exit();
 if ( is_user_logged_in() ) {
 	return;
 }
-
-$profile = LP_Global::profile();
-$fields  = $profile->get_login_fields();
 ?>
 
 <input type="radio" id="checkout-account-switch-to-login" checked="checked" name="checkout-account-switch-form" value="login"/>
@@ -25,11 +22,14 @@ $fields  = $profile->get_login_fields();
 	<h4><?php esc_html_e( 'Sign in', 'learnpress' ); ?></h4>
 
 	<ul class="lp-form-fields">
-		<?php foreach ( $fields as $field ) : ?>
-			<li class="form-field">
-				<?php LP_Meta_Box_Helper::show_field( $field ); ?>
-			</li>
-		<?php endforeach; ?>
+		<li class="form-field">
+			<label for="username"><?php esc_html_e( 'Username or email', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+			<input type="text" name="username" id="username" placeholder="<?php esc_attr_e( 'Email or username', 'learnpress' ); ?>" autocomplete="username" />
+		</li>
+		<li class="form-field">
+			<label for="password"><?php esc_html_e( 'Password', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+			<input type="password" name="password" id="password" placeholder="<?php esc_attr_e( 'Password', 'learnpress' ); ?>" autocomplete="current-password" />
+		</li>
 	</ul>
 
 	<?php

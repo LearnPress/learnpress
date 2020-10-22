@@ -401,9 +401,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				return;
 			}
 
-			LP_Assets::enqueue_script( 'select2', LP_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
-			LP_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
-
 			ob_start();
 			?>
 

@@ -383,6 +383,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-preview-course.php';
 
 			require_once 'inc/class-lp-widget.php';
+			require_once 'inc/lp-widget-functions.php';
 
 			/**
 			 * REST APIs
@@ -392,7 +393,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';
 			require_once 'inc/rest-api/class-lp-core-api.php';
-						require_once 'inc/admin/rest-api/class-lp-core-api.php';
+			require_once 'inc/admin/rest-api/class-lp-core-api.php';
 
 			include_once 'inc/theme-support/class-theme-support-base.php';
 			include_once 'inc/class-lp-theme-support.php';
@@ -420,8 +421,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
-			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
-			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
 			add_action( 'init', array( $this, 'wp_init' ), 10 );
 		}
@@ -540,15 +539,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$size = array_values( (array) $size );
 
 			add_image_size( 'course_thumbnail', $size[0], $size[1], true );
-		}
-
-		/**
-		 * Load metabox library.
-		 *
-		 * @since 3.0.0
-		 */
-		public function load_meta_box() {
-			require_once 'inc/libraries/meta-box/meta-box.php';
 		}
 
 		/**

@@ -9,9 +9,6 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 ?>
 

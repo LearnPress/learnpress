@@ -106,7 +106,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 			}
 
 			if ( apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
-				$atts   = shortcode_atts(
+				$atts = shortcode_atts(
 					array(
 						'method'                     => 'post',
 						'action'                     => '',
@@ -118,10 +118,8 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 					$atts
 				);
 
-				$fields = learn_press_get_become_a_teacher_form_fields();
-				$args   = array_merge(
+				$args = array_merge(
 					array(
-						'fields'  => $fields,
 						'code'    => $code,
 						'message' => $message,
 					),

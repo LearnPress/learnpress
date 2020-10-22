@@ -7,12 +7,9 @@
  * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! $course = LP_Global::course() ) {
@@ -20,14 +17,8 @@ if ( ! $course = LP_Global::course() ) {
 }
 ?>
 
-<div<?php $widget->get_class( $widget->instance ); ?>>
-
-    <div class="widget-body">
-
+<div class="lp_widget_course_progress <?php echo esc_attr( $instance['css_class'] ); ?>">
+	<div class="widget-body">
 		<?php learn_press_get_template( 'single-course/sidebar/user-progress.php' ); ?>
-
-		<?php //learn_press_course_remaining_time(); ?>
-
-    </div>
-
+	</div>
 </div>

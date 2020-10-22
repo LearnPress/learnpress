@@ -49,7 +49,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'select2'                           => self::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
+				'select2'                           => self::url( 'js/vendor/jquery/select2.full.min.js' ),
 				'lp-plugins-all'                    => array(
 					'url'     => self::url( 'js/vendor/admin.plugins.all' . $min . '.js' ),
 					'screens' => array(
@@ -156,12 +156,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-styles',
 			array(
-				'select2'                    => LP()->plugin_url( 'inc/libraries/meta-box/css/select2/select2.css' ),
-				'font-awesome'               => $this->url( 'css/vendor/font-awesome-5.min.css' ),
-				'jquery-ui'                  => $this->url( 'css/vendor/jquery-ui/jquery-ui.min.css' ),
-				'jquery-ui-timepicker-addon' => $this->url( 'css/vendor/jquery-ui-timepicker-addon.css' ),
-				'learn-press-bundle'         => $this->url( 'css/bundle.min.css' ),
-				'learn-press-admin'          => array(
+				'select2'              => $this->url( 'css/vendor/select2.min.css' ),
+				'font-awesome'         => $this->url( 'css/vendor/font-awesome-5.min.css' ),
+				'jquery-ui'            => $this->url( 'css/vendor/jquery-ui/jquery-ui.min.css' ),
+				'jquery-ui-timepicker' => $this->url( 'css/vendor/jquery-ui-timepicker-addon.css' ),
+				'learn-press-bundle'   => $this->url( 'css/bundle.min.css' ),
+				'learn-press-admin'    => array(
 					'url'  => $this->url( 'css/admin/admin.css' ),
 					'deps' => array( 'wp-color-picker' ),
 				),
