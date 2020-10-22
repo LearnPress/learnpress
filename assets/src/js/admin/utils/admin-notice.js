@@ -29,12 +29,12 @@ const dismissNotice = function dismissNotice( notice, options ) {
 	}
 
 	$( document ).on( 'click', '.lp-notice [data-dismiss-notice]', function() {
-		var data = $( this ).data();
-		var notice = data.dismissNotice;
+		const data = $( this ).data();
+		const notice = data.dismissNotice;
 
 		delete data.dismissNotice;
 
-		dismissNotice( notice, { data: data, el: $( this ).closest( '.lp-notice' ) } );
+		dismissNotice( notice, { data, el: $( this ).closest( '.lp-notice' ) } );
 	} );
 }( window.jQuery ) );
 

@@ -238,60 +238,6 @@ var LP = LP || {};
     $newButton.insertBefore($addNew);
     $newButton.prepend($addNew.removeClass('page-title-action'));
   };
-  /**
-   * Auto focus into the last item in Text list after user press 'Add more'
-   * button.
-   *
-   * If there is an empty item then focus it and remove the new item added.
-   *
-   * @param event Doc.
-   */
-
-
-  var focusToInputWhenCloningTextList = function focusToInputWhenCloningTextList(event) {
-    setTimeout(function () {
-      var $container = $(event.target).closest('.rwmb-text-list-wrapper');
-      var $siblings = $container.find('.rwmb-text-list-clone');
-      var $lastRow = $siblings.last();
-      $siblings.each(function () {
-        var $row = $(this);
-
-        if (!$row.find('.rwmb-text-list').val().length) {
-          $row.find('.rwmb-text-list').focus();
-
-          if (!$row.is($lastRow)) {
-            $lastRow.remove();
-          }
-
-          return false;
-        }
-      });
-    }, 20);
-  };
-  /**
-   * Add new option to Metabox Text list when user press Enter in
-   * an existing item.
-   *
-   * @param event
-   */
-
-
-  var addOptionToTextList = function addOptionToTextList(event) {
-    if (event.keyCode !== 13) {
-      return;
-    }
-
-    event.preventDefault();
-    var $item = $(event.target).closest('.rwmb-text-list-clone');
-    var $container = $(event.target).closest('.rwmb-text-list-wrapper');
-    var $siblings = $container.find('.rwmb-text-list-clone');
-
-    if ($siblings.last().is($item)) {
-      $container.find('.add-clone').trigger('click');
-    } else {
-      $(event.target).closest('.rwmb-text-list-clone').next().find('.rwmb-text-list').focus();
-    }
-  };
 
   var autoCheckHideContentOption = function autoCheckHideContentOption(event) {
     var isChecked = $(event.target).is(':checked');
@@ -307,8 +253,7 @@ var LP = LP || {};
     $('.learn-press-dropdown-pages').LP('DropdownPages');
     $('.learn-press-advertisement-slider').LP('Advertisement', 'a', 's').appendTo($('#wpbody-content'));
     $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
-    $('.learn-press-tip').LP('QuickTip'); //$('.learn-press-tabs').LP('AdminTab');
-
+    $('.learn-press-tip').LP('QuickTip');
     LP.createButtonAddNewQuestion();
     $(document).on('click', '#learn-press-create-pages', createPages).on('click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage).on('click', '.plugin-action-buttons a', pluginActions).on('click', '[data-remove-confirm]', preventDefault).on('mousedown', '.lp-sortable-handle', function (e) {
       $('html, body').addClass('lp-item-moving');
@@ -316,19 +261,7 @@ var LP = LP || {};
     }).on('mouseup', function (e) {
       $('html, body').removeClass('lp-item-moving');
       $('.lp-sortable-handle').css('cursor', '');
-    }).on('click', '.rwmb-text-list-wrapper .add-clone', focusToInputWhenCloningTextList).on('keypress', '.rwmb-text-list-wrapper .rwmb-text-list', addOptionToTextList).on('change', '#_lp_retake_count', autoCheckHideContentOption);
-    setTimeout(function () {
-      $('.rwmb-text-list-wrapper .rwmb-input').removeClass('ui-sortable').sortable({
-        axis: 'y',
-        handle: 'label'
-      });
-    }, 100);
-    $(document).on('LP.adminTabs.selectTab', function (event, $tab, url) {
-      if ($(document).find('input[name="post_type"]').val() === 'lp_course') {
-        $('input[name="_wp_http_referer"], input[name="referredby"], input[name="_wp_original_http_referer"]').val(url);
-      }
-    });
-    $('input[name^="learn_press_enable_gutenberg"][value="-1"]').prop('checked', 'checked').closest('li').hide();
+    }).on('change', '#_lp_retake_count', autoCheckHideContentOption);
   };
 
   $(document).ready(onReady);

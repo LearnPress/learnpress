@@ -2496,8 +2496,8 @@ add_action( 'save_post', 'learn_press_maybe_sync_data' );
  * @since 3.2.6
  */
 function learn_press_get_screen_id() {
-	global $current_screen;
-	$screen_id = $current_screen ? $current_screen->id : false;
+	$screen    = get_current_screen();
+	$screen_id = $screen ? $screen->id : false;
 
 	return $screen_id;
 }
@@ -2590,36 +2590,6 @@ function learn_press_get_orders_status_chart_data() {
 
 	return $data;
 }
-
-/**
- * Callback function to filter outer html of meta box field.
- * If option 'roles' is passed to field and current user does
- * not have the role in that then do not show the field.
- *
- * @param string $outer_html
- * @param array  $field
- * @param mixed  $value
- *
- * @return string
- * @since 3.x.x
- */
-function learn_press_meta_box_field_outer_html( $outer_html, $field, $value ) {
-
-	if ( ! empty( $field['roles'] ) ) {
-		$roles = $field['roles'];
-		settype( $roles, 'array' );
-
-		global $current_user;
-		$user_roles = $current_user->roles;
-
-		if ( ! array_intersect( $roles, $user_roles ) ) {
-			return '';
-		}
-	}
-
-	return $outer_html;
-}
-add_filter( 'rwmb_outer_html', 'learn_press_meta_box_field_outer_html', 10, 3 );
 
 function learn_press_option_course_evaluation_method( $method ) {
 	global $post;

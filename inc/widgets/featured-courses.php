@@ -85,10 +85,22 @@ if ( ! class_exists( 'LP_Widget_Featured_Courses' ) ) {
 		 * Show widget in frontend.
 		 */
 		public function widget( $args, $instance ) {
+			if ( $this->get_cached_widget( $args ) ) {
+				return;
+			}
+
+			ob_start();
+
 			$curd    = new LP_Course_CURD();
 			$courses = $curd->get_featured_courses( array( 'limit' => (int) $instance['limit'] ) );
 
+			$this->widget_start( $args, $instance );
+
 			include learn_press_locate_template( 'widgets/featured-courses/default.php' );
+
+			$this->widget_end( $args );
+
+			echo $this->cache_widget( $args, ob_get_clean() );
 		}
 	}
 }

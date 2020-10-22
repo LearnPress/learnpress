@@ -8,7 +8,6 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-
 class LP_Assets extends LP_Abstract_Assets {
 
 	public function __construct() {
@@ -98,6 +97,7 @@ class LP_Assets extends LP_Abstract_Assets {
 						'jquery',
 					),
 				),
+				// @todo (Nhamdv) Do not use any page, so need check again.
 				'lp-plugins-all'      => array(
 					'url' => self::url( 'js/vendor/plugins.all' . $min . '.js' ),
 				),
@@ -192,6 +192,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Load assets
 	 */
 	public function load_scripts() {
+		// Register script.
 		$this->_register_scripts();
 
 		$scripts = $this->_get_scripts();

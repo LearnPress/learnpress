@@ -520,23 +520,6 @@ const lpMetaboxsalePriceDate = () => {
 	} );
 };
 
-const toggleSalePriceSchedule = function toggleSalePriceSchedule() {
-	const $el = $( this ),
-		id = $el.attr( 'id' );
-
-	if ( id === '_lp_sale_price_schedule' ) {
-		$( this ).hide();
-		$( '#field-_lp_sale_start, #field-_lp_sale_end' ).removeClass( 'hide-if-js' );
-		$win.trigger( 'resize.calculate-tab' );
-	} else {
-		$( '#_lp_sale_price_schedule' ).show();
-		$( '#field-_lp_sale_start, #field-_lp_sale_end' ).addClass( 'hide-if-js' ).find( '#_lp_sale_start, #_lp_sale_end' ).val( '' );
-		$win.trigger( 'resize.calculate-tab' );
-	}
-
-	return false;
-};
-
 const callbackFilterTemplates = function callbackFilterTemplates() {
 	const $link = $( this );
 
@@ -657,58 +640,6 @@ const importCourses = function importCourses() {
 	} );
 };
 
-const onChangeCoursePrices = function onChangeCoursePrices( e ) {
-	const _self = $( this ),
-		_price = $( '#_lp_price' ),
-		_sale_price = $( '#_lp_sale_price' ),
-		_target = $( e.target ).attr( 'id' );
-	_self.find( '#field-_lp_price div, #field-_lp_sale_price div' ).remove( '.learn-press-tip-floating' );
-	if ( parseInt( _sale_price.val() ) >= parseInt( _price.val() ) ) {
-		if ( _target === '_lp_price' ) {
-			_price.parent( '.rwmb-input' ).append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_price + '</div>' );
-		} else if ( _target === '_lp_sale_price' ) {
-			_sale_price.parent( '.rwmb-input' ).append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_price + '</div>' );
-		}
-	}
-};
-
-const onChangeSaleStartDate = function onChangeSaleStartDate( e ) {
-	const _sale_start_date = $( this ),
-		_sale_end_date = $( '#_lp_sale_end' ),
-		_start_date = Date.parse( _sale_start_date.val() ),
-		_end_date = Date.parse( _sale_end_date.val() ),
-		_parent_start = _sale_start_date.parent( '.rwmb-input' ),
-		_parent_end = _sale_end_date.parent( '.rwmb-input' );
-
-	if ( ! _start_date ) {
-		_parent_start.append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_invalid_date + '</div>' );
-	}
-
-	$( '#field-_lp_sale_start div, #field-_lp_sale_end div' ).remove( '.learn-press-tip-floating' );
-
-	if ( _start_date > _end_date ) {
-		_parent_start.append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_start_date + '</div>' );
-	}
-};
-
-const onChangeSaleEndDate = function onChangeSaleEndDate( e ) {
-	const _sale_end_date = $( this ),
-		_sale_start_date = $( '#_lp_sale_start' ),
-		_start_date = Date.parse( _sale_start_date.val() ),
-		_end_date = Date.parse( _sale_end_date.val() ),
-		_parent_start = _sale_start_date.parent( '.rwmb-input' ),
-		_parent_end = _sale_end_date.parent( '.rwmb-input' );
-
-	if ( ! _end_date ) {
-		_parent_end.append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_invalid_date + '</div>' );
-	}
-
-	$( '#field-_lp_sale_start div, #field-_lp_sale_end div' ).remove( '.learn-press-tip-floating' );
-	if ( _start_date > _end_date ) {
-		_parent_end.append( '<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_end_date + '</div>' );
-	}
-};
-
 const onReady = function onReady() {
 	makePaymentsSortable();
 	initSelect2();
@@ -724,20 +655,13 @@ const onReady = function onReady() {
 	lpMetaboxsalePriceDate();
 	lpMetaboxExtraInfo();
 
-	$( '.learn-press-tabs' ).LP( 'AdminTab' );
-
 	$( document )
 		.on( 'click', '.learn-press-payments .status .dashicons', togglePaymentStatus )
 		.on( 'click', '.change-email-status', updateEmailStatus )
-		.on( 'click', '#_lp_sale_price_schedule', toggleSalePriceSchedule )
-		.on( 'click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule )
 		.on( 'click', '.learn-press-filter-template', callbackFilterTemplates )
 		.on( 'click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails )
 		.on( 'click', '.lp-duplicate-row-action .lp-duplicate-post', duplicatePost )
-		.on( 'click', '#learn-press-install-sample-data-notice a', importCourses )
-		.on( 'input', '#meta-box-tab-course_payment', onChangeCoursePrices )
-		.on( 'change', '#_lp_sale_start', onChangeSaleStartDate )
-		.on( 'change', '#_lp_sale_end', onChangeSaleEndDate );
+		.on( 'click', '#learn-press-install-sample-data-notice a', importCourses );
 };
 
 $( document ).ready( onReady );

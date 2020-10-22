@@ -89,10 +89,22 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 		 * Show widget in frontend.
 		 */
 		public function widget( $args, $instance ) {
+			if ( $this->get_cached_widget( $args ) ) {
+				return;
+			}
+
+			ob_start();
+
 			$curd    = new LP_Course_CURD();
 			$courses = $curd->get_recent_courses( array( 'limit' => (int) $instance['limit'] ) );
 
+			$this->widget_start( $args, $instance );
+
 			include learn_press_locate_template( 'widgets/recent-courses/default.php' );
+
+			$this->widget_end( $args );
+
+			echo $this->cache_widget( $args, ob_get_clean() );
 		}
 	}
 }

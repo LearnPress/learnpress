@@ -10,7 +10,6 @@ module.exports = {
 		'./assets/js/admin/editor/course': './assets/src/js/admin/editor/course.js',
 		'./assets/js/admin/editor/quiz': './assets/src/js/admin/editor/quiz.js',
 		'./assets/js/admin/editor/question': './assets/src/js/admin/editor/question.js',
-		'./assets/js/admin/conditional-logic': './assets/src/js/admin/utils/conditional-logic.js',
 		'./assets/js/admin/partial/meta-box-order': './assets/src/js/admin/partial/meta-box-order.js',
 		'./assets/js/admin/pages/statistic': './assets/src/js/admin/pages/statistic.js',
 		'./assets/js/admin/pages/setup': './assets/src/js/admin/pages/setup.js',

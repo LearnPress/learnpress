@@ -12,7 +12,6 @@ import Event_Callback from './event-callback';
 import Hook from './hook';
 import Cookies from './cookies';
 import _localStorage from './local-storage';
-import jQueryScrollbar from '../vendor/jquery/jquery.scrollbar';
 import * as jplugins from './jquery.plugins';
 import IframeSubmit from './iframe-submit';
 import showPass from './show-password';

@@ -1,8 +1,0 @@
-.rwmb-color-wrapper .wp-picker-container {
-	position: relative;
-}
-.rwmb-color-wrapper .wp-picker-holder {
-	position: absolute;
-	z-index: 99;
-	min-width: 255px;
-}

@@ -5,8 +5,8 @@
 	 * @param el
 	 * @param options
 	 */
-	var AdvancedList = function( el, options ) {
-		var self = this,
+	const AdvancedList = function( el, options ) {
+		const self = this,
 			$el = $( el ).hasClass( 'advanced-list' ) ? $( el ) : $( '.advanced-list', el );
 
 		this.options = $.extend( {
@@ -51,7 +51,7 @@
 		 * @param at - Optional. Position where to insert
 		 */
 		function add( data, at ) {
-			var options = {},
+			let options = {},
 				template = getTemplate();
 			if ( $.isPlainObject( data ) ) {
 				options = $.extend( { id: 0, text: '' }, data );
@@ -60,23 +60,23 @@
 					id: '',
 					text: data,
 				};
-			} else if ( data[0] !== undefined ) {
+			} else if ( data[ 0 ] !== undefined ) {
 				options = {
-					id: data[1] ? data[1] : '',
-					text: data[0],
+					id: data[ 1 ] ? data[ 1 ] : '',
+					text: data[ 0 ],
 				};
 			}
 
 			// Replace placeholders with related variables
-			for ( var prop in options ) {
-				var reg = new RegExp( '\{\{' + prop + '\}\}', 'g' );
-				template = template.replace( reg, options[prop] );
+			for ( const prop in options ) {
+				const reg = new RegExp( '\{\{' + prop + '\}\}', 'g' );
+				template = template.replace( reg, options[ prop ] );
 			}
 
 			template = $( template );
 
 			if ( at !== undefined ) {
-				var $e = $el.children( ':eq(' + ( at - 1 ) + ')' );
+				const $e = $el.children( ':eq(' + ( at - 1 ) + ')' );
 				if ( $e.length ) {
 					template.insertBefore( $e );
 				} else {
@@ -87,7 +87,7 @@
 			}
 
 			// Append "\n" between li elements
-			var $child = $el.children().detach();
+			const $child = $el.children().detach();
 			$child.each( function() {
 				$el.append( '\n' ).append( this );
 			} );
@@ -95,7 +95,7 @@
 		}
 
 		function getTemplate() {
-			var $container = $( self.options.template );
+			const $container = $( self.options.template );
 			if ( $container.length ) {
 				return $container.html();
 			}
@@ -110,12 +110,12 @@
 
 	// Export
 	$.fn.LP( 'AdvancedList', function( options ) {
-		var args = [];
-		for ( var i = 1; i < arguments.length; i++ ) {
-			args.push( arguments[i] );
+		const args = [];
+		for ( let i = 1; i < arguments.length; i++ ) {
+			args.push( arguments[ i ] );
 		}
 		return $.each( this, function() {
-			var $advancedList = $( this ).data( 'advancedList' );
+			let $advancedList = $( this ).data( 'advancedList' );
 			if ( ! $advancedList ) {
 				$advancedList = new AdvancedList( this, options );
 				$( this ).data( 'advancedList', $advancedList );
@@ -123,8 +123,8 @@
 
 			// Try to calling to methods of class
 			if ( typeof options === 'string' ) {
-				if ( $.isFunction( $advancedList[options] ) ) {
-					return $advancedList[options].apply( $advancedList, args );
+				if ( $.isFunction( $advancedList[ options ] ) ) {
+					return $advancedList[ options ].apply( $advancedList, args );
 				}
 			}
 			return this;

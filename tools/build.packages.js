@@ -51,7 +51,7 @@ module.exports = function( env = { environment: 'production', watch: false, buil
 		entry: buildPackages.reduce( ( memo, slug ) => {
 			const basename = path.basename( slug );
 			const name = camelCaseDash( basename );
-			memo[name] = path.resolve( packageDir, `js/${slug}.js` );
+			memo[ name ] = path.resolve( packageDir, `js/${ slug }.js` );
 			return memo;
 		}, {} ),
 		output: {

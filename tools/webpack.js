@@ -3,7 +3,7 @@ const uglifyJS = require( 'uglify-js' );
 const uglifyCSS = require( 'uglifycss' );
 
 const isCompressed = function isCompressed( code, n = 5 ) {
-	var m = code.match( /\n/gm );
+	const m = code.match( /\n/gm );
 
 	return ! m || ( m.length <= n );
 };
@@ -12,7 +12,7 @@ const minifyJsDest = function minifyJsDest( dest, code, isDev ) {
 	if ( isDev === undefined ) {
 		isDev = process.env.NODE_ENV !== 'production';
 	}
-	var min = ! isDev ? '.min' : '';
+	let min = ! isDev ? '.min' : '';
 
 	if ( ! min && isCompressed( code ) ) {
 		min = '.min';
@@ -25,7 +25,7 @@ const minifyJsDest = function minifyJsDest( dest, code, isDev ) {
 	code = ! isDev ? uglifyJS.minify( code ).code : code;
 
 	return {
-		[`${dest}${min}.js`]: code,
+		[ `${ dest }${ min }.js` ]: code,
 	};
 };
 
@@ -35,7 +35,7 @@ const minifyCssDest = function minifyCssDest( dest, code ) {
 	code = ! isDev ? uglifyCSS.processString( code ) : code;
 
 	return {
-		[`${dest}${min}.css`]: code,
+		[ `${ dest }${ min }.css` ]: code,
 	};
 };
 
@@ -57,52 +57,33 @@ const frontendSources = () => [
 	'./assets/src/js/vendor/vue/vuex.js',
 	'./assets/src/js/vendor/vue/vue-resource.js',
 	'./assets/src/js/vendor/watch.js',
-	'./assets/src/js/vendor/jquery/jquery-alert.js',
 	'./assets/src/js/vendor/jquery/jquery-appear.js',
 	'./assets/src/js/vendor/jquery/jquery-scrollTo.js',
 	'./assets/src/js/vendor/jquery/jquery-timer.js',
 	'./assets/src/js/vendor/jquery/jquery.tipsy.js',
-	'./assets/src/js/vendor/jquery/jquery.scrollbar.js',
 ];
 
 const options = {
 	files: [
 		{
 			src: frontendSources(),
-			dest: function( code ) {
+			dest( code ) {
 				return minifyJsDest( 'assets/js/vendor/plugins.all', code );
 			},
 		},
 		{
 			src: adminSources(),
-			dest: function( code ) {
+			dest( code ) {
 				return minifyJsDest( 'assets/js/vendor/admin.plugins.all', code );
 			},
 		},
 		{
 			src: [
-				'./assets/src/css/vendor/jquery.scrollbar.css',
 				'./assets/src/css/vendor/jquery.tipsy.css',
 				'./assets/src/css/vendor/jalert.css',
-				//'./assets/src/css/vendor/font-awesome.min.css',
 			],
-			dest: function( code ) {
+			dest( code ) {
 				return minifyCssDest( 'assets/css/bundle', code );
-				// return {
-				//     'assets/css/bundle.css': code
-				// }
-			},
-		},
-		{
-			src: [
-				//'./assets/src/css/vendor/font-awesome.min.css',
-				'./assets/src/css/vendor/jquery.tipsy.css',
-			],
-			dest: function( code ) {
-				return minifyCssDest( 'assets/css/admin.bundle', code );
-				// return {
-				//     'assets/css/bundle.css': code
-				// }
 			},
 		},
 	],
@@ -115,7 +96,7 @@ adminSources().concat( frontendSources() ).concat( [
 } ).forEach( ( file ) => {
 	options.files.push( {
 		src: [ file ],
-		dest: function( code ) {
+		dest( code ) {
 			return minifyJsDest( file.replace( /\/assets\/src\//, '/assets/' ).replace( /(\.js$)/, '' ), code );
 		},
 	} );

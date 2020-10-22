@@ -50,29 +50,6 @@ const toggleSidebarHandler = function toggleSidebarHandler( event ) {
 
 export { toggleSidebarHandler };
 
-const createCustomScrollbar = function( element ) {
-	[].map.call( arguments, ( element ) => {
-		$( element ).each( function() {
-			$( this )
-				.addClass( 'scrollbar-light' )
-				.css( {
-					opacity: 1,
-				} )
-				.scrollbar( {
-					scrollx: false,
-				} )
-				.parent()
-				.css( {
-					position: 'absolute',
-					top: 0,
-					bottom: 0,
-					width: '100%',
-					opacity: 1,
-				} );
-		} );
-	} );
-};
-
 const AjaxSearchCourses = function( el ) {
 	const $form = $( el );
 	const $ul = $( '<ul class="search-results"></ul>' ).appendTo( $form );
@@ -212,8 +189,6 @@ $( window ).on( 'load', () => {
 		}, 500 ) );
 
 		$( '#sidebar-toggle' ).on( 'change', toggleSidebarHandler );
-
-		createCustomScrollbar( $curriculum.find( '.curriculum-scrollable' ), $( '#popup-content' ).find( '.content-item-scrollable' ) );
 
 		LP.toElement( '.course-item.current', { container: '.curriculum-scrollable:eq(1)', offset: 100, duration: 1 } );
 	}

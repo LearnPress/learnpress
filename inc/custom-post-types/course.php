@@ -46,7 +46,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				->add_map_method( 'before_delete', 'before_delete_course' );
 
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
-			add_filter( 'rwmb__lpr_course_price_html', array( $this, 'currency_symbol' ), 5, 3 );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
 
@@ -710,10 +709,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			delete_post_meta( $post->ID, '_lp_curriculum' );
-		}
-
-		public function currency_symbol( $input_html, $field, $sub_meta ) {
-			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
 		}
 
 		/**

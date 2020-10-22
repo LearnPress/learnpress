@@ -1,9 +1,11 @@
 <?php
-
 /**
  * Class LP_Admin_Assets
  *
  * Manage admin assets
+ *
+ * @author ThimPress <nhamdv>
+ * @version 4.0.0
  */
 class LP_Admin_Assets extends LP_Abstract_Assets {
 
@@ -17,14 +19,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press-meta-box-order' => apply_filters(
 				'learn-press/meta-box-order/script-data',
 				array(
-					'i18n_error' => __( 'Ooops! Error.', 'learnpress' ),
-					'i18n_guest' => __( 'Guest', 'learnpress' ),
+					'i18n_error' => esc_html__( 'Ooops! Error.', 'learnpress' ),
+					'i18n_guest' => esc_html__( 'Guest', 'learnpress' ),
 				)
 			),
 			'learn-press-update'         => apply_filters(
 				'learn-press/upgrade/script-data',
 				array(
-					'i18n_confirm' => __( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?', 'learnpress' ),
+					'i18n_confirm' => esc_html__( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?', 'learnpress' ),
 				)
 			),
 			'lp-admin'                   => apply_filters(
@@ -104,10 +106,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'learn-press-meta-box-order'        => array(
 					'url'     => $this->url( 'js/admin/partial/meta-box-order' . $min . '.js' ),
 					'deps'    => array(
-						// 'learn-press-modal-search-items',
-						// 'learn-press-modal-search-users',
 						'learn-press-utils',
-						// 'lp-vue'
 					),
 					'screens' => array( LP_ORDER_CPT ),
 				),
