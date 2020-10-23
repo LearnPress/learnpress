@@ -1,0 +1,1 @@
+# Folder dist to store files js write by vue js build with webpack

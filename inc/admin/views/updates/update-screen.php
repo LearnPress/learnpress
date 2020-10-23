@@ -19,18 +19,18 @@ defined( 'ABSPATH' ) or exit;
 	<?php do_action( 'admin_print_styles' ); ?>
 	<?php do_action( 'admin_head' ); ?>
     <script type="text/javascript">
-        var LP_Settings = {
-            siteurl: '<?php echo site_url();?>'
-        }
+      var LP_Settings = {
+        siteurl: '<?php echo site_url();?>'
+      }
     </script>
 </head>
 <body class="lp-update-database wp-core-ui js">
 <div id="content">
     <div class="logo">
-		<a href="javascript:void(0)">
-			<?php $logoUrl = LP_PLUGIN_URL . '/assets/images/icon-128x128.png' ?>
-			<img src="<?php echo esc_attr( esc_html( $logoUrl ) ) ?>">
-		</a>
+        <a href="javascript:void(0)">
+			<?php $logoUrl = LP_PLUGIN_URL . 'assets/images/icon-128x128.png' ?>
+            <img src="<?php echo esc_url( $logoUrl ) ?>">
+        </a>
     </div>
     <div id="main">
 

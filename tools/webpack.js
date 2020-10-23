@@ -45,18 +45,18 @@ const isDev = function isDev() {
 
 
 const adminSources = () => [
-    './assets/src/js/vendor/vue/vue' + (isDev() ? '' : '.min') + '.js',
-    './assets/src/js/vendor/vue/vuex.js',
-    './assets/src/js/vendor/vue/vue-resource.js',
-    './assets/src/js/vendor/vue/vue-draggable.js',
-    './assets/src/js/vendor/jquery/jquery.tipsy.js',
+    //'./assets/src/js/vendor/vue/vue.js',
+    // './assets/src/js/vendor/vue/vuex.js',
+    // './assets/src/js/vendor/vue/vue-resource.js',
+    // './assets/src/js/vendor/vue/vue-draggable.js',
+    //'./assets/src/js/vendor/jquery/jquery.tipsy.js',
    // './assets/src/js/vendor/chart.min.js',
 ];
 
 const frontendSources = () => [
-    './assets/src/js/vendor/vue/vue' + (isDev() ? '' : '.min') + '.js',
-    './assets/src/js/vendor/vue/vuex.js',
-    './assets/src/js/vendor/vue/vue-resource.js',
+    // './assets/src/js/vendor/vue/vue' + (isDev() ? '' : '.min') + '.js',
+    // './assets/src/js/vendor/vue/vuex.js',
+    // './assets/src/js/vendor/vue/vue-resource.js',
     './assets/src/js/vendor/watch.js',
     './assets/src/js/vendor/jquery/jquery-alert.js',
     './assets/src/js/vendor/jquery/jquery-appear.js',
@@ -66,18 +66,30 @@ const frontendSources = () => [
     './assets/src/js/vendor/jquery/jquery.scrollbar.js',
 ];
 
+const vueSources = () => [
+    './assets/js/vendor/vue/vue.js',
+    './assets/js/vendor/vue/vuex.js',
+    './assets/js/vendor/vue/vue-resource.js'
+];
+
 const options = {
     files: [
+        // {
+        //     src: frontendSources(),
+        //     dest: function (code) {
+        //         return minifyJsDest('assets/js/vendor/plugins.all', code);
+        //     }
+        // },
+        // {
+        //     src: adminSources(),
+        //     dest: function (code) {
+        //         return minifyJsDest('assets/js/vendor/admin.plugins.all', code);
+        //     }
+        // },
         {
-            src: frontendSources(),
+            src: vueSources(),
             dest: function (code) {
-                return minifyJsDest('assets/js/vendor/plugins.all', code);
-            }
-        },
-        {
-            src: adminSources(),
-            dest: function (code) {
-                return minifyJsDest('assets/js/vendor/admin.plugins.all', code);
+                return minifyJsDest('assets/js/vendor/vue/vue_libs', code);
             }
         },
         {
@@ -109,16 +121,16 @@ const options = {
     ]
 }
 
-adminSources().concat(frontendSources()).filter((value, index, self) => {
-    return self.indexOf(value) === index;
-}).forEach((file) => {
-    options.files.push({
-        src: [file],
-        dest: function (code) {
-            return minifyJsDest(file.replace(/\/assets\/src\//, '/assets/').replace(/(\.js$)/, ''), code);
-        }
-    })
-})
+// adminSources().concat(frontendSources()).filter((value, index, self) => {
+//     return self.indexOf(value) === index;
+// }).forEach((file) => {
+//     options.files.push({
+//         src: [file],
+//         dest: function (code) {
+//             return minifyJsDest(file.replace(/\/assets\/src\//, '/assets/').replace(/(\.js$)/, ''), code);
+//         }
+//     })
+// })
 
 const mergeAndCompressJs = new MergeIntoSingleFilePlugin(options);
 

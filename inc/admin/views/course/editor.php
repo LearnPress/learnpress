@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
 
 ?>
 <script type="text/x-template" id="tmpl-lp-course-editor">
-    <div id="admin-editor-lp_course" class='lp-admin-editor' xxxx>
+    <div id="admin-editor-lp_course" class='lp-admin-editor'>
 
         <div v-if="heartbeat">
             <form @submit.prevent="">

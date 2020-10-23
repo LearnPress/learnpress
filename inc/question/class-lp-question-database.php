@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class LP_Question_DB
+ * Class LP_Lesson_DB
  *
  * @since 3.2.8
  */

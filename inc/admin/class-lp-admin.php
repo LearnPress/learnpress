@@ -71,7 +71,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function load_modal() {
 			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Items::instance();
-			};
+			}
 
 			if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Users::instance();
@@ -159,17 +159,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function init() {
-
-			///die(get_post_type());
-			add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array(
-				'LP_Modal_Search_Items',
-				'instance'
-			) );
-			add_action( 'learn-press/enqueue-script/learn-press-modal-search-users', array(
-				'LP_Modal_Search_Users',
-				'instance'
-			) );
-
 			if ( 'yes' === LP_Request::get_string( 'lp-hide-upgrade-message' ) ) {
 				delete_transient( 'lp_upgraded_30' );
 			}
@@ -836,7 +825,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
-		 * Get courses, item's courses on Backend page list posts
+		 * Get courses, item's courses on Backend page post_type
 		 *
 		 * @param WP_Query $query
 		 */

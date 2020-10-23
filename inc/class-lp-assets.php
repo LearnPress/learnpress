@@ -13,11 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LP_Assets extends LP_Abstract_Assets {
+	protected static $_instance;
 
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	protected function __construct() {
 		parent::__construct();
 	}
 
@@ -91,33 +92,27 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	}
 
-	protected function get_all_plugins_url( $min = '' ) {
-		$url = false;
-		if ( get_option( 'learn_press_exclude_frontend_libraries' ) ) {
-			$uploadDir = wp_upload_dir();
-			if ( file_exists( $uploadDir['basedir'] . '/learnpress/plugins.all' . $min . '.js' ) ) {
-				$url = $uploadDir['baseurl'] . '/learnpress/plugins.all' . $min . '.js';
-			}
-		}
-
-		return $url;
-	}
-
 	public function _get_scripts() {
 		$min = learn_press_is_debug() ? '' : '.min';
 
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-				//				'watchjs'          => self::url( 'js/vendor/watch.js' ),
+//				'watchjs'          => array(
+//					'url' => ( self::url( 'js/vendor/watch' . $min . '.js' ) ),
+//				),
 				//				'jalerts'          => self::url( 'js/vendor/jquery.alert.js' ),
 				//				'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
 				//				'lp-vue'           => array(
 				//					'url' => self::url( 'js/vendor/vue.min.js' ),
 				//					'ver' => '2.5.16'
 				//				),
+//				'vue_libs'   => array(
+//					'url' => self::url( 'js/vendor/vue/vue_libs' . $min . '.js' ),
+//					'deps' => array('watchjs')
+//				),
 				'lp-plugins-all'   => array(
-					'url' => ( $url = $this->get_all_plugins_url( $min ) ) ? $url : self::url( 'js/vendor/plugins.all' . $min . '.js' ),
+					'url' => self::url( 'js/vendor/plugins.all.min.js' ),
 				),
 				//				'lp-vue-plugins'    => array(
 				//					'url'  => self::url( 'js/vendor/vue-plugins' . $min . '.js' ),
@@ -135,8 +130,9 @@ class LP_Assets extends LP_Abstract_Assets {
 				//					'enqueue' => false
 				//				),
 				'global'           => array(
-					'url'  => self::url( 'js/global' . $min . '.js' ),
-					'deps' => array( 'jquery', 'underscore', 'utils' )
+					'url'     => self::url( 'js/global' . $min . '.js' ),
+					'deps'    => array( 'jquery', 'underscore', 'utils' ),
+					'screens' => '*'
 				),
 				'wp-utils'         => array(
 					'url'     => self::url( 'js/utils' . $min . '.js' ),
@@ -238,7 +234,13 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 	}
 
+	public static function instance() {
+		if ( self::$_instance == null ) {
+			self::$_instance = new self();
+		}
 
+		return self::$_instance;
+	}
 }
 
 /**
@@ -247,17 +249,11 @@ class LP_Assets extends LP_Abstract_Assets {
  * @return LP_Assets|null
  */
 function learn_press_assets() {
-	static $assets = null;
-	if ( ! $assets ) {
-		$assets = new LP_Assets();
+	if ( is_admin() ) {
+		return null;
 	}
 
-	return $assets;
+	return LP_Assets::instance();
 }
 
-/**
- * Load frontend asset
- */
-if ( ! is_admin() ) {
-	learn_press_assets();
-}
+learn_press_assets();
