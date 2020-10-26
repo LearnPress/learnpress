@@ -847,15 +847,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			 * @since  3.2.6.8
 			 * @author tungnx
 			 */
-			if ( ! current_user_can( 'edit_pages' ) || ! isset( $_POST['lp-settings-nonce'] )
-			     || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lp-settings-nonce'] ) ), 'lp-settings' )
-			     || empty( $_POST['page_name'] )
+			if ( ! current_user_can( 'edit_pages' ) || empty( $_POST['page_name'] )
 			) {
 				$response['message'] = 'Request invalid';
 				learn_press_send_json( $response );
 			}
 
-			$page_name = sanitize_text_field( wp_unslash( $_POST['page_name'] ) );
+			$page_name = LP_Helper::sanitize_params_submitted( $_POST['page_name'] );
 
 			if ( $page_name ) {
 				if ( $page_id = LP_Helper::create_page( $page_name ) ) {
