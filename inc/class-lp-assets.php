@@ -55,6 +55,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'button_no'     => esc_html__( 'No', 'learnpress' ),
 				),
 				'lp_rest_url' => get_rest_url(),
+				'nonce'       => wp_create_nonce( 'wp_rest' ),
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'            => home_url(),

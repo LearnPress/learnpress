@@ -366,14 +366,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			LP()->session->order_awaiting_payment = null;
 
-			$valid_order_statuses = apply_filters(
-				'learn-press/valid-order-statuses-for-payment-complete',
-				array(
-					'pending',
-					'processing',
-				),
-				$this
-			);
+			$valid_order_statuses = apply_filters( 'learn-press/valid-order-statuses-for-payment-complete', array( 'pending', 'processing' ), $this );
 
 			if ( $this->get_id() && $this->has_status( $valid_order_statuses ) ) {
 
@@ -559,10 +552,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function add_item( $item, $quantity = 1, $meta = array() ) {
 			global $wpdb;
-
-			if ( func_num_args() > 1 ) {
-				_deprecated_argument( 'quantity and meta', '3.0.0' );
-			}
 
 			if ( is_numeric( $item ) ) {
 				$item = array(
@@ -1178,7 +1167,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				/**
 				 * @since 3.0.0
 				 */
-				do_action( 'learn-press/order/status-' . $new_status, $the_id, $old_status );
+				do_action( 'learn-press/order/status-' . $new_status, $the_id, $old_status ); // Send email ( slow query ) - Nhamdv.
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $the_id );
 				do_action( 'learn-press/order/status-changed', $the_id, $old_status, $new_status );
 

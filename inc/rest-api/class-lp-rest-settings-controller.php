@@ -9,7 +9,7 @@ class LP_REST_Settings_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'' => array(
+			''               => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
@@ -41,7 +41,7 @@ class LP_REST_Settings_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
-			)
+			),
 		);
 
 		parent::register_routes();
@@ -59,7 +59,7 @@ class LP_REST_Settings_Controller extends LP_Abstract_REST_Controller {
 	public function get_items( $request ) {
 		$settings = LP()->settings();
 		$response = array(
-			'result' => $settings->get()
+			'result' => $settings->get(),
 		);
 
 		return rest_ensure_response( $response );
@@ -73,7 +73,7 @@ class LP_REST_Settings_Controller extends LP_Abstract_REST_Controller {
 	public function get_item( $request ) {
 		$settings = LP()->settings();
 		$response = array(
-			'result' => $settings->get( $request['key'] )
+			'result' => $settings->get( $request['key'] ),
 		);
 
 		return rest_ensure_response( $response );

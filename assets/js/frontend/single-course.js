@@ -91,7 +91,7 @@ this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
   \*************************************************/
-/*! exports provided: default, init, formatDuration, toggleSidebarHandler, initCourseTabs, initCourseSidebar */
+/*! exports provided: default, init, formatDuration, toggleSidebarHandler, initCourseTabs, initCourseSidebar, enrollCourse */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -101,6 +101,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggleSidebarHandler", function() { return toggleSidebarHandler; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseTabs", function() { return initCourseTabs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseSidebar", function() { return initCourseSidebar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "enrollCourse", function() { return enrollCourse; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -127,7 +128,6 @@ var $ = jQuery;
 var _lodash = lodash,
     debounce = _lodash.debounce,
     throttle = _lodash.throttle;
-var _x = wp.i18n._x;
 function formatDuration(seconds) {
   var d;
   var dayInSeconds = 3600 * 24;
@@ -162,98 +162,6 @@ var toggleSidebarHandler = function toggleSidebarHandler(event) {
 };
 
 
-
-var createCustomScrollbar = function createCustomScrollbar(element) {
-  [].map.call(arguments, function (element) {
-    $(element).each(function () {
-      $(this).addClass('scrollbar-light').css({
-        opacity: 1
-      }).scrollbar({
-        scrollx: false
-      }).parent().css({
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        width: '100%',
-        opacity: 1
-      });
-    });
-  });
-};
-
-var AjaxSearchCourses = function AjaxSearchCourses(el) {
-  var $form = $(el);
-  var $ul = $('<ul class="search-results"></ul>').appendTo($form);
-  var $input = $form.find('input[name="s"]');
-  var paged = 1;
-
-  var submit = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-      var response, _response$results, courses, num_pages, page;
-
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              e.preventDefault();
-              _context.next = 3;
-              return wp.apiFetch({
-                path: 'lp/v1/courses/search?s=' + $input.val() + '&page=' + paged
-              });
-
-            case 3:
-              response = _context.sent;
-              _response$results = response.results, courses = _response$results.courses, num_pages = _response$results.num_pages, page = _response$results.page;
-              $ul.html('');
-
-              if (courses.length) {
-                courses.map(function (course) {
-                  $ul.append("<li class=\"search-results__item\">\n                    <a href=\"".concat(course.url, "\">\n                    ") + (course.thumbnail.small ? "<img src=\"".concat(course.thumbnail.small, "\" />") : '') + "\n                        <h4 class=\"search-results__item-title\">".concat(course.title, "</h4>\n                        <span class=\"search-results__item-author\">").concat(course.author, "</span>\n                        ").concat(course.price_html, "\n                        </a>\n                    </li>"));
-                });
-
-                if (num_pages > 1) {
-                  $ul.append("<li class=\"search-results__pagination\">\n                  " + _toConsumableArray(Array(num_pages).keys()).map(function (i) {
-                    return i === paged - 1 ? '<span>' + (i + 1) + '</span>' : '<a data-page="' + (i + 1) + '">' + (i + 1) + '</a>';
-                  }).join('') + "\n                </li>");
-                }
-              } else {
-                $ul.append('<li class="search-results__not-found">' + _x('No course found!', 'ajax search course not found', 'learnpress') + '</li>');
-              }
-
-              $form.addClass('searching');
-              return _context.abrupt("return", false);
-
-            case 9:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-
-    return function submit(_x2) {
-      return _ref.apply(this, arguments);
-    };
-  }();
-
-  $input.on('keyup', debounce(function (e) {
-    paged = 1;
-
-    if (e.target.value.length < 3) {
-      return;
-    }
-
-    submit(e);
-  }, 300));
-  $form.on('click', '.clear', function () {
-    $form.removeClass('searching');
-    $input.val('');
-  }).on('click', '.search-results__pagination a', function (e) {
-    e.preventDefault();
-    paged = $(e.target).data('page');
-    submit(e);
-  });
-};
 
 var initCourseTabs = function initCourseTabs() {
   $('#learn-press-course-tabs').on('change', 'input[name="learn-press-course-tab-radio"]', function () {
@@ -300,6 +208,69 @@ var initCourseSidebar = function initCourseSidebar() {
   };
 
   $window.on('scroll.fixed-course-sidebar', onScroll).trigger('scroll.fixed-course-sidebar');
+}; // Rest API Enroll course - Nhamdv.
+
+
+var enrollCourse = function enrollCourse() {
+  var formEnroll = document.querySelector('form.enroll-course');
+
+  if (!formEnroll || !document.body.classList.contains('logged-in')) {
+    return;
+  }
+
+  var submit = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id, btnEnroll) {
+      var response, status, redirect, message;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return wp.apiFetch({
+                path: 'lp/v1/courses/enroll-course',
+                method: 'POST',
+                data: {
+                  id: id
+                }
+              });
+
+            case 2:
+              response = _context.sent;
+              btnEnroll.classList.remove('loading');
+              btnEnroll.disabled = false;
+              status = response.status, redirect = response.redirect, message = response.message;
+
+              if (message && status) {
+                formEnroll.innerHTML += "<div class=\"lp-enroll-notice ".concat(status, "\">").concat(message, "</div>");
+              }
+
+              if (status === 'success' && redirect) {
+                window.location.href = redirect;
+              }
+
+              return _context.abrupt("return", response);
+
+            case 9:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function submit(_x, _x2) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  formEnroll.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var id = formEnroll.querySelector('input[name=enroll-course]').value;
+    var btnEnroll = formEnroll.querySelector('button.button-enroll-course');
+    btnEnroll.classList.add('loading');
+    btnEnroll.disabled = true;
+    submit(id, btnEnroll);
+  });
 };
 
 
@@ -318,7 +289,6 @@ $(window).on('load', function () {
       }, 1000);
     }, 500));
     $('#sidebar-toggle').on('change', toggleSidebarHandler);
-    createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
     LP.toElement('.course-item.current', {
       container: '.curriculum-scrollable:eq(1)',
       offset: 100,
@@ -334,6 +304,7 @@ $(window).on('load', function () {
   });
   initCourseTabs();
   initCourseSidebar();
+  enrollCourse();
   $('.section').each(function () {
     var $section = $(this),
         $toggle = $section.find('.section-toggle');

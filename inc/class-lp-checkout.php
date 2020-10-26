@@ -676,14 +676,14 @@ class LP_Checkout {
 				// maybe throw new exception
 				$this->validate_payment();
 
-				// Create order
+				// Create order.
 				$order_id = $this->create_order();
 
 				if ( is_wp_error( $order_id ) ) {
 					throw new Exception( $order_id->get_error_message() );
 				}
 
-				// allow Third-party hook.
+				// allow Third-party hook: send email and more...
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
 				if ( $this->payment_method ) {

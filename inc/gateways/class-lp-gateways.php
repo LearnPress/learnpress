@@ -40,7 +40,7 @@ class LP_Gateways {
 	public function init() {
 		if ( ! $this->payment_gateways ) {
 			$gateways = array(
-				'paypal' => 'LP_Gateway_Paypal'
+				'paypal' => 'LP_Gateway_Paypal',
 			);
 			// Filter
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
@@ -133,7 +133,6 @@ class LP_Gateways {
 					$_available_gateways[ $slug ] = $gateway;
 				}
 			}
-
 		}
 
 		// Set default payment if there is no payment is selected
@@ -176,6 +175,7 @@ class LP_Gateways {
 
 	/**
 	 * Ensure that only one instance of LP_Gateways is loaded
+	 *
 	 * @return LP_Gateways|null
 	 */
 	public static function instance() {

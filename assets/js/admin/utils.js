@@ -2730,7 +2730,7 @@ var MessageBox = {
 
 var $ = jQuery;
 $(function () {
-  $('.form-fields input[type="password"]').wrap('<span class="lp-password-input"></span>');
+  $('.form-field input[type="password"]').wrap('<span class="lp-password-input"></span>');
   $('.lp-password-input').append('<span class="lp-show-password-input"></span>');
   $('.lp-show-password-input').on('click', function () {
     $(this).toggleClass('display-password');

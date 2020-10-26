@@ -151,6 +151,93 @@
 	}
 }
 
+.learn-press-form-login,
+.learn-press-form-register {
+	max-width: 600px;
+	margin-right: auto;
+	margin-bottom: 60px;
+	margin-left: auto;
+	padding: 40px;
+	border: 1px solid #eee;
+	border-radius: 6px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+
+	h3 {
+		margin-bottom: 20px;
+		font-size: 28px;
+		line-height: 1.4;
+	}
+
+	.form-fields {
+
+		.form-field {
+
+			label {
+				font-size: 16px;
+				font-weight: 400;
+				user-select: none;
+			}
+
+			input[type="text"],
+			input[type="password"],
+			input[type="tel"],
+			input[type="url"],
+			input[type="number"] {
+				height: 42px;
+				border: 1px solid #bbb;
+				border-radius: 4px;
+				line-height: 42px;
+
+				&:focus {
+					border: none;
+					outline: 2px solid transparent !important;
+					outline-offset: 2px;
+					box-shadow: 0 0 0 2px #666 !important;
+				}
+			}
+		}
+	}
+
+	form[name="learn-press-login"] {
+
+
+		>p {
+
+			>label {
+				color: #666;
+				font-size: 16px;
+				cursor: pointer;
+				user-select: none;
+			}
+
+			>a {
+				color: #666;
+				font-size: 16px;
+				line-height: 1;
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+	}
+
+	button[type="submit"] {
+		width: 100%;
+		height: 50px;
+		border-radius: 3px;
+		outline: none;
+		color: #fff;
+		background: var(--lp-primary-color);
+		box-shadow: none;
+		font-size: 16px;
+		line-height: 1;
+		vertical-align: middle;
+		text-decoration: none;
+	}
+}
+
 .lp-password-input {
 	display: flex;
 	flex-direction: column;
@@ -167,7 +254,7 @@
 
 	.lp-show-password-input {
 		position: absolute;
-		top: 6px;
+		top: 8px;
 		right: 10px;
 		cursor: pointer;
 	}

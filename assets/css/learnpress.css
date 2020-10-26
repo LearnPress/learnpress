@@ -886,6 +886,82 @@
     .learn-press-form .form-fields .form-field .asterisk {
       color: #f00; }
 
+.learn-press-form-login,
+.learn-press-form-register {
+  max-width: 600px;
+  margin-right: auto;
+  margin-bottom: 60px;
+  margin-left: auto;
+  padding: 40px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important; }
+  .learn-press-form-login h3,
+  .learn-press-form-register h3 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    line-height: 1.4; }
+  .learn-press-form-login .form-fields .form-field label,
+  .learn-press-form-register .form-fields .form-field label {
+    font-size: 16px;
+    font-weight: 400;
+    user-select: none; }
+  .learn-press-form-login .form-fields .form-field input[type="text"],
+  .learn-press-form-login .form-fields .form-field input[type="password"],
+  .learn-press-form-login .form-fields .form-field input[type="tel"],
+  .learn-press-form-login .form-fields .form-field input[type="url"],
+  .learn-press-form-login .form-fields .form-field input[type="number"],
+  .learn-press-form-register .form-fields .form-field input[type="text"],
+  .learn-press-form-register .form-fields .form-field input[type="password"],
+  .learn-press-form-register .form-fields .form-field input[type="tel"],
+  .learn-press-form-register .form-fields .form-field input[type="url"],
+  .learn-press-form-register .form-fields .form-field input[type="number"] {
+    height: 42px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    line-height: 42px; }
+    .learn-press-form-login .form-fields .form-field input[type="text"]:focus,
+    .learn-press-form-login .form-fields .form-field input[type="password"]:focus,
+    .learn-press-form-login .form-fields .form-field input[type="tel"]:focus,
+    .learn-press-form-login .form-fields .form-field input[type="url"]:focus,
+    .learn-press-form-login .form-fields .form-field input[type="number"]:focus,
+    .learn-press-form-register .form-fields .form-field input[type="text"]:focus,
+    .learn-press-form-register .form-fields .form-field input[type="password"]:focus,
+    .learn-press-form-register .form-fields .form-field input[type="tel"]:focus,
+    .learn-press-form-register .form-fields .form-field input[type="url"]:focus,
+    .learn-press-form-register .form-fields .form-field input[type="number"]:focus {
+      border: none;
+      outline: 2px solid transparent !important;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 2px #666 !important; }
+  .learn-press-form-login form[name="learn-press-login"] > p > label,
+  .learn-press-form-register form[name="learn-press-login"] > p > label {
+    color: #666;
+    font-size: 16px;
+    cursor: pointer;
+    user-select: none; }
+  .learn-press-form-login form[name="learn-press-login"] > p > a,
+  .learn-press-form-register form[name="learn-press-login"] > p > a {
+    color: #666;
+    font-size: 16px;
+    line-height: 1; }
+  .learn-press-form-login form[name="learn-press-login"] > p:last-child,
+  .learn-press-form-register form[name="learn-press-login"] > p:last-child {
+    margin-bottom: 0; }
+  .learn-press-form-login button[type="submit"],
+  .learn-press-form-register button[type="submit"] {
+    width: 100%;
+    height: 50px;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+    background: var(--lp-primary-color);
+    box-shadow: none;
+    font-size: 16px;
+    line-height: 1;
+    vertical-align: middle;
+    text-decoration: none; }
+
 .lp-password-input {
   display: flex;
   flex-direction: column;
@@ -897,7 +973,7 @@
     display: none; }
   .lp-password-input .lp-show-password-input {
     position: absolute;
-    top: 6px;
+    top: 8px;
     right: 10px;
     cursor: pointer; }
   .lp-password-input .lp-show-password-input::after {
@@ -3897,6 +3973,21 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
         #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button.button-enroll-course:hover {
           opacity: 0.5;
           background: var(--lp-primary-color); }
+        #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button.button-enroll-course.loading::before {
+          display: inline-block;
+          font-family: "Font Awesome 5 Free";
+          font-weight: 900;
+          content: "\f110";
+          animation: lp-rotating 1s linear infinite; }
+        #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button.button-enroll-course ~ .lp-enroll-notice {
+          margin-top: 20px;
+          padding: 20px;
+          border: 2px solid #059601;
+          border-radius: 9px;
+          font-size: 15px;
+          line-height: 1.4; }
+          #learn-press-course .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button.button-enroll-course ~ .lp-enroll-notice.error {
+            border-color: #d85554; }
   #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-time {
     margin-bottom: 28px;
     padding-bottom: 8px;

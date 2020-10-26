@@ -11,8 +11,6 @@ export const init = () => {
 const $ = jQuery;
 const { debounce, throttle } = lodash;
 
-const { _x } = wp.i18n;
-
 export function formatDuration( seconds ) {
 	let d;
 
@@ -49,70 +47,6 @@ const toggleSidebarHandler = function toggleSidebarHandler( event ) {
 };
 
 export { toggleSidebarHandler };
-
-const AjaxSearchCourses = function( el ) {
-	const $form = $( el );
-	const $ul = $( '<ul class="search-results"></ul>' ).appendTo( $form );
-	const $input = $form.find( 'input[name="s"]' );
-	let paged = 1;
-
-	const submit = async function( e ) {
-		e.preventDefault();
-		const response = await wp.apiFetch( {
-			path: 'lp/v1/courses/search?s=' + $input.val() + '&page=' + paged,
-		} );
-
-		const {
-			courses,
-			num_pages,
-			page,
-		} = response.results;
-		$ul.html( '' );
-
-		if ( courses.length ) {
-			courses.map( ( course ) => {
-				$ul.append( `<li class="search-results__item">
-                    <a href="${ course.url }">
-                    ` + ( course.thumbnail.small ? `<img src="${ course.thumbnail.small }" />` : '' ) + `
-                        <h4 class="search-results__item-title">${ course.title }</h4>
-                        <span class="search-results__item-author">${ course.author }</span>
-                        ${ course.price_html }
-                        </a>
-                    </li>` );
-			} );
-
-			if ( num_pages > 1 ) {
-				$ul.append( `<li class="search-results__pagination">
-                  ` + ( [ ...Array( num_pages ).keys() ].map( ( i ) => {
-					return i === paged - 1 ? '<span>' + ( i + 1 ) + '</span>' : '<a data-page="' + ( i + 1 ) + '">' + ( i + 1 ) + '</a>';
-				} ) ).join( '' ) + `
-                </li>` );
-			}
-		} else {
-			$ul.append( '<li class="search-results__not-found">' + _x( 'No course found!', 'ajax search course not found', 'learnpress' ) + '</li>' );
-		}
-
-		$form.addClass( 'searching' );
-
-		return false;
-	};
-
-	$input.on( 'keyup', debounce( function( e ) {
-		paged = 1;
-		if ( e.target.value.length < 3 ) {
-			return;
-		}
-		submit( e );
-	}, 300 ) );
-	$form.on( 'click', '.clear', () => {
-		$form.removeClass( 'searching' );
-		$input.val( '' );
-	} ).on( 'click', '.search-results__pagination a', ( e ) => {
-		e.preventDefault();
-		paged = $( e.target ).data( 'page' );
-		submit( e );
-	} );
-};
 
 const initCourseTabs = function() {
 	$( '#learn-press-course-tabs' ).on( 'change', 'input[name="learn-press-course-tab-radio"]', function() {
@@ -164,9 +98,54 @@ const initCourseSidebar = function initCourseSidebar() {
 	$window.on( 'scroll.fixed-course-sidebar', onScroll ).trigger( 'scroll.fixed-course-sidebar' );
 };
 
+// Rest API Enroll course - Nhamdv.
+const enrollCourse = () => {
+	const formEnroll = document.querySelector( 'form.enroll-course' );
+
+	if ( ! formEnroll || ! document.body.classList.contains( 'logged-in' ) ) {
+		return;
+	}
+
+	const submit = async ( id, btnEnroll ) => {
+		const response = await wp.apiFetch( {
+			path: 'lp/v1/courses/enroll-course',
+			method: 'POST',
+			data: { id },
+		} );
+
+		btnEnroll.classList.remove( 'loading' );
+		btnEnroll.disabled = false;
+
+		const { status, redirect, message } = response;
+
+		if ( message && status ) {
+			formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
+		}
+
+		if ( status === 'success' && redirect ) {
+			window.location.href = redirect;
+		}
+
+		return response;
+	};
+
+	formEnroll.addEventListener( 'submit', ( event ) => {
+		event.preventDefault();
+
+		const id = formEnroll.querySelector( 'input[name=enroll-course]' ).value;
+		const btnEnroll = formEnroll.querySelector( 'button.button-enroll-course' );
+
+		btnEnroll.classList.add( 'loading' );
+		btnEnroll.disabled = true;
+
+		submit( id, btnEnroll );
+	} );
+};
+
 export {
 	initCourseTabs,
 	initCourseSidebar,
+	enrollCourse,
 };
 
 $( window ).on( 'load', () => {
@@ -202,6 +181,7 @@ $( window ).on( 'load', () => {
 
 	initCourseTabs();
 	initCourseSidebar();
+	enrollCourse();
 
 	$( '.section' ).each( function() {
 		const $section = $( this ),

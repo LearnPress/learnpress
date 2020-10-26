@@ -1152,17 +1152,21 @@ add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_
  *
  */
 function learn_press_enroll_course_from_url() {
-	if ( ! $course_id = LP_Request::get_int( 'enroll-course' ) ) {
+	$course_id = LP_Request::get_int( 'enroll-course' );
+
+	if ( ! $course_id ) {
 		return;
 	}
 
 	$course = learn_press_get_course( $course_id );
 
-	if ( ! $course /*|| ! LP_Nonce_Helper::verify_course( LP_Request::get_string( 'enroll-course-nonce' ), 'enroll' ) */ ) {
+	if ( ! $course ) {
 		wp_die( __( 'Invalid request!', 'learnpress' ) );
 	}
 
-	if ( ! $user = learn_press_get_current_user( false ) ) {
+	$user = learn_press_get_current_user( false );
+
+	if ( ! $user ) {
 		return;
 	}
 
@@ -1171,10 +1175,8 @@ function learn_press_enroll_course_from_url() {
 	}
 
 	if ( $user->has_enrolled_course( $course_id ) ) {
-
 		// If user is just logged in
 		if ( 'yes' === LP()->session->get( 'user_just_logged_in' ) ) {
-
 			// Remove all error messages
 			learn_press_remove_message( '', 'error' );
 			learn_press_add_message( sprintf( __( 'Welcome back, %s', 'learnpress' ), $user->get_display_name() ) );
@@ -1200,13 +1202,11 @@ function learn_press_enroll_course_from_url() {
 	<?php
 	die();
 }
-
 add_action( 'get_header', 'learn_press_enroll_course_from_url' );
 
 function learn_press_remove_query_var_enrolled_course( $redirect ) {
 	return remove_query_arg( 'enroll-course', $redirect );
 }
-
 add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_enrolled_course' );
 
 /**
