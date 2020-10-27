@@ -113,7 +113,6 @@ add_action( 'learn-press/after-courses-loop', LP()->template( 'course' )->callba
 
 // Sidebar and content
 add_action( 'learn-press/single-course-summary', LP()->template( 'course' )->callback( 'single-course/content' ), 10 );
-// add_action( 'learn-press/single-course-summary', LP()->template( 'course' )->callback( 'single-course/sidebar' ), 20 );
 
 // Content
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="course-detail-info wrap-fullwidth"> <div class="lp-content-area"> <div class="course-info-left">', 'course-info-left-open' ), 10 );
@@ -132,7 +131,6 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->ca
 // appear at bottom after enrolled
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 70 );
 
-// add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/buttons' ), 70 );
 // add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tags' ), 80 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<!-- end entry content left --> </div>', 'entry-content-left-close' ), 80 );
 
@@ -334,13 +332,6 @@ add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->fun
 
 
 // ******************************************************************************************************************* //
-
-// add_action( 'learn-press/course-buttons', function () {
-// $user = LP_Global::user();
-// if ( $user->has_finished_course( get_the_ID() ) ) {
-// echo 'You finished course';
-// }
-// } );
 
 add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
 add_action( 'learn-press/before-content-item-summary/lp_quiz', LP()->template( 'course' )->callback( 'content-quiz/title.php' ), 5 );

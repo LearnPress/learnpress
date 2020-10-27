@@ -2675,10 +2675,10 @@ function learn_press_get_requested_post_type() {
 function learn_press_get_graduation_text( $slug ) {
 	switch ( $slug ) {
 		case 'passed':
-			$text = __( 'Passed', 'learnpress' );
+			$text = esc_html__( 'Passed', 'learnpress' );
 			break;
 		case 'failed':
-			$text = __( 'Failed', 'learnpress' );
+			$text = esc_html__( 'Failed', 'learnpress' );
 			break;
 		default:
 			$text = $slug;

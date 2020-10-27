@@ -1794,18 +1794,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function has_enrolled_course( $course_id, $force = false ) {
-
 			$course_item = $this->get_course_data( $course_id );
-			// $enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_55;// $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
-
-			// @deprecated
-			// $enrolled = apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
 
 			$enrolled = $course_item && $course_item->get_user_item_id() > 0;
 
-			/**
-			 * @since 3.0.0
-			 */
 			return apply_filters( 'learn-press/has-enrolled-course', $enrolled, $this->get_id(), $course_id );
 		}
 
@@ -1818,12 +1810,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function has_finished_course( $course_id, $force = false ) {
-			if ( func_num_args() > 1 ) {
-				_deprecated_argument( '$force', '3.0.0' );
-			}
-
-			// $finished = $this->get_course_access_level( $course_id ) === LP_COURSE_ACCESS_LEVEL_70;
-
 			$course_item = $this->get_course_data( $course_id );
 			$finished    = $course_item && $course_item->has_finished();
 
@@ -2005,48 +1991,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			do_action( 'learn-press/user-retried-course', $result, $course_id, $this->get_id() );
 
 			return $result;
-
-			// return;
-			// {
-			// $course_data->delete_meta_data( array( 'grade', 'via', 'exceeded' ) );
-			//
-			// $course_data->set_status( 'enrolled' );
-			// $start_time = new LP_Datetime( current_time( 'mysql' ) );
-			// $course_data->set_start_time( $start_time->toSql() );
-			// $course_data->set_end_time( '' );
-			// $course = learn_press_get_course( $course_id );
-			//
-			// **
-			// * If enable duration for course then update the expiration time
-			// * otherwise, consider quiz is lifetime access.
-			// */
-			// if ( $duration = $course->get_duration() ) {
-			// $course_data->set_expiration_time( $start_time->getPeriod( $duration ), true );
-			// } else {
-			// $course_data->set_expiration_time( '' );
-			// $course_data->set_expiration_time_gmt( '' );
-			// }
-			//
-			// if ( $result = $course_data->update() ) {
-			// $course_data->increase_retake_count();
-			//
-			// *
-			// * Should be deleted all user items when user retake course?
-			// */
-			// $wpdb->query(
-			// $wpdb->prepare( "
-			// DELETE FROM {$wpdb->prefix}learnpress_user_items
-			// WHERE parent_id = %d
-			// ", $result->user_item_id )
-			// );
-			//
-			// $course_data->calculate_course_results();
-			// do_action( 'learn-press/user/retaken-course', $result, $course_id, $this->get_id() );
-			// }
-			//
-			// }
-			//
-			// return $result;
 		}
 
 		/**
@@ -2091,17 +2035,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					// TODO: conflict???
 					$time = new LP_Datetime();
 					$item->set_end_time( $time->toSql( false ) );
-
-					// print_r($time->toSql(false));
-					// echo "\n<br />";
-					// print_r( current_time('mysql', true));
-					// die();
-					//
 					$item->set_status( 'completed' );
 					$item->set_graduation( apply_filters( 'learn-press/complete-lesson-graduation', 'passed' ) );
 
-					// learn_press_debug( $item );
-					// die();
 					$updated = $item->update( true, true );
 
 					if ( is_wp_error( $updated ) ) {
@@ -2222,8 +2158,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				if ( ! $course ) {
 					$access_level = LP_COURSE_ACCESS_LEVEL_0;
-				} elseif ( $course->is_required_enroll() ) {
-					$access_level = LP_COURSE_ACCESS_LEVEL_35;
 				} elseif ( $this->is_admin() ) {
 					$access_level = LP_COURSE_ACCESS_LEVEL_30;
 				} elseif ( $this->is_author_of( $course_id ) ) {
@@ -2244,21 +2178,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 								$access_level = LP_COURSE_ACCESS_LEVEL_60;
 								break;
 							case 'in-progress':
+							case 'enrolled':
 								$access_level = LP_COURSE_ACCESS_LEVEL_70;
 								break;
 						}
-					} else {
-						// $access_level = LP_COURSE_ACCESS_LEVEL_55;
 					}
-
-					// switch ( $course_data->get_status() ) {
-					// case 'enrolled':
-					// $access_level = LP_COURSE_ACCESS_LEVEL_60;
-					// break;
-					// case 'finished':
-					// $access_level = LP_COURSE_ACCESS_LEVEL_70;
-					// break;
-					// }
 				} else {
 					$order = $this->get_course_order( $course_id, 'object', true );
 
@@ -2270,19 +2194,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 							default:
 								$access_level = LP_COURSE_ACCESS_LEVEL_40;
 						}
-
-						// if ( $access_level === LP_COURSE_ACCESS_LEVEL_50 ) {
-						// if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
-						// switch ( $course_data->get_status() ) {
-						// case 'enrolled':
-						// $access_level = LP_COURSE_ACCESS_LEVEL_60;
-						// break;
-						// case 'finished':
-						// $access_level = LP_COURSE_ACCESS_LEVEL_70;
-						// break;
-						// }
-						// }
-						// }
 					}
 				}
 
@@ -3011,10 +2922,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Get user course's grade.
 		 * Possible values:
-		 *        + passed        User has finished and passed course
-		 *        + failed        User has finished but failed
-		 *        + in-progress    User still is learning course
-		 *        + false            All other cases, e.g: not enrolled
+		 *        + passed        User has finished and passed course.
+		 *        + failed        User has finished but failed.
+		 *        + in-progress    User still is learning course.
 		 *
 		 * @param $course_id
 		 *
@@ -3025,7 +2935,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$course_data = $this->get_course_data( $course_id );
 
 			if ( $course_data ) {
-				$grade = $course_data->get_grade();
+				$grade = $course_data->get_status( 'graduation' );
 			}
 
 			return apply_filters( 'learn-press/user-course-grade', $grade, $this->get_id(), $course_id );

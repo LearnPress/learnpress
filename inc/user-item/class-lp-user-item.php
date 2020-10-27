@@ -397,7 +397,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function has_finished() {
-		return in_array( $this->get_status(), array( 'failed', 'passed' ) );
+		return in_array( $this->get_status(), array( 'failed', 'passed' ), true );
 	}
 
 	public function is_exists() {
@@ -706,21 +706,21 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	public function get_status_label( $status = '' ) {
 		$statuses = array(
-			'enrolled'    => __( 'In Progress', 'learnpress' ),
-			'started'     => __( 'In Progress', 'learnpress' ),
-			'in-progress' => __( 'In Progress', 'learnpress' ),
-			'purchased'   => __( 'Not Enrolled', 'learnpress' ),
-			'completed'   => __( 'Completed', 'learnpress' ),
-			'finished'    => __( 'Finished', 'learnpress' ),
-			'passed'      => __( 'Passed', 'learnpress' ),
-			'failed'      => __( 'Failed', 'learnpress' ),
+			'enrolled'    => esc_html__( 'In Progress', 'learnpress' ),
+			'started'     => esc_html__( 'In Progress', 'learnpress' ),
+			'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
+			'purchased'   => esc_html__( 'Not Enrolled', 'learnpress' ),
+			'completed'   => esc_html__( 'Completed', 'learnpress' ),
+			'finished'    => esc_html__( 'Finished', 'learnpress' ),
+			'passed'      => esc_html__( 'Passed', 'learnpress' ),
+			'failed'      => esc_html__( 'Failed', 'learnpress' ),
 		);
 
 		if ( ! $status ) {
 			$status = $this->get_status();
 		}
 
-		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not Enrolled', 'learnpress' );
+		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : esc_html__( 'Not Enrolled', 'learnpress' );
 	}
 
 	/**
@@ -909,7 +909,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function complete( $status = 'completed' ) {
-
 		global $wpdb;
 
 		$end_time  = new LP_Datetime();
@@ -935,11 +934,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$status
 		);
 
-		if ( $return = $wpdb->get_var( $query ) ) {
+		if ( $wpdb->get_var( $query ) ) {
 			$this->maybe_update_item_grade();
 		}
 
-		return $return;
+		return $wpdb->get_var( $query );
 	}
 
 	public function maybe_update_item_grade() {

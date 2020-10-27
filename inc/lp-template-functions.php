@@ -1208,40 +1208,6 @@ if ( ! function_exists( 'learn_press_item_meta_type' ) ) {
 	}
 }
 
-function learn_press_single_course_js() {
-	_deprecated_function( __FUNCTION__, '3.0.0' );
-	if ( ! learn_press_is_course() ) {
-		return;
-	}
-	$user   = learn_press_get_current_user();
-	$course = learn_press_get_course();
-	$js     = array( 'url' => $course->get_permalink(), 'items' => array() );
-	if ( $items = $course->get_curriculum_items() ) {
-		foreach ( $items as $item ) {
-			$item          = array(
-				'id'        => absint( $item->ID ),
-				'type'      => $item->post_type,
-				'title'     => get_the_title( $item->ID ),
-				'url'       => $course->get_item_link( $item->ID ),
-				'current'   => $course->is_viewing_item( $item->ID ),
-				'completed' => false,
-				'viewable'  => $item->post_type == 'lp_quiz' ? ( $user->can_view_quiz( $item->ID, $course->get_id() ) !== false ) : ( $user->can_view_lesson( $item->ID, $course->get_id() ) !== false )
-			);
-			$js['items'][] = $item;
-		}
-	}
-	echo '<script type="text/javascript">';
-	echo 'var SingleCourse_Params = ' . json_encode( $js );
-	echo '</script>';
-}
-
-///add_action( 'wp_head', 'learn_press_single_course_js' );
-
-/*
- *
- */
-
-
 if ( ! function_exists( 'learn_press_sort_course_tabs' ) ) {
 
 	function learn_press_sort_course_tabs( $tabs = array() ) {

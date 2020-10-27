@@ -592,10 +592,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$user = learn_press_get_current_user();
 
-		// if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
-		// return;
-		// }
-
 		if ( $lesson->setup_postdata() ) {
 
 			if ( comments_open() || get_comments_number() ) {
@@ -659,8 +655,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 			)
 		);
 
-		?>
-		<?php
 		$is_checked = 0;
 		foreach ( $boxes as $box ) {
 
@@ -675,8 +669,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 			learn_press_get_template( 'single-course/extra-info', $box );
 		}
-		?>
-		<?php
+
 	}
 
 	public function faqs() {

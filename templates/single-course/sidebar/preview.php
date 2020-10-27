@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<div class="course-sidebar-preview margin-bottom">
+<div class="course-sidebar-preview">
 	<div class="media-preview">
 		<?php
 

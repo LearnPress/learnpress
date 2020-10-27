@@ -724,11 +724,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool
 		 */
 		public function is_free() {
-
-			// @deprecated
-			$is_free = apply_filters( 'learn_press_is_free_course', $this->get_price() == 0, $this );
-
-			return apply_filters( 'learn-press/course-is-free', $is_free, $this->get_id() );
+			return apply_filters( 'learn-press/course-is-free', $this->get_price() == 0, $this->get_id() );
 		}
 
 		/**

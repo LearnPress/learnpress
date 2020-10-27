@@ -9,9 +9,6 @@
  * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $course ) ) {
@@ -29,7 +26,7 @@ if ( ! isset( $course ) ) {
 	<input type="hidden" name="enroll-course-nonce" value="<?php echo esc_attr( LP_Nonce_Helper::create_course( 'enroll' ) ); ?>"/>
 
 	<button class="lp-button button button-enroll-course">
-		<?php echo esc_html( apply_filters( 'learn-press/enroll-course-button-text', __( 'Start Now', 'learnpress' ) ) ); ?>
+		<?php echo esc_html( apply_filters( 'learn-press/enroll-course-button-text', esc_html__( 'Start Now', 'learnpress' ) ) ); ?>
 	</button>
 
 	<?php do_action( 'learn-press/after-enroll-button' ); ?>

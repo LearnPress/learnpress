@@ -13,6 +13,10 @@ defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
 $user   = LP_Global::user();
+
+// print '<pre>';
+// print_r( $user->get_course_data( $course->get_id() ) );
+// print '</pre>';
 ?>
 
 <form class="lp-form form-button form-button-finish-course" method="post" data-confirm="<?php LP_Strings::esc_attr_e( 'confirm-finish-course', '', array( $course->get_title() ) ); ?>">

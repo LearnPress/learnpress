@@ -270,7 +270,17 @@ var enrollCourse = function enrollCourse() {
     btnEnroll.classList.add('loading');
     btnEnroll.disabled = true;
     submit(id, btnEnroll);
-  });
+  }); // Reload when press back button in chrome.
+
+  if (document.querySelector('.course-detail-info') !== null) {
+    window.addEventListener('pageshow', function (event) {
+      var hasCache = event.persisted || typeof window.performance != 'undefined' && String(window.performance.getEntriesByType('navigation')[0].type) == 'back_forward';
+
+      if (hasCache) {
+        location.reload();
+      }
+    });
+  }
 };
 
 
