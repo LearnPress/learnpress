@@ -176,7 +176,6 @@
         if($('#learn-press-updater').length) {
             var Updater = new Vue(UpdaterSettings);
         }
-
     }
 
     $(document).ready(init);

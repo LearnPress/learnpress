@@ -2,7 +2,7 @@
   'use strict'
   var $main, $setupForm
 
-  const checkForm = function checkForm ($form) {
+  var checkForm = function checkForm ($form) {
     var $emails = $form.find('input[type="email"]'),
       valid = true
 
@@ -28,23 +28,23 @@
     return valid
   }
 
-  const blockContent = function blockContent (block) {
+  var blockContent = function blockContent (block) {
     $main.toggleClass('loading', block === undefined ? true : block)
   }
 
-  const getFormData = function getFormData (more) {
+  var getFormData = function getFormData (more) {
     var data = $setupForm.serializeJSON()
 
     return $.extend(data, more || {})
   }
 
-  const replaceMainContent = function replaceMainContent (newContent) {
+  var replaceMainContent = function replaceMainContent (newContent) {
     var $newContent = $(newContent)
     $main.replaceWith($newContent)
     $main = $newContent
   }
 
-  const navPages = function navPages (e) {
+  var navPages = function navPages (e) {
     e.preventDefault()
     var loadUrl = $(this).attr('href')
 
@@ -69,7 +69,7 @@
     })
   }
 
-  const updateCurrency = function updateCurrency () {
+  var updateCurrency = function updateCurrency () {
     var m = $(this).children(':selected').html().match(/\((.*)\)/),
       symbol = m ? m[1] : ''
     $('#currency-pos').children().each(function () {
@@ -95,7 +95,7 @@
     })
   }
 
-  const updatePrice = function updatePrice () {
+  var updatePrice = function updatePrice () {
     $.post({
       url: '',
       dataType: 'html',
@@ -109,7 +109,7 @@
     })
   }
 
-  const createPages = function createPages (e) {
+  var createPages = function createPages (e) {
     e.preventDefault()
     blockContent()
     $.post({
@@ -127,7 +127,7 @@
     })
   }
 
-  const installSampleCourse = function installSampleCourse (e) {
+  var installSampleCourse = function installSampleCourse (e) {
     e.preventDefault()
 
     var $button = $(this)

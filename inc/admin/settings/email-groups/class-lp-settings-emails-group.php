@@ -52,6 +52,10 @@ class LP_Settings_Emails_Group extends LP_Settings {
 
 		echo '<ul class="subsubsub">';
 		foreach ( $this->items as $email ) {
+			if ( ! $email ) {
+				return;
+			}
+
 			if ( $current == $email->id ) {
 				echo '<li class="active"><span>' . $email . '</span></li>';
 			} else {

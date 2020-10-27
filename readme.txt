@@ -201,10 +201,15 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 3.2.8 =
+~ Fix query get posts (courses, items courses) on Backend - multiple site
+~ Fix error not same param on hook of Yoast SEO vs Yoast SEO premium
+~ Fix security XSS function view_log
+~ Fix check if get user on function learn_press_course_purchase_button() is null
+~ Fix create statics pages LP on 'lp setup' page
+
 = 3.2.7.9 =
 ~ Fix question not show description
-~ Fix query get posts (couses, items courses) on Backend
-~ Fix error not same param on hook of Yoast SEO vs Yoast SEO premium
 
 = 3.2.7.8 =
 ~ Fix save author id when add item when edit course

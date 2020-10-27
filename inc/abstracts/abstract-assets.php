@@ -36,6 +36,7 @@ abstract class LP_Abstract_Assets {
 
 	public static $_min_assets = '.min';
 	public static $_version_assets = LEARNPRESS_VERSION;
+	public static $_folder_source = '';
 
 	/**
 	 * LP_Abstract_Assets constructor.
@@ -46,6 +47,7 @@ abstract class LP_Abstract_Assets {
 		if ( LP_Debug::is_debug() ) {
 			self::$_min_assets     = '';
 			self::$_version_assets = uniqid();
+			self::$_folder_source = 'src/';
 		}
 
 		if ( is_admin() ) {

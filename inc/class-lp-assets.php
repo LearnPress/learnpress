@@ -40,18 +40,10 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles() {
-
-		if ( LP_DEBUG_STATUS ) {
-			$styles = array(
-				'learn-press-bundle' => ( $url = $this->get_bundle_css_url() ) ? $url : self::url( 'css/bundle.min.css' ),
-				'learn-press'        => self::url( 'css/learnpress.css' ),
-			);
-		} else {
-			$styles = array(
-				'learn-press-bundle' => ( $url = $this->get_bundle_css_url() ) ? $url : self::url( 'css/bundle.min.css' ),
-				'learn-press'        => self::url( 'css/learnpress.min.css' ),
-			);
-		}
+		$styles = array(
+			'learn-press-bundle' => ( $url = $this->get_bundle_css_url() ) ? $url : self::url( 'css/bundle.min.css' ),
+			'learn-press'        => self::url( 'css/learnpress' . self::$_min_assets . '.css' ),
+		);
 
 		return apply_filters( 'learn-press/frontend-default-styles', $styles );
 	}
@@ -93,8 +85,6 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	public function _get_scripts() {
-		$min = learn_press_is_debug() ? '' : '.min';
-
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
@@ -130,12 +120,12 @@ class LP_Assets extends LP_Abstract_Assets {
 				//					'enqueue' => false
 				//				),
 				'global'           => array(
-					'url'     => self::url( 'js/global' . $min . '.js' ),
+					'url'     => self::url( 'js/global' . self::$_min_assets . '.js' ),
 					'deps'    => array( 'jquery', 'underscore', 'utils' ),
 					'screens' => '*'
 				),
 				'wp-utils'         => array(
-					'url'     => self::url( 'js/utils' . $min . '.js' ),
+					'url'     => self::url( 'js/utils' . self::$_min_assets . '.js' ),
 					'deps'    => array( 'jquery' ),
 					'screens' => '*'
 				),
@@ -143,10 +133,11 @@ class LP_Assets extends LP_Abstract_Assets {
 				//					'url'  => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.js' ),
 				//					'deps' => array( 'jquery' )
 				//				),
-				'learnpress'       => array(
-					'url'  => self::url( 'js/frontend/learnpress' . $min . '.js' ),
-					'deps' => array( 'global' )
-				),
+//				'learnpress'       => array(
+//					'url'  => self::url( 'js/frontend/learnpress' . self::$_min_assets . '.js' ),
+//					'deps' => array( 'global' ),
+//					'screens' => '*'
+//				),
 				'checkout'         => array(
 					'url'     => self::url( 'js/frontend/checkout.js' ),
 					'deps'    => array( 'global' ),

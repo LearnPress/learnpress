@@ -44,7 +44,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 				$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $tooltip ) );
 			}
 		}
-		$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( 'ádsadasdsadasd' ) );
+		$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( '' ) );
 
 		return $title;
 	}

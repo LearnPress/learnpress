@@ -402,7 +402,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function get_pages_is_lp_page( $q ) {
 			if ( 'page' == LP_Request::get( 'post_type' ) && 'yes' == LP_Request::get( 'lp-page' ) ) {
-				if ( $ids = array_keys( $this->_get_static_pages( 'learnpress' ) ) ) {
+				$ids = $this->_get_static_pages( 'learnpress' );
+				if ( ! empty( $ids ) ) {
+				    $ids = array_keys($ids);
 					$q->set( 'post__in', $ids );
 				}
 			}
@@ -709,17 +711,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks from LearnPress team for your generous.', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
 					ob_start(); ?>
                     <script type="text/javascript">
-                      jQuery(function ($) {
-                        var $ratingLink = $('a.lp-rating-link').click(function (e) {
-                          $.ajax({
+                      jQuery( function( $ ) {
+                        var $ratingLink = $( 'a.lp-rating-link' ).click( function( e ) {
+                          $.ajax( {
                             url: '<?php echo admin_url( 'admin-ajax.php' );?>', data: {
                               action: 'learn_press_rated',
-                            }, success: function () {
-                              $ratingLink.parent().html($ratingLink.data('rated'))
+                            }, success: function() {
+                              $ratingLink.parent().html( $ratingLink.data( 'rated' ) );
                             },
-                          })
-                        })
-                      })
+                          } );
+                        } );
+                      } );
 
                     </script>
 					<?php

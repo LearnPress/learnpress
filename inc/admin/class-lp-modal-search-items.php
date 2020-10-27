@@ -236,14 +236,23 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 
 		/**
 		 * JS Modal template.
+		 * @editor tungnx
+		 *
+		 * @since 3.2.8
 		 */
 		public function js_template() {
+			$screen_id = LP_Admin::instance()->get_screen_id();
+
+			if ( ! $screen_id || ! in_array( LP_Admin::instance()->get_screen_id(), array( LP_ORDER_CPT ) ) ) {
+				return;
+			}
+
 			$view = learn_press_get_admin_view( 'modal-search-items' );
 			include $view;
 		}
 
 		/**
-		 * @param array  $args
+		 * @param array $args
 		 * @param string $context
 		 * @param string $context_id
 		 *
@@ -266,7 +275,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */

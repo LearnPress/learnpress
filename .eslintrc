@@ -1,0 +1,24 @@
+{
+	"extends": ["plugin:@wordpress/eslint-plugin/recommended-with-formatting"],
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": true
+	},
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"rules": {
+		"indent": ["error", "tab"],
+		"space-in-parens": ["error", "always"],
+		"camelcase": [2, { "properties": "never" }],
+		"no-undef": 0,
+		"eqeqeq": 0,
+		"no-unused-expressions": ["error", { "allowShortCircuit": true }],
+		"no-unused-vars": 0,
+		"no-shadow": 0,
+		"no-console": 0,
+		"vars-on-top": 0,
+		"jsdoc/require-param-type": 0
+	}
+}
