@@ -51,8 +51,8 @@
 
 		$listItems.on( 'click', '.remove-order-item', function( e ) {
 			e.preventDefault();
-			const $item = $( this ).closest( 'tr' ),
-				item_id = $item.data( 'item_id' );
+			const $item = $( this ).closest( 'tr' );
+			const itemId = $item.data( 'item_id' );
 			$item.remove();
 
 			if ( $listItems.children( ':not(.no-order-items)' ).length === 0 ) {
@@ -61,7 +61,7 @@
 
 			$Vue.http.post( window.location.href, {
 				order_id: $( '#post_ID' ).val(),
-				items: [ item_id ],
+				items: [ itemId ],
 				'lp-ajax': 'remove_items_from_order',
 			}, {
 				emulateJSON: true,
