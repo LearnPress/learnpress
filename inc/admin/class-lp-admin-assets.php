@@ -31,18 +31,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		);
 	}
 
-//	protected function get_all_plugins_url() {
-//		$url = false;
-//		if ( get_option( 'learn_press_exclude_admin_libraries' ) ) {
-//			$uploadDir = wp_upload_dir();
-//			if ( file_exists( $uploadDir['basedir'] . '/learnpress/admin.plugins.all' . self::$_min_assets . '.js' ) ) {
-//				$url = $uploadDir['baseurl'] . '/learnpress/admin.plugins.all' . self::$_min_assets . '.js';
-//			}
-//		}
-//
-//		return $url;
-//	}
-
 	/**
 	 * Get default scripts in admin.
 	 *
@@ -64,9 +52,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( 'jquery' ), array( 'learnpress_page_learn-press-addons' ), 0, 1
 				),
 				'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
-				'lp-modal-search-users'             => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
-					array( 'jquery' ), array( LP_ORDER_CPT ), 0, 1
-				),
 				'learn-press-global'                => new LP_Asset_Key( $this->url( 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' ),
 					array( 'learnpress' ), 1 ),
@@ -157,13 +142,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'vuex',
 						'vue-resource',
 						'jquery'
-					), array( LP_ORDER_CPT ), 0, 1
+					), array( LP_ORDER_CPT ), 1, 1
 				),
 				'lp-admin-tabs'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/admin-tabs' . self::$_min_assets . '.js' ),
 					array( 'jquery' ), array( LP_COURSE_CPT ), 0, 1
 				),
 				'lp-admin-notice'                   => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/admin-notice' . self::$_min_assets . '.js' ),
 					array( 'jquery' ), array(), 0, 1
+				),
+				'lp-modal-search-users'             => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
+					array( 'jquery' ), array( LP_ORDER_CPT ), 1, 1
 				),
 			)
 		);
