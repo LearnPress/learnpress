@@ -2,17 +2,19 @@
 /**
  * Template for displaying course level in secondary section.
  *
- * @version 4.0.0
  * @author  ThimPress
  * @package LearnPress/Templates
+ * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
-if ( ! $level = learn_press_get_post_level( get_the_ID() ) ) {
+$level = learn_press_get_post_level( get_the_ID() );
+
+if ( ! $level ) {
 	return;
 }
 ?>
 
-<div class="meta-item meta-item-level"><?php echo $level; ?></div>
+<div class="meta-item meta-item-level"><?php echo esc_html( $level ); ?></div>
 

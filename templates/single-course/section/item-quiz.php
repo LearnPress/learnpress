@@ -9,7 +9,6 @@
  * @version  4.0.0
  */
 
-
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $item ) ) {

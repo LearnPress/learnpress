@@ -698,30 +698,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$this->set_data( 'answer_options', $answers );
 		}
 
-		/**
-		 * Prints the question in frontend user.
-		 *
-		 * @param mixed $args
-		 *
-		 * @return void
-		 */
-		public function render( $args = false ) {
-			$this->set_answered( $args );
-
-			$type = '';
-			switch ( $this->get_type() ) {
-				case 'true_or_false':
-				case 'single_choice':
-					$type = 'single-choice';
-					break;
-				case 'multi_choice':
-					$type = 'multi-choice';
-					break;
-			}
-
-			learn_press_get_template( 'content-question/' . $type . '/answer-options.php', array( 'question' => $this ) );
-		}
-
 		public function setup_data( $quiz_id, $course_id = 0, $user_id = 0 ) {
 
 			$quiz   = learn_press_get_quiz( $quiz_id );
@@ -746,21 +722,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			$this->show_correct_answers( $show_correct );
 		}
-
-		/**
-		 * Return HTML of question content.
-		 *
-		 * @param array $args
-		 *
-		 * @return string
-		 */
-		public function get_html( $args = array() ) {
-			ob_start();
-			$this->render( $args );
-
-			return ob_get_clean();
-		}
-
 
 		/**
 		 * Get question name.

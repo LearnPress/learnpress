@@ -53,7 +53,7 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 
 			$this->widget_start( $args, $instance );
 
-			include learn_press_locate_template( 'widgets/course-info/default.php' );
+			include learn_press_locate_template( 'widgets/course-info.php' );
 
 			$this->widget_end( $args );
 		}

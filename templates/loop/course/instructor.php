@@ -6,19 +6,18 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.3.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $course = learn_press_get_course() ) {
+$course = learn_press_get_course();
+
+if ( ! $course ) {
 	return;
 }
 ?>
 
 <span class="course-instructor">
-	<?php echo $course->get_instructor_html(); ?>
+	<?php echo wp_kses_post( $course->get_instructor_html() ); ?>
 </span>

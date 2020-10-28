@@ -10,15 +10,15 @@
 defined( 'ABSPATH' ) or die;
 
 get_header();
+
 do_action( 'learn-press/before-main-content' );
 ?>
 
-    <div id="learn-press-checkout" class="lp-content-wrap">
+	<div id="learn-press-checkout" class="lp-content-wrap">
 
-        <h2><?php echo get_the_title(); ?></h2>
+		<h2><?php the_title(); ?></h2>
 
 		<?php
-
 		/**
 		 * LP Hook
 		 *
@@ -37,8 +37,9 @@ do_action( 'learn-press/before-main-content' );
 		do_action( 'learn-press/after-checkout-page' );
 		?>
 
-    </div>
+	</div>
 
 <?php
 do_action( 'learn-press/after-main-content' );
+
 get_footer();

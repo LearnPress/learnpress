@@ -6,12 +6,9 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.3.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 ?>
 

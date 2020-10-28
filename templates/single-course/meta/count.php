@@ -2,17 +2,12 @@
 /**
  * Template for displaying course level in secondary section.
  *
- * @version 4.0.0
  * @author  ThimPress
  * @package LearnPress/Templates
+ * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
-
-/**
- * @var string $count
- * @var string $object
- */
+defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="meta-item meta-item-<?php echo $object; ?>"><?php echo $count; ?></div>

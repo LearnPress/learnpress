@@ -16,7 +16,11 @@
 				data: $.extend( {}, args || {} ),
 				type: 'POST',
 				success: ( response ) => {
-					const newEl = $( response ).filter( $wrapElement );
+					let newEl = $( response ).contents().find( $wrapElement );
+
+					if ( $wrapElement === '.lp-archive-courses' ) {
+						newEl = $( response ).filter( $wrapElement );
+					}
 
 					if ( newEl.length > 0 ) {
 						$( $wrapElement ).replaceWith( newEl );
@@ -49,6 +53,7 @@
 
 		fetchCourses( {
 			s: $( event.target ).val(),
+			wrapElement: '.learn-press-courses',
 		} );
 	}, 300 );
 
@@ -72,8 +77,7 @@
 
 	const selectCoursesLayout = function() {
 		const coursesLayout = LP.Cookies.get( 'courses-layout' );
-		const switches = $( '.lp-courses-bar .switch-layout' )
-			.find( '[name="lp-switch-layout-btn"]' );
+		const switches = $( '.lp-courses-bar .switch-layout' ).find( '[name="lp-switch-layout-btn"]' );
 
 		if ( coursesLayout ) {
 			switches

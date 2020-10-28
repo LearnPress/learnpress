@@ -92,7 +92,7 @@ class LP_Debug {
 				$total_time += $time;
 			}
 			echo '----' . str_pad( 'Total time', 50, '-' ) . ' = ' . $total_time . "\n";
-			echo microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'], ',', date( 'Y-m-d H:i:s' ), ',', date( 'Y-m-d H:i:s', $_SERVER['REQUEST_TIME_FLOAT'] );
+			echo microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'], ',', gmdate( 'Y-m-d H:i:s' ), ',', gmdate( 'Y-m-d H:i:s', $_SERVER['REQUEST_TIME_FLOAT'] );
 
 			echo '---->';
 		}

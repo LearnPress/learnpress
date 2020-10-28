@@ -109,7 +109,11 @@
         data: $.extend({}, args || {}),
         type: 'POST',
         success: function success(response) {
-          var newEl = $(response).filter($wrapElement);
+          var newEl = $(response).contents().find($wrapElement);
+
+          if ($wrapElement === '.lp-archive-courses') {
+            newEl = $(response).filter($wrapElement);
+          }
 
           if (newEl.length > 0) {
             $($wrapElement).replaceWith(newEl);
@@ -139,7 +143,8 @@
   var searchCourseHandler = debounce(function (event) {
     event.preventDefault();
     fetchCourses({
-      s: $(event.target).val()
+      s: $(event.target).val(),
+      wrapElement: '.learn-press-courses'
     });
   }, 300);
   /**

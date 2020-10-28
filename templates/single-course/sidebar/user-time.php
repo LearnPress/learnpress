@@ -25,7 +25,7 @@ $course = LP_Global::course();
 		<strong><?php esc_html_e( 'You started on:', 'learnpress' ); ?></strong>
 		<time class="entry-date enrolled" datetime="<?php esc_attr( $start_time->toISO8601() ); ?>"><?php echo $start_time->format( 'M j, Y' ); ?></time>
 	</p>
-	<?php if ( in_array( $status, array( learn_press_user_item_in_progress_slug(), /* deprecated */ 'enrolled' ) ) ) : ?>
+	<?php if ( in_array( $status, array( learn_press_user_item_in_progress_slug(), 'enrolled' ) ) ) : ?>
 		<?php if ( $expiration_time ) : ?>
 			<p class="course-time-row">
 				<strong><?php esc_html_e( 'Course will end:', 'learnpress' ); ?></strong>

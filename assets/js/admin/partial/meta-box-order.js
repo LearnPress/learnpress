@@ -93,13 +93,12 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-;
-
 (function ($) {
-  "use strict";
+  'use strict';
 
   window.$Vue = window.$Vue || Vue;
   $(document).ready(function () {
+    // eslint-disable-next-line no-var
     var $listItems = $('.list-order-items').find('tbody'),
         $listUsers = $('#list-users'),
         template = function template(templateHTML, data) {

@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 				$perms = self::is_file( $path ) ? self::chmod_file() : self::chmod_dir();
 			}
 
-			$output = @chmod( $path, $perms );
+			$output = @chmod( $path, $perms ); // phpcs:ignore
 
 			if ( ! $output ) {
 				global $wp_filesystem;
@@ -133,7 +133,7 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 		}
 
 		public static function put_contents( $path, $content ) {
-			$output = @file_put_contents( $path, $content );
+			$output = @file_put_contents( $path, $content ); // phpcs:ignore
 			self::chmod( $path );
 
 			if ( ! $output ) {
@@ -165,7 +165,7 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 			$upload_dir    = $wp_upload_dir['basedir'] . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR;
 			$file_path     = $upload_dir . $file_name;
 
-			$output = @file_put_contents( $file_path, $content );
+			$output = @file_put_contents( $file_path, $content ); // phpcs:ignore
 
 			if ( ! $output ) {
 				global $wp_filesystem;
@@ -195,7 +195,7 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 				return false;
 			}
 
-			$output = @copy( $source_path, $des_path );
+			$output = @copy( $source_path, $des_path ); // phpcs:ignore
 
 			if ( $perms && $output ) {
 				self::chmod( $des_path, $perms );

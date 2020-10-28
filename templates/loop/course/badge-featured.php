@@ -7,16 +7,17 @@
  * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
-if ( ! $course = learn_press_get_course() ) {
+$course = learn_press_get_course();
+
+if ( ! $course ) {
 	return;
 }
 
 if ( ! $course->is_featured() ) {
 	return;
 }
-
 ?>
-<span class="lp-badge featured-course"
-      data-text="<?php echo _x( 'Featured', 'badge label featured', 'learnpress' ); ?>"></span>
+
+<span class="lp-badge featured-course" data-text="<?php esc_attr_e( 'Featured', 'learnpress' ); ?>"></span>

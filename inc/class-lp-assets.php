@@ -8,6 +8,7 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
 class LP_Assets extends LP_Abstract_Assets {
 
 	public function __construct() {

@@ -20,4 +20,4 @@ if ( ! $title ) {
 }
 ?>
 
-<h3 class="course-item-title quiz-title"><?php echo $title; ?></h3>
+<h3 class="course-item-title quiz-title"><?php echo esc_html( $title ); ?></h3>

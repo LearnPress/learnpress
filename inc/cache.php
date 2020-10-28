@@ -340,7 +340,7 @@ class LP_Object_Cache {
 		}
 
 		if ( self::_exists( $key, $group ) ) {
-			$found            = true;
+			$found             = true;
 			$self->cache_hits += 1;
 			if ( is_object( $self->cache[ $group ][ $key ] ) ) {
 				return clone $self->cache[ $group ][ $key ];
@@ -349,7 +349,7 @@ class LP_Object_Cache {
 			}
 		}
 
-		$found              = false;
+		$found               = false;
 		$self->cache_misses += 1;
 
 		return false;
@@ -514,10 +514,10 @@ class LP_Object_Cache {
 	 */
 	public static function stats() {
 		$self = self::instance();
-		echo "<p>";
+		echo '<p>';
 		echo "<strong>Cache Hits:</strong> {$self->cache_hits}<br />";
 		echo "<strong>Cache Misses:</strong> {$self->cache_misses}<br />";
-		echo "</p>";
+		echo '</p>';
 		echo '<ul>';
 		foreach ( $self->cache as $group => $cache ) {
 			echo "<li><strong>Group:</strong> $group - ( " . number_format( strlen( serialize( $cache ) ) / KB_IN_BYTES, 2 ) . 'k )</li>';
@@ -565,7 +565,6 @@ class LP_Object_Cache {
 	public function __construct() {
 		$this->multisite   = is_multisite();
 		$this->blog_prefix = $this->multisite ? get_current_blog_id() . ':' : '';
-
 
 		/**
 		 * @todo This should be moved to the PHP4 style constructor, PHP5

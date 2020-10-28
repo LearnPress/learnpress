@@ -2,12 +2,12 @@
 /**
  * Template for displaying content of single course.
  *
- * @version 4.x.x
  * @author  ThimPress
  * @package LearnPress/Templates
+ * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Header for page

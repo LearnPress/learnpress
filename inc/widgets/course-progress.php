@@ -89,7 +89,7 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 
 			$this->widget_start( $args, $instance );
 
-			include learn_press_locate_template( 'widgets/course-progress/default.php' );
+			include learn_press_locate_template( 'widgets/course-progress.php' );
 
 			$this->widget_end( $args );
 		}

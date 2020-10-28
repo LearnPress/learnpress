@@ -1155,29 +1155,6 @@ if ( ! function_exists( 'learn_press_course_remaining_time' ) ) {
 	}
 }
 
-//add_filter( 'template_include', 'learn_press_permission_view_quiz', 100 );
-function learn_press_permission_view_quiz( $template ) {
-	$quiz = LP()->global['course-item'];
-	// if is not in single quiz
-	if ( ! learn_press_is_quiz() ) {
-		return $template;
-	}
-	$user = learn_press_get_current_user();
-	// If user haven't got permission
-	if ( ! current_user_can( 'edit-lp_quiz' ) && ! $user->can_view_quiz( $quiz->id ) ) {
-		switch ( LP()->settings->get( 'quiz_restrict_access' ) ) {
-			case 'custom':
-				$template = learn_press_locate_template( 'global/restrict-access.php' );
-				break;
-			default:
-				learn_press_is_404();
-		}
-	}
-
-	return $template;
-}
-
-
 if ( ! function_exists( 'learn_press_item_meta_type' ) ) {
 	function learn_press_item_meta_type( $course, $item ) { ?>
 
@@ -1245,16 +1222,6 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 	}
 }
 
-
-if ( ! function_exists( 'learn_press_content_item_review_quiz_title' ) ) {
-	function learn_press_content_item_review_quiz_title() {
-		if ( learn_press_is_review_questions() ) {
-			learn_press_get_template( 'content-quiz/review-title.php' );
-		}
-	}
-}
-
-
 if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 
 	function learn_press_content_item_comments() {
@@ -1289,10 +1256,6 @@ if ( ! function_exists( 'learn_press_content_item_nav' ) ) {
 	function learn_press_content_item_nav() {
 
 	}
-}
-
-function learn_press_disable_course_comment_form() {
-	add_filter( 'comments_template', 'learn_press_blank_comments_template', 999 );
 }
 
 function learn_press_course_comments_open( $open, $post_id ) {
@@ -1872,8 +1835,9 @@ function learn_press_courses_layouts() {
  */
 function learn_press_get_courses_layout() {
 	$layouts = learn_press_courses_layouts();
+	$layout  = LP_Request::get_cookie( 'courses-layout' );
 
-	if ( ! $layout = LP_Request::get_cookie( 'courses-layout' ) ) {
+	if ( ! $layout ) {
 		$layout = defined( 'LP_COURSES_LAYOUT' ) ? LP_COURSES_LAYOUT : LP()->settings()->get( 'course_layout' );
 	}
 

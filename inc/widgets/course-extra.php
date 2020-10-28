@@ -13,15 +13,8 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Widget_Course_Extra' ) ) {
-
-	/**
-	 * Class LP_Widget_Course_Extra
-	 */
 	class LP_Widget_Course_Extra extends LP_Widget {
 
-		/**
-		 * LP_Widget_Course_Extra constructor.
-		 */
 		public function __construct() {
 			$this->widget_cssclass    = 'learnpress widget_course_extra';
 			$this->widget_description = esc_html__( 'Display the Extra information in Course settings', 'learnpress' );

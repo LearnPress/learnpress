@@ -2,9 +2,9 @@
 /**
  * Template for displaying secondary course meta data such as: duration, level, lessons, quizzes, students, etc...
  *
- * @version 4.0.0
  * @author  ThimPress
  * @package LearnPress/Templates
+ * @version 4.0.0
  */
 
 defined( 'ABSPATH' ) or die;
@@ -17,11 +17,12 @@ if ( ! $has_meta_left && ! $has_meta_right ) {
 	return;
 }
 ?>
-<div class="course-meta course-meta-secondary<?php echo $has_meta_right && $has_meta_left ? ' two-columns' : '';?>">
+
+<div class="course-meta course-meta-secondary<?php echo $has_meta_right && $has_meta_left ? ' two-columns' : ''; ?>">
 
 	<?php if ( $has_meta_left ) { ?>
 
-        <div class="course-meta__pull-left">
+		<div class="course-meta__pull-left">
 
 			<?php
 			/**
@@ -31,13 +32,13 @@ if ( ! $has_meta_left && ! $has_meta_right ) {
 			do_action( 'learn-press/course-meta-secondary-left' );
 			?>
 
-        </div>
+		</div>
 
 	<?php } ?>
 
 	<?php if ( $has_meta_right ) { ?>
 
-        <div class="course-meta__pull-right">
+		<div class="course-meta__pull-right">
 
 			<?php
 			/**
@@ -47,7 +48,7 @@ if ( ! $has_meta_left && ! $has_meta_right ) {
 			do_action( 'learn-press/course-meta-secondary-right' );
 			?>
 
-        </div>
+		</div>
 
 	<?php } ?>
 

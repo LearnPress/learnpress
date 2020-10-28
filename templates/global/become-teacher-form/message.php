@@ -6,16 +6,11 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 if ( ! isset( $messages ) ) {
 	return;
 }

@@ -6,10 +6,12 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<button type="submit" data-text="<?php esc_attr_e( 'Submitting', 'learnpress' ); ?>"><?php _e( 'Submit', 'learnpress' ); ?></button>
+<button type="submit" data-text="<?php esc_attr_e( 'Submitting', 'learnpress' ); ?>">
+	<?php esc_html_e( 'Submit', 'learnpress' ); ?>
+</button>

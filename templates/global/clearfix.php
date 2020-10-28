@@ -8,7 +8,7 @@
  * @package LearnPress/Templates
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="clearfix"></div>

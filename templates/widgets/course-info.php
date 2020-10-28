@@ -12,7 +12,9 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $course = LP_Global::course() ) {
+$course = LP_Global::course();
+
+if ( ! $course ) {
 	return;
 }
 ?>

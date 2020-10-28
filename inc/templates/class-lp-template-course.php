@@ -306,23 +306,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
-	public function course_categories( $post = 0 ) {
-		$post = get_post( $post );
-
-		$categories = get_object_term_cache( $post->ID, 'course_category' );
-		if ( false === $categories ) {
-			$categories = wp_get_object_terms( $post->ID, 'course_category' );
-		}
-
-		if ( ! $categories ) {
-			return;
-		}
-
-		// learn_press_get_template( 'single-course/categories' );
-	}
-
 	public function course_retake_button() {
-
 		if ( ! isset( $course ) ) {
 			$course = learn_press_get_course();
 		}
@@ -474,10 +458,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'loop/course/price' );
 	}
 
-	public function courses_loop_item_students() {
-		learn_press_get_template( 'loop/course/students' );
-	}
-
 	public function begin_courses_loop() {
 		learn_press_get_template( 'loop/course/loop-begin.php' );
 	}
@@ -487,7 +467,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_item_content() {
-
 		$item = LP_Global::course_item();
 
 		if ( $item->is_blocked() ) {
@@ -535,7 +514,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 			return;
 		}
-		learn_press_get_template( 'content-lesson/title.php' );
+		learn_press_get_template( 'content-lesson/title.php', array( 'lesson' => $item ) );
 	}
 
 	public function item_lesson_content() {
@@ -551,7 +530,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 		do_action( 'learn-press/lesson-start', $item );
-		learn_press_get_template( 'content-lesson/content.php' );
+
+		learn_press_get_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
 	}
 
 	public function item_lesson_content_blocked() {
@@ -567,16 +547,20 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function item_lesson_complete_button() {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
-
-		// if ( ! $course->is_required_enroll() ) {
-		// return;
-		// }
+		$item   = LP_Global::course_item();
 
 		if ( ! $user->is_course_in_progress( $course->get_id() ) ) {
 			return;
 		}
 
-		learn_press_get_template( 'content-lesson/button-complete.php' );
+		learn_press_get_template(
+			'content-lesson/button-complete.php',
+			array(
+				'user'   => $user,
+				'course' => $course,
+				'item'   => $item,
+			)
+		);
 	}
 
 	public function lesson_comment_form() {
@@ -603,15 +587,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function count_object() {
-		if ( ! $course = learn_press_get_course() ) {
+		$course = learn_press_get_course();
+
+		if ( ! $course ) {
 			return;
 		}
 
 		$lessons = $course->get_items( LP_LESSON_CPT );
 		$quizzes = $course->get_items( LP_QUIZ_CPT );
 
-		$lessons  = sizeof( $lessons );
-		$quizzes  = sizeof( $quizzes );
+		$lessons  = count( $lessons );
+		$quizzes  = count( $quizzes );
 		$students = $course->count_students();
 
 		$counts = apply_filters(

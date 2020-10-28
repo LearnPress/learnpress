@@ -11,32 +11,25 @@ defined( 'ABSPATH' ) || exit;
 <div class="course-sidebar-preview">
 	<div class="media-preview">
 		<?php
-
 		LP()->template( 'course' )->course_media_preview();
-
 		learn_press_get_template( 'loop/course/badge-featured' );
-
 		?>
 	</div>
 
 	<?php
-
-	// Price box
-	if ( ! in_array( learn_press_user_course_status(), learn_press_course_enrolled_slugs() /* array( 'finished', 'enrolled', 'passed', 'failed' )*/ ) ) {
+	// Price box.
+	if ( ! in_array( learn_press_user_course_status(), learn_press_course_enrolled_slugs() ) ) {
 		LP()->template( 'course' )->course_pricing();
 	}
 
-	// Graduation
+	// Graduation.
 	LP()->template( 'course' )->course_graduation();
 
-	// Buttons
+	// Buttons.
 	LP()->template( 'course' )->course_buttons();
 
 	LP()->template( 'course' )->user_time();
 
 	LP()->template( 'course' )->user_progress();
-
-	// Target audiences
-	// LP()->template('course')->course_extra_target_audiences();
 	?>
 </div>

@@ -9,23 +9,20 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
+
 defined( 'ABSPATH' ) || exit();
+
+if ( ! $messages ) {
+	return;
+}
 ?>
 
-<?php if ( ! $messages ) {
-	return;
-} ?>
-
 <?php foreach ( $messages as $type => $message ) { ?>
-
 	<?php if ( $message ) { ?>
-
 		<?php foreach ( $message as $content ) { ?>
+			<?php
+			$options = array();
 
-			<?php $options = array();
 			if ( is_array( $content ) ) {
 				$options = $content['options'];
 				$content = $content['content'];
@@ -34,12 +31,14 @@ defined( 'ABSPATH' ) || exit();
 					array(
 						'position'  => '',
 						'delay-in'  => 0,
-						'delay-out' => 0
+						'delay-out' => 0,
 					)
 				);
 			}
+
 			$classes = array( 'learn-press-message', esc_attr( $type ) );
 			$data    = array();
+
 			if ( ! empty( $options['position'] ) ) {
 				$classes[] = $options['position'];
 				if ( ! empty( $options['delay-in'] ) ) {
@@ -51,9 +50,9 @@ defined( 'ABSPATH' ) || exit();
 				}
 			}
 			?>
-            <div class="<?php echo join( ' ', $classes ); ?>" <?php echo $data ? join( ' ', $data ) : ''; ?>>
-                <i class="fa"></i><?php echo $content; ?>
-            </div>
+			<div class="<?php echo join( ' ', $classes ); ?>" <?php echo $data ? join( ' ', $data ) : ''; ?>>
+				<i class="fa"></i><?php echo $content; ?>
+			</div>
 
 		<?php } ?>
 

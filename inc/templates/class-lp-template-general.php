@@ -62,16 +62,6 @@ class LP_Template_General extends LP_Abstract_Template {
 		learn_press_get_template( 'global/breadcrumb.php', $args );
 	}
 
-	public function search_form() {
-		if ( ! empty( $_REQUEST['s'] ) && ! empty( $_REQUEST['ref'] ) && 'course' == $_REQUEST['ref'] ) {
-			$s = stripslashes_deep( $_REQUEST['s'] );
-		} else {
-			$s = '';
-		}
-
-		learn_press_get_template( 'search-form.php', array( 's' => $s ) );
-	}
-
 	public function become_teacher_messages() {
 		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
 		if ( ! $messages ) {

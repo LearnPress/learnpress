@@ -75,7 +75,6 @@ add_action( 'learn-press/courses-loop-item-title', LP()->template( 'course' )->c
  * @see LP_Template_Course::courses_loop_item_meta()
  * @see LP_Template_Course::courses_loop_item_info_begin()
  * @see LP_Template_Course::clearfix()
- * @see LP_Template_Course::courses_loop_item_students()
  * @see LP_Template_Course::courses_loop_item_price()
  * @see LP_Template_Course::courses_loop_item_info_end()
  * @see LP_Template_Course::loop_item_user_progress()
@@ -92,7 +91,6 @@ add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->f
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'clearfix' ), 30 );
 
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content-footer --> <div class="course-footer">', 'course-footer-open' ), 40 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_students' ), 40 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_price' ), 50 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content-footer -->', 'course-footer-close' ), 50 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'course_readmore' ), 55 );
@@ -131,7 +129,6 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->ca
 // appear at bottom after enrolled
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 70 );
 
-// add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tags' ), 80 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<!-- end entry content left --> </div>', 'entry-content-left-close' ), 80 );
 
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/sidebar' ), 85 );

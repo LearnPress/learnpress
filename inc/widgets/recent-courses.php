@@ -3,16 +3,13 @@
 /**
  * Recent Courses Widget.
  *
- * @author  ThimPress
+ * @author  ThimPress <nhamdv>
  * @category Widgets
  * @package  Learnpress/Widgets
- * @version  3.0.0
+ * @version  4.0.0
  * @extends  LP_Widget
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
@@ -100,7 +97,7 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 
 			$this->widget_start( $args, $instance );
 
-			include learn_press_locate_template( 'widgets/recent-courses/default.php' );
+			include learn_press_locate_template( 'widgets/recent-courses.php' );
 
 			$this->widget_end( $args );
 

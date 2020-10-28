@@ -1,10 +1,10 @@
 <?php
 /**
- * Template for displaying content of Recent Courses widget.
+ * Template for displaying content of Popular Courses widget.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/widgets/recent-courses/default.php.
+ * This template can be overridden by copying it to yourtheme/learnpress/widgets/popular-courses/default.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Templates
  * @version  4.0.0
@@ -14,6 +14,7 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $courses ) ) {
 	esc_html_e( 'No courses', 'learnpress' );
+
 	return;
 }
 
@@ -28,32 +29,32 @@ global $post;
 			if ( empty( $course_id ) ) {
 				continue;
 			}
+
 			$post = get_post( $course_id );
 			setup_postdata( $post );
 			$course = learn_press_get_course( $course_id );
 			?>
 
 			<div class="course-entry">
-
 				<!-- course thumbnail -->
-				<?php if ( ! empty( $instance['show_thumbnail'] ) && $image = $course->get_image( 'medium' ) ) { ?>
+				<?php if ( ! empty( $instance['show_thumbnail'] ) && $course->get_image( 'medium' ) ) { ?>
 					<div class="course-cover">
-						<a href="<?php echo $course->get_permalink(); ?>">
-							<?php echo $image; ?>
+						<a href="<?php echo esc_url( $course->get_permalink() ); ?>">
+							<?php echo $course->get_image( 'medium' ); ?>
 						</a>
 					</div>
 				<?php } ?>
 
 				<div class="course-detail">
 					<!-- course title -->
-					<a href="<?php echo get_the_permalink( $course->get_id() ); ?>">
+					<a href="<?php echo esc_url( get_the_permalink( $course->get_id() ) ); ?>">
 						<h3 class="course-title"><?php echo $course->get_title(); ?></h3>
 					</a>
 
 					<!-- course content -->
-					<?php if ( ! empty( $instance['desc_length'] ) && ( $len = intval( $instance['desc_length'] ) ) > 0 ) { ?>
+					<?php if ( ! empty( $instance['desc_length'] ) && absint( $instance['desc_length'] ) > 0 ) { ?>
 						<div class="course-description">
-							<?php echo $course->get_content( 'raw', $len, __( '...', 'learnpress' ) ); ?></div>
+							<?php echo $course->get_content( 'raw', absint( $instance['desc_length'] ), '...' ); ?></div>
 					<?php } ?>
 
 					<div class="course-meta-data">
@@ -87,6 +88,7 @@ global $post;
 				</div>
 			</div>
 		<?php } ?>
+
 	</div>
 
 	<?php wp_reset_postdata(); ?>

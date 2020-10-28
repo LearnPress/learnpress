@@ -7,20 +7,17 @@
  * @package LearnPress/Templates
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
-/**
- * @var LP_Course $course
- */
 $course = LP_Global::course();
-
 ?>
+
 <div class="meta-item meta-item-instructor">
-    <div class="meta-item__image">
+	<div class="meta-item__image">
 		<?php echo $course->get_instructor()->get_profile_picture(); ?>
-    </div>
-    <div class="meta-item__value">
-        <label><?php esc_html_e( 'Instructor', 'learnpress' ); ?></label>
-        <div><?php echo $course->get_instructor_html(); ?></div>
-    </div>
+	</div>
+	<div class="meta-item__value">
+		<label><?php esc_html_e( 'Instructor', 'learnpress' ); ?></label>
+		<div><?php echo $course->get_instructor_html(); ?></div>
+	</div>
 </div>

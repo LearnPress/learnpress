@@ -9,13 +9,11 @@
  * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $item ) ) {
 	return;
-} ?>
+}
+?>
 
 <span class="item-name"><?php echo esc_html( $item->get_title( 'display' ) ); ?></span>

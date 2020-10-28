@@ -65,10 +65,6 @@ function learn_press_lesson_comment_form() {
 
 }
 
-function learn_press_blank_comments_template() {
-	return learn_press_locate_template( 'global/blank-comments.php' );
-}
-
 /**
  * Add class css js-action to element comment reply
  */

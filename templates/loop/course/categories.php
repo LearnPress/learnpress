@@ -7,12 +7,13 @@
  * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+defined( 'ABSPATH' ) || exit;
 
-$categories = get_the_term_list( '', 'course_category');
+$categories = get_the_term_list( '', 'course_category' );
 ?>
-<?php if(!empty($categories)): ?>
-<div class="course-categories">
-	<?php echo $categories; ?>
-</div>
+
+<?php if ( ! empty( $categories ) ) : ?>
+	<div class="course-categories">
+		<?php echo $categories; ?>
+	</div>
 <?php endif; ?>

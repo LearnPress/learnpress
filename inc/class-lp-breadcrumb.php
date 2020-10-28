@@ -149,14 +149,16 @@ class LP_Breadcrumb {
 		if ( LP_COURSE_CPT === get_post_type( $post ) ) {
 			$this->prepend_courses_page();
 
-			if ( $terms = learn_press_get_course_terms(
+			$terms = learn_press_get_course_terms(
 				$post->ID,
 				'course_category',
 				array(
 					'orderby' => 'parent',
 					'order'   => 'DESC',
 				)
-			) ) {
+			);
+
+			if ( $terms ) {
 				$main_term = apply_filters( 'learn_press_breadcrumb_main_term', $terms[0], $terms );
 				$this->term_ancestors( $main_term->term_id, 'course_category' );
 				$this->add_crumb( $main_term->name, get_term_link( $main_term ) );
@@ -239,7 +241,9 @@ class LP_Breadcrumb {
 		$_name = $course_page_id ? get_the_title( $course_page_id ) : '';
 
 		if ( ! $_name ) {
-			if ( $course_post_type = get_post_type_object( LP_COURSE_CPT ) ) {
+			$course_post_type = get_post_type_object( LP_COURSE_CPT );
+
+			if ( $course_post_type ) {
 				$_name = $course_post_type->labels->singular_name;
 			}
 		}

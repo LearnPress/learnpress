@@ -56,7 +56,7 @@ class LP_Thumbnail_Helper {
 
 		if ( ! $image ) {
 			$image = LP()->image( 'no-image.png' );
-			$image = sprintf( '<img src="%s" alt="%s">', $image, _x( 'course thumbnail', 'no course thumbnail', 'learnpress' ) );
+			$image = sprintf( '<img src="%s" alt="%s">', esc_url( $image ), _x( 'course thumbnail', 'no course thumbnail', 'learnpress' ) );
 		}
 
 		// @deprecated

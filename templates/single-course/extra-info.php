@@ -2,24 +2,18 @@
 /**
  * Template for displaying extra info as toggle
  *
- * @version 4.0.0
  * @author  ThimPress
  * @package LearnPress/Templates
+ * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+defined( 'ABSPATH' ) || exit;
 
-/**
- * @var string $title
- * @var array  $items
- * @var bool   $checked
- */
-
-if ( !isset( $checked ) ) {
+if ( ! isset( $checked ) ) {
 	$checked = false;
 }
-
 ?>
+
 <input type="radio" name="course-extra-box-ratio" id="course-extra-box-ratio-<?php echo sanitize_key( $title ); ?>" <?php checked( $checked ); ?>/>
 
 <div class="course-extra-box">
@@ -29,20 +23,11 @@ if ( !isset( $checked ) ) {
 
 	<div class="course-extra-box__content">
 		<div class="course-extra-box__content-inner">
-			<?php if ( sanitize_key( $title ) == 'targetaudiences' ): ?>
-				<ul>
-					<?php foreach ( $items as $item ) { ?>
-						<li><?php echo $item; ?></li>
-					<?php } ?>
-				</ul>
-			<?php else: ?>
-				<ul>
-					<?php foreach ( $items as $item ) { ?>
-						<li><?php echo $item; ?></li>
-					<?php } ?>
-				</ul>
-			<?php endif; ?>
-
+			<ul>
+				<?php foreach ( $items as $item ) : ?>
+					<li><?php echo $item; ?></li>
+				<?php endforeach; ?>
+			</ul>
 		</div>
 	</div>
 </div>

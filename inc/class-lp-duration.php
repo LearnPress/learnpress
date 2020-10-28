@@ -4,7 +4,6 @@
  * Class LP_Duration
  */
 class LP_Duration {
-
 	/**
 	 * @var int
 	 */

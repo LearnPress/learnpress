@@ -2,21 +2,17 @@
 /**
  * Template for displaying course sidebar.
  *
- * @version 4.0.0
  * @author  ThimPress
  * @package LearnPress/Templates
+ * @version 4.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
-ob_start();
-dynamic_sidebar( 'course-sidebar' );
-$output = ob_get_clean();
-
 /**
  * Hide sidebar if there is no content
  */
-if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
+if ( ! is_active_sidebar( 'course-sidebar' ) && ! LP()->template( 'course' )->has_sidebar() ) {
 	return;
 }
 ?>
@@ -25,7 +21,6 @@ if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
 	<div class="course-summary-sidebar__inner">
 		<div class="course-sidebar-top">
 			<?php
-
 			/**
 			 * LP Hook
 			 *
@@ -53,10 +48,10 @@ if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
 			?>
 		</div>
 
-		<div class="course-sidebar-secondary">
-			<?php
-			echo $output;
-			?>
-		</div>
+		<?php if ( is_active_sidebar( 'course-sidebar' ) ) : ?>
+			<div class="course-sidebar-secondary">
+				<?php dynamic_sidebar( 'course-sidebar' ); ?>
+			</div>
+		<?php endif; ?>
 	</div>
 </aside>

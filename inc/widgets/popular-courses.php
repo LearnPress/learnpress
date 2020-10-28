@@ -2,7 +2,7 @@
 /**
  * Popular Courses Widget.
  *
- * @author  ThimPress
+ * @author  ThimPress <nhamdv>
  * @category Widgets
  * @package  Learnpress/Widgets
  * @version  4.0.0
@@ -12,10 +12,6 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
-
-	/**
-	 * Class LP_Widget_Popular_Courses
-	 */
 	class LP_Widget_Popular_Courses extends LP_Widget {
 
 		public function __construct() {
@@ -97,7 +93,7 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 
 			$this->widget_start( $args, $instance );
 
-			include learn_press_locate_template( 'widgets/popular-courses/default.php' );
+			include learn_press_locate_template( 'widgets/popular-courses.php' );
 
 			$this->widget_end( $args );
 

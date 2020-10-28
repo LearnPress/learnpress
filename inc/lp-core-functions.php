@@ -2028,40 +2028,6 @@ function learn_press_remove_cookie( $name ) {
 	}
 }
 
-function learn_press_clear_notices() {
-
-}
-
-/**
- * Display all notices from queue and clear queue if required
- *
- * @param bool|true $clear
- */
-function learn_press_print_notices( $clear = true ) {
-	if ( $notices = learn_press_session_get( 'notices' ) ) {
-		// Allow to reorder the position of notices
-		$notice_types = apply_filters( 'learn_press_notice_types', array( 'error', 'success', 'notice' ) );
-
-		foreach ( $notice_types as $notice_type ) {
-			if ( ! empty( $notices[ $notice_type ] ) ) {
-				learn_press_get_template(
-					"notices/{$notice_type}.php",
-					array(
-						'messages' => $notices[ $notice_type ],
-					)
-				);
-			}
-		}
-
-		// clear queue if required
-		if ( $clear ) {
-			learn_press_clear_notices();
-		}
-	}
-}
-
-// add_filter( 'the_content', '_learn_press_print_notices', 1000 );
-
 /**
  * Filter the login url so third-party can be customize
  *

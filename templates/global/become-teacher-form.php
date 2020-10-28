@@ -9,15 +9,12 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 ?>
 
 <div id="learn-press-become-teacher-form" class="become-teacher-form learn-press-form">
 
-    <form name="become-teacher-form" method="post" enctype="multipart/form-data" action="">
+	<form name="become-teacher-form" method="post" enctype="multipart/form-data" action="">
 
 		<?php do_action( 'learn-press/before-become-teacher-form' ); ?>
 
@@ -25,6 +22,6 @@ defined( 'ABSPATH' ) || exit();
 
 		<?php do_action( 'learn-press/after-become-teacher-form' ); ?>
 
-    </form>
+	</form>
 
 </div>

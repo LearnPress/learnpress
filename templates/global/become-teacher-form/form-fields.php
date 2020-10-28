@@ -2,11 +2,9 @@
 /**
  * Template for displaying become teacher form.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/global/become-teacher-form/form-fields.php.
- *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
 defined( 'ABSPATH' ) || exit();

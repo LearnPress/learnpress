@@ -9,12 +9,11 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $course = learn_press_get_course() ) {
+$course = learn_press_get_course();
+
+if ( ! $course ) {
 	return;
 }
 ?>

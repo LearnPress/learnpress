@@ -1,50 +1,12 @@
 <?php
+defined( 'ABSPATH' ) || exit;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
 if ( ! class_exists( 'LP_AJAX' ) ) {
-	/**
-	 * Class LP_AJAX
-	 */
 	class LP_AJAX {
 		/**
 		 * Init common ajax events
 		 */
 		public static function init() {
-			/*
-			$ajaxEvents = array(
-				'load_quiz_question'  => true,
-				'load_prev_question'  => false,
-				'load_next_question'  => false,
-				'finish_quiz'         => true,
-				'retake_quiz'         => true, // anonymous user can retake quiz
-				'take_free_course'    => false,
-				'load_lesson_content' => false,
-				'load_next_lesson'    => false,
-				'load_prev_lesson'    => false,
-				'finish_course'       => false,
-				'not_going'           => false,load_more_courses
-				'take_course'         => true,
-				'start_quiz'          => true,
-				'fetch_question'      => true,
-				'upload-user-avatar'  => false,
-				'check-user-email'    => true
-			);
-
-			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
-				$ajax_func = preg_replace( '/-/', '_', $ajax_event );
-				add_action( 'wp_ajax_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
-
-				if ( $nopriv ) {
-					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
-				}
-			}*/
-			/**
-			 * action-name
-			 *      :nopriv => Allows calling AJAX with user is not logged in
-			 *      :nonce  => Requires checking nonce with value of request param action-name-nonce before doing AJAX
-			 */
 			$ajax_events = array(
 				'checkout-user-email-exists:nopriv',
 				'recover-order',
@@ -57,7 +19,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'external-link:nopriv',
 				'save-uploaded-user-avatar',
 				'load-more-courses',
-				// 'register-user:nopriv',
 			);
 
 			$ajax_events = apply_filters( 'learn-press/ajax/events', $ajax_events );
@@ -137,60 +98,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				wp_redirect( $link );
 				exit();
 			}
-		}
-
-		public static function register_user() {
-			if ( ! get_option( 'users_can_register' ) ) {
-				wp_die( __( 'Sorry! Registration is not allowed on this site.', 'learnpress' ) );
-			}
-
-			if ( ! wp_verify_nonce( LP_Request::get( 'learn-press-register-nonce' ), 'learn-press-register' ) ) {
-				wp_die( __( 'Bad request.', 'learnpress' ) );
-			}
-
-			$username = LP_Request::get_string( 'user_login' );
-			$password = LP_Request::get_string( 'user_password' );
-			$email    = LP_Request::get_email( 'user_email' );
-
-			try {
-				$error = apply_filters( 'learn-press/registration-error', new WP_Error(), $username, $password, $email );
-
-				if ( $error->get_error_code() ) {
-					throw new Exception( $error->get_error_message() );
-				}
-				$new_user = LP_User_CURD::create_user( $email, $username, $password );
-
-				if ( is_wp_error( $new_user ) ) {
-					throw new Exception( $new_user->get_error_message() );
-				}
-
-				// Login new user
-				global $current_user;
-
-				$current_user = get_user_by( 'id', $new_user );
-				wp_set_auth_cookie( $new_user, true );
-
-			} catch ( Exception $e ) {
-				learn_press_add_message( $e->getMessage(), 'error' );
-			}
-
-			$redirect = LP_Request::get( 'redirect' );
-			if ( ! $redirect ) {
-				if ( ! $redirect = wp_get_raw_referer() ) {
-					$redirect = learn_press_get_page_link( 'profile' );
-				}
-			}
-
-			$response = array(
-				'result'   => learn_press_message_count( 'error' ) ? 'error' : 'success',
-				'message'  => learn_press_get_messages( true ),
-				'redirect' => $redirect,
-			);
-
-			learn_press_send_json( $response );
-
-			wp_redirect( wp_validate_redirect( apply_filters( 'learn-press/registration-redirect', $redirect ), learn_press_get_page_link( 'profile' ) ) );
-			exit;
 		}
 
 		public static function checkout() {

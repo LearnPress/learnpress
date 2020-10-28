@@ -3,16 +3,11 @@
  * Template for displaying content of single course with curriculum and
  * item's content inside it
  *
- * This template can be overridden by copying it to yourtheme/learnpress/content-single-course.php
- *
  * @author  ThimPress
  * @package LearnPress/Templates
  * @version 4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 /**

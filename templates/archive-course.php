@@ -2,9 +2,9 @@
 /**
  * Template for displaying content of archive courses page.
  *
- * @version 4.x.x
  * @author  ThimPress
  * @package LearnPress/Templates
+ * @version 4.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * @since 4.0.0
  *
- * @see   LP_Template_General::template_header()
+ * @see LP_Template_General::template_header()
  */
 do_action( 'learn-press/template-header' );
 
@@ -25,7 +25,6 @@ $page_title = learn_press_page_title( false );
 ?>
 
 <div class="lp-content-area">
-
 	<?php if ( $page_title ) : ?>
 		<header class="learn-press-courses-header">
 			<h1><?php echo $page_title; ?></h1>
@@ -33,7 +32,6 @@ $page_title = learn_press_page_title( false );
 	<?php endif; ?>
 
 	<?php
-
 	/**
 	 * LP Hook
 	 */
@@ -69,6 +67,7 @@ $page_title = learn_press_page_title( false );
 	do_action( 'learn-press/sidebar' );
 	?>
 </div>
+
 <?php
 /**
  * @since 4.0.0

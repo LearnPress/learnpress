@@ -104,20 +104,6 @@ class LP_Course_Query extends LP_Object_Query {
 			}
 		}
 
-		// if ( $query_vars['post_status'] === 'enrolled' ) {
-		// $user_id                   = isset( $query_vars['user'] ) ? $query_vars['user'] : 0;
-		// $query_vars['post_status'] = array( 'publish' );
-		//
-		// $curd      = new LP_User_CURD();
-		// $purchased = $curd->query_purchased_courses( 0, array( 'limit' => - 1 ) );
-		//
-		// if ( $purchased->get_items() ) {
-		// $post_in = LP_Helper::list_pluck( $purchased->get_items(), 'get_course_id' );
-		//
-		// $query_vars['post__in'] = $post_in;
-		// }
-		// }
-
 		return apply_filters( 'learn-press/course-object-wp-query-args', $query_vars );
 	}
 

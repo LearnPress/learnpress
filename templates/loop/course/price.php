@@ -9,30 +9,26 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $course = learn_press_get_course() ) {
+$course = learn_press_get_course();
+
+if ( ! $course ) {
 	return;
 }
+
+$price_html = $course->get_price_html();
 ?>
 
 <div class="course-price">
 
-	<?php if ( $price_html = $course->get_price_html() ) { ?>
+	<?php if ( $price_html ) : ?>
 
-		<?php if ( $course->get_origin_price() != $course->get_price() ) { ?>
+		<?php if ( $course->get_origin_price() != $course->get_price() ) : ?>
+			<span class="origin-price"><?php echo $course->get_origin_price_html(); ?></span>
+		<?php endif; ?>
 
-			<?php $origin_price_html = $course->get_origin_price_html(); ?>
+		<span class="price"><?php echo $price_html; ?></span>
 
-            <span class="origin-price"><?php echo $origin_price_html; ?></span>
-
-		<?php } ?>
-
-        <span class="price"><?php echo $price_html; ?></span>
-
-	<?php } ?>
-
+	<?php endif; ?>
 </div>

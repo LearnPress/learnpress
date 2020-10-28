@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Widget_Featured_Courses' ) ) {
 
 			$this->widget_start( $args, $instance );
 
-			include learn_press_locate_template( 'widgets/featured-courses/default.php' );
+			include learn_press_locate_template( 'widgets/featured-courses.php' );
 
 			$this->widget_end( $args );
 

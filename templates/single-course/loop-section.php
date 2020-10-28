@@ -26,7 +26,7 @@ $user_course = $user->get_course_data( get_the_ID() );
 $items       = $section->get_items();
 ?>
 
-<li <?php $section->main_class(); ?> id="section-<?php echo $section->get_slug(); ?>" data-id="<?php echo esc_attr( $section->get_slug() ); ?>" data-section-id="<?php echo $section->get_id(); ?>">
+<li <?php $section->main_class(); ?> id="section-<?php echo esc_attr( $section->get_slug() ); ?>" data-id="<?php echo esc_attr( $section->get_slug() ); ?>" data-section-id="<?php echo esc_attr( $section->get_id() ); ?>">
 	<?php do_action( 'learn-press/before-section-summary', $section, $course->get_id() ); ?>
 
 	<div class="section-header">

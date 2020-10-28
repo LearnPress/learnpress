@@ -1,8 +1,8 @@
 <?php
 
 class LP_Datetime extends DateTime {
-	const DAY_ABBR = "\x021\x03";
-	const DAY_NAME = "\x022\x03";
+	const DAY_ABBR   = "\x021\x03";
+	const DAY_NAME   = "\x022\x03";
 	const MONTH_ABBR = "\x023\x03";
 	const MONTH_NAME = "\x024\x03";
 
@@ -41,13 +41,13 @@ class LP_Datetime extends DateTime {
 	public function __construct( $date = '', $tz = null ) {
 		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
 			self::$gmt = new DateTimeZone( 'GMT' );
-			self::$stz = new DateTimeZone( @date_default_timezone_get() );
+			self::$stz = new DateTimeZone( @date_default_timezone_get() ); // phpcs:ignore
 		}
 
 		if ( $date instanceof LP_Datetime ) {
 			$this->raw_date = $date->get_raw_date();
 		} else {
-			$this->raw_date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date;
+			$this->raw_date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date; // phpcs:ignore
 		}
 
 		if ( empty( $date ) ) {
@@ -62,11 +62,11 @@ class LP_Datetime extends DateTime {
 			$tz = null;
 		}
 
-		date_default_timezone_set( 'UTC' );
+		date_default_timezone_set( 'UTC' ); // phpcs:ignore
 
 		parent::__construct( $this->raw_date, $tz );
 
-		date_default_timezone_set( self::$stz->getName() );
+		date_default_timezone_set( self::$stz->getName() ); // phpcs:ignore
 
 		$this->tz = $tz;
 	}
@@ -95,12 +95,11 @@ class LP_Datetime extends DateTime {
 	 * Check if time is exceeded with current time
 	 */
 	public function is_exceeded( $interval = 0 ) {
-		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval;
+		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval; // phpcs:ignore
 	}
 
 	public static function timezone_string() {
-
-		if ( $timezone = get_option( 'timezone_string' ) ) {
+		if ( $timezone = get_option( 'timezone_string' ) ) { // phpcs:ignore
 			return $timezone;
 		}
 
@@ -115,14 +114,13 @@ class LP_Datetime extends DateTime {
 
 		$utc_offset *= 3600;
 
-
-		if ( $timezone = timezone_name_from_abbr( '', $utc_offset ) ) {
+		if ( $timezone = timezone_name_from_abbr( '', $utc_offset ) ) { // phpcs:ignore
 			return $timezone;
 		}
 
 		foreach ( timezone_abbreviations_list() as $abbr ) {
 			foreach ( $abbr as $city ) {
-				if ( ( (bool) date( 'I' ) === (bool) $city['dst'] ) && $city['timezone_id'] && ( intval( $city['offset'] ) === $utc_offset ) ) {
+				if ( ( (bool) date( 'I' ) === (bool) $city['dst'] ) && $city['timezone_id'] && ( intval( $city['offset'] ) === $utc_offset ) ) { // phpcs:ignore
 					return $city['timezone_id'];
 				}
 			}
@@ -161,7 +159,7 @@ class LP_Datetime extends DateTime {
 				break;
 
 			case 'isleapyear':
-				$value = (boolean) $this->format( 'L', true );
+				$value = (bool) $this->format( 'L', true );
 				break;
 
 			case 'day':
@@ -236,18 +234,17 @@ class LP_Datetime extends DateTime {
 				$return = $this->getTimestamp( $local );
 				break;
 			case 'human':
-				$time      = $this->getTimestamp( true );/// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
-				$time1      = $this->getTimestamp( false );/// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
-				$time_diff = (time() ) - $time1;
+				$time      = $this->getTimestamp( true );// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
+				$time1     = $this->getTimestamp( false );// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
+				$time_diff = ( time() ) - $time1;
 				if ( $time_diff > 0 ) {
-					$return = sprintf( __( '%s ago', 'learnpress' ), human_time_diff($time1, time() ) );
+					$return = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time1, time() ) );
 				}
 				break;
 			case 'mysql':
 				$return = $this->format( 'Y-m-d H:i:s', $local );
 				break;
 			default:
-
 				if ( $local == false && ! empty( self::$gmt ) ) {
 					parent::setTimezone( self::$gmt );
 				}
@@ -310,13 +307,12 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @return int|string
 	 * @since 4.0.0
-	 *
 	 */
 	public function toLocal( $format = 'Y-m-d H:i:s' ) {
 		$time = $this->getTimestamp() + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
 
 		if ( $format ) {
-			return date( $format, $time );
+			return date( $format, $time ); // phpcs:ignore
 		}
 
 		return $time;
@@ -379,11 +375,10 @@ class LP_Datetime extends DateTime {
 	 * @throws
 	 *
 	 * @since 3.3.0
-	 *
 	 */
 	public function addDuration( $seconds ) {
 		$timestamp = $this->getTimestamp();
-		parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz );
+		parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz ); // phpcs:ignore
 	}
 
 	public function getPeriod( $seconds, $local = true ) {
@@ -393,6 +388,6 @@ class LP_Datetime extends DateTime {
 			$seconds = strtotime( $seconds ) - time();
 		}
 
-		return date( 'Y-m-d H:i:s', $timestamp + $seconds );
+		return date( 'Y-m-d H:i:s', $timestamp + $seconds ); // phpcs:ignore
 	}
 }

@@ -22,9 +22,7 @@ $user = LP_Global::user();
 		<span class="item-meta course-item-preview" data-preview="<?php esc_attr_e( 'Preview', 'learnpress' ); ?>"></span>
 
 		<?php else : ?>
-			<?php $status_message = $item->get_status_title(); ?>
-		<span class="item-meta course-item-status" title="<?php echo isset( $status_message ) ? esc_attr( $status_message ) : ''; ?>"></span>
-
+		<span class="item-meta course-item-status" title="<?php echo esc_attr( $item->get_status_title() ); ?>"></span>
 		<?php endif; ?>
 
 	<?php do_action( 'learn-press/course-section-item/after-' . $item->get_item_type() . '-meta', $item ); ?>
