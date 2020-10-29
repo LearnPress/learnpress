@@ -259,7 +259,7 @@ add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_ite
  */
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_buttons', 5 );
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_numbers', 10 );
-add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_questions', 15 );
+//add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_questions', 15 );
 
 /**
  * @see learn_press_content_item_review_quiz_title
