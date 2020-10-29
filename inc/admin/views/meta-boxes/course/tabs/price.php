@@ -12,23 +12,23 @@ $current_user = learn_press_get_current_user();
 $role         = $current_user->get_role();
 ?>
 
-<?php if ( in_array( $role, apply_filters( 'learn-press/user-set-course-price-roles', array( 'admin', 'instructor' ) ) ) ) { ?>
-	<?php
-	$message    = '';
-	$price      = get_post_meta( $thepostid, '_lp_price', true );
-	$sale_price = '';
-	$start_date = '';
-	$end_date   = '';
+<div id="price_course_data" class="lp-meta-box-course-panels">
 
-	if ( $payment != 'free' ) {
-		$sale_price = get_post_meta( $thepostid, '_lp_sale_price', true );
-		$start_date = get_post_meta( $thepostid, '_lp_sale_start', true );
-		$end_date   = get_post_meta( $thepostid, '_lp_sale_end', true );
-	}
-	?>
-
-	<div id="price_course_data" class="lp-meta-box-course-panels">
+	<?php if ( in_array( $role, apply_filters( 'learn-press/user-set-course-price-roles', array( 'admin', 'instructor' ) ) ) ) { ?>
 		<?php
+		$message    = '';
+		$price      = get_post_meta( $thepostid, '_lp_price', true );
+		$sale_price = '';
+		$start_date = '';
+		$end_date   = '';
+
+		if ( $payment != 'free' ) {
+			$sale_price = get_post_meta( $thepostid, '_lp_sale_price', true );
+			$start_date = get_post_meta( $thepostid, '_lp_sale_start', true );
+			$end_date   = get_post_meta( $thepostid, '_lp_sale_end', true );
+		}
+
+		do_action( 'learnpress/course-settings/before-price' );
 
 		lp_meta_box_text_input_field(
 			array(
@@ -74,7 +74,10 @@ $role         = $current_user->get_role();
 				<a href="#" class="description lp_cancel_sale_schedule"><?php esc_html_e( 'Cancel', 'learnpress' ); ?></a>
 			</p>
 		</div>
-	</div>
-<?php } else { ?>
-	<p><?php esc_html_e( 'Price set by admin', 'learnpress' ); ?></p>
-<?php } ?>
+
+		<?php do_action( 'learnpress/course-settings/after-price' ); ?>
+
+	<?php } else { ?>
+		<p><?php esc_html_e( 'Price set by admin', 'learnpress' ); ?></p>
+	<?php } ?>
+</div>

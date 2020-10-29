@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) || exit;
 
 <div id="general_course_data" class="lp-meta-box-course-panels">
 	<?php
+	do_action( 'learnpress/course-settings/before-general' );
 
 	lp_meta_box_duration_field(
 		array(
@@ -116,5 +117,7 @@ defined( 'ABSPATH' ) || exit;
 			'default'     => '',
 		)
 	);
+
+	do_action( 'learnpress/course-settings/after-general' );
 	?>
 </div>

@@ -46,7 +46,7 @@ class LP_Hard_Cache {
 			return;
 		}
 
-		@wp_mkdir_p( self::$_root_path );
+		@wp_mkdir_p( self::$_root_path ); // phpcs:ignore
 	}
 
 	/**
@@ -59,7 +59,6 @@ class LP_Hard_Cache {
 	 * @return bool
 	 */
 	public static function replace( $key, $data, $group = '' ) {
-
 		if ( self::is_locked() ) {
 			return false;
 		}
@@ -83,7 +82,6 @@ class LP_Hard_Cache {
 	 * @return bool
 	 */
 	public static function set( $key, $data, $group = '' ) {
-
 		if ( self::is_locked() ) {
 			return false;
 		}
@@ -100,7 +98,6 @@ class LP_Hard_Cache {
 	 * @return bool
 	 */
 	public static function get( $key, $group = '' ) {
-
 		if ( self::is_locked() ) {
 			return false;
 		}
@@ -117,14 +114,13 @@ class LP_Hard_Cache {
 	 * @return bool|mixed
 	 */
 	public static function read( $key, $group = '' ) {
-
 		if ( self::is_locked() ) {
 			return false;
 		}
 
 		$file = self::get_file( $key, $group );
 		if ( file_exists( $file ) ) {
-			$f       = @fopen( $file, 'r' );
+			$f       = @fopen( $file, 'r' ); // phpcs:ignore
 			$content = fread( $f, filesize( $file ) );
 			fclose( $f );
 
@@ -184,7 +180,6 @@ class LP_Hard_Cache {
 	 * @return string
 	 */
 	protected static function get_file( $key, $group = '' ) {
-
 		if ( self::is_locked() ) {
 			return false;
 		}
@@ -192,7 +187,7 @@ class LP_Hard_Cache {
 		$path = array( self::$_root_path, $group );
 		$path = array_filter( $path );
 		$path = join( '/', $path );
-		@wp_mkdir_p( $path );
+		@wp_mkdir_p( $path ); // phpcs:ignore
 		$file = "{$path}/{$key}.cache";
 
 		return $file;

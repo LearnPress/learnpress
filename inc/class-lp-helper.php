@@ -95,7 +95,6 @@ class LP_Helper {
 	 * @param array|int $ids
 	 */
 	public static function cache_posts( $ids ) {
-
 		global $wpdb;
 
 		settype( $ids, 'array' );
@@ -103,11 +102,11 @@ class LP_Helper {
 		$query  = $wpdb->prepare(
 			"
 			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ')
-		',
-			$ids
-		);
+		', $ids ); // phpcs:ignore
 
-		if ( $posts = $wpdb->get_results( $query ) ) {
+		$posts = $wpdb->get_results( $query );
+
+		if ( $posts ) {
 			foreach ( $posts as $post ) {
 				wp_cache_set( $post->ID, $post, 'posts' );
 			}
@@ -289,7 +288,9 @@ class LP_Helper {
 			'post_status' => 'publish',
 		);
 
-		if ( ! $page_id = wp_insert_post( $args ) ) {
+		$page_id = wp_insert_post( $args );
+
+		if ( ! $page_id ) {
 			return false;
 		}
 
@@ -423,6 +424,7 @@ class LP_Helper {
 	 */
 	public static function prepare( $query, $args ) {
 		global $wpdb;
+
 		$args = func_get_args();
 		array_shift( $args );
 		$new_args = array();

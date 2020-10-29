@@ -193,7 +193,12 @@ class LP_Meta_Box_Course {
 	private static function output_tabs() {
 		global $post, $thepostid;
 
-		include 'tabs/general.php';
+		if ( empty( self::eduma_child_metabox_v3() ) ) {
+			include 'tabs/general.php';
+		} else {
+			self::eduma_child_metabox_v3();
+		}
+
 		include 'tabs/price.php';
 		include 'tabs/extra.php';
 		include 'tabs/author.php';
@@ -210,5 +215,76 @@ class LP_Meta_Box_Course {
 		}
 
 		return $a['priority'] < $b['priority'] ? -1 : 1;
+	}
+
+	/**
+	 * In child theme use metabox in v3,
+	 * so need use for child theme.
+	 * function in child: thim_add_course_meta.
+	 *
+	 * @return void
+	 */
+	public static function eduma_child_metabox_v3() {
+		$general = apply_filters( 'learn_press_course_settings_meta_box_args', null );
+
+		if ( ! empty( $general['fields'] ) ) {
+			?>
+
+			<div id="general_course_data" class="lp-meta-box-course-panels">
+
+			<?php
+			foreach ( $general['fields'] as $setting ) {
+				$field = wp_parse_args(
+					$setting,
+					array(
+						'id'   => '',
+						'name' => '',
+						'desc' => '',
+						'std'  => '',
+					)
+				);
+
+				switch ( $field['type'] ) {
+					case 'text':
+					case 'number':
+						lp_meta_box_text_input_field(
+							array(
+								'id'          => $field['id'],
+								'label'       => $field['name'],
+								'description' => $field['desc'],
+								'type'        => $field['type'],
+								'default'     => $field['std'],
+							)
+						);
+						break;
+
+					case 'textarea':
+						lp_meta_box_textarea_field(
+							array(
+								'id'          => $field['id'],
+								'label'       => $field['name'],
+								'description' => $field['desc'],
+								'default'     => $field['std'],
+							)
+						);
+						break;
+				}
+			}
+			?>
+			</div>
+			<?php
+		}
+	}
+
+	public static function save_eduma_child_metabox_v3( $post_id ) {
+		$general = apply_filters( 'learn_press_course_settings_meta_box_args', null );
+
+		if ( ! empty( $general['fields'] ) ) {
+			foreach ( $general['fields'] as $field ) {
+				$value = isset( $_POST[ $field['id'] ] ) ? wp_unslash( $_POST[ $field['id'] ] ) : '';
+
+				update_post_meta( $post_id, $field['id'], $value );
+			}
+		}
 	}
 }

@@ -88,7 +88,9 @@ class LP_Global {
 	 * @return bool
 	 */
 	public static function is_course_item_type( $type ) {
-		if ( $item = self::course_item() ) {
+		$item = self::course_item();
+
+		if ( $item ) {
 			return $type === get_post_type( $item->get_id() );
 		}
 

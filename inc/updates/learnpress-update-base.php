@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Update_Base
  *
@@ -44,11 +43,9 @@ class LP_Update_Base {
 
 	public function log_query( $query ) {
 		global $wpdb;
-		if ( preg_match_all( '#' . $wpdb->prefix . 'learnpress#im', $query )
-		     || preg_match_all( '#' . $wpdb->prefix . 'posts#im', $query )
-		     || preg_match_all( '#' . $wpdb->prefix . 'postmeta#im', $query )
-		) {
-			//LP_Debug::instance()->add( "===== " . $this->version . " ===== \n" . $query, 'query-updater', false, true );
+
+		if ( preg_match_all( '#' . $wpdb->prefix . 'learnpress#im', $query ) || preg_match_all( '#' . $wpdb->prefix . 'posts#im', $query ) || preg_match_all( '#' . $wpdb->prefix . 'postmeta#im', $query ) ) {
+			// LP_Debug::instance()->add( "===== " . $this->version . " ===== \n" . $query, 'query-updater', false, true );
 		}
 
 		return $query;
@@ -85,12 +82,11 @@ class LP_Update_Base {
 				if ( $callback == $step ) {
 					if ( is_callable( array( $this, $callback ) ) ) {
 
-						$this->output( "Running " . get_class( $this ) . '::' . $callback . "\n" );
+						$this->output( 'Running ' . get_class( $this ) . '::' . $callback . "\n" );
 						update_option( 'learnpress_updater_running_step', $step );
 						if ( $return = call_user_func( array( $this, $callback ) ) ) {
 							$this->_next_step();
 						}
-
 					} else {
 						$this->output( "$callback failed" );
 						$this->_next_step();
@@ -106,9 +102,7 @@ class LP_Update_Base {
 				$this->output( "Step {$step} not found" );
 				$this->_next_step();
 			}
-
-		}
-		catch ( Exception $exception ) {
+		} catch ( Exception $exception ) {
 			$this->output( $exception->getMessage() );
 			LP_Debug::rollbackTransaction();
 		}
@@ -160,7 +154,6 @@ class LP_Update_Base {
 			$next_step = end( $this->steps );
 		}
 
-		var_dump($next_step);
 		if ( $next_step ) {
 			update_option( 'learnpress_updater_step', $next_step );
 		} else {

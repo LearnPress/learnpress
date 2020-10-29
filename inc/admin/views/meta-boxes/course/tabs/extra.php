@@ -14,6 +14,9 @@ $faqs             = get_post_meta( $thepostid, '_lp_faqs', true );
 ?>
 
 <div id="extra_course_data" class="lp-meta-box-course-panels">
+
+	<?php do_action( 'learnpress/course-settings/before-extra' ); ?>
+
 	<div class="form-field lp_course_extra_meta_box">
 		<label for="_lp_requirements"><?php esc_html_e( 'Requirements', 'learnpress' ); ?></label>
 		<div class="lp_course_extra_meta_box__content">
@@ -121,4 +124,7 @@ $faqs             = get_post_meta( $thepostid, '_lp_faqs', true );
 			</a>
 		</div>
 	</div>
+
+	<?php do_action( 'learnpress/course-settings/after-extra' ); ?>
+
 </div>

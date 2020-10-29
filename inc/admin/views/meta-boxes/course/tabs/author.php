@@ -19,6 +19,8 @@ foreach ( $role as $_role ) {
 
 <div id="author_course_data" class="lp-meta-box-course-panels">
 	<?php
+	do_action( 'learnpress/course-settings/before-author' );
+
 	if ( is_super_admin() ) {
 		lp_meta_box_select_field(
 			array(
@@ -31,7 +33,7 @@ foreach ( $role as $_role ) {
 		);
 	}
 
-	do_action( 'lp_course_meta_box_author_settings' );
+	do_action( 'learnpress/course-settings/after-author' );
 	?>
 </div>
 

@@ -36,6 +36,8 @@ if ( $course ) {
 
 <div id="assessment_course_data" class="lp-meta-box-course-panels">
 	<?php
+	do_action( 'learnpress/course-settings/before-assessment' );
+
 	lp_meta_box_radio_field(
 		array(
 			'id'          => '_lp_course_result',
@@ -60,5 +62,7 @@ if ( $course ) {
 			'style'             => 'width: 60px;',
 		)
 	);
+
+	do_action( 'learnpress/course-settings/after-assessment' );
 	?>
 </div>

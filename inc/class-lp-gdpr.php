@@ -129,22 +129,28 @@ class LP_GDPR {
 			'done' => true,
 		);
 
-		if ( ! $wp_user = get_user_by( 'email', $email_address ) ) {
+		$wp_user = get_user_by( 'email', $email_address );
+
+		if ( ! $wp_user ) {
 			return $export_data;
 		}
 
 		$profile = LP_Profile::instance( $wp_user->ID );
 
-		if ( ! $query_orders = $profile->query_orders(
+		$query_orders = $profile->query_orders(
 			array(
 				'paged' => $page,
 				'limit' => $number,
 			)
-		) ) {
+		);
+
+		if ( ! $query_orders ) {
 			return $export_data;
 		}
 
-		if ( ! $orders = $query_orders->get_items() ) {
+		$orders = $query_orders->get_items();
+
+		if ( ! $orders ) {
 			return $export_data;
 		}
 
@@ -218,9 +224,13 @@ class LP_GDPR {
 			);
 		}
 
-		if ( $courses = (array) $query->get_items() ) {
+		$courses = (array) $query->get_items();
+
+		if ( $courses ) {
 			foreach ( $courses as $course_id ) {
-				if ( ! $course = learn_press_get_course( $course_id ) ) {
+				$course = learn_press_get_course( $course_id );
+
+				if ( ! $course ) {
 					continue;
 				}
 
@@ -265,11 +275,14 @@ class LP_GDPR {
 	 */
 	protected function _export_course_items( &$export_items, $course_id ) {
 		global $post;
+
 		$post = get_post( $course_id );
 		setup_postdata( $post );
 		$course = learn_press_get_course( $course_id );
 
-		if ( ! $items = $course->get_items() ) {
+		$items = $course->get_items();
+
+		if ( ! $items ) {
 			return;
 		}
 
@@ -315,7 +328,10 @@ class LP_GDPR {
 			'data' => array(),
 			'done' => true,
 		);
-		if ( ! $wp_user = get_user_by( 'email', $email_address ) ) {
+
+		$wp_user = get_user_by( 'email', $email_address );
+
+		if ( ! $wp_user ) {
 			return $export_data;
 		}
 
@@ -334,8 +350,9 @@ class LP_GDPR {
 		}
 
 		$export_items = array();
-		if ( $courses = (array) $query->get_items() ) {
+		$courses      = (array) $query->get_items();
 
+		if ( $courses ) {
 			foreach ( $courses as $course_data ) {
 
 				$course = learn_press_get_course( $course_data->get_id() );
@@ -408,7 +425,9 @@ class LP_GDPR {
 		setup_postdata( $post );
 		$course = learn_press_get_course( $course_data->get_id() );
 
-		if ( ! $items = $course_data->get_items() ) {
+		$items = $course_data->get_items();
+
+		if ( ! $items ) {
 			return;
 		}
 
@@ -467,7 +486,9 @@ class LP_GDPR {
 	 * @return array|bool|LP_Query_List_Table
 	 */
 	protected function get_courses_by_email( $type = 'own', $email, $args = array() ) {
-		if ( ! $user = get_user_by( 'email', $email ) ) {
+		$user = get_user_by( 'email', $email );
+
+		if ( ! $user ) {
 			return false;
 		}
 
@@ -498,7 +519,9 @@ class LP_GDPR {
 			'done'           => 1,
 		);
 
-		if ( ! $wp_user = get_user_by( 'email', $email ) ) {
+		$wp_user = get_user_by( 'email', $email );
+
+		if ( ! $wp_user ) {
 			return $eraser_data;
 		}
 
@@ -519,17 +542,17 @@ class LP_GDPR {
 	 * @param int $page
 	 */
 	protected function _eraser_orders( $user_id, $page ) {
-
 		$curd       = new LP_User_CURD();
 		$order_curd = new LP_Order_CURD();
 
-		if ( ! $orders = $curd->get_orders( $user_id, array( 'group_by_order' => true ) ) ) {
+		$orders = $curd->get_orders( $user_id, array( 'group_by_order' => true ) );
+
+		if ( ! $orders ) {
 			return;
 		}
 
 		foreach ( $orders as $order_id => $course_ids ) {
 			$order = learn_press_get_order( $order_id );
-			// $order_curd->delete_order_data( $order );
 			wp_delete_post( $order_id );
 		}
 
@@ -553,8 +576,8 @@ class LP_GDPR {
 	 * @param int $page
 	 */
 	protected function _eraser_courses( $user_id, $page ) {
-
 		global $wpdb;
+
 		$query = $wpdb->prepare(
 			"
 			SELECT *
@@ -565,7 +588,10 @@ class LP_GDPR {
 			$user_id,
 			LP_COURSE_CPT
 		);
-		if ( ! $post_ids = $wpdb->get_col( $query ) ) {
+
+		$post_ids = $wpdb->get_col( $query );
+
+		if ( ! $post_ids ) {
 			return;
 		}
 
