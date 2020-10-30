@@ -72,6 +72,15 @@ define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
 define( 'LP_COMPLETE_ITEM_FAIL', 170 );
 define( 'LP_COMPRESS_ASSETS', false );
 
+// Pages
+define( 'LP_PAGE_CHECKOUT', 'lp_page_checkout' );
+define( 'LP_PAGE_COURSES', 'lp_page_courses' );
+define( 'LP_PAGE_COURSE', 'lp_page_course' );
+define( 'LP_PAGE_QIZ', 'lp_page_quiz' );
+define( 'LP_PAGE_QUESTION', 'lp_page_question' );
+define( 'LP_PAGE_PROFILE', 'lp_page_profile' );
+define( 'LP_PAGE_BECOME_A_TEACHER', 'lp_page_become_a_teacher' );
+
 /**
  * Thim Market library
  */

@@ -81,15 +81,15 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "/assets/apps/js/admin/editor/course.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/course.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "/assets/apps/js/admin/editor/actions/course-section.js":
-/*!****************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/course-section.js ***!
-  \****************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/course-section.js":
+/*!********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/course-section.js ***!
+  \********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -275,10 +275,10 @@ var CourseCurriculum = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/actions/course.js":
-/*!********************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/course.js ***!
-  \********************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/course.js":
+/*!************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/course.js ***!
+  \************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -334,10 +334,10 @@ var Course = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/actions/modal-course-items.js":
-/*!********************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/modal-course-items.js ***!
-  \********************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/modal-course-items.js":
+/*!************************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/modal-course-items.js ***!
+  \************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -413,17 +413,17 @@ var ModalCourseItems = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/course.js":
-/*!************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/course.js ***!
-  \************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/course.js":
+/*!****************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/course.js ***!
+  \****************************************************************************************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./http */ "/assets/apps/js/admin/editor/http.js");
-/* harmony import */ var _store_course__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store/course */ "/assets/apps/js/admin/editor/store/course.js");
+/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./http */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/http.js");
+/* harmony import */ var _store_course__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store/course */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/course.js");
 
 
 window.$Vue = window.$Vue || Vue;
@@ -451,10 +451,10 @@ $(document).ready(function () {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/getters/course-section.js":
-/*!****************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/course-section.js ***!
-  \****************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/course-section.js":
+/*!********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/course-section.js ***!
+  \********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -490,10 +490,10 @@ var CourseCurriculum = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/getters/course.js":
-/*!********************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/course.js ***!
-  \********************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/course.js":
+/*!************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/course.js ***!
+  \************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -532,10 +532,10 @@ var Course = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/getters/modal-course-items.js":
-/*!********************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/modal-course-items.js ***!
-  \********************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/modal-course-items.js":
+/*!************************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/modal-course-items.js ***!
+  \************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -575,10 +575,10 @@ var Getters = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/http.js":
-/*!**********************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/http.js ***!
-  \**********************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/http.js":
+/*!**************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/http.js ***!
+  \**************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -645,10 +645,10 @@ function HTTP(options) {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/mutations/course-section.js":
-/*!******************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/course-section.js ***!
-  \******************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/course-section.js":
+/*!**********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/course-section.js ***!
+  \**********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -818,10 +818,10 @@ var CourseCurriculum = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/mutations/course.js":
-/*!**********************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/course.js ***!
-  \**********************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/course.js":
+/*!**************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/course.js ***!
+  \**************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -849,10 +849,10 @@ var Course = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/mutations/modal-course-items.js":
-/*!**********************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/modal-course-items.js ***!
-  \**********************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/modal-course-items.js":
+/*!**************************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/modal-course-items.js ***!
+  \**************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -899,18 +899,18 @@ var Mutations = {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/store/course-section.js":
-/*!**************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/course-section.js ***!
-  \**************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/course-section.js":
+/*!******************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/course-section.js ***!
+  \******************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_course_section__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions/course-section */ "/assets/apps/js/admin/editor/actions/course-section.js");
-/* harmony import */ var _mutations_course_section__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/course-section */ "/assets/apps/js/admin/editor/mutations/course-section.js");
-/* harmony import */ var _getters_course_section__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../getters/course-section */ "/assets/apps/js/admin/editor/getters/course-section.js");
+/* harmony import */ var _actions_course_section__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions/course-section */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/course-section.js");
+/* harmony import */ var _mutations_course_section__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/course-section */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/course-section.js");
+/* harmony import */ var _getters_course_section__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../getters/course-section */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/course-section.js");
 
 
 
@@ -938,21 +938,21 @@ var $ = jQuery;
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/store/course.js":
-/*!******************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/course.js ***!
-  \******************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/course.js":
+/*!**********************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/course.js ***!
+  \**********************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _store_modal_course_items__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store/modal-course-items */ "/assets/apps/js/admin/editor/store/modal-course-items.js");
-/* harmony import */ var _store_course_section__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../store/course-section */ "/assets/apps/js/admin/editor/store/course-section.js");
-/* harmony import */ var _store_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../store/i18n */ "/assets/apps/js/admin/editor/store/i18n.js");
-/* harmony import */ var _getters_course__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../getters/course */ "/assets/apps/js/admin/editor/getters/course.js");
-/* harmony import */ var _mutations_course__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mutations/course */ "/assets/apps/js/admin/editor/mutations/course.js");
-/* harmony import */ var _actions_course__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../actions/course */ "/assets/apps/js/admin/editor/actions/course.js");
+/* harmony import */ var _store_modal_course_items__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store/modal-course-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/modal-course-items.js");
+/* harmony import */ var _store_course_section__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../store/course-section */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/course-section.js");
+/* harmony import */ var _store_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../store/i18n */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/i18n.js");
+/* harmony import */ var _getters_course__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../getters/course */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/course.js");
+/* harmony import */ var _mutations_course__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mutations/course */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/course.js");
+/* harmony import */ var _actions_course__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../actions/course */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/course.js");
 
 
 
@@ -983,10 +983,10 @@ var Course = function Course(data) {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/store/i18n.js":
-/*!****************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/i18n.js ***!
-  \****************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/i18n.js":
+/*!********************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/i18n.js ***!
+  \********************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1012,18 +1012,18 @@ var i18n = function i18n(i18n) {
 
 /***/ }),
 
-/***/ "/assets/apps/js/admin/editor/store/modal-course-items.js":
-/*!******************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/modal-course-items.js ***!
-  \******************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/modal-course-items.js":
+/*!**********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/modal-course-items.js ***!
+  \**********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _getters_modal_course_items__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/modal-course-items */ "/assets/apps/js/admin/editor/getters/modal-course-items.js");
-/* harmony import */ var _mutations_modal_course_items__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/modal-course-items */ "/assets/apps/js/admin/editor/mutations/modal-course-items.js");
-/* harmony import */ var _actions_modal_course_items__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/modal-course-items */ "/assets/apps/js/admin/editor/actions/modal-course-items.js");
+/* harmony import */ var _getters_modal_course_items__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/modal-course-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/modal-course-items.js");
+/* harmony import */ var _mutations_modal_course_items__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/modal-course-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/modal-course-items.js");
+/* harmony import */ var _actions_modal_course_items__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/modal-course-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/modal-course-items.js");
 
 
 

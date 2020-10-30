@@ -81,15 +81,15 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/quiz.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/quiz.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/modal-quiz-items.js":
-/*!******************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/modal-quiz-items.js ***!
-  \******************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/modal-quiz-items.js":
+/*!**********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/modal-quiz-items.js ***!
+  \**********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -166,10 +166,10 @@ var ModalQuizItems = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/question-list.js":
-/*!***************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/question-list.js ***!
-  \***************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/question-list.js":
+/*!*******************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/question-list.js ***!
+  \*******************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -463,10 +463,10 @@ var QuestionList = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/quiz.js":
-/*!******************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/quiz.js ***!
-  \******************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/quiz.js":
+/*!**********************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/quiz.js ***!
+  \**********************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -504,10 +504,10 @@ var Quiz = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/modal-quiz-items.js":
-/*!******************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/modal-quiz-items.js ***!
-  \******************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/modal-quiz-items.js":
+/*!**********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/modal-quiz-items.js ***!
+  \**********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -547,10 +547,10 @@ var ModalQuizItems = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/question-list.js":
-/*!***************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/question-list.js ***!
-  \***************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/question-list.js":
+/*!*******************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/question-list.js ***!
+  \*******************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -598,10 +598,10 @@ var QuestionList = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/quiz.js":
-/*!******************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/quiz.js ***!
-  \******************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/quiz.js":
+/*!**********************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/quiz.js ***!
+  \**********************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -637,10 +637,10 @@ var Quiz = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/http.js":
-/*!**********************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/http.js ***!
-  \**********************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/http.js":
+/*!**************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/http.js ***!
+  \**************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -707,10 +707,10 @@ function HTTP(options) {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/modal-quiz-items.js":
-/*!********************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/modal-quiz-items.js ***!
-  \********************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/modal-quiz-items.js":
+/*!************************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/modal-quiz-items.js ***!
+  \************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -757,10 +757,10 @@ var ModalQuizItems = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/question-list.js":
-/*!*****************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/question-list.js ***!
-  \*****************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/question-list.js":
+/*!*********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/question-list.js ***!
+  \*********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -945,10 +945,10 @@ var QuestionList = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/quiz.js":
-/*!********************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/quiz.js ***!
-  \********************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/quiz.js":
+/*!************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/quiz.js ***!
+  \************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -975,17 +975,17 @@ var Quiz = {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/quiz.js":
-/*!**********************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/quiz.js ***!
-  \**********************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/quiz.js":
+/*!**************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/quiz.js ***!
+  \**************************************************************************************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _store_quiz__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/quiz.js");
-/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./http */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/http.js");
+/* harmony import */ var _store_quiz__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/quiz.js");
+/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./http */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/http.js");
 
 
 window.$Vue = window.$Vue || Vue;
@@ -1012,10 +1012,10 @@ window.jQuery(document).ready(function () {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/i18n.js":
-/*!****************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/i18n.js ***!
-  \****************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/i18n.js":
+/*!********************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/i18n.js ***!
+  \********************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1041,18 +1041,18 @@ var i18n = function i18n(i18n) {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/modal-quiz-items.js":
-/*!****************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/modal-quiz-items.js ***!
-  \****************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/modal-quiz-items.js":
+/*!********************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/modal-quiz-items.js ***!
+  \********************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _getters_modal_quiz_items__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/modal-quiz-items.js");
-/* harmony import */ var _mutations_modal_quiz_items__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/modal-quiz-items.js");
-/* harmony import */ var _actions_modal_quiz_items__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/modal-quiz-items.js");
+/* harmony import */ var _getters_modal_quiz_items__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/modal-quiz-items.js");
+/* harmony import */ var _mutations_modal_quiz_items__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/modal-quiz-items.js");
+/* harmony import */ var _actions_modal_quiz_items__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/modal-quiz-items.js");
 
 
 
@@ -1077,18 +1077,18 @@ var Quiz = function Quiz(data) {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/question-list.js":
-/*!*************************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/question-list.js ***!
-  \*************************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/question-list.js":
+/*!*****************************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/question-list.js ***!
+  \*****************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _getters_question_list__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/question-list.js");
-/* harmony import */ var _mutations_question_list__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/question-list.js");
-/* harmony import */ var _actions_question_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/question-list.js");
+/* harmony import */ var _getters_question_list__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/question-list.js");
+/* harmony import */ var _mutations_question_list__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/question-list.js");
+/* harmony import */ var _actions_question_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/question-list.js");
 
 
 
@@ -1122,21 +1122,21 @@ var QuestionList = function QuestionList(data) {
 
 /***/ }),
 
-/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/quiz.js":
-/*!****************************************************************************************************************!*\
-  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/quiz.js ***!
-  \****************************************************************************************************************/
+/***/ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/quiz.js":
+/*!********************************************************************************************************************!*\
+  !*** E:/Work/Webs/WP/Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/quiz.js ***!
+  \********************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _getters_quiz__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/getters/quiz.js");
-/* harmony import */ var _mutations_quiz__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/mutations/quiz.js");
-/* harmony import */ var _actions_quiz__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/actions/quiz.js");
-/* harmony import */ var _store_modal_quiz_items__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../store/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/modal-quiz-items.js");
-/* harmony import */ var _store_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store/i18n */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/i18n.js");
-/* harmony import */ var _store_question_list__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../store/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/apps/js/admin/editor/store/question-list.js");
+/* harmony import */ var _getters_quiz__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getters/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/getters/quiz.js");
+/* harmony import */ var _mutations_quiz__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mutations/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/mutations/quiz.js");
+/* harmony import */ var _actions_quiz__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/quiz */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/actions/quiz.js");
+/* harmony import */ var _store_modal_quiz_items__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../store/modal-quiz-items */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/modal-quiz-items.js");
+/* harmony import */ var _store_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store/i18n */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/i18n.js");
+/* harmony import */ var _store_question_list__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../store/question-list */ "../../../Clouds/Thimpress/Plugins/github.com/learnpress/assets/src/apps/js/admin/editor/store/question-list.js");
 
 
 

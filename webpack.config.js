@@ -29,18 +29,10 @@ const extractConfig = {
 
 module.exports = {
 	entry: {
-		// './assets/js/admin/admin': './assets/js/admin/admin.js', // no need build with webpack, only copy
-		// './assets/js/admin/learnpress': './assets/js/admin/learnpress.js', // no need build with webpack
-		// './assets/js/admin/utils': './assets/src/js/admin/utils/index.js',
 		'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
 		'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
 		'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
-		//'./assets/js/admin/conditional-logic': './assets/src/js/admin/utils/conditional-logic.js',
-		// './assets/js/admin/partial/meta-box-order': './assets/js/admin/partial/meta-box-order.js', // no need build with webpack
-		// './assets/js/admin/pages/statistic': './assets/js/admin/pages/statistic.js', // no need build with webpack
-		// './assets/js/admin/pages/setup': './assets/js/admin/pages/setup.js', // no need build with webpack
-		// './assets/js/frontend/learnpress': './assets/js/frontend/learnpress.js', no need build with webpack
-		// './assets/js/utils': './assets/src/js/utils/index.js',
+		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
 	},
 	output: {
 		path: path.resolve( __dirname ),

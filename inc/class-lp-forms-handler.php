@@ -23,21 +23,20 @@ class LP_Forms_Handler {
 		$field_names = wp_list_pluck( $fields, 'id' );
 		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), $field_names );
 
-		$result = array(
-			'message' => array(),
-			'result'  => 'success'
-		);
+		$result = new LP_REST_Response();
 
 		foreach ( $fields as $field ) {
 			$name     = $field['id'];
 			$validate = apply_filters( 'learn-press/become-teacher-validate-field', $name, $field, $args[ $name ] );
 
 			if ( is_wp_error( $validate ) ) {
-				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
-				$result['result']           = 'error';
+				$result->message = learn_press_get_message( $validate->get_error_message(), 'error' );
+
+				wp_send_json( $result );
 			} elseif ( ! $validate ) {
-				$result['message'][ $name ] = learn_press_get_message( sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) ), 'error' );
-				$result['result']           = 'error';
+				$result->message = learn_press_get_message( sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) ), 'error' );
+
+				wp_send_json( $result );
 			}
 		}
 
@@ -46,16 +45,14 @@ class LP_Forms_Handler {
 			'become_teacher_validate_field'
 		) );
 
-		$result = apply_filters( 'learn-press/become-teacher-request-result', $result );
+		$user = get_user_by( 'email', $args['bat_email'] );
+		update_user_meta( $user->ID, '_requested_become_teacher', 'yes' );
+		do_action( 'learn-press/become-a-teacher-sent', $args );
 
-		if ( $result['result'] === 'success' ) {
-			$result['message'][] = learn_press_get_message( __( 'Thank you! Your message has been sent.', 'learnpress' ), 'success' );
-			$user                = get_user_by( 'email', $args['bat_email'] );
-			update_user_meta( $user->ID, '_requested_become_teacher', 'yes' );
-			do_action( 'learn-press/become-a-teacher-sent', $args );
-		}
+		$result->status  = 'success';
+		$result->message = learn_press_get_message( __( 'Thank you! Your message has been sent.', 'learnpress' ), 'success' );
 
-		learn_press_maybe_send_json( $result );
+		wp_send_json( $result );
 	}
 
 	/**

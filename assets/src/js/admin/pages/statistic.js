@@ -253,9 +253,8 @@
 				return this.value == '';
 			} ).get().length || ! _valid_date() );
 		} );
-	}
-	;
-	$( document ).ready( function() {
+	};
+	$( function() {
 		if ( typeof $.fn.datepicker != 'undefined' ) {
 			$( '.date-picker' ).datepicker( {
 				dateFormat: 'yy/mm/dd',

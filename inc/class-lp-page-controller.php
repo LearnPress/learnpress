@@ -934,6 +934,42 @@ class LP_Page_Controller {
 		return $content;
 	}
 
+	/**
+	 * Get page current on frontend
+	 *
+	 * @return string
+	 */
+	public static function page_current() {
+		if ( learn_press_is_checkout() ) {
+			return LP_PAGE_CHECKOUT;
+		} elseif ( learn_press_is_courses() ) {
+			return LP_PAGE_COURSES;
+		} elseif ( learn_press_is_profile() ) {
+			return LP_PAGE_PROFILE;
+		} elseif ( self::is_pae_become_a_teacher() ) {
+			return LP_PAGE_BECOME_A_TEACHER;
+		} elseif (LP_Global::course_item_quiz()) {
+			return LP_PAGE_QIZ;
+		} else {
+			return apply_filters('learnpress/page/current', '');
+		}
+	}
+
+	/**
+	 * Check is page Become a teacher
+	 *
+	 * @return bool|mixed|void
+	 */
+	public static function is_pae_become_a_teacher() {
+		$page_id = learn_press_get_page_id( 'become_a_teacher' );
+
+		if ( $page_id && is_page( $page_id ) ) {
+			return true;
+		}
+
+		return apply_filters( 'learnpress/is-page/become-a-teacher', false );
+	}
+
 	public static function instance() {
 		if ( ! self::$_instance ) {
 			self::$_instance = new self();
@@ -943,4 +979,10 @@ class LP_Page_Controller {
 	}
 }
 
-LP_Page_Controller::instance();
+if ( ! function_exists( 'lp_page_controller' ) ) {
+	function lp_page_controller() {
+		return LP_Page_Controller::instance();
+	}
+
+	lp_page_controller();
+}

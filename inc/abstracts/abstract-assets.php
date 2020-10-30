@@ -22,16 +22,6 @@ abstract class LP_Abstract_Assets {
 	/**
 	 * @var array
 	 */
-	protected $_enqueue_scripts = array();
-
-	/**
-	 * @var array
-	 */
-	protected $_enqueue_styles = array();
-
-	/**
-	 * @var array
-	 */
 	protected $_script_data = array();
 
 	public static $_min_assets = '.min';
@@ -124,9 +114,7 @@ abstract class LP_Abstract_Assets {
 	public function enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
 		$this->register_style( $handle, $src, $deps, $ver, $media );
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
-			call_user_func_array( 'wp_enqueue_style', $this->_styles[ $handle ] );
-		} else {
-			$this->_enqueue_styles[] = $handle;
+			wp_enqueue_style( $handle, $src, $deps, $ver, $media );
 		}
 	}
 
@@ -142,9 +130,7 @@ abstract class LP_Abstract_Assets {
 	public function enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
 		$this->register_script( $handle, $src, $deps, $ver, $in_footer );
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
-			call_user_func_array( 'wp_enqueue_script', $this->_scripts[ $handle ] );
-		} else {
-			$this->_enqueue_scripts[] = $handle;
+			wp_enqueue_script( $handle, $src, $deps, $ver, $in_footer );
 		}
 	}
 
@@ -182,57 +168,60 @@ abstract class LP_Abstract_Assets {
 
 	/**
 	 * Register scripts and styles for admin.
+	 *
+	 * @editor tungnx
+	 * @reason not user
 	 */
-	protected function _register_scripts() {
-		$wp_scripts = $this->_get_wp_scripts();
-		$wp_styles  = $this->_get_wp_styles();
-
-		// No use cache if debug mode is turn on
-		$no_cache = '';
-		if ( learn_press_is_debug() ) {
-			$no_cache = microtime( true );
-		}
-
-		if ( $default_scripts = $this->_get_scripts() ) {
-			foreach ( $default_scripts as $handle => $data ) {
-				if ( empty( $data['url'] ) ) {
-					continue;
-				}
-
-				$data = wp_parse_args(
-					$data,
-					array(
-						'deps' => null,
-						'ver'  => LEARNPRESS_VERSION
-					)
-				);
-				$wp_scripts->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
-			}
-
-		}
-
-		if ( $default_styles = $this->_get_styles() ) {
-
-			foreach ( $default_styles as $handle => $data ) {
-				if ( is_string( $data ) ) {
-					$data = array( 'url' => $data );
-				}
-
-				$data = wp_parse_args(
-					$data,
-					array(
-						'deps' => null,
-						'ver'  => LEARNPRESS_VERSION
-					)
-				);
-				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
-			}
-
-		}
-	}
+//	protected function _register_scripts() {
+//		$wp_scripts = $this->_get_wp_scripts();
+//		$wp_styles  = $this->_get_wp_styles();
+//
+//		// No use cache if debug mode is turn on
+//		$no_cache = '';
+//		if ( learn_press_is_debug() ) {
+//			$no_cache = microtime( true );
+//		}
+//
+//		if ( $default_scripts = $this->_get_scripts() ) {
+//			foreach ( $default_scripts as $handle => $data ) {
+//				if ( empty( $data['url'] ) ) {
+//					continue;
+//				}
+//
+//				$data = wp_parse_args(
+//					$data,
+//					array(
+//						'deps' => null,
+//						'ver'  => LEARNPRESS_VERSION
+//					)
+//				);
+//				$wp_scripts->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
+//			}
+//
+//		}
+//
+//		if ( $default_styles = $this->_get_styles() ) {
+//
+//			foreach ( $default_styles as $handle => $data ) {
+//				if ( is_string( $data ) ) {
+//					$data = array( 'url' => $data );
+//				}
+//
+//				$data = wp_parse_args(
+//					$data,
+//					array(
+//						'deps' => null,
+//						'ver'  => LEARNPRESS_VERSION
+//					)
+//				);
+//				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
+//			}
+//
+//		}
+//	}
 
 	public function get_script_var_name( $handle ) {
-		$handle = str_replace( array( 'learn-press', '_', '-' ), ' ', $handle );
+		$handle = str_replace( array( 'learn-press', '_', '-', 'lp' ), ' ', $handle );
 		$handle = ucwords( $handle );
 
 		return 'lp' . str_replace( ' ', '', $handle ) . 'Settings';
@@ -262,7 +251,8 @@ abstract class LP_Abstract_Assets {
 			$data = apply_filters( 'learn-press/script-data', $data, $handle );
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 
-			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
+			// comment by tungnx
+			/*if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
 					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
 						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
@@ -273,7 +263,7 @@ abstract class LP_Abstract_Assets {
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}
 				}
-			}
+			}*/
 
 			if ( is_admin() ) {
 				$wp_scripts->print_extra_script( $handle );
