@@ -2,13 +2,11 @@
 /**
  * Widget class
  *
- * @class LP_Widget
  * @package  Learnpress/Abstracts
+ * @author ThimPress <nhamdv>
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * LP_Widget

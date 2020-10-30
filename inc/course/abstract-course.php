@@ -1866,13 +1866,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @return bool|string
-		 */
-		public function get_video_embed() {
-			return LP_Thumbnail_Helper::instance()->get_video_embed( $this );
-		}
-
-		/**
 		 * @return int
 		 * @deprecated 4.0.0
 		 */

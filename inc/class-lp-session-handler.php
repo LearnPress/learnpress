@@ -118,10 +118,6 @@ class LP_Session_Handler implements ArrayAccess {
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 		add_action( 'wp', array( $this, 'schedule_event' ) );
 		add_action( $this->schedule_id, array( $this, 'cleanup_sessions' ), 10 );
-
-		if ( ! is_user_logged_in() ) {
-			// add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
-		}
 	}
 
 	protected function init() {
@@ -305,17 +301,13 @@ class LP_Session_Handler implements ArrayAccess {
 		$this->_customer_id = $this->generate_customer_id();
 	}
 
-	public function nonce_user_logged_out( $uid ) {
-		return $this->has_session() && $this->_customer_id ? $this->_customer_id : $uid;
-	}
-
 	public function cleanup_sessions() {
 		global $wpdb;
 
 		if ( ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
 
 			// Delete expired sessions
-			$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) ); // phpcs:ignore
 
 			// Invalidate cache
 			$this->incr_cache_prefix( LP_SESSION_CACHE_GROUP );
@@ -333,7 +325,7 @@ class LP_Session_Handler implements ArrayAccess {
 		$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
 		// echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
 		if ( false === $value ) {
-			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id );
+			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id ); // phpcs:ignore
 			$value = $wpdb->get_var( $q );
 			if ( is_null( $value ) ) {
 				$value = $default;

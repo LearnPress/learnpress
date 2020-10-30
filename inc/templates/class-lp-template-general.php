@@ -107,28 +107,6 @@ class LP_Template_General extends LP_Abstract_Template {
 		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
 	}
 
-	public function order_guest_email() {
-		$checkout = LP()->checkout();
-
-		if ( $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
-			learn_press_get_template( 'checkout/guest-email.php' );
-		}
-	}
-
-	/**
-	 * Display link of all courses page
-	 */
-	public function back_to_class_button() {
-		$courses_link = learn_press_get_page_link( 'courses' );
-		if ( ! $courses_link ) {
-			return;
-		}
-		?>
-
-		<a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
-		<?php
-	}
-
 	public function preview_course_notice() {
 		if ( ! learn_press_is_preview_course() ) {
 			return;

@@ -133,7 +133,9 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		if ( is_bool( $status ) ) {
 			$this->enabled = $status;
 
-			if ( ! $options = get_option( 'learn_press_' . $this->get_id() ) ) {
+			$options = get_option( 'learn_press_' . $this->get_id() );
+
+			if ( ! $options ) {
 				$options = array();
 			}
 

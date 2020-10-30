@@ -54,15 +54,14 @@ class LP_Nonce_Helper {
 
 	public static function quiz_action( $action, $quiz_id, $course_id, $ajax = false ) {
 		?>
-        <input type="hidden" name="quiz-id" value="<?php echo $quiz_id; ?>">
-        <input type="hidden" name="course-id" value="<?php echo $course_id; ?>">
+		<input type="hidden" name="quiz-id" value="<?php echo $quiz_id; ?>">
+		<input type="hidden" name="course-id" value="<?php echo $course_id; ?>">
 		<?php if ( $ajax ) { ?>
-            <input type="hidden" name="lp-ajax" value="<?php echo $action; ?>-quiz">
+			<input type="hidden" name="lp-ajax" value="<?php echo $action; ?>-quiz">
 		<?php } else { ?>
-            <input type="hidden" name="lp-<?php echo $action; ?>-quiz" value="<?php echo $quiz_id; ?>">
+			<input type="hidden" name="lp-<?php echo $action; ?>-quiz" value="<?php echo $quiz_id; ?>">
 		<?php } ?>
-        <input type="hidden" name="<?php echo $action; ?>-quiz-nonce"
-               value="<?php echo wp_create_nonce( sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) ); ?>">
+		<input type="hidden" name="<?php echo $action; ?>-quiz-nonce" value="<?php echo wp_create_nonce( sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) ); ?>">
 		<?php
 	}
 

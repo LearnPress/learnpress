@@ -17,20 +17,17 @@ class LP_Schedules {
 	 */
 	public function __construct() {
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
-			//add_filter( 'init', array( $this, '_update_current_user_course_expired' ) );
-			add_filter( 'init', array(
-				$this,
-				'fix_bug_auto_finish_not_enrolled_course'
-			) );// remove this code on LP 3.2.3
+			add_filter( 'init', array( $this, 'fix_bug_auto_finish_not_enrolled_course' ) );// remove this code on LP 3.2.3
 		}
 		add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
 
 		$args = array( false );
+
 		if ( ! wp_next_scheduled( 'learn_press_schedule_', $args ) ) {
 			wp_schedule_event( time(), 'lp_cron_schedule', 'learn_press_schedule_', $args );
 		}
 
-		//add_action( 'plugins_loaded', array( $this, 'run' ) );
+		// add_action( 'plugins_loaded', array( $this, 'run' ) );
 		add_action( 'learn-press/schedule-event-handler', array( $this, 'schedules' ) );
 
 		LP_Request::register_ajax( 'cron:nopriv', array( $this, 'do_cron' ) );
@@ -39,7 +36,7 @@ class LP_Schedules {
 	public function cron_schedules( $schedules ) {
 		$schedules['lp_cron_schedule'] = array(
 			'interval' => 180,
-			'display'  => __( 'Every 3 Minutes', 'learnpress' )
+			'display'  => __( 'Every 3 Minutes', 'learnpress' ),
 		);
 
 		return $schedules;
@@ -49,13 +46,10 @@ class LP_Schedules {
 	 * @since 3.3.0
 	 */
 	public function schedules() {
-		/**
-		 * @var LP_Background_Schedule_Items $scheduleItems
-		 */
-		$scheduleItems = LP()->background( 'schedule-items' );
-		$scheduleItems->run();
+		$schedule_items = LP()->background( 'schedule-items' );
+		$schedule_items->run();
 
-		LP_Debug::instance()->add( [ $_REQUEST, $_SERVER ], 'x.' . date( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
+		LP_Debug::instance()->add( array( $_REQUEST, $_SERVER ), 'x.' . gmdate( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
 	}
 
 	/**
@@ -64,21 +58,18 @@ class LP_Schedules {
 	 * @since 3.3.0
 	 */
 	public function run() {
-
-		// Stop
 		if ( 'yes' !== get_option( '_lp_schedule_enable' ) ) {
 			return;
 		}
 
-		$time     = microtime( true );
-		$nextTime = get_option( '_lp_schedule_next' );
-		$duration = get_option( '_lp_schedule_event_duration', 15 );//default 15 seconds
-		$exceed   = $time - $nextTime;
+		$time      = microtime( true );
+		$next_time = get_option( '_lp_schedule_next' );
+		$duration  = get_option( '_lp_schedule_event_duration', 15 );// default 15 seconds
+		$exceed    = $time - $next_time;
 
-		//
 		if ( $exceed >= $duration ) {
 			update_option( '_lp_schedule_next', $time );
-			// Do what you want here...
+			// Do what you want here.../ Nhamdv: oh really?
 			do_action( 'learn-press/schedule-event-handler' );
 
 			update_option( '_lp_schedule_r', 'no' );
@@ -107,53 +98,8 @@ class LP_Schedules {
 			wp_die( 'Forbidden access!' );
 		}
 
-		/**
-		 * @var LP_Background_Schedule_Items $scheduleItems
-		 */
-		$scheduleItems = LP()->background( 'schedule-items' );
-		$scheduleItems->run();
-
-
-//		global $wpdb;
-//		$query = $wpdb->prepare( "
-//			SELECT X.*
-//			FROM(
-//			SELECT ui.*
-//                FROM {$wpdb->learnpress_user_items} ui
-//				LEFT JOIN {$wpdb->learnpress_user_items} uix
-//					ON ui.item_id = uix.item_id
-//						AND ui.user_id = uix.user_id
-//						AND ui.user_item_id < uix.user_item_id
-//			    WHERE uix.user_item_id IS NULL
-//			) X
-//			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
-//			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
-//			WHERE X.item_type = %s
-//				AND X.status = %s
-//				AND expiration_time_gmt <= UTC_TIMESTAMP()
-//			LIMIT 0, 10
-//		", LP_COURSE_CPT, 'enrolled' );
-//
-//		learn_press_debug( $wpdb->get_results( $query ) );
-
-
-//		echo $query = $wpdb->prepare("
-//			SELECT ui.*
-//			FROM (
-//			   SELECT user_id, item_id, MAX(user_item_id) max_id
-//			   FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
-//			) AS X
-// 			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = x.user_id AND ui.item_id = x.item_id AND ui.user_item_id = x.max_id
-// 			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
-//			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
-//			WHERE ui.item_type = %s
-//				AND ui.status = %s
-// 			ORDER BY user_item_id ASC
-//		", LP_COURSE_CPT, 'enrolled');
-//
-//		learn_press_debug($wpdb->get_results($query));
-
-		//LP_Debug::instance()->add( $query, 'auto-complete-course', false, true );
+		$schedule_items = LP()->background( 'schedule-items' );
+		$schedule_items->run();
 
 		die();
 	}
@@ -164,127 +110,64 @@ class LP_Schedules {
 	 */
 	public function fix_bug_auto_finish_not_enrolled_course() {
 		global $wpdb;
+
 		$user_id = get_current_user_id();
+
 		if ( empty( $wpdb->learnpress_user_items ) ) {
 			return;
 		}
-		$query = $wpdb->prepare( "
-						SELECT user_item_id
-						FROM `{$wpdb->learnpress_user_items}`
-						WHERE 
-							`user_id` = %s
-							AND `ref_type` = %s
-							AND `status` = %s
-							AND `start_time` = %s 
-						",
-			$user_id, LP_ORDER_CPT, 'finished', '0000-00-00 00:00:00' );
+
+		$query = $wpdb->prepare(
+			"
+			SELECT user_item_id
+			FROM `{$wpdb->learnpress_user_items}`
+			WHERE
+				`user_id` = %s
+				AND `ref_type` = %s
+				AND `status` = %s
+				AND `start_time` = %s
+			",
+			$user_id,
+			LP_ORDER_CPT,
+			'finished',
+			'0000-00-00 00:00:00'
+		);
 
 		$user_item_ids = $wpdb->get_col( $query );
 
-		// $user_item_ids = array(99991,99992,99993,99994,99995);// test data
 		if ( ! empty( $user_item_ids ) ) {
-
-			// clear item metas
-			$sql_delete = $wpdb->prepare( "
-							DELETE
-							FROM `{$wpdb->learnpress_user_itemmeta}`
-							WHERE `learnpress_user_item_id` IN (" . implode( ', ', array_fill( 0, count( $user_item_ids ), '%s' ) ) . ")
-							",
+			$sql_delete = $wpdb->prepare(
+				"
+				DELETE
+				FROM `{$wpdb->learnpress_user_itemmeta}`
+				WHERE `learnpress_user_item_id` IN (" . implode( ', ', array_fill( 0, count( $user_item_ids ), '%s' ) ) . ')
+				',
 				$user_item_ids
 			);
 			$wpdb->query( $sql_delete );
 
 			// update status of item to purchased
-			$sql_update = $wpdb->prepare( "
-							UPDATE `{$wpdb->learnpress_user_items}`
-							SET `start_time_gmt` = %s,
-								`end_time` = %s, 
-								`end_time_gmt` = %s,
-								`status` = %s
-							WHERE `user_item_id` IN (" . implode( ', ', array_fill( 0, count( $user_item_ids ), '%s' ) ) . ")
-							",
-				array_merge( array(
-					'0000-00-00 00:00:00',
-					'0000-00-00 00:00:00',
-					'0000-00-00 00:00:00',
-					'purchased'
-				), $user_item_ids )
+			$sql_update = $wpdb->prepare(
+				"
+				UPDATE `{$wpdb->learnpress_user_items}`
+				SET `start_time_gmt` = %s,
+					`end_time` = %s,
+					`end_time_gmt` = %s,
+					`status` = %s
+				WHERE `user_item_id` IN (" . implode( ', ', array_fill( 0, count( $user_item_ids ), '%s' ) ) . ')
+				',
+				array_merge(
+					array(
+						'0000-00-00 00:00:00',
+						'0000-00-00 00:00:00',
+						'0000-00-00 00:00:00',
+						'purchased',
+					),
+					$user_item_ids
+				)
 			);
+
 			$wpdb->query( $sql_update );
-		}
-	}
-
-	/**
-	 * Auto finished course when time is expired for users
-	 *
-	 * @updated
-	 * + 3.3.0: Changed sql
-	 */
-	public function _update_current_user_course_expired() {
-		global $wpdb, $post;
-		$user_id = get_current_user_id();
-
-		if ( empty( $wpdb->learnpress_user_items ) ) {
-			return;
-		}
-
-		$query = $wpdb->prepare( "
-			SELECT * 
-			FROM ( 
-				SELECT * 
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_type = %s
-				AND user_id = %d 
-				AND status = %s
-				AND expiration_time_gmt <= UTC_TIMESTAMP()
-				ORDER BY item_id, user_item_id DESC 
-			) X 
-			GROUP BY item_id
-			LIMIT 0, 10
-		", LP_COURSE_CPT, $user_id, 'enrolled' );
-		LP_Debug::instance()->add( $query, 'auto-complete-course', false, true );
-
-		$results = $wpdb->get_results( $query );
-
-		if ( ! empty( $results ) ) {
-			$course_ids = wp_list_pluck( $results, 'item_id' );
-			$order_ids  = wp_list_pluck( $results, 'ref_id' );
-
-			LP_Helper_CURD::cache_posts( array_merge( $course_ids, $order_ids ) );
-
-			foreach ( $results as $row ) {
-				$course = learn_press_get_course( $row->item_id );
-
-				if ( ! $course ) {
-					// Delete data from table user-items if the course does not exist.
-					if ( get_post_type( $row->item_id ) !== LP_COURSE_CPT ) {
-						LP_Repair_Database::instance()->remove_user_items_by_user_item_id( $row->user_item_id );
-					}
-
-					continue;
-				}
-
-				$check_args = array(
-					'start_time' => strtotime( $row->start_time )
-				);
-
-				//$expired = $course->is_expired( $row->user_id, $check_args );
-				//if ( $expired && 0 >= $expired ) {
-
-				$user = learn_press_get_user( $row->user_id );
-				if ( ! $user ) {
-					return;
-				}
-				$this->_update_user_course_items_expired( $course, $user );
-				$user_course  = $user->get_course_data( $course->get_id() );
-				$item_meta_id = $user_course->finish();
-				if ( $item_meta_id ) {
-					learn_press_update_user_item_meta( $item_meta_id, 'finishing_type', 'automation_zz' );
-					do_action( 'learn_press_user_finish_course_automation', $course->get_id(), $item_meta_id, $user->get_id() );
-				}
-
-				//}
-			}
 		}
 	}
 
@@ -295,8 +178,9 @@ class LP_Schedules {
 	 */
 	protected function _get_item_course( $user_item_id ) {
 		$curd = new LP_User_CURD();
+		$item = $curd->get_user_item_by_id( $user_item_id );
 
-		if ( $item = $curd->get_user_item_by_id( $user_item_id ) ) {
+		if ( $item ) {
 			return new LP_User_Item_Course( $item );
 		}
 
@@ -315,13 +199,13 @@ class LP_Schedules {
 		LP()->add_background_task( array( 'auto-complete-item' => rand() ), 'schedule-items' );
 
 		return false;
-		if ( ! $items = $this->_get_items() ) {
+		if ( ! $items = $this->_get_items() ) { // phpcs:ignore
 			return $template;
 		}
 
 		foreach ( $items as $user_item_id => $course_items ) {
 
-			if ( ! $item_course = $this->_get_item_course( $user_item_id ) ) {
+			if ( ! $item_course = $this->_get_item_course( $user_item_id ) ) { // phpcs:ignore
 				continue;
 			}
 
@@ -332,20 +216,8 @@ class LP_Schedules {
 
 			$data = array(
 				'user_item_id' => $user_item_id,
-				'items'        => isset( $course_items['items'] ) ? $course_items['items'] : array()
+				'items'        => isset( $course_items['items'] ) ? $course_items['items'] : array(),
 			);
-
-			/**
-			 * if ( isset( $course_items['items'] ) ) {
-			 * foreach ( $course_items['items'] as $user_item_id ) {
-			 * if ( $item = $item_course->get_item( $user_item_id ) ) {
-			 * if ( $item->is_exceeded() ) {
-			 * $data['items'][] = $user_item_id;
-			 * }
-			 * }
-			 * }
-			 * }*/
-			// Add to queue for processing in background
 		}
 
 		return $template;
@@ -355,7 +227,7 @@ class LP_Schedules {
 	function add_custom_cron_intervals( $schedules ) {
 		$schedules['ten_minutes'] = array(
 			'interval' => 600,
-			'display'  => 'Once Every 10 Minutes'
+			'display'  => 'Once Every 10 Minutes',
 		);
 
 		return (array) $schedules;
@@ -409,14 +281,13 @@ class LP_Schedules {
 	 */
 	private function _update_user_course_expired() {
 		global $wpdb;
-		/**
-		 * Find all courses that user did not finish yet
-		 */
+
 		if ( empty( $wpdb->learnpress_user_items ) ) {
 			return;
 		}
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE user_item_id IN(
@@ -429,7 +300,12 @@ class LP_Schedules {
 				GROUP BY item_id, user_id
 			  )
 			LIMIT 0, 10
-		", '0000-00-00 00:00:00', 'lp_course', 'enrolled', '0000-00-00 00:00:00' );
+		",
+			'0000-00-00 00:00:00',
+			'lp_course',
+			'enrolled',
+			'0000-00-00 00:00:00'
+		);
 
 		if ( $results = $wpdb->get_results( $query ) ) {
 			$ids = array();
@@ -442,7 +318,7 @@ class LP_Schedules {
 					continue;
 				}
 				$check_args = array(
-					'start_time' => strtotime( $row->start_time )
+					'start_time' => strtotime( $row->start_time ),
 				);
 				$expired    = $course->is_expired( $row->user_id, $check_args );
 				if ( 0 >= $expired ) {
@@ -458,7 +334,7 @@ class LP_Schedules {
 					$item_meta_id = $user_course->finish();
 
 					if ( $item_meta_id ) {
-// 						learn_press_update_user_item_meta( $item_meta_id, '_finish_type', 'automation' ); // worked with old version
+						// learn_press_update_user_item_meta( $item_meta_id, '_finish_type', 'automation' ); // worked with old version
 						learn_press_update_user_item_meta( $item_meta_id, 'finishing_type', 'automation_x' );
 						do_action( 'learn_press_user_finish_course_automation', $course->get_id(), $item_meta_id, $user->get_id() );
 					}
@@ -475,14 +351,20 @@ class LP_Schedules {
 		/**
 		 * Find all courses that user did not finish yet
 		 */
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE end_time = %s
 			AND start_time <> %s
 			AND item_type <> %s
 			AND ref_id = %d
-		", '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'lp_course', $course->get_id() );
+		",
+			'0000-00-00 00:00:00',
+			'0000-00-00 00:00:00',
+			'lp_course',
+			$course->get_id()
+		);
 		if ( $results = $wpdb->get_results( $query ) ) {
 			foreach ( $results as $row ) {
 				switch ( $row->item_type ) {

@@ -56,9 +56,12 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 				$course_id = $atts['id'];
 			}
 
-			if ( $course_id && $course = learn_press_get_course( $course_id ) ) {
+			$course = learn_press_get_course( $course_id );
+
+			if ( $course_id && $course ) {
 				LP_Global::set_course( $course );
 				global $post;
+
 				$post = get_post( $course_id );
 
 				setup_postdata( $post );

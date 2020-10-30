@@ -155,7 +155,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		// If course is reached limitation.
 		if ( ! $course->is_in_stock() ) {
-			if ( $message = apply_filters( 'learn-press/maximum-students-reach', __( 'This course is out of stock', 'learnpress' ) ) ) {
+			$message = apply_filters( 'learn-press/maximum-students-reach', esc_html__( 'This course is out of stock', 'learnpress' ) );
+
+			if ( $message ) {
 				learn_press_display_message( $message );
 			}
 
@@ -173,8 +175,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		// If the order contains course is processing
-		if ( ( $order = $user->get_course_order( $course->get_id() ) ) && $order->get_status() === 'processing' ) {
-			if ( $message = apply_filters( 'learn-press/order-processing-message', __( 'Your order is waiting for processing', 'learnpress' ) ) ) {
+		$order = $user->get_course_order( $course->get_id() );
+		if ( $order && $order->get_status() === 'processing' ) {
+			$message = apply_filters( 'learn-press/order-processing-message', __( 'Your order is waiting for processing', 'learnpress' ) );
+
+			if ( $message ) {
 				learn_press_display_message( $message );
 			}
 

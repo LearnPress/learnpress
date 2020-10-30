@@ -18,7 +18,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function __construct() {
 		$this->_error_messages = array(
-			'QUIZ_NOT_EXISTS' => __( 'Quiz does not exists.', 'learnpress' )
+			'QUIZ_NOT_EXISTS' => __( 'Quiz does not exists.', 'learnpress' ),
 		);
 	}
 
@@ -42,10 +42,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				'passing_grade_type' => get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ),
 				'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true ),
 				'instant_check'      => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ),
-				//'count_check_answer' => get_post_meta( $quiz->get_id(), '_lp_check_answer_count', true ),
-				//'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
-				//'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
-				//'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
+				// 'count_check_answer' => get_post_meta( $quiz->get_id(), '_lp_check_answer_count', true ),
+				// 'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
+				// 'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
+				// 'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
 				'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review', true ),
 			)
 		);
@@ -83,15 +83,22 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		if ( false === $questions || $quiz->get_no_cache() ) {
 			global $wpdb;
 			$questions = array();
-			$query     = $wpdb->prepare( "
+			$query     = $wpdb->prepare(
+				"
 				SELECT p.*, qq.question_order AS `order`
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
 				WHERE qq.quiz_id = %d
 				AND p.post_status = %s
 				ORDER BY question_order ASC
-			", $id, 'publish' );
-			if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
+			",
+				$id,
+				'publish'
+			);
+
+			$results = $wpdb->get_results( $query, OBJECT_K );
+
+			if ( $results ) {
 				foreach ( $results as $k => $v ) {
 					wp_cache_set( $v->ID, $v, 'posts' );
 					$questions[ $v->ID ] = $v->ID;
@@ -126,18 +133,26 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	protected function _load_question_answers( &$quiz ) {
 		global $wpdb;
 
-		if ( ! $questions = $this->get_questions( $quiz ) ) {
+		$questions = $this->get_questions( $quiz );
+
+		if ( ! $questions ) {
 			return;
 		}
 
 		$format = array_fill( 0, sizeof( $questions ), '%d' );
-		$query  = $wpdb->prepare( "
+		$query  = $wpdb->prepare(
+			"
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_question_answers
-			WHERE question_id IN(" . join( ',', $format ) . ")
+			WHERE question_id IN(" . join( ',', $format ) . ')
 			ORDER BY question_id, `order` ASC
-		", $questions );
-		if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
+		',
+			$questions
+		);
+
+		$results = $wpdb->get_results( $query, OBJECT_K );
+
+		if ( $results ) {
 			$answer_options = array();
 			$meta_ids       = array();
 			$group          = 0;
@@ -146,31 +161,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$answer_options[ $v->question_id ] = array();
 				}
 				$v = (array) $v;
-				// 4.0
-//				if ( $answer_data = LP_Helper::maybe_unserialize( $v['answer_data'] ) ) {
-//					foreach ( $answer_data as $kk => $vv ) {
-//						$v[ $kk ] = $vv;
-//					}
-//				}
-//				unset( $v['answer_data'] );
-
 
 				$answer_options[ $v['question_id'] ][] = $v;
-				/*$kk                                  = sizeof( $answer_options[ $v->question_id ] );
-
-				if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
-					foreach ( $answer_data as $data_key => $data_value ) {
-						$answer_options[ $v->question_id ][ $kk ][ $data_key ] = $data_value;
-					}
-				}
-				unset( $answer_options[ $v->question_id ][ $kk ]['answer_data'] );
-				if ( empty( $meta_ids[ $group ] ) ) {
-					$meta_ids[ $group ] = array();
-				}
-				$meta_ids[ $group ][] = $v->question_answer_id;
-				$group                = ceil( sizeof( $answer_options ) / 5 ) - 1;*/
-
-
 			}
 
 			foreach ( $answer_options as $question_id => $options ) {
@@ -178,40 +170,49 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 
 			foreach ( $meta_ids as $meta_id ) {
-				//$this->_load_question_answer_meta( $meta_id );
+				// $this->_load_question_answer_meta( $meta_id );
 			}
 
 			$fetched    = array_keys( $answer_options );
 			$un_fetched = array_diff( $questions, $fetched );
-			//$this->_load_question_answer_meta( $answer_options );
+			// $this->_load_question_answer_meta( $answer_options );
 		} else {
 			$un_fetched = $questions;
 		}
+
 		if ( $un_fetched ) {
 			foreach ( $un_fetched as $question_id ) {
 				LP_Object_Cache::set( 'answer-options-' . $question_id, array(), 'learn-press/questions' );
 			}
 		}
-		//
 
 	}
 
 	protected function _load_question_answer_meta( $meta_ids ) {
 		global $wpdb;
+
 		$format = array_fill( 0, sizeof( $meta_ids ), '%d' );
-		$query  = $wpdb->prepare( "
+		$query  = $wpdb->prepare(
+			"
 			SELECT *
 			FROM {$wpdb->learnpress_question_answermeta}
-			WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ")
-		", $meta_ids );
-		if ( $metas = $wpdb->get_results( $query ) ) {
+			WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ')
+		',
+			$meta_ids
+		);
+
+		$metas = $wpdb->get_results( $query );
+
+		if ( $metas ) {
 			foreach ( $metas as $meta ) {
 				$key        = $meta->meta_key;
 				$option_key = $meta->learnpress_question_answer_id;
+
 				if ( ! empty( $answer_options[ $option_key ] ) ) {
 					if ( $key == 'checked' ) {
 						$key = 'is_true';
 					}
+
 					$answer_options[ $option_key ][ $key ] = $meta->meta_value;
 				}
 			}
@@ -230,7 +231,9 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		if ( ! $questions ) {
 			return $questions;
 		}
+
 		$first = reset( $questions );
+
 		if ( empty( $first['order'] ) ) {
 			return $questions;
 		}
@@ -254,30 +257,45 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function reorder_questions( $the_quiz, $questions = false ) {
 		global $wpdb;
-		if ( ! $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
+
+		$the_quiz = learn_press_get_quiz( $the_quiz );
+
+		if ( ! $the_quiz ) {
 			return false;
 		}
+
 		if ( false == $questions ) {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT quiz_question_id as id
 				FROM {$wpdb->prefix}learnpress_quiz_questions
 				WHERE quiz_id = %d
 				ORDER BY question_order ASC
-			", $the_quiz->get_id() );
-			if ( $rows = $wpdb->get_results( $query ) ) {
+			",
+				$the_quiz->get_id()
+			);
+
+			$rows = $wpdb->get_results( $query );
+
+			if ( $rows ) {
 				$update = array();
 				$ids    = wp_list_pluck( $rows, 'id' );
 				$format = array_fill( 0, sizeof( $ids ), '%d' );
+
 				foreach ( $rows as $order => $row ) {
-					$update[] = $wpdb->prepare( "WHEN quiz_question_id = %d THEN %d", $row->id, $order + 1 );
+					$update[] = $wpdb->prepare( 'WHEN quiz_question_id = %d THEN %d', $row->id, $order + 1 );
 				}
-				$query = $wpdb->prepare( "
+
+				$query = $wpdb->prepare(
+					"
 					UPDATE {$wpdb->prefix}learnpress_quiz_questions
 					SET question_order = CASE
-					" . join( "\n", $update ) . "
+					" . join( "\n", $update ) . '
 					ELSE question_order END
-					WHERE quiz_question_id IN(" . join( ',', $format ) . ")
-				", $ids );
+					WHERE quiz_question_id IN(' . join( ',', $format ) . ')
+				',
+					$ids
+				);
 
 				return $wpdb->query( $query );
 			}
@@ -286,10 +304,12 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				UPDATE {$wpdb->learnpress_quiz_questions}
 				SET question_order = CASE
 			";
+
 			for ( $order = 0, $n = sizeof( $questions ); $order < $n; $order ++ ) {
-				$query .= $wpdb->prepare( "WHEN question_id = %d THEN %d", $questions[ $order ], $order + 1 ) . "\n";
+				$query .= $wpdb->prepare( 'WHEN question_id = %d THEN %d', $questions[ $order ], $order + 1 ) . "\n";
 			}
-			$query .= sprintf( "ELSE question_order END WHERE quiz_id = %d", $the_quiz->get_id() );
+
+			$query .= sprintf( 'ELSE question_order END WHERE quiz_id = %d', $the_quiz->get_id() );
 
 			return $wpdb->query( $query );
 		}
@@ -305,7 +325,9 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * @return array|mixed
 	 */
 	public function get_questions( $the_quiz ) {
-		if ( ! $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
+		$the_quiz = learn_press_get_quiz( $the_quiz );
+
+		if ( ! $the_quiz ) {
 			return $this->get_error( 'QUESTION_NOT_EXISTS' );
 		}
 
@@ -322,10 +344,15 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * @return mixed false on failed
 	 */
 	public function add_question( $the_quiz, $question_id, $args = array() ) {
-		if ( ! $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
+		$the_quiz = learn_press_get_quiz( $the_quiz );
+
+		if ( ! $the_quiz ) {
 			return $this->get_error( 'QUESTION_NOT_EXISTS' );
 		}
-		if ( ! $question = learn_press_get_question( $question_id ) ) {
+
+		$question = learn_press_get_question( $question_id );
+
+		if ( ! $question ) {
 			return false;
 		}
 
@@ -334,25 +361,38 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 
 		global $wpdb;
+
 		$id   = $the_quiz->get_id();
 		$args = wp_parse_args( $args, array( 'order' => - 1 ) );
 		$this->reorder_questions( $the_quiz );
+
 		if ( $args['order'] >= 0 ) {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				UPDATE {$wpdb->prefix}learnpress_quiz_questions
 				SET question_order = question_order + 1
 				WHERE quiz_id = %d AND question_order >= %d
-			", $id, $args['order'] );
+			",
+				$id,
+				$args['order']
+			);
 			$wpdb->get_results( $query );
 		} else {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT max(question_order) + 1 as ordering
 				FROM {$wpdb->prefix}learnpress_quiz_questions
 				WHERE quiz_id = %d
-			", $id );
-			if ( ! $order = $wpdb->get_var( $query ) ) {
+			",
+				$id
+			);
+
+			$order = $wpdb->get_var( $query );
+
+			if ( ! $order ) {
 				$order = 1;
 			}
+
 			$args['order'] = $order;
 		}
 		$inserted = $wpdb->insert(
@@ -360,7 +400,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			array(
 				'quiz_id'        => $id,
 				'question_id'    => $question_id,
-				'question_order' => $args['order']
+				'question_order' => $args['order'],
 			),
 			array( '%d', '%d', '%d' )
 		);
@@ -378,17 +418,24 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function is_exists_question( $the_id, $ids = array() ) {
 		global $wpdb;
+
 		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
 		$args   = $ids;
 		$args[] = $the_id;
-		$query  = $wpdb->prepare( "
+		$query  = $wpdb->prepare(
+			"
 			SELECT quiz_question_id
 			FROM {$wpdb->learnpress_quiz_questions}
-			WHERE question_id IN( " . join( ',', $format ) . " )
+			WHERE question_id IN( " . join( ',', $format ) . ' )
 				AND quiz_id = %d
-		", $args );
-		if ( $results = $wpdb->get_results( $query ) ) {
+		',
+			$args
+		);
+
+		$results = $wpdb->get_results( $query );
+
+		if ( $results ) {
 			return $results;
 		}
 
@@ -447,8 +494,9 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function get_items_by( $field, $value = '' ) {
 		global $wpdb;
-		$where = "";
-		$order = "ORDER BY user_item_id DESC";
+
+		$where = '';
+		$order = 'ORDER BY user_item_id DESC';
 
 		if ( is_array( $field ) ) {
 			foreach ( $field as $k => $v ) {
@@ -497,10 +545,11 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * @return array
 	 */
 	public function parse_items_preview( $course_id, $user_id = 0 ) {
-
 		$items = array();
 
-		if ( ! $course = learn_press_get_course( $course_id ) ) {
+		$course = learn_press_get_course( $course_id );
+
+		if ( ! $course ) {
 			return $items;
 		}
 
@@ -515,19 +564,20 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 		if ( $get_item_ids ) {
 			foreach ( $get_item_ids as $item_id ) {
-				$is_preview = get_post_meta( $item_id, '_lp_preview', true );#// == 'yes';
+				$is_preview = get_post_meta( $item_id, '_lp_preview', true );
+
 				if ( $enrolled ) {
 					$is_preview = 'no';
 				}
-				if ( false === ( $cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/preview-items' ) ) ) {
+
+				$cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/preview-items' );
+
+				if ( false === $cached ) {
 					LP_Object_Cache::set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $item_id, $is_preview, 'learn-press/preview-items' );
-				} else {
-					///$is_preview = $cached === 'yes' ? true : false;
 				}
 
 				$items[ $item_id ] = $is_preview;
 			}
-
 		}
 
 		return $items;
@@ -547,7 +597,9 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	public function parse_items_classes( $course_id, $user_id = 0, $more = array() ) {
 		$items = array();
 
-		if ( ! $course = learn_press_get_course( $course_id ) ) {
+		$course = learn_press_get_course( $course_id );
+
+		if ( ! $course ) {
 			return $items;
 		}
 
@@ -555,11 +607,11 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			$user_id = get_current_user_id();
 		}
 
-		//$user            = learn_press_get_user( $user_id, false ); tested on client site and this function not work. Use the below line instead of!
+		// $user            = learn_press_get_user( $user_id, false ); tested on client site and this function not work. Use the below line instead of!
 
 		$get_item_ids = $course->get_item_ids();
-		//$is_free         = $course->is_free();
-		//$required_enroll = $course->is_required_enroll();
+		// $is_free         = $course->is_free();
+		// $required_enroll = $course->is_required_enroll();
 
 		if ( ! $get_item_ids ) {
 			return $items;
@@ -580,11 +632,14 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				array(
 					'course-item',
 					'course-item-' . $item->get_item_type(),
-					'course-item-' . $item_id
-				), (array) $more
+					'course-item-' . $item_id,
+				),
+				(array) $more
 			);
 
-			if ( ( 'standard' !== ( $post_format = $item->get_format() ) ) && $post_format ) {
+			$post_format = $item->get_format();
+
+			if ( ( 'standard' !== $post_format ) && $post_format ) {
 				$defaults[] = 'course-item-type-' . $post_format;
 			}
 

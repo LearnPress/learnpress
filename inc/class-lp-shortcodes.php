@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				'button_enroll'       => __CLASS__ . '::button_enroll',
 				'button_purchase'     => __CLASS__ . '::button_purchase',
 				'button_course'       => __CLASS__ . '::button_course',
-				'course_curriculum'   => __CLASS__ . '::course_curriculum'
+				'course_curriculum'   => __CLASS__ . '::course_curriculum',
 			);
 
 			foreach ( $shortcodes as $shortcode => $function ) {
@@ -92,8 +92,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 
 			try {
 				$html .= $content->output();
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 			}
 
 			return '<div class="learnpress">' . $html . '</div>';
@@ -186,14 +185,15 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		public static function confirm_order( $atts = null ) {
 			$atts = shortcode_atts(
 				array(
-					'order_id' => ! empty( $_REQUEST['order_id'] ) ? intval( $_REQUEST['order_id'] ) : 0
+					'order_id' => ! empty( $_REQUEST['order_id'] ) ? intval( $_REQUEST['order_id'] ) : 0,
 				),
 				$atts
 			);
 
 			$order_id = null;
 
-			extract( $atts );
+			extract( $atts ); // phpcs:ignore
+
 			ob_start();
 
 			$order = learn_press_get_order( $order_id );
@@ -208,7 +208,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		public static function login_form( $atts, $content = '' ) {
 			$atts = shortcode_atts(
 				array(
-					'redirect' => ''
+					'redirect' => '',
 				),
 				$atts
 			);
@@ -221,12 +221,13 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		public static function login_form_bottom( $html, $args ) {
 			ob_start();
 			?>
-            <p>
-                <a href="<?php echo wp_lostpassword_url(); ?>"><?php _e( 'Forgot password?', 'learnpress' ); ?></a>
-                &nbsp;|&nbsp;
-                <a href="<?php echo wp_registration_url(); ?>"><?php _e( 'Create new account', 'learnpress' ); ?></a>
-            </p>
-			<?php $html .= ob_get_clean();
+			<p>
+				<a href="<?php echo wp_lostpassword_url(); ?>"><?php esc_html_e( 'Forgot password?', 'learnpress' ); ?></a>
+				&nbsp;|&nbsp;
+				<a href="<?php echo wp_registration_url(); ?>"><?php esc_html_e( 'Create new account', 'learnpress' ); ?></a>
+			</p>
+			<?php
+			$html .= ob_get_clean();
 
 			return $html;
 		}

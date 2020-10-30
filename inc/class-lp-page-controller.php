@@ -182,8 +182,8 @@ class LP_Page_Controller {
 			}
 
 			// Post item is not exists or get it's item failed.
-			if ( ! $post_item || ( $post_item && ( ! $lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) ) ) ) ) {
-
+			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) );
+			if ( ! $post_item || ( $post_item && ! $lp_course_item ) ) {
 				$this->set_404( true );
 				throw new Exception( __( 'You can not view this item or it does not exist!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
 			}
@@ -199,7 +199,9 @@ class LP_Page_Controller {
 			$user = learn_press_get_current_user();
 
 			if ( false === $user->can_view_item( $lp_course_item->get_id() ) && ! $user->get_item_url( $lp_course_item->get_id() ) ) {
-				if ( false !== ( $redirect = apply_filters( 'learn-press/redirect-forbidden-access-item-url', $lp_course->get_permalink() ) ) ) {
+				$redirect = apply_filters( 'learn-press/redirect-forbidden-access-item-url', $lp_course->get_permalink() );
+
+				if ( false !== $redirect ) {
 					wp_redirect( $redirect );
 					exit();
 				}
@@ -211,7 +213,8 @@ class LP_Page_Controller {
 			if ( 1 === 0 && LP_QUIZ_CPT === $item_type ) {
 				$question = false;
 				// If has question in request but it seems the question does not exists
-				if ( ! empty( $vars['question'] ) && ! $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) {
+				$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
+				if ( ! empty( $vars['question'] ) && ! $question ) {
 					$this->set_404( true );
 					throw new Exception( '404' );
 				}
@@ -297,7 +300,9 @@ class LP_Page_Controller {
 
 			if ( $lp_course_item ) {
 				if ( ! $lp_user->can_view_item( $lp_course_item->get_id() ) ) {
-					if ( $redirect = apply_filters( 'learn-press/access-forbidden-item-redirect', false, $lp_course_item->get_id(), $lp_course->get_id() ) ) {
+					$redirect = apply_filters( 'learn-press/access-forbidden-item-redirect', false, $lp_course_item->get_id(), $lp_course->get_id() );
+
+					if ( $redirect ) {
 						wp_redirect( $redirect );
 						exit();
 					}
@@ -670,7 +675,9 @@ class LP_Page_Controller {
 			 * In this case, WP know it as a course archive page not a
 			 * single page.
 			 */
-			if ( ! LEARNPRESS_IS_CATEGORY && ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
+			$course_page_id   = learn_press_get_page_id( 'courses' );
+			$course_page_slug = get_post_field( 'post_name', $course_page_id );
+			if ( ! LEARNPRESS_IS_CATEGORY && $course_page_id && $course_page_slug ) {
 				if ( $course_page_slug == 'courses' ) {
 					$wp_query->queried_object_id = $course_page_id;
 					$this->queried_object        = $wp_query->queried_object = get_post( $course_page_id );
@@ -812,7 +819,9 @@ class LP_Page_Controller {
 			 * Display template of content item if user is viewing course's item.
 			 * Otherwise, display template of course.
 			 */
-			if ( $course_item = LP_Global::course_item() ) {
+			$course_item = LP_Global::course_item();
+
+			if ( $course_item ) {
 				learn_press_get_template( 'content-single-item.php' );
 			} else {
 				learn_press_get_template( 'content-single-course.php' );

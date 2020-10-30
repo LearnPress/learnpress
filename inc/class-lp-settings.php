@@ -50,14 +50,6 @@ class LP_Settings {
 			settype( $data, 'array' );
 			$this->_options = $data;
 		}
-		// self::load_site_options();
-		// add_action( 'init', array( $this, 'init' ) );
-	}
-
-	public function init() {
-
-		// LP_Background_Global::add( 'load-site-options', '', array( __CLASS__, 'load_site_options' ) );
-		// LP_Settings::load_site_options();
 	}
 
 	/**
@@ -78,10 +70,8 @@ class LP_Settings {
 	 * @param bool $force
 	 */
 	protected function _load_options( $force = false ) {
-
-		// $this->_options = wp_load_alloptions();
-
 		global $wpdb;
+
 		$query = $wpdb->prepare(
 			"
 			SELECT option_name, option_value
@@ -91,7 +81,9 @@ class LP_Settings {
 			$wpdb->esc_like( $this->_prefix ) . '%'
 		);
 
-		if ( $options = $wpdb->get_results( $query ) ) {
+		$options = $wpdb->get_results( $query );
+
+		if ( $options ) {
 			foreach ( $options as $option ) {
 				$this->_options[ $option->option_name ] = LP_Helper::maybe_unserialize( $option->option_value );
 			}
@@ -385,11 +377,15 @@ class LP_Settings {
 	 * @return array
 	 */
 	public function get_profile_endpoints() {
-		if ( false === ( $endpoints = LP_Object_Cache::get( 'profile', 'learn-press-endpoints' ) ) ) {
-			$defaults = array();
+		$endpoints = LP_Object_Cache::get( 'profile', 'learn-press-endpoints' );
 
+		if ( false === $endpoints ) {
+			$defaults  = array();
 			$endpoints = array();
-			if ( $settings = LP()->settings->get( 'profile_endpoints' ) ) {
+
+			$settings = LP()->settings->get( 'profile_endpoints' );
+
+			if ( $settings ) {
 				foreach ( $settings as $k => $v ) {
 					$k               = preg_replace( '!_!', '-', $k );
 					$endpoints[ $k ] = $v;

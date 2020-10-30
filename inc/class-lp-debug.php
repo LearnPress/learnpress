@@ -65,7 +65,7 @@ class LP_Debug {
 			return;
 		}
 		foreach ( $this->_handles as $handle ) {
-			@fclose( $handle );
+			@fclose( $handle ); // phpcs:ignore
 		}
 	}
 
@@ -153,7 +153,7 @@ class LP_Debug {
 
 	private function close( $handle ) {
 		if ( isset( $this->_handles[ $handle ] ) ) {
-			@fclose( $this->_handles[ $handle ] );
+			@fclose( $this->_handles[ $handle ] ); // phpcs:ignore
 			unset( $this->_handles[ $handle ] );
 
 			return true;
@@ -205,7 +205,7 @@ class LP_Debug {
 				$f    = @fopen( $path, 'a' );
 				fwrite( $f, '----------' . $time . "----------\n" . $message . "-----------------------------------------\n\n\n" );
 				fseek( $this->_handles[ $handle ], 0 );
-				while ( ( $buffer = fgets( $this->_handles[ $handle ], 4096 ) ) !== false ) {
+				while ( ( $buffer = fgets( $this->_handles[ $handle ], 4096 ) ) !== false ) { // phpcs:ignore
 					fwrite( $f, $buffer );
 				}
 
@@ -233,7 +233,7 @@ class LP_Debug {
 	 */
 	public function clear( $handle ) {
 		if ( $this->open( $handle ) && is_resource( $this->_handles[ $handle ] ) ) {
-			@ftruncate( $this->_handles[ $handle ], 0 );
+			@ftruncate( $this->_handles[ $handle ], 0 ); // phpcs:ignore
 		}
 
 		do_action( 'learn_press_log_clear', $handle );
@@ -254,7 +254,7 @@ class LP_Debug {
 		if ( LP_Settings::instance()->get( 'debug' ) != 'yes' ) {
 			return;
 		}
-		if ( $args = func_get_args() ) {
+		if ( $args = func_get_args() ) { // phpcs:ignore
 			foreach ( $args as $arg ) {
 				learn_press_debug( $arg );
 			}
@@ -268,7 +268,7 @@ class LP_Debug {
 		throw new Exception( $message );
 	}
 
-	public static function timeStart( $name = '' ) {
+	public static function timeStart( $name = '' ) { // phpcs:ignore
 		if ( ! $name ) {
 			self::$_current_name = md5( uniqid() );
 			$name                = self::$_current_name;
@@ -277,7 +277,7 @@ class LP_Debug {
 		self::$_time[ $name ] = microtime( true );
 	}
 
-	public static function timeEnd( $name = '', $echo = true ) {
+	public static function timeEnd( $name = '', $echo = true ) { // phpcs:ignore
 
 		if ( ! $name ) {
 			$name = self::$_current_name;
@@ -294,7 +294,7 @@ class LP_Debug {
 		return $time;
 	}
 
-	public static function logTime( $name ) {
+	public static function logTime( $name ) { // phpcs:ignore
 		if ( empty( self::$log_times[ $name ] ) ) {
 			self::$log_times[ $name ] = array();
 		}
@@ -308,7 +308,7 @@ class LP_Debug {
 		}
 	}
 
-	public static function getLogTimes() {
+	public static function getLogTimes() { // phpcs:ignore
 		return self::$log_times;
 	}
 
@@ -333,7 +333,7 @@ class LP_Debug {
 	/**
 	 * Start a new sql transaction
 	 */
-	public static function startTransaction() {
+	public static function startTransaction() { // phpcs:ignore
 		global $wpdb;
 
 		if ( self::$_transaction_started ) {
@@ -348,7 +348,7 @@ class LP_Debug {
 	/**
 	 * Rollback a sql transaction
 	 */
-	public static function rollbackTransaction() {
+	public static function rollbackTransaction() { // phpcs:ignore
 		global $wpdb;
 
 		if ( ! self::$_transaction_started ) {
@@ -363,7 +363,7 @@ class LP_Debug {
 	/**
 	 * Commit a sql transaction
 	 */
-	public static function commitTransaction() {
+	public static function commitTransaction() { // phpcs:ignore
 		global $wpdb;
 
 		if ( ! self::$_transaction_started ) {

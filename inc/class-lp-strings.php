@@ -64,7 +64,7 @@ class LP_Strings {
 	}
 
 	public static function esc_attr_e( $str, $context = '', $args = '' ) {
-		esc_attr_e( self::get( $str, $context, $args ) );
+		echo esc_attr( self::get( $str, $context, $args ) );
 	}
 
 	public static function output( $str, $context = '', $args = '' ) {

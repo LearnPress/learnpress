@@ -150,9 +150,7 @@ class LP_Repair_Database {
 			DELETE
 			FROM {$wpdb->learnpress_order_items}
 			WHERE order_item_id  IN(" . join( ',', $format ) . ')
-		',
-			$order_item_id
-		);
+		', $order_item_id ); // phpcs:ignore
 
 		$wpdb->query( $query );
 
@@ -183,7 +181,6 @@ class LP_Repair_Database {
 	 * @since 3.1.0
 	 */
 	public function remove_user_items_by_order_id( $order_id ) {
-
 		if ( is_array( $order_id ) ) {
 			foreach ( $order_id as $oid ) {
 				$this->remove_user_items_by_order_id( $oid );

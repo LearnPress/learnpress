@@ -14,14 +14,13 @@ class LP_Template implements ArrayAccess {
 	protected $templates = array();
 
 	public function __construct() {
-
 		$this->templates = apply_filters(
 			'learn-press/templates-classes',
 			array(
 				'general'  => include_once 'templates/class-lp-template-general.php',
 				'course'   => include_once 'templates/class-lp-template-course.php',
 				'checkout' => include_once 'templates/class-lp-template-checkout.php',
-				'profile'  => include_once 'templates/class-lp-template-profile.php'
+				'profile'  => include_once 'templates/class-lp-template-profile.php',
 			)
 		);
 	}

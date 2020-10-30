@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Thumbnail_Helper
  *
@@ -63,37 +62,6 @@ class LP_Thumbnail_Helper {
 		$image = apply_filters( 'learn_press_course_image', $image, $course_id, $size, $attr );
 
 		return $image;
-	}
-
-	/**
-	 * @param LP_Abstract_Post_Data $object
-	 *
-	 * @return bool|string
-	 */
-	public function get_video_embed( &$object ) {
-		$video_id   = $object->get_data( 'video_id' );
-		$video_type = $object->get_data( 'video_type' );
-
-		if ( ! $video_id || ! $video_type ) {
-			return false;
-		}
-
-		$embed  = '';
-		$height = $object->get_data( 'video_embed_height' );
-		$width  = $object->get_data( 'video_embed_width' );
-
-		if ( 'youtube' === $video_type ) {
-			$embed = '<iframe width="' . $width . '" height="' . $height . '" '
-					 . 'src="https://www.youtube.com/embed/' . $video_id . '" '
-					 . 'frameborder="0" allowfullscreen></iframe>';
-
-		} elseif ( 'vimeo' === $video_type ) {
-			$embed = '<iframe width="' . $width . '" height="' . $height . '" '
-					 . ' src="https://player.vimeo.com/video/' . $video_id . '" '
-					 . 'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-		}
-
-		return $embed;
 	}
 
 	/**

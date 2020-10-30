@@ -242,7 +242,6 @@ add_action( 'learn-press/after-content-item-summary/lp_lesson', LP()->template( 
  * @see LP_Template_Course::course_item_content()
  */
 add_action( 'learn-press/course-item-content', LP()->template( 'course' )->func( 'course_item_content' ), 5 );
-// add_action( 'learn-press/after-course-item-content', 'learn_press_content_item_nav', 5 );
 
 /** BEGIN: User profile */
 
@@ -316,18 +315,6 @@ add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->fun
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'terms' ), 70 );
 
 
-
-/**
- * @see LP_Template_General::order_guest_email()
- * @see LP_Template_General::term_conditions_template()
- * @see LP_Template_Course::back_to_class_button()
- */
-// add_action( 'learn-press/payment-form', LP()->template( 'general' )->func( 'order_guest_email' ), 15 );
-// add_action( 'learn-press/after-payment-methods', LP()->template( 'general' )->func( 'term_conditions_template' ) );
-// add_action( 'learn-press/after-checkout-form', LP()->template( 'general' )->func( 'back_to_class_button' ) );
-// add_action( 'learn-press/after-empty-cart-message', LP()->template( 'general' )->func( 'back_to_class_button' ) );
-
-
 // ******************************************************************************************************************* //
 
 add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
@@ -339,7 +326,6 @@ add_filter( 'document_title_parts', 'learn_press_single_document_title_parts', 5
 
 add_filter( 'body_class', 'learn_press_body_classes', 10 );
 add_filter( 'post_class', 'learn_press_course_class', 15, 3 );
-// add_action( 'learn-press/after-main-content', LP()->template( 'course' )->callback( 'global/after-main-content.php' ), 5 );
 add_action( 'wp_head', 'learn_press_single_course_args', 5 );
 add_action( 'learn-press/before-checkout-order-review', LP()->template( 'course' )->callback( 'checkout/form-logged-in.php' ), 10 );
 add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );

@@ -32,7 +32,7 @@ class LP_Preview_Course {
 			$ids = self::get_preview_courses();
 
 			if ( $ids === false ) {
-				$title                 = __( 'Preview Course', 'learnpress' );
+				$title                 = esc_html__( 'Preview Course', 'learnpress' );
 				self::$_preview_course = wp_insert_post(
 					array(
 						'post_author' => 0,
@@ -58,7 +58,9 @@ class LP_Preview_Course {
 		global $wpdb;
 
 		if ( ! self::is_preview() ) {
-			if ( $ids = self::get_preview_courses() ) {
+			$ids = self::get_preview_courses();
+
+			if ( $ids ) {
 				$format = array_fill( 0, sizeof( $ids ), '%d' );
 				$where .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ') ', $ids );
 			}
@@ -68,7 +70,9 @@ class LP_Preview_Course {
 	}
 
 	public static function is_preview() {
-		if ( ! $post_id = LP_Request::get_int( 'lp-preview' ) ) {
+		$post_id = LP_Request::get_int( 'lp-preview' );
+
+		if ( ! $post_id ) {
 			return false;
 		}
 
@@ -76,7 +80,9 @@ class LP_Preview_Course {
 			return false;
 		}
 
-		if ( ! $post_item = get_post( $post_id ) ) {
+		$post_item = get_post( $post_id );
+
+		if ( ! $post_item ) {
 			throw new Exception( __( 'Invalid preview item.', 'learnpress' ) );
 		}
 
@@ -88,8 +94,9 @@ class LP_Preview_Course {
 	 */
 	public static function setup_preview() {
 		try {
+			$post_item = self::is_preview();
 
-			if ( ! $post_item = self::is_preview() ) {
+			if ( ! $post_item ) {
 				return false;
 			}
 
@@ -155,8 +162,11 @@ class LP_Preview_Course {
 	}
 
 	public static function get_preview_courses() {
-		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses' ) ) ) {
+		$ids = LP_Object_Cache::get( 'preview-courses' );
+
+		if ( false === $ids ) {
 			global $wpdb;
+
 			$query = $wpdb->prepare(
 				"
 				SELECT post_id
@@ -268,8 +278,9 @@ class LP_Preview_Course {
 	}
 
 	public static function template_include( $template ) {
+		$preview_nonce = LP_Request::get( 'preview' );
 
-		if ( ! ( $preview_nonce = LP_Request::get( 'preview' ) ) || get_post_type() !== LP_COURSE_CPT ) {
+		if ( ! $preview_nonce || get_post_type() !== LP_COURSE_CPT ) {
 			return $template;
 		}
 
@@ -293,7 +304,9 @@ class LP_Preview_Course {
 	}
 
 	public static function reduce_counts( $counts, $type, $perm ) {
-		if ( ( LP_COURSE_CPT === $type ) && ( $ids = self::get_preview_courses() ) ) {
+		$ids = self::get_preview_courses();
+
+		if ( ( LP_COURSE_CPT === $type ) && $ids ) {
 			foreach ( $ids as $id ) {
 				switch ( get_post_status( $id ) ) {
 					case 'draft':

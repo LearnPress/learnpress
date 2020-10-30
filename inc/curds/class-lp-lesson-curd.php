@@ -27,24 +27,27 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		 * @return int|WP_Error
 		 */
 		public function create( &$args ) {
-
-			$args = wp_parse_args( $args, array(
+			$args = wp_parse_args(
+				$args,
+				array(
 					'id'      => '',
 					'status'  => 'publish',
-					'title'   => __( 'New Lesson', 'learnpress' ),
+					'title'   => esc_html__( 'New Lesson', 'learnpress' ),
 					'content' => '',
-					'author'  => learn_press_get_current_user_id()
+					'author'  => learn_press_get_current_user_id(),
 				)
 			);
 
-			$lesson_id = wp_insert_post( array(
-				'ID'           => $args['id'],
-				'post_type'    => LP_LESSON_CPT,
-				'post_status'  => $args['status'],
-				'post_title'   => $args['title'],
-				'post_content' => $args['content'],
-				'post_author'  => $args['author']
-			) );
+			$lesson_id = wp_insert_post(
+				array(
+					'ID'           => $args['id'],
+					'post_type'    => LP_LESSON_CPT,
+					'post_status'  => $args['status'],
+					'post_title'   => $args['title'],
+					'post_content' => $args['content'],
+					'post_author'  => $args['author'],
+				)
+			);
 
 			if ( $lesson_id ) {
 				// add default meta for new lesson
@@ -91,7 +94,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param $lesson_id
-		 * @param array $args
+		 * @param array     $args
 		 *
 		 * @return mixed|WP_Error
 		 */
@@ -140,7 +143,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 
 			$lesson->set_data(
 				array(
-					'preview' => get_post_meta( $id, '_lp_preview', true )
+					'preview' => get_post_meta( $id, '_lp_preview', true ),
 				)
 			);
 

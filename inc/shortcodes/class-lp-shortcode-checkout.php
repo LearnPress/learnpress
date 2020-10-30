@@ -9,9 +9,6 @@
  * @extends  LP_Abstract_Shortcode
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
@@ -36,17 +33,16 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		 * @return string
 		 */
 		public function output() {
-
 			global $wp;
-			ob_start();
 
+			ob_start();
 			if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 				$this->_order_received( $wp->query_vars['lp-order-received'] );
 			} else {
-				$checkoutCart = learn_press_get_checkout_cart();
+				$checkout_cart = learn_press_get_checkout_cart();
 
 				// Check cart has contents
-				if ( $checkoutCart->is_empty() ) {
+				if ( $checkout_cart->is_empty() ) {
 					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
 					learn_press_get_template( 'checkout/form.php' );
@@ -67,7 +63,9 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			$order_key = ! empty( $_GET['key'] ) ? $_GET['key'] : '';
 			$order     = null;
 
-			if ( $order_id > 0 && ( $origin_order = learn_press_get_order( $order_id ) ) && ! $origin_order->is_trashed() ) {
+			$origin_order = learn_press_get_order( $order_id );
+
+			if ( $order_id > 0 && $origin_order && ! $origin_order->is_trashed() ) {
 				if ( $origin_order->get_order_key() == $order_key ) {
 					$order = $origin_order;
 				}

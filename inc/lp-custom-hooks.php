@@ -24,12 +24,17 @@ add_action( 'learn-press/user/quiz-started', 'learn_press_evaluate_course_result
 add_action( 'learn-press/user/quiz-redone', 'learn_press_evaluate_course_results', 10, 3 );
 add_action( 'learn-press/user/quiz-finished', 'learn_press_evaluate_course_results', 10, 3 );
 
-add_filter( 'learn-press/create-user-item-meta', function ( $meta, $item ) {
-//	switch ( $item['item_type'] ) {
-//		case LP_QUIZ_CPT:
-//			shuffle( $meta['questions'] );
-//	}
+add_filter(
+	'learn-press/create-user-item-meta',
+	function ( $meta, $item ) {
+		// switch ( $item['item_type'] ) {
+		// case LP_QUIZ_CPT:
+		// shuffle( $meta['questions'] );
+		// }
 
-	return $meta;
-}, 100, 2 );
+		return $meta;
+	},
+	100,
+	2
+);
 

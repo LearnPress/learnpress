@@ -67,19 +67,22 @@ class LP_Gateways {
 	 */
 	public function get_gateways( $with_order = false ) {
 		$gateways = array();
+
 		if ( count( $this->payment_gateways ) ) {
 			foreach ( $this->payment_gateways as $gateway ) {
 				if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 					$gateway = new $gateway();
 				}
+
 				if ( ! is_object( $gateway ) ) {
 					continue;
 				}
+
 				$gateways[ $gateway->id ] = $gateway;
 			}
 		}
 
-		if ( $with_order && $ordered = get_option( 'learn_press_payment_order' ) ) {
+		if ( $with_order && get_option( 'learn_press_payment_order' ) ) {
 			// Sort gateways by the keys stored.
 			usort( $gateways, array( $this, '_sort_gateways_callback' ) );
 		}
@@ -97,7 +100,9 @@ class LP_Gateways {
 	 * @return bool|int
 	 */
 	public function _sort_gateways_callback( $a, $b ) {
-		if ( $ordered = get_option( 'learn_press_payment_order' ) ) {
+		$ordered = get_option( 'learn_press_payment_order' );
+
+		if ( $ordered ) {
 			return array_search( $a->id, $ordered ) > array_search( $b->id, $ordered );
 		}
 
@@ -164,7 +169,9 @@ class LP_Gateways {
 	 * @return bool|LP_Gateway_Abstract
 	 */
 	public function get_gateway( $id ) {
-		if ( $gateways = $this->get_gateways() ) {
+		$gateways = $this->get_gateways();
+
+		if ( $gateways ) {
 			if ( isset( $gateways[ $id ] ) ) {
 				return $gateways[ $id ];
 			}

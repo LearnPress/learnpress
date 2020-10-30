@@ -160,9 +160,9 @@ function learn_press_get_quiz_id( $id ) {
  * @return  boolean
  */
 function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null ) {
-	// _deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> has_completed_quiz' );
+	$user = learn_press_get_user( $user_id );
 
-	if ( $user = learn_press_get_user( $user_id ) ) {
+	if ( $user ) {
 		return $user->has_completed_quiz( $quiz_id );
 	}
 
@@ -319,6 +319,7 @@ function learn_press_question_type_support( $type, $features ) {
 	$features    = array_filter( $features );
 	$supports    = learn_press_get_question_type_support( $type );
 	$has_support = true;
+
 	if ( $features ) {
 		foreach ( $features as $feature ) {
 			$has_support = $has_support && in_array( $feature, $supports );
@@ -353,18 +354,21 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 	 * @return array
 	 */
 	function learn_press_quiz_get_questions_order( $questions = array() ) {
-
 		if ( ! $questions ) {
 			return array();
 		}
 
 		global $wpdb;
+
 		$ids = $orders = array();
+
 		foreach ( $questions as $id => $question ) {
 			$ids[] = $id;
 		}
 
-		if ( $order = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A ) ) {
+		$order = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A );
+
+		if ( $order ) {
 			foreach ( $order as $id => $_order ) {
 				$orders[ $_order['q_id'] ] = $_order['q_order'];
 			}
@@ -375,8 +379,12 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 }
 
 function learn_press_is_review_questions() {
-	if ( ( $item = LP_Global::course_item() ) && ( $user = learn_press_get_current_user() ) ) {
+	$item = LP_Global::course_item();
+	$user = learn_press_get_current_user();
+
+	if ( $item && $user ) {
 		$quiz_data = $user->get_item_data( $item->get_id(), LP_Global::course( 'id' ) );
+
 		return $quiz_data && $quiz_data->is_review_questions();
 	}
 

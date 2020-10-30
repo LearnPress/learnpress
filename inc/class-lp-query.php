@@ -164,7 +164,6 @@ class LP_Query {
 		// Profile
 		$profile_id = learn_press_get_page_id( 'profile' );
 		if ( $profile_id ) {
-
 			$rules[] = array(
 				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?$',
 				'index.php?page_id=' . $profile_id . '&user=$matches[1]',
@@ -172,7 +171,9 @@ class LP_Query {
 			);
 
 			$profile = learn_press_get_profile();
-			if ( $tabs = $profile->get_tabs()->get() ) {
+			$tabs    = $profile->get_tabs()->get();
+
+			if ( $tabs ) {
 				foreach ( $tabs as $slug => $args ) {
 					$tab_slug = isset( $args['slug'] ) ? $args['slug'] : $slug;
 					$rules[]  = array(
@@ -358,9 +359,10 @@ class LP_Query {
 
 		if ( ! is_admin() && learn_press_is_courses() ) {
 			$ids = LP_Preview_Course::get_preview_courses();
-			if ( $ids) {
+
+			if ( $ids ) {
 				$format = array_fill( 0, sizeof( $ids ), '%d' );
-				$where .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ') ', $ids );
+				$where .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ') ', $ids ); // phpcs:ignore
 			}
 		}
 

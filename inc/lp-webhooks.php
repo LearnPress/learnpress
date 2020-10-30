@@ -16,13 +16,13 @@ defined( 'ABSPATH' ) || exit();
  * @param $param
  */
 function learn_press_register_web_hook( $key, $param ) {
-	if ( !$key ) {
+	if ( ! $key ) {
 		return;
 	}
-	if ( empty ( $GLOBALS['learn_press']['web_hooks'] ) ) {
+	if ( empty( $GLOBALS['learn_press']['web_hooks'] ) ) {
 		$GLOBALS['learn_press']['web_hooks'] = array();
 	}
-	$GLOBALS['learn_press']['web_hooks'][$key] = $param;
+	$GLOBALS['learn_press']['web_hooks'][ $key ] = $param;
 	do_action( 'learn_press_register_web_hook', $key, $param );
 }
 
@@ -45,7 +45,8 @@ function learn_press_get_web_hooks() {
  */
 function learn_press_get_web_hook( $key ) {
 	$web_hooks = learn_press_get_web_hooks();
-	$web_hook  = empty( $web_hooks[$key] ) ? false : $web_hooks[$key];
+	$web_hook  = empty( $web_hooks[ $key ] ) ? false : $web_hooks[ $key ];
+
 	return apply_filters( 'learn_press_web_hook', $web_hook, $key );
 }
 
@@ -55,9 +56,10 @@ function learn_press_get_web_hook( $key ) {
 function learn_press_process_web_hooks() {
 	$web_hooks           = learn_press_get_web_hooks();
 	$web_hooks_processed = array();
+
 	foreach ( $web_hooks as $key => $param ) {
-		if ( !empty( $_REQUEST[$param] ) ) {
-			//$web_hooks_processed           = true;
+		if ( ! empty( $_REQUEST[ $param ] ) ) {
+			// $web_hooks_processed           = true;
 			$request_scheme                = is_ssl() ? 'https://' : 'http://';
 			$requested_web_hook_url        = untrailingslashit( $request_scheme . $_SERVER['HTTP_HOST'] ) . $_SERVER['REQUEST_URI'];
 			$parsed_requested_web_hook_url = parse_url( $requested_web_hook_url );
@@ -70,7 +72,7 @@ function learn_press_process_web_hooks() {
 			} else {
 
 			}
-			$web_hooks_processed[$param] = $_REQUEST;
+			$web_hooks_processed[ $param ] = $_REQUEST;
 			break;
 		}
 	}

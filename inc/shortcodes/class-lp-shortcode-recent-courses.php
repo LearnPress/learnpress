@@ -36,10 +36,12 @@ if ( ! class_exists( 'LP_Shortcode_Recent_Courses' ) ) {
 		 * @since 3.0.0
 		 */
 		public function query_courses() {
-			$this->_query = $this->curd->get_recent_courses( array(
-				'limit' => $this->_atts['limit'],
-				'order' => $this->_atts['order']
-			) );
+			$this->_query = $this->curd->get_recent_courses(
+				array(
+					'limit' => $this->_atts['limit'],
+					'order' => $this->_atts['order'],
+				)
+			);
 		}
 	}
 }

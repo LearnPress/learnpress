@@ -117,12 +117,6 @@ gulp.task( 'updateReadme', () => {
 		.pipe( gulp.dest( './releases/learnpress/', { overwrite: true } ) );
 } );
 
-gulp.task( 'replaceReleases', () => {
-	return gulp.src( [ './releases/learnpress/**/*.php', './releases/learnpress/**/*.js' ] )
-		.pipe( replace( /define\( 'LP_DEBUG', true \);/, 'define( \'LP_DEBUG\', false);' ) )
-		.pipe( gulp.dest( './releases/learnpress/', { overwrite: true } ) );
-} );
-
 gulp.task( 'zipReleases', () => {
 	return gulp
 		.src( './releases/learnpress/**', { base: './releases/' } )
@@ -147,7 +141,6 @@ gulp.task(
 		'clearCache',
 		'cleanReleases',
 		'copyReleases',
-		'replaceReleases',
 		'updateReadme',
 		'zipReleases',
 		( done ) => {

@@ -31,6 +31,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function __construct( $the_user = 0, $the_course = 0 ) {
 		$this->_user_id   = $the_user;
 		$this->_course_id = $the_course;
+
 		add_action( 'init', array( $this, 'init' ) );
 	}
 
@@ -231,7 +232,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		if ( $user = learn_press_get_user( $this->_user_id ) ) {
+		$user = learn_press_get_user( $this->_user_id );
+
+		if ( $user ) {
 			$this->load( $user );
 			$this->read_course( $user->get_id(), $this->_course_id );
 		}
@@ -266,8 +269,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed;
 	 */
 	public function load( &$user ) {
-		$user_id = $user->get_id();
-		if ( false !== ( $user_object = get_user_by( 'id', $user_id ) ) ) {
+		$user_id     = $user->get_id();
+		$user_object = get_user_by( 'id', $user_id );
+
+		if ( false !== $user_object ) {
 			$user->set_data(
 				array(
 					'email'           => $user_object->user_email,
@@ -310,9 +315,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array|mixed
 	 */
 	public function get_orders( $user_id, $args = array() ) {
+		$user = learn_press_get_user( $user_id );
 
-		// If user does not exists
-		if ( ! $user_id || ! $user = learn_press_get_user( $user_id ) ) {
+		if ( ! $user_id || ! $user ) {
 			return false;
 		}
 
@@ -332,12 +337,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			/**
 			 * Get orders from cache by args
 			 */
-			if ( false !== ( $orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'lp-user-orders' ) ) ) {
+			$orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'lp-user-orders' );
+
+			if ( false !== $orders ) {
 				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 				return $orders;
 			}
 		}
+
 		// Get orders for the user from cache
 		$orders = LP_Object_Cache::get( 'user-' . $user_id, 'lp-user-orders' );
 
@@ -364,15 +372,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			 * Error when checkout with guest then register error Start Quiz - nhamdv.
 			 */
 			// $sql_guest_orders = $wpdb->prepare(
-			// 	"
-			// 	SELECT p.*
-			// 	FROM {$wpdb->posts} p
-			// 	INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
-			// 	LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
+			// "
+			// SELECT p.*
+			// FROM {$wpdb->posts} p
+			// INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
+			// LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
 			// ",
-			// 	'_checkout_email',
-			// 	$user->get_email(),
-			// 	'_user_id'
+			// '_checkout_email',
+			// $user->get_email(),
+			// '_user_id'
 			// );
 
 			/**
@@ -394,7 +402,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			$sql = $sql_orders /* . ' UNION ' . $sql_guest_orders */ . $sql_rest;
 
-			if ( $order_posts = $wpdb->get_results( $sql ) ) {
+			$order_posts = $wpdb->get_results( $sql );
+
+			if ( $order_posts ) {
 				$order_ids = array();
 
 				foreach ( $order_posts as $order_post ) {
@@ -416,7 +426,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					array_merge( array( '_course_id' ), $order_ids, $order_ids )
 				);
 
-				if ( $results = $wpdb->get_results( $query ) ) {
+				$results = $wpdb->get_results( $query );
+
+				if ( $results ) {
 					foreach ( $results as $result ) {
 						if ( empty( $orders[ $result->course_id ] ) ) {
 							$orders[ $result->course_id ] = array();
@@ -425,7 +437,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 			}
-			// Store to cache
+
 			LP_Object_Cache::set( 'user-' . $user_id, $orders, 'lp-user-orders' );
 		}
 
@@ -465,12 +477,14 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array|bool|mixed
 	 */
 	public function read_orders( $user_id, $args = array() ) {
-		// If user does not exists
-		if ( ! $user_id || ! $user = learn_press_get_user( $user_id ) ) {
+		$user = learn_press_get_user( $user_id );
+
+		if ( ! $user_id || ! $user ) {
 			return false;
 		}
 
 		$cache_key = false;
+
 		if ( $args ) {
 			$args = wp_parse_args(
 				$args,
@@ -486,12 +500,13 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			/**
 			 * Get orders from cache by args
 			 */
-			if ( false !== ( $orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'learn-press/user-orders' ) ) ) {
+			$orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'learn-press/user-orders' );
 
+			if ( false !== $orders ) {
 				return $orders;
 			}
 		}
-		// Get orders for the user from cache
+
 		$orders = LP_Object_Cache::get( 'user-' . $user_id, 'learn-press/user-orders' );
 
 		if ( false === $orders ) {
@@ -546,7 +561,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			$sql = $sql_orders . ' UNION ' . $sql_guest_orders . $sql_rest;
 
-			if ( $order_posts = $wpdb->get_results( $sql ) ) {
+			$order_posts = $wpdb->get_results( $sql );
+
+			if ( $order_posts ) {
 				$order_ids = array();
 				foreach ( $order_posts as $order_post ) {
 
@@ -2071,9 +2088,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 								);
 
 								// if ( 'passed' === $args['status'] ) {
-								// 	$having .= $wpdb->prepare( ' AND grade = %s', 'passed' );
+								// $having .= $wpdb->prepare( ' AND grade = %s', 'passed' );
 								// } else {
-								// 	$having .= $wpdb->prepare( ' AND ( grade IS NULL OR grade <> %s )', 'passed' );
+								// $having .= $wpdb->prepare( ' AND ( grade IS NULL OR grade <> %s )', 'passed' );
 								// }
 
 								if ( 'passed' === $args['status'] ) {

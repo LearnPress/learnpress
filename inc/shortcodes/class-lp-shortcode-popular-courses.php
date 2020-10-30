@@ -35,11 +35,13 @@ if ( ! class_exists( 'LP_Shortcode_Popular_Courses' ) ) {
 		 * @since 3.0.0
 		 */
 		public function query_courses() {
-			$this->_query = $this->curd->get_popular_courses( array(
-				'limit'    => $this->_atts['limit'],
-				'order_by' => $this->_atts['order_by'],
-				'order'    => $this->_atts['order']
-			) );
+			$this->_query = $this->curd->get_popular_courses(
+				array(
+					'limit'    => $this->_atts['limit'],
+					'order_by' => $this->_atts['order_by'],
+					'order'    => $this->_atts['order'],
+				)
+			);
 		}
 	}
 }
