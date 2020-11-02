@@ -340,15 +340,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		$course_data = $user->get_course_data( $course->get_id() );
+
 		if ( false === $course_data ) {
 			return;
 		}
 
-		// if ( ! $course_data->is_available() ) {
-		// return;
-		// }
-
-		// if ( $course_data->get_status() !== 'enrolled' ) {
 		if ( ! learn_press_is_enrolled_slug( $course_data->get_status() ) ) {
 			return;
 		}

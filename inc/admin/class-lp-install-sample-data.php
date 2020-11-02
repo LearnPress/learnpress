@@ -60,14 +60,13 @@ class LP_Install_Sample_Data {
 	}
 
 	public function i18n( $data, $handle ) {
-
 		if ( 'learn-press-global' !== $handle ) {
 			return $data;
 		}
 
 		$i18n = array(
-			'confirm_install_sample_data'   => __( 'Are you sure you want to install sample course data?', 'learnpress' ),
-			'confirm_uninstall_sample_data' => __( 'Are you sure you want to delete sample course data?', 'learnpress' ),
+			'confirm_install_sample_data'   => esc_html__( 'Are you sure you want to install sample course data?', 'learnpress' ),
+			'confirm_uninstall_sample_data' => esc_html__( 'Are you sure you want to delete sample course data?', 'learnpress' ),
 		);
 
 		if ( empty( $data['i18n'] ) ) {
@@ -112,7 +111,7 @@ class LP_Install_Sample_Data {
 		LP_Debug::startTransaction();
 
 		try {
-			ini_set( 'memory_limit', '2G' );
+			@ini_set( 'memory_limit', '2G' );
 
 			global $wp_filter;
 
@@ -137,26 +136,30 @@ class LP_Install_Sample_Data {
 			$this->create_sections( $course_id );
 
 			$price = LP_Request::get( 'course-price' );
+
 			if ( $price ) {
 				update_post_meta( $course_id, '_lp_price', $price );
 			}
-
 			?>
 
-			<div class="lp-install-sample-data-response">
+			<div class="lp-install-sample__response success">
 				<?php printf( __( 'Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
 				<a href="<?php echo esc_url( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
+				|
 				<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
 			</div>
 
 			<?php
 			LP_Debug::commitTransaction();
+
 		} catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
+			echo '<div class="lp-install-sample__response fail">';
 			echo $ex->getMessage();
+			echo '</div>';
 		}
 
-		wp_die();
+		die();
 	}
 
 	/**
@@ -171,12 +174,12 @@ class LP_Install_Sample_Data {
 
 		$posts = $this->get_sample_posts();
 
-		if ( ! $posts ) {
-			die();
-		}
-
 		LP_Debug::startTransaction();
 		try {
+			if ( ! $posts ) {
+				throw new Exception( esc_html__( 'No data sample.', 'learnpress' ) );
+			}
+
 			foreach ( $posts as $post ) {
 				switch ( $post->post_type ) {
 					case LP_COURSE_CPT:
@@ -192,9 +195,19 @@ class LP_Install_Sample_Data {
 
 				$this->_delete_post( $post->ID );
 			}
+			?>
+
+			<div class="lp-install-sample__response success">
+				<?php esc_html_e( 'Delete sample data successfully!', 'learnpress' ); ?>
+			</div>
+
+			<?php
 		} catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
+
+			echo '<div class="lp-install-sample__response fail">';
 			echo 'Error: ' . $ex->getMessage();
+			echo '</div>';
 		}
 		LP_Debug::commitTransaction();
 
@@ -208,6 +221,7 @@ class LP_Install_Sample_Data {
 	 */
 	public function get_sample_posts() {
 		global $wpdb;
+
 		$query = $wpdb->prepare(
 			"
 	        SELECT p.ID, post_type

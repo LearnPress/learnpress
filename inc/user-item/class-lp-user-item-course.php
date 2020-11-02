@@ -687,9 +687,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$this->complete_items();
 		}
 
-		parent::complete();
+		$results = $this->calculate_course_results();
+		$status  = $this->_is_passed( $results['result'] ) ? 'passed' : 'failed';
+		$status  = apply_filters( 'learn-press/finish-course-status', $status, $this->get_course_id(), $this->get_user(), $this );
 
-		$this->calculate_course_results();
+		return parent::complete( $status );
 	}
 
 	/**

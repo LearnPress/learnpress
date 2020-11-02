@@ -25,6 +25,7 @@ class LP_Quiz_Results implements ArrayAccess {
 	 */
 	public function read( $user_item_id ) {
 		global $wpdb;
+
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->learnpress_user_itemmeta}

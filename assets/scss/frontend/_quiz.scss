@@ -300,7 +300,7 @@ button[data-counter] {
 	&.passed {
 
 		.result-message {
-			background: var(--lp-primary-color) -course-item-status;
+			background: $primary-color-course-item-status;
 
 			&::after {
 				content: "\f00c";

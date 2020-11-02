@@ -61,6 +61,7 @@
     "gulp-svn": "^1.0.8",
     "gulp-uglify": "^3.0.2",
     "gulp-uglify-es": "^2.0.0",
+    "gulp-uglifycss": "^1.1.0",
     "gulp-zip": "^4.2.0",
     "jquery": "^3.4.1",
     "mkdir": "0.0.2",

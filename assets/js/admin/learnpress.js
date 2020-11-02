@@ -1276,8 +1276,8 @@ $(document).ready(onReady);
 /***/ (function(module, exports) {
 
 (function ($) {
-  var $doc = $(document),
-      isRunning = false;
+  var $doc = $(document);
+  var isRunning = false;
 
   var installSampleCourse = function installSampleCourse(e) {
     e.preventDefault();
@@ -1292,11 +1292,11 @@ $(document).ready(onReady);
     }
 
     $button.addClass('disabled').html($button.data('installing-text'));
-    $('.lp-install-sample-data-response').remove();
+    $('.lp-install-sample__response').remove();
     isRunning = true;
     $.ajax({
       url: $button.attr('href'),
-      data: $('.lp-install-sample-data-options').serializeJSON(),
+      data: $('.lp-install-sample__options').serializeJSON(),
       success: function success(response) {
         $button.removeClass('disabled').html($button.data('text'));
         isRunning = false;
@@ -1305,6 +1305,7 @@ $(document).ready(onReady);
       error: function error() {
         $button.removeClass('disabled').html($button.data('text'));
         isRunning = false;
+        $(response).insertBefore($button.parent());
       }
     });
   };
@@ -1328,10 +1329,12 @@ $(document).ready(onReady);
       success: function success(response) {
         $button.removeClass('disabled').html($button.data('text'));
         isRunning = false;
+        $(response).insertBefore($button.parent());
       },
       error: function error() {
         $button.removeClass('disabled').html($button.data('text'));
         isRunning = false;
+        $(response).insertBefore($button.parent());
       }
     });
   };
@@ -1370,10 +1373,10 @@ $(document).ready(onReady);
 
   var toggleOptions = function toggleOptions(e) {
     e.preventDefault();
-    $('.lp-install-sample-data-options').toggleClass('hide-if-js');
+    $('.lp-install-sample__options').toggleClass('hide-if-js');
   };
 
-  $doc.on('click', '#learn-press-install-sample-data', installSampleCourse).on('click', '#learn-press-uninstall-sample-data', uninstallSampleCourse).on('click', '#learn-press-clear-cache', clearHardCache).on('click', 'input[name="enable_hard_cache"]', toggleHardCache).on('click', '#learn-press-install-sample-data-options', toggleOptions);
+  $doc.on('click', '.lp-install-sample__install', installSampleCourse).on('click', '.lp-install-sample__uninstall', uninstallSampleCourse).on('click', '#learn-press-clear-cache', clearHardCache).on('click', 'input[name="enable_hard_cache"]', toggleHardCache).on('click', '.lp-install-sample__toggle-options', toggleOptions);
 })(jQuery);
 
 /***/ })

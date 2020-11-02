@@ -2830,7 +2830,7 @@ ul.learn-press-nav-tabs::after {
 }
 
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-content .course-item.has-status.status-completed .course-item-status::before {
-  color: var(--lp-primary-color) -course-item-status;
+  color: #3bb54a;
 }
 
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-content .course-item.has-status.item-failed .course-item-status::before, #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-content .course-item.has-status.failed .course-item-status::before {
@@ -3840,7 +3840,7 @@ button[data-counter]::after {
 }
 
 .quiz-result.passed .result-message {
-  background: var(--lp-primary-color) -course-item-status;
+  background: #3bb54a;
 }
 
 .quiz-result.passed .result-message::after {
@@ -6473,7 +6473,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20)::before {
 }
 
 #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.status-completed .section-item-link .course-item-meta .trans {
-  color: var(--lp-primary-color) -course-item-status;
+  color: #3bb54a;
 }
 
 #popup-course #popup-sidebar .course-curriculum .section.section-empty .section-header {

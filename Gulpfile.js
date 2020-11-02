@@ -13,7 +13,6 @@ const zip = require( 'gulp-zip' );
 const plumber = require( 'gulp-plumber' );
 const sourcemaps = require( 'gulp-sourcemaps' );
 // const concat = require( 'gulp-concat' );
-// const cssnano = require( 'gulp-cssnano' );
 // const postcss = require( 'gulp-postcss' );
 // const rtlcss = require( 'gulp-rtlcss' );
 const del = require( 'del' );

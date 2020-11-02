@@ -48,6 +48,7 @@ class LP_User_Factory {
 
 	public static function clear_temp_users() {
 		global $wpdb;
+
 		if ( $users = learn_press_get_temp_users() ) {
 			LP()->background( 'clear-temp-users' )->push_to_queue(
 				array(

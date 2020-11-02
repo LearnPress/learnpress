@@ -3502,6 +3502,54 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
   z-index: 99999;
 }
 
+.lp-install-sample {
+  max-width: 600px;
+  margin: 0;
+  padding: 10px 25px;
+  border: 1px solid #ccd0d4;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.lp-install-sample__options {
+  margin-bottom: 20px;
+  padding: 0 20px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.lp-install-sample__options legend {
+  padding: 5px;
+  font-weight: 500;
+}
+
+.lp-install-sample__buttons {
+  display: flex;
+  margin-top: 25px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lp-install-sample__toggle-options {
+  margin-right: auto;
+  margin-left: 10px;
+}
+
+.lp-install-sample__uninstall {
+  float: right;
+}
+
+.lp-install-sample__response {
+  margin: 0;
+  padding: 10px;
+  border: 2px solid #059601;
+  border-radius: 6px;
+}
+
+.lp-install-sample__response.fail {
+  border-color: #d85554;
+}
+
 /**
  * General style for admin editor.
  */

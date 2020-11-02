@@ -13,11 +13,11 @@ function learn_press_evaluate_course_results( $quiz_id, $course_id, $user_id ) {
 	$user = learn_press_get_user( $user_id );
 
 	LP_Object_Cache::delete( 'user-course-' . $user_id . '-' . $course_id, 'learn-press/course-results' );
+	$course_data = $user->get_course_data( $course_id );
 
-	if ( $courseData = $user->get_course_data( $course_id ) ) {
-		$r = $courseData->calculate_course_results();
+	if ( $course_data ) {
+		$r = $course_data->calculate_course_results();
 	}
-
 }
 
 add_action( 'learn-press/user/quiz-started', 'learn_press_evaluate_course_results', 10, 3 );

@@ -1,11 +1,11 @@
 ( function( $ ) {
-	var $doc = $( document ),
-		isRunning = false;
+	const $doc = $( document );
+	let isRunning = false;
 
 	const installSampleCourse = function installSampleCourse( e ) {
 		e.preventDefault();
 
-		var $button = $( this );
+		const $button = $( this );
 
 		if ( isRunning ) {
 			return;
@@ -16,19 +16,21 @@
 		}
 
 		$button.addClass( 'disabled' ).html( $button.data( 'installing-text' ) );
-		$( '.lp-install-sample-data-response' ).remove();
+		$( '.lp-install-sample__response' ).remove();
 		isRunning = true;
+
 		$.ajax( {
 			url: $button.attr( 'href' ),
-			data: $( '.lp-install-sample-data-options' ).serializeJSON(),
-			success: function( response ) {
+			data: $( '.lp-install-sample__options' ).serializeJSON(),
+			success( response ) {
 				$button.removeClass( 'disabled' ).html( $button.data( 'text' ) );
 				isRunning = false;
 				$( response ).insertBefore( $button.parent() );
 			},
-			error: function() {
+			error() {
 				$button.removeClass( 'disabled' ).html( $button.data( 'text' ) );
 				isRunning = false;
+				$( response ).insertBefore( $button.parent() );
 			},
 		} );
 	};
@@ -36,7 +38,7 @@
 	const uninstallSampleCourse = function uninstallSampleCourse( e ) {
 		e.preventDefault();
 
-		var $button = $( this );
+		const $button = $( this );
 
 		if ( isRunning ) {
 			return;
@@ -48,22 +50,25 @@
 
 		$button.addClass( 'disabled' ).html( $button.data( 'uninstalling-text' ) );
 		isRunning = true;
+
 		$.ajax( {
 			url: $button.attr( 'href' ),
-			success: function( response ) {
+			success( response ) {
 				$button.removeClass( 'disabled' ).html( $button.data( 'text' ) );
 				isRunning = false;
+				$( response ).insertBefore( $button.parent() );
 			},
-			error: function() {
+			error() {
 				$button.removeClass( 'disabled' ).html( $button.data( 'text' ) );
 				isRunning = false;
+				$( response ).insertBefore( $button.parent() );
 			},
 		} );
 	};
 
 	const clearHardCache = function clearHardCache( e ) {
 		e.preventDefault();
-		var $button = $( this );
+		const $button = $( this );
 
 		if ( $button.hasClass( 'disabled' ) ) {
 			return;
@@ -73,10 +78,10 @@
 		$.ajax( {
 			url: $button.attr( 'href' ),
 			data: {},
-			success: function( response ) {
+			success( response ) {
 				$button.removeClass( 'disabled' ).html( $button.data( 'text' ) );
 			},
-			error: function() {
+			error() {
 				$button.removeClass( 'disabled' ).html( $button.data( 'text' ) );
 			},
 		} );
@@ -86,21 +91,21 @@
 		$.ajax( {
 			url: 'admin.php?page=lp-toggle-hard-cache-option',
 			data: { v: this.checked ? 'yes' : 'no' },
-			success: function( response ) {
+			success( response ) {
 			},
-			error: function() {
+			error() {
 			},
 		} );
 	};
 
 	const toggleOptions = function toggleOptions( e ) {
 		e.preventDefault();
-		$( '.lp-install-sample-data-options' ).toggleClass( 'hide-if-js' );
+		$( '.lp-install-sample__options' ).toggleClass( 'hide-if-js' );
 	};
 
-	$doc.on( 'click', '#learn-press-install-sample-data', installSampleCourse )
-		.on( 'click', '#learn-press-uninstall-sample-data', uninstallSampleCourse )
+	$doc.on( 'click', '.lp-install-sample__install', installSampleCourse )
+		.on( 'click', '.lp-install-sample__uninstall', uninstallSampleCourse )
 		.on( 'click', '#learn-press-clear-cache', clearHardCache )
 		.on( 'click', 'input[name="enable_hard_cache"]', toggleHardCache )
-		.on( 'click', '#learn-press-install-sample-data-options', toggleOptions );
+		.on( 'click', '.lp-install-sample__toggle-options', toggleOptions );
 }( jQuery ) );

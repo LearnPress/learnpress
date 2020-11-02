@@ -405,7 +405,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function is_available() {
-
 		if ( null === $this->_is_available ) {
 			$user                = $this->get_user();
 			$order               = $user->get_course_order( $this->get_item_id() );

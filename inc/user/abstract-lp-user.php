@@ -1633,7 +1633,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function can_retry_course( $course_id ) {
 			$can = false;
 
-			if ( $course = learn_press_get_course( $course_id ) ) {
+			$course = learn_press_get_course( $course_id );
+
+			if ( $course && get_post_meta( $course_id, '_lp_retake_count', true ) === 'yes' ) {
 				global $wpdb;
 
 				$retry_allowed = learn_press_get_course_max_retrying( $course_id );
@@ -1676,6 +1678,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$auto_complete_items = apply_filters( 'learn-press/auto-complete-course-items', true, $course_id, $this->get_id() );
 
 					$return = $user_course->finish( $auto_complete_items );
+
+					$user_course->calculate_course_results();
 
 					if ( $return ) {
 						do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
@@ -2481,38 +2485,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_item  = false;
 
 				if ( $course_items ) {
-					// switch ( $course_items[0]->status ) {
-					// case 'pending':
-					// case 'passed':
-					// case 'failed':
-					// case 'enrolled':
-					//
-					// if ( $course_items[0]->status === 'pending' && $course->is_required_enroll() ) {
-					// return false;
-					// }
-					//
-					// **
-					// * If current status is 'enrolled' but it's order is not completed
-					// * then mark it is completed.
-					// */
-					// if ( $order_id ) {
-					// $order = learn_press_get_order( $order_id );
-					//
-					// if ( $order && $order->get_status() !== 'completed' ) {
-					// $order->set_status( 'completed' );
-					// $order->save();
-					// }
-					// }
-					//
-					// return $course_items[0]->user_item_id;
-					// case 'purchased':
-					// $course_item = (array) $course_items[0];
-					// break;
-					// case 'archived':
-					// case 'completed':
-					// break;
-					// }
-
 					// User is learning course or course result is under evaluation
 					if ( in_array( $course_items[0]->status, array( 'in-progress', 'under-evaluation' ) ) ) {
 						return $course_items[0]->user_item_id;

@@ -1,0 +1,48 @@
+
+.lp-install-sample {
+	max-width: 600px;
+	margin: 0;
+	padding: 10px 25px;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	background-color: #fff;
+
+	&__options {
+		margin-bottom: 20px;
+		padding: 0 20px;
+		border: 1px solid #eee;
+		border-radius: 4px;
+
+		legend {
+			padding: 5px;
+			font-weight: 500;
+		}
+	}
+
+	&__buttons {
+		display: flex;
+		margin-top: 25px;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	&__toggle-options {
+		margin-right: auto;
+		margin-left: 10px;
+	}
+
+	&__uninstall {
+		float: right;
+	}
+
+	&__response {
+		margin: 0;
+		padding: 10px;
+		border: 2px solid #059601;
+		border-radius: 6px;
+
+		&.fail {
+			border-color: #d85554;
+		}
+	}
+}
