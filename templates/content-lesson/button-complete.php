@@ -15,29 +15,30 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $course ) || ! isset( $item ) ||
-	! isset( $security ) || ! isset( $completed ) ) {
+     ! isset( $security ) || ! isset( $completed ) ) {
 	return;
 }
 ?>
 
 <form method="post" name="learn-press-form-complete-lesson"
-	  data-confirm="<?php ! $completed ? LP_Strings::esc_attr_e( 'confirm-complete-lesson', '', array( $item->get_title() ) ) : ''; ?>"
-	  class="learn-press-form form-button<?php echo $completed ? ' completed' : ''; ?>">
+      data-confirm="<?php ! $completed ? LP_Strings::esc_attr_e( 'confirm-complete-lesson', '', array( $item->get_title() ) ) : ''; ?>"
+      data-title="<?php esc_html_e( 'Complete lesson', 'learnpress' ); ?>"
+      class="learn-press-form form-button<?php echo $completed ? ' completed' : ''; ?> lp-btn-complete-item">
 
 	<?php do_action( 'learn-press/lesson/before-complete-button' ); ?>
 
 	<?php if ( $completed ) { ?>
-		<p><i class="fa fa-check"></i> <?php _e( 'Completed', 'learnpress' ); ?></p>
+        <p><i class="fa fa-check"></i> <?php _e( 'Completed', 'learnpress' ); ?></p>
 	<?php } else { ?>
-		<input type="hidden" name="id" value="<?php echo $item->get_id(); ?>"/>
-		<input type="hidden" name="course_id" value="<?php echo $course->get_id(); ?>"/>
-		<input type="hidden" name="complete-lesson-nonce" value="<?php echo esc_attr( $security ); ?>"/>
-		<input type="hidden" name="type" value="lp_lesson"/>
-		<input type="hidden" name="lp-ajax" value="complete-lesson"/>
-		<input type="hidden" name="noajax" value="yes"/>
-		<button class="lp-button button button-complete-item button-complete-lesson">
+        <input type="hidden" name="id" value="<?php echo $item->get_id(); ?>"/>
+        <input type="hidden" name="course_id" value="<?php echo $course->get_id(); ?>"/>
+        <input type="hidden" name="complete-lesson-nonce" value="<?php echo esc_attr( $security ); ?>"/>
+        <input type="hidden" name="type" value="lp_lesson"/>
+        <input type="hidden" name="lp-ajax" value="complete-lesson"/>
+        <input type="hidden" name="noajax" value="yes"/>
+        <button class="lp-button button button-complete-item button-complete-lesson">
 			<?php _e( 'Complete', 'learnpress' ); ?>
-		</button>
+        </button>
 	<?php } ?>
 
 	<?php do_action( 'learn-press/lesson/after-complete-button' ); ?>

@@ -162,7 +162,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 		        SELECT COUNT(ID)
-		        FROM {$wpdb->posts} p 
+		        FROM {$wpdb->posts} p
 		        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
 		        WHERE pm.meta_value = %s
 		        AND p.post_type = %s
@@ -180,7 +180,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 		        SELECT COUNT(ID)
-		        FROM {$wpdb->posts} p 
+		        FROM {$wpdb->posts} p
 		        WHERE p.post_type = %s AND p.post_status NOT LIKE 'auto-draft'
 		    ", LP_LESSON_CPT );
 
@@ -417,7 +417,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function admin_scripts() {
 			if ( in_array( get_post_type(), array( LP_LESSON_CPT ) ) ) {
-				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/vendor/jquery.caret.js' ) );
+				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/src/js/vendor/jquery/jquery.caret.js' ) );
 			}
 		}
 
@@ -432,6 +432,8 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		/**
 		 * Enqueue script.
+         *
+         * @TODO check function have work - tungnx
 		 */
 		public function enqueue_script() {
 			if ( LP_LESSON_CPT != get_post_type() ) {

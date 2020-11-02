@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.2.7.5
+ * @version  3.2.7.6
  */
 
 /**
@@ -27,12 +27,13 @@ if ( $finish_not_passed && ! $finish_passed ) {
 }
 ?>
 
-<form class="lp-form form-button form-button-finish-course" method="post" data-confirm="<?php echo $message ?>">
-	<button class="lp-button"><?php _e( 'Finish course', 'learnpress' ); ?></button>
-	<input type="hidden" name="course-id" value="<?php echo $course->get_id(); ?>"/>
-	<input type="hidden" name="finish-course-nonce"
-		   value="<?php echo esc_attr( wp_create_nonce( sprintf( 'finish-course-%d-%d', $course->get_id(), $user->get_id() ) ) ); ?>"/>
-	<input type="hidden" name="lp-ajax" value="finish-course"/>
-	<input type="hidden" name="noajax" value="yes"/>
+<form class="lp-form form-button form-button-finish-course" method="post" data-confirm="<?php echo $message ?>"
+      data-title="<?php esc_html_e( 'Finish Course', 'learnpress' ); ?>">
+    <button class="lp-button lp-btn-finish-course"><?php _e( 'Finish course', 'learnpress' ); ?></button>
+    <input type="hidden" name="course-id" value="<?php echo $course->get_id(); ?>"/>
+    <input type="hidden" name="finish-course-nonce"
+           value="<?php echo esc_attr( wp_create_nonce( sprintf( 'finish-course-%d-%d', $course->get_id(), $user->get_id() ) ) ); ?>"/>
+    <input type="hidden" name="lp-ajax" value="finish-course"/>
+    <input type="hidden" name="noajax" value="yes"/>
 
 </form>

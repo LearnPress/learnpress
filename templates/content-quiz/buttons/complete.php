@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -21,12 +21,13 @@ defined( 'ABSPATH' ) || exit();
 
     <form name="complete-quiz"
           data-confirm="<?php LP_Strings::esc_attr_e( 'confirm-complete-quiz', '', array( $quiz->get_title() ) ); ?>"
+          data-title="<?php esc_html_e('Complete quiz', 'learnnpress'); ?>"
           data-action="complete-quiz"
           class="complete-quiz form-button lp-form" method="post" enctype="multipart/form-data">
 
 		<?php do_action( 'learn-press/quiz/begin-complete-button' ); ?>
 
-        <button type="submit"><?php _e( 'Complete', 'learnpress' ); ?></button>
+        <button type="submit" class="lp-button lp-btn-complete-quiz lp-btn-complete-item"><?php _e( 'Complete', 'learnpress' ); ?></button>
 
 		<?php do_action( 'learn-press/quiz/end-complete-button' ); ?>
 

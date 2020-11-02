@@ -944,14 +944,16 @@ class LP_Page_Controller {
 			return LP_PAGE_CHECKOUT;
 		} elseif ( learn_press_is_courses() ) {
 			return LP_PAGE_COURSES;
+		} elseif ( learn_press_is_course() ) {
+			return LP_PAGE_COURSE;
 		} elseif ( learn_press_is_profile() ) {
 			return LP_PAGE_PROFILE;
 		} elseif ( self::is_pae_become_a_teacher() ) {
 			return LP_PAGE_BECOME_A_TEACHER;
-		} elseif (LP_Global::course_item_quiz()) {
+		} elseif ( LP_Global::course_item_quiz() ) {
 			return LP_PAGE_QIZ;
 		} else {
-			return apply_filters('learnpress/page/current', '');
+			return apply_filters( 'learnpress/page/current', '' );
 		}
 	}
 

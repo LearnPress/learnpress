@@ -17,7 +17,7 @@ const zip = require( 'gulp-zip' );
 // const plumber = require( 'gulp-plumber' );
 // const concat = require( 'gulp-concat' );
 // const sourcemaps = require( 'gulp-sourcemaps' );
-// const cssnano = require( 'gulp-cssnano' );
+const uglifycss = require( 'gulp-uglifycss' );
 const del = require( 'del' );
 const beep = require( 'beepbeep' );
 
@@ -87,12 +87,12 @@ gulp.task( 'watch', gulp.series( 'clearCache', () => {
 	gulp.watch( [ 'assets/scss/**/*.scss' ], gulp.parallel( 'styles' ) );
 } ) );
 
-// Min css.
+// Min CSS frontend.
 gulp.task( 'mincss', () => {
 	return gulp
-		.src( './assets/**/*.css' )
+		.src( './assets/**/learnpress.css' )
 		.pipe( rename( { suffix: '.min' } ) )
-		.pipe( cssnano( { discardUnused: { fontFace: false, keyframes: false } } ) )
+		.pipe( uglifycss() )
 		.pipe( lineec() )
 		.pipe( gulp.dest( 'assets' ) );
 } );
@@ -114,6 +114,18 @@ gulp.task( 'minJsAdmin', () => {
 		.pipe( uglify() )
 		.pipe( lineec() )
 		.pipe( gulp.dest( 'assets/js/admin' ) );
+} );
+gulp.task( 'minJsFrontend', () => {
+	return gulp
+		.src( [ 'assets/src/js/frontend/**/*.js' ] )
+		.pipe(
+			rename( {
+				suffix: '.min',
+			} )
+		)
+		.pipe( uglify() )
+		.pipe( lineec() )
+		.pipe( gulp.dest( 'assets/js/frontend' ) );
 } );
 
 // Clean folder to releases.
@@ -150,6 +162,8 @@ gulp.task(
 		'clearCache',
 		'clearJsAdmin',
 		'minJsAdmin',
+		'minJsFrontend',
+		'mincss',
 		'cleanReleases',
 		'copyReleases',
 		'zipReleases',

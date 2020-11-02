@@ -20,6 +20,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	protected function __construct() {
 		parent::__construct();
+
+		add_action( 'wp_print_footer_scripts', array( $this, 'show_overlay' ) );
 	}
 
 	/**
@@ -76,7 +78,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-				'watch'            => new LP_Asset_Key( self::url( 'js/vendor/watch' . self::$_min_assets . '.js' ) ),
+				'watch'            => new LP_Asset_Key( self::url( 'src/js/vendor/watch' . self::$_min_assets . '.js' ) ),
 				'lp-plugins-all'   => new LP_Asset_Key( self::url( 'src/js/plugins.all.min.js' ) ),
 				'lp-global'        => new LP_Asset_Key( self::url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils' )
@@ -193,11 +195,26 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	public static function instance() {
+		if ( is_admin() ) {
+			return null;
+		}
+
 		if ( self::$_instance == null ) {
 			self::$_instance = new self();
 		}
 
 		return self::$_instance;
+	}
+
+	public function show_overlay() {
+		$page_current = LP_Page_Controller::page_current();
+		if ( $page_current != LP_PAGE_COURSE ) {
+			return;
+		}
+
+		echo '<div class="lp-overlay">';
+		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
+		echo '</div>';
 	}
 }
 
@@ -207,10 +224,6 @@ class LP_Assets extends LP_Abstract_Assets {
  * @return LP_Assets|null
  */
 function learn_press_assets() {
-	if ( is_admin() ) {
-		return null;
-	}
-
 	return LP_Assets::instance();
 }
 
