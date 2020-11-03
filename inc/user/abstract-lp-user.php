@@ -239,7 +239,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			// Validate course
-			if ( $course = learn_press_get_course( $course_id ) ) {
+			$course = learn_press_get_course( $course_id );
+
+			if ( $course ) {
 				switch ( $return ) {
 					case 'id':
 						return $course_id;
@@ -383,18 +385,18 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					return false;
 				}
 
-				$userQuiz = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
+				$user_quiz = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
 
 				// @deprecated
-				do_action( 'learn_press_user_start_quiz', $userQuiz, $quiz_id, $course_id, $this->get_id() );
+				do_action( 'learn_press_user_start_quiz', $user_quiz, $quiz_id, $course_id, $this->get_id() );
 
 				/**
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-started', $quiz_id, $course_id, $this->get_id() );
 
-				// $return = $userQuiz->get_mysql_data();
-				$return = $userQuiz;
+				// $return = $user_quiz->get_mysql_data();
+				$return = $user_quiz;
 			} catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 			}
@@ -483,103 +485,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				$allow_attempts = learn_press_get_quiz_max_retrying( $quiz_id, $course_id );
+
 				if ( $this->count_quiz_attempts( $quiz_id, $course_id ) > $allow_attempts + 1 ) {
 					throw new Exception( sprintf( __( '%1$s::%2$s - Your attempt has reached limitation.', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
+
 				$return = learn_press_user_retry_quiz( $quiz_id, false, $course_id, $wp_error );
 
-				// if ( 1 === 0 ) {
-				//
-				// $course_data     = $this->get_course_data( $course_id );
-				// $quiz            = learn_press_get_quiz( $quiz_id );
-				// $quiz_data       = $course_data->get_item( $quiz_id );
-				// $create_new_item = true;
-				// **
-				// * If the option 'Archive History' in quiz is turn off
-				// * then remove all items in user-items table.
-				// */
-				// if ( ! $enable_history = $quiz->enable_archive_history() ) {
-				// if ( $user_item_id = $quiz_data->get_user_item_id() ) {
-				// global $wpdb;
-				//
-				// Delete al meta
-				// $query_meta = $wpdb->prepare( "
-				// DELETE FROM {$wpdb->learnpress_user_itemmeta}
-				// WHERE learnpress_user_item_id = %d
-				// ", $user_item_id );
-				// $wpdb->query( $query_meta );
-				//
-				// Delete all items but ignore the last item. We will update it
-				// instead if create new item.
-				// $query = $wpdb->prepare( "
-				// DELETE FROM {$wpdb->learnpress_user_items}
-				// WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-				// ", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
-				// $wpdb->query( $query );
-				//
-				// $create_new_item = false;
-				// } else {
-				// $course_data->update_item_retaken_count( $quiz_id, 0 );
-				// }
-				// } else {
-				// $count_history = $course_data->count_history_items( $quiz_id );
-				// }
-				//
-				// $course_data->update_item_retaken_count( $quiz_id, '+1' );
-				// $quiz_data->set_status( 'started' );
-				//
-				// $date = new LP_Datetime();
-				// $quiz_data->set_start_time( $date->toSql() );
-				// $quiz_data->set_end_time( null );
-				// $quiz_data->set_end_time_gmt( null );
-				//
-				// **
-				// * If enable duration for quiz then update the expiration time
-				// * otherwise, consider quiz is lifetime access.
-				// */
-				//
-				// $expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
-				// LP_Debug::instance()->add( [ $expiration, $quiz->get_duration()->get_seconds() ], '', '', true );
-				//
-				// if ( $quiz->get_duration()->get_seconds() ) {
-				// $quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );
-				// } else {
-				// $quiz_data->set_expiration_time( null );
-				// $quiz_data->set_expiration_time_gmt( null );
-				// }
-				//
-				// if ( $create_new_item ) {
-				// $quiz_data->set_user_item_id( 0 );
-				// }
-				//
-				// *$course_data->update_item_retaken_count( $quiz_id, '+1' );
-				// $quiz_data->set_status( 'started' );
-				// $quiz_data->set_start_time( current_time( 'mysql' ), true );
-				// $quiz_data->set_end_time( '0000-00-00 00:00:00' );
-				// $quiz_data->set_end_time_gmt( '0000-00-00 00:00:00' );
-				// $quiz_data->set_status( 'started' );*/
-				//
-				// if ( $quiz_data->update() ) {
-				// $quiz_data->update_meta(
-				// array(
-				// '_question_answers' => false,
-				// '_grade'            => false,
-				// 'results'           => false
-				// )
-				// );
-				//
-				// $course_data->set_item( $quiz_data );
-				// }
-				//
-				//
-				// if ( $questions = $quiz->get_questions() ) {
-				// $question_id = reset( $questions );
-				// learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
-				// }
-				// }
-				/**
-				 * @since 3.0.0
-				 */
 				do_action( 'learn-press/user/quiz-retried', $quiz_id, $course_id, $this->get_id() );
 			} catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
@@ -599,81 +511,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return 0;
-		}
-
-		protected function _insert_quiz_item( $quiz_id, $course_id ) {
-			_deprecated_function( __FUNCTION__, '3.1.0' );
-			// $course_data   = $this->get_course_data( $course_id );
-			// $quiz          = learn_press_get_quiz( $quiz_id );
-			// $quiz_data     = $course_data->get_item( $quiz_id );
-			// $count_history = $course_data->count_history_items( $quiz_id );
-			// if ( ! $quiz->enable_archive_history() ) {
-			// if ( $quiz_data->get_user_item_id() ) {
-			// global $wpdb;
-			// $query = $wpdb->prepare( "
-			// DELETE FROM {$wpdb->learnpress_user_items}
-			// WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-			// ", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
-			//
-			// $wpdb->query( $query );
-			// } else {
-			// $course_data->update_item_retaken_count( $quiz_id, 0 );
-			// }
-			// }
-			//
-			// if ( $quiz_data->get_status() === 'completed' ) {
-			// $course_data->update_item_retaken_count( $quiz_id, '+1' );
-			// }
-			//
-			// $start_time = new LP_Datetime( current_time( 'mysql' ) );
-			// $item_data  = array(
-			// 'user_id'        => $this->get_id(),
-			// 'item_id'        => $quiz_id,
-			// 'start_time'     => $start_time->toSql(false),
-			// 'start_time_gmt' => $start_time->toSql( false ),
-			// 'end_time'       => '0000-00-00 00:00:00',
-			// 'end_time_gmt'   => '0000-00-00 00:00:00',
-			// 'item_type'      => LP_QUIZ_CPT,
-			// 'status'         => 'started',
-			// 'ref_id'         => $course_id,
-			// 'ref_type'       => LP_COURSE_CPT,
-			// 'parent_id'      => $course_data->get_user_item_id(),
-			// 'user_item_id'   => 0//insert
-			// );
-			//
-			// $last_results         = $this->get_item_archive( $quiz_id, $course_id, true );
-			// $set_current_question = false;
-			//
-			// If there is no a record
-			// if ( ! $last_results ) {
-			// $item_data            = apply_filters( 'learn-press/insert-user-item-data', $item_data, $quiz_id, $course_id, $this->get_id() );
-			// $set_current_question = true;
-			// learn_press_update_user_item_field( $item_data );
-			// } else {
-			//
-			// If there is one record but it's status is not valid then
-			// update it as started
-			// if ( in_array( $last_results['status'], array( '', 'viewed' ) ) ) {
-			// $last_results['status']         = 'started';
-			// $last_results['start_time']     = $start_time->toSql();
-			// $last_results['start_time_gmt'] = $start_time->toSql( false );
-			//
-			// $item_data            = apply_filters( 'learn-press/update-user-item-data', $last_results, $quiz_id, $course_id, $this->get_id() );
-			// $set_current_question = true;
-			// }
-			// }
-			//
-			// $this->_curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
-			// $return = $this->get_item_archive( $quiz_id, $course_id, true );
-			//
-			// if ( $return && $set_current_question ) {
-			// $quiz = learn_press_get_quiz( $quiz_id );
-			// if ( $first_question = $quiz->get_question_at( 0 ) ) {
-			// learn_press_update_user_item_meta( $return['user_item_id'], '_current_question', $first_question );
-			// }
-			// }
-			//
-			// return $return;
 		}
 
 		/**

@@ -239,16 +239,6 @@ var LP = LP || {};
     $newButton.prepend($addNew.removeClass('page-title-action'));
   };
 
-  var autoCheckHideContentOption = function autoCheckHideContentOption(event) {
-    var isChecked = $(event.target).is(':checked');
-
-    if (!isChecked) {
-      return;
-    }
-
-    $('#_lp_block_content').prop('checked', true);
-  };
-
   var onReady = function onReady() {
     $('.learn-press-dropdown-pages').LP('DropdownPages');
     $('.learn-press-advertisement-slider').LP('Advertisement', 'a', 's').appendTo($('#wpbody-content'));
@@ -261,7 +251,7 @@ var LP = LP || {};
     }).on('mouseup', function (e) {
       $('html, body').removeClass('lp-item-moving');
       $('.lp-sortable-handle').css('cursor', '');
-    }).on('change', '#_lp_retake_count', autoCheckHideContentOption);
+    });
   };
 
   $(document).ready(onReady);
