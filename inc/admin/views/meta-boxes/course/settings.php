@@ -115,7 +115,7 @@ class LP_Meta_Box_Course {
 		if ( ! empty( $author ) ) {
 			global $wpdb;
 
-			$curriculum = $course->get_items();
+			$curriculum = $course->get_items( '', false );
 
 			if ( ! $curriculum ) {
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $post_id ) );

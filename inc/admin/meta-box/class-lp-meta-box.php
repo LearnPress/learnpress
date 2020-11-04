@@ -10,7 +10,7 @@ class LP_Meta_Box {
 	private static $saved_meta_boxes = false;
 
 	public function __construct() {
-		add_action( 'save_post', array( $this, 'save_meta_boxes' ), 1, 2 );
+		add_action( 'save_post', array( $this, 'save_meta_boxes' ), 100, 2 );
 
 		add_action( 'learnpress_save_lp_lesson_metabox', 'LP_Meta_Box_Lesson::save' );
 		add_action( 'learnpress_save_lp_question_metabox', 'LP_Meta_Box_Question::save' );

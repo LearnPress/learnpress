@@ -792,9 +792,11 @@ class LP_Repair_Database {
 	 */
 	public function sync_course_final_quiz( $courses = array() ) {
 		settype( $courses, 'array' );
-		foreach ( $courses as $course_id ) {
 
-			if ( ! $course = learn_press_get_course( $course_id ) ) {
+		foreach ( $courses as $course_id ) {
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course ) {
 				continue;
 			}
 
@@ -809,6 +811,7 @@ class LP_Repair_Database {
 			$items = $course->get_item_ids();
 			if ( $items ) {
 				$end = end( $items );
+
 				if ( learn_press_get_post_type( $end ) === LP_QUIZ_CPT ) {
 					$final_quiz = $end;
 				}

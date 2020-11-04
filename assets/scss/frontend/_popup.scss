@@ -112,8 +112,6 @@
 	background: #fff;
 
 	#popup-header {
-
-		/*height: 70px;*/
 		display: flex;
 		position: fixed;
 		z-index: 100;
@@ -130,6 +128,7 @@
 			width: 792px;
 			margin: 0 auto;
 			justify-content: space-between;
+			align-items: center;
 
 			@media (max-width: 1024px) {
 				width: 100%;
@@ -191,7 +190,22 @@
 		}
 
 		.lp-button {
+			display: flex;
+			position: relative;
+			height: 40px;
 			margin: 9px;
+			border: none;
+			color: #fff;
+			background: var(--lp-primary-color);
+			font-size: 14px;
+			font-weight: 400;
+			justify-content: center;
+			line-height: 40px;
+			align-items: center;
+
+			&:hover {
+				opacity: 0.8;
+			}
 		}
 
 		.lp-button-back {

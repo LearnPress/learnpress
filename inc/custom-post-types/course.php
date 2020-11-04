@@ -23,11 +23,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		protected static $_VER2 = false;
 
 		/**
-		 * @var RW_Meta_Box[]
-		 */
-		public static $metaboxes = array();
-
-		/**
 		 * @var null
 		 */
 		protected static $_instance = null;

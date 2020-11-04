@@ -324,12 +324,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$results = $this->_evaluate_course_by_lesson();
 				break;
 
-			case 'evaluate_quiz':
-				$results = $this->_evaluate_results_by_passed_per_all_quizzes();
-				break;
-
 			case 'final_quiz':
 				$results = $this->_evaluate_course_by_final_quiz();
+				break;
+
+			case 'evaluate_quiz':
+				$results = $this->_evaluate_results_by_passed_per_all_quizzes();
 				break;
 
 			case 'evaluate_questions':
@@ -459,19 +459,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param bool $hard - Optional. TRUE will re-calculate results instead of get from cache
 	 *
 	 * @return array|mixed
-	 * @since 3.x.x
+	 * @since 4.0.0
+	 * @author Nhamdv <email@email.com>
 	 */
 	protected function _evaluate_results_by_passed_per_all_quizzes( $hard = false ) {
-
-		/**
-		 * @var LP_User_Item_Quiz $item
-		 */
 		$cache_key     = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 		$cache_sub_key = 'passed-per-all-quizzes';
 		$cached_data   = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' );
 
 		if ( $hard || false === $cached_data || ! array_key_exists( $cache_sub_key, $cached_data ) ) {
-
 			$data = array(
 				'items_completed' => 0,
 				'items_count'     => 0,
@@ -487,7 +483,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 						continue;
 					}
 
-					$data['items_completed'] += $item->is_passed() ? 1 : 0;
+					$data['items_completed'] += $item->get_status( 'graduation' ) == 'passed' ? 1 : 0;
 					$data['items_count'] ++;
 				}
 
@@ -510,11 +506,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return isset( $cached_data[ $cache_sub_key ] ) ? $cached_data[ $cache_sub_key ] : array();
 	}
 
-	protected function _evaluate_course_by_question() {
+	protected function _evaluate_course_by_question( $hard = false ) {
 		$cache_key   = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 		$cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' );
 
-		if ( false === $cached_data || ! array_key_exists( 'questions', $cached_data ) ) {
+		if ( $hard || false === $cached_data || ! array_key_exists( 'questions', $cached_data ) ) {
 			$data = array(
 				'result' => 0,
 				'grade'  => '',
@@ -532,15 +528,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 						continue;
 					}
 
-					$quiz_result = $item->calculate_results();
+					$quiz_result = $item->get_results( '' );
 
 					if ( $quiz_result ) {
 						if ( $quiz_result['question_correct'] ) {
 							$result += absint( $quiz_result['question_correct'] );
 						}
-
-						$result_of_items += $quiz_result['question_count'] ? absint( $quiz_result['question_count'] ) : 0;
 					}
+
+					$result_of_items += ! empty( $item->get_questions() ) ? count( $item->get_questions() ) : 0;
 				}
 
 				$result         = $result_of_items ? ( $result * 100 ) / $result_of_items : 0;
@@ -582,14 +578,23 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 						continue;
 					}
 
-					$quiz_result = $item->calculate_results();
+					$questions   = $item->get_questions();
+					$quiz_result = $item->get_results( '' );
+
+					if ( $questions ) {
+						foreach ( $questions as $question_id ) {
+							$question = LP_Question::get_question( $question_id );
+
+							if ( $question ) {
+								$result_of_items += absint( $question->get_mark() );
+							}
+						}
+					}
 
 					if ( $quiz_result ) {
 						if ( $quiz_result['user_mark'] ) {
 							$result += $quiz_result['user_mark'];
 						}
-
-						$result_of_items += $quiz_result['mark'] ? $quiz_result['mark'] : 0;
 					}
 				}
 
@@ -645,7 +650,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return array
 	 */
 	protected function _evaluate_course_by_lesson( $hard = false ) {
-
 		$cache_key   = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 		$cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' );
 

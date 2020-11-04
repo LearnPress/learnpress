@@ -3459,21 +3459,6 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 }
 
 /**
- * Get default methods to evaluate course results.
- *
- * @return array
- * @since 3.x.x
- */
-function learn_press_course_evaluation_method_quiz_options() {
-	$methods = array(
-		'evaluate_lesson' => __( 'With lessons', 'learnpress' ),
-		'evaluate_quiz'   => __( 'With quizzes', 'learnpress' ),
-	);
-
-	return $methods;
-}
-
-/**
  * Wrap WP Core function current_time with mysql format.
  *
  * @param bool $gmt

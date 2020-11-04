@@ -2593,6 +2593,7 @@ function learn_press_get_orders_status_chart_data() {
 
 function learn_press_option_course_evaluation_method( $method ) {
 	global $post;
+
 	$evaluation_by = get_post_meta( $post->ID, '_lp_course_result_quiz', true );
 	switch ( $method ) {
 		case 'evaluate_quiz':

@@ -355,11 +355,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$access_level = $this->get_course_access_level( $course_id );
 
 				// If user has already finished the course
-				if ( $this->has_finished_course( $course_id ) /* $access_level === LP_COURSE_ACCESS_LEVEL_70*/ ) {
+				if ( $this->has_finished_course( $course_id ) ) {
 					throw new Exception( __( 'You have already finished the course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
 				}
 
-				if ( $course->is_required_enroll() && ! $this->has_enrolled_course( $course_id ) /* $access_level < LP_COURSE_ACCESS_LEVEL_60*/ ) {
+				if ( $course->is_required_enroll() && ! $this->has_enrolled_course( $course_id ) ) {
 					throw new Exception( __( 'Please enroll course before starting quiz.', 'learnpress' ), LP_COURSE_IS_FINISHED );
 				}
 
@@ -369,7 +369,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 				$user = LP_Global::user();
 
-				if ( $course->is_required_enroll() && $user->is_guest()/* && ! $quiz->get_preview() */ ) {
+				if ( $course->is_required_enroll() && $user->is_guest() ) {
 					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
 				}
 
@@ -2119,21 +2119,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$user_access_level = $this->get_course_access_level( $course_id );
 
 			return $user_access_level === $access_level;
-		}
-
-		/**
-		 * Evaluate results of a quiz for this user
-		 *
-		 * @param $quiz_id
-		 * @param $progress
-		 *
-		 * @return mixed
-		 * @deprecated
-		 */
-		public function evaluate_quiz_results( $quiz_id, $progress ) {
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.0' );
-
-			return array();
 		}
 
 		/**

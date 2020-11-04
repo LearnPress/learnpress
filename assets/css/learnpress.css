@@ -5982,7 +5982,6 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20)::before {
 }
 
 #popup-course #popup-header {
-  /*height: 70px;*/
   display: flex;
   position: fixed;
   z-index: 100;
@@ -6003,6 +6002,7 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20)::before {
   width: 792px;
   margin: 0 auto;
   justify-content: space-between;
+  align-items: center;
 }
 
 @media (max-width: 1024px) {
@@ -6074,7 +6074,22 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20)::before {
 }
 
 #popup-course #popup-header .lp-button {
+  display: flex;
+  position: relative;
+  height: 40px;
   margin: 9px;
+  border: none;
+  color: #fff;
+  background: var(--lp-primary-color);
+  font-size: 14px;
+  font-weight: 400;
+  justify-content: center;
+  line-height: 40px;
+  align-items: center;
+}
+
+#popup-course #popup-header .lp-button:hover {
+  opacity: 0.8;
 }
 
 #popup-course #popup-header .lp-button-back {

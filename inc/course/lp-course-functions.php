@@ -227,8 +227,9 @@ add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
  * @throws Exception
  */
 function learn_press_get_final_quiz( $course_id ) {
+	$final_quiz = LP_Object_Cache::get( 'final-quiz-' . $course_id, 'learn-press/final-quiz' );
 
-	if ( false === ( $final_quiz = LP_Object_Cache::get( 'final-quiz-' . $course_id, 'learn-press/final-quiz' ) ) ) {
+	if ( false === $final_quiz ) {
 
 		$course = learn_press_get_course( $course_id );
 		if ( ! $course ) {
@@ -1131,10 +1132,11 @@ function learn_press_get_course_results_tooltip( $course_id ) {
 }
 
 function learn_press_course_passing_condition( $value, $format, $course_id ) {
+	$course    = learn_press_get_course( $course_id );
+	$quiz_id   = $course->get_final_quiz();
+	$evalution = get_post_meta( $course_id, '_lp_course_result', true );
 
-	$course = learn_press_get_course( $course_id );
-
-	if ( $quiz_id = $course->get_final_quiz() ) {
+	if ( $quiz_id && $evalution === 'evaluate_final_quiz' ) {
 		$quiz  = learn_press_get_quiz( $quiz_id );
 		$value = absint( $quiz->get_passing_grade() );
 
