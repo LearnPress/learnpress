@@ -1,4 +1,12 @@
 <?php
+/**
+ * Use for Course Extra widget.
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 4.0.0
+ */
+
 if ( ! isset( $type ) || ! isset( $content ) ) {
 	return;
 }

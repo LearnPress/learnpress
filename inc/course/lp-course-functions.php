@@ -1233,13 +1233,13 @@ function learn_press_translate_course_result_required( $passing_condition = null
 	$label = '';
 	switch ( $course->get_evaluation_results_method() ) {
 		case 'evaluate_lesson':
-			$label = __( 'Lessons Completed', 'learnpress' );
+			$label = esc_html__( 'Lessons Completed', 'learnpress' );
 			break;
 		case 'evaluate_quiz':
-			$label = __( 'Quizzes Completed', 'learnpress' );
+			$label = esc_html__( 'Quizzes Completed', 'learnpress' );
 			break;
-		case 'final_quiz':
-			$label = __( 'Final Quiz', 'learnpress' );
+		case 'evaluate_final_quiz':
+			$label = esc_html__( 'Final Quiz', 'learnpress' );
 	}
 
 	return apply_filters( 'learn-press/translate-course-result-required', sprintf( __( 'Require %1$s %2$s', 'learnpress' ), $passing_condition . '%', $label ) );

@@ -3195,18 +3195,29 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
   display: none;
 }
 
-.post-type-lp_order #order_details .hndle, .post-type-lp_order #order_details .handlediv, .post-type-lp_order #order_details .postbox-header {
+.post-type-lp_order #order_details {
+  border: none !important;
+  background: transparent !important;
+}
+
+.post-type-lp_order #order_details .hndle,
+.post-type-lp_order #order_details .handlediv,
+.post-type-lp_order #order_details .postbox-header {
   display: none;
 }
 
 .post-type-lp_order #order_details .inside {
   display: block !important;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .post-type-lp_order #order_details .order-data {
+  margin: 0 0 20px 0 !important;
   padding: 30px !important;
+  border: 1px solid #ccd0d4 !important;
+  background-color: #fff !important;
+  box-shadow: none !important;
 }
 
 .post-type-lp_order #order_details .order-data-field {
@@ -3226,8 +3237,12 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
 }
 
 .post-type-lp_order #order_details .payment-method-title {
-  font-size: 16px;
   color: #777;
+  font-size: 16px;
+}
+
+.post-type-lp_order #order_details .payment-method-title strong {
+  color: #23282d;
 }
 
 .post-type-lp_order #order_details .order-data-heading {
@@ -3240,27 +3255,29 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
 }
 
 .post-type-lp_order #order_details .order-users .description {
+  margin-top: 10px;
   padding: 10px;
   background: #eee;
-  margin-top: 10px;
 }
 
 .post-type-lp_order #order_details .order-data-date .order-date {
   width: 100px;
 }
 
-.post-type-lp_order #order_details .order-data-date .order-hour, .post-type-lp_order #order_details .order-data-date .order-minute {
+.post-type-lp_order #order_details .order-data-date .order-hour,
+.post-type-lp_order #order_details .order-data-date .order-minute {
   width: 50px;
 }
 
 .post-type-lp_order #order_details .order-items {
   margin: 0;
-  border-top: 1px solid #DDD;
+  border: 1px solid #ccd0d4 !important;
+  background-color: #fff;
 }
 
 .post-type-lp_order #order_details .order-items table {
-  border-collapse: collapse;
   width: 100%;
+  border-collapse: collapse;
 }
 
 .post-type-lp_order #order_details .order-items table thead {
@@ -3273,11 +3290,11 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
 }
 
 .post-type-lp_order #order_details .order-items table thead th {
-  border-bottom: none;
-  text-align: left;
   padding: 15px;
-  font-weight: 400;
+  border-bottom: none;
   color: #999;
+  font-weight: 400;
+  text-align: left;
 }
 
 .post-type-lp_order #order_details .order-items table thead th:first-child {
@@ -3288,10 +3305,11 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
   padding-right: 30px;
 }
 
-.post-type-lp_order #order_details .order-items table tbody td, .post-type-lp_order #order_details .order-items table tfoot td {
-  border-bottom: 1px solid #DDD;
-  text-align: left;
+.post-type-lp_order #order_details .order-items table tbody td,
+.post-type-lp_order #order_details .order-items table tfoot td {
   padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
 }
 
 .post-type-lp_order #order_details .order-items table tbody {
@@ -3326,11 +3344,11 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
 }
 
 .post-type-lp_order #order_details .order-items table tfoot td {
-  border: none;
-  padding-bottom: 0;
-  text-align: right;
-  font-size: 14px;
   padding: 10px 15px;
+  padding-bottom: 0;
+  border: none;
+  font-size: 14px;
+  text-align: right;
 }
 
 .post-type-lp_order #order_details .order-items table tfoot td:first-child {
@@ -3344,18 +3362,21 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
 .post-type-lp_order #order_details .order-items table .column-price,
 .post-type-lp_order #order_details .order-items table .column-total,
 .post-type-lp_order #order_details .order-items table .column-quantity {
-  text-align: right;
   width: 150px;
+  text-align: right;
 }
 
-.post-type-lp_order #order_details .order-items table .row-subtotal td .order-subtotal, .post-type-lp_order #order_details .order-items table .row-subtotal td .order-total, .post-type-lp_order #order_details .order-items table .row-total td .order-subtotal, .post-type-lp_order #order_details .order-items table .row-total td .order-total {
+.post-type-lp_order #order_details .order-items table .row-subtotal td .order-subtotal,
+.post-type-lp_order #order_details .order-items table .row-subtotal td .order-total,
+.post-type-lp_order #order_details .order-items table .row-total td .order-subtotal,
+.post-type-lp_order #order_details .order-items table .row-total td .order-total {
   font-weight: 700;
 }
 
 .post-type-lp_order #order_details .order-items table .remove-order-item {
-  text-decoration: none;
   outline: none;
-  color: #CCC;
+  color: #ccc;
+  text-decoration: none;
 }
 
 .post-type-lp_order #order_details .order-items table .remove-order-item .dashicons {
@@ -3363,7 +3384,7 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
 }
 
 .post-type-lp_order #order_details .order-items table .remove-order-item:hover {
-  color: #FF0000;
+  color: #f00;
 }
 
 .post-type-lp_order #order_details .order-items table .order-item-row:hover .remove-order-item {

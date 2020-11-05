@@ -1,135 +1,158 @@
 .post-type-lp_order {
-    #post-body-content {
-        display: none;
-    }
 
-    #order_details {
-        .hndle, .handlediv, .postbox-header {
-            display: none;
-        }
+	#post-body-content {
+		display: none;
+	}
 
-        .inside {
+	#order_details {
+		border: none !important;
+		background: transparent !important;
+
+		.hndle,
+		.handlediv,
+		.postbox-header {
+			display: none;
+		}
+
+		.inside {
 			display: block !important;
-            padding: 0;
-            margin: 0;
+			margin: 0;
+			padding: 0;
 		}
 
-		.order-data{
+		.order-data {
+			margin: 0 0 20px 0 !important;
 			padding: 30px !important;
+			border: 1px solid #ccd0d4 !important;
+			background-color: #fff !important;
+			box-shadow: none !important;
 		}
 
-        .order-data-field {
+		.order-data-field {
 			margin-bottom: 20px;
 
-            label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: 500;
-            }
-        }
+			label {
+				display: block;
+				margin-bottom: 5px;
+				font-weight: 500;
+			}
+		}
 
-        .order-data-number {
-            margin: 0 0 10px;
-            font-size: 20px;
-            font-weight: 600;
+		.order-data-number {
+			margin: 0 0 10px;
+			font-size: 20px;
+			font-weight: 600;
 		}
 
 		.payment-method-title {
-			font-size: 16px;
 			color: #777;
+			font-size: 16px;
+
+			strong {
+				color: #23282d;
+			}
 		}
 
-        .order-data-heading {
+		.order-data-heading {
 			margin-top: 40px;
 			font-size: 16px;
-        }
+		}
 
-        .order-users {
+		.order-users {
 			display: inline-block;
 
-			.description{
+			.description {
+				margin-top: 10px;
 				padding: 10px;
 				background: #eee;
-				margin-top: 10px;
 			}
-        }
+		}
 
-        .order-data-date {
-            .order-date {
-                width: 100px;
-            }
-            .order-hour, .order-minute {
-                width: 50px;
-            }
-        }
+		.order-data-date {
 
-        .order-items {
-            margin: 0;
-            border-top: 1px solid #DDD;
+			.order-date {
+				width: 100px;
+			}
 
-            table {
-                border-collapse: collapse;
+			.order-hour,
+			.order-minute {
+				width: 50px;
+			}
+		}
+
+		.order-items {
+			margin: 0;
+			border: 1px solid #ccd0d4 !important;
+			background-color: #fff;
+
+			table {
 				width: 100%;
+				border-collapse: collapse;
 
-                thead {
+				thead {
 					margin: 0;
 					padding: 0;
 
-					tr{
+					tr {
 						background-color: #f8f8f8;
 					}
 
-                    th {
-                        border-bottom: none;
-                        text-align: left;
-                        padding: 15px;
-						font-weight: 400;
+					th {
+						padding: 15px;
+						border-bottom: none;
 						color: #999;
+						font-weight: 400;
+						text-align: left;
 
-						&:first-child{
+						&:first-child {
 							padding-left: 30px;
 						}
 
-						&:last-child{
+						&:last-child {
 							padding-right: 30px;
 						}
-                    }
-                }
+					}
+				}
 
-                tbody, tfoot {
-                    td {
-                        border-bottom: 1px solid #DDD;
-                        text-align: left;
-                        padding: 10px;
-                    }
-                }
+				tbody,
+				tfoot {
 
-                tbody {
+					td {
+						padding: 10px;
+						border-bottom: 1px solid #ddd;
+						text-align: left;
+					}
+				}
+
+				tbody {
 					margin: 0;
 					padding: 0;
-                    tr {
+
+					tr {
+
 						td {
 							padding: 15px;
 
-							&:first-child{
+							&:first-child {
 								padding-left: 30px;
 							}
 
-							&:last-child{
+							&:last-child {
 								padding-right: 30px;
 							}
 						}
-                    }
-                }
+					}
+				}
 
-                tfoot {
+				tfoot {
 					margin: 0;
 					padding: 0;
 
-					tr{
+					tr {
 						background-color: #f8f8f8;
 
-						&:last-child{
+						&:last-child {
+
 							td {
 								padding-top: 20px;
 								padding-bottom: 20px;
@@ -137,57 +160,63 @@
 						}
 					}
 
-                    td {
-                        border: none;
-                        padding-bottom: 0;
-                        text-align: right;
-						font-size: 14px;
+					td {
 						padding: 10px 15px;
+						padding-bottom: 0;
+						border: none;
+						font-size: 14px;
+						text-align: right;
 
-						&:first-child{
+						&:first-child {
 							padding-left: 30px;
 						}
 
-						&:last-child{
+						&:last-child {
 							padding-right: 30px;
 						}
-                    }
-                }
-                .column-price,
-                .column-total,
-                .column-quantity {
-                    text-align: right;
-                    width: 150px;
+					}
 				}
 
-                .row-subtotal, .row-total {
-                    td {
-						.order-subtotal, .order-total {
+				.column-price,
+				.column-total,
+				.column-quantity {
+					width: 150px;
+					text-align: right;
+				}
+
+				.row-subtotal,
+				.row-total {
+
+					td {
+
+						.order-subtotal,
+						.order-total {
 							font-weight: 700;
 						}
-                    }
+					}
 				}
 
-                .remove-order-item {
-                    text-decoration: none;
-                    outline: none;
-					color: #CCC;
+				.remove-order-item {
+					outline: none;
+					color: #ccc;
+					text-decoration: none;
 
-                    .dashicons {
-                        font-size: 20px;
+					.dashicons {
+						font-size: 20px;
 					}
 
-                    &:hover {
-                        color: #FF0000;
-                    }
-                }
+					&:hover {
+						color: #f00;
+					}
+				}
 
-                .order-item-row:hover {
-                    .remove-order-item {
-                        display: inline-block;
-                    }
-                }
-            }
-        }
-    }
+				.order-item-row:hover {
+
+					.remove-order-item {
+						display: inline-block;
+					}
+				}
+			}
+		}
+	}
 }

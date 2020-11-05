@@ -259,7 +259,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			'single-course/sidebar/course-extra',
 			array(
 				'type'    => 'requirements',
-				'title'   => __( 'Requirements', 'learnpress' ),
+				'title'   => esc_html__( 'Requirements', 'learnpress' ),
 				'content' => $requirements,
 			)
 		);
@@ -282,7 +282,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			'single-course/sidebar/course-extra',
 			array(
 				'type'    => 'key-features',
-				'title'   => __( 'Key features', 'learnpress' ),
+				'title'   => esc_html__( 'Key features', 'learnpress' ),
 				'content' => $key_features,
 			)
 		);
@@ -305,7 +305,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			'single-course/sidebar/course-extra',
 			array(
 				'type'    => 'target-audiences',
-				'title'   => __( 'Target audiences', 'learnpress' ),
+				'title'   => esc_html__( 'Target audiences', 'learnpress' ),
 				'content' => $target_audiences,
 			)
 		);

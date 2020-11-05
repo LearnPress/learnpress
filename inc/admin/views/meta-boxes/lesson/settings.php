@@ -8,17 +8,18 @@ class LP_Meta_Box_Lesson {
 		<div class="lp-meta-box lp-meta-box--lesson">
 			<div class="lp-meta-box__inner">
 				<?php
-				// lp_meta_box_duration_field(
-				// array(
-				// 'id'                => '_lp_duration',
-				// 'label'             => esc_html__( 'Duration', 'learnpress' ),
-				// 'default_time'      => 'minute',
-				// 'custom_attributes' => array(
-				// 'min'  => '0',
-				// 'step' => '1',
-				// ),
-				// )
-				// );
+				lp_meta_box_duration_field(
+					array(
+						'id'                => '_lp_duration',
+						'label'             => esc_html__( 'Duration', 'learnpress' ),
+						'default_time'      => 'minute',
+						'default'           => '0',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '1',
+						),
+					)
+				);
 
 				lp_meta_box_checkbox_field(
 					array(
@@ -36,8 +37,10 @@ class LP_Meta_Box_Lesson {
 	}
 
 	public static function save( $post_id ) {
-		$preview = ! empty( $_POST['_lp_preview'] ) ? 'yes' : 'no';
+		$preview  = ! empty( $_POST['_lp_preview'] ) ? 'yes' : 'no';
+		$duration = isset( $_POST['_lp_duration'][0] ) && $_POST['_lp_duration'][0] !== '' ? implode( ' ', wp_unslash( $_POST['_lp_duration'] ) ) : '0 minute';
 
+		update_post_meta( $post_id, '_lp_duration', $duration );
 		update_post_meta( $post_id, '_lp_preview', $preview );
 	}
 }

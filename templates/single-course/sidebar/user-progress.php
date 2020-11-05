@@ -2,11 +2,9 @@
 /**
  * Template for displaying progress of single course.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/single-course/progress.php.
- *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
 defined( 'ABSPATH' ) || exit();

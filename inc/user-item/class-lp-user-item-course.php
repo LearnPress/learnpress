@@ -324,7 +324,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$results = $this->_evaluate_course_by_lesson();
 				break;
 
-			case 'final_quiz':
+			case 'evaluate_final_quiz':
 				$results = $this->_evaluate_course_by_final_quiz();
 				break;
 
@@ -783,14 +783,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return array
 	 */
 	protected function _evaluate_course_by_final_quiz() {
+		$cache_key   = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
+		$cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' );
 
-		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
-
-		if ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' ) ) || ! array_key_exists( 'final-quiz', $cached_data ) ) {
+		if ( false === $cached_data || ! array_key_exists( 'final-quiz', $cached_data ) ) {
 			$course     = $this->get_course();
 			$final_quiz = $course->get_final_quiz();
+			$user_quiz  = $this->get_item( $final_quiz );
 			$result     = false;
-			if ( $user_quiz = $this->get_item( $final_quiz ) ) {
+
+			if ( $user_quiz ) {
 				$result = $user_quiz->get_results( false );
 			}
 
@@ -852,96 +854,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return isset( $cached_data['quizzes'] ) ? $cached_data['quizzes'] : array();
-	}
-
-	/**
-	 * Evaluate course result by point of quizzes doing/done per total quizzes.
-	 *
-	 * @return array
-	 */
-	protected function _evaluate_course_by_passed_quizzes() {
-
-		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
-
-		if ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' ) ) || ! array_key_exists( 'passed-quizzes', $cached_data ) ) {
-
-			$data            = array(
-				'result' => 0,
-				'grade'  => '',
-				'status' => $this->get_status(),
-			);
-			$result          = 0;
-			$result_of_items = 0;
-			if ( $items = $this->get_items() ) {
-				foreach ( $items as $item ) {
-					if ( $item->get_type() !== LP_QUIZ_CPT ) {
-						continue;
-					}
-					if ( $item->get_quiz()->get_data( 'passing_grade' ) ) {
-						$result += $item->is_passed() ? $item->get_results( 'result' ) : 0;
-						$result_of_items ++;
-					}
-				}
-				$result         = $result_of_items ? $result / $result_of_items : 0;
-				$data['result'] = $result;
-
-				if ( $this->is_finished() ) {
-					$data['grade'] = $this->_is_passed( $result );
-				}
-			}
-
-			settype( $cached_data, 'array' );
-			$cached_data['passed-quizzes'] = $data;
-
-			LP_Object_Cache::set( $cache_key, $cached_data, 'learn-press/course-results' );
-		}
-
-		return isset( $cached_data['passed-quizzes'] ) ? $cached_data['passed-quizzes'] : array();
-	}
-
-	/**
-	 * Evaluate course result by number of passed quizzes per total quizzes.
-	 *
-	 * @return array
-	 */
-	protected function _evaluate_course_by_completed_quizzes() {
-		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
-
-		if ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' ) ) || ! array_key_exists( 'completed-quizzes', $cached_data ) ) {
-			$course = $this->get_course();
-
-			$data   = array(
-				'result' => 0,
-				'grade'  => '',
-				'status' => $this->get_status(),
-			);
-			$result = 0;
-
-			if ( $items = $this->get_items() ) {
-				$result_of_items = 0;
-				foreach ( $items as $item ) {
-					if ( $item->get_type() !== LP_QUIZ_CPT ) {
-						continue;
-					}
-					if ( $item->get_quiz()->get_data( 'passing_grade' ) ) {
-						$result += $item->is_passed() ? 1 : 0;
-						$result_of_items ++;
-					}
-				}
-				$result         = $result_of_items ? $result * 100 / $result_of_items : 0;
-				$data['result'] = $result;
-				if ( $this->is_finished() ) {
-					$data['grade'] = $this->_is_passed( $result );
-				}
-			}
-
-			settype( $cached_data, 'array' );
-			$cached_data['completed-quizzes'] = $data;
-
-			LP_Object_Cache::set( $cache_key, $cached_data, 'learn-press/course-results' );
-		}
-
-		return isset( $cached_data['completed-quizzes'] ) ? $cached_data['completed-quizzes'] : array();
 	}
 
 	protected function _is_passed( $result ) {

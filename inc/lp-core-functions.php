@@ -3432,7 +3432,7 @@ function learn_press_default_course_levels() {
  * @since 3.x.x
  */
 function learn_press_course_evaluation_methods( $return = '', $final_quizz_passing = '' ) {
-	$course_tip = '<span class="learn-press-tip" data-x="1234">%s</span>';
+	$course_tip = '<span class="learn-press-tip">%s</span>';
 
 	$course_desc = array(
 		'evaluate_lesson'     => __( 'Evaluate by number of lessons completed per number of total lessons.', 'learnpress' )
@@ -3440,8 +3440,8 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 		'evaluate_final_quiz' => __( 'Evaluate by results of final quiz in course. You have to add a quiz into end of course.', 'learnpress' ),
 		'evaluate_quizzes'    => __( 'Evaluate as a percentage of completed quizzes on the total number of quizzes.', 'learnpress' )
 			. __( '<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: 50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>', 'learnpress' ),
-		'evaluate_quiz'       => __( '<p>Evaluate by number of quizzes completed per number of total quizzes.</p>', 'learnpress' )
-			. __( '<p>E.g: Course has 10 quizzes and user completed 5 quizzes then the result = 5/10 = 50%.</p>', 'learnpress' ),
+		'evaluate_quiz'       => __( '<p>Evaluate by number of quizzes passed per number of total quizzes.</p>', 'learnpress' )
+			. __( '<p>E.g: Course has 10 quizzes and user passed 5 quizzes then the result = 5/10 = 50%.</p>', 'learnpress' ),
 		'evaluate_questions'  => __( 'Evaluate by achieved points of question passed per total point of all questions.', 'learnpress' )
 			. sprintf( '<p>%s</p>', __( 'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%.', 'learnpress' ) ),
 		'evaluate_mark'       => __( 'Evaluate by achieved marks per total marks of all questions.', 'learnpress' ),
@@ -3450,7 +3450,7 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 	$methods = array(
 		'evaluate_lesson'     => __( 'Evaluate via lessons', 'learnpress' ) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
 		'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_final_quiz'] ) . $final_quizz_passing,
-		'evaluate_quiz'       => __( 'Evaluate via quizzes', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_quiz'] ),
+		'evaluate_quiz'       => __( 'Evaluate via quizzes passed', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_quiz'] ),
 		'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_questions'] ),
 		'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf( $course_tip, $course_desc['evaluate_mark'] ),
 	);
