@@ -67,9 +67,9 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * the course automatically. And finally, start this quiz for the user.
 		 *
 		 * @param bool $true
-		 * @param int  $quiz_id
-		 * @param int  $course_id
-		 * @param int  $user_id
+		 * @param int $quiz_id
+		 * @param int $course_id
+		 * @param int $user_id
 		 *
 		 * @return bool
 		 * @throws Exception
@@ -132,8 +132,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$result['result']   = 'success';
 					$result['redirect'] = apply_filters( 'learn-press/quiz/started-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message']  = $ex->getMessage();
 				$result['result']   = 'failure';
 				$result['redirect'] = apply_filters( 'learn-press/quiz/start-quiz-failure-redirect', learn_press_get_current_url(), $quiz_id, $course_id, $user->get_id() );
@@ -218,10 +217,10 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					throw new Exception( $remain->get_error_message(), $remain->get_error_code() );
 				} else {
 					if ( $course = learn_press_get_course( $course_id ) ) {
-						$quiz      = $course->get_item( $quiz_id );
+						$quiz = $course->get_item( $quiz_id );
 						//$quiz_data = $user->get_item_data( $quiz_id, $course_id );
-						$redirect  = $quiz->get_question_link( $question_id );
-						$question  = learn_press_get_question( $question_id );
+						$redirect = $quiz->get_question_link( $question_id );
+						$question = learn_press_get_question( $question_id );
 						$question->show_correct_answers( 'yes' );
 
 						$result['result']   = 'success';
@@ -230,8 +229,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['html']     = learn_press_get_template_content( 'content-question/content.php', array( 'quiz' => $quiz ) );
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -288,8 +286,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['html']     = learn_press_get_template_content( 'content-question/content.php', array( 'quiz' => $quiz ) );
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -323,9 +320,10 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$check = self::maybe_save_questions( 'complete' );
 				// PHP Exception
-				if ( learn_press_is_exception( $check ) ) {
+				// Comment by tungnx
+				/*if ( learn_press_is_exception( $check ) ) {
 					throw $check;
-				}
+				}*/
 
 				$user = LP_Global::user();
 
@@ -344,10 +342,16 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['result']   = 'success';
 						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 						$result['data']     = $data;
+
+						// Redirecting...
+						if ( ! empty( $result['redirect'] ) ) {
+							wp_cache_flush();
+							wp_redirect( $result['redirect'] );
+							exit();
+						}
 					}
 				}
-			}
-			catch ( LP_Exception $ex ) {
+			} catch ( LP_Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -361,13 +365,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			// Message
 			if ( ! empty( $result['message'] ) ) {
 				learn_press_add_message( $result['message'] );
-			}
-
-			// Redirecting...
-			if ( ! empty( $result['redirect'] ) ) {
-				wp_cache_flush();
-				wp_redirect( $result['redirect'] );
-				exit();
 			}
 		}
 
@@ -404,8 +401,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$result['redirect'] = apply_filters( 'learn-press/quiz/retaken-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 					$result['data']     = $data;
 				}
-			}
-			catch ( LP_Exception $ex ) {
+			} catch ( LP_Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 				$result['result']  = 'failure';
@@ -525,8 +521,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
 					'next_question' => $user->get_next_question( $quiz_id, $course_id )
 				);
-			}
-			catch ( LP_Exception $ex ) {
+			} catch ( LP_Exception $ex ) {
 				$return = $ex;
 			}
 
@@ -579,8 +574,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 					$questions = self::_get_answer( $data );
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 			}
 
 			return $question_id ? ( array_key_exists( $question_id, $questions ) ? $questions[ $question_id ] : false ) : $questions;

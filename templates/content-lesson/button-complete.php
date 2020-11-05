@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.1
+ * @version  3.0.2
  */
 
 /**
@@ -23,7 +23,7 @@ if ( ! isset( $course ) || ! isset( $item ) ||
 <form method="post" name="learn-press-form-complete-lesson"
       data-confirm="<?php ! $completed ? LP_Strings::esc_attr_e( 'confirm-complete-lesson', '', array( $item->get_title() ) ) : ''; ?>"
       data-title="<?php esc_html_e( 'Complete lesson', 'learnpress' ); ?>"
-      class="learn-press-form form-button<?php echo $completed ? ' completed' : ''; ?> lp-btn-complete-item">
+      class="learn-press-form form-button<?php echo $completed ? ' completed' : ''; ?>">
 
 	<?php do_action( 'learn-press/lesson/before-complete-button' ); ?>
 
@@ -36,8 +36,8 @@ if ( ! isset( $course ) || ! isset( $item ) ||
         <input type="hidden" name="type" value="lp_lesson"/>
         <input type="hidden" name="lp-ajax" value="complete-lesson"/>
         <input type="hidden" name="noajax" value="yes"/>
-        <button class="lp-button button button-complete-item button-complete-lesson">
-			<?php _e( 'Complete', 'learnpress' ); ?>
+        <button class="lp-button button-complete-item button-complete-lesson lp-btn-complete-item">
+			<?php esc_html_e( 'Complete', 'learnpress' ); ?>
         </button>
 	<?php } ?>
 

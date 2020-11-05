@@ -37,7 +37,7 @@ abstract class LP_Abstract_Assets {
 		if ( LP_Debug::is_debug() ) {
 			self::$_min_assets     = '';
 			self::$_version_assets = uniqid();
-			self::$_folder_source = 'src/';
+			self::$_folder_source  = 'src/';
 		}
 
 		if ( is_admin() ) {
@@ -46,9 +46,9 @@ abstract class LP_Abstract_Assets {
 
 		} else {
 			//add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
-			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
-			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ) );
+			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ) );
 		}
 	}
 
@@ -321,7 +321,7 @@ abstract class LP_Abstract_Assets {
 		return $url;
 	}
 
-	public function get_compressible_assets(){
+	public function get_compressible_assets() {
 		return array();
 	}
 

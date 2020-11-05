@@ -942,6 +942,8 @@ class LP_Page_Controller {
 	public static function page_current() {
 		if ( learn_press_is_checkout() ) {
 			return LP_PAGE_CHECKOUT;
+		} elseif ( LP_Global::course_item_quiz() ) {
+			return LP_PAGE_QIZ;
 		} elseif ( learn_press_is_courses() ) {
 			return LP_PAGE_COURSES;
 		} elseif ( learn_press_is_course() ) {
@@ -950,8 +952,6 @@ class LP_Page_Controller {
 			return LP_PAGE_PROFILE;
 		} elseif ( self::is_pae_become_a_teacher() ) {
 			return LP_PAGE_BECOME_A_TEACHER;
-		} elseif ( LP_Global::course_item_quiz() ) {
-			return LP_PAGE_QIZ;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}

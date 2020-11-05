@@ -53,11 +53,12 @@ const adminSources = () => [
 ];
 
 const frontendSources = () => [
-	'./assets/src/js/vendor/vue/vue' + ( isDev() ? '' : '.min' ) + '.js',
-	'./assets/src/js/vendor/vue/vuex.js',
-	'./assets/src/js/vendor/vue/vue-resource.js',
+	// './assets/src/js/vendor/vue/vue' + ( isDev() ? '' : '.min' ) + '.js',
+	// './assets/src/js/vendor/vue/vuex.js',
+	// './assets/src/js/vendor/vue/vue-resource.js',
+	// './assets/src/js/vendor/vue_libs_c.min.js',
 	'./assets/src/js/vendor/watch.js',
-	'./assets/src/js/vendor/jquery/jquery-alert.js',
+	//'./assets/src/js/vendor/jquery/jquery-alert.js',
 	'./assets/src/js/vendor/jquery/jquery-appear.js',
 	'./assets/src/js/vendor/jquery/jquery-scrollTo.js',
 	'./assets/src/js/vendor/jquery/jquery-timer.js',
@@ -74,12 +75,12 @@ const vueSources = () => [
 
 const options = {
 	files: [
-		// { // Run this can error code vue - add on frontend editor
-		//     src: frontendSources(),
-		//     dest: function (code) {
-		//         return minifyJsDest('assets/js/vendor/plugins.all', code);
-		//     }
-		// },
+		{ // Run this can error code vue - add on frontend editor
+			src: frontendSources(),
+			dest( code ) {
+				return minifyJsDest( 'assets/js/vendor/plugins.all', code );
+			},
+		},
 		// {
 		//     src: adminSources(),
 		//     dest: function (code) {

@@ -511,7 +511,7 @@
 
 				lp_course.lpModalOverlay.setElCalledModal( elFormSubmit );
 				lp_course.lpModalOverlay.callBackYes = function() {
-					elFormCompleteLesson.submit();
+					elFormSubmit.submit();
 				};
 				elLPOverlay.show();
 			} );
@@ -523,7 +523,7 @@
 			callBackYes: null,
 			elCalledModal: null,
 			init() {
-			  const lpModalOverlay = this;
+				const lpModalOverlay = this;
 				this.elMessage = elLPOverlay.find( '.message' );
 				this.elTitle = elLPOverlay.find( '.modal-title' );
 
@@ -551,7 +551,7 @@
 			const elFormFinishCourse = $( '.form-button-finish-course' );
 
 			if ( ! elFormFinishCourse ) {
-			  return;
+				return;
 			}
 
 			const elBtnFinishCourse = elFormFinishCourse.find( '.lp-btn-finish-course' );

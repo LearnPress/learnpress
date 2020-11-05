@@ -68,7 +68,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'avatar_size' => learn_press_get_avatar_thumb_size()
 			),
 			//'course'       => learn_press_single_course_args(), # lpCourseSettings => didn't see use
-			'quiz'         => learn_press_single_quiz_args()
+			'lp-quiz'      => learn_press_single_quiz_args()
 			# lpQuizSettings is param object_name of wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 		);
 
@@ -79,7 +79,9 @@ class LP_Assets extends LP_Abstract_Assets {
 			'learn-press/frontend-default-scripts',
 			array(
 				'watch'            => new LP_Asset_Key( self::url( 'src/js/vendor/watch' . self::$_min_assets . '.js' ) ),
-				'lp-plugins-all'   => new LP_Asset_Key( self::url( 'src/js/plugins.all.min.js' ) ),
+				//'lp-plugins-all'   => new LP_Asset_Key( self::url( 'src/js/plugins.all.min.js' ) ),
+				'vue-libs'   => new LP_Asset_Key( self::url( 'src/js/vendor/vue/vue_libs_special.min.js' ) ),
+				'lp-plugins-all'   => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
 				'lp-global'        => new LP_Asset_Key( self::url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils' )
 				),
@@ -179,12 +181,10 @@ class LP_Assets extends LP_Abstract_Assets {
 			wp_register_script( $handle, $script->_url, $script->_deps, self::$_version_assets, $script->_in_footer );
 
 			if ( ! $script->_only_register ) {
-				$can_load_js = false;
+				$can_load_js = true;
 
 				if ( ! empty( $script->_screens ) ) {
 					$can_load_js = apply_filters( 'learnpress/frontend/can-load-js/' . $handle, in_array( $page_current, $script->_screens ), $page_current, $script->_screens );
-				} else {
-					$can_load_js = true;
 				}
 
 				if ( $can_load_js ) {
@@ -208,7 +208,7 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	public function show_overlay() {
 		$page_current = LP_Page_Controller::page_current();
-		if ( $page_current != LP_PAGE_COURSE ) {
+		if ( ! in_array( $page_current, array( LP_PAGE_COURSE, LP_PAGE_QIZ ) ) ) {
 			return;
 		}
 
