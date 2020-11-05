@@ -90,11 +90,11 @@ gulp.task( 'watch', gulp.series( 'clearCache', () => {
 // Min CSS frontend.
 gulp.task( 'mincss', () => {
 	return gulp
-		.src( './assets/**/learnpress.css' )
+		.src( [ 'assets/src/css/**/*.css', '!assets/src/css/vendor/*.css' ] )
 		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( uglifycss() )
 		.pipe( lineec() )
-		.pipe( gulp.dest( 'assets' ) );
+		.pipe( gulp.dest( 'assets/css' ) );
 } );
 
 // Clear JS in admin folder.

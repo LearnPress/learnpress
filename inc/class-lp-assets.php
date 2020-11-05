@@ -32,7 +32,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	protected function _get_styles() {
 		$styles = array(
 			'learn-press-bundle' => self::url( 'css/bundle.min.css' ),
-			'learn-press'        => self::url( 'css/learnpress' . self::$_min_assets . '.css' ),
+			'learn-press'        => self::url( self::$_folder_source . 'css/frontend/learnpress' . self::$_min_assets . '.css' ),
+			'lp-overlay'         => self::url( self::$_folder_source . 'css/frontend/lp-overlay' . self::$_min_assets . '.css' ),
 		);
 
 		return apply_filters( 'learn-press/frontend-default-styles', $styles );
@@ -80,7 +81,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			array(
 				'watch'            => new LP_Asset_Key( self::url( 'src/js/vendor/watch' . self::$_min_assets . '.js' ) ),
 				//'lp-plugins-all'   => new LP_Asset_Key( self::url( 'src/js/plugins.all.min.js' ) ),
-				'vue-libs'   => new LP_Asset_Key( self::url( 'src/js/vendor/vue/vue_libs_special.min.js' ) ),
+				'vue-libs'         => new LP_Asset_Key( self::url( 'src/js/vendor/vue/vue_libs_special.min.js' ) ),
 				'lp-plugins-all'   => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
 				'lp-global'        => new LP_Asset_Key( self::url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils' )

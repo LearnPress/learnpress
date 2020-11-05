@@ -97,7 +97,6 @@ const options = {
 			src: [
 				'./assets/src/css/vendor/jquery.scrollbar.css',
 				'./assets/src/css/vendor/jquery.tipsy.css',
-				'./assets/src/css/vendor/jalert.css',
 				'./assets/src/css/vendor/font-awesome.min.css',
 			],
 			dest( code ) {
