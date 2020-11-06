@@ -1,4 +1,4 @@
-=== LearnPress - WordPress LMS Plugin ===  
+=== LearnPress - WordPress LMS Plugin ===
 Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungnx89
 Donate link:
 Tags: elearning, education, course, lms, learning management system
@@ -207,6 +207,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fix security XSS function view_log
 ~ Fix check if get user on function learn_press_course_purchase_button() is null
 ~ Fix create statics pages LP on 'lp setup' page
+~ Fix duplicate class RWMB_Field with another plugins
 
 = 3.2.7.9 =
 ~ Fix question not show description

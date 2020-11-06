@@ -290,6 +290,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-request-handler.php';
 			require_once 'inc/abstract-settings.php';
 			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
+			require_once 'inc/class-lp-rest-response.php';
 
 			//require_once( 'inc/class-lp-market-products.php' );
 
