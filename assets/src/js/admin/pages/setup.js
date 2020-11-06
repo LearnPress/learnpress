@@ -1,7 +1,6 @@
 ( function( $ ) {
 	'use strict';
-	let $main,
-		$setupForm;
+	let $main, $setupForm;
 
 	const checkForm = function checkForm( $form ) {
 		const $emails = $form.find( 'input[type="email"]' );
@@ -37,6 +36,7 @@
 	};
 
 	const getFormData = function getFormData( more ) {
+		$setupForm = $( '#learn-press-setup-form' );
 		const data = $setupForm.serializeJSON();
 
 		return $.extend( data, more || {} );
@@ -155,6 +155,10 @@
 	}
 
 	function onReady() {
+
+	}
+
+	$( function() {
 		$main = $( '#main' );
 		$setupForm = $( '#learn-press-setup-form' );
 
@@ -164,7 +168,5 @@
 			on( 'change', 'input, select', updatePrice ).
 			on( 'click', '#create-pages', createPages ).
 			on( 'click', '#install-sample-course', installSampleCourse );
-	}
-
-	$( document ).ready( onReady );
+	} );
 }( jQuery ) );

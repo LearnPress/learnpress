@@ -185,30 +185,6 @@ const toggleEmails = function toggleEmails( e ) {
 	} );
 };
 
-const duplicatePost = function duplicatePost( e ) {
-	e.preventDefault();
-
-	const _self = $( this ),
-		_id = _self.data( 'post-id' );
-
-	$.ajax( {
-		url: '',
-		data: {
-			'lp-ajax': 'duplicator',
-			id: _id,
-		},
-		success( response ) {
-			response = LP.parseJSON( response );
-
-			if ( response.success ) {
-				window.location.href = response.data;
-			} else {
-				alert( response.data );
-			}
-		},
-	} );
-};
-
 const importCourses = function importCourses() {
 	const $container = $( '#learn-press-install-sample-data-notice' ),
 		action = $( this ).attr( 'data-action' );
@@ -319,7 +295,6 @@ const onReady = function onReady() {
 		.on( 'click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule )
 		.on( 'click', '.learn-press-filter-template', callbackFilterTemplates )
 		.on( 'click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails )
-		.on( 'click', '.lp-duplicate-row-action .lp-duplicate-post', duplicatePost )
 		.on( 'click', '#learn-press-install-sample-data-notice a', importCourses )
 		.on( 'input', '#meta-box-tab-course_payment', onChangeCoursePrices )
 		.on( 'change', '#_lp_sale_start', onChangeSaleStartDate )

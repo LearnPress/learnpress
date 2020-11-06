@@ -1936,6 +1936,10 @@ if ( ! function_exists( 'learn_press_course_loop_item_user_progress' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
+		if ( ! $course || ! $user ) {
+			return;
+		}
+
 		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
 			$user->get_course_status( $course->get_id() );
 		}
@@ -3843,7 +3847,7 @@ function learn_press_define_debug_mode() {
 		return;
 	}
 	?>
-    <script>window.LP_DEBUG = true</script>
+    <script>window.LP_DEBUG = true;</script>
 	<?php
 }
 

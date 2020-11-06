@@ -69,6 +69,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_COURSE_CPT, 'learnpress_page_learn-press-settings' ), 0, 1
 				),
+				'lp-duplicate-post'                 => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/lp-duplicate-post' . self::$_min_assets . '.js' ),
+					array( 'jquery' ),
+					array( 'edit-' . LP_COURSE_CPT, 'edit-' . LP_LESSON_CPT, 'edit-' . LP_QUESTION_CPT ), 0, 1
+				),
 				'learn-press-admin-course-editor'   => new LP_Asset_Key( $this->url( 'js/dist/admin/editor/course' . self::$_min_assets . '.js' ),
 					array(
 						'vue-libs'

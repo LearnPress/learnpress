@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -15,6 +15,10 @@
 defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
+
+if ( ! $course ) {
+	return;
+}
 ?>
 
 <div class="course-price">

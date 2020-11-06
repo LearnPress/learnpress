@@ -3,7 +3,7 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungn
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
-Tested up to: 5.5
+Tested up to: 5.5.3
 Requires PHP: 7.0
 Stable tag: 5.4.3
 License: GPLv2 or later
@@ -207,7 +207,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fix security XSS function view_log
 ~ Fix check if get user on function learn_press_course_purchase_button() is null
 ~ Fix create statics pages LP on 'lp setup' page
-~ Fix duplicate class RWMB_Field with another plugins
+~ Show message duplicate class RWMB_Field with another plugins
 
 = 3.2.7.9 =
 ~ Fix question not show description

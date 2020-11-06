@@ -41,9 +41,12 @@ class LP_Setup_Wizard {
 		}
 
 		$settings = LP_Request::get( 'settings' );
-		foreach ( $settings['pages'] as $page => $page_id ) {
-			if ( empty( $page_id ) ) {
-				$_REQUEST['settings']['pages'][ $page ] = $this->create_page( $page );
+
+		if ( ! empty( $settings ) ) {
+			foreach ( $settings['pages'] as $page => $page_id ) {
+				if ( empty( $page_id ) ) {
+					$_REQUEST['settings']['pages'][ $page ] = $this->create_page( $page );
+				}
 			}
 		}
 
@@ -140,9 +143,9 @@ class LP_Setup_Wizard {
 	public function save() {
 		$step = LP_Request::get_string( 'lp-setup-step' );
 
-		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( 'lp-setup-nonce' ) ), 'lp-setup-step-' . $step ) ) {
-			return;
-		}
+//		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( 'lp-setup-nonce' ) ), 'lp-setup-step-' . $step ) ) {
+//			return;
+//		}
 
 		$postdata = LP_Request::get_array( 'settings' );
 		$steps    = array( 'payment', 'pages', 'currency', 'emails' );
