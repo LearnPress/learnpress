@@ -2233,7 +2233,6 @@ if ( ! function_exists( 'learn_press_become_teacher_button' ) ) {
 	}
 }
 
-
 if ( ! function_exists( 'learn_press_back_to_class_button' ) ) {
 	function learn_press_back_to_class_button() {
 		$courses_link = learn_press_get_page_link( 'courses' );
@@ -2245,4 +2244,41 @@ if ( ! function_exists( 'learn_press_back_to_class_button' ) ) {
 		<a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
 		<?php
 	}
+}
+
+function learn_press_get_become_a_teacher_form_fields() {
+	$user   = learn_press_get_current_user();
+	$fields = array(
+		'bat_name'    => array(
+			'title'       => __( 'Name', 'learnpress' ),
+			'type'        => 'text',
+			'placeholder' => __( 'Your name', 'learnpress' ),
+			'saved'       => $user->get_display_name(),
+			'id'          => 'bat_name',
+			'required'    => true,
+		),
+		'bat_email'   => array(
+			'title'       => __( 'Email', 'learnpress' ),
+			'type'        => 'email',
+			'placeholder' => __( 'Your email address', 'learnpress' ),
+			'saved'       => $user->get_email(),
+			'id'          => 'bat_email',
+			'required'    => true,
+		),
+		'bat_phone'   => array(
+			'title'       => __( 'Phone', 'learnpress' ),
+			'type'        => 'text',
+			'placeholder' => __( 'Your phone number', 'learnpress' ),
+			'id'          => 'bat_phone',
+		),
+		'bat_message' => array(
+			'title'       => __( 'Message', 'learnpress' ),
+			'type'        => 'textarea',
+			'placeholder' => __( 'Your message', 'learnpress' ),
+			'id'          => 'bat_message',
+		),
+	);
+	$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
+
+	return $fields;
 }

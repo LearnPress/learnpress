@@ -791,55 +791,6 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Display content of single course page.
-	 *
-	 * @param string $content
-	 *
-	 * @return string
-	 */
-	public function single_content( $content ) {
-		// Should not effect if current post is not a LP Course
-		if ( LP_COURSE_CPT != get_post_type() ) {
-			return $content;
-		}
-
-		// @NOTE: make sure current page is not lesson or quiz before return cache content of single course page
-		// if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = LP_Object_Cache::get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
-		// return $_content;
-		// }
-
-		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
-		add_filter( 'the_content', 'wpautop' );
-		ob_start();
-
-		if ( function_exists( 'learn_press_content_single_course' ) ) {
-			do_action( 'learn-press/content-single' );
-		} else {
-			/**
-			 * Display template of content item if user is viewing course's item.
-			 * Otherwise, display template of course.
-			 */
-			$course_item = LP_Global::course_item();
-
-			if ( $course_item ) {
-				learn_press_get_template( 'content-single-item.php' );
-			} else {
-				learn_press_get_template( 'content-single-course.php' );
-			}
-		}
-
-		$content = ob_get_clean();
-
-		remove_filter( 'the_content', 'wpautop' );
-
-		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
-
-		LP_Object_Cache::set( 'course-' . get_the_ID(), $content, 'learn-press/course-content' );
-
-		return $content;
-	}
-
-	/**
 	 * Controls WP displays the courses in a page which setup to display on homepage
 	 *
 	 * @param $q WP_Query

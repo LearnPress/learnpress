@@ -54,7 +54,7 @@ $readmore = 'https://thimpress.com/knowledge-base/outdated-template-fix/';
 	?>
 	</p>
 	<p>
-		<a class="button" href="<?php echo admin_url( 'admin.php?page=learn-press-tools&amp;tab=templates' ); ?>">
+		<a class="button" href="<?php echo admin_url( 'admin.php?page=learn-press-tools&amp;tab=template' ); ?>">
 			<?php esc_html_e( 'View list of outdated templates', 'learnpress' ); ?>
 		</a>
 		<a href="" onclick="LP.dismissMessage(this, {expired: 3600}); return false;" data-name="outdated-template" data-value="yes" data-el="#message" data-instant="yes">

@@ -49,7 +49,7 @@ $profile = LP_Profile::instance();
 						echo $profile_tab['icon'];
 					}
 					?>
-					<?php echo esc_html( apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab['title'], $tab_key ) ); ?>
+					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab['title'], $tab_key ); ?>
 				</a>
 
 				<?php if ( $sections && sizeof( $sections ) > 1 ) { ?>

@@ -443,9 +443,9 @@ class LP_Cart {
 				/**
 				 * + Auto enroll
 				 */
-				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10, 2 );
+				// add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10, 2 );
 				$checkout->process_checkout();
-				remove_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10 );
+				// remove_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10 );
 			}/*
 			else {
 				if ( $user->has_finished_course( $course_id ) ) {

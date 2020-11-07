@@ -191,12 +191,7 @@ class LP_Meta_Box_Course {
 	private static function output_tabs() {
 		global $post, $thepostid;
 
-		if ( empty( self::eduma_child_metabox_v3() ) ) {
-			include 'tabs/general.php';
-		} else {
-			self::eduma_child_metabox_v3();
-		}
-
+		include 'tabs/general.php';
 		include 'tabs/price.php';
 		include 'tabs/extra.php';
 		include 'tabs/author.php';
@@ -222,16 +217,9 @@ class LP_Meta_Box_Course {
 	 *
 	 * @return void
 	 */
-	public static function eduma_child_metabox_v3() {
-		$general = apply_filters( 'learn_press_course_settings_meta_box_args', null );
-
-		if ( ! empty( $general['fields'] ) ) {
-			?>
-
-			<div id="general_course_data" class="lp-meta-box-course-panels">
-
-			<?php
-			foreach ( $general['fields'] as $setting ) {
+	public static function eduma_child_metabox_v3( $meta_boxes ) {
+		if ( ! empty( $meta_boxes['fields'] ) ) {
+			foreach ( $meta_boxes['fields'] as $setting ) {
 				$field = wp_parse_args(
 					$setting,
 					array(
@@ -247,11 +235,12 @@ class LP_Meta_Box_Course {
 					case 'number':
 						lp_meta_box_text_input_field(
 							array(
-								'id'          => $field['id'],
-								'label'       => $field['name'],
-								'description' => $field['desc'],
-								'type'        => $field['type'],
-								'default'     => $field['std'],
+								'id'                => $field['id'],
+								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
+								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
+								'type'              => $field['type'],
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
 							)
 						);
 						break;
@@ -259,18 +248,55 @@ class LP_Meta_Box_Course {
 					case 'textarea':
 						lp_meta_box_textarea_field(
 							array(
+								'id'                => $field['id'],
+								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
+								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
+							)
+						);
+						break;
+
+					case 'checkbox':
+						lp_meta_box_checkbox_field(
+							array(
 								'id'          => $field['id'],
-								'label'       => $field['name'],
-								'description' => $field['desc'],
-								'default'     => $field['std'],
+								'label'       => isset( $field['label'] ) ? $field['label'] : $field['name'],
+								'description' => isset( $field['description'] ) ? $field['description'] : $field['desc'],
+								'default'     => isset( $field['default'] ) ? $field['default'] : $field['std'],
+							)
+						);
+						break;
+
+					case 'duration':
+						lp_meta_box_duration_field(
+							array(
+								'id'                => $field['id'],
+								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
+								'default_time'      => $field['default_time'],
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
+							)
+						);
+						break;
+
+					case 'select':
+						lp_meta_box_select_field(
+							array(
+								'id'                => $field['id'],
+								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
+								'options'           => $field['options'],
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
 							)
 						);
 						break;
 				}
 			}
-			?>
-			</div>
-			<?php
 		}
 	}
 

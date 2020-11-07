@@ -65,14 +65,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 				$post = get_post( $course_id );
 
 				setup_postdata( $post );
-				add_filter( 'learn-press/enroll-course-button-text', array( $this, 'enroll_button_text' ) );
-				add_filter( 'learn-press/purchase-course-button-text', array( $this, 'purchase_button_text' ) );
-
-				learn_press_course_enroll_button();
-				learn_press_course_purchase_button();
-
-				remove_filter( 'learn-press/purchase-course-button-text', array( $this, 'purchase_button_text' ) );
-				remove_filter( 'learn-press/enroll-course-button-text', array( $this, 'enroll_button_text' ) );
+				do_action( 'learn-press/course-buttons' );
 				wp_reset_postdata();
 				LP_Global::reset();
 			}
