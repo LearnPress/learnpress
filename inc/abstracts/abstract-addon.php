@@ -83,9 +83,12 @@ class LP_Addon {
 	}
 
 	public function _plugin_links( $links ) {
-		$plugin_links = call_user_func( array( $this, 'plugin_links' ) );
-		if ( is_callable( array( $this, 'plugin_links' ) ) && $plugin_links ) {
-			$links = array_merge( $links, $plugin_links );
+		if ( method_exists( $this, 'plugin_links' ) ) {
+			$plugin_links = call_user_func( array( $this, 'plugin_links' ) );
+
+			if ( is_callable( array( $this, 'plugin_links' ) ) && $plugin_links ) {
+				$links = array_merge( $links, $plugin_links );
+			}
 		}
 
 		return $links;

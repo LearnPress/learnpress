@@ -1757,7 +1757,7 @@ function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	    WHERE user_id = %d AND item_id = %d AND status IN ('enrolled', 'in-progress'))
 	",
 		$user_id,
-		$course_id,
+		$course_id
 	);
 
 	$parent = $wpdb->get_row( $query );
