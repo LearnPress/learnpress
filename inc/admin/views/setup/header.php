@@ -9,7 +9,6 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -25,7 +24,8 @@ defined( 'ABSPATH' ) || exit;
 <body class="lp-setup wp-core-ui js">
 <div id="content">
 	<div class="logo">
-		<a href="">
-			<img src="https://ps.w.org/learnpress/assets/icon-256x256.png?rev=2146737">
+		<a href="javascript:void(0)">
+			<?php $logoUrl = LP_PLUGIN_URL . 'assets/images/icon-128x128.png'; ?>
+			<img src="<?php echo esc_url( $logoUrl ); ?>">
 		</a>
 	</div>

@@ -20,15 +20,16 @@ defined( 'ABSPATH' ) or exit;
 	<?php do_action( 'admin_head' ); ?>
 	<script type="text/javascript">
 		var LP_Settings = {
-			siteurl: '<?php echo site_url(); ?>'
+			siteurl: '<?php echo site_url();?>'
 		}
 	</script>
 </head>
 <body class="lp-update-database wp-core-ui js">
 <div id="content">
 	<div class="logo">
-		<a href="">
-			<img src="https://ps.w.org/learnpress/assets/icon-256x256.png?rev=2146737">
+		<a href="javascript:void(0)">
+			<?php $logoUrl = LP_PLUGIN_URL . 'assets/images/icon-128x128.png'; ?>
+			<img src="<?php echo esc_url( $logoUrl ); ?>">
 		</a>
 	</div>
 	<div id="main">
@@ -39,8 +40,10 @@ defined( 'ABSPATH' ) or exit;
 
 		<form id="learn-press-update-form" class="lp-update-content" name="lp-update" method="post">
 			<p class="finish-buttons">
-				<a id="button-update" class="button button-primary" href="<?php echo admin_url( 'index.php?do-update-learnpress=yes' ); ?>"><?php _e( 'Run Updater', 'learnpress' ); ?></a>
-				<a class="button" href="<?php echo ( $redirect = LP_Request::get_string( 'redirect' ) ) ? $redirect : admin_url( 'index.php' ); ?>">
+				<a id="button-update" class="button button-primary"
+				   href="<?php echo admin_url( 'index.php?do-update-learnpress=yes' ); ?>"><?php _e( 'Run Updater', 'learnpress' ); ?></a>
+				<a class="button"
+				   href="<?php echo ( $redirect = LP_Request::get_string( 'redirect' ) ) ? $redirect : admin_url( 'index.php' ); ?>">
 					<?php _e( 'Back', 'learnpress' ); ?>
 				</a>
 			</p>
