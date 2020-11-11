@@ -7670,22 +7670,6 @@ body {
   background: #fff;
 }
 
-body h1,
-body h2,
-body h3,
-body h4,
-body h5,
-body h6 {
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-}
-
-body h1:not(.site-title)::before,
-body h2::before {
-  display: none;
-}
-
 body.learnpress-page {
   overflow-x: hidden;
 }
