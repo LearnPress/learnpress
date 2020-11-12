@@ -21,7 +21,13 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 	}
 
 	public function payment() {
-		learn_press_get_template( 'checkout/payment' );
+		$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
+		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
+	}
+
+	public function order_comment() {
+		learn_press_get_template( 'checkout/order-comment.php' );
 	}
 
 	public function account_logged_in() {

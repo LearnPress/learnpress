@@ -5791,7 +5791,9 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20)::before {
 #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .items-progress .items-progress__heading,
 #learn-press-course .course-summary-sidebar .course-sidebar-preview .course-results-progress .course-progress .items-progress__heading {
   float: left;
+  margin: 0;
   margin-top: 0;
+  padding: 0;
   color: #333;
   font-size: 16px;
   font-weight: 500;
@@ -7919,6 +7921,10 @@ footer {
 }
 
 /* Archive */
+.learn-press-checkout-comment h4 {
+  display: none;
+}
+
 .order-comments {
   width: 100%;
   min-height: 150px;

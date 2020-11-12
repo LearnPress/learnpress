@@ -101,12 +101,6 @@ class LP_Template_General extends LP_Abstract_Template {
 		learn_press_get_template( 'global/become-teacher-form/button.php' );
 	}
 
-	public function order_payment() {
-		$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
-
-		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
-	}
-
 	public function preview_course_notice() {
 		if ( ! learn_press_is_preview_course() ) {
 			return;
