@@ -110,6 +110,8 @@ class LP_Abstract_Template {
 
 			}
 
+			return;
+
 		}
 
 		/**
