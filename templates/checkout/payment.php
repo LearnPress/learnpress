@@ -12,8 +12,6 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-
-$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 ?>
 
 <div id="checkout-payment" class="lp-checkout-block left">

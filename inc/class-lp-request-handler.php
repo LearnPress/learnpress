@@ -68,6 +68,7 @@ class LP_Request {
 		if ( $is_guest_checkout ) {
 			return $result;
 		}
+
 		$course_id = get_transient( 'checkout_enroll_course_id' );
 
 		if ( ! $course_id ) {
@@ -82,9 +83,7 @@ class LP_Request {
 			$course_items = $course->get_items();
 			$first_item   = ( $course_items[0] ) ? $course_items[0] : 0;
 
-			self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
-
-			unset( $result['redirect'] );
+			$result['redirect'] = self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
 		}
 
 		return $result;
@@ -284,22 +283,6 @@ class LP_Request {
 		}
 
 		learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
-		// } else {
-		// Need?
-		// if ( 'enroll-course' == $action ) {
-		// if ( ! $user->can_enroll_course( $course_id ) ) {
-		// learn_press_add_message(
-		// sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-		// 'error'
-		// );
-		//
-		// return false;
-		// }
-		// }
-		// do_action( 'learn-press/add-to-cart-order-total-empty', $course_id, $cart_id, $action );
-		// $checkout = LP()->checkout();
-		// $checkout->process_checkout();
-		// }
 
 		return true;
 	}
@@ -350,8 +333,12 @@ class LP_Request {
 			}
 		}
 
-		wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
-		exit();
+		if ( learn_press_is_ajax() ) {
+			return $redirect;
+		} else {
+			wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
+			exit();
+		}
 	}
 
 	/**

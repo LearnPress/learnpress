@@ -48,7 +48,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'get_pages', array( $this, 'add_empty_page' ), 1000, 2 );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
-			add_filter( 'admin_enqueue_scripts', array( $this, 'create_question_type' ) );
 
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
 
@@ -65,30 +64,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			);
 
 			// add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
-		}
-
-		public function create_question_type() {
-			global $post;
-
-			if ( LP_QUESTION_CPT !== get_post_type() ) {
-				return;
-			}
-			return;
-			var_dump( get_post_meta( $post->ID, '_lp_type', true ), $post );
-			die();
-
-			if ( get_post_meta( $post->ID, '_lp_type', true ) ) {
-				return;
-			}
-
-			if ( empty( $_REQUEST['question-type'] ) ) {
-				$types = array_keys( learn_press_question_types() );
-				$type  = reset( $types );
-			} else {
-				$type = $_REQUEST['question-type'];
-			}
-
-			update_post_meta( $post->ID, '_lp_type', $type );
 		}
 
 		public function display_post_states( $post_states, $post ) {

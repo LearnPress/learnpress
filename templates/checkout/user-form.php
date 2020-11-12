@@ -2,7 +2,7 @@
 /**
  * Template for displaying user form.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/checkout/user-form.php.
+ * Note: Use only LP3. In LP4 will remove, show don't use in LP4.
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
