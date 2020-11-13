@@ -1,16 +1,13 @@
-import isEmail from '../../utils/email-validator';
-
 ( function( $ ) {
 	'use strict';
-	var $main,
-		$setupForm;
+	let $main, $setupForm;
 
 	const checkForm = function checkForm( $form ) {
-		var $emails = $form.find( 'input[type="email"]' ),
-			valid = true;
+		const $emails = $form.find( 'input[type="email"]' );
+		let valid = true;
 
 		$emails.each( function() {
-			var $this = $( this );
+			const $this = $( this );
 			$this.css( 'border-color', '' );
 
 			switch ( $this.attr( 'name' ) ) {
@@ -36,14 +33,14 @@ import isEmail from '../../utils/email-validator';
 	};
 
 	const getFormData = function getFormData( more ) {
-		var data = $setupForm.serializeJSON();
+		$setupForm = $( '#learn-press-setup-form' );
+		const data = $setupForm.serializeJSON();
 
 		return $.extend( data, more || {} );
 	};
 
 	const replaceMainContent = function replaceMainContent( newContent ) {
-		var $newContent = $( newContent );
-
+		const $newContent = $( newContent );
 		$main.replaceWith( $newContent );
 		$main = $newContent;
 	};
@@ -51,38 +48,35 @@ import isEmail from '../../utils/email-validator';
 	const navPages = function navPages( e ) {
 		e.preventDefault();
 
-		var loadUrl = $( this ).attr( 'href' );
-
 		if ( ! checkForm( $setupForm ) ) {
 			return;
 		}
 
-		$main.addClass( 'loading' );
+		const loadUrl = $( this ).attr( 'href' );
 
+		$main.addClass( 'loading' );
 		$.post( {
 			url: loadUrl,
 			data: getFormData(),
-			success: function( res ) {
-				var $html = $( res );
+			success( res ) {
+				const $html = $( res );
 				replaceMainContent( $html.contents().filter( '#main' ) );
 
 				LP.setUrl( loadUrl );
 
-				$setupForm = $( '#learn-press-setup-form' );
 				$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
 				$( '.learn-press-tip' ).LP( 'QuickTip' );
-				$( '.learn-press-select2' ).select2();
 				$main.removeClass( 'loading' );
 			},
 		} );
 	};
 
 	const updateCurrency = function updateCurrency() {
-		var m = $( this ).children( ':selected' ).html().match( /\((.*)\)/ ),
-			symbol = m ? m[1] : '';
+		const m = $( this ).children( ':selected' ).html().match( /\((.*)\)/ ),
+			symbol = m ? m[ 1 ] : '';
 		$( '#currency-pos' ).children().each( function() {
-			var $option = $( this ),
-				text = $option.html();
+			const $option = $( this );
+			let text = $option.html();
 
 			switch ( $option.val() ) {
 			case 'left':
@@ -109,7 +103,7 @@ import isEmail from '../../utils/email-validator';
 			data: getFormData( {
 				'lp-ajax': 'get-price-format',
 			} ),
-			success: function( res ) {
+			success( res ) {
 				$( '#preview-price' ).html( res );
 			},
 		} );
@@ -125,7 +119,7 @@ import isEmail from '../../utils/email-validator';
 			data: getFormData( {
 				'lp-ajax': 'setup-create-pages',
 			} ),
-			success: function( res ) {
+			success( res ) {
 				replaceMainContent( $( res ).contents().filter( '#main' ) );
 				$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
 				blockContent( false );
@@ -136,32 +130,35 @@ import isEmail from '../../utils/email-validator';
 	const installSampleCourse = function installSampleCourse( e ) {
 		e.preventDefault();
 
-		var $button = $( this );
+		const $button = $( this );
 		blockContent();
 
 		$.post( {
 			url: $( this ).attr( 'href' ),
 			dataType: 'html',
 			data: {},
-			success: function( res ) {
+			success( res ) {
 				blockContent( false );
 				$button.replaceWith( $( res ).find( 'a:first' ).addClass( 'button button-primary' ) );
 			},
 		} );
 	};
 
-	function onReady() {
+	function isEmail( email ) {
+		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return re.test( email );
+	}
+
+	$( function() {
 		$main = $( '#main' );
 		$setupForm = $( '#learn-press-setup-form' );
 		$( '.learn-press-select2' ).select2();
 
-		$( document )
-			.on( 'click', '.buttons .button', navPages )
-			.on( 'change', '#currency', updateCurrency )
-			.on( 'change', 'input, select', updatePrice )
-			.on( 'click', '#create-pages', createPages )
-			.on( 'click', '#install-sample-course', installSampleCourse );
-	}
-
-	$( document ).ready( onReady );
+		$( document ).
+			on( 'click', '.buttons .button', navPages ).
+			on( 'change', '#currency', updateCurrency ).
+			on( 'change', 'input, select', updatePrice ).
+			on( 'click', '#create-pages', createPages ).
+			on( 'click', '#install-sample-course', installSampleCourse );
+	} );
 }( jQuery ) );

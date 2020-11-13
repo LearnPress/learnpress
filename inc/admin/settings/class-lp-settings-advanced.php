@@ -20,7 +20,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 	public function get_settings( $section = '', $tab = '' ) {
 		return apply_filters(
-			'learn_press_profile_settings',
+			'learn_press_advanced_settings',
 			array(
 				array(
 					'type'  => 'title',

@@ -1,5 +1,5 @@
 ( function( $ ) {
-	var Sync_Base = {
+	const Sync_Base = {
 		id: 'sync-base',
 		syncing: false,
 		items: false,
@@ -8,7 +8,7 @@
 		methodGetItems: '',
 		itemsKey: '',
 		chunkSize: 50,
-		sync: function( callback ) {
+		sync( callback ) {
 			if ( this.syncing ) {
 				return;
 			}
@@ -25,16 +25,16 @@
 
 			this.syncing = true;
 		},
-		init: function() {
+		init() {
 			this.syncing = false;
 			this.items = false;
 			this.completed = false;
 		},
-		is_completed: function() {
+		is_completed() {
 			return this.completed;
 		},
-		dispatch: function() {
-			var that = this,
+		dispatch() {
+			const that = this,
 				items = this.items ? this.items.splice( 0, this.chunkSize ) : false;
 			if ( ! items || items.length === 0 ) {
 				return false;
@@ -46,7 +46,7 @@
 					sync: items,
 				},
 				method: 'post',
-				success: function( response ) {
+				success( response ) {
 					response = LP.parseJSON( response );
 					that.syncing = false;
 					if ( response.result !== 'success' ) {
@@ -63,22 +63,22 @@
 
 			return true;
 		},
-		callToCallback: function() {
+		callToCallback() {
 			this.callback && this.callback.call( this );
 		},
-		get_items: function() {
-			var that = this;
+		get_items() {
+			const that = this;
 			$.ajax( {
 				url: '',
 				data: {
 					'lp-ajax': this.id,
 					sync: this.methodGetItems,
 				},
-				success: function( response ) {
+				success( response ) {
 					that.syncing = false;
 					response = LP.parseJSON( response );
-					if ( response[that.itemsKey] ) {
-						that.items = response[that.itemsKey];
+					if ( response[ that.itemsKey ] ) {
+						that.items = response[ that.itemsKey ];
 						that.sync( that.callback );
 					} else {
 						that.completed = true;
@@ -90,41 +90,41 @@
 		},
 	};
 
-	var Sync_Course_Orders = $.extend( {}, Sync_Base, {
+	const Sync_Course_Orders = $.extend( {}, Sync_Base, {
 		id: 'sync-course-orders',
 		methodGetItems: 'get-courses',
 		itemsKey: 'courses',
 	} );
 
-	var Sync_User_Courses = $.extend( {}, Sync_Base, {
+	const Sync_User_Courses = $.extend( {}, Sync_Base, {
 		id: 'sync-user-courses',
 		methodGetItems: 'get-users',
 		itemsKey: 'users',
 		chunkSize: 500,
 	} );
 
-	var Sync_User_Orders = $.extend( {}, Sync_Base, {
+	const Sync_User_Orders = $.extend( {}, Sync_Base, {
 		id: 'sync-user-orders',
 		methodGetItems: 'get-users',
 		itemsKey: 'users',
 		chunkSize: 500,
 	} );
 
-	var Sync_Course_Final_Quiz = $.extend( {}, Sync_Base, {
+	const Sync_Course_Final_Quiz = $.extend( {}, Sync_Base, {
 		id: 'sync-course-final-quiz',
 		methodGetItems: 'get-courses',
 		itemsKey: 'courses',
 		chunkSize: 500,
 	} );
 
-	var Sync_Remove_Older_Data = $.extend( {}, Sync_Base, {
+	const Sync_Remove_Older_Data = $.extend( {}, Sync_Base, {
 		id: 'sync-remove-older-data',
 		methodGetItems: 'remove-older-data',
 		itemsKey: '_nothing_here',
 		chunkSize: 500,
 	} );
 
-	var Sync_Calculate_Course_Results = $.extend( {}, Sync_Base, {
+	const Sync_Calculate_Course_Results = $.extend( {}, Sync_Base, {
 		id: 'sync-calculate-course-results',
 		methodGetItems: 'get-users',
 		itemsKey: 'users',
@@ -135,18 +135,18 @@
 		syncs: [],
 		syncing: 0,
 		options: {},
-		start: function( options ) {
+		start( options ) {
 			this.syncs = [];
 			this.options = $.extend( {
-				onInit: function() {
+				onInit() {
 				},
-				onStart: function() {
+				onStart() {
 
 				},
-				onCompleted: function() {
+				onCompleted() {
 
 				},
-				onCompletedAll: function() {
+				onCompletedAll() {
 
 				},
 			}, options || {} );
@@ -172,36 +172,36 @@
 				};
 			this.sync( syncing, syncCallback );
 		},
-		reset: function() {
-			for ( var sync in this.syncs ) {
+		reset() {
+			for ( const sync in this.syncs ) {
 				try {
-					this[this.syncs[sync]].init();
+					this[ this.syncs[ sync ] ].init();
 				} catch ( e ) {
 				}
 			}
 		},
-		sync: function( sync, callback ) {
-			var that = this,
-				$sync = this[this.syncs[sync]];
+		sync( sync, callback ) {
+			const that = this,
+				$sync = this[ this.syncs[ sync ] ];
 			that.options.onStart.call( that, $sync );
 			$sync.sync( function() {
 				callback.call( that, $sync );
 			} );
 		},
-		get_syncs: function() {
-			var syncs = $( 'input[name^="lp-repair"]:checked' ).serializeJSON()['lp-repair'];
+		get_syncs() {
+			const syncs = $( 'input[name^="lp-repair"]:checked' ).serializeJSON()[ 'lp-repair' ];
 			if ( ! syncs ) {
 				return false;
 			}
 
-			for ( var sync in syncs ) {
-				if ( syncs[sync] !== 'yes' ) {
+			for ( let sync in syncs ) {
+				if ( syncs[ sync ] !== 'yes' ) {
 					continue;
 				}
 
 				sync = sync.replace( /[-]+/g, '_' );
 
-				if ( ! this[sync] ) {
+				if ( ! this[ sync ] ) {
 					continue;
 				}
 
@@ -210,9 +210,9 @@
 
 			return this.syncs;
 		},
-		get_sync: function( id ) {
+		get_sync( id ) {
 			id = id.replace( /[-]+/g, '_' );
-			return this[id];
+			return this[ id ];
 		},
 		sync_course_orders: Sync_Course_Orders,
 		sync_user_orders: Sync_User_Orders,
@@ -224,7 +224,7 @@
 
 	$( document ).ready( function() {
 		function initSyncs() {
-			var $chkAll = $( '#learn-press-check-all-syncs' ),
+			const $chkAll = $( '#learn-press-check-all-syncs' ),
 				$chks = $( '#learn-press-syncs' ).find( '[name^="lp-repair"]' );
 
 			$chkAll.on( 'click', function() {
@@ -243,17 +243,17 @@
 		}
 
 		LP_Sync_Data.start( {
-			onInit: function() {
+			onInit() {
 				$( 'ul#learn-press-syncs' ).children().removeClass( 'syncing synced' );
 				$( '.lp-button-repair' ).prop( 'disabled', true );
 			},
-			onStart: function( $sync ) {
+			onStart( $sync ) {
 				getInput( $sync.id ).closest( 'li' ).addClass( 'syncing' );
 			},
-			onCompleted: function( $sync ) {
+			onCompleted( $sync ) {
 				getInput( $sync.id ).closest( 'li' ).removeClass( 'syncing' ).addClass( 'synced' );
 			},
-			onCompletedAll: function() {
+			onCompletedAll() {
 				$( 'ul#learn-press-syncs' ).children().removeClass( 'syncing synced' );
 				$( '.lp-button-repair' ).prop( 'disabled', false );
 			},

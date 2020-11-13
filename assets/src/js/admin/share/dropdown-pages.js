@@ -1,10 +1,4 @@
-( function() {
-	const $ = window.jQuery;
-
-	if ( $ === undefined ) {
-		return;
-	}
-
+( function( $ ) {
 	function DropdownPages( el, options ) {
 		this.options = $.extend( {
 			ID: '',
@@ -72,15 +66,12 @@
 			const $button = $( this ),
 				$input = $form.find( 'input' ),
 				page_name = $input.val();
-
 			if ( ! page_name ) {
 				alert( 'Please enter the name of page' );
 				$input.focus();
 				return;
 			}
-
 			$button.prop( 'disabled', true );
-
 			$.ajax( {
 				url: lpGlobalSettings.ajax,
 				data: {
@@ -133,5 +124,5 @@
 			return $instance;
 		} );
 	} );
-}() );
+}( jQuery ) );
 

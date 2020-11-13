@@ -1,12 +1,13 @@
 ( function( $ ) {
 	$.fn.LP_Chart_Line = function( data, config ) {
 		return $.each( this, function() {
-			var $elem = $( this ),
+			const $elem = $( this ),
 				$canvas = $( '<canvas />' );
 			$elem.html( '' );
 			$canvas.appendTo( $elem );
 			new Chart( $canvas.get( 0 ).getContext( '2d' ) ).Line( data, config );
 		} );
+		//
 	};
 
 	$.fn.LP_Statistic_Users = function() {
@@ -14,12 +15,11 @@
 			return;
 		}
 		return $.each( this, function() {
-			var $buttons = $( '.chart-buttons button' ).on( 'click', function() {
-					var $button = $( this ),
-						type = $button.data( 'type' ),
-						from = '',
-						to = '',
-						$container = $( '#learn-press-chart' );
+			const $buttons = $( '.chart-buttons button' ).on( 'click', function() {
+					const $button = $( this ),
+						type = $button.data( 'type' );
+					let from = '',
+						to = '';
 					$buttons.not( this ).not( '[data-type="user-custom-time"]' ).prop( 'disabled', false );
 					if ( type == 'user-custom-time' ) {
 						from = $( '#user-custom-time input[name="from"]' ).val();
@@ -31,16 +31,18 @@
 					} else {
 						$button.prop( 'disabled', true );
 					}
+
+					const $container = $( '#learn-press-chart' );
 					$container.addClass( 'loading' );
 					$.ajax( {
 						url: 'admin-ajax.php',
 						data: {
 							action: 'learnpress_load_chart',
-							type: type,
+							type,
 							range: [ from, to ],
 						},
 						dataType: 'text',
-						success: function( response ) {
+						success( response ) {
 							response = LP.parseJSON( response );
 							$container.LP_Chart_Line( response, LP_Chart_Config );
 							$container.removeClass( 'loading' );
@@ -49,8 +51,8 @@
 					return false;
 				} ),
 				$inputs = $( '.chart-buttons #user-custom-time input[type="text"]' ).change( function() {
-					var _valid_date = function() {
-						if ( new Date( $inputs[0].value ) < new Date( $inputs[1].value ) ) {
+					const _valid_date = function() {
+						if ( new Date( $inputs[ 0 ].value ) < new Date( $inputs[ 1 ].value ) ) {
 							return true;
 						}
 					};
@@ -67,7 +69,7 @@
 		}
 		return $.each( this, function() {
 			var $buttons = $( '.chart-buttons button' ).on( 'click', function() {
-					var $button = $( this ),
+					let $button = $( this ),
 						type = $button.data( 'type' ),
 						from = '',
 						to = '',
@@ -88,11 +90,11 @@
 						url: 'admin-ajax.php',
 						data: {
 							action: 'learnpress_load_chart',
-							type: type,
+							type,
 							range: [ from, to ],
 						},
 						dataType: 'text',
-						success: function( response ) {
+						success( response ) {
 							response = LP.parseJSON( response );
 							$container.LP_Chart_Line( response, LP_Chart_Config );
 							$container.removeClass( 'loading' );
@@ -101,8 +103,8 @@
 					return false;
 				} ),
 				$inputs = $( '.chart-buttons #course-custom-time input[type="text"]' ).change( function() {
-					var _valid_date = function() {
-						if ( new Date( $inputs[0].value ) < new Date( $inputs[1].value ) ) {
+					const _valid_date = function() {
+						if ( new Date( $inputs[ 0 ].value ) < new Date( $inputs[ 1 ].value ) ) {
 							return true;
 						}
 					};
@@ -133,7 +135,7 @@
 		 * @return {boolean}
 		 */
 		var LP_Statistic_Orders_Upgrade_Chart = function() {
-			var type = '',
+			let type = '',
 				from = '',
 				to = '',
 				report_sales_by = 'date',
@@ -143,9 +145,9 @@
 			$container = $( '#learn-press-chart' );
 			$container.addClass( 'loading' );
 			// get type
-			var $buttons = $( '.chart-buttons button:disabled' ).not( '[data-type="order-custom-time"]' );
+			const $buttons = $( '.chart-buttons button:disabled' ).not( '[data-type="order-custom-time"]' );
 			if ( parseInt( $buttons.length ) > 0 ) {
-				type	= $( $buttons[0] ).data( 'type' );
+				type	= $( $buttons[ 0 ] ).data( 'type' );
 			} else {
 				type	= 'order-custom-time';
 				from	= $( '#order-custom-time input[name="from"]' ).val();
@@ -164,14 +166,14 @@
 				url: 'admin-ajax.php',
 				data: {
 					action: 'learnpress_load_chart',
-					type: type,
+					type,
 					range: [ from, to ],
-					report_sales_by: report_sales_by,
-					course_id: course_id,
-					cat_id: cat_id,
+					report_sales_by,
+					course_id,
+					cat_id,
 				},
 				dataType: 'text',
-				success: function( response ) {
+				success( response ) {
 					response = LP.parseJSON( response );
 					$container.LP_Chart_Line( response, LP_Chart_Config );
 					$container.removeClass( 'loading' );
@@ -179,26 +181,24 @@
 			} );
 		};
 
-		if ( $( '#report-by-course-id' ).length > 0 ) {
-			$( '#report-by-course-id' ).select2( {
-				placeholder: 'Select a course',
-				minimumInputLength: 1,
-				ajax: {
-					url: ajaxurl + '?action=learnpress_search_course',
-					dataType: 'json',
-					quietMillis: 250,
-					data: function( term, page ) {
-						return {
-							q: term,
-						};
-					},
-					results: function( data, page ) {
-						return { results: data.items };
-					},
-					cache: true,
+		$( '#report-by-course-id' ).select2( {
+			placeholder: 'Select a course',
+			minimumInputLength: 1,
+			ajax: {
+				url: ajaxurl + '?action=learnpress_search_course',
+				dataType: 'json',
+				quietMillis: 250,
+				data( term, page ) {
+					return {
+						q: term, // search term
+					};
 				},
-			} );
-		}
+				results( data, page ) {
+					return { results: data.items };
+				},
+				cache: true,
+			},
+		} );
 
 		$( '#report-by-course-id' ).on( 'change', function() {
 			LP_Statistic_Orders_Upgrade_Chart();
@@ -211,12 +211,12 @@
 				url: ajaxurl + '?action=learnpress_search_course_category',
 				dataType: 'json',
 				quietMillis: 250,
-				data: function( term, page ) {
+				data( term, page ) {
 					return {
 						q: term, // search term
 					};
 				},
-				results: function( data, page ) {
+				results( data, page ) {
 					return { results: data.items };
 				},
 				cache: true,
@@ -228,7 +228,7 @@
 		} );
 
 		var $buttons = $( '.chart-buttons button' ).on( 'click', function() {
-			var $button = $( this ),
+			const $button = $( this ),
 				type = $button.data( 'type' ),
 				from = '',
 				to = '',
@@ -244,8 +244,8 @@
 		} );
 
 		var $inputs = $( '.chart-buttons #order-custom-time input[type="text"]' ).change( function() {
-			var _valid_date = function() {
-				if ( new Date( $inputs[0].value ) < new Date( $inputs[1].value ) ) {
+			const _valid_date = function() {
+				if ( new Date( $inputs[ 0 ].value ) < new Date( $inputs[ 1 ].value ) ) {
 					return true;
 				}
 			};
@@ -253,9 +253,8 @@
 				return this.value == '';
 			} ).get().length || ! _valid_date() );
 		} );
-	}
-	;
-	$( document ).ready( function() {
+	};
+	$( function() {
 		if ( typeof $.fn.datepicker != 'undefined' ) {
 			$( '.date-picker' ).datepicker( {
 				dateFormat: 'yy/mm/dd',
@@ -267,24 +266,28 @@
 	} );
 	return;
 
-	var student_chart;
+	let student_chart;
 	window.drawStudentsChart = drawStudentsChart = function( data, config ) {
-		var $student_chart = $( '#lpr-chart-students' ).clone().attr( 'style', '' ).removeAttr( 'width' ).removeAttr( 'height' );
+		let $student_chart = $( '#lpr-chart-students' ).clone().attr( 'style', '' ).removeAttr( 'width' ).removeAttr( 'height' );
 		$( '#lpr-chart-students' ).replaceWith( $student_chart );
-		$student_chart = $student_chart[0].getContext( '2d' );
+		$student_chart = $student_chart[ 0 ].getContext( '2d' );
 		student_chart = new Chart( $student_chart ).Line( data, config );
 	};
-	if ( typeof last_seven_days == 'undefined' ) {}
+	if ( typeof last_seven_days == 'undefined' ) {
+		return;
+	}
 	drawStudentsChart( last_seven_days, config );
 
-	var courses_chart;
+	let courses_chart;
 	window.drawCoursesChart = drawCoursesChart = function( data, config ) {
-		var $courses_chart = $( '#lpr-chart-courses' ).clone().attr( 'style', '' ).removeAttr( 'width' ).removeAttr( 'height' );
+		let $courses_chart = $( '#lpr-chart-courses' ).clone().attr( 'style', '' ).removeAttr( 'width' ).removeAttr( 'height' );
 		$( '#lpr-chart-courses' ).replaceWith( $courses_chart );
-		$courses_chart = $courses_chart[0].getContext( '2d' );
+		$courses_chart = $courses_chart[ 0 ].getContext( '2d' );
 		courses_chart = new Chart( $courses_chart ).Bar( data, config );
 	};
-	if ( typeof data == 'undefined' ) {}
+	if ( typeof data == 'undefined' ) {
+		return;
+	}
 
 	drawCoursesChart( data, config );
 }( jQuery ) );

@@ -159,37 +159,6 @@ abstract class LP_Abstract_Post_Type {
 			if ( $user ) {
 				$option = sprintf( '<option value="%d" selected="selected">%s</option>', $user->ID, $user->user_login );
 			}
-			?>
-
-			<script>
-				jQuery(function ($) {
-					var $input = $('#post-search-input');
-
-					if (!$input.length) {
-						return;
-					}
-
-					var $form = $($input[0].form),
-						$select = $('<select name="author" id="author"></select>').append($('<?php echo $option; ?>')).insertAfter($input).select2({
-							ajax: {
-								url: window.location.href + '&lp-ajax=search-authors',
-								dataType: 'json',
-								s: ''
-							},
-							placeholder: '<?php echo __( 'Search by user', 'learnpress' ); ?>',
-							minimumInputLength: 3,
-							allowClear: true
-						}).on('select2:select', function () {
-							$('input[name="author"]').val($select.val())
-						});
-
-					$form.on('submit', function () {
-						var url = window.location.href.removeQueryVar('author').addQueryVar('author', $select.val());
-
-					});
-				});
-				</script>
-			<?php
 		}
 
 		if ( $pagenow === 'post.php' ) {

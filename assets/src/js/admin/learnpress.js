@@ -1,8 +1,3 @@
-// Include;
-import AdminTools from './pages/tools';
-import Statistic from './pages/statistic';
-import SyncData from './pages/sync-data';
-
 const $ = jQuery;
 const $doc = $( document );
 const $win = $( window );
@@ -363,9 +358,9 @@ const initTooltips = function initTooltips() {
 	} );
 };
 
-const initSelect2 = () => {
+const initSelect2 = function initSelect2() {
 	if ( $.fn.select2 ) {
-		$( 'select.lp-select-2' ).select2();
+		$( '.lp-select-2 select' ).select2();
 	}
 };
 
@@ -573,30 +568,6 @@ const toggleEmails = function toggleEmails( e ) {
 	} );
 };
 
-const duplicatePost = function duplicatePost( e ) {
-	e.preventDefault();
-
-	const _self = $( this ),
-		_id = _self.data( 'post-id' );
-
-	$.ajax( {
-		url: '',
-		data: {
-			'lp-ajax': 'duplicator',
-			id: _id,
-		},
-		success( response ) {
-			response = LP.parseJSON( response );
-
-			if ( response.success ) {
-				window.location.href = response.data;
-			} else {
-				alert( response.data );
-			}
-		},
-	} );
-};
-
 const importCourses = function importCourses() {
 	const $container = $( '#learn-press-install-sample-data-notice' ),
 		action = $( this ).attr( 'data-action' );
@@ -660,9 +631,7 @@ const onReady = function onReady() {
 		.on( 'click', '.change-email-status', updateEmailStatus )
 		.on( 'click', '.learn-press-filter-template', callbackFilterTemplates )
 		.on( 'click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails )
-		.on( 'click', '.lp-duplicate-row-action .lp-duplicate-post', duplicatePost )
 		.on( 'click', '#learn-press-install-sample-data-notice a', importCourses );
 };
 
 $( document ).ready( onReady );
-

@@ -1597,27 +1597,6 @@ function learn_press_install_add_on( $plugin_name ) {
 	return $response;
 }
 
-function learn_press_accept_become_a_teacher() {
-	$action  = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
-	$user_id = ! empty( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : '';
-
-	if ( ! $action || ! $user_id || ( $action != 'accept-to-be-teacher' ) ) {
-		return;
-	}
-
-	if ( ! learn_press_user_maybe_is_a_teacher( $user_id ) ) {
-		$be_teacher = new WP_User( $user_id );
-		$be_teacher->set_role( LP_TEACHER_ROLE );
-		delete_transient( 'learn_press_become_teacher_sent_' . $user_id );
-		do_action( 'learn_press_user_become_a_teacher', $user_id );
-
-		$redirect = add_query_arg( 'become-a-teacher-accepted', 'yes' );
-		$redirect = remove_query_arg( 'action', $redirect );
-		wp_redirect( $redirect );
-	}
-}
-add_action( 'plugins_loaded', 'learn_press_accept_become_a_teacher' );
-
 function learn_press_user_become_a_teacher_notice() {
 	$user_id = learn_press_get_request( 'user_id' );
 
