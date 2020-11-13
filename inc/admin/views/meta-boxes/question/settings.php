@@ -8,7 +8,7 @@ class LP_Meta_Box_Question {
 		<div class="lp-meta-box lp-meta-box--question">
 			<div class="lp-meta-box__inner">
 				<?php
-				do_action( 'lp_before_question_meta_box_settings' );
+				do_action( 'learnpress/question-settings/before' );
 
 				lp_meta_box_text_input_field(
 					array(
@@ -44,7 +44,7 @@ class LP_Meta_Box_Question {
 					)
 				);
 
-				do_action( 'lp_after_question_meta_box_settings' );
+				do_action( 'learnpress/question-settings/after' );
 				?>
 			</div>
 		</div>

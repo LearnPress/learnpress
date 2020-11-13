@@ -8,6 +8,8 @@ class LP_Meta_Box_Lesson {
 		<div class="lp-meta-box lp-meta-box--lesson">
 			<div class="lp-meta-box__inner">
 				<?php
+				do_action( 'learnpress/lesson-settings/before' );
+
 				lp_meta_box_duration_field(
 					array(
 						'id'                => '_lp_duration',
@@ -29,6 +31,8 @@ class LP_Meta_Box_Lesson {
 						'default'     => 'no',
 					)
 				);
+
+				do_action( 'learnpress/lesson-settings/after' );
 				?>
 			</div>
 		</div>
