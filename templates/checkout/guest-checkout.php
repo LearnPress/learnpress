@@ -21,7 +21,7 @@ $is_exists = $checkout->checkout_email_exists();
 	<h4><?php esc_html_e( 'As Guest', 'learnpress' ); ?></h4>
 	<ul class="lp-form-fields">
 		<li class="form-field">
-			<input size="30" placeholder="<?php esc_attr_e( 'Enter your email...', 'learnpress' ); ?>" type="text" id="guest_email" class="rwmb-text" name="guest_email" autocomplete="off">
+			<input size="30" placeholder="<?php esc_attr_e( 'Enter your email...', 'learnpress' ); ?>" type="text" id="guest_email" name="guest_email" autocomplete="off">
 			<div class="lp-guest-checkout-notice">
 				<?php esc_html_e( 'An order key to activate the course will be sent to your email after the payment proceeded successfully.', 'learnpress' ); ?>
 			</div>

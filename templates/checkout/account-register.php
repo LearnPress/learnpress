@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit();
 			<input id ="reg_email" name="reg_email" type="text" placeholder="<?php esc_attr_e( 'Email', 'learnpress' ); ?>" autocomplete="email" value="<?php echo ( ! empty( $_POST['reg_email'] ) ) ? esc_attr( wp_unslash( $_POST['reg_email'] ) ) : ''; ?>">
 		</li>
 		<li class="form-field">
-			<label for="reg_username"><?php esc_html_e( 'Usernanme', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
+			<label for="reg_username"><?php esc_html_e( 'Username', 'learnpress' ); ?>&nbsp;<span class="required">*</span></label>
 			<input id ="reg_username" name="reg_username" type="text" placeholder="<?php esc_attr_e( 'Username', 'learnpress' ); ?>" autocomplete="username" value="<?php echo ( ! empty( $_POST['reg_username'] ) ) ? esc_attr( wp_unslash( $_POST['reg_username'] ) ) : ''; ?>">
 		</li>
 		<li class="form-field">
