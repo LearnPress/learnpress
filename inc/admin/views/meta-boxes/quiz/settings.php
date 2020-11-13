@@ -8,7 +8,7 @@ class LP_Meta_Box_Quiz {
 		<div class="lp-meta-box lp-meta-box--quiz">
 			<div class="lp-meta-box__inner">
 				<?php
-				do_action( 'lp_before_quiz_meta_box_settings' );
+				do_action( 'learnpress/quiz-settings/before' );
 
 				lp_meta_box_duration_field(
 					array(
@@ -92,7 +92,7 @@ class LP_Meta_Box_Quiz {
 					)
 				);
 
-				do_action( 'lp_after_quiz_meta_box_settings' );
+				do_action( 'learnpress/quiz-settings/before' );
 				?>
 			</div>
 		</div>

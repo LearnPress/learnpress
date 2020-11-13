@@ -143,10 +143,6 @@ add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )
 add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
 add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )->func( 'count_object' ), 20 );
 
-// add_action( 'learn-press/course-meta-primary-right', LP()->template( 'course' )->callback( 'single-course/meta/category' ) );
-// add_action( 'learn-press/course-meta-primary-right', LP()->template( 'course' )->callback( 'single-course/meta/category' ) );
-
-
 
 // Sidebar content
 /**
