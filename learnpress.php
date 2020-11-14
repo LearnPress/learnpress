@@ -156,7 +156,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Add new task to a background process.
 		 *
-		 * @param mixed  $data
+		 * @param mixed $data
 		 * @param string $background
 		 *
 		 * @return LP_Abstract_Background_Process|bool
@@ -536,7 +536,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			$this->api = new LP_Core_API();
 
-			$this->view_log();
+			//$this->view_log();
 
 			$this->get_session();
 
@@ -556,10 +556,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * View log.
 		 *
 		 * @since 3.0.0
+		 * @deprecated 3.2.8
+		 * @editor tungnx
 		 */
-		public function view_log() {
+		/*public function view_log() {
 			if ( ! empty( $_REQUEST['view-log'] ) ) {
-				$log = LP_Helper::sanitize_params_submitted($_REQUEST['view-log']);
+				$log = LP_Helper::sanitize_params_submitted( $_REQUEST['view-log'] );
 				echo '<pre>';
 				if ( is_multisite() ) {
 					$log = "{$log}-" . get_current_blog_id();
@@ -569,7 +571,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				echo '<pre>';
 				die();
 			}
-		}
+		}*/
 
 		/**
 		 * Get session object instance.

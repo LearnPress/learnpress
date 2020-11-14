@@ -77,7 +77,7 @@ class LP_Database {
 		$cache_key = _count_posts_cache_key( $filter->_post_type, '' );
 
 		// Get cache
-		$counts = wp_cache_get( $cache_key, '' );
+		$counts = wp_cache_get( $cache_key );
 		if ( false !== $counts ) {
 			return $counts;
 		}

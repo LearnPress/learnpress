@@ -152,12 +152,33 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 			$course = learn_press_get_course();
 		}
 
+		if ( ! $course ) {
+			return;
+		}
+
+		$retake_config = absint( get_post_meta( $course->get_id(), '_lp_retake_count', true ) );
+
+		if ( $retake_config == 0 ) {
+			return;
+		}
+
 		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
 			return;
 		}
 
 		if ( ! isset( $user ) ) {
 			$user = learn_press_get_current_user();
+		}
+
+		if ( ! $user ) {
+			return;
+		}
+
+		// Check user have turn retake course
+		$can_retake_course = $user->can_retake_course( $course->get_id() );
+
+		if ( ! $can_retake_course ) {
+			return;
 		}
 
 		// Check user not enroll course
@@ -179,7 +200,9 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 			}
 		}
 
-		learn_press_get_template( 'single-course/buttons/retake.php' );
+		$args = array( 'course' => $course, 'user' => $user, 'count' => $can_retake_course );
+
+		learn_press_get_template( 'single-course/buttons/retake.php', $args );
 	}
 }
 
@@ -1175,30 +1198,30 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 		}
 		?>
         <style type="text/css">
-          html, body {
-            overflow: hidden;
-          }
+            html, body {
+                overflow: hidden;
+            }
 
-          body.course-item-popup #learn-press-course-curriculum {
-            position: fixed;
-            top: 60px;
-            bottom: 0;
-            left: 0;
-            background: #FFF;
-            border-right: 1px solid #DDD;
-            overflow: auto;
-            z-index: 9999;
-          }
+            body.course-item-popup #learn-press-course-curriculum {
+                position: fixed;
+                top: 60px;
+                bottom: 0;
+                left: 0;
+                background: #FFF;
+                border-right: 1px solid #DDD;
+                overflow: auto;
+                z-index: 9999;
+            }
 
-          body.course-item-popup #learn-press-content-item {
-            position: fixed;
-            z-index: 9999;
-            background: #FFF;
-            top: 60px;
-            right: 0;
-            bottom: 0;
-            overflow: visible;
-          }
+            body.course-item-popup #learn-press-content-item {
+                position: fixed;
+                z-index: 9999;
+                background: #FFF;
+                top: 60px;
+                right: 0;
+                bottom: 0;
+                overflow: visible;
+            }
         </style>
 		<?php
 	}
