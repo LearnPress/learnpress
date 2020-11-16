@@ -850,7 +850,7 @@ class LP_Repair_Database {
 					$item_course     = $user->get_course_data( $course_id );
 					$course_exceeded = $item_course->is_exceeded();
 
-					if ( $course_exceeded <= 0 && ( learn_press_is_enrolled_slug( $item_course->get_status() ) /* $item_course->get_status() === 'enrolled' */ ) ) {
+					if ( $course_exceeded <= 0 && ( learn_press_is_enrolled_slug( $item_course->get_status() ) ) ) {
 						$item_course->finish();
 
 						$start_time = $item_course->get_start_time()->getTimestamp();

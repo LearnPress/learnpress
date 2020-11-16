@@ -514,14 +514,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$author_id = intval( $matches[1] );
 				$sql       = ' ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)';
 
-				$sql = " {$wpdb->posts}.ID IN ( SELECT 
+				$sql = " {$wpdb->posts}.ID IN ( SELECT
 						IF( p.post_parent >0, p.post_parent, p.ID)
 					FROM
 						{$wpdb->posts} AS p
 							INNER JOIN
-						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s 
+						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s
 								AND m.meta_key = %s
-							INNER JOIN 
+							INNER JOIN
 						{$wpdb->users} u on m.meta_value = u.ID
 					WHERE
 						p.post_type = 'lp_order'

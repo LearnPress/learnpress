@@ -177,6 +177,15 @@ defined( 'ABSPATH' ) || exit;
 
 		lp_meta_box_checkbox_field(
 			array(
+				'id'          => '_lp_block_lesson_content',
+				'label'       => esc_html__( 'Block content', 'learnpress' ),
+				'description' => esc_html__( 'Block content item( lesson, quiz... ) of course when completed course.', 'learnpress' ),
+				'default'     => 'no',
+			)
+		);
+
+		lp_meta_box_checkbox_field(
+			array(
 				'id'          => '_lp_featured',
 				'label'       => esc_html__( 'Featured list', 'learnpress' ),
 				'description' => esc_html__( 'Add the course to Featured List.', 'learnpress' ),

@@ -154,9 +154,13 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	public function get_finishing_type() {
-		if ( ! $type = $this->get_meta( 'finishing_type' ) ) {
+		$type = $this->get_meta( 'finishing_type' );
+
+		if ( ! $type ) {
 			$type = $this->is_exceeded() <= 0 ? 'exceeded' : 'click';
+
 			learn_press_update_user_item_meta( $this->get_user_item_id(), 'finishing_type', $type );
+
 			$this->set_meta( 'finishing_type', $type );
 		}
 
