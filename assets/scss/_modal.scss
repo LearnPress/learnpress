@@ -1,54 +1,60 @@
 #lp-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 999999;
-    background: #000;
-    opacity: 0.5;
-    display: none;
+	display: none;
+	position: fixed;
+	z-index: 999999;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0.5;
+	background: #000;
 }
 
 #lp-modal-window {
-    position: fixed;
-    background: #FFF;
-    z-index: 999999;
-    display: none;
-    padding: 35px 60px 28px 60px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    @include border-radius(4px);
-    #lp-modal-content {
-        margin: 0 0 24px 0;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 400;
-        color: #333;
-        line-height: 26px;
-        > * {
-            margin: 0 0 0.5em;
-        }
-        #lp-modal-buttons {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: row-reverse;
-        }
-    }
+	display: none;
+	position: fixed;
+	z-index: 999999;
+	top: 50%;
+	left: 50%;
+	padding: 35px 60px 28px 60px;
+	background: #fff;
+	transform: translate(-50%, -50%);
 
-    #lp-modal-buttons {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: row-reverse;
-        .lp-button {
-            margin: 0 10px 0 10px;
-            position: relative;
-            &.modal-button-cancel {
+	@include border-radius(4px);
 
-            }
-        }
-    }
+	#lp-modal-content {
+		margin: 0 0 24px 0;
+		color: #333;
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 26px;
+		text-align: center;
+
+		> * {
+			margin: 0 0 0.5em;
+		}
+
+		#lp-modal-buttons {
+			display: flex;
+			flex-direction: row-reverse;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+
+	#lp-modal-buttons {
+		display: flex;
+		flex-direction: row-reverse;
+		align-items: center;
+		justify-content: center;
+
+		.lp-button {
+			position: relative;
+			margin: 0 10px 0 10px;
+
+			&.modal-button-cancel {
+
+			}
+		}
+	}
 }

@@ -796,12 +796,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function is_exceeded() {
 		$expiration = $this->get_expiration_time();
-		// $end        = $this->get_end_time_gmt();
-		$end = $this->get_end_time();
+		$end        = $this->get_end_time();
 
-		// learn_press_debug($expiration, $end);
-
-		// FALSE if expiration time not set
 		if ( ! $expiration ) {
 			return false;
 		}

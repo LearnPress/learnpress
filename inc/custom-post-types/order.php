@@ -95,7 +95,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				global $wpdb;
 				$query = "
-				        SELECT post_status, COUNT( ID ) AS num_posts 
+				        SELECT post_status, COUNT( ID ) AS num_posts
                         FROM {$wpdb->posts}
                         WHERE post_type = %s
                         AND post_parent = %d
@@ -525,14 +525,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$author_id = intval( $matches[1] );
 				$sql       = ' ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)';
 
-				$sql = " {$wpdb->posts}.ID IN ( SELECT 
+				$sql = " {$wpdb->posts}.ID IN ( SELECT
 						IF( p.post_parent >0, p.post_parent, p.ID)
 					FROM
 						{$wpdb->posts} AS p
 							INNER JOIN
-						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s 
+						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s
 								AND m.meta_key = %s
-							INNER JOIN 
+							INNER JOIN
 						{$wpdb->users} u on m.meta_value = u.ID
 					WHERE
 						p.post_type = 'lp_order'
@@ -570,7 +570,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					" {$wpdb->posts}.ID IN (
 						SELECT DISTINCT order_id FROM {$wpdb->learnpress_order_items} loi
 						INNER JOIN {$wpdb->learnpress_order_itemmeta} loim ON loi.order_item_id = loim.learnpress_order_item_id AND loim.meta_key LIKE %s
-						WHERE `order_item_name` LIKE %s OR loim.meta_value LIKE %s 
+						WHERE `order_item_name` LIKE %s OR loim.meta_value LIKE %s
 					)",
 					array( '_course_id', $s, $s )
 				);
@@ -657,50 +657,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			$columns['order_total']   = 'order_total';
 
 			return $columns;
-		}
-
-		public function admin_head() {
-
-			global $post, $wp_query;
-
-			if ( LP_ORDER_CPT != get_post_type() ) {
-				return;
-			}
-
-			ob_start();
-			?>
-
-			<script>
-				$('#update-order-status').on( 'click', function() {
-					var $button = $(this).attr('disabled', 'disabled').html('<?php esc_html_e( 'Processing...', 'learnpress' ); ?>');
-					$.ajax({
-						url: ajaxurl,
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							action: 'update_order_status',
-							order_id: '<?php echo $post->ID; ?>',
-							status: $('select[name="learn_press_order_status"]').val()
-						},
-						success: function (res) {
-							if (res.status) {
-								$('.order-data-status')
-									.removeClass('pending completed')
-									.html(res.status)
-									.addClass(res.class);
-							}
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
-						},
-						error: function () {
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
-						}
-					});
-				});
-			</script>
-
-			<?php
-			$js = preg_replace( '!</?script>!', '', ob_get_clean() );
-			learn_press_enqueue_script( $js );
 		}
 
 		public function update_status() {
@@ -1057,7 +1013,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$query   = $wpdb->prepare(
 					"
 						SELECT oi.order_id FROM `{$wpdb->learnpress_order_items}` as oi
-						INNER JOIN `{$wpdb->posts}` as post ON oi.order_id = post.ID AND post.post_status LIKE %s 
+						INNER JOIN `{$wpdb->posts}` as post ON oi.order_id = post.ID AND post.post_status LIKE %s
 						",
 					'lp_completed'
 				);
