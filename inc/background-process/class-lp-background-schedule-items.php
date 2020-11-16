@@ -107,76 +107,14 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			// Force auto completing course items if turn on.
 			$complete_items = 'yes' === $settings->get( 'force_complete_course_items', 'yes' );
 
+			// Cron-job auto finish course when expiration time (nhamdv).
 			foreach ( $course_items as $course_item ) {
 				$user        = learn_press_get_user( $course_item->user_id );
 				$course_data = $user->get_course_data( $course_item->course_id );
 
-				$course_data->finish( $complete_items );
-			}
+				$finished = $course_data->finish( $complete_items );
 
-			return false;
-
-			parent::task( $data );
-
-			$x = ! empty( $_REQUEST['xxx'] );
-			if ( $x ) {
-				$this->_get_items();
-				$items = get_transient( $this->transient_key );
-
-				if ( ! $items ) {
-					return false;
-				}
-
-				$curd = new LP_User_CURD();
-
-				foreach ( $items as $course_item_id => $item_data ) {
-					$item_course = $curd->get_user_item_course( $course_item_id );
-
-					if ( ! $item_course ) {
-						continue;
-					}
-
-					$course_exceeded = $item_course->is_exceeded() <= 0;
-
-					if ( ! empty( $item_data ) ) {
-						foreach ( $item_data as $user_item_id ) {
-							$user_item = $item_course->get_item_by_user_item_id( $user_item_id );
-
-							if ( ! $user_item ) {
-								continue;
-							}
-							switch ( $user_item->get_post_type() ) {
-								case LP_QUIZ_CPT:
-									if ( $user_item->get_status() == 'started' ) {
-										if ( ( $item_course->is_finished() || $course_exceeded ) || $user_item->is_exceeded() <= 0 ) {
-											$user_item->complete();
-										}
-									}
-									break;
-								case LP_LESSON_CPT:
-									if ( $user_item->is_exceeded() <= 0 ) {
-										$user_item->complete();
-									}
-									break;
-								default:
-									do_action( 'learn-press/schedule/auto-complete-item', $user_item_id );
-							}
-						}
-					}
-
-					$exceeded = $item_course->is_exceeded();
-					if ( $exceeded <= 0 && ( learn_press_is_enrolled_slug( $item_course->get_status() ) ) ) {
-						$item_course->finish();
-
-						$start_time = $item_course->get_start_time()->getTimestamp();
-						$duration   = $item_course->get_course()->get_duration();
-
-						learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'via', 'schedule' );
-						learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'exceeded', $exceeded );
-					}
-				}
-
-				remove_action( 'shutdown', array( $this, 'dispatch_queue' ) );
+				learn_press_update_user_item_meta( $finished, 'finishing_type', 'exceeded' );
 			}
 
 			return false;

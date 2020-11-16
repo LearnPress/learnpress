@@ -34,6 +34,13 @@ defined( 'ABSPATH' ) || exit;
 					'type'              => 'duration',
 				),
 				array(
+					'id'          => '_lp_block_lesson_content',
+					'label'       => esc_html__( 'Block content', 'learnpress' ),
+					'description' => esc_html__( 'Block content item( lesson, quiz... ) of course when expiration time course.', 'learnpress' ),
+					'default'     => 'no',
+					'type'        => 'checkbox',
+				),
+				array(
 					'id'          => '_lp_level',
 					'label'       => esc_html__( 'Level', 'learnpress' ),
 					'description' => esc_html__( 'Choose a difficulty level.', 'learnpress' ),
@@ -121,6 +128,15 @@ defined( 'ABSPATH' ) || exit;
 			)
 		);
 
+		lp_meta_box_checkbox_field(
+			array(
+				'id'          => '_lp_block_lesson_content',
+				'label'       => esc_html__( 'Block content', 'learnpress' ),
+				'description' => esc_html__( 'Block content item( lesson, quiz... ) of course when expiration time course.', 'learnpress' ),
+				'default'     => 'no',
+			)
+		);
+
 		lp_meta_box_select_field(
 			array(
 				'id'          => '_lp_level',
@@ -147,7 +163,7 @@ defined( 'ABSPATH' ) || exit;
 					'min'  => '0',
 					'step' => '1',
 				),
-				'style'             => 'width: 60px;',
+				'style'             => 'width: 70px;',
 			)
 		);
 
@@ -162,7 +178,7 @@ defined( 'ABSPATH' ) || exit;
 					'min'  => '0',
 					'step' => '1',
 				),
-				'style'             => 'width: 60px;',
+				'style'             => 'width: 70px;',
 			)
 		);
 
@@ -171,15 +187,6 @@ defined( 'ABSPATH' ) || exit;
 				'id'          => '_lp_retake_count',
 				'label'       => esc_html__( 'Retry', 'learnpress' ),
 				'description' => esc_html__( 'Allow students to try the course one more time.', 'learnpress' ),
-				'default'     => 'no',
-			)
-		);
-
-		lp_meta_box_checkbox_field(
-			array(
-				'id'          => '_lp_block_lesson_content',
-				'label'       => esc_html__( 'Block content', 'learnpress' ),
-				'description' => esc_html__( 'Block content item( lesson, quiz... ) of course when completed course.', 'learnpress' ),
 				'default'     => 'no',
 			)
 		);
