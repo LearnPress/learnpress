@@ -9,12 +9,12 @@ $plugin_info = get_plugin_data( LP_PLUGIN_FILE );
 // version
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
 
-define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
+//define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 
 // Plugin paths and urls
 define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( LP_PLUGIN_FILE ) ) );
 define( 'LP_TEMPLATE_PATH', LP_PLUGIN_PATH . 'templates/' );
-define( 'LP_CONTENT_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
+//define( 'LP_CONTENT_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
 define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', LP_PLUGIN_FILE ) ) );
 define( 'LP_JS_URL', LP_PLUGIN_URL . 'assets/js/' );
 define( 'LP_CSS_URL', LP_PLUGIN_URL . 'assets/css/' );
@@ -74,6 +74,15 @@ define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
 define( 'LP_COMPLETE_ITEM_FAIL', 170 );
 define( 'LP_COMPRESS_ASSETS', false );
 define( 'LP_COURSES_LAYOUT', 'list' );
+
+// Pages
+define( 'LP_PAGE_CHECKOUT', 'lp_page_checkout' );
+define( 'LP_PAGE_COURSES', 'lp_page_courses' );
+define( 'LP_PAGE_COURSE', 'lp_page_course' );
+define( 'LP_PAGE_QIZ', 'lp_page_quiz' );
+define( 'LP_PAGE_QUESTION', 'lp_page_question' );
+define( 'LP_PAGE_PROFILE', 'lp_page_profile' );
+define( 'LP_PAGE_BECOME_A_TEACHER', 'lp_page_become_a_teacher' );
 
 /**
  * Thim Market library

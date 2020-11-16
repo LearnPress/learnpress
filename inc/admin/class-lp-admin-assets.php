@@ -280,6 +280,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	}
 
 	public static function instance() {
+		if ( ! is_admin() ) {
+			return null;
+		}
+
 		if ( ! self::$_instance ) {
 			self::$_instance = new self();
 		}
@@ -294,10 +298,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
  * @return LP_Admin_Assets|null
  */
 function learn_press_admin_assets() {
-	if ( ! is_admin() ) {
-		return null;
-	}
-
 	return LP_Admin_Assets::instance();
 }
 

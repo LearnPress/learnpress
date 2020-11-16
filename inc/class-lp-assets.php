@@ -10,9 +10,15 @@
 defined( 'ABSPATH' ) || exit;
 
 class LP_Assets extends LP_Abstract_Assets {
+	protected static $_instance;
 
-	public function __construct() {
+	/**
+	 * Constructor
+	 */
+	protected function __construct() {
 		parent::__construct();
+
+		add_action( 'wp_print_footer_scripts', array( $this, 'show_overlay' ) );
 	}
 
 	/**
@@ -307,6 +313,35 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		return $is_screen;
 	}
+
+	/**
+	 * Add lp overlay
+	 *
+	 * @since 3.2.8
+	 * @author tungnx
+	 */
+	public function show_overlay() {
+		$page_current = LP_Page_Controller::page_current();
+		if ( ! in_array( $page_current, array( LP_PAGE_COURSE, LP_PAGE_QIZ ) ) ) {
+			return;
+		}
+
+		echo '<div class="lp-overlay">';
+		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
+		echo '</div>';
+	}
+
+	public static function instance() {
+		if ( is_admin() ) {
+			return null;
+		}
+
+		if ( self::$_instance == null ) {
+			self::$_instance = new self();
+		}
+
+		return self::$_instance;
+	}
 }
 
 /**
@@ -315,19 +350,8 @@ class LP_Assets extends LP_Abstract_Assets {
  * @return LP_Assets|null
  */
 function learn_press_assets() {
-	static $assets = null;
-
-	if ( ! $assets ) {
-		$assets = new LP_Assets();
-	}
-
-	return $assets;
+	return LP_Assets::instance();
 }
 
-/**
- * Load frontend asset
- */
-if ( ! is_admin() ) {
-	learn_press_assets();
-}
+learn_press_assets();
 

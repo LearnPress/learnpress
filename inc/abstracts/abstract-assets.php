@@ -321,21 +321,6 @@ abstract class LP_Abstract_Assets {
 		return LP_PLUGIN_URL . "assets/{$file}";
 	}
 
-	/**
-	 * Get url with param nocache if debug mode is turn on.
-	 *
-	 * @param $url
-	 *
-	 * @return string
-	 */
-	protected function _get_url( $url ) {
-		if ( learn_press_is_debug() ) {
-			$url = add_query_arg( 'nocache', $this->_cache, $url );
-		}
-
-		return $url;
-	}
-
 	public function get_compressible_assets() {
 		return array();
 	}

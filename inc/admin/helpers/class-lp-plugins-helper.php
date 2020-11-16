@@ -158,7 +158,7 @@ class LP_Plugins_Helper {
 	 * Get our related themes.
 	 *
 	 * @param string $type
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @return array|mixed
 	 */
@@ -304,16 +304,19 @@ class LP_Plugins_Helper {
 	 * @return array
 	 */
 	public static function get_add_on_icons( $plugin_data, $plugin_file ) {
-		$plugin_path = ABSPATH . LP_WP_CONTENT . '/plugins/' . $plugin_file;
+		$plugin_path = ABSPATH . basename( WP_CONTENT_DIR ) . '/plugins/' . $plugin_file;
 		$icon_path   = dirname( $plugin_path ) . '/assets/images';
 		$icons       = array(
 			'2x' => '',
 			'1x' => '',
 		);
-		foreach ( array(
+
+		$icons_tmp = array(
 			'2x' => 'icon-256x256',
 			'1x' => 'icon-128x128',
-		) as $s => $name ) {
+		);
+
+		foreach ( $icons_tmp as $s => $name ) {
 			foreach ( array( 'png', 'svg' ) as $t ) {
 				if ( file_exists( $icon_path . "/{$name}.{$t}" ) ) {
 					$icons[ $s ] = plugins_url( '/', $plugin_path ) . "assets/images/{$name}.{$t}";

@@ -101,14 +101,6 @@ class LP_Template_General extends LP_Abstract_Template {
 		learn_press_get_template( 'global/become-teacher-form/button.php' );
 	}
 
-	public function preview_course_notice() {
-		if ( ! learn_press_is_preview_course() ) {
-			return;
-		}
-
-		learn_press_display_message( __( 'Your course is currently in preview mode.', 'learnpress' ), 'error' );
-	}
-
 	/**
 	 * Get header for course page
 	 */
