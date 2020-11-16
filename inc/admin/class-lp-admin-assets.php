@@ -149,24 +149,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-modal-search-users'             => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
 					array( 'jquery' ), array( LP_ORDER_CPT ), 1, 1
 				),
-				'lp-tools-course'                   => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/dist/admin/tools/course' . self::$_min_assets . '.js' ),
+				'lp-tools-course'                   => new LP_Asset_Key( $this->url( 'js/dist/admin/tools/course' . self::$_min_assets . '.js' ),
 					array( 'vue-libs' ), array( 'learnpress_page_learn-press-tools' ), 0, 1
 				),
-//				'learn-press-data-controls'         => array(
-//					'url'       => $this->url( 'js/frontend/data-controls.js' ),
-//					'screens'   => array( LP_QUESTION_CPT ),
-//					'in_footer' => true,
-//					'deps'      => array(
-//						'wp-element',
-//						'wp-compose',
-//						'wp-data',
-//						'wp-hooks',
-//						'wp-api-fetch',
-//						'lodash',
-//					),
-//				),
+				'lp-tools-course-tab'               => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
+					array( 'vue-libs' ), array( 'learnpress_page_learn-press-tools' ), 0, 1
+				),
 //				'learn-press-question-editor'       => array(
-//					'url'       => $this->url( 'js/admin/question-editor.js' ),
+//					'url'       => $this->url( 'js/dist/admin/question-editor.js' ),
 //					'screens'   => array( LP_QUESTION_CPT ),
 //					'in_footer' => true,
 //					'deps'      => array(

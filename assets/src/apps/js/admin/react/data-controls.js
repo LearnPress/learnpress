@@ -36,7 +36,7 @@ const resolveSelect = ( registry, { storeKey, selectorName, args } ) => {
 		const hasFinished = () => registry.select( '' )
 			.hasFinishedResolution( storeKey, selectorName, args );
 
-		const getResult = () => registry.select( storeKey )[selectorName]
+		const getResult = () => registry.select( storeKey )[ selectorName ]
 			.apply( null, args );
 
 		// trigger the selector (to trigger the resolver)
@@ -61,14 +61,14 @@ export const controls = {
 	},
 	SELECT: createRegistryControl(
 		( registry ) => ( { storeKey, selectorName, args } ) => {
-			return registry.select( storeKey )[selectorName].hasResolver
+			return registry.select( storeKey )[ selectorName ].hasResolver
 				? resolveSelect( registry, { storeKey, selectorName, args } )
-				: registry.select( storeKey )[selectorName]( ...args );
+				: registry.select( storeKey )[ selectorName ]( ...args );
 		}
 	),
 	DISPATCH: createRegistryControl(
 		( registry ) => ( { storeKey, actionName, args } ) => {
-			return registry.dispatch( storeKey )[actionName]( ...args );
+			return registry.dispatch( storeKey )[ actionName ]( ...args );
 		}
 	),
 };
