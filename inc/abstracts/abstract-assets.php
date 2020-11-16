@@ -32,6 +32,8 @@ abstract class LP_Abstract_Assets {
 	 * LP_Abstract_Assets constructor.
 	 */
 	protected function __construct() {
+		$priority = 1000;
+
 		if ( LP_Debug::is_debug() ) {
 			self::$_min_assets     = '';
 			self::$_version_assets = uniqid();
@@ -41,11 +43,10 @@ abstract class LP_Abstract_Assets {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ) );
 			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_admin_scripts' ) );
-
 		} else {
-			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
-			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ) );
-			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priority );
+			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priority + 10 );
+			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priority + 10 );
 		}
 	}
 
