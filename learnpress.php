@@ -1,27 +1,36 @@
 <?php
-/*
-Plugin Name: LearnPress
-Plugin URI: http://thimpress.com/learnpress
-Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can easily build online courses, lessons and quizzes. With LearnPress, we can learn anything, anywhere and anytime.
-Author: ThimPress
-Version: 4.0.0
-Author URI: http://thimpress.com
-Requires at least: 3.8
-Tested up to: 5.3
+/**
+ * Plugin Name: LearnPress
+ * Plugin URI: http://thimpress.com/learnpress
+ * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
+ * Author: ThimPress
+ * Version: 4.0.0
+ * Author URI: http://thimpress.com
+ * Requires at least: 3.8
+ * Tested up to: 5.5.3
+ * Text Domain: learnpress
+ * Domain Path: /languages/
+ *
+ * @package LearnPress
+ */
 
-Text Domain: learnpress
-Domain Path: /languages/
-*/
-
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
-
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
 }
 
 if ( ! class_exists( 'LearnPress' ) ) {
+
+	/**
+	 * Class LearnPress
+	 *
+	 * Version 3.0.0
+	 */
 	class LearnPress {
 
 		/**
@@ -174,7 +183,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Add new task to a background process.
 		 *
-		 * @param mixed  $data
+		 * @param mixed $data
 		 * @param string $background
 		 *
 		 * @return LP_Abstract_Background_Process|bool
@@ -259,12 +268,24 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-course-query.php';
 			require_once 'inc/class-lp-utils.php';
 			require_once 'inc/abstracts/abstract-addon.php';
-			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
+			require_once 'inc/class-lp-asset-key.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
+
+			// Filter query
+			require_once 'inc/filters/class-lp-filter.php';
+			require_once 'inc/filters/class-lp-post-type-filter.php';
+
+			// Query Database
+			require_once 'inc/class-lp-database.php';
+			require_once 'inc/course/class-lp-course-database.php';
+			require_once 'inc/lesson/class-lp-lesson-database.php';
+			require_once 'inc/section/class-lp-section-database.php';
+			require_once 'inc/quiz/class-lp-quiz-database.php';
+			require_once 'inc/question/class-lp-question-database.php';
 
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';
@@ -299,6 +320,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-request-handler.php';
 			require_once 'inc/abstract-settings.php';
 			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
+			require_once 'inc/class-lp-rest-response.php';
 
 			if ( is_admin() ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
@@ -520,11 +542,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( LP_COURSE_CPT, 'thumbnail' );
 
-			$size = $this->settings()->get( 'course_thumbnail_dimensions' );
-
-			if ( ! $size ) {
-				$size = array( 500, 300 );
-			}
+			$size = $this->settings()->get( 'course_thumbnail_dimensions', array( 500, 300 ) );
 
 			$size = array_values( (array) $size );
 
@@ -577,7 +595,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$this->admin_api     = new LP_Admin_Core_API();
 			$this->theme_support = LP_Theme_Support::instance();
 
-			$this->view_log();
+			//$this->view_log();
 
 			$this->get_session();
 
@@ -598,10 +616,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * View log.
 		 *
 		 * @since 3.0.0
+		 * @deprecated 3.2.8
+		 * @editor tungnx
 		 */
-		public function view_log() {
+		/*public function view_log() {
 			if ( ! empty( $_REQUEST['view-log'] ) ) {
-				$log = $_REQUEST['view-log'];
+				$log = LP_Helper::sanitize_params_submitted( $_REQUEST['view-log'] );
 				echo '<pre>';
 				if ( is_multisite() ) {
 					$log = "{$log}-" . get_current_blog_id();
@@ -611,7 +631,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				echo '<pre>';
 				die();
 			}
-		}
+		}*/
 
 		/**
 		 * Get session object instance.
@@ -677,13 +697,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function is_request( $type ) {
 			switch ( $type ) {
-				case 'admin':
+				case 'admin' :
 					return is_admin();
-				case 'ajax':
+				case 'ajax' :
 					return defined( 'LP_DOING_AJAX' );
-				case 'cron':
+				case 'cron' :
 					return defined( 'DOING_CRON' );
-				case 'frontend':
+				case 'frontend' :
 					return ( ! is_admin() || defined( 'LP_DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
 				default:
 					return strtolower( $_SERVER['REQUEST_METHOD'] ) == $type;
@@ -764,7 +784,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
  * @since  1.0
  * @author thimpress
  */
-function LP() { // phpcs:ignore
+function LP() {
 	return LearnPress::instance();
 }
 

@@ -1,11 +1,10 @@
 <?php
-
 /**
  * Class LP_Settings
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 1.0.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,9 +36,10 @@ class LP_Settings {
 	 * Constructor.
 	 *
 	 * @param array|mixed $data
-	 * @param string      $prefix
+	 * @param string $prefix
+	 *
 	 */
-	public function __construct( $data = false, $prefix = 'learn_press_' ) {
+	protected function __construct( $data = false, $prefix = 'learn_press_' ) {
 
 		$this->_prefix = $prefix;
 
@@ -71,15 +71,11 @@ class LP_Settings {
 	 */
 	protected function _load_options( $force = false ) {
 		global $wpdb;
-
-		$query = $wpdb->prepare(
-			"
+		$query = $wpdb->prepare( "
 			SELECT option_name, option_value
 			FROM {$wpdb->options}
-			WHERE option_name LIKE %s
-		",
-			$wpdb->esc_like( $this->_prefix ) . '%'
-		);
+			WHERE option_name LIKE %s",
+			$wpdb->esc_like( $this->_prefix ) . '%' );
 
 		$options = $wpdb->get_results( $query );
 
@@ -135,7 +131,7 @@ class LP_Settings {
 	 * Get option recurse separated by DOT
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return mixed
 	 */
@@ -213,7 +209,7 @@ class LP_Settings {
 	 * Update option with default prefix is learn_press_
 	 *
 	 * @param string $name
-	 * @param mixed  $value
+	 * @param mixed $value
 	 * @param string $prefix
 	 */
 	public static function update_option( $name, $value, $prefix = 'learn_press_' ) {
@@ -224,13 +220,15 @@ class LP_Settings {
 	 * Get option with default prefix is learn_press_
 	 *
 	 * @param string $name
-	 * @param mixed  $default
-	 * @param string $prefix
+	 * @param mixed $default
 	 *
 	 * @return mixed
+	 * @since 3.2.8
+	 * @editor tungnx
+	 *
 	 */
-	public static function get_option( $name, $default, $prefix = 'learn_press_' ) {
-		return get_option( "{$prefix}{$name}", $default );
+	public static function get_option( $name, $default = false ) {
+		return get_option( "learn_press_{$name}", $default );
 	}
 
 	public function get_int( $key ) {
@@ -254,8 +252,11 @@ class LP_Settings {
 	 * Load all 'no' options from other plugins for caching purpose.
 	 *
 	 * @since 3.0.0
+	 * @deprecated 4.0.0
+	 * @editor tungnx
+	 * @reason not use
 	 */
-	public static function load_site_options() {
+	/*public static function load_site_options() {
 		static $loaded = false;
 
 		if ( $loaded ) {
@@ -303,15 +304,12 @@ class LP_Settings {
 		global $wpdb;
 
 		$format = array_fill( 0, sizeof( $options ), '%s' );
-		$q      = $wpdb->prepare(
-			"
+		$q      = $wpdb->prepare( "
 			SELECT option_name, option_value
 			FROM $wpdb->options
 			WHERE 1
-			AND option_name IN(" . join( ',', $format ) . ')
-		',
-			$options
-		);
+			AND option_name IN(" . join( ',', $format ) . ")
+		", $options );
 
 		$alloptions_db = $wpdb->get_results( $q, OBJECT_K );
 		$notoptions    = wp_cache_get( 'notoptions', 'options' );
@@ -330,14 +328,14 @@ class LP_Settings {
 
 		wp_cache_set( 'notoptions', $notoptions, 'options' );
 		$loaded = true;
-	}
+	}*/
 
 	/**
 	 * Get settings endpoints for checkout page.
 	 *
+	 * @return array
 	 * @since 3.0.0
 	 *
-	 * @return array
 	 */
 	public function get_checkout_endpoints() {
 		$endpoints = LP_Object_Cache::get( 'checkout', 'learn-press-endpoints' );
@@ -372,9 +370,9 @@ class LP_Settings {
 	/**
 	 * Get settings endpoints for profile page.
 	 *
+	 * @return array
 	 * @since 3.0.0
 	 *
-	 * @return array
 	 */
 	public function get_profile_endpoints() {
 		$endpoints = LP_Object_Cache::get( 'profile', 'learn-press-endpoints' );
@@ -384,7 +382,6 @@ class LP_Settings {
 			$endpoints = array();
 
 			$settings = LP()->settings->get( 'profile_endpoints' );
-
 			if ( $settings ) {
 				foreach ( $settings as $k => $v ) {
 					$k               = preg_replace( '!_!', '-', $k );
@@ -405,5 +402,11 @@ class LP_Settings {
 	}
 }
 
-
-return LP_Settings::instance();
+if ( ! function_exists( 'lp_settings' ) ) {
+	/**
+	 * @return LP_Settings|null
+	 */
+	function lp_settings() {
+		return LP_Settings::instance();
+	}
+}

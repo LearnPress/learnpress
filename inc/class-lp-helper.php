@@ -99,10 +99,9 @@ class LP_Helper {
 
 		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$query  = $wpdb->prepare(
-			"
-			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ')
-		', $ids ); // phpcs:ignore
+		$query  = $wpdb->prepare( "
+			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ")
+		", $ids );
 
 		$posts = $wpdb->get_results( $query );
 
@@ -117,9 +116,9 @@ class LP_Helper {
 	 * Sort an array by a field.
 	 * Having some issue with default PHP usort function.
 	 *
-	 * @param array  $array
+	 * @param array $array
 	 * @param string $field
-	 * @param int    $default
+	 * @param int $default
 	 */
 	public static function sort_by_priority( &$array, $field = 'priority', $default = 10 ) {
 		foreach ( $array as $k => $item ) {
@@ -156,7 +155,6 @@ class LP_Helper {
 		}
 
 		$classes = array();
-
 		foreach ( func_get_args() as $class ) {
 			if ( is_string( $class ) ) {
 				$cls     = explode( ' ', $class );
@@ -407,6 +405,68 @@ class LP_Helper {
 		}
 
 		return $newlist;
+	}
+
+	/**
+	 * Get the current url
+	 *
+	 * @return string
+	 * @since  3.2.6.8
+	 * @author tungnx
+	 */
+	public static function getUrlCurrent() {
+		$schema = is_ssl() ? 'https://' : 'http://';
+
+		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( $_SERVER['REQUEST_URI'] );
+	}
+
+	/**
+	 * Sanitize string and array
+	 *
+	 * @param array|string $value
+	 * @param string $type_content
+	 *
+	 * @return array|string
+	 * @since  3.2.7.1
+	 * @author tungnx
+	 */
+	public static function sanitize_params_submitted( $value, $type_content = 'text' ) {
+		$value = wp_unslash( $value );
+
+		if ( is_string( $value ) ) {
+			switch ( $type_content ) {
+				case 'html':
+					$value = wp_kses_post( $value );
+					break;
+				case 'textarea' :
+					$value = sanitize_textarea_field( $value );
+					break;
+				default:
+					$value = sanitize_text_field( wp_unslash( $value ) );
+			}
+		} elseif ( is_array( $value ) ) {
+			foreach ( $value as $k => $v ) {
+				$value[ $k ] = self::sanitize_params_submitted( $v, $type_content );
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Get wp file system
+	 *
+	 * @return mixed
+	 */
+	public static function get_wp_filesystem() {
+		global $wp_filesystem;
+
+		if ( empty( $wp_filesystem ) ) {
+			require_once( ABSPATH . '/wp-admin/includes/file.php' );
+			WP_Filesystem();
+		}
+
+		return $wp_filesystem;
 	}
 
 	/**

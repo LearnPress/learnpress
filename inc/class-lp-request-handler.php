@@ -73,7 +73,7 @@ class LP_Request {
 
 		if ( ! $course_id ) {
 			if ( isset( $_REQUEST['enroll-course'] ) && $_REQUEST['enroll-course'] ) {
-				$course_id = $_REQUEST['enroll-course'];
+				$course_id = absint( $_REQUEST['enroll-course'] );
 			}
 		}
 
@@ -117,7 +117,7 @@ class LP_Request {
 	/**
 	 * Purchase course action, when user clicking on "Buy this course" or "Enroll" button.
 	 *
-	 * @param int    $course_id
+	 * @param int $course_id
 	 * @param string $action
 	 *
 	 * @return bool
@@ -250,17 +250,15 @@ class LP_Request {
 	/**
 	 * Function callback
 	 *
-	 * @param int    $course_id
+	 * @param int $course_id
 	 * @param string $cart_id
 	 * @param string $action
 	 *
 	 * @return mixed
-	 * @throws Exception
 	 */
 	public static function do_checkout( $course_id, $cart_id, $action ) {
 		$user   = learn_press_get_current_user();
 		$course = learn_press_get_course( $course_id );
-
 		if ( ! $course ) {
 			return false;
 		}
@@ -288,8 +286,8 @@ class LP_Request {
 	}
 
 	/**
-	 * @param int    $course_id
-	 * @param int    $order_id
+	 * @param int $course_id
+	 * @param int $order_id
 	 * @param string $action
 	 */
 	public static function do_enroll( $course_id, $order_id, $action, $item_id = 0 ) {
@@ -393,21 +391,13 @@ class LP_Request {
 	 * Register new request
 	 *
 	 * @param string|array $action
-	 * @param mixed        $function
-	 * @param int          $priority
+	 * @param mixed $function
+	 * @param int $priority
 	 */
 	public static function register( $action, $function = '', $priority = 5 ) {
 		if ( is_array( $action ) ) {
 			foreach ( $action as $item ) {
-				$item = wp_parse_args(
-					$item,
-					array(
-						'action'   => '',
-						'callback' => '',
-						'priority' => 5,
-					)
-				);
-
+				$item = wp_parse_args( $item, array( 'action' => '', 'callback' => '', 'priority' => 5 ) );
 				if ( ! $item['action'] || ! $item['callback'] ) {
 					continue;
 				}
@@ -435,8 +425,8 @@ class LP_Request {
 	 *      LP_Request::register_ajax( 'action:nopriv', 'function_to_call', 5 )
 	 *
 	 * @param string $action
-	 * @param mixed  $function
-	 * @param int    $priority
+	 * @param mixed $function
+	 * @param int $priority
 	 */
 	public static function register_ajax( $action, $function, $priority = 5 ) {
 		if ( is_array( $action ) ) {
@@ -462,11 +452,6 @@ class LP_Request {
 		if ( isset( $actions['nopriv'] ) ) {
 			add_action( 'learn-press/ajax/no-priv/' . $actions['action'], $function, $priority );
 		}
-
-		/**
-		 * @deprecated
-		 */
-		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
 	}
 
 	/**
@@ -489,15 +474,19 @@ class LP_Request {
 		}
 
 		if ( is_user_logged_in() ) {
-			do_action( 'learn_press_ajax_handler_' . $action );
-
 			$has_action = has_action( 'learn-press/ajax/' . $action );
 
+			/**
+			 * @since 3.0.0
+			 */
 			do_action( 'learn-press/ajax/' . $action );
 		} else {
 
 			$has_action = has_action( 'learn-press/ajax/no-priv/' . $action );
 
+			/**
+			 * @since 3.0.0
+			 */
 			do_action( 'learn-press/ajax/no-priv/' . $action );
 		}
 
@@ -530,7 +519,7 @@ class LP_Request {
 	 * Get variable value from Server environment.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @param string $type
 	 * @param string $env
 	 *
@@ -589,6 +578,8 @@ class LP_Request {
 				break;
 		}
 
+		LP_Helper::sanitize_params_submitted( $return );
+
 		return $return;
 	}
 
@@ -596,7 +587,7 @@ class LP_Request {
 	 * Get value int from environment.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @param string $env
 	 *
 	 * @return int
@@ -609,7 +600,7 @@ class LP_Request {
 	 * Get value float from environment.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @param string $env
 	 *
 	 * @return float
@@ -622,7 +613,7 @@ class LP_Request {
 	 * Get value bool from environment.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @param string $env
 	 *
 	 * @return bool
@@ -635,7 +626,7 @@ class LP_Request {
 	 * Get value string from environment.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @param string $env
 	 *
 	 * @return string
@@ -648,7 +639,7 @@ class LP_Request {
 	 * Get value array from environment.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @param string $env
 	 *
 	 * @return array
@@ -661,7 +652,7 @@ class LP_Request {
 	 * Get value from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return mixed
 	 */
@@ -673,7 +664,7 @@ class LP_Request {
 	 * Get value int from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return int
 	 */
@@ -685,7 +676,7 @@ class LP_Request {
 	 * Get value float from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return float
 	 */
@@ -697,7 +688,7 @@ class LP_Request {
 	 * Get value bool from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return bool
 	 */
@@ -709,7 +700,7 @@ class LP_Request {
 	 * Get value string from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return string
 	 */
@@ -721,7 +712,7 @@ class LP_Request {
 	 * Get value array from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return array
 	 */
@@ -733,7 +724,7 @@ class LP_Request {
 	 * Get email field and validate.
 	 *
 	 * @param string $var
-	 * @param bool   $default
+	 * @param bool $default
 	 *
 	 * @return bool|string
 	 */

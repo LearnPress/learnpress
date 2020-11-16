@@ -65,12 +65,12 @@ class LP_Debug {
 			return;
 		}
 		foreach ( $this->_handles as $handle ) {
-			@fclose( $handle ); // phpcs:ignore
+			@fclose( $handle );
 		}
 	}
 
 	public function init() {
-		// add_action( 'shutdown', array( $this, 'output' ) );
+		//add_action( 'shutdown', array( $this, 'output' ) );
 	}
 
 	public static function is_enable_log() {
@@ -88,13 +88,13 @@ class LP_Debug {
 					continue;
 				}
 				$time = array_sum( $times );
-				echo str_pad( ++ $i, 3, '-', STR_PAD_LEFT ) . '.' . str_pad( $func, 50, '-' ) . ' = ' . str_pad( sizeof( $times ), 5, '-' ) . '(' . $time . ')' . "\n";
+				echo str_pad( ++ $i, 3, '-', STR_PAD_LEFT ) . '.' . str_pad( $func, 50, '-' ) . ' = ' . str_pad( sizeof( $times ), 5, '-' ) . "(" . $time . ')' . "\n";
 				$total_time += $time;
 			}
 			echo '----' . str_pad( 'Total time', 50, '-' ) . ' = ' . $total_time . "\n";
-			echo microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'], ',', gmdate( 'Y-m-d H:i:s' ), ',', gmdate( 'Y-m-d H:i:s', $_SERVER['REQUEST_TIME_FLOAT'] );
+			echo microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'], ',', date( 'Y-m-d H:i:s' ), ',', date( 'Y-m-d H:i:s', $_SERVER['REQUEST_TIME_FLOAT'] );
 
-			echo '---->';
+			echo "---->";
 		}
 	}
 
@@ -153,7 +153,7 @@ class LP_Debug {
 
 	private function close( $handle ) {
 		if ( isset( $this->_handles[ $handle ] ) ) {
-			@fclose( $this->_handles[ $handle ] ); // phpcs:ignore
+			@fclose( $this->_handles[ $handle ] );
 			unset( $this->_handles[ $handle ] );
 
 			return true;
@@ -167,14 +167,10 @@ class LP_Debug {
 	 *
 	 * @param string $handle
 	 * @param string $message
-	 * @param bool   $clear
-	 * @param bool   $force
+	 * @param bool $clear
+	 * @param bool $force
 	 */
 	public function add( $message, $handle = 'log', $clear = false, $force = false ) {
-		if ( ! $handle ) {
-			$handle = 'log';
-		}
-
 		if ( $this->_lock === null ) {
 			$this->_lock = ! ( LP_Settings::instance()->get( 'debug' ) == 'yes' );
 		}
@@ -195,7 +191,7 @@ class LP_Debug {
 			echo "\n\n";
 			foreach ( array( 'file', 'line', 'function', 'class' ) as $prop ) {
 				if ( isset( $backtrace[0][ $prop ] ) ) {
-					echo '=> ' . str_pad( $prop, 10 ) . ':' . $backtrace[0][ $prop ] . "\n";
+					echo "=> " . str_pad( $prop, 10 ) . ':' . $backtrace[0][ $prop ] . "\n";
 				}
 			}
 			$message .= ob_get_clean();
@@ -203,9 +199,9 @@ class LP_Debug {
 
 				$path = learn_press_get_log_file_path( $handle . '-temp' );
 				$f    = @fopen( $path, 'a' );
-				fwrite( $f, '----------' . $time . "----------\n" . $message . "-----------------------------------------\n\n\n" );
+				fwrite( $f, "----------" . $time . "----------\n" . $message . "-----------------------------------------\n\n\n" );
 				fseek( $this->_handles[ $handle ], 0 );
-				while ( ( $buffer = fgets( $this->_handles[ $handle ], 4096 ) ) !== false ) { // phpcs:ignore
+				while ( ( $buffer = fgets( $this->_handles[ $handle ], 4096 ) ) !== false ) {
 					fwrite( $f, $buffer );
 				}
 
@@ -214,7 +210,7 @@ class LP_Debug {
 				unlink( learn_press_get_log_file_path( $handle ) );
 				rename( $path, learn_press_get_log_file_path( $handle ) );
 
-				// fwrite( $this->_handles[ $handle ], "----------" . $time . "----------\n" . $message . "\n--------------------" );
+				//fwrite( $this->_handles[ $handle ], "----------" . $time . "----------\n" . $message . "\n--------------------" );
 				do_action( 'learn_press_log_add', $handle, $message );
 			} catch ( Exception $ex ) {
 				error_log( 'LearnPress add log failed!' );
@@ -233,7 +229,7 @@ class LP_Debug {
 	 */
 	public function clear( $handle ) {
 		if ( $this->open( $handle ) && is_resource( $this->_handles[ $handle ] ) ) {
-			@ftruncate( $this->_handles[ $handle ], 0 ); // phpcs:ignore
+			@ftruncate( $this->_handles[ $handle ], 0 );
 		}
 
 		do_action( 'learn_press_log_clear', $handle );
@@ -254,7 +250,7 @@ class LP_Debug {
 		if ( LP_Settings::instance()->get( 'debug' ) != 'yes' ) {
 			return;
 		}
-		if ( $args = func_get_args() ) { // phpcs:ignore
+		if ( $args = func_get_args() ) {
 			foreach ( $args as $arg ) {
 				learn_press_debug( $arg );
 			}
@@ -268,7 +264,7 @@ class LP_Debug {
 		throw new Exception( $message );
 	}
 
-	public static function timeStart( $name = '' ) { // phpcs:ignore
+	public static function timeStart( $name = '' ) {
 		if ( ! $name ) {
 			self::$_current_name = md5( uniqid() );
 			$name                = self::$_current_name;
@@ -277,7 +273,7 @@ class LP_Debug {
 		self::$_time[ $name ] = microtime( true );
 	}
 
-	public static function timeEnd( $name = '', $echo = true ) { // phpcs:ignore
+	public static function timeEnd( $name = '', $echo = true ) {
 
 		if ( ! $name ) {
 			$name = self::$_current_name;
@@ -294,7 +290,7 @@ class LP_Debug {
 		return $time;
 	}
 
-	public static function logTime( $name ) { // phpcs:ignore
+	public static function logTime( $name ) {
 		if ( empty( self::$log_times[ $name ] ) ) {
 			self::$log_times[ $name ] = array();
 		}
@@ -308,17 +304,17 @@ class LP_Debug {
 		}
 	}
 
-	public static function getLogTimes() { // phpcs:ignore
+	public static function getLogTimes() {
 		return self::$log_times;
 	}
 
 	/**
 	 * Throw an exception.
 	 *
-	 * @param string    $message
-	 * @param int       $code
+	 * @param string $message
+	 * @param int $code
 	 * @param Throwable $prev
-	 * @param string    $type A class of an exception, default Exception.
+	 * @param string $type A class of an exception, default Exception.
 	 *
 	 * @throws Exception.
 	 */
@@ -333,14 +329,14 @@ class LP_Debug {
 	/**
 	 * Start a new sql transaction
 	 */
-	public static function startTransaction() { // phpcs:ignore
+	public static function startTransaction() {
 		global $wpdb;
 
 		if ( self::$_transaction_started ) {
 			return;
 		}
 
-		$wpdb->query( 'START TRANSACTION;' );
+		$wpdb->query( "START TRANSACTION;" );
 
 		self::$_transaction_started = true;
 	}
@@ -348,14 +344,14 @@ class LP_Debug {
 	/**
 	 * Rollback a sql transaction
 	 */
-	public static function rollbackTransaction() { // phpcs:ignore
+	public static function rollbackTransaction() {
 		global $wpdb;
 
 		if ( ! self::$_transaction_started ) {
 			return;
 		}
 
-		$wpdb->query( 'ROLLBACK;' );
+		$wpdb->query( "ROLLBACK;" );
 
 		self::$_transaction_started = false;
 	}
@@ -363,14 +359,14 @@ class LP_Debug {
 	/**
 	 * Commit a sql transaction
 	 */
-	public static function commitTransaction() { // phpcs:ignore
+	public static function commitTransaction() {
 		global $wpdb;
 
 		if ( ! self::$_transaction_started ) {
 			return;
 		}
 
-		$wpdb->query( 'COMMIT;' );
+		$wpdb->query( "COMMIT;" );
 
 		self::$_transaction_started = false;
 	}
@@ -398,5 +394,18 @@ class LP_Debug {
 		}
 
 	}
+
+	/**
+	 * Check enable debug mode
+	 *
+	 * @return bool
+	 * @since 3.2.8
+	 * @editor tungnx
+	 *
+	 */
+	public static function is_debug() {
+		return LP_Settings::get_option( 'debug', 'no' ) == 'yes';
+	}
 }
+
 return LP_Debug::instance();

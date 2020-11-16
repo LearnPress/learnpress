@@ -1,10 +1,11 @@
 === LearnPress - WordPress LMS Plugin ===
-Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, daonham
+Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungnx89
 Donate link:
-Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
+Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
-Tested up to: 5.3
-Stable tag: 4.0.0
+Tested up to: 5.5.3
+Requires PHP: 7.0
+Stable tag: 5.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +15,7 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 **<a href="http://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, just like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface. With this WordPress LMS plugin, you can quickly and easily create education, online school, online-course websites with no coding-knowledge required.
 
-<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/wordpress/themes/learnpress-premium-theme/" target="_blank">LearnPress Themes</a>
+<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/wordpress/themes/learnpress-premium-theme/" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a>
 
 LearnPress is free and always be free, but it has premium high quality WordPress Plugin which will probably help you make money from your **WordPress based LMS**, try and see how it is. LearnPress WordPress Online Course plugin is lightweight but super powerful with lots of add-ons to empower its core system.
 
@@ -22,11 +23,11 @@ LearnPress is free and always be free, but it has premium high quality WordPress
 
 > [Click here](https://goo.gl/JzwYkj) to get a coupon for 20% Off all Learnpress Add-ons
 
-> Or you can buy [Education WP Theme](https://1.envato.market/Yx2YR) for only $69 and get all of them.
+> Or you can buy [Education WP Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only $69 and get all add-on in package <a href="https://bit.ly/3iutiV1" target="_blank">LEARNPRESS THEME BUNDLE.</a>
 
-> **HOT!!** [WordPress theme for Coaches, Trainers, Teachers - Coaching WP](https://1.envato.market/Xq2Ra) is also FOR SALE at only $59, LearnPress included.
+> **HOT!!** [WordPress theme for Coaches, Trainers, Teachers - Coaching WP](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) is also FOR SALE at only $59, LearnPress included.
 
-> [Course Builder Wordpress Theme](https://1.envato.market/13Zkd) - WordPress LMS theme for online courses is also FOR SALE at only $64, LearnPress included.
+> [Course Builder Wordpress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) - WordPress LMS theme for online courses is also FOR SALE at only $64, Learnpress included.
 
 ###LMS & Education WordPress Themes###
 
@@ -72,7 +73,7 @@ Education should be free and we want you to bring it to as many people as you ca
 **LearnPress is actively developed**
 We are developing and improving LearnPress day by day and bringing new features to you cos we want LearnPress to become the **best WordPress LMS plugin**.
 
-<a href="http://docs.thimpress.com/learnpress" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
+<a href="http://docspress.thimpress.com/learnpress" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
 
 ###Free add-ons for LearnPress WordPress LMS Plugin###
 
@@ -164,7 +165,7 @@ Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress
 LearnPress is a plugin to create a LMS website, to spread out course, or sell course.
 
 = Where can I find LearnPress documentation and user guides? =
-If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="http://docs.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>
+If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="http://docspress.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>
 And if you want to extending or theming LearnPress, see our <a href="https://github.com/LearnPress/LearnPress/wiki" target="_blank">Wiki.</a>
 
 = Where can I get support or talk to other users? =
@@ -199,9 +200,8 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
-= 4.0.0 =
 
-= 3.3.0 =
+= 4.0.0 =
 + Added new UI/UX for Quiz screen in frontend.
 + Added enable Gutenberg for lesson and quiz and question.
 + Added extra meta for course: Requirements, Target Audience, Key Features.
@@ -210,6 +210,99 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Improved archive course page.
 ~ Restructure database table.
 ~ Added some hooks/filters.
+
+= 3.2.8 =
+~ Fix query get posts (courses, items courses) on Backend - multiple site
+~ Fix error not same param on hook of Yoast SEO vs Yoast SEO premium
+~ Fix security XSS function view_log
+~ Fix check if get user on function learn_press_course_purchase_button() is null
+~ Fix create statics pages LP on 'lp setup' page
+~ Show message duplicate class RWMB_Field with another plugins
+
+= 3.2.7.9 =
+~ Fix question not show description
+
+= 3.2.7.8 =
+~ Fix save author id when add item when edit course
+~ Fix title, description item course when install yoast seo plugin
+~ Fix Retake when not enable duration expire
+~ Fix function 'Instructors Registration'
+~ Add function Export order invoice PDF
+
+= 3.2.7.7 =
+~ Add Evaluate via questions
+~ Add Evaluate via mark
+~ Fixed duration expire course
+~ Fixed link 'Preview change' button when edit item course
+~ Fixed title of course archive page
+~ Fixed if quiz has only one question will not show paginate
+
+= 3.2.7.6 =
+~ Fix missing file class-lp-course-database.php
+
+= 3.2.7.5 =
+~ Fixed run Elementor with question.
+~ Fixed lesson preview not show button complete when user enrolled.
+~ Add tag apply_filter 'learn-press/order-item-not-course-id' on received-order.
+~ Add tag apply_filter 'learn-press/tmpl-button-purchase-course' before return button purchase course.
+~ Optimize (permalink of items course).
+~ Show finish course button when items of course completed although the course not passed.
+~ Fixed explanation of question when user completed quiz.
+~ Hide description of quiz when the quiz completed.
+
+= 3.2.7.4 =
+~ Fix can't load items when select on Order Backend
+
+= 3.2.7.3 =
+~ Fixed error get_image() return bool not string on the file \templates\loop\course\thumbnail.php
+~ Modify description for the function 'External Link'
+~ Fixed LP_Datetime error with date = '0000-00-00 00:00:00'
+~ Fixed not show number Duration of Lesson when translate text
+~ Fixed not send mail for instructor when have new order
+~ Remove hook get avatar of Ultimate member plugin
+~ Fixed get value with, height image_size on LP setting
+~ Fixed security, clear sanitize
+~ Wilfried, security ninja at Synacktiv
+~ Fixed compatible with Elementor on items of course (lesson, quizz, question v.v...)
+
+= 3.2.7.2 =
+~ Fixed email setting not save tag html
+
+= 3.2.7.1 =
+~ Fix save settings
+
+= 3.2.7 =
+~ Fix sanitize
+
+= 3.2.6.10 =
+~ Fix add-on GradeBook
+
+= 3.2.6.9 =
+~ Revert library meta-box to v4.15.7
+
+= 3.2.6.8 =
+~ Fixed security: remove functions low security
+~ Fixed some minor bugs
+~ Fixed confusing "external link button" name default of course
+~ Fixed filter items of course
+~ Fixed create same name, slug page Checkout with Woo
+~ Improve performance
+
+= 3.2.6.7 (2020.03.16) =
+~ Fixed security issues (CVE-2020-7916): uer logged can change role all users to Instructor
+~ Fixed security issues (CVE-2020-7917): remove function low security
+~ Fixed error preview Assignment
+
+= 3.2.6.6 =
+~ Fixed option Block Lessons not working
+
+= 3.2.6.5 (2019.11.20) =
+~ Fixed email doesn't send.
+~ Fixed some js errors.
+~ Fixed js call twice times.
+~ Fixed question doesn't show after added to quiz.
+~ Fixed ignore some metadata when copying course.
+~ Fixed search orders in backend.
 
 = 3.2.6.4 =
 ~ Fixed some errors.
@@ -362,5 +455,5 @@ https://www.transifex.com/projects/p/learnpress/
 In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independence plugins. If you face any problems relate to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
 
 == Other note ==
-<a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
+<a href="http://docspress.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
 <a href="https://github.com/LearnPress/LearnPress/" target="_blank">LearnPress github repo.</a>

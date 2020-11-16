@@ -41,10 +41,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
 			add_filter( 'manage_pages_custom_column', array( $this, 'page_columns_content' ), 10, 2 );
 			add_filter( 'views_edit-page', array( $this, 'views_pages' ), 10 );
-			add_filter( 'pre_get_posts', array( $this, 'filter_pages' ), 10 );
 			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
 			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
-			add_filter( 'post_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
 			add_filter( 'get_pages', array( $this, 'add_empty_page' ), 1000, 2 );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
@@ -53,43 +51,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
 
-			add_filter(
-				'learn-press/dismissed-notice-response',
-				array(
-					$this,
-					'on_dismissed_notice_response',
-				),
-				10,
-				2
-			);
+			add_filter( 'learn-press/dismissed-notice-response', array(
+				$this,
+				'on_dismissed_notice_response'
+			), 10, 2 );
 
-			// add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
-		}
+			// get list items course of user | tungnx
+			add_action( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
+			add_action( 'pre_get_posts', array( $this, 'get_pages_of_lp' ), 10 );
 
-		public function display_post_states( $post_states, $post ) {
-
-			if ( ! in_array(
-				get_post_type(),
-				array(
-					LP_COURSE_CPT,
-					LP_QUIZ_CPT,
-					LP_LESSON_CPT,
-					LP_QUESTION_CPT,
-				)
-			)
-			) {
-				return $post_states;
-			}
-			$args = array(
-				'post_type' => $post->post_type,
-				'author'    => get_the_author_meta( 'ID' ),
-			);
-
-			$author_link = add_query_arg( $args, 'edit.php' );
-
-			$post_states['author'] = sprintf( '<span class="post-author">by <a href="%s">%s</a></span>', $author_link, get_the_author() );
-
-			return $post_states;
+			// Set link item course when edit on Backend | tungnx
+			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
 		}
 
 		/**
@@ -98,29 +70,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function load_modal() {
 			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Items::instance();
-			};
+			}
 
 			if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Users::instance();
 			}
-		}
-
-		/**
-		 * Filter to post row actions.
-		 *
-		 * @since 9.9.9
-		 *
-		 * @param array   $actions
-		 * @param WP_Post $post
-		 *
-		 * @return array
-		 */
-		public function post_row_actions( $actions = array(), $post ) {
-			if ( get_post_type( $post->ID ) === LP_COURSE_CPT ) {
-				// $actions['course_id'] = sprintf('<span>[#%d]</span>', $post->ID);
-			}
-
-			return $actions;
 		}
 
 		/**
@@ -147,11 +101,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add 'LearnPress' tab into views of plugins manage.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $views
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public function views_plugins( $views ) {
 			global $s;
@@ -189,11 +143,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Callback function for searching plugins have 'learnpress' inside.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $plugin
 		 *
 		 * @return bool
+		 * @since 3.0.0
+		 *
 		 */
 		public function _search_callback( $plugin ) {
 			foreach ( $plugin as $value ) {
@@ -206,23 +160,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function init() {
-
-			// die(get_post_type());
-			add_action(
-				'learn-press/enqueue-script/learn-press-modal-search-items',
-				array(
-					'LP_Modal_Search_Items',
-					'instance',
-				)
-			);
-			add_action(
-				'learn-press/enqueue-script/learn-press-modal-search-users',
-				array(
-					'LP_Modal_Search_Users',
-					'instance',
-				)
-			);
-
 			if ( 'yes' === LP_Request::get_string( 'lp-hide-upgrade-message' ) ) {
 				delete_transient( 'lp_upgraded_30' );
 			}
@@ -363,7 +300,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					'BuddyPress'          => array(),
 				);
 
-				$all_pages           = array(
+				$all_pages = array(
 					'courses'          => __( 'Courses', 'learnpress' ),
 					'profile'          => __( 'Profile', 'learnpress' ),
 					'checkout'         => __( 'Checkout', 'learnpress' ),
@@ -423,7 +360,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int    $post
+		 * @param int $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -468,15 +405,18 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
+		 * Get pages set by LP with param url lp-page=yes
+		 *
 		 * @param WP_Query $q
 		 *
 		 * @return mixed
 		 */
-		public function filter_pages( $q ) {
+		public function get_pages_of_lp( $q ) {
 			if ( 'page' == LP_Request::get( 'post_type' ) && 'yes' == LP_Request::get( 'lp-page' ) ) {
+				$ids = $this->_get_static_pages( 'learnpress' );
 
-				$ids = array_keys( $this->_get_static_pages( 'learnpress' ) );
-				if ( $ids ) {
+				if ( ! empty( $ids ) ) {
+					$ids = array_keys( $ids );
 					$q->set( 'post__in', $ids );
 				}
 			}
@@ -487,7 +427,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -511,6 +451,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @param string $action
 		 */
 		public function filter_users( $action ) {
+			if ( ! current_user_can( 'administrator' ) ) {
+				return;
+			}
+
 			$user_id = LP_Request::get_int( 'user_id' );
 
 			if ( ! $user_id || ! get_user_by( 'id', $user_id ) ) {
@@ -529,13 +473,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						$be_teacher->set_role( LP_TEACHER_ROLE );
 
 						do_action( 'learn-press/user-become-a-teacher-accept', $user_data->user_email );
-
 						wp_redirect( admin_url( 'users.php?lp-action=accepted-request&user_id=' . $user_id ) );
-						exit;
+						exit();
 					case 'deny-request':
 						do_action( 'learn-press/user-become-a-teacher-deny', $user_data->user_email );
 						wp_redirect( admin_url( 'users.php?lp-action=denied-request&user_id=' . $user_id ) );
-						exit;
+						exit();
 				}
 			}
 		}
@@ -585,7 +528,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$action  = LP_Request::get( 'lp-action' );
 			$user_id = LP_Request::get_int( 'user_id' );
 
-			if ( ( in_array( $action, array( 'accepted-request', 'denied-request' ) ) ) && ( $user_id ) && get_user_by( 'id', $user_id ) ) {
+			if ( ( in_array( $action, array(
+					'accepted-request',
+					'denied-request'
+				) ) ) && ( $user_id ) && get_user_by( 'id', $user_id ) ) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				}
@@ -654,11 +600,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			<style type="text/css">
 				.admin-color {
-					color: <?php echo $colors[0]; ?>
+					color: <?php echo $colors[0];?>
 				}
 
 				.admin-background {
-					color: <?php echo $colors[0]; ?>
+					color: <?php echo $colors[0];?>
 				}
 			</style>
 
@@ -764,12 +710,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Send data to join newsletter or dismiss.
 		 *
-		 * @since 3.0.10
-		 *
-		 * @param array  $data
+		 * @param array $data
 		 * @param string $notice
 		 *
 		 * @return array
+		 * @since 3.0.10
+		 *
 		 */
 		public function on_dismissed_notice_response( $data, $notice ) {
 			switch ( $notice ) {
@@ -850,8 +796,108 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
+		 * Get courses, item's courses on Backend page post_type
+		 *
+		 * @param WP_Query $query
+		 */
+		public function get_course_items_of_user_backend( $query ) {
+			if ( ! $query->is_main_query() ) {
+				return;
+			}
+
+			global $post_type, $pagenow;
+
+			if ( current_user_can( 'administrator' ) ) {
+				return;
+			}
+
+			if ( ! current_user_can( LP_TEACHER_ROLE ) || ( $pagenow != 'edit.php' ) ) {
+				return;
+			}
+
+			$post_type_valid = apply_filters( 'learn-press/filter-user-access-types',
+				array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) );
+
+			if ( ! in_array( $post_type, $post_type_valid ) ) {
+				return;
+			}
+
+			$query->set( 'author', get_current_user_id() );
+
+			$query = apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
+
+			add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
+			remove_filter( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
+		}
+
+		/**
+		 * Set link item of course when edit item on Backend
+		 *
+		 * @param string $post_link
+		 * @param int $post_id
+		 * @param string $new_title
+		 * @param string $new_slug
+		 * @param WP_Post|null $post
+		 *
+		 * @return array|int|mixed|string|void
+		 * @author tungnx
+		 * @since  3.2.7.5
+		 */
+		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
+			if ( ! in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
+				return $post_link;
+			}
+
+			$course            = null;
+			$course_id_of_item = LP_Course_DB::getInstance()->learn_press_get_item_course( $post->ID );
+
+			if ( $course_id_of_item ) {
+				$course = learn_press_get_course( $course_id_of_item );
+
+				if ( $course ) {
+					$link_item = $course->get_item_link( $post->ID );
+
+					$post_slug           = $post->post_name;
+					$link_item_edit_slug = preg_replace( '/' . $post_slug . '(\/)/', '', $link_item );
+
+					// For update new slug
+					if ( $new_slug ) {
+						$post_slug = $new_slug;
+					}
+
+					$post_link = '<strong>Permalink: </strong>';
+					$post_link .= '<span id="sample-permalink">';
+					$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
+					$post_link .= '</span>';
+					$post_link .= '&lrm;<span id="edit-slug-buttons">';
+					$post_link .= '<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">Edit</button>';
+					$post_link .= '</span>';
+					$post_link .= '<span id="editable-post-name-full">' . $post_slug . '</span>';
+				}
+			} else {
+				// $post_link_preview = sprintf( '<a class="button" href="%s" target="_blank">%s</a>', learn_press_get_preview_url( $post_id ), __( 'Preview', 'learnpress' ) );
+				$post_link_message = '<span>' . __( 'Permalink only available if the item is already assigned to a course.', 'learnpress' ) . '</span>';
+				$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );
+			}
+
+			return $post_link;
+		}
+
+		/**
+		 * @return false|string
+		 * @since 3.2.8
+		 * @editor tungnx
+		 */
+		public function get_screen_id() {
+			global $current_screen;
+
+			return $current_screen ? $current_screen->id : false;
+		}
+
+		/**
 		 * Get single instance of self
 		 *
+		 * @return bool|LP_Admin
 		 * @since 3.0.0
 		 *
 		 * @return bool|LP_Admin

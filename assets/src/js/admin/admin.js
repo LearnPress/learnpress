@@ -1,15 +1,4 @@
-/**
- * JS code may run in all pages in admin.
- *
- * @version 3.2.6
- */
-
-import './partial/update';
-
-var LP = LP || {};
-( function() {
-	const $ = jQuery;
-
+( function( $ ) {
 	const updateItemPreview = function updateItemPreview() {
 		$.ajax( {
 			url: '',
@@ -20,29 +9,27 @@ var LP = LP || {};
 				nonce: $( this ).attr( 'data-nonce' ),
 			},
 			dataType: 'text',
-			success( response ) {
+			success: function success( response ) {
 				response = LP.parseJSON( response );
 			},
 		} );
 	};
-
 	/**
 	 * Callback event for button to creating pages inside error message.
 	 *
 	 * @param {Event} e
 	 */
+
 	const createPages = function createPages( e ) {
 		const $button = $( this ).addClass( 'disabled' );
-
 		e.preventDefault();
-
 		$.post( {
 			url: $button.attr( 'href' ),
 			data: {
 				'lp-ajax': 'create-pages',
 			},
 			dataType: 'text',
-			success( res ) {
+			success: function success( res ) {
 				const $message = $button.closest( '.lp-notice' ).html( '<p>' + res + '</p>' );
 				setTimeout( function() {
 					$message.fadeOut();
@@ -60,8 +47,7 @@ var LP = LP || {};
 			data: {
 				'lp-hide-upgrade-message': 'yes',
 			},
-			success( res ) {
-			},
+			success: function success( res ) {},
 		} );
 	};
 
@@ -72,26 +58,26 @@ var LP = LP || {};
 		}
 
 		e.preventDefault();
-
 		const $plugin = $( this ).closest( '.plugin-card' );
+
 		if ( $( this ).hasClass( 'updating-message' ) ) {
 			return;
 		}
+
 		$( this ).addClass( 'updating-message button-working disabled' );
 		$.ajax( {
 			url: $( this ).attr( 'href' ),
 			data: {},
-			success( r ) {
+			success: function success( r ) {
 				$.ajax( {
 					url: window.location.href,
-					success( r ) {
+					success: function success( r ) {
 						const $p = $( r ).find( '#' + $plugin.attr( 'id' ) );
+
 						if ( $p.length ) {
 							$plugin.replaceWith( $p );
 						} else {
-							$plugin.find( '.plugin-action-buttons a' )
-								.removeClass( 'updating-message button-working' )
-								.html( learn_press_admin_localize.plugin_installed );
+							$plugin.find( '.plugin-action-buttons a' ).removeClass( 'updating-message button-working' ).html( learn_press_admin_localize.plugin_installed );
 						}
 					},
 				} );
@@ -104,69 +90,214 @@ var LP = LP || {};
 		return false;
 	};
 
-	const ajaxCreateQuestionType = function ajaxCreateQuestionType( e ) {
-		const type = $( e.target ).data( 'type' ) || $( this ).find( 'li:first' ).data( 'type' );
-		const ajaxUrl = window.lpAdminSettings.ajax;
+	$.fn._filter_post_by_author = function() {
+		const $input = $( '#post-search-input' );
 
-		$.ajax( {
-			url: ajaxUrl,
-			data: {
-				'lp-ajax': 'create-question-type',
-				type,
+		if ( ! $input.length ) {
+			return;
+		}
+
+		const $form = $( $input[ 0 ].form );
+		const $select = $( '<select name="author" id="author"></select>' ).insertAfter( $input ).select2( {
+			ajax: {
+				url: window.location.href + '&lp-ajax=search-authors',
+				dataType: 'json',
+				s: '',
 			},
+			placeholder: 'Search by user',
+			minimumInputLength: 3,
+			allowClear: true,
+		} ).on( 'select2:select', function() {
+			$( 'input[name="author"]' ).val( $select.val() );
 		} );
-	};
 
-	LP.createButtonAddNewQuestion = function() {
-		if ( ! $( document.body ).hasClass( 'post-type-lp_question' ) ) {
-			return;
-		}
-
-		const $addNew = $( document ).find( '.page-title-action' );
-
-		if ( ! $addNew.length ) {
-			return;
-		}
-
-		const types = window.lpAdminSettings.questionTypes;
-		const supportType = window.lpAdminSettings.supportAnswerOptions;
-		const $newButton = $( '<div id="button-new-question" class="page-title-action"><div></div></div>' );
-		const url = $addNew.attr( 'href' );
-
-		for ( const type in types ) {
-			if ( supportType.includes( type ) ) {
-				$newButton.find( 'div' ).append( `<a href="${ url.addQueryVar( 'question-type', type ) }">${ types[ type ] }</a>` );
-			}
-		}
-
-		$newButton.find( 'span' ).html( $addNew.text() );
-
-		$newButton.insertBefore( $addNew );
-		$newButton.prepend( $addNew.removeClass( 'page-title-action' ) );
+		$form.on( 'submit', function() {
+			const url = window.location.href.removeQueryVar( 'author' ).addQueryVar( 'author', $select.val() );
+		} );
 	};
 
 	const onReady = function onReady() {
 		$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
 		$( '.learn-press-advertisement-slider' ).LP( 'Advertisement', 'a', 's' ).appendTo( $( '#wpbody-content' ) );
 		$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
-		$( '.learn-press-tip' ).LP( 'QuickTip' );
+		$( '.learn-press-tip' ).LP( 'QuickTip' ); //$('.learn-press-tabs').LP('AdminTab');
 
-		LP.createButtonAddNewQuestion();
+		$( document ).on( 'click', '#learn-press-create-pages', createPages ).on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage ).on( 'click', '.plugin-action-buttons a', pluginActions ).on( 'click', '[data-remove-confirm]', preventDefault ).on( 'mousedown', '.lp-sortable-handle', function( e ) {
+			$( 'html, body' ).addClass( 'lp-item-moving' );
+			$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );
+		} ).on( 'mouseup', function( e ) {
+			$( 'html, body' ).removeClass( 'lp-item-moving' );
+			$( '.lp-sortable-handle' ).css( 'cursor', '' );
+		} );
 
-		$( document )
-			.on( 'click', '#learn-press-create-pages', createPages )
-			.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
-			.on( 'click', '.plugin-action-buttons a', pluginActions )
-			.on( 'click', '[data-remove-confirm]', preventDefault )
-			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
-				$( 'html, body' ).addClass( 'lp-item-moving' );
-				$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );
-			} )
-			.on( 'mouseup', function( e ) {
-				$( 'html, body' ).removeClass( 'lp-item-moving' );
-				$( '.lp-sortable-handle' ).css( 'cursor', '' );
+		/**
+		 * Function Export invoice LP Order
+		 *
+		 * @author hungkv
+		 * @since 3.2.7.8
+		 */
+		if ( $( '#order-export__section' ).length ) {
+			const tabs = document.querySelectorAll( '.tabs' );
+			const tab = document.querySelectorAll( '.tab' );
+			const panel = document.querySelectorAll( '.panel' );
+
+			function onTabClick( event ) {
+				// deactivate existing active tabs and panel
+
+				for ( let i = 0; i < tab.length; i++ ) {
+					tab[ i ].classList.remove( 'active' );
+				}
+
+				for ( let i = 0; i < panel.length; i++ ) {
+					panel[ i ].classList.remove( 'active' );
+				}
+
+				// activate new tabs and panel
+				event.target.classList.add( 'active' );
+				const classString = event.target.getAttribute( 'data-target' );
+				document.getElementById( 'panels' ).getElementsByClassName( classString )[ 0 ].classList.add( 'active' );
+			}
+
+			for ( let i = 0; i < tab.length; i++ ) {
+				tab[ i ].addEventListener( 'click', onTabClick, false );
+			}
+
+			// modal export order to pdf
+
+			// Get the modal
+			const modal = document.getElementById( 'myModal' );
+
+			// Get the button that opens the modal
+			const btn = document.getElementById( 'order-export__button' );
+
+			// Get the <span> element that closes the modal
+			const span = document.getElementsByClassName( 'close' )[ 0 ];
+
+			// When the user clicks on the button, open the modal
+			btn.onclick = function() {
+				modal.style.display = 'block';
+			};
+
+			// When the user clicks on <span> (x), close the modal
+			span.onclick = function() {
+				modal.style.display = 'none';
+			};
+
+			// When the user clicks anywhere outside of the modal, close it
+			window.onclick = function( event ) {
+				if ( event.target == modal ) {
+					modal.style.display = 'none';
+				}
+			};
+
+			if ( $( '#lp-invoice__content' ).length ) {
+				$( '#lp-invoice__export' ).click( function() {
+					const doc = new jsPDF( 'p', 'pt', 'letter' );
+
+					// We'll make our own renderer to skip this editor
+					const specialElementHandlers = {
+						'#bypassme'( element, renderer ) {
+							return true;
+						},
+					};
+					const margins = {
+						top: 80,
+						bottom: 60,
+						left: 40,
+						width: 522,
+					};
+
+					doc.fromHTML(
+						$( '#lp-invoice__content' )[ 0 ],
+						margins.left, // x coord
+						margins.top, { // y coord
+							width: margins.width, // max width of content on PDF
+							elementHandlers: specialElementHandlers,
+						},
+						function( dispose ) {
+							// dispose: object with X, Y of the last line add to the PDF
+							//          this allow the insertion of new lines after html
+							const blob = doc.output( 'blob' );
+							window.open( URL.createObjectURL( blob ) );
+						}, margins );
+				} );
+			}
+
+			// Script update option export to pdf
+			$( '#lp-invoice__update' ).click( function() {
+				let order_id = $( this ).data( 'id' ),
+					site_title = $( 'input[name="site_title"]' ),
+					order_date = $( 'input[name="order_date"]' ),
+					invoice_no = $( 'input[name="invoice_no"]' ),
+					order_customer = $( 'input[name="order_customer"]' ),
+					order_email = $( 'input[name="order_email"]' ),
+					order_payment = $( 'input[name="order_payment"]' );
+				if ( site_title.is( ':checked' ) ) {
+					site_title = 'check';
+				} else {
+					site_title = 'uncheck';
+				}
+				if ( order_date.is( ':checked' ) ) {
+					order_date = 'check';
+				} else {
+					order_date = 'uncheck';
+				}
+				if ( invoice_no.is( ':checked' ) ) {
+					invoice_no = 'check';
+				} else {
+					invoice_no = 'uncheck';
+				}
+				if ( order_customer.is( ':checked' ) ) {
+					order_customer = 'check';
+				} else {
+					order_customer = 'uncheck';
+				}
+				if ( order_email.is( ':checked' ) ) {
+					order_email = 'check';
+				} else {
+					order_email = 'uncheck';
+				}
+				if ( order_payment.is( ':checked' ) ) {
+					order_payment = 'check';
+				} else {
+					order_payment = 'uncheck';
+				}
+
+				$.ajax( {
+					type: 'post',
+					dataType: 'html',
+					url: 'admin-ajax.php',
+					data: {
+						site_title,
+						order_date,
+						invoice_no,
+						order_customer,
+						order_email,
+						order_id,
+						order_payment,
+						action: 'learnpress_update_order_exports',
+					},
+					beforeSend() {
+						$( '.export-options__loading' ).addClass( 'active' );
+					},
+					success( response ) {
+						$( '#lp-invoice__content' ).html( '' );
+						$( '#lp-invoice__content' ).append( response );
+						$( '.export-options__loading' ).removeClass( 'active' );
+						$( '.options-tab' ).removeClass( 'active' );
+						$( '.preview-tab' ).addClass( 'active' );
+						$( '#panels .export-options' ).removeClass( 'active' );
+						$( '#panels .pdf-preview' ).addClass( 'active' );
+					},
+					error( jqXHR, textStatus, errorThrown ) {
+						console.log( 'The following error occured: ' + textStatus, errorThrown );
+					},
+				} );
 			} );
+		}
+
+		$.fn._filter_post_by_author();
 	};
 
 	$( document ).ready( onReady );
-}() );
+}( jQuery ) );

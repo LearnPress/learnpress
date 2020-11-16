@@ -98,31 +98,78 @@ gulp.task( 'styles', () => {
 		.pipe( gulp.dest( 'assets/css' ) );
 } );
 
+// Watch sass
 gulp.task( 'watch', gulp.series( 'clearCache', () => {
 	gulp.watch( [ 'assets/scss/**/*.scss' ], gulp.parallel( 'styles' ) );
 } ) );
 
+// Min CSS frontend.
+gulp.task( 'mincss', () => {
+	return gulp
+		.src( [ 'assets/src/css/**/*.css', '!assets/src/css/vendor/*.css' ] )
+		.pipe( rename( { suffix: '.min' } ) )
+		.pipe( uglifycss() )
+		.pipe( lineec() )
+		.pipe( gulp.dest( 'assets/css' ) );
+} );
+
+// Clear JS in admin folder.
+gulp.task( 'clearJsAdmin', () => {
+	return del( './assets/js/admin/**' );
+} );
+
+// Min JS.
+gulp.task( 'minJsAdmin', () => {
+	return gulp
+		.src( [ 'assets/src/js/admin/**/*.js' ] )
+		.pipe(
+			rename( {
+				suffix: '.min',
+			} )
+		)
+		.pipe( uglify() )
+		.pipe( lineec() )
+		.pipe( gulp.dest( 'assets/js/admin' ) );
+} );
+gulp.task( 'minJsFrontend', () => {
+	return gulp
+		.src( [ 'assets/src/js/frontend/**/*.js' ] )
+		.pipe(
+			rename( {
+				suffix: '.min',
+			} )
+		)
+		.pipe( uglify() )
+		.pipe( lineec() )
+		.pipe( gulp.dest( 'assets/js/frontend' ) );
+} );
+
+// Clean folder to releases.
 gulp.task( 'cleanReleases', () => {
 	return del( './releases/**' );
 } );
 
+// Copy folder to releases.
 gulp.task( 'copyReleases', () => {
 	return gulp.src( releasesFiles ).pipe( gulp.dest( './releases/learnpress/' ) );
 } );
 
+// Update file Readme
 gulp.task( 'updateReadme', () => {
 	return gulp.src( [ 'readme.txt' ] )
 		.pipe( replace( /Stable tag: (.*)/g, 'Stable tag: ' + getCurrentVer( true ) ) )
 		.pipe( gulp.dest( './releases/learnpress/', { overwrite: true } ) );
 } );
 
+// Zip learnpress in releases.
 gulp.task( 'zipReleases', () => {
 	return gulp
 		.src( './releases/learnpress/**', { base: './releases/' } )
-		.pipe( zip( 'learnpress.' + getCurrentVer() + '.zip' ) )
+		.pipe( zip( 'learnpress.zip' ) )
 		.pipe( gulp.dest( './releases/' ) );
 } );
 
+// Notice.
 gulp.task( 'noticeReleases', () => {
 	const version = getCurrentVer();
 
@@ -138,6 +185,10 @@ gulp.task(
 	'build',
 	gulp.series(
 		'clearCache',
+		'clearJsAdmin',
+		'minJsAdmin',
+		// 'minJsFrontend',
+		// 'mincss',
 		'cleanReleases',
 		'copyReleases',
 		'updateReadme',
@@ -151,4 +202,3 @@ gulp.task(
 gulp.task( 'release', gulp.series( 'build', 'noticeReleases', ( done ) => {
 	done();
 } ) );
-
