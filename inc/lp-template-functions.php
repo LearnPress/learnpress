@@ -1647,11 +1647,11 @@ function learn_press_get_post_level( $post_id ) {
 	return apply_filters( 'learn-press/level-label', ! empty( $level ) ? ucwords( $level ) : esc_html__( 'All levels', 'learnpress' ), $post_id );
 }
 
-function learn_press_is_preview_course() {
-	$course_id = isset( $GLOBALS['preview_course'] ) ? $GLOBALS['preview_course'] : 0;
-
-	return $course_id && get_post_type( $course_id ) === LP_COURSE_CPT;
-}
+//function learn_press_is_preview_course() {
+//	$course_id = isset( $GLOBALS['preview_course'] ) ? $GLOBALS['preview_course'] : 0;
+//
+//	return $course_id && get_post_type( $course_id ) === LP_COURSE_CPT;
+//}
 
 /**
  * Get slug for logout action in user profile.

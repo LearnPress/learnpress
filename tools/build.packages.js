@@ -14,12 +14,16 @@ const args = require( 'yargs' ).argv;
 const baseDir = path.join( __dirname, '../' );
 const buildPath = __dirname + '/build';
 const { camelCaseDash } = require( '@wordpress/dependency-extraction-webpack-plugin/lib/util' );
-const packageDir = baseDir + '/assets/src/';
+const packageDir = baseDir + '/assets/src/apps';
 const buildPackages = [
 
+	// Global
+	'data-controls',
+
 	// Admin
-	'admin/data-controls',
-	'admin/question-editor',
+	//'admin/react/data-controls',
+	//'admin/react/question-editor',
+
 	// Frontend
 	'frontend/modal',
 	'frontend/single-course',
@@ -27,13 +31,8 @@ const buildPackages = [
 	'frontend/lesson',
 	'frontend/quiz',
 	'frontend/config',
-	'frontend/data-controls',
+	//'frontend/data-controls',
 	'frontend/custom',
-	//'frontend/checkout',
-	//'frontend/profile',
-	//'frontend/become-teacher',
-	//'frontend/add-to-cart',
-	//'frontend/enroll',
 ];
 
 console.log( buildPackages );
@@ -55,7 +54,7 @@ module.exports = function( env = { environment: 'production', watch: false, buil
 			return memo;
 		}, {} ),
 		output: {
-			path: path.resolve( baseDir, 'assets/js' ),
+			path: path.resolve( baseDir, 'assets/js/dist' ),
 			filename: '[LP_BASEPATH]/[LP_BASENAME]' + ( isDev ? '' : '.min' ) + '.js',
 			library: [ 'LP', '[name]' ],
 			libraryTarget: 'this',

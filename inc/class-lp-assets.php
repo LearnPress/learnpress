@@ -85,7 +85,6 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	public function _get_scripts() {
-		$min   = learn_press_is_debug() ? '' : '.min';
 		$wp_js = array(
 			'jquery',
 			'wp-element',
@@ -99,98 +98,76 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-				'lp-modal'            => array(
-					'url'  => self::url( 'js/frontend/modal.js' ),
-					'deps' => array(
-						'jquery',
-					),
+				'lp-modal'            => new LP_Asset_Key( self::url( 'js/frontend/modal.js' ),
+					array( 'jquery', )
 				),
-				// @todo (Nhamdv) Do not use any page, so need check again.
-				'lp-plugins-all'      => array(
-					'url' => self::url( 'js/vendor/plugins.all' . $min . '.js' ),
+				'lp-plugins-all'      => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
+				'lp-global'           => new LP_Asset_Key( self::url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
+					array( 'jquery', 'underscore', 'utils' )
 				),
-				'lp-global'           => array(
-					'url'     => self::url( 'js/global' . $min . '.js' ),
-					'deps'    => array( 'jquery', 'underscore', 'utils' ),
-					'screens' => '*',
+				'lp-utils'            => new LP_Asset_Key( self::url( 'js/dist/utils' . self::$_min_assets . '.js' ),
+					array( 'jquery' )
 				),
-				// 'lp-utils'            => array(
-				// 'url'     => self::url( 'js/utils' . $min . '.js' ),
-				// 'deps'    => array( 'jquery' ),
-				// 'screens' => 'learnpress',
-				// ),
-				'learnpress'          => array(
-					'url'  => self::url( 'js/frontend/learnpress' . $min . '.js' ),
-					'deps' => array( 'lp-global' ),
+				'lp-checkout'         => new LP_Asset_Key( self::url( self::$_folder_source . 'js/frontend/checkout' . self::$_min_assets . '.js' ),
+					array( 'lp-global' ),
+					array( LP_PAGE_CHECKOUT ),
+					0, 1
 				),
-				'lp-checkout'         => array(
-					'url'     => self::url( 'js/frontend/checkout' . $min . '.js' ),
-					'deps'    => array( 'lp-global' ),
-					'screens' => learn_press_is_checkout() || learn_press_is_course() && ! learn_press_is_learning_course(),
-
+				'lp-data-controls'    => new LP_Asset_Key( self::url( 'js/dist/js/data-controls' . self::$_min_assets . '.js' ),
+					array_merge( $wp_js, array( 'lp-global' ) )
 				),
-				'lp-data-controls'    => array(
-					'url'  => self::url( 'js/frontend/data-controls' . $min . '.js' ),
-					'deps' => array_merge( $wp_js, array( 'lp-global' ) ),
+				'lp-config'           => new LP_Asset_Key( self::url( 'js/dist/frontend/config' . self::$_min_assets . '.js' ),
+					array_merge( $wp_js, array( 'lp-global' ) )
 				),
-				'lp-config'           => array(
-					'url'  => self::url( 'js/frontend/config' . $min . '.js' ),
-					'deps' => array_merge( $wp_js, array( 'lp-global' ) ),
+				//'lp-lesson'           => new LP_Asset_Key( self::url( self::$_folder_source .'js/frontend/lesson' . self::$_min_assets . '.js' ) ),
+				'lp-question-types'   => new LP_Asset_Key( self::url( 'js/dist/frontend/question-types' . self::$_min_assets . '.js' ),
+					array_merge( $wp_js, array( 'lp-global' ) )
 				),
-				'lp-lesson'           => array(
-					'url'  => self::url( 'js/frontend/lesson' . $min . '.js' ),
-					'deps' => array_merge( $wp_js, array( 'lp-global' ) ),
-				),
-				'lp-question-types'   => array(
-					'url'  => self::url( 'js/frontend/question-types' . $min . '.js' ),
-					'deps' => array_merge( $wp_js, array( 'lp-global' ) ),
-				),
-				'lp-quiz'             => array(
-					'url'  => self::url( 'js/frontend/quiz' . $min . '.js' ),
-					'deps' => array_merge( $wp_js, array( 'lp-global', 'lp-question-types', 'lp-modal' ) ),
-				),
-				'lp-single-course'    => array(
-					'url'     => self::url( 'js/frontend/single-course' . $min . '.js' ),
-					'deps'    => array(
+				'lp-quiz'             => new LP_Asset_Key( self::url( 'js/dist/frontend/quiz' . self::$_min_assets . '.js' ),
+					array_merge( $wp_js, array(
 						'lp-global',
-						'lp-config',
+						'lp-utils',
 						'lp-data-controls',
-						'lp-quiz',
-						'lp-lesson',
-						'lp-custom',
-					),
-					'screens' => array( 'course' ),
+						'lp-question-types',
+						'lp-modal'
+					) ),
+					array( LP_PAGE_QIZ ), 0, 1
 				),
-				'lp-courses'          => array(
-					'url'     => self::url( 'js/frontend/courses' . $min . '.js' ),
-					'deps'    => array( 'lp-global', 'lodash' ),
-					'screens' => learn_press_is_courses(),
-				),
-				'lp-profile-user'     => array(
-					'url'     => self::url( 'js/frontend/profile' . $min . '.js' ),
-					'deps'    => array(
+				'lp-single-course'    => new LP_Asset_Key( self::url( 'js/dist/frontend/single-course' . self::$_min_assets . '.js' ),
+					array_merge( $wp_js, array(
 						'lp-global',
+						'lp-utils',
+//						'lp-config',
+//						'lp-data-controls',
+//						'lp-quiz',
+//						'lp-custom',
+					) ),
+					array( LP_PAGE_COURSE ), 0, 1
+				),
+				'lp-courses'          => new LP_Asset_Key( self::url( 'js/frontend/courses' . self::$_min_assets . '.js' ),
+					array( 'lp-global', 'lodash', 'lp-utils' ),
+					array( LP_PAGE_COURSES ),
+					0, 1
+				),
+				'lp-profile-user'     => new LP_Asset_Key( self::url( self::$_folder_source . 'js/frontend/profile' . self::$_min_assets . '.js' ),
+					array(
+						'lp-global',
+						'lp-utils',
 						'plupload',
 						'backbone',
 						'jquery-ui-slider',
 						'jquery-ui-draggable',
 						'jquery-touch-punch',
 					),
-					'screens' => learn_press_is_profile(),
+					array( LP_PAGE_PROFILE ), 0, 1
 				),
-				'lp-become-a-teacher' => array(
-					'url'     => self::url( 'js/frontend/become-teacher' . $min . '.js' ),
-					'deps'    => array(
-						'jquery',
-					),
-					'screens' => learn_press_is_page( 'become_a_teacher' ),
+				'lp-become-a-teacher' => new LP_Asset_Key( self::url( self::$_folder_source . 'js/frontend/become-teacher' . self::$_min_assets . '.js' ),
+					array( 'jquery' ),
+					array( LP_PAGE_BECOME_A_TEACHER ), 0, 1
 				),
-				'lp-custom'           => array(
-					'url'  => self::url( 'js/frontend/custom' . $min . '.js' ),
-					'deps' => array(
-						'jquery',
-					),
-				),
+				/*'lp-custom'           => new LP_Asset_Key( self::url( 'js/dist/frontend/custom' . self::$_min_assets . '.js' ),
+					array( 'jquery', )
+				),*/
 			)
 		);
 
@@ -201,25 +178,27 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public function load_scripts() {
 		// Register script.
-		$this->_register_scripts();
+		//$this->_register_scripts();
+		//$scripts = $this->_get_scripts();
 
-		$scripts = $this->_get_scripts();
+//		if ( $scripts ) {
+//			foreach ( $scripts as $handle => $data ) {
+//				$enqueue = false;
+//
+//				do_action( 'learn-press/enqueue-script/' . $handle );
+//
+//				if ( ! empty( $data['screens'] ) ) {
+//					$enqueue = $this->is_screen( $data['screens'] );
+//				}
+//
+//				if ( $enqueue ) {
+//					wp_enqueue_script( $handle );
+//				}
+//			}
+//		}
 
-		if ( $scripts ) {
-			foreach ( $scripts as $handle => $data ) {
-				$enqueue = false;
-
-				do_action( 'learn-press/enqueue-script/' . $handle );
-
-				if ( ! empty( $data['screens'] ) ) {
-					$enqueue = $this->is_screen( $data['screens'] );
-				}
-
-				if ( $enqueue ) {
-					wp_enqueue_script( $handle );
-				}
-			}
-		}
+		$page_current = lp_page_controller()::page_current();
+		$this->handle_js( $page_current );
 
 		$styles = $this->_get_styles();
 		if ( $styles ) {
@@ -233,12 +212,38 @@ class LP_Assets extends LP_Abstract_Assets {
 				}
 
 				if ( $enqueue ) {
-					wp_enqueue_style( $handle );
+					wp_enqueue_style( $handle, $data['url'] );
 				}
 			}
 		}
 
 		do_action( 'learn-press/after-enqueue-scripts' );
+	}
+
+	protected function handle_js( $page_current ) {
+		$scripts = $this->_get_scripts();
+		/**
+		 * @var LP_Asset_Key[] $scripts
+		 */
+		foreach ( $scripts as $handle => $script ) {
+			if ( ! $script instanceof LP_Asset_Key ) {
+				continue;
+			}
+
+			wp_register_script( $handle, $script->_url, $script->_deps, self::$_version_assets, $script->_in_footer );
+
+			if ( ! $script->_only_register ) {
+				$can_load_js = true;
+
+				if ( ! empty( $script->_screens ) ) {
+					$can_load_js = apply_filters( 'learnpress/frontend/can-load-js/' . $handle, in_array( $page_current, $script->_screens ), $page_current, $script->_screens );
+				}
+
+				if ( $can_load_js ) {
+					wp_enqueue_script( $handle );
+				}
+			}
+		}
 	}
 
 	/**
@@ -326,7 +331,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			return;
 		}
 
-		echo '<div class="lp-overlay">';
+		echo '<div id="lp-modal-overlay">';
 		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
 		echo '</div>';
 	}

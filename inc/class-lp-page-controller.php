@@ -217,7 +217,7 @@ class LP_Page_Controller {
 
 			// If item viewing is a QUIZ and have a question...
 			if ( LP_QUIZ_CPT === $item_type ) {
-				$question = false;
+				/*$question = false;
 
 				// If has question in request but it seems the question does not exists
 				$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
@@ -234,7 +234,7 @@ class LP_Page_Controller {
 
 				$quiz_data   = $user->get_quiz_data( $post_item->ID, $lp_course->get_id() );
 				$redirect    = false;
-				$quiz_status = $quiz_data ? $quiz_data->get_status() : false;
+				$quiz_status = $quiz_data ? $quiz_data->get_status() : false;*/
 
 				// if ( $quiz_status == 'started' ) {
 				// $current_question = 0;
@@ -270,11 +270,11 @@ class LP_Page_Controller {
 				// $lp_quiz_question = learn_press_get_question( $current_question );
 				// }
 
-				if ( $redirect ) {
-					//var_dump($redirect);
-					wp_redirect( $redirect );
-					exit();
-				}
+//				if ( $redirect ) {
+//					//var_dump($redirect);
+//					wp_redirect( $redirect );
+//					exit();
+//				}
 			}
 		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );

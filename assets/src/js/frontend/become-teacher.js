@@ -20,7 +20,7 @@ $( function() {
 			showMessages = function( messages ) {
 				let m = [];
 				if ( $.isPlainObject( messages ) ) {
-					for ( var i in messages ) {
+					for ( const i in messages ) {
 						m.push( $( messages[ i ] ) );
 					}
 				} else if ( $.isArray( messages ) ) {
@@ -28,7 +28,7 @@ $( function() {
 				} else {
 					m = [ messages ];
 				}
-				for ( var i = 0; i < m.length; i++ ) {
+				for ( let i = 0; i < m.length; i++ ) {
 					$( m[ i ] ).insertBefore( $form );
 				}
 			},

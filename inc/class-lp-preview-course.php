@@ -238,11 +238,11 @@ class LP_Preview_Course {
 		// add_filter( 'posts_where_paged', array( __CLASS__, 'exclude' ) );
 
 		add_action( 'template_include', array( __CLASS__, 'template_include' ) );
-		add_action( 'wp_footer', array( __CLASS__, 'output_script' ), 1000 );
+//		add_action( 'wp_footer', array( __CLASS__, 'output_script' ), 1000 );
 	}
 
 	public static function output_script() {
-		if ( learn_press_is_preview_course() ) {
+//		if ( learn_press_is_preview_course() ) {
 			?>
 			<script>
 				jQuery(function ($) {
@@ -274,7 +274,7 @@ class LP_Preview_Course {
 
 			</script>
 			<?php
-		}
+//		}
 	}
 
 	public static function template_include( $template ) {
