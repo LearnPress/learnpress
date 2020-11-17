@@ -926,7 +926,7 @@ class LP_Page_Controller {
 	 * @since 3.2.8
 	 * @author tungnx
 	 */
-	public static function is_pae_become_a_teacher() {
+	public static function is_page_become_a_teacher() {
 		$page_id = learn_press_get_page_id( 'become_a_teacher' );
 
 		if ( $page_id && is_page( $page_id ) ) {
@@ -954,7 +954,7 @@ class LP_Page_Controller {
 			return LP_PAGE_COURSE;
 		} elseif ( learn_press_is_profile() ) {
 			return LP_PAGE_PROFILE;
-		} elseif ( self::is_pae_become_a_teacher() ) {
+		} elseif ( self::is_page_become_a_teacher() ) {
 			return LP_PAGE_BECOME_A_TEACHER;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
