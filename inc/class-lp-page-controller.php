@@ -6,7 +6,7 @@
 class LP_Page_Controller {
 
 	protected $_shortcode_exists = false;
-	protected $_shortcode_tag = '[learn_press_archive_course]';
+	protected $_shortcode_tag    = '[learn_press_archive_course]';
 	protected $_archive_contents = null;
 
 	/**
@@ -206,7 +206,8 @@ class LP_Page_Controller {
 			 * @reason       not use
 			 * @deprecated   3.2.7.5
 			 */
-			/*if ( false === $user->can_view_item( $lp_course_item->get_id() ) && ! $user->get_item_url( $lp_course_item->get_id() ) ) {
+			/*
+			if ( false === $user->can_view_item( $lp_course_item->get_id() ) && ! $user->get_item_url( $lp_course_item->get_id() ) ) {
 				if ( false !== ( $redirect = apply_filters( 'learn-press/redirect-forbidden-access-item-url', $lp_course->get_permalink() ) ) ) {
 					wp_redirect( $redirect );
 					exit();
@@ -217,7 +218,8 @@ class LP_Page_Controller {
 
 			// If item viewing is a QUIZ and have a question...
 			if ( LP_QUIZ_CPT === $item_type ) {
-				/*$question = false;
+				/*
+				$question = false;
 
 				// If has question in request but it seems the question does not exists
 				$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
@@ -270,11 +272,11 @@ class LP_Page_Controller {
 				// $lp_quiz_question = learn_press_get_question( $current_question );
 				// }
 
-//				if ( $redirect ) {
-//					//var_dump($redirect);
-//					wp_redirect( $redirect );
-//					exit();
-//				}
+				// if ( $redirect ) {
+				// var_dump($redirect);
+				// wp_redirect( $redirect );
+				// exit();
+				// }
 			}
 		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
@@ -731,7 +733,7 @@ class LP_Page_Controller {
 			$this->_archive_contents = do_shortcode( $this->_shortcode_tag );
 			if ( class_exists( 'SiteOrigin_Panels' ) ) {
 				if ( class_exists( 'SiteOrigin_Panels' ) &&
-				     has_filter( 'the_content', array( SiteOrigin_Panels::single(), 'generate_post_content' ) )
+					 has_filter( 'the_content', array( SiteOrigin_Panels::single(), 'generate_post_content' ) )
 				) {
 					remove_shortcode( 'learn_press_archive_course' );
 					add_filter(
@@ -845,15 +847,15 @@ class LP_Page_Controller {
 		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
 			$_query = wp_parse_args( $q->query );
 			if ( empty( $_query ) || ! array_diff(
-					array_keys( $_query ),
-					array(
-						'preview',
-						'page',
-						'paged',
-						'cpage',
-						'orderby',
-					)
-				) ) {
+				array_keys( $_query ),
+				array(
+					'preview',
+					'page',
+					'paged',
+					'cpage',
+					'orderby',
+				)
+			) ) {
 				$q->is_page = true;
 				$q->is_home = false;
 				$q->set( 'page_id', get_option( 'page_on_front' ) );
@@ -947,11 +949,13 @@ class LP_Page_Controller {
 		if ( learn_press_is_checkout() ) {
 			return LP_PAGE_CHECKOUT;
 		} elseif ( LP_Global::course_item_quiz() ) {
-			return LP_PAGE_QIZ;
+			return LP_PAGE_QUIZ;
+		} elseif ( learn_press_is_course() && is_single() && LP_Global::course_item() ) {
+			return LP_PAGE_SINGLE_COURSE_CURRICULUM;
 		} elseif ( learn_press_is_courses() ) {
 			return LP_PAGE_COURSES;
 		} elseif ( learn_press_is_course() ) {
-			return LP_PAGE_COURSE;
+			return LP_PAGE_SINGLE_COURSE;
 		} elseif ( learn_press_is_profile() ) {
 			return LP_PAGE_PROFILE;
 		} elseif ( self::is_page_become_a_teacher() ) {

@@ -1,6 +1,8 @@
 import { select } from '@wordpress/data';
 import { __, _x } from '@wordpress/i18n';
 
+import { default as formatDuration } from '../duration';
+
 /**
  * Displays list of all attempt from a quiz.
  */
@@ -12,14 +14,12 @@ const Attempts = () => {
 			return __( 'Unlimited', 'learnpress' );
 		}
 
-		const { formatDuration } = LP.singleCourse;
 		const milliseconds = new Date( attempt.expirationTime ).getTime() - new Date( attempt.startTime ).getTime();
 
 		return milliseconds ? formatDuration( milliseconds / 1000 ) : '';
 	};
 
 	const getTimeSpendLabel = ( attempt ) => {
-		const { formatDuration } = LP.singleCourse;
 		const milliseconds = new Date( attempt.endTime ).getTime() - new Date( attempt.startTime ).getTime();
 		return milliseconds ? formatDuration( milliseconds / 1000 ) : '';
 	};

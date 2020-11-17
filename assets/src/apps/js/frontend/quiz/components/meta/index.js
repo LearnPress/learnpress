@@ -7,11 +7,10 @@
 import { select } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
+import { default as formatDuration } from '../duration';
 const { Hook } = LP;
 
 const Meta = () => {
-	const { singleCourse } = LP;
-
 	const getData = ( attr ) => {
 		return select( 'learnpress/quiz' ).getData( attr );
 	};
@@ -20,7 +19,7 @@ const Meta = () => {
 		duration: {
 			title: __( 'Duration:', 'learnpress' ),
 			name: 'duration',
-			content: singleCourse.formatDuration( getData( 'duration' ) ) || '--',
+			content: formatDuration( getData( 'duration' ) ) || '--',
 		},
 		passingGrade: {
 			title: __( 'Passing grade:', 'learnpress' ),

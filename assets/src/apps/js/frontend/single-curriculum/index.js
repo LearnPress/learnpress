@@ -1,7 +1,8 @@
 import { Component } from '@wordpress/element';
-import Quiz from '@learnpress/quiz';
 
-import './store';
+import { searchCourseContent } from './components/search';
+import { Sidebar } from './components/sidebar';
+import { progressBar } from './components/progress';
 
 class SingleCourse extends Component {
 	render() {
@@ -14,11 +15,8 @@ class SingleCourse extends Component {
 
 export default SingleCourse;
 
-function run() {
-	// commentForm();
-}
-
 window.addEventListener( 'DOMContentLoaded', () => {
-	run();
+	searchCourseContent();
+	Sidebar();
+	progressBar();
 } );
-

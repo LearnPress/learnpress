@@ -78,11 +78,12 @@ define( 'LP_COURSES_LAYOUT', 'list' );
 // Pages
 define( 'LP_PAGE_CHECKOUT', 'lp_page_checkout' );
 define( 'LP_PAGE_COURSES', 'lp_page_courses' );
-define( 'LP_PAGE_COURSE', 'lp_page_course' );
-define( 'LP_PAGE_QIZ', 'lp_page_quiz' );
+define( 'LP_PAGE_SINGLE_COURSE', 'lp_page_single_course' );
+define( 'LP_PAGE_QUIZ', 'lp_page_quiz' );
 define( 'LP_PAGE_QUESTION', 'lp_page_question' );
 define( 'LP_PAGE_PROFILE', 'lp_page_profile' );
 define( 'LP_PAGE_BECOME_A_TEACHER', 'lp_page_become_a_teacher' );
+define( 'LP_PAGE_SINGLE_COURSE_CURRICULUM', 'lp_page_single_course_curriculum' );
 
 /**
  * Thim Market library
