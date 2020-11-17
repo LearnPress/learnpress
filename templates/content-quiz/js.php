@@ -9,12 +9,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$user       = learn_press_get_current_user();
-$course     = LP_Global::course();
-$quiz       = LP_Global::course_item_quiz();
-$questions  = array();
-$show_check = $quiz->get_instant_check();
-$user_js    = array();
+$user           = learn_press_get_current_user();
+$course         = LP_Global::course();
+$quiz           = LP_Global::course_item_quiz();
+$total_question = $quiz->count_questions();
+$questions      = array();
+$show_check     = $quiz->get_instant_check();
+$user_js        = array();
 
 
 $user_course       = $user->get_course_data( $course->get_id() );
@@ -113,17 +114,25 @@ $js = array(
 );
 
 $js = array_merge( $js, $user_js );
-?>
 
-<div id="learn-press-quiz-app"></div>
+if ( $total_question ) :
+	?>
+	<div id="learn-press-quiz-app"></div>
 
-<script>
-	jQuery( function() {
-		LP.Hook.addAction( 'course-ready', () => {
-			LP.quiz.init(
-				'#learn-press-quiz-app',
-				<?php echo( json_encode( $js ) ); ?>
-			);
-		});
-	});
-</script>
+	<script>
+		jQuery(function () {
+			LP.Hook.addAction('course-ready', () => {
+				LP.quiz.init(
+					'#learn-press-quiz-app',
+					<?php echo( json_encode( $js ) ); ?>
+				)
+			})
+		})
+	</script>
+
+<?php
+else:
+	esc_html_e( 'Not have any question', 'learnpress' );
+	?>
+
+<?php endif; ?>
