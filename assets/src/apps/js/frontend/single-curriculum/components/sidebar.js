@@ -6,7 +6,7 @@ export const Sidebar = () => {
 	const $curriculum = $( '#learn-press-course-curriculum' );
 	let timerClearScroll;
 
-	document.querySelector( '#sidebar-toggle' ).addEventListener( 'change', ( event ) => {
+	$( '#sidebar-toggle' ).on( 'change', ( event ) => {
 		LP.Cookies.set( 'sidebar-toggle', event.target.checked );
 	} );
 

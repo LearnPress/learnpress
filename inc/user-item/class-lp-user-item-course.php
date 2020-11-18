@@ -1214,52 +1214,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
-	 * Add new item
-	 *
-	 * @param int|array $item_id
-	 * @param int       $user_id
-	 *
-	 * @return bool
-	 */
-	public function add_item( $item_id, $user_id = 0 ) {
-		echo __FUNCTION__;
-		/*
-		$this->read_items();
-
-		if ( empty( $this->_items[ $item_id ] ) ) {
-			return false;
-		}
-
-		$item_data = is_numeric( $item_id ) ? array( 'item_id' => $item_id ) : (array) $item_id;
-
-		if ( func_num_args() == 2 ) {
-			$item_data['user_id'] = $user_id ? $user_id : get_current_user_id();
-		}
-
-		$current_time = new LP_Datetime();
-		$defaults     = array(
-			'start_time'     => $current_time,
-			'start_time_gtm' => $current_time->toSql( false ),
-			'end_time'       => $current_time,
-			'end_time_gmt'   => $current_time->toSql( false ),
-			'item_type'      => learn_press_get_post_type( $item_id ),
-			'status'         => '',
-			'ref_id'         => $this->get_id(),
-			'ref_type'       => learn_press_get_post_type( $this->get_id() ),
-			'parent_id'      => $this->get_user_item_id()
-		);
-		$item_data    = wp_parse_args(
-			$item_data,
-			$defaults
-		);
-
-		$this->_items[ $item_id ] = LP_User_Item::get_item_object( $item_data );
-
-		return $this->_items[ $item_id ];
-		*/
-	}
-
-	/**
 	 * Update course item and it's child.
 	 */
 	public function save() {

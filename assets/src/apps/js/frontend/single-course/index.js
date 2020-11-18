@@ -3,6 +3,8 @@ import Quiz from '@learnpress/quiz';
 
 import './store';
 
+import { Sidebar } from '../single-curriculum/components/sidebar'; // Use toggle in Curriculum tab.
+
 class SingleCourse extends Component {
 	render() {
 		return (
@@ -15,7 +17,7 @@ class SingleCourse extends Component {
 export default SingleCourse;
 
 function run() {
-	// commentForm();
+	Sidebar();
 }
 
 window.addEventListener( 'DOMContentLoaded', () => {

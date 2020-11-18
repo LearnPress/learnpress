@@ -178,33 +178,69 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$course_id = absint( $request['id'] );
+			$course    = learn_press_get_course( $course_id );
 
-			LP()->session->set( 'order_awaiting_payment', '' );
+			// Check if course has in order.
+			$user_item_api = new LP_User_Item_CURD();
+			$find_query    = array(
+				'item_id' => $course_id,
+				'user_id' => get_current_user_id(),
+			);
 
-			$cart     = LP()->cart;
-			$checkout = LP_Checkout::instance();
+			$course_items = $user_item_api->get_items_by( $find_query );
 
-			if ( ! learn_press_enable_cart() ) {
-				$order_awaiting_payment = LP()->session->order_awaiting_payment;
+			// Auto enroll for Course.
+			if ( $course_items && isset( $course_items[0]->user_item_id ) ) {
+				if ( in_array( $course_items[0]->status, array( 'purchased' ) ) ) {
+					$date            = new LP_Datetime();
+					$course_duration = $course->get_duration();
+
+					$fields = array(
+						'graduation' => 'in-progress',
+						'status'     => 'enrolled',
+						'start_time' => $date->toSql( false ),
+					);
+
+					if ( $course_duration ) {
+						$expiration                = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
+						$fields['expiration_time'] = $expiration->toSql( true );
+					}
+
+					learn_press_update_user_item_field(
+						$fields,
+						array(
+							'user_item_id' => $course_items[0]->user_item_id,
+						)
+					);
+
+				}
+			} else {
+				LP()->session->set( 'order_awaiting_payment', '' );
+
+				$cart     = LP()->cart;
+				$checkout = LP_Checkout::instance();
+
+				if ( ! learn_press_enable_cart() ) {
+					$order_awaiting_payment = LP()->session->order_awaiting_payment;
+					$cart->empty_cart();
+					LP()->session->order_awaiting_payment = $order_awaiting_payment;
+				}
+
+				$cart->add_to_cart( $course_id, 1, array() );
+
+				$order_id = $checkout->create_order();
+
+				if ( is_wp_error( $order_id ) ) {
+					throw new Exception( $order_id->get_error_message() );
+				}
+
+				$order = new LP_Order( $order_id );
+
+				$order->payment_complete(); // Slow query in action 'learn-press/order/status-completed' send email.
+
 				$cart->empty_cart();
-				LP()->session->order_awaiting_payment = $order_awaiting_payment;
 			}
 
-			$cart->add_to_cart( $course_id, 1, array() );
-
-			$order_id = $checkout->create_order();
-
-			if ( is_wp_error( $order_id ) ) {
-				throw new Exception( $order_id->get_error_message() );
-			}
-
-			$order = new LP_Order( $order_id );
-
-			$order->payment_complete(); // Slow query in action 'learn-press/order/status-completed' send email.
-
-			$cart->empty_cart();
-
-			$course   = learn_press_get_course( $course_id );
 			$items    = $course->get_items( '', false );
 			$redirect = ! empty( $items ) ? $course->get_item_link( $items[0] ) : get_the_permalink( $course_id );
 

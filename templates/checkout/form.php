@@ -39,4 +39,3 @@ learn_press_print_messages();
 	</form>
 
 <?php
-get_footer();

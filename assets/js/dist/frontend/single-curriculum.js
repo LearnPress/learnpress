@@ -257,7 +257,7 @@ var Sidebar = function Sidebar() {
   var $popup = $('#popup-course');
   var $curriculum = $('#learn-press-course-curriculum');
   var timerClearScroll;
-  document.querySelector('#sidebar-toggle').addEventListener('change', function (event) {
+  $('#sidebar-toggle').on('change', function (event) {
     LP.Cookies.set('sidebar-toggle', event.target.checked);
   });
   $curriculum.find('.section-desc').each(function (i, el) {
@@ -348,28 +348,28 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var SingleCourse = /*#__PURE__*/function (_Component) {
-  _inherits(SingleCourse, _Component);
+var SingleCurriculums = /*#__PURE__*/function (_Component) {
+  _inherits(SingleCurriculums, _Component);
 
-  var _super = _createSuper(SingleCourse);
+  var _super = _createSuper(SingleCurriculums);
 
-  function SingleCourse() {
-    _classCallCheck(this, SingleCourse);
+  function SingleCurriculums() {
+    _classCallCheck(this, SingleCurriculums);
 
     return _super.apply(this, arguments);
   }
 
-  _createClass(SingleCourse, [{
+  _createClass(SingleCurriculums, [{
     key: "render",
     value: function render() {
       return /*#__PURE__*/React.createElement(React.Fragment, null);
     }
   }]);
 
-  return SingleCourse;
+  return SingleCurriculums;
 }(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (SingleCourse);
+/* harmony default export */ __webpack_exports__["default"] = (SingleCurriculums);
 window.addEventListener('DOMContentLoaded', function () {
   Object(_components_search__WEBPACK_IMPORTED_MODULE_1__["searchCourseContent"])();
   Object(_components_sidebar__WEBPACK_IMPORTED_MODULE_2__["Sidebar"])();

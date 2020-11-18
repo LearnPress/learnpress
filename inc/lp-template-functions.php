@@ -1627,11 +1627,9 @@ function learn_press_custom_excerpt_length( $length ) {
  * @since 4.0.0
  */
 function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
-	if ( ! $duration = get_post_meta( $post_id, '_lp_duration', true ) ) {
-		return $default;
-	}
+	$duration = get_post_meta( $post_id, '_lp_duration', true );
 
-	return $duration;
+	return empty( absint( $duration ) ) ? $default : $duration;
 }
 
 /**

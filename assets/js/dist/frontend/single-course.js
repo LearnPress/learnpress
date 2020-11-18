@@ -259,6 +259,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _learnpress_quiz__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_learnpress_quiz__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store */ "./assets/src/apps/js/frontend/single-course/store/index.js");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_store__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _single_curriculum_components_sidebar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../single-curriculum/components/sidebar */ "./assets/src/apps/js/frontend/single-curriculum/components/sidebar.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -284,6 +285,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+ // Use toggle in Curriculum tab.
 
 var SingleCourse = /*#__PURE__*/function (_Component) {
   _inherits(SingleCourse, _Component);
@@ -308,7 +310,8 @@ var SingleCourse = /*#__PURE__*/function (_Component) {
 
 /* harmony default export */ __webpack_exports__["default"] = (SingleCourse);
 
-function run() {// commentForm();
+function run() {
+  Object(_single_curriculum_components_sidebar__WEBPACK_IMPORTED_MODULE_3__["Sidebar"])();
 }
 
 window.addEventListener('DOMContentLoaded', function () {
@@ -327,6 +330,85 @@ window.addEventListener('DOMContentLoaded', function () {
 /**
  * Created by tu on 9/19/19.
  */
+
+/***/ }),
+
+/***/ "./assets/src/apps/js/frontend/single-curriculum/components/sidebar.js":
+/*!*****************************************************************************!*\
+  !*** ./assets/src/apps/js/frontend/single-curriculum/components/sidebar.js ***!
+  \*****************************************************************************/
+/*! exports provided: Sidebar */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Sidebar", function() { return Sidebar; });
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+var $ = jQuery;
+var _lodash = lodash,
+    throttle = _lodash.throttle;
+var Sidebar = function Sidebar() {
+  var $popup = $('#popup-course');
+  var $curriculum = $('#learn-press-course-curriculum');
+  var timerClearScroll;
+  $('#sidebar-toggle').on('change', function (event) {
+    LP.Cookies.set('sidebar-toggle', event.target.checked);
+  });
+  $curriculum.find('.section-desc').each(function (i, el) {
+    var a = $('<span class="show-desc"></span>').on('click', function () {
+      b.toggleClass('c');
+    });
+    var b = $(el).siblings('.section-title').append(a);
+  });
+  $('.section').each(function () {
+    var $section = $(this),
+        $toggle = $section.find('.section-toggle');
+    $toggle.on('click', function () {
+      var isClose = $section.toggleClass('closed').hasClass('closed');
+      var sections = LP.Cookies.get('closed-section-' + lpGlobalSettings.post_id) || [];
+      var sectionId = parseInt($section.data('section-id'));
+      var at = sections.findIndex(function (id) {
+        return id == sectionId;
+      });
+
+      if (isClose) {
+        sections.push(parseInt($section.data('section-id')));
+      } else {
+        sections.splice(at, 1);
+      }
+
+      LP.Cookies.remove('closed-section-(.*)');
+      LP.Cookies.set('closed-section-' + lpGlobalSettings.post_id, _toConsumableArray(new Set(sections)));
+    });
+  }); // Popup only
+
+  if ($popup.length) {
+    $curriculum.on('scroll', throttle(function () {
+      var $self = $(this);
+      $self.addClass('scrolling');
+      timerClearScroll && clearTimeout(timerClearScroll);
+      timerClearScroll = setTimeout(function () {
+        $self.removeClass('scrolling');
+      }, 1000);
+    }, 500));
+    LP.toElement('.course-item.current', {
+      container: '.curriculum-scrollable:eq(1)',
+      offset: 100,
+      duration: 1
+    });
+  }
+};
 
 /***/ }),
 

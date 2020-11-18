@@ -760,11 +760,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$user        = LP_Global::user();
 		$course_data = $user->get_course_data( $this->course->get_id() );
 
-		// $course_data->set_start_time( current_time( 'timestamp' ) - 8*3600 );
-
 		$status = $user->get_course_status( $this->course->get_id() );
 
-		if ( ! in_array( $status, learn_press_course_enrolled_slugs() /* array( 'enrolled', 'finished' )*/ ) ) {
+		if ( ! in_array( $status, learn_press_course_enrolled_slugs() ) ) {
 			return;
 		}
 

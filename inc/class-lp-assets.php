@@ -113,7 +113,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-checkout'          => new LP_Asset_Key(
 					self::url( self::$_folder_source . 'js/frontend/checkout' . self::$_min_assets . '.js' ),
-					array( 'lp-global' ),
+					array( 'lp-global', 'lp-utils' ),
 					array( LP_PAGE_CHECKOUT ),
 					0,
 					1
