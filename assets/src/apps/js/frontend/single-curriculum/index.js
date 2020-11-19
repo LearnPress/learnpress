@@ -4,7 +4,7 @@ import { searchCourseContent } from './components/search';
 import { Sidebar } from './components/sidebar';
 import { progressBar } from './components/progress';
 
-class SingleCourse extends Component {
+class SingleCurriculums extends Component {
 	render() {
 		return (
 			<>
@@ -13,7 +13,7 @@ class SingleCourse extends Component {
 	}
 }
 
-export default SingleCourse;
+export default SingleCurriculums;
 
 window.addEventListener( 'DOMContentLoaded', () => {
 	searchCourseContent();

@@ -1029,9 +1029,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'item_id'    => '%d',
 			'ref_id'     => '%d',
 			'start_time' => '%s',
-			// 'start_time_gmt' => '%s',
 			'end_time'   => '%s',
-			// 'end_time_gmt'   => '%s',
 			'item_type'  => '%s',
 			'status'     => '%s',
 			'ref_type'   => '%s',
@@ -1048,18 +1046,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$new_status = $item_data['status'];
 			unset( $item_data['status'] );
 		}
-
-		// if ( ! empty( $item_data['start_time'] ) && empty( $item_data['start_time_gmt'] ) ) {
-		// $start_time = new LP_Datetime( $item_data['start_time'] );
-		//
-		// $item_data['start_time_gmt'] = $start_time->toSql( false );
-		// }
-		//
-		// if ( ! empty( $item_data['end_time'] ) && empty( $item_data['end_time_gmt'] ) ) {
-		// $start_time = new LP_Datetime( $item_data['end_time'] );
-		//
-		// $item_data['end_time_gmt'] = $start_time->toSql( false );
-		// }
 
 		// Build data and data format
 		foreach ( $item_data as $field => $value ) {
@@ -1332,9 +1318,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'item_id'      => '%d',
 			'ref_id'       => '%d',
 			'start_time'   => '%s',
-			// 'start_time_gmt' => '%s',
 			'end_time'     => '%s',
-			// 'end_time_gmt'   => '%s',
 			'item_type'    => '%s',
 			'status'       => '%s',
 			'ref_type'     => '%s',

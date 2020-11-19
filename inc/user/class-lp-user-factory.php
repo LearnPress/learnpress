@@ -106,7 +106,6 @@ class LP_User_Factory {
 				case 'completed':
 					self::_update_user_item_purchased( $order, $old_status, $new_status );
 			}
-
 		} catch ( Exception $ex ) {
 
 		}
@@ -182,9 +181,7 @@ class LP_User_Factory {
 						)
 					);
 				} else {
-
 					$user->enroll_course( $item['course_id'], $order->get_id(), false, false );
-
 					$user_item_id = $wpdb->insert_id;
 				}
 
@@ -195,14 +192,24 @@ class LP_User_Factory {
 					$course_id   = $item['item_id'];
 					$can_enroll  = $user->can_enroll_course( $course_id );
 					$auto_enroll = LP()->settings->get( 'auto_enroll' ) == 'yes';
+					$course      = learn_press_get_course( $course_id );
+
 					if ( $new_status == 'completed' && $can_enroll && $auto_enroll ) {
 						$args['status'] = 'enrolled';
 					}
+
 					if ( ! $last_status ) {
 						$args['status'] = $auto_enroll && $can_enroll ? 'enrolled' : 'purchased';
+
+						if ( $course->is_free() && $can_enroll ) {
+							$args['status'] = 'enrolled';
+						}
+
 						if ( 'enrolled' == $args['status'] ) {
 							$time               = new LP_Datetime();
 							$args['start_time'] = $time->toSql( false );
+						} elseif ( 'purchased' == $args['status'] ) {
+							$args['start_time'] = null;
 						}
 					}
 

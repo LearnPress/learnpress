@@ -1153,13 +1153,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			// Course is published and not reached limitation
 			$can_enroll = ! ! $course && $course->is_publish();
 
-			if ( $can_enroll && $course->is_free() && ! $course->is_required_enroll() && ! $course->is_in_stock() ) {
+			if ( $can_enroll && $course->is_free() && ! $course->is_in_stock() ) {
 				$can_enroll = false;
 			}
 
 			if ( $can_enroll && ! $course->is_free() && ! $this->has_purchased_course( $course_id ) ) {
 				$can_enroll = false;
-
 			}
 
 			return apply_filters( 'learn-press/can-enroll-course', $can_enroll, $course_id, $this->get_id() );
@@ -2338,11 +2337,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$user_course = new LP_User_Item_Course( $course_item );
 				$user_course->set_status( 'in-progress' );
 
+				$course = learn_press_get_course( $course_id );
+
 				// Added since 3.3.0
 				if ( $course_duration ) {
 					// Expiration is GTM time
-					$expiration = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
-					$user_course->set_expiration_time( $expiration->toSql( true ) );
+					if ( LP()->settings->get( 'auto_enroll' ) == 'no' && ! $course->is_free() ) {
+						$user_course->set_expiration_time( null );
+					} else {
+						$expiration = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
+						$user_course->set_expiration_time( $expiration->toSql( true ) );
+					}
 				}
 
 				if ( ! $user_course->update() ) {

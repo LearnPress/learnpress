@@ -257,9 +257,23 @@ var Sidebar = function Sidebar() {
   var $popup = $('#popup-course');
   var $curriculum = $('#learn-press-course-curriculum');
   var timerClearScroll;
-  document.querySelector('#sidebar-toggle').addEventListener('change', function (event) {
+  $('#sidebar-toggle').on('change', function (event) {
     LP.Cookies.set('sidebar-toggle', event.target.checked);
+    toggleSidebar(event.target.checked);
   });
+
+  var toggleSidebar = function toggleSidebar(toggle) {
+    $('body').removeClass('lp-sidebar-toggle__open');
+    $('body').removeClass('lp-sidebar-toggle__close');
+
+    if (toggle) {
+      $('body').addClass('lp-sidebar-toggle__close');
+    } else {
+      $('body').addClass('lp-sidebar-toggle__open');
+    }
+  };
+
+  toggleSidebar(LP.Cookies.get('sidebar-toggle'));
   $curriculum.find('.section-desc').each(function (i, el) {
     var a = $('<span class="show-desc"></span>').on('click', function () {
       b.toggleClass('c');
@@ -348,28 +362,28 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var SingleCourse = /*#__PURE__*/function (_Component) {
-  _inherits(SingleCourse, _Component);
+var SingleCurriculums = /*#__PURE__*/function (_Component) {
+  _inherits(SingleCurriculums, _Component);
 
-  var _super = _createSuper(SingleCourse);
+  var _super = _createSuper(SingleCurriculums);
 
-  function SingleCourse() {
-    _classCallCheck(this, SingleCourse);
+  function SingleCurriculums() {
+    _classCallCheck(this, SingleCurriculums);
 
     return _super.apply(this, arguments);
   }
 
-  _createClass(SingleCourse, [{
+  _createClass(SingleCurriculums, [{
     key: "render",
     value: function render() {
       return /*#__PURE__*/React.createElement(React.Fragment, null);
     }
   }]);
 
-  return SingleCourse;
+  return SingleCurriculums;
 }(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (SingleCourse);
+/* harmony default export */ __webpack_exports__["default"] = (SingleCurriculums);
 window.addEventListener('DOMContentLoaded', function () {
   Object(_components_search__WEBPACK_IMPORTED_MODULE_1__["searchCourseContent"])();
   Object(_components_sidebar__WEBPACK_IMPORTED_MODULE_2__["Sidebar"])();
