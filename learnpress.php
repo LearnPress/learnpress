@@ -393,7 +393,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
 			require_once 'inc/class-lp-schedules.php';
-			require_once 'inc/class-lp-preview-course.php';
+			//require_once 'inc/class-lp-preview-course.php';
 
 			require_once 'inc/class-lp-widget.php';
 			require_once 'inc/lp-widget-functions.php';

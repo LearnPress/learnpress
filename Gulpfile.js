@@ -117,6 +117,9 @@ gulp.task( 'mincss', () => {
 gulp.task( 'clearJsAdmin', () => {
 	return del( './assets/js/admin/**' );
 } );
+gulp.task( 'clearJsFrontend', () => {
+	return del( './assets/js/frontend/**' );
+} );
 
 // Min JS.
 gulp.task( 'minJsAdmin', () => {
@@ -187,7 +190,7 @@ gulp.task(
 		'clearCache',
 		'clearJsAdmin',
 		'minJsAdmin',
-		// 'minJsFrontend',
+		'minJsFrontend',
 		// 'mincss',
 		'cleanReleases',
 		'copyReleases',

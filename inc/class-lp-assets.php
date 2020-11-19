@@ -30,15 +30,15 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
-				'font-awesome-5' => array(
+				'font-awesome' => array(
 					'url'     => self::url( 'css/vendor/font-awesome-5.min.css' ),
 					'screens' => array( 'learnpress' ),
 				),
-				'lp-bundle'      => array(
+				'lp-bundle'    => array(
 					'url'     => self::url( 'css/bundle.min.css' ),
 					'screens' => array( 'learnpress' ),
 				),
-				'learnpress'     => array(
+				'learnpress'   => array(
 					'url'     => self::url( 'css/learnpress.css' ),
 					'screens' => 'learnpress',
 				),
@@ -113,7 +113,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-checkout'          => new LP_Asset_Key(
 					self::url( self::$_folder_source . 'js/frontend/checkout' . self::$_min_assets . '.js' ),
-					array( 'lp-global' ),
+					array( 'lp-global', 'lp-utils' ),
 					array( LP_PAGE_CHECKOUT ),
 					0,
 					1
@@ -176,7 +176,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'lp-courses'           => new LP_Asset_Key(
-					self::url( 'js/frontend/courses' . self::$_min_assets . '.js' ),
+					self::url( self::$_folder_source . 'js/frontend/courses' . self::$_min_assets . '.js' ),
 					array( 'lp-global', 'lodash', 'lp-utils' ),
 					array( LP_PAGE_COURSES ),
 					0,

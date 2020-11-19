@@ -1519,7 +1519,7 @@ function set_post_order_in_admin( $wp_query ) {
 	}
 }
 
-add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
+//add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;
@@ -1550,8 +1550,10 @@ function learn_press_copy_post_meta( $from_id, $to_id ) {
  * @param string $plugin_name
  *
  * @return array
+ * @editor tungnx
+ * @reason not use
  */
-function learn_press_install_add_on( $plugin_name ) {
+/*function learn_press_install_add_on( $plugin_name ) {
 	require_once LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php';
 	$upgrader = new LP_Upgrader();
 
@@ -1595,23 +1597,7 @@ function learn_press_install_add_on( $plugin_name ) {
 	}
 
 	return $response;
-}
-
-function learn_press_user_become_a_teacher_notice() {
-	$user_id = learn_press_get_request( 'user_id' );
-
-	if ( $user_id && learn_press_get_request( 'become-a-teacher-accepted' ) == 'yes' ) {
-		$user = new WP_User( $user_id );
-		?>
-
-		<div class="updated">
-			<p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
-		</div>
-
-		<?php
-	}
-}
-add_action( 'admin_notices', 'learn_press_user_become_a_teacher_notice' );
+}*/
 
 /**
  * Check to see if a plugin is already installed or not
@@ -2424,26 +2410,6 @@ function learn_press_modal_search_items_context( $context_id, $context ) {
 	return $context_id;
 }
 add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_search_items_context', 10, 2 );
-
-/**
- * Filter to post link to change the link if it is an item inside course.
- *
- * @param string  $link
- * @param WP_Post $post
- *
- * @return string
- * @since 3.0.0
- */
-function learn_press_preview_post_link( $link, $post ) {
-	$items = learn_press_course_get_support_item_types( true );
-
-	if ( in_array( $post->post_type, $items ) ) {
-		$link = learn_press_course_item_type_link( $link, $post, false, false );
-	}
-
-	return $link;
-}
-add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
 
 /**
  * Sync post meta when saving post type.

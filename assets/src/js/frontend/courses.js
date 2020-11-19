@@ -53,6 +53,7 @@
 
 		fetchCourses( {
 			s: $( event.target ).val(),
+			post_type: 'lp_course',
 			wrapElement: '.learn-press-courses',
 		} );
 	}, 300 );

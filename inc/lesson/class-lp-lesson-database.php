@@ -75,9 +75,9 @@ class LP_Lesson_DB extends LP_Database {
 		        SELECT COUNT(ID)
 		        FROM {$wpdb->posts} p
 		        WHERE p.post_type = %s
-		        AND p.post_status
-		        NOT LIKE 'auto-draft'",
-			LP_LESSON_CPT );
+		        AND p.post_status NOT LIKE 'auto-draft'
+		        AND p.post_status NOT LIKE 'trash'
+		        ", LP_LESSON_CPT );
 
 		return $wpdb->get_var( $query ) - $total_preview_items;
 	}

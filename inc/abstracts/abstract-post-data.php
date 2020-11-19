@@ -129,25 +129,25 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		public function get_content( $context = 'display', $length = - 1, $more = '' ) {
 			if ( 'display' === $context ) {
 				if ( ! $this->_content ) {
-					global $post, $wp_query;
+//					global $post, $wp_query;
+//
+//					$posts = apply_filters_ref_array(
+//						'the_posts',
+//						array(
+//							array( get_post( $this->get_id() ) ),
+//							&$wp_query,
+//						)
+//					);
+//
+//					if ( $posts ) {
+//						$post = $posts[0];
+//					}
 
-					$posts = apply_filters_ref_array(
-						'the_posts',
-						array(
-							array( get_post( $this->get_id() ) ),
-							&$wp_query,
-						)
-					);
-
-					if ( $posts ) {
-						$post = $posts[0];
-					}
-
-					setup_postdata( $post );
+//					setup_postdata( $post );
 					ob_start();
 					the_content();
 					$this->_content = ob_get_clean();
-					wp_reset_postdata();
+//					wp_reset_postdata();
 				}
 			} else {
 				$content = get_post_field( 'post_content', $this->get_id() );
