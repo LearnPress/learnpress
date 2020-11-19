@@ -364,7 +364,21 @@ var Sidebar = function Sidebar() {
   var timerClearScroll;
   $('#sidebar-toggle').on('change', function (event) {
     LP.Cookies.set('sidebar-toggle', event.target.checked);
+    toggleSidebar(event.target.checked);
   });
+
+  var toggleSidebar = function toggleSidebar(toggle) {
+    $('body').removeClass('lp-sidebar-toggle__open');
+    $('body').removeClass('lp-sidebar-toggle__close');
+
+    if (toggle) {
+      $('body').addClass('lp-sidebar-toggle__close');
+    } else {
+      $('body').addClass('lp-sidebar-toggle__open');
+    }
+  };
+
+  toggleSidebar(LP.Cookies.get('sidebar-toggle'));
   $curriculum.find('.section-desc').each(function (i, el) {
     var a = $('<span class="show-desc"></span>').on('click', function () {
       b.toggleClass('c');

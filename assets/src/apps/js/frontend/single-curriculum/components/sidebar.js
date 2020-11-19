@@ -8,7 +8,22 @@ export const Sidebar = () => {
 
 	$( '#sidebar-toggle' ).on( 'change', ( event ) => {
 		LP.Cookies.set( 'sidebar-toggle', event.target.checked );
+
+		toggleSidebar( event.target.checked );
 	} );
+
+	const toggleSidebar = ( toggle ) => {
+		$( 'body' ).removeClass( 'lp-sidebar-toggle__open' );
+		$( 'body' ).removeClass( 'lp-sidebar-toggle__close' );
+
+		if ( toggle ) {
+			$( 'body' ).addClass( 'lp-sidebar-toggle__close' );
+		} else {
+			$( 'body' ).addClass( 'lp-sidebar-toggle__open' );
+		}
+	};
+
+	toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
 
 	$curriculum.find( '.section-desc' ).each( ( i, el ) => {
 		const a = $( '<span class="show-desc"></span>' ).on( 'click', () => {
