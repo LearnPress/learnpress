@@ -17,7 +17,7 @@ $user = LP_Profile::instance()->get_user();
 
 	<?php if ( ! empty( $courses ) ) : ?>
 		<div class="lp-archive-courses">
-			<ul class="learn-press-courses" data-size="3" data-layout="grid" id="learn-press-profile-latest-courses">
+			<ul class="learn-press-courses<?php echo apply_filters( 'lp_extral_class_item_courses','');?>" data-size="3" data-layout="grid" id="learn-press-profile-latest-courses">
 				<?php
 				global $post;
 
