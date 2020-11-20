@@ -15,6 +15,7 @@ cache/
 /assets/fonts/icon.woff
 /assets/fonts/iconfont.eot
 /assets/fonts/iconfont.svg
+/assets/js/dist
 /inc/test.php
 /local-debug.php
 /languages/learnpress-vi.mo
