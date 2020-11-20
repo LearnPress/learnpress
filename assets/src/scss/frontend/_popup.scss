@@ -25,9 +25,9 @@
 #learn-press-course-curriculum {
 
 	.section-header {
-		padding: 10px 0;
-		border-bottom: 1px solid #d9e0f1;
-		background: #fff;
+		//padding: 10px 0;
+		//
+
 	}
 
 	.section-title {
@@ -64,41 +64,7 @@
 		}
 	}
 
-	.section-item-link {
-		color: #777;
-		text-decoration: none;
-	}
 
-	.section-desc {
-		display: none;
-		color: #999;
-	}
-
-	.section-title {
-
-		&.c + .section-desc {
-			display: block;
-		}
-
-		&.c {
-
-			span.show-desc {
-
-				&::before {
-
-					@include transform(rotate(180deg));
-					top: 0;
-				}
-			}
-		}
-	}
-
-	.item-meta {
-
-		&.duration {
-			background: #d9e0f1;
-		}
-	}
 }
 
 #popup-course {

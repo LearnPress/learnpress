@@ -119,12 +119,6 @@ class LP_Reset_Data {
 
 		$s     = LP_Request::get_string( 's' );
 		$where = '';
-		$ids   = LP_Preview_Course::get_preview_courses();
-
-		if ( $ids ) {
-			$format = array_fill( 0, sizeof( $ids ), '%d' );
-			$where  = $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ') ', $ids );
-		}
 
 		$query = $wpdb->prepare(
 			"

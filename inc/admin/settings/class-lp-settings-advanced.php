@@ -90,7 +90,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'id'      => 'debug',
 					'default' => 'no',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Turn on/off debug mode for developer.', 'learnpress' ),
+					'desc'    => esc_html__( 'Enable debug mode for developer.', 'learnpress' ),
 				),
 				array(
 					'title'   => esc_html__( 'Hard Cache', 'learnpress' ),

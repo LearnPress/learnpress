@@ -32,7 +32,7 @@ const getCurrentVer = function( force ) {
 
 const releasesFiles = [
 	'./**',
-	'!assets/src/**',
+	'assets/src/**',
 	'!assets/scss/**',
 	'!assets/**/*.js.map',
 	'!assets/**/*.dev.js',
@@ -113,9 +113,12 @@ gulp.task( 'mincss', () => {
 		.pipe( gulp.dest( 'assets/css' ) );
 } );
 
-// Clear JS in admin folder.
+// Clear JS folder.
 gulp.task( 'clearJsAdmin', () => {
 	return del( './assets/js/admin/**' );
+} );
+gulp.task( 'clearJsFrontend', () => {
+	return del( './assets/js/frontend/**' );
 } );
 
 // Min JS.
@@ -186,8 +189,9 @@ gulp.task(
 	gulp.series(
 		'clearCache',
 		'clearJsAdmin',
+		'clearJsFrontend',
 		'minJsAdmin',
-		// 'minJsFrontend',
+		'minJsFrontend',
 		// 'mincss',
 		'cleanReleases',
 		'copyReleases',

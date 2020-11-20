@@ -32,10 +32,11 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * LP_Abstract_Post_Data constructor.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param mixed $post
 		 * @param array $args
+		 *
+		 * @since 3.0.0
+		 *
 		 */
 		public function __construct( $post, $args = null ) {
 			$id = 0;
@@ -55,9 +56,9 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * Get status of post.
 		 *
+		 * @return array|mixed
 		 * @since 3.0.0
 		 *
-		 * @return array|mixed
 		 */
 		public function get_status() {
 			return $this->get_data( 'status' );
@@ -66,9 +67,9 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * Check if the post of this instance is exists.
 		 *
+		 * @return bool
 		 * @since 3.0.0
 		 *
-		 * @return bool
 		 */
 		public function is_exists() {
 			return get_post_type( $this->get_id() ) === $this->_post_type;
@@ -77,9 +78,9 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * Check if the post in trash.
 		 *
+		 * @return bool
 		 * @since 3.0.0
 		 *
-		 * @return bool
 		 */
 		public function is_trashed() {
 			return get_post_status( $this->get_id() ) === 'trash';
@@ -88,9 +89,9 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * Check if the post is publish.
 		 *
+		 * @return mixed
 		 * @since 3.0.0
 		 *
-		 * @return mixed
 		 */
 		public function is_publish() {
 			return apply_filters( 'learn-press/' . $this->_post_type . '/is-publish', get_post_status( $this->get_id() ) === 'publish' );
@@ -99,11 +100,11 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * Get the title.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param string $context
 		 *
 		 * @return string
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_title( $context = '' ) {
 			$title = get_the_title( $this->get_id() );
@@ -116,38 +117,47 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		}
 
 		/**
-		 * Get the content.
-		 *
-		 * @since 3.0.0
+		 * Get the content of course, course's item
 		 *
 		 * @param string $context
-		 * @param int    $length
+		 * @param int $length
 		 * @param string $more
 		 *
 		 * @return string
+		 * @since 4.0.0
+		 * @editor tungnx
+		 * todo: should rewrite this
+		 * @reason Current all post type is item of course ex: lesson, quiz... use same page is course single
 		 */
 		public function get_content( $context = 'display', $length = - 1, $more = '' ) {
 			if ( 'display' === $context ) {
 				if ( ! $this->_content ) {
 					global $post, $wp_query;
 
-					$posts = apply_filters_ref_array(
-						'the_posts',
-						array(
-							array( get_post( $this->get_id() ) ),
-							&$wp_query,
-						)
-					);
+					// Post not preview
+					if ( ! isset( $_REQUEST['preview'] ) ) {
+						$posts = apply_filters_ref_array(
+							'the_posts',
+							array(
+								array( get_post( $this->get_id() ) ),
+								&$wp_query,
+							)
+						);
 
-					if ( $posts ) {
-						$post = $posts[0];
+						if ( $posts ) {
+							$post = $posts[0];
+						}
+
+						setup_postdata( $post );
+						ob_start();
+						the_content();
+						$this->_content = ob_get_clean();
+						wp_reset_postdata();
+					} else { // Post is preview
+						ob_start();
+						the_content();
+						$this->_content = ob_get_clean();
 					}
-
-					setup_postdata( $post );
-					ob_start();
-					the_content();
-					$this->_content = ob_get_clean();
-					wp_reset_postdata();
 				}
 			} else {
 				$content = get_post_field( 'post_content', $this->get_id() );
@@ -173,9 +183,9 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * Get post type.
 		 *
+		 * @return false|string
 		 * @since 3.0.0
 		 *
-		 * @return false|string
 		 */
 		public function get_post_type() {
 			return get_post_type( $this->get_id() );
@@ -184,9 +194,9 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		/**
 		 * Get default post meta.
 		 *
+		 * @return array
 		 * @since 3.0.0
 		 *
-		 * @return array
 		 */
 		public static function get_default_meta() {
 			return array();
@@ -207,7 +217,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @updated 3.1.0
 		 *
 		 * @param string $key
-		 * @param bool   $single
+		 * @param bool $single
 		 *
 		 * @return mixed
 		 */

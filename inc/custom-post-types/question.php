@@ -36,11 +36,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
-			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 10 );
+			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 11 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			$this->add_map_method( 'before_delete', 'before_delete_question' )
-				->add_map_method( 'save', 'save_question' );
+			     ->add_map_method( 'save', 'save_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -68,15 +68,17 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add filters to lesson view.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param array $views
 		 *
 		 * @return mixed
+		 * @since 3.0.1
+		 * @editor tungnx
+		 *
 		 */
 		public function views_pages( $views ) {
-			$unassigned_items = learn_press_get_unassigned_questions();
-			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+			$user_id          = get_current_user_id();
+			$unassigned_items = LP_Question_DB::getInstance()->get_total_question_unassigned();
+			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . $unassigned_items . ')</span>' );
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$views['unassigned'] = sprintf(
@@ -90,6 +92,28 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
 					$text
 				);
+			}
+
+			// Get count question
+			if ( ! current_user_can( 'administrator' ) ) {
+				$filter             = new LP_Question_Filter();
+				$filter->_post_type = LP_QUESTION_CPT;
+				$filter->_user_id   = $user_id;
+
+				$totalPostAllStatus = LP_Database::getInstance()->getCountPostOfUser( $filter );
+				$views['all']       = wp_sprintf( '<a href="edit.php?post_type=lp_question" class="current" aria-current="page">All <span class="count">(%d)</span></a>', $totalPostAllStatus );
+
+				if ( $totalPostAllStatus == 0 ) {
+					unset( $views['publish'] );
+					unset( $views['unassigned'] );
+					unset( $views['trash'] );
+					unset( $views['draft'] );
+					unset( $views['pending'] );
+				} elseif ( isset( $views['publish'] ) ) {
+					$filter->_post_status = 'publish';
+					$totalPostPublish     = LP_Database::getInstance()->getCountPostOfUser( $filter );
+					$views['publish']     = wp_sprintf( '<a href="edit.php?post_type=lp_question&post_status=publish" class="current" aria-current="page">Published <span class="count">(%d)</span></a>', $totalPostPublish );
+				}
 			}
 
 			return $views;
@@ -175,7 +199,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'rewrite'           => array(
 						'slug'         => 'question-tag',
 						'hierarchical' => false,
-						'with_front'   => false,
+						'with_front'   => false
 					),
 				)
 			);
@@ -196,8 +220,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'not_found'          => esc_html__( 'No questions found', 'learnpress' ),
 					'not_found_in_trash' => esc_html__( 'No questions found in trash', 'learnpress' ),
 				),
-				'public'             => false,
-				'publicly_queryable' => false,
+				'public'             => true,
+				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'has_archive'        => false,
 				'capability_type'    => LP_LESSON_CPT,
@@ -227,17 +251,17 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
 				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
 			}
-
 		}
 
 		/**
 		 * Remove question from quiz items.
 		 *
+		 * @param int $question_id
+		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
 		 */
-		public function before_delete_question( $question_id ) {
+		public function before_delete_question( $question_id = 0 ) {
 			$curd = new LP_Question_CURD();
 
 			$curd->delete( $question_id );
@@ -246,9 +270,10 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add default answer when save new question action.
 		 *
+		 * @param $question_id
+		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
 		 */
 		public function save_question( $question_id ) {
 			if ( get_post_status( $question_id ) != 'auto-draft' ) {
@@ -293,7 +318,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add columns to admin manage question page
 		 *
-		 * @param  array $columns
+		 * @param array $columns
 		 *
 		 * @return array
 		 */
@@ -401,17 +426,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				global $wpdb;
-				$where .= $wpdb->prepare(
-					"
+				$where .= $wpdb->prepare( "
                     AND {$wpdb->posts}.ID NOT IN(
                         SELECT qq.question_id
                         FROM {$wpdb->learnpress_quiz_questions} qq
                         INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
                         WHERE p.post_type = %s
                     )
-                ",
-					LP_QUESTION_CPT
-				);
+                ", LP_QUESTION_CPT );
 			}
 
 			$posts_where_paged = true;
@@ -452,7 +474,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['instructor']  = 'author';
+			$columns['author']      = 'author';
 			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
 
 			return $columns;

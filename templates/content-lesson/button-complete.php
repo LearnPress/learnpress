@@ -18,7 +18,7 @@ if ( $item->is_preview() ) {
 $completed = $user->has_completed_item( $item->get_id(), $course->get_id() );
 
 if ( $completed ) :
-	echo esc_html__( 'You have completed this lesson at ', 'learnpress' ) . $user->get_item_data( $item->get_id(), $course->get_id(), 'end_time' );
+	echo '<div>'.esc_html__( 'You have completed this lesson at ', 'learnpress' ) . $user->get_item_data( $item->get_id(), $course->get_id(), 'end_time' ).'</div>';
 	?>
 
 	<button class="lp-button completed" disabled><i class="fa fa-check"></i><?php esc_html_e( 'Completed', 'learnpress' ); ?></button>

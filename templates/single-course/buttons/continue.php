@@ -15,7 +15,7 @@ $user = LP_Global::user();
 ?>
 
 <form name="continue-course" class="continue-course form-button lp-form" method="post" action="<?php echo esc_url( $user->get_current_item( get_the_ID(), true ) ); ?>">
-	<button type="submit" id="lp-button" class="lp-button button">
+	<button type="submit" class="lp-button button">
 		<?php esc_html_e( 'Continue', 'learnpress' ); ?>
 	</button>
 </form>

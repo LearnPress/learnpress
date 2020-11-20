@@ -2,7 +2,7 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Admin/Classes
- * @version 1.0
+ * @version 1.0.1
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -13,6 +13,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 	 * Class LP_Admin
 	 */
 	class LP_Admin {
+		protected static $instance;
 
 		/**
 		 * @var array
@@ -22,9 +23,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 *  Constructor
 		 */
-		public function __construct() {
+		protected function __construct() {
 			$this->includes();
-
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
@@ -900,12 +900,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return bool|LP_Admin
 		 */
 		public static function instance() {
-			static $instance = false;
-			if ( ! $instance ) {
-				$instance = new self();
+			if ( ! self::$instance ) {
+				self::$instance = new self();
 			}
 
-			return $instance;
+			return self::$instance;
 		}
 	}
 }

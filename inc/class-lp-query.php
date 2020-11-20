@@ -306,8 +306,6 @@ class LP_Query {
 			add_filter( 'posts_join', array( $this, 'join_term' ) );
 			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
 		}
-
-		add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
 	}
 
 	/**
@@ -340,30 +338,6 @@ class LP_Query {
 		if ( ! empty( $wp_query->query_vars['s'] ) && ! is_admin() ) {
 			$escaped_s = esc_sql( $wp_query->query_vars['s'] );
 			$where    .= "OR $wpdb->terms.name LIKE '%{$escaped_s}%'";
-		}
-
-		return $where;
-	}
-
-	/**
-	 * Exclude 'Preview course' from main query.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param string $where
-	 *
-	 * @return string
-	 */
-	public function exclude_preview_course( $where ) {
-		global $wpdb;
-
-		if ( ! is_admin() && learn_press_is_courses() ) {
-			$ids = LP_Preview_Course::get_preview_courses();
-
-			if ( $ids ) {
-				$format = array_fill( 0, sizeof( $ids ), '%d' );
-				$where .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ') ', $ids ); // phpcs:ignore
-			}
 		}
 
 		return $where;

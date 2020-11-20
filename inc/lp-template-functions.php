@@ -44,7 +44,13 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 
 		$defaults = array();
 
-		if ( $course && $course->get_content() ) {
+		/**
+		 * Show tab overview if
+		 * 1. Course is preview
+		 * OR
+		 * 2. Course's content not empty
+		 */
+		if ( isset( $_GET['preview'] ) || $course && $course->get_content() ) {
 			$defaults['overview'] = array(
 				'title'    => esc_html__( 'Overview', 'learnpress' ),
 				'priority' => 10,
@@ -93,12 +99,12 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 
 			if ( ! $has_active ) {
 				if ( $course && $user->has_course_status(
-					$course->get_id(),
-					array(
-						'enrolled',
-						'finished',
-					)
-				) && ! empty( $tabs['curriculum'] )
+						$course->get_id(),
+						array(
+							'enrolled',
+							'finished',
+						)
+					) && ! empty( $tabs['curriculum'] )
 				) {
 					$tabs['curriculum']['active'] = true;
 				} elseif ( ! empty( $tabs['overview'] ) ) {
@@ -226,12 +232,12 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 		}
 
 		foreach ( $hooks as $hook ) {
-			if ( isset( $wp_filter[ "learn-press/{$hook}" ] ) ) {
+			if ( isset( $wp_filter["learn-press/{$hook}"] ) ) {
 				// Move to backup to restore it if needed.
-				$wp_filter['learn-press-backup-hooks'][ "learn-press/{$hook}" ] = $wp_filter[ "learn-press/{$hook}" ];
+				$wp_filter['learn-press-backup-hooks']["learn-press/{$hook}"] = $wp_filter["learn-press/{$hook}"];
 
 				// Remove the origin hook
-				unset( $wp_filter[ "learn-press/{$hook}" ] );
+				unset( $wp_filter["learn-press/{$hook}"] );
 			}
 		}
 
@@ -369,10 +375,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $lesson_id
-	 * @param int          $course_id
+	 * @param int $lesson_id
+	 * @param int $course_id
 	 * @param array|string $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -439,10 +445,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $quiz_id
-	 * @param int          $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param string|array $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -569,7 +575,7 @@ if ( ! is_admin() ) {
  * Display a message immediately with out push into queue
  *
  * @param        $message
- * @param string  $type
+ * @param string $type
  */
 
 function learn_press_display_message( $message, $type = 'success' ) {
@@ -594,15 +600,16 @@ function learn_press_display_message( $message, $type = 'success' ) {
 function learn_press_get_messages( $clear = false ) {
 	ob_start();
 	learn_press_print_messages( $clear );
+
 	return ob_get_clean();
 }
 
 /**
  * Add new message into queue for displaying.
  *
- * @param string   $message
- * @param string   $type
- * @param array    $options
+ * @param string $message
+ * @param string $type
+ * @param array $options
  * @param int|bool $current_user . @since 3.0.9 - add for current user only
  */
 function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
@@ -650,7 +657,7 @@ function learn_press_get_message( $message, $type = 'success' ) {
 /**
  * Remove message added into queue by id and/or type.
  *
- * @param string       $id
+ * @param string $id
  * @param string|array $type
  *
  * @since 3.0.0
@@ -782,6 +789,7 @@ function learn_press_template_redirect() {
 		exit;
 	}
 }
+
 add_action( 'template_redirect', 'learn_press_template_redirect' );
 
 
@@ -830,9 +838,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name
- * @param array  $args          (default: array())
+ * @param array $args (default: array())
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return void
  */
@@ -875,9 +883,9 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * Get template content
  *
  * @param        $template_name
- * @param array         $args
- * @param string        $template_path
- * @param string        $default_path
+ * @param array $args
+ * @param string $template_path
+ * @param string $default_path
  *
  * @return string
  * @uses learn_press_get_template();
@@ -894,7 +902,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */
@@ -1149,7 +1157,7 @@ function learn_press_get_course_redirect( $link ) {
 					$sep = '';
 				} elseif ( $v == 'port' ) {
 					$link .= ':';
-					$sep   = '';
+					$sep  = '';
 				} else {
 					$sep = '/';
 				}
@@ -1256,6 +1264,7 @@ function learn_press_body_classes( $classes ) {
 
 	return $classes;
 }
+
 add_filter( 'body_class', 'learn_press_body_classes', 10 );
 
 /**
@@ -1301,7 +1310,7 @@ if ( ! function_exists( 'learn_press_print_custom_styles' ) ) {
 		?>
 
 		<style id="learn-press-custom-css">
-			:root{
+			:root {
 				--lp-primary-color: <?php echo ! empty( $primary_color ) ? $primary_color : '#ffb606'; ?>;
 				--lp-secondary-color: <?php echo ! empty( $secondary_color ) ? $secondary_color : '#442e66'; ?>;
 			}
@@ -1309,6 +1318,7 @@ if ( ! function_exists( 'learn_press_print_custom_styles' ) ) {
 
 		<?php
 	}
+
 	add_action( 'wp_head', 'learn_press_print_custom_styles' );
 }
 
@@ -1468,7 +1478,7 @@ function learn_press_define_debug_mode() {
 		return;
 	}
 	?>
-	<script>window.LP_DEBUG = true;</script>
+	<script>window.LP_DEBUG = true</script>
 	<?php
 }
 
@@ -1528,6 +1538,7 @@ function learn_press_register_sidebars() {
 		)
 	);
 }
+
 add_action( 'widgets_init', 'learn_press_register_sidebars' );
 
 function learn_press_setup_theme() {
@@ -1543,6 +1554,7 @@ function learn_press_setup_theme() {
 
 	add_theme_support( 'starter-content', $support );
 }
+
 add_action( 'after_setup_theme', 'learn_press_setup_theme' );
 
 if ( ! function_exists( 'learn_press_page_title' ) ) {
@@ -1572,7 +1584,7 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 
 /**
  * @param LP_Question $question
- * @param array       $args
+ * @param array $args
  *
  * @return array
  * @since 4.x.x
@@ -1620,7 +1632,7 @@ function learn_press_custom_excerpt_length( $length ) {
 /**
  * Get post meta with key _lp_duration and translate.
  *
- * @param int    $post_id
+ * @param int $post_id
  * @param string $default
  *
  * @return string
@@ -1665,7 +1677,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 	if ( $meta && isset( $meta[ $format ] ) ) {
 		$content = stripslashes( $meta[ $format ] );
 	} else {
-		$template      = ! empty( $field[ "template_{$format}" ] ) ? $field[ "template_{$format}" ] : null;
+		$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
 		$template_file = $field['template_base'] . $template;
 		$content       = LP_WP_Filesystem::get_contents( $template_file );
 	}

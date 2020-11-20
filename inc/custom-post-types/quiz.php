@@ -41,8 +41,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
-			// hide View Quiz link if not assigned to Course
-			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link' ) );
+
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
@@ -584,7 +583,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( $orderby = $this->_get_orderby() && $order = $this->_get_order() ) {
 				switch ( $orderby ) {
 					case 'course-name':
-						$order_by_statement = "c.post_title {$order}";
+						$order_by_statement = "post_title {$order}";
 						break;
 					case 'question-count':
 						$order_by_statement = "question_count {$order}";
@@ -621,40 +620,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 
 			return true;
-		}
-
-		/**
-		 * Hide View Quiz link if not assigned to Course.
-		 */
-		public function hide_view_quiz_link() {
-			$current_screen = get_current_screen();
-
-			global $post;
-
-			if ( ! $post ) {
-				return;
-			}
-
-			if ( $current_screen->id === LP_QUIZ_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
-				?>
-				<style type="text/css">
-					#wp-admin-bar-view {
-						display: none;
-					}
-
-					#sample-permalink a {
-						pointer-events: none;
-						cursor: default;
-						text-decoration: none;
-						color: #666;
-					}
-
-					#preview-action {
-						display: none;
-					}
-				</style>
-				<?php
-			}
 		}
 
 		/**
