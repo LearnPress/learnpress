@@ -6,12 +6,12 @@
  * @package LearnPress/Admin/Views
  * @version 3.0.8
  */
-defined( 'ABSPATH' ) or die();
 
-//
+defined( 'ABSPATH' ) || exit;
+
 LP()->session->remove( 'do-update-learnpress', true );
-
 ?>
+
 <div class="updated notice">
-    <p><?php esc_html_e( 'LearnPress has just updated to latest version.', 'learnpress' ); ?></p>
+	<p><?php esc_html_e( 'LearnPress has just updated to latest version.', 'learnpress' ); ?></p>
 </div>

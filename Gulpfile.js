@@ -82,7 +82,7 @@ gulp.task( 'clearCache', ( done ) => {
 
 gulp.task( 'styles', () => {
 	return gulp
-		.src( [ 'assets/scss/**/*.scss' ] )
+		.src( [ 'assets/src/scss/**/*.scss' ] )
 		.pipe( plumber( errorHandler ) )
 		// .pipe( sourcemaps.init() )
 		.pipe(
@@ -100,7 +100,7 @@ gulp.task( 'styles', () => {
 
 // Watch sass
 gulp.task( 'watch', gulp.series( 'clearCache', () => {
-	gulp.watch( [ 'assets/scss/**/*.scss' ], gulp.parallel( 'styles' ) );
+	gulp.watch( [ 'assets/src/scss/**/*.scss' ], gulp.parallel( 'styles' ) );
 } ) );
 
 // Min CSS frontend.

@@ -42,24 +42,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 */
 		public static function init() {
 			self::get_update_files();
+
 			add_action( 'learn-press/activate', array( __CLASS__, 'on_activate' ) );
 			add_action( 'admin_init', array( __CLASS__, 'do_install' ) );
-			add_action( 'admin_init', array( __CLASS__, 'do_update' ) );
-			add_action( 'admin_init', array( __CLASS__, 'check_update' ) );
 			add_action( 'admin_init', array( __CLASS__, 'subscription_button' ) );
-
-			// add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
-			// return;
-			// add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
-			// add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
-			// add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
-			// add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
-			// add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
-			// add_action( 'wp_ajax_lp_repair_database', array( __CLASS__, 'repair_database' ) );
-			// add_action( 'wp_ajax_lp_rollback_database', array( __CLASS__, 'rollback_database' ) );
-			// add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
-			// add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
-			// add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		}
 
 		/**
@@ -79,6 +65,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
 			}
+
+			if ( ! get_option( 'learn_press_currency' ) ) {
+				update_option( 'learn_press_currency', 'USD' );
+			}
 		}
 
 		/**
@@ -87,7 +77,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * @since 3.x.x
 		 */
 		public static function do_install() {
-
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
 			}
@@ -101,19 +90,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
-		/**
-		 * Run updater if user click on 'Update Now' button
-		 */
-		public static function do_update() {
-			if ( empty( $_REQUEST['do-update-learnpress'] ) ) {
-				return;
-			}
-
-			if ( ! empty( $_REQUEST['redirect'] ) ) {
-				wp_safe_redirect( urldecode( $_REQUEST['redirect'] ) );
-			}
-		}
-
 		public static function subscription_button() {
 			// Only administrator of the site can do this
 			if ( ! current_user_can( 'administrator' ) ) {
@@ -121,51 +97,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 
 			LP_Admin_Notice::instance()->add( 'tools/subscription-button.php', '', true, 'newsletter-button' );
-		}
-
-		/**
-		 * Check new update and show message in admin
-		 */
-		public static function check_update() {
-			// Only administrator of the site can do this
-			if ( ! current_user_can( 'administrator' ) ) {
-				return;
-			}
-
-			/**
-			 * For test upgrade
-			 */
-			if ( isset( $_REQUEST['test-upgrade'] ) ) {
-				$ver = $_REQUEST['test-upgrade'];
-				if ( ! empty( self::$_update_files[ $ver ] ) ) {
-					include_once LP_PLUGIN_PATH . '/inc/updates/' . self::$_update_files[ $ver ];
-				}
-			}
-
-			// There is no file to update
-			if ( ! self::$_update_files ) {
-				return;
-			}
-
-			// Get versions
-			$versions   = array_keys( self::$_update_files );
-			$latest_ver = end( $versions );
-			$db_version = get_option( 'learnpress_db_version' );
-
-			// Check latest version with the value updated in db
-			if ( ! $db_version || version_compare( $db_version, $latest_ver, '>=' ) ) {
-				return;
-			}
-
-			// Show message if the latest version is not already updated
-			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
-		}
-
-		/**
-		 * Show message for new update
-		 */
-		public static function check_update_message() {
-			learn_press_admin_view( 'updates/html-update-message' );
 		}
 
 		/**
@@ -199,8 +130,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				)
 			);
 
-			self::update_db_version();
 			self::update_version();
+
+			if ( ! get_option( 'learnpress_db_version' ) ) {
+				self::update_db_version();
+			}
 		}
 
 		protected static function _clear_backgrounds() {
@@ -555,42 +489,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
-		public static function update_from_09() {
-			if ( ! self::_has_new_table() || version_compare( LEARNPRESS_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
-				self::install();
-			}
-
-			if ( ! get_option( 'learnpress_version' ) || ! get_option( 'learn_press_currency' ) ) {
-				self::create_options();
-			}
-
-			$ask = get_transient( 'learn_press_upgrade_courses_ask_again' );
-
-			if ( self::_need_to_update() ) {
-				// Notify for administrator
-				if ( empty( $ask ) && learn_press_current_user_is( 'administrator' ) ) {
-					LP_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/09/style.css' ) );
-					LP_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/09/script.js' ) );
-					$upgrade_url = wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_from_09' ), 'learn-press-upgrade-09' );
-					$message     = sprintf( '<p>%s</p>', __( 'It seems like you have updated LearnPress from an older version and there are some outdated courses or data that need to be upgraded.', 'learnpress' ) );
-					$message    .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learnpress' ), __( 'Ok', 'learnpress' ), __( 'Cancel', 'learnpress' ) );
-					$message    .= sprintf( '<p id="learn-press-upgrade-course-actions"><a href="%s" class="button" data-action="upgrade">%s</a>&nbsp;<button class="button disabled" data-action="abort">%s</button></p>', $upgrade_url, __( 'Upgrade now', 'learnpress' ), __( 'No, thank!', 'learnpress' ) );
-
-					LP_Admin_Notice::instance()->add( $message, 'error' );
-				}
-
-				// Notify for instructor
-				if ( learn_press_current_user_is( 'instructor' ) ) {
-					LP_Admin_Notice::instance()->add( sprintf( '<p>%s</p>', __( 'LearnPress has been updated and the database needs to be upgraded before you can work with it. Please notify the site administrator.', 'learnpress' ) ), 'error' );
-				}
-			}
-		}
-
-		public static function admin_menu() {
-			add_dashboard_page( '', '', 'manage_options', 'learn_press_upgrade_from_09', '' );
-
-		}
-
 		public static function hide_upgrade_notice() {
 			$ask_again  = learn_press_get_request( 'ask_again' );
 			$expiration = DAY_IN_SECONDS;
@@ -660,35 +558,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
-		/**
-		 * Install update actions when user click update button
-		 */
-		public static function update_actions() {
-			if ( ! empty( $_GET['upgrade_learnpress'] ) ) {
-				self::update();
-			}
-		}
-
-		/**
-		 * Check for new database version and show notice
-		 */
-		public static function db_update_notices() {
-			if ( get_option( 'learnpress_db_version' ) != LP()->version ) {
-				// code
-			}
-		}
-
-
 		private static function _create_cron_jobs() {
 			wp_clear_scheduled_hook( 'learn_press_cleanup_sessions' );
 			wp_schedule_event( time(), apply_filters( 'learn_press_cleanup_session_recurrence', 'twicedaily' ), 'learn_press_cleanup_sessions' );
 		}
-
-		public static function _auto_update() {
-			self::get_update_files();
-			self::update();
-		}
-
 
 		private function _is_old_version() {
 			if ( is_null( self::$_is_old_version ) ) {
@@ -790,25 +663,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return sizeof( $new_post ) > 0;
 		}
 
-		public static function update() {
-			$learnpress_db_version = get_option( 'learnpress_db_version' );
-
-			foreach ( self::$_update_files as $version => $updater ) {
-				if ( version_compare( $learnpress_db_version, $version, '<' ) ) {
-					@include LP_PLUGIN_PATH . '/inc/updates/' . $updater;
-					self::update_db_version( $version );
-				}
-			}
-
-			self::update_db_version();
-			self::update_version();
-		}
-
 		public static function update_db_version( $version = null ) {
 			delete_option( 'learnpress_db_version' );
 			update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
-
-			// LP_Debug::instance()->add( debug_backtrace(), 'update_db_version', false, true );
 		}
 
 		public static function update_version( $version = null ) {

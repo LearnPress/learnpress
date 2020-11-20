@@ -6,6 +6,8 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+learn_press_admin_view( 'updates/html-update-modal' );
 ?>
 
 <div class="notice notice-warning lp-notice-update-database">

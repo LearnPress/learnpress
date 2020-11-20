@@ -21,26 +21,45 @@ class LP_Updater {
 	 * LP_Updater constructor.
 	 */
 	protected function __construct() {
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_action( 'admin_init', array( $this, 'update_form' ) );
 		add_action( 'admin_init', array( $this, 'do_update' ) );
+		add_action( 'admin_notices', array( $this, 'check_update_message' ), 20 );
 
 		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
-			add_action( 'admin_notices', array( $this, 'update_message' ), 10 );
+			add_action( 'admin_notices', array( $this, 'update_message' ) );
 		}
 
 		LP_Request::register_ajax( 'check-updated', array( $this, 'check_updated' ) );
+
+		add_action( 'wp_ajax_lp_update_database', array( $this, 'update_database_ajax' ) );
+	}
+
+	public function update_database_ajax() {
+		$this->_do_update();
+
+		$db_version     = get_option( 'learnpress_db_version' );
+		$latest_version = $this->get_latest_version();
+		$response       = array();
+
+		if ( version_compare( $db_version, $latest_version, '>=' ) ) {
+			$response['status']  = 'success';
+			$response['message'] = esc_html__( 'LearnPress has just updated to latest version.', 'learnpress' );
+		} else {
+			$response['status'] = 'error';
+		}
+
+		wp_send_json( $response );
+		die();
 	}
 
 	public function check_updated() {
-
 		$this->do_update();
+
 		$db_version     = get_option( 'learnpress_db_version' );
 		$latest_version = $this->get_latest_version();
 		$response       = array();
 		$next_step      = get_option( 'learnpress_updater_step' );
 
-		if ( version_compare( $db_version, $latest_version, '>=' ) || ( version_compare( $db_version, '3.0.0', '>=' ) && ! $next_step ) ) {
+		if ( version_compare( $db_version, $latest_version, '>=' ) ) {
 			$response['result']  = 'success';
 			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
 		} else {
@@ -49,11 +68,10 @@ class LP_Updater {
 
 		learn_press_send_json( $response );
 
-		wp_die();
+		die();
 	}
 
 	public function update_message() {
-		remove_action( 'admin_notices', array( 'LP_Install', 'check_update_message' ), 20 );
 		learn_press_admin_view( 'updates/html-updating-message' );
 	}
 
@@ -78,7 +96,6 @@ class LP_Updater {
 	}
 
 	protected function _do_update() {
-
 		try {
 			$db_version     = get_option( 'learnpress_db_version' );
 			$latest_version = true;
@@ -89,9 +106,7 @@ class LP_Updater {
 					continue;
 				}
 
-				$file = LP_PLUGIN_PATH . '/inc/updates/' . $file;
-
-				include_once $file;
+				include_once LP_PLUGIN_PATH . '/inc/updates/' . $file;
 
 				update_option( 'learnpress_updater', $version, 'yes' );
 
@@ -152,6 +167,7 @@ class LP_Updater {
 	public function get_update_files() {
 		if ( ! $this->_update_files ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
+
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 
@@ -177,56 +193,32 @@ class LP_Updater {
 	}
 
 	/**
-	 * Add an empty menu for passing permission check
+	 * Show message for new update
 	 */
-	public function admin_menu() {
-		if ( 'lp-database-updater' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
+	public function check_update_message() {
+		if ( ! current_user_can( 'administrator' ) ) {
 			return;
 		}
 
-		add_dashboard_page( '', '', 'manage_options', 'lp-database-updater', '' );
-	}
-
-	public function update_form() {
-		if ( 'lp-database-updater' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
+		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
 			return;
 		}
 
-		$assets = learn_press_admin_assets();
+		if ( LP()->session->get( 'do-update-learnpress' ) ) {
+			learn_press_admin_view( 'updates/html-updated-latest-message' );
 
-		wp_enqueue_style( 'buttons' );
-		wp_enqueue_style( 'common' );
-		wp_enqueue_style( 'forms' );
-		wp_enqueue_style( 'themes' );
-		wp_enqueue_style( 'dashboard' );
-		wp_enqueue_style( 'widgets' );
-		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
-		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
+			return;
+		}
 
-		wp_enqueue_script(
-			'lp-global',
-			$assets->url( 'js/global.js' ),
-			array(
-				'jquery',
-				'jquery-ui-sortable',
-				'underscore',
-			)
-		);
-		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
-		wp_enqueue_script( 'lp-admin', $assets->url( 'js/admin/admin.js' ) );
-		wp_enqueue_script(
-			'lp-update',
-			$assets->url( 'js/admin/update.js' ),
-			array(
-				'lp-global',
-				'lp-admin',
-				'lp-utils',
-			)
-		);
+		$latest_version = $this->get_latest_version();
+		$db_version     = get_option( 'learnpress_db_version' );
 
-		learn_press_admin_view( 'updates/update-screen' );
+		if ( ! $db_version || version_compare( $db_version, $latest_version, '>=' ) ) {
+			return;
+		}
 
-		die();
+		learn_press_admin_view( 'updates/html-update-message' );
+
 	}
 
 	/**

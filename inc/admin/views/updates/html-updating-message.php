@@ -16,13 +16,13 @@ defined( 'ABSPATH' ) || exit;
 	</p>
 </div>
 
-<script type="text/javascript">
-	(function (win, doc) {
+<script>
+	(function( win, doc ) {
 		var t = null;
 		var $ = jQuery;
 
-		function parseJSON(data) {
-			if (typeof data !== 'string') {
+		function parseJSON( data ) {
+			if ( typeof data !== 'string' ) {
 				return data;
 			}
 
@@ -41,36 +41,39 @@ defined( 'ABSPATH' ) || exit;
 		}
 
 		function sendRequest() {
-			t = setTimeout(function () {
+			t = setTimeout( function() {
 				var $ = jQuery;
 				$.ajax({
 					url: '',
 					data: {
 						'lp-ajax': 'check-updated'
 					},
-					success: function (response) {
-						response = parseJSON(response);
-						if (response.result === 'success') {
+					success: function( response ) {
+						response = parseJSON( response );
+
+						if ( response.result === 'success' ) {
 							clearTimeout(t);
-							$('.lp-notice-update-database.do-updating').replaceWith($(response.message));
+							$('.lp-notice-update-database.do-updating').replaceWith( $( response.message ) );
 							window.onbeforeunload = null;
 							return;
 						}
 						sendRequest();
 					}
 				});
-			}, 1000);
+			}, 1000 );
 
-			window.onbeforeunload = function () {
-				return 'Warning! Please dont close or reload this page.'
-			}
+			window.addEventListener( 'beforeunload', function( e ) {
+				e.preventDefault();
+
+				e.returnValue = 'Warning! Please don\'t close or reload this page.';
+			} );
 		}
 
-		if (document.readyState === "complete") {
-			sendRequest.apply(win);
+		if ( document.readyState === "complete" ) {
+			sendRequest.apply( win );
 		} else {
-			window.addEventListener('load', sendRequest);
+			window.addEventListener( 'load', sendRequest );
 		}
-	})(window, document)
+	})( window, document );
 
 </script>
