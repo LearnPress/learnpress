@@ -409,4 +409,6 @@ if ( ! function_exists( 'lp_settings' ) ) {
 	function lp_settings() {
 		return LP_Settings::instance();
 	}
+
+	lp_settings();
 }
