@@ -3571,6 +3571,145 @@ input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
   border-color: #d85554;
 }
 
+.lp-update-db-modal {
+  display: flex;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.lp-update-db-modal__hidden {
+  display: none !important;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lp-update-db-modal__overlay {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(209, 213, 219, 0.8);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  transition-property: opacity;
+}
+
+.lp-update-db-modal__content {
+  display: inline-block;
+  overflow: hidden;
+  z-index: 2;
+  width: 100%;
+  max-width: 510px;
+  border-radius: 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.lp-update-db-modal__content-header {
+  padding: 24px 24px 16px 24px;
+  background-color: #fff;
+}
+
+.lp-update-db-modal__content-start {
+  display: flex;
+  flex-direction: flex-start;
+}
+
+.lp-update-db-modal__content-icon {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  margin-right: 0;
+  margin-left: 0;
+  border-radius: 999px;
+  background-color: #fee2e2;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.lp-update-db-modal__content-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #dc2626;
+}
+
+.lp-update-db-modal__content-icon svg:last-child {
+  color: #258d6c;
+}
+
+.lp-update-db-modal__content-icon__success {
+  display: none;
+}
+
+.lp-update-db-modal__content-text {
+  margin-left: 18px;
+  text-align: left;
+}
+
+.lp-update-db-modal__content-text h3 {
+  margin: 0;
+  font-weight: 500;
+}
+
+.lp-update-db-modal__content-text p {
+  margin: 0;
+  margin-top: 10px;
+  color: #999;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.lp-update-db-modal__content-footer {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 24px;
+  background-color: #f9fafb;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.lp-update-db-modal__content-footer a {
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.lp-update-db-modal__content-footer a:last-child {
+  margin-left: 10px;
+  color: #fff;
+  background-color: #0073aa;
+}
+
+.lp-update-db-modal__success .lp-update-db-modal__content-icon {
+  background-color: #def7ec;
+}
+
+.lp-update-db-modal__success .lp-update-db-modal__content-icon__error {
+  display: none;
+}
+
+.lp-update-db-modal__success .lp-update-db-modal__content-icon__success {
+  display: block;
+}
+
 /**
  * General style for admin editor.
  */

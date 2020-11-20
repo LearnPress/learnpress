@@ -51,10 +51,15 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
 
-			add_filter( 'learn-press/dismissed-notice-response', array(
-				$this,
-				'on_dismissed_notice_response'
-			), 10, 2 );
+			add_filter(
+				'learn-press/dismissed-notice-response',
+				array(
+					$this,
+					'on_dismissed_notice_response',
+				),
+				10,
+				2
+			);
 
 			// get list items course of user | tungnx
 			add_action( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
@@ -105,7 +110,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.0
-		 *
 		 */
 		public function views_plugins( $views ) {
 			global $s;
@@ -147,7 +151,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @return bool
 		 * @since 3.0.0
-		 *
 		 */
 		public function _search_callback( $plugin ) {
 			foreach ( $plugin as $value ) {
@@ -360,7 +363,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int $post
+		 * @param int    $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -427,7 +430,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -528,10 +531,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$action  = LP_Request::get( 'lp-action' );
 			$user_id = LP_Request::get_int( 'user_id' );
 
-			if ( ( in_array( $action, array(
-					'accepted-request',
-					'denied-request'
-				) ) ) && ( $user_id ) && get_user_by( 'id', $user_id ) ) {
+			if ( ( in_array( $action, array( 'accepted-request', 'denied-request' ) ) ) && ( $user_id ) && get_user_by( 'id', $user_id ) ) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				}
@@ -542,10 +542,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				</div>
 
 				<?php
-			}
-
-			if ( LP()->session->get( 'do-update-learnpress' ) ) {
-				learn_press_admin_view( 'updates/html-updated-latest-message' );
 			}
 		}
 
@@ -600,11 +596,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			<style type="text/css">
 				.admin-color {
-					color: <?php echo $colors[0];?>
+					color: <?php echo $colors[0]; ?>
 				}
 
 				.admin-background {
-					color: <?php echo $colors[0];?>
+					color: <?php echo $colors[0]; ?>
 				}
 			</style>
 
@@ -710,12 +706,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Send data to join newsletter or dismiss.
 		 *
-		 * @param array $data
+		 * @param array  $data
 		 * @param string $notice
 		 *
 		 * @return array
 		 * @since 3.0.10
-		 *
 		 */
 		public function on_dismissed_notice_response( $data, $notice ) {
 			switch ( $notice ) {
@@ -815,8 +810,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			$post_type_valid = apply_filters( 'learn-press/filter-user-access-types',
-				array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) );
+			$post_type_valid = apply_filters(
+				'learn-press/filter-user-access-types',
+				array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT )
+			);
 
 			if ( ! in_array( $post_type, $post_type_valid ) ) {
 				return;
@@ -833,10 +830,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Set link item of course when edit item on Backend
 		 *
-		 * @param string $post_link
-		 * @param int $post_id
-		 * @param string $new_title
-		 * @param string $new_slug
+		 * @param string       $post_link
+		 * @param int          $post_id
+		 * @param string       $new_title
+		 * @param string       $new_slug
 		 * @param WP_Post|null $post
 		 *
 		 * @return array|int|mixed|string|void
@@ -865,7 +862,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						$post_slug = $new_slug;
 					}
 
-					$post_link = '<strong>Permalink: </strong>';
+					$post_link  = '<strong>Permalink: </strong>';
 					$post_link .= '<span id="sample-permalink">';
 					$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
 					$post_link .= '</span>';

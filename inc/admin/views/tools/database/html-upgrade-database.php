@@ -2,10 +2,12 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 3.0.0
+ * @version 4.0.0
  */
 
-defined( 'ABSPATH' ) || die();
+defined( 'ABSPATH' ) || exit();
+
+learn_press_admin_view( 'updates/html-update-modal' );
 ?>
 
 <div class="card">
