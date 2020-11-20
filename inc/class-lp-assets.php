@@ -30,15 +30,15 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
-				'font-awesome' => array(
+				'lp-font-awesome-5' => array(
 					'url'     => self::url( 'css/vendor/font-awesome-5.min.css' ),
 					'screens' => array( 'learnpress' ),
 				),
-				'lp-bundle'    => array(
+				'lp-bundle'         => array(
 					'url'     => self::url( 'css/bundle.min.css' ),
 					'screens' => array( 'learnpress' ),
 				),
-				'learnpress'   => array(
+				'learnpress'        => array(
 					'url'     => self::url( 'css/learnpress.css' ),
 					'screens' => 'learnpress',
 				),
@@ -99,7 +99,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'learn-press/frontend-default-scripts',
 			array(
 				'lp-modal'             => new LP_Asset_Key(
-					self::url( 'js/frontend/modal.js' ),
+					self::url( 'js/dist/frontend/modal.js' ),
 					array( 'jquery' )
 				),
 				'lp-plugins-all'       => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
