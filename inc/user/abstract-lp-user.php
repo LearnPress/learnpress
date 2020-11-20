@@ -1204,9 +1204,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			// @deprecated
-			$view = apply_filters( 'learn_press_user_view_quiz', $view, $item_id, $this->get_id(), $course_id );
-
 			return apply_filters( 'learn-press/can-view-item', $view, $item_id, $this->get_id(), $course_id );
 
 			// $return    = false;
