@@ -476,6 +476,23 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		/**
+		 * Fix only for WPBakery load style inline
+		 * custom CSS is provided, load inline style.
+		 *
+		 * @editor tuanta
+		 * @since 3.2.8.1
+		 */
+		$shortcodes_custom_css = get_post_meta( $item->get_id(), '_wpb_shortcodes_custom_css', true );
+
+		if ( ! empty( $shortcodes_custom_css ) ) {
+			$shortcodes_custom_css = strip_tags( $shortcodes_custom_css );
+			echo '<style type="text/css" data-type="vc_shortcodes-custom-css">';
+			echo $shortcodes_custom_css;
+			echo '</style>';
+		}
+		// End
+
 		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 
 		if ( file_exists( $item_template_name ) ) {
