@@ -10,6 +10,6 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-?>
 
-<ul class="learn-press-courses" data-layout="<?php echo learn_press_get_courses_layout(); ?>">
+echo apply_filters( 'learn_press_course_loop_begin', '<ul class="learn-press-courses" data-layout="'.learn_press_get_courses_layout().'">');
+?>

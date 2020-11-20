@@ -10,6 +10,7 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-?>
 
-</ul>
+echo apply_filters( 'learn_press_course_loop_end', '</ul>');
+
+?>

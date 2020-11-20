@@ -2640,6 +2640,7 @@ ul.learn-press-nav-tabs::after {
   font-weight: normal;
   line-height: 1;
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-header .section-title span.show-desc {
   display: inline-block;
   position: absolute;
@@ -2649,12 +2650,14 @@ ul.learn-press-nav-tabs::after {
   height: 20px;
   transform: translate(0, -50%);
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-header .section-title span.show-desc::before {
   font-family: "Font Awesome 5 Free";
   font-size: 18px;
   font-weight: 900;
-  content: "";
+  content: "\f107";
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-header .section-title span.show-desc:hover::before {
   border-top-color: #ccc;
 }
@@ -2887,17 +2890,21 @@ ul.learn-press-nav-tabs::after {
   top: 0;
   height: 100%;
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-item-link {
   color: #777;
   text-decoration: none;
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-desc {
   display: none;
   color: #999;
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-title.c + .section-desc {
   display: block;
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .section-title.c span.show-desc::before {
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
@@ -2906,6 +2913,7 @@ ul.learn-press-nav-tabs::after {
   transform: rotate(180deg);
   top: 0;
 }
+
 #learn-press-course-curriculum.course-curriculum ul.curriculum-sections .item-meta.duration {
   background: #d9e0f1;
 }
@@ -5954,15 +5962,6 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20)::before {
   text-decoration: none;
 }
 
-<<<<<<< HEAD
-#learn-press-course-curriculum .section-header {
-  padding: 10px 0;
-  border-bottom: 1px solid #d9e0f1;
-  background: #fff;
-}
-
-=======
->>>>>>> 600d6d063a2a05917cb8a00439de0ac601b53e97
 #learn-press-course-curriculum .section-title {
   position: relative;
   margin-bottom: 0;
@@ -5993,36 +5992,6 @@ input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20)::before {
 #learn-press-course-curriculum .section-title span.show-desc:hover::before {
   border-top-color: #ccc;
 }
-<<<<<<< HEAD
-
-#learn-press-course-curriculum .section-item-link {
-  color: #777;
-  text-decoration: none;
-}
-
-#learn-press-course-curriculum .section-desc {
-  display: none;
-  color: #999;
-}
-
-#learn-press-course-curriculum .section-title.c + .section-desc {
-  display: block;
-}
-
-#learn-press-course-curriculum .section-title.c span.show-desc::before {
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  transform: rotate(180deg);
-  top: 0;
-}
-
-#learn-press-course-curriculum .item-meta.duration {
-  background: #d9e0f1;
-}
-=======
->>>>>>> 600d6d063a2a05917cb8a00439de0ac601b53e97
 
 #popup-course {
   display: flex;
