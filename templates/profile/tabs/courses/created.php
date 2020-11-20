@@ -41,7 +41,7 @@ $filters       = $profile->get_own_courses_filters( $filter_status );
 		<?php learn_press_display_message( esc_html__( 'No courses!', 'learnpress' ) ); ?>
 	<?php else : ?>
 		<div class="lp-archive-courses">
-			<ul class="learn-press-courses profile-courses-list<?php echo apply_filters( 'lp_extral_class_item_courses','');?>" id="learn-press-profile-created-courses" data-layout="grid" data-size="3">
+			<ul <?php lp_item_course_class(array('profile-courses-list'));?> id="learn-press-profile-created-courses" data-layout="grid" data-size="3">
 				<?php
 				global $post;
 

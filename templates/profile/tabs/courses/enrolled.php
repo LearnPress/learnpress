@@ -39,7 +39,7 @@ $filters       = $profile->get_purchased_courses_filters( $filter_status );
 
 	<?php if ( $query['items'] ) : ?>
 		<div class="lp-archive-courses">
-			<ul class="learn-press-courses profile-courses-list<?php echo apply_filters( 'lp_extral_class_item_courses','');?>" id="learn-press-profile-enrolled-courses" data-layout="grid" data-size="3">
+			<ul <?php lp_item_course_class(array('profile-courses-list'));?> id="learn-press-profile-enrolled-courses" data-layout="grid" data-size="3">
 				<?php
 				global $post;
 
