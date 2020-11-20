@@ -22,6 +22,51 @@
 	}
 }
 
+#learn-press-course-curriculum {
+
+	.section-header {
+		//padding: 10px 0;
+		//
+
+	}
+
+	.section-title {
+		position: relative;
+		margin-bottom: 0;
+		padding: 8px 0;
+		color: #5383f7;
+		font-size: 16px;
+		font-weight: normal;
+		line-height: 1;
+
+		span.show-desc {
+			display: inline-block;
+			position: absolute;
+			top: 50%;
+			right: 30px;
+			width: 20px;
+			height: 20px;
+			transform: translate(0, -50%);
+
+			&::before {
+				font-family: "Font Awesome 5 Free";
+				font-size: 18px;
+				font-weight: 900;
+				content: "\f107";
+			}
+
+			&:hover {
+
+				&::before {
+					border-top-color: #ccc;
+				}
+			}
+		}
+	}
+
+
+}
+
 #popup-course {
 	display: flex;
 	position: fixed;
