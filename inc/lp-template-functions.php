@@ -597,6 +597,23 @@ if ( ! function_exists( 'learn_press_course_item_content' ) ) {
 	function learn_press_course_item_content() {
 		$item = LP_Global::course_item();
 
+		/**
+		 * Fix only for WPBakery load style inline
+		 * custom CSS is provided, load inline style.
+		 *
+		 * @editor tuanta
+		 * @since 3.2.8.1
+		 */
+		$shortcodes_custom_css = get_post_meta( $item->get_id(), '_wpb_shortcodes_custom_css', true );
+
+		if ( ! empty( $shortcodes_custom_css ) ) {
+			$shortcodes_custom_css = strip_tags( $shortcodes_custom_css );
+			echo '<style type="text/css" data-type="vc_shortcodes-custom-css">';
+			echo $shortcodes_custom_css;
+			echo '</style>';
+		}
+		// End
+
 		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 
 		if ( file_exists( $item_template_name ) ) {

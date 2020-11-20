@@ -19,9 +19,9 @@ if ( ! $order->is_guest() ) {
 } ?>
 
 <div>
-    <p><?php _e( 'This order was checked out by you but there is no user was assigned to.' ); ?></p>
-    <p><?php _e( 'If the order is made for another one, you can send the code below to them.' ); ?></p>
-    <p><?php _e( 'If the order is made for yourself, you can assign it to you here.' ); ?></p>
+    <p><?php _e( 'This order was checked out by you but there is no user was assigned to.', 'learnpress' ); ?></p>
+    <p><?php _e( 'If the order is made for another one, you can send the code below to them.', 'learnpress' ); ?></p>
+    <p><?php _e( 'If the order is made for yourself, you can assign it to you here.', 'learnpress' ); ?></p>
 </div>
 
 <?php learn_press_get_template( 'order/retrieve.php', array( 'order' => $order ) ); ?>

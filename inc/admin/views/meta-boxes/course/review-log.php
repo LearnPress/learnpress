@@ -37,7 +37,7 @@ $status                = get_post_status();
 		<?php } else { ?>
 			<?php if ( $required_review && !$enable_edit_published ) { ?>
 				<p class="description submitdelete">
-					<?php _e( 'Warning! Your course will become Pending Review for admins to review before it can be published when you update.' ); ?>
+					<?php _e( 'Warning! Your course will become Pending Review for admins to review before it can be published when you update.', 'learnpress' ); ?>
 				</p>
 				<textarea class="widefat" rows="5" id="review-message" name="review-message" resize="none" placeholder="<?php _e( 'Message to Reviewer', 'learnpress' ); ?>"></textarea>
 			<?php } ?>
