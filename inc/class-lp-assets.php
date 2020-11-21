@@ -31,7 +31,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'learn-press/frontend-default-styles',
 			array(
 				'lp-font-awesome-5' => array(
-					'url'     => self::url( 'css/vendor/font-awesome-5.min.css' ),
+					'url'     => self::url( 'src/css/vendor/font-awesome-5.min.css' ),
 					'screens' => array( 'learnpress' ),
 				),
 				'lp-bundle'         => array(

@@ -80,20 +80,32 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 					case 'email':
 					case 'url':
 					case 'tel':
-						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/text.php';
+						include LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/text.php';
 						break;
-
 					case 'select':
 					case 'multiselect':
-						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/select.php';
+						include LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/select.php';
 						break;
-
 					case 'image_advanced':
-						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/image-advanced.php';
+						include LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/image-advanced.php';
 						break;
-
 					default:
-						include LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/' . $value['type'] . '.php';
+						$file_meta_box_custom = LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/' . $value['type'] . '.php';
+						$file_meta_box_custom = apply_filters( 'learnpress/meta-box/field-custom', $file_meta_box_custom );
+
+						$pattern_find_match = '/\/admin\/meta-box\/fields\//';
+						preg_match( $pattern_find_match, $file_meta_box_custom, $match );
+
+						if ( empty( $match ) ) {
+							echo sprintf( '<p class="lp-error">Path file "%s" not valid. Format must is /admin/meta-box/fields</p>', $value['type'] );
+						}
+
+						if ( file_exists( $file_meta_box_custom ) ) {
+							include $file_meta_box_custom;
+						} else {
+							echo sprintf( '<p class="lp-error">File meta box "%s" not exists</p>', $value['type'] );
+						}
+
 						break;
 				}
 			}
