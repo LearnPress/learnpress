@@ -11,6 +11,11 @@ const Status = () => {
 
 	useEffect( () => {
 		const $pc = $( '#popup-content' );
+
+		if ( ! $pc.length ) {
+			return;
+		}
+
 		const $sc = $pc.find( '.content-item-scrollable:eq(1)' );
 		const $ciw = $pc.find( '.content-item-wrap' );
 		const $qs = $pc.find( '.quiz-status' );
