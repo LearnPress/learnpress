@@ -185,7 +185,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url' => $this->url( 'css/vendor/select2.min.css' )
 				),
 				'font-awesome'          => array(
-					'url' => $this->url( 'css/vendor/font-awesome-5.min.css' )
+					'url' => $this->url( 'src/css/vendor/font-awesome-5.min.css' )
 				),
 				'jquery-ui'             => array(
 					'url' => $this->url( 'css/vendor/jquery-ui/jquery-ui.min.css' )

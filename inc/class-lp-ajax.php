@@ -338,7 +338,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ), 'error' );
 			} else {
 				if ( $user->can_retake_course( $course_id ) ) {
-					if ( ! $result = $user->retry_course( $course_id ) ) {
+					$result = $user->retry_course( $course_id );
+
+					if ( ! $result ) {
 						learn_press_add_message( __( 'Error!', 'learnpress' ), 'error' );
 					} else {
 						learn_press_add_message( sprintf( __( 'You have retaken the course "%s"', 'learnpress' ), $course->get_title() ) );
@@ -350,7 +352,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			if ( learn_press_message_count( 'error' ) == 0 ) {
-				if ( $item = $course->get_item_at( 0 ) ) {
+				$item = $course->get_item_at( 0 );
+
+				if ( $item ) {
 					$redirect = $course->get_item_link( $item );
 				} else {
 					$redirect = $course->get_permalink();

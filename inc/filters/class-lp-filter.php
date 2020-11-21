@@ -14,10 +14,10 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Filter' ) ) {
 	class LP_Filter {
-		public $limit = 10;
-		public $order_by = '';
+		public $limit         = 10;
+		public $order_by      = '';
 		public $order_by_desc = '';
-		public $key_word = '';
+		public $key_word      = '';
 
 		public function __construct() {
 			$this->limit = apply_filters( 'lp/filter/limit', $this->limit );
