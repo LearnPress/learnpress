@@ -1,7 +1,4 @@
-<p align="center"><a href="https://vi.wordpress.org/plugins/learnpress/"><img src="https://ps.w.org/learnpress/assets/icon-256x256.png" alt="LearnPress" /></a></p>
-<p align="center">
-[![Travis](https://img.shields.io/travis/LearnPress/learnpress/develop.svg)](https://travis-ci.org/LearnPress/learnpress) [![GitHub issues](https://img.shields.io/github/issues/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/issues) [![GitHub forks](https://img.shields.io/github/forks/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/network) [![GitHub stars](https://img.shields.io/github/stars/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/stargazers)
-</p>
+# LearnPress  [![Travis](https://img.shields.io/travis/LearnPress/learnpress/develop.svg)](https://travis-ci.org/LearnPress/learnpress) [![GitHub issues](https://img.shields.io/github/issues/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/issues) [![GitHub forks](https://img.shields.io/github/forks/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/network) [![GitHub stars](https://img.shields.io/github/stars/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/stargazers)
 
 <a href="http://thimpress.com/learnpress" target="_blank">LearnPress</a> is a comprehensive WordPress LMS Plugin for WordPress. This WordPress LMS Plugin can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.  
 
