@@ -375,7 +375,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					$settings = $this->get_settings();
 
 					foreach ( $settings as $field ) {
-						if ( $field['type'] == 'heading' ) {
+						if ( $field['type'] == 'heading' || $field['type'] == 'title' || $field['type'] == 'sectionend' ) {
 							continue;
 						}
 
