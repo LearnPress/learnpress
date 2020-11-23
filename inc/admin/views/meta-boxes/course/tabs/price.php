@@ -7,14 +7,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$payment      = get_post_meta( $thepostid, '_lp_payment', true );
-$current_user = learn_press_get_current_user();
-$role         = $current_user->get_role();
+$payment = get_post_meta( $thepostid, '_lp_payment', true );
 ?>
 
 <div id="price_course_data" class="lp-meta-box-course-panels">
 
-	<?php if ( in_array( $role, apply_filters( 'learn-press/user-set-course-price-roles', array( 'admin', 'instructor' ) ) ) ) { ?>
+	<?php if ( current_user_can( LP_TEACHER_ROLE ) || current_user_can( 'administrator' ) ) { ?>
 		<?php
 		$message    = '';
 		$price      = get_post_meta( $thepostid, '_lp_price', true );
