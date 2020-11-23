@@ -1,4 +1,4 @@
-<p align="center"><a href="https://vi.wordpress.org/plugins/learnpress/"><img src="https://ps.w.org/learnpress/assets/icon-128x128.png?rev=2403692" alt="LearnPress" /></a></p>
+<p align="center"><a href="https://vi.wordpress.org/plugins/learnpress/"><img src="https://ps.w.org/learnpress/assets/icon-256x256.png" alt="LearnPress" /></a></p>
 <p align="center">
 [![Travis](https://img.shields.io/travis/LearnPress/learnpress/develop.svg)](https://travis-ci.org/LearnPress/learnpress) [![GitHub issues](https://img.shields.io/github/issues/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/issues) [![GitHub forks](https://img.shields.io/github/forks/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/network) [![GitHub stars](https://img.shields.io/github/stars/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/stargazers)
 </p>
