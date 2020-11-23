@@ -10,7 +10,8 @@
     "dev-packages": "cross-env BABEL_ENV=default webpack --config tools/build.packages.js --mode=development --watch",
     "build-packages": "cross-env BABEL_ENV=default NODE_ENV=production webpack --config tools/build.packages.js --progress -p",
     "build": "cross-env BABEL_ENV=default NODE_ENV=production webpack --progress -p",
-    "prod": "webpack --progress --colors -p --config webpack.config.js --mode=production"
+	"prod": "webpack --progress --colors -p --config webpack.config.js --mode=production",
+	"dev-build" : "npm run build && npm run build-packages && gulp styles"
   },
   "repository": {
     "type": "git",

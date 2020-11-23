@@ -1,16 +1,17 @@
-# LearnPress  [![Travis](https://img.shields.io/travis/LearnPress/learnpress/develop.svg)](https://travis-ci.org/LearnPress/learnpress) [![GitHub issues](https://img.shields.io/github/issues/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/issues) [![GitHub forks](https://img.shields.io/github/forks/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/network) [![GitHub stars](https://img.shields.io/github/stars/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/stargazers)
+<p align="center"><a href="https://vi.wordpress.org/plugins/learnpress/"><img src="https://ps.w.org/learnpress/assets/icon-128x128.png?rev=2403692" alt="LearnPress" /></a></p>
+<p align="center">
+[![Travis](https://img.shields.io/travis/LearnPress/learnpress/develop.svg)](https://travis-ci.org/LearnPress/learnpress) [![GitHub issues](https://img.shields.io/github/issues/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/issues) [![GitHub forks](https://img.shields.io/github/forks/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/network) [![GitHub stars](https://img.shields.io/github/stars/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/stargazers)
+</p>
 
 <a href="http://thimpress.com/learnpress" target="_blank">LearnPress</a> is a comprehensive WordPress LMS Plugin for WordPress. This WordPress LMS Plugin can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.  
 
-[youtube https://www.youtube.com/watch?v=3LDa8vtDIAk&hd=1&&cc_load_policy=1]
-
+* [Youtube] (https://www.youtube.com/watch?v=3LDa8vtDIAk&hd=1&&cc_load_policy=1)
+* [Documentation] (http://docs.thimpress.com/learnpress)
+* [Add-ons] (https://thimpress.com/wordpress/learnpress/)
+* Premium Themes: [Eduma] (http://themeforest.net/item/education-wordpress-theme-education-wp/14058034) | [LMS WordPress theme] (http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847). More will coming soon.
+## LearnPress Features
 **LearnPress LMS Plugin works with your theme**  
 We create LearnPress LMS Plugin to work with any WordPress themes.
-
-Here are some WordPress Themes designed to work with LearnPress: [Education WordPress Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034 "Education WordPress Theme") and [LMS WordPress theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847 "LMS WordPress Theme"). More will coming soon.
-
-
-**LearnPress Support WordPress Multisites**
 
 **LearnPress features**  
 *Create course*  
@@ -29,13 +30,15 @@ With BuddyPress support, LearnPress will help you to communicate with your stude
 *LearnPress provide a bunch of add-on*  
 Add-on is used to providing extra features for LearnPress and you can also write it.  
 
-<a href="http://docs.thimpress.com/learnpress" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
-
 **LearnPress is free and always will be**  
 Education should be free and we want you to bring it to as many people as you can. Therefore, we create LearnPress as a tool for you to create course and share it. We'll continue developing it as long as we can and make it better and better.  
 
 **LearnPress is actively developed**  
 We are developing and improving LearnPress day by day and bringing new features to you cos we want LearnPress to become the best WordPress plugin in LMS.
+
+**LearnPress Support WordPress Multisites**
+
+## Learnpress Add-ons
 
 **Free add-ons for LearnPress WordPress LMS Plugin:**
 
@@ -95,10 +98,10 @@ We are developing and improving LearnPress day by day and bringing new features 
 Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
 
 
-##Installation
+## Install
 
 **From your WordPress dashboard**  
-1. Visit 'Plugin > Add new'.  
+1. Visit 'Plugins > Add new'.  
 2. Search for 'LearnPress'.  
 3. Activate LearnPress from your Plugins page.  
 
@@ -106,7 +109,7 @@ Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress
 1. Search, select and download LearnPress.  
 2. Activate the plugin through the 'Plugins' menu in WordPress Dashboard.  
 
-##Frequently Asked Questions  
+## Frequently Asked Questions  
 
 **What is LearnPress ?**  
 LearnPress is a plugin to create a LMS website, to spread out course, or sell course.  
@@ -138,7 +141,7 @@ https://www.transifex.com/projects/p/learnpress/
 **Other note**  
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  
 
-##For DEVs
+## For Developer.
 1. <code>git clone https://github.com/LearnPress/learnpress.git</code>  
 
 2. <code>npm install</code> *Install required packages.*
@@ -146,3 +149,5 @@ https://www.transifex.com/projects/p/learnpress/
 3. <code>npm run dev</code> *Watch changes to compile js/scss when developing.*
 
 4. <code>npm run build</code> *Build and compress js files.*
+   
+5. <code>npm run dev-build</code> *Build for all js, css files.*
