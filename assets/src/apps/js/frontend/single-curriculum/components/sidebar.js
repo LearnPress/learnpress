@@ -34,7 +34,8 @@ export const Sidebar = () => {
 
 	$( '.section' ).each( function() {
 		const $section = $( this ),
-			$toggle = $section.find( '.section-toggle' );
+			$toggle = $section.find( '.section-left' );
+
 		$toggle.on( 'click', function() {
 			const isClose = $section.toggleClass( 'closed' ).hasClass( 'closed' );
 			const sections = LP.Cookies.get( 'closed-section-' + lpGlobalSettings.post_id ) || [];

@@ -1,5 +1,7 @@
 /**
  * Toogle form Comment for Lesson.
+ *
+ * @author Nhamdv.
  */
 
 export const commentForm = () => {
