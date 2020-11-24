@@ -502,8 +502,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function toggle_item_preview() {
 			$id = learn_press_get_request( 'item_id' );
 			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
-					'lp_lesson',
-					'lp_quiz'
+					'lp_lesson'
 				) ) ) && wp_verify_nonce( sanitize_key( learn_press_get_request( 'nonce' ) ), 'learn-press-toggle-item-preview' )
 			) {
 				$previewable = learn_press_get_request( 'previewable' );
