@@ -144,7 +144,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 				 * Retake count > 0 && course duration is blocked
 				 * @editor hungkv
 				 */
-				if ( $course->get_retake_count() <= 0 &&
+				if ( $user->can_retake_course( $course->get_id() ) <= 0 &&
 				     $user->user_check_blocked_duration( $course->get_id() ) == true ) {
 					learn_press_get_template( 'single-course/buttons/enroll.php' );
 				}
