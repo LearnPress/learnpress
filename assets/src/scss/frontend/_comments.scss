@@ -1,44 +1,54 @@
-#learn-press-item-comments {
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: #fff;
+#popup-content {
 
-	> label {
+	#learn-press-item-comments {
+		visibility: hidden;
+		overflow: auto;
 		position: absolute;
-		z-index: 1000000000;
-		top: -50px;
-		right: 10px;
-		height: 40px;
-		margin: 0;
-		padding: 0 10px;
-		border: 1px solid #ddd;
-		font-weight: normal;
-		line-height: 40px;
+		z-index: 99;
+		top: 0;
+		right: 0;
+		left: 0;
+		opacity: 0;
+		background: #fff;
+		transition: all 0.3s ease;
+		pointer-events: none;
+
+		.learn-press-comments {
+			width: 800px;
+			max-width: 90%;
+			margin: 20px auto;
+			padding: 50px;
+		}
 	}
 
-	.learn-press-comments {
-		display: none;
-		width: 800px;
-		max-width: 90%;
-		margin: 20px auto;
-		padding: 50px;
+	&.open-comments {
+
+		#learn-press-content-item {
+			display: none;
+		}
+
+		#learn-press-item-comments {
+			visibility: visible;
+			opacity: 1;
+			pointer-events: visible;
+		}
 	}
 }
 
-#learn-press-item-comments-toggle {
-
-	&:checked + #learn-press-item-comments {
-		top: 0;
-
-		> label {
-			top: 10px;
-			color: #ff0;
-		}
-
-		.learn-press-comments {
-			display: block;
-		}
-	}
+.lp-lesson-comment-btn {
+	position: fixed;
+	z-index: 100;
+	right: 40px;
+	bottom: 60px;
+	height: 40px;
+	margin: 0;
+	padding: 0 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	color: #fff;
+	background-color: var(--lp-primary-color);
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 40px;
+	cursor: pointer;
 }

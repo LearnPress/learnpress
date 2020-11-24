@@ -10,13 +10,10 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<input type="checkbox" id="learn-press-item-comments-toggle">
-<div id="learn-press-item-comments">
-	<label for="learn-press-item-comments-toggle"><?php esc_html_e( 'Comments', 'learnpress' ); ?></label>
+<a class="lp-lesson-comment-btn" href="#" data-close="<?php esc_attr_e( 'Close comments', 'learnpress' ); ?>"><?php esc_html_e( 'Open comments', 'learnpress' ); ?></a>
 
+<div id="learn-press-item-comments">
 	<div class="learn-press-comments">
-	<?php
-	comments_template();
-	?>
+		<?php comments_template(); ?>
 	</div>
 </div>
