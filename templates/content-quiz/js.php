@@ -52,12 +52,12 @@ if ( $user_quiz ) {
 		'status'            => $status,
 		'attempts'          => $attempts,
 		'checked_questions' => $checked_questions,
-		'start_time'        => $user_quiz->get_start_time()->toSql(),
+		'start_time'        => $user_quiz->get_start_time()->toSql( false ),
 	);
 
 	if ( isset( $total_time ) ) {
 		$user_js['total_time'] = $total_time;
-		$user_js['endTime']    = $expiration_time->toSql();
+		$user_js['endTime']    = $expiration_time->toSql( false );
 	}
 
 	if ( $quiz_results ) {
@@ -130,8 +130,8 @@ if ( $total_question ) :
 		})
 	</script>
 
-<?php
-else:
+	<?php
+else :
 	esc_html_e( 'Not have any question', 'learnpress' );
 	?>
 

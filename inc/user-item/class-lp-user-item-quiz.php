@@ -286,11 +286,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		);
 
 		$quiz = $this->get_quiz();
+		$rows = $wpdb->get_results( $query );
 
-		if ( $rows = $wpdb->get_results( $query ) ) {
+		if ( $rows ) {
 			foreach ( $rows as $row ) {
-				if ( $results = learn_press_get_user_item_meta( $row->user_item_id, 'results', true ) ) {
-
+				$results = learn_press_get_user_item_meta( $row->user_item_id, 'results', true );
+				if ( $results ) {
 					$evaluation_questions = $results['questions'];
 
 					if ( ! $args['evaluation_questions'] ) {

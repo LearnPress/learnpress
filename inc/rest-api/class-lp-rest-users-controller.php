@@ -307,7 +307,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			if ( isset( $total_time ) ) {
 				$results['total_time'] = $total_time;
-				$results['end_time']   = $expiration_time->toSql();
+				$results['end_time']   = $expiration_time->toSql( false );
 			}
 
 			$results['duration']     = $duration ? $duration->get() : false;
