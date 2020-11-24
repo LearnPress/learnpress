@@ -250,8 +250,8 @@ abstract class LP_Abstract_Assets {
 			$data = apply_filters( 'learn-press/script-data', $data, $handle );
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 
-			// comment by tungnx
-			/*if ( isset( $wp_scripts->registered[ $handle ] ) ) {
+			// todo: check and rewrite this code - make addon certificate run not right if comment that code
+			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
 					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
 						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
@@ -262,7 +262,7 @@ abstract class LP_Abstract_Assets {
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}
 				}
-			}*/
+			}
 
 			if ( is_admin() ) {
 				$wp_scripts->print_extra_script( $handle );

@@ -37,8 +37,7 @@ class LP_Page_Controller {
 	 * LP_Page_Controller constructor.
 	 */
 	protected function __construct() {
-		// Prevent duplicated actions
-		if ( self::$_instance || is_admin() ) {
+		if ( is_admin() ) {
 			return;
 		}
 
@@ -53,7 +52,7 @@ class LP_Page_Controller {
 		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
 
 		// Yoast seo
-		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 2 );
+		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 	}
 

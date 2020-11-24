@@ -763,6 +763,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		$this->read_items();
 
+		if ( ! $this->_course ) {
+			return;
+		}
+
 		$key = sprintf( '%d-%d-%s', $this->get_user_id(), $this->_course->get_id(), md5( build_query( func_get_args() ) ) );
 
 		if ( false === ( $completed_items = LP_Object_Cache::get( $key, 'learn-press/user-completed-items' ) ) ) {

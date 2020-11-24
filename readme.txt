@@ -201,6 +201,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 3.2.8.1 =
+~ Fix WPBakery load style inline on course's item page
+~ Fix make co-instructor not show list courses on backend
+~ Fix miss lib vue js on LearnPress / Tools / Course page
+
 = 3.2.8 =
 ~ Fix query get posts (courses, items courses) on Backend - multiple site
 ~ Fix error not same param on hook of Yoast SEO vs Yoast SEO premium
