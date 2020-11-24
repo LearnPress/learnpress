@@ -113,7 +113,7 @@ add_action( 'learn-press/after-courses-loop', LP()->template( 'course' )->callba
 add_action( 'learn-press/single-course-summary', LP()->template( 'course' )->callback( 'single-course/content' ), 10 );
 
 // Content
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="course-detail-info wrap-fullwidth"> <div class="lp-content-area"> <div class="course-info-left">', 'course-info-left-open' ), 10 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="course-detail-info"> <div class="lp-content-area"> <div class="course-info-left">', 'course-info-left-open' ), 10 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/meta-primary' ), 10 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/title' ), 10 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/meta-secondary' ), 10 );

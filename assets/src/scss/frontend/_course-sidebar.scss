@@ -128,22 +128,26 @@
 
 				.items-progress,
 				.course-progress {
+					display: flex;
+					flex-direction: row;
+					margin: 0;
+					padding: 0;
+					justify-content: space-between;
+					flex-wrap: wrap;
 
-					.items-progress__heading {
-						float: left;
+					&__heading {
 						margin: 0;
-						margin-top: 0;
+						margin-bottom: 5px;
 						padding: 0;
 						color: #333;
-						font-size: 16px;
-						//font-size: 18px;
+						font-size: 15px;
 						font-weight: 500;
+						flex: 1 1 auto;
 					}
 
 					.number {
 						display: block;
-						float: right;
-						margin-bottom: 16px;
+						margin: 0;
 						color: #666;
 						font-size: 16px;
 						font-weight: 300;
@@ -156,14 +160,10 @@
 						width: 100%;
 					}
 				}
-
-				.items-progress {
-					margin-bottom: 27px;
-				}
 			}
 
 			> * {
-				//margin-bottom: 20px;
+
 				&:last-child {
 					margin-bottom: 0;
 				}

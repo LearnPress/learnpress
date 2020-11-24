@@ -4,13 +4,13 @@
 
 export const commentForm = () => {
 	const btn = document.querySelector( '.lp-lesson-comment-btn' );
-	const btnOpen = btn.textContent;
-	const btnClose = btn.dataset.close;
 
 	if ( ! btn ) {
 		return;
 	}
 
+	const btnOpen = btn.textContent;
+	const btnClose = btn.dataset.close;
 	const hashComment = window.location.hash;
 
 	if ( hashComment.includes( 'comment' ) ) {

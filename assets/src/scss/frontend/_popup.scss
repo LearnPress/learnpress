@@ -92,6 +92,7 @@
 		.popup-header__inner {
 			display: flex;
 			width: 792px;
+			height: 70px;
 			margin: 0 auto;
 			justify-content: space-between;
 			align-items: center;
@@ -102,33 +103,29 @@
 				padding-left: 15px;
 			}
 
-			@media (max-width: 767px) {
-				flex-direction: column;
-			}
-
 			.course-title {
+				display: flex;
 				margin: 0;
 				padding: 0;
-				line-height: 70px;
+				padding-right: 20px;
 				letter-spacing: unset;
+				align-items: center;
+				flex: 1 1 auto;
 
 				a {
-					display: -webkit-box;
-					overflow: hidden;
 					color: #fff;
 					font-size: 16px;
 					font-weight: 400;
+					vertical-align: middle;
 					text-overflow: ellipsis;
-					-webkit-line-clamp: 1;
-					-webkit-box-orient: vertical;
 
 					&:hover {
 						color: var(--lp-primary-color);
 					}
-				}
 
-				@media (max-width: 768px) {
-					flex: 1;
+					@media (max-width: 767px) {
+						white-space: nowrap;
+					}
 				}
 			}
 
@@ -136,14 +133,11 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-
-				@media (max-width: 768px) {
-					flex: 1;
-				}
+				flex: 0 0 auto;
 
 				@media (max-width: 767px) {
-					padding-bottom: 20px;
-					justify-content: end;
+					margin: 0;
+					padding: 0;
 				}
 
 				.number {
@@ -743,7 +737,10 @@
 				padding: 50px 0 80px 0;
 
 				@media (max-width: 1024px) {
+					--wrap-space-x: 15px;
 					width: 100%;
+					padding-right: var(--wrap-space-x);
+					padding-left: var(--wrap-space-x);
 				}
 
 				.content-item-summary {
