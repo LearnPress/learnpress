@@ -39,10 +39,12 @@ defined( 'ABSPATH' ) || exit();
 	<?php wp_nonce_field( 'learn-press-checkout-register', 'learn-press-checkout-nonce' ); ?>
 
 	<p class="lp-checkout-sign-in-link">
-		<?php esc_html_e( 'Already had an account?', 'learnpress' ); ?>
-		<a href="javascript: void(0);">
-			<label for="checkout-account-switch-to-login"><?php esc_html_e( 'Sign in', 'learnpress' ); ?></label>
-		</a>.
+		<?php if ( LP()->checkout()->is_enable_login() ) : ?>
+			<?php esc_html_e( 'Already had an account?', 'learnpress' ); ?>
+			<a href="javascript: void(0);">
+				<label for="checkout-account-switch-to-login"><?php esc_html_e( 'Sign in', 'learnpress' ); ?></label>
+			</a>.
+		<?php endif; ?>
 
 		<?php learn_press_get_template( 'checkout/guest-checkout-link' ); ?>
 	</p>
