@@ -261,7 +261,7 @@ class Buttons extends Component {
 										className="lp-button submit-quiz"
 										onClick={ this.submit }
 									>
-										{ __( 'Submit', 'learnpress' ) }
+										{ __( 'Finish Quiz', 'learnpress' ) }
 									</button>
 								) }
 							</>

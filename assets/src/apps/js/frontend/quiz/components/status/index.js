@@ -126,7 +126,7 @@ const Status = () => {
 							className="lp-button" id="button-submit-quiz"
 							onClick={ submit }
 						>
-							{ ! submitting ? __( 'Submit', 'learnpress' ) : __( 'Submitting...', 'learnpress' ) }
+							{ ! submitting ? __( 'Finish Quiz', 'learnpress' ) : __( 'Submitting...', 'learnpress' ) }
 						</button>
 					</div>
 
