@@ -38,7 +38,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'post_title'    => $order->get_title(),
 			'post_date'     => $order->get_order_date( 'edit' )->toSql( true ),
 			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
-			'post_excerpt'  => $order->get_customer_note()
+			'post_excerpt'  => $order->get_customer_note(),
 		);
 
 		$order_data = apply_filters( 'learn-press/order/new-data', $order_data );
@@ -77,7 +77,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'_user_ip_address'      => $order->get_user_ip_address(),
 			'_user_agent'           => $order->get_user_agent(),
 			'_order_version'        => '3.0.0',
-			'_created_via'          => $order->get_created_via()
+			'_created_via'          => $order->get_created_via(),
 		);
 
 		$checkout_email = $order->get_checkout_email();
@@ -97,7 +97,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 */
-	/* old function - comment by tungnx
+	/*
+	 old function - comment by tungnx
 	public function read_items( $order ) {
 		global $wpdb;
 		$screen = function_exists('get_current_screen')? get_current_screen():null;
@@ -153,9 +154,11 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					ON o_item.order_item_id = o_itemmeta.learnpress_order_item_id
 					WHERE o_item.order_id = %d
 					LIMIT %d",
-			$order->get_id(), 4 * 50 );
+			$order->get_id(),
+			4 * 50
+		);
 
-		//Todo: write query to function and call ajax load more
+		// Todo: write query to function and call ajax load more
 		$order_item_metas = $wpdb->get_results( $query, OBJECT );
 
 		$items = array();
@@ -192,7 +195,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Get order's items
 	 *
 	 * @param LP_Order $order
-	 * @param array $filter
+	 * @param array    $filter
 	 *
 	 * @return mixed
 	 * @author tungnx
@@ -214,9 +217,12 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					ON o_item.order_item_id = o_itemmeta.learnpress_order_item_id
 					WHERE o_item.order_id = %d
 					LIMIT %d, %d",
-			$order->get_id(), $offset, $limit );
+			$order->get_id(),
+			$offset,
+			$limit
+		);
 
-		//Todo: write query to function and call ajax load more
+		// Todo: write query to function and call ajax load more
 		$order_item_metas = $wpdb->get_results( $query, OBJECT );
 
 		$items = array();
@@ -277,15 +283,14 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$status = 'pending';
 		}
 
-
 		$post_data = array(
 			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
 			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
 			'post_status'   => 'lp-' . $status,
 			'post_parent'   => $order->get_parent_id(),
-			//'post_excerpt'      => $this->get_post_excerpt( $order ),
-			//'post_modified'     => $order->get_date_modified( ),
-			//'post_modified_gmt' => $order->get_date_modified( ),
+			// 'post_excerpt'      => $this->get_post_excerpt( $order ),
+			// 'post_modified'     => $order->get_date_modified( ),
+			// 'post_modified_gmt' => $order->get_date_modified( ),
 		);
 
 		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );
@@ -330,10 +335,13 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		return '';
 		// Get order items
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items
 			WHERE order_id = %d
-		", $order->get_id() );
+		",
+			$order->get_id()
+		);
 
 		if ( ! $item_ids = $wpdb->get_col( $query ) ) {
 			return false;
@@ -357,15 +365,18 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// Delete rows from order item meta data
 		$query = "
 			DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
-			WHERE learnpress_order_item_id IN(" . join( ',', $item_ids ) . ")
-		";
+			WHERE learnpress_order_item_id IN(" . join( ',', $item_ids ) . ')
+		';
 		$wpdb->query( $query );
 
 		// Delete order items
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			DELETE FROM {$wpdb->prefix}learnpress_order_items
 			WHERE order_id = %d
-		", $order->get_id() );
+		",
+			$order->get_id()
+		);
 		$wpdb->query( $query );
 
 		/**
@@ -382,14 +393,17 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$order_items_format = array_fill( 0, sizeof( $order_items ), '%d' );
 		$query_args         = array_merge( $order_items, array( $order->get_id(), $user_id, LP_ORDER_CPT ) );
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT user_item_id
 			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE item_id IN(" . join( ',', $order_items_format ) . ")
+			WHERE item_id IN(" . join( ',', $order_items_format ) . ')
 				AND ref_id = %d
 				AND user_id = %d
 				AND ref_type = %s
-		", $query_args );
+		',
+			$query_args
+		);
 
 		if ( $_user_item_ids = $wpdb->get_col( $query ) ) {
 			$user_item_ids = array_merge( $user_item_ids, $_user_item_ids );
@@ -403,25 +417,33 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		// Delete user course items
-		echo $query = $wpdb->prepare( "
+		echo $query = $wpdb->prepare(
+			"
 				DELETE
 				FROM ui, uim
 				USING {$wpdb->prefix}learnpress_user_items AS ui
 				LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
 				WHERE ref_id = %d AND user_id = %d AND ref_type = %s
-			", $order->get_id(), $user_id, LP_ORDER_CPT );
+			",
+			$order->get_id(),
+			$user_id,
+			LP_ORDER_CPT
+		);
 		$wpdb->query( $query );
 
 		// Delete other items
-		$format = array_fill( 0, sizeof( $course_ids ), '%d' );
-		$args   = array_merge( $course_ids, array( $user_id ) );
-		echo $query = $wpdb->prepare( "
+		$format     = array_fill( 0, sizeof( $course_ids ), '%d' );
+		$args       = array_merge( $course_ids, array( $user_id ) );
+		echo $query = $wpdb->prepare(
+			"
 						DELETE
 						FROM ui, uim
 						USING {$wpdb->prefix}learnpress_user_items AS ui
 						LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
-						WHERE ref_id IN(" . join( ',', $format ) . ") AND user_id = %d
-					", $args );
+						WHERE ref_id IN(" . join( ',', $format ) . ') AND user_id = %d
+					',
+			$args
+		);
 		$wpdb->query( $query );
 
 		// delete all data related user order
@@ -479,12 +501,15 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$order = learn_press_get_order( $from );
 		global $wpdb;
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT *
 			FROM {$wpdb->learnpress_order_items} oi
 			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id
 			WHERE order_id = %d
-		", $from );
+		",
+			$from
+		);
 
 		$items = $order->get_items();
 		if ( $items ) {
@@ -505,11 +530,14 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 				$learnpress_order_item_id = $wpdb->insert_id;
 
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
 					SELECT *
 					FROM {$wpdb->learnpress_order_itemmeta}
 					WHERE learnpress_order_item_id = %d
-				", $item['id'] );
+				",
+					$item['id']
+				);
 
 				if ( $metas = $wpdb->get_results( $query ) ) {
 					foreach ( $metas as $meta ) {
@@ -518,7 +546,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 							array(
 								'learnpress_order_item_id' => $learnpress_order_item_id,
 								'meta_key'                 => $meta->meta_key,
-								'meta_value'               => $meta->meta_value
+								'meta_value'               => $meta->meta_value,
 							)
 						);
 					}
@@ -537,7 +565,6 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 * @throws Exception
-	 *
 	 */
 	public function load( &$order ) {
 		$the_id = $order->get_id();
@@ -577,7 +604,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'user_ip_address' => get_post_meta( $post->ID, '_user_ip_address', true ),
 					'user_agent'      => get_post_meta( $post->ID, '_user_agent', true ),
 					'checkout_email'  => get_post_meta( $post->ID, '_checkout_email', true ),
-					'currency'        => get_post_meta( $post->ID, '_order_currency', true )
+					'currency'        => get_post_meta( $post->ID, '_order_currency', true ),
 				)
 			);
 
@@ -592,7 +619,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Recover an order checked out by Guest for an user.
 	 *
 	 * @param string $order_key
-	 * @param int $user_id
+	 * @param int    $user_id
 	 *
 	 * @return bool|LP_Order|WP_Error
 	 */
@@ -639,11 +666,15 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function get_order_by_key( $order_key ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT ID
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value = %s
-		", '_order_key', $order_key );
+		",
+			'_order_key',
+			$order_key
+		);
 
 		$order    = false;
 		$order_id = $wpdb->get_var( $query );
@@ -668,11 +699,14 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$orders = LP_Object_Cache::get( 'order-' . $order_id, 'lp-child-orders' );
 
 		if ( false === $orders ) {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 				SELECT *
 				FROM {$wpdb->posts}
 				WHERE post_parent = %d
-			", $order_id );
+			",
+				$order_id
+			);
 
 			$posts = $wpdb->get_results( $query );
 			if ( $posts ) {

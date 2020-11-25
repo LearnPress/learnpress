@@ -54,6 +54,10 @@
 			return $( '#checkout-payment' ).serializeJSON();
 		};
 
+		const getPaymentNote = function() {
+			return $( '.learn-press-checkout-comment' ).serializeJSON();
+		};
+
 		const showErrors = function( errors ) {
 			showMessage( errors );
 			const firstId = Object.keys( errors )[ 0 ];
@@ -72,7 +76,7 @@
 			let formData = {};
 
 			if ( ! isLoggedIn() ) {
-				formData = $.extend( formData, getActiveFormData() );
+				formData = $.extend( formData, getActiveFormData(), getPaymentNote() );
 			}
 
 			formData = $.extend( formData, getPaymentData() );

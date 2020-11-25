@@ -127,6 +127,14 @@ $user_ip      = $order->get_user_ip_address();
 			<label><?php esc_html_e( 'Order key:', 'learnpress' ); ?></label>
 			<?php echo esc_html( $order->get_order_key() ); ?>
 		</div>
+
+		<div class="order-data-field order-data-note">
+			<?php $note = $post->post_excerpt; ?>
+			<?php if ( ! empty( $note ) ) : ?>
+				<label><?php esc_html_e( 'Customer Note', 'learnpress' ); ?></label>
+				<p class="order-note description"><?php echo $note; ?></p>
+			<?php endif; ?>
+		</div>
 	</div>
 
 	<div class="order-items">
@@ -196,19 +204,11 @@ $user_ip      = $order->get_user_ip_address();
 							echo '</p>';
 						}
 						?>
-						<!--<button class="button" type="button" id="learn-press-calculate-order-total"><?php esc_html_e( 'Calculate Total', 'learnpress' ); ?></button>-->
 					</td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
-
-	<?php $note = $post->post_excerpt; ?>
-	<?php if ( $note ) : ?>
-		<br/>
-		<h3><?php esc_html_e( 'Customer Note', 'learnpress' ); ?></h3>
-		<p class="order-note description"><?php echo $note; ?></p>
-	<?php endif; ?>
 </div>
 
 <script type="text/html" id="tmpl-order-data-user">
@@ -221,15 +221,15 @@ $user_ip      = $order->get_user_ip_address();
 			</div>
 			<a href="" class="change-user"><?php esc_html_e( 'Change', 'learnpress' ); ?></a>
 		</div>
-		<# }else{ #>
-			<div class="order-data-field order-data-user">
-				<label><?php esc_html_e( 'Customer', 'learnpress' ); ?></label>
-				<div class="order-users">
-					<ul id="list-users" class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>"></ul>
-				</div>
-				<a href="" class="change-user" data-multiple="yes"><?php esc_html_e( 'Add multi users', 'learnpress' ); ?></a>
+	<# }else{ #>
+		<div class="order-data-field order-data-user">
+			<label><?php esc_html_e( 'Customer', 'learnpress' ); ?></label>
+			<div class="order-users">
+				<ul id="list-users" class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>"></ul>
 			</div>
-			<# } #>
+			<a href="" class="change-user" data-multiple="yes"><?php esc_html_e( 'Add multi users', 'learnpress' ); ?></a>
+		</div>
+	<# } #>
 </script>
 
 <script type="text/html" id="tmpl-order-advanced-list-item">

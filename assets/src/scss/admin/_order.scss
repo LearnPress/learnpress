@@ -80,6 +80,17 @@
 			}
 		}
 
+		.order-data-note {
+			display: inline-block;
+
+			.order-note {
+				padding: 10px;
+				color: #fff;
+				background-color: #c1a3b6;
+				font-size: 14px;
+			}
+		}
+
 		.order-items {
 			margin: 0;
 			border: 1px solid #ccd0d4 !important;
