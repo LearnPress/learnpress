@@ -82,7 +82,7 @@ class LP_Forms_Handler {
 
 				// On multisite, ensure user exists on current site, if not add them before allowing login.
 				if ( is_multisite() ) {
-					$user_data = get_user_by( is_email( $username ) ? 'email' : 'login', $creds['user_login'] );
+					$user_data = get_user_by( is_email( $username ) ? 'email' : 'login', $username );
 
 					if ( $user_data && ! is_user_member_of_blog( $user_data->ID, get_current_blog_id() ) ) {
 						add_user_to_blog( get_current_blog_id(), $user_data->ID, 'customer' );
@@ -95,7 +95,7 @@ class LP_Forms_Handler {
 						array(
 							'user_login'    => $username,
 							'user_password' => $password,
-							'rememberme'    => LP_Request::get_string( 'rememberme' ),
+							'remember'      => $remember,
 						)
 					),
 					is_ssl()
