@@ -10,6 +10,10 @@
 defined( 'ABSPATH' ) || exit;
 
 $user = LP_Profile::instance()->get_user();
+
+if ( empty( $courses ) ) {
+	return;
+}
 ?>
 
 <div class="profile-courses featured-courses">
@@ -17,7 +21,7 @@ $user = LP_Profile::instance()->get_user();
 
 	<?php if ( ! empty( $courses ) ) : ?>
 		<div class="lp-archive-courses">
-			<ul <?php lp_item_course_class();?> data-size="3" data-layout="grid" id="learn-press-profile-featured-courses">
+			<ul <?php lp_item_course_class(); ?> data-size="3" data-layout="grid" id="learn-press-profile-featured-courses">
 				<?php
 				global $post;
 
