@@ -128,7 +128,7 @@ class LP_Forms_Handler {
 			$logged = wp_signon( array(
 				'user_login'    => $args['username'],
 				'user_password' => $args['password'],
-				'rememberme'    => LP_Request::get_string( 'rememberme' )
+				'remember'    => LP_Request::get_string( 'rememberme' )
 			) );
 
 			if ( is_wp_error( $logged ) ) {

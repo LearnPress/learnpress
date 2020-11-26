@@ -25,7 +25,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press-update'         => apply_filters(
 				'learn-press/upgrade/script-data',
 				array(
-					'i18n_confirm' => __( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?', 'learnpress' )
+					'i18n_confirm' => __( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?',
+						'learnpress' )
 				)
 			)
 		);
@@ -54,7 +55,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'learn-press-global'                => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' ),
 					array( 'learnpress' ) ),
-				'lp-utils'                          => new LP_Asset_Key( $this->url( 'js/dist/utils' . self::$_min_assets . '.js' ), array(), array(), 1 ),
+				'lp-utils'                          => new LP_Asset_Key( $this->url( 'js/dist/utils' . self::$_min_assets . '.js' ),
+					array(), array(), 1
+				),
 				'lp-admin'                          => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/admin' . self::$_min_assets . '.js' ),
 					array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'jspdf' ),
 					array(), 0, 1
@@ -71,7 +74,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-duplicate-post'                 => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/lp-duplicate-post' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
-					array( 'edit-' . LP_COURSE_CPT, 'edit-' . LP_LESSON_CPT, 'edit-' . LP_QUESTION_CPT ), 0, 1
+					array(
+						'edit-' . LP_COURSE_CPT,
+						'edit-' . LP_LESSON_CPT,
+						'edit-' . LP_QUESTION_CPT,
+						'edit-' . LP_QUIZ_CPT
+					), 0, 1
 				),
 				'learn-press-admin-course-editor'   => new LP_Asset_Key( $this->url( 'js/dist/admin/editor/course' . self::$_min_assets . '.js' ),
 					array(
@@ -237,7 +245,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				$can_load_js = false;
 
 				if ( ! empty( $script->_screens ) ) {
-					$can_load_js = apply_filters( 'learnpress/admin/can-load-js/' . $handle, in_array( $screen_id, $script->_screens ), $screen_id, $script->_screens );
+					$can_load_js = apply_filters( 'learnpress/admin/can-load-js/' . $handle,
+						in_array( $screen_id, $script->_screens ), $screen_id, $script->_screens );
 				} else {
 					$can_load_js = true;
 				}
