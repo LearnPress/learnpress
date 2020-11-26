@@ -43,6 +43,7 @@ class LP_Meta_Box_Course {
 		$students        = isset( $_POST['_lp_students'] ) ? absint( wp_unslash( $_POST['_lp_students'] ) ) : 0;
 		$max_students    = isset( $_POST['_lp_max_students'] ) ? absint( wp_unslash( $_POST['_lp_max_students'] ) ) : 0;
 		$retry           = isset( $_POST['_lp_retake_count'] ) ? 'yes' : 'no';
+		$has_finish      = isset( $_POST['_lp_has_finish'] ) ? 'yes' : 'no';
 		$block_content   = isset( $_POST['_lp_block_lesson_content'] ) ? 'yes' : 'no';
 		$feature         = isset( $_POST['_lp_featured'] ) ? 'yes' : 'no';
 		$featured_review = isset( $_POST['_lp_featured_review'] ) ? wp_unslash( $_POST['_lp_featured_review'] ) : '';
@@ -53,6 +54,7 @@ class LP_Meta_Box_Course {
 		update_post_meta( $post_id, '_lp_students', $students );
 		update_post_meta( $post_id, '_lp_max_students', $max_students );
 		update_post_meta( $post_id, '_lp_retake_count', $retry );
+		update_post_meta( $post_id, '_lp_has_finish', $has_finish );
 		update_post_meta( $post_id, '_lp_block_lesson_content', $block_content );
 		update_post_meta( $post_id, '_lp_featured', $feature );
 		update_post_meta( $post_id, '_lp_featured_review', $featured_review );

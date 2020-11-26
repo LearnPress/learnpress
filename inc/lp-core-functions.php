@@ -3642,7 +3642,7 @@ function learn_press_is_enrolled_slug( $slug ) {
 		$slug,
 		array(
 			'in-progress',
-			'enrolled', // deprecated
+			'enrolled',
 		)
 	);
 }
@@ -3658,7 +3658,7 @@ function learn_press_course_enrolled_slugs() {
 			learn_press_user_item_passed_slug(),
 			learn_press_user_item_failed_slug(),
 			'in-progress',
-			'enrolled', // deprecated
+			'enrolled',
 			'finished', // deprecated
 		)
 	);
@@ -3667,12 +3667,12 @@ function learn_press_course_enrolled_slugs() {
  * @return array
  * @since 4.0.0
  */
-function lp_item_course_class( $class = array()) {
+function lp_item_course_class( $class = array() ) {
 	$classes = array_merge(
 		$class,
- 		array('learn-press-courses')
+		array( 'learn-press-courses' )
 	);
- 	echo 'class="' . esc_attr( implode( ' ', apply_filters( 'lp_item_course_class', $classes) ) ) . '"';
+	echo 'class="' . esc_attr( implode( ' ', apply_filters( 'lp_item_course_class', $classes ) ) ) . '"';
 }
 
 require_once dirname( __FILE__ ) . '/lp-custom-hooks.php';

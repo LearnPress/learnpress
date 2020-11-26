@@ -361,6 +361,7 @@ class LP_Install_Sample_Data {
 				'_lp_students'          => '0',
 				'_lp_retry'             => 'no',
 				'_lp_featured'          => 'no',
+				'_lp_has_finish'        => 'yes',
 				'_lp_course_result'     => 'evaluate_lesson',
 				'_lp_passing_condition' => '80',
 				'_lp_sample_data'       => 'yes',

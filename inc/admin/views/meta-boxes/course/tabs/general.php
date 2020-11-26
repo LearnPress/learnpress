@@ -193,6 +193,15 @@ defined( 'ABSPATH' ) || exit;
 
 		lp_meta_box_checkbox_field(
 			array(
+				'id'          => '_lp_has_finish',
+				'label'       => esc_html__( 'Finish button', 'learnpress' ),
+				'description' => esc_html__( 'Allow show finish button when all items completed but evalution not passed.', 'learnpress' ),
+				'default'     => 'yes',
+			)
+		);
+
+		lp_meta_box_checkbox_field(
+			array(
 				'id'          => '_lp_featured',
 				'label'       => esc_html__( 'Featured list', 'learnpress' ),
 				'description' => esc_html__( 'Add the course to Featured List.', 'learnpress' ),

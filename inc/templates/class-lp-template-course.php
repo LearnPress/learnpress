@@ -362,6 +362,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$course_data = $user->get_course_data( $course->get_id() );
 
+		$is_all_completed = $user->is_completed_all_items( $course->get_id() );
+		$has_finish       = get_post_meta( $course->get_id(), '_lp_has_finish', true ) ? get_post_meta( $course->get_id(), '_lp_has_finish', true ) : 'yes';
+		$is_passed        = $user->has_reached_passing_condition( $course->get_id() );
+
 		if ( $course->get_external_link() ) {
 			return;
 		}
@@ -370,7 +374,16 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( ! $user->has_reached_passing_condition( $course->get_id() ) ) {
+		if ( ! $is_passed && $has_finish === 'no' ) {
+			return;
+		}
+
+		// All items completed and not passed.
+		if ( ! $is_all_completed && $has_finish === 'yes' && ! $is_passed ) {
+			return;
+		}
+
+		if ( ! apply_filters( 'lp_can_finish_course', true ) ) {
 			return;
 		}
 

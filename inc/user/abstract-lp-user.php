@@ -1504,22 +1504,18 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$course = learn_press_get_course( $course_id );
 
 			if ( $course ) {
-				if ( ! $this->can_finish_course( $course_id ) ) {
-					return false;
-				} else {
-					$user_course         = $this->get_course_data( $course_id );
-					$auto_complete_items = apply_filters( 'learn-press/auto-complete-course-items', true, $course_id, $this->get_id() );
+				$user_course         = $this->get_course_data( $course_id );
+				$auto_complete_items = apply_filters( 'learn-press/auto-complete-course-items', true, $course_id, $this->get_id() );
 
-					$return = $user_course->finish( $auto_complete_items );
+				$return = $user_course->finish( $auto_complete_items );
 
-					$user_course->calculate_course_results();
+				$user_course->calculate_course_results();
 
-					if ( $return ) {
-						do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
-					}
-
-					wp_cache_flush();
+				if ( $return ) {
+					do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 				}
+
+				wp_cache_flush();
 			}
 
 			return apply_filters( 'learn-press/user-course-finished-data', $return, $course_id, $this->get_id() );
@@ -2699,6 +2695,22 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$result = $this->evaluate_course_results( $course_id );
 
 			return $return = $result >= $course->get_passing_condition();
+		}
+
+		/**
+		 * Check if all items in course completed.
+		 *
+		 * @author Nhamdv <email@email.com>
+		 * @return boolean
+		 */
+		public function is_completed_all_items( $course_id ) {
+			$course = learn_press_get_course( $course_id );
+
+			$course_data = $this->get_course_data( $course_id );
+
+			$course_results = $course_data->get_results( false );
+
+			return ( $course_results['completed_items'] >= $course->count_items( '', true ) ) ? true : false;
 		}
 
 		public function get_role() {
