@@ -83,7 +83,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$filter->_post_type = LP_QUESTION_CPT;
 				$filter->_user_id   = $user_id;
 
-				$totalPostAllStatus = LP_Database::getInstance()->getCountPostOfUser( $filter );
+				$totalPostAllStatus = LP_Database::getInstance()->get_count_post_of_user( $filter );
 				$views['all']       = wp_sprintf( '<a href="edit.php?post_type=lp_question" class="current" aria-current="page">All <span class="count">(%d)</span></a>', $totalPostAllStatus );
 
 				if ( $totalPostAllStatus == 0 ) {
@@ -94,7 +94,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					unset( $views['pending'] );
 				} elseif ( isset( $views['publish'] ) ) {
 					$filter->_post_status = 'publish';
-					$totalPostPublish     = LP_Database::getInstance()->getCountPostOfUser( $filter );
+					$totalPostPublish     = LP_Database::getInstance()->get_count_post_of_user( $filter );
 					$views['publish']     = wp_sprintf( '<a href="edit.php?post_type=lp_question&post_status=publish" class="current" aria-current="page">Published <span class="count">(%d)</span></a>', $totalPostPublish );
 				}
 			}
