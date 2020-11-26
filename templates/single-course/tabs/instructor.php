@@ -22,19 +22,6 @@ $instructor = $course->get_instructor();
 	<div class="course-author__pull-left">
 		<?php echo $instructor->get_profile_picture(); ?>
 
-		<div class="course-author__meta">
-			<?php
-			$author_meta = $instructor->get_profile_meta();
-			if ( $author_meta ) {
-				foreach ( $author_meta as $key => $value ) {
-					?>
-					<span class="course-author__meta-row <?php echo $key; ?>"><?php echo $value; ?></span>
-					<?php
-				}
-			}
-			?>
-		</div>
-
 		<?php $socials = $instructor->get_profile_socials(); ?>
 		<?php if ( $socials ) : ?>
 			<div class="author-socials">

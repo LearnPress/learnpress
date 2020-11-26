@@ -2595,16 +2595,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
 		}
 
-		public function get_profile_meta() {
-			$meta = array(
-				'courses'  => sprintf( __( '<span class="meta-number">%d</span> courses', 'learnpress' ), 12 ),
-				'students' => sprintf( __( '<span class="meta-number">%d</span> students', 'learnpress' ), 100 ),
-				'reviews'  => sprintf( __( '<span class="meta-number">%d</span> reviews', 'learnpress' ), 4 ),
-			);
-
-			return apply_filters( 'learn-press/user-profile-meta', $meta, $this->get_id(), $this );
-		}
-
 		public function get_profile_socials() {
 			$socials    = array();
 			$extra_info = learn_press_get_user_extra_profile_info();
