@@ -36,8 +36,7 @@ class LP_Settings {
 	 * Constructor.
 	 *
 	 * @param array|mixed $data
-	 * @param string $prefix
-	 *
+	 * @param string      $prefix
 	 */
 	protected function __construct( $data = false, $prefix = 'learn_press_' ) {
 
@@ -71,11 +70,13 @@ class LP_Settings {
 	 */
 	protected function _load_options( $force = false ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT option_name, option_value
 			FROM {$wpdb->options}
 			WHERE option_name LIKE %s",
-			$wpdb->esc_like( $this->_prefix ) . '%' );
+			$wpdb->esc_like( $this->_prefix ) . '%'
+		);
 
 		$options = $wpdb->get_results( $query );
 
@@ -131,7 +132,7 @@ class LP_Settings {
 	 * Get option recurse separated by DOT
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return mixed
 	 */
@@ -209,7 +210,7 @@ class LP_Settings {
 	 * Update option with default prefix is learn_press_
 	 *
 	 * @param string $name
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @param string $prefix
 	 */
 	public static function update_option( $name, $value, $prefix = 'learn_press_' ) {
@@ -220,12 +221,11 @@ class LP_Settings {
 	 * Get option with default prefix is learn_press_
 	 *
 	 * @param string $name
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return mixed
 	 * @since 3.2.8
 	 * @editor tungnx
-	 *
 	 */
 	public static function get_option( $name, $default = false ) {
 		return get_option( "learn_press_{$name}", $default );
@@ -256,7 +256,8 @@ class LP_Settings {
 	 * @editor tungnx
 	 * @reason not use
 	 */
-	/*public static function load_site_options() {
+	/*
+	public static function load_site_options() {
 		static $loaded = false;
 
 		if ( $loaded ) {
@@ -335,7 +336,6 @@ class LP_Settings {
 	 *
 	 * @return array
 	 * @since 3.0.0
-	 *
 	 */
 	public function get_checkout_endpoints() {
 		$endpoints = LP_Object_Cache::get( 'checkout', 'learn-press-endpoints' );
@@ -372,7 +372,6 @@ class LP_Settings {
 	 *
 	 * @return array
 	 * @since 3.0.0
-	 *
 	 */
 	public function get_profile_endpoints() {
 		$endpoints = LP_Object_Cache::get( 'profile', 'learn-press-endpoints' );
@@ -404,6 +403,8 @@ class LP_Settings {
 
 if ( ! function_exists( 'lp_settings' ) ) {
 	/**
+	 * Instance lp setting
+	 *
 	 * @return LP_Settings|null
 	 */
 	function lp_settings() {

@@ -25,7 +25,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press-update'         => apply_filters(
 				'learn-press/upgrade/script-data',
 				array(
-					'i18n_confirm' => esc_html__( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?', 'learnpress' ),
+					'i18n_confirm' => esc_html__(
+						'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?',
+						'learnpress'
+					),
 				)
 			),
 			'lp-admin'                   => apply_filters(
@@ -55,72 +58,118 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'jspdf'                             => new LP_Asset_Key( $this->url( 'src/js/vendor/jspdf.min.js' ) ),
 				'chart'                             => new LP_Asset_Key( $this->url( 'src/js/vendor/chart.min.js' ) ),
 				'dropdown-pages'                    => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ) ),
-				'jquery-ui-timepicker-addon'        => new LP_Asset_Key( $this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ), array( 'jquery-ui-datepicker' )
+				'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
+					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
+					array( 'jquery-ui-datepicker' )
 				),
-				'search-lp-addons-themes'           => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/search-lp-addons-themes' . self::$_min_assets . '.js' ),
-					array( 'jquery' ), array( 'learnpress_page_learn-press-addons' ), 0, 1
+				'search-lp-addons-themes'           => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/pages/search-lp-addons-themes' . self::$_min_assets . '.js' ),
+					array( 'jquery' ),
+					array( 'learnpress_page_learn-press-addons' ),
+					0,
+					1
 				),
 				'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
-				'learn-press-global'                => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
+				'learn-press-global'                => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' ),
-					array( 'learnpress' ) ),
-				'lp-utils'                          => new LP_Asset_Key( $this->url( 'js/dist/utils' . self::$_min_assets . '.js' ), array(), array(), 1 ),
-				'lp-admin'                          => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/admin' . self::$_min_assets . '.js' ),
-					array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'jspdf' ),
-					array(), 0, 1
+					array( 'learnpress' )
 				),
-				'lp-admin-learnpress'               => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/learnpress' . self::$_min_assets . '.js' ),
+				'lp-utils'                          => new LP_Asset_Key(
+					$this->url( 'js/dist/utils' . self::$_min_assets . '.js' ),
+					array(),
+					array(),
+					1
+				),
+				'lp-admin'                          => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/admin' . self::$_min_assets . '.js' ),
+					array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'jspdf' ),
+					array(),
+					0,
+					1
+				),
+				'lp-admin-learnpress'               => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/learnpress' . self::$_min_assets . '.js' ),
 					array(
 						'learn-press-global',
 						'lp-utils',
 						'wp-color-picker',
 						'jquery-tipsy',
 						'dropdown-pages',
-						'jquery-ui-timepicker-addon'
+						'jquery-ui-timepicker-addon',
 					),
-					array( LP_COURSE_CPT, 'learnpress_page_learn-press-settings' ), 0, 1
+					array( LP_COURSE_CPT, 'learnpress_page_learn-press-settings' ),
+					0,
+					1
 				),
-				'lp-duplicate-post'                 => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/lp-duplicate-post' . self::$_min_assets . '.js' ),
+				'lp-duplicate-post'                 => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/lp-duplicate-post' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
-					array( 'edit-' . LP_COURSE_CPT, 'edit-' . LP_LESSON_CPT, 'edit-' . LP_QUESTION_CPT ), 0, 1
+					array(
+						'edit-' . LP_COURSE_CPT,
+						'edit-' . LP_LESSON_CPT,
+						'edit-' . LP_QUESTION_CPT,
+						'edit-' . LP_QUIZ_CPT,
+					),
+					0,
+					1
 				),
-				'learn-press-admin-course-editor'   => new LP_Asset_Key( $this->url( 'js/dist/admin/editor/course' . self::$_min_assets . '.js' ),
+				'learn-press-admin-course-editor'   => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/editor/course' . self::$_min_assets . '.js' ),
 					array( 'vue-libs' ),
-					array( LP_COURSE_CPT ), 0, 0
+					array( LP_COURSE_CPT ),
+					0,
+					0
 				),
-				'learn-press-admin-quiz-editor'     => new LP_Asset_Key( $this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),
+				'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),
 					array( 'vue-libs' ),
-					array( LP_QUIZ_CPT ), 0, 0
+					array( LP_QUIZ_CPT ),
+					0,
+					0
 				),
-				'learn-press-admin-question-editor' => new LP_Asset_Key( $this->url( 'js/dist/admin/editor/question' . self::$_min_assets . '.js' ),
+				'learn-press-admin-question-editor' => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/editor/question' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lodash' ),
-					array( LP_QUESTION_CPT ), 0, 0
+					array( LP_QUESTION_CPT ),
+					0,
+					0
 				),
-				'learn-press-meta-box-order'        => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/partial/meta-box-order' . self::$_min_assets . '.js' ),
+				'learn-press-meta-box-order'        => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/partial/meta-box-order' . self::$_min_assets . '.js' ),
 					array(
 						'vue-libs',
 						'advanced-list',
 						'lp-modal-search-courses',
-						'lp-modal-search-users'
+						'lp-modal-search-users',
 					),
-					array( LP_ORDER_CPT ), 0, 1
+					array( LP_ORDER_CPT ),
+					0,
+					1
 				),
-				'learn-press-sync-data'             => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/sync-data' . self::$_min_assets . '.js' ),
+				'learn-press-sync-data'             => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/pages/sync-data' . self::$_min_assets . '.js' ),
 					array(),
 					array( 'learnpress_page_learn-press-tools' ),
-					0, 1
+					0,
+					1
 				),
-				'lp-setup'                          => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/setup' . self::$_min_assets . '.js' ),
+				'lp-setup'                          => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/pages/setup' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'lp-utils', 'dropdown-pages' ),
 					array( 'lp-page-setup' ),
-					0, 1
+					0,
+					1
 				),
-				'learn-press-statistic'             => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/statistic' . self::$_min_assets . '.js' ),
+				'learn-press-statistic'             => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/pages/statistic' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'jquery-ui-datepicker', 'chart' ),
 					array( 'learnpress_page_learn-press-statistics' ),
-					0, 1
+					0,
+					1
 				),
-				'lp-advertisement'                  => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advertisement' . self::$_min_assets . '.js' ),
+				'lp-advertisement'                  => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/share/advertisement' . self::$_min_assets . '.js' ),
 					array(),
 					array(
 						'edit-' . LP_COURSE_CPT,
@@ -132,42 +181,67 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress_page_learn-press-tools',
 						'learnpress_page_learn-press-statistics',
 					),
-					0, 1
+					0,
+					1
 				),
-				'lp-modal-search-courses'           => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/modal-search-courses' . self::$_min_assets . '.js' ),
+				'lp-modal-search-courses'           => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/share/modal-search-courses' . self::$_min_assets . '.js' ),
 					array(
 						'vue-libs',
-						'jquery'
-					), array( LP_ORDER_CPT ), 1, 1
+						'jquery',
+					),
+					array( LP_ORDER_CPT ),
+					1,
+					1
 				),
-				'lp-admin-tabs'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/admin-tabs' . self::$_min_assets . '.js' ),
-					array( 'jquery' ), array( LP_COURSE_CPT ), 0, 1
+				'lp-admin-tabs'                     => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/share/admin-tabs' . self::$_min_assets . '.js' ),
+					array( 'jquery' ),
+					array( LP_COURSE_CPT ),
+					0,
+					1
 				),
-				'lp-admin-notice'                   => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/admin-notice' . self::$_min_assets . '.js' ),
-					array( 'jquery' ), array(), 0, 1
+				'lp-admin-notice'                   => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/share/admin-notice' . self::$_min_assets . '.js' ),
+					array( 'jquery' ),
+					array(),
+					0,
+					1
 				),
-				'lp-modal-search-users'             => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
-					array( 'jquery' ), array( LP_ORDER_CPT ), 1, 1
+				'lp-modal-search-users'             => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
+					array( 'jquery' ),
+					array( LP_ORDER_CPT ),
+					1,
+					1
 				),
-				'lp-tools-course'                   => new LP_Asset_Key( $this->url( 'js/dist/admin/tools/course' . self::$_min_assets . '.js' ),
-					array( 'vue-libs' ), array( 'learnpress_page_learn-press-tools' ), 0, 1
+				'lp-tools-course'                   => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/tools/course' . self::$_min_assets . '.js' ),
+					array( 'vue-libs' ),
+					array( 'learnpress_page_learn-press-tools' ),
+					0,
+					1
 				),
-				'lp-tools-course-tab'               => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
-					array( 'vue-libs' ), array( 'learnpress_page_learn-press-tools' ), 0, 1
+				'lp-tools-course-tab'               => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
+					array( 'vue-libs' ),
+					array( 'learnpress_page_learn-press-tools' ),
+					0,
+					1
 				),
-//				'learn-press-question-editor'       => array(
-//					'url'       => $this->url( 'js/dist/admin/question-editor.js' ),
-//					'screens'   => array( LP_QUESTION_CPT ),
-//					'in_footer' => true,
-//					'deps'      => array(
-//						'wp-element',
-//						'wp-compose',
-//						'wp-data',
-//						'wp-hooks',
-//						'wp-api-fetch',
-//						'lodash',
-//					),
-//				),
+				// 'learn-press-question-editor'       => array(
+				// 'url'       => $this->url( 'js/dist/admin/question-editor.js' ),
+				// 'screens'   => array( LP_QUESTION_CPT ),
+				// 'in_footer' => true,
+				// 'deps'      => array(
+				// 'wp-element',
+				// 'wp-compose',
+				// 'wp-data',
+				// 'wp-hooks',
+				// 'wp-api-fetch',
+				// 'lodash',
+				// ),
+				// ),
 			)
 		);
 	}
@@ -182,19 +256,19 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press/admin-default-styles',
 			array(
 				'select2'               => array(
-					'url' => $this->url( 'css/vendor/select2.min.css' )
+					'url' => $this->url( 'css/vendor/select2.min.css' ),
 				),
 				'font-awesome'          => array(
-					'url' => $this->url( 'src/css/vendor/font-awesome-5.min.css' )
+					'url' => $this->url( 'src/css/vendor/font-awesome-5.min.css' ),
 				),
 				'jquery-ui'             => array(
-					'url' => $this->url( 'css/vendor/jquery-ui/jquery-ui.min.css' )
+					'url' => $this->url( 'css/vendor/jquery-ui/jquery-ui.min.css' ),
 				),
 				'jquery-ui-timepicker'  => array(
-					'url' => $this->url( 'css/vendor/jquery-ui-timepicker-addon.css' )
+					'url' => $this->url( 'css/vendor/jquery-ui-timepicker-addon.css' ),
 				),
 				'learn-press-bundle'    => array(
-					'url' => $this->url( 'css/bundle.min.css' )
+					'url' => $this->url( 'css/bundle.min.css' ),
 				),
 				'learn-press-admin'     => array(
 					'url'  => $this->url( 'css/admin/admin.css' ),
@@ -202,7 +276,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-statistic' => array(
 					'url'     => LP_CSS_URL . 'admin/statistic.css',
-					'screens' => 'learnpress_page_learn-press-statistics'
+					'screens' => 'learnpress_page_learn-press-statistics',
 				),
 			)
 		);
@@ -213,7 +287,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	public function load_scripts() {
 		// Register
-		//$this->_register_scripts();
+		// $this->_register_scripts();
 
 		$screen_id = LP_Admin::instance()->get_screen_id();
 
@@ -235,6 +309,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 	/**
 	 * Register and enqueue a custom stylesheet in the WordPress admin.
+	 *
 	 * @author
 	 */
 	public function wpdocs_enqueue_custom_admin_style() {
@@ -245,7 +320,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	/**
 	 * Register, enqueue js
 	 *
-	 * @param string $screen_id
+	 * @param  string  $screen_id
+	 * @return
 	 */
 	protected function handle_js( $screen_id = '' ) {
 		$scripts = $this->_get_scripts();
@@ -263,7 +339,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				$can_load_js = false;
 
 				if ( ! empty( $script->_screens ) ) {
-					$can_load_js = apply_filters( 'learnpress/admin/can-load-js/' . $handle, in_array( $screen_id, $script->_screens ), $screen_id, $script->_screens );
+					$can_load_js = apply_filters(
+						'learnpress/admin/can-load-js/' . $handle,
+						in_array( $screen_id, $script->_screens ),
+						$screen_id,
+						$script->_screens
+					);
 				} else {
 					$can_load_js = true;
 				}

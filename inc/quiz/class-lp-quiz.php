@@ -48,7 +48,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			// 'count_hint'         => 0,
 			// 'archive_history'    => 'no',
 			// 'show_hide_question' => 'yes',
-			'preview'            => 'no',
+			// 'preview'            => 'no',
 			// 'minus_points'         => 0,
 			// 'minus_skip_questions' => 'no',
 
@@ -128,7 +128,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'preview'          => 'no',
+//				'preview'          => 'no',
 				// 'minus_points'         => 0,
 				// 'minus_skip_questions' => 'no',
 				// 'show_hide_question' => 'yes',
