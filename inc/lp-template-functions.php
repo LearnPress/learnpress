@@ -3894,8 +3894,18 @@ add_action( 'learn-press/after-payment-methods', 'learn_press_term_conditions_te
 
 function learn_press_get_link_current_question_instead_of_continue_button( $link, $item ) {
 	if ( get_post_type( $item->get_id() ) === LP_QUIZ_CPT ) {
-		$user      = LP_Global::user();
-		$course    = $item->get_course();
+		$user = LP_Global::user();
+
+		if ( ! $user ) {
+			return $link;
+		}
+
+		$course = $item->get_course();
+
+		if ( ! $course ) {
+			return $link;
+		}
+
 		$quiz_data = $user->get_item_data( $item->get_id(), $course->get_id() );
 		if ( $quiz_data && $quiz_data->get_status() === 'started' ) {
 			$link = $item->get_question_link( $quiz_data->get_current_question() );

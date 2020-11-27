@@ -519,7 +519,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( $orderby = $this->_get_orderby() && $order = $this->_get_order() ) {
 				switch ( $orderby ) {
 					case 'course-name':
-						$order_by_statement = "c.post_title {$order}";
+						$order_by_statement = "post_title {$order}";
 						break;
 					case 'question-count':
 						$order_by_statement = "question_count {$order}";
