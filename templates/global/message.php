@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $messages ) {
+if ( ! isset( $messages ) ) {
 	return;
 }
 ?>

@@ -25,8 +25,8 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 		<div class="content-item-wrap">
 
 			<?php
-
-			if ( false === ( $item_content = apply_filters( 'learn-press/course-item-content-html', false, $course_item->get_id(), $course->get_id() ) ) ) {
+			$item_content = apply_filters( 'learn-press/course-item-content-html', false, $course_item->get_id(), $course->get_id() );
+			if ( false === $item_content ) {
 				/**
 				 * @deprecated
 				 */
@@ -38,11 +38,6 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 				do_action( 'learn-press/before-course-item-content' );
 
 				if ( $can_view_item ) {
-					/**
-					 * @deprecated
-					 */
-					do_action( 'learn_press_course_item_content' );
-
 					/**
 					 * @since 3.0.0
 					 */
@@ -56,11 +51,6 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/after-course-item-content' );
-
-				/**
-				 * @deprecated
-				 */
-				do_action( 'learn_press_after_content_item' );
 			} else {
 				echo $item_content;
 			}

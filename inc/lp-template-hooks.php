@@ -326,7 +326,7 @@ add_filter( 'comments_template_query_args', 'learn_press_comments_template_query
 add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 
 add_filter( 'excerpt_length', 'learn_press_custom_excerpt_length', 999 );
-add_filter( 'learn_press_get_template', LP()->template( 'general' )->func( 'filter_block_content_template' ), 10, 5 );
+//add_filter( 'learn_press_get_template', LP()->template( 'general' )->func( 'filter_block_content_template' ), 10, 5 );
 
 /**
  * Filter to hide the section if there is no item.

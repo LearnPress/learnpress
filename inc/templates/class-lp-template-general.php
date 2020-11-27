@@ -9,7 +9,7 @@
  */
 class LP_Template_General extends LP_Abstract_Template {
 
-	public function filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
+	/*public function filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
 		if ( $template_name == 'global/block-content.php' ) {
 			$can_view_item = false;
 
@@ -25,7 +25,7 @@ class LP_Template_General extends LP_Abstract_Template {
 
 		return $located;
 
-	}
+	}*/
 
 	public function term_conditions_template() {
 		$page_id = learn_press_get_page_id( 'term_conditions' );

@@ -7,6 +7,7 @@
  * @package  Learnpress/Templates
  * @version  4.0.0
  */
+
 ?>
 
 <div id="popup-content">

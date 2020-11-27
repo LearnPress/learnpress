@@ -2420,15 +2420,6 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 }
 
 /**
- * Return TRUE debug mode is ON
- *
- * @return boolean
- */
-function learn_press_debug_enable() {
-	return learn_press_is_debug();
-}
-
-/**
  * Returns checkout url from setting
  *
  * @return string
@@ -2495,7 +2486,7 @@ function learn_press_debug() {
 	$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 3 );
 
 	echo '<pre>';
-	print_r( $debug[1] );
+	print_r( $debug );
 	$arg = false;
 
 	if ( $args ) {
