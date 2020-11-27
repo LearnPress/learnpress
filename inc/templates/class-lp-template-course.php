@@ -636,7 +636,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			array(
 				'lesson'  => sprintf( $lessons > 1 ? __( '<span class="meta-number">%d</span> lessons', 'learnpress' ) : __( '<span class="meta-number">%d</span> lesson', 'learnpress' ), $lessons ),
 				'quiz'    => sprintf( $quizzes > 1 ? __( '<span class="meta-number">%d</span> quizzes', 'learnpress' ) : __( '<span class="meta-number">%d</span> quiz', 'learnpress' ), $quizzes ),
-				'student' => sprintf( $quizzes > 1 ? __( '<span class="meta-number">%d</span> students', 'learnpress' ) : __( '<span class="meta-number">%d</span> students', 'learnpress' ), $students ),
+				'student' => sprintf( $students > 1 ? __( '<span class="meta-number">%d</span> students', 'learnpress' ) : __( '<span class="meta-number">%d</span> student', 'learnpress' ), $students ),
 			),
 			array( $lessons, $quizzes, $students )
 		);

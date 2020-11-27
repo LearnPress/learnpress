@@ -709,15 +709,26 @@ class LP_Checkout {
 					if ( $order && $order->payment_complete() ) {
 
 						$is_guest_checkout = $this->guest_email ? true : false;
+						$redirect          = $order->get_checkout_order_received_url();
 
-						$result = apply_filters(
-							'learn-press/checkout-no-payment-result',
-							array(
-								'result'   => 'success',
-								'redirect' => $order->get_checkout_order_received_url(),
-							),
-							$order->get_id(),
-							$is_guest_checkout
+						if ( ! $is_guest_checkout ) {
+							$course_id = get_transient( 'checkout_enroll_course_id' );
+
+							if ( ! $course_id ) {
+								if ( isset( $_REQUEST['enroll-course'] ) && $_REQUEST['enroll-course'] ) {
+									$course_id = absint( $_REQUEST['enroll-course'] );
+								}
+							}
+
+							if ( $course_id ) {
+								delete_transient( 'checkout_enroll_course_id' );
+								$redirect = get_the_permalink( $course_id );
+							}
+						}
+
+						$result = array(
+							'result'   => 'success',
+							'redirect' => $redirect,
 						);
 
 						if ( learn_press_is_ajax() ) {

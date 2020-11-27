@@ -45,7 +45,7 @@ $quiz_false        = $course_results['items']['quiz']['completed'] - $course_res
 
 	<div class="course-progress">
 		<h4 class="items-progress__heading">
-			<?php esc_attr_e( 'Course progress:', 'learnpress' ); ?>
+			<?php esc_html_e( 'Course progress:', 'learnpress' ); ?>
 		</h4>
 
 		<div class="lp-course-status">
