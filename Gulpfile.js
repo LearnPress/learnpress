@@ -30,7 +30,8 @@ const getCurrentVer = function( force ) {
 const releasesFiles = [
 	'./**',
 	'assets/src/**',
-	'!assets/scss/**',
+	'!assets/src/scss/**',
+	'!assets/src/app/**',
 	'!assets/**/*.js.map',
 	'!assets/**/*.dev.js',
 	'!assets/**/*bak*',

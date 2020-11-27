@@ -972,7 +972,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function count_students() {
-			$count_users = LP()->utils->count_course_users( $this->get_id() );
+			$count_users = LP()->utils->count_course_users( $this->get_id(), true );
 			$total       = ! empty( $count_users['total'] ) ? $count_users['total'] : 0;
 
 			$append_students = LP()->settings()->get( 'enrolled_students_number' );

@@ -103,57 +103,6 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						array(
 							'type' => 'sectionend',
 						),
-						// @since 3.3.0
-					// array(
-					// 'name'    => __( 'Auto finish course', 'learnpress' ),
-					// 'id'      => 'auto_finish_course',
-					// 'type'    => 'yes-no',
-					// 'desc'    => __( 'Auto finish course if duration of course expire.', 'learnpress' ),
-					// 'default' => 'yes',
-					// 'inline'  => false
-					// ),
-					// array(
-					// 'name'    => __( 'Force complete items', 'learnpress' ),
-					// 'id'      => 'force_complete_course_items',
-					// 'type'    => 'yes-no',
-					// 'desc'    => __( 'Force to complete items (e.g quizzes) in current progress before finish course.', 'learnpress' ),
-					// 'default' => 'no'
-					// ),
-					// array(
-					// 'name'    => __( 'Block course', 'learnpress' ),
-					// 'id'      => 'course_blocking',
-					// 'type'    => 'radio',
-					// 'options' => array(
-					// 'no'                                 => __( 'No.', 'learnpress' ),
-					// 'duration_expire'                    => __( 'Block if duration expire.', 'learnpress' ),
-					// 'course_finished'                    => __( 'Block if course is finished.', 'learnpress' ),
-					// 'duration_expire_or_course_finished' => __( 'Block if duration expire or course is finished.', 'learnpress' ),
-					// ),
-					// 'desc'    => __( 'Action when course is finished.', 'learnpress' ),
-					// 'default' => 'no',
-					// 'std'     => 'no',
-					// 'inline'  => false
-					// ),
-					// array(
-					// 'name'       => __( 'Block content', 'learnpress' ),
-					// 'id'         => 'course_content_blocking',
-					// 'type'       => 'radio',
-					// 'options'    => array(
-					// 'content_items'     => __( 'Block content of items.', 'learnpress' ),
-					// 'course_curriculum' => __( 'Block course curriculum.', 'learnpress' )
-					// ),
-					// 'default'    => 'content_items',
-					// 'std'        => 'content_items',
-					// 'inline'     => false,
-					// 'visibility' => array(
-					// 'state'       => 'hide',
-					// 'conditional' => array(
-					// 'field'   => 'course_blocking',
-					// 'compare' => '=',
-					// 'value'   => 'no'
-					// )
-					// )
-					// ),
 					)
 				),
 				apply_filters(
@@ -204,108 +153,10 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						array(
 							'type' => 'sectionend',
 						),
-					// array(
-					// 'title'   => __( 'Enrolled students number', 'learnpress' ),
-					// 'type'    => 'yes_no',
-					// 'id'      => 'enrolled_students_number',
-					// 'desc'    => __( 'Displays a fake numbers of enrolled students. Disable to show the real value.', 'learnpress' ),
-					// 'default' => 'quizzes'
-					// ),
 					)
 				)
-				// Thumbnail
-				// apply_filters( 'learn-press/course-settings-fields/thumbnails', array(
-				// array(
-				// 'title' => __( 'Course thumbnails', 'learnpress' ),
-				// 'type'  => 'heading',
-				// 'desc'  => __( 'Thumbnail generation for archive/single course.', 'learnpress' )
-				// ),
-				// array(
-				// 'title'   => __( 'Single course', 'learnpress' ),
-				// 'id'      => 'generate_course_thumbnail',
-				// 'default' => 'yes',
-				// 'type'    => 'yes-no',
-				// 'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
-				// ),
-				// array(
-				// 'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-				// 'id'         => 'single_course_image_size',
-				// 'default'    => array( 800, 450, 'yes' ),
-				// 'type'       => 'image-dimensions',
-				// 'visibility' => array(
-				// 'state' => 'show',
-				//
-				// 'conditional' => array(
-				// 'field'   => 'generate_course_thumbnail',
-				// 'compare' => '=',
-				// 'value'   => 'yes'
-				// )
-				// )
-				// ),
-				// array(
-				// 'title'   => __( 'Archive course', 'learnpress' ),
-				// 'id'      => 'archive_course_thumbnail',
-				// 'default' => 'yes',
-				// 'type'    => 'yes-no',
-				// 'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
-				// ),
-				// array(
-				// 'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-				// 'id'         => 'course_thumbnail_image_size',
-				// 'default'    => array( 400, 250, 'yes' ),
-				// 'type'       => 'image-dimensions',
-				// 'visibility' => array(
-				// 'state' => 'show',
-				//
-				// 'conditional' => array(
-				// array(
-				// 'field'   => 'archive_course_thumbnail',
-				// 'compare' => '=',
-				// 'value'   => 'yes'
-				// )
-				// )
-				// )
-				// )
-				// )
 			)
 		);
-
-		// Removed from 2.1.4
-		/*
-		array(
-			'title'   => __( 'Show list of question in quiz', 'learnpress' ),
-			'desc'    => __( 'Show/Hide list questions in quiz.', 'learnpress' ),
-			'id' => 'disable_question_in_quiz',
-			'default' => 'yes',
-			'type'    => 'checkbox'
-		),*/
-
-		/*
-		 Temporary remove from 2.1.4
-		array(
-			'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
-			'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),
-			'id' => 'auto_redirect_next_lesson',
-			'default' => 'no',
-			'type'    => 'checkbox'
-		),
-		array(
-			'title'             => __( 'Time delay redirect', 'learnpress' ),
-			'desc'              => __( 'The item will be redirected after certain amount of time, unit: seconds (s)', 'learnpress' ),
-			'id' => 'auto_redirect_time',
-			'default'           => '3',
-			'type'              => 'number',
-			'custom_attributes' => array(
-				'min' => '0'
-			)
-		),
-		array(
-			'title'   => __( 'Auto redirect message ', 'learnpress' ),
-			'desc'    => '',
-			'id' => 'auto_redirect_message',
-			'default' => 'Redirecting to the next item ... ',
-			'type'    => 'text'
-		),*/
 
 		// Deprecated hook.
 		return apply_filters( 'learn_press_courses_settings', $settings );
