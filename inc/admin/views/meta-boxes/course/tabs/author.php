@@ -31,6 +31,8 @@ foreach ( $role as $_role ) {
 				'style'   => 'min-width:200px;',
 			)
 		);
+	} else {
+		esc_html_e( 'Author is set by Admintrator', 'learnpress' );
 	}
 
 	do_action( 'learnpress/course-settings/after-author' );
