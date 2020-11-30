@@ -124,7 +124,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 
 			// $this->emails['LP_Email_Enrolled_Course_Admin']     = include_once(  'emails/class-lp-email-enrolled-course-admin.php' );
 
-			do_action_ref_array( 'learn-press/register-emails', array( &$this->emails, $this ) );
+			// do_action_ref_array( 'learn-press/register-emails', array( &$this->emails, $this ) ); // Not use in LP4 - Nhamdv
 		}
 
 

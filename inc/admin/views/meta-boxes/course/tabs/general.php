@@ -92,6 +92,13 @@ defined( 'ABSPATH' ) || exit;
 					'type'        => 'checkbox',
 				),
 				array(
+					'id'          => '_lp_has_finish',
+					'label'       => esc_html__( 'Finish button', 'learnpress' ),
+					'description' => esc_html__( 'Allow show finish button when all items completed but evalution not passed.', 'learnpress' ),
+					'default'     => 'yes',
+					'type'        => 'checkbox',
+				),
+				array(
 					'id'          => '_lp_featured_review',
 					'label'       => esc_html__( 'Featured review', 'learnpress' ),
 					'description' => esc_html__( 'A good review to promote the course.', 'learnpress' ),

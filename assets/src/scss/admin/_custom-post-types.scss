@@ -111,37 +111,6 @@
 	.column-preview {
 		float: none;
 		text-align: left;
-
-		input[type="checkbox"] {
-			width: 30px;
-			height: auto;
-			margin: 0;
-			border: none;
-			background: transparent;
-			box-shadow: none;
-			text-align: center;
-
-			@include transform(rotate(-180deg));
-
-			&::before,
-			&:checked::before {
-				width: 30px;
-				margin: 0;
-				font: 400 21px/1 "Font Awesome 5 Free";
-				font-size: 24px;
-				text-align: center;
-				content: "\f205";
-			}
-
-			&:checked {
-
-				@include transform(rotate(0deg));
-
-				&::before {
-					margin-top: -1px;
-				}
-			}
-		}
 	}
 
 	.column-instructor {
