@@ -256,16 +256,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press/admin-default-styles',
 			array(
 				'select2'               => array(
-					'url' => $this->url( 'css/vendor/select2.min.css' ),
+					'url' => $this->url( 'src/css/vendor/select2.min.css' ),
 				),
 				'font-awesome'          => array(
 					'url' => $this->url( 'src/css/vendor/font-awesome-5.min.css' ),
 				),
 				'jquery-ui'             => array(
-					'url' => $this->url( 'css/vendor/jquery-ui/jquery-ui.min.css' ),
+					'url' => $this->url( 'src/css/vendor/jquery-ui/jquery-ui.min.css' ),
 				),
 				'jquery-ui-timepicker'  => array(
-					'url' => $this->url( 'css/vendor/jquery-ui-timepicker-addon.css' ),
+					'url' => $this->url( 'src/css/vendor/jquery-ui-timepicker-addon.css' ),
 				),
 				'learn-press-bundle'    => array(
 					'url' => $this->url( 'css/bundle.min.css' ),
