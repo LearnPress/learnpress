@@ -36,8 +36,6 @@ const buildPackages = [
 	'frontend/custom',
 ];
 
-console.log( buildPackages );
-
 const {
 	NODE_ENV: mode = 'development',
 	WP_DEVTOOL: devtool = ( mode === 'production' ? false : 'source-map' ),

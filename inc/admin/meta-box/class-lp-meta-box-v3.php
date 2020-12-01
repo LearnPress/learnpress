@@ -196,3 +196,52 @@ if ( ! class_exists( 'RW_Meta_Box' ) && ! is_plugin_active( 'thim-core/thim-core
 		}
 	}
 }
+
+class LP_Course_MetaBox_Tab_V3 {
+	public function __construct() {
+		add_action( 'lp_course_data_settings_tabs', array( $this, 'get_tab_title' ) );
+		add_action( 'lp_course_data_setting_tab_content', array( $this, 'get_tab_content' ) );
+
+	}
+
+	public function get_tab_title( $tabs ) {
+		$tab = apply_filters( 'learn-press/' . LP_COURSE_CPT . '/tabs', false );
+
+		if ( ! $tab ) {
+			return;
+		}
+
+		$priority = 60;
+
+		foreach ( $tab as $key => $field ) {
+			$tabs[ $key ] = array(
+				'label'    => $field['title'],
+				'target'   => $field['id'],
+				'icon'     => $field['icon'],
+				'priority' => $priority + 10,
+			);
+		}
+
+		return $tabs;
+	}
+
+	public function get_tab_content() {
+		$tab = apply_filters( 'learn-press/' . LP_COURSE_CPT . '/tabs', false );
+
+		if ( ! $tab ) {
+			return;
+		}
+
+		foreach ( $tab as $field ) {
+			if ( isset( $field['callback'] ) ) {
+				?>
+				<div id="<?php echo $field['id']; ?>" class="lp-meta-box-course-panels">
+					<?php call_user_func( $field['callback'] ); ?>
+				</div>
+				<?php
+			}
+		}
+	}
+}
+
+new LP_Course_MetaBox_Tab_V3();
