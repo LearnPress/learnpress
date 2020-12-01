@@ -75,7 +75,7 @@ echo wp_sprintf(
 			if ( $count > 1 ) {
 				echo sprintf( '<ol>%s</ol>', join( '', $links ) );
 			} elseif ( 1 == $count ) {
-				echo wp_kses_post( pjoin( '', $links ) );
+				echo wp_kses_post( implode( '', $links ) );
 			} else {
 				echo esc_html__( '(No item)', 'learnpress' );
 			}

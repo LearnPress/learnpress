@@ -89,6 +89,10 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 					case 'image_advanced':
 						include LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/image-advanced.php';
 						break;
+					case 'checkbox':
+					case 'yes-no':
+						include LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/checkbox.php';
+						break;
 					default:
 						$file_meta_box_custom = LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/' . $value['type'] . '.php';
 						$file_meta_box_custom = apply_filters( 'learnpress/meta-box/field-custom', $file_meta_box_custom );

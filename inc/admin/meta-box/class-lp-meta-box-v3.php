@@ -7,7 +7,7 @@
  * @since 4.0.0
  */
 
-if ( ! class_exists( 'RW_Meta_Box' ) ) {
+if ( ! class_exists( 'RW_Meta_Box' ) && ! is_plugin_active( 'thim-core/thim-core.php' ) ) {
 	class RW_Meta_Box {
 
 		public $meta_box;
