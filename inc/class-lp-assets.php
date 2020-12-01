@@ -99,7 +99,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'learn-press/frontend-default-scripts',
 			array(
 				'lp-modal'             => new LP_Asset_Key(
-					self::url( 'js/dist/frontend/modal.js' ),
+					self::url( 'js/dist/frontend/modal' . self::$_min_assets . '.js' ),
 					array( 'jquery' )
 				),
 				'lp-plugins-all'       => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
@@ -276,7 +276,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				$can_load_js = true;
 
 				if ( ! empty( $script->_screens ) ) {
-					$can_load_js = apply_filters( 'learnpress/frontend/can-load-js/' . $handle, in_array( $page_current, $script->_screens ), $page_current, $script->_screens );
+					$can_load_js = apply_filters( 'learnpress/frontend/can-load-js/' . $handle,
+						in_array( $page_current, $script->_screens ), $page_current, $script->_screens );
 				}
 
 				if ( $can_load_js ) {
