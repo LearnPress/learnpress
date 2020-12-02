@@ -139,7 +139,9 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data ) {
-			learn_press_get_template( 'single-course/buttons/enroll.php' );
+			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
+				learn_press_get_template( 'single-course/buttons/enroll.php' );
+			}
 		}
 	}
 
