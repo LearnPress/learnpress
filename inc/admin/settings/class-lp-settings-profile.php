@@ -186,7 +186,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'placeholder' => 'order-details',
 							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.order-details', 'order-details' ) . '</code>/123' ),
 						),
-					)
+					),
+					$this
 				),
 				apply_filters(
 					'learn-press/profile-settings-fields/settings-tab',

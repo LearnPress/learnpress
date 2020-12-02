@@ -201,7 +201,7 @@ class LP_Course_MetaBox_Tab_V3 {
 	public function __construct() {
 		add_action( 'lp_course_data_settings_tabs', array( $this, 'get_tab_title' ) );
 		add_action( 'lp_course_data_setting_tab_content', array( $this, 'get_tab_content' ) );
-
+		add_action( 'learnpress/course-settings/after-author', array( $this, 'co_instructor_author' ) );
 	}
 
 	public function get_tab_title( $tabs ) {
@@ -240,6 +240,19 @@ class LP_Course_MetaBox_Tab_V3 {
 				</div>
 				<?php
 			}
+		}
+	}
+
+	/**
+	 * Support for Co Instructor plugin.
+	 *
+	 * @return void
+	 */
+	public function co_instructor_author() {
+		$fields = apply_filters( 'learn_press_course_author_meta_box', array() );
+
+		if ( ! empty( $fields ) ) {
+			LP_Meta_Box_Course::eduma_child_metabox_v3( $fields );
 		}
 	}
 }

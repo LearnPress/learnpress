@@ -146,10 +146,11 @@ function lp_meta_box_select_field( $field ) {
 		array(
 			'class'             => 'select',
 			'style'             => '',
-			'wrapper_class'     => '',
+			'wrapper_class'     => '', // Use "lp-select-2" for select2.
 			'value'             => isset( $field['value'] ) ? $field['value'] : $default,
 			'name'              => $field['id'],
 			'desc_tip'          => false,
+			'multiple'          => false,
 			'custom_attributes' => array(),
 		)
 	);
@@ -163,6 +164,10 @@ function lp_meta_box_select_field( $field ) {
 	$field_attributes['id']    = $field['id'];
 	$field_attributes['name']  = $field['name'];
 	$field_attributes['class'] = $field['class'];
+
+	if ( $field['multiple'] ) {
+		$field_attributes['multiple'] = true;
+	}
 
 	$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
 	$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
