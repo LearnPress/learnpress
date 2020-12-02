@@ -2279,6 +2279,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$order     = $this->get_course_order( $course_id, 'id', true );
 			$purchased = ! empty( $order );
 			$purchased = apply_filters( 'learn-press/user-purchased-course', $purchased, $course_id, $this->get_id() );
+			// @deprecated
+			$purchased = apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id,
+				$this->get_id() );
 
 			return $purchased;
 		}
@@ -2885,25 +2888,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $remain > 0 ? $remain : false;
-		}
-
-		/**
-		 * Check course of user is blocked
-		 *
-		 * @param int $course_id
-		 *
-		 * @return bool
-		 * @since 3.2.7.8
-		 * @author hungkv
-		 */
-		public function user_check_blocked_duration( $course_id = 0 ) {
-			$course     = learn_press_get_course( $course_id );
-			$is_blocked = false;
-			if ( $course->is_block_item_content_duration() && $course->expires_to_milliseconds() <= '0' ) {
-				$is_blocked = true;
-			}
-
-			return $is_blocked;
 		}
 	}
 }

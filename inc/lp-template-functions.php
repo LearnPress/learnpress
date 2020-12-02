@@ -139,18 +139,8 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data ) {
-			if ( in_array( $course_data->get_status(), array( 'purchased', 'enrolled' ) ) ) {
-				/**
-				 * Retake count > 0 && course duration is blocked
-				 * @editor hungkv
-				 */
-				if ( $user->can_retake_course( $course->get_id() ) <= 0 &&
-				     $user->user_check_blocked_duration( $course->get_id() ) == true ) {
-					learn_press_get_template( 'single-course/buttons/enroll.php' );
-				}
-			}
+			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		}
-
 	}
 
 }

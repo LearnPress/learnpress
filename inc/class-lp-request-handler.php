@@ -182,15 +182,7 @@ class LP_Request {
 							 * Order is completed and course is finished/enrolled
 							 */
 							if ( $user->has_course_status( $course->get_id(), array( 'finished', 'enrolled' ) ) ) {
-								/**
-								 * Check user duration
-								 * @editor hungkv
-								 */
-								if ( $user->user_check_blocked_duration( $course->get_id() ) == true ) {
-									$add_to_cart = true;
-								} else {
-									throw new Exception( __( 'You have finished course.', 'learnpress' ) );
-								}
+								throw new Exception( __( 'You have finished course.', 'learnpress' ) );
 							} else {
 								// TODO: enroll
 								//do_action( "learn-press/{$action}-handler", $course_id, $order->get_id() );
