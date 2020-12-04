@@ -368,49 +368,6 @@ function learn_press_can_view_item( $item_id, $course_id = 0, $user_id = 0 ) {
 }
 
 /**
- * Check to see if user can view a lesson or not.
- *
- * @param      $lesson_id
- * @param int $course_id
- * @param null $user_id
- *
- * @return bool|mixed
- * @throws Exception
- */
-function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id = null ) {
-	_deprecated_function( __FUNCTION__, '3.1.0', 'learn_press_can_view_item' );
-	if ( $user_id ) {
-		$user = learn_press_get_user( $user_id );
-	} else {
-		$user = LP_Global::user();
-	}
-
-	return $user ? $user->can_view_lesson( $lesson_id, $course_id ) : false;
-}
-
-/**
- * Check to see if user can view a quiz or not.
- *
- * @param null $quiz_id
- * @param int $course_id
- * @param null $user_id
- *
- * @return bool|mixed
- * @throws Exception
- */
-function learn_press_user_can_view_quiz( $quiz_id = null, $course_id = 0, $user_id = null ) {
-	_deprecated_function( __FUNCTION__, '3.1.0', 'learn_press_can_view_item' );
-
-	if ( $user_id ) {
-		$user = learn_press_get_user( $user_id );
-	} else {
-		$user = LP_Global::user();
-	}
-
-	return $user ? $user->can_view_item( $quiz_id, $course_id ) : false;
-}
-
-/**
  * Get course setting is enroll required or public
  *
  * @param int $course_id

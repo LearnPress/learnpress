@@ -331,6 +331,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
+				require_once 'inc/course/class-model-user-can-view-course-item.php';
 			}
 
 			require_once 'inc/class-lp-repair-database.php';

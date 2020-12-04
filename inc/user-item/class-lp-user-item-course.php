@@ -695,66 +695,17 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$this->complete_items();
 		}
 
-		$results = $this->calculate_course_results();
-		$status  = $this->_is_passed( $results['result'] ) ? 'passed' : 'failed';
-		$status  = apply_filters( 'learn-press/finish-course-status', $status, $this->get_course_id(), $this->get_user(), $this );
+		$status  = apply_filters(
+			'learn-press/finish-course-status',
+			'finished',
+			$this->get_course_id(),
+			$this->get_user(),
+			$this
+		);
+
+		$this->calculate_course_results();
 
 		return parent::complete( $status );
-	}
-
-	/**
-	 * Complete all items of course.
-	 *
-	 * @return bool
-	 * @since 3.3.0
-	 */
-	public function complete_items() {
-
-		/**
-		 * Filters whether item types of course should be completed.
-		 * Only support lp_quiz by default.
-		 *
-		 * @param array $item_types
-		 * @param int $course_id
-		 * @param int $user_id
-		 *
-		 * @since 3.3.0
-		 */
-		$item_types = apply_filters( 'learn-press/auto-complete-course-items-types', array( LP_QUIZ_CPT ), $this->get_item_id(), $this->get_user_id() );
-
-		if ( ! $item_types ) {
-			return false;
-		}
-
-		if ( ! $items = $this->get_items() ) {
-			return false;
-		}
-
-		foreach ( $items as $item ) {
-			if ( ! in_array( $item->get_post_type(), $item_types ) || $item->is_completed() ) {
-				continue;
-			}
-
-			/**
-			 * Filters the item should be completed if has specific statuses.
-			 *
-			 * @param array $item_statuses
-			 * @param int $item_id
-			 * @param int $course_id
-			 * @param int $user_id
-			 *
-			 * @since 3.3.0
-			 */
-			$item_statuses = apply_filters( 'learn-press/auto-complete-course-item-has-statuses', array( 'started' ), $item->get_item_id(), $item->get_course( 'id' ), $item->get_user_id() );
-
-			if ( ! in_array( $item->get_status(), $item_statuses ) ) {
-				continue;
-			}
-
-			$item->complete();
-		}
-
-		return true;
 	}
 
 	public function is_enrolled() {

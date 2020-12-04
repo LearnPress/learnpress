@@ -11,10 +11,22 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( isset( $can_view_item ) && $can_view_item == 'not-enrolled' ) {
-	$message = esc_html__( 'This content is protected, please enroll course to view this content!', 'learnpress' );
-} else {
-	$message = sprintf( __( 'This content is protected, please <a href="%s">login</a> and enroll course to view this content!', 'learnpress' ), learn_press_get_login_url( learn_press_get_current_url() ) );
+if ( ! isset( $can_view_item ) || $can_view_item->flag ) {
+	return;
 }
 
-learn_press_display_message( apply_filters( 'learn_press_content_item_protected_message', $message ), 'error' );
+$message = '';
+
+if ( ! is_user_logged_in() ) {
+	$message = sprintf(
+		wp_kses_post(
+			'This content is protected, please <a href="%s">login</a> and enroll course to view this content!',
+			'learnpress'
+		),
+		learn_press_get_login_url( learn_press_get_current_url() )
+	);
+} else {
+	$message = $can_view_item->message;
+}
+
+learn_press_display_message( apply_filters( 'learnpress/message/course-content-protected', $message ), 'error' );

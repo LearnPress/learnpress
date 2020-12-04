@@ -51,10 +51,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			return $schedules;
 		}
 
-		public function test() {
-			$this->task( 0 );
-		}
-
 		/**
 		 * Run
 		 */
@@ -72,13 +68,16 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 * Update user-item status.
 		 * This function called in background by schedule event.
 		 *
-		 * @since 3.3.0
-		 *
 		 * @param mixed $data
 		 *
+		 * @editor tungnx
+		 * @reason not use
+		 *
 		 * @return bool
+		 * @since 3.3.0
+		 *
 		 */
-		protected function task( $data ) {
+		/*protected function task( $data ) {
 
 			$settings = LP_Settings::instance();
 
@@ -118,7 +117,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Get the items.
@@ -130,7 +129,8 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$queued_items      = get_transient( $this->transient_key );
 			$queued_course_ids = $queued_items ? array_keys( $queued_items ) : false;
 			$queued_course_ids = array_unique( $queued_course_ids );
-			$exclude_items     = $queued_course_ids ? 'AND user_item_id NOT IN(' . join( ',', $queued_course_ids ) . ')' : '';
+			$exclude_items     = $queued_course_ids ? 'AND user_item_id NOT IN(' . join( ',',
+					$queued_course_ids ) . ')' : '';
 
 			$null_time = '0000-00-00 00:00:00';
 			$query     = $wpdb->prepare(
@@ -253,4 +253,5 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		}
 	}
 }
+
 return LP_Background_Schedule_Items::instance();

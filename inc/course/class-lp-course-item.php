@@ -151,17 +151,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		}
 
 		/**
-		 * Return true if item can be shown in course curriculum.
-		 *
-		 * @return mixed
-		 */
-		public function is_visible() {
-			$show = true;
-
-			return apply_filters( 'learn-press/course-item-visible', $show, $this->get_item_type(), $this->get_id() );
-		}
-
-		/**
 		 * Get class of item.
 		 *
 		 * @param string $more

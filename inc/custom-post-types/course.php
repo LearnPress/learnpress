@@ -495,9 +495,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 
-			if ( $price ) {
+			/*if ( $price ) {
 				update_post_meta( $post->ID, '_lp_required_enroll', 'yes' );
-			}
+			}*/
 
 			return true;
 		}

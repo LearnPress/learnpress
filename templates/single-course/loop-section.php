@@ -26,7 +26,10 @@ $user_course = $user->get_course_data( get_the_ID() );
 $items       = $section->get_items();
 ?>
 
-<li <?php $section->main_class(); ?> id="section-<?php echo esc_attr( $section->get_slug() ); ?>" data-id="<?php echo esc_attr( $section->get_slug() ); ?>" data-section-id="<?php echo esc_attr( $section->get_id() ); ?>">
+<li <?php $section->main_class(); ?>
+	id="section-<?php echo esc_attr( $section->get_slug() ); ?>"
+	data-id="<?php echo esc_attr( $section->get_slug() ); ?>"
+	data-section-id="<?php echo esc_attr( $section->get_id() ); ?>">
 	<?php do_action( 'learn-press/before-section-summary', $section, $course->get_id() ); ?>
 
 	<div class="section-header">
@@ -54,7 +57,9 @@ $items       = $section->get_items();
 			<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
 
 			<div class="section-meta">
-				<div class="learn-press-progress" title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ), round( $percent, 2 ) ) ); ?>">
+				<div class="learn-press-progress"
+					 title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ),
+						 round( $percent, 2 ) ) ); ?>">
 					<div class="learn-press-progress__active" data-value="<?php echo $percent; ?>"></div>
 				</div>
 			</div>
@@ -70,37 +75,40 @@ $items       = $section->get_items();
 		<ul class="section-content">
 
 			<?php foreach ( $items as $item ) : ?>
-				<?php if ( $item->is_visible() ) : ?>
+				<li class="<?php echo esc_attr( implode( ' ', $item->get_class() ) ); ?>"
+					data-id="<?php echo esc_attr( $item->get_id() ); ?>">
 
-					<li class="<?php echo implode( ' ', $item->get_class() ); ?>" data-id="<?php echo esc_attr( $item->get_id() ); ?>">
+					<?php do_action( 'learn-press/before-section-loop-item', $item, $section, $course ); ?>
 
-						<?php do_action( 'learn-press/before-section-loop-item', $item, $section, $course ); ?>
+					<?php
+					$can_view_item = $user->can_view_item( $item->get_id() );
 
-						<?php $item_link = $user->can_view_item( $item->get_id() ) ? $item->get_permalink() : 'javascript:void(0);'; ?>
+					$item_link = $can_view_item->flag ? $item->get_permalink() : 'javascript:void(0);';
+					$item_link = apply_filters(
+						'learn-press/section-item-permalink', $item_link, $item, $section, $course
+					);
+					?>
 
-						<a class="section-item-link" href="<?php echo apply_filters( 'learn-press/section-item-permalink', $item_link, $item, $section, $course ); ?>">
+					<a class="section-item-link"
+					   href="<?php echo esc_attr( $item_link ); ?>">
 
-							<?php
-							do_action( 'learn-press/before-section-loop-item-title', $item, $section, $course );
+						<?php
+						do_action( 'learn-press/before-section-loop-item-title', $item, $section, $course );
 
-							learn_press_get_template(
-								'single-course/section/' . $item->get_template(),
-								array(
-									'item'    => $item,
-									'section' => $section,
-								)
-							);
+						learn_press_get_template(
+							'single-course/section/' . $item->get_template(),
+							array(
+								'item'    => $item,
+								'section' => $section,
+							)
+						);
 
-							do_action( 'learn-press/after-section-loop-item-title', $item, $section, $course );
-							?>
-						</a>
+						do_action( 'learn-press/after-section-loop-item-title', $item, $section, $course );
+						?>
+					</a>
 
-						<?php do_action( 'learn-press/after-section-loop-item', $item, $section, $course ); ?>
-					</li>
-
-					<?php else : ?>
-						<?php do_action( 'learn-press/section-loop-item-invisible', $item, $section, $course ); ?>
-				<?php endif; ?>
+					<?php do_action( 'learn-press/after-section-loop-item', $item, $section, $course ); ?>
+				</li>
 			<?php endforeach; ?>
 		</ul>
 	<?php endif; ?>

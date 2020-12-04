@@ -430,9 +430,9 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 			$classes[] = 'preview-item';
 		}
 
-		if ( $user->can_view_item( $lesson_id, $course_id ) ) {
+		/*if ( $user->can_view_item( $lesson_id, $course_id )->flag ) {
 			$classes[] = 'viewable';
-		}
+		}*/
 
 		$classes = array_unique( array_merge( $classes, $class ) );
 
@@ -488,9 +488,9 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 			$classes[] = 'item-current';
 		}
 
-		if ( $user->can_view_item( $quiz_id, $course_id ) ) {
+		/*if ( $user->can_view_item( $quiz_id, $course_id )->flag ) {
 			$classes[] = 'viewable';
-		}
+		}*/
 
 		if ( $course->is_final_quiz( $quiz_id ) ) {
 			$classes[] = 'final-quiz';

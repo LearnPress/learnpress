@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 	<?php
 	do_action( 'learnpress/course-settings/before-general' );
 
-	// Remove when Eduma theme and guest update 4.0.0
+	//Todo: Remove when Eduma theme and guest update 4.0.0
 	if ( ! empty( apply_filters( 'learn_press_course_settings_meta_box_args', null ) ) ) {
 		$meta_box = array(
 			'id'       => 'course_settings',
@@ -36,7 +36,8 @@ defined( 'ABSPATH' ) || exit;
 				array(
 					'id'          => '_lp_block_lesson_content',
 					'label'       => esc_html__( 'Block content', 'learnpress' ),
-					'description' => esc_html__( 'Block content item( lesson, quiz... ) of course when expiration time course.', 'learnpress' ),
+					'description' => esc_html__( 'Block content item( lesson, quiz... ) of course when expiration time course.',
+						'learnpress' ),
 					'default'     => 'no',
 					'type'        => 'checkbox',
 				),
@@ -68,7 +69,8 @@ defined( 'ABSPATH' ) || exit;
 				array(
 					'id'                => '_lp_max_students',
 					'label'             => esc_html__( 'Max student', 'learnpress' ),
-					'description'       => esc_html__( 'Maximum students can join the course. Set 0 for unlimited.', 'learnpress' ),
+					'description'       => esc_html__( 'Maximum students can join the course. Set 0 for unlimited.',
+						'learnpress' ),
 					'type'              => 'number',
 					'default'           => '0',
 					'custom_attributes' => array(
@@ -102,14 +104,20 @@ defined( 'ABSPATH' ) || exit;
 					'id'          => '_lp_featured_review',
 					'label'       => esc_html__( 'Featured review', 'learnpress' ),
 					'description' => esc_html__( 'A good review to promote the course.', 'learnpress' ),
-					'placeholder' => esc_html__( 'e.g. This course is so great and helpful. Thank you the best teacher to explain and show us what LearnPress LMS is all about.', 'learnpress' ),
+					'placeholder' => esc_html__(
+						'e.g. This course is so great and helpful. Thank you the best teacher to explain and show us what LearnPress LMS is all about.',
+						'learnpress'
+					),
 					'default'     => '',
 					'type'        => 'textarea',
 				),
 				array(
 					'id'          => '_lp_external_link_buy_course',
 					'label'       => esc_html__( 'External link', 'learnpress' ),
-					'description' => esc_html__( 'Normally use for offline classes, e.g. link to a contact page.', 'learnpress' ),
+					'description' => esc_html__(
+						'Normally use for offline classes, e.g. link to a contact page.',
+						'learnpress'
+					),
 					'placeholder' => 'https://',
 					'default'     => '',
 					'type'        => 'text',
@@ -137,10 +145,25 @@ defined( 'ABSPATH' ) || exit;
 
 		lp_meta_box_checkbox_field(
 			array(
-				'id'          => '_lp_block_lesson_content',
+				'id'          => '_lp_block_items_course_expire_duration',
 				'label'       => esc_html__( 'Block content', 'learnpress' ),
-				'description' => esc_html__( 'Block content item( lesson, quiz... ) of course when expiration time course.', 'learnpress' ),
+				'description' => esc_html__(
+					'Block content items( lesson, quiz... ) of course when expiration time course.',
+					'learnpress'
+				),
 				'default'     => 'no',
+			)
+		);
+
+		lp_meta_box_checkbox_field(
+			array(
+				'id'          => '_lp_block_items_course_finished',
+				'label'       => '',
+				'description' => esc_html__(
+					'Block content items(lesson, quiz, v.v...) of course when finished course.',
+					'learnpress'
+				),
+				'default'     => 'yes',
 			)
 		);
 
@@ -162,8 +185,8 @@ defined( 'ABSPATH' ) || exit;
 		lp_meta_box_text_input_field(
 			array(
 				'id'                => '_lp_students',
-				'label'             => esc_html__( 'Promote', 'learnpress' ),
-				'description'       => esc_html__( 'Show a plus number of students for the course.', 'learnpress' ),
+				'label'             => esc_html__( 'Fake Students Enrolled', 'learnpress' ),
+				'description'       => esc_html__( 'It only display fake students enrolled', 'learnpress' ),
 				'type'              => 'number',
 				'default'           => '0',
 				'custom_attributes' => array(
@@ -178,7 +201,10 @@ defined( 'ABSPATH' ) || exit;
 			array(
 				'id'                => '_lp_max_students',
 				'label'             => esc_html__( 'Max student', 'learnpress' ),
-				'description'       => esc_html__( 'Maximum students can join the course. Set 0 for unlimited.', 'learnpress' ),
+				'description'       => esc_html__(
+					'Maximum students can join the course. Set 0 for unlimited.',
+					'learnpress'
+				),
 				'type'              => 'number',
 				'default'           => '0',
 				'custom_attributes' => array(
@@ -202,7 +228,8 @@ defined( 'ABSPATH' ) || exit;
 			array(
 				'id'          => '_lp_has_finish',
 				'label'       => esc_html__( 'Finish button', 'learnpress' ),
-				'description' => esc_html__( 'Allow show finish button when all items completed but evalution not passed.', 'learnpress' ),
+				'description' => esc_html__( 'Allow show finish button when all items completed but evalution not passed.',
+					'learnpress' ),
 				'default'     => 'yes',
 			)
 		);
@@ -221,7 +248,10 @@ defined( 'ABSPATH' ) || exit;
 				'id'          => '_lp_featured_review',
 				'label'       => esc_html__( 'Featured review', 'learnpress' ),
 				'description' => esc_html__( 'A good review to promote the course.', 'learnpress' ),
-				'placeholder' => esc_html__( 'e.g. This course is so great and helpful. Thank you the best teacher to explain and show us what LearnPress LMS is all about.', 'learnpress' ),
+				'placeholder' => esc_html__(
+					'e.g. This course is so great and helpful. Thank you the best teacher to explain and show us what LearnPress LMS is all about.',
+					'learnpress'
+				),
 				'default'     => '',
 			)
 		);
@@ -230,7 +260,10 @@ defined( 'ABSPATH' ) || exit;
 			array(
 				'id'          => '_lp_external_link_buy_course',
 				'label'       => esc_html__( 'External link', 'learnpress' ),
-				'description' => esc_html__( 'Normally use for offline classes, e.g. link to a contact page.', 'learnpress' ),
+				'description' => esc_html__(
+					'Normally use for offline classes, e.g. link to a contact page.',
+					'learnpress'
+				),
 				'placeholder' => 'https://',
 				'default'     => '',
 			)

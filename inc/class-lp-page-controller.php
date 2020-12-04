@@ -34,7 +34,8 @@ class LP_Page_Controller {
 	protected function __construct() {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
-		add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
+		// Comment by tungnx
+		//add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
 		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
@@ -469,7 +470,6 @@ class LP_Page_Controller {
 		}
 
 		$this->_maybe_redirect_courses_page();
-		$this->_maybe_redirect_course_item();
 
 		$tmpl = $this->_is_profile();
 
@@ -639,31 +639,6 @@ class LP_Page_Controller {
 
 			if ( $page_id != get_option( 'page_on_front' ) && ! learn_press_is_current_url( $redirect ) ) {
 				wp_redirect( $redirect );
-				exit();
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	protected function _maybe_redirect_course_item() {
-		/**
-		 * Check if user is viewing a course's item but they do not have
-		 * permission to view it
-		 */
-		if ( ! learn_press_is_course() ) {
-			return false;
-		}
-
-		if ( ! empty( LP()->global['course-item'] ) && ( LP()->global['course-item'] ) ) {
-			$course_item = LP()->global['course-item'];
-			$user        = learn_press_get_current_user();
-
-			if ( ! $user->can_view_item( $course_item->id ) ) {
-				wp_redirect( get_the_permalink() );
 				exit();
 			}
 		}

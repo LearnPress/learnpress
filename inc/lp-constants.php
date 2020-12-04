@@ -85,6 +85,9 @@ define( 'LP_PAGE_PROFILE', 'lp_page_profile' );
 define( 'LP_PAGE_BECOME_A_TEACHER', 'lp_page_become_a_teacher' );
 define( 'LP_PAGE_SINGLE_COURSE_CURRICULUM', 'lp_page_single_course_curriculum' );
 
+// Key block course's item
+define( 'LP_BLOCK_COURSE_FINISHED', 'block_course_finished' );
+
 /**
  * Thim Market library
  */

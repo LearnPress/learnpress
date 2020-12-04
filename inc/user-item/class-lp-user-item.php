@@ -19,7 +19,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * LP_User_Item constructor.
 	 *
-	 * @param array $item . A record fetched from table _learnpress_user_items
+	 * @param array $item  . A record fetched from table _learnpress_user_items
 	 */
 	public function __construct( $item ) {
 		if ( is_numeric( $item ) ) {
@@ -166,7 +166,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Set start-time.
 	 *
 	 * @param mixed $time
-	 * @param bool  $bound_to_gmt - Optional. TRUE to auto update for start-time gmt
+	 * @param bool $bound_to_gmt  - Optional. TRUE to auto update for start-time gmt
 	 */
 	public function set_start_time( $time, $bound_to_gmt = false ) {
 		$this->_set_data_date( 'start_time', $time );
@@ -198,7 +198,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Get start-time.
 	 *
 	 * @param string $format
-	 * @param bool   $local
+	 * @param bool $local
 	 *
 	 * @return string|LP_Datetime
 	 */
@@ -237,7 +237,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set end-time for item.
 	 *
-	 * @param bool  $bound_to_gmt - Optional. Calculate gmt of end-time and update
+	 * @param bool $bound_to_gmt  - Optional. Calculate gmt of end-time and update
 	 * @param mixed $time
 	 */
 	public function set_end_time( $time, $bound_to_gmt = false ) {
@@ -270,8 +270,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * @param string|int|LP_Datetime $date
-	 * @param string                 $format
-	 * @param bool                   $local
+	 * @param string $format
+	 * @param bool $local
 	 *
 	 * @return bool|float|int|LP_Datetime|string
 	 */
@@ -397,7 +397,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function has_finished() {
-		return in_array( $this->get_status(), array( 'failed', 'passed' ), true );
+		return in_array( $this->get_status(), array( 'finished' ), true );
 	}
 
 	public function is_exists() {
@@ -529,7 +529,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @updated 3.1.0
 	 *
 	 * @param string $key
-	 * @param bool   $single
+	 * @param bool $single
 	 *
 	 * @return bool|mixed
 	 */
@@ -555,7 +555,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			if ( $this->_meta_data ) {
 				foreach ( $this->_meta_data as $meta_data ) {
 					if ( $meta_data->meta_value ) {
-						learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key, $meta_data->meta_value );
+						learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key,
+							$meta_data->meta_value );
 					} else {
 						learn_press_delete_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key );
 					}
@@ -654,8 +655,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @updated 3.1.0
 	 *
-	 * @param bool $force    - Optional. Added from 3.1.0 to force update if even the data is not changed.
-	 * @param bool $wp_error - Optional. Added from 3.3.0 to return WP_Error
+	 * @param bool $force  - Optional. Added from 3.1.0 to force update if even the data is not changed.
+	 * @param bool $wp_error  - Optional. Added from 3.3.0 to return WP_Error
 	 *
 	 * @return bool|mixed
 	 */
@@ -745,17 +746,21 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $interval;
 	}
 
+	/**
+	 * Check user can view course's item
+	 *
+	 * @return bool
+	 */
 	public function current_user_can_view() {
-		$user = $this->get_user();
-		if ( false !== ( $view = $user->can_view_item( $this->get_id(), $this->get_course( 'id' ) ) ) ) {
-			return $view;
-		}
+		$user          = $this->get_user();
+		$can_view_item = $user->can_view_item( $this->get_id(), $this->get_course( 'id' ) );
 
-		return false;
+		return $can_view_item->flag;
 	}
 
 	public function get_history() {
-		return LP_Object_Cache::get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_course( 'id' ), $this->get_id() ), 'learn-press/user-course-items' );
+		return LP_Object_Cache::get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_course( 'id' ),
+			$this->get_id() ), 'learn-press/user-course-items' );
 	}
 
 	public function count_history() {
@@ -767,7 +772,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function remove_user_items_history( $keep = 10 ) {
-		learn_press_remove_user_items_history( $this->get_item_id(), $this->get_course( 'id' ), $this->get_user_id(), $keep );
+		learn_press_remove_user_items_history( $this->get_item_id(), $this->get_course( 'id' ), $this->get_user_id(),
+			$keep );
 	}
 
 	/**
@@ -862,14 +868,15 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$duration = 100 * DAY_IN_SECONDS * 360;
 		}
 
-		return $duration !== false ? $format ? date( $format, $start_time + $duration ) : $start_time + $duration : false;
+		return $duration !== false ? $format ? date( $format,
+			$start_time + $duration ) : $start_time + $duration : false;
 	}
 
 
 	/**
 	 * Get time remaining for user item.
 	 *
-	 * @param string $return - Optional. What kind of data to return.
+	 * @param string $return  - Optional. What kind of data to return.
 	 *
 	 * @return LP_Duration
 	 * @since 3.3.0
@@ -949,13 +956,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( $include ) {
 			settype( $include, 'array' );
 			$format = array_fill( 0, sizeof( $include ), '%s' );
-			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
+			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
 		}
 
 		if ( $exclude ) {
 			settype( $exclude, 'array' );
 			$format = array_fill( 0, sizeof( $exclude ), '%s' );
-			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
+			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
 		}
 
 		$query = $wpdb->prepare(
@@ -987,7 +994,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function get_percent_result( $decimal = 1 ) {
-		return apply_filters( 'learn-press/user/item-percent-result', sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
+		return apply_filters( 'learn-press/user/item-percent-result',
+			sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(),
+				$this->get_item_id() ) );
 	}
 
 	/**
@@ -1033,9 +1042,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			'viewable' => '',
 		);
 
-		if ( ( $view = $this->current_user_can_view() ) !== false ) {
+		if ( $this->current_user_can_view() ) {
 			$item_js['status']   = $this->get_status();
-			$item_js['viewable'] = $view;
+			$item_js['viewable'] = true;
 		}
 
 		return $item_js;

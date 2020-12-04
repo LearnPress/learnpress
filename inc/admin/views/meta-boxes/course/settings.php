@@ -1,4 +1,5 @@
 <?php
+
 class LP_Meta_Box_Course {
 
 	public static function output( $post ) {
@@ -10,7 +11,8 @@ class LP_Meta_Box_Course {
 				<div class="lp-meta-box__course-tab">
 					<ul class="lp-meta-box__course-tab__tabs">
 						<?php foreach ( self::data_tabs() as $key => $tab ) : ?>
-							<li class="<?php echo esc_attr( $key ); ?>_options <?php echo esc_attr( $key ); ?>_tab <?php echo esc_attr( isset( $tab['class'] ) ? implode( ' ', (array) $tab['class'] ) : '' ); ?>">
+							<li class="<?php echo esc_attr( $key ); ?>_options <?php echo esc_attr( $key ); ?>_tab <?php echo esc_attr( isset( $tab['class'] ) ? implode( ' ',
+								(array) $tab['class'] ) : '' ); ?>">
 								<a href="#<?php echo esc_attr( $tab['target'] ); ?>">
 									<?php if ( isset( $tab['icon'] ) ) : ?>
 										<i class="<?php echo $tab['icon']; ?>"></i>
@@ -38,16 +40,18 @@ class LP_Meta_Box_Course {
 		$course = learn_press_get_course( $post_id );
 
 		// General.
-		$duration        = isset( $_POST['_lp_duration'][0] ) && $_POST['_lp_duration'][0] !== '' ? implode( ' ', wp_unslash( $_POST['_lp_duration'] ) ) : '0 minute';
-		$level           = isset( $_POST['_lp_level'] ) ? wp_unslash( $_POST['_lp_level'] ) : '';
-		$students        = isset( $_POST['_lp_students'] ) ? absint( wp_unslash( $_POST['_lp_students'] ) ) : 0;
-		$max_students    = isset( $_POST['_lp_max_students'] ) ? absint( wp_unslash( $_POST['_lp_max_students'] ) ) : 0;
-		$retry           = isset( $_POST['_lp_retake_count'] ) ? 'yes' : 'no';
-		$has_finish      = isset( $_POST['_lp_has_finish'] ) ? 'yes' : 'no';
-		$block_content   = isset( $_POST['_lp_block_lesson_content'] ) ? 'yes' : 'no';
-		$feature         = isset( $_POST['_lp_featured'] ) ? 'yes' : 'no';
-		$featured_review = isset( $_POST['_lp_featured_review'] ) ? wp_unslash( $_POST['_lp_featured_review'] ) : '';
-		$external        = isset( $_POST['_lp_external_link_buy_course'] ) ? wp_unslash( $_POST['_lp_external_link_buy_course'] ) : '';
+		$duration                    = isset( $_POST['_lp_duration'][0] ) && $_POST['_lp_duration'][0] !== '' ? implode( ' ', wp_unslash( $_POST['_lp_duration'] ) ) : '0 minute';
+		$level                       = isset( $_POST['_lp_level'] ) ? wp_unslash( $_POST['_lp_level'] ) : '';
+		$students                    = isset( $_POST['_lp_students'] ) ? absint( wp_unslash( $_POST['_lp_students'] ) ) : 0;
+		$max_students                = isset( $_POST['_lp_max_students'] ) ? absint( wp_unslash( $_POST['_lp_max_students'] ) ) : 0;
+		$retry                       = isset( $_POST['_lp_retake_count'] ) ? 'yes' : 'no';
+		$has_finish                  = isset( $_POST['_lp_has_finish'] ) ? 'yes' : 'no';
+		$block_content               = isset( $_POST['_lp_block_lesson_content'] ) ? 'yes' : 'no';
+		$feature                     = isset( $_POST['_lp_featured'] ) ? 'yes' : 'no';
+		$featured_review             = isset( $_POST['_lp_featured_review'] ) ? wp_unslash( $_POST['_lp_featured_review'] ) : '';
+		$external                    = isset( $_POST['_lp_external_link_buy_course'] ) ? wp_unslash( $_POST['_lp_external_link_buy_course'] ) : '';
+		$block_items_course_finished = isset( $_POST['_lp_block_items_course_finished'] ) ? 'yes' : 'no';
+		$block_items_course_expire   = isset( $_POST['_lp_block_items_course_expire_duration'] ) ? 'yes' : 'no';
 
 		update_post_meta( $post_id, '_lp_duration', $duration );
 		update_post_meta( $post_id, '_lp_level', $level );
@@ -59,6 +63,8 @@ class LP_Meta_Box_Course {
 		update_post_meta( $post_id, '_lp_featured', $feature );
 		update_post_meta( $post_id, '_lp_featured_review', $featured_review );
 		update_post_meta( $post_id, '_lp_external_link_buy_course', $external );
+		update_post_meta( $post_id, '_lp_block_items_course_finished', $block_items_course_finished );
+		update_post_meta( $post_id, '_lp_block_items_course_expire_duration', $block_items_course_expire );
 
 		// Price.
 		$price      = isset( $_POST['_lp_price'] ) ? floatval( wp_unslash( $_POST['_lp_price'] ) ) : '';
@@ -123,6 +129,7 @@ class LP_Meta_Box_Course {
 
 			if ( ! $curriculum ) {
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $post_id ) );
+
 				return;
 			}
 
