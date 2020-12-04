@@ -11,13 +11,12 @@
 	 * @type {LP.Checkout}
 	 */
 	const Checkout = LP.Checkout = function( options ) {
-		let
-			/**
-			 * Checkout form
-			 *
-			 * @type {form}
-			 */
-			$formCheckout = $( '#learn-press-checkout' ),
+		/**
+		 * Checkout form
+		 *
+		 * @type {form}
+		 */
+		const $formCheckout = $( '#learn-press-checkout' ),
 
 			/**
 			 * Register form
@@ -73,15 +72,16 @@
 			 *
 			 * @type {DOM}
 			 */
-			$checkoutNewAccount = $( '#checkout-new-account' )
-    ;
+			$checkoutNewAccount = $( '#checkout-new-account' );
 
 		/**
 		 * Add function to checking a string is in valid format of an email.
 		 */
 		if ( String.prototype.isEmail === undefined ) {
 			String.prototype.isEmail = function() {
-				return new RegExp( '^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$' ).test( this );
+				return new RegExp(
+					'^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$' ).test(
+					this );
 			};
 		}
 
@@ -95,7 +95,11 @@
 		const _formSubmit = function( e ) {
 			e.preventDefault();
 
-			if ( ! ( $formCheckout.triggerHandler( 'learn_press_checkout_place_order' ) !== false && $formCheckout.triggerHandler( 'learn_press_checkout_place_order_' + selectedMethod ) !== false ) ) {
+			if ( ! ( $formCheckout.triggerHandler(
+				'learn_press_checkout_place_order' ) !== false &&
+          $formCheckout.triggerHandler(
+          	'learn_press_checkout_place_order_' + selectedMethod ) !==
+          false ) ) {
 				return;
 			}
 
@@ -128,7 +132,8 @@
 						}
 					} catch ( error ) {
 						if ( ! response.messages ) {
-							showMessage( '<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>' );
+							showMessage( '<div class="learn-press-message error">' +
+                  options.i18n_unknown_error + '</div>' );
 						} else {
 							showMessage( response.messages );
 						}
@@ -138,7 +143,8 @@
 					}
 				},
 				error( jqXHR, textStatus, errorThrown ) {
-					showMessage( '<div class="learn-press-message error">' + errorThrown + '</div>' );
+					showMessage( '<div class="learn-press-message error">' + errorThrown +
+              '</div>' );
 					$buttonCheckout.html( options.i18n_place_order );
 					$buttonCheckout.prop( 'disabled', false );
 					LP.unblockContent();
@@ -153,11 +159,19 @@
 		 */
 		const _selectPaymentChange = function() {
 			const id = $( this ).val(),
-				$selected = $payments.children().filter( '.selected' ).removeClass( 'selected' ),
-				buttonText = $selected.find( '#payment_method_' + selectedMethod ).data( 'order_button_text' );
+				$selected = $payments.children().
+					filter( '.selected' ).
+					removeClass( 'selected' ),
+				buttonText = $selected.find( '#payment_method_' + selectedMethod ).
+					data( 'order_button_text' );
 
 			$selected.find( '.payment-method-form' ).slideUp();
-			$selected.end().filter( '#learn-press-payment-method-' + id ).addClass( 'selected' ).find( '.payment-method-form' ).hide().slideDown();
+			$selected.end().
+				filter( '#learn-press-payment-method-' + id ).
+				addClass( 'selected' ).
+				find( '.payment-method-form' ).
+				hide().
+				slideDown();
 
 			selectedMethod = $selected.find( 'payment_method' ).val();
 
@@ -207,18 +221,22 @@
 			this.timer && clearTimeout( this.timer );
 			this.timer = setTimeout( function() {
 				$.post( {
-					url: window.location.href,
-					data: {
+					url: window.location.href, data: {
 						'lp-ajax': 'checkout-user-email-exists',
 						email: $checkoutEmail.val(),
-					},
-					success( res ) {
+					}, success( res ) {
 						res = LP.parseJSON( res );
 						if ( res && res.exists ) {
-							$checkoutExistingAccount.show().find( 'input[name="checkout-email-option"]' ).prop( 'checked', res.waiting_payment === res.exists );
-							$checkoutNewAccount.hide().find( 'input[name="checkout-new-account"]' ).prop( 'checked', false );
+							$checkoutExistingAccount.show().
+								find( 'input[name="checkout-email-option"]' ).
+								prop( 'checked', res.waiting_payment === res.exists );
+							$checkoutNewAccount.hide().
+								find( 'input[name="checkout-new-account"]' ).
+								prop( 'checked', false );
 						} else {
-							$checkoutExistingAccount.hide().find( 'input[name="checkout-email-option"]' ).prop( 'checked', false );
+							$checkoutExistingAccount.hide().
+								find( 'input[name="checkout-email-option"]' ).
+								prop( 'checked', false );
 							$checkoutNewAccount.show();
 						}
 						$( '#checkout-guest-options' ).show();
@@ -231,7 +249,8 @@
 		 * Remove all messages
 		 */
 		var removeMessage = function() {
-			$( '.learn-press-error, .learn-press-notice, .learn-press-message' ).remove();
+			$( '.learn-press-error, .learn-press-notice, .learn-press-message' ).
+				remove();
 		};
 
 		/**
@@ -242,8 +261,12 @@
 		 * @private
 		 */
 		const _toggleRegisterForm = function( e, toggle ) {
-			toggle = $formRegister.find( '.learn-press-form-register' ).toggle( toggle ).is( ':visible' );
-			$formRegister.find( '.checkout-form-register-toggle[data-toggle="show"]' ).toggle( ! toggle );
+			toggle = $formRegister.find( '.learn-press-form-register' ).
+				toggle( toggle ).
+				is( ':visible' );
+			$formRegister.find(
+				'.checkout-form-register-toggle[data-toggle="show"]' ).
+				toggle( ! toggle );
 
 			e && ( e.preventDefault(), _toggleLoginForm( null, ! toggle ) );
 		};
@@ -256,8 +279,12 @@
 		 * @private
 		 */
 		var _toggleLoginForm = function( e, toggle ) {
-			toggle = $formLogin.find( '.learn-press-form-login' ).toggle( toggle ).is( ':visible' );
-			$formLogin.find( '.checkout-form-login-toggle[data-toggle="show"]' ).toggle( ! toggle );
+			toggle = $formLogin.find( '.learn-press-form-login' ).
+				toggle( toggle ).
+				is( ':visible' );
+
+			$formLogin.find( '.checkout-form-login-toggle[data-toggle="show"]' ).
+				toggle( ! toggle );
 
 			e && ( e.preventDefault(), _toggleRegisterForm( null, ! toggle ) );
 		};
@@ -270,28 +297,35 @@
 		} );
 
 		$( '.lp-button-guest-checkout' ).on( 'click', _guestCheckoutClick );
-		$( '#learn-press-button-cancel-guest-checkout' ).on( 'click', _guestCheckoutClick );
+		$( '#learn-press-button-cancel-guest-checkout' ).
+			on( 'click', _guestCheckoutClick );
 
 		$checkoutEmail.on( 'keyup changex', _checkEmail ).trigger( 'changex' );
-		$payments.on( 'change select', 'input[name="payment_method"]', _selectPaymentChange );
+		$payments.on( 'change select', 'input[name="payment_method"]',
+			_selectPaymentChange );
 		$formCheckout.on( 'submit', _formSubmit );
-		$payments.children( '.selected' ).find( 'input[name="payment_method"]' ).trigger( 'select' );
+		$payments.children( '.selected' ).
+			find( 'input[name="payment_method"]' ).
+			trigger( 'select' );
 		$formLogin.on( 'click', '.checkout-form-login-toggle', _toggleLoginForm );
-		$formRegister.on( 'click', '.checkout-form-register-toggle', _toggleRegisterForm );
+		$formRegister.on( 'click', '.checkout-form-register-toggle',
+			_toggleRegisterForm );
 
 		if ( options.user_waiting_payment === options.user_checkout ) {
 			//$checkoutExistingAccount.hide();
 		}
 
 		$formRegister.find( 'input' ).each( function() {
-			if ( ( -1 !== $.inArray( $( this ).attr( 'type' ).toLowerCase(), [ 'text', 'email', 'number' ] ) ) && $( this ).val() ) {
+			if ( ( -1 !== $.inArray( $( this ).attr( 'type' ).toLowerCase(),
+				[ 'text', 'email', 'number' ] ) ) && $( this ).val() ) {
 				_toggleRegisterForm();
 				return false;
 			}
 		} );
 
 		$formLogin.find( 'input:not([type="hidden"])' ).each( function() {
-			if ( ( -1 !== $.inArray( $( this ).attr( 'type' ).toLowerCase(), [ 'text', 'email', 'number' ] ) ) && $( this ).val() ) {
+			if ( ( -1 !== $.inArray( $( this ).attr( 'type' ).toLowerCase(),
+				[ 'text', 'email', 'number' ] ) ) && $( this ).val() ) {
 				_toggleLoginForm();
 				return false;
 			}

@@ -59,9 +59,11 @@ if ( is_user_logged_in() ) {
 		?>
 
         <p>
-            <a href="javascript:void(0)" class="checkout-form-register-toggle"
-               title="<?php _e( 'Register', 'learnpress' ); ?>"
-               data-toggle="show"><?php _e( 'Register', 'learnpress' ); ?></a>
+            <a href="javascript:void(0)"
+               class="checkout-form-register-toggle" data-toggle="show"
+               title="<?php _e( 'Register', 'learnpress' ); ?>">
+                <?php _e( 'Register', 'learnpress' ); ?>
+            </a>
         </p>
     </div>
 

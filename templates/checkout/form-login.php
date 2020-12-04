@@ -110,21 +110,22 @@ if ( is_user_logged_in() ) {
     </div>
 
     <p>
-        <a href="javascript:void(0)" class="checkout-form-login-toggle" data-toggle="show"
-           title="<?php _e( 'Login', 'learnpress' ); ?>>
+        <a href="javascript:void(0)"
+           class="checkout-form-login-toggle" data-toggle="show"
+           title="<?php _e( 'Login', 'learnpress' ); ?>">
 			<?php _e( 'Login', 'learnpress' ); ?>
         </a>
     </p>
 	<?php
-	/**
-	 * @since 3.0.0
-	 */
-	do_action( 'learn-press/after-checkout-form-login-fields' );
+		   /**
+		    * @since 3.0.0
+		    */
+		   do_action( 'learn-press/after-checkout-form-login-fields' );
 
-	/**
-	 * @deprecated
-	 */
-	do_action( 'learn_press_checkout_after_user_login_form' );
-	?>
+		   /**
+		    * @deprecated
+		    */
+		   do_action( 'learn_press_checkout_after_user_login_form' );
+		   ?>
 
 </div>
