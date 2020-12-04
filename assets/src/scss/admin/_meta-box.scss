@@ -621,7 +621,7 @@
 
 	select {
 
-		+ .description {
+		~ .description {
 			flex-basis: 100%;
 			width: 100%;
 			margin-top: 8px !important;

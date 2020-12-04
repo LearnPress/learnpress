@@ -306,6 +306,23 @@ class LP_Meta_Box_Course {
 							)
 						);
 						break;
+
+					case 'select_advanced':
+						lp_meta_box_select_field(
+							array(
+								'id'                => $field['id'],
+								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
+								'options'           => $field['options'],
+								'multiple'          => true,
+								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
+								'wrapper_class'     => 'lp-select-2',
+								'style'             => 'min-width: 200px',
+								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
+							)
+						);
+						break;
 				}
 			}
 		}

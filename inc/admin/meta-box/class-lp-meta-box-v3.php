@@ -24,6 +24,10 @@ if ( ! class_exists( 'RW_Meta_Box' ) && ! is_plugin_active( 'thim-core/thim-core
 		public function add_meta_boxes() {
 			$meta_box = $this->meta_box;
 
+			if ( isset( $meta_box['pages'] ) ) {
+				$meta_box['post_types'] = $meta_box['pages'];
+			}
+
 			if ( is_array( $meta_box['post_types'] ) ) {
 				foreach ( $meta_box['post_types'] as $post_type ) {
 					add_meta_box( $meta_box['id'], $meta_box['title'], array( $this, 'display' ), $post_type, $meta_box['context'], $meta_box['priority'] );
@@ -44,6 +48,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) && ! is_plugin_active( 'thim-core/thim-core
 					'autosave'       => false,
 					'default_hidden' => false,
 					'style'          => 'default',
+					'icon'           => '',
 				)
 			);
 
@@ -181,7 +186,25 @@ if ( ! class_exists( 'RW_Meta_Box' ) && ! is_plugin_active( 'thim-core/thim-core
 											'default'     => isset( $field['default'] ) ? $field['default'] : $field['std'],
 											'description' => isset( $field['description'] ) ? $field['description'] : $field['desc'],
 											'options'     => $field['options'],
+											'style'       => 'min-width: 200px',
 											'default'     => isset( $field['default'] ) ? $field['default'] : $field['std'],
+											'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
+										)
+									);
+									break;
+
+								case 'select_advanced':
+									lp_meta_box_select_field(
+										array(
+											'id'          => $field['id'],
+											'label'       => isset( $field['label'] ) ? $field['label'] : $field['name'],
+											'default'     => isset( $field['default'] ) ? $field['default'] : $field['std'],
+											'description' => isset( $field['description'] ) ? $field['description'] : $field['desc'],
+											'options'     => $field['options'],
+											'multiple'    => true,
+											'default'     => isset( $field['default'] ) ? $field['default'] : $field['std'],
+											'wrapper_class' => 'lp-select-2',
+											'style'       => 'min-width: 200px',
 											'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
 										)
 									);
@@ -193,6 +216,100 @@ if ( ! class_exists( 'RW_Meta_Box' ) && ! is_plugin_active( 'thim-core/thim-core
 				</div>
 				<?php
 			}
+		}
+	}
+}
+
+class LP_Course_MetaBox_Tab_V3 {
+	public function __construct() {
+		add_action( 'lp_course_data_settings_tabs', array( $this, 'get_tab_title' ) );
+		add_action( 'lp_course_data_setting_tab_content', array( $this, 'get_tab_content' ) );
+		add_action( 'learnpress/course-settings/after-author', array( $this, 'co_instructor_author' ) );
+		add_action( 'admin_init', array( $this, 'add_course_tab' ) );
+	}
+
+	public function add_course_tab() {
+		$tabs = apply_filters( 'learn-press/admin-course-tabs', array() );
+
+		if ( ! empty( $tabs ) ) {
+			foreach ( $tabs as $key => $tab ) {
+				return $tab;
+			}
+		}
+	}
+
+	public function get_tab_title( $tabs ) {
+		$tab = apply_filters( 'learn-press/' . LP_COURSE_CPT . '/tabs', false );
+
+		$priority = 60;
+		if ( ! empty( $tab ) && is_array( $tab ) ) {
+			foreach ( $tab as $key => $field ) {
+				$tabs[ $key ] = array(
+					'label'    => $field['title'],
+					'target'   => $field['id'],
+					'icon'     => $field['icon'],
+					'priority' => $priority + 10,
+				);
+			}
+		}
+
+		return $tabs;
+	}
+
+	public function get_tab_content() {
+		$tab = apply_filters( 'learn-press/' . LP_COURSE_CPT . '/tabs', false );
+
+		if ( ! $tab ) {
+			return;
+		}
+
+		foreach ( $tab as $field ) {
+			if ( isset( $field['callback'] ) ) {
+				?>
+				<div id="<?php echo $field['id']; ?>" class="lp-meta-box-course-panels">
+					<?php call_user_func( $field['callback'] ); ?>
+				</div>
+				<?php
+			}
+		}
+	}
+
+	/**
+	 * Support for Co Instructor plugin.
+	 *
+	 * @return void
+	 */
+	public function co_instructor_author() {
+		$fields = apply_filters( 'learn_press_course_author_meta_box', array() );
+
+		if ( ! empty( $fields ) ) {
+			LP_Meta_Box_Course::eduma_child_metabox_v3( $fields );
+		}
+	}
+}
+
+new LP_Course_MetaBox_Tab_V3();
+
+if ( ! class_exists( 'LP_Meta_Box_Tabs' ) ) {
+	/**
+	 * Not use, but need to fix error.
+	 * use in learnpress-coupon plugin.
+	 *
+	 * @author nhamdv <email@email.com>
+	 */
+	class LP_Meta_Box_Tabs {
+		public function __construct() {
+			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+
+			return true;
+		}
+
+		public function admin_notices() {
+			?>
+			<div class="error">
+				<p><?php esc_html_e( 'LearnPress 4 don\'t use LP_Meta_Box_Tabs, please update your code.', 'learnpress' ); ?></p>
+			</div>
+			<?php
 		}
 	}
 }
