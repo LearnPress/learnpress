@@ -145,6 +145,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 				switch ( $option['type'] ) {
 					case 'checkbox':
+					case 'yes-no':
 						$value = '1' === $raw_value || 'yes' === $raw_value ? 'yes' : 'no';
 						break;
 					case 'textarea':

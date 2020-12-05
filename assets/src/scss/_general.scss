@@ -56,7 +56,6 @@ $remove-icon-color: #e74c3c;
 			cursor: pointer;
 
 			&:hover {
-
 				a,
 				span {
 					color: $remove-icon-color;
@@ -65,14 +64,12 @@ $remove-icon-color: #e74c3c;
 		}
 
 		&.lp-btn-toggle {
-
 			.dashicons-arrow-down,
 			.dashicons-arrow-down-alt2 {
 				display: none;
 			}
 
 			&.closed {
-
 				.dashicons-arrow-up,
 				.dashicons-arrow-up-alt2 {
 					display: none;
@@ -117,7 +114,6 @@ $remove-icon-color: #e74c3c;
 					}
 
 					&.active {
-
 						a {
 							background: #eee;
 						}
@@ -155,7 +151,6 @@ $remove-icon-color: #e74c3c;
 }
 
 .column-content-actions {
-
 	&.lp-toolbar-buttons {
 		width: 30px;
 		padding: 0;
@@ -176,7 +171,6 @@ $remove-icon-color: #e74c3c;
 			margin: 0;
 			padding: 15px;
 			font-size: 16px;
-
 		}
 
 		.lp-box-data-actions {
@@ -193,26 +187,21 @@ $remove-icon-color: #e74c3c;
 				vertical-align: middle;
 
 				&.lp-box-data-remove {
-
 				}
 
 				&.lp-box-data-move {
-
 				}
 
 				&.lp-box-data-toggle {
-
 				}
 			}
 
 			&::after {
-
 				@include clear-fix();
 			}
 		}
 
 		&::after {
-
 			@include clear-fix();
 		}
 	}
@@ -228,9 +217,7 @@ $remove-icon-color: #e74c3c;
 	}
 
 	&.closed {
-
 		.lp-btn-toggle {
-
 			.dashicons-arrow-up,
 			.dashicons-arrow-up-alt2 {
 				display: none;
@@ -260,9 +247,7 @@ $remove-icon-color: #e74c3c;
 	}
 
 	thead {
-
 		tr {
-
 		}
 
 		th {
@@ -271,9 +256,7 @@ $remove-icon-color: #e74c3c;
 	}
 
 	tbody {
-
 		tr {
-
 			td {
 				padding: 0 15px;
 				background: #f4fcff;
@@ -296,18 +279,14 @@ $remove-icon-color: #e74c3c;
 			}
 
 			&:nth-child(odd) {
-
 				td {
 					background: #fff;
 				}
 			}
 
 			&:hover {
-
 				td {
-
 					&.lp-toolbar-buttons {
-
 						.lp-toolbar-btn {
 							visibility: visible;
 						}
@@ -371,7 +350,6 @@ $remove-icon-color: #e74c3c;
 }
 
 .lp-animation {
-
 	@include animation(spin 4s linear infinite);
 }
 
@@ -388,7 +366,6 @@ $remove-icon-color: #e74c3c;
 		@include no-outline();
 
 		&:focus {
-
 			@include no-outline();
 		}
 	}
@@ -435,7 +412,6 @@ $remove-icon-color: #e74c3c;
 
 				&.active {
 					background: #dbf5ff;
-
 				}
 
 				&:hover {
@@ -479,9 +455,7 @@ $remove-icon-color: #e74c3c;
 }
 
 #course-editor {
-
 	&.ajax-search {
-
 		#learn-press-ajax-search-overlay {
 			display: block;
 		}
@@ -532,7 +506,6 @@ $remove-icon-color: #e74c3c;
 	}
 
 	&.locked {
-
 		.remove-item {
 			display: none;
 		}
@@ -561,21 +534,18 @@ $remove-icon-color: #e74c3c;
 }
 
 @-moz-keyframes spin {
-
 	100% {
 		-moz-transform: rotate(360deg);
 	}
 }
 
 @-webkit-keyframes spin {
-
 	100% {
 		-webkit-transform: rotate(360deg);
 	}
 }
 
 @keyframes spin {
-
 	100% {
 		-webkit-transform: rotate(360deg);
 		transform: rotate(360deg);
@@ -593,7 +563,6 @@ ul .clearfix {
 }
 
 .clearfix-after {
-
 	&::after {
 		display: block;
 		clear: both;
