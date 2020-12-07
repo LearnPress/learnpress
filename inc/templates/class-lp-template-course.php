@@ -250,7 +250,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
-
 	public function course_extra_requirements() {
 		$course = LP_Course::get_course( get_the_ID() );
 
@@ -585,12 +584,15 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'global/block-content.php' );
 	}
 
+	/**
+	 * Get template button complete lesson
+	 */
 	public function item_lesson_complete_button() {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 		$item   = LP_Global::course_item();
 
-		if ( ! $user->is_course_in_progress( $course->get_id() ) ) {
+		if ( ! $user || ! $course || ! $user->is_course_in_progress( $course->get_id() ) ) {
 			return;
 		}
 

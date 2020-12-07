@@ -11,6 +11,11 @@
 
 defined( 'ABSPATH' ) || exit();
 
+if ( ! isset( $item ) ) {
+	return;
+}
+
+$course = LP_Global::course();
 $user = LP_Global::user();
 ?>
 
@@ -18,12 +23,13 @@ $user = LP_Global::user();
 
 	<?php do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item ); ?>
 
-	<?php if ( $item->is_preview() ) : ?>
-		<span class="item-meta course-item-preview" data-preview="<?php esc_attr_e( 'Preview', 'learnpress' ); ?>"></span>
+	<?php if ( $item->is_preview() && ! $user->has_completed_item( $item->get_id(), $course->get_id() ) ) : ?>
+		<span class="item-meta course-item-preview"
+			  data-preview="<?php esc_attr_e( 'Preview', 'learnpress' ); ?>"></span>
 
-		<?php else : ?>
+	<?php else : ?>
 		<span class="item-meta course-item-status" title="<?php echo esc_attr( $item->get_status_title() ); ?>"></span>
-		<?php endif; ?>
+	<?php endif; ?>
 
 	<?php do_action( 'learn-press/course-section-item/after-' . $item->get_item_type() . '-meta', $item ); ?>
 </div>

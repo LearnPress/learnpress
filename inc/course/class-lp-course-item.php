@@ -97,30 +97,19 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool
 		 */
 		public function is_preview( $context = 'display' ) {
-			if ( empty( $GLOBALS['course-item/is-preview'] ) ) {
-				$GLOBALS['course-item/is-preview'] = 0;
+			$item_id = $this->get_id();
+
+			$this->_preview = false;
+
+			if ( ! $item_id || $this->get_post_type() !== LP_LESSON_CPT ) {
+				return $this->_preview;
 			}
 
-			$t       = microtime( true );
-			$user_id = get_current_user_id();
+			$is_lesson_preview = get_post_meta( $item_id, '_lp_preview', true );
 
-			if ( $this->get_post_type() === LP_LESSON_CPT && '' === $this->_preview ) {
-				$course_id  = $this->get_course_id();
-				$item_id    = $this->get_id();
-				$is_preview = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/preview-items' );
+			$this->_preview = 'yes' === $is_lesson_preview;
 
-				if ( false === $is_preview ) {
-					$api   = new LP_User_Item_CURD();
-					$items = $api->parse_items_preview( $course_id, $user_id );
-
-					$is_preview = isset( $items[ $item_id ] ) ? $items[ $item_id ] : 'no';
-				}
-
-				$this->_preview = $is_preview === 'yes';
-			}
-			$GLOBALS['course-item/is-preview'] += microtime( true ) - $t;
-
-			return $context === 'display' ? apply_filters( 'learn-press/course-item-preview', $this->_preview, $this->get_id() ) : $this->_preview;
+			return apply_filters( 'learn-press/course-item-preview', $this->_preview, $this->get_id() );
 		}
 
 		/**
@@ -148,6 +137,18 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			}
 
 			return $format;
+		}
+
+		/**
+		 * Return true if item can be shown in course curriculum.
+		 *
+		 * @return mixed
+		 * @deprecated 4.0.0
+		 */
+		public function is_visible() {
+			$show = true;
+
+			return apply_filters( 'learn-press/course-item-visible', $show, $this->get_item_type(), $this->get_id() );
 		}
 
 		/**

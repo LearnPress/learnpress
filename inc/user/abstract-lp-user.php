@@ -1426,7 +1426,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( $is_finished_course && $enable_block_item_when_finish ) {
 						$view->key     = LP_BLOCK_COURSE_FINISHED;
 						$view->message = __(
-							'This content is protected, please enroll course to view this content!',
+							'You finished this course. This content is protected, please enroll course to view this content!',
 							'learnpress'
 						);
 					} elseif ( $item->is_blocked() ) {

@@ -13,7 +13,10 @@ class LP_Template implements ArrayAccess {
 
 	protected $templates = array();
 
-	public function __construct() {
+	/**
+	 * LP_Template constructor.
+	 */
+	protected function __construct() {
 		$this->templates = apply_filters(
 			'learn-press/templates-classes',
 			array(
@@ -46,6 +49,8 @@ class LP_Template implements ArrayAccess {
 	}
 
 	/**
+	 * Instance lp template
+	 *
 	 * @return LP_Template
 	 */
 	public static function instance() {
