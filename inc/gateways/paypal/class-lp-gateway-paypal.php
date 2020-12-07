@@ -514,12 +514,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 		}
 
-		public function get_icon( $size = null ) {
+		public function get_icon() {
 			if ( empty( $this->icon ) ) {
 				$this->icon = LP()->plugin_url( 'assets/images/paypal-logo-preview.png' );
 			}
 
-			return parent::get_icon( $size );
+			return parent::get_icon();
 		}
 	}
 }

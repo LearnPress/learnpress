@@ -12,8 +12,10 @@ defined( 'ABSPATH' ) || exit;
 	<?php
 	do_action( 'learnpress/course-settings/before-general' );
 
+	$meta_box_filter = apply_filters( 'learn_press_course_settings_meta_box_args', array( 'fields' => array() ) );
+
 	//Todo: Remove when Eduma theme and guest update 4.0.0
-	if ( ! empty( apply_filters( 'learn_press_course_settings_meta_box_args', null ) ) ) {
+	if ( ! empty( $meta_box_filter['fields'] ) ) {
 		$meta_box = array(
 			'id'       => 'course_settings',
 			'title'    => __( 'General', 'learnpress' ),

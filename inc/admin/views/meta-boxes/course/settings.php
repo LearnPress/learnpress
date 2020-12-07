@@ -329,7 +329,7 @@ class LP_Meta_Box_Course {
 	}
 
 	public static function save_eduma_child_metabox_v3( $post_id ) {
-		$general = apply_filters( 'learn_press_course_settings_meta_box_args', null );
+		$general = apply_filters( 'learn_press_course_settings_meta_box_args', array( 'fields' => array() ) );
 
 		if ( ! empty( $general['fields'] ) ) {
 			foreach ( $general['fields'] as $field ) {

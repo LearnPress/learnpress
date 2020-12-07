@@ -160,12 +160,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Get the icon of payment displays in front end.
 	 *
-	 * @param array $size
-	 *
 	 * @return mixed
 	 */
-	public function get_icon( $size = array( 51, 32 ) ) {
-		$size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', $size );
+	public function get_icon() {
+		$size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', array( 51, 32 ) );
 
 		if ( $size ) {
 			$icon_size = sprintf( 'width: %dpx; height: %dpx', $size[0], $size[1] );
