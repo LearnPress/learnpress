@@ -9,9 +9,10 @@ const rename = require( 'gulp-rename' );
 const sass = require( 'gulp-sass' );
 const replace = require( 'gulp-replace' );
 const uglify = require( 'gulp-uglify-es' ).default;
-const zip = require( 'gulp-zip' );
+const zip = require( 'gulp-vinyl-zip' );
 const plumber = require( 'gulp-plumber' );
 const sourcemaps = require( 'gulp-sourcemaps' );
+const uglifycss = require( 'gulp-uglifycss' );
 const del = require( 'del' );
 const beep = require( 'beepbeep' );
 const readFile = require( 'read-file' );
@@ -164,10 +165,11 @@ gulp.task( 'updateReadme', () => {
 
 // Zip learnpress in releases.
 gulp.task( 'zipReleases', () => {
+	const version = getCurrentVer();
+
 	return gulp
 		.src( './releases/learnpress/**', { base: './releases/' } )
-		.pipe( zip( 'learnpress.zip' ) )
-		.pipe( gulp.dest( './releases/' ) );
+		.pipe( zip.dest( './releases/learnpress.' + version + '.zip' ) );
 } );
 
 // Notice.
