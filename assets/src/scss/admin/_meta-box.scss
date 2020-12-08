@@ -251,7 +251,7 @@
 
 		label {
 
-			>small {
+			> small {
 				display: block;
 				color: #999;
 				font-weight: normal;
@@ -265,7 +265,7 @@
 	.forminp-password,
 	.forminp-url {
 
-		>input {
+		> input {
 			min-width: 260px;
 		}
 	}
@@ -397,7 +397,7 @@
 		margin: 0;
 		padding: 0;
 
-		>li {
+		> li {
 			float: left;
 			position: relative;
 			box-sizing: border-box;
@@ -513,7 +513,6 @@
 .lp-metabox-field__image {
 
 	&--inner {
-
 		position: relative;
 		box-sizing: border-box;
 		width: 120px;
@@ -728,7 +727,7 @@
 
 			&__content {
 
-				>div {
+				> div {
 					padding: 20px;
 				}
 			}
@@ -924,5 +923,122 @@ input[name="_lp_course_result"] {
 		padding: 10px 16px;
 		background-color: #eee;
 		font-size: 14px;
+	}
+}
+
+.lp-meta-box {
+
+	&__file {
+
+		&_list {
+			display: inline-block;
+			clear: both;
+			margin: 0;
+			padding: 0;
+
+			>li {
+				float: left;
+				position: relative;
+				box-sizing: border-box;
+				width: 80px;
+				margin: 9px 9px 0 0;
+				border: 1px solid #d5d5d5;
+				border-radius: 2px;
+				background: #f7f7f7;
+				cursor: move;
+
+				img {
+					display: block;
+					width: 100%;
+					height: auto;
+				}
+
+				&.lp-metabox-sortable-placeholder {
+					position: relative;
+					border: 3px dashed #ddd;
+
+					&::after {
+						position: absolute;
+						top: 0;
+						left: 0;
+						width: 100%;
+						height: 100%;
+						margin: 0;
+						color: #ddd;
+						font-family: Dashicons;
+						font-size: 2.618em;
+						font-weight: normal;
+						font-variant: normal;
+						line-height: 72px;
+						text-align: center;
+						text-indent: 0;
+						text-transform: none;
+						content: "\f161";
+						speak: none;
+						-webkit-font-smoothing: antialiased;
+					}
+				}
+
+				ul.actions {
+					// display: none;
+					position: absolute;
+					top: -8px;
+					right: -8px;
+					padding: 2px;
+
+					li {
+						float: right;
+						margin: 0 0 0 2px;
+
+						a.delete {
+							display: block;
+							position: relative;
+							width: 1em;
+							height: 1em;
+							font-size: 1.4em;
+							text-indent: -9999px;
+
+							&::before {
+								position: absolute;
+								top: 0;
+								left: 0;
+								width: 1em;
+								height: 1em;
+								margin: 0;
+								border-radius: 50%;
+								color: #999;
+								background: #fff;
+								font-family: Dashicons;
+								font-weight: 400;
+								font-variant: normal;
+								line-height: 1;
+								text-align: center;
+								text-indent: 0;
+								text-transform: none;
+								content: "\f153";
+								speak: none;
+								-webkit-font-smoothing: antialiased;
+							}
+						}
+					}
+
+					&::before {
+						display: table;
+						content: " ";
+					}
+				}
+			}
+		}
+
+		&::before {
+			display: table;
+			content: " ";
+		}
+
+		&::after {
+			display: table;
+			clear: both;
+			content: " ";
+		}
 	}
 }

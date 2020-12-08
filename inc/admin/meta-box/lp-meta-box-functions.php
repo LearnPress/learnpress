@@ -237,6 +237,70 @@ function lp_meta_box_radio_field( $field ) {
 	echo '</fieldset>';
 }
 
+function lp_meta_box_file_input_field( $field ) {
+	global $thepostid, $post;
+
+	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
+	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'short';
+	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
+	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
+	$field['default']       = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
+	$field['value']         = isset( $field['value'] ) ? $field['value'] : $field['default'];
+	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
+	$field['mime_type']     = isset( $field['mime_type'] ) ? implode( ',', $field['mime_type'] ) : '';
+	$field['multil']        = ( isset( $field['multil'] ) && $field['multil'] ) ? true : false;
+	$field['desc_tip']      = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
+
+	// Custom attribute handling
+	$custom_attributes = array();
+
+	if ( ! empty( $field['custom_attributes'] ) && is_array( $field['custom_attributes'] ) ) {
+		foreach ( $field['custom_attributes'] as $attribute => $value ) {
+			$custom_attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $value ) . '"';
+		}
+	}
+
+	echo '<div class="form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '">
+		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
+
+	echo '<div id="' . esc_attr( $field['id'] ) . '" class="lp-meta-box__file ' . esc_attr( $field['class'] ) . '" data-mime="' . $field['mime_type'] . '" data-multil="' . $field['multil'] . '" style="' . esc_attr( $field['style'] ) . '" ' . implode( ' ', $custom_attributes ) . '>';
+	echo '<ul class="lp-meta-box__file_list">';
+
+	if ( ! empty( $field['value'] ) ) {
+		foreach ( (array) $field['value'] as $attachment_id ) {
+			$url = wp_get_attachment_url( $attachment_id );
+
+			if ( $url ) {
+				$check_file = wp_check_filetype( $url );
+
+				echo '<li class="lp-meta-box__file_list-item image" data-attachment_id="' . $attachment_id . '">';
+
+				if ( in_array( $check_file['ext'], array( 'jpg', 'png', 'gif', 'bmp', 'tif' ) ) ) {
+					echo wp_get_attachment_image( $attachment_id, 'thumbnail' );
+				}
+				echo '<ul class="actions"><li><a href="#" class="delete"></a></li></ul>';
+				echo '</li>';
+			}
+		}
+	}
+
+	echo '</ul>';
+	echo '<input class="lp-meta-box__file_input" type="hidden" name="' . esc_attr( $field['id'] ) . '" value="' . esc_attr( ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) ? implode( ',', $field['value'] ) : $field['value'] ) . '" />';
+	echo '<p>';
+	echo '<a href="#" class="button btn-upload">' . esc_html__( '+ Add media', 'learnpress' ) . '</a>';
+	if ( ! empty( $field['description'] ) && false !== $field['desc_tip'] ) {
+		learn_press_quick_tip( $field['description'] );
+	}
+	echo '</p>';
+	echo '</div>';
+
+	if ( ! empty( $field['description'] ) && false === $field['desc_tip'] ) {
+		echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
+	}
+
+	echo '</div>';
+}
+
 /**
  * Output a duration input box.
  *

@@ -1,19 +1,16 @@
 @-moz-keyframes lp-spinner {
-
 	100% {
 		-moz-transform: rotate(360deg);
 	}
 }
 
 @-webkit-keyframes lp-spinner {
-
 	100% {
 		-webkit-transform: rotate(360deg);
 	}
 }
 
 @keyframes lp-spinner {
-
 	100% {
 		-webkit-transform: rotate(360deg);
 		transform: rotate(360deg);
@@ -59,7 +56,6 @@
 }
 
 #message-box-wrap {
-
 	/* text-align: center; */
 	display: inline-block;
 	max-width: 70%;
@@ -100,7 +96,6 @@
 }
 
 .learnpress {
-
 	a,
 	a:active {
 		outline: none;
@@ -136,7 +131,6 @@
 
 /* Metabox dropdown pages field */
 .learn-press-dropdown-pages {
-
 	input[type="text"] {
 		min-width: 300px;
 		height: 29px;
@@ -148,7 +142,6 @@
 		min-width: 220px !important;
 
 		.select2-selection {
-
 			&--single {
 				height: 30px;
 				border-color: #7e8993;
@@ -158,24 +151,22 @@
 				line-height: 28px !important;
 			}
 
-
 			&__arrow {
 				right: 1px;
 				width: 23px;
 				height: 28px;
-				background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 5px top 55%;
+				background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E)
+					no-repeat right 5px top 55%;
 				background-size: 16px 16px;
 
 				b {
 					display: none;
 				}
 			}
-
 		}
 	}
 
 	.quick-add-page-actions {
-
 		a {
 			font-size: 13px;
 			text-decoration: none;
@@ -188,9 +179,7 @@
 }
 
 .lp-select-2 {
-
-	+.select2-container {
-
+	+ .select2-container {
 		.select2-selection--single {
 			height: 30px;
 			border-color: #7e8993;
@@ -203,7 +192,8 @@
 				right: 1px;
 				width: 23px;
 				height: 28px;
-				background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 5px top 55%;
+				background: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E)
+					no-repeat right 5px top 55%;
 				background-size: 16px 16px;
 			}
 
@@ -235,7 +225,6 @@
 
 /* Metabox payment order field */
 .rwmb-payment-order-wrapper {
-
 	.rwmb-label {
 		margin-bottom: 20px !important;
 	}
@@ -294,21 +283,18 @@
 		}
 
 		&.enabled {
-
 			.dashicons {
 				background: #0085ba;
 			}
 		}
 
 		&.config {
-
 			a {
 			}
 		}
 	}
 
 	thead {
-
 		th {
 			border-bottom: 1px solid #ddd;
 			text-align: left;
@@ -316,16 +302,13 @@
 	}
 
 	tbody {
-
 		tr:nth-child(even) {
-
 			td {
 				background: #fff;
 			}
 		}
 
 		tr:nth-child(odd) {
-
 			td {
 				background: #f5f5f5;
 			}
@@ -357,7 +340,6 @@
 	}
 
 	&.sortable {
-
 		.order:hover {
 			color: #0073aa;
 			cursor: ns-resize;
@@ -395,14 +377,11 @@
 				}
 			}
 		}
-
 	}
 
 	.template-row {
-
 		&.outdated,
 		&.up-to-date {
-
 			code::before {
 				display: inline-block;
 				margin-top: -2px;
@@ -413,13 +392,11 @@
 		}
 
 		&.outdated {
-
 			.template-version {
 				color: #f00;
 			}
 
 			.template-file {
-
 				code::before {
 					color: #f00;
 					content: "\f534";
@@ -428,13 +405,11 @@
 		}
 
 		&.up-to-date {
-
 			.template-version {
 				color: #1859ff;
 			}
 
 			.template-file {
-
 				code::before {
 					color: #0085ba;
 					content: "\f147";
@@ -455,14 +430,12 @@
 
 /* General */
 .description {
-
 	code {
 		font-size: smaller;
 	}
 }
 
 #field-_lp_course_result {
-
 	input[name="_lp_course_result"] ~ #passing-condition-quiz-result {
 		display: none;
 		padding: 10px;
@@ -489,11 +462,8 @@
 
 //admin widget
 .widget {
-
 	.widget-content {
-
 		.rwmb-field {
-
 			&:not(:last-of-type) {
 				margin: 0 0 10px;
 
@@ -520,7 +490,6 @@
 			}
 
 			.rwmb-input {
-
 				input[type="text"] {
 					width: 100%;
 				}
@@ -549,4 +518,3 @@
 		}
 	}
 }
-

@@ -169,7 +169,124 @@
 		lpUpdateModal();
 	};
 
+	const lpMetaboxFileInput = () => {
+		$( '.lp-meta-box__file' ).each( ( i, element ) => {
+			let lpImageFrame;
+
+			const imageGalleryIds = $( element ).find( '.lp-meta-box__file_input' );
+			const listImages = $( element ).find( '.lp-meta-box__file_list' );
+			const btnUpload = $( element ).find( '.btn-upload' );
+			const isMultil = !! $( element ).data( 'multil' );
+
+			$( btnUpload ).on( 'click', ( event ) => {
+				event.preventDefault();
+
+				if ( lpImageFrame ) {
+					lpImageFrame.open();
+					return;
+				}
+
+				lpImageFrame = wp.media( {
+					states: [
+						new wp.media.controller.Library( {
+							filterable: 'all',
+							multiple: isMultil,
+						} ),
+					],
+				} );
+
+				lpImageFrame.on( 'select', function() {
+					const selection = lpImageFrame.state().get( 'selection' );
+					let attachmentIds = imageGalleryIds.val();
+
+					selection.forEach( function( attachment ) {
+						attachment = attachment.toJSON();
+
+						if ( attachment.id ) {
+							if ( ! isMultil ) {
+								attachmentIds = attachment.id;
+								listImages.empty();
+							} else {
+								attachmentIds = attachmentIds ? attachmentIds + ',' + attachment.id : attachment.id;
+							}
+
+							const attachmentImage = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+
+							listImages.append(
+								'<li class="lp-meta-box__file_list-item image" data-attachment_id="' + attachment.id + '"><img src="' + attachmentImage +
+						'" /><ul class="actions"><li><a href="#" class="delete"></a></li></ul></li>'
+							);
+						}
+					} );
+
+					delImage();
+
+					imageGalleryIds.val( attachmentIds );
+				} );
+
+				lpImageFrame.open();
+			} );
+
+			if ( isMultil ) {
+				listImages.sortable( {
+					items: 'li.image',
+					cursor: 'move',
+					scrollSensitivity: 40,
+					forcePlaceholderSize: true,
+					forceHelperSize: false,
+					helper: 'clone',
+					opacity: 0.65,
+					placeholder: 'lp-metabox-sortable-placeholder',
+					start( event, ui ) {
+						ui.item.css( 'background-color', '#f6f6f6' );
+					},
+					stop( event, ui ) {
+						ui.item.removeAttr( 'style' );
+					},
+					update() {
+						let attachmentIds = '';
+
+						listImages.find( 'li.image' ).css( 'cursor', 'default' ).each( function() {
+							const attachmentId = $( this ).attr( 'data-attachment_id' );
+							attachmentIds = attachmentIds + attachmentId + ',';
+						} );
+
+						delImage();
+
+						imageGalleryIds.val( attachmentIds );
+					},
+				} );
+			}
+
+			const delImage = () => {
+				$( listImages ).find( 'li.image' ).each( ( i, ele ) => {
+					const del = $( ele ).find( 'a.delete' );
+
+					del.on( 'click', function() {
+						$( ele ).remove();
+
+						if ( isMultil ) {
+							let attachmentIds = '';
+
+							$( listImages ).find( 'li.image' ).css( 'cursor', 'default' ).each( function() {
+								const attachmentId = $( this ).attr( 'data-attachment_id' );
+								attachmentIds = attachmentIds + attachmentId + ',';
+							} );
+
+							imageGalleryIds.val( attachmentIds );
+						} else {
+							imageGalleryIds.val( '' );
+						}
+
+						return false;
+					} );
+				} );
+			};
+		} );
+	};
+
 	const onReady = function onReady() {
+		lpMetaboxFileInput();
 		updateDb();
 		$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
 		$( '.learn-press-advertisement-slider' ).LP( 'Advertisement', 'a', 's' ).appendTo( $( '#wpbody-content' ) );
