@@ -210,12 +210,19 @@
 								attachmentIds = attachmentIds ? attachmentIds + ',' + attachment.id : attachment.id;
 							}
 
-							const attachmentImage = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+							if ( attachment.type === 'image' ) {
+								const attachmentImage = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
 
-							listImages.append(
-								'<li class="lp-meta-box__file_list-item image" data-attachment_id="' + attachment.id + '"><img src="' + attachmentImage +
-						'" /><ul class="actions"><li><a href="#" class="delete"></a></li></ul></li>'
-							);
+								listImages.append(
+									'<li class="lp-meta-box__file_list-item image" data-attachment_id="' + attachment.id + '"><img src="' + attachmentImage +
+							'" /><ul class="actions"><li><a href="#" class="delete"></a></li></ul></li>'
+								);
+							} else {
+								listImages.append(
+									'<li class="lp-meta-box__file_list-item image" data-attachment_id="' + attachment.id + '"><img class="is_file" src="' + attachment.icon +
+							'" /><span>' + attachment.filename + '</span><ul class="actions"><li><a href="#" class="delete"></a></li></ul></li>'
+								);
+							}
 						}
 					} );
 
