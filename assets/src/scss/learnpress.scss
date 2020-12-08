@@ -10,6 +10,7 @@ $bg-course-featured: #93f;
 $msg-color: #00adff;
 $msg-success: #059601;
 $msg-error: #d85554;
+$msg-waring: #ffc107;
 // Import
 @import "mixin.scss";
 @import "ajaxload";
@@ -473,6 +474,26 @@ footer {
 
 			&::after {
 				background: $msg-error;
+				content: "\f00d";
+			}
+		}
+	}
+
+	&.warning {
+		border-top: 5px solid $msg-waring;
+
+		&::before {
+			background: $msg-waring;
+		}
+
+		&.icon {
+
+			&::before {
+				background: $msg-waring;
+			}
+
+			&::after {
+				background: $msg-waring;
 				content: "\f00d";
 			}
 		}

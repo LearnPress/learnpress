@@ -552,9 +552,14 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 
 	/**
 	 * Retake course button
+	 *
+	 * @deprecated 3.3.0
 	 */
 	function learn_press_course_finish_button() {
-		_deprecated_function( __FUNCTION__, '3.3.0' );
+		learn_press_add_message(
+			'Deprecated: ' . __FUNCTION__ . ' is <strong>deprecated</strong> since version 3.3.0 with no alternative available. Please update LP v4.0.0',
+			'warning'
+		);
 
 		LP()->template( 'course' )->func( 'course_finish_button' );
 	}
@@ -1149,15 +1154,6 @@ if ( ! function_exists( 'learn_press_course_progress' ) ) {
 	 */
 	function learn_press_course_progress() {
 		learn_press_get_template( 'single-course/progress.php' );
-	}
-}
-
-if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
-	/**
-	 * Display course curriculum
-	 */
-	function learn_press_course_finish_button() {
-		// learn_press_get_template( 'single-course/buttons/finish.php' );
 	}
 }
 
