@@ -330,7 +330,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			if ( $this->settings->get( 'email_content.format' ) ) {
 				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
 			} else {
-				if ( LP()->settings->get( 'emails_general.default_email_content' ) ) {
+				if ( LP()->settings()->get( 'emails_general.default_email_content' ) ) {
 					$this->email_format = LP()->settings->get( 'emails_general.default_email_content' );
 				}
 			}

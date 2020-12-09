@@ -191,7 +191,7 @@ abstract class LP_Abstract_Settings {
 
 			// Single value
 		} else {
-			$option_value = LP()->settings->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
+			$option_value = LP()->settings()->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
 		}
 
 		if ( is_array( $option_value ) ) {

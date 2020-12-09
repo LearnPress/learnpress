@@ -51,17 +51,17 @@ String.prototype.removeQueryVar = function( name ) {
 	return url + ( m[ 1 ] ? '#' + m[ 1 ] : '' );
 };
 
-if ( $.isEmptyObject( '' ) == false ) {
-	$.isEmptyObject = function( a ) {
-		let prop;
-		for ( prop in a ) {
-			if ( a.hasOwnProperty( prop ) ) {
-				return false;
-			}
-		}
-		return true;
-	};
-}
+// if ( $.isEmptyObject( '' ) == false ) {
+// 	$.isEmptyObject = function( a ) {
+// 		let prop;
+// 		for ( prop in a ) {
+// 			if ( a.hasOwnProperty( prop ) ) {
+// 				return false;
+// 			}
+// 		}
+// 		return true;
+// 	};
+// }
 
 const _default = {
 	Hook,

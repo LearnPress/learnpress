@@ -138,8 +138,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * LearnPress constructor.
 		 */
-		public function __construct() {
-			// Prevent duplicate unwanted hooks
+		protected function __construct() {
 			if ( self::$_instance ) {
 				return;
 			}
@@ -209,7 +208,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function background( $name ) {
 			if ( ! did_action( 'plugins_loaded' ) ) {
-				_doing_it_wrong( __CLASS__ . '::' . __FUNCTION__, 'should call after \'plugins_loaded\' action', '3.0.8' );
+				_doing_it_wrong(
+					__CLASS__ . '::' . __FUNCTION__, 'should call after \'plugins_loaded\' action',
+					'3.0.8'
+				);
 			}
 
 			if ( isset( $this->backgrounds[ $name ] ) ) {
@@ -442,7 +444,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function error() {
 			?>
 			<div class="error">
-				<p><?php printf( __( 'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)', 'learnpress' ), $this->plugin_basename() ); ?></p>
+				<p><?php printf( __( 'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)',
+						'learnpress' ), $this->plugin_basename() ); ?></p>
 			</div>
 			<?php
 		}
@@ -693,7 +696,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Check type of request.
 		 *
-		 * @param string $type ajax, frontend or admin
+		 * @param string $type  ajax, frontend or admin
 		 *
 		 * @return bool
 		 */
@@ -769,14 +772,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return LearnPress
 		 */
 		public static function instance() {
-			if ( ! self::$_instance ) {
+			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self();
 			}
 
 			return self::$_instance;
 		}
 	}
-
 }
 
 /**

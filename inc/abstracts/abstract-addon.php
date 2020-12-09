@@ -166,8 +166,9 @@ class LP_Addon {
 	 * @return bool|null
 	 */
 	protected function _check_version() {
-		if ( $this->_valid === null ) {
+		if ( null === $this->_valid ) {
 			$this->_valid = true;
+
 			if ( $this->require_version ) {
 				if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>' ) ) {
 					add_action( 'admin_notices', array( $this, '_admin_notices' ) );
@@ -186,7 +187,17 @@ class LP_Addon {
 	public function _admin_notices() {
 		?>
 		<div class="error">
-			<p><?php printf( __( '<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher', 'learnpress' ), $this->get_name(), $this->version, $this->require_version ); ?></p>
+			<p>
+				<?php
+				printf(
+					__( '<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher',
+						'learnpress' ),
+					esc_html( $this->get_name() ),
+					esc_html( $this->version ),
+					esc_html( $this->require_version )
+				);
+				?>
+			</p>
 		</div>
 		<?php
 	}
@@ -230,9 +241,11 @@ class LP_Addon {
 	}
 
 	/**
+	 * Load Addon
+	 *
 	 * @param        $instance
 	 * @param        $path
-	 * @param string   $plugin_file
+	 * @param string $plugin_file
 	 */
 	public static function load( $instance, $path, $plugin_file = '' ) {
 		$plugin_folder = '';
@@ -246,7 +259,10 @@ class LP_Addon {
 		}
 
 		if ( ! file_exists( $path ) ) {
-			self::$_admin_notices['add-on-file-no-exists'] = sprintf( __( '%s plugin file does not exist.', 'learnpress' ), $path );
+			self::$_admin_notices['add-on-file-no-exists'] = sprintf(
+				__( '%s plugin file does not exist.', 'learnpress' ),
+				$path
+			);
 
 			return;
 		}
@@ -264,7 +280,10 @@ class LP_Addon {
 		}
 
 		if ( ! $addon_instance ) {
-			self::$_admin_notices['add-on-class-no-exists'] = sprintf( __( '%s plugin class does not exist.', 'learnpress' ), $instance );
+			self::$_admin_notices['add-on-class-no-exists'] = sprintf(
+				__( '%s plugin class does not exist.', 'learnpress' ),
+				$instance
+			);
 
 			return;
 		}
@@ -285,7 +304,8 @@ class LP_Addon {
 	 */
 	public function get_template_path() {
 		if ( empty( $this->_template_path ) ) {
-			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '!^learnpress-!', '', dirname( $this->get_plugin_slug() ) );
+			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '!^learnpress-!', '',
+					dirname( $this->get_plugin_slug() ) );
 		}
 
 		return $this->_template_path;
@@ -295,10 +315,11 @@ class LP_Addon {
 	 * Get content template of addon in theme or inside itself.
 	 *
 	 * @param string $template_name
-	 * @param array  $args
+	 * @param array $args
 	 */
 	public function get_template( $template_name, $args = array() ) {
-		learn_press_get_template( $template_name, $args, $this->get_template_path(), dirname( $this->plugin_file ) . '/templates/' );
+		learn_press_get_template( $template_name, $args, $this->get_template_path(),
+			dirname( $this->plugin_file ) . '/templates/' );
 	}
 
 	/**
@@ -309,16 +330,18 @@ class LP_Addon {
 	 * @return string
 	 */
 	public function locate_template( $template_name ) {
-		return learn_press_locate_template( $template_name, $this->get_template_path(), dirname( $this->plugin_file ) . '/templates/' );
+		return learn_press_locate_template( $template_name, $this->get_template_path(),
+			dirname( $this->plugin_file ) . '/templates/' );
 	}
 
 	/**
 	 * Output content of admin view file.
 	 *
+	 * @param string $view
+	 * @param array $args
+	 *
 	 * @since x.x.x
 	 *
-	 * @param string $view
-	 * @param array  $args
 	 */
 	public function admin_view( $view, $args = array() ) {
 		$args['plugin_file'] = $this->plugin_file;
@@ -328,12 +351,12 @@ class LP_Addon {
 	/**
 	 * Get content of admin view file.
 	 *
-	 * @since x.x.x
-	 *
 	 * @param string $view
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @return string
+	 * @since x.x.x
+	 *
 	 */
 	public function admin_view_content( $view, $args = array() ) {
 		ob_start();
@@ -379,4 +402,5 @@ class LP_Addon {
 		return $backtrace[2]['args'][0];
 	}
 }
+
 add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );
