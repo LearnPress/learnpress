@@ -7,7 +7,6 @@
  */
 ( function( $ ) {
 	'use strict';
-
 	function LP_Storage( key ) {
 		const storage = window.localStorage;
 		this.key = key;
@@ -315,21 +314,52 @@
 		function toggleContentItem( e ) {
 			e.preventDefault();
 			const curriculumWidth = getCurriculumWidth();
+			let sidebarPosition = 'left';
+
+			if ( 'rtl' === $( 'html' ).attr( 'dir' ) ) {
+				sidebarPosition = 'right';
+			}
+
 			fullScreen = $body.toggleClass( 'full-screen-content-item' ).
 				hasClass( 'full-screen-content-item' );
-			$curriculum.stop().animate( {
-				left: fullScreen ? -curriculumWidth : 0,
-			} );
 
-			$contentItem.stop().animate( {
-				left: fullScreen ? 0 : curriculumWidth,
-			} );
+			if ( 'right' === sidebarPosition ) {
+				curriculumRight();
+			} else {
+				curriculumLeft();
+			}
 
-			$footer.stop().animate( {
-				left: fullScreen ? 0 : curriculumWidth,
-			}, function() {
-				$( document, window ).trigger( 'learn-press/toggle-content-item' );
-			} );
+			function curriculumRight() {
+				$curriculum.stop().animate( {
+					right: fullScreen ? -curriculumWidth : 0,
+				} );
+
+				$contentItem.stop().animate( {
+					right: fullScreen ? 0 : curriculumWidth,
+				} );
+
+				$footer.stop().animate( {
+					right: fullScreen ? 0 : curriculumWidth,
+				}, function() {
+					$( document, window ).trigger( 'learn-press/toggle-content-item' );
+				} );
+			}
+
+			function curriculumLeft() {
+				$curriculum.stop().animate( {
+					left: fullScreen ? -curriculumWidth : 0,
+				} );
+
+				$contentItem.stop().animate( {
+					left: fullScreen ? 0 : curriculumWidth,
+				} );
+
+				$footer.stop().animate( {
+					left: fullScreen ? 0 : curriculumWidth,
+				}, function() {
+					$( document, window ).trigger( 'learn-press/toggle-content-item' );
+				} );
+			}
 
 			isShowingHeader = ! fullScreen;
 			window.localStorage && window.localStorage.setItem( 'lp-full-screen',
@@ -467,7 +497,7 @@
 			fitVideo();
 
 			fullScreen = window.localStorage && 'yes' ===
-          window.localStorage.getItem( 'lp-full-screen' );
+					window.localStorage.getItem( 'lp-full-screen' );
 			if ( $( window ).width() <= 768 ) {
 				fullScreen = true;
 			}

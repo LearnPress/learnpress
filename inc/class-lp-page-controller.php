@@ -681,9 +681,11 @@ class LP_Page_Controller {
 			if ( is_post_type_archive( LP_COURSE_CPT ) || LEARNPRESS_IS_CATEGORY ) {
 				$wp_query->is_page    = false;
 				$wp_query->is_archive = true;
+
 				// Fixed issue with Yoast Seo plugin
 				$wp_query->is_category = learn_press_is_course_category();
-				$wp_query->is_tax      = learn_press_is_course_tax();
+				// Remove causing an error wp-error :: $ taxonomy when yoast seo active
+				// $wp_query->is_tax      = learn_press_is_course_tax();
 				$wp_query->is_single   = false;
 			} else {
 				$wp_query->found_posts          = 1;

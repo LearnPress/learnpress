@@ -203,6 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 3.2.8.2 =
 ~ Fix compatible WP 5.6
+~ Fix error Yoast-Seo in course archive
 
 = 3.2.8.1 =
 ~ Fix WPBakery load style inline on course's item page

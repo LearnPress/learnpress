@@ -22,6 +22,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		parent::__construct();
 
 		add_action( 'wp_print_footer_scripts', array( $this, 'show_overlay' ) );
+
+		// Perform deregister script
+		$this->lp_deregister_script();
 	}
 
 	/**
@@ -185,7 +188,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				$can_load_js = true;
 
 				if ( ! empty( $script->_screens ) ) {
-					$can_load_js = apply_filters( 'learnpress/frontend/can-load-js/' . $handle, in_array( $page_current, $script->_screens ), $page_current, $script->_screens );
+					$can_load_js = apply_filters( 'learnpress/frontend/can-load-js/' . $handle,
+						in_array( $page_current, $script->_screens ), $page_current, $script->_screens );
 				}
 
 				if ( $can_load_js ) {
@@ -216,6 +220,21 @@ class LP_Assets extends LP_Abstract_Assets {
 		echo '<div class="lp-overlay">';
 		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
 		echo '</div>';
+	}
+
+	/**
+	 * Check and remove script conflict by default theme
+	 *
+	 * @author hungkv
+	 * @since 3.2.8.2
+	 */
+	protected function lp_deregister_script() {
+		$theme = wp_get_theme(); // gets the current theme
+
+		// deregister global js if theme active is twenty seventeen
+		if ( 'Twenty Seventeen' == $theme->name || 'Twenty Seventeen' == $theme->parent_theme ) {
+			wp_deregister_script( 'twentyseventeen-global' );
+		}
 	}
 }
 

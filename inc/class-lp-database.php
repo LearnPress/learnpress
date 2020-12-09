@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_Database
  */
 class LP_Database {
-	public static $_instance;
+	protected static $_instance;
 	public $wpdb;
 	public $tb_lp_user_items, $tb_lp_user_itemmeta;
 	public $tb_posts, $tb_postmeta;
@@ -128,5 +128,26 @@ class LP_Database {
 		);
 
 		return $this->wpdb->get_var( $query );
+	}
+
+	/**
+	 * Count student enrolled course
+	 *
+	 * @param $course_id
+	 * Count enrolled course
+	 * since 3.2.8.2
+	 * @editor Hungkv
+	 * @return mixed
+	 */
+	public function count_enrolled_course($course_id){
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+                    SELECT count(item_id) as c
+                    FROM $this->tb_lp_user_items
+                    WHERE status = %s AND item_id = %s
+                ", 'enrolled',$course_id );
+
+		return $wpdb->get_var( $query );
 	}
 }
