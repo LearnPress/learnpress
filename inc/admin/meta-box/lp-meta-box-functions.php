@@ -275,8 +275,11 @@ function lp_meta_box_file_input_field( $field ) {
 
 				echo '<li class="lp-meta-box__file_list-item image" data-attachment_id="' . $attachment_id . '">';
 
-				if ( in_array( $check_file['ext'], array( 'jpg', 'png', 'gif', 'bmp', 'tif' ) ) ) {
+				if ( in_array( $check_file['ext'], array( 'jpg', 'png', 'gif', 'bmp', 'tif' ), true ) ) {
 					echo wp_get_attachment_image( $attachment_id, 'thumbnail' );
+				} else {
+					echo '<img class="is_file" src="' . wp_mime_type_icon( $check_file['type'] ) . '" />';
+					echo '<span>' . wp_basename( get_attached_file( $attachment_id ) ) . '</span>';
 				}
 				echo '<ul class="actions"><li><a href="#" class="delete"></a></li></ul>';
 				echo '</li>';
@@ -292,12 +295,11 @@ function lp_meta_box_file_input_field( $field ) {
 		learn_press_quick_tip( $field['description'] );
 	}
 	echo '</p>';
-	echo '</div>';
 
 	if ( ! empty( $field['description'] ) && false === $field['desc_tip'] ) {
 		echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
 	}
-
+	echo '</div>';
 	echo '</div>';
 }
 

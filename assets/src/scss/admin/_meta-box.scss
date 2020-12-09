@@ -937,20 +937,34 @@ input[name="_lp_course_result"] {
 			padding: 0;
 
 			>li {
+				display: flex;
+				flex-flow: column nowrap;
 				float: left;
 				position: relative;
 				box-sizing: border-box;
 				width: 80px;
+				height: 80px;
 				margin: 9px 9px 0 0;
 				border: 1px solid #d5d5d5;
 				border-radius: 2px;
 				background: #f7f7f7;
 				cursor: move;
+				align-items: center;
+				justify-content: center;
 
 				img {
 					display: block;
 					width: 100%;
 					height: auto;
+
+					&.is_file {
+						width: 30px;
+
+						~ span {
+							margin-top: 5px;
+							font-size: 12px;
+						}
+					}
 				}
 
 				&.lp-metabox-sortable-placeholder {
