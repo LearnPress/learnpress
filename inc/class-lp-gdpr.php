@@ -447,7 +447,7 @@ class LP_GDPR {
 	 *
 	 * @return array|bool|LP_Query_List_Table
 	 */
-	protected function get_courses_by_email( $type = 'own', $email, $args = array() ) {
+	protected function get_courses_by_email( $type = 'own', $email = '', $args = array() ) {
 		if ( ! $user = get_user_by( 'email', $email ) ) {
 			return false;
 		}

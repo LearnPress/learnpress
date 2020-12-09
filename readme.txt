@@ -3,7 +3,7 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungn
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 3.8
-Tested up to: 5.5.3
+Tested up to: 5.6
 Requires PHP: 7.0
 Stable tag: 5.4.3
 License: GPLv2 or later
@@ -200,6 +200,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 3.2.8.2 =
+~ Fix compatible WP 5.6
 
 = 3.2.8.1 =
 ~ Fix WPBakery load style inline on course's item page
