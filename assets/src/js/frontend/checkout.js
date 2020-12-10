@@ -12,6 +12,13 @@
 	 */
 	const Checkout = LP.Checkout = function( options ) {
 		/**
+		 * The payment method has selected.
+		 *
+		 * @type {string}
+		 */
+		let selectedMethod = '';
+
+		/**
 		 * Checkout form
 		 *
 		 * @type {form}
@@ -45,13 +52,6 @@
 			 * @type {*}
 			 */
 			$buttonCheckout = $( '#learn-press-checkout-place-order' ),
-
-			/**
-			 * The payment method has selected.
-			 *
-			 * @type {string}
-			 */
-			selectedMethod = '',
 
 			/**
 			 * Checkout email field.
