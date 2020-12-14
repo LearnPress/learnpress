@@ -325,7 +325,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed|WP_Error
 		 * @throws Exception
 		 */
-		public function start_quiz( $quiz_id, $course_id = 0, $wp_error = false ) {
+		public function start_quiz( $quiz_id = 0, $course_id = 0, $wp_error = false ) {
 			try {
 				if ( $item_id = learn_press_get_request( 'lp-preview' ) ) {
 					learn_press_add_message( __( 'You cannot start a quiz in preview mode.', 'learnpress' ), 'error' );
@@ -901,7 +901,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return apply_filters( 'learn-press/current-user-question', $question_id );
 		}
 
-		public function get_prev_question( $quiz_id = null, $course_id, $permalink = false ) {
+		/**
+		 * Get preview question
+		 *
+		 * @param null $quiz_id
+		 * @param int $course_id
+		 * @param false $permalink
+		 *
+		 * @return bool
+		 */
+		public function get_prev_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
 			if ( ! $quiz_id ) {
 				$quiz_id = $this->get_current_item( $course_id );
 			}
@@ -915,7 +924,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $quiz->get_prev_question( $current );
 		}
 
-		public function get_next_question( $quiz_id = null, $course_id, $permalink = false ) {
+		/**
+		 * Get next question
+		 *
+		 * @param null $quiz_id
+		 * @param int $course_id
+		 * @param false $permalink
+		 *
+		 * @return bool
+		 */
+		public function get_next_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
 			if ( ! $quiz_id ) {
 				$quiz_id = $this->get_current_item( $course_id );
 			}
@@ -2221,7 +2239,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 * @since 3.1.0
 		 */
-		public function has_course_access_level( $access_level = array(), $course_id, $compare = '<=' ) {
+		public function has_course_access_level( $access_level = array(), $course_id = 0, $compare = '<=' ) {
 			$user_access_level = $this->get_course_access_level( $course_id );
 
 			switch ( $compare ) {

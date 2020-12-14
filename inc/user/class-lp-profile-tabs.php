@@ -98,7 +98,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		if ( ! empty( $_REQUEST['view'] ) ) {
 			$current = $_REQUEST['view'];
-		} else if ( ! empty( $wp->query_vars['view'] ) ) {
+		} elseif ( ! empty( $wp->query_vars['view'] ) ) {
 			$current = $wp->query_vars['view'];
 		} else {
 			if ( $tab = $this->get_tab_at() ) {
@@ -125,7 +125,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 		$current = $default;
 		if ( ! empty( $_REQUEST['section'] ) ) {
 			$current = $_REQUEST['section'];
-		} else if ( ! empty( $wp->query_vars['section'] ) ) {
+		} elseif ( ! empty( $wp->query_vars['section'] ) ) {
 			$current = $wp->query_vars['section'];
 		} else {
 			if ( false === $tab ) {
@@ -251,21 +251,22 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 * @return mixed|string
 	 */
 	public function get_current_url( $args = '', $with_permalink = false ) {
-		$current_tab 	= $this->get_current_tab();
-		$tab 		= $this->get_tab_at( $current_tab );
-		$sections 	= $tab['sections'];
-		
+		$current_tab = $this->get_current_tab();
+		$tab         = $this->get_tab_at( $current_tab );
+		$sections    = $tab['sections'];
+
 		$current_section_slug = $this->get_current_section();
-		$section = array();
-		if(isset($sections[$current_section_slug])){
-			$sections[$current_section_slug];
-		} elseif($sections && !empty($sections)){
-			reset($sections);
+		$section              = array();
+		if ( isset( $sections[ $current_section_slug ] ) ) {
+			$sections[ $current_section_slug ];
+		} elseif ( $sections && ! empty( $sections ) ) {
+			reset( $sections );
 		}
 		if ( array_key_exists( 'slug', $section ) ) {
 			$current_section_slug = $section['slug'];
 		}
-		$url = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $this->get_profile()->get_user()->get_username() );
+		$url = $this->get_tab_link( $this->get_current_tab(), $current_section_slug,
+			$this->get_profile()->get_user()->get_username() );
 
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {
@@ -331,11 +332,16 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	}
 
 	public function get( $key = false ) {
-		return false !== $key ? ( array_key_exists( $key, $this->_data ) ? $this->_data[ $key ] : false ) : $this->_data;
+		return false !== $key ? ( array_key_exists( $key,
+			$this->_data ) ? $this->_data[ $key ] : false ) : $this->_data;
 	}
 
 	protected function _sort_tabs( $a, $b ) {
-		return $a['priority'] > $b['priority'];
+		if ( $a['priority'] === $b['priority'] ) {
+			return 0;
+		}
+
+		return $a['priority'] < $b['priority'] ? - 1 : 1;
 	}
 
 	/**
@@ -404,7 +410,8 @@ class LP_Profile_Tab extends LP_Array_Access {
 	}
 
 	public function get( $key = false ) {
-		return false !== $key ? ( array_key_exists( $key, $this->_data ) ? $this->_data[ $key ] : false ) : $this->_data;
+		return false !== $key ? ( array_key_exists( $key,
+			$this->_data ) ? $this->_data[ $key ] : false ) : $this->_data;
 	}
 
 	public function get_profile() {

@@ -776,7 +776,7 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 *
 	 * @return string
 	 */
-	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size ) {
+	function learn_press_pre_get_avatar_callback( $avatar = '', $id_or_email = '', $size = array() ) {
 
 		$profile = LP_Profile::instance();
 

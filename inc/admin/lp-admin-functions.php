@@ -38,26 +38,32 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 			if ( count( $links ) > 1 ) {
 				$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
 				foreach ( $links as $link ) {
-					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] ) . '</li>';
+					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'],
+							$link['class'], $link['data'], $link['title'] ) . '</li>';
 				};
 				$drop_down[] = '</ul>';
-				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
+				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>',
+					'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
 			} else {
 				$link = array_shift( $links );
-				$link = sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] );
+				$link = sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'],
+					$link['data'], $link['title'] );
 			}
 			$actions['lp-duplicate-row-action'] = $link;
-		} else if ( LP_QUIZ_CPT === $post->post_type ) {
+		} elseif ( LP_QUIZ_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this quiz', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>',
+				$post->ID, __( 'Duplicate this quiz', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
-		} else if ( LP_QUESTION_CPT === $post->post_type ) {
+		} elseif ( LP_QUESTION_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this question', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>',
+				$post->ID, __( 'Duplicate this question', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
-		} else if ( LP_LESSON_CPT === $post->post_type ) {
+		} elseif ( LP_LESSON_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this lesson', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>',
+				$post->ID, __( 'Duplicate this lesson', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		}
 
@@ -229,7 +235,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 			$before_output[] = sprintf( '<option value="%s">%s</option>', $v, $l );
 		}
 		$before_output = join( "\n", $before_output );
-		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
+		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1",
+			$output, 1 );
 	}
 
 	$output = str_replace( '<option class="level-0" value="00000">#0 (no title)</option>', '', $output );
@@ -291,9 +298,11 @@ function learn_press_dropdown_question_types( $args = array() ) {
 	}
 	$args['class'] = 'lp-dropdown-question-types' . ( $args['class'] ? ' ' . $args['class'] : '' );
 	$types         = learn_press_question_types();
-	$output        = sprintf( '<select name="%s" id="%s" class="%s"%s>', $args['name'], $args['id'], $args['class'], $args['selected'] ? 'data-selected="' . $args['selected'] . '"' : '' );
+	$output        = sprintf( '<select name="%s" id="%s" class="%s"%s>', $args['name'], $args['id'], $args['class'],
+		$args['selected'] ? 'data-selected="' . $args['selected'] . '"' : '' );
 	foreach ( $types as $slug => $name ) {
-		$output .= sprintf( '<option value="%s"%s>%s</option>', $slug, selected( $slug == $args['selected'], true, false ), $name );
+		$output .= sprintf( '<option value="%s"%s>%s</option>', $slug,
+			selected( $slug == $args['selected'], true, false ), $name );
 	}
 	$output .= '</select>';
 	if ( $args['echo'] ) {
@@ -306,11 +315,12 @@ function learn_press_dropdown_question_types( $args = array() ) {
 /**
  * List all registered question types into dropdown
  *
- * @param array
+ * @param array $args
+ * @param LP_Question $question
  *
  * @return string
  */
-function learn_press_field_question_duration( $args = array(), $question ) {
+function learn_press_field_question_duration( $args = array(), $question = null ) {
 	global $post;
 	$duration_type = get_post_meta( $post->ID, "_lp_duration_type", true );
 	$value         = get_post_meta( $question->id, '_question_duration', true );
@@ -396,7 +406,8 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 	}
 
 	foreach ( $formats as $name => $text ) {
-		$output .= sprintf( '<option value="%s" %s>%s</option>', $name, selected( $args['selected'] == $name, true, false ), $text ) . "\n";
+		$output .= sprintf( '<option value="%s" %s>%s</option>', $name,
+				selected( $args['selected'] == $name, true, false ), $text ) . "\n";
 	}
 	$output .= '</select>';
 
@@ -501,7 +512,8 @@ function learn_press_footer_advertisement() {
 	if ( ! $screen = get_current_screen() ) {
 		return;
 	}
-	if ( ! ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' ) || ( in_array( $screen->id, $pages ) ) ) ) {
+	if ( ! ( ( in_array( $screen->post_type,
+				$admin_post_type ) && $screen->base === 'edit' ) || ( in_array( $screen->id, $pages ) ) ) ) {
 		return;
 	}
 
@@ -705,11 +717,11 @@ function learn_press_get_courses_by_price( $fee ) {
  *
  * @param null $from
  * @param null $by
- * @param      $time_ago
+ * @param float $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_students( $from = null, $by = null, $time_ago ) {
+function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0 ) {
 	$labels   = array();
 	$datasets = array();
 	if ( is_null( $from ) ) {
@@ -754,11 +766,11 @@ function learn_press_get_chart_students( $from = null, $by = null, $time_ago ) {
  *
  * @param null $from
  * @param null $by
- * @param      $time_ago
+ * @param float $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_users( $from = null, $by = null, $time_ago ) {
+function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
 
 	$labels   = array();
@@ -825,7 +837,8 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago ) {
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
-			", $_sql_format, 'wp_capabilities', '%' . $wpdb->esc_like( 's:13:"administrator"' ) . '%', '%' . $wpdb->esc_like( 's:10:"lp_teacher"' ) . '%', $_from, $_to );
+			", $_sql_format, 'wp_capabilities', '%' . $wpdb->esc_like( 's:13:"administrator"' ) . '%',
+		'%' . $wpdb->esc_like( 's:10:"lp_teacher"' ) . '%', $_from, $_to );
 
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
@@ -886,11 +899,11 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago ) {
  *
  * @param null $from
  * @param null $by
- * @param      $time_ago
+ * @param float $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
+function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
 
 	$labels   = array();
@@ -1061,11 +1074,11 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
  *
  * @param null $from
  * @param null $by
- * @param      $time_ago
+ * @param float $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
+function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
 	//	var_dump( current_user_can(LP_TEACHER_ROLE) );
 	//	exit();
@@ -1698,7 +1711,8 @@ if ( ! function_exists( 'learn_press_duplicate_post_meta' ) ) {
 
 		if ( count( $post_meta_infos ) != 0 ) {
 			$excerpt       = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
-			$excerpt       = apply_filters( 'learn_press_excerpt_duplicate_post_meta', $excerpt, $old_post_id, $new_post_id );
+			$excerpt       = apply_filters( 'learn_press_excerpt_duplicate_post_meta', $excerpt, $old_post_id,
+				$new_post_id );
 			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
 			$sql_query_sel = array();
 
@@ -1774,7 +1788,8 @@ if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
                         SELECT * FROM $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
                     ", $quiz_id, $question_id );
 			$quiz_question_data = $wpdb->get_row( $sql );
-			$max_order          = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d", $quiz_id ) );
+			$max_order          = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d",
+				$quiz_id ) );
 
 			if ( $quiz_question_data ) {
 				$wpdb->insert(
@@ -1890,11 +1905,11 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
  *
  * @param null $from
  * @param null $by
- * @param      $time_ago
+ * @param float $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_general( $from = null, $by = null, $time_ago ) {
+function learn_press_get_chart_general( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
 
 	$labels   = array();
