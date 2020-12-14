@@ -1787,6 +1787,8 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
 		}
 	}
 
+	$return = LP_Helper::sanitize_params_submitted( $return );
+
 	return $return;
 }
 

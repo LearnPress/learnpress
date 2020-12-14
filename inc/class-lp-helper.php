@@ -275,7 +275,7 @@ class LP_Helper {
 	 * Create LP static page.
 	 *
 	 * @param string $name
-	 * @param string $assign_to - Optional. Assign to LP page after creating successful.
+	 * @param string $assign_to  - Optional. Assign to LP page after creating successful.
 	 *
 	 * @return bool|int|WP_Error
 	 */
@@ -314,7 +314,7 @@ class LP_Helper {
 	 * Wrap function ksort of PHP itself and support recursive.
 	 *
 	 * @param array $array
-	 * @param int   $sort_flags
+	 * @param int $sort_flags
 	 *
 	 * @return bool
 	 * @since 3.3.0
@@ -438,7 +438,7 @@ class LP_Helper {
 				case 'html':
 					$value = wp_kses_post( $value );
 					break;
-				case 'textarea' :
+				case 'textarea':
 					$value = sanitize_textarea_field( $value );
 					break;
 				default:
@@ -473,7 +473,7 @@ class LP_Helper {
 	 * Wrap function $wpdb->prepare(...) to support arguments as
 	 * array.
 	 *
-	 * @param string      $query
+	 * @param string $query
 	 * @param array|mixed $args
 	 *
 	 * @return string

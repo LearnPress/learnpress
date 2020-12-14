@@ -520,28 +520,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Set item is viewing in single course.
-		 *
-		 * @param LP_Course_Item $item
-		 *
-		 * @return int
-		 */
-		public function set_viewing_item( $item ) {
-			die( __FUNCTION__ );
-
-			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
-				return 0;
-			}
-
-			$user = learn_press_get_current_user();
-
-			$this->_viewing_item = $item;
-			$item->set_course( $this );
-
-			return $user->maybe_update_item( $item->get_id(), $this->get_id() );
-		}
-
-		/**
 		 * Get item is viewing in single course.
 		 *
 		 * @return LP_Course_Item
@@ -1970,16 +1948,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn-press/course-sections', $sections, $this->get_id(), $return, $section_id );
-		}
-
-		/**
-		 * Enable item link in case user can not view content of them
-		 *
-		 * @return bool
-		 * @since 3.1.0
-		 */
-		public function is_enable_item_link() {
-			return get_post_meta( $this->get_id(), '_lp_submission', true ) === 'yes';
 		}
 
 		/**

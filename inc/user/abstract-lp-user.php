@@ -365,19 +365,23 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function start_quiz( $quiz_id, $course_id = 0, $wp_error = false ) {
 			try {
-				if ( $item_id = learn_press_get_request( 'lp-preview' ) ) {
+				$item_id = learn_press_get_request( 'lp-preview' );
+
+				if ( $item_id ) {
 					learn_press_add_message( __( 'You cannot start a quiz in preview mode.', 'learnpress' ), 'error' );
-					wp_redirect( learn_press_get_preview_url( $item_id ) );
+					wp_safe_redirect( learn_press_get_preview_url( $item_id ) );
 					exit();
 				}
 
 				// Validate course and quiz
-				if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
+				$course_id = $this->_verify_course_item( $quiz_id, $course_id );
+				if ( ! $course_id ) {
 					throw new Exception(
 						__( 'Course does not exist or does not contain the quiz', 'learnpress' ),
 						LP_INVALID_QUIZ_OR_COURSE
 					);
 				}
+
 				$course       = learn_press_get_course( $course_id );
 				$access_level = $this->get_course_access_level( $course_id );
 
@@ -410,9 +414,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				/**
+				 * Hook can start quiz
+				 *
 				 * @see learn_press_hk_before_start_quiz
 				 */
-				$do_start = apply_filters(
+				$can_start_quiz = apply_filters(
 					'learn-press/before-start-quiz',
 					true,
 					$quiz_id,
@@ -420,25 +426,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$this->get_id()
 				);
 
-				// @deprecated
-				$do_start = apply_filters(
-					'learn_press_before_user_start_quiz',
-					$do_start,
-					$quiz_id,
-					$course_id,
-					$this->get_id()
-				);
-
-				if ( ! $do_start ) {
+				if ( ! $can_start_quiz ) {
 					return false;
 				}
 
 				$user_quiz = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
 
-				// @deprecated
-				do_action( 'learn_press_user_start_quiz', $user_quiz, $quiz_id, $course_id, $this->get_id() );
-
 				/**
+				 * Hook quiz started
+				 *
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-started', $quiz_id, $course_id, $this->get_id() );
@@ -2039,14 +2035,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Returns TRUE if user has already completed a lesson
 		 *
-		 * @param      $lesson_id
-		 * @param null $course_id
+		 * @param int $lesson_id  Lesson id.
+		 * @param null $course_id  Course id.
 		 * @param bool $force
 		 *
 		 * @return mixed|null
 		 */
-		public function has_completed_lesson( $lesson_id, $course_id = null, $force = false ) {
-			$completed = $this->get_item_status( $lesson_id, $course_id ) == 'completed';
+		public function has_completed_lesson( $lesson_id = 0, $course_id = null, $force = false ) {
+			$completed = 'completed' === $this->get_item_status( $lesson_id, $course_id );
 
 			return apply_filters(
 				'learn-press/user-has-completed-lesson',

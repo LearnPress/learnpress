@@ -552,7 +552,7 @@ function learn_press_setup_object_data( $post ) {
 		return $object;
 	}
 
-	if ( $post->post_type == LP_COURSE_CPT ) {
+	if ( LP_COURSE_CPT === $post->post_type ) {
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
 		}
