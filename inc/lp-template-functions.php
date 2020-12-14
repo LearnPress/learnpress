@@ -2194,13 +2194,12 @@ function learn_press_setup_object_data( $post ) {
 	}
 
 	if ( $post->post_type == LP_COURSE_CPT ) {
-		///echo "123456";learn_press_debug($post, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
-
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
 		}
+
 		$object = learn_press_get_course( $post );
-		$object->prepare();
+		// $object->prepare();
 		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
 
