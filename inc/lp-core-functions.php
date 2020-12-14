@@ -58,8 +58,8 @@ function learn_press_get_theme_name( $folder ) {
  * Display HTML of element for building QuickTip JS.
  *
  * @param string $tip
- * @param bool   $echo
- * @param array  $options
+ * @param bool $echo
+ * @param array $options
  *
  * @return string
  * @since 3.0.0
@@ -163,7 +163,7 @@ function learn_press_plugin_path( $sub_dir = '' ) {
  *
  * @param string $file
  * @param string $folder
- * @param bool   $include_once
+ * @param bool $include_once
  *
  * @return bool
  */
@@ -195,9 +195,9 @@ function learn_press_get_ip() {
 	}
 	//Get the forwarded IP if it exists
 	if ( array_key_exists( 'X-Forwarded-For', $headers ) &&
-		(
-			filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-			filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+	     (
+		     filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
+		     filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 	) {
 		$the_ip = $headers['X-Forwarded-For'];
 	} elseif (
@@ -326,7 +326,7 @@ function learn_press_is_current_url( $url ) {
  * Remove unneeded characters in an URL
  *
  * @param string $url
- * @param bool   $trailingslashit
+ * @param bool $trailingslashit
  *
  * @return string
  */
@@ -337,7 +337,8 @@ function learn_press_sanitize_url( $url, $trailingslashit = true ) {
 		$url_without_http = preg_replace( '![/]+!', '/', $url_without_http );
 		$url              = $matches[1] . $url_without_http;
 
-		return ( $trailingslashit && strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
+		return ( $trailingslashit && strpos( $url,
+				'?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
 	}
 
 	return $url;
@@ -384,7 +385,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool   $script_tag - wrap code between <script> tag
+ * @param bool $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -407,9 +408,9 @@ function learn_press_enqueue_script( $code, $script_tag = false ) {
  * Get terms of a course by taxonomy.
  * E.g: course_tag, course_category
  *
- * @param int    $course_id
+ * @param int $course_id
  * @param string $taxonomy
- * @param array  $args
+ * @param array $args
  *
  * @return array|mixed
  */
@@ -516,7 +517,7 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  *
  * @param string $name
  * @param string $type
- * @param bool   $single
+ * @param bool $single
  *
  * @return array|bool|null|WP_Post
  */
@@ -605,8 +606,8 @@ function learn_press_print_script() {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 	if ( ! empty( $learn_press_queued_js ) ) {
 		?>
-		<!-- LearnPress JavaScript -->
-		<script type="text/javascript">jQuery(function ($) {
+        <!-- LearnPress JavaScript -->
+        <script type="text/javascript">jQuery( function( $ ) {
 				<?php
 				// Sanitize
 				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
@@ -615,8 +616,8 @@ function learn_press_print_script() {
 
 				echo $learn_press_queued_js;
 				?>
-			});
-		</script>
+          } );
+        </script>
 		<?php
 		unset( $learn_press_queued_js );
 	}
@@ -632,7 +633,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * @param string $str
- * @param int    $lines
+ * @param int $lines
  */
 function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
@@ -676,7 +677,8 @@ function learn_press_get_page_id( $name ) {
  * @return string
  */
 function learn_press_seconds_to_time( $seconds, $separator = ':' ) {
-	return sprintf( "%02d%s%02d%s%02d", floor( $seconds / 3600 ), $separator, ( $seconds / 60 ) % 60, $separator, $seconds % 60 );
+	return sprintf( "%02d%s%02d%s%02d", floor( $seconds / 3600 ), $separator, ( $seconds / 60 ) % 60, $separator,
+		$seconds % 60 );
 }
 
 /* nav */
@@ -737,8 +739,10 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 		$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
 		$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
-		$format = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos( $pagenum_link, 'index.php' ) ? 'index.php/' : '';
-		$format .= $args['format'] ? $args['format'] : ( $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( 'page/%#%', 'paged' ) : '?paged=%#%' );
+		$format = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos( $pagenum_link,
+			'index.php' ) ? 'index.php/' : '';
+		$format .= $args['format'] ? $args['format'] : ( $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( 'page/%#%',
+			'paged' ) : '?paged=%#%' );
 
 		$link_args = array(
 			'base'      => $pagenum_link,
@@ -756,10 +760,10 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 		ob_start();
 		if ( $links ) :
 			?>
-			<div class="<?php echo $args['wrapper_class']; ?>">
+            <div class="<?php echo $args['wrapper_class']; ?>">
 				<?php echo $links; ?>
-			</div>
-			<!-- .pagination -->
+            </div>
+            <!-- .pagination -->
 		<?php
 		endif;
 		$output = ob_get_clean();
@@ -884,7 +888,7 @@ function learn_press_human_time_to_seconds( $time, $default = '' ) {
  *
  * @param string $to
  * @param string $action
- * @param array  $vars
+ * @param array $vars
  *
  * @return mixed
  */
@@ -1531,7 +1535,8 @@ function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $
 
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
-			$permalink = preg_replace( '!/?\?lesson=([^\?\&]*)!', '/' . basename( get_permalink( $matches[1] ) ), untrailingslashit( $permalink ) );
+			$permalink = preg_replace( '!/?\?lesson=([^\?\&]*)!', '/' . basename( get_permalink( $matches[1] ) ),
+				untrailingslashit( $permalink ) );
 		}
 	}
 
@@ -1542,7 +1547,8 @@ function learn_press_course_question_permalink_friendly( $permalink, $lesson_id,
 
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
-			$permalink = preg_replace( '!/?\?lesson=([^\?\&]*)!', '/' . basename( get_permalink( $matches[1] ) ), untrailingslashit( $permalink ) );
+			$permalink = preg_replace( '!/?\?lesson=([^\?\&]*)!', '/' . basename( get_permalink( $matches[1] ) ),
+				untrailingslashit( $permalink ) );
 		}
 	}
 
@@ -1555,7 +1561,7 @@ add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_pe
 function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	if ( ! $user ) {
 		$user = learn_press_get_current_user();
-	} else if ( is_numeric( $user ) ) {
+	} elseif ( is_numeric( $user ) ) {
 		$user = learn_press_get_user( $user );
 	}
 	if ( ! $user ) {
@@ -1634,7 +1640,8 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		}
 
 		if ( ! $args['email'] ) {
-			$return['message'][] = learn_press_get_message( __( 'Please enter your email address', 'learnpress' ), 'error' );
+			$return['message'][] = learn_press_get_message( __( 'Please enter your email address', 'learnpress' ),
+				'error' );
 			$error               = true;
 		}
 	}
@@ -1651,10 +1658,13 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 				$fields[ $key ]['value'] = LP_Helper::sanitize_params_submitted( $_POST[ $key ] );
 			}
 		}
-		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields, $user );
+		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields,
+			$user );
 		if ( ! $notify_message ) {
 			// translators: 1: link user, 2: name user.
-			$notify_message = sprintf( __( 'The user <a href="%s">%s</a> wants to become a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->get_id() ), $user->user_login ) . "\r\n";
+			$notify_message = sprintf( __( 'The user <a href="%s">%s</a> wants to become a teacher.',
+						'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->get_id() ),
+					$user->user_login ) . "\r\n";
 			// translators: %s: Name.
 			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
 			// translators: %s: Email.
@@ -1669,7 +1679,9 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 				}
 			}
 			// translators: %s: Accept.
-			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->get_id() ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
+			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ),
+					wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->get_id() ) . '&action=accept-to-be-teacher',
+						'accept-to-be-teacher' ) ) ) . "\r\n";
 		}
 
 		$args = array(
@@ -1680,7 +1692,8 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		);
 
 		@call_user_func_array( 'wp_mail', $args );
-		$return['message'][] = learn_press_get_message( __( 'Your request has been sent! We will get back to you soon!', 'learnpress' ) );
+		$return['message'][] = learn_press_get_message( __( 'Your request has been sent! We will get back to you soon!',
+			'learnpress' ) );
 
 		set_transient( 'learn_press_become_teacher_sent_' . $user->get_id(), 'yes', HOUR_IN_SECONDS * 2 );
 	}
@@ -1757,7 +1770,8 @@ function learn_press_posts_where_statement_search( $where ) {
 		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
 
 		// append ) to the end of the block
-		$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )', $where );
+		$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )',
+			$where );
 	}
 	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
 
@@ -1868,8 +1882,8 @@ function learn_press_maybe_send_json( $data, $callback = null ) {
  * Get data from request.
  *
  * @param string $key
- * @param mixed  $default
- * @param mixed  $hash
+ * @param mixed $default
+ * @param mixed $hash
  *
  * @return mixed
  */
@@ -1898,7 +1912,8 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
  * @return mixed
  */
 function is_learnpress() {
-	return apply_filters( 'is_learnpress', ( learn_press_is_course_archive() || learn_press_is_course_taxonomy() || learn_press_is_course() || learn_press_is_quiz() || learn_press_is_search() ) ? true : false );
+	return apply_filters( 'is_learnpress',
+		( learn_press_is_course_archive() || learn_press_is_course_taxonomy() || learn_press_is_course() || learn_press_is_quiz() || learn_press_is_search() ) ? true : false );
 }
 
 if ( ! function_exists( 'learn_press_is_search' ) ) {
@@ -1906,7 +1921,8 @@ if ( ! function_exists( 'learn_press_is_search' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_search() {
-		return array_key_exists( 's', $_REQUEST ) && array_key_exists( 'ref', $_REQUEST ) && $_REQUEST['ref'] == 'course';
+		return array_key_exists( 's', $_REQUEST ) && array_key_exists( 'ref',
+				$_REQUEST ) && $_REQUEST['ref'] == 'course';
 	}
 }
 
@@ -2078,7 +2094,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int  $expire
+ * @param int $expire
  * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
@@ -2271,7 +2287,7 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
 
 /**
  * @param string $handle
- * @param bool   $hash
+ * @param bool $hash
  *
  * @return string
  */
@@ -2353,9 +2369,9 @@ function learn_press_get_current_profile_tab( $default = true ) {
 
 	if ( ! empty( $_REQUEST['tab'] ) ) {
 		$current = $_REQUEST['tab'];
-	} else if ( ! empty( $wp_query->query_vars['tab'] ) ) {
+	} elseif ( ! empty( $wp_query->query_vars['tab'] ) ) {
 		$current = $wp_query->query_vars['tab'];
-	} else if ( ! empty( $wp->query_vars['view'] ) ) {
+	} elseif ( ! empty( $wp->query_vars['view'] ) ) {
 		$current = $wp->query_vars['view'];
 	} else {
 		if ( $default && $tabs = learn_press_get_user_profile_tabs() ) {
@@ -2554,7 +2570,8 @@ function _learn_press_checkout_success_result( $results, $order_id ) {
 			}
 
 			if ( $course = learn_press_get_course( $course_id ) ) {
-				learn_press_add_message( sprintf( __( 'Congrats! You\'ve enrolled the course "%s".', 'learnpress' ), $course->get_title() ) );
+				learn_press_add_message( sprintf( __( 'Congrats! You\'ve enrolled the course "%s".', 'learnpress' ),
+					$course->get_title() ) );
 			}
 		}
 	}
@@ -2592,7 +2609,8 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 				),
 				array(
 					'title'   => __( 'Enable cart', 'learnpress' ),
-					'desc'    => __( 'Check this option to enable user purchase multiple courses at one time.', 'learnpress' ),
+					'desc'    => __( 'Check this option to enable user purchase multiple courses at one time.',
+						'learnpress' ),
 					'id'      => $class->get_field_name( 'enable_cart' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
@@ -2633,7 +2651,8 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 	add_filter( 'learn_press_get_template', '_learn_press_enroll_button', 1000, 5 );
 	function _learn_press_enroll_button( $located, $template_name, $args, $template_path, $default_path ) {
 		if ( $template_name == 'single-course/enroll-button.php' ) {
-			$located = learn_press_locate_template( 'single-course/enroll-button-new.php', $template_path, $default_path );
+			$located = learn_press_locate_template( 'single-course/enroll-button-new.php', $template_path,
+				$default_path );
 		}
 
 		return $located;
@@ -2686,7 +2705,8 @@ function learn_press_plugin_basename( $filepath ) {
 	$sp_plugin_dir = str_replace( '\\', '/', $sp_plugin_dir );
 	$sp_plugin_dir = preg_replace( '|/+|', '/', $sp_plugin_dir );
 
-	$file = preg_replace( '#^' . preg_quote( $sp_plugin_dir, '#' ) . '/|^' . preg_quote( $plugin_dir, '#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file );
+	$file = preg_replace( '#^' . preg_quote( $sp_plugin_dir, '#' ) . '/|^' . preg_quote( $plugin_dir,
+			'#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file );
 	$file = trim( $file, '/' );
 
 	return strtolower( $file );
@@ -2696,7 +2716,7 @@ function learn_press_plugin_basename( $filepath ) {
  * Update log data for each LP version into wp option.
  *
  * @param string $version
- * @param mixed  $data
+ * @param mixed $data
  */
 function learn_press_update_log( $version, $data ) {
 	$logs = get_option( 'learn_press_update_logs' );
@@ -2713,7 +2733,7 @@ function learn_press_update_log( $version, $data ) {
  */
 function learn_press_debug() {
 	$args  = func_get_args();
-	$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 3 );
+	$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 
 	echo '<pre>';
 	print_r( $debug[1] );
@@ -2858,10 +2878,10 @@ if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
  * Filter to comment reply link to fix bug the link is invalid for
  * lesson or quiz.
  *
- * @param string     $link
- * @param array      $args
+ * @param string $link
+ * @param array $args
  * @param WP_Comment $comment
- * @param WP_Post    $post
+ * @param WP_Post $post
  *
  * @return string
  */
@@ -2911,7 +2931,7 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
  * Sanitize content of tooltip
  *
  * @param string $tooltip
- * @param bool   $html
+ * @param bool $html
  *
  * @return string
  */
@@ -3037,8 +3057,7 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
 			try {
 				$data = unserialize( $content );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				print_r( $content );
 				die();
 			}
@@ -3202,7 +3221,7 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
  *
  * @param string $timestamp
  * @param string $format
- * @param bool   $gmt
+ * @param bool $gmt
  *
  * @return string
  * @since 3.0.0
@@ -3302,7 +3321,7 @@ function learn_press_get_post_type( $post ) {
  * Add post type of a post into cache
  *
  * @param int|array $id
- * @param string    $type
+ * @param string $type
  *
  * @since 3.1.0
  *

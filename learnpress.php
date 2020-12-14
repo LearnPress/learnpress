@@ -6,8 +6,8 @@
  * Author: ThimPress
  * Version: 3.2.8.2
  * Author URI: http://thimpress.com
- * Requires at least: 3.8
- * Tested up to: 5.5.3
+ * Requires at least: 5.3
+ * Tested up to: 5.6
  * Text Domain: learnpress
  * Domain Path: /languages/
  *

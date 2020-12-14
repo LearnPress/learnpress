@@ -2,10 +2,10 @@
 Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungnx89
 Donate link:
 Tags: elearning, education, course, lms, learning management system
-Requires at least: 3.8
+Requires at least: 5.3
 Tested up to: 5.6
 Requires PHP: 7.0
-Stable tag: 5.4.3
+Stable tag: 3.2.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,10 +18,6 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 <a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/wordpress/themes/learnpress-premium-theme/" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a>
 
 LearnPress is free and always be free, but it has premium high quality WordPress Plugin which will probably help you make money from your **WordPress based LMS**, try and see how it is. LearnPress WordPress Online Course plugin is lightweight but super powerful with lots of add-ons to empower its core system.
-
-> **One-Off Sale - 10 Days Left - Limited Time Offer**
-
-> [Click here](https://goo.gl/JzwYkj) to get a coupon for 20% Off all Learnpress Add-ons
 
 > Or you can buy [Education WP Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only $69 and get all add-on in package <a href="https://bit.ly/3iutiV1" target="_blank">LEARNPRESS THEME BUNDLE.</a>
 
@@ -203,7 +199,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 3.2.8.2 =
 ~ Fix compatible WP 5.6
-~ Fix error Yoast-Seo in course archive
+~ Fix error Yoast-Seo in course archive page
+~ Error file global.js on 'Twenty Seventeen' theme
+~ Fix error page course archive with YoastSeo
+~ Fix count students enrolled course on list course backend
+~ Fix toggle curriculum bar for right-to-left
 
 = 3.2.8.1 =
 ~ Fix WPBakery load style inline on course's item page
