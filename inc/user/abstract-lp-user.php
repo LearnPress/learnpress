@@ -852,36 +852,26 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return apply_filters( 'learn-press/current-user-question', $question_id );
 		}
 
-		public function get_prev_question( $quiz_id = null, $course_id, $permalink = false ) {
+		/**
+		 * Get previous Question
+		 *
+		 * @param null $quiz_id
+		 * @param int $course_id
+		 * @param false $permalink
+		 */
+		public function get_prev_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
 			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
-			// if ( ! $quiz_id ) {
-			// $quiz_id = $this->get_current_item( $course_id );
-			// }
-			//
-			// if ( ! $quiz_id ) {
-			// return false;
-			// }
-			// $current = $this->get_current_question( $quiz_id, $course_id );
-			// $quiz    = learn_press_get_quiz( $quiz_id );
-			//
-			// return $quiz->get_prev_question( $current );
 		}
 
-		public function get_next_question( $quiz_id = null, $course_id, $permalink = false ) {
+		/**
+		 * Get next Question
+		 *
+		 * @param null $quiz_id
+		 * @param int $course_id
+		 * @param false $permalink
+		 */
+		public function get_next_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
 			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
-
-			// if ( ! $quiz_id ) {
-			// $quiz_id = $this->get_current_item( $course_id );
-			// }
-			//
-			// if ( ! $quiz_id ) {
-			// return false;
-			// }
-			//
-			// $current = $this->get_current_question( $quiz_id, $course_id );
-			// $quiz    = learn_press_get_quiz( $quiz_id );
-			//
-			// return $quiz->get_next_question( $current );
 		}
 
 		/**

@@ -62,6 +62,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			if ( empty( $data['sections'] ) ) {
 				continue;
 			}
+
 			foreach ( $data['sections'] as $section_slug => $section_data ) {
 				if ( ! array_key_exists( 'slug', $section_data ) ) {
 					$tabs[ $slug ]['sections'][ $section_slug ]['slug'] = $section_slug;
@@ -333,7 +334,11 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	}
 
 	protected function _sort_tabs( $a, $b ) {
-		return $a['priority'] > $b['priority'];
+		if ( $a['priority'] === $b['priority'] ) {
+			return 0;
+		}
+
+		return $a['priority'] < $b['priority'] ? - 1 : 1;
 	}
 
 	/**

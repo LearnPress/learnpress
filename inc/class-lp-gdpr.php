@@ -197,7 +197,7 @@ class LP_GDPR {
 	 * Course list
 	 *
 	 * @param string $email_address
-	 * @param int    $page
+	 * @param int $page
 	 *
 	 * @return array
 	 */
@@ -416,7 +416,7 @@ class LP_GDPR {
 	}
 
 	/**
-	 * @param array               $export_items
+	 * @param array $export_items
 	 * @param LP_User_Item_Course $course_data
 	 */
 	protected function _export_purchased_course_items( &$export_items, $course_data ) {
@@ -461,7 +461,8 @@ class LP_GDPR {
 			} elseif ( $item->get_item_type() == LP_LESSON_CPT ) {
 				$export_item_data[] = array(
 					'name'  => __( 'Completed', 'learnpress' ),
-					'value' => $user_course_item->get_status() === 'completed' ? __( 'Yes', 'learnpress' ) : __( 'No', 'learnpress' ),
+					'value' => $user_course_item->get_status() === 'completed' ? __( 'Yes', 'learnpress' ) : __( 'No',
+						'learnpress' ),
 				);
 			}
 
@@ -481,11 +482,11 @@ class LP_GDPR {
 	 *
 	 * @param string $type
 	 * @param string $email
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @return array|bool|LP_Query_List_Table
 	 */
-	protected function get_courses_by_email( $type = 'own', $email, $args = array() ) {
+	protected function get_courses_by_email( $type = 'own', $email = '', $args = array() ) {
 		$user = get_user_by( 'email', $email );
 
 		if ( ! $user ) {
@@ -504,7 +505,7 @@ class LP_GDPR {
 	 * Eraser personal data
 	 *
 	 * @param string $email
-	 * @param int    $page
+	 * @param int $page
 	 *
 	 * @return array
 	 */
