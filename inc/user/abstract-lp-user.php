@@ -1394,7 +1394,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @since 4.0.0
 		 */
 		public function can_view_item( $item_id = 0, $course_id = 0 ) {
-			$view = new Model_User_Can_View_Course_Item();
+			$view          = new Model_User_Can_View_Course_Item();
+			$view->message = esc_html__(
+				'This content is protected, please enroll course to view this content!',
+				'learnpress'
+			);
 
 			$course = learn_press_get_course( $course_id );
 
@@ -1410,7 +1414,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			if ( ! $item ) {
 				$view->key     = 'item_null';
-				$view->message = __( 'Course\'s item null', 'learnpress' );
+				$view->message = __( 'Course\'s item is null', 'learnpress' );
 
 				return $view;
 			}
@@ -1454,17 +1458,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return apply_filters( 'learn-press/can-view-item', $view, $item_id, $this->get_id(), $course_id );
-		}
-
-		public function get_item_url( $item_id, $course_id = 0 ) {
-			$course = learn_press_get_course( $course_id );
-			if ( $this->can_view_item( $item_id ) || $course->is_enable_item_link() ) {
-				$url = $course->get_item_link( $item_id );
-			} else {
-				$url = false;
-			}
-
-			return $url;
 		}
 
 		public function can_edit_item( $item_id, $course_id = 0 ) {
