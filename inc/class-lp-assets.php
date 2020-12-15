@@ -98,6 +98,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
+				'vue-libs'             => new LP_Asset_Key(
+					self::url( 'src/js/vendor/vue/vue_libs_special.min.js' )
+				),
 				'lp-modal'             => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/modal' . self::$_min_assets . '.js' ),
 					array( 'jquery' )
