@@ -2,7 +2,7 @@
 	'use strict';
 	window.$Vue = window.$Vue || Vue;
 
-	$( document ).ready( function() {
+	jQuery( function() {
 		// eslint-disable-next-line no-var
 		var $listItems = $( '.list-order-items' ).find( 'tbody' ),
 			$listUsers = $( '#list-users' ),

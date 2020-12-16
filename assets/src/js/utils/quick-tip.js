@@ -125,7 +125,7 @@
 				$( this ).data( 'quick-tip', $tip );
 			}
 
-			if ( $.type( options ) === 'string' ) {
+			if ( typeof options === 'string' ) {
 				$tip[ options ] && $tip[ options ].apply( $tip );
 			}
 		} );

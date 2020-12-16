@@ -127,9 +127,9 @@ const _default = {
 
 		try {
 			if ( m ) {
-				data = $.parseJSON( m[ 1 ].replace( /(?:\r\n|\r|\n)/g, '' ) );
+				data = JSON.parse( m[ 1 ].replace( /(?:\r\n|\r|\n)/g, '' ) );
 			} else {
-				data = $.parseJSON( data );
+				data = JSON.parse( data );
 			}
 		} catch ( e ) {
 			data = {};
@@ -172,10 +172,10 @@ const _default = {
 			dataType: 'html',
 			success( raw ) {
 				const response = LP.parseResponse( raw, dataType );
-				$.isFunction( args.success ) && args.success( response, raw );
+				typeof ( args.success ) === 'function' && args.success( response, raw );
 			},
 			error() {
-				$.isFunction( args.error ) && args.error.apply( null, LP.funcArgs2Array() );
+				typeof ( args.error ) === 'function' && args.error.apply( null, LP.funcArgs2Array() );
 			},
 		} );
 	},

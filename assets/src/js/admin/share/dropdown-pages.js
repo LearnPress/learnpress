@@ -32,7 +32,7 @@
 			} );
 		}
 
-		$select.change( function() {
+		$select.on( 'change', function() {
 			$actions.addClass( 'hide-if-js' );
 			if ( this.value !== 'add_new_page' ) {
 				if ( parseInt( this.value ) ) {
@@ -44,7 +44,7 @@
 				return;
 			}
 			$listWrap.addClass( 'hide-if-js' );
-			$form.removeClass( 'hide-if-js' ).find( 'input' ).focus().val( '' );
+			$form.removeClass( 'hide-if-js' ).find( 'input' ).trigger( 'focus' ).val( '' );
 		} );
 
 		// Select 2
@@ -68,7 +68,7 @@
 				page_name = $input.val();
 			if ( ! page_name ) {
 				alert( 'Please enter the name of page' );
-				$input.focus();
+				$input.trigger( 'focus' );
 				return;
 			}
 			$button.prop( 'disabled', true );
@@ -88,7 +88,8 @@
 							name: response.page.post_title,
 							positions: response.positions,
 						} );
-						$select.val( response.page.ID ).focus().trigger( 'change' );
+						$select.val( response.page.ID ).trigger( 'focus' );
+						$select.val( response.page.ID ).trigger( 'change' );
 						$form.addClass( 'hide-if-js' );
 					} else if ( response.error ) {
 						alert( response.error );
@@ -105,10 +106,10 @@
 		} ).on( 'click', '.button-quick-add-page', function( e ) {
 			$select.val( 'add_new_page' ).trigger( 'change' );
 		} ).on( 'keypress keydown', '.quick-add-page-inline input[type="text"]', function( e ) {
-			if ( e.keyCode == 13 && e.type == 'keypress' ) {
+			if ( e.key == 'Enter' && e.type == 'keypress' ) {
 				e.preventDefault();
 				$( this ).siblings( 'button' ).trigger( 'click' );
-			} else if ( e.keyCode == 27 && e.type == 'keydown' ) {
+			} else if ( e.key == 'Escape' && e.type == 'keydown' ) {
 				$( this ).siblings( 'a' ).trigger( 'click' );
 			}
 		} );

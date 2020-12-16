@@ -1,8 +1,5 @@
 const $ = window.jQuery;
 const MessageBox = {
-	/*
-     *
-     */
 	$block: null,
 	$window: null,
 	events: {},

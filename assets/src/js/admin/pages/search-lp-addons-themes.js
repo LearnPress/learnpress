@@ -42,7 +42,9 @@
 	$( document ).on( 'keyup', '.lp-search-addon', function( e ) {
 		timer && clearTimeout( timer );
 		timer = setTimeout( onSearch, 300, e.target.value );
-	} ).ready( function() {
+	} );
+
+	jQuery( function() {
 		$wraps = $( '.addons-browse' );
 	} );
 }( jQuery ) );

@@ -123,7 +123,7 @@
 
 			// Try to calling to methods of class
 			if ( typeof options === 'string' ) {
-				if ( $.isFunction( $advancedList[ options ] ) ) {
+				if ( typeof $advancedList[ options ] === 'function' ) {
 					return $advancedList[ options ].apply( $advancedList, args );
 				}
 			}
