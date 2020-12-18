@@ -63,6 +63,8 @@ $items       = $section->get_items();
 					<div class="learn-press-progress__active" data-value="<?php echo $percent; ?>"></div>
 				</div>
 			</div>
+
+			<?php do_action('learnpress/single-course/section-header/after', $section ); ?>
 		<?php endif; ?>
 	</div>
 
