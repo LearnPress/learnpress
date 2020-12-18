@@ -3599,3 +3599,23 @@ body.lp-item-moving {
     padding: 10px;
   }
 }
+
+/*add css for get post thimpress to wp-admin LearnPress status*/
+.show_content_post_thimpress .entry-content:first-child{
+  display: none;
+}
+.show_content_post_thimpress .entry-content .entry-header .meta-category{
+  display:none;
+}
+.show_content_post_thimpress .entry-content .entry-header .entry-title{
+  font-size: 16px;
+}
+.show_content_post_thimpress .entry-content .entry-header .entry-title a{
+  text-decoration: none !important;
+}
+.show_content_post_thimpress .entry-content .entry-meta{
+  display:none;
+}
+.show_content_post_thimpress .entry-content .entry-summary p{
+  margin-top: 0 !important;
+}
