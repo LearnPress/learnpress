@@ -93,7 +93,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'sync-user-orders',
 				'sync-course-final-quiz',
 				'sync-remove-older-data',
-				'sync-calculate-course-results'
+				'sync-calculate-course-results',
+				'lp-get-blog-post-thimpess',
 				//'sync-user-courses',
 			);
 			foreach ( $ajax_events as $action => $callback ) {
@@ -242,7 +243,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
 				learn_press_admin_view( 'dashboard/plugin-status/html-no-data' );
 			} else {
-				learn_press_admin_view( 'dashboard/plugin-status/html-results', array( 'plugin_data' => $plugin_data ) );
+				learn_press_admin_view( 'dashboard/plugin-status/html-results',
+					array( 'plugin_data' => $plugin_data ) );
 			}
 			die();
 		}
@@ -375,7 +377,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				learn_press_send_json_error( __( 'Something went wrong: ', 'learnpress' ) . $error_message );
 			} else {
 				update_option( 'learn-press-dismissed-newsletter-button', 1 );
-				learn_press_send_json_success( __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.', 'learnpress' ) );
+				learn_press_send_json_success( __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.',
+					'learnpress' ) );
 			}
 		}
 
@@ -396,7 +399,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				$new_item_id = '';
 
-				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
+				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args',
+					array( 'post_status' => 'publish' ) );
 
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
@@ -503,7 +507,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$id = learn_press_get_request( 'item_id' );
 			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
 					'lp_lesson'
-				) ) ) && wp_verify_nonce( sanitize_key( learn_press_get_request( 'nonce' ) ), 'learn-press-toggle-item-preview' )
+				) ) ) && wp_verify_nonce( sanitize_key( learn_press_get_request( 'nonce' ) ),
+					'learn-press-toggle-item-preview' )
 			) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
@@ -527,7 +532,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$paged      = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
 			$exclude    = LP_Request::get( 'exclude' );
 
-			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged', 'exclude' ) );
+			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged',
+				'exclude' ) );
 
 			learn_press_send_json( array(
 				'html'  => $search->get_html_items(),
@@ -551,7 +557,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$text_format = (string) ( stripslashes( learn_press_get_request( 'text_format' ) ) );
 			$exclude     = LP_Request::get( 'exclude' );
 
-			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple', 'text_format', 'exclude' ) );
+			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple',
+				'text_format', 'exclude' ) );
 
 			learn_press_send_json( array(
 				'html'  => $search->get_html_items(),
@@ -862,8 +869,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$html                = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
-					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
-					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
+					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page',
+							'learnpress' ) . '</a>&nbsp;';
+					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page',
+							'learnpress' ) . '</a>';
 				} else {
 					$response['error'] = __( 'Error! Page creation failed. Please try again.', 'learnpress' );
 				}
@@ -893,7 +902,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					continue;
 				}
 
-				$page_id = LP_Helper::create_page( isset( $page_names[ $id ] ) ? $page_names[ $id ] : ucfirst( $id ), $id );
+				$page_id = LP_Helper::create_page( isset( $page_names[ $id ] ) ? $page_names[ $id ] : ucfirst( $id ),
+					$id );
 
 				// Add profile link into admin bar
 				if ( $page_id && $id == 'profile' ) {
@@ -912,8 +922,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function install_sample_data() {
 			$yes            = ! empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
 			$response       = array( 'result' => 'fail' );
-			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Please try again.', 'learnpress' ) );
-			$dismiss_button = sprintf( '<a href="" class="button disabled no" data-action="no">%s</a>', __( 'Cancel', 'learnpress' ) );
+			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>',
+				__( 'Please try again.', 'learnpress' ) );
+			$dismiss_button = sprintf( '<a href="" class="button disabled no" data-action="no">%s</a>',
+				__( 'Cancel', 'learnpress' ) );
 			$buttons        = sprintf( '<p>%s %s</p>', $retry_button, $dismiss_button );
 			if ( 'no' == $yes ) {
 				set_transient( 'learn_press_install_sample_data', 'off', 12 * HOUR_IN_SECONDS );
@@ -938,15 +950,20 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 							);
 							$response['url']     = $url = $url . '&' . http_build_query( $postdata ) . "\n";
 							$response['result']  = 'success';
-							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Successfully import sample data.', 'learnpress' ), __( 'View courses', 'learnpress' ) );
+							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>',
+								__( 'Successfully import sample data.', 'learnpress' ),
+								__( 'View courses', 'learnpress' ) );
 						}
 					}
 					if ( $response['result'] == 'fail' ) {
-						$response['message'] = sprintf( '<p>%s</p>%s', __( 'Failed to import sample data. Please try again.', 'learnpress' ), $buttons );
+						$response['message'] = sprintf( '<p>%s</p>%s',
+							__( 'Failed to import sample data. Please try again.', 'learnpress' ), $buttons );
 					}
 				} else {
 					$response['result']  = 'fail';
-					$response['message'] = sprintf( '<p>%s</p>', __( 'Unknown error when installing/activating Import/Export add-on. Please try again!', 'learnpress' ) ) . $buttons;
+					$response['message'] = sprintf( '<p>%s</p>',
+							__( 'Unknown error when installing/activating Import/Export add-on. Please try again!',
+								'learnpress' ) ) . $buttons;
 				}
 			}
 			learn_press_send_json( $response );
@@ -962,7 +979,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$response = array( 'addons' => array() );
 
 			if ( ! current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.', 'learnpress' );
+				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.',
+					'learnpress' );
 			} else {
 
 				$add_ons = $learn_press_add_ons['bundle_activate'];
@@ -983,7 +1001,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$response = array();
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
 			if ( ! current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.', 'learnpress' );
+				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.',
+					'learnpress' );
 			} else {
 				$slug              = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
 				$response[ $slug ] = learn_press_install_and_active_add_on( $slug );
@@ -1048,7 +1067,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( $date_diff <= 0 || $from == 0 || $to == 0 ) {
 				die();
 			}
-			learn_press_process_chart( learn_press_get_chart_students( $to, 'days', floor( $date_diff / ( 60 * 60 * 24 ) ) + 1 ) );
+			learn_press_process_chart( learn_press_get_chart_students( $to, 'days',
+				floor( $date_diff / ( 60 * 60 * 24 ) ) + 1 ) );
 			die();
 		}
 
@@ -1186,6 +1206,38 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$html = ob_get_clean();
 			echo $html;
 			die();
+		}
+
+		/**
+		 * Get list blog posts from Thimpress
+		 */
+		public static function lp_get_blog_post_thimpess() {
+			$result = new LP_REST_Response();
+
+			if ( ! is_admin() ) {
+				$result->message = 'Invalid request';
+				wp_send_json( $result );
+			}
+
+			if ( ! isset( $_POST['lp-nonce'] )
+			     || ! check_admin_referer( 'lp-get-blog-post-thimpess', 'lp-nonce' ) ) {
+				$result->message = 'Invalid nonce';
+				wp_send_json( $result );
+			}
+
+			$res = wp_remote_get( 'https://thimpress.com/blog/' );
+
+			if ( ! $res instanceof WP_Error ) {
+				$thimpress_response_body = wp_remote_retrieve_body( $res );
+				$content_sanitize        = wp_kses_post_deep( $thimpress_response_body );
+
+				$result->status = 'success';
+				$result->data   = $content_sanitize;
+			} else {
+				$result->message = $res->get_error_message();
+			}
+
+			wp_send_json( $result );
 		}
 	}
 

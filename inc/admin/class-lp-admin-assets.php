@@ -160,9 +160,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-tools-course-tab'               => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
 					array( 'vue-libs' ), array( 'learnpress_page_learn-press-tools' ), 0, 1
 				),
-//				add code to load file get-post-thimpress.js
-				'get-post-tp'               => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/get-post-thimpress' . self::$_min_assets . '.js' ),
-					array( 'jquery' ), array(), 0, 1
+				'lp-get-blog-post-thimpress'        => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/get-post-thimpress' . self::$_min_assets . '.js' ),
+					array( 'jquery', 'learn-press-global' ), array( 'dashboard' ), 0, 1
 				),
 			)
 		);

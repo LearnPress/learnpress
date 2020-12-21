@@ -16,10 +16,12 @@ if ( ! isset( $plugin_data ) || is_wp_error( $plugin_data ) ) {
         <li>
 			<?php
 			if ( ! empty( $plugin_data->downloaded ) ) {
-				printf( '<span><strong>%s</strong></span>: %s', __( 'Downloaded', 'learnpress' ), number_format( $plugin_data->downloaded ) );
+				printf( '<span><strong>%s</strong></span>: %s', __( 'Downloaded', 'learnpress' ),
+					number_format( $plugin_data->downloaded ) );
 			}
 			?>
-			<?php printf( '<span><strong>%s</strong></span>: %s', __( 'Active Installed', 'learnpress' ), number_format( $plugin_data->active_installs ) ) ?>
+			<?php printf( '<span><strong>%s</strong></span>: %s', __( 'Active Installed', 'learnpress' ),
+				number_format( $plugin_data->active_installs ) ) ?>
         </li>
     </ul>
 </div>
@@ -32,23 +34,26 @@ if ( ! isset( $plugin_data ) || is_wp_error( $plugin_data ) ) {
         </li>
     </ul>
 </div>
-<p><?php printf( '<strong>%s</strong>: %s', __( 'Published', 'learnpress' ), date_i18n( get_option( 'date_format' ), strtotime( $plugin_data->added ) ) ) ?></p>
-<p><?php printf( '<strong>%s</strong>: %s', __( 'Updated', 'learnpress' ), date_i18n( get_option( 'date_format' ), strtotime( $plugin_data->last_updated ) ) ) ?></p>
-<p><?php printf( '<strong>%s</strong>: %s', __( 'Current Version', 'learnpress' ), $plugin_data->version ) ?></p>
+<p>
+    <?php printf( '<strong>%s</strong>: %s', __( 'Published', 'learnpress' ),
+		date_i18n( get_option( 'date_format' ), strtotime( $plugin_data->added ) ) ) ?>
+</p>
+<p>
+    <?php printf( '<strong>%s</strong>: %s', __( 'Updated', 'learnpress' ),
+		date_i18n( get_option( 'date_format' ), strtotime( $plugin_data->last_updated ) ) ) ?>
+</p>
+<p>
+    <?php printf( '<strong>%s</strong>: %s', __( 'Current Version', 'learnpress' ), $plugin_data->version ) ?>
+</p>
 
-<!-- add code to load post from thimpress-->
-<?php
-$thimpress_response = wp_remote_get( 'https://thimpress.com/blog/' );
-$thimpress_response_body = wp_remote_retrieve_body($thimpress_response);
-$content_santize = wp_kses_post_deep($thimpress_response_body);
-?>
+<!-- Show list blog posts form Thimpress -->
 <div class="list_post_thimpress">
-	<div class="content_list_post_thimpress" style="display:none;">
-	<?php echo $content_santize; ?>
-	</div>
-	<div class="show_content_post_thimpress">
-
-	</div>
+    <div class="lp-place-holder">
+		<?php learn_press_admin_view( 'placeholder-animation' ); ?>
+    </div>
+    <div class="data_crawl"></div>
+    <div class="show_content_post_thimpress"></div>
+	<?php wp_nonce_field( 'lp-get-blog-post-thimpess', 'lp-nonce' ); ?>
 </div>
 
 

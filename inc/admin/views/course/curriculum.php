@@ -23,7 +23,7 @@ learn_press_admin_view( 'course/sections' );
 </script>
 
 <script type="text/javascript">
-    window.$Vue = window.$Vue = Vue;
+    window.$Vue = Vue;
     jQuery(function ($) {
 
         (function ( $store) {

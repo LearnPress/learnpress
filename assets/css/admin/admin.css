@@ -3601,6 +3601,14 @@ body.lp-item-moving {
 }
 
 /*add css for get post thimpress to wp-admin LearnPress status*/
+.list_post_thimpress {
+
+}
+
+.list_post_thimpress .data_crawl {
+  display: none;
+}
+
 .show_content_post_thimpress .entry-content:first-child{
   display: none;
 }

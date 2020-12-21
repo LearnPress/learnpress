@@ -197,6 +197,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 3.2.8.3 =
+
+
 = 3.2.8.2 =
 ~ Fix compatible WP 5.6
 ~ Fix error Yoast-Seo in course archive page
