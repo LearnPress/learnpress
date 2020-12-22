@@ -571,13 +571,19 @@ class LP_Checkout {
 					LP()->session->order_awaiting_payment = $order_id;
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );
-					if ( isset( $result['result'] ) && 'success' === $result['result'] ) {
-						$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
-						if ( learn_press_is_ajax() ) {
+
+					if ( isset( $result['result'] ) ) {
+						if ( 'success' === $result['result'] ) {
+							$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
+
+							if ( learn_press_is_ajax() ) {
+								learn_press_send_json( $result );
+							} else {
+								wp_redirect( $result['redirect'] );
+								exit;
+							}
+						} elseif ( learn_press_is_ajax() ) {
 							learn_press_send_json( $result );
-						} else {
-							wp_redirect( $result['redirect'] );
-							exit;
 						}
 					}
 

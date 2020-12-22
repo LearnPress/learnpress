@@ -132,11 +132,13 @@
 						}
 					} catch ( error ) {
 						if ( ! response.messages ) {
-							showMessage( '<div class="learn-press-message error">' +
+							showMessage( '<div class="learn-press-message message-error error">' +
                   options.i18n_unknown_error + '</div>' );
 						} else {
-							showMessage( response.messages );
-						}
+							showMessage( '<div class="learn-press-message message-error error">' +
+                            response.messages + '</div>');
+                        }
+
 						$buttonCheckout.html( options.i18n_place_order );
 						$buttonCheckout.prop( 'disabled', false );
 						LP.unblockContent();
