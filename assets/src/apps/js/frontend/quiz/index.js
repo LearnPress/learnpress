@@ -1,24 +1,11 @@
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
-import {
-	Content,
-	Meta,
-	Buttons,
-	Questions,
-	Attempts,
-	Result,
-	Status,
-} from './components';
+import { Content, Meta, Buttons, Questions, Attempts, Result, Status } from './components';
 
 import store from './store';
 
-const { chunk, isNumber } = lodash;
-const $ = jQuery;
-const MyContext = React.createContext( { status: -1 } );
-
-export { MyContext };
-
+const { chunk } = lodash;
 class Quiz extends Component {
 	constructor( props ) {
 		super( ...arguments );
@@ -44,8 +31,6 @@ class Quiz extends Component {
 		setQuizData( settings );
 	}
 
-	componentDidUpdate() {}
-
 	startQuiz = ( event ) => {
 		this.props.startQuiz();
 	};
@@ -57,47 +42,28 @@ class Quiz extends Component {
 			-1 !== [ '', 'completed', 'viewed' ].indexOf( status ) || ! status;
 		const notStarted =
 			-1 !== [ '', 'viewed', undefined ].indexOf( status ) || ! status;
+
 		// Just render content if status !== undefined (meant all data loaded)
 		return (
 			undefined !== status && (
 				<>
-					<MyContext.Provider value={ this.props }>
-						{ /*<div id="test-element">*/ }
-						{ /*I am TEST*/ }
-						{ /*/!*<LP.quiz.MyContext.Consumer>*!/*/ }
-						{ /*/!*{*!/*/ }
-						{ /*/!*(a)=>{*!/*/ }
-						{ /*/!*return JSON.stringify(a.status)*!/*/ }
-						{ /*/!*}*!/*/ }
-						{ /*/!*}*!/*/ }
-						{ /*/!*</LP.quiz.MyContext.Consumer>*!/*/ }
-						{ /*[*/ }
-						{ /*{*/ }
-						{ /*LP.Hook.doAction('xxxx', '')*/ }
-						{ /*}*/ }
-						{ /*]*/ }
-						{ /*</div>*/ }
-					</MyContext.Provider>
+					<div>
+						{ ! isReviewing && 'completed' === status && (
+							<Result />
+						) }
 
-					{ 1 === 1 && (
-						<div>
-							{ ! isReviewing && 'completed' === status && (
-								<Result />
-							) }
+						{ ! isReviewing && notStarted && <Meta /> }
+						{ ! isReviewing && notStarted && <Content /> }
 
-							{ ! isReviewing && notStarted && <Meta /> }
-							{ ! isReviewing && notStarted && <Content /> }
+						{ 'started' === status && <Status /> }
 
-							{ 'started' === status && <Status /> }
-
-							{ ( -1 !== [ 'completed', 'started' ].indexOf( status ) ||
+						{ ( -1 !== [ 'completed', 'started' ].indexOf( status ) ||
 								isReviewing ) && <Questions /> }
 
-							<Buttons />
+						<Buttons />
 
-							{ isA && ! isReviewing && <Attempts /> }
-						</div>
-					) }
+						{ isA && ! isReviewing && <Attempts /> }
+					</div>
 				</>
 			)
 		);

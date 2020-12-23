@@ -58,7 +58,6 @@ const frontendSources = () => [
 	// './assets/src/js/vendor/vue/vue-resource.js',
 	// './assets/src/js/vendor/vue_libs_c.min.js',
 	'./assets/src/js/vendor/watch.js',
-	'./assets/src/js/vendor/jquery/jquery-appear.js',
 	'./assets/src/js/vendor/jquery/jquery-scrollTo.js',
 	'./assets/src/js/vendor/jquery/jquery-timer.js',
 	'./assets/src/js/vendor/jquery/jquery.tipsy.js',

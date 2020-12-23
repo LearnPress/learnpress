@@ -48,7 +48,7 @@ const Event_Callback = function Event_Callback( self ) {
 		}
 		let at = -1;
 		if ( ! namespace ) {
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				at = callbacks[ event ][ 0 ].indexOf( callback );
 				if ( at < 0 ) {
 					return self;
@@ -62,7 +62,7 @@ const Event_Callback = function Event_Callback( self ) {
 				return self;
 			}
 
-			if ( $.isFunction( callback ) ) {
+			if ( typeof callback === 'function' ) {
 				at = callbacks[ event ][ 1 ][ namespace ].indexOf( callback );
 				if ( at < 0 ) {
 					return self;
@@ -83,14 +83,14 @@ const Event_Callback = function Event_Callback( self ) {
 
 		if ( callbacks[ event ][ 0 ] ) {
 			for ( var i = 0; i < callbacks[ event ][ 0 ].length; i++ ) {
-				$.isFunction( callbacks[ event ][ 0 ][ i ] ) && callbacks[ event ][ i ][ 0 ].apply( self, callbackArgs );
+				typeof ( callbacks[ event ][ 0 ][ i ] ) === 'function' && callbacks[ event ][ i ][ 0 ].apply( self, callbackArgs );
 			}
 		}
 
 		if ( callbacks[ event ][ 1 ] ) {
 			for ( var i in callbacks[ event ][ 1 ] ) {
 				for ( let j = 0; j < callbacks[ event ][ 1 ][ i ].length; j++ ) {
-					$.isFunction( callbacks[ event ][ 1 ][ i ][ j ] ) && callbacks[ event ][ 1 ][ i ][ j ].apply( self, callbackArgs );
+					typeof ( callbacks[ event ][ 1 ][ i ][ j ] ) === 'function' && callbacks[ event ][ 1 ][ i ][ j ].apply( self, callbackArgs );
 				}
 			}
 		}

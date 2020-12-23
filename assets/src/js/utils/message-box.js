@@ -35,7 +35,7 @@ const MessageBox = {
 						timerOut = setInterval( function() {
 							if ( --n == 0 ) {
 								hide.call( $div[ 0 ] );
-								$.isFunction( args.onCancel ) && args.onCancel( args.data );
+								typeof ( args.onCancel ) === 'function' && args.onCancel( args.data );
 								stop();
 							}
 							$div.find( 'span' ).html( ' (' + n + ')' );
@@ -46,7 +46,7 @@ const MessageBox = {
 								stop();
 								$div.remove();
 								$div.parent().css( 'position', '' );
-								$.isFunction( args.onCancel ) && args.onCancel( args.data );
+								typeof ( args.onCancel ) === 'function' && args.onCancel( args.data );
 							}
 						}, 350 );
 					};
@@ -59,7 +59,7 @@ const MessageBox = {
 				}, args || {} );
 				$div.html( args.message || $elem.attr( 'data-confirm-remove' ) || 'Are you sure?' ).append( '<span> (' + n + ')</span>' ).css( {} );
 				$div.click( function() {
-					$.isFunction( args.onOk ) && args.onOk( args.data );
+					typeof ( args.onOk ) === 'function' && args.onOk( args.data );
 					hide();
 				} ).hover( function() {
 					stop();
@@ -119,7 +119,7 @@ const MessageBox = {
 			if ( args.autohide ) {
 				setTimeout( function() {
 					LP.MessageBox.hide();
-					$.isFunction( args.onHide ) && args.onHide.call( LP.MessageBox, args );
+					typeof ( args.onHide ) === 'function' && args.onHide.call( LP.MessageBox, args );
 				}, args.autohide );
 			}
 		}, this )();

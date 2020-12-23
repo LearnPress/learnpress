@@ -152,10 +152,10 @@ const _default = {
 			beforeSend: beforeSend.apply( null, args ),
 			success( raw ) {
 				const response = LP.parseResponse( raw, dataType );
-				$.isFunction( args.success ) && args.success( response, raw );
+				typeof ( args.success ) === 'function' && args.success( response, raw );
 			},
 			error() {
-				$.isFunction( args.error ) && args.error.apply( null, LP.funcArgs2Array() );
+				typeof ( args.error ) === 'function' && args.error.apply( null, LP.funcArgs2Array() );
 			},
 		} );
 	},

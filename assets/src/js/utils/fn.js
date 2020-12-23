@@ -16,7 +16,7 @@ let exp;
 	}
 
 	$.fn.LP = exp = function( widget, fn ) {
-		if ( $.isFunction( fn ) ) {
+		if ( typeof fn === 'function' ) {
 			$.fn[ 'LP_' + widget ] = fn;
 		} else if ( widget ) {
 			const args = [];
@@ -26,7 +26,7 @@ let exp;
 				}
 			}
 
-			return $.isFunction( $( this )[ 'LP_' + widget ] ) ? $( this )[ 'LP_' + widget ].apply( this, args ) : this;
+			return typeof ( $( this )[ 'LP_' + widget ] ) === 'function' ? $( this )[ 'LP_' + widget ].apply( this, args ) : this;
 		}
 		return this;
 	};

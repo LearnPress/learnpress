@@ -120,19 +120,17 @@ if ( $total_question ) :
 	<div id="learn-press-quiz-app"></div>
 
 	<script>
-		jQuery(function () {
-			LP.Hook.addAction('course-ready', () => {
-				LP.quiz.init(
-					'#learn-press-quiz-app',
-					<?php echo( json_encode( $js ) ); ?>
-				)
-			})
-		})
+		LP.Hook.addAction('course-ready', () => {
+			LP.quiz.init(
+				'#learn-press-quiz-app',
+				<?php echo json_encode( $js ); ?>
+			)
+		});
 	</script>
 
 	<?php
 else :
-	esc_html_e( 'Not have any question', 'learnpress' );
+	esc_html_e( 'You haven\'t any question!', 'learnpress' );
 	?>
 
 <?php endif; ?>

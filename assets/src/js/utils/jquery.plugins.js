@@ -74,24 +74,27 @@ const serializeJSON = function serializeJSON( path ) {
 	return indexed;
 };
 
-const LP_Tooltip = function LP_Tooltip( options ) {
-	options = $.extend( {}, {
-		offset: [ 0, 0 ],
-	}, options || {} );
+const LP_Tooltip = ( options ) => {
+	options = $.extend( {}, { offset: [ 0, 0 ] }, options || {} );
+
 	return $.each( this, function() {
 		const $el = $( this ),
 			content = $el.data( 'content' );
+
 		if ( ! content || ( $el.data( 'LP_Tooltip' ) !== undefined ) ) {
 			return;
 		}
 
 		let $tooltip = null;
-		$el.hover( function( e ) {
+
+		$el.on( 'mouseenter', function( e ) {
 			$tooltip = $( '<div class="learn-press-tooltip-bubble"/>' ).html( content ).appendTo( $( 'body' ) ).hide();
 			const position = $el.offset();
-			if ( $.isArray( options.offset ) ) {
+
+			if ( Array.isArray( options.offset ) ) {
 				const top = options.offset[ 1 ],
 					left = options.offset[ 0 ];
+
 				if ( $.isNumeric( left ) ) {
 					position.left += left;
 				} else {
@@ -103,14 +106,19 @@ const LP_Tooltip = function LP_Tooltip( options ) {
 
 				}
 			}
+
 			$tooltip.css( {
 				top: position.top,
 				left: position.left,
 			} );
+
 			$tooltip.fadeIn();
-		}, function() {
+		} );
+
+		$el.on( 'mouseleave', function( e ) {
 			$tooltip && $tooltip.remove();
 		} );
+
 		$el.data( 'tooltip', true );
 	} );
 };
@@ -143,6 +151,7 @@ const rows = function rows() {
 	const h = $( this ).height();
 	const lh = $( this ).css( 'line-height' ).replace( 'px', '' );
 	$( this ).attr( { height: h, 'line-height': lh } );
+
 	return Math.floor( h / parseInt( lh ) );
 };
 
