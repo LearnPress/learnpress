@@ -1,14 +1,15 @@
 import Quiz from './quiz/index';
+import './single-curriculum/components/compatible';
 
 const { modal: { default: Modal } } = LP;
 
 export default Quiz;
 
-export const init = function init( elem, settings ) {
+export const init = ( elem, settings ) => {
 	wp.element.render(
 		<Modal><Quiz settings={ settings } /></Modal>,
-		jQuery( elem )[ 0 ]
+		[ ...document.querySelectorAll( elem ) ][ 0 ]
 	);
-};
 
-export { MyContext } from './quiz/index';
+	LP.Hook.doAction( 'lp-quiz-compatible-builder' );
+};

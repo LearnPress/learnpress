@@ -70,7 +70,7 @@
 #popup-course {
 	display: flex;
 	position: fixed;
-	z-index: 99999;
+	z-index: 999;
 	top: 0;
 	right: 0;
 	bottom: 0;
@@ -973,7 +973,6 @@
 		}
 
 
-
 		&.fixed-quiz-status {
 
 			.quiz-status {
@@ -1163,7 +1162,8 @@
 	}
 
 	.lp-quiz-buttons {
- 		.complete-quiz,
+
+		.complete-quiz,
 		.back-quiz,
 		.review-quiz {
 			float: right;
@@ -1249,13 +1249,15 @@
 	}
 
 	.quiz-questions {
- 		.question {
+
+		.question {
 			margin-bottom: 60px;
 		}
 	}
 
 	.question {
- 		.answer-option {
+
+		.answer-option {
 			padding: 0;
 			_border: 2px solid #d9e0f1;
 			background: #fff;
@@ -1348,7 +1350,8 @@
 				}
 			}
 		}
- 		.question-title {
+
+		.question-title {
 			display: block;
 			margin-top: 0;
 			margin-bottom: 18px;

@@ -127,12 +127,12 @@ class Questions extends Component {
 							return (
 								( isRendered || ! isRendered ) || isVisible
 									? <Question
-										key={ `loop-question-${ question.id }` }
-										isCurrent={ isCurrent }
-										isShow={ isVisible }
-										isShowIndex={ questionsPerPage ? index + 1 : false }
-										questionsPerPage={ questionsPerPage }
-										question={ question }
+											key={ `loop-question-${ question.id }` }
+											isCurrent={ isCurrent }
+											isShow={ isVisible }
+											isShowIndex={ questionsPerPage ? index + 1 : false }
+											questionsPerPage={ questionsPerPage }
+											question={ question }
 									/> : ''
 							);
 						} ) }

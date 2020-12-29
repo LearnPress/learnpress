@@ -39,6 +39,8 @@ class Question extends Component {
 			} );
 		}
 
+		LP.Hook.doAction( 'lp-question-compatible-builder' );
+
 		return a;
 	}
 
