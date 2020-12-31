@@ -872,7 +872,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			// $query->set( 'author', get_current_user_id() );
+			$query->set( 'author', get_current_user_id() );
 
 			$query = apply_filters( 'learnpress/get-post-type-lp-on-backend', $query );
 

@@ -1052,10 +1052,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = ! empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-            <a href="<?php echo get_edit_post_link( $page_id ); ?>"
-               target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-            <a href="<?php echo get_permalink( $page_id ); ?>"
-               target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_edit_post_link( $page_id ); ?>"
+			   target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_permalink( $page_id ); ?>"
+			   target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}
@@ -1225,14 +1225,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				wp_send_json( $result );
 			}
 
-			$res = wp_remote_get( 'https://thimpress.com/blog/' );
+			$res = wp_remote_get( 'https://thimpress.com/feed/' );
 
 			if ( ! $res instanceof WP_Error ) {
-				$thimpress_response_body = wp_remote_retrieve_body( $res );
-				$content_sanitize        = wp_kses_post_deep( $thimpress_response_body );
-
 				$result->status = 'success';
-				$result->data   = $content_sanitize;
+				$result->data   = wp_remote_retrieve_body( $res );
 			} else {
 				$result->message = $res->get_error_message();
 			}
