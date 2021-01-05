@@ -63,7 +63,7 @@ const frontendSources = () => [
 	'./assets/src/js/vendor/jquery/jquery-scrollTo.js',
 	'./assets/src/js/vendor/jquery/jquery-timer.js',
 	'./assets/src/js/vendor/jquery/jquery.tipsy.js',
-	'./assets/src/js/vendor/jquery/jquery.scrollbar.js',
+	// './assets/src/js/vendor/jquery/jquery.scrollbar.js',
 ];
 
 /** Merge vue libs **/

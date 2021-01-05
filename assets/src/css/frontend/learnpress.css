@@ -940,7 +940,7 @@ body.course-item-popup {
     left: 400px;
     right: 0;
     bottom: 0;
-    overflow: hidden; }
+    overflow: auto; }
     body.course-item-popup #learn-press-content-item .content-item-wrap {
       margin: 10px auto;
       max-width: 900px; }

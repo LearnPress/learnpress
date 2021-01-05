@@ -485,15 +485,15 @@
 				return;
 			}
 
-			$contentItem.appendTo( $body );
-			$curriculum.appendTo( $body );
+			// $contentItem.appendTo( $body );
+			// $curriculum.appendTo( $body );
 
 			if ( $( '#wpadminbar' ).length ) {
 				$body.addClass( 'wpadminbar' );
 				contentTop = 32;
 			}
 
-			initScrollbar();
+			// initScrollbar();
 			fitVideo();
 
 			fullScreen = window.localStorage && 'yes' ===

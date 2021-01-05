@@ -1346,7 +1346,7 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 
 		// Add more assets into page that displaying content of an item
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
-		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
+//		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
 	}
 }
 
@@ -1411,7 +1411,9 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 				'id'            => $quiz->get_id(),
 				'totalTime'     => $quiz->get_duration()->get(),
 				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
-				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) )
+				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
+				'daysLeft'      => _x( 'days left', 'quiz_duration', 'learnpress' ),
+				'dayLeft'       => _x( 'day left', 'quiz_duration', 'learnpress' )
 			);
 		}
 
