@@ -22,16 +22,17 @@ class LP_Database {
 		 */
 		global $wpdb;
 
-		$this->wpdb                 = $wpdb;
-		$this->tb_posts             = $this->wpdb->posts;
-		$this->tb_postmeta          = $this->wpdb->postmeta;
-		$this->tb_lp_user_items     = $this->wpdb->prefix . 'learnpress_user_items';
-		$this->tb_lp_user_itemmeta  = $this->wpdb->prefix . 'learnpress_user_itemmeta';
-		$this->tb_lp_order_items    = $this->wpdb->prefix . 'learnpress_order_items';
-		$this->tb_lp_order_itemmeta = $this->wpdb->prefix . 'learnpress_order_itemmeta';
-		$this->tb_lp_section_items  = $this->wpdb->prefix . 'learnpress_section_items';
-		$this->tb_lp_sections       = $this->wpdb->prefix . 'learnpress_sections';
-		$this->tb_lp_quiz_questions = $this->wpdb->prefix . 'learnpress_quiz_questions';
+		$this->wpdb                   = $wpdb;
+		$this->tb_posts               = $this->wpdb->posts;
+		$this->tb_postmeta            = $this->wpdb->postmeta;
+		$this->tb_lp_user_items       = $this->wpdb->prefix . 'learnpress_user_items';
+		$this->tb_lp_user_itemmeta    = $this->wpdb->prefix . 'learnpress_user_itemmeta';
+		$this->tb_lp_order_items      = $this->wpdb->prefix . 'learnpress_order_items';
+		$this->tb_lp_order_itemmeta   = $this->wpdb->prefix . 'learnpress_order_itemmeta';
+		$this->tb_lp_section_items    = $this->wpdb->prefix . 'learnpress_section_items';
+		$this->tb_lp_sections         = $this->wpdb->prefix . 'learnpress_sections';
+		$this->tb_lp_quiz_questions   = $this->wpdb->prefix . 'learnpress_quiz_questions';
+		$this->tb_lp_question_answers = $this->wpdb->prefix . 'learnpress_question_answers';
 	}
 
 	public static function getInstance() {
@@ -136,18 +137,111 @@ class LP_Database {
 	 * @param $course_id
 	 * Count enrolled course
 	 * since 3.2.8.2
+	 *
 	 * @editor Hungkv
 	 * @return mixed
 	 */
-	public function count_enrolled_course($course_id){
+	public function count_enrolled_course( $course_id ) {
 		global $wpdb;
 
 		$query = $wpdb->prepare( "
                     SELECT count(item_id) as c
                     FROM $this->tb_lp_user_items
                     WHERE status = %s AND item_id = %s
-                ", 'enrolled',$course_id );
+                ", 'enrolled', $course_id );
 
 		return $wpdb->get_var( $query );
+	}
+
+	/**
+	 * Create index for table
+	 *
+	 * @return array
+	 */
+	public function create_index(): array {
+		if ( current_user_can( 'administrator' ) ) {
+			$this->wpdb->query( "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'" );
+			$result_index_lp_user_items       = $this->create_index_for_table(
+				$this->tb_lp_user_items,
+				array( 'user_id', 'item_id', 'item_type', 'ref_id', 'ref_type', 'parent_id' )
+			);
+			$result_index_lp_user_itemmeta    = $this->create_index_for_table(
+				$this->tb_lp_user_itemmeta,
+				array( 'learnpress_user_item_id', 'meta_key' )
+			);
+			$result_index_lp_sections         = $this->create_index_for_table(
+				$this->tb_lp_sections,
+				array( 'section_course_id', 'meta_key', 'section_order' )
+			);
+			$result_index_lp_section_items    = $this->create_index_for_table(
+				$this->tb_lp_section_items,
+				array( 'section_id', 'item_id', 'item_type', 'item_order' )
+			);
+			$result_index_lp_quiz_questions   = $this->create_index_for_table(
+				$this->tb_lp_quiz_questions,
+				array( 'quiz_id', 'question_id', 'question_order' )
+			);
+			$result_index_lp_question_answers = $this->create_index_for_table(
+				$this->tb_lp_question_answers,
+				array( 'question_id', 'answer_order' )
+			);
+			$result_index_lp_order_items      = $this->create_index_for_table(
+				$this->tb_lp_order_items,
+				array( 'order_id', 'order_item_name' )
+			);
+			$result_index_lp_order_itemmeta   = $this->create_index_for_table(
+				$this->tb_lp_order_itemmeta,
+				array( 'learnpress_order_item_id', 'meta_key' )
+			);
+			$result_index_posts               = $this->create_index_for_table(
+				$this->tb_posts,
+				array( 'post_type' )
+			);
+
+			$result = array_merge(
+				$result_index_lp_user_items,
+				$result_index_lp_user_itemmeta,
+				$result_index_lp_sections,
+				$result_index_lp_section_items,
+				$result_index_lp_quiz_questions,
+				$result_index_lp_question_answers,
+				$result_index_lp_order_items,
+				$result_index_lp_order_itemmeta,
+				$result_index_posts
+			);
+
+			return $result;
+		}
+	}
+
+	/**
+	 * Create index for table
+	 *
+	 * @param string $tb_name
+	 * @param array $fields_index
+	 *
+	 * @return array[]
+	 */
+	private function create_index_for_table( $tb_name = '', $fields_index = array() ): array {
+		$query = "ALTER TABLE {$tb_name}";
+
+		$results = array(
+			$this->$tb_name => array()
+		);
+
+		foreach ( $fields_index as $key_index ) {
+			${$key_index} = $query . " ADD INDEX {$key_index} ({$key_index})";
+
+			$result = $this->wpdb->query( $this->wpdb->prepare( ${$key_index} ) );
+
+			$results[ $tb_name ][ $key_index ] = $result;
+		}
+
+		// Optimize table
+		$results[ $tb_name ]['optimize'] = $this->wpdb->query(
+			$this->wpdb->prepare( "OPTIMIZE TABLE {$tb_name}" )
+		);
+
+		return $results;
 	}
 }

@@ -95,6 +95,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'sync-remove-older-data',
 				'sync-calculate-course-results',
 				'lp-get-blog-post-thimpess',
+				'lp-database-optimize' //@see lp_database_optimize
 				//'sync-user-courses',
 			);
 			foreach ( $ajax_events as $action => $callback ) {
@@ -1052,10 +1053,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = ! empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-			<a href="<?php echo get_edit_post_link( $page_id ); ?>"
-			   target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-			<a href="<?php echo get_permalink( $page_id ); ?>"
-			   target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_edit_post_link( $page_id ); ?>"
+               target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_permalink( $page_id ); ?>"
+               target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}
@@ -1233,6 +1234,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			} else {
 				$result->message = $res->get_error_message();
 			}
+
+			wp_send_json( $result );
+		}
+
+		public static function lp_database_optimize() {
+			$result = new LP_REST_Response();
+
+			if ( ! is_admin() ) {
+				$result->message = 'Invalid request';
+				wp_send_json( $result );
+			}
+
+			if ( ! isset( $_POST['lp-nonce'] )
+			     || ! check_admin_referer( 'lp-optimize-database', 'lp-nonce' ) ) {
+				$result->message = 'Invalid nonce';
+				wp_send_json( $result );
+			}
+
+			$results        = LP_Database::getInstance()->create_index();
+			$result->status = 'success';
+			$result->data   = $results;
 
 			wp_send_json( $result );
 		}

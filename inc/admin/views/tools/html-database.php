@@ -12,3 +12,4 @@ include_once "database/html-repair-database.php";
 include_once "database/html-upgrade-database.php";
 include_once "database/html-remove-database.php";
 include_once "database/html-remove-outdated-data.php";
+include_once "database/html-optimize-database.php";

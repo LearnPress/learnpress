@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.3
 Tested up to: 5.6
 Requires PHP: 7.0
-Stable tag: 3.2.8.2
+Stable tag: 3.2.8.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -197,8 +197,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 3.2.8.3 =
+= 3.2.8.4 =
+~ Add function Scan database if have not index in table will create
 
+= 3.2.8.3 =
+~ Fix compatible PHP 8.0
+~ Fix checkout message error
+~ Optimize
 
 = 3.2.8.2 =
 ~ Fix compatible WP 5.6
