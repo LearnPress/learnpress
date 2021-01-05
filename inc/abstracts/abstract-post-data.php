@@ -36,7 +36,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @param array $args
 		 *
 		 * @since 3.0.0
-		 *
 		 */
 		public function __construct( $post, $args = null ) {
 			$id = 0;
@@ -58,7 +57,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return array|mixed
 		 * @since 3.0.0
-		 *
 		 */
 		public function get_status() {
 			return $this->get_data( 'status' );
@@ -69,7 +67,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return bool
 		 * @since 3.0.0
-		 *
 		 */
 		public function is_exists() {
 			return get_post_type( $this->get_id() ) === $this->_post_type;
@@ -80,7 +77,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return bool
 		 * @since 3.0.0
-		 *
 		 */
 		public function is_trashed() {
 			return get_post_status( $this->get_id() ) === 'trash';
@@ -91,7 +87,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return mixed
 		 * @since 3.0.0
-		 *
 		 */
 		public function is_publish() {
 			return apply_filters( 'learn-press/' . $this->_post_type . '/is-publish', get_post_status( $this->get_id() ) === 'publish' );
@@ -104,7 +99,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return string
 		 * @since 3.0.0
-		 *
 		 */
 		public function get_title( $context = '' ) {
 			$title = get_the_title( $this->get_id() );
@@ -120,7 +114,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * Get the content of course, course's item
 		 *
 		 * @param string $context
-		 * @param int $length
+		 * @param int    $length
 		 * @param string $more
 		 *
 		 * @return string
@@ -143,6 +137,10 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 								&$wp_query,
 							)
 						);
+
+						if ( class_exists( 'WPBMap' ) ) {
+							WPBMap::addAllMappedShortcodes();
+						}
 
 						if ( $posts ) {
 							$post = $posts[0];
@@ -185,7 +183,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return false|string
 		 * @since 3.0.0
-		 *
 		 */
 		public function get_post_type() {
 			return get_post_type( $this->get_id() );
@@ -196,7 +193,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.0
-		 *
 		 */
 		public static function get_default_meta() {
 			return array();
@@ -217,7 +213,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @updated 3.1.0
 		 *
 		 * @param string $key
-		 * @param bool $single
+		 * @param bool   $single
 		 *
 		 * @return mixed
 		 */
