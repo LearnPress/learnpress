@@ -15,7 +15,7 @@
 
 		if ( seconds > DAY_IN_SECONDS ) {
 			const days = Math.ceil( seconds / DAY_IN_SECONDS );
-			str = days + ( days > 1 ? ' days left' : ' day left' );
+			str = days + ( days > 1 ? ' ' + lpQuizSettings.daysLeft : ' ' + lpQuizSettings.dayLeft );
 		} else {
 			let hours = Math.floor( seconds / HOUR_IN_SECONDS ),
 				minutes = 0;
