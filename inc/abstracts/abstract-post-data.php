@@ -89,7 +89,8 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @since 3.0.0
 		 */
 		public function is_publish() {
-			return apply_filters( 'learn-press/' . $this->_post_type . '/is-publish', get_post_status( $this->get_id() ) === 'publish' );
+			return apply_filters( 'learn-press/' . $this->_post_type . '/is-publish',
+				get_post_status( $this->get_id() ) === 'publish' );
 		}
 
 		/**
@@ -114,7 +115,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * Get the content of course, course's item
 		 *
 		 * @param string $context
-		 * @param int    $length
+		 * @param int $length
 		 * @param string $more
 		 *
 		 * @return string
@@ -138,6 +139,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 							)
 						);
 
+						// Fix style, js if content is WP Bakery
 						if ( class_exists( 'WPBMap' ) ) {
 							WPBMap::addAllMappedShortcodes();
 						}
@@ -147,14 +149,10 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 						}
 
 						setup_postdata( $post );
-						ob_start();
-						the_content();
-						$this->_content = ob_get_clean();
+						$this->_content = get_the_content();
 						wp_reset_postdata();
 					} else { // Post is preview
-						ob_start();
-						the_content();
-						$this->_content = ob_get_clean();
+						$this->_content = get_the_content();
 					}
 				}
 			} else {
@@ -213,7 +211,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @updated 3.1.0
 		 *
 		 * @param string $key
-		 * @param bool   $single
+		 * @param bool $single
 		 *
 		 * @return mixed
 		 */
