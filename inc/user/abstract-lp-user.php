@@ -2907,5 +2907,25 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			return $remain > 0 ? $remain : false;
 		}
+
+		/**
+		 * Check course of user is blocked by duration expire
+		 *
+		 * @param $course_id
+		 *
+		 * @return bool
+		 * @author hungkv
+		 * @since 3.2.8.4
+		 */
+		public function user_check_blocked_duration( $course_id ) {
+			$course     = learn_press_get_course( $course_id );
+			$is_blocked = false;
+
+			if ( $course->is_block_item_content_duration() && $course->expires_to_milliseconds() <= '0' ) {
+				$is_blocked = true;
+			}
+
+			return $is_blocked;
+		}
 	}
 }

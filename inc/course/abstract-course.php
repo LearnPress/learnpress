@@ -136,6 +136,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 						'_lp_block_course_item_duration_content',
 						true
 					),
+					'course_repurchase'          => get_post_meta( $id, '_lp_allow_course_repurchase', true ),
 					'course_result'              => get_post_meta( $id, '_lp_course_result', true ),
 					'passing_condition'          => get_post_meta( $id, '_lp_passing_condition', true ),
 					'payment'                    => get_post_meta( $id, '_lp_payment', true ),
@@ -1499,6 +1500,17 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function is_block_item_content_duration() {
 			return $this->get_data( 'block_course_item_duration' ) === 'yes';
+		}
+
+		/**
+		 * Return TRUE if option to block course's items after allow purchase turn on.
+		 *
+		 * @return bool
+		 * @since  3.2.8.3
+		 * @author hungkv
+		 */
+		public function is_allow_repurchase_course(){
+			return $this->get_data( 'course_repurchase', 'no' ) === 'yes';
 		}
 
 		/**

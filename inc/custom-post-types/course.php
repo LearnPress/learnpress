@@ -605,6 +605,21 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 'no',
 					),
 					array(
+						'name' => __( '', 'learnpress' ),
+						'id'   => '_lp_block_lesson_content',
+						'type' => 'yes_no',
+						'desc' => __( 'Block of course when finished course.',
+							'learnpress' ),
+						'std'  => 'no',
+					),
+					array(
+						'name' => __( 'Allow repurchase ', 'learnpress' ),
+						'id'   => '_lp_allow_course_repurchase',
+						'type' => 'yes_no',
+						'desc' => __( 'Allow users to repurchase this course after course finished or blocked', 'learnpress' ),
+						'std'  => 'no',
+					),
+					array(
 						'name' => __( 'Maximum Students', 'learnpress' ),
 						'id'   => '_lp_max_students',
 						'type' => 'number',
@@ -632,14 +647,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'   => '_lp_featured',
 						'type' => 'yes_no',
 						'desc' => __( 'Set course as featured.', 'learnpress' ),
-						'std'  => 'no',
-					),
-					array(
-						'name' => __( 'Block content items course', 'learnpress' ),
-						'id'   => '_lp_block_lesson_content',
-						'type' => 'yes_no',
-						'desc' => __( 'Block content item(lesson, quiz, v.v...) of course when completed course.',
-							'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
