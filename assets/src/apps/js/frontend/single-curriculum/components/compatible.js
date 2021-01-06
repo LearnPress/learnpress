@@ -31,9 +31,16 @@ LP.Hook.addAction( 'lp-quiz-compatible-builder', () => {
 	}
 
 	if ( typeof vc_js !== 'undefined' ) {
-		vc_round_charts();
-		vc_pieChart();
-		vc_line_charts();
+		if ( typeof vc_round_charts !== 'undefined' ) {
+			vc_round_charts();
+		}
+
+		if ( typeof vc_pieChart !== 'undefined' ) {
+			vc_pieChart();
+		}
+		if ( typeof vc_line_charts !== 'undefined' ) {
+			vc_line_charts();
+		}
 
 		return window.vc_js();
 	}
@@ -49,9 +56,16 @@ LP.Hook.addAction( 'lp-question-compatible-builder', () => {
 	}
 
 	if ( typeof vc_js !== 'undefined' ) {
-		vc_round_charts();
-		vc_pieChart();
-		vc_line_charts();
+		if ( typeof vc_round_charts !== 'undefined' ) {
+			vc_round_charts();
+		}
+
+		if ( typeof vc_pieChart !== 'undefined' ) {
+			vc_pieChart();
+		}
+		if ( typeof vc_line_charts !== 'undefined' ) {
+			vc_line_charts();
+		}
 
 		return window.vc_js();
 	}
