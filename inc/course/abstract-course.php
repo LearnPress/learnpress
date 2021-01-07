@@ -1509,7 +1509,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @since  3.2.8.3
 		 * @author hungkv
 		 */
-		public function is_allow_repurchase_course(){
+		public function is_allow_repurchase_course() {
 			return $this->get_data( 'course_repurchase', 'no' ) === 'yes';
 		}
 

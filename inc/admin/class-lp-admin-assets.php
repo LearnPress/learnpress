@@ -157,8 +157,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-tools-course'                   => new LP_Asset_Key( $this->url( 'js/dist/admin/tools/course' . self::$_min_assets . '.js' ),
 					array( 'vue-libs' ), array( 'learnpress_page_learn-press-tools' ), 0, 1
 				),
-				'lp-tools-page'               => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
-					array( 'vue-libs', 'jquery', 'learn-press-global' ), array( 'learnpress_page_learn-press-tools' ), 0, 1
+				'lp-tools-page'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
+					array( 'vue-libs', 'jquery', 'learn-press-global' ), array( 'learnpress_page_learn-press-tools' ),
+					0, 1
 				),
 				'lp-get-blog-post-thimpress'        => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/get-post-thimpress' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'learn-press-global' ), array( 'dashboard' ), 0, 1
@@ -190,7 +191,11 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'learn-press-statistic' => array(
 					'url'     => LP_CSS_URL . 'admin/statistic.css',
 					'screens' => 'learnpress_page_learn-press-statistics'
-				)
+				),
+				'lp-statistics'         => array(
+					'url'     => $this->url( 'css/admin/statistic.css' ),
+					'screens' => 'learnpress_page_learn-press-statistics'
+				),
 			)
 		);
 	}
