@@ -51,6 +51,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				// Update order status
 				//'update_order_status'     => false,
 				'update_order_exports'    => false,
+				'search_course_by_name'    => false,
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -1258,7 +1259,37 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			wp_send_json( $result );
 		}
+
+		/**
+		 * Search course by name.
+		 * @since 3.2.8.1
+		 * @author Physcode - Hungkv
+		 */
+		public static function search_course_by_name() {
+			$search = $_GET['q'];
+			if(!isset($search)){
+				$json = [];
+			}else{
+				global $wpdb;
+				$query = "
+        SELECT      $wpdb->posts.post_title as title, $wpdb->posts.ID as id
+        FROM        $wpdb->posts
+        WHERE       $wpdb->posts.post_title LIKE '%$search%'
+        AND         $wpdb->posts.post_type = 'lp_course'
+        ORDER BY    $wpdb->posts.post_title
+        LIMIT 10
+        ";
+				if ( $_results = $wpdb->get_results( $query ) ) {
+					foreach ( $_results as $result ) {
+						$json[] = ['id'=>$result->id, 'text'=>$result->title];
+					}
+				}
+			}
+			echo json_encode($json);
+			exit();
+		}
 	}
+
 
 	if ( defined( 'DOING_AJAX' ) ) {
 		add_action( 'wp_ajax_learnpress_upload-user-avatar', array( 'LP_Admin_Ajax', 'upload_user_avatar' ) );

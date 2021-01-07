@@ -85,7 +85,6 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 					return;
 				}
 				break;
-
 			//////////////////
 			case 'course-last-7-days':
 				$response = learn_press_get_chart_courses( null, 'days', 7 );
@@ -188,7 +187,6 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 						AND c.post_type = %s
 					", '0000-00-00 00:00:00', 'lp_order' )
 				);
-
 				if ( $results ) {
 					$_POST['range'] = array(
 						date( 'Y/m/d', strtotime( $results->from ) ),
@@ -199,8 +197,59 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 
 					return;
 				}
-		}
+				break;
+			//////////////////
+			case 'general-last-7-days':
+				$response = learn_press_get_chart_general( null, 'days', 7 );
+				break;
+			case 'general-last-30-days':
+				$response = learn_press_get_chart_general( null, 'days', 30 );
+				break;
+			case 'general-last-12-months':
+				$response = learn_press_get_chart_general( null, 'months', 12 );
+				break;
+			case 'general-custom-time':
+				$range     = learn_press_get_request( 'range' );
+				$from_time = strtotime( $range[0] );
+				$to_time   = strtotime( $range[1] );
+				list( $from_d, $from_m, $from_y ) = explode( ' ', date( 'd m Y', $from_time ) );
+				list( $to_d, $to_m, $to_y ) = explode( ' ', date( 'd m Y', $to_time ) );
+				if ( $from_y != $to_y ) {
+					$months = abs( ( date( 'Y', $to_time ) - date( 'Y', $from_time ) ) * 12 + ( date( 'm', $to_time ) - date( 'm', $from_time ) ) ) + 1;
+					if ( $months > 12 ) {
+						$response = learn_press_get_chart_general( $to_time, 'years', $to_y - $from_y + 1 );
+					} else {
+						$response = learn_press_get_chart_general( $to_time, 'months', $months );
+					}
+				} else {
+					if ( $from_m != $to_m ) {
+						$response = learn_press_get_chart_general( $to_time, 'months', $to_m - $from_m + 1 );
+					} else {
+						$response = learn_press_get_chart_general( $to_time, 'days', $to_d - $from_d + 1 );
+					}
+				}
+				break;
+			case 'general-all':
+				global $wpdb;
+				$results = $wpdb->get_row(
+					$wpdb->prepare( "
+						SELECT min(c.user_registered) as `from`, NOW() as `to`
+						FROM {$wpdb->users} c
+						WHERE c.user_registered <> %s 				
+					", '0000-00-00 00:00:00' )
+				);
 
+				if ( $results ) {
+					$_POST['range'] = array(
+						date( 'Y/m/d', strtotime( $results->from ) ),
+						date( 'Y/m/d', strtotime( $results->to ) )
+					);
+					$_POST['type']  = 'general-custom-time';
+					$this->load_chart();
+
+					return;
+				}
+		}
 		learn_press_send_json( $response );
 	}
 
@@ -219,6 +268,7 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 	public function page_content_orders() {
 		learn_press_admin_view( 'statistics/orders' );
 	}
+
 
 }
 

@@ -491,11 +491,12 @@ function learn_press_count_orders( $args = array() ) {
 	$format     = array_fill( 0, $size_of_status, '%s' );
 	$counts     = array_fill_keys( $statuses, 0 );
 	$statuses[] = LP_ORDER_CPT;
+	// remove auto-draft when count order
 	$query      = $wpdb->prepare( "
 		SELECT COUNT(ID) AS count, post_status AS status
 		FROM {$wpdb->posts} o
 		WHERE post_status IN(" . join( ',', $format ) . ")
-		AND post_type = %s
+		AND post_type = %s AND post_parent = 0 AND post_status <> 'auto-draft'
 		GROUP BY o.post_status
 	", $statuses );
 
@@ -781,7 +782,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	 */
 	function learn_press_cancel_order_process() {
 		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] )
-			|| ! wp_verify_nonce( sanitize_key( $_REQUEST['lp-nonce'] ), 'cancel-order' ) || is_admin() ) {
+		     || ! wp_verify_nonce( sanitize_key( $_REQUEST['lp-nonce'] ), 'cancel-order' ) || is_admin() ) {
 			return;
 		}
 
@@ -844,4 +845,3 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 
 	return $result;
 }
-

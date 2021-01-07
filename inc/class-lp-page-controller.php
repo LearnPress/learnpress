@@ -49,7 +49,8 @@ class LP_Page_Controller {
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
-		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
+		// change prioty from 20 to 10 for display course meta title in Yoast Seo
+		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 10, 1 );
 
 		// Yoast seo
 		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );

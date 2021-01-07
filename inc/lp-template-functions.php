@@ -134,14 +134,10 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		$is_finish         = $course_data->is_finished();
 		$can_retake_course = $user->can_retake_course( $course->get_id() );
 		// For free course and user does not purchased
-
 		if ( $is_finish ) {
-
 			//set for course finished
 			if ( $can_retake_course <= 0 && ( $course->is_allow_repurchase_course() || $user->user_check_blocked_duration( $course->get_id() ) == true ) ) {
-				if ( $course->is_free() ) {
-					learn_press_get_template( 'single-course/buttons/enroll.php' );
-				} else {
+				if ( ! $course->is_free() && $purchased ) {
 					learn_press_get_template( 'single-course/buttons/purchase.php' );
 				}
 			}

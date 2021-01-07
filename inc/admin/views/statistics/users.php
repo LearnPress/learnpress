@@ -46,9 +46,12 @@ $count          = 0;
         <li class="instructors"><span><?php _e( 'Instructors', 'learnpress' ); ?></span></li>
         <li class="students"><span><?php _e( 'Students', 'learnpress' ); ?></span></li>
     </ul>
-    <div id="learn-press-chart" class="learn-press-chart">
+    <div class="lp-chart__wrapper">
+        <div id="learn-press-chart" class="learn-press-chart"></div>
+        <div class="lp-chart__loading">
+            <div class="loader"></div>
+        </div>
     </div>
-
     <script type="text/javascript">
         var LP_Chart_Config =  <?php learn_press_config_chart();?>;
         jQuery(document).ready(function ($) {
@@ -56,4 +59,3 @@ $count          = 0;
         });
     </script>
 </div>
-

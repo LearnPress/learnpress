@@ -117,7 +117,8 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * @return int|string
 		 */
 		private function _get_order_total_raised() {
-			$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
+			// Fix learnpress order status in dashboard
+			$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed','post_parent'=>'0','posts_per_page' => -1  ) );
 			$total  = 0;
 			if ( $orders ) {
 				foreach ( $orders as $order ) {
