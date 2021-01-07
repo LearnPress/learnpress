@@ -38,32 +38,26 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 			if ( count( $links ) > 1 ) {
 				$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
 				foreach ( $links as $link ) {
-					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'],
-							$link['class'], $link['data'], $link['title'] ) . '</li>';
+					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] ) . '</li>';
 				};
 				$drop_down[] = '</ul>';
-				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>',
-					'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
+				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
 			} else {
 				$link = array_shift( $links );
-				$link = sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'],
-					$link['data'], $link['title'] );
+				$link = sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] );
 			}
 			$actions['lp-duplicate-row-action'] = $link;
-		} elseif ( LP_QUIZ_CPT === $post->post_type ) {
+		} else if ( LP_QUIZ_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>',
-				$post->ID, __( 'Duplicate this quiz', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this quiz', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
-		} elseif ( LP_QUESTION_CPT === $post->post_type ) {
+		} else if ( LP_QUESTION_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>',
-				$post->ID, __( 'Duplicate this question', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this question', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
-		} elseif ( LP_LESSON_CPT === $post->post_type ) {
+		} else if ( LP_LESSON_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>',
-				$post->ID, __( 'Duplicate this lesson', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this lesson', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		}
 
@@ -141,7 +135,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param bool
  *
@@ -177,7 +171,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -235,8 +229,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 			$before_output[] = sprintf( '<option value="%s">%s</option>', $v, $l );
 		}
 		$before_output = join( "\n", $before_output );
-		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1",
-			$output, 1 );
+		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
 	}
 
 	$output = str_replace( '<option class="level-0" value="00000">#0 (no title)</option>', '', $output );
@@ -298,11 +291,9 @@ function learn_press_dropdown_question_types( $args = array() ) {
 	}
 	$args['class'] = 'lp-dropdown-question-types' . ( $args['class'] ? ' ' . $args['class'] : '' );
 	$types         = learn_press_question_types();
-	$output        = sprintf( '<select name="%s" id="%s" class="%s"%s>', $args['name'], $args['id'], $args['class'],
-		$args['selected'] ? 'data-selected="' . $args['selected'] . '"' : '' );
+	$output        = sprintf( '<select name="%s" id="%s" class="%s"%s>', $args['name'], $args['id'], $args['class'], $args['selected'] ? 'data-selected="' . $args['selected'] . '"' : '' );
 	foreach ( $types as $slug => $name ) {
-		$output .= sprintf( '<option value="%s"%s>%s</option>', $slug,
-			selected( $slug == $args['selected'], true, false ), $name );
+		$output .= sprintf( '<option value="%s"%s>%s</option>', $slug, selected( $slug == $args['selected'], true, false ), $name );
 	}
 	$output .= '</select>';
 	if ( $args['echo'] ) {
@@ -315,12 +306,11 @@ function learn_press_dropdown_question_types( $args = array() ) {
 /**
  * List all registered question types into dropdown
  *
- * @param array $args
- * @param LP_Question $question
+ * @param array
  *
  * @return string
  */
-function learn_press_field_question_duration( $args = array(), $question = null ) {
+function learn_press_field_question_duration( $args = array(), $question ) {
 	global $post;
 	$duration_type = get_post_meta( $post->ID, "_lp_duration_type", true );
 	$value         = get_post_meta( $question->id, '_question_duration', true );
@@ -406,8 +396,7 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 	}
 
 	foreach ( $formats as $name => $text ) {
-		$output .= sprintf( '<option value="%s" %s>%s</option>', $name,
-				selected( $args['selected'] == $name, true, false ), $text ) . "\n";
+		$output .= sprintf( '<option value="%s" %s>%s</option>', $name, selected( $args['selected'] == $name, true, false ), $text ) . "\n";
 	}
 	$output .= '</select>';
 
@@ -512,8 +501,7 @@ function learn_press_footer_advertisement() {
 	if ( ! $screen = get_current_screen() ) {
 		return;
 	}
-	if ( ! ( ( in_array( $screen->post_type,
-				$admin_post_type ) && $screen->base === 'edit' ) || ( in_array( $screen->id, $pages ) ) ) ) {
+	if ( ! ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' ) || ( in_array( $screen->id, $pages ) ) ) ) {
 		return;
 	}
 
@@ -717,11 +705,11 @@ function learn_press_get_courses_by_price( $fee ) {
  *
  * @param null $from
  * @param null $by
- * @param float $time_ago
+ * @param      $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0 ) {
+function learn_press_get_chart_students( $from = null, $by = null, $time_ago ) {
 	$labels   = array();
 	$datasets = array();
 	if ( is_null( $from ) ) {
@@ -766,11 +754,11 @@ function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0
  *
  * @param null $from
  * @param null $by
- * @param float $time_ago
+ * @param      $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) {
+function learn_press_get_chart_users( $from = null, $by = null, $time_ago ) {
 	global $wpdb;
 
 	$labels   = array();
@@ -792,9 +780,10 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
 			$date_format = 'M d Y';
 			$_from       = - $time_ago + 1;
 			$_from       = date( 'Y-m-d', strtotime( "{$_from} {$by}", $from_time ) );
-			$_to         = date( 'Y-m-d', $from_time );
+			$_to         = date( 'Y-m-d', strtotime(("+1 day"),$from_time ));
 			$_sql_format = '%Y-%m-%d';
-			$_key_format = 'Y-m-d';
+			$_key_format = 'j';
+			$groupby = 'DAY';
 			break;
 		case 'months':
 			$date_format = 'M Y';
@@ -803,7 +792,8 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
 			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
 			$_to         = date( 'Y-m-' . $days, $from_time );
 			$_sql_format = '%Y-%m';
-			$_key_format = 'Y-m';
+			$_key_format = 'm';
+			$groupby = 'MONTH';
 			break;
 		case 'years':
 			$date_format = 'Y';
@@ -813,36 +803,37 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
 			$_to         = date( 'Y-12-' . $days, $from_time );
 			$_sql_format = '%Y';
 			$_key_format = 'Y';
-
+			$groupby = 'YEAR';
 			break;
 	}
 	$query = $wpdb->prepare( "
-				SELECT count(u.ID) as c, DATE_FORMAT( u.user_registered, %s) as d
-				FROM {$wpdb->users} u
+				SELECT count(ID) as c, {$groupby}(user_registered) as d
+				FROM {$wpdb->users}
 				WHERE 1
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
+				AND user_registered BETWEEN %s AND %s
+				GROUP BY {$groupby}(user_registered)
 				ORDER BY d ASC
-			", $_sql_format, $_from, $_to );
+			",  $_from, $_to );
+
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['all'][ $v->d ] = $v;
 		}
 	}
 	$query = $wpdb->prepare( "
-				SELECT count(u.ID) as c, DATE_FORMAT( u.user_registered, %s) as d
+				SELECT count(ID) as c, {$groupby}(user_registered) as d
 				FROM {$wpdb->users} u
-				INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s AND ( um.meta_value LIKE %s OR um.meta_value LIKE %s )
+				INNER JOIN {$wpdb->usermeta} um ON um.user_id = ID AND um.meta_key = %s AND ( um.meta_value LIKE %s OR um.meta_value LIKE %s )
 				WHERE 1
+				AND user_registered BETWEEN %s AND %s
 				GROUP BY d
-				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
-			", $_sql_format, 'wp_capabilities', '%' . $wpdb->esc_like( 's:13:"administrator"' ) . '%',
-		'%' . $wpdb->esc_like( 's:10:"lp_teacher"' ) . '%', $_from, $_to );
+			",  'wp_capabilities', '%' . $wpdb->esc_like( 's:13:"administrator"' ) . '%', '%' . $wpdb->esc_like( 's:10:"lp_teacher"' ) . '%', $_from, $_to );
 
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['instructors'][ $v->d ] = $v;
+
 		}
 	}
 	for ( $i = - $time_ago + 1; $i <= 0; $i ++ ) {
@@ -865,12 +856,12 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
 			'label'  => __( 'All', 'learnpress' )
 		),
 		array(
-			'color1' => 'rgba(212, 208, 203, %s)',
+			'color1' => 'rgba(255, 191, 0, %s)',
 			'color2' => '#FFF',
 			'label'  => __( 'Instructors', 'learnpress' )
 		),
 		array(
-			'color1' => 'rgba(234, 199, 155, %s)',
+			'color1' => 'rgba(255, 0, 128, %s)',
 			'color2' => '#FFF',
 			'label'  => __( 'Students', 'learnpress' )
 		)
@@ -899,13 +890,12 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
  *
  * @param null $from
  * @param null $by
- * @param float $time_ago
+ * @param      $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 ) {
+function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 	global $wpdb;
-
 	$labels   = array();
 	$datasets = array();
 	if ( is_null( $from ) ) {
@@ -922,15 +912,15 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 		'paid'    => array()
 	);
 	$from_time = is_numeric( $from ) ? $from : strtotime( $from );
-
 	switch ( $by ) {
 		case 'days':
 			$date_format = 'M d Y';
 			$_from       = - $time_ago + 1;
 			$_from       = date( 'Y-m-d', strtotime( "{$_from} {$by}", $from_time ) );
-			$_to         = date( 'Y-m-d', $from_time );
+			$_to         = date( 'Y-m-d', strtotime(("+1 day"),$from_time ));
 			$_sql_format = '%Y-%m-%d';
-			$_key_format = 'Y-m-d';
+			$_key_format = 'j';
+			$groupby = 'DAY';
 			break;
 		case 'months':
 			$date_format = 'M Y';
@@ -939,7 +929,8 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
 			$_to         = date( 'Y-m-' . $days, $from_time );
 			$_sql_format = '%Y-%m';
-			$_key_format = 'Y-m';
+			$_key_format = 'n';
+			$groupby = 'MONTH';
 			break;
 		case 'years':
 			$date_format = 'Y';
@@ -949,59 +940,66 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 			$_to         = date( 'Y-12-' . $days, $from_time );
 			$_sql_format = '%Y';
 			$_key_format = 'Y';
-
+			$groupby = 'YEAR';
 			break;
 	}
-
 	$query_where = '';
 	if ( current_user_can( LP_TEACHER_ROLE ) ) {
 		$user_id     = learn_press_get_current_user_id();
 		$query_where .= $wpdb->prepare( " AND c.post_author=%d ", $user_id );
 	}
 
+	// query all course
 	$query = $wpdb->prepare( "
-				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
-				FROM {$wpdb->posts} c
-				WHERE 1
-				{$query_where}
-				AND c.post_status IN('publish', 'pending') AND c.post_type = %s
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
-				ORDER BY d ASC
-			", $_sql_format, 'lp_course', $_from, $_to );
+				SELECT {$groupby}(post_date) as d, COUNT(ID) as c
+         FROM {$wpdb->posts}
+         WHERE 
+         {$query_where} 1 AND
+         post_type = %s AND
+         post_status IN('publish', 'pending') AND
+         post_date BETWEEN %s AND %s
+         GROUP BY {$groupby}(post_date)
+         ORDER BY d ASC
+			",'lp_course', $_from, $_to );
 	if ( $_results = $wpdb->get_results( $query ) ) {
+
 		foreach ( $_results as $k => $v ) {
 			$results['all'][ $v->d ] = $v;
 		}
 	}
+
+	// query only course publish
 	$query = $wpdb->prepare( "
-				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
-				FROM {$wpdb->posts} c
-				WHERE 1
+				SELECT {$groupby}(post_date) as d, COUNT(ID) as c
+				FROM {$wpdb->posts}
+				WHERE
 				{$query_where}
-				AND c.post_status = %s AND c.post_type = %s
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
+				post_status = %s AND post_type = %s
+				AND post_date BETWEEN %s AND %s
+				GROUP BY {$groupby}(post_date)
 				ORDER BY d ASC
-			", $_sql_format, 'publish', 'lp_course', $_from, $_to );
+			", 'publish', 'lp_course', $_from, $_to );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['publish'][ $v->d ] = $v;
 		}
 	}
 
+
 	$query = $wpdb->prepare( "
-				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
-				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND cm.meta_value = %s
-				WHERE 1
+				SELECT {$groupby}(post_date) as d, COUNT(ID) as c
+				FROM {$wpdb->posts}
+				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = ID AND cm.meta_key = %s AND cm.meta_value > %s
+				WHERE
 				{$query_where}
-				AND c.post_status = %s AND c.post_type = %s
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
+				post_status = %s AND post_type = %s
+				AND post_date BETWEEN %s AND %s
+				GROUP BY {$groupby}(post_date)
 				ORDER BY d ASC
-			", $_sql_format, '_lp_payment', 'yes', 'publish', 'lp_course', $_from, $_to );
+			", '_lp_price',0,'publish', 'lp_course', $_from, $_to );
+
 	if ( $_results = $wpdb->get_results( $query ) ) {
+
 		foreach ( $_results as $k => $v ) {
 			$results['paid'][ $v->d ] = $v;
 		}
@@ -1013,6 +1011,7 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 		$key      = date( $_key_format, $date );
 
 		$all     = ! empty( $results['all'][ $key ] ) ? $results['all'][ $key ]->c : 0;
+
 		$publish = ! empty( $results['publish'][ $key ] ) ? $results['publish'][ $key ]->c : 0;
 		$paid    = ! empty( $results['paid'][ $key ] ) ? $results['paid'][ $key ]->c : 0;
 
@@ -1040,12 +1039,12 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 			'label'  => __( 'Pending', 'learnpress' )
 		),
 		array(
-			'color1' => 'rgba(234, 199, 155, %s)',
+			'color1' => 'rgba(255, 0, 0, %s)',
 			'color2' => '#FFF',
 			'label'  => __( 'Paid', 'learnpress' )
 		),
 		array(
-			'color1' => 'rgba(234, 199, 155, %s)',
+			'color1' => 'rgba(0, 255, 0, %s)',
 			'color2' => '#FFF',
 			'label'  => __( 'Free', 'learnpress' )
 		)
@@ -1068,24 +1067,192 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 	);
 }
 
+/**
+ * Get general data to render in chart
+ *
+ * @param null $from
+ * @param null $by
+ * @param      $time_ago
+ *
+ * @return array
+ */
+function learn_press_get_chart_general( $from = null, $by = null, $time_ago ) {
+	global $wpdb;
+
+	$labels   = array();
+	$datasets = array();
+
+	if ( is_null( $from ) ) {
+		$from = current_time( 'mysql' );
+	}
+
+	if ( is_null( $by ) ) {
+		$by = 'days';
+	}
+
+	$results = array(
+		'user'  => array(),
+		'course'  => array(),
+		'order'    => array()
+	);
+
+	$from_time   = is_numeric( $from ) ? $from : strtotime( $from );
+	$_from       = '';
+	$_to         = '';
+	$_sql_format = '';
+	$date_format = '';
+	switch ( $by ) {
+		case 'days':
+			$date_format = 'M d Y';
+			$_from       = - $time_ago + 1;
+			$_from       = date( 'Y-m-d', strtotime( "{$_from} {$by}", $from_time ) );
+			$_to         = date( 'Y-m-d', strtotime(("+1 day"),$from_time ));
+			$_sql_format = '%Y-%m-%d';
+			$_key_format = 'j';
+			$groupby = 'DAY';
+			break;
+		case 'months':
+			$date_format = 'M Y';
+			$_from       = - $time_ago + 1;
+			$_from       = date( 'Y-m-01', strtotime( "{$_from} {$by}", $from_time ) );
+			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
+			$_to         = date( 'Y-m-' . $days, $from_time );
+			$_sql_format = '%Y-%m';
+			$_key_format = 'n';
+			$groupby = 'MONTH';
+			break;
+		case 'years':
+			$date_format = 'Y';
+			$_from       = - $time_ago + 1;
+			$_from       = date( 'Y-01-01', strtotime( "{$_from} {$by}", $from_time ) );
+			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
+			$_to         = date( 'Y-12-' . $days, $from_time );
+			$_sql_format = '%Y';
+			$_key_format = 'Y';
+			$groupby = 'YEAR';
+			break;
+	}
+	$query_where = '';
+	if ( current_user_can( LP_TEACHER_ROLE ) ) {
+		$user_id     = learn_press_get_current_user_id();
+		$query_where .= $wpdb->prepare( " AND c.post_author=%d ", $user_id );
+	}
+
+	// Insert variable course
+	$query = $wpdb->prepare( "
+				SELECT {$groupby}(post_date) as d, COUNT(ID) as c
+         FROM {$wpdb->posts}
+         WHERE 
+         {$query_where}
+         post_type = %s AND
+         post_status IN('publish', 'pending') AND
+         post_date BETWEEN %s AND %s
+         GROUP BY {$groupby}(post_date)
+         ORDER BY d ASC
+			",'lp_course', $_from, $_to );
+	if ( $_results = $wpdb->get_results( $query ) ) {
+		foreach ( $_results as $k => $v ) {
+			$results['course'][ $v->d ] = $v;
+		}
+	}
+
+	// Insert variable user
+	$query = $wpdb->prepare( "
+				SELECT count(ID) as c, {$groupby}(user_registered ) as d
+				FROM {$wpdb->users}
+				WHERE 1
+				AND user_registered BETWEEN %s AND %s
+				GROUP BY d
+				ORDER BY d ASC
+			", $_from, $_to );
+
+	if ( $_results = $wpdb->get_results( $query ) ) {
+		foreach ( $_results as $k => $v ) {
+			$results['user'][ $v->d ] = $v;
+		}
+	}
+	// insert variable order
+	$query = $wpdb->prepare( "
+				SELECT count(ID) as c, {$groupby}(post_date) as d
+				FROM {$wpdb->posts}
+				WHERE 1 {$query_where} 
+				AND post_type = %s
+				AND post_date BETWEEN %s AND %s
+				AND post_status IN('lp-pending', 'lp-processing','lp-completed')
+				AND post_parent = 0
+				GROUP BY d
+				ORDER BY d ASC
+			", 'lp_order', $_from, $_to );
+
+	if ( $_results = $wpdb->get_results( $query ) ) {
+		foreach ( $_results as $k => $v ) {
+			$results['order'][ $v->d ] = $v;
+		}
+	}
+
+	for ( $i = - $time_ago + 1; $i <= 0; $i ++ ) {
+		$date     = strtotime( "$i $by", $from_time );
+		$labels[] = date( $date_format, $date );
+		$key      = date( $_key_format, $date );
+
+		$course     = ! empty( $results['course'][ $key ] ) ? $results['course'][ $key ]->c : 0;
+		$user = ! empty( $results['user'][ $key ] ) ? $results['user'][ $key ]->c : 0;
+		$order    = ! empty( $results['order'][ $key ] ) ? $results['order'][ $key ]->c : 0;
+
+		$datasets[0]['data'][] = $course;
+		$datasets[1]['data'][] = $user;
+		$datasets[2]['data'][] = $order;
+
+	}
+
+	$dataset_params = array(
+		array(
+			'color1' => 'rgba(47, 167, 255, %s)', // blue color
+			'color2' => '#FFF',
+			'label'  => esc_html__( 'Course', 'learnpress' )
+		),
+		array(
+			'color1' => 'rgba(225, 0, 0, %s)', // red color
+			'color2' => '#FFF',
+			'label'  => esc_html__( 'User', 'learnpress' )
+		),
+		array(
+			'color1' => 'rgba(255, 225, 0, %s)', // yellow color
+			'color2' => '#FFF',
+			'label'  => esc_html__( 'Order', 'learnpress' )
+		)
+	);
+
+	foreach ( $dataset_params as $k => $v ) {
+		$datasets[ $k ]['fillColor']            = sprintf( $v['color1'], '0.2' );
+		$datasets[ $k ]['strokeColor']          = sprintf( $v['color1'], '1' );
+		$datasets[ $k ]['pointColor']           = sprintf( $v['color1'], '1' );
+		$datasets[ $k ]['pointStrokeColor']     = $v['color2'];
+		$datasets[ $k ]['pointHighlightFill']   = $v['color2'];
+		$datasets[ $k ]['pointHighlightStroke'] = sprintf( $v['color1'], '1' );
+		$datasets[ $k ]['label']                = $v['label'];
+	}
+
+	return array(
+		'labels'   => $labels,
+		'datasets' => $datasets,
+		'sql'      => $query
+	);
+}
 
 /**
  * Get data about students to render in chart
  *
  * @param null $from
  * @param null $by
- * @param float $time_ago
+ * @param      $time_ago
  *
  * @return array
  */
-function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 ) {
+function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 	global $wpdb;
-	//	var_dump( current_user_can(LP_TEACHER_ROLE) );
-	//	exit();
 	$report_sales_by = learn_press_get_request( 'report_sales_by' );
 	$course_id       = learn_press_get_request( 'course_id' );
-	$cat_id          = learn_press_get_request( 'cat_id' );
-
 	$labels   = array();
 	$datasets = array();
 	if ( is_null( $from ) ) {
@@ -1106,9 +1273,10 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 			$date_format = 'M d Y';
 			$_from       = - $time_ago + 1;
 			$_from       = date( 'Y-m-d', strtotime( "{$_from} {$by}", $from_time ) );
-			$_to         = date( 'Y-m-d', $from_time );
+			$_to         = date( 'Y-m-d', strtotime(("+1 day"),$from_time ));
 			$_sql_format = '%Y-%m-%d';
-			$_key_format = 'Y-m-d';
+			$_key_format = 'j';
+			$groupby = 'DAY';
 			break;
 		case 'months':
 			$date_format = 'M Y';
@@ -1117,7 +1285,8 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
 			$_to         = date( 'Y-m-' . $days, $from_time );
 			$_sql_format = '%Y-%m';
-			$_key_format = 'Y-m';
+			$_key_format = 'n';
+			$groupby = 'MONTH';
 			break;
 		case 'years':
 			$date_format = 'Y';
@@ -1127,10 +1296,10 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 			$_to         = date( 'Y-12-' . $days, $from_time );
 			$_sql_format = '%Y';
 			$_key_format = 'Y';
-
+			$groupby = 'YEAR';
 			break;
 	}
-
+	$sql_join = '';
 	$query_join  = '';
 	$query_where = '';
 	if ( 'course' === $report_sales_by ) {
@@ -1148,20 +1317,6 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 			                             . " ) " );
 		}
 		$query_join .= $wpdb->prepare( $sql_join, $course_id );
-
-	} elseif ( 'category' === $report_sales_by ) {
-		$sql_join   .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
-		               . " ON o.ID=lpoi.order_id "
-		               . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
-		               . " ON lpoi.order_item_id=loim.learnpress_order_item_id "
-		               . " AND loim.meta_key='_course_id' "
-		               . " AND CAST(loim.meta_value AS SIGNED) IN("
-		               //sub query
-		               . " SELECT tr.object_id "
-		               . " FROM {$wpdb->prefix}term_taxonomy tt INNER JOIN {$wpdb->prefix}term_relationships tr "
-		               . " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
-		               . " WHERE tt.term_id=%d)";
-		$query_join .= $wpdb->prepare( $sql_join, $cat_id );
 	}
 	if ( current_user_can( LP_TEACHER_ROLE ) ) {
 		$user_id     = learn_press_get_current_user_id();
@@ -1177,39 +1332,35 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 	}
 
 	$query = $wpdb->prepare( "
-				SELECT count(o.ID) as c, DATE_FORMAT( o.post_date, %s) as d
+				SELECT count(ID) as c, {$groupby}(post_date) as d
 				FROM {$wpdb->posts} o {$query_join}
 				WHERE 1 {$query_where}
-				AND o.post_status IN('lp-completed') AND o.post_type = %s
+				AND post_status = 'lp-completed' AND post_type = %s  AND post_parent = 0
+				AND post_date BETWEEN %s AND %s
 				GROUP BY d
-				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
-			", $_sql_format, 'lp_order', $_from, $_to );
-	//	echo $query;
+			", 'lp_order', $_from, $_to );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			//			$results['all'][$v->d] = $v;
 			$results['completed'][ $v->d ] = $v;
 		}
 	}
-
 	$query = $wpdb->prepare( "
-				SELECT count(o.ID) as c, DATE_FORMAT( o.post_date, %s) as d
+				SELECT count(ID) as c, {$groupby}(post_date) as d
 				FROM {$wpdb->posts} o {$query_join}
 				WHERE 1 {$query_where}
-				AND o.post_status IN('lp-pending', 'lp-processing') AND o.post_type = %s
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
+				AND post_status IN('lp-pending', 'lp-processing') AND post_type = %s  AND post_parent = 0
+				AND post_date BETWEEN %s AND %s
+				GROUP BY {$groupby}(post_date)
 				ORDER BY d ASC
-			", $_sql_format, 'lp_order', $_from, $_to );
-	//	echo $query;
+			",'lp_order', $_from, $_to );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			//			$results['completed'][$v->d] = $v;
 			$results['pending'][ $v->d ] = $v;
 		}
 	}
-
 
 	for ( $i = - $time_ago + 1; $i <= 0; $i ++ ) {
 		$date     = strtotime( "$i $by", $from_time );
@@ -1232,12 +1383,12 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 			'label'  => __( 'All', 'learnpress' )
 		),
 		array(
-			'color1' => 'rgba(212, 208, 203, %s)',
+			'color1' => 'rgba(255, 191, 0, %s)',
 			'color2' => '#FFF',
 			'label'  => __( 'Completed', 'learnpress' )
 		),
 		array(
-			'color1' => 'rgba(234, 199, 155, %s)',
+			'color1' => 'rgba(255, 0, 128, %s)',
 			'color2' => '#FFF',
 			'label'  => __( 'Pending', 'learnpress' )
 		)
@@ -1257,37 +1408,6 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 		'labels'   => $labels,
 		'datasets' => $datasets,
 		'sql'      => $query
-	);
-}
-
-/**
- * Get data about courses to render in the chart
- * @return array
- */
-function learn_press_get_chart_courses2() {
-	$labels              = array(
-		__( 'Pending Courses / Publish Courses', 'learnpress' ),
-		__( 'Free Courses / Priced Courses', 'learnpress' )
-	);
-	$datasets            = array();
-	$datasets[0]['data'] = array(
-		learn_press_get_courses_by_status( 'pending' ),
-		learn_press_get_courses_by_price( 'free' )
-	);
-	$datasets[1]['data'] = array(
-		learn_press_get_courses_by_status( 'publish' ),
-		learn_press_get_courses_by_price( 'not_free' )
-	);
-
-	$colors                     = learn_press_get_admin_colors();
-	$datasets[0]['fillColor']   = $colors[1];
-	$datasets[0]['strokeColor'] = $colors[1];
-	$datasets[1]['fillColor']   = $colors[3];
-	$datasets[1]['strokeColor'] = $colors[3];
-
-	return array(
-		'labels'   => $labels,
-		'datasets' => $datasets
 	);
 }
 
@@ -1637,9 +1757,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	/**
 	 * Duplicate post.
 	 *
-	 * @param null $post_id
+	 * @param null  $post_id
 	 * @param array $args
-	 * @param bool $meta
+	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
 	 * @since 3.0.0
@@ -1711,8 +1831,7 @@ if ( ! function_exists( 'learn_press_duplicate_post_meta' ) ) {
 
 		if ( count( $post_meta_infos ) != 0 ) {
 			$excerpt       = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
-			$excerpt       = apply_filters( 'learn_press_excerpt_duplicate_post_meta', $excerpt, $old_post_id,
-				$new_post_id );
+			$excerpt       = apply_filters( 'learn_press_excerpt_duplicate_post_meta', $excerpt, $old_post_id, $new_post_id );
 			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
 			$sql_query_sel = array();
 
@@ -1788,8 +1907,7 @@ if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
                         SELECT * FROM $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
                     ", $quiz_id, $question_id );
 			$quiz_question_data = $wpdb->get_row( $sql );
-			$max_order          = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d",
-				$quiz_id ) );
+			$max_order          = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d", $quiz_id ) );
 
 			if ( $quiz_question_data ) {
 				$wpdb->insert(
@@ -1900,198 +2018,6 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
 
 }
 
-/**
- * Get general data to render in chart
- *
- * @param null $from
- * @param null $by
- * @param float $time_ago
- *
- * @return array
- */
-function learn_press_get_chart_general( $from = null, $by = null, $time_ago = 0 ) {
-	global $wpdb;
-
-	$labels   = array();
-	$datasets = array();
-
-	if ( is_null( $from ) ) {
-		$from = current_time( 'mysql' );
-	}
-
-	if ( is_null( $by ) ) {
-		$by = 'days';
-	}
-
-	$results = array(
-		'all'     => array(),
-		'public'  => array(),
-		'pending' => array(),
-		'free'    => array(),
-		'paid'    => array()
-	);
-
-	$results = array(
-		'course'  => array(),
-		'lesson'  => array(),
-		'quiz'    => array(),
-		'student' => array(),
-		'teacher' => array(),
-		'revenue' => array()
-	);
-
-	$from_time   = is_numeric( $from ) ? $from : strtotime( $from );
-	$_from       = '';
-	$_to         = '';
-	$_sql_format = '';
-	$date_format = '';
-	switch ( $by ) {
-		case 'days':
-			$date_format = 'M d Y';
-			$_from       = - $time_ago + 1;
-			$_from       = date( 'Y-m-d', strtotime( "{$_from} {$by}", $from_time ) );
-			$_to         = date( 'Y-m-d', $from_time );
-			$_sql_format = '%Y-%m-%d';
-			$_key_format = 'Y-m-d';
-			break;
-
-		case 'months':
-			$date_format = 'M Y';
-			$_from       = - $time_ago + 1;
-			$_from       = date( 'Y-m-01', strtotime( "{$_from} {$by}", $from_time ) );
-			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
-			$_to         = date( 'Y-m-' . $days, $from_time );
-			$_sql_format = '%Y-%m';
-			$_key_format = 'Y-m';
-			break;
-
-		case 'years':
-			$date_format = 'Y';
-			$_from       = - $time_ago + 1;
-			$_from       = date( 'Y-01-01', strtotime( "{$_from} {$by}", $from_time ) );
-			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
-			$_to         = date( 'Y-12-' . $days, $from_time );
-			$_sql_format = '%Y';
-			$_key_format = 'Y';
-			break;
-
-	}
-
-	$query_where = '';
-	if ( current_user_can( LP_TEACHER_ROLE ) ) {
-		$user_id     = learn_press_get_current_user_id();
-		$query_where .= $wpdb->prepare( " AND c.post_author=%d ", $user_id );
-	}
-
-	$query = $wpdb->prepare( "
-				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
-				FROM {$wpdb->posts} c
-				WHERE 1
-				{$query_where}
-				AND c.post_status IN('publish', 'pending') AND c.post_type = %s
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
-				ORDER BY d ASC
-			", $_sql_format, 'lp_course', $_from, $_to );
-	if ( $_results = $wpdb->get_results( $query ) ) {
-		foreach ( $_results as $k => $v ) {
-			$results['all'][ $v->d ] = $v;
-		}
-	}
-	$query = $wpdb->prepare( "
-				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
-				FROM {$wpdb->posts} c
-				WHERE 1
-				{$query_where}
-				AND c.post_status = %s AND c.post_type = %s
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
-				ORDER BY d ASC
-			", $_sql_format, 'publish', 'lp_course', $_from, $_to );
-	if ( $_results = $wpdb->get_results( $query ) ) {
-		foreach ( $_results as $k => $v ) {
-			$results['publish'][ $v->d ] = $v;
-		}
-	}
-
-	$query = $wpdb->prepare( "
-				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
-				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND cm.meta_value = %s
-				WHERE 1
-				{$query_where}
-				AND c.post_status = %s AND c.post_type = %s
-				GROUP BY d
-				HAVING d BETWEEN %s AND %s
-				ORDER BY d ASC
-			", $_sql_format, '_lp_payment', 'yes', 'publish', 'lp_course', $_from, $_to );
-	if ( $_results = $wpdb->get_results( $query ) ) {
-		foreach ( $_results as $k => $v ) {
-			$results['paid'][ $v->d ] = $v;
-		}
-	}
-
-	for ( $i = - $time_ago + 1; $i <= 0; $i ++ ) {
-		$date     = strtotime( "$i $by", $from_time );
-		$labels[] = date( $date_format, $date );
-		$key      = date( $_key_format, $date );
-
-		$all     = ! empty( $results['all'][ $key ] ) ? $results['all'][ $key ]->c : 0;
-		$publish = ! empty( $results['publish'][ $key ] ) ? $results['publish'][ $key ]->c : 0;
-		$paid    = ! empty( $results['paid'][ $key ] ) ? $results['paid'][ $key ]->c : 0;
-
-		$datasets[0]['data'][] = $all;
-		$datasets[1]['data'][] = $publish;
-		$datasets[2]['data'][] = $all - $publish;
-		$datasets[3]['data'][] = $paid;
-		$datasets[4]['data'][] = $all - $paid;
-	}
-
-	$dataset_params = array(
-		array(
-			'color1' => 'rgba(47, 167, 255, %s)',
-			'color2' => '#FFF',
-			'label'  => __( 'All', 'learnpress' )
-		),
-		array(
-			'color1' => 'rgba(212, 208, 203, %s)',
-			'color2' => '#FFF',
-			'label'  => __( 'Publish', 'learnpress' )
-		),
-		array(
-			'color1' => 'rgba(234, 199, 155, %s)',
-			'color2' => '#FFF',
-			'label'  => __( 'Pending', 'learnpress' )
-		),
-		array(
-			'color1' => 'rgba(234, 199, 155, %s)',
-			'color2' => '#FFF',
-			'label'  => __( 'Paid', 'learnpress' )
-		),
-		array(
-			'color1' => 'rgba(234, 199, 155, %s)',
-			'color2' => '#FFF',
-			'label'  => __( 'Free', 'learnpress' )
-		)
-	);
-
-	foreach ( $dataset_params as $k => $v ) {
-		$datasets[ $k ]['fillColor']            = sprintf( $v['color1'], '0.2' );
-		$datasets[ $k ]['strokeColor']          = sprintf( $v['color1'], '1' );
-		$datasets[ $k ]['pointColor']           = sprintf( $v['color1'], '1' );
-		$datasets[ $k ]['pointStrokeColor']     = $v['color2'];
-		$datasets[ $k ]['pointHighlightFill']   = $v['color2'];
-		$datasets[ $k ]['pointHighlightStroke'] = sprintf( $v['color1'], '1' );
-		$datasets[ $k ]['label']                = $v['label'];
-	}
-
-	return array(
-		'labels'   => $labels,
-		'datasets' => $datasets,
-		'sql'      => $query
-	);
-}
-
 function learn_press_get_default_section( $section = null ) {
 	if ( ! $section ) {
 		$section = new stdClass();
@@ -2172,7 +2098,7 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
  * Filter to modal search items to void filter the posts by author.
  *
  * @param int|string $context_id
- * @param string $context
+ * @param string     $context
  *
  * @return bool|int|string
  * @since 3.0.4
@@ -2191,7 +2117,7 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
 /**
  * Filter to post link to change the link if it is an item inside course.
  *
- * @param string $link
+ * @param string  $link
  * @param WP_Post $post
  *
  * @return string
@@ -2203,11 +2129,9 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
  */
 /*function learn_press_preview_post_link( $link, $post ) {
 	$items = learn_press_course_get_support_item_types( true );
-
 	if ( in_array( $post->post_type, $items ) ) {
 		$link = lp_course_set_link_backend( $link, $post->ID, false, false, $post );
 	}
-
 	return $link;
 }*/
 
@@ -2239,6 +2163,20 @@ function learn_press_maybe_sync_data( $post_id ) {
 add_action( 'save_post', 'learn_press_maybe_sync_data' );
 
 /**
+ * Return id of current screen.
+ *
+ * @return bool|string
+ * @since 3.2.6
+ *
+ */
+function learn_press_get_screen_id() {
+	global $current_screen;
+	$screen_id = $current_screen ? $current_screen->id : false;
+
+	return $screen_id;
+}
+
+/**
  * Check if current screen is a page of LP or
  * editing post type of LP such as course, lesson, etc...
  *
@@ -2246,7 +2184,8 @@ add_action( 'save_post', 'learn_press_maybe_sync_data' );
  * @since 3.2.6
  *
  */
-function learn_press_is_admin_page( $screen_id = '' ) {
+function learn_press_is_admin_page() {
+	$screen_id     = learn_press_get_screen_id();
 	$is_learnpress = false;
 
 	// Is editing post-type of LP
