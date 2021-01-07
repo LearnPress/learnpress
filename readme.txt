@@ -199,6 +199,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 3.2.8.4 =
 ~ Add function Scan database if have not index in table will create
+~ Add function Repurchase course when course finished or block duration expire
+~ Fix function Statistics
+~ Fix error content lesson conflict when activated elementor & yoast seo
+~ Fix order status on Dashboard screen
+~ Remove js scrollbar jquery
 
 = 3.2.8.3 =
 ~ Fix compatible PHP 8.0
