@@ -244,6 +244,10 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 			return;
 		}
 
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( false === ( $course_data = $user->get_course_data( $course->get_id() ) ) ) {
 			return;
 		}
@@ -285,6 +289,10 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 		$course = LP_Global::course();
 
 		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+			return;
+		}
+
+		if ( ! $user ) {
 			return;
 		}
 
@@ -550,6 +558,10 @@ if ( ! function_exists( 'learn_press_course_price' ) ) {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
 			return;
 		}
@@ -742,6 +754,10 @@ if ( ! function_exists( 'learn_press_content_item_quiz_intro' ) ) {
 			return;
 		}
 
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
 			//return;
 		}
@@ -760,6 +776,10 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_content' ) ) {
 		$item = LP_Global::course_item();
 		$quiz = LP_Global::course_item_quiz();
 		$user = LP_Global::user();
+
+		if ( ! $user ) {
+			return;
+		}
 
 		/**
 		 * Check if not start quiz (is showing question)
@@ -822,6 +842,11 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_result' ) ) {
 	function learn_press_content_item_summary_quiz_result() {
 		$quiz = LP_Global::course_item_quiz();
 		$user = LP_Global::user();
+
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( ! $user->has_completed_quiz( $quiz->get_id(), get_the_ID() ) ) {
 			return;
 		}
@@ -893,8 +918,13 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 	function learn_press_content_item_summary_question_explanation() {
 		$quiz = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
-			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$course = LP_Global::course();
+			$user   = LP_Global::user();
+
+			if ( ! $user ) {
+				return;
+			}
+
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 			$explanation = $question->get_explanation();
@@ -933,8 +963,13 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 	function learn_press_content_item_summary_question_hint() {
 		$quiz = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
-			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$course = LP_Global::course();
+			$user   = LP_Global::user();
+
+			if ( ! $user ) {
+				return;
+			}
+
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 			$hint        = $question->get_hint();
@@ -957,6 +992,10 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) 
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $quiz->get_show_hide_question() ) {
+			return;
+		}
+
+		if ( ! $user ) {
 			return;
 		}
 
@@ -1004,6 +1043,10 @@ if ( ! function_exists( 'learn_press_quiz_nav_buttons' ) ) {
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
 
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( ! $user->has_quiz_status( array( 'started', 'completed' ), $quiz->get_id(), $course->get_id() ) ) {
 			return;
 		}
@@ -1022,6 +1065,10 @@ if ( ! function_exists( 'learn_press_quiz_start_button' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
+
+		if ( ! $user ) {
+			return;
+		}
 
 		if ( $user->has_course_status( $course->get_id(), array( 'finished' ) ) || $user->has_quiz_status( array(
 				'started',
@@ -1057,6 +1104,10 @@ if ( ! function_exists( 'learn_press_quiz_continue_button' ) ) {
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
 
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
 			return;
 		}
@@ -1076,6 +1127,10 @@ if ( ! function_exists( 'learn_press_quiz_complete_button' ) ) {
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
 
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( $user->has_course_status( $course->get_id(), array( 'finished' ) ) || ! $user->has_quiz_status( 'started',
 				$quiz->get_id(), $course->get_id() ) ) {
 			return;
@@ -1090,6 +1145,10 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
+
+		if ( ! $user ) {
+			return;
+		}
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
 			return;
@@ -1110,6 +1169,10 @@ if ( ! function_exists( 'learn_press_quiz_result_button' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
+
+		if ( ! $user ) {
+			return;
+		}
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
 			return;
@@ -1134,6 +1197,10 @@ if ( ! function_exists( 'learn_press_quiz_summary_button' ) ) {
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
 
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
 			return;
 		}
@@ -1152,6 +1219,10 @@ if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
+
+		if ( ! $user ) {
+			return;
+		}
 
 		if ( ! $quiz->is_viewing_question() ) {
 			return;
@@ -1188,6 +1259,10 @@ if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 
 		$hint = $question->get_hint();
 		if ( ! $hint ) {
+			return;
+		}
+
+		if ( ! $user ) {
 			return;
 		}
 
@@ -1363,6 +1438,11 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 		if ( ! $output ) {
 			if ( ( $course = LP_Global::course() ) && $course->get_id() ) {
 				$user = LP_Global::user();
+
+				if ( ! $user ) {
+					return;
+				}
+
 				if ( $course_data = $user->get_course_data( $course->get_id() ) ) {
 					$output = $course_data->get_js_args();
 				}
@@ -1379,6 +1459,11 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 
 		if ( $quiz = LP_Global::course_item_quiz() ) {
 			$user = LP_Global::user();
+
+			if ( ! $user ) {
+				return;
+			}
+
 			if ( $user_quiz = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) ) ) {
 				$remaining_time = $user_quiz->get_time_remaining();
 			} else {
