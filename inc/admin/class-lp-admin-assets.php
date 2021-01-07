@@ -196,6 +196,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'     => $this->url( 'css/admin/statistic.css' ),
 					'screens' => 'learnpress_page_learn-press-statistics'
 				),
+				'jquery-ui'             => array(
+					'url'     => $this->url( 'src/css/vendor/jquery-ui.css' ),
+					'screens' => 'learnpress_page_learn-press-statistics'
+				),
 			)
 		);
 	}
