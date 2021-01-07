@@ -96,12 +96,19 @@
 	const optimizeDatabase = function( e ) {
 		e.preventDefault();
 		const $param = { 'lp-ajax': 'lp-database-optimize', 'lp-nonce': $( 'input[name=lp-nonce]' ).val() };
+
+		$el = $( e.target );
+		const el_spinner = $el.closest( '.tools-button' ).find( '.spinner' );
+		el_spinner.css( 'visibility', 'visible' );
+
 		$.post( lpGlobalSettings.ajax, $param )
 			.done( function( res ) {
 				console.log( res );
 			} )
 			.fail( function( err ) {} )
-			.always( function() {} );
+			.always( function() {
+				el_spinner.css( 'visibility', 'hidden' );
+			} );
 	};
 
 	$doc.on( 'click', '#learn-press-install-sample-data', installSampleCourse ).

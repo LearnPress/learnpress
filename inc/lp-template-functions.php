@@ -1233,47 +1233,6 @@ if ( ! function_exists( 'learn_press_content_item_body_class' ) ) {
 
 }
 
-if ( ! function_exists( 'learn_press_content_item_script' ) ) {
-	/**
-	 * Add custom scripts + styles into head
-	 */
-	function learn_press_content_item_script() {
-		global $lp_course_item;
-
-		if ( ! $lp_course_item ) {
-			return;
-		}
-		?>
-        <style type="text/css">
-            html, body {
-                overflow: hidden;
-            }
-
-            body.course-item-popup #learn-press-course-curriculum {
-                position: fixed;
-                top: 60px;
-                bottom: 0;
-                left: 0;
-                background: #FFF;
-                border-right: 1px solid #DDD;
-                overflow: auto;
-                z-index: 9999;
-            }
-
-            body.course-item-popup #learn-press-content-item {
-                position: fixed;
-                z-index: 9999;
-                background: #FFF;
-                top: 60px;
-                right: 0;
-                bottom: 0;
-                overflow: visible;
-            }
-        </style>
-		<?php
-	}
-}
-
 if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 	/**
 	 * Add edit links for course item question to admin bar.
@@ -1365,7 +1324,6 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 
 		// Add more assets into page that displaying content of an item
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
-		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
 	}
 }
 
