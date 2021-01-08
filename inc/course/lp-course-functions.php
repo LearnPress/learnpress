@@ -226,7 +226,7 @@ add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
  */
 function learn_press_get_final_quiz( $course_id ) {
 
-	if ( false === ( $final_quiz = LP_Object_Cache::get( 'final-quiz-' . $course_id, 'learn-press/final-quiz' ) ) ) {
+	if ( false == ( $final_quiz = LP_Object_Cache::get( 'final-quiz-' . $course_id, 'learn-press/final-quiz' ) ) ) {
 
 		$course = learn_press_get_course( $course_id );
 		if ( ! $course ) {
@@ -247,10 +247,10 @@ function learn_press_get_final_quiz( $course_id ) {
 			if ( $final_quiz ) {
 				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
 			} else {
-				delete_post_meta( $course_id, '_lp_final_quiz' );
+//				delete_post_meta( $course_id, '_lp_final_quiz' );
 			}
 		} else {
-			delete_post_meta( $course_id, '_lp_final_quiz' );
+//			delete_post_meta( $course_id, '_lp_final_quiz' );
 		}
 
 		LP_Object_Cache::set( 'final-quiz-' . $course_id, $final_quiz ? $final_quiz : 0, 'learn-press/final-quiz' );
@@ -262,7 +262,7 @@ function learn_press_get_final_quiz( $course_id ) {
 function learn_press_item_meta_format( $item, $nonce = '' ) {
 	if ( current_theme_supports( 'post-formats' ) ) {
 		$format = get_post_format( $item );
-		if ( false === $format ) {
+		if ( false == $format ) {
 			$format = 'standard';
 		}
 
@@ -1071,7 +1071,7 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 	global $wpdb;
 	$query = $wpdb->prepare( "
         SELECT section_course_id
-        FROM {$wpdb->learnpress_sections} s 
+        FROM {$wpdb->learnpress_sections} s
         INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
         WHERE si.item_id = %d
     ", $item_id );

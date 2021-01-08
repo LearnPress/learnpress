@@ -2100,4 +2100,9 @@ ul.list-table-nav {
     margin-right: 0; }
     ul.learn-press-courses .course {
       width: 100%;
-      margin-right: 0; } }
+      margin-right: 0; }
+
+    .lp-button-back {
+      display: none;
+    }
+}
