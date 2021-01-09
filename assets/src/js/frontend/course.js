@@ -515,11 +515,15 @@
 				e.preventDefault();
 				const elFormSubmit = $( this ).closest( 'form' );
 
-				lp_course.lpModalOverlay.setElCalledModal( elFormSubmit );
-				lp_course.lpModalOverlay.callBackYes = function() {
+				if ( 'yes' === lpGlobalSettings.show_popup_confirm_finish ) {
+					lp_course.lpModalOverlay.setElCalledModal( elFormSubmit );
+					lp_course.lpModalOverlay.callBackYes = function() {
+						elFormSubmit.submit();
+					};
+					elLPOverlay.show();
+				} else {
 					elFormSubmit.submit();
-				};
-				elLPOverlay.show();
+				}
 			} );
 		};
 
