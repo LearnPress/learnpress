@@ -247,10 +247,10 @@ function learn_press_get_final_quiz( $course_id ) {
 			if ( $final_quiz ) {
 				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
 			} else {
-//				delete_post_meta( $course_id, '_lp_final_quiz' );
+				delete_post_meta( $course_id, '_lp_final_quiz' );
 			}
 		} else {
-//			delete_post_meta( $course_id, '_lp_final_quiz' );
+			delete_post_meta( $course_id, '_lp_final_quiz' );
 		}
 
 		LP_Object_Cache::set( 'final-quiz-' . $course_id, $final_quiz ? $final_quiz : 0, 'learn-press/final-quiz' );

@@ -55,7 +55,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'button_yes'    => __( 'Yes', 'learnpress' ),
 					'button_no'     => __( 'No', 'learnpress' )
 				),
-				'show_popup_confirm_finish' => LP()->settings()->get( 'enable_popup_confirm_finish' ),
+				'show_popup_confirm_finish' => LP()->settings()->get( 'enable_popup_confirm_finish', 'yes' ),
 			),
 			'lp-checkout'  => array(
 				'ajaxurl'              => home_url(),

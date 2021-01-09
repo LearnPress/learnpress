@@ -569,11 +569,15 @@
 			elBtnFinishCourse.on( 'click', function( e ) {
 				e.preventDefault();
 
-				lp_course.lpModalOverlay.setElCalledModal( elFormFinishCourse );
-				lp_course.lpModalOverlay.callBackYes = function() {
+				if ( 'yes' === lpGlobalSettings.show_popup_confirm_finish ) {
+					lp_course.lpModalOverlay.setElCalledModal( elFormFinishCourse );
+					lp_course.lpModalOverlay.callBackYes = function() {
+						elFormFinishCourse.submit();
+					};
+					elLPOverlay.show();
+				} else {
 					elFormFinishCourse.submit();
-				};
-				elLPOverlay.show();
+				}
 			} );
 		};
 
