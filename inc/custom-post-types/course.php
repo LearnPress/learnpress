@@ -1462,7 +1462,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Before save curriculum action.
 		 */
 		public function before_save_curriculum() {
-			var_dump('before_save_curriculum');
 			global $post, $pagenow;
 
 			// Ensure that we are editing course in admin side
