@@ -19,7 +19,10 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 	function learn_press_course_purchase_button() {
 		$course = LP_Global::course();
 		$user   = learn_press_get_user( get_current_user_id() );
-
+        $course_data       = $user->get_course_data( $course->get_id() );
+        $is_finish         = $course_data->is_finished();
+        $can_retake_course = $user->can_retake_course( $course->get_id() );
+        $purchased         = $user->has_purchased_course( $course->get_id() );
 		if ( ! $user ) {
 			return;
 		}
@@ -78,9 +81,33 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 		);
 
 		$args_load_tmpl = apply_filters( 'learn-press/tmpl-button-purchase-course', $args_load_tmpl, $course );
+        if ( $is_finish ) {
 
-		learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
-			$args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
+            //set for course finished
+            if ( $can_retake_course <= 0 && ( $course->is_allow_repurchase_course() || $user->user_check_blocked_duration( $course->get_id() ) == true ) ) {
+                if ( ! $course->is_free() && $purchased ) {
+                    learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
+                        $args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
+                }
+            }
+
+        } elseif ( ! $is_finish ) {
+
+            // set for course unfinished
+            if ( $can_retake_course <= 0 && $user->user_check_blocked_duration( $course->get_id() ) == true ) {
+                if ( $course->is_free() ) {
+                    learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
+                        $args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
+                }
+            }else {
+                if ( ! $purchased && $course_data ) {
+                    learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
+                        $args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
+                }
+            }
+
+        }
+
 	}
 }
 
@@ -91,6 +118,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 	function learn_press_course_enroll_button() {
 		$user   = learn_press_get_user( get_current_user_id() );
 		$course = LP_Global::course();
+
 		if ( ! $user ) {
 			return;
 		}
@@ -119,12 +147,10 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		if ( ! $course->is_in_stock() ) {
 			return;
 		}
-
 		// Course is not require enrolling
 		if ( ! $course->is_required_enroll() ) {
 			return;
 		}
-
 		// User can not enroll course
 		if ( ! $user->can_enroll_course( $course->get_id() ) ) {
 			return;
@@ -134,35 +160,22 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		$is_finish         = $course_data->is_finished();
 		$can_retake_course = $user->can_retake_course( $course->get_id() );
 		// For free course and user does not purchased
-		if ( $is_finish ) {
-			//set for course finished
-			if ( $can_retake_course <= 0 && ( $course->is_allow_repurchase_course() || $user->user_check_blocked_duration( $course->get_id() ) == true ) ) {
-				if ( ! $course->is_free() && $purchased ) {
-					learn_press_get_template( 'single-course/buttons/purchase.php' );
-				}
-			}
+        if ( ! $is_finish ) {
 
-		} elseif ( ! $is_finish ) {
-			// set for course unfinished
-			if ( $can_retake_course <= 0 && $user->user_check_blocked_duration( $course->get_id() ) == true ) {
-				if ( $course->is_free() ) {
-					learn_press_get_template( 'single-course/buttons/enroll.php' );
-				} else {
-					learn_press_get_template( 'single-course/buttons/purchase.php' );
-				}
-			} elseif ( $purchased && ! in_array( $course_data->get_status(), array( 'enrolled' ) ) ) {
-				learn_press_get_template( 'single-course/buttons/enroll.php' );
-			} else {
-				if ( $course->is_free() && ! $purchased ) {
-					learn_press_get_template( 'single-course/buttons/enroll.php' );
-				} elseif ( ! $purchased && $course_data ) {
-					if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
-						learn_press_get_template( 'single-course/buttons/purchase.php' );
-					}
-				}
-			}
+            // set for course unfinished
+            if ( $can_retake_course <= 0 && $user->user_check_blocked_duration( $course->get_id() ) == true ) {
+                if ( $course->is_free() ) {
+                    learn_press_get_template( 'single-course/buttons/enroll.php' );
+                }
+            } elseif ( $purchased && ! in_array( $course_data->get_status(), array( 'enrolled' ) ) ) {
+                learn_press_get_template( 'single-course/buttons/enroll.php' );
+            } else {
+                if ( $course->is_free() && ! $purchased ) {
+                    learn_press_get_template( 'single-course/buttons/enroll.php' );
+                }
+            }
 
-		}
+        }
 	}
 
 }
