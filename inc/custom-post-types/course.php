@@ -620,7 +620,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Allow repurchase ', 'learnpress' ),
 						'id'   => '_lp_allow_course_repurchase',
 						'type' => 'yes_no',
-						'desc' => __( 'Allow users to repurchase this course after course finished or blocked', 'learnpress' ),
+						'desc' => __( 'Allow users to repurchase this course after course finished or blocked (Do not apply to free courses)', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
