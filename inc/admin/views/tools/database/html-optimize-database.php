@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) or die();
            href="javascript:void(0)">
 			<?php esc_html_e( 'Optimize now', 'learnpress' ); ?>
         </a>
+        <span class="spinner"></span>
 		<?php wp_nonce_field( 'lp-optimize-database', 'lp-nonce' ); ?>
     </p>
 </div>

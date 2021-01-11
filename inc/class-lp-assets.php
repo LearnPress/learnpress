@@ -45,16 +45,17 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data() {
 		return array(
 			'lp-global'    => array(
-				'url'      => learn_press_get_current_url(),
-				'siteurl'  => site_url(),
-				'ajax'     => admin_url( 'admin-ajax.php' ),
-				'theme'    => get_stylesheet(),
-				'localize' => array(
+				'url'                       => learn_press_get_current_url(),
+				'siteurl'                   => site_url(),
+				'ajax'                      => admin_url( 'admin-ajax.php' ),
+				'theme'                     => get_stylesheet(),
+				'localize'                  => array(
 					'button_ok'     => __( 'OK', 'learnpress' ),
 					'button_cancel' => __( 'Cancel', 'learnpress' ),
 					'button_yes'    => __( 'Yes', 'learnpress' ),
 					'button_no'     => __( 'No', 'learnpress' )
-				)
+				),
+				'show_popup_confirm_finish' => LP()->settings()->get( 'enable_popup_confirm_finish', 'yes' ),
 			),
 			'lp-checkout'  => array(
 				'ajaxurl'              => home_url(),

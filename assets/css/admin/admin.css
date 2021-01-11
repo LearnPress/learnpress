@@ -5018,6 +5018,10 @@ body.lp-item-moving {
 	width: 100%;
 }
 
+.tools-button .spinner {
+	float: none;
+}
+
 /*fix responsive for block Courses Setting
 
  */

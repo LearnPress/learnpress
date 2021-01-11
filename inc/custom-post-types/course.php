@@ -345,7 +345,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$passing_grade = LP_Request::get_string( '_lp_course_result_final_quiz_passing_condition' );
 				$quiz_id       = $course->get_final_quiz();
 
+//				var_dump($passing_grade, $quiz_id);
+
 				update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
+
+//				var_dump(123123);die;
 			}
 
 		}
@@ -1458,7 +1462,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Before save curriculum action.
 		 */
 		public function before_save_curriculum() {
-
+			var_dump('before_save_curriculum');
 			global $post, $pagenow;
 
 			// Ensure that we are editing course in admin side

@@ -371,7 +371,8 @@
 				animate( { marginLeft: fullScreen ? -curriculumWidth : 0 } );
 			$header.find( '.course-item-search' ).
 				stop().
-				animate( { opacity: fullScreen ? 0 : 1 } );
+				animate( { opacity: fullScreen ? 0 : 1 } ).
+				css( { visibility: fullScreen ? 'hidden' : 'visible' } );
 		}
 
 		function initEvents() {
@@ -396,30 +397,6 @@
 					timeoutToClose();
 				}
 			} );
-		}
-
-		function initScrollbar() {
-			$content.addClass( 'scrollbar-light' ).scrollbar( {
-				scrollx: false,
-			} );
-
-			$content.parent().css( {
-				position: 'absolute',
-				top: 0,
-				bottom: $( '#course-item-content-footer:visible' ).outerHeight() || 0,
-				width: '100%',
-			} ).css( 'opacity', 1 ).end().css( 'opacity', 1 );
-
-			$curriculumScrollable.addClass( 'scrollbar-light' ).scrollbar( {
-				scrollx: false,
-			} );
-
-			$curriculumScrollable.parent().css( {
-				position: 'absolute',
-				top: 0,
-				bottom: 0,
-				width: '100%',
-			} ).css( 'opacity', 1 ).end().css( 'opacity', 1 );
 		}
 
 		function fitVideo() {
@@ -493,7 +470,6 @@
 				contentTop = 32;
 			}
 
-			// initScrollbar();
 			fitVideo();
 
 			fullScreen = window.localStorage && 'yes' ===
@@ -539,11 +515,15 @@
 				e.preventDefault();
 				const elFormSubmit = $( this ).closest( 'form' );
 
-				lp_course.lpModalOverlay.setElCalledModal( elFormSubmit );
-				lp_course.lpModalOverlay.callBackYes = function() {
+				if ( 'yes' === lpGlobalSettings.show_popup_confirm_finish ) {
+					lp_course.lpModalOverlay.setElCalledModal( elFormSubmit );
+					lp_course.lpModalOverlay.callBackYes = function() {
+						elFormSubmit.submit();
+					};
+					elLPOverlay.show();
+				} else {
 					elFormSubmit.submit();
-				};
-				elLPOverlay.show();
+				}
 			} );
 		};
 
@@ -589,11 +569,15 @@
 			elBtnFinishCourse.on( 'click', function( e ) {
 				e.preventDefault();
 
-				lp_course.lpModalOverlay.setElCalledModal( elFormFinishCourse );
-				lp_course.lpModalOverlay.callBackYes = function() {
+				if ( 'yes' === lpGlobalSettings.show_popup_confirm_finish ) {
+					lp_course.lpModalOverlay.setElCalledModal( elFormFinishCourse );
+					lp_course.lpModalOverlay.callBackYes = function() {
+						elFormFinishCourse.submit();
+					};
+					elLPOverlay.show();
+				} else {
 					elFormFinishCourse.submit();
-				};
-				elLPOverlay.show();
+				}
 			} );
 		};
 

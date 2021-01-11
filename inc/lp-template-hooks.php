@@ -199,6 +199,7 @@ add_action( 'learn-press/after-course-item-content', 'learn_press_lesson_comment
  * @see learn_press_content_item_lesson_content
  * @see learn_press_content_item_lesson_content_blocked
  * @see learn_press_content_item_lesson_complete_button
+ * @see learn_press_course_finish_button
  */
 add_action( 'learn-press/before-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_title', 10 );
 add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content', 10 );

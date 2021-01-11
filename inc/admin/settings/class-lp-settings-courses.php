@@ -88,7 +88,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 									'value'   => 'yes'
 								)
 							)
-						)
+						),
+						array(
+							'title'      => __( 'Enable popup confirm finish course, complete item', 'learnpress' ),
+							'desc'       => __( 'Show popup confirm before finish course or complete item.', 'learnpress' ),
+							'id'         => 'enable_popup_confirm_finish',
+							'default'    => 'yes',
+							'type'       => 'yes-no',
+						),
 					)
 				),
 				// Archive

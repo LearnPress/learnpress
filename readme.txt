@@ -204,6 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fix error content lesson conflict when activated elementor & yoast seo
 ~ Fix order status on Dashboard screen
 ~ Remove js scrollbar jquery
+~ Add option 'Enable Popup Confirm Finish Course, Complete Item'
 
 = 3.2.8.3 =
 ~ Fix compatible PHP 8.0

@@ -915,7 +915,7 @@ body.course-item-popup {
   _opacity: 0; }
   body.course-item-popup #learn-press-course-curriculum {
     position: fixed;
-    top: 32px;
+    top: 60px;
     bottom: 0;
     left: 0;
     width: 400px;
@@ -936,7 +936,7 @@ body.course-item-popup {
     position: fixed;
     z-index: 9999;
     background: #FFF;
-    top: 32px;
+    top: 60px;
     left: 400px;
     right: 0;
     bottom: 0;
@@ -2100,4 +2100,9 @@ ul.list-table-nav {
     margin-right: 0; }
     ul.learn-press-courses .course {
       width: 100%;
-      margin-right: 0; } }
+      margin-right: 0; }
+
+    .lp-button-back {
+      display: none;
+    }
+}
