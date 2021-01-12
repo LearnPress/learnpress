@@ -515,6 +515,18 @@ const lpMetaboxsalePriceDate = () => {
 	} );
 };
 
+const lpHidePassingGrade = () => {
+	$( 'input[type=radio][name=_lp_course_result]' ).on( 'change', function( e ) {
+		const listHides = [ 'evaluate_final_quiz', 'evaluate_final_assignment' ];
+
+		if ( listHides.includes( e.target.value ) ) {
+			$( '._lp_passing_condition_field ' ).hide();
+		} else {
+			$( '._lp_passing_condition_field ' ).show();
+		}
+	} );
+};
+
 const callbackFilterTemplates = function callbackFilterTemplates() {
 	const $link = $( this );
 
@@ -625,6 +637,7 @@ const onReady = function onReady() {
 	lpMetaboxImage();
 	lpMetaboxsalePriceDate();
 	lpMetaboxExtraInfo();
+	lpHidePassingGrade();
 
 	$( document )
 		.on( 'click', '.learn-press-payments .status .dashicons', togglePaymentStatus )
