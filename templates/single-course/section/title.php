@@ -24,13 +24,6 @@ if ( ! isset( $section ) ) {
 
 $title = $section->get_title();
 ?>
-<?php if($user->user_check_blocked_duration( $course->get_id() ) == true && $user->can_retake_course($course->get_id()) >=0 ){
-    echo '<div class="lp-nofication">';
-    echo '<p style="color:red">'.esc_html__('The course duration has run out. You cannot access the content of this course more.','learnpress').'</p>';
-    echo '</div>';
-} ?>
-
-
 
 <div class="section-header">
 

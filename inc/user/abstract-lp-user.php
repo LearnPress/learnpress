@@ -1800,7 +1800,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function has_enrolled_course( $course_id, $force = false ) {
 			$enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
-
 			/**
 			 * @since 3.0.0
 			 */

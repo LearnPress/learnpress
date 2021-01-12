@@ -13,7 +13,14 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
+// add nofication when duration blocked
+$user        = learn_press_get_current_user();
+$course      = learn_press_get_the_course();
+if($user->user_check_blocked_duration( $course->get_id() ) == true && $user->can_retake_course($course->get_id()) >=0 && ! $user->get_course_data( $course->get_id() )->is_finished() ){
+    echo '<div class="lp-nofication__duration">';
+    echo '<p style="color:red">'.esc_html__('The course duration has run out. You cannot access the content of this course anymore.','learnpress').'</p>';
+    echo '</div>';
+}
 ?>
 
 <?php
@@ -24,7 +31,9 @@ do_action( 'learn_press_before_content_learning' );
 ?>
 
 <div class="course-learning-summary">
+    <?php
 
+    ?>
 	<?php
 	/**
 	 * @deprecated
