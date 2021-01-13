@@ -11,10 +11,11 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$user          = LP_Global::user();
-$course_item   = LP_Global::course_item();
-$course        = LP_Global::course();
-$can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id() );
+$user                    = LP_Global::user();
+$course                  = LP_Global::course();
+$course_item             = LP_Global::course_item();
+$can_view_content_course = $user->can_view_content_course( $course->get_id() );
+$can_view_content_item   = $user->can_view_item( $course_item->get_id(), $can_view_content_course );
 ?>
 
 <div id="learn-press-content-item">
@@ -23,25 +24,37 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 
 	<div class="content-item-scrollable">
 		<div class="content-item-wrap">
-
 			<?php
-			$item_content = apply_filters( 'learn-press/course-item-content-html', false, $course_item->get_id(), $course->get_id() );
-			if ( false === $item_content ) {
+			do_action( 'learn-press/before-course-item-content' );
 
-				do_action( 'learn-press/before-course-item-content' );
+			if ( $can_view_content_item->flag ) {
 
-				if ( $can_view_item->flag ) {
+				do_action(
+					'learn-press/course-item-content',
+					$user,
+					$course,
+					$course_item,
+					$course_item,
+					$can_view_content_course,
+					$can_view_content_item
+				);
 
-					do_action( 'learn-press/course-item-content' );
-
-				} else {
-					learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
-				}
-
-				do_action( 'learn-press/after-course-item-content' );
 			} else {
-				echo $item_content;
+				learn_press_get_template(
+					'single-course/content-protected.php',
+					array( 'can_view_item' => $can_view_content_item )
+				);
 			}
+
+			do_action(
+				'learn-press/after-course-item-content',
+				$user,
+				$course,
+				$course_item,
+				$course_item,
+				$can_view_content_course,
+				$can_view_content_item
+			);
 			?>
 
 		</div>

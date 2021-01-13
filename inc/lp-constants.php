@@ -87,6 +87,7 @@ define( 'LP_PAGE_SINGLE_COURSE_CURRICULUM', 'lp_page_single_course_curriculum' )
 
 // Key block course's item
 define( 'LP_BLOCK_COURSE_FINISHED', 'block_course_finished' );
+define( 'LP_BLOCK_COURSE_DURATION_EXPIRE', 'block_course_duration_expire' );
 
 /**
  * Thim Market library

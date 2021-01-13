@@ -11,13 +11,17 @@ export const init = () => {
 const $ = jQuery;
 
 const initCourseTabs = function() {
-	$( '#learn-press-course-tabs' ).on( 'change', 'input[name="learn-press-course-tab-radio"]', function() {
-		const selectedTab = $( 'input[name="learn-press-course-tab-radio"]:checked' ).val();
+	$( '#learn-press-course-tabs' ).on(
+		'change',
+		'input[name="learn-press-course-tab-radio"]',
+		function( e ) {
+			const selectedTab = $( 'input[name="learn-press-course-tab-radio"]:checked' ).val();
 
-		LP.Cookies.set( 'course-tab', selectedTab );
+			LP.Cookies.set( 'course-tab', selectedTab );
 
-		$( 'label[for="' + $( event.target ).attr( 'id' ) + '"]' ).closest( 'li' ).addClass( 'active' ).siblings().removeClass( 'active' );
-	} );
+			$( 'label[for="' + $( e.target ).attr( 'id' ) + '"]' ).closest( 'li' ).addClass( 'active' ).siblings().removeClass( 'active' );
+		}
+	);
 };
 
 const initCourseSidebar = function initCourseSidebar() {
@@ -69,11 +73,13 @@ const enrollCourse = () => {
 	}
 
 	const submit = async ( id, btnEnroll ) => {
-		const response = await wp.apiFetch( {
-			path: 'lp/v1/courses/enroll-course',
-			method: 'POST',
-			data: { id },
-		} );
+		const response = await wp.apiFetch(
+			{
+				path: 'lp/v1/courses/enroll-course',
+				method: 'POST',
+				data: { id },
+			}
+		);
 
 		btnEnroll.classList.remove( 'loading' );
 		btnEnroll.disabled = false;
@@ -81,7 +87,7 @@ const enrollCourse = () => {
 		const { status, redirect, message } = response;
 
 		if ( message && status ) {
-			formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
+			formEnroll.innerHTML += ` < div class = "lp-enroll-notice ${ status }" > ${ message } < / div > `;
 		}
 
 		if ( status === 'success' && redirect ) {
@@ -91,27 +97,29 @@ const enrollCourse = () => {
 		return response;
 	};
 
-	formEnroll.addEventListener( 'submit', ( event ) => {
-		event.preventDefault();
-
-		const id = formEnroll.querySelector( 'input[name=enroll-course]' ).value;
-		const btnEnroll = formEnroll.querySelector( 'button.button-enroll-course' );
-
-		btnEnroll.classList.add( 'loading' );
-		btnEnroll.disabled = true;
-
-		submit( id, btnEnroll );
-	} );
+	formEnroll.addEventListener(
+		'submit',
+		( event ) => {
+			event.preventDefault();
+			const id = formEnroll.querySelector( 'input[name=enroll-course]' ).value;
+			const btnEnroll = formEnroll.querySelector( 'button.button-enroll-course' );
+			btnEnroll.classList.add( 'loading' );
+			btnEnroll.disabled = true;
+			submit( id, btnEnroll );
+		}
+	);
 
 	// Reload when press back button in chrome.
 	if ( document.querySelector( '.course-detail-info' ) !== null ) {
-		window.addEventListener( 'pageshow', ( event ) => {
-			const hasCache = event.persisted || ( typeof window.performance != 'undefined' && String( window.performance.getEntriesByType( 'navigation' )[ 0 ].type ) == 'back_forward' );
-
-			if ( hasCache ) {
-				location.reload();
+		window.addEventListener(
+			'pageshow',
+			( event ) => {
+				const hasCache = event.persisted || ( typeof window.performance != 'undefined' && String( window.performance.getEntriesByType( 'navigation' )[ 0 ].type ) == 'back_forward' );
+				if ( hasCache ) {
+					location.reload();
+				}
 			}
-		} );
+		);
 	}
 };
 
@@ -121,12 +129,15 @@ export {
 	enrollCourse,
 };
 
-$( window ).on( 'load', () => {
-	const $popup = $( '#popup-course' );
-	let timerClearScroll;
-	const $curriculum = $( '#learn-press-course-curriculum' );
+$( window ).on(
+	'load',
+	() => {
+		const $popup = $( '#popup-course' );
+		let timerClearScroll;
+		const $curriculum = $( '#learn-press-course-curriculum' );
 
-	initCourseTabs();
-	initCourseSidebar();
-	enrollCourse();
-} );
+		initCourseTabs();
+		initCourseSidebar();
+		enrollCourse();
+	}
+);

@@ -10,62 +10,18 @@
 defined( 'ABSPATH' ) || exit();
 
 /**
- * @param mixed $the_course
+ * @param int $the_course
  * @param array|string $args
  *
  * @return LP_Course|mixed
  */
-function learn_press_get_course( $the_course = false, $args = '' ) {
+function learn_press_get_course( $the_course = 0, $args = '' ) {
 
 	if ( $the_course === 0 ) {
 		$the_course = get_the_ID();
 	}
 
 	return LP_Course::get_course( $the_course, $args );
-
-	// Todo: remove below code - tungnx
-	if ( is_numeric( $the_course ) ) {
-		if ( false !== ( $course = learn_press_get_course_by_id( $the_course ) ) ) {
-			return $course;
-		}
-	}
-
-	if ( false === ( $courses = LP_Object_Cache::get( 'object', 'learn-press/courses' ) ) ) {
-		$courses = array();
-	}
-
-	$the_id = 0;
-
-	if ( ! $the_course ) {
-		global $post;
-		if ( $post && isset( $post->ID ) && LP_COURSE_CPT === learn_press_get_post_type( $post->ID ) ) {
-			$the_id = $post->ID;
-		} elseif ( $the_course = LP_Global::course() ) {
-			$the_id = $the_course->get_id();
-		}
-	} else {
-		if ( is_numeric( $the_course ) ) {
-			$the_id = $the_course;
-		} elseif ( $the_course instanceof LP_Course ) {
-			$the_id = $the_course->get_id();
-		} elseif ( $the_course instanceof WP_Post ) {
-			$the_id = $the_course->ID;
-		} elseif ( isset( $the_course->ID ) ) {
-			$the_id = $the_course->ID;
-		}
-	}
-
-	if ( is_numeric( $the_id ) && ( $the_id > 0 ) ) {
-		if ( empty( $courses[ $the_id ] ) ) {
-			if ( $the_course instanceof LP_Course ) {
-				$courses[ $the_id ] = $the_course;
-			} else {
-				$courses[ $the_id ] = LP_Course::get_course( $the_id, $args );
-			}
-		}
-	}
-
-	return isset( $courses[ $the_id ] ) ? $courses[ $the_id ] : false;
 }
 
 function learn_press_get_course_by_id( $id ) {
@@ -80,7 +36,7 @@ function learn_press_get_course_by_id( $id ) {
  * Create nonce for course action.
  * Return nonce created with format 'learn-press-$action-$course_id-course-$user_id'
  *
- * @param string $action [retake, purchase, enroll]
+ * @param string $action  [retake, purchase, enroll]
  * @param int $course_id
  * @param int $user_id
  *
@@ -168,7 +124,8 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 
 	if ( ! empty( $terms ) ) {
 		$terms           = _learn_press_usort_terms_by_ID( $terms ); // order by ID
-		$category_object = apply_filters( 'learn_press_course_post_type_link_course_category', $terms[0], $terms, $post );
+		$category_object = apply_filters( 'learn_press_course_post_type_link_course_category', $terms[0], $terms,
+			$post );
 		$category_object = get_term( $category_object, 'course_category' );
 		$course_category = $category_object->slug;
 
@@ -222,6 +179,8 @@ add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
  *
  * @return mixed
  * @throws Exception
+ *
+ * @Todo check this function - when set Evaluate is Final Quiz
  */
 function learn_press_get_final_quiz( $course_id ) {
 	$final_quiz = LP_Object_Cache::get( 'final-quiz-' . $course_id, 'learn-press/final-quiz' );
@@ -268,7 +227,8 @@ function learn_press_item_meta_format( $item, $nonce = '' ) {
 
 		// return false to hide post format
 		if ( $format = apply_filters( 'learn_press_course_item_format', $format, $item ) ) {
-			printf( '<label for="post-format-0" class="post-format-icon post-format-%s" title="%s"></label>', $format, ucfirst( $format ) );
+			printf( '<label for="post-format-0" class="post-format-icon post-format-%s" title="%s"></label>', $format,
+				ucfirst( $format ) );
 		} else {
 			echo $nonce;
 		}
@@ -340,7 +300,10 @@ function learn_press_is_free_course( $course_id = null ) {
  *
  */
 function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
-	if ( $course = learn_press_get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
+	$course = learn_press_get_course( $course_id );
+	$user   = learn_press_get_user( $user_id );
+
+	if ( $course && $user ) {
 		return $user->get_course_status( $course_id );
 	}
 
@@ -358,14 +321,14 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
  * @since 3.1.0
  *
  */
-function learn_press_can_view_item( $item_id, $course_id = 0, $user_id = 0 ) {
-	if ( ! $user_id ) {
-		$user_id = get_current_user_id();
-	}
-	$user = learn_press_get_user( $user_id );
-
-	return $user->can_view_item( $item_id, $course_id );
-}
+//function learn_press_can_view_item( $item_id, $course_id = 0, $user_id = 0 ) {
+//	if ( ! $user_id ) {
+//		$user_id = get_current_user_id();
+//	}
+//	$user = learn_press_get_user( $user_id );
+//
+//	return $user->can_view_item( $item_id, $course_id );
+//}
 
 /**
  * Get course setting is enroll required or public
@@ -457,7 +420,8 @@ function learn_press_course_is_required_review( $course_id = null, $user_id = nu
 	}
 
 	$user = learn_press_get_user( $user_id );
-	if ( $user->is_admin() || ( ( $user_course = learn_press_get_user( get_post_field( 'post_author', $course_id ) ) ) && $user_course->is_admin() ) ) {
+	if ( $user->is_admin() || ( ( $user_course = learn_press_get_user( get_post_field( 'post_author',
+				$course_id ) ) ) && $user_course->is_admin() ) ) {
 		return false;
 	}
 
@@ -495,8 +459,8 @@ function learn_press_course_get_support_item_types( $keys = false ) {
 /**
  * Register new type of course item
  *
- * @param string $post_type - Usually is post type
- * @param string $label - Name show for user
+ * @param string $post_type  - Usually is post type
+ * @param string $label  - Name show for user
  */
 function learn_press_course_add_support_item_type( $post_type, $label = '' ) {
 	if ( empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {
@@ -835,7 +799,8 @@ if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 		$user = learn_press_get_current_user();
 		if ( $user->can_edit_item( $item_id, $course_id ) ) : ?>
 			<p class="edit-course-item-link">
-				<a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
+				<a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item',
+						'learnpress' ); ?></a>
 			</p>
 		<?php
 		endif;
@@ -1201,38 +1166,6 @@ function learn_press_mark_user_just_logged_in() {
 
 add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
 
-
-/**
- * Show element to js handle reload page if course duration expire
- *
- * @return mixed
- * @since  3.2.7.7
- * @author hungkv
- */
-function learn_press_reload_page_when_duration_expires() {
-	if ( is_admin() ) {
-		return;
-	}
-
-	if ( current_user_can( LP_TEACHER_ROLE ) || current_user_can( 'administrator' ) ) {
-		return;
-	}
-
-	// Check is single course page
-	if ( ! is_singular( 'lp_course' ) ) {
-		return;
-	}
-
-	$course = learn_press_get_the_course();
-
-	if ( $course->is_block_item_content_duration() === true &&
-		 ! empty( $course ) && $course->expires_to_milliseconds() > 0 ) {
-		echo '<input type="hidden" class="course-item-is-blocked" value="' . $course->expires_to_milliseconds() . '">';
-	}
-}
-
-//add_action( 'wp_head', 'learn_press_reload_page_when_duration_expires' );
-
 function learn_press_translate_course_result_required( $passing_condition = null ) {
 	$course = learn_press_get_course();
 
@@ -1255,5 +1188,6 @@ function learn_press_translate_course_result_required( $passing_condition = null
 			break;
 	}
 
-	return apply_filters( 'learn-press/translate-course-result-required', sprintf( __( 'Require %1$s %2$s', 'learnpress' ), $passing_condition . '%', $label ) );
+	return apply_filters( 'learn-press/translate-course-result-required',
+		sprintf( __( 'Require %1$s %2$s', 'learnpress' ), $passing_condition . '%', $label ) );
 }

@@ -61,9 +61,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		/**
 		 * Get default course meta.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @return mixed
+		 * @since 3.0.0
 		 */
 		public static function get_default_meta() {
 			$meta = array(
@@ -93,14 +92,13 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param bool  $the_course
 		 * @param array $args
 		 *
-		 * @return bool|LP_Course
+		 * @return mixed|bool|LP_Course
 		 */
 		public static function get_course( $the_course = false, $args = array() ) {
 			if ( is_numeric( $the_course ) && isset( LP_Global::$courses[ $the_course ] ) ) {
 				return LP_Global::$courses[ $the_course ];
 			}
 
-			LP_Debug::logTime( __FUNCTION__ );
 			$the_course = self::get_course_object( $the_course );
 
 			if ( ! $the_course ) {
@@ -147,25 +145,27 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			 * loaded or has been deleted for some reasons.
 			 */
 			$course->load();
-			LP_Debug::logTime( __FUNCTION__ );
 
 			return $course;
 		}
 
 		/**
-		 * @param  string $course_type
+		 * @param string $course_type
 		 *
 		 * @return string|false
 		 */
 		private static function get_class_name_from_course_type( $course_type ) {
-			return LP_COURSE_CPT === $course_type ? __CLASS__ : 'LP_Course_' . implode( '_', array_map( 'ucfirst', explode( '-', $course_type ) ) );
+			return LP_COURSE_CPT === $course_type ? __CLASS__ : 'LP_Course_' . implode(
+				'_',
+				array_map( 'ucfirst', explode( '-', $course_type ) )
+			);
 		}
 
 		/**
 		 * Get the course class name
 		 *
-		 * @param  WP_Post $the_course
-		 * @param  array   $args (default: array())
+		 * @param WP_Post $the_course
+		 * @param array   $args  (default: array())
 		 *
 		 * @return string
 		 */
@@ -182,10 +182,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		/**
 		 * Get the course object
 		 *
-		 * @param  mixed $the_course
+		 * @param mixed $the_course
 		 *
-		 * @uses   WP_Post
 		 * @return WP_Post|bool false on failure
+		 * @uses   WP_Post
 		 */
 		private static function get_course_object( $the_course ) {
 			$the_course_passed = $the_course;
@@ -205,6 +205,68 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			return apply_filters( 'learn-press/course/post-object', $the_course, $the_course_passed );
 		}
-	}
 
+		/**
+		 * Check time remaining course when enable duration expire
+		 * Value: -1 is no limit (default)
+		 * Value: 0 is block
+		 *
+		 * @return int second
+		 * @since 4.0.0
+		 * @author tungnx
+		 */
+		public function timestamp_remaining_duration(): int {
+			$timestamp_remaining = - 1;
+			$user                = learn_press_get_user( get_current_user_id() );
+
+			if ( current_user_can( 'administrator' ) ||
+				 ( current_user_can( LP_TEACHER_ROLE ) &&
+				   $this->get_author()->get_id() === $user->get_id() )
+			) {
+				return $timestamp_remaining;
+			}
+
+			if ( 0 === absint( $this->get_data( 'duration' ) ) ) {
+				return $timestamp_remaining;
+			}
+
+			if ( 'yes' !== $this->get_data( 'block_course_duration_expire' ) ) {
+				return $timestamp_remaining;
+			}
+
+			/**
+			 * Get cache
+			 * Please run wp_cache_delete('timestamp_remaining_duration_course_' . $this->get_id()); when save duration on course
+			 */
+			$timestamp_remaining = wp_cache_get(
+				'timestamp_remaining_duration_course_' . $this->get_id(),
+				'course-post'
+			);
+
+			if ( ! is_bool( $timestamp_remaining ) ) {
+				return $timestamp_remaining;
+			}
+
+			$course_item_data = $user->get_course_data( $this->get_id() );
+
+			$course_start_time   = $course_item_data->get_start_time()->get_raw_date();
+			$duration            = $this->get_data( 'duration' );
+			$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
+			$timestamp_current   = strtotime( current_time( 'mysql' ) );
+			$timestamp_remaining = $timestamp_expire - $timestamp_current;
+
+			if ( $timestamp_remaining < 0 ) {
+				$timestamp_remaining = 0;
+
+				// Set Cache
+				wp_cache_set(
+					'timestamp_remaining_duration_course_' . $this->get_id(),
+					$timestamp_remaining,
+					'course-post'
+				);
+			}
+
+			return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+		}
+	}
 }

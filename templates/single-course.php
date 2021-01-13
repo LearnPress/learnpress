@@ -18,6 +18,7 @@ get_header( 'course' );
  * @since 3.0.0
  */
 do_action( 'learn-press/before-main-content' );
+do_action( 'learn-press/before-main-content-single-course' );
 
 while ( have_posts() ) {
 	the_post();
@@ -27,10 +28,11 @@ while ( have_posts() ) {
 /**
  * @since 3.0.0
  */
+do_action( 'learn-press/after-main-content-single-course' );
 do_action( 'learn-press/after-main-content' );
 
 /**
- * LP Hook
+ * LP sidebar
  */
 do_action( 'learn-press/sidebar' );
 

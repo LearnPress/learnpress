@@ -11,7 +11,9 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
+$course                  = LP_Global::course();
+$user                    = learn_press_get_current_user();
+$can_view_content_course = $user->can_view_content_course( $course->get_id() );
 ?>
 
 <div class="course-curriculum" id="learn-press-course-curriculum">
@@ -19,19 +21,32 @@ $course = LP_Global::course();
 
 		<?php do_action( 'learn-press/before-single-course-curriculum' ); ?>
 
-		<?php $curriculum = $course->get_curriculum(); ?>
-
-		<?php if ( $curriculum ) : ?>
+		<?php
+		$curriculum = $course->get_curriculum();
+		if ( $curriculum ) :
+			?>
 			<ul class="curriculum-sections">
 				<?php
 				foreach ( $curriculum as $section ) {
-					learn_press_get_template( 'single-course/loop-section.php', array( 'section' => $section ) );
+					$args = array(
+						'section'                 => $section,
+						'can_view_content_course' => $can_view_content_course,
+					);
+
+					learn_press_get_template( 'single-course/loop-section.php', $args );
 				}
 				?>
 			</ul>
 
 		<?php else : ?>
-			<?php echo apply_filters( 'learn_press_course_curriculum_empty', esc_html__( 'Curriculum is empty', 'learnpress' ) ); ?>
+			<?php
+			echo wp_kses_post(
+				apply_filters(
+					'learnpress/course/curriculum/empty',
+					esc_html__( 'Curriculum is empty', 'learnpress' )
+				)
+			);
+			?>
 		<?php endif ?>
 
 		<?php do_action( 'learn-press/after-single-course-curriculum' ); ?>

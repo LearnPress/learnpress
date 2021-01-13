@@ -38,9 +38,11 @@ $show_sidebar = learn_press_cookie_get( 'sidebar-toggle' );
 
 		<?php
 		/**
+		 * Get content item's course
+		 *
 		 * @since 3.0.0
 		 *
-		 * @see   learn_press_single_item_summary()
+		 * @see LP_Template_Course::popup_content() - 30
 		 */
 		do_action( 'learn-press/single-item-summary' );
 		?>

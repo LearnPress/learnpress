@@ -124,10 +124,9 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 * @param bool $current
 	 *
 	 * @return LP_User|mixed
+	 * Todo: check this function - tungnx
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
-		LP_Debug::logTime( __FUNCTION__ );
-
 		$is_guest = false;
 		if ( $user_id != LP()->session->guest_user_id ) {
 			if ( $current && ! get_user_by( 'id', $user_id ) ) {
@@ -164,7 +163,6 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 
 			do_action( 'learn-press/get-user', LP_Global::$users[ $user_id ], $user_id );
 		}
-		LP_Debug::logTime( __FUNCTION__ );
 
 		return LP_Global::$users[ $user_id ];
 	}

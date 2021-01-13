@@ -491,6 +491,8 @@ class LP_Page_Controller {
 	 * @since  4.0.0
 	 */
 	private function get_page_template() {
+		$page_template = '';
+
 		if ( is_singular( LP_COURSE_CPT ) ) {
 			$page_template = 'single-course.php';
 
@@ -521,8 +523,6 @@ class LP_Page_Controller {
 			$page_template = 'pages/profile.php';
 		} elseif ( learn_press_is_checkout() ) {
 			$page_template = 'pages/checkout.php';
-		} else {
-			$page_template = '';
 		}
 
 		return apply_filters( 'learn-press/page-template', $page_template );

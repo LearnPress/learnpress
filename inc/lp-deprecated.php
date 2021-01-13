@@ -844,12 +844,6 @@ if ( ! function_exists( 'learn_press_course_item_content' ) ) {
 
 		$item = LP_Global::course_item();
 
-		if ( $item->is_blocked() ) {
-			learn_press_get_template( 'global/block-content.php' );
-
-			return;
-		}
-
 		/**
 		 * Fix only for WPBakery load style inline
 		 * custom CSS is provided, load inline style.

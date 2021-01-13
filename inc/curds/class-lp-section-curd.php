@@ -671,7 +671,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			)
 		);
 
-		if ( isset( $item['preview'] ) && $item['preview'] == 1 ) {
+		if ( isset( $item['preview'] ) && $item['preview'] ) {
 			update_post_meta( $item['id'], '_lp_preview', 'yes' );
 		} else {
 			delete_post_meta( $item['id'], '_lp_preview' );

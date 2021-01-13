@@ -250,6 +250,7 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_single_course_args' ) ) {
+	//Todo: check why call more time - tungnx
 	function learn_press_single_course_args() {
 		static $output = array();
 
@@ -1427,7 +1428,8 @@ add_action( 'wp_enqueue_scripts', 'learn_press_maybe_load_comment_js' );
 //}
 
 /** 3.3.0 */
-add_filter(
+// Comment by tungnx - not use
+/*add_filter(
 	'learn-press/can-view-item',
 	function ( $viewable, $item_id, $course_id ) {
 		return $viewable;
@@ -1478,7 +1480,7 @@ add_filter(
 	},
 	10,
 	3
-);
+);*/
 
 /**
  * @since 3.2.6

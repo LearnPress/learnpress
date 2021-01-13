@@ -38,10 +38,12 @@ add_action( 'learn-press/template-footer', LP()->template( 'general' )->func( 't
  *
  * @see LP_Template_General::breadcrumb()
  */
-add_action( 'learn-press/before-main-content', LP()->template( 'general' )->text( '<div class="lp-archive-courses">', 'lp-archive-courses-open' ), -100 );
+add_action( 'learn-press/before-main-content',
+	LP()->template( 'general' )->text( '<div class="lp-archive-courses">', 'lp-archive-courses-open' ), - 100 );
 add_action( 'learn-press/before-main-content', LP()->template( 'general' )->func( 'breadcrumb' ) );
 
-add_action( 'learn-press/after-main-content', LP()->template( 'general' )->text( '</div>', 'lp-archive-courses-close' ), 100 );
+add_action( 'learn-press/after-main-content', LP()->template( 'general' )->text( '</div>', 'lp-archive-courses-close' ),
+	100 );
 
 
 /**
@@ -61,15 +63,24 @@ learn_press_add_course_buttons();
 add_action( 'learn-press/before-courses-loop', LP()->template( 'course' )->func( 'courses_top_bar' ), 10 );
 
 /** BEGIN: Archive course loop item */
-add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->text( '<div class="course-wrap-thumbnail">', 'course-wrap-thumbnail-open' ), 1 );
-add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/badge-featured' ), 5 );
-add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/thumbnail.php' ), 10 );
-add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->text( '</div>', 'course-wrap-thumbnail-close' ), 1000 );
+add_action( 'learn-press/before-courses-loop-item',
+	LP()->template( 'course' )->text( '<div class="course-wrap-thumbnail">', 'course-wrap-thumbnail-open' ), 1 );
+add_action( 'learn-press/before-courses-loop-item',
+	LP()->template( 'course' )->callback( 'loop/course/badge-featured' ), 5 );
+add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/thumbnail.php' ),
+	10 );
+add_action( 'learn-press/before-courses-loop-item',
+	LP()->template( 'course' )->text( '</div>', 'course-wrap-thumbnail-close' ), 1000 );
 
-add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content --> <div class="course-content">', 'course-content-open' ), 1000 );
-add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/categories' ), 1010 );
-add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/instructor' ), 1010 );
-add_action( 'learn-press/courses-loop-item-title', LP()->template( 'course' )->callback( 'loop/course/title.php' ), 20 );
+add_action( 'learn-press/before-courses-loop-item',
+	LP()->template( 'course' )->text( '<!-- START .course-content --> <div class="course-content">',
+		'course-content-open' ), 1000 );
+add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/categories' ),
+	1010 );
+add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/instructor' ),
+	1010 );
+add_action( 'learn-press/courses-loop-item-title', LP()->template( 'course' )->callback( 'loop/course/title.php' ),
+	20 );
 
 /**
  * @see LP_Template_Course::courses_loop_item_meta()
@@ -80,30 +91,42 @@ add_action( 'learn-press/courses-loop-item-title', LP()->template( 'course' )->c
  * @see LP_Template_Course::loop_item_user_progress()
  */
 
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content-meta --> <div class="course-wrap-meta">', 'course-wrap-meta-open' ), 20 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/duration' ), 20 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
+add_action( 'learn-press/after-courses-loop-item',
+	LP()->template( 'course' )->text( '<!-- START .course-content-meta --> <div class="course-wrap-meta">',
+		'course-wrap-meta-open' ), 20 );
+add_action( 'learn-press/after-courses-loop-item',
+	LP()->template( 'course' )->callback( 'single-course/meta/duration' ), 20 );
+add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->callback( 'single-course/meta/level' ),
+	20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'count_object' ), 20 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content-meta -->', 'course-wrap-meta-close' ), 20 );
+add_action( 'learn-press/after-courses-loop-item',
+	LP()->template( 'course' )->text( '</div> <!-- END .course-content-meta -->', 'course-wrap-meta-close' ), 20 );
 
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_meta' ), 25 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_info_begin' ), 20 );
+add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_info_begin' ),
+	20 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'clearfix' ), 30 );
 
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content-footer --> <div class="course-footer">', 'course-footer-open' ), 40 );
+add_action( 'learn-press/after-courses-loop-item',
+	LP()->template( 'course' )->text( '<!-- START .course-content-footer --> <div class="course-footer">',
+		'course-footer-open' ), 40 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_price' ), 50 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content-footer -->', 'course-footer-close' ), 50 );
+add_action( 'learn-press/after-courses-loop-item',
+	LP()->template( 'course' )->text( '</div> <!-- END .course-content-footer -->', 'course-footer-close' ), 50 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'course_readmore' ), 55 );
 
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_info_end' ), 60 );
+add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_info_end' ),
+	60 );
 // add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'loop_item_user_progress' ), 70 );
 
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content -->', 'course-content-close' ), 1000 );
+add_action( 'learn-press/after-courses-loop-item',
+	LP()->template( 'course' )->text( '</div> <!-- END .course-content -->', 'course-content-close' ), 1000 );
 
 /** END: Archive course loop item */
 
 /** Archive course pagination */
-add_action( 'learn-press/after-courses-loop', LP()->template( 'course' )->callback( 'loop/course/pagination.php' ), 10 );
+add_action( 'learn-press/after-courses-loop', LP()->template( 'course' )->callback( 'loop/course/pagination.php' ),
+	10 );
 /** END: Archive course */
 
 /** BEGIN: Main content of single course */
@@ -113,34 +136,49 @@ add_action( 'learn-press/after-courses-loop', LP()->template( 'course' )->callba
 add_action( 'learn-press/single-course-summary', LP()->template( 'course' )->callback( 'single-course/content' ), 10 );
 
 // Content
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="course-detail-info"> <div class="lp-content-area"> <div class="course-info-left">', 'course-info-left-open' ), 10 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/meta-primary' ), 10 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->text( '<div class="course-detail-info"> <div class="lp-content-area"> <div class="course-info-left">',
+		'course-info-left-open' ), 10 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/meta-primary' ),
+	10 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/title' ), 10 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/meta-secondary' ), 10 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( ' </div> </div> </div>', 'course-info-left-close' ), 15 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->callback( 'single-course/meta-secondary' ), 10 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->text( ' </div> </div> </div>', 'course-info-left-close' ), 15 );
 
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="lp-entry-content lp-content-area">', 'lp-entry-content-open' ), 30 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<div class="entry-content-left">', 'entry-content-left-open' ), 35 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes_position_control' ), 39 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->text( '<div class="lp-entry-content lp-content-area">', 'lp-entry-content-open' ), 30 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->text( '<div class="entry-content-left">', 'entry-content-left-open' ), 35 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->func( 'course_extra_boxes_position_control' ), 39 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
 // add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/progress' ), 40 );
 // add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'remaining_time' ), 50 );
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tabs/tabs' ), 60 );
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tabs/tabs' ),
+	60 );
 // appear at bottom after enrolled
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 70 );
 
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( '<!-- end entry content left --> </div>', 'entry-content-left-close' ), 80 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->text( '<!-- end entry content left --> </div>', 'entry-content-left-close' ), 80 );
 
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/sidebar' ), 85 );
 
-add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->text( ' </div>', 'lp-entry-content-close' ), 100 );
+add_action( 'learn-press/course-content-summary',
+	LP()->template( 'course' )->text( ' </div>', 'lp-entry-content-close' ), 100 );
 
 // Meta
-add_action( 'learn-press/course-meta-primary-left', LP()->template( 'course' )->callback( 'single-course/meta/instructor' ), 10 );
-add_action( 'learn-press/course-meta-primary-left', LP()->template( 'course' )->callback( 'single-course/meta/category' ), 20 );
+add_action( 'learn-press/course-meta-primary-left',
+	LP()->template( 'course' )->callback( 'single-course/meta/instructor' ), 10 );
+add_action( 'learn-press/course-meta-primary-left',
+	LP()->template( 'course' )->callback( 'single-course/meta/category' ), 20 );
 
-add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )->callback( 'single-course/meta/duration' ), 10 );
-add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
+add_action( 'learn-press/course-meta-secondary-left',
+	LP()->template( 'course' )->callback( 'single-course/meta/duration' ), 10 );
+add_action( 'learn-press/course-meta-secondary-left',
+	LP()->template( 'course' )->callback( 'single-course/meta/level' ), 20 );
 add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )->func( 'count_object' ), 20 );
 
 
@@ -158,8 +196,10 @@ add_action( 'learn-press/course-summary-sidebar', LP()->template( 'course' )->fu
 /** END: Main content of single course */
 
 /** BEGIN: Course section */
-add_action( 'learn-press/section-summary', LP()->template( 'course' )->callback( 'single-course/section/title.php', array( 'section' ) ), 10 );
-add_action( 'learn-press/section-summary', LP()->template( 'course' )->callback( 'single-course/section/content.php', array( 'section' ) ), 20 );
+add_action( 'learn-press/section-summary',
+	LP()->template( 'course' )->callback( 'single-course/section/title.php', array( 'section' ) ), 10 );
+add_action( 'learn-press/section-summary',
+	LP()->template( 'course' )->callback( 'single-course/section/content.php', array( 'section' ) ), 20 );
 
 add_action(
 	'learn-press/after-section-loop-item-title',
@@ -181,13 +221,17 @@ add_action(
  * @see LP_Template_Course::item_meta_duration()
  * @see LP_Template_Course::quiz_meta_final()
  */
-add_action( 'learn-press/course-section-item/before-lp_quiz-meta', LP()->template( 'course' )->func( 'quiz_meta_questions' ), 10 );
-add_action( 'learn-press/course-section-item/before-lp_quiz-meta', LP()->template( 'course' )->func( 'item_meta_duration' ), 20 );
-add_action( 'learn-press/course-section-item/before-lp_quiz-meta', LP()->template( 'course' )->func( 'quiz_meta_final' ), 30 );
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta',
+	LP()->template( 'course' )->func( 'quiz_meta_questions' ), 10 );
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta',
+	LP()->template( 'course' )->func( 'item_meta_duration' ), 20 );
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta',
+	LP()->template( 'course' )->func( 'quiz_meta_final' ), 30 );
 /** END: Quiz item */
 
 /** BEGIN: Lesson item */
-add_action( 'learn-press/course-section-item/before-lp_lesson-meta', LP()->template( 'course' )->func( 'item_meta_duration' ), 10 );
+add_action( 'learn-press/course-section-item/before-lp_lesson-meta',
+	LP()->template( 'course' )->func( 'item_meta_duration' ), 10 );
 /** END: Lesson item */
 
 /** END: Course section */
@@ -227,11 +271,22 @@ add_action( 'learn-press/quiz-buttons', LP()->template( 'course' )->func( 'cours
  * @see LP_Template_Course::item_lesson_complete_button()
  * @see LP_Template_Course::course_finish_button()
  */
-add_action( 'learn-press/before-content-item-summary/lp_lesson', LP()->template( 'course' )->func( 'item_lesson_title' ), 10 );
-add_action( 'learn-press/content-item-summary/lp_lesson', LP()->template( 'course' )->func( 'item_lesson_content' ), 10 );
-add_action( 'learn-press/content-item-summary/lp_lesson', LP()->template( 'course' )->func( 'item_lesson_content_blocked' ), 15 );
-add_action( 'learn-press/after-content-item-summary/lp_lesson', LP()->template( 'course' )->func( 'item_lesson_complete_button' ), 10 );
-add_action( 'learn-press/after-content-item-summary/lp_lesson', LP()->template( 'course' )->func( 'course_finish_button' ), 15 );
+add_action(
+	'learn-press/before-content-item-summary/lp_lesson',
+	LP()->template( 'course' )->func( 'item_lesson_title' ),
+	10
+);
+add_action(
+	'learn-press/content-item-summary/lp_lesson',
+	LP()->template( 'course' )->func( 'item_lesson_content' ),
+	10
+);
+//add_action( 'learn-press/content-item-summary/lp_lesson',
+//	LP()->template( 'course' )->func( 'item_lesson_content_blocked' ), 15 );
+add_action( 'learn-press/after-content-item-summary/lp_lesson',
+	LP()->template( 'course' )->func( 'item_lesson_complete_button' ), 10 );
+add_action( 'learn-press/after-content-item-summary/lp_lesson',
+	LP()->template( 'course' )->func( 'course_finish_button' ), 15 );
 /** END: Popup lesson */
 
 /**
@@ -256,7 +311,11 @@ add_action( 'learn-press/user-profile-tabs', LP()->template( 'profile' )->func( 
 
 
 add_action( 'learn-press/profile/orders', LP()->template( 'profile' )->callback( 'profile/tabs/orders/list.php' ), 10 );
-add_action( 'learn-press/profile/orders', LP()->template( 'profile' )->callback( 'profile/tabs/orders/recover-order.php' ), 20 );
+add_action(
+	'learn-press/profile/orders',
+	LP()->template( 'profile' )->callback( 'profile/tabs/orders/recover-order.php' ),
+	20
+);
 
 /**
  * @see LP_Template_Profile::order_details()
@@ -271,8 +330,10 @@ add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->fu
  * @see LP_Template_Profile::dashboard_logged_in()
  */
 add_action( 'learn-press/profile/before-dashboard', LP()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
-add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_featured_courses' ), 20 );
-add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_latest_courses' ), 30 );
+add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_featured_courses' ),
+	20 );
+add_action( 'learn-press/profile/dashboard-summary', LP()->template( 'profile' )->func( 'dashboard_latest_courses' ),
+	30 );
 
 /**
  * @see LP_Template_Profile::dashboard_not_logged_in()
@@ -291,8 +352,10 @@ add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'regi
  * @see LP_Template_General::become_teacher_form_fields()
  * @see LP_Template_General::become_teacher_button()
  */
-add_action( 'learn-press/before-become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_messages' ), 10 );
-add_action( 'learn-press/before-become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_heading' ), 20 );
+add_action( 'learn-press/before-become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_messages' ),
+	10 );
+add_action( 'learn-press/before-become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_heading' ),
+	20 );
 add_action( 'learn-press/become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_form_fields' ), 10 );
 add_action( 'learn-press/after-become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_button' ), 10 );
 /** END: Become teacher form */
@@ -312,7 +375,8 @@ add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->fun
 // ******************************************************************************************************************* //
 
 add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
-add_action( 'learn-press/before-content-item-summary/lp_quiz', LP()->template( 'course' )->callback( 'content-quiz/title.php' ), 5 );
+add_action( 'learn-press/before-content-item-summary/lp_quiz',
+	LP()->template( 'course' )->callback( 'content-quiz/title.php' ), 5 );
 add_action( 'learn-press/content-item-summary/lp_quiz', LP()->template( 'course' )->callback( 'content-quiz/js' ), 25 );
 add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item', 5 );
 add_action( 'learn-press/after-single-course', 'learn_press_single_course_args', 5 );
@@ -321,7 +385,11 @@ add_filter( 'document_title_parts', 'learn_press_single_document_title_parts', 5
 add_filter( 'body_class', 'learn_press_body_classes', 10 );
 add_filter( 'post_class', 'learn_press_course_class', 15, 3 );
 add_action( 'wp_head', 'learn_press_single_course_args', 5 );
-add_action( 'learn-press/before-checkout-order-review', LP()->template( 'course' )->callback( 'checkout/form-logged-in.php' ), 10 );
+add_action(
+	'learn-press/before-checkout-order-review',
+	LP()->template( 'course' )->callback( 'checkout/form-logged-in.php' ),
+	10
+);
 add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
 add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 
@@ -331,13 +399,13 @@ add_filter( 'excerpt_length', 'learn_press_custom_excerpt_length', 999 );
 /**
  * Filter to hide the section if there is no item.
  *
- * @since 4.0.0
- *
- * @param bool              $visible
+ * @param bool $visible
  * @param LP_Course_Section $section
- * @param LP_Course         $course
+ * @param LP_Course $course
  *
  * @return bool
+ * @since 4.0.0
+ *
  */
 function learn_press_filter_section_visible( $visible, $section, $course ) {
 	if ( ! $section->get_items() ) {

@@ -425,6 +425,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/content-item/popup-sidebar' );
 	}
 
+	/**
+	 * Get single item's course
+	 */
 	public function popup_content() {
 		learn_press_get_template( 'single-course/content-item/popup-content' );
 	}
@@ -461,6 +464,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/tabs/curriculum' );
 	}
 
+	/**
+	 * Get template content item's course
+	 */
 	public function course_content_item() {
 		learn_press_get_template( 'single-course/content-item' );
 	}
@@ -512,6 +518,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 			echo '<style type="text/css" data-type="vc_shortcodes-custom-css">';
 			echo $shortcodes_custom_css;
 			echo '</style>';
+		}
+		// End
+
+		// Get timestamp remaining duration of course
+		$timestamp_remaining = $item->get_course()->timestamp_remaining_duration();
+
+		if ( $timestamp_remaining > 0 ) {
+			echo '<input type="hidden" name="lp-course-timestamp-remaining" value="' . esc_attr( $timestamp_remaining ) . '">';
 		}
 		// End
 

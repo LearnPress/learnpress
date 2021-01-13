@@ -6,12 +6,15 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $section ) ) {
+/**
+ * @var LP_Course_Section $section
+ */
+if ( ! isset( $section ) || ! isset( $can_view_content_course ) ) {
 	return;
 }
 
@@ -23,7 +26,12 @@ if ( ! apply_filters( 'learn-press/section-visible', true, $section, $course ) )
 
 $user        = learn_press_get_current_user();
 $user_course = $user->get_course_data( get_the_ID() );
-$items       = $section->get_items();
+/**
+ * List items of section
+ *
+ * @var LP_Course_Item[]
+ */
+$items = $section->get_items();
 ?>
 
 <li <?php $section->main_class(); ?>
@@ -64,7 +72,7 @@ $items       = $section->get_items();
 				</div>
 			</div>
 
-			<?php do_action('learnpress/single-course/section-header/after', $section ); ?>
+			<?php do_action( 'learnpress/single-course/section-header/after', $section ); ?>
 		<?php endif; ?>
 	</div>
 
@@ -76,14 +84,15 @@ $items       = $section->get_items();
 
 		<ul class="section-content">
 
-			<?php foreach ( $items as $item ) : ?>
+			<?php
+			foreach ( $items as $item ) :
+				$can_view_item = $user->can_view_item( $item->get_id(), $can_view_content_course );
+				?>
 				<li class="<?php echo esc_attr( implode( ' ', $item->get_class() ) ); ?>"
 					data-id="<?php echo esc_attr( $item->get_id() ); ?>">
 
-					<?php do_action( 'learn-press/before-section-loop-item', $item, $section, $course ); ?>
-
 					<?php
-					$can_view_item = $user->can_view_item( $item->get_id() );
+					do_action( 'learn-press/before-section-loop-item', $item, $section, $course );
 
 					$item_link = $can_view_item->flag ? $item->get_permalink() : 'javascript:void(0);';
 					$item_link = apply_filters(

@@ -147,25 +147,33 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$post_object = get_post( $id );
 			$this->_set_data(
 				array(
-					'status'               => $post_object->post_status,
+					'status'                       => $post_object->post_status,
 					// 'required_enroll'      => get_post_meta( $id, '_lp_required_enroll', true ),
-					'price'                => get_post_meta( $id, '_lp_price', true ),
-					'sale_price'           => get_post_meta( $id, '_lp_sale_price', true ),
-					'sale_start'           => get_post_meta( $id, '_lp_sale_start', true ),
-					'sale_end'             => get_post_meta( $id, '_lp_sale_end', true ),
-					'duration'             => get_post_meta( $id, '_lp_duration', true ),
-					'max_students'         => get_post_meta( $id, '_lp_max_students', true ),
-					'students'             => false,
-					'fake_students'        => get_post_meta( $id, '_lp_students', true ),
+					'price'                        => get_post_meta( $id, '_lp_price', true ),
+					'sale_price'                   => get_post_meta( $id, '_lp_sale_price', true ),
+					'sale_start'                   => get_post_meta( $id, '_lp_sale_start', true ),
+					'sale_end'                     => get_post_meta( $id, '_lp_sale_end', true ),
+					'duration'                     => get_post_meta( $id, '_lp_duration', true ),
+					'max_students'                 => get_post_meta( $id, '_lp_max_students', true ),
+					'students'                     => false,
+					'fake_students'                => get_post_meta( $id, '_lp_students', true ),
 					// 'retake_count'         => get_post_meta( $id, '_lp_retake_count', true ),
-					'featured'             => get_post_meta( $id, '_lp_featured', true ),
-					'block_lesson_content' => get_post_meta( $id, '_lp_block_lesson_content', true ),
-					'course_result'        => get_post_meta( $id, '_lp_course_result', true ),
-					'passing_condition'    => get_post_meta( $id, '_lp_passing_condition', true ),
-					// 'payment'              => get_post_meta( $id, '_lp_payment', true ),
-					'final_quiz'           => get_post_meta( $id, '_lp_final_quiz', true ),
-					'external_link'        => get_post_meta( $id, '_lp_external_link_buy_course', true ),
-					// 'external_link_text'   => get_post_meta( $id, '_lp_external_link_text', true ),
+					'featured'                     => get_post_meta( $id, '_lp_featured', true ),
+					'block_lesson_content'         => get_post_meta( $id, '_lp_block_lesson_content', true ),
+					'course_result'                => get_post_meta( $id, '_lp_course_result', true ),
+					'passing_condition'            => get_post_meta( $id, '_lp_passing_condition', true ),
+					'final_quiz'                   => get_post_meta( $id, '_lp_final_quiz', true ),
+					'external_link'                => get_post_meta( $id, '_lp_external_link_buy_course', true ),
+					'block_course_duration_expire' => get_post_meta(
+						$id,
+						'_lp_block_items_course_expire_duration',
+						true
+					),
+					'block_course_finished'        => get_post_meta(
+						$id,
+						'_lp_block_items_course_finished',
+						true
+					),
 				)
 			);
 		}
@@ -1027,7 +1035,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					LP_Helper_CURD::cache_posts( $this->get_item_ids() );
 				}
 
-				$item = LP_Course_Item::get_item( $item_id, $this );
+				$item = LP_Course_Item::get_item( $item_id, $this->get_id() );
 			}
 
 			return apply_filters( 'learn-press/course-item', $item, $item_id, $this->get_id() );

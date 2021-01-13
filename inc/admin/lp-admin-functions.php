@@ -2477,7 +2477,7 @@ function learn_press_get_screen_id() {
  * @return bool
  * @since 3.2.6
  */
-function learn_press_is_admin_page() {
+/*function learn_press_is_admin_page() {
 	$screen_id     = learn_press_get_screen_id();
 	$is_learnpress = false;
 
@@ -2497,7 +2497,7 @@ function learn_press_is_admin_page() {
 	}
 
 	return apply_filters( 'learn-press/is-admin-page', $is_learnpress, $screen_id );
-}
+}*/
 
 function learn_press_get_orders_status_chart_data() {
 	$data = array(

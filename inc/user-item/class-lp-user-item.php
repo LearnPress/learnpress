@@ -746,18 +746,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $interval;
 	}
 
-	/**
-	 * Check user can view course's item
-	 *
-	 * @return bool
-	 */
-	public function current_user_can_view() {
-		$user          = $this->get_user();
-		$can_view_item = $user->can_view_item( $this->get_id(), $this->get_course( 'id' ) );
-
-		return $can_view_item->flag;
-	}
-
 	public function get_history() {
 		return LP_Object_Cache::get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_course( 'id' ),
 			$this->get_id() ), 'learn-press/user-course-items' );
@@ -799,6 +787,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return bool|float|int
 	 * @since 3.3.0
+	 * Todo: check remove function
 	 */
 	public function is_exceeded() {
 		$expiration = $this->get_expiration_time();
@@ -1034,21 +1023,21 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $this->_data_key !== md5( serialize( $new_data ) );
 	}
 
-	public function get_js_args() {
-		$course  = $this->get_course();
-		$item_js = array(
-			'status'   => '',
-			'url'      => $course->get_item_link( $this->get_id() ),
-			'viewable' => '',
-		);
-
-		if ( $this->current_user_can_view() ) {
-			$item_js['status']   = $this->get_status();
-			$item_js['viewable'] = true;
-		}
-
-		return $item_js;
-	}
+//	public function get_js_args() {
+//		$course  = $this->get_course();
+//		$item_js = array(
+//			'status'   => '',
+//			'url'      => $course->get_item_link( $this->get_id() ),
+//			'viewable' => '',
+//		);
+//
+//		if ( $this->current_user_can_view() ) {
+//			$item_js['status']   = $this->get_status();
+//			$item_js['viewable'] = true;
+//		}
+//
+//		return $item_js;
+//	}
 
 	protected function _set_data_date( $key, $value, $extra = false ) {
 		if ( $value instanceof LP_Datetime ) {
