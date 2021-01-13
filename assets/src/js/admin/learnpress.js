@@ -515,6 +515,27 @@ const lpMetaboxsalePriceDate = () => {
 	} );
 };
 
+const lpHidePassingGrade = () => {
+	const listHides = [ 'evaluate_final_quiz', 'evaluate_final_assignment' ];
+	const inputLists = document.querySelectorAll( 'input[type=radio][name=_lp_course_result]' );
+
+	[ ...inputLists ].map( ( ele, i ) => {
+		if ( ele.checked && listHides.includes( ele.value ) ) {
+			$( '._lp_passing_condition_field' ).hide();
+		}
+
+		return null;
+	} );
+
+	$( 'input[type=radio][name=_lp_course_result]' ).on( 'change', function( e ) {
+		if ( listHides.includes( e.target.value ) ) {
+			$( '._lp_passing_condition_field' ).hide();
+		} else {
+			$( '._lp_passing_condition_field' ).show();
+		}
+	} );
+};
+
 const callbackFilterTemplates = function callbackFilterTemplates() {
 	const $link = $( this );
 
@@ -625,6 +646,7 @@ const onReady = function onReady() {
 	lpMetaboxImage();
 	lpMetaboxsalePriceDate();
 	lpMetaboxExtraInfo();
+	lpHidePassingGrade();
 
 	$( document )
 		.on( 'click', '.learn-press-payments .status .dashicons', togglePaymentStatus )

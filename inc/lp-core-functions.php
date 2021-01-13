@@ -3479,7 +3479,7 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 		'evaluate_mark'       => __( 'Evaluate by achieved marks per total marks of all questions.', 'learnpress' ),
 	);
 
-	$methods = array(
+	$methods = apply_filters( 'learnpress/course-evaluation/methods', array(
 		'evaluate_lesson'     => __( 'Evaluate via lessons',
 				'learnpress' ) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
 		'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf( $course_tip,
@@ -3490,10 +3490,9 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 				$course_desc['evaluate_questions'] ),
 		'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf( $course_tip,
 				$course_desc['evaluate_mark'] ),
-	);
+	) );
 
-	return apply_filters( 'learn-press/course-evaluation-methods',
-		$return === 'keys' ? array_keys( $methods ) : $methods, $return );
+	return apply_filters( 'learn-press/course-evaluation-methods', $return === 'keys' ? array_keys( $methods ) : $methods, $return );
 }
 
 /**
