@@ -3,5 +3,8 @@ body.course-item-popup #learn-press-course-curriculum, body.course-item-popup #l
 	overflow-y: scroll!important;
 	height: 100%
 }
+body.course-item-popup.theme-coaching #learn-press-course-curriculum{
+	position: relative;
+}
 body.course-item-popup #course-curriculum-popup #popup-sidebar #learn-press-course-curriculum {height: 100%;}
 #course-curriculum-popup #popup-sidebar #learn-press-course-curriculum::before{display: none}
