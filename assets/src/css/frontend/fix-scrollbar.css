@@ -1,3 +1,7 @@
-body.course-item-popup #learn-press-course-curriculum, body.course-item-popup #learn-press-content-item {overflow-y: scroll; height: 100%}
+body.course-item-popup #learn-press-course-curriculum, body.course-item-popup #learn-press-content-item {
+	overflow: visible!important;
+	overflow-y: scroll!important;
+	height: 100%
+}
 body.course-item-popup #course-curriculum-popup #popup-sidebar #learn-press-course-curriculum {height: 100%;}
 #course-curriculum-popup #popup-sidebar #learn-press-course-curriculum::before{display: none}
