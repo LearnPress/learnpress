@@ -20,16 +20,19 @@ class LP_Email_Type_Order extends LP_Email {
 	public function __construct() {
 		parent::__construct();
 
-		$this->support_variables = array_merge(
-			$this->general_variables,
-			array(
-				'{{order_id}}',
-				'{{order_user_id}}',
-				'{{order_user_name}}',
-				'{{order_items_table}}',
-				'{{order_detail_url}}',
-				'{{order_number}}',
-				'{{order_key}}'
+		$this->support_variables = apply_filters(
+			'lp/email/order/support_variable',
+			array_merge(
+				$this->general_variables,
+				array(
+					'{{order_id}}',
+					'{{order_user_id}}',
+					'{{order_user_name}}',
+					'{{order_items_table}}',
+					'{{order_detail_url}}',
+					'{{order_number}}',
+					'{{order_key}}'
+				)
 			)
 		);
 	}
@@ -37,9 +40,9 @@ class LP_Email_Type_Order extends LP_Email {
 	/**
 	 * Get courses instructor.
 	 *
+	 * @return array
 	 * @since 3.0.0
 	 *
-	 * @return array
 	 */
 	public function get_course_instructors() {
 		$order_id = $this->order_id;
@@ -67,7 +70,7 @@ class LP_Email_Type_Order extends LP_Email {
 	 * Get template data object.
 	 *
 	 * @param int $order_id
-	 * @param     array
+	 * @param array
 	 *
 	 * @return array
 	 */
@@ -84,7 +87,8 @@ class LP_Email_Type_Order extends LP_Email {
 				'order_id'          => $order_id,
 				'order_user_id'     => $order->get_user_id(),
 				'order_user_name'   => $order->get_user_name(),
-				'order_items_table' => learn_press_get_template_content( "emails/{$content_type}/order-items-table.php", array( 'order_id' => $order_id ) ),
+				'order_items_table' => learn_press_get_template_content( "emails/{$content_type}/order-items-table.php",
+					array( 'order_id' => $order_id ) ),
 				'order_detail_url'  => $order->get_view_order_url(),
 				'order_number'      => $order->get_order_number(),
 				'order_subtotal'    => $order->get_formatted_order_subtotal(),
@@ -148,7 +152,8 @@ class LP_Email_Type_Order extends LP_Email {
 			}
 		}
 
-		return $this->get_email_format() == 'html' ? learn_press_format_price( $total, learn_press_get_currency_symbol( $order->get_currency() ) ) : $total . " " . $order->get_currency();
+		return $this->get_email_format() == 'html' ? learn_press_format_price( $total,
+			learn_press_get_currency_symbol( $order->get_currency() ) ) : $total . " " . $order->get_currency();
 	}
 
 	/**
