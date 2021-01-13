@@ -41,38 +41,61 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 				$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
 
 				foreach ( $links as $link ) {
-					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'],
-							$link['class'], $link['data'], $link['title'] ) . '</li>';
+					$drop_down[] = '<li>' . sprintf(
+						'<a href="%s" class="%s" data-post-id="%s">%s</a>',
+						$link['link'],
+						$link['class'],
+						$link['data'],
+						$link['title']
+					) . '</li>';
 				};
 
 				$drop_down[] = '</ul>';
-				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>',
-					'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
+				$link        = sprintf(
+					'<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>',
+					'javascript: void(0);',
+					__( 'Course', 'learnpress' ),
+					join( "\n", $drop_down )
+				);
 
 			} else {
 				$link = array_shift( $links );
-				$link = sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'],
-					$link['data'], $link['title'] );
+				$link = sprintf(
+					'<a href="%s" class="%s" data-post-id="%s">%s</a>',
+					$link['link'],
+					$link['class'],
+					$link['data'],
+					$link['title']
+				);
 			}
 
 			$actions['lp-duplicate-row-action'] = $link;
 
 		} elseif ( LP_QUIZ_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>',
-				$post->ID, _x( 'Copy', 'copy quiz', 'learnpress' ) );
+			$link                               = sprintf(
+				'<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>',
+				$post->ID,
+				_x( 'Duplicate', 'copy quiz', 'learnpress' )
+			);
 			$actions['lp-duplicate-row-action'] = $link;
 
 		} elseif ( LP_QUESTION_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>',
-				$post->ID, _x( 'Copy', 'copy question', 'learnpress' ) );
+			$link                               = sprintf(
+				'<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>',
+				$post->ID,
+				_x( 'Duplicate', 'copy question', 'learnpress' )
+			);
 			$actions['lp-duplicate-row-action'] = $link;
 
 		} elseif ( LP_LESSON_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>',
-				$post->ID, _x( 'Copy', 'copy lesson', 'learnpress' ) );
+			$link                               = sprintf(
+				'<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>',
+				$post->ID,
+				_x( 'Duplicate', 'copy lesson', 'learnpress' )
+			);
 			$actions['lp-duplicate-row-action'] = $link;
 		}
 
@@ -147,7 +170,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param bool
  *
@@ -188,7 +211,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -239,7 +262,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 
 	$replace .= ' data-selected="' . $selected . '"';
 	$replace .= " data-placeholder='" . __( 'Select a page&hellip;', 'learnpress' ) . "' id=";
-	$output  = '<div class="list-pages-wrapper">' . str_replace( ' id=', $replace, $output );
+	$output   = '<div class="list-pages-wrapper">' . str_replace( ' id=', $replace, $output );
 
 	if ( $before ) {
 		$before_output = array();
@@ -249,8 +272,12 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		}
 
 		$before_output = join( "\n", $before_output );
-		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1",
-			$output, 1 );
+		$output        = preg_replace(
+			'!(<option class=".*" value="[0-9]+".*>.*</option>)!',
+			$before_output . "\n$1",
+			$output,
+			1
+		);
 	}
 
 	$output = str_replace( '<option class="level-0" value="00000">#0 (no title)</option>', '', $output );
@@ -325,12 +352,21 @@ function learn_press_dropdown_question_types( $args = array() ) {
 
 	$args['class'] = 'lp-dropdown-question-types' . ( $args['class'] ? ' ' . $args['class'] : '' );
 	$types         = learn_press_question_types();
-	$output        = sprintf( '<select name="%s" id="%s" class="%s"%s>', $args['name'], $args['id'], $args['class'],
-		$args['selected'] ? 'data-selected="' . $args['selected'] . '"' : '' );
+	$output        = sprintf(
+		'<select name="%s" id="%s" class="%s"%s>',
+		$args['name'],
+		$args['id'],
+		$args['class'],
+		$args['selected'] ? 'data-selected="' . $args['selected'] . '"' : ''
+	);
 
 	foreach ( $types as $slug => $name ) {
-		$output .= sprintf( '<option value="%s"%s>%s</option>', $slug,
-			selected( $slug == $args['selected'], true, false ), $name );
+		$output .= sprintf(
+			'<option value="%s"%s>%s</option>',
+			$slug,
+			selected( $slug == $args['selected'], true, false ),
+			$name
+		);
 	}
 
 	$output .= '</select>';
@@ -345,7 +381,7 @@ function learn_press_dropdown_question_types( $args = array() ) {
 /**
  * List all registered question types into dropdown
  *
- * @param array $args
+ * @param array       $args
  * @param LP_Question $question
  *
  * @return string
@@ -384,16 +420,16 @@ function learn_press_field_question_duration( $args = array(), $question = null 
 	}
 
 	return '<span class="' . esc_attr( $wrap_class ) . '">' . sprintf(
-			'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
-			$args['class'],
-			$args['name'],
-			empty( $args['clone'] ) ? $args['id'] : '',
-			$args['value'],
-			$args['step'],
-			$args['min'],
-			! empty( $args['max'] ) ? $args['max'] : '',
-			$args['placeholder']
-		) . $args['placeholder'] . '</span>';
+		'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
+		$args['class'],
+		$args['name'],
+		empty( $args['clone'] ) ? $args['id'] : '',
+		$args['value'],
+		$args['step'],
+		$args['min'],
+		! empty( $args['max'] ) ? $args['max'] : '',
+		$args['placeholder']
+	) . $args['placeholder'] . '</span>';
 }
 
 /**
@@ -440,8 +476,12 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 	}
 
 	foreach ( $formats as $name => $text ) {
-		$output .= sprintf( '<option value="%s" %s>%s</option>', $name,
-				selected( $args['selected'] == $name, true, false ), $text ) . "\n";
+		$output .= sprintf(
+			'<option value="%s" %s>%s</option>',
+			$name,
+			selected( $args['selected'] == $name, true, false ),
+			$text
+		) . "\n";
 	}
 	$output .= '</select>';
 
@@ -581,8 +621,10 @@ function learn_press_footer_advertisement() {
 		return;
 	}
 
-	if ( ! ( ( in_array( $screen->post_type,
-				$admin_post_type ) && $screen->base === 'edit' ) || ( in_array( $screen->id, $pages ) ) ) ) {
+	if ( ! ( ( in_array(
+		$screen->post_type,
+		$admin_post_type
+	) && $screen->base === 'edit' ) || ( in_array( $screen->id, $pages ) ) ) ) {
 		return;
 	}
 
@@ -802,8 +844,8 @@ function learn_press_get_courses_by_price( $fee ) {
 /**
  * Get data about students to render in chart
  *
- * @param null $from
- * @param null $by
+ * @param null  $from
+ * @param null  $by
  * @param float $time_ago
  *
  * @return array
@@ -854,8 +896,8 @@ function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0
 /**
  * Get data about students to render in chart
  *
- * @param null $from
- * @param null $by
+ * @param null  $from
+ * @param null  $by
  * @param float $time_ago
  *
  * @return array
@@ -1006,8 +1048,8 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
 /**
  * Get data about students to render in chart
  *
- * @param null $from
- * @param null $by
+ * @param null  $from
+ * @param null  $by
  * @param float $time_ago
  *
  * @return array
@@ -1069,7 +1111,7 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 	$query_where = '';
 
 	if ( current_user_can( LP_TEACHER_ROLE ) ) {
-		$user_id     = learn_press_get_current_user_id();
+		$user_id      = learn_press_get_current_user_id();
 		$query_where .= $wpdb->prepare( ' AND c.post_author=%d ', $user_id );
 	}
 
@@ -1212,8 +1254,8 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 /**
  * Get data about students to render in chart
  *
- * @param null $from
- * @param null $by
+ * @param null  $from
+ * @param null  $by
  * @param float $time_ago
  *
  * @return array
@@ -1281,7 +1323,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 					 . " AND loim.meta_key='_course_id' "
 					 . ' AND CAST(loim.meta_value AS SIGNED)=%d ';
 		if ( current_user_can( LP_TEACHER_ROLE ) ) {
-			$user_id  = learn_press_get_current_user_id();
+			$user_id   = learn_press_get_current_user_id();
 			$sql_join .= $wpdb->prepare(
 				' AND CAST(loim.meta_value AS SIGNED) IN '
 				. ' ( '
@@ -1292,7 +1334,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 		$query_join .= $wpdb->prepare( $sql_join, $course_id );
 
 	} elseif ( 'category' === $report_sales_by ) {
-		$sql_join   .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
+		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
 					   . ' ON o.ID=lpoi.order_id '
 					   . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
 					   . ' ON lpoi.order_item_id=loim.learnpress_order_item_id '
@@ -1306,7 +1348,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 		$query_join .= $wpdb->prepare( $sql_join, $cat_id );
 	}
 	if ( current_user_can( LP_TEACHER_ROLE ) ) {
-		$user_id     = learn_press_get_current_user_id();
+		$user_id      = learn_press_get_current_user_id();
 		$query_where .= $wpdb->prepare(
 			" AND o.ID IN( SELECT oi.order_id
 										FROM lptest.{$wpdb->prefix}learnpress_order_items oi
@@ -1535,7 +1577,7 @@ function set_post_order_in_admin( $wp_query ) {
 	}
 }
 
-//add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
+// add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;
@@ -1569,7 +1611,8 @@ function learn_press_copy_post_meta( $from_id, $to_id ) {
  * @editor tungnx
  * @reason not use
  */
-/*function learn_press_install_add_on( $plugin_name ) {
+/*
+function learn_press_install_add_on( $plugin_name ) {
 	require_once LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php';
 	$upgrader = new LP_Upgrader();
 
@@ -1834,9 +1877,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	/**
 	 * Duplicate post.
 	 *
-	 * @param null $post_id
+	 * @param null  $post_id
 	 * @param array $args
-	 * @param bool $meta
+	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
 	 * @since 3.0.0
@@ -1897,8 +1940,12 @@ if ( ! function_exists( 'learn_press_duplicate_post_meta' ) ) {
 
 		if ( count( $post_meta_infos ) != 0 ) {
 			$excerpt       = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
-			$excerpt       = apply_filters( 'learn_press_excerpt_duplicate_post_meta', $excerpt, $old_post_id,
-				$new_post_id );
+			$excerpt       = apply_filters(
+				'learn_press_excerpt_duplicate_post_meta',
+				$excerpt,
+				$old_post_id,
+				$new_post_id
+			);
 			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
 			$sql_query_sel = array();
 
@@ -1984,8 +2031,12 @@ if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 			);
 
 			$quiz_question_data = $wpdb->get_row( $sql );
-			$max_order          = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d",
-				$quiz_id ) );
+			$max_order          = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d",
+					$quiz_id
+				)
+			);
 
 			if ( $quiz_question_data ) {
 				$wpdb->insert(
@@ -2118,8 +2169,8 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
 /**
  * Get general data to render in chart
  *
- * @param null $from
- * @param null $by
+ * @param null  $from
+ * @param null  $by
  * @param float $time_ago
  *
  * @return array
@@ -2195,7 +2246,7 @@ function learn_press_get_chart_general( $from = null, $by = null, $time_ago = 0 
 
 	$query_where = '';
 	if ( current_user_can( LP_TEACHER_ROLE ) ) {
-		$user_id     = learn_press_get_current_user_id();
+		$user_id      = learn_press_get_current_user_id();
 		$query_where .= $wpdb->prepare( ' AND c.post_author=%d ', $user_id );
 	}
 
@@ -2369,12 +2420,12 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 
 	if ( $for_post ) {
 		$edit = ! ( in_array(
-						$post->post_status,
-						array(
-							'draft',
-							'pending',
-						)
-					) && ( ! $post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+			$post->post_status,
+			array(
+				'draft',
+				'pending',
+			)
+		) && ( ! $post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
 	}
 
 	$tab_index_attribute = '';
@@ -2418,7 +2469,7 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
  * Filter to modal search items to void filter the posts by author.
  *
  * @param int|string $context_id
- * @param string $context
+ * @param string     $context
  *
  * @return bool|int|string
  * @since 3.0.4
@@ -2477,7 +2528,8 @@ function learn_press_get_screen_id() {
  * @return bool
  * @since 3.2.6
  */
-/*function learn_press_is_admin_page() {
+/*
+function learn_press_is_admin_page() {
 	$screen_id     = learn_press_get_screen_id();
 	$is_learnpress = false;
 
@@ -2573,7 +2625,7 @@ function learn_press_option_course_evaluation_method( $method ) {
 					<?php _e( 'Only check <strong><em>the final quiz</em></strong> result', 'learnpress' ); ?>
 				</label>
 			</p>
-		<?php
+			<?php
 	}
 }
 
