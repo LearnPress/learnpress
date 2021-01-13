@@ -168,7 +168,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		 */
 		if ( $styles = $this->_get_styles() ) {
 			foreach ( $styles as $handle => $data ) {
-				wp_enqueue_style( $handle, $data );
+				wp_enqueue_style( $handle, $data, array(),  self::$_version_assets );
 			}
 		}
 	}

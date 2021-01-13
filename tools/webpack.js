@@ -97,6 +97,7 @@ const options = {
 			src: [
 				'./assets/src/css/vendor/jquery.tipsy.css',
 				'./assets/src/css/vendor/font-awesome.min.css',
+				'./assets/src/css/frontend/fix-scrollbar.css',
 			],
 			dest( code ) {
 				return minifyCssDest( `assets/css/bundle`, code );
