@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_User_Guest extends LP_Abstract_User {
+class LP_User_Guest extends LP_User {
 
 	/**
 	 * @param $the_user
