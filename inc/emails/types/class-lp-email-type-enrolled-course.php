@@ -78,7 +78,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 
 		$user   = learn_press_get_user( $this->user_id );
 		$course = learn_press_get_course( $this->course_id );
-
+		$order = $user->get_course_order( $this->user_item_id->get_item_id() );
 		$object = array();
 
 		if ( $course ) {
@@ -91,7 +91,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 						'course_name' => $course->get_title(),
 						'course_url'  => $course->get_permalink()
 					)
-				)
+				),$order
 			);
 		}
 
