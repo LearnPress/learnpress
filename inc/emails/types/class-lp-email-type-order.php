@@ -99,7 +99,9 @@ class LP_Email_Type_Order extends LP_Email {
 						strtotime( $order->get_order_date() ) ),
 					'order_key'         => $order->get_order_key()
 				)
-			),$order );
+			),
+			$order
+		);
 
 		$this->get_variable();
 
