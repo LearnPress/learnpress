@@ -6761,7 +6761,7 @@ msgstr "non classé"
 
 #: templates/single-course/buttons/finish.php:24
 msgid "Finish course"
-msgstr "Finir le cours"
+msgstr "Terminer le cours"
 
 #: inc/course/abstract-course.php:673 inc/custom-post-types/course.php:1376
 #: inc/admin/views/statistics/courses.php:46
@@ -8064,3 +8064,9 @@ msgstr "Aucun article trouvé"
 #: inc/custom-post-types/question.php:195
 msgid "No questions found"
 msgstr "Aucune question trouvée"
+
+msgid "Payment Medthod"
+msgstr "Méthode de paiement"
+
+msgid "Invoice No."
+msgstr "Facture nº"
