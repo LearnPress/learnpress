@@ -58,7 +58,3 @@ body.course-item-popup #course-curriculum-popup #popup-sidebar #learn-press-cour
 
 	/* end fix theme coaching  */
 }
-
-.course-item-popup.wpadminbar #wpadminbar {
-	display: none !important;
-}
