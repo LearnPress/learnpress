@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.3
 Tested up to: 5.6
 Requires PHP: 7.0
-Stable tag: 3.2.8.4
+Stable tag: 3.2.8.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -196,6 +196,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 3.2.8.5 =
+~ Fix header lesson style error on iphone
+~ Fix scrollbar error some themes
+~ Fix scroll js to item user viewing
+~ Add filter 'lp/email/type-order/object', 'lp/email/order/support_variable'
 
 = 3.2.8.4 =
 ~ Add function Scan database if have not index in table will create
