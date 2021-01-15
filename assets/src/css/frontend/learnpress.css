@@ -915,7 +915,7 @@ body.course-item-popup {
   _opacity: 0; }
   body.course-item-popup #learn-press-course-curriculum {
     position: fixed;
-    top: 60px;
+    padding-top: 60px;
     bottom: 0;
     left: 0;
     width: 400px;
