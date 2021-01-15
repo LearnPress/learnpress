@@ -581,72 +581,49 @@
 			} );
 		};
 
+		this.scrollToItemViewing = function() {
+			const elItemViewing = $( '.viewing-course-item' );
+
+			if ( elItemViewing.length ) {
+				const heightCourseItemContentHeader = $( '#course-item-content-header' ).outerHeight();
+				const heightSectionTitle = $( '.section-title' ).outerHeight();
+				const heightSectionHeader = $( '.section-header' ).outerHeight();
+				const regex = new RegExp( '^viewing-course-item-([0-9].*)' );
+				const classList = elItemViewing.attr( 'class' );
+				const classArr = classList.split( /\s+/ );
+				let idItem = 0;
+
+				$.each( classArr, function( i, className ) {
+					const compare = regex.exec( className );
+
+					if ( compare ) {
+						idItem = compare[ 1 ];
+						return false;
+					}
+				} );
+
+				if ( 0 === idItem ) {
+					return;
+				}
+
+				const elItemCurrent = $( '.course-item-' + idItem );
+				const offSetTop = elItemCurrent.offset().top;
+				let numberOffSetTop = offSetTop - heightCourseItemContentHeader;
+
+				if ( undefined === heightSectionTitle ) {
+					numberOffSetTop = numberOffSetTop - heightSectionHeader + 20;
+				} else {
+					numberOffSetTop = numberOffSetTop - heightSectionTitle;
+				}
+
+				$( '#learn-press-course-curriculum' ).animate( {
+					scrollTop: numberOffSetTop + 7,
+				}, 800 );
+			}
+		};
+
 		init();
 	}
-
-	// LP.Alerts = function() {
-	//
-	// 	console.log(123123);
-	//
-	// 	this.isShowing = false;
-	// 	var $doc = $( document ),
-	// 		self = this,
-	// 		trigger = function( action, args ) {
-	// 			const triggered = $doc.triggerHandler( action, args );
-	//
-	// 			if ( triggered !== undefined ) {
-	// 				return triggered;
-	// 			}
-	//
-	// 			return $.isArray( args ) ? args[ 0 ] : undefined;
-	// 		},
-	// 		confirmHandle = function( e ) {
-	// 			try {
-	// 				let $form = $( this ),
-	// 					message = $form.data( 'confirm' ),
-	// 					action = $form.data( 'action' );
-	//
-	// 				message = trigger( 'learn-press/confirm-message', [ message, action ] );
-	//
-	// 				if ( ! message ) {
-	// 					return true;
-	// 				}
-	//
-	// 				jConfirm( message, '', function( confirm ) {
-	// 					confirm && $form.off( 'submit.learn-press-confirm', confirmHandle ).submit();
-	// 					self.isShowing = false;
-	// 				} );
-	//
-	// 				self.isShowing = true;
-	//
-	// 				return false;
-	// 			} catch ( ex ) {
-	// 				console.log( ex );
-	// 			}
-	//
-	// 			return true;
-	// 		};
-	//
-	// 	this.watchChange( 'isShowing', function( prop, oldVal, newVal ) {
-	// 		if ( newVal ) {
-	// 			setTimeout( function() {
-	// 				$.alerts._reposition();
-	// 				$( '#popup_container' ).addClass( 'ready' );
-	// 			}, 30 );
-	//
-	// 			const $a = $( '<a href="" class="close"><i class="fa fa-times"></i></a>' );
-	// 			$( '#popup_container' ).append( $a );
-	// 			$a.on( 'click', function() {
-	// 				$.alerts._hide();
-	// 				return false;
-	// 			} );
-	// 		}
-	// 		$( document.body ).toggleClass( 'confirm', newVal );
-	// 		return newVal;
-	// 	} );
-	//
-	// 	const $forms = $( 'form[data-confirm]' ).on( 'submit.learn-press-confirm', confirmHandle );
-	// };
 
 	$( function() {
 		const lp_course = new LP_Course( {} );
@@ -655,6 +632,11 @@
 		// lp_course.completeLesson();
 		lp_course.completeItemsCourse();
 		lp_course.finishCourse();
+		lp_course.scrollToItemViewing();
+
+		// $( '#learn-press-course-curriculum' ).animate( {
+		//   scrollTop: 300
+		// }, 800);
 
 		$( this ).on( 'submit', 'form[name="course-external-link"]', function() {
 			const redirect = $( this ).attr( 'action' );
