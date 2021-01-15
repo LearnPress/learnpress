@@ -1,5 +1,6 @@
 import QuizStore from './store/quiz';
 import HTTP from './http';
+import './fill-in-blanks';
 
 window.$Vue = window.$Vue || Vue;
 window.$Vuex = window.$Vuex || Vuex;

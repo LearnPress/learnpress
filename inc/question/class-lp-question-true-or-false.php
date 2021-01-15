@@ -46,13 +46,13 @@ if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 					'question_answer_id' => - 1,
 					'is_true'            => 'yes',
 					'value'              => 'true',
-					'title'              => __( 'True', 'learnpress' ),
+					'title'              => esc_html__( 'True', 'learnpress' ),
 				),
 				array(
 					'question_answer_id' => - 2,
 					'is_true'            => 'no',
 					'value'              => 'false',
-					'title'              => __( 'False', 'learnpress' ),
+					'title'              => esc_html__( 'False', 'learnpress' ),
 				),
 			);
 

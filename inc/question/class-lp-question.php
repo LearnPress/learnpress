@@ -612,19 +612,19 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					'question_answer_id' => - 1,
 					'is_true'            => 'yes',
 					'value'              => learn_press_random_value(),
-					'title'              => __( 'First option', 'learnpress' ),
+					'title'              => esc_html__( 'First option', 'learnpress' ),
 				),
 				array(
 					'question_answer_id' => - 2,
 					'is_true'            => 'no',
 					'value'              => learn_press_random_value(),
-					'title'              => __( 'Second option', 'learnpress' ),
+					'title'              => esc_html__( 'Second option', 'learnpress' ),
 				),
 				array(
 					'question_answer_id' => - 3,
 					'is_true'            => 'no',
 					'value'              => learn_press_random_value(),
-					'title'              => __( 'Third option', 'learnpress' ),
+					'title'              => esc_html__( 'Third option', 'learnpress' ),
 				),
 			);
 

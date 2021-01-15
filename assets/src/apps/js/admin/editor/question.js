@@ -1,5 +1,6 @@
 import HTTP from './http';
 import Store from './store/question';
+import './fill-in-blanks';
 
 window.$Vue = window.$Vue || Vue;
 window.$Vuex = window.$Vuex || Vuex;

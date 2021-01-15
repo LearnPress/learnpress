@@ -14,6 +14,9 @@ learn_press_admin_view( 'quiz/question-meta' );
 		<template v-if="!supportAnswerOptions">
 			<?php do_action( 'learn-press/quiz-editor/question-js-component' ); ?>
 		</template>
+		<template v-else-if="isFillInBlank">
+			<lp-quiz-fib-question-answer :question="question"></lp-quiz-fib-question-answer>
+		</template>
 		<template v-else>
 			<lp-quiz-question-answers :question="question"></lp-quiz-question-answers>
 		</template>
@@ -32,10 +35,12 @@ learn_press_admin_view( 'quiz/question-meta' );
 			template: '#tmpl-lp-quiz-question-settings',
 			props: ['question', 'index'],
 			computed: {
-				// check external vue component
 				supportAnswerOptions: function () {
 					return $store.getters['lqs/supportAnswerOptions'].indexOf(this.question.type.key) !== -1;
-				}
+				},
+				isFillInBlank: function() {
+					return this.question.type.key === 'fill_in_blanks';
+				},
 			},
 
 			methods: {

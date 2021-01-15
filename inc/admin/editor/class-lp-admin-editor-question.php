@@ -60,7 +60,6 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	 * @return array
 	 */
 	public function get_question_data_to_question_editor( $question, $object = false ) {
-
 		if ( ! $object ) {
 			if ( get_post_type( $question ) !== LP_QUESTION_CPT ) {
 				return array();

@@ -335,6 +335,7 @@ function learn_press_default_question_type_support() {
 			'multi_choice',
 			'single_choice',
 			'true_or_false',
+			'fill_in_blanks',
 		),
 		'check-answer'
 	);

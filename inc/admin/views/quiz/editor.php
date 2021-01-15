@@ -2,12 +2,15 @@
 /**
  * Admin Quiz Editor: Editor template.
  *
- * @since 3.0.0
+ * @since 4.0.0
+ * @author Nhamdv - Code is poetry
  */
 
 learn_press_admin_view( 'quiz/questions' );
 learn_press_admin_view( 'quiz/modal-choose-items' );
+learn_press_admin_view( 'quiz/question-fib-editor' );
 ?>
+
 <div id="admin-editor-lp_quiz" xxxx="5">
 	<div class="lp-place-holder">
 		<div class="line-heading"></div>

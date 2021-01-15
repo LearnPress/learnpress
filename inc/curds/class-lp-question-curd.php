@@ -327,13 +327,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_type );
 
 				if ( $old_type == 'multi_choice' && $new_type == 'single_choice' ) {
-					// for convert to multi choice to single choice
 					$func = '_convert_answers_multi_choice_to_single_choice';
-				} elseif ( $question->is_support( 'answer_options' ) && 'true_or_false' == $new_type ) {
-					// for all question supports answer options convert to true or false (except: Fill in blank, so on)
+				} elseif ( ( $old_type == 'multi_choice' || $old_type == 'single_choice' ) && 'true_or_false' == $new_type ) {
 					$func = '_convert_answers_to_true_or_false';
-				} elseif ( ( $old_type == 'true_or_false' && $new_question->is_support( 'answer_options' ) ) || ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) {
-					// for case not must to convert answer
+				} elseif ( ( $old_type == 'true_or_false' && ( $new_type == 'single_choice' || $new_type == 'multi_choice' ) ) || ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) {
 					$func = '';
 				} else {
 					// for rest, clear answer data and create default
@@ -456,9 +453,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				// new answers data
 				$db_args[ $index ] = array(
 					'data'  => array(
-						/*
-						 @since 4.0 */
-						// 'answer_data' => serialize( $answer_data )
 						'title'   => $answer_data['title'],
 						'value'   => $answer_data['value'],
 						'is_true' => $answer_data['is_true'],
@@ -667,7 +661,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 							);
 						}
 					}
-					$answers = array_slice( $answers, 0, 2 );
+					$answers = array_slice( $answers, 0, 2, true );
 				}
 
 				$correct = 0;
@@ -682,7 +676,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					$answers[ $answer_ids[0] ]['is_true'] = 'yes';
 				} elseif ( $correct == 2 ) {
 					// for multiple choice keeps all correct, remove all correct and keep first option
-					$answers[ $answer_ids[1] ]['is_true'] = '';
+					$answers[ $answer_ids[1] ]['is_true'] = 'no';
 				}
 			}
 
@@ -713,9 +707,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					}
 				}
 
-				if ( $correct > 1 ) {
+				if ( ! $correct ) {
+					$answers[ $answer_ids[0] ]['is_true'] = 'yes';
+				} elseif ( $correct > 1 ) {
 					// remove all correct and keep first option
-					$answers[ $answer_ids[0] ]['is_true'] = '';
+					$answers[ $answer_ids[0] ]['is_true'] = 'no';
 				}
 			}
 
@@ -739,18 +735,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$answer_options = $new_question->get_default_answers();
 
 			if ( is_array( $answer_options ) ) {
-				// insert answers data in new question
 				foreach ( $answer_options as $index => $answer ) {
 					$insert        = array(
 						'question_id' => $question_id,
-						// @since 4.0
-						// 'answer_data'  => serialize( array(
-						// 'text'    => stripslashes( $answer['title'] ),
-						// 'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-						// 'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
-						// )
-						// ),
-							'title'   => stripslashes( $answer['title'] ),
+						'title'       => stripslashes( $answer['title'] ),
 						'value'       => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
 						'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
 						'order'       => $index + 1,
@@ -775,25 +763,17 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return array|bool
 		 */
 		public function add_answer( $question_type = '', $args = array() ) {
-
 			global $wpdb;
 
-			$question    = LP_Question::get_question( $args['question_id'], array( 'type' => $question_type ) );
-			$answer_data = maybe_unserialize( $args['answer_data'] );
-			ob_start();
-			print_r( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
-			error_log( ob_get_clean() );
-			die( __CLASS__ . '::' . __FUNCTION__ );
+			$question = LP_Question::get_question( $args['question_id'], array( 'type' => $question_type ) );
 
 			$wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				array(
 					'question_id' => $args['question_id'],
-					// 4.0
-					// 'answer_data'  => $args['answer_data'],
-					'title'       => ! empty( $answer_data['title'] ) ? $answer_data['title'] : 'wwwwwww',
-					'value'       => ! empty( $answer_data['value'] ) ? $answer_data['value'] : '',
-					'is_true'     => ! empty( $answer_data['is_true'] ) ? $answer_data['is_true'] : '',
+					'title'       => $args['title'],
+					'value'       => $args['value'],
+					'is_true'     => $args['is_true'],
 					'order'       => $args['order'],
 				),
 				array( '%d', '%s', '%d' )
@@ -802,16 +782,15 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question_answer_id = $wpdb->insert_id;
 			if ( $question_answer_id ) {
 				// update question answer option data
-				$answer_options   = $question->get_data( 'answer_options' ) ? $question->get_data( 'answer_options' ) : array();
-				$unserialize_data = unserialize( $args['answer_data'] );
+				$answer_options = $question->get_data( 'answer_options' ) ? $question->get_data( 'answer_options' ) : array();
 
 				$new_answer_option_data = array(
 					'question_answer_id' => $question_answer_id,
 					'question_id'        => $args['question_id'],
 					'order'              => $args['order'],
-					'title'              => $unserialize_data['title'],
-					'value'              => $unserialize_data['value'],
-					'is_true'            => $unserialize_data['is_true'],
+					'title'              => $args['title'],
+					'value'              => $args['value'],
+					'is_true'            => $args['is_true'],
 				);
 
 				if ( ! $answer_options ) {

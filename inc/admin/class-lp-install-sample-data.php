@@ -649,14 +649,10 @@ class LP_Install_Sample_Data {
 		foreach ( $answers as $order => $answer ) {
 			$data = array(
 				'question_id' => $question_id,
-				/**
-				 * @since 4.0
-				 */
 				'title'       => $answer['title'],
 				'value'       => $answer['value'],
 				'is_true'     => $answer['is_true'],
 				'order'       => $order + 1,
-				// 'answer_data' => maybe_serialize( $answer )
 			);
 
 			$wpdb->insert(

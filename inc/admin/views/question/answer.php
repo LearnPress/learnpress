@@ -20,7 +20,7 @@ learn_press_admin_view( 'question/option' );
 			</tr>
 			</thead>
 			<tbody>
-			<lp-question-answer-option v-for="(answer, index) in answers" :key="index" :index="index" :type="type" :radio="radio" :number="number" :answer="answer" @updateTitle="updateTitle" @changeCorrect="changeCorrect" @deleteAnswer="deleteAnswer"></lp-question-answer-option>
+				<lp-question-answer-option v-for="(answer, index) in answers" :key="index" :index="index" :type="type" :radio="radio" :number="number" :answer="answer" @updateTitle="updateTitle" @changeCorrect="changeCorrect" @deleteAnswer="deleteAnswer"></lp-question-answer-option>
 			</tbody>
 		</table>
 		<p class="add-answer" v-if="addable">

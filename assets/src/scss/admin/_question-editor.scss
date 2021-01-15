@@ -344,6 +344,90 @@
 	}
 }
 
+.lp-admin-fib-question-editor,
+.admin-quiz-fib-question-editor {
+	text-align: left;
+
+	.lp-box-data-content {
+		margin: 0 !important;
+		border: none !important;
+	}
+
+	.content-editable {
+		min-height: 240px !important;
+		padding: 12px 15px;
+		border: 2px solid #ddd;
+		border-radius: 4px;
+
+		.fib-blank {
+			position: relative;
+			color: #2196f3;
+
+			&::before {
+				content: "#" attr(data-index) ". ";
+			}
+		}
+	}
+
+	.fib-blanks {
+		min-width: 700px;
+		border-collapse: collapse;
+
+		tbody {
+			border-bottom: 1px solid #bbb;
+
+			tr {
+				background: #eee;
+
+				td {
+					padding: 5px;
+				}
+			}
+
+			tr.blank-options {
+
+				td {
+					padding: 0;
+				}
+
+				ul {
+					display: none;
+					margin: 5px 0;
+					padding: 20px;
+					border: 1px solid #ddd;
+					background: #fff;
+					list-style: none;
+				}
+			}
+
+			&.open {
+
+				.blank-options {
+
+					ul {
+						display: block;
+					}
+				}
+			}
+
+			.blank-position {
+				font-weight: 600;
+				text-align: center;
+			}
+
+			.blank-actions {
+				text-align: right;
+			}
+
+			&:last-child {
+				border: none;
+			}
+		}
+
+
+	}
+}
+
 #fill-in-blanks-editor {
 	display: flex;
 

@@ -9,6 +9,7 @@ $question = LP_Question::get_question();
 
 learn_press_admin_view( 'question/actions' );
 learn_press_admin_view( 'question/answer' );
+learn_press_admin_view( 'question/fill-in-blanks' );
 ?>
 
 <div id="admin-editor-lp_question">
@@ -36,7 +37,13 @@ learn_press_admin_view( 'question/answer' );
 	<template v-else>
 		<div id="admin-editor-lp_question" :class="['lp-admin-editor learn-press-box-data', type]">
 			<lp-question-actions :type="type" @changeType="changeType"></lp-question-actions>
-			<lp-question-answer :type="type" :answers="answers"></lp-question-answer>
+
+			<template v-if="isFillInBlank">
+				<lp-fib-question-answer :type="type" :answers="answers"></lp-fib-question-answer>
+			</template>
+			<template v-else>
+				<lp-question-answer :type="type" :answers="answers"></lp-question-answer>
+			</template>
 		</div>
 	</template>
 	</div>
@@ -59,6 +66,9 @@ learn_press_admin_view( 'question/answer' );
 			computed: {
 				type: function() {
 					return $store.getters['type']['key'];
+				},
+				isFillInBlank: function() {
+					return this.type === 'fill_in_blanks';
 				},
 				supportAnswerOptions: function () {
 					return $store.getters['supportAnswerOptions'].indexOf( this.type ) !== -1;

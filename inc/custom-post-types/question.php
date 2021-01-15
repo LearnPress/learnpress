@@ -57,6 +57,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'true_or_false',
 					'single_choice',
 					'multi_choice',
+					'fill_in_blanks',
 				)
 			);
 
