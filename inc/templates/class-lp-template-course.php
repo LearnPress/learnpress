@@ -195,7 +195,16 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		learn_press_get_template( 'single-course/buttons/purchase.php' );
+		$args_load_tmpl = array(
+			'template_name' => 'single-course/buttons/purchase.php',
+			'template_path' => '',
+			'default_path'  => ''
+		);
+
+		$args_load_tmpl = apply_filters( 'learn-press/tmpl-button-purchase-course', $args_load_tmpl, $course );
+
+		learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
+			$args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
 	}
 
 	public function course_enroll_button() {
