@@ -4,13 +4,10 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.0
+ * @version 4.0.0
  * @extends LP_Question
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
