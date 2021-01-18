@@ -27,32 +27,30 @@ $title = $section->get_title();
 
 <div class="section-header">
 
-    <div class="section-left">
+	<div class="section-left">
 
 		<?php if ( $title ) { ?>
-            <h5 class="section-title"><?php echo $title; ?></h5>
+			<h5 class="section-title"><?php echo $title; ?></h5>
 		<?php } ?>
 
 		<?php if ( $description = $section->get_description() ) { ?>
-            <p class="section-desc"><?php echo $description; ?></p>
+			<p class="section-desc"><?php echo $description; ?></p>
 		<?php } ?>
 
-    </div>
-
-	<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) { ?>
-
-		<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
-
-        <div class="section-meta">
-            <div class="learn-press-progress section-progress" title="<?php echo intval( $percent ); ?>%">
-                <div class="progress-bg">
-                    <div class="progress-active primary-background-color" style="left: <?php echo $percent; ?>%;"></div>
-                </div>
-            </div>
-            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items( '', false ) ); ?></span>
-            <span class="collapse"></span>
-        </div>
-
-	<?php } ?>
+	</div>
+	<div class="section-meta">
+		<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) { ?>
+			<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
+			<div class="learn-press-progress section-progress" title="<?php echo intval( $percent ); ?>%">
+				<div class="progress-bg">
+					<div class="progress-active primary-background-color" style="left: <?php echo $percent; ?>%;"></div>
+				</div>
+			</div>
+			<span class="step"><?php printf( '%d/%d', $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items( '', false ) ); ?></span>
+		<?php } else { ?>
+			<span class="step"><?php printf( '%d', $section->count_items( '', false ) ); ?></span>
+		<?php } ?>
+		<span class="collapse"></span>
+	</div>
 
 </div>
