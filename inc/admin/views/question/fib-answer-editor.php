@@ -45,13 +45,13 @@
 							<label>
 								<input type="radio" value="range" v-model="blank.comparison" @click="updateAnswerBlank($event, blank)">
 								<?php esc_html_e( 'Range', 'learnpress' ); ?></label>
-							<p class="description"><?php esc_html_e( 'Match any number in a range. Use <code>100, 200</code> will match any value from 100 to 200.', 'learnpress' ); ?></p>
+							<p class="description"><?php _e( 'Match any number in a range. Use <code>100, 200</code> will match any value from 100 to 200.', 'learnpress' ); ?></p>
 						</li>
 						<li>
 							<label>
 								<input type="radio" value="any" v-model="blank.comparison" @click="updateAnswerBlank($event, blank)">
 								<?php esc_html_e( 'Any', 'learnpress' ); ?></label>
-							<p class="description"><?php esc_html_e( 'Match any value in a set of words. Use <code>fill, blank, question</code> will match any value in the set.', 'learnpress' ); ?></p>
+							<p class="description"><?php _e( 'Match any value in a set of words. Use <code>fill, blank, question</code> will match any value in the set.', 'learnpress' ); ?></p>
 						</li>
 					</ul>
 				</td>

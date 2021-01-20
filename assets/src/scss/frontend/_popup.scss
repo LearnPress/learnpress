@@ -1253,6 +1253,44 @@
 		.question {
 			margin-bottom: 60px;
 		}
+
+		.lp-fib-content {
+			margin-bottom: 20px;
+			padding: 20px;
+			border: 2px solid $msg-color;
+			border-radius: 6px;
+
+			.lp-fib-input {
+				display: inline-block;
+				width: auto;
+				max-width: none;
+
+				> input {
+					height: 36px;
+					padding: 6px 18px;
+					border: 1px solid #222;
+					line-height: 36px;
+				}
+			}
+
+			.lp-fib-answered {
+				padding: 6px 10px;
+				background: #ececec;
+				white-space: nowrap;
+
+				&.fail {
+					border: 1px solid $msg-error;
+
+					.lp-fib-answered__answer {
+						text-decoration: line-through;
+					}
+				}
+
+				&.correct {
+					border: 1px solid $msg-success;
+				}
+			}
+		}
 	}
 
 	.question {
@@ -1416,6 +1454,7 @@
 			position: relative;
 			margin: 0 0 0 10px;
 			padding: 0;
+			border: none;
 			outline: none;
 			color: #00adff;
 			background: transparent;

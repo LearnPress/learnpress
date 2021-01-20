@@ -47,26 +47,6 @@ class QuestionBase extends Component {
 		return null;
 	}
 
-	// componentWillReceiveProps(nextProps) {
-	//     if (nextProps.$wrap) {
-	//         this.$wrap = nextProps.$wrap;
-	//     }
-	//
-	//     if (nextProps.question) {
-	//         this.setState({
-	//             options: this.parseOptions(nextProps.question.options)
-	//         });
-	//     }
-	//
-	//     if (nextProps.keyPressed === this.props.keyPressed) {
-	//         return;
-	//     }
-	//     if (nextProps.keyPressed >= 1 && nextProps.keyPressed <= 9) {
-	//         const input = Object.values(this.inputs)[nextProps.keyPressed - 1];
-	//         input && input.click();
-	//     }
-	// }
-
 	setInputRef = ( el, k ) => {
 		if ( ! this.inputs ) {
 			this.inputs = {};
