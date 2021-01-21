@@ -1257,7 +1257,7 @@
 		.lp-fib-content {
 			margin-bottom: 20px;
 			padding: 20px;
-			border: 2px solid $msg-color;
+			border: 2px solid #f5f5f5;
 			border-radius: 6px;
 
 			.lp-fib-input {
@@ -1279,7 +1279,7 @@
 				white-space: nowrap;
 
 				&.fail {
-					border: 1px solid $msg-error;
+					border: 2px solid #d85554;
 
 					.lp-fib-answered__answer {
 						text-decoration: line-through;
@@ -1287,8 +1287,23 @@
 				}
 
 				&.correct {
-					border: 1px solid $msg-success;
+					border: 2px solid #00adff;
 				}
+			}
+		}
+
+		.lp-fib-note {
+			display: flex;
+			margin-left: 10px;
+			font-size: 14px;
+			font-weight: 400;
+			align-items: center;
+
+			>span {
+				display: inline-block;
+				width: 20px;
+				height: 20px;
+				margin: 0 5px 0 0;
 			}
 		}
 	}
@@ -1414,6 +1429,9 @@
 		}
 
 		.question-response {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
 			margin-bottom: 10px;
 			font-size: 14px;
 

@@ -212,6 +212,7 @@ export default compose( [
 		const {
 			getData,
 			getQuestionAnswered,
+			getQuestionMark,
 		} = select( 'learnpress/quiz' );
 
 		return {
@@ -221,6 +222,7 @@ export default compose( [
 			questionsRendered: getData( 'questionsRendered' ),
 			editPermalink: getData( 'editPermalink' ),
 			numPages: getData( 'numPages' ),
+			mark: getQuestionMark( id ) || '',
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

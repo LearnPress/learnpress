@@ -300,7 +300,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				array(
 					'exclude'    => '',
 					'map'        => '',
-					'fib_answer' => '',
+					'answer' => '',
 				)
 			);
 
@@ -320,8 +320,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 				foreach ( $options as $k => $option ) {
 					$is_true         = ! isset( $exclude['is_true'] ) ? true : false;
-					$fib_answer      = ! empty( $args['fib_answer'] ) ? $args['fib_answer'] : '';
-					$option['title'] = apply_filters( 'learn-press/question/fib/regex-content', $option['question_answer_id'], $option['title'], $is_true, $fib_answer );
+					$fib_answer      = ! empty( $args['answer'] ) ? $args['answer'] : '';
+					$option['title'] = apply_filters( 'learn-press/question/fib/regex-content', $option['title'], $option['question_answer_id'], $is_true, $fib_answer );
 
 					foreach ( $map as $k_map => $v_map ) {
 						if ( array_key_exists( $k_map, $option ) ) {

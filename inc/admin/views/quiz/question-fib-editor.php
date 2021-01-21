@@ -17,6 +17,7 @@
 	jQuery(document).ready(function ($) {
 		var $Vue = window.$Vue || Vue;
 		var $store = window.LP_Quiz_Store;
+
 		Vue.component('lp-quiz-fib-question-answer', {
 			template: '#tmpl-lp-quiz-fib-question-answer',
 			props: ['question'],
@@ -48,8 +49,10 @@
 				this.$editor = $(this.$el).find('.content-editable');
 				this.$editor.html(content);
 				this.parseBlanks(content);
+
 				this.$editor[0].addEventListener("DOMCharacterDataModified", function (e) {
 					var $target = $(e.target).parent(), id = $target.data('id');
+
 					for (var i in that.blanks) {
 						if (that.blanks[i].id == id) {
 							that.blanks[i].fill = $target.html().trim();
@@ -58,6 +61,7 @@
 						}
 					}
 				}, false);
+
 				this.interval = setInterval(function (a) {
 					a.parseBlanks(a.getContent());
 				}, 1000, this);

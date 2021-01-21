@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import QuestionBase from '../../question-base';
 
 class QuestionFillInBlanks extends QuestionBase {
@@ -38,6 +39,19 @@ class QuestionFillInBlanks extends QuestionBase {
 		updateUserQuestionAnswers( question.id, newAnswered );
 	};
 
+	getCorrectLabel = () => {
+		const { question, mark } = this.props;
+
+		return this.maybeShowCorrectAnswer() && (
+			<div className="question-response correct">
+				<span className="label">{ __( 'Point', 'learnpress' ) }</span>
+				<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), mark, question.point ) }</span>
+				<span className="lp-fib-note"><span style={ { background: '#00adff' } }></span>{ __( 'Correct', 'learnpress' ) }</span>
+				<span className="lp-fib-note"><span style={ { background: '#d85554' } }></span>{ __( 'Incorrect', 'learnpress' ) }</span>
+			</div>
+		);
+	};
+
 	render() {
 		return (
 			<>
@@ -46,9 +60,11 @@ class QuestionFillInBlanks extends QuestionBase {
 						return (
 							<div key={ `blank-${ option.uid }` } dangerouslySetInnerHTML={ { __html: option.title || option.value } }></div>
 						);
-					} )
-					}
+					} ) }
 				</div>
+
+				{ ! this.isDefaultType() && this.getWarningMessage() }
+				{ this.getCorrectLabel() }
 			</>
 		);
 	}

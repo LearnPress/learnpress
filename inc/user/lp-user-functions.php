@@ -1894,7 +1894,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 					$question,
 					array(
 						'include_is_true' => $with_true_or_false,
-						'fib_answer'      => isset( $answered[ $id ]['answered'] ) ? $answered[ $id ]['answered'] : '',
+						'answer'          => isset( $answered[ $id ]['answered'] ) ? $answered[ $id ]['answered'] : '',
 					)
 				);
 			}

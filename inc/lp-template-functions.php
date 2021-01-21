@@ -1625,7 +1625,7 @@ function learn_press_get_question_options_for_js( $question, $args = array() ) {
 		array(
 			'cryptoJsAes'     => false,
 			'include_is_true' => true,
-			'fib_answer'      => false,
+			'answer'          => false,
 		)
 	);
 
@@ -1646,9 +1646,9 @@ function learn_press_get_question_options_for_js( $question, $args = array() ) {
 		$options = array_values(
 			$question->get_answer_options(
 				array(
-					'exclude'    => $exclude_option_key,
-					'map'        => array( 'question_answer_id' => 'uid' ),
-					'fib_answer' => $args['fib_answer'],
+					'exclude' => $exclude_option_key,
+					'map'     => array( 'question_answer_id' => 'uid' ),
+					'answer'  => $args['answer'],
 				)
 			)
 		);

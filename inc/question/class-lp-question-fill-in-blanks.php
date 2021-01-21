@@ -52,7 +52,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			add_filter( 'learn-press/question/fib/regex-content', array( $this, 'match_shortcode' ), 10, 4 );
 		}
 
-		public function match_shortcode( $answer_id, $content, $show_answer = false, $answered = '' ) {
+		public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
 			if ( ! empty( $content ) ) {
 				preg_match_all( '/' . get_shortcode_regex( array( 'fib' ) ) . '/', $content, $all_shortcode, PREG_SET_ORDER );
 
