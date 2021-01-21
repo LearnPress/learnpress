@@ -12,5 +12,5 @@ defined( 'ABSPATH' ) or die();
 $user = LP_Profile::instance()->get_user();
 ?>
 <div class="user-bio">
-	<?php echo $user->get_description(); ?>
+	<?php echo wpautop( $user->get_description() ); ?>
 </div>
