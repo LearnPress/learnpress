@@ -1259,6 +1259,7 @@
 			padding: 20px;
 			border: 2px solid #f5f5f5;
 			border-radius: 6px;
+			line-height: 1.6;
 
 			.lp-fib-input {
 				display: inline-block;
@@ -1267,14 +1268,14 @@
 
 				> input {
 					height: 36px;
-					padding: 6px 18px;
+					padding: 6px 16px;
 					border: 1px solid #222;
 					line-height: 36px;
 				}
 			}
 
 			.lp-fib-answered {
-				padding: 6px 10px;
+				padding: 0 10px;
 				background: #ececec;
 				white-space: nowrap;
 

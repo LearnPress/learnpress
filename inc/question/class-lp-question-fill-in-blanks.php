@@ -41,7 +41,6 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 			add_filter( 'learn-press/question-editor/localize-script', array( $this, 'sanitize_question_answers' ), 1000 );
 
-			add_action( 'learn-press/question/updated-answer-data', array( $this, 'update_question_answer_meta' ), 10, 3 );
 			add_action( 'learn-press/before-clear-question', array( $this, 'clear_question_answer_meta' ) );
 
 			add_filter( 'learn-press/quiz-editor/question-answers-data', array( $this, 'admin_editor_question_answers' ), 10, 3 );
@@ -140,24 +139,6 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			$i18n['confirm_remove_blanks'] = esc_html__( 'Are you sure to remove all blanks?', 'learnpress' );
 
 			return $i18n;
-		}
-
-		public function update_question_answer_meta( $question_id, $answer_id, $answer_data ) {
-			if ( ! empty( $answer_data['blanks'] ) ) {
-				$blanks = $answer_data['blanks'];
-			} else {
-				$blanks = '';
-			}
-
-			if ( is_array( $blanks ) ) {
-				$question = LP_Question::get_question( $question_id );
-
-				foreach ( $blanks as $id => $blank ) {
-					$question->_blanks[ $blank['id'] ] = $blank;
-				}
-			}
-
-			learn_press_update_question_answer_meta( $answer_id, '_blanks', $blanks );
 		}
 
 		public function clear_question_answer_meta( $question_id ) {

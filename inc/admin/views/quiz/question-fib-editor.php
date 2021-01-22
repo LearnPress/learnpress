@@ -35,7 +35,8 @@
 						is_true: '',
 						question_answer_id: this.question.answers[0].question_answer_id,
 						title: this.question.answers[0].title,
-						value: ''
+						value: '',
+						blanks: this.answers[ 0 ].blanks,
 					};
 				},
 				answers: function () {
@@ -79,6 +80,11 @@
 				},
 
 				updateAnswerBlank: function (e, blank) {
+					blank['comparison'] = e.target.value || '';
+					this.updateAnswer();
+				},
+				updateAnswerMatchCase( e, blank ) {
+					blank['match_case'] = e.target.checked ? true : false;
 					this.updateAnswer();
 				},
 				getContent: function () {
@@ -331,175 +337,7 @@
 					}
 					this.updateAnswer();
 				}
-				////////////////////
-//                parseBlanks: function (content) {
-//                    var answer = this.question.answers[0],
-//                        blanks = [];
-//
-//                    if (content !== undefined) {
-//                        this.question.answers[0].title = content;
-//                        this.answer.title = content;
-//                    } else {
-//                        content = answer.title;
-//                    }
-//
-//                    var $container = $('<div />').html(content),
-//                        $inputs = $container.find('.fib-blank'),
-//                        i = 0, n = 0, data;
-//
-//                    for (i = 0; i < $inputs.length; i++) {
-//                        data = $inputs.eq(i).data();
-//                        blanks.push({
-//                            fill: data.fill,
-//                            id: data.id,
-//                            comparison: data.comparison || '',
-//                            match_case: data.match_case || 0,
-//                            index: i + 1
-//                        })
-//                    }
-//                    this.blanks = blanks;
-//                    this.question.blanks = blanks;
-//
-//                    setTimeout($.proxy(function (blanks, content) {
-//                        this.updateAnswer();
-//                        this.editor.setContent(content);
-//                    }, this), 300, blanks, $container.html())
-//
-//                },
-//                updateBlanks: function (content) {
-//                    this.parseBlanks(content !== undefined ? content : this.editor.getContent());
-//                    return this.getShortcode();
-//                },
-//                getShortcode: function () {
-//                    var that = this,
-//                        $container = $('<div />').html(this.editor.getContent()),
-//                        $blanks = $container.find('.fib-blank');
-//
-//                    $blanks.each(function () {
-//                        var $blank = $(this),
-//                            id = $blank.attr('id'),
-//                            uid = id.replace('fib-blank-', ''),
-//                            blank = that.getBlankById(uid),
-//                            code = 'fib';
-//                        if (blank) {
-//                            if (!blank.id) {
-//                                return;
-//                            }
-//                            for (var i in blank) {
-//                                if ($.inArray(i, ['index']) !== -1) {
-//                                    continue;
-//                                }
-//
-//                                if (!blank[i]) {
-//                                    continue;
-//                                }
-//
-//                                code += ' ' + i + '="' + blank[i] + '"';
-//                            }
-//                            $blank.replaceWith('[' + code + ']');
-//                        } else {
-//                            console.log('Not found: ' + uid)
-//                            $blank.replaceWith('')
-//                        }
-//                    });
-//
-//                    return $container.html();
-//                },
-//                getBlankById: function (id) {
-//                    var blank = false;
-//                    $.each(this.blanks, function () {
-//                        if (id == this.id) {
-//                            blank = this;
-//                            return true;
-//                        }
-//                    });
-//                    return blank;
-//                },
-//                parseShortcode: function (content) {
-//
-//                },
-//                updateBlank: function (e) {
-//                    var $el = $(e.target),
-//                        id = $el.attr('id'),
-//                        content = this.editor.getContent(),
-//                        $wrap = $('<div />').html(content),
-//                        $blank = $wrap.find('#' + id),
-//                        pos = $wrap.find('.fib-blank').index($blank) + 1;
-//
-//                    $blank.attr('data-fill', e.target.value).html('[#' + pos + ']');
-//
-//                    this.editor.setContent($wrap.html());
-//                       if(e.type == 'change'){
-//                       		this.editor.save();
-//                       }
-//                },
-//                removeBlank: function (e) {
-//                    var that = this,
-//                        $li = $(e.target).closest('.fib-blank'),
-//                        id = $li.attr('data-id'),
-//                        $container = $('<div />').html(this.editor.getContent()),
-//                        $blank = $container.find('.fib-blank#' + id);
-//
-//                    $blank.replaceWith($blank.attr('data-fill'));
-//                    this.editor.setContent($container.html());
-//                    this.editor.save();
-//
-//                    $(this.$el).find('.fib-blanks .blank-fill input').each(function () {
-//                        that.updateBlank({target: this});
-//                    });
-//
-//                    var blanks = JSON.parse(JSON.stringify(this.blanks));
-//                    for (var i = 0; i < blanks.length; i++) {
-//                        if (blanks[i].id === id) {
-//                            blanks.splice(i, 1);
-//                            for (var j = 0; j < blanks.length; j++) {
-//                                blanks[j].index = j + 1;
-//                            }
-//                            break;
-//                        }
-//                    }
-//
-//                    this.blanks = blanks;
-//                    this.updateAll();
-//
-//                    e.preventDefault();
-//                },
-//                onClear: function () {
-//                    this.blanks = [];
-//                    this.updateAll();
-//                },
-//                updateAll: function () {
-//                    this.answer.title = this.updateBlanks();
-//                    this.updateAnswer();
-//                },
-//                insertBlank: function () {
-//                    this.editor.buttons['fib-code'].onclick();
-//                },
-//                clearBlanks: function () {
-//                    this.editor.buttons['fib-clear'].onclick();
-//                },
-
-//                getBlanksForDB: function () {
-//                    var blanks = {};
-//                    for (var i = 0, n = this.blanks.length; i < n; i++) {
-//                        var id = this.blanks[i].id.replace('fib-blank-', '');
-//                        blanks[id] = JSON.parse(JSON.stringify(this.blanks[i]));
-//                        blanks[id].id = id;
-//                    }
-//                    return blanks;
-//                },
-//                toggleOptions: function (e) {
-//                    e.preventDefault();
-//                    $(e.target).closest('.fib-blank').find('.blank-options ul').slideToggle()
-//                },
-//                maybeUpdateEditor: function () {
-//
-//                }
 			},
-			///
-//            created: function () {
-//                init.apply(this);
-//            }
 		})
 	});
 

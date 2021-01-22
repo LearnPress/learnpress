@@ -87,7 +87,7 @@ const enrollCourse = () => {
 		const { status, redirect, message } = response;
 
 		if ( message && status ) {
-			formEnroll.innerHTML += ` < div class = "lp-enroll-notice ${ status }" > ${ message } < / div > `;
+			formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
 		}
 
 		if ( status === 'success' && redirect ) {

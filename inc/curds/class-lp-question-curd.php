@@ -396,7 +396,20 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				array( '%d', '%d' )
 			);
 
-			do_action( 'learn-press/question/updated-answer-data', $question_id, $answer['question_answer_id'], $answer );
+			// Update for Fill in Blanks.
+			if ( ! empty( $answer['blanks'] ) ) {
+				$blanks = $answer['blanks'];
+
+				if ( is_array( $blanks ) ) {
+					$question = LP_Question::get_question( $question_id );
+
+					foreach ( $blanks as $id => $blank ) {
+						$question->_blanks[ $blank['id'] ] = $blank;
+					}
+				}
+
+				learn_press_update_question_answer_meta( $answer['question_answer_id'], '_blanks', $blanks );
+			}
 
 			return $update;
 		}

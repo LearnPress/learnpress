@@ -41,6 +41,7 @@ $content_id = uniqid( 'fib-content-' );
 				this.$editor[ 0 ].addEventListener( 'DOMCharacterDataModified', function( e ) {
 					const $target = $( e.target ).parent(),
 						id = $target.data( 'id' );
+
 					for ( const i in that.blanks ) {
 						if ( that.blanks[ i ].id == id ) {
 							that.blanks[ i ].fill = $target.html().trim();
@@ -49,6 +50,7 @@ $content_id = uniqid( 'fib-content-' );
 						}
 					}
 				}, false );
+
 				this.interval = setInterval( function( a ) {
 					a.parseBlanks( a.getContent() );
 				}, 1000, this );
@@ -67,13 +69,18 @@ $content_id = uniqid( 'fib-content-' );
 			},
 			methods: {
 				updateAnswer( e ) {
-					const answer = JSON.parse( JSON.stringify( this.answer ) );
+					let answer = JSON.parse( JSON.stringify( this.answer ) );
 					answer.title = this.getShortcode();
 					answer.blanks = this.getBlanksForDB();
 
 					$store.dispatch( 'updateAnswerTitle', answer );
 				},
 				updateAnswerBlank( e, blank ) {
+					blank['comparison'] = e.target.value || '';
+					this.updateAnswer();
+				},
+				updateAnswerMatchCase( e, blank ) {
+					blank['match_case'] = e.target.checked ? true : false;
 					this.updateAnswer();
 				},
 				getContent() {
@@ -188,8 +195,9 @@ $content_id = uniqid( 'fib-content-' );
 							if ( ! blank.id ) {
 								return;
 							}
+
 							for ( const i in blank ) {
-								if ( $.inArray( i, [ 'index' ] ) !== -1 ) {
+								if ( [ 'index' ].indexOf( i ) !== -1 ) {
 									continue;
 								}
 
@@ -199,6 +207,7 @@ $content_id = uniqid( 'fib-content-' );
 
 								code += ' ' + i + '="' + blank[ i ] + '"';
 							}
+
 							$blank.replaceWith( '[' + code + ']' );
 						} else {
 							console.log( 'Not found: ' + uid );
@@ -209,12 +218,14 @@ $content_id = uniqid( 'fib-content-' );
 				},
 				getBlankById( id ) {
 					let blank = false;
+
 					$.each( this.blanks, function() {
 						if ( id == this.id ) {
 							blank = this;
 							return true;
 						}
 					} );
+
 					return blank;
 				},
 				updateBlank( e ) {

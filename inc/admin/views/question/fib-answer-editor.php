@@ -30,7 +30,7 @@
 					<ul>
 						<li>
 							<label>
-								<input type="checkbox" v-model="blank.match_case" @click="updateAnswerBlank($event, blank)">
+								<input type="checkbox" v-model="blank.match_case" @click="updateAnswerMatchCase($event, blank)">
 								<?php esc_html_e( 'Match case', 'learnpress' ); ?></label>
 							<p class="description"><?php esc_html_e( 'Match two words in case sensitive.', 'learnpress' ); ?></p>
 						</li>

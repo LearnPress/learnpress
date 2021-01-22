@@ -45,7 +45,7 @@ class QuestionFillInBlanks extends QuestionBase {
 		return this.maybeShowCorrectAnswer() && (
 			<div className="question-response correct">
 				<span className="label">{ __( 'Point', 'learnpress' ) }</span>
-				<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), mark, question.point ) }</span>
+				<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), mark || 0, question.point ) }</span>
 				<span className="lp-fib-note"><span style={ { background: '#00adff' } }></span>{ __( 'Correct', 'learnpress' ) }</span>
 				<span className="lp-fib-note"><span style={ { background: '#d85554' } }></span>{ __( 'Incorrect', 'learnpress' ) }</span>
 			</div>
