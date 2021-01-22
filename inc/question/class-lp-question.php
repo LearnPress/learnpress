@@ -298,9 +298,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$args = wp_parse_args(
 				$args,
 				array(
-					'exclude'    => '',
-					'map'        => '',
-					'answer' => '',
+					'exclude' => '',
+					'map'     => '',
+					'answer'  => '',
 				)
 			);
 

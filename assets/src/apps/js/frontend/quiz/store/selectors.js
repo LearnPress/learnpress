@@ -176,7 +176,7 @@ const getQuestionsSelectedAnswers = function( state, questionId ) {
 		}
 
 		// Answer filled by user
-		if ( data[ loopId ].temp ) {
+		if ( data[ loopId ].temp || data[ loopId ].blanks ) {
 			// If specific a question then return it only.
 			if ( questionId && loopId === questionId ) {
 				return data[ loopId ].answered;
