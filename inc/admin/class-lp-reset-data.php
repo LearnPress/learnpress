@@ -42,15 +42,27 @@ class LP_Reset_Data {
 			}
 		}
 		global $wpdb;
-
 		//LP_Debug::startTransaction();
-		$query = $wpdb->prepare( "
+		$query         = $wpdb->prepare( "
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_id = %d AND item_id = %d
 		", $user_id, $item_id );
+		$user_item_ids = $wpdb->get_col( $query );
+		//declare input_type
+		$input_type = '';
+		// Check input is course or (lesson || quiz)
+		$query_check_type = $wpdb->prepare( "
+			SELECT item_type
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d AND item_id = %d
+		", $user_id, $item_id );
+		$input_type       = $wpdb->get_results( $query_check_type );
 
-		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
+		// check exist $user_item_ids && $input_type
+		if ( $user_item_ids && $input_type ) {
+
+			// Select parent id of item_id
 			$query   = "
 				SELECT DISTINCT parent_id AS parent, item_id
 				FROM {$wpdb->learnpress_user_items}
@@ -58,22 +70,91 @@ class LP_Reset_Data {
 			";
 			$parents = $wpdb->get_results( $query );
 
-			$format = array_fill( 0, sizeof( $user_item_ids ), '%d' );
-			$query  = $wpdb->prepare( "
+			if ( $parents[0]->parent == 0 ) {
+
+				/* ------------------------------
+				Process in table LP user itemmeta
+				-------------------------------- */
+				// List all user_item_id of quiz with item_id
+				$query = $wpdb->prepare( "
+				SELECT user_item_id
+				FROM {$wpdb->learnpress_user_items}
+				WHERE ref_id = %d AND item_type = %s 
+			", $item_id, 'lp_quiz' );
+
+				$results = $wpdb->get_results( $query );
+				foreach ( $results as $result ) {
+					$items[] = $result->user_item_id;
+				}
+
+				if ( ! empty( $items ) ) {
+
+					//Delete result in table user itemmeta
+					$query = $wpdb->prepare( "
+				DELETE
+				FROM {$wpdb->learnpress_user_itemmeta}
+				WHERE learnpress_user_item_id IN(" . join( ',', $items ) . ")
+			" );
+					// check $items != null
+
+					$wpdb->query( $query );
+				}
+
+				// Delete all field with learnpress_user_item_id = $user_item_ids
+				$query = $wpdb->prepare( "
+				DELETE
+				FROM {$wpdb->learnpress_user_itemmeta}
+				WHERE learnpress_user_item_id = %d
+			", $user_item_ids );
+
+				$wpdb->query( $query );
+
+				/*------------------------------------
+				 *  Process in table LP user items
+				 * ----------------------------------*/
+
+				//Update status in table learnpress user items
+				$null_time = '0000-00-00 00:00:00';
+				$query = $wpdb->prepare( "
+				UPDATE {$wpdb->learnpress_user_items}
+				SET status = %s , start_time = %d
+				WHERE user_id = %d AND item_id = %d
+			", 'enrolled', $null_time , $user_id, $item_id );
+				$wpdb->query( $query );
+
+				//Delete lesson & quiz in table lp user items
+
+				$query = $wpdb->prepare( "
+				DELETE 
+				FROM {$wpdb->learnpress_user_items}
+				WHERE user_id = %d AND ref_id = %d AND ref_type = %s
+			", $user_id, $item_id, 'lp_course' );
+				$wpdb->query( $query );
+
+
+			} else {
+
+				// Delete all result in table lp user itemmeta
+				$format = array_fill( 0, sizeof( $user_item_ids ), '%d' );
+				$query  = $wpdb->prepare( "
 				DELETE
 				FROM {$wpdb->learnpress_user_itemmeta}
 				WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ")
 			", $user_item_ids );
-			$wpdb->query( $query );
 
-			$query = $wpdb->prepare( "
+				$wpdb->query( $query );
+
+				$query = $wpdb->prepare( "
 				DELETE
 				FROM {$wpdb->learnpress_user_items}
 				WHERE user_id = %d AND item_id = %d
 			", $user_id, $item_id );
 
-			$wpdb->query( $query );
+				$wpdb->query( $query );
 
+			}
+
+			// general handling for all item & course
 			if ( $parents ) {
 				foreach ( $parents as $parent ) {
 					if ( $retaken_items = learn_press_get_user_item_meta( $parent->parent, '_retaken_items', true ) ) {
@@ -88,6 +169,7 @@ class LP_Reset_Data {
 			}
 
 			echo __( 'Item progress deleted', 'learnpress' );
+
 		} else {
 			echo __( 'No data found', 'learnpress' );
 		}
@@ -278,8 +360,7 @@ class LP_Reset_Data {
 			// Delete course
 			$user_item_ids = wp_list_pluck( $user_item_courses, 'user_item_id' );
 			self::delete_user_items_by_id( $user_item_ids );
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			//LP_Debug::rollbackTransaction();
 		}
 

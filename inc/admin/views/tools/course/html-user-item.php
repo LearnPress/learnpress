@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) or die();
     <table>
         <tr>
             <td><strong><?php _e( 'User ID or Email', 'learnpress' ); ?></strong></td>
-            <td><strong><?php _e( 'Item ID (ID of quiz or lesson)', 'learnpress' ); ?></strong></td>
+            <td><strong><?php _e( 'Course ID or Item ID (quiz or lesson)', 'learnpress' ); ?></strong></td>
         </tr>
         <tr>
             <td><input type="text" v-model="user_id" @keyup="update($event)"></td>
@@ -39,7 +39,7 @@ $localize = array(
     window.$Vue = window.$Vue || Vue;
 
     jQuery(function ($) {
-        var js_localize = <?php echo wp_json_encode( $localize );?>
+        var js_localize = <?php echo   ( $localize );?>
 
             new $Vue({
                 el: '#learn-press-reset-user-item',
