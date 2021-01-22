@@ -268,5 +268,14 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
 		}
+
+		/**
+		 * Get option enable block course when finish course
+		 *
+		 * @return bool
+		 */
+		public function enable_block_item_when_finish(): bool {
+			return 'yes' === $this->get_data( 'block_course_finished' );
+		}
 	}
 }

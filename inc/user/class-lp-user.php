@@ -39,7 +39,7 @@ class LP_User extends LP_Abstract_User {
 
 			if ( $is_enrolled ) {
 				$is_finished_course            = $this->has_finished_course( $course_id );
-				$enable_block_item_when_finish = $course->get_data( 'block_course_finished' );
+				$enable_block_item_when_finish = $course->enable_block_item_when_finish();
 
 				if ( $is_finished_course && $enable_block_item_when_finish ) {
 					$view->key     = LP_BLOCK_COURSE_FINISHED;

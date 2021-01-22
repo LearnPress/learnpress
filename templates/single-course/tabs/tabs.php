@@ -23,6 +23,20 @@ if ( ! $active_tab ) {
 	$tab_keys   = array_keys( $tabs );
 	$active_tab = reset( $tab_keys );
 }
+
+// Show status course
+$lp_user = learn_press_get_current_user();
+
+if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
+	$can_view_course = $lp_user->can_view_content_course( get_the_ID() );
+
+	if ( ! $can_view_course->flag ) {
+		learn_press_display_message(
+			esc_html__( 'You finished this course. This course blocked', 'learnpress' ),
+			'warning'
+		);
+	}
+}
 ?>
 
 <div id="learn-press-course-tabs" class="course-tabs">
@@ -50,7 +64,8 @@ if ( ! $active_tab ) {
 
 	<div class="course-tab-panels">
 		<?php foreach ( $tabs as $key => $tab ) : ?>
-			<div class="course-tab-panel-<?php echo esc_attr( $key ); ?> course-tab-panel" id="<?php echo esc_attr( $tab['id'] ); ?>">
+			<div class="course-tab-panel-<?php echo esc_attr( $key ); ?> course-tab-panel"
+				 id="<?php echo esc_attr( $tab['id'] ); ?>">
 				<?php
 				if ( is_callable( $tab['callback'] ) ) {
 					call_user_func( $tab['callback'], $key, $tab );

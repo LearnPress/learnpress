@@ -8,6 +8,7 @@
  * Author URI: http://thimpress.com
  * Requires at least: 3.8
  * Tested up to: 5.5.3
+ * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
  *

@@ -150,7 +150,7 @@ defined( 'ABSPATH' ) || exit;
 				'id'          => '_lp_block_items_course_expire_duration',
 				'label'       => esc_html__( 'Block content', 'learnpress' ),
 				'description' => esc_html__(
-					'Block content items( lesson, quiz... ) of course when expiration time course.',
+					'Block course when duration expires.',
 					'learnpress'
 				),
 				'default'     => 'no',
@@ -162,7 +162,7 @@ defined( 'ABSPATH' ) || exit;
 				'id'          => '_lp_block_items_course_finished',
 				'label'       => '',
 				'description' => esc_html__(
-					'Block content items(lesson, quiz, v.v...) of course when finished course.',
+					'Block course when finished course.',
 					'learnpress'
 				),
 				'default'     => 'yes',
