@@ -1967,12 +1967,12 @@ function learn_press_remove_cookie( $name ) {
  * @return mixed
  */
 function learn_press_get_login_url( $redirect = null ) {
-	$url          = apply_filters( 'learn_press_login_url', wp_login_url( $redirect ) );
+	$url          = wp_login_url( $redirect );
 	$profile_page = learn_press_get_page_link( 'profile' );
 
 	if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && $profile_page ) {
-		$a   = parse_url( $url );
-		$url = $profile_page . ( ! empty( $a['query'] ) ? '?' . $a['query'] : '' );
+		$parse_url = parse_url( $url );
+		$url       = $profile_page . ( ! empty( $parse_url['query'] ) ? '?' . $parse_url['query'] : '' );
 	}
 
 	return apply_filters( 'learn-press/login-url', $url );
@@ -3497,7 +3497,8 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 				$course_desc['evaluate_mark'] ),
 	) );
 
-	return apply_filters( 'learn-press/course-evaluation-methods', $return === 'keys' ? array_keys( $methods ) : $methods, $return );
+	return apply_filters( 'learn-press/course-evaluation-methods',
+		$return === 'keys' ? array_keys( $methods ) : $methods, $return );
 }
 
 /**
