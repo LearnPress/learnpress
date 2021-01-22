@@ -374,7 +374,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 						$results['questions'][ $id ] = array(
 							'explanation' => $question->get_explanation(),
-							'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true ) ),
+							'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true, 'answer' => $answered[ $id ] ) ),
 						);
 					}
 				}
@@ -424,7 +424,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		$response = array(
 			'explanation' => $question->get_explanation(),
-			'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true ) ),
+			'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true, 'answer' => $answered ) ),
 			'result'      => $checked,
 		);
 

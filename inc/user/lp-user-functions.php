@@ -72,8 +72,10 @@ function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* add
 	} else {
 
 		// Otherwise, get item of the course
-		if ( $items = learn_press_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id,
-			'lp-user-course-items' ) ) {
+		if ( $items = learn_press_cache_get(
+			'course-item-' . $user_id . '-' . $course_id . '-' . $item_id,
+			'lp-user-course-items'
+		) ) {
 			$item = reset( $items );
 
 			return $item['user_item_id'];
@@ -120,7 +122,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	/**
 	 * Get user by ID. Return false if the user does not exists.
 	 *
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $current
 	 *
 	 * @return LP_User|mixed
@@ -250,7 +252,7 @@ function learn_press_add_user_roles() {
 add_action( 'init', 'learn_press_add_user_roles' );
 
 /**
- * @param null $user_id
+ * @param null  $user_id
  * @param array $args
  *
  * @return mixed
@@ -343,8 +345,10 @@ add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );
 function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
-	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get( 'profile_endpoints.profile-orders',
-			'profile-orders' ) ) {
+	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get(
+		'profile_endpoints.profile-orders',
+		'profile-orders'
+	) ) {
 		$view = false;
 	}
 
@@ -425,8 +429,8 @@ add_action( 'register_form', 'learn_press_user_become_teacher_registration_form'
  *                                              field_name_n => value n
  *                                              )
  * @param mixed $where  - Optional. Fields with values for conditional update with the same format of $fields.
- * @param bool $update_cache  - Optional. Should be update to cache or not (since 3.0.0).
- * @param bool $update_extra_fields_as_meta  - Optional. Update extra fields as item meta (since 3.1.0).
+ * @param bool  $update_cache  - Optional. Should be update to cache or not (since 3.0.0).
+ * @param bool  $update_extra_fields_as_meta  - Optional. Update extra fields as item meta (since 3.1.0).
  *
  * @return mixed
  */
@@ -617,7 +621,7 @@ function learn_press_update_user_item_field(
  * Get user item row(s) from user items table by multiple WHERE conditional
  *
  * @param array|int $where
- * @param bool $single
+ * @param bool      $single
  *
  * @return array
  */
@@ -673,9 +677,9 @@ function learn_press_get_user_item( $where, $single = true ) {
 /**
  * Get user item meta from user_itemmeta table
  *
- * @param int $user_item_id
+ * @param int    $user_item_id
  * @param string $meta_key
- * @param bool $single
+ * @param bool   $single
  *
  * @return mixed
  */
@@ -691,9 +695,9 @@ function learn_press_get_user_item_meta( $user_item_id, $meta_key, $single = tru
 /**
  * Add user item meta into table user_itemmeta
  *
- * @param int $user_item_id
+ * @param int    $user_item_id
  * @param string $meta_key
- * @param mixed $meta_value
+ * @param mixed  $meta_value
  * @param string $prev_value
  *
  * @return false|int
@@ -705,9 +709,9 @@ function learn_press_add_user_item_meta( $user_item_id, $meta_key, $meta_value, 
 /**
  * Update user item meta to table user_itemmeta
  *
- * @param int $user_item_id
+ * @param int    $user_item_id
  * @param string $meta_key
- * @param mixed $meta_value
+ * @param mixed  $meta_value
  * @param string $prev_value
  *
  * @return bool|int
@@ -720,10 +724,10 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 /**
  * Update user item meta to table user_itemmeta
  *
- * @param int $object_id
+ * @param int    $object_id
  * @param string $meta_key
- * @param mixed $meta_value
- * @param bool $delete_all
+ * @param mixed  $meta_value
+ * @param bool   $delete_all
  *
  * @return bool|int
  */
@@ -823,9 +827,9 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 
 /**
  * @param     $status
- * @param int $quiz_id
- * @param int $user_id
- * @param int $course_id
+ * @param int    $quiz_id
+ * @param int    $user_id
+ * @param int    $course_id
  *
  * @return bool|mixed
  */
@@ -841,7 +845,7 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 *
 	 * @param string $avatar
 	 * @param string $id_or_email
-	 * @param array $size
+	 * @param array  $size
 	 *
 	 * @return string
 	 */
@@ -953,8 +957,10 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	if ( ! is_user_logged_in() ) {
 		$return_url = add_query_arg( $_POST, get_the_permalink( $course_id ) );
 		$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
-		$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect',
-			learn_press_get_login_url( $return_url ) );
+		$redirect   = apply_filters(
+			'learn_press_purchase_course_login_redirect',
+			learn_press_get_login_url( $return_url )
+		);
 		if ( $redirect !== false ) {
 			learn_press_add_message( __( 'Please login to enroll this course', 'learnpress' ) );
 
@@ -1040,7 +1046,7 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1062,7 +1068,7 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1336,9 +1342,9 @@ function learn_press_get_profile( $for_user = 0 ) {
 /**
  * Remove items from learnpress_user_items.
  *
- * @param int $user_id
- * @param int $item_id
- * @param int $course_id
+ * @param int  $user_id
+ * @param int  $item_id
+ * @param int  $course_id
  * @param bool $include_course  - Optional. If TRUE then remove course and it's items
  */
 function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include_course = false ) {
@@ -1358,7 +1364,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 	}
 
 	if ( $include_course ) {
-		$where  .= ' OR ( item_id = %d AND item_type = %s )';
+		$where .= ' OR ( item_id = %d AND item_type = %s )';
 		$args[] = $course_id;
 		$args[] = LP_COURSE_CPT;
 	}
@@ -1378,7 +1384,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 /**
  * Get user profile link
  *
- * @param int $user_id
+ * @param int  $user_id
  * @param null $tab
  *
  * @return mixed|string
@@ -1498,7 +1504,7 @@ function learn_press_get_user_role( $user_id ) {
 
 /**
  * @param array $args
- * @param bool $wp_error
+ * @param bool  $wp_error
  *
  * @return bool|int|LP_User_Item|mixed|WP_Error
  */
@@ -1537,8 +1543,12 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 
 	// Get id and type of ref if they are null
 	if ( ! empty( $itemData['parent_id'] ) && ( empty( $itemData['ref_id'] ) || ( empty( $itemData['ref_type'] ) ) ) ) {
-		$parent = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->learnpress_user_items} WHERE %d",
-			$itemData['parent_id'] ) );
+		$parent = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->learnpress_user_items} WHERE %d",
+				$itemData['parent_id']
+			)
+		);
 
 		if ( $parent ) {
 			if ( empty( $itemData['ref_id'] ) ) {
@@ -1611,7 +1621,7 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 
 /**
  * @param array $args
- * @param bool $wp_error  - Optional. TRUE will return WP_Error on fail.
+ * @param bool  $wp_error  - Optional. TRUE will return WP_Error on fail.
  *
  * @return bool|array|LP_User_Item|WP_Error
  */
@@ -1681,9 +1691,9 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
  * Create new user item prepare for user starts a quiz
  * Update error retry course not work - Nhamdv.
  *
- * @param int $quiz_id
- * @param int $user_id
- * @param int $course_id
+ * @param int  $quiz_id
+ * @param int  $user_id
+ * @param int  $course_id
  * @param bool $wp_error
  *
  * @return array|bool|LP_User_Item|WP_Error
@@ -1742,9 +1752,9 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
  * Create new user item prepare for user starts a quiz
  * Update error retry course not work - Nhamdv.
  *
- * @param int $quiz_id
- * @param int $user_id
- * @param int $course_id
+ * @param int  $quiz_id
+ * @param int  $user_id
+ * @param int  $course_id
  * @param bool $wp_error
  *
  * @return array|bool|LP_User_Item|WP_Error
@@ -1820,6 +1830,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				'quiz_status'       => '',
 				'checked_questions' => array(),
 				'hinted_questions'  => array(),
+				'answered'          => array(),
 			)
 		);
 	}
@@ -1829,6 +1840,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 	$instantHint      = $args['instant_hint'];
 	$instantCheck     = $args['instant_check'];
 	$quizStatus       = $args['quiz_status'];
+	$answered         = $args['answered'];
 	$questions        = array();
 
 	if ( $question_ids ) {
@@ -1878,32 +1890,22 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 			$with_true_or_false = ( $checked || $quizStatus == 'completed' );
 
 			if ( $question->is_support( 'answer-options' ) ) {
-				$questionData['options'] = learn_press_get_question_options_for_js( $question,
-					array( 'include_is_true' => $with_true_or_false ) );
-			} elseif ( $question->get_type() === 'fill_in_blanks' ) {
-				$blanks          = learn_press_get_question_options_for_js( $question,
-					array( 'include_is_true' => $with_true_or_false ) );
-				$blankFillsStyle = get_post_meta( $id, '_lp_blank_fills_style', true );
-
-				foreach ( $blanks as $k => $blank ) {
-					$blanks[ $k ]['text'] = preg_replace( '/\{\{([^\{\"\'].*?)\}\}/', '{{BLANK}}', $blank['title'] );
-					$blankOptions         = learn_press_get_question_answer_meta( $blank['uid'], '_blanks', true );
-
-					if ( in_array( $blankFillsStyle, array( 'select', 'enumeration' ) ) ) {
-						$blanks[ $k ]['words'] = isset( $blankOptions['words'] ) ? $blankOptions['words'] : array();
-					}
-
-					if ( isset( $blankOptions['tip'] ) ) {
-						$blanks[ $k ]['tip'] = $blankOptions['tip'];
-					}
-				}
-				$questionData['options']         = $blanks;
-				$questionData['blankFillsStyle'] = $blankFillsStyle;
-				$questionData['blanksStyle']     = get_post_meta( $id, '_lp_blanks_style', true );
+				$questionData['options'] = learn_press_get_question_options_for_js(
+					$question,
+					array(
+						'include_is_true' => $with_true_or_false,
+						'answer'          => isset( $answered[ $id ]['answered'] ) ? $answered[ $id ]['answered'] : '',
+					)
+				);
 			}
 
-			$questions[] = apply_filters( 'learn-press/single-quiz-js/question-data', $questionData,
-				$question->get_type(), $question->get_id(), $question );
+			$questions[] = apply_filters(
+				'learn-press/single-quiz-js/question-data',
+				$questionData,
+				$question->get_type(),
+				$question->get_id(),
+				$question
+			);
 		}
 
 		/**

@@ -49,6 +49,48 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 			add_filter( 'learn-press/question-editor/i18n', array( $this, 'admin_editor_i18n' ) );
 			add_filter( 'learn-press/quiz-editor/i18n', array( $this, 'admin_editor_i18n' ) );
+			add_filter( 'learn-press/question/fib/regex-content', array( $this, 'match_shortcode' ), 10, 4 );
+		}
+
+		public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
+			if ( ! empty( $content ) ) {
+				preg_match_all( '/' . get_shortcode_regex( array( 'fib' ) ) . '/', $content, $all_shortcode, PREG_SET_ORDER );
+
+				if ( ! empty( $all_shortcode ) ) {
+					foreach ( $all_shortcode as $shortcode ) {
+						$atts = shortcode_parse_atts( $shortcode[0] );
+
+						if ( empty( $atts['id'] ) ) {
+							$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
+							$ids = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
+						} else {
+							$ids = $atts['id'];
+						}
+
+						$fill = ! empty( $atts['fill'] ) ? $atts['fill'] : '';
+
+						if ( $show_answer ) {
+							$answer = isset( $answered[ $ids ] ) ? $answered[ $ids ] : '';
+
+							$is_correct = '';
+
+							if ( ! empty( $answer ) ) {
+								$blanks     = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
+								$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? 'correct' : 'fail';
+							}
+
+							$answer_html = ( ! empty( $answer ) && $is_correct === 'fail' ) ? '<span class="lp-fib-answered__answer">' . $answer . '</span> &rarr; ' : '';
+							$new_str     = '<span class="lp-fib-answered ' . $is_correct . '" id="' . esc_attr( $ids ) . '">' . $answer_html . '<span class="lp-fib-answered__fill">' . $fill . '</span></span>';
+						} else {
+							$new_str = '<div class="lp-fib-input" style="display: inline-block; width: auto;"><input type="text" data-id="' . esc_attr( $ids ) . '" value="" /></div>';
+						}
+
+						$content = str_replace( $shortcode[0], $new_str, $content );
+					}
+				}
+			}
+
+			return $content;
 		}
 
 		public function sanitize_question_answers( $data ) {
@@ -187,79 +229,103 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 		 * @return array
 		 */
 		public function check( $user_answer = null ) {
-			if ( $return = $this->_get_checked( $user_answer ) ) {
-				return $return;
-			}
-
 			$return = parent::check();
-			if ( $this->_blanks && ( $answered = $user_answer ) ) {
-				$return['blanks'] = array();
-				$point_per_blank  = $this->get_mark() / sizeof( $this->_blanks );
-				foreach ( $this->_blanks as $blank ) {
-					$uid       = $blank['id'];
-					$user_fill = ! empty( $answered[ $uid ] ) ? trim( $answered[ $uid ] ) : false;
-					$fill      = trim( $blank['fill'] );
+			settype( $user_answer, 'array' );
+			$answers = $this->get_answers();
 
-					$comparison    = ! empty( $blank['comparison'] ) ? $blank['comparison'] : false;
-					$match_case    = ! empty( $blank['match_case'] ) ? ! ! $blank['match_case'] : false;
-					$blank_correct = false;
-					switch ( $comparison ) {
-						case 'range':
-							if ( is_numeric( $user_fill ) ) {
-								$fill      = explode( ',', $fill );
-								$words     = array_map( 'trim', $fill );
-								$words     = array_map( 'floatval', $fill );
-								$user_fill = floatval( $user_fill );
+			if ( $answers ) {
+				foreach ( $answers as $key => $answer ) {
+					if ( '' === learn_press_get_question_answer_meta( $answer->get_id(), '_blanks', true ) ) {
+						// $blanks = LP_Addon_Fill_In_Blank::instance()->upgrader->upgrade_question( $this->get_id() );
+					} else {
+						$blanks = $answer->get_meta( '_blanks' );
+					}
 
-								if ( sizeof( $words ) == 2 ) {
-									$blank_correct = $words[0] <= $user_fill && $user_fill <= $words[1];
+					$return = array(
+						'correct'  => false,
+						'mark'     => 0,
+						'blanks'   => array(),
+						'answered' => array(),
+					);
+
+					$point_per_blank = $this->get_mark() / count( $blanks );
+
+					if ( $blanks ) {
+						foreach ( $user_answer as $answer_id => $answer_value ) {
+							$answer_id     = trim( $answer_id );
+							$blank_correct = false;
+
+							foreach ( $blanks as $blank ) {
+								if ( $answer_id === $blank['id'] ) {
+									$user_fill  = ! empty( $answer_value ) ? trim( $answer_value ) : '';
+									$blank_correct = $this->check_answer( $blank, $user_fill );
+
+									$return['blanks'][ $answer_id ]   = $blank_correct;
+									$return['answered'][ $answer_id ] = $user_fill;
+
+									if ( $blank_correct ) {
+										$return['mark'] += floatval( $point_per_blank );
+									}
 								}
 							}
-							break;
-						case 'any':
-							$fill  = explode( ',', $fill );
-							$words = array_map( 'trim', $fill );
+						}
 
-							if ( ! $match_case ) {
-								$words     = array_map( 'strtolower', $words );
-								$user_fill = strtolower( $user_fill );
-							}
-
-							$blank_correct = in_array( $user_fill, $words );
-							break;
-						default:
-							if ( $match_case ) {
-								$blank_correct = strcmp( $user_fill, $blank['fill'] ) == 0;
-							} else {
-								$blank_correct = strcasecmp( $user_fill, $blank['fill'] ) == 0;
-							}
-					}
-
-					$return['blanks'][ $uid ] = $blank_correct;
-					if ( $blank_correct ) {
-						$return['mark'] += $point_per_blank;
+						if ( floatval( $return['mark'] ) > 0 ) {
+							$return['correct'] = true;
+						}
 					}
 				}
 
-				if ( $return['mark'] ) {
-					$return['correct'] = true;
-				}
-
-				$answered_value = array_values( $answered );
-				$value          = array_filter( $answered_value );
-
-				if ( empty( $value ) ) {
-					$return['answered'] = false;
-				}
+				return $return;
 			}
-
-			$this->_set_checked( $return, $user_answer );
-
-			return $return;
 		}
 
-		public function get_wp_shortcode_regex() {
-			return '/' . get_shortcode_regex( array( 'fib' ) ) . '/';
+		public function check_answer( $blank, $user_fill ) {
+			$fill       = ! empty( $blank['fill'] ) ? trim( $blank['fill'] ) : '';
+			$comparison = ! empty( $blank['comparison'] ) ? $blank['comparison'] : false;
+			$match_case = ! empty( $blank['match_case'] ) ? ! ! $blank['match_case'] : false;
+
+			if ( empty( $user_fill ) ) {
+				return;
+			}
+
+			$blank_correct = false;
+
+			switch ( $comparison ) {
+				case 'range':
+					if ( is_numeric( $user_fill ) ) {
+						$fill      = explode( ',', $fill );
+						$words     = array_map( 'trim', $fill );
+						$words     = array_map( 'floatval', $fill );
+						$user_fill = floatval( $user_fill );
+
+						if ( count( $words ) == 2 ) {
+							$blank_correct = $words[0] <= $user_fill && $user_fill <= $words[1];
+						}
+					}
+					break;
+
+				case 'any':
+					$fill  = explode( ',', $fill );
+					$words = array_map( 'trim', $fill );
+
+					if ( ! $match_case ) {
+						$words     = array_map( 'strtolower', $words );
+						$user_fill = strtolower( $user_fill );
+					}
+
+					$blank_correct = in_array( $user_fill, $words );
+					break;
+
+				default:
+					if ( $match_case ) {
+						$blank_correct = strcmp( $user_fill, $fill ) == 0;
+					} else {
+						$blank_correct = strcasecmp( $user_fill, $fill ) == 0;
+					}
+			}
+
+			return $blank_correct;
 		}
 	}
 }

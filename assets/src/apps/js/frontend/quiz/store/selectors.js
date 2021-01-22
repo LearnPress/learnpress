@@ -99,6 +99,12 @@ export function getQuestionAnswered( state, id ) {
 	return get( userQuiz, `answered.${ id }.answered` ) || undefined;
 }
 
+export function getQuestionMark( state, id ) {
+	const { userQuiz } = state;
+
+	return get( userQuiz, `answered.${ id }.mark` ) || undefined;
+}
+
 /**
  * Get current question is doing.
  *

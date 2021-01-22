@@ -1,169 +1,73 @@
+import { __ } from '@wordpress/i18n';
 import QuestionBase from '../../question-base';
 
 class QuestionFillInBlanks extends QuestionBase {
-	constructor() {
-		super( ...arguments );
-	}
-
 	componentDidMount() {
-		// this.setState({
-		//     optionClass: [...this.state.optionClass, "new-class"]
-		// })
+		this.updateFibAnswer();
 	}
 
-    getOptionClass = ( option ) => {
-    	const {
-    		answered,
-    	} = this.props;
+	componentDidUpdate( prevProps ) {
+		if ( ! prevProps.answered ) {
+			this.updateFibAnswer();
+		}
+	}
 
-    	const optionClass = [ ...this.state.optionClass, 'XYZ' ];
-    	if ( ! answered && this.maybeShowCorrectAnswer() ) {
-    		if ( option.isTrue === 'yes' ) {
-    			optionClass.push( 'answer-correct' );
-    			( answered === option.value ) && optionClass.push( 'answered-correct' );
-    		} else {
-    			( answered === option.value ) && optionClass.push( 'answered-wrong' );
-    		}
-    	}
+	updateFibAnswer = () => {
+		const allFIBs = document.querySelectorAll( '.lp-fib-input > input' );
+		const answered = {};
 
-    	return optionClass;
-    };
+		[ ...allFIBs ].map( ( ele ) => {
+			ele.addEventListener( 'input', ( e ) => {
+				this.setAnswered( answered, ele.dataset.id, e.target.value );
+			} );
+		} );
+	}
 
-    getPassageContent = () => {
-    	const {
-    		question: {
-    			options,
-    			blankFillsStyle,
-    			blanksStyle,
-    		},
-    	} = this.props;
+	setAnswered = ( answered, id, value ) => {
+		const {
+			updateUserQuestionAnswers,
+			question,
+			status,
+		} = this.props;
 
-    	if ( ! options ) {
-    		return '';
-    	}
+		if ( status !== 'started' ) {
+			return 'LP Error: can not set answers';
+		}
 
-    	const preview = options.map( ( answer ) => {
-    		const blanks = [];//this.getBlanks(answer.text);
-    		const blank = blanks ? blanks[ 0 ] : {};
+		const newAnswered = Object.assign( answered, { [ id ]: value } );
 
-    		let html = '';
+		updateUserQuestionAnswers( question.id, newAnswered );
+	};
 
-    		if ( blank && blank.words.length ) {
-    			html = '<span class="blank-input"></span>';
+	getCorrectLabel = () => {
+		const { question, mark } = this.props;
 
-    			if ( blank.words.length > 1 ) {
-    				switch ( blankFillsStyle ) {
-    				case 'select':
-    					html += '<select>' + blank.words.map( ( word ) => {
-    						return `<option value=${ word }>${ word }</option>`;
-    					} ).join( '' ) + '</select>';
+		return this.maybeShowCorrectAnswer() && (
+			<div className="question-response correct">
+				<span className="label">{ __( 'Point', 'learnpress' ) }</span>
+				<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), mark, question.point ) }</span>
+				<span className="lp-fib-note"><span style={ { background: '#00adff' } }></span>{ __( 'Correct', 'learnpress' ) }</span>
+				<span className="lp-fib-note"><span style={ { background: '#d85554' } }></span>{ __( 'Incorrect', 'learnpress' ) }</span>
+			</div>
+		);
+	};
 
-    					break;
-    				case 'enumeration':
-    					html += '(' + blank.words.map( ( word ) => {
-    						return `<code>${ word }</code>`;
-    					} ).join( ', ' ) + ')';
-    					break;
-    				}
-    			}
+	render() {
+		return (
+			<>
+				<div className="lp-fib-content">
+					{ this.getOptions().map( ( option ) => {
+						return (
+							<div key={ `blank-${ option.uid }` } dangerouslySetInnerHTML={ { __html: option.title || option.value } }></div>
+						);
+					} ) }
+				</div>
 
-    			if ( blank.tip ) {
-    				html += '?';
-    			}
-    		}
-
-    		return ( '' + answer.text ).replace( /\{\{(.*)\}\}/, html );
-    	} ).join( blanksStyle === 'paragraphs' ? '</div><div>' : ( blanksStyle === 'ordered' ? '</li><li>' : ' ' ) );
-
-    	return blanksStyle === 'paragraphs' ? `<div>${ preview }</div>` : ( blanksStyle === 'ordered' ? `<ol><li>${ preview }</li></ol>` : preview );
-    };
-
-    setBlankWord = ( blank, word ) => ( event ) => {
-    	console.log( blank, word, event.target.value );
-    }
-
-    getBlankHtml = ( blank ) => {
-    	const {
-    		question: {
-    			blankFillsStyle,
-    			options,
-    		},
-    	} = this.props;
-    	const BlankOption = ( props ) => {
-    		const len = props.blank.words.length;
-    		return props.blank.words.map( ( word, i ) => {
-    			switch ( blankFillsStyle ) {
-    			case 'select':
-    				return <option value={ word } key={ word }>{ word }</option>;
-    			case 'enumeration':
-    				return <React.Fragment>
-    					<code key={ word } onClick={ this.setBlankWord( blank, word ) }>{ word }</code>
-    					{
-    						i === len - 1 ? '' : ','
-    					}
-    				</React.Fragment>;
-    			}
-    		} );
-    	};
-    	const textMatch = blank.text.split( /\{\{BLANK\}\}/ );
-
-    	return <React.Fragment>
-    		{ textMatch ? textMatch[ 0 ] : '' }
-    		<div className="blank-input-wrap">
-    			{ /*<input type="text" className="blank-input" onChange={ this.setBlankWord(blank) }/>*/ }
-    			<div contentEditable={ true } className="blank-input"></div>
-	</div>
-    		{ blank.tip && (
-	<span>help</span>
-    		) }
-
-    		{
-    			blankFillsStyle === 'select' && <select className="blank-select" onChange={ this.setBlankWord( blank ) }>
-    				<BlankOption blank={ blank } />
-    			</select>
-    		}
-
-    		{
-    			blankFillsStyle === 'enumeration' && <div className="blank-fills">
-	(<BlankOption blank={ blank } />)
-    			</div>
-    		}
-    		{ textMatch ? textMatch[ 1 ] : '' }
-    	</React.Fragment>;
-    };
-
-    render() {
-    	const {
-    		question: {
-    			options,
-    			blankFillsStyle,
-    			blanksStyle,
-    		},
-    	} = this.props;
-
-    	const Wrap = function( props ) {
-    		const className = props.blanksStyle ? props.blanksStyle : ' one-paragraph';
-    		return props.blanksStyle === 'ordered'
-    			? <ol className={ `blanks ${ className }` }>{ props.children }</ol>
-    			: <div className={ `blanks ${ className }` }>{ props.children }</div>;
-    	};
-
-    	return <React.Fragment>
-    		<Wrap blanksStyle={ blanksStyle }>
-    			{
-    				this.getOptions().map( ( option ) => {
-    					const blankHtml = this.getBlankHtml( option );
-    					const key = `blank-${ option.uid }`;
-
-    					return blanksStyle === 'ordered' ? <li key={ key } className="blank-block">
-    						{ blankHtml }
-    					</li> : ( blanksStyle === 'paragraphs'
-    						? <div key={ key } className="blank-block">{ blankHtml }</div> : blankHtml );
-    				} )
-    			}
-	</Wrap>
-    	</React.Fragment>;
-    }
+				{ ! this.isDefaultType() && this.getWarningMessage() }
+				{ this.getCorrectLabel() }
+			</>
+		);
+	}
 }
 
 export default QuestionFillInBlanks;
