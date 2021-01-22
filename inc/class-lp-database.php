@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_Database
  */
 class LP_Database {
-	protected static $_instance;
+	private static $_instance;
 	public $wpdb;
 	public $tb_lp_user_items, $tb_lp_user_itemmeta;
 	public $tb_posts, $tb_postmeta;

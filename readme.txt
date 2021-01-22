@@ -197,6 +197,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 3.2.8.6 =
+~ Fix minor bug
+~ Optimize
+
 = 3.2.8.5 =
 ~ Fix header lesson style error on iphone
 ~ Fix scrollbar error some themes

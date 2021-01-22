@@ -156,7 +156,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				'learn_press_course_submit_rejected',
 				'learn_press_course_submit_approved',
 				'learn_press_course_submit_for_reviewer',
-				'learn_press_user_enrolled_course',
 
 				// New order
 				'learn-press/order/status-pending-to-processing',

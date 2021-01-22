@@ -33,8 +33,8 @@ class LP_Datetime extends DateTime {
 	/**
 	 * Constructor.
 	 *
-	 * @param   string $date
-	 * @param   mixed  $tz
+	 * @param string $date
+	 * @param mixed $tz
 	 */
 	public function __construct( $date = '', $tz = null ) {
 		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
@@ -86,11 +86,11 @@ class LP_Datetime extends DateTime {
 	/**
 	 * Get default timezone from param and wp settings
 	 *
-	 * @since 3.1.0
-	 *
 	 * @param mixed $tz
 	 *
 	 * @return DateTimeZone|null|string
+	 * @since 3.1.0
+	 *
 	 */
 	public static function get_default_timezone( $tz ) {
 		if ( empty( self::$def_timezone ) ) {
@@ -149,7 +149,7 @@ class LP_Datetime extends DateTime {
 	}
 
 	/**
-	 * @param   string $name The name of the property.
+	 * @param string $name The name of the property.
 	 *
 	 * @return  mixed
 	 */
@@ -221,12 +221,12 @@ class LP_Datetime extends DateTime {
 	/**
 	 * Gets the date as a formatted string.
 	 *
-	 * @param   string  $format The date format specification string (see {@link PHP_MANUAL#date})
-	 * @param   boolean $local  True to return the date string in the local time zone, false to return it in GMT.
+	 * @param string $format The date format specification string (see {@link PHP_MANUAL#date})
+	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
 	 * @return  string   The date string in the specified format format.
 	 */
-	public function format( $format, $local = true ) {
+	public function format( $format = '', $local = true ) {
 		if ( '0000-00-00 00:00:00' === $this->raw_date ) {
 			return '';
 		}
@@ -265,7 +265,7 @@ class LP_Datetime extends DateTime {
 	}
 
 	/**
-	 * @param   boolean $local True to return the date string in the local time zone, false to return it in GMT.
+	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
 	 * @return  string
 	 */
@@ -276,7 +276,7 @@ class LP_Datetime extends DateTime {
 	/**
 	 * Gets the date as an SQL datetime string.
 	 *
-	 * @param   boolean $local True to return the date string in the local time zone, false to return it in GMT.
+	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
 	 * @return  string
 	 */
@@ -288,7 +288,7 @@ class LP_Datetime extends DateTime {
 	 * Gets the date as an RFC 822 string.  IETF RFC 2822 supercedes RFC 822 and its definition
 	 * can be found at the IETF Web site.
 	 *
-	 * @param   boolean $local True to return the date string in the local time zone, false to return it in GMT.
+	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
 	 * @return  string
 	 */

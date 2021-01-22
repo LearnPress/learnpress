@@ -2162,9 +2162,7 @@ function learn_press_print_notices( $clear = true ) {
  * @return mixed
  */
 function learn_press_get_login_url( $redirect = null ) {
-
-	// @deprecated
-	$url = apply_filters( 'learn_press_login_url', wp_login_url( $redirect ) );
+	$url = wp_login_url( $redirect );
 
 	if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && $profile_page = learn_press_get_page_link( 'profile' ) ) {
 		$a   = parse_url( $url );

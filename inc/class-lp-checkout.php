@@ -74,7 +74,7 @@ class LP_Checkout {
 	 * Process customer when checking out.
 	 *
 	 * @param array $result
-	 * @param int   $order_id
+	 * @param int $order_id
 	 *
 	 * @return mixed
 	 */
@@ -108,7 +108,8 @@ class LP_Checkout {
 
 					$user_id = $this->_create_account();
 					if ( ! is_wp_error( $user_id ) ) {
-						wp_new_user_notification( $user_id, null, apply_filters( 'learn-press/email-create-new-user-when-checkout', 'user' ) );
+						wp_new_user_notification( $user_id, null,
+							apply_filters( 'learn-press/email-create-new-user-when-checkout', 'user' ) );
 					}
 					break;
 			}
@@ -118,8 +119,7 @@ class LP_Checkout {
 			}
 
 			$order->save();
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			if ( $ex->getCode() && $message = $ex->getMessage() ) {
 				$result['message'] = $message;
 			}
@@ -147,8 +147,8 @@ class LP_Checkout {
 	}
 
 	/**
-	 * @param array       $errors
-	 * @param array       $fields
+	 * @param array $errors
+	 * @param array $fields
 	 * @param LP_Checkout $checkout
 	 *
 	 * @return array
@@ -264,7 +264,8 @@ class LP_Checkout {
 			if ( $order = $this->_is_resume_order( $order_id ) ) {
 
 				if ( is_wp_error( $order ) ) {
-					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 401 ) );
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.',
+						'learnpress' ), 401 ) );
 				}
 
 				$order->remove_order_items();
@@ -273,7 +274,8 @@ class LP_Checkout {
 			} else {
 				$order = new LP_Order();
 				if ( is_wp_error( $order ) ) {
-					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 400 ) );
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.',
+						'learnpress' ), 400 ) );
 				}
 
 				$order_id = $order->get_id();
@@ -304,7 +306,8 @@ class LP_Checkout {
 			// Store the line items to the new/resumed order
 			foreach ( $cart->get_items() as $item ) {
 				if ( empty( $item['order_item_name'] ) && ! empty( $item['item_id'] ) && ( $course = learn_press_get_course( $item['item_id'] ) ) ) {
-					$item['order_item_name'] = apply_filters( 'learn-press/checkout/oder_item_name', $course->get_title(), $item );
+					$item['order_item_name'] = apply_filters( 'learn-press/checkout/oder_item_name',
+						$course->get_title(), $item );
 				} else {
 					throw new Exception( sprintf( __( 'Item does not exist!', 'learnpress' ), 402 ) );
 				}
@@ -312,7 +315,8 @@ class LP_Checkout {
 				$item_id = $order->add_item( $item );
 
 				if ( ! $item_id ) {
-					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 402 ) );
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.',
+						'learnpress' ), 402 ) );
 				}
 
 				// @since 3.0.0
@@ -334,8 +338,7 @@ class LP_Checkout {
 			}
 			$wpdb->query( 'COMMIT' );
 
-		}
-		catch ( Exception $e ) {
+		} catch ( Exception $e ) {
 			// There was an error adding order data!
 			$wpdb->query( 'ROLLBACK' );
 			learn_press_add_message( $e->getMessage() );
@@ -496,7 +499,8 @@ class LP_Checkout {
 
 				if ( ! isset( $available_gateways[ $this->payment_method ] ) ) {
 					$this->payment_method = '';
-					throw new Exception( __( 'No payment method is selected', 'learnpress' ), LP_ERROR_NO_PAYMENT_METHOD_SELECTED );
+					throw new Exception( __( 'No payment method is selected', 'learnpress' ),
+						LP_ERROR_NO_PAYMENT_METHOD_SELECTED );
 				} else {
 					$this->payment_method = $available_gateways[ $this->payment_method ];
 				}
@@ -522,11 +526,6 @@ class LP_Checkout {
 			@set_time_limit( 0 );
 
 			/**
-			 * @deprecated
-			 */
-			do_action( 'learn_press_before_checkout_process' );
-
-			/**
 			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/before-checkout' );
@@ -543,7 +542,8 @@ class LP_Checkout {
 			foreach ( $cart->get_items() as $item ) {
 				$course = learn_press_get_course( $item['item_id'] );
 				if ( ! $course || ! $course->is_purchasable() ) {
-					throw new Exception( sprintf( '%s "%s" %s', __( 'Item', 'learnpress' ), $course->get_title(), __( 'is not purchasable.', 'learnpress' ) ) );
+					throw new Exception( sprintf( '%s "%s" %s', __( 'Item', 'learnpress' ), $course->get_title(),
+						__( 'is not purchasable.', 'learnpress' ) ) );
 				}
 			}
 
@@ -566,7 +566,8 @@ class LP_Checkout {
 
 				// allow Third-party hook
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
-				if ( $this->payment_method ) {
+
+				if ( is_object( $this->payment_method ) ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;
 					// Process Payment
@@ -609,8 +610,7 @@ class LP_Checkout {
 					}
 				}
 			}
-		}
-		catch ( Exception $e ) {
+		} catch ( Exception $e ) {
 			$has_error = $e->getMessage();
 			learn_press_add_message( $has_error, 'error' );
 		}

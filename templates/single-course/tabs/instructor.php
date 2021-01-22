@@ -19,19 +19,19 @@ $course = LP_Global::course();
 
 <div class="course-author">
 
-	<h3><?php _e( 'Instructor', 'learnpress' ); ?></h3>
+    <h3><?php _e( 'Instructor', 'learnpress' ); ?></h3>
 
 	<?php do_action( 'learn-press/before-single-course-instructor' ); ?>
-	<div class="author-wrapper">
-		<div class="author-name">
-			<?php echo $course->get_instructor()->get_profile_picture(); ?>
-			<?php echo $course->get_instructor_html(); ?>
-		</div>
+    <div class="author-wrapper">
+        <div class="author-name">
+			<?php echo wp_kses_post( wpautop( $course->get_instructor()->get_profile_picture() ) ); ?>
+			<?php echo wp_kses_post( wpautop( $course->get_instructor_html() ) ); ?>
+        </div>
 
-		<div class="author-bio">
-			<?php echo $course->get_author()->get_description(); ?>
-		</div>
-	</div>
+        <div class="author-bio">
+			<?php echo wp_kses_post( wpautop( $course->get_author()->get_description() ) ); ?>
+        </div>
+    </div>
 	<?php do_action( 'learn-press/after-single-course-instructor' ); ?>
 
 </div>

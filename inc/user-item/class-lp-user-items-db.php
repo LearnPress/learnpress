@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.2.8.6
  */
 class LP_User_Items_DB extends LP_Database {
-	protected static $_instance;
+	private static $_instance;
 
 	protected function __construct() {
 		parent::__construct();
@@ -27,33 +27,41 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get items by user_item_id | this is id where item_id = course_id
 	 *
-	 * @param int $user_item_id
+	 * @param int $user_item_id_by_course_id
+	 * @param int $user_id
 	 *
-	 * @return object|bool
+	 * @return object
 	 */
-	public function get_course_items_by_user_item_id( $user_item_id_by_course_id = 0 ) {
-		$item_types     = learn_press_get_course_item_types();
-
-		if ( is_user_logged_in() ) {
-			$user_inner_join = "INNER JOIN {$this->wpdb->users} u ON u.ID = X.user_id";
-		} else {
-			$user_inner_join = '';
+	public function get_course_items_by_user_item_id( $user_item_id_by_course_id = 0, $user_id = 0 ) {
+		if ( empty( $user_item_id_by_course_id ) || empty( $user_id ) ) {
+			return null;
 		}
 
-		$query = $this->wpdb->prepare( "
-			SELECT ui.* 
-			FROM ( 
-				SELECT user_id, item_id, MAX(user_item_id) max_id 
-				FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
-			 ) AS X
-			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
-			{$user_inner_join} 
-			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id 
-			WHERE ui.parent_id = %d
-			ORDER BY user_item_id ASC
-		", $user_item_id_by_course_id );
+		/**
+		 * Get cache
+		 *
+		 * Please clear cache when user action vs item. Ex: completed lesson, quiz. Start quiz...
+		 */
+		$course_items = wp_cache_get( 'lp-course-items-' . $user_id . '-' . $user_item_id_by_course_id,
+			'lp-user-course-items' );
 
-		return $wpdb->get_results( $query );
+		if ( ! $course_items ) {
+			$query = $this->wpdb->prepare( "
+			SELECT * FROM wp_learnpress_user_items
+			WHERE parent_id = %d
+			AND ref_type = %s
+			AND user_id = %d
+			GROUP BY user_item_id ASC;
+		", $user_item_id_by_course_id, LP_COURSE_CPT, $user_id );
+
+			$course_items = $this->wpdb->get_results( $query );
+
+			//Set cache
+			wp_cache_set( 'lp-course-items-' . $user_id . '-' . $user_item_id_by_course_id, $course_items,
+				'lp-user-course-items' );
+		}
+
+		return $course_items;
 	}
 }
 

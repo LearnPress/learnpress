@@ -85,8 +85,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			$quiz    = learn_press_get_quiz( $quiz_id );
 			$preview = $quiz->get_preview();
 
-			if ( ( ! $course->is_required_enroll() && ! $user->has_course_status( $course_id, 'enrolled' ) ) ) { //not support preview feature of quiz any more
-				// if quiz is previewable, $preview = true, force create enroll course record notwithstanding course require enroll or not
+			if ( ( ! $course->is_required_enroll() && ! $user->has_course_status( $course_id,
+					'enrolled' ) ) ) {
 				$ret = $user->enroll( $course_id, 0, $preview );
 
 				if ( $ret ) {
@@ -128,14 +128,17 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					throw new Exception( $data->get_error_message() );
 				} else {
 
-					$redirect           = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question', true ) );
+					$redirect           = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'],
+						'_current_question', true ) );
 					$result['result']   = 'success';
-					$result['redirect'] = apply_filters( 'learn-press/quiz/started-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+					$result['redirect'] = apply_filters( 'learn-press/quiz/started-redirect', $redirect, $quiz_id,
+						$course_id, $user->get_id() );
 				}
 			} catch ( Exception $ex ) {
 				$result['message']  = $ex->getMessage();
 				$result['result']   = 'failure';
-				$result['redirect'] = apply_filters( 'learn-press/quiz/start-quiz-failure-redirect', learn_press_get_current_url(), $quiz_id, $course_id, $user->get_id() );
+				$result['redirect'] = apply_filters( 'learn-press/quiz/start-quiz-failure-redirect',
+					learn_press_get_current_url(), $quiz_id, $course_id, $user->get_id() );
 			}
 
 			learn_press_maybe_send_json( $result );
@@ -224,9 +227,11 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$question->show_correct_answers( 'yes' );
 
 						$result['result']   = 'success';
-						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id,
+							$course_id, $user->get_id() );
 						$result['remain']   = $remain;
-						$result['html']     = learn_press_get_template_content( 'content-question/content.php', array( 'quiz' => $quiz ) );
+						$result['html']     = learn_press_get_template_content( 'content-question/content.php',
+							array( 'quiz' => $quiz ) );
 					}
 				}
 			} catch ( Exception $ex ) {
@@ -234,7 +239,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$result['code']    = $ex->getCode();
 			}
 
-			$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id, $user->get_id() );
+			$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id,
+				$user->get_id() );
 
 			// Send json if the ajax is calling
 			learn_press_maybe_send_json( $result );
@@ -281,9 +287,11 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$redirect  = $quiz->get_question_link( $quiz_data->get_current_question() );
 
 						$result['result']   = 'success';
-						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id,
+							$course_id, $user->get_id() );
 						$result['remain']   = $remain;
-						$result['html']     = learn_press_get_template_content( 'content-question/content.php', array( 'quiz' => $quiz ) );
+						$result['html']     = learn_press_get_template_content( 'content-question/content.php',
+							array( 'quiz' => $quiz ) );
 					}
 				}
 			} catch ( Exception $ex ) {
@@ -291,7 +299,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$result['code']    = $ex->getCode();
 			}
 			//LP_Debug::rollbackTransaction();
-			$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id, $user->get_id() );
+			$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id,
+				$user->get_id() );
 
 			// Send json if the ajax is calling
 			learn_press_maybe_send_json( $result );
@@ -340,7 +349,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$redirect = $quiz->get_permalink();// _question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
 
 						$result['result']   = 'success';
-						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+						$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id,
+							$course_id, $user->get_id() );
 						$result['data']     = $data;
 
 						// Redirecting...
@@ -394,11 +404,13 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				if ( is_wp_error( $data ) ) {
 					throw new LP_Exception( $data->get_error_message(), $data->get_error_code() );
 				} elseif ( $data ) {
-					$current_question_id = learn_press_get_user_item_meta( $data->get_user_item_id(), '_current_question' );
+					$current_question_id = learn_press_get_user_item_meta( $data->get_user_item_id(),
+						'_current_question' );
 					$redirect            = $quiz->get_question_link( $current_question_id );
 
 					$result['result']   = 'success';
-					$result['redirect'] = apply_filters( 'learn-press/quiz/retaken-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+					$result['redirect'] = apply_filters( 'learn-press/quiz/retaken-redirect', $redirect, $quiz_id,
+						$course_id, $user->get_id() );
 					$result['data']     = $data;
 				}
 			} catch ( LP_Exception $ex ) {
@@ -577,7 +589,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			} catch ( Exception $ex ) {
 			}
 
-			return $question_id ? ( array_key_exists( $question_id, $questions ) ? $questions[ $question_id ] : false ) : $questions;
+			return $question_id ? ( array_key_exists( $question_id,
+				$questions ) ? $questions[ $question_id ] : false ) : $questions;
 		}
 
 		/**

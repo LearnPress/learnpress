@@ -810,38 +810,3 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	}
 }
 add_action( 'init', 'learn_press_cancel_order_process' );
-
-/**
- * Auto enroll course after user checkout
- *
- * @param $result
- * @param $order_id
- */
-function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
-	return;
-	$enrolled = false;
-	if ( $order_id && $order = learn_press_get_order( $order_id, true /* force to get all changed */ ) ) {
-		$user = learn_press_get_user( $order->user_id, true );
-		if ( $order_items = $order->get_items() ) {
-			foreach ( $order_items as $item ) {
-				if ( $user->has_enrolled_course( $item['course_id'] ) ) {
-					continue;
-				}
-				if ( $user->enroll( $item['course_id'] ) ) {
-					$enrolled = $item['course_id'];
-				}
-			}
-			if ( ! $enrolled ) {
-				$item     = reset( $order_items );
-				$enrolled = $item['course_id'];
-			}
-		}
-	}
-	if ( $enrolled ) {
-		learn_press_add_message( sprintf( __( 'You have enrolled in this course. <a href="%s">Order details</a>', 'learnpress' ), $result['redirect'] ) );
-		$result['redirect'] = get_the_permalink( $enrolled );
-		LP()->cart->empty_cart();
-	}
-
-	return $result;
-}

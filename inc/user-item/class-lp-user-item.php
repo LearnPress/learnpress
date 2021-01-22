@@ -466,12 +466,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'start_time_gmt':
-					if ( ! $v ) {
-						$v = new LP_Datetime( $v );
-					}
-
-					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
-					break;
 				case 'end_time_gmt':
 					if ( ! $v ) {
 						$v = new LP_Datetime( $v );

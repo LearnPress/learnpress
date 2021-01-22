@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_Lesson_DB
  */
 class LP_Lesson_DB extends LP_Database {
-	public static $_instance;
+	private static $_instance;
 
 	public function __construct() {
 		parent::__construct();
