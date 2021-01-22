@@ -63,11 +63,11 @@ class LP_Reset_Data {
 		if ( $user_item_ids && $input_type ) {
 
 			// Select parent id of item_id
-			$query   = "
+			$query   = $wpdb->prepare ("
 				SELECT DISTINCT parent_id AS parent, item_id
 				FROM {$wpdb->learnpress_user_items}
-				WHERE user_item_id IN(" . join( ',', $user_item_ids ) . ")
-			";
+				WHERE user_item_id IN(" . join( ',', $user_item_ids ) . ") AND 1 = %d
+			", 1);
 			$parents = $wpdb->get_results( $query );
 
 			if ( $parents[0]->parent == 0 ) {
@@ -93,8 +93,9 @@ class LP_Reset_Data {
 					$query = $wpdb->prepare( "
 				DELETE
 				FROM {$wpdb->learnpress_user_itemmeta}
-				WHERE learnpress_user_item_id IN(" . join( ',', $items ) . ")
-			" );
+				WHERE  1 = %d
+				AND learnpress_user_item_id IN(" . join( ',', $items ) . ")
+			", 1);
 					// check $items != null
 
 					$wpdb->query( $query );
@@ -115,11 +116,12 @@ class LP_Reset_Data {
 
 				//Update status in table learnpress user items
 				$null_time = '0000-00-00 00:00:00';
+				$current_time = current_time( 'mysql' );
 				$query = $wpdb->prepare( "
 				UPDATE {$wpdb->learnpress_user_items}
-				SET status = %s , start_time = %d
+				SET status = %s , start_time = %s , end_time = %s
 				WHERE user_id = %d AND item_id = %d
-			", 'enrolled', $null_time , $user_id, $item_id );
+			", 'enrolled', $current_time , $null_time  , $user_id, $item_id );
 				$wpdb->query( $query );
 
 				//Delete lesson & quiz in table lp user items
