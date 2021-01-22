@@ -199,7 +199,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 3.2.8.6 =
 ~ Fix minor bug
-~ Optimize
+~ Optimize enroll course
+~ Add cache get items' course
+~ Add reset progress by course_id
+~ Fix "Enroll Button" is not appearing when disable "Auto Enroll" option
 
 = 3.2.8.5 =
 ~ Fix header lesson style error on iphone

@@ -1161,7 +1161,7 @@ function learn_press_course_passing_condition( $value, $format, $course_id ) {
 add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 3 );
 
 /**
- *
+ * Remove this function - tungnx
  */
 function learn_press_enroll_course_from_url() {
 	if ( ! $course_id = LP_Request::get_int( 'enroll-course' ) ) {
@@ -1214,7 +1214,7 @@ function learn_press_enroll_course_from_url() {
 	die();
 }
 
-add_action( 'get_header', 'learn_press_enroll_course_from_url' );
+//add_action( 'get_header', 'learn_press_enroll_course_from_url' );
 
 function learn_press_remove_query_var_enrolled_course( $redirect ) {
 	return remove_query_arg( 'enroll-course', $redirect );

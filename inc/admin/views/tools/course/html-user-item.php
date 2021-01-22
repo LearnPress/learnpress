@@ -39,7 +39,7 @@ $localize = array(
     window.$Vue = window.$Vue || Vue;
 
     jQuery(function ($) {
-        var js_localize = <?php echo   ( $localize );?>
+      var js_localize = <?php echo wp_json_encode( $localize );?>
 
             new $Vue({
                 el: '#learn-press-reset-user-item',
