@@ -91,10 +91,9 @@ class LP_Reset_Data {
 
 					//Delete result in table user itemmeta
 					$query = $wpdb->prepare( "
-				DELETE
-				FROM {$wpdb->learnpress_user_itemmeta}
-				WHERE  1 = %d
-				AND   IN(" . join( ',', $items ) . ")
+					DELETE FROM {$wpdb->learnpress_user_itemmeta}
+					WHERE 1 = %d
+					AND learnpress_user_item_id IN(" . join( ',', $items ) . ")
 			", 1);
 					// check $items != null
 
@@ -103,10 +102,9 @@ class LP_Reset_Data {
 
 				// Delete all field with learnpress_user_item_id = $user_item_ids
 				$query = $wpdb->prepare( "
-				DELETE
-				FROM {$wpdb->learnpress_user_itemmeta}
+				DELETE FROM {$wpdb->learnpress_user_itemmeta}
 				WHERE 1 = %d
-				AND   IN(" . join( ',', $user_item_ids ) . ")
+				AND learnpress_user_item_id IN(" . join( ',', $user_item_ids ) . ")
 			", 1 );
 
 				$wpdb->query( $query );
