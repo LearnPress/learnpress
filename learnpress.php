@@ -289,6 +289,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/section/class-lp-section-database.php';
 			require_once 'inc/quiz/class-lp-quiz-database.php';
 			require_once 'inc/question/class-lp-question-database.php';
+			require_once 'inc/user-item/class-lp-user-items-db.php';
 
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';

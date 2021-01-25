@@ -84,17 +84,15 @@ const enrollCourse = () => {
 		btnEnroll.classList.remove( 'loading' );
 		btnEnroll.disabled = false;
 
-		const { status, redirect, message } = response;
+		const { status, data: { redirect }, message } = response;
 
 		if ( message && status ) {
 			formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
-		}
 
-		if ( status === 'success' && redirect ) {
-			window.location.href = redirect;
+			if ( 'success' === status && undefined !== redirect ) {
+				window.location.href = redirect;
+			}
 		}
-
-		return response;
 	};
 
 	formEnroll.addEventListener(

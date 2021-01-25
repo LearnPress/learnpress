@@ -9,18 +9,18 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'search'         => array(
+			'search'        => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'search_courses' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
-			'enroll-course'  => array(
+			'enroll-course' => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'enroll_courses' ),
-					'permission_callback' => function() {
+					'permission_callback' => function () {
 						return is_user_logged_in();
 					},
 				),
@@ -162,19 +162,23 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * Rest API for Enroll in single course.
 	 *
-	 * @param [type] $request
-	 * @author Nhamdv <email@email.com>
+	 * @param [] $request
+	 *
+	 * @throws Exception
+	 * @author Nhamdv
+	 * @editor tungnx
 	 */
 	public function enroll_courses( $request ) {
-		global $wpdb;
-
-		if ( ! is_user_logged_in() ) {
-			return;
-		}
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
 
 		try {
+			if ( ! is_user_logged_in() ) {
+				throw new Exception( esc_html__( 'Please login!', 'learnpress' ) );
+			}
+
 			if ( empty( absint( $request['id'] ) ) ) {
-				throw new Exception( esc_html__( 'Error: No course avaliable!.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Error: No course available!.', 'learnpress' ) );
 			}
 
 			$course_id = absint( $request['id'] );
@@ -241,23 +245,17 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$cart->empty_cart();
 			}
 
-			$items    = $course->get_items( '', false );
-			$redirect = ! empty( $items ) ? $course->get_item_link( $items[0] ) : get_the_permalink( $course_id );
+			$first_item_course = LP_Course_DB::getInstance()->get_first_item( $course_id );
+			$redirect = ! empty( $first_item_course ) ? $course->get_item_link( $first_item_course ) : get_the_permalink( $course_id );
 
-			$response = array(
-				'status'   => 'success',
-				'message'  => esc_html__( 'Congrats! You enroll course successfully.', 'learnpress' ),
-				'redirect' => apply_filters( 'learnpress/rest-api/enroll-course/redirect', $redirect ),
-			);
-
+			$response->status         = 'success';
+			$response->message        = esc_html__( 'Congrats! You enroll course successfully.', 'learnpress' );
+			$response->data->redirect = apply_filters( 'learnpress/rest-api/enroll-course/redirect', $redirect );
 		} catch ( Exception $e ) {
-			$response = array(
-				'status'  => 'error',
-				'message' => $e->getMessage(),
-			);
+			$response->message = $e->getMessage();
 		}
 
-		return rest_ensure_response( $response );
+		wp_send_json( $response );
 	}
 
 	/**

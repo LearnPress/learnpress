@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Course_DB extends LP_Database {
-	protected static $_instance;
+	private static $_instance;
 
 	protected function __construct() {
 		parent::__construct();
@@ -67,6 +67,39 @@ class LP_Course_DB extends LP_Database {
 			", LP_ORDER_CPT, $order_id, LP_COURSE_CPT, $course_id, $user_id );
 
 		return $this->wpdb->get_var( $query );
+	}
+
+	/**
+	 * Get first item of course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return int
+	 */
+	public function get_first_item( $course_id = 0 ) {
+		/**
+		 * Get cache
+		 *
+		 * Please clear cache when change first item of course
+		 */
+		$first_item_id = wp_cache_get( 'first_item_id', LP_COURSE_CPT );
+
+		if ( ! $first_item_id ) {
+			$query = $this->wpdb->prepare( "
+			SELECT item_id FROM $this->tb_lp_section_items AS items
+			INNER JOIN $this->tb_lp_sections AS sections
+			ON items.section_id = sections.section_id
+			AND sections.section_course_id = %d
+			", $course_id
+			);
+
+			$first_item_id = (int) $this->wpdb->get_var( $query );
+
+			//Set cache
+			wp_cache_set( 'first_item_id', $first_item_id, LP_COURSE_CPT );
+		}
+
+		return $first_item_id;
 	}
 }
 

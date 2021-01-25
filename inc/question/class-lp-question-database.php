@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.2.8
  */
 class LP_Question_DB extends LP_Database {
-	public static $_instance;
+	private static $_instance;
 
-	public function __construct() {
+	protected function __construct() {
 		parent::__construct();
 	}
 
