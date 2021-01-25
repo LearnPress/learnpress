@@ -40,7 +40,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			$this->add_map_method( 'before_delete', 'before_delete_question' )
-			     ->add_map_method( 'save', 'save_question' );
+				 ->add_map_method( 'save', 'save_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -74,7 +74,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 * @since 3.0.1
 		 * @editor tungnx
-		 *
 		 */
 		public function views_pages( $views ) {
 			$user_id          = get_current_user_id();
@@ -169,7 +168,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'i18n' => apply_filters(
 							'learn-press/question-editor/i18n',
 							array(
-								'new_option_label' => esc_html__( 'New Option', 'learnpress' ),
+								'new_option_label'      => esc_html__( 'New Option', 'learnpress' ),
+								'confirm_remove_blanks' => esc_html__( 'Are you sure to remove all blanks?', 'learnpress' ),
 							)
 						),
 					)
@@ -200,7 +200,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'rewrite'           => array(
 						'slug'         => 'question-tag',
 						'hierarchical' => false,
-						'with_front'   => false
+						'with_front'   => false,
 					),
 				)
 			);
@@ -260,7 +260,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param int $question_id
 		 *
 		 * @since 3.0.0
-		 *
 		 */
 		public function before_delete_question( $question_id = 0 ) {
 			$curd = new LP_Question_CURD();
@@ -274,7 +273,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param $question_id
 		 *
 		 * @since 3.0.0
-		 *
 		 */
 		public function save_question( $question_id ) {
 			if ( get_post_status( $question_id ) != 'auto-draft' ) {
@@ -427,14 +425,17 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				global $wpdb;
-				$where .= $wpdb->prepare( "
+				$where .= $wpdb->prepare(
+					"
                     AND {$wpdb->posts}.ID NOT IN(
                         SELECT qq.question_id
                         FROM {$wpdb->learnpress_quiz_questions} qq
                         INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
                         WHERE p.post_type = %s
                     )
-                ", LP_QUESTION_CPT );
+                ",
+					LP_QUESTION_CPT
+				);
 			}
 
 			$posts_where_paged = true;
