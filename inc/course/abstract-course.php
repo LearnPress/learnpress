@@ -140,7 +140,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'course_result'              => get_post_meta( $id, '_lp_course_result', true ),
 					'passing_condition'          => get_post_meta( $id, '_lp_passing_condition', true ),
 					'payment'                    => get_post_meta( $id, '_lp_payment', true ),
-					'final_quiz'                 => get_post_meta( $id, '_lp_final_quiz', true ),
+					'final_quiz'                 => (int) get_post_meta( $id, '_lp_final_quiz', true ),
 					'external_link'              => get_post_meta( $id, '_lp_external_link_buy_course', true ),
 					'external_link_text'         => get_post_meta( $id, '_lp_external_link_text', true ),
 				)

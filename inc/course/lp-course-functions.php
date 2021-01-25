@@ -1144,10 +1144,16 @@ function learn_press_get_course_results_tooltip( $course_id ) {
 
 function learn_press_course_passing_condition( $value, $format, $course_id ) {
 
-	$course = learn_press_get_course( $course_id );
+	$course  = learn_press_get_course( $course_id );
+	$quiz_id = $course->get_final_quiz();
 
-	if ( $quiz_id = $course->get_final_quiz() ) {
-		$quiz  = learn_press_get_quiz( $quiz_id );
+	if ( $quiz_id ) {
+		$quiz = learn_press_get_quiz( $quiz_id );
+
+		if ( ! $quiz ) {
+			return $value;
+		}
+
 		$value = absint( $quiz->get_passing_grade() );
 
 		if ( $format ) {
