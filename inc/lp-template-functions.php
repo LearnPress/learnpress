@@ -27,7 +27,6 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 		$is_finish         = $course_data->is_finished();
 		$can_retake_course = $user->can_retake_course( $course->get_id() );
 		$purchased         = $user->has_purchased_course( $course->get_id() );
-
 		//  if free course
 		if ( $course->is_free() ) {
 			return;
@@ -117,7 +116,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 
 			if ( $purchased ) {
 
-				if ( $course->is_allow_repurchase_course() && $user->user_check_blocked_duration( $course->get_id() ) == true && $course_data == 'enrolled') {
+				if ( $course->is_allow_repurchase_course() && $user->user_check_blocked_duration( $course->get_id() ) == true && $course_data->get_status() == 'enrolled') {
 					learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
 						$args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
 				}

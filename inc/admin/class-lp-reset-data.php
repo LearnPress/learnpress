@@ -94,7 +94,7 @@ class LP_Reset_Data {
 				DELETE
 				FROM {$wpdb->learnpress_user_itemmeta}
 				WHERE  1 = %d
-				AND learnpress_user_item_id IN(" . join( ',', $items ) . ")
+				AND   IN(" . join( ',', $items ) . ")
 			", 1);
 					// check $items != null
 
@@ -105,8 +105,9 @@ class LP_Reset_Data {
 				$query = $wpdb->prepare( "
 				DELETE
 				FROM {$wpdb->learnpress_user_itemmeta}
-				WHERE learnpress_user_item_id = %d
-			", $user_item_ids );
+				WHERE 1 = %d
+				AND   IN(" . join( ',', $user_item_ids ) . ")
+			", 1 );
 
 				$wpdb->query( $query );
 
