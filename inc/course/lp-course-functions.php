@@ -1266,9 +1266,11 @@ function learn_press_reload_page_when_duration_expires() {
 	}
 
 	$course = learn_press_get_the_course();
+	$user = learn_press_get_current_user();
+	$course_data = $user->get_course_data( $course->get_id() );
 
 	if ( $course->is_block_item_content_duration() === true &&
-		! empty( $course ) && $course->expires_to_milliseconds() > 0 ) {
+	     ! empty( $course ) && $course->expires_to_milliseconds() > 0 && $course_data->get_status() == 'enrolled' ) {
 		echo '<input type="hidden" class="course-item-is-blocked" value="' . $course->expires_to_milliseconds() . '">';
 	}
 }
