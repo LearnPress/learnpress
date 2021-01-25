@@ -42,10 +42,17 @@ class QuestionFillInBlanks extends QuestionBase {
 	getCorrectLabel = () => {
 		const { question, mark } = this.props;
 
+		let getMark = mark || 0;
+
+		if ( mark ) {
+			if ( ! Number.isInteger( mark ) ) {
+				getMark = mark.toFixed( 2 );
+			}
+		}
 		return this.maybeShowCorrectAnswer() && (
 			<div className="question-response correct">
-				<span className="label">{ __( 'Point', 'learnpress' ) }</span>
-				<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), mark || 0, question.point ) }</span>
+				<span className="label">{ __( 'Points', 'learnpress' ) }</span>
+				<span className="point">{ `${ getMark }/${ question.point } ${ __( 'point', 'learnpress' ) }` }</span>
 				<span className="lp-fib-note"><span style={ { background: '#00adff' } }></span>{ __( 'Correct', 'learnpress' ) }</span>
 				<span className="lp-fib-note"><span style={ { background: '#d85554' } }></span>{ __( 'Incorrect', 'learnpress' ) }</span>
 			</div>

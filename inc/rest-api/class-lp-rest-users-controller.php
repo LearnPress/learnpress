@@ -363,6 +363,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		if ( $success ) {
 			$user_quiz    = $user_course->get_item( $item_id );
 			$quiz_results = $user_quiz->get_results( '' );
+			$attempts     = $user_quiz->get_attempts(
+				array(
+					'limit'  => learn_press_get_quiz_max_retrying( $item_id, $course_id ),
+					'offset' => 1,
+				)
+			);
 
 			// Use for Review Quiz.
 			if ( get_post_meta( $item_id, '_lp_review', true ) === 'yes' ) {
@@ -374,7 +380,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 						$results['questions'][ $id ] = array(
 							'explanation' => $question->get_explanation(),
-							'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true, 'answer' => $answered[ $id ] ) ),
+							'options'     => learn_press_get_question_options_for_js(
+								$question,
+								array(
+									'include_is_true' => true,
+									'answer'          => $answered[ $id ],
+								)
+							),
 						);
 					}
 				}
@@ -383,12 +395,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['answered'] = $quiz_results->getQuestions();
 			$results['status']   = $quiz_results->get( 'status' );
 			$results['results']  = $quiz_results->get();
-			$results['attempts'] = $user_quiz->get_attempts(
-				array(
-					'limit'  => learn_press_get_quiz_max_retrying( $item_id, $course_id ),
-					'offset' => 1,
-				)
-			);
+			$results['attempts'] = $attempts;
 
 			$response['results'] = $results;
 		}
@@ -424,7 +431,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		$response = array(
 			'explanation' => $question->get_explanation(),
-			'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true, 'answer' => $answered ) ),
+			'options'     => learn_press_get_question_options_for_js(
+				$question,
+				array(
+					'include_is_true' => true,
+					'answer'          => $answered,
+				)
+			),
 			'result'      => $checked,
 		);
 
