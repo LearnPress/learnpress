@@ -77,9 +77,10 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	public function get_object( $object_id = '', $more = '' ) {
 		$user   = learn_press_get_user( $this->user_id );
 		$course = learn_press_get_course( $this->course_id );
-		$order  = $user->get_course_order( $this->course_id );
+		$order_id = $user->get_course_order( $this->course_id, false );
+		$order = learn_press_get_order($order_id);
+		
 		$object = array();
-
 		if ( $course ) {
 			$object = apply_filters(
 				'lp/email/type_enrolled/data',
