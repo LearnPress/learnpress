@@ -120,11 +120,17 @@ class LP_User_Factory {
 	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
 		$items = $order->get_items();
+
 		if ( ! $items ) {
 			return;
 		}
+
 		foreach ( $order->get_users() as $user_id ) {
 			foreach ( $items as $item ) {
+				if ( ! isset( $item['course_id'] ) ) {
+					continue;
+				}
+
 				$item = $curd->get_user_item(
 					$user_id,
 					$item['course_id']
@@ -165,8 +171,7 @@ class LP_User_Factory {
 			$user = learn_press_get_user( $user_id );
 
 			foreach ( $items as $item ) {
-
-				if ( get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+				if ( ! isset( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 					continue;
 				}
 
