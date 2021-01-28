@@ -62,7 +62,7 @@
 			showMessage( errors );
 			const firstId = Object.keys( errors )[ 0 ];
 
-			$( 'input[name="' + firstId + '"]:visible' ).focus();
+			$( 'input[name="' + firstId + '"]:visible' ).trigger( 'focus' );
 		};
 
 		const _formSubmit = function( e ) {
@@ -98,7 +98,7 @@
 					response = LP.parseJSON( response );
 
 					if ( response.messages ) {
-						showErrors( response.messages );
+						showErrors( { ...response.messages } );
 					}
 
 					$( '#learn-press-checkout-place-order' ).removeClass( 'loading' );
@@ -170,6 +170,10 @@
 					msg = '<div class="learn-press-message ' + ( typeof ( type ) === 'string' ? type : '' ) + '">' + msg + '</div>';
 					$formCheckout.prepend( msg );
 				} );
+
+				$( 'html, body' ).animate( {
+					scrollTop: ( $formCheckout.offset().top - 100 ),
+				}, 1000 );
 
 				return;
 			}
