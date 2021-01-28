@@ -163,7 +163,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_icon() {
-		$size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', array( 51, 32 ) );
+		$size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', null ); // array( 52, 32 ) is low quatity.
 
 		if ( $size ) {
 			$icon_size = sprintf( 'width: %dpx; height: %dpx', $size[0], $size[1] );
