@@ -81,20 +81,11 @@ class LP_Request {
 				return $result;
 			}
 
-			$link_redirect = get_the_permalink( $course_id );
-
 			$first_item = LP_Course_DB::getInstance()->get_first_item( $course_id );
 
-			if ( $first_item ) {
-				$link_redirect = learn_press_get_course_item_permalink( $course_id, $first_item );
-			}
-
-			self::do_enroll( $course_id, $order_id, 'enroll-course' );
-
-			$result['redirect'] = $link_redirect;
+			self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
 			delete_transient( 'checkout_enroll_course_id' );
-
-			return $result;
+			unset( $result['redirect'] );
 		}
 
 		return $result;
@@ -208,11 +199,10 @@ class LP_Request {
 								if ( $course->is_allow_repurchase_course() || $user->user_check_blocked_duration( $course->get_id() ) ) {
 									$enroll_course = true;
 									$add_to_cart   = true;
-								} elseif ( 'finished' === $user->get_status_course_of_user() ) {
+								} else {
 									throw new Exception( __( 'have finished course.', 'learnpress' ) );
 								}
 
-								return false;
 							} else {
 								// TODO: enroll
 								//do_action( "learn-press/{$action}-handler", $course_id, $order->get_id() );
@@ -258,7 +248,11 @@ class LP_Request {
 					do_action( "learn-press/{$action}-handler", $course_id, $cart_id, $action );
 				}
 			} elseif ( $enroll_course ) {
-				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action );
+				/**
+				 * @see LP_Request::do_enroll()
+				 */
+				$first_item = LP_Course_DB::getInstance()->get_first_item( $course_id );
+				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action, $first_item );
 			}
 
 			if ( ! $add_to_cart && ! $enroll_course ) {
@@ -344,58 +338,55 @@ class LP_Request {
 	}
 
 	/**
-	 * Enroll course
-	 *
 	 * @param int $course_id
 	 * @param int $order_id
 	 * @param string $action
-	 * @param int $item_id
-	 *
-	 * @return bool
 	 */
-	public static function do_enroll( $course_id = 0, $order_id = 0, $action = '' ) {
+	public static function do_enroll( $course_id, $order_id, $action, $item_id = 0 ) {
+
+		//		if ( ! LP_Nonce_Helper::verify_course( LP_Request::get_string( 'enroll-course-nonce' ), 'enroll' ) ) {
+		//			wp_die( __( 'Invalid request!', 'learnpress' ) );
+		//		}
+
 		if ( ! $course = learn_press_get_course( $course_id ) ) {
 			wp_die( __( 'Invalid request!', 'learnpress' ) );
 		}
 
-		$user          = LP_Global::user();
-		$link_redirect = get_the_permalink( $course_id );
+		$user     = LP_Global::user();
+		$redirect = get_the_permalink( $course_id );
 
 		if ( ! $user->can_enroll_course( $course_id ) && 'enroll-course' == $action ) {
 			learn_press_add_message(
 				sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
 				'error'
 			);
-
-			return false;
 		} else {
-			$rs_enroll = $user->enroll( $course_id, $order_id );
+			$thing = $user->enroll( $course_id, $order_id );
 
-			if ( is_wp_error( $rs_enroll ) ) {
+			if ( is_wp_error( $thing ) ) {
 				learn_press_add_message(
-					$rs_enroll->get_error_message(),
+					$thing->get_error_message(),
 					'error'
 				);
 
-				return false;
-			} else {
+				if ( $thing->get_error_code() == 10002 ) {
+					$redirect = apply_filters( 'learn-press/enroll-course-redirect-login',
+						learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
+				}
+			} elseif ( $thing ) {
 				learn_press_add_message(
 					sprintf( '%s &quot;%s&quot', __( 'Congrats! You have enrolled ', 'learnpress' ),
 						get_the_title( $course_id ) ),
 					'success'
 				);
-
-				$first_item = LP_Course_DB::getInstance()->get_first_item( $course_id );
-
-				if ( $first_item ) {
-					$link_redirect = learn_press_get_course_item_permalink( $course_id, $first_item );
+				if ( $item_id ) {
+					$redirect = learn_press_get_course_item_permalink( $course_id, $item_id );
 				}
-
-				wp_redirect( $link_redirect );
 			}
-		}
 
-		return true;
+		}
+		wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
+		exit();
 	}
 
 	/**

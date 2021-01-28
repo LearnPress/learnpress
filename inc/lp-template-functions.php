@@ -23,10 +23,12 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 		if ( empty( $user ) || ! $course ) {
 			return;
 		}
+
 		$course_data       = $user->get_course_data( $course->get_id() );
 		$is_finish         = $course_data->is_finished();
 		$can_retake_course = $user->can_retake_course( $course->get_id() );
 		$purchased         = $user->has_purchased_course( $course->get_id() );
+
 		//  if free course
 		if ( $course->is_free() ) {
 			return;
@@ -116,7 +118,9 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 
 			if ( $purchased ) {
 
-				if ( $course->is_allow_repurchase_course() && $user->user_check_blocked_duration( $course->get_id() ) == true && $course_data->get_status() == 'enrolled') {
+				if ( $course->is_allow_repurchase_course() &&
+	                         $user->user_check_blocked_duration( $course->get_id() ) == true &&
+	     $course_data->get_status() == 'enrolled' ) {
 					learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
 						$args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
 				}
@@ -196,7 +200,8 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 
 				learn_press_get_template( 'single-course/buttons/enroll.php' );
 
-			} elseif ( ! $purchased && ( ! in_array( $course_data->get_status(), array( 'enrolled' ) ) && $course->is_free() ) ) {
+			} elseif ( ! $purchased && ( ! in_array( $course_data->get_status(),
+						array( 'enrolled' ) ) && $course->is_free() ) ) {
 
 				learn_press_get_template( 'single-course/buttons/enroll.php' );
 

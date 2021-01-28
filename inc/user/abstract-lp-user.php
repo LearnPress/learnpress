@@ -2505,6 +2505,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
 
+				// @deprecated
+				do_action( 'learn_press_user_enrolled_course', $course_id, $user_id, $user_course );
+
 				return $return;
 			} catch ( Exception $ex ) {
 				return new WP_Error( $ex->getCode(), $ex->getMessage() );
