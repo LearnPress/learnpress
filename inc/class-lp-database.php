@@ -11,7 +11,7 @@ class LP_Database {
 	private static $_instance;
 	public $wpdb;
 	public $tb_lp_user_items, $tb_lp_user_itemmeta;
-	public $tb_posts, $tb_postmeta;
+	public $tb_posts, $tb_postmeta, $tb_users;
 	public $tb_lp_order_items, $tb_lp_order_itemmeta;
 	public $tb_lp_sections, $tb_lp_section_items;
 	public $tb_lp_quiz_questions;
@@ -23,6 +23,7 @@ class LP_Database {
 		global $wpdb;
 
 		$this->wpdb                   = $wpdb;
+		$this->tb_users               = $this->wpdb->users;
 		$this->tb_posts               = $this->wpdb->posts;
 		$this->tb_postmeta            = $this->wpdb->postmeta;
 		$this->tb_lp_user_items       = $this->wpdb->prefix . 'learnpress_user_items';

@@ -110,8 +110,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_id = get_the_ID();
 			}
 
-			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id,
-					'learn-press/user-item-object-courses' ) ) ) {
+			$object_course_data = LP_Object_Cache::get(
+				'course-' . $this->get_id() . '-' . $course_id,
+				'learn-press/user-item-object-courses'
+			);
+
+			if ( false === $object_course_data ) {
 				$result = $this->_curd->read_course( $this->get_id(), $course_id );
 
 				if ( $result ) {
@@ -721,18 +725,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return false;
-			$item = false;
-			if ( false !== ( $items = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id,
-					'learn-press/user-course-items' ) ) ) {
-				// Only get status of a newest record.
-				if ( $last ) {
-					$item = reset( $items );
-				} else {
-					$item = $items;
-				}
-			}
-
-			return $item;
 		}
 
 		/**
@@ -779,8 +771,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			$status = false;
-
-			if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
+			$item   = $this->get_item( $item_id, $course_id, true );
+			if ( $item ) {
 				$status = $item['status'];
 			}
 
@@ -1800,6 +1792,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function has_enrolled_course( $course_id, $force = false ) {
 			$enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
+
 			/**
 			 * @since 3.0.0
 			 */

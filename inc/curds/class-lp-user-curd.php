@@ -425,7 +425,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @since 3.2.6.10
 	 */
 	public function read_course( $user_id = null, $course_id = null, $force = false ) {
-		#LP_Debug::logTime( __FUNCTION__ );
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
@@ -473,8 +472,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$result = $wpdb->get_row( $query, ARRAY_A );
 
 		LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $result, 'learn-press/user-item-courses' );
-
-		#LP_Debug::logTime( __FUNCTION__ );
 
 		return $result;
 	}
