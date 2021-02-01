@@ -441,6 +441,9 @@ class LP_Helper {
 				case 'textarea':
 					$value = sanitize_textarea_field( $value );
 					break;
+				case 'key':
+					$value = sanitize_key( $value );
+					break;
 				default:
 					$value = sanitize_text_field( wp_unslash( $value ) );
 			}

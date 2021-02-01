@@ -636,7 +636,7 @@
 	textarea {
 		width: 50%;
 
-		+ .description {
+		+ p.description {
 			flex-basis: 100%;
 			width: 100%;
 			margin-top: 8px !important;
@@ -936,7 +936,7 @@ input[name="_lp_course_result"] {
 			margin: 0;
 			padding: 0;
 
-			>li {
+			> li {
 				display: flex;
 				flex-flow: column nowrap;
 				float: left;
