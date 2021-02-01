@@ -294,8 +294,16 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 				$key = key( $option_array[ $option_name ] );
 
+				if ( is_array( $option_array[ $option_name ][ $key ] ) ) {
+					$key_child = key( $option_array[ $option_name ][ $key ] );
+				}
+
 				if ( isset( $option_values[ $key ] ) ) {
 					$option_value = $option_values[ $key ];
+
+					if ( is_array( $option_value ) && array_key_exists( $key_child, $option_value ) ) {
+						$option_value = $option_value[ $key_child ];
+					}
 				} else {
 					$option_value = null;
 				}

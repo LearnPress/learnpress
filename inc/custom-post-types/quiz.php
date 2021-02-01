@@ -41,7 +41,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
-
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
@@ -181,6 +180,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 									'singular' => esc_html__( 'Question', 'learnpress' ),
 									'plural'   => esc_html__( 'Questions', 'learnpress' ),
 								),
+								'confirm_remove_blanks'  => esc_html__( 'Are you sure to remove all blanks?', 'learnpress' ),
 							)
 						),
 						'listQuestions' => array(

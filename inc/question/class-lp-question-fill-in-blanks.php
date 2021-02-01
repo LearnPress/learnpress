@@ -46,8 +46,6 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			add_filter( 'learn-press/quiz-editor/question-answers-data', array( $this, 'admin_editor_question_answers' ), 10, 3 );
 			add_filter( 'learn-press/question-editor/question-answers-data', array( $this, 'admin_editor_question_answers' ), 10, 3 );
 
-			add_filter( 'learn-press/question-editor/i18n', array( $this, 'admin_editor_i18n' ) );
-			add_filter( 'learn-press/quiz-editor/i18n', array( $this, 'admin_editor_i18n' ) );
 			add_filter( 'learn-press/question/fib/regex-content', array( $this, 'match_shortcode' ), 10, 4 );
 		}
 
@@ -133,12 +131,6 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			}
 
 			return $answers;
-		}
-
-		public function admin_editor_i18n( $i18n ) {
-			$i18n['confirm_remove_blanks'] = esc_html__( 'Are you sure to remove all blanks?', 'learnpress' );
-
-			return $i18n;
 		}
 
 		public function clear_question_answer_meta( $question_id ) {
@@ -238,7 +230,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 							foreach ( $blanks as $blank ) {
 								if ( $answer_id === $blank['id'] ) {
-									$user_fill  = ! empty( $answer_value ) ? trim( $answer_value ) : '';
+									$user_fill     = ! empty( $answer_value ) ? trim( $answer_value ) : '';
 									$blank_correct = $this->check_answer( $blank, $user_fill );
 
 									$return['blanks'][ $answer_id ]   = $blank_correct;
@@ -265,6 +257,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			$fill       = ! empty( $blank['fill'] ) ? trim( $blank['fill'] ) : '';
 			$comparison = ! empty( $blank['comparison'] ) ? $blank['comparison'] : false;
 			$match_case = ! empty( $blank['match_case'] ) ? ! ! $blank['match_case'] : false;
+			$user_fill  = ! empty( $user_fill ) ? trim( $user_fill ) : '';
 
 			if ( empty( $user_fill ) ) {
 				return;

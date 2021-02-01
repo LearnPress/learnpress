@@ -701,6 +701,10 @@ class LP_Checkout {
 							wp_redirect( $result['redirect'] );
 							exit;
 						}
+					} else {
+						$error_message = isset( $result['messages'] ) ? $result['messages'] : '';
+
+						throw new Exception( $error_message );
 					}
 				} else {
 					// ensure that no order is waiting for payment

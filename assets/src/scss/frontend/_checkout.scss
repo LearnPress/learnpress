@@ -580,7 +580,7 @@
 	clear: both;
 }
 
-#learn-press-payment {
+#learn-press-checkout {
 
 	.payment-methods {
 		margin: 0;
@@ -591,10 +591,12 @@
 			margin-bottom: 20px;
 
 			> label {
-				display: block;
+				display: flex;
+				flex-flow: row nowrap;
 				padding: 10px 20px;
 				background: #f5f5f5;
 				line-height: 40px;
+				cursor: pointer;
 
 				img {
 					vertical-align: middle;
@@ -604,7 +606,7 @@
 			&.selected {
 
 				> label {
-					background: var(--lp-secondary-color);
+					background: #d4d4d4;
 				}
 			}
 		}
