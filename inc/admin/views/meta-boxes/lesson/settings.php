@@ -1,6 +1,30 @@
 <?php
 class LP_Meta_Box_Lesson {
 
+	public static function metabox() {
+		return apply_filters(
+			'lp/metabox/lesson/lists',
+			array(
+				'_lp_duration' => array(
+					'label'             => esc_html__( 'Duration', 'learnpress' ),
+					'type'              => 'duration',
+					'default_time'      => 'minute',
+					'default'           => '0',
+					'custom_attributes' => array(
+						'min'  => '0',
+						'step' => '1',
+					),
+				),
+				'_lp_preview'  => array(
+					'label'       => esc_html__( 'Preview', 'learnpress' ),
+					'description' => esc_html__( 'Allows any users to view the lesson content.', 'learnpress' ),
+					'type'        => 'checkbox',
+					'default'     => 'no',
+				),
+			)
+		);
+	}
+
 	public static function output( $post ) {
 		wp_nonce_field( 'learnpress_save_meta_box', 'learnpress_meta_box_nonce' );
 		?>
@@ -10,27 +34,7 @@ class LP_Meta_Box_Lesson {
 				<?php
 				do_action( 'learnpress/lesson-settings/before' );
 
-				lp_meta_box_duration_field(
-					array(
-						'id'                => '_lp_duration',
-						'label'             => esc_html__( 'Duration', 'learnpress' ),
-						'default_time'      => 'minute',
-						'default'           => '0',
-						'custom_attributes' => array(
-							'min'  => '0',
-							'step' => '1',
-						),
-					)
-				);
-
-				lp_meta_box_checkbox_field(
-					array(
-						'id'          => '_lp_preview',
-						'label'       => esc_html__( 'Preview', 'learnpress' ),
-						'description' => esc_html__( 'Allows any users to view the lesson content.', 'learnpress' ),
-						'default'     => 'no',
-					)
-				);
+				lp_meta_box_output( self::metabox() );
 
 				do_action( 'learnpress/lesson-settings/after' );
 				?>

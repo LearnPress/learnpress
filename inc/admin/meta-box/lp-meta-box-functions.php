@@ -35,8 +35,10 @@ function lp_meta_box_text_input_field( $field ) {
 	echo '<div class="form-field ' . $field_id . '_field ' . $wrapper_class . '">
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
-	echo '<input type="' . esc_attr( $field['type_input'] ) . '" ' . $class . ' ' . $style . ' name="' . $field['id'] . '" id="' . $field['id'] . '" value="' . $value . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode( ' ',
-			$custom_attributes ) . ' /> ';
+	echo '<input type="' . esc_attr( $field['type_input'] ) . '" ' . $class . ' ' . $style . ' name="' . $field['id'] . '" id="' . $field['id'] . '" value="' . $value . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode(
+		' ',
+		$custom_attributes
+	) . ' /> ';
 
 	if ( ! empty( $field['description'] ) ) {
 		echo '<p class="description">';
@@ -62,9 +64,15 @@ function lp_meta_box_textarea_field( $field ) {
 	$field['placeholder'] = isset( $field['placeholder'] ) ? $field['placeholder'] : '';
 	$field['class']       = isset( $field['class'] ) ? $field['class'] : 'short';
 	$field['style']       = isset( $field['style'] ) ? $field['style'] : '';
-	$field['default']     = ( ! get_post_meta( $thepostid, $field['id'],
-			true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'],
-		true );
+	$field['default']     = ( ! get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	);
 	$field['value']       = isset( $field['value'] ) ? $field['value'] : $field['default'];
 	$field['desc_tip']    = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
 	$field['name']        = isset( $field['name'] ) ? $field['name'] : $field['id'];
@@ -80,8 +88,10 @@ function lp_meta_box_textarea_field( $field ) {
 	echo '<p class="form-field ' . esc_attr( $field['id'] ) . '_field ' . '">
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
-	echo '<textarea class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '"  name="' . esc_attr( $field['name'] ) . '" id="' . esc_attr( $field['id'] ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" rows="5" ' . implode( ' ',
-			$custom_attributes ) . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
+	echo '<textarea class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '"  name="' . esc_attr( $field['name'] ) . '" id="' . esc_attr( $field['id'] ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" rows="5" ' . implode(
+		' ',
+		$custom_attributes
+	) . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
 
 	if ( ! empty( $field['description'] ) ) {
 		echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
@@ -152,9 +162,15 @@ function lp_meta_box_select_field( $field = array() ) {
 	global $thepostid, $post;
 
 	$thepostid = empty( $thepostid ) ? $post->ID : $thepostid;
-	$default   = ( ! get_post_meta( $thepostid, $field['id'],
-			true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'],
-		true );
+	$default   = ( ! get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	);
 
 	$field = wp_parse_args(
 		$field,
@@ -193,8 +209,11 @@ function lp_meta_box_select_field( $field = array() ) {
 		<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
 			<?php
 			foreach ( $field['options'] as $key => $value ) {
-				echo '<option value="' . esc_attr( $key ) . '"' . selected( $key, $field['value'],
-						false ) . '>' . esc_html( $value ) . '</option>';
+				echo '<option value="' . esc_attr( $key ) . '"' . selected(
+					$key,
+					$field['value'],
+					false
+				) . '>' . esc_html( $value ) . '</option>';
 			}
 			?>
 		</select>
@@ -223,9 +242,15 @@ function lp_meta_box_radio_field( $field ) {
 	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'select';
 	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
 	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-	$field['default']       = ( ! get_post_meta( $thepostid, $field['id'],
-			true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'],
-		true );
+	$field['default']       = ( ! get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	);
 	$field['value']         = isset( $field['value'] ) ? $field['value'] : $field['default'];
 	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
 	$field['desc_tip']      = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
@@ -265,9 +290,15 @@ function lp_meta_box_file_input_field( $field ) {
 	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'short';
 	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
 	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-	$field['default']       = ( ! get_post_meta( $thepostid, $field['id'],
-			true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'],
-		true );
+	$field['default']       = ( ! get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	);
 	$field['value']         = isset( $field['value'] ) ? $field['value'] : $field['default'];
 	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
 	$field['mime_type']     = isset( $field['mime_type'] ) ? implode( ',', $field['mime_type'] ) : '';
@@ -286,8 +317,10 @@ function lp_meta_box_file_input_field( $field ) {
 	echo '<div class="form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '">
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
-	echo '<div id="' . esc_attr( $field['id'] ) . '" class="lp-meta-box__file ' . esc_attr( $field['class'] ) . '" data-mime="' . $field['mime_type'] . '" data-multil="' . $field['multil'] . '" style="' . esc_attr( $field['style'] ) . '" ' . implode( ' ',
-			$custom_attributes ) . '>';
+	echo '<div id="' . esc_attr( $field['id'] ) . '" class="lp-meta-box__file ' . esc_attr( $field['class'] ) . '" data-mime="' . $field['mime_type'] . '" data-multil="' . $field['multil'] . '" style="' . esc_attr( $field['style'] ) . '" ' . implode(
+		' ',
+		$custom_attributes
+	) . '>';
 	echo '<ul class="lp-meta-box__file_list">';
 
 	if ( ! empty( $field['value'] ) ) {
@@ -312,8 +345,12 @@ function lp_meta_box_file_input_field( $field ) {
 	}
 
 	echo '</ul>';
-	echo '<input class="lp-meta-box__file_input" type="hidden" name="' . esc_attr( $field['id'] ) . '" value="' . esc_attr( ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) ? implode( ',',
-			$field['value'] ) : $field['value'] ) . '" />';
+	echo '<input class="lp-meta-box__file_input" type="hidden" name="' . esc_attr( $field['id'] ) . '" value="' . esc_attr(
+		( ! empty( $field['value'] ) && is_array( $field['value'] ) ) ? implode(
+			',',
+			$field['value']
+		) : $field['value']
+	) . '" />';
 	echo '<p>';
 	echo '<a href="#" class="button btn-upload">' . esc_html__( '+ Add media', 'learnpress' ) . '</a>';
 	if ( ! empty( $field['description'] ) && false !== $field['desc_tip'] ) {
@@ -341,9 +378,15 @@ function lp_meta_box_duration_field( $field ) {
 	$field['class']         = isset( $field['class'] ) ? $field['class'] : 'short';
 	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
 	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-	$field['default']       = ( ! get_post_meta( $thepostid, $field['id'],
-			true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'],
-		true );
+	$field['default']       = ( ! get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta(
+		$thepostid,
+		$field['id'],
+		true
+	);
 	$field['value']         = isset( $field['value'] ) ? $field['value'] : $field['default'];
 	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
 	$data_type              = empty( $field['data_type'] ) ? '' : $field['data_type'];
@@ -377,8 +420,10 @@ function lp_meta_box_duration_field( $field ) {
 	echo '<p class="lp-meta-box__duration form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '">
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
-	echo '<input type="number" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" name="' . esc_attr( $field['name'] ) . '[]" id="' . esc_attr( $field['id'] ) . '" value="' . esc_attr( $a1 ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode( ' ',
-			$custom_attributes ) . ' /> ';
+	echo '<input type="number" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" name="' . esc_attr( $field['name'] ) . '[]" id="' . esc_attr( $field['id'] ) . '" value="' . esc_attr( $a1 ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode(
+		' ',
+		$custom_attributes
+	) . ' /> ';
 
 	echo '<select name="' . esc_attr( $field['name'] ) . '[]" class="lp-meta-box__duration-select">' . $html_option . '</select>';
 
@@ -446,8 +491,14 @@ function lp_metabox_custom_fields( $value, $values, $key ) {
 									foreach ( $val['options'] as $cfks => $cfselect ) {
 										?>
 										<option
-											value="<?php echo $cfks; ?>" <?php echo ! empty( $values[ $cfk ] ) ? selected( $values[ $cfk ],
-											(string) $cfks ) : ''; ?>><?php echo $cfselect; ?></option>
+											value="<?php echo $cfks; ?>"
+															  <?php
+																echo ! empty( $values[ $cfk ] ) ? selected(
+																	$values[ $cfk ],
+																	(string) $cfks
+																) : '';
+																?>
+											><?php echo $cfselect; ?></option>
 										<?php
 									}
 								}
@@ -460,9 +511,14 @@ function lp_metabox_custom_fields( $value, $values, $key ) {
 					case 'checkbox':
 						?>
 						<td>
-							<input name="<?php echo esc_attr( $name ); ?>" type="checkbox" name=""
-								   value="1" <?php echo ! empty( $values[ $cfk ] ) ? checked( $values[ $cfk ],
-								'yes' ) : ''; ?>>
+							<input name="<?php echo esc_attr( $name ); ?>                                								   value="1"
+													<?php
+													echo ! empty( $values[ $cfk ] ) ? checked(
+														$values[ $cfk ],
+														'yes'
+													) : '';
+													?>
+								>
 						</td>
 						<?php
 						break;
@@ -482,4 +538,134 @@ function lp_implode_html_attributes( $raw_attributes ) {
 	}
 
 	return implode( ' ', $attributes );
+}
+
+function lp_meta_box_output( $metaboxes = array() ) {
+	if ( ! empty( $metaboxes ) ) {
+		foreach ( $metaboxes as $id => $field ) {
+			switch ( $field['type'] ) {
+				case 'text':
+				case 'number':
+				case 'url':
+					lp_meta_box_text_input_field(
+						array(
+							'id'                => $id,
+							'label'             => $field['label'] ?? '',
+							'description'       => $field['description'] ?? '',
+							'type_input'        => $field['type'],
+							'default'           => $field['default'] ?? '',
+							'custom_attributes' => $field['custom_attributes'] ?? '',
+							'wrapper_class'     => $field['wrapper_class'] ?? false,
+							'placeholder'       => $field['placeholder'] ?? '',
+							'class'             => $field['class'] ?? '',
+							'style'             => $field['style'] ?? '',
+							'desc_tip'          => $field['desc_tip'] ?? false,
+						)
+					);
+					break;
+
+				case 'textarea':
+					lp_meta_box_textarea_field(
+						array(
+							'id'                => $id,
+							'label'             => $field['label'] ?? '',
+							'description'       => $field['description'] ?? '',
+							'default'           => $field['default'] ?? '',
+							'custom_attributes' => $field['custom_attributes'] ?? '',
+							'placeholder'       => $field['placeholder'] ?? '',
+							'class'             => $field['class'] ?? '',
+							'style'             => $field['style'] ?? '',
+							'desc_tip'          => $field['desc_tip'] ?? false,
+						)
+					);
+					break;
+
+				case 'checkbox':
+					lp_meta_box_checkbox_field(
+						array(
+							'id'                => $id,
+							'label'             => $field['label'] ?? '',
+							'description'       => $field['description'] ?? '',
+							'default'           => $field['default'] ?? '',
+							'custom_attributes' => $field['custom_attributes'] ?? '',
+							'wrapper_class'     => $field['wrapper_class'] ?? false,
+							'class'             => $field['class'] ?? '',
+							'style'             => $field['style'] ?? '',
+							'desc_tip'          => $field['desc_tip'] ?? false,
+						)
+					);
+					break;
+
+				case 'duration':
+					lp_meta_box_duration_field(
+						array(
+							'id'                => $id,
+							'label'             => $field['label'] ?? '',
+							'description'       => $field['description'] ?? '',
+							'default'           => $field['default'] ?? '',
+							'default_time'      => $field['default_time'],
+							'custom_attributes' => $field['custom_attributes'] ?? '',
+							'wrapper_class'     => $field['wrapper_class'] ?? false,
+							'class'             => $field['class'] ?? '',
+							'style'             => $field['style'] ?? '',
+							'desc_tip'          => $field['desc_tip'] ?? false,
+						)
+					);
+					break;
+
+				case 'select':
+					lp_meta_box_select_field(
+						array(
+							'id'                => $id,
+							'label'             => $field['label'] ?? '',
+							'description'       => $field['description'] ?? '',
+							'default'           => $field['default'] ?? '',
+							'custom_attributes' => $field['custom_attributes'] ?? '',
+							'wrapper_class'     => $field['wrapper_class'] ?? false,
+							'class'             => $field['class'] ?? '',
+							'style'             => $field['style'] ?? '',
+							'desc_tip'          => $field['desc_tip'] ?? false,
+							'options'           => $field['options'],
+							'multiple'          => $field['multiple'] ?? false,
+						)
+					);
+					break;
+
+				case 'radio':
+					lp_meta_box_radio_field(
+						array(
+							'id'                => $id,
+							'label'             => $field['label'] ?? '',
+							'description'       => $field['description'] ?? '',
+							'default'           => $field['default'] ?? '',
+							'custom_attributes' => $field['custom_attributes'] ?? '',
+							'wrapper_class'     => $field['wrapper_class'] ?? false,
+							'class'             => $field['class'] ?? '',
+							'style'             => $field['style'] ?? '',
+							'desc_tip'          => $field['desc_tip'] ?? false,
+							'options'           => $field['options'],
+						)
+					);
+					break;
+
+				case 'file':
+					lp_meta_box_file_input_field(
+						array(
+							'id'                => $id,
+							'label'             => $field['label'] ?? '',
+							'description'       => $field['description'] ?? '',
+							'default'           => $field['default'] ?? '',
+							'custom_attributes' => $field['custom_attributes'] ?? '',
+							'wrapper_class'     => $field['wrapper_class'] ?? false,
+							'class'             => $field['class'] ?? '',
+							'style'             => $field['style'] ?? '',
+							'desc_tip'          => $field['desc_tip'] ?? false,
+							'options'           => $field['options'],
+							'multil'            => $field['multil'] ?? false,
+						)
+					);
+					break;
+			}
+		}
+	}
 }
