@@ -60,7 +60,6 @@ class LP_Meta_Box_Quiz {
 					'style'             => 'width: 60px;',
 				),
 				'_lp_review'           => array(
-					'id'          => '_lp_review',
 					'label'       => esc_html__( 'Review', 'learnpress' ),
 					'description' => esc_html__( 'Allow students to review the quiz after submitted.', 'learnpress' ),
 					'default'     => 'yes',

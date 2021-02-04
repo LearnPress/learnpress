@@ -660,7 +660,6 @@ function lp_meta_box_output( $metaboxes = array() ) {
 							'class'             => $field['class'] ?? '',
 							'style'             => $field['style'] ?? '',
 							'desc_tip'          => $field['desc_tip'] ?? false,
-							'options'           => $field['options'],
 							'multil'            => $field['multil'] ?? false,
 						)
 					);

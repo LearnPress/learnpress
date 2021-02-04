@@ -1,6 +1,38 @@
 <?php
 class LP_Meta_Box_Question {
 
+	public static function metabox() {
+		return apply_filters(
+			'lp/metabox/lesson/lists',
+			array(
+				'_lp_mark'        => array(
+					'label'             => esc_html__( 'Marking', 'learnpress' ),
+					'description'       => esc_html__( 'Set question points.', 'learnpress' ),
+					'desc_tip'          => true,
+					'type'              => 'number',
+					'default'           => '1',
+					'custom_attributes' => array(
+						'min'  => '1',
+						'step' => '1',
+					),
+					'style'             => 'width: 60px;',
+				),
+				'_lp_hint'        => array(
+					'label'       => esc_html__( 'Hint', 'learnpress' ),
+					'description' => esc_html__( 'A little help for students to get the right answer.', 'learnpress' ),
+					'default'     => '',
+					'type'        => 'textarea',
+				),
+				'_lp_explanation' => array(
+					'label'       => esc_html__( 'Explanation', 'learnpress' ),
+					'description' => esc_html__( 'Explanation will be showed after students Instant Check.', 'learnpress' ),
+					'default'     => '',
+					'type'        => 'textarea',
+				),
+			)
+		);
+	}
+
 	public static function output( $post ) {
 		wp_nonce_field( 'learnpress_save_meta_box', 'learnpress_meta_box_nonce' );
 		?>
@@ -10,39 +42,7 @@ class LP_Meta_Box_Question {
 				<?php
 				do_action( 'learnpress/question-settings/before' );
 
-				lp_meta_box_text_input_field(
-					array(
-						'id'                => '_lp_mark',
-						'label'             => esc_html__( 'Marking', 'learnpress' ),
-						'description'       => esc_html__( 'Set question points.', 'learnpress' ),
-						'desc_tip'          => true,
-						'type'              => 'number',
-						'default'           => '1',
-						'custom_attributes' => array(
-							'min'  => '1',
-							'step' => '1',
-						),
-						'style'             => 'width: 60px;',
-					)
-				);
-
-				lp_meta_box_textarea_field(
-					array(
-						'id'          => '_lp_hint',
-						'label'       => esc_html__( 'Hint', 'learnpress' ),
-						'description' => esc_html__( 'A little help for students to get the right answer.', 'learnpress' ),
-						'default'     => '',
-					)
-				);
-
-				lp_meta_box_textarea_field(
-					array(
-						'id'          => '_lp_explanation',
-						'label'       => esc_html__( 'Explanation', 'learnpress' ),
-						'description' => esc_html__( 'Explanation will be showed after students Instant Check.', 'learnpress' ),
-						'default'     => '',
-					)
-				);
+				lp_meta_box_output( self::metabox() );
 
 				do_action( 'learnpress/question-settings/after' );
 				?>
