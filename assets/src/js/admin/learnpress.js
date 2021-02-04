@@ -429,6 +429,11 @@ const updateEmailStatus = function updateEmailStatus() {
 };
 
 const lpMetaboxsalePriceDate = () => {
+	// Don't run in LearnPress Frontend Editor Add-on.
+	if ( ! $( '.course-settings' ).length ) {
+		return;
+	}
+
 	$( '.lp_sale_dates_fields' ).each( function() {
 		const $this = $( this );
 		const $wrap = $this.closest( 'div.lp-meta-box-course-panels' );
