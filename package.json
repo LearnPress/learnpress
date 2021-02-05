@@ -81,7 +81,8 @@
     "uglify": "^0.1.5",
     "uglify-js": "^3.10.4",
     "uglifycss": "0.0.29",
-    "yargs": "^7.1.0"
+	"yargs": "^7.1.0",
+	"webpack-merge-and-include-globally": "2.3.3"
   },
   "dependencies": {
     "@babel/core": "^7.6.0",
