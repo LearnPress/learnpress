@@ -151,7 +151,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Get class of item.
 		 *
 		 * @param string $more
-		 * @param int $user_id
+		 * @param int    $user_id
 		 *
 		 * @return array
 		 */
@@ -215,8 +215,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn-press/course-item-status-title', $status_message, $this->get_id(),
-				$course_id );
+			return apply_filters(
+				'learn-press/course-item-status-title',
+				$status_message,
+				$this->get_id(),
+				$course_id
+			);
 		}
 
 		/**
@@ -283,8 +287,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * Get instance of an item from post
 		 *
-		 * @param int $item_id  Item id.
-		 * @param int $course_id
+		 * @param int    $item_id  Item id.
+		 * @param int    $course_id
 		 * @param string $item_type
 		 *
 		 * @return LP_Course_Item|false
@@ -304,20 +308,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				if ( learn_press_is_support_course_item_type( $item_type ) ) {
 					$type = str_replace( 'lp_', '', $item_type );
 
-					$class = apply_filters(
-						'learn-press/course-item-object-class',
-						false,
-						$type,
-						$item_type,
-						$item_id
-					);
-
-					if ( is_string( $class ) && class_exists( $class ) ) {
-						$item = new $class( $item_id );
-					} elseif ( $class instanceof LP_Course_Item ) {
-						$item = $class;
-					}
-
 					switch ( $type ) {
 						case 'lesson':
 							$item = LP_Lesson::get_lesson( $item_id );
@@ -325,6 +315,24 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 						case 'quiz':
 							$item = LP_Quiz::get_quiz( $item_id );
 							break;
+						default:
+							$class_name = apply_filters(
+								'learn-press/course-item-object-class',
+								array(),
+								$type,
+								$item_type,
+								$item_id
+							);
+
+							if ( ! empty( $class_name ) && isset( $class_name[ $type ] ) ) {
+								$class = $class_name[ $type ];
+
+								if ( is_string( $class ) && class_exists( $class ) ) {
+									$item = new $class( $item_id );
+								} elseif ( $class instanceof LP_Course_Item ) {
+									$item = $class;
+								}
+							}
 					}
 
 					if ( $course_id && $item ) {
@@ -377,8 +385,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Create nonce for checking actions on an item.
 		 *
 		 * @param string $action
-		 * @param int $course_id
-		 * @param int $user_id
+		 * @param int    $course_id
+		 * @param int    $user_id
 		 *
 		 * @return string
 		 */
@@ -401,8 +409,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 *
 		 * @param string $nonce
 		 * @param string $action
-		 * @param int $course_id
-		 * @param int $user_id
+		 * @param int    $course_id
+		 * @param int    $user_id
 		 *
 		 * @return false|int
 		 */
@@ -587,7 +595,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			return apply_filters(
 				'learn-press/course-item/is-blocked',
 				$is_blocked === 'yes' ? true : false,
-				$this->get_id(), $course_id, $user_id
+				$this->get_id(),
+				$course_id,
+				$user_id
 			);
 		}
 
@@ -618,8 +628,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				if ( $item ) {
 					if ( $item->is_preview() ) {
 						$blocked_items[ $course_item ] = 'no';
-					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array( $item->get_post_type(),
-							$block_item_types ) ) {
+					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array(
+						$item->get_post_type(),
+						$block_item_types
+					) ) {
 						$blocked_items[ $course_item ] = 'no';
 					}
 				}
@@ -633,8 +645,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				}
 			}
 
-			$blocked_items = apply_filters( 'learn-press/course-item/parse-block-statuses', $blocked_items, $course_id,
-				$user_id );
+			$blocked_items = apply_filters(
+				'learn-press/course-item/parse-block-statuses',
+				$blocked_items,
+				$course_id,
+				$user_id
+			);
 
 			LP_Object_Cache::set( $cache_key, $blocked_items, 'learn-press/blocked-items' );
 
@@ -642,8 +658,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		}
 
 		/**
-		 * @param LP_User $user
-		 * @param LP_Course $course
+		 * @param LP_User             $user
+		 * @param LP_Course           $course
 		 * @param LP_User_Item_Course $course_item_data
 		 *
 		 * @return string
