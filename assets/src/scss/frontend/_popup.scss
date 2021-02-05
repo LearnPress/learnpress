@@ -1267,18 +1267,10 @@
 				max-width: none;
 
 				> input {
-					width: 180px;
-					min-width: 160px;
-					height: 26px;
-					padding: 2px 10px;
-					border: 2px solid rgba(229, 231, 235, 1);
-					border-radius: 4px;
-					line-height: 26px;
-
-					&:focus {
-						border-color: var(--lp-secondary-color);
-						outline: none;
-					}
+					height: 36px;
+					padding: 6px 16px;
+					border: 1px solid #222;
+					line-height: 36px;
 				}
 			}
 
