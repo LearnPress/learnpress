@@ -430,7 +430,7 @@ const updateEmailStatus = function updateEmailStatus() {
 
 const lpMetaboxsalePriceDate = () => {
 	// Don't run in LearnPress Frontend Editor Add-on.
-	if ( ! $( '.course-settings' ).length ) {
+	if ( ! $( '#course-settings' ).length ) {
 		return;
 	}
 
