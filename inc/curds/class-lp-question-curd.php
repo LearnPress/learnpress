@@ -261,7 +261,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		public function _get_question_mark( $question_id ) {
-			$mark = abs( get_post_meta( $question_id, '_lp_mark', true ) );
+
+			// Recheck _lp_mark @tungnx
+			$mark = get_post_meta( $question_id, '_lp_mark', true ) ? get_post_meta( $question_id, '_lp_mark', true ) : 0;
+
+			$mark = abs( $mark );
 			if ( ! $mark ) {
 				$mark = apply_filters( 'learn-press/question/default-mark', 1, $question_id );
 				update_post_meta( $question_id, '_lp_mark', $mark );
