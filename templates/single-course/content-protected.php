@@ -30,7 +30,7 @@ if ( ! isset( $block_by_check ) ) {
 	<?php
 	if ( ! is_user_logged_in() ) {
 		echo sprintf(
-			wp_kses_post(
+			__(
 				'This content is protected, please <a class="lp-link-login" href="%s">login</a> and enroll course to view this content!',
 				'learnpress'
 			),
