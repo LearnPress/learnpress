@@ -11,7 +11,7 @@ class LP_Template implements ArrayAccess {
 	 */
 	protected static $instance = null;
 
-	protected $templates = array();
+	public $templates = array();
 
 	/**
 	 * LP_Template constructor.
