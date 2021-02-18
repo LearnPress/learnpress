@@ -193,7 +193,7 @@ function lp_meta_box_select_field( $field = array() ) {
 	$field_attributes          = (array) $field['custom_attributes'];
 	$field_attributes['style'] = $field['style'];
 	$field_attributes['id']    = $field['id'];
-	$field_attributes['name']  = $field['name'];
+	$field_attributes['name']  = $field['multiple'] ? $field['name'] . '[]' : $field['name'];
 	$field_attributes['class'] = $field['class'];
 
 	if ( $field['multiple'] ) {
@@ -209,11 +209,7 @@ function lp_meta_box_select_field( $field = array() ) {
 		<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
 			<?php
 			foreach ( $field['options'] as $key => $value ) {
-				echo '<option value="' . esc_attr( $key ) . '"' . selected(
-					$key,
-					$field['value'],
-					false
-				) . '>' . esc_html( $value ) . '</option>';
+				echo '<option value="' . esc_attr( $key ) . '"' . ( is_array( $field['value'] ) ? selected( in_array( (string) $key, $field['value'], true ), true ) : selected( $key, $field['value'], false ) ) . '>' . esc_html( $value ) . '</option>';
 			}
 			?>
 		</select>
