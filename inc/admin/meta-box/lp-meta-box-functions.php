@@ -204,7 +204,7 @@ function lp_meta_box_select_field( $field = array() ) {
 	$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
 	?>
 
-	<p class="form-field lp-select-2 <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>">
+	<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>">
 		<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
 		<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
 			<?php
