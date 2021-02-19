@@ -507,14 +507,7 @@ function lp_metabox_custom_fields( $value, $values, $key ) {
 					case 'checkbox':
 						?>
 						<td>
-							<input name="<?php echo esc_attr( $name ); ?>                                								   value="1"
-													<?php
-													echo ! empty( $values[ $cfk ] ) ? checked(
-														$values[ $cfk ],
-														'yes'
-													) : '';
-													?>
-								>
+							<input name="<?php echo esc_attr( $name ); ?>" type="checkbox" name="" value="1" <?php echo ! empty( $values[ $cfk ] ) ? checked( $values[ $cfk ], 'yes' ) : ''; ?>>
 						</td>
 						<?php
 						break;
