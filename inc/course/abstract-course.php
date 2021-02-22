@@ -167,12 +167,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'external_link'                => get_post_meta( $id, '_lp_external_link_buy_course', true ),
 					'block_course_duration_expire' => get_post_meta(
 						$id,
-						'_lp_block_items_course_expire_duration',
+						'_lp_block_expire_duration',
 						true
 					),
 					'block_course_finished'        => get_post_meta(
 						$id,
-						'_lp_block_items_course_finished',
+						'_lp_block_finished',
 						true
 					),
 				)
