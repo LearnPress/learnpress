@@ -31,11 +31,11 @@ class LP_Abstract_Template {
 	}
 
 	public function __call( $name, $arguments ) {
-		$log = sprintf( 'Template %s::%s doesn\'t exists.', get_class($this), $name );
+		$log = sprintf( 'Template %s::%s doesn\'t exists.', get_class( $this ), $name );
 		error_log( $log );
 
 		if ( learn_press_is_debug() ) {
-			echo sprintf('<span title="%s" class="learn-press-template-warning"></span>', $log);
+			echo sprintf( '<span title="%s" class="learn-press-template-warning"></span>', $log );
 		}
 	}
 
@@ -107,7 +107,6 @@ class LP_Abstract_Template {
 
 					remove_action( $tag, $callback['function'], $priority1 );
 				}
-
 			}
 
 			return;
@@ -146,6 +145,65 @@ class LP_Abstract_Template {
 	}
 
 	/**
+	 * Remove callback function.
+	 *
+	 * @param [type] $tag
+	 * @param [type] $function
+	 * @param [type] $priority
+	 * @return void
+	 *
+	 * @author Nhamdv <email@email.com>
+	 *
+	 * Ex: LP()->template( 'course' )->remove_callback( 'learn-press/course-content-summary', 'single-course/title', 10 );
+	 *
+	 */
+	public static function remove_callback( $tag, $function, $priority ) {
+		global $wp_filter;
+
+		if ( empty( $wp_filter[ $tag ] ) ) {
+			return;
+		}
+
+		$callbacks = $wp_filter[ $tag ]->callbacks;
+
+		if ( ! $callbacks ) {
+			return;
+		}
+
+		$priorities = array_keys( $callbacks );
+
+		foreach ( $priorities as $priority1 ) {
+
+			if ( $priority !== '*' && $priority !== $priority1 ) {
+				continue;
+			}
+
+			if ( empty( $callbacks[ $priority1 ] ) ) {
+				continue;
+			}
+
+			foreach ( $callbacks[ $priority1 ] as $callback ) {
+
+				if ( ! $callback['function'][0] instanceof LP_Template_Callback ) {
+					continue;
+				}
+
+				if ( $callback['function'][1] !== 'callback' ) {
+					continue;
+				}
+
+				if ( $callback['function'][0]->get_template() !== $function ) {
+					continue;
+				}
+
+				remove_action( $tag, $callback['function'], $priority1 );
+			}
+		}
+
+		return;
+	}
+
+	/**
 	 * @return LP_Template
 	 */
 	public static function instance() {
@@ -173,7 +231,7 @@ class LP_Template_Callback {
 	 * LP_Template_Caller constructor.
 	 *
 	 * @param       $template
-	 * @param array $args
+	 * @param array    $args
 	 */
 	public function __construct( $template, $args = array() ) {
 		$this->template = $template;
