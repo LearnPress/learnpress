@@ -1,11 +1,9 @@
 <?php
 
+/**
+ * Class LP_Datetime
+ */
 class LP_Datetime extends DateTime {
-	const DAY_ABBR   = "\x021\x03";
-	const DAY_NAME   = "\x022\x03";
-	const MONTH_ABBR = "\x023\x03";
-	const MONTH_NAME = "\x024\x03";
-
 	/**
 	 * @var    string
 	 */
@@ -211,7 +209,7 @@ class LP_Datetime extends DateTime {
 	 * Gets the date as a formatted string.
 	 *
 	 * @param string  $format The date format specification string (see {@link PHP_MANUAL#date})
-	 * @param boolean $local  True to return the date string in the local time zone, false to return it in GMT.
+	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
 	 * @return string The date string in the specified format format.
 	 */
@@ -245,13 +243,13 @@ class LP_Datetime extends DateTime {
 				$return = $this->format( 'Y-m-d H:i:s', $local );
 				break;
 			default:
-				if ( $local == false && ! empty( self::$gmt ) ) {
+				if ( ! $local && ! empty( self::$gmt ) ) {
 					parent::setTimezone( self::$gmt );
 				}
 
 				$return = parent::format( $format );
 
-				if ( $local == false && ! empty( $this->tz ) ) {
+				if ( ! $local && ! empty( $this->tz ) ) {
 					parent::setTimezone( $this->tz );
 				}
 		}

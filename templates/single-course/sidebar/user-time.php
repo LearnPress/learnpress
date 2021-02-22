@@ -23,13 +23,13 @@ $course = LP_Global::course();
 <div class="course-time">
 	<p class="course-time-row">
 		<strong><?php esc_html_e( 'You started on:', 'learnpress' ); ?></strong>
-		<time class="entry-date enrolled" datetime="<?php esc_attr( $start_time->toISO8601() ); ?>"><?php echo $start_time->format( 'M j, Y' ); ?></time>
+		<time class="entry-date enrolled"><?php echo $start_time->format( 'M j, Y' ); ?></time>
 	</p>
 	<?php if ( in_array( $status, array( learn_press_user_item_in_progress_slug(), 'enrolled' ) ) ) : ?>
 		<?php if ( $expiration_time ) : ?>
 			<p class="course-time-row">
 				<strong><?php esc_html_e( 'Course will end:', 'learnpress' ); ?></strong>
-				<time class="entry-date expire" datetime="<?php esc_attr( $expiration_time->toISO8601() ); ?>"><?php echo $expiration_time->format( 'M j, Y' ); ?></time>
+				<time class="entry-date expire"><?php echo $expiration_time->format( 'M j, Y' ); ?></time>
 			</p>
 		<?php else : ?>
 			<p class="course-time-row">
@@ -40,7 +40,7 @@ $course = LP_Global::course();
 	<?php elseif ( $status === 'finished' && $end_time ) : ?>
 		<p class="course-time-row">
 			<strong><?php esc_html_e( 'You finished on:', 'learnpress' ); ?></strong>
-			<time class="entry-date finished" datetime="<?php esc_attr( $end_time->toISO8601() ); ?>"><?php echo $end_time->format( 'M j, Y' ); ?></time>
+			<time class="entry-date finished"><?php echo $end_time->format( 'M j, Y' ); ?></time>
 		</p>
 	<?php endif; ?>
 </div>

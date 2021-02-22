@@ -218,18 +218,12 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			if ( $course_items && isset( $course_items[0]->user_item_id ) ) {
 				if ( in_array( $course_items[0]->status, array( 'purchased' ) ) ) {
 					$date            = new LP_Datetime();
-					$course_duration = $course->get_duration();
 
 					$fields = array(
 						'graduation' => 'in-progress',
 						'status'     => 'enrolled',
 						'start_time' => $date->toSql( false ),
 					);
-
-					if ( $course_duration ) {
-						$expiration                = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
-						$fields['expiration_time'] = $expiration->toSql( true );
-					}
 
 					learn_press_update_user_item_field(
 						$fields,
@@ -318,7 +312,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			// Set status, start_time, end_time of course to enrolled.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-							 ->set_start_time( current_time( 'mysql' ) )
+							 ->set_start_time( current_time('mysql', true) )
 							 ->set_end_time( '' )
 							 ->set_graduation( '' )
 							 ->update();

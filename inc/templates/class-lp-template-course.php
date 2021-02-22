@@ -850,8 +850,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$end_time        = $course_data->get_end_time();
 		$expiration_time = $course_data->get_expiration_time();
 
-		learn_press_get_template( 'single-course/sidebar/user-time',
-			compact( 'status', 'start_time', 'end_time', 'expiration_time' ) );
+		learn_press_get_template(
+			'single-course/sidebar/user-time',
+			compact( 'status', 'start_time', 'end_time', 'expiration_time' )
+		);
 	}
 
 	public function user_progress() {

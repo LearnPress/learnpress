@@ -2317,8 +2317,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return bool|WP_Error
 		 * @since 3.3.0
+		 * @throws Exception .
 		 */
-		public function enroll_course( $course_id, $order_id = 0, $overwrite = false, $wp_error = false ) {
+		public function enroll_course( $course_id = 0, $order_id = 0, $overwrite = false, $wp_error = false ) {
 
 			try {
 				$user_item_api = new LP_User_Item_CURD();
@@ -2351,7 +2352,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$course_item = LP_User_Item::get_empty_item();
 				}
 
-				$course_duration = $course->get_duration();
 				$user_id         = $this->get_id();
 
 				$date                        = new LP_Datetime();
@@ -2366,19 +2366,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$user_course = new LP_User_Item_Course( $course_item );
 				$user_course->set_status( 'in-progress' );
-
-				$course = learn_press_get_course( $course_id );
-
-				// Added since 3.3.0
-				if ( $course_duration ) {
-					// Expiration is GTM time
-					if ( LP()->settings->get( 'auto_enroll' ) == 'no' && ! $course->is_free() ) {
-						$user_course->set_expiration_time( null );
-					} else {
-						$expiration = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
-						$user_course->set_expiration_time( $expiration->toSql( true ) );
-					}
-				}
 
 				if ( ! $user_course->update() ) {
 					throw new Exception( __( 'Update user item error.', 'learnpress' ) );
