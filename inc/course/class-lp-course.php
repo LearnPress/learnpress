@@ -89,31 +89,23 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		/**
 		 * Get LP Course.
 		 *
-		 * @param bool  $the_course
+		 * @param int   $course_id
 		 * @param array $args
 		 *
 		 * @return mixed|bool|LP_Course
 		 */
-		public static function get_course( $the_course = false, $args = array() ) {
-			if ( is_numeric( $the_course ) && isset( LP_Global::$courses[ $the_course ] ) ) {
-				return LP_Global::$courses[ $the_course ];
+		public static function get_course( $course_id = 0 ) {
+			if ( isset( LP_Global::$courses[ $course_id ] ) ) {
+				return LP_Global::$courses[ $course_id ];
 			}
 
-			$the_course = self::get_course_object( $the_course );
+			$the_course = self::get_course_object( $course_id );
 
 			if ( ! $the_course ) {
 				return false;
 			}
 
-			if ( ! empty( $args['force'] ) ) {
-				$force = ! ! $args['force'];
-				unset( $args['force'] );
-			} else {
-				$force = false;
-			}
-
 			$key_args = wp_parse_args(
-				$args,
 				array(
 					'id'   => $the_course->ID,
 					'type' => $the_course->post_type,
@@ -122,14 +114,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			$key = LP_Helper::array_to_md5( $key_args );
 
-			if ( $force ) {
-				LP_Global::$courses[ $key ] = false;
-			}
-
 			if ( empty( LP_Global::$courses[ $key ] ) ) {
-				$class_name = self::get_course_class( $the_course, $args );
+				$class_name = self::get_course_class( $the_course );
 				if ( is_string( $class_name ) && class_exists( $class_name ) ) {
-					$course = new $class_name( $the_course->ID, $args );
+					$course = new $class_name( $the_course->ID );
 				} elseif ( $class_name instanceof LP_Abstract_Course ) {
 					$course = $class_name;
 				} else {
@@ -156,16 +144,16 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		private static function get_class_name_from_course_type( $course_type ) {
 			return LP_COURSE_CPT === $course_type ? __CLASS__ : 'LP_Course_' . implode(
-				'_',
-				array_map( 'ucfirst', explode( '-', $course_type ) )
-			);
+					'_',
+					array_map( 'ucfirst', explode( '-', $course_type ) )
+				);
 		}
 
 		/**
 		 * Get the course class name
 		 *
 		 * @param WP_Post $the_course
-		 * @param array   $args  (default: array())
+		 * @param array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -220,8 +208,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$user                = learn_press_get_user( get_current_user_id() );
 
 			if ( current_user_can( 'administrator' ) ||
-				 ( current_user_can( LP_TEACHER_ROLE ) &&
-				   $this->get_author()->get_id() === $user->get_id() )
+			     ( current_user_can( LP_TEACHER_ROLE ) &&
+			       $this->get_author()->get_id() === $user->get_id() )
 			) {
 				return $timestamp_remaining;
 			}
@@ -276,6 +264,27 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function enable_block_item_when_finish(): bool {
 			return 'yes' === $this->get_data( 'block_course_finished' );
+		}
+
+		/**
+		 * Get first item of course
+		 *
+		 * @return int
+		 */
+		public function get_first_item_id(): int {
+			return LP_Course_DB::getInstance()->get_first_item_id( $this->get_id() );
+		}
+
+		/**
+		 * Get redirect url after enroll course
+		 *
+		 * @return false|string|WP_Error
+		 */
+		public function get_redirect_url_after_enroll() {
+			$first_item_id = $this->get_first_item_id();
+			$redirect      = ! empty( $first_item_id ) ? $this->get_item_link( $first_item_id ) : get_the_permalink( $this );
+
+			return apply_filters( 'learnpress/rest-api/enroll-course/redirect', $redirect );
 		}
 	}
 }

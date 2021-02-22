@@ -10,6 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * @see LP_Template_Course::button_retry()
+ */
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
 		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
@@ -99,12 +102,12 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 
 			if ( ! $has_active ) {
 				if ( $course && $user->has_course_status(
-					$course->get_id(),
-					array(
-						'enrolled',
-						'finished',
-					)
-				) && ! empty( $tabs['curriculum'] )
+						$course->get_id(),
+						array(
+							'enrolled',
+							'finished',
+						)
+					) && ! empty( $tabs['curriculum'] )
 				) {
 					$tabs['curriculum']['active'] = true;
 				} elseif ( ! empty( $tabs['overview'] ) ) {
@@ -184,9 +187,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$post_type_object = get_post_type_object( $lp_course_item->get_item_type() );
 
 			if ( $post_type_object && current_user_can(
-				'edit_post',
-				$lp_course_item->get_id()
-			) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
+					'edit_post',
+					$lp_course_item->get_id()
+				) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
 				$type = get_post_type( $lp_course_item->get_id() );
 
 				if ( apply_filters( 'learn-press/edit-admin-bar-button', true, $lp_course_item ) ) {
@@ -209,9 +212,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$edit_post_link   = get_edit_post_link( $lp_quiz_question->get_id() );
 
 			if ( $post_type_object && current_user_can(
-				'edit_post',
-				$lp_quiz_question->get_id()
-			) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
+					'edit_post',
+					$lp_quiz_question->get_id()
+				) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
 				$type = get_post_type( $lp_quiz_question->get_id() );
 				$wp_admin_bar->add_menu(
 					array(
@@ -244,12 +247,12 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 		}
 
 		foreach ( $hooks as $hook ) {
-			if ( isset( $wp_filter[ "learn-press/{$hook}" ] ) ) {
+			if ( isset( $wp_filter["learn-press/{$hook}"] ) ) {
 				// Move to backup to restore it if needed.
-				$wp_filter['learn-press-backup-hooks'][ "learn-press/{$hook}" ] = $wp_filter[ "learn-press/{$hook}" ];
+				$wp_filter['learn-press-backup-hooks']["learn-press/{$hook}"] = $wp_filter["learn-press/{$hook}"];
 
 				// Remove the origin hook
-				unset( $wp_filter[ "learn-press/{$hook}" ] );
+				unset( $wp_filter["learn-press/{$hook}"] );
 			}
 		}
 
@@ -312,7 +315,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 	 * Custom document title depending on LP current page.
 	 * E.g: Single course, profile, etc...
 	 *
-	 * @param  array $title
+	 * @param array $title
 	 *
 	 * @return array
 	 * @since 3.0.0
@@ -388,10 +391,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param  int          $lesson_id
-	 * @param  int          $course_id
-	 * @param  array|string $class
-	 * @param  boolean      $echo
+	 * @param int          $lesson_id
+	 * @param int          $course_id
+	 * @param array|string $class
+	 * @param boolean      $echo
 	 *
 	 * @return mixed
 	 */
@@ -459,10 +462,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param  int          $quiz_id
-	 * @param  int          $course_id
-	 * @param  string|array $class
-	 * @param  boolean      $echo
+	 * @param int          $quiz_id
+	 * @param int          $course_id
+	 * @param string|array $class
+	 * @param boolean      $echo
 	 *
 	 * @return mixed
 	 */
@@ -549,7 +552,7 @@ if ( ! function_exists( 'learn_press_course_class' ) ) {
 /**
  * When the_post is called, put course data into a global.
  *
- * @param  mixed $post
+ * @param mixed $post
  *
  * @return LP_Course
  */
@@ -568,7 +571,8 @@ function learn_press_setup_object_data( $post ) {
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
 		}
-		$object = learn_press_get_course( $post );
+
+		$object = learn_press_get_course( $post->ID );
 
 		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
@@ -590,7 +594,7 @@ if ( ! is_admin() ) {
  * Display a message immediately with out push into queue
  *
  * @param        $message
- * @param  string  $type
+ * @param string $type
  */
 
 function learn_press_display_message( $message, $type = 'success' ) {
@@ -608,7 +612,7 @@ function learn_press_display_message( $message, $type = 'success' ) {
 /**
  * Returns all notices added
  *
- * @param  bool $clear
+ * @param bool $clear
  *
  * @return string
  */
@@ -622,10 +626,10 @@ function learn_press_get_messages( $clear = false ) {
 /**
  * Add new message into queue for displaying.
  *
- * @param  string   $message
- * @param  string   $type
- * @param  array    $options
- * @param  int|bool $current_user  . @since 3.0.9 - add for current user only
+ * @param string   $message
+ * @param string   $type
+ * @param array    $options
+ * @param int|bool $current_user . @since 3.0.9 - add for current user only
  */
 function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
 	if ( is_string( $options ) ) {
@@ -672,8 +676,8 @@ function learn_press_get_message( $message, $type = 'success' ) {
 /**
  * Remove message added into queue by id and/or type.
  *
- * @param  string       $id
- * @param  string|array $type
+ * @param string       $id
+ * @param string|array $type
  *
  * @since 3.0.0
  */
@@ -714,7 +718,7 @@ function learn_press_remove_message( $id = '', $type = '' ) {
 /**
  * Print out the message stored in the queue
  *
- * @param  bool
+ * @param bool
  */
 function learn_press_print_messages( $clear = true ) {
 	$messages = learn_press_session_get( learn_press_session_message_id() );
@@ -763,7 +767,7 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 	/**
 	 * learn_press_page_title function.
 	 *
-	 * @param  boolean $echo
+	 * @param boolean $echo
 	 *
 	 * @return string
 	 */
@@ -811,8 +815,8 @@ add_action( 'template_redirect', 'learn_press_template_redirect' );
 /**
  * Get template part.
  *
- * @param  string $slug
- * @param  string $name
+ * @param string $slug
+ * @param string $name
  *
  * @return  string
  */
@@ -852,14 +856,14 @@ function learn_press_get_template_part( $slug, $name = '' ) {
 /**
  * Get other templates passing attributes and including the file.
  *
- * @param  string $template_name
- * @param  array  $args  (default: array())
- * @param  string $template_path  (default: '')
- * @param  string $default_path  (default: '')
+ * @param string $template_name .
+ * @param array  $args (default: array()) .
+ * @param string $template_path (default: '').
+ * @param string $default_path (default: '').
  *
  * @return void
  */
-function learn_press_get_template( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
+function learn_press_get_template( $template_name = '', $args = array(), $template_path = '', $default_path = '' ) {
 	if ( $args && is_array( $args ) ) {
 		extract( $args );
 	}
@@ -905,9 +909,9 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * Get template content
  *
  * @param        $template_name
- * @param  array         $args
- * @param  string        $template_path
- * @param  string        $default_path
+ * @param array  $args
+ * @param string $template_path
+ * @param string $default_path
  *
  * @return string
  * @uses learn_press_get_template();
@@ -922,9 +926,9 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
 /**
  * Locate a template and return the path for inclusion.
  *
- * @param  string $template_name
- * @param  string $template_path  (default: '')
- * @param  string $default_path  (default: '')
+ * @param string $template_name
+ * @param string $template_path (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */
@@ -959,7 +963,7 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 /**
  * Returns the name of folder contains template files in theme
  *
- * @param  bool
+ * @param bool
  *
  * @return string
  */
@@ -1179,7 +1183,7 @@ function learn_press_get_course_redirect( $link ) {
 					$sep = '';
 				} elseif ( $v == 'port' ) {
 					$link .= ':';
-					$sep   = '';
+					$sep  = '';
 				} else {
 					$sep = '/';
 				}
@@ -1200,7 +1204,7 @@ function learn_press_get_course_redirect( $link ) {
 }
 
 /**
- * @param  LP_Quiz $item
+ * @param LP_Quiz $item
  */
 function learn_press_quiz_meta_final( $item ) {
 	$course = LP_Global::course();
@@ -1257,7 +1261,7 @@ if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
 /**
  * Add custom classes to body tag class name
  *
- * @param  array $classes
+ * @param array $classes
  *
  * @return array
  *
@@ -1292,7 +1296,7 @@ add_filter( 'body_class', 'learn_press_body_classes', 10 );
 /**
  * Return true if user is learning a course
  *
- * @param  int $course_id
+ * @param int $course_id
  *
  * @return bool|mixed
  * @since 3.0
@@ -1364,8 +1368,8 @@ function learn_press_current_user_enrolled_course() {
 /**
  * Check if an user can access content of a course.
  *
- * @param  int $course_id
- * @param  int $user_id
+ * @param int $course_id
+ * @param int $user_id
  *
  * @return bool
  * @since 3.x.x
@@ -1613,8 +1617,8 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 }
 
 /**
- * @param  LP_Question $question
- * @param  array       $args
+ * @param LP_Question $question
+ * @param array       $args
  *
  * @return array
  * @since 4.x.x
@@ -1664,8 +1668,8 @@ function learn_press_custom_excerpt_length( $length ) {
 /**
  * Get post meta with key _lp_duration and translate.
  *
- * @param  int    $post_id
- * @param  string $default
+ * @param int    $post_id
+ * @param string $default
  *
  * @return string
  * @since 4.0.0
@@ -1679,7 +1683,7 @@ function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
 /**
  * Get level post meta.
  *
- * @param  int $post_id
+ * @param int $post_id
  *
  * @return string
  */
@@ -1713,7 +1717,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 	if ( $meta && isset( $meta[ $format ] ) ) {
 		$content = stripslashes( $meta[ $format ] );
 	} else {
-		$template      = ! empty( $field[ "template_{$format}" ] ) ? $field[ "template_{$format}" ] : null;
+		$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
 		$template_file = $field['template_base'] . $template;
 		$content       = LP_WP_Filesystem::get_contents( $template_file );
 	}

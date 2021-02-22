@@ -126,15 +126,22 @@ class LP_Global {
 		return $lp_user;
 	}
 
-	public static function set_user( $user ) {
-		global $lp_user;
-
-		if ( self::$_user === false ) {
-			self::$_user = $lp_user;
-		}
-
-		$lp_user = $user;
-	}
+	/**
+	 * Set global user
+	 *
+	 * @param LP_User $user
+	 */
+//	public static function set_user( $user = null ) {
+//		global $lp_user;
+//
+//		var_dump(debug_backtrace());
+//
+//		if ( false === self::$_user ) {
+//			self::$_user = $lp_user;
+//		}
+//
+//		$lp_user = $user;
+//	}
 
 	/**
 	 * Alias of course item for highlighting in dev
@@ -227,13 +234,13 @@ class LP_Global {
 	}
 
 	/**
-	 * @since 3.3.0
-	 *
 	 * @param string $object_type
 	 * @param string $feature
 	 * @param string $type
 	 *
 	 * @return mixed
+	 * @since 3.3.0
+	 *
 	 */
 	public static function add_object_feature( $object_type, $feature, $type = 'yes' ) {
 		$namespace   = explode( '.', $object_type );
@@ -258,13 +265,13 @@ class LP_Global {
 	/**
 	 * Checks if an object is support a feature.
 	 *
-	 * @since 3.3.0
-	 *
 	 * @param string $object_type
 	 * @param string $feature
-	 * @param mixed  $type
+	 * @param mixed $type
 	 *
 	 * @return bool
+	 * @since 3.3.0
+	 *
 	 */
 	public static function object_is_support_feature( $object_type, $feature, $type = null ) {
 		$objects     = self::$object_support_features;
@@ -302,11 +309,11 @@ class LP_Global {
 	/**
 	 * Get all features that an object support.
 	 *
-	 * @since 3.3.0
-	 *
 	 * @param string $object_type
 	 *
 	 * @return array|mixed
+	 * @since 3.3.0
+	 *
 	 */
 	public static function get_object_supports( $object_type ) {
 		$namespace   = explode( '.', $object_type );

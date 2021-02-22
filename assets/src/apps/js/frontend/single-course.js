@@ -121,6 +121,55 @@ const enrollCourse = () => {
 	}
 };
 
+const retakeCourse = () => {
+	const elFormRetakeCourse = document.querySelector( '.lp-form-retake-course' );
+
+	if ( ! elFormRetakeCourse ) {
+		return;
+	}
+
+	const elButtonRetakeCourse = elFormRetakeCourse.querySelector( '.button-retake-course' );
+	const elCourseId = elFormRetakeCourse.querySelector( '[name=retake-course]' ).value;
+	const elAjaxMessage = elFormRetakeCourse.querySelector( '.lp-ajax-message' );
+	const submit = () => {
+		wp.apiFetch( {
+			path: '/lp/v1/courses/retake-course',
+			method: 'POST',
+			data: { id: elCourseId },
+		} ).then( ( res ) => {
+			const { status, message, data } = res;
+			elAjaxMessage.innerHTML = message;
+
+			if ( undefined != status && status === 'success' ) {
+				elButtonRetakeCourse.style.display = 'none';
+				setTimeout( () => {
+					window.location.replace( data.url_redirect );
+				}, 1000 );
+			} else {
+				elAjaxMessage.classList.add( 'error' );
+			}
+		} ).catch( ( err ) => {
+			elAjaxMessage.classList.add( 'error' );
+			elAjaxMessage.innerHTML = 'error: ' + err.data.status + ' ' + err.message;
+		} ).then( ( ) => {
+			elButtonRetakeCourse.classList.remove( 'loading' );
+			elButtonRetakeCourse.disabled = false;
+			elAjaxMessage.style.display = 'block';
+		} );
+	};
+
+	elFormRetakeCourse.addEventListener( 'submit', ( e ) => {
+		e.preventDefault();
+	} );
+
+	elButtonRetakeCourse.addEventListener( 'click', ( e ) => {
+		e.preventDefault();
+		elButtonRetakeCourse.classList.add( 'loading' );
+		elButtonRetakeCourse.disabled = true;
+		submit();
+	} );
+};
+
 export {
 	initCourseTabs,
 	initCourseSidebar,
@@ -137,5 +186,6 @@ $( window ).on(
 		initCourseTabs();
 		initCourseSidebar();
 		enrollCourse();
+		retakeCourse();
 	}
 );

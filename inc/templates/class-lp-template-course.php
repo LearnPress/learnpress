@@ -54,14 +54,24 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/graduation', array( 'graduation' => $graduation ) );
 	}
 
+	/**
+	 * Show button retry course
+	 */
 	public function button_retry() {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		if ( $user->has_finished_course( $course->get_id() ) ) {
-			if ( $user->can_retry_course( $course->get_id() ) ) {
-				learn_press_get_template( 'single-course/buttons/retry' );
-			}
+		if ( ! $user || ! $course ) {
+			return;
+		}
+
+		$can_retake_times = $user->can_retry_course( $course->get_id() );
+
+		if ( $can_retake_times ) {
+			learn_press_get_template(
+				'single-course/buttons/retry',
+				array( 'can_retake_times' => $can_retake_times )
+			);
 		}
 	}
 
@@ -207,9 +217,18 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
 	}
 
+	/**
+	 * Show button enroll course
+	 *
+	 * @TODO check this function - tungnx
+	 */
 	public function course_enroll_button() {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
+
+		if ( ! $course ) {
+			return;
+		}
 
 		if ( $course->get_external_link() ) {
 			learn_press_show_log( 'Course has external link' );
@@ -217,31 +236,24 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		// If course is not published
+		// If course is not published.
 		if ( ! $course->is_publish() ) {
 			learn_press_show_log( 'Course is not published' );
 
 			return;
 		}
 
-		// Locked course for user
-		if ( $user->is_locked_course( $course->get_id() ) ) {
-			learn_press_show_log( 'Course is locked' );
-
-			return;
-		}
-
-		// Course out of stock (full students)
+		// Course out of stock (full students).
 		if ( ! $course->is_in_stock() ) {
 			return;
 		}
 
-		// Course is not require enrolling
+		// Course is not require enrolling.
 		if ( ! $course->is_required_enroll() ) {
 			return;
 		}
 
-		// User can not enroll course
+		// User can not enroll course.
 		if ( ! $user->can_enroll_course( $course->get_id() ) ) {
 			return;
 		}

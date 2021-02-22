@@ -15,13 +15,12 @@ defined( 'ABSPATH' ) || exit();
  *
  * @return LP_Course|mixed
  */
-function learn_press_get_course( $the_course = 0, $args = '' ) {
-
-	if ( $the_course === 0 ) {
+function learn_press_get_course( $the_course = 0 ) {
+	if ( 0 === $the_course ) {
 		$the_course = get_the_ID();
 	}
 
-	return LP_Course::get_course( $the_course, $args );
+	return LP_Course::get_course( $the_course );
 }
 
 function learn_press_get_course_by_id( $id ) {
@@ -36,7 +35,7 @@ function learn_press_get_course_by_id( $id ) {
  * Create nonce for course action.
  * Return nonce created with format 'learn-press-$action-$course_id-course-$user_id'
  *
- * @param string $action  [retake, purchase, enroll]
+ * @param string $action [retake, purchase, enroll]
  * @param int $course_id
  * @param int $user_id
  *
@@ -459,8 +458,8 @@ function learn_press_course_get_support_item_types( $keys = false ) {
 /**
  * Register new type of course item
  *
- * @param string $post_type  - Usually is post type
- * @param string $label  - Name show for user
+ * @param string $post_type - Usually is post type
+ * @param string $label - Name show for user
  */
 function learn_press_course_add_support_item_type( $post_type, $label = '' ) {
 	if ( empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {

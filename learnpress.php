@@ -281,15 +281,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Filter query
 			require_once 'inc/filters/class-lp-filter.php';
 			require_once 'inc/filters/class-lp-post-type-filter.php';
+			require_once 'inc/filters/class-lp-user-items-filter.php';
 
 			// Query Database
-			require_once 'inc/class-lp-database.php';
-			require_once 'inc/course/class-lp-course-database.php';
-			require_once 'inc/lesson/class-lp-lesson-database.php';
-			require_once 'inc/section/class-lp-section-database.php';
-			require_once 'inc/quiz/class-lp-quiz-database.php';
-			require_once 'inc/question/class-lp-question-database.php';
-			require_once 'inc/user-item/class-lp-user-items-db.php';
+			require_once 'inc/databases/class-lp-db.php';
+			require_once 'inc/databases/class-lp-course-db.php';
+			require_once 'inc/databases/class-lp-lesson-db.php';
+			require_once 'inc/databases/class-lp-section-db.php';
+			require_once 'inc/databases/class-lp-quiz-db.php';
+			require_once 'inc/databases/class-lp-question-db.php';
+			require_once 'inc/databases/class-lp-user-items-db.php';
 
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';

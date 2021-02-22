@@ -63,6 +63,38 @@ class LP_User_Items_DB extends LP_Database {
 
 		return $course_items;
 	}
+
+	/**
+	 * Remove items' of course and user learned
+	 *
+	 * @param LP_User_Items_Filter $filter .
+	 *
+	 * @return bool|int
+	 * @throws Exception .
+	 */
+	public function remove_items_of_user_course( LP_User_Items_Filter $filter ) {
+		$query_extra = '';
+
+		// Check valid user.
+		if ( ! is_user_logged_in()
+		     || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
+			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+		}
+
+		if ( - 1 < $filter->limit ) {
+			$query_extra .= " LIMIT $filter->limit";
+		}
+
+		$query = $this->wpdb->prepare( "
+			DELETE FROM {$this->tb_lp_user_items}
+			WHERE parent_id = %d
+			$query_extra;
+		",
+			$filter->parent_id
+		);
+
+		return $this->wpdb->query( $query );
+	}
 }
 
 LP_Course_DB::getInstance();

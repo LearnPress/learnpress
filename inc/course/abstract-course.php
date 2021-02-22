@@ -16,8 +16,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 	 */
 	abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		/**
+		 * Course type
 		 *
-		 * @var string
+		 * @var string .
 		 */
 		public $course_type = null;
 
@@ -100,8 +101,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Constructor gets the post object and sets the ID for the loaded course.
 		 *
-		 * @param mixed $the_course  Course ID, post object, or course object
-		 * @param mixed $deprecated  Deprecated
+		 * @param mixed $the_course Course ID, post object, or course object
+		 * @param mixed $deprecated Deprecated
 		 */
 		public function __construct( $the_course, $deprecated = '' ) {
 
@@ -157,7 +158,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'max_students'                 => get_post_meta( $id, '_lp_max_students', true ),
 					'students'                     => false,
 					'fake_students'                => get_post_meta( $id, '_lp_students', true ),
-					// 'retake_count'         => get_post_meta( $id, '_lp_retake_count', true ),
+					'retake_count'                 => get_post_meta( $id, '_lp_retake_count', true ),
 					'featured'                     => get_post_meta( $id, '_lp_featured', true ),
 					'block_lesson_content'         => get_post_meta( $id, '_lp_block_lesson_content', true ),
 					'course_result'                => get_post_meta( $id, '_lp_course_result', true ),
@@ -288,7 +289,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get course thumbnail, return placeholder if it does not exists
 		 *
 		 * @param string $size
-		 * @param array $attr
+		 * @param array  $attr
 		 *
 		 * @return string
 		 */
@@ -416,7 +417,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get all curriculum of this course.
 		 *
-		 * @param int $section_id
+		 * @param int  $section_id
 		 * @param bool $force
 		 *
 		 * @return bool|LP_Course_Section[]
@@ -429,7 +430,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Return list of item's ids in course's curriculum.
 		 *
 		 * @param string|array $type
-		 * @param bool $preview  - True for including 'Preview' item
+		 * @param bool         $preview - True for including 'Preview' item
 		 *
 		 * @return array
 		 * @since 3.0.0
@@ -665,7 +666,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 		/**
 		 * @param int|bool $with_avatar
-		 * @param string $link_class
+		 * @param string   $link_class
 		 *
 		 * @return string
 		 */
@@ -827,7 +828,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get all items in a course.
 		 *
-		 * @param string $type  . Type of items, eg: lp_lesson, lp_quiz...
+		 * @param string $type . Type of items, eg: lp_lesson, lp_quiz...
 		 *
 		 * @return array
 		 * @deprecated
@@ -1023,7 +1024,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get course's item (lesson/quiz/etc...).
 		 *
-		 * @param int $item_id  Course's item Id.
+		 * @param int $item_id Course's item Id.
 		 *
 		 * @return LP_Lesson|LP_Quiz|boolean
 		 */
@@ -1044,7 +1045,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get course passing condition value.
 		 *
-		 * @param bool $format
+		 * @param bool   $format
 		 * @param string $context
 		 *
 		 * @return array|mixed|string
@@ -1236,7 +1237,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * If the item is not passed consider it is item viewing.
 		 *
 		 * @param bool $current_item
-		 * @param bool $viewable  - Optional. TRUE will get next item is viewable.
+		 * @param bool $viewable - Optional. TRUE will get next item is viewable.
 		 *
 		 * @return array|bool
 		 * @since 3.1.0
@@ -1355,7 +1356,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Calculate course results for user by course results settings
 		 *
-		 * @param int $user_id
+		 * @param int     $user_id
 		 * @param boolean $force
 		 *
 		 * @return mixed
@@ -1523,7 +1524,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get number of lessons user has completed
 		 *
 		 * @param        $user_id
-		 * @param bool $force
+		 * @param bool   $force
 		 * @param string $type
 		 *
 		 * @return int|bool
@@ -1540,7 +1541,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @param int $user_id
+		 * @param int  $user_id
 		 * @param bool $force
 		 *
 		 * @return mixed
@@ -1559,8 +1560,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Count all items in a course.
 		 *
-		 * @param string|array $type  - Optional. Filter item by it's post-type, e.g: lp_lesson
-		 * @param bool $include_preview  - Optional. False to exclude if item is preview
+		 * @param string|array $type - Optional. Filter item by it's post-type, e.g: lp_lesson
+		 * @param bool         $include_preview - Optional. False to exclude if item is preview
 		 *
 		 * @return int
 		 */
@@ -1683,7 +1684,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Calculate results of course by final quiz
 		 *
-		 * @param int $user_id
+		 * @param int     $user_id
 		 * @param boolean $force
 		 *
 		 * @return mixed|null
@@ -1717,7 +1718,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Calculate results of course by avg of all quizzes
 		 *
-		 * @param int $user_id
+		 * @param int     $user_id
 		 * @param boolean $force
 		 *
 		 * @return mixed
@@ -1917,8 +1918,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get sections of course.
 		 *
-		 * @param string $return  - Optional.
-		 * @param int $section_id  - Optional.
+		 * @param string $return - Optional.
+		 * @param int    $section_id - Optional.
 		 *
 		 * @return array|bool|LP_Course_Section[]|LP_Course_Section
 		 * @version 4.0.0
@@ -1962,7 +1963,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get extra info of course.
 		 * Target Audience, Key Features, Requirements, etc...
 		 *
-		 * @param string $type  [target_audience, key_features, requirements]
+		 * @param string $type [target_audience, key_features, requirements]
 		 *
 		 * @return string|array
 		 * @since 3.x.x

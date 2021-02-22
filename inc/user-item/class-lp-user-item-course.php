@@ -6,14 +6,12 @@
 class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Course's items
-	 *
 	 * @var array
 	 */
 	protected $_items = array();
 
 	/**
 	 * Course
-	 *
 	 * @var LP_Course
 	 */
 	protected $_course = 0;
@@ -145,7 +143,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Get Id of course.
-	 *
 	 * @return int
 	 * @since 3.3.0
 	 */
@@ -169,7 +166,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Read item meta.
-	 *
 	 * @return mixed|bool
 	 */
 	public function read_items_meta() {
@@ -267,7 +263,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Firstly, get data from cache if it is already loaded.
 	 * If data is not loaded to cache then get from meta data.
 	 * If meta data is not updated then calculate and update it
-	 *
 	 * @updated 3.1.0
 	 *
 	 * @param string $prop
@@ -299,7 +294,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		/**
 		 * If course it not finished then grade should be null
-		 *
 		 * @since 3.3.0
 		 */
 		if ( $this->get_status() !== 'finished' ) {
@@ -464,7 +458,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Evaluate course results by count quizzes passed/all quizzes.
 	 *
-	 * @param bool $hard  - Optional. TRUE will re-calculate results instead of get from cache
+	 * @param bool $hard - Optional. TRUE will re-calculate results instead of get from cache
 	 *
 	 * @return array|mixed
 	 * @since 4.0.0
@@ -692,7 +686,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Finish course for user
 	 *
-	 * @param bool $complete_items  - Complete all items before finishing course.
+	 * @param bool $complete_items - Complete all items before finishing course.
 	 *
 	 * @return int
 	 */
@@ -741,7 +735,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Evaluate course result by final quiz.
-	 *
 	 * @return array
 	 */
 	protected function _evaluate_course_by_final_quiz() {
@@ -775,7 +768,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Evaluate course result by point of quizzes doing/done per total quizzes.
-	 *
 	 * @return array
 	 */
 	protected function _evaluate_course_by_quizzes() {
@@ -828,9 +820,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get completed items.
 	 *
-	 * @param string $type  - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool $with_total  - Optional. Include total if TRUE
-	 * @param int $section_id  - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool   $with_total - Optional. Include total if TRUE
+	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -892,8 +884,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get items completed by percentage.
 	 *
-	 * @param string $type  - Optional. Filter by type or not
-	 * @param int $section_id  - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type or not
+	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return float|int
 	 */
@@ -908,7 +900,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Get passing condition criteria.
-	 *
 	 * @return string
 	 */
 	public function get_passing_condition() {
@@ -931,7 +922,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Check course is completed or not.
-	 *
 	 * @return bool
 	 */
 	public function is_finished() {
@@ -940,7 +930,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Check course graduation is passed or not.
-	 *
 	 * @return bool
 	 */
 	public function is_graduated() {
@@ -1091,7 +1080,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Get js settings of course.
-	 *
 	 * @return array
 	 */
 	public function get_js_args() {
@@ -1141,8 +1129,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 *
 	 * @return int
 	 */
-	public function get_retaken_count() {
-		return absint( learn_press_get_user_item_meta( $this->get_user_item_id(), '_lp_retaken_count', true ) );
+	public function get_retaken_count(): int {
+		return (int) ( learn_press_get_user_item_meta( $this->get_user_item_id(), '_lp_retaken_count' ) );
 	}
 
 	/**
@@ -1154,12 +1142,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		$count = $this->get_retaken_count();
 		$count ++;
 
-		return learn_press_update_user_item_meta( $this->get_user_item_id(), '_lp_retaken_count', $count );
+		return $this->update_meta( '_lp_retaken_count', $count );
 	}
 
 	/**
 	 * Get js settings of course items.
-	 *
 	 * @return array
 	 */
 	public function get_items_for_js() {
@@ -1217,9 +1204,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get passed items.
 	 *
-	 * @param string $type  - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool $with_total  - Optional. Include total if TRUE
-	 * @param int $section_id  - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool   $with_total - Optional. Include total if TRUE
+	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */

@@ -100,7 +100,7 @@ function learn_press_get_current_user_id() {
  * Get the user by $user_id passed. If $user_id is NULL, get current user.
  * If current user is not logged in, return a GUEST user
  *
- * @param bool $create_temp  - Optional. Create temp user if user is not logged in.
+ * @param bool $create_temp - Optional. Create temp user if user is not logged in.
  *
  * @return bool|LP_User|LP_User_Guest
  */
@@ -346,9 +346,9 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
 	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get(
-		'profile_endpoints.profile-orders',
-		'profile-orders'
-	) ) {
+			'profile_endpoints.profile-orders',
+			'profile-orders'
+		) ) {
 		$view = false;
 	}
 
@@ -421,16 +421,16 @@ add_action( 'register_form', 'learn_press_user_become_teacher_registration_form'
 /**
  * Update data into table learnpress_user_items.
  *
- * @param array $fields  - Fields and values to be updated.
+ * @param array $fields - Fields and values to be updated.
  *                                              Format: array(
  *                                              field_name_1 => value 1,
  *                                              field_name_2 => value 2,
  *                                              ....
  *                                              field_name_n => value n
  *                                              )
- * @param mixed $where  - Optional. Fields with values for conditional update with the same format of $fields.
- * @param bool  $update_cache  - Optional. Should be update to cache or not (since 3.0.0).
- * @param bool  $update_extra_fields_as_meta  - Optional. Update extra fields as item meta (since 3.1.0).
+ * @param mixed $where - Optional. Fields with values for conditional update with the same format of $fields.
+ * @param bool  $update_cache - Optional. Should be update to cache or not (since 3.0.0).
+ * @param bool  $update_extra_fields_as_meta - Optional. Update extra fields as item meta (since 3.1.0).
  *
  * @return mixed
  */
@@ -677,13 +677,13 @@ function learn_press_get_user_item( $where, $single = true ) {
 /**
  * Get user item meta from user_itemmeta table
  *
- * @param int    $user_item_id
- * @param string $meta_key
- * @param bool   $single
+ * @param int    $user_item_id .
+ * @param string $meta_key .
+ * @param bool   $single .
  *
  * @return mixed
  */
-function learn_press_get_user_item_meta( $user_item_id, $meta_key, $single = true ) {
+function learn_press_get_user_item_meta( $user_item_id = 0, $meta_key = '', $single = true ) {
 	$meta = false;
 	if ( metadata_exists( 'learnpress_user_item', $user_item_id, $meta_key ) ) {
 		$meta = get_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $single );
@@ -827,9 +827,9 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 
 /**
  * @param     $status
- * @param int    $quiz_id
- * @param int    $user_id
- * @param int    $course_id
+ * @param int $quiz_id
+ * @param int $user_id
+ * @param int $course_id
  *
  * @return bool|mixed
  */
@@ -1046,7 +1046,7 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int  $id
+ * @param int $id
  *
  * @return bool
  */
@@ -1068,7 +1068,7 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int  $id
+ * @param int $id
  *
  * @return bool
  */
@@ -1195,7 +1195,7 @@ function learn_press_update_user_profile_avatar() {
 /**
  * Update user basic information.
  *
- * @param bool $wp_error  - Optional. Return WP_Error object in case updating failed.
+ * @param bool $wp_error - Optional. Return WP_Error object in case updating failed.
  *
  * @return bool|mixed|WP_Error
  */
@@ -1345,7 +1345,7 @@ function learn_press_get_profile( $for_user = 0 ) {
  * @param int  $user_id
  * @param int  $item_id
  * @param int  $course_id
- * @param bool $include_course  - Optional. If TRUE then remove course and it's items
+ * @param bool $include_course - Optional. If TRUE then remove course and it's items
  */
 function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include_course = false ) {
 	global $wpdb;
@@ -1364,7 +1364,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 	}
 
 	if ( $include_course ) {
-		$where .= ' OR ( item_id = %d AND item_type = %s )';
+		$where  .= ' OR ( item_id = %d AND item_type = %s )';
 		$args[] = $course_id;
 		$args[] = LP_COURSE_CPT;
 	}
@@ -1621,7 +1621,7 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 
 /**
  * @param array $args
- * @param bool  $wp_error  - Optional. TRUE will return WP_Error on fail.
+ * @param bool  $wp_error - Optional. TRUE will return WP_Error on fail.
  *
  * @return bool|array|LP_User_Item|WP_Error
  */

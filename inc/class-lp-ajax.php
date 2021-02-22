@@ -14,8 +14,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'upload-user-avatar',
 				'checkout:nopriv',
 				'complete-lesson',
-				'finish-course',
-				'retake-course',
+				'finish-course', // finish_course.
+				//'retake-course', // retake_course.
 				'external-link:nopriv',
 				'save-uploaded-user-avatar',
 				'load-more-courses',
@@ -123,7 +123,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				$result['message'] = $order->get_error_message();
 				$result['result']  = 'error';
 			} else {
-				$result['message']  = sprintf( __( 'The order %s has been successfully recovered.', 'learnpress' ), $order_key );
+				$result['message']  = sprintf( __( 'The order %s has been successfully recovered.', 'learnpress' ),
+					$order_key );
 				$result['redirect'] = $order->get_view_order_url();
 			}
 
@@ -149,11 +150,13 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			if ( email_exists( $email ) ) {
 				$response['exists'] = $email;
-				$output             = '<div class="lp-guest-checkout-output">' . __( 'Your email is already exists. Continue with this email?', 'learnpress' ) . '</div>';
+				$output             = '<div class="lp-guest-checkout-output">' . __( 'Your email is already exists. Continue with this email?',
+						'learnpress' ) . '</div>';
 			} else {
 				$output = '<label class="lp-guest-checkout-output">
 					<input type="checkbox" name="checkout-email-option" value="new-account">
-				' . __( 'Create new account with this email? Account information will be sent to this email.', 'learnpress' ) . '
+				' . __( 'Create new account with this email? Account information will be sent to this email.',
+						'learnpress' ) . '
 				</label>';
 			}
 
@@ -230,6 +233,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 		/**
 		 * Request finish course
+		 *
+		 * TODO: should move this function to api - tungnx
 		 */
 		public static function finish_course() {
 			$nonce     = LP_Request::get_string( 'finish-course-nonce' );
@@ -245,15 +250,21 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			$finished = $user->finish_course( $course_id );
 			$response = array(
-				'redirect' => apply_filters( 'learn-press/finish-course-redirect', get_the_permalink( $course_id ), $course_id ),
+				'redirect' => apply_filters(
+					'learn-press/finish-course-redirect',
+					get_the_permalink( $course_id ),
+					$course_id
+				),
 			);
 
 			if ( $finished ) {
 				learn_press_update_user_item_meta( $finished, 'finishing_type', 'click' );
-				learn_press_add_message( sprintf( __( 'You have finished this course "%s"', 'learnpress' ), $course->get_title() ) );
+				learn_press_add_message( sprintf( __( 'You have finished this course "%s"', 'learnpress' ),
+					$course->get_title() ) );
 				$response['result'] = 'success';
 			} else {
-				learn_press_add_message( __( 'Error! You cannot finish this course. Please contact your administrator for more information.', 'learnpress' ) );
+				learn_press_add_message( __( 'Error! You cannot finish this course. Please contact your administrator for more information.',
+					'learnpress' ) );
 				$response['result'] = 'error';
 			}
 
@@ -297,12 +308,14 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 						$response['redirect'] = $course->get_item_link( $next );
 					}
 
-					learn_press_add_message( sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ), $item->get_title() ) );
+					learn_press_add_message( sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ),
+						$item->get_title() ) );
 				} else {
 					learn_press_add_message( $result->get_error_message(), 'error' );
 				}
 
-				$response = apply_filters( 'learn-press/user-completed-lesson-result', $response, $item_id, $course_id, $user->get_id() );
+				$response = apply_filters( 'learn-press/user-completed-lesson-result', $response, $item_id, $course_id,
+					$user->get_id() );
 			} catch ( Exception $ex ) {
 				learn_press_add_message( $ex->getMessage(), 'error' );
 			}
@@ -322,8 +335,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 		/**
 		 * Retake course action
+		 *
+		 * @TODO move this function to API
 		 */
-		public static function retake_course() {
+		/*public static function retake_course() {
 			$security  = LP_Request::get_string( 'retake-course-nonce' );
 			$course_id = LP_Request::get_int( 'retake-course' );
 			$user      = learn_press_get_current_user();
@@ -335,7 +350,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$security_action = sprintf( 'retake-course-%d-%d', $course->get_id(), $user->get_id() );
 			// security check
 			if ( ! wp_verify_nonce( $security, $security_action ) ) {
-				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ), 'error' );
+				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ),
+					'error' );
 			} else {
 				if ( $user->can_retake_course( $course_id ) ) {
 					$result = $user->retry_course( $course_id );
@@ -343,7 +359,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					if ( ! $result ) {
 						learn_press_add_message( __( 'Error!', 'learnpress' ), 'error' );
 					} else {
-						learn_press_add_message( sprintf( __( 'You have retaken the course "%s"', 'learnpress' ), $course->get_title() ) );
+						learn_press_add_message( sprintf( __( 'You have retaken the course "%s"', 'learnpress' ),
+							$course->get_title() ) );
 						$response['result'] = 'success';
 					}
 				} else {
@@ -360,10 +377,12 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					$redirect = $course->get_permalink();
 				}
 				$response['redirect'] = apply_filters( 'learn-press/user-retake-course-redirect', $redirect );
-				$response             = apply_filters( 'learn-press/user-retaken-course-result', $response, $course_id, $user->get_id() );
+				$response             = apply_filters( 'learn-press/user-retaken-course-result', $response, $course_id,
+					$user->get_id() );
 			} else {
 				$response['redirect'] = $course->get_permalink();
-				$response             = apply_filters( 'learn-press/user-retake-course-failed-result', $response, $course_id, $user->get_id() );
+				$response             = apply_filters( 'learn-press/user-retake-course-failed-result', $response,
+					$course_id, $user->get_id() );
 			}
 
 			learn_press_maybe_send_json( $response );
@@ -372,7 +391,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				wp_redirect( $response['redirect'] );
 				exit();
 			}
-		}
+		}*/
 	}
 }
 

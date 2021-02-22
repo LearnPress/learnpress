@@ -1,7 +1,6 @@
 <?php
 /**
  * Class LP_Database
- *
  * @author tungnx
  * @since 3.2.7.5
  */
@@ -21,19 +20,25 @@ class LP_Database {
 		 * @global wpdb
 		 */
 		global $wpdb;
+		$prefix = $wpdb->prefix;
 
 		$this->wpdb                 = $wpdb;
-		$this->tb_posts             = $this->wpdb->posts;
-		$this->tb_postmeta          = $this->wpdb->postmeta;
-		$this->tb_lp_user_items     = $this->wpdb->prefix . 'learnpress_user_items';
-		$this->tb_lp_user_itemmeta  = $this->wpdb->prefix . 'learnpress_user_itemmeta';
-		$this->tb_lp_order_items    = $this->wpdb->prefix . 'learnpress_order_items';
-		$this->tb_lp_order_itemmeta = $this->wpdb->prefix . 'learnpress_order_itemmeta';
-		$this->tb_lp_section_items  = $this->wpdb->prefix . 'learnpress_section_items';
-		$this->tb_lp_sections       = $this->wpdb->prefix . 'learnpress_sections';
-		$this->tb_lp_quiz_questions = $this->wpdb->prefix . 'learnpress_quiz_questions';
+		$this->tb_users             = $wpdb->users;
+		$this->tb_posts             = $wpdb->posts;
+		$this->tb_postmeta          = $wpdb->postmeta;
+		$this->tb_lp_user_items     = $prefix . 'learnpress_user_items';
+		$this->tb_lp_user_itemmeta  = $prefix . 'learnpress_user_itemmeta';
+		$this->tb_lp_order_items    = $prefix . 'learnpress_order_items';
+		$this->tb_lp_order_itemmeta = $prefix . 'learnpress_order_itemmeta';
+		$this->tb_lp_section_items  = $prefix . 'learnpress_section_items';
+		$this->tb_lp_sections       = $prefix . 'learnpress_sections';
+		$this->tb_lp_quiz_questions = $prefix . 'learnpress_quiz_questions';
 	}
 
+	/**
+	 * Get Instance
+	 * @return LP_Database
+	 */
 	public static function getInstance() {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
@@ -45,8 +50,8 @@ class LP_Database {
 	/**
 	 * Get list Item by post type and user id
 	 *
-	 * @param string $post_type
-	 * @param int $user_id
+	 * @param string $post_type .
+	 * @param int    $user_id .
 	 *
 	 * @return array
 	 */
@@ -69,7 +74,6 @@ class LP_Database {
 	 *
 	 * @return int
 	 * @since 3.2.8
-	 *
 	 */
 	public function get_count_post_of_user( $filter ) {
 		$query_append = '';
@@ -108,8 +112,8 @@ class LP_Database {
 	/**
 	 * Get post by post_type and slug
 	 *
-	 * @param string $post_type
-	 * @param string $slug
+	 * @param string $post_type .
+	 * @param string $slug .
 	 *
 	 * @return string
 	 */

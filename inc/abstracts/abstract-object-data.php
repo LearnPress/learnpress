@@ -284,9 +284,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 *
 		 * @param array|string $key_or_data
 		 * @param string       $value
+		 * @return $this
 		 */
 		public function set_data( $key_or_data, $value = '' ) {
 			$this->_set_data( $key_or_data, $value, true );
+			return $this;
 		}
 
 		/**

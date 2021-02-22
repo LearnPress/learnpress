@@ -2,7 +2,6 @@
 
 /**
  * Class LP_User_Item
- *
  * @since 3.0.0
  */
 class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
@@ -19,7 +18,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * LP_User_Item constructor.
 	 *
-	 * @param array $item  . A record fetched from table _learnpress_user_items
+	 * @param array $item . A record fetched from table _learnpress_user_items
 	 */
 	public function __construct( $item ) {
 		if ( is_numeric( $item ) ) {
@@ -145,7 +144,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get access level to a course.
-	 *
 	 * @return int
 	 * @since 3.x.x
 	 */
@@ -155,7 +153,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get type of item. Consider is post-type.
-	 *
 	 * @return array|mixed
 	 */
 	public function get_type() {
@@ -165,15 +162,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set start-time.
 	 *
-	 * @param mixed $time
-	 * @param bool $bound_to_gmt  - Optional. TRUE to auto update for start-time gmt
+	 * @param mixed $time .
+	 *
+	 * @return $this
 	 */
-	public function set_start_time( $time, $bound_to_gmt = false ) {
+	public function set_start_time( $time ) {
 		$this->_set_data_date( 'start_time', $time );
 
-		if ( func_num_args() > 1 ) {
-			_deprecated_argument( '$bound_to_gmt', '4.0.0' );
-		}
+		return $this;
 	}
 
 	public function get_time( $field, $format = '', $human_diff_time = false ) {
@@ -198,7 +194,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Get start-time.
 	 *
 	 * @param string $format
-	 * @param bool $local
+	 * @param bool   $local
 	 *
 	 * @return string|LP_Datetime
 	 */
@@ -237,18 +233,19 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set end-time for item.
 	 *
-	 * @param bool $bound_to_gmt  - Optional. Calculate gmt of end-time and update
+	 * @param bool  $bound_to_gmt - Optional. Calculate gmt of end-time and update
 	 * @param mixed $time
+	 *
+	 * @return $this
 	 */
-	public function set_end_time( $time, $bound_to_gmt = false ) {
-		if ( $time && $time !== '0000-00-00 00:00:00' ) {
+	public function set_end_time( $time ) {
+		if ( $time && '0000-00-00 00:00:00' !== $time ) {
 			$this->_set_data_date( 'end_time', $time );
-			if ( $bound_to_gmt ) {
-				_deprecated_argument( sprintf( '%s::%s $bound_to_gmt', __CLASS__, __FUNCTION__ ), '4.0.0' );
-			}
 		} else {
 			$this->_set_data( 'end_time', '' );
 		}
+
+		return $this;
 	}
 
 	/**
@@ -270,8 +267,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * @param string|int|LP_Datetime $date
-	 * @param string $format
-	 * @param bool $local
+	 * @param string                 $format
+	 * @param bool                   $local
 	 *
 	 * @return bool|float|int|LP_Datetime|string
 	 */
@@ -359,15 +356,18 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set item-status.
 	 *
-	 * @param string $status
+	 * @param string $status .
+	 *
+	 * @return $this
 	 */
-	public function set_status( $status ) {
+	public function set_status( string $status ): LP_User_Item {
 		$this->_set_data( 'status', $status );
+
+		return $this;
 	}
 
 	/**
 	 * Get item-status.
-	 *
 	 * @return string
 	 */
 	public function get_status( $field = 'status' ) {
@@ -500,7 +500,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get structure of an user item.
-	 *
 	 * @return array
 	 * @since 3.1.0
 	 */
@@ -525,11 +524,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get user-item meta data.
 	 * Check if meta data does not exist then return FALSE.
-	 *
 	 * @updated 3.1.0
 	 *
 	 * @param string $key
-	 * @param bool $single
+	 * @param bool   $single
 	 *
 	 * @return bool|mixed
 	 */
@@ -549,8 +547,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param string $key
 	 * @param string $value
 	 * @param string $prev_value
+	 *
+	 * @editor tungnx add bk method
 	 */
-	public function update_meta( $key = '', $value = '', $prev_value = '' ) {
+	public function update_meta_bk( $key = '', $value = '', $prev_value = '' ) {
 		if ( func_num_args() === 0 ) {
 			if ( $this->_meta_data ) {
 				foreach ( $this->_meta_data as $meta_data ) {
@@ -581,6 +581,53 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 	}
 
+	/**
+	 * Update meta data
+	 *
+	 * @param string $key .
+	 * @param string $value .
+	 * @param string $prev_value .
+	 *
+	 * @return int|bool
+	 * @editor tungnx
+	 */
+	public function update_meta( $key = '', $value = '', $prev_value = '' ) {
+		$result = false;
+
+		if ( is_array( $key ) ) {
+			$result = $this->update_meta_multiple_keys( $key );
+		} else {
+			if ( false === $value ) {
+				$result = learn_press_delete_user_item_meta( $this->get_user_item_id(), $key );
+			} else {
+				$result = learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Update metadata with array keys values
+	 *
+	 * @param array $meta_datas .
+	 *
+	 * @return bool|int
+	 */
+	public function update_meta_multiple_keys( $meta_datas = array() ) {
+		$result = false;
+
+		foreach ( $meta_datas as $k => $v ) {
+			if ( false === $v ) {
+				$result = learn_press_delete_user_item_meta( $this->get_user_item_id(), $k );
+			} else {
+				$result = learn_press_update_user_item_meta( $this->get_user_item_id(), $k, $v );
+			}
+		}
+
+		return $result;
+	}
+
 	public function get_mysql_data() {
 		/**
 		 * @var LP_Datetime $v
@@ -591,7 +638,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			switch ( $k ) {
 				case 'start_time':
 				case 'end_time':
-				case 'expiration_time':
+//				case 'expiration_time':
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql( false ) : $v;
 					break;
 			}
@@ -646,17 +693,25 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return apply_filters( 'learn-press/user-item-object', $item, $data, $item_type );
 	}
 
-	public function set_graduation( $graduation ) {
+	/**
+	 * Set graduation
+	 *
+	 * @param string $graduation .
+	 *
+	 * @return $this
+	 */
+	public function set_graduation( string $graduation ): LP_User_Item {
 		$this->_set_data( 'graduation', $graduation );
+
+		return $this;
 	}
 
 	/**
 	 * Update data from memory to database.
-	 *
 	 * @updated 3.1.0
 	 *
-	 * @param bool $force  - Optional. Added from 3.1.0 to force update if even the data is not changed.
-	 * @param bool $wp_error  - Optional. Added from 3.3.0 to return WP_Error
+	 * @param bool $force - Optional. Added from 3.1.0 to force update if even the data is not changed.
+	 * @param bool $wp_error - Optional. Added from 3.3.0 to return WP_Error
 	 *
 	 * @return bool|mixed
 	 */
@@ -674,7 +729,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		/**
 		 * @since 3.3.0
-		 *
 		 * Allow filter to modify data
 		 */
 		$data  = apply_filters( 'learn-press/update-user-item-data', $data, $this->get_user_item_id() );
@@ -768,7 +822,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Return number of seconds has exceeded from the expiration time to now.
 	 * If less than or equals to 0 that means the time is exceeded.
 	 * Otherwise, the time is not exceeded.
-	 *
 	 * @return float|int
 	 * @since 3.3.0
 	 */
@@ -784,7 +837,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Check if user was finished before the expiration time is exceeded.
 	 * If the expiration-time is NULL that mean the course is not set duration.
-	 *
 	 * @return bool|float|int
 	 * @since 3.3.0
 	 * Todo: check remove function
@@ -808,64 +860,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $expiration->getTimestamp() - $end;
 	}
 
-
-	/**
-	 * Return number of seconds has exceeded from the expiration time to now.
-	 * If less than or equals to 0 that means the time is exceeded.
-	 * Otherwise, the time is not exceeded
-	 *
-	 * @return float|int
-	 */
-	public function is_exceeded_x() {
-		$time    = new LP_Datetime();
-		$current = $time->getTimestamp( false );
-		// $exceeded = $this->get_expiration_time_gmt();// $this->get_exceeded_time();
-		$exceeded = $this->get_expiration_time();
-
-		return false !== $exceeded ? $exceeded->getTimestamp() - $current : false;
-	}
-
-	public function x() {
-		// $expiration = $this->get_expiration_time_gmt();
-		$expiration = $this->get_expiration_time();
-
-		if ( ! $expiration ) {
-			return false;
-		}
-
-		// return $this->get_end_time_gmt()->getTimestamp() - $expiration->getTimestamp();
-		return $this->get_end_time()->getTimestamp() - $expiration->getTimestamp();
-	}
-
-	/**
-	 * @param string $format
-	 *
-	 * @return int|mixed
-	 * @since 3.3.0
-	 */
-	public function get_exceeded_time_x( $format = '' ) {
-
-		$expiration = $this->get_expiration_time();
-
-		return $expiration ? $expiration->getTimestamp() : false;
-
-		$start_time = $this->get_start_time()->getTimestamp();
-
-		if ( $course = $this->get_course() ) {
-			$duration = $course->get_duration();
-		} else {
-			$duration = 100 * DAY_IN_SECONDS * 360;
-		}
-
-		return $duration !== false ? $format ? date( $format,
-			$start_time + $duration ) : $start_time + $duration : false;
-	}
-
-
 	/**
 	 * Get time remaining for user item.
 	 *
-	 * @param string $return  - Optional. What kind of data to return.
+	 * @param string $return - Optional. What kind of data to return.
 	 *
 	 * @return LP_Duration
 	 * @since 3.3.0
@@ -971,7 +969,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get post type of item.
-	 *
 	 * @return string
 	 */
 	public function get_post_type() {

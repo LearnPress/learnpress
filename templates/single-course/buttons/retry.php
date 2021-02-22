@@ -6,33 +6,41 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
 
+if ( ! isset( $can_retake_times ) ) {
+	return;
+}
+
 $course = LP_Global::course();
-$user   = LP_Global::user();
+
+$message_data_confirm = sprintf(
+	'%s "%s"',
+	esc_html__( 'Do you want to retake course', 'learnpress' ),
+	$course->get_title()
+);
 ?>
 
-<?php do_action( 'learn-press/before-retry-form' ); ?>
+<?php do_action( 'lp/tmpl/course/button-retry/form/before' ); ?>
 
-	<form name="retake-course" class="retake-course" method="post" enctype="multipart/form-data" data-confirm="<?php LP_Strings::esc_attr_e( 'confirm-retake-course', '', array( $course->get_title() ) ); ?>">
+<form name="lp-form-retake-course" class="lp-form-retake-course" method="post" enctype="multipart/form-data"
+	  data-confirm="<?php echo $message_data_confirm; ?>">
 
-		<?php do_action( 'learn-press/before-retake-button' ); ?>
+	<?php do_action( 'lp/tmpl/course/button-retry/before' ); ?>
 
-		<input type="hidden" name="retake-course" value="<?php echo esc_attr( $course->get_id() ); ?>"/>
-		<input type="hidden" name="retake-course-nonce" value="<?php echo esc_attr( wp_create_nonce( sprintf( 'retake-course-%d-%d', $course->get_id(), $user->get_id() ) ) ); ?>"/>
+	<input type="hidden" name="retake-course" value="<?php echo esc_attr( $course->get_id() ); ?>"/>
 
-		<button class="lp-button button button-retake-course">
-			<?php echo esc_html__( 'Retry', 'learnpress' ); ?>
-		</button>
+	<button class="lp-button button button-retake-course">
+		<?php echo sprintf( '%s (%d)', esc_html__( 'Retake course', 'learnpress' ), $can_retake_times ); ?>
+	</button>
 
-		<input type="hidden" name="lp-ajax" value="retake-course"/>
-		<input type="hidden" name="noajax" value="yes"/>
+	<div class="lp-ajax-message"></div>
 
-		<?php do_action( 'learn-press/after-retake-button' ); ?>
+	<?php do_action( 'lp/tmpl/course/button-retry/after' ); ?>
 
-	</form>
+</form>
 
-<?php do_action( 'learn-press/after-retry-form' ); ?>
+<?php do_action( 'lp/tmpl/course/button-retry/form/after' ); ?>

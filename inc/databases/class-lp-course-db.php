@@ -72,11 +72,11 @@ class LP_Course_DB extends LP_Database {
 	/**
 	 * Get first item of course
 	 *
-	 * @param int $course_id
+	 * @param int $course_id .
 	 *
 	 * @return int
 	 */
-	public function get_first_item( $course_id = 0 ) {
+	public function get_first_item_id( $course_id = 0 ): int {
 		/**
 		 * Get cache
 		 *
@@ -90,7 +90,8 @@ class LP_Course_DB extends LP_Database {
 			INNER JOIN $this->tb_lp_sections AS sections
 			ON items.section_id = sections.section_id
 			AND sections.section_course_id = %d
-			", $course_id
+			",
+				$course_id
 			);
 
 			$first_item_id = (int) $this->wpdb->get_var( $query );

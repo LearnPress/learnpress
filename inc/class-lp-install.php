@@ -274,7 +274,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
 				AND b.option_value < %d
 			";
-			$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
+			$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%',
+				$wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 		}
 
 		/**
@@ -455,7 +456,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					"
 					SELECT ID, pm.meta_value as type
 					FROM {$wpdb->posts} p
-					INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value IN(" . join( ',', $in_types ) . ')
+					INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value IN(" . join( ',',
+						$in_types ) . ')
 					WHERE p.post_status = %s
 				',
 					$args
@@ -560,7 +562,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		private static function _create_cron_jobs() {
 			wp_clear_scheduled_hook( 'learn_press_cleanup_sessions' );
-			wp_schedule_event( time(), apply_filters( 'learn_press_cleanup_session_recurrence', 'twicedaily' ), 'learn_press_cleanup_sessions' );
+			wp_schedule_event( time(), apply_filters( 'learn_press_cleanup_session_recurrence', 'twicedaily' ),
+				'learn_press_cleanup_sessions' );
 		}
 
 		private function _is_old_version() {
@@ -569,13 +572,13 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 				if ( empty( $is_old_version ) ) {
 					if ( ! get_option( 'learnpress_db_version' ) ||
-						get_posts(
-							array(
-								'post_type'      => 'lpr_course',
-								'post_status'    => 'any',
-								'posts_per_page' => 1,
-							)
-						)
+					     get_posts(
+						     array(
+							     'post_type'      => 'lpr_course',
+							     'post_status'    => 'any',
+							     'posts_per_page' => 1,
+						     )
+					     )
 					) {
 						$is_old_version = 'yes';
 					}
@@ -692,7 +695,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$collate .= " COLLATE $wpdb->collate";
 				}
 			}
-			$tables = $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s', '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
+			$tables = $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s',
+				'%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
 			$query  = '';
 
 			if ( ! in_array( $wpdb->learnpress_order_itemmeta, $tables ) ) {
@@ -713,8 +717,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				CREATE TABLE {$wpdb->learnpress_order_items} (
 					order_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					order_item_name longtext NOT NULL,
-					order_item_type varchar(200) NOT NULL DEFAULT '',
-					order_id bigint(20) unsigned NOT NULL DEFAULT '0',
+					item_type nvachar(50) NOT NULL DEFAULT '',
+					item_id bigint(20) unsigned NOT NULL DEFAULT 0,
+					order_id bigint(20) unsigned NOT NULL DEFAULT 0,
 					PRIMARY KEY (order_item_id),
   					KEY order_id (order_id)
 				) $collate;";
@@ -838,6 +843,17 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				) $collate;
 				";
 			}
+
+			$query .= "
+				CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_user_item_results (
+					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					user_item_id bigint(20) unsigned NOT NULL,
+					evaluate_result vachar(500)
+					PRIMARY KEY (id),
+					KEY (user_item_id),
+  					KEY (evaluate_result)
+				) $collate;
+			";
 
 			if ( ! in_array( $wpdb->learnpress_question_answermeta, $tables ) ) {
 				$query .= "

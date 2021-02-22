@@ -13,6 +13,7 @@ class LP_Strings {
 
 	/**
 	 * @since 3.2.0
+	 * @TODO should remove - tungnx, no important
 	 */
 	public static function load() {
 		$strings = apply_filters(

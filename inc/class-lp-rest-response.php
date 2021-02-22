@@ -17,7 +17,16 @@ class LP_REST_Response {
 	public $status = 'error';
 	public $message = '';
 	/**
-	 * @var array|object
+	 * Extra data
+	 *
+	 * @var object
 	 */
 	public $data;
+
+	/**
+	 * LP_REST_Response constructor.
+	 */
+	public function __construct() {
+		$this->data = new stdClass();
+	}
 }

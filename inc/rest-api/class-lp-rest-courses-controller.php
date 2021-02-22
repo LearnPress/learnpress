@@ -1,12 +1,21 @@
 <?php
 
+/**
+ * Class LP_REST_Courses_Controller
+ */
 class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
+	/**
+	 * LP_REST_Courses_Controller constructor.
+	 */
 	public function __construct() {
 		$this->namespace = 'lp/v1';
 		$this->rest_base = 'courses';
 		parent::__construct();
 	}
 
+	/**
+	 * Register routes API
+	 */
 	public function register_routes() {
 		$this->routes = array(
 			'search'        => array(
@@ -23,6 +32,18 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => function () {
 						return is_user_logged_in();
 					},
+				),
+			),
+			'retake-course' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'retake_course' ),
+					'permission_callback' => function () {
+						return is_user_logged_in();
+					},
+					'schema'              => array(
+						'type' => 'int',
+					),
 				),
 			),
 
@@ -164,7 +185,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param [] $request
 	 *
-	 * @throws Exception
+	 * @throws Exception .
 	 * @author Nhamdv
 	 * @editor tungnx
 	 */
@@ -245,12 +266,73 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$cart->empty_cart();
 			}
 
-			$first_item_course = LP_Course_DB::getInstance()->get_first_item( $course_id );
-			$redirect = ! empty( $first_item_course ) ? $course->get_item_link( $first_item_course ) : get_the_permalink( $course_id );
-
 			$response->status         = 'success';
 			$response->message        = esc_html__( 'Congrats! You enroll course successfully.', 'learnpress' );
-			$response->data->redirect = apply_filters( 'learnpress/rest-api/enroll-course/redirect', $redirect );
+			$response->data->redirect = $course->get_redirect_url_after_enroll();
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Rest API for retake course.
+	 *
+	 * @param WP_REST_Request $request .
+	 *
+	 * @throws Exception .
+	 */
+	public function retake_course( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+
+		try {
+			$course_id = $request->get_param( 'id' );
+
+			if ( ! $course_id ) {
+				throw new Exception( __( 'Invalid params', 'learnpress' ) );
+			}
+
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course ) {
+				throw new Exception( __( 'Invalid course', 'learnpress' ) );
+			}
+
+			$user = LP_Global::user();
+
+//			if ( ! is_user_logged_in() ) {
+//				throw new Exception( esc_html__( 'Please login!', 'learnpress' ) );
+//			}
+
+			$can_retry = $user->can_retry_course( $course_id );
+
+			if ( ! $can_retry ) {
+				throw new Exception( __( 'You can\'t retry course', 'learnpress' ) );
+			}
+
+			$user_course_data = $user->get_course_data( $course_id );
+
+			// Up retaken.
+			$user_course_data->increase_retake_count();
+
+			// Set status, start_time, end_time of course to enrolled.
+			$user_course_data->set_status( LP_COURSE_ENROLLED )
+							 ->set_start_time( current_time( 'mysql' ) )
+							 ->set_end_time( '' )
+							 ->set_graduation( '' )
+							 ->update();
+
+			// Remove items' course user learned.
+			$filter_remove            = new LP_User_Items_Filter();
+			$filter_remove->parent_id = $user_course_data->get_user_item_id();
+			$filter_remove->user_id   = $user_course_data->get_user_id();
+			$filter_remove->limit     = - 1;
+			LP_User_Items_DB::getInstance()->remove_items_of_user_course( $filter_remove );
+
+			$response->status             = 'success';
+			$response->message            = __( 'Now you can learn this course', 'learnpress' );
+			$response->data->url_redirect = $course->get_redirect_url_after_enroll();
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}

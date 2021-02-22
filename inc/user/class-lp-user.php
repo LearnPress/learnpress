@@ -2,7 +2,6 @@
 
 /**
  * Class LP_User
- *
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
@@ -69,8 +68,8 @@ class LP_User extends LP_Abstract_User {
 	/**
 	 * Check the user can access to an item inside course.
 	 *
-	 * @param int $item_id  Course's item Id.
-	 * @param LP_Model_User_Can_View_Course_Item $view  Course Id.
+	 * @param int                                $item_id Course's item Id.
+	 * @param LP_Model_User_Can_View_Course_Item $view Course Id.
 	 *
 	 * @author  tungnx
 	 * @return LP_Model_User_Can_View_Course_Item
@@ -90,7 +89,7 @@ class LP_User extends LP_Abstract_User {
 		}
 
 		if ( $item->is_preview() ) {
-			$view_new          = new LP_Model_User_Can_View_Course_Item();
+			$view_new          = clone $view; // or create new LP_Model_User_Can_View_Course_Item()
 			$view_new->flag    = true;
 			$view_new->key     = 'lesson_preview';
 			$view_new->message = '';
@@ -101,5 +100,44 @@ class LP_User extends LP_Abstract_User {
 		}
 
 		return apply_filters( 'learnpress/course/item/can-view', $view, $item );
+	}
+
+	/**
+	 * Check if user can retry course.
+	 *
+	 * @param int $course_id .
+	 *
+	 * @return int
+	 * @throws Exception .
+	 * @since 4.0.0
+	 */
+	public function can_retry_course( $course_id = 0 ): int {
+		$flag = 0;
+
+		try {
+			$course        = learn_press_get_course( $course_id );
+			$retake_option = (int) $course->get_data( 'retake_count' );
+
+			if ( $course && $retake_option > 0 ) {
+				if ( ! $this->has_finished_course( $course->get_id() ) ) {
+					throw new Exception();
+				}
+
+				$user_course_data = $this->get_course_data( $course_id );
+
+				if ( $user_course_data instanceof LP_User_Item_Course ) {
+					$retaken          = $user_course_data->get_retaken_count();
+					$can_retake_times = $retake_option - $retaken;
+
+					if ( $can_retake_times > 0 ) {
+						$flag = $can_retake_times;
+					}
+				}
+			}
+
+			return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
+		} catch ( Exception $e ) {
+			return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
+		}
 	}
 }
