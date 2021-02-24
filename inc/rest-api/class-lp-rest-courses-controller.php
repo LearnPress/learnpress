@@ -18,14 +18,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'search'        => array(
+			'search'         => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'search_courses' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
-			'enroll-course' => array(
+			'enroll-course'  => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'enroll_courses' ),
@@ -34,7 +34,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					},
 				),
 			),
-			'retake-course' => array(
+			'retake-course'  => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'retake_course' ),
@@ -217,7 +217,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			// Auto enroll for Course.
 			if ( $course_items && isset( $course_items[0]->user_item_id ) ) {
 				if ( in_array( $course_items[0]->status, array( 'purchased' ) ) ) {
-					$date            = new LP_Datetime();
+					$date = new LP_Datetime();
 
 					$fields = array(
 						'graduation' => 'in-progress',
@@ -295,9 +295,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			$user = LP_Global::user();
 
-//			if ( ! is_user_logged_in() ) {
-//				throw new Exception( esc_html__( 'Please login!', 'learnpress' ) );
-//			}
+			// if ( ! is_user_logged_in() ) {
+			// throw new Exception( esc_html__( 'Please login!', 'learnpress' ) );
+			// }
 
 			$can_retry = $user->can_retry_course( $course_id );
 
@@ -312,7 +312,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			// Set status, start_time, end_time of course to enrolled.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-							 ->set_start_time( current_time('mysql', true) )
+							 ->set_start_time( current_time( 'mysql', true ) )
 							 ->set_end_time( '' )
 							 ->set_graduation( '' )
 							 ->update();
@@ -325,7 +325,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			LP_User_Items_DB::getInstance()->remove_items_of_user_course( $filter_remove );
 
 			$response->status             = 'success';
-			$response->message            = __( 'Now you can learn this course', 'learnpress' );
+			$response->message            = esc_html__( 'Now you can learn this course', 'learnpress' );
 			$response->data->url_redirect = $course->get_redirect_url_after_enroll();
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();

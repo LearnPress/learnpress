@@ -594,7 +594,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				);
 			}
 
-			if ( ! $course = learn_press_get_course( $item['item_id'] ) ) {
+			$course = learn_press_get_course( $item['item_id'] );
+			if ( ! $course ) {
 				return false;
 			}
 
