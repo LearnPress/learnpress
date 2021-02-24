@@ -2,6 +2,7 @@
 
 /**
  * Class LP_User_Item
+ *
  * @since 3.0.0
  */
 class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
@@ -144,6 +145,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get access level to a course.
+	 *
 	 * @return int
 	 * @since 3.x.x
 	 */
@@ -153,6 +155,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get type of item. Consider is post-type.
+	 *
 	 * @return array|mixed
 	 */
 	public function get_type() {
@@ -330,10 +333,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @since 3.3.0
 	 */
 	public function set_expiration_time( $time ) {
-
 		if ( $time && $time !== '0000-00-00 00:00:00' ) {
 			$this->_set_data_date( 'expiration_time', $time );
-
 		} else {
 			$this->_set_data( 'expiration_time', '' );
 		}
@@ -368,6 +369,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get item-status.
+	 *
 	 * @return string
 	 */
 	public function get_status( $field = 'status' ) {
@@ -500,6 +502,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get structure of an user item.
+	 *
 	 * @return array
 	 * @since 3.1.0
 	 */
@@ -524,6 +527,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get user-item meta data.
 	 * Check if meta data does not exist then return FALSE.
+	 *
 	 * @updated 3.1.0
 	 *
 	 * @param string $key
@@ -555,8 +559,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			if ( $this->_meta_data ) {
 				foreach ( $this->_meta_data as $meta_data ) {
 					if ( $meta_data->meta_value ) {
-						learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key,
-							$meta_data->meta_value );
+						learn_press_update_user_item_meta(
+							$this->get_user_item_id(),
+							$meta_data->meta_key,
+							$meta_data->meta_value
+						);
 					} else {
 						learn_press_delete_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key );
 					}
@@ -638,7 +645,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			switch ( $k ) {
 				case 'start_time':
 				case 'end_time':
-//				case 'expiration_time':
+					// case 'expiration_time':
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql( false ) : $v;
 					break;
 			}
@@ -654,8 +661,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return LP_User_Item|bool
 	 */
 	public static function get_item_object( $data ) {
-
 		$item_id = 0;
+
 		if ( is_array( $data ) && isset( $data['item_id'] ) ) {
 			$item_id = $data['item_id'];
 		} elseif ( is_object( $data ) && isset( $data->item_id ) ) {
@@ -668,18 +675,22 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		$item      = false;
 		$item_type = learn_press_get_post_type( $item_id );
+
 		switch ( $item_type ) {
 			case LP_LESSON_CPT:
-				$item = new LP_User_Item( $data );
+				$item       = new LP_User_Item( $data );
+				$start_time = $item->get_start_time();
 
-				if ( ! $start_time = $item->get_start_time() ) {
+				if ( ! $start_time ) {
 					$start_time = new LP_Datetime();
 					$item->set_start_time( $start_time->toSql( false ) );
 				}
 
 				if ( $item->get_expiration_time() ) {
-					if ( $duration = get_post_meta( $item_id, '_lp_duration', true ) ) {
-						// Expiration is GTM time
+					$duration = get_post_meta( $item_id, '_lp_duration', true );
+
+					// Expiration is GTM time
+					if ( $duration ) {
 						$expiration = new LP_Datetime( $start_time->getPeriod( $duration, false ) );
 						$item->set_expiration_time( $expiration->toSql( true ) );
 					}
@@ -708,6 +719,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Update data from memory to database.
+	 *
 	 * @updated 3.1.0
 	 *
 	 * @param bool $force - Optional. Added from 3.1.0 to force update if even the data is not changed.
@@ -801,8 +813,15 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function get_history() {
-		return LP_Object_Cache::get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_course( 'id' ),
-			$this->get_id() ), 'learn-press/user-course-items' );
+		return LP_Object_Cache::get(
+			sprintf(
+				'course-item-%s-%s-%s',
+				$this->get_user_id(),
+				$this->get_course( 'id' ),
+				$this->get_id()
+			),
+			'learn-press/user-course-items'
+		);
 	}
 
 	public function count_history() {
@@ -814,14 +833,19 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function remove_user_items_history( $keep = 10 ) {
-		learn_press_remove_user_items_history( $this->get_item_id(), $this->get_course( 'id' ), $this->get_user_id(),
-			$keep );
+		learn_press_remove_user_items_history(
+			$this->get_item_id(),
+			$this->get_course( 'id' ),
+			$this->get_user_id(),
+			$keep
+		);
 	}
 
 	/**
 	 * Return number of seconds has exceeded from the expiration time to now.
 	 * If less than or equals to 0 that means the time is exceeded.
 	 * Otherwise, the time is not exceeded.
+	 *
 	 * @return float|int
 	 * @since 3.3.0
 	 */
@@ -837,6 +861,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Check if user was finished before the expiration time is exceeded.
 	 * If the expiration-time is NULL that mean the course is not set duration.
+	 *
 	 * @return bool|float|int
 	 * @since 3.3.0
 	 * Todo: check remove function
@@ -943,13 +968,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( $include ) {
 			settype( $include, 'array' );
 			$format = array_fill( 0, sizeof( $include ), '%s' );
-			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
+			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
 		}
 
 		if ( $exclude ) {
 			settype( $exclude, 'array' );
 			$format = array_fill( 0, sizeof( $exclude ), '%s' );
-			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
+			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
 		}
 
 		$query = $wpdb->prepare(
@@ -969,6 +994,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	/**
 	 * Get post type of item.
+	 *
 	 * @return string
 	 */
 	public function get_post_type() {
@@ -980,9 +1006,15 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function get_percent_result( $decimal = 1 ) {
-		return apply_filters( 'learn-press/user/item-percent-result',
-			sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(),
-				$this->get_item_id() ) );
+		return apply_filters(
+			'learn-press/user/item-percent-result',
+			sprintf(
+				'%s%%',
+				round( $this->get_result( 'result' ), $decimal ),
+				$this->get_user_id(),
+				$this->get_item_id()
+			)
+		);
 	}
 
 	/**
@@ -1020,21 +1052,21 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $this->_data_key !== md5( serialize( $new_data ) );
 	}
 
-//	public function get_js_args() {
-//		$course  = $this->get_course();
-//		$item_js = array(
-//			'status'   => '',
-//			'url'      => $course->get_item_link( $this->get_id() ),
-//			'viewable' => '',
-//		);
-//
-//		if ( $this->current_user_can_view() ) {
-//			$item_js['status']   = $this->get_status();
-//			$item_js['viewable'] = true;
-//		}
-//
-//		return $item_js;
-//	}
+	// public function get_js_args() {
+	// $course  = $this->get_course();
+	// $item_js = array(
+	// 'status'   => '',
+	// 'url'      => $course->get_item_link( $this->get_id() ),
+	// 'viewable' => '',
+	// );
+	//
+	// if ( $this->current_user_can_view() ) {
+	// $item_js['status']   = $this->get_status();
+	// $item_js['viewable'] = true;
+	// }
+	//
+	// return $item_js;
+	// }
 
 	protected function _set_data_date( $key, $value, $extra = false ) {
 		if ( $value instanceof LP_Datetime ) {
@@ -1055,8 +1087,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function __call( $name, $arguments ) {
 		if ( ! method_exists( $this, $name ) ) {
-			if ( $course = $this->get_course() ) {
+			$course = $this->get_course();
+
+			if ( $course ) {
 				$item = $course->get_item( $this->get_item_id() );
+
 				if ( is_callable( array( $item, $name ) ) ) {
 					return call_user_func_array( array( $item, $name ), $arguments );
 				}

@@ -182,10 +182,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		public function get_data( $name = '', $default = '' ) {
 			if ( is_string( $name ) && $name ) {
-				return array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
-						( array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default );
+				return array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] : ( array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default );
 			} elseif ( is_array( $name ) ) {
 				$data = array();
+
 				foreach ( $name as $key ) {
 					$data[ $key ] = $this->get_data( $key, $default );
 				}

@@ -150,7 +150,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( $args['expired'] ) {
-			// $where .= " AND expiration_time_gmt <= UTC_TIMESTAMP()";
 			$where .= ' AND expiration_time <= UTC_TIMESTAMP()';
 		}
 

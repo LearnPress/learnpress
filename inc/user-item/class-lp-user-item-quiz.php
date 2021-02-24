@@ -458,6 +458,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		if ( $context == 'display' ) {
 			$quiz = $this->get_quiz();
+
 			if ( $interval && $quiz->get_duration() ) {
 				$interval = new LP_Duration( $interval );
 				$interval = $interval->to_timer();
@@ -482,6 +483,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function is_answered( $question_id ) {
 		$result = $this->get_results();
+
 		if ( ! empty( $result['questions'][ $question_id ] ) ) {
 			return $result['questions'][ $question_id ]['answered'];
 		}
@@ -508,6 +510,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_questions_answered( $percent = false ) {
 		$result = $this->get_results( '' );
+
 		if ( $percent ) {
 			if ( $result['question_count'] ) {
 				$return = 0;
@@ -530,6 +533,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_mark( $percent = false ) {
 		$result = $this->get_results();
+
 		if ( $percent ) {
 			$return = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
 		} else {
@@ -560,7 +564,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return LP_Duration
 	 */
 	public function get_time_remaining( $return = 'object' ) {
-
 		$time = parent::get_time_remaining( $return );
 
 		return apply_filters( 'learn-press/quiz/time-remaining', $time, $this->get_item_id(), $this->get_course_id(), $this->get_user_id() );
@@ -573,6 +576,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_checked_questions() {
 		$value = $this->get_meta( '_lp_question_checked', true );
+
 		if ( $value ) {
 			$value = (array) $value;
 		} else {
@@ -667,7 +671,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function get_check_answer_count() {
-		return @sizeof( $this->get_checked_questions() );
+		return count( $this->get_checked_questions() );
 	}
 
 	/**
@@ -693,6 +697,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_hint_questions() {
 		$value = $this->get_meta( '_lp_question_hint', true );
+
 		if ( $value ) {
 			$value = (array) $value;
 		} else {
@@ -703,7 +708,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function get_count_hint() {
-		return @sizeof( $this->get_hint_questions() );// intval( $this->get_meta( '_lp_hint_count' ) );
+		return count( $this->get_hint_questions() );
 	}
 
 	/**
@@ -712,12 +717,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return bool
 	 */
 	public function can_hint_answer() {
-
 		return apply_filters( 'learn-press/user-quiz/can-hint-answer', true, $this->get_id(), $this->get_course_id() );
 	}
 
 	public function complete( $status = 'completed' ) {
 		parent::complete( $status );
+
 		$this->update();
 	}
 

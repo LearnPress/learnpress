@@ -1807,9 +1807,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$duration    = $this->get_duration();
 			$user        = learn_press_get_user( $user_id );
 			$course_info = $user->get_course_info( $this->get_id() );
-			$start_time  = array_key_exists( 'start_time',
-				$args ) ? $args['start_time'] : ( is_array( $course_info ) && array_key_exists( 'start',
-				$course_info ) ? intval( strtotime( $course_info['start'] ) ) : 0 );
+			$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : ( is_array( $course_info ) && array_key_exists( 'start', $course_info ) ? intval( strtotime( $course_info['start'] ) ) : 0 );
 
 			if ( $duration == 0 ) {
 				$expired = false;
@@ -1837,8 +1835,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			$expired = $this->get_user_expired_time( $user_id, $args );
 
-			return apply_filters( 'learn_press_user_course_expired',
-				$expired !== false ? ( $expired - current_time( 'timestamp' ) ) : false );
+			return apply_filters( 'learn_press_user_course_expired', $expired !== false ? ( $expired - current_time( 'timestamp' ) ) : false );
 		}
 
 		/**
@@ -1858,13 +1855,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_external_link() {
-			return apply_filters( 'learn-press/course-external-link', $this->get_data( 'external_link' ),
-				$this->get_id() );
+			return apply_filters( 'learn-press/course-external-link', $this->get_data( 'external_link' ), $this->get_id() );
 		}
 
 		public function get_external_link_text() {
-			return apply_filters( 'learn-press/course-external-link-text',
-				_x( 'More Info', 'External Link button text', 'learnpress' ), $this->get_id() );
+			return apply_filters( 'learn-press/course-external-link-text', _x( 'More Info', 'External Link button text', 'learnpress' ), $this->get_id() );
 		}
 
 		/**
@@ -1911,8 +1906,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_tags() {
-			return apply_filters( 'learn-press/course-tags',
-				get_the_term_list( $this->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ' ', '' ) );
+			return apply_filters( 'learn-press/course-tags', get_the_term_list( $this->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ' ', '' ) );
 		}
 
 		/**
