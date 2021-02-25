@@ -10,13 +10,7 @@ const Attempts = () => {
 	const attempts = select( 'learnpress/quiz' ).getData( 'attempts' ) || [];
 
 	const getDurationLabel = ( attempt ) => {
-		if ( ! attempt.expirationTime ) {
-			return __( 'Unlimited', 'learnpress' );
-		}
-
-		const milliseconds = new Date( attempt.expirationTime ).getTime() - new Date( attempt.startTime ).getTime();
-
-		return milliseconds ? formatDuration( milliseconds / 1000 ) : '';
+		return attempt.duration ? formatDuration( attempt.duration ) : __( 'Unlimited', 'learnpress' );
 	};
 
 	const getTimeSpendLabel = ( attempt ) => {

@@ -291,6 +291,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		if ( $rows ) {
 			foreach ( $rows as $row ) {
 				$results = learn_press_get_user_item_meta( $row->user_item_id, 'results', true );
+
 				if ( $results ) {
 					$evaluation_questions = $results['questions'];
 
@@ -307,12 +308,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 				$graduation = property_exists( $row, 'graduation' ) ? $row->graduation : learn_press_get_user_item_meta( $row->user_item_id, 'grade', true );
 
+				// Convert to Local - Nhamdv.
+				$start_time = new LP_Datetime( $row->start_time );
+				$end_time   = new LP_Datetime( $row->end_time );
+
 				$attempts[] = array_merge(
 					array(
 						'id'              => absint( $row->user_item_id ),
-						'start_time'      => $row->start_time,
-						'end_time'        => $row->end_time,
-						'expiration_time' => $row->expiration_time,
+						'start_time'      => $start_time->toLocal(),
+						'end_time'        => $end_time->toLocal(),
+						'duration'        => $quiz->get_duration()->get(),
 						'graduation'      => $graduation,
 						'graduation_text' => learn_press_get_graduation_text( $graduation ),
 					),

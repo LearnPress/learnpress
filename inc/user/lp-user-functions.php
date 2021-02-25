@@ -346,9 +346,9 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
 	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get(
-			'profile_endpoints.profile-orders',
-			'profile-orders'
-		) ) {
+		'profile_endpoints.profile-orders',
+		'profile-orders'
+	) ) {
 		$view = false;
 	}
 
@@ -444,18 +444,17 @@ function learn_press_update_user_item_field(
 
 	// Table fields
 	$table_fields = array(
-		'user_id'         => '%d',
-		'item_id'         => '%d',
-		'ref_id'          => '%d',
-		'start_time'      => '%s',
-		'end_time'        => '%s',
-		'expiration_time' => '%s',
-		'access_level'    => '%d',
-		'graduation'      => '%s',
-		'item_type'       => '%s',
-		'status'          => '%s',
-		'ref_type'        => '%s',
-		'parent_id'       => '%d',
+		'user_id'      => '%d',
+		'item_id'      => '%d',
+		'ref_id'       => '%d',
+		'start_time'   => '%s',
+		'end_time'     => '%s',
+		'access_level' => '%d',
+		'graduation'   => '%s',
+		'item_type'    => '%s',
+		'status'       => '%s',
+		'ref_type'     => '%s',
+		'parent_id'    => '%d',
 	);
 
 	/**
@@ -480,7 +479,6 @@ function learn_press_update_user_item_field(
 	$date_time_fields = array(
 		'start_time',
 		'end_time',
-		'expiration_time',
 	);
 
 	foreach ( $fields as $field => $value ) {
@@ -827,9 +825,9 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 
 /**
  * @param     $status
- * @param int $quiz_id
- * @param int $user_id
- * @param int $course_id
+ * @param int    $quiz_id
+ * @param int    $user_id
+ * @param int    $course_id
  *
  * @return bool|mixed
  */
@@ -1046,7 +1044,7 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1068,7 +1066,7 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1364,7 +1362,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 	}
 
 	if ( $include_course ) {
-		$where  .= ' OR ( item_id = %d AND item_type = %s )';
+		$where .= ' OR ( item_id = %d AND item_type = %s )';
 		$args[] = $course_id;
 		$args[] = LP_COURSE_CPT;
 	}
@@ -1513,17 +1511,16 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 
 	$currentTime = new LP_Datetime();
 	$defaults    = array(
-		'user_id'         => get_current_user_id(),
-		'item_id'         => '',
-		'start_time'      => $currentTime->toSql( false ),
-		'end_time'        => '',
-		'expiration_time' => '',
-		'item_type'       => '',
-		'status'          => '',
-		'ref_id'          => 0,
-		'ref_type'        => 0,
-		'parent_id'       => 0,
-		'create_meta'     => true,
+		'user_id'     => get_current_user_id(),
+		'item_id'     => '',
+		'start_time'  => $currentTime->toSql( false ),
+		'end_time'    => '',
+		'item_type'   => '',
+		'status'      => '',
+		'ref_id'      => 0,
+		'ref_type'    => 0,
+		'parent_id'   => 0,
+		'create_meta' => true,
 	);
 
 	$itemData = wp_parse_args( $args, $defaults );
@@ -1578,17 +1575,7 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		unset( $itemData['create_meta'] );
 	}
 
-	// Calculate the expiration time if duration is specific.
-	if ( ! empty( $itemData['duration'] ) ) {
-		$expiration = new LP_Datetime( $currentTime->getPeriod( $itemData['duration'], false ) );
-		unset( $itemData['duration'] );
-	}
-
 	$userItem = new LP_User_Item( $itemData );
-
-	if ( isset( $expiration ) ) {
-		$userItem->set_expiration_time( $expiration->toSql( true ) );
-	}
 
 	$result = $userItem->update( true, false );
 
