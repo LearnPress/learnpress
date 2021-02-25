@@ -223,7 +223,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * Defines table names.
+		 * Defines database table names.
 		 */
 		public function define_tables() {
 			global $wpdb;
@@ -234,6 +234,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				'section_items',
 				'user_items',
 				'user_itemmeta',
+				'user_item_results',
 				'order_items',
 				'order_itemmeta',
 				'quiz_questions',

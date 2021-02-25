@@ -324,9 +324,11 @@ class LP_Session_Handler implements ArrayAccess {
 		// Try get it from the cache, it will return false if not present or if object cache not in use
 		$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
 		// echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
-		if ( false === $value ) {
+
+		if ( false === $value && $wpdb->get_var( "SHOW TABLES LIKE '$this->_table'" ) == $this->_table ) {
 			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id ); // phpcs:ignore
 			$value = $wpdb->get_var( $q );
+
 			if ( is_null( $value ) ) {
 				$value = $default;
 			}

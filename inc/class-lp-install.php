@@ -691,17 +691,18 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				if ( ! empty( $wpdb->charset ) ) {
 					$collate .= "DEFAULT CHARACTER SET $wpdb->charset";
 				}
+
 				if ( ! empty( $wpdb->collate ) ) {
 					$collate .= " COLLATE $wpdb->collate";
 				}
 			}
-			$tables = $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s',
-				'%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
+
+			$tables = $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s', '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
 			$query  = '';
 
 			if ( ! in_array( $wpdb->learnpress_order_itemmeta, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_order_itemmeta} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_order_itemmeta} (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_order_item_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					meta_key varchar(255) NOT NULL DEFAULT '',
@@ -714,10 +715,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_order_items, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_order_items} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_order_items} (
 					order_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					order_item_name longtext NOT NULL,
-					item_type nvachar(50) NOT NULL DEFAULT '',
+					item_type varchar(50) NOT NULL DEFAULT '',
 					item_id bigint(20) unsigned NOT NULL DEFAULT 0,
 					order_id bigint(20) unsigned NOT NULL DEFAULT 0,
 					PRIMARY KEY (order_item_id),
@@ -727,7 +728,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_question_answers, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_question_answers} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_question_answers} (
 					question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					question_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					title text NOT NULL,
@@ -741,7 +742,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_quiz_questions, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_quiz_questions} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_quiz_questions} (
 					quiz_question_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					quiz_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					question_id bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -754,7 +755,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_review_logs, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_review_logs} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_review_logs} (
 					review_log_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					course_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					user_id bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -768,7 +769,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_section_items, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_section_items} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_section_items} (
 					section_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					section_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					item_id bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -782,7 +783,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_sections, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_sections} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_sections} (
 					section_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					section_name varchar(255) NOT NULL DEFAULT '',
 					section_course_id bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -796,7 +797,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_sessions, $tables ) ) {
 				$query .= "
-				CREATE TABLE  {$wpdb->learnpress_sessions} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_sessions} (
 					session_id bigint(20) NOT NULL AUTO_INCREMENT,
 					session_key char(32) NOT NULL,
 					session_value longtext NOT NULL,
@@ -808,7 +809,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_user_items, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_user_items} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_user_items} (
 					user_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					user_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					item_id bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -832,7 +833,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			if ( ! in_array( $wpdb->learnpress_user_itemmeta, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->prefix}learnpress_user_itemmeta (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_user_itemmeta} (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_user_item_id bigint(20) unsigned NOT NULL,
 					meta_key varchar(255) NOT NULL DEFAULT '',
@@ -844,20 +845,21 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				";
 			}
 
-			$query .= "
-				CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_user_item_results (
-					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-					user_item_id bigint(20) unsigned NOT NULL,
-					evaluate_result vachar(500)
-					PRIMARY KEY (id),
-					KEY (user_item_id),
-  					KEY (evaluate_result)
-				) $collate;
-			";
+			if ( ! in_array( $wpdb->learnpress_user_item_results, $tables ) ) {
+				$query .= "
+					CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_user_item_results} (
+						id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+						user_item_id bigint(20) unsigned NOT NULL,
+						result varchar(500),
+						PRIMARY KEY (id),
+						KEY user_item_id (user_item_id)
+					) $collate;
+				";
+			}
 
 			if ( ! in_array( $wpdb->learnpress_question_answermeta, $tables ) ) {
 				$query .= "
-				CREATE TABLE {$wpdb->learnpress_question_answermeta} (
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_question_answermeta} (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_question_answer_id bigint(20) unsigned NOT NULL,
 					meta_key varchar(255) NOT NULL DEFAULT '',
