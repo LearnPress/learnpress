@@ -196,7 +196,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return string|LP_Datetime
 	 */
 	public function get_start_time( $format = '', $local = false ) {
-		$date = $this->get_data_date( 'start_time' );
+		$date = $this->get_data( 'start_time' );
 
 		return $this->format_time( $date, $format, $local );
 	}
@@ -320,7 +320,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			return null;
 		}
 
-		$date = new LP_Datetime( $start_time->getPeriod( $duration, false ) );
+		$date = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
 
 		return $this->format_time( $date, $format );
 	}
