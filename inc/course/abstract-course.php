@@ -1354,36 +1354,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Calculate course results for user by course results settings
-		 *
-		 * @param int     $user_id
-		 * @param boolean $force
-		 *
-		 * @return mixed
-		 */
-		public function evaluate_course_results( $user_id = 0, $force = false ) {
-
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__ . '()', '3.1.0',
-				'LP_User::evaluate_course_results()' );
-
-			LP_Debug::logTime( __FUNCTION__ );
-			if ( ! $user_id ) {
-				$user_id = get_current_user_id();
-			}
-
-			$user = learn_press_get_user( $user_id );
-
-			if ( $user ) {
-				$user_course = $user->get_course_data( $this->get_id() );
-			}
-
-			$result = isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
-			LP_Debug::logTime( __FUNCTION__ );
-
-			return $result;
-		}
-
-		/**
 		 * Get achieved point of all quizzes per total points of all quizzes
 		 *
 		 * @param      $user_id

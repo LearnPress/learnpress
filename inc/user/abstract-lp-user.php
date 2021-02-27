@@ -1651,6 +1651,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function has_passed_course( $course_id ) {
 			$course = learn_press_get_course( $course_id );
+
 			if ( $course ) {
 				$results = $this->evaluate_course_results( $course_id );
 			} else {
@@ -1864,7 +1865,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				/**
 				 * If user has stared a lesson, get user lesson information
 				 */
-				if ( $item = $course_data->get_item( $lesson_id ) ) {
+				$item = $course_data->get_item( $lesson_id );
+				if ( $item ) {
 
 					if ( $item->is_completed() ) {
 						throw new Exception(
@@ -2708,11 +2710,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function can_do_quiz( $quiz_id, $course_id = 0 ) {
 			$course = learn_press_get_course( $course_id );
+
 			if ( $course->is_required_enroll() ) {
-				$can = $this->has_course_status(
-						$course_id,
-						array( 'enrolled' )
-					) && ! $this->has_started_quiz( $quiz_id, $course_id );
+				$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && ! $this->has_started_quiz( $quiz_id, $course_id );
 			} else {
 				$can = ! $this->has_started_quiz( $quiz_id, $course_id );
 			}

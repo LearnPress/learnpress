@@ -642,8 +642,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				);
 
 				$course_id = $wpdb->get_col( $query );
-				$query     = $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_section_items} WHERE item_id = %d",
-					$item_id );
+				$query     = $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_section_items} WHERE item_id = %d", $item_id );
 			}
 
 			// delete item from course's section

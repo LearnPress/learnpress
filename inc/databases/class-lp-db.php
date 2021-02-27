@@ -1,6 +1,7 @@
 <?php
 /**
  * Class LP_Database
+ *
  * @author tungnx
  * @since 3.2.7.5
  */
@@ -9,34 +10,34 @@ defined( 'ABSPATH' ) || exit();
 class LP_Database {
 	private static $_instance;
 	public $wpdb;
-	public $tb_lp_user_items, $tb_lp_user_itemmeta;
+	public $tb_lp_user_items, $tb_lp_user_itemmeta, $tb_lp_user_item_results;
 	public $tb_posts, $tb_postmeta;
 	public $tb_lp_order_items, $tb_lp_order_itemmeta;
 	public $tb_lp_sections, $tb_lp_section_items;
 	public $tb_lp_quiz_questions;
 
 	protected function __construct() {
-		/**
-		 * @global wpdb
-		 */
 		global $wpdb;
+
 		$prefix = $wpdb->prefix;
 
-		$this->wpdb                 = $wpdb;
-		$this->tb_users             = $wpdb->users;
-		$this->tb_posts             = $wpdb->posts;
-		$this->tb_postmeta          = $wpdb->postmeta;
-		$this->tb_lp_user_items     = $prefix . 'learnpress_user_items';
-		$this->tb_lp_user_itemmeta  = $prefix . 'learnpress_user_itemmeta';
-		$this->tb_lp_order_items    = $prefix . 'learnpress_order_items';
-		$this->tb_lp_order_itemmeta = $prefix . 'learnpress_order_itemmeta';
-		$this->tb_lp_section_items  = $prefix . 'learnpress_section_items';
-		$this->tb_lp_sections       = $prefix . 'learnpress_sections';
-		$this->tb_lp_quiz_questions = $prefix . 'learnpress_quiz_questions';
+		$this->wpdb                    = $wpdb;
+		$this->tb_users                = $wpdb->users;
+		$this->tb_posts                = $wpdb->posts;
+		$this->tb_postmeta             = $wpdb->postmeta;
+		$this->tb_lp_user_items        = $prefix . 'learnpress_user_items';
+		$this->tb_lp_user_itemmeta     = $prefix . 'learnpress_user_itemmeta';
+		$this->tb_lp_user_item_results = $prefix . 'learnpress_user_item_results';
+		$this->tb_lp_order_items       = $prefix . 'learnpress_order_items';
+		$this->tb_lp_order_itemmeta    = $prefix . 'learnpress_order_itemmeta';
+		$this->tb_lp_section_items     = $prefix . 'learnpress_section_items';
+		$this->tb_lp_sections          = $prefix . 'learnpress_sections';
+		$this->tb_lp_quiz_questions    = $prefix . 'learnpress_quiz_questions';
 	}
 
 	/**
 	 * Get Instance
+	 *
 	 * @return LP_Database
 	 */
 	public static function getInstance() {
@@ -56,7 +57,8 @@ class LP_Database {
 	 * @return array
 	 */
 	public function getListItem( $post_type = '', $user_id = 0 ) {
-		$query = $this->wpdb->prepare( "
+		$query = $this->wpdb->prepare(
+			"
 			SELECT ID FROM $this->tb_posts
 			WHERE post_type = %s
 			AND post_author = %d",
@@ -90,7 +92,8 @@ class LP_Database {
 			$query_append .= ' AND post_status = \'' . $filter->post_status . '\'';
 		}
 
-		$query = $this->wpdb->prepare( "
+		$query = $this->wpdb->prepare(
+			"
 			SELECT Count(ID) FROM $this->tb_posts
 			WHERE post_type = '%s'
 			AND post_author = %d
@@ -118,7 +121,8 @@ class LP_Database {
 	 * @return string
 	 */
 	public function getPostAuthorByTypeAndSlug( $post_type = '', $slug = '' ) {
-		$query = $this->wpdb->prepare( "
+		$query = $this->wpdb->prepare(
+			"
 			SELECT post_author FROM $this->tb_posts
 			WHERE post_type = %s
 			AND post_name = %s",

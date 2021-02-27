@@ -46,17 +46,6 @@ if ( ! class_exists( 'LP_Background_Sync_Data' ) ) {
 		protected function task( $data ) {
 			$queue_user_ids = get_option( $data['option_key'] );
 
-			if ( $queue_user_ids ) {
-				$user_ids  = array_splice( $queue_user_ids, 0, 1 );
-				$course_id = $data['course_id'];
-
-				foreach ( $user_ids as $user_id ) {
-					$user        = learn_press_get_user( $user_id );
-					$course_data = $user->get_course_data( $course_id );
-					$course_data->calculate_course_results();
-				}
-			}
-
 			if ( ! $queue_user_ids ) {
 				delete_option( $data['option_key'] );
 				delete_option( 'doing-sync-user-course-results' );

@@ -35,7 +35,6 @@ class LP_User_Factory {
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
 		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
-		// add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
 
 		/**
 		 * Filters into wp users manager
@@ -43,13 +42,14 @@ class LP_User_Factory {
 		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
 
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
-		add_action( 'learn-press/deleted-order-item', array( __CLASS__, 'delete_user_item' ), 10, 2 );
 	}
 
 	public static function clear_temp_users() {
 		global $wpdb;
 
-		if ( $users = learn_press_get_temp_users() ) {
+		$users = learn_press_get_temp_users();
+
+		if ( $users ) {
 			LP()->background( 'clear-temp-users' )->push_to_queue(
 				array(
 					'action' => 'clear_temp_users',
@@ -59,37 +59,9 @@ class LP_User_Factory {
 		}
 	}
 
-	/**
-	 * Delete user course from user_items table after an order item is deleted.
-	 *
-	 * @param int $item_id
-	 * @param int $order_id
-	 */
-	public static function delete_user_item( $item_id, $order_id ) {
-		$curd = new LP_User_CURD();
-
-		$order = learn_press_get_order( $order_id );
-		if ( $order ) {
-			$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
-			$users     = $order->get_users();
-
-			if ( $users ) {
-				foreach ( $users as $user_id ) {
-					$curd->delete_user_item(
-						array(
-							'item_id' => $course_id,
-							'ref_id'  => $order_id,
-							'user_id' => $user_id,
-						)
-					);
-				}
-			}
-		}
-
-	}
-
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
 		$order = learn_press_get_order( $the_id );
+
 		if ( ! $order ) {
 			return;
 		}
@@ -154,6 +126,7 @@ class LP_User_Factory {
 	 */
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
+
 		$curd         = new LP_User_CURD();
 		$parent_order = $order->is_child() ? $order->get_parent() : $order;
 		$items        = ! $order->is_child() ? $order->get_items() : $parent_order->get_items();

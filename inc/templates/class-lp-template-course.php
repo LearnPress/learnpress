@@ -94,8 +94,18 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 */
 	public function quiz_meta_questions( $item ) {
 		$count = $item->count_questions();
-		echo '<span class="item-meta count-questions">' . sprintf( $count ? _n( '%d question', '%d questions', $count,
-				'learnpress' ) : __( '%d question', 'learnpress' ), $count ) . '</span>';
+		echo '<span class="item-meta count-questions">' . sprintf(
+			$count ? _n(
+				'%d question',
+				'%d questions',
+				$count,
+				'learnpress'
+			) : __(
+				'%d question',
+				'learnpress'
+			),
+			$count
+		) . '</span>';
 	}
 
 	/**
@@ -172,8 +182,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		// If course is reached limitation.
 		if ( ! $course->is_in_stock() ) {
-			$message = apply_filters( 'learn-press/maximum-students-reach',
-				esc_html__( 'This course is out of stock', 'learnpress' ) );
+			$message = apply_filters(
+				'learn-press/maximum-students-reach',
+				esc_html__( 'This course is out of stock', 'learnpress' )
+			);
 
 			if ( $message ) {
 				learn_press_display_message( $message );
@@ -195,8 +207,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 		// If the order contains course is processing
 		$order = $user->get_course_order( $course->get_id() );
 		if ( $order && $order->get_status() === 'processing' ) {
-			$message = apply_filters( 'learn-press/order-processing-message',
-				__( 'Your order is waiting for processing', 'learnpress' ) );
+			$message = apply_filters(
+				'learn-press/order-processing-message',
+				__( 'Your order is waiting for processing', 'learnpress' )
+			);
 
 			if ( $message ) {
 				learn_press_display_message( $message );
@@ -208,13 +222,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$args_load_tmpl = array(
 			'template_name' => 'single-course/buttons/purchase.php',
 			'template_path' => '',
-			'default_path'  => ''
+			'default_path'  => '',
 		);
 
 		$args_load_tmpl = apply_filters( 'learn-press/tmpl-button-purchase-course', $args_load_tmpl, $course );
 
-		learn_press_get_template( $args_load_tmpl['template_name'], array( 'course' => $course ),
-			$args_load_tmpl['template_path'], $args_load_tmpl['default_path'] );
+		learn_press_get_template(
+			$args_load_tmpl['template_name'],
+			array( 'course' => $course ),
+			$args_load_tmpl['template_path'],
+			$args_load_tmpl['default_path']
+		);
 	}
 
 	/**
@@ -389,13 +407,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		$course_data = $user->get_course_data( $course->get_id() );
-
-		$is_all_completed = $user->is_completed_all_items( $course->get_id() );
-		$has_finish       = get_post_meta( $course->get_id(), '_lp_has_finish',
-			true ) ? get_post_meta( $course->get_id(), '_lp_has_finish', true ) : 'yes';
-		$is_passed        = $user->has_reached_passing_condition( $course->get_id() );
-
 		if ( $course->get_external_link() ) {
 			return;
 		}
@@ -404,9 +415,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		$has_finish = get_post_meta( $course->get_id(), '_lp_has_finish', true ) ? get_post_meta( $course->get_id(), '_lp_has_finish', true ) : 'yes';
+		$is_passed  = $user->has_reached_passing_condition( $course->get_id() );
+
 		if ( ! $is_passed && $has_finish === 'no' ) {
 			return;
 		}
+
+		$is_all_completed = $user->is_completed_all_items( $course->get_id() );
 
 		// All items completed and not passed.
 		if ( ! $is_all_completed && $has_finish === 'yes' && ! $is_passed ) {
@@ -519,11 +535,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function course_item_content() {
 		$item = LP_Global::course_item();
 
-//		if ( $item->is_blocked() ) {
-//			learn_press_get_template( 'global/block-content.php' );
-//
-//			return;
-//		}
+		// if ( $item->is_blocked() ) {
+		// learn_press_get_template( 'global/block-content.php' );
+		//
+		// return;
+		// }
 
 		/**
 		 * Fix only for WPBakery load style inline
@@ -681,12 +697,36 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$counts = apply_filters(
 			'learn-press/count-meta-objects',
 			array(
-				'lesson'  => sprintf( $lessons > 1 ? __( '<span class="meta-number">%d</span> lessons',
-					'learnpress' ) : __( '<span class="meta-number">%d</span> lesson', 'learnpress' ), $lessons ),
-				'quiz'    => sprintf( $quizzes > 1 ? __( '<span class="meta-number">%d</span> quizzes',
-					'learnpress' ) : __( '<span class="meta-number">%d</span> quiz', 'learnpress' ), $quizzes ),
-				'student' => sprintf( $students > 1 ? __( '<span class="meta-number">%d</span> students',
-					'learnpress' ) : __( '<span class="meta-number">%d</span> student', 'learnpress' ), $students ),
+				'lesson'  => sprintf(
+					$lessons > 1 ? __(
+						'<span class="meta-number">%d</span> lessons',
+						'learnpress'
+					) : __(
+						'<span class="meta-number">%d</span> lesson',
+						'learnpress'
+					),
+					$lessons
+				),
+				'quiz'    => sprintf(
+					$quizzes > 1 ? __(
+						'<span class="meta-number">%d</span> quizzes',
+						'learnpress'
+					) : __(
+						'<span class="meta-number">%d</span> quiz',
+						'learnpress'
+					),
+					$quizzes
+				),
+				'student' => sprintf(
+					$students > 1 ? __(
+						'<span class="meta-number">%d</span> students',
+						'learnpress'
+					) : __(
+						'<span class="meta-number">%d</span> student',
+						'learnpress'
+					),
+					$students
+				),
 			),
 			array( $lessons, $quizzes, $students )
 		);
@@ -869,11 +909,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$user     = LP_Global::user();
 		$enrolled = $user->has_enrolled_course( $course->get_id() );
 		if ( $enrolled ) {
-			remove_action( 'learn-press/course-content-summary',
-				LP()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
+			remove_action(
+				'learn-press/course-content-summary',
+				LP()->template( 'course' )->func( 'course_extra_boxes' ),
+				40
+			);
 		} else {
-			remove_action( 'learn-press/course-content-summary',
-				LP()->template( 'course' )->func( 'course_extra_boxes' ), 70 );
+			remove_action(
+				'learn-press/course-content-summary',
+				LP()->template( 'course' )->func( 'course_extra_boxes' ),
+				70
+			);
 		}
 	}
 }

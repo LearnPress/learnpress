@@ -31,8 +31,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$ajax_events = array(
 				'create_page'             => false,
-				//'plugin_action'           => false,
-				//'modal_search_items'      => false,
+				// 'plugin_action'           => false,
+				// 'modal_search_items'      => false,
 				'dismiss_notice'          => false,
 				'search_users'            => false,
 				'load_chart'              => false,
@@ -41,8 +41,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'ignore_setting_up'       => false,
 				'get_page_permalink'      => false,
 				'dummy_image'             => false,
-				//'update_add_on_status'    => false,
-				//'plugin_install'          => false,
+				// 'update_add_on_status'    => false,
+				// 'plugin_install'          => false,
 				'bundle_activate_add_ons' => false,
 				'install_sample_data'     => false,
 
@@ -140,11 +140,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$api = LP_Repair_Database::instance();
 
 			if ( $sync === 'get-users' ) {
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
                     SELECT ID
                     FROM {$wpdb->users}
                     WHERE 1
-                ", 1 );
+                ",
+					1
+				);
 
 				$users = $wpdb->get_col( $query );
 
@@ -335,7 +338,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param LP_Admin_Editor $editor
 		 *
 		 * @since 3.0.2
-		 *
 		 */
 		public static function admin_editor( &$editor ) {
 			$result = $editor->dispatch();
@@ -527,15 +529,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function toggle_item_preview() {
 			$id = learn_press_get_request( 'item_id' );
 			if ( in_array(
-					 get_post_type( $id ),
-					 apply_filters(
-						 'learn-press/reviewable-post-types',
-						 array(
-							 'lp_lesson',
-							 'lp_quiz',
-						 )
-					 )
-				 ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
+				get_post_type( $id ),
+				apply_filters(
+					'learn-press/reviewable-post-types',
+					array(
+						'lp_lesson',
+						'lp_quiz',
+					)
+				)
+			) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
 			) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
@@ -863,7 +865,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @reason not uses - low security
 		 * @since 3.2.6.8
 		 */
-		/*public static function plugin_action() {
+		/*
+		public static function plugin_action() {
 			$url = learn_press_get_request( 'url' );
 			ob_start();
 			wp_remote_get( $url );
@@ -876,7 +879,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Create a new page with the title passed via $_REQUEST
 		 */
 		public static function create_page() {
-			$response = array( 'code' => 0, 'message' => '' );
+			$response = array(
+				'code'    => 0,
+				'message' => '',
+			);
 
 			/**
 			 * Check valid
@@ -905,7 +911,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
 					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
-					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
+					$response['html']     .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
 				} else {
 					$response['error'] = __( 'Error! Page creation failed. Please try again.', 'learnpress' );
 				}
@@ -1035,7 +1041,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @reason not use
 		 * @deprecated 4.0.0.
 		 */
-		/*public static function plugin_install() {
+		/*
+		public static function plugin_install() {
 			$plugin_name = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$response    = learn_press_install_add_on( $plugin_name );
 			learn_press_send_json( $response );
@@ -1047,7 +1054,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @reason not use
 		 * @since 3.2.6.8
 		 */
-		/*public static function update_add_on_status() {
+		/*
+		public static function update_add_on_status() {
 			$plugin   = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$t        = ! empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
 			$response = array();
@@ -1118,7 +1126,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			wp_die();
 		}
 
-		/*public static function update_order_status() {
+		/*
+		public static function update_order_status() {
 
 			$order_id = learn_press_get_request( 'order_id' );
 			$value    = learn_press_get_request( 'value' );
@@ -1184,11 +1193,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
 
 			ob_start();
-			learn_press_admin_view( 'meta-boxes/order/content-tab-preview-exports-invoice.php',
+			learn_press_admin_view(
+				'meta-boxes/order/content-tab-preview-exports-invoice.php',
 				array(
 					'order'           => $order,
-					'currency_symbol' => $currency_symbol
-				) );
+					'currency_symbol' => $currency_symbol,
+				)
+			);
 			$html = ob_get_clean();
 			echo $html;
 			die();

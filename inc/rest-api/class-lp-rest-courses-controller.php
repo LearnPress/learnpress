@@ -324,6 +324,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter_remove->limit     = - 1;
 			LP_User_Items_DB::getInstance()->remove_items_of_user_course( $filter_remove );
 
+			// Create new result in table learnpress_user_item_results.
+			LP_User_Items_Result_DB::instance()->insert( $user_course_data->get_user_item_id() );
+
 			$response->status             = 'success';
 			$response->message            = esc_html__( 'Now you can learn this course', 'learnpress' );
 			$response->data->url_redirect = $course->get_redirect_url_after_enroll();

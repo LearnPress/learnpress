@@ -34,14 +34,16 @@ class LP_Course_DB extends LP_Database {
 	 */
 	public function learn_press_get_item_course( $item_id = 0 ) {
 
-		$query = $this->wpdb->prepare( "
+		$query = $this->wpdb->prepare(
+			"
 			SELECT section_course_id
 			FROM {$this->tb_lp_sections} AS s
 			INNER JOIN {$this->tb_lp_section_items} AS si
 			ON si.section_id = s.section_id
 			WHERE si.item_id = %d
 			ORDER BY section_course_id DESC",
-			$item_id );
+			$item_id
+		);
 
 		return (int) $this->wpdb->get_var( $query );
 	}
@@ -56,7 +58,8 @@ class LP_Course_DB extends LP_Database {
 	 * @return int
 	 */
 	public function get_user_item_id( $order_id = 0, $course_id = 0, $user_id = 0 ) {
-		$query = $this->wpdb->prepare( "
+		$query = $this->wpdb->prepare(
+			"
 			SELECT user_item_id
 			FROM {$this->tb_lp_user_items}
 			WHERE ref_type = %s
@@ -64,7 +67,13 @@ class LP_Course_DB extends LP_Database {
 			AND item_type = %s
 			AND item_id = %d
 			AND user_id = %d
-			", LP_ORDER_CPT, $order_id, LP_COURSE_CPT, $course_id, $user_id );
+			",
+			LP_ORDER_CPT,
+			$order_id,
+			LP_COURSE_CPT,
+			$course_id,
+			$user_id
+		);
 
 		return $this->wpdb->get_var( $query );
 	}
@@ -85,7 +94,8 @@ class LP_Course_DB extends LP_Database {
 		$first_item_id = wp_cache_get( 'first_item_id', LP_COURSE_CPT );
 
 		if ( ! $first_item_id ) {
-			$query = $this->wpdb->prepare( "
+			$query = $this->wpdb->prepare(
+				"
 			SELECT item_id FROM $this->tb_lp_section_items AS items
 			INNER JOIN $this->tb_lp_sections AS sections
 			ON items.section_id = sections.section_id
@@ -96,7 +106,7 @@ class LP_Course_DB extends LP_Database {
 
 			$first_item_id = (int) $this->wpdb->get_var( $query );
 
-			//Set cache
+			// Set cache
 			wp_cache_set( 'first_item_id', $first_item_id, LP_COURSE_CPT );
 		}
 
