@@ -11,14 +11,6 @@ class LP_User_Items_Result_DB extends LP_Database {
 		parent::__construct();
 	}
 
-	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
-		}
-
-		return self::$_instance;
-	}
-
 	/**
 	 * Get current result evaluation.
 	 *
@@ -32,15 +24,9 @@ class LP_User_Items_Result_DB extends LP_Database {
 			return false;
 		}
 
-		$max_id = $wpdb->get_var( $wpdb->prepare( "SELECT MAX(id) id from $wpdb->learnpress_user_item_results where user_item_id=%d", $user_item_id ) );
+		$result = $wpdb->get_var( $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC", $user_item_id ) );
 
-		if ( ! $max_id ) {
-			return false;
-		}
-
-		$result = $wpdb->get_results( $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE id=%d", $max_id ) );
-
-		return $result ? json_decode( $result[0]->result, true ) : false;
+		return $result && is_string( $result ) ? json_decode( $result, true ) : false;
 	}
 
 	public function update( $user_item_id = 0, $result = null ) {
@@ -50,7 +36,7 @@ class LP_User_Items_Result_DB extends LP_Database {
 			return false;
 		}
 
-		$max_id = $wpdb->get_var( $wpdb->prepare( "SELECT MAX(id) id from $wpdb->learnpress_user_item_results where user_item_id=%d", $user_item_id ) );
+		$max_id = $wpdb->get_var( $wpdb->prepare( "SELECT MAX(id) id from $wpdb->learnpress_user_item_results WHERE user_item_id=%d", $user_item_id ) );
 
 		$data   = array( 'result' => $result );
 		$where  = array(
@@ -110,6 +96,14 @@ class LP_User_Items_Result_DB extends LP_Database {
 		global $wpdb;
 
 		$wpdb->query( "DELETE FROM {$wpdb->learnpress_user_item_results}" );
+	}
+
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+
+		return self::$_instance;
 	}
 }
 LP_User_Items_Result_DB::instance();
