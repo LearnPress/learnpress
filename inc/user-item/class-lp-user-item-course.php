@@ -317,8 +317,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results ) );
 
-		// $this->update_meta( 'course_results_' . $course_result, $results );
-
 		learn_press_update_user_item_field( array( 'graduation' => $graduation ), array( 'user_item_id' => $this->get_user_item_id() ) );
 
 		return $results;

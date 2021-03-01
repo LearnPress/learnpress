@@ -70,7 +70,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		$results['questions'] = $questions;
 
-		$this->update_meta( 'results', $results->get() );
+		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results->get() ) );
+
 		$this->calculate_results();
 
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
@@ -290,7 +291,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		if ( $rows ) {
 			foreach ( $rows as $row ) {
-				$results = learn_press_get_user_item_meta( $row->user_item_id, 'results', true );
+				$results = LP_User_Items_Result_DB::instance()->get_result( $row->user_item_id );
 
 				if ( $results ) {
 					$evaluation_questions = $results['questions'];
@@ -306,7 +307,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					$results = array();
 				}
 
-				$graduation = property_exists( $row, 'graduation' ) ? $row->graduation : learn_press_get_user_item_meta( $row->user_item_id, 'grade', true );
+				$graduation = $row->graduation ? $row->graduation : false;
 
 				// Convert to Local - Nhamdv.
 				$start_time = new LP_Datetime( $row->start_time );
@@ -356,7 +357,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function calculate_results() {
 		$quiz         = learn_press_get_quiz( $this->get_item_id() );
-		$last_results = $this->get_meta( 'results' );
+		$last_results = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 
 		if ( ! $last_results ) {
 			$last_results = array();
@@ -437,17 +438,13 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			);
 		}
 
-		$this->update_meta( 'results', $result );
+		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $result ) );
 
 		return $result;
 	}
 
 	protected function _get_results() {
-		if ( metadata_exists( 'learnpress_user_item', $this->get_user_item_id(), 'results' ) ) {
-			return $this->get_meta( 'results' );
-		}
-
-		return false;
+		return LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 	}
 
 	public function is_passed() {

@@ -12,7 +12,7 @@ class LP_User_Items_Result_DB extends LP_Database {
 	}
 
 	/**
-	 * Get current result evaluation.
+	 * Get current result.
 	 *
 	 * @param integer $user_item_id
 	 * @return void
@@ -24,7 +24,7 @@ class LP_User_Items_Result_DB extends LP_Database {
 			return false;
 		}
 
-		$result = $wpdb->get_var( $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC", $user_item_id ) );
+		$result = $wpdb->get_var( $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC LIMIT 1", $user_item_id ) );
 
 		return $result && is_string( $result ) ? json_decode( $result, true ) : false;
 	}
