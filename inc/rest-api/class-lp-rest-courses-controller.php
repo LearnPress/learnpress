@@ -314,7 +314,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
 							 ->set_start_time( current_time( 'mysql', true ) )
 							 ->set_end_time( '' )
-							 ->set_graduation( '' )
+							 ->set_graduation( 'in-progress' )
 							 ->update();
 
 			// Remove items' course user learned.
