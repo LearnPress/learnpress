@@ -295,29 +295,6 @@ class LP_Meta_Box_Course {
 
 			if ( ! $curriculum ) {
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $post_id ) );
-
-				return;
-			}
-
-			$item_ids = $quiz_ids = $question_ids = array();
-
-			foreach ( $curriculum as $item_id ) {
-				$item_ids[] = (int) $item_id;
-
-				if ( learn_press_get_post_type( $item_id ) == LP_QUIZ_CPT ) {
-					$quiz      = LP_Quiz::get_quiz( $item_id );
-					$questions = $quiz->get_questions();
-
-					if ( $questions ) {
-						$question_ids = array_merge( $question_ids, $questions );
-					}
-				}
-			}
-
-			$ids = array_merge( (array) $post_id, $item_ids, $question_ids );
-
-			foreach ( $ids as $id ) {
-				$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $id ) );
 			}
 		}
 	}
