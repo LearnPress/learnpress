@@ -69,10 +69,14 @@ $( function() {
 				blockForm().filter( $submit ).html( $submit.data( 'origin-text' ) );
 			};
 
-		$form.on( 'submit', function() {
+		$form.on( 'submit', function( e ) {
+			e.preventDefault();
 			if ( $form.triggerHandler( 'become_teacher_send' ) !== false ) {
+				const url = new URL( window.location.href );
+				url.searchParams.set( 'lp-ajax', 'request-become-a-teacher' );
+
 				$.ajax( {
-					url: window.location.href.addQueryVar( 'lp-ajax', 'request-become-a-teacher' ),
+					url,
 					data: $form.serialize(),
 					dataType: 'text',
 					type: 'POST',
