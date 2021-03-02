@@ -31,9 +31,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 
-			$this
-				->add_map_method( 'before_delete', 'delete_order_data' )
-				->add_map_method( 'save', 'save_order' );
+			$this->add_map_method( 'save', 'save_order' );
 
 			add_filter( 'wp_count_posts', array( $this, 'filter_count_posts' ), 100, 3 );
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
@@ -314,29 +312,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			// Delete data
 			delete_post_meta( $post->ID, '_lp_user_data' );
-		}
-
-		/**
-		 * Delete all records related to order being deleted.
-		 *
-		 * @param int $post_id
-		 *
-		 * @return mixed
-		 * @since 3.0.0
-		 *
-		 */
-		public function delete_order_data( $post_id ) {
-
-			if ( learn_press_get_post_type( $post_id ) != 'lp_order' ) {
-				return false;
-			}
-
-			$order = learn_press_get_order( $post_id );
-			if ( $order ) {
-				return LP_Factory::get_order_factory()->delete_order_data( $order );
-			}
-
-			return false;
 		}
 
 		/**

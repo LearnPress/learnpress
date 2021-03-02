@@ -31,8 +31,9 @@ $query   = $profile->query_courses( 'purchased' );
 			<thead>
 			<tr>
 				<th class="manage-column column-course"><?php esc_html_e( 'Course', 'learnpress' ); ?></th>
-				<th class="manage-column column-start-date"><?php esc_html_e( 'Enrolled', 'learnpress' ); ?></th>
-				<th class="manage-column column-end-date"><?php esc_html_e( 'Finished', 'learnpress' ); ?></th>
+				<th class="manage-column column-start-date"><?php esc_html_e( 'Start time', 'learnpress' ); ?></th>
+				<th class="manage-column column-end-date"><?php esc_html_e( 'End time', 'learnpress' ); ?></th>
+				<th class="manage-column column-finished-date"><?php esc_html_e( 'Finished', 'learnpress' ); ?></th>
 				<th class="manage-column column-results"><?php esc_html_e( 'Results', 'learnpress' ); ?></th>
 			</tr>
 			</thead>
@@ -52,10 +53,16 @@ $query   = $profile->query_courses( 'purchased' );
 						<td class="manage-column column-course">
 							<a href="<?php echo esc_url( $course->get_permalink() ); ?>"><?php echo esc_html( $course->get_title() ); ?></a>
 						</td>
+
 						<td class="manage-column column-start-date">
 							<?php echo $course_data->get_start_time(); ?>
 						</td>
+
 						<td class="manage-column column-end-date">
+							<?php echo $course_data->get_end_time(); ?>
+						</td>
+
+						<td class="manage-column column-finished-date">
 							<?php
 							if ( $status === 'finished' ) {
 								echo $course_data->get_end_time();

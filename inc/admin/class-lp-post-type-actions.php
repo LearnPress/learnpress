@@ -104,6 +104,7 @@ class LP_Post_Type_Actions {
 
 			if ( $course_ids ) {
 				$curd = new LP_Course_CURD();
+
 				foreach ( $course_ids as $course_id ) {
 					$curd->remove_item( $post_id, $course_id );
 					do_action( 'learn-press/removed-course-item', $course_id );

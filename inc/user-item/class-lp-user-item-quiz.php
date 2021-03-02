@@ -451,7 +451,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function is_passed() {
-		return $this->get_results( 'grade' ) === 'passed';
+		return $this->get_graduation();
 	}
 
 	public function get_percent_result( $decimal = 1 ) {

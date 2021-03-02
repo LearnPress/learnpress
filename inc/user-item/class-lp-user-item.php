@@ -677,6 +677,17 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	/**
+	 * Get graduation
+	 *
+	 * @param string $graduation .
+	 *
+	 * @return $this
+	 */
+	public function get_graduation() {
+		return apply_filters( 'learnpress/user-item/get-graduation', $this->get_data( 'graduation' ), $this->get_item_id(), $this->get_user() );
+	}
+
+	/**
 	 * Update data from memory to database.
 	 *
 	 * @updated 3.1.0
@@ -906,17 +917,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$status
 		);
 
-		if ( $wpdb->get_var( $query ) ) {
-			$this->maybe_update_item_grade();
-		}
-
 		return $wpdb->get_var( $query );
-	}
-
-	public function maybe_update_item_grade() {
-		$grade = $this->get_result( 'grade' );
-
-		learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $grade ? $grade : '' );
 	}
 
 	public function delete_meta_data( $include = '', $exclude = '' ) {
@@ -960,7 +961,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function is_passed() {
-		return $this->get_result( 'grade' ) === 'passed';
+		return $this->get_graduation() === 'passed';
 	}
 
 	public function get_percent_result( $decimal = 1 ) {

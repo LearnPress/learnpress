@@ -39,10 +39,10 @@ $passing_condition = $course->get_passing_condition();
 				<span class="percentage-sign">%</span>
 			</span>
 
-			<?php $grade = $course_results['grade']; ?>
-			<?php if ( $grade ) : ?>
-				<span class="lp-label grade <?php echo esc_attr( $grade ); ?>">
-				<?php learn_press_course_grade_html( $grade ); ?>
+			<?php $graduation = $course_data->get_graduation(); ?>
+			<?php if ( $graduation ) : ?>
+				<span class="lp-graduation <?php echo esc_attr( $graduation ); ?>" style="color: #222; font-weight: 600;">
+				- <?php learn_press_course_grade_html( $graduation ); ?>
 				</span>
 			<?php endif; ?>
 		</div>

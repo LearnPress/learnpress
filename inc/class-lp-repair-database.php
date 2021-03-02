@@ -200,7 +200,9 @@ class LP_Repair_Database {
 			LP_ORDER_CPT
 		);
 
-		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
+		$user_item_ids = $wpdb->get_col( $query );
+
+		if ( ! $user_item_ids ) {
 			return false;
 		}
 
@@ -220,11 +222,14 @@ class LP_Repair_Database {
 	 */
 	public function remove_user_items_by_user_item_id( $user_item_id, $remove_child = true ) {
 		global $wpdb;
+
 		settype( $user_item_id, 'array' );
-		$format = array_fill( 0, sizeof( $user_item_id ), '%d' );
+
+		$format              = array_fill( 0, sizeof( $user_item_id ), '%d' );
+		$child_user_item_ids = $this->get_user_items_by_parent_id( $user_item_id );
 
 		// Remove child
-		if ( $remove_child && $child_user_item_ids = $this->get_user_items_by_parent_id( $user_item_id ) ) {
+		if ( $remove_child && $child_user_item_ids ) {
 			$this->remove_user_items_by_user_item_id( $child_user_item_ids, $remove_child );
 		}
 
@@ -249,6 +254,11 @@ class LP_Repair_Database {
 		);
 
 		$wpdb->query( $query );
+
+		// Remove all result in table user_item_results.
+		foreach ( $user_item_id as $delete_id ) {
+			LP_User_Items_Result_DB::instance()->delete( $delete_id );
+		}
 	}
 
 	/**
@@ -275,7 +285,9 @@ class LP_Repair_Database {
 			$item_id
 		);
 
-		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
+		$user_item_ids = $wpdb->get_col( $query );
+
+		if ( $user_item_ids ) {
 			return false;
 		}
 
@@ -316,7 +328,9 @@ class LP_Repair_Database {
 			$user_id
 		);
 
-		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
+		$user_item_ids = $wpdb->get_col( $query );
+
+		if ( ! $user_item_ids ) {
 			return false;
 		}
 
@@ -347,7 +361,9 @@ class LP_Repair_Database {
 			$item_id
 		);
 
-		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
+		$user_item_ids = $wpdb->get_col( $query );
+
+		if ( ! $user_item_ids ) {
 			return false;
 		}
 
