@@ -1520,7 +1520,7 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		'ref_id'      => 0,
 		'ref_type'    => 0,
 		'parent_id'   => 0,
-		'create_meta' => true,
+		'create_meta' => array(),
 	);
 
 	$itemData = wp_parse_args( $args, $defaults );
@@ -1613,10 +1613,9 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
  * @return bool|array|LP_User_Item|WP_Error
  */
 function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = false ) {
-
 	global $wpdb;
 
-	$itemData = wp_parse_args(
+	$item_data = wp_parse_args(
 		$args,
 		array(
 			'item_type' => LP_QUIZ_CPT,
@@ -1625,53 +1624,14 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 		)
 	);
 
-	$createMeta = ! empty( $itemData['create_meta'] ) ? $itemData['create_meta'] : false;
+	$user_item = learn_press_create_user_item( $item_data, $wp_error );
 
-	/**
-	 * If you want to add values for meta pass it through
-	 * as an array with keys and values
-	 */
-	if ( ! is_array( $createMeta ) ) {
-		$createMeta = array();
+	if ( $user_item && ! is_wp_error( $user_item ) ) {
+		$user_item = new LP_User_Item_Quiz( $user_item->get_data() );
+		$user_item->update( true );
 	}
 
-	$quiz        = LP_Quiz::get_quiz( $itemData['item_id'] );
-	$duration    = $quiz->get_duration();
-	$questionIds = $quiz->get_question_ids();
-
-	$metaData = array_merge(
-		array(
-			'data'    => array(
-				'duration'        => $duration ? $quiz->get_duration()->get() : 'unlimited',
-				'passingGrade'    => $quiz->get_passing_grade(),
-				'negativeMarking' => $quiz->get_negative_marking(),
-			),
-			'grade'   => '',
-			'results' => array(
-				'questions' => array_fill_keys(
-					$questionIds,
-					array(
-						'answered' => '',
-						'correct'  => '',
-						'mark'     => 0,
-					)
-				),
-			),
-			'version' => LEARNPRESS_VERSION,
-		),
-		$createMeta
-	);
-
-	$itemData['create_meta'] = $metaData;
-
-	$userItem = learn_press_create_user_item( $itemData, $wp_error );
-
-	if ( $userItem && ! is_wp_error( $userItem ) ) {
-		$userItem = new LP_User_Item_Quiz( $userItem->get_data() );
-		$userItem->update( true );
-	}
-
-	return $userItem;
+	return $user_item;
 }
 
 /**
