@@ -850,7 +850,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_user_item_results} (
 						id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 						user_item_id bigint(20) unsigned NOT NULL,
-						result varchar(500),
+						result longtext NULL,
 						PRIMARY KEY (id),
 						KEY user_item_id (user_item_id)
 					) $collate;
