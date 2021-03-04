@@ -37,15 +37,11 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 		$quiz->set_data_via_methods(
 			array(
-				'retry'              => get_post_meta( $quiz->get_id(), '_lp_retry', true ),
+				'retake_count'       => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
 				'show_result'        => get_post_meta( $quiz->get_id(), '_lp_show_result', true ),
 				'passing_grade_type' => get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ),
 				'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true ),
 				'instant_check'      => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ),
-				// 'count_check_answer' => get_post_meta( $quiz->get_id(), '_lp_check_answer_count', true ),
-				// 'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
-				// 'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
-				// 'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
 				'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review', true ),
 			)
 		);
@@ -251,7 +247,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * Reorder question by indexed number.
 	 *
 	 * @param LP_Quiz|WP_Post|int $the_quiz
-	 * @param mixed $questions
+	 * @param mixed               $questions
 	 *
 	 * @return mixed
 	 */
@@ -339,7 +335,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 *
 	 * @param LP_Quiz|int $the_quiz
 	 * @param             $question_id
-	 * @param array $args
+	 * @param array       $args
 	 *
 	 * @return mixed false on failed
 	 */
@@ -411,7 +407,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Check if a question (or batch of questions) is already added to quiz.
 	 *
-	 * @param int $the_id
+	 * @param int       $the_id
 	 * @param int|array $ids
 	 *
 	 * @return array|bool|null|object
@@ -468,11 +464,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * Get single user item by values of fields.
 	 *
 	 * @param string|array $field
-	 * @param string $value
+	 * @param string       $value
 	 *
 	 * @return mixed
 	 * @since 3.1.0
-	 *
 	 */
 	public function get_item_by( $field, $value = '' ) {
 		if ( $rows = $this->get_items_by( $field, $value ) ) {
@@ -486,11 +481,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * Get multiple rows of user item by values of fields.
 	 *
 	 * @param string|array $field
-	 * @param string $value
+	 * @param string       $value
 	 *
 	 * @return array
 	 * @since 3.1.0
-	 *
 	 */
 	public function get_items_by( $field, $value = '' ) {
 		global $wpdb;
@@ -542,7 +536,6 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 * @since 3.2.0
-	 *
 	 */
 	public function parse_items_preview( $course_id, $user_id = 0 ) {
 		$items = array();
@@ -570,12 +563,17 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$is_preview = 'no';
 				}
 
-				$cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id,
-					'learn-press/preview-items' );
+				$cached = LP_Object_Cache::get(
+					'item-' . $user_id . '-' . $course_id . '-' . $item_id,
+					'learn-press/preview-items'
+				);
 
 				if ( false === $cached ) {
-					LP_Object_Cache::set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $item_id, $is_preview,
-						'learn-press/preview-items' );
+					LP_Object_Cache::set(
+						'item-' . $user_id . '-' . $course->get_id() . '-' . $item_id,
+						$is_preview,
+						'learn-press/preview-items'
+					);
 				}
 
 				$items[ $item_id ] = $is_preview;
@@ -588,13 +586,12 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Parse classes for all items in a course.
 	 *
-	 * @param int $course_id
-	 * @param int $user_id
+	 * @param int          $course_id
+	 * @param int          $user_id
 	 * @param array|string $more
 	 *
 	 * @return array
 	 * @since 3.2.0
-	 *
 	 */
 	public function parse_items_classes( $course_id, $user_id = 0, $more = array() ) {
 		$items = array();
@@ -610,7 +607,6 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 
 		$get_item_ids = $course->get_item_ids();
-
 
 		if ( empty( $get_item_ids ) ) {
 			return $items;
@@ -634,7 +630,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					'course-item',
 					'course-item-' . $item->get_item_type(),
 					'course-item-' . $item_id,
-				), (array) $more
+				),
+				(array) $more
 			);
 
 			$post_format = $item->get_format();
@@ -680,8 +677,14 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 							$defaults['has-status']   = 'has-status';
 						}
 
-						if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status,
-							$item_grade, $item->get_item_type(), $item_id, $course_id ) ) {
+						if ( $item_class = apply_filters(
+							'learn-press/course-item-status-class',
+							$item_status,
+							$item_grade,
+							$item->get_item_type(),
+							$item_id,
+							$course_id
+						) ) {
 							$defaults[] = $item_class;
 						}
 				}

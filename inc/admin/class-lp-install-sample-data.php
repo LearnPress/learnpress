@@ -359,7 +359,7 @@ class LP_Install_Sample_Data {
 				'_lp_duration'          => '10 week',
 				'_lp_max_students'      => '1000',
 				'_lp_students'          => '0',
-				'_lp_retry'             => 'no',
+				'_lp_retake_count'      => '0',
 				'_lp_featured'          => 'no',
 				'_lp_has_finish'        => 'yes',
 				'_lp_course_result'     => 'evaluate_lesson',
@@ -561,7 +561,7 @@ class LP_Install_Sample_Data {
 				'_lp_sample_data'      => 'yes',
 				'_lp_negative_marking' => 'no',
 				'_lp_instant_check'    => 'no',
-				'_lp_retry'            => 'no',
+				'_lp_retake_count'     => '0',
 				'_lp_pagination'       => '1',
 				'_lp_review'           => 'yes',
 			);

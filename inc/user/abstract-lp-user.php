@@ -170,7 +170,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_user_item( $item_id, $course_id ) {
 			$data = false;
 
-			if ( $course_data = $this->get_course_data( $course_id ) ) {
+			$course_data = $this->get_course_data( $course_id );
+
+			if ( $course_data ) {
 				$data = $course_data->get_item( $item_id );
 			}
 
@@ -277,7 +279,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @since 3.0.0
 		 */
 		protected function _verify_course_item( $item_id, $course_id = 0 ) {
-			if ( false !== ( $course = $this->_get_course( $course_id, 'object' ) ) ) {
+			$course = $this->_get_course( $course_id, 'object' );
+
+			if ( false !== $course ) {
 				return $course->has_item( $item_id ) ? $course_id : false;
 			}
 
@@ -519,22 +523,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function retake_quiz( $quiz_id, $course_id, $wp_error = false ) {
-
-			if ( ! apply_filters(
-				'learn-press/user/before-retake-quiz',
-				true,
-				$quiz_id,
-				$course_id,
-				$this->get_id()
-			) ) {
+			if ( ! apply_filters( 'learn-press/user/before-retake-quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
 				return false;
 			}
 
 			$return = false;
 			try {
+				$course_id = $this->_verify_course_item( $quiz_id, $course_id );
 
-				// Validate course and quiz
-				if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
+				if ( false === $course_id ) {
 					throw new Exception(
 						sprintf(
 							__(
@@ -548,7 +545,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					);
 				}
 
-				// If user has already finished the course
+				// If user has already finished the course.
 				if ( $this->has_finished_course( $course_id ) ) {
 					throw new Exception(
 						sprintf(
@@ -575,13 +572,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$allow_attempts = learn_press_get_quiz_max_retrying( $quiz_id, $course_id );
 
-				if ( $this->count_quiz_attempts( $quiz_id, $course_id ) > $allow_attempts + 1 ) {
+				if ( ! $this->has_retake_quiz( $quiz_id, $course_id ) ) {
 					throw new Exception(
 						sprintf(
-							__(
-								'%1$s::%2$s - Your attempt has reached limitation.',
-								'learnpress'
-							),
+							__( '%1$s::%2$s - Your Quiz can\'t retake.', 'learnpress' ),
 							__CLASS__,
 							__FUNCTION__
 						),
@@ -589,7 +583,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					);
 				}
 
-				$return = learn_press_user_retry_quiz( $quiz_id, false, $course_id, $wp_error );
+				$return = learn_press_user_retake_quiz( $quiz_id, false, $course_id, $wp_error );
 
 				do_action( 'learn-press/user/quiz-retried', $quiz_id, $course_id, $this->get_id() );
 			} catch ( Exception $ex ) {
@@ -600,16 +594,29 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $return;
 		}
 
-		public function count_quiz_attempts( $quiz_id, $course_id ) {
+		/**
+		 * Check quiz can retake?
+		 *
+		 * @param [type] $quiz_id
+		 * @param [type] $course_id
+		 * @return boolean
+		 */
+		public function has_retake_quiz( $quiz_id, $course_id ) {
 			$user_quiz = $this->get_item_data( $quiz_id, $course_id );
 
 			if ( $user_quiz ) {
-				$attempts = $user_quiz->get_attempts();
+				$retaken = $user_quiz->get_retaken_count();
+				$count   = get_post_meta( $quiz_id, '_lp_retake_count', true );
 
-				return count( $attempts );
+				// Retake is disable.
+				if ( ! $count ) {
+					return false;
+				}
+
+				return absint( $retaken ) < absint( $count ) ? true : false;
 			}
 
-			return 0;
+			return false;
 		}
 
 		/**
@@ -656,9 +663,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return false;
 			$item = false;
 			if ( false !== ( $items = LP_Object_Cache::get(
-					'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id,
-					'learn-press/user-course-items'
-				) ) ) {
+				'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id,
+				'learn-press/user-course-items'
+			) ) ) {
 				// Only get status of a newest record.
 				if ( $last ) {
 					$item = reset( $items );
@@ -708,8 +715,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			$status = false;
+			$item   = $this->get_item( $item_id, $course_id, true );
 
-			if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
+			if ( false !== $item ) {
 				$status = $item['status'];
 			}
 
@@ -780,10 +788,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$course = learn_press_get_course( $course_id );
 
 			if ( false == ( $id = learn_press_get_user_item_meta(
-					$course_data->get_user_item_id(),
-					'_current_item',
-					true
-				) ) || $this->has_completed_item( $id, $course_id ) ) {
+				$course_data->get_user_item_id(),
+				'_current_item',
+				true
+			) ) || $this->has_completed_item( $id, $course_id ) ) {
 
 				if ( $items = $course->get_items( '', false ) ) {
 					foreach ( $items as $item_id ) {
@@ -885,7 +893,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function has_quiz_status( $statuses, $quiz_id, $course_id = 0, $force = false ) {
-
 			$status = $this->get_quiz_status( $quiz_id, $course_id );
 
 			settype( $statuses, 'array' );
@@ -1385,45 +1392,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Check to see if user can retake a quiz
-		 * - FALSE if user CAN NOT retake quiz
-		 * - INT (number of remain) if user CAN retake quiz
-		 *
-		 * @param int $quiz_id
-		 * @param int $course_id
-		 *
-		 * @return bool|int
-		 */
-		public function can_retake_quiz( $quiz_id, $course_id = 0 ) {
-			$can    = false;
-			$course = learn_press_get_course( $course_id );
-
-			if ( $course && $course->has_item( $quiz_id ) ) {
-
-				// Check if quiz is already exists
-				if ( $quiz = learn_press_get_quiz( $quiz_id ) ) {
-					$count = $quiz->get_retake_count();
-					if ( $count > 0 ) {
-						$count ++;
-						// Number of taken
-						$taken = $this->count_retaken_quiz( $quiz_id, $course_id );
-						if ( $taken ) {
-							$can = $count - $taken;
-						} else {
-							$can = $count;
-						}
-
-						$can = max( $can, 0 );
-
-						$can = absint( $can );
-					}
-				}
-			}
-
-			return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this->get_id(), $course_id );
-		}
-
-		/**
 		 * Check if user can finished course by getting current progress
 		 * and compares with course passing condition.
 		 *
@@ -1588,9 +1556,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			if ( $last_order ) {
 				if ( false !== ( $cached_last_order = LP_Object_Cache::get(
-						'user-' . $this->get_id(),
-						'learn-press/user-last-order'
-					) ) ) {
+					'user-' . $this->get_id(),
+					'learn-press/user-last-order'
+				) ) ) {
 					return $cached_last_order;
 				}
 			}
@@ -1777,7 +1745,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|WP_Error
 		 * @deprecated
 		 */
-		/*public function retake_course( $course_id ) {
+		/*
+		public function retake_course( $course_id ) {
 			 return $this->retry_course( $course_id );
 		}*/
 
@@ -1790,57 +1759,57 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|WP_Error
 		 * @since 4.0.0
 		 */
-//		public function retry_course( $course_id, $wp_error = false ) {
-//			global $wpdb;
-//
-//			$result = false;
-//			$check  = apply_filters(
-//				'learn-press/before-retake-course',
-//				$this->can_retry_course( $course_id ),
-//				$course_id,
-//				$this->get_id()
-//			);
-//
-//			if ( ! $check ) {
-//				return false;
-//			}
-//
-//			try {
-//				if ( ! $this->has_finished_course( $course_id ) ) {
-//					throw new Exception( __( 'Your are learning course.', 'learnpress' ) );
-//				}
-//
-//				$user_item_api = new LP_User_Item_CURD();
-//				$find_query    = array(
-//					'item_id' => $course_id,
-//					'user_id' => $this->get_id(),
-//				);
-//
-//				$course       = learn_press_get_course( $course_id );
-//				$course_items = $user_item_api->get_items_by( $find_query );
-//				$ref_id       = 0;
-//				if ( $course_items ) {
-//					$ref_id = $course_items[0]->ref_id;
-//				}
-//
-//				$result = $this->enroll_course( $course_id, $ref_id, false, $wp_error );
-//
-//				if ( is_wp_error( $result ) ) {
-//					throw new Exception( __( 'Retry course error!', 'learnpress' ) );
-//				}
-//			} catch ( Exception $ex ) {
-//				return $wp_error ? new WP_Error( 'retry-course-error', $ex->getMessage() ) : false;
-//			}
-//
-//			/**
-//			 * LP hook
-//			 *
-//			 * @since 4.0.0
-//			 */
-//			do_action( 'learn-press/user-retried-course', $result, $course_id, $this->get_id() );
-//
-//			return $result;
-//		}
+		// public function retry_course( $course_id, $wp_error = false ) {
+		// global $wpdb;
+		//
+		// $result = false;
+		// $check  = apply_filters(
+		// 'learn-press/before-retake-course',
+		// $this->can_retry_course( $course_id ),
+		// $course_id,
+		// $this->get_id()
+		// );
+		//
+		// if ( ! $check ) {
+		// return false;
+		// }
+		//
+		// try {
+		// if ( ! $this->has_finished_course( $course_id ) ) {
+		// throw new Exception( __( 'Your are learning course.', 'learnpress' ) );
+		// }
+		//
+		// $user_item_api = new LP_User_Item_CURD();
+		// $find_query    = array(
+		// 'item_id' => $course_id,
+		// 'user_id' => $this->get_id(),
+		// );
+		//
+		// $course       = learn_press_get_course( $course_id );
+		// $course_items = $user_item_api->get_items_by( $find_query );
+		// $ref_id       = 0;
+		// if ( $course_items ) {
+		// $ref_id = $course_items[0]->ref_id;
+		// }
+		//
+		// $result = $this->enroll_course( $course_id, $ref_id, false, $wp_error );
+		//
+		// if ( is_wp_error( $result ) ) {
+		// throw new Exception( __( 'Retry course error!', 'learnpress' ) );
+		// }
+		// } catch ( Exception $ex ) {
+		// return $wp_error ? new WP_Error( 'retry-course-error', $ex->getMessage() ) : false;
+		// }
+		//
+		// **
+		// * LP hook
+		// *
+		// * @since 4.0.0
+		// */
+		// do_action( 'learn-press/user-retried-course', $result, $course_id, $this->get_id() );
+		//
+		// return $result;
+		// }
 
 		/**
 		 * Mark a lesson is completed for user
@@ -2354,7 +2323,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$course_item = LP_User_Item::get_empty_item();
 				}
 
-				$user_id         = $this->get_id();
+				$user_id = $this->get_id();
 
 				$date                        = new LP_Datetime();
 				$course_item['user_id']      = $user_id;
@@ -2479,7 +2448,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * @param      $question_id
-		 * @param null $quiz_id
+		 * @param null        $quiz_id
 		 *
 		 * @return bool
 		 */
@@ -2511,7 +2480,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * @param      $question_id
-		 * @param null $quiz_id
+		 * @param null        $quiz_id
 		 *
 		 * @return bool
 		 */
@@ -2548,7 +2517,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * @param     $question_id
 		 * @param     $quiz_id
-		 * @param int $course_id
+		 * @param int         $course_id
 		 *
 		 * @return bool
 		 */
@@ -2565,7 +2534,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * @param     $question_id
 		 * @param     $quiz_id
-		 * @param int $course_id
+		 * @param int         $course_id
 		 *
 		 * @return bool
 		 */
@@ -2703,7 +2672,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * Return TRUE if user can do a quiz
 		 *
 		 * @param     $quiz_id
-		 * @param int $course_id
+		 * @param int     $course_id
 		 *
 		 * @return bool
 		 * @throws Exception

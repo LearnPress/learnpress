@@ -1696,25 +1696,25 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 }
 
 /**
- * Create new user item prepare for user starts a quiz
- * Update error retry course not work - Nhamdv.
+ * Function retake quiz.
  *
- * @param int  $quiz_id
- * @param int  $user_id
- * @param int  $course_id
- * @param bool $wp_error
- *
- * @return array|bool|LP_User_Item|WP_Error
- * @since 4.0.0
+ * @param [type] $quiz_id
+ * @param integer $user_id
+ * @param integer $course_id
+ * @param boolean $wp_error
+ * @return void
  */
-function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
+function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
 	}
 
+	if ( ! $course_id ) {
+		return new WP_Error( 'invalid_course_id', esc_html__( 'Invalid Course ID.', 'learnpress' ) );
+	}
+
 	global $wpdb;
 
-	// Get user item parent id
 	$query = $wpdb->prepare(
 		"
 	    SELECT user_item_id, item_id id, item_type type
@@ -1729,32 +1729,36 @@ function learn_press_user_retry_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 
 	$parent = $wpdb->get_row( $query );
 
-	do_action( 'learn-press/before-user-retry-quiz', $quiz_id, $user_id, $course_id );
+	if ( ! $parent ) {
+		return new WP_Error( 'invalid_user_item', esc_html__( 'Invalid Quiz', 'learnpress' ) );
+	}
 
-	$user        = learn_press_get_user( $user_id );
-	$course_data = $user->get_course_data( $course_id );
-	$quiz_data   = $course_data->get_item( $quiz_id );
-
-	$quiz      = LP_Quiz::get_quiz( $quiz_id );
-	$duration  = $quiz->get_duration();
-	$user_quiz = learn_press_create_user_item_for_quiz(
+	$data = learn_press_get_user_item(
 		array(
-			'item_id'   => $quiz->get_id(),
-			'duration'  => $duration ? $duration->get() : 0,
+			'item_id'   => $quiz_id,
 			'user_id'   => $user_id,
 			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
 			'ref_type'  => $parent ? $parent->type : '',
 			'ref_id'    => $parent ? $parent->id : '',
-		),
-		$wp_error
+		)
 	);
 
-	if ( $user_quiz && ! is_wp_error( $user_quiz ) ) {
-		do_action( 'learn-press/user-retried-quiz', $user_quiz, $quiz_id, $user_id, $course_id );
-	}
+	$user_item = new LP_User_Item_Quiz( $data );
 
-	return $user_quiz;
+	$user_item->update_retake_count();
+
+	// Create new result in table learnpress_user_item_results.
+	LP_User_Items_Result_DB::instance()->insert( $data->user_item_id );
+
+	$user_item->set_status( 'started' )
+				->set_start_time( current_time( 'mysql', true ) )
+				->set_end_time( '' )
+				->set_graduation( 'in-progress' )
+				->update();
+
+	return $user_item;
 }
+
 
 /**
  * Prepares list of questions for rest api.

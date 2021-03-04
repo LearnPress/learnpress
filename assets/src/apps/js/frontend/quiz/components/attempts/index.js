@@ -29,21 +29,19 @@ const Attempts = () => {
 					<table>
 						<thead>
 							<tr>
-								<th className="quiz-attempts__date">{ __( 'Date', 'learnpress' ) }</th>
 								<th className="quiz-attempts__questions">{ __( 'Questions', 'learnpress' ) }</th>
-								<th className="quiz-attempts__spend">{ __( 'Spend', 'learnpress' ) }</th>
+								<th className="quiz-attempts__spend">{ __( 'Time spend', 'learnpress' ) }</th>
 								<th className="quiz-attempts__marks">{ __( 'Marks', 'learnpress' ) }</th>
-								<th className="quiz-attempts__grade">{ __( 'Passing Grade', 'learnpress' ) }</th>
+								<th className="quiz-attempts__grade">{ __( 'Passing grade', 'learnpress' ) }</th>
 								<th className="quiz-attempts__result">{ __( 'Result', 'learnpress' ) }</th>
 							</tr>
 						</thead>
 						<tbody>
-							{ attempts.map( ( row ) => {
+							{ attempts.map( ( row, key ) => {
 								return (
-									<tr key={ `attempt-${ row.id }` }>
-										<td className="quiz-attempts__date">{ row.startTime }</td>
+									<tr key={ `attempt-${ key }` }>
 										<td className="quiz-attempts__questions">{ `${ row.questionCorrect } / ${ row.questionCount }` }</td>
-										<td className="quiz-attempts__spend">{ `${ getTimeSpendLabel( row ) } / ${ getDurationLabel( row ) }` }</td>
+										<td className="quiz-attempts__spend">{ row.timeSpend || '--' }</td>
 										<td className="quiz-attempts__marks">{ `${ row.userMark } / ${ row.mark }` }</td>
 										<td className="quiz-attempts__grade">{ row.passingGrade || _x( '-', 'unknown passing grade value', 'learnpress' ) }</td>
 										<td className="quiz-attempts__result">{ `${ parseFloat( row.result ).toFixed( 2 ) }%` } <span>{ row.graduationText }</span></td>

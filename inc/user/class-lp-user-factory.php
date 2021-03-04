@@ -30,7 +30,6 @@ class LP_User_Factory {
 		self::$_guest_transient = WEEK_IN_SECONDS;
 		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
-		add_action( 'learn_press_user_retake_quiz', array( __CLASS__, 'retake_quiz' ), 10, 4 );
 		add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
 		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
@@ -555,16 +554,6 @@ class LP_User_Factory {
 				self::_update_user_item_meta( $user->get_item_data( $quiz_id, $course_id ), $quiz_id, $course_id, $user_id );
 			}
 		}
-	}
-
-	/**
-	 * @param $item
-	 * @param $quiz_id
-	 * @param $course_id
-	 * @param $user_id
-	 */
-	public static function retake_quiz( $item, $quiz_id, $course_id, $user_id ) {
-		self::_update_user_item_meta( $item, $quiz_id, $course_id, $user_id );
 	}
 
 	/**

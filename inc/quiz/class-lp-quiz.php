@@ -38,7 +38,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @var array
 		 */
 		protected $_data = array(
-			// 'retake_count'       => 0,
 			// 'show_result'        => 'no',
 			'passing_grade_type' => '',
 			'passing_grade'      => 0,
@@ -54,7 +53,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 			'negative_marking'   => 'no',
 			'instant_check'      => 'no',
-			'retry'              => 'no',
+			'retake_count'       => 0,
 		);
 
 		/**
@@ -128,22 +127,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-//				'preview'          => 'no',
-				// 'minus_points'         => 0,
-				// 'minus_skip_questions' => 'no',
-				// 'show_hide_question' => 'yes',
 				'review_questions' => 'no',
-				// 'show_result'        => 'no',
 				'duration'         => '10 minute',
 				'passing_grade'    => 80,
-				// 'retake_count'         => 0,
-				// 'archive_history'      => 'no',
-				// 'show_check_answer'    => 0,
-				// 'show_hint'            => 0,
-				// 3.3.0
 				'negative_marking' => 'no',
 				'instant_check'    => 'no',
-				'retry'            => 'no',
+				'retake_count'     => '0',
 				'pagination'       => 1,
 			);
 
@@ -183,12 +172,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$this->_set_data( 'instant_check', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
 		}
 
-		public function get_retry() {
-			return $this->get_data( 'retry' ) === 'yes';
+		public function set_retake_count( $count ) {
+			$this->_set_data( 'retake_count', $count );
 		}
 
-		public function set_retry( $set ) {
-			$this->_set_data( 'retry', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
+		public function get_retake_count() {
+			return $this->get_data( 'retake_count' );
 		}
 
 		public function get_pagination() {
@@ -197,31 +186,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 		public function set_pagination( $set ) {
 			$this->_set_data( 'pagination', absint( $set ) );
-		}
-
-
-		/**
-		 * Set quiz retake count.
-		 *
-		 * @deprecated
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param $count
-		 */
-		public function set_retake_count( $count ) {
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-			$this->_set_data( 'retake_count', $count );
-		}
-
-		/**
-		 * @deprecated
-		 *
-		 * @return array|mixed
-		 */
-		public function get_retake_count() {
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-			return $this->get_data( 'retake_count' );
 		}
 
 		/**

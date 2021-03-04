@@ -40,11 +40,17 @@ class LP_Meta_Box_Quiz {
 					'default'     => 'no',
 					'type'        => 'checkbox',
 				),
-				'_lp_retry'            => array(
-					'label'       => esc_html__( 'Retry', 'learnpress' ),
-					'description' => esc_html__( 'Allow students to try the quiz one more time.', 'learnpress' ),
-					'default'     => 'no',
-					'type'        => 'checkbox',
+				'_lp_retake_count'     => array(
+					'label'             => esc_html__( 'Retake', 'learnpress' ),
+					'description'       => esc_html__( 'Number times the user can learn again this quiz. Set to 0 to disable.', 'learnpress' ),
+					'type'              => 'text',
+					'type_input'        => 'number',
+					'custom_attributes' => array(
+						'min'  => '0',
+						'step' => '1',
+						'max'  => '100',
+					),
+					'style'             => 'width: 60px;',
 				),
 				'_lp_pagination'       => array(
 					'label'             => esc_html__( 'Pagination', 'learnpress' ),
@@ -93,7 +99,7 @@ class LP_Meta_Box_Quiz {
 		$passing_grade    = isset( $_POST['_lp_passing_grade'] ) ? absint( wp_unslash( $_POST['_lp_passing_grade'] ) ) : '80';
 		$instant_check    = isset( $_POST['_lp_instant_check'] ) ? 'yes' : 'no';
 		$negative_marking = isset( $_POST['_lp_negative_marking'] ) ? 'yes' : 'no';
-		$retry            = isset( $_POST['_lp_retry'] ) ? 'yes' : 'no';
+		$retake           = isset( $_POST['_lp_retake_count'] ) ? absint( wp_unslash( $_POST['_lp_retake_count'] ) ) : 0;
 		$review           = isset( $_POST['_lp_review'] ) ? 'yes' : 'no';
 		$pagination       = ! empty( $_POST['_lp_pagination'] ) ? absint( wp_unslash( $_POST['_lp_pagination'] ) ) : '1';
 
@@ -101,7 +107,7 @@ class LP_Meta_Box_Quiz {
 		update_post_meta( $post_id, '_lp_passing_grade', $passing_grade );
 		update_post_meta( $post_id, '_lp_instant_check', $instant_check );
 		update_post_meta( $post_id, '_lp_negative_marking', $negative_marking );
-		update_post_meta( $post_id, '_lp_retry', $retry );
+		update_post_meta( $post_id, '_lp_retake_count', $retake );
 		update_post_meta( $post_id, '_lp_pagination', $pagination );
 		update_post_meta( $post_id, '_lp_review', $review );
 	}

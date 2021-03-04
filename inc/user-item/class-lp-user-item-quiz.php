@@ -248,86 +248,26 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 * @return array
 	 */
-	public function get_attempts( $args = '' ) {
-		global $wpdb;
+	public function get_attempts( $limit = 3 ) {
+		$limit = isset( $limit ) ? $limit : 3;
 
-		$args = wp_parse_args(
-			$args,
-			array(
-				'evaluation_questions' => false,
-				'limit'                => - 1,
-				'offset'               => '',
-				'paged'                => '',
-			)
-		);
+		$limit = absint( apply_filters( 'lp/quiz/get-attempts/limit', $limit ) );
 
-		$limit  = isset( $args['limit'] ) && $args['limit'] > 0 ? $args['limit'] : false;
-		$offset = isset( $args['offset'] ) && $args['offset'] > 0 ? $args['offset'] : 0;
-		$paged  = isset( $args['paged'] ) && $args['paged'] > 0 ? $args['paged'] : false;
+		$results = LP_User_Items_Result_DB::instance()->get_results( $this->get_user_item_id(), $limit, true );
 
-		if ( ! $offset && $paged && $limit ) {
-			$offset = ( $paged - 1 ) * $limit;
-		}
+		$output = array();
 
-		$attempts = array();
-		$query    = $wpdb->prepare(
-			"
-			SELECT *
-			FROM {$wpdb->learnpress_user_items}
-			WHERE parent_id = %d AND item_type = %s
-			AND status = %s
-			AND item_id = %d
-			ORDER BY user_item_id DESC
-			" . ( $limit ? "LIMIT {$offset}, {$limit}" : '' ) . '
-		',
-			$this->get_parent_id(),
-			LP_QUIZ_CPT,
-			'completed',
-			$this->get_item_id()
-		);
+		foreach ( $results as $result ) {
+			if ( $result && is_string( $result ) ) {
+				$result = json_decode( $result );
 
-		$quiz = $this->get_quiz();
-		$rows = $wpdb->get_results( $query );
+				unset( $result->questions );
 
-		if ( $rows ) {
-			foreach ( $rows as $row ) {
-				$results = LP_User_Items_Result_DB::instance()->get_result( $row->user_item_id );
-
-				if ( $results ) {
-					$evaluation_questions = $results['questions'];
-
-					if ( ! $args['evaluation_questions'] ) {
-						unset( $results['questions'] );
-					}
-
-					if ( ! array_key_exists( 'passing_grade', $results ) ) {
-						$results['passing_grade'] = $quiz->get_passing_grade();
-					}
-				} else {
-					$results = array();
-				}
-
-				$graduation = $row->graduation ? $row->graduation : false;
-
-				// Convert to Local - Nhamdv.
-				$start_time = new LP_Datetime( $row->start_time );
-				$end_time   = new LP_Datetime( $row->end_time );
-
-				$attempts[] = array_merge(
-					array(
-						'id'              => absint( $row->user_item_id ),
-						'start_time'      => $start_time->toLocal(),
-						'end_time'        => $end_time->toLocal(),
-						'duration'        => $quiz->get_duration()->get(),
-						'graduation'      => $graduation,
-						'graduation_text' => learn_press_get_graduation_text( $graduation ),
-					),
-					$results
-				);
+				$output[] = $result;
 			}
 		}
 
-		return $attempts;
+		return $output;
 	}
 
 	/**
@@ -377,7 +317,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'status'            => $this->get_status(),
 			'result'            => 0,
 			'time_spend'        => $this->get_time_interval( 'display' ),
-			'retake_count'      => 0,
 			'passing_grade'     => $quiz->get_passing_grade(),
 		);
 
@@ -693,6 +632,27 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
+	 * Get number retaken count.
+	 *
+	 * @return integer
+	 */
+	public function get_retaken_count(): int {
+		return absint( learn_press_get_user_item_meta( $this->get_user_item_id(), '_lp_retaken_count' ) );
+	}
+
+	/**
+	 * Update learnpress_user_itemmeta retaken
+	 *
+	 * @return void
+	 */
+	public function update_retake_count() {
+		$count = $this->get_retaken_count();
+		$count ++;
+
+		return $this->update_meta( '_lp_retaken_count', $count );
+	}
+
+	/**
 	 * Get all questions user has already used "Check"
 	 *
 	 * @return array
@@ -740,9 +700,5 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function is_review_questions() {
 		return LP_Global::quiz_question() && ( $this->get_status() === 'completed' );
-	}
-
-	public function can_retake_quiz() {
-		return $this->get_user()->can_retake_quiz( $this->get_id(), $this->get_course() );
 	}
 }

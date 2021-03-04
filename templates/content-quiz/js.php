@@ -41,16 +41,9 @@ if ( $user_quiz ) {
 		$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
 	}
 
-	$attempts = $user_quiz->get_attempts(
-		array(
-			'limit'  => $max_retrying,
-			'offset' => 1,
-		)
-	);
-
 	$user_js = array(
 		'status'            => $status,
-		'attempts'          => $attempts,
+		'attempts'          => $user_quiz->get_attempts(),
 		'checked_questions' => $checked_questions,
 		'start_time'        => $user_quiz->get_start_time()->toSql( false ),
 	);
@@ -97,12 +90,12 @@ $js = array(
 	'question_nav'       => '',
 	'status'             => '',
 	'attempts'           => array(),
-	'attempts_count'     => $max_retrying,
 	'answered'           => $answered ? (object) $answered : new stdClass(),
 	'passing_grade'      => $quiz->get_passing_grade(),
 	'negative_marking'   => $quiz->get_negative_marking(),
 	'instant_check'      => $quiz->get_instant_check(),
-	'retry'              => $quiz->get_retry(),
+	'retake_count'       => absint( $quiz->get_retake_count() ),
+	'retaken'            => absint( $user_quiz->get_retaken_count() ),
 	'questions_per_page' => $quiz->get_pagination(),
 	'page_numbers'       => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
 	'review_questions'   => $quiz->get_review_questions(),

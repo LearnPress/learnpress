@@ -63,7 +63,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 					'instant_check'      => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ),
 					'negative_marking'   => get_post_meta( $quiz->get_id(), '_lp_negative_marking', true ),
-					'retry'              => get_post_meta( $quiz->get_id(), '_lp_retry', true ),
+					'retake_count'       => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
 				)
 			);
 

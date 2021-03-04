@@ -12,7 +12,35 @@ class LP_User_Items_Result_DB extends LP_Database {
 	}
 
 	/**
-	 * Get current result.
+	 * Get list results.
+	 *
+	 * @param [type] $user_item_id
+	 * @param integer $limit Number result in db.
+	 * @param boolean $last Remove lastest result.
+	 * @return array result
+	 */
+	public function get_results( $user_item_id, $limit = 3, $last = false ) {
+		global $wpdb;
+
+		if ( ! $user_item_id ) {
+			return array();
+		}
+
+		$limit = absint( $limit ) ?? 3;
+
+		$query = $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC LIMIT %d", $user_item_id, $limit + 1 );
+
+		$col = $wpdb->get_col( $query );
+
+		if ( ! empty( $col ) && $last ) {
+			unset( $col[0] );
+		}
+
+		return $col;
+	}
+
+	/**
+	 * Get lastest result.
 	 *
 	 * @param integer $user_item_id
 	 * @return void

@@ -1,5 +1,4 @@
 <?php
-
 class LP_Quiz_Results implements ArrayAccess {
 
 	/**
@@ -13,61 +12,12 @@ class LP_Quiz_Results implements ArrayAccess {
 	 * @param $results
 	 */
 	public function __construct( $results ) {
+		// If $results is user_item_id.
 		if ( is_numeric( $results ) ) {
-			$this->read( $results );
+			$this->results = LP_User_Items_Result_DB::instance()->get_result( $results );
 		} else {
 			$this->results = $results ? (array) $results : array();
 		}
-	}
-
-	/**
-	 * @param $user_item_id
-	 */
-	public function read( $user_item_id ) {
-		global $wpdb;
-
-		$query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE learnpress_user_item_id = %d
-			AND meta_key IN(%s, %s, %s)
-		", $user_item_id, 'results', 'answers', '_question_answers' );
-
-		$results = array();
-		$answers = array();
-
-		if ( $rows = $wpdb->get_results( $query ) ) {
-			foreach ( $rows as $row ) {
-				switch ( $row->meta_key ) {
-					case 'results':
-						$results = maybe_unserialize( $row->meta_value );
-						break;
-					case '_question_answers':
-					case 'answers':
-						if ( $row->meta_key === '_question_answers' && ! $answers ) {
-							$answers = maybe_unserialize( $rows->meta_value );
-						} elseif ( $row->meta_key === 'answers' ) {
-							$answers = maybe_unserialize( $rows->meta_value );
-						}
-				}
-			}
-
-			if ( $answers ) {
-				foreach ( $answers as $k => $v ) {
-					if ( ! isset( $results[ $k ] ) ) {
-						continue;
-					}
-
-					if ( empty( $results[ $k ]['answered'] ) || is_bool( $results[ $k ]['answered'] ) ) {
-						$results[ $k ]['answered'] = $v;
-					}
-				}
-			}
-
-			$this->results = $results;
-		}
-
-		die( __CLASS__ . '::' . __FUNCTION__ );
 	}
 
 	/**
@@ -76,7 +26,9 @@ class LP_Quiz_Results implements ArrayAccess {
 	 * @return array|bool|mixed
 	 */
 	public function getQuestions( $return = '' ) {
-		if ( ! $questions = $this->offsetGet( 'questions' ) ) {
+		$questions = $this->offsetGet( 'questions' );
+
+		if ( ! $questions ) {
 			$questions = array();
 		}
 

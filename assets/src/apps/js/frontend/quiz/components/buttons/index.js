@@ -199,6 +199,7 @@ class Buttons extends Component {
 			question,
 			questionsPerPage,
 			canRetry,
+			retakeNumber,
 		} = this.props;
 
 		const classNames = [ 'quiz-buttons' ];
@@ -240,7 +241,7 @@ class Buttons extends Component {
 
 						{ ( ( status === 'completed' && canRetry ) || -1 !== [ '', 'viewed' ].indexOf( status ) ) && ! isReviewing && (
 							<button className="lp-button start" onClick={ this.startQuiz }>
-								{ ( status === 'completed' ) ? _x( 'Retry', 'label button retry quiz', 'learnpress' ) :	_x( 'Start', 'label button start quiz', 'learnpress' ) }
+								{ ( status === 'completed' ) ? `${ _x( 'Retake', 'label button retry quiz', 'learnpress' ) }${ retakeNumber ? ` (${ retakeNumber })` : '' }` :	_x( 'Start', 'label button start quiz', 'learnpress' ) }
 							</button>
 						) }
 
@@ -383,7 +384,8 @@ export default compose( [
 			questionsPerPage: getData( 'questionsPerPage' ),
 			pageNumbers: getData( 'pageNumbers' ),
 			keyPressed: getData( 'keyPressed' ),
-			canRetry: ( getData( 'attempts' ) || [] ).length < getData( 'attemptsCount' ) && getData( 'retry' ),
+			canRetry: getData( 'retakeCount' ) > 0 && getData( 'retaken' ) < getData( 'retakeCount' ),
+			retakeNumber: getData( 'retakeCount' ) > 0 && getData( 'retaken' ) < getData( 'retakeCount' ) ? getData( 'retakeCount' ) - getData( 'retaken' ) : null,
 			message: getData( 'messageResponse' ) || false,
 			success: getData( 'successResponse' ) !== undefined ? getData( 'successResponse' ) : true,
 		};

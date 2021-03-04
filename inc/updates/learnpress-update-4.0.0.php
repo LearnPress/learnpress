@@ -622,15 +622,6 @@ class LP_Update_400 extends LP_Update_Base {
 							);
 							break;
 
-						case '_lp_retake_count':
-							$update_meta['_lp_retry'] = $wpdb->prepare(
-								'(%d, %s, %s)',
-								$meta->post_id,
-								'_lp_retry',
-								$meta->meta_value > 0 ? 'yes' : 'no'
-							);
-							break;
-
 						case '_lp_show_check_answer':
 							$update_meta['_lp_instant_check'] = $wpdb->prepare(
 								'(%d, %s, %s)',
