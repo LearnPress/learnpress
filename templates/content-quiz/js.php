@@ -46,6 +46,7 @@ if ( $user_quiz ) {
 		'attempts'          => $user_quiz->get_attempts(),
 		'checked_questions' => $checked_questions,
 		'start_time'        => $user_quiz->get_start_time()->toSql( false ),
+		'retaken'           => absint( $user_quiz->get_retaken_count() ),
 	);
 
 	if ( isset( $total_time ) ) {
@@ -95,7 +96,7 @@ $js = array(
 	'negative_marking'   => $quiz->get_negative_marking(),
 	'instant_check'      => $quiz->get_instant_check(),
 	'retake_count'       => absint( $quiz->get_retake_count() ),
-	'retaken'            => absint( $user_quiz->get_retaken_count() ),
+	'retaken'            => 0,
 	'questions_per_page' => $quiz->get_pagination(),
 	'page_numbers'       => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
 	'review_questions'   => $quiz->get_review_questions(),
