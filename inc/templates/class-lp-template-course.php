@@ -896,12 +896,42 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
+	/**
+	 * Animation placholder in user-progress file.
+	 * Content will show in class-rest-lazy-load-controller file.
+	 *
+	 * @author Nhamdv.
+	 * @return void
+	 */
 	public function user_progress() {
-		$user = LP_Global::user();
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
 
-		$course_status = $user->get_course_status( $this->course->get_id() );
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
 
-		learn_press_get_template( 'single-course/sidebar/user-progress', array( 'status' => $course_status ) );
+		if ( ! $course || ! $user ) {
+			return;
+		}
+
+		if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
+			return;
+		}
+
+		if ( LP_LAZY_LOAD_ANIMATION ) {
+			echo '<div class="lp-course-progress-wrapper">';
+			echo lp_skeleton_animation_html();
+			echo '</div>';
+		} else {
+			learn_press_get_template(
+				'single-course/sidebar/user-progress',
+				array(
+					'course' => $course,
+					'user'   => $user,
+				)
+			);
+		}
 	}
 
 	public function course_extra_boxes_position_control() {

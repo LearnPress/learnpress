@@ -170,22 +170,62 @@ const retakeCourse = () => {
 	} );
 };
 
+// Rest API load content course progress - Nhamdv.
+const courseProgress = () => {
+	const elements = document.querySelectorAll( '.lp-course-progress-wrapper' );
+
+	if ( ! elements.length ) {
+		return;
+	}
+
+	if ( 'IntersectionObserver' in window ) {
+		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
+			entries.forEach( ( entry ) => {
+				if ( entry.isIntersecting ) {
+					const ele = entry.target;
+
+					setTimeout( function() {
+						getResponse( ele );
+					}, 1000 );
+
+					eleObserver.unobserve( ele );
+				}
+			} );
+		} );
+
+		[ ...elements ].map( ( ele ) => eleObserver.observe( ele ) );
+	}
+
+	const getResponse = async ( ele ) => {
+		const response = await wp.apiFetch( {
+			path: 'lp/v1/lazy-load/course-progress',
+			method: 'POST',
+			data: {
+				courseId: lpGlobalSettings.post_id || '',
+				userId: lpGlobalSettings.user_id || '',
+			},
+		} );
+
+		const { data } = response;
+
+		ele.innerHTML = data;
+	};
+};
+
 export {
 	initCourseTabs,
 	initCourseSidebar,
 	enrollCourse,
 };
 
-$( window ).on(
-	'load',
-	() => {
-		const $popup = $( '#popup-course' );
-		let timerClearScroll;
-		const $curriculum = $( '#learn-press-course-curriculum' );
+$( window ).on( 'load', () => {
+	const $popup = $( '#popup-course' );
+	let timerClearScroll;
+	const $curriculum = $( '#learn-press-course-curriculum' );
 
-		initCourseTabs();
-		initCourseSidebar();
-		enrollCourse();
-		retakeCourse();
-	}
-);
+	initCourseTabs();
+	initCourseSidebar();
+	enrollCourse();
+	retakeCourse();
+	courseProgress();
+} );

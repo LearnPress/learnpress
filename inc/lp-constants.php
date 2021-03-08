@@ -93,6 +93,9 @@ define( 'LP_BLOCK_COURSE_DURATION_EXPIRE', 'block_course_duration_expire' );
 define( 'LP_COURSE_ENROLLED', 'enrolled' );
 define( 'LP_COURSE_FINISHED', 'finished' );
 
+// Enable lazyload animation placeholder.
+define( 'LP_LAZY_LOAD_ANIMATION', true );
+
 /**
  * Thim Market library
  */

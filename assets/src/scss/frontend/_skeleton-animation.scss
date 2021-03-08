@@ -1,0 +1,28 @@
+
+.lp-skeleton-animation {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	>li {
+		width: 100%;
+		height: 16px;
+		margin-top: 15px;
+		border-radius: 2px;
+		background: linear-gradient(90deg, hsla(0, 0%, 74.5%, 0.2) 25%, hsla(0, 0%, 50.6%, 0.24) 37%, hsla(0, 0%, 74.5%, 0.2) 63%);
+		background-size: 400% 100%;
+		list-style: none;
+		animation: lp-skeleton-loading 1.4s ease infinite;
+	}
+}
+
+@keyframes lp-skeleton-loading {
+
+	0% {
+		background-position: 100% 50%;
+	}
+
+	to {
+		background-position: 0 50%;
+	}
+}

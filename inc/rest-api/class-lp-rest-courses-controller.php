@@ -46,7 +46,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					),
 				),
 			),
-
 			'(?P<key>[\w]+)' => array(
 				'args'   => array(
 					'id' => array(

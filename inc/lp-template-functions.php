@@ -1724,3 +1724,14 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 
 	return $content;
 }
+
+function lp_skeleton_animation_html() {
+	?>
+	<ul class="lp-skeleton-animation">
+		<li style="width: 70%"></li>
+		<li></li>
+		<li style="width: 90%"></li>
+	</ul>
+
+	<?php
+}

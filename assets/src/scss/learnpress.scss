@@ -32,6 +32,7 @@ $msg-waring: #ffc107;
 @import "modal";
 @import "frontend/comments";
 @import "frontend/base";
+@import "frontend/skeleton-animation";
 
 input[type="text"],
 input[type="email"],
@@ -269,6 +270,7 @@ footer {
 		}
 
 		&.loading {
+
 			&::before {
 				display: inline-block;
 				font-family: "Font Awesome 5 Free";

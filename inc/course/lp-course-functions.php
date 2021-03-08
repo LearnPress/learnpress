@@ -1165,8 +1165,10 @@ function learn_press_mark_user_just_logged_in() {
 
 add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
 
-function learn_press_translate_course_result_required( $passing_condition = null ) {
-	$course = learn_press_get_course();
+function learn_press_translate_course_result_required( $course, $passing_condition = null ) {
+	if ( ! $course ) {
+		$course = learn_press_get_course();
+	}
 
 	if ( $passing_condition === null ) {
 		$passing_condition = $course->get_passing_condition();
@@ -1187,6 +1189,5 @@ function learn_press_translate_course_result_required( $passing_condition = null
 			break;
 	}
 
-	return apply_filters( 'learn-press/translate-course-result-required',
-		sprintf( __( 'Require %1$s %2$s', 'learnpress' ), $passing_condition . '%', $label ) );
+	return apply_filters( 'learn-press/translate-course-result-required', sprintf( __( 'Require %1$s %2$s', 'learnpress' ), $passing_condition . '%', $label ) );
 }

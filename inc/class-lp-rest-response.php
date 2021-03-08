@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LP_REST_Response {
-	public $status = 'error';
+	public $status  = 'error';
 	public $message = '';
 	/**
 	 * Extra data
