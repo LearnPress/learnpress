@@ -257,13 +257,15 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		$output = array();
 
-		foreach ( $results as $result ) {
-			if ( $result && is_string( $result ) ) {
-				$result = json_decode( $result );
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $result ) {
+				if ( $result && is_string( $result ) ) {
+					$result = json_decode( $result );
 
-				unset( $result->questions );
+					unset( $result->questions );
 
-				$output[] = $result;
+					$output[] = $result;
+				}
 			}
 		}
 
