@@ -267,18 +267,17 @@ abstract class LP_Abstract_Assets {
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 
 			// comment by tungnx
-			/*if ( isset( $wp_scripts->registered[ $handle ] ) ) {
+			// Edit: Use in certificate - Nhamdv.
+			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
-					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
-							$this,
-							'_valid_json_number'
-						), $data );
+					if ( $wp_scripts->registered[ $handle ]->extra['data'] ) {
+						$data = $wp_scripts->registered[ $handle ]->extra['data'];
+						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array( $this, '_valid_json_number' ), $data );
 
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}
 				}
-			}*/
+			}
 
 			if ( is_admin() ) {
 				$wp_scripts->print_extra_script( $handle );
