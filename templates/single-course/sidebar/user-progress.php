@@ -9,20 +9,10 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
-$user   = LP_Global::user();
-
-if ( ! $course || ! $user ) {
-	return;
-}
-
-if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
-	return;
-}
-
 $course_data       = $user->get_course_data( $course->get_id() );
 $course_results    = $course_data->get_results( false );
 $passing_condition = $course->get_passing_condition();
+$quiz_false        = 0;
 
 if ( ! empty( $course_results['items'] ) ) {
 	$quiz_false = $course_results['items']['quiz']['completed'] - $course_results['items']['quiz']['passed'];
@@ -55,7 +45,7 @@ if ( ! empty( $course_results['items'] ) ) {
 			<span class="number"><?php echo round( $course_results['result'], 2 ); ?><span class="percentage-sign">%</span></span>
 		</div>
 
-		<div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>" data-value="<?php echo $course_results['result']; ?>" data-passing-condition="<?php echo $passing_condition; ?>" title="<?php echo esc_attr( learn_press_translate_course_result_required() ); ?>">
+		<div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>" data-value="<?php echo $course_results['result']; ?>" data-passing-condition="<?php echo $passing_condition; ?>" title="<?php echo esc_attr( learn_press_translate_course_result_required( $course ) ); ?>">
 			<div class="progress-bg lp-progress-bar">
 				<div class="progress-active lp-progress-value" style="left: <?php echo $course_results['result']; ?>%;">
 				</div>
