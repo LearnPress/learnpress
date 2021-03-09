@@ -921,7 +921,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		if ( LP_LAZY_LOAD_ANIMATION ) {
 			echo '<div class="lp-course-progress-wrapper">';
-			echo lp_skeleton_animation_html();
+			echo lp_skeleton_animation_html( 3 );
 			echo '</div>';
 		} else {
 			learn_press_get_template(
