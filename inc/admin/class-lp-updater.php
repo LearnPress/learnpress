@@ -10,6 +10,7 @@
  * @version 3.0.0
  */
 class LP_Updater {
+	public $db_map_version = array();
 	/**
 	 * Array of update patches.
 	 *
@@ -21,6 +22,17 @@ class LP_Updater {
 	 * LP_Updater constructor.
 	 */
 	protected function __construct() {
+		/**
+		 * When modify or create new Tables, need change version.
+		 * Ex: 5.x.x => 6.0.0
+		 */
+		$this->db_map_version = apply_filters(
+			'lp/upgrade/db/map_version',
+			array(
+				'4' => '3', // 4.0.0 <=> 3.x.x
+				'5' => '4', // 5.0.0 <=> 4.x.x
+			)
+		);
 		add_action( 'admin_init', array( $this, 'do_update' ) );
 		add_action( 'admin_notices', array( $this, 'check_update_message' ), 20 );
 
@@ -210,15 +222,13 @@ class LP_Updater {
 			return;
 		}
 
-		$latest_version = $this->get_latest_version();
-		$db_version     = get_option( 'learnpress_db_version' );
+		$db_version = get_option( 'learnpress_db_version' );
 
-		if ( ! $db_version || version_compare( $db_version, $latest_version, '>=' ) ) {
+		if ( ! $db_version || version_compare( $db_version, LEARNPRESS_VERSION, '>=' ) ) {
 			return;
 		}
 
 		learn_press_admin_view( 'updates/html-update-message' );
-
 	}
 
 	/**

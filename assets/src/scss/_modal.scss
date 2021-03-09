@@ -1,3 +1,84 @@
+.lp-overlay {
+	display: none;
+	position: fixed;
+	z-index: 100;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(209, 213, 219, 0.8);
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
+	transition-property: opacity;
+}
+
+.lp-modal-dialog {
+	display: flex;
+	position: fixed;
+	z-index: 9999;
+	top: 0;
+	right: 0;
+	left: 0;
+	width: 100%;
+	min-height: 100vh;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+
+	.lp-modal-content {
+		display: inline-block;
+		overflow: hidden;
+		z-index: 2;
+		width: 100%;
+		max-width: 70%;
+		border-radius: 8px;
+		text-align: left;
+		vertical-align: middle;
+		background: white;
+		color: black;
+
+		.lp-modal-header {
+			background: #7c60d9;
+			border-bottom: 1px solid #eee;
+			padding: 2em;
+
+			h3 {
+				margin: 0;
+				color: white;
+			}
+		}
+
+		.lp-modal-body {
+			.main-content {
+				max-height: 500px;
+				overflow: auto;
+				height: 500px;
+			}
+		}
+	}
+
+	.lp-modal-header {
+		padding: 0 20px;
+	}
+
+	.lp-modal-body {
+	}
+
+	.lp-modal-footer {
+		padding: 10px 20px;
+		background-color: #f9fafb;
+		text-align: right;
+	}
+
+	.btn-yes {
+		color: #fff;
+		background-color: #7c60d9;
+	}
+}
+
+// To remove.
 #lp-modal-overlay {
 	display: none;
 	position: fixed;
@@ -57,4 +138,6 @@
 			}
 		}
 	}
+
+
 }

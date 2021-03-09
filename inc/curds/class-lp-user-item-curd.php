@@ -657,7 +657,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			} elseif ( $item->is_blocked() ) {
 				$defaults[] = 'item-locked';
 			} else {
-				$item_status = $user->get_item_status( $item_id, $course_id );
+				$item_status = $user->getItemStatus( $item_id, $course_id );
 				$item_grade  = $user->get_item_grade( $item_id, $course_id );
 
 				if ( $item_status ) {

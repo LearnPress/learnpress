@@ -98,6 +98,20 @@ class LP_User_Items_DB extends LP_Database {
 
 		return $this->wpdb->query( $query );
 	}
+
+	public function get_item_status ($item_id, $course_id) {
+		$query = $this->wpdb->prepare(
+			"
+			SELECT status FROM {$this->tb_lp_user_items}
+			WHERE ref_id = %d
+			AND ref_type = %s
+			AND item_id = %d
+		",
+			$course_id, 'lp_course', $item_id
+		);
+
+		return $this->wpdb->get_var($query);
+	}
 }
 
 LP_Course_DB::getInstance();

@@ -183,8 +183,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Add new task to a background process.
 		 *
-		 * @param mixed $data
-		 * @param string $background
+		 * @param mixed  $data .
+		 * @param string $background .
 		 *
 		 * @return LP_Abstract_Background_Process|bool
 		 * @since 3.0.8
@@ -330,6 +330,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
 			require_once 'inc/class-lp-rest-response.php';
 
+			include_once 'inc/admin/class-lp-updater.php';
+
 			if ( is_admin() ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 				require_once 'inc/admin/class-lp-admin-notice.php';
@@ -341,6 +343,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/class-lp-assets.php';
 				require_once 'inc/course/class-model-user-can-view-course-item.php';
 			}
+
+			include_once 'inc/models/steps/class-lp-group-step.php';
+			include_once 'inc/models/steps/class-lp-step.php';
 
 			require_once 'inc/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
@@ -406,6 +411,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class-lp-widget.php';
 			require_once 'inc/lp-widget-functions.php';
+
+			// Handle steps.
+			require_once 'inc/handle-steps/class-lp-handle-steps.php';
+			require_once 'inc/handle-steps/class-lp-handle-upgrade-db-steps.php';
 
 			/**
 			 * REST APIs
@@ -701,7 +710,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Check type of request.
 		 *
-		 * @param string $type  ajax, frontend or admin
+		 * @param string $type ajax, frontend or admin.
 		 *
 		 * @return bool
 		 */

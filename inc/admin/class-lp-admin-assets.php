@@ -8,7 +8,11 @@
 class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected static $_instance;
 
+	/**
+	 * LP_Admin_Assets constructor.
+	 */
 	protected function __construct() {
+		add_action( 'admin_footer', array( $this, 'show_overlay' ) );
 		parent::__construct();
 	}
 
@@ -224,7 +228,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-tools-course-tab'               => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
-					array( 'vue-libs' ),
+					array( 'vue-libs', 'wp-api-fetch' ),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
 					1
@@ -320,8 +324,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	/**
 	 * Register, enqueue js
 	 *
-	 * @param  string  $screen_id
-	 * @return
+	 * @param string $screen_id .
 	 */
 	protected function handle_js( $screen_id = '' ) {
 		$scripts = $this->_get_scripts();
@@ -358,6 +361,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 	protected function handle_style() {
 
+	}
+
+	/**
+	 * Show overlay
+	 */
+	public function show_overlay() {
+		echo '<div class="lp-overlay">';
+		apply_filters( 'learnpress/admin/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
+		echo '</div>';
 	}
 
 	public static function instance() {

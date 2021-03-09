@@ -6,8 +6,6 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-
-learn_press_admin_view( 'updates/html-update-modal' );
 ?>
 
 <div class="notice notice-warning lp-notice-update-database">
@@ -15,6 +13,6 @@ learn_press_admin_view( 'updates/html-update-modal' );
 		<?php _e( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ); ?>
 	</p>
 	<p>
-		<a class="button button-primary lp-button-upgrade" data-context="message" href="<?php echo esc_url( admin_url( 'index.php?do-update-learnpress=yes' ) ); ?>"><?php esc_html_e( 'Update Now', 'learnpress' ); ?></a>
+		<a class="button button-primary lp-btn-go-upgrade-db" data-context="message" href="<?php echo esc_url( admin_url( 'admin.php?page=learn-press-tools&tab=database&action=upgrade-db' ) ); ?>"><?php esc_html_e( 'Go to Update', 'learnpress' ); ?></a>
 	</p>
 </div>

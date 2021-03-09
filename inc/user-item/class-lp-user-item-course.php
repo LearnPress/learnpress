@@ -931,6 +931,19 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
+	 * Write again get_item
+	 *
+	 * @param int $item_id
+	 *
+	 * @author tungnx
+	 *
+	 * @return LP_User_Item|LP_User_Item_Quiz|bool
+	 */
+	public function getItem( $item_id ) {
+
+	}
+
+	/**
 	 * @param int $user_item_id
 	 *
 	 * @return LP_User_Item|LP_User_Item_Quiz|bool

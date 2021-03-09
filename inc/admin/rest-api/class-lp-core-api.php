@@ -13,6 +13,7 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 		parent::rest_api_includes();
 
 		include_once dirname( __FILE__ ) . '/class-lp-rest-question-controller.php';
+		include_once dirname( __FILE__ ) . '/class-lp-rest-database-controller.php';
 
 		do_action( 'learn-press/admin/core-api/includes' );
 	}
@@ -20,6 +21,7 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 	public function rest_api_register_routes() {
 		$controllers = array(
 			'LP_REST_Admin_Question_Controller',
+			'LP_REST_Admin_Database_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );
