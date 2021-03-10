@@ -340,8 +340,12 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @since 3.0.0
 	 */
 	public function new_item( $section_id, $item ) {
-		// course author, for case co-instructor add new items
-		$author_id = get_post_field( 'post_author', $this->course_id ) ? get_post_field( 'post_author', $this->course_id ) : learn_press_get_current_user_id();
+		// course author, for case co-instructor add new items.
+		$author_id = get_current_user_id();
+
+		if ( ! $author_id ) {
+			$author_id = get_post_field( 'post_author', $this->course_id ) ? get_post_field( 'post_author', $this->course_id ) : learn_press_get_current_user_id();
+		}
 
 		// $item = wp_parse_args( $item, array( 'title' => '', 'type' => '' ) );
 		$item = array_merge(
