@@ -68,6 +68,7 @@ class LP_Addon {
 		$this->_includes();
 
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'admin_init', array( $this, 'check_addon_update_version_4x' ) );
 	}
 
 	public static function admin_errors() {
@@ -190,8 +191,10 @@ class LP_Addon {
 			<p>
 				<?php
 				printf(
-					__( '<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher',
-						'learnpress' ),
+					__(
+						'<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher',
+						'learnpress'
+					),
 					esc_html( $this->get_name() ),
 					esc_html( $this->version ),
 					esc_html( $this->require_version )
@@ -200,6 +203,54 @@ class LP_Addon {
 			</p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Add notice and deactivate learnpress add-on if version < 4.0.0
+	 *
+	 * @return void
+	 */
+	public function check_addon_update_version_4x() {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$all_plugins = get_plugins();
+
+		if ( ! empty( $all_plugins ) ) {
+			foreach ( $all_plugins as $file => $plugin ) {
+				if ( preg_match( '/^learnpress-/', $file ) ) {
+					if ( version_compare( $plugin['Version'], '4.0.0', '<' ) ) {
+						add_action(
+							'admin_notices',
+							function() use ( $plugin ) {
+								?>
+								<div class="error">
+									<p>
+										<?php
+										printf(
+											__(
+												'<strong>%1$s</strong> add-on version %2$s is not compatible with LearnPress latest version. Please update %3$s to version 4.x.',
+												'learnpress'
+											),
+											$plugin['Name'],
+											$plugin['Version'],
+											$plugin['Name']
+										);
+										?>
+									</p>
+								</div>
+								<?php
+							}
+						);
+
+						if ( is_plugin_active( $file ) ) {
+							deactivate_plugins( $file );
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -245,7 +296,7 @@ class LP_Addon {
 	 *
 	 * @param        $instance
 	 * @param        $path
-	 * @param string $plugin_file
+	 * @param string   $plugin_file
 	 */
 	public static function load( $instance, $path, $plugin_file = '' ) {
 		$plugin_folder = '';
@@ -304,8 +355,11 @@ class LP_Addon {
 	 */
 	public function get_template_path() {
 		if ( empty( $this->_template_path ) ) {
-			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '!^learnpress-!', '',
-					dirname( $this->get_plugin_slug() ) );
+			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace(
+				'!^learnpress-!',
+				'',
+				dirname( $this->get_plugin_slug() )
+			);
 		}
 
 		return $this->_template_path;
@@ -315,11 +369,15 @@ class LP_Addon {
 	 * Get content template of addon in theme or inside itself.
 	 *
 	 * @param string $template_name
-	 * @param array $args
+	 * @param array  $args
 	 */
 	public function get_template( $template_name, $args = array() ) {
-		learn_press_get_template( $template_name, $args, $this->get_template_path(),
-			dirname( $this->plugin_file ) . '/templates/' );
+		learn_press_get_template(
+			$template_name,
+			$args,
+			$this->get_template_path(),
+			dirname( $this->plugin_file ) . '/templates/'
+		);
 	}
 
 	/**
@@ -330,18 +388,20 @@ class LP_Addon {
 	 * @return string
 	 */
 	public function locate_template( $template_name ) {
-		return learn_press_locate_template( $template_name, $this->get_template_path(),
-			dirname( $this->plugin_file ) . '/templates/' );
+		return learn_press_locate_template(
+			$template_name,
+			$this->get_template_path(),
+			dirname( $this->plugin_file ) . '/templates/'
+		);
 	}
 
 	/**
 	 * Output content of admin view file.
 	 *
 	 * @param string $view
-	 * @param array $args
+	 * @param array  $args
 	 *
 	 * @since x.x.x
-	 *
 	 */
 	public function admin_view( $view, $args = array() ) {
 		$args['plugin_file'] = $this->plugin_file;
@@ -352,11 +412,10 @@ class LP_Addon {
 	 * Get content of admin view file.
 	 *
 	 * @param string $view
-	 * @param array $args
+	 * @param array  $args
 	 *
 	 * @return string
 	 * @since x.x.x
-	 *
 	 */
 	public function admin_view_content( $view, $args = array() ) {
 		ob_start();

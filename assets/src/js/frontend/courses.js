@@ -18,7 +18,7 @@
 				success: ( response ) => {
 					let newEl = $( response ).contents().find( $wrapElement );
 
-					if ( $wrapElement === '.lp-archive-courses' ) {
+					if ( $( 'body' ).hasClass( 'twentytwenty' ) && $wrapElement === '.lp-archive-courses' ) {
 						newEl = $( response ).filter( $wrapElement );
 					}
 
