@@ -184,28 +184,33 @@
 					step: steps[ 0 ],
 				};
 
-				// Show progess when upgrading.
+				// Show progress when upgrading.
 				const showProgress = ( stepCurrent, percent ) => {
 					elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
 					elItemStepCurrent.addClass( 'running' );
 
 					if ( 100 === percent ) {
-						elItemStepCurrent.addClass( 'completed' ).removeClass( 'running' );
+						elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
 					}
 
+					console.log( 123123 );
+
 					elItemStepCurrent.find( '.progress-bar' ).css( 'width', percent + '%' );
+					elItemStepCurrent.find( '.percent' ).text( percent + '%' );
 				};
 
-				// Set all
+				// Set all.
 				elItemSteps.find( 'input' ).attr( 'disabled', 'disabled' );
 
-				showProgress( steps[ 0 ], 1 );
+				showProgress( steps[ 0 ], 0.1 );
 
 				const funcCallBack = {
 					success: ( res ) => {
 						showProgress( params.step, res.percent );
 
-						showProgress( res.name, 1 );
+						if ( params.step !== res.name ) {
+							showProgress( res.name, 1 );
+						}
 
 						if ( 'success' === res.status ) {
 							params.step = res.name;
@@ -213,9 +218,9 @@
 
 							setTimeout( () => {
 								handleAjax( urlHandle, params, funcCallBack );
-							}, 2000 );
+							}, 800 );
 						} else if ( 'finished' === res.status ) {
-
+							elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
 						} else {
 							elItemStepCurrent.removeClass( 'running' ).addClass( 'error' );
 						}

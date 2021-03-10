@@ -36,6 +36,7 @@ $group_steps = $db_upgrade->group_steps;
 				echo '<div class="lp-item-step-right">';
 				echo '<label for="">' . $step->label . '</label>';
 				echo '<div class="description">' . $step->description . '</div>';
+				echo '<div class="percent"></div>';
 				echo '<span class="progress-bar"></span>';
 				echo '</div>';
 				echo '</div>';

@@ -15,6 +15,7 @@ class LP_Database {
 	public $tb_lp_sections, $tb_lp_section_items;
 	public $tb_lp_quiz_questions;
 	public $tb_lp_user_item_results;
+	public $tb_lp_question_answers;
 
 	protected function __construct() {
 		/**
@@ -35,6 +36,7 @@ class LP_Database {
 		$this->tb_lp_sections          = $prefix . 'learnpress_sections';
 		$this->tb_lp_quiz_questions    = $prefix . 'learnpress_quiz_questions';
 		$this->tb_lp_user_item_results = $prefix . 'learnpress_user_item_results';
+		$this->tb_lp_question_answers  = $prefix . 'learnpress_question_answers';
 		$this->wpdb->hide_errors();
 	}
 

@@ -88,7 +88,7 @@ class LP_User extends LP_Abstract_User {
 			return $view;
 		}
 
-		if ( $item->is_preview() ) {
+		if ( $item instanceof LP_Course_Item && $item->is_preview() ) {
 			$view_new          = clone $view; // or create new LP_Model_User_Can_View_Course_Item()
 			$view_new->flag    = true;
 			$view_new->key     = 'lesson_preview';

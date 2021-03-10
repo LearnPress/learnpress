@@ -282,6 +282,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Filter query
 			require_once 'inc/filters/class-lp-filter.php';
 			require_once 'inc/filters/class-lp-post-type-filter.php';
+			require_once 'inc/filters/class-lp-question-filter.php';
 			require_once 'inc/filters/class-lp-user-items-filter.php';
 
 			// Query Database

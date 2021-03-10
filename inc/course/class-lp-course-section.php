@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class LP_Course_Section
  *
@@ -84,13 +85,14 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		LP_Helper_CURD::cache_posts( $items );
 
 		foreach ( $items as $item ) {
-			// Create item
 			$item_class = $this->_get_item( $item );
 
 			if ( $item_class ) {
-				$item_class->set_course( $this->get_course_id() );
-				$item_class->set_section( $this );
-				$this->items[ $item ] = $item_class;
+				if ( $item_class instanceof LP_Course_Item ) {
+					$item_class->set_course( $this->get_course_id() );
+					$item_class->set_section( $this );
+					$this->items[ $item ] = $item_class;
+				}
 			}
 		}
 
@@ -283,7 +285,8 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			$found = ! empty( $items[ $item_id ] );
 		}
 
-		return apply_filters( 'learn-press/section-has-item', $found, $item_id, $this->get_id(), $this->get_course_id() );
+		return apply_filters( 'learn-press/section-has-item', $found, $item_id, $this->get_id(),
+			$this->get_course_id() );
 	}
 
 	public function get_slug() {

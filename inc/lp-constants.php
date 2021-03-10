@@ -92,6 +92,7 @@ define( 'LP_BLOCK_COURSE_DURATION_EXPIRE', 'block_course_duration_expire' );
 // Status user item course.
 define( 'LP_COURSE_ENROLLED', 'enrolled' );
 define( 'LP_COURSE_FINISHED', 'finished' );
+define( 'LP_COURSE_PURCHASED', 'purchased' );
 
 // Enable lazyload animation placeholder.
 define( 'LP_LAZY_LOAD_ANIMATION', true );

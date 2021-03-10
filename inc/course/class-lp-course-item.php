@@ -287,9 +287,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * Get instance of an item from post
 		 *
-		 * @param int    $item_id  Item id.
-		 * @param int    $course_id
-		 * @param string $item_type
+		 * @param int    $item_id Item id.
+		 * @param int    $course_id .
+		 * @param string $item_type .
 		 *
 		 * @return LP_Course_Item|false
 		 */
@@ -336,7 +336,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 					}
 
 					if ( $course_id && $item ) {
-						$item->set_course( $course_id );
+						if ( $item instanceof LP_Course_Item ) {
+							$item->set_course( $course_id );
+						}
 					}
 
 					wp_cache_set( 'course_item_id_' . $item_id, $item, 'lp_post' );
@@ -629,9 +631,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 					if ( $item->is_preview() ) {
 						$blocked_items[ $course_item ] = 'no';
 					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array(
-						$item->get_post_type(),
-						$block_item_types
-					) ) {
+							$item->get_post_type(),
+							$block_item_types
+						) ) {
 						$blocked_items[ $course_item ] = 'no';
 					}
 				}

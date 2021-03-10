@@ -7,13 +7,13 @@
 
 	.lp-item-step {
 		display: flex;
+		position: relative;
+		min-height: 35px;
 		margin: 0;
 		padding: 1em 0;
 		border-top: 1px solid #eee;
-		border-bottom: 1px solid #eee;
 		align-items: center;
 		cursor: pointer;
-		position: relative;
 
 		&:last-child {
 			border: none;
