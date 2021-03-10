@@ -138,8 +138,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					X.status IN('" . join( "','", $status__in_1 ) . "')";
 
 				if ( ! in_array( 'in-progress', $status__in ) ) {
-					var_dump( $status__in );
-
 					$where .= "AND ( uim.meta_value IN('" . join( "','", $status__in_2 ) . "')
 						" . ( in_array( 'in-progress', $status__in ) ? ' OR uim.meta_value IS NULL' : '' ) . ')';
 				}

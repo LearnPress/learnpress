@@ -2037,8 +2037,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				);
 			}
 
-			var_dump( $access_level );
-
 			return apply_filters( 'learn-press/course-access-level', $access_level, $course_id, $this->get_id() );
 		}
 

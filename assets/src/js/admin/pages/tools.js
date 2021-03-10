@@ -193,8 +193,6 @@
 						elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
 					}
 
-					console.log( 123123 );
-
 					elItemStepCurrent.find( '.progress-bar' ).css( 'width', percent + '%' );
 					elItemStepCurrent.find( '.percent' ).text( percent + '%' );
 				};
