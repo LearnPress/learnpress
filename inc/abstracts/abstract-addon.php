@@ -220,7 +220,7 @@ class LP_Addon {
 		if ( ! empty( $all_plugins ) ) {
 			foreach ( $all_plugins as $file => $plugin ) {
 				if ( preg_match( '/^learnpress-/', $file ) ) {
-					if ( version_compare( $plugin['Version'], '4.0.0', '<' ) ) {
+					if ( version_compare( $plugin['Version'], '4.0', '<' ) && is_plugin_active( $file ) ) {
 						add_action(
 							'admin_notices',
 							function() use ( $plugin ) {
@@ -244,9 +244,7 @@ class LP_Addon {
 							}
 						);
 
-						if ( is_plugin_active( $file ) ) {
-							deactivate_plugins( $file );
-						}
+						deactivate_plugins( $file );
 					}
 				}
 			}
