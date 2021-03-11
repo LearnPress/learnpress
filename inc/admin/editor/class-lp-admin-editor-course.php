@@ -219,6 +219,11 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 		$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
 
+		// Instructor only remove item in my item.
+		if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
 		if ( ! ( $section_id && $item_id ) ) {
 			return false;
 		}
@@ -237,6 +242,11 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	public function delete_section_item( $args = array() ) {
 		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 		$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+
+		// Instructor only remove item in my item.
+		if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
 
 		if ( ! ( $section_id && $item_id ) ) {
 			return false;
