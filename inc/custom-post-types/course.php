@@ -495,7 +495,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 
-			/*if ( $price ) {
+			/*
+			if ( $price ) {
 				update_post_meta( $post->ID, '_lp_required_enroll', 'yes' );
 			}*/
 
@@ -664,6 +665,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		/**
 		 * Before save curriculum action.
+		 * If is instructor will pending course if enable required review in settings.
 		 */
 		public function before_save_curriculum() {
 			global $post, $pagenow;
@@ -674,11 +676,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 
-			$user                  = learn_press_get_current_user();
-			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
-			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
+			$user            = learn_press_get_current_user();
+			$required_review = LP()->settings->get( 'required_review' ) == 'yes';
 
-			if ( $user->is_instructor() && $required_review && ! $enable_edit_published ) {
+			if ( $user->is_instructor() && $required_review ) {
 				wp_update_post(
 					array(
 						'ID'          => $post->ID,

@@ -398,39 +398,6 @@ function learn_press_search_post_excerpt( $where = '' ) {
 
 // add_filter( 'posts_where', 'learn_press_search_post_excerpt' );
 
-/**
- * Return true if a course is required review before submit
- *
- * @param null $course_id
- * @param null $user_id
- *
- * @return bool
- */
-function learn_press_course_is_required_review( $course_id = null, $user_id = null ) {
-	if ( ! $user_id ) {
-		$user_id = get_current_user_id();
-	}
-	if ( ! $course_id ) {
-		global $post;
-		$course_id = $post->ID;
-	}
-	if ( learn_press_get_post_type( $course_id ) != 'lp_course' ) {
-		return false;
-	}
-
-	$user = learn_press_get_user( $user_id );
-	if ( $user->is_admin() || ( ( $user_course = learn_press_get_user( get_post_field( 'post_author',
-				$course_id ) ) ) && $user_course->is_admin() ) ) {
-		return false;
-	}
-
-	$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
-	$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
-	$is_publish            = get_post_status( $course_id ) == 'publish';
-
-	return ! ( ( ! $required_review ) || ( $required_review && $enable_edit_published && $is_publish ) );
-}
-
 function learn_press_get_course_user( $course_id = null ) {
 	if ( ! $course_id ) {
 		$course_id = get_the_ID();
