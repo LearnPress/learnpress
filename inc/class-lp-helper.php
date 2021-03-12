@@ -116,9 +116,9 @@ class LP_Helper {
 	 * Sort an array by a field.
 	 * Having some issue with default PHP usort function.
 	 *
-	 * @param array $array
-	 * @param string $field
-	 * @param int $default
+	 * @param array  $array .
+	 * @param string $field .
+	 * @param int    $default .
 	 */
 	public static function sort_by_priority( &$array, $field = 'priority', $default = 10 ) {
 		foreach ( $array as $k => $item ) {
@@ -275,7 +275,7 @@ class LP_Helper {
 	 * Create LP static page.
 	 *
 	 * @param string $name
-	 * @param string $assign_to  - Optional. Assign to LP page after creating successful.
+	 * @param string $assign_to - Optional. Assign to LP page after creating successful.
 	 *
 	 * @return bool|int|WP_Error
 	 */
@@ -314,7 +314,7 @@ class LP_Helper {
 	 * Wrap function ksort of PHP itself and support recursive.
 	 *
 	 * @param array $array
-	 * @param int $sort_flags
+	 * @param int   $sort_flags
 	 *
 	 * @return bool
 	 * @since 3.3.0
@@ -424,7 +424,7 @@ class LP_Helper {
 	 * Sanitize string and array
 	 *
 	 * @param array|string $value
-	 * @param string $type_content
+	 * @param string       $type_content
 	 *
 	 * @return array|string
 	 * @since  3.2.7.1
@@ -476,7 +476,7 @@ class LP_Helper {
 	 * Wrap function $wpdb->prepare(...) to support arguments as
 	 * array.
 	 *
-	 * @param string $query
+	 * @param string      $query
 	 * @param array|mixed $args
 	 *
 	 * @return string
@@ -507,5 +507,26 @@ class LP_Helper {
 		$arr_formatted = array_fill( 0, sizeof( $arr ), $format );
 
 		return join( ',', $arr_formatted );
+	}
+
+	/**
+	 * Calculate percent of progress rows on db
+	 *
+	 * @param int $offset .
+	 * @param int $limit .
+	 * @param int $total_row .
+	 *
+	 * @return float
+	 */
+	public static function progress_percent( int $offset, int $limit, int $total_row ): float {
+		if ( $total_row <= 0 ) {
+			return 0;
+		}
+
+		$percent = ( $offset + $limit ) * 100 / $total_row;
+
+		$percent = $percent > 100 ? 100 : $percent;
+
+		return floatval( number_format( $percent, 2 ) );
 	}
 }

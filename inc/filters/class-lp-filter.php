@@ -17,6 +17,7 @@ class LP_Filter {
 	public $order_by = '';
 	public $order_by_desc = '';
 	public $key_word = '';
+	public $page = 0;
 
 	public function __construct() {
 		$this->limit = apply_filters( 'lp/filter/limit', $this->limit );
