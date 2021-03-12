@@ -165,13 +165,67 @@ class LP_Database {
 	/**
 	 * Drop Column of Table
 	 *
-	 * @param string $name_table
-	 * @param string $name_col
+	 * @param string $name_table .
+	 * @param string $name_col .
 	 *
 	 * @return bool|int
 	 */
 	public function drop_col_table( string $name_table, string $name_col ) {
-		$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP COLUMN $name_col", 1 );
+		$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP COLUMN IF EXISTS $name_col", 1 );
+
+		return $this->wpdb->query( $query );
+	}
+
+	/**
+	 * Drop Index of Table
+	 *
+	 * @param string $name_table .
+	 *
+	 * @return bool|int
+	 */
+	public function drop_indexs_table( string $name_table ) {
+		$show_index = "SHOW INDEX FROM $name_table";
+		$indexs     = $this->wpdb->get_results( $show_index );
+
+		foreach ( $indexs as $index ) {
+			if ( 'PRIMARY' === $index->Key_name ) {
+				continue;
+			}
+
+			$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP INDEX $index->Column_name", 1 );
+
+			$this->wpdb->query( $query );
+		}
+	}
+
+	/**
+	 * Add Index of Table
+	 *
+	 * @param string $name_table .
+	 * @param array  $indexs .
+	 *
+	 * @return bool|int
+	 */
+	public function add_indexs_table( string $name_table, array $indexs ) {
+		$add_index    = '';
+		$count_indexs = count( $indexs ) - 1;
+
+		// Drop indexs .
+		$this->drop_indexs_table( $name_table );
+
+		foreach ( $indexs as $index ) {
+			if ( $count_indexs === array_search( $index, $indexs ) ) {
+				$add_index .= ' ADD INDEX IF NOT EXISTS ' . $index . ' (' . $index . ')';
+			} else {
+				$add_index .= ' ADD INDEX IF NOT EXISTS ' . $index . ' (' . $index . '),';
+			}
+		}
+
+		$query = $this->wpdb->prepare(
+			"
+				ALTER TABLE {$name_table}
+				$add_index
+			", 1 );
 
 		return $this->wpdb->query( $query );
 	}
