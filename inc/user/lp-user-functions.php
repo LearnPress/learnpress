@@ -887,7 +887,7 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 		if ( $profile_picture_src = $user->get_upload_profile_src() ) {
 			$lp           = LP();
 			$lp_setting   = $lp->settings;
-			$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
+			$setting_size = $lp_setting->get( 'avatar_dimensions' );
 			$img_size     = '';
 
 			// Get avatar size
@@ -1277,7 +1277,6 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 }
 
 function learn_press_get_avatar_thumb_size() {
-	$avatar_size_settings = LP()->settings->get( 'profile_picture_thumbnail_size' );
 	$avatar_size_settings = LP()->settings->get( 'avatar_dimensions' );
 
 	$avatar_size = array();
