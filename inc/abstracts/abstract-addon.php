@@ -60,7 +60,6 @@ class LP_Addon {
 	 * LP_Addon constructor.
 	 */
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'check_addon_update_version_4x' ) );
 
 		if ( ! $this->_check_version() ) {
 			return;
@@ -211,7 +210,7 @@ class LP_Addon {
 	 *
 	 * @return void
 	 */
-	public function check_addon_update_version_4x() {
+	public static function check_addon_update_version_4x() {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
@@ -245,7 +244,7 @@ class LP_Addon {
 							}
 						);
 
-						deactivate_plugins( $file );
+						deactivate_plugins( trim( $file ) );
 					}
 				}
 			}
@@ -462,3 +461,4 @@ class LP_Addon {
 }
 
 add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );
+add_action( 'admin_init', array( 'LP_Addon', 'check_addon_update_version_4x' ) );
