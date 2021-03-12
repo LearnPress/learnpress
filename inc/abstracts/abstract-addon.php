@@ -60,6 +60,8 @@ class LP_Addon {
 	 * LP_Addon constructor.
 	 */
 	public function __construct() {
+		add_action( 'admin_init', array( $this, 'check_addon_update_version_4x' ) );
+
 		if ( ! $this->_check_version() ) {
 			return;
 		}
@@ -68,7 +70,6 @@ class LP_Addon {
 		$this->_includes();
 
 		add_action( 'init', array( $this, 'init' ) );
-		add_action( 'admin_init', array( $this, 'check_addon_update_version_4x' ) );
 	}
 
 	public static function admin_errors() {
