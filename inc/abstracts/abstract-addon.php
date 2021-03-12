@@ -62,11 +62,16 @@ class LP_Addon {
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'check_addon_update_version_4x' ) );
 
-		if ( ! $this->_check_version() ) {
+		$this->_define_constants();
+
+		// Return if all add-on is 3.x.
+		if ( version_compare( $this->version, '4.0', '<' ) ) {
 			return;
 		}
 
-		$this->_define_constants();
+		if ( ! $this->_check_version() ) {
+			return;
+		}
 		$this->_includes();
 
 		add_action( 'init', array( $this, 'init' ) );
