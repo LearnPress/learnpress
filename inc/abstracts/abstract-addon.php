@@ -466,4 +466,3 @@ class LP_Addon {
 }
 
 add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );
-add_action( 'admin_init', array( 'LP_Addon', 'check_addon_update_version_4x' ) );
