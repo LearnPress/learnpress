@@ -1,4 +1,5 @@
 import SingleCourse from './single-course/index';
+import { addQueryArgs } from '@wordpress/url';
 
 export default SingleCourse;
 
@@ -212,6 +213,47 @@ const courseProgress = () => {
 	};
 };
 
+// Rest API load content in Tab Curriculum - Nhamdv.
+const courseCurriculum = () => {
+	const elements = document.querySelectorAll( '.course-tab-panel-curriculum' );
+
+	if ( ! elements.length ) {
+		return;
+	}
+
+	if ( 'IntersectionObserver' in window ) {
+		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
+			entries.forEach( ( entry ) => {
+				if ( entry.isIntersecting ) {
+					const ele = entry.target;
+
+					setTimeout( function() {
+						getResponse( ele );
+					}, 1000 );
+
+					eleObserver.unobserve( ele );
+				}
+			} );
+		} );
+
+		[ ...elements ].map( ( ele ) => eleObserver.observe( ele ) );
+	}
+
+	const getResponse = async ( ele ) => {
+		const response = await wp.apiFetch( {
+			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
+				courseId: lpGlobalSettings.post_id || '',
+				userId: lpGlobalSettings.user_id || '',
+			} ),
+			method: 'GET',
+		} );
+
+		const { data } = response;
+
+		ele.innerHTML = data;
+	};
+};
+
 export {
 	initCourseTabs,
 	initCourseSidebar,
@@ -228,4 +270,5 @@ $( window ).on( 'load', () => {
 	enrollCourse();
 	retakeCourse();
 	courseProgress();
+	courseCurriculum();
 } );

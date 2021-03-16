@@ -64,7 +64,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		$defaults['curriculum'] = array(
 			'title'    => esc_html__( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
-			'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/curriculum.php' ),
+			'callback' => LP()->template( 'course' )->func( 'course_curriculum' ),
 		);
 
 		$defaults['instructor'] = array(

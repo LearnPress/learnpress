@@ -211,52 +211,6 @@ class LP_Addon {
 	}
 
 	/**
-	 * Add notice and deactivate learnpress add-on if version < 4.0.0
-	 *
-	 * @return void
-	 */
-	public static function check_addon_update_version_4x() {
-		if ( ! function_exists( 'get_plugins' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		$all_plugins = get_plugins();
-
-		if ( ! empty( $all_plugins ) ) {
-			foreach ( $all_plugins as $file => $plugin ) {
-				if ( preg_match( '/^learnpress-/', $file ) ) {
-					if ( version_compare( $plugin['Version'], '4.0', '<' ) && is_plugin_active( $file ) ) {
-						add_action(
-							'admin_notices',
-							function() use ( $plugin ) {
-								?>
-								<div class="error">
-									<p>
-										<?php
-										printf(
-											__(
-												'<strong>%1$s</strong> add-on version %2$s is not compatible with LearnPress latest version. Please update %3$s to version 4.x.',
-												'learnpress'
-											),
-											$plugin['Name'],
-											$plugin['Version'],
-											$plugin['Name']
-										);
-										?>
-									</p>
-								</div>
-								<?php
-							}
-						);
-
-						deactivate_plugins( trim( $file ) );
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * @return mixed
 	 */
 	public function get_name() {
@@ -466,4 +420,3 @@ class LP_Addon {
 }
 
 add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );
-add_action( 'admin_init', array( 'LP_Addon', 'check_addon_update_version_4x' ) );
