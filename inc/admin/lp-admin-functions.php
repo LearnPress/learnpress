@@ -1319,7 +1319,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
 					 . ' ON o.ID=lpoi.order_id '
 					 . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
-					 . ' ON lpoi.order_item_id=loim.learnpress_order_item_id '
+					 . ' ON lpoi.order_item_id=loim.order_item_id '
 					 . " AND loim.meta_key='_course_id' "
 					 . ' AND CAST(loim.meta_value AS SIGNED)=%d ';
 		if ( current_user_can( LP_TEACHER_ROLE ) ) {
@@ -1337,7 +1337,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
 					   . ' ON o.ID=lpoi.order_id '
 					   . " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
-					   . ' ON lpoi.order_item_id=loim.learnpress_order_item_id '
+					   . ' ON lpoi.order_item_id=loim.order_item_id '
 					   . " AND loim.meta_key='_course_id' "
 					   . ' AND CAST(loim.meta_value AS SIGNED) IN('
 					   // sub query
@@ -1353,7 +1353,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 			" AND o.ID IN( SELECT oi.order_id
 										FROM lptest.{$wpdb->prefix}learnpress_order_items oi
 											inner join {$wpdb->prefix}learnpress_order_itemmeta oim
-												on oi.order_item_id = oim.learnpress_order_item_id
+												on oi.order_item_id = oim.order_item_id
 													and oim.meta_key='_course_id'
 													and cast(oim.meta_value as SIGNED) IN (
 														SELECT sp.ID FROM {$wpdb->prefix}posts sp WHERE sp.post_author=%d and sp.ID=cast(oim.meta_value as SIGNED)

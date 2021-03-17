@@ -1000,7 +1000,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				"
 				SELECT *
 				FROM {$wpdb->prefix}learnpress_question_answermeta
-				WHERE learnpress_question_answer_id IN(" . join( ', ', $format ) . ')
+				WHERE question_answer_id IN(" . join( ', ', $format ) . ')
 			',
 				$answer_option_ids
 			);
@@ -1010,7 +1010,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			if ( $metas ) {
 				foreach ( $metas as $meta ) {
 					$key        = $meta->meta_key;
-					$option_key = $meta->learnpress_question_answer_id;
+					$option_key = $meta->question_answer_id;
 					if ( ! empty( $answer_options[ $option_key ] ) ) {
 						if ( $key == 'checked' ) {
 							$key = 'is_true';

@@ -1194,10 +1194,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$query = $wpdb->prepare(
 				"
-			SELECT learnpress_user_item_id as user_item_id, meta_key, meta_value, item_id
+			SELECT user_item_id, meta_key, meta_value, item_id
 			FROM {$wpdb->prefix}learnpress_user_itemmeta im
-			INNER JOIN {$wpdb->prefix}learnpress_user_items i ON i.user_item_id = im.learnpress_user_item_id
-			WHERE learnpress_user_item_id IN(" . join( ',', $in ) . ')
+			INNER JOIN {$wpdb->prefix}learnpress_user_items i ON i.user_item_id = im.user_item_id
+			WHERE user_item_id IN(" . join( ',', $in ) . ')
 			',
 				$user_item_id
 			);
@@ -2448,7 +2448,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				"
 			SELECT quiz_id
 			FROM {$wpdb->prefix}learnpress_user_items uq
-			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta uqm ON uqm.learnpress_user_item_id = uq.user_item_id AND uqm.meta_key = %s AND uqm.meta_value LIKE %s
+			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta uqm ON uqm.user_item_id = uq.user_item_id AND uqm.meta_key = %s AND uqm.meta_value LIKE %s
 		",
 				'questions',
 				'%i:' . $wpdb->esc_like( $question_id . '' ) . ';%'

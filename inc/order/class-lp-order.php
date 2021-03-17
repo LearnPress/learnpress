@@ -554,7 +554,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				DELETE FROM itemmeta
 				USING {$wpdb->learnpress_order_itemmeta} itemmeta
 				INNER JOIN {$wpdb->learnpress_order_items} items
-				WHERE itemmeta.learnpress_order_item_id = items.order_item_id
+				WHERE itemmeta.order_item_id = items.order_item_id
 				AND items.order_id = %d",
 					$this->get_id()
 				)
@@ -731,7 +731,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			do_action( 'learn-press/before-delete-order-item', $item_id, $this->get_id() );
 
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
-			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE order_item_id = %d", $item_id ) );
 
 			LP_Object_Cache::delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
 

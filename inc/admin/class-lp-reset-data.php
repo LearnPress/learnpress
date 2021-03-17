@@ -70,7 +70,7 @@ class LP_Reset_Data {
 				"
 				DELETE
 				FROM {$wpdb->learnpress_user_itemmeta}
-				WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ')
+				WHERE user_item_id IN(" . join( ',', $format ) . ')
 			',
 				$user_item_ids
 			);
@@ -266,7 +266,7 @@ class LP_Reset_Data {
 					"
 					DELETE
 					FROM {$wpdb->learnpress_user_itemmeta}
-					WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ')
+					WHERE user_item_id IN(" . join( ',', $format ) . ')
 				',
 					$user_item_ids
 				);
@@ -355,7 +355,7 @@ class LP_Reset_Data {
 
 		// Delete meta
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$query  = $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ')', $ids );
+		$query  = $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE user_item_id IN(" . join( ',', $format ) . ')', $ids );
 		$wpdb->query( $query );
 		echo "$query\n";
 
