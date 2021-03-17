@@ -77,7 +77,7 @@ if ( ! class_exists( 'LP_Email_Updated_Course' ) ) {
 				SELECT pmt.meta_value
 				FROM {$wpdb->posts} o
 				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
-				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.order_item_id = oi.order_item_id
+				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
 				INNER JOIN {$wpdb->prefix}postmeta pmt ON pmt.meta_key = %s and pmt.post_id = oi.order_id
 				AND oim.meta_key = %s AND oim.meta_value = %d
 				WHERE o.post_status = %s

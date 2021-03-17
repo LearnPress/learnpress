@@ -108,9 +108,9 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				# , oim2.meta_value as `quantity`
 				# , oim3.meta_value as `total`
 			FROM {$wpdb->learnpress_order_items} oi
-				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.order_item_id AND oim.meta_key='_course_id'
-				# INNER JOIN {$wpdb->learnpress_order_itemmeta} oim2 ON oi.order_item_id = oim2.order_item_id AND oim2.meta_key='_quantity'
-				# INNER JOIN {$wpdb->learnpress_order_itemmeta} oim3 ON oi.order_item_id = oim3.order_item_id AND oim3.meta_key='_total'
+				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key='_course_id'
+				# INNER JOIN {$wpdb->learnpress_order_itemmeta} oim2 ON oi.order_item_id = oim2.learnpress_order_item_id AND oim2.meta_key='_quantity'
+				# INNER JOIN {$wpdb->learnpress_order_itemmeta} oim3 ON oi.order_item_id = oim3.learnpress_order_item_id AND oim3.meta_key='_total'
 			WHERE order_id = %d
 		", $order->get_id() );
 
@@ -151,7 +151,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			"SELECT o_item.order_item_id, o_item.order_item_name, o_itemmeta.meta_value, o_itemmeta.meta_key
 					From $table_order_items as o_item
 					INNER JOIN $table_order_item_meta as o_itemmeta
-					ON o_item.order_item_id = o_itemmeta.order_item_id
+					ON o_item.order_item_id = o_itemmeta.learnpress_order_item_id
 					WHERE o_item.order_id = %d
 					LIMIT %d",
 			$order->get_id(),
@@ -214,7 +214,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			"SELECT o_item.order_item_id, o_item.order_item_name, o_itemmeta.meta_value, o_itemmeta.meta_key
 					From $table_order_items as o_item
 					INNER JOIN $table_order_item_meta as o_itemmeta
-					ON o_item.order_item_id = o_itemmeta.order_item_id
+					ON o_item.order_item_id = o_itemmeta.learnpress_order_item_id
 					WHERE o_item.order_id = %d
 					LIMIT %d, %d",
 			$order->get_id(),
@@ -369,7 +369,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			"
 			SELECT *
 			FROM {$wpdb->learnpress_order_items} oi
-			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.order_item_id
+			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id
 			WHERE order_id = %d
 		",
 			$from
@@ -398,7 +398,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					"
 					SELECT *
 					FROM {$wpdb->learnpress_order_itemmeta}
-					WHERE order_item_id = %d
+					WHERE learnpress_order_item_id = %d
 				",
 					$item['id']
 				);
@@ -408,7 +408,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						$wpdb->insert(
 							$wpdb->learnpress_order_itemmeta,
 							array(
-								'order_item_id' => $learnpress_order_item_id,
+								'learnpress_order_item_id' => $learnpress_order_item_id,
 								'meta_key'                 => $meta->meta_key,
 								'meta_value'               => $meta->meta_value,
 							)

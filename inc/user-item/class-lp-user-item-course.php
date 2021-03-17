@@ -361,10 +361,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				"
 				SELECT ui.*, p.post_type AS item_type, grade.meta_value as grade, data.meta_value as data, results.meta_value as results, version.meta_value as version
 				FROM {$wpdb->learnpress_user_items} ui
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} grade ON ui.user_item_id = grade.user_item_id AND grade.meta_key = '%s'
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} data ON ui.user_item_id = data.user_item_id AND data.meta_key = '%s'
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} results ON ui.user_item_id = results.user_item_id AND results.meta_key = '%s'
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} version ON ui.user_item_id = version.user_item_id AND version.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} grade ON ui.user_item_id = grade.learnpress_user_item_id AND grade.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} data ON ui.user_item_id = data.learnpress_user_item_id AND data.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} results ON ui.user_item_id = results.learnpress_user_item_id AND results.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} version ON ui.user_item_id = version.learnpress_user_item_id AND version.meta_key = '%s'
 				INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id
 				WHERE user_item_id IN(" . LP_Helper::db_format_array( $user_item_ids ) . ')
 					AND  p.post_type IN(' . $item_types_format . ')

@@ -138,7 +138,7 @@ class LP_Repair_Database {
 			"
 			DELETE
 			FROM {$wpdb->learnpress_order_itemmeta}
-			WHERE order_item_id IN(" . join( ',', $format ) . ')
+			WHERE learnpress_order_item_id IN(" . join( ',', $format ) . ')
 		',
 			$order_item_id
 		);
@@ -237,7 +237,7 @@ class LP_Repair_Database {
 			"
 			DELETE
 			FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE user_item_id IN(" . join( ',', $format ) . ')
+			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ')
 		',
 			$user_item_id
 		);
@@ -533,7 +533,7 @@ class LP_Repair_Database {
 		$query = "
 			DELETE items, meta
 			FROM {$wpdb->learnpress_user_items} items
-			INNER JOIN {$wpdb->learnpress_user_itemmeta} meta ON items.user_item_id = meta.user_item_id
+			INNER JOIN {$wpdb->learnpress_user_itemmeta} meta ON items.user_item_id = meta.learnpress_user_item_id
 		";
 
 		$where = '';
@@ -743,7 +743,7 @@ class LP_Repair_Database {
 				FROM(
 					SELECT oim.meta_value cid, concat(oim.meta_value, ' ', o.post_status)  a, post_status `status`, GROUP_CONCAT(o.ID) orders
 					FROM {$wpdb->learnpress_order_itemmeta} oim
-					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.order_item_id AND oim.meta_key = %s
+					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
 					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
 					INNER JOIN {$wpdb->postmeta} om ON o.ID = om.post_id AND `om`.`meta_key`='_user_id'
 					INNER JOIN {$wpdb->users} `u` ON u.ID = `om`.`meta_value`
