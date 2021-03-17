@@ -10,12 +10,13 @@ class LP_Database {
 	private static $_instance;
 	public $wpdb;
 	public $tb_lp_user_items, $tb_lp_user_itemmeta;
-	public $tb_posts, $tb_postmeta;
+	public $tb_posts, $tb_postmeta, $tb_options;
 	public $tb_lp_order_items, $tb_lp_order_itemmeta;
 	public $tb_lp_sections, $tb_lp_section_items;
 	public $tb_lp_quiz_questions;
 	public $tb_lp_user_item_results;
 	public $tb_lp_question_answers;
+	public $tb_lp_question_answermeta;
 
 	protected function __construct() {
 		/**
@@ -24,19 +25,21 @@ class LP_Database {
 		global $wpdb;
 		$prefix = $wpdb->prefix;
 
-		$this->wpdb                    = $wpdb;
-		$this->tb_users                = $wpdb->users;
-		$this->tb_posts                = $wpdb->posts;
-		$this->tb_postmeta             = $wpdb->postmeta;
-		$this->tb_lp_user_items        = $prefix . 'learnpress_user_items';
-		$this->tb_lp_user_itemmeta     = $prefix . 'learnpress_user_itemmeta';
-		$this->tb_lp_order_items       = $prefix . 'learnpress_order_items';
-		$this->tb_lp_order_itemmeta    = $prefix . 'learnpress_order_itemmeta';
-		$this->tb_lp_section_items     = $prefix . 'learnpress_section_items';
-		$this->tb_lp_sections          = $prefix . 'learnpress_sections';
-		$this->tb_lp_quiz_questions    = $prefix . 'learnpress_quiz_questions';
-		$this->tb_lp_user_item_results = $prefix . 'learnpress_user_item_results';
-		$this->tb_lp_question_answers  = $prefix . 'learnpress_question_answers';
+		$this->wpdb                      = $wpdb;
+		$this->tb_users                  = $wpdb->users;
+		$this->tb_posts                  = $wpdb->posts;
+		$this->tb_postmeta               = $wpdb->postmeta;
+		$this->tb_options                = $wpdb->options;
+		$this->tb_lp_user_items          = $prefix . 'learnpress_user_items';
+		$this->tb_lp_user_itemmeta       = $prefix . 'learnpress_user_itemmeta';
+		$this->tb_lp_order_items         = $prefix . 'learnpress_order_items';
+		$this->tb_lp_order_itemmeta      = $prefix . 'learnpress_order_itemmeta';
+		$this->tb_lp_section_items       = $prefix . 'learnpress_section_items';
+		$this->tb_lp_sections            = $prefix . 'learnpress_sections';
+		$this->tb_lp_quiz_questions      = $prefix . 'learnpress_quiz_questions';
+		$this->tb_lp_user_item_results   = $prefix . 'learnpress_user_item_results';
+		$this->tb_lp_question_answers    = $prefix . 'learnpress_question_answers';
+		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
 		$this->wpdb->hide_errors();
 	}
 
@@ -146,16 +149,29 @@ class LP_Database {
 	 * @return bool|int
 	 */
 	public function clone_table( string $name_table ) {
-		$table_bk = $name_table . '_bk';
-		$query    = $this->wpdb->prepare( "
-				CREATE TABLE IF NOT EXISTS $table_bk AS
+		$primary_key = $this->wpdb->get_row( "SHOW COLUMNS FROM $name_table" );
+
+		if ( $primary_key ) {
+			$table_bk = $name_table . '_bk';
+			$query    = $this->wpdb->prepare(
+				"
+				CREATE TABLE IF NOT EXISTS $table_bk (
+				    primary key ($primary_key->Field)
+				) AS
 				SELECT * FROM $name_table
-			", $name_table
-		);
+				", $name_table
+			);
+		}
 
 		return $this->wpdb->query( $query );
 	}
 
+	/**
+	 * @param string $name_table
+	 * @param string $name_col
+	 *
+	 * @return bool|int
+	 */
 	public function check_col_table( string $name_table, string $name_col ) {
 		$query = $this->wpdb->prepare( "SHOW COLUMNS FROM $name_table LIKE %s", $name_col );
 
@@ -188,11 +204,11 @@ class LP_Database {
 		$indexs     = $this->wpdb->get_results( $show_index );
 
 		foreach ( $indexs as $index ) {
-			if ( 'PRIMARY' === $index->Key_name ) {
+			if ( 'PRIMARY' === $index->Key_name || '1' !== $index->Seq_in_index ) {
 				continue;
 			}
 
-			$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP INDEX $index->Column_name", 1 );
+			$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP INDEX $index->Key_name", 1 );
 
 			$this->wpdb->query( $query );
 		}
@@ -215,9 +231,9 @@ class LP_Database {
 
 		foreach ( $indexs as $index ) {
 			if ( $count_indexs === array_search( $index, $indexs ) ) {
-				$add_index .= ' ADD INDEX IF NOT EXISTS ' . $index . ' (' . $index . ')';
+				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . ')';
 			} else {
-				$add_index .= ' ADD INDEX IF NOT EXISTS ' . $index . ' (' . $index . '),';
+				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . '),';
 			}
 		}
 
@@ -225,7 +241,8 @@ class LP_Database {
 			"
 				ALTER TABLE {$name_table}
 				$add_index
-			", 1 );
+			", 1
+		);
 
 		return $this->wpdb->query( $query );
 	}
@@ -233,13 +250,11 @@ class LP_Database {
 	/**
 	 * Create table learnpress_user_item_results
 	 *
-	 * @param string $name_table .
-	 * @param string $statement_data_fields .
-	 *
 	 * @return bool|int
 	 */
 	public function create_tb_lp_user_item_results() {
-		$query = $this->wpdb->prepare( "
+		$query = $this->wpdb->prepare(
+			"
 				CREATE TABLE IF NOT EXISTS $this->tb_lp_user_item_results(
 					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					user_item_id bigint(20) unsigned NOT NULL,

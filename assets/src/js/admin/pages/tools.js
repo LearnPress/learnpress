@@ -207,7 +207,7 @@
 						showProgress( params.step, res.percent );
 
 						if ( params.step !== res.name ) {
-							showProgress( res.name, 1 );
+							showProgress( res.name, 0.1 );
 						}
 
 						if ( 'success' === res.status ) {

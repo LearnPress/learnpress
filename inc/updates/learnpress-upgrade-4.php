@@ -32,15 +32,23 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 *
 	 * @see clone_tables
 	 * @see create_tables
-	 * @see convert_data
+	 * @see modify_tb_lp_user_items
+	 * @see modify_tb_learnpress_user_itemmeta
 	 * @see convert_result_graduation_item
-	 * @see remove_data_lp_user_itemmeta
+	 * @see convert_result_questions
 	 * @see modify_tb_lp_user_itemmeta
+	 * @see remove_data_lp_user_itemmeta
+	 * @see modify_tb_lp_quiz_questions
 	 * @see modify_tb_lp_question_answers
 	 * @see update_question_answers
+	 * @see modify_tb_lp_question_answermeta
 	 * @see convert_question_type_fill_in_blank
 	 * @see delete_columns_question_answers
+	 * @see modify_tb_lp_order_items
 	 * @see modify_tb_lp_order_itemmeta
+	 * @see modify_tb_lp_sections
+	 * @see modify_tb_lp_section_items
+	 * @see convert_lp_settings
 	 */
 	protected function __construct() {
 		$this->version     = '4.0.0';
@@ -54,8 +62,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 						new LP_Step( 'clone_tables', 'Backup Tables',
 							'learnpress_user_items, learnpress_user_itemmeta' ),
 						new LP_Step( 'create_tables', 'Create tables', 'learnpress_user_item_results' ),
-						new LP_Step( 'convert_data', 'Convert Datas',
-							'Modify table learnpress_user_items, move the result of students on table learnpress_uset_itemmeta to learnpress_user_item_results' ),
+						new LP_Step(
+							'modify_tb_lp_user_items',
+							'Modify table learnpress_user_items',
+							'Modify table learnpress_user_items, move the result of students on table learnpress_uset_itemmeta to learnpress_user_item_results'
+						),
 						new LP_Step(
 							'convert_result_graduation_item',
 							'Convert Data Result courses, items\' courses',
@@ -74,6 +85,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 						new LP_Step(
 							'modify_tb_lp_user_itemmeta',
 							'Modify table learnpress_user_itemmeta',
+							'Change Column "learnpress_user_item_id" to "user_item_id", Create Index: user_item_id, meta_key, meta_value'
+						),
+						new LP_Step(
+							'modify_tb_lp_quiz_questions',
+							'Modify table learnpress_quiz_questions',
 							''
 						),
 						new LP_Step(
@@ -87,6 +103,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 							''
 						),
 						new LP_Step(
+							'modify_tb_lp_question_answermeta',
+							'Modify table learnpress_question_answermeta',
+							''
+						),
+						new LP_Step(
 							'convert_question_type_fill_in_blank',
 							'Update data question type "Fill in blank"',
 							''
@@ -97,10 +118,30 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 							''
 						),
 						new LP_Step(
+							'modify_tb_lp_order_items',
+							'Modify data table learnpress_order_items',
+							''
+						),
+						new LP_Step(
 							'modify_tb_lp_order_itemmeta',
 							'Modify data table learnpress_order_itemmeta',
 							''
 						),
+						new LP_Step(
+							'modify_tb_lp_sections',
+							'Modify table learnpress_sections',
+							'Create Index'
+						),
+						new LP_Step(
+							'modify_tb_lp_section_items',
+							'Modify table learnpress_section_items',
+							'Create Index'
+						),
+						new LP_Step(
+							'convert_lp_settings',
+							'Convert data settings learnpress',
+							'Courses thumbnail dimensions, Profile thumbnail dimensions, Profile rename dashboard to overview, Block course by duration, Block course when finished, Assessment course by quizzes - Evaluate, '
+						)
 					)
 				),
 			)
@@ -121,12 +162,15 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 		try {
 			// All tables need clone.
-			$lp_db                   = LP_Database::getInstance();
-			$clone_tables            = array(
+			$lp_db = LP_Database::getInstance();
+			$lp_db->wpdb->query( "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'" );
+
+			$clone_tables = array(
 				$lp_db->tb_lp_user_items,
 				$lp_db->tb_lp_user_itemmeta,
 				$lp_db->tb_lp_question_answers,
 			);
+
 			$total_tables_need_clone = count( $clone_tables );
 
 			// Check table need clone.
@@ -139,9 +183,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 			if ( empty( $clone_table ) ) {
 				// Finish this step.
-				$response->percent = 100;
-				$response->status  = 'finished';
-				$response->message = 'Clone tables done';
+				$this->finish_step( $response, __FUNCTION__ . ' finished' );
 			} else {
 				// Clone table.
 				$lp_db->clone_table( $clone_table );
@@ -150,9 +192,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				}
 
 				// Set param to clone table next.
-				$index   = array_search( $clone_table, $clone_tables );
-				$percent = ( $index + 1 ) * 100 / $total_tables_need_clone;
+				$index = array_search( $clone_table, $clone_tables );
 				++ $index;
+				$percent = LP_Helper::progress_percent( $index, 1, $total_tables_need_clone );
 
 				if ( ! empty( $clone_tables[ $index ] ) ) {
 					$response->status            = 'success';
@@ -161,9 +203,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					$response->message           = 'Table "' . $clone_table . '" cloned';
 				} else {
 					// Finish this step.
-					$response->status  = 'finished';
-					$response->percent = 100;
-					$response->message = 'Table "' . $clone_table . '" cloned - Clone tables success';
+					$this->finish_step( $response, __FUNCTION__ . ' finished' );
 				}
 			}
 		} catch ( Exception $e ) {
@@ -209,9 +249,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 			if ( empty( $create_table ) ) {
 				// Finish this step.
-				$response->percent = 100;
-				$response->status  = 'finished';
-				$response->message = 'Create tables done';
+				$this->finish_step( $response, __FUNCTION__ . ' finished' );
 			} else {
 				// Create table.
 				$name_method = 'create_' . $create_table;
@@ -226,9 +264,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 				// Set param to clone table next.
 				$index = array_search( $create_table, $create_tables );
-
-				$percent = ( $index + 1 ) * 100 / $total_tables_need_create;
 				++ $index;
+				$percent = LP_Helper::progress_percent( $index, 1, $total_tables_need_create );
 
 				if ( ! empty( $create_tables[ $index ] ) ) {
 					$response->status            = 'success';
@@ -237,9 +274,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					$response->message           = 'Table "' . $create_table . '" created';
 				} else {
 					// Finish this step.
-					$response->status  = 'finished';
-					$response->percent = 100;
-					$response->message = 'Table "' . $create_table . '" created - Create tables success';
+					$this->finish_step( $response, __FUNCTION__ . ' finished' );
 				}
 			}
 		} catch ( Exception $e ) {
@@ -250,142 +285,67 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	}
 
 	/**
-	 * Step Create Tables
-	 *
-	 * @param array $data .
+	 * Modify table learnpress_user_items .
 	 *
 	 * @return LP_Step
 	 */
-	protected function convert_data( array $data ): LP_Step {
-		$response         = new LP_Step( __FUNCTION__, '' );
-		$key_convert_data = 'convert_data';
-		$handle           = '';
+	protected function modify_tb_lp_user_items() {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
 
 		try {
-			/**
-			 * All tables need create.
-			 * key: name table
-			 * value: function handle create this table
-			 *
-			 * @see LP_Database::create_tb_lp_user_item_results
-			 */
-			$lp_db        = LP_Database::getInstance();
-			$handles      = array(
-				'modify_table_learnpress_user_items',
+			// Add columns: graduation, access_level .
+			$lp_db->wpdb->query(
+				"
+				ALTER TABLE $lp_db->tb_lp_user_items
+				ADD COLUMN IF NOT EXISTS graduation varchar(20) AFTER `status`,
+				ADD COLUMN IF NOT EXISTS access_level int(3)
+				"
 			);
-			$total_handle = count( $handles );
 
-			// Check table need create.
-			if ( empty( $data ) ) {
-				$handle = $handles[0];
-			} elseif ( ! empty( $data[ $key_convert_data ] )
-			           && in_array( $data[ $key_convert_data ], $handles, true ) ) {
-				$handle = $data[ $key_convert_data ];
+			// Change type columns: start_time, end_time.
+			$lp_db->wpdb->query(
+				"
+				ALTER TABLE $lp_db->tb_lp_user_items
+				MODIFY start_time datetime default null,
+				MODIFY end_time datetime default null;
+				"
+			);
+
+			/**
+			 * Check column start_time_gmt exists.
+			 *
+			 * Copy value start_time_gmt to start_time
+			 *
+			 * Drop column start_time_gmt
+			 */
+			$check_col_start_time_gmt = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
+			if ( $check_col_start_time_gmt ) {
+				$lp_db->wpdb->query( "UPDATE $lp_db->tb_lp_user_items SET start_time = start_time_gmt WHERE user_item_id > 0" );
+				$lp_db->drop_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
 			}
 
-			if ( empty( $handle ) ) {
-				// Finish this step.
-				$response->percent = 100;
-				$response->status  = 'finished';
-				$response->message = 'Create tables done';
-			} else {
-				// handles.
-				switch ( $handle ) {
-					case 'modify_table_learnpress_user_items' :
-						$this->modify_tb_learnpress_user_items( $lp_db );
-						break;
-				}
-
-				// Set param to handle next.
-				$index = array_search( $handle, $handles );
-
-				$percent = LP_Helper::progress_percent( $index, 1, $total_handle );
-				++ $index;
-
-				if ( ! empty( $handles[ $index ] ) ) {
-					$response->status            = 'success';
-					$response->percent           = $percent;
-					$response->data->clone_table = $handles[ $index ];
-					$response->message           = $handle . '" success';
-				} else {
-					// Finish this step.
-					$response->status  = 'finished';
-					$response->percent = 100;
-					$response->message = $handle . '" success - Handles success';
-				}
+			/**
+			 * Check column end_time_gmt exists.
+			 *
+			 * Copy value end_time_gmt to end_time
+			 *
+			 * Drop column end_time_gmt
+			 */
+			$check_col_end_time_gmt = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'end_time_gmt' );
+			if ( $check_col_end_time_gmt ) {
+				$lp_db->wpdb->query( "UPDATE $lp_db->tb_lp_user_items SET end_time = end_time_gmt WHERE user_item_id > 0" );
+				$lp_db->drop_col_table( $lp_db->tb_lp_user_items, 'end_time_gmt' );
 			}
+
+			// Create index.
+			$indexs = array( 'user_id', 'item_id', 'item_type', 'status', 'ref_type', 'ref_id', 'parent_id' );
+			$lp_db->add_indexs_table( $lp_db->tb_lp_user_items, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
 
-		return $response;
-	}
-
-	/**
-	 * Create table learnpress_user_item_results
-	 *
-	 * @param LP_Database $lp_db .
-	 *
-	 * @return bool|int
-	 */
-	protected function modify_tb_learnpress_user_items( LP_Database $lp_db ) {
-		$lp_db->wpdb->query( "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'" );
-
-		// Add column graduation.
-		$query = $lp_db->wpdb->prepare( "
-				ALTER TABLE $lp_db->tb_lp_user_items
-				ADD COLUMN IF NOT EXISTS graduation varchar(20) AFTER `status`;
-			", 1
-		);
-		$lp_db->wpdb->query( $query );
-
-		// Add column access level.
-		$query = $lp_db->wpdb->prepare( "
-				ALTER TABLE $lp_db->tb_lp_user_items
-				ADD COLUMN IF NOT EXISTS access_level int(3);
-			", 1
-		);
-		$lp_db->wpdb->query( $query );
-
-		// Convert type column start_time, end_time.
-		$this->alter_datetime_default_value( $lp_db );
-
-		/**
-		 * Check column start_time_gmt exists.
-		 *
-		 * Copy value start_time_gmt to start_time
-		 *
-		 * Drop column start_time_gmt
-		 */
-		$check_col_start_time_gmt = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
-		if ( $check_col_start_time_gmt ) {
-			$query = $lp_db->wpdb->prepare(
-				"
-				UPDATE $lp_db->tb_lp_user_items SET start_time = start_time_gmt WHERE user_item_id > 0;
-				", 1
-			);
-			$lp_db->wpdb->query( $query );
-			$lp_db->drop_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
-		}
-
-		/**
-		 * Check column end_time_gmt exists.
-		 *
-		 * Copy value end_time_gmt to end_time
-		 *
-		 * Drop column end_time_gmt
-		 */
-		$check_col_end_time_gmt = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'end_time_gmt' );
-		if ( $check_col_end_time_gmt ) {
-			$query = $lp_db->wpdb->prepare(
-				"
-				UPDATE $lp_db->tb_lp_user_items SET end_time = end_time_gmt WHERE user_item_id > 0;
-				", 1
-			);
-
-			$lp_db->wpdb->query( $query );
-			$lp_db->drop_col_table( $lp_db->tb_lp_user_items, 'end_time_gmt' );
-		}
+		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
 	}
 
 	/**
@@ -400,7 +360,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$lp_db     = LP_Database::getInstance();
 		$page      = 0;
 		$offset    = 0;
-		$limit     = 50;
+		$limit     = 100;
 		$total_row = 0;
 
 		try {
@@ -477,7 +437,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$lp_db     = LP_Database::getInstance();
 		$page      = 0;
 		$offset    = 0;
-		$limit     = 50;
+		$limit     = 100;
 		$total_row = 0;
 
 		try {
@@ -487,7 +447,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					"
 					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
 					WHERE meta_key = '_question_answers'
-					ORDER BY learnpress_user_item_id
 					", 1
 				);
 
@@ -514,16 +473,22 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			}
 
 			foreach ( $quizs_questions_answered as $quiz_question_answered ) {
-				$query_quiz_result = $lp_db->wpdb->prepare(
-					"
-					SELECT meta_value AS quiz_result FROM $lp_db->tb_lp_user_itemmeta
-					WHERE learnpress_user_item_id = %d
-					AND meta_key = %s
-					", $quiz_question_answered->user_item_id, 'results'
+				$query_quiz_result = $lp_db->wpdb->get_var(
+					$lp_db->wpdb->prepare(
+						"
+						SELECT meta_value AS quiz_result FROM $lp_db->tb_lp_user_itemmeta
+						WHERE learnpress_user_item_id = %d
+						AND meta_key = %s
+						", $quiz_question_answered->user_item_id, 'results'
+					)
 				);
 
-				$quiz_result        = unserialize( $lp_db->wpdb->get_var( $query_quiz_result ) );
-				$questions_answered = unserialize( $quiz_question_answered->answered );
+				$quiz_result        = maybe_unserialize( ( $query_quiz_result ) );
+				$questions_answered = maybe_unserialize( $quiz_question_answered->answered );
+
+				if ( ! $quiz_result || ! $questions_answered ) {
+					continue;
+				}
 
 				foreach ( $questions_answered as $question_id => $question_answered ) {
 					if ( isset( $quiz_result['questions'][ $question_id ] ) ) {
@@ -533,7 +498,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 				$result_json = json_encode( $quiz_result );
 
-				// Check exists user_item_id on table learnpress_user_item_results.
+				// Check exists user_item_id value on table learnpress_user_item_results.
 				$check = $lp_db->wpdb->get_var(
 					$lp_db->wpdb->prepare(
 						"
@@ -547,11 +512,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					$lp_db->wpdb->insert( $lp_db->tb_lp_user_item_results,
 						array( 'result' => $result_json, 'user_item_id' => $quiz_question_answered->user_item_id ) );
 				} else {
-//					$lp_db->wpdb->update(
-//						$lp_db->tb_lp_user_item_results,
-//						array( 'result' => $result_json ),
-//						array( 'user_item_id' => $quiz_question_answered->user_item_id )
-//					);
 				}
 			}
 
@@ -567,6 +527,53 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Modify table learnpress_user_itemmeta .
+	 * Must run after Step "convert_result_questions"
+	 * Because change name column name 'learnpress_user_item_id' to 'user_item_id' and meta_key change type from 'text' to varchar(255)
+	 *
+	 * @return LP_Step
+	 */
+	protected function modify_tb_lp_user_itemmeta(): LP_Step {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
+
+		try {
+			$lp_db->wpdb->query(
+				"
+				ALTER TABLE {$lp_db->tb_lp_user_itemmeta}
+				CHANGE COLUMN `meta_key` `meta_key` VARCHAR(255) NOT NULL DEFAULT '',
+				CHANGE COLUMN `meta_value` `meta_value` VARCHAR(255) NOT NULL DEFAULT ''
+				"
+			);
+
+			// Change column name learnpress_question_answer_id to question_answer_id.
+			$check = $lp_db->wpdb->query(
+				"
+				SHOW columns FROM $lp_db->tb_lp_user_itemmeta
+				LIKE 'user_item_id'
+				"
+			);
+			if ( ! $check ) {
+				$lp_db->wpdb->query(
+					"
+					ALTER TABLE {$lp_db->tb_lp_user_itemmeta}
+					CHANGE COLUMN learnpress_user_item_id user_item_id bigint(20)
+					"
+				);
+			}
+			// End change name column .
+
+			// Create index.
+			$indexs = array( 'user_item_id', 'meta_key', 'meta_value' );
+			$lp_db->add_indexs_table( $lp_db->tb_lp_user_itemmeta, $indexs );
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
 	}
 
 	/**
@@ -599,45 +606,29 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		);
 		$lp_db->wpdb->query( $query );
 
-		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+		return $this->finish_step( $response,
+			'Step ' . __FUNCTION__ . ' finished' );
 	}
 
 	/**
-	 * Modify table learnpress_user_itemmeta.
-	 *
-	 * @return LP_Step
+	 * Modify table learnpress_quiz_questions.
 	 */
-	protected function modify_tb_lp_user_itemmeta(): LP_Step {
+	protected function modify_tb_lp_quiz_questions() {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
-		$lp_db->wpdb->query(
-			"
-			ALTER TABLE {$lp_db->tb_lp_user_itemmeta}
-			CHANGE COLUMN `meta_key` `meta_key` VARCHAR(255) NOT NULL DEFAULT '',
-			CHANGE COLUMN `meta_value` `meta_value` VARCHAR(255) NOT NULL DEFAULT ''
-			"
-		);
+		try {
+			$indexs = array( 'quiz_id', 'question_id' );
+			$lp_db->add_indexs_table( $lp_db->tb_lp_quiz_questions, $indexs );
 
-		foreach ( array( 'learnpress_user_item_id', 'meta_key', 'meta_value' ) as $index ) {
-			$lp_db->wpdb->query(
-				"
-				ALTER TABLE {$lp_db->tb_lp_user_itemmeta}
-				DROP INDEX {$index};
-				"
-			);
+			if ( ! empty( $lp_db->wpdb->last_error ) ) {
+				throw new Exception( $lp_db->wpdb->last_error );
+			}
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
 		}
 
-		$lp_db->wpdb->query(
-			"
-			ALTER TABLE {$lp_db->tb_lp_user_itemmeta}
-			ADD INDEX learnpress_user_item_id (learnpress_user_item_id),
-			ADD INDEX meta_key (meta_key),
-			ADD INDEX meta_value (meta_value);
-			"
-		);
-
-		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
+		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
 	}
 
 	/**
@@ -647,30 +638,27 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
-		$query = "
-			ALTER TABLE `{$lp_db->tb_lp_question_answers}`
-			ADD `title` text NULL AFTER `question_id`,
-			ADD `value` varchar(32) NULL AFTER `title`,
-			ADD `order` bigint(20) NULL DEFAULT 1 AFTER `value`,
-			ADD `is_true` varchar(3) NULL AFTER `order`;
-		";
-		$lp_db->wpdb->query( $query );
-
-		foreach ( array( 'question_id' ) as $index ) {
-			$lp_db->wpdb->query(
+		try {
+			$query = $lp_db->wpdb->prepare(
 				"
 				ALTER TABLE {$lp_db->tb_lp_question_answers}
-				DROP INDEX `{$index}`;
-			"
+				ADD `title` text NULL AFTER `question_id`,
+				ADD `value` varchar(32) NULL AFTER `title`,
+				ADD `order` bigint(20) NULL DEFAULT 1 AFTER `value`,
+				ADD `is_true` varchar(3) NULL AFTER `order`;
+			", 1
 			);
-		}
+			$lp_db->wpdb->query( $query );
 
-		$lp_db->wpdb->query(
-			"
-			ALTER TABLE {$lp_db->tb_lp_question_answers}
-			ADD INDEX `question_id` (`question_id` ASC);
-		"
-		);
+			$indexs = array( 'question_id' );
+			$lp_db->add_indexs_table( $lp_db->tb_lp_question_answers, $indexs );
+
+			if ( ! empty( $lp_db->wpdb->last_error ) ) {
+				throw new Exception( $lp_db->wpdb->last_error );
+			}
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
 	}
@@ -682,20 +670,19 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 *
 	 * @return LP_Step
 	 */
-	protected function update_question_answers( array $data = array() ): LP_Step {
+	protected function update_question_answers( array $data ): LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 		global $wpdb;
 		$page      = 0;
 		$offset    = 0;
-		$limit     = 50;
+		$limit     = 100;
 		$total_row = 0;
 
 		try {
 			$offset = absint( get_transient( 'lp_upgrade_question_answers_offset' ) );
 
-			if ( ! $offset ) {
-				$offset = 0;
+			if ( empty( $data ) ) {
 				// Check total rows.
 				$query = $lp_db->wpdb->prepare(
 					"
@@ -704,30 +691,25 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				);
 
 				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
-				set_transient( 'lp_upgrade_question_answers_total_row', $total_row, DAY_IN_SECONDS );
+			} else {
+				$page      = $data['p'];
+				$offset    = $limit * $page;
+				$total_row = $data['total_rows'];
 			}
-
-			$total_row = absint( get_transient( 'lp_upgrade_question_answers_total_row' ) );
 
 			$query = $wpdb->prepare(
 				"
 				SELECT *
-				FROM {$wpdb->learnpress_question_answers}
-				ORDER BY question_answer_id ASC
-				LIMIT %d, %d
-				", $offset, $limit
+				FROM {$lp_db->tb_lp_question_answers}
+				LIMIT %d OFFSET %d
+				", $limit, $offset
 			);
 
 			$rows = $wpdb->get_results( $query );
 
 			if ( ! $rows ) {
-				delete_transient( 'lp_upgrade_question_answers_total_row' );
-				delete_transient( 'lp_upgrade_question_answers_offset' );
-
 				return $this->finish_step( $response, 'Finished ' . __FUNCTION__ );
 			}
-
-			LP_Debug::startTransaction();
 
 			foreach ( $rows as $row ) {
 				$answers    = wp_parse_args(
@@ -738,15 +720,15 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 						'is_true' => '',
 					)
 				);
-				$update_sql = $wpdb->prepare(
+				$update_sql = $lp_db->wpdb->prepare(
 					"
-					UPDATE {$wpdb->learnpress_question_answers}
-					SET `title`=%s,
-						`value`=%s,
-						`is_true`=%s,
-						`order`=%s
+					UPDATE {$lp_db->tb_lp_question_answers}
+					SET `title`= %s,
+						`value`= %s,
+						`is_true`= %s,
+						`order`= %s
 					WHERE question_answer_id=%d
-				",
+					",
 					$answers['text'],
 					$answers['value'] ? $answers['value'] : learn_press_random_value(),
 					$answers['is_true'],
@@ -756,10 +738,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				$wpdb->query( $update_sql );
 			}
 
-			set_transient( 'lp_upgrade_question_answers_offset', $offset + $limit, DAY_IN_SECONDS );
-
-			LP_Debug::commitTransaction();
-
 			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
 
 			$response->status           = 'success';
@@ -768,12 +746,58 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$response->data->p          = ++ $page;
 			$response->data->total_rows = $total_row;
 		} catch ( Exception $e ) {
-			LP_Debug::rollbackTransaction();
-
 			$response->message = $e->getMessage();
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Modify table learnpress_question_answermeta
+	 */
+	protected function modify_tb_lp_question_answermeta() {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
+
+		try {
+			$lp_db->wpdb->query(
+				"
+				ALTER TABLE {$lp_db->tb_lp_question_answermeta}
+				MODIFY COLUMN `meta_key` VARCHAR(255) NOT NULL DEFAULT '',
+				MODIFY COLUMN `meta_value` longtext NULL DEFAULT ''
+				"
+			);
+
+			// Change column name learnpress_question_answer_id to question_answer_id.
+			$check = $lp_db->wpdb->query(
+				"
+				SHOW columns FROM $lp_db->tb_lp_question_answermeta
+				LIKE 'question_answer_id'
+				"
+			);
+			if ( ! $check ) {
+				$lp_db->wpdb->query(
+					"
+				ALTER TABLE {$lp_db->tb_lp_question_answermeta}
+				CHANGE COLUMN learnpress_question_answer_id question_answer_id bigint(20)
+				"
+				);
+			}
+			// End change name column .
+
+			// Create index.
+			$lp_db->drop_indexs_table( $lp_db->tb_lp_question_answermeta );
+			$lp_db->wpdb->query(
+				"
+				ALTER TABLE {$lp_db->tb_lp_question_answermeta}
+				ADD INDEX question_answer_meta (`question_answer_id`, `meta_key`)
+				"
+			);
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 	}
 
 	/**
@@ -789,7 +813,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		global $wpdb;
 		$page      = 0;
 		$offset    = 0;
-		$limit     = 50;
+		$limit     = 100;
 		$total_row = 0;
 
 		try {
@@ -853,13 +877,38 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		return $response;
 	}
 
-	public function delete_columns_question_answers() {
+	protected function delete_columns_question_answers() {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
 		try {
 			$lp_db->drop_col_table( $lp_db->tb_lp_question_answers, 'answer_data' );
 			$lp_db->drop_col_table( $lp_db->tb_lp_question_answers, 'answer_order' );
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
+	}
+
+	/**
+	 * Modify table learnpress_order_items .
+	 */
+	protected function modify_tb_lp_order_items() {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
+
+		try {
+			$lp_db->wpdb->query(
+				"
+	             ALTER TABLE {$lp_db->tb_lp_order_items}
+	             ADD IF NOT EXISTS `item_id` bigint(20) NULL DEFAULT NULL AFTER `order_id`,
+	             ADD IF NOT EXISTS `item_type` varchar(200) NULL DEFAULT NULL AFTER `item_id`
+				"
+			);
+
+			$indexs = array( 'order_id', 'item_id', 'item_type' );
+			$lp_db->add_indexs_table( $lp_db->tb_lp_order_items, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
@@ -882,11 +931,27 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				ALTER TABLE {$lp_db->tb_lp_order_itemmeta}
 				MODIFY COLUMN `meta_key` VARCHAR(255) NOT NULL DEFAULT '',
 				MODIFY COLUMN `meta_value` VARCHAR(255) NOT NULL DEFAULT ''
-			"
+				"
 			);
 
-			$indexs = array( 'learnpress_order_item_id', 'meta_key', 'meta_value' );
+			// Change column name learnpress_order_item_id to order_item_id.
+			$check = $lp_db->wpdb->query(
+				"
+				SHOW columns FROM $lp_db->tb_lp_order_itemmeta
+				LIKE 'order_item_id'
+				"
+			);
+			if ( ! $check ) {
+				$lp_db->wpdb->query(
+					"
+				ALTER TABLE {$lp_db->tb_lp_order_itemmeta}
+				CHANGE COLUMN learnpress_order_item_id order_item_id bigint(20)
+				"
+				);
+			}
+			// End change name column .
 
+			$indexs = array( 'order_item_id', 'meta_key', 'meta_value' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_order_itemmeta, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
@@ -895,310 +960,181 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 	}
 
-	protected function create_table_index(): LP_Step {
-
-	}
-
-	public function update_settings() {
-		if ( $profile_settings = get_option( 'learn_press_profile_endpoints' ) ) {
-			$new_profile_settings = array();
-			foreach ( $profile_settings as $k => $v ) {
-				$new_k = preg_replace( '/^profile-/', '', $k );
-
-				if ( $new_k === 'dashboard' ) {
-					$new_k = 'overview';
-				}
-
-				$new_profile_settings[ $new_k ] = $v;
-			}
-
-			update_option( 'learn_press_profile_endpoints', $new_profile_settings );
-		}
-
-		return true;
-	}
-
-	/**
-	 * Alter table user_items to change the default values for datetime fields
-	 * from '0000-00-00 00:00:00' to NULL.
-	 *
-	 * @param LP_Database $lp_db .
-	 *
-	 * @return bool|int
-	 */
-	public function alter_datetime_default_value( LP_Database $lp_db ) {
-		$query = $lp_db->wpdb->prepare(
-			"
-				ALTER TABLE $lp_db->tb_lp_user_items
-				MODIFY start_time datetime default null,
-				MODIFY end_time datetime default null;
-			", 1
-		);
-
-		return $lp_db->wpdb->query( $query );
-	}
-
 	/**
 	 * Create index table learnpress_sections
 	 */
-	protected function create_index_lp_sections() {
-		global $wpdb;
+	protected function modify_tb_lp_sections() {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
 
-		foreach ( array( 'section_course_id', 'section_id', 'item_id' ) as $index ) {
-			try {
-				$wpdb->query(
-					"
-					ALTER TABLE {$wpdb->learnpress_sections}
-					DROP INDEX `{$index}`;
-				"
-				);
-			} catch ( Exception $ex ) {
-			}
+		try {
+			$indexs = array( 'section_course_id' );
+
+			$lp_db->add_indexs_table( $lp_db->tb_lp_sections, $indexs );
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
 		}
 
-		$wpdb->query(
-			"
-			ALTER TABLE {$wpdb->learnpress_user_items}
-			ADD INDEX `section_course_id` (`section_course_id` ASC),
-			ADD INDEX `section_id` (`section_id` ASC),
-			ADD INDEX `item_id` (`item_id` ASC);
-		"
-		);
+		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 	}
 
 	/**
 	 * Create index table learnpress_section_items
 	 */
-	protected function create_index_lp_section_items() {
-		global $wpdb;
+	protected function modify_tb_lp_section_items() {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
 
-		foreach ( array( 'section_course_id', 'section_id', 'item_id' ) as $index ) {
-			try {
-				$wpdb->query(
-					"
-					ALTER TABLE {$wpdb->learnpress_sections}
-					DROP INDEX `{$index}`;
+		try {
+			$lp_db->drop_indexs_table( $lp_db->tb_lp_section_items );
+
+			$query = $lp_db->wpdb->prepare(
 				"
-				);
-			} catch ( Exception $ex ) {
-			}
-		}
-
-		$wpdb->query(
-			"
-			ALTER TABLE {$wpdb->learnpress_user_items}
-			ADD INDEX `section_course_id` (`section_course_id` ASC),
-			ADD INDEX `section_id` (`section_id` ASC),
-			ADD INDEX `item_id` (`item_id` ASC);
-		"
-		);
-	}
-
-	protected function alter_order_items() {
-		global $wpdb;
-
-		$query = "
-     		 ALTER TABLE `{$wpdb->prefix}learnpress_order_items`
-     		 ADD `order_item_type` varchar(200) NULL DEFAULT NULL AFTER `order_item_name`;
-		";
-		$wpdb->query( $query );
-
-		foreach ( array( 'order_id' ) as $index ) {
-			$wpdb->query(
-				"
-				ALTER TABLE {$wpdb->learnpress_order_items}
-				DROP INDEX `{$index}`;
-			"
+				ALTER TABLE {$lp_db->tb_lp_section_items}
+				ADD INDEX section_item (`section_id`, `item_id`)
+				", 1
 			);
+
+			$lp_db->wpdb->query( $query );
+
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
 		}
 
-		$wpdb->query(
-			"
-			ALTER TABLE {$wpdb->learnpress_order_items}
-			ADD INDEX `order_id` (`order_id` ASC);
-		"
-		);
-	}
-
-	protected function alter_question_answermeta() {
-		global $wpdb;
-
-		$wpdb->query(
-			"
-			ALTER TABLE {$wpdb->learnpress_question_answermeta}
-			CHANGE COLUMN `meta_key` `meta_key` VARCHAR(255) NOT NULL DEFAULT '',
-			CHANGE COLUMN `meta_value` `meta_value` longtext NULL DEFAULT '';
-		"
-		);
-
-		foreach ( array( 'learnpress_question_answer_id', 'meta_key' ) as $index ) {
-			$wpdb->query(
-				"
-				ALTER TABLE {$wpdb->learnpress_question_answermeta}
-				DROP INDEX `{$index}`;
-			"
-			);
-		}
-
-		$wpdb->query(
-			"
-			ALTER TABLE {$wpdb->learnpress_question_answermeta}
-			ADD INDEX `learnpress_question_answer_id` (`learnpress_question_answer_id` ASC),
-			ADD INDEX `meta_key` (`meta_key`(191) ASC);
-		"
-		);
-	}
-
-	protected function alter_quiz_questions() {
-		global $wpdb;
-
-		foreach ( array( 'quiz_id', 'question_id' ) as $index ) {
-			$wpdb->query(
-				"
-				ALTER TABLE {$wpdb->learnpress_quiz_questions}
-				DROP INDEX `{$index}`;
-			"
-			);
-		}
-
-		$wpdb->query(
-			"
-			ALTER TABLE {$wpdb->learnpress_quiz_questions}
-			ADD INDEX `quiz_id` (`quiz_id` ASC),
-			ADD INDEX `question_id` (`question_id` ASC);
-		"
-		);
+		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 	}
 
 	/**
-	 * Swap value between start_time/start_time_gmt and end_time/end_time_gmt
-	 * The field start_time_gmt/end_time_gmt are no longer used therefore
-	 * we keep them to backup values of start_time/end_time fields.
+	 * Convert Learnpress Settings
+	 * 1. Courses thumbnail dimensions convert.
+	 * 2. Profile thumbnail dimensions convert.
+	 * 3. Profile rename dashboard to overview.
+	 * 4. Block course by duration.
+	 * 5. Block course when finished.
+	 * 6. Assessment course by quizzes - Evaluate.
 	 *
-	 * @return bool
+	 * @return LP_Step
 	 */
-	public function update_time_field_from_time_gmt() {
-		global $wpdb;
-
-		$query = $wpdb->prepare(
-			"
-			UPDATE {$wpdb->learnpress_user_items}
-			SET
-				start_time = (@temp:=start_time), start_time = start_time_gmt, start_time_gmt = @temp,
-				end_time = (@temp:=end_time), end_time = end_time_gmt, end_time_gmt = @temp
-			WHERE %d
-		",
-			1
-		);
-
-		$wpdb->query( $query );
-
-		return true;
-	}
-
-	public function update_quiz_settings() {
-		global $wpdb;
-
-		$offset = absint( get_transient( 'lp_upgrade_quiz_settings_offset' ) );
-		$limit  = 100;
-
-		$query = $wpdb->prepare(
-			"
-			SELECT ID
-			FROM {$wpdb->posts}
-			WHERE post_type=%s
-			AND post_status IN(%s, %s)
-			ORDER BY ID ASC
-			LIMIT $offset, $limit
-		",
-			'lp_quiz',
-			'publish',
-			'draft'
-		);
-
-		if ( ! $rows = $wpdb->get_col( $query ) ) {
-			return true;
-		}
+	public function convert_lp_settings(): LP_Step {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
 
 		try {
-			LP_Debug::startTransaction();
+			// Courses thumbnail dimensions convert.
+			$lp_db->wpdb->query(
+				"UPDATE $lp_db->tb_options
+				SET option_name = 'learn_press_course_thumbnail_dimensions'
+				WHERE option_name = 'learn_press_course_thumbnail_image_size'
+				"
+			);
 
-			foreach ( $rows as $post_id ) {
-				$query = $wpdb->prepare(
-					"
-					SELECT *
-					FROM {$wpdb->postmeta}
-					WHERE post_id=%d
-				",
-					$post_id
-				);
+			// Profile thumbnail dimensions convert.
+			$lp_db->wpdb->query(
+				"UPDATE $lp_db->tb_options
+				SET option_name = 'learn_press_avatar_dimensions'
+				WHERE option_name = 'learn_press_profile_picture_thumbnail_size'
+				"
+			);
 
-				if ( ! $metas = $wpdb->get_results( $query ) ) {
-					continue;
-				}
+			// Profile rename dashboard to overview.
+			$learn_press_profile_endpoints = $lp_db->wpdb->get_var(
+				"
+				SELECT option_value FROM $lp_db->tb_options
+				WHERE option_name = 'learn_press_profile_endpoints'
+				"
+			);
 
-				$update_meta = array();
+			$learn_press_profile_endpoints = maybe_unserialize( $learn_press_profile_endpoints );
 
-				foreach ( $metas as $meta ) {
-					switch ( $meta->meta_key ) {
-						case '_lp_review_questions':
-							$update_meta['_lp_review'] = $wpdb->prepare(
-								'(%d, %s, %s)',
-								$meta->post_id,
-								'_lp_review',
-								$meta->meta_value === 'yes' ? 'yes' : 'no'
-							);
-							break;
-
-						case '_lp_show_check_answer':
-							$update_meta['_lp_instant_check'] = $wpdb->prepare(
-								'(%d, %s, %s)',
-								$meta->post_id,
-								'_lp_instant_check',
-								$meta->meta_value === '0' ? 'no' : 'yes'
-							);
-							break;
+			$learn_press_profile_endpoints_tmp = array();
+			if ( $learn_press_profile_endpoints ) {
+				foreach ( $learn_press_profile_endpoints as $k => $val ) {
+					if ( 'profile-dashboard' === $k ) {
+						$learn_press_profile_endpoints_tmp['overview'] = $val;
+					} else {
+						$learn_press_profile_endpoints_tmp[ str_replace( 'profile-', '', $k ) ] = $val;
 					}
 				}
-
-				if ( $update_meta ) {
-					$wpdb->query( "INSERT INTO {$wpdb->postmeta}(`post_id`, `meta_key`, `meta_value`) VALUES" . join( ',',
-							$update_meta ) );
-				}
-
-				$query = $wpdb->prepare(
-					"
-					DELETE FROM {$wpdb->postmeta}
-					WHERE post_id = %d
-				  	AND post_type IN(%s, %s, %s, %s)
-				",
-					array(
-						$post_id,
-						'_lp_review_questions',
-						'_lp_retake_count',
-						'_lp_show_check_answer',
-						'_lp_show_result',
-						'_lp_minus_points',
-						'_lp_minus_skip_questions',
-						'_lp_retake_count',
-						'_lp_archive_history',
-						'_lp_show_check_answer',
-						'_lp_show_hint',
-					)
-				);
-				error_log( 'update_quiz_settings [delete meta]' . $query );
-				// $wpdb->query( $query );
 			}
 
-			set_transient( 'lp_upgrade_quiz_settings_offset', $offset + $limit, DAY_IN_SECONDS );
+			$lp_db->wpdb->query(
+				$lp_db->wpdb->prepare(
+					"UPDATE $lp_db->tb_options
+					SET option_value = %s
+					WHERE option_name = 'learn_press_profile_endpoints'
+					", maybe_serialize( $learn_press_profile_endpoints_tmp )
+				)
+			);
 
-			LP_Debug::commitTransaction();
-		} catch ( Exception $ex ) {
-			LP_Debug::rollbackTransaction();
-			error_log( sprintf( 'update_quiz_settings [%s]: %s', LEARNPRESS_VERSION, $ex->getMessage() ) );
+			// Course settings.
+			// Block course by duration.
+			$lp_db->wpdb->query(
+				"UPDATE $lp_db->tb_postmeta
+				SET meta_key = '_lp_block_expire_duration'
+				WHERE meta_key = '_lp_block_course_item_duration_content'
+				"
+			);
+
+			// Block course when finished.
+			$lp_db->wpdb->query(
+				"UPDATE $lp_db->tb_postmeta
+				SET meta_key = '_lp_block_finished'
+				WHERE meta_key = '_lp_block_lesson_content'
+				"
+			);
+
+			// Assessment course by quizzes - Evaluate.
+			$lp_db->wpdb->query(
+				"UPDATE $lp_db->tb_postmeta
+				SET meta_value = 'evaluate_quiz'
+				WHERE meta_key = '_lp_course_result'
+				AND meta_value = 'evaluate_quizzes'
+				"
+			);
+
+			// End course settings.
+
+			// Quiz settings.
+			$lp_db->wpdb->query(
+				"
+				UPDATE $lp_db->tb_postmeta
+				SET meta_key = 'lp_review'
+				WHERE meta_key = '_lp_review_questions'
+				"
+			);
+
+			$lp_db->wpdb->query(
+				"
+				UPDATE $lp_db->tb_postmeta
+				SET meta_key = '_lp_negative_marking'
+				WHERE meta_key = '_lp_minus_points'
+				"
+			);
+
+			$lp_db->wpdb->query(
+				"
+				UPDATE $lp_db->tb_postmeta
+				SET meta_value = 'yes'
+				WHERE meta_key = '_lp_negative_marking'
+				AND meta_value > 0
+				"
+			);
+
+			$lp_db->wpdb->query(
+				"
+				UPDATE $lp_db->tb_postmeta
+				SET meta_value = 'no'
+				WHERE meta_key = '_lp_negative_marking'
+				AND meta_value != 'yes'
+				"
+			);
+
+			// Delete some fields not use.
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
 		}
 
-		return false;
+		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 	}
 }
 

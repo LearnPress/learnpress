@@ -457,7 +457,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			"
 			SELECT *
 			FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE learnpress_user_item_id = %d
+			WHERE user_item_id = %d
 		",
 			$this->get_user_item_id()
 		);
@@ -939,7 +939,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$query = $wpdb->prepare(
 			"
 			DELETE FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE learnpress_user_item_id = %d
+			WHERE user_item_id = %d
 			{$where}
 		",
 			$this->get_user_item_id()

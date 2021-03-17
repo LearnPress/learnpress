@@ -934,7 +934,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 					"
 					SELECT oim.meta_value cid, COUNT(oim.meta_id) `count`
 					FROM {$wpdb->learnpress_order_itemmeta} oim
-					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
+					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.order_item_id
 						AND oim.meta_key = %s
 					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
 					WHERE o.post_type = %s
