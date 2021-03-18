@@ -703,7 +703,8 @@ class LP_Page_Controller {
 				$wp_query->is_archive = true;
 
 				// Fixed issue with Yoast Seo plugin
-				$wp_query->is_category = learn_press_is_course_category();
+
+//				$wp_query->is_category = learn_press_is_course_category();
 				// Remove causing an error wp-error :: $ taxonomy when yoast seo active
 				// $wp_query->is_tax      = learn_press_is_course_tax();
 				$wp_query->is_single   = false;
