@@ -377,7 +377,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					'multi_choice'   => esc_html__( 'Multi Choice', 'learnpress' ),
 					'single_choice'  => esc_html__( 'Single Choice', 'learnpress' ),
 					'fill_in_blanks' => esc_html__( 'Fill In Blanks', 'learnpress' ),
-					'sorting_choice' => esc_html__( 'Sorting Choice', 'learnpress' ),
 				)
 			);
 

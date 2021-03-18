@@ -32,7 +32,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param mixed
 		 */
 		public function __construct( $post_type, $args = '' ) {
-			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
+			add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
@@ -50,7 +50,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @since 3.3.0
 		 */
-		public function plugins_loaded() {
+		public function wp_loaded() {
 			$default_support_options = apply_filters(
 				'learn-press/default-question-types-support-answer-options',
 				array(
@@ -58,7 +58,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'single_choice',
 					'multi_choice',
 					'fill_in_blanks',
-					'sorting_choice',
 				)
 			);
 
