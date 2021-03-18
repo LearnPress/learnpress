@@ -254,6 +254,32 @@ const courseCurriculum = () => {
 	};
 };
 
+const accordionExtraTab = () => {
+	const elements = document.querySelectorAll( '.course-extra-box' );
+
+	[ ...elements ].map( ( ele ) => {
+		const title = ele.querySelector( '.course-extra-box__title' );
+
+		title.addEventListener( 'click', () => {
+			const panel = title.nextElementSibling;
+			const eleActive = document.querySelector( '.course-extra-box.active' );
+
+			if ( eleActive && ! ele.classList.contains( 'active' ) ) {
+				eleActive.classList.remove( 'active' );
+				eleActive.querySelector( '.course-extra-box__content' ).style.display = 'none';
+			}
+
+			if ( ! ele.classList.contains( 'active' ) ) {
+				ele.classList.add( 'active' );
+				panel.style.display = 'block';
+			} else {
+				ele.classList.remove( 'active' );
+				panel.style.display = 'none';
+			}
+		} );
+	} );
+};
+
 export {
 	initCourseTabs,
 	initCourseSidebar,
@@ -265,6 +291,7 @@ $( window ).on( 'load', () => {
 	let timerClearScroll;
 	const $curriculum = $( '#learn-press-course-curriculum' );
 
+	accordionExtraTab();
 	initCourseTabs();
 	initCourseSidebar();
 	enrollCourse();

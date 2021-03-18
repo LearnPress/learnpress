@@ -9,15 +9,6 @@ import { default as formatDuration } from '../duration';
 const Attempts = () => {
 	const attempts = select( 'learnpress/quiz' ).getData( 'attempts' ) || [];
 
-	const getDurationLabel = ( attempt ) => {
-		return attempt.duration ? formatDuration( attempt.duration ) : __( 'Unlimited', 'learnpress' );
-	};
-
-	const getTimeSpendLabel = ( attempt ) => {
-		const milliseconds = new Date( attempt.endTime ).getTime() - new Date( attempt.startTime ).getTime();
-		return milliseconds ? formatDuration( milliseconds / 1000 ) : '';
-	};
-
 	const hasAttempts = attempts && !! attempts.length;
 
 	return (

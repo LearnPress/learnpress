@@ -636,13 +636,17 @@
 	textarea {
 		width: 50%;
 
-		+ p.description {
+		+ .description {
 			flex-basis: 100%;
 			width: 100%;
 			margin-top: 8px !important;
 			margin-left: 180px !important;
 			color: #666;
 		}
+	}
+
+	input[type="checkbox"] {
+		margin-top: 0;
 	}
 
 	.short {

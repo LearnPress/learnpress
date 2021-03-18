@@ -118,6 +118,8 @@ class LP_Duration {
 
 		if ( $hour ) {
 			$parts['hour'] = $hour;
+		} else {
+			$parts['hour'] = 0;
 		}
 
 		$parts['minute'] = $minute;

@@ -65,9 +65,7 @@ $items = $section->get_items();
 			<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
 
 			<div class="section-meta">
-				<div class="learn-press-progress"
-					 title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ),
-						 round( $percent, 2 ) ) ); ?>">
+				<div class="learn-press-progress" title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ), round( $percent, 2 ) ) ); ?>">
 					<div class="learn-press-progress__active" data-value="<?php echo $percent; ?>"></div>
 				</div>
 			</div>
@@ -88,20 +86,16 @@ $items = $section->get_items();
 			foreach ( $items as $item ) :
 				$can_view_item = $user->can_view_item( $item->get_id(), $can_view_content_course );
 				?>
-				<li class="<?php echo esc_attr( implode( ' ', $item->get_class() ) ); ?>"
-					data-id="<?php echo esc_attr( $item->get_id() ); ?>">
+				<li class="<?php echo esc_attr( implode( ' ', $item->get_class() ) ); ?>" data-id="<?php echo esc_attr( $item->get_id() ); ?>">
 
 					<?php
 					do_action( 'learn-press/before-section-loop-item', $item, $section, $course );
 
 					$item_link = $can_view_item->flag ? $item->get_permalink() : 'javascript:void(0);';
-					$item_link = apply_filters(
-						'learn-press/section-item-permalink', $item_link, $item, $section, $course
-					);
+					$item_link = apply_filters( 'learn-press/section-item-permalink', $item_link, $item, $section, $course );
 					?>
 
-					<a class="section-item-link"
-					   href="<?php echo esc_attr( $item_link ); ?>">
+					<a class="section-item-link" href="<?php echo esc_url( $item_link ); ?>">
 
 						<?php
 						do_action( 'learn-press/before-section-loop-item-title', $item, $section, $course );

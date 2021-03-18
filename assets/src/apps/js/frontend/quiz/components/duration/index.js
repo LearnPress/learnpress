@@ -12,14 +12,6 @@ const formatDuration = ( seconds ) => {
 
 	const x = ( new Date( seconds * 1000 ).toUTCString() ).match( /\d{2}:\d{2}:\d{2}/ )[ 0 ].split( ':' );
 
-	if ( x[ 2 ] === '00' ) {
-		x.splice( 2, 1 );
-	}
-
-	if ( x[ 0 ] === '00' ) {
-		x[ 0 ] = 0;
-	}
-
 	if ( d ) {
 		x[ 0 ] = parseInt( x[ 0 ] ) + ( d * 24 );
 	}

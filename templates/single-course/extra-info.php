@@ -14,12 +14,10 @@ if ( ! isset( $checked ) ) {
 }
 ?>
 
-<input type="radio" name="course-extra-box-ratio" id="course-extra-box-ratio-<?php echo sanitize_key( $title ); ?>" <?php checked( $checked ); ?>/>
-
 <div class="course-extra-box">
-	<label class="course-extra-box__title" for="course-extra-box-ratio-<?php echo sanitize_key( $title ); ?>">
+	<h4 class="course-extra-box__title">
 		<?php echo esc_html( $title ); ?>
-	</label>
+	</h4>
 
 	<div class="course-extra-box__content">
 		<div class="course-extra-box__content-inner">
