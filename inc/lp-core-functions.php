@@ -3412,13 +3412,10 @@ function learnpress_disable_auto_update( $update, $item ) {
 	$plugins = array( // Plugins to  auto-update
 		'learnpress',
 	);
-
+    // Auto-update specified plugins
 	if ( in_array( $item->slug, $plugins ) ) {
 		return false;
-	} // Auto-update specified plugins
-	else {
-		return true;
-	} // Don't auto-update all other plugins
+	}
 }
 
 add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );

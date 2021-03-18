@@ -89,13 +89,22 @@ class LP_Page_Controller {
 		} elseif ( learn_press_is_courses() ) {
 
 			if ( is_plugin_active( 'wordpress-seo/wp-seo.php' ) || is_plugin_active( 'wordpress-seo-premium/wp-seo-premium.php' ) ) {
-				if(is_tax('course_category')){
+
+				if ( is_tax( 'course_category' ) ) {
 					$course_category_id = get_queried_object()->term_id;
-					$wpseo_option = get_option('wpseo_taxonomy_meta', true);
-					$wpseo_option_unserialize = maybe_unserialize($wpseo_option)["course_category"][$course_category_id]["wpseo_title"];
-					$title = $wpseo_option_unserialize;
-				} else{
-					$title =  get_post_meta($course_archive_page_id, '_yoast_wpseo_title', true);
+					$wpseo_option       = get_option( 'wpseo_taxonomy_meta', true );
+					if($wpseo_option){
+						$wpseo_option_unserialize = maybe_unserialize( $wpseo_option )["course_category"][ $course_category_id ];
+						if(!empty($wpseo_option_unserialize["wpseo_title"])){
+							$title                    = $wpseo_option_unserialize["wpseo_title"];
+						} else {
+							$title = get_the_title();
+						}
+
+					}
+					$title = get_the_title();
+				} else {
+					$title = get_post_meta( $course_archive_page_id, '_yoast_wpseo_title', true );
 				}
 
 			}else{
