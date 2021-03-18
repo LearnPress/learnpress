@@ -373,10 +373,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$types = apply_filters(
 				'learn-press/question-types',
 				array(
-					'true_or_false'  => __( 'True Or False', 'learnpress' ),
-					'multi_choice'   => __( 'Multi Choice', 'learnpress' ),
-					'single_choice'  => __( 'Single Choice', 'learnpress' ),
-					'fill_in_blanks' => __( 'Fill In Blanks', 'learnpress' ),
+					'true_or_false'  => esc_html__( 'True Or False', 'learnpress' ),
+					'multi_choice'   => esc_html__( 'Multi Choice', 'learnpress' ),
+					'single_choice'  => esc_html__( 'Single Choice', 'learnpress' ),
+					'fill_in_blanks' => esc_html__( 'Fill In Blanks', 'learnpress' ),
+					'sorting_choice' => esc_html__( 'Sorting Choice', 'learnpress' ),
 				)
 			);
 

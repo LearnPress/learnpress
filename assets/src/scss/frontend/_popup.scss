@@ -1307,6 +1307,16 @@
 				margin: 0 5px 0 0;
 			}
 		}
+
+		.lp-sorting-choice {
+
+			&__check-answer {
+				padding: 5px 20px;
+				border: 2px solid $msg-success;
+				border-radius: 5px;
+				font-size: 1rem;
+			}
+		}
 	}
 
 	.question {

@@ -58,6 +58,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'single_choice',
 					'multi_choice',
 					'fill_in_blanks',
+					'sorting_choice',
 				)
 			);
 

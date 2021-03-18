@@ -1697,7 +1697,7 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 /**
  * Function retake quiz.
  *
- * @param [type] $quiz_id
+ * @param [type]  $quiz_id
  * @param integer $user_id
  * @param integer $course_id
  * @param boolean $wp_error
@@ -1748,6 +1748,9 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 
 	// Create new result in table learnpress_user_item_results.
 	LP_User_Items_Result_DB::instance()->insert( $data->user_item_id );
+
+	// Remove user_item_meta.
+	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
 
 	$user_item->set_status( 'started' )
 				->set_start_time( current_time( 'mysql', true ) )

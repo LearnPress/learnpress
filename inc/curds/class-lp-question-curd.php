@@ -608,6 +608,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			// number answer options
 			$number = count( $answers );
 
+			if ( $question->get_type() === 'sorting_choice' ) {
+				$new_answer['is_true'] = 'yes';
+			}
+
 			global $wpdb;
 
 			$new_answer = wp_parse_args(
@@ -793,7 +797,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'is_true'     => $args['is_true'],
 					'order'       => $args['order'],
 				),
-				array( '%d', '%s', '%d' )
+				array( '%d', '%s', '%s', '%s', '%d' )
 			);
 
 			$question_answer_id = $wpdb->insert_id;

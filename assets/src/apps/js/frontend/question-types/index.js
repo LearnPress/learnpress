@@ -7,15 +7,14 @@ export * from './components';
 
 class QuestionTypes extends Component {
 	getQuestion = () => {
-		const {
-			question,
-		} = this.props;
+		const { question } = this.props;
 
 		const types = LP.Hook.applyFilters( 'question-types', {
 			single_choice: LP.questionTypes.SingleChoice,
 			multi_choice: LP.questionTypes.MultipleChoices,
 			true_or_false: LP.questionTypes.TrueOrFalse,
 			fill_in_blanks: LP.questionTypes.FillInBlanks,
+			sorting_choice: LP.questionTypes.SortingChoice,
 		} );
 
 		return types[ question.type ];

@@ -342,6 +342,16 @@
 			margin: 15px 0 0 0;
 		}
 	}
+
+	&.sorting_choice {
+
+		table.list-question-answers {
+
+			.answer-correct {
+				display: none !important;
+			}
+		}
+	}
 }
 
 .lp-admin-fib-question-editor,

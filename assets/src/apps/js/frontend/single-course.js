@@ -270,5 +270,5 @@ $( window ).on( 'load', () => {
 	enrollCourse();
 	retakeCourse();
 	courseProgress();
-	courseCurriculum();
+	// courseCurriculum();
 } );

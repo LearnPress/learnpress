@@ -160,6 +160,7 @@ class LP_Assets extends LP_Abstract_Assets {
 							'lp-modal',
 							'lp-config',
 							'lp-single-curriculum',
+							'jquery-ui-sortable', //Use in question type: sorting choice - Nhamdv
 						)
 					),
 					array( LP_PAGE_QUIZ ),

@@ -720,6 +720,16 @@
 							}
 						}
 					}
+
+					&.sorting_choice {
+
+						.quiz-question-data table.lp-list-options {
+
+							.answer-correct {
+								display: none !important;
+							}
+						}
+					}
 				}
 			}
 
