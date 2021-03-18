@@ -1088,7 +1088,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 		public function get_user_email() {
 			$email = false;
-			if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
+			$user_id = $this->get_data( 'user_id' );
+			if ( is_array( $user_id ) ) {
+				foreach ( $user_id as $uid ) {
+					$user_id = $uid;
+				}
+			}
+			if ( $user = learn_press_get_user( $user_id ) ) {
 				$email = $user->get_data( 'email' );
 			} // Order is checked out by guest
 			if ( ! $email ) {

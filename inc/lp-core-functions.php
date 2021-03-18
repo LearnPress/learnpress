@@ -3401,3 +3401,50 @@ function learn_press_global_script_params() {
 
 	return $js;
 }
+
+/**
+ * @param $update
+ * @param $item
+ *
+ * @return bool
+ */
+function learnpress_disable_auto_update( $update, $item ) {
+	$plugins = array( // Plugins to  auto-update
+		'learnpress',
+	);
+
+	if ( in_array( $item->slug, $plugins ) ) {
+		return false;
+	} // Auto-update specified plugins
+	else {
+		return true;
+	} // Don't auto-update all other plugins
+}
+
+add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );
+
+
+add_action('in_plugin_update_message-learnpress/learnpress.php', function($plugin_data){
+	version_update_warning( LEARNPRESS_VERSION, $plugin_data['new_version'] );
+});
+function version_update_warning( $current_version, $new_version ) {
+	$current_version_minor_part = explode( '.', $current_version )[1];
+	$new_version_minor_part = explode( '.', $new_version )[1];
+	if ( $current_version_minor_part === $new_version_minor_part ) {
+		return;
+	}
+	?>
+    <hr class="lp-update--warning__separator" />
+    <div class="lp-update--warning">
+        <div>
+            <div class="lp-update-warning__title">
+				<?php echo __( 'Heads up, Please backup before upgrade!', 'learnpress' ); ?>
+            </div>
+            <div class="lp-update-warning__message">
+                <?php echo esc_html__('The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment','learnpress'); ?>
+            </div>
+        </div>
+    </div>
+
+	<?php
+}

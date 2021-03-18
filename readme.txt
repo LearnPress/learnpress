@@ -196,7 +196,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.2.8.8 =
+~ Fix compatible PHP 8.0.3
+~ Fix Yoat SEO course category title not working
 
+~ Fix
 = 3.2.8.7 =
 ~ Fix: start quiz 404
 ~ Optimize

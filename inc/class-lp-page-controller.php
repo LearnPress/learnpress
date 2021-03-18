@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Page_Controller
  */
@@ -50,7 +49,7 @@ class LP_Page_Controller {
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 		// change prioty from 20 to 10 for display course meta title in Yoast Seo
-		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 10, 1 );
+		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 30);
 
 		// Yoast seo
 		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
@@ -70,7 +69,7 @@ class LP_Page_Controller {
 	 * @author tungnx
 	 * @since  3.2.7.7
 	 */
-	public function set_title_pages( $title = '' ) {
+	public function set_title_pages( $title ) {
 		global $wp_query;
 		$flag_title_course = false;
 
@@ -88,10 +87,23 @@ class LP_Page_Controller {
 				$flag_title_course = true;
 			}
 		} elseif ( learn_press_is_courses() ) {
-			if ( learn_press_is_search() ) {
-				$title = __( 'Course Search Results', 'learnpress' );
-			} else {
-				$title = __( 'Courses', 'learnpress' );
+
+			if ( is_plugin_active( 'wordpress-seo/wp-seo.php' ) || is_plugin_active( 'wordpress-seo-premium/wp-seo-premium.php' ) ) {
+				if(is_tax('course_category')){
+					$course_category_id = get_queried_object()->term_id;
+					$wpseo_option = get_option('wpseo_taxonomy_meta', true);
+					$wpseo_option_unserialize = maybe_unserialize($wpseo_option)["course_category"][$course_category_id]["wpseo_title"];
+					$title = $wpseo_option_unserialize;
+				} else{
+					$title =  get_post_meta($course_archive_page_id, '_yoast_wpseo_title', true);
+				}
+
+			}else{
+				if ( learn_press_is_search() ) {
+					$title = __( 'Course Search Results', 'learnpress' );
+				} else {
+					$title = __( 'Courses', 'learnpress' );
+				}
 			}
 
 			$flag_title_course = true;
@@ -125,7 +137,6 @@ class LP_Page_Controller {
 		if ( $flag_title_course ) {
 			$title .= ' - ' . get_bloginfo( 'name', 'display' );
 		}
-
 		return apply_filters( 'learn-press/title-page', $title );
 	}
 
@@ -385,7 +396,6 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
-
 		$this->_maybe_redirect_courses_page();
 		$this->_maybe_redirect_course_item();
 

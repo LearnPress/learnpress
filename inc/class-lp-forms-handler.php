@@ -21,7 +21,7 @@ class LP_Forms_Handler {
 
 		$fields      = learn_press_get_become_a_teacher_form_fields();
 		$field_names = wp_list_pluck( $fields, 'id' );
-		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), $field_names );
+		$args = call_user_func_array( array( 'LP_Request', 'get_list' ), array_keys( $field_names ) );
 
 		$result = new LP_REST_Response();
 
@@ -93,7 +93,7 @@ class LP_Forms_Handler {
 
 		$fields      = LP_Shortcode_Login_Form::get_login_fields();
 		$field_names = wp_list_pluck( $fields, 'id' );
-		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), $field_names );
+		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), array_values($field_names) );
 
 		$result = array(
 			'message' => array(),
@@ -177,7 +177,7 @@ class LP_Forms_Handler {
 
 		$fields      = LP_Shortcode_Register_Form::get_register_fields();
 		$field_names = wp_list_pluck( $fields, 'id' );
-		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), $field_names );
+		$args = call_user_func_array( array( 'LP_Request', 'get_list' ), array_keys( $field_names ) );
 
 		$result = array(
 			'message' => array(),
