@@ -448,12 +448,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			}
 			?>
-            <script type="text/javascript">
-              jQuery(function ($) {
-                $('#post-search-input').prop('placeholder',
-                  '<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>').css('width', 400)
-              })
-            </script>
+			<script type="text/javascript">
+				jQuery(function ($) {
+					$('#post-search-input').prop('placeholder',
+						'<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>').css('width', 400)
+				})
+			</script>
 			<?php
 		}
 
@@ -467,7 +467,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
 			if ( is_admin() && $this->_is_archive() &&
-			     ( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
+				 ( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
 				$statuses = array_keys( learn_press_get_register_order_statuses() );
 				$search   = "{$wpdb->posts}.post_status = 'publish' ";
 				$tmps     = array( $search );
@@ -532,7 +532,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				# search order via course name
 				$sql .= " OR " . $wpdb->prepare( " {$wpdb->posts}.ID IN (
 						SELECT DISTINCT order_id FROM {$wpdb->learnpress_order_items} loi
-						INNER JOIN {$wpdb->learnpress_order_itemmeta} loim ON loi.order_item_id = loim.order_item_id AND loim.meta_key LIKE %s
+						INNER JOIN {$wpdb->learnpress_order_itemmeta} loim ON loi.order_item_id = loim.learnpress_order_item_id AND loim.meta_key LIKE %s
 						WHERE `order_item_name` LIKE %s OR loim.meta_value LIKE %s
 					)", array( '_course_id', $s, $s ) );
 				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
@@ -856,9 +856,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					echo $the_order->get_formatted_order_total();// learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
 					if ( $title = $the_order->get_payment_method_title() ) {
 						?>
-                        <div class="payment-method-title">
+						<div class="payment-method-title">
 							<?php echo $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $title, $the_order ), $the_order ); ?>
-                        </div>
+						</div>
 						<?php
 					}
 					break;

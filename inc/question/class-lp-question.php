@@ -450,7 +450,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$query      = $wpdb->prepare(
 				"
 				DELETE FROM t1, t2
-				USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.question_answer_id
+				USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
 				WHERE t1.question_id = %d
 			",
 				$id
@@ -519,8 +519,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				"
 			    SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
 	            FROM {$wpdb->learnpress_question_answers} qa
-	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam ON qa.question_answer_id = qam.question_answer_id AND qam.meta_key = %s
-	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam2 ON qa.question_answer_id = qam2.question_answer_id AND qam2.meta_key = %s
+	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
+	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
 	            WHERE qa.question_id = %d
 	            ORDER BY `order`
 			",

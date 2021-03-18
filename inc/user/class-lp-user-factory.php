@@ -28,7 +28,7 @@ class LP_User_Factory {
 	 */
 	public static function init() {
 		self::$_guest_transient = WEEK_IN_SECONDS;
-		//add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
+		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
 		add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
@@ -399,8 +399,8 @@ class LP_User_Factory {
 			"
 			SELECT user_id
 			FROM {$wpdb->prefix}learnpress_user_items c
-			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta d ON c.user_item_id = d.user_item_id AND d.meta_key = %s
-			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta e ON c.user_item_id = e.user_item_id AND e.meta_key = %s AND e.meta_value < TIMESTAMPADD(SECOND, %d, NOW())
+			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta d ON c.user_item_id = d.learnpress_user_item_id AND d.meta_key = %s
+			INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta e ON c.user_item_id = e.learnpress_user_item_id AND e.meta_key = %s AND e.meta_value < TIMESTAMPADD(SECOND, %d, NOW())
 		",
 			'temp_user_id',
 			'temp_user_time',
@@ -414,7 +414,7 @@ class LP_User_Factory {
 				FROM {$wpdb->prefix}learnpress_user_items a
 				INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b
 				WHERE %d
-				AND a.user_item_id = b.user_item_id
+				AND a.user_item_id = b.learnpress_user_item_id
 				AND a.user_id IN (" . join( ',', $uids ) . ')
 			',
 				1
@@ -519,7 +519,7 @@ class LP_User_Factory {
 				"
 				SELECT user_item_id
 				FROM {$wpdb->prefix}learnpress_user_items a
-				INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b ON a.user_item_id = b.user_item_id AND b.meta_key = %s And b.meta_value = %s
+				INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b ON a.user_item_id = b.learnpress_user_item_id AND b.meta_key = %s And b.meta_value = %s
 			",
 				'temp_user_id',
 				'yes'
@@ -532,7 +532,7 @@ class LP_User_Factory {
 					DELETE a.*, b.*
 					FROM {$wpdb->prefix}learnpress_user_items a
 					INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b
-					WHERE a.user_item_id = b.user_item_id
+					WHERE a.user_item_id = b.learnpress_user_item_id
 					AND a.user_id = %d
 				",
 					$temp_id

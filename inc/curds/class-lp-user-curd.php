@@ -71,7 +71,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			";
 		}
 
-		$join .= $wpdb->prepare( "LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.user_item_id = X.user_item_id AND uim.meta_key = %s",
+		$join .= $wpdb->prepare( "LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = X.user_item_id AND uim.meta_key = %s",
 			'grade' );
 
 		// Where
@@ -417,7 +417,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					"
 						SELECT meta_value as course_id, order_id
 						FROM {$wpdb->learnpress_order_items} oi
-						INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.order_item_id AND oim.meta_key = %s
+						INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
 						WHERE oi.order_id IN (" . join( ',', $order_ids_format ) . ')
 						ORDER BY FIELD(order_id, ' . join( ',', $order_ids_format ) . ')
 					',
@@ -577,7 +577,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					"
 						SELECT meta_value as course_id, order_id
 						FROM {$wpdb->learnpress_order_items} oi
-						INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.order_item_id AND oim.meta_key = %s
+						INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
 						WHERE oi.order_id IN (" . join( ',', $order_ids_format ) . ')
 						ORDER BY FIELD(order_id, ' . join( ',', $order_ids_format ) . ')
 					',
@@ -779,10 +779,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				"
 				SELECT ui.*, p.post_type AS item_type, grade.meta_value as grade, data.meta_value as data, results.meta_value as results, version.meta_value as version
 				FROM {$wpdb->learnpress_user_items} ui
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} grade ON ui.user_item_id = grade.user_item_id AND grade.meta_key = '%s'
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} data ON ui.user_item_id = data.user_item_id AND data.meta_key = '%s'
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} results ON ui.user_item_id = results.user_item_id AND results.meta_key = '%s'
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} version ON ui.user_item_id = version.user_item_id AND version.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} grade ON ui.user_item_id = grade.learnpress_user_item_id AND grade.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} data ON ui.user_item_id = data.learnpress_user_item_id AND data.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} results ON ui.user_item_id = results.learnpress_user_item_id AND results.meta_key = '%s'
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} version ON ui.user_item_id = version.learnpress_user_item_id AND version.meta_key = '%s'
 				INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id
 				WHERE user_item_id IN(" . LP_Helper::db_format_array( $user_item_ids ) . ')
 					AND  p.post_type IN(' . $item_types_format . ')
@@ -911,7 +911,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			"
 			SELECT *
 			FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE user_item_id = %d
+			WHERE learnpress_user_item_id = %d
 		",
 			$item['user_item_id']
 		);
@@ -1320,7 +1320,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		);
 
 		foreach ( $user_item_ids as $user_item_id ) {
-			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE user_item_id = %d",
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE learnpress_user_item_id = %d",
 				$user_item_id ) );
 			do_action( 'learn-press/deleted-user-item', $user_item_id );
 		}
@@ -1360,7 +1360,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			DELETE
 			FROM ui, uim
 			USING {$wpdb->prefix}learnpress_user_items AS ui
-			LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.user_item_id
+			LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
 			WHERE user_item_id = %d
 		",
 			$user_item_id
@@ -1628,7 +1628,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 								$select .= ', uim.meta_value AS grade';
 								$join   .= $wpdb->prepare(
 									"
-									LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.user_item_id = ui.user_item_id AND uim.meta_key = %s
+									LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
 								",
 									'grade'
 								);
@@ -1779,7 +1779,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
 					) X
 					INNER JOIN {$wpdb->learnpress_user_items} ui ON X.max_id = ui.user_item_id
-					INNER JOIN {$wpdb->learnpress_user_itemmeta} uim ON ui.user_item_id=uim.user_item_id
+					INNER JOIN {$wpdb->learnpress_user_itemmeta} uim ON ui.user_item_id=uim.learnpress_user_item_id
 					WHERE uim.meta_key LIKE '%grade%'
 					AND ui.user_id = %d AND ui.item_type = %s
 					GROUP BY meta_value
@@ -1942,7 +1942,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 								$select .= ', uim.meta_value AS grade';
 								$join   .= $wpdb->prepare(
 									"
-									LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.user_item_id = ui.user_item_id AND uim.meta_key = %s
+									LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
 								",
 									'grade'
 								);
@@ -2045,7 +2045,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			"
 			SELECT *
 			FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE user_item_id = %d
+			WHERE learnpress_user_item_id = %d
 		",
 			$course['user_item_id']
 		);

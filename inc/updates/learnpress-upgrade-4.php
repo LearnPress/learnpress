@@ -33,7 +33,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @see clone_tables
 	 * @see create_tables
 	 * @see modify_tb_lp_user_items
-	 * @see modify_tb_learnpress_user_itemmeta
 	 * @see convert_result_graduation_item
 	 * @see convert_result_questions
 	 * @see modify_tb_lp_user_itemmeta
@@ -549,25 +548,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				"
 			);
 
-			// Change column name learnpress_question_answer_id to question_answer_id.
-			$check = $lp_db->wpdb->query(
-				"
-				SHOW columns FROM $lp_db->tb_lp_user_itemmeta
-				LIKE 'user_item_id'
-				"
-			);
-			if ( ! $check ) {
-				$lp_db->wpdb->query(
-					"
-					ALTER TABLE {$lp_db->tb_lp_user_itemmeta}
-					CHANGE COLUMN learnpress_user_item_id user_item_id bigint(20)
-					"
-				);
-			}
-			// End change name column .
-
 			// Create index.
-			$indexs = array( 'user_item_id', 'meta_key', 'meta_value' );
+			$indexs = array( 'learnpress_user_item_id', 'meta_key', 'meta_value' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_user_itemmeta, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
@@ -768,29 +750,12 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				"
 			);
 
-			// Change column name learnpress_question_answer_id to question_answer_id.
-			$check = $lp_db->wpdb->query(
-				"
-				SHOW columns FROM $lp_db->tb_lp_question_answermeta
-				LIKE 'question_answer_id'
-				"
-			);
-			if ( ! $check ) {
-				$lp_db->wpdb->query(
-					"
-				ALTER TABLE {$lp_db->tb_lp_question_answermeta}
-				CHANGE COLUMN learnpress_question_answer_id question_answer_id bigint(20)
-				"
-				);
-			}
-			// End change name column .
-
 			// Create index.
 			$lp_db->drop_indexs_table( $lp_db->tb_lp_question_answermeta );
 			$lp_db->wpdb->query(
 				"
 				ALTER TABLE {$lp_db->tb_lp_question_answermeta}
-				ADD INDEX question_answer_meta (`question_answer_id`, `meta_key`)
+				ADD INDEX question_answer_meta (`learnpress_question_answer_id`, `meta_key`)
 				"
 			);
 		} catch ( Exception $e ) {
@@ -934,24 +899,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				"
 			);
 
-			// Change column name learnpress_order_item_id to order_item_id.
-			$check = $lp_db->wpdb->query(
-				"
-				SHOW columns FROM $lp_db->tb_lp_order_itemmeta
-				LIKE 'order_item_id'
-				"
-			);
-			if ( ! $check ) {
-				$lp_db->wpdb->query(
-					"
-				ALTER TABLE {$lp_db->tb_lp_order_itemmeta}
-				CHANGE COLUMN learnpress_order_item_id order_item_id bigint(20)
-				"
-				);
-			}
-			// End change name column .
-
-			$indexs = array( 'order_item_id', 'meta_key', 'meta_value' );
+			$indexs = array( 'learnpress_order_item_id', 'meta_key', 'meta_value' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_order_itemmeta, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();

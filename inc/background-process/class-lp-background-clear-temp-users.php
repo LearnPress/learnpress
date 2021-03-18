@@ -48,7 +48,7 @@ if ( ! class_exists( 'LP_Background_Clear_Temp_Users' ) ) {
 					DELETE a.*, b.*
 					FROM {$wpdb->prefix}learnpress_user_items a
 					INNER JOIN {$wpdb->prefix}learnpress_user_itemmeta b
-					WHERE a.user_item_id = b.user_item_id
+					WHERE a.user_item_id = b.learnpress_user_item_id
 					AND a.user_id = %d
 				",
 					$data['users']
