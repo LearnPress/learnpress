@@ -1393,20 +1393,34 @@ body {
 	border: 1px solid rgba(204, 204, 204, 0.3);
 	border-radius: 5px;
 
-	.course-extra-box__title {
-		display: block;
+	&__title {
+		--extra-height: 54px;
+		display: flex;
+		align-items: center;
+		position: relative;
+		height: var(--extra-height);
 		margin: 0;
-		padding: 18px 38px 15px 38px;
+		padding: 0 45px 0 38px;
 		background: rgba(181, 187, 211, 0.15);
-		font-size: 18px;
+		font-size: 1.1rem;
 		font-weight: 600;
 		cursor: pointer;
+
+		&::after {
+			position: absolute;
+			top: 0;
+			right: 20px;
+			color: #666;
+			font-family: "Font Awesome 5 Free";
+			line-height: var(--extra-height);
+			content: "\f0d7";
+		}
 	}
 
-	.course-extra-box__content {
+	&__content {
 		display: none;
 
-		.course-extra-box__content-inner {
+		&-inner {
 
 			-webkit-animation-name: course-extra-box__content-inner-transform;
 			animation-name: course-extra-box__content-inner-transform;
@@ -1454,6 +1468,16 @@ body {
 
 	&:last-child {
 		margin-bottom: 60px;
+	}
+
+	&.active {
+
+		.course-extra-box__title {
+
+			&::after {
+				content: "\f0d8";
+			}
+		}
 	}
 }
 
