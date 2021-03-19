@@ -853,7 +853,7 @@ function learn_press_get_template_part( $slug, $name = '' ) {
 		// check in child theme if have filter learn_press_child_in_parrent_template_path
 
 		$check_child_theme = get_stylesheet_directory() . '/' . learn_press_template_path() . "{$slug}-{$name}.php";
-		if ( $check_child_theme && file_exists( $template_child ) ) {
+		if ( $check_child_theme && file_exists( $check_child_theme ) ) {
 			$template = $check_child_theme;
 		}
 	}
@@ -981,10 +981,10 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 			}
 			// check in child theme if have filter learn_press_child_in_parrent_template_path
 			$check_child_theme = get_stylesheet_directory() . '/' . trailingslashit( $template_path ) . $template_name;
-			if ( $check_child_theme && file_exists( $template_child ) ) {
+			if ( $check_child_theme && file_exists( $check_child_theme ) ) {
 				$template = $check_child_theme;
 			}
-		}
+   		}
 
 	}
 	if ( ! isset( $template ) || ! $template ) {
