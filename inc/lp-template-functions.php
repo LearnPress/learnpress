@@ -841,6 +841,16 @@ function learn_press_get_template_part( $slug, $name = '' ) {
 	if ( ! $template ) {
 		$template = locate_template( array( "{$slug}.php", learn_press_template_path() . "/{$slug}.php" ) );
 	}
+	// override path of child theme in parent theme - Fix for eduma by tuanta
+	$file_ct_in_pr = apply_filters( 'learn_press_child_in_parrent_template_path', '' );
+	if ( $file_ct_in_pr && $name ) {
+		$template_child = locate_template(
+			array( "{$slug}-{$name}.php", 'lp-child-path/' . learn_press_template_path() . '/' . $file_ct_in_pr . "/{$slug}-{$name}.php", )
+		);
+		if ( $template_child && file_exists( $template_child ) ) {
+			$template = $template_child;
+		}
+	}
 
 	// Allow 3rd party plugin filter template file from their plugin
 	if ( $template ) {
@@ -951,8 +961,21 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 				$template_name,
 			)
 		);
-	}
+		// override path of child theme in parent theme - Fix for eduma by tuanta
+		$file_ct_in_pr = apply_filters( 'learn_press_child_in_parrent_template_path', '' );
+		if ( $file_ct_in_pr ) {
+			$template_child = locate_template(
+				array(
+					trailingslashit( 'lp-child-path/' . $template_path . '/' . $file_ct_in_pr ) . $template_name,
+					$template_name,
+				)
+			);
+			if ( $template_child && file_exists( $template_child ) ) {
+				$template = $template_child;
+			}
+		}
 
+	}
 	if ( ! isset( $template ) || ! $template ) {
 		$template = trailingslashit( $default_path ) . $template_name;
 	}
