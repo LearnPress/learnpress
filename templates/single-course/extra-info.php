@@ -15,9 +15,9 @@ if ( ! isset( $checked ) ) {
 ?>
 
 <div class="course-extra-box">
-	<h4 class="course-extra-box__title">
+	<h3 class="course-extra-box__title">
 		<?php echo esc_html( $title ); ?>
-	</h4>
+	</h3>
 
 	<div class="course-extra-box__content">
 		<div class="course-extra-box__content-inner">
