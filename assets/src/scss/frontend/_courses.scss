@@ -18,6 +18,39 @@ a {
 
 .lp-archive-courses {
 
+	&.loading {
+
+		ul.learn-press-courses {
+			position: relative;
+
+			&::after {
+				position: absolute;
+				z-index: 3;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				background: #f3f3f3;
+				background: linear-gradient(90deg, hsla(0, 0%, 74.5%, 0.2) 25%, hsla(0, 0%, 50.6%, 0.24) 37%, hsla(0, 0%, 74.5%, 0.2) 63%);
+				background-size: 400% 100%;
+				list-style: none;
+				content: "";
+				animation: lp-skeleton-loading 1.4s ease infinite;
+			}
+
+			&::before {
+				position: absolute;
+				z-index: 2;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				background: #fff;
+				content: "";
+			}
+		}
+	}
+
 	form[name="search-course"] {
 		position: relative;
 		margin-bottom: 20px;
@@ -767,6 +800,7 @@ a {
 			width: 40px;
 			height: 40px;
 			margin: 0;
+			padding: 0;
 			border-radius: 5px;
 			font-size: 16px;
 			line-height: 40px;

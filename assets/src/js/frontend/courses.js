@@ -10,6 +10,8 @@
 
 		LP.setUrl( url );
 
+		$( '.lp-archive-courses' ).addClass( 'loading' );
+
 		return new Promise( ( resolve, reject ) => {
 			$.ajax( {
 				url,
@@ -35,9 +37,12 @@
 					}, 200 );
 
 					resolve( newEl );
+
+					$( '.lp-archive-courses' ).removeClass( 'loading' );
 				},
 				error: ( response ) => {
 					reject();
+					$( '.lp-archive-courses' ).removeClass( 'loading' );
 				},
 			} );
 		} );
@@ -56,7 +61,7 @@
 			post_type: 'lp_course',
 			wrapElement: '.learn-press-courses',
 		} );
-	}, 300 );
+	}, 600 );
 
 	/**
 	 * Switch layout between Grid and List.
