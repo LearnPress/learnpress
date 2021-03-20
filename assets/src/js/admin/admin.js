@@ -475,6 +475,21 @@
 		}
 
 		$.fn._filter_post_by_author();
+
+		// Scroll to Passing grade when click link final Quiz in Course Setting.
+		if ( window.location.hash ) {
+			const hash = window.location.hash;
+
+			if ( hash == '#_lp_passing_grade' ) {
+				const ele = document.querySelector( hash );
+
+				$( 'html, body' ).animate( {
+					scrollTop: $( hash ).offset().top,
+				}, 900, 'swing' );
+
+				ele.parentNode.style.border = '2px solid orangered';
+			}
+		}
 	};
 
 	$( document ).ready( onReady );

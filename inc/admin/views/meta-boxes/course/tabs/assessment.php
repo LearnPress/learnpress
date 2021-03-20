@@ -20,7 +20,7 @@ if ( $course ) {
 	if ( $final_quiz ) {
 		$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
 
-		$url = get_edit_post_link( $final_quiz );
+		$url = get_edit_post_link( $final_quiz ) . '#_lp_passing_grade';
 
 		$final_quizz_passing = '
 			<div class="lp-metabox-evaluate-final_quiz">

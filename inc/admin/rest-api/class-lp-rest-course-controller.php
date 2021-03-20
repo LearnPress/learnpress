@@ -71,7 +71,9 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 			if ( ! empty( $final_quiz ) ) {
 				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
 				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
-				$url           = get_edit_post_link( $final_quiz );
+
+				$post_type_object = get_post_type_object( LP_QUIZ_CPT );
+				$url              = admin_url( sprintf( $post_type_object->_edit_link . '&action=edit#_lp_passing_grade', $final_quiz ) );
 
 				ob_start();
 				?>
