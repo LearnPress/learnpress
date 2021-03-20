@@ -33,7 +33,7 @@ class LP_Admin_Menu {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
+		//add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
 
 		if ( apply_filters( 'learn_press_show_admin_bar_courses_page', true ) ) {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );

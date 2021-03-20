@@ -254,6 +254,7 @@ class LP_Addon {
 	 * @param        $instance
 	 * @param        $path
 	 * @param string   $plugin_file
+	 * @return void|mixed
 	 */
 	public static function load( $instance, $path, $plugin_file = '' ) {
 		$plugin_folder = '';
@@ -299,6 +300,8 @@ class LP_Addon {
 		$addon_instance->plugin_file = $plugin_file;
 
 		self::$instances[ $instance ] = $addon_instance;
+
+		return $addon_instance;
 	}
 
 	public function get_plugin_url( $sub = '/' ) {
