@@ -163,19 +163,15 @@ const lpGetFinalQuiz = () => {
 			return;
 		}
 
-		const response = await fetch( lpGlobalSettings.root + 'lp/v1/admin/course/get_final_quiz', {
+		const response = await wp.apiFetch( {
+			path: 'lp/v1/admin/course/get_final_quiz',
 			method: 'POST',
-			cache: 'no-cache',
-			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify( {
+			data: {
 				courseId: btn.dataset.postid || '',
-			} ),
+			},
 		} );
 
-		return response.json();
+		return response;
 	};
 };
 

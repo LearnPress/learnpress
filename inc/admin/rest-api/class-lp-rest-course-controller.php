@@ -23,7 +23,9 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_final_quiz' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => function() {
+						return current_user_can( 'edit_posts' );
+					},
 				),
 			),
 		);

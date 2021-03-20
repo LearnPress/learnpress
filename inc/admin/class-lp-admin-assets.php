@@ -100,6 +100,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-color-picker',
 						'jquery-tipsy',
 						'dropdown-pages',
+						'wp-api-fetch',
 						'jquery-ui-timepicker-addon',
 					),
 					array( LP_COURSE_CPT, 'learnpress_page_learn-press-settings' ),
