@@ -1060,3 +1060,22 @@ input[name="_lp_course_result"] {
 		}
 	}
 }
+
+.lp-metabox-evaluate-final_quiz {
+	display: block;
+
+	&__message {
+		display: inline-block;
+		min-width: 50%;
+		margin-top: 10px;
+		padding: 8px 20px;
+		border: 2px solid #36af27;
+		border-radius: 4px;
+		background: #f7f7f7;
+		text-align: center;
+
+		&-error {
+			border-color: lightcoral;
+		}
+	}
+}

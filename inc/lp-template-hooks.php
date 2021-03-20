@@ -677,31 +677,33 @@ function lp_add_notice_update_v4() {
 
 		if ( ! empty( $list_notice ) ) {
 			foreach ( $list_notice as $plugin_file ) {
-				$plugin = $all_plugins[ $plugin_file ];
+				if ( isset( $all_plugins[ $plugin_file ] ) ) {
+					$plugin = $all_plugins[ $plugin_file ];
 
-				if ( version_compare( $plugin['Version'], '4.0', '<' ) ) {
-					add_action(
-						'admin_notices',
-						function() use ( $plugin ) {
-							?>
+					if ( version_compare( $plugin['Version'], '4.0', '<' ) ) {
+						add_action(
+							'admin_notices',
+							function() use ( $plugin ) {
+								?>
 						<div class="error">
 							<p>
-									<?php
-									printf(
-										__(
-											'<strong>%1$s</strong> add-on version %2$s is not compatible with LearnPress latest version. Please update %3$s to version 4.x.',
-											'learnpress'
-										),
-										$plugin['Name'],
-										$plugin['Version'],
-										$plugin['Name']
-									);
-									?>
+										<?php
+										printf(
+											__(
+												'<strong>%1$s</strong> add-on version %2$s is not compatible with LearnPress latest version. Please update %3$s to version 4.x.',
+												'learnpress'
+											),
+											$plugin['Name'],
+											$plugin['Version'],
+											$plugin['Name']
+										);
+										?>
 							</p>
 						</div>
-							<?php
-						}
-					);
+								<?php
+							}
+						);
+					}
 				}
 			}
 		}

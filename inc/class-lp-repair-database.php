@@ -826,10 +826,10 @@ class LP_Repair_Database {
 
 			$items = $course->get_item_ids();
 			if ( $items ) {
-				$end = end( $items );
-
-				if ( learn_press_get_post_type( $end ) === LP_QUIZ_CPT ) {
-					$final_quiz = $end;
+				foreach ( $items as $item ) {
+					if ( learn_press_get_post_type( $item ) === LP_QUIZ_CPT ) {
+						$final_quiz = $item;
+					}
 				}
 			}
 

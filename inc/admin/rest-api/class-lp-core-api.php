@@ -14,6 +14,7 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 
 		include_once dirname( __FILE__ ) . '/class-lp-rest-question-controller.php';
 		include_once dirname( __FILE__ ) . '/class-lp-rest-database-controller.php';
+		include_once dirname( __FILE__ ) . '/class-lp-rest-course-controller.php';
 
 		do_action( 'learn-press/admin/core-api/includes' );
 	}
@@ -22,6 +23,7 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 		$controllers = array(
 			'LP_REST_Admin_Question_Controller',
 			'LP_REST_Admin_Database_Controller',
+			'LP_REST_Admin_Course_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );

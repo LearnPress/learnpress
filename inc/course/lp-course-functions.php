@@ -171,52 +171,6 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 
 add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
 
-/**
- * Get the final quiz for a course if it is existing
- *
- * @param $course_id
- *
- * @return mixed
- * @throws Exception
- *
- * @Todo check this function - when set Evaluate is Final Quiz
- */
-function learn_press_get_final_quiz( $course_id ) {
-	$final_quiz = LP_Object_Cache::get( 'final-quiz-' . $course_id, 'learn-press/final-quiz' );
-
-	if ( false === $final_quiz ) {
-
-		$course = learn_press_get_course( $course_id );
-		if ( ! $course ) {
-			throw new Exception( sprintf( __( 'The course %d does not exists', 'learnpress' ), $course_id ) );
-		}
-		$final_quiz = $course->get_final_quiz();
-
-		if ( $course->get_data( 'course_result' ) == 'evaluate_final_quiz' ) {
-
-			$items = $course->get_items();
-			if ( $items ) {
-				$end = end( $items );
-				if ( learn_press_get_post_type( $end ) === LP_QUIZ_CPT ) {
-					$final_quiz = $end;
-				}
-			}
-
-			if ( $final_quiz ) {
-				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
-			} else {
-				delete_post_meta( $course_id, '_lp_final_quiz' );
-			}
-		} else {
-			delete_post_meta( $course_id, '_lp_final_quiz' );
-		}
-
-		LP_Object_Cache::set( 'final-quiz-' . $course_id, $final_quiz ? $final_quiz : 0, 'learn-press/final-quiz' );
-	}
-
-	return $final_quiz;
-}
-
 function learn_press_item_meta_format( $item, $nonce = '' ) {
 	if ( current_theme_supports( 'post-formats' ) ) {
 		$format = get_post_format( $item );

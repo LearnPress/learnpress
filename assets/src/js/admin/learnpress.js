@@ -125,6 +125,60 @@ const lpMetaboxExtraInfo = () => {
 	} );
 };
 
+// Nhamdv.
+const lpGetFinalQuiz = () => {
+	const btns = document.querySelectorAll( '.lp-metabox-get-final-quiz' );
+
+	[ ...btns ].map( ( btn ) => {
+		btn.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
+
+			const text = btn.textContent,
+				loading = btn.dataset.loading,
+				message = document.querySelector( '.lp-metabox-evaluate-final_quiz' );
+
+			if ( message ) {
+				message.remove();
+			}
+
+			btn.textContent = loading;
+
+			getResponse( btn )
+				.then( ( data ) => {
+					const { message, data: responseData } = data;
+
+					btn.textContent = text;
+
+					const newNode = document.createElement( 'div' );
+					newNode.className = 'lp-metabox-evaluate-final_quiz';
+					newNode.innerHTML = responseData || message;
+
+					btn.parentNode.insertBefore( newNode, btn.nextSibling );
+				} );
+		} );
+	} );
+
+	const getResponse = async ( btn ) => {
+		if ( ! lpGlobalSettings.root ) {
+			return;
+		}
+
+		const response = await fetch( lpGlobalSettings.root + 'lp/v1/admin/course/get_final_quiz', {
+			method: 'POST',
+			cache: 'no-cache',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify( {
+				courseId: btn.dataset.postid || '',
+			} ),
+		} );
+
+		return response.json();
+	};
+};
+
 const lpMetaboxColorPicker = () => {
 	$( '.lp-metabox__colorpick' )
 		.iris( {
@@ -652,6 +706,7 @@ const onReady = function onReady() {
 	lpMetaboxsalePriceDate();
 	lpMetaboxExtraInfo();
 	lpHidePassingGrade();
+	lpGetFinalQuiz();
 
 	$( document )
 		.on( 'click', '.learn-press-payments .status .dashicons', togglePaymentStatus )

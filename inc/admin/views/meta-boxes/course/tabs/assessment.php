@@ -13,24 +13,25 @@ $final_quizz_passing = '';
 $course = learn_press_get_course( $thepostid );
 
 if ( $course ) {
-	$passing_grade = '';
+	$passing_grade = $url = '';
 
 	$final_quiz = $course->get_final_quiz();
 
 	if ( $final_quiz ) {
-		$quiz = learn_press_get_quiz( $final_quiz );
+		$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
 
-		if ( $quiz ) {
-			$passing_grade = $quiz->get_passing_grade();
-		}
+		$url = get_edit_post_link( $final_quiz );
+
+		$final_quizz_passing = '
+			<div class="lp-metabox-evaluate-final_quiz">
+				<div class="lp-metabox-evaluate-final_quiz__message">'
+				. sprintf( esc_html__( 'Passing Grade: %s', 'learpress' ), $passing_grade . '%' ) .
+				' - '
+				. sprintf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ) .
+				'</div>
+			</div>
+		';
 	}
-
-	$final_quizz_passing = '
-		<div id="passing-condition-quiz-result">
-		<input type="number" name="_lp_course_result_final_quiz_passing_condition" value="' . absint( $passing_grade ) . '" /> %
-		<p>' . __( 'This is conditional "passing grade" of Final quiz will apply for result of this course. When you change it here, the "passing grade" also change with new value for the Final quiz.', 'learnpress' ) . '</p>
-		</div>
-	';
 }
 ?>
 

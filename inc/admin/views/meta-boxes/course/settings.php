@@ -269,16 +269,25 @@ class LP_Meta_Box_Course {
 
 		// Assessment.
 		$evalution         = isset( $_POST['_lp_course_result'] ) ? wp_unslash( $_POST['_lp_course_result'] ) : '';
-		$final_quiz        = isset( $_POST['_lp_course_result_final_quiz_passing_condition'] ) ? absint( wp_unslash( $_POST['_lp_course_result_final_quiz_passing_condition'] ) ) : 0;
 		$passing_condition = isset( $_POST['_lp_passing_condition'] ) ? absint( wp_unslash( $_POST['_lp_passing_condition'] ) ) : 0;
 
+		// Update Final Quiz. - Nhamdv
 		if ( $evalution == 'evaluate_final_quiz' ) {
-			$api = LP_Repair_Database::instance();
-			$api->sync_course_final_quiz( $course->get_id() );
+			$items = $course->get_item_ids();
 
-			$quiz_id = $course->get_final_quiz();
+			if ( $items ) {
+				foreach ( $items as $item ) {
+					if ( learn_press_get_post_type( $item ) === LP_QUIZ_CPT ) {
+						$final_quiz = $item;
+					}
+				}
+			}
 
-			update_post_meta( $quiz_id, '_lp_passing_grade', $final_quiz );
+			if ( isset( $final_quiz ) ) {
+				update_post_meta( $post_id, '_lp_final_quiz', $final_quiz );
+			} else {
+				delete_post_meta( $post_id, '_lp_final_quiz' );
+			}
 		}
 
 		update_post_meta( $post_id, '_lp_course_result', $evalution );

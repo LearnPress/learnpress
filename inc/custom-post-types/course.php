@@ -440,14 +440,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			);
 		}
 
-		private function _update_final_quiz() {
-			global $post;
-
-			$final_quiz = learn_press_get_final_quiz( $post->ID );
-
-			return $final_quiz;
-		}
-
 		private function _send_mail() {
 			if ( ! LP()->user->is_instructor() ) {
 				return;
@@ -692,9 +684,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$new_status = get_post_status( $post->ID );
 			$old_status = get_post_meta( $post->ID, '_lp_course_status', true );
-
-			// Final quiz
-			$this->_update_final_quiz();
 
 			// Update price
 			$this->_update_price();
