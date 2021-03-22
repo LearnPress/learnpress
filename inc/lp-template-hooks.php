@@ -575,10 +575,12 @@ function lp_check_addon_is_v4() {
 	if ( ! empty( $active_plugins ) ) {
 		foreach ( $active_plugins as $file ) {
 			if ( preg_match( '/^learnpress-/', $file ) ) {
-				$plugin = $all_plugins[ $file ];
+				if ( isset( $all_plugins[ $file ] ) ) {
+					$plugin = $all_plugins[ $file ];
 
-				if ( version_compare( $plugin['Version'], '4.0', '<' ) ) {
-					$list_plugins[] = $file;
+					if ( version_compare( $plugin['Version'], '4.0', '<' ) ) {
+						$list_plugins[] = $file;
+					}
 				}
 			}
 		}
