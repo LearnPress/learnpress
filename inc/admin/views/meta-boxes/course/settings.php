@@ -288,6 +288,8 @@ class LP_Meta_Box_Course {
 			} else {
 				delete_post_meta( $post_id, '_lp_final_quiz' );
 			}
+		} else {
+			delete_post_meta( $post_id, '_lp_final_quiz' );
 		}
 
 		update_post_meta( $post_id, '_lp_course_result', $evalution );

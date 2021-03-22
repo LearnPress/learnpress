@@ -58,8 +58,23 @@ class QuestionSortingChoice extends QuestionBase {
 		const checker = this.isCorrect;
 		const isCorrect = checker.call( this );
 
+		return this.maybeShowCorrectAnswer() && (
+			<>
+				<div className={ `question-response` + ( isCorrect ? ' correct' : ' incorrect' ) }>
+					<span className="label">{ isCorrect ? __( 'Correct', 'learnpress' ) : __( 'Incorrect', 'learnpress' ) }</span>
+					<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), isCorrect ? question.point : 0, question.point ) }</span>
+				</div>
+			</>
+		);
+	};
+
+	getAnswerSortingChoice = () => {
+		const { question } = this.props;
+
 		const options = question.options || [];
 
+		const checker = this.isCorrect;
+		const isCorrect = checker.call( this );
 		const getAnswer = [];
 
 		if ( ! isCorrect && options.length > 0 ) {
@@ -67,29 +82,18 @@ class QuestionSortingChoice extends QuestionBase {
 				const sorting = option.sorting;
 
 				if ( sorting !== undefined ) {
-					return 	getAnswer[ sorting ] = option.title;
+					return getAnswer[ sorting ] = option.title;
 				}
 			} );
 		}
 
-		return this.maybeShowCorrectAnswer() && (
-			<>
-				<div className={ `question-response` + ( isCorrect ? ' correct' : ' incorrect' ) }>
-					<span className="label">{ isCorrect ? __( 'Correct', 'learnpress' ) : __( 'Incorrect', 'learnpress' ) }</span>
-					<span className="point">{ sprintf( __( '%d/%d point', 'learnpress' ), isCorrect ? question.point : 0, question.point ) }</span>
-				</div>
-
-				{ ! isCorrect && getAnswer.length > 0 && (
-					<div className={ 'lp-sorting-choice__check-answer' }>
-						{ getAnswer.join( ' → ' ) }
-					</div>
-				) }
-			</>
-		);
-	};
+		return getAnswer;
+	}
 
 	render() {
 		const { question } = this.props;
+
+		const getAnswer = this.getAnswerSortingChoice();
 
 		return (
 			<div className="question-answers">
@@ -97,18 +101,26 @@ class QuestionSortingChoice extends QuestionBase {
 				{ this.isDefaultType() && (
 					<ul id={ `answer-options-${ question.id }` } className="answer-options lp-sorting-choice-ul">
 
-						{ this.getOptions().map( ( option ) => {
+						{ this.getOptions().map( ( option, key ) => {
 							return (
-								<li className={ this.getOptionClass( option ).join( ' ' ) } key={ `answer-option-${ option.value }` } data-value={ option.value }>
-									<span className="option-drag" style={ { display: 'flex', alignItems: 'center', position: 'absolute', height: '100%', left: 14 } }>
-										<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none" /><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" /></svg>
-									</span>
+								<>
+									<li className={ this.getOptionClass( option ).join( ' ' ) } key={ `answer-option-${ option.value }` } data-value={ option.value }>
+										<span className="option-drag" style={ { display: 'flex', alignItems: 'center', position: 'absolute', height: '100%', left: 14 } }>
+											<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none" /><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" /></svg>
+										</span>
 
-									<label htmlFor={ `learn-press-answer-option-${ option.value }` }
-										className="option-title"
-										dangerouslySetInnerHTML={ { __html: option.title || option.value } }>
-									</label>
-								</li>
+										<label htmlFor={ `learn-press-answer-option-${ option.value }` }
+											className="option-title"
+											dangerouslySetInnerHTML={ { __html: option.title || option.value } }>
+										</label>
+									</li>
+
+									{ getAnswer.length > 0 && getAnswer[ key ] !== undefined && (
+										<div className={ 'lp-sorting-choice__check-answer' } key={ `lp-checked-answer-${ key }` } style={ { marginBottom: 10 } }>
+											{ getAnswer[ key ] }
+										</div>
+									) }
+								</>
 							);
 						} ) }
 					</ul>
