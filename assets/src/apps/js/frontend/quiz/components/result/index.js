@@ -22,8 +22,30 @@ const Result = () => {
 		return select( 'learnpress/quiz' ).getData( 'passingGrade' );
 	}, [] );
 
+	const QuizID = useSelect( ( select ) => {
+		return select( 'learnpress/quiz' ).getData( 'id' );
+	}, [] );
+
 	useEffect( () => {
 		animate();
+
+		let graduation = '';
+		if ( results.graduation ) {
+			graduation = results.graduation;
+		} else if ( results.result >= passingGradeValue.replace( /[^0-9\.]+/g, '' ) ) {
+			graduation = 'passed';
+		} else {
+			graduation = 'failed';
+		}
+
+		if ( graduation ) {
+			const ele = document.querySelector( `.course-curriculum .course-item.course-item-${ QuizID }` );
+
+			if ( ele ) {
+				ele.classList.remove( 'failed', 'passed' );
+				ele.classList.add( 'has-status', 'status-completed', graduation );
+			}
+		}
 	}, [ results ] );
 
 	const animate = () => {
