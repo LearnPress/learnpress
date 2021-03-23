@@ -45,7 +45,7 @@ class LP_Datetime extends DateTime {
 		if ( $date instanceof LP_Datetime ) {
 			$this->raw_date = $date->get_raw_date();
 		} else {
-			$this->raw_date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date; // phpcs:ignore
+			$this->raw_date = is_numeric( $date ) ? gmdate( 'Y-m-d H:i:s', $date ) : $date;
 		}
 
 		if ( empty( $date ) ) {
@@ -60,7 +60,7 @@ class LP_Datetime extends DateTime {
 			$tz = null;
 		}
 
-		date_default_timezone_set( 'UTC' ); // phpcs:ignore
+		date_default_timezone_set( 'UTC' );
 
 		parent::__construct( $this->raw_date, $tz );
 
@@ -78,8 +78,8 @@ class LP_Datetime extends DateTime {
 	 */
 	public static function get_default_timezone( $tz ) {
 		if ( empty( self::$def_timezone ) ) {
-			if ( ( $tz === null ) ) {
-				$tz = new DateTimeZone( self::timezone_string() );
+			if ( $tz === null ) {
+				$tz = wp_timezone();
 			} elseif ( is_string( $tz ) && $tz ) {
 				$tz = new DateTimeZone( $tz );
 			}
@@ -94,37 +94,6 @@ class LP_Datetime extends DateTime {
 	 */
 	public function is_exceeded( $interval = 0 ) {
 		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval; // phpcs:ignore
-	}
-
-	public static function timezone_string() {
-		if ( $timezone = get_option( 'timezone_string' ) ) { // phpcs:ignore
-			return $timezone;
-		}
-
-		return self::timezone_string_from_offset( intval( get_option( 'gmt_offset', 0 ) ) );
-
-	}
-
-	public static function timezone_string_from_offset( $utc_offset ) {
-		if ( 0 === $utc_offset ) {
-			return 'UTC';
-		}
-
-		$utc_offset *= 3600;
-
-		if ( $timezone = timezone_name_from_abbr( '', $utc_offset ) ) { // phpcs:ignore
-			return $timezone;
-		}
-
-		foreach ( timezone_abbreviations_list() as $abbr ) {
-			foreach ( $abbr as $city ) {
-				if ( ( (bool) date( 'I' ) === (bool) $city['dst'] ) && $city['timezone_id'] && ( intval( $city['offset'] ) === $utc_offset ) ) { // phpcs:ignore
-					return $city['timezone_id'];
-				}
-			}
-		}
-
-		return 'UTC';
 	}
 
 	public function is_null() {
@@ -235,6 +204,7 @@ class LP_Datetime extends DateTime {
 				$time      = $this->getTimestamp( true );// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
 				$time1     = $this->getTimestamp( false );// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
 				$time_diff = ( time() ) - $time1;
+
 				if ( $time_diff > 0 ) {
 					$return = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time1, time() ) );
 				}

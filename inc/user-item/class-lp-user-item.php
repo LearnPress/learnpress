@@ -314,14 +314,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_expiration_time( $format = '' ) {
 		$duration   = get_post_meta( $this->get_item_id(), '_lp_duration', true );
-		$start_time = $this->get_start_time();
+		$start_time = $this->get_start_time( '', false );
 
 		if ( ! absint( $duration ) || ! $start_time ) {
 			return null;
 		}
 
 		$date = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
-
 		return $this->format_time( $date, $format );
 	}
 
