@@ -17,8 +17,8 @@ function lp_meta_box_text_input_field( $field ) {
 	 * If you want to set default value for input text
 	 * You must us hook default_{$meta_type}_metadata | Read more get_metadata_default() function
 	 */
-	$value               = get_post_meta( $thepostid, $field['id'], true );
-	$field['value']      = $field['value'] ?? $field['default'];
+	$field['default']    = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
+	$field['value']      = isset( $field['value'] ) ? $field['value'] : $field['default'];
 	$field_id            = isset( $field['id'] ) ? esc_attr( $field['id'] ) : '';
 	$field['type_input'] = $field['type_input'] ?? 'text';
 	$field['desc_tip']   = $field['desc_tip'] ?? '';
@@ -35,7 +35,7 @@ function lp_meta_box_text_input_field( $field ) {
 	echo '<div class="form-field ' . $field_id . '_field ' . $wrapper_class . '">
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
-	echo '<input type="' . esc_attr( $field['type_input'] ) . '" ' . $class . ' ' . $style . ' name="' . $field['id'] . '" id="' . $field['id'] . '" value="' . $value . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode(
+	echo '<input type="' . esc_attr( $field['type_input'] ) . '" ' . $class . ' ' . $style . ' name="' . $field['id'] . '" id="' . $field['id'] . '" value="' . $field['value'] . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode(
 		' ',
 		$custom_attributes
 	) . ' /> ';
