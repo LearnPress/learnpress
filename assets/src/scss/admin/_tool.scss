@@ -188,3 +188,35 @@
 		}
 	}
 }
+
+.terms-upgrade {
+	max-width: 500px;
+	margin: 0 auto;
+
+	.error {
+		display: none;
+	}
+}
+
+.wrapper-lp-upgrade-message, .wrapper-terms-upgrade {
+	display: none;
+}
+
+.lp-upgrade-message {
+
+	.learn-press-message {
+
+		&::before,
+		&::after {
+			content: none;
+		}
+	}
+}
+
+.lp-modal-footer {
+	.learn-press-notice {
+		color: #ff6060;
+		font-weight: 500;
+		font-style: italic;
+	}
+}

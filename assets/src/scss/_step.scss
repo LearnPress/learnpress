@@ -5,6 +5,13 @@
 		padding: 0 2em;
 	}
 
+	label {
+		margin-bottom: 5px;
+		font-size: 13px;
+		font-weight: 500;
+		font-style: italic;
+	}
+
 	.lp-item-step {
 		display: flex;
 		position: relative;
@@ -15,15 +22,13 @@
 		align-items: center;
 		cursor: pointer;
 
-		&:last-child {
-			border: none;
-		}
-
 		&:hover {
 			background: #eee;
 		}
 
 		.lp-item-step-left {
+			display: inline-flex;
+			align-items: center;
 			position: relative;
 			padding: 0 2em;
 
@@ -128,7 +133,7 @@
 			width: 0;
 			height: 100%;
 			opacity: 0;
-			background: #7c60d9;
+			background: #7c60d9bf;
 			transition: 0.8s linear;
 		}
 	}

@@ -38,10 +38,17 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'upgrade' => array(
+			'upgrade'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'upgrade' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+			'get_steps' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'get_steps' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
@@ -60,33 +67,76 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	 * @return void
 	 */
 	public function upgrade( WP_REST_Request $request ) {
-		// Check version DB need update.
-		$lp_updater = LP_Updater::instance();
-
-		$class_handle = '';
-
-		if ( in_array( (int) LEARNPRESS_VERSION, $lp_updater->db_map_version ) ) {
-			$file_plugin_version = (int) LEARNPRESS_VERSION;
-			$db_version_current  = (int) get_option( 'learnpress_db_version' );
-			$db_map              = (int) $lp_updater->db_map_version[ $file_plugin_version ];
-
-			if ( $db_version_current === $db_map ) {
-				$file_update = LP_PLUGIN_PATH . 'inc/updates/learnpress-upgrade-' . $file_plugin_version . '.php';
-
-				if ( file_exists( $file_update ) ) {
-					include_once $file_update;
-					$name_class_handle_upgrade = 'LP_Upgrade_' . $file_plugin_version;
-					$class_handle              = $name_class_handle_upgrade::get_instance();
-				}
-			}
-		}
+		$lp_updater   = LP_Updater::instance();
+		$result       = new LP_REST_Response();
+		$class_handle = $lp_updater->load_file_version_upgrade_db();
 
 		if ( empty( $class_handle ) ) {
-			return;
+			$result->message = sprintf(
+				'%s %s',
+				__( 'The LP Database is Latest:', 'learnpress' ),
+				'v' . get_option( 'learnpress_db_version' )
+			);
+			wp_send_json( $result );
 		}
 
 		$params = $request->get_params();
 
 		wp_send_json( $class_handle->handle( $params ) );
+	}
+
+	/**
+	 * Load file upgrade database.
+	 *
+	 * @return null|object
+	 */
+//	public function load_file_version_upgrade_db() {
+//		// Check version DB need update.
+//		$lp_updater = LP_Updater::instance();
+//
+//		$class_handle = null;
+//
+//		if ( $lp_updater->check_lp_db_need_upgrade() ) {
+//			$file_plugin_version = $lp_updater->check_lp_db_need_upgrade();
+//
+//			$file_update = LP_PLUGIN_PATH . 'inc/updates/learnpress-upgrade-' . $file_plugin_version . '.php';
+//
+//			if ( file_exists( $file_update ) ) {
+//				include_once $file_update;
+//				$name_class_handle_upgrade = 'LP_Upgrade_' . $file_plugin_version;
+//				$class_handle              = $name_class_handle_upgrade::get_instance();
+//			}
+//		}
+//
+//		return $class_handle;
+//	}
+
+	/**
+	 * Get Steps upgrade completed.
+	 */
+	public function get_steps() {
+		$lp_updater      = LP_Updater::instance();
+		$lp_db           = LP_Database::getInstance();
+		$steps_completed = array();
+		$steps_default   = array();
+
+		$class_handle = $lp_updater->load_file_version_upgrade_db();
+
+		if ( ! empty( $class_handle ) ) {
+			$steps_default = $class_handle->group_steps;
+
+			$tb_lp_upgrade_db_exists = $lp_db->check_table_exists( $lp_db->tb_lp_upgrade_db );
+
+			if ( $tb_lp_upgrade_db_exists ) {
+				$steps_completed = $lp_db->get_steps_completed();
+			}
+		}
+
+		$steps = array(
+			'steps_default'   => $steps_default,
+			'steps_completed' => $steps_completed,
+		);
+
+		wp_send_json( $steps );
 	}
 }

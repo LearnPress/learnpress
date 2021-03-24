@@ -26,15 +26,23 @@ class LP_Updater {
 		 * When modify or create new Tables, need change version.
 		 * Ex: 5.x.x => 6.0.0
 		 */
+//		$this->db_map_version = apply_filters(
+//			'lp/upgrade/db/map_version',
+//			array(
+//				'4' => '3', // 4.0.0 <=> 3.x.x
+//				'5' => '4', // 5.0.0 <=> 4.x.x
+//			)
+//		);
+
 		$this->db_map_version = apply_filters(
 			'lp/upgrade/db/map_version',
 			array(
-				'4' => '3', // 4.0.0 <=> 3.x.x
-				'5' => '4', // 5.0.0 <=> 4.x.x
+				'3' => 4, // DB v3 need up DB v4
+				'4' => 5, // DB v4 need up DB v5
 			)
 		);
 		add_action( 'admin_init', array( $this, 'do_update' ) );
-		add_action( 'admin_notices', array( $this, 'check_update_message' ), 20 );
+		add_action( 'admin_notices', array( $this, 'check_update_database_message' ));
 
 		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
 			add_action( 'admin_notices', array( $this, 'update_message' ) );
@@ -205,26 +213,54 @@ class LP_Updater {
 	}
 
 	/**
-	 * Show message for new update
+	 * Check LP Database need upgrade.
+	 *
+	 * @return bool|int
 	 */
-	public function check_update_message() {
+	public function check_lp_db_need_upgrade() {
 		if ( ! current_user_can( 'administrator' ) ) {
-			return;
+			return false;
 		}
 
-		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
-			return;
+		$db_current_version = (int) get_option( 'learnpress_db_version' );
+		$lp_version         = (int) LP()->version;
+
+		if ( array_key_exists( $db_current_version, $this->db_map_version )
+		     && $this->db_map_version[ $db_current_version ] === $lp_version ) {
+			return $this->db_map_version[ $db_current_version ];
 		}
 
-		if ( LP()->session->get( 'do-update-learnpress' ) ) {
-			learn_press_admin_view( 'updates/html-updated-latest-message' );
+		return false;
+	}
 
-			return;
+	/**
+	 * Load file upgrade database.
+	 *
+	 * @return null|object
+	 */
+	public function load_file_version_upgrade_db() {
+		$class_handle = null;
+
+		if ( $this->check_lp_db_need_upgrade() ) {
+			$file_plugin_version = $this->check_lp_db_need_upgrade();
+
+			$file_update = LP_PLUGIN_PATH . 'inc/updates/learnpress-upgrade-' . $file_plugin_version . '.php';
+
+			if ( file_exists( $file_update ) ) {
+				include_once $file_update;
+				$name_class_handle_upgrade = 'LP_Upgrade_' . $file_plugin_version;
+				$class_handle              = $name_class_handle_upgrade::get_instance();
+			}
 		}
 
-		$db_version = get_option( 'learnpress_db_version' );
+		return $class_handle;
+	}
 
-		if ( ! $db_version || version_compare( $db_version, LEARNPRESS_VERSION, '>=' ) ) {
+	/**
+	 * Show message needs upgrades database compatible with LP version current.
+	 */
+	public function check_update_database_message() {
+		if ( ! $this->check_lp_db_need_upgrade() ) {
 			return;
 		}
 

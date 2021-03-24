@@ -120,6 +120,9 @@ class LP_Gateways {
 		$is_selected         = false;
 
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
+			if ( ! is_object( $gateway ) ) {
+				continue;
+			}
 
 			/**
 			 * @deprecated
@@ -164,9 +167,9 @@ class LP_Gateways {
 	/**
 	 * @param string $id
 	 *
+	 * @return bool|LP_Gateway_Abstract
 	 * @since 3.0.0
 	 *
-	 * @return bool|LP_Gateway_Abstract
 	 */
 	public function get_gateway( $id ) {
 		$gateways = $this->get_gateways();

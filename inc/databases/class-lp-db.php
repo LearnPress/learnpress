@@ -17,6 +17,7 @@ class LP_Database {
 	public $tb_lp_user_item_results;
 	public $tb_lp_question_answers;
 	public $tb_lp_question_answermeta;
+	public $tb_lp_upgrade_db;
 
 	protected function __construct() {
 		/**
@@ -40,6 +41,7 @@ class LP_Database {
 		$this->tb_lp_user_item_results   = $prefix . 'learnpress_user_item_results';
 		$this->tb_lp_question_answers    = $prefix . 'learnpress_question_answers';
 		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
+		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
 		$this->wpdb->hide_errors();
 	}
 
@@ -142,6 +144,17 @@ class LP_Database {
 	}
 
 	/**
+	 * Check table exists.
+	 *
+	 * @param string $name_table
+	 *
+	 * @return bool|int
+	 */
+	public function check_table_exists( string $name_table ) {
+		return $this->wpdb->query( $this->wpdb->prepare( "SHOW TABLES LIKE %s", $name_table ) );
+	}
+
+	/**
 	 * Clone table
 	 *
 	 * @param string $name_table .
@@ -149,6 +162,10 @@ class LP_Database {
 	 * @return bool|int
 	 */
 	public function clone_table( string $name_table ) {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
 		$primary_key = $this->wpdb->get_row( "SHOW COLUMNS FROM $name_table" );
 
 		if ( $primary_key ) {
@@ -187,6 +204,10 @@ class LP_Database {
 	 * @return bool|int
 	 */
 	public function drop_col_table( string $name_table, string $name_col ) {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
 		$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP COLUMN IF EXISTS $name_col", 1 );
 
 		return $this->wpdb->query( $query );
@@ -266,5 +287,51 @@ class LP_Database {
 		);
 
 		return $this->wpdb->query( $query );
+	}
+
+	/**
+	 * Create table learnpress_upgrade_db
+	 *
+	 * @return bool|int
+	 */
+	public function create_tb_lp_upgrade_db() {
+		$query = $this->wpdb->prepare(
+			"
+				CREATE TABLE IF NOT EXISTS {$this->tb_lp_upgrade_db}(
+					step varchar(255) PRIMARY KEY UNIQUE,
+					status varchar(20),
+					KEY status (status)
+				)
+			", 1
+		);
+
+		return $this->wpdb->query( $query );
+	}
+
+	/**
+	 * Set step completed.
+	 *
+	 * @param string $step .
+	 * @param string $status .
+	 *
+	 * @return int|bool
+	 */
+	public function set_step_complete( string $step, string $status ) {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
+		return $this->wpdb->insert(
+			$this->tb_lp_upgrade_db,
+			array( 'step' => $step, 'status' => $status ),
+			array( '%s', '%s' )
+		);
+	}
+
+	/**
+	 * @return array|object|null
+	 */
+	public function get_steps_completed() {
+		return $this->wpdb->get_results( "SELECT step, status FROM {$this->tb_lp_upgrade_db}", OBJECT_K );
 	}
 }

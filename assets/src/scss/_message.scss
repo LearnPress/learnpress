@@ -1,0 +1,127 @@
+$msg-color: #00adff;
+$msg-success: #059601;
+$msg-error: #d85554;
+$msg-waring: #ffc107;
+
+.learn-press-message {
+	position: relative;
+	margin: 0 0 20px 0;
+	padding: 10px 12px 10px 15px;
+	border-top: 5px solid $msg-color;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	background: #f5f5f5;
+
+	&.icon {
+		padding-left: 45px;
+
+		&::before {
+			background: $msg-color;
+
+		}
+
+		&::after {
+			position: absolute;
+			top: 50%;
+			left: 15px;
+			width: 26px;
+			height: 26px;
+			margin-top: -13px;
+			margin-right: 10px;
+			border-radius: 50%;
+			color: #fff;
+			background: $msg-color;
+			font-family: "Font Awesome 5 Free";
+			font-size: 20px;
+			line-height: 26px;
+			text-align: center;
+			vertical-align: baseline;
+			content: "\f129";
+		}
+	}
+
+	&::before,
+	&::after {
+		position: absolute;
+		top: 0;
+		content: "";
+		//border-top-left-radius: 5px;
+		//border-bottom-left-radius: 5px;
+	}
+
+	&::before {
+		right: 20px;
+		width: 20px;
+		height: 30px;
+		background: $msg-color;
+	}
+
+	&::after {
+		top: 10px;
+		right: 20px;
+		width: 0;
+		height: 0;
+		border: 10px solid transparent;
+		border-bottom-color: #f5f5f5;
+	}
+
+	&.error {
+		border-top: 5px solid $msg-error;
+
+		&::before {
+			background: $msg-error;
+		}
+
+		&.icon {
+
+			&::before {
+				background: $msg-error;
+			}
+
+			&::after {
+				background: $msg-error;
+				content: "\f00d";
+			}
+		}
+	}
+
+	&.warning {
+		border-top: 5px solid $msg-waring;
+
+		&::before {
+			background: $msg-waring;
+		}
+
+		&.icon {
+
+			&::before {
+				background: $msg-waring;
+			}
+
+			&::after {
+				background: $msg-waring;
+				content: "\f00d";
+			}
+		}
+	}
+
+	&.success {
+		border-top: 5px solid $msg-success;
+
+		&::before {
+			background: $msg-success;
+		}
+
+		&.icon {
+
+			&::before {
+				background: $msg-success;
+			}
+
+			&::after {
+				background: $msg-success;
+				content: "\f129";
+			}
+		}
+	}
+}
