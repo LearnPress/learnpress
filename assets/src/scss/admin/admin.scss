@@ -1,4 +1,5 @@
 @import "../mixin";
+@import "../message";
 @import "../general";
 @import "general";
 @import "advertisment";
@@ -21,6 +22,7 @@
 @import "../ajaxload";
 @import "responsive";
 @import "rtl";
+@import "../frontend/skeleton-animation";
 
 .button {
 

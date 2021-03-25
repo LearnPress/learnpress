@@ -171,7 +171,7 @@ abstract class LP_Abstract_Assets {
 	 * @reason not use
 	 * @deprecated 3.2.8
 	 */
-	protected function _register_scripts() {
+	/*protected function _register_scripts() {
 		$wp_scripts = $this->_get_wp_scripts();
 		$wp_styles  = $this->_get_wp_styles();
 
@@ -230,7 +230,7 @@ abstract class LP_Abstract_Assets {
 				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
 			}
 		}
-	}
+	}*/
 
 	public function get_script_var_name( $handle ) {
 		$handle = str_replace( array( 'learn-press', 'lp', '_', '-' ), ' ', $handle );

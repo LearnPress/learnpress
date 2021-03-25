@@ -1,14 +1,13 @@
 <?php
-/**
- * Todo: update emails
- */
-
-require_once dirname( __FILE__ ) . '/learnpress-update-base.php';
 
 /**
  * Class LP_Upgrade_4
  *
  * Helper class for updating database to 4.0.0
+ *
+ * @version 1.0.0
+ * @author tungnx
+ * @since 4.0.0
  */
 class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	/**
@@ -30,8 +29,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	/**
 	 * LP_Upgrade_4 constructor.
 	 *
-	 * @see clone_tables
 	 * @see create_tables
+	 * @see clone_tables
 	 * @see modify_tb_lp_user_items
 	 * @see convert_result_graduation_item
 	 * @see convert_result_questions
@@ -56,95 +55,176 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			array(
 				'learnpress_user_items' => new LP_Group_Step(
 					'learnpress_user_items',
-					'Merge table learnpress_user_items',
+					'',
 					array(
-						new LP_Step( 'clone_tables', 'Backup Tables',
-							'learnpress_user_items, learnpress_user_itemmeta' ),
-						new LP_Step( 'create_tables', 'Create tables', 'learnpress_user_item_results' ),
-						new LP_Step(
+						'create_tables'                       => new LP_Step(
+							'create_tables',
+							'Create tables',
+							'learnpress_user_item_results'
+						),
+						'clone_tables'                        => new LP_Step(
+							'clone_tables',
+							'Backup Tables',
+							'learnpress_user_items, learnpress_user_itemmeta, learnpress_question_answers, postmeta, options'
+						),
+						'modify_tb_lp_user_items'             => new LP_Step(
 							'modify_tb_lp_user_items',
 							'Modify table learnpress_user_items',
 							'Modify table learnpress_user_items, move the result of students on table learnpress_uset_itemmeta to learnpress_user_item_results'
 						),
-						new LP_Step(
+						'convert_result_graduation_item'      => new LP_Step(
 							'convert_result_graduation_item',
 							'Convert Data Result courses, items\' courses',
 							''
 						),
-						new LP_Step(
+						'convert_result_questions'            => new LP_Step(
 							'convert_result_questions',
 							'Convert Data Result questions',
 							''
 						),
-						new LP_Step(
+						'remove_data_lp_user_itemmeta'        => new LP_Step(
 							'remove_data_lp_user_itemmeta',
 							'Remove data results of lp_user_itemmeta',
 							''
 						),
-						new LP_Step(
+						'modify_tb_lp_user_itemmeta'          => new LP_Step(
 							'modify_tb_lp_user_itemmeta',
 							'Modify table learnpress_user_itemmeta',
-							'Change Column "learnpress_user_item_id" to "user_item_id", Create Index: user_item_id, meta_key, meta_value'
+							'Change type columns: meta_key, meta_value. Create Index: user_item_id, meta_key, meta_value'
 						),
-						new LP_Step(
+						'modify_tb_lp_quiz_questions'         => new LP_Step(
 							'modify_tb_lp_quiz_questions',
 							'Modify table learnpress_quiz_questions',
 							''
 						),
-						new LP_Step(
+						'modify_tb_lp_question_answers'       => new LP_Step(
 							'modify_tb_lp_question_answers',
 							'Modify table learnpress_question_answers',
 							''
 						),
-						new LP_Step(
+						'update_question_answers'             => new LP_Step(
 							'update_question_answers',
 							'Update data table learnpress_question_answers',
 							''
 						),
-						new LP_Step(
+						'modify_tb_lp_question_answermeta'    => new LP_Step(
 							'modify_tb_lp_question_answermeta',
 							'Modify table learnpress_question_answermeta',
 							''
 						),
-						new LP_Step(
+						'convert_question_type_fill_in_blank' => new LP_Step(
 							'convert_question_type_fill_in_blank',
 							'Update data question type "Fill in blank"',
 							''
 						),
-						new LP_Step(
+						'delete_columns_question_answers'     => new LP_Step(
 							'delete_columns_question_answers',
 							'Delete data table learnpress_question_answers',
 							''
 						),
-						new LP_Step(
+						'modify_tb_lp_order_items'            => new LP_Step(
 							'modify_tb_lp_order_items',
 							'Modify data table learnpress_order_items',
 							''
 						),
-						new LP_Step(
+						'modify_tb_lp_order_itemmeta'         => new LP_Step(
 							'modify_tb_lp_order_itemmeta',
 							'Modify data table learnpress_order_itemmeta',
 							''
 						),
-						new LP_Step(
+						'modify_tb_lp_sections'               => new LP_Step(
 							'modify_tb_lp_sections',
 							'Modify table learnpress_sections',
 							'Create Index'
 						),
-						new LP_Step(
+						'modify_tb_lp_section_items'          => new LP_Step(
 							'modify_tb_lp_section_items',
 							'Modify table learnpress_section_items',
 							'Create Index'
 						),
-						new LP_Step(
+						'convert_lp_settings'                 => new LP_Step(
 							'convert_lp_settings',
 							'Convert data settings learnpress',
 							'Courses thumbnail dimensions, Profile thumbnail dimensions, Profile rename dashboard to overview, Block course by duration, Block course when finished, Assessment course by quizzes - Evaluate, '
-						)
+						),
 					)
 				),
 			)
 		);
+		add_action( 'lp/db/upgrade/finish', array( $this, 'save_db_when_step_finish' ) );
+	}
+
+	/**
+	 * Step Create Tables
+	 *
+	 * @param array $data
+	 *
+	 * @return LP_Step
+	 */
+	protected function create_tables( array $data ): LP_Step {
+		$response         = new LP_Step( __FUNCTION__, '' );
+		$key_create_table = 'create_table';
+		$create_table     = '';
+
+		try {
+			/**
+			 * All tables need create.
+			 * key: name table
+			 * value: function handle create this table
+			 *
+			 * @see LP_Database::create_tb_lp_user_item_results
+			 * @see LP_Database::create_tb_lp_upgrade_db()
+			 */
+			$lp_db                    = LP_Database::getInstance();
+			$create_tables            = array(
+				'tb_lp_user_item_results',
+				'tb_lp_upgrade_db',
+			);
+			$total_tables_need_create = count( $create_tables );
+
+			// Check table need create.
+			if ( empty( $data ) ) {
+				$create_table = $create_tables[0];
+			} elseif ( ! empty( $data[ $key_create_table ] )
+			           && in_array( $data[ $key_create_table ], $create_tables ) ) {
+				$create_table = $data[ $key_create_table ];
+			}
+
+			if ( empty( $create_table ) ) {
+				// Finish this step.
+				$this->finish_step( $response, __FUNCTION__ . ' finished' );
+			} else {
+				// Create table.
+				$name_method = 'create_' . $create_table;
+				if ( ! method_exists( $lp_db, $name_method ) ) {
+					throw new Exception( 'Not found method ' . $name_method . ' of Class ' . get_class( $lp_db ) );
+				}
+				$lp_db->{$name_method}();
+
+				if ( $lp_db->wpdb->last_error ) {
+					throw new Exception( $lp_db->wpdb->last_error );
+				}
+
+				// Set param to clone table next.
+				$index   = array_search( $create_table, $create_tables );
+				$percent = LP_Helper::progress_percent( $index, 1, $total_tables_need_create );
+				++ $index;
+
+				if ( ! empty( $create_tables[ $index ] ) ) {
+					$response->status             = 'success';
+					$response->percent            = $percent;
+					$response->data->create_table = $create_tables[ $index ];
+					$response->message            = 'Table "' . $create_table . '" created';
+				} else {
+					// Finish this step.
+					$this->finish_step( $response, __FUNCTION__ . ' finished' );
+				}
+			}
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
 	}
 
 	/**
@@ -168,6 +248,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				$lp_db->tb_lp_user_items,
 				$lp_db->tb_lp_user_itemmeta,
 				$lp_db->tb_lp_question_answers,
+				$lp_db->tb_postmeta,
+				$lp_db->tb_options,
 			);
 
 			$total_tables_need_clone = count( $clone_tables );
@@ -187,90 +269,19 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				// Clone table.
 				$lp_db->clone_table( $clone_table );
 				if ( $lp_db->wpdb->last_error ) {
-					throw new Exception( 'Has error, please try again or contact supporter!' );
+					throw new Exception( $lp_db->wpdb->last_error );
 				}
 
 				// Set param to clone table next.
-				$index = array_search( $clone_table, $clone_tables );
-				++ $index;
+				$index   = array_search( $clone_table, $clone_tables );
 				$percent = LP_Helper::progress_percent( $index, 1, $total_tables_need_clone );
+				++ $index;
 
 				if ( ! empty( $clone_tables[ $index ] ) ) {
 					$response->status            = 'success';
 					$response->percent           = $percent;
 					$response->data->clone_table = $clone_tables[ $index ];
 					$response->message           = 'Table "' . $clone_table . '" cloned';
-				} else {
-					// Finish this step.
-					$this->finish_step( $response, __FUNCTION__ . ' finished' );
-				}
-			}
-		} catch ( Exception $e ) {
-			$response->message = $e->getMessage();
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Step Create Tables
-	 *
-	 * @param array $data
-	 *
-	 * @return LP_Step
-	 */
-	protected function create_tables( array $data ): LP_Step {
-		$response         = new LP_Step( __FUNCTION__, '' );
-		$key_create_table = 'create_table';
-		$create_table     = '';
-
-		try {
-			/**
-			 * All tables need create.
-			 * key: name table
-			 * value: function handle create this table
-			 *
-			 * @see LP_Database::create_tb_lp_user_item_results
-			 */
-			$lp_db                    = LP_Database::getInstance();
-			$create_tables            = array(
-				'tb_lp_user_item_results',
-			);
-			$total_tables_need_create = count( $create_tables );
-
-			// Check table need create.
-			if ( empty( $data ) ) {
-				$create_table = $create_tables[0];
-			} elseif ( ! empty( $data[ $key_create_table ] )
-			           && in_array( $data[ $key_create_table ], $create_tables, true ) ) {
-				$create_table = $data[ $key_create_table ];
-			}
-
-			if ( empty( $create_table ) ) {
-				// Finish this step.
-				$this->finish_step( $response, __FUNCTION__ . ' finished' );
-			} else {
-				// Create table.
-				$name_method = 'create_' . $create_table;
-				if ( ! method_exists( $lp_db, $name_method ) ) {
-					throw new Exception( 'Not found method ' . $name_method . ' of Class ' . get_class( $lp_db ) );
-				}
-				$lp_db->{$name_method}();
-
-				if ( $lp_db->wpdb->last_error ) {
-					return $response;
-				}
-
-				// Set param to clone table next.
-				$index = array_search( $create_table, $create_tables );
-				++ $index;
-				$percent = LP_Helper::progress_percent( $index, 1, $total_tables_need_create );
-
-				if ( ! empty( $create_tables[ $index ] ) ) {
-					$response->status            = 'success';
-					$response->percent           = $percent;
-					$response->data->clone_table = $create_tables[ $index ];
-					$response->message           = 'Table "' . $create_table . '" created';
 				} else {
 					// Finish this step.
 					$this->finish_step( $response, __FUNCTION__ . ' finished' );
@@ -694,6 +705,10 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			}
 
 			foreach ( $rows as $row ) {
+				if ( ! isset( $row->answer_data ) ) {
+					continue;
+				}
+
 				$answers    = wp_parse_args(
 					maybe_unserialize( $row->answer_data ),
 					array(
@@ -1078,11 +1093,24 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			);
 
 			// Delete some fields not use.
+
+			// Finish upgrade.
+			update_option( 'learnpress_db_version', '4' );
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
+	}
+
+	/**
+	 * Save step status completed .
+	 *
+	 * @param LP_Step $step .
+	 */
+	public function save_db_when_step_finish( LP_Step $step ) {
+		$lp_db = LP_Database::getInstance();
+		$lp_db->set_step_complete( $step->name, 'completed' );
 	}
 }
 

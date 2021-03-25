@@ -1,3 +1,5 @@
+import { lpModalOverlay, elLPOverlay } from '../lp-modal-overlay';
+
 ( function( $ ) {
 	const $doc = $( document );
 	let isRunning = false;
@@ -103,139 +105,267 @@
 		$( '.lp-install-sample__options' ).toggleClass( 'hide-if-js' );
 	};
 
-	let elLPOverlay;
-	const lpModalOverlay = {
-		elMainContent: null,
-		elTitle: null,
-		elBtnYes: null,
-		elBtnNo: null,
-		elCalledModal: null,
-		callBackYes: null,
-		init() {
-			const lpModalOverlay = this;
-			this.elMainContent = elLPOverlay.find( '.main-content' );
-			this.elTitle = elLPOverlay.find( '.modal-title' );
-			this.elBtnYes = elLPOverlay.find( '.btn-yes' );
-			this.elBtnNo = elLPOverlay.find( '.btn-no' );
+	const upgradeDB = function upgradeDB() {
+		let isUpgrading = 0;
+		elLPOverlay.show();
 
-			$( document ).on( 'click', '.close, .btn-no', function() {
-				elLPOverlay.hide();
-			} );
+		const elToolUpgradeDB = $( '#lp-tool-upgrade-db' );
+		const elWrapperTermsUpgrade = elToolUpgradeDB.find( '.wrapper-terms-upgrade' );
+		const elStatusUpgrade = elToolUpgradeDB.find( '.wrapper-lp-status-upgrade' );
+		const elWrapperUpgradeMessage = elToolUpgradeDB.find( '.wrapper-lp-upgrade-message' );
 
-			$( document ).on( 'click', '.btn-yes', function() {
-				lpModalOverlay.callBackYes();
-			} );
-		},
-		setElCalledModal( elCalledModal ) {
-			this.elCalledModal = elCalledModal;
-		},
-		setContentModal( content, event ) {
-			this.elMainContent.html( content );
-			if ( 'function' === typeof event ) {
-				event();
+		if ( ! elToolUpgradeDB.length ) {
+			return;
+		}
+
+		let checkValidBeforeUpgrade = null;
+
+		if ( elWrapperTermsUpgrade.length ) { // Show Terms Upgrade.
+			lpModalOverlay.setContentModal( elWrapperTermsUpgrade.html() );
+
+			const elTermUpdate = elLPOverlay.find( '.terms-upgrade' );
+			const elLPAgreeTerm = elTermUpdate.find( 'input[name=lp-agree-term]' );
+			const elTermMessage = elTermUpdate.find( '.error' );
+			const elMessageUpgrading = $( 'input[name=message-when-upgrading]' ).val();
+
+			checkValidBeforeUpgrade = function() {
+				elTermMessage.hide();
+				elTermMessage.removeClass( 'learn-press-message' );
+
+				if ( elLPAgreeTerm.is( ':checked' ) ) {
+					handleAjax( '/lp/v1/database/agree_terms', { agree_terms: 1 }, {} );
+
+					lpModalOverlay.elFooter.find( '.learn-press-notice' ).remove();
+					lpModalOverlay.elFooter.prepend( '<span class="learn-press-notice">' + elMessageUpgrading + '</span>' );
+					lpModalOverlay.setContentModal( elStatusUpgrade.html() );
+
+					return true;
+				}
+
+				elTermMessage.show();
+				elTermMessage.addClass( 'learn-press-message' );
+				lpModalOverlay.elMainContent.animate( {
+					scrollTop: elTermMessage.offset().top,
+				} );
+
+				return false;
+			};
+		} else { // Show Steps Upgrade.
+			lpModalOverlay.setContentModal( elStatusUpgrade.html() );
+			checkValidBeforeUpgrade = function() {
+				return true;
+			};
+		}
+
+		lpModalOverlay.setTitleModal( elToolUpgradeDB.find( 'h2' ).html() );
+		lpModalOverlay.elBtnYes.text( 'Upgrade' );
+		lpModalOverlay.elBtnYes.show();
+		lpModalOverlay.elBtnNo.text( 'close' );
+		lpModalOverlay.callBackYes = function() {
+			if ( ! checkValidBeforeUpgrade() ) {
+				return;
 			}
-		},
-		setTitleModal( content ) {
-			this.elTitle.html( content );
-		},
+
+			isUpgrading = 1;
+
+			lpModalOverlay.elBtnYes.hide();
+			lpModalOverlay.elBtnNo.hide();
+
+			const urlHandle = '/lp/v1/database/upgrade';
+			const elGroupStep = elLPOverlay.find( '.lp-group-step' );
+			const elItemSteps = elLPOverlay.find( '.lp-item-step' );
+
+			// Get params.
+			const steps = [];
+
+			$.each( elItemSteps, function( i, el ) {
+				const elItemStepsTmp = $( el );
+
+				if ( ! elItemStepsTmp.hasClass( 'completed' ) ) {
+					const step = elItemStepsTmp.find( 'input' ).val();
+					steps.push( step );
+				}
+			} );
+
+			const params = {
+				steps,
+				step: steps[ 0 ],
+			};
+
+			// Show progress when upgrading.
+			const showProgress = ( stepCurrent, percent ) => {
+				const elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
+				elItemStepCurrent.addClass( 'running' );
+
+				if ( 100 === percent ) {
+					elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
+				}
+
+				elItemStepCurrent.find( '.progress-bar' ).css( 'width', percent + '%' );
+				elItemStepCurrent.find( '.percent' ).text( percent + '%' );
+			};
+
+			// Scroll to step current.
+			const scrollToStepCurrent = ( stepCurrent ) => {
+				const elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
+
+				const offset = elItemStepCurrent.offset().top - lpModalOverlay.elMainContent.offset().top +
+					lpModalOverlay.elMainContent.scrollTop();
+
+				lpModalOverlay.elMainContent.stop().animate( {
+					scrollTop: offset,
+				}, 600 );
+			};
+
+			showProgress( steps[ 0 ], 0.1 );
+
+			const funcCallBack = {
+				success: ( res ) => {
+					showProgress( params.step, res.percent );
+
+					if ( params.step !== res.name ) {
+						showProgress( res.name, 0.1 );
+					}
+
+					if ( 'success' === res.status ) {
+						scrollToStepCurrent( params.step );
+						params.step = res.name;
+						params.data = res.data;
+
+						setTimeout( () => {
+							handleAjax( urlHandle, params, funcCallBack );
+						}, 800 );
+					} else if ( 'finished' === res.status ) {
+						isUpgrading = 0;
+						elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
+						setTimeout( () => {
+							lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html() );
+						}, 1000 );
+						lpModalOverlay.elFooter.find( '.learn-press-notice' ).remove();
+						lpModalOverlay.elBtnNo.show();
+						lpModalOverlay.elBtnNo.on( 'click', () => {
+							window.location.reload();
+						} );
+					} else {
+						isUpgrading = 0;
+						lpModalOverlay.elFooter.find( '.learn-press-notice' ).remove();
+						elItemStepCurrent.removeClass( 'running' ).addClass( 'error' );
+						lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
+							lpModalOverlay.elBtnYes.text( 'Retry' ).show();
+							lpModalOverlay.elBtnNo.show();
+							lpModalOverlay.elMainContent.find( '.learn-press-message' ).addClass( 'error' ).html( err.message );
+						} );
+					}
+				},
+				error: ( err ) => {
+					isUpgrading = 0;
+					lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
+						lpModalOverlay.elBtnYes.text( 'Retry' ).show();
+						lpModalOverlay.elBtnNo.show();
+						lpModalOverlay.elMainContent.find( '.learn-press-message' ).addClass( 'error' ).html( err.message );
+					} );
+				},
+				completed: () => {
+
+				},
+			};
+
+			handleAjax( urlHandle, params, funcCallBack );
+		};
+
+		// Show confirm if, within upgrading, the user reload the page.
+		window.onbeforeunload = function() {
+			if ( isUpgrading ) {
+				return 'LP is upgrading Database. Are you want to reload page?';
+			}
+		};
+
+		// Show confirm if, within upgrading, the user close the page.
+		window.onclose = function() {
+			if ( isUpgrading ) {
+				return 'LP is upgrading Database. Are you want to close page?';
+			}
+		};
 	};
 
-	const upgradeDB = function upgradeDB() {
+	const getStepsUpgradeStatus = function() {
+		const elWrapperStatusUpgrade = $( '.wrapper-lp-status-upgrade' );
+		const urlHandle = '/lp/v1/database/get_steps';
+
+		// Show dialog upgrade database.
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams( queryString );
 		const action = urlParams.get( 'action' );
 
 		if ( 'upgrade-db' === action ) {
-			const elToolUpgradeDB = $( '#lp-tool-upgrade-db' );
-
-			if ( ! elToolUpgradeDB.length ) {
-				return;
-			}
-
+			elLPOverlay.show();
 			lpModalOverlay.init();
-			lpModalOverlay.setContentModal( elToolUpgradeDB.find( '.lp-wrapper-status-upgrade' ).html(), function() {
-				$( document ).on( 'click', '.lp-item-step', function( e ) {
-					const input = $( e.target ).find( 'input' );
-					if ( input.attr( 'checked' ) ) {
-						input.attr( 'checked', false );
-					} else {
-						input.attr( 'checked', true );
-					}
-				} );
-			} );
-			lpModalOverlay.setTitleModal( elToolUpgradeDB.find( 'h2' ).text() );
-			lpModalOverlay.elBtnYes.text( 'Upgrade' );
-			lpModalOverlay.callBackYes = function() {
-				const urlHandle = '/lp/v1/database/upgrade';
-				const elGroupStep = elLPOverlay.find( '.lp-group-step' );
-				const elItemSteps = elLPOverlay.find( '.lp-item-step' );
-
-				// Get params.
-				const steps = [];
-
-				$.each( elLPOverlay.find( 'input[name=\'lp_steps_upgrade_db[]\']' ), function( i, el ) {
-					if ( $( el ).prop( 'checked' ) ) {
-						steps.push( $( el ).val() );
-					}
-				} );
-
-				const params = {
-					steps,
-					step: steps[ 0 ],
-				};
-
-				// Show progress when upgrading.
-				const showProgress = ( stepCurrent, percent ) => {
-					elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
-					elItemStepCurrent.addClass( 'running' );
-
-					if ( 100 === percent ) {
-						elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
-					}
-
-					elItemStepCurrent.find( '.progress-bar' ).css( 'width', percent + '%' );
-					elItemStepCurrent.find( '.percent' ).text( percent + '%' );
-				};
-
-				// Set all.
-				elItemSteps.find( 'input' ).attr( 'disabled', 'disabled' );
-
-				showProgress( steps[ 0 ], 0.1 );
-
-				const funcCallBack = {
-					success: ( res ) => {
-						showProgress( params.step, res.percent );
-
-						if ( params.step !== res.name ) {
-							showProgress( res.name, 0.1 );
-						}
-
-						if ( 'success' === res.status ) {
-							params.step = res.name;
-							params.data = res.data;
-
-							setTimeout( () => {
-								handleAjax( urlHandle, params, funcCallBack );
-							}, 800 );
-						} else if ( 'finished' === res.status ) {
-							elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
-						} else {
-							elItemStepCurrent.removeClass( 'running' ).addClass( 'error' );
-						}
-					},
-					error: ( err ) => {
-						console.log( err );
-					},
-					completed: () => {
-
-					},
-				};
-
-				handleAjax( urlHandle, params, funcCallBack );
-			};
-
-			$( '.lp-overlay' ).css( 'display', 'block' );
+			lpModalOverlay.setContentModal( $( '.wrapper-lp-loading' ).html() );
 		}
+
+		const funcCallBack = {
+			success: ( res ) => {
+				const { steps_completed, steps_default } = res;
+
+				if ( undefined === steps_completed || undefined === steps_default ) {
+					console.log( 'invalid steps_completed and steps_default' );
+					return false;
+				}
+
+				// Render show Steps.
+				let htmlStep = '';
+				for ( const k_gr_steps in steps_default ) {
+					const step_group = steps_default[ k_gr_steps ];
+					const steps = step_group.steps;
+
+					htmlStep = '<div class="lp-group-step">';
+					htmlStep += '<h3>' + step_group.label + '</h3>';
+
+					for ( const k_step in steps ) {
+						const step = steps[ k_step ];
+						let completed = '';
+
+						if ( undefined !== steps_completed[ k_step ] ) {
+							completed = 'completed';
+						}
+
+						htmlStep += '<div class="lp-item-step ' + completed + '">';
+						htmlStep += '<div class="lp-item-step-left"><input type="hidden" name="lp_steps_upgrade_db[]" value="' + step.name + '"  /></div>';
+						htmlStep += '<div class="lp-item-step-right">';
+						htmlStep += '<label for=""><strong></strong>' + step.label + '</label>';
+						htmlStep += '<div class="description">' + step.description + '</div>';
+						htmlStep += '<div class="percent"></div>';
+						htmlStep += '<span class="progress-bar"></span>';
+						htmlStep += '</div>';
+						htmlStep += '</div>';
+					}
+
+					htmlStep += '</div>';
+
+					elWrapperStatusUpgrade.append( htmlStep );
+
+					const elBtnUpgradeDB = $( '.lp-btn-upgrade-db' );
+
+					if ( 'upgrade-db' === action ) {
+						upgradeDB();
+					}
+
+					elBtnUpgradeDB.on( 'click', function() {
+						// instance LP Modal Overlay.
+						lpModalOverlay.init();
+						upgradeDB();
+					} );
+				}
+			},
+			error: ( err ) => {
+
+			},
+			completed: () => {
+
+			},
+		};
+
+		handleAjax( urlHandle, {}, funcCallBack );
 	};
 
 	const handleAjax = function( url, params, functions ) {
@@ -259,8 +389,8 @@
 	};
 
 	$( function() {
-		elLPOverlay = $( '.lp-overlay' );
-		upgradeDB();
+		// elLPOverlay = $( '.lp-overlay' );
+		getStepsUpgradeStatus();
 
 		$doc.on( 'click', '.lp-install-sample__install', installSampleCourse )
 			.on( 'click', '.lp-install-sample__uninstall', uninstallSampleCourse )

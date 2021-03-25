@@ -228,7 +228,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'lp-tools-course-tab'               => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
+					$this->url( 'js/dist/admin/pages/tools' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'wp-api-fetch' ),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
@@ -298,16 +298,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 		$this->handle_js( $screen_id );
 
-		/**
-		 * Enqueue styles
-		 *
-		 * TODO: check to show only styles needed in specific pages
-		 */
-		if ( $styles = $this->_get_styles() ) {
-			foreach ( $styles as $handle => $data ) {
-				wp_enqueue_style( $handle, $data['url'] );
-			}
-		}
+		$this->handle_style( $screen_id );
 
 		do_action( 'learn-press/admin/after-enqueue-scripts' );
 	}
@@ -326,6 +317,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * Register, enqueue js
 	 *
 	 * @param string $screen_id .
+	 *
+	 * @author tungnx
+	 * @since 4.0.0
+	 * @version 1.0.0
 	 */
 	protected function handle_js( $screen_id = '' ) {
 		$scripts = $this->_get_scripts();
@@ -360,8 +355,23 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		}
 	}
 
-	protected function handle_style() {
-
+	/**
+	 * Register, enqueue css
+	 *
+	 * @param string $screen_id .
+	 */
+	protected function handle_style( $screen_id = '' ) {
+		/**
+		 * Enqueue styles
+		 *
+		 * TODO: check to show only styles needed in specific pages
+		 */
+		$styles = $this->_get_styles();
+		if ( $styles ) {
+			foreach ( $styles as $handle => $data ) {
+				wp_enqueue_style( $handle, $data['url'], array(), self::$_version_assets );
+			}
+		}
 	}
 
 	/**

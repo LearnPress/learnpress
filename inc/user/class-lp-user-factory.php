@@ -28,7 +28,7 @@ class LP_User_Factory {
 	 */
 	public static function init() {
 		self::$_guest_transient = WEEK_IN_SECONDS;
-		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
+		//add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
 		add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );

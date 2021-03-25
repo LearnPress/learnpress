@@ -31,7 +31,7 @@
 		display: inline-block;
 		overflow: hidden;
 		z-index: 2;
-		width: 100%;
+		width: auto;
 		max-width: 70%;
 		border-radius: 8px;
 		text-align: left;
@@ -55,6 +55,10 @@
 				max-height: 500px;
 				overflow: auto;
 				height: 500px;
+
+				h3, h2, .pd-2em {
+					padding: 0 2em;
+				}
 			}
 		}
 	}
