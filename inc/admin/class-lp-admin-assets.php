@@ -228,7 +228,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'lp-tools-course-tab'               => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/pages/tools' . self::$_min_assets . '.js' ),
+					$this->url( 'js/dist/admin/pages/tools' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'wp-api-fetch' ),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,

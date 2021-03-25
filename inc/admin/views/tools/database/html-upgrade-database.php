@@ -38,7 +38,6 @@ if ( ! $check_lp_need_upgrade_db ) {
 				<h2>Terms of Service update</h2>
 				<div class="pd-2em">
 					<p>To system Learnpress runs normally on v4.0.0 we need to upgrade database on your site.</p>
-					<p>Please backup your site before upgrade.</p>
 					<p>
 						Please read these Terms and Conditions carefully before you upgrade the database of Learn Press
 						operated by ThimPress on your website. Your access to and use this action is conditioned on your
@@ -48,8 +47,8 @@ if ( ! $check_lp_need_upgrade_db ) {
 					</p>
 					<p>
 						1. We do not take responsibility for the consequence with the data not from our
-						plugins of this action. You should have a backup version for your website before doing
-						this.
+						plugins of this action. <strong style="color: #f55252"><i>Make sure you back up all your website before doing
+								this</i></strong>.
 					</p>
 					<p>
 						2. We do not take responsibility for the consequence of this action with your website
@@ -78,8 +77,8 @@ if ( ! $check_lp_need_upgrade_db ) {
 			<h2>Upgrade finished</h2>
 			<div class="pd-2em">
 				<div class="learn-press-message">
-					<p>You have upgraded the database from plugin LearnPress successfully
-						You can use the LearnPress functions and LearnPress add-ons now.</p>
+					<p>You have upgraded the database from plugin LearnPress successfully.</p>
+					<p>You can use the LearnPress functions and LearnPress add-ons now.</p>
 					<p>Read more document <a href="https://docspress.thimpress.com/admin-learnpress-4-0/">LearnPress
 							version 4.0.0</a></p>
 				</div>

@@ -1,3 +1,5 @@
+import { lpModalOverlay, elLPOverlay } from '../lp-modal-overlay';
+
 ( function( $ ) {
 	const $doc = $( document );
 	let isRunning = false;
@@ -103,46 +105,8 @@
 		$( '.lp-install-sample__options' ).toggleClass( 'hide-if-js' );
 	};
 
-	let elLPOverlay;
-	const lpModalOverlay = {
-		elMainContent: null,
-		elTitle: null,
-		elBtnYes: null,
-		elBtnNo: null,
-		elFooter: null,
-		elCalledModal: null,
-		callBackYes: null,
-		init() {
-			const lpModalOverlay = this;
-			this.elMainContent = elLPOverlay.find( '.main-content' );
-			this.elTitle = elLPOverlay.find( '.modal-title' );
-			this.elBtnYes = elLPOverlay.find( '.btn-yes' );
-			this.elBtnNo = elLPOverlay.find( '.btn-no' );
-			this.elFooter = elLPOverlay.find( '.lp-modal-footer' );
-
-			$( document ).on( 'click', '.close, .btn-no', function() {
-				elLPOverlay.hide();
-			} );
-
-			$( document ).on( 'click', '.btn-yes', function() {
-				lpModalOverlay.callBackYes();
-			} );
-		},
-		setElCalledModal( elCalledModal ) {
-			this.elCalledModal = elCalledModal;
-		},
-		setContentModal( content, event ) {
-			this.elMainContent.html( content );
-			if ( 'function' === typeof event ) {
-				event();
-			}
-		},
-		setTitleModal( content ) {
-			this.elTitle.html( content );
-		},
-	};
-
 	const upgradeDB = function upgradeDB() {
+		let isUpgrading = 0;
 		elLPOverlay.show();
 
 		const elToolUpgradeDB = $( '#lp-tool-upgrade-db' );
@@ -169,6 +133,8 @@
 				elTermMessage.removeClass( 'learn-press-message' );
 
 				if ( elLPAgreeTerm.is( ':checked' ) ) {
+					handleAjax( '/lp/v1/database/agree_terms', { agree_terms: 1 }, {} );
+
 					lpModalOverlay.elFooter.find( '.learn-press-notice' ).remove();
 					lpModalOverlay.elFooter.prepend( '<span class="learn-press-notice">' + elMessageUpgrading + '</span>' );
 					lpModalOverlay.setContentModal( elStatusUpgrade.html() );
@@ -200,6 +166,8 @@
 				return;
 			}
 
+			isUpgrading = 1;
+
 			lpModalOverlay.elBtnYes.hide();
 			lpModalOverlay.elBtnNo.hide();
 
@@ -226,7 +194,7 @@
 
 			// Show progress when upgrading.
 			const showProgress = ( stepCurrent, percent ) => {
-				elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
+				const elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
 				elItemStepCurrent.addClass( 'running' );
 
 				if ( 100 === percent ) {
@@ -239,7 +207,7 @@
 
 			// Scroll to step current.
 			const scrollToStepCurrent = ( stepCurrent ) => {
-				elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
+				const elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
 
 				const offset = elItemStepCurrent.offset().top - lpModalOverlay.elMainContent.offset().top +
 					lpModalOverlay.elMainContent.scrollTop();
@@ -268,6 +236,7 @@
 							handleAjax( urlHandle, params, funcCallBack );
 						}, 800 );
 					} else if ( 'finished' === res.status ) {
+						isUpgrading = 0;
 						elItemStepCurrent.removeClass( 'running' ).addClass( 'completed' );
 						setTimeout( () => {
 							lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html() );
@@ -278,15 +247,18 @@
 							window.location.reload();
 						} );
 					} else {
+						isUpgrading = 0;
 						lpModalOverlay.elFooter.find( '.learn-press-notice' ).remove();
 						elItemStepCurrent.removeClass( 'running' ).addClass( 'error' );
-						lpModalOverlay.elBtnYes.text( 'Retry' ).show();
 						lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
-							lpModalOverlay.elMainContent.find( '.learn-press-message' ).addClass( 'error' ).html( res.message );
+							lpModalOverlay.elBtnYes.text( 'Retry' ).show();
+							lpModalOverlay.elBtnNo.show();
+							lpModalOverlay.elMainContent.find( '.learn-press-message' ).addClass( 'error' ).html( err.message );
 						} );
 					}
 				},
 				error: ( err ) => {
+					isUpgrading = 0;
 					lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
 						lpModalOverlay.elBtnYes.text( 'Retry' ).show();
 						lpModalOverlay.elBtnNo.show();
@@ -301,7 +273,19 @@
 			handleAjax( urlHandle, params, funcCallBack );
 		};
 
-		$( '.lp-overlay' ).css( 'display', 'block' );
+		// Show confirm if, within upgrading, the user reload the page.
+		window.onbeforeunload = function() {
+			if ( isUpgrading ) {
+				return 'LP is upgrading Database. Are you want to reload page?';
+			}
+		};
+
+		// Show confirm if, within upgrading, the user close the page.
+		window.onclose = function() {
+			if ( isUpgrading ) {
+				return 'LP is upgrading Database. Are you want to close page?';
+			}
+		};
 	};
 
 	const getStepsUpgradeStatus = function() {
@@ -399,7 +383,7 @@
 	};
 
 	$( function() {
-		elLPOverlay = $( '.lp-overlay' );
+		// elLPOverlay = $( '.lp-overlay' );
 		getStepsUpgradeStatus();
 
 		$doc.on( 'click', '.lp-install-sample__install', installSampleCourse )

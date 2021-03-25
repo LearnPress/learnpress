@@ -38,17 +38,24 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'upgrade'   => array(
+			'upgrade'     => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'upgrade' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
-			'get_steps' => array(
+			'get_steps'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_steps' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+			'agree_terms' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'agree_terms_upgrade' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
@@ -62,7 +69,27 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
+	 * Set agree terms upgrade database.
+	 *
+	 * @param WP_REST_Request $request .
+	 *
+	 * @return void
+	 */
+	public function agree_terms_upgrade( WP_REST_Request $request ) {
+		$result = new LP_REST_Response();
+
+		if ( $request->get_param( 'agree_terms' ) ) {
+			LP_Settings::update_option( 'agree_terms', 1 );
+			$result->status = 'success';
+		}
+
+		wp_send_json( $result );
+	}
+
+	/**
 	 * Upgrade DB
+	 *
+	 * @param WP_REST_Request $request .
 	 *
 	 * @return void
 	 */
@@ -84,32 +111,6 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 
 		wp_send_json( $class_handle->handle( $params ) );
 	}
-
-	/**
-	 * Load file upgrade database.
-	 *
-	 * @return null|object
-	 */
-//	public function load_file_version_upgrade_db() {
-//		// Check version DB need update.
-//		$lp_updater = LP_Updater::instance();
-//
-//		$class_handle = null;
-//
-//		if ( $lp_updater->check_lp_db_need_upgrade() ) {
-//			$file_plugin_version = $lp_updater->check_lp_db_need_upgrade();
-//
-//			$file_update = LP_PLUGIN_PATH . 'inc/updates/learnpress-upgrade-' . $file_plugin_version . '.php';
-//
-//			if ( file_exists( $file_update ) ) {
-//				include_once $file_update;
-//				$name_class_handle_upgrade = 'LP_Upgrade_' . $file_plugin_version;
-//				$class_handle              = $name_class_handle_upgrade::get_instance();
-//			}
-//		}
-//
-//		return $class_handle;
-//	}
 
 	/**
 	 * Get Steps upgrade completed.
