@@ -189,6 +189,12 @@
 	}
 }
 
+#lp-tool-upgrade-db {
+	.wrapper-lp-upgrade-message, .wrapper-terms-upgrade, .wrapper-lp-loading {
+		display: none;
+	}
+}
+
 .terms-upgrade {
 	max-width: 500px;
 	margin: 0 auto;
@@ -198,9 +204,7 @@
 	}
 }
 
-.wrapper-lp-upgrade-message, .wrapper-terms-upgrade {
-	display: none;
-}
+
 
 .lp-upgrade-message {
 
@@ -218,5 +222,12 @@
 		color: #ff6060;
 		font-weight: 500;
 		font-style: italic;
+	}
+}
+
+.lp-modal-body {
+	.lp-skeleton-animation {
+		width: 500px;
+		margin: 0 20px;
 	}
 }

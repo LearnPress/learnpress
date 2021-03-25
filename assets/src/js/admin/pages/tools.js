@@ -292,6 +292,17 @@ import { lpModalOverlay, elLPOverlay } from '../lp-modal-overlay';
 		const elWrapperStatusUpgrade = $( '.wrapper-lp-status-upgrade' );
 		const urlHandle = '/lp/v1/database/get_steps';
 
+		// Show dialog upgrade database.
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams( queryString );
+		const action = urlParams.get( 'action' );
+
+		if ( 'upgrade-db' === action ) {
+			elLPOverlay.show();
+			lpModalOverlay.init();
+			lpModalOverlay.setContentModal( $( '.wrapper-lp-loading' ).html() );
+		}
+
 		const funcCallBack = {
 			success: ( res ) => {
 				const { steps_completed, steps_default } = res;
@@ -333,22 +344,17 @@ import { lpModalOverlay, elLPOverlay } from '../lp-modal-overlay';
 
 					elWrapperStatusUpgrade.append( htmlStep );
 
-					// Show dialog upgrade database.
-					const queryString = window.location.search;
-					const urlParams = new URLSearchParams( queryString );
-					const action = urlParams.get( 'action' );
 					const elBtnUpgradeDB = $( '.lp-btn-upgrade-db' );
-
-					// instance LP Modal Overlay.
-					lpModalOverlay.init();
-
-					elBtnUpgradeDB.on( 'click', function() {
-						upgradeDB();
-					} );
 
 					if ( 'upgrade-db' === action ) {
 						upgradeDB();
 					}
+
+					elBtnUpgradeDB.on( 'click', function() {
+						// instance LP Modal Overlay.
+						lpModalOverlay.init();
+						upgradeDB();
+					} );
 				}
 			},
 			error: ( err ) => {
