@@ -7,7 +7,8 @@
  * @since 4.0.0
  */
 
-if ( ! class_exists( 'RW_Meta_Box' ) ) {
+$all_plugins = get_plugins();
+if ( ! class_exists( 'RW_Meta_Box' ) && ( ! isset( $all_plugins['thim-core/thim-core.php'] ) || ( isset( $all_plugins['thim-core/thim-core.php'] ) && version_compare( $all_plugins['thim-core/thim-core.php']['Version'], '1.10.2', '>=' ) ) ) ) {
 	class RW_Meta_Box {
 
 		public $meta_box;
