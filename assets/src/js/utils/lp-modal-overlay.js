@@ -10,8 +10,9 @@ const lpModalOverlay = {
 	elFooter: null,
 	elCalledModal: null,
 	callBackYes: null,
+	instance: null,
 	init() {
-		const lpModalOverlay = this;
+		this.instance = this;
 		this.elMainContent = elLPOverlay.find( '.main-content' );
 		this.elTitle = elLPOverlay.find( '.modal-title' );
 		this.elBtnYes = elLPOverlay.find( '.btn-yes' );
@@ -23,7 +24,9 @@ const lpModalOverlay = {
 		} );
 
 		$( document ).on( 'click', '.btn-yes', function() {
-			lpModalOverlay.callBackYes();
+			if ( 'function' === typeof lpModalOverlay.callBackYes ) {
+				lpModalOverlay.callBackYes();
+			}
 		} );
 	},
 	setElCalledModal( elCalledModal ) {

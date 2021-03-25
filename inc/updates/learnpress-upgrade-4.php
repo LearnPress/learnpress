@@ -944,7 +944,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	/**
 	 * Create index table learnpress_section_items
 	 */
-	protected function modify_tb_lp_section_items() {
+	protected function modify_tb_lp_section_items() : LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
@@ -978,7 +978,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 *
 	 * @return LP_Step
 	 */
-	public function convert_lp_settings(): LP_Step {
+	protected function convert_lp_settings(): LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
