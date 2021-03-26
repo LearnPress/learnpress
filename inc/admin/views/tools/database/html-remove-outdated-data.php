@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || die();
 	<h2><?php _e( 'Remove outdated Data', 'learnpress' ); ?></h2>
 	<p><?php _e( 'Remove all courses, lessons, quizzes and questions from version older than 1.0.', 'learnpress' ); ?></p>
 	<form method="post" name="learn-press-form-remove-data">
-		<div class="learn-press-message lp-error">
+		<div class="">
 			<p><?php _e( 'Be careful before using this action! Only use this action in case all outdated data has been upgraded.', 'learnpress' ); ?></p>
 		</div>
 		<label class="hide-if-js">
