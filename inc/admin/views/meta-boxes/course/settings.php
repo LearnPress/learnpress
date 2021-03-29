@@ -53,7 +53,7 @@ class LP_Meta_Box_Course {
 					'_lp_block_finished',
 					'',
 					esc_html__(
-						'Block course when finished course.',
+						'Block course after student finished this course.',
 						'learnpress'
 					),
 					'lp_meta_box_checkbox_field',
@@ -79,7 +79,7 @@ class LP_Meta_Box_Course {
 				'_lp_students'                 => new LP_Meta_Box_Text_Attribute(
 					'_lp_students',
 					esc_html__( 'Fake Students Enrolled', 'learnpress' ),
-					esc_html__( 'It only display fake students enrolled', 'learnpress' ),
+					esc_html__( 'How many students have taken this course', 'learnpress' ),
 					0,
 					'',
 					'',
@@ -111,7 +111,7 @@ class LP_Meta_Box_Course {
 					'_lp_retake_count',
 					esc_html__( 'Re-take Course', 'learnpress' ),
 					esc_html__(
-						'Number times the user can learn again this course. Set to 0 to disable.',
+						'The number of times a user can learn again this course. Set 0 to disable.',
 						'learnpress'
 					),
 					0,
@@ -125,7 +125,7 @@ class LP_Meta_Box_Course {
 					'_lp_has_finish',
 					esc_html__( 'Finish button', 'learnpress' ),
 					esc_html__(
-						'Allow show finish button when all items completed but evalution not passed.',
+						'Allow show finish button when the student has completed all items but has not passed the course assessment.',
 						'learnpress'
 					),
 					'lp_meta_box_checkbox_field',

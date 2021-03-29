@@ -90,7 +90,7 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 				$response->data   = ob_get_clean();
 			} else {
 				delete_post_meta( $course_id, '_lp_final_quiz' );
-				$response->data = '<div class="lp-metabox-evaluate-final_quiz__message lp-metabox-evaluate-final_quiz__message-error">' . esc_html__( 'No Quiz in Course!', 'learnpress' ) . '</div>';
+				$response->data = '<div class="lp-metabox-evaluate-final_quiz__message lp-metabox-evaluate-final_quiz__message-error">' . esc_html__( 'No Quiz in this course!', 'learnpress' ) . '</div>';
 			}
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();

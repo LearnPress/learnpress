@@ -41,7 +41,7 @@
 						<div class="lp-quiz-editor__detail-input">
 							<div>
 								<textarea name="hint" :id="'hint-'+question.id" cols="60" rows="3" class="rlp-quiz-editor__detail-textarea large-text" @change="updateMeta" v-model="question.settings.hint"></textarea>
-								<p class="description"><?php esc_html_e( 'A little help for students to get the right answer.', 'learnpress' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ); ?></p>
 							</div>
 						</div>
 					</div>
@@ -52,7 +52,7 @@
 						<div class="lp-quiz-editor__detail-input">
 							<div>
 								<textarea name="explanation" :id="'explanation-'+question.id" cols="60" rows="3" class="lp-quiz-editor__detail-textarea large-text" @change="updateMeta" v-model="question.settings.explanation"></textarea>
-								<p class="description"><?php esc_html_e( 'Explanation will be showed after students Instant Check.', 'learnpress' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Explanation will be displayed when students click button "Check Answer".', 'learnpress' ); ?></p>
 							</div>
 						</div>
 					</div>

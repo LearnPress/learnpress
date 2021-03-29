@@ -6,7 +6,7 @@ class LP_Meta_Box_Question {
 			'lp/metabox/lesson/lists',
 			array(
 				'_lp_mark'        => array(
-					'label'             => esc_html__( 'Marking', 'learnpress' ),
+					'label'             => esc_html__( 'Points for choosing the right answer.', 'learnpress' ),
 					'description'       => esc_html__( 'Set question points.', 'learnpress' ),
 					'desc_tip'          => true,
 					'type'              => 'number',
@@ -19,13 +19,13 @@ class LP_Meta_Box_Question {
 				),
 				'_lp_hint'        => array(
 					'label'       => esc_html__( 'Hint', 'learnpress' ),
-					'description' => esc_html__( 'A little help for students to get the right answer.', 'learnpress' ),
+					'description' => esc_html__( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ),
 					'default'     => '',
 					'type'        => 'textarea',
 				),
 				'_lp_explanation' => array(
 					'label'       => esc_html__( 'Explanation', 'learnpress' ),
-					'description' => esc_html__( 'Explanation will be showed after students Instant Check.', 'learnpress' ),
+					'description' => esc_html__( 'Explanation will be displayed when students click button "Check Answer".', 'learnpress' ),
 					'default'     => '',
 					'type'        => 'textarea',
 				),

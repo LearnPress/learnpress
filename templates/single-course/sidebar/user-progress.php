@@ -29,7 +29,7 @@ if ( ! empty( $course_results['items'] ) ) {
 
 	<div class="items-progress">
 		<h4 class="items-progress__heading">
-			<?php esc_html_e( 'Quizzes submitted:', 'learnpress' ); ?>
+			<?php esc_html_e( 'Quizzes finished:', 'learnpress' ); ?>
 		</h4>
 		<span class="number" title="<?php esc_attr( sprintf( __( 'Failed %1$d, Passed %2$d', 'learnpress' ), $quiz_false, $course_results['items']['quiz']['passed'] ) ); ?>"><?php printf( __( '%1$d/%2$d', 'learnpress' ), $course_results['items']['quiz']['completed'], $course_results['items']['quiz']['total'] ); ?></span>
 	</div>

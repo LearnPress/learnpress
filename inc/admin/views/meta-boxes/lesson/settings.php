@@ -17,7 +17,7 @@ class LP_Meta_Box_Lesson {
 				),
 				'_lp_preview'  => array(
 					'label'       => esc_html__( 'Preview', 'learnpress' ),
-					'description' => esc_html__( 'Allows any users to view the lesson content.', 'learnpress' ),
+					'description' => esc_html__( 'Students can view this lesson content without taking the course.', 'learnpress' ),
 					'type'        => 'checkbox',
 					'default'     => 'no',
 				),

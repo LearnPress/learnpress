@@ -220,6 +220,10 @@
 
 .lp-notice-update-database {
 	border-left-color: #f00;
+	border: 1px solid rebeccapurple;
+	background: rebeccapurple;
+	color: white;
+	border-radius: 3px;
 
 	&.do-updating {
 

@@ -36,13 +36,13 @@ class LP_Meta_Box_Quiz {
 				),
 				'_lp_negative_marking' => array(
 					'label'       => esc_html__( 'Negative Marking', 'learnpress' ),
-					'description' => esc_html__( 'For each question which students answer wrongly, the total point is deducted exactly the question mark.', 'learnpress' ),
+					'description' => esc_html__( 'For each question which students answer wrongly, the total point is deducted exactly the question\'s point', 'learnpress' ),
 					'default'     => 'no',
 					'type'        => 'checkbox',
 				),
 				'_lp_retake_count'     => array(
 					'label'             => esc_html__( 'Retake', 'learnpress' ),
-					'description'       => esc_html__( 'Number times the user can learn again this quiz. Set to 0 to disable.', 'learnpress' ),
+					'description'       => esc_html__( 'How many times the user can re-take this quiz. Set 0 to disable.', 'learnpress' ),
 					'type'              => 'text',
 					'type_input'        => 'number',
 					'custom_attributes' => array(
@@ -54,7 +54,7 @@ class LP_Meta_Box_Quiz {
 				),
 				'_lp_pagination'       => array(
 					'label'             => esc_html__( 'Pagination', 'learnpress' ),
-					'description'       => esc_html__( 'Set a number of questions showed in each page.', 'learnpress' ),
+					'description'       => esc_html__( 'The number of questions displayed on each page.', 'learnpress' ),
 					'type'              => 'text',
 					'type_input'        => 'number',
 					'default'           => '1',
@@ -67,7 +67,7 @@ class LP_Meta_Box_Quiz {
 				),
 				'_lp_review'           => array(
 					'label'       => esc_html__( 'Review', 'learnpress' ),
-					'description' => esc_html__( 'Allow students to review the quiz after submitted.', 'learnpress' ),
+					'description' => esc_html__( 'Allow students to review this quiz after they finish the quiz.', 'learnpress' ),
 					'default'     => 'yes',
 					'type'        => 'checkbox',
 				),

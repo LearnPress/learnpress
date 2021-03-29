@@ -42,7 +42,7 @@ if ( $course ) {
 	lp_meta_box_radio_field(
 		array(
 			'id'          => '_lp_course_result',
-			'label'       => esc_html__( 'Evalution', 'learnpress' ),
+			'label'       => esc_html__( 'Evaluation', 'learnpress' ),
 			'description' => $course_result_desc,
 			'options'     => learn_press_course_evaluation_methods( '', $final_quizz_passing ),
 			'default'     => 'evaluate_lesson',
@@ -53,7 +53,7 @@ if ( $course ) {
 		array(
 			'id'                => '_lp_passing_condition',
 			'label'             => esc_html__( 'Passing Grade(%)', 'learnpress' ),
-			'description'       => esc_html__( 'The condition that must be achieved in order to be completed the course.', 'learnpress' ),
+			'description'       => esc_html__( 'The condition that must be achieved to finish the course.', 'learnpress' ),
 			'type'              => 'number',
 			'default'           => '80',
 			'custom_attributes' => array(
