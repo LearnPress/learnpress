@@ -32,7 +32,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
-			add_action( 'init', array( $this, 'init' ), 50 );
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 
@@ -164,12 +163,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return false;
-		}
-
-		public function init() {
-			if ( 'yes' === LP_Request::get_string( 'lp-hide-upgrade-message' ) ) {
-				delete_transient( 'lp_upgraded_30' );
-			}
 		}
 
 		/**
@@ -528,11 +521,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display admin notices
 		 */
 		public function admin_notices() {
-
-			if ( 'yes' === get_transient( 'lp_upgraded_30' ) ) {
-				learn_press_admin_view( 'updates/html-upgrade-message-3.0.0' );
-			}
-
 			if ( 'yes' === get_option( 'learn_press_install' ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
 			}

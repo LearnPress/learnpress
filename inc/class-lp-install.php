@@ -111,7 +111,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			self::_create_log_path();
 			self::_clear_backgrounds();
 
-			delete_transient( 'lp_upgraded_30' );
 			$current_version    = get_option( 'learnpress_version', null );
 			$current_db_version = get_option( 'learnpress_db_version', null );
 
