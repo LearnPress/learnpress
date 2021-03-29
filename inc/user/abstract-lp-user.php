@@ -1593,15 +1593,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Return true if user has already enrolled course
 		 *
-		 * @param int  $course_id
-		 * @param bool $force
+		 * @param int $course_id .
 		 *
 		 * @return bool
 		 */
-		public function has_enrolled_course( $course_id, $force = false ) {
+		public function has_enrolled_course( int $course_id ) : bool {
 			$course_item = $this->get_course_data( $course_id );
 
-			$enrolled = $course_item && $course_item->get_user_item_id() > 0;
+			$enrolled = $course_item && $course_item->get_status() === LP_COURSE_ENROLLED;
 
 			return apply_filters( 'learn-press/has-enrolled-course', $enrolled, $this->get_id(), $course_id );
 		}
@@ -1609,12 +1608,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Return true if you has finished a course
 		 *
-		 * @param int
-		 * @param bool
+		 * @param int $course_id .
 		 *
 		 * @return bool
 		 */
-		public function has_finished_course( $course_id, $force = false ) {
+		public function has_finished_course( int $course_id ) : bool {
 			$course_item = $this->get_course_data( $course_id );
 			$finished    = $course_item && $course_item->has_finished();
 
