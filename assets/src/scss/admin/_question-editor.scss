@@ -383,6 +383,11 @@
 		min-width: 700px;
 		border-collapse: collapse;
 
+		@media (max-width: 1024px) {
+			width: 100%;
+			min-width: 100%;
+		}
+
 		tbody {
 			border-bottom: 1px solid #bbb;
 

@@ -93,6 +93,13 @@
 				text-align: center;
 				align-items: center;
 
+				&.question-settings {
+
+					@media (max-width: 1024px ) {
+						flex-direction: column;
+					}
+				}
+
 				& > * {
 					width: 100%;
 					padding: 12px 8px;
@@ -131,15 +138,16 @@
 				> .type {
 					display: inline-flex;
 					position: relative;
-					width: 180px;
+					width: 125px;
 					height: 32px;
 					padding: 0;
 					border-radius: 2px;
 					background-color: #eee;
 					box-shadow: 0 0 2px rgba($color: #000, $alpha: 0.22);
 					line-height: 32px;
-					align-items: center;
 					cursor: pointer;
+					flex: 0 0 auto;
+					align-items: center;
 
 					>a {
 						display: inline-flex;
@@ -551,10 +559,14 @@
 							padding: 0;
 
 							.lp-toolbar-buttons {
+								display: grid;
 								position: static;
 								z-index: 10;
 								height: 100%;
-								text-align: left;
+								text-align: right;
+								grid-template-columns: 30px 30px 30px 40px;
+								align-items: center;
+								justify-content: end;
 
 								> div {
 
