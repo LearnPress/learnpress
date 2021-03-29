@@ -25,7 +25,7 @@
 					</div>
 					<div class="lp-quiz-editor__detail-field">
 						<div class="lp-quiz-editor__detail-label">
-							<label :for="'marking-'+question.id"><?php esc_html_e( 'Marking', 'learnpress' ); ?></label>
+							<label :for="'marking-'+question.id"><?php esc_html_e( 'Points for choosing the right answer.', 'learnpress' ); ?></label>
 						</div>
 						<div class="lp-quiz-editor__detail-input">
 							<div>
