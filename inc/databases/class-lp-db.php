@@ -329,6 +329,8 @@ class LP_Database {
 	}
 
 	/**
+	 * Get steps completed.
+	 *
 	 * @return array|object|null
 	 */
 	public function get_steps_completed() {

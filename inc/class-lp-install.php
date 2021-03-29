@@ -56,12 +56,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		public static function on_activate() {
 			update_option( 'learn_press_status', 'activated' );
 
-			// Force option permalink to 'postname'
+			// Force option permalink to 'postname'.
 			if ( ! get_option( 'permalink_structure' ) ) {
 				update_option( 'permalink_structure', '/%postname%/' );
 			}
 
-			// Force option users_can_register to ON
+			// Force option users_can_register to ON.
 			if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
 			}
@@ -114,25 +114,21 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			$current_version    = get_option( 'learnpress_version', null );
 			$current_db_version = get_option( 'learnpress_db_version', null );
 
-			// Fresh installation
+			// Fresh installation .
 			if ( is_null( $current_version ) && is_null( $current_db_version ) ) {
 				update_option( 'learn_press_install', 'yes' );
 				set_transient( 'lp_activation_redirect', 'yes', 60 );
 			}
 
-			// Force to show notice outdated template
+			// Force to show notice outdated template .
 			learn_press_delete_user_option( 'hide-notice-template-files' );
 
-			LP_Admin_Notice::instance()->remove_dismissed_notice(
-				array(
-					'outdated-template',
-				)
-			);
+			LP_Admin_Notice::instance()->remove_dismissed_notice( array( 'outdated-template', ) );
 
-			self::update_version();
+			update_option( 'learnpress_version', LEARNPRESS_VERSION );
 
 			if ( ! get_option( 'learnpress_db_version' ) ) {
-				self::update_db_version();
+				update_option( 'learnpress_db_version', (int) LEARNPRESS_VERSION );
 			}
 		}
 
@@ -248,11 +244,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		public static function create_tables() {
 			global $wpdb;
 
-			// Do not show errors
+			// Do not show errors .
 			$wpdb->hide_errors();
-
-			error_reporting( 0 );
-			ini_set( 'display_errors', 0 );
 
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
@@ -665,15 +658,15 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return sizeof( $new_post ) > 0;
 		}
 
-		public static function update_db_version( $version = null ) {
-			delete_option( 'learnpress_db_version' );
-			update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
-		}
+//		public static function update_db_version( $version = null ) {
+//			delete_option( 'learnpress_db_version' );
+//			update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
+//		}
 
-		public static function update_version( $version = null ) {
-			delete_option( 'learnpress_version' );
-			update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
-		}
+//		public static function update_version( $version = null ) {
+//			delete_option( 'learnpress_version' );
+//			update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
+//		}
 
 
 		/**
@@ -696,7 +689,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				}
 			}
 
-			$tables = $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s', '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
+			$tables = $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s',
+				'%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
 			$query  = '';
 
 			if ( ! in_array( $wpdb->learnpress_order_itemmeta, $tables ) ) {
@@ -814,7 +808,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					item_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					start_time datetime NULL DEFAULT NULL,
 					end_time datetime NULL DEFAULT NULL,
-					expiration_time datetime DEFAULT NULL,
 					item_type varchar(45) NOT NULL DEFAULT '',
 					status varchar(45) NOT NULL DEFAULT '',
 					graduation varchar(20) NULL DEFAULT NULL,
