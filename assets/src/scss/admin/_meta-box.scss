@@ -565,6 +565,7 @@
 			}
 
 			.description {
+				flex: 1;
 				display: inline;
 				clear: none;
 				margin: 0 0 0 7px;
@@ -606,12 +607,18 @@
 
 	&__duration {
 
+
+		&-select {
+			width: auto !important;
+		}
+
+
 		input[type="number"] {
 			width: 80px !important;
 		}
 
 		.description {
-			flex-basis: 100%;
+			flex-basis: 100% !important;
 			width: 100%;
 			margin-top: 8px !important;
 			margin-left: 180px !important;
@@ -619,9 +626,10 @@
 	}
 
 	select {
+		width: auto !important;
 
 		~ .description {
-			flex-basis: 100%;
+			flex-basis: 100% !important;
 			width: 100%;
 			margin-top: 8px !important;
 			margin-left: 180px !important;
@@ -637,7 +645,7 @@
 		width: 50%;
 
 		+ .description {
-			flex-basis: 100%;
+			flex-basis: 100% !important;
 			width: 100%;
 			margin-top: 8px !important;
 			margin-left: 180px !important;
@@ -647,6 +655,8 @@
 
 	input[type="checkbox"] {
 		margin-top: 0;
+
+
 	}
 
 	.short {
@@ -727,6 +737,27 @@
 						}
 					}
 				}
+
+				@media (max-width: 767px) {
+					display: flex;
+					overflow: hidden;
+					overflow-x: auto;
+					flex-direction: row;
+					margin: 0;
+					margin-bottom: 30px;
+					padding: 0;
+					border-bottom: 1px solid #e5e5e5;
+					text-align: center;
+					white-space: nowrap;
+					list-style: none;
+					align-items: center;
+					flex-wrap: nowrap;
+
+					li {
+						min-width: 25%;
+						margin-right: 20px;
+					}
+				}
 			}
 
 			&__content {
@@ -734,6 +765,10 @@
 				> div {
 					padding: 20px;
 				}
+			}
+
+			@media (max-width: 767px) {
+				grid-template-columns: auto;
 			}
 		}
 	}

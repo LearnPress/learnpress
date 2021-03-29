@@ -76,7 +76,7 @@ class Question extends Component {
 			editPermalink,
 		} = this.props;
 
-		return editPermalink ? editPermalink.replace( /[0-9]+/, question.id ) : '';
+		return editPermalink ? editPermalink.replace( /post=([0-9]{3,4})/, `post=${ question.id }` ) : '';
 	};
 
 	editPermalink = ( editPermalink ) => {
