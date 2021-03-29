@@ -321,6 +321,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		$date = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
+
 		return $this->format_time( $date, $format );
 	}
 
@@ -368,8 +369,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $got_status;
 	}
 
-	public function has_finished() {
-		return in_array( $this->get_status(), array( 'finished' ), true );
+	/**
+	 * Check course is finished.
+	 *
+	 * @return bool.
+	 */
+	public function has_finished() : bool {
+		return $this->get_status() === LP_COURSE_FINISHED;
 	}
 
 	public function is_exists() {
@@ -683,7 +689,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return $this
 	 */
 	public function get_graduation() {
-		return apply_filters( 'learnpress/user-item/get-graduation', $this->get_data( 'graduation' ), $this->get_item_id(), $this->get_user() );
+		return apply_filters( 'learnpress/user-item/get-graduation', $this->get_data( 'graduation' ),
+			$this->get_item_id(), $this->get_user() );
 	}
 
 	/**
@@ -926,13 +933,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( $include ) {
 			settype( $include, 'array' );
 			$format = array_fill( 0, sizeof( $include ), '%s' );
-			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
+			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
 		}
 
 		if ( $exclude ) {
 			settype( $exclude, 'array' );
 			$format = array_fill( 0, sizeof( $exclude ), '%s' );
-			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
+			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
 		}
 
 		$query = $wpdb->prepare(
