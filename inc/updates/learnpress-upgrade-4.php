@@ -16,9 +16,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	protected static $instance = null;
 
 	/**
+	 * Get Instance
+	 *
 	 * @return LP_Upgrade_4
 	 */
-	public static function get_instance() {
+	public static function get_instance(): self {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
@@ -80,6 +82,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 						'convert_result_questions'            => new LP_Step(
 							'convert_result_questions',
 							'Convert Data Result questions',
+							''
+						),
+						'convert_retake_quiz'                 => new LP_Step(
+							'convert_retake_quiz',
+							'Convert retake quizzes',
 							''
 						),
 						'remove_data_lp_user_itemmeta'        => new LP_Step(
@@ -540,6 +547,99 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	}
 
 	/**
+	 * Convert retake quiz.
+	 *
+	 * @param array $data .
+	 *
+	 * @return LP_Step
+	 */
+	protected function convert_retake_quiz( array $data ): LP_Step {
+		$response  = new LP_Step( __FUNCTION__, '' );
+		$lp_db     = LP_Database::getInstance();
+		$page      = 0;
+		$offset    = 0;
+		$limit     = 100;
+		$total_row = 0;
+
+		try {
+			if ( empty( $data ) ) {
+				// Check total rows.
+				$query = $lp_db->wpdb->prepare(
+					"
+					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
+					WHERE meta_key = '_retaken_items'
+					", 1
+				);
+
+				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
+			} else {
+				$page      = $data['p'];
+				$offset    = $limit * $page;
+				$total_row = $data['total_rows'];
+			}
+
+			// Convert rows.
+			$query                   = $lp_db->wpdb->prepare(
+				"
+				SELECT learnpress_user_item_id AS user_item_id, meta_value AS quizzes_retaken
+				FROM $lp_db->tb_lp_user_itemmeta
+				WHERE meta_key = '_retaken_items'
+				LIMIT %d offset %d
+				", $limit, $offset
+			);
+			$courses_quizzes_retaken = $lp_db->wpdb->get_results( $query );
+
+			if ( 0 === count( $courses_quizzes_retaken ) ) {
+				return $this->finish_step( $response, 'Convert result question success' );
+			}
+
+			foreach ( $courses_quizzes_retaken as $quizzes_retaken ) {
+				$user_item_id = $quizzes_retaken->user_item_id;
+				$retaken      = maybe_unserialize( $quizzes_retaken->quizzes_retaken );
+
+				if ( is_array( $retaken ) ) {
+					foreach ( $retaken as $quiz_id => $v ) {
+						$quiz_user_item_id = $lp_db->wpdb->get_var(
+							$lp_db->wpdb->prepare(
+								"
+								SELECT user_item_id
+								FROM $lp_db->tb_lp_user_items
+								WHERE parent_id = %d
+								AND item_id = %d
+								", $user_item_id, $quiz_id
+							)
+						);
+
+						if ( $quiz_user_item_id ) {
+							$lp_db->wpdb->query(
+								$lp_db->wpdb->prepare(
+									"
+									INSERT INTO $lp_db->tb_lp_user_itemmeta
+									(learnpress_user_item_id, meta_key, meta_value)
+									VALUES ($quiz_user_item_id, '_lp_retake_count', $v)
+									"
+								)
+							);
+						}
+					}
+				}
+			}
+
+			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
+
+			$response->status           = 'success';
+			$response->message          = 'Convert success ';
+			$response->percent          = $percent;
+			$response->data->p          = ++ $page;
+			$response->data->total_rows = $total_row;
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	/**
 	 * Modify table learnpress_user_itemmeta .
 	 * Must run after Step "convert_result_questions"
 	 * Because change name column name 'learnpress_user_item_id' to 'user_item_id' and meta_key change type from 'text' to varchar(255)
@@ -584,6 +684,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		 * 5. Remove _last_status.
 		 * 6. Remove _current_status.
 		 * 7. Remove finishing_type.
+		 * 7. Remove _retaken_items.
 		 */
 		$query = $lp_db->wpdb->prepare(
 			"
@@ -595,6 +696,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				OR meta_key = '_last_status'
 				OR meta_key = '_current_status'
 				OR meta_key = 'finishing_type'
+				OR meta_key = '_retaken_items'
 			", 1
 		);
 		$lp_db->wpdb->query( $query );

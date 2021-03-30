@@ -38,12 +38,12 @@ define( 'LP_QUESTION_CPT', 'lp_question' );
 define( 'LP_QUIZ_CPT', 'lp_quiz' );
 define( 'LP_ORDER_CPT', 'lp_order' );
 
-// Role of user who is a teacher
+// Role of user .
 define( 'LP_TEACHER_ROLE', 'lp_teacher' );
+define( 'ADMIN_ROLE', 'administrator' );
 
 // Turn debug mode on/off.
 //define( 'LP_DEBUG', true );
-define( 'LP_CACHE_RESOURCE', false );
 
 // Options.
 define( 'LP_USE_ATTRIBUTES', false );
