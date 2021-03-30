@@ -525,5 +525,4 @@ class LP_Meta_Box_Course {
 		}
 	}
 }
-
-LP_Meta_Box_Course::get_instance();
+add_action( 'admin_init', array( 'LP_Meta_Box_Course', 'get_instance' ) );
