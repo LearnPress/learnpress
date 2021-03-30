@@ -807,6 +807,10 @@ function LP() {
 	return LearnPress::instance();
 }
 
+
+
+
+
 /**
  * Done! entry point of the plugin
  * Create new instance of LearnPress and put it to global
