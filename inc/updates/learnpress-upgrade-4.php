@@ -626,22 +626,58 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 	/**
 	 * Modify table learnpress_question_answers
+	 *
+	 * @return LP_Step
+	 * @throws Exception .
 	 */
-	protected function modify_tb_lp_question_answers() {
+	protected function modify_tb_lp_question_answers(): LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
 		try {
-			$query = $lp_db->wpdb->prepare(
-				"
-				ALTER TABLE {$lp_db->tb_lp_question_answers}
-				ADD `title` text NULL AFTER `question_id`,
-				ADD `value` varchar(32) NULL AFTER `title`,
-				ADD `order` bigint(20) NULL DEFAULT 1 AFTER `value`,
-				ADD `is_true` varchar(3) NULL AFTER `order`;
-			", 1
-			);
-			$lp_db->wpdb->query( $query );
+			// Add column title.
+			$check_col_title = $lp_db->check_col_table( $lp_db->tb_lp_question_answers, 'title' );
+			if ( ! $check_col_title ) {
+				$lp_db->wpdb->query(
+					"
+					ALTER TABLE {$lp_db->tb_lp_question_answers}
+					ADD `title` text NULL AFTER `question_id`
+					"
+				);
+			}
+
+			// Add column value.
+			$check_col_value = $lp_db->check_col_table( $lp_db->tb_lp_question_answers, 'value' );
+			if ( ! $check_col_value ) {
+				$lp_db->wpdb->query(
+					"
+					ALTER TABLE {$lp_db->tb_lp_question_answers}
+					ADD `value` varchar(32) NULL AFTER `title`
+					"
+				);
+			}
+
+			// Add column order.
+			$check_col_order = $lp_db->check_col_table( $lp_db->tb_lp_question_answers, 'order' );
+			if ( ! $check_col_order ) {
+				$lp_db->wpdb->query(
+					"
+					ALTER TABLE {$lp_db->tb_lp_question_answers}
+					ADD `order` bigint(20) NULL DEFAULT 1 AFTER `value`
+					"
+				);
+			}
+
+			// Add column is_true.
+			$check_col_is_true = $lp_db->check_col_table( $lp_db->tb_lp_question_answers, 'is_true' );
+			if ( ! $check_col_is_true ) {
+				$lp_db->wpdb->query(
+					"
+					ALTER TABLE {$lp_db->tb_lp_question_answers}
+					ADD `is_true` varchar(3) NULL AFTER `order`
+					"
+				);
+			}
 
 			$indexs = array( 'question_id' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_question_answers, $indexs );
@@ -944,7 +980,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	/**
 	 * Create index table learnpress_section_items
 	 */
-	protected function modify_tb_lp_section_items() : LP_Step {
+	protected function modify_tb_lp_section_items(): LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
