@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Query in table learnpress_user_item_result.
  *
@@ -18,7 +17,6 @@ class LP_User_Items_Result_DB extends LP_Database {
 	 * @param [type] $user_item_id
 	 * @param integer $limit Number result in db.
 	 * @param boolean $last Remove lastest result.
-	 *
 	 * @return array result
 	 */
 	public function get_results( $user_item_id, $limit = 3, $last = false ) {
@@ -30,8 +28,7 @@ class LP_User_Items_Result_DB extends LP_Database {
 
 		$limit = absint( $limit ) ?? 3;
 
-		$query = $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC LIMIT %d",
-			$user_item_id, $limit + 1 );
+		$query = $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC LIMIT %d", $user_item_id, $limit + 1 );
 
 		$col = $wpdb->get_col( $query );
 
@@ -46,7 +43,6 @@ class LP_User_Items_Result_DB extends LP_Database {
 	 * Get lastest result.
 	 *
 	 * @param integer $user_item_id
-	 *
 	 * @return void
 	 */
 	public function get_result( $user_item_id = 0 ) {
@@ -56,13 +52,7 @@ class LP_User_Items_Result_DB extends LP_Database {
 			return false;
 		}
 
-		$result = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT result FROM $wpdb->learnpress_user_item_results
-				WHERE user_item_id=%d ORDER BY id DESC LIMIT 1
-				", $user_item_id
-			)
-		);
+		$result = $wpdb->get_var( $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC LIMIT 1", $user_item_id ) );
 
 		return $result && is_string( $result ) ? json_decode( $result, true ) : false;
 	}
@@ -74,13 +64,7 @@ class LP_User_Items_Result_DB extends LP_Database {
 			return false;
 		}
 
-		$max_id = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT MAX(id) id FROM $wpdb->learnpress_user_item_results
-				WHERE user_item_id=%d
-				", $user_item_id
-			)
-		);
+		$max_id = $wpdb->get_var( $wpdb->prepare( "SELECT MAX(id) id from $wpdb->learnpress_user_item_results WHERE user_item_id=%d", $user_item_id ) );
 
 		$data   = array( 'result' => $result );
 		$where  = array(
@@ -121,20 +105,11 @@ class LP_User_Items_Result_DB extends LP_Database {
 		return false;
 	}
 
-	/**
-	 * Delete all results by user_item_id.
-	 *
-	 * @param int $user_item_id .
-	 *
-	 * @return bool|int
-	 */
 	public function delete( $user_item_id = 0 ) {
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			return false;
-		}
+		global $wpdb;
 
-		$delete = $this->wpdb->delete(
-			$this->tb_lp_user_item_results,
+		$delete = $wpdb->delete(
+			$wpdb->learnpress_user_item_results,
 			array(
 				'user_item_id' => $user_item_id,
 			),
@@ -159,5 +134,4 @@ class LP_User_Items_Result_DB extends LP_Database {
 		return self::$_instance;
 	}
 }
-
 LP_User_Items_Result_DB::instance();

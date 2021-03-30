@@ -276,16 +276,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache.php';
 			require_once 'inc/class-lp-asset-key.php';
 
-			// Background processes .
+			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
 
-			// Filter query .
+			// Filter query
 			require_once 'inc/filters/class-lp-filter.php';
 			require_once 'inc/filters/class-lp-post-type-filter.php';
 			require_once 'inc/filters/class-lp-question-filter.php';
 			require_once 'inc/filters/class-lp-user-items-filter.php';
 
-			// Query Database .
+			// Query Database
 			require_once 'inc/databases/class-lp-db.php';
 			require_once 'inc/databases/class-lp-course-db.php';
 			require_once 'inc/databases/class-lp-lesson-db.php';
@@ -295,7 +295,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-lp-user-items-db.php';
 			require_once 'inc/databases/class-lp-user-item-results-db.php';
 
-			// curds .
+			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
@@ -351,7 +351,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
 
-			// Register custom-post-type and taxonomies .
+			// Register custom-post-type and taxonomies
 			require_once 'inc/custom-post-types/abstract.php';
 			require_once 'inc/custom-post-types/course.php';
 			require_once 'inc/custom-post-types/lesson.php';
