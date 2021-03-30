@@ -65,7 +65,7 @@ const upgradeDB = () => {
 
 		const urlHandle = '/lp/v1/database/upgrade';
 		const elGroupStep = elLPOverlay.find( '.lp-group-step' );
-		const elItemSteps = elLPOverlay.find( '.lp-item-step' );
+		const elItemSteps = elToolUpgradeDB.find( '.lp-item-step' );
 
 		// Get params.
 		const steps = [];
