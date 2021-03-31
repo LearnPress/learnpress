@@ -280,9 +280,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$enrolled  = $user->has_enrolled_course( $course->get_id() );
 
 		// For free course and user does not purchased
-		if ( $course->is_free() && ! $enrolled ) {
+		$course_data = $user->get_course_data( $course->get_id() );
+
+		if ( $course->is_free() && ! $enrolled && ! $course_data ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
-		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
+		} elseif ( $purchased && $course_data ) {
 			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
 				learn_press_get_template( 'single-course/buttons/enroll.php' );
 			}
