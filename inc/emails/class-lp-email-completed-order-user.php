@@ -27,7 +27,8 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 		public function __construct() {
 			$this->id          = 'completed-order-user';
 			$this->title       = __( 'User', 'learnpress' );
-			$this->description = __( 'Send email to the user who has bought course when order is completed.', 'learnpress' );
+			$this->description = __( 'Send email to the user who has bought course when order is completed.',
+				'learnpress' );
 
 			$this->default_subject = __( 'Your order on {{order_date}} has completed', 'learnpress' );
 			$this->default_heading = __( 'Your order has completed', 'learnpress' );
@@ -64,6 +65,11 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 			$free = 0;
 			foreach ( $items as $item ) {
 				$course = learn_press_get_course( $item['course_id'] );
+
+				if ( ! $course ) {
+					continue;
+				}
+
 				if ( $course->is_free() ) {
 					$free ++;
 				}
@@ -84,7 +90,8 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 
 			$this->get_object();
 
-			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() );
+			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(),
+				$this->get_attachments() );
 
 			return $return;
 		}
