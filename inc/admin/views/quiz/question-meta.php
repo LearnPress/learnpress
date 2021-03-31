@@ -25,12 +25,12 @@
 					</div>
 					<div class="lp-quiz-editor__detail-field">
 						<div class="lp-quiz-editor__detail-label">
-							<label :for="'marking-'+question.id"><?php esc_html_e( 'Points for choosing the right answer.', 'learnpress' ); ?></label>
+							<label :for="'marking-'+question.id"><?php esc_html_e( 'Points', 'learnpress' ); ?></label>
 						</div>
 						<div class="lp-quiz-editor__detail-input">
 							<div>
 								<input name="mark" :id="'marking-'+question.id" type="number" min="1" step="1" v-model="question.settings.mark" @change="updateMeta">
-								<p class="description"><?php esc_html_e( 'Set question points.', 'learnpress' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Points for choosing the correct answer.', 'learnpress' ); ?></p>
 							</div>
 						</div>
 					</div>

@@ -6,8 +6,8 @@ class LP_Meta_Box_Question {
 			'lp/metabox/lesson/lists',
 			array(
 				'_lp_mark'        => array(
-					'label'             => esc_html__( 'Points for choosing the right answer.', 'learnpress' ),
-					'description'       => esc_html__( 'Set question points.', 'learnpress' ),
+					'label'             => esc_html__( 'Points', 'learnpress' ),
+					'description'       => esc_html__( 'Points for choosing the correct answer.', 'learnpress' ),
 					'desc_tip'          => true,
 					'type'              => 'number',
 					'default'           => '1',

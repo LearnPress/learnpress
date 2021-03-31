@@ -145,14 +145,26 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			self::$_instance = $this;
 
-			// define table prefixes
+			// Define constant .
+			$this->plugin_defines();
+
+			// define table prefixes .
 			$this->define_tables();
 
-			// include files
+			// include files .
 			$this->includes();
 
-			// hooks
+			// hooks .
 			$this->init_hooks();
+		}
+
+		/**
+		 * Define constant.
+		 */
+		protected function plugin_defines() {
+			if ( ! defined( 'LP_PLUGIN_BASENAME' ) ) {
+				define( 'LP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+			}
 		}
 
 		public function init_background_processes() {
