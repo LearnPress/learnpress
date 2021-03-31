@@ -31,7 +31,7 @@ $percentage     = $course_results['count_items'] ? absint( $course_results['comp
 
 		<?php if ( $user->has_enrolled_course( $course->get_id() ) ) : ?>
 			<div class="items-progress">
-				<span class="number"><?php printf( __( '%1$d of %2$d items', 'learnpress' ), $course_results['completed_items'], $course->count_items( '', true ) ); ?></span>
+				<span class="number"><?php printf( __( '%1$s of %2$d items', 'learnpress' ), '<span class="items-completed">' . $course_results['completed_items'] . '</span>', $course->count_items( '', true ) ); ?></span>
 				<div class="learn-press-progress">
 					<div class="learn-press-progress__active" data-value="<?php echo $percentage; ?>%;">
 					</div>
