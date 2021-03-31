@@ -179,6 +179,9 @@ class LP_Addon {
 				if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>' ) ) {
 					add_action( 'admin_notices', array( $this, '_admin_notices' ) );
 
+					// Deactivate plugin .
+					deactivate_plugins( plugin_basename( $this->plugin_file ) );
+
 					$this->_valid = false;
 				}
 			}
@@ -253,7 +256,8 @@ class LP_Addon {
 	 *
 	 * @param        $instance
 	 * @param        $path
-	 * @param string   $plugin_file
+	 * @param string $plugin_file
+	 *
 	 * @return void|mixed
 	 */
 	public static function load( $instance, $path, $plugin_file = '' ) {
@@ -316,10 +320,10 @@ class LP_Addon {
 	public function get_template_path() {
 		if ( empty( $this->_template_path ) ) {
 			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace(
-				'!^learnpress-!',
-				'',
-				dirname( $this->get_plugin_slug() )
-			);
+					'!^learnpress-!',
+					'',
+					dirname( $this->get_plugin_slug() )
+				);
 		}
 
 		return $this->_template_path;
