@@ -63,7 +63,6 @@ class LP_Meta_Box_Course {
 					'_lp_level',
 					esc_html__( 'Level', 'learnpress' ),
 					esc_html__( 'Choose a difficulty level.', 'learnpress' ),
-					'lp_meta_box_select_field',
 					'',
 					'',
 					'',
