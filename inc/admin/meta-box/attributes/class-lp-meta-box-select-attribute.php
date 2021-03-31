@@ -13,7 +13,7 @@ class LP_Meta_Box_Select_Attribute extends LP_Meta_Box_Attribute {
 	 *
 	 * @var string
 	 */
-	public $type = 'lp_meta_box_text_input_field';
+	public $type = 'lp_meta_box_select_field';
 	/**
 	 * List value select
 	 *
