@@ -197,6 +197,7 @@ function lp_meta_box_select_field( $field = array() ) {
 	$field_attributes['class'] = $field['class'];
 
 	if ( $field['multiple'] ) {
+		$field['wrapper_class']       = 'lp-select-2';
 		$field_attributes['multiple'] = true;
 	}
 
