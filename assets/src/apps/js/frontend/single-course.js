@@ -187,7 +187,7 @@ const courseProgress = () => {
 
 					setTimeout( function() {
 						getResponse( ele );
-					}, 1000 );
+					}, 600 );
 
 					eleObserver.unobserve( ele );
 				}

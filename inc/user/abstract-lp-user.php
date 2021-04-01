@@ -397,7 +397,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					);
 				}
 
-				if ( $course->is_required_enroll() && ! $this->has_enrolled_course( $course_id ) ) {
+				if ( ! $this->has_enrolled_course( $course_id ) || ! $this->is_course_in_progress( $course_id ) ) {
 					throw new Exception(
 						__( 'Please enroll course before starting quiz.', 'learnpress' ),
 						LP_COURSE_IS_FINISHED
@@ -1600,7 +1600,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function has_enrolled_course( int $course_id ) : bool {
 			$course_item = $this->get_course_data( $course_id );
 
-			$enrolled = $course_item && $course_item->get_status() === LP_COURSE_ENROLLED;
+			$enrolled = $course_item && $course_item->get_user_item_id() > 0;
 
 			return apply_filters( 'learn-press/has-enrolled-course', $enrolled, $this->get_id(), $course_id );
 		}
