@@ -48,12 +48,13 @@ defined( 'ABSPATH' ) || die();
 				<?php esc_html_e( 'Re-calculate course result for users', 'learnpress' ); ?>
 			</label>
 		</li>
-		<li>
+		<!--tungnx comment because need add Sync-User-Completed-Items on sync-data.js-->
+		<!--<li>
 			<label>
 				<input type="checkbox" name="lp-repair[sync-user-completed-items]" value="yes">
-				<?php esc_html_e( 'Re-calculate completed items for each users', 'learnpress' ); ?>
+				<?php /*esc_html_e( 'Re-calculate completed items for each users', 'learnpress' ); */ ?>
 			</label>
-		</li>
+		</li>-->
 	</ul>
 	<p class="tools-button">
 		<button type="button" class="button lp-button-repair"><?php esc_html_e( 'Repair now', 'learnpress' ); ?></button>

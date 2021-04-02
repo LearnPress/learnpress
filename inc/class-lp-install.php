@@ -693,29 +693,32 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				'%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
 			$query  = '';
 
+			if ( ! in_array( $wpdb->learnpress_order_items, $tables ) ) {
+				$query .= "
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_order_items} (
+					order_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					order_item_name longtext NOT NULL,
+					order_id bigint(20) unsigned NOT NULL DEFAULT 0,
+					item_id bigint(20) unsigned NOT NULL DEFAULT 0,
+					item_type varchar(200) NOT NULL DEFAULT '',
+					PRIMARY KEY (order_item_id),
+  					KEY order_id (order_id),
+  					KEY item_id (item_id),
+  					KEY item_type (item_type)
+				) $collate;";
+			}
+
 			if ( ! in_array( $wpdb->learnpress_order_itemmeta, $tables ) ) {
 				$query .= "
 				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_order_itemmeta} (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_order_item_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					meta_key varchar(255) NOT NULL DEFAULT '',
-					meta_value longtext NULL,
+					meta_value varchar(255) NULL,
 					PRIMARY KEY (meta_id),
   					KEY learnpress_order_item_id (learnpress_order_item_id),
-  					KEY meta_key (meta_key(191))
-				) $collate;";
-			}
-
-			if ( ! in_array( $wpdb->learnpress_order_items, $tables ) ) {
-				$query .= "
-				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_order_items} (
-					order_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-					order_item_name longtext NOT NULL,
-					item_type varchar(50) NOT NULL DEFAULT '',
-					item_id bigint(20) unsigned NOT NULL DEFAULT 0,
-					order_id bigint(20) unsigned NOT NULL DEFAULT 0,
-					PRIMARY KEY (order_item_id),
-  					KEY order_id (order_id)
+  					KEY meta_key (meta_key),
+  					KEY meta_value (meta_value)
 				) $collate;";
 			}
 
@@ -731,6 +734,19 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					PRIMARY KEY (question_answer_id),
 					KEY question_id (question_id)
 				) $collate;";
+			}
+
+			if ( ! in_array( $wpdb->learnpress_question_answermeta, $tables ) ) {
+				$query .= "
+				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_question_answermeta} (
+					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					learnpress_question_answer_id bigint(20) unsigned NOT NULL,
+					meta_key varchar(255) NOT NULL DEFAULT '',
+					meta_value longtext NULL,
+					PRIMARY KEY (meta_id),
+					KEY question_answer_meta (`learnpress_question_answer_id`, `meta_key`)
+				) $collate;
+				";
 			}
 
 			if ( ! in_array( $wpdb->learnpress_quiz_questions, $tables ) ) {
@@ -753,10 +769,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					course_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					user_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					message text NOT NULL,
-					date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+					date datetime NULL DEFAULT NULL,
 					status varchar(45) NOT NULL DEFAULT '',
 					user_type varchar(45) NOT NULL DEFAULT '',
-					PRIMARY KEY (review_log_id)
+					PRIMARY KEY (review_log_id),
+				    KEY course_id (course_id),
+					KEY user_id (user_id)
 				) $collate;";
 			}
 
@@ -769,8 +787,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					item_order bigint(20) unsigned NOT NULL DEFAULT '0',
 					item_type varchar(45),
 					PRIMARY KEY (section_item_id),
-					KEY section_id (section_id),
-					KEY item_id (item_id)
+					KEY section_item (`section_id`, `item_id`)
 				) $collate;";
 			}
 
@@ -783,8 +800,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					section_order bigint(10) unsigned NOT NULL DEFAULT '1',
 					section_description longtext NOT NULL,
 					PRIMARY KEY (section_id),
-					KEY section_course_id (section_course_id),
-					KEY section_name (section_name)
+					KEY section_course_id (section_course_id)
 				) $collate;";
 			}
 
@@ -819,7 +835,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					KEY parent_id (parent_id),
 					KEY user_id (user_id),
 					KEY item_id (item_id),
-					KEY ref_id (ref_id)
+					KEY item_type (item_type),
+					KEY ref_id (ref_id),
+					KEY ref_type (ref_type),
+					KEY status (status)
 				) $collate;";
 			}
 
@@ -829,10 +848,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_user_item_id bigint(20) unsigned NOT NULL,
 					meta_key varchar(255) NOT NULL DEFAULT '',
-					meta_value longtext NULL,
+					meta_value varchar(255) NULL,
 					PRIMARY KEY (meta_id),
 					KEY learnpress_user_item_id (learnpress_user_item_id),
-  					KEY meta_key (meta_key(191))
+  					KEY meta_key (meta_key)
+  					KEY meta_value (meta_value)
 				) $collate;
 				";
 			}
@@ -846,20 +866,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 						PRIMARY KEY (id),
 						KEY user_item_id (user_item_id)
 					) $collate;
-				";
-			}
-
-			if ( ! in_array( $wpdb->learnpress_question_answermeta, $tables ) ) {
-				$query .= "
-				CREATE TABLE IF NOT EXISTS {$wpdb->learnpress_question_answermeta} (
-					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-					learnpress_question_answer_id bigint(20) unsigned NOT NULL,
-					meta_key varchar(255) NOT NULL DEFAULT '',
-					meta_value longtext NULL,
-					PRIMARY KEY (meta_id),
-					KEY learnpress_question_answer_id (learnpress_question_answer_id),
-					KEY meta_key (meta_key(191))
-				) $collate;
 				";
 			}
 

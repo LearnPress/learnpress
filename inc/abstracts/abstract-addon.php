@@ -63,11 +63,6 @@ class LP_Addon {
 
 		$this->_define_constants();
 
-		// Return if all add-on is 3.x.
-		if ( version_compare( $this->version, '4.0', '<' ) ) {
-			return;
-		}
-
 		if ( ! $this->_check_version() ) {
 			return;
 		}

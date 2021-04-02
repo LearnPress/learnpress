@@ -402,7 +402,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/class-lp-shortcodes.php';
 			}
 
-			// include template functions
+			// include template functions .
 			require_once 'inc/lp-template-functions.php';
 			require_once 'inc/templates/abstract-template.php';
 			require_once 'inc/class-lp-template.php';
