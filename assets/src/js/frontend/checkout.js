@@ -62,7 +62,7 @@
 			showMessage( errors );
 			const firstId = Object.keys( errors )[ 0 ];
 
-			$( 'input[name="' + firstId + '"]:visible' ).focus();
+			$( 'input[name="' + firstId + '"]:visible' ).trigger( 'focus' );
 		};
 
 		const _formSubmit = function( e ) {
@@ -99,12 +99,14 @@
 
 					if ( response.messages ) {
 						showErrors( response.messages );
+					} else if ( response.message ) {
+						showMessage( '<div class="learn-press-message error">' + response.message + '</div>' );
 					}
 
 					$( '#learn-press-checkout-place-order' ).removeClass( 'loading' );
 
 					if ( 'success' === response.result ) {
-						if ( response.redirect.match( /https?/ ) ) {
+						if ( response.redirect && response.redirect.match( /https?/ ) ) {
 							$buttonCheckout.html( options.i18n_redirecting );
 							window.location = response.redirect;
 						}
