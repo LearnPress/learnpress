@@ -52,6 +52,12 @@ class LP_User extends LP_Abstract_User {
 						'Content of this item has blocked because the course has exceeded duration.',
 						'learnpress'
 					);
+				} elseif ( $this->get_course_status( $course_id ) === LP_COURSE_PURCHASED ) {
+					$view->key     = LP_BLOCK_COURSE_PURCHASE;
+					$view->message = __(
+						'This content is protected, please enroll course to view this content!',
+						'learnpress'
+					);
 				} else {
 					$view->key     = 'can_view_course';
 					$view->flag    = true;

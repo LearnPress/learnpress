@@ -425,6 +425,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$is_all_completed = $user->is_completed_all_items( $course->get_id() );
 
+		if ( ! $user->is_course_in_progress( $course->get_id() ) ) {
+			return;
+		}
+
 		// All items completed and not passed.
 		if ( ! $is_all_completed && $has_finish === 'yes' && ! $is_passed ) {
 			return;
@@ -624,6 +628,16 @@ class LP_Template_Course extends LP_Abstract_Template {
 		do_action( 'learn-press/lesson-start', $item );
 
 		learn_press_get_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
+	}
+
+	public function item_quiz_content() {
+		$item = LP_Global::course_item();
+
+		if ( $item->is_blocked() ) {
+			return;
+		}
+
+		learn_press_get_template( 'content-quiz/js.php' );
 	}
 
 	public function item_lesson_content_blocked() {
@@ -916,7 +930,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
+		$course_data = $user->get_course_data( $course->get_id() );
+
+		if ( ! $user->has_enrolled_course( $course->get_id() ) || $course_data->get_status() === LP_COURSE_PURCHASED ) {
 			return;
 		}
 

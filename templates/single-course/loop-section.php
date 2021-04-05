@@ -91,11 +91,11 @@ $items = $section->get_items();
 					<?php
 					do_action( 'learn-press/before-section-loop-item', $item, $section, $course );
 
-					$item_link = $can_view_item->flag ? $item->get_permalink() : 'javascript:void(0);';
+					$item_link = $can_view_item->flag ? $item->get_permalink() : false;
 					$item_link = apply_filters( 'learn-press/section-item-permalink', $item_link, $item, $section, $course );
 					?>
 
-					<a class="section-item-link" href="<?php echo esc_url( $item_link ); ?>">
+					<a class="section-item-link" href="<?php echo $item_link ? esc_url( $item_link ) : 'javascript:void(0);'; ?>">
 
 						<?php
 						do_action( 'learn-press/before-section-loop-item-title', $item, $section, $course );
