@@ -47,7 +47,7 @@ class LP_Updater {
 			)
 		);
 //		add_action( 'admin_init', array( $this, 'do_update' ) );
-		add_action( 'admin_notices', array( $this, 'check_update_database_message' ) );
+		add_action( 'admin_notices', array( $this, 'check_update_database_message' ), 0 );
 
 //		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
 //			add_action( 'admin_notices', array( $this, 'update_message' ) );

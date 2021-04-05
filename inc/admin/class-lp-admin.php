@@ -30,7 +30,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
-			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notices' ), 1 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
