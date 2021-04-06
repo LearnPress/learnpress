@@ -131,23 +131,27 @@ const purchaseCourse = () => {
 	}
 
 	const submit = async ( id, btn ) => {
-		const response = await wp.apiFetch( {
-			path: 'lp/v1/courses/purchase-course',
-			method: 'POST',
-			data: { id },
-		} );
+		try {
+			const response = await wp.apiFetch( {
+				path: 'lp/v1/courses/purchase-course',
+				method: 'POST',
+				data: { id },
+			} );
 
-		btn.classList.remove( 'loading' );
-		btn.disabled = false;
+			btn.classList.remove( 'loading' );
+			btn.disabled = false;
 
-		const { status, data: { redirect }, message } = response;
+			const { status, data: { redirect }, message } = response;
 
-		if ( message && status ) {
-			form.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
+			if ( message && status ) {
+				form.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
 
-			if ( 'success' === status && redirect ) {
-				window.location.href = redirect;
+				if ( 'success' === status && redirect ) {
+					window.location.href = redirect;
+				}
 			}
+		} catch ( error ) {
+			form.innerHTML += `<div class="lp-enroll-notice error">${ error }</div>`;
 		}
 	};
 
