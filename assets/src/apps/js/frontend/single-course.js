@@ -122,6 +122,46 @@ const enrollCourse = () => {
 	}
 };
 
+// Rest API purchase course - Nhamdv.
+const purchaseCourse = () => {
+	const form = document.querySelector( 'form.purchase-course' );
+
+	if ( ! form ) {
+		return;
+	}
+
+	const submit = async ( id, btn ) => {
+		const response = await wp.apiFetch( {
+			path: 'lp/v1/courses/purchase-course',
+			method: 'POST',
+			data: { id },
+		} );
+
+		btn.classList.remove( 'loading' );
+		btn.disabled = false;
+
+		const { status, data: { redirect }, message } = response;
+
+		if ( message && status ) {
+			form.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
+
+			if ( 'success' === status && redirect ) {
+				window.location.href = redirect;
+			}
+		}
+	};
+
+	form.addEventListener( 'submit', ( event ) => {
+		event.preventDefault();
+		const id = form.querySelector( 'input[name=purchase-course]' ).value;
+		const btn = form.querySelector( 'button.button-purchase-course' );
+		btn.classList.add( 'loading' );
+		btn.disabled = true;
+
+		submit( id, btn );
+	} );
+};
+
 const retakeCourse = () => {
 	const elFormRetakeCourse = document.querySelector( '.lp-form-retake-course' );
 
@@ -295,6 +335,7 @@ $( window ).on( 'load', () => {
 	initCourseTabs();
 	initCourseSidebar();
 	enrollCourse();
+	purchaseCourse();
 	retakeCourse();
 	courseProgress();
 	// courseCurriculum();

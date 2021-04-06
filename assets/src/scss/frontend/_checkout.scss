@@ -304,6 +304,10 @@
 		.course-thumbnail {
 			width: 100px;
 			padding: 20px 13px 18px 0;
+
+			>img {
+				width: 100px;
+			}
 		}
 
 		.course-name {

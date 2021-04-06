@@ -23,7 +23,6 @@ if ( ! isset( $course ) ) {
 	<?php do_action( 'learn-press/before-enroll-button' ); ?>
 
 	<input type="hidden" name="enroll-course" value="<?php echo esc_attr( $course->get_id() ); ?>"/>
-	<input type="hidden" name="enroll-course-nonce" value="<?php echo esc_attr( LP_Nonce_Helper::create_course( 'enroll' ) ); ?>"/>
 
 	<button class="lp-button button button-enroll-course">
 		<?php echo esc_html( apply_filters( 'learn-press/enroll-course-button-text', esc_html__( 'Start Now', 'learnpress' ) ) ); ?>

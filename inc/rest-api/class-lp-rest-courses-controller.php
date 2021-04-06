@@ -18,14 +18,21 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'search'         => array(
+			'search'          => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'search_courses' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
-			'enroll-course'  => array(
+			'purchase-course' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'purchase_course' ),
+					'permission_callback' => '__return_true',
+				),
+			),
+			'enroll-course'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'enroll_courses' ),
@@ -34,7 +41,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					},
 				),
 			),
-			'retake-course'  => array(
+			'retake-course'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'retake_course' ),
@@ -46,7 +53,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					),
 				),
 			),
-			'(?P<key>[\w]+)' => array(
+			'(?P<key>[\w]+)'  => array(
 				'args'   => array(
 					'id' => array(
 						'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
@@ -216,12 +223,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			// Auto enroll for Course.
 			if ( $course_items && isset( $course_items[0]->user_item_id ) ) {
 				if ( in_array( $course_items[0]->status, array( 'purchased' ) ) ) {
-					$date = new LP_Datetime();
-
 					$fields = array(
 						'graduation' => 'in-progress',
 						'status'     => 'enrolled',
-						'start_time' => $date->toSql( false ),
+						'start_time' => current_time( 'mysql', true ),
 					);
 
 					learn_press_update_user_item_field(
@@ -230,7 +235,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 							'user_item_id' => $course_items[0]->user_item_id,
 						)
 					);
-
 				}
 			} else {
 				LP()->session->set( 'order_awaiting_payment', '' );
@@ -267,6 +271,73 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		wp_send_json( $response );
+	}
+
+	/**
+	 * Rest API for Purchase course in single course.
+	 *
+	 * @param WP_REST_Request $request
+	 * @author Nhamdv
+	 * @return void
+	 */
+	public function purchase_course( WP_REST_Request $request ) {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+		$params         = $request->get_params();
+
+		try {
+			$course_id = $params['id'];
+
+			if ( ! $course_id ) {
+				throw new Exception( __( 'Error: Invalid Course ID.', 'learnpress' ) );
+			}
+
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course ) {
+				throw new Exception( __( 'Error: No Course available.', 'learnpress' ) );
+			}
+
+			$user  = learn_press_get_current_user();
+			$order = $user ? $user->get_course_order( $course_id ) : false;
+
+			if ( $order && $order->has_status( array( 'processing', 'completed' ) ) ) {
+				throw new Exception( esc_html__( 'Error: You have already purchased this course.', 'learnpress' ) );
+			}
+
+			LP()->session->set( 'order_awaiting_payment', '' );
+
+			$cart     = LP()->cart;
+			$checkout = LP_Checkout::instance();
+
+			if ( ! learn_press_enable_cart() ) {
+				$order_awaiting_payment = LP()->session->order_awaiting_payment;
+				$cart->empty_cart();
+				LP()->session->order_awaiting_payment = $order_awaiting_payment;
+			}
+
+			do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );
+
+			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
+
+			if ( ! $cart_id ) {
+				throw new Exception( __( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
+			}
+
+			$redirect = apply_filters( 'learnpress/rest-api/courses/purchase/redirect', learn_press_get_page_link( 'checkout' ), $course_id, $cart_id );
+
+			if ( empty( $redirect ) ) {
+				throw new Exception( __( 'Error: Please setup page for checkout.', 'learnpress' ) );
+			}
+
+			$response->status         = 'success';
+			$response->message        = sprintf( esc_html__( '"%s" has been added to your cart.', 'learnpress' ), $course->get_title() );
+			$response->data->redirect = $redirect;
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return rest_ensure_response( $response );
 	}
 
 	/**

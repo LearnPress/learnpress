@@ -79,20 +79,21 @@
 								animation: lp-rotating 1s linear infinite;
 							}
 						}
+					}
 
-						~ .lp-enroll-notice {
-							margin-top: 20px;
-							padding: 20px;
-							border: 2px solid $msg-success;
-							border-radius: 9px;
-							font-size: 15px;
-							line-height: 1.4;
+					~ .lp-enroll-notice {
+						margin-top: 20px;
+						padding: 20px;
+						border: 2px solid $msg-success;
+						border-radius: 9px;
+						font-size: 15px;
+						line-height: 1.4;
 
-							&.error {
-								border-color: $msg-error;
-							}
+						&.error {
+							border-color: $msg-error;
 						}
 					}
+
 				}
 
 			}
