@@ -301,7 +301,8 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				if ( isset( $option_values[ $key ] ) ) {
 					$option_value = $option_values[ $key ];
 
-					if ( is_array( $option_value ) && array_key_exists( $key_child, $option_value ) ) {
+					if ( is_array( $option_value ) && isset( $key_child )
+					     && array_key_exists( $key_child, $option_value ) ) {
 						$option_value = $option_value[ $key_child ];
 					}
 				} else {

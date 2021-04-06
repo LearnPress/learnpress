@@ -851,7 +851,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					meta_value varchar(255) NULL,
 					PRIMARY KEY (meta_id),
 					KEY learnpress_user_item_id (learnpress_user_item_id),
-  					KEY meta_key (meta_key)
+  					KEY meta_key (meta_key),
   					KEY meta_value (meta_value)
 				) $collate;
 				";
