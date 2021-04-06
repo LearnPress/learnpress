@@ -1275,27 +1275,27 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			array( '%s' ),
 			array( '%d' )
 		);
-		if ( $updated ) {
-			$this->update_user_item_meta( $user_item_id, '_last_status', $item['status'] );
-			$this->update_user_item_meta( $user_item_id, '_current_status', $new_status );
-		}
+		// if ( $updated ) {
+		// 	$this->update_user_item_meta( $user_item_id, '_last_status', $item['status'] );
+		// 	$this->update_user_item_meta( $user_item_id, '_current_status', $new_status );
+		// }
 
 		return $updated;
 	}
 
-	public function restore_last_status( $user_item_id ) {
-		$item = $this->get_user_item_by_id( $user_item_id );
-		if ( ! $item ) {
-			return false;
-		}
+	// public function restore_last_status( $user_item_id ) {
+	// 	$item = $this->get_user_item_by_id( $user_item_id );
+	// 	if ( ! $item ) {
+	// 		return false;
+	// 	}
 
-		if ( $last_status = $this->get_user_item_meta( $item['user_item_id'], '_last_status', true ) ) {
-			$this->update_user_item_status( $user_item_id, $last_status );
-			learn_press_delete_user_item_meta( $user_item_id, '_last_status', '', true );
-		}
+	// 	if ( $last_status = $this->get_user_item_meta( $item['user_item_id'], '_last_status', true ) ) {
+	// 		$this->update_user_item_status( $user_item_id, $last_status );
+	// 		learn_press_delete_user_item_meta( $user_item_id, '_last_status', '', true );
+	// 	}
 
-		return $last_status;
-	}
+	// 	return $last_status;
+	// }
 
 	/**
 	 * Delete user item by fields.

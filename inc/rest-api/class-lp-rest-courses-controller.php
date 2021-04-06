@@ -36,9 +36,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'enroll_courses' ),
-					'permission_callback' => function () {
-						return is_user_logged_in();
-					},
+					'permission_callback' => '__return_true',
 				),
 			),
 			'retake-course'   => array(
@@ -200,10 +198,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$response->data = new stdClass();
 
 		try {
-			if ( ! is_user_logged_in() ) {
-				throw new Exception( esc_html__( 'Please login!', 'learnpress' ) );
-			}
-
 			if ( empty( absint( $request['id'] ) ) ) {
 				throw new Exception( esc_html__( 'Error: No course available!.', 'learnpress' ) );
 			}
@@ -218,7 +212,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				'user_id' => get_current_user_id(),
 			);
 
-			$course_items = $user_item_api->get_items_by( $find_query );
+			$course_items = is_user_logged_in() ? $user_item_api->get_items_by( $find_query ) : false;
 
 			// Auto enroll for Course.
 			if ( $course_items && isset( $course_items[0]->user_item_id ) ) {
@@ -229,12 +223,16 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						'start_time' => current_time( 'mysql', true ),
 					);
 
-					learn_press_update_user_item_field(
+					$update = learn_press_update_user_item_field(
 						$fields,
 						array(
 							'user_item_id' => $course_items[0]->user_item_id,
 						)
 					);
+
+					if ( ! $update ) {
+						throw new Exception( esc_html__( 'Error: Can\'t Enroll course.', 'learnpress' ) );
+					}
 				}
 			} else {
 				LP()->session->set( 'order_awaiting_payment', '' );
@@ -248,24 +246,35 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					LP()->session->order_awaiting_payment = $order_awaiting_payment;
 				}
 
-				$cart->add_to_cart( $course_id, 1, array() );
+				$cart_id = $cart->add_to_cart( $course_id, 1, array() );
 
-				$order_id = $checkout->create_order();
-
-				if ( is_wp_error( $order_id ) ) {
-					throw new Exception( $order_id->get_error_message() );
+				if ( ! $cart_id ) {
+					throw new Exception( esc_html__( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
 				}
 
-				$order = new LP_Order( $order_id );
+				if ( is_user_logged_in() ) {
+					$order_id = $checkout->create_order();
 
-				$order->payment_complete(); // Slow query in action 'learn-press/order/status-completed' send email.
+					if ( is_wp_error( $order_id ) ) {
+						throw new Exception( $order_id->get_error_message() );
+					}
 
-				$cart->empty_cart();
+					$order = new LP_Order( $order_id );
+
+					$order->payment_complete(); // Slow query in action 'learn-press/order/status-completed' send email.
+
+					$cart->empty_cart();
+				}
 			}
 
-			$response->status         = 'success';
-			$response->message        = esc_html__( 'Congrats! You enroll course successfully.', 'learnpress' );
-			$response->data->redirect = $course->get_redirect_url_after_enroll();
+			if ( is_user_logged_in() ) {
+				$response->status         = 'success';
+				$response->message        = esc_html__( 'Congrats! You enroll course successfully.', 'learnpress' );
+				$response->data->redirect = $course->get_redirect_url_after_enroll();
+			} else {
+				$response->message        = esc_html__( 'Please login/register to continue.', 'learnpress' );
+				$response->data->redirect = learn_press_get_page_link( 'checkout' );
+			}
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}

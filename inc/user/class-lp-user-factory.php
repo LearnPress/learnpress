@@ -28,7 +28,7 @@ class LP_User_Factory {
 	 */
 	public static function init() {
 		self::$_guest_transient = WEEK_IN_SECONDS;
-		//add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
+		// add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
 		add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
@@ -85,8 +85,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string $old_status
-	 * @param string $new_status
+	 * @param string   $old_status
+	 * @param string   $new_status
 	 */
 	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
@@ -102,16 +102,15 @@ class LP_User_Factory {
 					continue;
 				}
 
-				$item = $curd->get_user_item(
-					$user_id,
-					$item['course_id']
-				);
+				$item = $curd->get_user_item( $user_id, $item['course_id'] );
+
 				if ( $item ) {
 					if ( is_array( $item ) ) {
 						$item_id = $item['user_item_id'];
 					} else {
 						$item_id = $item;
 					}
+
 					$curd->update_user_item_status( $item_id, $new_status );
 				}
 			}
@@ -120,8 +119,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string $old_status
-	 * @param string $new_status
+	 * @param string   $old_status
+	 * @param string   $new_status
 	 */
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
@@ -139,7 +138,6 @@ class LP_User_Factory {
 		}
 
 		foreach ( $order->get_users() as $user_id ) {
-
 			$user = learn_press_get_user( $user_id );
 
 			foreach ( $items as $item ) {
@@ -161,35 +159,31 @@ class LP_User_Factory {
 					);
 				} else {
 					$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id(), false, false );
-					// $user_item_id = $wpdb->insert_id;
 				}
 
-				if ( $user_item_id && ! $user_item_id instanceof WP_Error ) {
+				if ( $user_item_id && ! is_wp_error( $user_item_id ) ) {
+					// $last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
 					$item        = $curd->get_user_item_by_id( $user_item_id );
-					$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
-					$args        = array( 'status' => $last_status );
 					$course_id   = $item['item_id'];
 					$can_enroll  = $user->can_enroll_course( $course_id );
-					$auto_enroll = LP()->settings->get( 'auto_enroll' ) == 'yes';
+					$auto_enroll = LP()->settings()->get( 'auto_enroll' ) == 'yes';
 					$course      = learn_press_get_course( $course_id );
 
+					$args = array(
+						'status'     => LP_COURSE_PURCHASED,
+						'start_time' => current_time( 'mysql', true ),
+					);
+
 					if ( $new_status == 'completed' && $can_enroll && $auto_enroll ) {
-						$args['status'] = 'enrolled';
+						$args['status'] = LP_COURSE_ENROLLED;
 					}
 
-					if ( ! $last_status ) {
-						$args['status'] = $auto_enroll && $can_enroll ? 'enrolled' : 'purchased';
+					if ( $course->is_free() && $can_enroll ) {
+						$args['status'] = LP_COURSE_ENROLLED;
+					}
 
-						if ( $course->is_free() && $can_enroll ) {
-							$args['status'] = 'enrolled';
-						}
-
-						if ( 'enrolled' == $args['status'] ) {
-							$time               = new LP_Datetime();
-							$args['start_time'] = $time->toSql( false );
-						} elseif ( 'purchased' == $args['status'] ) {
-							$args['start_time'] = null;
-						}
+					if ( $args['status'] === LP_COURSE_PURCHASED ) {
+						$args['start_time'] = null;
 					}
 
 					$curd->update_user_item_by_id( $user_item_id, $args );
@@ -203,7 +197,8 @@ class LP_User_Factory {
 	 * @editor tungnx
 	 * @reason move to LP_Course_DB
 	 */
-	/*protected static function _get_course_item( $order_id, $course_id, $user_id ) {
+	/*
+	protected static function _get_course_item( $order_id, $course_id, $user_id ) {
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -445,7 +440,7 @@ class LP_User_Factory {
 
 	/**
 	 * @param      $the_user
-	 * @param bool $force
+	 * @param bool     $force
 	 *
 	 * @return LP_Abstract_User
 	 */
@@ -558,9 +553,9 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_User_Item $item
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 * @param int $user_id
+	 * @param int          $quiz_id
+	 * @param int          $course_id
+	 * @param int          $user_id
 	 */
 	private static function _update_user_item_meta( $item, $quiz_id, $course_id, $user_id ) {
 		if ( get_user_by( 'id', $user_id ) ) {

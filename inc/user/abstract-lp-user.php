@@ -2334,18 +2334,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$user_id = $this->get_id();
 
-				$date                        = new LP_Datetime();
 				$course_item['user_id']      = $user_id;
 				$course_item['item_id']      = $course_id;
 				$course_item['item_type']    = learn_press_get_post_type( $course_id );
 				$course_item['ref_id']       = $order_id;
 				$course_item['ref_type']     = ( $order_id != 0 ) ? learn_press_get_post_type( $order_id ) : '';
-				$course_item['start_time']   = $date->toSql( false );
+				$course_item['start_time']   = current_time( 'mysql', true );
 				$course_item['access_level'] = 50;
 				$course_item['graduation']   = 'in-progress';
 
 				$user_course = new LP_User_Item_Course( $course_item );
-				$user_course->set_status( 'in-progress' );
+				$user_course->set_status( LP_COURSE_PURCHASED );
 
 				if ( ! $user_course->update() ) {
 					throw new Exception( __( 'Update user item error.', 'learnpress' ) );

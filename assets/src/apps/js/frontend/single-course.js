@@ -69,56 +69,52 @@ const initCourseSidebar = function initCourseSidebar() {
 const enrollCourse = () => {
 	const formEnroll = document.querySelector( 'form.enroll-course' );
 
-	if ( ! formEnroll || ! document.body.classList.contains( 'logged-in' ) ) {
+	if ( ! formEnroll ) {
 		return;
 	}
 
 	const submit = async ( id, btnEnroll ) => {
-		const response = await wp.apiFetch(
-			{
+		try {
+			const response = await wp.apiFetch( {
 				path: 'lp/v1/courses/enroll-course',
 				method: 'POST',
 				data: { id },
+			} );
+
+			btnEnroll.classList.remove( 'loading' );
+			btnEnroll.disabled = false;
+
+			const { status, data: { redirect }, message } = response;
+
+			if ( message && status ) {
+				formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
+
+				if ( redirect ) {
+					window.location.href = redirect;
+				}
 			}
-		);
-
-		btnEnroll.classList.remove( 'loading' );
-		btnEnroll.disabled = false;
-
-		const { status, data: { redirect }, message } = response;
-
-		if ( message && status ) {
-			formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
-
-			if ( 'success' === status && undefined !== redirect ) {
-				window.location.href = redirect;
-			}
+		} catch ( error ) {
+			form.innerHTML += `<div class="lp-enroll-notice error">${ error.message && error.message }</div>`;
 		}
 	};
 
-	formEnroll.addEventListener(
-		'submit',
-		( event ) => {
-			event.preventDefault();
-			const id = formEnroll.querySelector( 'input[name=enroll-course]' ).value;
-			const btnEnroll = formEnroll.querySelector( 'button.button-enroll-course' );
-			btnEnroll.classList.add( 'loading' );
-			btnEnroll.disabled = true;
-			submit( id, btnEnroll );
-		}
-	);
+	formEnroll.addEventListener( 'submit', ( event ) => {
+		event.preventDefault();
+		const id = formEnroll.querySelector( 'input[name=enroll-course]' ).value;
+		const btnEnroll = formEnroll.querySelector( 'button.button-enroll-course' );
+		btnEnroll.classList.add( 'loading' );
+		btnEnroll.disabled = true;
+		submit( id, btnEnroll );
+	} );
 
 	// Reload when press back button in chrome.
 	if ( document.querySelector( '.course-detail-info' ) !== null ) {
-		window.addEventListener(
-			'pageshow',
-			( event ) => {
-				const hasCache = event.persisted || ( typeof window.performance != 'undefined' && String( window.performance.getEntriesByType( 'navigation' )[ 0 ].type ) == 'back_forward' );
-				if ( hasCache ) {
-					location.reload();
-				}
+		window.addEventListener( 'pageshow', ( event ) => {
+			const hasCache = event.persisted || ( typeof window.performance != 'undefined' && String( window.performance.getEntriesByType( 'navigation' )[ 0 ].type ) == 'back_forward' );
+			if ( hasCache ) {
+				location.reload();
 			}
-		);
+		} );
 	}
 };
 
