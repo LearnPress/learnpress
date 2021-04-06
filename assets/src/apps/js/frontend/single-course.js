@@ -151,7 +151,7 @@ const purchaseCourse = () => {
 				}
 			}
 		} catch ( error ) {
-			form.innerHTML += `<div class="lp-enroll-notice error">${ error }</div>`;
+			form.innerHTML += `<div class="lp-enroll-notice error">${ error.message && error.message }</div>`;
 		}
 	};
 
