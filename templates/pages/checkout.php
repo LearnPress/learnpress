@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) or die;
 get_header();
 
 do_action( 'learn-press/before-main-content' );
+do_action( 'learnpress/template/pages/checkout/before-content' );
 ?>
 
 	<div id="learn-press-checkout" class="lp-content-wrap">
@@ -41,5 +42,6 @@ do_action( 'learn-press/before-main-content' );
 
 <?php
 do_action( 'learn-press/after-main-content' );
+do_action( 'learnpress/template/pages/checkout/after-content' );
 
 get_footer();

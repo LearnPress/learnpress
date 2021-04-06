@@ -12,6 +12,8 @@ defined( 'ABSPATH' ) || exit();
 get_header( 'profile' );
 
 $profile = LP_Global::profile();
+
+do_action( 'learnpress/template/pages/profile/before-content' );
 ?>
 
 <div id="learn-press-profile" <?php $profile->main_class(); ?>>
@@ -39,4 +41,6 @@ $profile = LP_Global::profile();
 </div>
 
 <?php
+do_action( 'learnpress/template/pages/profile/after-content' );
+
 get_footer( 'profile' );
