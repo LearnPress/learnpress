@@ -11,7 +11,8 @@
     "build-packages": "cross-env BABEL_ENV=default NODE_ENV=production webpack --config tools/build.packages.js --progress -p",
     "build": "cross-env BABEL_ENV=default NODE_ENV=production webpack --progress -p",
     "prod": "webpack --progress --colors -p --config webpack.config.js --mode=production",
-    "dev-build": "npm run build && npm run build-packages && gulp styles && npm run dev && npm run dev-packages"
+    "dev-build": "npm run build && npm run build-packages && gulp styles && npm run dev && npm run dev-packages",
+	"release": "npm run build && npm run build-packages && gulp release"
   },
   "repository": {
     "type": "git",
@@ -46,7 +47,6 @@
     "gulp-cache": "^1.1.3",
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^3.10.0",
-    "gulp-install": "^1.1.0",
     "gulp-line-ending-corrector": "^1.0.3",
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.1",
