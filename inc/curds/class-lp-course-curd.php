@@ -702,7 +702,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			$query = apply_filters( 'learn-press/course-curd/query-recent-courses',
 				$wpdb->prepare( "
-					SELECT DISTINCT p.ID 
+					SELECT DISTINCT p.ID
 						FROM $wpdb->posts AS p
 						WHERE p.post_type = %s
 						AND p.post_status = %s
@@ -713,6 +713,38 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			);
 
 			return $wpdb->get_col( $query );
+		}
+
+		/**
+		 * Get recent courses query string.
+		 *
+		 * @param array $args
+		 *
+		 * @return array
+		 */
+		public function get_recent_courses_query_string( $args = array() ) {
+			global $wpdb;
+
+			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
+			$order = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
+
+			if ( $limit <= 0 ) {
+				$limit = 0;
+			}
+
+			$query = apply_filters( 'learn-press/course-curd/query-recent-courses',
+				$wpdb->prepare( "
+					SELECT DISTINCT p.ID
+						FROM $wpdb->posts AS p
+						WHERE p.post_type = %s
+						AND p.post_status = %s
+						ORDER BY p.post_date {$order}
+						LIMIT %d
+				", LP_COURSE_CPT, 'publish', $limit
+				)
+			);
+
+			return $query;
 		}
 
 		/**

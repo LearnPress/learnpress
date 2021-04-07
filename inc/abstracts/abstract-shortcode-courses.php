@@ -94,8 +94,8 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 				}
 			}
 
-			$arr_orders    = array( 'DESC', 'ASC' );
-			$order         = strtoupper( $order );
+			$arr_orders = array( 'DESC', 'ASC' );
+			$order      = strtoupper( $order );
 			if ( ! in_array( $order, $arr_orders ) ) {
 				$order = 'DESC';
 			}
