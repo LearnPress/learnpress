@@ -178,7 +178,7 @@ class LP_Addon {
 	 *
 	 * @return bool|null
 	 */
-	/*protected function _check_version() {
+	protected function _check_version() {
 		if ( null === $this->_valid ) {
 			$this->_valid = true;
 
@@ -195,7 +195,7 @@ class LP_Addon {
 		}
 
 		return $this->_valid;
-	}*/
+	}
 
 	/**
 	 * Check required version Addons.
