@@ -521,8 +521,12 @@ add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->fun
 // ******************************************************************************************************************* //
 
 add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
-add_action( 'learn-press/before-content-item-summary/lp_quiz', LP()->template( 'course' )->callback( 'content-quiz/title.php' ), 5 );
-add_action( 'learn-press/content-item-summary/lp_quiz', LP()->template( 'course' )->func( 'item_quiz_content' ), 25 );
+add_action(
+	'learn-press/before-content-item-summary/lp_quiz',
+	LP()->template( 'course' )->callback( 'content-quiz/title.php' ),
+	5
+);
+add_action( 'learn-press/content-item-summary/lp_quiz', LP()->template( 'course' )->callback( 'content-quiz/js' ), 25 );
 add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item', 5 );
 add_action( 'learn-press/after-single-course', 'learn_press_single_course_args', 5 );
 add_filter( 'document_title_parts', 'learn_press_single_document_title_parts', 5 );
@@ -560,152 +564,3 @@ function learn_press_filter_section_visible( $visible, $section, $course ) {
 }
 
 add_filter( 'learn-press/section-visible', 'learn_press_filter_section_visible', 10, 3 );
-
-function lp_check_addon_is_v4() {
-	$active_plugins = get_option( 'active_plugins', array() );
-
-	$all_plugins = get_plugins();
-
-	$list_plugins = array();
-
-	if ( ! empty( $active_plugins ) ) {
-		foreach ( $active_plugins as $file ) {
-			if ( preg_match( '/^learnpress-/', $file ) ) {
-				if ( isset( $all_plugins[ $file ] ) ) {
-					$plugin = $all_plugins[ $file ];
-
-					if ( version_compare( $plugin['Version'], '4.0', '<' ) ) {
-						$list_plugins[] = $file;
-					}
-				}
-			}
-		}
-	}
-
-	if ( ! empty( $list_plugins ) ) {
-		global $wp_filter;
-
-		if ( empty( $wp_filter['learn-press/ready'] ) ) {
-			return;
-		}
-
-		$callbacks = $wp_filter['learn-press/ready']->callbacks;
-
-		$lists = array(
-			'learnpress-2checkout-payment/learnpress-2checkout-payment.php' => 'LP_Addon_2Checkout_Payment_Preload',
-			'learnpress-announcements/learnpress-announcements.php' => 'LP_Addon_Announcements_Preload',
-			'learnpress-assignments/learnpress-assignments.php' => 'LP_Addon_Assignment_Preload',
-			'learnpress-authorizenet-payment/learnpress-authorizenet-payment.php' => 'LP_Addon_Authorizenet_Payment_Preload',
-			'learnpress-avada-kit/learnpress-avada-kit.php' => 'LP_Addon_Avada_Preload',
-			'learnpress-badgeos/learnpress-badgeos.php'   => 'LP_Addon_Badgeos_Preload',
-			'learnpress-bbpress/learnpress-bbpress.php'   => 'LP_Addon_bbPress_Preload',
-			'learnpress-buddypress/learnpress-buddypress.php' => 'LP_Addon_BuddyPress_Preload',
-			'learnpress-cert-email/learnpress-cert-email.php' => 'LP_Addon_Cert_Email_Preload',
-			'learnpress-certificates/learnpress-certificates.php' => 'LP_Addon_Certificates_Preload',
-			'learnpress-co-instructor/learnpress-co-instructor.php' => 'LP_Co_Instructor_Preload',
-			'learnpress-collections/learnpress-collections.php' => 'LP_Addon_Collections_Preload',
-			'learnpress-coming-soon-courses/learnpress-coming-soon-courses.php' => 'LP_Addon_Coming_Soon_Courses_Preload',
-			'learnpress-commission/learnpress-commission.php' => 'LP_Addon_Commission_Preload',
-			'learnpress-content-drip/learnpress-content-drip.php' => 'LP_Addon_Content_Drip_Preload',
-			'learnpress-coupon/learnpress-coupon.php'     => 'LP_Addon_Coupon_Preload',
-			'learnpress-course-review/learnpress-course-review.php' => 'LP_Addon_Course_Review_Preload',
-			'learnpress-dropdown-question/learnpress-dropdown-question.php' => 'LP_Addon_Dropdown_Preload',
-			'learnpress-fill-in-blank/learnpress-fill-in-blank.php' => 'LP_Addon_Fill_In_Blank_Preload',
-			'learnpress-fill-in-blank-advance/learnpress-fill-in-blank-advance.php' => 'LP_Addon_Fill_In_Blank_Advance_Preload',
-			'learnpress-frontend-editor/learnpress-frontend-editor.php' => 'LP_Addon_Frontend_Editor_Preload',
-			'learnpress-gradebook/learnpress-gradebook.php' => 'LP_Addon_Gradebook_Preload',
-			'learnpress-h5p/learnpress-h5p.php'           => 'LP_Addon_H5p_Preload',
-			'learnpress-helper/learnpress-helper.php'     => 'LP_Addon_Helper',
-			'learnpress-import-export/learnpress-import-export.php' => 'LP_Addon_Import_Export_Preload',
-			'learnpress-jevelin-kit/learnpress-jevelin-kit.php' => 'LP_Addon_Jevelin_Preload',
-			'learnpress-memberships/learnpress-memberships.php' => 'LP_Addons_Membership_Preload',
-			'learnpress-mycred/learnpress-mycred.php'     => 'LP_Addon_MyCred_Preload',
-			'learnpress-offline-payment/learnpress-offline-payment.php' => 'LP_Addon_Offline_Payment_Preload',
-			'learnpress-paid-membership-pro/learnpress-paid-memberships-pro.php' => 'LP_Addon_Paid_Memberships_Pro_Preload',
-			'learnpress-payu-payment/learnpress-payu-payment.php' => 'LP_Addon_PayU_PaymentPreload',
-			'learnpress-polylang/learnpress-polylang.php' => 'LP_Addon_Polylang_Preload',
-			'learnpress-prerequisites-courses/learnpress-prerequisites-courses.php' => 'LP_Addon_Prerequisites_Courses_Preload',
-			'learnpress-random-quiz/learnpress-random-quiz.php' => 'LP_Addon_Random_Quiz_Preload',
-			'learnpress-sorting-choice/learnpress-sorting-choice.php' => 'LP_Addon_Sorting_Choice_Preload',
-			'learnpress-stripe/learnpress-stripe.php'     => 'LP_Addon_Stripe_Payment_Preload',
-			'learnpress-students-list/learnpress-students-list.php' => 'LP_Addon_Students_List_Preload',
-			'learnpress-user-dashboard/learnpress-user-dashboard.php' => 'LP_Addon_User_Dashboard',
-			'learnpress-wishlist/learnpress-wishlist.php' => 'LP_Addon_Wishlist_Preload',
-			'learnpress-woo-payment/learnpress-woo-payment.php' => 'LP_Addon_Woo_Payment_Preload',
-			'learnpress-wpml/learnpress-wpml.php'         => 'LP_Addon_WPML_Preload',
-		);
-
-		if ( $callbacks ) {
-			foreach ( $callbacks as $key => $callback ) {
-				foreach ( $callback as $function ) {
-					if ( isset( $function['function'] ) ) {
-						$functions = $function['function'];
-
-						if ( $functions[1] !== 'load' ) {
-							continue;
-						}
-
-						foreach ( $list_plugins as $plugin ) {
-							if ( isset( $lists[ $plugin ] ) ) {
-								$plugin_class = $lists[ $plugin ];
-
-								if ( get_class( $functions[0] ) === $plugin_class ) {
-									remove_action( 'learn-press/ready', $functions, $key );
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if ( ! empty( $list_plugins ) ) {
-			update_option( 'lp_plugins_notice_v4', $list_plugins );
-		}
-	}
-}
-
-add_action( 'learn_press_ready', 'lp_check_addon_is_v4' );
-
-function lp_add_notice_update_v4() {
-	if ( is_admin() ) {
-		$list_notice = get_option( 'lp_plugins_notice_v4' );
-
-		$all_plugins = get_plugins();
-
-		if ( ! empty( $list_notice ) ) {
-			foreach ( $list_notice as $plugin_file ) {
-				if ( isset( $all_plugins[ $plugin_file ] ) ) {
-					$plugin = $all_plugins[ $plugin_file ];
-
-					if ( version_compare( $plugin['Version'], '4.0', '<' ) ) {
-						add_action(
-							'admin_notices',
-							function() use ( $plugin ) {
-								?>
-						<div class="error">
-							<p>
-										<?php
-										printf(
-											__(
-												'<strong>%1$s</strong> add-on version %2$s is not compatible with LearnPress latest version. Please update %3$s to version 4.x.',
-												'learnpress'
-											),
-											$plugin['Name'],
-											$plugin['Version'],
-											$plugin['Name']
-										);
-										?>
-							</p>
-						</div>
-								<?php
-							}
-						);
-					}
-				}
-			}
-		}
-	}
-}
-
-add_action( 'admin_init', 'lp_add_notice_update_v4' );

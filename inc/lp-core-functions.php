@@ -2501,7 +2501,7 @@ function learn_press_checkout_needs_payment() {
  *
  * @return string
  */
-function learn_press_plugin_basename( $filepath ) {
+/*function learn_press_plugin_basename( $filepath ) {
 	$file          = str_replace( '\\', '/', $filepath );
 	$file          = preg_replace( '|/+|', '/', $file );
 	$plugin_dir    = str_replace( '\\', '/', WP_PLUGIN_DIR );
@@ -2527,7 +2527,7 @@ function learn_press_plugin_basename( $filepath ) {
 	$file = trim( $file, '/' );
 
 	return strtolower( $file );
-}
+}*/
 
 /**
  * Update log data for each LP version into wp option.

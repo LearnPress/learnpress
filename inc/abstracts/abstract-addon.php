@@ -12,6 +12,14 @@ class LP_Addon {
 	public $version = null;
 
 	/**
+	 * Learnpress require addon version
+	 * Case:
+	 *
+	 * @var array
+	 */
+	private $lp_require_addon_version = '4.0.0-beta-0';
+
+	/**
 	 * Required version for current version of addon.
 	 *
 	 * @var string
@@ -63,9 +71,13 @@ class LP_Addon {
 
 		$this->_define_constants();
 
-		if ( ! $this->_check_version() ) {
-			return;
-		}
+//		if ( ! $this->_check_version() ) {
+//			return;
+//		}
+
+		add_action( 'plugins_loaded', array( $this, 'check_require_version_addon' ), - 9 );
+		add_action( 'plugins_loaded', array( $this, 'check_require_version_lp' ), - 9 );
+
 		$this->_includes();
 
 		add_action( 'init', array( $this, 'init' ) );
@@ -99,9 +111,9 @@ class LP_Addon {
 	 * Init
 	 */
 	public function init() {
-		if ( ! $this->_check_version() ) {
-			return;
-		}
+//		if ( ! $this->_check_version() ) {
+//			return;
+//		}
 
 		$this->load_text_domain();
 
@@ -166,7 +178,7 @@ class LP_Addon {
 	 *
 	 * @return bool|null
 	 */
-	protected function _check_version() {
+	/*protected function _check_version() {
 		if ( null === $this->_valid ) {
 			$this->_valid = true;
 
@@ -183,12 +195,80 @@ class LP_Addon {
 		}
 
 		return $this->_valid;
+	}*/
+
+	/**
+	 * Check required version Addons.
+	 *
+	 * @return bool
+	 */
+	public function check_require_version_addon(): bool {
+
+		$flag = true;
+
+		// If addon not set, return false.
+		if ( empty( $this->plugin_file ) ) {
+			$flag = false;
+		}
+
+		if ( version_compare( $this->lp_require_addon_version, $this->version, '>' ) ) {
+			$flag = false;
+		}
+
+		if ( ! $flag ) {
+			add_action( 'admin_notices', array( $this, 'admin_notice_require_addon_version' ) );
+
+			// Deactivate plugin .
+			if ( ! empty( $this->plugin_file ) ) {
+				deactivate_plugins( plugin_basename( $this->plugin_file ) );
+			}
+		}
+
+		return $flag;
+	}
+
+	/**
+	 * Check required version LP on Addon.
+	 *
+	 * @return bool
+	 */
+	public function check_require_version_lp(): bool {
+
+		$flag = true;
+
+		// If addon not set, return false.
+		if ( empty( $this->require_version ) ) {
+			$flag = false;
+		}
+
+		if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>' ) ) {
+			$flag = false;
+		}
+
+		if ( ! $flag ) {
+			add_action( 'admin_notices', array( $this, 'admin_notice_require_lp_version' ) );
+
+			// Deactivate plugin .
+			if ( ! empty( $this->plugin_file ) ) {
+				deactivate_plugins( plugin_basename( $this->plugin_file ) );
+			}
+		}
+
+		return $flag;
+	}
+
+	public function admin_notice_require_addon_version() {
+		?>
+		<div class="notice notice-error">
+			<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require ' . $this->get_name() . ' version ' . $this->lp_require_addon_version . ' or higher' ); ?></p>
+		</div>
+		<?php
 	}
 
 	/**
 	 * Admin notices
 	 */
-	public function _admin_notices() {
+	public function admin_notice_require_lp_version() {
 		?>
 		<div class="error">
 			<p>

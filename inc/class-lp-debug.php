@@ -39,7 +39,7 @@ class LP_Debug {
 	protected function __construct() {
 		$this->_handles = array();
 
-		add_action( 'plugins_loaded', array( $this, 'init' ) );
+		//add_action( 'plugins_loaded', array( $this, 'init' ) );
 	}
 
 	/**

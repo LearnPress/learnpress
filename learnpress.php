@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.0.0
+ * Version: 4.0.0-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 3.8
  * Tested up to: 5.5.3
@@ -453,14 +453,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function init_hooks() {
-			$plugin_basename = $this->plugin_basename();
-
-			if ( 0 !== strcmp( $plugin_basename, 'learnpress/learnpress.php' ) ) {
+			if ( 0 !== strcmp( LP_PLUGIN_BASENAME, 'learnpress/learnpress.php' ) ) {
 				add_action( 'admin_notices', array( $this, 'error' ) );
 			}
 
-			add_action( 'activate_' . $plugin_basename, array( $this, 'on_activate' ) );
-			add_action( 'deactivate_' . $plugin_basename, array( $this, 'on_deactivate' ) );
+			add_action( 'activate_' . LP_PLUGIN_BASENAME, array( $this, 'on_activate' ) );
+			add_action( 'deactivate_' . LP_PLUGIN_BASENAME, array( $this, 'on_deactivate' ) );
 
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
@@ -471,8 +469,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function error() {
 			?>
 			<div class="error">
-				<p><?php printf( __( 'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)',
-						'learnpress' ), $this->plugin_basename() ); ?></p>
+				<p>
+					<?php
+					printf( __( 'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)',
+						'learnpress' ), LP_PLUGIN_BASENAME );
+					?>
+				</p>
 			</div>
 			<?php
 		}
@@ -492,9 +494,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return string
 		 */
-		private function plugin_basename() {
-			return learn_press_plugin_basename( __FILE__ );
-		}
+//		private function plugin_basename() {
+//			return learn_press_plugin_basename( __FILE__ );
+//		}
 
 		/**
 		 * Magic function to get Learnpress data.
