@@ -20,6 +20,10 @@ class QuestionFillInBlanks extends QuestionBase {
 			ele.addEventListener( 'input', ( e ) => {
 				this.setAnswered( answered, ele.dataset.id, e.target.value );
 			} );
+
+			ele.addEventListener( 'paste', ( e ) => {
+				this.setAnswered( answered, ele.dataset.id, e.target.value );
+			} );
 		} );
 	}
 
