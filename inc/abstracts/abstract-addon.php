@@ -34,6 +34,13 @@ class LP_Addon {
 	public $plugin_file = null;
 
 	/**
+	 * Base addon.
+	 *
+	 * @var string
+	 */
+	public $plugin_base = null;
+
+	/**
 	 * Addon textdomain name.
 	 *
 	 * @var string
@@ -75,8 +82,10 @@ class LP_Addon {
 //			return;
 //		}
 
-		add_action( 'plugins_loaded', array( $this, 'check_require_version_addon' ), - 9 );
-		add_action( 'plugins_loaded', array( $this, 'check_require_version_lp' ), - 9 );
+		/**
+		 * After all addons lp config by key "Require_LP_Version" can remove hook
+		 */
+		//add_action( 'plugins_loaded', array( $this, 'check_require_version_lp' ), - 9 );
 
 		$this->_includes();
 
@@ -177,8 +186,10 @@ class LP_Addon {
 	 * Check required version of LP.
 	 *
 	 * @return bool|null
+	 * @deprecated 4.0.0
+	 * @todo clean, remove code
 	 */
-	protected function _check_version() {
+	/*protected function _check_version() {
 		if ( null === $this->_valid ) {
 			$this->_valid = true;
 
@@ -195,7 +206,7 @@ class LP_Addon {
 		}
 
 		return $this->_valid;
-	}
+	}*/
 
 	/**
 	 * Check required version Addons.
@@ -203,13 +214,7 @@ class LP_Addon {
 	 * @return bool
 	 */
 	public function check_require_version_addon(): bool {
-
 		$flag = true;
-
-		// If addon not set, return false.
-		if ( empty( $this->plugin_file ) ) {
-			$flag = false;
-		}
 
 		if ( version_compare( $this->lp_require_addon_version, $this->version, '>' ) ) {
 			$flag = false;
@@ -219,8 +224,8 @@ class LP_Addon {
 			add_action( 'admin_notices', array( $this, 'admin_notice_require_addon_version' ) );
 
 			// Deactivate plugin .
-			if ( ! empty( $this->plugin_file ) ) {
-				deactivate_plugins( plugin_basename( $this->plugin_file ) );
+			if ( ! empty( $this->plugin_base ) ) {
+				deactivate_plugins( $this->plugin_base );
 			}
 		}
 
@@ -229,6 +234,8 @@ class LP_Addon {
 
 	/**
 	 * Check required version LP on Addon.
+	 * Should define require on each Addons by key "Require_LP_Version".
+	 * After long time, when ready standard, need check not key "Require_LP_Version" will deactivate addon.
 	 *
 	 * @return bool
 	 */
@@ -241,7 +248,7 @@ class LP_Addon {
 			$flag = false;
 		}
 
-		if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>' ) ) {
+		if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>=' ) ) {
 			$flag = false;
 		}
 
@@ -249,8 +256,8 @@ class LP_Addon {
 			add_action( 'admin_notices', array( $this, 'admin_notice_require_lp_version' ) );
 
 			// Deactivate plugin .
-			if ( ! empty( $this->plugin_file ) ) {
-				deactivate_plugins( plugin_basename( $this->plugin_file ) );
+			if ( ! empty( $this->plugin_base ) ) {
+				deactivate_plugins( plugin_basename( $this->plugin_base ) );
 			}
 		}
 
@@ -260,7 +267,7 @@ class LP_Addon {
 	public function admin_notice_require_addon_version() {
 		?>
 		<div class="notice notice-error">
-			<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require ' . $this->get_name() . ' version ' . $this->lp_require_addon_version . ' or higher' ); ?></p>
+			<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require ' . $this->get_name() . '</strong> version ' . $this->lp_require_addon_version . ' or higher' ); ?></p>
 		</div>
 		<?php
 	}
