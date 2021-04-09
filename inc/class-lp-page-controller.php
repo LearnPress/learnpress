@@ -879,19 +879,8 @@ class LP_Page_Controller {
 		 * If current page is used for courses page
 		 */
 		$page_courses_id = learn_press_get_page_id( 'courses' );
-		if ( $q->is_page() && ( $page_courses_id && $q->queried_object_id == $page_courses_id ) ) {
-			$q->set( 'post_type', LP_COURSE_CPT );
-			$q->set( 'page', '' );
-			$q->set( 'pagename', '' );
 
-			$q->is_archive           = true;
-			$q->is_post_type_archive = true;
-			$q->is_singular          = false;
-			$q->is_page              = false;
-		}
-
-		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) &&
-		     get_option( 'page_on_front' ) == $page_courses_id ) {
+		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == $page_courses_id ) {
 			$_query = wp_parse_args( $q->query );
 
 			if ( empty( $_query ) ||
@@ -915,9 +904,7 @@ class LP_Page_Controller {
 		/**
 		 * If current page is used for courses page and set as home-page
 		 */
-		if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) &&
-		     $page_courses_id &&
-		     $q->get( 'page_id' ) == $page_courses_id ) {
+		if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $page_courses_id && $q->get( 'page_id' ) == $page_courses_id ) {
 
 			$q->set( 'post_type', LP_COURSE_CPT );
 			$q->set( 'page_id', '' );
@@ -941,9 +928,11 @@ class LP_Page_Controller {
 		// Set custom posts per page
 		if ( $this->_is_archive() ) {
 			$limit = absint( LP()->settings->get( 'archive_course_limit' ) );
+
 			if ( 0 < $limit ) {
 				$q->set( 'posts_per_page', $limit );
 			}
+
 			if ( isset( $q->query['page'] ) ) {
 				$q->set( 'paged', $q->query['page'] );
 			}

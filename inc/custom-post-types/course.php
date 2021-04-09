@@ -125,13 +125,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course_base      = $settings->get( 'course_base' );
 			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learnpress' ) : $course_base;
 
+			$courses_page_id = learn_press_get_page_id( 'courses' );
+
+			$has_archive = $courses_page_id && get_post( $courses_page_id ) ? urldecode( get_page_uri( $courses_page_id ) ) : 'courses';
+
 			$args = array(
 				'labels'             => $labels,
 				'public'             => true,
 				'query_var'          => true,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
-				'has_archive'        => 'courses',
+				'has_archive'        => $has_archive,
 				'capability_type'    => LP_COURSE_CPT,
 				'map_meta_cap'       => true,
 				'show_in_menu'       => 'learn_press',
