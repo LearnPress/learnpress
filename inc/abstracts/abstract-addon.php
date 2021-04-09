@@ -299,7 +299,14 @@ class LP_Addon {
 	 * @return mixed
 	 */
 	public function get_name() {
-		return str_replace( '_', ' ', str_replace( 'LP_Addon_', '', get_class( $this ) ) );
+		preg_match( '/([A-z].*)\/([A-z].*)/', $this->plugin_base, $match );
+
+		$name_addon = '';
+		if ( isset( $match[1] ) ) {
+			$name_addon = $match[1];
+		}
+
+		return $name_addon;
 	}
 
 	/**
