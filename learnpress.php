@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.0.0-beta-1
+ * Version: 4.0.0-beta-2
  * Author URI: http://thimpress.com
  * Requires at least: 3.8
  * Tested up to: 5.5.3
@@ -589,18 +589,74 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @since 3.0.0
 		 */
 		public function plugin_loaded() {
-			require_once 'inc/lp-template-hooks.php';
-
-			// let third parties know that we're ready
-			do_action( 'learn_press_ready' );
-			do_action( 'learn_press_loaded', $this );
-			do_action( 'learn-press/ready' );
-
-			$this->add_cron();
+			//$this->add_cron();
 			$this->init();
 
-			// Background
+			// Background.
 			$this->init_background_processes();
+
+			require_once 'inc/lp-template-hooks.php';
+
+			/**
+			 * Check version addons valid version require.
+			 * If not valid will be deactivate.
+			 * Reload page, so not affect to hook "learn-press/ready"
+			 */
+			$addons_valid = true;
+			$plugins     = get_option( 'active_plugins' );
+
+			$list_lp_addon_activated = preg_grep( '/^learnpress-.*/i', $plugins );
+
+			// Remove hook deactivate addon assignments v3.
+			add_action( 'deactivate_learnpress-assignments/learnpress-assignments.php',
+				array( $this, 'lp_assignment_install' ), - 10 );
+
+			foreach ( $list_lp_addon_activated as $lp_addon ) {
+				$lp_addon_info = get_file_data(
+					WP_PLUGIN_DIR . '/' . $lp_addon,
+					array(
+						'Require_LP_Version' => 'Require_LP_Version',
+						'Version'            => 'Version',
+					)
+				);
+
+				//$lp_addon_info    = get_plugin_data( WP_PLUGIN_DIR . '/' . $lp_addon );
+				$lp_addon_version = $lp_addon_info['Version'];
+
+				$addon              = new Lp_Addon();
+				$addon->version     = $lp_addon_version;
+				$addon->plugin_base = $lp_addon;
+				$addons_valid        = $addon->check_require_version_addon();
+
+				if ( $addons_valid ) {
+					/**
+					 * If define standard, can remove hook below on file abstract-addon.php
+					 * add_action( 'plugins_loaded', array( $this, 'check_require_version_lp' ), - 9 )
+					 */
+					if ( ! empty( $lp_addon_info['Require_LP_Version'] ) ) {
+						$addon->require_version = $lp_addon_info['Require_LP_Version'];
+					} else {
+						$addon->require_version = '';
+					}
+
+					$addons_valid = $addon->check_require_version_lp();
+				}
+			}
+			// End check addons valid.
+
+			if ( ! $addons_valid ) {
+				return;
+			}
+
+			// let third parties know that we're ready .
+			do_action( 'learn-press/ready' );
+		}
+
+		/**
+		 * Remove hook deactivate addon assignments v3.
+		 */
+		public function lp_assignment_install() {
+			remove_action( 'deactivate_learnpress-assignments/learnpress-assignments.php', 'lp_assignment_remove' );
 		}
 
 		/**

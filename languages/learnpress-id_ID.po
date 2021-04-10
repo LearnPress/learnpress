@@ -64,6 +64,10 @@ msgstr "Maaf! Anda tidak dapat menyelesaikan kuliah ini sekarang"
 msgid "Error"
 msgstr "Kesalahan"
 
+#: learnpress/inc/lp-template-functions.php:561
+msgid "Overview"
+msgstr ""
+
 #: inc/class.lpr-multi-language.php:40 lib/meta-box/inc/common.php:48
 msgid "Documentation"
 msgstr "Dokumentasi"
