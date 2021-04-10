@@ -60,6 +60,7 @@
     "gulp-uglify-es": "^2.0.0",
     "gulp-uglifycss": "^1.1.0",
     "gulp-vinyl-zip": "^2.2.1",
+    "gulp-wp-pot": "^2.5.0",
     "jquery": "^3.4.1",
     "mkdir": "0.0.2",
     "mkdirp": "^0.5.1",

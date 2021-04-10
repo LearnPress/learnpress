@@ -16,6 +16,7 @@ const uglifycss = require( 'gulp-uglifycss' );
 const del = require( 'del' );
 const beep = require( 'beepbeep' );
 const readFile = require( 'read-file' );
+var wpPot = require('gulp-wp-pot');
 
 let currentVer = null;
 
@@ -183,6 +184,15 @@ gulp.task( 'noticeReleases', () => {
 		} )
 	);
 } );
+
+gulp.task('makepot', function() {
+	return gulp.src(['./**/*.php', '!node_modules/**', '!releases/**', '!vendor/**'])
+		.pipe(wpPot( {
+			domain: 'learnpress',
+			package: 'learnpress'
+		} ))
+		.pipe(gulp.dest('./languages/learnpress.pot'));
+});
 
 gulp.task(
 	'build',
