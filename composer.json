@@ -20,7 +20,8 @@
     "wp-coding-standards/wpcs": "^2.3.0",
 	"phpunit/phpunit": "7.5.20",
 	"phpcompatibility/php-compatibility": "9.3.5",
-    "friendsofphp/php-cs-fixer": "^2.18"
+    "friendsofphp/php-cs-fixer": "^2.18",
+	"wp-cli/wp-cli-bundle": "^2.4"
   },
   "scripts": {
     "format": "phpcbf --standard=phpcs.xml --report-summary --report-source",
