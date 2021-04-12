@@ -494,6 +494,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Upgrade Notice ==
 
+= 4.0.0 =
+In this version, we have to change the database structure, so that if you have installed LP3 on your site before, please backup your site and follow these steps to upgrade.
+
 = 0.9.19 =
 In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independent plugins. If you face any problems related to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
 
