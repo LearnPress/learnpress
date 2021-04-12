@@ -31,7 +31,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ), 1 );
-			add_action( 'admin_head', array( $this, 'admin_colors' ) );
+			//add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 
@@ -360,7 +360,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int $post
+		 * @param int    $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -429,7 +429,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -521,6 +521,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display admin notices
 		 */
 		public function admin_notices() {
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
+				return;
+			}
+
 			if ( 'yes' === get_option( 'learn_press_install' ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
 			}
@@ -580,31 +584,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $classes;
-		}
-
-		public function admin_colors() {
-			global $_wp_admin_css_colors;
-
-			$schema = get_user_option( 'admin_color' );
-
-			if ( empty( $_wp_admin_css_colors[ $schema ] ) ) {
-				return;
-			}
-
-			$colors = $_wp_admin_css_colors[ $schema ]->colors;
-			?>
-
-			<style type="text/css">
-				.admin-color {
-					color: <?php echo $colors[0]; ?>
-				}
-
-				.admin-background {
-					color: <?php echo $colors[0]; ?>
-				}
-			</style>
-
-			<?php
 		}
 
 		public function notice_required_permalink() {
@@ -711,7 +690,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Send data to join newsletter or dismiss.
 		 *
-		 * @param array $data
+		 * @param array  $data
 		 * @param string $notice
 		 *
 		 * @return array
@@ -840,10 +819,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Set link item of course when edit item on Backend
 		 *
-		 * @param string $post_link
-		 * @param int $post_id
-		 * @param string $new_title
-		 * @param string $new_slug
+		 * @param string       $post_link
+		 * @param int          $post_id
+		 * @param string       $new_title
+		 * @param string       $new_slug
 		 * @param WP_Post|null $post
 		 *
 		 * @return array|int|mixed|string|void
