@@ -1,33 +1,32 @@
 === LearnPress - WordPress LMS Plugin ===
-Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld, tungnx89, manhnl
+Contributors: thimpress, tungnx89, nhamdv, hungkv, manhnl, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
-Tested up to: 5.5.3
+Tested up to: 5.7
 Requires PHP: 7.0
 Stable tag: trunk
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress LMS Plugin to create WordPress Learning Management System. Turn your WP to LMS WordPress with Courses, Lessons, Quizzes & more.
+A WordPress LMS Plugin to create WordPress Learning Management System. Turn your WordPress to LMS WordPress Website with Courses, Lessons, Quizzes & more.
 
 == Description ==
 
-**<a href="http://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
+**<a href="https://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
 
-<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/wordpress/themes/learnpress-premium-theme/" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a>
+<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/product-category/themes/education-themes/" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a>
 
-LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of add-ons to empower its core system.
+LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
-> Or you can buy [Eduma – Education WordPress Theme]( https://themeforest.net/item/education-wordpress-theme-education-wp/14058034) for only $69 and get all add-on in package <a href=" https://thimpress.com/product/learnpress-add-ons-bundle" target="_blank">LEARNPRESS THEME BUNDLE.</a>
-
-> **HOT!!** [WordPress theme for Coaching, Training, Teaching - Colead](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658) is also FOR SALE at only $59, LearnPress included.
-
-> [Course Builder WordPress Theme]( https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918) - WordPress LMS theme for online courses is also FOR SALE at only $59, Learnpress included.
+> Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have LearnPress Theme Bundle included already.
+> [Eduma – Education WordPress Theme](https://themeforest.net/item/education-wordpress-theme-education-wp/14058034) (Bestseller).
+> [Colead - Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658) (Rising Star).
+> [CBKit - Course Builder WordPress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918) (Potential).
 
 ###LMS & Education WordPress Themes###
 
-Take a look at Premium **[Eduma - Education WordPress Theme]( ]( https://themeforest.net/item/education-wordpress-theme-education-wp/14058034)**, **[Coaching WordPress Theme]( https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658)** & **[Epsilon – eLearning LMS WordPress Theme]( https://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847)** & **[IvyPrep - Education & School WordPress Theme ](https://themeforest.net/item/ivy-school-education-university-wordpress-theme/22773871)** & **[StarKid - Kindergarten WordPress Theme  ](https://themeforest.net/item/starkid-kindergarten-wordpress-theme/23451388)(someone calls it LMS WordPress Template) we designed to work with LearnPress, all developers are welcome to develop WordPress LMS Theme based on LMS plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress themes for LearnPress.
+Take a look at Premium **[Eduma - Education WordPress Theme](https://themeforest.net/item/education-wordpress-theme-education-wp/14058034)**, **[Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658)** & **[Epsilon – eLearning LMS WordPress Theme](https://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847)** & **[IvyPrep - Education & School WordPress Theme](https://themeforest.net/item/ivy-school-education-university-wordpress-theme/22773871)** & **[StarKid - Kindergarten WordPress Theme](https://themeforest.net/item/starkid-kindergarten-wordpress-theme/23451388)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
 
 ###LearnPress Tutorials###
 
@@ -36,13 +35,12 @@ Take a look at Premium **[Eduma - Education WordPress Theme]( ]( https://themefo
 - Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=3LDa8vtDIAk)**
 [youtube https://www.youtube.com/watch?v=3LDa8vtDIAk&hd=1&&cc_load_policy=1]
 
-Are you looking for *best LMS WordPress plugin*?
-
+Are you looking for *the best LMS WordPress Plugin*?
 
 ###LearnPress features###
 
-**LearnPress - WordPress LMS Plugin works with your theme**
-We create LearnPress LMS Plugin to work with any WordPress themes.
+**LearnPress - WordPress LMS Plugin works with your Theme**
+We create LearnPress LMS Plugin to work with any WordPress Themes.
 
 **LearnPress supports WordPress Multisite**
 Create WordPress based LMS as a multi-site.
@@ -69,11 +67,11 @@ Education should be free and we want you to bring it to as many people as you ca
 **LearnPress is actively developed**
 We are developing and improving LearnPress day by day and bringing you more new features cos we want LearnPress to become the **best WordPress LMS plugin**.
 
-<a href="http://docspress.thimpress.com/learnpress" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
+<a href="https://docspress.thimpress.com/learnpress" target="_blank">LearnPress WordPress LMS Plugin Documentation</a>
 
 ###Free add-ons for LearnPress WordPress LMS Plugin###
 
-- [LearnPress Wishlist](https://wordpress.org/plugins/learnpress-wishlist) - add courses to a wishlist for students.
+- [LearnPress Wishlist](https://wordpress.org/vilugins/learnpress-wishlist) - add courses to a wishlist for students.
 - [LearnPress Course Review](https://wordpress.org/plugins/learnpress-course-review) - review courses for enrolled students.
 - [LearnPress Import/Export](https://wordpress.org/plugins/learnpress-import-export) - export or import courses out-of-box.
 - [LearnPress Prerequisites Courses](https://wordpress.org/plugins/learnpress-prerequisites-courses) - require students need to pass the prerequisite course items to access the next ones.
@@ -85,22 +83,22 @@ We are developing and improving LearnPress day by day and bringing you more new 
 ###Premium add-ons for LearnPress WordPress LMS Plugin###
 
 - [Assignments add-on for LearnPress](https://thimpress.com/product/assignments-add-on-for-learnpress/) - Allow instructors to give assignments, homework for students and they can grade the students' work later on. The Assignments add-on is a great supplement to LearnPress and will make your courses more interactive.
-- [myCRED add-on for LearnPress](http://thimpress.com/product/mycred-add-on-for-learnpress/) - add myCRED support for LearnPress WordPress LMS plugin, you can add point system to your eLearning WordPress site using LearnPress + myCRED add-on.
-- [Certificates add-on for LearnPress](http://thimpress.com/product/certificates-add-on-for-learnpress/) -  add drag & drop certificates builder as well as select designed certificate for each LMS course, your students will get particular certificates when they finished their courses.
-- [Co-instructors add-on for LearnPress](http://thimpress.com/product/co-instructors-add-on-for-learnpress/) - multiple instructors support for each LMS course.
-- [Collections add-on for LearnPress](http://thimpress.com/product/collections-add-on-for-learnpress/) – create LMS courses collection, this is helpful if you want to combine multiple LMS courses into a collection for a group of skills.
-- [Stripe Payment method for LearnPress](http://thimpress.com/product/stripe-add-on-for-learnpress/) - Stripe payment method for LearnPress WordPress LMS Plugin.
+- [myCRED add-on for LearnPress](https://thimpress.com/product/mycred-add-on-for-learnpress/) - add myCRED support for LearnPress WordPress LMS plugin, you can add point system to your eLearning WordPress site using LearnPress + myCRED add-on.
+- [Certificates add-on for LearnPress](https://thimpress.com/product/certificates-add-on-for-learnpress/) -  add drag & drop certificates builder as well as select designed certificate for each LMS course, your students will get particular certificates when they finished their courses.
+- [Co-instructors add-on for LearnPress](https://thimpress.com/product/co-instructors-add-on-for-learnpress/) - multiple instructors support for each LMS course.
+- [Collections add-on for LearnPress](https://thimpress.com/product/collections-add-on-for-learnpress/) – create LMS courses collection, this is helpful if you want to combine multiple LMS courses into a collection for a group of skills.
+- [Stripe Payment method for LearnPress](https://thimpress.com/product/stripe-add-on-for-learnpress/) - Stripe payment method for LearnPress WordPress LMS Plugin.
 - [2Checkout add-on for LearnPress](https://thimpress.com/product/2checkout-add-learnpress/) - make LearnPress plugin ready to use 2Checkout payment gateway to pay for courses.
 - [Authorize.Net add-ons for LearnPress](https://thimpress.com/product/authorize-net-add-ons-learnpress/) - Authorize.Net payment method for LearnPress WordPress LMS Plugin.
-- [WooCommerce add-on for LearnPress](http://thimpress.com/product/woocommerce-add-on-for-learnpress/) - use WooCommerce as payment gateway for LearnPress WordPress LMS Plugin.
-- [Content Drip add-on for LearnPress](http://thimpress.com/product/content-drip-add-on-for-learnpress/) - restrict the access of students to each lesson by progress, or time.
-- [Sorting Choices question type for LearnPress](http://thimpress.com/product/sorting-choice-add-on-for-learnpress/) - another interactive question type for LearnPress.
+- [WooCommerce add-on for LearnPress](https://thimpress.com/product/woocommerce-add-on-for-learnpress/) - use WooCommerce as payment gateway for LearnPress WordPress LMS Plugin.
+- [Content Drip add-on for LearnPress](https://thimpress.com/product/content-drip-add-on-for-learnpress/) - restrict the access of students to each lesson by progress, or time.
+- [Sorting Choices question type for LearnPress](https://thimpress.com/product/sorting-choice-add-on-for-learnpress/) - another interactive question type for LearnPress.
 - [Commission add-on for LearnPress](https://thimpress.com/product/commission-add-on-for-learnpress/) - provide a Commission Management system for LearnPress.
 - [Gradebook add-on for LearnPress](https://thimpress.com/product/gradebook-add-on-for-learnpress/) - view your class result, export these result to csv and post to frontend.
 - [Random Quiz add-on for LearnPress](https://thimpress.com/product/random-quiz-add-on-for-learnpress/) - allow you to create a random questions quiz. Each student will get different quiz within a same course.
 - [Paid Membership Pro add-on for LearnPress](https://thimpress.com/product/paid-membership-pro-add-learnpress/) - integrate Paid Membership Pro into LearnPress, bring membership feature to your powerful WordPress based LMS system.
 - [Announcement add-on for LearnPress](https://thimpress.com/product/announcement-add-on-for-learnpress/) - Announcement is a great way to promote your courses and update new features + contents of your courses, email notification included.
-
+- [Frontend Editor add-on for LearnPress](https://thimpress.com/product/frontend-editor-add-on-for-learnpress/) - Frontend Editor add-on for LearnPress enable your courses to be edited from the frontend. Your instructors doesn't need to go to the WP Dashboard to create and edit courses anymore with Frontend Editor add-on.
 
 ###LearnPress has been translated into the following languages###
 
@@ -111,28 +109,30 @@ We are developing and improving LearnPress day by day and bringing you more new 
 5. German
 6. Polish
 7. Russian
-8. Dutch
+8. Dutch (Netherlands)
+9. Spanish (Costa Rica)
+10. Spanish
+11. Spanish (Mexico)
+12. Spanish (Venezuela)
+13. Indonesian
+14. Chinese
+
 
 ##WordPress LMS Plugin - LearnPress ROADMAP##
 
 - Payment Method support (first priority)
-	- Authorize.net (DONE)
-	- 2Checkout (DONE)
 	- Google Checkout
 	- Amazon Payments
 	- Dwolla
 	- Braintree
 	- Samurai by FeeFighters
 	- WePay
-- Assignment - **DONE** - [check LearnPress Assignments Add-on HERE](https://thimpress.com/product/assignments-add-on-for-learnpress/)
 - Events
 - Share Grade
 - BadgeOS
-- Manually reset quiz for retake
 - Create quiz from random questions in question bank (DONE)
 - Attach restriction to lesson
 - Presentation support (maybe support SlideShare)
-- Show enrolled users
 - Student ranks
 - REST API for mobile app
 - No distraction mode (when doing quiz)
@@ -142,7 +142,7 @@ We are developing and improving LearnPress day by day and bringing you more new 
 - Private message from Admin to teacher
 - Group payment
 
-Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
+Any suggestions for this WordPress LMS Plugin? Send us <a href="https://thimpress.com/learnpress-suggestion/" target="_blank">here</a>.
 
 == Installation ==
 
@@ -161,7 +161,7 @@ Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress
 LearnPress is a plugin for LMS website to spread out courses and sell courses online.
 
 = Where can I find LearnPress documentation and user guides? =
-If you want to use LearnPress to build a Learning Management System website, please refer to our user guides in <a href="http://docspress.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>
+If you want to use LearnPress to build a Learning Management System website, please refer to our user guides in <a href="https://docspress.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>
 And if you want to extend or use LearnPress, see our <a href="https://github.com/LearnPress/LearnPress/wiki" target="_blank">Wiki.</a>
 
 = Where can I get support or talk to other users? =
@@ -170,7 +170,7 @@ If you get troubles when using LearnPress you can ask for help on the <a href="h
 For help with premium add-ons, use our <a href="https://thimpress.com/forums/forum/learnpress">helpdesk</a>.
 
 = Where can I ask for new features, suggest new ideas or new themes for LearnPress? =
-You can send us your thoughts through form <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
+You can send us your thoughts through form <a href="https://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
 
 = Where can I report bugs or contribute to the project? =
 You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/LearnPress" target="_blank">Github Repository</a>.
@@ -196,7 +196,6 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
-
 = 4.0.0 =
 + Added new UI/UX for Quiz screen in frontend.
 + Added enable Gutenberg for lesson and quiz and question.
@@ -204,8 +203,57 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Improved quiz settings that made it simpler and easy to use.
 ~ Improved single course page.
 ~ Improved archive course page.
-~ Restructure database table.
+~ Restructure database tables.
 ~ Added some hooks/filters.
+
+= 3.2.8.8 =
+~ Fix compatible PHP 8.0.3
+~ Fix Yoat SEO course category title not working
+
+= 3.2.8.7 =
+~ Fix: start quiz 404
+~ Optimize
+
+= 3.2.8.6 =
+~ Fix minor bug
+~ Optimize enroll course
+~ Add cache get items' course
+~ Add reset progress by course_id
+~ Fix "Enroll Button" is not appearing when disable "Auto Enroll" option
+
+= 3.2.8.5 =
+~ Fix header lesson style error on iphone
+~ Fix scrollbar error some themes
+~ Fix scroll js to item user viewing
+~ Add filter 'lp/email/type-order/object', 'lp/email/order/support_variable'
+
+= 3.2.8.4 =
+~ Add function Scan database if have not index in table will create
+~ Add function Repurchase course when course finished or block duration expire
+~ Fix function Statistics
+~ Fix error content lesson conflict when activated elementor & yoast seo
+~ Fix order status on Dashboard screen
+~ Remove js scrollbar jquery
+~ Add option 'Enable Popup Confirm Finish Course, Complete Item
+~ Add message block duration
+
+= 3.2.8.3 =
+~ Fix compatible PHP 8.0
+~ Fix checkout message error
+~ Optimize
+
+= 3.2.8.2 =
+~ Fix compatible WP 5.6
+~ Fix error Yoast-Seo in course archive page
+~ Error file global.js on 'Twenty Seventeen' theme
+~ Fix error page course archive with YoastSeo
+~ Fix count students enrolled course on list course backend
+~ Fix toggle curriculum bar for right-to-left
+
+= 3.2.8.1 =
+~ Fix WPBakery load style inline on course's item page
+~ Fix make co-instructor not show list courses on backend
+~ Fix miss lib vue js on LearnPress / Tools / Course page
 
 = 3.2.8 =
 ~ Fix query get posts (courses, items courses) on Backend - multiple site
@@ -292,7 +340,7 @@ https://www.transifex.com/projects/p/learnpress/
 = 3.2.6.6 =
 ~ Fixed option Block Lessons not working
 
-= 3.2.6.5 (2019.11.20) =
+= 3.2.6.5 (20.11.2019) =
 ~ Fixed email doesn't send.
 ~ Fixed some js errors.
 ~ Fixed js call twice times.
@@ -444,12 +492,11 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed breadcrumb not show page name when viewing archive course
 ~ Fixed archive course show header is title of first course
 
-
 == Upgrade Notice ==
 
 = 0.9.19 =
 In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independent plugins. If you face any problems related to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
 
 == Other note ==
-<a href="http://docspress.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
-<a href="https://github.com/LearnPress/LearnPress/" target="_blank">LearnPress github repo.</a>
+<a href="https://docspress.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
+<a href="https://github.com/LearnPress/LearnPress/" target="_blank">LearnPress github repo</a>.
