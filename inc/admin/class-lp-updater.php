@@ -235,6 +235,22 @@ class LP_Updater {
 			return $this->db_map_version[ $db_current_version ];
 		}
 
+		/**
+		 * For case not have key "learnpress_db_version" on DB, still have columns of learnpress.
+		 * After along time, need remove fix fast
+		 */
+		$lp_db                                = LP_Database::getInstance();
+		$check_tb_lp_order_items_exists       = $lp_db->check_table_exists( $lp_db->tb_lp_order_items );
+		$check_tb_lp_user_item_results_exists = $lp_db->check_table_exists( $lp_db->tb_lp_user_item_results );
+
+		if ( $check_tb_lp_order_items_exists && ! $check_tb_lp_user_item_results_exists ) {
+			update_option( 'learnpress_db_version', 3 );
+
+			return $this->db_map_version['3'];
+		}
+
+		// End.
+
 		return false;
 	}
 
