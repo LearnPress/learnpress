@@ -370,10 +370,8 @@ function learn_press_sanitize_url( $url, $trailingslashit = true ) {
 		$url_without_http = preg_replace( '![/]+!', '/', $url_without_http );
 		$url              = $matches[1] . $url_without_http;
 
-		return ( $trailingslashit && strpos(
-			$url,
-			'?'
-		) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
+		return ( $trailingslashit &&
+				 strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
 	}
 
 	return $url;
@@ -420,7 +418,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool   $script_tag  - wrap code between <script> tag
+ * @param bool   $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -711,7 +709,7 @@ function learn_press_get_page_id( $name ) {
  * display the seconds in time format h:i:s
  *
  * @param        $seconds
- * @param string  $separator
+ * @param string $separator
  *
  * @return string
  */
@@ -776,7 +774,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 		$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
 		$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
-		$format  = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos(
+		$format = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos(
 			$pagenum_link,
 			'index.php'
 		) ? 'index.php/' : '';
@@ -1551,23 +1549,23 @@ function learn_press_seconds_to_weeks( $secs ) {
 		$weeks = (int) ( $days / 7 );
 		$days  = $days % 7;
 	}
-	// format result
+	// format result.
 	$result = '';
 	if ( $weeks ) {
-		$result .= $weeks . ' ' . _n( 'week', 'weeks', $weeks, 'learnpress' ) . ' ';
+		$result .= sprintf( _n( '%s week', '%s weeks', $weeks, 'learnpress' ), $weeks ) . ' ';
 	}
 
 	if ( $days ) {
-		$result .= $days . ' ' . _n( 'day', 'days', $days, 'learnpress' ) . ' ';
+		$result .= sprintf( _n( '%s day', '%s days', $days, 'learnpress' ), $days ) . ' ';
 	}
 
 	if ( ! $weeks ) {
 		if ( $hours ) {
-			$result .= $hours . ' ' . _n( 'hour', 'hours', $hours, 'learnpress' ) . ' ';
-
+			$result .= sprintf( _n( '%s hour', '%s hours', $days, 'learnpress' ), $hours ) . ' ';
 		}
+
 		if ( $mins ) {
-			$result .= $mins . ' ' . _n( 'minute', 'minutes', $mins, 'learnpress' ) . ' ';
+			$result .= sprintf( _n( '%s minute', '%s minutes', $days, 'learnpress' ), $hours ) . ' ';
 		}
 	}
 	$result = rtrim( $result );
@@ -1831,9 +1829,9 @@ function is_learnpress() {
 if ( ! function_exists( 'learn_press_is_search' ) ) {
 	function learn_press_is_search() {
 		return array_key_exists( 's', $_REQUEST ) && array_key_exists(
-			'ref',
-			$_REQUEST
-		) && $_REQUEST['ref'] == 'course';
+				'ref',
+				$_REQUEST
+			) && $_REQUEST['ref'] == 'course';
 	}
 }
 
@@ -1958,8 +1956,8 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int   $expire
- * @param bool  $secure
+ * @param int  $expire
+ * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 	if ( ! headers_sent() ) {
@@ -2644,13 +2642,6 @@ function learn_press_execute_time( $n = 1 ) {
 	}
 }
 
-function learn_press_debug_hidden() {
-	$args = func_get_args();
-	echo '<div class="learn-press-debug-hidden" style="display:none;">';
-	call_user_func_array( 'learn_press_debug', $args );
-	echo '</div>';
-}
-
 if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
 	function learn_press_is_negative_value( $value ) {
 		$return = in_array( $value, array( 'no', 'off', 'false', '0' ) ) || ! $value || $value == '' || $value == null;
@@ -2810,7 +2801,7 @@ function learn_press_static_page_ids() {
 /**
  * Get default static pages of LP.
  *
- * @param bool $name  - Optional. TRUE will return name only.
+ * @param bool $name - Optional. TRUE will return name only.
  *
  * @return array
  *
@@ -2942,7 +2933,7 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
 /**
  * Get all items are unassigned to any course.
  *
- * @param string|array $type  - Optional. Types of items to get, default is all.
+ * @param string|array $type - Optional. Types of items to get, default is all.
  *
  * @return array
  * @since 3.0.0
@@ -3500,7 +3491,7 @@ function learn_press_default_course_levels() {
 /**
  * Get default methods to evaluate course results.
  *
- * @param string $return  - Optional. 'keys' will return keys instead of all.
+ * @param string $return - Optional. 'keys' will return keys instead of all.
  *
  * @return array
  * @since 3.x.x
@@ -3745,7 +3736,7 @@ function learn_press_user_item_in_progress_slug( $type = '' ) {
  * Get slug for status of course/lesson/quiz if user
  * completed/finished and result is under-evaluation
  *
- * @param string $item  - Optional. Type of item
+ * @param string $item - Optional. Type of item
  *
  * @return string
  * @since 4.0.0
