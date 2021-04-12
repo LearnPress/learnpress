@@ -20,7 +20,8 @@ const _localStorage = {
 	exists( name ) {
 		const data = _localStorage.get();
 
-		return data.hasOwnProperty( name );
+		// return data.hasOwnProperty( name );
+		return name in data;
 	},
 
 	remove( name ) {
