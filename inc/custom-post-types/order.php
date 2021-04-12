@@ -35,10 +35,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				->add_map_method( 'before_delete', 'delete_order_data' )
 				->add_map_method( 'save', 'save_order' );
 
-
-			add_filter( 'wp_count_posts', array( $this, 'filter_count_posts' ), 100, 3 );
+            // Hungkv fix error child order not show in trash
+//			add_filter( 'wp_count_posts', array( $this, 'filter_count_posts' ), 100, 3 );
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
-			add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
+//			add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
 
 			parent::__construct( $post_type );
 
