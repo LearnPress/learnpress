@@ -97,7 +97,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				} elseif ( isset( $v['active'] ) && $v['active'] ) {
 					$has_active = true;
 				}
-				$tabs[$k] = $v;
+				$tabs[ $k ] = $v;
 			}
 
 			if ( ! $has_active ) {
@@ -113,9 +113,9 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				} elseif ( ! empty( $tabs['overview'] ) ) {
 					$tabs['overview']['active'] = true;
 				} else {
-					$keys                       = array_keys( $tabs );
-					$first_key                  = reset( $keys );
-					$tabs[$first_key]['active'] = true;
+					$keys                         = array_keys( $tabs );
+					$first_key                    = reset( $keys );
+					$tabs[ $first_key ]['active'] = true;
 				}
 			}
 		}
@@ -653,11 +653,11 @@ function learn_press_add_message( $message, $type = 'success', $options = array(
 
 	$messages = learn_press_session_get( $key );
 
-	if ( empty( $messages[$type] ) ) {
-		$messages[$type] = array();
+	if ( empty( $messages[ $type ] ) ) {
+		$messages[ $type ] = array();
 	}
 
-	$messages[$type][$options['id']] = array(
+	$messages[ $type ][ $options['id'] ] = array(
 		'content' => $message,
 		'options' => $options,
 	);
@@ -693,19 +693,19 @@ function learn_press_remove_message( $id = '', $type = '' ) {
 	if ( $id ) {
 		foreach ( $groups as $message_type => $messages ) {
 			if ( ! sizeof( $type ) ) {
-				if ( isset( $groups[$message_type][$id] ) ) {
-					unset( $groups[$message_type][$id] );
+				if ( isset( $groups[ $message_type ][ $id ] ) ) {
+					unset( $groups[ $message_type ][ $id ] );
 				}
 			} elseif ( in_array( $message_type, $type ) ) {
-				if ( isset( $groups[$message_type][$id] ) ) {
-					unset( $groups[$message_type][$id] );
+				if ( isset( $groups[ $message_type ][ $id ] ) ) {
+					unset( $groups[ $message_type ][ $id ] );
 				}
 			}
 		}
 	} elseif ( sizeof( $type ) ) {
 		foreach ( $type as $t ) {
-			if ( isset( $groups[$t] ) ) {
-				unset( $groups[$t] );
+			if ( isset( $groups[ $t ] ) ) {
+				unset( $groups[ $t ] );
 			}
 		}
 	} else {
@@ -733,8 +733,8 @@ function learn_press_message_count( $type = '' ) {
 	$count    = 0;
 	$messages = learn_press_session_get( learn_press_session_message_id(), array() );
 
-	if ( isset( $messages[$type] ) ) {
-		$count = absint( sizeof( $messages[$type] ) );
+	if ( isset( $messages[ $type ] ) ) {
+		$count = absint( sizeof( $messages[ $type ] ) );
 	} elseif ( empty( $type ) ) {
 		foreach ( $messages as $message ) {
 			$count += absint( sizeof( $message ) );
@@ -845,7 +845,10 @@ function learn_press_get_template_part( $slug, $name = '' ) {
 	$file_ct_in_pr = apply_filters( 'learn_press_child_in_parrent_template_path', '' );
 	if ( $file_ct_in_pr && $name ) {
 		$template_child = locate_template(
-			array( "{$slug}-{$name}.php", 'lp-child-path/' . learn_press_template_path() . '/' . $file_ct_in_pr . "/{$slug}-{$name}.php", )
+			array(
+				"{$slug}-{$name}.php",
+				'lp-child-path/' . learn_press_template_path() . '/' . $file_ct_in_pr . "/{$slug}-{$name}.php",
+			)
 		);
 		if ( $template_child && file_exists( $template_child ) ) {
 			$template = $template_child;
@@ -873,9 +876,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name .
- * @param array  $args          (default: array()) .
+ * @param array  $args (default: array()) .
  * @param string $template_path (default: '').
- * @param string $default_path  (default: '').
+ * @param string $default_path (default: '').
  *
  * @return void
  */
@@ -944,7 +947,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */
@@ -984,7 +987,7 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 			if ( $check_child_theme && file_exists( $check_child_theme ) ) {
 				$template = $check_child_theme;
 			}
-   		}
+		}
 
 	}
 	if ( ! isset( $template ) || ! $template ) {
@@ -1207,7 +1210,7 @@ function learn_press_get_course_redirect( $link ) {
 		if ( ! ( array_diff_assoc( $a, $b ) ) ) {
 			$link = '';
 			foreach ( array( 'scheme', 'host', 'port', 'path' ) as $v ) {
-				if ( ! isset( $info_a[$v] ) ) {
+				if ( ! isset( $info_a[ $v ] ) ) {
 					continue;
 				}
 
@@ -1221,7 +1224,7 @@ function learn_press_get_course_redirect( $link ) {
 				} else {
 					$sep = '/';
 				}
-				$link = $link . $info_a[$v] . $sep;
+				$link = $link . $info_a[ $v ] . $sep;
 			}
 
 			if ( ! empty( $info_b['query'] ) ) {
@@ -1711,7 +1714,30 @@ function learn_press_custom_excerpt_length( $length ) {
 function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
 	$duration = get_post_meta( $post_id, '_lp_duration', true );
 
-	return empty( absint( $duration ) ) ? $default : $duration;
+	$duration_arr = explode( ' ', $duration );
+
+	$duration_number = $duration_arr[0];
+	$duration_text   = $duration_arr[1];
+
+	switch ( strtolower( $duration_text ) ) {
+		case 'minute':
+			$duration_str = sprintf( _n( '%s minute', '%s minutes', $duration_number, 'learnpress' ),
+				$duration_number );
+			break;
+		case 'hour':
+			$duration_str = sprintf( _n( '%s hour', '%s hours', $duration_number, 'learnpress' ), $duration_number );
+			break;
+		case 'day':
+			$duration_str = sprintf( _n( '%s day', '%s days', $duration_number, 'learnpress' ), $duration_number );
+			break;
+		case 'week':
+			$duration_str = sprintf( _n( '%s week', '%s weeks', $duration_number, 'learnpress' ), $duration_number );
+			break;
+		default:
+			$duration_str = $duration;
+	}
+
+	return empty( absint( $duration ) ) ? $default : $duration_str;
 }
 
 /**
@@ -1748,8 +1774,8 @@ function learn_press_profile_logout_slug() {
 }
 
 function lp_get_email_content( $format, $meta = array(), $field = array() ) {
-	if ( $meta && isset( $meta[$format] ) ) {
-		$content = stripslashes( $meta[$format] );
+	if ( $meta && isset( $meta[ $format ] ) ) {
+		$content = stripslashes( $meta[ $format ] );
 	} else {
 		$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
 		$template_file = $field['template_base'] . $template;
