@@ -442,6 +442,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/theme-support/class-theme-support-base.php';
 			include_once 'inc/class-lp-theme-support.php';
 
+			/** Jwt */
+			include_once 'inc/jwt/class-jwt-auth.php';
+
 			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
 			}

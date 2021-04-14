@@ -1,0 +1,30 @@
+POST http://localhost/default2/wp-json/learnpress/v1/token
+Content-Type: application/json
+
+{
+	"username": "instructor",
+	"password": "instructor"
+}
+
+###
+POST  http://localhost/default2/wp-json/learnpress/v1/token/validate
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2RlZmF1bHQyIiwiaWF0IjoxNjE3ODQ2MTg5LCJuYmYiOjE2MTc4NDYxODksImV4cCI6MTYxODQ1MDk4OSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.m6GWV4i8A0oFeXsV2IzZFWZg0ATJJYUyZ85V22d_baQ
+
+###
+GET http://localhost/default2/wp-json/learnpress/v1/test
+Content-Type: application/json
+
+###
+GET http://localhost/default/wp-json/wp/v2/posts
+Content-Type: application/json
+
+###
+GET http://localhost/default2/wp-json/learnpress/v1/courses
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2RlZmF1bHQyIiwiaWF0IjoxNjE3ODQ2MTg5LCJuYmYiOjE2MTc4NDYxODksImV4cCI6MTYxODQ1MDk4OSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.m6GWV4i8A0oFeXsV2IzZFWZg0ATJJYUyZ85V22d_baQ
+
+###
+GET http://localhost/default2/wp-json/learnpress/v1/courses/133
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2RlZmF1bHQyIiwiaWF0IjoxNjE3ODQ2MTg5LCJuYmYiOjE2MTc4NDYxODksImV4cCI6MTYxODQ1MDk4OSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.m6GWV4i8A0oFeXsV2IzZFWZg0ATJJYUyZ85V22d_baQ
