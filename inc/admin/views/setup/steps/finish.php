@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) or exit;
     </a>
 
     <a class="button"
-       href="https://learnpress.io/docs/"><?php _e( 'View Documentation', 'learnpress' ); ?></a>
+       href="https://docspress.thimpress.com/admin-learnpress-4-0/"><?php _e( 'View Documentation', 'learnpress' ); ?></a>
 
     <a class="button"
        href="<?php echo esc_url( admin_url( 'post-new.php?post_type=lp_course' ) ); ?>"><?php _e( 'Create a new course', 'learnpress' ); ?></a>
