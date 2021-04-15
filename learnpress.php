@@ -4,10 +4,10 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.0.0-beta-2
+ * Version: 4.0.0-beta-3
  * Author URI: http://thimpress.com
  * Requires at least: 3.8
- * Tested up to: 5.5.3
+ * Tested up to: 5.7
  * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
@@ -130,6 +130,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @var LP_Admin_Core_API
 		 */
 		public $admin_api = null;
+
+		/**
+		 * @var string
+		 */
+		public $thim_core_version_require = '2.0.0-beta-0';
 
 		/**
 		 *
@@ -464,6 +469,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
 			add_action( 'init', array( $this, 'wp_init' ), 10 );
+
+			// Check require version thim-core.
+			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
 		}
 
 		public function error() {
@@ -603,7 +611,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			 * Reload page, so not affect to hook "learn-press/ready"
 			 */
 			$addons_valid = true;
-			$plugins     = get_option( 'active_plugins' );
+			$plugins      = get_option( 'active_plugins' );
 
 			$list_lp_addon_activated = preg_grep( '/^learnpress-.*/i', $plugins );
 
@@ -626,7 +634,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$addon              = new Lp_Addon();
 				$addon->version     = $lp_addon_version;
 				$addon->plugin_base = $lp_addon;
-				$addons_valid        = $addon->check_require_version_addon();
+				$addons_valid       = $addon->check_require_version_addon();
 
 				if ( $addons_valid ) {
 					/**
@@ -849,6 +857,37 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function flush_rewrite_rules() {
 			LP()->session->flush_rewrite_rules = true;
 			flush_rewrite_rules();
+		}
+
+		/**
+		 * Check require version thim-core
+		 */
+		public function check_thim_core_version_require() {
+			// Get thim-core info for LP check .
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+			$thim_core_info = get_file_data(
+				WP_PLUGIN_DIR . '/thim-core/thim-core.php',
+				array(
+					'Name'               => 'Plugin Name',
+					'Require_LP_Version' => 'Require_LP_Version',
+					'Version'            => 'Version',
+				)
+			);
+
+			if ( version_compare( $this->thim_core_version_require, $thim_core_info['Version'], '>' ) ) {
+				deactivate_plugins( 'thim-core/thim-core.php' );
+
+				if ( isset( $_GET['activate'] ) ) {
+					unset( $_GET['activate'] );
+				}
+
+				?>
+				<div class="notice notice-error">
+					<p><?php echo( 'LP4 require version Thim-core: ' . $this->thim_core_version_require ) ?></p>
+				</div>
+				<?php
+				die;
+			}
 		}
 
 		/**
