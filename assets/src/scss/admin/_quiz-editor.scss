@@ -87,6 +87,14 @@
 			border-collapse: collapse;
 			color: #777;
 
+			.fill_in_blanks{
+				.question-settings{
+					@media (max-width: 1560px ) {
+						flex-direction: column;
+					}
+				}
+			}
+
 			.table-row {
 				display: flex;
 				flex-direction: row;
