@@ -1716,25 +1716,29 @@ function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
 
 	$duration_arr = explode( ' ', $duration );
 
-	$duration_number = $duration_arr[0];
-	$duration_text   = $duration_arr[1];
+	if ( count( $duration_arr ) > 1 ) {
+		$duration_number = $duration_arr[0];
+		$duration_text   = $duration_arr[1];
 
-	switch ( strtolower( $duration_text ) ) {
-		case 'minute':
-			$duration_str = sprintf( _n( '%s minute', '%s minutes', $duration_number, 'learnpress' ),
-				$duration_number );
-			break;
-		case 'hour':
-			$duration_str = sprintf( _n( '%s hour', '%s hours', $duration_number, 'learnpress' ), $duration_number );
-			break;
-		case 'day':
-			$duration_str = sprintf( _n( '%s day', '%s days', $duration_number, 'learnpress' ), $duration_number );
-			break;
-		case 'week':
-			$duration_str = sprintf( _n( '%s week', '%s weeks', $duration_number, 'learnpress' ), $duration_number );
-			break;
-		default:
-			$duration_str = $duration;
+		switch ( strtolower( $duration_text ) ) {
+			case 'minute':
+				$duration_str = sprintf( _n( '%s minute', '%s minutes', $duration_number, 'learnpress' ),
+					$duration_number );
+				break;
+			case 'hour':
+				$duration_str = sprintf( _n( '%s hour', '%s hours', $duration_number, 'learnpress' ),
+					$duration_number );
+				break;
+			case 'day':
+				$duration_str = sprintf( _n( '%s day', '%s days', $duration_number, 'learnpress' ), $duration_number );
+				break;
+			case 'week':
+				$duration_str = sprintf( _n( '%s week', '%s weeks', $duration_number, 'learnpress' ),
+					$duration_number );
+				break;
+			default:
+				$duration_str = $duration;
+		}
 	}
 
 	return empty( absint( $duration ) ) ? $default : $duration_str;

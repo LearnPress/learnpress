@@ -146,10 +146,10 @@ class LP_User extends LP_Abstract_User {
 					}
 				}
 			}
-
-			return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
 		} catch ( Exception $e ) {
-			return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
+
 		}
+
+		return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
 	}
 }
