@@ -1,30 +1,30 @@
-POST http://localhost/default2/wp-json/learnpress/v1/token
+POST http://learnpress4.local/wp-json/learnpress/v1/token
 Content-Type: application/json
 
 {
-	"username": "instructor",
-	"password": "instructor"
+	"username": "admin",
+	"password": "admin"
 }
 
 ###
-POST  http://localhost/default2/wp-json/learnpress/v1/token/validate
+POST http://learnpress4.local/wp-json/learnpress/v1/token/validate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2RlZmF1bHQyIiwiaWF0IjoxNjE3ODQ2MTg5LCJuYmYiOjE2MTc4NDYxODksImV4cCI6MTYxODQ1MDk4OSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.m6GWV4i8A0oFeXsV2IzZFWZg0ATJJYUyZ85V22d_baQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYxODM4Mjc3NiwibmJmIjoxNjE4MzgyNzc2LCJleHAiOjE2MTg5ODc1NzYsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.wCkm1nhrRlX-0mXvkY8Q_FYojkoeoVSNe7Ev2HszXkA
 
 ###
-GET http://localhost/default2/wp-json/learnpress/v1/test
-Content-Type: application/json
-
-###
-GET http://localhost/default/wp-json/wp/v2/posts
+GET http://learnpress4.local/wp-json/learnpress/v1/test
 Content-Type: application/json
 
 ###
-GET http://localhost/default2/wp-json/learnpress/v1/courses
+GET http://learnpress4.local/wp-json/wp/v2/posts
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2RlZmF1bHQyIiwiaWF0IjoxNjE3ODQ2MTg5LCJuYmYiOjE2MTc4NDYxODksImV4cCI6MTYxODQ1MDk4OSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.m6GWV4i8A0oFeXsV2IzZFWZg0ATJJYUyZ85V22d_baQ
 
 ###
-GET http://localhost/default2/wp-json/learnpress/v1/courses/133
+GET http://learnpress4.local/wp-json/learnpress/v1/courses
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2RlZmF1bHQyIiwiaWF0IjoxNjE3ODQ2MTg5LCJuYmYiOjE2MTc4NDYxODksImV4cCI6MTYxODQ1MDk4OSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.m6GWV4i8A0oFeXsV2IzZFWZg0ATJJYUyZ85V22d_baQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYxODM4Mjc3NiwibmJmIjoxNjE4MzgyNzc2LCJleHAiOjE2MTg5ODc1NzYsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.wCkm1nhrRlX-0mXvkY8Q_FYojkoeoVSNe7Ev2HszXkA
+
+###
+GET http://learnpress4.local/wp-json/learnpress/v1/courses/10
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYxODM4Mjc3NiwibmJmIjoxNjE4MzgyNzc2LCJleHAiOjE2MTg5ODc1NzYsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.wCkm1nhrRlX-0mXvkY8Q_FYojkoeoVSNe7Ev2HszXkA

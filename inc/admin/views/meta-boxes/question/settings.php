@@ -1,48 +1,68 @@
 <?php
-class LP_Meta_Box_Question {
+class LP_Meta_Box_Question extends LP_Meta_Box {
 
-	public static function metabox() {
+	private static $_instance = null;
+
+	public $post_type = LP_QUESTION_CPT;
+
+	public function add_meta_box() {
+		add_meta_box( 'question_settings', esc_html__( 'Question Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
+	}
+
+	public function metabox() {
 		return apply_filters(
-			'lp/metabox/lesson/lists',
+			'lp/metabox/question/lists',
 			array(
-				'_lp_mark'        => array(
-					'label'             => esc_html__( 'Points', 'learnpress' ),
-					'description'       => esc_html__( 'Points for choosing the correct answer.', 'learnpress' ),
-					'desc_tip'          => true,
-					'type'              => 'number',
-					'default'           => '1',
-					'custom_attributes' => array(
-						'min'  => '1',
-						'step' => '1',
-					),
-					'style'             => 'width: 60px;',
+				'_lp_mark'        => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Points', 'learnpress' ),
+					esc_html__( 'Points for choosing the correct answer.', 'learnpress' ),
+					'1',
+					array(
+						'type_input'        => 'number',
+						'custom_attributes' => array(
+							'min'  => '1',
+							'step' => '1',
+						),
+						'style'             => 'width: 60px;',
+					)
 				),
-				'_lp_hint'        => array(
-					'label'       => esc_html__( 'Hint', 'learnpress' ),
-					'description' => esc_html__( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ),
-					'default'     => '',
-					'type'        => 'textarea',
+				'_lp_hint'        => new LP_Meta_Box_Textarea_Field(
+					esc_html__( 'Hint', 'learnpress' ),
+					esc_html__( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ),
+					'',
 				),
-				'_lp_explanation' => array(
-					'label'       => esc_html__( 'Explanation', 'learnpress' ),
-					'description' => esc_html__( 'Explanation will be displayed when students click button "Check Answer".', 'learnpress' ),
-					'default'     => '',
-					'type'        => 'textarea',
+				'_lp_explanation' => new LP_Meta_Box_Textarea_Field(
+					esc_html__( 'Explanation', 'learnpress' ),
+					esc_html__( 'Explanation will be displayed when students click button "Check Answer".', 'learnpress' ),
+					'',
 				),
 			)
 		);
 	}
 
-	public static function output( $post ) {
-		wp_nonce_field( 'learnpress_save_meta_box', 'learnpress_meta_box_nonce' );
+	public function output( $post ) {
+		parent::output( $post );
 		?>
 
 		<div class="lp-meta-box lp-meta-box--question">
 			<div class="lp-meta-box__inner">
 				<?php
 				do_action( 'learnpress/question-settings/before' );
+				// Check if add_filter to old version.
+				$is_old = false;
 
-				lp_meta_box_output( self::metabox() );
+				foreach ( $this->metabox() as $key => $object ) {
+					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
+						$object->id = $key;
+						echo $object->output( $post->ID );
+					} elseif ( is_array( $object ) ) {
+						$is_old = true;
+					}
+				}
+
+				if ( $is_old ) {
+					lp_meta_box_output( $this->metabox() );
+				}
 
 				do_action( 'learnpress/question-settings/after' );
 				?>
@@ -52,13 +72,13 @@ class LP_Meta_Box_Question {
 		<?php
 	}
 
-	public static function save( $post_id ) {
-		$mark        = ! empty( $_POST['_lp_mark'] ) ? absint( wp_unslash( $_POST['_lp_mark'] ) ) : '0';
-		$hint        = ! empty( $_POST['_lp_hint'] ) ? wp_kses_post( wp_unslash( $_POST['_lp_hint'] ) ) : '';
-		$explanation = ! empty( $_POST['_lp_explanation'] ) ? wp_kses_post( wp_unslash( $_POST['_lp_explanation'] ) ) : '';
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
 
-		update_post_meta( $post_id, '_lp_mark', $mark );
-		update_post_meta( $post_id, '_lp_hint', $hint );
-		update_post_meta( $post_id, '_lp_explanation', $explanation );
+		return self::$_instance;
 	}
 }
+
+LP_Meta_Box_Question::instance();

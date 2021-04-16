@@ -716,6 +716,5 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 	$course_post_type = LP_Course_Post_Type::instance();
 
-	$course_post_type->add_meta_box( 'course-editor', esc_html__( 'Curriculum', 'learnpress' ), 'admin_editor', 'normal', 'high' )
-					->add_meta_box( 'course-settings', esc_html__( 'Course Settings', 'learnpress' ), 'LP_Meta_Box_Course::output', 'normal', 'high' );
+	$course_post_type->add_meta_box( 'course-editor', esc_html__( 'Curriculum', 'learnpress' ), 'admin_editor', 'normal', 'high' );
 }

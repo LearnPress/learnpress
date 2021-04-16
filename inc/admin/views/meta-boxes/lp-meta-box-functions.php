@@ -533,126 +533,37 @@ function lp_implode_html_attributes( $raw_attributes ) {
 function lp_meta_box_output( $metaboxes = array() ) {
 	if ( ! empty( $metaboxes ) ) {
 		foreach ( $metaboxes as $id => $field ) {
+			$field['id'] = $id;
+
 			switch ( $field['type'] ) {
 				case 'text':
 				case 'number':
 				case 'url':
-					lp_meta_box_text_input_field(
-						array(
-							'id'                => $id,
-							'label'             => $field['label'] ?? '',
-							'description'       => $field['description'] ?? '',
-							'type_input'        => $field['type_input'] ?? 'text',
-							'default'           => $field['default'] ?? '',
-							'custom_attributes' => $field['custom_attributes'] ?? '',
-							'wrapper_class'     => $field['wrapper_class'] ?? false,
-							'placeholder'       => $field['placeholder'] ?? '',
-							'class'             => $field['class'] ?? '',
-							'style'             => $field['style'] ?? '',
-							'desc_tip'          => $field['desc_tip'] ?? false,
-						)
-					);
+					lp_meta_box_text_input_field( $field );
 					break;
 
 				case 'textarea':
-					lp_meta_box_textarea_field(
-						array(
-							'id'                => $id,
-							'label'             => $field['label'] ?? '',
-							'description'       => $field['description'] ?? '',
-							'default'           => $field['default'] ?? '',
-							'custom_attributes' => $field['custom_attributes'] ?? '',
-							'placeholder'       => $field['placeholder'] ?? '',
-							'class'             => $field['class'] ?? '',
-							'style'             => $field['style'] ?? '',
-							'desc_tip'          => $field['desc_tip'] ?? false,
-						)
-					);
+					lp_meta_box_textarea_field( $field );
 					break;
 
 				case 'checkbox':
-					lp_meta_box_checkbox_field(
-						array(
-							'id'                => $id,
-							'label'             => $field['label'] ?? '',
-							'description'       => $field['description'] ?? '',
-							'default'           => $field['default'] ?? '',
-							'custom_attributes' => $field['custom_attributes'] ?? '',
-							'wrapper_class'     => $field['wrapper_class'] ?? false,
-							'class'             => $field['class'] ?? '',
-							'style'             => $field['style'] ?? '',
-							'desc_tip'          => $field['desc_tip'] ?? false,
-						)
-					);
+					lp_meta_box_checkbox_field( $field );
 					break;
 
 				case 'duration':
-					lp_meta_box_duration_field(
-						array(
-							'id'                => $id,
-							'label'             => $field['label'] ?? '',
-							'description'       => $field['description'] ?? '',
-							'default'           => $field['default'] ?? '',
-							'default_time'      => $field['default_time'],
-							'custom_attributes' => $field['custom_attributes'] ?? '',
-							'wrapper_class'     => $field['wrapper_class'] ?? false,
-							'class'             => $field['class'] ?? '',
-							'style'             => $field['style'] ?? '',
-							'desc_tip'          => $field['desc_tip'] ?? false,
-						)
-					);
+					lp_meta_box_duration_field( $field );
 					break;
 
 				case 'select':
-					lp_meta_box_select_field(
-						array(
-							'id'                => $id,
-							'label'             => $field['label'] ?? '',
-							'description'       => $field['description'] ?? '',
-							'default'           => $field['default'] ?? '',
-							'custom_attributes' => $field['custom_attributes'] ?? '',
-							'wrapper_class'     => $field['wrapper_class'] ?? false,
-							'class'             => $field['class'] ?? '',
-							'style'             => $field['style'] ?? '',
-							'desc_tip'          => $field['desc_tip'] ?? false,
-							'options'           => $field['options'],
-							'multiple'          => $field['multiple'] ?? false,
-						)
-					);
+					lp_meta_box_select_field( $field );
 					break;
 
 				case 'radio':
-					lp_meta_box_radio_field(
-						array(
-							'id'                => $id,
-							'label'             => $field['label'] ?? '',
-							'description'       => $field['description'] ?? '',
-							'default'           => $field['default'] ?? '',
-							'custom_attributes' => $field['custom_attributes'] ?? '',
-							'wrapper_class'     => $field['wrapper_class'] ?? false,
-							'class'             => $field['class'] ?? '',
-							'style'             => $field['style'] ?? '',
-							'desc_tip'          => $field['desc_tip'] ?? false,
-							'options'           => $field['options'],
-						)
-					);
+					lp_meta_box_radio_field( $field );
 					break;
 
 				case 'file':
-					lp_meta_box_file_input_field(
-						array(
-							'id'                => $id,
-							'label'             => $field['label'] ?? '',
-							'description'       => $field['description'] ?? '',
-							'default'           => $field['default'] ?? '',
-							'custom_attributes' => $field['custom_attributes'] ?? '',
-							'wrapper_class'     => $field['wrapper_class'] ?? false,
-							'class'             => $field['class'] ?? '',
-							'style'             => $field['style'] ?? '',
-							'desc_tip'          => $field['desc_tip'] ?? false,
-							'multil'            => $field['multil'] ?? false,
-						)
-					);
+					lp_meta_box_file_input_field( $field );
 					break;
 			}
 		}

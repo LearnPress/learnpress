@@ -136,7 +136,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 		}
 
-		$data['meta_data'] = $this->get_all_meta_by_id( $id );
+		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
 	}
@@ -165,6 +165,28 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		foreach ( $curriculum as $section ) {
 			if ( $section ) {
 				$output[] = $section->to_array();
+			}
+		}
+
+		return $output;
+	}
+
+	public function get_course_meta( $id ) {
+		if ( ! class_exists( 'LP_Meta_Box_Course' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box.php';
+		}
+
+		// General tab.
+		$fields = LP_Meta_Box_Course::get_instance()::$general_fields;
+
+		$output = array();
+		foreach ( $fields as $meta_key => $field ) {
+			$meta_value = get_post_meta( $id, $meta_key, false );
+
+			if ( count( $meta_value ) == 1 ) {
+				$output[ $meta_key ] = $meta_value[0];
+			} else {
+				$output[ $meta_key ] = array_values( $meta_value );
 			}
 		}
 

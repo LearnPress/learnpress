@@ -345,6 +345,5 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 	// add meta box
 	$lesson_post_type
-		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' )
-		->add_meta_box( 'lesson_settings', esc_html__( 'Lesson Settings', 'learnpress' ), 'LP_Meta_Box_Lesson::output', 'normal', 'high' );
+		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
 }
