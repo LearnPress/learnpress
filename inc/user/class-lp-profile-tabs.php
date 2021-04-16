@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class LP_Profile_Tabs
  */
@@ -29,16 +30,21 @@ class LP_Profile_Tabs extends LP_Array_Access {
 		$this->init();
 	}
 
+	/**
+	 *
+	 */
 	protected function init() {
 		global $wp;
-		$current = isset( $wp->query_vars['view'] ) ? $wp->query_vars['view'] : 'overview';
+
+		$current      = $wp->query_vars['view'] ?? 'overview';
+		$current_page = LP_Page_Controller::page_current();
+
+		if ( LP_PAGE_PROFILE !== $current_page ) {
+			return;
+		}
 
 		foreach ( $this->_data as $k => $v ) {
-			if ( empty( $v['slug'] ) ) {
-				$v['slug'] = $k;
-			}
-
-			if ( $current === $k ) {
+			if ( $current === $v['slug'] ) {
 				$v['is_current'] = true;
 			}
 			$this->_data[ $k ] = new LP_Profile_Tab( $k, $v, $this->get_profile() );
@@ -254,7 +260,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	/**
 	 * Get current link of profile
 	 *
-	 * @param string $args           - Optional. Add more query args to url.
+	 * @param string $args - Optional. Add more query args to url.
 	 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
 	 *
 	 * @return mixed|string

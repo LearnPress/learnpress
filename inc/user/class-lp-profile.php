@@ -381,7 +381,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool   $key     Optional. True if return the key instead of value.
+		 * @param bool   $key Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -441,7 +441,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get current link of profile
 		 *
-		 * @param string $args           - Optional. Add more query args to url.
+		 * @param string $args - Optional. Add more query args to url.
 		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
 		 *
 		 * @return mixed|string
@@ -1044,7 +1044,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
 
 						if ( $user->get_data( 'profile_picture_changed' ) == 'yes' ) {
-							$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $user->get_data( 'uploaded_profile_src' ) );
+							$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ),
+								$user->get_data( 'uploaded_profile_src' ) );
 							delete_user_meta( $user->get_id(), '_lp_profile_picture_changed' );
 						}
 					} else {
@@ -1105,7 +1106,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 	}
 }
 
-function learn_press_profile_init() {
+/*function learn_press_profile_init() {
+	$current_page = LP_Page_Controller::page_current();
+
+	if ( LP_PAGE_PROFILE !== $current_page ) {
+		return;
+	}
+
 	$profile = LP_Profile::instance();
 	$user    = $profile->get_user();
 
@@ -1120,6 +1127,6 @@ function learn_press_profile_init() {
 		add_filter( 'redirect_canonical', '__return_false' );
 		$wp_query->set_404();
 	}
-}
+}*/
 
-add_filter( 'wp', 'learn_press_profile_init' );
+//add_filter( 'wp', 'learn_press_profile_init' );

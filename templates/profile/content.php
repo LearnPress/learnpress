@@ -16,6 +16,9 @@ if ( ! isset( $user ) ) {
 }
 
 $profile = learn_press_get_profile();
+/**
+ * LP_Profile_Tabs
+ */
 $tabs    = $profile->get_tabs();
 $current = $profile->get_current_tab();
 ?>
@@ -25,6 +28,9 @@ $current = $profile->get_current_tab();
 	<?php learn_press_print_messages( true ); ?>
 
 	<?php
+	/**
+	 * @var LP_Profile_Tab $profile_tab
+	 */
 	foreach ( $tabs as $tab_key => $profile_tab ) {
 
 		if ( ! $profile_tab->tab_is_visible_for_user() ) {
