@@ -190,7 +190,9 @@ function learn_press_add_user_roles() {
 	$lesson_cap = LP_LESSON_CPT . 's';
 	$order_cap  = LP_ORDER_CPT . 's';
 
-	if ( $teacher = get_role( LP_TEACHER_ROLE ) ) {
+	$teacher = get_role( LP_TEACHER_ROLE );
+	if ( $teacher ) {
+		$teacher->add_cap( 'read_private_' . $course_cap );
 		$teacher->add_cap( 'delete_published_' . $course_cap );
 		$teacher->add_cap( 'edit_published_' . $course_cap );
 		$teacher->add_cap( 'edit_' . $course_cap );
@@ -216,7 +218,9 @@ function learn_press_add_user_roles() {
 	}
 
 	// administrator
-	if ( $admin = get_role( 'administrator' ) ) {
+	$admin = get_role( 'administrator' );
+	if ( $admin ) {
+		$admin->add_cap( 'read_private_' . $course_cap );
 		$admin->add_cap( 'delete_' . $course_cap );
 		$admin->add_cap( 'delete_published_' . $course_cap );
 		$admin->add_cap( 'edit_' . $course_cap );
