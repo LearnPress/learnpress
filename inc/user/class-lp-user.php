@@ -125,8 +125,14 @@ class LP_User extends LP_Abstract_User {
 			$retake_option = (int) $course->get_data( 'retake_count' );
 
 			if ( $course && $retake_option > 0 ) {
+				/**
+				 * Check course is finished
+				 * Check duration is blocked
+				 */
 				if ( ! $this->has_finished_course( $course->get_id() ) ) {
-					throw new Exception();
+					if ( 0 !== $course->timestamp_remaining_duration() ) {
+						throw new Exception();
+					}
 				}
 
 				$user_course_data = $this->get_course_data( $course_id );

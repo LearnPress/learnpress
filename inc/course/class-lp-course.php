@@ -198,6 +198,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * Check time remaining course when enable duration expire
 		 * Value: -1 is no limit (default)
 		 * Value: 0 is block
+		 * Administrator || (is instructor && is author course) will be not block.
 		 *
 		 * @return int second
 		 * @since 4.0.0

@@ -19,6 +19,7 @@
 		"no-shadow": 0,
 		"no-console": 0,
 		"vars-on-top": 0,
-		"jsdoc/require-param-type": 0
+		"jsdoc/require-param-type": 0,
+		"array-callback-return": 0
 	}
 }
