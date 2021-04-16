@@ -616,10 +616,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function item_lesson_content() {
 		$item = LP_Global::course_item();
 
-		if ( $item->is_blocked() ) {
-			return;
-		}
-
 		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/content.php" ) ) ) {
 			include $format_template;
 
@@ -633,19 +629,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function item_quiz_content() {
 		$item = LP_Global::course_item();
 
-		if ( $item->is_blocked() ) {
-			return;
-		}
-
 		learn_press_get_template( 'content-quiz/js.php' );
 	}
 
 	public function item_lesson_content_blocked() {
 		$item = LP_Global::course_item();
-
-		if ( ! $item->is_blocked() ) {
-			return;
-		}
 
 		learn_press_get_template( 'global/block-content.php' );
 	}
