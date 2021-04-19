@@ -586,14 +586,15 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Parse classes for all items in a course.
 	 *
-	 * @param int          $course_id
-	 * @param int          $user_id
-	 * @param array|string $more
+	 * @param int          $course_id .
+	 * @param int          $user_id .
+	 * @param array|string $more .
 	 *
 	 * @return array
 	 * @since 3.2.0
+	 * @editor tungnx
 	 */
-	public function parse_items_classes( $course_id, $user_id = 0, $more = array() ) {
+	public function parse_items_classes( $course_id = 0, $user_id = 0, $more = array() ) {
 		$items = array();
 
 		$course = learn_press_get_course( $course_id );
@@ -612,11 +613,16 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			return $items;
 		}
 
-		$user            = learn_press_get_current_user();
-		$current_item    = LP_Global::course_item();
-		$enrolled        = $user ? $user->has_enrolled_course( $course_id ) : false;
-		$is_free         = $course->is_free();
-		$required_enroll = $course->is_required_enroll();
+		$user = learn_press_get_user( $user_id );
+		if ( ! $user ) {
+			return $items;
+		}
+
+		$current_item            = LP_Global::course_item();
+		$enrolled                = $user->has_enrolled_course( $course_id );
+		$is_free                 = $course->is_free();
+		$required_enroll         = $course->is_required_enroll();
+		$can_view_content_course = $user->can_view_content_course( $course_id );
 
 		foreach ( $get_item_ids as $item_id ) {
 			$item = $course->get_item( $item_id );
@@ -624,6 +630,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			if ( ! $item ) {
 				continue;
 			}
+
+			$can_view_item = $user->can_view_item( $item_id, $can_view_content_course );
 
 			$defaults = array_merge(
 				array(
@@ -643,7 +651,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				$defaults[] = 'current';
 			}
 
-			// Edit by tungnx, rewrite class to show icon
+			// Edit by tungnx, rewrite class to show icon.
 			if ( $is_free && ! $required_enroll ) {
 				$defaults[] = 'item-free';
 			} elseif ( ! $user || ! $enrolled ) {
@@ -654,7 +662,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$defaults['has-status']   = 'has-status';
 					unset( $defaults['item-locked'] );
 				}
-			} elseif ( $item->is_blocked() ) {
+			} elseif ( ! $can_view_item->flag ) {
 				$defaults[] = 'item-locked';
 			} else {
 				$item_status = $user->get_item_status( $item_id, $course_id );
@@ -689,7 +697,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 						}
 				}
 			}
-			// End
+			// End.
 
 			$classes = apply_filters(
 				'learn-press/course-item-class',
@@ -699,7 +707,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				$course_id
 			);
 
-			// Filter unwanted values
+			// Filter unwanted values.
 			$classes = is_array( $classes ) ? $classes : explode( ' ', $classes );
 			$classes = array_filter( $classes );
 			$classes = array_unique( $classes );

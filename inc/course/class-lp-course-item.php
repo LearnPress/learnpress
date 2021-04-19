@@ -196,23 +196,19 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			$course_id      = get_the_ID();
 			$status_message = '';
 
-			if ( $this->is_blocked() ) {
-				$status_message = _x( 'Locked', 'course item status title', 'learnpress' );
-			} else {
-				$user = learn_press_get_current_user();
-				if ( $user->get_item_status( $this->get_id(), $course_id ) === 'completed' ) {
-					$item_grade = $user->get_item_grade( $this->get_id(), $course_id );
+			$user = learn_press_get_current_user();
+			if ( $user->get_item_status( $this->get_id(), $course_id ) === 'completed' ) {
+				$item_grade = $user->get_item_grade( $this->get_id(), $course_id );
 
-					if ( $item_grade === 'failed' ) {
-						$status_message = _x( 'Failed', 'course item status title', 'learnpress' );
-					} elseif ( $item_grade === 'passed' ) {
-						$status_message = _x( 'Passed', 'course item status title', 'learnpress' );
-					} else {
-						$status_message = _x( 'Completed', 'course item status title', 'learnpress' );
-					}
+				if ( $item_grade === 'failed' ) {
+					$status_message = _x( 'Failed', 'course item status title', 'learnpress' );
+				} elseif ( $item_grade === 'passed' ) {
+					$status_message = _x( 'Passed', 'course item status title', 'learnpress' );
 				} else {
-					$status_message = _x( 'Unread', 'course item status title', 'learnpress' );
+					$status_message = _x( 'Completed', 'course item status title', 'learnpress' );
 				}
+			} else {
+				$status_message = _x( 'Unread', 'course item status title', 'learnpress' );
 			}
 
 			return apply_filters(
