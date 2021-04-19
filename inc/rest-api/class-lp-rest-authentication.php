@@ -186,9 +186,7 @@ class LP_REST_Authentication {
 	 * @return bool
 	 */
 	public static function check_admin_permission() {
-		$user = learn_press_get_user( self::get_wp_user_id() );
-
-		return $user && $user->is_admin();
+		return current_user_can(ADMIN_ROLE);
 	}
 }
 
