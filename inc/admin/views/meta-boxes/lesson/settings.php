@@ -9,7 +9,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 		add_meta_box( 'lesson_settings', esc_html__( 'Lesson Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
 	}
 
-	public function metabox() {
+	public function metabox( $post_id ) {
 		return apply_filters(
 			'lp/metabox/lesson/lists',
 			array(
@@ -45,7 +45,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 				// Check if add_filter to old version.
 				$is_old = false;
 
-				foreach ( $this->metabox() as $key => $object ) {
+				foreach ( $this->metabox( $post->ID ) as $key => $object ) {
 					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
 						$object->id = $key;
 						echo $object->output( $post->ID );
@@ -55,7 +55,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 				}
 
 				if ( $is_old ) {
-					lp_meta_box_output( $this->metabox() );
+					lp_meta_box_output( $this->metabox( $post->ID ) );
 				}
 
 				do_action( 'learnpress/lesson-settings/after' );

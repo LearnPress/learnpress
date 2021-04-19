@@ -14,7 +14,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		add_meta_box( 'course-settings', esc_html__( 'Course Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
 	}
 
-	public function metabox() {
+	public function metabox( $post_id ) {
 		$tabs = apply_filters(
 			'lp_course_data_settings_tabs',
 			array(
@@ -23,35 +23,35 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'target'   => 'general_course_data',
 					'icon'     => 'dashicons-admin-tools',
 					'priority' => 10,
-					'content'  => $this->general(),
+					'content'  => $this->general( $post_id ),
 				),
 				'price'      => array(
 					'label'    => esc_html__( 'Pricing', 'learnpress' ),
 					'target'   => 'price_course_data',
 					'icon'     => 'dashicons-cart',
 					'priority' => 20,
-					'content'  => $this->price(),
+					'content'  => $this->price( $post_id ),
 				),
 				'extra'      => array(
 					'label'    => esc_html__( 'Extra Information', 'learnpress' ),
 					'target'   => 'extra_course_data',
 					'icon'     => 'dashicons-excerpt-view',
 					'priority' => 30,
-					'content'  => $this->extra(),
+					'content'  => $this->extra( $post_id ),
 				),
 				'assessment' => array(
 					'label'    => esc_html__( 'Assessment', 'learnpress' ),
 					'target'   => 'assessment_course_data',
 					'icon'     => 'dashicons-awards',
 					'priority' => 40,
-					'content'  => $this->assessment(),
+					'content'  => $this->assessment( $post_id ),
 				),
 				'author'     => array(
 					'label'    => esc_html__( 'Author', 'learnpress' ),
 					'target'   => 'author_course_data',
 					'icon'     => 'dashicons-businessman',
 					'priority' => 50,
-					'content'  => $this->author(),
+					'content'  => $this->author( $post_id ),
 				),
 			)
 		);
@@ -61,7 +61,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return $tabs;
 	}
 
-	public function general() {
+	public function general( $thepostid ) {
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
 			array(
@@ -165,8 +165,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function price() {
-		global $thepostid, $post;
+	public function price( $thepostid ) {
+		$post = get_post( $thepostid );
 
 		$thepostid = ! empty( $thepostid ) ? $thepostid : absint( $post->ID );
 		if ( current_user_can( LP_TEACHER_ROLE ) || current_user_can( 'administrator' ) ) {
@@ -240,8 +240,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return array();
 	}
 
-	public function author() {
-		global $thepostid, $post;
+	public function author( $thepostid ) {
+		$post = get_post( $thepostid );
 
 		$author = $post ? $post->post_author : get_current_user_id();
 
@@ -280,8 +280,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		}
 	}
 
-	public function assessment() {
-		global $thepostid, $post;
+	public function assessment( $thepostid ) {
+		$post = get_post( $thepostid );
 
 		$course_result_desc = '';
 		$course_results     = get_post_meta( $thepostid, '_lp_course_result', true );
@@ -346,7 +346,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function extra() {
+	public function extra( $thepostid ) {
 		return apply_filters(
 			'lp/course/meta-box/fields/extra',
 			array(
@@ -383,7 +383,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				<div class="lp-meta-box__course-tab">
 					<ul class="lp-meta-box__course-tab__tabs">
 						<?php
-						foreach ( $this->metabox() as $key => $tab ) {
+						foreach ( $this->metabox( $post->ID ) as $key => $tab ) {
 							$class_tab = '';
 
 							if ( isset( $tab['class'] ) ) {
@@ -402,7 +402,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					</ul>
 
 					<div class="lp-meta-box__course-tab__content">
-						<?php foreach ( $this->metabox() as $key => $tab_content ) { ?>
+						<?php foreach ( $this->metabox( $post->ID ) as $key => $tab_content ) { ?>
 							<?php if ( isset( $tab_content['content'] ) ) { ?>
 								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>" class="lp-meta-box-course-panels">
 									<?php
@@ -433,8 +433,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function save( $post_id ) {
-		if ( ! empty( $this->metabox() ) ) {
-			foreach ( $this->metabox() as $key => $tab_content ) {
+		if ( ! empty( $this->metabox( $post_id ) ) ) {
+			foreach ( $this->metabox( $post_id ) as $key => $tab_content ) {
 				if ( isset( $tab_content['content'] ) ) {
 					foreach ( $tab_content['content'] as $meta_key => $object ) {
 						if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {

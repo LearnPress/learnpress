@@ -43,7 +43,7 @@ abstract class LP_Meta_Box {
 
 	public function add_meta_box() {}
 
-	public function metabox() {
+	public function metabox( $post_id ) {
 		return array();
 	}
 
