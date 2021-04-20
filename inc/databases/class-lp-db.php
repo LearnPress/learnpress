@@ -1,10 +1,14 @@
 <?php
 /**
  * Class LP_Database
+ *
  * @author tungnx
  * @since 3.2.7.5
+ * @version 2.0.0
  */
 defined( 'ABSPATH' ) || exit();
+
+require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 class LP_Database {
 	private static $_instance;
@@ -166,26 +170,37 @@ class LP_Database {
 			return false;
 		}
 
-		$primary_key = $this->wpdb->get_row( "SHOW COLUMNS FROM $name_table" );
+		$table_bk = $name_table . '_bk';
+//		$primary_key = $this->wpdb->get_row( "SHOW COLUMNS FROM $name_table" );
 
-		if ( $primary_key ) {
-			$table_bk = $name_table . '_bk';
+		/*if ( $primary_key ) {
+
 			$query    = $this->wpdb->prepare(
 				"
 				CREATE TABLE IF NOT EXISTS $table_bk (
-				    primary key ($primary_key->Field)
+				    $primary_key->Field bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY
 				) AS
 				SELECT * FROM $name_table
-				", $name_table
+				", 1
 			);
-		}
+		}*/
 
-		return $this->wpdb->query( $query );
+
+		$query = dbDelta(
+			"CREATE TABLE $table_bk LIKE $name_table;
+				INSERT INTO $table_bk SELECT * FROM $name_table;"
+		);
+
+		return $query;
+
+//		return $this->wpdb->query( $query );
 	}
 
 	/**
-	 * @param string $name_table
-	 * @param string $name_col
+	 * Check column table
+	 *
+	 * @param string $name_table .
+	 * @param string $name_col .
 	 *
 	 * @return bool|int
 	 */
@@ -208,9 +223,47 @@ class LP_Database {
 			return false;
 		}
 
-		$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP COLUMN IF EXISTS $name_col", 1 );
+		$check_table = $this->check_col_table( $this->tb_lp_user_items, $name_col );
 
-		return $this->wpdb->query( $query );
+		if ( $check_table ) {
+			$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP COLUMN $name_col", 1 );
+
+			return $this->wpdb->query( $query );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Add Column of Table
+	 *
+	 * @param string $name_table .
+	 * @param string $name_col .
+	 * @param string $type .
+	 * @param string $after_col .
+	 *
+	 * @return bool|int
+	 */
+	public function add_col_table( string $name_table, string $name_col, string $type, string $after_col = '' ) {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
+		$query_add = '';
+
+		$col_exists = $this->check_col_table( $this->tb_lp_user_items, $name_col );
+
+		if ( ! empty( $after_col ) ) {
+			$query_add .= "AFTER $after_col";
+		}
+
+		if ( ! $col_exists ) {
+			$query = $this->wpdb->prepare( "ALTER TABLE $name_table ADD COLUMN $name_col $type $query_add", 1 );
+
+			return $this->wpdb->query( $query );
+		}
+
+		return true;
 	}
 
 	/**

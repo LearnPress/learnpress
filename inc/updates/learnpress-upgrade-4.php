@@ -311,14 +311,15 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$lp_db    = LP_Database::getInstance();
 
 		try {
-			// Add columns: graduation, access_level .
-			$lp_db->wpdb->query(
-				"
-				ALTER TABLE $lp_db->tb_lp_user_items
-				ADD COLUMN IF NOT EXISTS graduation varchar(20) AFTER `status`,
-				ADD COLUMN IF NOT EXISTS access_level int(3)
-				"
-			);
+			/**
+			 * Check column graduation, if not exist will be create
+			 */
+			$lp_db->add_col_table( $lp_db->tb_lp_user_items, 'graduation', 'varchar(20)', 'status' );
+
+			/**
+			 * Check column access_level, if not exist will be create
+			 */
+			$lp_db->add_col_table( $lp_db->tb_lp_user_items, 'access_level', 'varchar(20)', 'graduation' );
 
 			// Change type columns: start_time, end_time.
 			$lp_db->wpdb->query(
@@ -1017,13 +1018,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$lp_db    = LP_Database::getInstance();
 
 		try {
-			$lp_db->wpdb->query(
-				"
-	             ALTER TABLE {$lp_db->tb_lp_order_items}
-	             ADD IF NOT EXISTS `item_id` bigint(20) NULL DEFAULT NULL AFTER `order_id`,
-	             ADD IF NOT EXISTS `item_type` varchar(200) NULL DEFAULT NULL AFTER `item_id`
-				"
-			);
+			$lp_db->add_col_table( $lp_db->tb_lp_order_items, 'item_id', 'bigint(20)', 'order_id' );
+			$lp_db->add_col_table( $lp_db->tb_lp_order_items, 'item_type', 'varchar(200)', 'item_id' );
 
 			$indexs = array( 'order_id', 'item_id', 'item_type' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_order_items, $indexs );
