@@ -207,6 +207,7 @@ function learn_press_add_user_roles() {
 			$teacher->add_cap( 'publish_' . $course_cap );
 		}
 
+		$teacher->add_cap( 'read_private_' . $lesson_cap );
 		$teacher->add_cap( 'delete_published_' . $lesson_cap );
 		$teacher->add_cap( 'edit_published_' . $lesson_cap );
 		$teacher->add_cap( 'edit_' . $lesson_cap );
@@ -231,6 +232,7 @@ function learn_press_add_user_roles() {
 		$admin->add_cap( 'delete_others_' . $course_cap );
 		$admin->add_cap( 'edit_others_' . $course_cap );
 
+		$admin->add_cap( 'read_private_' . $lesson_cap );
 		$admin->add_cap( 'delete_' . $lesson_cap );
 		$admin->add_cap( 'delete_published_' . $lesson_cap );
 		$admin->add_cap( 'edit_' . $lesson_cap );

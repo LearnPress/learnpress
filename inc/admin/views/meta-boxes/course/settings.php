@@ -111,7 +111,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'step' => '1',
 						),
 						'style'             => 'width: 70px;',
-					),
+					)
 				),
 				'_lp_max_students'             => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Max student', 'learnpress' ),
@@ -124,7 +124,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'step' => '1',
 						),
 						'style'             => 'width: 70px;',
-					),
+					)
 				),
 				'_lp_retake_count'             => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Re-take Course', 'learnpress' ),
@@ -137,7 +137,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'step' => '1',
 						),
 						'style'             => 'width: 70px;',
-					),
+					)
 				),
 				'_lp_has_finish'               => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Finish button', 'learnpress' ),
@@ -151,7 +151,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_featured_review'          => new LP_Meta_Box_Textarea_Field(
 					esc_html__( 'Featured review', 'learnpress' ),
-					esc_html__( 'A good review to promote the course.', 'learnpress' ),
+					esc_html__( 'A good review to promote the course.', 'learnpress' )
 				),
 				'_lp_external_link_buy_course' => new LP_Meta_Box_Text_Field(
 					esc_html__( 'External link', 'learnpress' ),
@@ -198,7 +198,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							),
 							'style'             => 'width: 70px;',
 							'class'             => 'lp_meta_box_regular_price',
-						),
+						)
 					),
 					'_lp_sale_price' => new LP_Meta_Box_Text_Field(
 						esc_html__( 'Sale price', 'learnpress' ),
@@ -212,7 +212,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							),
 							'style'             => 'width: 70px;',
 							'class'             => 'lp_meta_box_sale_price',
-						),
+						)
 					),
 					'_lp_sale_start' => new LP_Meta_Box_Date_Field(
 						esc_html__( 'Sale start dates', 'learnpress' ),

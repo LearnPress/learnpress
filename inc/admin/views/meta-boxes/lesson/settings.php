@@ -28,7 +28,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 				'_lp_preview'  => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Preview', 'learnpress' ),
 					esc_html__( 'Students can view this lesson content without taking the course.', 'learnpress' ),
-					'no',
+					'no'
 				),
 			)
 		);
