@@ -442,7 +442,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';
 			require_once 'inc/rest-api/class-lp-core-api.php';
-			require_once 'inc/admin/rest-api/class-lp-core-api.php';
+			require_once 'inc/rest-api/admin/class-lp-admin-core-api.php';
 
 			include_once 'inc/theme-support/class-theme-support-base.php';
 			include_once 'inc/class-lp-theme-support.php';

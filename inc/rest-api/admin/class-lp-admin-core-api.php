@@ -12,9 +12,9 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 	public function rest_api_includes() {
 		parent::rest_api_includes();
 
-		include_once dirname( __FILE__ ) . '/class-lp-rest-question-controller.php';
-		include_once dirname( __FILE__ ) . '/class-lp-rest-database-controller.php';
-		include_once dirname( __FILE__ ) . '/class-lp-rest-course-controller.php';
+		include_once dirname( __FILE__ ) . '/class-lp-admin-rest-question-controller.php';
+		include_once dirname( __FILE__ ) . '/class-lp-admin-rest-database-controller.php';
+		include_once dirname( __FILE__ ) . '/class-lp-admin-rest-course-controller.php';
 
 		do_action( 'learn-press/admin/core-api/includes' );
 	}
