@@ -89,12 +89,14 @@ class Buttons extends Component {
 
 		const item = [ ...document.querySelectorAll( '#popup-header .items-progress' ) ][ 0 ];
 
-		const itemCompleted = item.querySelector( '.items-completed' );
+		if ( item ) {
+			const itemCompleted = item.querySelector( '.items-completed' );
 
-		if ( itemCompleted ) {
-			const number = parseInt( itemCompleted.textContent );
+			if ( itemCompleted ) {
+				const number = parseInt( itemCompleted.textContent );
 
-			itemCompleted.textContent = number + 1;
+				itemCompleted.textContent = number + 1;
+			}
 		}
 
 		submitQuiz();
