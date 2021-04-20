@@ -67,46 +67,46 @@ const initCourseSidebar = function initCourseSidebar() {
 
 // Rest API Enroll course - Nhamdv.
 const enrollCourse = () => {
-	const formEnroll = document.querySelector( 'form.enroll-course' );
+	const formEnrolls = document.querySelectorAll( 'form.enroll-course' );
 
-	if ( ! formEnroll ) {
-		return;
-	}
+	if ( formEnrolls.length > 0 ) {
+		formEnrolls.forEach( ( formEnroll ) => {
+			const submit = async ( id, btnEnroll ) => {
+				try {
+					const response = await wp.apiFetch( {
+						path: 'lp/v1/courses/enroll-course',
+						method: 'POST',
+						data: { id },
+					} );
 
-	const submit = async ( id, btnEnroll ) => {
-		try {
-			const response = await wp.apiFetch( {
-				path: 'lp/v1/courses/enroll-course',
-				method: 'POST',
-				data: { id },
-			} );
+					btnEnroll.classList.remove( 'loading' );
+					btnEnroll.disabled = false;
 
-			btnEnroll.classList.remove( 'loading' );
-			btnEnroll.disabled = false;
+					const { status, data: { redirect }, message } = response;
 
-			const { status, data: { redirect }, message } = response;
+					if ( message && status ) {
+						btnEnroll.style.display = 'none';
+						formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
 
-			if ( message && status ) {
-				btnEnroll.style.display = 'none';
-				formEnroll.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
-
-				if ( redirect ) {
-					window.location.href = redirect;
+						if ( redirect ) {
+							window.location.href = redirect;
+						}
+					}
+				} catch ( error ) {
+					form.innerHTML += `<div class="lp-enroll-notice error">${ error.message && error.message }</div>`;
 				}
-			}
-		} catch ( error ) {
-			form.innerHTML += `<div class="lp-enroll-notice error">${ error.message && error.message }</div>`;
-		}
-	};
+			};
 
-	formEnroll.addEventListener( 'submit', ( event ) => {
-		event.preventDefault();
-		const id = formEnroll.querySelector( 'input[name=enroll-course]' ).value;
-		const btnEnroll = formEnroll.querySelector( 'button.button-enroll-course' );
-		btnEnroll.classList.add( 'loading' );
-		btnEnroll.disabled = true;
-		submit( id, btnEnroll );
-	} );
+			formEnroll.addEventListener( 'submit', ( event ) => {
+				event.preventDefault();
+				const id = formEnroll.querySelector( 'input[name=enroll-course]' ).value;
+				const btnEnroll = formEnroll.querySelector( 'button.button-enroll-course' );
+				btnEnroll.classList.add( 'loading' );
+				btnEnroll.disabled = true;
+				submit( id, btnEnroll );
+			} );
+		} );
+	}
 
 	// Reload when press back button in chrome.
 	if ( document.querySelector( '.course-detail-info' ) !== null ) {
@@ -121,46 +121,46 @@ const enrollCourse = () => {
 
 // Rest API purchase course - Nhamdv.
 const purchaseCourse = () => {
-	const form = document.querySelector( 'form.purchase-course' );
+	const forms = document.querySelectorAll( 'form.purchase-course' );
 
-	if ( ! form ) {
-		return;
-	}
+	if ( forms.length > 0 ) {
+		forms.forEach( ( form ) => {
+			const submit = async ( id, btn ) => {
+				try {
+					const response = await wp.apiFetch( {
+						path: 'lp/v1/courses/purchase-course',
+						method: 'POST',
+						data: { id },
+					} );
 
-	const submit = async ( id, btn ) => {
-		try {
-			const response = await wp.apiFetch( {
-				path: 'lp/v1/courses/purchase-course',
-				method: 'POST',
-				data: { id },
-			} );
+					btn.classList.remove( 'loading' );
+					btn.disabled = false;
 
-			btn.classList.remove( 'loading' );
-			btn.disabled = false;
+					const { status, data: { redirect }, message } = response;
 
-			const { status, data: { redirect }, message } = response;
+					if ( message && status ) {
+						form.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
 
-			if ( message && status ) {
-				form.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
-
-				if ( 'success' === status && redirect ) {
-					window.location.href = redirect;
+						if ( 'success' === status && redirect ) {
+							window.location.href = redirect;
+						}
+					}
+				} catch ( error ) {
+					form.innerHTML += `<div class="lp-enroll-notice error">${ error.message && error.message }</div>`;
 				}
-			}
-		} catch ( error ) {
-			form.innerHTML += `<div class="lp-enroll-notice error">${ error.message && error.message }</div>`;
-		}
-	};
+			};
 
-	form.addEventListener( 'submit', ( event ) => {
-		event.preventDefault();
-		const id = form.querySelector( 'input[name=purchase-course]' ).value;
-		const btn = form.querySelector( 'button.button-purchase-course' );
-		btn.classList.add( 'loading' );
-		btn.disabled = true;
+			form.addEventListener( 'submit', ( event ) => {
+				event.preventDefault();
+				const id = form.querySelector( 'input[name=purchase-course]' ).value;
+				const btn = form.querySelector( 'button.button-purchase-course' );
+				btn.classList.add( 'loading' );
+				btn.disabled = true;
 
-		submit( id, btn );
-	} );
+				submit( id, btn );
+			} );
+		} );
+	}
 };
 
 const retakeCourse = () => {

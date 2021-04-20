@@ -52,8 +52,8 @@ abstract class LP_Meta_Box {
 	}
 
 	public function save( $post_id ) {
-		if ( ! empty( $this->metabox() ) ) {
-			foreach ( $this->metabox() as $key => $object ) {
+		if ( ! empty( $this->metabox( $post_id ) ) ) {
+			foreach ( $this->metabox( $post_id ) as $key => $object ) {
 				if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
 					$object->id = $key;
 					$object->save( $post_id );

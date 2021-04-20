@@ -9,7 +9,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 		add_meta_box( 'lesson_settings', esc_html__( 'Lesson Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
 	}
 
-	public function metabox( $post_id ) {
+	public function metabox( $post_id = 0 ) {
 		return apply_filters(
 			'lp/metabox/lesson/lists',
 			array(
