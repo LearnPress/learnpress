@@ -295,10 +295,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					break;
 				case 'duration':
 					$duration = learn_press_human_time_to_seconds( get_post_meta( $post_id, '_lp_duration', true ) );
-					if ( $duration >= 600 ) {
+					if ( $duration > 0 ) {
 						echo gmdate( 'H:i:s', $duration );
-					} elseif ( $duration > 0 ) {
-						echo gmdate( 'i:s', $duration );
 					} else {
 						echo '-';
 					}

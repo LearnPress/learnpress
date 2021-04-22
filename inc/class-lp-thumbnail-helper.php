@@ -41,9 +41,12 @@ class LP_Thumbnail_Helper {
 		$image = '';
 
 		$thumbnail = LP()->settings()->get( 'course_thumbnail_dimensions' );
-
-		if ( empty( $thumbnail['width'] ) || empty( $thumbnail['height'] ) ) {
+		if ( empty( $thumbnail['0'] ) || empty( $thumbnail['1'] ) ) {
 			$size = '';
+		}
+
+		if($thumbnail['width'] && $thumbnail['height']){
+			$size = array($thumbnail['width'],$thumbnail['height']);
 		}
 
 		if ( has_post_thumbnail( $course_id ) ) {

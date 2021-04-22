@@ -76,8 +76,18 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_media_preview() {
-		$course = learn_press_get_course();
-		echo $course->get_image();
+		$course    = learn_press_get_course();
+
+		$thumbnail = LP()->settings()->get( 'course_thumbnail_dimensions' );
+
+		if ( empty( $thumbnail['width'] ) || empty( $thumbnail['height'] ) ) {
+			$size = '';
+		}
+
+		if ( isset($thumbnail['width']) && isset($thumbnail['height']) ) {
+			$size = array( $thumbnail['width'], $thumbnail['height'] );
+		}
+		echo $course->get_image( $size, array() );
 	}
 
 	public function loop_item_user_progress() {
