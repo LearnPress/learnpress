@@ -6,6 +6,10 @@
 			display: none;
 			padding-top: 56px;
 
+			img{
+				max-width: 100%;
+			}
+
 			&.active {
 				display: block;
 			}
