@@ -143,7 +143,7 @@ class LP_Forms_Handler {
 		$update_meta  = isset( $_POST['_lp_custom_register_form'] ) ? wp_unslash( $_POST['_lp_custom_register_form'] ) : array();
 
 		try {
-			$new_customer = self::learnpress_create_new_customer( sanitize_email( $email ), $username, $password, array( $first_name, $last_name, $display_name ), $update_meta );
+			$new_customer = self::learnpress_create_new_customer( sanitize_email( $email ), $username, $password, array( 'first_name' => $first_name, 'last_name' => $last_name, 'display_name' => $display_name ), $update_meta );
 
 			if ( is_wp_error( $new_customer ) ) {
 				throw new Exception( $new_customer->get_error_message() );

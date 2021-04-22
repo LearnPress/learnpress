@@ -650,6 +650,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		// The complete button is not displayed when the course is locked --hungkv--
+		if($user->can_view_content_course( $course->get_id())->key === LP_BLOCK_COURSE_DURATION_EXPIRE){
+			return;
+		}
+
 		learn_press_get_template(
 			'content-lesson/button-complete.php',
 			array(

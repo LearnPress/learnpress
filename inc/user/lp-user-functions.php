@@ -2006,9 +2006,23 @@ function lp_custom_register_fields_display() {
 
 	<?php if ( $custom_fields ) : ?>
 		<?php foreach ( $custom_fields as $custom_field ) : ?>
+			<?php
+			$cf_class = '';
+			if ( $custom_field['required'] == 'yes' ) {
+				$cf_class = ' required';
+			}
+			?>
 			<?php $value = sanitize_key( $custom_field['name'] ); ?>
 
-			<li class="form-field">
+			<li class="form-field<?php echo esc_attr($cf_class); ?>">
+				<label for="description">
+					<?php
+					echo  $custom_field['name'] ;
+					if ( $custom_field['required'] == 'yes' ) {
+						echo '&nbsp;' . '<span class="required">*</span>';
+					}
+					?>
+				</label>
 				<?php
 				switch ( $custom_field['type'] ) {
 					case 'text':
@@ -2017,7 +2031,6 @@ function lp_custom_register_fields_display() {
 					case 'url':
 					case 'tel':
 						?>
-						<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
 						<input name="_lp_custom_register_form[<?php echo $value; ?>]"
 							   type="<?php echo $custom_field['type']; ?>"
 							   placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>" class="regular-text"
