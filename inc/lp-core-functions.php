@@ -82,7 +82,7 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
 		$atts = ' ' . implode( ' ', $options );
 	}
 
-	$tip = sprintf( '<span class="learn-press-tip" '.$atts.'>%s</span>', $tip );
+	$tip = sprintf( '<span class="learn-press-tip" ' . $atts . '>%s</span>', $tip );
 
 	if ( $echo ) {
 		echo $tip;
@@ -933,14 +933,14 @@ function learn_press_human_time_to_seconds( $time, $default = '' ) {
 /**
  * Send email notification.
  *
- * @param string $to
- * @param string $action
- * @param array  $vars
+ * @param string $to .
+ * @param string $action .
+ * @param array  $vars .
  *
- * @return mixed
+ * @return bool
  */
-function learn_press_send_mail( $to, $action, $vars ) {
-	$email_settings = LP_Settings::instance( 'emails' );
+function learn_press_send_mail( $to = '', $action = '', $vars = array() ) {
+	$email_settings = LP_Settings::instance();
 
 	if ( ! $email_settings->get( $action . '.enable' ) ) {
 		return "The action {$action} doesnt support";
@@ -3513,44 +3513,45 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 
 	$course_desc = array(
 		'evaluate_lesson'     => __(
-			'Evaluate by number of lessons completed per number of total lessons.',
-			'learnpress'
-		)
-		. sprintf(
-			'<p>%s</p>',
-			__(
-				'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%',
-				'learnpress'
-			)
-		),
+									 'Evaluate by number of lessons completed per number of total lessons.',
+									 'learnpress'
+								 )
+								 . sprintf(
+									 '<p>%s</p>',
+									 __(
+										 'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%',
+										 'learnpress'
+									 )
+								 ),
 		'evaluate_final_quiz' => __(
 			'Evaluate by results of final quiz in course. Click to Get Passing Grade to get and update Final Quiz',
 			'learnpress'
 		),
 		'evaluate_quizzes'    => __(
-			'Evaluate as a percentage of completed quizzes on the total number of quizzes.',
-			'learnpress'
-		)
-		. __(
-			'<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: 50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>',
-			'learnpress'
-		),
+									 'Evaluate as a percentage of completed quizzes on the total number of quizzes.',
+									 'learnpress'
+								 )
+								 . __(
+									 '<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: 50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>',
+									 'learnpress'
+								 ),
 		'evaluate_quiz'       => __(
-			'<p>Evaluate by number of quizzes passed per number of total quizzes.</p>',
-			'learnpress'
-		)
-		. __(
-			'<p>E.g: Course has 10 quizzes and user passed 5 quizzes then the result = 5/10 = 50%.</p>',
-			'learnpress'
-		),
+									 '<p>Evaluate by number of quizzes passed per number of total quizzes.</p>',
+									 'learnpress'
+								 )
+								 . __(
+									 '<p>E.g: Course has 10 quizzes and user passed 5 quizzes then the result = 5/10 = 50%.</p>',
+									 'learnpress'
+								 ),
 		'evaluate_questions'  => __(
-			'Evaluate by achieved points of question passed per total point of all questions.',
-			'learnpress'
-		)
-		. sprintf(
-			'<p>%s</p>',
-			__( 'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%.', 'learnpress' )
-		),
+									 'Evaluate by achieved points of question passed per total point of all questions.',
+									 'learnpress'
+								 )
+								 . sprintf(
+									 '<p>%s</p>',
+									 __( 'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%.',
+										 'learnpress' )
+								 ),
 		'evaluate_mark'       => __( 'Evaluate by achieved marks per total marks of all questions.', 'learnpress' ),
 	);
 
@@ -3558,25 +3559,25 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 		'learnpress/course-evaluation/methods',
 		array(
 			'evaluate_lesson'     => __(
-				'Evaluate via lessons',
-				'learnpress'
-			) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
+										 'Evaluate via lessons',
+										 'learnpress'
+									 ) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
 			'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_final_quiz']
-			) . $final_quiz_btn . $final_quizz_passing,
+					$course_tip,
+					$course_desc['evaluate_final_quiz']
+				) . $final_quiz_btn . $final_quizz_passing,
 			'evaluate_quiz'       => __( 'Evaluate via quizzes passed', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_quiz']
-			),
+					$course_tip,
+					$course_desc['evaluate_quiz']
+				),
 			'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_questions']
-			),
+					$course_tip,
+					$course_desc['evaluate_questions']
+				),
 			'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_mark']
-			),
+					$course_tip,
+					$course_desc['evaluate_mark']
+				),
 		)
 	);
 
@@ -3639,12 +3640,12 @@ function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
 /**
  * Count all users has enrolled to courses of an instructor.
  *
- * @param int $instructor_id
+ * @param int $instructor_id .
  *
  * @return float|int
  * @since 4.0.0
  */
-function learn_press_count_instructor_users( $instructor_id ) {
+function learn_press_count_instructor_users( $instructor_id = 0 ) {
 	global $wpdb;
 
 	$curd        = new LP_User_CURD();
