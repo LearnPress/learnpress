@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -14,6 +14,14 @@ defined( 'ABSPATH' ) || exit();
 $checkout = LP()->checkout();
 
 learn_press_print_messages();
+
+if ( ! is_user_logged_in() ) {
+	?>
+	<div class="learn-press-message error">
+		<?php _e( 'Please login to enroll the course!', 'learnpress' ); ?>
+	</div>
+	<?php
+}
 ?>
 
 	<form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form" class="lp-checkout-form" tabindex="0" action="<?php echo esc_url( learn_press_get_checkout_url() ); ?>" enctype="multipart/form-data">

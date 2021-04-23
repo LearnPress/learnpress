@@ -82,7 +82,7 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
 		$atts = ' ' . implode( ' ', $options );
 	}
 
-	$tip = sprintf( '<span class="learn-press-tip"%s>%s</span>', $atts, $tip );
+	$tip = sprintf( '<span class="learn-press-tip" '.$atts.'>%s</span>', $tip );
 
 	if ( $echo ) {
 		echo $tip;
@@ -1522,17 +1522,18 @@ function learn_press_get_course_by_order( $order_id ) {
  *
  * @return bool|string
  */
-function learn_press_seconds_to_weeks( $secs ) {
+function learn_press_seconds_to_weeks( int $secs = 0 ) {
 	$secs = (int) $secs;
-	if ( $secs === 0 ) {
+
+	if ( 0 === $secs ) {
 		return false;
 	}
-	// variables for holding values
+	// variables for holding values.
 	$mins  = 0;
 	$hours = 0;
 	$days  = 0;
 	$weeks = 0;
-	// calculations
+	// calculations.
 	if ( $secs >= 60 ) {
 		$mins = (int) ( $secs / 60 );
 		$secs = $secs % 60;
@@ -1561,13 +1562,14 @@ function learn_press_seconds_to_weeks( $secs ) {
 
 	if ( ! $weeks ) {
 		if ( $hours ) {
-			$result .= sprintf( _n( '%s hour', '%s hours', $days, 'learnpress' ), $hours ) . ' ';
+			$result .= sprintf( _n( '%s hour', '%s hours', $hours, 'learnpress' ), $hours ) . ' ';
 		}
 
 		if ( $mins ) {
-			$result .= sprintf( _n( '%s minute', '%s minutes', $days, 'learnpress' ), $hours ) . ' ';
+			$result .= sprintf( _n( '%s minute', '%s minutes', $mins, 'learnpress' ), $mins ) . ' ';
 		}
 	}
+
 	$result = rtrim( $result );
 
 	return $result;
@@ -1958,16 +1960,22 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  * @param      $value
  * @param int  $expire
  * @param bool $secure
+ *
+ * @editor tungnx
+ * @version 1.0.1
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 	if ( ! headers_sent() ) {
-		setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
-	} elseif ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-		headers_sent( $file, $line );
-		trigger_error(
-			"{$name} cookie cannot be set - headers already sent by {$file} on line {$line}",
-			E_USER_NOTICE
+		//setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
+
+		$arr_cookie_options = array(
+			'expires'  => $expire,
+			'path'     => COOKIEPATH ? COOKIEPATH : '/',
+			'domain'   => COOKIE_DOMAIN, // leading dot for compatibility or use subdomain
+			'secure'   => true,     // or false
+			'samesite' => 'None' // None || Lax  || Strict
 		);
+		setcookie( $name, $value, $arr_cookie_options );
 	}
 }
 
@@ -3500,7 +3508,8 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 	global $thepostid;
 
 	$course_tip     = '<span class="learn-press-tip">%s</span>';
-	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $thepostid . '" data-loading="' . esc_attr__( 'Loading...', 'learnpress' ) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
+	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $thepostid . '" data-loading="' . esc_attr__( 'Loading...',
+			'learnpress' ) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
 
 	$course_desc = array(
 		'evaluate_lesson'     => __(

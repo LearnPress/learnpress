@@ -155,7 +155,7 @@ class LP_Database {
 	 * @return bool|int
 	 */
 	public function check_table_exists( string $name_table ) {
-		return $this->wpdb->query( $this->wpdb->prepare( "SHOW TABLES LIKE %s", $name_table ) );
+		return $this->wpdb->query( $this->wpdb->prepare( "SHOW TABLES LIKE '%s'", $name_table ) );
 	}
 
 	/**
@@ -171,29 +171,16 @@ class LP_Database {
 		}
 
 		$table_bk = $name_table . '_bk';
-//		$primary_key = $this->wpdb->get_row( "SHOW COLUMNS FROM $name_table" );
 
-		/*if ( $primary_key ) {
-
-			$query    = $this->wpdb->prepare(
-				"
-				CREATE TABLE IF NOT EXISTS $table_bk (
-				    $primary_key->Field bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY
-				) AS
-				SELECT * FROM $name_table
-				", 1
-			);
-		}*/
-
+		// Drop table bk if exists.
+		$this->drop_table( $table_bk );
 
 		$query = dbDelta(
 			"CREATE TABLE $table_bk LIKE $name_table;
-				INSERT INTO $table_bk SELECT * FROM $name_table;"
+			INSERT INTO $table_bk SELECT * FROM $name_table;"
 		);
 
 		return $query;
-
-//		return $this->wpdb->query( $query );
 	}
 
 	/**
@@ -204,8 +191,8 @@ class LP_Database {
 	 *
 	 * @return bool|int
 	 */
-	public function check_col_table( string $name_table, string $name_col ) {
-		$query = $this->wpdb->prepare( "SHOW COLUMNS FROM $name_table LIKE %s", $name_col );
+	public function check_col_table( string $name_table = '', string $name_col = '' ) {
+		$query = $this->wpdb->prepare( "SHOW COLUMNS FROM $name_table LIKE '%s'", $name_col );
 
 		return $this->wpdb->query( $query );
 	}
@@ -218,7 +205,7 @@ class LP_Database {
 	 *
 	 * @return bool|int
 	 */
-	public function drop_col_table( string $name_table, string $name_col ) {
+	public function drop_col_table( string $name_table = '', string $name_col = '' ) {
 		if ( ! current_user_can( 'administrator' ) ) {
 			return false;
 		}
@@ -319,6 +306,27 @@ class LP_Database {
 		);
 
 		return $this->wpdb->query( $query );
+	}
+
+	/**
+	 * Drop table
+	 *
+	 * @param string $name_table .
+	 *
+	 * @return bool|int
+	 */
+	public function drop_table( string $name_table = '' ) {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
+		// Check table exists.
+		$tb_exists = $this->check_table_exists( $name_table );
+		if ( $tb_exists ) {
+			return $this->wpdb->query( "DROP TABLE $name_table" );
+		}
+
+		return true;
 	}
 
 	/**

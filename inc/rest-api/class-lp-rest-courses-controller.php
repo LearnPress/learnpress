@@ -205,6 +205,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$course_id = absint( $request['id'] );
 			$course    = learn_press_get_course( $course_id );
 
+			if ( ! $course ) {
+				throw new Exception( esc_html__( 'Invalid course!', 'learnpress' ) );
+			}
+
 			// Check if course has in order.
 			$user_item_api = new LP_User_Item_CURD();
 			$find_query    = array(
@@ -269,10 +273,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			if ( is_user_logged_in() ) {
 				$response->status         = 'success';
-				$response->message        = esc_html__( 'Congrats! You enroll course successfully.', 'learnpress' );
+				$response->message        = esc_html__(
+					'Congrats! You enroll course successfully. Redirecting...',
+					'learnpress'
+				);
 				$response->data->redirect = $course->get_redirect_url_after_enroll();
 			} else {
-				$response->message        = esc_html__( 'Please login/register to continue.', 'learnpress' );
+				$response->message        = esc_html__( 'Redirecting...', 'learnpress' );
 				$response->data->redirect = learn_press_get_page_link( 'checkout' );
 			}
 		} catch ( Exception $e ) {
@@ -285,9 +292,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * Rest API for Purchase course in single course.
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request .
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 * @throws Exception .
 	 * @author Nhamdv
-	 * @return void
 	 */
 	public function purchase_course( WP_REST_Request $request ) {
 		$response       = new LP_REST_Response();
@@ -333,14 +342,21 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
 			}
 
-			$redirect = apply_filters( 'learnpress/rest-api/courses/purchase/redirect', learn_press_get_page_link( 'checkout' ), $course_id, $cart_id );
+			$redirect = apply_filters(
+				'learnpress/rest-api/courses/purchase/redirect',
+				learn_press_get_page_link( 'checkout' ),
+				$course_id, $cart_id
+			);
 
 			if ( empty( $redirect ) ) {
 				throw new Exception( __( 'Error: Please setup page for checkout.', 'learnpress' ) );
 			}
 
 			$response->status         = 'success';
-			$response->message        = sprintf( esc_html__( '"%s" has been added to your cart.', 'learnpress' ), $course->get_title() );
+			$response->message        = sprintf(
+				esc_html__( '"%s" has been added to your cart.', 'learnpress' ),
+				$course->get_title()
+			);
 			$response->data->redirect = $redirect;
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
