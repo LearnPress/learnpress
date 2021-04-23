@@ -151,7 +151,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 			return false;
 		}
 
-		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
+		if ( ( isset( $force_new ) && $force_new == true ) || empty( LP_Global::$users[ $user_id ] ) ) {
 			/**
 			 * LP Hook.
 			 *
