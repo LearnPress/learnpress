@@ -14,20 +14,51 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LP_Asset_Key {
-	public $_url           = ''; // url of file css/js
-	public $_deps          = array(); // attach js/css need load
-	public $_in_footer     = 0; // load in footer
-	public $_only_register = 1; // value 1 for run wp_register_script(), 0 for run wp_enqueue_script()
-	public $_screens       = array(); // default value empty will load all page
+	/**
+	 * Url of file css/js
+	 *
+	 * @var string
+	 */
+	public $_url = '';
+	/**
+	 * Attach js/css need load
+	 *
+	 * @var array
+	 */
+	public $_deps = array();
+	/**
+	 * Load on footer
+	 *
+	 * @var int
+	 */
+	public $_in_footer = 0;
+	/**
+	 * Value 1 for run wp_register_script(), 0 for run wp_enqueue_script()
+	 *
+	 * @var int
+	 */
+	public $_only_register = 1;
+	/**
+	 * Default value empty will load all page
+	 *
+	 * @var array|string[]
+	 */
+	public $_screens = array();
+	/**
+	 * Set screens(pages) not load js
+	 *
+	 * @var array|string[]
+	 */
+	public $_exclude_screens = array();
 
 	/**
 	 * LP_ASSET_KEY constructor.
 	 *
-	 * @param string   $url
-	 * @param array    $deps
-	 * @param int      $in_footer
-	 * @param int      $only_register
-	 * @param string[] $screens
+	 * @param string   $url .
+	 * @param array    $deps .
+	 * @param string[] $screens .
+	 * @param int      $only_register .
+	 * @param int      $in_footer .
 	 */
 	public function __construct( $url = '', $deps = array(), $screens = array(), $only_register = 1, $in_footer = 0 ) {
 		$this->_url           = $url;
@@ -35,5 +66,14 @@ class LP_Asset_Key {
 		$this->_in_footer     = $in_footer;
 		$this->_only_register = $only_register;
 		$this->_screens       = $screens;
+	}
+
+	/**
+	 * Set pages not call js.
+	 *
+	 * @param string[] $screens .
+	 */
+	public function exclude_screen( $screens = array() ) {
+
 	}
 }
