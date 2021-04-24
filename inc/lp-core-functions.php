@@ -1975,7 +1975,12 @@ function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 			'secure'   => true,     // or false
 			'samesite' => 'None' // None || Lax  || Strict
 		);
-		setcookie( $name, $value, $arr_cookie_options );
+
+		if ( phpversion() >= '7.3.0' ) {
+			setcookie( $name, $value, $arr_cookie_options );
+		} else {
+			setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, true );
+		}
 	}
 }
 
