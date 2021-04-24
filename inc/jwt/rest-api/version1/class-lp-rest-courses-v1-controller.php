@@ -75,8 +75,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return apply_filters( "lp_jwt_rest_prepare_{$this->post_type}_object", $response, $object, $request );
 	}
 
-	protected function get_course_data( $course, $context = 'view', $request ) {
-		$fields = $this->get_fields_for_response( $request );
+	protected function get_course_data( $course, $context = 'view' ) {
+		$request = func_num_args() >= 2 ? func_get_arg( 2 ) : new WP_REST_Request( '', '', array( 'context' => $context ) );
+		$fields  = $this->get_fields_for_response( $request );
 
 		$id   = $course->get_id();
 		$post = get_post( $course->get_id() );
@@ -136,7 +137,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 		}
 
-		$data['meta_data'] = $this->get_all_meta_by_id( $id );
+		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
 	}
@@ -165,6 +166,28 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		foreach ( $curriculum as $section ) {
 			if ( $section ) {
 				$output[] = $section->to_array();
+			}
+		}
+
+		return $output;
+	}
+
+	public function get_course_meta( $id ) {
+		if ( ! class_exists( 'LP_Meta_Box_Course' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
+		}
+
+		$metabox = new LP_Meta_Box_Course();
+
+		$output = array();
+		foreach ( $metabox->metabox( $id ) as $key => $tab ) {
+			if ( isset( $tab['content'] ) ) {
+				foreach ( $tab['content'] as $meta_key => $object ) {
+					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
+						$object->id          = $meta_key;
+						$output[ $meta_key ] = $object->meta_value( $id );
+					}
+				}
 			}
 		}
 

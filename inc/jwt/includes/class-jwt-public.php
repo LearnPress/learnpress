@@ -166,10 +166,10 @@ class LP_Jwt_Public {
 
 		/** The token is signed, now create the object with no sensible user data to the client*/
 		$data = array(
-			'token'      => $token,
-			'user_id'    => $user->data->ID,
-			'user_login' => $user->data->user_login,
-			'user_email' => $user->data->user_email,
+			'token'             => $token,
+			'user_id'           => $user->data->ID,
+			'user_login'        => $user->data->user_login,
+			'user_email'        => $user->data->user_email,
 			'user_display_name' => $user->data->display_name,
 		);
 
@@ -184,7 +184,7 @@ class LP_Jwt_Public {
 	 *
 	 * @return (int|bool)
 	 */
-	public function determine_current_user( $user ) {
+	public function determine_current_user( $user_id ) {
 		$rest_prefix   = trailingslashit( rest_get_url_prefix() );
 		$request_uri   = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 		$valid_api_uri = strpos( $request_uri, $rest_prefix . $this->name );
@@ -192,8 +192,8 @@ class LP_Jwt_Public {
 		/**
 		 * Only check when rest url has wp-json/learnpress.
 		 */
-		if ( $valid_api_uri === false ) {
-			return $user;
+		if ( ! empty( $user_id ) || $valid_api_uri === false ) {
+			return $user_id;
 		}
 
 		/*
@@ -203,7 +203,7 @@ class LP_Jwt_Public {
 		$validate_token = strpos( $_SERVER['REQUEST_URI'], 'token' );
 
 		if ( $validate_token > 0 ) {
-			return $user;
+			return $user_id;
 		}
 
 		$token = $this->validate_token( false );
@@ -211,7 +211,7 @@ class LP_Jwt_Public {
 		if ( is_wp_error( $token ) ) {
 			$this->jwt_error = $token;
 
-			return $user;
+			return $user_id;
 		}
 
 		return $token->data->user->id;

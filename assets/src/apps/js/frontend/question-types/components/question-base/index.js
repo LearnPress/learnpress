@@ -63,9 +63,9 @@ class QuestionBase extends Component {
 	 * @author Nhamdv
 	 */
 	maybeShowCorrectAnswer = () => {
-		const { status, isCheckedAnswer } = this.props;
+		const { status, isCheckedAnswer, showCorrectReview, isReviewing } = this.props;
 
-		return ( ( status === 'completed' ) ) || isCheckedAnswer;
+		return ( status === 'completed' && showCorrectReview ) || ( isCheckedAnswer && ! isReviewing );
 	};
 
 	/**

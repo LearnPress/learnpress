@@ -460,6 +460,5 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 	// add meta box
 	$quiz_post_type
 		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' )
-		->add_meta_box( 'quiz-editor', esc_html__( 'Questions', 'learnpress' ), 'admin_editor', 'normal', 'high' )
-		->add_meta_box( 'quiz_settings', esc_html__( 'Quiz Settings', 'learnpress' ), 'LP_Meta_Box_Quiz::output', 'normal', 'high' );
+		->add_meta_box( 'quiz-editor', esc_html__( 'Questions', 'learnpress' ), 'admin_editor', 'normal', 'high' );
 }
