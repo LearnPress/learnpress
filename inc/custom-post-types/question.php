@@ -533,6 +533,5 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 	// Add meta box.
 	$question_post_type
 		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'question_assigned', 'side', 'high' )
-		->add_meta_box( 'question-editor', esc_html__( 'Answer Options', 'learnpress' ), 'admin_editor', 'normal', 'high', 1 )
-		->add_meta_box( 'question_settings', esc_html__( 'Question Settings', 'learnpress' ), 'LP_Meta_Box_Question::output', 'normal', 'high', 2 );
+		->add_meta_box( 'question-editor', esc_html__( 'Answer Options', 'learnpress' ), 'admin_editor', 'normal', 'high', 1 );
 }

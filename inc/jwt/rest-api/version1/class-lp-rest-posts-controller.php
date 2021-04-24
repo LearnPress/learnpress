@@ -55,7 +55,9 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 
 		$objects = array();
 		foreach ( $query_results['objects'] as $object ) {
-			if ( ! lp_rest_check_post_permissions( $this->post_type, 'read', $object->get_id() ) ) {
+			$object_id = ! empty( $object->ID ) ? $object->ID : $object->get_id();
+
+			if ( ! lp_rest_check_post_permissions( $this->post_type, 'read', $object_id ) ) {
 				continue;
 			}
 

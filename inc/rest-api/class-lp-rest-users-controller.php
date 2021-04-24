@@ -268,11 +268,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		if ( $success ) {
-			$course     = LP_Course::get_course( $course_id );
-			$quiz       = LP_Quiz::get_quiz( $item_id );
-			$show_hint  = $quiz->get_show_hint();
-			$show_check = $quiz->get_show_check_answer();
-			$duration   = $quiz->get_duration();
+			$course              = LP_Course::get_course( $course_id );
+			$quiz                = LP_Quiz::get_quiz( $item_id );
+			$show_hint           = $quiz->get_show_hint();
+			$show_check          = $quiz->get_show_check_answer();
+			$duration            = $quiz->get_duration();
+			$show_correct_review = $quiz->get_show_correct_review();
 
 			$status            = $user_quiz->get_status();
 			$checked_questions = $user_quiz->get_checked_questions();
@@ -291,12 +292,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$questions = learn_press_rest_prepare_user_questions(
 				$question_ids,
 				array(
-					'instant_hint'      => $show_hint,
-					'instant_check'     => $show_check,
-					'quiz_status'       => $status,
-					'checked_questions' => $checked_questions,
-					'hinted_questions'  => $hinted_questions,
-					'answered'          => $answered,
+					'instant_hint'        => $show_hint,
+					'instant_check'       => $show_check,
+					'quiz_status'         => $status,
+					'checked_questions'   => $checked_questions,
+					'hinted_questions'    => $hinted_questions,
+					'answered'            => $answered,
+					'show_correct_review' => $show_correct_review,
 				)
 			);
 
@@ -380,7 +382,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 							'options'     => learn_press_get_question_options_for_js(
 								$question,
 								array(
-									'include_is_true' => true,
+									'include_is_true' => get_post_meta( $item_id, '_lp_show_correct_review', true ) === 'yes',
 									'answer'          => isset( $answered[ $id ] ) ? $answered[ $id ] : '',
 								)
 							),

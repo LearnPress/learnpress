@@ -1,6 +1,6 @@
 <?php
 
-class LP_Meta_Box_Course {
+class LP_Meta_Box_Course extends LP_Meta_Box {
 	/**
 	 * Instance
 	 *
@@ -8,171 +8,374 @@ class LP_Meta_Box_Course {
 	 */
 	private static $instance = null;
 
-	/**
-	 * General fields
-	 *
-	 * @var array
-	 */
-	public static $general_fields = array();
+	public $post_type = LP_COURSE_CPT;
 
-	/**
-	 * LP_Meta_Box_Course constructor.
-	 *
-	 * @see lp_meta_box_checkbox_field
-	 */
-	private function __construct() {
-		self::$general_fields = apply_filters(
+	public function add_meta_box() {
+		add_meta_box( 'course-settings', esc_html__( 'Course Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
+	}
+
+	public function metabox( $post_id ) {
+		$tabs = apply_filters(
+			'lp_course_data_settings_tabs',
+			array(
+				'general'    => array(
+					'label'    => esc_html__( 'General', 'learnpress' ),
+					'target'   => 'general_course_data',
+					'icon'     => 'dashicons-admin-tools',
+					'priority' => 10,
+					'content'  => $this->general( $post_id ),
+				),
+				'price'      => array(
+					'label'    => esc_html__( 'Pricing', 'learnpress' ),
+					'target'   => 'price_course_data',
+					'icon'     => 'dashicons-cart',
+					'priority' => 20,
+					'content'  => $this->price( $post_id ),
+				),
+				'extra'      => array(
+					'label'    => esc_html__( 'Extra Information', 'learnpress' ),
+					'target'   => 'extra_course_data',
+					'icon'     => 'dashicons-excerpt-view',
+					'priority' => 30,
+					'content'  => $this->extra( $post_id ),
+				),
+				'assessment' => array(
+					'label'    => esc_html__( 'Assessment', 'learnpress' ),
+					'target'   => 'assessment_course_data',
+					'icon'     => 'dashicons-awards',
+					'priority' => 40,
+					'content'  => $this->assessment( $post_id ),
+				),
+				'author'     => array(
+					'label'    => esc_html__( 'Author', 'learnpress' ),
+					'target'   => 'author_course_data',
+					'icon'     => 'dashicons-businessman',
+					'priority' => 50,
+					'content'  => $this->author( $post_id ),
+				),
+			)
+		);
+
+		uasort( $tabs, array( __CLASS__, 'data_tabs_sort' ) );
+
+		return $tabs;
+	}
+
+	public function general( $thepostid ) {
+		return apply_filters(
 			'lp/course/meta-box/fields/general',
 			array(
-				'_lp_duration'                 => new LP_Meta_Box_Duration_Attribute(
-					'_lp_duration',
+				'_lp_duration'                 => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
 					esc_html__( 'Set 0 for lifetime access.', 'learnpress' ),
-					'lp_meta_box_duration_field',
 					'10',
-					'',
-					'',
-					'',
 					array(
-						'min'  => '0',
-						'step' => '1',
-					),
-					'week'
+						'default_time'      => 'week',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '1',
+						),
+					)
 				),
-				'_lp_block_expire_duration'    => new LP_Meta_Box_Attribute(
-					'_lp_block_expire_duration',
+				'_lp_block_expire_duration'    => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Block content', 'learnpress' ),
-					esc_html__(
-						'Block course when duration expires.',
-						'learnpress'
-					),
-					'lp_meta_box_checkbox_field',
+					esc_html__( 'Block course when duration expires.', 'learnpress' ),
 					'no'
 				),
-				'_lp_block_finished'           => new LP_Meta_Box_Attribute(
-					'_lp_block_finished',
+				'_lp_block_finished'           => new LP_Meta_Box_Checkbox_Field(
 					'',
-					esc_html__(
-						'Block course after student finished this course.',
-						'learnpress'
-					),
-					'lp_meta_box_checkbox_field',
+					esc_html__( 'Block course after student finished this course.', 'learnpress' ),
 					'yes'
 				),
-				'_lp_level'                    => new LP_Meta_Box_Select_Attribute(
-					'_lp_level',
+				'_lp_level'                    => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Level', 'learnpress' ),
 					esc_html__( 'Choose a difficulty level.', 'learnpress' ),
 					'',
-					'',
-					'',
-					'',
-					array(),
 					array(
-						''             => esc_html__( 'All levels', 'learnpress' ),
-						'beginner'     => esc_html__( 'Beginner', 'learnpress' ),
-						'intermediate' => esc_html__( 'Intermediate', 'learnpress' ),
-						'expert'       => esc_html__( 'Expert', 'learnpress' ),
+						'options' => array(
+							''             => esc_html__( 'All levels', 'learnpress' ),
+							'beginner'     => esc_html__( 'Beginner', 'learnpress' ),
+							'intermediate' => esc_html__( 'Intermediate', 'learnpress' ),
+							'expert'       => esc_html__( 'Expert', 'learnpress' ),
+						),
 					)
 				),
-				'_lp_students'                 => new LP_Meta_Box_Text_Attribute(
-					'_lp_students',
+				'_lp_students'                 => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Fake Students Enrolled', 'learnpress' ),
 					esc_html__( 'How many students have taken this course', 'learnpress' ),
 					0,
-					'',
-					'',
-					'width: 70px;',
 					array(
-						'min'  => '0',
-						'step' => '1',
-					),
-					'number'
+						'type_input'        => 'number',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '1',
+						),
+						'style'             => 'width: 70px;',
+					)
 				),
-				'_lp_max_students'             => new LP_Meta_Box_Text_Attribute(
-					'_lp_max_students',
+				'_lp_max_students'             => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Max student', 'learnpress' ),
-					esc_html__(
-						'Maximum students can join the course. Set 0 for unlimited.',
-						'learnpress'
-					),
-					'0',
-					'',
-					'',
-					'width: 70px;',
-					array(
-						'min'  => '0',
-						'step' => '1',
-					),
-					'number'
-				),
-				'_lp_retake_count'             => new LP_Meta_Box_Text_Attribute(
-					'_lp_retake_count',
-					esc_html__( 'Re-take Course', 'learnpress' ),
-					esc_html__(
-						'The number of times a user can learn again this course. Set 0 to disable.',
-						'learnpress'
-					),
+					esc_html__( 'Maximum students can join the course. Set 0 for unlimited.', 'learnpress' ),
 					0,
-					'',
-					'',
-					'width: 70px;',
-					array(),
-					'number'
+					array(
+						'type_input'        => 'number',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '1',
+						),
+						'style'             => 'width: 70px;',
+					)
 				),
-				'_lp_has_finish'               => new LP_Meta_Box_Attribute(
-					'_lp_has_finish',
+				'_lp_retake_count'             => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Re-take Course', 'learnpress' ),
+					esc_html__( 'The number of times a user can learn again this course. Set 0 to disable.', 'learnpress' ),
+					0,
+					array(
+						'type_input'        => 'number',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '1',
+						),
+						'style'             => 'width: 70px;',
+					)
+				),
+				'_lp_has_finish'               => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Finish button', 'learnpress' ),
-					esc_html__(
-						'Allow show finish button when the student has completed all items but has not passed the course assessment.',
-						'learnpress'
-					),
-					'lp_meta_box_checkbox_field',
+					esc_html__( 'Allow show finish button when the student has completed all items but has not passed the course assessment.', 'learnpress' ),
 					'yes'
 				),
-				'_lp_featured'                 => new LP_Meta_Box_Attribute(
-					'_lp_featured',
+				'_lp_featured'                 => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Featured list', 'learnpress' ),
 					esc_html__( 'Add the course to Featured List.', 'learnpress' ),
-					'lp_meta_box_checkbox_field',
 					'no'
 				),
-				'_lp_featured_review'          => new LP_Meta_Box_Attribute(
-					'_lp_featured_review',
+				'_lp_featured_review'          => new LP_Meta_Box_Textarea_Field(
 					esc_html__( 'Featured review', 'learnpress' ),
-					esc_html__( 'A good review to promote the course.', 'learnpress' ),
-					'lp_meta_box_textarea_field'
-
+					esc_html__( 'A good review to promote the course.', 'learnpress' )
 				),
-				'_lp_external_link_buy_course' => new LP_Meta_Box_Text_Attribute(
-					'_lp_external_link_buy_course',
+				'_lp_external_link_buy_course' => new LP_Meta_Box_Text_Field(
 					esc_html__( 'External link', 'learnpress' ),
-					esc_html__(
-						'Normally use for offline classes, Ex: link to a contact page. Format: https://google.com',
-						'learnpress'
-					),
+					esc_html__( 'Normally use for offline classes, Ex: link to a contact page. Format: https://google.com', 'learnpress' ),
 					'',
-					'You can apply for case: user register form.<br> You accept for user can learn courses by add manual order on backend'
+					array(
+						'desc_tip' => 'You can apply for case: user register form.<br> You accept for user can learn courses by add manual order on backend',
+					)
 				),
 			)
 		);
 	}
 
-	/**
-	 * Get instance
-	 *
-	 * @return LP_Meta_Box_Course
-	 */
-	public static function get_instance(): LP_Meta_Box_Course {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
+	public function price( $thepostid ) {
+		$post = get_post( $thepostid );
+
+		$thepostid = ! empty( $thepostid ) ? $thepostid : absint( $post->ID );
+		if ( current_user_can( LP_TEACHER_ROLE ) || current_user_can( 'administrator' ) ) {
+			$message    = '';
+			$price      = get_post_meta( $thepostid, '_lp_price', true );
+			$payment    = get_post_meta( $thepostid, '_lp_payment', true );
+			$sale_price = '';
+			$start_date = '';
+			$end_date   = '';
+
+			if ( $payment != 'free' ) {
+				$sale_price = get_post_meta( $thepostid, '_lp_sale_price', true );
+				$start_date = get_post_meta( $thepostid, '_lp_sale_start', true );
+				$end_date   = get_post_meta( $thepostid, '_lp_sale_end', true );
+			}
+
+			return apply_filters(
+				'lp/course/meta-box/fields/price',
+				array(
+					'_lp_price'      => new LP_Meta_Box_Text_Field(
+						esc_html__( 'Regular price', 'learnpress' ),
+						sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() ),
+						$price,
+						array(
+							'type_input'        => 'number',
+							'custom_attributes' => array(
+								'min'  => '0',
+								'step' => '0.01',
+							),
+							'style'             => 'width: 70px;',
+							'class'             => 'lp_meta_box_regular_price',
+						)
+					),
+					'_lp_sale_price' => new LP_Meta_Box_Text_Field(
+						esc_html__( 'Sale price', 'learnpress' ),
+						'<a href="#" class="lp_sale_price_schedule">' . esc_html__( 'Schedule', 'learnpress' ) . '</a>',
+						$sale_price,
+						array(
+							'type_input'        => 'number',
+							'custom_attributes' => array(
+								'min'  => '0',
+								'step' => '0.01',
+							),
+							'style'             => 'width: 70px;',
+							'class'             => 'lp_meta_box_sale_price',
+						)
+					),
+					'_lp_sale_start' => new LP_Meta_Box_Date_Field(
+						esc_html__( 'Sale start dates', 'learnpress' ),
+						'',
+						'',
+						array(
+							'wrapper_class' => 'lp_sale_start_dates_fields',
+							'placeholder'   => _x( 'From&hellip;', 'placeholder', 'learnpress' ),
+						)
+					),
+					'_lp_sale_end'   => new LP_Meta_Box_Date_Field(
+						esc_html__( 'Sale end dates', 'learnpress' ),
+						'',
+						'',
+						array(
+							'wrapper_class' => 'lp_sale_end_dates_fields',
+							'placeholder'   => _x( 'To&hellip;', 'placeholder', 'learnpress' ),
+							'cancel'        => true,
+						)
+					),
+				)
+			);
 		}
 
-		return self::$instance;
+		return array();
 	}
 
-	public static function output( $post ) {
-		wp_nonce_field( 'learnpress_save_meta_box', 'learnpress_meta_box_nonce' );
+	public function author( $thepostid ) {
+		$post = get_post( $thepostid );
+
+		$author = $post ? $post->post_author : get_current_user_id();
+
+		$options = array();
+		$role    = array( 'administrator', 'lp_teacher' );
+
+		$role = apply_filters( 'learn_press_course_author_role_meta_box', $role );
+
+		foreach ( $role as $_role ) {
+			$users_by_role = get_users( array( 'role' => $_role ) );
+
+			if ( $users_by_role ) {
+				foreach ( $users_by_role as $user ) {
+					$options[ $user->get( 'ID' ) ] = $user->user_login;
+				}
+			}
+		}
+
+		if ( is_super_admin() ) {
+			return apply_filters(
+				'lp/course/meta-box/fields/author',
+				array(
+					'_lp_course_author' => new LP_Meta_Box_Select_Field(
+						esc_html__( 'Author', 'learnpress' ),
+						'',
+						$author,
+						array(
+							'options' => $options,
+							'style'   => 'min-width:200px;',
+						)
+					),
+				)
+			);
+		} else {
+			return array();
+		}
+	}
+
+	public function assessment( $thepostid ) {
+		$post = get_post( $thepostid );
+
+		$course_result_desc = '';
+		$course_results     = get_post_meta( $thepostid, '_lp_course_result', true );
+
+		$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
+
+		if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $thepostid, '_lp_final_quiz', true ) ) {
+			$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
+		}
+
+		$final_quizz_passing = '';
+
+		$course = learn_press_get_course( $thepostid );
+
+		if ( $course ) {
+			$passing_grade = $url = '';
+
+			$final_quiz = $course->get_final_quiz();
+
+			if ( $final_quiz ) {
+				$passing_grade = get_post_meta( $final_quiz, '_lp_passing_grade', true );
+
+				$url = get_edit_post_link( $final_quiz ) . '#_lp_passing_grade';
+
+				$final_quizz_passing = '
+					<div class="lp-metabox-evaluate-final_quiz">
+						<div class="lp-metabox-evaluate-final_quiz__message">'
+						. sprintf( esc_html__( 'Passing Grade: %s', 'learpress' ), $passing_grade . '%' ) .
+						' - '
+						. sprintf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ) .
+						'</div>
+					</div>
+				';
+			}
+		}
+
+		return apply_filters(
+			'lp/course/meta-box/fields/assessment',
+			array(
+				'_lp_course_result'     => new LP_Meta_Box_Radio_Field(
+					esc_html__( 'Evaluation', 'learnpress' ),
+					$course_result_desc,
+					'evaluate_lesson',
+					array(
+						'options' => learn_press_course_evaluation_methods( '', $final_quizz_passing ),
+					)
+				),
+				'_lp_passing_condition' => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Passing Grade(%)', 'learnpress' ),
+					esc_html__( 'The condition that must be achieved to finish the course.', 'learnpress' ),
+					'80',
+					array(
+						'type'              => 'number',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '1',
+						),
+						'style'             => 'width: 60px;',
+					)
+				),
+			)
+		);
+	}
+
+	public function extra( $thepostid ) {
+		return apply_filters(
+			'lp/course/meta-box/fields/extra',
+			array(
+				'_lp_requirements'     => new LP_Meta_Box_Extra_Field(
+					esc_html__( 'Requirements', 'learnpress' ),
+					'',
+					array()
+				),
+				'_lp_target_audiences' => new LP_Meta_Box_Extra_Field(
+					esc_html__( 'Target Audience', 'learnpress' ),
+					'',
+					array()
+				),
+				'_lp_key_features'     => new LP_Meta_Box_Extra_Field(
+					esc_html__( 'Key Features', 'learnpress' ),
+					'',
+					array()
+				),
+				'_lp_faqs'             => new LP_Meta_Box_Extra_Faq_Field(
+					esc_html__( 'FAQs', 'learnpress' ),
+					'',
+					array()
+				),
+			)
+		);
+	}
+
+	public function output( $post ) {
+		parent::output( $post );
 		?>
 
 		<div class="lp-meta-box lp-meta-box--course">
@@ -180,14 +383,14 @@ class LP_Meta_Box_Course {
 				<div class="lp-meta-box__course-tab">
 					<ul class="lp-meta-box__course-tab__tabs">
 						<?php
-						foreach ( self::data_tabs() as $key => $tab ) {
+						foreach ( $this->metabox( $post->ID ) as $key => $tab ) {
 							$class_tab = '';
+
 							if ( isset( $tab['class'] ) ) {
 								$class_tab = implode( ' ', (array) $tab['class'] );
 							}
 							?>
-							<li class="<?php echo esc_attr( $key ); ?>_options <?php echo esc_attr( $key ); ?>_tab
-							<?php echo esc_attr( $class_tab ); ?>">
+							<li class="<?php echo esc_attr( $key ); ?>_options <?php echo esc_attr( $key ); ?>_tab <?php echo esc_attr( $class_tab ); ?>">
 								<a href="#<?php echo esc_attr( $tab['target'] ); ?>">
 									<?php if ( isset( $tab['icon'] ) ) : ?>
 										<i class="<?php echo esc_attr( $tab['icon'] ); ?>"></i>
@@ -199,8 +402,26 @@ class LP_Meta_Box_Course {
 					</ul>
 
 					<div class="lp-meta-box__course-tab__content">
-						<?php
-						self::output_tabs();
+						<?php foreach ( $this->metabox( $post->ID ) as $key => $tab_content ) { ?>
+							<?php if ( isset( $tab_content['content'] ) ) { ?>
+								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>" class="lp-meta-box-course-panels">
+									<?php
+									do_action( 'learnpress/course-settings/before-' . $key );
+
+									foreach ( $tab_content['content'] as $meta_key => $object ) {
+										if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
+											$object->id = $meta_key;
+											echo $object->output( $post->ID );
+										}
+									}
+
+									do_action( 'learnpress/course-settings/after-' . $key );
+									?>
+								</div>
+								<?php
+							}
+						}
+
 						do_action( 'lp_course_data_setting_tab_content' );
 						?>
 					</div>
@@ -211,62 +432,22 @@ class LP_Meta_Box_Course {
 		<?php
 	}
 
-	/**
-	 * Save meta fields
-	 *
-	 * @param int $post_id
-	 */
-	public static function save( $post_id = 0 ) {
-		$course = learn_press_get_course( $post_id );
-
-		/**
-		 * Save general course setting
-		 *
-		 * @var LP_Meta_Box_Attribute $field
-		 */
-		foreach ( self::$general_fields as $k => $field ) {
-			if ( isset( $field->type ) && $field->type ) {
-				self::save_field_type( $field->type, $post_id, $k );
-			}
-		}
-		// End save general course setting.
-
-		// Price.
-		$price      = isset( $_POST['_lp_price'] ) ? floatval( wp_unslash( $_POST['_lp_price'] ) ) : '';
-		$sale_price = isset( $_POST['_lp_sale_price'] ) ? floatval( wp_unslash( $_POST['_lp_sale_price'] ) ) : '';
-		$sale_start = isset( $_POST['_lp_sale_start'] ) ? wp_unslash( $_POST['_lp_sale_start'] ) : '';
-		$sale_end   = isset( $_POST['_lp_sale_end'] ) ? wp_unslash( $_POST['_lp_sale_end'] ) : '';
-
-		update_post_meta( $post_id, '_lp_price', $price );
-		update_post_meta( $post_id, '_lp_sale_price', $sale_price );
-		update_post_meta( $post_id, '_lp_sale_start', $sale_start );
-		update_post_meta( $post_id, '_lp_sale_end', $sale_end );
-
-		// Extra Infomation.
-		$requirements     = isset( $_POST['_lp_requirements'] ) ? wp_unslash( $_POST['_lp_requirements'] ) : array();
-		$target_audiences = isset( $_POST['_lp_target_audiences'] ) ? wp_unslash( $_POST['_lp_target_audiences'] ) : array();
-		$key_features     = isset( $_POST['_lp_key_features'] ) ? wp_unslash( $_POST['_lp_key_features'] ) : array();
-		$faqs_question    = isset( $_POST['_lp_faqs_question'] ) ? wp_unslash( $_POST['_lp_faqs_question'] ) : array();
-		$faqs_answer      = isset( $_POST['_lp_faqs_answer'] ) ? wp_unslash( $_POST['_lp_faqs_answer'] ) : array();
-
-		$faqs = array();
-
-		if ( ! empty( $faqs_question ) ) {
-			$faqs_question_size = count( $faqs_question );
-
-			for ( $i = 0; $i < $faqs_question_size; $i ++ ) {
-				if ( ! empty( $faqs_question[ $i ] ) ) {
-					$faqs[] = array( $faqs_question[ $i ], $faqs_answer[ $i ] );
+	public function save( $post_id ) {
+		if ( ! empty( $this->metabox( $post_id ) ) ) {
+			foreach ( $this->metabox( $post_id ) as $key => $tab_content ) {
+				if ( isset( $tab_content['content'] ) ) {
+					foreach ( $tab_content['content'] as $meta_key => $object ) {
+						if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
+							$object->id = $meta_key;
+							$object->save( $post_id );
+						}
+					}
 				}
 			}
 		}
 
-		update_post_meta( $post_id, '_lp_requirements', $requirements );
-		update_post_meta( $post_id, '_lp_target_audiences', $target_audiences );
-		update_post_meta( $post_id, '_lp_key_features', $key_features );
-		update_post_meta( $post_id, '_lp_faqs', $faqs );
+		$course = learn_press_get_course( $post_id );
 
-		// Assessment.
 		$evalution         = isset( $_POST['_lp_course_result'] ) ? wp_unslash( $_POST['_lp_course_result'] ) : '';
 		$passing_condition = isset( $_POST['_lp_passing_condition'] ) ? absint( wp_unslash( $_POST['_lp_passing_condition'] ) ) : 0;
 
@@ -291,71 +472,13 @@ class LP_Meta_Box_Course {
 			delete_post_meta( $post_id, '_lp_final_quiz' );
 		}
 
-		update_post_meta( $post_id, '_lp_course_result', $evalution );
-		update_post_meta( $post_id, '_lp_passing_condition', $passing_condition );
-
-		// Author.
 		$author = isset( $_POST['_lp_course_author'] ) ? wp_unslash( $_POST['_lp_course_author'] ) : '';
-		update_post_meta( $post_id, '_lp_course_author', $author );
 
 		if ( ! empty( $author ) ) {
 			global $wpdb;
 
 			$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $post_id ) );
 		}
-	}
-
-	private static function data_tabs() {
-		$tabs = apply_filters(
-			'lp_course_data_settings_tabs',
-			array(
-				'general'    => array(
-					'label'    => esc_html__( 'General', 'learnpress' ),
-					'target'   => 'general_course_data',
-					'icon'     => 'dashicons-admin-tools',
-					'priority' => 10,
-				),
-				'price'      => array(
-					'label'    => esc_html__( 'Pricing', 'learnpress' ),
-					'target'   => 'price_course_data',
-					'icon'     => 'dashicons-cart',
-					'priority' => 20,
-				),
-				'extra'      => array(
-					'label'    => esc_html__( 'Extra Information', 'learnpress' ),
-					'target'   => 'extra_course_data',
-					'icon'     => 'dashicons-excerpt-view',
-					'priority' => 30,
-				),
-				'assessment' => array(
-					'label'    => esc_html__( 'Assessment', 'learnpress' ),
-					'target'   => 'assessment_course_data',
-					'icon'     => 'dashicons-awards',
-					'priority' => 40,
-				),
-				'author'     => array(
-					'label'    => esc_html__( 'Author', 'learnpress' ),
-					'target'   => 'author_course_data',
-					'icon'     => 'dashicons-businessman',
-					'priority' => 50,
-				),
-			)
-		);
-
-		// Sort tabs based on priority.
-		uasort( $tabs, array( __CLASS__, 'data_tabs_sort' ) );
-
-		return $tabs;
-	}
-
-	private static function output_tabs() {
-		global $post, $thepostid;
-
-		include 'tabs/general.php';
-		include 'tabs/price.php';
-		include 'tabs/extra.php';
-		include 'tabs/author.php';
-		include 'tabs/assessment.php';
 	}
 
 	private static function data_tabs_sort( $a, $b ) {
@@ -368,41 +491,6 @@ class LP_Meta_Box_Course {
 		}
 
 		return $a['priority'] < $b['priority'] ? - 1 : 1;
-	}
-
-	/**
-	 * Save with field type
-	 *
-	 * @param string $field_type
-	 * @param int $post_id
-	 * @param string $k
-	 *
-	 * @return void
-	 */
-	protected static function save_field_type( $field_type = '', $post_id = 0, $k = '' ) {
-		switch ( $field_type ) {
-			case 'lp_meta_box_checkbox_field':
-				$yes_no_field = isset( $_POST[ $k ] ) ? 'yes' : 'no';
-				update_post_meta( $post_id, $k, $yes_no_field );
-				break;
-			case 'lp_meta_box_duration_field':
-				$duration = '0 minute';
-
-				if ( isset( $_POST[ $k ] ) && isset( $_POST[ $k ][0] ) && '' !== $_POST[ $k ][0] ) {
-					$duration = implode( ' ', LP_Helper::sanitize_params_submitted( $_POST[ $k ] ) );
-				}
-
-				update_post_meta( $post_id, $k, $duration );
-				break;
-			case 'lp_meta_box_textarea_field':
-				update_post_meta( $post_id, $k, LP_Helper::sanitize_params_submitted( $_POST[ $k ], 'html' ) );
-				break;
-			case $field_type . '_custom':
-				do_action( 'lp/meta_box/custom_field/save_value', $post_id, $k, $_POST[ $k ] );
-				break;
-			default:
-				update_post_meta( $post_id, $k, LP_Helper::sanitize_params_submitted( $_POST[ $k ] ) );
-		}
 	}
 
 	/**
@@ -523,5 +611,19 @@ class LP_Meta_Box_Course {
 			}
 		}
 	}
+
+	/**
+	 * Get instance
+	 *
+	 * @return LP_Meta_Box_Course
+	 */
+	public static function instance(): LP_Meta_Box_Course {
+		if ( ! self::$instance ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
 }
-add_action( 'admin_init', array( 'LP_Meta_Box_Course', 'get_instance' ) );
+
+LP_Meta_Box_Course::instance();

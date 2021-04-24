@@ -293,6 +293,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache.php';
 			require_once 'inc/class-lp-asset-key.php';
 
+			// Abstract Metabox.
+			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
+
 			// Background processes .
 			require_once 'inc/abstracts/abstract-background-process.php';
 

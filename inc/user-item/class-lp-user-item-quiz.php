@@ -337,9 +337,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 					// If answered is empty consider user has skipped question
 					if ( ! $check['answered'] ) {
-						// TODO: check this again !!!
-						if ( $quiz->get_negative_marking() ) {
-							// $result['user_mark'] -= $negative_marking;
+						if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
+							$result['user_mark'] -= $negative_marking;
 						}
 						$result['question_empty'] ++;
 					} else {

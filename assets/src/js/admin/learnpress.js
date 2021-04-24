@@ -83,6 +83,20 @@ const lpMetaboxExtraInfo = () => {
 		return false;
 	} );
 
+	document.querySelectorAll( '.lp_course_extra_meta_box__fields' ).forEach( ( ele ) => {
+		ele.addEventListener( 'keydown', ( e ) => {
+			const inputs = ele.querySelectorAll( '.lp_course_extra_meta_box__input' );
+
+			if ( e.keyCode === 13 ) {
+				e.preventDefault();
+				inputs.forEach( ( input ) => {
+					input.blur();
+				} );
+				return false;
+			}
+		} );
+	} );
+
 	$( '.lp_course_extra_meta_box__fields' ).on( 'click', 'a.delete', function() {
 		$( this ).closest( '.lp_course_extra_meta_box__field' ).remove();
 
@@ -105,6 +119,21 @@ const lpMetaboxExtraInfo = () => {
 		$( this ).closest( '.lp_course_faq_meta_box__content' ).find( '.lp_course_faq_meta_box__fields' ).append( $( this ).data( 'add' ) );
 
 		return false;
+	} );
+
+	document.querySelectorAll( '.lp_course_faq_meta_box__fields' ).forEach( ( ele ) => {
+		ele.addEventListener( 'keydown', ( e ) => {
+			const inputs = ele.querySelectorAll( '.lp_course_faq_meta_box__field input' );
+			const textareas = ele.querySelectorAll( '.lp_course_faq_meta_box__field textarea' );
+
+			if ( e.keyCode === 13 ) {
+				e.preventDefault();
+				[ ...inputs, ...textareas ].forEach( ( input ) => {
+					input.blur();
+				} );
+				return false;
+			}
+		} );
 	} );
 
 	$( '.lp_course_faq_meta_box__fields' ).on( 'click', 'a.delete', function() {
