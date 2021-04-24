@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class LP_Thumbnail_Helper
  *
@@ -41,24 +42,28 @@ class LP_Thumbnail_Helper {
 		$image = '';
 
 		$thumbnail = LP()->settings()->get( 'course_thumbnail_dimensions' );
-		if ( empty( $thumbnail['0'] ) || empty( $thumbnail['1'] ) ) {
-			$size = '';
+		if ( empty( $thumbnail['0'] ) && empty( $thumbnail['1'] ) ) {
+			$size = array( $thumbnail['0'], $thumbnail['1'] );
 		}
 
-		if($thumbnail['width'] && $thumbnail['height']){
-			$size = array($thumbnail['width'],$thumbnail['height']);
+		if ( isset( $thumbnail['width'] ) && isset( $thumbnail['height'] ) ) {
+			$size = array( $thumbnail['width'], $thumbnail['height'] );
 		}
+
+		$parent_id = wp_get_post_parent_id( $course_id );
 
 		if ( has_post_thumbnail( $course_id ) ) {
 			$image = get_the_post_thumbnail( $course_id, $size, $attr );
-		} elseif ( wp_get_post_parent_id( $course_id ) && has_post_thumbnail( $parent_id ) ) {
-			$parent_id = wp_get_post_parent_id( $course_id );
-			$image     = get_the_post_thumbnail( $parent_id, $size, $attr );
+		} elseif ( $parent_id && has_post_thumbnail( $parent_id ) ) {
+			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
 		}
 
 		if ( ! $image ) {
 			$image = LP()->image( 'no-image.png' );
-			$image = sprintf( '<img src="%s" alt="%s">', esc_url( $image ), _x( 'course thumbnail', 'no course thumbnail', 'learnpress' ) );
+			$image = sprintf(
+				'<img src="%s" alt="%s">', esc_url( $image ),
+				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
+			);
 		}
 
 		// @deprecated

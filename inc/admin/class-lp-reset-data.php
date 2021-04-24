@@ -245,6 +245,7 @@ class LP_Reset_Data {
 
 		$user = learn_press_get_user($user_id);
 		$user_course_data = $user->get_course_data( $course_id );
+
 		// Set status, start_time, end_time of course to enrolled.
 		$user_course_data->set_status( LP_COURSE_ENROLLED )
 		                 ->set_start_time( current_time( 'mysql', true ) )
@@ -258,9 +259,6 @@ class LP_Reset_Data {
 		$filter_remove->user_id   = $user_course_data->get_user_id();
 		$filter_remove->limit     = - 1;
 		LP_User_Items_DB::getInstance()->remove_items_of_user_course( $filter_remove );
-
-		// Create new result in table learnpress_user_item_results.
-		LP_User_Items_Result_DB::instance()->insert( $user_course_data->get_user_item_id() );
 
 		die();
 	}
