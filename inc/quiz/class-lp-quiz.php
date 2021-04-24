@@ -39,8 +39,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		protected $_data = array(
 			// 'show_result'        => 'no',
-			'passing_grade_type' => '',
-			'passing_grade'      => 0,
+			'passing_grade_type'   => '',
+			'passing_grade'        => 0,
 			// 'show_check_answer'  => 'no',
 			// 'count_check_answer' => 0,
 			// 'show_hint'          => 'no',
@@ -49,11 +49,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			// 'show_hide_question' => 'yes',
 			// 'preview'            => 'no',
 			// 'minus_points'         => 0,
-			// 'minus_skip_questions' => 'no',
+			'minus_skip_questions' => 'no',
 
-			'negative_marking'   => 'no',
-			'instant_check'      => 'no',
-			'retake_count'       => 0,
+			'negative_marking'     => 'no',
+			'instant_check'        => 'no',
+			'retake_count'         => 0,
+			'show_correct_review'  => 'yes',
 		);
 
 		/**
@@ -127,13 +128,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'review_questions' => 'no',
-				'duration'         => '10 minute',
-				'passing_grade'    => 80,
-				'negative_marking' => 'no',
-				'instant_check'    => 'no',
-				'retake_count'     => '0',
-				'pagination'       => 1,
+				'review_questions'    => 'no',
+				'duration'            => '10 minute',
+				'passing_grade'       => 80,
+				'negative_marking'    => 'no',
+				'instant_check'       => 'no',
+				'retake_count'        => '0',
+				'pagination'          => 1,
+				'show_correct_review' => 'yes',
 			);
 
 			return apply_filters( 'learn-press/quiz/default-meta', $meta );
@@ -162,6 +164,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 		public function set_negative_marking( $set ) {
 			$this->_set_data( 'negative_marking', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
+		}
+
+		public function get_show_correct_review() {
+			return $this->get_data( 'show_correct_review' ) === 'yes';
+		}
+
+		public function set_show_correct_review( $set ) {
+			$this->_set_data( 'show_correct_review', $set );
 		}
 
 		public function get_instant_check() {
@@ -976,8 +986,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param $skip
 		 */
 		public function set_minus_skip_questions( $skip ) {
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-
 			$this->_set_data( 'minus_skip_questions', $skip );
 		}
 
@@ -1006,8 +1014,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool
 		 */
 		public function get_minus_skip_questions() {
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-
 			return 'yes' === $this->get_data( 'minus_skip_questions' );
 		}
 

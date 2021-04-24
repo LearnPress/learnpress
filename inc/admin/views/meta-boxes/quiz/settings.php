@@ -13,7 +13,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 		return apply_filters(
 			'lp/metabox/quiz/lists',
 			array(
-				'_lp_duration'         => new LP_Meta_Box_Duration_Field(
+				'_lp_duration'             => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
 					'',
 					'0',
@@ -25,7 +25,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 						),
 					)
 				),
-				'_lp_passing_grade'    => new LP_Meta_Box_Text_Field(
+				'_lp_passing_grade'        => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Passing Grade(%)', 'learnpress' ),
 					esc_html__( 'The condition that must be achieved in order to be passed the quiz.', 'learnpress' ),
 					'80',
@@ -39,17 +39,22 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 						'style'             => 'width: 60px;',
 					)
 				),
-				'_lp_instant_check'    => new LP_Meta_Box_Checkbox_Field(
+				'_lp_instant_check'        => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Instant Check', 'learnpress' ),
 					esc_html__( 'Allow students to immediately check their answers while doing the quiz.', 'learnpress' ),
 					'no'
 				),
-				'_lp_negative_marking' => new LP_Meta_Box_Checkbox_Field(
+				'_lp_negative_marking'     => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Negative Marking', 'learnpress' ),
 					esc_html__( 'For each question which students answer wrongly, the total point is deducted exactly the question\'s point', 'learnpress' ),
 					'no'
 				),
-				'_lp_retake_count'     => new LP_Meta_Box_Text_Field(
+				'_lp_minus_skip_questions' => new LP_Meta_Box_Checkbox_Field(
+					esc_html__( 'Minus for skip', 'learnpress' ),
+					esc_html__( 'For each question which students answer skip, the total point is deducted exactly the question\'s point', 'learnpress' ),
+					'no'
+				),
+				'_lp_retake_count'         => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Retake', 'learnpress' ),
 					esc_html__( 'How many times the user can re-take this quiz. Set 0 to disable.', 'learnpress' ),
 					'',
@@ -63,7 +68,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 						'style'             => 'width: 60px;',
 					)
 				),
-				'_lp_pagination'       => new LP_Meta_Box_Text_Field(
+				'_lp_pagination'           => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Pagination', 'learnpress' ),
 					esc_html__( 'The number of questions displayed on each page.', 'learnpress' ),
 					'1',
@@ -77,9 +82,14 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 						'style'             => 'width: 60px;',
 					)
 				),
-				'_lp_review'           => new LP_Meta_Box_Checkbox_Field(
+				'_lp_review'               => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Review', 'learnpress' ),
 					esc_html__( 'Allow students to review this quiz after they finish the quiz.', 'learnpress' ),
+					'yes'
+				),
+				'_lp_show_correct_review'  => new LP_Meta_Box_Checkbox_Field(
+					esc_html__( 'Show correct answer', 'learnpress' ),
+					esc_html__( 'Allow students view correct answer question in review this quiz.', 'learnpress' ),
 					'yes'
 				),
 			)

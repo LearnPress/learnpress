@@ -546,24 +546,25 @@ class LP_Install_Sample_Data {
 		if ( $quiz_id ) {
 
 			$metas = array(
-				'_lp_preview'          => 'no',
+				'_lp_preview'              => 'no',
 				// '_lp_minus_points'         => 0,
-				// '_lp_minus_skip_questions' => 'no',
 				// '_lp_show_hide_question'   => 'no',
 				// '_lp_review_questions'     => 'yes',
 				// '_lp_show_result'          => 'yes',
-				'_lp_duration'         => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
-				'_lp_passing_grade'    => rand( 5, 9 ) * 10,
+				'_lp_duration'             => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
+				'_lp_passing_grade'        => rand( 5, 9 ) * 10,
 				// '_lp_retake_count'         => rand( 0, 10 ),
 				// '_lp_archive_history'      => 'no',
 				// '_lp_show_check_answer'    => '0',
 				// '_lp_show_hint'            => '0',
-				'_lp_sample_data'      => 'yes',
-				'_lp_negative_marking' => 'no',
-				'_lp_instant_check'    => 'no',
-				'_lp_retake_count'     => '0',
-				'_lp_pagination'       => '1',
-				'_lp_review'           => 'yes',
+				'_lp_sample_data'          => 'yes',
+				'_lp_negative_marking'     => 'no',
+				'_lp_minus_skip_questions' => 'no',
+				'_lp_instant_check'        => 'no',
+				'_lp_retake_count'         => '0',
+				'_lp_pagination'           => '1',
+				'_lp_review'               => 'yes',
+				'_lp_show_correct_review'  => 'yes',
 			);
 
 			foreach ( $metas as $key => $value ) {

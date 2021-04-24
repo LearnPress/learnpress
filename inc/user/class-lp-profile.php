@@ -260,7 +260,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$this->_default_settings = array(
 					'overview'      => array(
 						'title'    => esc_html__( 'Overview', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.dashboard', 'overview' ),
+						'slug'     => $settings->get( 'profile_endpoints.overview', 'overview' ),
 						'callback' => array( $this, 'tab_dashboard' ),
 						'priority' => 10,
 						'icon'     => '<i class="fas fa-chalkboard-teacher"></i>',

@@ -1784,12 +1784,13 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 		$args = wp_parse_args(
 			$args,
 			array(
-				'instant_hint'      => true,
-				'instant_check'     => true,
-				'quiz_status'       => '',
-				'checked_questions' => array(),
-				'hinted_questions'  => array(),
-				'answered'          => array(),
+				'instant_hint'        => true,
+				'instant_check'       => true,
+				'quiz_status'         => '',
+				'checked_questions'   => array(),
+				'hinted_questions'    => array(),
+				'answered'            => array(),
+				'show_correct_review' => true,
 			)
 		);
 	}
@@ -1846,7 +1847,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				}
 			}
 
-			$with_true_or_false = ( $checked || $quizStatus == 'completed' );
+			$with_true_or_false = ( $checked || ( $quizStatus == 'completed' && $args['show_correct_review'] ) );
 
 			if ( $question->is_support( 'answer-options' ) ) {
 				$questionData['options'] = learn_press_get_question_options_for_js(

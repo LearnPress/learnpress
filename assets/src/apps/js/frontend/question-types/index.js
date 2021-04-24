@@ -56,6 +56,8 @@ export default compose(
 			supportOptions: getData( 'supportOptions' ),
 			isCheckedAnswer: isCheckedAnswer( id ),
 			keyPressed: getData( 'keyPressed' ),
+			showCorrectReview: getData( 'showCorrectReview' ),
+			isReviewing: getData( 'mode' ) === 'reviewing',
 		};
 	} ),
 	withDispatch( () => {
