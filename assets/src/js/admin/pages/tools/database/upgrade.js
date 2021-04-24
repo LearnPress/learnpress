@@ -148,6 +148,11 @@ const upgradeDB = () => {
 					lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
 						lpModalOverlay.elBtnYes.text( 'Retry' ).show();
 						lpModalOverlay.elBtnNo.show();
+
+						if ( ! res.message ) {
+							res.message = 'Upgrade not success! Please clear cache, restart sever then retry or contact to LP to help';
+						}
+
 						lpModalOverlay.elMainContent.find( '.learn-press-message' ).addClass( 'error' ).html( res.message );
 					} );
 				}
@@ -157,6 +162,11 @@ const upgradeDB = () => {
 				lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
 					lpModalOverlay.elBtnYes.text( 'Retry' ).show();
 					lpModalOverlay.elBtnNo.show();
+
+					if ( ! err.message ) {
+						err.message = 'Upgrade not success! Something wrong. Please clear cache, restart sever then retry or contact to LP to help';
+					}
+
 					lpModalOverlay.elMainContent.find( '.learn-press-message' ).addClass( 'error' ).html( err.message );
 				} );
 			},
