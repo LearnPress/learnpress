@@ -492,11 +492,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course    = LP_Global::course();
 		$next_item = $prev_item = false;
 
-		if ( $next_id = $course->get_next_item() ) {
+		$next_id = $course->get_next_item();
+		$prev_id = $course->get_prev_item();
+
+		if ( $next_id ) {
 			$next_item = $course->get_item( $next_id );
+			$next_item->set_course( $course->get_id() );
 		}
-		if ( $prev_id = $course->get_prev_item() ) {
+
+		if ( $prev_id ) {
 			$prev_item = $course->get_item( $prev_id );
+			$prev_item->set_course( $course->get_id() );
 		}
 
 		if ( ! $prev_item && ! $next_item ) {
