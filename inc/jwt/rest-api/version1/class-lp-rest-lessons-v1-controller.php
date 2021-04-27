@@ -83,6 +83,13 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$post = get_post( $id );
 		$data = array();
 
+		$assigned = $this->get_assigned( $id );
+
+		if ( ! empty( $assigned ) && method_exists( $object, 'set_course' ) ) {
+			$course_id = $assigned['course']['id'];
+			$object->set_course( $course_id );
+		}
+
 		foreach ( $fields as $field ) {
 			switch ( $field ) {
 				case 'id':
@@ -95,7 +102,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['slug'] = $post->post_name;
 					break;
 				case 'permalink':
-					$data['permalink'] = get_permalink( $id );
+					$data['permalink'] = $object->get_permalink();
 					break;
 				case 'date_created':
 					$data['date_created'] = lp_jwt_prepare_date_response( $post->post_date_gmt, $post->post_date );
@@ -119,7 +126,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['excerpt'] = $post->post_excerpt;
 					break;
 				case 'assigned':
-					$data['assigned'] = $this->get_assigned( $id );
+					$data['assigned'] = $assigned;
 					break;
 			}
 		}

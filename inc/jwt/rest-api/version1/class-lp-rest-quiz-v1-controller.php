@@ -83,6 +83,12 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$post = get_post( $id );
 		$data = array();
 
+		$assigned = $this->get_assigned( $id );
+		if ( ! empty( $assigned ) && method_exists( $object, 'set_course' ) ) {
+			$course_id = $assigned['course']['id'];
+			$object->set_course( $course_id );
+		}
+
 		foreach ( $fields as $field ) {
 			switch ( $field ) {
 				case 'id':
@@ -95,7 +101,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['slug'] = $post->post_name;
 					break;
 				case 'permalink':
-					$data['permalink'] = get_permalink( $id );
+					$data['permalink'] = $object->get_permalink();
 					break;
 				case 'date_created':
 					$data['date_created'] = lp_jwt_prepare_date_response( $post->post_date_gmt, $post->post_date );
@@ -119,7 +125,10 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['excerpt'] = $post->post_excerpt;
 					break;
 				case 'assigned':
-					$data['assigned'] = $this->get_assigned( $id );
+					$data['assigned'] = $assigned;
+					break;
+				case 'questions':
+					$data['questions'] = $this->get_all_question( $object );
 					break;
 			}
 		}
@@ -147,7 +156,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return $output;
 	}
 
-	public function get_assigned( $id ) {
+	public function get_assigned( int $id ) : array {
 		$courses = learn_press_get_item_courses( $id );
 
 		$output = array();
@@ -165,6 +174,22 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		return $output;
+	}
+
+	public function get_all_question( object $quiz ) : array {
+		$questions = array();
+
+		if ( function_exists( 'learn_press_rest_prepare_user_questions' ) ) {
+			$questions = learn_press_rest_prepare_user_questions(
+				$quiz->get_question_ids(),
+				array(
+					'instant_check'       => $quiz->get_instant_check(),
+					'show_correct_review' => $quiz->get_show_correct_review(),
+				)
+			);
+		}
+
+		return $questions;
 	}
 
 	public function get_item_schema() {
@@ -266,6 +291,75 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 							'description' => __( 'Item Author.', 'learnpress' ),
 							'type'        => 'integer',
 							'context'     => array( 'view', 'edit' ),
+						),
+					),
+				),
+				'questions'         => array(
+					'description' => __( 'List all Question in Quiz.', 'learnpress' ),
+					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'items'       => array(
+						'description' => __( 'Question items.', 'learnpress' ),
+						'type'        => 'object',
+						'context'     => array( 'view', 'edit' ),
+						'items'       => array(
+							'id'      => array(
+								'description' => __( 'Item ID.', 'learnpress' ),
+								'type'        => 'integer',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'type'    => array(
+								'description' => __( 'Item Type.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'title'   => array(
+								'description' => __( 'Item title.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'content' => array(
+								'description' => __( 'Item Content.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'point'   => array(
+								'description' => __( 'Point.', 'learnpress' ),
+								'type'        => 'integer',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'hint'    => array(
+								'description' => __( 'Question Hint.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'options' => array(
+								'description' => __( 'Question Options.', 'learnpress' ),
+								'type'        => 'array',
+								'context'     => array( 'view', 'edit' ),
+								'items'       => array(
+									'description' => __( 'Question items.', 'learnpress' ),
+									'type'        => 'object',
+									'context'     => array( 'view', 'edit' ),
+									'items'       => array(
+										'title' => array(
+											'description' => __( 'Item title.', 'learnpress' ),
+											'type'        => 'string',
+											'context'     => array( 'view', 'edit' ),
+										),
+										'value' => array(
+											'description' => __( 'Item value.', 'learnpress' ),
+											'type'        => 'string',
+											'context'     => array( 'view', 'edit' ),
+										),
+										'uid'   => array(
+											'description' => __( 'Item id.', 'learnpress' ),
+											'type'        => 'integer',
+											'context'     => array( 'view', 'edit' ),
+										),
+									),
+								),
+							),
 						),
 					),
 				),

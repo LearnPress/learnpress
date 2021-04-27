@@ -363,8 +363,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'custom_fields':
 					$data['custom_fields'] = $this->custom_register( $user );
 					break;
-				case 'lp_items':
-					$data['lp_items'] = $this->get_lp_list_items( $user );
+				case 'lp_datas':
+					$data['lp_datas'] = $this->get_lp_list_datas( $user );
 					break;
 			}
 		}
@@ -396,10 +396,10 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return $output;
 	}
 
-	public function get_lp_list_items( $user ) {
-		$output = array();
+	public function get_lp_list_datas( $user ) {
+		$output = learn_press_get_user_profile_tabs();
 
-		return $output;
+		return $output->get();
 	}
 
 	/**
@@ -619,7 +619,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'type'        => 'object',
 					'context'     => array( 'embed', 'view', 'edit' ),
 				),
-				'lp_items'           => array(
+				'lp_datas'           => array(
 					'description' => __( 'Get all items in user like course, lesson, quiz...' ),
 					'type'        => 'array',
 					'context'     => array( 'embed', 'view', 'edit' ),
