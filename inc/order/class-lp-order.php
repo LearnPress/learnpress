@@ -858,12 +858,15 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 		public function get_view_order_url() {
 			global $wp_query;
+
 			$view_order_url      = learn_press_get_endpoint_url( 'view-order', $this->get_id(), learn_press_get_page_link( 'profile' ) );
-			$user    = learn_press_get_current_user();
-			$view_order_endpoint = LP()->settings->get( 'profile_endpoints.profile-order-details' );
+			$user                = learn_press_get_current_user();
+			$view_order_endpoint = LP()->settings->get( 'profile_endpoints.order-details' );
+
 			if ( ! $view_order_endpoint ) {
 				$view_order_endpoint = 'order-details';
 			}
+
 			$view_order_endpoint = urlencode( $view_order_endpoint );
 			if ( get_option( 'permalink_structure' ) ) {
 				$view_order_url = learn_press_get_page_link( 'profile' ) . $user->get_data( 'user_login' ) . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
@@ -872,6 +875,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					'user' => $user->get_data( 'user_login' ),
 				);
 				$args['view'] = $view_order_endpoint;
+
 				if ( $view_order_endpoint ) {
 					$args['id'] = $this->get_id();
 				}
