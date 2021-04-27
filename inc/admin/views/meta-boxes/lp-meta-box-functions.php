@@ -329,7 +329,7 @@ function lp_meta_box_file_input_field( $field ) {
 
 				echo '<li class="lp-meta-box__file_list-item image" data-attachment_id="' . $attachment_id . '">';
 
-				if ( in_array( $check_file['ext'], array( 'jpg', 'png', 'gif', 'bmp', 'tif' ), true ) ) {
+				if ( in_array( $check_file['ext'], array( 'jpg', 'png', 'gif', 'bmp', 'tif', 'jpeg' ), true ) ) {
 					echo wp_get_attachment_image( $attachment_id, 'thumbnail' );
 				} else {
 					echo '<img class="is_file" src="' . wp_mime_type_icon( $check_file['type'] ) . '" />';
