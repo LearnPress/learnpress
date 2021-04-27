@@ -27,7 +27,7 @@ $bio = $user->get_description();
 
 		<?php if ( $bio ) : ?>
 			<div class="lp-profile-user-bio">
-				<?php echo $bio; ?>
+				<?php echo wpautop($bio); ?>
 			</div>
 		<?php endif; ?>
 	</div>
