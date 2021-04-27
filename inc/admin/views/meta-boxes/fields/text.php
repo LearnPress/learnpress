@@ -71,7 +71,7 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 		$type_input = $this->extra['type_input'] ?? 'text';
 		$meta_value = isset( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : $this->default;
 
-		if ( $type_input === 'number' ) {
+		if ( $meta_value !== '' && $type_input === 'number' ) {
 			$step = isset( $this->extra['custom_attributes']['step'] ) ? $this->extra['custom_attributes']['step'] : '';
 
 			if ( floatval( $step ) !== 1 ) {
