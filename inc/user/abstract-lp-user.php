@@ -774,7 +774,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$item->set_ref_id( $course_id );
 					$item->set_parent_id( $course_data->get_user_item_id() );
 
-					if ( $return = $item->update() ) {
+					$return = $item->update();
+
+					if ( $return ) {
 						$course_data->set_item( $item );
 					}
 				}
