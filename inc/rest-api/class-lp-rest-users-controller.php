@@ -309,10 +309,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			// Error get_start_time when ajax call.
 			$expiration = $expiration_time->toSql( false );
-			if ( $user->has_started_quiz( $item_id, $course_id ) ) {
-				$expiration = $expiration_time->get_raw_date();
-			}
-
 			if ( isset( $total_time ) ) {
 				$results['total_time'] = $total_time;
 				$results['end_time']   = $expiration;

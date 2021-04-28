@@ -1746,7 +1746,7 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 			'item_id'   => $quiz_id,
 			'user_id'   => $user_id,
 			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
-			'ref_type'  => $parent ? $parent->type : '',
+			'ref_type'  => $parent ? $parent->type : LP_COURSE_CPT,
 			'ref_id'    => $parent ? $parent->id : '',
 		)
 	);
@@ -1762,10 +1762,20 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
 
 	$user_item->set_status( 'started' )
-			  ->set_start_time( current_time( 'mysql', true ) )
+			  ->set_start_time( current_time( 'mysql', false ) ) // Error Retake when change timezone - Nhamdv
 			  ->set_end_time( '' )
 			  ->set_graduation( 'in-progress' )
 			  ->update();
+
+	// Error Retake when change timezone - Nhamdv
+	learn_press_update_user_item_field(
+		array(
+			'start_time' => current_time( 'mysql', true ),
+		),
+		array(
+			'user_item_id' => $data->user_item_id,
+		)
+	);
 
 	return $user_item;
 }

@@ -652,13 +652,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		switch ( $item_type ) {
 			case LP_LESSON_CPT:
-				$item       = new LP_User_Item( $data );
-				$start_time = $item->get_start_time();
-
-				if ( ! $start_time ) {
-					$start_time = new LP_Datetime();
-					$item->set_start_time( $start_time->toSql( false ) );
-				}
+				$item = new LP_User_Item( $data );
 				break;
 			case LP_QUIZ_CPT:
 				$item = new LP_User_Item_Quiz( $data );
@@ -689,8 +683,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return $this
 	 */
 	public function get_graduation() {
-		return apply_filters( 'learnpress/user-item/get-graduation', $this->get_data( 'graduation' ),
-			$this->get_item_id(), $this->get_user() );
+		return apply_filters(
+			'learnpress/user-item/get-graduation',
+			$this->get_data( 'graduation' ),
+			$this->get_item_id(),
+			$this->get_user()
+		);
 	}
 
 	/**
@@ -933,13 +931,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( $include ) {
 			settype( $include, 'array' );
 			$format = array_fill( 0, sizeof( $include ), '%s' );
-			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
+			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
 		}
 
 		if ( $exclude ) {
 			settype( $exclude, 'array' );
 			$format = array_fill( 0, sizeof( $exclude ), '%s' );
-			$where  .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
+			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
 		}
 
 		$query = $wpdb->prepare(
@@ -1014,7 +1012,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		} else {
 			$value = is_numeric( $value ) ? $value : strtotime( $value );
 		}
-		$offset = intval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
+		$offset = (int) ( get_option( 'gmt_offset', 0 ) * HOUR_IN_SECONDS );
 
 		parent::_set_data_date( $key, $value + $offset, $extra );
 	}
