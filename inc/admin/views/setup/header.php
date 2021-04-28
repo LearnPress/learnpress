@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 	<?php wp_print_scripts( 'lp-setup' ); ?>
 	<?php do_action( 'admin_print_styles' ); ?>
 	<?php do_action( 'admin_print_scripts' ); ?>
-	<?php do_action( 'admin_head' ); ?>
+	<?php //do_action( 'admin_head' ); ?>
 
 </head>
 <body class="lp-setup wp-core-ui js">
