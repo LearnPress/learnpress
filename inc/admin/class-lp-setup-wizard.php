@@ -119,6 +119,11 @@ class LP_Setup_Wizard {
 
 		$assets = learn_press_admin_assets();
 
+		// tungnx: fix error with Woocommerce
+		remove_action('admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ));
+		remove_action('admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'load_scripts' ), 15 );
+		remove_action('admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Features\Features', 'load_scripts' ), 15 );
+		// End fix
 		@do_action( 'admin_enqueue_scripts' );
 
 		wp_enqueue_style( 'buttons' );
@@ -129,7 +134,7 @@ class LP_Setup_Wizard {
 		wp_enqueue_style( 'widgets' );
 		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
 		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
-		wp_enqueue_style( 'lp-select2', $assets->url( 'css/vendor/select2.min.css' ) );
+		wp_enqueue_style( 'lp-select2', $assets->url( 'src/css/vendor/select2.min.css' ) );
 
 		$assets->enqueue_script( 'learn-press-global' );
 		wp_enqueue_script( 'lp-select2', $assets->url( 'js/vendor/jquery/select2.full.min.js' ) );
