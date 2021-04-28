@@ -13,7 +13,7 @@ const Timer = () => {
 	const totalTime = getData( 'totalTime' ) ? getData( 'totalTime' ) : getData( 'duration' );
 	const endTime = getData( 'endTime' );
 
-	const d1 = new Date( endTime );
+	const d1 = new Date( endTime.replace( /-/g, '/' ) );
 	const d2 = new Date();
 	const tz = new Date().getTimezoneOffset();
 	const t = parseInt( ( d1.getTime() / 1000 ) - ( ( d2.getTime() / 1000 ) + ( tz * 60 ) ) );
