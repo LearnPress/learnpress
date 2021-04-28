@@ -52,6 +52,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_scripts() {
+		$lp_admin_js = new LP_Asset_Key(
+			$this->url( self::$_folder_source . 'js/admin/admin' . self::$_min_assets . '.js' ),
+			array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'jspdf' ),
+			array(),
+			0,
+			1
+		);
+		$lp_admin_js->exclude_screen( array( 'plugin-install' ) );
+
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
@@ -85,13 +94,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array(),
 					1
 				),
-				'lp-admin'                          => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/admin' . self::$_min_assets . '.js' ),
-					array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'jspdf' ),
-					array(),
-					0,
-					1
-				),
+				'lp-admin'                          => $lp_admin_js,
 				'lp-admin-learnpress'               => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/learnpress' . self::$_min_assets . '.js' ),
 					array(
@@ -338,15 +341,23 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				$can_load_js = false;
 
 				if ( ! empty( $script->_screens ) ) {
-					$can_load_js = apply_filters(
-						'learnpress/admin/can-load-js/' . $handle,
-						in_array( $screen_id, $script->_screens ),
-						$screen_id,
-						$script->_screens
-					);
+					if ( in_array( $screen_id, $script->_screens ) ) {
+						$can_load_js = true;
+					}
+				} elseif ( ! empty( $script->_exclude_screens ) ) {
+					if ( ! in_array( $screen_id, $script->_exclude_screens ) ) {
+						$can_load_js = true;
+					}
 				} else {
 					$can_load_js = true;
 				}
+
+				$can_load_js = apply_filters(
+					'learnpress/admin/can-load-js/' . $handle,
+					$can_load_js,
+					$screen_id,
+					$script->_screens
+				);
 
 				if ( $can_load_js ) {
 					wp_enqueue_script( $handle );

@@ -74,6 +74,6 @@ class LP_Asset_Key {
 	 * @param string[] $screens .
 	 */
 	public function exclude_screen( $screens = array() ) {
-
+		$this->_exclude_screens = $screens;
 	}
 }
