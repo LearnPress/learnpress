@@ -64,7 +64,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp_rest_url'                        => get_rest_url(),
 				'nonce'                              => wp_create_nonce( 'wp_rest' ),
-				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish' ),
+				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ),
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'            => home_url(),
@@ -377,7 +377,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public function show_overlay() {
 		$page_current = LP_Page_Controller::page_current();
-		if ( ! in_array( $page_current, array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE, LP_PAGE_QUIZ ) ) ) {
+		if ( ! in_array( $page_current,
+			array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE, LP_PAGE_QUIZ ) ) ) {
 			return;
 		}
 
