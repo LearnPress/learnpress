@@ -134,12 +134,39 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'sections':
 					$data['sections'] = $this->get_all_items( $course );
 					break;
+				case 'course_data':
+					$data['course_data'] = $this->get_course_data_for_current_user( $id, $request );
+					break;
 			}
 		}
 
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function get_course_data_for_current_user( $id, $request ) {
+		// Add "course_data" to link /wp-json/learnpress/v1/courses?course_data=true.
+		if ( ! isset( $request['course_data'] ) ) {
+			return;
+		}
+
+		$user = learn_press_get_user( get_current_user_id() );
+
+		if ( empty( $user ) || empty( $id ) ) {
+			return array();
+		}
+
+		$course_data = $user->get_course_data( $id );
+
+		return array(
+			'graduation'      => $course_data->get_graduation() ?? '',
+			'status'          => $course_data->get_status() ?? '',
+			'start_time'      => $course_data->get_start_time() ? lp_jwt_prepare_date_response( $course_data->get_start_time()->toSql( false ) ) : null,
+			'end_time'        => $course_data->get_end_time() ? lp_jwt_prepare_date_response( $course_data->get_end_time()->toSql( false ) ) : null,
+			'expiration_time' => $course_data->get_expiration_time() ? lp_jwt_prepare_date_response( $course_data->get_expiration_time()->toSql( false ) ) : '',
+			'result'          => LP_User_Items_Result_DB::instance()->get_result( $course_data->get_user_item_id() ),
+		);
 	}
 
 	public function get_course_taxonomy( $id, $taxonomy ) {
@@ -412,6 +439,45 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						),
 					),
 				),
+				'course_data'       => array(
+					'description' => __( 'List of course user data.', 'learnpress' ),
+					'type'        => 'array',
+					'context'     => array( 'view' ),
+					'items'       => array(
+						'type'       => 'object',
+						'properties' => array(
+							'graduation'      => array(
+								'description' => __( 'Graduation.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view' ),
+							),
+							'status'          => array(
+								'description' => __( 'Status.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'start_time'      => array(
+								'description' => __( 'Start time.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'end_time'        => array(
+								'description' => __( 'End time.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'expiration_time' => array(
+								'description' => __( 'Expiration time.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+						),
+					),
+				),
 			),
 		);
 
@@ -421,16 +487,21 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function get_collection_params() {
 		$params = parent::get_collection_params();
 
-		$params['category'] = array(
+		$params['category']    = array(
 			'description'       => __( 'Limit result set to courses assigned a specific category ID.', 'learnpress' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['tag']      = array(
+		$params['tag']         = array(
 			'description'       => __( 'Limit result set to courses assigned a specific tag ID.', 'learnpress' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'wp_parse_id_list',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['course_data'] = array(
+			'description'       => __( 'Get course data for current user.', 'learnpress' ),
+			'type'              => 'boolean',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 

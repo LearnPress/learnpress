@@ -52,6 +52,36 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/(?P<id>[\d]+)/(?P<tab>[\w]+)',
+			array(
+				'args'   => array(
+					'id'  => array(
+						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+					'tab' => array(
+						'description' => esc_html__( 'Get content in profile learnpress tab.', 'learnpress' ),
+						'type'        => 'string',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item_tab' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'args'                => array(
+						'context' => $this->get_context_param(
+							array(
+								'default' => 'view',
+							)
+						),
+					),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -117,6 +147,195 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		}
 
 		return $user;
+	}
+
+	public function get_item_tab( $request ) {
+		$user   = $this->get_user( $request['id'] );
+		$output = array();
+
+		switch ( $request['tab'] ) {
+			case 'overview':
+				$output = $this->get_overview_tab_contents( $user );
+				break;
+
+			case 'courses':
+				$output = $this->get_course_tab_contents( $request );
+				break;
+
+			case 'quiz':
+				$output = $this->get_quiz_tab_contents( $request );
+				break;
+
+			default:
+				$output = esc_html__( 'No Tab content!', 'learnpress' );
+		}
+
+		$return = apply_filters( 'learnpress/jwt/rest-api/user/tab-content', $output, $request );
+
+		$response = rest_ensure_response( $return );
+
+		return $response;
+	}
+
+	public function get_overview_tab_contents( $user ) {
+		$output = array();
+
+		$query     = LP_Profile::instance()->query_courses( 'purchased' );
+		$counts    = $query['counts'];
+		$statistic = array(
+			'enrolled_courses'  => isset( $counts['all'] ) ? $counts['all'] : 0,
+			'active_courses'    => isset( $counts['in-progress'] ) ? $counts['in-progress'] : 0,
+			'completed_courses' => isset( $counts['finished'] ) ? $counts['finished'] : 0,
+			'total_courses'     => count_user_posts( $user->ID, LP_COURSE_CPT ),
+			'total_users'       => learn_press_count_instructor_users( $user->ID ),
+		);
+
+		$output['statistic'] = array_map( 'absint', $statistic );
+
+		$featured_query = new LP_Course_Query(
+			array(
+				'paginate' => false,
+				'featured' => 'yes',
+				'return'   => 'ids',
+				'author'   => $user->ID,
+			)
+		);
+
+		$output['featured'] = $featured_query->get_courses();
+
+		$latest_query = new LP_Course_Query(
+			array(
+				'paginate' => false,
+				'return'   => 'ids',
+				'author'   => $user->get_id(),
+				'limit'    => '-1',
+			)
+		);
+
+		$output['latest'] = $latest_query->get_courses();
+
+		return $output;
+	}
+
+	public function get_course_tab_contents( $request ) {
+		$output = array(
+			'enrolled' => array(),
+			'created'  => array(),
+		);
+
+		$profile          = learn_press_get_profile( $request['id'] );
+		$user             = learn_press_get_user( $request['id'] );
+		$filters_enrolled = array(
+			'all'      => 'all',
+			'finished' => 'finished',
+			'passed'   => 'passed',
+			'failed'   => 'failed',
+		);
+
+		if ( method_exists( $profile, 'query_courses' ) ) {
+			foreach ( $filters_enrolled as $key => $filter ) {
+				$query_enrolled = $profile->query_courses(
+					'purchased',
+					array(
+						'status' => $filter,
+						'limit'  => $request['per_page'] ?? '100',
+						'paged'  => $request['paged'] ?? 1,
+					)
+				);
+
+				$enrolled_ids = array();
+				if ( ! empty( $query_enrolled['items'] ) ) {
+					foreach ( $query_enrolled['items'] as $enrolled_item ) {
+						$course_data    = $user->get_course_data( $enrolled_item->get_id() );
+						$enrolled_ids[] = array(
+							'id'         => $enrolled_item->get_id() ?? '',
+							'graduation' => $course_data->get_graduation() ?? '',
+							'status'     => $course_data->get_status() ?? '',
+							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
+							'end_time'   => lp_jwt_prepare_date_response( $course_data->get_end_time() ? $course_data->get_end_time()->toSql( false ) : '' ),
+							'expiration' => lp_jwt_prepare_date_response( $course_data->get_expiration_time() ? $course_data->get_expiration_time()->toSql( false ) : '' ),
+							'results'    => array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $course_data->get_user_item_id(), 4, false ) ),
+						);
+					}
+				}
+
+				$output['enrolled'][ $key ] = $enrolled_ids;
+			}
+		}
+
+		$filters_created = array(
+			'all'     => '',
+			'publish' => 'publish',
+			'pending' => 'pending',
+		);
+
+		if ( method_exists( $profile, 'query_courses' ) ) {
+			foreach ( $filters_created as $created_key => $filter ) {
+				$query_created = $profile->query_courses(
+					'own',
+					array(
+						'status' => $filter,
+						'limit'  => $request['per_page'] ?? '100',
+						'paged'  => $request['paged'] ?? 1,
+					)
+				);
+
+				$created_ids = array();
+				if ( ! empty( $query_created['items'] ) ) {
+					foreach ( $query_created['items'] as $created_item ) {
+						$created_ids[] = $created_item;
+					}
+				}
+
+				$output['created'][ $created_key ] = array_map( 'absint', $created_ids );
+			}
+		}
+
+		return $output;
+	}
+
+	public function get_quiz_tab_contents( $request ) {
+		$output = array();
+
+		$profile = learn_press_get_profile( $request['id'] );
+		$filters = array(
+			'all'      => '',
+			'finished' => 'completed',
+			'passed'   => 'passed',
+			'failed'   => 'failed',
+		);
+
+		if ( method_exists( $profile, 'query_quizzes' ) ) {
+			foreach ( $filters as $key => $filter ) {
+				$query = $profile->query_quizzes(
+					array(
+						'status' => $filter,
+						'limit'  => $request['per_page'] ?? '100',
+						'paged'  => $request['paged'] ?? 1,
+					)
+				);
+
+				$ids = array();
+				if ( ! empty( $query['items'] ) ) {
+					foreach ( $query['items'] as $item ) {
+						$ids[] = array(
+							'id'         => $item->get_id(),
+							'result'     => $item->get_percent_result() ?? '',
+							'status'     => $item->get_results( 'status' ) ?? '',
+							'graduation' => $item->get_graduation() ?? '',
+							'time_spend' => $item->get_time_interval( 'display' ) ?? '',
+							'start_time' => $item->get_start_time() ? lp_jwt_prepare_date_response( $item->get_start_time()->toSql( false ) ) : '',
+							'end_time'   => $item->get_end_time() ? lp_jwt_prepare_date_response( $item->get_end_time()->toSql( false ) ) : '',
+							'attempt'    => array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $item->get_user_item_id(), 4, false ) ),
+						);
+					}
+				}
+
+				$output[ $key ] = $ids;
+			}
+		}
+
+		return $output;
 	}
 
 	/**
@@ -363,8 +582,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'custom_fields':
 					$data['custom_fields'] = $this->custom_register( $user );
 					break;
-				case 'lp_datas':
-					$data['lp_datas'] = $this->get_lp_list_datas( $user );
+				case 'tabs':
+					$data['tabs'] = $this->get_lp_data_tabs( $user );
 					break;
 			}
 		}
@@ -396,10 +615,33 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return $output;
 	}
 
-	public function get_lp_list_datas( $user ) {
-		$output = learn_press_get_user_profile_tabs();
+	public function get_lp_data_tabs( $user ) {
+		$output = array();
 
-		return $output->get();
+		if ( function_exists( 'learn_press_get_user_profile_tabs' ) ) {
+			$tabs = learn_press_get_user_profile_tabs();
+
+			foreach ( $tabs->get() as $key => $tab ) {
+				$output[ $key ] = array(
+					'title'    => $tab['title'] ?? '',
+					'slug'     => $tab['slug'] ?? '',
+					'priority' => $tab['priority'] ?? '',
+					'icon'     => $tab['icon'] ?? '',
+				);
+
+				if ( ! empty( $tab['sections'] ) ) {
+					foreach ( $tab['sections'] as $section_key => $section ) {
+						$output[ $key ]['section'][ $section_key ] = array(
+							'title'    => $section['title'] ?? '',
+							'slug'     => $section['slug'] ?? '',
+							'priority' => $section['priority'] ?? '',
+						);
+					}
+				}
+			}
+		}
+
+		return $output;
 	}
 
 	/**
@@ -619,7 +861,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'type'        => 'object',
 					'context'     => array( 'embed', 'view', 'edit' ),
 				),
-				'lp_datas'           => array(
+				'tabs'               => array(
 					'description' => __( 'Get all items in user like course, lesson, quiz...' ),
 					'type'        => 'array',
 					'context'     => array( 'embed', 'view', 'edit' ),
