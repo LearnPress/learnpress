@@ -706,6 +706,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				"
 				UPDATE $lp_db->tb_lp_user_itemmeta SET extra_value = meta_value
 				WHERE meta_key = '_lp_assignment_answer_note'
+				OR meta_key = '_lp_assignment_answer_upload'
 				"
 			);
 		} catch ( Exception $e ) {
