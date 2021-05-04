@@ -151,7 +151,9 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 			return false;
 		}
 
-		if ( $force_new || ! isset( LP_Global::$users[ $user_id ] ) || empty( LP_Global::$users[ $user_id ] ) ) {
+		$user_id = '' . $user_id;
+
+		if ( $force_new || ! array_key_exists( $user_id, LP_Global::$users ) ) {
 			/**
 			 * LP Hook.
 			 *
@@ -352,9 +354,9 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
 	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get(
-		'profile_endpoints.profile-orders',
-		'profile-orders'
-	) ) {
+			'profile_endpoints.profile-orders',
+			'profile-orders'
+		) ) {
 		$view = false;
 	}
 
@@ -831,9 +833,9 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 
 /**
  * @param     $status
- * @param int    $quiz_id
- * @param int    $user_id
- * @param int    $course_id
+ * @param int $quiz_id
+ * @param int $user_id
+ * @param int $course_id
  *
  * @return bool|mixed
  */
@@ -1050,7 +1052,7 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int  $id
+ * @param int $id
  *
  * @return bool
  */
@@ -1072,7 +1074,7 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int  $id
+ * @param int $id
  *
  * @return bool
  */
@@ -1367,7 +1369,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 	}
 
 	if ( $include_course ) {
-		$where .= ' OR ( item_id = %d AND item_type = %s )';
+		$where  .= ' OR ( item_id = %d AND item_type = %s )';
 		$args[] = $course_id;
 		$args[] = LP_COURSE_CPT;
 	}
@@ -1707,6 +1709,7 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
  * @param integer $user_id
  * @param integer $course_id
  * @param boolean $wp_error
+ *
  * @return void
  */
 function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
@@ -1759,10 +1762,10 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
 
 	$user_item->set_status( 'started' )
-				->set_start_time( current_time( 'mysql', false ) ) // Error Retake when change timezone - Nhamdv
-				->set_end_time( '' )
-				->set_graduation( 'in-progress' )
-				->update();
+			  ->set_start_time( current_time( 'mysql', false ) ) // Error Retake when change timezone - Nhamdv
+			  ->set_end_time( '' )
+			  ->set_graduation( 'in-progress' )
+			  ->update();
 
 	// Error Retake when change timezone - Nhamdv
 	learn_press_update_user_item_field(

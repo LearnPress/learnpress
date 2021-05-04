@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 do_action( 'admin_print_footer_scripts' );
-do_action( 'admin_footer' );
+//do_action( 'admin_footer' );
 ?>
 
 <footer>

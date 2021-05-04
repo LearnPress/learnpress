@@ -118,9 +118,16 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			$current_display = $current;
 			$current         = false;
 			foreach ( $this->get() as $_slug => $data ) {
-				if ( $data->get( 'slug' ) === $current_display ) {
-					$current = $_slug;
-					break;
+				if ( is_object( $data ) ) {
+					if ( $data->get( 'slug' ) === $current_display ) {
+						$current = $_slug;
+						break;
+					}
+				} elseif ( is_array( $data ) ) {
+					if ( $data['slug'] === $current_display ) {
+						$current = $_slug;
+						break;
+					}
 				}
 			}
 		}
@@ -268,7 +275,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	public function get_current_url( $args = '', $with_permalink = false ) {
 		$current_tab = $this->get_current_tab();
 		$tab         = $this->get_tab_at( $current_tab );
-		$sections    = $tab['sections'];
+		$sections    = isset( $tab['sections'] ) ? $tab['sections'] : array();
 
 		$current_section_slug = $this->get_current_section();
 		$section              = array();

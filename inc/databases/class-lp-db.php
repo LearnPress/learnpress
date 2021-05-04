@@ -238,16 +238,14 @@ class LP_Database {
 
 		$query_add = '';
 
-		$col_exists = $this->check_col_table( $this->tb_lp_user_items, $name_col );
+		$col_exists = $this->check_col_table( $name_table, $name_col );
 
 		if ( ! empty( $after_col ) ) {
 			$query_add .= "AFTER $after_col";
 		}
 
 		if ( ! $col_exists ) {
-			$query = $this->wpdb->prepare( "ALTER TABLE $name_table ADD COLUMN $name_col $type $query_add", 1 );
-
-			return $this->wpdb->query( $query );
+			return $this->wpdb->query( "ALTER TABLE $name_table ADD COLUMN $name_col $type $query_add");
 		}
 
 		return true;
