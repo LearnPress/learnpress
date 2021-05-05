@@ -1,5 +1,6 @@
 import SingleCourse from './single-course/index';
 import { addQueryArgs } from '@wordpress/url';
+import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
 
 export default SingleCourse;
 
@@ -339,5 +340,6 @@ $( window ).on( 'load', () => {
 	purchaseCourse();
 	retakeCourse();
 	courseProgress();
+	lpModalOverlayCompleteItem.init();
 	// courseCurriculum();
 } );

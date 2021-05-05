@@ -227,7 +227,7 @@ class LP_Settings {
 	 * @since 3.2.8
 	 * @editor tungnx
 	 */
-	public static function get_option( $name, $default = false ) {
+	public static function get_option( $name = '', $default = false ) {
 		return get_option( "learn_press_{$name}", $default );
 	}
 

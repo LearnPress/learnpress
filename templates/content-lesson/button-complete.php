@@ -19,20 +19,29 @@ if ( $item->is_preview() && ! $user->has_enrolled_course( $course->get_id() ) ) 
 	return;
 }
 
-$completed = $user->has_completed_item( $item->get_id(), $course->get_id() );
+$message_confirm_complete_item = sprintf( '%s "%s"?', __( 'Do you want to complete lesson', 'learnpress' ), $item->get_title() );
+$completed                     = $user->has_completed_item( $item->get_id(), $course->get_id() );
 
 if ( $completed ) :
-	echo '<div>' . esc_html__( 'You have completed this lesson at ',
-			'learnpress' ) . $user->get_item_data( $item->get_id(), $course->get_id(), 'end_time' ) . '</div>';
 	?>
-
-	<button class="lp-button completed" disabled><i class="fa fa-check"></i><?php esc_html_e( 'Completed',
-			'learnpress' ); ?></button>
-
+	<div>
+		<?php
+		echo sprintf(
+			'%s %s',
+			esc_html__( 'You have completed this lesson at ', 'learnpress' ),
+			$user->get_item_data( $item->get_id(), $course->get_id(), 'end_time' )
+		)
+		?>
+	</div>
+	<button class="lp-button completed" disabled>
+		<i class="fa fa-check"></i><?php esc_html_e( 'Completed', 'learnpress' ); ?>
+	</button>
 <?php else : ?>
 
 	<form method="post" name="learn-press-form-complete-lesson"
-		  class="learn-press-form form-button <?php echo $completed ? 'completed' : ''; ?>">
+		  class="learn-press-form form-button <?php echo esc_attr( $completed ) ? 'completed' : ''; ?>"
+		  data-title="<?php echo esc_attr(__('Complete lesson', 'learnpress'))?>"
+		  data-confirm="<?php echo esc_attr( $message_confirm_complete_item ); ?>">
 
 		<?php do_action( 'learn-press/lesson/before-complete-button' ); ?>
 
@@ -43,8 +52,9 @@ if ( $completed ) :
 		<input type="hidden" name="type" value="lp_lesson"/>
 		<input type="hidden" name="lp-ajax" value="complete-lesson"/>
 		<input type="hidden" name="noajax" value="yes"/>
-		<button class="lp-button button button-complete-item button-complete-lesson"><?php echo esc_html__( 'Complete',
-				'learnpress' ); ?></button>
+		<button class="lp-button button button-complete-item button-complete-lesson lp-btn-complete-item">
+			<?php echo esc_html__( 'Complete', 'learnpress' ); ?>
+		</button>
 
 		<?php do_action( 'learn-press/lesson/after-complete-button' ); ?>
 

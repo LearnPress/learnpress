@@ -49,21 +49,22 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data() {
 		return array(
 			'lp-global'       => array(
-				'url'         => learn_press_get_current_url(),
-				'siteurl'     => site_url(),
-				'ajax'        => admin_url( 'admin-ajax.php' ),
-				'courses_url' => learn_press_get_page_link( 'courses' ),
-				'post_id'     => get_the_ID(),
-				'user_id'     => get_current_user_id(), // use: course-progress.
-				'theme'       => get_stylesheet(),
-				'localize'    => array(
+				'url'                                => learn_press_get_current_url(),
+				'siteurl'                            => site_url(),
+				'ajax'                               => admin_url( 'admin-ajax.php' ),
+				'courses_url'                        => learn_press_get_page_link( 'courses' ),
+				'post_id'                            => get_the_ID(),
+				'user_id'                            => get_current_user_id(), // use: course-progress.
+				'theme'                              => get_stylesheet(),
+				'localize'                           => array(
 					'button_ok'     => esc_html__( 'OK', 'learnpress' ),
 					'button_cancel' => esc_html__( 'Cancel', 'learnpress' ),
 					'button_yes'    => esc_html__( 'Yes', 'learnpress' ),
 					'button_no'     => esc_html__( 'No', 'learnpress' ),
 				),
-				'lp_rest_url' => get_rest_url(),
-				'nonce'       => wp_create_nonce( 'wp_rest' ),
+				'lp_rest_url'                        => get_rest_url(),
+				'nonce'                              => wp_create_nonce( 'wp_rest' ),
+				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish' ),
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'            => home_url(),
@@ -257,7 +258,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				}
 
 				if ( $enqueue ) {
-					wp_enqueue_style( $handle, $data['url'] );
+					wp_enqueue_style( $handle, $data['url'], array(), self::$_version_assets );
 				}
 			}
 		}
@@ -371,15 +372,20 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Add lp overlay
 	 *
 	 * @since 3.2.8
+	 * @version 1.0.1
 	 * @author tungnx
 	 */
 	public function show_overlay() {
 		$page_current = LP_Page_Controller::page_current();
-		if ( ! in_array( $page_current, array( LP_PAGE_SINGLE_COURSE, LP_PAGE_QUIZ ) ) ) {
+		if ( ! in_array( $page_current, array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE, LP_PAGE_QUIZ ) ) ) {
 			return;
 		}
 
-		echo '<div id="lp-modal-overlay">';
+		if ( 'yes' !== LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ) ) {
+			return;
+		}
+
+		echo '<div class="lp-overlay">';
 		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
 		echo '</div>';
 	}
