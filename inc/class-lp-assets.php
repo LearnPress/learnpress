@@ -253,12 +253,14 @@ class LP_Assets extends LP_Abstract_Assets {
 
 				do_action( 'learn-press/enqueue-style/' . $handle );
 
+				wp_register_style( $handle, $data['url'], array(), self::$_version_assets );
+
 				if ( ! empty( $data['screens'] ) ) {
 					$enqueue = $this->is_screen( $data['screens'] );
 				}
 
 				if ( $enqueue ) {
-					wp_enqueue_style( $handle, $data['url'], array(), self::$_version_assets );
+					wp_enqueue_style( $handle );
 				}
 			}
 		}

@@ -38,7 +38,7 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 
 			ob_start();
 			learn_press_print_messages();
-			learn_press_get_template( 'profile/profile.php' );
+			learn_press_get_template( 'pages/profile.php' );
 			$output = ob_get_clean();
 
 			return $output;

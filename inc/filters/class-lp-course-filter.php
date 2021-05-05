@@ -16,6 +16,6 @@ if ( class_exists( 'LP_Question_Filter' ) ) {
 	return;
 }
 
-class LP_Question_Filter extends LP_Post_Type_Filter {
-	public $post_type = 'lp_question';
+class LP_Course_Filter extends LP_Post_Type_Filter {
+	public $post_type = 'lp_course';
 }
