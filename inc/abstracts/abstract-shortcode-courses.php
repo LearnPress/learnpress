@@ -125,8 +125,13 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 		public function output_courses() {
 			global $wpdb;
 
-			$post_ids = $wpdb->get_col( $this->_query );
-			$query    = new LP_Query_Course( array( 'post__in' => $post_ids ) );
+			$post_ids = $this->_query;
+
+			if ( ! $post_ids ) {
+				$post_ids = array();
+			}
+
+			$query = new LP_Query_Course( array( 'post__in' => $post_ids ) );
 
 			if ( $query->have_posts() ) {
 				do_action( 'learn_press_before_courses_loop' );
