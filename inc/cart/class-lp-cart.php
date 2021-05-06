@@ -165,9 +165,7 @@ class LP_Cart {
 				)
 			);
 
-			if ( did_action( 'wp' ) ) {
-				$this->set_cart_cookies( true );
-			}
+			$this->set_cart_cookies( true );
 
 			// @deprecated
 			do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
