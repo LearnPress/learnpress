@@ -36,6 +36,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @see modify_tb_lp_user_items
 	 * @see convert_result_graduation_item
 	 * @see convert_result_questions
+	 * @see convert_retake_quiz
+	 * @see create_col_extra_value_on_tb_lp_user_itemmeta
+	 * @see convert_meta_value_longtext
 	 * @see modify_tb_lp_user_itemmeta
 	 * @see remove_data_lp_user_itemmeta
 	 * @see modify_tb_lp_quiz_questions
@@ -59,62 +62,72 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					'learnpress_user_items',
 					'',
 					array(
-						'create_tables'                       => new LP_Step(
+						'create_tables'                    => new LP_Step(
 							'create_tables',
 							'Create tables',
 							'learnpress_user_item_results'
 						),
-						'clone_tables'                        => new LP_Step(
+						'clone_tables'                     => new LP_Step(
 							'clone_tables',
 							'Backup Tables',
 							'learnpress_user_items, learnpress_user_itemmeta, learnpress_question_answers, postmeta, options'
 						),
-						'modify_tb_lp_user_items'             => new LP_Step(
+						'modify_tb_lp_user_items'          => new LP_Step(
 							'modify_tb_lp_user_items',
 							'Modify table learnpress_user_items',
 							'Modify table learnpress_user_items, move the result of students on table learnpress_uset_itemmeta to learnpress_user_item_results'
 						),
-						'convert_result_graduation_item'      => new LP_Step(
+						'convert_result_graduation_item'   => new LP_Step(
 							'convert_result_graduation_item',
 							'Convert Data Result courses, items\' courses',
 							''
 						),
-						'convert_result_questions'            => new LP_Step(
+						'convert_result_questions'         => new LP_Step(
 							'convert_result_questions',
 							'Convert Data Result questions',
 							''
 						),
-						'convert_retake_quiz'                 => new LP_Step(
+						'convert_retake_quiz'              => new LP_Step(
 							'convert_retake_quiz',
 							'Convert retake quizzes',
 							''
 						),
-						'remove_data_lp_user_itemmeta'        => new LP_Step(
+						'create_col_extra_value_on_tb_lp_user_itemmeta' => new LP_Step(
+							'create_col_extra_value_on_tb_lp_user_itemmeta',
+							'Create column extra_value',
+							''
+						),
+						'convert_meta_value_longtext'      => new LP_Step(
+							'convert_meta_value_longtext',
+							'Copy meta_value longtext to extra_value',
+							''
+						),
+						'remove_data_lp_user_itemmeta'     => new LP_Step(
 							'remove_data_lp_user_itemmeta',
 							'Remove data results of lp_user_itemmeta',
 							''
 						),
-						'modify_tb_lp_user_itemmeta'          => new LP_Step(
+						'modify_tb_lp_user_itemmeta'       => new LP_Step(
 							'modify_tb_lp_user_itemmeta',
 							'Modify table learnpress_user_itemmeta',
 							'Change type columns: meta_key, meta_value. Create Index: user_item_id, meta_key, meta_value'
 						),
-						'modify_tb_lp_quiz_questions'         => new LP_Step(
+						'modify_tb_lp_quiz_questions'      => new LP_Step(
 							'modify_tb_lp_quiz_questions',
 							'Modify table learnpress_quiz_questions',
 							''
 						),
-						'modify_tb_lp_question_answers'       => new LP_Step(
+						'modify_tb_lp_question_answers'    => new LP_Step(
 							'modify_tb_lp_question_answers',
 							'Modify table learnpress_question_answers',
 							''
 						),
-						'update_question_answers'             => new LP_Step(
+						'update_question_answers'          => new LP_Step(
 							'update_question_answers',
 							'Update data table learnpress_question_answers',
 							''
 						),
-						'modify_tb_lp_question_answermeta'    => new LP_Step(
+						'modify_tb_lp_question_answermeta' => new LP_Step(
 							'modify_tb_lp_question_answermeta',
 							'Modify table learnpress_question_answermeta',
 							''
@@ -124,32 +137,32 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 							'Update data question type "Fill in blank"',
 							''
 						),
-						'delete_columns_question_answers'     => new LP_Step(
+						'delete_columns_question_answers'  => new LP_Step(
 							'delete_columns_question_answers',
 							'Delete data table learnpress_question_answers',
 							''
 						),
-						'modify_tb_lp_order_items'            => new LP_Step(
+						'modify_tb_lp_order_items'         => new LP_Step(
 							'modify_tb_lp_order_items',
 							'Modify data table learnpress_order_items',
 							''
 						),
-						'modify_tb_lp_order_itemmeta'         => new LP_Step(
+						'modify_tb_lp_order_itemmeta'      => new LP_Step(
 							'modify_tb_lp_order_itemmeta',
 							'Modify data table learnpress_order_itemmeta',
 							''
 						),
-						'modify_tb_lp_sections'               => new LP_Step(
+						'modify_tb_lp_sections'            => new LP_Step(
 							'modify_tb_lp_sections',
 							'Modify table learnpress_sections',
 							'Create Index'
 						),
-						'modify_tb_lp_section_items'          => new LP_Step(
+						'modify_tb_lp_section_items'       => new LP_Step(
 							'modify_tb_lp_section_items',
 							'Modify table learnpress_section_items',
 							'Create Index'
 						),
-						'convert_lp_settings'                 => new LP_Step(
+						'convert_lp_settings'              => new LP_Step(
 							'convert_lp_settings',
 							'Convert data settings learnpress',
 							'Courses thumbnail dimensions, Profile thumbnail dimensions, Profile rename dashboard to overview, Block course by duration, Block course when finished, Assessment course by quizzes - Evaluate, '
@@ -193,7 +206,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			if ( empty( $data ) ) {
 				$create_table = $create_tables[0];
 			} elseif ( ! empty( $data[ $key_create_table ] )
-			           && in_array( $data[ $key_create_table ], $create_tables ) ) {
+					   && in_array( $data[ $key_create_table ], $create_tables ) ) {
 				$create_table = $data[ $key_create_table ];
 			}
 
@@ -265,7 +278,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			if ( empty( $data ) ) {
 				$clone_table = $clone_tables[0];
 			} elseif ( ! empty( $data[ $key_clone_table ] )
-			           && in_array( $data[ $key_clone_table ], $clone_tables, true ) ) {
+					   && in_array( $data[ $key_clone_table ], $clone_tables, true ) ) {
 				$clone_table = $data[ $key_clone_table ];
 			}
 
@@ -322,8 +335,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_col_table( $lp_db->tb_lp_user_items, 'access_level', 'varchar(20)', 'graduation' );
 
 			// Change type columns: start_time, end_time.
-			$lp_db->wpdb->query(
-				"
+			$lp_db->wpdb->query( "
 				ALTER TABLE $lp_db->tb_lp_user_items
 				MODIFY start_time datetime default null,
 				MODIFY end_time datetime default null;
@@ -388,7 +400,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					"
 					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
 					WHERE meta_key = %s
-					", 'grade'
+					",
+					'grade'
 				);
 
 				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
@@ -405,7 +418,10 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				    FROM $lp_db->tb_lp_user_itemmeta
 				    WHERE meta_key = %s
 					LIMIT %d, %d
-				", 'grade', $offset, $limit
+				",
+				'grade',
+				$offset,
+				$limit
 			);
 			$user_item_grades = $lp_db->wpdb->get_results( $query );
 
@@ -425,7 +441,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					UPDATE $lp_db->tb_lp_user_items
 					SET graduation = %s
 					WHERE user_item_id = %d;
-				", $user_item_grade->grade, $user_item_grade->user_item_id
+				",
+					$user_item_grade->grade,
+					$user_item_grade->user_item_id
 				);
 
 				$lp_db->wpdb->query( $query );
@@ -465,7 +483,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					"
 					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
 					WHERE meta_key = '_question_answers'
-					", 1
+					",
+					1
 				);
 
 				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
@@ -482,7 +501,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				FROM $lp_db->tb_lp_user_itemmeta
 				WHERE meta_key = '_question_answers'
 				LIMIT %d offset %d
-				", $limit, $offset
+				",
+				$limit,
+				$offset
 			);
 			$quizs_questions_answered = $lp_db->wpdb->get_results( $query );
 
@@ -497,7 +518,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 						SELECT meta_value AS quiz_result FROM $lp_db->tb_lp_user_itemmeta
 						WHERE learnpress_user_item_id = %d
 						AND meta_key = %s
-						", $quiz_question_answered->user_item_id, 'results'
+						",
+						$quiz_question_answered->user_item_id,
+						'results'
 					)
 				);
 
@@ -522,13 +545,19 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 						"
 						SELECT user_item_id FROM $lp_db->tb_lp_user_item_results
 						WHERE user_item_id = %d
-						", $quiz_question_answered->user_item_id
+						",
+						$quiz_question_answered->user_item_id
 					)
 				);
 
 				if ( empty( $check ) ) {
-					$lp_db->wpdb->insert( $lp_db->tb_lp_user_item_results,
-						array( 'result' => $result_json, 'user_item_id' => $quiz_question_answered->user_item_id ) );
+					$lp_db->wpdb->insert(
+						$lp_db->tb_lp_user_item_results,
+						array(
+							'result'       => $result_json,
+							'user_item_id' => $quiz_question_answered->user_item_id,
+						)
+					);
 				} else {
 				}
 			}
@@ -569,7 +598,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					"
 					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
 					WHERE meta_key = '_retaken_items'
-					", 1
+					",
+					1
 				);
 
 				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
@@ -586,7 +616,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				FROM $lp_db->tb_lp_user_itemmeta
 				WHERE meta_key = '_retaken_items'
 				LIMIT %d offset %d
-				", $limit, $offset
+				",
+				$limit,
+				$offset
 			);
 			$courses_quizzes_retaken = $lp_db->wpdb->get_results( $query );
 
@@ -607,7 +639,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 								FROM $lp_db->tb_lp_user_items
 								WHERE parent_id = %d
 								AND item_id = %d
-								", $user_item_id, $quiz_id
+								",
+								$user_item_id,
+								$quiz_id
 							)
 						);
 
@@ -638,6 +672,48 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Create column extra_value for table learnpress_user_itemmeta.
+	 *
+	 * @return LP_Step
+	 */
+	protected function create_col_extra_value_on_tb_lp_user_itemmeta() {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
+
+		try {
+			$lp_db->add_col_table( $lp_db->tb_lp_user_itemmeta, 'extra_value', 'longtext', 'meta_value' );
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+	}
+
+	/**
+	 * Copy meta_value longtext to extra_value.
+	 *
+	 * @return LP_Step
+	 */
+	protected function convert_meta_value_longtext() {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
+
+		try {
+			$lp_db->wpdb->query(
+				"
+				UPDATE $lp_db->tb_lp_user_itemmeta SET extra_value = meta_value
+				WHERE meta_key = '_lp_assignment_answer_note'
+				OR meta_key = '_lp_assignment_answer_upload'
+				"
+			);
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
 	}
 
 	/**
@@ -685,7 +761,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		 * 5. Remove _last_status.
 		 * 6. Remove _current_status.
 		 * 7. Remove finishing_type.
-		 * 7. Remove _retaken_items.
+		 * 8. Remove _retaken_items.
 		 */
 		$query = $lp_db->wpdb->prepare(
 			"
@@ -698,12 +774,15 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				OR meta_key = '_current_status'
 				OR meta_key = 'finishing_type'
 				OR meta_key = '_retaken_items'
-			", 1
+			",
+			1
 		);
 		$lp_db->wpdb->query( $query );
 
-		return $this->finish_step( $response,
-			'Step ' . __FUNCTION__ . ' finished' );
+		return $this->finish_step(
+			$response,
+			'Step ' . __FUNCTION__ . ' finished'
+		);
 	}
 
 	/**
@@ -819,7 +898,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				$query = $lp_db->wpdb->prepare(
 					"
 					SELECT COUNT(question_answer_id) FROM $lp_db->tb_lp_question_answers
-					", 1
+					",
+					1
 				);
 
 				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
@@ -834,7 +914,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				SELECT *
 				FROM {$lp_db->tb_lp_question_answers}
 				LIMIT %d OFFSET %d
-				", $limit, $offset
+				",
+				$limit,
+				$offset
 			);
 
 			$rows = $wpdb->get_results( $query );
@@ -943,7 +1025,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					SELECT COUNT(meta_id) FROM $lp_db->tb_postmeta
 					WHERE meta_key = %s
 					AND meta_value = %s
-					", 'lp_type', 'fill_in_blank'
+					",
+					'lp_type',
+					'fill_in_blank'
 				);
 
 				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
@@ -960,7 +1044,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				    WHERE meta_key = %s
 				    AND meta_value = %s
 				    LIMIT %d, %d
-				", '_lp_type', 'fill_in_blank', $offset, $limit
+				",
+				'_lp_type',
+				'fill_in_blank',
+				$offset,
+				$limit
 			);
 
 			$question_ids = $lp_db->wpdb->get_col( $query_get_question_ids );
@@ -976,7 +1064,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				UPDATE {$lp_db->tb_postmeta}
 				SET meta_value = %s
 				WHERE meta_id IN ($question_ids_str)
-				", 'fill_in_blanks'
+				",
+				'fill_in_blanks'
 			);
 			$lp_db->wpdb->query( $query );
 
@@ -1048,6 +1137,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				"
 			);
 
+			$lp_db->add_col_table( $lp_db->tb_lp_order_itemmeta, 'extra_value', 'longtext', 'meta_value' );
+
 			$indexs = array( 'learnpress_order_item_id', 'meta_key', 'meta_value' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_order_itemmeta, $indexs );
 		} catch ( Exception $e ) {
@@ -1089,7 +1180,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				"
 				ALTER TABLE {$lp_db->tb_lp_section_items}
 				ADD INDEX section_item (`section_id`, `item_id`)
-				", 1
+				",
+				1
 			);
 
 			$lp_db->wpdb->query( $query );
@@ -1159,7 +1251,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					"UPDATE $lp_db->tb_options
 					SET option_value = %s
 					WHERE option_name = 'learn_press_profile_endpoints'
-					", maybe_serialize( $learn_press_profile_endpoints_tmp )
+					",
+					maybe_serialize( $learn_press_profile_endpoints_tmp )
 				)
 			);
 

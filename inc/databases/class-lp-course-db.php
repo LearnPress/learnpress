@@ -112,6 +112,39 @@ class LP_Course_DB extends LP_Database {
 
 		return $first_item_id;
 	}
+
+	/**
+	 * Get popular courses.
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @return array
+	 * @author tungnx
+	 * @version 1.0.0
+	 */
+	public function get_popular_courses( LP_Course_Filter $filter ): array {
+		$query = apply_filters(
+			'learn-press/course-curd/query-popular-courses',
+			$this->wpdb->prepare(
+				"
+					SELECT DISTINCT(item_id), COUNT(item_id) as total
+					FROM $this->tb_lp_user_items
+					WHERE item_type = %s
+					AND status = %s
+					OR status = %s
+					GROUP BY item_id
+					ORDER BY total DESC
+					LIMIT %d
+				",
+				LP_COURSE_CPT,
+				LP_COURSE_ENROLLED,
+				LP_COURSE_FINISHED,
+				$filter->limit
+			)
+		);
+
+		return $this->wpdb->get_col( $query );
+	}
 }
 
 LP_Course_DB::getInstance();

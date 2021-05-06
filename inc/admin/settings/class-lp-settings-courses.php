@@ -84,6 +84,13 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'desc'    => esc_html__( 'Students will get started courses immediately after successfully purchased.', 'learnpress' ),
 						),
 						array(
+							'title'      => __( 'Enable popup confirm finish course, complete item', 'learnpress' ),
+							'desc'       => __( 'Show popup confirm before finish course or complete item.', 'learnpress' ),
+							'id'         => 'enable_popup_confirm_finish',
+							'default'    => 'yes',
+							'type'       => 'checkbox',
+						),
+						array(
 							'title'             => esc_html__( 'Courses per page', 'learnpress' ),
 							'desc'              => esc_html__( 'Number of courses displayed per page.', 'learnpress' ),
 							'id'                => 'archive_course_limit',

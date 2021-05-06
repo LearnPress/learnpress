@@ -1,7 +1,7 @@
 .lp-overlay {
 	display: none;
 	position: fixed;
-	z-index: 100;
+	z-index: 10000;
 	top: 0;
 	right: 0;
 	bottom: 0;
@@ -12,6 +12,21 @@
 	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 	transition-duration: 150ms;
 	transition-property: opacity;
+}
+
+.wp-admin {
+	.lp-modal-dialog {
+
+		.lp-modal-content {
+			.lp-modal-header {
+				padding: 2em;
+
+				h3 {
+					font-size: 1.4em;
+				}
+			}
+		}
+	}
 }
 
 .lp-modal-dialog {
@@ -42,11 +57,12 @@
 		.lp-modal-header {
 			background: #7c60d9;
 			border-bottom: 1px solid #eee;
-			padding: 2em;
+			padding: 1em;
 
 			h3 {
 				margin: 0;
 				color: white;
+				font-size: inherit;
 			}
 		}
 
@@ -54,7 +70,6 @@
 			.main-content {
 				max-height: 500px;
 				overflow: auto;
-				height: 500px;
 
 				h3, h2, .pd-2em {
 					padding: 0 2em;

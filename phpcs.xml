@@ -8,7 +8,6 @@
     <file>./inc/</file>
     <file>./templates/</file>
     <file>learnpress.php</file>
-    <file>learnpress.php</file>
 
     <exclude-pattern>./inc/admin/includes/class-markdown-parse.php</exclude-pattern>
     <exclude-pattern>*/inc/libraries/*</exclude-pattern>

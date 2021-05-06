@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * Delete course itself and sections.
 		 *
 		 * @param int|object $course_id
-		 * @param bool $delete_item  - Optional. TRUE will delete all items assigned to course
+		 * @param bool       $delete_item - Optional. TRUE will delete all items assigned to course
 		 */
 		public function delete_course( $course_id, $delete_item = false ) {
 			if ( $delete_item ) {
@@ -231,7 +231,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * Read all items in a course from database with an array in pair of
 		 * post ID and post type.
 		 *
-		 * @param int $course_id
+		 * @param int  $course_id
 		 * @param bool $publish_only
 		 *
 		 * @return array
@@ -281,8 +281,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * Get all courses that contains an item by item id.
 		 * Data returned is an array of all courses found.
 		 *
-		 * @param int $item_id  - ID of any item
-		 * @param bool $check_support  - Optional. TRUE will check if course is support that item
+		 * @param int  $item_id - ID of any item
+		 * @param bool $check_support - Optional. TRUE will check if course is support that item
 		 *
 		 * @return array|bool
 		 * @since 3.1.0
@@ -477,7 +477,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		/**
 		 * Get sections of course
 		 *
-		 * @param int $course_id
+		 * @param int    $course_id
 		 * @param string $return
 		 *
 		 * @return array
@@ -602,7 +602,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * Remove lesson, quiz from course's curriculum.
 		 *
 		 * @param int $item_id
-		 * @param int $course_id  - Optional. Added since 3.1.0
+		 * @param int $course_id - Optional. Added since 3.1.0
 		 *
 		 * @since 3.0.0
 		 */
@@ -845,8 +845,26 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param array $args
 		 *
 		 * @return array
+		 * @author tungnx
+		 * @version 1.0.0
 		 */
-		public function get_popular_courses( $args = array() ) {
+		public function get_popular_courses( array $args = array() ): array {
+			$lp_db = LP_Course_DB::getInstance();
+
+			$filter        = new LP_Course_Filter();
+			$filter->limit = $args['limit'];
+
+			return $lp_db->get_popular_courses( $filter );
+		}
+
+		/**
+		 * Get popular courses.
+		 *
+		 * @param array $args
+		 *
+		 * @return array
+		 */
+		public function get_popular_courses_bk( $args = array() ) {
 			global $wpdb;
 
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -881,7 +899,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @param int|array $course_id
+		 * @param int|array    $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
@@ -962,7 +980,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @param int|array $course_id
+		 * @param int|array    $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
