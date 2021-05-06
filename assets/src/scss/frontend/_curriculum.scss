@@ -6,10 +6,6 @@
 			display: none;
 			padding-top: 56px;
 
-			img{
-				max-width: 100%;
-			}
-
 			&.active {
 				display: block;
 			}
@@ -53,7 +49,7 @@
 
 #learn-press-course {
 
-	.course-author {
+	.lp-course-author {
 		display: flex;
 		margin-bottom: 40px;
 
@@ -63,52 +59,31 @@
 		}
 
 		.course-author__pull-left {
-			display: flex;
-			flex-direction: column;
-			width: 210px;
 			margin-right: 30px;
 			text-align: center;
 			align-items: center;
 
 			@media (max-width: 767px) {
-				width: 100%;
 				margin-right: 0;
 				margin-bottom: 30px;
 			}
 
 			img {
-				position: relative;
-				width: 96px;
-				height: 96px;
+				width: 100%;
+				max-width: 96px;
 				margin-bottom: 20px;
 				border-radius: 50%;
-			}
-
-			.course-author__meta {
-
-				span {
-					color: #333;
-					font-size: 16px;
-					font-weight: 300;
-					text-transform: capitalize;
-
-					.meta-number {
-						font-weight: 500;
-					}
-
-				}
-
-				.courses {
-					display: none;
-				}
+				object-fit: cover;
+				object-position: center;
 			}
 		}
 
 		.course-author__pull-right {
-			width: calc(100% - 210px);
+			flex: 1;
 
 			@media (max-width: 767px) {
 				width: 100%;
+				text-align: center;
 			}
 
 			.author-title {
@@ -135,21 +110,17 @@
 			}
 		}
 
-		.course-author__meta {
-			margin-bottom: 12px;
-		}
-
-		.course-author__meta-row {
-			display: block;
-		}
-
 		.author-socials {
+			display: grid;
+			grid-template-columns: repeat(4, 33px);
+			gap: 10px;
+			justify-content: center;
 
-			a {
+			> a {
 				display: inline-block;
 				width: 33px;
 				height: 33px;
-				margin: 0 10px 0 0;
+				margin: 0;
 				border: 1px solid #ededed;
 				border-radius: 50%;
 				color: #878787;
@@ -157,6 +128,7 @@
 				font-size: 14px;
 				line-height: 33px;
 				text-align: center;
+				vertical-align: middle;
 				transition: all 0.3s;
 
 				&:hover {
@@ -173,15 +145,49 @@
 				}
 			}
 		}
+	}
 
-		&::after {
+	div.lp-list-co-instructor {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 40px;
 
-			@include clear-fix();
+		&__item {
+			display: flex;
+			column-gap: 30px;
+
+			@media (max-width: 767px) {
+				align-items: center;
+				flex-direction: column;
+				padding: 0 15px;
+				column-gap: 0;
+				row-gap: 10px;
+			}
 		}
 
-		.course-instructor-item {
-			clear: both;
-			padding-top: 20px;
+		&__avatar {
+
+			>img {
+				width: 100%;
+				max-width: 96px;
+				border-radius: 999px;
+			}
+		}
+
+		&__bio {
+			flex: 1;
+
+			&__top {
+
+				> a {
+					font-size: 18px;
+					font-weight: 600;
+				}
+			}
+
+			&__description {
+				font-size: 1rem;
+			}
 		}
 	}
 
