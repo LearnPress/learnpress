@@ -3,13 +3,18 @@
  * Display single row of order items.
  *
  * @author Nhamdv <4.0.0>
+ * @version 4.0.0
  */
+
+if ( ! isset( $item ) ) {
+	return;
+}
 ?>
 
 <?php if ( ! empty( $item['course_id'] ) ) { ?>
 	<tr class="order-item-row" data-item_id="<?php echo esc_attr( $item['id'] ); ?>" data-id="<?php echo esc_attr( $item['course_id'] ); ?>" data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
 		<td class="column-name">
-			<?php if ( 'pending' === $order->get_status() ) : ?>
+			<?php if ( isset( $order ) && 'pending' === $order->get_status() ) : ?>
 				<a class="remove-order-item learn-press-tooltip" href="" data-tooltip="<?php esc_attr_e( 'Delete item', 'learnpress' ); ?>">
 					<span class="dashicons dashicons-no-alt"></span>
 				</a>
@@ -25,7 +30,7 @@
 		</td>
 
 		<td class="column-price align-right">
-			<?php echo learn_press_format_price( $item['total'], $currency_symbol ); ?>
+			<?php echo learn_press_format_price( isset( $item['total'] ) ? $item['total'] : 0, isset( $currency_symbol ) ? $currency_symbol : '$' ); ?>
 		</td>
 
 		<td class="column-quantity align-right">
@@ -33,7 +38,7 @@
 			<?php echo esc_html( $item['quantity'] ); ?>
 		</td>
 
-		<td class="column-total align-right"><?php echo learn_press_format_price( $item['total'], $currency_symbol ); ?></td>
+		<td class="column-total align-right"><?php echo learn_press_format_price( isset( $item['total'] ) ? $item['total'] : 0, isset( $currency_symbol ) ? $currency_symbol : '$' ); ?></td>
 	</tr>
 
 	<?php

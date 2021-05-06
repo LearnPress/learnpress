@@ -149,11 +149,11 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * Process the payment.
 	 *
-	 * @param $order
+	 * @param int $order
 	 *
 	 * @return array
 	 */
-	public function process_payment( $order ) {
+	public function process_payment( int $order ) {
 		return array();
 	}
 
