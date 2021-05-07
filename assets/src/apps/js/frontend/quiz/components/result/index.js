@@ -46,6 +46,20 @@ const Result = () => {
 				ele.classList.add( 'has-status', 'status-completed', graduation );
 			}
 		}
+
+		const item = [ ...document.querySelectorAll( '#popup-header .items-progress' ) ][ 0 ];
+
+		if ( item ) {
+			const itemCompleted = item.querySelector( '.items-completed' );
+
+			if ( itemCompleted ) {
+				const number = parseInt( itemCompleted.textContent );
+
+				const allItemCompleted = document.querySelectorAll( '#popup-sidebar .course-curriculum .course-item.status-completed' );
+
+				itemCompleted.textContent = parseInt( allItemCompleted.length );
+			}
+		}
 	}, [ results ] );
 
 	const animate = () => {
