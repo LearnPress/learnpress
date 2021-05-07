@@ -1011,7 +1011,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->wpdb->query(
 				"
 				ALTER TABLE {$lp_db->tb_lp_question_answermeta}
-				ADD INDEX question_answer_meta (`learnpress_question_answer_id`, `meta_key`)
+				ADD INDEX question_answer_meta (`learnpress_question_answer_id`, `meta_key`(150))
 				"
 			);
 		} catch ( Exception $e ) {
@@ -1128,7 +1128,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 		try {
 			$lp_db->add_col_table( $lp_db->tb_lp_order_items, 'item_id', 'bigint(20)', 'order_id' );
-			$lp_db->add_col_table( $lp_db->tb_lp_order_items, 'item_type', 'varchar(200)', 'item_id' );
+			$lp_db->add_col_table( $lp_db->tb_lp_order_items, 'item_type', 'varchar(45)', 'item_id' );
 
 			$indexs = array( 'order_id', 'item_id', 'item_type' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_order_items, $indexs );

@@ -700,7 +700,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					order_item_name longtext NOT NULL,
 					order_id bigint(20) unsigned NOT NULL DEFAULT 0,
 					item_id bigint(20) unsigned NOT NULL DEFAULT 0,
-					item_type varchar(200) NOT NULL DEFAULT '',
+					item_type varchar(45) NOT NULL DEFAULT '',
 					PRIMARY KEY (order_item_id),
   					KEY order_id (order_id),
   					KEY item_id (item_id),
@@ -718,8 +718,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					extra_value longtext,
 					PRIMARY KEY (meta_id),
   					KEY learnpress_order_item_id (learnpress_order_item_id),
-  					KEY meta_key (meta_key),
-  					KEY meta_value (meta_value)
+  					KEY meta_key (meta_key(190)),
+  					KEY meta_value (meta_value(190))
 				) $collate;";
 			}
 
@@ -745,7 +745,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					meta_key varchar(255) NOT NULL DEFAULT '',
 					meta_value longtext NULL,
 					PRIMARY KEY (meta_id),
-					KEY question_answer_meta (`learnpress_question_answer_id`, `meta_key`)
+					KEY question_answer_meta (`learnpress_question_answer_id`, `meta_key`(150))
 				) $collate;
 				";
 			}
@@ -853,8 +853,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					extra_value longtext NULL,
 					PRIMARY KEY (meta_id),
 					KEY learnpress_user_item_id (learnpress_user_item_id),
-  					KEY meta_key (meta_key),
-  					KEY meta_value (meta_value)
+  					KEY meta_key (meta_key(190)),
+  					KEY meta_value (meta_value(190))
 				) $collate;
 				";
 			}

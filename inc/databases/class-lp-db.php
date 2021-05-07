@@ -290,9 +290,9 @@ class LP_Database {
 
 		foreach ( $indexs as $index ) {
 			if ( $count_indexs === array_search( $index, $indexs ) ) {
-				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . ')';
+				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . '(190))';
 			} else {
-				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . '),';
+				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . '(190)),';
 			}
 		}
 
