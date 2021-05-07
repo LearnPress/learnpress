@@ -62,32 +62,32 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					'learnpress_user_items',
 					'',
 					array(
-						'create_tables'                    => new LP_Step(
+						'create_tables'                                 => new LP_Step(
 							'create_tables',
 							'Create tables',
 							'learnpress_user_item_results'
 						),
-						'clone_tables'                     => new LP_Step(
+						'clone_tables'                                  => new LP_Step(
 							'clone_tables',
 							'Backup Tables',
 							'learnpress_user_items, learnpress_user_itemmeta, learnpress_question_answers, postmeta, options'
 						),
-						'modify_tb_lp_user_items'          => new LP_Step(
+						'modify_tb_lp_user_items'                       => new LP_Step(
 							'modify_tb_lp_user_items',
 							'Modify table learnpress_user_items',
 							'Modify table learnpress_user_items, move the result of students on table learnpress_uset_itemmeta to learnpress_user_item_results'
 						),
-						'convert_result_graduation_item'   => new LP_Step(
+						'convert_result_graduation_item'                => new LP_Step(
 							'convert_result_graduation_item',
 							'Convert Data Result courses, items\' courses',
 							''
 						),
-						'convert_result_questions'         => new LP_Step(
+						'convert_result_questions'                      => new LP_Step(
 							'convert_result_questions',
 							'Convert Data Result questions',
 							''
 						),
-						'convert_retake_quiz'              => new LP_Step(
+						'convert_retake_quiz'                           => new LP_Step(
 							'convert_retake_quiz',
 							'Convert retake quizzes',
 							''
@@ -97,72 +97,72 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 							'Create column extra_value',
 							''
 						),
-						'convert_meta_value_longtext'      => new LP_Step(
+						'convert_meta_value_longtext'                   => new LP_Step(
 							'convert_meta_value_longtext',
 							'Copy meta_value longtext to extra_value',
 							''
 						),
-						'remove_data_lp_user_itemmeta'     => new LP_Step(
+						'remove_data_lp_user_itemmeta'                  => new LP_Step(
 							'remove_data_lp_user_itemmeta',
 							'Remove data results of lp_user_itemmeta',
 							''
 						),
-						'modify_tb_lp_user_itemmeta'       => new LP_Step(
+						'modify_tb_lp_user_itemmeta'                    => new LP_Step(
 							'modify_tb_lp_user_itemmeta',
 							'Modify table learnpress_user_itemmeta',
 							'Change type columns: meta_key, meta_value. Create Index: user_item_id, meta_key, meta_value'
 						),
-						'modify_tb_lp_quiz_questions'      => new LP_Step(
+						'modify_tb_lp_quiz_questions'                   => new LP_Step(
 							'modify_tb_lp_quiz_questions',
 							'Modify table learnpress_quiz_questions',
 							''
 						),
-						'modify_tb_lp_question_answers'    => new LP_Step(
+						'modify_tb_lp_question_answers'                 => new LP_Step(
 							'modify_tb_lp_question_answers',
 							'Modify table learnpress_question_answers',
 							''
 						),
-						'update_question_answers'          => new LP_Step(
+						'update_question_answers'                       => new LP_Step(
 							'update_question_answers',
 							'Update data table learnpress_question_answers',
 							''
 						),
-						'modify_tb_lp_question_answermeta' => new LP_Step(
+						'modify_tb_lp_question_answermeta'              => new LP_Step(
 							'modify_tb_lp_question_answermeta',
 							'Modify table learnpress_question_answermeta',
 							''
 						),
-						'convert_question_type_fill_in_blank' => new LP_Step(
+						'convert_question_type_fill_in_blank'           => new LP_Step(
 							'convert_question_type_fill_in_blank',
 							'Update data question type "Fill in blank"',
 							''
 						),
-						'delete_columns_question_answers'  => new LP_Step(
+						'delete_columns_question_answers'               => new LP_Step(
 							'delete_columns_question_answers',
 							'Delete data table learnpress_question_answers',
 							''
 						),
-						'modify_tb_lp_order_items'         => new LP_Step(
+						'modify_tb_lp_order_items'                      => new LP_Step(
 							'modify_tb_lp_order_items',
 							'Modify data table learnpress_order_items',
 							''
 						),
-						'modify_tb_lp_order_itemmeta'      => new LP_Step(
+						'modify_tb_lp_order_itemmeta'                   => new LP_Step(
 							'modify_tb_lp_order_itemmeta',
 							'Modify data table learnpress_order_itemmeta',
 							''
 						),
-						'modify_tb_lp_sections'            => new LP_Step(
+						'modify_tb_lp_sections'                         => new LP_Step(
 							'modify_tb_lp_sections',
 							'Modify table learnpress_sections',
 							'Create Index'
 						),
-						'modify_tb_lp_section_items'       => new LP_Step(
+						'modify_tb_lp_section_items'                    => new LP_Step(
 							'modify_tb_lp_section_items',
 							'Modify table learnpress_section_items',
 							'Create Index'
 						),
-						'convert_lp_settings'              => new LP_Step(
+						'convert_lp_settings'                           => new LP_Step(
 							'convert_lp_settings',
 							'Convert data settings learnpress',
 							'Courses thumbnail dimensions, Profile thumbnail dimensions, Profile rename dashboard to overview, Block course by duration, Block course when finished, Assessment course by quizzes - Evaluate, '
@@ -206,7 +206,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			if ( empty( $data ) ) {
 				$create_table = $create_tables[0];
 			} elseif ( ! empty( $data[ $key_create_table ] )
-					   && in_array( $data[ $key_create_table ], $create_tables ) ) {
+			           && in_array( $data[ $key_create_table ], $create_tables ) ) {
 				$create_table = $data[ $key_create_table ];
 			}
 
@@ -278,7 +278,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			if ( empty( $data ) ) {
 				$clone_table = $clone_tables[0];
 			} elseif ( ! empty( $data[ $key_clone_table ] )
-					   && in_array( $data[ $key_clone_table ], $clone_tables, true ) ) {
+			           && in_array( $data[ $key_clone_table ], $clone_tables, true ) ) {
 				$clone_table = $data[ $key_clone_table ];
 			}
 
@@ -316,10 +316,15 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 	/**
 	 * Modify table learnpress_user_items .
+	 * - Add column graduation varchar(20)
+	 * - Add column access_level varchar(20)
+	 * - Copy value start_time_gmt to start_time if value != '0000-00-00 00:00:00' | And delete column start_time_gmt
+	 * - Copy value end_time_gmt to start_time if value != '0000-00-00 00:00:00' | And delete column end_time_gmt
+	 * - Create indexs
 	 *
 	 * @return LP_Step
 	 */
-	protected function modify_tb_lp_user_items() {
+	protected function modify_tb_lp_user_items() : LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
@@ -335,7 +340,8 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_col_table( $lp_db->tb_lp_user_items, 'access_level', 'varchar(20)', 'graduation' );
 
 			// Change type columns: start_time, end_time.
-			$lp_db->wpdb->query( "
+			$lp_db->wpdb->query(
+				"
 				ALTER TABLE $lp_db->tb_lp_user_items
 				MODIFY start_time datetime default null,
 				MODIFY end_time datetime default null;
@@ -351,7 +357,13 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			 */
 			$check_col_start_time_gmt = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
 			if ( $check_col_start_time_gmt ) {
-				$lp_db->wpdb->query( "UPDATE $lp_db->tb_lp_user_items SET start_time = start_time_gmt WHERE user_item_id > 0" );
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items SET start_time = start_time_gmt
+					WHERE user_item_id > 0
+					AND start_time_gmt != '0000-00-00 00:00:00'
+					"
+				);
 				$lp_db->drop_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
 			}
 
@@ -364,9 +376,17 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			 */
 			$check_col_end_time_gmt = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'end_time_gmt' );
 			if ( $check_col_end_time_gmt ) {
-				$lp_db->wpdb->query( "UPDATE $lp_db->tb_lp_user_items SET end_time = end_time_gmt WHERE user_item_id > 0" );
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items SET end_time = end_time_gmt
+					WHERE user_item_id > 0
+					AND end_time_gmt != '0000-00-00 00:00:00'
+					"
+				);
 				$lp_db->drop_col_table( $lp_db->tb_lp_user_items, 'end_time_gmt' );
 			}
+
+			// Remove rows have status = 'canceled';
 
 			// Create index.
 			$indexs = array( 'user_id', 'item_id', 'item_type', 'status', 'ref_type', 'ref_id', 'parent_id' );
@@ -1323,6 +1343,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 			// Finish upgrade.
 			update_option( 'learnpress_db_version', '4' );
+			update_option( 'learnpress_version', LEARNPRESS_VERSION );
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
