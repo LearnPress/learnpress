@@ -19,7 +19,7 @@ if ( ! $course || ! $user ) {
 }
 
 $course_data    = $user->get_course_data( $course->get_id() );
-$course_results = $course_data->get_results( false );
+$course_results = $course_data->calculate_course_results();
 $percentage     = $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0;
 ?>
 

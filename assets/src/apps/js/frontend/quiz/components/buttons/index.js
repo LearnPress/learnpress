@@ -7,12 +7,17 @@ class Buttons extends Component {
 	startQuiz = ( event ) => {
 		event && event.preventDefault();
 
+		const btn = document.querySelector( '.lp-button.start' );
+
+		btn && btn.setAttribute( 'disabled', 'disabled' );
+
 		const { startQuiz, status } = this.props;
 
 		if ( status === 'completed' ) {
-			const { confirm } = select( 'learnpress/modal' );
+			const { confirm, isOpen } = select( 'learnpress/modal' );
 
 			if ( 'no' === confirm( 'Are you sure you want to retry quiz?', this.startQuiz ) ) {
+				! isOpen() && btn && btn.removeAttribute( 'disabled' );
 				return;
 			}
 		}
@@ -85,18 +90,6 @@ class Buttons extends Component {
 
 		if ( 'no' === confirm( __( 'Are you sure to submit quiz?', 'learnpress' ), this.submit ) ) {
 			return;
-		}
-
-		const item = [ ...document.querySelectorAll( '#popup-header .items-progress' ) ][ 0 ];
-
-		if ( item ) {
-			const itemCompleted = item.querySelector( '.items-completed' );
-
-			if ( itemCompleted ) {
-				const number = parseInt( itemCompleted.textContent );
-
-				itemCompleted.textContent = number + 1;
-			}
 		}
 
 		submitQuiz();
