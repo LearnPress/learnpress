@@ -248,7 +248,7 @@ class LP_Addon {
 			$flag = false;
 		}
 
-		if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>=' ) ) {
+		if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>' ) ) {
 			$flag = false;
 		}
 
