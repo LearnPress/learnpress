@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit();
 
 $course_data       = $user->get_course_data( $course->get_id() );
-$course_results    = $course_data->get_results( false );
+$course_results    = $course_data->calculate_course_results();
 $passing_condition = $course->get_passing_condition();
 $quiz_false        = 0;
 

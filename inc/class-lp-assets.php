@@ -329,6 +329,11 @@ class LP_Assets extends LP_Abstract_Assets {
 						break;
 					}
 
+					if ( is_post_type_archive( 'lp_collection' ) || is_singular( 'lp_collection' ) ) {
+						$is_screen = true;
+						break;
+					}
+
 					if ( learn_press_is_page( $page ) ) {
 						$is_screen = true;
 						break;
