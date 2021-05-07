@@ -481,7 +481,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_items() {
-			if ( false === ( $items = LP_Object_Cache::get( 'order-' . $this->get_id(), 'learn-press/order-items' ) ) ) {
+			$items = LP_Object_Cache::get( 'order-' . $this->get_id(), 'learn-press/order-items' );
+			if ( false === $items ) {
 				$items = $this->_curd->read_items( $this );
 
 				LP_Object_Cache::set( 'order-' . $this->get_id(), $items, 'learn-press/order-items' );
@@ -501,7 +502,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_items_filter( $filter = array() ) {
 			$key_item_cache = 'order-' . $this->get_id() . md5( json_encode( $filter ) );
 
-			if ( false === ( $items = LP_Object_Cache::get( $key_item_cache, 'learn-press/order-items' ) ) ) {
+			$items = LP_Object_Cache::get( 'order-' . $this->get_id(), 'learn-press/order-items' );
+			if ( false === $items ) {
 				$items = $this->_curd->read_items_filter( $this, $filter );
 
 				LP_Object_Cache::set( $key_item_cache, $items, 'learn-press/order-items' );
@@ -522,10 +524,25 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Get list of course ids from order.
 		 *
 		 * @return array|bool
+		 * @editor tungnx
 		 */
 		public function get_item_ids() {
-			if ( $items = $this->get_items() ) {
-				return wp_list_pluck( $items, 'course_id' );
+			$items = $this->get_items();
+
+			if ( $items ) {
+				$course_ids = array();
+				foreach ( $items as $item ) {
+					if ( isset( $item['course_id'] ) ) {
+						$course_ids[] = $item['course_id'];
+					}
+				}
+
+				return $course_ids;
+				/**
+				 * Comment by tungnx. Because it will error if item didn't have key 'course_id'.
+				 * Ex: case buy certificate, will not have that key
+				 */
+				//return @wp_list_pluck( $items, 'course_id' );
 			}
 
 			return false;

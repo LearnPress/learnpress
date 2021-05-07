@@ -25,7 +25,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			//add_action( 'trashed_post', array( $this, 'trashed_order' ) );
 			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
 			add_action( 'save_post', array( $this, 'recount_enrolled_users' ), 11, 3 );
 
@@ -178,77 +177,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			}
 			wp_enqueue_script( 'user-suggest' );
-		}
-
-		/**
-		 * Disable accessing course if the order is trashed.
-		 *
-		 * @param int $order_id
-		 */
-		public function trashed_order( $order_id ) {
-			return;
-
-			$order = learn_press_get_order( $order_id );
-			if ( ! $order ) {
-				return;
-			}
-
-			$items = $order->get_items();
-			if ( ! $items ) {
-				return;
-			}
-
-			$users = $order->get_users();
-			if ( ! $users ) {
-				return;
-			}
-
-			// Also trash child orders
-			$child_orders = $order->get_child_orders();
-			if ( $order->is_multi_users() && $child_orders ) {
-				foreach ( $child_orders as $child_order ) {
-					wp_trash_post( $child_order );
-				}
-			}
-
-			$user_curd  = new LP_User_CURD();
-			$order_data = array();
-			foreach ( $users as $user_id ) {
-				$user = learn_press_get_user( $user_id );
-				if ( ! $user ) {
-					continue;
-				}
-
-				foreach ( $items as $item ) {
-
-					$user_course = $user->get_course_data( $item['course_id'] );
-
-					if ( ! $user_course || ! $user_course->get_user_item_id() ) {
-						continue;
-					}
-
-					$user_course->set_status( 'trash' );
-					$user_course->update();
-
-					// Store user_id and item_id of current user item into the order
-					$order_data[ $user_course->get_user_item_id() ] = array(
-						'user_id' => $user_course->get_user_id(),
-						'item_id' => $user_course->get_item_id()
-					);
-
-					// And remove it from user item
-					$user_curd->update_user_item_by_id(
-						$user_course->get_user_item_id(),
-						array(
-							'user_id' => - 1,
-							'item_id' => - 1
-						)
-					);
-				}
-			}
-
-			// Store all to the order itself
-			update_post_meta( $order_id, '_lp_user_data', $order_data );
 		}
 
 		/**

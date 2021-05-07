@@ -48,8 +48,12 @@ class LP_Email_Type_Order extends LP_Email {
 		$items       = $order->get_items();
 		$instructors = array();
 
-		if ( sizeof( $items ) ) {
+		if ( count( $items ) ) {
 			foreach ( $items as $item ) {
+				if ( ! isset( $item['course_id'] ) ) {
+					continue;
+				}
+
 				$user_id = get_post_field( 'post_author', $item['course_id'] );
 				if ( $user_id ) {
 					if ( empty( $instructors[ $user_id ] ) ) {

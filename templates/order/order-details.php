@@ -34,6 +34,10 @@ if ( ! isset( $order ) ) {
 		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
 
 		foreach ( $items as $item_id => $item ) {
+			if ( ! isset( $item['course_id'] ) ) {
+				continue;
+			}
+
 			if ( apply_filters( 'learn-press/order/item-visible', true, $item ) ) {
 				$course = learn_press_get_course( $item['course_id'] );
 
