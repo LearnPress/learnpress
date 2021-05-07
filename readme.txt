@@ -197,9 +197,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 = 4.0.0 =
-+ Added new UI/UX for Quiz screen in frontend.
-+ Added enable Gutenberg for lesson and quiz and question.
-+ Added extra meta for course: Requirements, Target Audience, Key Features.
+~ Added new UI/UX for Quiz screen in frontend.
+~ Added enable Gutenberg for lesson and quiz and question.
+~ Added extra meta for course: Requirements, Target Audience, Key Features.
 ~ Improved quiz settings that made it simpler and easy to use.
 ~ Improved single course page.
 ~ Improved archive course page.
@@ -474,9 +474,9 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed header-sent when log file
 
 = 3.0.10 =
-+ Added quiz option to minus a number of points for each wrong question in quiz
-+ Added admin email to send to admin when an order is completed
-+ Added button allows wp admin can send a request to subscriber
+~ Added quiz option to minus a number of points for each wrong question in quiz
+~ Added admin email to send to admin when an order is completed
+~ Added button allows wp admin can send a request to subscriber
 ~ Improved auto redirecting to current question when user go to a quiz
 ~ Improved UI of course editor for RTL
 ~ Improved content of email sending to admin and instructor
