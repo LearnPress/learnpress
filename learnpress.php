@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.0.0-beta-4
+ * Version: 4.0.0
  * Author URI: http://thimpress.com
  * Requires at least: 3.8
  * Tested up to: 5.7
@@ -227,7 +227,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function background( $name ) {
 			if ( ! did_action( 'plugins_loaded' ) ) {
 				_doing_it_wrong(
-					__CLASS__ . '::' . __FUNCTION__, 'should call after \'plugins_loaded\' action',
+					__CLASS__ . '::' . __FUNCTION__,
+					'should call after \'plugins_loaded\' action',
 					'3.0.8'
 				);
 			}
@@ -486,8 +487,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			<div class="error">
 				<p>
 					<?php
-					printf( __( 'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)',
-						'learnpress' ), LP_PLUGIN_BASENAME );
+					printf(
+						__(
+							'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)',
+							'learnpress'
+						),
+						LP_PLUGIN_BASENAME
+					);
 					?>
 				</p>
 			</div>
@@ -509,9 +515,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return string
 		 */
-//		private function plugin_basename() {
-//			return learn_press_plugin_basename( __FILE__ );
-//		}
+		//      private function plugin_basename() {
+		//          return learn_press_plugin_basename( __FILE__ );
+		//      }
 
 		/**
 		 * Magic function to get Learnpress data.
@@ -602,6 +608,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Trigger Learnpress loaded actions.
 		 *
 		 * @since 3.0.0
+		 * @version 1.0.1
+		 * @editor tungnx
 		 */
 		public function plugin_loaded() {
 			//$this->add_cron();
@@ -623,8 +631,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$list_lp_addon_activated = preg_grep( '/^learnpress-.*/i', $plugins );
 
 			// Remove hook deactivate addon assignments v3.
-			add_action( 'deactivate_learnpress-assignments/learnpress-assignments.php',
-				array( $this, 'lp_assignment_install' ), - 10 );
+			add_action(
+				'deactivate_learnpress-assignments/learnpress-assignments.php',
+				array( $this, 'lp_assignment_install' ),
+				- 10
+			);
 
 			foreach ( $list_lp_addon_activated as $lp_addon ) {
 				$lp_addon_info = get_file_data(
@@ -638,23 +649,18 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				//$lp_addon_info    = get_plugin_data( WP_PLUGIN_DIR . '/' . $lp_addon );
 				$lp_addon_version = $lp_addon_info['Version'];
 
-				$addon              = new Lp_Addon();
-				$addon->version     = $lp_addon_version;
-				$addon->plugin_base = $lp_addon;
-				$addons_valid       = $addon->check_require_version_addon();
+				$addon                  = new Lp_Addon();
+				$addon->version         = $lp_addon_version;
+				$addon->plugin_base     = $lp_addon;
+				$addon->require_version = $lp_addon_info['Require_LP_Version'];
+				$addon_valid            = $addon->check_require_version_addon();
 
 				if ( $addons_valid ) {
-					/**
-					 * If define standard, can remove hook below on file abstract-addon.php
-					 * add_action( 'plugins_loaded', array( $this, 'check_require_version_lp' ), - 9 )
-					 */
-					if ( ! empty( $lp_addon_info['Require_LP_Version'] ) ) {
-						$addon->require_version = $lp_addon_info['Require_LP_Version'];
-					} else {
-						$addon->require_version = '';
-					}
+					$addon_valid = $addon->check_require_version_lp();
+				}
 
-					$addons_valid = $addon->check_require_version_lp();
+				if ( ! $addon_valid ) {
+					$addons_valid = false;
 				}
 			}
 			// End check addons valid.
@@ -802,13 +808,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function is_request( $type ) {
 			switch ( $type ) {
-				case 'admin' :
+				case 'admin':
 					return is_admin();
-				case 'ajax' :
+				case 'ajax':
 					return defined( 'LP_DOING_AJAX' );
-				case 'cron' :
+				case 'cron':
 					return defined( 'DOING_CRON' );
-				case 'frontend' :
+				case 'frontend':
 					return ( ! is_admin() || defined( 'LP_DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
 				default:
 					return strtolower( $_SERVER['REQUEST_METHOD'] ) == $type;
@@ -890,7 +896,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				?>
 				<div class="notice notice-error">
-					<p><?php echo( 'LP4 require version Thim-core: ' . $this->thim_core_version_require ) ?></p>
+					<p><?php echo( 'LP4 require version Thim-core: ' . $this->thim_core_version_require ); ?></p>
 				</div>
 				<?php
 				die;
@@ -908,6 +914,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			return self::$_instance;
+		}
+
+		public function admin_notice_require_addon_version() {
+			?>
+			<div class="notice notice-error">
+				<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require Addon</strong> version 4.0.0 or higher' ); ?></p>
+			</div>
+			<?php
 		}
 	}
 }

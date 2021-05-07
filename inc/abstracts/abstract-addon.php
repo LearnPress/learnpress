@@ -78,9 +78,9 @@ class LP_Addon {
 
 		$this->_define_constants();
 
-//		if ( ! $this->_check_version() ) {
-//			return;
-//		}
+		//      if ( ! $this->_check_version() ) {
+		//          return;
+		//      }
 
 		/**
 		 * After all addons lp config by key "Require_LP_Version" can remove hook
@@ -120,9 +120,9 @@ class LP_Addon {
 	 * Init
 	 */
 	public function init() {
-//		if ( ! $this->_check_version() ) {
-//			return;
-//		}
+		//      if ( ! $this->_check_version() ) {
+		//          return;
+		//      }
 
 		$this->load_text_domain();
 
@@ -282,12 +282,13 @@ class LP_Addon {
 				<?php
 				printf(
 					__(
-						'<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher',
+						'<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher %4$s',
 						'learnpress'
 					),
 					esc_html( $this->get_name() ),
 					esc_html( $this->version ),
-					esc_html( $this->require_version )
+					esc_html( $this->require_version ),
+					'| Can addon invalid key Require_LP_Version'
 				);
 				?>
 			</p>
@@ -409,10 +410,10 @@ class LP_Addon {
 	public function get_template_path() {
 		if ( empty( $this->_template_path ) ) {
 			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace(
-					'!^learnpress-!',
-					'',
-					dirname( $this->get_plugin_slug() )
-				);
+				'!^learnpress-!',
+				'',
+				dirname( $this->get_plugin_slug() )
+			);
 		}
 
 		return $this->_template_path;
