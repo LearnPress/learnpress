@@ -13,7 +13,7 @@
     "prod": "webpack --progress --colors -p --config webpack.config.js --mode=production",
     "dev-build": "npm run build && npm run build-packages && gulp styles && npm run dev && npm run dev-packages",
     "release": "npm run build && npm run build-packages && gulp release",
-    "makepot": ".\\vendor\\bin\\wp i18n make-pot . --skip-audit --exclude=\"test,release,build,tools,dist,node_modules,vendor,wordpress\" --headers='{\"last-translator\":\"admin@email.com\",\"Report-Msgid-Bugs-To\":\"https://github.com/LearnPress/learnpress/issues\"}' languages/learnpress.pot"
+    "makepot": "wp i18n make-pot . --skip-audit --exclude=\"test,release,build,tools,dist,node_modules,vendor,wordpress\" --headers='{\"last-translator\":\"admin@email.com\",\"Report-Msgid-Bugs-To\":\"https://github.com/LearnPress/learnpress/issues\"}' languages/learnpress.pot"
   },
   "repository": {
     "type": "git",
