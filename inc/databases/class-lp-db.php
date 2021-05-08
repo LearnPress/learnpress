@@ -326,7 +326,7 @@ class LP_Database {
 			"
 		);
 
-		return $this->wpdb->query( $query );
+		return $query;
 	}
 
 	/**

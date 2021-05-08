@@ -720,7 +720,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 *
 	 * @return LP_Step
 	 */
-	protected function create_col_extra_value_on_tb_lp_user_itemmeta() {
+	protected function create_col_extra_value_on_tb_lp_user_itemmeta(): LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
@@ -738,14 +738,24 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 *
 	 * @return LP_Step
 	 */
-	protected function convert_meta_value_longtext() {
+	protected function convert_meta_value_longtext(): LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 
 		try {
+			// Copy meta_value to extra_value.
 			$lp_db->wpdb->query(
 				"
 				UPDATE $lp_db->tb_lp_user_itemmeta SET extra_value = meta_value
+				WHERE meta_key = '_lp_assignment_answer_note'
+				OR meta_key = '_lp_assignment_answer_upload'
+				"
+			);
+
+			// Empty meta_value.
+			$lp_db->wpdb->query(
+				"
+				UPDATE $lp_db->tb_lp_user_itemmeta SET meta_value = ''
 				WHERE meta_key = '_lp_assignment_answer_note'
 				OR meta_key = '_lp_assignment_answer_upload'
 				"
