@@ -199,23 +199,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			 * @see LP_Database::create_tb_lp_upgrade_db()
 			 */
 			$lp_db = LP_Database::getInstance();
-			//          $mysql_version = $lp_db->wpdb->db_server_info();
-			//          if ( version_compare( $mysql_version, '5.5.2', '<=' ) ) {
-			//              $lp_db->wpdb->query(
-			//                  '
-			//                  ALTER DATABASE databasename CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-			//                  ALTER TABLE tablename CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-			//                  '
-			//              );
-			//          } elseif ( version_compare( $mysql_version, '5.7', '<' ) ) {
-			//              $lp_db->wpdb->query(
-			//                  '
-			//                  ALTER DATABASE databasename CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-			//                  ALTER TABLE tablename CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-			//                  '
-			//              );
-			//
-			//          }
 
 			$create_tables            = array(
 				'tb_lp_user_item_results',
