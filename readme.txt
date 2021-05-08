@@ -196,6 +196,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.0.1 =
+~ Fixed: upgrade LP error if mysql version < 5.7
+~ Fixed: minor bugs
+
 = 4.0.0 =
 ~ Added new UI/UX for Quiz screen in frontend.
 ~ Added enable Gutenberg for lesson and quiz and question.
