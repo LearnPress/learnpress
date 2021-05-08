@@ -29,4 +29,4 @@ if ( ! is_user_logged_in() ) {
 	$message = $can_view_item->message;
 }
 
-learn_press_display_message( $message, 'error' );
+learn_press_display_message( $message, 'learn-press-content-protected-message error' );
