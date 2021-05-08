@@ -16,6 +16,8 @@ if ( ! isset( $course ) ) {
 }
 
 $classes_purchase = 'purchase-course';
+$classes_purchase .= ( LP()->checkout()->is_enable_guest_checkout() ) ? ' guest_checkout' : '';
+
 $classes_purchase = apply_filters( 'lp/btn/purchase/classes', $classes_purchase );
 ?>
 
