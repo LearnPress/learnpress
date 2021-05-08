@@ -3803,10 +3803,13 @@ require_once dirname( __FILE__ ) . '/lp-custom-hooks.php';
 
 
 /**
+ * Disable auto update
+ *
  * @param $update
  * @param $item
  *
  * @return false
+ * @author hungkv
  */
 function learnpress_disable_auto_update( $update, $item ) {
 	$plugins = array( // Plugins to  auto-update
@@ -3817,25 +3820,27 @@ function learnpress_disable_auto_update( $update, $item ) {
 		return false;
 	}
 }
-
 add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );
 
 
-add_action('in_plugin_update_message-learnpress/learnpress.php', function($plugin_data){
+add_action( 'in_plugin_update_message-learnpress/learnpress.php', function ( $plugin_data ) {
 	version_update_warning( LEARNPRESS_VERSION, $plugin_data['new_version'] );
 });
 /**
+ * Custom message warning have new version
+ *
  * @param $current_version
  * @param $new_version
+ * @author hungkv
  */
 function version_update_warning( $current_version, $new_version ) {
 	$current_version_minor_part = explode( '.', $current_version )[1];
-	$new_version_minor_part = explode( '.', $new_version )[1];
+	$new_version_minor_part     = explode( '.', $new_version )[1];
 	if ( $current_version_minor_part === $new_version_minor_part ) {
 		return;
 	}
 	?>
-	<hr class="lp-update--warning__separator" />
+	<hr class="lp-update--warning__separator"/>
 	<div class="lp-update--warning">
 		<div>
 			<div class="lp-update-warning__title">
@@ -3845,14 +3850,14 @@ function version_update_warning( $current_version, $new_version ) {
 				<?php echo esc_html__('The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment','learnpress'); ?>
 			</div>
 			<style>
-				#learnpress-update .update-message{
+				#learnpress-update .update-message {
 					background: #ff0000;
 				}
 				#learnpress-update .update-message p::after,
-				#learnpress-update .update-message p::before{
+				#learnpress-update .update-message p::before {
 					color: #fff;
 				}
-				.lp-update-warning__title, .lp-update-warning__message{
+				.lp-update-warning__title, .lp-update-warning__message {
 					color: #fff;
 				}
 			</style>
