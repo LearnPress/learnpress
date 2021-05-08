@@ -22,6 +22,8 @@ class LP_Database {
 	public $tb_lp_question_answers;
 	public $tb_lp_question_answermeta;
 	public $tb_lp_upgrade_db;
+	private $collate = '';
+	public $max_index_length = '191';
 
 	protected function __construct() {
 		/**
@@ -47,6 +49,7 @@ class LP_Database {
 		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
 		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
 		$this->wpdb->hide_errors();
+		$this->set_collate();
 	}
 
 	/**
@@ -60,6 +63,26 @@ class LP_Database {
 		}
 
 		return self::$_instance;
+	}
+
+	public function set_collate() {
+		$collate = '';
+
+		if ( $this->wpdb->has_cap( 'collation' ) ) {
+			if ( ! empty( $this->wpdb->charset ) ) {
+				$collate .= 'DEFAULT CHARACTER SET ' . $this->wpdb->charset;
+			}
+
+			if ( ! empty( $this->wpdb->collate ) ) {
+				$collate .= ' COLLATE ' . $this->wpdb->collate;
+			}
+		}
+
+		$this->collate = $collate;
+	}
+
+	public function get_collate(): string {
+		return $this->collate;
 	}
 
 	/**
@@ -91,7 +114,7 @@ class LP_Database {
 	 * @return int
 	 * @since 3.2.8
 	 */
-	public function get_count_post_of_user( $filter ) {
+	public function get_count_post_of_user( LP_Post_Type_Filter $filter ): int {
 		$query_append = '';
 
 		$cache_key = _count_posts_cache_key( $filter->post_type );
@@ -245,7 +268,7 @@ class LP_Database {
 		}
 
 		if ( ! $col_exists ) {
-			return $this->wpdb->query( "ALTER TABLE $name_table ADD COLUMN $name_col $type $query_add");
+			return $this->wpdb->query( "ALTER TABLE $name_table ADD COLUMN $name_col $type $query_add" );
 		}
 
 		return true;
@@ -277,7 +300,7 @@ class LP_Database {
 	 * Add Index of Table
 	 *
 	 * @param string $name_table .
-	 * @param array  $indexs .
+	 * @param array  $indexs | ('type' => 'int', 'name' => '').
 	 *
 	 * @return bool|int
 	 */
@@ -290,17 +313,17 @@ class LP_Database {
 
 		foreach ( $indexs as $index ) {
 			if ( $count_indexs === array_search( $index, $indexs ) ) {
-				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . '(190))';
+				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . ')';
 			} else {
-				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . '(190)),';
+				$add_index .= ' ADD INDEX ' . $index . ' (' . $index . '),';
 			}
 		}
 
-		$query = $this->wpdb->prepare(
+		$query = $this->wpdb->query(
 			"
-				ALTER TABLE {$name_table}
-				$add_index
-			", 1
+			ALTER TABLE {$name_table}
+			$add_index
+			"
 		);
 
 		return $this->wpdb->query( $query );
@@ -333,19 +356,19 @@ class LP_Database {
 	 * @return bool|int
 	 */
 	public function create_tb_lp_user_item_results() {
-		$query = $this->wpdb->prepare(
-			"
-				CREATE TABLE IF NOT EXISTS $this->tb_lp_user_item_results(
-					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-					user_item_id bigint(20) unsigned NOT NULL,
-					result longtext,
-					PRIMARY KEY (id),
-					KEY user_item_id (user_item_id)
-				)
-			", 1
-		);
+		$collate = $this->get_collate();
 
-		return $this->wpdb->query( $query );
+		return $this->wpdb->query(
+			"
+			CREATE TABLE IF NOT EXISTS $this->tb_lp_user_item_results(
+				id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+				user_item_id bigint(20) unsigned NOT NULL,
+				result longtext,
+				PRIMARY KEY (id),
+				KEY user_item_id (user_item_id)
+			) $collate
+			"
+		);
 	}
 
 	/**
@@ -354,17 +377,17 @@ class LP_Database {
 	 * @return bool|int
 	 */
 	public function create_tb_lp_upgrade_db() {
-		$query = $this->wpdb->prepare(
-			"
-				CREATE TABLE IF NOT EXISTS {$this->tb_lp_upgrade_db}(
-					step varchar(255) PRIMARY KEY UNIQUE,
-					status varchar(20),
-					KEY status (status)
-				)
-			", 1
-		);
+		$collate = $this->get_collate();
 
-		return $this->wpdb->query( $query );
+		return $this->wpdb->query(
+			"
+			CREATE TABLE IF NOT EXISTS {$this->tb_lp_upgrade_db}(
+				step varchar(50) PRIMARY KEY UNIQUE,
+				status varchar(10),
+				KEY status (status)
+			) $collate
+			"
+		);
 	}
 
 	/**
@@ -382,7 +405,10 @@ class LP_Database {
 
 		return $this->wpdb->insert(
 			$this->tb_lp_upgrade_db,
-			array( 'step' => $step, 'status' => $status ),
+			array(
+				'step'   => $step,
+				'status' => $status,
+			),
 			array( '%s', '%s' )
 		);
 	}
