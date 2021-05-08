@@ -34,6 +34,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @see create_tables
 	 * @see clone_tables
 	 * @see modify_tb_lp_user_items
+	 * @see remove_course_status_cancelled
 	 * @see convert_result_graduation_item
 	 * @see convert_result_questions
 	 * @see convert_retake_quiz
@@ -79,6 +80,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 							'modify_tb_lp_user_items',
 							'Modify table learnpress_user_items',
 							'Modify table learnpress_user_items, move the result of students on table learnpress_uset_itemmeta to learnpress_user_item_results'
+						),
+						'remove_course_status_cancelled'   => new LP_Step(
+							'remove_course_status_cancelled',
+							'Remove courses has status cancelled',
+							'learnpress_user_item_results'
 						),
 						'convert_result_graduation_item'   => new LP_Step(
 							'convert_result_graduation_item',
@@ -312,7 +318,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				}
 			}
 		} catch ( Exception $e ) {
-			$response->message = $e->getMessage();
+			$response->message = sprintf( 'Step %s: %s', __FUNCTION__, $e->getMessage() );
 		}
 
 		return $response;
@@ -395,6 +401,62 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			// Create index.
 			$indexs = array( 'user_id', 'item_id', 'item_type', 'status', 'ref_type', 'ref_id', 'parent_id' );
 			$lp_db->add_indexs_table( $lp_db->tb_lp_user_items, $indexs );
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+	}
+
+	/**
+	 * Remove courses has status "cancelled" and items child, itemmeta
+	 *
+	 * @return LP_Step
+	 */
+	protected function remove_course_status_cancelled() : LP_Step {
+		$response = new LP_Step( __FUNCTION__, '' );
+		$lp_db    = LP_Database::getInstance();
+
+		try {
+			$user_course_ids = $lp_db->wpdb->get_col(
+				$lp_db->wpdb->prepare(
+					"
+					SELECT user_item_id FROM $lp_db->tb_lp_user_items
+					WHERE item_type = %s
+					AND status = %s
+					",
+					LP_COURSE_CPT,
+					'cancelled'
+				)
+			);
+
+			$user_course_ids_str = implode( ',', $user_course_ids );
+
+			$user_item_ids = $lp_db->wpdb->get_col(
+				"
+				SELECT user_item_id FROM $lp_db->tb_lp_user_items
+				WHERE parent_id IN (" . $user_course_ids_str . ')
+				'
+			);
+
+			$user_item_ids_concat     = array_merge( $user_course_ids, $user_item_ids );
+			$user_item_ids_concat_str = implode( ',', $user_item_ids_concat );
+
+			// Delete on tb lp_user_items
+			$lp_db->wpdb->query(
+				"
+				DELETE FROM $lp_db->tb_lp_user_items
+				WHERE user_item_id IN (" . $user_item_ids_concat_str . ')
+				'
+			);
+
+			// Delete on tb lp_user_itemmeta
+			$lp_db->wpdb->query(
+				"
+				DELETE FROM $lp_db->tb_lp_user_itemmeta
+				WHERE learnpress_user_item_id IN (" . $user_course_ids_str . ')
+				'
+			);
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
