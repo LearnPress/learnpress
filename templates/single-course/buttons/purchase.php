@@ -14,11 +14,14 @@ defined( 'ABSPATH' ) || exit();
 if ( ! isset( $course ) ) {
 	$course = learn_press_get_course();
 }
+
+$classes_purchase = 'purchase-course';
+$classes_purchase = apply_filters( 'lp/btn/purchase/classes', $classes_purchase );
 ?>
 
 <?php do_action( 'learn-press/before-purchase-form' ); ?>
 
-	<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
+	<form name="purchase-course" class="<?php echo esc_attr( $classes_purchase ); ?>" method="post" enctype="multipart/form-data">
 
 		<?php do_action( 'learn-press/before-purchase-button' ); ?>
 
