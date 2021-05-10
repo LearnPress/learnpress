@@ -4,6 +4,8 @@
  * Handle request(ajax|api) call step by step
  *
  * Class LP_Handle_Steps
+ * @author tungnx
+ * @version 1.0.0
  */
 class LP_Handle_Steps {
 	/**
@@ -73,6 +75,6 @@ class LP_Handle_Steps {
 			return call_user_func( $step_function, $data );
 		}
 
-		throw new Exception( __( 'Not found function', 'thim-core' ) . $step_function );
+		throw new Exception( __( 'Not found function', 'learnpress' ) . $step_function );
 	}
 }
