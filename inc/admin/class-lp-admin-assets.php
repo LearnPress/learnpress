@@ -76,7 +76,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( 'jquery-ui-datepicker' )
 				),
 				'search-lp-addons-themes'           => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/pages/search-lp-addons-themes' . self::$_min_assets . '.js' ),
+					$this->url( 'js/dist/admin/pages/search-lp-addons-themes' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
 					array( 'learnpress_page_learn-press-addons' ),
 					0,
@@ -156,21 +156,21 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'learn-press-sync-data'             => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/pages/sync-data' . self::$_min_assets . '.js' ),
+					$this->url( 'js/dist/admin/pages/sync-data' . self::$_min_assets . '.js' ),
 					array(),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
 					1
 				),
 				'lp-setup'                          => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/pages/setup' . self::$_min_assets . '.js' ),
+					$this->url( 'js/dist/admin/pages/setup' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'lp-utils', 'dropdown-pages' ),
 					array( 'lp-page-setup' ),
 					0,
 					1
 				),
 				'learn-press-statistic'             => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/pages/statistic' . self::$_min_assets . '.js' ),
+					$this->url( 'js/dist/admin/pages/statistic' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'jquery-ui-datepicker', 'chart' ),
 					array( 'learnpress_page_learn-press-statistics' ),
 					0,

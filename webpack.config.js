@@ -8,7 +8,11 @@ module.exports = {
 		'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
 		'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
 		'./assets/js/dist/admin/tools/course': './assets/src/apps/components/admin/tools/course.js',
-		'./assets/js/dist/admin/pages/tools': './assets/src/js/admin/pages/tools.js',
+		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
+		'./assets/js/dist/admin/pages/setup': './assets/src/apps/js/admin/pages/setup.js',
+		'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
+		'./assets/js/dist/admin/pages/sync-data': './assets/src/apps/js/admin/pages/sync-data.js',
+		'./assets/js/dist/admin/pages/search-lp-addons-themes': './assets/src/apps/js/admin/pages/search-lp-addons-themes.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
 	},
 	output: {
