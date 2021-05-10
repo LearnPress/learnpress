@@ -1,5 +1,5 @@
 const $ = jQuery;
-import lpModalOverlay from '../ultils/lp-modal-overlay';
+import lpModalOverlay from '../utils/lp-modal-overlay';
 
 const lpModalOverlayCompleteItem = {
 	elBtnFinishCourse: null,

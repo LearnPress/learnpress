@@ -150,8 +150,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			self::$_instance = $this;
 
-			update_option( 'learnpress_version', LEARNPRESS_VERSION );
-
 			// Define constant .
 			$this->plugin_defines();
 
@@ -911,6 +909,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return LearnPress
 		 */
 		public static function instance() {
+			update_option( 'learnpress_version', LEARNPRESS_VERSION );
+
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self();
 			}
