@@ -19,8 +19,8 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 				'course'   => __( 'Course Data', 'learnpress' ),
 				'database' => __( 'Database', 'learnpress' ),
 				'template' => __( 'Templates', 'learnpress' ),
-				'cron'     => __( 'Cron Jobs', 'learnpress' ),
-				'cache'    => __( 'Caches', 'learnpress' ),
+				//'cron'     => __( 'Cron Jobs', 'learnpress' ),
+				//'cache'    => __( 'Caches', 'learnpress' ),
 			)
 		);
 
@@ -70,17 +70,17 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		learn_press_admin_view( 'tools/html-template' );
 	}
 
-	public function page_content_cache() {
+	/*public function page_content_cache() {
 		learn_press_admin_view( 'tools/html-cache' );
-	}
+	}*/
 
 	public function page_content_course() {
 		learn_press_admin_view( 'tools/html-course' );
 	}
 
-	public function page_content_cron() {
+	/*public function page_content_cron() {
 		learn_press_admin_view( 'tools/html-cron' );
-	}
+	}*/
 
 	/**
 	 * Display page

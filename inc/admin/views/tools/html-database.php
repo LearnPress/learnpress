@@ -10,6 +10,7 @@
 defined( 'ABSPATH' ) || die();
 
 require_once 'database/html-upgrade-database.php';
-require_once 'database/html-repair-database.php';
-require_once 'database/html-remove-database.php';
-require_once 'database/html-remove-outdated-data.php';
+//require_once 'database/html-repair-database.php';
+//require_once 'database/html-remove-database.php';
+//require_once 'database/html-remove-outdated-data.php';
+require_once 'database/html-rollback-db.php';
