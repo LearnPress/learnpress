@@ -4,7 +4,7 @@
  *
  * @author tungnx
  * @since 3.2.7.5
- * @version 2.0.0
+ * @version 2.0.1
  */
 defined( 'ABSPATH' ) || exit();
 
@@ -22,7 +22,7 @@ class LP_Database {
 	public $tb_lp_question_answers;
 	public $tb_lp_question_answermeta;
 	public $tb_lp_upgrade_db;
-	private $collate = '';
+	private $collate         = '';
 	public $max_index_length = '191';
 
 	protected function __construct() {
@@ -227,6 +227,7 @@ class LP_Database {
 	 * @param string $name_col .
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function drop_col_table( string $name_table = '', string $name_col = '' ) {
 		if ( ! current_user_can( 'administrator' ) ) {
@@ -236,9 +237,11 @@ class LP_Database {
 		$check_table = $this->check_col_table( $this->tb_lp_user_items, $name_col );
 
 		if ( $check_table ) {
-			$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP COLUMN $name_col", 1 );
+			$execute = $this->wpdb->query( "ALTER TABLE $name_table DROP COLUMN $name_col" );
 
-			return $this->wpdb->query( $query );
+			$this->check_execute_has_error();
+
+			return $execute;
 		}
 
 		return true;
@@ -253,6 +256,7 @@ class LP_Database {
 	 * @param string $after_col .
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function add_col_table( string $name_table, string $name_col, string $type, string $after_col = '' ) {
 		if ( ! current_user_can( 'administrator' ) ) {
@@ -268,7 +272,11 @@ class LP_Database {
 		}
 
 		if ( ! $col_exists ) {
-			return $this->wpdb->query( "ALTER TABLE $name_table ADD COLUMN $name_col $type $query_add" );
+			$execute = $this->wpdb->query( "ALTER TABLE $name_table ADD COLUMN $name_col $type $query_add" );
+
+			$this->check_execute_has_error();
+
+			return $execute;
 		}
 
 		return true;
@@ -300,9 +308,10 @@ class LP_Database {
 	 * Add Index of Table
 	 *
 	 * @param string $name_table .
-	 * @param array  $indexs | ('type' => 'int', 'name' => '').
+	 * @param array  $indexs.
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function add_indexs_table( string $name_table, array $indexs ) {
 		$add_index    = '';
@@ -319,14 +328,16 @@ class LP_Database {
 			}
 		}
 
-		$query = $this->wpdb->query(
+		$execute = $this->wpdb->query(
 			"
 			ALTER TABLE {$name_table}
 			$add_index
 			"
 		);
 
-		return $query;
+		$this->check_execute_has_error();
+
+		return $execute;
 	}
 
 	/**
@@ -335,6 +346,7 @@ class LP_Database {
 	 * @param string $name_table .
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function drop_table( string $name_table = '' ) {
 		if ( ! current_user_can( 'administrator' ) ) {
@@ -344,7 +356,11 @@ class LP_Database {
 		// Check table exists.
 		$tb_exists = $this->check_table_exists( $name_table );
 		if ( $tb_exists ) {
-			return $this->wpdb->query( "DROP TABLE $name_table" );
+			$execute = $this->wpdb->query( "DROP TABLE $name_table" );
+
+			$this->check_execute_has_error();
+
+			return $execute;
 		}
 
 		return true;
@@ -354,11 +370,12 @@ class LP_Database {
 	 * Create table learnpress_user_item_results
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function create_tb_lp_user_item_results() {
 		$collate = $this->get_collate();
 
-		return $this->wpdb->query(
+		$execute = $this->wpdb->query(
 			"
 			CREATE TABLE IF NOT EXISTS $this->tb_lp_user_item_results(
 				id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -369,17 +386,22 @@ class LP_Database {
 			) $collate
 			"
 		);
+
+		$this->check_execute_has_error();
+
+		return $execute;
 	}
 
 	/**
 	 * Create table learnpress_upgrade_db
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function create_tb_lp_upgrade_db() {
 		$collate = $this->get_collate();
 
-		return $this->wpdb->query(
+		$execute = $this->wpdb->query(
 			"
 			CREATE TABLE IF NOT EXISTS {$this->tb_lp_upgrade_db}(
 				step varchar(50) PRIMARY KEY UNIQUE,
@@ -388,6 +410,10 @@ class LP_Database {
 			) $collate
 			"
 		);
+
+		$this->check_execute_has_error();
+
+		return $execute;
 	}
 
 	/**
@@ -420,5 +446,16 @@ class LP_Database {
 	 */
 	public function get_steps_completed() {
 		return $this->wpdb->get_results( "SELECT step, status FROM {$this->tb_lp_upgrade_db}", OBJECT_K );
+	}
+
+	/**
+	 * Check execute current has any errors.
+	 *
+	 * @throws Exception
+	 */
+	public function check_execute_has_error() {
+		if ( $this->wpdb->last_error ) {
+			throw new Exception( $this->wpdb->last_error );
+		}
 	}
 }
