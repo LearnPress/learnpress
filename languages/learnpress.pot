@@ -7292,7 +7292,7 @@ msgid "Close comments"
 msgstr ""
 
 #: templates/single-course/item-comments.php:13
-msgid "Open comments"
+msgid "View comments"
 msgstr ""
 
 #: templates/single-course/loop-section.php:48

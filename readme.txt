@@ -198,7 +198,7 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.0.1 =
-~ Fixed: upgrade LP error if mysql version < 5.7
+~ Fixed: upgrade LP error if mysql version < 5.7 - "Specified key was too long"
 ~ Fixed: minor bugs
 
 = 4.0.0 =
