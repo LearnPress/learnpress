@@ -723,20 +723,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$status = $item['status'];
 			}
 
-			$status = apply_filters( 'learn-press/user-item-status', $status, $item_id, $this->get_id(), $course_id );
-
-			/**
-			 * @deprecated
-			 */
-			$status = apply_filters(
-				'learn_press_user_course_item_status',
-				$status,
-				$item_id,
-				$course_id,
-				$this->get_id()
-			);
-
-			return $status;
+			return apply_filters( 'learn-press/user-item-status', $status, $item_id, $this->get_id(), $course_id );
 		}
 
 		/**
