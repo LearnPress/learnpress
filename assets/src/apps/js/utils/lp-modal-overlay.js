@@ -9,9 +9,7 @@ const lpModalOverlay = {
 	elFooter: null,
 	elCalledModal: null,
 	callBackYes: null,
-	instance: null,
 	init() {
-		this.instance = this;
 		this.elLPOverlay = $( '.lp-overlay' );
 
 		if ( ! this.elLPOverlay.length ) {

@@ -1,4 +1,4 @@
-import { elLPOverlay, lpModalOverlay } from '../../../../utils/lp-modal-overlay';
+import lpModalOverlay from '../../../../utils/lp-modal-overlay';
 import handleAjax from '../../../../utils/handle-ajax-api';
 
 const $ = jQuery;
@@ -15,7 +15,7 @@ const upgradeDB = () => {
 	if ( elWrapperTermsUpgrade.length ) { // Show Terms Upgrade.
 		lpModalOverlay.setContentModal( elWrapperTermsUpgrade.html() );
 
-		const elTermUpdate = elLPOverlay.find( '.terms-upgrade' );
+		const elTermUpdate = lpModalOverlay.elLPOverlay.find( '.terms-upgrade' );
 		const elLPAgreeTerm = elTermUpdate.find( 'input[name=lp-agree-term]' );
 		const elTermMessage = elTermUpdate.find( '.error' );
 		const elMessageUpgrading = $( 'input[name=message-when-upgrading]' ).val();
@@ -64,7 +64,7 @@ const upgradeDB = () => {
 		lpModalOverlay.elBtnNo.hide();
 
 		const urlHandle = '/lp/v1/database/upgrade';
-		const elGroupStep = elLPOverlay.find( '.lp-group-step' );
+		const elGroupStep = lpModalOverlay.elLPOverlay.find( '.lp-group-step' );
 		const elItemSteps = elToolUpgradeDB.find( '.lp-item-step' );
 
 		// Get params.
@@ -198,6 +198,11 @@ const getStepsUpgradeStatus = () => {
 		return;
 	}
 
+	// initial LP Modal Overlay
+	if ( ! lpModalOverlay.init() ) {
+		return;
+	}
+
 	const elWrapperStatusUpgrade = $( '.wrapper-lp-status-upgrade' );
 	const urlHandle = '/lp/v1/database/get_steps';
 
@@ -207,10 +212,7 @@ const getStepsUpgradeStatus = () => {
 	const action = urlParams.get( 'action' );
 
 	if ( 'upgrade-db' === action ) {
-		elLPOverlay.show();
-		if ( ! lpModalOverlay.instance ) {
-			lpModalOverlay.init();
-		}
+		lpModalOverlay.elLPOverlay.show();
 		lpModalOverlay.setTitleModal( elToolUpgradeDB.find( 'h2' ).html() );
 		lpModalOverlay.setContentModal( $( '.wrapper-lp-loading' ).html() );
 	}
@@ -263,12 +265,7 @@ const getStepsUpgradeStatus = () => {
 				}
 
 				elBtnUpgradeDB.on( 'click', function() {
-					// instance LP Modal Overlay.
-					if ( ! lpModalOverlay.instance ) {
-						lpModalOverlay.init();
-					}
-
-					elLPOverlay.show();
+					lpModalOverlay.elLPOverlay.show();
 					upgradeDB();
 				} );
 			}
