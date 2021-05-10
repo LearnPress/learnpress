@@ -125,8 +125,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			LP_Admin_Notice::instance()->remove_dismissed_notice( array( 'outdated-template', ) );
 
-			update_option( 'learnpress_version', LEARNPRESS_VERSION );
-
 			if ( ! get_option( 'learnpress_db_version' ) ) {
 				update_option( 'learnpress_db_version', (int) LEARNPRESS_VERSION );
 			}
@@ -546,11 +544,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		/**
 		 * Check version
 		 */
-		public static function check_version() {
+		/*public static function check_version() {
 			if ( ! defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LP()->version ) ) {
 				self::install();
 			}
-		}
+		}*/
 
 		private static function _create_cron_jobs() {
 			wp_clear_scheduled_hook( 'learn_press_cleanup_sessions' );
@@ -558,7 +556,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				'learn_press_cleanup_sessions' );
 		}
 
-		private function _is_old_version() {
+		/*private function _is_old_version() {
 			if ( is_null( self::$_is_old_version ) ) {
 				$is_old_version = get_transient( 'learn_press_is_old_version' );
 
@@ -583,7 +581,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 
 			return self::$_is_old_version;
-		}
+		}*/
 
 		/**
 		 * Find if there is any old course and did not upgrade
@@ -591,7 +589,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 *
 		 * @return mixed
 		 */
-		private static function _has_old_posts() {
+		/*private static function _has_old_posts() {
 			global $wpdb;
 			$query = $wpdb->prepare(
 				"
@@ -607,7 +605,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			);
 
 			return $wpdb->get_row( $query );
-		}
+		}*/
 
 		private static function _has_new_table() {
 			global $wpdb;
@@ -625,11 +623,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return $wpdb->get_var( $query ) ? true : false;
 		}
 
-		private static function _need_to_update() {
+		/*private static function _need_to_update() {
 			return self::_has_old_posts() || self::_has_old_teacher_role();
-		}
+		}*/
 
-		private static function _has_old_teacher_role() {
+		/*private static function _has_old_teacher_role() {
 			global $wpdb;
 			$query = $wpdb->prepare(
 				"
@@ -644,9 +642,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			);
 
 			return $wpdb->get_results( $query );
-		}
+		}*/
 
-		private static function _has_new_posts() {
+		/*private static function _has_new_posts() {
 			$new_post = get_posts(
 				array(
 					'post_type'      => 'lp_course',
@@ -656,7 +654,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			);
 
 			return sizeof( $new_post ) > 0;
-		}
+		}*/
 
 //		public static function update_db_version( $version = null ) {
 //			delete_option( 'learnpress_db_version' );

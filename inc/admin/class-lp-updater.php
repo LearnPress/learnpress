@@ -31,13 +31,13 @@ class LP_Updater {
 		 * When modify or create new Tables, need change version.
 		 * Ex: 5.x.x => 6.0.0
 		 */
-//		$this->db_map_version = apply_filters(
-//			'lp/upgrade/db/map_version',
-//			array(
-//				'4' => '3', // 4.0.0 <=> 3.x.x
-//				'5' => '4', // 5.0.0 <=> 4.x.x
-//			)
-//		);
+		//      $this->db_map_version = apply_filters(
+		//          'lp/upgrade/db/map_version',
+		//          array(
+		//              '4' => '3', // 4.0.0 <=> 3.x.x
+		//              '5' => '4', // 5.0.0 <=> 4.x.x
+		//          )
+		//      );
 
 		$this->db_map_version = apply_filters(
 			'lp/upgrade/db/map_version',
@@ -46,12 +46,12 @@ class LP_Updater {
 				'4' => 5, // DB v4 need up DB v5
 			)
 		);
-//		add_action( 'admin_init', array( $this, 'do_update' ) );
+		//      add_action( 'admin_init', array( $this, 'do_update' ) );
 		add_action( 'admin_notices', array( $this, 'check_update_database_message' ), 0 );
 
-//		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
-//			add_action( 'admin_notices', array( $this, 'update_message' ) );
-//		}
+		//      if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
+		//          add_action( 'admin_notices', array( $this, 'update_message' ) );
+		//      }
 
 		//LP_Request::register_ajax( 'check-updated', array( $this, 'check_updated' ) );
 
@@ -76,29 +76,29 @@ class LP_Updater {
 		die();
 	}*/
 
-//	public function check_updated() {
-//		$this->do_update();
-//
-//		$db_version     = get_option( 'learnpress_db_version' );
-//		$latest_version = $this->get_latest_version();
-//		$response       = array();
-//		$next_step      = get_option( 'learnpress_updater_step' );
-//
-//		if ( version_compare( $db_version, $latest_version, '>=' ) ) {
-//			$response['result']  = 'success';
-//			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
-//		} else {
-//			$response['step'] = $next_step;
-//		}
-//
-//		learn_press_send_json( $response );
-//
-//		die();
-//	}
+	//  public function check_updated() {
+	//      $this->do_update();
+	//
+	//      $db_version     = get_option( 'learnpress_db_version' );
+	//      $latest_version = $this->get_latest_version();
+	//      $response       = array();
+	//      $next_step      = get_option( 'learnpress_updater_step' );
+	//
+	//      if ( version_compare( $db_version, $latest_version, '>=' ) ) {
+	//          $response['result']  = 'success';
+	//          $response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
+	//      } else {
+	//          $response['step'] = $next_step;
+	//      }
+	//
+	//      learn_press_send_json( $response );
+	//
+	//      die();
+	//  }
 
-//	public function update_message() {
-//		learn_press_admin_view( 'updates/html-updating-message' );
-//	}
+	//  public function update_message() {
+	//      learn_press_admin_view( 'updates/html-updating-message' );
+	//  }
 
 	/*public function do_update() {
 		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
@@ -157,18 +157,18 @@ class LP_Updater {
 	/**
 	 * Includes all update patches by version priority.
 	 */
-//	public function include_update() {
-//		if ( ! $this->get_update_files() ) {
-//			return;
-//		}
-//
-//		$versions       = array_keys( $this->_update_files );
-//		$latest_version = end( $versions );
-//
-//		if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
-//			learn_press_include( 'updates/' . $this->_update_files[ $latest_version ] );
-//		}
-//	}
+	//  public function include_update() {
+	//      if ( ! $this->get_update_files() ) {
+	//          return;
+	//      }
+	//
+	//      $versions       = array_keys( $this->_update_files );
+	//      $latest_version = end( $versions );
+	//
+	//      if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
+	//          learn_press_include( 'updates/' . $this->_update_files[ $latest_version ] );
+	//      }
+	//  }
 
 	/**
 	 * Get latest version from updates
@@ -189,33 +189,33 @@ class LP_Updater {
 	/**
 	 * Scan folder updates to get update patches.
 	 */
-//	public function get_update_files() {
-//		if ( ! $this->_update_files ) {
-//			require_once ABSPATH . 'wp-admin/includes/file.php';
-//
-//			if ( WP_Filesystem() ) {
-//				global $wp_filesystem;
-//
-//				$files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' );
-//				if ( $files ) {
-//					foreach ( $files as $file ) {
-//						if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
-//							$this->_update_files [ $matches[1] ] = $file['name'];
-//						}
-//					}
-//				}
-//			}
-//
-//			/**
-//			 * Sort files by version
-//			 */
-//			if ( $this->_update_files ) {
-//				ksort( $this->_update_files );
-//			}
-//		}
-//
-//		return $this->_update_files;
-//	}
+	//  public function get_update_files() {
+	//      if ( ! $this->_update_files ) {
+	//          require_once ABSPATH . 'wp-admin/includes/file.php';
+	//
+	//          if ( WP_Filesystem() ) {
+	//              global $wp_filesystem;
+	//
+	//              $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' );
+	//              if ( $files ) {
+	//                  foreach ( $files as $file ) {
+	//                      if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
+	//                          $this->_update_files [ $matches[1] ] = $file['name'];
+	//                      }
+	//                  }
+	//              }
+	//          }
+	//
+	//          /**
+	//           * Sort files by version
+	//           */
+	//          if ( $this->_update_files ) {
+	//              ksort( $this->_update_files );
+	//          }
+	//      }
+	//
+	//      return $this->_update_files;
+	//  }
 
 	/**
 	 * Check LP Database need upgrade.
@@ -231,7 +231,7 @@ class LP_Updater {
 		$lp_version         = (int) LP()->version;
 
 		if ( array_key_exists( $db_current_version, $this->db_map_version )
-		     && $this->db_map_version[ $db_current_version ] === $lp_version ) {
+			 && $this->db_map_version[ $db_current_version ] === $lp_version ) {
 			return $this->db_map_version[ $db_current_version ];
 		}
 
@@ -242,8 +242,9 @@ class LP_Updater {
 		$lp_db                                = LP_Database::getInstance();
 		$check_tb_lp_order_items_exists       = $lp_db->check_table_exists( $lp_db->tb_lp_order_items );
 		$check_tb_lp_user_item_results_exists = $lp_db->check_table_exists( $lp_db->tb_lp_user_item_results );
+		$check_tb_lp_upgrade_db               = $lp_db->check_table_exists( $lp_db->tb_lp_upgrade_db );
 
-		if ( $check_tb_lp_order_items_exists && ! $check_tb_lp_user_item_results_exists ) {
+		if ( $check_tb_lp_order_items_exists && ( ! $check_tb_lp_user_item_results_exists || ! $check_tb_lp_upgrade_db ) ) {
 			update_option( 'learnpress_db_version', 3 );
 
 			return $this->db_map_version['3'];
@@ -272,7 +273,7 @@ class LP_Updater {
 				$name_class_handle_upgrade = 'LP_Upgrade_' . $file_plugin_version;
 
 				if ( class_exists( $name_class_handle_upgrade )
-				     && is_callable( array( $name_class_handle_upgrade, 'get_instance' ) ) ) {
+					 && is_callable( array( $name_class_handle_upgrade, 'get_instance' ) ) ) {
 					$class_handle = $name_class_handle_upgrade::get_instance();
 				}
 			}
