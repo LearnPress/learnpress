@@ -186,9 +186,9 @@ class LP_Database {
 	 *
 	 * @param string $name_table .
 	 *
-	 * @return bool|int
+	 * @throws Exception
 	 */
-	public function clone_table( string $name_table ) {
+	public function clone_table( string $name_table ):bool {
 		if ( ! current_user_can( 'administrator' ) ) {
 			return false;
 		}
@@ -198,12 +198,14 @@ class LP_Database {
 		// Drop table bk if exists.
 		$this->drop_table( $table_bk );
 
-		$query = dbDelta(
+		dbDelta(
 			"CREATE TABLE $table_bk LIKE $name_table;
 			INSERT INTO $table_bk SELECT * FROM $name_table;"
 		);
 
-		return $query;
+		$this->check_execute_has_error();
+
+		return true;
 	}
 
 	/**
