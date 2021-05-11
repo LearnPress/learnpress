@@ -709,7 +709,7 @@ function learn_press_get_page_id( $name ) {
  * display the seconds in time format h:i:s
  *
  * @param        $seconds
- * @param string $separator
+ * @param string  $separator
  *
  * @return string
  */
@@ -774,7 +774,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 		$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
 		$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
-		$format = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos(
+		$format  = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos(
 			$pagenum_link,
 			'index.php'
 		) ? 'index.php/' : '';
@@ -1831,9 +1831,9 @@ function is_learnpress() {
 if ( ! function_exists( 'learn_press_is_search' ) ) {
 	function learn_press_is_search() {
 		return array_key_exists( 's', $_REQUEST ) && array_key_exists(
-				'ref',
-				$_REQUEST
-			) && $_REQUEST['ref'] == 'course';
+			'ref',
+			$_REQUEST
+		) && $_REQUEST['ref'] == 'course';
 	}
 }
 
@@ -1958,22 +1958,22 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int  $expire
- * @param bool $secure
+ * @param int   $expire
+ * @param bool  $secure
  *
  * @editor tungnx
  * @version 1.0.1
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 	if ( ! headers_sent() ) {
-		//setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
+		// setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
 
 		$arr_cookie_options = array(
 			'expires'  => $expire,
 			'path'     => COOKIEPATH ? COOKIEPATH : '/',
 			'domain'   => COOKIE_DOMAIN, // leading dot for compatibility or use subdomain
 			'secure'   => true,     // or false
-			'samesite' => 'None' // None || Lax  || Strict
+			'samesite' => 'None', // None || Lax  || Strict
 		);
 
 		if ( phpversion() >= '7.3.0' ) {
@@ -2512,7 +2512,8 @@ function learn_press_checkout_needs_payment() {
  *
  * @return string
  */
-/*function learn_press_plugin_basename( $filepath ) {
+/*
+function learn_press_plugin_basename( $filepath ) {
 	$file          = str_replace( '\\', '/', $filepath );
 	$file          = preg_replace( '|/+|', '/', $file );
 	$plugin_dir    = str_replace( '\\', '/', WP_PLUGIN_DIR );
@@ -3513,50 +3514,54 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 	global $thepostid;
 
 	$course_tip     = '<span class="learn-press-tip">%s</span>';
-	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $thepostid . '" data-loading="' . esc_attr__( 'Loading...',
-			'learnpress' ) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
+	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $thepostid . '" data-loading="' . esc_attr__(
+		'Loading...',
+		'learnpress'
+	) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
 
 	$course_desc = array(
 		'evaluate_lesson'     => __(
-									 'Evaluate by number of lessons completed per number of total lessons.',
-									 'learnpress'
-								 )
-								 . sprintf(
-									 '<p>%s</p>',
-									 __(
-										 'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%',
-										 'learnpress'
-									 )
-								 ),
+			'Evaluate by number of lessons completed per number of total lessons.',
+			'learnpress'
+		)
+								. sprintf(
+									'<p>%s</p>',
+									__(
+										'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%',
+										'learnpress'
+									)
+								),
 		'evaluate_final_quiz' => __(
 			'Evaluate by results of final quiz in course. Click to Get Passing Grade to get and update Final Quiz',
 			'learnpress'
 		),
 		'evaluate_quizzes'    => __(
-									 'Evaluate as a percentage of completed quizzes on the total number of quizzes.',
-									 'learnpress'
-								 )
-								 . __(
-									 '<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: 50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>',
-									 'learnpress'
-								 ),
+			'Evaluate as a percentage of completed quizzes on the total number of quizzes.',
+			'learnpress'
+		)
+								. __(
+									'<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: 50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>',
+									'learnpress'
+								),
 		'evaluate_quiz'       => __(
-									 '<p>Evaluate by number of quizzes passed per number of total quizzes.</p>',
-									 'learnpress'
-								 )
-								 . __(
-									 '<p>E.g: Course has 10 quizzes and user passed 5 quizzes then the result = 5/10 = 50%.</p>',
-									 'learnpress'
-								 ),
+			'<p>Evaluate by number of quizzes passed per number of total quizzes.</p>',
+			'learnpress'
+		)
+								. __(
+									'<p>E.g: Course has 10 quizzes and user passed 5 quizzes then the result = 5/10 = 50%.</p>',
+									'learnpress'
+								),
 		'evaluate_questions'  => __(
-									 'Evaluate by achieved points of question passed per total point of all questions.',
-									 'learnpress'
-								 )
-								 . sprintf(
-									 '<p>%s</p>',
-									 __( 'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%.',
-										 'learnpress' )
-								 ),
+			'Evaluate by achieved points of question passed per total point of all questions.',
+			'learnpress'
+		)
+								. sprintf(
+									'<p>%s</p>',
+									__(
+										'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%.',
+										'learnpress'
+									)
+								),
 		'evaluate_mark'       => __( 'Evaluate by achieved marks per total marks of all questions.', 'learnpress' ),
 	);
 
@@ -3564,25 +3569,25 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 		'learnpress/course-evaluation/methods',
 		array(
 			'evaluate_lesson'     => __(
-										 'Evaluate via lessons',
-										 'learnpress'
-									 ) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
+				'Evaluate via lessons',
+				'learnpress'
+			) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
 			'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_final_quiz']
-				) . $final_quiz_btn . $final_quizz_passing,
+				$course_tip,
+				$course_desc['evaluate_final_quiz']
+			) . $final_quiz_btn . $final_quizz_passing,
 			'evaluate_quiz'       => __( 'Evaluate via quizzes passed', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_quiz']
-				),
+				$course_tip,
+				$course_desc['evaluate_quiz']
+			),
 			'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_questions']
-				),
+				$course_tip,
+				$course_desc['evaluate_questions']
+			),
 			'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_mark']
-				),
+				$course_tip,
+				$course_desc['evaluate_mark']
+			),
 		)
 	);
 
@@ -3823,9 +3828,12 @@ function learnpress_disable_auto_update( $update, $item ) {
 add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );
 
 
-add_action( 'in_plugin_update_message-learnpress/learnpress.php', function ( $plugin_data ) {
-	version_update_warning( LEARNPRESS_VERSION, $plugin_data['new_version'] );
-});
+add_action(
+	'in_plugin_update_message-learnpress/learnpress.php',
+	function ( $plugin_data ) {
+		version_update_warning( LEARNPRESS_VERSION, $plugin_data['new_version'] );
+	}
+);
 /**
  * Custom message warning have new version
  *
@@ -3847,7 +3855,7 @@ function version_update_warning( $current_version, $new_version ) {
 				<?php echo esc_html__( 'Heads up, Please backup before upgrade!', 'learnpress' ); ?>
 			</div>
 			<div class="lp-update-warning__message">
-				<?php echo esc_html__('The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment','learnpress'); ?>
+				<?php echo esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' ); ?>
 			</div>
 			<style>
 				#learnpress-update .update-message {
