@@ -9,13 +9,17 @@ a {
 	width: 1170px;
 	max-width: 100%;
 	margin: 0 auto;
-
-	@media (max-width: 1024px) {
+ 	@media (max-width: 1024px) {
 		padding-right: 15px;
 		padding-left: 15px;
 	}
-}
 
+}
+.lp-content-area:after,.lp-content-area:before{
+	content:"";
+	display: table;
+	clear: both;
+}
 .lp-archive-courses {
 
 	&.loading {
