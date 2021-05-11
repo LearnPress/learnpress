@@ -199,7 +199,8 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.0.2 =
 ~ Fixed: page profile lost styles when activate "All in One SEO" plugin
-~ Upgrade libray chart.js to version
+~ Upgrade library chart.js to v3.2.1
+~ Optimize query cache get list questions on a quiz
 
 = 4.0.1 =
 ~ Fixed: upgrade LP error if mysql version < 5.7 - "Specified key was too long".

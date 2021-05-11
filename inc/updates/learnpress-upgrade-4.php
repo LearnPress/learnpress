@@ -190,6 +190,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @return LP_Step
 	 */
 	protected function create_tables( array $data ): LP_Step {
+		set_time_limit( 0 );
 		$response         = new LP_Step( __FUNCTION__, 'Create table' );
 		$key_create_table = 'create_table';
 		$create_table     = '';
