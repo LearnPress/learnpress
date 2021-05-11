@@ -1799,3 +1799,71 @@ function lp_skeleton_animation_html( $count_li = 3 ) {
 
 	<?php
 }
+
+add_filter( 'lp_format_page_content', 'wptexturize' );
+add_filter( 'lp_format_page_content', 'convert_smilies' );
+add_filter( 'lp_format_page_content', 'convert_chars' );
+add_filter( 'lp_format_page_content', 'wpautop' );
+add_filter( 'lp_format_page_content', 'shortcode_unautop' );
+add_filter( 'lp_format_page_content', 'prepend_attachment' );
+add_filter( 'lp_format_page_content', 'do_shortcode', 11 );
+add_filter( 'lp_format_page_content', array( $GLOBALS['wp_embed'], 'run_shortcode' ), 8 );
+
+if ( function_exists( 'do_blocks' ) ) {
+	add_filter( 'lp_format_page_content', 'do_blocks', 9 );
+}
+
+function lp_format_page_content( $raw_string ) {
+	return apply_filters( 'lp_format_page_content', $raw_string );
+}
+
+if ( ! function_exists( 'lp_profile_page_content' ) ) {
+	function lp_profile_page_content() {
+		$profile_id = learn_press_get_page_id( 'profile' );
+
+		if ( $profile_id ) {
+			$profile_page = get_post( $profile_id );
+
+			$description = lp_format_page_content( wp_kses_post( $profile_page->post_content ) );
+
+			if ( $description ) {
+				echo '<div class="lp-profile-page__content">' . $description . '</div>';
+			}
+		}
+	}
+}
+
+if ( ! function_exists( 'lp_archive_course_page_content' ) ) {
+	function lp_archive_course_page_content() {
+		if ( is_search() ) {
+			return;
+		}
+
+		if ( is_post_type_archive( LP_COURSE_CPT ) && in_array( absint( get_query_var( 'paged' ) ), array( 0, 1 ), true ) ) {
+			$profile_id = learn_press_get_page_id( 'courses' );
+
+			if ( $profile_id ) {
+				$profile_page = get_post( $profile_id );
+
+				$description = lp_format_page_content( wp_kses_post( $profile_page->post_content ) );
+
+				if ( $description ) {
+					echo '<div class="lp-course-page__content">' . $description . '</div>';
+				}
+			}
+		}
+	}
+}
+
+if ( ! function_exists( 'lp_taxonomy_archive_course_description' ) ) {
+	function lp_taxonomy_archive_course_description() {
+
+		if ( learn_press_is_course_tax() && 0 === absint( get_query_var( 'paged' ) ) ) {
+			$term = get_queried_object();
+
+			if ( $term && ! empty( $term->description ) ) {
+				echo '<div class="lp-archive-course-term-description">' . lp_format_page_content( wp_kses_post( $term->description ) ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+		}
+	}
+}

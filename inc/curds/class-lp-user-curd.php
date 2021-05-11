@@ -1909,7 +1909,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			try {
 				if ( ! $orders ) {
-					throw new Exception( '', 0 );
+					throw new Exception( __( 'No item in Order', 'learnpress' ), 0 );
 				}
 
 				$course_ids   = array_keys( $orders );
@@ -1937,13 +1937,26 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 							if ( $args['status'] !== 'completed' ) {
 								if ( 'passed' === $args['status'] ) {
-									$having .= $wpdb->prepare( ' AND X.graduation	= %s', 'passed' );
+									$having .= $wpdb->prepare( ' AND X.graduation = %s', 'passed' );
+								} elseif ( 'failed' === $args['status'] ) {
+									$having .= $wpdb->prepare( ' AND X.graduation = %s', 'failed' );
 								} else {
 									$having .= $wpdb->prepare( ' AND ( X.graduation IS NULL OR X.graduation <> %s )', 'passed' );
 								}
 							}
-
 							break;
+
+						case 'in-progress':
+							$having .= $wpdb->prepare(
+								' AND X.status IN( %s ) AND X.graduation NOT IN ( %s, %s )',
+								array(
+									'started',
+									'passed',
+									'failed',
+								)
+							);
+							break;
+
 						case 'not-started':
 							$having .= $wpdb->prepare(
 								' AND X.status NOT IN( %s, %s )',

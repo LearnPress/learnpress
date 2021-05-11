@@ -294,15 +294,24 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return $output;
 	}
 
+	/**
+	 * Get Profile Quiz Tab content
+	 *
+	 * @param [type] $request
+	 * @return void
+	 *
+	 * @author Nhamdv <daonham@gmail.com>
+	 */
 	public function get_quiz_tab_contents( $request ) {
 		$output = array();
 
 		$profile = learn_press_get_profile( $request['id'] );
 		$filters = array(
-			'all'      => '',
-			'finished' => 'completed',
-			'passed'   => 'passed',
-			'failed'   => 'failed',
+			'all'         => '',
+			'finished'    => 'completed',
+			'passed'      => 'passed',
+			'failed'      => 'failed',
+			'in-progress' => 'in-progress',
 		);
 
 		if ( method_exists( $profile, 'query_quizzes' ) ) {
@@ -321,12 +330,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 						$ids[] = array(
 							'id'         => $item->get_id(),
 							'result'     => $item->get_percent_result() ?? '',
-							'status'     => $item->get_results( 'status' ) ?? '',
 							'graduation' => $item->get_graduation() ?? '',
-							'time_spend' => $item->get_time_interval( 'display' ) ?? '',
 							'start_time' => $item->get_start_time() ? lp_jwt_prepare_date_response( $item->get_start_time()->toSql( false ) ) : '',
 							'end_time'   => $item->get_end_time() ? lp_jwt_prepare_date_response( $item->get_end_time()->toSql( false ) ) : '',
-							'attempt'    => array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $item->get_user_item_id(), 4, false ) ),
+							'data'       => $filter !== 'in-progress' ? LP_User_Items_Result_DB::instance()->get_result( $item->get_user_item_id() ) : array(),
+							'attempt'    => $filter !== 'in-progress' ? array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $item->get_user_item_id(), 4, false ) ) : array(),
 						);
 					}
 				}

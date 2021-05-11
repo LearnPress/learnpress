@@ -16,6 +16,8 @@ $profile = LP_Global::profile();
 do_action( 'learnpress/template/pages/profile/before-content' );
 ?>
 
+<?php echo lp_profile_page_content(); ?>
+
 <div id="learn-press-profile" <?php $profile->main_class(); ?>>
 	<?php if ( $profile->is_public() || $profile->get_user()->is_guest() ) : ?>
 
