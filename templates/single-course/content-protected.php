@@ -19,7 +19,7 @@ $message = '';
 
 if ( ! is_user_logged_in() ) {
 	$message = sprintf(
-		wp_kses_post(
+		__(
 			'This content is protected, please <a class="lp-link-login" href="%s">login</a> and enroll course to view this content!',
 			'learnpress'
 		),
