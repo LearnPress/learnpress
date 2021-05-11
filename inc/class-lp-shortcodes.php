@@ -61,11 +61,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				return $template;
 			}
 
-			if ( $post->ID == learn_press_get_page_id( 'profile' ) ) {
-				if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
-					$post->post_content .= '[learn_press_profile]';
-				}
-			} elseif ( $post->ID == learn_press_get_page_id( 'checkout' ) ) {
+			if ( $post->ID == learn_press_get_page_id( 'checkout' ) ) {
 				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
 				}

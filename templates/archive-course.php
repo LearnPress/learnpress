@@ -28,6 +28,8 @@ $page_title = learn_press_page_title( false );
 	<?php if ( $page_title ) : ?>
 		<header class="learn-press-courses-header">
 			<h1><?php echo $page_title; ?></h1>
+
+			<?php do_action( 'lp/template/archive-course/description' ); ?>
 		</header>
 	<?php endif; ?>
 

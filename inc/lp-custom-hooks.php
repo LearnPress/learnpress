@@ -24,3 +24,6 @@ add_action( 'learn-press/user/quiz-started', 'learn_press_evaluate_course_result
 add_action( 'learn-press/user/quiz-redone', 'learn_press_evaluate_course_results', 10, 3 );
 add_action( 'learn-press/user/quiz-finished', 'learn_press_evaluate_course_results', 10, 3 );
 
+add_action( 'lp/template/archive-course/description', 'lp_archive_course_page_content' );
+add_action( 'lp/template/archive-course/description', 'lp_taxonomy_archive_course_description' );
+
