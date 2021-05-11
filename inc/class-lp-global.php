@@ -131,17 +131,17 @@ class LP_Global {
 	 *
 	 * @param LP_User $user
 	 */
-//	public static function set_user( $user = null ) {
-//		global $lp_user;
-//
-//		var_dump(debug_backtrace());
-//
-//		if ( false === self::$_user ) {
-//			self::$_user = $lp_user;
-//		}
-//
-//		$lp_user = $user;
-//	}
+	//  public static function set_user( $user = null ) {
+	//      global $lp_user;
+	//
+	//      var_dump(debug_backtrace());
+	//
+	//      if ( false === self::$_user ) {
+	//          self::$_user = $lp_user;
+	//      }
+	//
+	//      $lp_user = $user;
+	//  }
 
 	/**
 	 * Alias of course item for highlighting in dev
@@ -331,5 +331,15 @@ class LP_Global {
 		}
 
 		return self::$object_support_features[ $object_type ];
+	}
+
+	/**
+	 * @param $user
+	 *
+	 * @return false
+	 * @deprecated 4.0.0
+	 */
+	public function set_user( $user ) {
+		return false;
 	}
 }
