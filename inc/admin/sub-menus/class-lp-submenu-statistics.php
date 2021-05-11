@@ -35,7 +35,7 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 			$tabs
 		);
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
+		//add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
 
 		parent::__construct();
 	}
@@ -216,7 +216,7 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 	/**
 	 *
 	 */
-	public function scripts() {
+	/*public function scripts() {
 		if ( LP_Request::get( 'page' ) !== 'learn-press-statistics' ) {
 			return;
 		}
@@ -236,7 +236,7 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 				'jquery-ui-datepicker',
 			)
 		);
-	}
+	}*/
 
 	public function page_content_courses() {
 		learn_press_admin_view( 'statistics/courses' );
