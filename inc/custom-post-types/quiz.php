@@ -452,6 +452,21 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			return self::$_instance;
 		}
 
+		/**
+		 * Save Post type Quiz
+		 * @author tungnx
+		 * @version 1.0.0
+		 * @since 4.0.0
+		 */
+		public function save() {
+			if ( empty( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] !== LP_QUIZ_CPT ) {
+				return;
+			}
+
+			$post_quiz_id = LP_Helper::sanitize_params_submitted( $_REQUEST['post_ID'] );
+
+			wp_cache_delete( "lp/quiz/$post_quiz_id/question_ids", 'lp/quiz' );
+		}
 	}
 
 	// LP_Quiz_Post_Type

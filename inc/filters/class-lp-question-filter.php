@@ -5,6 +5,8 @@
  * @author  ThimPress
  * @package LearnPress/Classes/Filters
  * @version 3.2.8
+ * @author tungnx
+ * @version 1.0.1
  */
 
 /**
@@ -17,5 +19,16 @@ if ( class_exists( 'LP_Question_Filter' ) ) {
 }
 
 class LP_Question_Filter extends LP_Post_Type_Filter {
+	/**
+	 * @var string
+	 */
 	public $post_type = 'lp_question';
+	/**
+	 * @var int
+	 */
+	public $quiz_id = 0;
+	/**
+	 * @var array
+	 */
+	public $statues = array();
 }

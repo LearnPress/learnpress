@@ -218,21 +218,15 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @return array|bool
 		 */
-		public function read_questions( $quiz_id, $context = 'display' ) {
+		/*public function read_questions( $quiz_id, $context = 'display' ) {
 			$quiz = learn_press_get_quiz( $quiz_id );
 
 			if ( ! $quiz ) {
 				return false;
 			}
 
-			$question_ids = $quiz->get_question_ids( $context );
-
-			if ( $question_ids ) {
-				LP_Helper_CURD::cache_posts( $question_ids );
-			}
-
-			return $question_ids;
-		}
+			return $quiz->get_question_ids( $context );
+		}*/
 
 		/**
 		 * Read all question ids of a quiz.
@@ -241,9 +235,16 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * @param string $context
 		 *
 		 * @return array
+		 * @throws Exception
 		 */
-		public function read_question_ids( $quiz_id, $context = 'display' ) {
-			global $wpdb;
+		public function read_question_ids( int $quiz_id = 0, string $context = 'display' ) :array {
+			$quiz = learn_press_get_quiz( $quiz_id );
+
+			if ( ! $quiz ) {
+				return array();
+			}
+
+			$lp_question_db = LP_Question_DB::getInstance();
 
 			if ( $context === 'display' ) {
 				$statuses = array( 'publish' );
@@ -251,26 +252,11 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				$statuses = array( 'publish', 'draft', 'auto-draft' );
 			}
 
-			$format = array_fill( 0, sizeof( $statuses ), '%s' );
+			$filter          = new LP_Question_Filter();
+			$filter->quiz_id = $quiz_id;
+			$filter->statues = $statuses;
 
-			$query = $this->prepare(
-				"
-				SELECT question_id
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.quiz_id = p.ID
-				INNER JOIN {$wpdb->posts} q ON qq.question_id = q.ID AND q.post_status <> %s
-				AND p.ID = %d
-				AND p.post_status IN(" . join( ',', $format ) . ')
-				ORDER BY question_order
-			',
-				'trash',
-				$quiz_id,
-				$statuses
-			);
-
-			$ids = $wpdb->get_col( $query );
-
-			return $ids;
+			return $lp_question_db->get_list_question_ids_of_quiz( $filter );
 		}
 
 		public function update_question_ids( $quiz_id ) {
