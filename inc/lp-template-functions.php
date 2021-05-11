@@ -102,12 +102,12 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 
 			if ( ! $has_active ) {
 				if ( $course && $user->has_course_status(
-						$course->get_id(),
-						array(
-							'enrolled',
-							'finished',
-						)
-					) && ! empty( $tabs['curriculum'] )
+					$course->get_id(),
+					array(
+						'enrolled',
+						'finished',
+					)
+				) && ! empty( $tabs['curriculum'] )
 				) {
 					$tabs['curriculum']['active'] = true;
 				} elseif ( ! empty( $tabs['overview'] ) ) {
@@ -187,9 +187,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$post_type_object = get_post_type_object( $lp_course_item->get_item_type() );
 
 			if ( $post_type_object && current_user_can(
-					'edit_post',
-					$lp_course_item->get_id()
-				) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
+				'edit_post',
+				$lp_course_item->get_id()
+			) && $post_type_object->show_in_admin_bar && get_edit_post_link( $lp_course_item->get_id() ) ) {
 				$type = get_post_type( $lp_course_item->get_id() );
 
 				if ( apply_filters( 'learn-press/edit-admin-bar-button', true, $lp_course_item ) ) {
@@ -212,9 +212,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 			$edit_post_link   = get_edit_post_link( $lp_quiz_question->get_id() );
 
 			if ( $post_type_object && current_user_can(
-					'edit_post',
-					$lp_quiz_question->get_id()
-				) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
+				'edit_post',
+				$lp_quiz_question->get_id()
+			) && $post_type_object->show_in_admin_bar && $edit_post_link ) {
 				$type = get_post_type( $lp_quiz_question->get_id() );
 				$wp_admin_bar->add_menu(
 					array(
@@ -247,12 +247,12 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 		}
 
 		foreach ( $hooks as $hook ) {
-			if ( isset( $wp_filter["learn-press/{$hook}"] ) ) {
+			if ( isset( $wp_filter[ "learn-press/{$hook}" ] ) ) {
 				// Move to backup to restore it if needed.
-				$wp_filter['learn-press-backup-hooks']["learn-press/{$hook}"] = $wp_filter["learn-press/{$hook}"];
+				$wp_filter['learn-press-backup-hooks'][ "learn-press/{$hook}" ] = $wp_filter[ "learn-press/{$hook}" ];
 
 				// Remove the origin hook
-				unset( $wp_filter["learn-press/{$hook}"] );
+				unset( $wp_filter[ "learn-press/{$hook}" ] );
 			}
 		}
 
@@ -594,7 +594,7 @@ if ( ! is_admin() ) {
  * Display a message immediately with out push into queue
  *
  * @param        $message
- * @param string $type
+ * @param string  $type
  */
 
 function learn_press_display_message( $message, $type = 'success' ) {
@@ -928,9 +928,9 @@ function learn_press_get_template( $template_name = '', $args = array(), $templa
  * Get template content
  *
  * @param        $template_name
- * @param array  $args
- * @param string $template_path
- * @param string $default_path
+ * @param array         $args
+ * @param string        $template_path
+ * @param string        $default_path
  *
  * @return string
  * @uses learn_press_get_template();
@@ -988,7 +988,6 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 				$template = $check_child_theme;
 			}
 		}
-
 	}
 	if ( ! isset( $template ) || ! $template ) {
 		$template = trailingslashit( $default_path ) . $template_name;
@@ -1220,7 +1219,7 @@ function learn_press_get_course_redirect( $link ) {
 					$sep = '';
 				} elseif ( $v == 'port' ) {
 					$link .= ':';
-					$sep  = '';
+					$sep   = '';
 				} else {
 					$sep = '/';
 				}
@@ -1722,19 +1721,25 @@ function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
 
 		switch ( strtolower( $duration_text ) ) {
 			case 'minute':
-				$duration_str = sprintf( _n( '%s minute', '%s minutes', $duration_number, 'learnpress' ),
-					$duration_number );
+				$duration_str = sprintf(
+					_n( '%s minute', '%s minutes', $duration_number, 'learnpress' ),
+					$duration_number
+				);
 				break;
 			case 'hour':
-				$duration_str = sprintf( _n( '%s hour', '%s hours', $duration_number, 'learnpress' ),
-					$duration_number );
+				$duration_str = sprintf(
+					_n( '%s hour', '%s hours', $duration_number, 'learnpress' ),
+					$duration_number
+				);
 				break;
 			case 'day':
 				$duration_str = sprintf( _n( '%s day', '%s days', $duration_number, 'learnpress' ), $duration_number );
 				break;
 			case 'week':
-				$duration_str = sprintf( _n( '%s week', '%s weeks', $duration_number, 'learnpress' ),
-					$duration_number );
+				$duration_str = sprintf(
+					_n( '%s week', '%s weeks', $duration_number, 'learnpress' ),
+					$duration_number
+				);
 				break;
 			default:
 				$duration_str = $duration;
@@ -1781,7 +1786,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 	if ( $meta && isset( $meta[ $format ] ) ) {
 		$content = stripslashes( $meta[ $format ] );
 	} else {
-		$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
+		$template      = ! empty( $field[ "template_{$format}" ] ) ? $field[ "template_{$format}" ] : null;
 		$template_file = $field['template_base'] . $template;
 		$content       = LP_WP_Filesystem::get_contents( $template_file );
 	}
@@ -1824,6 +1829,7 @@ if ( ! function_exists( 'lp_profile_page_content' ) ) {
 		if ( $profile_id ) {
 			$profile_page = get_post( $profile_id );
 
+			remove_shortcode( 'learn_press_profile' );
 			$description = lp_format_page_content( wp_kses_post( $profile_page->post_content ) );
 
 			if ( $description ) {
