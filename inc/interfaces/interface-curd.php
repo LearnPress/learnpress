@@ -235,8 +235,9 @@ class LP_Object_Data_CURD {
 	 * => $wpdb->prepare($sql, $one, $two, $three, $four, $file)
 	 *
 	 * @return string
+	 * @editor tungnx - comment method
 	 */
-	public function prepare( $query, $args ) {
+	/*public function prepare( $query, $args ) {
 		global $wpdb;
 		$args = func_get_args();
 		array_shift( $args );
@@ -251,5 +252,5 @@ class LP_Object_Data_CURD {
 		}
 
 		return $wpdb->prepare( $query, $new_args );
-	}
+	}*/
 }

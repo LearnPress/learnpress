@@ -242,9 +242,9 @@ class LP_Updater {
 		$lp_db                                = LP_Database::getInstance();
 		$check_tb_lp_order_items_exists       = $lp_db->check_table_exists( $lp_db->tb_lp_order_items );
 		$check_tb_lp_user_item_results_exists = $lp_db->check_table_exists( $lp_db->tb_lp_user_item_results );
-		$check_tb_lp_upgrade_db               = $lp_db->check_table_exists( $lp_db->tb_lp_upgrade_db );
+		$check_col_item_id_on_lp_order_items  = $lp_db->check_col_table( $lp_db->tb_lp_order_items, 'item_id' );
 
-		if ( $check_tb_lp_order_items_exists && ( ! $check_tb_lp_user_item_results_exists || ! $check_tb_lp_upgrade_db ) ) {
+		if ( $check_tb_lp_order_items_exists && ( ! $check_tb_lp_user_item_results_exists || ! $check_col_item_id_on_lp_order_items ) ) {
 			update_option( 'learnpress_db_version', 3 );
 
 			return $this->db_map_version['3'];

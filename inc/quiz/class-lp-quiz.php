@@ -434,21 +434,19 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param string $context
 		 *
 		 * @return mixed
+		 * @editor tungnx
+		 * @throws Exception
+		 * @since 3.x.x
+		 * @version 1.0.1
 		 */
 		public function get_questions( $context = 'display' ) {
-			$questions = LP_Object_Cache::get( $this->get_id(), 'quiz-questions-' . $context );
+			$questions = array();
+			$ids       = $this->_curd->read_question_ids( $this->get_id(), $context );
 
-			if ( false === $questions ) {
-				$questions = array();
-				$ids       = $this->_curd->read_questions( $this->get_id(), $context );
-
-				if ( $ids ) {
-					foreach ( $ids as $id ) {
-						$questions[ $id ] = $id;
-					}
+			if ( $ids ) {
+				foreach ( $ids as $id ) {
+					$questions[ $id ] = $id;
 				}
-
-				LP_Object_Cache::set( $this->get_id(), $questions, 'quiz-questions-' . $context );
 			}
 
 			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $context );
@@ -543,21 +541,18 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get all question's ids of the quiz.
 		 *
-		 * @since 3.2.0
-		 *
 		 * @param string $context
 		 *
 		 * @return int[]
+		 * @editor tungnx
+		 * @throws Exception
+		 * @version 1.0.1
+		 * @since 3.x.x
+		 * @since 3.2.0
+		 *
 		 */
-		public function get_question_ids( $context = 'display' ) {
-			$ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids-' . $context );
-
-			if ( false === $ids ) {
-				$ids = $this->_curd->read_question_ids( $this->get_id(), $context );
-				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids-' . $context );
-			}
-
-			$ids = apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id(), $context );
+		public function get_question_ids( string $context = 'display' ): array {
+			$ids = $this->_curd->read_question_ids( $this->get_id(), $context );
 
 			return apply_filters( 'learn-press/quiz/get-question-ids', $ids, $this->get_id(), $this->get_course_id(), $context );
 		}

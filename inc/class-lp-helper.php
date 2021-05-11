@@ -529,4 +529,18 @@ class LP_Helper {
 
 		return floatval( number_format( $percent, 2 ) );
 	}
+
+	/**
+	 * Convert array to string
+	 * Ex: array("publish", "pending") to post_status IN(%s, %s)
+	 *
+	 * @param array $arr
+	 *
+	 * @return string
+	 */
+	public static function format_query_IN( array $arr ): string {
+		$format = array_fill( 0, count( $arr ), '%s' );
+
+		return join( ',', $format );
+	}
 }

@@ -14,7 +14,7 @@ LP.Hook.addAction( 'lp-compatible-builder', () => {
 		} );
 	}
 
-	if ( typeof vc_js !== 'undefined' ) {
+	if ( typeof vc_js !== 'undefined' && typeof VcWaypoint !== 'undefined' ) {
 		[ ...document.querySelectorAll( '#popup-content' ) ][ 0 ].addEventListener( 'scroll', () => {
 			VcWaypoint.refreshAll();
 		} );
