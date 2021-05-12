@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.0.0-beta-4\n"
+"Project-Id-Version: LearnPress 4.0.0n"
 "Report-Msgid-Bugs-To: https://github.com/LearnPress/learnpress/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
