@@ -125,9 +125,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			LP_Admin_Notice::instance()->remove_dismissed_notice( array( 'outdated-template', ) );
 
-			if ( ! get_option( 'learnpress_db_version' ) ) {
-				update_option( 'learnpress_db_version', (int) LEARNPRESS_VERSION );
-			}
+			//if ( ! get_option( 'learnpress_db_version' ) ) {
+			update_option( 'learnpress_db_version', (int) LEARNPRESS_VERSION );
+			//}
 		}
 
 		protected static function _clear_backgrounds() {

@@ -221,6 +221,9 @@ class LP_Updater {
 	 * Check LP Database need upgrade.
 	 *
 	 * @return bool|int
+	 * @author tungnx
+	 * @version 1.0.1
+	 * @since 4.0.0
 	 */
 	public function check_lp_db_need_upgrade() {
 		if ( ! current_user_can( 'administrator' ) ) {
@@ -248,6 +251,8 @@ class LP_Updater {
 			update_option( 'learnpress_db_version', 3 );
 
 			return $this->db_map_version['3'];
+		} else {
+			update_option( 'learnpress_db_version', 4 );
 		}
 
 		// End.
@@ -259,18 +264,25 @@ class LP_Updater {
 	 * Load file upgrade database.
 	 *
 	 * @return null|object
+	 * @author tungnx
+	 * @version 1.0.1
+	 * @since 4.0.0
 	 */
 	public function load_file_version_upgrade_db() {
 		$class_handle = null;
 
-		if ( $this->check_lp_db_need_upgrade() ) {
-			$file_plugin_version = $this->check_lp_db_need_upgrade();
+		$db_version_up_to = get_option( 'lp_db_need_upgrade' );
 
-			$file_update = LP_PLUGIN_PATH . 'inc/updates/learnpress-upgrade-' . $file_plugin_version . '.php';
+		if ( ! $db_version_up_to && $this->check_lp_db_need_upgrade() ) {
+			$db_version_up_to = $this->check_lp_db_need_upgrade();
+		}
+
+		if ( $db_version_up_to ) {
+			$file_update = LP_PLUGIN_PATH . 'inc/updates/learnpress-upgrade-' . $db_version_up_to . '.php';
 
 			if ( file_exists( $file_update ) ) {
 				include_once $file_update;
-				$name_class_handle_upgrade = 'LP_Upgrade_' . $file_plugin_version;
+				$name_class_handle_upgrade = 'LP_Upgrade_' . $db_version_up_to;
 
 				if ( class_exists( $name_class_handle_upgrade )
 					 && is_callable( array( $name_class_handle_upgrade, 'get_instance' ) ) ) {
@@ -278,6 +290,22 @@ class LP_Updater {
 				}
 			}
 		}
+
+		//      if ( $this->check_lp_db_need_upgrade() ) {
+		//          $file_plugin_version = $this->check_lp_db_need_upgrade();
+		//
+		//          $file_update = LP_PLUGIN_PATH . 'inc/updates/learnpress-upgrade-' . $file_plugin_version . '.php';
+		//
+		//          if ( file_exists( $file_update ) ) {
+		//              include_once $file_update;
+		//              $name_class_handle_upgrade = 'LP_Upgrade_' . $file_plugin_version;
+		//
+		//              if ( class_exists( $name_class_handle_upgrade )
+		//                   && is_callable( array( $name_class_handle_upgrade, 'get_instance' ) ) ) {
+		//                  $class_handle = $name_class_handle_upgrade::get_instance();
+		//              }
+		//          }
+		//      }
 
 		return $class_handle;
 	}

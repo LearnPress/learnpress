@@ -369,6 +369,13 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					"
 				);
 				$lp_db->check_execute_has_error();
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items SET start_time = null
+					WHERE start_time = '0000-00-00 00:00:00'
+					"
+				);
+				$lp_db->check_execute_has_error();
 				$lp_db->drop_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
 			}
 
@@ -386,6 +393,13 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					UPDATE $lp_db->tb_lp_user_items SET end_time = end_time_gmt
 					WHERE user_item_id > 0
 					AND end_time_gmt != '0000-00-00 00:00:00'
+					"
+				);
+				$lp_db->check_execute_has_error();
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items SET end_time = null
+					WHERE end_time_gmt = '0000-00-00 00:00:00'
 					"
 				);
 				$lp_db->check_execute_has_error();
@@ -1430,6 +1444,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			// Finish upgrade.
 			update_option( 'learnpress_db_version', '4' );
 			update_option( 'learnpress_version', LEARNPRESS_VERSION );
+			delete_option( 'lp_db_need_upgrade' );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
 		}
