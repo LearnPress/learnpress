@@ -36,7 +36,7 @@ const scrollToItemCurrent = {
 					numberOffSetTop = numberOffSetTop - heightSectionTitle;
 				}
 				$( '#learn-press-course-curriculum' ).animate( {
-					scrollTop: numberOffSetTop + 180,
+					scrollTop: numberOffSetTop + 300,
 				}, 800 );
 			}
 		};
