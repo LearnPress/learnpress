@@ -1,7 +1,17 @@
 <?php
-
+/**
+ * Class LP_Admin_Core_API
+ *
+ * @author Thimpress
+ * @editor tungnx, nhamdv
+ * @version 1.0.1
+ * @since 4.0.0
+ */
 class LP_Admin_Core_API extends LP_Abstract_API {
 	public function __construct() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return;
+		}
 
 		parent::__construct();
 	}
@@ -12,9 +22,11 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 	public function rest_api_includes() {
 		parent::rest_api_includes();
 
-		include_once dirname( __FILE__ ) . '/class-lp-admin-rest-question-controller.php';
-		include_once dirname( __FILE__ ) . '/class-lp-admin-rest-database-controller.php';
-		include_once dirname( __FILE__ ) . '/class-lp-admin-rest-course-controller.php';
+		$path_version = DIRECTORY_SEPARATOR . $this->version . DIRECTORY_SEPARATOR . 'admin';
+
+		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-question-controller.php';
+		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-database-controller.php';
+		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-course-controller.php';
 
 		do_action( 'learn-press/admin/core-api/includes' );
 	}

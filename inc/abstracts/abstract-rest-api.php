@@ -11,7 +11,7 @@ abstract class LP_Abstract_API {
 	/**
 	 * @var string
 	 */
-	public $version = '';
+	public $version = 'v1';
 
 	/**
 	 * @var string
