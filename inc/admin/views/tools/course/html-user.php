@@ -53,6 +53,7 @@ defined( 'ABSPATH' ) or die();
 					   data-reset="all"
 					   :class="resetActionClass(user)"
 					   @click="reset($event, user);"></a>
+					<span style="font-size: 12px"><?php echo esc_html__('Delete All','learnpress'); ?></span>
 				</td>
 			</tr>
 			</tbody>
