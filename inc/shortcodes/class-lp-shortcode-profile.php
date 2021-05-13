@@ -36,12 +36,12 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 		 */
 		public function output() {
 
-			ob_start();
-			learn_press_print_messages();
-			learn_press_get_template( 'pages/profile.php' );
-			$output = ob_get_clean();
+			//ob_start();
+			//learn_press_print_messages();
+			//learn_press_get_template( 'pages/profile.php' );
+			//$output = ob_get_clean();
 
-			return $output;
+			return '';
 		}
 	}
 }

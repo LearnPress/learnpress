@@ -1822,6 +1822,23 @@ function lp_format_page_content( $raw_string ) {
 	return apply_filters( 'lp_format_page_content', $raw_string );
 }
 
+if ( ! function_exists( 'lp_profile_page_content' ) ) {
+	function lp_profile_page_content() {
+		$profile_id = learn_press_get_page_id( 'profile' );
+
+		if ( $profile_id ) {
+			$profile_page = get_post( $profile_id );
+
+			//remove_shortcode( 'learn_press_profile' );
+			$description = lp_format_page_content( wp_kses_post( $profile_page->post_content ) );
+
+			if ( $description ) {
+				echo '<div class="lp-profile-page__content">' . $description . '</div>';
+			}
+		}
+	}
+}
+
 if ( ! function_exists( 'lp_archive_course_page_content' ) ) {
 	function lp_archive_course_page_content() {
 		if ( is_search() ) {
