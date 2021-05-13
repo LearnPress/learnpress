@@ -21,7 +21,7 @@ class LP_Core_API extends LP_Abstract_API {
 	public function rest_api_includes() {
 		parent::rest_api_includes();
 
-		$path_version = DIRECTORY_SEPARATOR . $this->version;
+		$path_version = DIRECTORY_SEPARATOR . $this->version . DIRECTORY_SEPARATOR . 'frontend';
 
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-settings-controller.php';
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-users-controller.php';
