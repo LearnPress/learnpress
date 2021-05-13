@@ -197,6 +197,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.0.3 =
+~ Fixed: tool "Reset course progress"
+~ Remove
+
 = 4.0.2 =
 ~ Fixed: page profile lost styles when activate "All in One SEO" plugin
 ~ Upgrade library chart.js to v3.2.1
