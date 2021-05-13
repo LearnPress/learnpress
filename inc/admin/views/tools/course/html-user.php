@@ -41,6 +41,7 @@ defined( 'ABSPATH' ) or die();
 							<a :href="course.url" target="_blank">{{course.title}} (#{{course.id}})</a>
 							<a href=""
 							   class="action-reset dashicons"
+							   data-reset="single"
 							   @click="reset($event, user, course.id);"
 							   :class="resetActionClass(user, course)"></a>
 						</li>
@@ -49,6 +50,7 @@ defined( 'ABSPATH' ) or die();
 				<td>
 					<a href=""
 					   class="action-reset dashicons"
+					   data-reset="all"
 					   :class="resetActionClass(user)"
 					   @click="reset($event, user);"></a>
 				</td>
@@ -145,14 +147,15 @@ $localize = array(
 							user.status = 'resetting';
 						}
 
-						console.log(user.courses);
+						var object_reset = $(e.target).data('reset');
 
 						$.ajax({
 							url: '',
 							data: {
 								'lp-ajax': 'rs-reset-user-courses',
 								user_id: user.id,
-								course_id: course_id
+								course_id: course_id,
+								object_reset: object_reset
 							},
 							success: function (response) {
 								response = LP.parseJSON(response);
