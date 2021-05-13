@@ -1829,7 +1829,7 @@ if ( ! function_exists( 'lp_profile_page_content' ) ) {
 		if ( $profile_id ) {
 			$profile_page = get_post( $profile_id );
 
-			remove_shortcode( 'learn_press_profile' );
+			//remove_shortcode( 'learn_press_profile' );
 			$description = lp_format_page_content( wp_kses_post( $profile_page->post_content ) );
 
 			if ( $description ) {
