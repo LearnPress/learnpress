@@ -5,7 +5,11 @@
 				$canvas = $( '<canvas />' );
 			$elem.html( '' );
 			$canvas.appendTo( $elem );
-			new Chart( $canvas.get( 0 ).getContext( '2d' ) ).Line( data, config );
+			var lineChart = new Chart($canvas,{
+				type: 'line',
+				data: data,
+				options: config
+			})
 		} );
 		//
 	};
