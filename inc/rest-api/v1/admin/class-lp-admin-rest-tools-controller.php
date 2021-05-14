@@ -1,46 +1,136 @@
 <?php
 
 /**
- * Class LP_REST_Users_Controller
+ * Class LP_REST_Admin_Tools_Controller
  *
- * @since 3.3.0
+ * @since 4.0.3
+ * @author tungnx
+ * @version 1.0.0
  */
 class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
-	/**
-	 * @var LP_User
-	 */
-	protected $user = null;
-
 	public function __construct() {
 		$this->namespace = 'lp/v1';
-		$this->rest_base = 'database';
+		$this->rest_base = 'tools';
 		parent::__construct();
 	}
 
 	/**
-	 * Upgrade DB
+	 * Register rest routes.
+	 */
+	public function register_routes() {
+		$this->routes = array(
+			'create-indexs'      => array(
+				array(
+					'methods'  => WP_REST_Server::CREATABLE,
+					'callback' => array( $this, 'create_indexs' ),
+					//'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+			'list-tables-indexs' => array(
+				array(
+					'methods'  => WP_REST_Server::CREATABLE,
+					'callback' => array( $this, 'get_list_tables_indexs' ),
+					//'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+		);
+
+		parent::register_routes();
+	}
+
+	/**
+	 * Create indexs.
 	 *
 	 * @param WP_REST_Request $request .
 	 *
 	 * @return void
 	 */
-	public function upgrade( WP_REST_Request $request ) {
-		$lp_updater   = LP_Updater::instance();
-		$result       = new LP_REST_Response();
-		$class_handle = $lp_updater->load_file_version_upgrade_db();
+	public function create_indexs( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+		$lp_db    = LP_Database::getInstance();
 
-		if ( empty( $class_handle ) ) {
-			$result->message = sprintf(
-				'%s %s',
-				__( 'The LP Database is Latest:', 'learnpress' ),
-				'v' . get_option( 'learnpress_db_version' )
-			);
-			wp_send_json( $result );
+		try {
+			$tables     = $request->get_param( 'tables' );
+			$table      = $request->get_param( 'table' );
+			$table_keys = array();
+
+			$lp_db->wpdb->query( 'SET autocommit = 0' );
+
+			if ( empty( $tables ) ) {
+				throw new Exception( 'Param invalid!' );
+			} else {
+				$table_keys = array_keys( $tables );
+			}
+
+			if ( empty( $table ) ) {
+				$table = $lp_db->tb_lp_user_items;
+			} elseif ( array_key_exists( $table, $table_keys ) ) {
+				throw new Exception( 'Table invalid!' );
+			}
+
+			// Create Indexs for a table.
+			if ( $table === $lp_db->tb_lp_question_answermeta ) {
+				$lp_db->drop_indexs_table( $lp_db->tb_lp_question_answermeta );
+				$lp_db->wpdb->query(
+					"
+					ALTER TABLE {$lp_db->tb_lp_question_answermeta}
+					ADD INDEX question_answer_meta (`learnpress_question_answer_id`, `meta_key`(150))
+					"
+				);
+				$lp_db->check_execute_has_error();
+			} elseif ( $table === $lp_db->tb_lp_section_items ) {
+				$lp_db->drop_indexs_table( $lp_db->tb_lp_section_items );
+
+				$lp_db->wpdb->query(
+					"
+					ALTER TABLE {$lp_db->tb_lp_section_items}
+					ADD INDEX section_item (`section_id`, `item_id`)
+					"
+				);
+				$lp_db->check_execute_has_error();
+			} else {
+				$lp_db->add_indexs_table( $table, $tables[ $table ] );
+			}
+
+			// Set next table key.
+			$index_key = array_search( $table, $table_keys );
+			++ $index_key;
+
+			if ( ! array_key_exists( $index_key, $table_keys ) ) {
+				$response->status        = 'finished';
+				$response->data->percent = 100;
+			} else {
+				$response->data->table   = $table_keys[ $index_key ];
+				$response->data->percent = 100;
+				$response->status        = 'success';
+			}
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
 		}
 
-		$params = $request->get_params();
-
-		wp_send_json( $class_handle->handle( $params ) );
+		wp_send_json( $response );
 	}
 
+	public function get_list_tables_indexs( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+		$lp_db    = LP_Database::getInstance();
+
+		$tables_indexs = array(
+			$lp_db->tb_lp_user_items          => array( 'user_id', 'item_id', 'item_type', 'status', 'ref_type', 'ref_id', 'parent_id' ),
+			$lp_db->tb_lp_user_itemmeta       => array( 'learnpress_user_item_id', 'meta_key', 'meta_value' ),
+			$lp_db->tb_lp_quiz_questions      => array( 'quiz_id', 'question_id' ),
+			$lp_db->tb_lp_question_answers    => array( 'question_id' ),
+			$lp_db->tb_lp_question_answermeta => '',
+			$lp_db->tb_lp_order_items         => array( 'order_id', 'item_id', 'item_type' ),
+			$lp_db->tb_lp_order_itemmeta      => array( 'learnpress_order_item_id', 'meta_key', 'meta_value' ),
+			$lp_db->tb_lp_sections            => array( 'section_course_id' ),
+			$lp_db->tb_lp_section_items       => '',
+		);
+
+		$response->data->tables = $tables_indexs;
+		$response->data->table  = $lp_db->tb_lp_user_items;
+		$response->status       = 'success';
+
+		wp_send_json( $response );
+	}
 }

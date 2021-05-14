@@ -147,6 +147,9 @@ const upgradeDB = () => {
 					elItemStepCurrent.removeClass( 'running' ).addClass( 'error' );
 					lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
 						lpModalOverlay.elBtnYes.text( 'Retry' ).show();
+						lpModalOverlay.callBackYes = () => {
+							window.location.reload();
+						};
 						lpModalOverlay.elBtnNo.show();
 
 						if ( ! res.message ) {
@@ -161,6 +164,9 @@ const upgradeDB = () => {
 				isUpgrading = 0;
 				lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
 					lpModalOverlay.elBtnYes.text( 'Retry' ).show();
+					lpModalOverlay.callBackYes = () => {
+						window.location.reload();
+					};
 					lpModalOverlay.elBtnNo.show();
 
 					if ( ! err.message ) {

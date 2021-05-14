@@ -392,6 +392,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		echo '<div class="lp-overlay">';
 		apply_filters( 'learnpress/admin/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
 		echo '</div>';
+
+		apply_filters( 'learnpress/admin/steps', learn_press_get_template( 'global/lp-group-step' ) );
 	}
 
 	public static function instance() {

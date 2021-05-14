@@ -1109,6 +1109,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				ADD INDEX question_answer_meta (`learnpress_question_answer_id`, `meta_key`(150))
 				"
 			);
+			$lp_db->check_execute_has_error();
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
 		}

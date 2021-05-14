@@ -1,4 +1,5 @@
 import getStepsUpgradeStatus from './tools/database/upgrade';
+import createIndexs from './tools/database/create_indexs';
 
 ( function( $ ) {
 	const $doc = $( document );
@@ -107,6 +108,7 @@ import getStepsUpgradeStatus from './tools/database/upgrade';
 
 	$( function() {
 		getStepsUpgradeStatus();
+		createIndexs();
 
 		$doc.on( 'click', '.lp-install-sample__install', installSampleCourse )
 			.on( 'click', '.lp-install-sample__uninstall', uninstallSampleCourse )

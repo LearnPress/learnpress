@@ -9,7 +9,12 @@ const lpModalOverlay = {
 	elFooter: null,
 	elCalledModal: null,
 	callBackYes: null,
+	instance: null,
 	init() {
+		if ( this.instance ) {
+			return true;
+		}
+
 		this.elLPOverlay = $( '.lp-overlay' );
 
 		if ( ! this.elLPOverlay.length ) {
@@ -27,11 +32,16 @@ const lpModalOverlay = {
 			elLPOverlay.hide();
 		} );
 
-		$( document ).on( 'click', '.btn-yes', function() {
+		$( document ).on( 'click', '.btn-yes', function( e ) {
+			e.preventDefault();
+			e.stopPropagation();
+
 			if ( 'function' === typeof lpModalOverlay.callBackYes ) {
 				lpModalOverlay.callBackYes();
 			}
 		} );
+
+		this.instance = this;
 
 		return true;
 	},
