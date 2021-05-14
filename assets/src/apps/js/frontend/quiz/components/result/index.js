@@ -8,6 +8,8 @@ import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { __, _x } from '@wordpress/i18n';
 
+import { getResponse } from '../../../single-curriculum/components/items-progress';
+
 const { debounce } = lodash;
 
 const Result = () => {
@@ -60,7 +62,17 @@ const Result = () => {
 				itemCompleted.textContent = parseInt( allItemCompleted.length );
 			}
 		}
+
+		updateItemsProgress();
 	}, [ results ] );
+
+	const updateItemsProgress = () => {
+		const elements = document.querySelectorAll( '.popup-header__inner' );
+
+		if ( elements[ 0 ].querySelectorAll( 'form.form-button-finish-course' ).length === 0 ) {
+			getResponse( elements[ 0 ] );
+		}
+	};
 
 	const animate = () => {
 		setPercentage( 0 );

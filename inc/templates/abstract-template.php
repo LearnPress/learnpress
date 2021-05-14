@@ -70,6 +70,8 @@ class LP_Abstract_Template {
 	 * @param string $tag
 	 * @param string $function_to_remove - '*' will remove all methods.
 	 * @param int    $priority
+	 *
+	 * Ex: Remove for text: LP()->template( 'course' )->remove( 'learn-press/course-content-summary', array( '<div class="course-detail-info"> <div class="lp-content-area"> <div class="course-info-left">', 'course-info-left-open' ), 10 );
 	 */
 	public function remove( $tag, $function_to_remove, $priority = 10 ) {
 		global $wp_filter;

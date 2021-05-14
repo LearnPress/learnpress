@@ -4,6 +4,8 @@ import { searchCourseContent } from './components/search';
 import { Sidebar } from './components/sidebar';
 import { progressBar } from './components/progress';
 import { commentForm } from './components/comment';
+import { itemsProgress } from './components/items-progress';
+
 import './components/compatible';
 
 class SingleCurriculums extends Component {
@@ -40,6 +42,7 @@ window.addEventListener( 'DOMContentLoaded', () => {
 	Sidebar();
 	progressBar();
 	commentForm();
+	itemsProgress();
 
 	// Check duration expire of course
 	const singleCurriculums = new SingleCurriculums();

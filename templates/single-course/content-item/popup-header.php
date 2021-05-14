@@ -38,11 +38,5 @@ $percentage     = $course_results['count_items'] ? absint( $course_results['comp
 				</div>
 			</div>
 		<?php endif; ?>
-
-		<?php
-		if ( $user->can_finish_course( $course->get_id() ) ) {
-			LP()->template( 'course' )->course_finish_button();
-		}
-		?>
 	</div>
 </div>

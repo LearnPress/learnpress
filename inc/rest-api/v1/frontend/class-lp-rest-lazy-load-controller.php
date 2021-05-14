@@ -25,9 +25,60 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => '__return_true',
 				),
 			),
+			'items-progress'    => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'items_progress' ),
+					'permission_callback' => '__return_true',
+				),
+			),
 		);
 
 		parent::register_routes();
+	}
+
+	/**
+	 * Load items progress in single curriculum items.
+	 *
+	 * @param [type] $request
+	 * @return
+	 *
+	 * @author Nhamdv <daonham95>
+	 */
+	public function items_progress( $request ) {
+		$params         = $request->get_params();
+		$course_id      = isset( $params['courseId'] ) ? $params['courseId'] : false;
+		$user_id        = isset( $params['userId'] ) ? $params['userId'] : false;
+		$response       = new LP_REST_Response();
+		$response->data = '';
+
+		try {
+			if ( $course_id && $user_id ) {
+				$course = learn_press_get_course( $course_id );
+				$user   = learn_press_get_user( $user_id );
+
+				$check = LP()->template( 'course' )->can_show_finish_course_btn( $course, $user );
+
+				if ( $check['status'] !== 'success' ) {
+					throw new Exception( $check['message'] );
+				}
+
+				$response->status = 'success';
+				$response->data   = learn_press_get_template_content(
+					'single-course/buttons/finish.php',
+					array(
+						'course' => $course,
+						'user'   => $user,
+					)
+				);
+			} else {
+				throw new Exception( esc_html__( 'Error: Cannot get course ID or user ID', 'learnpress' ) );
+			}
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return rest_ensure_response( $response );
 	}
 
 	/**
