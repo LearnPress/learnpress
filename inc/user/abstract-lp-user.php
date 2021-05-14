@@ -2357,9 +2357,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				);
 				$wpdb->query( $query );
 
-				// Trigger action
-				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
-
 				$return = $user_course->get_user_item_id();
 			} catch ( Exception $ex ) {
 				if ( $wp_error ) {
@@ -2370,6 +2367,19 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $return;
+		}
+
+		/**
+		 * Send mail when user enrolled course
+		 * @param $user_id
+		 * @param $course_id
+		 */
+		public function enrolled_sendmail( $user_id, $course_id ) {
+			$user_course = $this->get_course_data( $this->get_id() );
+			if ( $this->has_enrolled_course($course_id) ) {
+				// Trigger action
+				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
+			}
 		}
 
 		/**

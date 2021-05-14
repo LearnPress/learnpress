@@ -176,6 +176,8 @@ class LP_User_Factory {
 
 					if ( $new_status == 'completed' && $can_enroll && $auto_enroll ) {
 						$args['status'] = LP_COURSE_ENROLLED;
+						// Send mail when course enrolled
+						$user->enrolled_sendmail( $user_id, $course_id );
 					}
 
 					if ( $course->is_free() && $can_enroll ) {
