@@ -171,10 +171,10 @@ const retakeCourse = () => {
 		return;
 	}
 
-	const elButtonRetakeCourse = elFormRetakeCourse.querySelector( '.button-retake-course' );
+	const elButtonRetakeCourses = elFormRetakeCourse.querySelectorAll( '.button-retake-course' );
 	const elCourseId = elFormRetakeCourse.querySelector( '[name=retake-course]' ).value;
 	const elAjaxMessage = elFormRetakeCourse.querySelector( '.lp-ajax-message' );
-	const submit = () => {
+	const submit = ( elButtonRetakeCourse ) => {
 		wp.apiFetch( {
 			path: '/lp/v1/courses/retake-course',
 			method: 'POST',
@@ -193,7 +193,7 @@ const retakeCourse = () => {
 			}
 		} ).catch( ( err ) => {
 			elAjaxMessage.classList.add( 'error' );
-			elAjaxMessage.innerHTML = 'error: ' + err.data.status + ' ' + err.message;
+			elAjaxMessage.innerHTML = 'error: ' + err.message;
 		} ).then( ( ) => {
 			elButtonRetakeCourse.classList.remove( 'loading' );
 			elButtonRetakeCourse.disabled = false;
@@ -205,12 +205,15 @@ const retakeCourse = () => {
 		e.preventDefault();
 	} );
 
-	elButtonRetakeCourse.addEventListener( 'click', ( e ) => {
-		e.preventDefault();
-		elButtonRetakeCourse.classList.add( 'loading' );
-		elButtonRetakeCourse.disabled = true;
-		submit();
-	} );
+	elButtonRetakeCourses.forEach( ( element ) => element.addEventListener(
+		'click',
+		( e ) => {
+			e.preventDefault();
+			element.classList.add( 'loading' );
+			element.disabled = true;
+			submit( element );
+		} )
+	);
 };
 
 // Rest API load content course progress - Nhamdv.
