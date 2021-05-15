@@ -440,6 +440,10 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				)
 			);
 
+			if ( empty( $user_course_ids ) ) {
+				return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
+			}
+
 			$user_course_ids_str = implode( ',', $user_course_ids );
 
 			$user_item_ids = $lp_db->wpdb->get_col(
@@ -1330,6 +1334,14 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$lp_db    = LP_Database::getInstance();
 
 		try {
+
+			/**
+			 * Update value on column option_name.
+			 * Code update value option_name must write before re create indexes if not error "Duplicate entry".
+			 */
+			// Drop table options.
+			$lp_db->drop_indexs_table( $lp_db->tb_options );
+
 			// Courses thumbnail dimensions convert.
 			$lp_db->wpdb->query(
 				"UPDATE $lp_db->tb_options
@@ -1376,6 +1388,10 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					maybe_serialize( $learn_press_profile_endpoints_tmp )
 				)
 			);
+
+			// Create indexes for table options.
+			$lp_db->create_indexes_tb_options();
+			// End.
 
 			// Course settings.
 			// Block course by duration.
