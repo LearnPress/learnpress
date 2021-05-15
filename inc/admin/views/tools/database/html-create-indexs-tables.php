@@ -12,11 +12,11 @@
 defined( 'ABSPATH' ) or die();
 ?>
 
-<div class="card" id="lp-tool-create-indexs-tables">
-	<h2><?php echo sprintf( '%s', __( 'Create Index Database.', 'learnpress' ) ); ?></h2>
-	<p><?php _e( 'Recreate or create new indexs for tables.', 'learnpress' ); ?></p>
+<div class="card" id="lp-tool-create-indexes-tables">
+	<h2><?php echo sprintf( '%s', __( 'Create Database Indexes', 'learnpress' ) ); ?></h2>
+	<p><?php _e( 'Re-create or create new indexes for tables.', 'learnpress' ); ?></p>
 	<p class="tools-button">
-		<button type="button" class="button lp-btn lp-btn-create-indexs"><?php esc_html_e( 'Create now', 'learnpress' ); ?></button>
+		<button type="button" class="button lp-btn lp-btn-create-indexes"><?php esc_html_e( 'Create now', 'learnpress' ); ?></button>
 	</p>
 
 	<div class="wrapper-lp-loading" style="display: none">

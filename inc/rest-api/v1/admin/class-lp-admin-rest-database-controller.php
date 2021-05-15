@@ -38,24 +38,38 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'upgrade'     => array(
+			'upgrade'                   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'upgrade' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
-			'get_steps'   => array(
+			'get_steps'                 => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_steps' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
-			'agree_terms' => array(
+			'agree_terms'               => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'agree_terms_upgrade' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+			'check-db-valid-re-upgrade' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'check_DB_valid_to_re_upgrade' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+			'del-tb-lp-upgrade-db'      => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'delete_tb_lp_upgrade_db' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
@@ -139,5 +153,55 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		wp_send_json( $steps );
+	}
+
+	/**
+	 * Check DB valid to re upgrade
+	 *
+	 * can_re_upgrade | 1: can, 0: can't
+	 */
+	public function check_DB_valid_to_re_upgrade() {
+		$response                       = new LP_REST_Response();
+		$lp_db                          = LP_Database::getInstance();
+		$response->data->can_re_upgrade = 0;
+
+		$col_start_time_gmt_exist = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
+		$col_graduation_exist     = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'graduation' );
+
+		if ( $col_start_time_gmt_exist || ! $col_graduation_exist ) {
+			$response->data->can_re_upgrade = 1;
+		}
+
+		// Test
+		$response->data->can_re_upgrade = 1;
+		// End
+
+		$response->status = 'success';
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Remove table lp_upgrade_db
+	 *
+	 * can_re_upgrade | 1: can, 0: can't
+	 */
+	public function delete_tb_lp_upgrade_db() {
+		$response                       = new LP_REST_Response();
+		$lp_db                          = LP_Database::getInstance();
+		$response->data->can_re_upgrade = 0;
+
+		try {
+			$result = $lp_db->drop_table( $lp_db->tb_lp_upgrade_db );
+
+			if ( $result ) {
+				$response->status    = 'success';
+				$response->data->url = admin_url( 'admin.php?page=learn-press-tools&tab=database&action=upgrade-db' );
+			}
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
 	}
 }

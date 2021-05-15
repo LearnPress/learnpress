@@ -460,4 +460,29 @@ class LP_Database {
 			throw new Exception( $this->wpdb->last_error );
 		}
 	}
+
+	/**
+	 * Important: Reason need set again indexes for table options of WP
+	 * because if want change value of "option_name" will error "database error Duplicate entry"
+	 * So before set must drop and add when done all
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.0.3
+	 * @throws Exception
+	 */
+	public function create_indexes_tb_options() {
+		$this->drop_indexs_table( $this->tb_options );
+		$result = $this->wpdb->query(
+			"
+			ALTER TABLE $this->tb_options
+			ADD UNIQUE option_name (option_name),
+			ADD INDEX autoload (autoload)
+			"
+		);
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
 }

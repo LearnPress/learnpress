@@ -1,17 +1,16 @@
 import lpModalOverlay from '../../../../utils/lp-modal-overlay';
 import handleAjax from '../../../../utils/handle-ajax-api';
 
-const $ = jQuery;
-
-const createIndexs = () => {
-	const elCreateIndexTables = document.querySelector( '#lp-tool-create-indexs-tables' );
-	const elBtnCreateIndexs = elCreateIndexTables.querySelector( '.lp-btn-create-indexs' );
+const createIndexes = () => {
+	const elCreateIndexTables = document.querySelector( '#lp-tool-create-indexes-tables' );
 
 	if ( ! elCreateIndexTables ) {
 		return;
 	}
 
-	elBtnCreateIndexs.addEventListener( 'click', ( e ) => {
+	const elBtnCreateIndexes = elCreateIndexTables.querySelector( '.lp-btn-create-indexes' );
+
+	elBtnCreateIndexes.addEventListener( 'click', ( e ) => {
 		e.preventDefault();
 		const elLoading = elCreateIndexTables.querySelector( '.wrapper-lp-loading' );
 
@@ -133,4 +132,4 @@ const createIndexs = () => {
 	} );
 };
 
-export default createIndexs;
+export default createIndexes;

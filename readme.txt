@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.0.3 =
 ~ Fixed: tool "Reset course progress"
+~ Added: tool "Create Database Indexes"
+~ Fixed js button "Retake course" if have more than one.
+~ Added: tool "Re upgrade Database" ~ If DB upgrade not success
 
 = 4.0.2 =
 ~ Upgrade library chart.js to v3.2.1
