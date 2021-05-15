@@ -413,6 +413,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_indexs_table( $lp_db->tb_lp_user_items, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
@@ -475,6 +476,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->check_execute_has_error();
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
@@ -792,6 +794,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_col_table( $lp_db->tb_lp_user_itemmeta, 'extra_value', 'longtext', 'meta_value' );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
@@ -828,6 +831,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->check_execute_has_error();
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
@@ -859,6 +863,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_indexs_table( $lp_db->tb_lp_user_itemmeta, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
@@ -898,6 +903,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->check_execute_has_error();
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step(
@@ -918,6 +924,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_indexs_table( $lp_db->tb_lp_quiz_questions, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
@@ -986,6 +993,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			}
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, 'Step ' . __FUNCTION__ . ' finished' );
@@ -1116,6 +1124,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->check_execute_has_error();
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
@@ -1221,6 +1230,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->drop_col_table( $lp_db->tb_lp_question_answers, 'answer_order' );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
@@ -1241,6 +1251,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_indexs_table( $lp_db->tb_lp_order_items, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
@@ -1271,6 +1282,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_indexs_table( $lp_db->tb_lp_order_itemmeta, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
@@ -1289,6 +1301,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->add_indexs_table( $lp_db->tb_lp_sections, $indexs );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
@@ -1313,6 +1326,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$lp_db->check_execute_has_error();
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );
@@ -1349,6 +1363,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				WHERE option_name = 'learn_press_course_thumbnail_image_size'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			// Profile thumbnail dimensions convert.
 			$lp_db->wpdb->query(
@@ -1357,6 +1372,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				WHERE option_name = 'learn_press_profile_picture_thumbnail_size'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			// Profile rename dashboard to overview.
 			$learn_press_profile_endpoints = $lp_db->wpdb->get_var(
@@ -1365,6 +1381,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				WHERE option_name = 'learn_press_profile_endpoints'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			$learn_press_profile_endpoints = maybe_unserialize( $learn_press_profile_endpoints );
 
@@ -1388,6 +1405,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					maybe_serialize( $learn_press_profile_endpoints_tmp )
 				)
 			);
+			$lp_db->check_execute_has_error();
 
 			// Create indexes for table options.
 			$lp_db->create_indexes_tb_options();
@@ -1401,6 +1419,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				WHERE meta_key = '_lp_block_course_item_duration_content'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			// Block course when finished.
 			$lp_db->wpdb->query(
@@ -1409,6 +1428,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				WHERE meta_key = '_lp_block_lesson_content'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			// Assessment course by quizzes - Evaluate.
 			$lp_db->wpdb->query(
@@ -1418,6 +1438,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				AND meta_value = 'evaluate_quizzes'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			// End course settings.
 
@@ -1429,6 +1450,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				WHERE meta_key = '_lp_review_questions'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			$lp_db->wpdb->query(
 				"
@@ -1437,6 +1459,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				WHERE meta_key = '_lp_minus_points'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			$lp_db->wpdb->query(
 				"
@@ -1446,6 +1469,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				AND meta_value > 0
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			$lp_db->wpdb->query(
 				"
@@ -1455,6 +1479,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				AND meta_value != 'yes'
 				"
 			);
+			$lp_db->check_execute_has_error();
 
 			// Delete some fields not use.
 
@@ -1464,6 +1489,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			delete_option( 'lp_db_need_upgrade' );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
+			return $response;
 		}
 
 		return $this->finish_step( $response, __FUNCTION__ . ' finished' );

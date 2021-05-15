@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) or die();
 	</p>
 
 	<div class="wrapper-lp-loading" style="display: none">
-		<?php lp_skeleton_animation_html(7) ?>
+		<?php lp_skeleton_animation_html( 7 ); ?>
 	</div>
 </div>
 

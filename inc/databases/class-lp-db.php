@@ -290,6 +290,7 @@ class LP_Database {
 	 * @param string $name_table .
 	 *
 	 * @return bool|int
+	 * @throws Exception
 	 */
 	public function drop_indexs_table( string $name_table ) {
 		$show_index = "SHOW INDEX FROM $name_table";
@@ -303,6 +304,7 @@ class LP_Database {
 			$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP INDEX $index->Key_name", 1 );
 
 			$this->wpdb->query( $query );
+			$this->check_execute_has_error();
 		}
 	}
 

@@ -172,10 +172,6 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 			$response->data->can_re_upgrade = 1;
 		}
 
-		// Test
-		$response->data->can_re_upgrade = 1;
-		// End
-
 		$response->status = 'success';
 
 		wp_send_json( $response );
