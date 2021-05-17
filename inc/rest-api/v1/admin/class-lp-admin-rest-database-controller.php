@@ -189,6 +189,7 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$result = $lp_db->drop_table( $lp_db->tb_lp_upgrade_db );
+			update_option( 'learnpress_db_version', 3 );
 
 			if ( $result ) {
 				$response->status    = 'success';

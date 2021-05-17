@@ -21,16 +21,16 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$this->routes = array(
 			'create-indexs'      => array(
 				array(
-					'methods'  => WP_REST_Server::CREATABLE,
-					'callback' => array( $this, 'create_indexs' ),
-					//'permission_callback' => array( $this, 'check_admin_permission' ),
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'create_indexs' ),
+					'permission_callback' => '__return_true',
 				),
 			),
 			'list-tables-indexs' => array(
 				array(
-					'methods'  => WP_REST_Server::CREATABLE,
-					'callback' => array( $this, 'get_list_tables_indexs' ),
-					//'permission_callback' => array( $this, 'check_admin_permission' ),
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'get_list_tables_indexs' ),
+					'permission_callback' => '__return_true',
 				),
 			),
 		);
