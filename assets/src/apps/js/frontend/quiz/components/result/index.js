@@ -69,7 +69,7 @@ const Result = () => {
 	const updateItemsProgress = () => {
 		const elements = document.querySelectorAll( '.popup-header__inner' );
 
-		if ( elements[ 0 ].querySelectorAll( 'form.form-button-finish-course' ).length === 0 ) {
+		if ( elements.length > 0 && elements[ 0 ].querySelectorAll( 'form.form-button-finish-course' ).length === 0 ) {
 			getResponse( elements[ 0 ] );
 		}
 	};
