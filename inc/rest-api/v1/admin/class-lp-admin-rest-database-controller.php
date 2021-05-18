@@ -167,8 +167,9 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 
 		$col_start_time_gmt_exist = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'start_time_gmt' );
 		$col_graduation_exist     = $lp_db->check_col_table( $lp_db->tb_lp_user_items, 'graduation' );
+		$col_item_id_exist        = $lp_db->check_col_table( $lp_db->tb_lp_order_items, 'item_id' );
 
-		if ( $col_start_time_gmt_exist || ! $col_graduation_exist ) {
+		if ( $col_start_time_gmt_exist || ! $col_graduation_exist || ! $col_item_id_exist ) {
 			$response->data->can_re_upgrade = 1;
 		}
 
@@ -190,6 +191,31 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$result = $lp_db->drop_table( $lp_db->tb_lp_upgrade_db );
 			update_option( 'learnpress_db_version', 3 );
+
+			// Drop tables.
+			$lp_db->drop_table( $lp_db->tb_lp_user_items );
+			$lp_db->drop_table( $lp_db->tb_lp_user_itemmeta );
+			$lp_db->drop_table( $lp_db->tb_lp_question_answers );
+			$lp_db->drop_table( $lp_db->tb_postmeta );
+			$lp_db->drop_table( $lp_db->tb_options );
+			// End.
+
+			// Rename tables bk.
+			$tb_lp_user_items_bk = $lp_db->tb_lp_user_items . '_bk';
+			$lp_db->rename_table( $tb_lp_user_items_bk, $lp_db->tb_lp_user_items );
+
+			$tb_lp_user_itemmeta_bk = $lp_db->tb_lp_user_itemmeta . '_bk';
+			$lp_db->rename_table( $tb_lp_user_itemmeta_bk, $lp_db->tb_lp_user_itemmeta );
+
+			$tb_lp_question_answers_bk = $lp_db->tb_lp_question_answers . '_bk';
+			$lp_db->rename_table( $tb_lp_question_answers_bk, $lp_db->tb_lp_question_answers );
+
+			$tb_postmeta_bk = $lp_db->tb_postmeta . '_bk';
+			$lp_db->rename_table( $tb_postmeta_bk, $lp_db->tb_postmeta );
+
+			$tb_options_bk = $lp_db->tb_options . '_bk';
+			$lp_db->rename_table( $tb_options_bk, $lp_db->tb_options );
+			// End.
 
 			if ( $result ) {
 				$response->status    = 'success';

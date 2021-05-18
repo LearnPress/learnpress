@@ -189,8 +189,8 @@ class LP_Database {
 	 * @throws Exception
 	 */
 	public function clone_table( string $name_table ):bool {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
+		if ( ! current_user_can( ADMIN_ROLE ) ) {
+			throw new Exception( 'You don\'t have permission' );
 		}
 
 		$table_bk = $name_table . '_bk';
@@ -261,8 +261,8 @@ class LP_Database {
 	 * @throws Exception
 	 */
 	public function add_col_table( string $name_table, string $name_col, string $type, string $after_col = '' ) {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
+		if ( ! current_user_can( ADMIN_ROLE ) ) {
+			throw new Exception( 'You don\'t have permission' );
 		}
 
 		$query_add = '';
@@ -353,8 +353,8 @@ class LP_Database {
 	 * @throws Exception
 	 */
 	public function drop_table( string $name_table = '' ) {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
+		if ( ! current_user_can( ADMIN_ROLE ) ) {
+			throw new Exception( 'You don\'t have permission' );
 		}
 
 		// Check table exists.
@@ -483,6 +483,36 @@ class LP_Database {
 			"
 		);
 
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
+	 * Rename table
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.0.3
+	 * @throws Exception
+	 */
+	public function rename_table( string $name_table = '', string $new_name = '' ) {
+		if ( ! current_user_can( ADMIN_ROLE ) ) {
+			throw new Exception( 'You don\'t have permission' );
+		}
+
+		$tb_exists = $this->check_table_exists( $name_table );
+
+		if ( ! $tb_exists ) {
+			throw new Exception( 'Table not exists' );
+		}
+
+		$result = $this->wpdb->query(
+			"
+			ALTER TABLE $name_table
+			RENAME $new_name
+			"
+		);
 		$this->check_execute_has_error();
 
 		return $result;
