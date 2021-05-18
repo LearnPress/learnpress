@@ -309,24 +309,6 @@ class LP_Debug {
 	}
 
 	/**
-	 * Throw an exception.
-	 *
-	 * @param string $message
-	 * @param int $code
-	 * @param Throwable $prev
-	 * @param string $type A class of an exception, default Exception.
-	 *
-	 * @throws Exception.
-	 */
-	public static function throw_exception( $message, $code = null, $prev = null, $type = '' ) {
-		if ( learn_press_is_debug() ) {
-			$exception = class_exists( $type ) ? $type : 'Exception';
-			$exception = new $exception( $message, $code, $prev );
-			throw $exception;
-		}
-	}
-
-	/**
 	 * Start a new sql transaction
 	 */
 	public static function startTransaction() {

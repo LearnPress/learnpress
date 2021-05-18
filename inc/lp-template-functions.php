@@ -1540,21 +1540,6 @@ add_filter(
 	3
 );*/
 
-/**
- * @since 3.2.6
- */
-function learn_press_define_debug_mode() {
-	if ( ! learn_press_is_debug() ) {
-		return;
-	}
-	?>
-	<script>window.LP_DEBUG = true</script>
-	<?php
-}
-
-add_action( 'admin_print_scripts', 'learn_press_define_debug_mode' );
-add_action( 'wp_print_scripts', 'learn_press_define_debug_mode' );
-
 /***************************/
 /********** 3.3.0 **********/
 /***************************/
@@ -1714,6 +1699,7 @@ function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
 	$duration = get_post_meta( $post_id, '_lp_duration', true );
 
 	$duration_arr = explode( ' ', $duration );
+	$duration_str = '';
 
 	if ( count( $duration_arr ) > 1 ) {
 		$duration_number = $duration_arr[0];
