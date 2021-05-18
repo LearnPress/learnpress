@@ -114,33 +114,7 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
  * @todo comment this function - replace with LP_Debug::is_debug()
  */
 function learn_press_is_debug() {
-
-	/**
-	 * Priority #1
-	 */
-	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'true' && learn_press_get_current_user()->is_admin() ) {
-		return true;
-	}
-
-	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'false' ) {
-		return false;
-	}
-
-	/**
-	 * Priority #2
-	 */
-	if ( defined( 'LP_DEBUG' ) ) {
-		return LP_DEBUG;
-	}
-
-	/**
-	 * Priority #3
-	 */
-	$is_debug = LP()->settings->get( 'debug' ) == 'yes';
-
-	define( 'LP_DEBUG', $is_debug );
-
-	return LP_DEBUG;
+	return LP_Debug::is_debug();
 }
 
 /**
@@ -1846,9 +1820,9 @@ function is_learnpress() {
 if ( ! function_exists( 'learn_press_is_search' ) ) {
 	function learn_press_is_search() {
 		return array_key_exists( 's', $_REQUEST ) && array_key_exists(
-			'ref',
-			$_REQUEST
-		) && $_REQUEST['ref'] == 'course';
+				'ref',
+				$_REQUEST
+			) && $_REQUEST['ref'] == 'course';
 	}
 }
 
@@ -1993,14 +1967,14 @@ function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 			'expires'  => $expire,
 			'path'     => COOKIEPATH ? COOKIEPATH : '/',
 			'domain'   => COOKIE_DOMAIN, // leading dot for compatibility or use subdomain
-			'secure'   => true,     // or false
+			'secure'   => $secure,     // or false
 			'samesite' => 'None', // None || Lax  || Strict
 		);
 
-		if ( phpversion() >= '7.3.0' ) {
+		if ( version_compare( phpversion(), '7.3.0', '>=' ) ) {
 			setcookie( $name, $value, $arr_cookie_options );
 		} else {
-			setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, true );
+			setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
 		}
 	}
 }
