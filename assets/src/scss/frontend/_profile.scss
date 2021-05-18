@@ -19,6 +19,11 @@ body {
 		color: #fff;
 		background: var(--lp-secondary-color);
 
+		@media (max-width: 990px) {
+			margin-right: 0;
+			margin-left: 0;
+		}
+
 		#profile-header {
 
 			.lp-profile-header__inner {
@@ -62,13 +67,16 @@ body {
 		box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
 
 		@media (max-width: 990px) {
-			width: 50%;
+			width: 100%;
 			margin-top: 58px;
+			.lp-user-profile-avatar{
+				max-width: 150px;
+			}
 		}
 
-		@media (max-width: 767px) {
-			width: 100%;
-		}
+		//@media (max-width: 767px) {
+		//	width: 100%;
+		//}
 	}
 
 	.lp-user-profile-avatar {
@@ -280,6 +288,75 @@ body {
 					}
 				}
 			}
+
+		}
+		@media (max-width: 990px) {
+			overflow-x: scroll;
+			border-top: 1px solid rgba(204, 204, 204, 0.3);
+			.lp-profile-nav-tabs {
+ 				width: max-content;
+				&:after{
+					display: table;
+					content: "";
+					clear: both;
+				}
+				> li {
+					max-width: 80px;
+					border: none;
+					border-right: 1px solid rgba(204, 204, 204, 0.3);
+					float: left;
+ 					> a {
+						font-size: 0;
+						height: auto;
+						padding: 0 20px 0 45px;
+					}
+					&.has-child{
+						a:after{
+							content:"\f077";
+						}
+					}
+					&.active{
+						a{
+							padding-left: 45px;
+							&:after{
+								content:"\f078"
+							}
+						}
+
+						&.has-child{
+							ul{
+								display: none;
+								width: max-content;
+								transform: translateX(-20%);
+								&:after{
+									display: table;
+									content: "";
+									clear: both;
+									box-shadow: 0 0 0;
+								}
+								li{
+									float: left;
+									border-right: 1px solid rgba(204, 204, 204, 0.3);
+									&:last-child{
+										border-right: none;
+									}
+									a{
+										padding: 0 10px;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				li {
+					&:not(.has-child) {
+						> a:after {
+							display: none;
+						}
+					}
+ 				}
+			}
 		}
 	}
 
@@ -298,11 +375,22 @@ body {
 			.learn-press-tabs {
 
 				.learn-press-tabs__nav {
-					display: grid;
+					display: block;
+					width: 100%;
+					&:after{
+						content: "";
+						clear: both;
+						display: table;
+					}
 					border: 0;
 
 					.learn-press-tabs__tab {
 						border-right: 0;
+						float: left;
+						label{
+							padding-right: 25px;
+							padding-left: 25px;
+						}
 					}
 				}
 			}
