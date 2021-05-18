@@ -41,7 +41,7 @@ window.addEventListener( 'DOMContentLoaded', () => {
 	searchCourseContent();
 	Sidebar();
 	progressBar();
-	commentForm();
+	//commentForm();
 	itemsProgress();
 
 	// Check duration expire of course
