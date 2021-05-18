@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -15,21 +15,22 @@ defined( 'ABSPATH' ) || exit;
  * @var LP_Datetime $end_time
  * @var LP_Datetime $expiration_time
  */
-$time   = current_time( 'mysql', true );
-$user   = LP_Global::user();
-$course = LP_Global::course();
+$time               = current_time( 'mysql', true );
+$user               = LP_Global::user();
+$course             = LP_Global::course();
+$option_date_format = get_option( 'date_format', 'M j, Y' );
 ?>
 
 <div class="course-time">
 	<p class="course-time-row">
 		<strong><?php esc_html_e( 'You started on:', 'learnpress' ); ?></strong>
-		<time class="entry-date enrolled"><?php echo $start_time->format( 'M j, Y' ); ?></time>
+		<time class="entry-date enrolled"><?php echo $start_time->format( $option_date_format ); ?></time>
 	</p>
 	<?php if ( in_array( $status, array( learn_press_user_item_in_progress_slug(), 'enrolled' ) ) ) : ?>
 		<?php if ( $expiration_time ) : ?>
 			<p class="course-time-row">
 				<strong><?php esc_html_e( 'Course will end:', 'learnpress' ); ?></strong>
-				<time class="entry-date expire"><?php echo $expiration_time->format( 'M j, Y' ); ?></time>
+				<time class="entry-date expire"><?php echo $expiration_time->format( $option_date_format ); ?></time>
 			</p>
 		<?php else : ?>
 			<p class="course-time-row">
@@ -40,7 +41,7 @@ $course = LP_Global::course();
 	<?php elseif ( $status === 'finished' && $end_time ) : ?>
 		<p class="course-time-row">
 			<strong><?php esc_html_e( 'You finished on:', 'learnpress' ); ?></strong>
-			<time class="entry-date finished"><?php echo $end_time->format( 'M j, Y' ); ?></time>
+			<time class="entry-date finished"><?php echo $end_time->format( $option_date_format ); ?></time>
 		</p>
 	<?php endif; ?>
 </div>
