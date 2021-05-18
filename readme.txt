@@ -198,13 +198,20 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.0.4 =
-~ Fixed: get option "archive_course_limit" get default value if empty.
+~ Fixed: get option "archive_course_limit" default value if empty.
+~ Fixed: Profile shortcode.
+~ Fixed: error table "learnpress_user_itemmeta" doesn’t exist when install new.
+~ Fixed: style comment function.
+~ Added: form comment on course.
+~ Fixed: js itemProgress undefined in Eduma
 
 = 4.0.3 =
 ~ Fixed: tool "Reset course progress"
+~ Fixed: tool "Reset user progress"
 ~ Added: tool "Create Database Indexes"
 ~ Fixed js button "Retake course" if have more than one.
 ~ Added: tool "Re upgrade Database" ~ If DB upgrade not success
+~ Fixed: show button finish when completed quiz - if assessment passed
 
 = 4.0.2 =
 ~ Upgrade library chart.js to v3.2.1
