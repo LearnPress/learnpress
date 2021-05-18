@@ -197,6 +197,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.0.4 =
+~ Fixed: get option "archive_course_limit" get default value if empty.
+
 = 4.0.3 =
 ~ Fixed: tool "Reset course progress"
 ~ Added: tool "Create Database Indexes"

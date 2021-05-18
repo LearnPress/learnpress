@@ -15,10 +15,15 @@ class LP_Course_Query extends LP_Object_Query {
 	 * @param string $query
 	 */
 	public function __construct( $query = '' ) {
+		$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
+		if ( ! empty( $limit ) ) {
+			$limit = 6;
+		}
+
 		$this->course_query_vars = array(
 			'post_type'   => LP_COURSE_CPT,
 			'post_status' => array( 'draft', 'pending', 'private', 'publish' ),
-			'limit'       => LP()->settings()->get( 'archive_course_limit' ),
+			'limit'       => $limit,
 			'author'      => '',
 		);
 
