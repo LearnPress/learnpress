@@ -116,8 +116,8 @@ class LP_Session_Handler implements ArrayAccess {
 		add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
 		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
-		add_action( 'wp', array( $this, 'schedule_event' ) );
-		add_action( $this->schedule_id, array( $this, 'cleanup_sessions' ), 10 );
+		//add_action( 'wp', array( $this, 'schedule_event' ) );
+		//add_action( $this->schedule_id, array( $this, 'cleanup_sessions' ), 10 );
 	}
 
 	protected function init() {
@@ -152,11 +152,11 @@ class LP_Session_Handler implements ArrayAccess {
 		$this->_data = $this->get_session_data();
 	}
 
-	public function schedule_event() {
+	/*public function schedule_event() {
 		if ( ! wp_next_scheduled( $this->schedule_id ) ) {
 			wp_schedule_event( time(), 'hourly', $this->schedule_id );
 		}
-	}
+	}*/
 
 	public function set_customer_session_cookie( $set ) {
 		if ( $set ) {
