@@ -553,12 +553,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Redirect to setup page if we have just activated LP
 		 */
 		public function admin_redirect() {
-			// Fix temporary, after release 4.0.0 release remove this.
-			// Check extra_value column exists.
-			$lp_db = LP_Database::getInstance();
-			$lp_db->add_col_table($lp_db->tb_lp_user_itemmeta, 'extra_value', 'longtext', 'meta_value');
-			// End.
-
 			if ( 'yes' === get_transient( 'lp_activation_redirect' ) && current_user_can( 'install_plugins' ) ) {
 				delete_transient( 'lp_activation_redirect' );
 
