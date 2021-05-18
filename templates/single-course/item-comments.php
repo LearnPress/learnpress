@@ -8,12 +8,14 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+if ( comments_open() || get_comments_number() ) {
 ?>
-
-<a class="lp-lesson-comment-btn" href="#" data-close="<?php esc_attr_e( 'Close comments', 'learnpress' ); ?>"><?php esc_html_e( 'View comments', 'learnpress' ); ?></a>
-
-<div id="learn-press-item-comments">
+ <!--<a class="lp-lesson-comment-btn" href="#" data-close="--><?php //esc_attr_e( 'Close comments', 'learnpress' ); ?><!--">--><?php //esc_html_e( 'View comments', 'learnpress' ); ?><!--</a>-->
+ <div id="learn-press-item-comments">
 	<div class="learn-press-comments">
 		<?php comments_template(); ?>
 	</div>
 </div>
+
+<?php }?>

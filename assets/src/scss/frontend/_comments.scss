@@ -1,66 +1,66 @@
-#popup-content {
+//#popup-content {
+//
+//	#learn-press-item-comments {
+//		visibility: hidden;
+//		overflow: auto;
+//		position: absolute;
+//		z-index: 99;
+//		top: 0;
+//		right: 0;
+//		left: 0;
+//		opacity: 0;
+//		background: #fff;
+//		transition: all 0.3s ease;
+//		pointer-events: none;
+//
+//		.learn-press-comments {
+//			width: 800px;
+//			max-width: 90%;
+//			margin: 20px auto;
+//			padding: 50px;
+//		}
+//	}
+//
+//	&.open-comments {
+//
+//		#learn-press-content-item {
+//			display: none;
+//		}
+//
+//		#learn-press-item-comments {
+//			visibility: visible;
+//			opacity: 1;
+//			pointer-events: visible;
+//		}
+//	}
+//}
 
-	#learn-press-item-comments {
-		visibility: hidden;
-		overflow: auto;
-		position: absolute;
-		z-index: 99;
-		top: 0;
-		right: 0;
-		left: 0;
-		opacity: 0;
-		background: #fff;
-		transition: all 0.3s ease;
-		pointer-events: none;
-
-		.learn-press-comments {
-			width: 800px;
-			max-width: 90%;
-			margin: 20px auto;
-			padding: 50px;
-		}
-	}
-
-	&.open-comments {
-
-		#learn-press-content-item {
-			display: none;
-		}
-
-		#learn-press-item-comments {
-			visibility: visible;
-			opacity: 1;
-			pointer-events: visible;
-		}
-	}
-}
-
-body.learnpress {
-
-	#popup-content {
-
-		>a.lp-lesson-comment-btn {
-			position: fixed;
-			z-index: 100;
-			right: 40px;
-			bottom: 60px;
-			height: 42px;
-			margin: 0;
-			padding: 0 18px;
-			border-radius: 4px;
-			color: #fff;
-			background-color: var(--lp-primary-color);
-			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);
-			font-size: 15px;
-			font-weight: 400;
-			line-height: 42px;
-			cursor: pointer;
-
-			&:focus {
-				outline: none;
-				background-color: var(--lp-primary-color);
-				text-decoration: none;
-			}
-		}
-	}
-}
+//body.learnpress {
+//
+//	#popup-content {
+//
+//		>a.lp-lesson-comment-btn {
+//			position: fixed;
+//			z-index: 100;
+//			right: 40px;
+//			bottom: 60px;
+//			height: 42px;
+//			margin: 0;
+//			padding: 0 18px;
+//			border-radius: 4px;
+//			color: #fff;
+//			background-color: var(--lp-primary-color);
+//			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.16);
+//			font-size: 15px;
+//			font-weight: 400;
+//			line-height: 42px;
+//			cursor: pointer;
+//
+//			&:focus {
+//				outline: none;
+//				background-color: var(--lp-primary-color);
+//				text-decoration: none;
+//			}
+//		}
+//	}
+//}
