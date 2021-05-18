@@ -945,6 +945,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
+	public function course_comment_template() {
+		global $post;
+
+		if ( comments_open() || get_comments_number() ) {
+			comments_template();
+		}
+	}
+
 	public function user_time() {
 		$user        = LP_Global::user();
 		$course_data = $user->get_course_data( $this->course->get_id() );

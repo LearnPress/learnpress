@@ -253,6 +253,8 @@ add_action(
 // appear at bottom after enrolled
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_extra_boxes' ), 70 );
 
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->func( 'course_comment_template' ), 75 );
+
 add_action(
 	'learn-press/course-content-summary',
 	LP()->template( 'course' )->text( '<!-- end entry content left --> </div>', 'entry-content-left-close' ),
