@@ -1,4 +1,18 @@
+body {
+
+
+	div.entry-content > {
+
+		div.learnpress {
+			--responsive--aligndefault-width: 100%;
+			max-width: var(--lp-content-width, 100%);
+		}
+	}
+}
+
 #learn-press-profile {
+	overflow: hidden;
+	position: relative;
 	background: #fff;
 
 	.wrapper-profile-header {

@@ -34,6 +34,21 @@ function learn_press_get_curd( $type ) {
 	return apply_filters( 'learn-press/curd', $curd, $type, $curds );
 }
 
+if ( ! function_exists( 'lp_add_body_class' ) ) {
+	function lp_add_body_class( $classes ) {
+		$classes = (array) $classes;
+
+		if ( learn_press_is_profile() ) {
+			$classes[] = 'learnpress-profile';
+		} elseif ( learn_press_is_checkout() ) {
+			$classes[] = 'learnpress-checkout';
+		}
+
+		return $classes;
+	}
+	add_filter( 'body_class', 'lp_add_body_class' );
+}
+
 /**
  * Short function to get name of a theme
  *
@@ -1902,6 +1917,12 @@ if ( ! function_exists( 'learn_press_is_quiz' ) ) {
 	}
 }
 
+function lp_content_has_shortcode( $tag = '' ) {
+	global $post;
+
+	return is_singular() && is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, $tag );
+}
+
 /**
  * Returns true when viewing profile page.
  *
@@ -1910,7 +1931,7 @@ if ( ! function_exists( 'learn_press_is_quiz' ) ) {
 function learn_press_is_profile() {
 	$page_id = learn_press_get_page_id( 'profile' );
 
-	if ( $page_id && is_page( $page_id ) ) {
+	if ( $page_id && is_page( $page_id ) || lp_content_has_shortcode( 'learn_press_profile' ) ) {
 		return true;
 	}
 
@@ -3874,3 +3895,18 @@ function version_update_warning( $current_version, $new_version ) {
 
 	<?php
 }
+
+// If profile content don't have shortcode profile.
+function lp_add_shortcode_profile() {
+	global $post;
+
+	if ( learn_press_is_profile() && is_object( $post ) ) {
+		if ( ! has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
+			$post->post_content .= '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+		}
+
+		wp_update_post( $post );
+	}
+}
+
+add_action( 'template_redirect', 'lp_add_shortcode_profile' );

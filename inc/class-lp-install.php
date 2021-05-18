@@ -399,6 +399,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 							$page_title = ucwords( str_replace( '_', ' ', $page ) );
 						}
 
+						if ( $page === 'profile' ) {
+							$page_content = '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+						} else {
+							$page_content = '';
+						}
+
 						$page_slug = 'lp-' . str_replace( '_', '-', $page );
 
 						$inserted = wp_insert_post(
@@ -408,6 +414,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 								'post_status'    => 'publish',
 								'post_type'      => 'page',
 								'comment_status' => 'closed',
+								'post_content'   => isset( $page_content ) ? $page_content : '',
 								'post_author'    => get_current_user_id(),
 							)
 						);

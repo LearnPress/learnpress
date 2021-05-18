@@ -8,17 +8,10 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-
-get_header( 'profile' );
-
-$profile = LP_Global::profile();
-
-do_action( 'learnpress/template/pages/profile/before-content' );
 ?>
 
 <div id="learn-press-profile" <?php $profile->main_class(); ?>>
 	<?php if ( $profile->is_public() || $profile->get_user()->is_guest() ) : ?>
-
 		<div class="wrapper-profile-header wrap-fullwidth">
 			<?php do_action( 'learn-press/before-user-profile', $profile ); ?>
 		</div>
@@ -36,11 +29,10 @@ do_action( 'learnpress/template/pages/profile/before-content' );
 			?>
 		</div>
 	<?php else : ?>
-		<?php esc_html_e( 'This user does not public their profile.', 'learnpress' ); ?>
+		<div class="lp-content-area">
+			<?php esc_html_e( 'This user does not public their profile.', 'learnpress' ); ?>
+		</div>
 	<?php endif; ?>
 </div>
 
 <?php
-do_action( 'learnpress/template/pages/profile/after-content' );
-
-get_footer( 'profile' );

@@ -77,11 +77,18 @@ class LP_Setup_Wizard {
 			'term_conditions_page_id'  => _x( 'LP Terms and Conditions', 'static-page', 'learnpress' ),
 		);
 
+		if ( $page === 'profile_page_id' ) {
+			$page_content = '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+		} else {
+			$page_content = '';
+		}
+
 		return wp_insert_post(
 			array(
-				'post_title'  => $page_titles[ $page ],
-				'post_status' => 'publish',
-				'post_type'   => 'page',
+				'post_title'   => $page_titles[ $page ],
+				'post_status'  => 'publish',
+				'post_type'    => 'page',
+				'post_content' => isset( $page_content ) ? $page_content : '',
 			)
 		);
 	}
@@ -120,9 +127,9 @@ class LP_Setup_Wizard {
 		$assets = learn_press_admin_assets();
 
 		// tungnx: fix error with Woocommerce
-		remove_action('admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ));
-		remove_action('admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'load_scripts' ), 15 );
-		remove_action('admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Features\Features', 'load_scripts' ), 15 );
+		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ) );
+		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'load_scripts' ), 15 );
+		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Features\Features', 'load_scripts' ), 15 );
 		// End fix
 		@do_action( 'admin_enqueue_scripts' );
 

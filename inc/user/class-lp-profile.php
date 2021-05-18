@@ -238,7 +238,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tabs() {
 			if ( $this->_tabs === null ) {
-				$settings        = LP()->settings;
+				$settings        = LP()->settings();
 				$course_sections = array();
 
 				$course_sections['enrolled'] = array(

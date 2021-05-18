@@ -456,12 +456,6 @@ class LP_Page_Controller {
 
 		$this->_maybe_redirect_courses_page();
 
-		$tmpl = $this->_is_profile();
-
-		if ( false !== $tmpl ) {
-			return $tmpl;
-		}
-
 		$default_template = $this->get_page_template();
 
 		if ( $default_template ) {
@@ -519,8 +513,6 @@ class LP_Page_Controller {
 			}
 		} elseif ( is_post_type_archive( LP_COURSE_CPT ) || ( ! empty( learn_press_get_page_id( 'courses' ) ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) {
 			$page_template = 'archive-course.php';
-		} elseif ( learn_press_is_profile() ) {
-			$page_template = 'pages/profile.php';
 		} elseif ( learn_press_is_checkout() ) {
 			$page_template = 'pages/checkout.php';
 		}
@@ -631,54 +623,6 @@ class LP_Page_Controller {
 		return false;
 	}
 
-	/**
-	 * Return template if we are in profile.
-	 *
-	 * @return bool|string
-	 */
-	protected function _is_profile() {
-		if ( ! learn_press_is_profile() ) {
-			return false;
-		}
-
-		global $wp;
-
-		$current_user = learn_press_get_current_user();
-		$viewing_user = true;
-
-		$profile = learn_press_get_profile();
-
-		if ( empty( $wp->query_vars['user'] ) ) {
-			$viewing_user = $current_user;
-		} else {
-			$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );
-
-			if ( $wp_user ) {
-				$viewing_user = learn_press_get_user( $wp_user->ID );
-
-				if ( $viewing_user->is_guest() ) {
-					$viewing_user = false;
-				}
-			}
-		}
-
-		try {
-			if ( ! $viewing_user ) {
-				throw new Exception( sprintf( __( 'The user %s is not available!', 'learnpress' ), $wp->query_vars['user'] ) );
-			}
-		} catch ( Exception $ex ) {
-			$message = $ex->getMessage();
-			if ( $message ) {
-				learn_press_add_message( $message, 'error' );
-			} else {
-				return get_404_template();
-			}
-
-			return false;
-		}
-
-		return false;
-	}
 
 	public function archive_content() {
 		ob_start();
@@ -1058,10 +1002,10 @@ class LP_Page_Controller {
 			return LP_PAGE_COURSES;
 		} elseif ( learn_press_is_course() ) {
 			return LP_PAGE_SINGLE_COURSE;
-		} elseif ( learn_press_is_profile() ) {
-			return LP_PAGE_PROFILE;
 		} elseif ( self::is_page_become_a_teacher() ) {
 			return LP_PAGE_BECOME_A_TEACHER;
+		} elseif ( learn_press_is_profile() ) {
+			return LP_PAGE_PROFILE;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}

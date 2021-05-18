@@ -3,14 +3,11 @@
  * Base class of LearnPress shortcodes and helper functions.
  *
  * @author   ThimPress
- * @category Widgets
+ * @category Shortcode
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcodes' ) ) {
@@ -22,7 +19,6 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		 * Init shortcodes
 		 */
 		public static function init() {
-
 			$shortcodes = array(
 				'confirm_order'       => __CLASS__ . '::confirm_order',
 				'profile'             => __CLASS__ . '::profile',
@@ -89,6 +85,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 			try {
 				$html .= $content->output();
 			} catch ( Exception $ex ) {
+				$html .= $ex->getMessage();
 			}
 
 			return '<div class="learnpress">' . $html . '</div>';
@@ -269,4 +266,5 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		}
 	}
 }
-LP_Shortcodes::init();
+
+add_action( 'init', array( 'LP_Shortcodes', 'init' ) );
