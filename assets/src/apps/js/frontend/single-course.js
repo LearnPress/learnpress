@@ -165,55 +165,57 @@ const purchaseCourse = () => {
 };
 
 const retakeCourse = () => {
-	const elFormRetakeCourse = document.querySelector( '.lp-form-retake-course' );
+	const elFormRetakeCourses = document.querySelectorAll( '.lp-form-retake-course' );
 
-	if ( ! elFormRetakeCourse ) {
+	if ( ! elFormRetakeCourses.length ) {
 		return;
 	}
 
-	const elButtonRetakeCourses = elFormRetakeCourse.querySelectorAll( '.button-retake-course' );
-	const elCourseId = elFormRetakeCourse.querySelector( '[name=retake-course]' ).value;
-	const elAjaxMessage = elFormRetakeCourse.querySelector( '.lp-ajax-message' );
-	const submit = ( elButtonRetakeCourse ) => {
-		wp.apiFetch( {
-			path: '/lp/v1/courses/retake-course',
-			method: 'POST',
-			data: { id: elCourseId },
-		} ).then( ( res ) => {
-			const { status, message, data } = res;
-			elAjaxMessage.innerHTML = message;
+	elFormRetakeCourses.forEach( ( elFormRetakeCourse ) => {
+		const elButtonRetakeCourses = elFormRetakeCourse.querySelector( '.button-retake-course' );
+		const elCourseId = elFormRetakeCourse.querySelector( '[name=retake-course]' ).value;
+		const elAjaxMessage = elFormRetakeCourse.querySelector( '.lp-ajax-message' );
+		const submit = ( elButtonRetakeCourse ) => {
+			wp.apiFetch( {
+				path: '/lp/v1/courses/retake-course',
+				method: 'POST',
+				data: { id: elCourseId },
+			} ).then( ( res ) => {
+				const { status, message, data } = res;
+				elAjaxMessage.innerHTML = message;
 
-			if ( undefined != status && status === 'success' ) {
-				elButtonRetakeCourse.style.display = 'none';
-				setTimeout( () => {
-					window.location.replace( data.url_redirect );
-				}, 1000 );
-			} else {
+				if ( undefined != status && status === 'success' ) {
+					elButtonRetakeCourse.style.display = 'none';
+					setTimeout( () => {
+						window.location.replace( data.url_redirect );
+					}, 1000 );
+				} else {
+					elAjaxMessage.classList.add( 'error' );
+				}
+			} ).catch( ( err ) => {
 				elAjaxMessage.classList.add( 'error' );
-			}
-		} ).catch( ( err ) => {
-			elAjaxMessage.classList.add( 'error' );
-			elAjaxMessage.innerHTML = 'error: ' + err.message;
-		} ).then( ( ) => {
-			elButtonRetakeCourse.classList.remove( 'loading' );
-			elButtonRetakeCourse.disabled = false;
-			elAjaxMessage.style.display = 'block';
-		} );
-	};
+				elAjaxMessage.innerHTML = 'error: ' + err.message;
+			} ).then( ( ) => {
+				elButtonRetakeCourse.classList.remove( 'loading' );
+				elButtonRetakeCourse.disabled = false;
+				elAjaxMessage.style.display = 'block';
+			} );
+		};
 
-	elFormRetakeCourse.addEventListener( 'submit', ( e ) => {
-		e.preventDefault();
-	} );
-
-	elButtonRetakeCourses.forEach( ( element ) => element.addEventListener(
-		'click',
-		( e ) => {
+		elFormRetakeCourse.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
-			element.classList.add( 'loading' );
-			element.disabled = true;
-			submit( element );
-		} )
-	);
+		} );
+
+		elButtonRetakeCourses.addEventListener(
+			'click',
+			( e ) => {
+				e.preventDefault();
+				elButtonRetakeCourses.classList.add( 'loading' );
+				elButtonRetakeCourses.disabled = true;
+				submit( elButtonRetakeCourses );
+			}
+		);
+	} );
 };
 
 // Rest API load content course progress - Nhamdv.
