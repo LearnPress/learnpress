@@ -1415,12 +1415,17 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$paged = absint( $wp->query_vars['view_id'] );
 		}
 
+		$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
+		if ( ! empty( $limit ) ) {
+			$limit = 6;
+		}
+
 		$paged = max( $paged, 1 );
 		$args  = wp_parse_args(
 			$args,
 			array(
 				'paged'  => $paged,
-				'limit'  => LP()->settings()->get( 'archive_course_limit' ),
+				'limit'  => $limit,
 				'status' => '',
 			)
 		);
