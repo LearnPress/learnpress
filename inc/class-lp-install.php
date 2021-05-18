@@ -115,7 +115,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			$current_db_version = get_option( 'learnpress_db_version', null );
 
 			// Fresh installation .
-			if ( is_null( $current_version ) && is_null( $current_db_version ) ) {
+			if ( is_null( $current_db_version ) ) {
 				update_option( 'learn_press_install', 'yes' );
 				set_transient( 'lp_activation_redirect', 'yes', 60 );
 			}

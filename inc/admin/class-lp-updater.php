@@ -251,8 +251,6 @@ class LP_Updater {
 			update_option( 'learnpress_db_version', 3 );
 
 			return $this->db_map_version['3'];
-		} else {
-			update_option( 'learnpress_db_version', 4 );
 		}
 
 		// End.
