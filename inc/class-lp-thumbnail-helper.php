@@ -41,7 +41,14 @@ class LP_Thumbnail_Helper {
 		);
 		$image = '';
 
-		$thumbnail = LP()->settings()->get( 'course_thumbnail_dimensions' );
+		$thumbnail = LP_Settings::get_option(
+			'course_thumbnail_dimensions',
+			array(
+				500,
+				300,
+			)
+		);
+
 		if ( ! empty( $thumbnail['0'] ) && ! empty( $thumbnail['1'] ) ) {
 			$size = array( $thumbnail['0'], $thumbnail['1'] );
 		}

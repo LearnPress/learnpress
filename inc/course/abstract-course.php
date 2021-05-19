@@ -293,7 +293,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_image( $size = 'course_thumbnail', $attr = array() ) {
+		public function get_image( string $size = 'course_thumbnail', array $attr = array() ): string {
 			$image = LP_Thumbnail_Helper::instance()->get_course_image( $this->get_id(), $size, $attr );
 
 			return apply_filters( 'learn-press/course/image', $image, $this->get_id(), $size, $attr );
