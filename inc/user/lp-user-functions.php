@@ -892,10 +892,9 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 
 		$user = LP_User_Factory::get_user( $user_id );
 
-		if ( $profile_picture_src = $user->get_upload_profile_src() ) {
-			$lp           = LP();
-			$lp_setting   = $lp->settings;
-			$setting_size = $lp_setting->get( 'avatar_dimensions' );
+		$profile_picture_src = $user->get_upload_profile_src();
+		if ( $profile_picture_src ) {
+			$setting_size = learn_press_get_avatar_thumb_size();
 			$img_size     = '';
 
 			// Get avatar size
@@ -1285,25 +1284,22 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 }
 
 function learn_press_get_avatar_thumb_size() {
-	$avatar_size_settings = LP()->settings->get( 'avatar_dimensions' );
+	$option = LP_Settings::get_option(
+		'avatar_dimensions',
+		array(
+			'width'  => 250,
+			'height' => 250,
+		)
+	);
 
-	$avatar_size = array();
-	if ( ! empty( $avatar_size_settings['width'] ) ) {
-		$avatar_size['width'] = absint( $avatar_size_settings['width'] );
-	} elseif ( ! empty( $avatar_size_settings[0] ) ) {
-		$avatar_size['width'] = absint( $avatar_size_settings[0] );
-	} else {
-		$avatar_size['width'] = 150;
-	}
-	if ( ! empty( $avatar_size_settings['height'] ) ) {
-		$avatar_size['height'] = absint( $avatar_size_settings['height'] );
-	} elseif ( ! empty( $avatar_size_settings[1] ) ) {
-		$avatar_size['height'] = absint( $avatar_size_settings[1] );
-	} else {
-		$avatar_size['height'] = 150;
+	if ( ! isset( $option['width'] ) || ! isset( $option['height'] ) ) {
+		$option = array(
+			'width'  => 250,
+			'height' => 250,
+		);
 	}
 
-	return $avatar_size;
+	return $option;
 }
 
 /**
@@ -1369,7 +1365,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 	}
 
 	if ( $include_course ) {
-		$where  .= ' OR ( item_id = %d AND item_type = %s )';
+		$where .= ' OR ( item_id = %d AND item_type = %s )';
 		$args[] = $course_id;
 		$args[] = LP_COURSE_CPT;
 	}
