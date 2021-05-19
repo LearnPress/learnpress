@@ -41,21 +41,8 @@ class LP_Thumbnail_Helper {
 		);
 		$image = '';
 
-		$thumbnail = LP_Settings::get_option(
-			'course_thumbnail_dimensions',
-			array(
-				500,
-				300,
-			)
-		);
-
-		if ( ! empty( $thumbnail['0'] ) && ! empty( $thumbnail['1'] ) ) {
-			$size = array( $thumbnail['0'], $thumbnail['1'] );
-		}
-
-		if ( isset( $thumbnail['width'] ) && isset( $thumbnail['height'] ) ) {
-			$size = array( $thumbnail['width'], $thumbnail['height'] );
-		}
+		$thumbnail = learn_press_get_course_thumbnail_dimensions();
+		$size      = array( $thumbnail['width'], $thumbnail['height'] );
 
 		$parent_id = wp_get_post_parent_id( $course_id );
 
@@ -68,7 +55,8 @@ class LP_Thumbnail_Helper {
 		if ( ! $image ) {
 			$image = LP()->image( 'no-image.png' );
 			$image = sprintf(
-				'<img src="%s" alt="%s">', esc_url( $image ),
+				'<img src="%s" alt="%s">',
+				esc_url( $image ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
 			);
 		}

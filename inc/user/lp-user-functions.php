@@ -354,9 +354,9 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
 	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get(
-			'profile_endpoints.profile-orders',
-			'profile-orders'
-		) ) {
+		'profile_endpoints.profile-orders',
+		'profile-orders'
+	) ) {
 		$view = false;
 	}
 
@@ -1296,6 +1296,25 @@ function learn_press_get_avatar_thumb_size() {
 		$option = array(
 			'width'  => 250,
 			'height' => 250,
+		);
+	}
+
+	return $option;
+}
+
+function learn_press_get_course_thumbnail_dimensions() {
+	$option = LP_Settings::get_option(
+		'course_thumbnail_dimensions',
+		array(
+			'width'  => 500,
+			'height' => 300,
+		)
+	);
+
+	if ( ! isset( $option['width'] ) || ! isset( $option['height'] ) ) {
+		$option = array(
+			'width'  => 500,
+			'height' => 300,
 		);
 	}
 
