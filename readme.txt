@@ -197,6 +197,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.0.5 =
+~ Fixed: error "Duplicate entry" for case upgrade LP4, if user install LP4 and save setting before Upgrade Database
+
 = 4.0.4 =
 ~ Fixed: get option "archive_course_limit" default value if empty.
 ~ Fixed: Profile shortcode.

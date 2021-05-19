@@ -1348,31 +1348,39 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$lp_db    = LP_Database::getInstance();
 
 		try {
-
-			/**
-			 * Update value on column option_name.
-			 * Code update value option_name must write before re create indexes if not error "Duplicate entry".
-			 */
-			// Drop table options.
-			$lp_db->drop_indexs_table( $lp_db->tb_options );
-
 			// Courses thumbnail dimensions convert.
-			$lp_db->wpdb->query(
-				"UPDATE $lp_db->tb_options
-				SET option_name = 'learn_press_course_thumbnail_dimensions'
-				WHERE option_name = 'learn_press_course_thumbnail_image_size'
+			$check_option_thumbnail_dimensions_exists = $lp_db->wpdb->get_var(
+				"
+				SELECT option_name FROM $lp_db->op_options
+				WHERE option_name = 'learn_press_course_thumbnail_dimensions'
 				"
 			);
-			$lp_db->check_execute_has_error();
+			if ( empty( $check_option_thumbnail_dimensions_exists ) ) {
+				$lp_db->wpdb->query(
+					"UPDATE $lp_db->tb_options
+					SET option_name = 'learn_press_course_thumbnail_dimensions'
+					WHERE option_name = 'learn_press_course_thumbnail_image_size'
+					"
+				);
+				$lp_db->check_execute_has_error();
+			}
 
 			// Profile thumbnail dimensions convert.
-			$lp_db->wpdb->query(
-				"UPDATE $lp_db->tb_options
-				SET option_name = 'learn_press_avatar_dimensions'
-				WHERE option_name = 'learn_press_profile_picture_thumbnail_size'
+			$check_option_avatar_dimensions_exists = $lp_db->wpdb->get_var(
+				"
+				SELECT option_name FROM $lp_db->op_options
+				WHERE option_name = 'learn_press_avatar_dimensions'
 				"
 			);
-			$lp_db->check_execute_has_error();
+			if ( empty( $check_option_avatar_dimensions_exists ) ) {
+				$lp_db->wpdb->query(
+					"UPDATE $lp_db->tb_options
+					SET option_name = 'learn_press_avatar_dimensions'
+					WHERE option_name = 'learn_press_profile_picture_thumbnail_size'
+					"
+				);
+				$lp_db->check_execute_has_error();
+			}
 
 			// Profile rename dashboard to overview.
 			$learn_press_profile_endpoints = $lp_db->wpdb->get_var(
@@ -1406,10 +1414,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				)
 			);
 			$lp_db->check_execute_has_error();
-
-			// Create indexes for table options.
-			$lp_db->create_indexes_tb_options();
-			// End.
 
 			// Course settings.
 			// Block course by duration.
