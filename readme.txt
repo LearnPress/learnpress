@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.0.5 =
 ~ Fixed: error "Duplicate entry" for case upgrade LP4, if user install LP4 and save setting before Upgrade Database
+~ Fixed: get option 'avatar_dimensions' set default value if user not set
+~ Fixed: get option 'course_thumbnail_dimensions' set default value if user not set
+~ Modify template Profile
 
 = 4.0.4 =
 ~ Fixed: get option "archive_course_limit" default value if empty.

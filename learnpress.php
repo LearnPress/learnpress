@@ -756,15 +756,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function get_session() {
 			if ( ! $this->session ) {
-				$session_class = apply_filters( 'learn_press_session_class', 'LP_Session_Handler' );
-				if ( class_exists( $session_class ) ) {
-					$this->session = is_callable(
-						array(
-							$session_class,
-							'instance',
-						)
-					) ? call_user_func( array( $session_class, 'instance' ) ) : new $session_class();
-				}
+				$this->session = LP_Session_Handler::instance();
 			}
 
 			return $this->session;

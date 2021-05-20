@@ -1957,26 +1957,12 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  * @param bool  $secure
  *
  * @editor tungnx
- * @version 1.0.1
+ * @version 1.0.2
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
-	if ( ! headers_sent() ) {
-		// setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
+	$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 
-		$arr_cookie_options = array(
-			'expires'  => $expire,
-			'path'     => COOKIEPATH ? COOKIEPATH : '/',
-			'domain'   => COOKIE_DOMAIN, // leading dot for compatibility or use subdomain
-			'secure'   => $secure,     // or false
-			'samesite' => 'None', // None || Lax  || Strict
-		);
-
-		if ( version_compare( phpversion(), '7.3.0', '>=' ) ) {
-			setcookie( $name, $value, $arr_cookie_options );
-		} else {
-			setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
-		}
-	}
+	setcookie( $name, $value, $expire, SITECOOKIEPATH !== COOKIEPATH ? SITECOOKIEPATH : COOKIEPATH, COOKIE_DOMAIN, $secure );
 }
 
 /**
