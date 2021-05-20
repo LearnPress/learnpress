@@ -25,7 +25,7 @@ const createIndexes = () => {
 		lpModalOverlay.elBtnYes[ 0 ].textContent = 'Run';
 		lpModalOverlay.elBtnNo[ 0 ].textContent = 'Close';
 
-		const url = '/lp/v1/tools/list-tables-indexs';
+		const url = '/lp/v1/admin/tools/list-tables-indexs';
 		const params = {};
 		const functions = {
 			success: ( res ) => {
@@ -77,7 +77,7 @@ const createIndexes = () => {
 				}
 
 				lpModalOverlay.callBackYes = () => {
-					const url = '/lp/v1/tools/create-indexs';
+					const url = '/lp/v1/tools/admin/create-indexs';
 					const params = { tables, table };
 
 					lpModalOverlay.elBtnNo[ 0 ].style.display = 'none';

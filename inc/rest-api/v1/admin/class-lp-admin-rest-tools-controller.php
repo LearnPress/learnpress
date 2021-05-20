@@ -9,7 +9,7 @@
  */
 class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
-		$this->namespace = 'lp/v1';
+		$this->namespace = 'lp/v1/admin';
 		$this->rest_base = 'tools';
 		parent::__construct();
 	}
