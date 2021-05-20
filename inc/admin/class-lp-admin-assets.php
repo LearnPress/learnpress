@@ -223,16 +223,20 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1,
 					1
 				),
-				'lp-tools-course'                   => new LP_Asset_Key(
-					$this->url( 'js/dist/admin/tools/course' . self::$_min_assets . '.js' ),
-					array( 'vue-libs' ),
-					array( 'learnpress_page_learn-press-tools' ),
-					0,
-					1
-				),
 				'lp-tools-course-tab'               => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/tools' . self::$_min_assets . '.js' ),
-					array( 'vue-libs', 'wp-api-fetch' ),
+					array(
+						'jquery',
+						'wp-element',
+						'wp-compose',
+						'wp-components',
+						'wp-data',
+						'wp-hooks',
+						'wp-api-fetch',
+						'lodash',
+						'vue-libs',
+
+					),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
 					1
@@ -280,7 +284,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-admin'     => array(
 					'url'  => $this->url( 'css/admin/admin.css' ),
-					'deps' => array( 'wp-color-picker' ),
+					'deps' => array( 'wp-color-picker', 'wp-components' ),
 				),
 				'learn-press-statistic' => array(
 					'url'     => LP_CSS_URL . 'admin/statistic.css',
@@ -380,7 +384,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		$styles = $this->_get_styles();
 		if ( $styles ) {
 			foreach ( $styles as $handle => $data ) {
-				wp_enqueue_style( $handle, $data['url'], array(), self::$_version_assets );
+				wp_enqueue_style( $handle, $data['url'], $data['deps'] ?? array(), self::$_version_assets );
 			}
 		}
 	}
