@@ -1348,6 +1348,13 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$lp_db    = LP_Database::getInstance();
 
 		try {
+			/**
+			 * Update value on column option_name.
+			 * Code update value option_name must write before re create indexes if not error "Duplicate entry".
+			 */
+			// Drop table options.
+			$lp_db->drop_indexs_table( $lp_db->tb_options );
+
 			// Courses thumbnail dimensions convert.
 			$check_option_thumbnail_dimensions_exists = $lp_db->wpdb->get_var(
 				"
@@ -1381,6 +1388,37 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				);
 				$lp_db->check_execute_has_error();
 			}
+
+			// Delete value same of column "option_name" before re-create indexes for table options.
+			$data_sames = $lp_db->wpdb->get_results(
+				"
+				SELECT option_id, option_name, COUNT(option_name) as total
+				FROM $lp_db->tb_options
+				GROUP BY option_name
+				HAVING total > 1;
+				"
+			);
+			if ( $data_sames ) {
+				foreach ( $data_sames as $data_same ) {
+					$lp_db->wpdb->query(
+						$lp_db->wpdb->prepare(
+							"
+							DELETE FROM $lp_db->tb_options
+							WHERE option_name = %s
+							AND option_id != %d
+							",
+							$data_same->option_name,
+							$data_same->option_id
+						)
+					);
+
+					$lp_db->check_execute_has_error();
+				}
+			}
+
+			// Create indexes for table options.
+			$lp_db->create_indexes_tb_options();
+			// End.
 
 			// Profile rename dashboard to overview.
 			$learn_press_profile_endpoints = $lp_db->wpdb->get_var(
