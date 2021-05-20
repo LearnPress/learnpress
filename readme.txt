@@ -202,6 +202,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: get option 'avatar_dimensions' set default value if user not set
 ~ Fixed: get option 'course_thumbnail_dimensions' set default value if user not set
 ~ Modify template Profile
+~ Fixed: tool "Reset course progress"
+~ Fixed: get options "Courses per page"
 
 = 4.0.4 =
 ~ Fixed: get option "archive_course_limit" default value if empty.
