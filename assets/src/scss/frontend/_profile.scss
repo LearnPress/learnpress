@@ -1,6 +1,5 @@
 body {
 
-
 	div.entry-content > {
 
 		div.learnpress {
@@ -14,74 +13,7 @@ body {
 	overflow: hidden;
 	position: relative;
 	background: #fff;
-
-	.wrapper-profile-header {
-		color: #fff;
-		background: var(--lp-secondary-color);
-
-		@media (max-width: 990px) {
-			margin-right: 0;
-			margin-left: 0;
-		}
-
-		#profile-header {
-
-			.lp-profile-header__inner {
-				width: 90%;
-				min-height: 252px;
-				margin: 0 auto;
-				padding: 82px 200px 30px 240px;
-
-				.lp-profile-username {
-					padding-bottom: 18px;
-					font-size: 18px;
-					font-weight: 500;
-					text-transform: capitalize;
-				}
-
-				.lp-profile-user-bio {
-					font-size: 16px;
-					font-weight: 300;
-					line-height: 26px;
-				}
-
-				@media (max-width: 990px) {
-					width: 100%;
-					padding: 65px 0 30px 0;
-					text-align: center;
-				}
-
-				@media (max-width: 767px) {
-					padding: 30px 0;
-				}
-			}
-		}
-	}
-
-	#profile-sidebar {
-		float: left;
-		width: 270px;
-		margin-top: -212px;
-		border-radius: 4px;
-		background: #fff;
-		box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
-
-		@media (max-width: 990px) {
-			width: 100%;
-			margin-top: 58px;
-			.lp-user-profile-avatar{
-				max-width: 150px;
-			}
-		}
-
-		//@media (max-width: 767px) {
-		//	width: 100%;
-		//}
-	}
-
 	.lp-user-profile-avatar {
-		margin: 25px;
-
 		img {
 			position: relative;
 			width: 100%;
@@ -94,8 +26,7 @@ body {
 		display: flex;
 		position: relative;
 		z-index: 1;
-		margin: -47px 26px 0 26px;
-		padding-bottom: 30px;
+		margin-top: -17px;
 		justify-content: center;
 		-webkit-flex-wrap: wrap;
 		-ms-flex-wrap: wrap;
@@ -122,6 +53,112 @@ body {
 			}
 		}
 	}
+	.wrapper-profile-header {
+		color: #fff;
+		background: var(--lp-secondary-color);
+
+		.lp-profile-content-area{
+			position: relative;
+			min-height: 345px;
+			padding-top: 50px;
+		}
+
+		.lp-profile-left{
+			width: 270px;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			padding: 20px;
+			background: #fff;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-bottom: 0;
+		}
+		.lp-profile-right {
+			margin-left: 270px;
+ 			padding-left: 35px;
+			padding-right: 15px;
+			.lp-profile-username {
+				padding-bottom: 18px;
+				font-size: 18px;
+				font-weight: 500;
+				text-transform: capitalize;
+			}
+ 			.lp-profile-user-bio {
+				font-size: 16px;
+				font-weight: 300;
+				line-height: 26px;
+			}
+		}
+		@media (max-width: 990px) {
+			.lp-profile-content-area{
+				min-height: inherit;
+				padding: 20px 15px;
+			}
+			.lp-profile-left{
+				position: static;
+				float: left;
+			}
+			.lp-profile-right {
+				width: calc(100% - 270px);
+				float: right;
+				margin-left: 0;
+			}
+		}
+		@media (max-width: 768px) {
+			.lp-profile-left{
+				 width: 220px;
+			}
+			.lp-profile-right {
+				width: calc(100% - 220px);
+			}
+			.lp-user-profile-socials {
+				margin-left: -5px;
+				margin-right: -5px;
+ 				a {
+ 					width: 36px;
+					height: 36px;
+					margin: 0 5px;
+ 					line-height: 36px;
+ 				}
+			}
+		}
+		@media (max-width: 500px) {
+			.lp-profile-left{
+				float: none;
+				margin: 0 auto;
+			}
+			.lp-profile-right {
+				width: 100%;
+				text-align: center;
+				padding-top: 30px;
+			}
+		}
+	}
+
+	#profile-sidebar {
+		float: left;
+		width: 270px;
+		margin-top: 0;
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-top: 0;
+		//border-radius: 4px;
+		background: #fff;
+		//box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
+
+		@media (max-width: 990px) {
+			width: 100%;
+			margin-top: 58px;
+			.lp-user-profile-avatar {
+				max-width: 150px;
+			}
+		}
+
+		//@media (max-width: 767px) {
+		//	width: 100%;
+		//}
+	}
+
+
 
 	#profile-nav {
 
@@ -290,57 +327,70 @@ body {
 			}
 
 		}
+
 		@media (max-width: 990px) {
 			overflow-x: scroll;
 			border-top: 1px solid rgba(204, 204, 204, 0.3);
 			.lp-profile-nav-tabs {
- 				width: max-content;
-				&:after{
+				width: max-content;
+
+				&:after {
 					display: table;
 					content: "";
 					clear: both;
 				}
+
 				> li {
-					max-width: 80px;
-					border: none;
+ 					border: none;
 					border-right: 1px solid rgba(204, 204, 204, 0.3);
 					float: left;
- 					> a {
-						font-size: 0;
+
+					> a {
+						//font-size: 0;
 						height: auto;
 						padding: 0 20px 0 45px;
-					}
-					&.has-child{
-						a:after{
-							content:"\f077";
+						&:after{
+							margin-left: 10px;
 						}
 					}
-					&.active{
-						a{
+
+					&.has-child {
+						a:after {
+							content: "\f077";
+						}
+					}
+
+					&.active {
+						a {
 							padding-left: 45px;
-							&:after{
-								content:"\f078"
+
+							&:after {
+								content: "\f078"
 							}
 						}
 
-						&.has-child{
-							ul{
+						&.has-child {
+							ul {
 								display: none;
 								width: max-content;
 								transform: translateX(-20%);
-								&:after{
+
+								&:after {
 									display: table;
 									content: "";
 									clear: both;
 									box-shadow: 0 0 0;
 								}
-								li{
+
+								li {
 									float: left;
 									border-right: 1px solid rgba(204, 204, 204, 0.3);
-									&:last-child{
+
+									&:last-child {
 										border-right: none;
 									}
-									a{
+
+									a {
 										padding: 0 10px;
 									}
 								}
@@ -350,13 +400,29 @@ body {
 				}
 
 				li {
+					&:hover ul{
+						display: none!important;
+					}
 					&:not(.has-child) {
 						> a:after {
 							display: none;
 						}
 					}
- 				}
+				}
 			}
+		}
+		@media (max-width: 560px) {
+ 			.lp-profile-nav-tabs {
+ 				> li {
+					max-width: 80px;
+  					> a {
+						 font-size: 0;
+						&:after{
+							margin-left: 0;
+						}
+ 					}
+				}
+ 			}
 		}
 	}
 
@@ -377,17 +443,20 @@ body {
 				.learn-press-tabs__nav {
 					display: block;
 					width: 100%;
-					&:after{
+
+					&:after {
 						content: "";
 						clear: both;
 						display: table;
 					}
+
 					border: 0;
 
 					.learn-press-tabs__tab {
 						border-right: 0;
 						float: left;
-						label{
+
+						label {
 							padding-right: 25px;
 							padding-left: 25px;
 						}
@@ -906,7 +975,7 @@ form[name="profile-change-password"] {
 div.order-recover {
 	display: flex;
 
-	>.button-recover-order {
+	> .button-recover-order {
 		margin: 0;
 		margin-left: 20px;
 		flex: 0 0 auto;
