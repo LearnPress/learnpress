@@ -10,6 +10,9 @@
 defined( 'ABSPATH' ) || exit;
 
 $socials = LP_Profile::instance()->get_user()->get_profile_socials();
+if(empty($socials)){
+	return;
+}
 ?>
 
 <div class="lp-user-profile-socials">
