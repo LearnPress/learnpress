@@ -18,19 +18,15 @@ if ( ! isset( $user ) ) {
 
 $bio = $user->get_description();
 ?>
-<div class="wrapper-profile-header wrap-fullwidth">
-	<header id="profile-header" class="lp-content-area">
-		<div class="lp-profile-header__inner">
-			<div class="lp-profile-username">
-				<?php echo $user->get_display_name(); ?>
-			</div>
+<div class="lp-profile-right">
 
-			<?php if ( $bio ) : ?>
-				<div class="lp-profile-user-bio">
-					<?php echo wpautop( $bio ); ?>
-				</div>
-
-			<?php endif; ?>
+	<div class="lp-profile-username">
+		<?php echo $user->get_display_name(); ?>
+	</div>
+	<?php if ( $bio ) : ?>
+		<div class="lp-profile-user-bio">
+			<?php echo wpautop( $bio ); ?>
 		</div>
-	</header>
+
+	<?php endif; ?>
 </div>
