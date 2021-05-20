@@ -872,7 +872,7 @@ class LP_Page_Controller {
 		// Set custom posts per page
 		if ( $this->_is_archive() ) {
 			$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
-			if ( ! empty( $limit ) ) {
+			if ( empty( $limit ) ) {
 				$limit = 6;
 			}
 

@@ -1416,7 +1416,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
-		if ( ! empty( $limit ) ) {
+		if ( empty( $limit ) ) {
 			$limit = 6;
 		}
 
@@ -1531,7 +1531,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
-		if ( ! empty( $limit ) ) {
+		if ( empty( $limit ) ) {
 			$limit = 6;
 		}
 

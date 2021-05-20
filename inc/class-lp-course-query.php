@@ -16,7 +16,7 @@ class LP_Course_Query extends LP_Object_Query {
 	 */
 	public function __construct( $query = '' ) {
 		$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
-		if ( ! empty( $limit ) ) {
+		if ( empty( $limit ) ) {
 			$limit = 6;
 		}
 

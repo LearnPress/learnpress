@@ -196,7 +196,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * @param null $order
+	 * @param LP_Order $order
 	 *
 	 * @return mixed
 	 */
