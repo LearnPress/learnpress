@@ -87,6 +87,8 @@ class LP_User_Factory {
 	 * @param LP_Order $order
 	 * @param string   $old_status
 	 * @param string   $new_status
+	 *
+	 * @author Nhamdv <email@email.com>
 	 */
 	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
@@ -96,22 +98,68 @@ class LP_User_Factory {
 			return;
 		}
 
+		global $wpdb;
+
 		foreach ( $order->get_users() as $user_id ) {
 			foreach ( $items as $item ) {
 				if ( ! isset( $item['course_id'] ) ) {
 					continue;
 				}
 
-				$item = $curd->get_user_item( $user_id, $item['course_id'] );
+				$user_item_id = LP_Course_DB::getInstance()->get_user_item_id( $order->get_id(), $item['course_id'], $user_id );
 
-				if ( $item ) {
-					if ( is_array( $item ) ) {
-						$item_id = $item['user_item_id'];
-					} else {
-						$item_id = $item;
+				if ( $user_item_id ) {
+					$wpdb->delete(
+						$wpdb->learnpress_user_items,
+						array(
+							'user_item_id' => $user_item_id,
+						),
+						array( '%d' )
+					);
+
+					// DELETE user_itemmeta by user_item_id.
+					$wpdb->delete(
+						$wpdb->learnpress_user_itemmeta,
+						array(
+							'learnpress_user_item_id' => absint( $user_item_id ),
+						),
+						array( '%d' )
+					);
+
+					// DELETE user_item_result
+					LP_User_Items_Result_DB::instance()->delete( absint( $user_item_id ) );
+
+					// DELETE Lesson, Quiz in Course.
+					$wpdb->delete(
+						$wpdb->learnpress_user_items,
+						array(
+							'parent_id' => $user_item_id,
+						),
+						array( '%d' )
+					);
+
+					$child_user_item_ids = $wpdb->get_col(
+						$wpdb->prepare(
+							"SELECT user_item_id FROM $wpdb->learnpress_user_items
+							WHERE parent_id=%d",
+							$user_item_id
+						)
+					);
+
+					// DELETE user_itemmeta for ( lesson, quiz... )
+					if ( ! empty( $child_user_item_ids ) ) {
+						foreach ( $child_user_item_ids as $child_user_item_id ) {
+							$wpdb->delete(
+								$wpdb->learnpress_user_itemmeta,
+								array(
+									'learnpress_user_item_id' => absint( $child_user_item_id ),
+								),
+								array( '%d' )
+							);
+
+							LP_User_Items_Result_DB::instance()->delete( absint( $child_user_item_id ) );
+						}
 					}
-
-					$curd->update_user_item_status( $item_id, $new_status );
 				}
 			}
 		}

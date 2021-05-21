@@ -66,6 +66,15 @@ $user_ip      = $order->get_user_ip_address();
 				}
 				?>
 			</select>
+
+			<?php if ( $order->get_status() === 'completed' ) : ?>
+				<div>
+					<div style="padding: 10px 18px; margin-top: 10px; border: 2px solid #d80000; border-radius: 4px; display: inline-block;">
+						<span class="dashicons dashicons-warning" style="color:#d80000"></span>
+						<?php esc_html_e( 'When change Status to "Pending", "Cancelled" or "Failed" will delete all course, lesson, quizz... processing!', 'learnpress' ); ?>
+					</div>
+				</div>
+			<?php endif; ?>
 		</div>
 
 		<div class="order-data-field order-data-user">

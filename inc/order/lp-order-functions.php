@@ -722,14 +722,14 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learnpress' ),
 	);
-	$order_statues['lp-processing'] = array(
-		'label'                     => _x( 'Processing', 'Order status', 'learnpress' ),
-		'public'                    => false,
-		'exclude_from_search'       => false,
-		'show_in_admin_all_list'    => true,
-		'show_in_admin_status_list' => true,
-		'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' ),
-	);
+	// $order_statues['lp-processing'] = array(
+	// 	'label'                     => _x( 'Processing', 'Order status', 'learnpress' ),
+	// 	'public'                    => false,
+	// 	'exclude_from_search'       => false,
+	// 	'show_in_admin_all_list'    => true,
+	// 	'show_in_admin_status_list' => true,
+	// 	'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' ),
+	// );
 	$order_statues['lp-completed']  = array(
 		'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
 		'public'                    => false,
