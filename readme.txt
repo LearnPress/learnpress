@@ -197,6 +197,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.0.6 =
+~ Fixed: translated text on js function "Quiz"
+~ Fixed: js scroll to item viewing
+
 = 4.0.5 =
 ~ Fixed: error "Duplicate entry" for case upgrade LP4, if user install LP4 and save setting before Upgrade Database
 ~ Fixed: get option 'avatar_dimensions' set default value if user not set
