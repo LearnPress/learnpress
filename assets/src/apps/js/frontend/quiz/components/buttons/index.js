@@ -1,7 +1,7 @@
 import { Component } from '@wordpress/element';
 import { withSelect, withDispatch, select } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { __, _x } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 class Buttons extends Component {
 	startQuiz = ( event ) => {
@@ -16,7 +16,7 @@ class Buttons extends Component {
 		if ( status === 'completed' ) {
 			const { confirm, isOpen } = select( 'learnpress/modal' );
 
-			if ( 'no' === confirm( 'Are you sure you want to retry quiz?', this.startQuiz ) ) {
+			if ( 'no' === confirm( __( 'Are you sure you want to retake quiz?', 'learnpress' ), this.startQuiz ) ) {
 				! isOpen() && btn && btn.removeAttribute( 'disabled' );
 				return;
 			}
@@ -246,7 +246,7 @@ class Buttons extends Component {
 
 						{ ( ( status === 'completed' && canRetry ) || -1 !== [ '', 'viewed' ].indexOf( status ) ) && ! isReviewing && (
 							<button className="lp-button start" onClick={ this.startQuiz }>
-								{ ( status === 'completed' ) ? `${ _x( 'Retake', 'label button retry quiz', 'learnpress' ) }${ retakeNumber ? ` (${ retakeNumber })` : '' }` :	_x( 'Start', 'label button start quiz', 'learnpress' ) }
+								{ ( status === 'completed' ) ? `${ __( 'Retake', 'learnpress' ) }${ retakeNumber ? ` (${ retakeNumber })` : '' }` :	__( 'Start', 'learnpress' ) }
 							</button>
 						) }
 

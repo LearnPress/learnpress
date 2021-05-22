@@ -6,7 +6,7 @@
  */
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import { __, _x } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 import { getResponse } from '../../../single-curriculum/components/items-progress';
 
