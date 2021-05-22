@@ -154,6 +154,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					array_merge(
 						$wp_js,
 						array(
+							'wp-i18n',
 							'lp-global',
 							'lp-utils',
 							'lp-data-controls',
@@ -162,6 +163,7 @@ class LP_Assets extends LP_Abstract_Assets {
 							'lp-config',
 							'lp-single-curriculum',
 							'jquery-ui-sortable', //Use in question type: sorting choice - Nhamdv
+
 						)
 					),
 					array( LP_PAGE_QUIZ ),
@@ -216,6 +218,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				),*/
 			)
 		);
+
+		wp_set_script_translations( 'lp-quiz', 'learnpress' );
 
 	}
 
@@ -294,7 +298,11 @@ class LP_Assets extends LP_Abstract_Assets {
 			}
 		}
 
-		wp_set_script_translations( 'lp-quiz', 'learnpress', LP_PLUGIN_PATH . 'languages' );
+		/**
+		 * Set translate on file js of folder js/dist
+		 * Path translate of a string on file ".pot" if have must map to js/dist
+		 */
+		wp_set_script_translations( 'lp-quiz', 'learnpress' );
 	}
 
 	/**
