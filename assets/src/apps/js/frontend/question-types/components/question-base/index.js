@@ -95,7 +95,7 @@ class QuestionBase extends Component {
 		} = this.props;
 
 		if ( status !== 'started' ) {
-			return 'LP Error: can not set answers';
+			return __( 'LP Error: can not set answers', 'learnpress' );
 		}
 
 		const $options = this.$wrap.find( '.option-check' );

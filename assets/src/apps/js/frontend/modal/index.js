@@ -6,7 +6,7 @@
  */
 
 import store from './store';
-import { _x } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { useSelect, dispatch } from '@wordpress/data';
 
 const Modal = ( { children } ) => {
@@ -38,22 +38,10 @@ const Modal = ( { children } ) => {
 					<div id="lp-modal-content" dangerouslySetInnerHTML={ { __html: message } }></div>
 					<div id="lp-modal-buttons">
 						<button className="lp-button modal-button-ok" onClick={ dataConfirm( 'yes' ) }>
-							<span>
-								{ _x(
-									'OK',
-									'button confirm ok',
-									'learnpress'
-								) }
-							</span>
+							<span>{ __( 'OK', 'learnpress' ) }</span>
 						</button>
 						<button className="lp-button modal-button-cancel" onClick={ dataConfirm( 'no' ) }>
-							<span>
-								{ _x(
-									'Cancel',
-									'button confirm cancel',
-									'learnpress'
-								) }
-							</span>
+							<span>{ __( 'Cancel', 'learnpress' ) }</span>
 						</button>
 					</div>
 				</div>
