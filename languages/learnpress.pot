@@ -2584,8 +2584,8 @@ msgstr ""
 #: inc/custom-post-types/quiz.php:181
 #: inc/custom-post-types/quiz.php:244
 #: inc/custom-post-types/quiz.php:463
-#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:23
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:175
+#: assets/js/dist/frontend/quiz.js:23
+#: assets/js/dist/frontend/quiz.js:175
 msgid "Questions"
 msgstr ""
 
@@ -3595,7 +3595,7 @@ msgstr ""
 #: inc/user-item/class-lp-user-item.php:755
 #: inc/user/class-lp-profile.php:844
 #: inc/user/class-lp-profile.php:878
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:140
+#: assets/js/dist/frontend/quiz.js:140
 msgid "Passed"
 msgstr ""
 
@@ -3605,7 +3605,7 @@ msgstr ""
 #: inc/user-item/class-lp-user-item.php:756
 #: inc/user/class-lp-profile.php:845
 #: inc/user/class-lp-profile.php:879
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:142
+#: assets/js/dist/frontend/quiz.js:142
 msgid "Failed"
 msgstr ""
 
@@ -7183,13 +7183,13 @@ msgid "When you checkout with Guest order key will send in email, you can use or
 msgstr ""
 
 #: templates/profile/tabs/quizzes.php:34
-#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:27
+#: assets/js/dist/frontend/quiz.js:27
 msgid "Result"
 msgstr ""
 
 #: templates/profile/tabs/quizzes.php:35
-#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:24
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:167
+#: assets/js/dist/frontend/quiz.js:24
+#: assets/js/dist/frontend/quiz.js:167
 msgid "Time spend"
 msgstr ""
 
@@ -7341,7 +7341,7 @@ msgid "Course will end:"
 msgstr ""
 
 #: templates/single-course/sidebar/user-time.php:36
-#: assets/src/apps/js/frontend/quiz/components/meta/index.js:20
+#: assets/js/dist/frontend/quiz.js:20
 msgid "Duration:"
 msgstr ""
 
@@ -7391,76 +7391,76 @@ msgctxt "button confirm cancel"
 msgid "Cancel"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:17
+#: assets/js/dist/frontend/quiz.js:17
 msgid "Last Attempted"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:25
+#: assets/js/dist/frontend/quiz.js:25
 msgid "Marks"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:26
+#: assets/js/dist/frontend/quiz.js:26
 msgid "Passing grade"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:37
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:159
+#: assets/js/dist/frontend/quiz.js:37
+#: assets/js/dist/frontend/quiz.js:159
 msgctxt "unknown passing grade value"
 msgid "-"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/meta/index.js:25
+#: assets/js/dist/frontend/quiz.js:25
 msgid "Passing grade:"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/meta/index.js:30
+#: assets/js/dist/frontend/quiz.js:30
 msgid "Questions:"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:149
+#: assets/js/dist/frontend/quiz.js:149
 msgid "Your Result"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:171
+#: assets/js/dist/frontend/quiz.js:171
 msgid "Point"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:179
+#: assets/js/dist/frontend/quiz.js:179
 msgid "Correct"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:183
+#: assets/js/dist/frontend/quiz.js:183
 msgid "Wrong"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/result/index.js:187
+#: assets/js/dist/frontend/quiz.js:187
 msgid "Skipped"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:67
+#: assets/js/dist/frontend/quiz.js:67
 msgid "Are you sure to submit quiz?"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:106
+#: assets/js/dist/frontend/quiz.js:106
 msgid "Question <span>%d to %d of %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:108
+#: assets/js/dist/frontend/quiz.js:108
 msgid "Question <span>%d of %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:111
+#: assets/js/dist/frontend/quiz.js:111
 msgid "Question <span>%d to %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:120
+#: assets/js/dist/frontend/quiz.js:120
 msgid "Earned Point: %s"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:129
+#: assets/js/dist/frontend/quiz.js:129
 msgid "Finish Quiz"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:129
+#: assets/js/dist/frontend/quiz.js:129
 msgid "Submitting..."
 msgstr ""
