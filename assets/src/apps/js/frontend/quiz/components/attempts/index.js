@@ -1,5 +1,5 @@
 import { select } from '@wordpress/data';
-import { __, _x } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 import { default as formatDuration } from '../duration';
 

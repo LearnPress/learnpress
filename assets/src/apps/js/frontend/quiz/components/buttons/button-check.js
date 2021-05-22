@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Component } from '@wordpress/element';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { __, _x } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 class ButtonCheck extends Component {
 	constructor() {
@@ -37,7 +37,7 @@ class ButtonCheck extends Component {
 				} ) } onClick={ this.checkAnswer }
 				>
 					<span className="instant-check__icon" />
-					{ _x( 'Check answer', 'label of button check answer', 'learnpress' ) }
+					{ __( 'Check answer', 'learnpress' ) }
 
 					{ ! answered && (
 						<div className="instant-check__info" dangerouslySetInnerHTML={ { __html: __( 'You need to answer the question before check answer.', 'learnpress' ) } } />
