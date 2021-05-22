@@ -17,10 +17,7 @@ if ( ! isset( $profile ) ) {
 <div id="learn-press-profile" <?php $profile->main_class(); ?>>
 	<?php if ( $profile->is_public() || $profile->get_user()->is_guest() ) : ?>
 
-<!--			<div class="lp-profile-left">-->
-<!--				--><?php //do_action( 'learn-press/user-profile-account' ); ?>
-<!--			</div>-->
-			<?php do_action( 'learn-press/before-user-profile', $profile ); ?>
+		<?php do_action( 'learn-press/before-user-profile', $profile ); ?>
 
  		<div class="lp-content-area">
 			<?php
