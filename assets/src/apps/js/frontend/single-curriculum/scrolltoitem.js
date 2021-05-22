@@ -1,3 +1,5 @@
+import lpModalOverlay from '../../utils/lp-modal-overlay';
+
 const $ = jQuery;
 
 const scrollToItemCurrent = {
@@ -5,6 +7,7 @@ const scrollToItemCurrent = {
 		this.scrollToItemViewing = function() {
 			const elItemViewing = $( '.viewing-course-item' );
 			if ( elItemViewing.length ) {
+				const elCourseCurriculumn = $( '#learn-press-course-curriculum' );
 				const heightCourseItemContentHeader = $( '#popup-sidebar' ).outerHeight();
 				const heightSectionTitle = $( '.section-title' ).outerHeight();
 				const heightSectionHeader = $( '.section-header' ).outerHeight();
@@ -28,15 +31,11 @@ const scrollToItemCurrent = {
 
 				const elItemCurrent = $( '.course-item-' + idItem );
 				const offSetTop = elItemCurrent.offset().top;
-				let numberOffSetTop = offSetTop - heightCourseItemContentHeader;
+				const offset = elItemCurrent.offset().top - elCourseCurriculumn.offset().top +
+					elCourseCurriculumn.scrollTop();
 
-				if ( undefined === heightSectionTitle ) {
-					numberOffSetTop = numberOffSetTop - heightSectionHeader + 20;
-				} else {
-					numberOffSetTop = numberOffSetTop - heightSectionTitle;
-				}
-				$( '#learn-press-course-curriculum' ).animate( {
-					scrollTop: numberOffSetTop + 300,
+				elCourseCurriculumn.animate( {
+					scrollTop: offset - heightSectionHeader,
 				}, 800 );
 			}
 		};
