@@ -198,12 +198,14 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.0.6 =
+~ Fixed: Page profile not show login/register form
 ~ Fixed: translated text on js function "Quiz"
 ~ Fixed: js scroll to item viewing
 ~ Fixed: show html title question
 ~ Fixed: Order change status from "completed" to "pending" => user can't learn courses in this order
 ~ Added: Option "Logout Redirect"
-
+~ Fixed: Set default sidebar curriculumn will be hide on mobile
+~ Modify: Remove course on Overview tab when enable "Publish Profile"
 
 = 4.0.5 =
 ~ Fixed: error "Duplicate entry" for case upgrade LP4, if user install LP4 and save setting before Upgrade Database

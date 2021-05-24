@@ -30,11 +30,10 @@ do_action( 'learn-press/before-single-item' );
 /**
  * Get cookie stored for sidebar state
  */
-$show_sidebar = learn_press_cookie_get( 'sidebar-toggle' );
 ?>
 	<div id="popup-course" class="course-summary">
 
-		<input type="checkbox" id="sidebar-toggle" <?php checked( $show_sidebar, true ); ?> />
+		<input type="checkbox" id="sidebar-toggle" />
 
 		<?php
 		/**
