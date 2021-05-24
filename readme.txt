@@ -197,6 +197,14 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.0.6 =
+~ Fixed: translated text on js function "Quiz"
+~ Fixed: js scroll to item viewing
+~ Fixed: show html title question
+~ Fixed: Order change status from "completed" to "pending" => user can't learn courses in this order
+~ Added: Option "Logout Redirect"
+
+
 = 4.0.5 =
 ~ Fixed: error "Duplicate entry" for case upgrade LP4, if user install LP4 and save setting before Upgrade Database
 ~ Fixed: get option 'avatar_dimensions' set default value if user not set

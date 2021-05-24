@@ -1352,6 +1352,15 @@ body {
 	}
 }
 
+.viewing-course-item {
+	#learn-press-course-curriculum {
+		.section-header {
+			.section-desc {
+				display: none;
+			}
+		}
+	}
+}
 /***********/
 .course-meta {
 	display: flex;

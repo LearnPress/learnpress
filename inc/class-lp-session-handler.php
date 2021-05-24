@@ -299,6 +299,13 @@ class LP_Session_Handler implements ArrayAccess {
 		$this->_data        = array();
 		$this->_changed     = false;
 		$this->_customer_id = $this->generate_customer_id();
+
+		$logout_redirect_page_id = LP_Settings::get_option( 'logout_redirect_page_id', false );
+		if ( $logout_redirect_page_id ) {
+
+			wp_safe_redirect( get_the_permalink( $logout_redirect_page_id ) );
+			die;
+		}
 	}
 
 	public function cleanup_sessions() {

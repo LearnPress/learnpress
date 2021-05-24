@@ -195,7 +195,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$this->_privacy = apply_filters(
 					'learn-press/check-privacy-setting',
 					array(
-						'view-tab-dashboard' => LP()->settings()->get( 'publish_profile' ) == 'yes',
+						'view-tab-dashboard' => self::get_option_publish_profile() == 'yes',
 						'view-tab-courses'   => $this->get_privacy( 'courses' ) == 'yes',
 						'view-tab-quizzes'   => $this->get_privacy( 'quizzes' ) == 'yes',
 					),
@@ -332,7 +332,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					);
 				}
 
-				if ( 'yes' === $settings->get( 'publish_profile' ) ) {
+				if ( 'yes' === self::get_option_publish_profile() ) {
 					$this->_default_settings['settings']['sections']['privacy'] = array(
 						'title'    => esc_html__( 'Privacy', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
@@ -1044,8 +1044,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
 
 						if ( $user->get_data( 'profile_picture_changed' ) == 'yes' ) {
-							$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ),
-								$user->get_data( 'uploaded_profile_src' ) );
+							$uploaded_profile_src = add_query_arg(
+								'r',
+								md5( rand( 0, 10 ) / rand( 1, 1000000 ) ),
+								$user->get_data( 'uploaded_profile_src' )
+							);
 							delete_user_meta( $user->get_id(), '_lp_profile_picture_changed' );
 						}
 					} else {
@@ -1079,6 +1082,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return $avatar;
+		}
+
+		/**
+		 * Get option enable "Publish profile"
+		 *
+		 * @return string
+		 */
+		public static function get_option_publish_profile(): string {
+			return LP_Settings::get_option( 'publish_profile', 'no' );
 		}
 
 		/**
