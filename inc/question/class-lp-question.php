@@ -566,7 +566,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return string
 		 */
 		public function get_type_label() {
-			return ucwords( str_replace( '_', ' ', $this->get_type() ) );
+			return learn_press_question_types()[ $this->get_type() ];
 		}
 
 		protected function _init() {
