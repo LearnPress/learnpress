@@ -71,6 +71,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function dashboard_featured_courses() {
+		if ( ! is_user_logged_in() || ( $this->get_user()->get_id() !== get_current_user_id() && ! current_user_can( ADMIN_ROLE ) ) ) {
+			return;
+		}
+
 		$user  = $this->get_user();
 		$query = new LP_Course_Query(
 			array(
@@ -87,6 +91,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function dashboard_latest_courses() {
+		if ( ! is_user_logged_in() || ( $this->get_user()->get_id() !== get_current_user_id() && ! current_user_can( ADMIN_ROLE ) ) ) {
+			return;
+		}
+
 		$user  = $this->get_user();
 		$query = new LP_Course_Query(
 			array(
