@@ -105,7 +105,7 @@ class Question extends Component {
 			},
 
 			title: () => {
-				return question.title;
+				return ( <span dangerouslySetInnerHTML={ { __html: question.title } } /> );
 			},
 
 			hint: () => {
