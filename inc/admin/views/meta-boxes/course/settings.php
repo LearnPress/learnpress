@@ -92,12 +92,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					esc_html__( 'Choose a difficulty level.', 'learnpress' ),
 					'',
 					array(
-						'options' => array(
-							''             => esc_html__( 'All levels', 'learnpress' ),
-							'beginner'     => esc_html__( 'Beginner', 'learnpress' ),
-							'intermediate' => esc_html__( 'Intermediate', 'learnpress' ),
-							'expert'       => esc_html__( 'Expert', 'learnpress' ),
-						),
+						'options' => lp_course_level(),
 					)
 				),
 				'_lp_students'                 => new LP_Meta_Box_Text_Field(

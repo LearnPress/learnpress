@@ -389,6 +389,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:591
 #: inc/custom-post-types/question.php:372
 #: templates/content-lesson/content.php:20
+#: assets/js/dist/frontend/quiz.js:1
 msgid "Edit"
 msgstr ""
 
@@ -1890,25 +1891,25 @@ msgstr ""
 msgid "Choose a difficulty level."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:96
+#: inc/lp-template-functions.php:1759
 #: inc/admin/views/meta-boxes/course/tabs/general.php:52
 #: inc/lp-template-functions.php:1750
 msgid "All levels"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:97
+#: inc/lp-template-functions.php:1760
 #: inc/admin/views/meta-boxes/course/tabs/general.php:53
 #: inc/lp-core-functions.php:3477
 msgid "Beginner"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:98
+#: inc/lp-template-functions.php:1761
 #: inc/admin/views/meta-boxes/course/tabs/general.php:54
 #: inc/lp-core-functions.php:3478
 msgid "Intermediate"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:99
+#: inc/lp-template-functions.php:1762
 #: inc/admin/views/meta-boxes/course/tabs/general.php:55
 #: inc/lp-core-functions.php:3479
 msgid "Expert"
@@ -2385,6 +2386,7 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/question/settings.php:17
 #: inc/admin/views/quiz/question-meta.php:28
+#: assets/js/dist/frontend/quiz.js:1
 msgid "Points"
 msgstr ""
 
@@ -2395,6 +2397,7 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/question/settings.php:30
 #: inc/admin/views/quiz/question-meta.php:39
+#: assets/js/dist/frontend/quiz.js:1
 msgid "Hint"
 msgstr ""
 
@@ -2446,6 +2449,7 @@ msgid "For each question which students answer skip, the total point is deducted
 msgstr ""
 
 #: inc/admin/views/meta-boxes/quiz/settings.php:58
+#: assets/js/dist/frontend/quiz.js:1
 msgid "Retake"
 msgstr ""
 
@@ -2462,6 +2466,7 @@ msgid "The number of questions displayed on each page."
 msgstr ""
 
 #: inc/admin/views/meta-boxes/quiz/settings.php:86
+#: assets/js/dist/frontend/quiz.js:1
 msgid "Review"
 msgstr ""
 
@@ -7217,7 +7222,6 @@ msgstr ""
 
 #: templates/profile/tabs/quizzes.php:35
 #: assets/js/dist/frontend/quiz.js:24
-#: assets/js/dist/frontend/quiz.js:179
 msgid "Time spend"
 msgstr ""
 
@@ -7284,11 +7288,13 @@ msgid "Retake course"
 msgstr ""
 
 #: templates/single-course/content-item/nav.php:30
+#: assets/js/dist/frontend/quiz.js:1
 msgctxt "course-item-navigation"
 msgid "Prev"
 msgstr ""
 
 #: templates/single-course/content-item/nav.php:39
+#: assets/js/dist/frontend/quiz.js:1
 msgctxt "course-item-navigation"
 msgid "Next"
 msgstr ""
@@ -7418,7 +7424,6 @@ msgid "Passing grade"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.js:37
-#: assets/js/dist/frontend/quiz.js:171
 msgctxt "unknown passing grade value"
 msgid "-"
 msgstr ""
@@ -7471,10 +7476,54 @@ msgstr ""
 msgid "Earned Point: %s"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.js:129
+#: assets/js/dist/frontend/quiz.js:1
 msgid "Finish Quiz"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.js:129
 msgid "Submitting..."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "LP Error: can not set answers"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "Render function should be overwritten from base."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "Incorrect"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "%d/%d point"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "point"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "%d/%d point"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "Check answer"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "You need to answer the question before check answer."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "Are you sure you want to retake quiz?"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "Start"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
+msgid "Hint:"
 msgstr ""

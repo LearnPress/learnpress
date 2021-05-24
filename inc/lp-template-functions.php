@@ -1747,8 +1747,20 @@ function learn_press_get_post_level( $post_id ) {
 
 	return apply_filters(
 		'learn-press/level-label',
-		! empty( $level ) ? ucwords( $level ) : esc_html__( 'All levels', 'learnpress' ),
+		! empty( $level ) ? lp_course_level()[ $level ] : esc_html__( 'All levels', 'learnpress' ),
 		$post_id
+	);
+}
+
+function lp_course_level() {
+	return apply_filters(
+		'lp/template/function/course/level',
+		array(
+			''             => esc_html__( 'All levels', 'learnpress' ),
+			'beginner'     => esc_html__( 'Beginner', 'learnpress' ),
+			'intermediate' => esc_html__( 'Intermediate', 'learnpress' ),
+			'expert'       => esc_html__( 'Expert', 'learnpress' ),
+		)
 	);
 }
 
@@ -1815,7 +1827,7 @@ if ( ! function_exists( 'lp_profile_page_content' ) ) {
 		if ( $profile_id ) {
 			$profile_page = get_post( $profile_id );
 
-			//remove_shortcode( 'learn_press_profile' );
+			// remove_shortcode( 'learn_press_profile' );
 			$description = lp_format_page_content( wp_kses_post( $profile_page->post_content ) );
 
 			if ( $description ) {
