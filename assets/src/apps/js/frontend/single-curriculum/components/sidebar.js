@@ -2,29 +2,25 @@ const $ = jQuery;
 const { throttle } = lodash;
 
 export const Sidebar = () => {
-	const $popup = $( '#popup-course' );
-	const $curriculum = $( '#learn-press-course-curriculum' );
-	let timerClearScroll;
+	// Tungnx - Show/hide sidebar curriculumn
+	const elSidebarToggle = document.querySelector( '#sidebar-toggle' );
 
-	$( document ).on( 'change', '#sidebar-toggle', ( event ) => {
-		LP.Cookies.set( 'sidebar-toggle', event.target.checked );
-
-		toggleSidebar( event.target.checked );
-	} );
-
-	const toggleSidebar = ( toggle ) => {
-		$( 'body' ).removeClass( 'lp-sidebar-toggle__open' );
-		$( 'body' ).removeClass( 'lp-sidebar-toggle__close' );
-
-		if ( toggle ) {
-			$( 'body' ).addClass( 'lp-sidebar-toggle__close' );
+	if ( elSidebarToggle ) {
+		if ( $( window ).innerWidth() <= 768 ) {
+			elSidebarToggle.setAttribute( 'checked', 'checked' );
+		} else if ( LP.Cookies.get( 'sidebar-toggle' ) ) {
+			elSidebarToggle.setAttribute( 'checked', 'checked' );
 		} else {
-			$( 'body' ).addClass( 'lp-sidebar-toggle__open' );
+			elSidebarToggle.removeAttribute( 'checked' );
 		}
-	};
 
-	toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
+		elSidebarToggle.addEventListener( 'click', ( e ) => {
+			LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
+		} );
+	}
+	// End editor by tungnx
 
+	const $curriculum = $( '#learn-press-course-curriculum' );
 	$curriculum.find( '.section-desc' ).each( ( i, el ) => {
 		const a = $( '<span class="show-desc"></span>' ).on( 'click', () => {
 			b.toggleClass( 'c' );
@@ -54,22 +50,5 @@ export const Sidebar = () => {
 			LP.Cookies.set( 'closed-section-' + lpGlobalSettings.post_id, [ ...new Set( sections ) ] );
 		} );
 	} );
-
-	// Popup only
-	if ( $popup.length ) {
-		$curriculum.on( 'scroll', throttle( function() {
-			const $self = $( this );
-
-			$self.addClass( 'scrolling' );
-
-			timerClearScroll && clearTimeout( timerClearScroll );
-
-			timerClearScroll = setTimeout( () => {
-				$self.removeClass( 'scrolling' );
-			}, 1000 );
-		}, 500 ) );
-
-		LP.toElement( '.course-item.current', { container: '.curriculum-scrollable:eq(1)', offset: 100, duration: 1 } );
-	}
 };
 

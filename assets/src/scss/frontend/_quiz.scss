@@ -1022,6 +1022,10 @@ button[data-counter] {
 		font-size: 16px;
 		font-weight: 300;
 		line-height: 26px;
+		img {
+			max-width: 100%;
+			width: 100%;
+		}
 	}
 
 	.question-response {
