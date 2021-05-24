@@ -1891,25 +1891,25 @@ msgstr ""
 msgid "Choose a difficulty level."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:96
+#: inc/lp-template-functions.php:1759
 #: inc/admin/views/meta-boxes/course/tabs/general.php:52
 #: inc/lp-template-functions.php:1750
 msgid "All levels"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:97
+#: inc/lp-template-functions.php:1760
 #: inc/admin/views/meta-boxes/course/tabs/general.php:53
 #: inc/lp-core-functions.php:3477
 msgid "Beginner"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:98
+#: inc/lp-template-functions.php:1761
 #: inc/admin/views/meta-boxes/course/tabs/general.php:54
 #: inc/lp-core-functions.php:3478
 msgid "Intermediate"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:99
+#: inc/lp-template-functions.php:1762
 #: inc/admin/views/meta-boxes/course/tabs/general.php:55
 #: inc/lp-core-functions.php:3479
 msgid "Expert"
