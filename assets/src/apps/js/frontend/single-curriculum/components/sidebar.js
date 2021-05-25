@@ -5,17 +5,33 @@ export const Sidebar = () => {
 	// Tungnx - Show/hide sidebar curriculumn
 	const elSidebarToggle = document.querySelector( '#sidebar-toggle' );
 
+	// For style of theme
+	const toggleSidebar = ( toggle ) => {
+		$( 'body' ).removeClass( 'lp-sidebar-toggle__open' );
+		$( 'body' ).removeClass( 'lp-sidebar-toggle__close' );
+
+		if ( toggle ) {
+			$( 'body' ).addClass( 'lp-sidebar-toggle__close' );
+		} else {
+			$( 'body' ).addClass( 'lp-sidebar-toggle__open' );
+		}
+	};
+
+	// For lp and theme
 	if ( elSidebarToggle ) {
 		if ( $( window ).innerWidth() <= 768 ) {
 			elSidebarToggle.setAttribute( 'checked', 'checked' );
+			toggleSidebar( true );
 		} else if ( LP.Cookies.get( 'sidebar-toggle' ) ) {
 			elSidebarToggle.setAttribute( 'checked', 'checked' );
+			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
 		} else {
 			elSidebarToggle.removeAttribute( 'checked' );
 		}
 
 		elSidebarToggle.addEventListener( 'click', ( e ) => {
 			LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
+			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
 		} );
 	}
 	// End editor by tungnx

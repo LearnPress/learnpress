@@ -134,11 +134,12 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'type'  => 'title',
 				),
 				array(
-					'title'   => esc_html__( 'Publish profile', 'learnpress' ),
-					'id'      => 'publish_profile',
-					'default' => 'no',
-					'type'    => 'checkbox',
-					'desc'    => __( 'Public all user profile page (Overview tab only). <br>This option will add a sub-item "Privacy" under Setting tab on the Profile page.', 'learnpress' ),
+					'title'    => esc_html__( 'Publish profile', 'learnpress' ),
+					'id'       => 'publish_profile',
+					'default'  => 'no',
+					'type'     => 'checkbox',
+					'desc_tip' => esc_html__( 'This option will add a sub-item "Privacy" under Setting tab on the Profile page. If users want to publish or hide their course, quiz tab when other users visit their profile page, they need to enable/disable that option in the Privacy section.', 'learnpress' ),
+					'desc'     => __( 'Public all user profile page (Overview tab only).', 'learnpress' ),
 				),
 				array(
 					'title'   => esc_html__( 'Instructor registration', 'learnpress' ),
