@@ -367,6 +367,13 @@ add_action(
 /** END: Course section */
 
 /** BEGIN: Popup */
+/**
+ * @see single-button-toggle-sidebar
+ */
+add_action( 'learn-press/single-button-toggle-sidebar',
+	LP()->template( 'course' )->text( '<input type="checkbox" id="sidebar-toggle" />','single-button-toggle-sidebar' ),
+	5
+);
 
 /**
  * @see LP_Template_Course::popup_header()

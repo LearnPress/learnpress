@@ -32,10 +32,14 @@ do_action( 'learn-press/before-single-item' );
  */
 ?>
 	<div id="popup-course" class="course-summary">
+ 		<?php
+		/**
+		 * * @since 4.0.7
+		 * * @see single-button-toggle-sidebar - 5
+		 */
 
-		<input type="checkbox" id="sidebar-toggle" />
+		do_action('learn-press/single-button-toggle-sidebar');
 
-		<?php
 		/**
 		 * Get content item's course
 		 *
