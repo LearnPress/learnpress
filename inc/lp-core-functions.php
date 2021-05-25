@@ -1820,9 +1820,9 @@ function is_learnpress() {
 if ( ! function_exists( 'learn_press_is_search' ) ) {
 	function learn_press_is_search() {
 		return array_key_exists( 's', $_REQUEST ) && array_key_exists(
-				'ref',
-				$_REQUEST
-			) && $_REQUEST['ref'] == 'course';
+			'ref',
+			$_REQUEST
+		) && $_REQUEST['ref'] == 'course';
 	}
 }
 
@@ -3870,3 +3870,12 @@ function lp_add_shortcode_profile() {
 }
 
 add_action( 'template_redirect', 'lp_add_shortcode_profile' );
+
+add_filter(
+	'elementor/theme/get_location_templates/template_id',
+	function() {
+		if ( is_post_type_archive( LP_COURSE_CPT ) && class_exists( 'ElementorPro\Modules\ThemeBuilder\Conditions\Archive' ) ) {
+			return false;
+		}
+	}
+);
