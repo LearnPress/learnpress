@@ -27,6 +27,7 @@ export const Sidebar = () => {
 			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
 		} else {
 			elSidebarToggle.removeAttribute( 'checked' );
+			toggleSidebar( false );
 		}
 
 		elSidebarToggle.addEventListener( 'click', ( e ) => {

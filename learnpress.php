@@ -182,7 +182,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					'schedule-items'   => 'schedule-items',
 					'global'           => 'global',
 					'clear-temp-users' => 'clear-temp-users',
-					'sync-data'        => 'sync-data',
+					//'sync-data'        => 'sync-data',
 				)
 			);
 
@@ -195,6 +195,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					$this->backgrounds[ $name ] = include_once $file;
 				}
 			}
+
+//			var_dump($this->backgrounds);
 		}
 
 		/**
@@ -550,29 +552,29 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
-			$this->remove_cron();
+			//$this->remove_cron();
 		}
 
-		protected function add_cron() {
+		/*protected function add_cron() {
 			add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
 
 			if ( ! wp_next_scheduled( 'learn_press_schedule_items' ) ) {
 				wp_schedule_event( time(), 'lp_cron_schedule_items', 'learn_press_schedule_items' );
 			}
-		}
+		}*/
 
-		protected function remove_cron() {
+		/*protected function remove_cron() {
 			wp_clear_scheduled_hook( 'learn_press_schedule_items' );
-		}
+		}*/
 
-		public function cron_schedules( $schedules ) {
+		/*public function cron_schedules( $schedules ) {
 			$schedules['lp_cron_schedule_items'] = array(
 				'interval' => 15,
 				'display'  => esc_html__( 'Every 3 Minutes', 'learnpress' ),
 			);
 
 			return $schedules;
-		}
+		}*/
 
 		/**
 		 * Trigger WP loaded actions.
