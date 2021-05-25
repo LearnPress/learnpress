@@ -20,11 +20,11 @@ export const Sidebar = () => {
 	// For lp and theme
 	if ( elSidebarToggle ) {
 		if ( $( window ).innerWidth() <= 768 ) {
- 			toggleSidebar( true );
+			elSidebarToggle.setAttribute( 'checked', 'checked' );
 		} else if ( LP.Cookies.get( 'sidebar-toggle' ) ) {
- 			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
+			elSidebarToggle.setAttribute( 'checked', 'checked' );
 		} else {
- 			toggleSidebar( false );
+			elSidebarToggle.removeAttribute( 'checked' );
 		}
 
 		elSidebarToggle.addEventListener( 'click', ( e ) => {

@@ -158,12 +158,18 @@ if ( ! function_exists( 'learn_press_content_item_body_class' ) ) {
 	function learn_press_content_item_body_class( $classes ) {
 		global $lp_course_item;
 
+		if ( wp_is_mobile() ) {
+			$sidebar_toggle_class = 'lp-sidebar-toggle__close';
+		} else {
+			$sidebar_toggle_class = learn_press_cookie_get( 'sidebar-toggle' ) ? 'lp-sidebar-toggle__close' : 'lp-sidebar-toggle__open';
+		}
+
 		if ( $lp_course_item ) {
 			$classes[] = 'course-item-popup';
 			$classes[] = 'viewing-course-item';
 			$classes[] = 'viewing-course-item-' . $lp_course_item->get_id();
 			$classes[] = 'course-item-' . $lp_course_item->get_item_type();
-			$classes[] = learn_press_cookie_get( 'sidebar-toggle' ) ? 'lp-sidebar-toggle__close' : 'lp-sidebar-toggle__open';
+			$classes[] = $sidebar_toggle_class;
 		}
 
 		return $classes;
