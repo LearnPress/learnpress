@@ -1151,30 +1151,6 @@
 		}
 	}
 
-	//#sidebar-toggle {
-	//
-	//	&:checked {
-	//		left: 0;
-	//
-	//		/*background: #5383f7;
-    //        border-color: #5383f7;*/
-	//		&::before {
-	//			content: "\f0da";
-	//		}
-	//	}
-	//
-	//	&:checked {
-	//	}
-	//}
-
-	//#sidebar-toggle:checked ~ #popup-sidebar {
-	//	flex: 0 0 0;
-	//}
-	//
-	//#sidebar-toggle:checked ~ #popup-footer,
-	//#sidebar-toggle:checked ~ #popup-header {
-	//	left: 0;
-	//}
 
 	.lp-quiz-buttons {
 
@@ -1634,31 +1610,7 @@ body {
 			top: 32px;
 		}
 	}
-	//&.lp-sidebar-toggle__close {
-	//	.lp-single-course {
-	//		&.learn-press-4 {
-	//			#popup-course {
-	//				#popup-sidebar {
-	//					flex: 0 0 0;
-	//				}
-	//
-	//				#popup-header, #popup-footer {
-	//					left: 0px;
-	//				}
-	//
-	//				#popup-header {
-	//					.thim-course-item-popup-right {
-	//						#sidebar-toggle {
-	//							&.toggle-content-item::before {
-	//								content: "\f066";
-	//							}
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+
 	&.lp-sidebar-toggle__close{
 		#popup-course {
 			> #sidebar-toggle {
@@ -1676,6 +1628,25 @@ body {
 			}
 		}
 	}
+	@media (max-width: 768px){
+		&:not(.lp-sidebar-toggle__open){
+			#popup-course {
+				> #sidebar-toggle {
+					left: 0;
+					&::before {
+						content: "\f0da";
+					}
+				}
+				#popup-sidebar {
+					flex: 0 0 0;
+				}
+
+				#popup-header, #popup-footer {
+					left: 0;
+				}
+			}
+		}
+	}
 }
 
 .course-curriculum {
@@ -1686,35 +1657,7 @@ body {
 			position: relative;
 		}
 
-		//.section-progress {
-		//    width: 24px;
-		//    height: 24px;
-		//    position: absolute;
-		//    right: 0;
-		//    top: 50%;
-		//    margin-top: -12px;
-		//    .circle-progress-bar {
-		//        position: relative;
-		//        width: 24px;
-		//        height: 24px;
-		//        stroke: #5383f7;
-		//        display: inline-block;
-		//        .circle-progress-bar__circle {
-		//            transition: 0.35s stroke-dashoffset;
-		//            transform: rotate(-90deg);
-		//            transform-origin: 50% 50%;
-		//        }
-		//    }
-		//    &:before {
-		//        content: '';
-		//        display: block;
-		//        border: 6px solid #d9e0f1;
-		//        position: absolute;
-		//        width: 100%;
-		//        height: 100%;
-		//        border-radius: 50%;
-		//    }
-		//}
+
 	}
 }
 

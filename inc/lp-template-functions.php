@@ -163,6 +163,7 @@ if ( ! function_exists( 'learn_press_content_item_body_class' ) ) {
 			$classes[] = 'viewing-course-item';
 			$classes[] = 'viewing-course-item-' . $lp_course_item->get_id();
 			$classes[] = 'course-item-' . $lp_course_item->get_item_type();
+			$classes[] = learn_press_cookie_get( 'sidebar-toggle' ) ? 'lp-sidebar-toggle__close' : 'lp-sidebar-toggle__open';
 		}
 
 		return $classes;
