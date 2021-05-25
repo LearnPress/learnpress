@@ -206,6 +206,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: Option "Logout Redirect"
 ~ Fixed: Set default sidebar curriculumn will be hide on mobile
 ~ Modify: Remove course on Overview tab when enable "Publish Profile"
+~ Fixed: Elementor pro make archive course run wrong
 
 = 4.0.5 =
 ~ Fixed: error "Duplicate entry" for case upgrade LP4, if user install LP4 and save setting before Upgrade Database

@@ -138,7 +138,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'id'      => 'publish_profile',
 					'default' => 'no',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'User course data will be public.', 'learnpress' ),
+					'desc'    => __( 'Public all user profile page (Overview tab only). <br>This option will add a sub-item "Privacy" under Setting tab on the Profile page.', 'learnpress' ),
 				),
 				array(
 					'title'   => esc_html__( 'Instructor registration', 'learnpress' ),
