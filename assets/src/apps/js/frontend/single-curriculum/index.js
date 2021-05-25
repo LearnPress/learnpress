@@ -35,7 +35,7 @@ class SingleCurriculums extends Component {
 
 export default SingleCurriculums;
 
-window.addEventListener( 'DOMContentLoaded', () => {
+document.addEventListener( 'DOMContentLoaded', () => {
 	LP.Hook.doAction( 'lp-compatible-builder' );
 
 	searchCourseContent();

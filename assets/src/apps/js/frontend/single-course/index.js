@@ -20,7 +20,7 @@ function run() {
 	Sidebar();
 }
 
-window.addEventListener( 'DOMContentLoaded', () => {
+document.addEventListener( 'DOMContentLoaded', () => {
 	run();
 } );
 
