@@ -1127,7 +1127,10 @@
 		cursor: pointer;
 		transition: 0.25s;
 		-webkit-appearance: none;
-
+		border:none;
+		&:after{
+			display: none;
+		}
 		&::before {
 			display: inline-block;
 			position: absolute;
@@ -1148,30 +1151,30 @@
 		}
 	}
 
-	#sidebar-toggle {
+	//#sidebar-toggle {
+	//
+	//	&:checked {
+	//		left: 0;
+	//
+	//		/*background: #5383f7;
+    //        border-color: #5383f7;*/
+	//		&::before {
+	//			content: "\f0da";
+	//		}
+	//	}
+	//
+	//	&:checked {
+	//	}
+	//}
 
-		&:checked {
-			left: 0;
-
-			/*background: #5383f7;
-            border-color: #5383f7;*/
-			&::before {
-				content: "\f0da";
-			}
-		}
-
-		&:checked {
-		}
-	}
-
-	#sidebar-toggle:checked ~ #popup-sidebar {
-		flex: 0 0 0;
-	}
-
-	#sidebar-toggle:checked ~ #popup-footer,
-	#sidebar-toggle:checked ~ #popup-header {
-		left: 0;
-	}
+	//#sidebar-toggle:checked ~ #popup-sidebar {
+	//	flex: 0 0 0;
+	//}
+	//
+	//#sidebar-toggle:checked ~ #popup-footer,
+	//#sidebar-toggle:checked ~ #popup-header {
+	//	left: 0;
+	//}
 
 	.lp-quiz-buttons {
 
@@ -1629,6 +1632,48 @@ body {
 
 		#popup-course {
 			top: 32px;
+		}
+	}
+	//&.lp-sidebar-toggle__close {
+	//	.lp-single-course {
+	//		&.learn-press-4 {
+	//			#popup-course {
+	//				#popup-sidebar {
+	//					flex: 0 0 0;
+	//				}
+	//
+	//				#popup-header, #popup-footer {
+	//					left: 0px;
+	//				}
+	//
+	//				#popup-header {
+	//					.thim-course-item-popup-right {
+	//						#sidebar-toggle {
+	//							&.toggle-content-item::before {
+	//								content: "\f066";
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+	&.lp-sidebar-toggle__close{
+		#popup-course {
+			> #sidebar-toggle {
+				left: 0;
+ 				&::before {
+					content: "\f0da";
+				}
+			}
+			#popup-sidebar {
+				flex: 0 0 0;
+			}
+
+			#popup-header, #popup-footer {
+				left: 0;
+			}
 		}
 	}
 }
