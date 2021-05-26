@@ -63,7 +63,9 @@ const Result = () => {
 			}
 		}
 
-		updateItemsProgress();
+		setTimeout( function() {
+			updateItemsProgress();
+		}, 1000 );
 	}, [ results ] );
 
 	const updateItemsProgress = () => {
