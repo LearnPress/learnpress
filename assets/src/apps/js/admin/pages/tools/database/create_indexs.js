@@ -55,8 +55,6 @@ const createIndexes = () => {
 				const scrollToStepCurrent = ( stepCurrent ) => {
 					const elItemStepCurrent = elGroupStep.querySelector( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
 
-					console.log( elItemStepCurrent.offsetTop, lpModalOverlay.elMainContent[ 0 ].offsetTop );
-
 					const offset = elItemStepCurrent.offsetTop - lpModalOverlay.elMainContent[ 0 ].offsetTop +
 						lpModalOverlay.elMainContent[ 0 ].scrollTop;
 
@@ -77,7 +75,7 @@ const createIndexes = () => {
 				}
 
 				lpModalOverlay.callBackYes = () => {
-					const url = '/lp/v1/tools/admin/create-indexs';
+					const url = '/lp/v1/admin/tools/create-indexs';
 					const params = { tables, table };
 
 					lpModalOverlay.elBtnNo[ 0 ].style.display = 'none';
