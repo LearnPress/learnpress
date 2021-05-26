@@ -456,8 +456,8 @@ button[data-counter] {
 	> div {
 		display: flex;
 		box-sizing: border-box;
-		width: 792px;
-		max-width: 100%;
+		width: 100%;
+		max-width: 792px;
 		height: 60px;
 		margin: 0 auto;
 		padding: 5px 10px 5px 30px;
@@ -465,7 +465,11 @@ button[data-counter] {
 		background: var(--lp-primary-color);
 		justify-content: center;
 		align-items: center;
-
+		@media (max-width: 480px){
+			display: block;
+			height: auto;
+			text-align: center;
+		}
 		> div {
 			display: flex;
 			flex-direction: row-reverse;
