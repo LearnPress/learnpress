@@ -27,11 +27,12 @@ export const Sidebar = () => {
 			elSidebarToggle.removeAttribute( 'checked' );
 		}
 
-		/*elSidebarToggle.addEventListener( 'click', ( e ) => {
-			//console.log( 123123123123 );
-			LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
-			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
-		} );*/
+		document.querySelector( '#popup-course' ).addEventListener( 'click', ( e ) => {
+			if ( e.target.id === 'sidebar-toggle' ) {
+				LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
+				toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
+			}
+		} );
 	}
 	// End editor by tungnx
 
@@ -64,34 +65,6 @@ export const Sidebar = () => {
 			LP.Cookies.remove( 'closed-section-(.*)' );
 			LP.Cookies.set( 'closed-section-' + lpGlobalSettings.post_id, [ ...new Set( sections ) ] );
 		} );
-	} );
-
-	function on( elSelector, eventName, selector, fn ) {
-		const element = document.querySelector( elSelector );
-
-		element.addEventListener( eventName, function( event ) {
-			const possibleTargets = element.querySelectorAll( selector );
-			const target = event.target;
-
-			for ( let i = 0, l = possibleTargets.length; i < l; i++ ) {
-				let el = target;
-				const p = possibleTargets[ i ];
-
-				while ( el && el !== element ) {
-					if ( el === p ) {
-						return fn.call( p, event );
-					}
-
-					el = el.parentNode;
-				}
-			}
-		} );
-	}
-
-	on( 'body', 'click', '#sidebar-toggle', function( e ) {
-		//e.preventDefault();
-		LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
-		toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
 	} );
 };
 
