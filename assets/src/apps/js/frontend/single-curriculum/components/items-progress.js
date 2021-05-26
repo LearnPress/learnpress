@@ -13,7 +13,7 @@ export const itemsProgress = () => {
 		return;
 	}
 
-	if ( elements[ 0 ].querySelectorAll( 'form.form-button-finish-course' ).length === 0 ) {
+	if ( elements[ 0 ].querySelectorAll( 'form.form-button-finish-course' ).length !== 0 ) {
 		return;
 	}
 
