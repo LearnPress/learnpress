@@ -219,7 +219,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		public function get_extra_data( string $name = '', $default = false ) {
 			if ( is_string( $name ) ) {
-				return array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default;
+				return array_key_exists( $name, $this->_extra_data ) && ! empty( $this->_extra_data[ $name ] ) ? $this->_extra_data[ $name ] : $default;
 			} elseif ( is_array( $name ) ) {
 				$data = array();
 				foreach ( $name as $key ) {
