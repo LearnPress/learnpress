@@ -1034,11 +1034,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return int
 		 */
 		public function count_enrolled_users_by_orders( $course_id ) {
-
 			$completed  = get_post_meta( $course_id, 'order-completed', true );
 			$processing = get_post_meta( $course_id, 'order-processing', true );
 
-			return sizeof( $completed ) + sizeof( $processing );
+			return absint( $completed ) + absint( $processing );
 
 			$statuses = array( 'completed', 'processing' );
 			$count    = $this->count_by_orders( $course_id, $statuses );
