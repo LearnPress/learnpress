@@ -101,7 +101,9 @@ const createIndexes = () => {
 							}
 
 							if ( 'success' === status ) {
-								handleAjax( url, params, functions );
+								setTimeout( () => {
+									handleAjax( url, params, functions );
+								}, 2000 );
 							} else if ( 'finished' === status ) {
 								console.log( 'finished' );
 								lpModalOverlay.elBtnNo[ 0 ].style.display = 'inline-block';
