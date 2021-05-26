@@ -1,6 +1,7 @@
 .lp-quiz-buttons {
 	margin-bottom: 20px;
- 	@include clear-fix();
+
+	@include clear-fix();
 }
 
 .quiz-progress {
@@ -57,6 +58,7 @@
 	margin: 0;
 	padding: 0;
 	list-style: none;
+
 	.answer-option {
 		display: flex;
 		overflow: hidden;
@@ -82,13 +84,14 @@
 
 			&::before {
 				position: absolute;
- 				top: 0;
+				top: 0;
 				bottom: 0;
 				left: 0;
 				width: 3px;
 				background: #ddd;
 				content: "";
- 				@include transition(background linear 0.25s);
+
+				@include transition(background linear 0.25s);
 			}
 		}
 
@@ -465,11 +468,13 @@ button[data-counter] {
 		background: var(--lp-primary-color);
 		justify-content: center;
 		align-items: center;
-		@media (max-width: 480px){
+
+		@media (max-width: 480px) {
 			display: block;
 			height: auto;
 			text-align: center;
 		}
+
 		> div {
 			display: flex;
 			flex-direction: row-reverse;
@@ -498,8 +503,8 @@ button[data-counter] {
 	.countdown {
 		position: relative;
 		min-width: 120px;
-		padding: 12px 29px;
 		margin-right: 5px;
+		padding: 12px 29px;
 		//border: 1px solid var(--lp-secondary-color);
 		//border-radius: 3px;
 		color: #333;
@@ -559,18 +564,20 @@ button[data-counter] {
 
 	.submit-quiz button {
 		margin: 0 0 0 10px;
-		background: #fff;
 		border: none;
 		border-radius: 0;
+		background: #fff;
 		text-transform: uppercase;
- 		&:hover {
+
+		&:hover {
 			//color: var(--lp-secondary-color);
 			background: var(--lp-secondary-color);
- 		}
+		}
 	}
 
 	&.submitting {
-		.submit-quiz button  {
+
+		.submit-quiz button {
 			background: #ddd;
 		}
 	}
@@ -687,11 +694,22 @@ button[data-counter] {
 	margin: 0 0 20px;
 	padding: 0;
 	list-style: none;
+	flex-flow: row wrap;
+
+	@media (max-width: 768px) {
+		padding-right: 10px;
+		padding-left: 10px;
+		justify-content: space-between;
+	}
 
 	&-item {
 		display: flex;
 		margin: 0 40px 0 0;
 		align-items: center;
+
+		@media (max-width: 768px) {
+			margin: 0 20px 0 0;
+		}
 
 		&::before {
 			position: relative;
@@ -817,6 +835,7 @@ button[data-counter] {
 }
 
 .lp-quiz-buttons {
+
 	.complete-quiz,
 	.back-quiz,
 	.review-quiz {
@@ -903,6 +922,7 @@ button[data-counter] {
 }
 
 .quiz-questions {
+
 	.question {
 		margin-bottom: 60px;
 	}
@@ -1026,9 +1046,10 @@ button[data-counter] {
 		font-size: 16px;
 		font-weight: 300;
 		line-height: 26px;
+
 		img {
-			max-width: 100%;
 			width: 100%;
+			max-width: 100%;
 		}
 	}
 
