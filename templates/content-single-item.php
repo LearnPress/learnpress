@@ -5,7 +5,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.1
+ * @version 4.0.0
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -26,16 +26,12 @@ do_action( 'learn-press/before-main-content' );
  * LP Hook
  */
 do_action( 'learn-press/before-single-item' );
-
-/**
- * Get cookie stored for sidebar state
- */
 ?>
 	<div id="popup-course" class="course-summary">
  		<?php
 		/**
-		 * * @since 4.0.7
-		 * * @see single-button-toggle-sidebar - 5
+		 * @since 4.0.6
+		 * @see single-button-toggle-sidebar - 5
 		 */
 
 		do_action('learn-press/single-button-toggle-sidebar');
