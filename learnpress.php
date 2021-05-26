@@ -881,9 +881,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					unset( $_GET['activate'] );
 				}
 
+				$message = sprintf(
+					'%s %s You can download %s. Read guide on %s',
+					'LP4 require version Thim-core:',
+					$this->thim_core_version_require,
+					'<a href="https://thimpresswp.github.io/thim-core/thim-core.zip">latest version</a>',
+					'<a href="https://bit.ly/2SrsxUf">here</a>'
+				);
 				?>
 				<div class="notice notice-error">
-					<p><?php echo( 'LP4 require version Thim-core: ' . $this->thim_core_version_require ); ?></p>
+					<p><?php echo $message; ?></p>
 				</div>
 				<?php
 				die;
