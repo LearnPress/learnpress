@@ -213,11 +213,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 		/**
 		 * @param string $name
-		 * @param string $default
+		 * @param mixed $default
 		 *
 		 * @return array|bool|mixed|string
 		 */
-		public function get_extra_data( $name = '', $default = '' ) {
+		public function get_extra_data( string $name = '', $default = false ) {
 			if ( is_string( $name ) ) {
 				return array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default;
 			} elseif ( is_array( $name ) ) {
@@ -227,11 +227,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				}
 
 				return $data;
-			} elseif ( true === $name ) {
-				return $this->_extra_data;
 			}
 
-			return false;
+			return $default;
 		}
 
 		/**
