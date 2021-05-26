@@ -13,6 +13,10 @@ export const itemsProgress = () => {
 		return;
 	}
 
+	if ( elements[ 0 ].querySelectorAll( 'form.form-button-finish-course' ).length === 0 ) {
+		return;
+	}
+
 	if ( 'IntersectionObserver' in window ) {
 		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
 			entries.forEach( ( entry ) => {
