@@ -442,12 +442,7 @@ add_action( 'register_form', 'learn_press_user_become_teacher_registration_form'
  *
  * @return mixed
  */
-function learn_press_update_user_item_field(
-	$fields,
-	$where = false,
-	$update_cache = true,
-	$update_extra_fields_as_meta = false
-) {
+function learn_press_update_user_item_field( $fields, $where = false, $update_cache = true, $update_extra_fields_as_meta = false ) {
 	global $wpdb;
 
 	// Table fields
@@ -833,9 +828,9 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 
 /**
  * @param     $status
- * @param int $quiz_id
- * @param int $user_id
- * @param int $course_id
+ * @param int    $quiz_id
+ * @param int    $user_id
+ * @param int    $course_id
  *
  * @return bool|mixed
  */
@@ -1051,7 +1046,7 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1073,7 +1068,7 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 
 /**
  * @param     $name
- * @param int $id
+ * @param int  $id
  *
  * @return bool
  */
@@ -1531,12 +1526,12 @@ function learn_press_get_user_role( $user_id ) {
 function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	global $wpdb;
 
-	$currentTime = new LP_Datetime();
-	$defaults    = array(
+	$defaults = array(
 		'user_id'     => get_current_user_id(),
 		'item_id'     => '',
-		'start_time'  => $currentTime->toSql( false ),
+		'start_time'  => current_time( 'mysql', true ),
 		'end_time'    => '',
+		'graduation'  => '',
 		'item_type'   => '',
 		'status'      => '',
 		'ref_id'      => 0,
@@ -1545,10 +1540,10 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		'create_meta' => array(),
 	);
 
-	$itemData = wp_parse_args( $args, $defaults );
+	$item_data = wp_parse_args( $args, $defaults );
 
 	// Validate item_id and post type
-	if ( empty( $itemData['item_id'] ) ) {
+	if ( empty( $item_data['item_id'] ) ) {
 		if ( $wp_error ) {
 			return new WP_Error( 'invalid_item_id', __( 'Invalid item id.', 'learnpress' ) );
 		}
@@ -1556,32 +1551,32 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		return 0;
 	}
 
-	if ( empty( $itemData['item_type'] ) && $post_type = learn_press_get_post_type( $itemData['item_id'] ) ) {
-		$itemData['item_type'] = $post_type;
+	if ( empty( $item_data['item_type'] ) && $post_type = learn_press_get_post_type( $item_data['item_id'] ) ) {
+		$item_data['item_type'] = $post_type;
 	}
 
 	// Get id and type of ref if they are null
-	if ( ! empty( $itemData['parent_id'] ) && ( empty( $itemData['ref_id'] ) || ( empty( $itemData['ref_type'] ) ) ) ) {
+	if ( ! empty( $item_data['parent_id'] ) && ( empty( $item_data['ref_id'] ) || ( empty( $item_data['ref_type'] ) ) ) ) {
 		$parent = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->learnpress_user_items} WHERE %d",
-				$itemData['parent_id']
+				$item_data['parent_id']
 			)
 		);
 
 		if ( $parent ) {
-			if ( empty( $itemData['ref_id'] ) ) {
-				$itemData['ref_id'] = $parent->item_id;
+			if ( empty( $item_data['ref_id'] ) ) {
+				$item_data['ref_id'] = $parent->item_id;
 			}
 
-			if ( empty( $itemData['ref_type'] ) ) {
-				$itemData['ref_type'] = $parent->item_type;
+			if ( empty( $item_data['ref_type'] ) ) {
+				$item_data['ref_type'] = $parent->item_type;
 			}
 		}
 	}
 
 	// Filter
-	if ( ! $itemData = apply_filters( 'learn-press/create-user-item-data', $itemData ) ) {
+	if ( ! $item_data = apply_filters( 'learn-press/create-user-item-data', $item_data ) ) {
 		if ( $wp_error ) {
 			return new WP_Error( 'invalid_item_data', __( 'Invalid item data.', 'learnpress' ) );
 		}
@@ -1589,17 +1584,17 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		return 0;
 	}
 
-	do_action( 'learn-press/before-create-user-item', $itemData );
+	do_action( 'learn-press/before-create-user-item', $item_data );
 
-	$createMeta = ! empty( $itemData['create_meta'] ) ? $itemData['create_meta'] : false;
+	$create_meta = ! empty( $item_data['create_meta'] ) ? $item_data['create_meta'] : false;
 
-	if ( $createMeta ) {
-		unset( $itemData['create_meta'] );
+	if ( $create_meta ) {
+		unset( $item_data['create_meta'] );
 	}
 
-	$userItem = new LP_User_Item( $itemData );
+	$user_item = new LP_User_Item( $item_data );
 
-	$result = $userItem->update( true, false );
+	$result = $user_item->update( true, false );
 
 	if ( ! $result || is_wp_error( $result ) ) {
 
@@ -1610,22 +1605,22 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		return 0;
 	}
 
-	do_action( 'learn-press/created-user-item', $userItem, $itemData );
+	do_action( 'learn-press/created-user-item', $user_item, $item_data );
 
-	$createMeta = apply_filters( 'learn-press/create-user-item-meta', $createMeta, $itemData );
-	if ( ! $createMeta ) {
-		return $userItem;
+	$create_meta = apply_filters( 'learn-press/create-user-item-meta', $create_meta, $item_data );
+	if ( ! $create_meta ) {
+		return $user_item;
 	}
 
-	do_action( 'learn-press/before-create-user-item-meta', $createMeta );
+	do_action( 'learn-press/before-create-user-item-meta', $create_meta );
 
-	foreach ( $createMeta as $key => $value ) {
-		learn_press_update_user_item_meta( $userItem->get_user_item_id(), $key, $value );
+	foreach ( $create_meta as $key => $value ) {
+		learn_press_update_user_item_meta( $user_item->get_user_item_id(), $key, $value );
 	}
 
-	do_action( 'learn-press/created-user-item-meta', $userItem, $createMeta );
+	do_action( 'learn-press/created-user-item-meta', $user_item, $create_meta );
 
-	return $userItem;
+	return $user_item;
 }
 
 /**
@@ -1640,9 +1635,10 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 	$item_data = wp_parse_args(
 		$args,
 		array(
-			'item_type' => LP_QUIZ_CPT,
-			'status'    => 'started',
-			'user_id'   => get_current_user_id(),
+			'item_type'  => LP_QUIZ_CPT,
+			'status'     => 'started',
+			'graduation' => 'in-progress',
+			'user_id'    => get_current_user_id(),
 		)
 	);
 
@@ -1654,6 +1650,26 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 	}
 
 	return $user_item;
+}
+
+/**
+ * Get list user_item_id for Quiz in table learnpress_user_items
+ *
+ * @param int $quiz_id
+ * @param int $course_id
+ * @return array || false
+ */
+function learn_press_isset_user_item_for_quiz( $quiz_id, $course_id ) {
+	global $wpdb;
+
+	$query = $wpdb->prepare( "SELECT user_item_id FROM $wpdb->learnpress_user_items WHERE ref_id=%d AND item_id=%d", $course_id, $quiz_id );
+	$col   = $wpdb->get_col( $query );
+
+	if ( ! empty( $col ) ) {
+		return $col;
+	} else {
+		return false;
+	}
 }
 
 /**
