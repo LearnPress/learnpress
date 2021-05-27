@@ -78,6 +78,35 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
+	 * Get data user_items by course_id, quiz_id, user_id
+	 *
+	 * @param [type] $course_id
+	 * @param [type] $item_id
+	 * @param [type] $user_id
+	 * @return array
+	 */
+	public function get_result_by_item_id( $course_id, $item_id, $user_id ) {
+		if ( empty( $course_id ) || empty( $item_id ) ) {
+			return false;
+		}
+
+		$query = $this->wpdb->prepare(
+			"SELECT * FROM {$this->tb_lp_user_items}
+			WHERE ref_id = %d
+			AND item_id = %d
+			AND user_id=%d
+			ORDER BY user_item_id DESC",
+			$course_id,
+			$item_id,
+			$user_id
+		);
+
+		$results = $this->wpdb->get_row( $query, ARRAY_A );
+
+		return $results;
+	}
+
+	/**
 	 * Remove items' of course and user learned
 	 *
 	 * @param LP_User_Items_Filter $filter .

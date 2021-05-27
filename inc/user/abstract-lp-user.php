@@ -663,20 +663,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return false;
-			$item = false;
-			if ( false !== ( $items = LP_Object_Cache::get(
-					'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id,
-					'learn-press/user-course-items'
-				) ) ) {
-				// Only get status of a newest record.
-				if ( $last ) {
-					$item = reset( $items );
-				} else {
-					$item = $items;
-				}
-			}
-
-			return $item;
 		}
 
 		/**
