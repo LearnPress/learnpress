@@ -28,6 +28,10 @@ const Result = () => {
 		return select( 'learnpress/quiz' ).getData( 'id' );
 	}, [] );
 
+	const submitting = useSelect( ( select ) => {
+		return select( 'learnpress/quiz' ).getData( 'submitting' );
+	}, [] );
+
 	useEffect( () => {
 		animate();
 
@@ -62,11 +66,13 @@ const Result = () => {
 				itemCompleted.textContent = parseInt( allItemCompleted.length );
 			}
 		}
-
-		setTimeout( function() {
-			updateItemsProgress();
-		}, 1000 );
 	}, [ results ] );
+
+	useEffect( () => {
+		if ( submitting !== undefined ) {
+			updateItemsProgress();
+		}
+	}, [ submitting ] );
 
 	const updateItemsProgress = () => {
 		const elements = document.querySelectorAll( '.popup-header__inner' );
