@@ -662,6 +662,7 @@ function learn_press_get_user_item( $where, $single = true ) {
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE " . join( ' AND ', $where_str ) . '
+			ORDER BY user_item_id DESC
 		',
 			$where
 		);
