@@ -117,12 +117,16 @@ if ( $total_question ) :
 	<div id="learn-press-quiz-app"></div>
 
 	<script>
-		LP.Hook.addAction('course-ready', () => {
-			LP.quiz.init(
-				'#learn-press-quiz-app',
-				<?php echo json_encode( $js ); ?>
-			)
-		});
+	document.addEventListener( 'DOMContentLoaded', () => {
+		if ( typeof LP !== 'undefined' ) {
+			LP.Hook.addAction('course-ready', () => {
+				LP.quiz.init(
+					'#learn-press-quiz-app',
+					<?php echo json_encode( $js ); ?>
+				)
+			});
+		}
+	});
 	</script>
 
 	<?php
