@@ -182,7 +182,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					'schedule-items'   => 'schedule-items',
 					'global'           => 'global',
 					'clear-temp-users' => 'clear-temp-users',
-					//'sync-data'        => 'sync-data',
+					'sync-data'        => 'sync-data',
 				)
 			);
 
@@ -195,8 +195,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					$this->backgrounds[ $name ] = include_once $file;
 				}
 			}
-
-//			var_dump($this->backgrounds);
 		}
 
 		/**
@@ -207,8 +205,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return LP_Abstract_Background_Process|bool
 		 * @since 3.0.8
+		 * @editor tungnx | comment this function
 		 */
-		public function add_background_task( $data, $background = 'global' ) {
+		/*public function add_background_task( $data, $background = 'global' ) {
 			if ( isset( $this->backgrounds[ $background ] ) ) {
 				$this->backgrounds[ $background ]->push_to_queue( $data );
 
@@ -216,7 +215,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Return a background instance.
