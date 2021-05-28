@@ -16,6 +16,10 @@ add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
 function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
+	if ( ! function_exists( 'wp_get_current_user' ) ) {
+		include( ABSPATH . 'wp-includes/pluggable.php' );
+	}
+
 	if ( ! did_action( 'plugin_loaded' ) || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
 		return $query;
 	}
