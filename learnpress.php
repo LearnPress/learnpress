@@ -172,75 +172,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 		}
 
-		public function init_background_processes() {
-			$supports = apply_filters(
-				'learn-press/background-processes',
-				array(
-					'emailer'          => 'emailer',
-					'installer'        => 'installer',
-					'query-items'      => 'query-items',
-					'schedule-items'   => 'schedule-items',
-					'global'           => 'global',
-					'clear-temp-users' => 'clear-temp-users',
-					'sync-data'        => 'sync-data',
-				)
-			);
-
-			foreach ( $supports as $name => $file ) {
-				if ( ! is_file( $file ) || ! file_exists( $file ) || preg_match( '~.php$~', $file ) ) {
-					$file = LP_PLUGIN_PATH . "/inc/background-process/class-lp-background-{$file}.php";
-				}
-
-				if ( file_exists( $file ) && is_readable( $file ) ) {
-					$this->backgrounds[ $name ] = include_once $file;
-				}
-			}
-		}
-
-		/**
-		 * Add new task to a background process.
-		 *
-		 * @param mixed  $data .
-		 * @param string $background .
-		 *
-		 * @return LP_Abstract_Background_Process|bool
-		 * @since 3.0.8
-		 * @editor tungnx | comment this function
-		 */
-		/*public function add_background_task( $data, $background = 'global' ) {
-			if ( isset( $this->backgrounds[ $background ] ) ) {
-				$this->backgrounds[ $background ]->push_to_queue( $data );
-
-				return $this->backgrounds[ $background ];
-			}
-
-			return false;
-		}*/
-
-		/**
-		 * Return a background instance.
-		 *
-		 * @param string $name
-		 *
-		 * @return LP_Abstract_Background_Process|bool
-		 * @since 3.0.8
-		 */
-		public function background( $name ) {
-			if ( ! did_action( 'plugins_loaded' ) ) {
-				_doing_it_wrong(
-					__CLASS__ . '::' . __FUNCTION__,
-					'should call after \'plugins_loaded\' action',
-					'3.0.8'
-				);
-			}
-
-			if ( isset( $this->backgrounds[ $name ] ) ) {
-				return $this->backgrounds[ $name ];
-			}
-
-			return false;
-		}
-
 		/**
 		 * Defines database table names.
 		 */
@@ -551,29 +482,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
-			//$this->remove_cron();
 		}
-
-		/*protected function add_cron() {
-			add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
-
-			if ( ! wp_next_scheduled( 'learn_press_schedule_items' ) ) {
-				wp_schedule_event( time(), 'lp_cron_schedule_items', 'learn_press_schedule_items' );
-			}
-		}*/
-
-		/*protected function remove_cron() {
-			wp_clear_scheduled_hook( 'learn_press_schedule_items' );
-		}*/
-
-		/*public function cron_schedules( $schedules ) {
-			$schedules['lp_cron_schedule_items'] = array(
-				'interval' => 15,
-				'display'  => esc_html__( 'Every 3 Minutes', 'learnpress' ),
-			);
-
-			return $schedules;
-		}*/
 
 		/**
 		 * Trigger WP loaded actions.
@@ -618,11 +527,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @editor tungnx
 		 */
 		public function plugin_loaded() {
-			//$this->add_cron();
 			$this->init();
 
-			// Background.
-			$this->init_background_processes();
+			//Todo: tungnx - remove this code after handle ajax on page learn-press-addons
+			require_once 'inc/background-process/class-lp-background-query-items.php';
 
 			require_once 'inc/lp-template-hooks.php';
 

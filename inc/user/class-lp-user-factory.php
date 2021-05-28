@@ -19,11 +19,6 @@ class LP_User_Factory {
 	public static $_deleted_users = array();
 
 	/**
-	 * @var LP_Background_Clear_Temp_Users
-	 */
-	// protected static $_background_clear_users = null;
-
-	/**
 	 *
 	 */
 	public static function init() {
@@ -41,21 +36,6 @@ class LP_User_Factory {
 		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
 
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
-	}
-
-	public static function clear_temp_users() {
-		global $wpdb;
-
-		$users = learn_press_get_temp_users();
-
-		if ( $users ) {
-			LP()->background( 'clear-temp-users' )->push_to_queue(
-				array(
-					'action' => 'clear_temp_users',
-					'users'  => $users,
-				)
-			);
-		}
 	}
 
 	public static function update_user_items( $the_id, $old_status, $new_status ) {

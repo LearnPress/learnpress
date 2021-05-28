@@ -607,10 +607,11 @@ class LP_Repair_Database {
 	 * Sync course data when saving post.
 	 *
 	 * @param int $course_id
-	 *
+	 * @editor tungnx
+	 * @version 3.1.1
 	 * @since 3.1.0
 	 */
-	public function sync_course_data( $course_id ) {
+	public function sync_course_data( int $course_id ) {
 		$user_curd   = new LP_User_CURD();
 		$course_curd = new LP_Course_CURD();
 
@@ -621,8 +622,6 @@ class LP_Repair_Database {
 		}
 
 		update_post_meta( $course_id, 'count_items', $count_items );
-		$this->queue_sync_user_course_results( $course_id );
-
 	}
 
 	/**
@@ -648,7 +647,12 @@ class LP_Repair_Database {
 			call_user_func( array( $this, $func ) );
 	}
 
-	public function queue_sync_user_course_results( $course_id ) {
+	/***
+	 * @editor tungnx
+	 * @deprecated 4.0.7
+	 * @reason not use on LP4, make CPU run high.
+	 */
+	/*public function queue_sync_user_course_results( $course_id ) {
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -693,7 +697,7 @@ class LP_Repair_Database {
 				update_option( 'doing-sync-user-course-results', 'yes' );
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Sync orders for each course

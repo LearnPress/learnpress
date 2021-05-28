@@ -19,6 +19,8 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 */
 		protected $queue_lock_time = 3600;
 
+		protected $cron_interval = 60 * 24; // minutes
+
 		/**
 		 * @var float|int
 		 */

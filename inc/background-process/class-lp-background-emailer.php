@@ -4,13 +4,13 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'LP_Background_Emailer' ) ) {
+if ( ! class_exists( 'LP_Background_Email' ) ) {
 	/**
 	 * Class LP_Background_Emailer
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Background_Emailer extends LP_Abstract_Background_Process {
+	class LP_Background_Email extends LP_Abstract_Background_Process {
 
 		/**
 		 * @var string
@@ -49,5 +49,3 @@ if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 		}
 	}
 }
-
-return LP_Background_Emailer::instance();

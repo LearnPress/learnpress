@@ -308,22 +308,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			return $wpdb->get_col( $query );
 		}
 
-		/**
-		 * @param int $course_id
-		 */
-		public function bg_update_items_format( $course_id ) {
-			if ( ! get_option( 'update_items_format_' . $course_id ) ) {
-				LP_Background_Global::add(
-					'update_items_format_' . $course_id,
-					array(
-						'course_id' => $course_id,
-					),
-					__CLASS__ . '::bg_update_items_format'
-				);
-				update_option( 'update_items_format_' . $course_id, 'yes' );
-			}
-		}
-
 		public static function update_items_format( $item ) {
 
 			if ( empty( $item['args']['course_id'] ) ) {

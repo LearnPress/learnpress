@@ -182,18 +182,22 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				)
 			);
 
-			if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
+			//TODO: tungnx - rewrite background progess
+			/*if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
 
 				// self::$_background_emailer = new LP_Background_Emailer();
 
 				foreach ( $actions as $action ) {
-					add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
+					//add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
 				}
 			} else {
-
 				foreach ( $actions as $action ) {
 					add_action( $action, array( __CLASS__, 'send_email' ), 10, 10 );
 				}
+			}*/
+
+			foreach ( $actions as $action ) {
+				add_action( $action, array( __CLASS__, 'send_email' ), 10, 10 );
 			}
 
 			self::instance();
@@ -204,13 +208,13 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public static function queue_email() {
+		/*public static function queue_email() {
 			$data_queue = array(
 				'filter' => current_filter(),
 				'args'   => func_get_args(),
 			);
 			LP()->background( 'emailer' )->push_to_queue( $data_queue );
-		}
+		}*/
 
 		/**
 		 * Send email notification.

@@ -204,7 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: show html title question
 ~ Fixed: Order change status from "completed" to "pending" => user can't learn courses in this order
 ~ Added: Option "Logout Redirect"
-~ Fixed: Set default sidebar curriculumn will be hide on mobile
+~ Fixed: Set default sidebar curriculum will be hide on mobile
 ~ Modify: Remove course on Overview tab when enable "Publish Profile"
 ~ Fixed: Elementor pro make archive course show wrong
 
