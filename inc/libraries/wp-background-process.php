@@ -1,13 +1,15 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * WP Background Process
+ *
+ * @package WP-Background-Processing
+ * @source https://github.com/deliciousbrains/wp-background-processing
+ */
 
 /**
  * Abstract WP_Background_Process class.
  *
  * @abstract
- * @package WP-Background-Processing
  * @extends WP_Async_Request
  */
 abstract class WP_Background_Process extends WP_Async_Request {
@@ -106,7 +108,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	/**
 	 * Update queue
 	 *
-	 * @param string $key Key.
+	 * @param string $key  Key.
 	 * @param array  $data Data.
 	 *
 	 * @return $this
@@ -270,18 +272,17 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
 		$query = $wpdb->get_row( $wpdb->prepare( "
-		SELECT *
-		FROM {$table}
-		WHERE {$column} LIKE %s
-		ORDER BY {$key_column} ASC
-		LIMIT 1
+			SELECT *
+			FROM {$table}
+			WHERE {$column} LIKE %s
+			ORDER BY {$key_column} ASC
+			LIMIT 1
 		", $key ) );
-		$batch = null;
-		if( $query ){
-		    $batch       = new stdClass();
-		    $batch->key  = $query->$column;
-		    $batch->data = LP_Helper::maybe_unserialize( $query->$value_column );
-		}
+
+		$batch       = new stdClass();
+		$batch->key  = $query->$column;
+		$batch->data = maybe_unserialize( $query->$value_column );
+
 		return $batch;
 	}
 
@@ -296,20 +297,20 @@ abstract class WP_Background_Process extends WP_Async_Request {
 
 		do {
 			$batch = $this->get_batch();
-			if( $batch && isset($batch->data) && !empty($batch->data) ) {
-    			foreach ( $batch->data as $key => $value ) {
-    				$task = $this->task( $value );
-    				if ( false !== $task ) {
-    					$batch->data[ $key ] = $task;
-    				} else {
-    					unset( $batch->data[ $key ] );
-    				}
-    
-    				if ( $this->time_exceeded() || $this->memory_exceeded() ) {
-    					// Batch limits reached.
-    					break;
-    				}
-    			}
+
+			foreach ( $batch->data as $key => $value ) {
+				$task = $this->task( $value );
+
+				if ( false !== $task ) {
+					$batch->data[ $key ] = $task;
+				} else {
+					unset( $batch->data[ $key ] );
+				}
+
+				if ( $this->time_exceeded() || $this->memory_exceeded() ) {
+					// Batch limits reached.
+					break;
+				}
 			}
 
 			// Update or delete current batch.
@@ -328,6 +329,8 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		} else {
 			$this->complete();
 		}
+
+		wp_die();
 	}
 
 	/**
@@ -363,12 +366,12 @@ abstract class WP_Background_Process extends WP_Async_Request {
 			$memory_limit = '128M';
 		}
 
-		if ( ! $memory_limit || -1 === intval( $memory_limit ) ) {
+		if ( ! $memory_limit || - 1 === intval( $memory_limit ) ) {
 			// Unlimited, set to 32GB.
 			$memory_limit = '32000M';
 		}
 
-		return intval( $memory_limit ) * 1024 * 1024;
+		return wp_convert_hr_to_bytes( $memory_limit );
 	}
 
 	/**
@@ -405,20 +408,22 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	 * Schedule cron healthcheck
 	 *
 	 * @access public
+	 *
 	 * @param mixed $schedules Schedules.
+	 *
 	 * @return mixed
 	 */
 	public function schedule_cron_healthcheck( $schedules ) {
 		$interval = apply_filters( $this->identifier . '_cron_interval', 5 );
 
 		if ( property_exists( $this, 'cron_interval' ) ) {
-			$interval = apply_filters( $this->identifier . '_cron_interval', $this->cron_interval_identifier );
+			$interval = apply_filters( $this->identifier . '_cron_interval', $this->cron_interval );
 		}
 
 		// Adds every 5 minutes to the existing schedules.
 		$schedules[ $this->identifier . '_cron_interval' ] = array(
 			'interval' => MINUTE_IN_SECONDS * $interval,
-			'display'  => sprintf( __( 'Every %d minutes', 'learnpress' ), $interval ),
+			'display'  => sprintf( __( 'Every %d Minutes' ), $interval ),
 		);
 
 		return $schedules;
