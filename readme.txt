@@ -15,7 +15,7 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 **<a href="https://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
 
-<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/product-category/themes/education-themes/" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a>
+<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/product-category/themes/education-themes/" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a> | <a href="https://docspress.thimpress.com/learnpress-4-0/" target="_blank">Documentation</a>
 
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
@@ -32,8 +32,8 @@ Take a look at Premium **[Eduma - Education WordPress Theme](https://themeforest
 
 - **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**
 
-- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=3LDa8vtDIAk)**
-[youtube https://www.youtube.com/watch?v=3LDa8vtDIAk&hd=1&&cc_load_policy=1]
+- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=0mJBC9IpiS0&t=1891s)**
+[youtube https://www.youtube.com/watch?v=0mJBC9IpiS0&t=1891s]
 
 Are you looking for *the best LMS WordPress Plugin*?
 
