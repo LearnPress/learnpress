@@ -3871,11 +3871,26 @@ function lp_add_shortcode_profile() {
 
 add_action( 'template_redirect', 'lp_add_shortcode_profile' );
 
+/**
+ * If Elementor Pro set Theme builder type "Archive", will not show content on page "Archive course"
+ *
+ * @editor tungnx
+ * @author nhamdv
+ *
+ * @since 4.0.6
+ * @version 1.0.1
+ */
 add_filter(
 	'elementor/theme/get_location_templates/template_id',
-	function() {
-		if ( is_post_type_archive( LP_COURSE_CPT ) && class_exists( 'ElementorPro\Modules\ThemeBuilder\Conditions\Archive' ) ) {
-			return false;
+	function( $theme_template_id ) {
+		$elementor_template_type = get_post_meta( $theme_template_id, '_elementor_template_type', true );
+
+		if ( in_array( $elementor_template_type, array( 'archive' ) ) ) {
+			if ( LP_PAGE_COURSES === LP_Page_Controller::page_current() && class_exists( 'ElementorPro\Modules\ThemeBuilder\Conditions\Archive' ) ) {
+				return false;
+			}
 		}
+
+		return $theme_template_id;
 	}
 );
