@@ -197,6 +197,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.0.7 =
+~ Fixed: "start quiz" error with some cases have cached.
+~ Fixed: CPU runs high
+
 = 4.0.6 =
 ~ Fixed: Page profile not show login/register form
 ~ Fixed: translated text on js function "Quiz"
