@@ -17,7 +17,7 @@ class LP_Addon {
 	 *
 	 * @var array
 	 */
-	private $lp_require_addon_version = '4.0.0-beta-0';
+	private $lp_require_addon_version = '4.0.0';
 
 	/**
 	 * Required version for current version of addon.

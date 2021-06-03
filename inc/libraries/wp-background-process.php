@@ -24,6 +24,8 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	 */
 	protected $action = 'background_process';
 
+	protected $cron_interval = 5;
+
 	/**
 	 * Start time of current process.
 	 *
