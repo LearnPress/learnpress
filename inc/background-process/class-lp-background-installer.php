@@ -65,8 +65,6 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 
 			$required_tables = get_object_vars( $wpdb );
 
-			error_log( json_decode( $required_tables ) );
-
 			$required_tables = array_filter( $required_tables, array( $this, '_filter_tables' ) );
 
 			return array_diff( $required_tables, $tables );
