@@ -198,8 +198,9 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.0.7 =
-~ Fixed: "start quiz" error with some cases have cached.
 ~ Fixed: CPU runs high
+~ Fixed: "start quiz" error with some cases have cached.
+~ Fixed: make Elementor pro show wrong: header, footer... (theme builder)
 
 = 4.0.6 =
 ~ Fixed: Page profile not show login/register form
