@@ -125,7 +125,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 			$item_type = learn_press_get_post_type( $item_id );
 
-			switch ( $item_type ) {
+			/*switch ( $item_type ) {
 				case LP_QUIZ_CPT:
 					$course_item = new LP_User_Item_Quiz( $user_course_item );
 					break;
@@ -134,7 +134,14 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					break;
 			}
 
-			$course_item = apply_filters( 'learn-press/user-course-item', $course_item, $user_course_item, $this );
+			$course_item = apply_filters( 'learn-press/user-course-item', $course_item, $user_course_item, $this );*/
+
+			$course_item = apply_filters(
+				'learn-press/user-course-item',
+				LP_User_Item::get_item_object( $user_course_item ),
+				$user_course_item,
+				$this
+			);
 
 			if ( $course_item ) {
 				$this->_items[ $item_id ]                                     = $item_id;
