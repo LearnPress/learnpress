@@ -149,7 +149,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$this->_set_data(
 				array(
 					'status'                       => $post_object->post_status,
-					// 'required_enroll'      => get_post_meta( $id, '_lp_required_enroll', true ),
+					 'required_enroll'      => get_post_meta( $id, '_lp_required_enroll', true ),
 					'price'                        => get_post_meta( $id, '_lp_price', true ),
 					'sale_price'                   => get_post_meta( $id, '_lp_sale_price', true ),
 					'sale_start'                   => get_post_meta( $id, '_lp_sale_start', true ),
@@ -396,6 +396,37 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
 		}
+		/**
+		 * Check if this course is required enroll or not.
+		 *
+		 * @param mixed
+		 *
+		 * @return bool
+		 */
+		public function is_no_required_enroll() {
+			$return = $this->get_data( 'required_enroll' ) == 'yes';
+
+			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
+		}
+
+		/**
+		 * @param $course_id
+		 *
+		 * @return bool|void
+		 */
+		public function user_course_no_required_enroll() {
+			$result = false;
+			if ( ! $course_id = $this->get_id() ) {
+				return;
+			}
+			$course = learn_press_get_course( $course_id );
+
+			if ( $course->is_no_required_enroll() && $course->is_free() && ! is_user_logged_in() ) {
+				$result = true;
+			}
+			return $result;
+		}
+
 
 		/**
 		 * @return mixed

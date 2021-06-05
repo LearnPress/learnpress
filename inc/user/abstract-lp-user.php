@@ -398,10 +398,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				if ( ! $this->has_enrolled_course( $course_id ) || ! $this->is_course_in_progress( $course_id ) ) {
-					throw new Exception(
-						__( 'Please enroll course before starting quiz.', 'learnpress' ),
-						LP_COURSE_IS_FINISHED
-					);
+					if ( ! $course->is_no_required_enroll() ) {
+						throw new Exception(
+							__( 'Please enroll course before starting quiz.', 'learnpress' ),
+							LP_COURSE_IS_FINISHED
+						);
+					}
 				}
 
 				// Check if user has already started or completed quiz
@@ -413,8 +415,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 				$user = LP_Global::user();
 
-				if ( $course->is_required_enroll() && $user->is_guest() ) {
-					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
+				if ( $user->is_guest() ) {
+					// if course required enroll => print message "You have to login for starting quiz"
+					if ( ! $course->is_no_required_enroll() ) {
+						throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
+					}
 				}
 
 				/**
@@ -527,7 +532,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$this->get_id() ) ) {
 				return false;
 			}
-
 			$return = false;
 			try {
 				$course_id = $this->_verify_course_item( $quiz_id, $course_id );

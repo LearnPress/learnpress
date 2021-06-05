@@ -6,11 +6,8 @@ import { __ } from '@wordpress/i18n';
 class Buttons extends Component {
 	startQuiz = ( event ) => {
 		event && event.preventDefault();
-
 		const btn = document.querySelector( '.lp-button.start' );
-
 		btn && btn.setAttribute( 'disabled', 'disabled' );
-
 		const { startQuiz, status } = this.props;
 
 		if ( status === 'completed' ) {
@@ -21,7 +18,16 @@ class Buttons extends Component {
 				return;
 			}
 		}
-
+		// Remove all local.Storage
+		if ( lpQuizSettings.checknorequizenroll == '1' ) {
+			const retakenNumber = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
+			if ( retakenNumber >= 1 ) {
+				window.localStorage.setItem( 'quiz_retake_' + lpQuizSettings.id, parseInt( retakenNumber ) + 1 );
+			} else {
+				window.localStorage.setItem( 'quiz_retake_' + lpQuizSettings.id, 1 );
+			}
+			window.localStorage.removeItem( 'quiz_results_' + lpQuizSettings.id );
+		}
 		startQuiz();
 	};
 
@@ -398,6 +404,9 @@ export default compose( [
 		if ( data.questionsPerPage === 1 ) {
 			data.question = getCurrentQuestion( 'object' );
 		}
+
+		const retakenCurrent = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
+		data.retakeNumber = data.retakeNumber - retakenCurrent;
 
 		return data;
 	} ),

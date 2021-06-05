@@ -11,21 +11,24 @@ import { __ } from '@wordpress/i18n';
 import { getResponse } from '../../../single-curriculum/components/items-progress';
 
 const { debounce } = lodash;
-
 const Result = () => {
 	const [ percentage, setPercentage ] = useState( 0 );
 	const [ done, setDone ] = useState( false );
-
+	const QuizID = useSelect( ( select ) => {
+		return select( 'learnpress/quiz' ).getData( 'id' );
+	}, [] );
 	const results = useSelect( ( select ) => {
+		if ( lpQuizSettings.checknorequizenroll == '1' ) {
+			const resultsStorage = window.localStorage.getItem( 'quiz_results_' + QuizID );
+			if ( resultsStorage ) {
+				return JSON.parse( resultsStorage );
+			}
+		}
 		return select( 'learnpress/quiz' ).getData( 'results' );
 	}, [] );
 
 	const passingGrade = useSelect( ( select ) => {
 		return select( 'learnpress/quiz' ).getData( 'passingGrade' );
-	}, [] );
-
-	const QuizID = useSelect( ( select ) => {
-		return select( 'learnpress/quiz' ).getData( 'id' );
 	}, [] );
 
 	const submitting = useSelect( ( select ) => {
@@ -67,6 +70,10 @@ const Result = () => {
 			}
 		}
 	}, [ results ] );
+	console.log();
+	if ( lpQuizSettings.checknorequizenroll == '1' ) {
+		localStorage.setItem( 'quiz_results_' + QuizID, JSON.stringify( results ) );
+	}
 
 	useEffect( () => {
 		if ( submitting !== undefined ) {

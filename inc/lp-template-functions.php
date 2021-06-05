@@ -294,7 +294,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
 		$args = array();
 		$quiz = LP_Global::course_item_quiz();
-
+		$course = LP_Global::course();
 		if ( $quiz ) {
 			$user      = LP_Global::user();
 			$user_quiz = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) );
@@ -310,6 +310,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 				'totalTime'     => $quiz->get_duration()->get(),
 				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
 				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
+				'checknorequizenroll' => $course->user_course_no_required_enroll()
 			);
 		}
 

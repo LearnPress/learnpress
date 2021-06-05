@@ -109,7 +109,13 @@ $js = array(
 	'edit_permalink'      => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
 	'results'             => array(),
 );
-
+if ( $course->user_course_no_required_enroll() ) {
+	$cookie_user_status = 'quiz_submit_status_' . $course->get_id() . '_' . $quiz->get_id() . '';
+	if ( ! empty( $_COOKIE[ $cookie_user_status ] ) ) {
+		$js_status    = $_COOKIE[ $cookie_user_status ];
+		$js['status'] = $js_status;
+	}
+}
 $js = array_merge( $js, $user_js );
 
 if ( $total_question ) :

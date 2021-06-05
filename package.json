@@ -74,7 +74,7 @@
     "react-redux": "^7.1.0",
     "read-file": "^0.2.0",
     "replace": "^0.3.0",
-    "sass": "^1.24.2",
+    "sass": "^1.34.1",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.19.1",
     "stylelint": "^13.7.0",

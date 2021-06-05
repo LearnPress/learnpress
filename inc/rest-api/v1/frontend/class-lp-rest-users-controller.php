@@ -253,11 +253,28 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$item_id   = $request['item_id'];
 		$course_id = $request['course_id'];
 		$user      = learn_press_get_user( $user_id );
-
+		$course    = learn_press_get_course( $course_id );
+		$quiz      = learn_press_get_quiz( $item_id );
+		if ( $course->user_course_no_required_enroll() ) {
+			learn_press_setcookie( 'quiz_starttime_' . $course_id . '_' . $item_id . '', strtotime( current_time( 'mysql' ) ), time() + ( 7 * DAY_IN_SECONDS ), false );
+		}
 		if ( $user->has_started_quiz( $item_id, $course_id ) ) {
+
 			$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
+
 		} else {
-			$user_quiz = $user->start_quiz( $item_id, $course_id, true );
+			if ( $course->is_no_required_enroll() && $course->is_free() && ! $user->is_logged_in() && $quiz->get_retake_count() >= 0 ) {
+				// Remove all cookie when retake (course if free & is no required enroll)
+				$cookie_array = array( 'quiz_starttime_', 'quiz_endtime_', 'quiz_submit_status_' );
+				foreach ( $cookie_array as $cookie ) {
+					learn_press_remove_cookie( '' . $cookie . '' . $course_id . '_' . $item_id . '' );
+				}
+				// after re-set quiz start time cookie
+				learn_press_setcookie( 'quiz_starttime_' . $course_id . '_' . $item_id . '', strtotime( current_time( 'mysql' ) ), time() + ( 7 * DAY_IN_SECONDS ), false );
+				$user_quiz = $user->start_quiz( $item_id, $course_id, true );
+			} else {
+				$user_quiz = $user->start_quiz( $item_id, $course_id, true );
+			}
 		}
 
 		$success = ! is_wp_error( $user_quiz );
@@ -314,11 +331,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$results['end_time']   = $expiration;
 			}
 
-			$results['duration']     = $duration ? $duration->get() : false;
-			$results['answered']     = $quiz_results->getQuestions();
-			$results['status']       = $quiz_results->get( 'status' );
-			$results['results']      = $quiz_results->get();
-			$results['retaken']      = absint( $user_quiz->get_retaken_count() );
+			$results['duration'] = $duration ? $duration->get() : false;
+			$results['answered'] = $quiz_results->getQuestions();
+			$results['status']   = $quiz_results->get( 'status' );
+			$results['results']  = $quiz_results->get();
+			$results['retaken']  = absint( $user_quiz->get_retaken_count() );
+
 			$results['attempts']     = $user_quiz->get_attempts();
 			$results['user_item_id'] = $user_quiz->get_user_item_id();
 
@@ -335,66 +353,108 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return mixed|WP_REST_Response
 	 */
 	public function submit_quiz( $request ) {
-		$user_id     = get_current_user_id();
-		$item_id     = $request['item_id'];
-		$course_id   = $request['course_id'];
-		$answered    = $request['answered'];
-		$user        = learn_press_get_user( $user_id );
-		$user_course = $user->get_course_data( $course_id );
-		$results     = array();
-		$user_quiz   = false;
+		$user_id         = get_current_user_id();
+		$item_id         = $request['item_id'];
+		$course_id       = $request['course_id'];
+		$answered        = $request['answered'];
+		$user            = learn_press_get_user( $user_id );
+		$course          = learn_press_get_course( $course_id );
+		$user_course     = $user->get_course_data( $course_id );
+		$results         = array();
+		$user_quiz       = false;
+		$required_enroll = new LP_Course_No_Required_Enroll();
 
-		if ( $user_course ) {
-			$user_quiz = $user_course->get_item( $item_id );
+		if ( $course->user_course_no_required_enroll() ) {
+			learn_press_setcookie( 'quiz_endtime_' . $course_id . '_' . $item_id . '', strtotime( current_time( 'mysql' ) ), time() + ( 7 * DAY_IN_SECONDS ), false );
+			// Course is no required enroll
+			$success  = true;
+			$response = array(
+				'success' => $success,
+				'message' => __( 'Success!', 'learnpress' ),
+			);
+			if ( $success ) {
+				// Use for Review Quiz.
+				$quiz = learn_press_get_quiz( $item_id );
+				if ( get_post_meta( $item_id, '_lp_review', true ) === 'yes' ) {
 
-			if ( $user_quiz ) {
-				$user_quiz->add_question_answer( $answered );
-			}
-		}
+					$question_ids = $quiz->get_question_ids();
+					if ( $question_ids ) {
+						foreach ( $question_ids as $id ) {
+							$question = learn_press_get_question( $id );
 
-		$finished = $user->finish_quiz( $item_id, $course_id, true );
-		$success  = ! is_wp_error( $finished );
-
-		$response = array(
-			'success' => $success,
-			'message' => ! $success ? $finished->get_error_message() : __( 'Success!', 'learnpress' ),
-		);
-
-		if ( $success ) {
-			$user_quiz    = $user_course->get_item( $item_id );
-			$quiz_results = $user_quiz->get_results( '' );
-			$attempts     = $user_quiz->get_attempts();
-
-			// Use for Review Quiz.
-			if ( get_post_meta( $item_id, '_lp_review', true ) === 'yes' ) {
-				$question_ids = $quiz_results->getQuestions( 'ids' );
-
-				if ( $question_ids ) {
-					foreach ( $question_ids as $id ) {
-						$question = learn_press_get_question( $id );
-
-						$results['questions'][ $id ] = array(
-							'explanation' => $question->get_explanation(),
-							'options'     => learn_press_get_question_options_for_js(
-								$question,
-								array(
-									'include_is_true' => get_post_meta( $item_id, '_lp_show_correct_review', true ) === 'yes',
-									'answer'          => isset( $answered[ $id ] ) ? $answered[ $id ] : '',
-								)
-							),
-						);
+							$results['questions'][ $id ] = array(
+								'explanation' => $question->get_explanation(),
+								'options'     => learn_press_get_question_options_for_js(
+									$question,
+									array(
+										'include_is_true' => get_post_meta( $item_id, '_lp_show_correct_review', true ) === 'yes',
+										'answer'          => isset( $answered[ $id ] ) ? $answered[ $id ] : '',
+									)
+								),
+							);
+						}
 					}
+				}
+
+				$results['answered'] = $required_enroll->guest_get_quiz_answered( $request['answered'], $item_id );
+				$results['status']   = 'completed';
+				$results['results']  = $required_enroll->guest_quiz_get_results( '', false, $item_id, $request['answered'], $course_id );
+				$results['attempts'] = $required_enroll->guest_quiz_get_attempts( $item_id, $request['answered'], $course_id );
+				$response['results'] = $results;
+
+				learn_press_setcookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '', 'completed', time() + ( 7 * DAY_IN_SECONDS ), false );
+			}
+		} else {
+			// Course required enroll
+			if ( $user_course ) {
+				$user_quiz = $user_course->get_item( $item_id );
+
+				if ( $user_quiz ) {
+					$user_quiz->add_question_answer( $answered );
 				}
 			}
 
-			$results['answered'] = $quiz_results->getQuestions();
-			$results['status']   = $quiz_results->get( 'status' );
-			$results['results']  = $quiz_results->get();
-			$results['attempts'] = $attempts;
+			$finished = $user->finish_quiz( $item_id, $course_id, true );
+			$success  = ! is_wp_error( $finished );
 
-			$response['results'] = $results;
+			$response = array(
+				'success' => $success,
+				'message' => ! $success ? $finished->get_error_message() : __( 'Success!', 'learnpress' ),
+			);
+
+			if ( $success ) {
+				$user_quiz    = $user_course->get_item( $item_id );
+				$quiz_results = $user_quiz->get_results( '' );
+				$attempts     = $user_quiz->get_attempts();
+				// Use for Review Quiz.
+				if ( get_post_meta( $item_id, '_lp_review', true ) === 'yes' ) {
+					$question_ids = $quiz_results->getQuestions( 'ids' );
+					if ( $question_ids ) {
+						foreach ( $question_ids as $id ) {
+							$question = learn_press_get_question( $id );
+
+							$results['questions'][ $id ] = array(
+								'explanation' => $question->get_explanation(),
+								'options'     => learn_press_get_question_options_for_js(
+									$question,
+									array(
+										'include_is_true' => get_post_meta( $item_id, '_lp_show_correct_review', true ) === 'yes',
+										'answer'          => isset( $answered[ $id ] ) ? $answered[ $id ] : '',
+									)
+								),
+							);
+						}
+					}
+				}
+
+				$results['answered'] = $quiz_results->getQuestions();
+				$results['status']   = $quiz_results->get( 'status' );
+				$results['results']  = $quiz_results->get();
+				$results['attempts'] = $attempts;
+				$response['results'] = $results;
+
+			}
 		}
-
 		return rest_ensure_response( $response );
 	}
 
@@ -420,10 +480,16 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	public function check_answer( $request ) {
 		$question_id = $request['question_id'];
 		$answered    = $request['answered'];
+		$course_id   = $request['course_id'];
+		$course      = learn_press_get_course( $course_id );
 
-		$checked  = $this->user_item->check_question( $question_id, $answered );
+		if ( $course->user_course_no_required_enroll() ) {
+			$required_enroll = new LP_Course_No_Required_Enroll();
+			$checked         = $required_enroll->guest_check_question( $question_id, $answered );
+		} else {
+			$checked = $this->user_item->check_question( $question_id, $answered );
+		}
 		$question = learn_press_get_question( $question_id );
-
 		$response = array(
 			'explanation' => $question->get_explanation(),
 			'options'     => learn_press_get_question_options_for_js(
@@ -435,7 +501,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			),
 			'result'      => $checked,
 		);
-
 		return rest_ensure_response( $response );
 	}
 
