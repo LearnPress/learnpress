@@ -184,7 +184,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 		// Course is not require enrolling
-		if ( !$course->is_required_enroll() || $course->is_free() || $user->has_enrolled_course( $course->get_id() ) ) {
+		if ( $course->is_no_required_enroll() || $course->is_free() || $user->has_enrolled_course( $course->get_id() ) ) {
 			return;
 		}
 
@@ -275,7 +275,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		// Course is not require enrolling.
-		if ( $course->is_no_required_enroll() && $user->is_guest() ) {
+		if ( $course->is_no_required_enroll()) {
 			return;
 		}
 

@@ -310,7 +310,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 				'totalTime'     => $quiz->get_duration()->get(),
 				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
 				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
-				'checknorequizenroll' => $course->user_course_no_required_enroll()
+				'checknorequizenroll' => $course->is_no_required_enroll()
 			);
 		}
 
@@ -1511,7 +1511,7 @@ add_filter(
 
 		$course_blocking = LP()->settings()->get( 'course_blocking' );
 		$course_data     = $user->get_course_data( $course_id );
-		// $end_time        = $course_data->get_end_time_gmt();
+		// $end_time        = $course_data->get_end_time_gmt();3
 		// $expired_time    = $course_data->get_expiration_time_gmt();
 		ob_start();
 

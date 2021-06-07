@@ -34,7 +34,7 @@ class LP_User extends LP_Abstract_User {
 		}
 
 		// Set view->flag is true if course is no required enroll
-		if ( $course->is_no_required_enroll() && $course->is_free() && false == is_user_logged_in() ) {
+		if ( $course->is_no_required_enroll() ) {
 			$view->flag = true;
 
 			return $view;

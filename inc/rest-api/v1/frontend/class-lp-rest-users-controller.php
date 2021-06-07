@@ -255,7 +255,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$user      = learn_press_get_user( $user_id );
 		$course    = learn_press_get_course( $course_id );
 		$quiz      = learn_press_get_quiz( $item_id );
-		if ( $course->user_course_no_required_enroll() ) {
+		if ( $course->is_no_required_enroll() ) {
 			learn_press_setcookie( 'quiz_starttime_' . $course_id . '_' . $item_id . '', strtotime( current_time( 'mysql' ) ), time() + ( 7 * DAY_IN_SECONDS ), false );
 		}
 		if ( $user->has_started_quiz( $item_id, $course_id ) ) {
@@ -263,7 +263,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
 
 		} else {
-			if ( $course->is_no_required_enroll() && $course->is_free() && ! $user->is_logged_in() && $quiz->get_retake_count() >= 0 ) {
+			if ( $course->is_no_required_enroll() && $quiz->get_retake_count() >= 0 ) {
 				// Remove all cookie when retake (course if free & is no required enroll)
 				$cookie_array = array( 'quiz_starttime_', 'quiz_endtime_', 'quiz_submit_status_' );
 				foreach ( $cookie_array as $cookie ) {
@@ -364,7 +364,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$user_quiz       = false;
 		$required_enroll = new LP_Course_No_Required_Enroll();
 
-		if ( $course->user_course_no_required_enroll() ) {
+		if ( $course->is_no_required_enroll() ) {
 			learn_press_setcookie( 'quiz_endtime_' . $course_id . '_' . $item_id . '', strtotime( current_time( 'mysql' ) ), time() + ( 7 * DAY_IN_SECONDS ), false );
 			// Course is no required enroll
 			$success  = true;
@@ -483,7 +483,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$course_id   = $request['course_id'];
 		$course      = learn_press_get_course( $course_id );
 
-		if ( $course->user_course_no_required_enroll() ) {
+		if ( $course->is_no_required_enroll() ) {
 			$required_enroll = new LP_Course_No_Required_Enroll();
 			$checked         = $required_enroll->guest_check_question( $question_id, $answered );
 		} else {
