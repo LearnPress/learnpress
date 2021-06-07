@@ -144,9 +144,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		private static function get_class_name_from_course_type( $course_type ) {
 			return LP_COURSE_CPT === $course_type ? __CLASS__ : 'LP_Course_' . implode(
-					'_',
-					array_map( 'ucfirst', explode( '-', $course_type ) )
-				);
+				'_',
+				array_map( 'ucfirst', explode( '-', $course_type ) )
+			);
 		}
 
 		/**
@@ -209,8 +209,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$user                = learn_press_get_user( get_current_user_id() );
 
 			if ( current_user_can( 'administrator' ) ||
-			     ( current_user_can( LP_TEACHER_ROLE ) &&
-			       $this->get_author()->get_id() === $user->get_id() )
+				 ( current_user_can( LP_TEACHER_ROLE ) &&
+				   $this->get_author()->get_id() === $user->get_id() )
 			) {
 				return $timestamp_remaining;
 			}
@@ -265,6 +265,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function enable_block_item_when_finish(): bool {
 			return 'yes' === $this->get_data( 'block_course_finished' );
+		}
+
+		public function allow_repurchase() : bool {
+			return 'yes' === $this->get_data( 'allow_repurchase' );
 		}
 
 		/**

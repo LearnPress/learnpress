@@ -271,11 +271,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-
-
 			if ( is_user_logged_in() ) {
-				$response->status         = 'success';
-				$response->message        = esc_html__(
+				$response->status  = 'success';
+				$response->message = esc_html__(
 					'Congrats! You enroll course successfully. Redirecting...',
 					'learnpress'
 				);
@@ -321,11 +319,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'Error: No Course available.', 'learnpress' ) );
 			}
 
-			$user  = learn_press_get_current_user();
-			$order = $user ? $user->get_course_order( $course_id ) : false;
+			$user = learn_press_get_current_user();
 
-			if ( $order && $order->has_status( array( 'processing', 'completed' ) ) ) {
-				throw new Exception( esc_html__( 'Error: You have already purchased this course.', 'learnpress' ) );
+			if ( ! $user->can_show_purchase_course_btn( $course_id ) ) {
+				throw new Exception( esc_html__( 'Error: Cannot purchase course!.', 'learnpress' ) );
 			}
 
 			LP()->session->set( 'order_awaiting_payment', '' );
@@ -350,7 +347,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$redirect = apply_filters(
 				'learnpress/rest-api/courses/purchase/redirect',
 				learn_press_get_page_link( 'checkout' ),
-				$course_id, $cart_id
+				$course_id,
+				$cart_id
 			);
 
 			if ( empty( $redirect ) ) {

@@ -56,6 +56,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			)
 		);
 
+		$tabs = apply_filters( 'learnpress/course/metabox/tabs', $tabs, $post_id );
+
 		uasort( $tabs, array( __CLASS__, 'data_tabs_sort' ) );
 
 		return $tabs;
@@ -86,6 +88,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'',
 					esc_html__( 'Block course after student finished this course.', 'learnpress' ),
 					'yes'
+				),
+				'_lp_allow_course_repurchase'  => new LP_Meta_Box_Checkbox_Field(
+					'Allow Repurchase',
+					esc_html__( 'Allow users to repurchase this course after course finished or blocked ( Do not apply to free courses ).', 'learnpress' ),
+					'no'
 				),
 				'_lp_level'                    => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Level', 'learnpress' ),

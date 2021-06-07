@@ -152,4 +152,70 @@ class LP_User extends LP_Abstract_User {
 
 		return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
 	}
+
+	public function can_show_purchase_course_btn( $course_id ) {
+		$course = learn_press_get_course( $course_id );
+
+		if ( ! $course->is_publish() ) {
+			return false;
+		}
+
+		if ( $course->is_free() ) {
+			return false;
+		}
+
+		if ( $this->can_retry_course( $course_id ) ) {
+			return false;
+		}
+
+		// Allow Repurchase when course finished or block duration.
+		if ( $course->allow_repurchase() && ( $this->has_finished_course( $course_id ) || 0 === $course->timestamp_remaining_duration() ) ) {
+			return true;
+		}
+
+		if ( $this->has_enrolled_course( $course_id ) ) {
+			return false;
+		}
+
+		// If course is reached limitation.
+		if ( ! $course->is_in_stock() ) {
+			$message = apply_filters(
+				'learn-press/maximum-students-reach',
+				esc_html__( 'This course is out of stock', 'learnpress' )
+			);
+
+			if ( $message ) {
+				learn_press_display_message( $message );
+			}
+
+			return false;
+		}
+
+		// User can not purchase course
+		if ( ! $this->can_purchase_course( $course_id ) ) {
+			return false;
+		}
+
+		// If user has already purchased course but has not finished yet.
+		if ( $this->has_purchased_course( $course_id ) && 'finished' !== $this->get_course_status( $course_id ) ) {
+			return false;
+		}
+
+		// If the order contains course is processing
+		$order = $this->get_course_order( $course_id );
+		if ( $order && $order->get_status() === 'processing' ) {
+			$message = apply_filters(
+				'learn-press/order-processing-message',
+				__( 'Your order is waiting for processing', 'learnpress' )
+			);
+
+			if ( $message ) {
+				learn_press_display_message( $message );
+			}
+
+			return false;
+		}
+
+		return true;
+	}
 }
