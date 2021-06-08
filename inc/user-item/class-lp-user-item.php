@@ -654,6 +654,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			case LP_LESSON_CPT:
 				$item = new LP_User_Item( $data );
 				break;
+			case LP_QUIZ_CPT:
+				$item = new LP_User_Item_Quiz( $data );
+				break;
 		}
 
 		return apply_filters( 'learn-press/user-item-object', $item, $data, $item_type );

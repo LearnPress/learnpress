@@ -1358,7 +1358,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			// Courses thumbnail dimensions convert.
 			$check_option_thumbnail_dimensions_exists = $lp_db->wpdb->get_var(
 				"
-				SELECT option_name FROM $lp_db->op_options
+				SELECT option_name FROM $lp_db->tb_options
 				WHERE option_name = 'learn_press_course_thumbnail_dimensions'
 				"
 			);
@@ -1375,7 +1375,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			// Profile thumbnail dimensions convert.
 			$check_option_avatar_dimensions_exists = $lp_db->wpdb->get_var(
 				"
-				SELECT option_name FROM $lp_db->op_options
+				SELECT option_name FROM $lp_db->tb_options
 				WHERE option_name = 'learn_press_avatar_dimensions'
 				"
 			);

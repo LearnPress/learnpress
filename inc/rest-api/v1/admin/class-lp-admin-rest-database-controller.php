@@ -187,35 +187,27 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 		$response                       = new LP_REST_Response();
 		$lp_db                          = LP_Database::getInstance();
 		$response->data->can_re_upgrade = 0;
+		$tables                         = array(
+			$lp_db->tb_lp_user_items,
+			$lp_db->tb_lp_user_itemmeta,
+			$lp_db->tb_lp_question_answers,
+			$lp_db->tb_postmeta,
+			$lp_db->tb_options,
+		);
 
 		try {
 			$result = $lp_db->drop_table( $lp_db->tb_lp_upgrade_db );
 			update_option( 'learnpress_db_version', 3 );
 
-			// Drop tables.
-			$lp_db->drop_table( $lp_db->tb_lp_user_items );
-			$lp_db->drop_table( $lp_db->tb_lp_user_itemmeta );
-			$lp_db->drop_table( $lp_db->tb_lp_question_answers );
-			$lp_db->drop_table( $lp_db->tb_postmeta );
-			$lp_db->drop_table( $lp_db->tb_options );
-			// End.
-
-			// Rename tables bk.
-			$tb_lp_user_items_bk = $lp_db->tb_lp_user_items . '_bk';
-			$lp_db->rename_table( $tb_lp_user_items_bk, $lp_db->tb_lp_user_items );
-
-			$tb_lp_user_itemmeta_bk = $lp_db->tb_lp_user_itemmeta . '_bk';
-			$lp_db->rename_table( $tb_lp_user_itemmeta_bk, $lp_db->tb_lp_user_itemmeta );
-
-			$tb_lp_question_answers_bk = $lp_db->tb_lp_question_answers . '_bk';
-			$lp_db->rename_table( $tb_lp_question_answers_bk, $lp_db->tb_lp_question_answers );
-
-			$tb_postmeta_bk = $lp_db->tb_postmeta . '_bk';
-			$lp_db->rename_table( $tb_postmeta_bk, $lp_db->tb_postmeta );
-
-			$tb_options_bk = $lp_db->tb_options . '_bk';
-			$lp_db->rename_table( $tb_options_bk, $lp_db->tb_options );
-			// End.
+			foreach ( $tables as $table ) {
+				// Drop - Rename tables bk.
+				$tb_bk        = $table . '_bk';
+				$tb_bk_exists = $lp_db->check_table_exists( $tb_bk );
+				if ( $tb_bk_exists ) {
+					$lp_db->drop_table( $table );
+					$lp_db->rename_table( $tb_bk, $table );
+				}
+			}
 
 			if ( $result ) {
 				$response->status    = 'success';

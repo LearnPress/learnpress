@@ -25,7 +25,7 @@ const reUpgradeDB = () => {
 
 			elBtnReUpradeDB.addEventListener( 'click', () => {
 				// eslint-disable-next-line no-alert
-				if ( confirm( 'Are want Re Upgrade!' ) ) {
+				if ( confirm( 'Are you want to Re Upgrade!' ) ) {
 					url = 'lp/v1/database/del-tb-lp-upgrade-db';
 					handleAjax( url, {}, {
 						success( res ) {

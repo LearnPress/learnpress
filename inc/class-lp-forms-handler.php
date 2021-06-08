@@ -116,9 +116,7 @@ class LP_Forms_Handler {
 					exit();
 				}
 			} catch ( Exception $e ) {
-				if ( $e->getMessage() ) {
-					learn_press_add_message( $e->getMessage(), 'error' );
-				}
+				learn_press_add_message( $e->getMessage(), 'error' );
 			}
 		}
 	}

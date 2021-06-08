@@ -283,7 +283,18 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 					$all_themes[ $theme['id'] ] = $theme;
 				}
 
-				$education_themes = learn_press_get_education_themes();
+				$education_themes = apply_filters(
+					'learn-press/education-themes',
+					array(
+						'23451388' => 'kindergarten',
+						'22773871' => 'ivy-school',
+						'20370918' => 'wordpress-lms',
+						'14058034' => 'eduma',
+						'17097658' => 'coach',
+						'11797847' => 'lms',
+					)
+				);
+
 				if ( $education_themes ) {
 					$themes['other']     = array_diff_key( $all_themes, $education_themes );
 					$themes['education'] = array_diff_key( $all_themes, $themes['other'] );

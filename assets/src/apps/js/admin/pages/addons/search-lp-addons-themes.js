@@ -44,7 +44,13 @@
 		timer = setTimeout( onSearch, 300, e.target.value );
 	} );
 
-	jQuery( function() {
+	$( function() {
 		$wraps = $( '.addons-browse' );
 	} );
 }( jQuery ) );
+
+const searchThemesAddons = () => {
+
+};
+
+export default searchThemesAddons;
