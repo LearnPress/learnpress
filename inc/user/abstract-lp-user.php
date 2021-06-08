@@ -1266,15 +1266,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function can_purchase_course( $course_id ) {
-			$course      = learn_press_get_course( $course_id );
+		public function can_purchase_course( int $course_id ) : bool {
+			return false;
+			/*$course      = learn_press_get_course( $course_id );
 			$purchasable = $course->is_purchasable();
 
 			// @deprecated
 			$purchasable = apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 
 			// since 3.0.0
-			return apply_filters( 'learn-press/user/can-purchase-course', $purchasable, $this->get_id(), $course_id );
+			return apply_filters( 'learn-press/user/can-purchase-course', $purchasable, $this->get_id(), $course_id );*/
 		}
 
 		/**

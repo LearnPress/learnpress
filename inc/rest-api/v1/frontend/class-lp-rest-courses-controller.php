@@ -321,7 +321,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			$user = learn_press_get_current_user();
 
-			if ( ! $user->can_show_purchase_course_btn( $course_id ) ) {
+			if ( ! $user->can_purchase_course( $course_id ) ) {
 				throw new Exception( esc_html__( 'Error: Cannot purchase course!.', 'learnpress' ) );
 			}
 

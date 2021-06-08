@@ -117,14 +117,19 @@ class LP_User extends LP_Abstract_User {
 	 * @throws Exception .
 	 * @since 4.0.0
 	 */
-	public function can_retry_course( $course_id = 0 ): int {
+	public function can_retry_course( int $course_id = 0 ): int {
 		$flag = 0;
 
 		try {
-			$course        = learn_press_get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course ) {
+				throw new Exception( 'Course is not available' );
+			}
+
 			$retake_option = (int) $course->get_data( 'retake_count' );
 
-			if ( $course && $retake_option > 0 ) {
+			if ( $retake_option > 0 ) {
 				/**
 				 * Check course is finished
 				 * Check duration is blocked
@@ -153,69 +158,145 @@ class LP_User extends LP_Abstract_User {
 		return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
 	}
 
-	public function can_show_purchase_course_btn( $course_id ) {
-		$course = learn_press_get_course( $course_id );
+	/**
+	 * Check can show purchase course button
+	 *
+	 * @param int $course_id
+	 * @return bool
+	 * @throws Exception
+	 * @author nhamdv
+	 */
+	public function can_purchase_course( int $course_id ): bool {
+		$can_purchase = false;
+		$course       = learn_press_get_course( $course_id );
 
-		if ( ! $course->is_publish() ) {
-			return false;
-		}
-
-		if ( $course->is_free() ) {
-			return false;
-		}
-
-		if ( $this->can_retry_course( $course_id ) ) {
-			return false;
-		}
-
-		// Allow Repurchase when course finished or block duration.
-		if ( $course->allow_repurchase() && ( $this->has_finished_course( $course_id ) || 0 === $course->timestamp_remaining_duration() ) ) {
-			return true;
-		}
-
-		if ( $this->has_enrolled_course( $course_id ) ) {
-			return false;
-		}
-
-		// If course is reached limitation.
-		if ( ! $course->is_in_stock() ) {
-			$message = apply_filters(
-				'learn-press/maximum-students-reach',
-				esc_html__( 'This course is out of stock', 'learnpress' )
-			);
-
-			if ( $message ) {
-				learn_press_display_message( $message );
+		try {
+			if ( ! $course ) {
+				throw new Exception( 'Course is unavailable' );
 			}
 
-			return false;
-		}
-
-		// User can not purchase course
-		if ( ! $this->can_purchase_course( $course_id ) ) {
-			return false;
-		}
-
-		// If user has already purchased course but has not finished yet.
-		if ( $this->has_purchased_course( $course_id ) && 'finished' !== $this->get_course_status( $course_id ) ) {
-			return false;
-		}
-
-		// If the order contains course is processing
-		$order = $this->get_course_order( $course_id );
-		if ( $order && $order->get_status() === 'processing' ) {
-			$message = apply_filters(
-				'learn-press/order-processing-message',
-				__( 'Your order is waiting for processing', 'learnpress' )
-			);
-
-			if ( $message ) {
-				learn_press_display_message( $message );
+			if ( ! $course->is_publish() ) {
+				throw new Exception( 'Course is not publish' );
 			}
 
-			return false;
+			if ( $course->is_free() ) {
+				throw new Exception( 'Course is free' );
+			}
+
+			if ( $this->can_retry_course( $course_id ) ) {
+				throw new Exception( 'Course is has retake' );
+			}
+
+			// If course is reached limitation.
+			if ( ! $course->is_in_stock() ) {
+				$message = apply_filters(
+					'learn-press/maximum-students-reach',
+					esc_html__( 'This course is out of stock', 'learnpress' )
+				);
+
+				if ( $message ) {
+					learn_press_display_message( $message );
+				}
+
+				throw new Exception( $message );
+			}
+
+			// If the order contains course is processing
+			$order = $this->get_course_order( $course_id );
+			if ( $order && $order->get_status() === 'processing' ) {
+				$message = apply_filters(
+					'learn-press/order-processing-message',
+					__( 'Your order is waiting for processing', 'learnpress' )
+				);
+
+				if ( $message ) {
+					learn_press_display_message( $message );
+				}
+
+				throw new Exception( $message );
+			}
+
+			// Allow Repurchase when course finished or block duration.
+			if ( $course->allow_repurchase() && ( $this->has_finished_course( $course_id ) || 0 === $course->timestamp_remaining_duration() ) ) {
+				$can_purchase = true;
+			} else {
+				if ( $this->has_enrolled_course( $course_id ) ) {
+					throw new Exception( 'Course is has enrolled' );
+				}
+
+				// User can not purchase course
+				/*if ( ! parent::can_purchase_course( $course_id ) ) {
+					return false;
+				}*/
+
+				// If user has already purchased course but has not finished yet.
+				if ( $this->has_purchased_course( $course_id ) && 'finished' !== $this->get_course_status( $course_id ) ) {
+					throw new Exception( 'Course is has purchased but not finished' );
+				}
+			}
+		} catch ( Exception $e ) {
+
 		}
 
-		return true;
+		return apply_filters( 'learn-press/user/can-purchase-course', $can_purchase, $this->get_id(), $course_id );
+	}
+
+	/**
+	 * Check condition show finish course button
+	 *
+	 * @param $course
+	 * @return array
+	 * @author nhamdv
+	 * @editor tungnx
+	 * @version 1.0.1
+	 */
+	public function can_show_finish_course_btn( $course ): array {
+		$return = array(
+			'status'  => 'fail',
+			'message' => '',
+		);
+
+		try {
+			if ( ! $course ) {
+				throw new Exception( esc_html__( 'Error: No Course or User available.', 'learnpress' ) );
+			}
+
+			$course_id = $course->get_id();
+
+			/**
+			 * Re-calculate result course of user
+			 */
+			$course_data    = $this->get_course_data( $course_id );
+			$course_results = $course_data->calculate_course_results();
+			// End
+
+			// Get result to check
+			$is_all_completed = $this->is_completed_all_items( $course_id );
+
+			if ( ! $this->is_course_in_progress( $course_id ) ) {
+				throw new Exception( esc_html__( 'Error: Course is not in-progress.', 'learnpress' ) );
+			}
+
+			$has_finish = get_post_meta( $course_id, '_lp_has_finish', true ) ? get_post_meta( $course_id, '_lp_has_finish', true ) : 'yes';
+			$is_passed  = $this->has_reached_passing_condition( $course_id );
+
+			if ( ! $is_passed && $has_finish === 'no' ) {
+				throw new Exception( esc_html__( 'Error: Course is not has finish.', 'learnpress' ) );
+			}
+
+			if ( ! $is_all_completed && $has_finish === 'yes' && ! $is_passed ) {
+				throw new Exception( esc_html__( 'Error: Cannot finish course.', 'learnpress' ) );
+			}
+
+			if ( ! apply_filters( 'lp_can_finish_course', true ) ) {
+				throw new Exception( esc_html__( 'Error: Filter disable finish course.', 'learnpress' ) );
+			}
+
+			$return['status'] = 'success';
+		} catch ( Exception $e ) {
+			$return['message'] = $e->getMessage();
+		}
+
+		return $return;
 	}
 }
