@@ -148,7 +148,7 @@ const upgradeDB = () => {
 					lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html(), function() {
 						lpModalOverlay.elBtnYes.text( 'Retry' ).show();
 						lpModalOverlay.callBackYes = () => {
-							window.location.href = 'wp-admin/admin.php?page=learn-press-tools&tab=database&action=upgrade-db';
+							window.location.href = lpGlobalSettings.siteurl + '/wp-admin/admin.php?page=learn-press-tools&tab=database&action=upgrade-db';
 						};
 						lpModalOverlay.elBtnNo.show();
 

@@ -167,6 +167,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/price' );
 	}
 
+	/**
+	 * Template purchase course button
+	 *
+	 * @throws Exception
+	 */
 	public function course_purchase_button() {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
@@ -179,51 +184,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		// If course is not published
-		if ( ! $course->is_publish() ) {
-			return;
-		}
-		// Course is not require enrolling
-		if ( $course->is_no_required_enroll() || $course->is_free() || $user->has_enrolled_course( $course->get_id() ) ) {
-			return;
-		}
-
-		// If course is reached limitation.
-		if ( ! $course->is_in_stock() ) {
-			$message = apply_filters(
-				'learn-press/maximum-students-reach',
-				esc_html__( 'This course is out of stock', 'learnpress' )
-			);
-
-			if ( $message ) {
-				learn_press_display_message( $message );
-			}
-
-			return;
-		}
-
-		// User can not purchase course
 		if ( ! $user->can_purchase_course( $course->get_id() ) ) {
-			return;
-		}
-
-		// If user has already purchased course but has not finished yet.
-		if ( $user->has_purchased_course( $course->get_id() ) && 'finished' !== $user->get_course_status( $course->get_id() ) ) {
-			return;
-		}
-
-		// If the order contains course is processing
-		$order = $user->get_course_order( $course->get_id() );
-		if ( $order && $order->get_status() === 'processing' ) {
-			$message = apply_filters(
-				'learn-press/order-processing-message',
-				__( 'Your order is waiting for processing', 'learnpress' )
-			);
-
-			if ( $message ) {
-				learn_press_display_message( $message );
-			}
-
 			return;
 		}
 

@@ -41,14 +41,14 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 * Load items progress in single curriculum items.
 	 *
 	 * @param [type] $request
-	 * @return
+	 * @return WP_REST_Response|WP_Error
 	 *
 	 * @author Nhamdv <daonham95>
 	 */
 	public function items_progress( $request ) {
 		$params         = $request->get_params();
-		$course_id      = isset( $params['courseId'] ) ? $params['courseId'] : false;
-		$user_id        = isset( $params['userId'] ) ? $params['userId'] : false;
+		$course_id      = $params['courseId'] ?? false;
+		$user_id        = $params['userId'] ?? false;
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
@@ -57,7 +57,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				$course = learn_press_get_course( $course_id );
 				$user   = learn_press_get_user( $user_id );
 
-				$check = LP()->template( 'course' )->can_show_finish_course_btn( $course, $user );
+				$check = $user->can_show_finish_course_btn( $course );
 
 				if ( $check['status'] !== 'success' ) {
 					throw new Exception( $check['message'] );
