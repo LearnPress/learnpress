@@ -234,6 +234,8 @@ class LP_User extends LP_Abstract_User {
 					throw new Exception( 'Course is has purchased but not finished' );
 				}
 			}
+
+			$can_purchase = true;
 		} catch ( Exception $e ) {
 
 		}

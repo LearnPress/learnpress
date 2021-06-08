@@ -197,6 +197,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.0.8 =
+~ Added: feature "Allow Repurchase course"
+
 = 4.0.7 =
 ~ Fixed: CPU runs high
 ~ Fixed: "start quiz" error with some cases have cached.
