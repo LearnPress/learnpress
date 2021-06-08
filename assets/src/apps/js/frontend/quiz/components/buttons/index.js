@@ -18,14 +18,18 @@ class Buttons extends Component {
 				return;
 			}
 		}
-		// Remove all local.Storage
 		if ( lpQuizSettings.checknorequizenroll == '1' ) {
+			// remove & set start_time to local.storage
+			window.localStorage.removeItem( 'quiz_start_' + lpQuizSettings.id );
+			window.localStorage.setItem( 'quiz_start_' + lpQuizSettings.id, Date.now() );
+			// Set retake to local.storage
 			const retakenNumber = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
 			if ( retakenNumber >= 1 ) {
 				window.localStorage.setItem( 'quiz_retake_' + lpQuizSettings.id, parseInt( retakenNumber ) + 1 );
 			} else {
 				window.localStorage.setItem( 'quiz_retake_' + lpQuizSettings.id, 1 );
 			}
+			// Remove Local.Storage results
 			window.localStorage.removeItem( 'quiz_results_' + lpQuizSettings.id );
 		}
 		startQuiz();
@@ -97,7 +101,6 @@ class Buttons extends Component {
 		if ( 'no' === confirm( __( 'Are you sure to submit quiz?', 'learnpress' ), this.submit ) ) {
 			return;
 		}
-
 		submitQuiz();
 	};
 
@@ -405,8 +408,15 @@ export default compose( [
 			data.question = getCurrentQuestion( 'object' );
 		}
 
-		const retakenCurrent = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
-		data.retakeNumber = data.retakeNumber - retakenCurrent;
+		if ( lpQuizSettings.checknorequizenroll == '1' ) {
+			const retakenCurrent = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
+			if ( getData( 'retakeCount' ) > retakenCurrent ) {
+				data.retakeNumber = getData( 'retakeCount' ) - retakenCurrent;
+				data.canRetry = true;
+			} else {
+				data.canRetry = false;
+			}
+		}
 
 		return data;
 	} ),

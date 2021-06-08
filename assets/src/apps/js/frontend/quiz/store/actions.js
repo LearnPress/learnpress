@@ -137,6 +137,12 @@ export function* submitQuiz() {
 		},
 	} );
 
+	if ( lpQuizSettings.checknorequizenroll == '1' ) {
+		// Remove & set storage end_time
+		window.localStorage.removeItem( 'quiz_end_' + lpQuizSettings.id );
+		window.localStorage.setItem( 'quiz_end_' + lpQuizSettings.id, Date.now() );
+	}
+
 	response = Hook.applyFilters( 'request-submit-quiz-response', response, itemId, courseId );
 
 	if ( response.success ) {

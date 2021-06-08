@@ -70,7 +70,6 @@ const Result = () => {
 			}
 		}
 	}, [ results ] );
-	console.log();
 	if ( lpQuizSettings.checknorequizenroll == '1' ) {
 		localStorage.setItem( 'quiz_results_' + QuizID, JSON.stringify( results ) );
 	}
@@ -170,7 +169,14 @@ const Result = () => {
 	}
 
 	const classNames = [ 'quiz-result', graduation ];
-
+	// Re-write value to results.timeSpend
+	if ( lpQuizSettings.checknorequizenroll == '1' ) {
+		const timespendStart = window.localStorage.getItem( 'quiz_start_' + QuizID ),
+			timespendEnd = window.localStorage.getItem( 'quiz_end_' + QuizID );
+		if ( timespendStart && timespendEnd ) {
+			results.timeSpend = timeDifference( timespendStart, timespendEnd ).duration;
+		}
+	}
 	return (
 		<div className={ classNames.join( ' ' ) }>
 			<h3 className="result-heading">{ __( 'Your Result', 'learnpress' ) }</h3>
@@ -217,6 +223,61 @@ const Result = () => {
 			</ul>
 		</div>
 	);
+
+	function timeDifference( earlierDate, laterDate ) {
+		const oDiff = new Object();
+
+		//  Calculate Differences
+		//  -------------------------------------------------------------------  //
+		let nTotalDiff = laterDate - earlierDate;
+
+		oDiff.days = Math.floor( nTotalDiff / 1000 / 60 / 60 / 24 );
+		nTotalDiff -= oDiff.days * 1000 * 60 * 60 * 24;
+
+		oDiff.hours = Math.floor( nTotalDiff / 1000 / 60 / 60 );
+		nTotalDiff -= oDiff.hours * 1000 * 60 * 60;
+
+		oDiff.minutes = Math.floor( nTotalDiff / 1000 / 60 );
+		nTotalDiff -= oDiff.minutes * 1000 * 60;
+
+		oDiff.seconds = Math.floor( nTotalDiff / 1000 );
+		//  -------------------------------------------------------------------  //
+
+		//  Format Duration
+		//  -------------------------------------------------------------------  //
+		//  Format Hours
+		let hourtext = '00';
+		if ( oDiff.days > 0 ) {
+			hourtext = String( oDiff.days );
+		}
+		if ( hourtext.length == 1 ) {
+			hourtext = '0' + hourtext;
+		}
+
+		//  Format Minutes
+		let mintext = '00';
+		if ( oDiff.minutes > 0 ) {
+			mintext = String( oDiff.minutes );
+		}
+		if ( mintext.length == 1 ) {
+			mintext = '0' + mintext;
+		}
+
+		//  Format Seconds
+		let sectext = '00';
+		if ( oDiff.seconds > 0 ) {
+			sectext = String( oDiff.seconds );
+		}
+		if ( sectext.length == 1 ) {
+			sectext = '0' + sectext;
+		}
+		//  Set Duration
+		const sDuration = hourtext + ':' + mintext + ':' + sectext;
+		oDiff.duration = sDuration;
+		//  -------------------------------------------------------------------  //
+
+		return oDiff;
+	}
 };
 
 export default Result;

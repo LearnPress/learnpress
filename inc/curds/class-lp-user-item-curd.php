@@ -652,7 +652,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 
 			// Edit by tungnx, rewrite class to show icon.
-			if ( $is_free && $no_required_enroll ) {
+			if ( $no_required_enroll ) {
 				$defaults[] = 'item-free';
 			} elseif ( ! $user || ! $enrolled ) {
 				$defaults['item-locked'] = 'item-locked';

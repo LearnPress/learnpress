@@ -111,21 +111,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 						'user_item_id' => '',
 					)
 				);
-
-				// get cookie for start time & end time
-				$cookie_quiz_start_time = 'quiz_starttime_' . $course->get_id() . '_' . $quiz->get_id() . '';
-				$quiz_start_time_cookie = $_COOKIE[ $cookie_quiz_start_time ];
-				// set initial value of start time
-				$start_time = '';
-				if ( isset( $quiz_start_time_cookie ) ) {
-					$start_time = $quiz_start_time_cookie;
-				}
-				// set initial value of end time
-				$end_time = strtotime( current_time( 'mysql' ) );
-				if ( isset( $end_time ) && isset( $start_time ) ) {
-					$time_spend           = $end_time - $start_time;
-					$result['time_spend'] = gmdate( 'H:i:s', $time_spend );
-				}
 			}
 			return $result;
 		}
@@ -192,6 +177,67 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$checked['answered'] = $answered;
 			}
 			return $checked;
+		}
+		public function guest_start_quiz( $course_id, $item_id ) {
+			$success  = true;
+			$response = array(
+				'success' => $success,
+				'message' => __( 'Success!', 'learnpress' ),
+			);
+
+			if ( $success ) {
+				$course              = LP_Course::get_course( $course_id );
+				$quiz                = LP_Quiz::get_quiz( $item_id );
+				$show_hint           = $quiz->get_show_hint();
+				$show_check          = $quiz->get_show_check_answer();
+				$duration            = $quiz->get_duration();
+				$show_correct_review = $quiz->get_show_correct_review();
+
+				$status            = 'started';
+				$checked_questions = '';
+				$hinted_questions  = '';
+				$quiz_results      = '';
+
+				$question_ids = $quiz->get_question_ids();
+				$answered     = '';
+
+				$questions = learn_press_rest_prepare_user_questions(
+					$question_ids,
+					array(
+						'instant_hint'        => $show_hint,
+						'instant_check'       => $show_check,
+						'quiz_status'         => $status,
+						'checked_questions'   => $checked_questions,
+						'hinted_questions'    => $hinted_questions,
+						'answered'            => $answered,
+						'show_correct_review' => $show_correct_review,
+					)
+				);
+
+				$results = array(
+					'question_ids' => $question_ids,
+					'questions'    => $questions,
+				);
+
+				// Error get_start_time when ajax call.
+				if ( isset( $total_time ) ) {
+					$expiration            = '';
+					$results['total_time'] = '';
+					$results['end_time']   = '';
+				}
+
+				$results['duration'] = $duration ? $duration->get() : false;
+				$results['answered'] = '';
+				$results['status']   = 'started';
+				$results['results']  = '';
+				$results['retaken']  = absint( $quiz->get_retake_count() );
+
+				$results['attempts']     = '';
+				$results['user_item_id'] = '';
+
+				$response['results'] = $results;
+			}
+			return $response;
 		}
 	}
 }
