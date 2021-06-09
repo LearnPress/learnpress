@@ -438,23 +438,23 @@ function lp_meta_box_duration_field( $field ) {
 /**
  * Use for Type: custom_fields in LP4.
  *
- * @param [type] $value
- * @param [type] $values
+ * @param [type] $field get ID, options....
+ * @param [type] $values get_option() value
  * @param [type] $key
  *
  * @return void
  */
-function lp_metabox_custom_fields( $value, $values, $key ) {
+function lp_metabox_custom_fields( $field, $values, $key ) {
 	?>
 	<tr>
 		<td class="sort">
-			<input class="count" type="hidden" value="<?php echo $key; ?>" name="<?php echo esc_attr( $value['id'] ) . '[' . $key . ']' . '[sort]'; ?>">
-			<input type="hidden" value="<?php echo ! empty( $values['id'] ) ? $values['id'] : wp_rand( 1, 10000 ); ?>" name="<?php echo esc_attr( $value['id'] ) . '[' . $key . ']' . '[id]'; ?>">
+			<input class="count" type="hidden" value="<?php echo $key; ?>" name="<?php echo esc_attr( $field['id'] ) . '[' . $key . ']' . '[sort]'; ?>">
+			<input type="hidden" value="<?php echo ! empty( $values['id'] ) ? $values['id'] : wp_rand( 1, 10000 ) . $key; ?>" name="<?php echo esc_attr( $field['id'] ) . '[' . $key . ']' . '[id]'; ?>">
 		</td>
 		<?php
-		if ( $value['options'] ) {
-			foreach ( $value['options'] as $cfk => $val ) {
-				$name = $value['id'] . '[' . $key . ']' . '[' . $cfk . ']';
+		if ( $field['options'] ) {
+			foreach ( $field['options'] as $cfk => $val ) {
+				$name = $field['id'] . '[' . $key . ']' . '[' . $cfk . ']';
 
 				switch ( $val['type'] ) {
 					case 'text':

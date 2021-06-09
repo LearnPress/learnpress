@@ -68,9 +68,8 @@ $user = $profile->get_user();
 
 		if ( $custom_fields ) {
 			foreach ( $custom_fields as $field ) {
-				$value = $field['id'];
 				?>
-				<li class="form-field form-field__<?php echo $value; ?> form-field__clear">
+				<li class="form-field form-field__<?php echo esc_attr( $field['id'] ); ?> form-field__clear">
 				<?php
 				switch ( $field['type'] ) {
 					case 'text':
@@ -80,19 +79,19 @@ $user = $profile->get_user();
 					case 'tel':
 						?>
 						<label for="description"><?php echo esc_html( $field['name'] ); ?></label>
-						<input name="_lp_custom_register[<?php echo $value; ?>]" type="<?php echo $field['type']; ?>" class="regular-text" value="<?php echo isset( $custom_profile[ $value ] ) ? $custom_profile[ $value ] : ''; ?>">
+						<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" class="regular-text" value="<?php echo isset( $custom_profile[ $field['id'] ] ) ? $custom_profile[ $field['id'] ] : ''; ?>">
 						<?php
 						break;
 					case 'textarea':
 						?>
 						<label for="description"><?php echo esc_html( $field['name'] ); ?></label>
-						<textarea name="_lp_custom_register[<?php echo $value; ?>]"><?php echo isset( $custom_profile[ $value ] ) ? esc_textarea( $custom_profile[ $value ] ) : ''; ?></textarea>
+						<textarea name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]"><?php echo isset( $custom_profile[ $field['id'] ] ) ? esc_textarea( $custom_profile[ $field['id'] ] ) : ''; ?></textarea>
 						<?php
 						break;
 					case 'checkbox':
 						?>
 						<label>
-							<input name="_lp_custom_register[<?php echo $value; ?>]" type="<?php echo $field['type']; ?>" value="1" <?php echo isset( $custom_profile[ $value ] ) ? checked( $custom_profile[ $value ], 1 ) : ''; ?>>
+							<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" value="1" <?php echo isset( $custom_profile[ $field['id'] ] ) ? checked( $custom_profile[ $field['id'] ], 1 ) : ''; ?>>
 							<?php echo esc_html( $field['name'] ); ?>
 						</label>
 						<?php

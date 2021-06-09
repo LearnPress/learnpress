@@ -32,11 +32,10 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 
 		if ( $custom_fields ) {
 			foreach ( $custom_fields as $field ) {
-				$value = $field['id'];
 				?>
 				<tr>
 					<th>
-						<label for="learn-press-custom-register-<?php echo $value; ?>"><?php echo esc_html( $field['name'] ); ?></label>
+						<label for="learn-press-custom-register-<?php echo $field['id']; ?>"><?php echo esc_html( $field['name'] ); ?></label>
 					</th>
 					<td>
 					<?php
@@ -47,17 +46,17 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 						case 'url':
 						case 'tel':
 							?>
-							<input name="_lp_custom_register[<?php echo $value; ?>]" type="<?php echo $field['type']; ?>" class="regular-text" value="<?php echo isset( $custom_profile[ $value ] ) ? $custom_profile[ $value ] : ''; ?>">
+							<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" class="regular-text" value="<?php echo isset( $custom_profile[ $field['id'] ] ) ? $custom_profile[ $field['id'] ] : ''; ?>">
 							<?php
 							break;
 						case 'textarea':
 							?>
-							<textarea name="_lp_custom_register[<?php echo $value; ?>]"><?php echo isset( $custom_profile[ $value ] ) ? esc_textarea( $custom_profile[ $value ] ) : ''; ?></textarea>
+							<textarea name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]"><?php echo isset( $custom_profile[ $field['id'] ] ) ? esc_textarea( $custom_profile[ $field['id'] ] ) : ''; ?></textarea>
 							<?php
 							break;
 						case 'checkbox':
 							?>
-							<input name="_lp_custom_register[<?php echo $value; ?>]" type="<?php echo $field['type']; ?>" value="1" <?php echo isset( $custom_profile[ $value ] ) ? checked( $custom_profile[ $value ], 1 ) : ''; ?>>
+							<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" value="1" <?php echo isset( $custom_profile[ $field['id'] ] ) ? checked( $custom_profile[ $field['id'] ], 1 ) : ''; ?>>
 							<?php
 							break;
 					}
