@@ -187,6 +187,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( ! $user->can_purchase_course( $course->get_id() ) ) {
 			return;
 		}
+
+		// Course is not require enrolling.
+		if ( $course->is_no_required_enroll()) {
+			return;
+		}
+		
 		$args_load_tmpl = array(
 			'template_name' => 'single-course/buttons/purchase.php',
 			'template_path' => '',
