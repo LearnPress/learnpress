@@ -132,16 +132,28 @@ class LP_Forms_Handler {
 			return;
 		}
 
-		$username     = isset( $_POST['reg_username'] ) ? wp_unslash( $_POST['reg_username'] ) : '';
-		$email        = isset( $_POST['reg_email'] ) ? wp_unslash( $_POST['reg_email'] ) : '';
-		$password     = isset( $_POST['reg_password'] ) ? wp_unslash( $_POST['reg_password'] ) : '';
-		$first_name   = isset( $_POST['reg_first_name'] ) ? wp_unslash( $_POST['reg_first_name'] ) : '';
-		$last_name    = isset( $_POST['reg_last_name'] ) ? wp_unslash( $_POST['reg_last_name'] ) : '';
-		$display_name = isset( $_POST['reg_display_name'] ) ? wp_unslash( $_POST['reg_display_name'] ) : '';
-		$update_meta  = isset( $_POST['_lp_custom_register_form'] ) ? wp_unslash( $_POST['_lp_custom_register_form'] ) : array();
+		$username         = isset( $_POST['reg_username'] ) ? wp_unslash( $_POST['reg_username'] ) : '';
+		$email            = isset( $_POST['reg_email'] ) ? wp_unslash( $_POST['reg_email'] ) : '';
+		$password         = isset( $_POST['reg_password'] ) ? wp_unslash( $_POST['reg_password'] ) : '';
+		$confirm_password = isset( $_POST['reg_password2'] ) ? wp_unslash( $_POST['reg_password2'] ) : '';
+		$first_name       = isset( $_POST['reg_first_name'] ) ? wp_unslash( $_POST['reg_first_name'] ) : '';
+		$last_name        = isset( $_POST['reg_last_name'] ) ? wp_unslash( $_POST['reg_last_name'] ) : '';
+		$display_name     = isset( $_POST['reg_display_name'] ) ? wp_unslash( $_POST['reg_display_name'] ) : '';
+		$update_meta      = isset( $_POST['_lp_custom_register_form'] ) ? wp_unslash( $_POST['_lp_custom_register_form'] ) : array();
 
 		try {
-			$new_customer = self::learnpress_create_new_customer( sanitize_email( $email ), $username, $password, array( 'first_name' => $first_name, 'last_name' => $last_name, 'display_name' => $display_name ), $update_meta );
+			$new_customer = self::learnpress_create_new_customer(
+				sanitize_email( $email ),
+				$username,
+				$password,
+				$confirm_password,
+				array(
+					'first_name'   => $first_name,
+					'last_name'    => $last_name,
+					'display_name' => $display_name,
+				),
+				$update_meta
+			);
 
 			if ( is_wp_error( $new_customer ) ) {
 				throw new Exception( $new_customer->get_error_message() );
@@ -190,7 +202,7 @@ class LP_Forms_Handler {
 	 *
 	 * @author ThimPress <nhamdv>
 	 */
-	public static function learnpress_create_new_customer( $email, $username = '', $password = '', $args = array(), $update_meta = array() ) {
+	public static function learnpress_create_new_customer( $email, $username = '', $password = '', $confirm_password = '', $args = array(), $update_meta = array() ) {
 		if ( empty( $email ) || ! is_email( $email ) ) {
 			return new WP_Error( 'registration-error-invalid-email', __( 'Please provide a valid email address.', 'learnpress' ) );
 		}
@@ -225,11 +237,19 @@ class LP_Forms_Handler {
 			return new WP_Error( 'registration-error-spacing-password', __( 'Password can not have spacing!', 'learnpress' ) );
 		}
 
+		if ( empty( $confirm_password ) ) {
+			return new WP_Error( 'registration-error-missing-confirm-password', __( 'Please enter confirm password.', 'learnpress' ) );
+		}
+
+		if ( $password !== $confirm_password ) {
+			return new WP_Error( 'registration-error-confirm-password', __( 'Confirmation password incorrect!.', 'learnpress' ) );
+		}
+
 		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
 
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {
-				if ( $field['required'] === 'yes' && empty( $update_meta[ sanitize_key( $field['name'] ) ] ) ) {
+				if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
 					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
 				}
 			}
@@ -296,7 +316,7 @@ class LP_Forms_Handler {
 
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {
-				if ( $field['required'] === 'yes' && empty( $update_meta[ sanitize_key( $field['name'] ) ] ) ) {
+				if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
 					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
 				}
 			}

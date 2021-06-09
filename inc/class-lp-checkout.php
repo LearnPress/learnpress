@@ -214,6 +214,7 @@ class LP_Checkout {
 						$this->checkout_form_data['reg_email'],
 						$this->checkout_form_data['reg_username'],
 						$this->checkout_form_data['reg_password'],
+						$this->checkout_form_data['reg_password2'],
 						$default_fields,
 						$update_meta
 					);
@@ -300,9 +301,10 @@ class LP_Checkout {
 			$this->checkout_fields['invalid_request'] = new WP_Error( 'invalid_request', __( 'Your session has expired.', 'learnpress' ) );
 		} else {
 			if ( $this->checkout_action === 'checkout-register' ) {
-				$this->checkout_fields['reg_email']    = esc_html__( 'Email', 'learnpress' );
-				$this->checkout_fields['reg_username'] = esc_html__( 'Username', 'learnpress' );
-				$this->checkout_fields['reg_password'] = esc_html__( 'Password', 'learnpress' );
+				$this->checkout_fields['reg_email']     = esc_html__( 'Email', 'learnpress' );
+				$this->checkout_fields['reg_username']  = esc_html__( 'Username', 'learnpress' );
+				$this->checkout_fields['reg_password']  = esc_html__( 'Password', 'learnpress' );
+				$this->checkout_fields['reg_password2'] = esc_html__( 'Confirm Password', 'learnpress' );
 			} elseif ( $this->checkout_action === 'checkout-login' ) {
 				$this->checkout_fields['username'] = esc_html__( 'Username', 'learnpress' );
 				$this->checkout_fields['password'] = esc_html__( 'Password', 'learnpress' );
@@ -502,6 +504,10 @@ class LP_Checkout {
 				} elseif ( $name === 'reg_password' ) {
 					if ( empty( $_POST['reg_password'] ) ) {
 						return new WP_Error( 'password_empty', sprintf( __( '%s is required field.', 'learnpress' ), $field ) );
+					}
+				} elseif ( $name === 'reg_password2' ) {
+					if ( empty( $_POST['reg_password2'] ) ) {
+						return new WP_Error( 'password2_empty', sprintf( __( '%s is required field.', 'learnpress' ), $field ) );
 					}
 				}
 

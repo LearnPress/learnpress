@@ -2059,51 +2059,54 @@ function lp_custom_register_fields_display() {
 			if ( $custom_field['required'] == 'yes' ) {
 				$cf_class = ' required';
 			}
-			?>
-			<?php $value = sanitize_key( $custom_field['name'] ); ?>
 
-			<li class="form-field<?php echo esc_attr( $cf_class ); ?>">
-				<label for="description">
+			if ( ! empty( $custom_field['id'] ) ) {
+				?>
+				<?php $value = $custom_field['id']; ?>
+
+				<li class="form-field<?php echo esc_attr( $cf_class ); ?>">
+					<label for="description">
+						<?php
+						echo $custom_field['name'];
+						if ( $custom_field['required'] == 'yes' ) {
+							echo '&nbsp;' . '<span class="required">*</span>';
+						}
+						?>
+					</label>
 					<?php
-					echo $custom_field['name'];
-					if ( $custom_field['required'] == 'yes' ) {
-						echo '&nbsp;' . '<span class="required">*</span>';
+					switch ( $custom_field['type'] ) {
+						case 'text':
+						case 'number':
+						case 'email':
+						case 'url':
+						case 'tel':
+							?>
+							<input name="_lp_custom_register_form[<?php echo $value; ?>]"
+								type="<?php echo $custom_field['type']; ?>"
+								placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>" class="regular-text"
+								value="">
+							<?php
+							break;
+						case 'textarea':
+							?>
+							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
+							<textarea name="_lp_custom_register_form[<?php echo $value; ?>]"
+									placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>"></textarea>
+							<?php
+							break;
+						case 'checkbox':
+							?>
+							<label>
+								<input name="_lp_custom_register_form[<?php echo $value; ?>]"
+									type="<?php echo $custom_field['type']; ?>" value="1">
+								<?php echo esc_html( $custom_field['name'] ); ?>
+							</label>
+							<?php
+							break;
 					}
 					?>
-				</label>
-				<?php
-				switch ( $custom_field['type'] ) {
-					case 'text':
-					case 'number':
-					case 'email':
-					case 'url':
-					case 'tel':
-						?>
-						<input name="_lp_custom_register_form[<?php echo $value; ?>]"
-							   type="<?php echo $custom_field['type']; ?>"
-							   placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>" class="regular-text"
-							   value="">
-						<?php
-						break;
-					case 'textarea':
-						?>
-						<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
-						<textarea name="_lp_custom_register_form[<?php echo $value; ?>]"
-								  placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>"></textarea>
-						<?php
-						break;
-					case 'checkbox':
-						?>
-						<label>
-							<input name="_lp_custom_register_form[<?php echo $value; ?>]"
-								   type="<?php echo $custom_field['type']; ?>" value="1">
-							<?php echo esc_html( $custom_field['name'] ); ?>
-						</label>
-						<?php
-						break;
-				}
-				?>
-			</li>
+				</li>
+			<?php } ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
 	<?php
@@ -2149,7 +2152,7 @@ function lp_get_user_custom_fields() {
 
 	if ( $custom_fields ) {
 		foreach ( $custom_fields as $field ) {
-			$output[ sanitize_key( $field['name'] ) ] = '';
+			$output[ $field['id'] ] = '';
 		}
 	}
 
