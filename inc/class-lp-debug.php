@@ -1,6 +1,8 @@
 <?php
 /**
  * Class LP_Debug
+ *
+ * @editor tungnx
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,28 +28,11 @@ class LP_Debug {
 	private static $_time = array();
 
 	/**
-	 * @var array
-	 */
-	private static $_log_functions = array();
-
-	protected static $log_times = array();
-
-	/**
 	 * Constructor for the logger.
 	 */
 	protected function __construct() {
 
 	}
-
-	/**
-	 * @var string
-	 */
-	protected static $_current_name = '';
-
-	/**
-	 * @var null
-	 */
-	protected $_lock = null;
 
 	/**
 	 * @var bool
@@ -123,6 +108,18 @@ class LP_Debug {
 		$wpdb->query( 'ROLLBACK;' );
 
 		self::$_transaction_started = false;
+	}
+
+	/**
+	 * Show value of variable
+	 *
+	 * @param $variable
+	 * @param $file_path
+	 * @param $line
+	 */
+	public static function var_dump( $variable, $file_path, $line ) {
+		echo '<pre>' . print_r( $variable, true ) . '</pre>';
+		echo 'FILE:' . $file_path . '<br> LINE:' . $line;
 	}
 
 	/**
