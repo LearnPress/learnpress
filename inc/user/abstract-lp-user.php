@@ -1410,10 +1410,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			// @deprecated
-			$return = apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->get_id() );
-			LP_Debug::logTime( __FUNCTION__ );
-
 			return apply_filters( 'learn-press/can-finished-course', $return, $course, $this->get_id() );
 		}
 
@@ -2698,14 +2694,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		public function evaluate_course_results( $course_id ) {
-			LP_Debug::logTime( __FUNCTION__ );
-
 			$user_course = $this->get_course_data( $course_id );
 
-			$result = isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
-			LP_Debug::logTime( __FUNCTION__ );
-
-			return $result;
+			return isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
 		}
 
 		public function has_reached_passing_condition( $course_id ) {

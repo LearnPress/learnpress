@@ -181,8 +181,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$rows = $wpdb->get_results( $query );
 
-		LP_Debug::instance()->add( $query, 'query-user-items' );
-
 		// echo nl2br( $query );
 
 		if ( $args['paginate'] && $args['limit'] ) {
@@ -340,8 +338,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'lp-user-orders' );
 
 			if ( false !== $orders ) {
-				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 				return $orders;
 			}
 		}
@@ -464,8 +460,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( $cache_key ) {
 			LP_Object_Cache::set( "user-{$user_id}-" . $cache_key, $orders, 'lp-user-orders' );
 		}
-
-		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		return $orders;
 	}
@@ -629,8 +623,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			LP_Object_Cache::set( "user-{$user_id}-" . $cache_key, $orders, 'learn-press/user-orders' );
 		}
 
-		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 		return $orders;
 	}
 
@@ -660,7 +652,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return bool
 	 */
 	public function read_course( $user_id = null, $course_id = null, $force = false ) {
-		LP_Debug::logTime( __FUNCTION__ );
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
@@ -717,8 +708,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $result, 'learn-press/user-item-courses' );
-
-		LP_Debug::logTime( __FUNCTION__ );
 
 		return $result;
 	}
@@ -1684,7 +1673,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				 * and query it back and then restore data by rollback that transaction.
 				 */
 				if ( $unenrolled_course_ids ) {
-					LP_Debug::startTransaction();
+					//LP_Debug::startTransaction();
 
 					foreach ( $unenrolled_course_ids as $unenrolled_course_id ) {
 						$wpdb->insert(
@@ -1725,7 +1714,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$items = $wpdb->get_results( $sql );
 
 				if ( $unenrolled_course_ids ) {
-					LP_Debug::rollbackTransaction();
+					//LP_Debug::rollbackTransaction();
 				}
 
 				if ( $items ) {

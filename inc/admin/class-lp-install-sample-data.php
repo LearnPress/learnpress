@@ -108,7 +108,7 @@ class LP_Install_Sample_Data {
 		if ( $answer_range ) {
 			self::$answer_range = $answer_range;
 		}
-		LP_Debug::startTransaction();
+		//LP_Debug::startTransaction();
 
 		try {
 			@ini_set( 'memory_limit', '2G' );
@@ -150,10 +150,10 @@ class LP_Install_Sample_Data {
 			</div>
 
 			<?php
-			LP_Debug::commitTransaction();
+			//LP_Debug::commitTransaction();
 
 		} catch ( Exception $ex ) {
-			LP_Debug::rollbackTransaction();
+			//LP_Debug::rollbackTransaction();
 			echo '<div class="lp-install-sample__response fail">';
 			echo $ex->getMessage();
 			echo '</div>';
@@ -173,8 +173,6 @@ class LP_Install_Sample_Data {
 		global $wpdb;
 
 		$posts = $this->get_sample_posts();
-
-		LP_Debug::startTransaction();
 		try {
 			if ( ! $posts ) {
 				throw new Exception( esc_html__( 'No data sample.', 'learnpress' ) );
@@ -203,13 +201,11 @@ class LP_Install_Sample_Data {
 
 			<?php
 		} catch ( Exception $ex ) {
-			LP_Debug::rollbackTransaction();
 
 			echo '<div class="lp-install-sample__response fail">';
 			echo 'Error: ' . $ex->getMessage();
 			echo '</div>';
 		}
-		LP_Debug::commitTransaction();
 
 		die();
 	}

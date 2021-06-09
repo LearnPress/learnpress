@@ -3292,20 +3292,6 @@ function learn_press_get_expired_courses() {
 }
 
 /**
- * Add debug log
- *
- * @param mixed  $message
- * @param string $handle
- * @param bool   $clear
- * @param bool   $force
- *
- * @since 4.0.0
- */
-function learn_press_debug_add( $message, $handle = 'log', $clear = false, $force = false ) {
-	LP_Debug::instance()->add( $message, $handle, $clear, $force );
-}
-
-/**
  * Add new error log. Support message as an array|object.
  * Convert message to string if it is not a string.
  *
