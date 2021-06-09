@@ -2060,7 +2060,7 @@ function lp_custom_register_fields_display() {
 				$cf_class = ' required';
 			}
 
-			if ( ! empty( $custom_field['id'] ) ) {
+			if ( isset( $custom_field['id'] ) ) {
 				?>
 				<?php $value = $custom_field['id']; ?>
 
@@ -2266,3 +2266,29 @@ function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' )
 	);
 
 }
+
+add_action(
+	'admin_init',
+	function() {
+		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+
+		if ( ! empty( $custom_fields ) ) {
+			$output = array();
+
+			foreach ( $custom_fields as $key => $field ) {
+				if ( ! isset( $field['id'] ) ) {
+					$output[ $key ] = array(
+						'id'       => sanitize_key( $field['name'] ),
+						'name'     => $field['name'] ?? '',
+						'type'     => $field['type'] ?? '',
+						'required' => $field['required'] ?? '',
+					);
+				} else {
+					$output[ $key ] = $field;
+				}
+			}
+
+			update_option( 'learn_press_register_profile_fields', $output );
+		}
+	}
+);
