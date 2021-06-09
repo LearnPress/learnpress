@@ -36,12 +36,6 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 	protected function _process_actions() {
 		$has_action = true;
 		switch ( LP_Request::get( 'page' ) ) {
-			case 'lp-clear-cache':
-				LP_Hard_Cache::flush();
-				break;
-			case 'lp-toggle-hard-cache-option':
-				update_option( 'learn_press_enable_hard_cache', LP_Request::get( 'v' ) == 'yes' ? 'yes' : 'no' );
-				break;
 			default:
 				$has_action = false;
 		}

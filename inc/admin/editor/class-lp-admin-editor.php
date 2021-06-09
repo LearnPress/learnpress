@@ -46,7 +46,7 @@ class LP_Admin_Editor {
 		$callback = array( $this, $func );
 
 		if ( is_callable( $callback ) ) {
-			LP_Hard_Cache::flush();
+			//LP_Hard_Cache::flush();
 
 			return call_user_func_array( $callback, $args );
 		}

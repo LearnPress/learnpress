@@ -108,7 +108,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			self::_create_pages();
 			self::_create_cron_jobs();
 			self::_delete_transients();
-			self::_create_log_path();
+			//self::_create_log_path();
 			self::_clear_backgrounds();
 
 			$current_version    = get_option( 'learnpress_version', null );
@@ -271,7 +271,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		/**
 		 * Create log directory and add some files for security.
 		 */
-		public static function _create_log_path() {
+		/*public static function _create_log_path() {
 			$files = array(
 				array(
 					'base'    => LP_LOG_PATH,
@@ -293,7 +293,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					}
 				}
 			}
-		}
+		}*/
 
 		/**
 		 * Remove learnpress page if total of learn page > 10

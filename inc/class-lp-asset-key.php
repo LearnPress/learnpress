@@ -60,7 +60,7 @@ class LP_Asset_Key {
 	 * @param int      $only_register .
 	 * @param int      $in_footer .
 	 */
-	public function __construct( $url = '', $deps = array(), $screens = array(), $only_register = 1, $in_footer = 0 ) {
+	public function __construct( string $url = '', array $deps = array(), array $screens = array(), int $only_register = 1, int $in_footer = 0 ) {
 		$this->_url           = $url;
 		$this->_deps          = $deps;
 		$this->_in_footer     = $in_footer;
@@ -73,7 +73,7 @@ class LP_Asset_Key {
 	 *
 	 * @param string[] $screens .
 	 */
-	public function exclude_screen( $screens = array() ) {
+	public function exclude_screen( array $screens = array() ) {
 		$this->_exclude_screens = $screens;
 	}
 }

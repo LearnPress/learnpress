@@ -207,7 +207,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function includes() {
 			require_once 'inc/class-lp-file-system.php';
-			require_once 'inc/class-lp-exception.php';
 			require_once 'inc/class-lp-helper.php';
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-factory.php';
@@ -225,6 +224,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
 			require_once 'inc/class-lp-asset-key.php';
+
+			// LP Cache
+			require_once 'inc/cache/class-lp-cache.php';
 
 			// Abstract Metabox.
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
@@ -270,7 +272,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 
 			require_once 'inc/lp-deprecated.php'; // Will remove if Eduma and guest update all 4.0.0
-			// require_once 'inc/class-lp-cache.php';
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
 

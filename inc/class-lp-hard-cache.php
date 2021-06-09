@@ -32,7 +32,7 @@ class LP_Hard_Cache {
 	/**
 	 * Init
 	 */
-	public static function init() {
+	/*public static function init() {
 		$upload_dir       = wp_upload_dir();
 		self::$_root_path = trailingslashit( $upload_dir['basedir'] ) . 'lp-cache';
 
@@ -47,7 +47,7 @@ class LP_Hard_Cache {
 		}
 
 		@wp_mkdir_p( self::$_root_path ); // phpcs:ignore
-	}
+	}*/
 
 	/**
 	 * Replace existing cache with new data.
@@ -252,4 +252,4 @@ class LP_Hard_Cache {
 	}
 }
 
-add_action( 'init', array( 'LP_Hard_Cache', 'init' ) );
+//add_action( 'init', array( 'LP_Hard_Cache', 'init' ) );

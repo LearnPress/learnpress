@@ -3198,10 +3198,6 @@ function _learn_press_schedule_enable_shuffle_themes() {
 
 add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule_enable_shuffle_themes' );
 
-function learn_press_is_exception( $thing ) {
-	return $thing instanceof LP_Exception;
-}
-
 function learn_press_show_log() {
 	if ( trim( LP_Request::get( 'show_log' ) ) === md5( AUTH_KEY ) ) {
 		call_user_func_array( 'learn_press_debug', func_get_args() );
