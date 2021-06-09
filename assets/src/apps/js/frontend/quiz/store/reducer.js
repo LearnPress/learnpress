@@ -206,7 +206,6 @@ export const userQuiz = ( state = STORE_DATA, action ) => {
 			keyPressed: action.keyPressed,
 		};
 	}
-	console.log( state );
 	return state;
 };
 

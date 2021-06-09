@@ -114,6 +114,33 @@ class Questions extends Component {
 		if ( status === 'completed' && ! isReviewing ) {
 			isShow = false;
 		}
+		if ( lpQuizSettings.checknorequizenroll == '1' && window.localStorage.getItem( 'quiz_getdata_' + lpQuizSettings.id ) !== null ) {
+			const getdataStorage = JSON.parse( window.localStorage.getItem( 'quiz_getdata_' + lpQuizSettings.id ) );
+			return (
+				<>
+					<div tabIndex={ 100 } onKeyUp={ this.nav }>
+						<div className="quiz-questions" style={ { display: isShow ? '' : 'none' } }>
+							{ getdataStorage.questions.map( ( question, index ) => {
+								const isCurrent = getdataStorage.questionsPerPage ? false : getdataStorage.currentQuestion === question.id;
+								const isRendered = getdataStorage.questionsRendered && getdataStorage.questionsRendered.indexOf( question.id ) !== -1;
+								const isVisible = this.isInVisibleRange( question.id, index + 1 );
+								return (
+									( isRendered || ! isRendered ) || isVisible
+										? <Question
+											key={ `loop-question-${ question.id }` }
+											isCurrent={ isCurrent }
+											isShow={ isVisible }
+											isShowIndex={ getdataStorage.questionsPerPage ? index + 1 : false }
+											questionsPerPage={ getdataStorage.questionsPerPage }
+											question={ question }
+										/> : ''
+								);
+							} ) }
+						</div>
+					</div>
+				</>
+			);
+		}
 
 		return (
 			<>
@@ -123,7 +150,6 @@ class Questions extends Component {
 							const isCurrent = questionsPerPage ? false : currentQuestion === question.id;
 							const isRendered = questionsRendered && questionsRendered.indexOf( question.id ) !== -1;
 							const isVisible = this.isInVisibleRange( question.id, index + 1 );
-
 							return (
 								( isRendered || ! isRendered ) || isVisible
 									? <Question

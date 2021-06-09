@@ -1,5 +1,6 @@
 import { dispatch, select, apiFetch } from '@learnpress/data-controls';
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 
 function _dispatch() {
 	const args = [].slice.call( arguments, 2 );
@@ -147,6 +148,10 @@ export function* submitQuiz() {
 
 	if ( response.success ) {
 		yield _dispatch( 'learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys( response.results ), itemId, courseId );
+	}
+
+	if ( lpQuizSettings.checknorequizenroll == '1' ) {
+		localStorage.setItem( 'quiz_getdata_' + lpQuizSettings.id, JSON.stringify( wpSelect( 'learnpress/quiz' ).getData() ) );
 	}
 }
 

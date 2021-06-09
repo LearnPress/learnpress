@@ -175,22 +175,22 @@ const getQuestionsSelectedAnswers = function( state, questionId ) {
 			continue;
 		}
 
-		// Answer filled by user
-		if ( ( data[ loopId ].temp || data[ loopId ].blanks ) && lpQuizSettings.checknorequizenroll == '0' ) {
-			// If specific a question then return it only.
-			if ( questionId && loopId === questionId ) {
-				return data[ loopId ].answered;
-			}
-
-			returnData[ loopId ] = data[ loopId ].answered;
-		}
-
 		if ( lpQuizSettings.checknorequizenroll == '1' ) {
 			// If specific a question then return it only.
 			if ( questionId && loopId === questionId ) {
 				return data[ loopId ].answered;
 			}
 			returnData[ loopId ] = data[ loopId ].answered;
+		} else {
+			// Answer filled by user
+			if ( ( data[ loopId ].temp || data[ loopId ].blanks ) ) {
+				// If specific a question then return it only.
+				if ( questionId && loopId === questionId ) {
+					return data[ loopId ].answered;
+				}
+
+				returnData[ loopId ] = data[ loopId ].answered;
+			}
 		}
 	}
 

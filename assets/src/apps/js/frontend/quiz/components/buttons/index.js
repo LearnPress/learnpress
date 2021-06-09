@@ -31,6 +31,8 @@ class Buttons extends Component {
 			}
 			// Remove Local.Storage results
 			window.localStorage.removeItem( 'quiz_results_' + lpQuizSettings.id );
+			// Reset User Data
+			window.localStorage.removeItem( 'quiz_getdata_' + lpQuizSettings.id );
 		}
 		startQuiz();
 	};
