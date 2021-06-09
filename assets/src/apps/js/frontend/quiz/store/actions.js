@@ -23,11 +23,16 @@ export function setQuizData( key, data ) {
 	} else {
 		data = key;
 	}
+	// Save all data for no required enroll available
+	if ( lpQuizSettings.checknorequizenroll == '1' && window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) !== null ) {
+		data = JSON.parse(window.localStorage.getItem('quiz_userdata_' + lpQuizSettings.id));
+	}
 
 	return {
 		type: 'SET_QUIZ_DATA',
 		data: camelCaseDashObjectKeys( data ),
 	};
+
 }
 
 /**
@@ -151,7 +156,7 @@ export function* submitQuiz() {
 	}
 
 	if ( lpQuizSettings.checknorequizenroll == '1' ) {
-		localStorage.setItem( 'quiz_getdata_' + lpQuizSettings.id, JSON.stringify( wpSelect( 'learnpress/quiz' ).getData() ) );
+		localStorage.setItem( 'quiz_userdata_' + lpQuizSettings.id, JSON.stringify( wpSelect( 'learnpress/quiz' ).getData() ) );
 	}
 }
 

@@ -29,10 +29,8 @@ class Buttons extends Component {
 			} else {
 				window.localStorage.setItem( 'quiz_retake_' + lpQuizSettings.id, 1 );
 			}
-			// Remove Local.Storage results
-			window.localStorage.removeItem( 'quiz_results_' + lpQuizSettings.id );
 			// Reset User Data
-			window.localStorage.removeItem( 'quiz_getdata_' + lpQuizSettings.id );
+			window.localStorage.removeItem( 'quiz_userdata_' + lpQuizSettings.id );
 		}
 		startQuiz();
 	};

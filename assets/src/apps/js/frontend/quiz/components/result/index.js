@@ -18,12 +18,7 @@ const Result = () => {
 		return select( 'learnpress/quiz' ).getData( 'id' );
 	}, [] );
 	const results = useSelect( ( select ) => {
-		if ( lpQuizSettings.checknorequizenroll == '1' ) {
-			const resultsStorage = window.localStorage.getItem( 'quiz_results_' + QuizID );
-			if ( resultsStorage ) {
-				return JSON.parse( resultsStorage );
-			}
-		}
+
 		return select( 'learnpress/quiz' ).getData( 'results' );
 	}, [] );
 
@@ -70,9 +65,6 @@ const Result = () => {
 			}
 		}
 	}, [ results ] );
-	if ( lpQuizSettings.checknorequizenroll == '1' ) {
-		localStorage.setItem( 'quiz_results_' + QuizID, JSON.stringify( results ) );
-	}
 
 	useEffect( () => {
 		if ( submitting !== undefined ) {
@@ -169,7 +161,7 @@ const Result = () => {
 	}
 
 	const classNames = [ 'quiz-result', graduation ];
-	// Re-write value to results.timeSpend
+	//Re-write value to results.timeSpend
 	if ( lpQuizSettings.checknorequizenroll == '1' ) {
 		const timespendStart = window.localStorage.getItem( 'quiz_start_' + QuizID ),
 			timespendEnd = window.localStorage.getItem( 'quiz_end_' + QuizID );
