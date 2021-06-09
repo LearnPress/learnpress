@@ -199,6 +199,8 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.0.8 =
 ~ Added: feature "Allow Repurchase course"
+~ Fixed: Custom register fields error with some name not utf8
+~ Added: field "confirm password" on register form profile
 
 = 4.0.7 =
 ~ Fixed: CPU runs high
