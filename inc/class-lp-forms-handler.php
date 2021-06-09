@@ -249,6 +249,9 @@ class LP_Forms_Handler {
 
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {
+				if ( ! isset( $field['id'] ) ) {
+					return new WP_Error( 'registration-custom-exists', __( 'Please go to LearnPress > Settings and save again.', 'learnpress' ) );
+				}
 				if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
 					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
 				}
