@@ -68,7 +68,7 @@ $user = $profile->get_user();
 
 		if ( $custom_fields ) {
 			foreach ( $custom_fields as $field ) {
-				$value = sanitize_key( $field['name'] );
+				$value = $field['id'];
 				?>
 				<li class="form-field form-field__<?php echo $value; ?> form-field__clear">
 				<?php

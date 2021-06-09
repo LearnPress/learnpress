@@ -448,8 +448,8 @@ function lp_metabox_custom_fields( $value, $values, $key ) {
 	?>
 	<tr>
 		<td class="sort">
-			<input class="count" type="hidden" value="<?php echo $key; ?>"
-				   name="<?php echo esc_attr( $value['id'] ) . '[' . $key . ']' . '[sort]'; ?>">
+			<input class="count" type="hidden" value="<?php echo $key; ?>" name="<?php echo esc_attr( $value['id'] ) . '[' . $key . ']' . '[sort]'; ?>">
+			<input type="hidden" value="<?php echo ! empty( $values['id'] ) ? $values['id'] : wp_rand( 1, 10000 ); ?>" name="<?php echo esc_attr( $value['id'] ) . '[' . $key . ']' . '[id]'; ?>">
 		</td>
 		<?php
 		if ( $value['options'] ) {

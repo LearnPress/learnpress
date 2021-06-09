@@ -32,7 +32,7 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 
 		if ( $custom_fields ) {
 			foreach ( $custom_fields as $field ) {
-				$value = sanitize_key( $field['name'] );
+				$value = $field['id'];
 				?>
 				<tr>
 					<th>
