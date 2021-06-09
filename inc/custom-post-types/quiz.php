@@ -459,7 +459,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @since 4.0.0
 		 */
 		public function save() {
-			if ( empty( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] !== LP_QUIZ_CPT ) {
+			if ( empty( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] !== LP_QUIZ_CPT || empty( $_REQUEST['post_ID'] ) ) {
 				return;
 			}
 

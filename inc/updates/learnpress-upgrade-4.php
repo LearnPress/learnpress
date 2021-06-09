@@ -190,7 +190,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @return LP_Step
 	 */
 	protected function create_tables( array $data ): LP_Step {
-		set_time_limit( 0 );
 		$response         = new LP_Step( __FUNCTION__, 'Create table' );
 		$key_create_table = 'create_table';
 		$create_table     = '';
@@ -753,13 +752,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 						if ( $quiz_user_item_id ) {
 							$lp_db->wpdb->query(
-								$lp_db->wpdb->prepare(
-									"
-									INSERT INTO $lp_db->tb_lp_user_itemmeta
-									(learnpress_user_item_id, meta_key, meta_value)
-									VALUES ($quiz_user_item_id, '_lp_retake_count', $v)
-									"
-								)
+								"
+								INSERT INTO $lp_db->tb_lp_user_itemmeta
+								(learnpress_user_item_id, meta_key, meta_value)
+								VALUES ($quiz_user_item_id, '_lp_retake_count', $v)
+								"
 							);
 							$lp_db->check_execute_has_error();
 						}
