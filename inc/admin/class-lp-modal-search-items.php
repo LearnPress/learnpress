@@ -80,7 +80,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @return array
 		 */
 		protected function _get_items() {
-			global $wpdb;
+			$user_id = get_current_user_id();
 
 			$term       = $this->_options['term'];
 			$type       = $this->_options['type'];
@@ -105,10 +105,11 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				'offset'         => ( $paged - 1 ) * $this->_options['limit'],
 			);
 
-			$context_id = apply_filters( 'learn-press/modal-search-items/context-id', $context_id, $context );
-
-			if ( $context_id ) {
-				$args['author'] = get_post_field( 'post_author', $context_id );
+			if ( $context_id = apply_filters( 'learn-press/modal-search-items/context-id', $context_id, $context ) ) {
+				// Admin can get all items
+				if ( ! user_can( $user_id, 'administrator' ) ) {
+					$args['author'] = get_post_field( 'post_author', $context_id );
+				}
 			}
 
 			if ( $term ) {
