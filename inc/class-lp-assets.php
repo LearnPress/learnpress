@@ -128,7 +128,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					array_merge( $wp_js, array( 'lp-global' ) )
 				),
 				'lp-config'            => new LP_Asset_Key(
-					self::url( 'js/dist/frontend/config' . self::$_min_assets . '.js' ),
+					self::url( 'js/dist/frontend/lp-config' . self::$_min_assets . '.js' ),
 					array_merge( $wp_js, array( 'lp-global' ) )
 				),
 				// 'lp-lesson'           => new LP_Asset_Key( self::url( self::$_folder_source .'js/frontend/lesson' . self::$_min_assets . '.js' ) ),
