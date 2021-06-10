@@ -268,6 +268,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 			require_once 'inc/course/class-lp-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';
+			require_once 'inc/course/class-lp-course-no-required-enroll.php';
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 

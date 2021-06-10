@@ -617,7 +617,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		$current_item            = LP_Global::course_item();
 		$enrolled                = $user->has_enrolled_course( $course_id );
 		$is_free                 = $course->is_free();
-		$required_enroll         = $course->is_required_enroll();
+		$no_required_enroll         = $course->is_no_required_enroll();
 		$can_view_content_course = $user->can_view_content_course( $course_id );
 
 		foreach ( $get_item_ids as $item_id ) {
@@ -648,7 +648,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 
 			// Edit by tungnx, rewrite class to show icon.
-			if ( $is_free && ! $required_enroll ) {
+			if ( $no_required_enroll ) {
 				$defaults[] = 'item-free';
 			} elseif ( ! $user || ! $enrolled ) {
 				$defaults['item-locked'] = 'item-locked';

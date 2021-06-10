@@ -188,6 +188,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		// Course is not require enrolling.
+		if ( $course->is_no_required_enroll()) {
+			return;
+		}
+		
 		$args_load_tmpl = array(
 			'template_name' => 'single-course/buttons/purchase.php',
 			'template_path' => '',
@@ -236,7 +241,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		// Course is not require enrolling.
-		if ( ! $course->is_required_enroll() ) {
+		if ( $course->is_no_required_enroll()) {
 			return;
 		}
 
@@ -377,11 +382,56 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/buttons/continue.php' );
 	}
 
+	public function can_show_finish_course_btn( $course, $user ) {
+		$return = array(
+			'status'  => 'fail',
+			'message' => '',
+		);
+
+		try {
+			if ( ! $course || ! $user ) {
+				throw new Exception( esc_html__( 'Error: No Course or User avaliable.', 'learnpress' ) );
+			}
+
+			$course_id = $course->get_id();
+
+			$course_data    = $user->get_course_data( $course_id );
+			$course_results = $course_data->calculate_course_results();
+
+			$is_all_completed = $user->is_completed_all_items( $course_id );
+
+			if ( ! $user->is_course_in_progress( $course_id ) ) {
+				throw new Exception( esc_html__( 'Error: Course is not in-progress.', 'learnpress' ) );
+			}
+
+			$has_finish = get_post_meta( $course_id, '_lp_has_finish', true ) ? get_post_meta( $course_id, '_lp_has_finish', true ) : 'yes';
+			$is_passed  = $user->has_reached_passing_condition( $course_id );
+
+			if ( ! $is_passed && $has_finish === 'no' ) {
+				throw new Exception( esc_html__( 'Error: Course is not has finish.', 'learnpress' ) );
+			}
+
+			if ( ! $is_all_completed && $has_finish === 'yes' && ! $is_passed ) {
+				throw new Exception( esc_html__( 'Error: Cannot finish course.', 'learnpress' ) );
+			}
+
+			if ( ! apply_filters( 'lp_can_finish_course', true ) ) {
+				throw new Exception( esc_html__( 'Error: Filter disable finish course.', 'learnpress' ) );
+			}
+
+			$return['status'] = 'success';
+		} catch ( Exception $e ) {
+			$return['message'] = $e->getMessage();
+		}
+
+		return $return;
+	}
+
 	public function course_finish_button() {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		$check = $user->can_show_finish_course_btn( $course );
+		$check = $this->can_show_finish_course_btn( $course, $user );
 
 		if ( $check['status'] === 'success' ) {
 			learn_press_get_template(

@@ -149,7 +149,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$this->_set_data(
 				array(
 					'status'                       => $post_object->post_status,
-					// 'required_enroll'      => get_post_meta( $id, '_lp_required_enroll', true ),
+					 'no_required_enroll'      => get_post_meta( $id, '_lp_no_required_enroll', true ),
 					'price'                        => get_post_meta( $id, '_lp_price', true ),
 					'sale_price'                   => get_post_meta( $id, '_lp_sale_price', true ),
 					'sale_start'                   => get_post_meta( $id, '_lp_sale_start', true ),
@@ -395,6 +395,20 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			 */
 			$return = true;
 
+			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
+		}
+		/**
+		 * Check if this course is required enroll or not.
+		 *
+		 * @param mixed
+		 *
+		 * @return bool
+		 */
+		public function is_no_required_enroll() {
+			$return = false;
+			if ( $this->get_data( 'no_required_enroll' ) == 'yes' && ! is_user_logged_in() ) {
+				$return = true;
+			}
 			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
 		}
 

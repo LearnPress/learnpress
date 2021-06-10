@@ -1,5 +1,6 @@
 import { dispatch, select, apiFetch } from '@learnpress/data-controls';
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 
 function _dispatch() {
 	const args = [].slice.call( arguments, 2 );
@@ -21,6 +22,10 @@ export function setQuizData( key, data ) {
 		data = { [ key ]: data };
 	} else {
 		data = key;
+	}
+	// Save all data for no required enroll available
+	if ( lpQuizSettings.checkNorequizenroll == '1' && window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) !== null ) {
+		data = JSON.parse( window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) );
 	}
 
 	return {
@@ -137,10 +142,20 @@ export function* submitQuiz() {
 		},
 	} );
 
+	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
+		// Remove & set storage end_time
+		window.localStorage.removeItem( 'quiz_end_' + lpQuizSettings.id );
+		window.localStorage.setItem( 'quiz_end_' + lpQuizSettings.id, Date.now() );
+	}
+
 	response = Hook.applyFilters( 'request-submit-quiz-response', response, itemId, courseId );
 
 	if ( response.success ) {
 		yield _dispatch( 'learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys( response.results ), itemId, courseId );
+	}
+
+	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
+		localStorage.setItem( 'quiz_userdata_' + lpQuizSettings.id, JSON.stringify( wpSelect( 'learnpress/quiz' ).getData() ) );
 	}
 }
 
