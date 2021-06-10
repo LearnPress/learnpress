@@ -63,18 +63,16 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			if ( $questions ) {
 				foreach ( $questions as $question_id => $last_checked ) {
 					$question = LP_Question::get_question( $question_id );
-					$answer   = $answered[ $question_id ];
-
+					$answer   = $answered[ $question_id ] ?? false;
 					$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answer ), $question_id );
-					$check['answered'] = $answer;
-					if ( $check['answered'] && $check['correct'] ) {
+					if ( $answer && $check['correct'] ) {
 						$result['question_correct'] ++;
 						$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 					} else {
 						$negative_marking = apply_filters( 'learn-press/get-negative-marking-value', floatval( $question->get_mark() ), $question_id, $quiz->get_id() );
 
 						// If answered is empty consider user has skipped question
-						if ( ! $check['answered'] ) {
+						if ( ! $answer ) {
 							if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
 								$result['user_mark'] -= $negative_marking;
 							}
@@ -88,7 +86,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					}
 					$result['questions'][ $question_id ] = apply_filters( 'learn-press/question-results-data', $last_checked ? array_merge( $last_checked, $check ) : $check, $question_id, $quiz->get_id() );
 
-					if ( $check['answered'] ) {
+					if ( $answer ) {
 						$result['question_answered'] ++;
 					}
 				}
@@ -124,12 +122,12 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		public function guest_get_quiz_answered( $answered, $quiz_id ) {
 			$quiz         = learn_press_get_quiz( $quiz_id );
 			$question_ids = $quiz->get_question_ids();
-			foreach ( $question_ids as $ids ) {
-				$question       = learn_press_get_question( $ids );
-				$result[ $ids ] = array(
+			foreach ( $question_ids as $question_id ) {
+				$question       = learn_press_get_question( $question_id );
+				$result[ $question_id ] = array(
 					'correct'  => $question->show_correct_answers(),
 					'mark'     => $question->get_mark(),
-					'answered' => $answered[ $ids ],
+					'answered' => $answered[ $question_id ] ?? array(),
 				);
 			}
 			return $result;
