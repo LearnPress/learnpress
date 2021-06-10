@@ -237,7 +237,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					),
 					'_lp_no_required_enroll'    => new LP_Meta_Box_Checkbox_Field(
 						esc_html__( 'No requirement enroll', 'learnpress' ),
-						esc_html__( 'Require users logged in to study or public to all.', 'learnpress' ),
+						esc_html__( 'Students can see the content of all course items and do the quiz without enrolling in this course.', 'learnpress' ),
 						'no'
 					),
 				)
