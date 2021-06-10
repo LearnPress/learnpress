@@ -79,7 +79,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 *
 		 * @return array
 		 */
-		protected function _get_items() {
+		protected function _get_items(): array {
 			$user_id = get_current_user_id();
 
 			$term       = $this->_options['term'];
@@ -105,7 +105,8 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				'offset'         => ( $paged - 1 ) * $this->_options['limit'],
 			);
 
-			if ( $context_id = apply_filters( 'learn-press/modal-search-items/context-id', $context_id, $context ) ) {
+			$context_id = apply_filters( 'learn-press/modal-search-items/context-id', $context_id, $context );
+			if ( $context_id ) {
 				// Admin can get all items
 				if ( ! user_can( $user_id, 'administrator' ) ) {
 					$args['author'] = get_post_field( 'post_author', $context_id );
@@ -117,9 +118,6 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 			}
 
 			$this->_query_args = apply_filters( 'learn-press/modal-search-items/args', $args, $context, $context_id );
-
-			// @deprecated
-			$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $this->_query_args, $context, $context_id );
 
 			$posts = get_posts( $this->_query_args );
 
