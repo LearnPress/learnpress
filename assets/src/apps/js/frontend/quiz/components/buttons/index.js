@@ -18,7 +18,7 @@ class Buttons extends Component {
 				return;
 			}
 		}
-		if ( lpQuizSettings.checknorequizenroll == '1' ) {
+		if ( lpQuizSettings.checkNorequizenroll == '1' ) {
 			// remove & set start_time to local.storage
 			window.localStorage.removeItem( 'quiz_start_' + lpQuizSettings.id );
 			window.localStorage.setItem( 'quiz_start_' + lpQuizSettings.id, Date.now() );
@@ -408,7 +408,7 @@ export default compose( [
 			data.question = getCurrentQuestion( 'object' );
 		}
 
-		if ( lpQuizSettings.checknorequizenroll == '1' ) {
+		if ( lpQuizSettings.checkNorequizenroll == '1' ) {
 			const retakenCurrent = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
 			if ( getData( 'retakeCount' ) > retakenCurrent ) {
 				data.retakeNumber = getData( 'retakeCount' ) - retakenCurrent;

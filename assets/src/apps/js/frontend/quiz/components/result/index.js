@@ -18,7 +18,6 @@ const Result = () => {
 		return select( 'learnpress/quiz' ).getData( 'id' );
 	}, [] );
 	const results = useSelect( ( select ) => {
-
 		return select( 'learnpress/quiz' ).getData( 'results' );
 	}, [] );
 
@@ -162,7 +161,7 @@ const Result = () => {
 
 	const classNames = [ 'quiz-result', graduation ];
 	//Re-write value to results.timeSpend
-	if ( lpQuizSettings.checknorequizenroll == '1' ) {
+	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
 		const timespendStart = window.localStorage.getItem( 'quiz_start_' + QuizID ),
 			timespendEnd = window.localStorage.getItem( 'quiz_end_' + QuizID );
 		if ( timespendStart && timespendEnd ) {

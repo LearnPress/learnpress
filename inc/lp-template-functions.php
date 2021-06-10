@@ -310,7 +310,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 				'totalTime'     => $quiz->get_duration()->get(),
 				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
 				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
-				'checknorequizenroll' => $course->is_no_required_enroll(),
+				'checkNorequizenroll' => $course->is_no_required_enroll(),
 			);
 		}
 

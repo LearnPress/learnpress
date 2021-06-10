@@ -28,7 +28,7 @@ const Attempts = () => {
 						<tbody>
 							{ attempts.map( ( row, key ) => {
 								// Re-write value to attempts.timeSpend
-								if ( lpQuizSettings.checknorequizenroll == '1' ) {
+								if ( lpQuizSettings.checkNorequizenroll == '1' ) {
 									const timespendStart = window.localStorage.getItem( 'quiz_start_' + lpQuizSettings.id ),
 										timespendEnd = window.localStorage.getItem( 'quiz_end_' + lpQuizSettings.id );
 									if ( timespendStart && timespendEnd ) {

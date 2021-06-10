@@ -255,14 +255,18 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$user      = learn_press_get_user( $user_id );
 		$course    = learn_press_get_course( $course_id );
 		$quiz      = learn_press_get_quiz( $item_id );
+
+		// For no required enroll
 		if ( $course->is_no_required_enroll() ) {
 			if ( $quiz->get_retake_count() >= 0 ) {
 				learn_press_remove_cookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '' );
 			}
 			$no_required_enroll = new LP_Course_No_Required_Enroll();
 			$response           = $no_required_enroll->guest_start_quiz( $course_id, $item_id );
+
 			return rest_ensure_response( $response );
 		}
+
 		if ( $user->has_started_quiz( $item_id, $course_id ) ) {
 			$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
 

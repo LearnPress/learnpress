@@ -24,15 +24,14 @@ export function setQuizData( key, data ) {
 		data = key;
 	}
 	// Save all data for no required enroll available
-	if ( lpQuizSettings.checknorequizenroll == '1' && window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) !== null ) {
-		data = JSON.parse(window.localStorage.getItem('quiz_userdata_' + lpQuizSettings.id));
+	if ( lpQuizSettings.checkNorequizenroll == '1' && window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) !== null ) {
+		data = JSON.parse( window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) );
 	}
 
 	return {
 		type: 'SET_QUIZ_DATA',
 		data: camelCaseDashObjectKeys( data ),
 	};
-
 }
 
 /**
@@ -143,7 +142,7 @@ export function* submitQuiz() {
 		},
 	} );
 
-	if ( lpQuizSettings.checknorequizenroll == '1' ) {
+	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
 		// Remove & set storage end_time
 		window.localStorage.removeItem( 'quiz_end_' + lpQuizSettings.id );
 		window.localStorage.setItem( 'quiz_end_' + lpQuizSettings.id, Date.now() );
@@ -155,7 +154,7 @@ export function* submitQuiz() {
 		yield _dispatch( 'learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys( response.results ), itemId, courseId );
 	}
 
-	if ( lpQuizSettings.checknorequizenroll == '1' ) {
+	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
 		localStorage.setItem( 'quiz_userdata_' + lpQuizSettings.id, JSON.stringify( wpSelect( 'learnpress/quiz' ).getData() ) );
 	}
 }
