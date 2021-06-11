@@ -31,7 +31,7 @@ const buildPackages = [
 	'frontend/question-types',
 	'frontend/lesson',
 	'frontend/quiz',
-	'frontend/config',
+	'frontend/lp-configs',
 	//'frontend/data-controls',
 	'frontend/custom',
 ];
@@ -48,7 +48,10 @@ module.exports = function( env = { environment: 'production', watch: false, buil
 		mode,
 		entry: buildPackages.reduce( ( memo, slug ) => {
 			const basename = path.basename( slug );
-			const name = camelCaseDash( basename );
+			let name = camelCaseDash( basename );
+			if ( 'lpConfigs' === name ) {
+				name = 'config';
+			}
 			memo[ name ] = path.resolve( packageDir, `js/${ slug }.js` );
 			return memo;
 		}, {} ),
