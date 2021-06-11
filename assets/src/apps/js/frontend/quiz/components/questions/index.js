@@ -108,7 +108,6 @@ class Questions extends Component {
 			isReviewing,
 			questionsPerPage,
 		} = this.props;
-
 		let isShow = true;
 
 		if ( status === 'completed' && ! isReviewing ) {
@@ -123,7 +122,6 @@ class Questions extends Component {
 							const isCurrent = questionsPerPage ? false : currentQuestion === question.id;
 							const isRendered = questionsRendered && questionsRendered.indexOf( question.id ) !== -1;
 							const isVisible = this.isInVisibleRange( question.id, index + 1 );
-
 							return (
 								( isRendered || ! isRendered ) || isVisible
 									? <Question

@@ -436,7 +436,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	protected function _flush_cache() {
-		LP_Hard_Cache::flush();
+		//LP_Hard_Cache::flush();
 		wp_cache_flush();
 	}
 

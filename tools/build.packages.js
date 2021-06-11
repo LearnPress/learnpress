@@ -31,7 +31,11 @@ const buildPackages = [
 	'frontend/question-types',
 	'frontend/lesson',
 	'frontend/quiz',
+<<<<<<< HEAD
 	'frontend/lp-config',
+=======
+	'frontend/lp-configs',
+>>>>>>> origin/develop
 	//'frontend/data-controls',
 	'frontend/custom',
 ];
@@ -49,7 +53,11 @@ module.exports = function( env = { environment: 'production', watch: false, buil
 		entry: buildPackages.reduce( ( memo, slug ) => {
 			const basename = path.basename( slug );
 			let name = camelCaseDash( basename );
+<<<<<<< HEAD
 			if ( name === 'lpConfig' ) {
+=======
+			if ( 'lpConfigs' === name ) {
+>>>>>>> origin/develop
 				name = 'config';
 			}
 			memo[ name ] = path.resolve( packageDir, `js/${ slug }.js` );

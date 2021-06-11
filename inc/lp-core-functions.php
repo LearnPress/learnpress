@@ -2820,7 +2820,7 @@ function learn_press_static_pages( $name = false ) {
 	return $pages;
 }
 
-function learn_press_cache_path( $group, $key = '' ) {
+/*function learn_press_cache_path( $group, $key = '' ) {
 	$path = LP_PLUGIN_PATH . 'cache';
 	if ( ! file_exists( $path ) ) {
 		@mkdir( $path );
@@ -2835,17 +2835,17 @@ function learn_press_cache_path( $group, $key = '' ) {
 	}
 
 	return $path;
-}
+}*/
 
 function learn_press_cache_get( $key, $group, $found = null ) {
-	$file = learn_press_cache_path( $group, $key );
+	//$file = learn_press_cache_path( $group, $key );
 	$data = wp_cache_get( $key, $group, $found );
 
-	if ( ! file_exists( $file ) ) {
+	/*if ( ! file_exists( $file ) ) {
 		return false;
-	}
+	}*/
 
-	if ( false === $data ) {
+	/*if ( false === $data ) {
 		$content = file_get_contents( $file );
 
 		if ( file_exists( $file ) && $content ) {
@@ -2857,19 +2857,19 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 			}
 			wp_cache_set( $key, $data, $group, $found );
 		}
-	}
+	}*/
 
 	return $data;
 }
 
 function learn_press_cache_set( $key, $data, $group = '', $expire = 0 ) {
-	$file = learn_press_cache_path( $group, $key );
+	//$file = learn_press_cache_path( $group, $key );
 	wp_cache_set( $key, $data, $group, $expire );
 
-	if ( ! is_string( $data ) ) {
+	/*if ( ! is_string( $data ) ) {
 		$data = serialize( $data );
 	}
-	file_put_contents( $file, $data );
+	file_put_contents( $file, $data );*/
 }
 
 function learn_press_cache_replace( $key, $data, $group = '', $expire = 0 ) {
@@ -2952,7 +2952,7 @@ function learn_press_get_unassigned_items( $type = '' ) {
             SELECT p.ID
             FROM {$wpdb->posts} p
             WHERE p.post_type IN(" . join( ',', $format ) . ")
-            AND p.ID NOT IN(
+            AND p.ID IN(
                 SELECT si.item_id
                 FROM {$wpdb->learnpress_section_items} si
                 INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
@@ -2964,6 +2964,9 @@ function learn_press_get_unassigned_items( $type = '' ) {
 		);
 
 		$items = $wpdb->get_col( $query );
+
+		//LP_Debug::var_dump($query, __FILE__, __LINE__);
+
 		LP_Object_Cache::set( $key, $items, 'learn-press/unassigned' );
 	}
 
