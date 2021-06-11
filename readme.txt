@@ -201,6 +201,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: feature "Allow Repurchase course"
 ~ Fixed: Custom register fields error with some name not utf8
 ~ Added: field "confirm password" on register form profile
+~ Fixed: file config.js permission 403 on some sites, change name to lp-configs.js
+~ Fixed: When edit course, Admin can add item of another user
 
 = 4.0.7 =
 ~ Fixed: CPU runs high
