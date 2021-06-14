@@ -1822,7 +1822,7 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
  * @return array
  * @since 3.3.0
  */
-function learn_press_rest_prepare_user_questions( $question_ids, $args = array() ) {
+function learn_press_rest_prepare_user_questions( array $question_ids = array(), array $args = array() ) : array {
 	if ( is_numeric( $args ) ) {
 
 	} else {
@@ -1865,14 +1865,17 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				$hasExplanation = ! ! $theExplanation;
 			}
 
+			 $mark = $question->get_mark() ? $question->get_mark() : 1;
+
 			$questionData = array(
 				'id'    => absint( $id ),
 				'title' => $question->get_title(),
 				'type'  => $question->get_type(),
-				'point' => ( $mark = $question->get_mark() ) ? $mark : 1,
+				'point' => $mark,
 			);
 
-			if ( $content = $question->get_content() ) {
+			$content = $question->get_content();
+			if ( $content ) {
 				$questionData['content'] = $content;
 			}
 
@@ -1899,18 +1902,12 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 					$question,
 					array(
 						'include_is_true' => $with_true_or_false,
-						'answer'          => isset( $answered[ $id ]['answered'] ) ? $answered[ $id ]['answered'] : '',
+						'answer'          => $answered[ $id ]['answered'] ?? '',
 					)
 				);
 			}
 
-			$questions[] = apply_filters(
-				'learn-press/single-quiz-js/question-data',
-				$questionData,
-				$question->get_type(),
-				$question->get_id(),
-				$question
-			);
+			$questions[] = $questionData;
 		}
 
 		/**
@@ -1932,7 +1929,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 		}
 	}
 
-	return $questions;
+	return apply_filters( 'learn-press/list-questions-data', $questions );
 }
 
 /**

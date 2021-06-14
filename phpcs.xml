@@ -36,5 +36,6 @@
         <exclude name="WordPress.PHP.RestrictedPHPFunctions.date_date"/>
         <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
         <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
     </rule>
 </ruleset>
