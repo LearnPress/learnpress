@@ -82,9 +82,10 @@ class LP_Admin_Menu {
 	 * Register for menu for admin
 	 */
 	public function admin_menu() {
+		// Not for translate menu_title, because it make compare $current_screen with "learnpress_page_.*" wrong
 		add_menu_page(
 			__( 'Learning Management System', 'learnpress' ),
-			__( 'LearnPress', 'learnpress' ),
+			'LearnPress',
 			$this->get_capability(),
 			'learn_press',
 			'',
