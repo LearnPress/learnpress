@@ -192,23 +192,6 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		return $query_args;
 	}
 
-	public function get_all_meta_by_id( $id ) {
-		$meta = get_post_meta( $id );
-
-		$output = array();
-		if ( ! empty( $meta ) ) {
-			foreach ( $meta as $meta_key => $meta_value ) {
-				if ( count( $meta_value ) == 1 ) {
-					$output[ $meta_key ] = maybe_unserialize( $meta_value[0] );
-				} else {
-					$output[ $meta_key ] = array_map( 'maybe_unserialize', array_values( $meta_value ) );
-				}
-			}
-		}
-
-		return $output;
-	}
-
 	public function get_collection_params() {
 		$params                       = array();
 		$params['context']            = $this->get_context_param();

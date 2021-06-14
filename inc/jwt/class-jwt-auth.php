@@ -38,6 +38,7 @@ class LP_Jwt_Auth {
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php';
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php';
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php';
+		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php';
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php';
 
 		require_once LP_PLUGIN_PATH . 'inc/jwt/rest-api/lp-rest-function.php';
