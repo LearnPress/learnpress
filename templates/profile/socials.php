@@ -8,8 +8,8 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-
-$socials = LP_Profile::instance()->get_user()->get_profile_socials();
+$user = LP_Profile::instance()->get_user();
+$socials = $user->get_profile_socials($user->get_id());
 if(empty($socials)){
 	return;
 }
