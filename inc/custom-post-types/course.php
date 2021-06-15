@@ -28,6 +28,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		protected static $_instance = null;
 
 		/**
+		 * @var string
+		 */
+		protected $_post_type = LP_COURSE_CPT;
+
+		/**
 		 * Constructor
 		 *
 		 * @param string
@@ -36,9 +41,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			parent::__construct( $post_type );
 
 			// Map origin methods to another method
-			$this
+			/*$this
 				->add_map_method( 'save', 'before_save_curriculum', false )
-				->add_map_method( 'before_delete', 'before_delete_course' );
+				->add_map_method( 'before_delete', 'before_delete_course' );*/
 
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
@@ -245,11 +250,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Delete course sections before delete course.
 		 *
-		 * @param $post_id
-		 *
+		 * @param int $post_id
+		 * @param WP_Post $post
 		 * @since 3.0.0
+		 * @editor tungnx
 		 */
-		public function before_delete_course( $post_id ) {
+		public function before_delete( int $post_id, WP_Post $post ) {
+
+			//echo 555;die;
 			// course curd
 			$curd = new LP_Course_CURD();
 			// remove all items from each section and delete course's sections
@@ -662,15 +670,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Before save curriculum action.
 		 * If is instructor will pending course if enable required review in settings.
+		 *
+		 * @param WP_Post $post
+		 * @editor tungnx
 		 */
-		public function before_save_curriculum() {
-			global $post, $pagenow;
-
-			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP_COURSE_CPT ) ) {
+		public function before_save_curriculum( WP_Post $post ) {
+			if ( ! $post || LP_COURSE_CPT != $post->post_type || 'trash' === $post->post_status ) {
 				return;
 			}
 
-			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
+			//remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 
 			$user            = learn_press_get_current_user();
 			$required_review = LP()->settings->get( 'required_review' ) == 'yes';
@@ -698,6 +707,19 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			delete_post_meta( $post->ID, '_lp_curriculum' );
+		}
+
+		/**
+		 * Save course post
+		 *
+		 * @param int $post_id
+		 * @param WP_Post $post
+		 * @since 4.0.9
+		 * @version 1.0.0
+		 * @editor tungnx
+		 */
+		public function save( int $post_id, WP_Post $post ) {
+			$this->before_save_curriculum( $post );
 		}
 
 		/**

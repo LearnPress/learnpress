@@ -39,8 +39,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 11 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
-			$this->add_map_method( 'before_delete', 'before_delete_question' )
-				 ->add_map_method( 'save', 'save_question' );
+			$this->add_map_method( 'before_delete', 'before_delete_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -257,11 +256,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Remove question from quiz items.
 		 *
-		 * @param int $question_id
+		 * @param  $question_id
 		 *
 		 * @since 3.0.0
 		 */
-		public function before_delete_question( $question_id = 0 ) {
+		public function before_delete_question( int $question_id = 0 ) {
 			$curd = new LP_Question_CURD();
 
 			$curd->delete( $question_id );
@@ -270,12 +269,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add default answer when save new question action.
 		 *
-		 * @param $question_id
-		 *
+		 * @param int $post_id
+		 * @param WP_Post $post
 		 * @since 3.0.0
 		 */
-		public function save_question( $question_id ) {
-			if ( get_post_status( $question_id ) != 'auto-draft' ) {
+		public function save( int $post_id, WP_Post $post ) {
+			$question_id = $post_id;
+
+			if ( $post->post_status != 'auto-draft' ) {
 				return;
 			}
 

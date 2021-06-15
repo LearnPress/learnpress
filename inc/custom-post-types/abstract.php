@@ -298,34 +298,48 @@ abstract class LP_Abstract_Post_Type {
 	 * checks some security in basic level or prevent loop 'save_post'
 	 * action in our application.
 	 *
-	 * @param $post_id
-	 * @param $post
+	 * @param int $post_id
+	 * @param WP_Post $post
 	 *
-	 * @return bool
+	 * @return int
 	 */
-	public function _do_save( $post_id, $post = null ) {
+	public function _do_save( int $post_id = 0, WP_Post $post = null ) : int {
 		// Maybe remove
-		$this->maybe_remove_assigned( $post_id );
+		$this->maybe_remove_assigned( $post );
 
 		if ( get_post_type( $post_id ) != $this->_post_type ) {
-			return false;
+			return 0;
 		}
-		// TODO: check more here
+
 		// prevent loop action
-		remove_action( 'save_post', array( $this, '_do_save' ), 10 );
-		$func_args = func_get_args();
-		$this->_call_method( 'save', $func_args );
+		//remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		//$func_args = func_get_args();
+
+		//var_dump($post_id, $post, $func_args);die;
+
+		//$this->_call_method( 'save', $func_args );
+		$this->save( $post_id, $post );
 		$this->_flush_cache();
-		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		//add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 
 		return $post_id;
 	}
 
-	public function maybe_remove_assigned( $post_id ) {
+	/**
+	 * Maybe remove assigned item
+	 *
+	 * @param WP_Post $post
+	 * @editor tungnx
+	 * @todo Review and move to place correct
+	 */
+	public function maybe_remove_assigned( WP_Post $post ) {
 		global $wpdb;
 
-		$post        = get_post( $post_id );
-		$post_type   = $this->get_post_type();
+		if ( ! $post ) {
+			return;
+		}
+
+		$post_type   = $post->post_type;
 		$post_status = $post->post_status;
 
 		// If we are updating question
@@ -337,8 +351,8 @@ abstract class LP_Abstract_Post_Type {
 					"
                     DELETE FROM {$wpdb->learnpress_quiz_questions}
                     WHERE question_id = %d
-                ",
-					$post_id
+                	",
+					$post->ID
 				);
 				$wpdb->query( $query );
 			}
@@ -350,8 +364,8 @@ abstract class LP_Abstract_Post_Type {
 					"
                     DELETE FROM {$wpdb->learnpress_section_items}
                     WHERE item_id = %d
-                ",
-					$post_id
+                	",
+					$post->ID
 				);
 				$wpdb->query( $query );
 			}
@@ -421,23 +435,27 @@ abstract class LP_Abstract_Post_Type {
 		return true;
 	}
 
-	public function _before_delete_post( $post_id ) {
-		// TODO:
+	/**
+	 * @param int $post_id
+	 * @param WP_Post $post
+	 *
+	 * @editor tungnx
+	 */
+	public function _before_delete_post( int $post_id, WP_Post $post ) {
 		if ( ! $this->_check_post() ) {
 			return;
 		}
 
-		$func_args = func_get_args();
-		return $this->_call_method( 'before_delete', $func_args );
+		$this->before_delete( $post_id, $post );
 	}
 
 	public function _deleted_post( $post_id ) {
-		$this->_flush_cache();
+
 	}
 
 	protected function _flush_cache() {
 		//LP_Hard_Cache::flush();
-		wp_cache_flush();
+		//wp_cache_flush();
 	}
 
 	public function _posts_fields( $fields ) {
@@ -520,15 +538,23 @@ abstract class LP_Abstract_Post_Type {
 
 	}
 
-	public function before_delete( $post_id ) {
+	/**
+	 * Hook before delete post
+	 *
+	 * @param int $post_id
+	 * @param WP_Post $post
+	 */
+	public function before_delete( int $post_id, WP_Post $post ) {
 		// Implement from child
 	}
 
 	/**
-	 *
+	 * Hook Save post
+	 * @editor tungnx
+	 * @docs Class post type extend need override this function if want to handle when save
 	 */
-	public function save() {
-
+	public function save( int $post_id, WP_Post $post ) {
+		// Implement from child
 	}
 
 	/**
@@ -673,13 +699,21 @@ abstract class LP_Abstract_Post_Type {
 		return LP_Request::get( 'orderby' );
 	}
 
+	/**
+	 * @param string[] $actions
+	 * @param WP_Post $post
+	 * @return array|false|mixed
+	 */
 	public function _post_row_actions( $actions, $post ) {
 		if ( ! $this->_check_post() ) {
 			return $actions;
 		}
-		$func_args = func_get_args();
 
-		return $this->_call_method( 'row_actions', $func_args );
+		$this->row_actions( $actions, $post );
+
+		//$func_args = func_get_args();
+
+		//return $this->_call_method( 'row_actions', $func_args );
 	}
 
 	public function row_actions( $actions, $post ) {
@@ -726,7 +760,13 @@ abstract class LP_Abstract_Post_Type {
 		return $this;
 	}
 
-	private function _get_map_method( $origin ) {
+	/**
+	 * @editor tungnx
+	 * @reason comment by write difficult for another developer, difficult development
+	 * @param $messages
+	 * @return array|mixed
+	 */
+	/*private function _get_map_method( $origin ) {
 		if ( ! empty( $this->_map_methods[ $origin ] ) ) {
 			if ( is_array( $this->_map_methods[ $origin ] ) ) {
 				$callback = array();
@@ -741,9 +781,15 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		return $callback;
-	}
+	}*/
 
-	private function _call_method( $name, $args = false ) {
+	/**
+	 * @editor tungnx
+	 * @reason comment by write difficult for another developer, difficult development
+	 * @param $messages
+	 * @return array|mixed
+	 */
+	/*private function _call_method( $name, $args = false ) {
 		$callbacks = $this->_get_map_method( $name );
 		if ( is_array( $callbacks[0] ) ) {
 			$return = array();
@@ -756,7 +802,7 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		return $return;
-	}
+	}*/
 
 	public function updated_messages( $messages ) {
 		$post             = get_post();

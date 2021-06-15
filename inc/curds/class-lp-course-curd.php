@@ -137,8 +137,12 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			// ensure that user can create course
 			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this course</p>',
-					'learnpress' ) );
+				return new WP_Error(
+					__(
+						'<p>Sorry! You don\'t have permission to duplicate this course</p>',
+						'learnpress'
+					)
+				);
 			}
 			// duplicate course
 			$new_course_id = learn_press_duplicate_post( $course_id, $args );
@@ -251,13 +255,20 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				);
 			}
 
-			$types = learn_press_course_get_support_item_types( true );
-			$where .= $wpdb->prepare( ' AND si.item_type IN(' . LP_Helper::db_format_array( $types, '%s' ) . ')',
-				$types );
+			$types  = learn_press_course_get_support_item_types( true );
+			$where .= $wpdb->prepare(
+				' AND si.item_type IN(' . LP_Helper::db_format_array( $types, '%s' ) . ')',
+				$types
+			);
 
 			if ( $section_ids ) {
-				$where .= $wpdb->prepare( ' AND s.section_id IN(' . LP_Helper::db_format_array( $section_ids,
-						'%d' ) . ')', $section_ids );
+				$where .= $wpdb->prepare(
+					' AND s.section_id IN(' . LP_Helper::db_format_array(
+						$section_ids,
+						'%d'
+					) . ')',
+					$section_ids
+				);
 			}
 
 			$query = $wpdb->prepare(
@@ -450,11 +461,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
 				WHERE s.section_course_id = %d";
 			if ( $context == 'view' ) {
-				$sql    .= ' AND c.post_status = %s
+				$sql   .= ' AND c.post_status = %s
 					AND it.post_status = %s ';
 				$params = array_merge( $params, array( 'publish', 'publish' ) );
 			}
-			$sql   .= ' GROUP BY it.post_type ';
+			$sql  .= ' GROUP BY it.post_type ';
 			$query = $wpdb->prepare( $sql, $params );
 
 			$stats_object = array();
@@ -582,12 +593,21 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		public function remove_course( $course_id ) {
 			global $wpdb;
 
-			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d",
-				$course_id ) );
+			$section_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d",
+					$course_id
+				)
+			);
 			if ( $section_ids ) {
 				$wpdb->query(
-					$wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',',
-							$section_ids ) . ')', 1 )
+					$wpdb->prepare(
+						"DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join(
+							',',
+							$section_ids
+						) . ')',
+						1
+					)
 				);
 				learn_press_reset_auto_increment( 'learnpress_section_items' );
 			}
@@ -841,8 +861,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 					continue;
 				}
 
-				if ( false !== ( $count = LP_Object_Cache::get( 'course-' . $course_id,
-						'learn-press/course-orders' ) ) ) {
+				if ( false !== ( $count = LP_Object_Cache::get(
+					'course-' . $course_id,
+					'learn-press/course-orders'
+				) ) ) {
 					continue;
 				} else {
 					LP_Object_Cache::set( 'course-' . $course_id, 0, 'learn-press/course-orders' );
@@ -883,8 +905,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						if ( empty( $row->cid ) ) {
 							continue;
 						}
-						LP_Object_Cache::set( 'course-' . $row->cid, intval( $row->count ),
-							'learn-press/course-orders' );
+						LP_Object_Cache::set(
+							'course-' . $row->cid,
+							intval( $row->count ),
+							'learn-press/course-orders'
+						);
 					}
 				}
 			}

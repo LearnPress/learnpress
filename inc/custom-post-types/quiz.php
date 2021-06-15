@@ -454,18 +454,16 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		/**
 		 * Save Post type Quiz
+		 *
 		 * @author tungnx
 		 * @version 1.0.0
 		 * @since 4.0.0
 		 */
-		public function save() {
-			if ( empty( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] !== LP_QUIZ_CPT || empty( $_REQUEST['post_ID'] ) ) {
-				return;
-			}
+		public function save( int $post_id, WP_Post $post ) {
+			$lp_quiz_cache = LP_Quiz_Cache::instance();
 
-			$post_quiz_id = LP_Helper::sanitize_params_submitted( $_REQUEST['post_ID'] );
-
-			wp_cache_delete( "lp/quiz/$post_quiz_id/question_ids", 'lp/quiz' );
+			// Clear cache get question_ids of quiz
+			$lp_quiz_cache->clear( "$post_id/question_ids" );
 		}
 	}
 

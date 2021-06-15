@@ -110,11 +110,11 @@ class LP_Question_DB extends LP_Database {
 	 *
 	 */
 	public function get_list_question_ids_of_quiz( LP_Question_Filter $filter ): array {
-		$key_cache       = "lp/quiz/$filter->quiz_id/question_ids";
-		$key_group_cache = 'lp/quiz';
+		$key_cache = "$filter->quiz_id/question_ids";
 
 		// Get cache
-		$quiz_ids = wp_cache_get( $key_cache, $key_group_cache );
+		$lp_quiz_cache = LP_Quiz_Cache::instance();
+		$quiz_ids      = $lp_quiz_cache->get_cache( $key_cache );
 
 		if ( $quiz_ids ) {
 			return $quiz_ids;
@@ -147,7 +147,7 @@ class LP_Question_DB extends LP_Database {
 		$this->check_execute_has_error();
 
 		// Set cache
-		wp_cache_set( $key_cache, $ids, $key_group_cache, DAY_IN_SECONDS );
+		$lp_quiz_cache->set_cache( $key_cache, $ids, DAY_IN_SECONDS );
 
 		return $ids;
 	}
