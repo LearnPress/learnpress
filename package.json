@@ -46,7 +46,7 @@
     "got": "^9.6.0",
     "gulp": "^4.0.2",
     "gulp-cache": "^1.1.3",
-    "gulp-clean": "^0.3.2",
+    "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^3.10.0",
     "gulp-line-ending-corrector": "^1.0.3",
     "gulp-notify": "^3.2.0",
@@ -100,6 +100,7 @@
     "gulp-cli": "^2.3.0",
     "gulp-update": "0.0.2",
     "natives": "^1.1.6",
-    "refx": "^3.1.1"
+    "refx": "^3.1.1",
+    "sortablejs": "^1.13.0"
   }
 }
