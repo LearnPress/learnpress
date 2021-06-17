@@ -294,7 +294,7 @@ class Buttons extends Component {
 							</button>
 						) }
 
-						{ 'completed' === status && showReview && ! isReviwing && (
+						{ 'completed' === status && showReview && ! isReviewing && (
 							<button
 								className="lp-button review-quiz"
 								onClick={ this.setQuizMode( 'reviewing' ) }
