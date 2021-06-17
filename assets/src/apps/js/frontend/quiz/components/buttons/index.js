@@ -245,7 +245,7 @@ class Buttons extends Component {
 			styles = null;
 		}
 		let navPositionClass = ' fixed';
-		if ( lpQuizSettings.navigationPosition == 'right' ) {
+		if ( lpQuizSettings.navigationPosition == 'no' ) {
 			navPositionClass = ' nav-center';
 		}
 		return (
@@ -294,7 +294,7 @@ class Buttons extends Component {
 							</button>
 						) }
 
-						{ 'completed' === status && showReview && ! isReviewing && (
+						{ 'completed' === status && showReview && ! isReviwing && (
 							<button
 								className="lp-button review-quiz"
 								onClick={ this.setQuizMode( 'reviewing' ) }

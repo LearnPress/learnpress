@@ -107,14 +107,11 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'desc'    => sprintf( __( 'Enable cache for static content such as content and settings of course, lesson, quiz. <a href="%1$s">%2$s</a>', 'learnpress' ), admin_url( 'admin.php?page=learn-press-tools&tab=cache' ), esc_html__( 'Advanced', 'learnpress' ) ),
 				),
 				array(
-					'title'   => esc_html__( 'Question navigation position', 'learnpress' ),
+					'title'   => esc_html__( 'Enable', 'learnpress' ),
 					'id'      => 'navigation_position',
-					'default' => 'bottom',
-					'type'    => 'select',
-					'options' => array(
-						'bottom'  => esc_html__( 'Bottom of the quiz page', 'learnpress' ),
-						'right' => esc_html__( 'Right below the quiz content', 'learnpress' ),
-					),
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Question navigation position is sticky, if not right below the quiz content', 'learnpress' ),
 				),
 				array(
 					'type' => 'sectionend',
