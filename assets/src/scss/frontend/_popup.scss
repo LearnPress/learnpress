@@ -883,6 +883,10 @@
 							margin-left: 237px;
 							transform: translateX(-50%);
 						}
+						&.nav-center {
+							height: 50px;
+							margin-left: 0 !important;
+						}
 					}
 				}
 
@@ -947,33 +951,33 @@
 							display: inline-block;
 							padding: 8px;
 							background: transparent;
-							font-size: 0;
+							font-size: 16px;
 							text-align: center;
 							text-decoration: none;
 							text-transform: none;
 						}
 
-						&.prev {
-
-							&::before {
-								color: #999;
-								font-family: "Font Awesome 5 Free";
-								font-size: 16px;
-								font-weight: 900;
-								content: "\f104";
-							}
-						}
-
-						&.next {
-
-							&::after {
-								color: #999;
-								font-family: "Font Awesome 5 Free";
-								font-size: 16px;
-								font-weight: 900;
-								content: "\f105";
-							}
-						}
+						//&.prev {
+						//
+						//	&::before {
+						//		color: #999;
+						//		font-family: "Font Awesome 5 Free";
+						//		font-size: 16px;
+						//		font-weight: 900;
+						//		content: "\f104";
+						//	}
+						//}
+						//
+						//&.next {
+						//
+						//	&::after {
+						//		color: #999;
+						//		font-family: "Font Awesome 5 Free";
+						//		font-size: 16px;
+						//		font-weight: 900;
+						//		content: "\f105";
+						//	}
+						//}
 
 						&.current,
 						&:hover {
