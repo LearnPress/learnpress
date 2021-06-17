@@ -522,7 +522,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @since 3.0.0
 		 */
 		public function remove_item( $item_id, $course_id = 0 ) {
-
+			$learnpress_user_item_db = LP_User_Items_DB::getInstance();
 			global $wpdb;
 			// allow hook
 			do_action( 'learn-press/before-remove-section-item', $item_id, $course_id );
@@ -568,41 +568,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				foreach ( $course_id as $cid ) {
 					do_action( 'learn-press/removed-item-from-section', $item_id, $cid );
-
-					/*
-				    * Re-set current item
-				    */
-					// Select all course enrolled
-					$query         = $wpdb->prepare(
-						"
-						SELECT user_item_id
-						FROM {$wpdb->prefix}learnpress_user_items
-						WHERE status = %s AND item_id = %d AND graduation = %s
-						",
-						'enrolled', $cid, 'in-progress'
-					);
-					$user_item_ids = $wpdb->get_col( $query );
-					if ( ! empty( $user_item_ids ) ) {
-						foreach ( $user_item_ids as $user_item_id ) {
-							// Check item is current item of all course
-							$query = $wpdb->prepare(
-								"
-							SELECT meta_value
-							FROM {$wpdb->prefix}learnpress_user_itemmeta
-							WHERE learnpress_user_item_id = %d
-							",
-								$user_item_id
-							);
-							$meta_value_id = $wpdb->get_var( $query );
-							// Check if the deleted item is current item or not
-							if ( $meta_value_id == $item_id ) {
-								$course = learn_press_get_course($cid);
-								// update _curent_item to database
-								learn_press_update_user_item_meta( $user_item_id, '_current_item', $course->get_first_item_id() );
-							}
-						}
-					}
-
+					$learnpress_user_item_db->reset_course_current_item( $cid, $item_id );
 				} // end foreach $course_id as $cid
 			}
 
