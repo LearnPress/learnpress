@@ -311,7 +311,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
 				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
 				'checkNorequizenroll' => $course->is_no_required_enroll(),
-				'navigationPosition' => LP()->settings()->get( 'navigation_position' )
+				'navigationPosition' => LP_Settings::get_option( 'navigation_position','yes' )
 			);
 		}
 
