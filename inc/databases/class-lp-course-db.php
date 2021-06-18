@@ -100,10 +100,11 @@ class LP_Course_DB extends LP_Database {
 			INNER JOIN $this->tb_lp_sections AS sections
 			ON items.section_id = sections.section_id
 			AND sections.section_course_id = %d
+			AND sections.section_order = %d
+			ORDER BY IF(items.item_order = 0,items.item_id,items.item_order) ASC;
 			",
-				$course_id
+				$course_id,0
 			);
-
 			$first_item_id = (int) $this->wpdb->get_var( $query );
 
 			// Set cache

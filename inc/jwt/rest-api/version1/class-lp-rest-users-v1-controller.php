@@ -1,4 +1,10 @@
 <?php
+/**
+ * REST API for the user.
+ *
+ * @package LearnPress/JWT/RESTAPI
+ * @author Nhamdv <daonham95@gmail.com>
+ */
 class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	protected $namespace = 'learnpress/v1';
 
@@ -49,39 +55,16 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 						),
 					),
 				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_item' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
 
-		register_rest_route(
-			$this->namespace,
-			'/' . $this->rest_base . '/(?P<id>[\d]+)/(?P<tab>[\w]+)',
-			array(
-				'args'   => array(
-					'id'  => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
-						'type'        => 'integer',
-					),
-					'tab' => array(
-						'description' => esc_html__( 'Get content in profile learnpress tab.', 'learnpress' ),
-						'type'        => 'string',
-					),
-				),
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_item_tab' ),
-					'permission_callback' => array( $this, 'get_item_permissions_check' ),
-					'args'                => array(
-						'context' => $this->get_context_param(
-							array(
-								'default' => 'view',
-							)
-						),
-					),
-				),
-				'schema' => array( $this, 'get_public_item_schema' ),
-			)
-		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -126,6 +109,109 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return true;
 	}
 
+	/**
+	 * Checks if a given request has access to update a user.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
+	 */
+	public function update_item_permissions_check( $request ) {
+		$user = $this->get_user( $request['id'] );
+		if ( is_wp_error( $user ) ) {
+			return $user;
+		}
+
+		if ( ! empty( $request['roles'] ) ) {
+			if ( ! current_user_can( 'promote_user', $user->ID ) ) {
+				return new WP_Error(
+					'rest_cannot_edit_roles',
+					__( 'Sorry, you are not allowed to edit roles of this user.' ),
+					array( 'status' => rest_authorization_required_code() )
+				);
+			}
+
+			$request_params = array_keys( $request->get_params() );
+			sort( $request_params );
+			// If only 'id' and 'roles' are specified (we are only trying to
+			// edit roles), then only the 'promote_user' cap is required.
+			if ( array( 'id', 'roles' ) === $request_params ) {
+				return true;
+			}
+		}
+
+		if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+			return new WP_Error(
+				'rest_cannot_edit',
+				__( 'Sorry, you are not allowed to edit this user.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines if the current user is allowed to make the desired roles change.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param int   $user_id User ID.
+	 * @param array $roles   New user roles.
+	 * @return true|WP_Error True if the current user is allowed to make the role change,
+	 *                       otherwise a WP_Error object.
+	 */
+	protected function check_role_update( $user_id, $roles ) {
+		global $wp_roles;
+
+		foreach ( $roles as $role ) {
+
+			if ( ! isset( $wp_roles->role_objects[ $role ] ) ) {
+				return new WP_Error(
+					'rest_user_invalid_role',
+					/* translators: %s: Role key. */
+					sprintf( __( 'The role %s does not exist.' ), $role ),
+					array( 'status' => 400 )
+				);
+			}
+
+			$potential_role = $wp_roles->role_objects[ $role ];
+
+			/*
+			 * Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
+			 * Multisite super admins can freely edit their blog roles -- they possess all caps.
+			 */
+			if ( ! ( is_multisite()
+				&& current_user_can( 'manage_sites' ) )
+				&& get_current_user_id() === $user_id
+				&& ! $potential_role->has_cap( 'edit_users' )
+			) {
+				return new WP_Error(
+					'rest_user_invalid_role',
+					__( 'Sorry, you are not allowed to give users that role.' ),
+					array( 'status' => rest_authorization_required_code() )
+				);
+			}
+
+			// Include user admin functions to get access to get_editable_roles().
+			require_once ABSPATH . 'wp-admin/includes/user.php';
+
+			// The new role must be editable by the logged-in user.
+			$editable_roles = get_editable_roles();
+
+			if ( empty( $editable_roles[ $role ] ) ) {
+				return new WP_Error(
+					'rest_user_invalid_role',
+					__( 'Sorry, you are not allowed to give users that role.' ),
+					array( 'status' => 403 )
+				);
+			}
+		}
+
+		return true;
+	}
+
 	protected function get_user( $id ) {
 		$error = new WP_Error(
 			'rest_user_invalid_id',
@@ -149,32 +235,181 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return $user;
 	}
 
-	public function get_item_tab( $request ) {
-		$user   = $this->get_user( $request['id'] );
-		$output = array();
-
-		switch ( $request['tab'] ) {
-			case 'overview':
-				$output = $this->get_overview_tab_contents( $user );
-				break;
-
-			case 'courses':
-				$output = $this->get_course_tab_contents( $request );
-				break;
-
-			case 'quiz':
-				$output = $this->get_quiz_tab_contents( $request );
-				break;
-
-			default:
-				$output = esc_html__( 'No Tab content!', 'learnpress' );
+	/**
+	 * Updates a single user.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function update_item( $request ) {
+		$user = $this->get_user( $request['id'] );
+		if ( is_wp_error( $user ) ) {
+			return $user;
 		}
 
-		$return = apply_filters( 'learnpress/jwt/rest-api/user/tab-content', $output, $request );
+		$id = $user->ID;
 
-		$response = rest_ensure_response( $return );
+		if ( ! $user ) {
+			return new WP_Error(
+				'rest_user_invalid_id',
+				__( 'Invalid user ID.' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$owner_id = email_exists( $request['email'] );
+
+		if ( $owner_id && $owner_id !== $id ) {
+			return new WP_Error(
+				'rest_user_invalid_email',
+				__( 'Invalid email address.' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		if ( ! empty( $request['username'] ) && $request['username'] !== $user->user_login ) {
+			return new WP_Error(
+				'rest_user_invalid_argument',
+				__( "Username isn't editable." ),
+				array( 'status' => 400 )
+			);
+		}
+
+		if ( ! empty( $request['slug'] ) && $request['slug'] !== $user->user_nicename && get_user_by( 'slug', $request['slug'] ) ) {
+			return new WP_Error(
+				'rest_user_invalid_slug',
+				__( 'Invalid slug.' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		if ( ! empty( $request['roles'] ) ) {
+			$check_permission = $this->check_role_update( $id, $request['roles'] );
+
+			if ( is_wp_error( $check_permission ) ) {
+				return $check_permission;
+			}
+		}
+
+		$user = $this->prepare_item_for_database( $request );
+
+		// Ensure we're operating on the same user we already checked.
+		$user->ID = $id;
+
+		$user_id = wp_update_user( wp_slash( (array) $user ) );
+
+		if ( is_wp_error( $user_id ) ) {
+			return $user_id;
+		}
+
+		$user = get_user_by( 'id', $user_id );
+
+		do_action( 'lp_rest_insert_user', $user, $request, false );
+
+		if ( ! empty( $request['roles'] ) ) {
+			array_map( array( $user, 'add_role' ), $request['roles'] );
+		}
+
+		$schema = $this->get_item_schema();
+
+		if ( ! empty( $schema['properties']['meta'] ) && isset( $request['meta'] ) ) {
+			$meta_update = $this->meta->update_value( $request['meta'], $user_id );
+
+			if ( is_wp_error( $meta_update ) ) {
+				return $meta_update;
+			}
+		}
+
+		$user          = get_user_by( 'id', $user_id );
+		$fields_update = $this->update_additional_fields_for_object( $user, $request );
+
+		if ( is_wp_error( $fields_update ) ) {
+			return $fields_update;
+		}
+
+		$request->set_param( 'context', 'edit' );
+
+		do_action( 'lp_rest_after_insert_user', $user, $request, false );
+
+		$response = $this->prepare_item_for_response( $user, $request );
+		$response = rest_ensure_response( $response );
 
 		return $response;
+	}
+
+	/**
+	 * Prepares a single user for creation or update.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return object User object.
+	 */
+	protected function prepare_item_for_database( $request ) {
+		$prepared_user = new stdClass();
+
+		$schema = $this->get_item_schema();
+
+		// Required arguments.
+		if ( isset( $request['email'] ) && ! empty( $schema['properties']['email'] ) ) {
+			$prepared_user->user_email = $request['email'];
+		}
+
+		if ( isset( $request['username'] ) && ! empty( $schema['properties']['username'] ) ) {
+			$prepared_user->user_login = $request['username'];
+		}
+
+		if ( isset( $request['password'] ) && ! empty( $schema['properties']['password'] ) ) {
+			$prepared_user->user_pass = $request['password'];
+		}
+
+		// Optional arguments.
+		if ( isset( $request['id'] ) ) {
+			$prepared_user->ID = absint( $request['id'] );
+		}
+
+		if ( isset( $request['name'] ) && ! empty( $schema['properties']['name'] ) ) {
+			$prepared_user->display_name = $request['name'];
+		}
+
+		if ( isset( $request['first_name'] ) && ! empty( $schema['properties']['first_name'] ) ) {
+			$prepared_user->first_name = $request['first_name'];
+		}
+
+		if ( isset( $request['last_name'] ) && ! empty( $schema['properties']['last_name'] ) ) {
+			$prepared_user->last_name = $request['last_name'];
+		}
+
+		if ( isset( $request['nickname'] ) && ! empty( $schema['properties']['nickname'] ) ) {
+			$prepared_user->nickname = $request['nickname'];
+		}
+
+		if ( isset( $request['slug'] ) && ! empty( $schema['properties']['slug'] ) ) {
+			$prepared_user->user_nicename = $request['slug'];
+		}
+
+		if ( isset( $request['description'] ) && ! empty( $schema['properties']['description'] ) ) {
+			$prepared_user->description = $request['description'];
+		}
+
+		if ( isset( $request['url'] ) && ! empty( $schema['properties']['url'] ) ) {
+			$prepared_user->user_url = $request['url'];
+		}
+
+		if ( isset( $request['locale'] ) && ! empty( $schema['properties']['locale'] ) ) {
+			$prepared_user->locale = $request['locale'];
+		}
+
+		// Setting roles will be handled outside of this function.
+		if ( isset( $request['roles'] ) ) {
+			$prepared_user->role = false;
+		}
+
+		/**
+		 * Filters user data before insertion via the REST API.
+		 *
+		 * @param object          $prepared_user User object.
+		 * @param WP_REST_Request $request       Request object.
+		 */
+		return apply_filters( 'lp_rest_pre_insert_user', $prepared_user, $request );
 	}
 
 	public function get_overview_tab_contents( $user ) {
@@ -226,10 +461,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		$profile          = learn_press_get_profile( $request['id'] );
 		$user             = learn_press_get_user( $request['id'] );
 		$filters_enrolled = array(
-			'all'      => 'all',
-			'finished' => 'finished',
-			'passed'   => 'passed',
-			'failed'   => 'failed',
+			'all'         => 'all',
+			'finished'    => 'finished',
+			'passed'      => 'passed',
+			'failed'      => 'failed',
+			'in-progress' => 'in-progress',
 		);
 
 		if ( method_exists( $profile, 'query_courses' ) ) {
@@ -340,6 +576,40 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				}
 
 				$output[ $key ] = $ids;
+			}
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Get order by user id
+	 *
+	 * @param array $request [id: user ID]
+	 * @return array
+	 *
+	 * @author Nhamdv <daonham95@gmail.com>
+	 */
+	public function get_order_content_tab( $request ) {
+		$output = array();
+
+		$profile = learn_press_get_profile( $request['id'] );
+
+		if ( method_exists( $profile, 'query_orders' ) ) {
+			$query_orders = $profile->query_orders( array( 'fields' => 'ids' ) );
+
+			if ( ! empty( $query_orders['items'] ) ) {
+				foreach ( $query_orders['items'] as $order_id ) {
+					$order = learn_press_get_order( $order_id );
+
+					$output[ $order_id ] = array(
+						'order_key' => $order->get_order_number() ?? '',
+						'total'     => $order->get_total(),
+						'currency'  => $order->get_currency(),
+						'status'    => $order->get_status(),
+						'date'      => lp_jwt_prepare_date_response( $order->get_order_date() ),
+					);
+				}
 			}
 		}
 
@@ -587,16 +857,53 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'meta':
 					$data['meta'] = $this->meta->get_value( $user->ID, $request );
 					break;
-				case 'custom_fields':
-					$data['custom_fields'] = $this->custom_register( $user );
-					break;
 				case 'tabs':
-					$data['tabs'] = $this->get_lp_data_tabs( $user );
+					$data['tabs'] = $this->get_lp_data_tabs( $user, $request );
+					break;
+				case 'custom_register':
+					$data['custom_register'] = $this->custom_register( $user );
 					break;
 			}
 		}
 
 		return $data;
+	}
+
+	public function get_lp_data_tabs( $user, $request ) {
+		$output = array();
+
+		if ( function_exists( 'learn_press_get_user_profile_tabs' ) ) {
+			$tabs = learn_press_get_user_profile_tabs();
+
+			$content = array(
+				'overview' => $this->get_overview_tab_contents( $user ),
+				'courses'  => $this->get_course_tab_contents( $request ),
+				'quiz'     => $this->get_quiz_tab_contents( $request ),
+				'orders'   => $this->get_order_content_tab( $request ),
+			);
+
+			foreach ( $tabs->get() as $key => $tab ) {
+				$output[ $key ] = array(
+					'title'    => $tab['title'] ?? '',
+					'slug'     => $tab['slug'] ?? '',
+					'priority' => $tab['priority'] ?? '',
+					'icon'     => $tab['icon'] ?? '',
+					'content'  => $content[ $key ] ?? '',
+				);
+
+				if ( ! empty( $tab['sections'] ) ) {
+					foreach ( $tab['sections'] as $section_key => $section ) {
+						$output[ $key ]['section'][ $section_key ] = array(
+							'title'    => $section['title'] ?? '',
+							'slug'     => $section['slug'] ?? '',
+							'priority' => $section['priority'] ?? '',
+						);
+					}
+				}
+			}
+		}
+
+		return $output;
 	}
 
 	/**
@@ -614,37 +921,13 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 			if ( $custom_fields ) {
 				foreach ( $custom_fields as $field ) {
-					$value            = sanitize_key( $field['name'] );
-					$output[ $value ] = isset( $custom_profile[ $value ] ) ? $custom_profile[ $value ] : '';
-				}
-			}
-		}
-
-		return $output;
-	}
-
-	public function get_lp_data_tabs( $user ) {
-		$output = array();
-
-		if ( function_exists( 'learn_press_get_user_profile_tabs' ) ) {
-			$tabs = learn_press_get_user_profile_tabs();
-
-			foreach ( $tabs->get() as $key => $tab ) {
-				$output[ $key ] = array(
-					'title'    => $tab['title'] ?? '',
-					'slug'     => $tab['slug'] ?? '',
-					'priority' => $tab['priority'] ?? '',
-					'icon'     => $tab['icon'] ?? '',
-				);
-
-				if ( ! empty( $tab['sections'] ) ) {
-					foreach ( $tab['sections'] as $section_key => $section ) {
-						$output[ $key ]['section'][ $section_key ] = array(
-							'title'    => $section['title'] ?? '',
-							'slug'     => $section['slug'] ?? '',
-							'priority' => $section['priority'] ?? '',
-						);
-					}
+					$value            = $field['id'];
+					$output[ $value ] = array(
+						'title'    => $field['name'] ?? '',
+						'type'     => $field['type'] ?? '',
+						'required' => $field['required'] ?? 'no',
+						'value'    => $custom_profile[ $value ] ?? '',
+					);
 				}
 			}
 		}
@@ -751,7 +1034,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'username'           => array(
 					'description' => __( 'Login name for the user.' ),
 					'type'        => 'string',
-					'context'     => array( 'edit' ),
+					'context'     => array( 'view', 'edit' ),
 					'required'    => true,
 					'arg_options' => array(
 						'sanitize_callback' => array( $this, 'check_username' ),
@@ -768,7 +1051,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'first_name'         => array(
 					'description' => __( 'First name for the user.' ),
 					'type'        => 'string',
-					'context'     => array( 'edit' ),
+					'context'     => array( 'view', 'edit' ),
 					'arg_options' => array(
 						'sanitize_callback' => 'sanitize_text_field',
 					),
@@ -776,7 +1059,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'last_name'          => array(
 					'description' => __( 'Last name for the user.' ),
 					'type'        => 'string',
-					'context'     => array( 'edit' ),
+					'context'     => array( 'view', 'edit' ),
 					'arg_options' => array(
 						'sanitize_callback' => 'sanitize_text_field',
 					),
@@ -785,7 +1068,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'description' => __( 'The email address for the user.' ),
 					'type'        => 'string',
 					'format'      => 'email',
-					'context'     => array( 'edit' ),
+					'context'     => array( 'view', 'edit' ),
 					'required'    => true,
 				),
 				'url'                => array(
@@ -815,7 +1098,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'nickname'           => array(
 					'description' => __( 'The nickname for the user.' ),
 					'type'        => 'string',
-					'context'     => array( 'edit' ),
+					'context'     => array( 'view', 'edit' ),
 					'arg_options' => array(
 						'sanitize_callback' => 'sanitize_text_field',
 					),
@@ -864,15 +1147,15 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'context'     => array( 'edit' ),
 					'readonly'    => true,
 				),
-				'custom_fields'      => array(
-					'description' => __( 'Display custom Register' ),
-					'type'        => 'object',
-					'context'     => array( 'embed', 'view', 'edit' ),
-				),
 				'tabs'               => array(
 					'description' => __( 'Get all items in user like course, lesson, quiz...' ),
 					'type'        => 'array',
-					'context'     => array( 'embed', 'view', 'edit' ),
+					'context'     => array( 'view' ),
+				),
+				'custom_register'    => array(
+					'description' => __( 'Get custom register fields.' ),
+					'type'        => 'object',
+					'context'     => array( 'view' ),
 				),
 			),
 		);

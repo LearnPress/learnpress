@@ -533,7 +533,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @since 3.0.0
 		 */
 		public function remove_item( $item_id, $course_id = 0 ) {
-
+			$learnpress_user_item_db = LP_User_Items_DB::getInstance();
 			global $wpdb;
 			// allow hook
 			do_action( 'learn-press/before-remove-section-item', $item_id, $course_id );
@@ -579,7 +579,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				foreach ( $course_id as $cid ) {
 					do_action( 'learn-press/removed-item-from-section', $item_id, $cid );
-				}
+					$learnpress_user_item_db->reset_course_current_item( $cid, $item_id );
+				} // end foreach $course_id as $cid
 			}
 
 			learn_press_reset_auto_increment( 'learnpress_section_items' );

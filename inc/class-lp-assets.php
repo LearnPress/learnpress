@@ -162,7 +162,7 @@ class LP_Assets extends LP_Abstract_Assets {
 							'lp-modal',
 							'lp-config',
 							'lp-single-curriculum',
-							'jquery-ui-sortable', //Use in question type: sorting choice - Nhamdv
+							'jquery-ui-sortable', // Use in question type: sorting choice - Nhamdv
 
 						)
 					),
@@ -200,6 +200,16 @@ class LP_Assets extends LP_Abstract_Assets {
 						'jquery-ui-slider',
 						'jquery-ui-draggable',
 						'jquery-touch-punch',
+					),
+					array( LP_PAGE_PROFILE ),
+					0,
+					1
+				),
+				'lp-profile-v2'        => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
+					array_merge(
+						$wp_js,
+						array( 'wp-i18n' )
 					),
 					array( LP_PAGE_PROFILE ),
 					0,
@@ -288,8 +298,12 @@ class LP_Assets extends LP_Abstract_Assets {
 				$can_load_js = true;
 
 				if ( ! empty( $script->_screens ) ) {
-					$can_load_js = apply_filters( 'learnpress/frontend/can-load-js/' . $handle,
-						in_array( $page_current, $script->_screens ), $page_current, $script->_screens );
+					$can_load_js = apply_filters(
+						'learnpress/frontend/can-load-js/' . $handle,
+						in_array( $page_current, $script->_screens ),
+						$page_current,
+						$script->_screens
+					);
 				}
 
 				if ( $can_load_js ) {
@@ -392,8 +406,10 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public function show_overlay() {
 		$page_current = LP_Page_Controller::page_current();
-		if ( ! in_array( $page_current,
-			array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE, LP_PAGE_QUIZ ) ) ) {
+		if ( ! in_array(
+			$page_current,
+			array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE, LP_PAGE_QUIZ )
+		) ) {
 			return;
 		}
 

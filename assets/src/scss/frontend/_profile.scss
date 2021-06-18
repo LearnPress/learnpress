@@ -13,7 +13,9 @@ body {
 	overflow: hidden;
 	position: relative;
 	background: #fff;
+
 	.lp-user-profile-avatar {
+
 		img {
 			position: relative;
 			width: 100%;
@@ -53,84 +55,100 @@ body {
 			}
 		}
 	}
+
 	.wrapper-profile-header {
 		color: #fff;
 		background: var(--lp-secondary-color);
 
-		.lp-profile-content-area{
+		.lp-profile-content-area {
 			position: relative;
 			min-height: 345px;
 			padding-top: 50px;
 		}
 
-		.lp-profile-left{
-			width: 270px;
+		.lp-profile-left {
 			position: absolute;
 			bottom: 0;
 			left: 0;
+			width: 270px;
 			padding: 20px;
-			background: #fff;
 			border: 1px solid rgba(0, 0, 0, 0.1);
 			border-bottom: 0;
+			background: #fff;
 		}
+
 		.lp-profile-right {
 			margin-left: 270px;
- 			padding-left: 35px;
 			padding-right: 15px;
+			padding-left: 35px;
+
 			.lp-profile-username {
 				padding-bottom: 18px;
 				font-size: 18px;
 				font-weight: 500;
 				text-transform: capitalize;
 			}
- 			.lp-profile-user-bio {
+
+			.lp-profile-user-bio {
 				font-size: 16px;
 				font-weight: 300;
 				line-height: 26px;
 			}
 		}
+
 		@media (max-width: 990px) {
-			.lp-profile-content-area{
+
+			.lp-profile-content-area {
 				min-height: inherit;
 				padding: 20px 15px;
 			}
-			.lp-profile-left{
-				position: static;
+
+			.lp-profile-left {
 				float: left;
+				position: static;
 			}
+
 			.lp-profile-right {
-				width: calc(100% - 270px);
 				float: right;
+				width: calc(100% - 270px);
 				margin-left: 0;
 			}
 		}
+
 		@media (max-width: 768px) {
-			.lp-profile-left{
-				 width: 220px;
+
+			.lp-profile-left {
+				width: 220px;
 			}
+
 			.lp-profile-right {
 				width: calc(100% - 220px);
 			}
+
 			.lp-user-profile-socials {
-				margin-left: -5px;
 				margin-right: -5px;
- 				a {
- 					width: 36px;
+				margin-left: -5px;
+
+				a {
+					width: 36px;
 					height: 36px;
 					margin: 0 5px;
- 					line-height: 36px;
- 				}
+					line-height: 36px;
+				}
 			}
 		}
+
 		@media (max-width: 500px) {
-			.lp-profile-left{
+
+			.lp-profile-left {
 				float: none;
 				margin: 0 auto;
 			}
+
 			.lp-profile-right {
 				width: 100%;
-				text-align: center;
 				padding-top: 30px;
+				text-align: center;
 			}
 		}
 	}
@@ -148,6 +166,7 @@ body {
 		@media (max-width: 990px) {
 			width: 100%;
 			margin-top: 58px;
+
 			.lp-user-profile-avatar {
 				max-width: 150px;
 			}
@@ -157,7 +176,6 @@ body {
 		//	width: 100%;
 		//}
 	}
-
 
 
 	#profile-nav {
@@ -331,55 +349,60 @@ body {
 		@media (max-width: 990px) {
 			overflow-x: scroll;
 			border-top: 1px solid rgba(204, 204, 204, 0.3);
+
 			.lp-profile-nav-tabs {
 				width: max-content;
 
-				&:after {
+				&::after {
 					display: table;
-					content: "";
 					clear: both;
+					content: "";
 				}
 
 				> li {
- 					border: none;
-					border-right: 1px solid rgba(204, 204, 204, 0.3);
 					float: left;
+					border: none;
+					border-right: 1px solid rgba(204, 204, 204, 0.3);
 
 					> a {
 						//font-size: 0;
 						height: auto;
 						padding: 0 20px 0 45px;
-						&:after{
+
+						&::after {
 							margin-left: 10px;
 						}
 					}
 
 					&.has-child {
-						a:after {
+
+						a::after {
 							content: "\f077";
 						}
 					}
 
 					&.active {
+
 						a {
 							padding-left: 45px;
 
-							&:after {
-								content: "\f078"
+							&::after {
+								content: "\f078";
 							}
 						}
 
 						&.has-child {
+
 							ul {
 								display: none;
 								width: max-content;
 								transform: translateX(-20%);
 
-								&:after {
+								&::after {
 									display: table;
-									content: "";
 									clear: both;
 									box-shadow: 0 0 0;
+									content: "";
 								}
 
 								li {
@@ -400,29 +423,37 @@ body {
 				}
 
 				li {
-					&:hover ul{
-						display: none!important;
+
+					&:hover ul {
+						display: none !important;
 					}
+
 					&:not(.has-child) {
-						> a:after {
+
+						> a::after {
 							display: none;
 						}
 					}
 				}
 			}
 		}
+
 		@media (max-width: 560px) {
- 			.lp-profile-nav-tabs {
- 				> li {
+
+			.lp-profile-nav-tabs {
+
+				> li {
 					max-width: 80px;
-  					> a {
-						 font-size: 0;
-						&:after{
+
+					> a {
+						font-size: 0;
+
+						&::after {
 							margin-left: 0;
 						}
- 					}
+					}
 				}
- 			}
+			}
 		}
 	}
 
@@ -444,17 +475,17 @@ body {
 					display: block;
 					width: 100%;
 
-					&:after {
-						content: "";
-						clear: both;
+					&::after {
 						display: table;
+						clear: both;
+						content: "";
 					}
 
 					border: 0;
 
 					.learn-press-tabs__tab {
-						border-right: 0;
 						float: left;
+						border-right: 0;
 
 						label {
 							padding-right: 25px;
@@ -1006,5 +1037,90 @@ div.order-recover {
 		font-style: italic;
 		line-height: 43px;
 		flex: 1 1 auto;
+	}
+}
+
+.learn-press-profile-course__progress {
+
+	.lp_profile_course_progress {
+		border: 1px solid #eee;
+
+		&__item {
+			display: grid;
+			align-items: center;
+			padding: 15px;
+			border-top: 1px solid #eee;
+			grid-template-columns: 90px 1fr 80px 140px 140px;
+			column-gap: 20px;
+		}
+
+		&__header {
+			background-color: #eee;
+		}
+
+
+	}
+}
+
+.lp_profile_course_progress__nav {
+
+	button {
+
+		&.loading {
+
+			&::before {
+				display: inline-block;
+				margin-right: 5px;
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				content: "\f110";
+
+				@include animation(lp-rotating 1s linear infinite);
+			}
+		}
+	}
+}
+
+.learn-press-profile-course__tab {
+
+	&__inner {
+		display: flex;
+		margin: 40px 0 0 0;
+		padding: 0;
+		background: #eee;
+		list-style: none !important;
+
+		> li {
+			list-style: none;
+		}
+
+		a {
+			display: inline-block;
+			padding: 15px 30px;
+			font-weight: 600;
+
+			&.active {
+				border-top: 4px solid var(--lp-primary-color);
+				color: var(--lp-primary-color);
+				background: #fff;
+			}
+		}
+	}
+}
+
+.learn-press-course-tab-filters {
+
+	.learn-press-filters {
+		margin-top: 20px;
+		margin-left: 0;
+		padding: 0;
+		list-style: none;
+
+		a {
+
+			&.active {
+				color: var(--lp-primary-color);
+			}
+		}
 	}
 }

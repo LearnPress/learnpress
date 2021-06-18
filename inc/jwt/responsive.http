@@ -7,9 +7,18 @@ Content-Type: application/json
 }
 
 ###
+POST http://learnpress4.local/wp-json/learnpress/v1/token
+Content-Type: application/json
+
+{
+	"username": "student",
+	"password": "student"
+}
+
+###
 POST http://learnpress4.local/wp-json/learnpress/v1/token/validate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/test
@@ -22,22 +31,27 @@ Content-Type: application/json
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/courses
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
 
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses/10
+GET http://learnpress4.local/wp-json/learnpress/v1/courses/529?course_data=true
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/quiz?per_page=2
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+
+###
+GET http://learnpress4.local/wp-json/learnpress/v1/questions
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
 
 
 ###
@@ -45,16 +59,41 @@ GET http://learnpress4.local/wp-json/wp/v2/users
 Content-Type: application/json
 
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/users/
+GET http://learnpress4.local/wp-json/learnpress/v1/users/?per_page=2
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/users/1
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
 
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/users/1/courses
+POST http://learnpress4.local/wp-json/learnpress/v1/users/1/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzA1NDczMSwibmJmIjoxNjIzMDU0NzMxLCJleHAiOjE2MjM2NTk1MzEsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.FBXUkp3XXXdpW-aXdVhM2sbK5iYMfHXS8XqJFRUK-40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+
+{
+	"first_name": "dao",
+	"last_name": "nham",
+	"email": "daonham95@gmail.com",
+	"password": "admin"
+}
+
+###
+GET http://learnpress4.local/wp-json/learnpress/v1/users/2
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzI5MTgzNiwibmJmIjoxNjIzMjkxODM2LCJleHAiOjE2MjM4OTY2MzYsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.Ls7Q3EiFE5ZHn78Exe6CdnfZJ2JZaPcuJBI0wQHdvzk
+
+###
+POST http://learnpress4.local/wp-json/learnpress/v1/users/2
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzI5MTgzNiwibmJmIjoxNjIzMjkxODM2LCJleHAiOjE2MjM4OTY2MzYsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.Ls7Q3EiFE5ZHn78Exe6CdnfZJ2JZaPcuJBI0wQHdvzk
+
+{
+	"first_name": "dao",
+	"last_name": "nham",
+	"email": "studentsss@gmail.com",
+	"password": "student"
+}
+

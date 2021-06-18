@@ -244,12 +244,15 @@ class Buttons extends Component {
 		} else {
 			styles = null;
 		}
-
+		let navPositionClass = ' fixed';
+		if ( lpQuizSettings.navigationPosition == 'no' ) {
+			navPositionClass = ' nav-center';
+		}
 		return (
 			<>
 				<div className={ classNames.join( ' ' ) }>
 					<div
-						className={ `button-left` + ( ( status === 'started' || isReviewing ) ? ' fixed' : '' ) }
+						className={ `button-left` + ( ( status === 'started' || isReviewing ) ? navPositionClass : '' ) }
 						style={ styles }
 					>
 
