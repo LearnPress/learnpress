@@ -31,6 +31,10 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	public function check_admin_permission( $request ) {
 		$user_id = $request->get_param( 'userID' );
 
+		if ( empty( $user_id ) ) {
+			return false;
+		}
+
 		$profile = learn_press_get_profile( $user_id );
 
 		if ( ! $profile->current_user_can( 'view-tab-courses' ) ) {
@@ -90,6 +94,10 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		try {
 			if ( empty( $user_id ) ) {
 				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
+			}
+
+			if ( empty( $status ) ) {
+				throw new Exception( esc_html__( 'No Status found!', 'learnpress' ) );
 			}
 
 			$profile = learn_press_get_profile( $user_id );
