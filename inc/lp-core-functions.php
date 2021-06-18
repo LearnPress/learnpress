@@ -1962,7 +1962,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 	$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 
-	@setcookie( $name, $value, $expire, SITECOOKIEPATH !== COOKIEPATH ? SITECOOKIEPATH : COOKIEPATH, COOKIE_DOMAIN, $secure );
+	@setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
 }
 
 /**
