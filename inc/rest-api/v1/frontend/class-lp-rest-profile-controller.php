@@ -134,6 +134,10 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			$user = learn_press_get_user( $user_id );
 
+			if ( empty( $user ) ) {
+				throw new Exception( esc_html__( 'No User avaliable!', 'learnpress' ) );
+			}
+
 			do_action( 'learnpress/rest/frontend/profile/course_tab', $request );
 
 			$num_pages    = $query->get_pages();
