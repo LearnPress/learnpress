@@ -84,7 +84,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	public function course_tab( $request ) {
 		$request        = $request->get_params();
 		$user_id        = $request['userID'];
-		$status         = $request['status'];
+		$status         = $request['status'] ?? '';
 		$paged          = $request['paged'] ?? 1;
 		$query_type     = $request['query'] ?? 'purchased';
 		$layout         = $request['layout'] ?? 'grid';
@@ -94,10 +94,6 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		try {
 			if ( empty( $user_id ) ) {
 				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
-			}
-
-			if ( empty( $status ) ) {
-				throw new Exception( esc_html__( 'No Status found!', 'learnpress' ) );
 			}
 
 			$profile = learn_press_get_profile( $user_id );
