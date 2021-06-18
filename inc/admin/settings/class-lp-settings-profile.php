@@ -147,14 +147,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'    => 'lp_profile_permalinks',
 						),
 						array(
-							'title'       => esc_html__( 'Overview', 'learnpress' ),
-							'id'          => 'profile_endpoints[overview]',
-							'type'        => 'text',
-							'default'     => 'overview',
-							'placeholder' => 'overview',
-							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.dashboard', 'overview' ) . '</code>' ),
-						),
-						array(
 							'title'       => esc_html__( 'Courses', 'learnpress' ),
 							'id'          => 'profile_endpoints[courses]',
 							'type'        => 'text',

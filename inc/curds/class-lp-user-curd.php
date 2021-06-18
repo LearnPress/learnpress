@@ -1638,6 +1638,17 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 							}
 
 							break;
+						case 'in-progress':
+							$where .= $wpdb->prepare(
+								' AND ui.status IN( %s )',
+								array(
+									'enrolled',
+								)
+							);
+
+							$having .= $wpdb->prepare( ' AND ui.graduation = %s', 'in-progress' );
+
+							break;
 						case 'not-enrolled':
 							$where .= $wpdb->prepare(
 								' AND ui.status NOT IN( %s, %s, %s )',
