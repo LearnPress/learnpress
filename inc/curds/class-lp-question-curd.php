@@ -210,7 +210,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 							'is_true'     => ! empty( $option->is_true ) ? $option->is_true : '',
 							'order'       => $option->order,
 						),
-						array( '%d', '%s', '%s' )
+						array( '%d', '%s', '%s', '%s', '%s' )
 					);
 				}
 			}
