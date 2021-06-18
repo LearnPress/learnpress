@@ -241,36 +241,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$settings        = LP()->settings();
 				$course_sections = array();
 
-				$course_sections['enrolled'] = array(
-					'title'    => esc_html__( 'Enrolled', 'learnpress' ),
-					'slug'     => 'enrolled',
-					'callback' => array( $this, 'tab_order_details' ),
-					'priority' => 10,
-				);
-
-				if ( learn_press_user_maybe_is_a_teacher() ) {
-					$course_sections['created'] = array(
-						'title'    => esc_html__( 'Created', 'learnpress' ),
-						'slug'     => 'created',
-						'callback' => array( $this, 'tab_order_details' ),
-						'priority' => 20,
-					);
-				}
-
 				$this->_default_settings = array(
-					'overview'      => array(
-						'title'    => esc_html__( 'Overview', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.overview', 'overview' ),
-						'callback' => array( $this, 'tab_dashboard' ),
-						'priority' => 10,
-						'icon'     => '<i class="fas fa-chalkboard-teacher"></i>',
-					),
 					'courses'       => array(
 						'title'    => esc_html__( 'Courses', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.courses', 'courses' ),
 						'callback' => array( $this, 'tab_courses' ),
-						'priority' => 15,
-						'sections' => $course_sections,
+						'priority' => 1,
 						'icon'     => '<i class="fas fa-book-open"></i>',
 					),
 					'quizzes'       => array(

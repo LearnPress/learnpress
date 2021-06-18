@@ -1801,11 +1801,11 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 	return $content;
 }
 
-function lp_skeleton_animation_html( $count_li = 3 ) {
+function lp_skeleton_animation_html( $count_li = 3, $width = 'random', $styleli = '', $styleul = '' ) {
 	?>
-	<ul class="lp-skeleton-animation">
+	<ul class="lp-skeleton-animation" style="<?php echo ! empty( $styleul ) ? $styleul : ''; ?>">
 		<?php for ( $i = 0; $i < absint( $count_li ); $i ++ ) : ?>
-			<li style="width: <?php echo wp_rand( 60, 100 ); ?>%"></li>
+			<li style="width: <?php echo $width === 'random' ? wp_rand( 60, 100 ) . '%' : $width; ?>; <?php echo ! empty( $styleli ) ? $styleli : ''; ?>"></li>
 		<?php endfor; ?>
 	</ul>
 

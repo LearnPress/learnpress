@@ -461,10 +461,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		$profile          = learn_press_get_profile( $request['id'] );
 		$user             = learn_press_get_user( $request['id'] );
 		$filters_enrolled = array(
-			'all'      => 'all',
-			'finished' => 'finished',
-			'passed'   => 'passed',
-			'failed'   => 'failed',
+			'all'         => 'all',
+			'finished'    => 'finished',
+			'passed'      => 'passed',
+			'failed'      => 'failed',
+			'in-progress' => 'in-progress',
 		);
 
 		if ( method_exists( $profile, 'query_courses' ) ) {

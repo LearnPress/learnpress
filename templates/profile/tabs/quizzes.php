@@ -9,6 +9,10 @@
 
 defined( 'ABSPATH' ) || exit();
 
+if ( ! LP_Profile::instance()->current_user_can( 'view-tab-quizzes' ) ) {
+	return;
+}
+
 $profile       = learn_press_get_profile();
 $filter_status = LP_Request::get_string( 'filter-status' );
 $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );

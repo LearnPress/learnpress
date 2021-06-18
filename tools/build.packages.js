@@ -34,6 +34,7 @@ const buildPackages = [
 	'frontend/lp-configs',
 	//'frontend/data-controls',
 	'frontend/custom',
+	'frontend/profile',
 ];
 
 const {
