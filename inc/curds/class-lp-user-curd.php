@@ -1466,6 +1466,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					SELECT SQL_CALC_FOUND_ROWS ID
 					FROM {$wpdb->posts} c
 					{$where}
+					ORDER BY ID DESC
 					LIMIT {$offset}, {$limit}
 				";
 

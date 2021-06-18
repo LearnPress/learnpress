@@ -113,6 +113,15 @@ const courseTab = () => {
 
 				if ( viewMoreEle ) {
 					viewMoreEle.classList.remove( 'loading' );
+
+					const paged = viewMoreEle.dataset.paged;
+					const numberPage = viewMoreEle.dataset.number;
+
+					if ( numberPage <= paged ) {
+						viewMoreEle.remove();
+					}
+
+					viewMoreEle.dataset.paged = parseInt( paged ) + 1;
 				}
 
 				viewMore( ele, dataset );
@@ -126,6 +135,15 @@ const courseTab = () => {
 
 			if ( viewMoreEle ) {
 				viewMoreEle.classList.remove( 'loading' );
+
+				const paged = viewMoreEle.dataset.paged;
+				const numberPage = viewMoreEle.dataset.number;
+
+				if ( numberPage <= paged ) {
+					viewMoreEle.remove();
+				}
+
+				viewMoreEle.dataset.paged = parseInt( paged ) + 1;
 			}
 		}
 	};
@@ -137,16 +155,9 @@ const courseTab = () => {
 			viewMoreEle.addEventListener( 'click', ( e ) => {
 				e.preventDefault();
 
-				viewMoreEle.classList.add( 'loading' );
-
 				const paged = viewMoreEle && viewMoreEle.dataset.paged;
-				const numberPage = viewMoreEle && viewMoreEle.dataset.number;
 
-				if ( numberPage <= paged ) {
-					viewMoreEle.remove();
-				}
-
-				viewMoreEle.dataset.paged = parseInt( paged ) + 1;
+				viewMoreEle.classList.add( 'loading' );
 
 				const element = dataset.layout === 'list' ? '.lp_profile_course_progress' : '.learn-press-courses';
 
