@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 5.7
 Requires PHP: 7.0
-Stable tag: 4.0.6
+Stable tag: 4.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,24 +13,24 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 == Description ==
 
-**<a href="https://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
+**<a href="https://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
 
-<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/product-category/themes/education-themes/" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a> | <a href="https://docspress.thimpress.com/learnpress-4-0/" target="_blank">Documentation</a>
+<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://themeforest.net/item/education-wordpress-theme-education-wp/14058034" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a> | <a href="https://docspress.thimpress.com/learnpress-4-0/" target="_blank">Documentation</a>
 
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
 > Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have LearnPress Theme Bundle included already.
-> [Eduma – Education WordPress Theme](https://themeforest.net/item/education-wordpress-theme-education-wp/14058034) (Bestseller).
-> [Colead - Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658) (Rising Star).
-> [CBKit - Course Builder WordPress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918) (Potential).
+> [Eduma – Education WordPress Theme](https://themeforest.net/item/education-wordpress-theme-education-wp/14058034) (#1 Selling Education WordPress Theme).
+> [Coaching | Life & Fitness Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658) (Rising Star).
+> [CorpTrain | Corporate Training WordPress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918) (Potential).
 
 ###LMS & Education WordPress Themes###
 
-Take a look at Premium **[Eduma - Education WordPress Theme](https://themeforest.net/item/education-wordpress-theme-education-wp/14058034)**, **[Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658)** & **[Epsilon – eLearning LMS WordPress Theme](https://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847)** & **[IvyPrep - Education & School WordPress Theme](https://themeforest.net/item/ivy-school-education-university-wordpress-theme/22773871)** & **[StarKid - Kindergarten WordPress Theme](https://themeforest.net/item/starkid-kindergarten-wordpress-theme/23451388)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
+Take a look at **[Premium Theme](https://themeforest.net/category/wordpress/education?sort=sales&term=thimpress#content)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
 
 ###LearnPress Tutorials###
 
-- **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**
+- **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress)**
 
 - Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=0mJBC9IpiS0&t=1891s)**
 [youtube https://www.youtube.com/watch?v=0mJBC9IpiS0&t=1891s]
@@ -201,6 +201,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: option enable sticky navigation pagination when user answer question on quiz.
 ~ Fixed: set again current item when manager remove item current when edit course.
 ~ Modified: page profile - load ajax call API, show more info.
+~ Fixed: can't upgrade DB from 3 to 4 because user translate menu "LearnPress".
 
 = 4.0.8 =
 ~ Added: feature "Allow Repurchase course"
@@ -239,7 +240,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: error table "learnpress_user_itemmeta" doesn’t exist when install new.
 ~ Fixed: style comment function.
 ~ Added: form comment on course.
-~ Fixed: js itemProgress undefined in Eduma
+~ Fixed: js itemProgress undefined in Eduma theme
 
 = 4.0.3 =
 ~ Fixed: tool "Reset course progress"
