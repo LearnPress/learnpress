@@ -167,31 +167,17 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function price( $thepostid ) {
-		$post = get_post( $thepostid );
-
-		$thepostid = ! empty( $thepostid ) ? $thepostid : absint( $post->ID );
-		if ( current_user_can( LP_TEACHER_ROLE ) || current_user_can( 'administrator' ) ) {
-			$message    = '';
-			$price      = get_post_meta( $thepostid, '_lp_price', true );
-			$payment    = get_post_meta( $thepostid, '_lp_payment', true );
-			$sale_price = '';
-			$start_date = '';
-			$end_date   = '';
-
-			if ( $payment != 'free' ) {
-				$sale_price = get_post_meta( $thepostid, '_lp_sale_price', true );
-				$start_date = get_post_meta( $thepostid, '_lp_sale_start', true );
-				$end_date   = get_post_meta( $thepostid, '_lp_sale_end', true );
-			}
+	public function price( $post_id ) {
+		if ( current_user_can( LP_TEACHER_ROLE ) || current_user_can( ADMIN_ROLE ) ) {
+			//$price = get_post_meta( $thepostid, '_lp_price', true );
 
 			return apply_filters(
 				'lp/course/meta-box/fields/price',
 				array(
-					'_lp_price'      => new LP_Meta_Box_Text_Field(
+					'_lp_price'              => new LP_Meta_Box_Text_Field(
 						esc_html__( 'Regular price', 'learnpress' ),
 						sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() ),
-						$price,
+						'',
 						array(
 							'type_input'        => 'number',
 							'custom_attributes' => array(
@@ -202,10 +188,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'class'             => 'lp_meta_box_regular_price',
 						)
 					),
-					'_lp_sale_price' => new LP_Meta_Box_Text_Field(
+					'_lp_sale_price'         => new LP_Meta_Box_Text_Field(
 						esc_html__( 'Sale price', 'learnpress' ),
 						'<a href="#" class="lp_sale_price_schedule">' . esc_html__( 'Schedule', 'learnpress' ) . '</a>',
-						$sale_price,
+						'',
 						array(
 							'type_input'        => 'number',
 							'custom_attributes' => array(
@@ -216,7 +202,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'class'             => 'lp_meta_box_sale_price',
 						)
 					),
-					'_lp_sale_start' => new LP_Meta_Box_Date_Field(
+					'_lp_sale_start'         => new LP_Meta_Box_Date_Field(
 						esc_html__( 'Sale start dates', 'learnpress' ),
 						'',
 						'',
@@ -225,7 +211,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'placeholder'   => _x( 'From&hellip;', 'placeholder', 'learnpress' ),
 						)
 					),
-					'_lp_sale_end'   => new LP_Meta_Box_Date_Field(
+					'_lp_sale_end'           => new LP_Meta_Box_Date_Field(
 						esc_html__( 'Sale end dates', 'learnpress' ),
 						'',
 						'',
@@ -235,7 +221,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'cancel'        => true,
 						)
 					),
-					'_lp_no_required_enroll'    => new LP_Meta_Box_Checkbox_Field(
+					'_lp_no_required_enroll' => new LP_Meta_Box_Checkbox_Field(
 						esc_html__( 'No requirement enroll', 'learnpress' ),
 						esc_html__( 'Students can see the content of all course items and do the quiz without login.', 'learnpress' ),
 						'no'

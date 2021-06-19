@@ -1,9 +1,9 @@
 <?php
 
 /**
- * LP_Meta_Box_Attribute
+ * LP_Meta_Box_Field
  *
- * @author tungnx
+ * @author nhamdv
  * @version 1.0.0
  * @since 4.0.0
  */

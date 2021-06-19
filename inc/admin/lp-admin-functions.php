@@ -1165,7 +1165,7 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 		"
 			SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
 			FROM {$wpdb->posts} c
-			INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND cm.meta_value = %s
+			INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID
 			WHERE 1
 			{$query_where}
 			AND c.post_status = %s AND c.post_type = %s
@@ -1174,8 +1174,6 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 			ORDER BY d ASC
 			",
 		$_sql_format,
-		'_lp_payment',
-		'yes',
 		'publish',
 		'lp_course',
 		$_from,
@@ -2301,7 +2299,7 @@ function learn_press_get_chart_general( $from = null, $by = null, $time_ago = 0 
 		"
 				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
 				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND cm.meta_value = %s
+				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID
 				WHERE 1
 				{$query_where}
 				AND c.post_status = %s AND c.post_type = %s
@@ -2310,8 +2308,6 @@ function learn_press_get_chart_general( $from = null, $by = null, $time_ago = 0 
 				ORDER BY d ASC
 			",
 		$_sql_format,
-		'_lp_payment',
-		'yes',
 		'publish',
 		'lp_course',
 		$_from,
