@@ -65,10 +65,8 @@
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
+		</wp:postmeta>
+		<wp:postmeta>
 		<wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
 		<wp:meta_value><![CDATA[]]></wp:meta_value>
 		</wp:postmeta>		<wp:postmeta>
@@ -178,10 +176,8 @@ Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[no]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[no]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
+		</wp:postmeta>
+		<wp:postmeta>
 		<wp:meta_key>_lp_course_status</wp:meta_key>
 		<wp:meta_value><![CDATA[publish]]></wp:meta_value>
 		</wp:postmeta>		<wp:postmeta>
@@ -496,10 +492,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
+		</wp:postmeta>				<wp:postmeta>
 		<wp:meta_key>_lp_is_previewable</wp:meta_key>
 		<wp:meta_value><![CDATA[no]]></wp:meta_value>
 		</wp:postmeta>		<wp:postmeta>
@@ -549,10 +542,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
+		</wp:postmeta>				<wp:postmeta>
 		<wp:meta_key>_edit_lock</wp:meta_key>
 		<wp:meta_value><![CDATA[1452319835:1]]></wp:meta_value>
 		</wp:postmeta>		<wp:postmeta>
@@ -785,10 +775,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
+		</wp:postmeta>				<wp:postmeta>
 		<wp:meta_key>_lp_is_previewable</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
 		</wp:postmeta>
@@ -939,9 +926,6 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
 		</wp:postmeta>
 </item><item>
 	<title>asd asda sdasdas da</title>
@@ -1052,9 +1036,6 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
 		</wp:postmeta>
 </item><item>
 	<title>What is your name</title>
@@ -1171,9 +1152,6 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
 		</wp:postmeta>
 </item><item>
 	<title>sdf sdfsd fsdf sdfsd f</title>
@@ -1296,10 +1274,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
 		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
-		<wp:meta_key>_lp_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
-		</wp:postmeta>		<wp:postmeta>
+		</wp:postmeta>				<wp:postmeta>
 		<wp:meta_key>_lp_is_previewable</wp:meta_key>
 		<wp:meta_value><![CDATA[no]]></wp:meta_value>
 		</wp:postmeta>		<wp:postmeta>
