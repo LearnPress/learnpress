@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import Sortable from 'sortablejs';
 import QuestionBase from '../../question-base';
 
 class QuestionSortingChoice extends QuestionBase {
@@ -8,14 +7,16 @@ class QuestionSortingChoice extends QuestionBase {
 
 		const ele = document.querySelector( `#answer-options-${ question.id }` );
 
-		return Sortable.create( ele, {
-			sort: true,
-			swap: true, // Enable swap plugin
-			swapClass: 'highlight',
-			animation: 200,
-			ghostClass: 'lp-sort-bg',
-			easing: 'cubic-bezier(1, 0, 0, 1)',
-			onUpdate( evt ) {
+		return jQuery( ele ).sortable( {
+			items: '.answer-option',
+			cursor: 'move',
+			axis: 'y',
+			handle: '.option-drag',
+			scrollSensitivity: 40,
+			forcePlaceholderSize: true,
+			helper: 'clone',
+			opacity: 0.65,
+			update( event, ui ) {
 				const options = ele.querySelectorAll( '.answer-option' );
 				const answers = [];
 
@@ -104,14 +105,7 @@ class QuestionSortingChoice extends QuestionBase {
 							return (
 								<>
 									<li className={ this.getOptionClass( option ).join( ' ' ) } key={ `answer-option-${ option.value }` } data-value={ option.value }>
-										<span className="option-drag"
-											style={ {
-												display: 'flex',
-												alignItems: 'center',
-												position: 'absolute',
-												height: '100%',
-												left: 14,
-											} }>
+										<span className="option-drag" style={ { display: 'flex', alignItems: 'center', position: 'absolute', height: '100%', left: 14 } }>
 											<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none" /><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" /></svg>
 										</span>
 
