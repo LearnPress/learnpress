@@ -12,6 +12,9 @@
 defined( 'ABSPATH' ) || exit();
 
 $course     = LP_Global::course();
+/**
+ * @var LP_User
+ */
 $instructor = $course->get_instructor();
 ?>
 
@@ -23,7 +26,7 @@ $instructor = $course->get_instructor();
 		<div class="course-author__pull-left">
 			<?php echo $instructor->get_profile_picture(); ?>
 
-			<?php $socials = $instructor->get_profile_socials(); ?>
+			<?php $socials = $instructor->get_profile_socials( $instructor->get_id() ); ?>
 			<?php if ( $socials ) : ?>
 				<div class="author-socials">
 					<?php echo implode( '', $socials ); ?>

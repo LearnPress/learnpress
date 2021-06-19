@@ -2594,9 +2594,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
 		}
 
-		public function get_profile_socials() {
+		public function get_profile_socials( $user_id ) {
 			$socials    = array();
-			$extra_info = learn_press_get_user_extra_profile_info();
+			$extra_info = learn_press_get_user_extra_profile_info( $user_id );
 
 			if ( $extra_info ) {
 				foreach ( $extra_info as $k => $v ) {

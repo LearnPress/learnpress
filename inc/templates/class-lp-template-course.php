@@ -189,10 +189,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		// Course is not require enrolling.
-		if ( $course->is_no_required_enroll()) {
+		if ( $course->is_no_required_enroll() ) {
 			return;
 		}
-		
+
 		$args_load_tmpl = array(
 			'template_name' => 'single-course/buttons/purchase.php',
 			'template_path' => '',
@@ -241,7 +241,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		// Course is not require enrolling.
-		if ( $course->is_no_required_enroll()) {
+		if ( $course->is_no_required_enroll() ) {
 			return;
 		}
 
@@ -843,7 +843,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function instructor_socials() {
 		$instructor = $this->course->get_instructor();
-		$socials    = $instructor->get_profile_socials();
+		$socials    = $instructor->get_profile_socials( $instructor->get_id() );
 
 		foreach ( $socials as $social ) {
 			echo $social;
