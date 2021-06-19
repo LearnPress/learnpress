@@ -202,6 +202,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: set again current item when manager remove item current when edit course.
 ~ Modified: page profile - load ajax call API, show more info.
 ~ Fixed: can't upgrade DB from 3 to 4 because user translate menu "LearnPress".
+~ Modified: Navigation on page quiz - change icon next, previous to text.
 
 = 4.0.8 =
 ~ Added: feature "Allow Repurchase course"
