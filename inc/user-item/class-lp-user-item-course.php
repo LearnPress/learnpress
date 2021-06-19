@@ -246,8 +246,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			return false;
 		}
 
-		$results = LP_Object_Cache::get( 'course-' . $this->get_item_id() . '-' . $this->get_user_id(),
-			'course-results' );
+		$results = LP_Object_Cache::get(
+			'course-' . $this->get_item_id() . '-' . $this->get_user_id(),
+			'course-results'
+		);
 
 		if ( $results === false ) {
 			$course_result = $course->get_evaluation_results_method();
@@ -258,8 +260,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$results = $this->calculate_course_results();
 			}
 
-			LP_Object_Cache::set( 'course-' . $this->get_item_id() . '-' . $this->get_user_id(), $results,
-				'course-results' );
+			LP_Object_Cache::set(
+				'course-' . $this->get_item_id() . '-' . $this->get_user_id(),
+				$results,
+				'course-results'
+			);
 		}
 
 		return $prop && $results && array_key_exists( $prop, $results ) ? $results[ $prop ] : $results;
@@ -336,13 +341,20 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$graduation = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
 		}
 
-		$results = apply_filters( 'learn-press/update-course-results', $results, $this->get_item_id(),
-			$this->get_user_id(), $this );
+		$results = apply_filters(
+			'learn-press/update-course-results',
+			$results,
+			$this->get_item_id(),
+			$this->get_user_id(),
+			$this
+		);
 
 		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results ) );
 
-		learn_press_update_user_item_field( array( 'graduation' => $graduation ),
-			array( 'user_item_id' => $this->get_user_item_id() ) );
+		learn_press_update_user_item_field(
+			array( 'graduation' => $graduation ),
+			array( 'user_item_id' => $this->get_user_item_id() )
+		);
 
 		return $results;
 	}
@@ -615,7 +627,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			}
 
 			$result *= 100;
-			$data   = array(
+			$data    = array(
 				'result' => $result,
 				'status' => $this->get_status(),
 			);
@@ -658,8 +670,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	public function is_enrolled() {
-		return in_array( $this->get_status(),
-			learn_press_course_enrolled_slugs() /* array( 'enrolled', 'finished' )*/ );
+		return in_array(
+			$this->get_status(),
+			learn_press_course_enrolled_slugs() /* array( 'enrolled', 'finished' )*/
+		);
 	}
 
 	public function get_level() {
@@ -775,6 +789,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
+	 * @editor tungnx
 	 */
 	public function get_completed_items( $type = '', $with_total = false, $section_id = 0 ) {
 
@@ -783,6 +798,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		// $completed_items = array(0,100);
 		// return $with_total ? $completed_items : $completed_items[0];
 
+		if ( ! $this->_course ) {
+			return;
+		}
+
 		$key = sprintf(
 			'%d-%d-%s',
 			$this->get_user_id(),
@@ -790,20 +809,27 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			md5( build_query( func_get_args() ) )
 		);
 
-		if ( false === ( $completed_items = LP_Object_Cache::get( $key, 'learn-press/user-completed-items' ) ) ) {
+		$completed_items = LP_Object_Cache::get( $key, 'learn-press/user-completed-items' );
+
+		if ( false === $completed_items ) {
 			$completed     = 0;
 			$total         = 0;
 			$section_items = array();
 
-			if ( $section_id && $section = $this->_course->get_sections( 'object', $section_id ) ) {
-				$section_items = $section->get_items();
+			if ( $section_id ) {
+				$section = $this->_course->get_sections( 'object', $section_id );
 
-				if ( $section_items ) {
-					$section_items = array_keys( $section_items );
+				if ( $section ) {
+					$section_items = $section->get_items();
+
+					if ( $section_items ) {
+						$section_items = array_keys( $section_items );
+					}
 				}
 			}
 
-			if ( $items = $this->get_items() ) {
+			$items = $this->get_items();
+			if ( $items ) {
 				foreach ( $items as $item ) {
 
 					if ( $section_id && ! in_array( $item->get_id(), $section_items ) ) {
