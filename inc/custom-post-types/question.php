@@ -39,7 +39,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 11 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
-			$this->add_map_method( 'before_delete', 'before_delete_question' );
+			//$this->add_map_method( 'before_delete', 'before_delete_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -179,7 +179,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Register question post type.
 		 */
-		public function register() {
+		public function args_register_post_type(): array {
 			register_taxonomy(
 				'question_tag',
 				array( LP_QUESTION_CPT ),

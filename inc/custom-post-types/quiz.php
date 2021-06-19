@@ -39,7 +39,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type, $args = '' ) {
 
-			$this->add_map_method( 'before_delete', 'before_delete_quiz' );
+			//$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 
@@ -82,50 +82,49 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		/**
 		 * Register quiz post type.
 		 */
-		public function register() {
-			register_post_type(
-				LP_QUIZ_CPT,
-				apply_filters(
-					'lp_quiz_post_type_args',
-					array(
-						'labels'             => array(
-							'name'               => esc_html__( 'Quizzes', 'learnpress' ),
-							'menu_name'          => esc_html__( 'Quizzes', 'learnpress' ),
-							'singular_name'      => esc_html__( 'Quiz', 'learnpress' ),
-							'add_new_item'       => esc_html__( 'Add New Quiz', 'learnpress' ),
-							'edit_item'          => esc_html__( 'Edit Quiz', 'learnpress' ),
-							'all_items'          => esc_html__( 'Quizzes', 'learnpress' ),
-							'view_item'          => esc_html__( 'View Quiz', 'learnpress' ),
-							'add_new'            => esc_html__( 'New Quiz', 'learnpress' ),
-							'update_item'        => esc_html__( 'Update Quiz', 'learnpress' ),
-							'search_items'       => esc_html__( 'Search Quizzes', 'learnpress' ),
-							'not_found'          => sprintf( __( 'You haven\'t had any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
-							'not_found_in_trash' => esc_html__( 'No quiz found in Trash', 'learnpress' ),
-						),
-						'public'             => true,
-						'publicly_queryable' => true,
-						'show_ui'            => true,
-						'has_archive'        => false,
-						'capability_type'    => LP_LESSON_CPT,
-						'map_meta_cap'       => true,
-						'show_in_menu'       => 'learn_press',
-						'show_in_rest'       => $this->is_support_gutenberg(),
-						'show_in_admin_bar'  => true,
-						'show_in_nav_menus'  => true,
-						'supports'           => array(
-							'title',
-							'editor',
-							'revisions',
-						),
-						'hierarchical'       => true,
-						'rewrite'            => array(
-							'slug'         => 'quizzes',
-							'hierarchical' => true,
-							'with_front'   => false,
-						),
-					)
+		public function args_register_post_type(): array {
+			$args = apply_filters(
+				'lp_quiz_post_type_args',
+				array(
+					'labels'             => array(
+						'name'               => esc_html__( 'Quizzes', 'learnpress' ),
+						'menu_name'          => esc_html__( 'Quizzes', 'learnpress' ),
+						'singular_name'      => esc_html__( 'Quiz', 'learnpress' ),
+						'add_new_item'       => esc_html__( 'Add New Quiz', 'learnpress' ),
+						'edit_item'          => esc_html__( 'Edit Quiz', 'learnpress' ),
+						'all_items'          => esc_html__( 'Quizzes', 'learnpress' ),
+						'view_item'          => esc_html__( 'View Quiz', 'learnpress' ),
+						'add_new'            => esc_html__( 'New Quiz', 'learnpress' ),
+						'update_item'        => esc_html__( 'Update Quiz', 'learnpress' ),
+						'search_items'       => esc_html__( 'Search Quizzes', 'learnpress' ),
+						'not_found'          => sprintf( __( 'You haven\'t had any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
+						'not_found_in_trash' => esc_html__( 'No quiz found in Trash', 'learnpress' ),
+					),
+					'public'             => true,
+					'publicly_queryable' => true,
+					'show_ui'            => true,
+					'has_archive'        => false,
+					'capability_type'    => LP_LESSON_CPT,
+					'map_meta_cap'       => true,
+					'show_in_menu'       => 'learn_press',
+					'show_in_rest'       => $this->is_support_gutenberg(),
+					'show_in_admin_bar'  => true,
+					'show_in_nav_menus'  => true,
+					'supports'           => array(
+						'title',
+						'editor',
+						'revisions',
+					),
+					'hierarchical'       => true,
+					'rewrite'            => array(
+						'slug'         => 'quizzes',
+						'hierarchical' => true,
+						'with_front'   => false,
+					),
 				)
 			);
+
+			return $args;
 		}
 
 		/**

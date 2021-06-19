@@ -817,9 +817,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
-		 * Register post type
+		 * Register order post type
 		 */
-		public function register() {
+		public function args_register_post_type(): array {
 			return array(
 				'labels'             => array(
 					'name'               => __( 'Orders', 'learnpress' ),

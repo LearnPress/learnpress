@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type ) {
 
-			$this->add_map_method( 'before_delete', 'before_delete_lesson' );
+			//$this->add_map_method( 'before_delete', 'before_delete_lesson' );
 			// hide View Lesson link if not assigned to course
 
 			add_filter( 'views_edit-' . LP_LESSON_CPT, array( $this, 'views_pages' ), 10 );
@@ -157,7 +157,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		/**
 		 * Register lesson post type.
 		 */
-		public function register() {
+		public function args_register_post_type(): array {
 
 			return array(
 				'labels'             => array(

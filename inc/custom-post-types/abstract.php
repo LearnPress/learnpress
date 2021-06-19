@@ -71,7 +71,7 @@ abstract class LP_Abstract_Post_Type {
 
 		$this->_post_type = $post_type;
 		add_action( 'init', array( $this, '_do_register' ) );
-		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		add_action( 'save_post', array( $this, '_do_save_post' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
 		add_action( 'deleted_post', array( $this, '_deleted_post' ) );
 
@@ -84,7 +84,7 @@ abstract class LP_Abstract_Post_Type {
 		add_filter( 'posts_where_paged', array( $this, '_posts_where_paged' ) );
 		add_filter( 'posts_orderby', array( $this, '_posts_orderby' ) );
 
-		add_filter( 'page_row_actions', array( $this, '_post_row_actions' ), 10, 2 );
+		// Show actions link on list post admin.
 		add_filter( 'post_row_actions', array( $this, '_post_row_actions' ), 10, 2 );
 
 		add_action( 'load-post.php', array( $this, 'add_meta_boxes' ), 0 );
@@ -282,7 +282,7 @@ abstract class LP_Abstract_Post_Type {
 	 * new post type with WP.
 	 */
 	public function _do_register() {
-		$args = $this->register();
+		$args = $this->args_register_post_type();
 
 		if ( $args ) {
 			register_post_type( $this->_post_type, $args );
@@ -290,25 +290,21 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
-	 * This function is invoked along with 'save_post' action to save
-	 * post data if needed.
+	 * Hook save post of WP
 	 *
-	 * In child-class should use function save() to update data instead
-	 * of _do_save() directly. This helper function is a pre-process to
-	 * checks some security in basic level or prevent loop 'save_post'
-	 * action in our application.
+	 * In child-class use function save()
 	 *
 	 * @param int $post_id
 	 * @param WP_Post $post
-	 *
-	 * @return int
+	 * @editor tungnx
+	 * @since modify 4.0.9
 	 */
-	public function _do_save( int $post_id = 0, WP_Post $post = null ) : int {
+	final function _do_save_post( int $post_id = 0, WP_Post $post = null ) {
 		// Maybe remove
 		$this->maybe_remove_assigned( $post );
 
-		if ( get_post_type( $post_id ) != $this->_post_type ) {
-			return 0;
+		if ( ! $this->_check_post() ) {
+			return;
 		}
 
 		// prevent loop action
@@ -319,10 +315,8 @@ abstract class LP_Abstract_Post_Type {
 
 		//$this->_call_method( 'save', $func_args );
 		$this->save( $post_id, $post );
-		$this->_flush_cache();
+		//$this->_flush_cache();
 		//add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
-
-		return $post_id;
 	}
 
 	/**
@@ -436,21 +430,32 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
+	 * Before delete post
+	 * Only on receiver 1 param $post_id, can't get param $post - don't know why
+	 *
 	 * @param int $post_id
-	 * @param WP_Post $post
 	 *
 	 * @editor tungnx
 	 */
-	public function _before_delete_post( int $post_id, WP_Post $post ) {
+	public function _before_delete_post( int $post_id ) {
 		if ( ! $this->_check_post() ) {
 			return;
 		}
 
-		$this->before_delete( $post_id, $post );
+		$this->before_delete( $post_id );
 	}
 
-	public function _deleted_post( $post_id ) {
+	/**
+	 * Deleted post
+	 *
+	 * @param int $post_id
+	 */
+	public function _deleted_post( int $post_id ) {
+		if ( ! $this->_check_post() ) {
+			return;
+		}
 
+		$this->deleted_post( $post_id );
 	}
 
 	protected function _flush_cache() {
@@ -490,7 +495,12 @@ abstract class LP_Abstract_Post_Type {
 		return $this->posts_orderby( $orderby );
 	}
 
-	public function _check_post() {
+	/**
+	 * Check post valid
+	 *
+	 * @return bool
+	 */
+	public function _check_post():bool {
 		global $pagenow, $post_type;
 
 		if ( ! is_admin() || ( ! in_array( $pagenow, array( 'edit.php', 'post.php' ) ) ) || ( $this->_post_type != $post_type ) ) {
@@ -506,8 +516,13 @@ abstract class LP_Abstract_Post_Type {
 		return $this;
 	}
 
-	public function register() {
-		return false;
+	/**
+	 * Args to register custom post type.
+	 *
+	 * @return array
+	 */
+	public function args_register_post_type() : array {
+		return array();
 	}
 
 	public function add_meta_boxes() {
@@ -542,9 +557,10 @@ abstract class LP_Abstract_Post_Type {
 	 * Hook before delete post
 	 *
 	 * @param int $post_id
-	 * @param WP_Post $post
+	 * @editor tungnx
+	 * @since modify 4.0.9
 	 */
-	public function before_delete( int $post_id, WP_Post $post ) {
+	public function before_delete( int $post_id ) {
 		// Implement from child
 	}
 
@@ -554,6 +570,16 @@ abstract class LP_Abstract_Post_Type {
 	 * @docs Class post type extend need override this function if want to handle when save
 	 */
 	public function save( int $post_id, WP_Post $post ) {
+		// Implement from child
+	}
+
+	/**
+	 * Hook deleted post
+	 *
+	 * @editor tungnx
+	 * @docs Class post type extend need override this function if want to handle when save
+	 */
+	public function deleted_post( int $post_id, WP_Post $post ) {
 		// Implement from child
 	}
 
@@ -700,6 +726,8 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
+	 * Show actions on list post
+	 *
 	 * @param string[] $actions
 	 * @param WP_Post $post
 	 * @return array|false|mixed
@@ -709,11 +737,7 @@ abstract class LP_Abstract_Post_Type {
 			return $actions;
 		}
 
-		$this->row_actions( $actions, $post );
-
-		//$func_args = func_get_args();
-
-		//return $this->_call_method( 'row_actions', $func_args );
+		return $this->row_actions( $actions, $post );
 	}
 
 	public function row_actions( $actions, $post ) {

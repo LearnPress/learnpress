@@ -90,9 +90,11 @@ function learn_press_get_current_user_id() {
 function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
 	static $current_user = false;
 
-	if ( $id = get_current_user_id() ) {
+	$user_id = get_current_user_id();
+
+	if ( $user_id ) {
 		if ( ! $current_user || $force_new ) {
-			$current_user = learn_press_get_user( $id, $force_new );
+			$current_user = learn_press_get_user( $user_id, $force_new );
 		}
 
 		return $current_user;

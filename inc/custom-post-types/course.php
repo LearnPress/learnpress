@@ -16,13 +16,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 	 */
 	final class LP_Course_Post_Type extends LP_Abstract_Post_Type_Core {
 		/**
-		 * New version of course editor
-		 *
-		 * @var bool
-		 */
-		protected static $_VER2 = false;
-
-		/**
 		 * @var null
 		 */
 		protected static $_instance = null;
@@ -49,7 +42,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
 
-			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_course_editor' ) );
+			// Comment by tungnx
+			//add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_course_editor' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'add_script_data' ) );
 		}
 
@@ -110,7 +104,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Register course post type.
 		 */
-		public function register() {
+		public function args_register_post_type() : array {
 			$settings         = LP_Settings::instance();
 			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
@@ -239,25 +233,25 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Load data for course editor.
 		 *
 		 * @since 3.0.0
+		 * @editor tungnx
+		 * @reason not use
 		 */
-		public function data_course_editor() {
+		/*public function data_course_editor() {
 			if ( LP_COURSE_CPT !== get_post_type() ) {
 				return;
 			}
 
-		}
+		}*/
 
 		/**
 		 * Delete course sections before delete course.
 		 *
 		 * @param int $post_id
-		 * @param WP_Post $post
 		 * @since 3.0.0
 		 * @editor tungnx
+		 * @since modify 4.0.9
 		 */
-		public function before_delete( int $post_id, WP_Post $post ) {
-
-			//echo 555;die;
+		public function before_delete( int $post_id ) {
 			// course curd
 			$curd = new LP_Course_CURD();
 			// remove all items from each section and delete course's sections
@@ -463,10 +457,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Update course price and sale price
 		 *
-		 * @return mixed
+		 * @editor tungnx
+		 * @since modify 4.0.9
+		 * @reason this function of LP old, LP4 no need.
 		 */
-		private function _update_price() {
-			global $wpdb, $post;
+		/*private function _update_price( WP_Post $post ) {
+			global $wpdb;
 
 			$request          = $_POST;
 			$price            = floatval( LP_Request::get( '_lp_price' ) );
@@ -498,21 +494,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					unset( $_POST[ $key ] );
 				}
 			}
-
-			/*
-			if ( $price ) {
-				update_post_meta( $post->ID, '_lp_required_enroll', 'yes' );
-			}*/
-
-			return true;
-		}
+		}*/
 
 		/**
 		 * Check sale price dates are in range
 		 *
+		 * @editor tungnx
+		 * @reason not use
 		 * @return bool
 		 */
-		private function _validate_sale_price_date() {
+		/*private function _validate_sale_price_date() {
 			$now              = current_time( 'timestamp' );
 			$sale_price_start = learn_press_get_request( '_lp_sale_start' );
 			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
@@ -520,7 +511,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$start            = strtotime( $sale_price_start );
 
 			return ( ( $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
-		}
+		}*/
 
 		/**
 		 * Add columns to admin manage course page
@@ -675,14 +666,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @editor tungnx
 		 */
 		public function before_save_curriculum( WP_Post $post ) {
-			if ( ! $post || LP_COURSE_CPT != $post->post_type || 'trash' === $post->post_status ) {
+			if ( in_array( $post->post_status, array( 'trash', 'auto-draft' ) ) ) {
 				return;
 			}
 
-			//remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
-
 			$user            = learn_press_get_current_user();
-			$required_review = LP()->settings->get( 'required_review' ) == 'yes';
+			$required_review = LP_Settings::get_option( 'required_review' ) == 'yes';
 
 			if ( $user->is_instructor() && $required_review ) {
 				wp_update_post(
@@ -695,22 +684,23 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			}
 
-			$new_status = get_post_status( $post->ID );
+			$new_status = $post->post_status;
 			$old_status = get_post_meta( $post->ID, '_lp_course_status', true );
 
-			// Update price
-			$this->_update_price();
+			// Update price - comment by tungnx
+			// $this->_update_price( $post );
 
 			if ( $new_status != $old_status ) {
 				do_action( 'learn_press_transition_course_status', $new_status, $old_status, $post->ID );
 				update_post_meta( $post->ID, '_lp_course_status', $new_status );
 			}
 
-			delete_post_meta( $post->ID, '_lp_curriculum' );
+			//delete_post_meta( $post->ID, '_lp_curriculum' );
 		}
 
 		/**
 		 * Save course post
+		 * Should write run background if handle big and need more time
 		 *
 		 * @param int $post_id
 		 * @param WP_Post $post
