@@ -205,6 +205,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modified: Navigation on page quiz - change icon next, previous to text.
 ~ Fixed: function "duplicate question" not duplicate "answer option"
 ~ Fixed: Social icons on page profile when user view another user.
+~ Fixed: on multiple site enable option "Registration is disabled" will not show form register on page Profile.
 
 = 4.0.8 =
 ~ Added: feature "Allow Repurchase course"
