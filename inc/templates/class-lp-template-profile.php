@@ -192,7 +192,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) || ! get_option( 'users_can_register' ) ) {
 			return;
 		}
 
