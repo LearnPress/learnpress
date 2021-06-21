@@ -39,23 +39,38 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 		public function __construct( $the_question = null, $args = null ) {
 			parent::__construct( $the_question, $args );
 
-			add_filter( 'learn-press/question-editor/localize-script', array( $this, 'sanitize_question_answers' ),
-				1000 );
+			add_filter(
+				'learn-press/question-editor/localize-script',
+				array( $this, 'sanitize_question_answers' ),
+				1000
+			);
 
 			add_action( 'learn-press/before-clear-question', array( $this, 'clear_question_answer_meta' ) );
 
-			add_filter( 'learn-press/quiz-editor/question-answers-data',
-				array( $this, 'admin_editor_question_answers' ), 10, 3 );
-			add_filter( 'learn-press/question-editor/question-answers-data',
-				array( $this, 'admin_editor_question_answers' ), 10, 3 );
+			add_filter(
+				'learn-press/quiz-editor/question-answers-data',
+				array( $this, 'admin_editor_question_answers' ),
+				10,
+				3
+			);
+			add_filter(
+				'learn-press/question-editor/question-answers-data',
+				array( $this, 'admin_editor_question_answers' ),
+				10,
+				3
+			);
 
 			add_filter( 'learn-press/question/fib/regex-content', array( $this, 'match_shortcode' ), 10, 4 );
 		}
 
 		public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
 			if ( ! empty( $content ) ) {
-				preg_match_all( '/' . get_shortcode_regex( array( 'fib' ) ) . '/', $content, $all_shortcode,
-					PREG_SET_ORDER );
+				preg_match_all(
+					'/' . get_shortcode_regex( array( 'fib' ) ) . '/',
+					$content,
+					$all_shortcode,
+					PREG_SET_ORDER
+				);
 
 				if ( ! empty( $all_shortcode ) ) {
 					foreach ( $all_shortcode as $shortcode ) {
@@ -76,8 +91,11 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 							$is_correct = '';
 
 							if ( ! empty( $answer ) ) {
-								$blanks     = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
-								$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? 'correct' : 'fail';
+								$blanks = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
+
+								if ( ! empty( $blanks ) ) {
+									$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? 'correct' : 'fail';
+								}
 							}
 
 							$answer_html = ( ! empty( $answer ) && $is_correct === 'fail' ) ? '<span class="lp-fib-answered__answer">' . $answer . '</span> &rarr; ' : '';
@@ -129,8 +147,11 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 			if ( $answers ) {
 				foreach ( $answers as $k => $answer ) {
-					$blanks                  = learn_press_get_question_answer_meta( $answer['question_answer_id'],
-						'_blanks', true );
+					$blanks                  = learn_press_get_question_answer_meta(
+						$answer['question_answer_id'],
+						'_blanks',
+						true
+					);
 					$answers[ $k ]['blanks'] = $blanks ? array_values( $blanks ) : array();
 				}
 			}
