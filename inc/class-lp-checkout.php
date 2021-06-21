@@ -681,22 +681,7 @@ class LP_Checkout {
 			} else {
 				// maybe throw new exception
 				$this->validate_payment();
-
-				// Check user login and has enroll course ==> return course url
-				$user = learn_press_get_current_user();
-				if ( $user->has_enrolled_course( $course->get_id() ) ) {
-					$result = array(
-						'result'   => 'success',
-						'redirect' => esc_url( $user->get_current_item( $course->get_id(), true ) ),
-					);
-					if ( learn_press_is_ajax() ) {
-						learn_press_send_json( $result );
-					} else {
-						wp_redirect( $result['redirect'] );
-						exit;
-					}
-				}
-
+				
 				// Create order.
 				$order_id = $this->create_order();
 
