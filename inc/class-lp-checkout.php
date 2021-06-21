@@ -682,6 +682,21 @@ class LP_Checkout {
 				// maybe throw new exception
 				$this->validate_payment();
 
+				// Check user login and has enroll course ==> return course url
+				$user = learn_press_get_current_user();
+				if ( $user->has_enrolled_course( $course->get_id() ) ) {
+					$result = array(
+						'result'   => 'success',
+						'redirect' => esc_url( $user->get_current_item( $course->get_id(), true ) ),
+					);
+					if ( learn_press_is_ajax() ) {
+						learn_press_send_json( $result );
+					} else {
+						wp_redirect( $result['redirect'] );
+						exit;
+					}
+				}
+
 				// Create order.
 				$order_id = $this->create_order();
 
@@ -693,7 +708,7 @@ class LP_Checkout {
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
 				if ( $this->payment_method ) {
-					// Store the order is waiting for payment and each payment method should clear it
+					// Store the order is waiting f6or payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );
