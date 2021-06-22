@@ -319,10 +319,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_fields( $fields ) {
+		public function posts_fields( $fields ): string {
 			global $wpdb;
 
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $fields;
 			}
 
@@ -340,8 +340,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_join_paged( $join ) {
-			if ( ! $this->_is_archive() ) {
+		public function posts_join_paged( $join ): string {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
 			}
 
@@ -354,7 +354,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return mixed|string
 		 */
 		public function posts_where_paged( $where ) {
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $where;
 			}
 
@@ -385,11 +385,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public function posts_orderby( $order_by_statement ) {
 			global $wpdb;
 
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $order_by_statement;
 			}
 
-			if ( $orderby = $this->_get_orderby() && $order = $this->_get_order() ) {
+			$orderby = $this->_get_orderby();
+			$order   = $this->_get_order();
+
+			if ( $order && $orderby ) {
 				switch ( $orderby ) {
 					case 'course-name':
 						$order_by_statement = "post_title {$order}";
@@ -416,19 +419,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$columns['num_of_question'] = 'question-count';
 
 			return $columns;
-		}
-
-		/**
-		 * @return bool
-		 */
-		private function _is_archive() {
-			global $pagenow, $post_type;
-
-			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUIZ_CPT != $post_type ) ) {
-				return false;
-			}
-
-			return true;
 		}
 
 		/**
@@ -469,7 +459,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 	// LP_Quiz_Post_Type
 	$quiz_post_type = LP_Quiz_Post_Type::instance();
 
-	// add meta box
+	//Todo: Nhamdv see to rewrite
 	$quiz_post_type
 		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' )
 		->add_meta_box( 'quiz-editor', esc_html__( 'Questions', 'learnpress' ), 'admin_editor', 'normal', 'high' );

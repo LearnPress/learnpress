@@ -50,35 +50,42 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_where_paged( $where ) {
+		public function posts_where_paged( $where ): string {
 
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $where;
 			}
 
 			global $wpdb;
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
-				$where .= $wpdb->prepare( "
+				$where .= $wpdb->prepare(
+					"
                     AND {$wpdb->posts}.ID NOT IN(
                         SELECT si.item_id
                         FROM {$wpdb->learnpress_section_items} si
                         INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
                         WHERE p.post_type = %s
                     )
-                ", LP_LESSON_CPT );
+                	",
+					LP_LESSON_CPT
+				);
 			}
 
 			$preview = LP_Request::get( 'preview' );
 
 			if ( $preview ) {
-				$clause = $wpdb->prepare( "
+				$clause = $wpdb->prepare(
+					"
                     SELECT ID
                     FROM {$wpdb->posts} p
                     INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
                     WHERE pm.meta_value = %s
                     AND p.post_type = %s",
-					'_lp_preview', 'yes', LP_LESSON_CPT );
+					'_lp_preview',
+					'yes',
+					LP_LESSON_CPT
+				);
 
 				$in = '';
 				if ( 'no' === $preview ) {
@@ -301,16 +308,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			return $columns;
 		}
 
-		private function _is_archive() {
-			global $pagenow, $post_type;
-
-			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_LESSON_CPT != LP_Request::get_string( 'post_type' ) ) ) {
-				return false;
-			}
-
-			return true;
-		}
-
 		/**
 		 * Add admin params.
 		 *
@@ -343,7 +340,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 	$lesson_post_type = LP_Lesson_Post_Type::instance();
 
-	// add meta box
+	//Todo: Nhamdv see to rewrite
 	$lesson_post_type
 		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
 }

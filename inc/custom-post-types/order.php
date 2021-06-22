@@ -9,7 +9,12 @@
 
 if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {
-
+		/**
+		 * Type of post
+		 *
+		 * @var string
+		 */
+		protected $_post_type = LP_ORDER_CPT;
 		/**
 		 * @var null
 		 */
@@ -149,8 +154,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function filter_orders( $where ) {
-			if ( ! $this->_is_archive() ) {
+		public function filter_orders( string $where ): string {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $where;
 			}
 
@@ -167,7 +172,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function enqueue_scripts() {
-			if ( get_post_type() != 'lp_order' ) {
+			if ( get_post_type() != $this->_post_type ) {
 				return;
 			}
 			wp_enqueue_script( 'user-suggest' );
@@ -369,7 +374,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function admin_footer() {
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return;
 			}
 			?>
@@ -391,7 +396,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
-			if ( is_admin() && $this->_is_archive() &&
+			if ( is_admin() && $this->is_page_list_posts_on_backend() &&
 				 ( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
 				$statuses = array_keys( learn_press_get_register_order_statuses() );
 				$search   = "{$wpdb->posts}.post_status = 'publish' ";
@@ -404,7 +409,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$where   = str_replace( $search, $replace, $where );
 			}
 
-			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
+			if ( ! $this->is_page_list_posts_on_backend() || ! $this->_is_search() ) {
 				return $where;
 			}
 
@@ -477,7 +482,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public function posts_fields( $fields ) {
 			global $wp_query;
 
-			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
+			if ( ! $this->is_page_list_posts_on_backend() || ! $this->_is_search() ) {
 				return $fields;
 			}
 			$fields .= ', uu.ID as user_ID, uu.display_name as user_display_name';
@@ -488,7 +493,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public function posts_orderby( $orderby ) {
 			global $wpdb;
 
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $orderby;
 			}
 			global $wpdb;
@@ -515,7 +520,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		public function posts_join_paged( $join ) {
 			global $wpdb, $wp_query;
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
 			}
 			$s     = $wp_query->get( 's' );
@@ -803,15 +808,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 		}
 
-		private function _is_archive() {
-			global $pagenow, $post_type;
-			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( 'lp_order' != $post_type ) ) {
-				return false;
-			}
-
-			return true;
-		}
-
 		private function _is_search() {
 			return is_search();
 		}
@@ -925,6 +921,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 	// end LP_Order_Post_Type
 
 	$order_post_type = LP_Order_Post_Type::instance();
+
+	//Todo: Nhamdv see to rewrite
 	$order_post_type
 		->add_meta_box( 'order_details', esc_html__( 'Order Details', 'learnpress' ), 'order_details', 'normal', 'high' )
 		->add_meta_box( 'submitdiv', esc_html__( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' )

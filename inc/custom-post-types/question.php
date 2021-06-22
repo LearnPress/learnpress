@@ -391,14 +391,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_join_paged( $join ) {
-			if ( ! $this->_is_archive() ) {
+		public function posts_join_paged( $join ): string {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
 			}
 
 			global $wpdb;
 
-			if ( $quiz_id = $this->_filter_quiz() || ( $this->_get_orderby() == 'quiz-name' ) ) {
+			$quiz_id = $this->_filter_quiz();
+			if ( $quiz_id || $this->_get_orderby() == 'quiz-name' ) {
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON {$wpdb->posts}.ID = qq.question_id";
 				$join .= " LEFT JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id";
 			}
@@ -414,13 +415,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function posts_where_paged( $where ) {
 			static $posts_where_paged = false;
 
-			if ( $posts_where_paged || ! $this->_is_archive() ) {
+			if ( $posts_where_paged || ! $this->is_page_list_posts_on_backend() ) {
 				return $where;
 			}
 
 			global $wpdb;
+			$quiz_id = $this->_filter_quiz();
 
-			if ( $quiz_id = $this->_filter_quiz() ) {
+			if ( $quiz_id ) {
 				$where .= $wpdb->prepare( ' AND (q.ID = %d)', $quiz_id );
 			}
 
@@ -449,8 +451,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_orderby( $order_by_statement ) {
-			if ( ! $this->_is_archive() ) {
+		public function posts_orderby( $order_by_statement ): string {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $order_by_statement;
 			}
 
@@ -481,18 +483,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
 
 			return $columns;
-		}
-
-		/**
-		 * @return bool
-		 */
-		private function _is_archive() {
-			global $pagenow, $post_type;
-			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUESTION_CPT != $post_type ) ) {
-				return false;
-			}
-
-			return true;
 		}
 
 		/**
@@ -533,7 +523,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 	$question_post_type = LP_Question_Post_Type::instance();
 
-	// Add meta box.
+	//Todo: Nhamdv see to rewrite
 	$question_post_type
 		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'question_assigned', 'side', 'high' )
 		->add_meta_box( 'question-editor', esc_html__( 'Answer Options', 'learnpress' ), 'admin_editor', 'normal', 'high', 1 );
