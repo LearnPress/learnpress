@@ -14,7 +14,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 	/**
 	 * Class LP_Course_Post_Type
 	 */
-	final class LP_Course_Post_Type extends LP_Abstract_Post_Type_Core {
+	final class LP_Course_Post_Type extends LP_Abstract_Post_Type {
 		/**
 		 * @var null
 		 */
@@ -264,7 +264,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_fields( $fields ) {
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $fields;
 			}
 
@@ -309,7 +309,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function posts_join_paged( $join ) {
 			global $wpdb;
 
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
 			}
 
@@ -326,7 +326,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function posts_where_paged( $where ) {
 			global $wpdb;
 
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $where;
 			}
 
@@ -360,7 +360,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_orderby( $order_by_statement ) {
-			if ( ! $this->_is_archive() ) {
+			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $order_by_statement;
 			}
 
@@ -383,16 +383,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$columns['price']      = 'price';
 
 			return $columns;
-		}
-
-		private function _is_archive() {
-			global $pagenow, $post_type;
-
-			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_COURSE_CPT != $post_type ) ) {
-				return false;
-			}
-
-			return true;
 		}
 
 		/**

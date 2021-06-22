@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 	/**
 	 * Class LP_Lesson_Post_Type
 	 */
-	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type_Core {
+	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type {
 		/**
 		 * @var null
 		 */
@@ -326,7 +326,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function lesson_assigned() {
-			learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+			//learn_press_admin_view( 'meta-boxes/course/assigned.php' );
 		}
 
 		/**

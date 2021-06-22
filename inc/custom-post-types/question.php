@@ -14,7 +14,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 	/**
 	 * Class LP_Question_Post_Type
 	 */
-	class LP_Question_Post_Type extends LP_Abstract_Post_Type_Core {
+	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
 		/**
 		 * @var null
 		 */
@@ -513,16 +513,18 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 		/**
 		 * @return LP_Question_Post_Type|null
+		 *
+		 * @editor tungnx
 		 */
 		public static function instance() {
 			if ( ! self::$_instance ) {
-				$args            = array(
+				/*$args            = array(
 					'default_meta' => array(
 						'_lp_mark' => 1,
 						'_lp_type' => 'true_or_false',
 					),
-				);
-				self::$_instance = new self( LP_QUESTION_CPT, $args );
+				);*/
+				self::$_instance = new self( LP_QUESTION_CPT );
 			}
 
 			return self::$_instance;

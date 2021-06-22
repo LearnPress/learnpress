@@ -49,7 +49,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @var array
 	 */
-	protected $_map_methods = array();
+	//protected $_map_methods = array();
 
 	/**
 	 * @var array
@@ -87,13 +87,21 @@ abstract class LP_Abstract_Post_Type {
 		// Show actions link on list post admin.
 		add_filter( 'post_row_actions', array( $this, '_post_row_actions' ), 10, 2 );
 
+		//Todo: Nhamdv see to rewrite
 		add_action( 'load-post.php', array( $this, 'add_meta_boxes' ), 0 );
 		add_action( 'load-post-new.php', array( $this, 'add_meta_boxes' ), 0 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
-		add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
-		add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
-		add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
+		//End
+
+		// Comment by tungnx
+		//add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+		//add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
+
+		// Comment by tungnx
+		//add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
+		//add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
+
+		// Comment by tungnx - not use
+		//add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
 		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
@@ -110,11 +118,123 @@ abstract class LP_Abstract_Post_Type {
 			add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
 		}
 
-		if ( $args['default_meta'] ) {
+		/*if ( $args['default_meta'] ) {
 			$this->_default_metas = $args['default_meta'];
+		}*/
+
+		// Comment by tungnx
+		//add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
+	}
+
+	/**
+	 * This function is invoked along with 'init' action to register
+	 * new post type with WP.
+	 */
+	public function _do_register() {
+		$args = $this->args_register_post_type();
+
+		if ( $args ) {
+			register_post_type( $this->_post_type, $args );
+		}
+	}
+
+	/**
+	 * Args to register custom post type.
+	 *
+	 * @return array
+	 */
+	public function args_register_post_type() : array {
+		return array();
+	}
+
+	/**
+	 * Hook save post of WP
+	 *
+	 * In child-class use function save()
+	 *
+	 * @param int $post_id
+	 * @param WP_Post $post
+	 * @editor tungnx
+	 * @since modify 4.0.9
+	 */
+	final function _do_save_post( int $post_id = 0, WP_Post $post = null ) {
+		// Maybe remove
+		$this->maybe_remove_assigned( $post );
+
+		if ( ! $this->_check_post() ) {
+			return;
 		}
 
-		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
+		// prevent loop action
+		//remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		//$func_args = func_get_args();
+
+		//var_dump($post_id, $post, $func_args);die;
+
+		//$this->_call_method( 'save', $func_args );
+		$this->save( $post_id, $post );
+		//$this->_flush_cache();
+		//add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+	}
+
+	/**
+	 * Function for child class handle when post has just saved
+	 *
+	 * @editor tungnx
+	 * @docs Class post type extend need override this function if want to handle when save
+	 */
+	public function save( int $post_id, WP_Post $post ) {
+		// Implement from child
+	}
+
+	/**
+	 * Hook before delete post
+	 * Only on receiver 1 param $post_id, can't get param $post - don't know why
+	 *
+	 * @param int $post_id
+	 *
+	 * @editor tungnx
+	 */
+	public function _before_delete_post( int $post_id ) {
+		if ( ! $this->_check_post() ) {
+			return;
+		}
+
+		$this->before_delete( $post_id );
+	}
+
+	/**
+	 * Function for child class handle before post deleted
+	 *
+	 * @param int $post_id
+	 * @editor tungnx
+	 * @since modify 4.0.9
+	 */
+	public function before_delete( int $post_id ) {
+		// Implement from child
+	}
+
+	/**
+	 * Hook deleted post
+	 *
+	 * @param int $post_id
+	 */
+	public function _deleted_post( int $post_id ) {
+		if ( ! $this->_check_post() ) {
+			return;
+		}
+
+		$this->deleted_post( $post_id );
+	}
+
+	/**
+	 * Function for child class handle when post has just deleted
+	 *
+	 * @editor tungnx
+	 * @docs Class post type extend need override this function if want to handle when post deleted
+	 */
+	public function deleted_post( int $post_id, WP_Post $post ) {
+		// Implement from child
 	}
 
 	public function column_instructor( $post_id = 0 ) {
@@ -152,15 +272,17 @@ abstract class LP_Abstract_Post_Type {
 			return;
 		}
 
-		if ( $pagenow === 'edit.php' ) {
+		// Comment by tungnx - not use on here, wrote on js
+		/*if ( $pagenow === 'edit.php' ) {
 			$option = sprintf( '<option value="">%s</option>', __( 'Search by user', 'learnpress' ) );
 			$user   = get_user_by( 'id', LP_Request::get_int( 'author' ) );
 
 			if ( $user ) {
 				$option = sprintf( '<option value="%d" selected="selected">%s</option>', $user->ID, $user->user_login );
 			}
-		}
+		}*/
 
+		// Todo: write this code on file js
 		if ( $pagenow === 'post.php' ) {
 			?>
 			<script>
@@ -223,7 +345,8 @@ abstract class LP_Abstract_Post_Type {
 		return 0;
 	}
 
-	public function maybe_remove_features() {
+	// Comment by tungnx - no see use
+	/*public function maybe_remove_features() {
 		if ( ! $this->_remove_features ) {
 			return;
 		}
@@ -231,9 +354,10 @@ abstract class LP_Abstract_Post_Type {
 		foreach ( $this->_remove_features as $feature ) {
 			remove_post_type_support( $this->_post_type, $feature );
 		}
-	}
+	}*/
 
-	public function remove_feature( $feature ) {
+	// Comment by tungnx - no see use
+	/*public function remove_feature( $feature ) {
 		if ( is_array( $feature ) ) {
 			foreach ( $feature as $fea ) {
 				$this->remove_feature( $fea );
@@ -241,9 +365,10 @@ abstract class LP_Abstract_Post_Type {
 		} else {
 			$this->_remove_features[] = $feature;
 		}
-	}
+	}*/
 
-	public function update_default_meta() {
+	// Comment by tungnx - not use
+	/*public function update_default_meta() {
 		global $wp_query, $post;
 
 		if ( ! $post ) {
@@ -267,7 +392,7 @@ abstract class LP_Abstract_Post_Type {
 				update_post_meta( $post->ID, $k, $v );
 			}
 		}
-	}
+	}*/
 
 	public function remove_auto_save_script() {
 		global $post;
@@ -275,48 +400,6 @@ abstract class LP_Abstract_Post_Type {
 		if ( $post && in_array( get_post_type( $post->ID ), array( $this->_post_type ) ) ) {
 			wp_dequeue_script( 'autosave' );
 		}
-	}
-
-	/**
-	 * This function is invoked along with 'init' action to register
-	 * new post type with WP.
-	 */
-	public function _do_register() {
-		$args = $this->args_register_post_type();
-
-		if ( $args ) {
-			register_post_type( $this->_post_type, $args );
-		}
-	}
-
-	/**
-	 * Hook save post of WP
-	 *
-	 * In child-class use function save()
-	 *
-	 * @param int $post_id
-	 * @param WP_Post $post
-	 * @editor tungnx
-	 * @since modify 4.0.9
-	 */
-	final function _do_save_post( int $post_id = 0, WP_Post $post = null ) {
-		// Maybe remove
-		$this->maybe_remove_assigned( $post );
-
-		if ( ! $this->_check_post() ) {
-			return;
-		}
-
-		// prevent loop action
-		//remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
-		//$func_args = func_get_args();
-
-		//var_dump($post_id, $post, $func_args);die;
-
-		//$this->_call_method( 'save', $func_args );
-		$this->save( $post_id, $post );
-		//$this->_flush_cache();
-		//add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 	}
 
 	/**
@@ -420,43 +503,18 @@ abstract class LP_Abstract_Post_Type {
 		}
 	}
 
-	private function _is_archive() {
+	/**
+	 * @editor tungnx
+	 * @reason not use
+	 */
+	/*private function _is_archive() {
 		global $pagenow, $post_type;
 		if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( $this->_post_type != LP_Request::get_string( 'post_type' ) ) ) {
 			return false;
 		}
 
 		return true;
-	}
-
-	/**
-	 * Before delete post
-	 * Only on receiver 1 param $post_id, can't get param $post - don't know why
-	 *
-	 * @param int $post_id
-	 *
-	 * @editor tungnx
-	 */
-	public function _before_delete_post( int $post_id ) {
-		if ( ! $this->_check_post() ) {
-			return;
-		}
-
-		$this->before_delete( $post_id );
-	}
-
-	/**
-	 * Deleted post
-	 *
-	 * @param int $post_id
-	 */
-	public function _deleted_post( int $post_id ) {
-		if ( ! $this->_check_post() ) {
-			return;
-		}
-
-		$this->deleted_post( $post_id );
-	}
+	}*/
 
 	protected function _flush_cache() {
 		//LP_Hard_Cache::flush();
@@ -479,6 +537,10 @@ abstract class LP_Abstract_Post_Type {
 		return $this->posts_join_paged( $join );
 	}
 
+	public function posts_join_paged( $join ) {
+		return $join;
+	}
+
 	public function _posts_where_paged( $where ) {
 		if ( ! $this->_check_post() ) {
 			return $where;
@@ -487,12 +549,20 @@ abstract class LP_Abstract_Post_Type {
 		return $this->posts_where_paged( $where );
 	}
 
+	public function posts_where_paged( $where ) {
+		return $where;
+	}
+
 	public function _posts_orderby( $orderby ) {
 		if ( ! $this->_check_post() ) {
 			return $orderby;
 		}
 
 		return $this->posts_orderby( $orderby );
+	}
+
+	public function posts_orderby( $orderby ) {
+		return $orderby;
 	}
 
 	/**
@@ -510,19 +580,25 @@ abstract class LP_Abstract_Post_Type {
 		return true;
 	}
 
+	/**
+	 * Check is page list posts valid
+	 *
+	 * @return bool
+	 */
+	protected function is_page_list_posts_on_backend():bool {
+		global $pagenow, $post_type;
+
+		if ( ! is_admin() || $pagenow != 'edit.php' || ( $this->_post_type != $post_type ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public function add_meta_box( $id, $title, $callback = null, $context = 'advanced', $priority = 'default', $callback_args = null ) {
 		$this->_meta_boxes[ $id ] = func_get_args();
 
 		return $this;
-	}
-
-	/**
-	 * Args to register custom post type.
-	 *
-	 * @return array
-	 */
-	public function args_register_post_type() : array {
-		return array();
 	}
 
 	public function add_meta_boxes() {
@@ -554,41 +630,12 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
-	 * Hook before delete post
-	 *
-	 * @param int $post_id
-	 * @editor tungnx
-	 * @since modify 4.0.9
-	 */
-	public function before_delete( int $post_id ) {
-		// Implement from child
-	}
-
-	/**
-	 * Hook Save post
-	 * @editor tungnx
-	 * @docs Class post type extend need override this function if want to handle when save
-	 */
-	public function save( int $post_id, WP_Post $post ) {
-		// Implement from child
-	}
-
-	/**
-	 * Hook deleted post
-	 *
-	 * @editor tungnx
-	 * @docs Class post type extend need override this function if want to handle when save
-	 */
-	public function deleted_post( int $post_id, WP_Post $post ) {
-		// Implement from child
-	}
-
-	/**
 	 * Filter item by the course selected.
 	 *
 	 * @since 3.0.7
 	 *
 	 * @return bool|int
+	 * @Todo move to course LP_Course_Post_Type
 	 */
 	protected function _filter_items_by_course() {
 		$course_id = ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;
@@ -605,6 +652,7 @@ abstract class LP_Abstract_Post_Type {
 
 	/**
 	 * @return mixed
+	 * @Todo move to course LP_Course_Post_Type
 	 */
 	protected function _get_course_column_title() {
 		global $post_type;
@@ -673,18 +721,6 @@ abstract class LP_Abstract_Post_Type {
 		return $fields;
 	}
 
-	public function posts_join_paged( $join ) {
-		return $join;
-	}
-
-	public function posts_where_paged( $where ) {
-		return $where;
-	}
-
-	public function posts_orderby( $orderby ) {
-		return $orderby;
-	}
-
 	/**
 	 * Get sortable columns for list table
 	 *
@@ -707,21 +743,21 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return string
 	 */
-	private function _get_search() {
+	protected function _get_search(): string {
 		return LP_Request::get( 's' );
 	}
 
 	/**
 	 * @return string
 	 */
-	private function _get_order() {
+	protected function _get_order(): string {
 		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
 	}
 
 	/**
 	 * @return mixed
 	 */
-	private function _get_orderby() {
+	protected function _get_orderby(): string {
 		return LP_Request::get( 'orderby' );
 	}
 
@@ -748,29 +784,39 @@ abstract class LP_Abstract_Post_Type {
 	 * Those functions should be extended from child class to override
 	 *
 	 * @return mixed
+	 * @editor tungnx
+	 * @reason not use
 	 */
-
-	public function register_post_type() {
+	/*public function register_post_type() {
 		return $this;
-	}
+	}*/
 
-	public function admin_params() {
+	// Comment by tungnx - not use
+	/*public function admin_params() {
 		return $this;
-	}
+	}*/
 
-	public function admin_scripts() {
+	// Comment by tungnx - not use
+	/*public function admin_scripts() {
 		return $this;
-	}
+	}*/
 
-	public function admin_styles() {
+	// Comment by tungnx - not use
+	/*public function admin_styles() {
 		return $this;
-	}
+	}*/
 
-	public function print_js_template() {
+	// Comment by tungnx
+	/*public function print_js_template() {
 		return $this;
-	}
+	}*/
 
-	public function add_map_method( $origin, $replace, $single = false ) {
+	/**
+	 * @editor tungnx
+	 * @reason comment by write difficult for another developer, difficult development
+	 * @since modify 4.0.9
+	 */
+	/*public function add_map_method( $origin, $replace, $single = false ) {
 		if ( $single ) {
 			$this->_map_methods[ $origin ] = $replace;
 		} else {
@@ -782,7 +828,7 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		return $this;
-	}
+	}*/
 
 	/**
 	 * @editor tungnx
@@ -885,31 +931,6 @@ abstract class LP_Abstract_Post_Type {
 
 		return $messages;
 	}
-}
-
-class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
-	/**
-	 * Get string for searching
-	 *
-	 * @return string
-	 */
-	protected function _get_search() {
-		return LP_Request::get( 's' );
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function _get_order() {
-		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
-	}
-
-	/**
-	 * @return mixed
-	 */
-	protected function _get_orderby() {
-		return LP_Request::get( 'orderby' );
-	}
 
 	/**
 	 * Return TRUE if this post-type is support Gutenberg editor.
@@ -918,16 +939,62 @@ class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
 	 *
 	 * @return bool
 	 */
-	public function is_support_gutenberg() {
+	public function is_support_gutenberg(): bool {
 		$post_types = array(
-			LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
-			LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
-			LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
-			LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
+			LP_COURSE_CPT   => LP_Settings::get_option( 'enable_gutenberg_course' ),
+			LP_LESSON_CPT   => LP_Settings::get_option( 'enable_gutenberg_lesson' ),
+			LP_QUIZ_CPT     => LP_Settings::get_option( 'enable_gutenberg_quiz' ),
+			LP_QUESTION_CPT => LP_Settings::get_option( 'enable_gutenberg_question' ),
 		);
 
-		$support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
+		$support = $post_types[ $this->_post_type ] === 'yes';
 
 		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
 	}
 }
+
+// Comment by tungnx - not use
+//class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
+//	/**
+//	 * Get string for searching
+//	 *
+//	 * @return string
+//	 */
+//	protected function _get_search() {
+//		return LP_Request::get( 's' );
+//	}
+//
+//	/**
+//	 * @return string
+//	 */
+//	protected function _get_order() {
+//		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
+//	}
+//
+//	/**
+//	 * @return mixed
+//	 */
+//	protected function _get_orderby() {
+//		return LP_Request::get( 'orderby' );
+//	}
+//
+//	/**
+//	 * Return TRUE if this post-type is support Gutenberg editor.
+//	 *
+//	 * @since 3.3.0
+//	 *
+//	 * @return bool
+//	 */
+//	public function is_support_gutenberg() {
+//		$post_types = array(
+//			LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
+//			LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
+//			LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
+//			LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
+//		);
+//
+//		$support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
+//
+//		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
+//	}
+//}

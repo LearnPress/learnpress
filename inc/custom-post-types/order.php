@@ -8,7 +8,7 @@
  */
 
 if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
-	final class LP_Order_Post_Type extends LP_Abstract_Post_Type_Core {
+	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {
 
 		/**
 		 * @var null
