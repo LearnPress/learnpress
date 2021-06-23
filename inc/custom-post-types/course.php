@@ -33,7 +33,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function __construct( $post_type ) {
 			parent::__construct( $post_type );
 
-			// Map origin methods to another method
+			// Map origin methods to another method - comment by tungnx
 			/*$this
 				->add_map_method( 'save', 'before_save_curriculum', false )
 				->add_map_method( 'before_delete', 'before_delete_course' );*/
@@ -135,7 +135,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'has_archive'        => $has_archive,
-				'capability_type'    => LP_COURSE_CPT,
+				'capability_type'    => $this->_post_type,
 				'map_meta_cap'       => true,
 				'show_in_menu'       => 'learn_press',
 				'show_in_admin_bar'  => true,
@@ -263,13 +263,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_fields( $fields ) {
+		public function posts_fields( $fields ): string {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $fields;
 			}
 
 			$fields = ' DISTINCT ' . $fields;
-			if ( ( $this->_get_orderby() == 'price' ) || ( $this->_get_search() ) ) {
+			if ( $this->get_order_by() == 'price' ) {
 				$fields .= ', pm_price.meta_value as course_price';
 			}
 
@@ -344,7 +344,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
 				WHERE pm.meta_value = %s
-			",
+				",
 				'_lp_preview_course',
 				'yes'
 			);
@@ -355,17 +355,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * @param $order_by_statement
+		 * @param $orderby
 		 *
 		 * @return string
 		 */
-		public function posts_orderby( $order_by_statement ) {
+		public function posts_orderby( $orderby ): string {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
-				return $order_by_statement;
+				return $orderby;
 			}
 
-			$order = $this->_get_order();
-			switch ( $this->_get_orderby() ) {
+			$order = $this->get_order_sort();
+			switch ( $this->get_order_by() ) {
 				case 'price':
 					$order_by_statement = "pm_price.meta_value {$order}";
 			}

@@ -328,7 +328,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			$fields = ' DISTINCT ' . $fields;
 
-			if ( $this->_get_orderby() == 'question-count' ) {
+			if ( $this->get_order_by() == 'question-count' ) {
 				$fields .= ", (SELECT count(*) FROM {$wpdb->prefix}learnpress_quiz_questions qq WHERE {$wpdb->posts}.ID = qq.quiz_id ) as question_count";
 			}
 
@@ -389,8 +389,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				return $order_by_statement;
 			}
 
-			$orderby = $this->_get_orderby();
-			$order   = $this->_get_order();
+			$orderby = $this->get_order_by();
+			$order   = $this->get_order_sort();
 
 			if ( $order && $orderby ) {
 				switch ( $orderby ) {

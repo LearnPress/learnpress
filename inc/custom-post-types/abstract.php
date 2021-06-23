@@ -129,9 +129,20 @@ abstract class LP_Abstract_Post_Type {
 	/**
 	 * This function is invoked along with 'init' action to register
 	 * new post type with WP.
+	 *
+	 * @editor tungnx
+	 * @since modify 4.1.0
 	 */
 	public function _do_register() {
 		$args = $this->args_register_post_type();
+
+		/*
+		 * Todo: This is function old, still has on some addons, so need replace "register" function to args_register_post_type
+		 * When replace all will delete this function - long ago will delete, for some user didn't updated new addon version fix
+		 */
+		if ( method_exists( $this, 'register' ) ) {
+			$args = $this->register();
+		}
 
 		if ( $args ) {
 			register_post_type( $this->_post_type, $args );
@@ -743,21 +754,21 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return string
 	 */
-	protected function _get_search(): string {
+	protected function get_search(): string {
 		return LP_Request::get( 's' );
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function _get_order(): string {
+	protected function get_order_sort(): string {
 		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
 	}
 
 	/**
 	 * @return mixed
 	 */
-	protected function _get_orderby(): string {
+	protected function get_order_by(): string {
 		return LP_Request::get( 'orderby' );
 	}
 
@@ -951,6 +962,19 @@ abstract class LP_Abstract_Post_Type {
 
 		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
 	}
+
+	// Deprecated functions
+	/*private function _get_orderby() {
+		_deprecated_function( __FUNCTION__, '4.1.0' );
+	}
+	public function _get_search(): string {
+		return LP_Request::get( 's' );
+	}
+	protected function _get_order(): string {
+
+	}*/
+
+	// End deprecated
 }
 
 // Comment by tungnx - not use

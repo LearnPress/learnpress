@@ -498,9 +498,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 			global $wpdb;
 
-			$order = $this->_get_order();
+			$order = $this->get_order_sort();
 
-			switch ( $this->_get_orderby() ) {
+			switch ( $this->get_order_by() ) {
 				case 'title':
 					$orderby = "{$wpdb->posts}.ID {$order}";
 					break;

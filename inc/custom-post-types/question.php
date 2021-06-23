@@ -399,7 +399,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			global $wpdb;
 
 			$quiz_id = $this->_filter_quiz();
-			if ( $quiz_id || $this->_get_orderby() == 'quiz-name' ) {
+			if ( $quiz_id || $this->get_order_by() == 'quiz-name' ) {
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON {$wpdb->posts}.ID = qq.question_id";
 				$join .= " LEFT JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id";
 			}
@@ -456,8 +456,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				return $order_by_statement;
 			}
 
-			$orderby = $this->_get_orderby();
-			$order   = $this->_get_order();
+			$orderby = $this->get_order_by();
+			$order   = $this->get_order_sort();
 
 			if ( $orderby && $order ) {
 				switch ( $orderby ) {
