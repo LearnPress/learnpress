@@ -2055,6 +2055,16 @@ function lp_custom_register_fields_display() {
 			$cf_class = '';
 			if ( $custom_field['required'] == 'yes' ) {
 				$cf_class = ' required';
+				?>
+				<style>
+					.required label {
+						font-weight: bold;
+					}
+					.required label:after {
+						content: ' *';
+						display:inline;
+					}
+				</style> <?php
 			}
 
 			if ( isset( $custom_field['id'] ) ) {
@@ -2062,40 +2072,33 @@ function lp_custom_register_fields_display() {
 				<?php $value = $custom_field['id']; ?>
 
 				<li class="form-field<?php echo esc_attr( $cf_class ); ?>">
-					<label for="description">
-						<?php
-						echo $custom_field['name'];
-						if ( $custom_field['required'] == 'yes' ) {
-							echo '&nbsp;' . '<span class="required">*</span>';
-						}
-						?>
-					</label>
 					<?php
 					switch ( $custom_field['type'] ) {
 						case 'text':
 						case 'number':
 						case 'email':
 						case 'url':
+							?>
+							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
+						<?php
 						case 'tel':
 							?>
 							<input name="_lp_custom_register_form[<?php echo $value; ?>]"
-								type="<?php echo $custom_field['type']; ?>"
-								placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>" class="regular-text"
-								value="">
+								   type="<?php echo $custom_field['type']; ?>" class="regular-text"
+								   value="">
 							<?php
 							break;
 						case 'textarea':
 							?>
 							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
-							<textarea name="_lp_custom_register_form[<?php echo $value; ?>]"
-									placeholder="<?php echo esc_attr( $custom_field['name'] ); ?>"></textarea>
+							<textarea name="_lp_custom_register_form[<?php echo $value; ?>]"></textarea>
 							<?php
 							break;
 						case 'checkbox':
 							?>
 							<label>
 								<input name="_lp_custom_register_form[<?php echo $value; ?>]"
-									type="<?php echo $custom_field['type']; ?>" value="1">
+									   type="<?php echo $custom_field['type']; ?>" value="1">
 								<?php echo esc_html( $custom_field['name'] ); ?>
 							</label>
 							<?php
