@@ -44,11 +44,11 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		return true;
 	}
 
-	public function statistic( $request ) {
-		$request        = $request->get_params();
-		$user_id        = $request['userID'];
-		$response       = new LP_REST_Response();
-		$response->data = '';
+	public function statistic( WP_REST_Request $request ) {
+		$user_id          = $request->get_param( 'userID' );
+		$response         = new LP_REST_Response();
+		$response->data   = '';
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
 			if ( empty( $user_id ) ) {
@@ -57,14 +57,25 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			$profile = learn_press_get_profile( $user_id );
 
+			if ( $profile instanceof WP_Error ) {
+				throw new Exception( $profile->get_error_message() );
+			}
+
 			$query = $profile->query_courses( 'purchased' );
 
 			$counts = $query['counts'];
 
+			$total_courses_has_status     = 0;
+			$total_courses_has_status_obj = $lp_user_items_db->get_total_courses_has_status( $user_id, 'in-progress' );
+
+			if ( ! isset( $total_courses_has_status_obj->total ) ) {
+				$total_courses_has_status = $total_courses_has_status_obj->total;
+			}
+
 			$statistic = array(
-				'enrolled_courses'  => isset( $counts['all'] ) ? $counts['all'] : 0,
-				'active_courses'    => isset( $counts['in-progress'] ) ? $counts['in-progress'] : 0,
-				'completed_courses' => isset( $counts['finished'] ) ? $counts['finished'] : 0,
+				'enrolled_courses'  => $counts['all'] ?? 0,
+				'active_courses'    => $total_courses_has_status,
+				'completed_courses' => $counts['finished'] ?? 0,
 				'total_courses'     => count_user_posts( $user_id, LP_COURSE_CPT ),
 				'total_users'       => learn_press_count_instructor_users( $user_id ),
 			);
