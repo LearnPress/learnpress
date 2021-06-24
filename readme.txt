@@ -197,6 +197,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.0 =
+~ Fixed: show incorrect "Active Courses" on page profile
+~ Fixed: show fake student
+
 = 4.0.9 =
 ~ Added: option enable sticky navigation pagination when user answer question on quiz.
 ~ Fixed: set again current item when manager remove item current when edit course.
@@ -209,7 +213,6 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.0.8 =
 ~ Added: feature "Allow Repurchase course"
-~ Added: feature "No require enroll"
 ~ Fixed: Custom register fields error with some name not utf8
 ~ Added: field "confirm password" on register form profile
 ~ Fixed: file config.js permission 403 on some sites, change name to lp-configs.js

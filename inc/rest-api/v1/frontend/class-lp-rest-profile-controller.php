@@ -68,7 +68,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$total_courses_has_status     = 0;
 			$total_courses_has_status_obj = $lp_user_items_db->get_total_courses_has_status( $user_id, 'in-progress' );
 
-			if ( ! isset( $total_courses_has_status_obj->total ) ) {
+			if ( $total_courses_has_status_obj && isset( $total_courses_has_status_obj->total ) ) {
 				$total_courses_has_status = $total_courses_has_status_obj->total;
 			}
 
