@@ -44,7 +44,10 @@ $tab_active      = ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'creat
 ?>
 
 <div class="learn-press-subtab-content">
-	<div class="learn-press-profile-course__statistic" data-ajax="<?php echo htmlentities( wp_json_encode( [ 'userID' => $user->get_id() ] ) ); ?>"></div> <?php // phpcs:ignore ?>
+	<div class="learn-press-profile-course__statistic"
+		 data-ajax="<?php echo htmlentities( wp_json_encode( array( 'userID' => $user->get_id() ) ) ); ?>">
+		<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
+	</div>
 
 	<div class="learn-press-profile-course__tab">
 		<ul class="learn-press-profile-course__tab__inner">

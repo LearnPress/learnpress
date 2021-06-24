@@ -33,9 +33,9 @@ const courseStatistics = () => {
 			} );
 
 			if ( response.status === 'success' && response.data ) {
-				ele.innerHTML += response.data;
+				ele.innerHTML = response.data;
 			} else {
-				ele.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ response.message && response.message }</div>`;
+				ele.innerHTML = `<div class="lp-ajax-message error" style="display:block">${ response.message && response.message }</div>`;
 			}
 		} catch ( error ) {
 			ele.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;

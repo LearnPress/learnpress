@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LP_User_Items_DB extends LP_Database {
 	private static $_instance;
 	public static $user_item_id_col = 'learnpress_user_item_id';
-	public static $extra_value_col = 'extra_value';
+	public static $extra_value_col  = 'extra_value';
 
 	protected function __construct() {
 		parent::__construct();
@@ -129,8 +129,10 @@ class LP_User_Items_DB extends LP_Database {
 			WHERE ref_id = %d
 			AND ref_type = %s
 			AND item_id = %d
-		",
-			$course_id, 'lp_course', $item_id
+			",
+			$course_id,
+			'lp_course',
+			$item_id
 		);
 
 		return $this->wpdb->get_var( $query );
@@ -147,22 +149,35 @@ class LP_User_Items_DB extends LP_Database {
 	 * @author tungnx
 	 */
 	public function update_extra_value( $user_item_id = 0, $meta_key = '', $value = '' ) {
-		$data   = array( 'learnpress_user_item_id' => $user_item_id, 'meta_key' => $meta_key, 'extra_value' => $value );
+		$data   = array(
+			'learnpress_user_item_id' => $user_item_id,
+			'meta_key'                => $meta_key,
+			'extra_value'             => $value,
+		);
 		$format = array( '%s', '%s' );
 
 		$check_exist_data = $this->wpdb->get_var(
-			$this->wpdb->prepare( "
+			$this->wpdb->prepare(
+				"
 				SELECT meta_id FROM $this->tb_lp_user_itemmeta
-				WHERE " . self::$user_item_id_col . " = %d
+				WHERE " . self::$user_item_id_col . ' = %d
 				AND meta_key = %s
-				",
-				$user_item_id, $meta_key
+				',
+				$user_item_id,
+				$meta_key
 			)
 		);
 
 		if ( $check_exist_data ) {
-			$this->wpdb->update( $this->tb_lp_user_itemmeta, $data,
-				array( self::$user_item_id_col => $user_item_id, 'meta_key' => $meta_key ), $format );
+			$this->wpdb->update(
+				$this->tb_lp_user_itemmeta,
+				$data,
+				array(
+					self::$user_item_id_col => $user_item_id,
+					'meta_key'              => $meta_key,
+				),
+				$format
+			);
 		} else {
 			$this->wpdb->insert( $this->tb_lp_user_itemmeta, $data, $format );
 		}
@@ -176,11 +191,12 @@ class LP_User_Items_DB extends LP_Database {
 	 */
 	public function get_extra_value( $user_item_id = 0, $meta_key = '' ) {
 		return $this->wpdb->get_var(
-			$this->wpdb->prepare( "
-				SELECT " . self::$extra_value_col . " FROM $this->tb_lp_user_itemmeta
-				WHERE " . self::$user_item_id_col . " = %d
+			$this->wpdb->prepare(
+				'
+				SELECT ' . self::$extra_value_col . " FROM $this->tb_lp_user_itemmeta
+				WHERE " . self::$user_item_id_col . ' = %d
 				AND meta_key = %s
-				",
+				',
 				$user_item_id,
 				$meta_key
 			)
@@ -192,7 +208,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @param $item_id
 	 * @editor hungkv
 	 */
-	function reset_course_current_item( $course_id, $item_id ) {
+	public function reset_course_current_item( $course_id, $item_id ) {
 		// Select all course enrolled
 		$query         = $this->wpdb->prepare(
 			"
@@ -200,7 +216,9 @@ class LP_User_Items_DB extends LP_Database {
 						FROM {$this->wpdb->prefix}learnpress_user_items
 						WHERE status = %s AND item_id = %d AND graduation = %s
 						",
-			'enrolled', $course_id, 'in-progress'
+			'enrolled',
+			$course_id,
+			'in-progress'
 		);
 		$user_item_ids = $this->wpdb->get_col( $query );
 		if ( ! empty( $user_item_ids ) ) {
@@ -223,6 +241,34 @@ class LP_User_Items_DB extends LP_Database {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get total courses is has graduation is 'in_progress'
+	 *
+	 * @param int $user_id
+	 * @param string $status
+	 * @return object
+	 * @throws Exception
+	 */
+	public function get_total_courses_has_status( int $user_id, string $status ) {
+		$query = $this->wpdb->prepare(
+			"
+			SELECT DISTINCT (ref_id) , COUNT(graduation) AS total
+			FROM $this->tb_lp_user_items
+			WHERE item_type = %s
+			AND user_id = %d
+			AND graduation = %s
+			GROUP BY graduation
+			",
+			LP_COURSE_CPT,
+			$user_id,
+			$status
+		);
+
+		$this->check_execute_has_error();
+
+		return $this->wpdb->get_row( $query );
 	}
 }
 
