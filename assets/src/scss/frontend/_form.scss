@@ -196,12 +196,20 @@
 				}
 			}
 		}
+		.form-field.required {
+			label {
+				&::after {
+					content: ' *';
+					display: inline;
+				}
+			}
+		}
 	}
 
 	form[name="learn-press-login"] {
 
 
-
+		>p {
 			>label {
 				color: #666;
 				font-size: 16px;
