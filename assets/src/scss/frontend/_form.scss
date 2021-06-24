@@ -201,7 +201,6 @@
 	form[name="learn-press-login"] {
 
 
-		>p {
 
 			>label {
 				color: #666;
@@ -235,6 +234,16 @@
 		line-height: 1;
 		vertical-align: middle;
 		text-decoration: none;
+	}
+}
+
+.required {
+	label {
+		font-weight: bold;
+		&:after {
+			content: ' *';
+			display: inline;
+		}
 	}
 }
 
