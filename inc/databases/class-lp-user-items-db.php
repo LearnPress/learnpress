@@ -254,7 +254,7 @@ class LP_User_Items_DB extends LP_Database {
 	public function get_total_courses_has_status( int $user_id, string $status ) {
 		$query = $this->wpdb->prepare(
 			"
-			SELECT DISTINCT (ref_id) , COUNT(graduation) AS total
+			SELECT DISTINCT(ref_id) , COUNT(graduation) AS total
 			FROM $this->tb_lp_user_items
 			WHERE item_type = %s
 			AND user_id = %d
