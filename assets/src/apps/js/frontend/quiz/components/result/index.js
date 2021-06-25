@@ -180,7 +180,7 @@ const Result = () => {
 
 				<span className="result-achieved">{ `${ percentResult }%` }</span>
 				<span className="result-require">
-					{ passingGradeValue || _x( '-', 'unknown passing grade value', 'learnpress' ) }
+					{ passingGradeValue || '-' }
 				</span>
 			</div>
 

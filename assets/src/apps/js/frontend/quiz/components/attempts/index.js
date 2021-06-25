@@ -40,7 +40,7 @@ const Attempts = () => {
 										<td className="quiz-attempts__questions">{ `${ row.questionCorrect } / ${ row.questionCount }` }</td>
 										<td className="quiz-attempts__spend">{ row.timeSpend || '--' }</td>
 										<td className="quiz-attempts__marks">{ `${ row.userMark } / ${ row.mark }` }</td>
-										<td className="quiz-attempts__grade">{ row.passingGrade || _x( '-', 'unknown passing grade value', 'learnpress' ) }</td>
+										<td className="quiz-attempts__grade">{ row.passingGrade || '-' }</td>
 										<td className="quiz-attempts__result">{ `${ parseFloat( row.result ).toFixed( 2 ) }%` } <span>{ row.graduationText }</span></td>
 									</tr>
 								);
