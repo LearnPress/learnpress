@@ -307,7 +307,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$params         = $request->get_params();
 
 		try {
-			$course_id = $params['id'];
+			$course_id        = $params['id'];
+			$allow_repurchase = $params['valRepurchase'] ?? false;
 
 			if ( ! $course_id ) {
 				throw new Exception( __( 'Error: Invalid Course ID.', 'learnpress' ) );
@@ -323,6 +324,56 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			if ( ! $user->can_purchase_course( $course_id ) ) {
 				throw new Exception( esc_html__( 'Error: Cannot purchase course!.', 'learnpress' ) );
+			}
+
+			global $wpdb;
+
+			// Allow Repurchase.
+			$latest_user_item_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT MAX(user_item_id) user_item_id
+					FROM {$wpdb->learnpress_user_items}
+					WHERE ref_type = %s
+					AND item_type = %s
+					AND item_id = %d
+					AND user_id = %d",
+					LP_ORDER_CPT,
+					LP_COURSE_CPT,
+					$course_id,
+					$user->get_id(),
+				)
+			);
+
+			if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && empty( $allow_repurchase ) ) {
+				if ( $course->allow_repurchase_course_progress() === 'popup' ) {
+					ob_start();
+					?>
+					<div class="lp_allow_repuchase_select">
+						<ul>
+							<li>
+								<label>
+									<input name="_lp_allow_repurchase_type" value="reset" type="radio" checked="checked" />
+									<?php esc_html_e( 'Reset Course progress', 'learnpress' ); ?>
+								</label>
+							</li>
+							<li>
+								<label>
+									<input name="_lp_allow_repurchase_type" value="update" type="radio" />
+									<?php esc_html_e( 'Continue Course progress', 'learnpress' ); ?>
+								</label>
+							</li>
+						</ul>
+					</div>
+					<?php
+					$response->data->html       = ob_get_clean();
+					$response->data->type       = 'allow_repurchase';
+					$response->data->titlePopup = esc_html__( 'Repurchase Options', 'learnpress' );
+					$response->status           = 'success';
+
+					return rest_ensure_response( $response );
+				} else {
+					learn_press_update_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type', $course->allow_repurchase_course_progress() );
+				}
 			}
 
 			LP()->session->set( 'order_awaiting_payment', '' );
@@ -342,6 +393,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			if ( ! $cart_id ) {
 				throw new Exception( __( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
+			}
+
+			if ( ! empty( $allow_repurchase ) ) {
+				learn_press_update_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type', $allow_repurchase );
 			}
 
 			$redirect = apply_filters(

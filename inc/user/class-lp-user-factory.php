@@ -176,15 +176,96 @@ class LP_User_Factory {
 				$user_item_id = LP_Course_DB::getInstance()->get_user_item_id( $order->get_id(), $item['course_id'], $user_id );
 
 				if ( $user_item_id ) {
-					$user_item_id = $curd->update_user_item(
-						$user_id,
+					continue;
+				}
+
+				$course = learn_press_get_course( $item['course_id'] );
+
+				$latest_user_item_id = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT MAX(user_item_id) user_item_id
+						FROM {$wpdb->learnpress_user_items}
+						WHERE ref_type = %s
+						AND item_type = %s
+						AND item_id = %d
+						AND user_id = %d",
+						LP_ORDER_CPT,
+						LP_COURSE_CPT,
 						$item['course_id'],
-						array(
-							'ref_id'    => $order->get_id(),
-							'ref_type'  => LP_ORDER_CPT,
-							'parent_id' => 0,
-						)
-					);
+						$user_id
+					)
+				);
+
+				$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
+
+				if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() && ! empty( $allow_repurchase_type ) ) {
+
+					if ( $allow_repurchase_type === 'update' ) {
+						do_action( 'lp/allow_repurchase_options/continue/db/update', $latest_user_item_id );
+
+						$update = $wpdb->update(
+							$wpdb->learnpress_user_items,
+							array(
+								'ref_id'     => $order->get_id(),
+								'start_time' => current_time( 'mysql', true ),
+								'end_time'   => null,
+								'graduation' => 'in-progress',
+								'status'     => LP_COURSE_ENROLLED,
+							),
+							array(
+								'user_item_id' => $latest_user_item_id,
+							),
+							array( '%d', '%s', '%s', '%s', '%s' ),
+							array( '%d' )
+						);
+
+						if ( $update ) {
+							$user_item_id = false;
+						}
+					} elseif ( $allow_repurchase_type === 'reset' ) {
+						$wpdb->delete(
+							$wpdb->learnpress_user_items,
+							array(
+								'user_item_id' => $latest_user_item_id,
+							),
+							array( '%d' )
+						);
+
+						$wpdb->delete(
+							$wpdb->learnpress_user_items,
+							array(
+								'parent_id' => absint( $latest_user_item_id ),
+							),
+							array( '%d' )
+						);
+
+						$user_item_ids = $wpdb->get_col(
+							$wpdb->prepare(
+								"SELECT user_item_id FROM $wpdb->learnpress_user_items
+								WHERE parent_id=%d
+								",
+								$latest_user_item_id
+							)
+						);
+
+						if ( ! empty( $user_item_ids ) ) {
+							foreach ( $user_item_ids as $user_item_id ) {
+								$wpdb->delete(
+									$wpdb->learnpress_user_itemmeta,
+									array(
+										'learnpress_user_item_id' => absint( $user_item_id ),
+									),
+									array( '%d' )
+								);
+
+								LP_User_Items_Result_DB::instance()->delete( absint( $user_item_id ) );
+							}
+						}
+
+						$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id(), false, false );
+					}
+
+					learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
 				} else {
 					$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id(), false, false );
 				}
