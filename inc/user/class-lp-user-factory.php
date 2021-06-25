@@ -231,14 +231,6 @@ class LP_User_Factory {
 							array( '%d' )
 						);
 
-						$wpdb->delete(
-							$wpdb->learnpress_user_items,
-							array(
-								'parent_id' => absint( $latest_user_item_id ),
-							),
-							array( '%d' )
-						);
-
 						$user_item_ids = $wpdb->get_col(
 							$wpdb->prepare(
 								"SELECT user_item_id FROM $wpdb->learnpress_user_items
@@ -246,6 +238,14 @@ class LP_User_Factory {
 								",
 								$latest_user_item_id
 							)
+						);
+
+						$wpdb->delete(
+							$wpdb->learnpress_user_items,
+							array(
+								'parent_id' => absint( $latest_user_item_id ),
+							),
+							array( '%d' )
 						);
 
 						if ( ! empty( $user_item_ids ) ) {
