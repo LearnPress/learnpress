@@ -181,6 +181,7 @@ class LP_User_Factory {
 
 				$course = learn_press_get_course( $item['course_id'] );
 
+				/** Get latest user_item_id of course for allow_repurchase */
 				$latest_user_item_id = $wpdb->get_var(
 					$wpdb->prepare(
 						"SELECT MAX(user_item_id) user_item_id
@@ -196,13 +197,21 @@ class LP_User_Factory {
 					)
 				);
 
+				/** Get allow_repurchase_type for reset, update. Add in: rest-api/v1/frontend/class-lp-courses-controller.php: purchase_course */
 				$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
 
+				/** If allow_repurchase. */
 				if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() && ! empty( $allow_repurchase_type ) ) {
 
+					/** If update course progress will reset start_time, graduation.. */
 					if ( $allow_repurchase_type === 'update' ) {
 						do_action( 'lp/allow_repurchase_options/continue/db/update', $latest_user_item_id );
 
+						/**
+						 * Update latest user_item_id to continue course progress.
+						 *
+						 * @author Nhamdv.
+						 */
 						$update = $wpdb->update(
 							$wpdb->learnpress_user_items,
 							array(
@@ -223,6 +232,7 @@ class LP_User_Factory {
 							$user_item_id = false;
 						}
 					} elseif ( $allow_repurchase_type === 'reset' ) {
+						/** Delete user_item_id in table learnpress_user_items */
 						$wpdb->delete(
 							$wpdb->learnpress_user_items,
 							array(
@@ -231,6 +241,7 @@ class LP_User_Factory {
 							array( '%d' )
 						);
 
+						/** Get list user_item_id for lesson, quiz... by course user_item_id in table learnpress_user_items */
 						$user_item_ids = $wpdb->get_col(
 							$wpdb->prepare(
 								"SELECT user_item_id FROM $wpdb->learnpress_user_items
@@ -240,6 +251,7 @@ class LP_User_Factory {
 							)
 						);
 
+						/** Delete all lesson, quiz... by course parent user_item_id */
 						$wpdb->delete(
 							$wpdb->learnpress_user_items,
 							array(
@@ -248,6 +260,7 @@ class LP_User_Factory {
 							array( '%d' )
 						);
 
+						/** Delete all user_item_meta for lesson, quiz... */
 						if ( ! empty( $user_item_ids ) ) {
 							foreach ( $user_item_ids as $user_item_id ) {
 								$wpdb->delete(
