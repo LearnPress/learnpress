@@ -272,7 +272,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		}
 
 		public function allow_repurchase_course_progress() : string {
-			return $this->get_data( 'allow_repurchase_course_progress' ) ?? 'popup';
+			return $this->get_data( 'allow_repurchase_course_progress' ) ?? 'reset';
 		}
 
 		/**

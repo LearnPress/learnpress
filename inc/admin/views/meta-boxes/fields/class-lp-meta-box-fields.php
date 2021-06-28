@@ -44,6 +44,11 @@ class LP_Meta_Box_Field {
 	public $extra = array();
 
 	/**
+	 * Condition logic show or hide when checkbox, select or...
+	 */
+	public $condition = false;
+
+	/**
 	 * LP_Meta_Box_Attribute constructor.
 	 *
 	 * @param string $id
@@ -60,6 +65,15 @@ class LP_Meta_Box_Field {
 		$this->description = $description;
 		$this->default     = $default;
 		$this->extra       = $extra;
+
+		$show = ! empty( $extra['show'] ) ? htmlentities( wp_json_encode( $extra['show'] ) ) : false;
+		$hide = ! empty( $extra['hide'] ) ? htmlentities( wp_json_encode( $extra['hide'] ) ) : false;
+
+		if ( $show ) {
+			$this->condition = 'data-show="' . $show . '"';
+		} elseif ( $hide ) {
+			$this->condition = 'data-hide="' . $hide . '"';
+		}
 	}
 
 	public function meta_value( $thepostid ) {

@@ -37,6 +37,8 @@ const makePaymentsSortable = function makePaymentsSortable() {
 	} );
 };
 
+/** Start Nhamdv code */
+
 const lpMetaboxCustomFields = () => {
 	$( '.lp-metabox__custom-fields' ).on( 'click', '.lp-metabox-custom-field-button', function() {
 		const row = $( this ).data( 'row' ).replace( /lp_metabox_custom_fields_key/gi, Math.floor( Math.random() * 1000 ) + 1 );
@@ -429,6 +431,62 @@ const lpMetaboxCourseTabs = () => {
 	} ).trigger( 'lp-metabox-course-tab-panels' );
 };
 
+// use to show and hide field condition logic metabox.
+const lpMetaboxCondition = () => {
+	const fields = document.querySelectorAll( '.lp-meta-box .form-field' );
+
+	fields.forEach( ( field ) => {
+		if ( field.hasAttribute( 'data-show' ) && field.dataset.show ) {
+			lpMetaboxConditionType( field, field.dataset.show, 'show' );
+		} else if ( field.hasAttribute( 'data-hide' ) && field.dataset.hide ) {
+			lpMetaboxConditionType( field, field.dataset.hide, 'hide' );
+		}
+	} );
+};
+
+const lpMetaboxConditionType = ( field, conditions, typeCondition = 'show' ) => {
+	const condition = JSON.parse( conditions ),
+		eles = document.querySelectorAll( `input[id^="${ condition[ 0 ] }"]` ),
+		logic = condition[ 1 ] === '=' ? '=' : '!=',
+		dataLogic = condition[ 2 ];
+
+	const switchCase = ( type, ele, target ) => {
+		switch ( type ) {
+		case 'checkbox':
+			let val = dataLogic;
+
+			if ( dataLogic === 'yes' || dataLogic === '1' || dataLogic === 1 || dataLogic === 'true' ) {
+				val = true;
+			} else if ( dataLogic === 'no' || dataLogic === '0' || dataLogic === 0 || dataLogic === 'false' ) {
+				val = false;
+			}
+
+			if ( logic == '!=' && val !== Boolean( target ? target.checked : ele.checked ) ) {
+				field.style.display = typeCondition === 'show' ? 'flex' : 'none';
+			} else if ( logic == '=' && val == Boolean( target ? target.checked : ele.checked ) ) {
+				field.style.display = typeCondition === 'show' ? 'flex' : 'none';
+			} else {
+				field.style.display = typeCondition === 'show' ? 'none' : 'flex';
+			}
+			break;
+		}
+	};
+
+	eles.forEach( ( ele ) => {
+		const type = ele.getAttribute( 'type' );
+
+		switchCase( type, ele );
+
+		ele.addEventListener( 'change', ( e ) => {
+			const target = e.target;
+
+			switchCase( type, ele, target );
+		} );
+	} );
+};
+
+/** End Nhamdv code */
+
 const initTooltips = function initTooltips() {
 	$( '.learn-press-tooltip' ).each( function() {
 		const $el = $( this ),
@@ -732,6 +790,7 @@ const onReady = function onReady() {
 	lpMetaboxExtraInfo();
 	lpHidePassingGrade();
 	lpGetFinalQuiz();
+	lpMetaboxCondition();
 
 	$( document )
 		.on( 'click', '.learn-press-payments .status .dashicons', togglePaymentStatus )

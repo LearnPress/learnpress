@@ -139,7 +139,11 @@ const purchaseCourse = () => {
 							const valRepurchase = radios[ i ].value;
 							const id = form.querySelector( 'input[name=purchase-course]' ).value;
 
-							submit( id, '', valRepurchase );
+							const btnBuynow = form.querySelector( 'button.button-purchase-course' );
+							btnBuynow.classList.add( 'loading' );
+							btnBuynow.disabled = true;
+
+							submit( id, btnBuynow, valRepurchase );
 							break;
 						}
 					}
@@ -174,6 +178,8 @@ const purchaseCourse = () => {
 							lpModalOverlay.setContentModal( html );
 
 							lpModalOverlay.callBackYes = () => {
+								lpModalOverlay.elLPOverlay.hide();
+
 								allowRepurchase();
 							};
 						}

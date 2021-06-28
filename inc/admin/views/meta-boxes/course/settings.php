@@ -108,6 +108,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'update' => esc_html__( 'Continue Course progress', 'learnpress' ),
 							'popup'  => esc_html__( 'Open popup', 'learnpress' ),
 						),
+						'show'    => array( '_lp_allow_course_repurchase', '=', 'yes' ), // use 'show' or 'hide'
 					)
 				),
 				'_lp_level'                    => new LP_Meta_Box_Select_Field(
