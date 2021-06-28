@@ -256,9 +256,12 @@ class LP_User_Items_DB extends LP_Database {
 			"
 			SELECT DISTINCT(ref_id) , COUNT(graduation) AS total
 			FROM $this->tb_lp_user_items
+				INNER JOIN $this->tb_posts AS p
+				ON item_id = p.ID
 			WHERE item_type = %s
 			AND user_id = %d
 			AND graduation = %s
+			AND p.post_status = 'publish'
 			GROUP BY graduation
 			",
 			LP_COURSE_CPT,

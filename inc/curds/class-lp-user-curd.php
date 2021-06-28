@@ -1600,13 +1600,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					LP_COURSE_CPT
 				);
 
-				// WHERE
+				// WHERE - modify by tungnx
 				$where       = $wpdb->prepare(
 					'
 					WHERE ui.user_id = %d
 					AND c.ID IN(' . join( ',', $course_ids ) . ')
-				',
-					$user_id
+					AND c.post_status = %s
+					',
+					$user_id,
+					'publish'
 				);
 				$count_where = $where;
 
@@ -1666,7 +1668,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$unenrolled_course_ids = $this->query_courses_by_order( $user_id );
 				}
 
-				$where .= $wpdb->prepare( ' AND ui.status NOT IN(%s) ', 'pending' );
+				// Comment by tungnx
+				//$where .= $wpdb->prepare( ' AND ui.status NOT IN(%s) ', 'pending' );
 
 				$query_parts = apply_filters(
 					'learn-press/query/user-purchased-courses',

@@ -198,8 +198,9 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.1.0 =
-~ Fixed: show incorrect "Active Courses" on page profile
-~ Fixed: show fake student
+~ Added: feature "Allow repurchase option". Manager can set fixed: Reset/Keep course progress of course or allow student choice.
+~ Fixed: show incorrect "Active Courses" on page profile.
+~ Fixed: show fake student.
 
 = 4.0.9 =
 ~ Added: option enable sticky navigation pagination when user answer question on quiz.

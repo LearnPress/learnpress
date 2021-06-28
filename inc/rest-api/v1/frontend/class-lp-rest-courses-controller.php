@@ -340,7 +340,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					LP_ORDER_CPT,
 					LP_COURSE_CPT,
 					$course_id,
-					$user->get_id(),
+					$user->get_id()
 				)
 			);
 
