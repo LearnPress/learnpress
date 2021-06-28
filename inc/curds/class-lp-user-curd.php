@@ -1596,7 +1596,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 				// JOIN
 				$join = $wpdb->prepare(
-					"INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s",
+					"INNER JOIN {$wpdb->posts} c ON ui.item_id = c.ID AND c.post_type = %s",
 					LP_COURSE_CPT
 				);
 
@@ -1800,7 +1800,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					LP_COURSE_CPT
 				);
 
-				if ( $rows = $wpdb->get_results( $sql ) ) {
+				$rows = $wpdb->get_results( $sql );
+				if ( $rows ) {
 					foreach ( $rows as $row ) {
 						$counts[ $row->status ] = $row->count;
 					}

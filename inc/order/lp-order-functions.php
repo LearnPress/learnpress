@@ -827,8 +827,9 @@ add_action( 'init', 'learn_press_cancel_order_process' );
  *
  * @param $result
  * @param $order_id
+ * @editor tungnx - comment - for not use
  */
-function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
+/*function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 	return;
 	$enrolled = false;
 	$order    = learn_press_get_order( $order_id, true );
@@ -859,5 +860,5 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 	}
 
 	return $result;
-}
+}*/
 

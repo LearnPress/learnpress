@@ -744,6 +744,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					break;
 				case 'own':
 					$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
+					break;
 			}
 
 			return $query;
