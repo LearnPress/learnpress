@@ -359,7 +359,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_orderby( $orderby ): string {
+		public function posts_orderby( $orderby ) {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $orderby;
 			}
@@ -367,10 +367,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$order = $this->get_order_sort();
 			switch ( $this->get_order_by() ) {
 				case 'price':
-					$order_by_statement = "pm_price.meta_value {$order}";
+					$orderby = "pm_price.meta_value {$order}";
 			}
 
-			return $order_by_statement;
+			return $orderby;
 		}
 
 		/**
