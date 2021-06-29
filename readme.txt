@@ -215,6 +215,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.0.8 =
 ~ Added: feature "Allow Repurchase course"
+~ Added: feature "No require enroll"
 ~ Fixed: Custom register fields error with some name not utf8
 ~ Added: field "confirm password" on register form profile
 ~ Fixed: file config.js permission 403 on some sites, change name to lp-configs.js
