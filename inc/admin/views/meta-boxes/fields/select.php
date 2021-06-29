@@ -76,7 +76,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
 		?>
 
-		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>">
+		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>" <?php echo $this->condition ? $this->condition : ''; ?>>
 			<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
 			<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
 				<?php

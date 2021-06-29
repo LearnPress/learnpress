@@ -248,18 +248,20 @@ class LP_User_Items_DB extends LP_Database {
 	 *
 	 * @param int $user_id
 	 * @param string $status
-	 * @return object
+	 * @return int
 	 * @throws Exception
 	 */
-	public function get_total_courses_has_status( int $user_id, string $status ) {
+	public function get_total_courses_has_status( int $user_id, string $status ): int {
 		$query = $this->wpdb->prepare(
 			"
-			SELECT DISTINCT(ref_id) , COUNT(graduation) AS total
+			SELECT COUNT(DISTINCT(item_id)) total
 			FROM $this->tb_lp_user_items
+				INNER JOIN $this->tb_posts AS p
+				ON item_id = p.ID
 			WHERE item_type = %s
 			AND user_id = %d
 			AND graduation = %s
-			GROUP BY graduation
+			AND p.post_status = 'publish'
 			",
 			LP_COURSE_CPT,
 			$user_id,
@@ -268,7 +270,7 @@ class LP_User_Items_DB extends LP_Database {
 
 		$this->check_execute_has_error();
 
-		return $this->wpdb->get_row( $query );
+		return (int) $this->wpdb->get_var( $query );
 	}
 }
 

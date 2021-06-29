@@ -9,17 +9,21 @@ a {
 	width: 1170px;
 	max-width: 100%;
 	margin: 0 auto;
- 	@media (max-width: 1024px) {
+
+	@media (max-width: 1024px) {
 		padding-right: 15px;
 		padding-left: 15px;
 	}
 
 }
-.lp-content-area:after,.lp-content-area:before{
-	content:"";
+
+.lp-content-area::after,
+.lp-content-area::before {
 	display: table;
 	clear: both;
+	content: "";
 }
+
 .lp-archive-courses {
 
 	&.loading {
@@ -49,9 +53,9 @@ a {
 				right: 0;
 				bottom: 0;
 				left: 0;
+				opacity: 0.8%;
 				background: #fff;
 				content: "";
-				opacity: 0.8%;
 			}
 		}
 	}
@@ -1130,6 +1134,8 @@ a {
 								}
 							}
 						}
+
+
 					}
 
 					@media (max-width: 768px) {
@@ -1152,5 +1158,22 @@ a {
 				}
 			}
 		}
+	}
+}
+
+.lp_allow_repuchase_select {
+	padding: 20px;
+	background: #f7f7f7;
+
+	>ul {
+		padding: 0;
+		list-style: none;
+	}
+
+	>a {
+		display: inline-block;
+		margin-top: 10px;
+		color: #fff;
+		background-color: #222;
 	}
 }

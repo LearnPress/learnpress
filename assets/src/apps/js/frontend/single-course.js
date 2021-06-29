@@ -1,6 +1,7 @@
 import SingleCourse from './single-course/index';
 import { addQueryArgs } from '@wordpress/url';
 import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
+import lpModalOverlay from '../utils/lp-modal-overlay';
 
 export default SingleCourse;
 
@@ -126,20 +127,63 @@ const purchaseCourse = () => {
 
 	if ( forms.length > 0 ) {
 		forms.forEach( ( form ) => {
-			const submit = async ( id, btn ) => {
+			// Allow Repurchase.
+			const allowRepurchase = () => {
+				const continueRepurchases = document.querySelectorAll( '.lp_allow_repuchase_select' );
+
+				continueRepurchases.forEach( ( repurchase ) => {
+					const radios = repurchase.querySelectorAll( '[name=_lp_allow_repurchase_type]' );
+
+					for ( let i = 0, length = radios.length; i < length; i++ ) {
+						if ( radios[ i ].checked ) {
+							const repurchaseType = radios[ i ].value;
+							const id = form.querySelector( 'input[name=purchase-course]' ).value;
+
+							const btnBuynow = form.querySelector( 'button.button-purchase-course' );
+							btnBuynow.classList.add( 'loading' );
+							btnBuynow.disabled = true;
+
+							submit( id, btnBuynow, repurchaseType );
+							break;
+						}
+					}
+				} );
+			};
+
+			const submit = async ( id, btn, repurchaseType = false ) => {
 				try {
 					const response = await wp.apiFetch( {
 						path: 'lp/v1/courses/purchase-course',
 						method: 'POST',
-						data: { id },
+						data: { id, repurchaseType },
 					} );
 
-					btn.classList.remove( 'loading' );
-					btn.disabled = false;
+					if ( btn ) {
+						btn.classList.remove( 'loading' );
+						btn.disabled = false;
+					}
 
-					const { status, data: { redirect }, message } = response;
+					const { status, data: { redirect, type, html, titlePopup }, message } = response;
 
-					if ( message && status ) {
+					if ( type === 'allow_repurchase' && status === 'success' ) {
+						if ( ! form.querySelector( '.lp_allow_repuchase_select' ) ) {
+							if ( ! lpModalOverlay.init() ) {
+								return;
+							}
+
+							lpModalOverlay.elLPOverlay.show();
+
+							lpModalOverlay.setTitleModal( titlePopup || '' );
+
+							lpModalOverlay.setContentModal( html );
+
+							lpModalOverlay.callBackYes = () => {
+								lpModalOverlay.elLPOverlay.hide();
+
+								allowRepurchase();
+							};
+						}
+					} else if ( message && status ) {
 						form.innerHTML += `<div class="lp-enroll-notice ${ status }">${ message }</div>`;
 
 						if ( 'success' === status && redirect ) {

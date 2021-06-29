@@ -64,6 +64,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function general( $thepostid ) {
+		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
+		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
+		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
+
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
 			array(
@@ -93,6 +97,19 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'Allow Repurchase',
 					esc_html__( 'Allow users to repurchase this course after course finished or blocked ( Do not apply to free courses ).', 'learnpress' ),
 					'no'
+				),
+				'_lp_course_repurchase_option'   => new LP_Meta_Box_Select_Field(
+					esc_html__( 'Repurchase action', 'learnpress' ),
+					$repurchase_option_desc,
+					'reset',
+					array(
+						'options' => array(
+							'reset'  => esc_html__( 'Reset course progress', 'learnpress' ),
+							'keep' => esc_html__( 'Keep course progress', 'learnpress' ),
+							'popup'  => esc_html__( 'Open popup', 'learnpress' ),
+						),
+						'show'    => array( '_lp_allow_course_repurchase', '=', 'yes' ), // use 'show' or 'hide'
+					)
 				),
 				'_lp_level'                    => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Level', 'learnpress' ),

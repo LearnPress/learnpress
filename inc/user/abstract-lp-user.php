@@ -2328,7 +2328,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_item['ref_type']     = ( $order_id != 0 ) ? learn_press_get_post_type( $order_id ) : '';
 				$course_item['start_time']   = current_time( 'mysql', true );
 				$course_item['access_level'] = 50;
-				$course_item['graduation']   = 'in-progress';
+
+				/**
+				 * @editor tungnx
+				 * @fixed: case no auto enroll
+				 */
+				if ( 'yes' == LP_Settings::get_option( 'auto_enroll' ) ) {
+					$course_item['graduation'] = 'in-progress';
+				}
 
 				$user_course = new LP_User_Item_Course( $course_item );
 				$user_course->set_status( LP_COURSE_PURCHASED );
@@ -2396,11 +2403,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int  $order_id
 		 * @param bool $force - Optional. Force create db record for preview quiz case
 		 * @param bool $wp_error - Optional. TRUE will return WP_Error object if there is an error.
-		 *
+		 * @editor tungnx - comment - not use
 		 * @return bool|mixed|WP_Error
 		 */
 		public function enroll( $course_id, $order_id, $force = false, $wp_error = false ) {
 			global $wpdb;
+
+			_deprecated_function( __FUNCTION__, '4.1.0' );
 
 			try {
 				$course  = learn_press_get_course( $course_id );
