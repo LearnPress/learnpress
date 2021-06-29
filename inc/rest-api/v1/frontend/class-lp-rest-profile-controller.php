@@ -65,12 +65,8 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			$counts = $query['counts'];
 
-			$total_courses_has_status     = 0;
-			$total_courses_has_status_obj = $lp_user_items_db->get_total_courses_has_status( $user_id, 'in-progress' );
-
-			if ( $total_courses_has_status_obj && isset( $total_courses_has_status_obj->total ) ) {
-				$total_courses_has_status = $total_courses_has_status_obj->total;
-			}
+			// Count total courses has status 'in-progress'
+			$total_courses_has_status = $lp_user_items_db->get_total_courses_has_status( $user_id, 'in-progress' );
 
 			$statistic = array(
 				'enrolled_courses'  => $counts['all'] ?? 0,
