@@ -308,7 +308,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$course_id             = $params['id'];
-			$allow_repurchase_type = $params['valRepurchase'] ?? false;
+			$allow_repurchase_type = $params['repurchaseType'] ?? false;
 
 			if ( ! $course_id ) {
 				throw new Exception( __( 'Error: Invalid Course ID.', 'learnpress' ) );
