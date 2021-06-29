@@ -136,26 +136,26 @@ const purchaseCourse = () => {
 
 					for ( let i = 0, length = radios.length; i < length; i++ ) {
 						if ( radios[ i ].checked ) {
-							const valRepurchase = radios[ i ].value;
+							const repurchaseType = radios[ i ].value;
 							const id = form.querySelector( 'input[name=purchase-course]' ).value;
 
 							const btnBuynow = form.querySelector( 'button.button-purchase-course' );
 							btnBuynow.classList.add( 'loading' );
 							btnBuynow.disabled = true;
 
-							submit( id, btnBuynow, valRepurchase );
+							submit( id, btnBuynow, repurchaseType );
 							break;
 						}
 					}
 				} );
 			};
 
-			const submit = async ( id, btn, valRepurchase = false ) => {
+			const submit = async ( id, btn, repurchaseType = false ) => {
 				try {
 					const response = await wp.apiFetch( {
 						path: 'lp/v1/courses/purchase-course',
 						method: 'POST',
-						data: { id, valRepurchase },
+						data: { id, repurchaseType },
 					} );
 
 					if ( btn ) {

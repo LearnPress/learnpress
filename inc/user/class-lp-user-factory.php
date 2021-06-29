@@ -203,8 +203,8 @@ class LP_User_Factory {
 				/** If allow_repurchase. */
 				if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() && ! empty( $allow_repurchase_type ) ) {
 
-					/** If update course progress will reset start_time, graduation.. */
-					if ( $allow_repurchase_type === 'update' ) {
+					/** If keep course progress will reset start_time, graduation.. */
+					if ( $allow_repurchase_type === 'keep' ) {
 						do_action( 'lp/allow_repurchase_options/continue/db/update', $latest_user_item_id );
 
 						/**

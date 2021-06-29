@@ -307,8 +307,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$params         = $request->get_params();
 
 		try {
-			$course_id        = $params['id'];
-			$allow_repurchase = $params['valRepurchase'] ?? false;
+			$course_id             = $params['id'];
+			$allow_repurchase_type = $params['valRepurchase'] ?? false;
 
 			if ( ! $course_id ) {
 				throw new Exception( __( 'Error: Invalid Course ID.', 'learnpress' ) );
@@ -344,8 +344,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				)
 			);
 
-			if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && empty( $allow_repurchase ) ) {
-				if ( $course->allow_repurchase_course_progress() === 'popup' ) {
+			if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && empty( $allow_repurchase_type ) ) {
+				if ( $course->allow_repurchase_course_option() === 'popup' ) {
 					ob_start();
 					?>
 					<div class="lp_allow_repuchase_select">
@@ -358,7 +358,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 							</li>
 							<li>
 								<label>
-									<input name="_lp_allow_repurchase_type" value="update" type="radio" />
+									<input name="_lp_allow_repurchase_type" value="keep" type="radio" />
 									<?php esc_html_e( 'Continue Course progress', 'learnpress' ); ?>
 								</label>
 							</li>
@@ -372,7 +372,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 					return rest_ensure_response( $response );
 				} else {
-					learn_press_update_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type', $course->allow_repurchase_course_progress() );
+					learn_press_update_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type', $course->allow_repurchase_course_option() );
 				}
 			}
 
@@ -395,8 +395,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
 			}
 
-			if ( ! empty( $allow_repurchase ) ) {
-				learn_press_update_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type', $allow_repurchase );
+			if ( ! empty( $allow_repurchase_type ) ) {
+				learn_press_update_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type', $allow_repurchase_type );
 			}
 
 			$redirect = apply_filters(

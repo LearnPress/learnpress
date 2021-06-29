@@ -271,8 +271,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			return 'yes' === $this->get_data( 'allow_repurchase' );
 		}
 
-		public function allow_repurchase_course_progress() : string {
-			return $this->get_data( 'allow_repurchase_course_progress' ) ?? 'reset';
+		public function allow_repurchase_course_option() : string {
+			return $this->get_data( 'allow_repurchase_course_option', 'reset' );
 		}
 
 		/**
