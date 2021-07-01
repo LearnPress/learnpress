@@ -3823,18 +3823,6 @@ function version_update_warning( $current_version, $new_version ) {
 			<div class="lp-update-warning__message">
 				<?php echo esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' ); ?>
 			</div>
-			<style>
-				#learnpress-update .update-message {
-					background: #ff0000;
-				}
-				#learnpress-update .update-message p::after,
-				#learnpress-update .update-message p::before {
-					color: #fff;
-				}
-				.lp-update-warning__title, .lp-update-warning__message {
-					color: #fff;
-				}
-			</style>
 		</div>
 	</div>
 

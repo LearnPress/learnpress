@@ -121,7 +121,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$course_item_objects = ! empty( $query['items'] ) ? $query['items'] : false;
 
 			if ( empty( $course_item_objects ) ) {
-				throw new Exception( esc_html__( 'No Course avaliable!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'No Course available!', 'learnpress' ) );
 			}
 
 			$course_ids = array_map(
@@ -132,13 +132,13 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			);
 
 			if ( empty( $course_ids ) ) {
-				throw new Exception( esc_html__( 'No Course IDs avaliable!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'No Course IDs available!', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_user( $user_id );
 
 			if ( empty( $user ) ) {
-				throw new Exception( esc_html__( 'No User avaliable!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'No User available!', 'learnpress' ) );
 			}
 
 			do_action( 'learnpress/rest/frontend/profile/course_tab', $request );

@@ -390,7 +390,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		try {
 			if ( ! $course || ! $user ) {
-				throw new Exception( esc_html__( 'Error: No Course or User avaliable.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Error: No Course or User available.', 'learnpress' ) );
 			}
 
 			$course_id = $course->get_id();
