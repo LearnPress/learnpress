@@ -51,13 +51,13 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			if ( empty( $course_id ) ) {
-				throw new Exception( esc_html__( 'No Course ID avaliable!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'No Course ID available!', 'learnpress' ) );
 			}
 
 			$course = learn_press_get_course( $course_id );
 
 			if ( ! $course ) {
-				throw new Exception( esc_html__( 'No Course avaliable!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'No Course available!', 'learnpress' ) );
 			}
 
 			$items = $course->get_item_ids();
@@ -79,12 +79,11 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 
 				ob_start();
 				?>
-					<div class="lp-metabox-evaluate-final_quiz__message">
-						<?php printf( esc_html__( 'Passing Grade: %s', 'learpress' ), $passing_grade . '%' ); ?>
-						-
-						<?php printf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ); ?>
-					</div>
-
+				<div class="lp-metabox-evaluate-final_quiz__message">
+					<?php printf( esc_html__( 'Passing Grade: %s', 'learpress' ), $passing_grade . '%' ); ?>
+					-
+					<?php printf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ); ?>
+				</div>
 				<?php
 				$response->status = 'success';
 				$response->data   = ob_get_clean();

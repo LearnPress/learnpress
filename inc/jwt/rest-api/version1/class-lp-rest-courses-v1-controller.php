@@ -447,30 +447,30 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						'type'       => 'object',
 						'properties' => array(
 							'graduation'      => array(
-								'description' => __( 'Graduation.', 'learnpress' ),
+								'description' => __( 'Graduation', 'learnpress' ),
 								'type'        => 'string',
 								'context'     => array( 'view' ),
 							),
 							'status'          => array(
-								'description' => __( 'Status.', 'learnpress' ),
+								'description' => __( 'Status', 'learnpress' ),
 								'type'        => 'string',
 								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
 							'start_time'      => array(
-								'description' => __( 'Start time.', 'learnpress' ),
+								'description' => __( 'Start time', 'learnpress' ),
 								'type'        => 'string',
 								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
 							'end_time'        => array(
-								'description' => __( 'End time.', 'learnpress' ),
+								'description' => __( 'End time', 'learnpress' ),
 								'type'        => 'string',
 								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
 							'expiration_time' => array(
-								'description' => __( 'Expiration time.', 'learnpress' ),
+								'description' => __( 'Expiration time', 'learnpress' ),
 								'type'        => 'string',
 								'context'     => array( 'view' ),
 								'readonly'    => true,

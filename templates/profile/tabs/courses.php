@@ -27,7 +27,7 @@ $data_course_progress = apply_filters(
 
 $enrolleds = array(
 	''            => esc_html__( 'All', 'learnpress' ),
-	'in-progress' => esc_html__( 'In-Progress', 'learnpress' ),
+	'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
 	'finished'    => esc_html__( 'Finished', 'learnpress' ),
 	'passed'      => esc_html__( 'Passed', 'learnpress' ),
 	'failed'      => esc_html__( 'Failed', 'learnpress' ),
