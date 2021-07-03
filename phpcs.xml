@@ -38,5 +38,6 @@
         <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
         <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
         <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found"/>
     </rule>
 </ruleset>

@@ -205,8 +205,9 @@ abstract class LP_Abstract_Post_Type {
 	 * @param int $post_id
 	 *
 	 * @editor tungnx
+	 * @since modify 4.0.9
 	 */
-	public function _before_delete_post( int $post_id ) {
+	final function _before_delete_post( int $post_id ) {
 		if ( ! $this->_check_post() ) {
 			return;
 		}
@@ -230,7 +231,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @param int $post_id
 	 */
-	public function _deleted_post( int $post_id ) {
+	final function _deleted_post( int $post_id ) {
 		if ( ! $this->_check_post() ) {
 			return;
 		}
@@ -244,7 +245,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @editor tungnx
 	 * @docs Class post type extend need override this function if want to handle when post deleted
 	 */
-	public function deleted_post( int $post_id, WP_Post $post ) {
+	public function deleted_post( int $post_id ) {
 		// Implement from child
 	}
 

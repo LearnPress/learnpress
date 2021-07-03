@@ -671,7 +671,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array( '%d', '%s' )
 				);
-
 			}
 
 			$new_status = $post->post_status;
@@ -700,6 +699,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function save( int $post_id, WP_Post $post ) {
 			$this->before_save_curriculum( $post );
+
+			// Save in background.
+			$bg = LP_Background_Single_Course::instance();
+
+			$bg->data( [ 'id' => $post_id ] )->dispatch();
 		}
 
 		/**
