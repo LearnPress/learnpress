@@ -20,13 +20,13 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
 > Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have LearnPress Theme Bundle included already.
-> [Eduma – Education WordPress Theme](https://themeforest.net/item/education-wordpress-theme-education-wp/14058034) (#1 Selling Education WordPress Theme).
-> [Coaching | Life & Fitness Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658) (Rising Star).
-> [CorpTrain | Corporate Training WordPress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918) (Potential).
+> [Eduma – Education WordPress Theme](https://1.envato.market/G5Ook) (#1 Selling Education WordPress Theme).
+> [Coaching | Life & Fitness Coaching WordPress Theme](https://1.envato.market/Xq2Ra) (Rising Star).
+> [CorpTrain | Corporate Training WordPress Theme](https://1.envato.market/13Zkd) (Potential).
 
 ###LMS & Education WordPress Themes###
 
-Take a look at **[Premium Theme](https://themeforest.net/category/wordpress/education?sort=sales&term=thimpress#content)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
+Take a look at **[Premium Theme](https://1.envato.market/AoKx3D)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
 
 ###LearnPress Tutorials###
 
