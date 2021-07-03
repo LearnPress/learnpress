@@ -232,8 +232,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Abstract Metabox.
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
-			// Background processes .
-			require_once 'inc/abstracts/abstract-background-process.php';
+			// Background processes.
+			require_once 'inc/libraries/wp-background-processing/wp-background-processing.php';
+			require_once 'inc/background-process/abstract-background-process.php';
+			require_once 'inc/background-process/class-lp-background-single-course.php';
 
 			// Filter query .
 			require_once 'inc/filters/class-lp-filter.php';
@@ -389,9 +391,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			/** Jwt */
 			include_once 'inc/jwt/class-jwt-auth.php';
 
-			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
+			// Comment by tungnx
+			/*if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
-			}
+			}*/
 
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
 		}

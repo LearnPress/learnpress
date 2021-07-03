@@ -3,14 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WP_Async_Request', false ) ) {
-	include_once LP_PLUGIN_PATH . '/inc/libraries/wp-async-request.php';
-}
-
-if ( ! class_exists( 'WP_Background_Process', false ) ) {
-	include_once LP_PLUGIN_PATH . '/inc/libraries/wp-background-process.php';
-}
-
 if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 	/**
 	 * Class LP_Abstract_Background_Process
