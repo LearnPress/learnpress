@@ -204,9 +204,16 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			$course_id = absint( $request['id'] );
 			$course    = learn_press_get_course( $course_id );
+			$user      = learn_press_get_current_user();
 
 			if ( ! $course ) {
 				throw new Exception( esc_html__( 'Invalid course!', 'learnpress' ) );
+			}
+
+			$can_enroll = $user->can_enroll_course( $course_id, false );
+
+			if ( ! $can_enroll->check ) {
+				throw new Exception( $can_enroll->message ?? esc_html__( 'Error: Cannot enroll course.', 'learnpress' ) );
 			}
 
 			// Check if course has in order.
@@ -272,23 +279,22 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			if ( is_user_logged_in() ) {
-				$response->status  = 'success';
-				//Course has no items
+				$response->status = 'success';
+				// Course has no items
 				if ( empty( $course->get_item_ids() ) ) {
-					$response->message = esc_html__(
+					$response->message        = esc_html__(
 						'Congrats! You enroll course successfully. Redirecting...',
 						'learnpress'
 					);
-					$response->data->redirect = get_permalink($course->get_id());
+					$response->data->redirect = get_permalink( $course->get_id() );
 					wp_send_json( $response );
-				}else{
+				} else {
 					$response->message = esc_html__(
 						'Congrats! You enroll course successfully. Redirecting...',
 						'learnpress'
 					);
 				}
 				// Send mail when course enrolled
-				$user = learn_press_get_current_user();
 				$user->enrolled_sendmail( get_current_user_id(), $course_id );
 				$response->data->redirect = $course->get_redirect_url_after_enroll();
 			} else {
