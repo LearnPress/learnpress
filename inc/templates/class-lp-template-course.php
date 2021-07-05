@@ -389,6 +389,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		// Do not display continue button if course is block duration
+		if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/continue.php' );
 	}
 
