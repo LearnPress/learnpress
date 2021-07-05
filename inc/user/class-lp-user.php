@@ -2,6 +2,7 @@
 
 /**
  * Class LP_User
+ *
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
@@ -73,7 +74,7 @@ class LP_User extends LP_Abstract_User {
 			}
 		}
 
-		//Todo: set cache - tungnx
+		// Todo: set cache - tungnx
 
 		return apply_filters( 'learnpress/course/can-view-content', $view, $this->get_id(), $course );
 	}
@@ -165,6 +166,48 @@ class LP_User extends LP_Abstract_User {
 		return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
 	}
 
+	public function can_enroll_course( int $course_id, bool $return_bool = true ) {
+		$course          = learn_press_get_course( $course_id );
+		$output          = new stdClass();
+		$output->check   = true;
+		$output->message = '';
+
+		try {
+			if ( ! $course ) {
+				throw new Exception( esc_html__( 'No Course or User available', 'learnpress' ) );
+			}
+
+			if ( ! $course->is_publish() ) {
+				throw new Exception( esc_html__( 'Course is not public', 'learnpress' ) );
+			}
+
+			if ( $course->get_external_link() ) {
+				throw new Exception( esc_html__( 'Course is External', 'learnpress' ) );
+			}
+
+			if ( ! $course->is_in_stock() ) {
+				throw new Exception( esc_html__( 'Course is full students', 'learnpress' ) );
+			}
+
+			if ( $course->is_no_required_enroll() ) {
+				throw new Exception( esc_html__( 'Course is not require enrolling.', 'learnpress' ) );
+			}
+
+			if ( ! $course->is_free() && ! $this->has_purchased_course( $course_id ) ) {
+				throw new Exception( esc_html__( 'Course is not purchased.', 'learnpress' ) );
+			}
+		} catch ( \Throwable $th ) {
+			$output->check   = false;
+			$output->message = $th->getMessage();
+		}
+
+		if ( $return_bool ) {
+			$output = $output->check;
+		}
+
+		return apply_filters( 'learn-press/user/can-enroll-course', $output, $course, $return_bool );
+	}
+
 	/**
 	 * Check can show purchase course button
 	 *
@@ -232,7 +275,8 @@ class LP_User extends LP_Abstract_User {
 				}
 
 				// User can not purchase course
-				/*if ( ! parent::can_purchase_course( $course_id ) ) {
+				/*
+				if ( ! parent::can_purchase_course( $course_id ) ) {
 					return false;
 				}*/
 

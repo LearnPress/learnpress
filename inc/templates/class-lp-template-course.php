@@ -227,29 +227,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( $course->get_external_link() ) {
-			learn_press_show_log( 'Course has external link' );
-
-			return;
-		}
-
-		// If course is not published.
-		if ( ! $course->is_publish() ) {
-			learn_press_show_log( 'Course is not published' );
-
-			return;
-		}
-
-		// Course out of stock (full students).
-		if ( ! $course->is_in_stock() ) {
-			return;
-		}
-
-		// Course is not require enrolling.
-		if ( $course->is_no_required_enroll() ) {
-			return;
-		}
-
 		// User can not enroll course.
 		if ( ! $user->can_enroll_course( $course->get_id() ) ) {
 			return;
