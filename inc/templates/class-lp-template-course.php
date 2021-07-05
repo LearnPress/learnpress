@@ -67,6 +67,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$can_retake_times = $user->can_retry_course( $course->get_id() );
 
+		//Course has no items
+		if ( empty( $course->get_item_ids() ) ) {
+			return;
+		}
+
 		if ( $can_retake_times ) {
 			learn_press_get_template(
 				'single-course/buttons/retry',
@@ -379,6 +384,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		//Course has no items
+		if ( empty( $course->get_item_ids() ) ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/continue.php' );
 	}
 
@@ -432,6 +442,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course = LP_Global::course();
 
 		$check = $this->can_show_finish_course_btn( $course, $user );
+
+		//Course has no items
+		if ( empty( $course->get_item_ids() ) ) {
+			return;
+		}
 
 		if ( $check['status'] === 'success' ) {
 			learn_press_get_template(
