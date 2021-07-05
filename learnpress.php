@@ -233,7 +233,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
 			// Background processes.
-			require_once 'inc/libraries/wp-background-processing/wp-background-processing.php';
+			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
 			require_once 'inc/background-process/abstract-background-process.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 
