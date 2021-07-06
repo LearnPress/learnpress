@@ -166,6 +166,13 @@ class LP_User extends LP_Abstract_User {
 		return apply_filters( 'learn-press/user/course/can-retry', $flag, $this->get_id(), $course_id );
 	}
 
+	/**
+	 * Check user can enroll course
+	 *
+	 * @param int $course_id
+	 * @param bool $return_bool
+	 * @return mixed|object|bool
+	 */
 	public function can_enroll_course( int $course_id, bool $return_bool = true ) {
 		$course          = learn_press_get_course( $course_id );
 		$output          = new stdClass();
