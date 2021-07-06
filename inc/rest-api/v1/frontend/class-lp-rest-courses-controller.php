@@ -281,22 +281,19 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			if ( is_user_logged_in() ) {
 				$response->status = 'success';
 				// Course has no items
+				$response->message = esc_html__(
+					'Congrats! You enroll course successfully. Redirecting...',
+					'learnpress'
+				);
+
+				$response->data->redirect = $course->get_redirect_url_after_enroll();
+
 				if ( empty( $course->get_item_ids() ) ) {
-					$response->message        = esc_html__(
-						'Congrats! You enroll course successfully. Redirecting...',
-						'learnpress'
-					);
 					$response->data->redirect = get_permalink( $course->get_id() );
-					wp_send_json( $response );
-				} else {
-					$response->message = esc_html__(
-						'Congrats! You enroll course successfully. Redirecting...',
-						'learnpress'
-					);
 				}
+
 				// Send mail when course enrolled
 				$user->enrolled_sendmail( get_current_user_id(), $course_id );
-				$response->data->redirect = $course->get_redirect_url_after_enroll();
 			} else {
 				$response->message        = esc_html__( 'Redirecting...', 'learnpress' );
 				$response->data->redirect = learn_press_get_page_link( 'checkout' );
