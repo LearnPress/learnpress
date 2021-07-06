@@ -197,6 +197,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.1 =
+~ Fixed: not show button "continue" when course is blocked.
+~ Fixed: course don't have any item will be not show button "continue", "finish", "retake".
+~ Updated: file languages
+
 = 4.1.0 =
 ~ Added: feature "Allow repurchase option". Manager can set fixed: Reset/Keep course progress of course or allow student choice.
 ~ Fixed: show incorrect "Active Courses" on page profile.
