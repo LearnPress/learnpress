@@ -1283,30 +1283,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Return true if user can enroll a course.
-		 *
-		 * @param int $course_id
-		 *
-		 * @return bool|string
-		 */
-		public function can_enroll_course( $course_id ) {
-			$course = learn_press_get_course( $course_id );
-
-			// Course is published and not reached limitation
-			$can_enroll = ! ! $course && $course->is_publish();
-
-			if ( $can_enroll && $course->is_free() && ! $course->is_in_stock() ) {
-				$can_enroll = false;
-			}
-
-			if ( $can_enroll && ! $course->is_free() && ! $this->has_purchased_course( $course_id ) ) {
-				$can_enroll = false;
-			}
-
-			return apply_filters( 'learn-press/can-enroll-course', $can_enroll, $course_id, $this->get_id() );
-		}
-
-		/**
 		 * Check if the user can access to an item inside course.
 		 *
 		 * @updated 3.1.0

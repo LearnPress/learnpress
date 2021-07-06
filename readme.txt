@@ -15,18 +15,18 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 **<a href="https://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
 
-<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://themeforest.net/item/education-wordpress-theme-education-wp/14058034" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a> | <a href="https://docspress.thimpress.com/learnpress-4-0/" target="_blank">Documentation</a>
+<a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://1.envato.market/G5Ook" target="_blank">LearnPress Themes</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/" target="_blank">Support</a> | <a href="https://docspress.thimpress.com/learnpress-4-0/" target="_blank">Documentation</a>
 
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
 > Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have LearnPress Theme Bundle included already.
-> [Eduma – Education WordPress Theme](https://themeforest.net/item/education-wordpress-theme-education-wp/14058034) (#1 Selling Education WordPress Theme).
-> [Coaching | Life & Fitness Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658) (Rising Star).
-> [CorpTrain | Corporate Training WordPress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918) (Potential).
+> [Eduma – Education WordPress Theme](https://1.envato.market/G5Ook) (#1 Selling Education WordPress Theme).
+> [Coaching | Life & Fitness Coaching WordPress Theme](https://1.envato.market/Xq2Ra) (Rising Star).
+> [CorpTrain | Corporate Training WordPress Theme](https://1.envato.market/13Zkd) (Potential).
 
 ###LMS & Education WordPress Themes###
 
-Take a look at **[Premium Theme](https://themeforest.net/category/wordpress/education?sort=sales&term=thimpress#content)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
+Take a look at **[Premium Theme](https://1.envato.market/AoKx3D)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
 
 ###LearnPress Tutorials###
 
@@ -196,6 +196,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.1.1 =
+~ Fixed: not show button "continue" when course is blocked.
+~ Fixed: course don't have any item will be not show button "continue", "finish", "retake".
+~ Updated: file languages
 
 = 4.1.0 =
 ~ Added: feature "Allow repurchase option". Manager can set fixed: Reset/Keep course progress of course or allow student choice.

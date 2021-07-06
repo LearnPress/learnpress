@@ -67,6 +67,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$can_retake_times = $user->can_retry_course( $course->get_id() );
 
+		//Course has no items
+		if ( empty( $course->get_item_ids() ) ) {
+			return;
+		}
+
 		if ( $can_retake_times ) {
 			learn_press_get_template(
 				'single-course/buttons/retry',
@@ -222,29 +227,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( $course->get_external_link() ) {
-			learn_press_show_log( 'Course has external link' );
-
-			return;
-		}
-
-		// If course is not published.
-		if ( ! $course->is_publish() ) {
-			learn_press_show_log( 'Course is not published' );
-
-			return;
-		}
-
-		// Course out of stock (full students).
-		if ( ! $course->is_in_stock() ) {
-			return;
-		}
-
-		// Course is not require enrolling.
-		if ( $course->is_no_required_enroll() ) {
-			return;
-		}
-
 		// User can not enroll course.
 		if ( ! $user->can_enroll_course( $course->get_id() ) ) {
 			return;
@@ -379,6 +361,16 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
+		//Course has no items
+		if ( empty( $course->get_item_ids() ) ) {
+			return;
+		}
+
+		// Do not display continue button if course is block duration
+		if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/continue.php' );
 	}
 
@@ -432,6 +424,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course = LP_Global::course();
 
 		$check = $this->can_show_finish_course_btn( $course, $user );
+
+		//Course has no items
+		if ( empty( $course->get_item_ids() ) ) {
+			return;
+		}
 
 		if ( $check['status'] === 'success' ) {
 			learn_press_get_template(

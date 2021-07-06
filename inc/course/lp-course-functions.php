@@ -1011,63 +1011,6 @@ function learn_press_course_passing_condition( $value, $format, $course_id ) {
 
 add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 3 );
 
-/**
- *
- */
-function learn_press_enroll_course_from_url() {
-	$course_id = LP_Request::get_int( 'enroll-course' );
-
-	if ( ! $course_id ) {
-		return;
-	}
-
-	$course = learn_press_get_course( $course_id );
-
-	if ( ! $course ) {
-		wp_die( __( 'Invalid request!', 'learnpress' ) );
-	}
-
-	$user = learn_press_get_current_user( false );
-
-	if ( ! $user ) {
-		return;
-	}
-
-	if ( ! $user->can_enroll_course( $course_id ) ) {
-		return;
-	}
-
-	if ( $user->has_enrolled_course( $course_id ) ) {
-		// If user is just logged in
-		if ( 'yes' === LP()->session->get( 'user_just_logged_in' ) ) {
-			// Remove all error messages
-			learn_press_remove_message( '', 'error' );
-			learn_press_add_message( sprintf( __( 'Welcome back, %s', 'learnpress' ), $user->get_display_name() ) );
-			LP()->session->remove( 'user_just_logged_in' );
-		}
-
-		wp_redirect( remove_query_arg( 'enroll-course' ) );
-		exit();
-	}
-	?>
-
-	<div style="display: none;">
-		<?php learn_press_get_template( 'single-course/buttons/enroll.php', array( 'course' => $course ) ); ?>
-	</div>
-	<script>
-		setTimeout(function () {
-			var forms = document.getElementsByClassName('enroll-course')
-			if (forms.length) {
-				forms[0].submit()
-			}
-		}, 300)
-	</script>
-	<?php
-	die();
-}
-
-add_action( 'get_header', 'learn_press_enroll_course_from_url' );
-
 function learn_press_remove_query_var_enrolled_course( $redirect ) {
 	return remove_query_arg( 'enroll-course', $redirect );
 }
