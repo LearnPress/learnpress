@@ -140,7 +140,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 						);
 
 						// Fix style, js if content is WP Bakery
-						if ( class_exists( 'WPBMap' ) ) {
+						if ( class_exists( 'WPBMap' ) && method_exists( 'WPBMap', 'addAllMappedShortcodes' ) ) {
 							WPBMap::addAllMappedShortcodes();
 						}
 
