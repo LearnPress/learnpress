@@ -33,6 +33,13 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => '__return_true',
 				),
 			),
+			'clean-tables'       => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'clean_tables' ),
+					'permission_callback' => '__return_true',
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -131,6 +138,47 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$response->data->table  = $lp_db->tb_lp_user_items;
 		$response->status       = 'success';
 
+		wp_send_json( $response );
+	}
+
+	public function clean_tables( WP_REST_Request $request ) {
+		$response            = new LP_REST_Response();
+		$lp_db               = LP_Database::getInstance();
+		$tables              = $request->get_param( 'tables' );
+		$item_before_process = $request->get_param( 'itemtotal' );
+		if ($item_before_process == 0) {
+			$response->data->percent == 100;
+			$response->status = 'finished';
+			wp_send_json( $response );
+		}
+
+		try {
+			// Delete resuilt in table select
+			$now = current_time('timestamp');
+			$adayago = $now - (24*60*60);
+			$where = 'WHERE session_expiry < '.$adayago.'';
+			$table = $lp_db->tb_lp_sessions;
+			$limit = 100;
+			$lp_db->wpdb->query(
+				"
+			DELETE FROM {$table}
+			{$where}
+			LIMIT {$limit}
+			"
+			);
+			// check the number of lines remaining after each query
+			$item_after_process = $lp_db->learn_press_count_row_db( $tables );
+			$response->data->processed = $item_before_process - $item_after_process;
+			$percent   = ( ($item_before_process - $item_after_process) / $item_before_process ) * 100;
+			$response->data->percent   = number_format_i18n($percent,'2');
+			if ( $response->data->percent == 100 ) {
+				$response->status = 'finished';
+			} else {
+				$response->status = 'success';
+			}
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
 		wp_send_json( $response );
 	}
 }

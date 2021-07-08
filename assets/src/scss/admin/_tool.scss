@@ -231,3 +231,72 @@
 		margin: 0 20px;
 	}
 }
+.tools-select__data{
+	overflow: hidden;
+	li{
+		background-color: #fff;
+		border: 1px solid #eee;
+		color: #000;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex: 0 0 auto;
+		font-size: 14px;
+		line-height: 1.4em;
+		font-weight: normal;
+		padding: 10px;
+		width: 100%;
+		input{
+			margin: 0 10px 0 0;
+		}
+	}
+}
+.progressbar__content{
+	width: 100%;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.4em;
+	background: #eee;
+	padding: 10px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	span{
+		z-index: 9;
+	}
+}
+.progressbar__container{
+	position: relative;
+}
+.progressbar__value{
+	position: absolute;
+	width: 0;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background: #8A2BE2;
+}
+.progressbar__item h4{
+	z-index: 9;
+	margin: 0;
+}
+.progressbar__item{
+	width: 500px;
+	border-bottom: 1px solid #fff;
+}
+.progressbar__indexs{
+	z-index: 9;
+}
+.lp-tool__message{
+	text-align: center;
+	color: red;
+	padding: 10px 0;
+	display: none;
+}
+.tools-prepare__message{
+	background: #dba617;
+	padding: 10px 0;
+	text-align: center;
+	display: none;
+}

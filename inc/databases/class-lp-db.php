@@ -22,6 +22,7 @@ class LP_Database {
 	public $tb_lp_question_answers;
 	public $tb_lp_question_answermeta;
 	public $tb_lp_upgrade_db;
+	public $tb_lp_sessions;
 	private $collate         = '';
 	public $max_index_length = '191';
 
@@ -48,6 +49,7 @@ class LP_Database {
 		$this->tb_lp_question_answers    = $prefix . 'learnpress_question_answers';
 		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
 		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
+		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
 		$this->wpdb->hide_errors();
 		$this->set_collate();
 	}
@@ -516,5 +518,31 @@ class LP_Database {
 		$this->check_execute_has_error();
 
 		return $result;
+	}
+	public function learn_press_count_row_db( $table_name ) {
+		global $wpdb;
+		$now = current_time('timestamp');
+		$adayago = $now - (24*60*60);
+		if ( $table_name == 'learnpress_sessions' ) {
+			$where = 'WHERE session_expiry < '.$adayago.' AND 0=%d';
+		}
+		$query  = $wpdb->prepare(
+			"
+			SELECT count(*)
+			FROM {$wpdb->prefix}$table_name
+			{$where}
+			",
+			0
+		);
+		$result = $wpdb->get_var( $query );
+		return $result;
+	}
+	public function learn_press_get_color_code_status( $table_name ) {
+		$color_code = '#ffffff';
+		$rows       = $this->learn_press_count_row_db( $table_name );
+		if ( $rows > 500 ) {
+			$color_code = '#ff0000';
+		}
+		return $color_code;
 	}
 }
