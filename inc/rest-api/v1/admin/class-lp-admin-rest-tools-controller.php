@@ -143,7 +143,6 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 	public function clean_tables( WP_REST_Request $request ) {
 		$response            = new LP_REST_Response();
-		$lp_db               = LP_Database::getInstance();
 		$lp_db_sessions      = LP_Sessions_DB::getInstance();
 		$tables              = $request->get_param( 'tables' );
 		$item_before_process = $request->get_param( 'itemtotal' );
@@ -166,7 +165,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			if ( $tables == 'learnpress_sessions' ) {
 				$lp_db_sessions->delete_rows();
 				// check the number of lines remaining after each query
-				$item_after_process = $lp_db->learn_press_count_row_db( $tables );
+				$item_after_process = $lp_db_sessions->learn_press_count_row_db();
 				$response->data->processed = $item_before_process - $item_after_process;
 				$percent   = ( ($item_before_process - $item_after_process) / $item_before_process ) * 100;
 				$response->data->percent   = number_format_i18n($percent,'2');

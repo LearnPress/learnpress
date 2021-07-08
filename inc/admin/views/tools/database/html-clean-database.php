@@ -10,7 +10,7 @@
  */
 
 defined( 'ABSPATH' ) or die();
-$lp_db               = LP_Database::getInstance();
+$lp_db_sessions      = LP_Sessions_DB::getInstance();
 global $wpdb;
 $clean_tables = array(
 	'learnpress_sessions',
@@ -25,9 +25,9 @@ $clean_tables = array(
 			<ul class="clean-table">
 				<?php foreach ( $clean_tables as $clean_table ) :
 					?>
-					<li style="background-color: <?php echo esc_attr( $lp_db->learn_press_get_color_code_status( $clean_table ) ); ?>">
+					<li style="background-color: <?php echo esc_attr( $lp_db_sessions->learn_press_get_color_code_status() ); ?>">
 						<input type="checkbox" id="clean-table__<?php echo esc_attr( $clean_table ); ?>" name="clean-table__<?php echo esc_attr( $clean_table ); ?>" value="<?php echo esc_attr($clean_table); ?>" >
-						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>"><?php echo esc_html__( '' . $clean_table . ' (' . $lp_db->learn_press_count_row_db( $clean_table ) . ' rows)', 'learnpress' ); ?></label><br>
+						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>"><?php echo esc_html__( '' . $clean_table . ' (' . $lp_db_sessions->learn_press_count_row_db() . ' rows)', 'learnpress' ); ?></label><br>
 					</li>
 				<?php endforeach; ?>
 			</ul>
@@ -41,7 +41,7 @@ $clean_tables = array(
 		$i = 0;
 		foreach ( $clean_tables as $clean_table ) :
 			$i++;
-			$rows = $lp_db->learn_press_count_row_db($clean_table);
+			$rows = $lp_db_sessions->learn_press_count_row_db();
 		?>
 			<div class="progressbar__item step-<?php echo esc_attr($i); ?>" data-total="<?php echo esc_attr($rows); ?>">
 				<div class="progressbar__container">
