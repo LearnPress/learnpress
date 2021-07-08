@@ -165,7 +165,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			if ( $tables == 'learnpress_sessions' ) {
 				$lp_db_sessions->delete_rows();
 				// check the number of lines remaining after each query
-				$item_after_process = $lp_db_sessions->learn_press_count_row_db();
+				$item_after_process = $lp_db_sessions->count_row_db_sessions();
 				$response->data->processed = $item_before_process - $item_after_process;
 				$percent   = ( ($item_before_process - $item_after_process) / $item_before_process ) * 100;
 				$response->data->percent   = number_format_i18n($percent,'2');

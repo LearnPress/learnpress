@@ -47,7 +47,7 @@ class LP_Sessions_DB extends LP_Database {
 
 		return $result;
 	}
-	public function learn_press_count_row_db() {
+	public function count_row_db_sessions() {
 		global $wpdb;
 		$now = current_time('timestamp');
 		$adayago = $now - (24*60*60);
@@ -63,14 +63,6 @@ class LP_Sessions_DB extends LP_Database {
 
 		$result = $wpdb->get_var( $query );
 		return $result;
-	}
-	public function learn_press_get_color_code_status() {
-		$color_code = '#ffffff';
-		$rows       = $this->learn_press_count_row_db();
-		if ( $rows > 500 ) {
-			$color_code = '#ff0000';
-		}
-		return $color_code;
 	}
 }
 

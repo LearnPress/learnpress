@@ -24,10 +24,15 @@ $clean_tables = array(
 	<div id="tools-select__id" class="tools-select__data">
 			<ul class="clean-table">
 				<?php foreach ( $clean_tables as $clean_table ) :
+					$color_code = '#ffffff';
+					$rows       = $lp_db_sessions->count_row_db_sessions();
+					if ( $rows > 500 ) {
+						$color_code = '#ff0000';
+					}
 					?>
-					<li style="background-color: <?php echo esc_attr( $lp_db_sessions->learn_press_get_color_code_status() ); ?>">
+					<li style="background-color: <?php echo esc_attr( $color_code ); ?>">
 						<input type="checkbox" id="clean-table__<?php echo esc_attr( $clean_table ); ?>" name="clean-table__<?php echo esc_attr( $clean_table ); ?>" value="<?php echo esc_attr($clean_table); ?>" >
-						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>"><?php echo esc_html__( '' . $clean_table . ' (' . $lp_db_sessions->learn_press_count_row_db() . ' rows)', 'learnpress' ); ?></label><br>
+						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>"><?php echo esc_html__( '' . $clean_table . ' (' . $lp_db_sessions->count_row_db_sessions() . ' rows)', 'learnpress' ); ?></label><br>
 					</li>
 				<?php endforeach; ?>
 			</ul>
@@ -41,7 +46,7 @@ $clean_tables = array(
 		$i = 0;
 		foreach ( $clean_tables as $clean_table ) :
 			$i++;
-			$rows = $lp_db_sessions->learn_press_count_row_db();
+			$rows = $lp_db_sessions->count_row_db_sessions();
 		?>
 			<div class="progressbar__item step-<?php echo esc_attr($i); ?>" data-total="<?php echo esc_attr($rows); ?>">
 				<div class="progressbar__container">
