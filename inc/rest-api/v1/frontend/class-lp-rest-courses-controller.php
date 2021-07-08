@@ -51,6 +51,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					),
 				),
 			),
+			'archive-course'  => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'archive_course' ),
+					'permission_callback' => '__return_true',
+				),
+			),
 			'(?P<key>[\w]+)'  => array(
 				'args'   => array(
 					'id' => array(
@@ -83,6 +90,74 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 	public function check_admin_permission() {
 		return LP_REST_Authentication::check_admin_permission();
+	}
+
+	public function archive_course( WP_REST_Request $request ) {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		$s       = $request['s'] ?? false;
+		$page    = isset( $request['page'] ) ? absint( wp_unslash( $request['page'] ) ) : 1;
+		$order   = isset( $request['order'] ) ? wp_unslash( $request['order'] ) : false;
+		$orderby = isset( $request['orderby'] ) ? wp_unslash( $request['orderby'] ) : false;
+		$user_id = isset( $request['userID'] ) ? absint( wp_unslash( $request['userID'] ) ) : false;
+		$limit   = LP_Settings::get_option( 'archive_course_limit', -1 );
+
+		$args = array(
+			'posts_per_page' => $limit,
+			'paged'          => $page,
+			'post_type'      => LP_COURSE_CPT,
+		);
+
+		if ( ! empty( $s ) ) {
+			$args['s'] = $s;
+		}
+
+		if ( ! empty( $order ) ) {
+			$args['orderby'] = $orderby;
+			$args['order']   = $order;
+		}
+
+		if ( $user_id && learn_press_user_maybe_is_a_teacher( $user_id ) ) {
+			$args['post_status'] = array( 'publish', 'private' );
+		}
+
+		$args = apply_filters( 'lp/rest-api/frontend/course/archive_course', $args, $request );
+
+		$query = new WP_Query( $args );
+
+		$num_pages = ! empty( $query->max_num_pages ) ? $query->max_num_pages : 1;
+
+		$response->data->pagination = learn_press_get_template_content(
+			'loop/course/pagination.php',
+			array(
+				'total' => $num_pages,
+				'paged' => $page,
+				'base'  => get_post_type_archive_link( LP_COURSE_CPT ),
+			)
+		);
+
+		ob_start();
+
+		if ( $query->have_posts() ) {
+			global $post;
+
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				learn_press_get_template_part( 'content', 'course' );
+			}
+
+			wp_reset_postdata();
+		} else {
+			?>
+			<div class="lp-ajax-message error" style="display: block"><?php esc_html_e( 'No more course available...', 'learnpress' ); ?></div>
+			<?php
+		}
+
+		$response->status        = 'success';
+		$response->data->content = ob_get_clean();
+
+		return rest_ensure_response( $response );
 	}
 
 	public function search_courses( $request ) {
@@ -147,7 +222,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					);
 				}
 
-				ob_start(); ?>
+				ob_start();
+				?>
 
 				<div class="course-price">
 					<?php if ( $course->has_sale_price() ) { ?>
