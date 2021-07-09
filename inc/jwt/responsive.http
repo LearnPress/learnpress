@@ -18,40 +18,121 @@ Content-Type: application/json
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/token/validate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNDU4NzE3MiwibmJmIjoxNjI0NTg3MTcyLCJleHAiOjE2MjUxOTE5NzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.czBrKpTMrlUt5nGc5DXbNsAhkhg2od1xnlSHcgzBG6U
 
+## Get list Course learned by user, if not learned will get all course
+## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/test
+GET http://learnpress4.local/wp-json/learnpress/v1/courses/?learned=true&course_filter=passed
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
 
+### Get content Course
+## If have token will show course_data for this user: course_data: graduation, status....
+GET http://learnpress4.local/wp-json/learnpress/v1/courses/196
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+
+
+## Enroll course.
 ###
-GET http://learnpress4.local/wp-json/wp/v2/posts
+POST http://learnpress4.local/wp-json/learnpress/v1/courses/enroll
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
 
+{
+	"id": "196"
+}
+
+## Finish course.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses
+POST http://learnpress4.local/wp-json/learnpress/v1/courses/finish
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
 
-###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses/529?course_data=true
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+{
+	"id": "196"
+}
 
+## Get All lesson: is administration, student cannot get list.
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+
+## In student: You can get lesson by course is enrolled
+###
+GET http://learnpress4.local/wp-json/learnpress/v1/lessons/545
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+
+## Action Complete Lesson.
+###
+POST http://learnpress4.local/wp-json/learnpress/v1/lessons/finish
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTgwMDYxMywibmJmIjoxNjI1ODAwNjEzLCJleHAiOjE2MjY0MDU0MTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.4IQCUUcgZG5KH335evg8ZkDADVC0KCte8zFfENtQ0FA
+
+{
+	"id": "545"
+}
+
+## In student: You can get quiz by course is enrolled
+###
+GET http://learnpress4.local/wp-json/learnpress/v1/quiz/197
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTgwMDYxMywibmJmIjoxNjI1ODAwNjEzLCJleHAiOjE2MjY0MDU0MTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.4IQCUUcgZG5KH335evg8ZkDADVC0KCte8zFfENtQ0FA
+
+## Start Quiz.
+###
+POST http://learnpress4.local/wp-json/learnpress/v1/quiz/start
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTgwMDYxMywibmJmIjoxNjI1ODAwNjEzLCJleHAiOjE2MjY0MDU0MTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.4IQCUUcgZG5KH335evg8ZkDADVC0KCte8zFfENtQ0FA
+
+{
+	"id": "197"
+}
+
+## Check Answer Quiz.
+###
+POST http://learnpress4.local/wp-json/learnpress/v1/quiz/check_answer
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTgwMDYxMywibmJmIjoxNjI1ODAwNjEzLCJleHAiOjE2MjY0MDU0MTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.4IQCUUcgZG5KH335evg8ZkDADVC0KCte8zFfENtQ0FA
+
+{
+	"id": "197",
+	"question_id": "198",
+	"answered": "5f2674eb"
+}
+
+## Finish Quiz.
+###
+POST http://learnpress4.local/wp-json/learnpress/v1/quiz/finish
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTgwMDYxMywibmJmIjoxNjI1ODAwNjEzLCJleHAiOjE2MjY0MDU0MTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.4IQCUUcgZG5KH335evg8ZkDADVC0KCte8zFfENtQ0FA
+
+{
+	"id": 197,
+	"answered": {
+		"198": "5f2674eb"
+	}
+}
+
+###
+GET http://learnpress4.local/wp-json/wp/v2/categories
+Content-Type: application/json
+
+### END.
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/quiz?per_page=2
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTE5NDUzMCwibmJmIjoxNjI1MTk0NTMwLCJleHAiOjE2MjU3OTkzMzAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.GXI49miNfrGgatf9EjcFiciJHdB8jvmIr_jtedBnWQ4
+
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/questions
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNDU4NzE3MiwibmJmIjoxNjI0NTg3MTcyLCJleHAiOjE2MjUxOTE5NzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.czBrKpTMrlUt5nGc5DXbNsAhkhg2od1xnlSHcgzBG6U
 
 
 ###
@@ -61,17 +142,17 @@ Content-Type: application/json
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/users/?per_page=2
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTgwMDYxMywibmJmIjoxNjI1ODAwNjEzLCJleHAiOjE2MjY0MDU0MTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.4IQCUUcgZG5KH335evg8ZkDADVC0KCte8zFfENtQ0FA
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/users/1
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI5OTk2OSwibmJmIjoxNjI1Mjk5OTY5LCJleHAiOjE2MjU5MDQ3NjksImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.2j7AsEJP5E5F4fDaIaBTX-Bg_nbL9lj1mR6IwNGlrzk
 
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/users/1/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzY2NTU5NSwibmJmIjoxNjIzNjY1NTk1LCJleHAiOjE2MjQyNzAzOTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.5tsZ-uQRzt_9eNauqXz3IoYqLSTIrWS-C8dQJ1v1mw0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNDU4NzE3MiwibmJmIjoxNjI0NTg3MTcyLCJleHAiOjE2MjUxOTE5NzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.czBrKpTMrlUt5nGc5DXbNsAhkhg2od1xnlSHcgzBG6U
 
 {
 	"first_name": "dao",
@@ -88,11 +169,11 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/users/2
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyMzI5MTgzNiwibmJmIjoxNjIzMjkxODM2LCJleHAiOjE2MjM4OTY2MzYsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.Ls7Q3EiFE5ZHn78Exe6CdnfZJ2JZaPcuJBI0wQHdvzk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTQ2MDU4MSwibmJmIjoxNjI1NDYwNTgxLCJleHAiOjE2MjYwNjUzODEsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.-vPZer6A5impVQ_pHa2tUmvWmEDdQXL166pKHGlOv6U
 
 {
-	"first_name": "dao",
-	"last_name": "nham",
+	"first_name": "nham",
+	"last_name": "kin",
 	"email": "studentsss@gmail.com",
 	"password": "student"
 }

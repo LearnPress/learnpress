@@ -48,6 +48,165 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/start',
+			array(
+				'args' => array(
+					'id' => array(
+						'description' => esc_html__( 'Quiz ID.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'start_quiz' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/check_answer',
+			array(
+				'args' => array(
+					'id'          => array(
+						'description' => esc_html__( 'Quiz ID.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+					'question_id' => array(
+						'description' => esc_html__( 'Question ID.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+					'answered'    => array(
+						'description' => esc_html__( 'Answer this question.', 'learnpress' ),
+						'type'        => 'string',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'check_quiz' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/finish',
+			array(
+				'args' => array(
+					'id'       => array(
+						'description' => esc_html__( 'Quiz ID.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+					'answered' => array(
+						'description' => esc_html__( 'Answer all question.', 'learnpress' ),
+						'type'        => 'object',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'submit_quiz' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Checks if a course can be read.
+	 *
+	 * Correctly handles courses with the inherit status.
+	 *
+	 * @author Nhamdv
+	 *
+	 * @return bool Whether the post can be read.
+	 * */
+	public function check_read_permission( $post_id ) {
+		if ( empty( absint( $post_id ) ) ) {
+			return false;
+		}
+
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return false;
+		}
+
+		if ( lp_rest_check_post_permissions( $this->post_type, 'read', $post_id ) ) {
+			return true;
+		}
+
+		$post_status_obj = get_post_status_object( $post->post_status );
+		if ( ! $post_status_obj || ! $post_status_obj->public ) {
+			return false;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( ! $user_id ) {
+			return false;
+		}
+
+		$user = learn_press_get_user( $user_id );
+
+		// Get course ID by lesson ID assigned.
+		$course_id = $this->get_course_by_item_id( $post_id );
+
+		if ( empty( $course_id ) ) {
+			return false;
+		}
+
+		$can_view_content_course = $user->can_view_content_course( $course_id );
+
+		$can_view_item = $user->can_view_item( $post_id, $can_view_content_course );
+
+		if ( ! $can_view_item->flag ) {
+			return false;
+		}
+
+		// Can we read the parent if we're inheriting?
+		if ( 'inherit' === $post->post_status && $post->post_parent > 0 ) {
+			$parent = get_post( $post->post_parent );
+
+			if ( $parent ) {
+				return $this->check_read_permission( $parent );
+			}
+		}
+
+		return true;
+	}
+
+	protected function get_course_by_item_id( $item_id ) {
+		static $output;
+
+		global $wpdb;
+
+		if ( empty( $item_id ) ) {
+			return false;
+		}
+
+		if ( ! isset( $output ) ) {
+			$output = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT c.ID FROM {$wpdb->posts} c
+					INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
+					INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+					WHERE si.item_id = %d ORDER BY si.section_id DESC LIMIT 1
+					",
+					$item_id
+				)
+			);
+		}
+
+		if ( $output ) {
+			return absint( $output );
+		}
+
+		return false;
 	}
 
 	protected function get_object( $quiz = 0 ) {
@@ -64,6 +223,85 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		return new LP_Quiz( $id );
+	}
+
+	public function start_quiz( $request ) {
+		$response  = new LP_REST_Response();
+		$quiz_id   = isset( $request['id'] ) ? absint( $request['id'] ) : '';
+		$course_id = $this->get_course_by_item_id( $quiz_id );
+
+		if ( empty( $quiz_id ) || empty( $course_id ) ) {
+			$response->status  = 'error';
+			$response->message = esc_html__( 'No Quiz ID or Quiz is not assigned in Course.', 'learnpress' );
+
+			return rest_ensure_response( $response );
+		}
+
+		if ( ! class_exists( 'LP_REST_Users_Controller' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-users-controller.php';
+		}
+
+		$controller = new LP_REST_Users_Controller();
+
+		$request->set_param( 'course_id', $course_id );
+		$request->set_param( 'item_id', $quiz_id );
+
+		return $controller->start_quiz( $request );
+	}
+
+	public function check_quiz( $request ) {
+		$response    = new LP_REST_Response();
+		$quiz_id     = isset( $request['id'] ) ? absint( $request['id'] ) : '';
+		$question_id = isset( $request['question_id'] ) ? absint( $request['question_id'] ) : '';
+		$answered    = isset( $request['answered'] ) ? wp_unslash( $request['answered'] ) : '';
+		$course_id   = $this->get_course_by_item_id( $quiz_id );
+
+		if ( empty( $quiz_id ) || empty( $course_id ) ) {
+			$response->status  = 'error';
+			$response->message = esc_html__( 'No Quiz ID or Quiz is not assigned in Course.', 'learnpress' );
+
+			return rest_ensure_response( $response );
+		}
+
+		if ( ! class_exists( 'LP_REST_Users_Controller' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-users-controller.php';
+		}
+
+		$controller = new LP_REST_Users_Controller();
+
+		$request->set_param( 'answered', $answered );
+		$request->set_param( 'question_id', $question_id );
+		$request->set_param( 'course_id', $course_id );
+		$request->set_param( 'item_id', $quiz_id );
+
+		return $controller->check_answer( $request );
+	}
+
+	public function submit_quiz( $request ) {
+		$response = new LP_REST_Response();
+		$quiz_id  = isset( $request['id'] ) ? absint( $request['id'] ) : '';
+		$answered = isset( $request['answered'] ) ? wp_unslash( $request['answered'] ) : '';
+
+		$course_id = $this->get_course_by_item_id( $quiz_id );
+
+		if ( empty( $quiz_id ) || empty( $course_id ) ) {
+			$response->status  = 'error';
+			$response->message = esc_html__( 'No Quiz ID or Quiz is not assigned in Course.', 'learnpress' );
+
+			return rest_ensure_response( $response );
+		}
+
+		if ( ! class_exists( 'LP_REST_Users_Controller' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-users-controller.php';
+		}
+
+		$controller = new LP_REST_Users_Controller();
+
+		$request->set_param( 'answered', $answered );
+		$request->set_param( 'course_id', $course_id );
+		$request->set_param( 'item_id', $quiz_id );
+
+		return $controller->submit_quiz( $request );
 	}
 
 	public function prepare_object_for_response( $object, $request ) {
@@ -128,7 +366,10 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['assigned'] = $assigned;
 					break;
 				case 'questions':
-					$data['questions'] = $this->get_all_question( $object );
+					$data['questions'] = $this->get_quiz_results( $object, true )['questions'] ?? array();
+					break;
+				case 'results':
+					$data['results'] = $this->get_quiz_results( $object );
 					break;
 			}
 		}
@@ -136,6 +377,100 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function get_quiz_results( $quiz, $get_question = false ) {
+		$output = array();
+
+		$user = learn_press_get_current_user();
+
+		if ( ! $user || ! $quiz ) {
+			return $output;
+		}
+
+		$id = ! empty( $quiz->ID ) ? $quiz->ID : $quiz->get_id();
+
+		$course_id = $this->get_course_by_item_id( $id );
+
+		if ( empty( $course_id ) ) {
+			return $output;
+		}
+
+		$user_course         = $user->get_course_data( $course_id );
+		$user_quiz           = $user_course ? $user_course->get_item( $id ) : false;
+		$show_check          = $quiz->get_instant_check();
+		$show_correct_review = $quiz->get_show_correct_review();
+		$answered            = array();
+		$status              = '';
+		$checked_questions   = array();
+		$question_ids        = array();
+
+		if ( $user_quiz ) {
+			$status            = $user_quiz->get_status();
+			$quiz_results      = $user_quiz->get_results( '' );
+			$checked_questions = $user_quiz->get_checked_questions();
+			$expiration_time   = $user_quiz->get_expiration_time();
+
+			// If expiration time is specific then calculate total time
+			if ( $expiration_time && ! $expiration_time->is_null() ) {
+				$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
+			}
+
+			$output = array(
+				'status'            => $status,
+				'attempts'          => $user_quiz->get_attempts(),
+				'checked_questions' => $checked_questions,
+				'start_time'        => lp_jwt_prepare_date_response( $user_quiz->get_start_time()->toSql( false ) ),
+				'retaken'           => absint( $user_quiz->get_retaken_count() ),
+			);
+
+			if ( isset( $total_time ) ) {
+				$output['total_time'] = lp_jwt_prepare_date_response( $total_time );
+				$output['endTime']    = lp_jwt_prepare_date_response( $expiration_time->toSql( false ) );
+			}
+
+			if ( $quiz_results ) {
+				$output['results'] = $quiz_results->get();
+				$answered          = $quiz_results->getQuestions();
+				$question_ids      = $quiz_results->getQuestions( 'ids' );
+			} else {
+				$question_ids = $quiz->get_question_ids();
+			}
+
+			$output['answered']     = ! empty( $answered ) ? (object) $answered : new stdClass();
+			$output['question_ids'] = array_map( 'absint', array_values( $question_ids ) );
+		}
+
+		$duration = $quiz->get_duration();
+
+		$array = array(
+			'passing_grade'      => $quiz->get_passing_grade(),
+			'negative_marking'   => $quiz->get_negative_marking(),
+			'instant_check'      => $quiz->get_instant_check(),
+			'retake_count'       => absint( $quiz->get_retake_count() ),
+			'questions_per_page' => $quiz->get_pagination(),
+			'page_numbers'       => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
+			'review_questions'   => $quiz->get_review_questions(),
+			'support_options'    => learn_press_get_question_support_answer_options(),
+			'duration'           => $duration ? $duration->get() : false,
+		);
+
+		if ( function_exists( 'learn_press_rest_prepare_user_questions' ) && $get_question ) {
+			$questions = learn_press_rest_prepare_user_questions(
+				$question_ids,
+				array(
+					'instant_check'       => $show_check,
+					'quiz_status'         => $status,
+					'checked_questions'   => $checked_questions,
+					'answered'            => $answered,
+					'show_correct_review' => $show_correct_review,
+				)
+			);
+
+			$output['questions'] = $questions;
+		}
+
+		return array_merge( $array, $output );
 	}
 
 	public function get_course_meta( $id ) {
@@ -362,6 +697,11 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 							),
 						),
 					),
+				),
+				'results'           => array(
+					'description' => __( 'Retrieves the quiz result..', 'learnpress' ),
+					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
 				),
 			),
 		);

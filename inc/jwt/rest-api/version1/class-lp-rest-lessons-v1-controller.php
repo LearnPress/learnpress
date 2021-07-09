@@ -48,6 +48,95 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/finish',
+			array(
+				'args' => array(
+					'id' => array(
+						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'finish_lesson' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'args'                => array(
+						'context' => $this->get_context_param(
+							array(
+								'default' => 'edit',
+							)
+						),
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Checks if a course can be read.
+	 *
+	 * Correctly handles courses with the inherit status.
+	 *
+	 * @author Nhamdv
+	 *
+	 * @return bool Whether the post can be read.
+	 * */
+	public function check_read_permission( $post_id ) {
+		if ( empty( absint( $post_id ) ) ) {
+			return false;
+		}
+
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return false;
+		}
+
+		if ( lp_rest_check_post_permissions( $this->post_type, 'read', $post_id ) ) {
+			return true;
+		}
+
+		$post_status_obj = get_post_status_object( $post->post_status );
+		if ( ! $post_status_obj || ! $post_status_obj->public ) {
+			return false;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( ! $user_id ) {
+			return false;
+		}
+
+		$user = learn_press_get_user( $user_id );
+
+		// Get course ID by lesson ID assigned.
+		$course_id = $this->get_course_by_item_id( $post_id );
+
+		if ( empty( $course_id ) ) {
+			return false;
+		}
+
+		$can_view_content_course = $user->can_view_content_course( $course_id );
+
+		$can_view_item = $user->can_view_item( $post_id, $can_view_content_course );
+
+		if ( ! $can_view_item->flag ) {
+			return false;
+		}
+
+		// Can we read the parent if we're inheriting?
+		if ( 'inherit' === $post->post_status && $post->post_parent > 0 ) {
+			$parent = get_post( $post->post_parent );
+
+			if ( $parent ) {
+				return $this->check_read_permission( $parent );
+			}
+		}
+
+		return true;
 	}
 
 	protected function get_object( $lesson = 0 ) {
@@ -64,6 +153,81 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		return LP_Course_Item::get_item( $id );
+	}
+
+	/**
+	 * Get course ID by lesson ID assigned.
+	 *
+	 * @param [type] $item_id
+	 * @return void
+	 */
+	protected function get_course_by_item_id( $item_id ) {
+		static $output;
+
+		global $wpdb;
+
+		if ( empty( $item_id ) ) {
+			return false;
+		}
+
+		if ( ! isset( $output ) ) {
+			$output = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT c.ID FROM {$wpdb->posts} c
+					INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
+					INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+					WHERE si.item_id = %d ORDER BY si.section_id DESC LIMIT 1
+					",
+					$item_id
+				)
+			);
+		}
+
+		if ( $output ) {
+			return absint( $output );
+		}
+
+		return false;
+	}
+
+	public function finish_lesson( $request ) {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$id = isset( $request['id'] ) ? absint( $request['id'] ) : '';
+
+			if ( empty( $id ) ) {
+				throw new Exception( esc_html__( 'Error: No lesson available!.', 'learnpress' ) );
+			}
+
+			$course_id = $this->get_course_by_item_id( $id );
+
+			if ( empty( $course_id ) ) {
+				throw new Exception( esc_html__( 'Error: This lesson is not assign in Course.', 'learnpress' ) );
+			}
+
+			$course = learn_press_get_course( $course_id );
+			$user   = learn_press_get_current_user();
+
+			if ( empty( $course ) || empty( $user ) ) {
+				throw new Exception( esc_html__( 'Error: No Course or User available.', 'learnpress' ) );
+			}
+
+			$result = $user->complete_lesson( $id, $course_id, true );
+
+			if ( is_wp_error( $result ) ) {
+				throw new Exception( $result->get_error_message() ?? esc_html__( 'Error: Cannot complete Lesson', 'learnpress' ) );
+			}
+
+			$response->status  = 'success';
+			$response->message = esc_html__( 'Congrats! You complete lesson is successfully', 'learnpress' );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+		}
+
+		return rest_ensure_response( $response );
 	}
 
 	public function prepare_object_for_response( $object, $request ) {
