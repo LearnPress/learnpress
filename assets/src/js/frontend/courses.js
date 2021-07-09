@@ -120,10 +120,18 @@ const gridListCourseHandle = ( e ) => {
 document.addEventListener( 'DOMContentLoaded', function( event ) {
 	const archiveEle = document.querySelector( '.lp-archive-courses' );
 	const search = archiveEle.querySelectorAll( '.search-courses input[name="s"]' );
+	const searchForm = archiveEle.querySelectorAll( 'form.search-courses' );
 	const gridList = archiveEle.querySelectorAll( 'input[name="lp-switch-layout-btn"]' );
 
-	search.forEach( ( s ) => s.addEventListener( 'keyup', searchCourse ) );
 	gridList.forEach( ( s ) => s.addEventListener( 'change', gridListCourseHandle ) );
+	search.forEach( ( s ) => s.addEventListener( 'keyup', searchCourse ) );
+
+	searchForm.forEach( ( s ) => s.addEventListener( 'submit', ( e ) => {
+		e.preventDefault();
+
+		const eleSearch = s.querySelector( 'input[name="s"]' );
+		eleSearch && eleSearch.dispatchEvent( new Event( 'keyup' ) );
+	} ) );
 
 	paginationCourse();
 	gridListCourse();
