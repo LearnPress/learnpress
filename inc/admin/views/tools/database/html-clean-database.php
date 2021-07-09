@@ -10,7 +10,7 @@
  */
 
 defined( 'ABSPATH' ) or die();
-$lp_db_sessions      = LP_Sessions_DB::getInstance();
+$lp_db_sessions = LP_Sessions_DB::getInstance();
 global $wpdb;
 $clean_tables = array(
 	'learnpress_sessions',
@@ -18,12 +18,13 @@ $clean_tables = array(
 ?>
 
 <div class="card" id="lp-tool-clean-database">
-	<h2><?php echo sprintf( '%s', __( 'Repair Database', 'learnpress' ) ); ?></h2>
-	<p><?php _e( 'Remove unwanted data and re-calculate relationship', 'learnpress' ); ?></p>
+	<h2><?php echo sprintf( '%s', __( 'Clean data system', 'learnpress' ) ); ?></h2>
+	<p><?php _e( 'Remove old data, not use or expire', 'learnpress' ); ?></p>
 	<div class="tools-prepare__message"></div>
 	<div id="tools-select__id" class="tools-select__data">
 			<ul class="clean-table">
-				<?php foreach ( $clean_tables as $clean_table ) :
+				<?php
+				foreach ( $clean_tables as $clean_table ) :
 					$color_code = '#ffffff';
 					$rows       = $lp_db_sessions->count_row_db_sessions();
 					if ( $rows > 500 ) {
@@ -31,8 +32,8 @@ $clean_tables = array(
 					}
 					?>
 					<li style="background-color: <?php echo esc_attr( $color_code ); ?>">
-						<input type="checkbox" id="clean-table__<?php echo esc_attr( $clean_table ); ?>" name="clean-table__<?php echo esc_attr( $clean_table ); ?>" value="<?php echo esc_attr($clean_table); ?>" >
-						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>"><?php echo esc_html__( '' . $clean_table . ' (' . $lp_db_sessions->count_row_db_sessions() . ' rows)', 'learnpress' ); ?></label><br>
+						<input type="checkbox" id="clean-table__<?php echo esc_attr( $clean_table ); ?>" name="clean-table__<?php echo esc_attr( $clean_table ); ?>" value="<?php echo esc_attr( $clean_table ); ?>" >
+						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>"><?php echo esc_html__( '' . $clean_table . ' (' . $lp_db_sessions->count_row_db_sessions() . ' rows expire)', 'learnpress' ); ?></label><br>
 					</li>
 				<?php endforeach; ?>
 			</ul>
@@ -47,14 +48,14 @@ $clean_tables = array(
 		foreach ( $clean_tables as $clean_table ) :
 			$i++;
 			$rows = $lp_db_sessions->count_row_db_sessions();
-		?>
-			<div class="progressbar__item step-<?php echo esc_attr($i); ?>" data-total="<?php echo esc_attr($rows); ?>">
+			?>
+			<div class="progressbar__item step-<?php echo esc_attr( $i ); ?>" data-total="<?php echo esc_attr( $rows ); ?>">
 				<div class="progressbar__container">
 					<div class="progressbar__content">
-						<h4><?php echo esc_html('Table name: '.$clean_table.'') ?></h4>
+						<h4><?php echo esc_html( 'Table name: ' . $clean_table . '' ); ?></h4>
 						<div class="progressbar__indexs">
 								<span class="progressbar__rows">
-									<?php echo esc_html('0 / ' . $rows) ?>
+									<?php echo esc_html( '0 / ' . $rows . ' expire' ); ?>
 								</span>
 								<span class="progressbar__percent">
 									( 0% )
