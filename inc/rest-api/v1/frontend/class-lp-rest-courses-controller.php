@@ -96,7 +96,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 
-		$s       = $request['s'] ?? false;
+		$s       = isset( $request['s'] ) ? sanitize_text_field( $request['s'] ) : false;
 		$page    = isset( $request['page'] ) ? absint( wp_unslash( $request['page'] ) ) : 1;
 		$order   = isset( $request['order'] ) ? wp_unslash( $request['order'] ) : false;
 		$orderby = isset( $request['orderby'] ) ? wp_unslash( $request['orderby'] ) : false;
@@ -122,7 +122,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$args['post_status'] = array( 'publish', 'private' );
 		}
 
-		$args = apply_filters( 'lp/rest-api/frontend/course/archive_course', $args, $request );
+		$args = apply_filters( 'lp/rest-api/frontend/course/archive_course/query_args', $args, $request );
 
 		$query = new WP_Query( $args );
 
@@ -149,15 +149,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			wp_reset_postdata();
 		} else {
-			?>
-			<div class="lp-ajax-message error" style="display: block"><?php esc_html_e( 'No more course available...', 'learnpress' ); ?></div>
-			<?php
+			LP()->template( 'course' )->no_courses_found();
 		}
 
 		$response->status        = 'success';
 		$response->data->content = ob_get_clean();
 
-		return rest_ensure_response( $response );
+		return rest_ensure_response( apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response ) );
 	}
 
 	public function search_courses( $request ) {

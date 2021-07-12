@@ -27,6 +27,10 @@ const requestCourse = ( args ) => {
 		return;
 	}
 
+	if ( archive.classList.contains( 'loading' ) ) {
+		return;
+	}
+
 	archive.classList.add( 'loading' );
 
 	fetch( addQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args, userID } ), {
@@ -56,25 +60,31 @@ const requestCourse = ( args ) => {
 					paginationEle.remove();
 				}
 			} else {
-				archiveCourse.innerHTML += pagination;
+				jQuery( listCourse ).after( pagination );
 			}
 		}
-
-		paginationCourse();
 	} ).catch( ( error ) => {
 		listCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/courses/archive-course' }</div>`;
 	} ).finally( () => {
 		archive.classList.remove( 'loading' );
+
+		LPArchiveCourseInit();
 	} );
 };
 
-const searchCourse = debounce( ( event ) => {
-	event.preventDefault();
+const searchCourse = () => {
+	const search = document.querySelectorAll( '.search-courses input[name="s"]' );
 
-	requestCourse( {
-		s: event.target.value,
-	} );
-}, 600 );
+	search.length > 0 && search.forEach( ( ele ) => ele.addEventListener( 'keyup', debounce( ( event ) => {
+		event.preventDefault();
+
+		const s = event.target.value;
+
+		if ( s && s.length > 2 ) {
+			requestCourse( { s } );
+		}
+	}, 500 ) ) );
+};
 
 const paginationCourse = () => {
 	const paginationEle = document.querySelectorAll( '.lp-archive-courses .learn-press-pagination .page-numbers' );
@@ -104,27 +114,30 @@ const gridListCourse = () => {
 	switches.length > 0 && [ ...switches ].map( ( ele ) => ele.value === layout && ( ele.checked = true ) );
 };
 
-const gridListCourseHandle = ( e ) => {
-	e.preventDefault();
+const gridListCourseHandle = () => {
+	const gridList = document.querySelectorAll( '.lp-archive-courses input[name="lp-switch-layout-btn"]' );
 
-	const layout = e.target.value;
+	gridList.length > 0 && gridList.forEach( ( element ) => element.addEventListener( 'change', ( e ) => {
+		e.preventDefault();
 
-	if ( layout ) {
-		const dataLayout = document.querySelector( '.lp-archive-courses .learn-press-courses[data-layout]' );
+		const layout = e.target.value;
 
-		dataLayout && ( dataLayout.dataset.layout = layout );
-		LP.Cookies.set( 'courses-layout', layout );
-	}
+		if ( layout ) {
+			const dataLayout = document.querySelector( '.lp-archive-courses .learn-press-courses[data-layout]' );
+
+			dataLayout && ( dataLayout.dataset.layout = layout );
+			LP.Cookies.set( 'courses-layout', layout );
+		}
+	} ) );
 };
 
-document.addEventListener( 'DOMContentLoaded', function( event ) {
-	const archiveEle = document.querySelector( '.lp-archive-courses' );
-	const search = archiveEle.querySelectorAll( '.search-courses input[name="s"]' );
-	const gridList = archiveEle.querySelectorAll( 'input[name="lp-switch-layout-btn"]' );
-
-	gridList.forEach( ( s ) => s.addEventListener( 'change', gridListCourseHandle ) );
-	search.forEach( ( s ) => s.addEventListener( 'keyup', searchCourse ) );
-
+function LPArchiveCourseInit() {
+	searchCourse();
+	gridListCourseHandle();
 	paginationCourse();
 	gridListCourse();
+}
+
+document.addEventListener( 'DOMContentLoaded', function( event ) {
+	LPArchiveCourseInit();
 } );
