@@ -8,7 +8,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+//require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 class LP_Database {
 	private static $_instance;
@@ -200,10 +200,14 @@ class LP_Database {
 		// Drop table bk if exists.
 		$this->drop_table( $table_bk );
 
-		dbDelta(
+		// Clone table
+		$this->wpdb->query( "CREATE TABLE {$table_bk} LIKE {$name_table}" );
+		$this->wpdb->query( "INSERT INTO {$table_bk} SELECT * FROM {$name_table}" );
+
+		/*dbDelta(
 			"CREATE TABLE $table_bk LIKE $name_table;
 			INSERT INTO $table_bk SELECT * FROM $name_table;"
-		);
+		);*/
 
 		$this->check_execute_has_error();
 
