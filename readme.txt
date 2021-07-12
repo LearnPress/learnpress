@@ -198,8 +198,9 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.1.1 =
+~ Added: tool clean "table session" clean sessions expire after 1 days.
 ~ Fixed: not show button "continue" when course is blocked.
-~ Fixed: course don't have any item will be not show button "continue", "finish", "retake".
+~ Fixed: course doesn't has any item will be not show button "continue", "finish", "retake".
 ~ Updated: file languages
 
 = 4.1.0 =

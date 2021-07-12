@@ -200,7 +200,10 @@ class LP_Jwt_Public {
 		 * if the request URI is for validate the token don't do anything,
 		 * this avoid double calls to the validate_token function.
 		 */
-		$validate_token = strpos( $_SERVER['REQUEST_URI'], 'token' );
+		$validate_token = strpos( $request_uri, 'token' );
+
+		/** All course is public so donot need token */
+		$is_rest_courses = strpos( $request_uri, 'courses' );
 
 		if ( $validate_token > 0 ) {
 			return $user_id;
@@ -209,7 +212,9 @@ class LP_Jwt_Public {
 		$token = $this->validate_token( false );
 
 		if ( is_wp_error( $token ) ) {
-			$this->jwt_error = $token;
+			if ( ! $is_rest_courses ) {
+				$this->jwt_error = $token;
+			}
 
 			return $user_id;
 		}

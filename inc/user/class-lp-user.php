@@ -167,9 +167,54 @@ class LP_User extends LP_Abstract_User {
 	}
 
 	/**
+	 * Check course is enrolled
+	 *
+	 * @param integer $course_id Course ID
+	 * @param boolean $return_bool
+	 * @return any
+	 *
+	 * @author Nhamdv
+	 */
+	public function is_course_enrolled( int $course_id, bool $return_bool = true ) {
+		static $output;
+
+		if ( ! isset( $output ) || ! is_object( $output ) ) {
+			$output          = new stdClass();
+			$output->check   = true;
+			$output->message = '';
+
+			try {
+				$order = $this->get_course_order( $course_id, 'id', true );
+
+				if ( empty( $order ) ) {
+					throw new Exception( esc_html__( 'Order is not completed', 'learnpress' ) );
+				}
+
+				global $wpdb;
+
+				$query  = $wpdb->prepare( "SELECT status FROM $wpdb->learnpress_user_items WHERE item_id=%d AND user_id=%d AND item_type=%s ORDER BY user_item_id DESC LIMIT 1", $course_id, $this->get_id(), LP_COURSE_CPT );
+				$status = $wpdb->get_var( $query );
+
+				if ( $status !== 'enrolled' ) {
+					throw new Exception( esc_html__( 'Course is not enrolled', 'learnpress' ) );
+				}
+			} catch ( Throwable $th ) {
+				$output->check   = false;
+				$output->message = $th->getMessage();
+			}
+		}
+
+		if ( $return_bool ) {
+			$output = $output->check;
+		}
+
+		return apply_filters( 'learn-press/user/is-course-enrolled', $output, $course_id, $return_bool );
+	}
+
+	/**
 	 * Check user can enroll course
 	 *
-	 * @param int $course_id
+	 * @param int  $course_id
 	 * @param bool $return_bool
 	 * @return mixed|object|bool
 	 */
@@ -202,6 +247,10 @@ class LP_User extends LP_Abstract_User {
 
 			if ( ! $course->is_free() && ! $this->has_purchased_course( $course_id ) ) {
 				throw new Exception( esc_html__( 'Course is not purchased.', 'learnpress' ) );
+			}
+
+			if ( $this->is_course_enrolled( $course_id ) ) {
+				throw new Exception( esc_html__( 'This course is already enrolled.', 'learnpress' ) );
 			}
 		} catch ( \Throwable $th ) {
 			$output->check   = false;

@@ -17,3 +17,4 @@ require_once 'database/html-create-indexs-tables.php';
 //require_once 'database/html-reupgrade-db.php';
 require_once 'database/html-rollback-db.php';
 require_once 'database/html-reupgrade-db.php';
+require_once 'database/html-clean-database.php';

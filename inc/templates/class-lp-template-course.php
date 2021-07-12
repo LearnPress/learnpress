@@ -989,6 +989,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 			);
 		}
 	}
+
+	public function no_courses_found() {
+		learn_press_get_template( 'global/no-courses-found' );
+	}
 }
 
 return new LP_Template_Course();

@@ -566,7 +566,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$checked             = $question->check( $answered );
 				$checked['answered'] = $answered;
 			} else {
-				throw new Exception( __( 'You have already checked this question.', 'learnpress' ), 1010 );
+				throw new Exception( __( 'Cannot check answer the question.', 'learnpress' ), 1010 );
 			}
 		} catch ( Exception $ex ) {
 			return new WP_Error( $ex->getCode(), $ex->getMessage() );
@@ -624,7 +624,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$quiz = learn_press_get_quiz( $this->get_item_id() );
 		$can  = false;
 
-		if ( $quiz->get_instant_check() ) {
+		if ( $quiz->get_instant_check() && $this->get_status() === 'started' ) {
 			$can = ! $this->has_checked_question( $question_id );
 		}
 

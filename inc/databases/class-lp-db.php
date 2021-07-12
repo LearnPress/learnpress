@@ -22,6 +22,7 @@ class LP_Database {
 	public $tb_lp_question_answers;
 	public $tb_lp_question_answermeta;
 	public $tb_lp_upgrade_db;
+	public $tb_lp_sessions;
 	private $collate         = '';
 	public $max_index_length = '191';
 
@@ -48,6 +49,7 @@ class LP_Database {
 		$this->tb_lp_question_answers    = $prefix . 'learnpress_question_answers';
 		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
 		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
+		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
 		$this->wpdb->hide_errors();
 		$this->set_collate();
 	}

@@ -34,27 +34,30 @@ $page_title = learn_press_page_title( false );
 	<?php endif; ?>
 
 	<?php
-	/**
-	 * LP Hook
-	 */
-	do_action( 'learn-press/before-courses-loop' );
+	if ( have_posts() ) {
+		/**
+		 * LP Hook
+		 */
+		do_action( 'learn-press/before-courses-loop' );
 
-	LP()->template( 'course' )->begin_courses_loop();
+		LP()->template( 'course' )->begin_courses_loop();
 
-	while ( have_posts() ) :
-		the_post();
+		while ( have_posts() ) :
+			the_post();
 
-		learn_press_get_template_part( 'content', 'course' );
+			learn_press_get_template_part( 'content', 'course' );
 
-	endwhile;
+		endwhile;
 
-	LP()->template( 'course' )->end_courses_loop();
+		LP()->template( 'course' )->end_courses_loop();
 
-	/**
-	 * @since 3.0.0
-	 */
-	do_action( 'learn-press/after-courses-loop' );
-
+		/**
+		 * @since 3.0.0
+		 */
+		do_action( 'learn-press/after-courses-loop' );
+	} else {
+		LP()->template( 'course' )->no_courses_found();
+	}
 
 	/**
 	 * LP Hook

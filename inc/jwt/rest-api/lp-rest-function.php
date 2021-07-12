@@ -3,8 +3,8 @@
 /**
  * Check permissions of posts on REST API.
  *
- * @param [type] $post_type Post type.
- * @param string $context Request context.
+ * @param [type]  $post_type Post type.
+ * @param string  $context Request context.
  * @param integer $object_id Post ID.
  * @return void
  */
