@@ -22,11 +22,37 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		return true;
 	}
 
+	/**
+	 * Check if a given request has access to create an item.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function create_item_permissions_check( $request ) {
+		if ( ! lp_rest_check_post_permissions( $this->post_type, 'create' ) ) {
+			return new WP_Error( 'lp_rest_cannot_create', __( 'Sorry, you are not allowed to create resources.', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
 	public function get_item_permissions_check( $request ) {
+		if ( $this->post_type !== get_post_type( (int) $request['id'] ) ) {
+			return new WP_Error( 'lp_jwt_rest_not_in_post_type', __( 'Sorry, You cannot view this item.', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
 		$object = $this->get_object( (int) $request['id'] );
 
-		if ( $object && 0 !== $object->get_id() && ! lp_rest_check_post_permissions( $this->post_type, 'read', $object->get_id() ) ) {
+		if ( $object && 0 !== $object->get_id() && ! $this->check_read_permission( $object->get_id() ) ) {
 			return new WP_Error( 'lp_jwt_rest_cannot_view', __( 'Sorry, you cannot view this resource.', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
+	public function check_read_permission( $post_id ) {
+		if ( ! lp_rest_check_post_permissions( $this->post_type, 'read', $post_id ) ) {
+			return false;
 		}
 
 		return true;
@@ -57,7 +83,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		foreach ( $query_results['objects'] as $object ) {
 			$object_id = ! empty( $object->ID ) ? $object->ID : $object->get_id();
 
-			if ( ! lp_rest_check_post_permissions( $this->post_type, 'read', $object_id ) ) {
+			if ( ! $this->check_read_permission( $object_id ) ) {
 				continue;
 			}
 
@@ -110,7 +136,265 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		return $response;
 	}
 
+	/**
+	 * Create a single item.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function create_item( $request ) {
+		if ( ! empty( $request['id'] ) ) {
+			/* translators: %s: post type */
+			return new WP_Error( "lp_rest_{$this->post_type}_exists", sprintf( __( 'Cannot create existing %s.', 'learnpress' ), $this->post_type ), array( 'status' => 400 ) );
+		}
+
+		$post = $this->prepare_item_for_database( $request );
+		if ( is_wp_error( $post ) ) {
+			return $post;
+		}
+
+		$post->post_type = $this->post_type;
+		$post_id         = wp_insert_post( $post, true );
+
+		if ( is_wp_error( $post_id ) ) {
+			if ( in_array( $post_id->get_error_code(), array( 'db_insert_error' ) ) ) {
+				$post_id->add_data( array( 'status' => 500 ) );
+			} else {
+				$post_id->add_data( array( 'status' => 400 ) );
+			}
+			return $post_id;
+		}
+
+		$post->ID = $post_id;
+		$post     = get_post( $post_id );
+
+		$this->update_additional_fields_for_object( $post, $request );
+
+		// Add meta fields.
+		$meta_fields = $this->add_post_meta_fields( $post, $request );
+		if ( is_wp_error( $meta_fields ) ) {
+			// Remove post.
+			$this->delete_post( $post );
+
+			return $meta_fields;
+		}
+
+		/**
+		 * Fires after a single item is created or updated via the REST API.
+		 *
+		 * @param WP_Post         $post      Post object.
+		 * @param WP_REST_Request $request   Request object.
+		 * @param boolean         $creating  True when creating item, false when updating.
+		 */
+		do_action( "lp_rest_insert_{$this->post_type}", $post, $request, true );
+
+		$request->set_param( 'context', 'edit' );
+		$response = $this->prepare_item_for_response( $post, $request );
+		$response = rest_ensure_response( $response );
+		$response->set_status( 201 );
+		$response->header( 'Location', rest_url( sprintf( '/%s/%s/%d', $this->namespace, $this->rest_base, $post_id ) ) );
+
+		return $response;
+	}
+
+	public function prepare_item_for_database( $request, $creating = false ) {
+		$prepared_post  = new stdClass();
+		$current_status = '';
+
+		$id = isset( $request['id'] ) ? absint( $request['id'] ) : 0;
+
+		if ( isset( $request['id'] ) ) {
+			$post = get_post( $id );
+
+			if ( empty( $post ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
+				return new WP_Error( 'rest_invalid_course', __( 'Invalid Course' ), array( 'status' => 404 ) );
+			}
+
+			$prepared_post->ID = $existing_post->ID;
+			$current_status    = $existing_post->post_status;
+		}
+
+		$schema = $this->get_item_schema();
+
+		// Post title.
+		if ( ! empty( $schema['properties']['name'] ) && isset( $request['name'] ) ) {
+			if ( is_string( $request['name'] ) ) {
+				$prepared_post->post_title = $request['name'];
+			} elseif ( ! empty( $request['name']['raw'] ) ) {
+				$prepared_post->post_title = $request['name']['raw'];
+			}
+		}
+
+		// Post content.
+		if ( ! empty( $schema['properties']['content'] ) && isset( $request['content'] ) ) {
+			if ( is_string( $request['content'] ) ) {
+				$prepared_post->post_content = $request['content'];
+			} elseif ( isset( $request['content']['raw'] ) ) {
+				$prepared_post->post_content = $request['content']['raw'];
+			}
+		}
+
+		// Post excerpt.
+		if ( ! empty( $schema['properties']['excerpt'] ) && isset( $request['excerpt'] ) ) {
+			if ( is_string( $request['excerpt'] ) ) {
+				$prepared_post->post_excerpt = $request['excerpt'];
+			} elseif ( isset( $request['excerpt']['raw'] ) ) {
+				$prepared_post->post_excerpt = $request['excerpt']['raw'];
+			}
+		}
+
+		// Post type.
+		if ( empty( $request['id'] ) ) {
+			// Creating new post, use default type for the controller.
+			$prepared_post->post_type = $this->post_type;
+		} else {
+			// Updating a post, use previous type.
+			$prepared_post->post_type = get_post_type( $request['id'] );
+		}
+
+		$post_type = get_post_type_object( $prepared_post->post_type );
+
+		// Post status.
+		if (
+			! empty( $schema['properties']['status'] ) &&
+			isset( $request['status'] ) &&
+			( ! $current_status || $current_status !== $request['status'] )
+		) {
+			$status = $this->handle_status_param( $request['status'], $post_type );
+
+			if ( is_wp_error( $status ) ) {
+				return $status;
+			}
+
+			$prepared_post->post_status = $status;
+		}
+
+		// Post date.
+		if ( ! empty( $schema['properties']['date'] ) && ! empty( $request['date'] ) ) {
+			$current_date = isset( $prepared_post->ID ) ? get_post( $prepared_post->ID )->post_date : false;
+			$date_data    = rest_get_date_with_gmt( $request['date'] );
+
+			if ( ! empty( $date_data ) && $current_date !== $date_data[0] ) {
+				list( $prepared_post->post_date, $prepared_post->post_date_gmt ) = $date_data;
+				$prepared_post->edit_date                                        = true;
+			}
+		} elseif ( ! empty( $schema['properties']['date_gmt'] ) && ! empty( $request['date_gmt'] ) ) {
+			$current_date = isset( $prepared_post->ID ) ? get_post( $prepared_post->ID )->post_date_gmt : false;
+			$date_data    = rest_get_date_with_gmt( $request['date_gmt'], true );
+
+			if ( ! empty( $date_data ) && $current_date !== $date_data[1] ) {
+				list( $prepared_post->post_date, $prepared_post->post_date_gmt ) = $date_data;
+				$prepared_post->edit_date                                        = true;
+			}
+		}
+
+		// Sending a null date or date_gmt value resets date and date_gmt to their
+		// default values (`0000-00-00 00:00:00`).
+		if (
+			( ! empty( $schema['properties']['date_gmt'] ) && $request->has_param( 'date_gmt' ) && null === $request['date_gmt'] ) ||
+			( ! empty( $schema['properties']['date'] ) && $request->has_param( 'date' ) && null === $request['date'] )
+		) {
+			$prepared_post->post_date_gmt = null;
+			$prepared_post->post_date     = null;
+		}
+
+		// Post slug.
+		if ( ! empty( $schema['properties']['slug'] ) && isset( $request['slug'] ) ) {
+			$prepared_post->post_name = $request['slug'];
+		}
+
+		// Author.
+		if ( ! empty( $schema['properties']['author'] ) && ! empty( $request['author'] ) ) {
+			$post_author = (int) $request['author'];
+
+			if ( get_current_user_id() !== $post_author ) {
+				$user_obj = get_userdata( $post_author );
+
+				if ( ! $user_obj ) {
+					return new WP_Error(
+						'rest_invalid_author',
+						__( 'Invalid author ID.' ),
+						array( 'status' => 400 )
+					);
+				}
+			}
+
+			$prepared_post->post_author = $post_author;
+		}
+
+		// Post password.
+		if ( ! empty( $schema['properties']['password'] ) && isset( $request['password'] ) ) {
+			$prepared_post->post_password = $request['password'];
+
+			if ( '' !== $request['password'] ) {
+				if ( ! empty( $schema['properties']['sticky'] ) && ! empty( $request['sticky'] ) ) {
+					return new WP_Error(
+						'rest_invalid_field',
+						__( 'A post can not be sticky and have a password.' ),
+						array( 'status' => 400 )
+					);
+				}
+
+				if ( ! empty( $prepared_post->ID ) && is_sticky( $prepared_post->ID ) ) {
+					return new WP_Error(
+						'rest_invalid_field',
+						__( 'A sticky post can not be password protected.' ),
+						array( 'status' => 400 )
+					);
+				}
+			}
+		}
+
+		return apply_filters( "lp_rest_pre_insert_{$this->post_type}", $prepared_post, $request );
+	}
+
+	/**
+	 * Determines validity and normalizes the given status parameter.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param string       $post_status Post status.
+	 * @param WP_Post_Type $post_type   Post type.
+	 * @return string|WP_Error Post status or WP_Error if lacking the proper permission.
+	 */
+	protected function handle_status_param( $post_status, $post_type ) {
+
+		switch ( $post_status ) {
+			case 'draft':
+			case 'pending':
+				break;
+			case 'private':
+				if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
+					return new WP_Error(
+						'rest_cannot_publish',
+						__( 'Sorry, you are not allowed to create private posts in this post type.' ),
+						array( 'status' => rest_authorization_required_code() )
+					);
+				}
+				break;
+			case 'publish':
+			case 'future':
+				if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
+					return new WP_Error(
+						'rest_cannot_publish',
+						__( 'Sorry, you are not allowed to publish posts in this post type.' ),
+						array( 'status' => rest_authorization_required_code() )
+					);
+				}
+				break;
+			default:
+				if ( ! get_post_status_object( $post_status ) ) {
+					$post_status = 'draft';
+				}
+				break;
+		}
+
+		return $post_status;
+	}
+
 	protected function prepare_objects_query( $request ) {
+		global $wpdb;
+
 		$args                        = array();
 		$args['offset']              = $request['offset'];
 		$args['order']               = $request['order'];
@@ -139,11 +423,26 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			$args['date_query'][0]['after'] = $request['after'];
 		}
 
+		// Get item user is learned
+		if ( ! empty( $request['learned'] ) ) {
+			$item_ids = $this->get_item_learned_ids( $request );
+
+			// Force WP_Query return empty if don't found any order.
+			$item_ids = ! empty( $item_ids ) ? $item_ids : array( 0 );
+
+			$args['post__in'] = $item_ids;
+		}
+
 		$args['post_type'] = $this->post_type;
 
 		$args = apply_filters( "lp_jwt_rest_{$this->post_type}_object_query", $args, $request );
 
 		return $this->prepare_items_query( $args, $request );
+	}
+
+	/** Get all items has in database learnpress_user_items by post_type */
+	public function get_item_learned_ids( $request ) {
+		return array();
 	}
 
 	protected function get_objects( $query_args ) {
@@ -164,6 +463,10 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'total'   => (int) $total_posts,
 			'pages'   => (int) ceil( $total_posts / (int) $query->query_vars['posts_per_page'] ),
 		);
+	}
+
+	protected function add_post_meta_fields( $post, $request ) {
+		return true;
 	}
 
 	protected function prepare_object_for_response( $object, $request ) {
@@ -275,6 +578,12 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 				'slug',
 				'modified',
 			),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['learned']  = array(
+			'description'       => __( 'Get item learned by user.', 'learnpress' ),
+			'type'              => 'boolean',
+			'default'           => false,
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
