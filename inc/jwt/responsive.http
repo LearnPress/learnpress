@@ -54,6 +54,16 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 	"id": "196"
 }
 
+## Retake course.
+###
+POST http://learnpress4.local/wp-json/learnpress/v1/courses/retake
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+
+{
+	"id": "196"
+}
+
 ## Get All lesson: is administration, student cannot get list.
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons

@@ -291,6 +291,13 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return rest_ensure_response( $response );
 		}
 
+		if ( ! isset( $answered ) ) {
+			$response->status  = 'error';
+			$response->message = esc_html__( 'No Answed param.', 'learnpress' );
+
+			return rest_ensure_response( $response );
+		}
+
 		if ( ! class_exists( 'LP_REST_Users_Controller' ) ) {
 			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-users-controller.php';
 		}

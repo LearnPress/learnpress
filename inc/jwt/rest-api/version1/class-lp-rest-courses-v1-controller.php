@@ -104,6 +104,31 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/retake',
+			array(
+				'args' => array(
+					'id' => array(
+						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'retake_course' ),
+					'permission_callback' => '__return_true',
+					'args'                => array(
+						'context' => $this->get_context_param(
+							array(
+								'default' => 'edit',
+							)
+						),
+					),
+				),
+			)
+		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -228,6 +253,18 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		return rest_ensure_response( $response );
+	}
+
+	public function retake_course( $request ) {
+		$response = new LP_REST_Response();
+
+		if ( ! class_exists( 'LP_REST_Courses_Controller' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php';
+		}
+
+		$course_controller = new LP_REST_Courses_Controller();
+
+		return $course_controller->retake_course( $request );
 	}
 
 	/**
