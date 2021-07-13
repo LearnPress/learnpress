@@ -34,26 +34,6 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 
 			parent::__construct();
 		}
-
-		/**
-		 * Trigger email.
-		 *
-		 * @param int $course_id
-		 * @param int $user_id
-		 * @param int $user_item_id
-		 */
-		public function trigger( $course_id, $user_id, $user_item_id ) {
-
-			parent::trigger( $course_id, $user_id, $user_item_id );
-
-			if ( ! $this->enable ) {
-				return;
-			}
-
-			$this->get_object();
-
-			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
-		}
 	}
 }
 return new LP_Email_Enrolled_Course_Admin();

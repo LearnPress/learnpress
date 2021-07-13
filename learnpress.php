@@ -225,6 +225,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache.php';
 			require_once 'inc/class-lp-asset-key.php';
 
+			// Email
+			include_once 'inc/emails/class-lp-email-hooks.php';
+
 			// LP Cache
 			require_once 'inc/cache/class-lp-cache.php';
 			require_once 'inc/cache/class-lp-quiz-cache.php';
@@ -641,8 +644,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$this->admin_notices = LP_Admin_Notice::instance();
 			}
 
-			// init email notification hooks
-			LP_Emails::init_email_notifications();
+			// Init emails
+			LP_Emails::instance();
 		}
 
 		/**

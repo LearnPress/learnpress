@@ -45,14 +45,14 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 
 			// remove complete order hook for free course ( default new free order auto create pending from pending to completed )
-			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
+			//remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 
 			add_action( 'init', array( $this, 'init' ) );
 		}
 
 		public function init() {
 			// disable send mail for enable enroll course admin mail
-			$email = LP_Emails::get_email( 'enrolled-course-admin' );
+			/*$email = LP_Emails::get_email( 'enrolled-course-admin' );
 
 			if ( $email->enable() ) {
 				remove_action(
@@ -62,7 +62,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 						'trigger',
 					)
 				);
-			}
+			}*/
 		}
 
 		/**

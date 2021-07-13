@@ -37,8 +37,8 @@ if ( ! class_exists( 'LP_Email_Completed_Order_Admin' ) ) {
 
 			parent::__construct();
 
-			// Completed orders
-			add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
+			//Completed orders - Comment by tungnx
+			//add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 		}
 
 		/**

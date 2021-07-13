@@ -32,15 +32,18 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 			$this->default_subject = __( 'Your order {{order_date}} status has just been changed', 'learnpress' );
 			$this->default_heading = __( 'Your order {{order_number}} status has just been changed', 'learnpress' );
 
-			$this->support_variables = array_merge( $this->general_variables, array(
-				'{{order_id}}',
-				'{{order_user_id}}',
-				'{{order_user_name}}',
-				'{{order_status}}',
-				'{{order_items_table}}',
-				'{{order_detail_url}}',
-				'{{order_number}}',
-			) );
+			$this->support_variables = array_merge(
+				$this->general_variables,
+				array(
+					'{{order_id}}',
+					'{{order_user_id}}',
+					'{{order_user_name}}',
+					'{{order_status}}',
+					'{{order_items_table}}',
+					'{{order_detail_url}}',
+					'{{order_number}}',
+				)
+			);
 
 			add_action( 'learn_press_update_order_status', array( $this, 'update_order_status' ), 10, 2 );
 			parent::__construct();
@@ -83,7 +86,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 					'order_subtotal'    => $order->get_formatted_order_subtotal(),
 					'order_total'       => $order->get_formatted_order_total(),
 					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) ),
-					'order_status'      => $new_status
+					'order_status'      => $new_status,
 				)
 			);
 
@@ -130,13 +133,13 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 					array(
 						'type'  => 'heading',
 						'title' => $this->title,
-						'desc'  => $this->description
+						'desc'  => $this->description,
 					),
 					array(
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => $this->get_field_name( 'enable' )
+						'id'      => $this->get_field_name( 'enable' ),
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
@@ -150,10 +153,10 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 								array(
 									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
+									'value'   => 'yes',
+								),
+							),
+						),
 					),
 					array(
 						'title'      => __( 'Heading', 'learnpress' ),
@@ -167,10 +170,10 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 								array(
 									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
+									'value'   => 'yes',
+								),
+							),
+						),
 					),
 					array(
 						'title'                => __( 'Email content', 'learnpress' ),
@@ -178,7 +181,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'default'              => '',
 						'id'                   => $this->get_field_name( 'email_content' ),
 						'template_base'        => $this->template_base,
-						'template_path'        => $this->template_path,//default learnpress
+						'template_path'        => $this->template_path, //default learnpress
 						'template_html'        => $this->template_html,
 						'template_plain'       => $this->template_plain,
 						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
@@ -190,10 +193,10 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 								array(
 									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
+									'value'   => 'yes',
+								),
+							),
+						),
 					),
 				)
 			);

@@ -15,29 +15,10 @@ defined( 'ABSPATH' ) || exit();
 
 /**
  * Class LP_Email_Type_Enrolled_Course
+ *
+ * Handle email when user enrolled course
  */
 class LP_Email_Type_Enrolled_Course extends LP_Email {
-	/**
-	 * Course ID
-	 *
-	 * @var int
-	 */
-	public $course_id = 0;
-
-	/**
-	 * User ID
-	 *
-	 * @var int
-	 */
-	public $user_id = 0;
-
-	/**
-	 * User Item ID
-	 *
-	 * @var int
-	 */
-	public $user_item_id = 0;
-
 	/**
 	 * LP_Email_Type_Enrolled_Course constructor.
 	 */
@@ -45,117 +26,130 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 		parent::__construct();
 
 		$this->support_variables = array_merge(
-			$this->general_variables,
+			$this->support_variables,
 			array(
 				'{{course_id}}',
 				'{{course_name}}',
 				'{{course_url}}',
 				'{{user_id}}',
 				'{{user_name}}',
-				'{{user_email}}'
+				'{{user_email}}',
+				'{{user_display_name}}',
 			)
 		);
 
-		if ( LP()->settings->get( 'auto_enroll' ) == 'yes' ) {
+		/*if ( LP_Settings::get_option( 'auto_enroll' ) == 'yes' ) {
 			add_action( 'learn-press/order/status-completed', array( $this, 'auto_enroll_trigger' ), 10, 2 );
-		}
+		}*/
 
-		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
-		add_action( 'learn-press/user-enrolled-course/notification', array( $this, 'trigger' ), 99, 3 );
+		//add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
+		//add_action( 'learn-press/user-enrolled-course/notification', array( $this, 'trigger' ), 99, 3 );
 
 	}
 
 	/**
-	 * @param string $object_id
-	 * @param string $more
+	 * Trigger email.
+	 * Receive 2 params: order_id, old_status
 	 *
-	 * @return array|object|void
+	 * @param array $params
+	 * @author tungnx
+	 * @since 4.1.1
 	 */
-	public function get_object( $object_id = '', $more = '' ) {
+	public function handle( array $params ) {
+		if ( ! $this->enable ) {
+			return;
+		}
 
-		$user   = learn_press_get_user( $this->user_id );
-		$course = learn_press_get_course( $this->course_id );
+		try {
+			if ( count( $params ) < 1 ) {
+				throw new Exception( 'Invalid params to send email ' . __CLASS__ );
+			}
 
-		$object = array();
+			$order_id   = $params[0] ?? 0;
+			$order      = new LP_Order( $order_id );
+			$course_ids = $order->get_item_ids();
+
+			foreach ( $course_ids as $course_id ) {
+				$user_ids = $order->get_user_id();
+
+				if ( is_array( $user_ids ) ) {
+					foreach ( $user_ids as $user_id ) {
+						$this->send_mails( $order, $course_id, $user_id );
+					}
+				} else {
+					$this->send_mails( $order, $course_id, $user_ids );
+				}
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+	}
+
+	/**
+	 * Set variables for content email.
+	 *
+	 * @param int $course_id
+	 * @param int $user_id
+	 * @editor tungnx
+	 * @since 4.1.1
+	 */
+	public function set_data_content( int $course_id, int $user_id ) {
+		$user   = learn_press_get_user( $user_id );
+		$course = learn_press_get_course( $course_id );
+
+		$variables = [];
 
 		if ( $course ) {
-			$object = array_merge(
-				$object,
+			$variables = array_merge(
+				$variables,
 				array(
 					'course_id'   => $course->get_id(),
 					'course_name' => $course->get_title(),
-					'course_url'  => $course->get_permalink()
+					'course_url'  => $course->get_permalink(),
 				)
 			);
 		}
 
 		if ( $user ) {
-			$object = array_merge(
-				$object,
+			$variables = array_merge(
+				$variables,
 				array(
 					'user_id'           => $user->get_id(),
 					'user_name'         => $user->get_username(),
 					'user_email'        => $user->get_email(),
-					'user_display_name' => $user->get_display_name()
+					'user_display_name' => $user->get_display_name(),
 				)
 			);
 		}
 
-		if ( $course_data = $user->get_course_data( $this->course_id ) ) {
-			$object['course_start_date'] = $course_data->get_start_time();
-		}
-
-		$this->object = $this->get_common_template_data(
-			$this->email_format,
-			$object
-		);
-
-		$this->get_variable();
+		$this->map_data_to_variables( $variables );
+		$variables_common = $this->get_common_variables( $this->email_format );
+		$this->variables  = array_merge( $this->variables, $variables_common );
 	}
 
 	/**
-	 * Get instructor of the course.
+	 * Send emails to user
 	 *
-	 * @return LP_User|mixed
-	 */
-	public function get_instructor() {
-		return learn_press_get_user( get_post_field( 'post_author', $this->course_id ) );
-	}
-
-	/**
+	 * @param LP_Order $order
 	 * @param int $course_id
 	 * @param int $user_id
-	 * @param int $user_item_id
 	 */
-	public function trigger( $course_id, $user_id, $user_item_id ) {
+	public function send_mails( LP_Order $order, int $course_id, int $user_id ) {
+		$this->set_data_content( $course_id, $user_id );
 
-		$this->course_id    = $course_id;
-		$this->user_id      = $user_id;
-		$this->user_item_id = $user_item_id;
-
-		LP_Emails::instance()->set_current( $this->id );
-	}
-
-	/**
-	 * @param $order_id
-	 */
-	public function auto_enroll_trigger( $order_id, $status ) {
-
-		if ( ! $this->enable ) {
-			return;
-		}
-
-		$order   = learn_press_get_order( $order_id );
-		$user    = $order->get_user();
-		$courses = $order->get_items();
-
-		if ( $courses ) {
-			foreach ( $courses as $course ) {
-				$course_id = $course['course_id'];
-
-				$course_data = new LP_User_Item_Course( $course_id );
-				$this->trigger( $course_id, $user->get_id(), $course_data->get_item_id() );
+		if ( $this instanceof LP_Email_Enrolled_Course_User ) {
+			$lp_user = new LP_User( $user_id );
+			if ( $lp_user ) {
+				$this->set_receive( $lp_user->get_email() );
 			}
+		} elseif ( $this instanceof LP_Email_Enrolled_Course_Instructor ) {
+			$course           = new LP_Course( $course_id );
+			$email_instructor = $course->get_author()->get_email();
+			$this->set_receive( $email_instructor );
 		}
+
+		do_action( 'learnpress/email/user-enrolled-course/handle', $order, $course_id );
+
+		$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 	}
 }

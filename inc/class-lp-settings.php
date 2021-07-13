@@ -136,8 +136,8 @@ class LP_Settings {
 	 *
 	 * @return mixed
 	 */
-	public function get( $var = null, $default = null ) {
-		if ( ! $var ) {
+	public function get( string $var = '', $default = null ) {
+		if ( empty( $var ) ) {
 			return $this->_options;
 		}
 
@@ -145,7 +145,6 @@ class LP_Settings {
 			$var = $this->_prefix . $var;
 		}
 
-		$segs   = explode( '.', $var );
 		$return = $this->_get_option( $this->_options, $var, $default );
 
 		if ( $return == '' || is_null( $return ) ) {

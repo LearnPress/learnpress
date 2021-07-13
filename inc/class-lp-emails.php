@@ -73,14 +73,14 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		}
 
 		public function register_emails() {
-			include_once LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-order.php';
-			include_once LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-enrolled-course.php';
-			include_once LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-finished-course.php';
+			include_once 'emails/types/class-lp-email-type-order.php';
+			include_once 'emails/types/class-lp-email-type-enrolled-course.php';
+			include_once 'emails/types/class-lp-email-type-finished-course.php';
 
 			// New order
-			$this->emails['LP_Email_New_Order_Admin']      = include_once 'emails/class-lp-email-new-order-admin.php';
-			$this->emails['LP_Email_New_Order_User']       = include_once 'emails/class-lp-email-new-order-user.php';
-			$this->emails['LP_Email_New_Order_Instructor'] = include_once 'emails/class-lp-email-new-order-instructor.php';
+			$this->emails['LP_Email_New_Order_Admin']      = include_once 'emails/admin/class-lp-email-new-order-admin.php';
+			$this->emails['LP_Email_New_Order_User']       = include_once 'emails/student/class-lp-email-new-order-user.php';
+			$this->emails['LP_Email_New_Order_Instructor'] = include_once 'emails/instructor/class-lp-email-new-order-instructor.php';
 			$this->emails['LP_Email_New_Order_Guest']      = include_once 'emails/class-lp-email-new-order-guest.php';
 
 			// Processing order
@@ -88,25 +88,25 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Processing_Order_Guest'] = include_once 'emails/class-lp-email-processing-order-guest.php';
 
 			// Completed order
-			$this->emails['LP_Email_Completed_Order_Admin'] = include_once 'emails/class-lp-email-completed-order-admin.php';
-			$this->emails['LP_Email_Completed_Order_User']  = include_once 'emails/class-lp-email-completed-order-user.php';
+			$this->emails['LP_Email_Completed_Order_Admin'] = include_once 'emails/admin/class-lp-email-completed-order-admin.php';
+			$this->emails['LP_Email_Completed_Order_User']  = include_once 'emails/student/class-lp-email-completed-order-user.php';
 			$this->emails['LP_Email_Completed_Order_Guest'] = include_once 'emails/class-lp-email-completed-order-guest.php';
 
 			// Cancelled order
-			$this->emails['LP_Email_Cancelled_Order_Admin']      = include_once 'emails/class-lp-email-cancelled-order-admin.php';
-			$this->emails['LP_Email_Cancelled_Order_Instructor'] = include_once 'emails/class-lp-email-cancelled-order-instructor.php';
-			$this->emails['LP_Email_Cancelled_Order_User']       = include_once 'emails/class-lp-email-cancelled-order-user.php';
+			$this->emails['LP_Email_Cancelled_Order_Admin']      = include_once 'emails/admin/class-lp-email-cancelled-order-admin.php';
+			$this->emails['LP_Email_Cancelled_Order_Instructor'] = include_once 'emails/instructor/class-lp-email-cancelled-order-instructor.php';
+			$this->emails['LP_Email_Cancelled_Order_User']       = include_once 'emails/student/class-lp-email-cancelled-order-user.php';
 			$this->emails['LP_Email_Cancelled_Order_Guest']      = include_once 'emails/class-lp-email-cancelled-order-guest.php';
 
 			// Enrolled course
-			$this->emails['LP_Email_Enrolled_Course_Admin']      = include_once 'emails/class-lp-email-enrolled-course-admin.php';
-			$this->emails['LP_Email_Enrolled_Course_Instructor'] = include_once 'emails/class-lp-email-enrolled-course-instructor.php';
-			$this->emails['LP_Email_Enrolled_Course_User']       = include_once 'emails/class-lp-email-enrolled-course-user.php';
+			$this->emails['LP_Email_Enrolled_Course_Admin']      = include_once 'emails/admin/class-lp-email-enrolled-course-admin.php';
+			$this->emails['LP_Email_Enrolled_Course_Instructor'] = include_once 'emails/instructor/class-lp-email-enrolled-course-instructor.php';
+			$this->emails['LP_Email_Enrolled_Course_User']       = include_once 'emails/student/class-lp-email-enrolled-course-user.php';
 
 			// Finished course
-			$this->emails['LP_Email_Finished_Course_Admin']      = include_once 'emails/class-lp-email-finished-course-admin.php';
-			$this->emails['LP_Email_Finished_Course_Instructor'] = include_once 'emails/class-lp-email-finished-course-instructor.php';
-			$this->emails['LP_Email_Finished_Course_User']       = include_once 'emails/class-lp-email-finished-course-user.php';
+			$this->emails['LP_Email_Finished_Course_Admin']      = include_once 'emails/admin/class-lp-email-finished-course-admin.php';
+			$this->emails['LP_Email_Finished_Course_Instructor'] = include_once 'emails/instructor/class-lp-email-finished-course-instructor.php';
+			$this->emails['LP_Email_Finished_Course_User']       = include_once 'emails/student/class-lp-email-finished-course-user.php';
 
 			// Review course
 			// $this->emails['LP_Email_New_Course']       = include_once(  'emails/class-lp-email-new-course.php' );
@@ -146,62 +146,12 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * Init email notification hooks.
 		 *
 		 * @since 3.0.0
+		 * @editor tungnx
+		 * @reason comment - not use
 		 */
-		public static function init_email_notifications() {
-			$actions = apply_filters(
-				'learn-press/email-actions',
-				array(
-					// preview course
-					'learn_press_course_submit_rejected',
-					'learn_press_course_submit_approved',
-					'learn_press_course_submit_for_reviewer',
-					'learn_press_user_enrolled_course',
-
-					// New order
-					'learn-press/order/status-pending-to-processing',
-					'learn-press/order/status-pending-to-completed',
-
-					// Completed order
-					'learn-press/order/status-completed',
-
-					// Cancelled order
-					'learn-press/order/status-cancelled',
-
-					// User become an teacher
-					'set_user_role',
-
-					// User enrolled course
-					'learn-press/user-enrolled-course',
-
-					// User finished course
-					'learn-press/user-course-finished',
-
-				// Create order
-				// 'learn_press_checkout_success_result',
-				// 'learn_press_user_finish_course',
-				)
-			);
-
-			//TODO: tungnx - rewrite background progess
-			/*if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
-
-				// self::$_background_emailer = new LP_Background_Emailer();
-
-				foreach ( $actions as $action ) {
-					//add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
-				}
-			} else {
-				foreach ( $actions as $action ) {
-					add_action( $action, array( __CLASS__, 'send_email' ), 10, 10 );
-				}
-			}*/
-
-			foreach ( $actions as $action ) {
-				add_action( $action, array( __CLASS__, 'send_email' ), 10, 10 );
-			}
-
+		/*public static function init_email_notifications() {
 			self::instance();
-		}
+		}*/
 
 		/**
 		 * Push email notification into queue.
@@ -218,15 +168,19 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 
 		/**
 		 * Send email notification.
+		 *
+		 * @editor tungnx
+		 * @reason not use
+		 * @deprecated 4.1.1
 		 */
-		public static function send_email() {
+		/*public static function send_email() {
 			try {
 				$args = func_get_args();
 				self::instance();
 				do_action_ref_array( current_filter() . '/notification', $args );
 			} catch ( Exception $e ) {
 			}
-		}
+		}*/
 
 		/**
 		 * Email header.
@@ -236,7 +190,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 *
 		 * @return string
 		 */
-		public function email_header( $heading, $echo = true ) {
+		public function email_header( string $heading, bool $echo = true ): string {
 			ob_start();
 			learn_press_get_template( 'emails/email-header.php', array( 'email_heading' => $heading ) );
 			$header = ob_get_clean();
@@ -255,7 +209,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 *
 		 * @return string
 		 */
-		public function email_footer( $footer_text, $echo = true ) {
+		public function email_footer( string $footer_text, bool $echo = true ): string {
 			ob_start();
 			learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
 			$footer = ob_get_clean();

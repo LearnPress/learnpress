@@ -1073,7 +1073,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 		public function get_user_email() {
 			$email = false;
-			if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
+
+			$user = learn_press_get_user( $this->get_data( 'user_id' ) );
+			if ( $user ) {
 				$email = $user->get_data( 'email' );
 			} // Order is checked out by guest
 			if ( ! $email ) {
@@ -1120,7 +1122,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array|int
 		 */
 		public function get_user_id() {
-			return $this->get_data( 'user_id' );
+			return $this->get_data( 'user_id', 0 );
 		}
 
 		/**
@@ -1165,16 +1167,16 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return bool
 		 * @throws Exception
 		 */
-		public function _save_status() {
+		public function _save_status(): bool {
 
 			// Nothing changed
 			if ( ! $this->_status ) {
 				return false;
 			}
 
-			$the_id     = $this->get_id();
-			$old_status = ! empty( $this->_status['from'] ) ? $this->_status['from'] : '';
-			$new_status = ! empty( $this->_status['to'] ) ? $this->_status['to'] : '';
+			$order_id   = $this->get_id();
+			$old_status = $this->_status['from'] ?? '';
+			$new_status = $this->_status['to'] ?? '';
 
 			// Only update if new status is difference with old status.
 			if ( $new_status !== $old_status ) {
@@ -1186,36 +1188,36 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				if ( doing_action( 'save_post' ) ) {
 					// Update post's status using wpdb to preventing loop
 					global $wpdb;
-					$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $the_id ), array( '%s' ) );
+					$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $order_id ), array( '%s' ) );
 				} else {
 					$updated = wp_update_post(
 						array(
 							'post_status' => 'lp-' . $new_status,
-							'ID'          => $the_id,
+							'ID'          => $order_id,
 						)
 					);
 				}
 
 				// Clear cache
-				wp_cache_delete( $the_id, 'posts' );
+				wp_cache_delete( $order_id, 'posts' );
 
 				/**
 				 * Trigger actions after status was changed
 				 *
 				 * @deprecated
 				 */
-				do_action( 'learn_press_order_status_' . $new_status, $the_id );
-				do_action( 'learn_press_order_status_' . $old_status . '_to_' . $new_status, $the_id );
-				do_action( 'learn_press_order_status_changed', $the_id, $old_status, $new_status );
+				//do_action( 'learn_press_order_status_' . $new_status, $order_id );
+				//do_action( 'learn_press_order_status_' . $old_status . '_to_' . $new_status, $order_id );
+				//do_action( 'learn_press_order_status_changed', $order_id, $old_status, $new_status );
 				// backward compatible
-				do_action( 'learn_press_update_order_status', $new_status, $the_id );
+				do_action( 'learn_press_update_order_status', $new_status, $order_id );
 
 				/**
 				 * @since 3.0.0
 				 */
-				do_action( 'learn-press/order/status-' . $new_status, $the_id, $old_status );
-				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $the_id );
-				do_action( 'learn-press/order/status-changed', $the_id, $old_status, $new_status );
+				do_action( 'learn-press/order/status-' . $new_status, $order_id, $old_status );
+				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $order_id );
+				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );
 
 				return true;
 			}

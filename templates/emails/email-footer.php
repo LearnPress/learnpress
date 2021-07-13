@@ -7,22 +7,22 @@
  * @version 3.0.0
  */
 
-defined('ABSPATH') or exit();
+defined( 'ABSPATH' ) or exit();
 
-if ( ! $email = LP_Emails::instance()->get_current() ) {
+if ( ! isset( $footer_text ) ) {
 	return;
 }
 ?>
 						</td>
 					</tr>
-                    </tbody>
-                    <tfoot id="email-footer">
+					</tbody>
+					<tfoot id="email-footer">
 					<tr>
 						<td>
-                            <?php echo $email->get_footer_text(); ?>
+							<?php echo $footer_text; ?>
 						</td>
 					</tr>
-                    </tfoot>
+					</tfoot>
 				</table>
 			</td>
 		</tr>

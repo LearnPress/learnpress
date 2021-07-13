@@ -2,6 +2,10 @@
 wp_enqueue_script( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.js' ) );
 wp_enqueue_style( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.css' ) );
 
+if ( ! isset( $value ) ) {
+	return;
+}
+
 $meta = wp_parse_args(
 	$value['value'],
 	array(
@@ -29,7 +33,7 @@ $email_format = $meta['format'];
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label><?php echo $value['title']; ?> <?php echo $tooltip_html; ?></label>
+		<label><?php echo $value['title']; ?> <?php echo $tooltip_html ?? ''; ?></label>
 	</th>
 	<td class="forminp lp-metabox-field__email-content forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
 		<?php

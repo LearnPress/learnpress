@@ -27,7 +27,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type ) {
 			add_action( 'init', array( $this, 'register_post_statues' ) );
-			//add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
@@ -52,9 +52,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param int $post_id
 		 * @since 3.0.10
 		 * @editor tungnx
-		 * @todo review function to rewrite handle on background
+		 * @reason not use
 		 */
-		public function recount_enrolled_users( int $post_id ) {
+		/*public function recount_enrolled_users( int $post_id ) {
 			$order = learn_press_get_order( $post_id );
 			$curd  = new LP_Course_CURD();
 			$items = $order->get_items();
@@ -71,7 +71,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					update_post_meta( $course_id, 'count_enrolled_users', $count );
 				}
 			}
-		}
+		}*/
 
 		/**
 		 * Filter the counts of posts when wp counting orders by statuses.
@@ -248,8 +248,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param bool $trigger_action
 		 *
 		 * @throws Exception
+		 * @editor tungnx
+		 * @reason comment - not use
 		 */
-		protected function _update_child( $order, $user_ids, $trigger_action = false ) {
+		/*protected function _update_child( $order, $user_ids, $trigger_action = false ) {
 			$new_orders   = array();
 			$child_orders = $order->get_child_orders( true );
 
@@ -295,7 +297,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					do_action( 'learn-press/order/status-changed', $new_order->get_id(), $status, $old_status );
 				}
 			}
-		}
+		}*/
 
 		/**
 		 * Save order post.
@@ -313,25 +315,23 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			}
 
-			if ( ! $post || $post->post_type !== LP_ORDER_CPT ) {
-				return;
-			}
-
 			if ( $action == 'editpost' ) {
 				//remove_action( 'save_post', array( $this, 'save_order' ) );
-				remove_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
+				//remove_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 
 				$user_id        = learn_press_get_request( 'order-customer' );
 				$order          = learn_press_get_order( $post_id );
-				$old_status     = get_post_status( $order->get_id() );
+				$old_status     = get_post_status( $order );
 				$trigger_action = LP_Request::get_string( 'trigger-order-action' ) == 'current-status';
 
-				if ( is_array( $user_id ) ) {
+				/*if ( is_array( $user_id ) ) {
 					$this->_update_child( $order, $user_id, $trigger_action );
 					$order->set_user_id( $user_id );
 				} else {
 					$order->set_user_id( absint( $user_id ) );
-				}
+				}*/
+
+				$order->set_user_id( $user_id );
 				$order->set_status( learn_press_get_request( 'order-status' ) );
 				$order->save();
 
@@ -343,26 +343,27 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				 * user. If the order is for multi users then it will trigger in
 				 * each child order
 				 */
-				if ( ! is_array( $user_id ) && ( ( $new_status == $old_status ) && $trigger_action ) ) {
+				/*if ( ! is_array( $user_id ) && ( ( $new_status == $old_status ) && $trigger_action ) ) {
 					$status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $order->get_id(), $status );
 					do_action( 'learn-press/order/status-changed', $order->get_id(), $status, $status );
-				}
+				}*/
 
 				//add_action( 'save_post', array( $this, 'save_order' ) );
-				add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
+				//add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 			} else {
 				$order   = learn_press_get_order( $post_id );
 				$user_id = $order->get_users();
 			}
 
-			if ( $user_id ) {
+			// Comment by tungnx
+			/*if ( $user_id ) {
 				$api = LP_Repair_Database::instance();
 				$api->sync_user_orders( $user_id );
-			}
+			}*/
 
-			// Recount number user enrolled
-			$this->recount_enrolled_users( $post_id );
+			// Comment by tungnx
+			//$this->recount_enrolled_users( $post_id );
 		}
 
 		/**
@@ -608,16 +609,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		/*public function pre_get_posts( $wp_query ) {
-			if ( is_admin() ) {
-				if ( ! empty( $wp_query->query['post_type'] ) && ( $wp_query->query['post_type'] == LP_ORDER_CPT ) ) {
-					$wp_query->set( 'orderby', 'date' );
-					$wp_query->set( 'order', 'desc' );
-				}
+		public function pre_get_posts( $wp_query ) {
+			if ( is_admin() && isset( $wp_query->query['post_type'] ) && LP_ORDER_CPT == $wp_query->query['post_type'] ) {
+				$wp_query->set( 'orderby', 'date' );
+				$wp_query->set( 'order', 'desc' );
 			}
 
 			return $wp_query;
-		}*/
+		}
 
 		/**
 		 *
