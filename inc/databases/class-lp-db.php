@@ -8,7 +8,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+//require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 class LP_Database {
 	private static $_instance;
@@ -22,6 +22,7 @@ class LP_Database {
 	public $tb_lp_question_answers;
 	public $tb_lp_question_answermeta;
 	public $tb_lp_upgrade_db;
+	public $tb_lp_sessions;
 	private $collate         = '';
 	public $max_index_length = '191';
 
@@ -48,6 +49,7 @@ class LP_Database {
 		$this->tb_lp_question_answers    = $prefix . 'learnpress_question_answers';
 		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
 		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
+		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
 		$this->wpdb->hide_errors();
 		$this->set_collate();
 	}
@@ -198,10 +200,14 @@ class LP_Database {
 		// Drop table bk if exists.
 		$this->drop_table( $table_bk );
 
-		dbDelta(
+		// Clone table
+		$this->wpdb->query( "CREATE TABLE {$table_bk} LIKE {$name_table}" );
+		$this->wpdb->query( "INSERT INTO {$table_bk} SELECT * FROM {$name_table}" );
+
+		/*dbDelta(
 			"CREATE TABLE $table_bk LIKE $name_table;
 			INSERT INTO $table_bk SELECT * FROM $name_table;"
-		);
+		);*/
 
 		$this->check_execute_has_error();
 

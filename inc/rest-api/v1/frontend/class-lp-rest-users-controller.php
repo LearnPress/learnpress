@@ -477,14 +477,38 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$question_id = $request['question_id'];
 		$answered    = $request['answered'];
 		$course_id   = $request['course_id'];
+		$quiz_id     = $request['item_id'];
 		$course      = learn_press_get_course( $course_id );
+		$checked     = false;
 
 		if ( $course->is_no_required_enroll() ) {
 			$no_required_enroll = new LP_Course_No_Required_Enroll();
 			$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
 		} else {
-			$checked = $this->user_item->check_question( $question_id, $answered );
+			$user = learn_press_get_current_user();
+
+			if ( $user ) {
+				$user_course = $user->get_course_data( $course_id );
+
+				if ( $user_course ) {
+					$user_item = $user_course->get_item( $quiz_id );
+					$checked   = $user_item->check_question( $question_id, $answered );
+				}
+			}
 		}
+
+		if ( is_wp_error( $checked ) || ! $checked ) {
+			return rest_ensure_response(
+				new WP_Error(
+					'cannot_check_answer',
+					is_wp_error( $checked ) ? $checked->get_error_message() : esc_html__( 'Cannot check answer question!', 'learnpress' ),
+					array(
+						'status' => 403,
+					)
+				)
+			);
+		}
+
 		$question = learn_press_get_question( $question_id );
 		$response = array(
 			'explanation' => $question->get_explanation(),

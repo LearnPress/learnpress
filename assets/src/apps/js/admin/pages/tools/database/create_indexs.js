@@ -30,7 +30,6 @@ const createIndexes = () => {
 		const functions = {
 			success: ( res ) => {
 				const { status, message, data: { tables, table } } = res;
-
 				const elSteps = document.querySelector( '.example-lp-group-step' );
 
 				lpModalOverlay.setContentModal( elSteps.innerHTML );

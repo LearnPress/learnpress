@@ -1,6 +1,7 @@
 import getStepsUpgradeStatus from './tools/database/upgrade';
 import createIndexes from './tools/database/create_indexs';
 import reUpgradeDB from './tools/database/re-upgrade-db';
+import cleanDatabases from './tools/database/clean_database';
 
 import resetData from './tools/reset-data';
 
@@ -114,7 +115,7 @@ import resetData from './tools/reset-data';
 		createIndexes();
 		reUpgradeDB();
 		resetData();
-
+		cleanDatabases();
 		$doc.on( 'click', '.lp-install-sample__install', installSampleCourse )
 			.on( 'click', '.lp-install-sample__uninstall', uninstallSampleCourse )
 			.on( 'click', '#learn-press-clear-cache', clearHardCache )
