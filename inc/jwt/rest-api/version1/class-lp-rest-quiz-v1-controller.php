@@ -291,7 +291,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return rest_ensure_response( $response );
 		}
 
-		if ( ! isset( $answered ) ) {
+		if ( ! isset( $request['answered'] ) ) {
 			$response->status  = 'error';
 			$response->message = esc_html__( 'No Answed param.', 'learnpress' );
 
