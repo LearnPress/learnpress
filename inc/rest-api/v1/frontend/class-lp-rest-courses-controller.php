@@ -96,12 +96,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 
-		$s       = isset( $request['s'] ) ? sanitize_text_field( $request['s'] ) : false;
-		$page    = isset( $request['page'] ) ? absint( wp_unslash( $request['page'] ) ) : 1;
-		$order   = isset( $request['order'] ) ? wp_unslash( $request['order'] ) : false;
-		$orderby = isset( $request['orderby'] ) ? wp_unslash( $request['orderby'] ) : false;
-		$user_id = isset( $request['userID'] ) ? absint( wp_unslash( $request['userID'] ) ) : false;
-		$limit   = LP_Settings::get_option( 'archive_course_limit', -1 );
+		$s        = isset( $request['s'] ) ? sanitize_text_field( $request['s'] ) : false;
+		$page     = isset( $request['paged'] ) ? absint( wp_unslash( $request['paged'] ) ) : 1;
+		$order    = isset( $request['order'] ) ? wp_unslash( $request['order'] ) : false;
+		$orderby  = isset( $request['orderby'] ) ? wp_unslash( $request['orderby'] ) : false;
+		$taxonomy = isset( $request['taxonomy'] ) ? wp_unslash( $request['taxonomy'] ) : false;
+		$term_id  = isset( $request['term_id'] ) ? wp_unslash( $request['term_id'] ) : false;
+		$user_id  = isset( $request['userID'] ) ? absint( wp_unslash( $request['userID'] ) ) : false;
+		$limit    = LP_Settings::get_option( 'archive_course_limit', -1 );
 
 		$args = array(
 			'posts_per_page' => $limit,
@@ -113,9 +115,24 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$args['s'] = $s;
 		}
 
+		if ( ! empty( $taxonomy ) && ! empty( $term_id ) ) {
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => $taxonomy,
+					'field'    => 'term_id',
+					'terms'    => $term_id,
+				),
+			);
+
+			$term_link = get_term_link( $term_id, $taxonomy );
+		}
+
 		if ( ! empty( $order ) ) {
+			$args['order'] = $order;
+		}
+
+		if ( ! empty( $orderby ) ) {
 			$args['orderby'] = $orderby;
-			$args['order']   = $order;
 		}
 
 		if ( $user_id && learn_press_user_maybe_is_a_teacher( $user_id ) ) {
@@ -128,12 +145,23 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		$num_pages = ! empty( $query->max_num_pages ) ? $query->max_num_pages : 1;
 
+		$archive_link = get_post_type_archive_link( LP_COURSE_CPT );
+
+		if ( isset( $term_link ) && ! is_wp_error( $term_link ) ) {
+			$archive_link = $term_link;
+		}
+
+		$base = esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
+
+		global $wp;
+		$base = str_replace( home_url( $wp->request ) . '/', $archive_link, $base );
+
 		$response->data->pagination = learn_press_get_template_content(
 			'loop/course/pagination.php',
 			array(
 				'total' => $num_pages,
 				'paged' => $page,
-				'base'  => get_post_type_archive_link( LP_COURSE_CPT ),
+				'base'  => $base,
 			)
 		);
 

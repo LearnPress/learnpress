@@ -1,7 +1,7 @@
 
 const { debounce } = lodash;
 
-const addQueryArgs = ( endpoint, args ) => {
+const lpArchiveAddQueryArgs = ( endpoint, args ) => {
 	const url = new URL( endpoint );
 
 	Object.keys( args ).forEach( ( arg ) => {
@@ -11,7 +11,37 @@ const addQueryArgs = ( endpoint, args ) => {
 	return url;
 };
 
-const requestCourse = ( args ) => {
+const lpArchiveCourse = () => {
+	const elements = document.querySelectorAll( '.lp-archive-course-skeleton' );
+
+	if ( ! elements.length ) {
+		return;
+	}
+
+	if ( 'IntersectionObserver' in window ) {
+		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
+			entries.forEach( ( entry ) => {
+				if ( entry.isIntersecting ) {
+					const ele = entry.target;
+
+					if ( ! lpArchiveSkeleton ) {
+						return;
+					}
+
+					setTimeout( function() {
+						lpArchiveRequestCourse( lpArchiveSkeleton );
+					}, 600 );
+
+					eleObserver.unobserve( ele );
+				}
+			} );
+		} );
+
+		[ ...elements ].map( ( ele ) => eleObserver.observe( ele ) );
+	}
+};
+
+const lpArchiveRequestCourse = ( args ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
 	const userID = lpGlobalSettings.user_id || '';
 
@@ -31,9 +61,13 @@ const requestCourse = ( args ) => {
 		return;
 	}
 
+	const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+
+	skeleton && skeleton.remove();
+
 	archive.classList.add( 'loading' );
 
-	fetch( addQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args, userID } ), {
+	fetch( lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args, userID } ), {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -72,7 +106,7 @@ const requestCourse = ( args ) => {
 	} );
 };
 
-const searchCourse = () => {
+const lpArchiveSearchCourse = () => {
 	const search = document.querySelectorAll( '.search-courses input[name="s"]' );
 
 	search.length > 0 && search.forEach( ( ele ) => ele.addEventListener( 'keyup', debounce( ( event ) => {
@@ -81,32 +115,40 @@ const searchCourse = () => {
 		const s = event.target.value;
 
 		if ( s && s.length > 2 ) {
-			requestCourse( { s } );
+			lpArchiveRequestCourse( { s, ...lpArchiveSkeleton } );
 		}
 	}, 500 ) ) );
 };
 
-const paginationCourse = () => {
+const lpArchivePaginationCourse = () => {
 	const paginationEle = document.querySelectorAll( '.lp-archive-courses .learn-press-pagination .page-numbers' );
 
 	paginationEle.length > 0 && paginationEle.forEach( ( ele ) => ele.addEventListener( 'click', ( event ) => {
 		event.preventDefault();
+		event.stopPropagation();
 
-		const urlString = event.target.getAttribute( 'href' );
+		const urlString = event.currentTarget.getAttribute( 'href' );
 
 		if ( urlString ) {
 			const url = new URL( urlString );
-			const s = url.searchParams.get( 's' ) || '';
-			const orderby = url.searchParams.get( 'orderby' ) || '';
-			const order = url.searchParams.get( 'order' ) || '';
-			const page = event.target.textContent || 1;
 
-			requestCourse( { s, page, order, orderby } );
+			const params = {};
+			url.searchParams.forEach( ( key, value ) => {
+				params[ value ] = key;
+			} );
+
+			const current = [ ...paginationEle ].filter( ( el ) => el.classList.contains( 'current' ) );
+
+			const paged = event.currentTarget.textContent || ( ele.classList.contains( 'next' ) && parseInt( current[ 0 ].textContent ) + 1 ) || ( ele.classList.contains( 'prev' ) && parseInt( current[ 0 ].textContent ) - 1 );
+
+			lpArchiveRequestCourse( { ...params, paged } );
+
+			window.history.pushState( '', '', urlString );
 		}
 	} ) );
 };
 
-const gridListCourse = () => {
+const lpArchiveGridListCourse = () => {
 	const layout = LP.Cookies.get( 'courses-layout' );
 
 	const switches = document.querySelectorAll( '.lp-courses-bar .switch-layout [name="lp-switch-layout-btn"]' );
@@ -114,7 +156,7 @@ const gridListCourse = () => {
 	switches.length > 0 && [ ...switches ].map( ( ele ) => ele.value === layout && ( ele.checked = true ) );
 };
 
-const gridListCourseHandle = () => {
+const lpArchiveGridListCourseHandle = () => {
 	const gridList = document.querySelectorAll( '.lp-archive-courses input[name="lp-switch-layout-btn"]' );
 
 	gridList.length > 0 && gridList.forEach( ( element ) => element.addEventListener( 'change', ( e ) => {
@@ -132,10 +174,11 @@ const gridListCourseHandle = () => {
 };
 
 function LPArchiveCourseInit() {
-	searchCourse();
-	gridListCourseHandle();
-	paginationCourse();
-	gridListCourse();
+	lpArchiveCourse();
+	lpArchiveSearchCourse();
+	lpArchiveGridListCourseHandle();
+	lpArchivePaginationCourse();
+	lpArchiveGridListCourse();
 }
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {

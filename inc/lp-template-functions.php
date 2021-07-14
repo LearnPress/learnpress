@@ -292,8 +292,8 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 
 if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
-		$args = array();
-		$quiz = LP_Global::course_item_quiz();
+		$args   = array();
+		$quiz   = LP_Global::course_item_quiz();
 		$course = LP_Global::course();
 		if ( $quiz ) {
 			$user      = LP_Global::user();
@@ -306,12 +306,12 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 			}
 
 			$args = array(
-				'id'            => $quiz->get_id(),
-				'totalTime'     => $quiz->get_duration()->get(),
-				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
-				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
+				'id'                  => $quiz->get_id(),
+				'totalTime'           => $quiz->get_duration()->get(),
+				'remainingTime'       => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
+				'status'              => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
 				'checkNorequizenroll' => $course->is_no_required_enroll(),
-				'navigationPosition' => LP_Settings::get_option( 'navigation_position','yes' )
+				'navigationPosition'  => LP_Settings::get_option( 'navigation_position', 'yes' ),
 			);
 		}
 
@@ -1880,3 +1880,52 @@ if ( ! function_exists( 'lp_taxonomy_archive_course_description' ) ) {
 		}
 	}
 }
+
+function lp_is_archive_course_skeleton() {
+	return apply_filters( 'lp/template/archive-course/enable_lazyload', true );
+}
+
+function lp_archive_skeleton_get_args() {
+	global $post, $wp;
+
+	$args = array();
+
+	if ( ! empty( $_GET ) ) {
+		$args = (array) $_GET;
+	}
+
+	$array = apply_filters(
+		'lp/template/archive-course/skeleton/args',
+		array(
+			'paged',
+			's',
+			'orderby',
+			'order',
+		)
+	);
+
+	if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
+		$cat = get_queried_object();
+
+		$args['term_id']  = $cat->term_id;
+		$args['taxonomy'] = $cat->taxonomy;
+	}
+
+	if ( learn_press_is_course_archive() ) {
+		foreach ( $array as $a ) {
+			if ( get_query_var( $a ) ) {
+				$args[ $a ] = get_query_var( $a );
+			}
+		}
+	}
+
+	return $args;
+}
+
+add_action(
+	'learn-press/after-enqueue-scripts',
+	function() {
+		$args = lp_archive_skeleton_get_args();
+		wp_add_inline_script( 'lp-courses', 'const lpArchiveSkeleton= ' . wp_json_encode( $args ) . '' );
+	}
+);
