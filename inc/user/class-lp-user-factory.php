@@ -44,7 +44,7 @@ class LP_User_Factory {
 		if ( ! $order ) {
 			return;
 		}
-		remove_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10 );
+		//remove_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10 );
 
 		try {
 			switch ( $new_status ) {
@@ -60,7 +60,7 @@ class LP_User_Factory {
 		} catch ( Exception $ex ) {
 
 		}
-		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
+		//add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 	}
 
 	/**
@@ -153,17 +153,18 @@ class LP_User_Factory {
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
 
-		$curd         = new LP_User_CURD();
-		$parent_order = $order->is_child() ? $order->get_parent() : $order;
-		$items        = ! $order->is_child() ? $order->get_items() : $parent_order->get_items();
+		$curd  = new LP_User_CURD();
+		$items = $order->get_items();
+		//$parent_order = $order->is_child() ? $order->get_parent() : $order;
+		//$items        = ! $order->is_child() ? $order->get_items() : $parent_order->get_items();
 
 		if ( ! $items ) {
 			return;
 		}
 
-		if ( $order->is_multi_users() && ! $order->is_child() ) {
+		/*if ( $order->is_multi_users() && ! $order->is_child() ) {
 			return;
-		}
+		}*/
 
 		foreach ( $order->get_users() as $user_id ) {
 			$user = learn_press_get_user( $user_id );

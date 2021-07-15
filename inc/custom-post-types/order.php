@@ -331,11 +331,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$order->set_user_id( absint( $user_id ) );
 				}*/
 
+				$order->set_created_via( 'manual' );
 				$order->set_user_id( $user_id );
 				$order->set_status( learn_press_get_request( 'order-status' ) );
 				$order->save();
 
-				$new_status = get_post_status( $order->get_id() );
+				//$new_status = get_post_status( $order->get_id() );
 
 				/**
 				 * If the status is not changed and force to trigger action is set
@@ -352,8 +353,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				//add_action( 'save_post', array( $this, 'save_order' ) );
 				//add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 			} else {
-				$order   = learn_press_get_order( $post_id );
-				$user_id = $order->get_users();
+				//$order   = learn_press_get_order( $post_id );
+				//$user_id = $order->get_users();
 			}
 
 			// Comment by tungnx

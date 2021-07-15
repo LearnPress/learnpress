@@ -43,7 +43,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 			) );
 
 
-			add_action( 'learn_press_order_status_completed_notification', array( $this, 'trigger' ) );
+			//add_action( 'learn_press_order_status_completed_notification', array( $this, 'trigger' ) );
 
 			parent::__construct();
 		}
