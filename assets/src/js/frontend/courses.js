@@ -107,6 +107,7 @@ const lpArchiveRequestCourse = ( args ) => {
 };
 
 const lpArchiveSearchCourse = () => {
+	const searchForm = document.querySelectorAll( 'form.search-courses' );
 	const search = document.querySelectorAll( '.search-courses input[name="s"]' );
 
 	search.length > 0 && search.forEach( ( ele ) => ele.addEventListener( 'keyup', debounce( ( event ) => {
@@ -118,6 +119,13 @@ const lpArchiveSearchCourse = () => {
 			lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
 		}
 	}, 500 ) ) );
+
+	searchForm.forEach( ( s ) => s.addEventListener( 'submit', ( e ) => {
+		e.preventDefault();
+
+		const eleSearch = s.querySelector( 'input[name="s"]' );
+		eleSearch && eleSearch.dispatchEvent( new Event( 'keyup' ) );
+	} ) );
 };
 
 const lpArchivePaginationCourse = () => {
