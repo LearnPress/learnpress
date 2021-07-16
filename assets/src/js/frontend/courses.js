@@ -115,7 +115,7 @@ const lpArchiveSearchCourse = () => {
 		const s = event.target.value;
 
 		if ( s && s.length > 2 ) {
-			lpArchiveRequestCourse( { s, ...lpArchiveSkeleton } );
+			lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
 		}
 	}, 500 ) ) );
 };
