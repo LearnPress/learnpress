@@ -124,9 +124,9 @@ const lpArchiveSearchCourse = () => {
 
 			const s = event.target.value;
 
-			btn.classList.add( 'loading' );
-
 			if ( s && s.length > 2 ) {
+				btn.classList.add( 'loading' );
+
 				lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
 
 				const url = lpArchiveAddQueryArgs( action, {
