@@ -16,6 +16,17 @@ Content-Type: application/json
 }
 
 ###
+POST http://learnpress4.local/wp-json/learnpress/v1/token/register
+Content-Type: application/json
+
+{
+	"username": "student4",
+	"password": "student4",
+	"confirm_password": "student4",
+	"email": "student4@gmail.com"
+}
+
+###
 POST http://learnpress4.local/wp-json/learnpress/v1/token/validate
 Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNDU4NzE3MiwibmJmIjoxNjI0NTg3MTcyLCJleHAiOjE2MjUxOTE5NzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.czBrKpTMrlUt5nGc5DXbNsAhkhg2od1xnlSHcgzBG6U
