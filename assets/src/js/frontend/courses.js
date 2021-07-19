@@ -102,30 +102,51 @@ const lpArchiveRequestCourse = ( args ) => {
 	} ).finally( () => {
 		archive.classList.remove( 'loading' );
 
+		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
+
 		LPArchiveCourseInit();
 	} );
 };
 
 const lpArchiveSearchCourse = () => {
 	const searchForm = document.querySelectorAll( 'form.search-courses' );
-	const search = document.querySelectorAll( '.search-courses input[name="s"]' );
 
-	search.length > 0 && search.forEach( ( ele ) => ele.addEventListener( 'keyup', debounce( ( event ) => {
-		event.preventDefault();
+	searchForm.forEach( ( s ) => {
+		const search = s.querySelector( 'input[name="s"]' );
+		const action = s.getAttribute( 'action' );
+		const postType = s.querySelector( '[name="post_type"]' ).value || '';
+		const taxonomy = s.querySelector( '[name="taxonomy"]' ).value || '';
+		const termID = s.querySelector( '[name="term_id"]' ).value || '';
+		const btn = s.querySelector( '[type="submit"]' );
 
-		const s = event.target.value;
+		search.addEventListener( 'keyup', debounce( ( event ) => {
+			event.preventDefault();
 
-		if ( s && s.length > 2 ) {
-			lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
-		}
-	}, 500 ) ) );
+			const s = event.target.value;
 
-	searchForm.forEach( ( s ) => s.addEventListener( 'submit', ( e ) => {
-		e.preventDefault();
+			btn.classList.add( 'loading' );
 
-		const eleSearch = s.querySelector( 'input[name="s"]' );
-		eleSearch && eleSearch.dispatchEvent( new Event( 'keyup' ) );
-	} ) );
+			if ( s && s.length > 2 ) {
+				lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
+
+				const url = lpArchiveAddQueryArgs( action, {
+					post_type: postType,
+					taxonomy,
+					term_id: termID,
+					s,
+				} );
+
+				window.history.pushState( '', '', url );
+			}
+		}, 500 ) );
+
+		s.addEventListener( 'submit', ( e ) => {
+			e.preventDefault();
+
+			const eleSearch = s.querySelector( 'input[name="s"]' );
+			eleSearch && eleSearch.dispatchEvent( new Event( 'keyup' ) );
+		} );
+	} );
 };
 
 const lpArchivePaginationCourse = () => {
