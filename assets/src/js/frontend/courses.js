@@ -28,9 +28,9 @@ const lpArchiveCourse = () => {
 						return;
 					}
 
-					setTimeout( function() {
-						lpArchiveRequestCourse( lpArchiveSkeleton );
-					}, 600 );
+					//setTimeout( function() {
+					lpArchiveRequestCourse( lpArchiveSkeleton );
+					//}, 600 );
 
 					eleObserver.unobserve( ele );
 				}
@@ -41,6 +41,9 @@ const lpArchiveCourse = () => {
 	}
 };
 
+let skeleton;
+let skeletonClone;
+let isLoading = false;
 const lpArchiveRequestCourse = ( args ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
 	const userID = lpGlobalSettings.user_id || '';
@@ -57,15 +60,18 @@ const lpArchiveRequestCourse = ( args ) => {
 		return;
 	}
 
-	if ( archive.classList.contains( 'loading' ) ) {
+	if ( isLoading ) {
 		return;
 	}
 
-	const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+	isLoading = true;
 
-	skeleton && skeleton.remove();
-
-	archive.classList.add( 'loading' );
+	if ( ! skeletonClone ) {
+		skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+		skeletonClone = skeleton.outerHTML;
+	} else {
+		listCourse.innerHTML = skeletonClone;
+	}
 
 	fetch( lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args, userID } ), {
 		method: 'GET',
@@ -81,6 +87,8 @@ const lpArchiveRequestCourse = ( args ) => {
 
 		const pagination = reponsive.data.pagination;
 
+		lpArchiveSearchCourse();
+
 		if ( typeof pagination !== 'undefined' ) {
 			const paginationHTML = new DOMParser().parseFromString( pagination, 'text/html' );
 			const paginationSelector = paginationHTML.querySelector( '.learn-press-pagination' );
@@ -90,6 +98,8 @@ const lpArchiveRequestCourse = ( args ) => {
 			if ( paginationEle ) {
 				if ( paginationInnerHTML ) {
 					paginationEle.innerHTML = paginationInnerHTML || '';
+
+					lpArchivePaginationCourse();
 				} else {
 					paginationEle.remove();
 				}
@@ -100,7 +110,8 @@ const lpArchiveRequestCourse = ( args ) => {
 	} ).catch( ( error ) => {
 		listCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/courses/archive-course' }</div>`;
 	} ).finally( () => {
-		archive.classList.remove( 'loading' );
+		isLoading = false;
+		skeleton && skeleton.remove();
 
 		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
 
@@ -124,7 +135,7 @@ const lpArchiveSearchCourse = () => {
 
 			const s = event.target.value;
 
-			if ( s && s.length > 2 ) {
+			if ( ! s || ( s && s.length > 2 ) ) {
 				btn.classList.add( 'loading' );
 
 				lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
@@ -204,12 +215,10 @@ const lpArchiveGridListCourseHandle = () => {
 
 function LPArchiveCourseInit() {
 	lpArchiveCourse();
-	lpArchiveSearchCourse();
 	lpArchiveGridListCourseHandle();
-	lpArchivePaginationCourse();
 	lpArchiveGridListCourse();
 }
 
-document.addEventListener( 'DOMContentLoaded', function( event ) {
-	LPArchiveCourseInit();
-} );
+//document.addEventListener( 'DOMContentLoaded', function( event ) {
+LPArchiveCourseInit();
+//} );

@@ -4,9 +4,9 @@
  * Class LP_Page_Controller
  */
 class LP_Page_Controller {
-	protected static $_instance = null;
+	protected static $_instance  = null;
 	protected $_shortcode_exists = false;
-	protected $_shortcode_tag = '[learn_press_archive_course]';
+	protected $_shortcode_tag    = '[learn_press_archive_course]';
 	protected $_archive_contents = null;
 
 	/**
@@ -72,12 +72,13 @@ class LP_Page_Controller {
 
 		// Set title course archive page
 		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&
-		     $course_archive_page_id == $wp_query->post->ID ) {
+			 $course_archive_page_id == $wp_query->post->ID ) {
 			$title             = get_the_title( $course_archive_page_id );
 			$flag_title_course = true;
 		} elseif ( learn_press_is_course() ) {
-			if ( $item = LP_Global::course_item() ) {
-				$title = apply_filters( 'learn-press/document-course-title-parts', get_the_title() . " &rarr; " . $item->get_title(), $item );
+			$item = LP_Global::course_item();
+			if ( $item ) {
+				$title = apply_filters( 'learn-press/document-course-title-parts', get_the_title() . ' &rarr; ' . $item->get_title(), $item );
 
 				$flag_title_course = true;
 			}
@@ -107,7 +108,7 @@ class LP_Page_Controller {
 						array(
 							$page_title,
 							'&rarr;',
-							$tab['title']
+							$tab['title'],
 						)
 					)
 				);
@@ -736,7 +737,7 @@ class LP_Page_Controller {
 			$this->_archive_contents = do_shortcode( $this->_shortcode_tag );
 			if ( class_exists( 'SiteOrigin_Panels' ) ) {
 				if ( class_exists( 'SiteOrigin_Panels' ) &&
-				     has_filter( 'the_content', array( SiteOrigin_Panels::single(), 'generate_post_content' ) )
+					 has_filter( 'the_content', array( SiteOrigin_Panels::single(), 'generate_post_content' ) )
 				) {
 					remove_shortcode( 'learn_press_archive_course' );
 					add_filter(
@@ -767,7 +768,7 @@ class LP_Page_Controller {
 			if ( is_post_type_archive( LP_COURSE_CPT ) || LEARNPRESS_IS_CATEGORY ) {
 				$wp_query->is_page    = false;
 				$wp_query->is_archive = true;
-				$wp_query->is_single   = false;
+				$wp_query->is_single  = false;
 			} else {
 				$wp_query->found_posts          = 1;
 				$wp_query->is_single            = true;
@@ -802,17 +803,22 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Controls WP displays the courses in a page which setup to display on homepage
+	 * Query courses if page is archive courses
 	 *
 	 * @param $q WP_Query
 	 *
 	 * @return WP_Query
+	 * @editor tungnx
+	 * @modify 4.1.2
+	 * @throws Exception
 	 */
-	public function pre_get_posts( $q ) {
+	public function pre_get_posts( WP_Query $q ): WP_Query {
 		// Affect only the main query and not in admin
-		if ( ! $q->is_main_query() ) {
+		if ( ! $q->is_main_query() && ! is_admin() ) {
 			return $q;
 		}
+
+		$is_archive_course = false;
 
 		// Handle 404 if user are viewing course item directly.
 		$this->set_link_item_course_default_wp_to_page_404( $q );
@@ -821,39 +827,23 @@ class LP_Page_Controller {
 
 		/**
 		 * If current page is used for courses page
+		 * Set on both: "Homepage" and "Posts page" on Reading Settings
 		 */
 		$page_courses_id = learn_press_get_page_id( 'courses' );
 
 		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == $page_courses_id ) {
-			$_query = wp_parse_args( $q->query );
-
-			if ( empty( $_query ) ||
-			     ! array_diff( array_keys( $_query ),
-				     array(
-					     'preview',
-					     'page',
-					     'paged',
-					     'cpage',
-					     'orderby'
-				     )
-			     )
-			) {
-				$q->is_page = true;
-				$q->is_home = false;
-				$q->set( 'page_id', get_option( 'page_on_front' ) );
-				$q->set( 'post_type', LP_COURSE_CPT );
-			}
+			$is_archive_course = 1;
+			//$q->is_home = false;
+			//$q->set( 'page_id', get_option( 'page_on_front' ) );
 		}
 
 		/**
-		 * If current page is used for courses page and set as home-page
+		 * If current page is used for courses page and set as "Homepage"
 		 */
 		if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $page_courses_id && $q->get( 'page_id' ) == $page_courses_id ) {
+			$is_archive_course = 1;
 
-			$q->set( 'post_type', LP_COURSE_CPT );
-			$q->set( 'page_id', '' );
-
-			global $wp_post_types;
+			/*global $wp_post_types;
 
 			$course_page                                = get_post( $page_courses_id );
 			$this->_queried_object                      = $course_page;
@@ -861,27 +851,34 @@ class LP_Page_Controller {
 			$wp_post_types[ LP_COURSE_CPT ]->post_title = $course_page->post_title;
 			$wp_post_types[ LP_COURSE_CPT ]->post_name  = $course_page->post_name;
 			$wp_post_types[ LP_COURSE_CPT ]->post_type  = $course_page->post_type;
-			$wp_post_types[ LP_COURSE_CPT ]->ancestors  = get_ancestors( $course_page->ID, $course_page->post_type );
-
-			$q->is_singular          = false;
-			$q->is_post_type_archive = true;
-			$q->is_archive           = true;
-			$q->is_page              = true;
+			$wp_post_types[ LP_COURSE_CPT ]->ancestors  = get_ancestors( $course_page->ID, $course_page->post_type );*/
 		}
 
 		// Set custom posts per page
 		if ( $this->_is_archive() ) {
-			$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
-			if ( empty( $limit ) ) {
-				$limit = 6;
-			}
+			$is_archive_course = 1;
+		}
 
-			if ( 0 < $limit ) {
+		if ( $is_archive_course ) {
+			if ( lp_is_archive_course_load_via_api() ) {
+				LP()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
+				/**
+				 * If page is archive course - query set posts_per_page = 1
+				 * For fastest - because when page loaded - call API to load list courses
+				 *
+				 * Current, apply only for LP, not apply for theme Thimpress, because theme override
+				 */
+				$q->set( 'posts_per_page', 1 );
+			} else {
+				$q->set( 'post_type', LP_COURSE_CPT );
+				$q->set( 'page_id', '' );
+				$q->is_singular          = false;
+				$q->is_post_type_archive = true;
+				$q->is_archive           = true;
+				$q->is_page              = true;
+
+				$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
 				$q->set( 'posts_per_page', $limit );
-			}
-
-			if ( isset( $q->query['page'] ) ) {
-				$q->set( 'paged', $q->query['page'] );
 			}
 		}
 

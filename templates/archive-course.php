@@ -40,21 +40,21 @@ $page_title = learn_press_page_title( false );
 	do_action( 'learn-press/before-courses-loop' );
 	LP()->template( 'course' )->begin_courses_loop();
 
-	if ( have_posts() ) {
-		if ( lp_is_archive_course_skeleton() ) {
-			echo '<div class="lp-archive-course-skeleton" style="width:100%">';
-			echo lp_skeleton_animation_html( 5, 'random', 'height:40px', 'width:100%' );
-			echo '</div>';
-		} else {
+	if ( lp_is_archive_course_load_via_api() ) {
+		echo '<div class="lp-archive-course-skeleton" style="width:100%">';
+		echo lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
+		echo '</div>';
+	} else {
+		if ( have_posts() ) {
 			while ( have_posts() ) :
 				the_post();
 
 				learn_press_get_template_part( 'content', 'course' );
 
 			endwhile;
+		} else {
+			LP()->template( 'course' )->no_courses_found();
 		}
-	} else {
-		LP()->template( 'course' )->no_courses_found();
 	}
 
 	LP()->template( 'course' )->end_courses_loop();
