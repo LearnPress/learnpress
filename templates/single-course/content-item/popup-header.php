@@ -38,5 +38,6 @@ $percentage     = $course_results['count_items'] ? absint( $course_results['comp
 				</div>
 			</div>
 		<?php endif; ?>
-	</div>
-</div>
+ 	</div>
+	<a href="<?php echo $course->get_permalink(); ?>" class="back-course"><i class="fa fa-times"></i></a>
+ </div>

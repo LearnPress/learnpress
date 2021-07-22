@@ -6,14 +6,18 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.1.1
  */
 
 defined( 'ABSPATH' ) || exit();
 
 global $wp_query;
 
-if ( $wp_query->max_num_pages <= 1 ) {
+$total = isset( $total ) ? $total : $wp_query->max_num_pages;
+$paged = isset( $paged ) ? $paged : get_query_var( 'paged' );
+$base  = isset( $base ) ? $base : esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
+
+if ( $total <= 1 ) {
 	return;
 }
 ?>
@@ -24,11 +28,11 @@ if ( $wp_query->max_num_pages <= 1 ) {
 		apply_filters(
 			'learn_press_pagination_args',
 			array(
-				'base'      => esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) ),
+				'base'      => $base,
 				'format'    => '',
 				'add_args'  => '',
-				'current'   => max( 1, get_query_var( 'paged' ) ),
-				'total'     => $wp_query->max_num_pages,
+				'current'   => max( 1, $paged ),
+				'total'     => $total,
 				'prev_text' => '<i class="fas fa-angle-left"></i>',
 				'next_text' => '<i class="fas fa-angle-right"></i>',
 				'type'      => 'list',

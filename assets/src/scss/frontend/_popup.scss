@@ -76,7 +76,27 @@
 	bottom: 0;
 	left: 0;
 	background: #fff;
-
+	.back-course{
+		padding-left: 30px;
+		padding-right: 30px;
+		line-height: 70px;
+		background: rgba(255,255,255, 0.1);
+		color: #fff;
+		&:hover{
+			background: rgba(255,255,255, 0.15);
+		}
+ 		@media (max-width: 768px){
+ 			background: transparent;
+			line-height: 50px;
+			opacity: 0.6;
+			padding-left: 15px;
+			padding-right: 15px;
+			&:hover{
+				background: transparent;
+				opacity: 1;
+			}
+		}
+	}
 	#popup-header {
 		display: flex;
 		position: fixed;

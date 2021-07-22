@@ -15,7 +15,11 @@ $s       = LP_Request::get( 's' );
 ?>
 
 <div class="lp-courses-bar <?php echo esc_attr( $active ); ?>">
-	<form class="search-courses" method="post">
+	<form class="search-courses" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+		<input type="hidden" name="post_type" value="<?php echo esc_attr( LP_COURSE_CPT ); ?>">
+		<input type="hidden" name="taxonomy" value="<?php echo esc_attr( get_queried_object()->taxonomy ?? $_GET['taxonomy'] ?? '' ); ?>">
+		<input type="hidden" name="term_id" value="<?php echo esc_attr( get_queried_object()->term_id ?? $_GET['term_id'] ?? '' ); ?>">
+		<input type="hidden" name="term" value="<?php echo esc_attr( get_queried_object()->slug ?? $_GET['term'] ?? '' ); ?>">
 		<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>" name="s" value="<?php echo esc_attr( $s ); ?>">
 		<button type="submit"><i class="fas fa-search"></i></button>
 	</form>

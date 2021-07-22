@@ -38,21 +38,26 @@ $page_title = learn_press_page_title( false );
 	 * LP Hook
 	 */
 	do_action( 'learn-press/before-courses-loop' );
-
 	LP()->template( 'course' )->begin_courses_loop();
 
-	while ( have_posts() ) :
-		the_post();
+	if ( lp_is_archive_course_load_via_api() ) {
+		echo '<div class="lp-archive-course-skeleton" style="width:100%">';
+		echo lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
+		echo '</div>';
+	} else {
+		if ( have_posts() ) {
+			while ( have_posts() ) :
+				the_post();
 
-		learn_press_get_template_part( 'content', 'course' );
+				learn_press_get_template_part( 'content', 'course' );
 
-	endwhile;
+			endwhile;
+		} else {
+			LP()->template( 'course' )->no_courses_found();
+		}
+	}
 
 	LP()->template( 'course' )->end_courses_loop();
-
-	/**
-	 * @since 3.0.0
-	 */
 	do_action( 'learn-press/after-courses-loop' );
 
 

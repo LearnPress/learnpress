@@ -772,6 +772,18 @@ a {
 				border: 0;
 				outline: 0;
 			}
+
+			&.loading > i {
+
+				&::before {
+					display: inline-block;
+					font-family: "Font Awesome 5 Free";
+					font-weight: 900;
+					content: "\f110";
+
+					@include animation(lp-rotating 1s linear infinite);
+				}
+			}
 		}
 
 		::-webkit-input-placeholder {
