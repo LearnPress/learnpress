@@ -99,9 +99,8 @@ const lpArchiveRequestCourse = ( args ) => {
 				paginationEle.remove();
 			}
 
-			listCourse.after( paginationNewNode );
-
 			if ( paginationNewNode ) {
+				listCourse.after( paginationNewNode );
 				lpArchivePaginationCourse();
 			}
 		}
