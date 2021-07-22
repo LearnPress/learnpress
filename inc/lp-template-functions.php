@@ -780,7 +780,9 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 	 *
 	 * @return string
 	 */
-	function learn_press_page_title( $echo = true ) {
+	function learn_press_page_title( bool $echo = true ): string {
+		$page_title = '';
+
 		if ( is_search() ) {
 			// Comment by tungnx
 			/*$page_title = sprintf( __( 'Search Results for: &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() );
@@ -1860,7 +1862,6 @@ if ( ! function_exists( 'lp_archive_course_page_content' ) ) {
 				$profile_page = get_post( $profile_id );
 
 				$description = lp_format_page_content( wp_kses_post( $profile_page->post_content ) );
-
 				if ( $description ) {
 					echo '<div class="lp-course-page__content">' . $description . '</div>';
 				}

@@ -91,20 +91,18 @@ const lpArchiveRequestCourse = ( args ) => {
 
 		if ( typeof pagination !== 'undefined' ) {
 			const paginationHTML = new DOMParser().parseFromString( pagination, 'text/html' );
-			const paginationSelector = paginationHTML.querySelector( '.learn-press-pagination' );
-			const paginationInnerHTML = paginationSelector && paginationSelector.innerHTML;
+			const paginationNewNode = paginationHTML.querySelector( '.learn-press-pagination' );
+			//const paginationInnerHTML = paginationSelector && paginationSelector.innerHTML;
 			const paginationEle = document.querySelector( '.learn-press-pagination' );
 
 			if ( paginationEle ) {
-				if ( paginationInnerHTML ) {
-					paginationEle.innerHTML = paginationInnerHTML || '';
+				paginationEle.remove();
+			}
 
-					lpArchivePaginationCourse();
-				} else {
-					paginationEle.remove();
-				}
-			} else {
-				jQuery( listCourse ).after( pagination );
+			listCourse.after( paginationNewNode );
+
+			if ( paginationNewNode ) {
+				lpArchivePaginationCourse();
 			}
 		}
 	} ).catch( ( error ) => {
