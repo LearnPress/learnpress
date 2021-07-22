@@ -870,13 +870,6 @@ class LP_Page_Controller {
 				 */
 				$q->set( 'posts_per_page', 1 );
 			} else {
-				$q->set( 'post_type', LP_COURSE_CPT );
-				$q->set( 'page_id', '' );
-				$q->is_singular          = false;
-				$q->is_post_type_archive = true;
-				$q->is_archive           = true;
-				$q->is_page              = true;
-
 				$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
 				$q->set( 'posts_per_page', $limit );
 			}
