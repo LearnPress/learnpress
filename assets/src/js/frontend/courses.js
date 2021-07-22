@@ -80,12 +80,12 @@ const lpArchiveRequestCourse = ( args ) => {
 		},
 	} ).then( ( response ) => {
 		return response.json();
-	} ).then( ( reponsive ) => {
-		if ( typeof reponsive.data.content !== 'undefined' && listCourse ) {
-			listCourse.innerHTML = reponsive.data.content || '';
+	} ).then( ( response ) => {
+		if ( typeof response.data.content !== 'undefined' && listCourse ) {
+			listCourse.innerHTML = response.data.content || '';
 		}
 
-		const pagination = reponsive.data.pagination;
+		const pagination = response.data.pagination;
 
 		lpArchiveSearchCourse();
 
