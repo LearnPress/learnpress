@@ -382,7 +382,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return ! ! $this->get_user_item_id();
 	}
 
-	public function is_available() {
+	/**
+	 * @editor tungnx
+	 * @reason comment - not use
+	 */
+	/*public function is_available() {
 		if ( null === $this->_is_available ) {
 			$user                = $this->get_user();
 			$order               = $user->get_course_order( $this->get_item_id() );
@@ -390,7 +394,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		return $this->_is_available;
-	}
+	}*/
 
 	/**
 	 * @param string $return
@@ -678,9 +682,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get graduation
 	 *
-	 * @param string $graduation .
-	 *
-	 * @return $this
+	 * @return string
 	 */
 	public function get_graduation() {
 		return apply_filters(
@@ -733,16 +735,22 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->_changes = array();
 		}
 
-		if ( $data_course = $this->get_parent() ) {
+		$data_course = $this->get_parent();
+		if ( $data_course ) {
 			$data_course->calculate_course_results();
 		}
 
 		return $return;
 	}
 
-	public function is_course_item() {
+	/**
+	 * @editor tungnx
+	 * @reason commnet - not use
+	 * @modify 4.1.2
+	 */
+	/*public function is_course_item() {
 		return learn_press_is_support_course_item_type( $this->get_data( 'item_type' ) );
-	}
+	}*/
 
 	public function get_status_label( $status = '' ) {
 		$statuses = array(
@@ -798,22 +806,32 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		);
 	}
 
-	public function count_history() {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.2
+	 * @reason comment - not use
+	 */
+	/*public function count_history() {
 		if ( $items = $this->get_history() ) {
 			return sizeof( $items );
 		}
 
 		return 0;
-	}
+	}*/
 
-	public function remove_user_items_history( $keep = 10 ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.2
+	 * @reason comment - not use
+	 */
+	/*public function remove_user_items_history( $keep = 10 ) {
 		learn_press_remove_user_items_history(
 			$this->get_item_id(),
 			$this->get_course( 'id' ),
 			$this->get_user_id(),
 			$keep
 		);
-	}
+	}*/
 
 	/**
 	 * Return number of seconds has exceeded from the expiration time to now.
@@ -924,7 +942,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $wpdb->get_var( $query );
 	}
 
-	public function delete_meta_data( $include = '', $exclude = '' ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.2
+	 * @reason comment - not use
+	 */
+	/*public function delete_meta_data( $include = '', $exclude = '' ) {
 		global $wpdb;
 
 		$where = '';
@@ -953,7 +976,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		$this->_meta_data = array();
 		update_meta_cache( 'learnpress_user_item', $this->get_user_item_id() );
-	}
+	}*/
 
 	/**
 	 * Get post type of item.
@@ -964,8 +987,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return learn_press_get_post_type( $this->get_item_id() );
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function is_passed() {
-		return $this->get_graduation() === 'passed';
+		return 'passed' === $this->get_graduation();
 	}
 
 	public function get_percent_result( $decimal = 1 ) {

@@ -41,6 +41,9 @@ if ( ! class_exists( 'LP_Background_Single_Email' ) ) {
 				return;
 			}
 
+			/**
+			 * @var LP_Email_Type_Enrolled_Course $email
+			 */
 			$email = new $class_name;
 			$email->handle( $params );
 		}

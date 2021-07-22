@@ -1297,8 +1297,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_completed() {
-			return preg_replace( '~^lp-~', '', $this->get_order_status() ) === 'completed';
+		public function is_completed(): bool {
+			return $this->get_order_status() === 'completed';
 		}
 	}
 }

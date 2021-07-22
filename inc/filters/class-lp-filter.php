@@ -13,11 +13,30 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Filter {
+	/**
+	 * @var int
+	 */
 	public $limit = 10;
+	/**
+	 * @var string
+	 */
 	public $order_by = '';
+	/**
+	 * @var string
+	 */
 	public $order_by_desc = '';
+	/**
+	 * @var string
+	 */
 	public $key_word = '';
+	/**
+	 * @var int
+	 */
 	public $page = 0;
+	/**
+	 * @var string
+	 */
+	public $select = '';
 
 	public function __construct() {
 		$this->limit = apply_filters( 'lp/filter/limit', $this->limit );

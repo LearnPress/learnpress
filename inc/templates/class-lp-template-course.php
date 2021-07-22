@@ -590,7 +590,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
-	public function remaining_time() {
+	/**
+	 * @editor tungnx
+	 * @reason comment - not use
+	 * @since 4.1.2
+	 */
+	/*public function remaining_time() {
 
 		if ( ! $course = LP_Global::course() ) {
 			return;
@@ -610,12 +615,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		learn_press_get_template( 'single-course/remaining-time.php', array( 'remaining_time' => $remain ) );
-	}
+	}*/
 
 	public function item_lesson_title() {
-		$item = LP_Global::course_item();
+		$item            = LP_Global::course_item();
+		$format          = $item->get_format();
+		$format_template = learn_press_locate_template( "content-lesson/{$format}/title.php" );
 
-		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/title.php" ) ) ) {
+		if ( 'standard' !== $format && file_exists( $format_template ) ) {
 			include $format_template;
 
 			return;
@@ -624,9 +631,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function item_lesson_content() {
-		$item = LP_Global::course_item();
+		$item            = LP_Global::course_item();
+		$format          = $item->get_format();
+		$format_template = learn_press_locate_template( "content-lesson/{$format}/content.php" );
 
-		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/content.php" ) ) ) {
+		if ( 'standard' !== $format && file_exists( $format_template ) ) {
 			include $format_template;
 
 			return;
@@ -990,6 +999,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
+	/**
+	 * Template for case not any courses
+	 *
+	 * @author Nhamdv
+	 * @since 4.1.2
+	 */
 	public function no_courses_found() {
 		learn_press_get_template( 'global/no-courses-found' );
 	}

@@ -59,14 +59,22 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 		if ( ! $this->enable ) {
 			return;
 		}
+		$lp_db = LP_User_Items_DB::getInstance();
 
 		try {
 			if ( count( $params ) < 1 ) {
 				throw new Exception( 'Invalid params to send email ' . __CLASS__ );
 			}
 
-			$order_id   = $params[0] ?? 0;
-			$order      = new LP_Order( $order_id );
+			$order_id = $params[0] ?? 0;
+			$order    = new LP_Order( $order_id );
+
+			$user_course_status = $lp_db->get_status_by_order_id( $order_id );
+
+			if ( LP_COURSE_ENROLLED != $user_course_status ) {
+				return;
+			}
+
 			$course_ids = $order->get_item_ids();
 
 			foreach ( $course_ids as $course_id ) {

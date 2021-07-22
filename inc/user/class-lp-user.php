@@ -5,7 +5,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 1.0.1
  */
 class LP_User extends LP_Abstract_User {
 	/**
@@ -29,7 +29,8 @@ class LP_User extends LP_Abstract_User {
 		}
 
 		if ( $this->is_admin() || $this->is_author_of( $course_id ) ) {
-			$view->flag = true;
+			$view->flag    = true;
+			$view->message = '';
 
 			return $view;
 		}
@@ -89,7 +90,7 @@ class LP_User extends LP_Abstract_User {
 	 * @return LP_Model_User_Can_View_Course_Item
 	 * @since 4.0.0
 	 */
-	public function can_view_item( $item_id = 0, $view = null ): LP_Model_User_Can_View_Course_Item {
+	public function can_view_item( int $item_id = 0, $view = null ): LP_Model_User_Can_View_Course_Item {
 		$view_new = null;
 
 		if ( ! $view instanceof LP_Model_User_Can_View_Course_Item ) {
@@ -124,6 +125,7 @@ class LP_User extends LP_Abstract_User {
 	 * @return int
 	 * @throws Exception .
 	 * @since 4.0.0
+	 * @author tungnx
 	 */
 	public function can_retry_course( int $course_id = 0 ): int {
 		$flag = 0;
@@ -171,44 +173,46 @@ class LP_User extends LP_Abstract_User {
 	 *
 	 * @param integer $course_id Course ID
 	 * @param boolean $return_bool
-	 * @return any
+	 * @return bool|object
+	 * @editor tungnx
+	 * @since 4.1.2
+	 * @version 1.0.1
 	 *
 	 * @author Nhamdv
 	 */
 	public function is_course_enrolled( int $course_id, bool $return_bool = true ) {
-		static $output;
+		$result_check          = new stdClass();
+		$result_check->check   = true;
+		$result_check->message = '';
+		$lp_db                 = LP_User_Items_DB::getInstance();
 
-		if ( ! isset( $output ) || ! is_object( $output ) ) {
-			$output          = new stdClass();
-			$output->check   = true;
-			$output->message = '';
+		try {
+			$order = $this->get_course_order( $course_id );
 
-			try {
-				$order = $this->get_course_order( $course_id, 'id', true );
-
-				if ( empty( $order ) ) {
-					throw new Exception( esc_html__( 'Order is not completed', 'learnpress' ) );
-				}
-
-				global $wpdb;
-
-				$query  = $wpdb->prepare( "SELECT status FROM $wpdb->learnpress_user_items WHERE item_id=%d AND user_id=%d AND item_type=%s ORDER BY user_item_id DESC LIMIT 1", $course_id, $this->get_id(), LP_COURSE_CPT );
-				$status = $wpdb->get_var( $query );
-
-				if ( $status !== 'enrolled' ) {
-					throw new Exception( esc_html__( 'Course is not enrolled', 'learnpress' ) );
-				}
-			} catch ( Throwable $th ) {
-				$output->check   = false;
-				$output->message = $th->getMessage();
+			if ( ! $order || ! $order->is_completed() ) {
+				throw new Exception( esc_html__( 'Order is not completed', 'learnpress' ) );
 			}
+
+			$filter          = new LP_User_Items_Filter();
+			$filter->user_id = $this->get_id();
+			$filter->item_id = $course_id;
+
+			$user_course = $lp_db->get_last_user_course( $filter );
+
+			// global $wpdb;
+			//
+			// $query  = $wpdb->prepare( "SELECT status FROM $wpdb->learnpress_user_items WHERE item_id=%d AND user_id=%d AND item_type=%s ORDER BY user_item_id DESC LIMIT 1", $course_id, $this->get_id(), LP_COURSE_CPT );
+			// $status = $wpdb->get_var( $query );
+
+			if ( ! $user_course || ! isset( $user_course->status ) || ! in_array( $user_course->status, [ LP_COURSE_ENROLLED, LP_COURSE_FINISHED ] ) ) {
+				throw new Exception( esc_html__( 'Course is not enrolled', 'learnpress' ) );
+			}
+		} catch ( Throwable $th ) {
+			$result_check->check   = false;
+			$result_check->message = $th->getMessage();
 		}
 
-		if ( $return_bool ) {
-			$output = $output->check;
-		}
-
-		return apply_filters( 'learn-press/user/is-course-enrolled', $output, $course_id, $return_bool );
+		return apply_filters( 'learn-press/user/is-course-enrolled', $return_bool ? $result_check->check : $result_check, $course_id, $return_bool );
 	}
 
 	/**

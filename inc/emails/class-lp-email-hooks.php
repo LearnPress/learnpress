@@ -32,6 +32,13 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 						LP_Email_Enrolled_Course_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-enrolled-course-instructor.php',
 					],
 
+					// User enrolled course when order completed before
+					'learnpress/user/course-enrolled'    => [
+						LP_Email_Enrolled_Course_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-enrolled-course-user.php',
+						LP_Email_Enrolled_Course_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-enrolled-course-admin.php',
+						LP_Email_Enrolled_Course_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-enrolled-course-instructor.php',
+					],
+
 					// Cancelled order
 					'learn-press/order/status-cancelled',
 

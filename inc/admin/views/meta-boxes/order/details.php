@@ -126,7 +126,7 @@ $user_ip      = $order->get_user_ip_address();
 
 				}
 
-				learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
+				//learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
 				?>
 
 			</div>

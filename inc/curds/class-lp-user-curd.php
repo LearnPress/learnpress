@@ -645,13 +645,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Read course data for an user.
 	 *
-	 * @param int       $user_id
-	 * @param int|array $course_id
-	 * @param bool      $force - Optional. Force to read new data from DB (ignore caching).
+	 * @param int $user_id
+	 * @param int $course_id
+	 * @param bool $force - ignore caching.
 	 *
 	 * @return bool
+	 * @editor tungnx
+	 * @modify 4.1.2
+	 * @Todo should rewrite
 	 */
-	public function read_course( $user_id = null, $course_id = null, $force = false ) {
+	public function read_course( int $user_id = 0, int $course_id = null, bool $force = false ) {
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
@@ -668,48 +673,33 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
-		if ( is_array( $course_id ) ) {
-			foreach ( $course_id as $cid ) {
-				$this->read_course( $user_id, $cid, $force );
+		/*$result = LP_Object_Cache::get( 'course-' . $user_id . '-' . $course_id, 'learn-press/user-item-courses' );
+		if ( false !== $result ) {
+			return $result;
+		}*/
+		$last_user_course = false;
+
+		try {
+			/**
+			 * Get newest item-course in table user-items
+			 */
+			$filter            = new LP_User_Items_Filter();
+			$filter->item_id   = $course_id;
+			$filter->user_id   = $user_id;
+			$last_user_course  = $lp_user_items_db->get_last_user_course( $filter );
+
+			if ( ! $last_user_course ) {
+				return false;
 			}
 
-			return true;
+			$last_user_course = (array) $last_user_course;
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 
-		if ( false !== ( $result = LP_Object_Cache::get( 'course-' . $user_id . '-' . $course_id, 'learn-press/user-item-courses' ) ) ) {
-			return $result;
-		}
+		//LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $result, 'learn-press/user-item-courses' );
 
-		global $wpdb;
-
-		/**
-		 * Get newest item-course in table user-items
-		 */
-		$query = $wpdb->prepare(
-			"
-			SELECT ui.*
-			FROM {$wpdb->learnpress_user_items} ui
-			WHERE item_type = %s
-				AND user_id = %d
-				AND item_id = %d
-			ORDER BY user_item_id DESC
-			LIMIT 0, 1
-		",
-			LP_COURSE_CPT,
-			$user_id,
-			$course_id
-		);
-
-		if ( $result = $wpdb->get_row( $query, ARRAY_A ) ) {
-			/*** TEST CACHE */
-			// $this->_read_course_items( $result, $force );
-		} else {
-			$result = '';
-		}
-
-		LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $result, 'learn-press/user-item-courses' );
-
-		return $result;
+		return $last_user_course;
 	}
 
 	public function get_course_access_level( $user_id, $course_id ) {

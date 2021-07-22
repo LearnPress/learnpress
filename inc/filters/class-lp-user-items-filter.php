@@ -16,13 +16,37 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 	class LP_User_Items_Filter extends LP_Filter {
+		/**
+		 * @var int
+		 */
 		public $user_item_id = 0;
+		/**
+		 * @var int
+		 */
 		public $user_id = 0;
+		/**
+		 * @var int
+		 */
 		public $item_id = 0;
+		/**
+		 * @var string
+		 */
 		public $status = '';
+		/**
+		 * @var string
+		 */
 		public $item_type = '';
+		/**
+		 * @var string
+		 */
 		public $start_time = '';
+		/**
+		 * @var string
+		 */
 		public $end_time = '';
+		/**
+		 * @var int
+		 */
 		public $parent_id = 0;
 
 		public function __construct() {

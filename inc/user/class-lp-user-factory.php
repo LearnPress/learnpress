@@ -38,6 +38,14 @@ class LP_User_Factory {
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 	}
 
+	/**
+	 * Handle when order changed status
+	 *
+	 * @param $the_id
+	 * @param $old_status
+	 * @param $new_status
+	 * @Todo tungnx - should write on class LP_Order
+	 */
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
 		$order = learn_press_get_order( $the_id );
 
@@ -89,6 +97,7 @@ class LP_User_Factory {
 				$user_item_id = LP_Course_DB::getInstance()->get_user_item_id( $order->get_id(), $item['course_id'], $user_id );
 
 				if ( $user_item_id ) {
+					//Todo: tungnx - handle code on background
 					$wpdb->delete(
 						$wpdb->learnpress_user_items,
 						array(
@@ -146,12 +155,18 @@ class LP_User_Factory {
 	}
 
 	/**
+	 * Enroll course if Order completed
+	 *
 	 * @param LP_Order $order
-	 * @param string   $old_status
-	 * @param string   $new_status
+	 * @param string $old_status
+	 * @param string $new_status
+	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.2
 	 */
-	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
+	protected static function _update_user_item_purchased( LP_Order $order, $old_status, $new_status ) {
 		global $wpdb;
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		$curd  = new LP_User_CURD();
 		$items = $order->get_items();
@@ -182,26 +197,40 @@ class LP_User_Factory {
 
 				$course = learn_press_get_course( $item['course_id'] );
 
-				/** Get latest user_item_id of course for allow_repurchase */
-				$latest_user_item_id = $wpdb->get_var(
+				/** Get newest user_item_id of course for allow_repurchase */
+				$filter          = new LP_User_Items_Filter();
+				$filter->user_id = $user_id;
+				$filter->item_id = $item['course_id'];
+				$user_course     = $lp_user_items_db->get_last_user_course( $filter );
+
+				$latest_user_item_id   = 0;
+				$allow_repurchase_type = '';
+
+				if ( $user_course && isset( $user_course->user_item_id ) ) {
+					$latest_user_item_id = $user_course->user_item_id;
+
+					/** Get allow_repurchase_type for reset, update. Add in: rest-api/v1/frontend/class-lp-courses-controller.php: purchase_course */
+					$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
+				}
+
+				/*$latest_user_item_id = $wpdb->get_var(
 					$wpdb->prepare(
 						"SELECT MAX(user_item_id) user_item_id
-						FROM {$wpdb->learnpress_user_items}
-						WHERE ref_type = %s
-						AND item_type = %s
-						AND item_id = %d
-						AND user_id = %d",
+					  FROM {$wpdb->learnpress_user_items}
+					  WHERE ref_type = %s
+					  AND item_type = %s
+					  AND item_id = %d
+					  AND user_id = %d",
 						LP_ORDER_CPT,
 						LP_COURSE_CPT,
 						$item['course_id'],
 						$user_id
 					)
-				);
+				);*/
 
-				/** Get allow_repurchase_type for reset, update. Add in: rest-api/v1/frontend/class-lp-courses-controller.php: purchase_course */
-				$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
-
-				/** If allow_repurchase. */
+				/**
+				 * If allow_repurchase.
+				 */
 				if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() && ! empty( $allow_repurchase_type ) ) {
 
 					/** If keep course progress will reset start_time, graduation.. */
@@ -276,12 +305,18 @@ class LP_User_Factory {
 							}
 						}
 
-						$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id(), false, false );
+						/**
+						 * Insert new item(row) on table learnpress_user_items
+						 */
+						$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id() );
 					}
 
 					learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
 				} else {
-					$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id(), false, false );
+					/**
+					 * Insert new item(row) on table learnpress_user_items
+					 */
+					$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id() );
 				}
 
 				if ( $user_item_id && ! is_wp_error( $user_item_id ) ) {
@@ -300,7 +335,7 @@ class LP_User_Factory {
 					if ( $new_status == 'completed' && $can_enroll && $auto_enroll ) {
 						$args['status'] = LP_COURSE_ENROLLED;
 						// Send mail when course enrolled
-						$user->enrolled_sendmail( $user_id, $course_id );
+						// $user->enrolled_sendmail( $user_id, $course_id );
 					}
 
 					if ( $course->is_free() && $can_enroll ) {

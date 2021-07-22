@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_User_Items_DB
  *
  * @since 3.2.8.6
- * @version 1.0.1
- *
+ * @version 1.0.2
+ * @author tungnx
  */
 class LP_User_Items_DB extends LP_Database {
 	private static $_instance;
@@ -271,6 +271,106 @@ class LP_User_Items_DB extends LP_Database {
 		$this->check_execute_has_error();
 
 		return (int) $this->wpdb->get_var( $query );
+	}
+
+	/**
+	 * Get status course by order_id
+	 *
+	 * @param int $order_id
+	 * @throws Exception
+	 * @return null|string
+	 */
+	public function get_status_by_order_id( int $order_id ) {
+		$query = $this->wpdb->prepare(
+			"
+			SELECT status
+			FROM $this->tb_lp_user_items
+			WHERE ref_type = %s
+			AND ref_id = %d
+			AND item_type = %s
+			",
+			LP_ORDER_CPT,
+			$order_id,
+			LP_COURSE_CPT
+		);
+
+		$result = $this->wpdb->get_var( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
+	 * Get status course by order_id
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 * @throws Exception
+	 *
+	 * @return null|object
+	 */
+	public function get_last_user_course( LP_User_Items_Filter $filter ) {
+		$query = $this->wpdb->prepare(
+			"
+			SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time
+			FROM $this->tb_lp_user_items
+			WHERE item_type = %s
+			AND item_id = %d
+			AND user_id = %s
+			ORDER BY user_item_id DESC
+			LIMIT 1
+			",
+			LP_COURSE_CPT,
+			$filter->item_id,
+			$filter->user_id
+		);
+
+		$result = $this->wpdb->get_row( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
+	 * Query table learnpress_user_items
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 */
+	public function get_user_items( LP_User_Items_Filter $filter ) {
+		if ( empty( $filter->select ) ) {
+			$filter->select = '*';
+		}
+
+		$WHERE = '';
+
+		$vars = get_class_vars( $this );
+
+		foreach ( $vars as $var ) {
+			if ( ! empty( $filter->{$var} ) ) {
+				if ( empty( $WHERE ) ) {
+					$WHERE = ' WHERE' . $filter->{$var};
+				} else {
+					$WHERE = ' AND' . $filter->{$var};
+				}
+			}
+		}
+
+		$query = $this->wpdb->prepare(
+			"
+			SELECT $filter->select FROM $this->tb_lp_user_items
+			$WHERE
+			",
+			$filter->item_type,
+			$filter->item_id,
+			$filter->user_id
+		);
+
+		$result = $this->wpdb->get_var( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
 	}
 }
 

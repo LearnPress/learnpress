@@ -1423,15 +1423,7 @@ function learn_press_current_user_enrolled_course() {
  * @since 3.x.x
  */
 function learn_press_user_can_access_course( $course_id, $user_id = 0 ) {
-	if ( ! $user_id ) {
-		$user_id = get_current_user_id();
-	}
-
-	if ( $user = learn_press_get_user( $user_id ) ) {
-		return $user->can_access_course( $course_id );
-	}
-
-	return false;
+	_deprecated_function( __FUNCTION__, '4.1.2' );
 }
 
 function learn_press_content_item_summary_class( $more = '', $echo = true ) {
