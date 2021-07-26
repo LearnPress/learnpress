@@ -2579,8 +2579,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
 		}
 
-		public function get_profile_socials( $user_id ) {
-			$socials    = array();
+		/**
+		 * Get links socials of use on Profile page
+		 *
+		 * @param int $user_id
+		 * @return array
+		 */
+		public function get_profile_socials( int $user_id = 0 ): array {
+			$socials = array();
 			$extra_info = learn_press_get_user_extra_profile_info( $user_id );
 
 			if ( $extra_info ) {
