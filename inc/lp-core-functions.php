@@ -3453,17 +3453,19 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
  *
  * @return array
  * @since 3.x.x
+ * @editor tungnx
+ * @reason comment - not use
  */
-function learn_press_default_course_levels() {
+/*function learn_press_default_course_levels() {
 	$levels = array(
 		'beginner'     => __( 'Beginner', 'learnpress' ),
 		'intermediate' => __( 'Intermediate', 'learnpress' ),
 		'expert'       => __( 'Expert', 'learnpress' ),
-		''             => __( 'All Levels', 'learnpress' ),
+		''             => __( 'All levels', 'learnpress' ),
 	);
 
 	return apply_filters( 'learn-press/default-course-levels', $levels );
-}
+}*/
 
 /**
  * Get default methods to evaluate course results.
