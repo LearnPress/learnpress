@@ -46,7 +46,12 @@ class LP_Assets extends LP_Abstract_Assets {
 		);
 	}
 
-	public function _get_script_data() {
+	/**
+	 * Set localize script data
+	 *
+	 * @return array
+	 */
+	public function _get_script_data(): array {
 		return array(
 			'lp-global'       => array(
 				'url'                                => learn_press_get_current_url(),
@@ -86,7 +91,12 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	}
 
-	public function _get_scripts() {
+	/**
+	 * Config load scripts
+	 *
+	 * @return array
+	 */
+	public function _get_scripts(): array {
 		$wp_js = array(
 			'jquery',
 			'wp-element',
@@ -97,7 +107,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'lodash',
 		);
 
-		return apply_filters(
+		$scripts = apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
 				'vue-libs'             => new LP_Asset_Key(
@@ -231,6 +241,7 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		wp_set_script_translations( 'lp-quiz', 'learnpress' );
 
+		return $scripts;
 	}
 
 	/**
