@@ -113,6 +113,9 @@ const lpArchiveRequestCourse = ( args ) => {
 		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
 
 		LPArchiveCourseInit();
+
+		// Scroll to archive element
+		archive.scrollIntoView();
 	} );
 };
 
