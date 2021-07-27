@@ -156,7 +156,7 @@ class Question extends Component {
 					question.explanation && (
 						<>
 							<div className="question-explanation-content">
-								<strong className="explanation-title">{ __( 'Explanation:', 'learnpress' ) }</strong>
+								<strong className="explanation-title">{ __( 'Explanation', 'learnpress' ) }:</strong>
 								<div dangerouslySetInnerHTML={ { __html: question.explanation } }>
 								</div>
 							</div>
@@ -170,7 +170,7 @@ class Question extends Component {
 					question.hint && ! question.explanation && question.showHint && (
 						<>
 							<div className="question-hint-content">
-								<strong className="hint-title">{ __( 'Hint:', 'learnpress' ) }</strong>
+								<strong className="hint-title">{ __( 'Hint', 'learnpress' ) }:</strong>
 								<div dangerouslySetInnerHTML={ { __html: question.hint } } />
 							</div>
 						</>
