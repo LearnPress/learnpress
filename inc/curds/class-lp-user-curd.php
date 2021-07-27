@@ -2162,13 +2162,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * @param  string  $user_type
-	 * @param $where
+	 * Check and query get course by language (wpml)
+	 *
+	 * @param string $user_type
+	 * @param string $where
+	 * @return stdClass|void
 	 * @author hungkv
 	 * @since 4.1.2
-	 * check and query get course by language (wpml)
 	 */
-	public function profile_support_wpml( $user_type = '', $where ) {
+	public function profile_support_wpml( string $user_type = '', string $where = '' ) {
 		// Check if wpml active & install
 		$join = '';
 		global $wpdb;

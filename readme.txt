@@ -197,6 +197,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.2 =
+~ Modify, optimize Archive course page - call API - make faster
+~ Added: back icon on item page
+~ Fixed: some where call old function "get_profile_socials" not has param $user_id
+
 = 4.1.1 =
 ~ Added: tool clean "table session" clean sessions expire after 1 days.
 ~ Fixed: not show button "continue" when course is blocked.
