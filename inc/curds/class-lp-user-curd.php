@@ -2184,7 +2184,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$t_option           = get_option( 'icl_sitepress_settings' );
 			$lpcourse_tu_option = $t_option['custom_posts_sync_option']['lp_course'];
 			if ( $lpcourse_tu_option == 1 ) {
-				if ( $user_type = 'owner' ) {
+				if ( $user_type == 'owner' ) {
 					// Select list course is translated with language default
 					$my_default_lang = apply_filters( 'wpml_default_language', null );
 					if ( isset( $my_default_lang ) && $ilc == $my_default_lang ) {
@@ -2205,7 +2205,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			} elseif ( $lpcourse_tu_option == 2 ) {
 				$my_default_lang = apply_filters( 'wpml_default_language', null );
 				if ( isset( $my_default_lang ) && $ilc == $my_default_lang ) {
-					if ( $user_type = 'owner' ) {
+					if ( $user_type == 'owner' ) {
 						$join  = $wpdb->prepare( ' INNER JOIN ' . $wpdb->prefix . 'icl_translations icl ON c.ID = icl.element_id',
 							0 );
 						$where = $where . $wpdb->prepare( ' AND icl.language_code = %s ', $ilc );
@@ -2218,7 +2218,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 
 				} else {
-					if ( $user_type = 'owner' ) {
+					if ( $user_type == 'owner' ) {
 						// select trid list courses translated
 						$tri_ids = $lp_db->query_support_wpml_profile( 'list_course_translated', '', 'ids' );
 
