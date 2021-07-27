@@ -538,13 +538,12 @@ class LP_Database {
 			return;
 		}
 
-		if(!isset($key)){
+		if ( ! isset( $key ) ) {
 			return;
 		}
 
 		// defined
 		$ilc = '';
-
 
 		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
 			if ( isset( $_COOKIE['wp-wpml_current_language'] ) ) {
@@ -553,66 +552,101 @@ class LP_Database {
 				$ilc = ICL_LANGUAGE_CODE;
 			}
 		}
-		$my_default_lang = apply_filters('wpml_default_language', NULL );
-		switch ($key) {
+
+		$my_default_lang = apply_filters( 'wpml_default_language', null );
+
+		switch ( $key ) {
 			case 'translated_by_default_lang':
-				$query      = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 						SELECT trid
 						FROM ' . $this->wpdb->prefix . 'icl_translations
 						WHERE source_language_code = %s AND element_type = %s
 						GROUP BY trid
-						', $ilc, 'post_lp_course' );
+						',
+					$ilc,
+					'post_lp_course'
+				);
 				break;
 			case 'list_course_translated':
-				$query = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 							SELECT  trid
 							FROM ' . $this->wpdb->prefix . 'icl_translations
 							WHERE language_code = %s AND element_type = %s
-							',$ilc,'post_lp_course');
+							',
+					$ilc,
+					'post_lp_course'
+				);
 				break;
 			case 'not_ids_original_language':
 				$input = implode( ',', $input );
-				$query      = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 							SELECT  element_id
 							FROM ' . $this->wpdb->prefix . 'icl_translations
 							WHERE language_code = %s AND element_type = %s AND trid NOT IN ( ' . $input . ' )
-							',$my_default_lang,'post_lp_course');
+							',
+					$my_default_lang,
+					'post_lp_course'
+				);
 				break;
 			case 'list_element_id_course_translated':
-				$query      = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 							SELECT  element_id
 							FROM ' . $this->wpdb->prefix . 'icl_translations
 							WHERE language_code = %s AND element_type = %s
-							',$ilc,'post_lp_course');
+							',
+					$ilc,
+					'post_lp_course'
+				);
 				break;
 			case 'list_course_not_translated':
-				$query      = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 							SELECT  element_id
 							FROM ' . $this->wpdb->prefix . 'icl_translations
 							WHERE language_code != %s AND element_type = %s
-							',$ilc,'post_lp_course');
+							',
+					$ilc,
+					'post_lp_course'
+				);
 				break;
 			case 'list_course_default_not_translated':
-				$query      = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 							SELECT  element_id
 							FROM ' . $this->wpdb->prefix . 'icl_translations
 							WHERE language_code != %s AND element_type = %s
-							',$my_default_lang,'post_lp_course');
+							',
+					$my_default_lang,
+					'post_lp_course'
+				);
 				break;
 			case 'all_course_other_language':
-				$query      = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 							SELECT  element_id
 							FROM ' . $this->wpdb->prefix . 'icl_translations
 							WHERE language_code != %s AND language_code != %s AND element_type = %s
-							',$my_default_lang,$ilc,'post_lp_course');
+							',
+					$my_default_lang,
+					$ilc,
+					'post_lp_course'
+				);
 				break;
 			case 'ids_original_language':
 				$input = implode( ',', $input );
-				$query      = $this->wpdb->prepare( '
+				$query = $this->wpdb->prepare(
+					'
 							SELECT  element_id
 							FROM ' . $this->wpdb->prefix . 'icl_translations
 							WHERE language_code = %s AND element_type = %s AND trid IN ( ' . $input . ' )
-							',$my_default_lang,'post_lp_course');
+							',
+					$my_default_lang,
+					'post_lp_course'
+				);
 				break;
 		}
 
