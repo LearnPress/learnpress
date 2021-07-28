@@ -2586,7 +2586,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return array
 		 */
 		public function get_profile_socials( int $user_id = 0 ): array {
-			$socials = array();
+			$socials    = array();
 			$extra_info = learn_press_get_user_extra_profile_info( $user_id );
 
 			if ( $extra_info ) {
