@@ -2493,7 +2493,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return LP_Query_List_Table
 		 */
-		public function get_purchased_courses( $args = array() ) {
+		public function get_purchased_courses( array $args = array() ): LP_Query_List_Table {
 			return $this->_curd->query_purchased_courses( $this->get_id(), $args );
 		}
 
