@@ -730,11 +730,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Query user's courses
 		 *
 		 * @param string $type - Optional. [own, purchased, enrolled, etc]
-		 * @param mixed  $args - Optional.
+		 * @param array  $args - Optional.
 		 *
-		 * @return array|LP_Query_List_Table
+		 * @return bool|LP_Query_List_Table
 		 */
-		public function query_courses( $type = 'own', $args = '' ) {
+		public function query_courses( string $type = 'own', array $args = array() ) {
 			$query = false;
 			switch ( $type ) {
 				case 'purchased':

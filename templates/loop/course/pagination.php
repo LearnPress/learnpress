@@ -13,16 +13,16 @@ defined( 'ABSPATH' ) || exit();
 
 global $wp_query;
 
-$total = isset( $total ) ? $total : $wp_query->max_num_pages;
-$paged = isset( $paged ) ? $paged : get_query_var( 'paged' );
-$base  = isset( $base ) ? $base : esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
+$total = $total ?? $wp_query->max_num_pages;
+$paged = $paged ?? get_query_var( 'paged' );
+$base  = $base ?? esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
 
 if ( $total <= 1 ) {
 	return;
 }
 ?>
 
-<nav class="learn-press-pagination">
+<nav class="learn-press-pagination navigation pagination">
 	<?php
 	echo paginate_links(
 		apply_filters(
