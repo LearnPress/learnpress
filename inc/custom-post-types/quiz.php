@@ -107,7 +107,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'capability_type'    => LP_LESSON_CPT,
 					'map_meta_cap'       => true,
 					'show_in_menu'       => 'learn_press',
-					'show_in_rest'       => $this->is_support_gutenberg(),
+					'show_in_rest'       => true,
 					'show_in_admin_bar'  => true,
 					'show_in_nav_menus'  => true,
 					'supports'           => array(

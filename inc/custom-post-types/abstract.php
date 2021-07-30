@@ -944,26 +944,6 @@ abstract class LP_Abstract_Post_Type {
 		return $messages;
 	}
 
-	/**
-	 * Return TRUE if this post-type is support Gutenberg editor.
-	 *
-	 * @since 3.3.0
-	 *
-	 * @return bool
-	 */
-	public function is_support_gutenberg(): bool {
-		$post_types = array(
-			LP_COURSE_CPT   => LP_Settings::get_option( 'enable_gutenberg_course' ),
-			LP_LESSON_CPT   => LP_Settings::get_option( 'enable_gutenberg_lesson' ),
-			LP_QUIZ_CPT     => LP_Settings::get_option( 'enable_gutenberg_quiz' ),
-			LP_QUESTION_CPT => LP_Settings::get_option( 'enable_gutenberg_question' ),
-		);
-
-		$support = $post_types[ $this->_post_type ] === 'yes';
-
-		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
-	}
-
 	// Deprecated functions
 	/*private function _get_orderby() {
 		_deprecated_function( __FUNCTION__, '4.1.0' );

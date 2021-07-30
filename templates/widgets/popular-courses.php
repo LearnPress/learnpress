@@ -75,7 +75,7 @@ global $post;
 							<div class="course-lesson-number course-meta-field">
 								<?php
 								$lesson_count = $course->count_items( LP_LESSON_CPT );
-								echo $lesson_count > 1 ? sprintf( __( '%d lessons', 'learnpress' ), $lesson_count ) : sprintf( __( '%d lesson', 'learnpress' ), $lesson_count );
+								echo sprintf( _n( '%d lesson', '%d lessons', $lesson_count, 'learnpress' ), $lesson_count );
 								?>
 							</div>
 						<?php } ?>

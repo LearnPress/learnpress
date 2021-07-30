@@ -259,8 +259,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param $txn_id
 		 *
 		 * @return int
+		 * @editor tungnx
+		 * @modify 4.1.2
+		 * @reason comment - not user
 		 */
-		public function get_order_id( $txn_id ) {
+		/*public function get_order_id( $txn_id ) {
 
 			$args = array(
 				'meta_key'    => '_learn_press_transaction_method_id',
@@ -276,7 +279,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return 0;
-		}
+		}*/
 
 		public function parse_ipn() {
 			if ( ! isset( $_REQUEST['ipn'] ) ) {
@@ -284,71 +287,76 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 		}
 
-		public function process_order_paypal_standard() {
-
-			if ( ! empty( $_REQUEST['learn-press-transaction-method'] ) && ( 'paypal-standard' == $_REQUEST['learn-press-transaction-method'] ) ) {
-				// if we have a paypal-nonce in $_REQUEST that meaning user has clicked go back to our site after finished the transaction
-				// so, create a new order
-				if ( ! empty( $_REQUEST['paypal-nonce'] ) && wp_verify_nonce( $_REQUEST['paypal-nonce'], 'learn-press-paypal-nonce' ) ) {
-					if ( ! empty( $_REQUEST['tx'] ) ) {
-						$transaction_id = $_REQUEST['tx'];
-					} elseif ( ! empty( $_REQUEST['txn_id'] ) ) {
-						$transaction_id = $_REQUEST['txn_id'];
-					} else {
-						$transaction_id = null;
-					}
-
-					if ( ! empty( $_REQUEST['cm'] ) ) {
-						$transient_transaction_id = $_REQUEST['cm'];
-					} elseif ( ! empty( $_REQUEST['custom'] ) ) {
-						$transient_transaction_id = $_REQUEST['custom'];
-					} else {
-						$transient_transaction_id = null;
-					}
-
-					if ( ! empty( $_REQUEST['st'] ) ) {
-						$transaction_status = $_REQUEST['st'];
-					} elseif ( ! empty( $_REQUEST['payment_status'] ) ) {
-						$transaction_status = $_REQUEST['payment_status'];
-					} else {
-						$transaction_status = null;
-					}
-
-					if ( ! empty( $transaction_id ) && ! empty( $transient_transaction_id ) && ! empty( $transaction_status ) ) {
-						$user = learn_press_get_current_user();
-
-						try {
-							// If the transient still exists, delete it and add the official transaction
-							if ( $transaction_object = learn_press_get_transient_transaction( 'lpps', $transient_transaction_id ) ) {
-
-								learn_press_delete_transient_transaction( 'lpps', $transient_transaction_id );
-								$order_id = $this->get_order_id( $transaction_id );
-								$order_id = learn_press_add_transaction(
-									array(
-										'order_id'  => $order_id,
-										'method'    => 'paypal-standard',
-										'method_id' => $transaction_id,
-										'status'    => $transaction_status,
-										'user_id'   => $user->get_id(),
-										'transaction_object' => $transaction_object['transaction_object'],
-									)
-								);
-
-								wp_redirect( ( $confirm_page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && get_post( $confirm_page_id ) ? learn_press_get_order_confirm_url( $order_id ) : get_home_url() /* SITE_URL */ );
-								die();
-							}
-						} catch ( Exception $e ) {
-							return false;
-
-						}
-					} elseif ( is_null( $transaction_id ) && is_null( $transient_transaction_id ) && is_null( $transaction_status ) ) {
-					}
-				}
-			}
-
-			wp_redirect( get_home_url() );
-			die();
-		}
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.2
+		 * @reason comment - not user
+		 */
+//		public function process_order_paypal_standard() {
+//
+//			if ( ! empty( $_REQUEST['learn-press-transaction-method'] ) && ( 'paypal-standard' == $_REQUEST['learn-press-transaction-method'] ) ) {
+//				// if we have a paypal-nonce in $_REQUEST that meaning user has clicked go back to our site after finished the transaction
+//				// so, create a new order
+//				if ( ! empty( $_REQUEST['paypal-nonce'] ) && wp_verify_nonce( $_REQUEST['paypal-nonce'], 'learn-press-paypal-nonce' ) ) {
+//					if ( ! empty( $_REQUEST['tx'] ) ) {
+//						$transaction_id = $_REQUEST['tx'];
+//					} elseif ( ! empty( $_REQUEST['txn_id'] ) ) {
+//						$transaction_id = $_REQUEST['txn_id'];
+//					} else {
+//						$transaction_id = null;
+//					}
+//
+//					if ( ! empty( $_REQUEST['cm'] ) ) {
+//						$transient_transaction_id = $_REQUEST['cm'];
+//					} elseif ( ! empty( $_REQUEST['custom'] ) ) {
+//						$transient_transaction_id = $_REQUEST['custom'];
+//					} else {
+//						$transient_transaction_id = null;
+//					}
+//
+//					if ( ! empty( $_REQUEST['st'] ) ) {
+//						$transaction_status = $_REQUEST['st'];
+//					} elseif ( ! empty( $_REQUEST['payment_status'] ) ) {
+//						$transaction_status = $_REQUEST['payment_status'];
+//					} else {
+//						$transaction_status = null;
+//					}
+//
+//					if ( ! empty( $transaction_id ) && ! empty( $transient_transaction_id ) && ! empty( $transaction_status ) ) {
+//						$user = learn_press_get_current_user();
+//
+//						try {
+//							// If the transient still exists, delete it and add the official transaction
+//							if ( $transaction_object = learn_press_get_transient_transaction( 'lpps', $transient_transaction_id ) ) {
+//
+//								learn_press_delete_transient_transaction( 'lpps', $transient_transaction_id );
+//								$order_id = $this->get_order_id( $transaction_id );
+//								$order_id = learn_press_add_transaction(
+//									array(
+//										'order_id'  => $order_id,
+//										'method'    => 'paypal-standard',
+//										'method_id' => $transaction_id,
+//										'status'    => $transaction_status,
+//										'user_id'   => $user->get_id(),
+//										'transaction_object' => $transaction_object['transaction_object'],
+//									)
+//								);
+//
+//								wp_redirect( ( $confirm_page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && get_post( $confirm_page_id ) ? learn_press_get_order_confirm_url( $order_id ) : get_home_url() /* SITE_URL */ );
+//								die();
+//							}
+//						} catch ( Exception $e ) {
+//							return false;
+//
+//						}
+//					} elseif ( is_null( $transaction_id ) && is_null( $transient_transaction_id ) && is_null( $transaction_status ) ) {
+//					}
+//				}
+//			}
+//
+//			wp_redirect( get_home_url() );
+//			die();
+//		}
 
 		/**
 		 * Handle a completed payment
