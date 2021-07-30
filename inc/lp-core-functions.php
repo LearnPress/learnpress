@@ -10,6 +10,24 @@
 
 defined( 'ABSPATH' ) || exit;
 
+function learnpress_gutenberg_disable_cpt( $can_edit, $post_type ) {
+	$post_types = array(
+		LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
+		LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
+		LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
+		LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
+	);
+
+	foreach ( $post_types as $key => $pt ) {
+		if ( $post_type === $key && $pt !== 'yes' ) {
+			$can_edit = false;
+		}
+	}
+
+	return $can_edit;
+}
+add_filter( 'use_block_editor_for_post_type', 'learnpress_gutenberg_disable_cpt', 10, 2 );
+
 /**
  * Get instance of a CURD class by type
  *
@@ -3456,7 +3474,8 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
  * @editor tungnx
  * @reason comment - not use
  */
-/*function learn_press_default_course_levels() {
+/*
+function learn_press_default_course_levels() {
 	$levels = array(
 		'beginner'     => __( 'Beginner', 'learnpress' ),
 		'intermediate' => __( 'Intermediate', 'learnpress' ),
