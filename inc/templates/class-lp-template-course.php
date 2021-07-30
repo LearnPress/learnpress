@@ -716,33 +716,15 @@ class LP_Template_Course extends LP_Abstract_Template {
 			'learn-press/count-meta-objects',
 			array(
 				'lesson'  => sprintf(
-					$lessons > 1 ? __(
-						'<span class="meta-number">%d</span> lessons',
-						'learnpress'
-					) : __(
-						'<span class="meta-number">%d</span> lesson',
-						'learnpress'
-					),
+					'<span class="meta-number">' . _n( '%d lesson', '%d lessons', $lessons, 'learnpress' ) . '</span>',
 					$lessons
 				),
 				'quiz'    => sprintf(
-					$quizzes > 1 ? __(
-						'<span class="meta-number">%d</span> quizzes',
-						'learnpress'
-					) : __(
-						'<span class="meta-number">%d</span> quiz',
-						'learnpress'
-					),
+					'<span class="meta-number">' . _n( '%d quiz', '%d quizzes', $quizzes, 'learnpress' ) . '</span>',
 					$quizzes
 				),
 				'student' => sprintf(
-					$students > 1 ? __(
-						'<span class="meta-number">%d</span> students',
-						'learnpress'
-					) : __(
-						'<span class="meta-number">%d</span> student',
-						'learnpress'
-					),
+					'<span class="meta-number">' . _n( '%d student', '%d students', $students, 'learnpress' ) . '</span>',
 					$students
 				),
 			),

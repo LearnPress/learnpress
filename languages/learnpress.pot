@@ -6552,30 +6552,6 @@ msgstr ""
 msgid "Error: Filter disable finish course."
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:722
-msgid "<span class=\"meta-number\">%d</span> lessons"
-msgstr ""
-
-#: inc/templates/class-lp-template-course.php:725
-msgid "<span class=\"meta-number\">%d</span> lesson"
-msgstr ""
-
-#: inc/templates/class-lp-template-course.php:732
-msgid "<span class=\"meta-number\">%d</span> quizzes"
-msgstr ""
-
-#: inc/templates/class-lp-template-course.php:735
-msgid "<span class=\"meta-number\">%d</span> quiz"
-msgstr ""
-
-#: inc/templates/class-lp-template-course.php:742
-msgid "<span class=\"meta-number\">%d</span> students"
-msgstr ""
-
-#: inc/templates/class-lp-template-course.php:745
-msgid "<span class=\"meta-number\">%d</span> student"
-msgstr ""
-
 #: inc/templates/class-lp-template-course.php:776
 msgid "Features"
 msgstr ""
@@ -7470,16 +7446,25 @@ msgid "Preview Lessons"
 msgstr ""
 
 #: templates/widgets/featured-courses.php:77
-#: templates/widgets/popular-courses.php:78
-#: templates/widgets/recent-courses.php:77
-msgid "%d lessons"
-msgstr ""
+#: inc/templates/class-lp-template-course.php:719
+msgid "%d lesson"
+msgid_plural "%d lessons"
+msgstr[0] ""
+msgstr[1] ""
 
 #: templates/widgets/featured-courses.php:77
-#: templates/widgets/popular-courses.php:78
-#: templates/widgets/recent-courses.php:77
-msgid "%d lesson"
-msgstr ""
+#: inc/templates/class-lp-template-course.php:723
+msgid "%d quiz"
+msgid_plural "%d quizzes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/widgets/featured-courses.php:77
+#: inc/templates/class-lp-template-course.php:723
+msgid "%d student"
+msgid_plural "%d students"
+msgstr[0] ""
+msgstr[1] ""
 
 #: assets/js/dist/frontend/quiz.js:15
 msgid "Last Attempted"
