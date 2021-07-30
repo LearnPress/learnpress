@@ -185,7 +185,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				'show_in_menu'       => 'learn_press',
 				'show_in_admin_bar'  => true,
 				'show_in_nav_menus'  => true,
-				'show_in_rest'       => $this->is_support_gutenberg(),
+				'show_in_rest'       => learn_press_user_maybe_is_a_teacher(),
 				'supports'           => array(
 					'title',
 					'editor',

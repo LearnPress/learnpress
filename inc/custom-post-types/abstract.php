@@ -840,24 +840,4 @@ class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
 	protected function _get_orderby() {
 		return LP_Request::get( 'orderby' );
 	}
-
-	/**
-	 * Return TRUE if this post-type is support Gutenberg editor.
-	 *
-	 * @since 3.3.0
-	 *
-	 * @return bool
-	 */
-	public function is_support_gutenberg() {
-		$post_types = array(
-			LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
-			LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
-			LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
-			LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
-		);
-
-		$support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
-
-		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
-	}
 }

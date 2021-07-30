@@ -141,7 +141,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'show_in_menu'       => 'learn_press',
 				'show_in_admin_bar'  => true,
 				'show_in_nav_menus'  => true,
-				'show_in_rest'       => $this->is_support_gutenberg(),
+				'show_in_rest'       => true,
 				'taxonomies'         => array( 'course_category', 'course_tag' ),
 				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'excerpt' ),
 				'hierarchical'       => false,
@@ -183,7 +183,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'show_admin_column' => true,
 					'show_in_admin_bar' => true,
 					'show_in_nav_menus' => true,
-					'show_in_rest'      => $this->is_support_gutenberg(),
+					'show_in_rest'      => true,
 					'rewrite'           => array(
 						'slug'         => empty( $category_base ) ? _x( 'course-category', 'slug', 'learnpress' ) : $category_base,
 						'hierarchical' => true,
@@ -221,7 +221,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'show_in_menu'          => 'learn_press',
 					'update_count_callback' => '_update_post_term_count',
 					'query_var'             => true,
-					'show_in_rest'          => $this->is_support_gutenberg(),
+					'show_in_rest'          => true,
 					'rewrite'               => array(
 						'slug'       => empty( $tag_base ) ? _x( 'course-tag', 'slug', 'learnpress' ) : $tag_base,
 						'with_front' => false,
