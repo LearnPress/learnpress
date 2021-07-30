@@ -167,9 +167,6 @@ class LP_Cart {
 
 			$this->set_cart_cookies( true );
 
-			// @deprecated
-			do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
-
 			/**
 			 * @see LP_Cart::calculate_totals()
 			 */

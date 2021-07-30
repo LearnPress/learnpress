@@ -404,8 +404,20 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				// Send mail when course enrolled
 				// $user->enrolled_sendmail( get_current_user_id(), $course_id );
 			} else {
+				$redirect_url = apply_filters(
+					'learnpress/rest-api/courses/enroll/redirect',
+					learn_press_get_page_link( 'checkout' ),
+					$course_id
+				);
+
+				if ( empty( $redirect_url ) ) {
+					throw new Exception( __( 'Error: Please setup page for checkout.', 'learnpress' ) );
+				} elseif ( ! is_user_logged_in() ) { // Fix case: cache page with user anonymous
+					$redirect_url = LP_Helper::get_link_no_cache( $redirect_url );
+				}
+
 				$response->message        = esc_html__( 'Redirecting...', 'learnpress' );
-				$response->data->redirect = learn_press_get_page_link( 'checkout' );
+				$response->data->redirect = $redirect_url;
 			}
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
@@ -530,15 +542,17 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				learn_press_update_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type', $allow_repurchase_type );
 			}
 
-			$redirect = apply_filters(
+			$redirect_url = apply_filters(
 				'learnpress/rest-api/courses/purchase/redirect',
 				learn_press_get_page_link( 'checkout' ),
 				$course_id,
 				$cart_id
 			);
 
-			if ( empty( $redirect ) ) {
+			if ( empty( $redirect_url ) ) {
 				throw new Exception( __( 'Error: Please setup page for checkout.', 'learnpress' ) );
+			} elseif ( ! is_user_logged_in() ) { // Fix case: cache page with user anonymous
+				$redirect_url = LP_Helper::get_link_no_cache( $redirect_url );
 			}
 
 			$response->status         = 'success';
@@ -546,7 +560,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				esc_html__( '"%s" has been added to your cart.', 'learnpress' ),
 				$course->get_title()
 			);
-			$response->data->redirect = $redirect;
+			$response->data->redirect = $redirect_url;
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}

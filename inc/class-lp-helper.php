@@ -93,15 +93,19 @@ class LP_Helper {
 	 * Load posts from database into cache by ids
 	 *
 	 * @param array|int $ids
+	 * @Todo: tungnx - need to review code
 	 */
 	public static function cache_posts( $ids ) {
 		global $wpdb;
 
 		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$query  = $wpdb->prepare( "
-			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ")
-		", $ids );
+		$query  = $wpdb->prepare(
+			"
+			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ')
+			',
+			$ids
+		);
 
 		$posts = $wpdb->get_results( $query );
 
@@ -542,5 +546,13 @@ class LP_Helper {
 		$format = array_fill( 0, count( $arr ), '%s' );
 
 		return join( ',', $format );
+	}
+
+	/**
+	 * Get link lp checkout page
+	 * without cache - because some cache(redis) will cache page with user anonymous
+	 */
+	public static function get_link_no_cache( string $link ): string {
+		return add_query_arg( 'no-cache', uniqid(), $link );
 	}
 }
