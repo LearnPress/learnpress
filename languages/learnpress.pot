@@ -7352,14 +7352,20 @@ msgid "Retake course"
 msgstr ""
 
 #: templates/single-course/content-item/nav.php:30
-#: assets/js/dist/frontend/quiz.js:1
 msgctxt "course-item-navigation"
 msgid "Prev"
 msgstr ""
 
-#: templates/single-course/content-item/nav.php:39
 #: assets/js/dist/frontend/quiz.js:1
+msgid "Prev"
+msgstr ""
+
+#: templates/single-course/content-item/nav.php:39
 msgctxt "course-item-navigation"
+msgid "Next"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.js:1
 msgid "Next"
 msgstr ""
 
