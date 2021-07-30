@@ -548,6 +548,49 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$args['tax_query'] = $tax_query;
 		}
 
+		$orderby = $request->get_param( 'orderby' );
+		$order   = $request->get_param( 'order' );
+
+		$orderby = strtolower( is_array( $orderby ) ? (string) current( $orderby ) : (string) $orderby );
+		$order   = strtoupper( is_array( $order ) ? (string) current( $order ) : (string) $order );
+
+		switch ( $orderby ) {
+			case 'id':
+				$args['orderby'] = 'ID';
+				break;
+			case 'menu_order':
+				$args['orderby'] = 'menu_order title';
+				break;
+			case 'title':
+				$args['orderby'] = 'title';
+				$args['order']   = ( 'DESC' === $order ) ? 'DESC' : 'ASC';
+				break;
+			case 'relevance':
+				$args['orderby'] = 'relevance';
+				$args['order']   = 'DESC';
+				break;
+			case 'rand':
+				$args['orderby'] = 'rand'; // @codingStandardsIgnoreLine
+				break;
+			case 'date':
+				$args['orderby'] = 'date ID';
+				$args['order']   = ( 'ASC' === $order ) ? 'ASC' : 'DESC';
+				break;
+			case 'price':
+				$args['orderby']  = 'meta_value_num';
+				$args['meta_key'] = '_lp_price';
+				break;
+		}
+
+		if ( is_bool( $request['on_sale'] ) ) {
+			$on_sale_key = $request['on_sale'] ? 'post__in' : 'post__not_in';
+			$on_sale_ids = LP_Course_DB::getInstance()->get_courses_on_sale();
+
+			$on_sale_ids = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
+
+			$args[ $on_sale_key ] += $on_sale_ids;
+		}
+
 		return $args;
 	}
 
@@ -796,6 +839,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function get_collection_params() {
 		$params = parent::get_collection_params();
 
+		$params['orderby']['enum'] = array_merge( $params['orderby']['enum'], array( 'menu_order', 'price' ) );
+
 		$params['category']      = array(
 			'description'       => __( 'Limit result set to courses assigned a specific category ID.', 'learnpress' ),
 			'type'              => 'string',
@@ -812,6 +857,13 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'description'       => __( 'Filter by course to in-progress, passed, failed.', 'learnpress' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+
+		$params['on_sale'] = array(
+			'description'       => __( 'Get item learned by user.', 'learnpress' ),
+			'type'              => 'boolean',
+			'default'           => false,
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 

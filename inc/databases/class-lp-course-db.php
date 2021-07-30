@@ -94,14 +94,15 @@ class LP_Course_DB extends LP_Database {
 		$first_item_id = wp_cache_get( 'first_item_id', LP_COURSE_CPT );
 
 		if ( ! $first_item_id ) {
-			$query = $this->wpdb->prepare(
+			$query         = $this->wpdb->prepare(
 				"
 			SELECT item_id FROM $this->tb_lp_section_items AS items
 			INNER JOIN $this->tb_lp_sections AS sections
 			ON items.section_id = sections.section_id
 			AND sections.section_course_id = %d
 			",
-				$course_id,0
+				$course_id,
+				0
 			);
 			$first_item_id = (int) $this->wpdb->get_var( $query );
 
@@ -143,6 +144,42 @@ class LP_Course_DB extends LP_Database {
 		);
 
 		return $this->wpdb->get_col( $query );
+	}
+
+	public function get_courses_on_sale() {
+		$args = array(
+			'post_type'      => LP_COURSE_CPT,
+			'orderby'        => 'ID',
+			'order'          => 'DESC',
+			'posts_per_page' => -1,
+			'meta_query'     => array(
+				array(
+					'key'     => '_lp_sale_price',
+					'value'   => '',
+					'compare' => '!=',
+				),
+			),
+		);
+
+		$courses = get_posts( $args );
+
+		$output = array();
+
+		foreach ( (array) $courses as $course_object ) {
+			$course_id = $course_object->ID;
+
+			$course = learn_press_get_course( $course_object->ID );
+
+			if ( ! $course || empty( $course_id ) ) {
+				continue;
+			}
+
+			if ( $course->has_sale_price() ) {
+				$output[] = $course_id;
+			}
+		}
+
+		return $output;
 	}
 }
 
