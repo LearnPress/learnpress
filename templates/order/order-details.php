@@ -42,6 +42,23 @@ if ( ! isset( $order ) ) {
 				$course = learn_press_get_course( $item['course_id'] );
 
 				if ( ! $course || ! $course->exists() ) {
+					?>
+					<tr class="<?php echo esc_attr( apply_filters( 'learn-press/order/item-class', 'order-item', $item, $order ) ); ?>">
+						<td class="course-name">
+							<?php echo apply_filters( 'learn-press/order/item-name', sprintf( '%s', $item['name'] ), $item ); ?>
+						</td>
+						<td class="course-total">
+							<?php
+							$price = (float) $item['subtotal'];
+							if ( $price <= 0 ) {
+								$price = __( 'Free', 'learnpress' );
+							}
+
+							echo '<span class="course-price">' . $price . '</span>';
+							?>
+						</td>
+					</tr>
+					<?php
 					continue;
 				}
 				?>
