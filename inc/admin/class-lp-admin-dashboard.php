@@ -43,53 +43,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 			?>
 
 			<ul class="lp-order-statuses">
-				<li class="count-number total-raised">
-					<strong><?php echo $this->_get_order_total_raised(); ?></strong>
-					<p><?php esc_html_e( 'Total Raised', 'learnpress' ); ?></p>
-				</li>
-
-				<?php
-				$order_statuses    = learn_press_get_order_statuses( true, true );
-				$specific_statuses = array( 'lp-completed', 'lp-failed' );
-
-				foreach ( $order_statuses as $status ) {
-					if ( ! in_array( $status, $specific_statuses ) ) {
-						$specific_statuses[] = $status;
-					}
-				}
-
-				$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
-
-				foreach ( $specific_statuses as $status ) :
-
-					$status_object = get_post_status_object( $status );
-
-					if ( ! $status_object ) {
-						continue;
-					}
-
-					$count = $counts[ $status ];
-					$url   = $count ? admin_url( 'edit.php?post_type=' . LP_ORDER_CPT . '&post_status=' . $status ) : '#';
-					?>
-
-					<li class="counter-number order-<?php echo str_replace( 'lp-', '', $status ); ?>">
-						<div class="counter-inner">
-							<a href="<?php echo esc_url( $url ); ?>">
-								<strong>
-									<?php
-									if ( $count ) {
-										printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count );
-									} else {
-										printf( __( '%d order', 'learnpress' ), 0 );
-									}
-									?>
-								</strong>
-								<p><?php printf( '%s', $status_object->label ); ?></p>
-							</a>
-						</div>
-					</li>
-				<?php endforeach; ?>
-
+				<?php lp_skeleton_animation_html( 4, 100 , 'height: 30px;border-radius:4px;' ); ?>
 				<?php
 				$eduma_data = $this->_get_theme_info( 14058034 );
 

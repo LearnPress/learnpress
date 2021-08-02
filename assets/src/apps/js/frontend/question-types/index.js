@@ -14,7 +14,6 @@ class QuestionTypes extends Component {
 			multi_choice: LP.questionTypes.MultipleChoices,
 			true_or_false: LP.questionTypes.TrueOrFalse,
 			fill_in_blanks: LP.questionTypes.FillInBlanks,
-			sorting_choice: LP.questionTypes.SortingChoice,
 		} );
 
 		return types[ question.type ];
