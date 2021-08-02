@@ -73,7 +73,6 @@ define( 'LP_QUIZ_HAS_STARTED_OR_COMPLETED', 160 );
 define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
 define( 'LP_COMPLETE_ITEM_FAIL', 170 );
 define( 'LP_COMPRESS_ASSETS', false );
-define( 'LP_COURSES_LAYOUT', 'list' );
 
 // Pages.
 define( 'LP_PAGE_CHECKOUT', 'lp_page_checkout' );

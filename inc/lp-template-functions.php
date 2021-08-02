@@ -777,10 +777,9 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 	 * learn_press_page_title function.
 	 *
 	 * @param boolean $echo
-	 *
 	 * @return string
 	 */
-	function learn_press_page_title( bool $echo = true ): string {
+	function learn_press_page_title( bool $echo = false ): string {
 		$page_title = '';
 
 		if ( is_search() ) {
@@ -791,23 +790,13 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 				$page_title .= sprintf( __( '&nbsp;&ndash; Page %s', 'learnpress' ), get_query_var( 'paged' ) );
 			}*/
 		} elseif ( is_tax() ) {
-
 			$page_title = single_term_title( '', false );
-
 		} else {
-
 			$courses_page_id = learn_press_get_page_id( 'courses' );
 			$page_title      = get_the_title( $courses_page_id );
-
 		}
 
-		$page_title = apply_filters( 'learn_press_page_title', $page_title );
-
-		if ( $echo ) {
-			echo $page_title;
-		} else {
-			return $page_title;
-		}
+		return apply_filters( 'learn_press_page_title', $page_title );
 	}
 }
 
@@ -1421,8 +1410,11 @@ function learn_press_current_user_enrolled_course() {
  *
  * @return bool
  * @since 3.x.x
+ * @editor tungnx
+ * @modify 4.1.3
+ * @reason comment - not use
  */
-function learn_press_user_can_access_course( $course_id, $user_id = 0 ) {
+/*function learn_press_user_can_access_course( $course_id, $user_id = 0 ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
 	}
@@ -1432,7 +1424,7 @@ function learn_press_user_can_access_course( $course_id, $user_id = 0 ) {
 	}
 
 	return false;
-}
+}*/
 
 function learn_press_content_item_summary_class( $more = '', $echo = true ) {
 	$classes = array( 'content-item-summary' );
@@ -1552,12 +1544,20 @@ add_filter(
 	3
 );*/
 
-/***************************/
-/********** 3.3.0 **********/
-/***************************/
-
+/**
+ * Get list layouts archive course setting
+ *
+ * @editor tungnx
+ * @modify 4.1.3
+ */
 function learn_press_courses_layouts() {
-	return apply_filters( 'learn-press/courses-layouts', array( 'grid', 'list' ) );
+	return apply_filters(
+		'learnpress/archive-courses-layouts',
+		[
+			'grid' => 'Grid',
+			'list' => 'List',
+		]
+	);
 }
 
 /**
@@ -1565,17 +1565,14 @@ function learn_press_courses_layouts() {
  *
  * @return mixed
  * @since 3.3.0
+ * @editor tungnx
+ * @modify 4.1.3
  */
 function learn_press_get_courses_layout() {
-	$layouts = learn_press_courses_layouts();
-	$layout  = LP_Request::get_cookie( 'courses-layout' );
+	$layout = LP_Request::get_cookie( 'courses-layout' );
 
 	if ( ! $layout ) {
-		$layout = defined( 'LP_COURSES_LAYOUT' ) ? LP_COURSES_LAYOUT : LP()->settings()->get( 'course_layout' );
-	}
-
-	if ( ! $layout || ! in_array( $layout, $layouts ) ) {
-		$layout = reset( $layouts );
+		$layout = LP_Settings::get_option( 'layout_course_archive', 'list' );
 	}
 
 	return $layout;
@@ -1623,31 +1620,6 @@ function learn_press_setup_theme() {
 }
 
 add_action( 'after_setup_theme', 'learn_press_setup_theme' );
-
-if ( ! function_exists( 'learn_press_page_title' ) ) {
-	function learn_press_page_title( $echo = true ) {
-		if ( is_search() ) {
-			$page_title = sprintf( __( 'Search results: &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() );
-
-			if ( get_query_var( 'paged' ) ) {
-				$page_title .= sprintf( __( '&nbsp;&ndash; Page %s', 'learnpress' ), get_query_var( 'paged' ) );
-			}
-		} elseif ( is_tax() ) {
-			$page_title = single_term_title( '', false );
-		} else {
-			$page_id    = learn_press_get_page_id( 'courses' );
-			$page_title = get_the_title( $page_id );
-		}
-
-		$page_title = apply_filters( 'learn-press/page-title', $page_title );
-
-		if ( $echo ) {
-			echo $page_title;
-		}
-
-		return $page_title;
-	}
-}
 
 /**
  * @param LP_Question $question

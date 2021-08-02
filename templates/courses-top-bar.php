@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -25,7 +25,7 @@ $s       = LP_Request::get( 's' );
 	</form>
 
 	<div class="switch-layout">
-		<?php foreach ( $layouts as $layout ) : ?>
+		<?php foreach ( $layouts as $layout => $value ) : ?>
 			<input type="radio" name="lp-switch-layout-btn" value="<?php echo esc_attr( $layout ); ?>" id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
 			<label class="switch-btn <?php echo $layout; ?>" title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>" for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
 		<?php endforeach; ?>

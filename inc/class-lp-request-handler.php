@@ -72,7 +72,14 @@ class LP_Request {
 	public static function register( $action, $function = '', $priority = 5 ) {
 		if ( is_array( $action ) ) {
 			foreach ( $action as $item ) {
-				$item = wp_parse_args( $item, array( 'action' => '', 'callback' => '', 'priority' => 5 ) );
+				$item = wp_parse_args(
+					$item,
+					array(
+						'action'   => '',
+						'callback' => '',
+						'priority' => 5,
+					)
+				);
 				if ( ! $item['action'] || ! $item['callback'] ) {
 					continue;
 				}
@@ -475,12 +482,12 @@ class LP_Request {
 
 	public static function get_cookie( $name, $def = false, $global = false ) {
 		if ( $global ) {
-			return isset( $_COOKIE[ $name ] ) ? $_COOKIE[ $name ] : $def;
+			return $_COOKIE[ $name ] ?? $def;
 		}
 
 		$cookie = isset( $_COOKIE['LP'] ) ? (array) json_decode( stripslashes( $_COOKIE['LP'] ) ) : array();
 
-		return isset( $cookie[ $name ] ) ? $cookie[ $name ] : $def;
+		return $cookie[ $name ] ?? $def;
 	}
 
 	public static function set_cookie( $name, $value, $expires = '', $domain = '', $path = '', $secure = false ) {
