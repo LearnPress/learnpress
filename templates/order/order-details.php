@@ -41,7 +41,7 @@ if ( ! isset( $order ) ) {
 			if ( apply_filters( 'learn-press/order/item-visible', true, $item ) ) {
 				$course = learn_press_get_course( $item['course_id'] );
 
-				if ( ! $course->exists() ) {
+				if ( ! $course || ! $course->exists() ) {
 					continue;
 				}
 				?>
