@@ -12,6 +12,7 @@ module.exports = {
 		'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
 		'./assets/js/dist/admin/pages/sync-data': './assets/src/apps/js/admin/pages/sync-data.js',
 		'./assets/js/dist/admin/pages/themes-addons': './assets/src/apps/js/admin/pages/themes-addons.js',
+		'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
 	},
 	output: {

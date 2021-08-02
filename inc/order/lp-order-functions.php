@@ -822,6 +822,25 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 }
 add_action( 'init', 'learn_press_cancel_order_process' );
 
+
+/**
+ * get total price order complete
+ *
+ */
+
+function learn_press_get_total_price_order_complete(){
+	global $wpdb;
+
+	$query = $wpdb->prepare("SELECT SUM(meta_value) as order_total From `{$wpdb->prefix}postmeta` as mt
+	INNER JOIN `{$wpdb->prefix}posts` as p ON p.id = mt.post_id
+	WHERE p.post_type = %s AND mt.meta_key = %s
+	", LP_ORDER_CPT , '_order_total');
+
+	$total = $wpdb->get_results($query)[0]->order_total;
+
+	return learn_press_format_price( $total, true );
+
+}
 /**
  * Auto enroll course after user checkout
  *
