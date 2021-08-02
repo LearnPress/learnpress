@@ -241,6 +241,21 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
+				'lp-dashboard'        => new LP_Asset_Key(
+					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),
+					array(
+						'jquery',
+						'wp-element',
+						'wp-compose',
+						'wp-data',
+						'wp-hooks',
+						'wp-api-fetch',
+						'lodash',
+					),
+					array( 'dashboard' ),
+					0,
+					1
+				),
 				// 'learn-press-question-editor'       => array(
 				// 'url'       => $this->url( 'js/dist/admin/question-editor.js' ),
 				// 'screens'   => array( LP_QUESTION_CPT ),
