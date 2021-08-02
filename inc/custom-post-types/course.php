@@ -696,6 +696,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @since 4.0.9
 		 * @version 1.0.0
 		 * @editor tungnx
+		 * @see LP_Background_Single_Course::handle()
 		 */
 		public function save( int $post_id, WP_Post $post ) {
 			$this->before_save_curriculum( $post );
@@ -703,7 +704,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			// Save in background.
 			$bg = LP_Background_Single_Course::instance();
 
-			$bg->data( [ 'id' => $post_id ] )->dispatch();
+			$bg->data(
+				[
+					'handle_name' => 'save_post',
+					'course_id'   => $post_id,
+				]
+			)->dispatch();
 		}
 
 		/**

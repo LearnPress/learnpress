@@ -225,14 +225,18 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache.php';
 			require_once 'inc/class-lp-asset-key.php';
 
+			// Models
+			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
+
 			// Email
 			include_once 'inc/emails/class-lp-email-hooks.php';
 
 			// LP Cache
 			require_once 'inc/cache/class-lp-cache.php';
+			require_once 'inc/cache/class-lp-course-cache.php';
 			require_once 'inc/cache/class-lp-quiz-cache.php';
 
-			// Abstract Metabox.
+			// Abstract Meta-box.
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
 			// Background processes.

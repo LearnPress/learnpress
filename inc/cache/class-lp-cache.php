@@ -5,15 +5,28 @@
  *
  * @author tungnx
  * @since 4.0.8
- * @version 1.0.0
+ * @version 1.0.1
  */
 defined( 'ABSPATH' ) || exit();
 
 class LP_Cache {
 	protected static $instance;
+	/**
+	 * @var string Key group parent
+	 */
 	protected $key_group_parent = 'learn_press/';
-	protected $key_group_child  = '';
-	protected $key_group        = '';
+	/**
+	 * @var string Key group child(external)
+	 */
+	protected $key_group_child = '';
+	/**
+	 * @var string Add key group parent with key group child
+	 */
+	protected $key_group = '';
+	/**
+	 * @var float|int default expire
+	 */
+	protected $expire = DAY_IN_SECONDS;
 
 	/**
 	 * Get instance
@@ -34,12 +47,16 @@ class LP_Cache {
 
 	/**
 	 * Set cache
+	 * $expire = -1 is  get default expire time on one day(DAY_IN_SECONDS)
 	 *
 	 * @param string $key
 	 * @param mixed $data
 	 * @param int $expire
 	 */
-	public function set_cache( string $key, $data, int $expire ) {
+	public function set_cache( string $key, $data, int $expire = -1 ) {
+		if ( -1 === $expire ) {
+			$expire = $this->expire;
+		}
 		wp_cache_set( $key, $data, $this->key_group, $expire );
 	}
 

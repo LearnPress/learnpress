@@ -15,6 +15,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 	 * Class LP_Course
 	 */
 	class LP_Course extends LP_Abstract_Course {
+		protected $key_info_extra_fast_query = '_lp_info_extra_fast_query';
 
 		/**
 		 * LP_Course constructor.
@@ -278,22 +279,106 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		/**
 		 * Get first item of course
 		 *
+		 * @author tungnx
+		 * @since 4.0.0
+		 * @modify 4.1.3
+		 * @version 1.0.1
 		 * @return int
 		 */
 		public function get_first_item_id(): int {
-			return LP_Course_DB::getInstance()->get_first_item_id( $this->get_id() );
+			$course_id = $this->get_id();
+
+			try {
+				// Get cache
+				$lp_course_cache = LP_Course_Cache::instance();
+				$key_cache       = "$course_id/first_item_id";
+				$first_item_id   = $lp_course_cache->get_cache( $key_cache );
+
+				if ( ! $first_item_id ) {
+					$extra_info = $this->get_info_extra_for_fast_query();
+
+					if ( ! $extra_info->first_item_id ) {
+						$first_item_id             = LP_Course_DB::getInstance()->get_first_item_id( $course_id );
+						$extra_info->first_item_id = $first_item_id;
+
+						// Save post meta
+						$this->set_info_extra_for_fast_query( $extra_info );
+					} else {
+						$first_item_id = $extra_info->first_item_id;
+					}
+				}
+			} catch ( Throwable $e ) {
+				$first_item_id = 0;
+			}
+
+			return $first_item_id;
 		}
 
 		/**
 		 * Get redirect url after enroll course
 		 *
+		 * @author tungnx
+		 * @version 1.0.0
+		 * @since 4.0.0
 		 * @return false|string|WP_Error
 		 */
 		public function get_redirect_url_after_enroll() {
 			$first_item_id = $this->get_first_item_id();
-			$redirect      = ! empty( $first_item_id ) ? $this->get_item_link( $first_item_id ) : get_the_permalink( $this );
+			$redirect      = $first_item_id ? $this->get_item_link( $first_item_id ) : get_the_permalink( $this->get_id() );
 
 			return apply_filters( 'learnpress/rest-api/enroll-course/redirect', $redirect );
+		}
+
+		/**
+		 * Get info extra on post meta to query fast
+		 *
+		 * @since 4.1.3
+		 * @author tungnx
+		 * @version 1.0.0
+		 * @return LP_Course_Extra_Info_Fast_Query_Model
+		 */
+		public function get_info_extra_for_fast_query(): LP_Course_Extra_Info_Fast_Query_Model {
+			$extra_info = new LP_Course_Extra_Info_Fast_Query_Model();
+
+			try {
+				$extra_info_str = get_post_meta( $this->get_id(), $this->key_info_extra_fast_query, true );
+
+				if ( $extra_info_str ) {
+					$extra_info_stdclass = json_decode( $extra_info_str );
+
+					if ( JSON_ERROR_NONE !== json_last_error() ) {
+						throw new Exception( 'Error json decode on ' . __METHOD__ );
+					}
+
+					$extra_info = $extra_info->map_stdclass( $extra_info_stdclass );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+
+			return $extra_info;
+		}
+
+		/**
+		 * Set extra info for query fast on post meta
+		 *
+		 * @since 4.1.3
+		 * @author tungnx
+		 * @version 1.0.0
+		 * @param LP_Course_Extra_Info_Fast_Query_Model $data_object
+		 */
+		public function set_info_extra_for_fast_query( LP_Course_Extra_Info_Fast_Query_Model $data_object ) {
+			try {
+				$extra_info_json = json_encode( $data_object );
+
+				if ( JSON_ERROR_NONE !== json_last_error() ) {
+					throw new Exception( 'Error encode on ' . __METHOD__ );
+				}
+
+				update_post_meta( $this->get_id(), $this->key_info_extra_fast_query, $extra_info_json );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 		}
 	}
 }

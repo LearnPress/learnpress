@@ -79,35 +79,43 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
-	 * Get first item of course
+	 * Get first item id of course
 	 *
 	 * @param int $course_id .
 	 *
 	 * @return int
+	 * @throws Exception
+	 * @since 4.0.0
+	 * @version 1.0.1
+	 * @modify 4.1.3
+	 * @author tungnx
 	 */
-	public function get_first_item_id( $course_id = 0 ): int {
-		/**
-		 * Get cache
-		 *
-		 * Please clear cache when change first item of course
-		 */
-		$first_item_id = wp_cache_get( 'first_item_id', LP_COURSE_CPT );
+	public function get_first_item_id( int $course_id = 0 ): int {
+		// Get cache
+		$lp_course_cache = LP_Course_Cache::instance();
+		$key_cache       = "$course_id/first_item_id";
+		$first_item_id   = $lp_course_cache->get_cache( $key_cache );
 
 		if ( ! $first_item_id ) {
-			$query         = $this->wpdb->prepare(
+			$query = $this->wpdb->prepare(
 				"
-			SELECT item_id FROM $this->tb_lp_section_items AS items
-			INNER JOIN $this->tb_lp_sections AS sections
-			ON items.section_id = sections.section_id
-			AND sections.section_course_id = %d
-			",
+				SELECT item_id FROM $this->tb_lp_section_items AS items
+				INNER JOIN $this->tb_lp_sections AS sections
+				ON items.section_id = sections.section_id
+				AND sections.section_course_id = %d
+				GROUP BY items.item_order ASC
+				LIMIT %d
+				",
 				$course_id,
-				0
+				1
 			);
+
 			$first_item_id = (int) $this->wpdb->get_var( $query );
 
+			$this->check_execute_has_error();
+
 			// Set cache
-			wp_cache_set( 'first_item_id', $first_item_id, LP_COURSE_CPT );
+			$lp_course_cache->set_cache( $key_cache, $first_item_id );
 		}
 
 		return $first_item_id;
