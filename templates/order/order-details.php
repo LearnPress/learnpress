@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -38,10 +38,29 @@ if ( ! isset( $order ) ) {
 				continue;
 			}
 
+			$price = (float) $item['subtotal'];
+			if ( $price <= 0 ) {
+				$price = __( 'Free', 'learnpress' );
+			} else {
+				$price = learn_press_format_price( $price, $currency_symbol );
+			}
+
 			if ( apply_filters( 'learn-press/order/item-visible', true, $item ) ) {
 				$course = learn_press_get_course( $item['course_id'] );
 
-				if ( ! $course->exists() ) {
+				if ( ! $course || ! $course->exists() ) {
+					?>
+					<tr class="<?php echo esc_attr( apply_filters( 'learn-press/order/item-class', 'order-item', $item, $order ) ); ?>">
+						<td class="course-name">
+							<?php echo apply_filters( 'learn-press/order/item-name', sprintf( '%s', $item['name'] ), $item ); ?>
+						</td>
+						<td class="course-total">
+							<?php
+							echo '<span class="course-price">' . $price . '</span>';
+							?>
+						</td>
+					</tr>
+					<?php
 					continue;
 				}
 				?>
@@ -53,16 +72,12 @@ if ( ! isset( $order ) ) {
 
 						<td class="course-total">
 							<?php
-							$price = $course->get_price_html();
+							$origin_price = $course->get_origin_price_html();
 
-							if ( $price ) {
-								$origin_price = $course->get_origin_price_html();
-
-								if ( $course->has_sale_price() ) {
-									echo '<span class="course-origin-price">' . $origin_price . '</span>';
-								}
-								echo '<span class="course-price">' . $price . '</span>';
+							if ( $course->has_sale_price() ) {
+								echo '<span class="course-origin-price">' . $origin_price . '</span>';
 							}
+							echo '<span class="course-price">' . $price . '</span>';
 							?>
 						</td>
 					</tr>
