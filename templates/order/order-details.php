@@ -52,6 +52,8 @@ if ( ! isset( $order ) ) {
 							$price = (float) $item['subtotal'];
 							if ( $price <= 0 ) {
 								$price = __( 'Free', 'learnpress' );
+							} else {
+								$price = learn_press_format_price( $price, $currency_symbol );
 							}
 
 							echo '<span class="course-price">' . $price . '</span>';
