@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -72,7 +72,12 @@ if ( ! isset( $order ) ) {
 
 						<td class="course-total">
 							<?php
-							$price = $course->get_price_html();
+							$price = (float) $item['subtotal'];
+							if ( $price <= 0 ) {
+								$price = __( 'Free', 'learnpress' );
+							} else {
+								$price = learn_press_format_price( $price, $currency_symbol );
+							}
 
 							if ( $price ) {
 								$origin_price = $course->get_origin_price_html();
