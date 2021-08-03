@@ -38,6 +38,13 @@ if ( ! isset( $order ) ) {
 				continue;
 			}
 
+			$price = (float) $item['subtotal'];
+			if ( $price <= 0 ) {
+				$price = __( 'Free', 'learnpress' );
+			} else {
+				$price = learn_press_format_price( $price, $currency_symbol );
+			}
+
 			if ( apply_filters( 'learn-press/order/item-visible', true, $item ) ) {
 				$course = learn_press_get_course( $item['course_id'] );
 
@@ -49,13 +56,6 @@ if ( ! isset( $order ) ) {
 						</td>
 						<td class="course-total">
 							<?php
-							$price = (float) $item['subtotal'];
-							if ( $price <= 0 ) {
-								$price = __( 'Free', 'learnpress' );
-							} else {
-								$price = learn_press_format_price( $price, $currency_symbol );
-							}
-
 							echo '<span class="course-price">' . $price . '</span>';
 							?>
 						</td>
@@ -72,21 +72,12 @@ if ( ! isset( $order ) ) {
 
 						<td class="course-total">
 							<?php
-							$price = (float) $item['subtotal'];
-							if ( $price <= 0 ) {
-								$price = __( 'Free', 'learnpress' );
-							} else {
-								$price = learn_press_format_price( $price, $currency_symbol );
-							}
+							$origin_price = $course->get_origin_price_html();
 
-							if ( $price ) {
-								$origin_price = $course->get_origin_price_html();
-
-								if ( $course->has_sale_price() ) {
-									echo '<span class="course-origin-price">' . $origin_price . '</span>';
-								}
-								echo '<span class="course-price">' . $price . '</span>';
+							if ( $course->has_sale_price() ) {
+								echo '<span class="course-origin-price">' . $origin_price . '</span>';
 							}
+							echo '<span class="course-price">' . $price . '</span>';
 							?>
 						</td>
 					</tr>
