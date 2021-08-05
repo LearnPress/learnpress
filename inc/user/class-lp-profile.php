@@ -1041,6 +1041,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		public function get_profile_picture( $type = '', $size = 96 ) {
 			$user = $this->get_user();
+			$args = learn_press_get_avatar_thumb_size();
 
 			if ( $type == 'gravatar' ) {
 				remove_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1 );
@@ -1052,7 +1053,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$user->set_data( 'profile_picture_src', $profile_picture_src );
 			}
 
-			$avatar = get_avatar( $user->get_id(), $size, '', esc_attr__( 'User Avatar', 'learnpress' ), array( 'gravatar' => false ) );
+			$avatar = get_avatar( $user->get_id(), $size, '', esc_attr__( 'User Avatar', 'learnpress' ), $args );
 
 			if ( $type == 'gravatar' ) {
 				add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
