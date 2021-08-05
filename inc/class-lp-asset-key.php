@@ -5,7 +5,7 @@
  *
  * @author  tungnx
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 1.0.1
  * @since 3.2.8
  */
 
@@ -50,6 +50,12 @@ class LP_Asset_Key {
 	 * @var array|string[]
 	 */
 	public $_exclude_screens = array();
+	/**
+	 * Version of addon
+	 *
+	 * @var string
+	 */
+	public $_version = '';
 
 	/**
 	 * LP_ASSET_KEY constructor.
@@ -60,12 +66,13 @@ class LP_Asset_Key {
 	 * @param int      $only_register .
 	 * @param int      $in_footer .
 	 */
-	public function __construct( string $url = '', array $deps = array(), array $screens = array(), int $only_register = 1, int $in_footer = 0 ) {
+	public function __construct( string $url = '', array $deps = array(), array $screens = array(), int $only_register = 1, int $in_footer = 0, string $version = '' ) {
 		$this->_url           = $url;
 		$this->_deps          = $deps;
 		$this->_in_footer     = $in_footer;
 		$this->_only_register = $only_register;
 		$this->_screens       = $screens;
+		$this->_version       = $version;
 	}
 
 	/**
@@ -75,5 +82,14 @@ class LP_Asset_Key {
 	 */
 	public function exclude_screen( array $screens = array() ) {
 		$this->_exclude_screens = $screens;
+	}
+
+	/**
+	 * Set dependency
+	 *
+	 * @param array $deps
+	 */
+	public function set_dependency_js( array $deps ) {
+		$this->_deps = $deps;
 	}
 }
