@@ -6,6 +6,7 @@
 @import "submenu";
 @import "meta-box";
 @import "admin-tabs";
+@import "widget";
 @import "addons";
 @import "custom-post-types";
 @import "../modal";
@@ -219,11 +220,11 @@
 }
 
 .lp-notice-update-database {
-	border-left-color: #f00;
 	border: 1px solid rebeccapurple;
-	background: rebeccapurple;
-	color: white;
+	border-left-color: #f00;
 	border-radius: 3px;
+	color: white;
+	background: rebeccapurple;
 
 	&.do-updating {
 

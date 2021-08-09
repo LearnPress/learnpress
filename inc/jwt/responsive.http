@@ -7,12 +7,12 @@ Content-Type: application/json
 }
 
 ###
-POST http://learnpress4.local/wp-json/learnpress/v1/token
+POST https://test.thimpress.com/wp-json/learnpress/v1/token
 Content-Type: application/json
 
 {
-	"username": "student",
-	"password": "student"
+	"username": "nghiant12",
+	"password": "123123"
 }
 
 ###
@@ -20,11 +20,16 @@ POST http://learnpress4.local/wp-json/learnpress/v1/token/register
 Content-Type: application/json
 
 {
-	"username": "student4",
-	"password": "student4",
-	"confirm_password": "student4",
-	"email": "student4@gmail.com"
+	"username": "student5",
+	"password": "student5",
+	"confirm_password": "student5",
+	"email": "student5@gmail.com"
 }
+
+###
+GET https://test.thimpress.com/wp-json/learnpress/v1/courses/?learned=true
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGVzdC50aGltcHJlc3MuY29tIiwiaWF0IjoxNjI4NDkzMTc0LCJuYmYiOjE2Mjg0OTMxNzQsImV4cCI6MTYyOTA5Nzk3NCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTA0In19fQ.rECq688vRLVcqF1dWcdHTkWd1fQUL0TWPtIZdlfWa3U
 
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/token/validate
@@ -34,15 +39,15 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses/?learned=true&course_filter=passed
+GET http://learnpress4.local/wp-json/learnpress/v1/courses/?learned=true
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODQ5MjQxMCwibmJmIjoxNjI4NDkyNDEwLCJleHAiOjE2MjkwOTcyMTAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEwIn19fQ.ZRjpGOpo0cSnosSXe7dhWcHIO3pwD4_IDxgWMSToraY
 
 ### Get content Course
 ## If have token will show course_data for this user: course_data: graduation, status....
 GET http://learnpress4.local/wp-json/learnpress/v1/courses/196
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODQ5MjQxMCwibmJmIjoxNjI4NDkyNDEwLCJleHAiOjE2MjkwOTcyMTAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEwIn19fQ.ZRjpGOpo0cSnosSXe7dhWcHIO3pwD4_IDxgWMSToraY
 
 
 ## Enroll course.

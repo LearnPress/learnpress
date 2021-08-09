@@ -2,50 +2,77 @@ const $ = jQuery;
 
 import { debounce } from 'lodash';
 
-function autocomplete() {
-	const elements = document.querySelectorAll( '.lp_widget_autocomplete_field' );
-
+function autocompleteWidget( widget ) {
 	const getResponse = async ( ele, value ) => {
-		const postType = ele.dataset.type || 'posts';
+		const postType = ele.data( 'type' ) || 'posts';
+
+		ele.addClass( 'loading' );
+
+		if ( ! ele.parent().find( '.lp_widget_autocomplete__loading' ).length ) {
+			ele.after( '<p class="lp_widget_autocomplete__loading">Loading...</p>' );
+		}
+
+		$( ele ).parent().find( '.lp_widget_autocomplete__select' ).remove();
 
 		const response = await wp.apiFetch( {
 			path: wp.url.addQueryArgs( `wp/v2/${ postType }`, { search: value } ),
 			method: 'GET',
 		} );
 
-		[ ...document.querySelectorAll( '.lp_widget_autocomplete__select' ) ].map( ( ele ) => ele.remove() );
+		ele.parent().find( '.lp_widget_autocomplete__loading' ).remove();
 
-		const output = [];
+		ele.removeClass( 'loading' );
 
-		response.forEach( ( item ) => {
-			output.push( `<div class="lp_widget_autocomplete__item" style="padding: 7px 10px; border: 1px solid #949494; border-bottom-color: #afafaf; border-top: none; cursor: pointer;">${ item.title.rendered }</div>` );
+		ele.after( '<div class="lp_widget_autocomplete__select"></div>' );
+
+		if ( response.length > 0 ) {
+			response.forEach( ( item ) => {
+				$( '.lp_widget_autocomplete__select' ).append( `<div class="lp_widget_autocomplete__item" data-id="${ item.id }">${ item.title.rendered }</div>` );
+			} );
+		} else {
+			$( '.lp_widget_autocomplete__select' ).append( '<p>No items found!</p>' );
+		}
+
+		$( document ).on( 'click', function() {
+			[ ...document.querySelectorAll( '.lp_widget_autocomplete__select' ) ].map( ( ele ) => ele.style.display = 'none' );
 		} );
 
-		ele.insertAdjacentHTML( 'afterend', `<div class="lp_widget_autocomplete__select" style="max-height: 160px; overflow: auto; background: #eee; left: 0; width: 100%; font-size: 13px;">${ output.join( '' ) }</div>` );
+		ele.on( 'click', ( e ) => {
+			e.stopPropagation();
+			ele.parent().find( '.lp_widget_autocomplete__select' ).css( 'display', 'block' );
+		} );
+
+		const elses = ele.parent().find( '.lp_widget_autocomplete__item' );
+		elses.each( function( item ) {
+			$( elses[ item ] ).on( 'click', function( e ) {
+				e.preventDefault();
+
+				const id = $( elses[ item ] ).data( 'id' );
+
+				ele.parent().find( '.lp_widget_autocomplete_field__value' ).val( id );
+
+				ele.val( $( elses[ item ] ).text() || '' );
+			} );
+		} );
 	};
 
-	if ( elements && elements.length > 0 ) {
-		elements.forEach( ( ele ) => {
-			ele.addEventListener( 'keyup', debounce( ( e ) => {
-				const value = e.target.value;
+	if ( $( widget ).find( '.lp_widget_autocomplete_field' ).length > 0 ) {
+		const ele = $( widget ).find( '.lp_widget_autocomplete_field' );
 
-				if ( value.length > 2 ) {
-					getResponse( ele, value );
-				} else {
-					ele.querySelector( '.lp_widget_autocomplete__select' )?.remove();
-				}
-			}, 300 ) );
-		} );
+		$( ele ).on( 'keyup', debounce( ( e ) => {
+			const value = e.target.value;
+
+			if ( value.length > 2 ) {
+				getResponse( $( ele ), value );
+			} else {
+				$( widget ).find( '.lp_widget_autocomplete__select' )?.remove();
+			}
+		}, 300 ) );
 	}
 }
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {
-	let widgets = null;
-
 	$( document ).on( 'widget-added', function( event, widget ) {
-		if ( ! widgets ) {
-			autocomplete();
-		}
-		widgets = widget;
+		autocompleteWidget( widget );
 	} );
 } );
