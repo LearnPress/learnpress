@@ -82,26 +82,22 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 			parent::__construct();
 		}
 
-		/**
-		 * Show widget in frontend.
-		 */
-		public function widget( $args, $instance ) {
-			if ( $this->get_cached_widget( $args ) ) {
-				return;
-			}
+		/** Send content for API */
+		public function lp_rest_api_content( $instance, $params ) {
+			$filter        = new LP_Course_Filter();
+			$filter->limit = $instance['limit'] ?? 4;
 
-			ob_start();
+			$courses = LP_Course_DB::getInstance()->get_recent_courses( $filter );
 
-			$curd    = new LP_Course_CURD();
-			$courses = $curd->get_recent_courses( array( 'limit' => (int) $instance['limit'] ) );
+			$data = learn_press_get_template_content(
+				'widgets/recent-courses.php',
+				array(
+					'courses'  => $courses,
+					'instance' => $instance,
+				)
+			);
 
-			$this->widget_start( $args, $instance );
-
-			include learn_press_locate_template( 'widgets/recent-courses.php' );
-
-			$this->widget_end( $args );
-
-			echo $this->cache_widget( $args, ob_get_clean() );
+			return $data;
 		}
 	}
 }

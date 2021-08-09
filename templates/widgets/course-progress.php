@@ -12,15 +12,21 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
-
-if ( ! $course ) {
+if ( ! $course || ! $user ) {
 	return;
 }
 ?>
 
 <div class="lp_widget_course_progress <?php echo esc_attr( $instance['css_class'] ); ?>">
 	<div class="widget-body">
-		<?php learn_press_get_template( 'single-course/sidebar/user-progress.php' ); ?>
+		<?php
+		learn_press_get_template(
+			'single-course/sidebar/user-progress.php',
+			array(
+				'user'   => $user,
+				'course' => $course,
+			)
+		);
+		?>
 	</div>
 </div>

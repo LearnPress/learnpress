@@ -82,25 +82,27 @@ if ( ! class_exists( 'LP_Widget_Featured_Courses' ) ) {
 		}
 
 		/**
-		 * Show widget in frontend.
+		 * Send content for API
+		 *
+		 * @param array $instance Widget Instance
+		 * @param array $params RestAPI param need for content.
+		 * @return string || WP_Error
 		 */
-		public function widget( $args, $instance ) {
-			if ( $this->get_cached_widget( $args ) ) {
-				return;
-			}
+		public function lp_rest_api_content( $instance, $params ) {
+			$filter        = new LP_Course_Filter();
+			$filter->limit = $instance['limit'] ?? 4;
 
-			ob_start();
+			$courses = LP_Course_DB::getInstance()->get_featured_courses( $filter );
 
-			$curd    = new LP_Course_CURD();
-			$courses = $curd->get_featured_courses( array( 'limit' => (int) $instance['limit'] ) );
+			$data = learn_press_get_template_content(
+				'widgets/featured-courses.php',
+				array(
+					'courses'  => $courses,
+					'instance' => $instance,
+				)
+			);
 
-			$this->widget_start( $args, $instance );
-
-			include learn_press_locate_template( 'widgets/featured-courses.php' );
-
-			$this->widget_end( $args );
-
-			echo $this->cache_widget( $args, ob_get_clean() );
+			return $data;
 		}
 	}
 }

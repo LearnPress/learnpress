@@ -33,6 +33,14 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 					'type'  => 'text',
 					'std'   => esc_html__( 'Course Info', 'learnpress' ),
 				),
+				'course_id' => array(
+					'label' => esc_html__( 'Select Course', 'learnpress' ),
+					'type'  => 'autocomplete',
+					'query' => array(
+						'post_type' => LP_COURSE_CPT,
+						'limit'     => 100,
+					),
+				),
 				'css_class' => array(
 					'label' => esc_html__( 'CSS Class', 'learnpress' ),
 					'type'  => 'text',
@@ -51,11 +59,39 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 				return;
 			}
 
-			$this->widget_start( $args, $instance );
+			wp_enqueue_script( 'lp-widgets' );
 
-			include learn_press_locate_template( 'widgets/course-info.php' );
+			$serialized_instance = serialize( $instance );
 
-			$this->widget_end( $args );
+			$data = array_merge(
+				$this->widget_data_attr,
+				array(
+					'widget'   => $this->widget_id,
+					'instance' => base64_encode( $serialized_instance ),
+					'hash'     => wp_hash( $serialized_instance ),
+					'courseId' => get_the_ID(),
+				)
+			);
+
+			echo $this->lp_widget_content( $data, $args, $instance );
+		}
+
+		public function lp_rest_api_content( $instance, $params ) {
+			if ( ! empty( $params['courseId'] ) ) {
+				$course = learn_press_get_course( $params['courseId'] );
+
+				if ( $course ) {
+					return learn_press_get_template_content(
+						'widgets/course-info.php',
+						array(
+							'course'   => $course,
+							'instance' => $instance,
+						)
+					);
+				}
+			}
+
+			return new WP_Error( 'no_params', esc_html__( 'Error: Data Course progress invalid', 'learnpress' ) );
 		}
 	}
 }

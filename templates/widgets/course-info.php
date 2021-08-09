@@ -12,8 +12,6 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
-
 if ( ! $course ) {
 	return;
 }

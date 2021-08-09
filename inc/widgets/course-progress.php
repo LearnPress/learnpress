@@ -20,7 +20,6 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 	class LP_Widget_Course_Progress extends LP_Widget {
 
 		public function __construct() {
-
 			$this->widget_cssclass    = 'learnpress widget_course_progress';
 			$this->widget_description = esc_html__( 'Display the Course Progress', 'learnpress' );
 			$this->widget_id          = 'learnpress_widget_course_progress';
@@ -41,58 +40,47 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 			parent::__construct();
 		}
 
-		public function is_singular() {
-			return learn_press_is_course() && $this->get_remaining_time();
-		}
-
-		/**
-		 * Get remaining time for current course.
-		 *
-		 * @return bool|int|string
-		 */
-		public function get_remaining_time() {
-			$course = LP_Global::course();
-
-			if ( ! $course ) {
-				return false;
-			}
-
-			$user = LP_Global::user();
-
-			if ( ! $user ) {
-				return false;
-			}
-
-			$remaining_time = $user->get_course_remaining_time( $course->get_id() );
-
-			if ( false === $remaining_time ) {
-				return false;
-			}
-
-			return $remaining_time;
-		}
-
-		/**
-		 * Show widget in frontend.
-		 */
 		public function widget( $args, $instance ) {
-
-			if ( ! $this->is_singular() ) {
+			if ( ! learn_press_is_course() ) {
 				return;
 			}
 
-			$remaining_time = $this->get_remaining_time();
+			wp_enqueue_script( 'lp-widgets' );
 
-			if ( false === $remaining_time ) {
-				return;
-			}
+			$serialized_instance = serialize( $instance );
 
-			$this->widget_start( $args, $instance );
+			$data = array_merge(
+				$this->widget_data_attr,
+				array(
+					'widget'   => $this->widget_id,
+					'instance' => base64_encode( $serialized_instance ),
+					'hash'     => wp_hash( $serialized_instance ),
+					'courseId' => get_the_ID(),
+					'userId'   => get_current_user_id(),
+				)
+			);
 
-			include learn_press_locate_template( 'widgets/course-progress.php' );
-
-			$this->widget_end( $args );
+			echo $this->lp_widget_content( $data, $args, $instance );
 		}
 
+		public function lp_rest_api_content( $instance, $params ) {
+			if ( ! empty( $params['courseId'] ) && ! empty( $params['userId'] ) ) {
+				$course = learn_press_get_course( $params['courseId'] );
+				$user   = learn_press_get_user( $params['userId'] );
+
+				if ( $course && $user ) {
+					return learn_press_get_template_content(
+						'widgets/course-progress',
+						array(
+							'course'   => $course,
+							'user'     => $user,
+							'instance' => $instance,
+						)
+					);
+				}
+			}
+
+			return new WP_Error( 'no_params', esc_html__( 'Error: Data Course progress invalid', 'learnpress' ) );
+		}
 	}
 }

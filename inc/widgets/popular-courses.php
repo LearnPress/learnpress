@@ -81,23 +81,21 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 		/**
 		 * Show widget in frontend.
 		 */
-		public function widget( $args, $instance ) {
-			if ( $this->get_cached_widget( $args ) ) {
-				return;
-			}
+		public function lp_rest_api_content( $instance, $params ) {
+			$filter        = new LP_Course_Filter();
+			$filter->limit = $instance['limit'] ?? 5;
 
-			ob_start();
+			$courses = LP_Course_DB::getInstance()->get_popular_courses( $filter );
 
-			$curd    = new LP_Course_CURD();
-			$courses = $curd->get_popular_courses( array( 'limit' => (int) $instance['limit'] ) );
+			$data = learn_press_get_template_content(
+				'widgets/popular-courses.php',
+				array(
+					'courses'  => $courses,
+					'instance' => $instance,
+				)
+			);
 
-			$this->widget_start( $args, $instance );
-
-			include learn_press_locate_template( 'widgets/popular-courses.php' );
-
-			$this->widget_end( $args );
-
-			echo $this->cache_widget( $args, ob_get_clean() );
+			return $data;
 		}
 	}
 

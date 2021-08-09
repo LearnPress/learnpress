@@ -230,6 +230,16 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
+				'lp-widgets'           => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/widgets' . self::$_min_assets . '.js' ),
+					array_merge(
+						$wp_js,
+						array( 'wp-i18n' )
+					),
+					array(),
+					1,
+					1
+				),
 				'lp-become-a-teacher'  => new LP_Asset_Key(
 					self::url( self::$_folder_source . 'js/frontend/become-teacher' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'lp-utils' ),
