@@ -312,7 +312,7 @@ class LP_Widget extends WP_Widget {
 					?>
 					<p>
 						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label><?php // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped ?>
-						<input data-query="<?php echo isset( $setting['query'] ) ? esc_attr( wp_json_encode( $setting['query'] ) ) : ''; ?>" class="widefat lp_widget_autocomplete_field <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" />
+						<input data-type="<?php echo $setting['post_type'] ?? ''; ?>" class="widefat lp_widget_autocomplete_field <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" />
 					</p>
 					<?php
 					break;

@@ -29,7 +29,6 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-course-controller.php';
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-tools-controller.php';
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-reset-data-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-widgets-controller.php';
 
 		do_action( 'learn-press/admin/core-api/includes' );
 	}
@@ -41,7 +40,6 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 			'LP_REST_Admin_Course_Controller',
 			'LP_REST_Admin_Tools_Controller',
 			'LP_REST_Admin_Reset_Data_Controller',
-			'LP_REST_Admin_Widgets_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );

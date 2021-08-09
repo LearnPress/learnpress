@@ -34,12 +34,9 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 					'std'   => esc_html__( 'Course Info', 'learnpress' ),
 				),
 				'course_id' => array(
-					'label' => esc_html__( 'Select Course', 'learnpress' ),
-					'type'  => 'autocomplete',
-					'query' => array(
-						'post_type' => LP_COURSE_CPT,
-						'limit'     => 100,
-					),
+					'label'     => esc_html__( 'Select Course', 'learnpress' ),
+					'type'      => 'autocomplete',
+					'post_type' => LP_COURSE_CPT,
 				),
 				'css_class' => array(
 					'label' => esc_html__( 'CSS Class', 'learnpress' ),
