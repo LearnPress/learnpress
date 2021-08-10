@@ -246,13 +246,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
-	public function course_extra_requirements() {
-		$course = LP_Course::get_course( get_the_ID() );
+	public function course_extra_requirements( $course_id ) {
+		$course = LP_Course::get_course( $course_id );
 
 		$requirements = apply_filters(
 			'learn-press/course-extra-requirements',
 			$course->get_extra_info( 'requirements' ),
-			get_the_ID()
+			$course_id
 		);
 
 		if ( ! $requirements ) {
@@ -269,13 +269,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
-	public function course_extra_key_features() {
-		$course = LP_Course::get_course( get_the_ID() );
+	public function course_extra_key_features( $course_id ) {
+		$course = LP_Course::get_course( $course_id );
 
 		$key_features = apply_filters(
 			'learn-press/course-extra-key-features',
 			$course->get_extra_info( 'key_features' ),
-			get_the_ID()
+			$course_id
 		);
 
 		if ( ! $key_features ) {
@@ -292,13 +292,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
-	public function course_extra_target_audiences() {
-		$course = LP_Course::get_course( get_the_ID() );
+	public function course_extra_target_audiences( $course_id ) {
+		$course = LP_Course::get_course( $course_id );
 
 		$target_audiences = apply_filters(
 			'learn-press/course-extra-target-audiences',
 			$course->get_extra_info( 'target_audiences' ),
-			get_the_ID()
+			$course_id
 		);
 
 		if ( ! $target_audiences ) {

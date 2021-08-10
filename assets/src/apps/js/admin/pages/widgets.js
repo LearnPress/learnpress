@@ -23,6 +23,8 @@ function autocompleteWidget( widget ) {
 
 		ele.removeClass( 'loading' );
 
+		$( ele ).parent().find( '.lp_widget_autocomplete__select' ).remove();
+
 		ele.after( '<div class="lp_widget_autocomplete__select"></div>' );
 
 		if ( response.length > 0 ) {

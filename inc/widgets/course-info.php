@@ -49,34 +49,11 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 			parent::__construct();
 		}
 
-		/**
-		 * Show widget in frontend.
-		 */
-		public function widget( $args, $instance ) {
-			if ( ! learn_press_is_course() ) {
-				return;
-			}
-
-			wp_enqueue_script( 'lp-widgets' );
-
-			$serialized_instance = serialize( $instance );
-
-			$data = array_merge(
-				$this->widget_data_attr,
-				array(
-					'widget'   => $this->widget_id,
-					'instance' => base64_encode( $serialized_instance ),
-					'hash'     => wp_hash( $serialized_instance ),
-					'courseId' => get_the_ID(),
-				)
-			);
-
-			echo $this->lp_widget_content( $data, $args, $instance );
-		}
-
 		public function lp_rest_api_content( $instance, $params ) {
-			if ( ! empty( $params['courseId'] ) ) {
-				$course = learn_press_get_course( $params['courseId'] );
+			$instance['css_class'] = $instance['css_class'] ?? '';
+
+			if ( ! empty( $instance['course_id'] ) ) {
+				$course = learn_press_get_course( $instance['course_id'] );
 
 				if ( $course ) {
 					return learn_press_get_template_content(
@@ -89,7 +66,7 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 				}
 			}
 
-			return new WP_Error( 'no_params', esc_html__( 'Error: Data Course progress invalid', 'learnpress' ) );
+			return new WP_Error( 'no_params', esc_html__( 'Error: Please select a Course.', 'learnpress' ) );
 		}
 	}
 }
