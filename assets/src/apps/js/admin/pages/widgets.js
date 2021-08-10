@@ -72,7 +72,17 @@ function autocompleteWidget( widget ) {
 }
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {
-	$( document ).on( 'widget-added', function( event, widget ) {
-		autocompleteWidget( widget );
-	} );
+	if ( document.querySelector( '#widgets-editor' ) ) {
+		$( document ).on( 'widget-added', function( event, widget ) {
+			autocompleteWidget( widget );
+		} );
+	} else {
+		const widgets = $( document ).find( '#widgets-right .widget' );
+
+		if ( widgets.length > 0 ) {
+			widgets.each( function( widget ) {
+				autocompleteWidget( widget );
+			} );
+		}
+	}
 } );

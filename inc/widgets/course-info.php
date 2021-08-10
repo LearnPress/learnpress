@@ -37,6 +37,7 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 					'label'     => esc_html__( 'Select Course', 'learnpress' ),
 					'type'      => 'autocomplete',
 					'post_type' => LP_COURSE_CPT,
+					'std'       => '',
 				),
 				'css_class' => array(
 					'label' => esc_html__( 'CSS Class', 'learnpress' ),
