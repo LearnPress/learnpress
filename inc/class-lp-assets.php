@@ -29,24 +29,30 @@ class LP_Assets extends LP_Abstract_Assets {
 	protected function _get_styles(): array {
 		return apply_filters(
 			'learn-press/frontend-default-styles',
-			[
-				'lp-font-awesome-5' => new LP_Asset_Key(
+			array(
+				'lp-font-awesome-5'  => new LP_Asset_Key(
 					self::url( 'src/css/vendor/font-awesome-5.min.css' ),
-					[],
-					[]
+					array(),
+					array()
 				),
-				'lp-bundle'         => new LP_Asset_Key(
+				'lp-bundle'          => new LP_Asset_Key(
 					self::url( 'css/bundle.min.css' ),
-					[],
-					[]
+					array(),
+					array()
 				),
-				'learnpress'        => new LP_Asset_Key(
+				'learnpress'         => new LP_Asset_Key(
 					self::url( 'css/learnpress.css' ),
-					[ 'lp-font-awesome-5', 'lp-bundle' ],
-					[ LP_PAGE_COURSES, LP_PAGE_SINGLE_COURSE, LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ, LP_PAGE_QUESTION, LP_PAGE_CHECKOUT, LP_PAGE_BECOME_A_TEACHER ],
+					array( 'lp-font-awesome-5', 'lp-bundle' ),
+					array( LP_PAGE_COURSES, LP_PAGE_SINGLE_COURSE, LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ, LP_PAGE_QUESTION, LP_PAGE_CHECKOUT, LP_PAGE_BECOME_A_TEACHER ),
 					0
 				),
-			]
+				'learnpress-widgets' => new LP_Asset_Key(
+					self::url( 'css/widgets.css' ),
+					array(),
+					array(),
+					0
+				),
+			)
 		);
 	}
 
@@ -113,7 +119,7 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		$scripts = apply_filters(
 			'learn-press/frontend-default-scripts',
-			[
+			array(
 				'vue-libs'             => new LP_Asset_Key(
 					self::url( 'src/js/vendor/vue/vue_libs_special.min.js' )
 				),
@@ -149,7 +155,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp-question-types'    => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/question-types' . self::$_min_assets . '.js' ),
 					array_merge( $wp_js, array( 'lp-global' ) ),
-					[],
+					array(),
 					1,
 					1
 				),
@@ -247,7 +253,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-			]
+			)
 		);
 
 		wp_set_script_translations( 'lp-quiz', 'learnpress' );
@@ -280,7 +286,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @editor tungnx
 	 * @reason comment - not use
 	 */
-	/*public function is_screen( $screens ) {
+	/*
+	public function is_screen( $screens ) {
 		$pages = array(
 			'profile',
 			'become_a_teacher',

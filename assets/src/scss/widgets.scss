@@ -1,7 +1,17 @@
+@import "mixin";
+
 .learnpress {
 
 	&.widget {
+		max-width: 400px;
 		margin-bottom: 30px;
+
+		.widgettitle {
+			margin-top: 0;
+			margin-bottom: 2px;
+			font-size: 18px;
+			font-weight: 600;
+		}
 
 		.learnpress-widget-wrapper {
 			margin-top: 15px;
@@ -10,6 +20,10 @@
 		h3 {
 			margin-bottom: 20px;
 			font-size: 16px;
+		}
+
+		a {
+			text-decoration: none;
 		}
 
 		// use in featured, popular, recent course widget.
@@ -101,6 +115,39 @@
 
 			.lp-course-progress {
 				width: 100%;
+
+				&.learn-press-progress {
+					position: relative;
+
+					.progress-bg {
+						overflow: hidden;
+						position: relative;
+						height: 6px;
+						background: #ccc;
+
+						@include border-radius(5px);
+
+						.progress-active {
+							position: absolute;
+							left: 50%;
+							width: 100%;
+							height: 100%;
+							margin-left: -100%;
+							background: var(--lp-primary-color);
+
+							@include border-radius(5px);
+						}
+					}
+
+					.lp-passing-conditional {
+						position: absolute;
+						top: 0;
+						width: 3px;
+						height: 6px;
+						margin-left: -1px;
+						background: var(--lp-secondary-color);
+					}
+				}
 			}
 		}
 	}
