@@ -683,10 +683,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			/**
 			 * Get newest item-course in table user-items
 			 */
-			$filter            = new LP_User_Items_Filter();
-			$filter->item_id   = $course_id;
-			$filter->user_id   = $user_id;
-			$last_user_course  = $lp_user_items_db->get_last_user_course( $filter );
+			$filter           = new LP_User_Items_Filter();
+			$filter->item_id  = $course_id;
+			$filter->user_id  = $user_id;
+			$last_user_course = $lp_user_items_db->get_last_user_course( $filter );
 
 			if ( ! $last_user_course ) {
 				return false;
@@ -1166,8 +1166,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param array $item_data
 	 *
 	 * @return bool
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public function update_user_item_by_id( $user_item_id, $item_data = array() ) {
+	/*public function update_user_item_by_id( $user_item_id, $item_data = array() ) {
 		global $wpdb;
 
 		$item = $this->get_user_item_by_id( $user_item_id );
@@ -1225,7 +1227,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return isset( $updated ) ? $updated : $user_item_id;
-	}
+	}*/
 
 	/**
 	 * Update status of an user item by id.

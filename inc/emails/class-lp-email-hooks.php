@@ -26,11 +26,7 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					'learn-press/order/status-pending-to-completed',
 
 					// Completed order
-					'learn-press/order/status-completed' => [
-						LP_Email_Enrolled_Course_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-enrolled-course-user.php',
-						LP_Email_Enrolled_Course_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-enrolled-course-admin.php',
-						LP_Email_Enrolled_Course_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-enrolled-course-instructor.php',
-					],
+					'learn-press/order/status-completed' => [],
 
 					// User enrolled course when order completed before
 					'learnpress/user/course-enrolled'    => [

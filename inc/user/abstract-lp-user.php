@@ -1566,12 +1566,30 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @Todo tungnx - should replace to method LP_User::is_course_enrolled
 		 */
 		public function has_enrolled_course( int $course_id ) : bool {
-			$course_item = $this->get_course_data( $course_id );
+			$flag_enrolled = true;
+			$lp_db         = LP_User_Items_DB::getInstance();
 
-			$statues  = [ LP_COURSE_ENROLLED, LP_COURSE_FINISHED ];
-			$enrolled = $course_item && isset( $course_item->_data['status'] ) && in_array( $course_item->_data['status'], $statues );
+			try {
+				$order = $this->get_course_order( $course_id );
 
-			return apply_filters( 'learn-press/has-enrolled-course', $enrolled, $this->get_id(), $course_id );
+				if ( ! $order || ! $order->is_completed() ) {
+					throw new Exception( esc_html__( 'Order is not completed', 'learnpress' ) );
+				}
+
+				$filter          = new LP_User_Items_Filter();
+				$filter->user_id = $this->get_id();
+				$filter->item_id = $course_id;
+
+				$user_course = $lp_db->get_last_user_course( $filter );
+
+				if ( ! $user_course || ! isset( $user_course->status ) || ! in_array( $user_course->status, [ LP_COURSE_ENROLLED, LP_COURSE_FINISHED ] ) ) {
+					throw new Exception( esc_html__( 'Course is not enrolled', 'learnpress' ) );
+				}
+			} catch ( Throwable $th ) {
+				$flag_enrolled = false;
+			}
+
+			return $flag_enrolled;
 		}
 
 		/**

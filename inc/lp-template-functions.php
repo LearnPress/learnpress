@@ -1390,16 +1390,11 @@ if ( ! function_exists( 'learn_press_print_custom_styles' ) ) {
  *
  * @return bool
  * @since 3.0.0
+ * @editor tungnx
+ * @version 4.1.3
  */
 function learn_press_current_user_enrolled_course() {
-	$user   = learn_press_get_current_user();
-	$course = LP_Global::course();
-
-	if ( ! $course ) {
-		return false;
-	}
-
-	return $user->has_enrolled_course( $course->get_id() );
+	_deprecated_function( __FUNCTION__, '4.1.3' );
 }
 
 /**

@@ -2327,68 +2327,10 @@ function learn_press_search_template( $template ) {
  * @param int $order_id
  *
  * @return mixed
+ * @editor tungnx
  */
 function learn_press_auto_enroll_user_to_courses( $order_id ) {
-	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
-		return false;
-	}
-
-	wp_cache_delete( 'order-' . $order_id, 'lp-order-items' );
-	LP_Object_Cache::delete( 'order-' . $order_id, 'lp-order-items' );
-
-	if ( ! $order = learn_press_get_order( $order_id ) ) {
-		return false;
-	}
-
-	if ( ! $items = $order->get_items() ) {
-		return false;
-	}
-
-	if ( ! $users = $order->get_user_data() ) {
-		return false;
-	}
-
-	$return = 0;
-	foreach ( $items as $item_id => $item ) {
-		$course = learn_press_get_course( $item['course_id'] );
-
-		if ( ! $course ) {
-			continue;
-		}
-
-		foreach ( $users as $uid => $data ) {
-			$user = learn_press_get_user( $uid );
-
-			if ( ! $user->is_exists() ) {
-				continue;
-			}
-
-			if ( $user->has_enrolled_course( $course->get_id() ) ) {
-				continue;
-			}
-
-			if ( ! $user->can_enroll_course( $course->get_id() ) ) {
-				continue;
-			}
-
-			// error. this scripts will create new order each course item
-			$return = learn_press_update_user_item_field(
-				array(
-					'user_id'    => $user->get_id(),
-					'item_id'    => $course->get_id(),
-					'start_time' => learn_press_mysql_time( true ),
-					'status'     => learn_press_user_item_in_progress_slug(), // 'enrolled',
-					'end_time'   => '0000-00-00 00:00:00',
-					'ref_id'     => $order->id, // $course->get_id(),
-					'item_type'  => 'lp_course',
-					'ref_type'   => 'lp_order',
-					'parent_id'  => $user->get_course_history_id( $course->get_id() ),
-				)
-			);
-		}
-	}
-
-	return $return;
+	_deprecated_function( __FUNCTION__, '4.1.3' );
 }
 
 // add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );

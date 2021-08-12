@@ -226,7 +226,7 @@ class LP_Settings {
 	 * @since 3.2.8
 	 * @editor tungnx
 	 */
-	public static function get_option( $name = '', $default = false ) {
+	public static function get_option( string $name = '', $default = false ) {
 		return get_option( "learn_press_{$name}", $default );
 	}
 
@@ -397,6 +397,15 @@ class LP_Settings {
 		}
 
 		return apply_filters( 'learn-press/endpoints/profile', $endpoints );
+	}
+
+	/**
+	 * Check setting enable option "Auto start"
+	 *
+	 * @return bool
+	 */
+	public static function is_auto_start_course(): bool {
+		return 'yes' === self::get_option( 'auto_enroll', 'yes' );
 	}
 }
 

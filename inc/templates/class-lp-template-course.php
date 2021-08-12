@@ -237,7 +237,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		// For free course and user does not purchased
 		$course_data = $user->get_course_data( $course->get_id() );
 
-		if ( $course->is_free() && ! ( $course_data && $course_data->get_user_item_id() > 0 ) ) {
+		if ( $course->is_free() ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data ) {
 			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
@@ -316,16 +316,18 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_retake_button() {
+		$user = learn_press_get_current_user();
+
+		if ( ! $user ) {
+			return;
+		}
+
 		if ( ! isset( $course ) ) {
 			$course = learn_press_get_course();
 		}
 
-		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+		if ( ! $user->is_course_enrolled( $course->get_id() ) && $course->get_external_link() ) {
 			return;
-		}
-
-		if ( ! isset( $user ) ) {
-			$user = learn_press_get_current_user();
 		}
 
 		// If user has not finished course
@@ -343,7 +345,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+		if ( $user->is_course_enrolled( $course->get_id() ) && $course->get_external_link() ) {
 			return;
 		}
 
@@ -353,15 +355,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( ! learn_press_is_enrolled_slug( $course_data->get_status() ) ) {
-			return;
-		}
-
 		if ( ! $course_data->get_item_at( 0 ) ) {
 			return;
 		}
 
-		//Course has no items
+		// Course has no items
 		if ( empty( $course->get_item_ids() ) ) {
 			return;
 		}

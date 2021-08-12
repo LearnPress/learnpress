@@ -4,7 +4,7 @@
  *
  * @author   ThimPress
  * @package  LearnPress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) or die;
@@ -41,7 +41,7 @@ do_action( 'learnpress/template/pages/checkout/before-content' );
 	</div>
 
 <?php
-do_action( 'learn-press/after-main-content' );
 do_action( 'learnpress/template/pages/checkout/after-content' );
+do_action( 'learn-press/after-main-content' );
 
 get_footer();

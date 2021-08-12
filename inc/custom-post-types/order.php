@@ -30,7 +30,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
+			//add_action( 'transition_post_status', array( $this, 'restore_order' ), 1, 3 );
+			add_filter( 'wp_untrash_post_status', array( $this, 'restore_status_order' ), 11, 3 );
 			//add_action( 'save_post', array( $this, 'recount_enrolled_users' ), 11, 3 );
 
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
@@ -184,8 +185,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param string $new
 		 * @param string $old
 		 * @param WP_Post $post
+		 *
+		 * @editor tungnx
+		 * @modify 4.1.3 - commnet - not use
 		 */
-		public function restore_order( $new, $old, $post ) {
+		/*public function restore_order( $new, $old, $post ) {
 
 			if ( ! ( 'trash' === $old ) ) {
 				return;
@@ -240,6 +244,22 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			// Delete data
 			delete_post_meta( $post->ID, '_lp_user_data' );
+		}*/
+
+		/**
+		 * Restore user course item when the order is stored (usually from trash).
+		 *
+		 * @param string $new_status
+		 * @param int $post_id
+		 * @param string $previous_status
+		 * @return string
+		 */
+		public function restore_status_order( string $new_status, int $post_id, string $previous_status ): string {
+			if ( LP_ORDER_CPT != get_post_type( $post_id ) ) {
+				return $new_status;
+			}
+
+			return $previous_status;
 		}
 
 		/**
@@ -331,7 +351,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$order->set_user_id( absint( $user_id ) );
 				}*/
 
-				$order->set_created_via( 'manual' );
+				$created_via = $order->get_created_via();
+				if ( empty( $created_via ) ) {
+					$order->set_created_via( 'manual' );
+				}
+
 				$order->set_user_id( $user_id );
 				$order->set_status( learn_press_get_request( 'order-status' ) );
 				$order->save();

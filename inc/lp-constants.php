@@ -94,8 +94,13 @@ const LP_COURSE_ENROLLED  = 'enrolled';
 const LP_COURSE_FINISHED  = 'finished';
 const LP_COURSE_PURCHASED = 'purchased';
 
+// Graduation user item course
+const LP_COURSE_GRADUATION_IN_PROGRESS = 'in-progress';
+const LP_COURSE_GRADUATION_PASSED      = 'passed';
+const LP_COURSE_GRADUATION_FAILED      = 'failed';
+
 // Enable lazyload animation placeholder.
-define( 'LP_LAZY_LOAD_ANIMATION', true );
+const LP_LAZY_LOAD_ANIMATION = true;
 
 /**
  * Thim Market library

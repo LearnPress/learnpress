@@ -7,9 +7,68 @@
  */
 class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
-	 * @var bool
+	 * Auto increment
+	 *
+	 * @var int
 	 */
-	protected $_is_available = null;
+	public $_user_item_id = 0;
+	/**
+	 * User id
+	 *
+	 * @var string
+	 */
+	public $_user_id = 0;
+	/**
+	 * Item id (course, lesson, quiz ...)
+	 *
+	 * @var string
+	 */
+	public $_item_id = 0;
+	/**
+	 * @var string
+	 */
+	public $_start_time = '';
+	/**
+	 * @var string
+	 */
+	public $_end_time = '';
+	/**
+	 * Item type (course, lesson, quiz ...)
+	 *
+	 * @var string
+	 */
+	public $_item_type = '';
+	/**
+	 * Status
+	 *
+	 * @var string
+	 */
+	public $_status = '';
+	/**
+	 * Graduation
+	 *
+	 * @var string
+	 */
+	public $_graduation = '';
+	/**
+	 * Ref id (Order, course ...)
+	 *
+	 * @var string
+	 */
+	public $_ref_id = '';
+	/**
+	 * Ref type (Order, course ...)
+	 *
+	 * @var string
+	 */
+	public $_ref_type = '';
+	/**
+	 * Parent id
+	 *
+	 * @var string
+	 */
+	public $_parent_id = '';
+
 
 	/**
 	 * @var string
@@ -343,31 +402,31 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return string
 	 */
-	public function get_status( $field = 'status' ) {
-		$got_status = $this->get_data( $field, false );
-		$user_id    = $this->get_extra_data( 'user_id' );
-
-		if ( false === $got_status && false !== $user_id ) {
-			$user_item = learn_press_get_user_item(
-				array(
-					'user_id'   => $user_id,
-					'item_id'   => $this->get_item_id(),
-					'parent_id' => $this->get_parent_id(),
-					'ref_id'    => $this->get_data( 'ref_id' ),
-				)
-			);
-
-			if ( ! empty( $user_item ) ) {
-				$got_status = $user_item->$field;
-			} else {
-				$got_status = '';
-			}
-
-			$this->set_data( $field, $got_status );
-		}
-
-		return $got_status;
-	}
+//	public function get_status( $field = 'status' ) {
+//		//$got_status = $this->get_data( $field, false );
+//		$user_id    = $this->get_extra_data( 'user_id' );
+//
+////		if ( false === $got_status && false !== $user_id ) {
+//			$user_item = learn_press_get_user_item(
+//				array(
+//					'user_id'   => $user_id,
+//					'item_id'   => $this->get_item_id(),
+//					'parent_id' => $this->get_parent_id(),
+//					'ref_id'    => $this->get_data( 'ref_id' ),
+//				)
+//			);
+//
+//			if ( ! empty( $user_item ) ) {
+//				$got_status = $user_item->$field;
+//			} else {
+//				$got_status = '';
+//			}
+//
+//			$this->set_data( $field, $got_status );
+////		}
+//
+//		return $got_status;
+//	}
 
 	/**
 	 * Check course is finished.
@@ -698,20 +757,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @updated 3.1.0
 	 *
-	 * @param bool $force - Optional. Added from 3.1.0 to force update if even the data is not changed.
-	 * @param bool $wp_error - Optional. Added from 3.3.0 to return WP_Error
-	 *
 	 * @return bool|mixed
 	 */
 	public function update( $force = false, $wp_error = false ) {
-
-		if ( ! $force && ! $this->is_change() ) {
-			if ( $wp_error ) {
-				return new WP_Error( 'item_not_changed', __( 'Item not changed.', 'learnpress' ) );
-			}
-
-			return false;
-		}
 
 		$data = $this->get_mysql_data();
 

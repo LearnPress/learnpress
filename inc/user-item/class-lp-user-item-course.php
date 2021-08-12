@@ -4,6 +4,9 @@
  */
 
 class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
+	public $_item_type = LP_COURSE_CPT;
+	public $_ref_type  = LP_ORDER_CPT;
+
 	/**
 	 * Course's items
 	 *
@@ -49,6 +52,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param null $item
 	 */
 	public function __construct( $item ) {
+		if ( is_array( $item ) ) {
+			$item['item_type'] = $this->_item_type;
+			$item['ref_type']  = $this->_ref_type;
+		}
 		parent::__construct( $item );
 
 		$this->_curd    = new LP_User_CURD();
@@ -939,9 +946,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function count_history_items( $item_id ) {
 
 		if ( false === ( $history = LP_Object_Cache::get(
-				'course-' . $this->get_item_id() . '-' . $this->get_user_id(),
-				'learn-press/items-history'
-			) ) ) {
+			'course-' . $this->get_item_id() . '-' . $this->get_user_id(),
+			'learn-press/items-history'
+		) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare(
 				"
@@ -1182,14 +1189,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Update course item and it's child.
+	 *
+	 * @TODO: tungnx - review to modify
 	 */
 	public function save() {
 		/**
 		 * @var LP_User_Item $item
 		 */
 		$this->update();
-
-		if ( ! $items = $this->get_items() ) {
+		$items = $this->get_items();
+		if ( ! $items ) {
 			return false;
 		}
 

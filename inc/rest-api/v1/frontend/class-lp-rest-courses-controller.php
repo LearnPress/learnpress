@@ -321,35 +321,24 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( $can_enroll->message ?? esc_html__( 'Error: Cannot enroll course.', 'learnpress' ) );
 			}
 
-			// Check if course has in order.
-			/*$user_item_api = new LP_User_Item_CURD();
-			$find_query    = array(
-				'item_id' => $course_id,
-				'user_id' => get_current_user_id(),
-			);*/
-
 			$filter          = new LP_User_Items_Filter();
 			$filter->user_id = get_current_user_id();
 			$filter->item_id = $course_id;
 			$course_item     = $lp_user_items_db->get_last_user_course( $filter );
-			//$course_items      = is_user_logged_in() ? $user_item_api->get_items_by( $find_query ) : false;
 
 			// Case: if user bought course - or create order manual with order "completed".
 			if ( $course_item && 'purchased' == $course_item->status ) {
-				$fields = array(
-					'graduation' => 'in-progress',
-					'status'     => 'enrolled',
-					'start_time' => current_time( 'mysql', true ),
-				);
+				$user_item_data = [
+					'user_item_id' => $course_item->user_item_id,
+					'graduation'   => LP_COURSE_GRADUATION_IN_PROGRESS,
+					'status'       => LP_COURSE_ENROLLED,
+					'start_time'   => current_time( 'mysql', true ),
+				];
 
-				$update = learn_press_update_user_item_field(
-					$fields,
-					array(
-						'user_item_id' => $course_item->user_item_id,
-					)
-				);
+				$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
+				$result                  = $user_item_new_or_update->update();
 
-				if ( ! $update ) {
+				if ( ! $result ) {
 					throw new Exception( esc_html__( 'Error: Can\'t Enroll course.', 'learnpress' ) );
 				}
 
@@ -381,7 +370,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 					$order = new LP_Order( $order_id );
 
-					$order->payment_complete(); // Slow query in action 'learn-press/order/status-completed' send email.
+					$order->payment_complete();
 
 					$cart->empty_cart();
 				}
@@ -400,9 +389,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				if ( empty( $course->get_item_ids() ) ) {
 					$response->data->redirect = get_permalink( $course->get_id() );
 				}
-
-				// Send mail when course enrolled
-				// $user->enrolled_sendmail( get_current_user_id(), $course_id );
 			} else {
 				$redirect_url = apply_filters(
 					'learnpress/rest-api/courses/enroll/redirect',

@@ -372,10 +372,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param string - transaction ID provided payment gateway
 		 *
 		 * @return bool
+		 * @throws Exception
 		 */
-		public function payment_complete( $transaction_id = '' ) {
+		public function payment_complete( $transaction_id = '' ): bool {
 			do_action( 'learn-press/payment-pre-complete', $this->get_id() );
 
+			//TODO: tungnx - check to change code below - use LP()->session->set()
 			LP()->session->order_awaiting_payment = null;
 
 			$valid_order_statuses = apply_filters(
@@ -553,7 +555,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function get_item_meta( &$item ) {
-			if ( $metas = get_metadata( 'learnpress_order_item', $item['id'] ) ) {
+			$metas = get_metadata( 'learnpress_order_item', $item['id'] );
+			if ( $metas ) {
 				foreach ( $metas as $k => $v ) {
 					$item[ preg_replace( '!^_!', '', $k ) ] = LP_Helper::maybe_unserialize( $v[0] );
 				}
@@ -595,9 +598,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param int   $quantity
 		 * @param array $meta
 		 *
-		 * @return bool
+		 * @return int
 		 */
-		public function add_item( $item, $quantity = 1, $meta = array() ) {
+		public function add_item( $item, $quantity = 1, $meta = array() ): int {
 			global $wpdb;
 
 			if ( func_num_args() > 1 ) {
@@ -1157,8 +1160,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_created_via() {
-			return $this->get_data( 'created_via' );
+		public function get_created_via(): string {
+			return $this->get_data( 'created_via', '' );
 		}
 
 		/**

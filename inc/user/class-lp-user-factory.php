@@ -26,9 +26,8 @@ class LP_User_Factory {
 		// add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
 		add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
-		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
-		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
-		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
+		//add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
+		//add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
 
 		/**
 		 * Filters into wp users manager
@@ -60,13 +59,14 @@ class LP_User_Factory {
 				case 'processing':
 				case 'cancelled':
 				case 'failed':
-					self::_update_user_item_pending( $order, $old_status, $new_status );
+					self::_update_user_item_order_pending( $order, $old_status, $new_status );
 					break;
 				case 'completed':
-					self::_update_user_item_purchased( $order, $old_status, $new_status );
+					self::_update_user_item_order_completed( $order, $old_status, $new_status );
+					break;
 			}
 		} catch ( Exception $ex ) {
-
+			error_log( __METHOD__ . ': ' . $ex->getMessage() );
 		}
 		//add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 	}
@@ -78,7 +78,7 @@ class LP_User_Factory {
 	 *
 	 * @author Nhamdv <email@email.com>
 	 */
-	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
+	protected static function _update_user_item_order_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
 		$items = $order->get_items();
 
@@ -164,22 +164,213 @@ class LP_User_Factory {
 	 * @editor tungnx
 	 * @modify 4.1.2
 	 */
-	protected static function _update_user_item_purchased( LP_Order $order, $old_status, $new_status ) {
-		global $wpdb;
-		$lp_user_items_db = LP_User_Items_DB::getInstance();
+	//  protected static function _update_user_item_purchased( LP_Order $order, $old_status, $new_status ) {
+	//      global $wpdb;
+	//      $lp_user_items_db = LP_User_Items_DB::getInstance();
+	//
+	//      $curd  = new LP_User_CURD();
+	//      $items = $order->get_items();
+	//      //$parent_order = $order->is_child() ? $order->get_parent() : $order;
+	//      //$items        = ! $order->is_child() ? $order->get_items() : $parent_order->get_items();
+	//
+	//      if ( ! $items ) {
+	//          return;
+	//      }
+	//
+	//      /*if ( $order->is_multi_users() && ! $order->is_child() ) {
+	//          return;
+	//      }*/
+	//
+	//      foreach ( $order->get_users() as $user_id ) {
+	//          $user = learn_press_get_user( $user_id );
+	//
+	//          foreach ( $items as $item ) {
+	//              if ( ! isset( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+	//                  continue;
+	//              }
+	//
+	//              $user_item_id = LP_Course_DB::getInstance()->get_user_item_id( $order->get_id(), $item['course_id'], $user_id );
+	//
+	//              if ( $user_item_id ) {
+	//                  continue;
+	//              }
+	//
+	//              $course = learn_press_get_course( $item['course_id'] );
+	//
+	//              /** Get newest user_item_id of course for allow_repurchase */
+	//              $filter          = new LP_User_Items_Filter();
+	//              $filter->user_id = $user_id;
+	//              $filter->item_id = $item['course_id'];
+	//              $user_course     = $lp_user_items_db->get_last_user_course( $filter );
+	//
+	//              $latest_user_item_id   = 0;
+	//              $allow_repurchase_type = '';
+	//
+	//              if ( $user_course && isset( $user_course->user_item_id ) ) {
+	//                  $latest_user_item_id = $user_course->user_item_id;
+	//
+	//                  /** Get allow_repurchase_type for reset, update. Add in: rest-api/v1/frontend/class-lp-courses-controller.php: purchase_course */
+	//                  $allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
+	//              }
+	//
+	//              /*$latest_user_item_id = $wpdb->get_var(
+	//                  $wpdb->prepare(
+	//                      "SELECT MAX(user_item_id) user_item_id
+	//                    FROM {$wpdb->learnpress_user_items}
+	//                    WHERE ref_type = %s
+	//                    AND item_type = %s
+	//                    AND item_id = %d
+	//                    AND user_id = %d",
+	//                      LP_ORDER_CPT,
+	//                      LP_COURSE_CPT,
+	//                      $item['course_id'],
+	//                      $user_id
+	//                  )
+	//              );*/
+	//
+	//              /**
+	//               * If allow_repurchase.
+	//               */
+	//              if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() && ! empty( $allow_repurchase_type ) ) {
+	//
+	//                  /** If keep course progress will reset start_time, graduation.. */
+	//                  if ( $allow_repurchase_type === 'keep' ) {
+	//                      do_action( 'lp/allow_repurchase_options/continue/db/update', $latest_user_item_id );
+	//
+	//                      /**
+	//                       * Update latest user_item_id to continue course progress.
+	//                       *
+	//                       * @author Nhamdv.
+	//                       */
+	//                      $update = $wpdb->update(
+	//                          $wpdb->learnpress_user_items,
+	//                          array(
+	//                              'ref_id'     => $order->get_id(),
+	//                              'start_time' => current_time( 'mysql', true ),
+	//                              'end_time'   => null,
+	//                              'graduation' => 'in-progress',
+	//                              'status'     => LP_COURSE_ENROLLED,
+	//                          ),
+	//                          array(
+	//                              'user_item_id' => $latest_user_item_id,
+	//                          ),
+	//                          array( '%d', '%s', '%s', '%s', '%s' ),
+	//                          array( '%d' )
+	//                      );
+	//
+	//                      if ( $update ) {
+	//                          $user_item_id = false;
+	//                      }
+	//                  } elseif ( $allow_repurchase_type === 'reset' ) {
+	//                      /** Delete user_item_id in table learnpress_user_items */
+	//                      $wpdb->delete(
+	//                          $wpdb->learnpress_user_items,
+	//                          array(
+	//                              'user_item_id' => $latest_user_item_id,
+	//                          ),
+	//                          array( '%d' )
+	//                      );
+	//
+	//                      /** Get list user_item_id for lesson, quiz... by course user_item_id in table learnpress_user_items */
+	//                      $user_item_ids = $wpdb->get_col(
+	//                          $wpdb->prepare(
+	//                              "SELECT user_item_id FROM $wpdb->learnpress_user_items
+	//                              WHERE parent_id=%d
+	//                              ",
+	//                              $latest_user_item_id
+	//                          )
+	//                      );
+	//
+	//                      /** Delete all lesson, quiz... by course parent user_item_id */
+	//                      $wpdb->delete(
+	//                          $wpdb->learnpress_user_items,
+	//                          array(
+	//                              'parent_id' => absint( $latest_user_item_id ),
+	//                          ),
+	//                          array( '%d' )
+	//                      );
+	//
+	//                      /** Delete all user_item_meta for lesson, quiz... */
+	//                      if ( ! empty( $user_item_ids ) ) {
+	//                          foreach ( $user_item_ids as $user_item_id ) {
+	//                              $wpdb->delete(
+	//                                  $wpdb->learnpress_user_itemmeta,
+	//                                  array(
+	//                                      'learnpress_user_item_id' => absint( $user_item_id ),
+	//                                  ),
+	//                                  array( '%d' )
+	//                              );
+	//
+	//                              LP_User_Items_Result_DB::instance()->delete( absint( $user_item_id ) );
+	//                          }
+	//                      }
+	//
+	//                      /**
+	//                       * Insert new item(row) on table learnpress_user_items
+	//                       */
+	//                      $user_item_id = $user->enroll_course( $item['course_id'], $order->get_id() );
+	//                  }
+	//
+	//                  learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
+	//              } else {
+	//                  /**
+	//                   * Insert new item(row) on table learnpress_user_items
+	//                   */
+	//                  $user_item_id = $user->enroll_course( $item['course_id'], $order->get_id() );
+	//              }
+	//
+	//              if ( $user_item_id && ! is_wp_error( $user_item_id ) ) {
+	//                  // $last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
+	//                  $item        = $curd->get_user_item_by_id( $user_item_id );
+	//                  $course_id   = $item['item_id'];
+	//                  $can_enroll  = $user->can_enroll_course( $course_id );
+	//                  $auto_enroll = LP()->settings()->get( 'auto_enroll' ) == 'yes';
+	//                  $course      = learn_press_get_course( $course_id );
+	//
+	//                  $args = array(
+	//                      'status'     => LP_COURSE_PURCHASED,
+	//                      'start_time' => current_time( 'mysql', true ),
+	//                  );
+	//
+	//                  if ( $new_status == 'completed' && $can_enroll && $auto_enroll ) {
+	//                      $args['status'] = LP_COURSE_ENROLLED;
+	//                      // Send mail when course enrolled
+	//                      // $user->enrolled_sendmail( $user_id, $course_id );
+	//                  }
+	//
+	//                  if ( $course->is_free() && $can_enroll ) {
+	//                      $args['status'] = LP_COURSE_ENROLLED;
+	//                  }
+	//
+	//                  if ( $args['status'] === LP_COURSE_PURCHASED ) {
+	//                      $args['start_time'] = null;
+	//                  }
+	//
+	//                  $curd->update_user_item_by_id( $user_item_id, $args );
+	//              }
+	//          }
+	//      }
+	//
+	//  }
 
-		$curd  = new LP_User_CURD();
+	/**
+	 * Enroll course if Order completed
+	 *
+	 * @param LP_Order $order
+	 * @param string $old_status
+	 * @param string $new_status
+	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.2
+	 */
+	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$items = $order->get_items();
-		//$parent_order = $order->is_child() ? $order->get_parent() : $order;
-		//$items        = ! $order->is_child() ? $order->get_items() : $parent_order->get_items();
 
 		if ( ! $items ) {
 			return;
 		}
 
-		/*if ( $order->is_multi_users() && ! $order->is_child() ) {
-			return;
-		}*/
+		$created_via = $order->get_created_via();
 
 		foreach ( $order->get_users() as $user_id ) {
 			$user = learn_press_get_user( $user_id );
@@ -195,162 +386,175 @@ class LP_User_Factory {
 					continue;
 				}
 
-				$course = learn_press_get_course( $item['course_id'] );
-
-				/** Get newest user_item_id of course for allow_repurchase */
-				$filter          = new LP_User_Items_Filter();
-				$filter->user_id = $user_id;
-				$filter->item_id = $item['course_id'];
-				$user_course     = $lp_user_items_db->get_last_user_course( $filter );
-
-				$latest_user_item_id   = 0;
-				$allow_repurchase_type = '';
-
-				if ( $user_course && isset( $user_course->user_item_id ) ) {
-					$latest_user_item_id = $user_course->user_item_id;
-
-					/** Get allow_repurchase_type for reset, update. Add in: rest-api/v1/frontend/class-lp-courses-controller.php: purchase_course */
-					$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
-				}
-
-				/*$latest_user_item_id = $wpdb->get_var(
-					$wpdb->prepare(
-						"SELECT MAX(user_item_id) user_item_id
-					  FROM {$wpdb->learnpress_user_items}
-					  WHERE ref_type = %s
-					  AND item_type = %s
-					  AND item_id = %d
-					  AND user_id = %d",
-						LP_ORDER_CPT,
-						LP_COURSE_CPT,
-						$item['course_id'],
-						$user_id
-					)
-				);*/
-
-				/**
-				 * If allow_repurchase.
-				 */
-				if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() && ! empty( $allow_repurchase_type ) ) {
-
-					/** If keep course progress will reset start_time, graduation.. */
-					if ( $allow_repurchase_type === 'keep' ) {
-						do_action( 'lp/allow_repurchase_options/continue/db/update', $latest_user_item_id );
-
-						/**
-						 * Update latest user_item_id to continue course progress.
-						 *
-						 * @author Nhamdv.
-						 */
-						$update = $wpdb->update(
-							$wpdb->learnpress_user_items,
-							array(
-								'ref_id'     => $order->get_id(),
-								'start_time' => current_time( 'mysql', true ),
-								'end_time'   => null,
-								'graduation' => 'in-progress',
-								'status'     => LP_COURSE_ENROLLED,
-							),
-							array(
-								'user_item_id' => $latest_user_item_id,
-							),
-							array( '%d', '%s', '%s', '%s', '%s' ),
-							array( '%d' )
-						);
-
-						if ( $update ) {
-							$user_item_id = false;
-						}
-					} elseif ( $allow_repurchase_type === 'reset' ) {
-						/** Delete user_item_id in table learnpress_user_items */
-						$wpdb->delete(
-							$wpdb->learnpress_user_items,
-							array(
-								'user_item_id' => $latest_user_item_id,
-							),
-							array( '%d' )
-						);
-
-						/** Get list user_item_id for lesson, quiz... by course user_item_id in table learnpress_user_items */
-						$user_item_ids = $wpdb->get_col(
-							$wpdb->prepare(
-								"SELECT user_item_id FROM $wpdb->learnpress_user_items
-								WHERE parent_id=%d
-								",
-								$latest_user_item_id
-							)
-						);
-
-						/** Delete all lesson, quiz... by course parent user_item_id */
-						$wpdb->delete(
-							$wpdb->learnpress_user_items,
-							array(
-								'parent_id' => absint( $latest_user_item_id ),
-							),
-							array( '%d' )
-						);
-
-						/** Delete all user_item_meta for lesson, quiz... */
-						if ( ! empty( $user_item_ids ) ) {
-							foreach ( $user_item_ids as $user_item_id ) {
-								$wpdb->delete(
-									$wpdb->learnpress_user_itemmeta,
-									array(
-										'learnpress_user_item_id' => absint( $user_item_id ),
-									),
-									array( '%d' )
-								);
-
-								LP_User_Items_Result_DB::instance()->delete( absint( $user_item_id ) );
-							}
-						}
-
-						/**
-						 * Insert new item(row) on table learnpress_user_items
-						 */
-						$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id() );
-					}
-
-					learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
+				if ( 'manual' === $created_via ) {
+					self::handle_item_manual_order_completed( $order, $user, $item );
 				} else {
-					/**
-					 * Insert new item(row) on table learnpress_user_items
-					 */
-					$user_item_id = $user->enroll_course( $item['course_id'], $order->get_id() );
-				}
-
-				if ( $user_item_id && ! is_wp_error( $user_item_id ) ) {
-					// $last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
-					$item        = $curd->get_user_item_by_id( $user_item_id );
-					$course_id   = $item['item_id'];
-					$can_enroll  = $user->can_enroll_course( $course_id );
-					$auto_enroll = LP()->settings()->get( 'auto_enroll' ) == 'yes';
-					$course      = learn_press_get_course( $course_id );
-
-					$args = array(
-						'status'     => LP_COURSE_PURCHASED,
-						'start_time' => current_time( 'mysql', true ),
-					);
-
-					if ( $new_status == 'completed' && $can_enroll && $auto_enroll ) {
-						$args['status'] = LP_COURSE_ENROLLED;
-						// Send mail when course enrolled
-						// $user->enrolled_sendmail( $user_id, $course_id );
-					}
-
-					if ( $course->is_free() && $can_enroll ) {
-						$args['status'] = LP_COURSE_ENROLLED;
-					}
-
-					if ( $args['status'] === LP_COURSE_PURCHASED ) {
-						$args['start_time'] = null;
-					}
-
-					$curd->update_user_item_by_id( $user_item_id, $args );
+					self::handle_item_order_completed( $order, $user, $item );
 				}
 			}
 		}
+	}
 
+	/**
+	 * Handle something when Order completed
+	 */
+	protected static function handle_item_order_completed( LP_Order $order, LP_User $user, $item ) {
+		global $wpdb;
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+
+		try {
+			$course      = learn_press_get_course( $item['course_id'] );
+			$auto_enroll = LP_Settings::is_auto_start_course();
+
+			/** Get the newest user_item_id of course for allow_repurchase */
+			$filter          = new LP_User_Items_Filter();
+			$filter->user_id = $user->get_id();
+			$filter->item_id = $item['course_id'];
+			$user_course     = $lp_user_items_db->get_last_user_course( $filter );
+
+			$latest_user_item_id   = 0;
+			$allow_repurchase_type = '';
+
+			// Data user_item for save database
+			$user_item_data = [
+				'user_id' => $user->get_id(),
+				'item_id' => $course->get_id(),
+				'ref_id'  => $order->get_id(),
+			];
+
+			if ( $user_course && isset( $user_course->user_item_id ) ) {
+				$latest_user_item_id = $user_course->user_item_id;
+
+				/** Get allow_repurchase_type for reset, update. Add in: rest-api/v1/frontend/class-lp-courses-controller.php: purchase_course */
+				$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
+			}
+
+			// If > 1 time purchase same course and allow repurchase
+			if ( ! empty( $allow_repurchase_type ) && $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() ) {
+				/**
+				 * If keep course progress will reset start_time, end_time, status, graduation
+				 * where user_item_id = $latest_user_item_id
+				 */
+				if ( $allow_repurchase_type === 'keep' ) {
+					// Set data for update user item
+					$user_item_data['user_item_id'] = $latest_user_item_id;
+					$user_item_data['start_time']   = current_time( 'mysql', true );
+					$user_item_data['end_time']     = null;
+					$user_item_data['status']       = LP_COURSE_ENROLLED;
+					$user_item_data['graduation']   = LP_COURSE_GRADUATION_IN_PROGRESS;
+
+					do_action( 'lp/allow_repurchase_options/continue/db/update', $user_item_data, $latest_user_item_id );
+				} elseif ( $allow_repurchase_type === 'reset' ) {
+					/** Delete user_item_id in table learnpress_user_items */
+					$wpdb->delete(
+						$wpdb->learnpress_user_items,
+						array(
+							'user_item_id' => $latest_user_item_id,
+						),
+						array( '%d' )
+					);
+
+					/** Get list user_item_id for lesson, quiz... by course user_item_id in table learnpress_user_items */
+					$user_item_ids = $wpdb->get_col(
+						$wpdb->prepare(
+							"SELECT user_item_id FROM $wpdb->learnpress_user_items
+								WHERE parent_id=%d
+								",
+							$latest_user_item_id
+						)
+					);
+
+					/** Delete all lesson, quiz... by course parent user_item_id */
+					$wpdb->delete(
+						$wpdb->learnpress_user_items,
+						array(
+							'parent_id' => absint( $latest_user_item_id ),
+						),
+						array( '%d' )
+					);
+
+					/** Delete all user_item_meta for lesson, quiz... */
+					if ( ! empty( $user_item_ids ) ) {
+						foreach ( $user_item_ids as $user_item_id ) {
+							$wpdb->delete(
+								$wpdb->learnpress_user_itemmeta,
+								array(
+									'learnpress_user_item_id' => absint( $user_item_id ),
+								),
+								array( '%d' )
+							);
+
+							LP_User_Items_Result_DB::instance()->delete( absint( $user_item_id ) );
+						}
+					}
+
+					if ( $auto_enroll ) {
+						$user_item_data['status']     = LP_COURSE_ENROLLED;
+						$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+					} else {
+						$user_item_data['status'] = LP_COURSE_PURCHASED;
+					}
+				}
+
+				learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
+			} elseif ( ! $course->is_free() ) { // First purchase course
+				// Set data for create user_item
+				if ( $auto_enroll ) {
+					$user_item_data['status']     = LP_COURSE_ENROLLED;
+					$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+				} else {
+					$user_item_data['status'] = LP_COURSE_PURCHASED;
+				}
+			} else { // Enroll course free
+				// Set data for create user_item
+				$user_item_data['status']     = LP_COURSE_ENROLLED;
+				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+			}
+
+			$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
+			$result                  = $user_item_new_or_update->update();
+
+			if ( $result && isset( $user_item_data['status'] ) && LP_COURSE_ENROLLED == $user_item_data['status'] ) {
+				do_action( 'learnpress/user/course-enrolled', $order->get_id() );
+			}
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+		}
+	}
+
+	/**
+	 * Handle something when Manual Order completed
+	 */
+	protected static function handle_item_manual_order_completed( LP_Order $order, LP_User $user, $item ) {
+		try {
+			$course      = learn_press_get_course( $item['course_id'] );
+			$auto_enroll = LP_Settings::is_auto_start_course();
+
+			// Data user_item for save database
+			$user_item_data = [
+				'user_id' => $user->get_id(),
+				'item_id' => $course->get_id(),
+				'ref_id'  => $order->get_id(),
+			];
+
+			if ( $auto_enroll ) {
+				$user_item_data['status']     = LP_COURSE_ENROLLED;
+				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+			} elseif ( ! $course->is_free() ) {
+				$user_item_data['status'] = LP_COURSE_PURCHASED;
+			}
+
+			if ( isset( $user_item_data['status'] ) ) {
+				$user_item_new = new LP_User_Item_Course( $user_item_data );
+				$result        = $user_item_new->update();
+
+				if ( $result && LP_COURSE_ENROLLED == $user_item_data['status'] ) {
+					do_action( 'learnpress/user/course-enrolled', $order->get_id() );
+				}
+			}
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+		}
 	}
 
 	/**
@@ -418,8 +622,10 @@ class LP_User_Factory {
 	 * Query all ids of temp users has created.
 	 *
 	 * @return array
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	protected static function _get_temp_user_ids() {
+	/*protected static function _get_temp_user_ids() {
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -434,7 +640,7 @@ class LP_User_Factory {
 		);
 
 		return $wpdb->get_col( $query );
-	}
+	}*/
 
 	/**
 	 * Get temp user for some purpose.
@@ -446,8 +652,10 @@ class LP_User_Factory {
 	 * do a quiz , etc...
 	 *
 	 * @return LP_User|LP_User_Guest
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public static function get_temp_user() {
+	/*public static function get_temp_user() {
 		global $wpdb;
 
 		$id = LP()->session->get( 'temp_user' );
@@ -511,44 +719,36 @@ class LP_User_Factory {
 		}
 
 		return new LP_User_Guest( $id );
-	}
-
-	/**
-	 * Register new schedules
-	 *
-	 * @param $schedules
-	 *
-	 * @return mixed
-	 */
-	public static function cron_schedules( $schedules ) {
-		$schedules['every_three_minutes'] = array(
-			'interval' => self::$_guest_transient,
-			'display'  => __( 'Every 3 Minutes', 'learnpress' ),
-		);
-
-		return $schedules;
-	}
+	}*/
 
 	/**
 	 * Register schedule event to cleanup data of temp users who have took quiz
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public static function register_event() {
+	/*public static function register_event() {
 		if ( ! wp_next_scheduled( 'learn_press_schedule_cleanup_temp_users' ) ) {
 			wp_schedule_event( time(), 'every_three_minutes', 'learn_press_schedule_cleanup_temp_users' );
 		}
-	}
+	}*/
 
 	/**
 	 * Clear schedule event while deactivating LP
+	 *
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public static function deregister_event() {
+	/*public static function deregister_event() {
 		wp_clear_scheduled_hook( 'learn_press_schedule_cleanup_temp_users' );
-	}
+	}*/
 
 	/**
 	 * Call this function hourly
+	 *
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public static function schedule_cleanup_temp_users() {
+	/*public static function schedule_cleanup_temp_users() {
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -576,12 +776,12 @@ class LP_User_Factory {
 			);
 			$wpdb->query( $query );
 		}
-	}
+	}*/
 
 	/**
 	 * Generate unique id for anonymous user
 	 */
-	public static function generate_guest_id() {
+	/*public static function generate_guest_id() {
 		$id = self::get_guest_id();
 		if ( ! $id ) {
 			$id = time();
@@ -592,10 +792,10 @@ class LP_User_Factory {
 		}
 
 		return $id;
-	}
+	}*/
 
 	public static function get_guest_id() {
-		return LP()->session->guest_user_id;// empty( $_COOKIE['learn_press_user_guest_id'] ) ? false : $_COOKIE['learn_press_user_guest_id'];
+		return 0;// empty( $_COOKIE['learn_press_user_guest_id'] ) ? false : $_COOKIE['learn_press_user_guest_id'];
 	}
 
 	/**
@@ -662,8 +862,10 @@ class LP_User_Factory {
 	 * Clear temp data for guest user
 	 *
 	 * @param $user_login
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public static function clear_temp_user_data( $user_login ) {
+	/*public static function clear_temp_user_data( $user_login ) {
 		if ( $temp_id = self::get_guest_id() ) {
 			learn_press_remove_cookie( 'learn_press_user_guest_id' );
 			delete_transient( 'learn_press_user_guest_' . $temp_id );
@@ -695,7 +897,7 @@ class LP_User_Factory {
 				$wpdb->query( $query );
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * @param int $quiz_id
