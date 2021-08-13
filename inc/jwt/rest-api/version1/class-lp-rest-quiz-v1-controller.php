@@ -364,7 +364,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['status'] = $post->post_status;
 					break;
 				case 'content':
-					$data['content'] = 'view' === $context ? wpautop( do_shortcode( $post->post_content ) ) : $post->post_content;
+					$data['content'] = 'view' === $context ? apply_filters( 'the_content', $post->post_content ) : $post->post_content;
 					break;
 				case 'excerpt':
 					$data['excerpt'] = $post->post_excerpt;
