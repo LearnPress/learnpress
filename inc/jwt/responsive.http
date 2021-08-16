@@ -34,9 +34,9 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses/?learned=true&course_filter=passed
+GET http://learnpress4.local/wp-json/learnpress/v1/courses/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODc1ODI3MiwibmJmIjoxNjI4NzU4MjcyLCJleHAiOjE2MjkzNjMwNzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.KQXpjBcVWbw7R7lvoVkJMnqUSontyBUxRn9z9NsjEXA
 
 ### Get content Course
 ## If have token will show course_data for this user: course_data: graduation, status....
@@ -80,13 +80,13 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODc1ODI3MiwibmJmIjoxNjI4NzU4MjcyLCJleHAiOjE2MjkzNjMwNzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.KQXpjBcVWbw7R7lvoVkJMnqUSontyBUxRn9z9NsjEXA
 
 ## In student: You can get lesson by course is enrolled
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons/545
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODc1ODI3MiwibmJmIjoxNjI4NzU4MjcyLCJleHAiOjE2MjkzNjMwNzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.KQXpjBcVWbw7R7lvoVkJMnqUSontyBUxRn9z9NsjEXA
 
 ## Action Complete Lesson.
 ###
