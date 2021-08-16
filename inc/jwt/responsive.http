@@ -7,12 +7,12 @@ Content-Type: application/json
 }
 
 ###
-POST https://test.thimpress.com/wp-json/learnpress/v1/token
+POST http://learnpress4.local/wp-json/learnpress/v1/token
 Content-Type: application/json
 
 {
-	"username": "nghiant12",
-	"password": "123123"
+	"username": "student",
+	"password": "student"
 }
 
 ###
@@ -20,16 +20,11 @@ POST http://learnpress4.local/wp-json/learnpress/v1/token/register
 Content-Type: application/json
 
 {
-	"username": "student5",
-	"password": "student5",
-	"confirm_password": "student5",
-	"email": "student5@gmail.com"
+	"username": "student4",
+	"password": "student4",
+	"confirm_password": "student4",
+	"email": "student4@gmail.com"
 }
-
-###
-GET https://test.thimpress.com/wp-json/learnpress/v1/courses/?learned=true
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGVzdC50aGltcHJlc3MuY29tIiwiaWF0IjoxNjI4NDkzMTc0LCJuYmYiOjE2Mjg0OTMxNzQsImV4cCI6MTYyOTA5Nzk3NCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTA0In19fQ.rECq688vRLVcqF1dWcdHTkWd1fQUL0TWPtIZdlfWa3U
 
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/token/validate
@@ -39,15 +34,15 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses/?learned=true
+GET http://learnpress4.local/wp-json/learnpress/v1/courses/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODQ5MjQxMCwibmJmIjoxNjI4NDkyNDEwLCJleHAiOjE2MjkwOTcyMTAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEwIn19fQ.ZRjpGOpo0cSnosSXe7dhWcHIO3pwD4_IDxgWMSToraY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODc1ODI3MiwibmJmIjoxNjI4NzU4MjcyLCJleHAiOjE2MjkzNjMwNzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.KQXpjBcVWbw7R7lvoVkJMnqUSontyBUxRn9z9NsjEXA
 
 ### Get content Course
 ## If have token will show course_data for this user: course_data: graduation, status....
 GET http://learnpress4.local/wp-json/learnpress/v1/courses/196
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODQ5MjQxMCwibmJmIjoxNjI4NDkyNDEwLCJleHAiOjE2MjkwOTcyMTAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEwIn19fQ.ZRjpGOpo0cSnosSXe7dhWcHIO3pwD4_IDxgWMSToraY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
 
 
 ## Enroll course.
@@ -85,13 +80,13 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODc1ODI3MiwibmJmIjoxNjI4NzU4MjcyLCJleHAiOjE2MjkzNjMwNzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.KQXpjBcVWbw7R7lvoVkJMnqUSontyBUxRn9z9NsjEXA
 
 ## In student: You can get lesson by course is enrolled
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons/545
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODc1ODI3MiwibmJmIjoxNjI4NzU4MjcyLCJleHAiOjE2MjkzNjMwNzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.KQXpjBcVWbw7R7lvoVkJMnqUSontyBUxRn9z9NsjEXA
 
 ## Action Complete Lesson.
 ###
@@ -214,4 +209,3 @@ Content-Type: application/json
 	"password": "student4",
 	"email": "student4@gmail.com"
 }
-
