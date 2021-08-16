@@ -1,5 +1,5 @@
 
-const { debounce } = lodash;
+//const { debounce } = lodash;
 
 const lpArchiveAddQueryArgs = ( endpoint, args ) => {
 	const url = new URL( endpoint );
@@ -130,7 +130,7 @@ const lpArchiveSearchCourse = () => {
 		const termID = s.querySelector( '[name="term_id"]' ).value || '';
 		const btn = s.querySelector( '[type="submit"]' );
 
-		search.addEventListener( 'keyup', debounce( ( event ) => {
+		search.addEventListener( 'keyup', ( event ) => {
 			event.preventDefault();
 
 			const s = event.target.value;
@@ -149,7 +149,7 @@ const lpArchiveSearchCourse = () => {
 
 				window.history.pushState( '', '', url );
 			}
-		}, 500 ) );
+		} );
 
 		s.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
