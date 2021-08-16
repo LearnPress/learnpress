@@ -268,7 +268,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-api-fetch',
 						'lodash',
 					),
-					array( 'widgets' ),
+					array( 'widgets', 'elementor' ),
 					0,
 					1
 				),

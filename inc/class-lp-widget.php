@@ -312,8 +312,11 @@ class LP_Widget extends WP_Widget {
 					?>
 					<p>
 						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label><?php // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped ?>
-						<input id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" class="lp_widget_autocomplete_field__value" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="hidden" value="<?php echo esc_attr( $value ); ?>" />
-						<input data-type="<?php echo $setting['post_type'] ?? ''; ?>" class="widefat lp_widget_autocomplete_field <?php echo esc_attr( $class ); ?>" type="text" value="<?php echo ! empty( $value ) ? esc_attr( get_the_title( $value ) ) : ''; ?>" />
+						<select class="widefat lp-widget_select_course" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" style="width: 300px;">
+							<?php if ( ! empty( $value ) ) : ?>
+								<option value="<?php echo esc_attr( $value ); ?>" selected="selected"><?php echo esc_html( get_the_title( $value ) ); ?></option>
+							<?php endif; ?>
+						</select>
 					</p>
 					<?php
 					break;
