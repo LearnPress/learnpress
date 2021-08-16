@@ -316,6 +316,9 @@ class LP_Widget extends WP_Widget {
 							<?php if ( ! empty( $value ) ) : ?>
 								<option value="<?php echo esc_attr( $value ); ?>" selected="selected"><?php echo esc_html( get_the_title( $value ) ); ?></option>
 							<?php endif; ?>
+							<script>
+								jQuery(document).trigger('learnpress/widgets/select');
+							</script>
 						</select>
 					</p>
 					<?php

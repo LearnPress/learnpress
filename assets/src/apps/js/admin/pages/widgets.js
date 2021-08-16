@@ -13,7 +13,7 @@ function formatCourseSelection( repo ) {
 }
 
 function autocompleteWidget( widget = null ) {
-	const searchs = widget ? $( widget ).find( '.lp-widget_select_course' ) : $( '.lp-widget_select_course' );
+	const searchs = $( '.lp-widget_select_course' );
 
 	searchs.select2( {
 		ajax: {
@@ -50,6 +50,10 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 			autocompleteWidget( widget );
 		} );
 	} else {
+		$( document ).on( 'learnpress/widgets/select', function() {
+			autocompleteWidget();
+		} );
+
 		autocompleteWidget();
 	}
 } );

@@ -38,4 +38,11 @@ add_action(
 	}
 );
 
+add_action(
+	'elementor/editor/before_enqueue_scripts',
+	function() {
+		wp_enqueue_script( 'learnpress-widgets-eleentor-select2', LP_PLUGIN_URL . 'assets/src/js/vendor/select2.full.min.js', array( 'jquery' ), false );
+		wp_enqueue_script( 'learnpress-widgets-eleentor', LP_PLUGIN_URL . 'assets/js/dist/admin/pages/widgets.js', array( 'jquery' ), false );
+	}
+);
 
