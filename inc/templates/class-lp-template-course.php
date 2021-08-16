@@ -337,6 +337,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/buttons/retake.php' );
 	}
 
+	/**
+	 * Show template "continue" button con single course
+	 */
 	public function course_continue_button() {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
@@ -345,7 +348,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( $user->is_course_enrolled( $course->get_id() ) && $course->get_external_link() ) {
+		if ( ! $user->is_course_enrolled( $course->get_id() ) ) {
 			return;
 		}
 
