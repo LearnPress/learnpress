@@ -2702,14 +2702,23 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $accessible;
 		}
 
-		public function is_course_in_progress( $course_id ) {
-			$course_data = $this->get_course_data( $course_id );
+		/**
+		 * Check course of user has graduation is in-progress
+		 *
+		 * @param $course_id
+		 * @return bool
+		 * @throws Exception
+		 */
+		public function is_course_in_progress( $course_id ): bool {
+			$lp_db = LP_User_Items_DB::getInstance();
 
-			if ( ! $course_data ) {
-				return false;
-			}
+			$filter          = new LP_User_Items_Filter();
+			$filter->user_id = $this->get_id();
+			$filter->item_id = $course_id;
 
-			return $course_data->get_status( 'graduation' ) === 'in-progress';
+			$user_course = $lp_db->get_last_user_course( $filter );
+
+			return  isset( $user_course->graduation ) && LP_COURSE_GRADUATION_IN_PROGRESS === $user_course->graduation;
 		}
 
 		/**

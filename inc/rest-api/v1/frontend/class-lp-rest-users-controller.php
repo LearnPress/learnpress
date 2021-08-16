@@ -282,6 +282,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		if ( $success ) {
+			$user_quiz->set_user_id( $user->get_id() );
 			$course              = LP_Course::get_course( $course_id );
 			$quiz                = LP_Quiz::get_quiz( $item_id );
 			$show_hint           = $quiz->get_show_hint();

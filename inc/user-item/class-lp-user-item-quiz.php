@@ -4,6 +4,8 @@
  * Class LP_User_Item_Quiz
  */
 class LP_User_Item_Quiz extends LP_User_Item {
+	public $_item_type = LP_QUIZ_CPT;
+	public $_ref_type  = LP_COURSE_CPT;
 	/**
 	 * @var array
 	 */
@@ -43,43 +45,43 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			 *
 			 * @return array|bool|LP_Quiz_Results|mixed
 			 */
-			public function add_question_answer( $id, $values = null ) {
-				$results = $this->get_results( '' );
+	public function add_question_answer( $id, $values = null ) {
+		$results = $this->get_results( '' );
 
-				if ( ! $results ) {
-					return false;
-				}
+		if ( ! $results ) {
+			return false;
+		}
 
-				$questions = $results->get( 'questions', array() );
+		$questions = $results->get( 'questions', array() );
 
-				if ( is_numeric( $id ) ) {
-					$values = array( $id => $values );
+		if ( is_numeric( $id ) ) {
+			$values = array( $id => $values );
+		} else {
+			$values = (array) $id;
+		}
+
+		foreach ( $values as $id => $answer ) {
+			if ( ! $this->has_checked_question( $id ) ) {
+				if ( ! empty( $questions[ $id ] ) ) {
+					$questions[ $id ]['answered'] = $answer;
 				} else {
-					$values = (array) $id;
+					$questions[ $id ] = array( 'answered' => $answer );
 				}
-
-				foreach ( $values as $id => $answer ) {
-					if ( ! $this->has_checked_question( $id ) ) {
-						if ( ! empty( $questions[ $id ] ) ) {
-							$questions[ $id ]['answered'] = $answer;
-						} else {
-							$questions[ $id ] = array( 'answered' => $answer );
-						}
-					}
-				}
-
-				$results['questions'] = $questions;
-
-				LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results->get() ) );
-
-				$this->calculate_results();
-
-				$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
-
-				LP_Object_Cache::set( $cache_key, false, 'learn-press/quiz-result' );
-
-				return $this->get_results( '' );
 			}
+		}
+
+		$results['questions'] = $questions;
+
+		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results->get() ) );
+
+		$this->calculate_results();
+
+		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
+
+		LP_Object_Cache::set( $cache_key, false, 'learn-press/quiz-result' );
+
+		return $this->get_results( '' );
+	}
 
 	public function get_question_answer( $id ) {
 		$results = $this->get_results( '' );
@@ -254,7 +256,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$limit = absint( apply_filters( 'lp/quiz/get-attempts/limit', $limit ) );
 
 		$results = LP_User_Items_Result_DB::instance()->get_results( $this->get_user_item_id(), $limit, true );
-		$output = array();
+		$output  = array();
 
 		if ( ! empty( $results ) ) {
 			foreach ( $results as $result ) {

@@ -302,7 +302,7 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Get status course by order_id
+	 * Get the newest item is course of user
 	 *
 	 * @param LP_User_Items_Filter $filter
 	 * @throws Exception
@@ -316,11 +316,42 @@ class LP_User_Items_DB extends LP_Database {
 			FROM $this->tb_lp_user_items
 			WHERE item_type = %s
 			AND item_id = %d
-			AND user_id = %s
+			AND user_id = %d
 			ORDER BY user_item_id DESC
 			LIMIT 1
 			",
 			LP_COURSE_CPT,
+			$filter->item_id,
+			$filter->user_id
+		);
+
+		$result = $this->wpdb->get_row( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
+	 * Get item of user and course
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 * @throws Exception
+	 *
+	 * @return null|object
+	 */
+	public function get_user_course_item( LP_User_Items_Filter $filter ) {
+		$query = $this->wpdb->prepare(
+			"
+			SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time, parent_id
+			FROM $this->tb_lp_user_items
+			WHERE parent_id = %d
+			AND item_id = %d
+			AND user_id = %d
+			ORDER BY user_item_id DESC
+			LIMIT 1
+			",
+			$filter->parent_id,
 			$filter->item_id,
 			$filter->user_id
 		);

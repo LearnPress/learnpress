@@ -398,35 +398,37 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	/**
-	 * Get item-status.
+	 * Get item status.
 	 *
+	 * @param string $field
 	 * @return string
+	 * @throws Exception
+	 *
+	 * @editor tungnx
+	 * @modify 4.1.3
+	 * @Todo: tungnx - after should set status when new instance or save, update, get_status only return status.
 	 */
-//	public function get_status( $field = 'status' ) {
-//		//$got_status = $this->get_data( $field, false );
-//		$user_id    = $this->get_extra_data( 'user_id' );
-//
-////		if ( false === $got_status && false !== $user_id ) {
-//			$user_item = learn_press_get_user_item(
-//				array(
-//					'user_id'   => $user_id,
-//					'item_id'   => $this->get_item_id(),
-//					'parent_id' => $this->get_parent_id(),
-//					'ref_id'    => $this->get_data( 'ref_id' ),
-//				)
-//			);
-//
-//			if ( ! empty( $user_item ) ) {
-//				$got_status = $user_item->$field;
-//			} else {
-//				$got_status = '';
-//			}
-//
-//			$this->set_data( $field, $got_status );
-////		}
-//
-//		return $got_status;
-//	}
+	public function get_status( string $field = 'status' ): string {
+		$lp_user_item = LP_User_Items_DB::getInstance();
+		$filter       = new LP_User_Items_Filter();
+
+		$filter->user_id   = $this->get_user_id();
+		$filter->item_id   = $this->get_item_id();
+		$filter->ref_id    = $this->get_data( 'ref_id' );
+		$filter->parent_id = $this->get_parent_id();
+
+		$user_item = $lp_user_item->get_user_course_item( $filter );
+
+		if ( ! empty( $user_item ) && isset( $user_item->$field ) ) {
+			$got_status = $user_item->$field;
+		} else {
+			$got_status = '';
+		}
+
+		$this->set_data( $field, $got_status );
+
+		return $got_status;
+	}
 
 	/**
 	 * Check course is finished.

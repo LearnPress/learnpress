@@ -37,6 +37,14 @@ if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 		 */
 		public $item_type = '';
 		/**
+		 * @var int
+		 */
+		public $ref_id = 0;
+		/**
+		 * @var string
+		 */
+		public $ref_type = '';
+		/**
 		 * @var string
 		 */
 		public $start_time = '';
