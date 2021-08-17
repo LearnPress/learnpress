@@ -1,5 +1,5 @@
 @import "mixin";
-
+@import "frontend/skeleton-animation";
 
 .learnpress.widget {
 	max-width: 400px;
@@ -24,7 +24,16 @@
 	a {
 		text-decoration: none;
 	}
+}
 
+.elementor-widget-wrap {
+
+	.learnpress-widget-wrapper {
+		max-width: 400px;
+	}
+}
+
+.learnpress-widget-wrapper {
 	// use in featured, popular, recent course widget.
 	.lp-widget-course {
 		margin: 0 0 30px 0;
@@ -35,6 +44,12 @@
 				max-width: 100%;
 				height: auto;
 			}
+		}
+
+		&__title {
+			margin-bottom: 20px;
+			font-size: 16px;
+			font-weight: 600;
 		}
 
 		&__content {
@@ -259,7 +274,7 @@
 							&::before {
 								display: inline-block;
 								position: absolute;
-								top: 13px;
+								top: 50%;
 								left: 0;
 								width: 12px;
 								height: 7px;
@@ -267,7 +282,7 @@
 								border-top: none;
 								border-right: none;
 								content: "";
-								transform: rotate(-54deg);
+								transform: rotate(-54deg) translateY(-50%);
 							}
 						}
 					}
@@ -284,13 +299,15 @@
 							&::before {
 								display: inline-block;
 								position: absolute;
-								top: 12px;
+								top: 50%;
 								left: 0;
 								width: 12px;
-								height: 12px;
+								height: 7px;
 								border: 2px solid #8794b9;
-								border-radius: 50%;
+								border-top: none;
+								border-right: none;
 								content: "";
+								transform: rotate(-54deg) translateY(-50%);
 							}
 						}
 					}
@@ -315,9 +332,7 @@
 				line-height: 1;
 
 				&::before {
-					font-family: "Font Awesome 5 Free";
-					font-weight: 600;
-					content: "\f060";
+					content: "←";
 				}
 			}
 		}
@@ -339,9 +354,7 @@
 				line-height: 1;
 
 				&::before {
-					font-family: "Font Awesome 5 Free";
-					font-weight: 600;
-					content: "\f060";
+					content: "←";
 				}
 			}
 		}
@@ -363,9 +376,7 @@
 				line-height: 1;
 
 				&::before {
-					font-family: "Font Awesome 5 Free";
-					font-weight: 600;
-					content: "\f060";
+					content: "←";
 				}
 			}
 		}

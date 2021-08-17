@@ -312,7 +312,7 @@ class LP_Widget extends WP_Widget {
 					?>
 					<p>
 						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label><?php // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped ?>
-						<select class="widefat lp-widget_select_course" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" style="width: 300px;">
+						<select class="widefat lp-widget_select_course" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" data-rest-url="<?php echo get_rest_url(); ?>" data-post-type="<?php echo esc_attr( $setting['post_type'] ?? LP_COURSE_CPT ); ?>" style="width: 300px;">
 							<?php if ( ! empty( $value ) ) : ?>
 								<option value="<?php echo esc_attr( $value ); ?>" selected="selected"><?php echo esc_html( get_the_title( $value ) ); ?></option>
 							<?php endif; ?>

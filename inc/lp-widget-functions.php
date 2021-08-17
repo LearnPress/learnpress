@@ -33,7 +33,6 @@ add_action(
 	function() {
 		if ( isset( $_GET['legacy-widget-preview'] ) ) {
 			wp_enqueue_style( 'learnpress-widgets-admin', LP_PLUGIN_URL . 'assets/css/widgets.css', array() );
-			wp_enqueue_style( 'learnpress-widgets-font-awesome', LP_PLUGIN_URL . 'assets/src/css/vendor/font-awesome-5.min.css', array() );
 		}
 	}
 );
