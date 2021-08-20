@@ -68,7 +68,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 		return apply_filters(
 			'learn-press/admin-default-scripts',
-			[
+			array(
 				// need build if change source vue
 				'vue-libs'                          => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs' . self::$_min_assets . '.js' ) ),
 				'select2'                           => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
@@ -261,7 +261,18 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-			]
+				'lp-widgets-admin'                  => new LP_Asset_Key(
+					self::url( 'js/dist/admin/pages/widgets' . self::$_min_assets . '.js' ),
+					array(
+						'wp-url',
+						'wp-api-fetch',
+						'lodash',
+					),
+					array( 'widgets', 'elementor' ),
+					0,
+					1
+				),
+			)
 		);
 	}
 
@@ -291,14 +302,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-admin'     => new LP_Asset_Key(
 					$this->url( 'css/admin/admin.css' ),
-					[ 'wp-color-picker', 'wp-components', 'select2', 'jquery-ui', 'jquery-ui-timepicker', 'font-awesome' ],
-					[],
+					array( 'wp-color-picker', 'wp-components', 'select2', 'jquery-ui', 'jquery-ui-timepicker', 'font-awesome' ),
+					array(),
 					0
 				),
 				'learn-press-statistic' => new LP_Asset_Key(
 					LP_CSS_URL . 'admin/statistic.css',
-					[],
-					[ 'learners_page_learn-press-statistics' ],
+					array(),
+					array( 'learners_page_learn-press-statistics' ),
 					0
 				),
 			)

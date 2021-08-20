@@ -29,6 +29,7 @@ class LP_Core_API extends LP_Abstract_API {
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-lazy-load-controller.php';
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-profile-controller.php';
 		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-orders-controller.php';
+		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-widgets-controller.php';
 
 		do_action( 'learn-press/core-api/includes' );
 	}
@@ -41,6 +42,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'LP_REST_Lazy_Load_Controller',
 			'LP_REST_Profile_Controller',
 			'LP_REST_Orders_Controller',
+			'LP_REST_Widgets_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );

@@ -33,6 +33,12 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 					'type'  => 'text',
 					'std'   => esc_html__( 'Course Info', 'learnpress' ),
 				),
+				'course_id' => array(
+					'label'     => esc_html__( 'Select Course', 'learnpress' ),
+					'type'      => 'autocomplete',
+					'post_type' => LP_COURSE_CPT,
+					'std'       => '',
+				),
 				'css_class' => array(
 					'label' => esc_html__( 'CSS Class', 'learnpress' ),
 					'type'  => 'text',
@@ -43,19 +49,24 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 			parent::__construct();
 		}
 
-		/**
-		 * Show widget in frontend.
-		 */
-		public function widget( $args, $instance ) {
-			if ( ! learn_press_is_course() ) {
-				return;
+		public function lp_rest_api_content( $instance, $params ) {
+			$instance['css_class'] = $instance['css_class'] ?? '';
+
+			if ( ! empty( $instance['course_id'] ) ) {
+				$course = learn_press_get_course( $instance['course_id'] );
+
+				if ( $course ) {
+					return learn_press_get_template_content(
+						'widgets/course-info.php',
+						array(
+							'course'   => $course,
+							'instance' => $instance,
+						)
+					);
+				}
 			}
 
-			$this->widget_start( $args, $instance );
-
-			include learn_press_locate_template( 'widgets/course-info.php' );
-
-			$this->widget_end( $args );
+			return new WP_Error( 'no_params', esc_html__( 'Error: Please select a Course.', 'learnpress' ) );
 		}
 	}
 }

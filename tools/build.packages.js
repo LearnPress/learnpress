@@ -35,6 +35,7 @@ const buildPackages = [
 	//'frontend/data-controls',
 	'frontend/custom',
 	'frontend/profile',
+	'frontend/widgets',
 ];
 
 const {

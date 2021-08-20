@@ -45,6 +45,20 @@ class LP_Widget extends WP_Widget {
 	public $widget_name;
 
 	/**
+	 * Enable rest_api for LearnPress.
+	 *
+	 * @var string
+	 */
+	public $widget_in_rest = true;
+
+	/**
+	 * New param add to rest api need for data.
+	 *
+	 * @var array
+	 */
+	public $widget_data_attr = array();
+
+	/**
 	 * Settings.
 	 *
 	 * @var array
@@ -62,62 +76,6 @@ class LP_Widget extends WP_Widget {
 		);
 
 		parent::__construct( $this->widget_id, $this->widget_name, $widget_ops );
-
-		add_action( 'save_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
-	}
-
-	/**
-	 * Get cached widget.
-	 */
-	public function get_cached_widget( $args ) {
-		if ( empty( $args['widget_id'] ) ) {
-			return false;
-		}
-
-		$cache = wp_cache_get( $this->get_widget_id_for_cache( $this->widget_id ), 'widget' );
-
-		if ( ! is_array( $cache ) ) {
-			$cache = array();
-		}
-
-		if ( isset( $cache[ $this->get_widget_id_for_cache( $args['widget_id'] ) ] ) ) {
-			echo $cache[ $this->get_widget_id_for_cache( $args['widget_id'] ) ];
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Cache the widget.
-	 */
-	public function cache_widget( $args, $content ) {
-		if ( empty( $args['widget_id'] ) ) {
-			return $content;
-		}
-
-		$cache = wp_cache_get( $this->get_widget_id_for_cache( $this->widget_id ), 'widget' );
-
-		if ( ! is_array( $cache ) ) {
-			$cache = array();
-		}
-
-		$cache[ $this->get_widget_id_for_cache( $args['widget_id'] ) ] = $content;
-
-		wp_cache_set( $this->get_widget_id_for_cache( $this->widget_id ), $cache, 'widget' );
-
-		return $content;
-	}
-
-	/**
-	 * Flush the cache.
-	 */
-	public function flush_widget_cache() {
-		foreach ( array( 'https', 'http' ) as $scheme ) {
-			wp_cache_delete( $this->get_widget_id_for_cache( $this->widget_id, $scheme ), 'widget' );
-		}
 	}
 
 	/**
@@ -158,6 +116,80 @@ class LP_Widget extends WP_Widget {
 	 */
 	public function widget_end( $args ) {
 		echo $args['after_widget'];
+	}
+
+	/**
+	 * Output Widgets HTML.
+	 *
+	 * @param [type] $args
+	 * @param [type] $instance
+	 * @return void
+	 */
+	public function widget( $args, $instance ) {
+		wp_enqueue_script( 'lp-widgets' );
+
+		$serialized_instance = serialize( $instance );
+
+		$data = array_merge(
+			$this->widget_data_attr,
+			array(
+				'widget'   => $this->widget_id,
+				'instance' => base64_encode( $serialized_instance ),
+				'hash'     => wp_hash( $serialized_instance ),
+			)
+		);
+
+		echo $this->lp_widget_content( $data, $args, $instance );
+	}
+
+	/**
+	 * Show widget content.
+	 *
+	 * @param array $data Data attribute HTML for Rest API js.
+	 * @param [type] $args Default Widget Args
+	 * @param [type] $instance Default Widget Instance
+	 * @return string HTML
+	 */
+	public function lp_widget_content( $data, $args, $instance ) {
+		ob_start();
+
+		$this->widget_start( $args, $instance );
+
+		if ( ! is_admin() && $this->widget_in_rest ) {
+			?>
+			<div class="learnpress-widget-wrapper learnpress-widget-wrapper__restapi" data-widget="<?php echo htmlentities( wp_json_encode( $data ) ); ?>" >
+				<?php echo lp_skeleton_animation_html( 5 ); ?>
+			</div>
+
+			<?php
+		} else { // Use for Preview in Widget Editor since WordPress 5.8
+			$content = $this->lp_rest_api_content( $instance, array() );
+
+			echo '<div class="learnpress-widget-wrapper">';
+
+			if ( is_wp_error( $content ) ) {
+				echo $content->get_error_message();
+			} else {
+				echo $content;
+			}
+
+			echo '</div>';
+		}
+
+		$this->widget_end( $args );
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * Send content for API
+	 *
+	 * @param array $instance Widget Instance
+	 * @param array $params RestAPI param need for content.
+	 * @return string || WP_Error
+	 */
+	public function lp_rest_api_content( $instance, $params ) {
+		return 'No content for Rest API';
 	}
 
 	/**
@@ -204,8 +236,6 @@ class LP_Widget extends WP_Widget {
 			 */
 			$instance[ $key ] = apply_filters( 'learnpress_widget_settings_sanitize_option', $instance[ $key ], $new_instance, $key, $setting );
 		}
-
-		$this->flush_widget_cache();
 
 		return $instance;
 	}
@@ -278,23 +308,26 @@ class LP_Widget extends WP_Widget {
 					<?php
 					break;
 
+				case 'autocomplete':
+					?>
+					<p>
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label><?php // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped ?>
+						<select class="widefat lp-widget_select_course" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" data-rest-url="<?php echo get_rest_url(); ?>" data-post-type="<?php echo esc_attr( $setting['post_type'] ?? LP_COURSE_CPT ); ?>" style="width: 300px;">
+							<?php if ( ! empty( $value ) ) : ?>
+								<option value="<?php echo esc_attr( $value ); ?>" selected="selected"><?php echo esc_html( get_the_title( $value ) ); ?></option>
+							<?php endif; ?>
+							<script>
+								jQuery(document).trigger('learnpress/widgets/select');
+							</script>
+						</select>
+					</p>
+					<?php
+					break;
+
 				default:
 					do_action( 'learnpress_widget_field_' . $setting['type'], $key, $value, $setting, $instance );
 					break;
 			}
 		}
-	}
-
-	/**
-	 * Get widget id cached widgets.
-	 */
-	protected function get_widget_id_for_cache( $widget_id, $scheme = '' ) {
-		if ( $scheme ) {
-			$widget_id_for_cache = $widget_id . '-' . $scheme;
-		} else {
-			$widget_id_for_cache = $widget_id . '-' . ( is_ssl() ? 'https' : 'http' );
-		}
-
-		return apply_filters( 'learnpress_cached_widget_id', $widget_id_for_cache );
 	}
 }

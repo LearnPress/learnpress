@@ -490,13 +490,68 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	}
 
 	public function get_all_items( $course ) {
-		$curriculum = $course->get_curriculum();
-		$output     = array();
+		$curriculum  = $course->get_curriculum();
+		$user        = learn_press_get_current_user();
+		$user_course = $user ? $user->get_course_data( $course->get_id() ) : false;
+		$output      = array();
 
 		if ( ! empty( $curriculum ) ) {
 			foreach ( $curriculum as $section ) {
 				if ( $section ) {
-					$output[] = $section->to_array();
+					$data = array(
+						'id'          => $section->get_id(),
+						'title'       => $section->get_title(),
+						'course_id'   => $section->get_course_id(),
+						'description' => $section->get_description(),
+						'order'       => $section->get_order(),
+					);
+
+					if ( $user_course && $user->has_enrolled_course( $section->get_course_id() ) ) {
+						$data['percent'] = $user_course->get_percent_completed_items( '', $section->get_id() );
+					}
+
+					$data_item = array();
+
+					$items = $section->get_items();
+
+					if ( ! empty( $items ) ) {
+						foreach ( $items as $item ) {
+							$post = get_post( $item->get_id() );
+
+							$format = array(
+								'day'    => __( '%s days', 'learnpress' ),
+								'hour'   => __( '%s hours', 'learnpress' ),
+								'minute' => __( '%s mins', 'learnpress' ),
+								'second' => __( '%s secs', 'learnpress' ),
+							);
+
+							$user_item = $user_course ? $user_course->get_item( $item->get_id() ) : false;
+
+							if ( $user_item ) {
+								$graduation = $user_item->get_graduation();
+								$status     = $user_item->get_status();
+							}
+
+							if ( $user ) {
+								$can_view_content_course = $user->can_view_content_course( absint( $section->get_course_id() ) );
+								$can_view_item           = $user->can_view_item( $item->get_id(), $can_view_content_course );
+							}
+
+							$data_item[] = array(
+								'id'         => $item->get_id(),
+								'type'       => $item->get_item_type(),
+								'title'      => $post->post_title,
+								'preview'    => $item->is_preview(),
+								'duration'   => $item->get_duration()->to_timer( $format, true ),
+								'graduation' => ! empty( $graduation ) ? $graduation : '',
+								'status'     => ! empty( $status ) ? $status : '',
+								'locked'     => isset( $can_view_item->flag ) ? ! $can_view_item->flag : true,
+							);
+						}
+					}
+
+					$data['items'] = $data_item;
+					$output[]      = $data;
 				}
 			}
 		}
@@ -766,23 +821,48 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 								'type'        => 'array',
 								'context'     => array( 'view', 'edit' ),
 								'items'       => array(
-									'id'      => array(
+									'id'         => array(
 										'description' => __( 'Item ID.', 'learnpress' ),
 										'type'        => 'integer',
 										'context'     => array( 'view', 'edit' ),
 									),
-									'type'    => array(
+									'type'       => array(
 										'description' => __( 'Item Type.', 'learnpress' ),
 										'type'        => 'string',
 										'context'     => array( 'view', 'edit' ),
 									),
-									'title'   => array(
+									'title'      => array(
 										'description' => __( 'Item title.', 'learnpress' ),
 										'type'        => 'string',
 										'context'     => array( 'view', 'edit' ),
 									),
-									'preview' => array(
+									'preview'    => array(
 										'description' => __( 'Item ID.', 'learnpress' ),
+										'type'        => 'boolean',
+										'context'     => array( 'view', 'edit' ),
+									),
+									'percent'    => array(
+										'description' => __( 'Percent.', 'learnpress' ),
+										'type'        => 'integer',
+										'context'     => array( 'view', 'edit' ),
+									),
+									'duration'   => array(
+										'description' => __( 'Duration.', 'learnpress' ),
+										'type'        => 'string',
+										'context'     => array( 'view', 'edit' ),
+									),
+									'graduation' => array(
+										'description' => __( 'Graduation.', 'learnpress' ),
+										'type'        => 'string',
+										'context'     => array( 'view', 'edit' ),
+									),
+									'status'     => array(
+										'description' => __( 'Status.', 'learnpress' ),
+										'type'        => 'string',
+										'context'     => array( 'view', 'edit' ),
+									),
+									'locked'     => array(
+										'description' => __( 'Locked.', 'learnpress' ),
 										'type'        => 'boolean',
 										'context'     => array( 'view', 'edit' ),
 									),

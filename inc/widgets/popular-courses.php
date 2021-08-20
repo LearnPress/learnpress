@@ -20,58 +20,48 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 			$this->widget_id          = 'learnpress_widget_course_popular';
 			$this->widget_name        = esc_html__( 'LearnPress - Popular Courses', 'learnpress' );
 			$this->settings           = array(
-				'title'                  => array(
+				'title'            => array(
 					'label' => __( 'Title', 'learnpress' ),
 					'type'  => 'text',
 					'std'   => __( 'Popular Courses', 'learnpress' ),
 				),
-				'show_teacher'           => array(
-					'label' => __( 'Show teacher', 'learnpress' ),
+				'show_teacher'     => array(
+					'label' => __( 'Show instructor', 'learnpress' ),
 					'type'  => 'checkbox',
 					'std'   => 1,
 				),
-				'show_lesson'            => array(
-					'label' => __( 'Show lesson', 'learnpress' ),
+				'show_thumbnail'   => array(
+					'label' => __( 'Show thumbnail', 'learnpress' ),
 					'type'  => 'checkbox',
 					'std'   => 1,
 				),
-				'show_thumbnail'         => array(
-					'label' => __( 'Show Thumbnail', 'learnpress' ),
-					'type'  => 'checkbox',
-					'std'   => 1,
-				),
-				'limit'                  => array(
+				'limit'            => array(
 					'label' => __( 'Limit', 'learnpress' ),
 					'type'  => 'number',
 					'min'   => 1,
-					'std'   => 5,
+					'std'   => 4,
 				),
-				'desc_length'            => array(
-					'label' => __( 'Description Length', 'learnpress' ),
+				'desc_length'      => array(
+					'label' => __( 'Description length', 'learnpress' ),
 					'id'    => 'desc_length',
 					'type'  => 'number',
 					'min'   => 0,
 					'std'   => 10,
 				),
-				'show_enrolled_students' => array(
-					'label' => __( 'Show Enrolled Students', 'learnpress' ),
-					'type'  => 'checkbox',
-					'std'   => 0,
-				),
-				'show_price'             => array(
-					'label' => __( 'Show Price', 'learnpress' ),
+				'show_price'       => array(
+					'label' => __( 'Show price', 'learnpress' ),
 					'type'  => 'checkbox',
 					'std'   => 1,
 				),
-				'css_class'              => array(
-					'label' => __( 'CSS Class', 'learnpress' ),
+				'css_class'        => array(
+					'label' => __( 'CSS class', 'learnpress' ),
 					'type'  => 'text',
 					'std'   => '',
 				),
-				'bottom_link_text'       => array(
+				'bottom_link_text' => array(
 					'label' => __( 'Go to Courses', 'learnpress' ),
 					'type'  => 'text',
-					'std'   => 'LP Courses',
+					'std'   => 'Go to Courses',
 				),
 			);
 
@@ -81,23 +71,29 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 		/**
 		 * Show widget in frontend.
 		 */
-		public function widget( $args, $instance ) {
-			if ( $this->get_cached_widget( $args ) ) {
-				return;
-			}
+		public function lp_rest_api_content( $instance, $params ) {
+			$instance['show_teacher']     = $instance['show_teacher'] ?? 1;
+			$instance['show_thumbnail']   = $instance['show_thumbnail'] ?? 1;
+			$instance['limit']            = $instance['limit'] ?? 4;
+			$instance['desc_length']      = $instance['desc_length'] ?? 10;
+			$instance['show_price']       = $instance['show_price'] ?? 1;
+			$instance['css_class']        = $instance['css_class'] ?? '';
+			$instance['bottom_link_text'] = $instance['bottom_link_text'] ?? esc_html__( 'Go to Courses', 'learnpress' );
 
-			ob_start();
+			$filter        = new LP_Course_Filter();
+			$filter->limit = $instance['limit'];
 
-			$curd    = new LP_Course_CURD();
-			$courses = $curd->get_popular_courses( array( 'limit' => (int) $instance['limit'] ) );
+			$courses = LP_Course_DB::getInstance()->get_popular_courses( $filter );
 
-			$this->widget_start( $args, $instance );
+			$data = learn_press_get_template_content(
+				'widgets/popular-courses.php',
+				array(
+					'courses'  => $courses,
+					'instance' => $instance,
+				)
+			);
 
-			include learn_press_locate_template( 'widgets/popular-courses.php' );
-
-			$this->widget_end( $args );
-
-			echo $this->cache_widget( $args, ob_get_clean() );
+			return $data;
 		}
 	}
 

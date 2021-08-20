@@ -20,7 +20,6 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 	class LP_Widget_Course_Progress extends LP_Widget {
 
 		public function __construct() {
-
 			$this->widget_cssclass    = 'learnpress widget_course_progress';
 			$this->widget_description = esc_html__( 'Display the Course Progress', 'learnpress' );
 			$this->widget_id          = 'learnpress_widget_course_progress';
@@ -30,6 +29,12 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 					'label' => esc_html__( 'Title', 'learnpress' ),
 					'type'  => 'text',
 					'std'   => esc_html__( 'Course Progress', 'learnpress' ),
+				),
+				'course_id' => array(
+					'label'     => esc_html__( 'Select Course', 'learnpress' ),
+					'type'      => 'autocomplete',
+					'post_type' => LP_COURSE_CPT,
+					'std'       => '',
 				),
 				'css_class' => array(
 					'label' => esc_html__( 'CSS Class', 'learnpress' ),
@@ -41,58 +46,38 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 			parent::__construct();
 		}
 
-		public function is_singular() {
-			return learn_press_is_course() && $this->get_remaining_time();
+		public function lp_rest_api_content( $instance, $params ) {
+			$user_id = get_current_user_id();
+
+			if ( empty( $user_id ) ) {
+				return new WP_Error( 'no_user', esc_html__( 'You need login to view Course Progress', 'learnpress' ) );
+			}
+
+			if ( empty( $instance['course_id'] ) ) {
+				return new WP_Error( 'no_course', esc_html__( 'Please choose a course!', 'learnpress' ) );
+			}
+
+			$course = learn_press_get_course( $instance['course_id'] );
+			$user   = learn_press_get_user( $user_id );
+
+			if ( ! $user->is_course_enrolled( $instance['course_id'] ) ) {
+				return new WP_Error( 'no_enroll', sprintf( esc_html__( 'You haven\'t started %s', 'learnpress' ), $course->get_title() ) );
+			}
+
+			$instance['css_class'] = $instance['css_class'] ?? '';
+
+			if ( $course && $user ) {
+				return learn_press_get_template_content(
+					'widgets/course-progress',
+					array(
+						'course'   => $course,
+						'user'     => $user,
+						'instance' => $instance,
+					)
+				);
+			}
+
+			return new WP_Error( 'no_course', esc_html__( 'Error: No data for Course Progress', 'learnpress' ) );
 		}
-
-		/**
-		 * Get remaining time for current course.
-		 *
-		 * @return bool|int|string
-		 */
-		public function get_remaining_time() {
-			$course = LP_Global::course();
-
-			if ( ! $course ) {
-				return false;
-			}
-
-			$user = LP_Global::user();
-
-			if ( ! $user ) {
-				return false;
-			}
-
-			$remaining_time = $user->get_course_remaining_time( $course->get_id() );
-
-			if ( false === $remaining_time ) {
-				return false;
-			}
-
-			return $remaining_time;
-		}
-
-		/**
-		 * Show widget in frontend.
-		 */
-		public function widget( $args, $instance ) {
-
-			if ( ! $this->is_singular() ) {
-				return;
-			}
-
-			$remaining_time = $this->get_remaining_time();
-
-			if ( false === $remaining_time ) {
-				return;
-			}
-
-			$this->widget_start( $args, $instance );
-
-			include learn_press_locate_template( 'widgets/course-progress.php' );
-
-			$this->widget_end( $args );
-		}
-
 	}
 }
