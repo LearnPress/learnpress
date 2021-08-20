@@ -31,6 +31,10 @@ class LP_Settings_Emails_Group extends LP_Settings {
 
 		foreach ( $this->items as $id ) {
 			foreach ( $emails as $email ) {
+				if ( ! is_object( $email ) ) {
+					continue;
+				}
+
 				if ( ! array_key_exists( $email->id, $ids ) ) {
 					continue;
 				}
@@ -51,6 +55,9 @@ class LP_Settings_Emails_Group extends LP_Settings {
 		echo '<ul class="subsubsub">';
 
 		foreach ( $this->items as $email ) {
+			if ( ! is_object( $email ) ) {
+				continue;
+			}
 			if ( $current == $email->id ) {
 				echo '<li class="active"><span>' . $email . '</span></li>';
 			} else {

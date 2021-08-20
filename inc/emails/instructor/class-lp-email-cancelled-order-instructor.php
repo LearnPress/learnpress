@@ -6,6 +6,8 @@
  * @package Learnpress/Classes
  * @extends LP_Email_Type_Order
  * @version 3.0.0
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
@@ -14,7 +16,6 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
-
 	class LP_Email_Cancelled_Order_Instructor extends LP_Email_Type_Order {
 		/**
 		 * LP_Email_Cancelled_Order_Instructor constructor.
@@ -28,65 +29,38 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 			$this->default_heading = __( 'User order has been cancelled', 'learnpress' );
 
 			parent::__construct();
-
-			// Cancelled
-			add_action( 'learn-press/order/status-cancelled/notification', array( $this, 'trigger' ) );
 		}
 
 		/**
-		 * Trigger email
+		 * Get all instructor ids on all items of Order.
 		 *
-		 * @param int $order_id
+		 * @param LP_Order $order
+		 * @return array
+		 * @since 3.0.0
 		 *
-		 * @return mixed
 		 */
-		public function trigger( $order_id ) {
-			parent::trigger( $order_id );
+		protected function get_instructor_ids( LP_Order $order ): array {
+			$items       = $order->get_items();
+			$instructors = [];
 
-			if ( ! $this->enable ) {
-				return false;
-			}
+			if ( count( $items ) ) {
+				foreach ( $items as $item ) {
+					if ( ! isset( $item['course_id'] ) ) {
+						continue;
+					}
 
-			$this->order_id = $order_id;
-
-			$course_instructors = $this->get_course_instructors();
-
-			if ( ! $course_instructors ) {
-				return false;
-			}
-
-			$return = array();
-
-			foreach ( $course_instructors as $user_id => $courses ) {
-				$user = learn_press_get_user( $user_id );
-
-				if ( ! $user ) {
-					continue;
-				}
-
-				/**
-				 * If the instructor also is admin and email for admin is enabled
-				 */
-				$instructor_email = $user->get_email();
-				$admin_email      = apply_filters( 'learn-press/email/admin-email', get_option( 'admin_email' ) );
-				$admin_email      = LP()->settings->get( 'emails_cancelled-order-admin.recipients', $admin_email );
-				if ( $user->is_admin() && $admin_email == $instructor_email && LP_Emails::get_email( 'cancelled-order-admin' )->enable() ) {
-					continue;
-				}
-
-				$this->recipient     = $instructor_email;
-				$this->instructor_id = $user_id;
-
-				$this->get_object();
-
-				if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {
-					$return[] = $this->get_recipient();
+					$user_id = get_post_field( 'post_author', $item['course_id'] );
+					if ( $user_id ) {
+						if ( empty( $instructors[ $user_id ] ) ) {
+							$instructors[ $user_id ] = $user_id;
+						}
+					}
 				}
 			}
 
-			return $return;
+			return $instructors;
 		}
 	}
-}
 
-return new LP_Email_Cancelled_Order_Instructor();
+	return new LP_Email_Cancelled_Order_Instructor();
+}

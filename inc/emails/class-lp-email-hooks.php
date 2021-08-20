@@ -26,7 +26,11 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					'learn-press/order/status-pending-to-completed',
 
 					// Completed order
-					'learn-press/order/status-completed' => [],
+					'learn-press/order/status-completed' => [
+						LP_Email_Completed_Order_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-completed-order-user',
+						LP_Email_Completed_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-completed-order-admin',
+						LP_Email_Completed_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-completed-order-guest',
+					],
 
 					// User enrolled course when order completed before
 					'learnpress/user/course-enrolled'    => [
@@ -36,7 +40,12 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					],
 
 					// Cancelled order
-					'learn-press/order/status-cancelled',
+					'learn-press/order/status-cancelled' => [
+						LP_Email_Cancelled_Order_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-cancelled-order-user.php',
+						LP_Email_Cancelled_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-cancelled-order-admin.php',
+						LP_Email_Cancelled_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-cancelled-order-guest.php',
+						LP_Email_Cancelled_Order_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-cancelled-order-instructor.php',
+					],
 
 					// User become an teacher
 					'set_user_role',

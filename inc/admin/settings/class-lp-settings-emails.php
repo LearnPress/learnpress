@@ -82,13 +82,19 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 				}
 
 				foreach ( $emails as $email ) {
+					if ( ! is_object( $email ) ) {
+						continue;
+					}
+
 					foreach ( $groups as $group ) {
-						if ( ! empty( $group->items[ $email->id ] ) ) {
+						if ( is_object( $group ) && ! empty( $group->items[ $email->id ] ) ) {
 							continue 2;
 						}
 					}
 
-					$sections[ $email->id ] = $email;
+					if ( isset( $sections[ $email->id ] ) ) {
+						$sections[ $email->id ] = $email;
+					}
 				}
 			}
 		}

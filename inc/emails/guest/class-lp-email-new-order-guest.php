@@ -1,13 +1,11 @@
 <?php
 /**
- * LP_Email_Processing_Order_Guest.
+ * LP_Email_New_Order_Guest.
  *
  * @author  ThimPress
  * @package Learnpress/Classes
  * @extends LP_Email_Type_Order
  * @version 3.0.0
- * @editor tungnx
- * @version 4.1.3
  */
 
 /**
@@ -15,15 +13,15 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! class_exists( 'LP_Email_Processing_Order_Guest' ) ) {
-	class LP_Email_Processing_Order_Guest extends LP_Email_Type_Order {
+if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
+	class LP_Email_New_Order_Guest extends LP_Email_Type_Order {
 		/**
-		 * LP_Email_Processing_Order_Guest constructor.
+		 * LP_Email_New_Order_Guest constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'processing-order-guest';
+			$this->id          = 'new-order-guest';
 			$this->title       = __( 'Guest', 'learnpress' );
-			$this->description = __( 'Send email to user who has purchased course as a Guest when the order is processing.', 'learnpress' );
+			$this->description = __( 'Send email to the user who has bought course as guest.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
@@ -32,7 +30,5 @@ if ( ! class_exists( 'LP_Email_Processing_Order_Guest' ) ) {
 		}
 	}
 
-	return new LP_Email_Processing_Order_Guest();
+	return new LP_Email_New_Order_Guest();
 }
-
-

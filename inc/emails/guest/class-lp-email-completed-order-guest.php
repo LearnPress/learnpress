@@ -33,44 +33,8 @@ if ( ! class_exists( 'LP_Email_Completed_Order_Guest' ) ) {
 			$this->default_heading = __( 'Your order has completed', 'learnpress' );
 
 			parent::__construct();
-
-			// Completed orders - Comment by tungnx
-			//add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
-		}
-
-		/**
-		 * Trigger Email Notification
-		 *
-		 * @param int $order_id
-		 *
-		 * @return boolean
-		 */
-		public function trigger( $order_id ) {
-			parent::trigger( $order_id );
-
-			if ( ! $this->enable ) {
-				return false;
-			}
-
-			$order = $this->get_order();
-
-			if ( ! $order->is_guest() ) {
-				return false;
-			}
-
-			$this->recipient = $order->get_user_email();
-
-			if ( ! $this->recipient ) {
-				return false;
-			}
-
-			$this->get_object();
-
-			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() );
-
-			return $return;
 		}
 	}
-}
 
-return new LP_Email_Completed_Order_Guest();
+	return new LP_Email_Completed_Order_Guest();
+}

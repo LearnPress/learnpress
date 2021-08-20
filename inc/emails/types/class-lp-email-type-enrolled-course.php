@@ -6,6 +6,8 @@
  * @package Learnpress/Classes
  * @extends LP_Email
  * @version 3.0.9
+ * @editor tungnx
+ * @modify 4.1.3 - send email on background
  */
 
 /**
@@ -13,11 +15,6 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-/**
- * Class LP_Email_Type_Enrolled_Course
- *
- * Handle email when user enrolled course
- */
 class LP_Email_Type_Enrolled_Course extends LP_Email {
 	/**
 	 * LP_Email_Type_Enrolled_Course constructor.
@@ -25,9 +22,9 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	public function __construct() {
 		parent::__construct();
 
-		$this->support_variables = array_merge(
-			$this->support_variables,
-			array(
+		$variable_on_email_support = apply_filters(
+			'lp/email/enrolled-course/variables-support',
+			[
 				'{{course_id}}',
 				'{{course_name}}',
 				'{{course_url}}',
@@ -35,16 +32,10 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 				'{{user_name}}',
 				'{{user_email}}',
 				'{{user_display_name}}',
-			)
+			]
 		);
 
-		/*if ( LP_Settings::get_option( 'auto_enroll' ) == 'yes' ) {
-			add_action( 'learn-press/order/status-completed', array( $this, 'auto_enroll_trigger' ), 10, 2 );
-		}*/
-
-		//add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
-		//add_action( 'learn-press/user-enrolled-course/notification', array( $this, 'trigger' ), 99, 3 );
-
+		$this->support_variables = array_merge( $this->support_variables, $variable_on_email_support );
 	}
 
 	/**
@@ -111,9 +102,9 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 			$variables = array_merge(
 				$variables,
 				array(
-					'course_id'   => $course->get_id(),
-					'course_name' => $course->get_title(),
-					'course_url'  => $course->get_permalink(),
+					'{{course_id}}'   => $course->get_id(),
+					'{{course_name}}' => $course->get_title(),
+					'{{course_url}}'  => $course->get_permalink(),
 				)
 			);
 		}
@@ -122,17 +113,16 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 			$variables = array_merge(
 				$variables,
 				array(
-					'user_id'           => $user->get_id(),
-					'user_name'         => $user->get_username(),
-					'user_email'        => $user->get_email(),
-					'user_display_name' => $user->get_display_name(),
+					'{{user_id}}'           => $user->get_id(),
+					'{{user_name}}'         => $user->get_username(),
+					'{{user_email}}'        => $user->get_email(),
+					'{{user_display_name}}' => $user->get_display_name(),
 				)
 			);
 		}
 
-		$this->map_data_to_variables( $variables );
 		$variables_common = $this->get_common_variables( $this->email_format );
-		$this->variables  = array_merge( $this->variables, $variables_common );
+		$this->variables  = array_merge( $variables, $variables_common );
 	}
 
 	/**
@@ -147,9 +137,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 
 		if ( $this instanceof LP_Email_Enrolled_Course_User ) {
 			$lp_user = new LP_User( $user_id );
-			if ( $lp_user ) {
-				$this->set_receive( $lp_user->get_email() );
-			}
+			$this->set_receive( $lp_user->get_email() );
 		} elseif ( $this instanceof LP_Email_Enrolled_Course_Instructor ) {
 			$course           = new LP_Course( $course_id );
 			$email_instructor = $course->get_author()->get_email();

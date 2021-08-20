@@ -2838,10 +2838,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * @return array|mixed
+		 * Get email of user
+		 *
+		 * @return string
 		 */
-		public function get_email() {
-			return $this->get_data( 'email' );
+		public function get_email(): string {
+			return $this->get_data( 'email', '' );
 		}
 
 		/**
@@ -2849,8 +2851,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_username() {
-			return $this->get_data( 'user_login' );
+		public function get_username(): string {
+			return $this->get_data( 'user_login', '' );
 		}
 
 		/**
@@ -2858,8 +2860,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_description() {
-			return $this->get_data( 'description' );
+		public function get_description(): string {
+			return $this->get_data( 'description', '' );
 		}
 
 		/**
@@ -2867,8 +2869,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_first_name() {
-			return $this->get_data( 'first_name' );
+		public function get_first_name(): string {
+			return $this->get_data( 'first_name', '' );
 		}
 
 		/**
@@ -2876,8 +2878,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_last_name() {
-			return $this->get_data( 'last_name' );
+		public function get_last_name(): string {
+			return $this->get_data( 'last_name', '' );
 		}
 
 		/**
@@ -2885,8 +2887,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_nickname() {
-			return $this->get_data( 'nickname' );
+		public function get_nickname(): string {
+			return $this->get_data( 'nickname', '' );
 		}
 
 		/**
@@ -2894,8 +2896,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_display_name() {
-			return $this->get_data( 'display_name' );
+		public function get_display_name(): string {
+			return $this->get_data( 'display_name', '' );
 		}
 	}
 }

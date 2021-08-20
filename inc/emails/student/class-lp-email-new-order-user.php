@@ -33,59 +33,13 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 			parent::__construct();
 
 			// email for new order
-			add_action( 'learn-press/checkout-order-processed', array( $this, 'trigger' ) );
+			//add_action( 'learn-press/checkout-order-processed', array( $this, 'trigger' ) );
 
 			// new paid order
-			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
+			//add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 
 			// remove order complete for free order ( default new free order auto create pending from pending to completed )
 			//remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
-			add_action( 'init', array( $this, 'init' ) );
-		}
-
-		public function init() {
-			// disable send mail for enable enroll course instructor mail
-			/*$email = LP_Emails::get_email( 'enrolled-course-user' );
-			if ( $email->enable() ) {
-				remove_action( 'learn-press/order/status-pending-to-completed/notification', array(
-					$this,
-					'trigger'
-				) );
-			}*/
-		}
-
-		/**
-		 * Trigger Email Notification
-		 *
-		 * @param int $order_id
-		 *
-		 * @return boolean
-		 */
-		public function trigger( $order_id ) {
-
-			parent::trigger( $order_id );
-
-			if ( ! $this->enable ) {
-				return false;
-			}
-
-			$order = $this->get_order();
-
-			if ( $order->is_guest() ) {
-				return false;
-			}
-
-			$this->recipient = $order->get_user_email();
-
-			if ( ! $this->recipient ) {
-				return false;
-			}
-
-			$this->get_object();
-
-			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() );
-
-			return $return;
 		}
 	}
 }

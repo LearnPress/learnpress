@@ -832,6 +832,16 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		}
 
 		/**
+		 * Get all values set and send email
+		 *
+		 * @author tungnx
+		 * @since 4.1.3
+		 */
+		public function send_email(): bool {
+			return $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+		}
+
+		/**
 		 * Get format of email template content.
 		 *
 		 * @param string $format
