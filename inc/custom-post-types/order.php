@@ -336,59 +336,18 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			if ( $action == 'editpost' ) {
-				//remove_action( 'save_post', array( $this, 'save_order' ) );
-				//remove_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
-
-				$user_id        = learn_press_get_request( 'order-customer' );
-				$order          = learn_press_get_order( $post_id );
-				$old_status     = get_post_status( $order );
-				$trigger_action = LP_Request::get_string( 'trigger-order-action' ) == 'current-status';
-
-				/*if ( is_array( $user_id ) ) {
-					$this->_update_child( $order, $user_id, $trigger_action );
-					$order->set_user_id( $user_id );
-				} else {
-					$order->set_user_id( absint( $user_id ) );
-				}*/
+				$order = learn_press_get_order( $post_id );
 
 				$created_via = $order->get_created_via();
 				if ( empty( $created_via ) ) {
+					$user_id = learn_press_get_request( 'order-customer' );
 					$order->set_created_via( 'manual' );
+					$order->set_user_id( $user_id );
 				}
 
-				$order->set_user_id( $user_id );
 				$order->set_status( learn_press_get_request( 'order-status' ) );
 				$order->save();
-
-				//$new_status = get_post_status( $order->get_id() );
-
-				/**
-				 * If the status is not changed and force to trigger action is set
-				 * then trigger action for current status if this order is for singular
-				 * user. If the order is for multi users then it will trigger in
-				 * each child order
-				 */
-				/*if ( ! is_array( $user_id ) && ( ( $new_status == $old_status ) && $trigger_action ) ) {
-					$status = str_replace( 'lp-', '', $new_status );
-					do_action( 'learn-press/order/status-' . $status, $order->get_id(), $status );
-					do_action( 'learn-press/order/status-changed', $order->get_id(), $status, $status );
-				}*/
-
-				//add_action( 'save_post', array( $this, 'save_order' ) );
-				//add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
-			} else {
-				//$order   = learn_press_get_order( $post_id );
-				//$user_id = $order->get_users();
 			}
-
-			// Comment by tungnx
-			/*if ( $user_id ) {
-				$api = LP_Repair_Database::instance();
-				$api->sync_user_orders( $user_id );
-			}*/
-
-			// Comment by tungnx
-			//$this->recount_enrolled_users( $post_id );
 		}
 
 		/**

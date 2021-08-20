@@ -288,9 +288,6 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
 			'post_status'   => 'lp-' . $status,
 			'post_parent'   => $order->get_parent_id(),
-			// 'post_excerpt'      => $this->get_post_excerpt( $order ),
-			// 'post_modified'     => $order->get_date_modified( ),
-			// 'post_modified_gmt' => $order->get_date_modified( ),
 		);
 
 		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );

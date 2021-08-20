@@ -119,7 +119,6 @@ class LP_Checkout {
 
 			$user_id         = 0;
 			$checkout_option = LP_Request::get_string( 'checkout-email-option' );
-			$order->delete_meta( '_create_account' );
 
 			switch ( $checkout_option ) {
 				case 'new-account':
@@ -139,10 +138,8 @@ class LP_Checkout {
 
 			if ( $user_id ) {
 				$order->set_user_id( $user_id );
+				$order->save();
 			}
-
-			$order->save();
-
 		} catch ( Exception $ex ) {
 			if ( $ex->getCode() && $ex->getMessage() ) {
 				$result['message'] = $ex->getMessage();
@@ -450,7 +447,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_guest_checkout() {
-		return apply_filters( 'learn-press/checkout/enable-guest', LP()->settings()->get( 'guest_checkout' ) == 'yes' );
+		return apply_filters( 'learn-press/checkout/enable-guest', LP()->settings()->get( 'guest_checkout', 'no' ) == 'yes' );
 	}
 
 	/**
@@ -681,7 +678,7 @@ class LP_Checkout {
 			} else {
 				// maybe throw new exception
 				$this->validate_payment();
-				
+
 				// Create order.
 				$order_id = $this->create_order();
 
