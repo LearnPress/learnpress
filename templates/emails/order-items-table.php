@@ -6,29 +6,48 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.0
+ * @version 3.0.1
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
-$email = LP_Emails::instance()->get_current();
-
-if ( ! $email ) {
+/**
+ * @var $order LP_Order
+ */
+if ( ! isset( $order ) ) {
+	error_log( 'Invalid params on ' . __FILE__ );
 	return;
 }
 
-/**
- * @var $order LP_Order
- * @var $email LP_Email_Type_Order
- */
-$order = $email->get_order();
-$items = $email->get_order_items_table();
+$items = $order->get_items();
 
 if ( ! $items ) {
 	return;
+}
+
+$email_content = '';
+
+if ( $order->is_manual() ) {
+	$user_ids = $order->get_user_id();
+	if ( is_array( $user_ids ) ) {
+		$email_arr = [];
+		foreach ( $user_ids as $user_id ) {
+			$user = get_user_by( 'ID', $user_id );
+			if ( $user ) {
+				$email_arr[] = $user->user_email;
+			}
+		}
+
+		$email_content = implode( ',', $email_arr );
+	} else {
+		$email_content = $order->get_user_email( $user_ids );
+	}
+} else {
+	$email_content = $order->get_user_email( $order->get_user_id() );
 }
 ?>
 
@@ -55,18 +74,18 @@ if ( ! $items ) {
 	</tr>
 	<tr>
 		<th><?php _e( 'User Email', 'learnpress' ); ?></th>
-		<td><?php echo $order->get_user_email(); ?></td>
+		<td><?php echo $email_content; ?></td>
 	</tr>
 </table>
 
 <table class="order-table-items" cellspacing="0" cellpadding="5">
 	<thead>
 	<tr>
-		<?php do_action( 'learn-press/before-email-order-item-heading', $email, $order ); ?>
+		<?php do_action( 'learn-press/before-email-order-item-heading', $order ); ?>
 		<th class="column-name"><?php _e( 'Course', 'learnpress' ); ?></th>
 		<th class="column-quantity"><?php _e( 'Quantity', 'learnpress' ); ?></th>
 		<th class="column-number"><?php _e( 'Price', 'learnpress' ); ?></th>
-		<?php do_action( 'learn-press/after-email-order-item-heading', $email, $order ); ?>
+		<?php do_action( 'learn-press/after-email-order-item-heading', $order ); ?>
 	</tr>
 	</thead>
 	<tbody>
@@ -79,7 +98,7 @@ if ( ! $items ) {
 
 		?>
 		<tr>
-			<?php do_action( 'learn-press/before-email-order-item', $item_id, $item, $email, $order ); ?>
+			<?php do_action( 'learn-press/before-email-order-item', $item_id, $item, $order ); ?>
 			<td class="column-name">
 				<?php echo apply_filters( 'learn-press/email-order-item-name', $item['name'], $item ); ?>
 			</td>
@@ -89,7 +108,7 @@ if ( ! $items ) {
 			<td class="column-number">
 				<?php echo apply_filters( 'learn-press/email-order-item-cost', learn_press_format_price( $item['total'], learn_press_get_currency_symbol( $order->get_currency() ) ), $item ); ?>
 			</td>
-			<?php do_action( 'learn-press/after-email-order-item', $item_id, $item, $email, $order ); ?>
+			<?php do_action( 'learn-press/after-email-order-item', $item_id, $item, $order ); ?>
 		</tr>
 
 	<?php endforeach; ?>
@@ -98,7 +117,7 @@ if ( ! $items ) {
 	<tr>
 		<td colspan="2" class="column-number"><?php _e( 'Total', 'learnpress' ); ?></td>
 		<td class="column-number">
-			<?php echo $email->get_order_total(); ?>
+			<?php echo $order->get_formatted_order_total(); ?>
 		</td>
 	</tr>
 	</tfoot>

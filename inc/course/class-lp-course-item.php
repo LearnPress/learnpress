@@ -525,10 +525,14 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @param int $user_id
 		 *
 		 * @return bool
-		 * @Todo check this function - tungnx
+		 * @editor tungnx
+		 * @modify 4.1.3 - not use - comment
+		 * @deprecated
 		 */
 		public function is_blocked( $course_id = 0, $user_id = 0 ) {
-			if ( ! $user_id ) {
+			_deprecated_function( __FUNCTION__, '4.1.3' );
+
+			/*if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
 
@@ -596,7 +600,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$this->get_id(),
 				$course_id,
 				$user_id
-			);
+			);*/
 		}
 
 		protected function _parse_item_block_status( $course_id, $user_id, $cache_key ) {
@@ -627,9 +631,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 					if ( $item->is_preview() ) {
 						$blocked_items[ $course_item ] = 'no';
 					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array(
-							$item->get_post_type(),
-							$block_item_types
-						) ) {
+						$item->get_post_type(),
+						$block_item_types
+					) ) {
 						$blocked_items[ $course_item ] = 'no';
 					}
 				}
