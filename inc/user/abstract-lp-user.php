@@ -1459,7 +1459,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_instructor() {
+		public function is_instructor(): bool {
 
 			$roles = $this->get_data( 'roles' ) ? $this->get_data( 'roles' ) : array();
 

@@ -72,6 +72,21 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			// Save post meta
 			$lp_course->set_info_extra_for_fast_query( $extra_info );
 			// End set first item id
+
+			// Check user is Instructor and enable review post of Instructor
+			$user            = learn_press_get_current_user();
+			$required_review = LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
+
+			if ( $user->is_instructor() && $required_review ) {
+				wp_update_post(
+					array(
+						'ID'          => $lp_course->get_id(),
+						'post_status' => 'pending',
+					),
+					array( '%d', '%s' )
+				);
+			}
+			// End
 		}
 
 		/**

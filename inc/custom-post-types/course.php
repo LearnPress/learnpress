@@ -33,11 +33,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function __construct( $post_type ) {
 			parent::__construct( $post_type );
 
-			// Map origin methods to another method - comment by tungnx
-			/*$this
-				->add_map_method( 'save', 'before_save_curriculum', false )
-				->add_map_method( 'before_delete', 'before_delete_course' );*/
-
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
@@ -649,45 +644,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Before save curriculum action.
-		 * If is instructor will pending course if enable required review in settings.
-		 *
-		 * @param WP_Post $post
-		 * @editor tungnx
-		 */
-		public function before_save_curriculum( WP_Post $post ) {
-			if ( in_array( $post->post_status, array( 'trash', 'auto-draft' ) ) ) {
-				return;
-			}
-
-			$user            = learn_press_get_current_user();
-			$required_review = LP_Settings::get_option( 'required_review' ) == 'yes';
-
-			if ( $user->is_instructor() && $required_review ) {
-				wp_update_post(
-					array(
-						'ID'          => $post->ID,
-						'post_status' => 'pending',
-					),
-					array( '%d', '%s' )
-				);
-			}
-
-			$new_status = $post->post_status;
-			$old_status = get_post_meta( $post->ID, '_lp_course_status', true );
-
-			// Update price - comment by tungnx
-			// $this->_update_price( $post );
-
-			if ( $new_status != $old_status ) {
-				do_action( 'learn_press_transition_course_status', $new_status, $old_status, $post->ID );
-				update_post_meta( $post->ID, '_lp_course_status', $new_status );
-			}
-
-			//delete_post_meta( $post->ID, '_lp_curriculum' );
-		}
-
-		/**
 		 * Save course post
 		 * Should write run background if handle big and need more time
 		 *
@@ -699,8 +655,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @see LP_Background_Single_Course::handle()
 		 */
 		public function save( int $post_id, WP_Post $post ) {
-			$this->before_save_curriculum( $post );
-
 			// Save in background.
 			$bg = LP_Background_Single_Course::instance();
 
