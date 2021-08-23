@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
  * @editor tungnx
  * @modify 4.1.3
  */
@@ -15,10 +15,7 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
-	class LP_Email_New_Order_Instructor extends LP_Email_Type_Order {
-		/**
-		 * LP_Email_New_Order_Instructor constructor.
-		 */
+	class LP_Email_New_Order_Instructor extends LP_Email_Type_Order_Instructor {
 		public function __construct() {
 			$this->id          = 'new-order-instructor';
 			$this->title       = __( 'Instructor', 'learnpress' );
@@ -28,11 +25,6 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 			$this->default_heading = __( 'New user order', 'learnpress' );
 
 			parent::__construct();
-
-			//add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
-
-			// remove complete order hook for free course ( default new free order auto create pending from pending to completed )
-			//remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 		}
 	}
 

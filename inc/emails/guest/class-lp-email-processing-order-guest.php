@@ -5,7 +5,7 @@
  * @author  ThimPress
  * @package Learnpress/Classes
  * @extends LP_Email_Type_Order
- * @version 3.0.0
+ * @version 3.0.1
  * @editor tungnx
  * @version 4.1.3
  */
@@ -16,10 +16,7 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Processing_Order_Guest' ) ) {
-	class LP_Email_Processing_Order_Guest extends LP_Email_Type_Order {
-		/**
-		 * LP_Email_Processing_Order_Guest constructor.
-		 */
+	class LP_Email_Processing_Order_Guest extends LP_Email_Type_Order_Guest {
 		public function __construct() {
 			$this->id          = 'processing-order-guest';
 			$this->title       = __( 'Guest', 'learnpress' );

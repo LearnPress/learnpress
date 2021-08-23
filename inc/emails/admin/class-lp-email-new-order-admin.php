@@ -4,7 +4,9 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
@@ -13,11 +15,7 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
-
-	/**
-	 * Class LP_Email_New_Order_Admin
-	 */
-	class LP_Email_New_Order_Admin extends LP_Email_Type_Order {
+	class LP_Email_New_Order_Admin extends LP_Email_Type_Order_Admin {
 
 		/**
 		 * LP_Email_New_Order_Admin constructor.
@@ -34,8 +32,6 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			$this->recipient  = LP()->settings()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();
-
-
 		}
 	}
 

@@ -1912,7 +1912,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return LP_User|int
 		 */
-		public function get_author( $field = '' ) {
+		public function get_author( string $field = '' ) {
 			$author_id = absint( get_post_field( 'post_author', $this->get_id() ) );
 
 			return strtolower( $field ) === 'id' ? $author_id : learn_press_get_user( $author_id );

@@ -19,7 +19,7 @@ if ( ! class_exists( 'LP_Email_Completed_Order_Guest' ) ) {
 	/**
 	 * Class LP_Email_Completed_Order_Guest
 	 */
-	class LP_Email_Completed_Order_Guest extends LP_Email_Type_Order {
+	class LP_Email_Completed_Order_Guest extends LP_Email_Type_Order_Guest {
 
 		/**
 		 * LP_Email_Completed_Order_Guest constructor.

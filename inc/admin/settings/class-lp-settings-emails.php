@@ -131,13 +131,6 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'css'     => 'width:400px',
 				),
 				array(
-					'title'   => esc_html__( 'Background email', 'learnpress' ),
-					'id'      => 'emails_general[send_email_background]',
-					'default' => 'no',
-					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Sending emails in the background.', 'learnpress' ),
-				),
-				array(
 					'type' => 'sectionend',
 				),
 				array(

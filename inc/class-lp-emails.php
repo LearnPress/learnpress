@@ -70,7 +70,9 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		public function register_emails() {
 			include_once 'emails/types/class-lp-email-type-order.php';
 			include_once 'emails/types/class-lp-email-type-order-student.php';
+			include_once 'emails/types/class-lp-email-type-order-guest.php';
 			include_once 'emails/types/class-lp-email-type-order-admin.php';
+			include_once 'emails/types/class-lp-email-type-order-instructor.php';
 			include_once 'emails/types/class-lp-email-type-enrolled-course.php';
 			include_once 'emails/types/class-lp-email-type-finished-course.php';
 
@@ -81,8 +83,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_New_Order_Guest']      = include_once 'emails/guest/class-lp-email-new-order-guest.php';
 
 			// Processing order
-			$this->emails['LP_Email_Processing_Order_User']  = include_once 'emails/class-lp-email-processing-order-user.php';
-			$this->emails['LP_Email_Processing_Order_Guest'] = include_once 'emails/class-lp-email-processing-order-guest.php';
+			$this->emails['LP_Email_Processing_Order_User']  = include_once 'emails/student/class-lp-email-processing-order-user.php';
+			$this->emails['LP_Email_Processing_Order_Guest'] = include_once 'emails/guest/class-lp-email-processing-order-guest.php';
 
 			// Completed order
 			$this->emails['LP_Email_Completed_Order_Admin'] = include_once 'emails/admin/class-lp-email-completed-order-admin.php';

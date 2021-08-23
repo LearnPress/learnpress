@@ -4,7 +4,9 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
@@ -13,11 +15,7 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
-
-	/**
-	 * Class LP_Email_New_Order_User
-	 */
-	class LP_Email_New_Order_User extends LP_Email_Type_Order {
+	class LP_Email_New_Order_User extends LP_Email_Type_Order_Student {
 
 		/**
 		 * LP_Email_New_Order_User constructor.
@@ -31,17 +29,9 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
 
 			parent::__construct();
-
-			// email for new order
-			//add_action( 'learn-press/checkout-order-processed', array( $this, 'trigger' ) );
-
-			// new paid order
-			//add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
-
-			// remove order complete for free order ( default new free order auto create pending from pending to completed )
-			//remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 		}
 	}
+
+	return new LP_Email_New_Order_User();
 }
 
-return new LP_Email_New_Order_User();

@@ -5,7 +5,9 @@
  * @author  ThimPress
  * @package Learnpress/Classes
  * @extends LP_Email_Type_Order
- * @version 3.0.0
+ * @version 3.0.1
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
@@ -14,7 +16,7 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
-	class LP_Email_New_Order_Guest extends LP_Email_Type_Order {
+	class LP_Email_New_Order_Guest extends LP_Email_Type_Order_Guest {
 		/**
 		 * LP_Email_New_Order_Guest constructor.
 		 */

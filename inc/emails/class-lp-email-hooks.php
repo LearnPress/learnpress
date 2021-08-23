@@ -19,17 +19,28 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					'learn_press_course_submit_rejected',
 					'learn_press_course_submit_approved',
 					'learn_press_course_submit_for_reviewer',
-					'learn_press_user_enrolled_course',
 
 					// New order
-					'learn-press/order/status-pending-to-processing',
-					'learn-press/order/status-pending-to-completed',
+					'learn-press/order/status-pending-to-processing' => [
+						LP_Email_New_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-new-order-admin.php',
+						LP_Email_New_Order_User::class  => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-new-order-user.php',
+						LP_Email_New_Order_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-new-order-instructor.php',
+						LP_Email_New_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-new-order-guest.php',
+						LP_Email_Processing_Order_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-processing-order-user.php',
+						LP_Email_Processing_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-processing-order-guest.php',
+					],
+					'learn-press/order/status-pending-to-completed' => [
+						LP_Email_New_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-new-order-admin.php',
+						LP_Email_New_Order_User::class  => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-new-order-user.php',
+						LP_Email_New_Order_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-new-order-instructor.php',
+						LP_Email_New_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-new-order-guest.php',
+					],
 
 					// Completed order
 					'learn-press/order/status-completed' => [
-						LP_Email_Completed_Order_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-completed-order-user',
-						LP_Email_Completed_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-completed-order-admin',
-						LP_Email_Completed_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-completed-order-guest',
+						LP_Email_Completed_Order_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-completed-order-user.php',
+						LP_Email_Completed_Order_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-completed-order-admin.php',
+						LP_Email_Completed_Order_Guest::class => LP_PLUGIN_PATH . 'inc/emails/guest/class-lp-email-completed-order-guest.php',
 					],
 
 					// User enrolled course when order completed before

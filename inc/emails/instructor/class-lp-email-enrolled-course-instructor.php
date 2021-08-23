@@ -5,7 +5,9 @@
  * @author  ThimPress
  * @package Learnpress/Classes
  * @extends LP_Email
- * @version 3.0.0
+ * @version 3.0.1
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
@@ -14,10 +16,6 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Enrolled_Course_Instructor' ) ) {
-
-	/**
-	 * Class LP_Email_Enrolled_Course_Instructor
-	 */
 	class LP_Email_Enrolled_Course_Instructor extends LP_Email_Type_Enrolled_Course {
 		/**
 		 * LP_Email_Enrolled_Course_Instructor constructor.
@@ -33,6 +31,7 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Instructor' ) ) {
 			parent::__construct();
 		}
 	}
+
+	return new LP_Email_Enrolled_Course_Instructor();
 }
 
-return new LP_Email_Enrolled_Course_Instructor();
