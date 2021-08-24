@@ -1903,13 +1903,14 @@ if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
 			return;
 		}
 
-		if ( ( $course_item = $user->get_course_data( $course->get_id() ) ) && $course_item->is_finished() ) {
+		$course_item = $user->get_course_data( $course->get_id() );
+		if ( $course_item && $course_item->is_finished() ) {
 			return;
 		}
 
-		if ( ! $user->can_access_course( $course->get_id() ) ) {
+		/*if ( ! $user->can_access_course( $course->get_id() ) ) {
 			return;
-		}
+		}*/
 
 		learn_press_get_template( 'content-lesson/button-complete.php' );
 	}

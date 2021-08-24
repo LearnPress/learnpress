@@ -409,6 +409,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @Todo: tungnx - after should set status when new instance or save, update, get_status only return status.
 	 */
 	public function get_status( string $field = 'status' ): string {
+		if ( ! empty( $this->get_data( $field, '' ) ) ) {
+			return $this->get_data( $field );
+		}
+
 		$lp_user_item = LP_User_Items_DB::getInstance();
 		$filter       = new LP_User_Items_Filter();
 
@@ -434,6 +438,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Check course is finished.
 	 *
 	 * @return bool.
+	 * @throws Exception
 	 */
 	public function has_finished() : bool {
 		return $this->get_status() === LP_COURSE_FINISHED;
@@ -745,7 +750,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return string
 	 */
-	public function get_graduation() {
+	public function get_graduation(): string {
 		return apply_filters(
 			'learnpress/user-item/get-graduation',
 			$this->get_data( 'graduation' ),

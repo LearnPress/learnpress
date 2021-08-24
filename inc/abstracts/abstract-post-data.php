@@ -89,8 +89,10 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @since 3.0.0
 		 */
 		public function is_publish() {
-			return apply_filters( 'learn-press/' . $this->_post_type . '/is-publish',
-				get_post_status( $this->get_id() ) === 'publish' );
+			return apply_filters(
+				'learn-press/' . $this->_post_type . '/is-publish',
+				get_post_status( $this->get_id() ) === 'publish'
+			);
 		}
 
 		/**
@@ -149,15 +151,15 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 						}
 
 						setup_postdata( $post );
-						$content_post = get_the_content();
-						$content_post = apply_filters( 'the_content', $content_post );
-						$content_post = str_replace( ']]>', ']]&gt;', $content_post );
+						$content_post   = get_the_content();
+						$content_post   = apply_filters( 'the_content', $content_post );
+						$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
 						$this->_content = $content_post;
 						wp_reset_postdata();
 					} else { // Post is previewd
-						$content_post = get_the_content();
-						$content_post = apply_filters( 'the_content', $content_post );
-						$content_post = str_replace( ']]>', ']]&gt;', $content_post );
+						$content_post   = get_the_content();
+						$content_post   = apply_filters( 'the_content', $content_post );
+						$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
 						$this->_content = $content_post;
 					}
 				}
@@ -206,7 +208,12 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 			return get_edit_post_link( $this->get_id() );
 		}
 
-		public function current_user_can_edit() {
+		/**
+		 * Check user can edit item
+		 *
+		 * @return bool
+		 */
+		public function current_user_can_edit(): bool {
 			return learn_press_get_current_user()->can_edit( $this->get_id() );
 		}
 

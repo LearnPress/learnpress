@@ -583,21 +583,6 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		}
 	}
 
-	// Refresh cache
-	if ( $update_cache && $updated_item ) {
-
-		// Get course id
-		if ( LP_COURSE_CPT === learn_press_get_post_type( $updated_item->item_id ) ) {
-			$course_id = $updated_item->item_id;
-		} else {
-			$course_id = $updated_item->ref_id;
-		}
-
-		// Read new data from DB.
-		$curd = learn_press_get_curd( 'user' );
-		$curd->read_course( $updated_item->user_id, $course_id, true );
-	}
-
 	do_action( 'learn-press/updated-user-item-meta', $updated_item );
 
 	return $updated_item;

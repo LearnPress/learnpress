@@ -579,12 +579,14 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
+	 * Get graduation
+	 *
 	 * @param string $context
 	 *
 	 * @return string
 	 */
-	public function get_grade( $context = '' ) {
-		$grade = $this->get_status();
+	public function get_grade( string $context = 'display' ): string {
+		$grade = $this->get_graduation();
 
 		return $context == 'display' ? learn_press_course_grade_html( $grade, false ) : $grade;
 	}
@@ -1295,5 +1297,35 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return $with_total ? $passed_items : $passed_items[0];
+	}
+
+	/**
+	 * Get Order ID
+	 *
+	 * @return array|mixed
+	 * @since 4.1.3
+	 * @version 1.0.0
+	 * @author tungnx
+	 */
+	public function get_order_id() {
+		return $this->get_data( 'ref_id', 0 );
+	}
+
+	/**
+	 * Get Order
+	 *
+	 * @throws Exception
+	 * @since 4.1.3
+	 * @version 1.0.0
+	 * @author tungnx
+	 */
+	public function get_order() {
+		$order = false;
+
+		if ( $this->get_order_id() ) {
+			$order = new LP_Order( $this->get_order_id() );
+		}
+
+		return $order;
 	}
 }

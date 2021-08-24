@@ -50,8 +50,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function rest_pre_dispatch( $null, $server, $request ) {
 		$user_id   = get_current_user_id();
-		$item_id   = $request['item_id'];
-		$course_id = $request['course_id'];
+		$item_id   = $request['item_id'] ?? 0;
+		$course_id = $request['course_id'] ?? 0;
 
 		$this->user   = learn_press_get_user( $user_id );
 		$this->course = learn_press_get_course( $course_id );

@@ -5,7 +5,9 @@
  * @author  ThimPress
  * @package Learnpress/Classes
  * @extends LP_Email
- * @version 3.0.0
+ * @version 3.0.1
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
@@ -14,10 +16,6 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Finished_Course_Admin' ) ) {
-
-	/**
-	 * Class LP_Email_Finished_Course_Admin
-	 */
 	class LP_Email_Finished_Course_Admin extends LP_Email_Type_Finished_Course {
 
 		/**
@@ -34,26 +32,8 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Admin' ) ) {
 
 			parent::__construct();
 		}
-
-		/**
-		 * Trigger email.
-		 *
-		 * @param int $course_id
-		 * @param int $user_id
-		 * @param int $user_item_id
-		 */
-		public function trigger( $course_id, $user_id, $user_item_id ) {
-
-			parent::trigger( $course_id, $user_id, $user_item_id );
-
-			if ( ! $this->enable ) {
-				return;
-			}
-
-			$this->get_object();
-
-			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
-		}
 	}
+
+	return new LP_Email_Finished_Course_Admin();
 }
-return new LP_Email_Finished_Course_Admin();
+

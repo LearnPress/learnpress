@@ -58,14 +58,18 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 						LP_Email_Cancelled_Order_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-cancelled-order-instructor.php',
 					],
 
+					// Finished course
+					'learn-press/user-course-finished'   => [
+						LP_Email_Finished_Course_Admin::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-finished-course-admin.php',
+						LP_Email_Finished_Course_User::class => LP_PLUGIN_PATH . 'inc/emails/student/class-lp-email-finished-course-user.php',
+						LP_Email_Finished_Course_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-finished-course-instructor.php',
+					],
+
 					// User become an teacher
 					'set_user_role',
 
 					// User enrolled course
 					//'learn-press/user-enrolled-course',
-
-					// User finished course
-					'learn-press/user-course-finished',
 
 					// Create order
 					// 'learn_press_checkout_success_result',

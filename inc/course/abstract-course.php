@@ -90,14 +90,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			return false;
 		}
 
-		public function get_items_4() {
-
-		}
-
-		public function get_user_course_data() {
-			return learn_press_get_user( $this->user_id )->get_course_data( $this->get_id() );
-		}
-
 		/**
 		 * Constructor gets the post object and sets the ID for the loaded course.
 		 *

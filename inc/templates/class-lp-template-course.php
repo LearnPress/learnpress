@@ -442,6 +442,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
+	/**
+	 * Button course external link
+	 */
 	public function course_external_button() {
 		$course = LP_Global::course();
 
@@ -449,7 +452,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( ! $link = $course->get_external_link() ) {
+		$link = $course->get_external_link();
+		if ( ! $link ) {
 			return;
 		}
 
@@ -922,8 +926,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Animation placholder in user-progress file.
 	 * Content will show in class-rest-lazy-load-controller file.
 	 *
-	 * @author Nhamdv.
 	 * @return void
+	 * @author Nhamdv.
 	 */
 	public function user_progress() {
 		if ( ! is_user_logged_in() ) {
