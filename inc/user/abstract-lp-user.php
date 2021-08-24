@@ -116,10 +116,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				if ( $last_user_course ) {
 					$object_course_data = new LP_User_Item_Course( $last_user_course );
 				} else {
-					throw new Exception( 'Can\'t get newest user: ' . $this->get_id() . ' course: ' . $course_id . ' on learnpress_user_items' );
+					//Todo: tungnx - need debug to check
+					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
 			} catch ( Throwable $e ) {
-				error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 				$object_course_data = false;
 			}
 

@@ -6,13 +6,13 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
 
-$course                  = LP_Global::course();
-$user                    = learn_press_get_current_user();
+$course = LP_Global::course();
+$user   = learn_press_get_current_user();
 
 if ( ! $course || ! $user ) {
 	return;
@@ -27,16 +27,21 @@ $can_view_content_course = $user->can_view_content_course( $course->get_id() );
 		<?php do_action( 'learn-press/before-single-course-curriculum' ); ?>
 
 		<?php
-		$curriculum = $course->get_curriculum();
+		$curriculum  = $course->get_curriculum();
+		$user_course = $user->get_course_data( get_the_ID() );
+		$user        = learn_press_get_current_user();
+
 		if ( $curriculum ) :
 			?>
 			<ul class="curriculum-sections">
 				<?php
 				foreach ( $curriculum as $section ) {
-					$args = array(
+					$args = [
 						'section'                 => $section,
 						'can_view_content_course' => $can_view_content_course,
-					);
+						'user_course'             => $user_course,
+						'user'                    => $user,
+					];
 
 					learn_press_get_template( 'single-course/loop-section.php', $args );
 				}

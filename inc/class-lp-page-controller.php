@@ -36,7 +36,7 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		// Comment by tungnx
 		add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
-		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
+		//add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
@@ -201,7 +201,11 @@ class LP_Page_Controller {
 		return $template;
 	}
 
-	public function maybe_redirect_quiz( $template ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
+	 */
+	/*public function maybe_redirect_quiz( $template ) {
 		$course   = LP_Global::course();
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
@@ -223,7 +227,7 @@ class LP_Page_Controller {
 		}
 
 		return $template;
-	}
+	}*/
 
 	/**
 	 * @param $post

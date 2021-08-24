@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -14,7 +14,8 @@ defined( 'ABSPATH' ) || exit();
 /**
  * @var LP_Course_Section $section
  */
-if ( ! isset( $section ) || ! isset( $can_view_content_course ) ) {
+if ( ! isset( $section ) || ! isset( $can_view_content_course )
+	 || ! isset( $user_course ) || ! isset( $user ) ) {
 	return;
 }
 
@@ -24,8 +25,6 @@ if ( ! apply_filters( 'learn-press/section-visible', true, $section, $course ) )
 	return;
 }
 
-$user        = learn_press_get_current_user();
-$user_course = $user->get_course_data( get_the_ID() );
 /**
  * List items of section
  *
