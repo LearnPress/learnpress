@@ -808,8 +808,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @return int[]
 		 */
-		public function get_users() {
-			if ( $users = $this->get_data( 'user_id' ) ) {
+		public function get_users(): array {
+			$users = $this->get_data( 'user_id', 0 );
+			if ( $users ) {
 				settype( $users, 'array' );
 				$users = array_unique( $users );
 			} else {

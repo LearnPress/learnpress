@@ -515,7 +515,7 @@ class LP_User_Factory {
 			$result                  = $user_item_new_or_update->update();
 
 			if ( $result && isset( $user_item_data['status'] ) && LP_COURSE_ENROLLED == $user_item_data['status'] ) {
-				do_action( 'learnpress/user/course-enrolled', $order->get_id() );
+				do_action( 'learnpress/user/course-enrolled', $order->get_id(), $user_item_data['item_id'], $user_item_data['user_id'] );
 			}
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
@@ -549,7 +549,7 @@ class LP_User_Factory {
 				$result        = $user_item_new->update();
 
 				if ( $result && LP_COURSE_ENROLLED == $user_item_data['status'] ) {
-					do_action( 'learnpress/user/course-enrolled', $order->get_id() );
+					do_action( 'learnpress/user/course-enrolled', $order->get_id(), $user_item_data['item_id'], $user_item_data['user_id'] );
 				}
 			}
 		} catch ( Throwable $e ) {

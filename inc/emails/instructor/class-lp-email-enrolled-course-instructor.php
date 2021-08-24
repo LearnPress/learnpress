@@ -30,6 +30,26 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Instructor' ) ) {
 
 			parent::__construct();
 		}
+
+		/**
+		 * Trigger email.
+		 * Receive 2 params: order_id, old_status
+		 *
+		 * @param array $params
+		 *
+		 * @throws Exception
+		 * @since 4.1.1
+		 * @author tungnx
+		 */
+		public function handle( array $params ) {
+			if ( ! $this->check_and_set( $params ) ) {
+				return;
+			}
+
+			$this->set_data_content();
+			$this->set_receive( $this->_course->get_author()->get_email() );
+			$this->send_email();
+		}
 	}
 
 	return new LP_Email_Enrolled_Course_Instructor();

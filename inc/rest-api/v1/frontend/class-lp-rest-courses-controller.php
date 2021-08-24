@@ -342,7 +342,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					throw new Exception( esc_html__( 'Error: Can\'t Enroll course.', 'learnpress' ) );
 				}
 
-				do_action( 'learnpress/user/course-enrolled', $course_item->ref_id );
+				do_action( 'learnpress/user/course-enrolled', $course_item->ref_id, $course_id, $user->get_id() );
 			} else { // Case enroll course free
 				LP()->session->set( 'order_awaiting_payment', '' );
 

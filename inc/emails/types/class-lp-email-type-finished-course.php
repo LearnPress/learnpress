@@ -59,12 +59,12 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 	 * Set values
 	 *
 	 * @param array $params
-	 * @return void
+	 * @return bool
 	 * @throws Exception
 	 */
-	protected function check_and_set( array $params ) {
+	protected function check_and_set( array $params ): bool {
 		if ( ! $this->enable ) {
-			return null;
+			return false;
 		}
 
 		if ( count( $params ) < 3 ) {
@@ -74,6 +74,8 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 		$this->course_id    = $params[0];
 		$this->user_id      = $params[1];
 		$this->user_item_id = $params[2];
+
+		return true;
 	}
 
 	/**
@@ -86,7 +88,10 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 	 * @author tungnx
 	 */
 	public function handle( array $params ) {
-		$this->check_and_set( $params );
+		if ( ! $this->check_and_set( $params ) ) {
+			return;
+		}
+
 		$this->set_data_content();
 		if ( $this instanceof LP_Email_Finished_Course_Instructor ) {
 			$instructor = learn_press_get_user( get_post_field( 'post_author', $this->course_id ) );
