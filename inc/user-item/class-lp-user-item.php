@@ -750,7 +750,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return string
 	 */
-	public function get_graduation(): string {
+	public function get_graduation() {
 		return apply_filters(
 			'learnpress/user-item/get-graduation',
 			$this->get_data( 'graduation' ),
