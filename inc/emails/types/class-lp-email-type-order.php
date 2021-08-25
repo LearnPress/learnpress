@@ -44,8 +44,7 @@ class LP_Email_Type_Order extends LP_Email {
 			return false;
 		}
 
-		if ( count( $params ) < 2 ) {
-			error_log( 'Invalid params to send email ' . __CLASS__ );
+		if ( count( $params ) < 1 ) {
 			return false;
 		}
 
