@@ -66,14 +66,15 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 					],
 
 					// User become an teacher
-					'set_user_role',
-
-					// User enrolled course
-					//'learn-press/user-enrolled-course',
-
-					// Create order
-					// 'learn_press_checkout_success_result',
-					// 'learn_press_user_finish_course',
+					'learn-press/become-a-teacher-sent'  => [
+						LP_Email_Become_An_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-become-an-instructor.php',
+					],
+					'learn-press/user-become-a-teacher-accept' => [
+						LP_Email_Instructor_Accepted::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-instructor-accepted.php',
+					],
+					'learn-press/user-become-a-teacher-deny' => [
+						LP_Email_Instructor_Denied::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-instructor-denied.php',
+					],
 				]
 			);
 

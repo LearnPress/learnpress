@@ -862,9 +862,10 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @editor tungnx
 		 * @reason move to use method "get_common_variables"
 		 * @return array
+		 * @deprecated 4.1.3
 		 */
 		public function get_common_template_data( $format = 'plain' ) {
-
+			_deprecated_function( __FUNCTION__, '4.1.3', 'get_common_variables' );
 			$emails = LP_Emails::instance();
 			$emails->set_current( $this );
 
@@ -951,10 +952,11 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @param array $data
 		 * @editor tungnx
 		 * @reason move to use method "map_data_to_variables"
-		 *
+		 * @deprecated 4.1.3
 		 * @return array
 		 */
 		public function data_to_variables( $data = null ) {
+			_deprecated_function( __FUNCTION__, '4.1.3', 'map_data_to_variables' );
 			if ( ! $data ) {
 				$data = $this->get_common_template_data();
 			}

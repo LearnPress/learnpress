@@ -53,17 +53,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 
 			$this->register_emails();
 
-			add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
-			add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10, 2 );
-			add_action( 'learn_press_course_submit_approved_notification', array( $this, 'course_approved' ), 10, 2 );
-			add_action( 'learn_press_user_finish_course_notification', array( $this, 'finish_course' ), 10, 3 );
-			// Send email customer when order created
-			add_filter( 'learn_press_checkout_success_result_notification', array( $this, 'customer_new_order' ), 10, 2 );
-			add_action( 'set_user_role_notification', array( $this, 'become_an_teacher' ), 10, 3 );
-
-			// add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
-			// add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
-
 			do_action( 'learn-press/emails-init', $this );
 		}
 
@@ -75,6 +64,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			include_once 'emails/types/class-lp-email-type-order-instructor.php';
 			include_once 'emails/types/class-lp-email-type-enrolled-course.php';
 			include_once 'emails/types/class-lp-email-type-finished-course.php';
+			include_once 'emails/types/class-lp-email-type-become-an-instructor.php';
 
 			// New order
 			$this->emails['LP_Email_New_Order_Admin']      = include_once 'emails/admin/class-lp-email-new-order-admin.php';
@@ -107,23 +97,10 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Finished_Course_Instructor'] = include_once 'emails/instructor/class-lp-email-finished-course-instructor.php';
 			$this->emails['LP_Email_Finished_Course_User']       = include_once 'emails/student/class-lp-email-finished-course-user.php';
 
-			// Review course
-			// $this->emails['LP_Email_New_Course']       = include_once(  'emails/class-lp-email-new-course.php' );
-			// $this->emails['LP_Email_Rejected_Course']  = include_once(  'emails/class-lp-email-rejected-course.php' );
-			// $this->emails['LP_Email_Published_Course'] = include_once(  'emails/class-lp-email-published-course.php' );
-
-			// Other
-			// $this->emails['LP_Email_Update_Course']        = include_once(  'emails/class-lp-email-updated-course.php' );
-			$this->emails['LP_Email_Become_An_Instructor'] = include_once 'emails/instructor/class-lp-email-become-an-instructor.php';
-			$this->emails['LP_Email_Instructor_Accepted']  = include_once 'emails/class-lp-email-instructor-accepted.php';
-			$this->emails['LP_Email_Instructor_Denied']    = include_once 'emails/class-lp-email-instructor-denied.php';
-
-			// $this->emails['LP_Email_User_Order_Completed']      = include_once(  'emails/class-lp-email-user-order-completed.php' );
-			// $this->emails['LP_Email_User_Order_Changed_Status'] = include_once(  'emails/class-lp-email-user-order-changed-status.php' );
-
-			// $this->emails['LP_Email_Enrolled_Course_Admin']     = include_once(  'emails/class-lp-email-enrolled-course-admin.php' );
-
-			// do_action_ref_array( 'learn-press/register-emails', array( &$this->emails, $this ) ); // Not use in LP4 - Nhamdv
+			// Become An Instructor
+			$this->emails['LP_Email_Become_An_Instructor'] = include_once 'emails/admin/class-lp-email-become-an-instructor.php';
+			$this->emails['LP_Email_Instructor_Accepted']  = include_once 'emails/instructor/class-lp-email-instructor-accepted.php';
+			$this->emails['LP_Email_Instructor_Denied']    = include_once 'emails/instructor/class-lp-email-instructor-denied.php';
 		}
 
 
@@ -217,68 +194,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			}
 
 			return $footer;
-		}
-
-		/**
-		 * Email when a course is submitted for reviewing
-		 *
-		 * @param $course_id
-		 * @param $user
-		 */
-		public function review_course( $course_id, $user ) {
-			$mail = $this->emails['LP_Email_New_Course'];
-			$mail->trigger( $course_id, $user );
-		}
-
-		public function course_rejected( $course_id ) {
-			$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
-
-			if ( ! $course_user->is_admin() ) {
-				$mail = $this->emails['LP_Email_Rejected_Course'];
-				$mail->trigger( $course_id );
-			}
-		}
-
-		public function course_approved( $course_id, $user ) {
-			$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
-
-			if ( ! $course_user->is_admin() ) {
-				$mail = $this->emails['LP_Email_Published_Course'];
-				$mail->trigger( $course_id, $user );
-			}
-		}
-
-		public function finish_course( $course_id, $user_id, $result ) {
-			$user = learn_press_get_user( $user_id );
-
-			if ( ! $user ) {
-				return;
-			}
-
-			$mail = $this->emails['LP_Email_Finished_Course'];
-			$mail->trigger( $course_id, $user->get_id(), $result );
-		}
-
-		/**
-		 * triggder send customer new order
-		 *
-		 * @param type $result
-		 * @param type $order_id
-		 *
-		 * @return array
-		 */
-		public function customer_new_order( $result, $order_id ) {
-			$mail = $this->emails['LP_Email_New_Order_Customer'];
-			$mail->trigger( $order_id );
-
-			return $result;
-		}
-
-		public function become_an_teacher( $user_id, $role, $old_role ) {
-			if ( $role === LP_TEACHER_ROLE ) {
-				$mail = $this->emails['LP_Email_Become_An_Instructor'];
-				$mail->trigger( $user_id );
-			}
 		}
 
 		public function set_current( $id ) {
