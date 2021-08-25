@@ -354,7 +354,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$course_data = $user->get_course_data( $course->get_id() );
 
-		if ( $course_data ) {
+		if ( ! $course_data ) {
 			return;
 		}
 

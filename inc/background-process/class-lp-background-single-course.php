@@ -87,6 +87,14 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				);
 			}
 			// End
+
+			// Clear cache
+			$lp_course_cache = LP_Course_Cache::instance();
+			$key_cache_arr   = [];
+			foreach ( $key_cache_arr as $key_cache ) {
+				$lp_course_cache->clear( $key_cache );
+			}
+			// End
 		}
 
 		/**

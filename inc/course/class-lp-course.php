@@ -204,6 +204,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return int second
 		 * @since 4.0.0
 		 * @author tungnx
+		 * @version 1.0.1
 		 */
 		public function timestamp_remaining_duration(): int {
 			$timestamp_remaining = - 1;
@@ -224,15 +225,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return $timestamp_remaining;
 			}
 
-			/**
-			 * Get cache
-			 * Please run wp_cache_delete('timestamp_remaining_duration_course_' . $this->get_id()); when save duration on course
-			 */
-			$timestamp_remaining = wp_cache_get(
-				'timestamp_remaining_duration_course_' . $this->get_id(),
-				'course-post'
-			);
-
 			if ( ! is_bool( $timestamp_remaining ) ) {
 				return $timestamp_remaining;
 			}
@@ -247,13 +239,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			if ( $timestamp_remaining < 0 ) {
 				$timestamp_remaining = 0;
-
-				// Set Cache
-				wp_cache_set(
-					'timestamp_remaining_duration_course_' . $this->get_id(),
-					$timestamp_remaining,
-					'course-post'
-				);
 			}
 
 			return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
