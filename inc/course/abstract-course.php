@@ -1203,8 +1203,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param int $at
 		 *
 		 * @return bool|mixed
+		 * @editor tungnx
+		 * @modify 4.1.3 - comment - not use
 		 */
-		public function get_item_at( $at ) {
+		/*public function get_item_at( $at ) {
 			$items = $this->get_items();
 
 			if ( ! $items ) {
@@ -1212,7 +1214,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return ! empty( $items[ $at ] ) ? $items[ $at ] : false;
-		}
+		}*/
 
 		/**
 		 * Get position of an item in course curriculum.

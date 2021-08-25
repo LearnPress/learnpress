@@ -354,13 +354,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$course_data = $user->get_course_data( $course->get_id() );
 
-		if ( false === $course_data ) {
+		if ( $course_data ) {
 			return;
 		}
 
-		if ( ! $course_data->get_item_at( 0 ) ) {
+		/*if ( ! $course_data->get_item_at( 0 ) ) {
 			return;
-		}
+		}*/
 
 		// Course has no items
 		if ( empty( $course->get_item_ids() ) ) {

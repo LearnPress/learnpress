@@ -23,7 +23,7 @@ class LP_Email_Type_Order_Guest extends LP_Email_Type_Order_Student {
 			}
 
 			// If is Order of guest, only one mail, because Order manual add only user exist
-			if ( $order->is_guest() ) {
+			if ( ! $order->is_manual() && $order->is_guest() ) {
 				$this->set_user_receiver_mail( $order, 0 );
 			}
 		} catch ( Throwable $e ) {

@@ -18,7 +18,11 @@ class LP_Email_Type_Order_Student extends LP_Email_Type_Order {
 	public function handle( array $params ) {
 		try {
 			$order = $this->check_and_get_order( $params );
-			if ( ! $order || $order->is_guest() ) {
+			if ( ! $order ) {
+				return;
+			}
+
+			if ( ! $order->is_manual() && $order->is_guest() ) {
 				return;
 			}
 

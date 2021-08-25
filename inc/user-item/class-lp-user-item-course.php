@@ -1077,8 +1077,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param int $at
 	 *
 	 * @return LP_User_Item_Course
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public function get_item_at( $at = 0 ) {
+	/*public function get_item_at( $at = 0 ) {
 		$items   = $this->read_items();
 		$item_id = ! empty( $this->_items_by_order[ $at ] ) ? $this->_items_by_order[ $at ] : 0;
 		if ( ! $item_id && $items ) {
@@ -1087,7 +1089,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return $this->offsetGet( $item_id );
-	}
+	}*/
 
 	/**
 	 * @param $id

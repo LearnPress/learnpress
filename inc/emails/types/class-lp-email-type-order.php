@@ -36,16 +36,17 @@ class LP_Email_Type_Order extends LP_Email {
 	 * Return Order
 	 *
 	 * @param array $params
-	 * @return LP_Order|null
+	 * @return LP_Order|bool
 	 * @throws Exception
 	 */
 	protected function check_and_get_order( array $params ) {
 		if ( ! $this->enable ) {
-			return null;
+			return false;
 		}
 
-		if ( count( $params ) < 1 ) {
-			throw new Exception( 'Invalid params to send email ' . __CLASS__ );
+		if ( count( $params ) < 2 ) {
+			error_log( 'Invalid params to send email ' . __CLASS__ );
+			return false;
 		}
 
 		$order_id = $params[0] ?? 0;
