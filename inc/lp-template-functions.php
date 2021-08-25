@@ -30,7 +30,7 @@ if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 	function learn_press_remove_course_buttons() {
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
+		//remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'button_retry' ), 20 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );

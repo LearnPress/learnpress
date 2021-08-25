@@ -678,11 +678,13 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return parent::complete( $status );
 	}
 
-	public function is_enrolled() {
-		return in_array(
-			$this->get_status(),
-			learn_press_course_enrolled_slugs() /* array( 'enrolled', 'finished' )*/
-		);
+	/**
+	 * Check course of use has enrolled
+	 *
+	 * @throws Exception
+	 */
+	public function is_enrolled(): bool {
+		return $this->get_status() == LP_COURSE_ENROLLED;
 	}
 
 	public function get_level() {
@@ -920,9 +922,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Check course is completed or not.
 	 *
 	 * @return bool
+	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.3
 	 */
-	public function is_finished() {
-		return in_array( $this->get_status(), array( 'passed', 'failed', 'finished' ) );
+	public function is_finished(): bool {
+		return $this->get_status() == LP_COURSE_FINISHED;
 	}
 
 	/**

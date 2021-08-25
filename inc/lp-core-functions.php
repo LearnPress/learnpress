@@ -3276,8 +3276,10 @@ function learn_press_error_log( $value ) {
  *
  * @return bool|string
  * @since 3.3.0
+ * @editor tungnx
+ * @modify 4.1.3 - comment - not use
  */
-function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
+/*function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
 	if ( ! $user = learn_press_get_user( $user_id ? $user_id : get_current_user_id() ) ) {
 		return false;
 	}
@@ -3287,7 +3289,7 @@ function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
 	}
 
 	return $userCourse->get_status();
-}
+}*/
 
 /**
  * Return list types of questions that support answer options.
@@ -3707,8 +3709,10 @@ function learn_press_is_enrolled_slug( $slug ) {
 /**
  * @return array
  * @since 4.0.0
+ * @editor tungnx
+ * @modify 4.1.3 - comment - not use
  */
-function learn_press_course_enrolled_slugs() {
+/*function learn_press_course_enrolled_slugs(): array {
 	return apply_filters(
 		'learn-press/course-enrolled-slugs',
 		array(
@@ -3719,7 +3723,7 @@ function learn_press_course_enrolled_slugs() {
 			'finished', // deprecated
 		)
 	);
-}
+}*/
 
 /**
  * @return array

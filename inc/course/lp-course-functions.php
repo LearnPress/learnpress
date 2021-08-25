@@ -74,7 +74,8 @@ function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0
 function learn_press_get_course_item_types() {
 	return apply_filters(
 		'learn-press/course-item-type',
-		array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
+		array( LP_LESSON_CPT, LP_QUIZ_CPT )
+	);
 }
 
 /**
@@ -86,13 +87,16 @@ function learn_press_get_course_item_types() {
  */
 function learn_press_get_item_courses( $item ) {
 	global $wpdb;
-	$query = $wpdb->prepare( "
+	$query = $wpdb->prepare(
+		"
 		SELECT c.*
 		FROM {$wpdb->posts} c
 			INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
 			INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
 			WHERE si.item_id = %d
-	", $item );
+		",
+		$item
+	);
 
 	return $wpdb->get_results( $query );
 }
@@ -123,8 +127,12 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 
 	if ( ! empty( $terms ) ) {
 		$terms           = _learn_press_usort_terms_by_ID( $terms ); // order by ID
-		$category_object = apply_filters( 'learn_press_course_post_type_link_course_category', $terms[0], $terms,
-			$post );
+		$category_object = apply_filters(
+			'learn_press_course_post_type_link_course_category',
+			$terms[0],
+			$terms,
+			$post
+		);
 		$category_object = get_term( $category_object, 'course_category' );
 		$course_category = $category_object->slug;
 
@@ -180,8 +188,11 @@ function learn_press_item_meta_format( $item, $nonce = '' ) {
 
 		// return false to hide post format
 		if ( $format = apply_filters( 'learn_press_course_item_format', $format, $item ) ) {
-			printf( '<label for="post-format-0" class="post-format-icon post-format-%s" title="%s"></label>', $format,
-				ucfirst( $format ) );
+			printf(
+				'<label for="post-format-0" class="post-format-icon post-format-%s" title="%s"></label>',
+				$format,
+				ucfirst( $format )
+			);
 		} else {
 			echo $nonce;
 		}
@@ -218,8 +229,11 @@ function learn_press_get_course_curriculum( $course_id ) {
  * @param int $user_id
  *
  * @return boolean
+ * @deprecated 4.1.3
+ * @editor tungnx
  */
 function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
+	_deprecated_function( __FUNCTION__, '4.1.3' );
 	if ( $course = learn_press_get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
 		return $user->has_enrolled_course( $course_id );
 	}
@@ -719,10 +733,16 @@ if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 		$user = learn_press_get_current_user();
 		if ( $user->can_edit_item( $item_id, $course_id ) ) : ?>
 			<p class="edit-course-item-link">
-				<a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item',
-						'learnpress' ); ?></a>
+				<a href="<?php echo get_edit_post_link( $item_id ); ?>">
+									<?php
+									_e(
+										'Edit this item',
+										'learnpress'
+									);
+									?>
+						</a>
 			</p>
-		<?php
+			<?php
 		endif;
 	}
 }
@@ -763,14 +783,17 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 		}
 
 		if ( false === $course_id ) {
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare(
+				"
 			    SELECT section.section_course_id
                 FROM {$wpdb->learnpress_sections} AS section
                 INNER JOIN {$wpdb->learnpress_section_items} AS item
                 ON item.section_id = section.section_id
                 WHERE item.item_id = %d
                 LIMIT 1
-			", $post_id );
+				",
+				$post_id
+			);
 
 			$course_id = apply_filters( 'learn-press/item-course-id', absint( $wpdb->get_var( $query ) ), $post_id );
 
@@ -848,8 +871,9 @@ function learn_press_get_preview_url( $post_id ) {
 		add_query_arg(
 			array(
 				'lp-preview' => $post_id,
-				'_wpnonce'   => wp_create_nonce( 'lp-preview' )
-			), trailingslashit( get_home_url() /* SITE_URL */ )
+				'_wpnonce'   => wp_create_nonce( 'lp-preview' ),
+			),
+			trailingslashit( get_home_url() /* SITE_URL */ )
 		);
 }
 

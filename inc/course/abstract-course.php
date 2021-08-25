@@ -1882,7 +1882,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_external_link() {
-			return apply_filters( 'learn-press/course-external-link', $this->get_data( 'external_link' ), $this->get_id() );
+			return apply_filters( 'learn-press/course-external-link', $this->get_data( 'external_link', '' ), $this->get_id() );
 		}
 
 		public function get_external_link_text() {

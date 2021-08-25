@@ -336,8 +336,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return int
+		 * @editor tungnx
+		 * @modify 4.1.3 - comment - not user
 		 */
-		public function count_item_archive( $item_id, $course_id = 0 ) {
+		/*public function count_item_archive( $item_id, $course_id = 0 ) {
 			$count = 0;
 
 			if ( $items = $this->get_item_archive( $item_id, $course_id ) ) {
@@ -345,254 +347,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $count;
-		}
-
-		/**
-		 * Start quiz for the user.
-		 *
-		 * @param int  $quiz_id
-		 * @param int  $course_id
-		 * @param bool $wp_error Optional. Whether to return a WP_Error on failure. Default false.
-		 *
-		 * @return LP_User_Item_Quiz|bool|WP_Error
-		 * @throws Exception
-		 */
-		public function start_quiz( $quiz_id, $course_id = 0, $wp_error = false ) {
-			try {
-				$item_id = learn_press_get_request( 'lp-preview' );
-
-				if ( $item_id ) {
-					learn_press_add_message( __( 'You cannot start a quiz in preview mode.', 'learnpress' ), 'error' );
-					wp_safe_redirect( learn_press_get_preview_url( $item_id ) );
-					exit();
-				}
-
-				// Validate course and quiz
-				$course_id = $this->_verify_course_item( $quiz_id, $course_id );
-				if ( ! $course_id ) {
-					throw new Exception(
-						__( 'Course does not exist or does not contain the quiz', 'learnpress' ),
-						LP_INVALID_QUIZ_OR_COURSE
-					);
-				}
-
-				$course = learn_press_get_course( $course_id );
-				//$access_level = $this->get_course_access_level( $course_id );
-
-				// If user has already finished the course
-				if ( $this->has_finished_course( $course_id ) ) {
-					throw new Exception(
-						__( 'You have already finished the course of this quiz', 'learnpress' ),
-						LP_COURSE_IS_FINISHED
-					);
-				}
-
-				if ( ! $this->has_enrolled_course( $course_id ) || ! $this->is_course_in_progress( $course_id ) ) {
-					if ( ! $course->is_no_required_enroll() ) {
-						throw new Exception(
-							__( 'Please enroll course before starting quiz.', 'learnpress' ),
-							LP_COURSE_IS_FINISHED
-						);
-					}
-				}
-
-				// Check if user has already started or completed quiz
-				if ( $this->has_item_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
-					throw new Exception(
-						__( 'User has started or completed quiz', 'learnpress' ),
-						LP_QUIZ_HAS_STARTED_OR_COMPLETED
-					);
-				}
-				$user = LP_Global::user();
-
-				if ( $user->is_guest() ) {
-					// if course required enroll => print message "You have to login for starting quiz"
-					if ( ! $course->is_no_required_enroll() ) {
-						throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
-					}
-				}
-
-				/**
-				 * Hook can start quiz
-				 *
-				 * @see learn_press_hk_before_start_quiz
-				 */
-				$can_start_quiz = apply_filters(
-					'learn-press/before-start-quiz',
-					true,
-					$quiz_id,
-					$course_id,
-					$this->get_id()
-				);
-
-				if ( ! $can_start_quiz ) {
-					return false;
-				}
-
-				$user_quiz = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
-
-				/**
-				 * Hook quiz started
-				 *
-				 * @since 3.0.0
-				 */
-				do_action( 'learn-press/user/quiz-started', $quiz_id, $course_id, $this->get_id() );
-
-				// $return = $user_quiz->get_mysql_data();
-				$return = $user_quiz;
-			} catch ( Exception $ex ) {
-				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
-			}
-
-			return $return;
-		}
-
-		/**
-		 * Finish a quiz for the user and save all data needed
-		 *
-		 * @param int  $quiz_id
-		 * @param int  $course_id
-		 * @param bool $wp_error
-		 *
-		 * @return LP_User_Item_Quiz|bool|WP_Error
-		 */
-		public function finish_quiz( $quiz_id, $course_id, $wp_error = false ) {
-			if ( ! apply_filters(
-				'learn_press_before_user_finish_quiz',
-				true,
-				$quiz_id,
-				$course_id,
-				$this->get_id()
-			) ) {
-				return false;
-			}
-			$return = false;
-
-			try {
-				// Validate course and quiz
-				if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
-					throw new Exception(
-						__( 'Course is not exists or does not contain the quiz', 'learnpress' ),
-						LP_INVALID_QUIZ_OR_COURSE
-					);
-				}
-
-				// If user has already finished the course
-				if ( $this->has_finished_course( $course_id ) ) {
-					throw new Exception(
-						__( 'User has already finished course of this quiz', 'learnpress' ),
-						LP_COURSE_IS_FINISHED
-					);
-
-				}
-
-				// Check if user has already started or completed quiz
-				if ( $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
-					throw new Exception(
-						__( 'User has completed quiz', 'learnpress' ),
-						LP_QUIZ_HAS_STARTED_OR_COMPLETED
-					);
-				}
-
-				$user_quiz = $this->get_item_data( $quiz_id, $course_id );
-
-				$user_quiz->finish();
-
-				do_action( 'learn-press/user/quiz-finished', $quiz_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
-				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
-			}
-
-			return $return;
-		}
-
-		/**
-		 * Retake a quiz for the user
-		 *
-		 * @param int  $quiz_id
-		 * @param int  $course_id
-		 * @param bool $wp_error
-		 *
-		 * @return bool|WP_Error|LP_User_Item_Quiz
-		 *
-		 * @throws Exception
-		 */
-		public function retake_quiz( $quiz_id, $course_id, $wp_error = false ) {
-			if ( ! apply_filters(
-				'learn-press/user/before-retake-quiz',
-				true,
-				$quiz_id,
-				$course_id,
-				$this->get_id()
-			) ) {
-				return false;
-			}
-			$return = false;
-			try {
-				$course_id = $this->_verify_course_item( $quiz_id, $course_id );
-
-				if ( false === $course_id ) {
-					throw new Exception(
-						sprintf(
-							__(
-								'Course does not exist or does not contain the quiz.',
-								'learnpress'
-							),
-							__CLASS__,
-							__FUNCTION__
-						),
-						LP_INVALID_QUIZ_OR_COURSE
-					);
-				}
-
-				// If user has already finished the course.
-				if ( $this->has_finished_course( $course_id ) ) {
-					throw new Exception(
-						sprintf(
-							__( 'You can not redo a quiz in a finished course.', 'learnpress' ),
-							__CLASS__,
-							__FUNCTION__
-						),
-						LP_COURSE_IS_FINISHED
-					);
-
-				}
-
-				// Check if user has already started or completed quiz
-				if ( ! $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
-					throw new Exception(
-						sprintf(
-							__( '%1$s::%2$s - User has not completed quiz.', 'learnpress' ),
-							__CLASS__,
-							__FUNCTION__
-						),
-						LP_QUIZ_HAS_STARTED_OR_COMPLETED
-					);
-				}
-
-				$allow_attempts = learn_press_get_quiz_max_retrying( $quiz_id, $course_id );
-
-				if ( ! $this->has_retake_quiz( $quiz_id, $course_id ) ) {
-					throw new Exception(
-						sprintf(
-							__( '%1$s::%2$s - Your Quiz can\'t retake.', 'learnpress' ),
-							__CLASS__,
-							__FUNCTION__
-						),
-						LP_QUIZ_HAS_STARTED_OR_COMPLETED
-					);
-				}
-
-				$return = learn_press_user_retake_quiz( $quiz_id, false, $course_id, $wp_error );
-
-				do_action( 'learn-press/user/quiz-retried', $quiz_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
-				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
-				do_action( 'learn-press/user/retake-quiz-failure', $quiz_id, $course_id, $this->get_id() );
-			}
-
-			return $return;
-		}
+		}*/
 
 		/**
 		 * Check quiz can retake?
@@ -1542,9 +1297,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @editor tungnx
 		 * @modify 4.1.2
 		 * @version 1.0.1
-		 * @Todo tungnx - should replace to method LP_User::is_course_enrolled
+		 * @Todo tungnx - comment - use mothod LP_User::has_enrolled_course
+		 * @see LP_User::has_enrolled_course()
 		 */
-		public function has_enrolled_course( int $course_id ) : bool {
+		/*public function has_enrolled_course( int $course_id ) {
 			$flag_enrolled = true;
 
 			try {
@@ -1562,21 +1318,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $flag_enrolled;
-		}
-
-		/**
-		 * Return true if you has finished a course
-		 *
-		 * @param int $course_id .
-		 *
-		 * @return bool
-		 */
-		public function has_finished_course( int $course_id ) : bool {
-			$course_item = $this->get_course_data( $course_id );
-			$finished    = $course_item && $course_item->has_finished();
-
-			return apply_filters( 'learn-press/user-has-finished-course', $finished, $this->get_id(), $course_id );
-		}
+		}*/
 
 		/**
 		 * Check user has passed course.
@@ -2353,23 +2095,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		//
 		//          return $return;
 		//      }
-
-		/**
-		 * Send mail when user enrolled course
-		 * @param $user_id
-		 * @param $course_id
-		 * @editor tungnx
-		 * @author hungkv
-		 * @reason comment - not use
-		 * @since 4.1.2
-		 */
-		/*public function enrolled_sendmail( $user_id, $course_id ) {
-			$user_course = $this->get_course_data( $this->get_id() );
-			if ( $this->has_enrolled_course( $course_id ) ) {
-				// Trigger action
-				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
-			}
-		}*/
 
 		/**
 		 * Enroll this user to a course.

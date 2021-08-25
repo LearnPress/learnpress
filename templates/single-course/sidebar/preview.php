@@ -2,7 +2,7 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -18,9 +18,7 @@ defined( 'ABSPATH' ) || exit;
 
 	<?php
 	// Price box.
-	if ( ! in_array( learn_press_user_course_status(), learn_press_course_enrolled_slugs() ) ) {
-		LP()->template( 'course' )->course_pricing();
-	}
+	LP()->template( 'course' )->course_pricing();
 
 	// Graduation.
 	LP()->template( 'course' )->course_graduation();

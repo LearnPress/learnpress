@@ -434,16 +434,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $got_status;
 	}
 
-	/**
-	 * Check course is finished.
-	 *
-	 * @return bool.
-	 * @throws Exception
-	 */
-	public function has_finished() : bool {
-		return $this->get_status() === LP_COURSE_FINISHED;
-	}
-
 	public function is_exists() {
 		return ! ! $this->get_user_item_id();
 	}

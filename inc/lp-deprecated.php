@@ -765,8 +765,10 @@ if ( ! function_exists( 'learn_press_single_course_summary' ) ) {
 if ( ! function_exists( 'learn_press_course_price' ) ) {
 	/**
 	 * Display course price.
+	 * @deprecated 4.0.0
 	 */
 	function learn_press_course_price() {
+		_deprecated_function( __FUNCTION__, '4.0.0' );
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
@@ -1096,8 +1098,10 @@ if ( ! function_exists( 'learn_press_end_courses_loop' ) ) {
 if ( ! function_exists( 'learn_press_courses_loop_item_students' ) ) {
 	/**
 	 * Output the students of the course within loop
+	 * @deprecated 4.0.0
 	 */
 	function learn_press_courses_loop_item_students() {
+		_deprecated_function( __FUNCTION__, '4.0.0' );
 		echo '<div class="clearfix"></div>';
 		learn_press_get_template( 'loop/course/students.php' );
 	}

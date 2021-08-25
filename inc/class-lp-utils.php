@@ -75,6 +75,7 @@ class LP_Utils {
 	 * @param bool  $hard
 	 *
 	 * @return array
+	 * @Todo: tungnx - review this function
 	 */
 	public function count_course_users( $args = array(), $hard = false ) {
 

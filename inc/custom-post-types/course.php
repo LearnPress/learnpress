@@ -629,11 +629,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'students':
-					// In ra so student da enroll.
+					//Todo: tungnx - should review code
+					//Total user enrolled.
 					$count = LP()->utils->count_course_users(
 						array(
 							'course_id'  => $course->get_id(),
-							'status'     => learn_press_course_enrolled_slugs(),
+							'status'     => [],
 							'total_only' => true,
 						)
 					);
