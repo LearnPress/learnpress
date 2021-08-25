@@ -42,7 +42,7 @@ if ( ! class_exists( 'LP_Email_Type_Become_An_Instructor' ) ) {
 			}
 
 			$user_email = $params[0];
-			$user       = get_user_by_email( $user_email );
+			$user       = get_user_by( 'email', $user_email );
 
 			if ( ! $user ) {
 				return;
