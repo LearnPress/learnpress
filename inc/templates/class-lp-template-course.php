@@ -217,7 +217,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 	/**
 	 * Show button enroll course
 	 *
-	 * @TODO check this function - tungnx
+	 * @editor tungnx
+	 * @modify 4.1.3
+	 * @throws Exception
+	 * @version 4.0.1
 	 */
 	public function course_enroll_button() {
 		$user   = LP_Global::user();
@@ -232,18 +235,25 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$purchased = $user->has_purchased_course( $course->get_id() );
+		// Get user course from learnpress_user_items
+		$user_course = $user->get_course_data( $course->get_id() );
 
-		// For free course and user does not purchased
-		$course_data = $user->get_course_data( $course->get_id() );
-
-		if ( $course->is_free() ) {
-			learn_press_get_template( 'single-course/buttons/enroll.php' );
-		} elseif ( $purchased && $course_data ) {
-			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
-				learn_press_get_template( 'single-course/buttons/enroll.php' );
-			}
+		if ( ! $user_course ) {
+			return;
 		}
+
+		if ( $user_course->is_finished() ) {
+			return;
+		}
+
+		// For free course and user has not purchased
+		/*if ( $course->is_free() ) {
+			learn_press_get_template( 'single-course/buttons/enroll.php' );
+		} elseif ( $user_course->is_purchased() ) {
+			learn_press_get_template( 'single-course/buttons/enroll.php' );
+		}*/
+
+		learn_press_get_template( 'single-course/buttons/enroll.php' );
 	}
 
 	public function course_extra_requirements( $course_id ) {

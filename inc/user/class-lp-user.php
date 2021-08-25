@@ -170,6 +170,22 @@ class LP_User extends LP_Abstract_User {
 	}
 
 	/**
+	 * Return true if user has already purchased course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return bool
+	 * @editor tungnx
+	 * @modify 4.1.3
+	 * @throws Exception
+	 */
+	public function has_purchased_course( int $course_id ): bool {
+		$user_course = $this->get_course_data( $course_id );
+
+		return apply_filters( 'learn-press/user-purchased-course', $user_course->is_purchased(), $course_id, $this->get_id() );
+	}
+
+	/**
 	 * Check course is enrolled
 	 *
 	 * @param integer $course_id Course ID

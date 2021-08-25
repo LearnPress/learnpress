@@ -225,10 +225,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return $timestamp_remaining;
 			}
 
-			if ( ! is_bool( $timestamp_remaining ) ) {
-				return $timestamp_remaining;
-			}
-
 			$course_item_data = $user->get_course_data( $this->get_id() );
 
 			$course_start_time   = $course_item_data->get_start_time()->get_raw_date();

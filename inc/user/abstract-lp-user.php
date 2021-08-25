@@ -1855,28 +1855,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}*/
 
 		/**
-		 * Return true if user has already purchased course
-		 * and the order is completed.
-		 *
-		 * @param int $course_id
-		 *
-		 * @return bool
-		 */
-		public function has_purchased_course( int $course_id ): bool {
-			$purchased = false;
-
-			try {
-				if ( LP_COURSE_PURCHASED === $this->get_course_status( $course_id ) ) {
-					$purchased = true;
-				}
-			} catch ( Throwable $e ) {
-				$purchased = false;
-			}
-
-			return apply_filters( 'learn-press/user-purchased-course', $purchased, $course_id, $this->get_id() );
-		}
-
-		/**
 		 * Check if user is already ordered a course.
 		 *
 		 * @param int $course_id

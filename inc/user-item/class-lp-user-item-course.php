@@ -687,6 +687,18 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return $this->get_status() == LP_COURSE_ENROLLED;
 	}
 
+	/**
+	 * Check course of use has purchased
+	 *
+	 * @throws Exception
+	 * @author tungnx
+	 * @since 4.1.3
+	 * @version 1.0.0
+	 */
+	public function is_purchased(): bool {
+		return $this->get_status() == LP_COURSE_PURCHASED;
+	}
+
 	public function get_level() {
 		if ( ! $this->is_exists() ) {
 			return 0;
