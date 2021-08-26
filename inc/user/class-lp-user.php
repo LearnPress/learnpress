@@ -354,44 +354,38 @@ class LP_User extends LP_Abstract_User {
 				throw new Exception( $message );
 			}
 
-			// If the order contains course is processing
-			$order = $this->get_course_order( $course_id );
-			if ( $order && $order->get_status() === 'processing' ) {
-				$message = apply_filters(
-					'learn-press/order-processing-message',
-					__( 'Your order is waiting for processing', 'learnpress' )
-				);
+			if ( $this->has_purchased_course( $course_id ) ) {
+				// If the order contains course is processing
+				$order = $this->get_course_order( $course_id );
+				if ( $order && $order->get_status() === 'processing' ) {
+					$message = apply_filters(
+						'learn-press/order-processing-message',
+						__( 'Your order is waiting for processing', 'learnpress' )
+					);
 
-				if ( $message ) {
-					learn_press_display_message( $message );
+					if ( $message ) {
+						learn_press_display_message( $message );
+					}
+
+					throw new Exception( $message );
+				} else {
+					throw new Exception( 'Course is purchased' );
 				}
-
-				throw new Exception( $message );
 			}
 
-			// Allow Repurchase when course finished or block duration.
-			if ( $course->allow_repurchase() && ( $this->has_finished_course( $course_id ) || 0 === $course->timestamp_remaining_duration() ) ) {
-				$can_purchase = true;
-			} else {
-				if ( $this->has_enrolled_course( $course_id ) ) {
-					throw new Exception( 'Course is has enrolled' );
-				}
+			if ( ! $course->allow_repurchase() &&
+				 ( $this->has_finished_course( $course_id ) ||
+				   0 === $course->timestamp_remaining_duration() ) ) {
+				throw new Exception( 'Course deny repurchased' );
+			}
 
-				// User can not purchase course
-				/*
-				if ( ! parent::can_purchase_course( $course_id ) ) {
-					return false;
-				}*/
-
-				// If user has already purchased course but has not finished yet.
-				if ( $this->has_purchased_course( $course_id ) && 'finished' !== $this->get_course_status( $course_id ) ) {
-					throw new Exception( 'Course is has purchased but not finished' );
-				}
+			if ( $this->has_enrolled_course( $course_id ) ) {
+				throw new Exception( 'Course is has enrolled or finished' );
 			}
 
 			$can_purchase = true;
 		} catch ( Exception $e ) {
-
+			$can_purchase = false;
 		}
 
 		return apply_filters( 'learn-press/user/can-purchase-course', $can_purchase, $this->get_id(), $course_id );
