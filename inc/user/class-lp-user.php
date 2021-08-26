@@ -318,6 +318,8 @@ class LP_User extends LP_Abstract_User {
 	 * @return bool
 	 * @throws Exception
 	 * @author nhamdv
+	 * @editor tungnx
+	 * @modify 4.1.3
 	 */
 	public function can_purchase_course( int $course_id ): bool {
 		$can_purchase = false;
@@ -373,14 +375,18 @@ class LP_User extends LP_Abstract_User {
 				}
 			}
 
-			if ( ! $course->allow_repurchase() &&
-				 ( $this->has_finished_course( $course_id ) ||
-				   0 === $course->timestamp_remaining_duration() ) ) {
-				throw new Exception( 'Course deny repurchased' );
-			}
+			$is_blocked_course  = 0 === $course->timestamp_remaining_duration();
+			$is_enrolled_course = $this->has_enrolled_course( $course_id );
+			$is_finished_course = $this->has_finished_course( $course_id );
 
-			if ( $this->has_enrolled_course( $course_id ) ) {
-				throw new Exception( 'Course is has enrolled or finished' );
+			if ( $course->allow_repurchase() ) {
+				if ( $is_enrolled_course && ! $is_blocked_course ) {
+					throw new Exception( 'Course is enrolled' );
+				}
+			} else {
+				if ( $this->has_enrolled_or_finished( $course_id ) ) {
+					throw new Exception( 'Course is enrolled' );
+				}
 			}
 
 			$can_purchase = true;
