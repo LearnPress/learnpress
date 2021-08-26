@@ -56,6 +56,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	/**
 	 * Show button retry course
+	 *
+	 * @throws Exception
 	 */
 	public function button_retry() {
 		$user   = LP_Global::user();
@@ -86,7 +88,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		echo $course->get_image();
 	}
 
-	public function loop_item_user_progress() {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.3
+	 */
+	/*public function loop_item_user_progress() {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
@@ -97,7 +103,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( $user->has_enrolled_course( $course->get_id() ) ) {
 			echo $user->get_course_status( $course->get_id() );
 		}
-	}
+	}*/
 
 	/**
 	 * @param LP_Quiz $item
@@ -329,8 +335,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Show button retake course
 	 *
 	 * @throws Exception
+	 * @deprecated 4.0.0
 	 */
 	public function course_retake_button() {
+		_deprecated_function( __FUNCTION__, '4.0.0', 'button_retry' );
 		$user = learn_press_get_current_user();
 
 		if ( ! $user ) {
@@ -372,9 +380,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$course_data = $user->get_course_data( $course->get_id() );
-
-		if ( ! $course_data ) {
+		if ( $user->has_finished_course( $course->get_id() ) ) {
 			return;
 		}
 
@@ -479,7 +485,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$user = learn_press_get_current_user();
 
-		if ( $user && ! $user->has_enrolled_course( $course->get_id() ) && ! $user->has_finished_course( $course->get_id() ) ) {
+		if ( $user && ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
 			// Remove all another buttons
 			learn_press_remove_course_buttons();
 			learn_press_get_template( 'single-course/buttons/external-link.php' );
@@ -841,7 +847,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( $user->has_enrolled_course( $this->course->get_id() ) ) {
+		if ( $user->has_enrolled_or_finished( $this->course->get_id() ) ) {
 			return;
 		}
 
@@ -952,6 +958,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Content will show in class-rest-lazy-load-controller file.
 	 *
 	 * @return void
+	 * @throws Exception
 	 * @author Nhamdv.
 	 */
 	public function user_progress() {
@@ -966,9 +973,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$course_data = $user->get_course_data( $course->get_id() );
-
-		if ( ! $user->has_enrolled_course( $course->get_id() ) || $course_data->get_status() === LP_COURSE_PURCHASED ) {
+		if ( ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
 			return;
 		}
 

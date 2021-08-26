@@ -599,8 +599,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Output html for students enrolled counter
 		 *
 		 * @return string
+		 * @editor tungnx
+		 * @modify 4.1.3
 		 */
-		public function get_students_html() {
+		/*public function get_students_html() {
 			$output = '';
 			$count  = $this->get_users_enrolled();
 
@@ -639,7 +641,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn-press/students-enrolled-html', $output, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * @param string $field

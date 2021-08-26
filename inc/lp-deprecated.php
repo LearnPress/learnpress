@@ -529,10 +529,12 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 
 	/**
 	 * Retake course button
+	 *
+	 * @deprecated 3.3.0
 	 */
 	function learn_press_course_retake_button() {
 		_deprecated_function( __FUNCTION__, '3.3.0' );
-		LP()->template( 'course' )->func( 'course_retake_button' );
+		LP()->template( 'course' )->func( 'button_retry' );
 	}
 }
 

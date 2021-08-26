@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -29,7 +29,7 @@ $percentage     = $course_results['count_items'] ? absint( $course_results['comp
 			<a href="<?php echo esc_url( $course->get_permalink() ); ?>"><?php echo $course->get_title(); ?></a>
 		</h2>
 
-		<?php if ( $user->has_enrolled_course( $course->get_id() ) ) : ?>
+		<?php if ( $user->has_enrolled_or_finished( $course->get_id() ) ) : ?>
 			<div class="items-progress">
 				<span class="number"><?php printf( __( '%1$s of %2$d items', 'learnpress' ), '<span class="items-completed">' . $course_results['completed_items'] . '</span>', $course->count_items( '', true ) ); ?></span>
 				<div class="learn-press-progress">

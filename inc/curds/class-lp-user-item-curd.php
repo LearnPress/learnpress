@@ -532,8 +532,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 * @since 3.2.0
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	public function parse_items_preview( $course_id, $user_id = 0 ) {
+	/*public function parse_items_preview( $course_id, $user_id = 0 ) {
 		$items = array();
 
 		$course = learn_press_get_course( $course_id );
@@ -577,16 +579,17 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 
 		return $items;
-	}
+	}*/
 
 	/**
 	 * Parse classes for all items in a course.
 	 *
-	 * @param int          $course_id .
-	 * @param int          $user_id .
+	 * @param int $course_id .
+	 * @param int $user_id .
 	 * @param array|string $more .
 	 *
 	 * @return array
+	 * @throws Exception
 	 * @since 3.2.0
 	 * @editor tungnx
 	 */
@@ -615,7 +618,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 
 		$current_item            = LP_Global::course_item();
-		$enrolled                = $user->has_enrolled_course( $course_id );
+		$enrolled                = $user->has_enrolled_or_finished( $course_id );
 		$is_free                 = $course->is_free();
 		$no_required_enroll      = $course->is_no_required_enroll();
 		$can_view_content_course = $user->can_view_content_course( $course_id );

@@ -20,6 +20,6 @@ $course = LP_Global::course();
 
 <span class="course-students">
 
-	<?php echo $course->get_students_html(); ?>
+	<?php echo $course->get_users_enrolled(); ?>
 
 </span>

@@ -182,7 +182,7 @@ class LP_User extends LP_Abstract_User {
 	public function has_purchased_course( int $course_id ): bool {
 		$user_course = $this->get_course_data( $course_id );
 
-		return apply_filters( 'learn-press/user-purchased-course', $user_course->is_purchased(), $course_id, $this->get_id() );
+		return apply_filters( 'learn-press/user-purchased-course', $user_course && $user_course->is_purchased(), $course_id, $this->get_id() );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class LP_User extends LP_Abstract_User {
 
 			$user_course = $this->get_course_data( $course_id );
 
-			if ( ! $user_course->is_enrolled() ) {
+			if ( ! $user_course || ! $user_course->is_enrolled() ) {
 				throw new Exception( esc_html__( 'Course is not enrolled', 'learnpress' ) );
 			}
 		} catch ( Throwable $th ) {
@@ -233,7 +233,29 @@ class LP_User extends LP_Abstract_User {
 	public function has_finished_course( int $course_id ) : bool {
 		$user_course = $this->get_course_data( $course_id );
 
-		return apply_filters( 'learn-press/user-has-finished-course', $user_course->is_finished(), $this->get_id(), $course_id );
+		return apply_filters( 'learn-press/user-has-finished-course', $user_course && $user_course->is_finished(), $this->get_id(), $course_id );
+	}
+
+	/**
+	 * Check course of user is enrolled or finished
+	 *
+	 * @param int $course_id
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function has_enrolled_or_finished( int $course_id ): bool {
+		$status = true;
+
+		$user_course = $this->get_course_data( $course_id );
+
+		if ( ! $user_course ) {
+			$status = false;
+		} elseif ( ! $user_course->is_enrolled() && ! $user_course->is_finished() ) {
+			$status = false;
+		}
+
+		return apply_filters( 'learn-press/user-has-finished-course', $status, $this->get_id(), $course_id );
 	}
 
 	/**

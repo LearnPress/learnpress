@@ -60,7 +60,7 @@ $items = $section->get_items();
 			</span>
 		</div>
 
-		<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) : ?>
+		<?php if ( $user->has_enrolled_or_finished( $section->get_course_id() ) ) : ?>
 			<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
 
 			<div class="section-meta">

@@ -334,6 +334,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return apply_filters( "lp_jwt_rest_prepare_{$this->post_type}_object", $response, $object, $request );
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	protected function get_course_data( $course, $context = 'view' ) {
 		$request = func_num_args() >= 2 ? func_get_arg( 2 ) : new WP_REST_Request( '', '', array( 'context' => $context ) );
 		$fields  = $this->get_fields_for_response( $request );
@@ -489,11 +492,19 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return $output;
 	}
 
-	public function get_all_items( $course ) {
+	/**
+	 * Get Items of sections
+	 *
+	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.3
+	 * @version 4.0.1
+	 */
+	public function get_all_items( $course ): array {
 		$curriculum  = $course->get_curriculum();
 		$user        = learn_press_get_current_user();
 		$user_course = $user ? $user->get_course_data( $course->get_id() ) : false;
-		$output      = array();
+		$output      = [];
 
 		if ( ! empty( $curriculum ) ) {
 			foreach ( $curriculum as $section ) {
@@ -506,7 +517,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						'order'       => $section->get_order(),
 					);
 
-					if ( $user_course && $user->has_enrolled_course( $section->get_course_id() ) ) {
+					if ( $user_course && $user->has_enrolled_or_finished( $section->get_course_id() ) ) {
 						$data['percent'] = $user_course->get_percent_completed_items( '', $section->get_id() );
 					}
 

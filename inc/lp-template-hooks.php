@@ -120,7 +120,6 @@ add_action(
  * @see LP_Template_Course::clearfix()
  * @see LP_Template_Course::courses_loop_item_price()
  * @see LP_Template_Course::courses_loop_item_info_end()
- * @see LP_Template_Course::loop_item_user_progress()
  */
 
 add_action(
@@ -177,7 +176,6 @@ add_action(
 	LP()->template( 'course' )->func( 'courses_loop_item_info_end' ),
 	60
 );
-// add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'loop_item_user_progress' ), 70 );
 
 add_action(
 	'learn-press/after-courses-loop-item',

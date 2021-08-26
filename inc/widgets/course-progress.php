@@ -46,6 +46,9 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 			parent::__construct();
 		}
 
+		/**
+		 * @throws Exception
+		 */
 		public function lp_rest_api_content( $instance, $params ) {
 			$user_id = get_current_user_id();
 
@@ -60,7 +63,7 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 			$course = learn_press_get_course( $instance['course_id'] );
 			$user   = learn_press_get_user( $user_id );
 
-			if ( ! $user->has_enrolled_course( $instance['course_id'] ) ) {
+			if ( ! $user->has_enrolled_or_finished( $instance['course_id'] ) ) {
 				return new WP_Error( 'no_enroll', sprintf( esc_html__( 'You haven\'t started %s', 'learnpress' ), $course->get_title() ) );
 			}
 
