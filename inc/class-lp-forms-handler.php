@@ -159,13 +159,8 @@ class LP_Forms_Handler {
 				throw new Exception( $new_customer->get_error_message() );
 			}
 
-			wp_set_current_user( $new_customer );
-			wp_set_auth_cookie( $new_customer, true );
-
-			learn_press_add_message( $username . __( ' was successfully created!', 'learnpress' ), 'success' );
-
-			// Send email when check enable Instructor.
-			if ( LP()->settings->get( 'instructor_registration' ) == 'yes' && isset( $_POST['become_teacher'] ) ) {
+			// Send email become a teacher.
+			if ( LP_Settings::get_option( 'instructor_registration', 'no' ) == 'yes' && isset( $_POST['become_teacher'] ) ) {
 				update_user_meta( $new_customer, '_requested_become_teacher', 'yes' );
 				do_action(
 					'learn-press/become-a-teacher-sent',
@@ -178,6 +173,16 @@ class LP_Forms_Handler {
 
 				learn_press_add_message( __( 'Your request become a instructor has been sent. We will get back to you soon!', 'learnpress' ), 'success' );
 			}
+
+			/**
+			 * Auto login user
+			 * Must set code below after Send email become a teacher
+			 * because 'none' check by "check_ajax_referer" will not valid for send mail background on WP_Async_Request
+			 */
+			wp_set_current_user( $new_customer );
+			wp_set_auth_cookie( $new_customer, true );
+
+			learn_press_add_message( $username . __( ' was successfully created!', 'learnpress' ), 'success' );
 
 			if ( ! empty( $_POST['redirect'] ) ) {
 				$redirect = wp_sanitize_redirect( wp_unslash( $_POST['redirect'] ) );

@@ -65,7 +65,7 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 						LP_Email_Finished_Course_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/instructor/class-lp-email-finished-course-instructor.php',
 					],
 
-					// User become an teacher
+					// User become a teacher
 					'learn-press/become-a-teacher-sent'  => [
 						LP_Email_Become_An_Instructor::class => LP_PLUGIN_PATH . 'inc/emails/admin/class-lp-email-become-an-instructor.php',
 					],
