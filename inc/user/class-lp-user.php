@@ -44,9 +44,9 @@ class LP_User extends LP_Abstract_User {
 		}
 
 		if ( $course->is_publish() ) {
-			$is_enrolled = $this->has_enrolled_course( $course_id );
+			$is_enrolled_or_finished = $this->has_enrolled_or_finished( $course_id );
 
-			if ( $is_enrolled ) {
+			if ( $is_enrolled_or_finished ) {
 				$is_finished_course            = $this->has_finished_course( $course_id );
 				$enable_block_item_when_finish = $course->enable_block_item_when_finish();
 
