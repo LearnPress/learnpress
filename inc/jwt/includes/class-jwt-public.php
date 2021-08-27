@@ -123,6 +123,79 @@ class LP_Jwt_Public {
 		}
 	}
 
+	public function auto_login() {
+		global $wp;
+
+		$rest_router = isset( $_GET['rest_router'] ) ? wp_unslash( $_GET['rest_router'] ) : false;
+		$token       = isset( $_GET['token'] ) ? wp_unslash( $_GET['token'] ) : false;
+		$redirect    = isset( $_GET['redirect'] ) ? esc_url_raw( wp_unslash( $_GET['redirect'] ) ) : false;
+		$request     = ! empty( $wp->request ) ? home_url( $wp->request ) : get_site_url();
+
+		if ( ! $rest_router || ! $token || $rest_router !== 'learnpress-rest-auth' ) {
+			return;
+		}
+
+		$secret_key = $this->secret_key;
+
+		if ( ! $secret_key ) {
+			return;
+		}
+
+		try {
+			$token = JWT::decode( $token, $secret_key, array( 'HS256' ) );
+
+			/** The Token is decoded now validate the iss */
+			if ( $token->iss != get_bloginfo( 'url' ) ) {
+				return new WP_Error(
+					'lp_jwt_auth_bad_iss',
+					esc_html__( 'The iss do not match with this server', 'learnpress' ),
+					array(
+						'status' => 403,
+					)
+				);
+			}
+
+			/** So far so good, validate the user id in the token */
+			if ( ! isset( $token->data->user->id ) ) {
+				return new WP_Error(
+					'lp_jwt_auth_bad_request',
+					esc_html__( 'User ID not found in the token', 'learnpress' ),
+					array(
+						'status' => 403,
+					)
+				);
+			}
+
+			if ( ! isset( $token->exp ) ) {
+				return new WP_Error(
+					'rest_authentication_missing_token_expiration',
+					esc_html__( 'Token must have an expiration.', 'learnpress' ),
+					array(
+						'status' => 403,
+					)
+				);
+			}
+
+			if ( time() > $token->exp ) {
+				return new WP_Error(
+					'rest_authentication_token_expired',
+					esc_html__( 'Token has expired.', 'learnpress' ),
+					array(
+						'status' => 403,
+					)
+				);
+			}
+
+			wp_set_current_user( $token->data->user->id );
+			wp_set_auth_cookie( $token->data->user->id, true );
+		} catch ( Exception $e ) {
+			learn_press_add_message( $e->getMessage(), 'error' );
+		}
+
+		wp_redirect( $redirect ? $redirect : $request );
+		exit();
+	}
+
 	public function register( WP_REST_Request $request ) {
 		$username         = $request->get_param( 'username' );
 		$password         = $request->get_param( 'password' );
