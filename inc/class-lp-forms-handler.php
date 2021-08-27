@@ -171,7 +171,7 @@ class LP_Forms_Handler {
 					)
 				);
 
-				learn_press_add_message( __( 'Your request become a instructor has been sent. We will get back to you soon!', 'learnpress' ), 'success' );
+				learn_press_add_message( __( 'Your request become an instructor has been sent. We will get back to you soon!', 'learnpress' ), 'success' );
 			}
 
 			/**
