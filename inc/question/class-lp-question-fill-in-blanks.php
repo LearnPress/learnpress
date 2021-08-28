@@ -168,6 +168,58 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			}
 		}
 
+		/**
+		 * Get answer options of the question
+		 *
+		 * @param array $args - Optional.
+		 *
+		 * @return mixed
+		 */
+		public function get_answer_options( $args = array() ) {
+
+			$args = wp_parse_args(
+				$args,
+				array(
+					'exclude' => '',
+					'map'     => '',
+					'answer'  => '',
+				)
+			);
+
+			if ( $args['exclude'] && is_string( $args['exclude'] ) ) {
+				$exclude = array_map( 'trim', explode( ',', $args['exclude'] ) );
+			} else {
+				$exclude = $args['exclude'];
+			}
+
+			$map = $args['map'];
+
+			$options = $this->get_data( 'answer_options' );
+
+			// Remove key if it present in $exclude.
+			if ( $options && ( $exclude || $map ) ) {
+				$exclude = array_flip( $exclude );
+
+				foreach ( $options as $k => $option ) {
+					$is_true         = ! isset( $exclude['is_true'] ) ? true : false;
+					$fib_answer      = ! empty( $args['answer'] ) ? $args['answer'] : '';
+					$title           = $option['title'];
+					$option['title'] = apply_filters( 'learn-press/question/fib/regex-content', $title, $option['question_answer_id'], $is_true, $fib_answer );
+
+					foreach ( $map as $k_map => $v_map ) {
+						if ( array_key_exists( $k_map, $option ) ) {
+							$option[ $v_map ]  = $option[ $k_map ];
+							$exclude[ $k_map ] = 1;
+						}
+					}
+
+					$options[ $k ] = array_diff_key( $option, $exclude );
+				}
+			}
+
+			return apply_filters( 'learn-press/question/answer-options', $options, $this->get_id() );
+		}
+
 
 		public function get_editor_settings() {
 			$blanks = $this->get_data( 'answer_options' );
