@@ -38,6 +38,7 @@ abstract class LP_Meta_Box {
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/extra.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/extra-faq.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/date.php';
+		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/wysiwyg.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/lp-meta-box-functions.php';
 	}
 

@@ -625,6 +625,22 @@
 		}
 	}
 
+	&__wp-editor {
+		display: block;
+
+		.description {
+			flex-basis: 100% !important;
+			width: 100%;
+			margin-top: 8px !important;
+			margin-left: 180px !important;
+			color: #666;
+		}
+
+		&__textarea {
+			border: none !important;
+		}
+	}
+
 	select {
 		width: auto !important;
 
@@ -641,7 +657,7 @@
 	input[type="email"],
 	input[type="text"],
 	input[type="password"],
-	textarea {
+	textarea:not(.lp-meta-box__wp-editor__textarea) {
 		width: 50%;
 
 		+ .description {
@@ -663,7 +679,7 @@
 		width: 50%;
 	}
 
-	textarea {
+	textarea:not(.lp-meta-box__wp-editor__textarea) {
 		height: 3.5em;
 		line-height: 1.5em;
 		vertical-align: top;
