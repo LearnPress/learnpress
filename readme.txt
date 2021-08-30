@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, hungkv, manhnl, tunnhn, phonglq.foobl
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 7.0
 Stable tag: 4.1.0
 License: GPLv2 or later
@@ -196,6 +196,20 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+== 4.1.3 (2021-08-30) ==
+~ Modified: Learnpress order status on Dashboard of Wordpress.
+~ Fixed: Widgets: Popular course, Feature course, Recent course, Course Progress, Course Info, Course Extra. All widget compatible with Elementor.
+~ Fixed: Info Order have courses deleted on page Profile .
+~ Fixed: error user can't learn course set external link when Admin created Order manual Completed.
+~ Improve performance.
+~ Modify function set cache.
+~ Modify custom post type of Learnpress.
+~ Modify feature run progress on background.
+~ Handle send all email of LP (New Order, Processing Order, Completed Order, Cancelled Order, Enrolled Course, Finished Course, Become An Instructor) on Background.
+~ Remove child order when Order manual.
+~ Modify enroll/buy course (user, guest).
+~ Fixed: user can learn "course external" when Admin create Order manual has this course.
 
 = 4.1.2 =
 ~ Modify, optimize Archive course page - call API - make faster
