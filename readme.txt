@@ -201,15 +201,14 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modified: Learnpress order status on Dashboard of Wordpress.
 ~ Fixed: Widgets: Popular course, Feature course, Recent course, Course Progress, Course Info, Course Extra. All widget compatible with Elementor.
 ~ Fixed: Info Order have courses deleted on page Profile .
-~ Fixed: error user can't learn course set external link when Admin created Order manual Completed.
+~ Fixed: error user can't learn course set external link when Admin created Order manual Completed has this course.
 ~ Improve performance.
 ~ Modify function set cache.
-~ Modify custom post type of Learnpress.
+~ Modify custom post type of LP.
 ~ Modify feature run progress on background.
 ~ Handle send all email of LP (New Order, Processing Order, Completed Order, Cancelled Order, Enrolled Course, Finished Course, Become An Instructor) on Background.
-~ Remove child order when Order manual.
+~ Remove child order when Admin created Order manual.
 ~ Modify enroll/buy course (user, guest).
-~ Fixed: user can learn "course external" when Admin create Order manual has this course.
 
 = 4.1.2 =
 ~ Modify, optimize Archive course page - call API - make faster
