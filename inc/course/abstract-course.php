@@ -400,7 +400,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function is_no_required_enroll() {
 			$return = false;
-			if ( $this->get_data( 'no_required_enroll' ) == 'yes' && ! is_user_logged_in() ) {
+			if ( $this->get_data( 'no_required_enroll', 'no' ) == 'yes' && ! is_user_logged_in() ) {
 				$return = true;
 			}
 			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
