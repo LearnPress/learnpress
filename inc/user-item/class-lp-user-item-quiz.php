@@ -37,14 +37,15 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 	}
 
-			/**
-			 * Add user answer to DB.
-			 *
-			 * @param int|array $id
-			 * @param mixed     $values
-			 *
-			 * @return array|bool|LP_Quiz_Results|mixed
-			 */
+	/**
+	 * Add user answer to DB.
+	 *
+	 * @param int|array $id
+	 * @param mixed $values
+	 *
+	 * @return array|bool|LP_Quiz_Results|mixed
+	 * @throws Exception
+	 */
 	public function add_question_answer( $id, $values = null ) {
 		$results = $this->get_results( '' );
 
@@ -188,35 +189,43 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Calculate result of quiz.
 	 *
 	 * @param string $prop
-	 * @param bool   $force - Optional. Force to refresh cache.
+	 * @param bool $force - Optional. Force to refresh cache.
 	 *
-	 * @return LP_Quiz_Results|array|bool
+	 * Clear cache on
+	 * @see LP_REST_Users_Controller::start_quiz() | retake quiz
+	 *
+	 * @return LP_Quiz_Results|bool
+	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.3
+	 * @version 4.0.1
 	 */
-	public function get_results( $prop = 'result', $force = false ) {
-		if ( in_array( $this->get_status(), array( '', 'viewed' ) ) ) {
+	public function get_results( string $prop = 'result', bool $force = false ) {
+		if ( ! $this->get_status() ) {
 			return false;
 		}
 
-		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
-		$result    = LP_Object_Cache::get( $cache_key, 'learn-press/quiz-result' );
+		$lp_quiz_cache = LP_Quiz_Cache::instance();
+
+		$key_cache = sprintf( '%d/user/%d/course/%d', $this->get_item_id(), $this->get_user_id(), $this->get_course_id() );
+		$result    = $lp_quiz_cache->get_cache( $key_cache );
 
 		if ( false === $result || $force ) {
-			$result = $this->_get_results();
+			//$result = $this->_get_results();
 
-			if ( false === $result ) {
-				$result = $this->calculate_results();
-			}
+			//if ( false === $result ) {
+			$result = $this->calculate_results();
+			//}
 
-			LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
+			$lp_quiz_cache->set_cache( $key_cache, $result );
 		}
 
 		$result['user_item_id']   = $this->get_user_item_id();
 		$result['interval']       = array( $this->get_start_time(), $this->get_end_time() );
 		$result['graduation']     = $this->get_graduation();
 		$result['graduationText'] = $this->get_graduation_text();
-		$result                   = new LP_Quiz_Results( $result );
 
-		return $prop ? $result[ $prop ] : $result;
+		return new LP_Quiz_Results( $result );
 	}
 
 	/**
@@ -294,9 +303,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Calculate results of quiz.
 	 *
-	 * @version 4.0.0
-	 *
 	 * @return array
+	 * @throws Exception
+	 * @version 4.0.0
 	 */
 	public function calculate_results() {
 		$quiz         = learn_press_get_quiz( $this->get_item_id() );

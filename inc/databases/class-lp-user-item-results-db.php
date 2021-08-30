@@ -50,17 +50,17 @@ class LP_User_Items_Result_DB extends LP_Database {
 	 * @return void
 	 */
 	public function get_result( $user_item_id = 0 ) {
-		global $wpdb;
-
 		if ( ! $user_item_id ) {
 			return false;
 		}
 
-		$result = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT result FROM $wpdb->learnpress_user_item_results
+		$result = $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				"
+				SELECT result FROM $this->tb_lp_user_item_results
 				WHERE user_item_id=%d ORDER BY id DESC LIMIT 1
-				", $user_item_id
+				",
+				$user_item_id
 			)
 		);
 

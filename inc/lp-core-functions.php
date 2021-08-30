@@ -3712,7 +3712,8 @@ function learn_press_is_enrolled_slug( $slug ) {
  * @editor tungnx
  * @modify 4.1.3 - comment - not use
  */
-/*function learn_press_course_enrolled_slugs(): array {
+function learn_press_course_enrolled_slugs(): array {
+	_deprecated_function( __FUNCTION__, '4.1.3' );
 	return apply_filters(
 		'learn-press/course-enrolled-slugs',
 		array(
@@ -3723,7 +3724,7 @@ function learn_press_is_enrolled_slug( $slug ) {
 			'finished', // deprecated
 		)
 	);
-}*/
+}
 
 /**
  * @return array

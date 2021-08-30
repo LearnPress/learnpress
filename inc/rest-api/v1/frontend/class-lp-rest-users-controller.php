@@ -248,7 +248,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function start_quiz( $request ) {
+	public function start_quiz( WP_REST_Request $request ): WP_REST_Response {
 		$user_id   = get_current_user_id();
 		$item_id   = $request['item_id'];
 		$course_id = $request['course_id'];
@@ -269,7 +269,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		if ( $user->has_started_quiz( $item_id, $course_id ) ) {
 			$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
-
 		} else {
 			$user_quiz = $user->start_quiz( $item_id, $course_id, true );
 		}
@@ -282,6 +281,15 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		if ( $success ) {
+			/**
+			 * Clear cache result quiz
+			 * Cache set on @see LP_User_Item_Quiz::get_results
+			 */
+			$lp_quiz_cache = LP_Quiz_Cache::instance();
+			$key_cache     = sprintf( '%d/user/%d/course/%d', $item_id, $user_id, $course_id );
+			$lp_quiz_cache->clear( $key_cache );
+			// End
+
 			$user_quiz->set_user_id( $user->get_id() );
 			$course              = LP_Course::get_course( $course_id );
 			$quiz                = LP_Quiz::get_quiz( $item_id );
