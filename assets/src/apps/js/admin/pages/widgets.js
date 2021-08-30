@@ -14,11 +14,13 @@ function formatCourseSelection( repo ) {
 
 function autocompleteWidget( widget = null ) {
 	const searchs = $( '.lp-widget_select_course' );
+	const wpRestUrl = searchs.data( 'rest-url' );
+	const postType = searchs.data( 'post_type' ) || 'lp_course';
 
 	searchs.select2( {
 		ajax: {
 			method: 'GET',
-			url: '/wp-json/wp/v2/lp_course',
+			url: wpRestUrl + 'wp/v2/' + postType,
 			dataType: 'json',
 			delay: 250,
 			data( params ) {
