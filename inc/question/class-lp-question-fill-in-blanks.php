@@ -63,6 +63,36 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			add_filter( 'learn-press/question/fib/regex-content', array( $this, 'match_shortcode' ), 10, 4 );
 		}
 
+		public function fib_get_ids( $content ) {
+			$output = array();
+
+			if ( ! empty( $content ) ) {
+				preg_match_all(
+					'/' . get_shortcode_regex( array( 'fib' ) ) . '/',
+					$content,
+					$all_shortcode,
+					PREG_SET_ORDER
+				);
+
+				if ( ! empty( $all_shortcode ) ) {
+					foreach ( $all_shortcode as $shortcode ) {
+						$atts = shortcode_parse_atts( $shortcode[0] );
+
+						if ( empty( $atts['id'] ) ) {
+							$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
+							$ids = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
+						} else {
+							$ids = $atts['id'];
+						}
+
+						$output[] = $ids;
+					}
+				}
+			}
+
+			return $output;
+		}
+
 		public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
 			if ( ! empty( $content ) ) {
 				preg_match_all(
@@ -102,6 +132,55 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 							$new_str     = '<span class="lp-fib-answered ' . $is_correct . '" id="' . esc_attr( $ids ) . '">' . $answer_html . '<span class="lp-fib-answered__fill">' . $fill . '</span></span>';
 						} else {
 							$new_str = '<div class="lp-fib-input" style="display: inline-block; width: auto;"><input type="text" data-id="' . esc_attr( $ids ) . '" value="" /></div>';
+						}
+
+						$content = str_replace( $shortcode[0], $new_str, $content );
+					}
+				}
+			}
+
+			return $content;
+		}
+
+		public function match_shortcode_api( $content, $answer_id, $show_answer = false, $answered = '' ) {
+			if ( ! empty( $content ) ) {
+				preg_match_all(
+					'/' . get_shortcode_regex( array( 'fib' ) ) . '/',
+					$content,
+					$all_shortcode,
+					PREG_SET_ORDER
+				);
+
+				if ( ! empty( $all_shortcode ) ) {
+					foreach ( $all_shortcode as $shortcode ) {
+						$atts = shortcode_parse_atts( $shortcode[0] );
+
+						if ( empty( $atts['id'] ) ) {
+							$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
+							$ids = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
+						} else {
+							$ids = $atts['id'];
+						}
+
+						$fill = ! empty( $atts['fill'] ) ? $atts['fill'] : '';
+
+						if ( $show_answer ) {
+							$answer = isset( $answered[ $ids ] ) ? $answered[ $ids ] : '';
+
+							$is_correct = '';
+
+							if ( ! empty( $answer ) ) {
+								$blanks = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
+
+								if ( ! empty( $blanks ) ) {
+									$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? 'correct' : 'fail';
+								}
+							}
+
+							$answer_html = ( ! empty( $answer ) && $is_correct === 'fail' ) ? '<span class="lp-fib-answered__answer">' . $answer . '</span> &rarr; ' : '';
+							$new_str     = '<span class="lp-fib-answered ' . $is_correct . '" id="' . esc_attr( $ids ) . '">' . $answer_html . '<span class="lp-fib-answered__fill">' . $fill . '</span></span>';
+						} else {
+							$new_str = '{{FIB_' . esc_attr( $ids ) . '}}';
 						}
 
 						$content = str_replace( $shortcode[0], $new_str, $content );
@@ -201,10 +280,12 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 				$exclude = array_flip( $exclude );
 
 				foreach ( $options as $k => $option ) {
-					$is_true         = ! isset( $exclude['is_true'] ) ? true : false;
-					$fib_answer      = ! empty( $args['answer'] ) ? $args['answer'] : '';
-					$title           = $option['title'];
-					$option['title'] = apply_filters( 'learn-press/question/fib/regex-content', $title, $option['question_answer_id'], $is_true, $fib_answer );
+					$is_true             = ! isset( $exclude['is_true'] ) ? true : false;
+					$fib_answer          = ! empty( $args['answer'] ) ? $args['answer'] : '';
+					$title               = $option['title'];
+					$option['title']     = apply_filters( 'learn-press/question/fib/regex-content', $title, $option['question_answer_id'], $is_true, $fib_answer );
+					$option['ids']       = $this->fib_get_ids( $title );
+					$option['title_api'] = $this->match_shortcode_api( $title, $option['question_answer_id'], $is_true, $fib_answer );
 
 					foreach ( $map as $k_map => $v_map ) {
 						if ( array_key_exists( $k_map, $option ) ) {
