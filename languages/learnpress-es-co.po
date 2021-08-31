@@ -2250,7 +2250,7 @@ msgid "Order Exports"
 msgstr "Exportar pedidos"
 
 #: inc/class-lp-forms-handler.php:169
-msgid "Your request become a instructor has been sent. We will get back to you soon!"
+msgid "Your request become an instructor has been sent. We will get back to you soon!"
 msgstr "Su solicitud para convertirse en instructor ha sido enviada. ¡Contactaremos contigo pronto!"
 
 #: inc/class-lp-forms-handler.php:165

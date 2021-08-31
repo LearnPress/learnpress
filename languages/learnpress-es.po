@@ -662,7 +662,7 @@ msgid "An account is already registered with your email address."
 msgstr "Ya hay una cuenta registrada con tu dirección de correo electrónico."
 
 #: inc/class-lp-forms-handler.php:179
-msgid "Your request become a instructor has been sent. We will get back to you soon!"
+msgid "Your request become an instructor has been sent. We will get back to you soon!"
 msgstr "Tu solicitud para convertirte en instructor ha sido enviada. ¡Contactaremos contigo pronto!"
 
 #: inc/class-lp-forms-handler.php:175

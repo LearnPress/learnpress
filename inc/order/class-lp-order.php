@@ -1260,6 +1260,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				do_action( 'learn-press/order/status-' . $new_status, $order_id, $old_status );
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $order_id );
 				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );
+				//do_action( 'learn_press_update_order_status', $new_status, $order_id );
 			}
 
 			//$this->_save_status();
