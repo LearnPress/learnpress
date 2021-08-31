@@ -194,7 +194,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Clear cache on
 	 * @see LP_REST_Users_Controller::start_quiz() | retake quiz
 	 *
-	 * @return LP_Quiz_Results|bool
+	 * @return LP_Quiz_Results|bool|mixed
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.3
@@ -225,7 +225,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$result['graduation']     = $this->get_graduation();
 		$result['graduationText'] = $this->get_graduation_text();
 
-		return $prop ? $result[ $prop ] : $result;
+		return $prop ? $result[ $prop ] : new LP_Quiz_Results( $result );
 	}
 
 	/**
