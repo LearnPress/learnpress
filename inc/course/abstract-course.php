@@ -1401,8 +1401,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param bool    $force
 		 *
 		 * @return mixed|void
+		 * @editor tungnx
+		 * @modify 4.1.3 - comment - not use
 		 */
-		public function _evaluate_course_by_quizzes_results( $user_id, $force = false ) {
+		/*public function _evaluate_course_by_quizzes_results( $user_id, $force = false ) {
 			$quizzes        = $this->get_items( LP_QUIZ_CPT );
 			$user           = learn_press_get_user( $user_id );
 			$results        = array();
@@ -1437,7 +1439,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$this->get_id(),
 				$user_id
 			);
-		}
+		}*/
 
 		public function enable_evaluate_item( $item_id, $user_id = 0 ) {
 			if ( ! $user_id ) {
@@ -1751,8 +1753,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param boolean $force
 		 *
 		 * @return mixed
+		 * @editor tungnx
+		 * @modify 4.1.3 - comment - not use
 		 */
-		public function _evaluate_course_by_quizzes( $user_id, $force = false ) {
+		/*public function _evaluate_course_by_quizzes( $user_id, $force = false ) {
 			$quizzes = $this->get_items( LP_QUIZ_CPT );
 			$result  = 0;
 
@@ -1773,7 +1777,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn_press_evaluation_course_quizzes', $result, $this->get_id(), $user_id );
-		}
+		}*/
 
 		/**
 		 * Get course duration in seconds
