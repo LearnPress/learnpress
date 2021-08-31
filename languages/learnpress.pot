@@ -3325,7 +3325,7 @@ msgid "I need become a instructor"
 msgstr ""
 
 #: inc/class-lp-forms-handler.php:179
-msgid "Your request become a instructor has been sent. We will get back to you soon!"
+msgid "Your request become an instructor has been sent. We will get back to you soon!"
 msgstr ""
 
 #: inc/class-lp-forms-handler.php:211
