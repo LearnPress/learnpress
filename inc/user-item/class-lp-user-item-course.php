@@ -757,8 +757,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Evaluate course result by point of quizzes doing/done per total quizzes.
 	 *
 	 * @return array
+	 * @editor tungnx
+	 * @modify 4.1.3 - comment - not use
 	 */
-	protected function _evaluate_course_by_quizzes() {
+	/*protected function _evaluate_course_by_quizzes() {
 		$cache_key   = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 		$cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' );
 
@@ -796,7 +798,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return isset( $cached_data['quizzes'] ) ? $cached_data['quizzes'] : array();
-	}
+	}*/
 
 	protected function _is_passed( $result ) {
 		$result = round( $result, 2 );

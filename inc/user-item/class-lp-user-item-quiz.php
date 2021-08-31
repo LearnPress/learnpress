@@ -225,7 +225,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$result['graduation']     = $this->get_graduation();
 		$result['graduationText'] = $this->get_graduation_text();
 
-		return new LP_Quiz_Results( $result );
+		return $prop ? $result[ $prop ] : $result;
 	}
 
 	/**
