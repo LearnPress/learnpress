@@ -209,6 +209,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Handle send all email of LP (New Order, Processing Order, Completed Order, Cancelled Order, Enrolled Course, Finished Course, Become An Instructor) on Background.
 ~ Remove child order when Admin created Order manual.
 ~ Modify enroll/buy course (user, guest).
+~ Added wysiwyg field for metabox.
 
 = 4.1.2 =
 ~ Modify, optimize Archive course page - call API - make faster
