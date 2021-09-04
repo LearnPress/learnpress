@@ -111,7 +111,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-api-fetch',
 						'jquery-ui-timepicker-addon',
 					),
-					array( LP_COURSE_CPT, 'learnpress_page_learn-press-settings' ),
+					array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_COURSE_CPT, 'learnpress_page_learn-press-settings' ),
 					0,
 					1
 				),

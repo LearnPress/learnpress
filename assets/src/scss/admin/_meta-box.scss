@@ -876,6 +876,129 @@
 	}
 }
 
+.lp_repeater_meta_box {
+
+	&__wrapper {
+		flex: 1 !important;
+	}
+
+	&__fields {
+		position: relative;
+		margin-bottom: 10px;
+	}
+
+	&__field {
+		display: grid;
+		position: relative;
+		margin-bottom: 10px;
+		border: 1px solid #c5c5c5;
+		border-radius: 2px;
+
+		&_active {
+
+			.lp_repeater_meta_box__content {
+				display: block;
+			}
+
+			.lp_repeater_meta_box__title__toggle {
+
+				&::after {
+					transform: rotate(180deg);
+				}
+			}
+		}
+	}
+
+	&__title {
+		display: grid;
+		grid-template-columns: 44px 1fr 40px 40px;
+		align-items: center;
+		position: relative;
+		background-color: #eee;
+
+		&__title {
+			flex: 1;
+			padding: 14px 0;
+		}
+
+		&__sort {
+			display: flex;
+			height: 100%;
+			color: #666;
+			text-decoration: none;
+			cursor: grab;
+			align-items: center;
+			justify-content: center;
+
+			&::after {
+				font-family: Dashicons;
+				font-size: 20px;
+				line-height: 1;
+				content: "\f333";
+			}
+		}
+
+		&__delete {
+			display: flex;
+			height: 100%;
+			color: #666;
+			text-decoration: none;
+			align-items: center;
+			justify-content: center;
+
+			&::after {
+				font-family: Dashicons;
+				font-size: 20px;
+				line-height: 1;
+				content: "\f335";
+			}
+		}
+
+		&__toggle {
+			display: flex;
+			height: 100%;
+			color: #666;
+			text-decoration: none;
+			align-items: center;
+			justify-content: center;
+
+			&::after {
+				font-family: Dashicons;
+				font-size: 20px;
+				line-height: 1;
+				content: "\f347";
+			}
+		}
+	}
+
+	&__content {
+		display: none;
+		padding: 14px 20px;
+
+		>label {
+			display: grid;
+			width: 100% !important;
+			min-width: 100% !important;
+			max-width: 100% !important;
+			margin-bottom: 20px;
+			grid-template-rows: auto 1fr;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			span {
+				margin-bottom: 5px;
+			}
+
+			textarea,
+			input {
+				width: 100% !important;
+			}
+		}
+	}
+}
+
 .lp_course_faq_meta_box {
 
 	&__content {

@@ -77,6 +77,61 @@ const lpMetaboxCustomFields = () => {
 	};
 };
 
+const lpMetaboxRepeaterField = () => {
+	const updateSort = ( element ) => {
+		const items = element.find( '.lp_repeater_meta_box__field' );
+
+		items.each( function( i, item ) {
+			$( this ).find( '.lp_repeater_meta_box__field__count' ).val( i );
+			$( this ).find( '.lp_repeater_meta_box__title__title > span' ).text( i + 1 );
+		} );
+	};
+
+	$( '.lp_repeater_meta_box__add' ).on( 'click', function() {
+		const row = $( this ).data( 'add' ).replace( /lp_metabox_repeater_key/gi, Math.floor( Math.random() * 1000 ) + 1 );
+		$( this ).closest( '.lp_repeater_meta_box__wrapper' ).find( '.lp_repeater_meta_box__fields' ).append( row );
+
+		updateSort( $( this ).closest( '.lp_repeater_meta_box__wrapper' ) );
+		$( this ).closest( '.lp_repeater_meta_box__wrapper' ).find( '.lp_repeater_meta_box__fields' ).last().find( 'input' ).trigger( 'focus' );
+
+		return false;
+	} );
+
+	$( '.lp_repeater_meta_box__wrapper' ).on( 'click', 'a.lp_repeater_meta_box__title__delete', function() {
+		$( this ).closest( '.lp_repeater_meta_box__field' ).remove();
+
+		updateSort( $( this ).closest( '.lp_repeater_meta_box__wrapper' ) );
+
+		return false;
+	} );
+
+	$( '.lp_repeater_meta_box__fields' ).on( 'click', '.lp_repeater_meta_box__title__toggle, .lp_repeater_meta_box__title__title', function() {
+		const field = $( this ).closest( '.lp_repeater_meta_box__field' );
+
+		if ( field.hasClass( 'lp_repeater_meta_box__field_active' ) ) {
+			field.removeClass( 'lp_repeater_meta_box__field_active' );
+		} else {
+			field.addClass( 'lp_repeater_meta_box__field_active' );
+		}
+
+		return false;
+	} );
+
+	$( '.lp_repeater_meta_box__fields' ).sortable( {
+		items: '.lp_repeater_meta_box__field',
+		cursor: 'grab',
+		axis: 'y',
+		handle: '.lp_repeater_meta_box__title__sort',
+		scrollSensitivity: 40,
+		forcePlaceholderSize: true,
+		helper: 'clone',
+		opacity: 0.65,
+		update( event, ui ) {
+			updateSort( $( this ).closest( '.lp_repeater_meta_box__wrapper' ) );
+		},
+	} );
+};
+
 const lpMetaboxExtraInfo = () => {
 	$( '.lp_course_extra_meta_box__add' ).on( 'click', function() {
 		$( this ).closest( '.lp_course_extra_meta_box__content' ).find( '.lp_course_extra_meta_box__fields' ).append( $( this ).data( 'add' ) );
@@ -791,6 +846,7 @@ const onReady = function onReady() {
 	lpHidePassingGrade();
 	lpGetFinalQuiz();
 	lpMetaboxCondition();
+	lpMetaboxRepeaterField();
 
 	$( document )
 		.on( 'click', '.learn-press-payments .status .dashicons', togglePaymentStatus )

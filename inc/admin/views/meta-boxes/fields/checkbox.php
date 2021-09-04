@@ -50,6 +50,10 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 			$checked = 'checked="checked"';
 		}
 
+		if ( isset( $field['value'] ) && $field['value'] === 'yes' ) {
+			$checked = 'checked="checked"';
+		}
+
 		// Custom attribute handling
 		$custom_attributes = array();
 		if ( ! empty( $field['custom_attributes'] ) && is_array( $field['custom_attributes'] ) ) {
