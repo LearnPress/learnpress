@@ -210,6 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Remove child order when Admin created Order manual.
 ~ Modify enroll/buy course (user, guest).
 ~ Added wysiwyg field for metabox.
+~ Compatible with MathJax-LateX plugin.
 
 = 4.1.2 =
 ~ Modify, optimize Archive course page - call API - make faster
