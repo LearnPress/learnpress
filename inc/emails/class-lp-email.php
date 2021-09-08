@@ -59,14 +59,14 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 *
 		 * @var string
 		 */
-		public $template_html;
+		public $template_html = '';
 
 		/**
 		 * Template path.
 		 *
 		 * @var string
 		 */
-		public $template_base;
+		public $template_base = '';
 
 		/**
 		 * Recipients for the email.
@@ -263,12 +263,12 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		/**
 		 * @var null
 		 */
-		public $general_variables = array();
+		public $general_variables = [];
 
 		/**
 		 * @var null
 		 */
-		public $support_variables = array();
+		public $support_variables = [];
 
 		/**
 		 * @var LP_Settings

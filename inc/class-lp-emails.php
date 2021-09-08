@@ -101,6 +101,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Become_An_Instructor'] = include_once 'emails/admin/class-lp-email-become-an-instructor.php';
 			$this->emails['LP_Email_Instructor_Accepted']  = include_once 'emails/instructor/class-lp-email-instructor-accepted.php';
 			$this->emails['LP_Email_Instructor_Denied']    = include_once 'emails/instructor/class-lp-email-instructor-denied.php';
+
+			do_action( 'learnpress/emails/register', $this->emails );
 		}
 
 

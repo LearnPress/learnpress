@@ -95,12 +95,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @param int $course_id .
 		 *
-		 * @return LP_User_Item_Course
+		 * @return LP_User_Item_Course|bool
 		 * @version  3.1.1
 		 * @editor tungnx
 		 * @modify 4.1.3
 		 */
-		public function get_course_data( int $course_id = 0 ): LP_User_Item_Course {
+		public function get_course_data( int $course_id = 0 ) {
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 			try {

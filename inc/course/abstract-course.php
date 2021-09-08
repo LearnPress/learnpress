@@ -864,7 +864,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function is_viewing_item( $item_id = false ) {
 			$item = LP_Global::course_item();
 
-			if ( false === $item ) {
+			if ( empty( $item ) ) {
 				return false;
 			}
 
@@ -1186,7 +1186,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_item_link( $item_id ) {
+		public function get_item_link( int $item_id ): string {
 			$item_link  = '';
 			$item_links = $this->get_item_links();
 

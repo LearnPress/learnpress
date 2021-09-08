@@ -340,7 +340,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 							}
 					}
 
-					if ( $course_id && $item ) {
+					if ( $course_id ) {
 						if ( $item instanceof LP_Course_Item ) {
 							$item->set_course( $course_id );
 						}

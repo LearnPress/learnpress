@@ -493,12 +493,13 @@ function learn_press_get_course_permalink( $course_id = 0 ) {
  * @since 3.0.0
  *
  */
-function learn_press_get_course_item_permalink( $course_id = 0, $item_id = 0 ) {
-	if ( $course = learn_press_get_course( $course_id ) ) {
+function learn_press_get_course_item_permalink( int $course_id = 0, int $item_id = 0 ): string {
+	$course = learn_press_get_course( $course_id );
+	if ( $course ) {
 		return $course->get_item_link( $item_id );
 	}
 
-	return false;
+	return '';
 }
 
 
