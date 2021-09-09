@@ -382,7 +382,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				'data'  => apply_filters(
 					'learn-press/question/update-answer-data',
 					array(
-						'title'   => stripslashes( $answer['title'] ),
+						'title'   => $answer['title'],
 						'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
 						'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : '',
 					)
@@ -443,7 +443,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			foreach ( $question_answers as $index => $answer ) {
 
 				$answer_data = array(
-					'title'   => stripslashes( $answer['title'] ),
+					'title'   => $answer['title'],
 					'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
 					'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : '',
 				);
@@ -760,7 +760,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				foreach ( $answer_options as $index => $answer ) {
 					$insert        = array(
 						'question_id' => $question_id,
-						'title'       => stripslashes( $answer['title'] ),
+						'title'       => $answer['title'],
 						'value'       => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
 						'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
 						'order'       => $index + 1,
