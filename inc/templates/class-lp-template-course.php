@@ -369,28 +369,40 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @since  4.0.0
 	 */
 	public function course_continue_button() {
-		$user   = LP_Global::user();
-		$course = LP_Global::course();
+		$can_show = true;
 
-		if ( ! $user || ! $course ) {
-			return;
+		try {
+			$user   = LP_Global::user();
+			$course = LP_Global::course();
+
+			if ( ! $user || ! $course ) {
+				throw new Exception( 'User or Course not exists!' );
+			}
+
+			if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
+				throw new Exception( 'User has not enrolled course' );
+			}
+
+			if ( $user->has_finished_course( $course->get_id() ) ) {
+				throw new Exception( 'User has finished course' );
+			}
+
+			// Course has no items
+			if ( empty( $course->get_item_ids() ) ) {
+				throw new Exception( 'Course no any item' );
+			}
+
+			// Do not display continue button if course is block duration
+			if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
+				throw new Exception( 'Course is blocked' );
+			}
+		} catch ( Throwable $e ) {
+			$can_show = false;
 		}
 
-		if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
-			return;
-		}
+		$can_show = apply_filters( 'learnpress/course/template/button-continue', $can_show );
 
-		if ( $user->has_finished_course( $course->get_id() ) ) {
-			return;
-		}
-
-		// Course has no items
-		if ( empty( $course->get_item_ids() ) ) {
-			return;
-		}
-
-		// Do not display continue button if course is block duration
-		if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
+		if ( ! $can_show ) {
 			return;
 		}
 
