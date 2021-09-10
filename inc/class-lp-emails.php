@@ -4,7 +4,9 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
+ * @editor tungnx
+ * @modify 4.1.3
  */
 
 /**
