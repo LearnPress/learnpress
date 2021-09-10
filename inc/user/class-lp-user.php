@@ -322,7 +322,7 @@ class LP_User extends LP_Abstract_User {
 	 * @modify 4.1.3
 	 */
 	public function can_purchase_course( int $course_id ): bool {
-		$can_purchase = false;
+		$can_purchase = true;
 		$course       = learn_press_get_course( $course_id );
 
 		try {
@@ -388,8 +388,6 @@ class LP_User extends LP_Abstract_User {
 					throw new Exception( 'Course is enrolled' );
 				}
 			}
-
-			$can_purchase = true;
 		} catch ( Exception $e ) {
 			$can_purchase = false;
 		}
