@@ -241,7 +241,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Show button enroll course
 	 *
 	 * @editor tungnx
-	 * @modify 4.1.3
+	 * @modify 4.1.3.1
 	 * @throws Exception
 	 * @version 4.0.2
 	 */
@@ -384,7 +384,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Show template "continue" button con single course
 	 * @throws Exception
 	 * @editor tungnx
-	 * @modify 4.1.3
+	 * @modify 4.1.3.1
 	 * @version 4.0.2
 	 * @since  4.0.0
 	 */
@@ -419,13 +419,18 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$can_show = false;
 		}
 
-		$can_show = apply_filters( 'learnpress/course/template/button-continue', $can_show, $user, $course );
+		$can_show = apply_filters( 'learnpress/course/template/button-continue/can-show', $can_show, $user, $course );
 
 		if ( ! $can_show ) {
 			return;
 		}
 
-		learn_press_get_template( 'single-course/buttons/continue.php' );
+		$args = [
+			'user'   => $user,
+			'course' => $course,
+		];
+
+		learn_press_get_template( 'single-course/buttons/continue.php', $args );
 	}
 
 	public function can_show_finish_course_btn( $course, $user ) {
