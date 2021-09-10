@@ -365,16 +365,15 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.3
-	 * @version 4.0.1
+	 * @version 4.0.2
 	 * @since  4.0.0
 	 */
 	public function course_continue_button() {
 		$can_show = true;
+		$user     = LP_Global::user();
+		$course   = LP_Global::course();
 
 		try {
-			$user   = LP_Global::user();
-			$course = LP_Global::course();
-
 			if ( ! $user || ! $course ) {
 				throw new Exception( 'User or Course not exists!' );
 			}
@@ -400,7 +399,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$can_show = false;
 		}
 
-		$can_show = apply_filters( 'learnpress/course/template/button-continue', $can_show );
+		$can_show = apply_filters( 'learnpress/course/template/button-continue', $can_show, $user, $course );
 
 		if ( ! $can_show ) {
 			return;
