@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.1.3
+ * Version: 4.1.3.1-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 5.6
  * Tested up to: 5.8
@@ -227,9 +227,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Models
 			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
-
-			// Email
-			include_once 'inc/emails/class-lp-email-hooks.php';
 
 			// LP Cache
 			require_once 'inc/cache/class-lp-cache.php';
@@ -472,10 +469,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
 		 * @deprecated since 3.0.0
+		 * @editor tungnx
+		 * @modify 4.1.3.1 - comment
 		 */
-		public function __get( $key ) {
+		/*public function __get( $key ) {
 			return false;
-		}
+		}*/
 
 		/**
 		 * Trigger this function while activating Learnpress.
@@ -542,6 +541,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @editor tungnx
 		 */
 		public function plugin_loaded() {
+			do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
+
 			$this->init();
 
 			//Todo: tungnx - remove this code after handle ajax on page learn-press-addons
@@ -552,7 +553,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			/**
 			 * Check version addons valid version require.
-			 * If not valid will be deactivate.
+			 * If not valid will be to deactivate.
 			 * Reload page, so not affect to hook "learn-press/ready"
 			 */
 			$addons_valid = true;
@@ -649,6 +650,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$this->admin_notices = LP_Admin_Notice::instance();
 			}
 
+			// Email hook notify
+			include_once 'inc/emails/class-lp-email-hooks.php';
 			// Init emails
 			LP_Emails::instance();
 		}
