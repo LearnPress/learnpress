@@ -370,7 +370,30 @@ const accordionExtraTab = () => {
 		} );
 	} );
 };
+const courseContinue = () => {
+	const formContinue = document.querySelector( 'form.continue-course' );
 
+	if ( formContinue != null ) {
+		const getResponse = async ( ele ) => {
+			const response = await wp.apiFetch( {
+				path: 'lp/v1/courses/continue-course',
+				method: 'POST',
+				data: {
+					courseId: lpGlobalSettings.post_id || '',
+					userId: lpGlobalSettings.user_id || '',
+				},
+			} );
+
+			return response;
+		};
+		getResponse( formContinue ).then( function( result ) {
+			if ( result.status === 'success' ) {
+				formContinue.style.display = 'block';
+				formContinue.action = result.data;
+			}
+		} );
+	}
+};
 export {
 	initCourseTabs,
 	initCourseSidebar,
@@ -381,7 +404,6 @@ $( window ).on( 'load', () => {
 	const $popup = $( '#popup-course' );
 	let timerClearScroll;
 	const $curriculum = $( '#learn-press-course-curriculum' );
-
 	accordionExtraTab();
 	initCourseTabs();
 	initCourseSidebar();
@@ -389,6 +411,7 @@ $( window ).on( 'load', () => {
 	purchaseCourse();
 	retakeCourse();
 	courseProgress();
+	courseContinue();
 	lpModalOverlayCompleteItem.init();
 	// courseCurriculum();
 } );

@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit();
 $user = LP_Global::user();
 ?>
 
-<form name="continue-course" class="continue-course form-button lp-form" method="post" action="<?php echo esc_url( $user->get_current_item( get_the_ID(), true ) ); ?>">
+<form name="continue-course" class="continue-course form-button lp-form" method="post" action="" style="display:none">
 	<button type="submit" class="lp-button button">
 		<?php esc_html_e( 'Continue', 'learnpress' ); ?>
 	</button>
