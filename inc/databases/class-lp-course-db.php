@@ -250,6 +250,64 @@ class LP_Course_DB extends LP_Database {
 
 		return $output;
 	}
+
+	/**
+	 * Get list user ids enrolled by course
+	 *
+	 * @return array|object|null
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @author tungnx
+	 * @since 4.1.3.1
+	 */
+	public function get_user_ids_enrolled( int $course_id ) {
+		$query = $this->wpdb->prepare(
+			"
+				SELECT DISTINCT user_id FROM {$this->tb_lp_user_items}
+				WHERE item_id = %d
+				AND item_type = %s
+				AND (status = %s OR status = %s )
+			",
+			$course_id,
+			LP_COURSE_CPT,
+			'enrolled',
+			'finished'
+		);
+
+		$result = $this->wpdb->get_results( $query, OBJECT_K );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
+	 * Count total user enrolled by course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return string
+	 * @version 1.0.0
+	 * @author tungnx
+	 * @since 4.1.3.1
+	 */
+	public function get_total_user_enrolled( int $course_id ): string {
+		$query = $this->wpdb->prepare(
+			"
+				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
+				WHERE item_id = %d
+				AND item_type = %s
+				AND (status = %s OR status = %s )
+				GROUP BY user_id
+			",
+			$course_id,
+			LP_COURSE_CPT,
+			'enrolled',
+			'finished'
+		);
+
+		return $this->wpdb->get_var( $query );
+	}
 }
 
 LP_Course_DB::getInstance();

@@ -668,6 +668,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param int $limit
 		 *
 		 * @return array
+		 * @Todo tungnx from LP 4.1.3.1 use LP_Course_DB::get_user_ids_enrolled replace
 		 */
 		public function get_user_enrolled( $course_id, $limit = - 1 ) {
 			global $wpdb;
