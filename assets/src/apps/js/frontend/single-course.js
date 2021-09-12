@@ -370,6 +370,7 @@ const accordionExtraTab = () => {
 		} );
 	} );
 };
+
 const courseContinue = () => {
 	const formContinue = document.querySelector( 'form.continue-course' );
 
@@ -394,6 +395,7 @@ const courseContinue = () => {
 		} );
 	}
 };
+
 export {
 	initCourseTabs,
 	initCourseSidebar,

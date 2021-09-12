@@ -83,11 +83,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			),
-			'continue-course'   => array(
+			'continue-course' => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'continue_course' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => function () {
+						return is_user_logged_in();
+					},
 				),
 			),
 		);
@@ -95,7 +97,12 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
-	public function check_admin_permission() {
+	/**
+	 * Check user is Admin
+	 *
+	 * @return bool
+	 */
+	public function check_admin_permission(): bool {
 		return LP_REST_Authentication::check_admin_permission();
 	}
 
@@ -687,14 +694,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		return rest_ensure_response( $response );
 	}
 
-/**
-	 * Rest API for Continue in single course.
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @throws Exception .
-	 * @editor minhpd
-	 */
+	/**
+		 * Rest API for Continue in single course.
+		 *
+		 * @param WP_REST_Request $request
+		 *
+		 * @throws Exception .
+		 * @editor minhpd
+		 */
 	public function continue_course( WP_REST_Request $request ) {
 
 		$params           = $request->get_params();
@@ -703,24 +710,24 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			$course_id      = isset( $params['courseId'] ) ? $params['courseId'] : false;
-			$user_id        = isset( $params['userId'] ) ? $params['userId'] : false;
+			$course_id = isset( $params['courseId'] ) ? $params['courseId'] : false;
+			$user_id   = isset( $params['userId'] ) ? $params['userId'] : false;
 
-			$user = learn_press_get_user( $user_id );
-			$course = learn_press_get_course( $course_id);
+			$user     = learn_press_get_user( $user_id );
+			$course   = learn_press_get_course( $course_id );
 			$items_id = $course->get_item_ids();
 
-			foreach ( $items_id as $item ){
+			foreach ( $items_id as $item ) {
 
-				if ( !$user->has_completed_item( $item , $course_id )){
-					$item_link = $course->get_item_link($item);
+				if ( ! $user->has_completed_item( $item, $course_id ) ) {
+					$item_link = $course->get_item_link( $item );
 					break;
 				}
 			}
 
-			$response->data     = $item_link;
-			$response->status   = 'success';
-			$response->message  = '';
+			$response->data    = $item_link;
+			$response->status  = 'success';
+			$response->message = '';
 
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
