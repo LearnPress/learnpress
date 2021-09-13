@@ -75,8 +75,8 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$faqs_question = isset( $_POST['_lp_faqs_question'] ) ? wp_unslash( $_POST['_lp_faqs_question'] ) : array();
-		$faqs_answer   = isset( $_POST['_lp_faqs_answer'] ) ? wp_unslash( $_POST['_lp_faqs_answer'] ) : array();
+		$faqs_question = isset( $_POST['_lp_faqs_question'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_faqs_question'], 'html' ) : array();
+		$faqs_answer   = isset( $_POST['_lp_faqs_answer'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_faqs_answer'], 'html' ) : array();
 
 		$faqs = array();
 		if ( ! empty( $faqs_question ) ) {

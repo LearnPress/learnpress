@@ -12,7 +12,6 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $id
 	 * @param string $label
 	 * @param string $description
 	 * @param mixed  $default
@@ -51,7 +50,7 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$fields = isset( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : array();
+		$fields = isset( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ], 'html' ) : array();
 
 		update_post_meta( $post_id, $this->id, $fields );
 	}

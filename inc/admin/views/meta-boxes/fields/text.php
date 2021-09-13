@@ -79,6 +79,8 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 			} else {
 				$meta_value = absint( $meta_value );
 			}
+		} else {
+			$meta_value = LP_Helper::sanitize_params_submitted( $meta_value );
 		}
 
 		update_post_meta( $post_id, $this->id, $meta_value );
