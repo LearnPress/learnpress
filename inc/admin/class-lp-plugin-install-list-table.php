@@ -138,7 +138,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 				$items[ "{$slug}/{$filename}" ] = (object) $item;
 			}
 
-			LP_WP_Filesystem::put_contents( $cache, serialize( $items ) );
+			LP_WP_Filesystem::instance()->put_contents( $cache, serialize( $items ) );
 		}
 
 		$this->items = $items;

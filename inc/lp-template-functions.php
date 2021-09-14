@@ -1760,7 +1760,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 	} else {
 		$template      = ! empty( $field[ "template_{$format}" ] ) ? $field[ "template_{$format}" ] : null;
 		$template_file = $field['template_base'] . $template;
-		$content       = LP_WP_Filesystem::get_contents( $template_file );
+		$content       = LP_WP_Filesystem::instance()->file_get_contents( $template_file );
 	}
 
 	return $content;

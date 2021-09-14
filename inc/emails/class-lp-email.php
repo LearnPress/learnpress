@@ -306,7 +306,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			// End hooks
 
 			// Set template base path to LP templates path if it is not set.
-			if ( is_null( $this->template_base ) ) {
+			if ( empty( $this->template_base ) ) {
 				$this->template_base = LP()->plugin_path( 'templates/' );
 			}
 

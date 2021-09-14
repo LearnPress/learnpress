@@ -86,7 +86,7 @@ class LP_Install_Sample_Data {
 			return;
 		}
 
-		$dummy_text       = LP_WP_Filesystem::get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' );
+		$dummy_text       = LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' );
 		$this->dummy_text = preg_split( '!\s!', $dummy_text );
 
 		$section_range = LP_Request::get( 'section-range' );

@@ -73,8 +73,8 @@ $email_format = $meta['format'];
 					$classes[] = 'hide-if-js';
 				}
 
-				$content_html  = $meta['html'] ? stripslashes( $meta['html'] ) : LP_WP_Filesystem::get_contents( $template_file );
-				$content_plain = $meta['plain'] ? stripslashes( $meta['plain'] ) : LP_WP_Filesystem::get_contents( $template_file );
+				$content_html  = $meta['html'] ? stripslashes( $meta['html'] ) : LP_WP_Filesystem::instance()->file_get_contents( $template_file );
+				$content_plain = $meta['plain'] ? stripslashes( $meta['plain'] ) : LP_WP_Filesystem::instance()->file_get_contents( $template_file );
 
 				$has_local_file = file_exists( $local_file );
 
@@ -90,7 +90,7 @@ $email_format = $meta['format'];
 
 				<div class="<?php echo implode( ' ', $classes ); ?>">
 					<?php if ( $has_local_file ) : ?>
-						<textarea rows="10" style="width: 90%;" readonly="readonly"><?php echo stripslashes( LP_WP_Filesystem::get_contents( $local_file ) ); ?></textarea>
+						<textarea rows="10" style="width: 90%;" readonly="readonly"><?php echo stripslashes( LP_WP_Filesystem::instance()->file_get_contents( $local_file ) ); ?></textarea>
 						<p class="description">
 							<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>. <br />Please open the file in an editor program to edit', 'learnpress' ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
 						</p>
