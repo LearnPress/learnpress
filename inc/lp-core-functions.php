@@ -2574,6 +2574,9 @@ function learn_press_get_graduation_text( $slug ) {
 		case 'failed':
 			$text = esc_html__( 'Failed', 'learnpress' );
 			break;
+		case 'in-progress':
+			$text = esc_html__( 'In Progress', 'learnpress' );
+			break;
 		default:
 			$text = $slug;
 	}
