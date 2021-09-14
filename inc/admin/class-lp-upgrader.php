@@ -84,7 +84,7 @@ class LP_Upgrader {
 
 		// Once extracted, delete the package if required.
 		if ( $delete_package ) {
-			LP_WP_Filesystem::unlink( $package );
+			LP_WP_Filesystem::instance()->unlink( $package );
 		}
 
 		if ( is_wp_error( $result ) ) {
@@ -126,7 +126,7 @@ class LP_Upgrader {
 					$readme = $working_dir . '/readme.txt';
 				}
 
-				LP_WP_Filesystem::unlink( $download_file );
+				LP_WP_Filesystem::instance()->unlink( $download_file );
 			}
 		}
 
@@ -137,16 +137,16 @@ class LP_Upgrader {
 
 			$parse = new WordPress_Readme_Parser( $readme );
 
-			$info = @$parse->parse_readme_contents( LP_WP_Filesystem::get_contents( $readme ) );
+			$info = @$parse->parse_readme_contents( LP_WP_Filesystem::instance()->file_get_contents( $readme ) );
 			$file = $working_dir . '/' . $basename . '.php';
 
-			if ( LP_WP_Filesystem::file_exists( $file ) ) {
+			if ( LP_WP_Filesystem::instance()->file_exists( $file ) ) {
 				$headers      = get_plugin_data( $file );
 				$info['name'] = $headers['Name'];
 			}
 		}
 
-		LP_WP_Filesystem::unlink( $working_dir, true );
+		LP_WP_Filesystem::instance()->unlink( $working_dir, true );
 
 		return $info;
 	}
