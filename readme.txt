@@ -197,7 +197,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-== 4.1.3.1 (2021-09-15) ==
+= 4.1.3.1 (2021-09-15) =
 ~ Fixed: some shortcode of latex show incorrect on question answer.
 ~ Added: hooks for course_continue_button, course_purchase_button, course_enroll_button.
 ~ Fixed: Fatal error LP_Abstract_User::get_course_data() when upgrade from LP3 to LP4.
@@ -208,7 +208,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: functions get_user_ids_enrolled, get_total_user_enrolled.
 ~ Fixed: error WP_Filesystem_Direct::exist not exist.
 
-== 4.1.3 (2021-09-07) ==
+= 4.1.3 (2021-09-07) =
 ~ Modified: Learnpress order status on Dashboard of Wordpress.
 ~ Fixed: Widgets: Popular course, Feature course, Recent course, Course Progress, Course Info, Course Extra. All widget compatible with Elementor.
 ~ Fixed: Info Order have courses deleted on page Profile .
