@@ -197,15 +197,15 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-== 4.1.3.1 (2021-09-14) ==
-~ Fixed: some shortcode of latex show incorrect on question answer
-~ Added: hooks for course_continue_button, course_purchase_button, course_enroll_button
-~ Fixed: Fatal error LP_Abstract_User::get_course_data() when upgrade from LP3 to LP4
-~ Moved: function "Email hook notify" to hook "plugin_loaded"
-~ Added: hooks "learnpress/hook/before-addons-call-hook-learnpress-ready"
+== 4.1.3.1 (2021-09-15) ==
+~ Fixed: some shortcode of latex show incorrect on question answer.
+~ Added: hooks for course_continue_button, course_purchase_button, course_enroll_button.
+~ Fixed: Fatal error LP_Abstract_User::get_course_data() when upgrade from LP3 to LP4.
+~ Moved: function "Email hook notify" to hook "plugin_loaded".
+~ Added: hooks "learnpress/hook/before-addons-call-hook-learnpress-ready".
 ~ Fixed security: Cross Site Scripting (XSS) on fields: External Link, Requirements, Target Audience, Key Features, FAQs.
-~ Fixed: click button continue redirect wrong item
-~ Added: functions get_user_ids_enrolled, get_total_user_enrolled
+~ Fixed: click button continue redirect wrong item.
+~ Added: functions get_user_ids_enrolled, get_total_user_enrolled.
 ~ Fixed: error WP_Filesystem_Direct::exist not exist.
 
 == 4.1.3 (2021-09-07) ==
