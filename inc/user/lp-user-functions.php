@@ -1081,6 +1081,12 @@ function learn_press_update_user_profile() {
  * Update user avatar
  */
 function learn_press_update_user_profile_avatar() {
+	$user_id = get_current_user_id();
+
+	if ( ! $user_id ) {
+		return new WP_Error( 2, 'User is invalid!' );
+	}
+
 	$upload_dir = learn_press_user_profile_picture_upload_dir();
 
 	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
@@ -1114,15 +1120,14 @@ function learn_press_update_user_profile_avatar() {
 		return false;
 	}
 
-	$user_id = get_current_user_id();
-	$dst_x   = 0;
-	$dst_y   = 0;
-	$dst_w   = $data['width'];
-	$dst_h   = $data['height'];
-	$src_x   = $points[0];
-	$src_y   = $points[1];
-	$src_w   = $points[2] - $points[0];
-	$src_h   = $points[3] - $points[1];
+	$dst_x = 0;
+	$dst_y = 0;
+	$dst_w = $data['width'];
+	$dst_h = $data['height'];
+	$src_x = $points[0];
+	$src_y = $points[1];
+	$src_w = $points[2] - $points[0];
+	$src_h = $points[3] - $points[1];
 
 	imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
 
@@ -1173,6 +1178,10 @@ function learn_press_update_user_profile_avatar() {
 function learn_press_update_user_profile_basic_information( $wp_error = false ) {
 	$user_id = get_current_user_id();
 
+	if ( ! $user_id ) {
+		return new WP_Error( 2, 'User is invalid!' );
+	}
+
 	$update_data = array(
 		'ID'           => $user_id,
 		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
@@ -1183,7 +1192,7 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	);
 
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
-	$update_meta = isset( $_POST['_lp_custom_register'] ) ? $_POST['_lp_custom_register'] : '';
+	$update_meta = isset( $_POST['_lp_custom_register'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_custom_register'] ) : '';
 
 	$return = LP_Forms_Handler::update_user_data( $update_data, $update_meta );
 
@@ -1208,15 +1217,21 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
  * Update new password.
  */
 function learn_press_update_user_profile_change_password( $wp_error = false ) {
+	$user_id = get_current_user_id();
+
+	if ( ! $user_id ) {
+		return new WP_Error( 2, 'User is invalid!' );
+	}
+
 	$old_pass       = filter_input( INPUT_POST, 'pass0' );
 	$check_old_pass = false;
 
 	if ( $old_pass ) {
-		$cuser = wp_get_current_user();
+		$user = wp_get_current_user();
 		require_once ABSPATH . 'wp-includes/class-phpass.php';
 		$wp_hasher = new PasswordHash( 8, true );
 
-		if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
+		if ( $wp_hasher->CheckPassword( $old_pass, $user->data->user_pass ) ) {
 			$check_old_pass = true;
 		}
 	}
@@ -2034,7 +2049,8 @@ function lp_custom_register_fields_display() {
 						content: ' *';
 						display:inline;
 					}
-				</style> <?php
+				</style>
+				<?php
 			}
 
 			if ( isset( $custom_field['id'] ) ) {
@@ -2050,7 +2066,7 @@ function lp_custom_register_fields_display() {
 						case 'url':
 							?>
 							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
-						<?php
+							<?php
 						case 'tel':
 							?>
 							<input name="_lp_custom_register_form[<?php echo $value; ?>]"

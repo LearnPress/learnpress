@@ -29,8 +29,15 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 	public function content( $user ) {
 		$profile = LP_Global::profile();
+		$user_id = get_current_user_id();
 
 		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		$current_tab = $profile->get_current_tab();
+
+		if ( 'settings' === $current_tab && ! $user_id ) {
 			return;
 		}
 

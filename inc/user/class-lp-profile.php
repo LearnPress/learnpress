@@ -513,6 +513,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function save( $nonce ) {
+			$user_id = get_current_user_id();
+			if ( ! $user_id ) {
+				return new WP_Error( 2, 'User is invalid!' );
+			}
+
 			$message = '';
 
 			foreach ( $this->_default_actions as $_action => $message ) {
