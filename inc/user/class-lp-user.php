@@ -31,7 +31,7 @@ class LP_User extends LP_Abstract_User {
 
 		if ( $this->is_admin() || $this->is_author_of( $course_id ) ) {
 			$view->flag    = true;
-			$view->message = '';
+			$view->message = 'User can view because is Admin or author of course';
 
 			return $view;
 		}
