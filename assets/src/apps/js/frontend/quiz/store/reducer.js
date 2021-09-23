@@ -25,6 +25,11 @@ const updateUserQuestionAnswer = ( state, action ) => {
 		temp: true,
 	};
 
+	localStorage.setItem( 'answered', JSON.stringify( {
+		...state.answered,
+		[ action.questionId ]: newAnswer,
+	} ) );
+
 	return {
 		...state,
 		answered: {
@@ -181,6 +186,7 @@ export const userQuiz = ( state = STORE_DATA, action ) => {
 			currentPage: action.currentPage,
 		};
 	case 'SUBMIT_QUIZ_SUCCESS':
+		localStorage.removeItem( 'answered' );
 		return submitQuiz( state, action );
 	case 'UPDATE_USER_QUESTION_ANSWERS':
 		return state.status === 'started' ? updateUserQuestionAnswer( state, action ) : state;
