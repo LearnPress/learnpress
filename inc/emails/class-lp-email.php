@@ -594,7 +594,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_footer_text(): string {
-			$text = LP()->settings->get( 'emails_general.footer_text' );
+			$text = LP_Helper::sanitize_params_submitted( LP()->settings->get( 'emails_general.footer_text' ), 'html' );
 
 			return $this->format_string( $text );
 		}
