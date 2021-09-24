@@ -674,9 +674,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @version 1.0.1
 		 */
 		public function get_from_name(): string {
-			$name = LP()->settings->get( 'emails_general.from_name', get_option( 'blogname' ) );
+			$name = LP_Helper::sanitize_params_submitted(LP()->settings->get( 'emails_general.from_name', get_option( 'blogname' ) ),'html');
 
-			return sanitize_email( $name );
+			return $name;
 		}
 
 		/**
