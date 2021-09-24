@@ -594,7 +594,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_footer_text(): string {
-			$text = wpautop( wp_kses_post( wptexturize( $this->settings->get( 'emails_general.footer_text', 'LearnPress' ) ) ) );
+			$text = LP()->settings->get( 'emails_general.footer_text' );
 
 			return $this->format_string( $text );
 		}
