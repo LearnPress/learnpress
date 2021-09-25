@@ -286,19 +286,18 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @param int $course_id
 	 *
-	 * @return string
+	 * @return int
 	 * @version 1.0.0
 	 * @author tungnx
 	 * @since 4.1.3.1
 	 */
-	public function get_total_user_enrolled( int $course_id ): string {
+	public function get_total_user_enrolled( int $course_id ): int {
 		$query = $this->wpdb->prepare(
 			"
 				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
 				WHERE item_id = %d
 				AND item_type = %s
 				AND (status = %s OR status = %s )
-				GROUP BY user_id
 			",
 			$course_id,
 			LP_COURSE_CPT,
@@ -306,7 +305,7 @@ class LP_Course_DB extends LP_Database {
 			'finished'
 		);
 
-		return $this->wpdb->get_var( $query );
+		return (int) $this->wpdb->get_var( $query );
 	}
 }
 
