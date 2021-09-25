@@ -44,6 +44,7 @@ const lpArchiveCourse = () => {
 let skeleton;
 let skeletonClone;
 let isLoading = false;
+let firstLoad = 1;
 const lpArchiveRequestCourse = ( args ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
 	const userID = lpGlobalSettings.user_id || '';
@@ -115,7 +116,11 @@ const lpArchiveRequestCourse = ( args ) => {
 		LPArchiveCourseInit();
 
 		// Scroll to archive element
-		archive.scrollIntoView();
+		if ( ! firstLoad ) {
+			archive.scrollIntoView();
+		} else {
+			firstLoad = 0;
+		}
 	} );
 };
 
