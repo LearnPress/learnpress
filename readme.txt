@@ -201,6 +201,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed security: when user share profile, another user can see settings as change password, change info
 ~ Fixed minor bugs
 ~ Modify: not scroll to title courses when load first
+~ Fixed: get wrong key setting "archive course layout"
+~ Fixed: get value "From name", "Footer text" setting Email
 
 = 4.1.3.1 (2021-09-15) =
 ~ Fixed: some shortcode of latex show incorrect on question answer.

@@ -320,10 +320,11 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * Register and enqueue needed js and styles
 	 */
 	public function load_scripts() {
-		// Register
-		// $this->_register_scripts();
-
 		$screen_id = LP_Admin::instance()->get_screen_id();
+
+		if ( empty( $screen_id ) ) {
+			return;
+		}
 
 		$this->handle_js( $screen_id );
 
