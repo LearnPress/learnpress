@@ -986,16 +986,21 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @Todo: view and rewrite this function
 		 */
 		public function count_students(): int {
-			$count_users = LP()->utils->count_course_users( $this->get_id(), true );
-			$total       = ! empty( $count_users['total'] ) ? $count_users['total'] : 0;
-
-			// $append_students = LP()->settings()->get( 'enrolled_students_number' );
-
-			// if ( ( 'yes' == $append_students ) || ! in_array( $append_students, array( 'yes', 'no' ) ) ) {
-			$total += $this->get_fake_students();
-			// }
+			$lp_course_db = LP_Course_DB::getInstance();
+			$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
+			$total       += $this->get_fake_students();
 
 			return $total;
+		}
+
+		/**
+		 * Get total user enrolled
+		 *
+		 * @return int
+		 */
+		public function get_total_user_enrolled(): int {
+			$lp_course_db = LP_Course_DB::getInstance();
+			return $lp_course_db->get_total_user_enrolled( $this->get_id() );
 		}
 
 		/**

@@ -25,8 +25,11 @@ class LP_Utils {
 	 * @since 3.x.x
 	 *
 	 * @return array
+	 * @deprecated
+	 * @editor tungnx - deprecated
 	 */
 	public function flush_count_course_users() {
+		_deprecated_function( __FUNCTION__, '1.4.1' );
 		global $wpdb;
 
 		if ( ! $all_statuses = $wpdb->get_col( "SELECT DISTINCT `status` FROM {$wpdb->learnpress_user_items}" ) ) {
@@ -75,10 +78,11 @@ class LP_Utils {
 	 * @param bool  $hard
 	 *
 	 * @return array
-	 * @Todo: tungnx - review this function
+	 * @editor tungnx - deprecated
+	 * @deprecated
 	 */
 	public function count_course_users( $args = array(), $hard = false ) {
-
+		_deprecated_function( __FUNCTION__, '1.4.1', 'LP_Course_DB::get_total_user_enrolled' );
 		$counts = get_option( '_lp_count_course_users' );
 
 		if ( is_numeric( $args ) ) {
