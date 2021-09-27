@@ -581,7 +581,7 @@ class LP_Repair_Database {
 					$user_ids   = $order->get_users();
 					$course_ids = $order->get_item_ids();
 
-					$this->sync_course_orders( $course_ids );
+					//$this->sync_course_orders( $course_ids );
 					$this->sync_user_orders( $user_ids );
 				}
 
@@ -626,11 +626,14 @@ class LP_Repair_Database {
 
 	/**
 	 * Sync all
+	 *
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function sync_all() {
+	/*public function sync_all() {
 		$this->sync_course_orders();
 		$this->sync_user_courses();
-	}
+	}*/
 
 	public function call( $func ) {
 		$func = preg_replace( '~[-]+~', '_', $func );
@@ -706,8 +709,10 @@ class LP_Repair_Database {
 	 *
 	 * @return bool|array
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function sync_course_orders( $courses = '*' ) {
+	/*public function sync_course_orders( $courses = '*' ) {
 		global $wpdb;
 
 		if ( empty( $courses ) ) {
@@ -774,7 +779,7 @@ class LP_Repair_Database {
 		}
 
 		return $courses;
-	}
+	}*/
 
 	/**
 	 * Sync orders for each user

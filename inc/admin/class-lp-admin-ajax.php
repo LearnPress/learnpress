@@ -93,7 +93,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'dashboard-order-status',
 				'dashboard-plugin-status',
 				'dismiss-notice',
-				'sync-course-orders',
 				'sync-user-orders',
 				'sync-course-final-quiz',
 				'sync-remove-older-data',
@@ -164,8 +163,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Sync orders for each course
 		 *
 		 * @since 3.1.0
+		 * @editor tungnx
+		 * @modify 4.1.4 comment - not use
 		 */
-		public static function sync_course_orders() {
+		/*public static function sync_course_orders() {
 			if ( empty( $_REQUEST['sync'] ) ) {
 				die();
 			}
@@ -182,7 +183,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( array( 'result' => 'success' ) );
 
 			die();
-		}
+		}*/
 
 		/**
 		 * Sync orders for each user
