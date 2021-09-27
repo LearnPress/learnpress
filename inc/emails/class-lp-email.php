@@ -594,7 +594,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_footer_text(): string {
-			$text = wpautop( wp_kses_post( wptexturize( $this->settings->get( 'emails_general.footer_text', 'LearnPress' ) ) ) );
+			$text = LP_Helper::sanitize_params_submitted( $this->settings->get( 'emails_general.footer_text', 'LearnPress' ), 'html' );
 
 			return $this->format_string( $text );
 		}
@@ -676,7 +676,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		public function get_from_name(): string {
 			$name = LP()->settings->get( 'emails_general.from_name', get_option( 'blogname' ) );
 
-			return sanitize_email( $name );
+			return LP_Helper::sanitize_params_submitted( $name );
 		}
 
 		/**
