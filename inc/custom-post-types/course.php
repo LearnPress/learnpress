@@ -629,7 +629,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'students':
-					$count = $course->get_total_user_enrolled();
+					$count = $course->get_total_user_enrolled_or_purchased();
 
 					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . ( $count ? $count : 0 ) . '</span>';
 

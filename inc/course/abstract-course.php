@@ -1004,6 +1004,16 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * Get total user enrolled or finished
+		 *
+		 * @return int
+		 */
+		public function get_total_user_enrolled_or_purchased(): int {
+			$lp_course_db = LP_Course_DB::getInstance();
+			return $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+		}
+
+		/**
 		 * @param string|array $statuses
 		 *
 		 * @return mixed
