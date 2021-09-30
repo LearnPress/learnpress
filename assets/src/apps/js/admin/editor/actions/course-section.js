@@ -1,8 +1,8 @@
 const $ = window.jQuery || jQuery;
 
 const CourseCurriculum = {
-	toggleAllSections: function( context ) {
-		var hidden = context.getters.isHiddenAllSections;
+	toggleAllSections( context ) {
+		const hidden = context.getters.isHiddenAllSections;
 
 		if ( hidden ) {
 			context.commit( 'OPEN_ALL_SECTIONS' );
@@ -16,14 +16,14 @@ const CourseCurriculum = {
 		} );
 	},
 
-	updateSectionsOrder: function( context, order ) {
+	updateSectionsOrder( context, order ) {
 		LP.Request( {
 			type: 'sort-sections',
 			order: JSON.stringify( order ),
 		} ).then(
 			function( response ) {
-				var result = response.body;
-				var order_sections = result.data;
+				const result = response.body;
+				const order_sections = result.data;
 
 				context.commit( 'SORT_SECTION', order_sections );
 			},
@@ -33,7 +33,7 @@ const CourseCurriculum = {
 		);
 	},
 
-	toggleSection: function( context, section ) {
+	toggleSection( context, section ) {
 		if ( section.open ) {
 			context.commit( 'CLOSE_SECTION', section );
 		} else {
@@ -46,7 +46,7 @@ const CourseCurriculum = {
 		} );
 	},
 
-	updateSection: function( context, section ) {
+	updateSection( context, section ) {
 		context.commit( 'UPDATE_SECTION_REQUEST', section.id );
 
 		LP.Request( {
@@ -60,7 +60,7 @@ const CourseCurriculum = {
 			} );
 	},
 
-	removeSection: function( context, payload ) {
+	removeSection( context, payload ) {
 		context.commit( 'REMOVE_SECTION', payload.index );
 
 		LP.Request( {
@@ -68,7 +68,7 @@ const CourseCurriculum = {
 			section_id: payload.section.id,
 		} ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 			},
 			function( error ) {
 				console.error( error );
@@ -76,8 +76,8 @@ const CourseCurriculum = {
 		);
 	},
 
-	newSection: function( context, name ) {
-		var newSection = {
+	newSection( context, name ) {
+		const newSection = {
 			type: 'new-section',
 			section_name: name,
 			temp_id: LP.uniqueId(),
@@ -91,10 +91,10 @@ const CourseCurriculum = {
 
 		LP.Request( newSection ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 
 				if ( result.success ) {
-					var section = $.extend( {}, result.data, { open: true } );
+					const section = $.extend( {}, result.data, { open: true } );
 					context.commit( 'ADD_NEW_SECTION', section );
 				}
 			},
@@ -104,7 +104,7 @@ const CourseCurriculum = {
 		);
 	},
 
-	updateSectionItem: function( context, payload ) {
+	updateSectionItem( context, payload ) {
 		context.commit( 'UPDATE_SECTION_ITEM_REQUEST', payload.item.id );
 
 		LP.Request( {
@@ -116,11 +116,11 @@ const CourseCurriculum = {
 			function( response ) {
 				context.commit( 'UPDATE_SECTION_ITEM_SUCCESS', payload.item.id );
 
-				var result = response.body;
+				const result = response.body;
 				if ( result.success ) {
-					var item = result.data;
+					const item = result.data;
 
-					context.commit( 'UPDATE_SECTION_ITEM', { section_id: payload.section_id, item: item } );
+					context.commit( 'UPDATE_SECTION_ITEM', { section_id: payload.section_id, item } );
 				}
 			},
 			function( error ) {
@@ -130,8 +130,8 @@ const CourseCurriculum = {
 		);
 	},
 
-	removeSectionItem: function( context, payload ) {
-		var id = payload.item.id;
+	removeSectionItem( context, payload ) {
+		const id = payload.item.id;
 		context.commit( 'REMOVE_SECTION_ITEM', payload );
 		payload.item.temp_id = 0;
 		LP.Request( {
@@ -139,14 +139,23 @@ const CourseCurriculum = {
 			section_id: payload.section_id,
 			item_id: id,
 		} ).then(
-			function() {
+			function( rs ) {
+				const { data, success } = rs.body;
+
+				if ( success ) {
+					context.commit( 'REMOVE_SECTION_ITEM', payload );
+				} else {
+					alert( data );
+					payload.oldId = id;
+					context.commit( 'REMOVE_SECTION_ITEM', payload );
+				}
 				context.commit( 'REMOVE_SECTION_ITEM', payload );
 			}
 		);
 	},
 
-	deleteSectionItem: function( context, payload ) {
-		var id = payload.item.id;
+	deleteSectionItem( context, payload ) {
+		const id = payload.item.id;
 		context.commit( 'REMOVE_SECTION_ITEM', payload );
 		payload.item.temp_id = 0;
 		LP.Request( {
@@ -154,13 +163,21 @@ const CourseCurriculum = {
 			section_id: payload.section_id,
 			item_id: id,
 		} ).then(
-			function() {
-				context.commit( 'REMOVE_SECTION_ITEM', payload );
+			function( rs ) {
+				const { data, success } = rs.body;
+
+				if ( success ) {
+					context.commit( 'REMOVE_SECTION_ITEM', payload );
+				} else {
+					alert( data );
+					payload.oldId = id;
+					context.commit( 'REMOVE_SECTION_ITEM', payload );
+				}
 			}
 		);
 	},
 
-	newSectionItem: function( context, payload ) {
+	newSectionItem( context, payload ) {
 		context.commit( 'APPEND_EMPTY_ITEM_TO_SECTION', payload );
 		//context.commit('UPDATE_SECTION_ITEMS', {section_id: payload.section_id, items: result.data});
 		LP.Request( {
@@ -169,18 +186,18 @@ const CourseCurriculum = {
 			item: JSON.stringify( payload.item ),
 		} ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 
 				if ( result.success ) {
 					// context.commit('UPDATE_SECTION_ITEMS', {section_id: payload.section_id, items: result.data});
-					var items = {};
+					const items = {};
 					$.each( result.data, function( i, a ) {
-						items[a.old_id ? a.old_id : a.id] = a;
+						items[ a.old_id ? a.old_id : a.id ] = a;
 					} );
 
 					context.commit( 'UPDATE_ITEM_SECTION_BY_ID', {
 						section_id: payload.section_id,
-						items: items,
+						items,
 					} );
 				}
 			},
@@ -190,15 +207,15 @@ const CourseCurriculum = {
 		);
 	},
 
-	updateSectionItems: function( { state }, payload ) {
+	updateSectionItems( { state }, payload ) {
 		LP.Request( {
 			type: 'update-section-items',
 			section_id: payload.section_id,
 			items: JSON.stringify( payload.items ),
-			last_section: state.sections[state.sections.length - 1] === ( payload.section_id ),
+			last_section: state.sections[ state.sections.length - 1 ] === ( payload.section_id ),
 		} ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 
 				if ( result.success ) {
 					// console.log(result);

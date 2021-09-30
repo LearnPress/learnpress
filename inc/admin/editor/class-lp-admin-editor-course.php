@@ -216,22 +216,27 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function remove_section_item( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+		$section_id = $args['section_id'] ?? false;
+		$item_id    = $args['item_id'] ?? false;
 
-		// Instructor only remove item in my item.
-		if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
-			return false;
+		try {
+			// Instructor only remove item in my item.
+			if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
+				throw new Exception( __( 'You can not delete this item!', 'learnpress' ) );
+			}
+
+			if ( ! ( $section_id && $item_id ) ) {
+				throw new Exception( __( 'Invalid params!', 'learnpress' ) );
+			}
+
+			// remove item from course
+			$this->course_curd->remove_item( $item_id );
+			$this->result = true;
+		} catch ( Throwable $e ) {
+			$this->result = new WP_Error( '2', $e->getMessage() );
 		}
 
-		if ( ! ( $section_id && $item_id ) ) {
-			return false;
-		}
-
-		// remove item from course
-		$this->course_curd->remove_item( $item_id );
-
-		return true;
+		return $this->result;
 	}
 
 	/**
@@ -240,21 +245,25 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function delete_section_item( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+		$section_id = $args['section_id'] ?? false;
+		$item_id    = $args['item_id'] ?? false;
 
-		// Instructor only remove item in my item.
-		if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
-			return false;
+		try {
+			// Instructor only remove item in my item.
+			if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
+				throw new Exception( __( 'You can not delete this item!', 'learnpress' ) );
+			}
+
+			if ( ! ( $section_id && $item_id ) ) {
+				throw new Exception( __( 'Invalid params!', 'learnpress' ) );
+			}
+
+			$this->result = wp_trash_post( $item_id );
+		} catch ( Throwable $e ) {
+			$this->result = new WP_Error( '2', $e->getMessage() );
 		}
 
-		if ( ! ( $section_id && $item_id ) ) {
-			return false;
-		}
-
-		$this->result = wp_trash_post( $item_id );
-
-		return true;
+		return $this->result;
 	}
 
 	/**
