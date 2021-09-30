@@ -946,7 +946,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Check if students have enrolled course is reached.
+		 * Check if students have enrolled or purchased course is reached.
 		 *
 		 * @return mixed
 		 */
@@ -955,7 +955,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$max_allowed = $this->get_max_students();
 
 			if ( $max_allowed ) {
-				$in_stock = $max_allowed > $this->count_completed_orders();
+				$in_stock = $max_allowed > $this->get_total_user_enrolled_or_purchased();
 			}
 
 			return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
@@ -1033,7 +1033,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			return $count;
 		}
 
-		public function count_completed_orders() {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4 - comment - not use
+		 */
+		/*public function count_completed_orders() {
 			$orders = $this->get_meta( 'order-completed' );
 
 			if ( $orders ) {
@@ -1043,7 +1047,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return $count;
-		}
+		}*/
 
 		/**
 		 * Check if course contain an item in curriculum.
