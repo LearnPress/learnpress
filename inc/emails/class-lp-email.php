@@ -278,7 +278,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		/**
 		 * @var string
 		 */
-		public $email_format = '';
+		public $email_format = 'html';
 
 		/**
 		 * @var bool
@@ -299,12 +299,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * LP_Email constructor.
 		 */
 		public function __construct() {
-			// Hooks WP
-			add_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
-			add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
-			add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
-			// End hooks
-
 			// Set template base path to LP templates path if it is not set.
 			if ( empty( $this->template_base ) ) {
 				$this->template_base = LP()->plugin_path( 'templates/' );
@@ -659,12 +653,14 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 * @editor tungnx
 		 * @version 1.0.1
+		 * @editor tungnx
+		 * @modify 4.1.4 - comment - not override hook
 		 */
-		public function get_from_address(): string {
+		/*public function get_from_address(): string {
 			$email = LP()->settings->get( 'emails_general.from_email', get_option( 'admin_email' ) );
 
 			return sanitize_email( $email );
-		}
+		}*/
 
 		/**
 		 * Get FROM name. Default is Blog name.
@@ -838,6 +834,11 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @since 4.1.3
 		 */
 		public function send_email(): bool {
+			// Hooks WP
+			add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
+			add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
+			// End hooks
+
 			return $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 		}
 
