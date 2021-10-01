@@ -39,8 +39,8 @@ const LP_QUIZ_CPT     = 'lp_quiz';
 const LP_ORDER_CPT    = 'lp_order';
 
 // Role of user .
-define( 'LP_TEACHER_ROLE', 'lp_teacher' );
-define( 'ADMIN_ROLE', 'administrator' );
+const LP_TEACHER_ROLE = 'lp_teacher';
+const ADMIN_ROLE = 'administrator';
 
 // Turn debug mode on/off.
 //define( 'LP_DEBUG', true );

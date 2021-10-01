@@ -872,7 +872,8 @@ class LP_Page_Controller {
 				 *
 				 * Current, apply only for LP, not apply for theme Thimpress, because theme override
 				 */
-				$q->set( 'posts_per_page', 1 );
+				//$q->set( 'posts_per_page', 1 );
+				$q->set( 'author', -1 );
 			} else {
 				$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
 				$q->set( 'posts_per_page', $limit );
