@@ -987,18 +987,29 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @throws Exception
 	 */
 	public function user_time() {
-		$user        = LP_Global::user();
-		$course_data = $user->get_course_data( $this->course->get_id() );
+		$user = LP_Global::user();
 
-		$status = $user->get_course_status( $this->course->get_id() );
-
-		if ( ! $course_data->is_enrolled() && ! $course_data->is_finished() ) {
+		if ( ! $user ) {
 			return;
 		}
 
-		$start_time      = $course_data->get_start_time();
-		$end_time        = $course_data->get_end_time();
-		$expiration_time = $course_data->get_expiration_time();
+		if ( ! $user->has_enrolled_or_finished( $this->course->get_id() ) ) {
+			return;
+		}
+
+		/**
+		 * @var LP_User_Item_Course
+		 */
+		$user_course = $user->get_course_data( $this->course->get_id() );
+
+		if ( ! $user_course ) {
+			return;
+		}
+
+		$status          = $user_course->get_status();
+		$start_time      = $user_course->get_start_time();
+		$end_time        = $user_course->get_end_time();
+		$expiration_time = $user_course->get_expiration_time();
 
 		learn_press_get_template(
 			'single-course/sidebar/user-time',

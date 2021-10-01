@@ -198,11 +198,12 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.1.4 (2021-10-0x) =
-~ Fixed security: when user share profile, another user can see settings as change password, change info
-~ Fixed minor bugs
-~ Modify: not scroll to title courses when load first
-~ Fixed: get wrong key setting "archive course layout"
-~ Fixed: get value "From name", "Footer text" setting Email
+~ Fixed security: when user share profile, another user can see settings as change password, change info.
+~ Fixed minor bugs.
+~ Modify: not scroll to title courses when load first.
+~ Fixed: get incorrect key setting "archive course layout".
+~ Fixed: get value "From name", "Footer text" setting Email.
+~ Removed: option set "From address" email, removed hook "wp_mail_from" make some site can't send email when install LP.
 
 = 4.1.3.1 (2021-09-15) =
 ~ Fixed: some shortcode of latex show incorrect on question answer.
