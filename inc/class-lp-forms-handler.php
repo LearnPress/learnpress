@@ -157,6 +157,8 @@ class LP_Forms_Handler {
 
 			if ( is_wp_error( $new_customer ) ) {
 				throw new Exception( $new_customer->get_error_message() );
+			} else {
+				wp_new_user_notification( $new_customer );
 			}
 
 			// Send email become a teacher.
