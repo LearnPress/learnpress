@@ -537,11 +537,17 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Trigger Learnpress loaded actions.
 		 *
 		 * @since 3.0.0
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 * @editor tungnx
 		 */
 		public function plugin_loaded() {
 			do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
+
+			// Polylang
+			if ( defined( 'POLYLANG_VERSION' ) ) {
+				require_once 'inc/external-plugin/polylang/class-lp-polylang.php';
+				LP_Polylang::instance();
+			}
 
 			$this->init();
 

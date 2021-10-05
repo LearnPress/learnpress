@@ -1858,13 +1858,13 @@ function lp_archive_skeleton_get_args() {
 		$args = (array) $_GET;
 	}
 
-	$array = apply_filters(
+	$params = apply_filters(
 		'lp/template/archive-course/skeleton/args',
 		array(
-			'paged',
-			's',
-			'orderby',
-			'order',
+			'paged'   => 1,
+			's'       => '',
+			'orderby' => '',
+			'order'   => '',
 		)
 	);
 
@@ -1876,9 +1876,11 @@ function lp_archive_skeleton_get_args() {
 	}
 
 	if ( learn_press_is_course_archive() ) {
-		foreach ( $array as $a ) {
-			if ( get_query_var( $a ) ) {
-				$args[ $a ] = get_query_var( $a );
+		foreach ( $params as $key => $param ) {
+			if ( get_query_var( $key ) ) {
+				$args[ $key ] = get_query_var( $key );
+			} else {
+				$args[ $key ] = $param;
 			}
 		}
 	}

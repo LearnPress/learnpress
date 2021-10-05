@@ -459,7 +459,7 @@ class LP_Page_Controller {
 			return $template;
 		}
 
-		$this->_maybe_redirect_courses_page();
+		//$this->_maybe_redirect_courses_page();
 
 		$default_template = $this->get_page_template();
 
