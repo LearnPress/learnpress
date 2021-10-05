@@ -113,7 +113,7 @@ const lpArchiveRequestCourse = ( args ) => {
 
 		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
 
-		LPArchiveCourseInit();
+		//LPArchiveCourseInit();
 
 		// Scroll to archive element
 		if ( ! firstLoad ) {
