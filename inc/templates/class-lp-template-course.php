@@ -168,10 +168,21 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_pricing() {
-		$course = learn_press_get_course();
-		$user   = learn_press_get_current_user();
+		$can_show = true;
+		$course   = learn_press_get_course();
+		$user     = learn_press_get_current_user();
 
-		if ( $user && $user->has_enrolled_course( get_the_ID() ) ) {
+		try {
+			if ( $user && $user->has_enrolled_course( get_the_ID() ) ) {
+				throw new Exception( 'User has enrolled course' );
+			}
+		} catch ( Throwable $e ) {
+			$can_show = false;
+		}
+
+		$can_show = apply_filters( 'learnpress/course/template/price/can-show', $can_show, $user, $course );
+
+		if ( ! $can_show ) {
 			return;
 		}
 
