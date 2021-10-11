@@ -128,6 +128,8 @@ class LP_Widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		wp_enqueue_script( 'lp-widgets' );
 
+		do_action( 'before_show_lp_widget_content' );
+
 		$serialized_instance = serialize( $instance );
 
 		$data = array_merge(
