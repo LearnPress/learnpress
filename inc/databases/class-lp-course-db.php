@@ -138,8 +138,7 @@ class LP_Course_DB extends LP_Database {
 					SELECT DISTINCT(item_id), COUNT(item_id) as total
 					FROM $this->tb_lp_user_items
 					WHERE item_type = %s
-					AND status = %s
-					OR status = %s
+					AND ( status = %s OR status = %s OR status = %s )
 					GROUP BY item_id
 					ORDER BY total DESC
 					LIMIT %d
@@ -147,6 +146,7 @@ class LP_Course_DB extends LP_Database {
 				LP_COURSE_CPT,
 				LP_COURSE_ENROLLED,
 				LP_COURSE_FINISHED,
+				LP_COURSE_PURCHASED,
 				$filter->limit
 			)
 		);

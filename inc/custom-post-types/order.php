@@ -780,7 +780,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					break;
 				case 'order_total':
 					echo $the_order->get_formatted_order_total();// learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
-					if ( $title = $the_order->get_payment_method_title() ) {
+					$title = $the_order->get_payment_method_title();
+
+					if ( $title ) {
 						?>
 						<div class="payment-method-title">
 							<?php echo $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $title, $the_order ), $the_order ); ?>

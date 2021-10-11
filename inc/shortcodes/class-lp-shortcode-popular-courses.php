@@ -37,7 +37,7 @@ if ( ! class_exists( 'LP_Shortcode_Popular_Courses' ) ) {
 		public function query_courses() {
 			$this->_query = $this->curd->get_popular_courses(
 				array(
-					'limit'    => $this->_atts['limit']
+					'limit' => $this->_atts['limit'],
 				)
 			);
 		}
