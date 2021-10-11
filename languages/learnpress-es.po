@@ -1036,11 +1036,11 @@ msgid "Permalinks"
 msgstr "Enlaces permanentes"
 
 #: inc/admin/settings/class-lp-settings-courses.php:88
-msgid "Show popup confirm before finish course or complete item."
+msgid "Show confirmation popup before finishing course or completing item."
 msgstr "Mostrar una ventana emergente de confirmación antes de terminar el curso o cuando se completen los elementos."
 
 #: inc/admin/settings/class-lp-settings-courses.php:87
-msgid "Enable popup confirm finish course, complete item"
+msgid "Enable confirmation popup finish course, complete item"
 msgstr "Activar la ventana emergente para confirmar la finalización del curso, elementos completos"
 
 #: inc/admin/settings/class-lp-settings-courses.php:84
