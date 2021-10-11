@@ -280,12 +280,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 								'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
 								'callback' => array( $this, 'tab_order_details' ),
 								'priority' => 10,
+								'icon'     => '<i class="fas fa-home"></i>',
 							),
 							'change-password'   => array(
 								'title'    => esc_html__( 'Password', 'learnpress' ),
 								'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
 								'callback' => array( $this, 'tab_order_details' ),
 								'priority' => 30,
+								'icon'     => '<i class="fas fa-key"></i>',
 							),
 						),
 						'priority' => 35,
@@ -305,6 +307,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'callback' => array( $this, 'tab_order_details' ),
 						'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
 						'priority' => 20,
+						'icon'     => '<i class="fas fa-user-circle"></i>',
 					);
 				}
 
@@ -314,6 +317,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'slug'     => $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
 						'priority' => 40,
 						'callback' => array( $this, 'tab_order_details' ),
+						'icon'     => '<i class="fas fa-user-secret"></i>',
 					);
 				}
 			}
