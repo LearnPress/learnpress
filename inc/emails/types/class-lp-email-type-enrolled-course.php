@@ -58,12 +58,11 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	 *
 	 * @param array $params
 	 * @return bool
-	 * @throws Exception
 	 */
 	final function check_and_set( array $params ): bool {
 		try {
 			if ( count( $params ) < 3 ) {
-				throw new Exception( 'Invalid params to send email ' . __CLASS__ );
+				return false;
 			}
 
 			if ( ! $this->enable ) {
@@ -82,7 +81,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 			$user_course_status = $user->get_course_status( $course_id );
 
 			if ( LP_COURSE_ENROLLED != $user_course_status ) {
-				throw new Exception( 'User did not enrolled course ' . __CLASS__ );
+				error_log( 'User did not enrolled course ' . __CLASS__ );
 			}
 
 			$this->_order  = new LP_Order( $order_id );

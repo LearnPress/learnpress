@@ -99,7 +99,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$value = ! empty( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : '';
+		if ( ! isset( $_POST[ $this->id ] ) ) {
+			return;
+		}
+
+		$value = LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] );
 
 		$multil_meta = isset( $this->extra['multil_meta'] ) ? $this->extra['multil_meta'] : false;
 
@@ -114,11 +118,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 			$new_val = array_diff( $array_new_values, $array_get_values );
 
 			foreach ( $del_val as $level_id ) {
-				delete_post_meta( $post_id, '_lp_co_teacher', $level_id );
+				delete_post_meta( $post_id, $this->id, $level_id );
 			}
 
 			foreach ( $new_val as $level_id ) {
-				add_post_meta( $post_id, '_lp_co_teacher', $level_id, false );
+				add_post_meta( $post_id, $this->id, $level_id, false );
 			}
 		} else {
 			update_post_meta( $post_id, $this->id, $value );

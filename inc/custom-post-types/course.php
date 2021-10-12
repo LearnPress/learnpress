@@ -629,15 +629,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'students':
-					//Todo: tungnx - should review code
-					//Total user enrolled.
-					$count = LP()->utils->count_course_users(
-						array(
-							'course_id'  => $course->get_id(),
-							'status'     => [],
-							'total_only' => true,
-						)
-					);
+					$count = $course->get_total_user_enrolled_or_purchased();
 
 					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . ( $count ? $count : 0 ) . '</span>';
 

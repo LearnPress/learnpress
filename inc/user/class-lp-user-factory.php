@@ -529,7 +529,7 @@ class LP_User_Factory {
 		try {
 			$course      = learn_press_get_course( $item['course_id'] );
 			$auto_enroll = LP_Settings::is_auto_start_course();
-
+			$external_link = $course->get_external_link();
 			// Data user_item for save database
 			$user_item_data = [
 				'user_id' => $user->get_id(),
@@ -537,7 +537,7 @@ class LP_User_Factory {
 				'ref_id'  => $order->get_id(),
 			];
 
-			if ( $auto_enroll ) {
+			if ( $auto_enroll || ! empty($external_link) ) {
 				$user_item_data['status']     = LP_COURSE_ENROLLED;
 				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
 			} elseif ( ! $course->is_free() ) {

@@ -118,7 +118,7 @@ class LP_Global {
 	}
 
 	/**
-	 * @return LP_User
+	 * @return LP_User|LP_User_Guest|false
 	 */
 	public static function user() {
 		global $lp_user;

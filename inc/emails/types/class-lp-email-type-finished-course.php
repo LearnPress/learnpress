@@ -68,7 +68,7 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 		}
 
 		if ( count( $params ) < 3 ) {
-			throw new Exception( 'Invalid params to send email ' . __CLASS__ );
+			return false;
 		}
 
 		$this->course_id    = $params[0];

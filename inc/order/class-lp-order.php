@@ -259,11 +259,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			do_action( 'learn-press/before-update-status-lp-order', $new_status, $old_status, $this, $manual );
 
 			$this->set_status( $new_status );
-			$this->save();
+			$result = $this->save();
 
 			do_action( 'learn-press/after-update-status-lp-order', $new_status, $old_status, $this, $manual );
 
-			return false;
+			return $result;
 		}
 
 		/**

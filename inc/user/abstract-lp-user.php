@@ -2366,8 +2366,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function is_course_in_progress( $course_id ): bool {
-			$lp_db = LP_User_Items_DB::getInstance();
-
 			$user        = learn_press_get_user( $this->get_id() );
 			$user_course = $user->get_course_data( $course_id );
 

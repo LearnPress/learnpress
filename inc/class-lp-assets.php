@@ -62,7 +62,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return array
 	 */
 	public function _get_script_data(): array {
-		return array(
+		$localize_script = [
 			'lp-global'       => array(
 				'url'                                => learn_press_get_current_url(),
 				'siteurl'                            => site_url(),
@@ -97,7 +97,9 @@ class LP_Assets extends LP_Abstract_Assets {
 			),
 			'lp-course'       => learn_press_single_course_args(),
 			'lp-quiz'         => learn_press_single_quiz_args(),
-		);
+		];
+
+		return apply_filters( 'learnpress/frontend/localize_script', $localize_script );
 
 	}
 

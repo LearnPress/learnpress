@@ -1,19 +1,19 @@
 const CourseCurriculum = {
-	SORT_SECTION: function( state, orders ) {
+	SORT_SECTION( state, orders ) {
 		state.sections = state.sections.map( function( section ) {
-			section.order = orders[section.id];
+			section.order = orders[ section.id ];
 
 			return section;
 		} );
 	},
-	SET_SECTIONS: function( state, sections ) {
+	SET_SECTIONS( state, sections ) {
 		state.sections = sections;
 	},
-	ADD_NEW_SECTION: function( state, newSection ) {
+	ADD_NEW_SECTION( state, newSection ) {
 		if ( newSection.open === undefined ) {
 			newSection.open = true;
 		}
-		var pos;
+		let pos;
 
 		if ( newSection.temp_id ) {
 			state.sections.map( function( section, i ) {
@@ -30,19 +30,19 @@ const CourseCurriculum = {
 			state.sections.push( newSection );
 		}
 	},
-	ADD_EMPTY_SECTION: function( state, section ) {
+	ADD_EMPTY_SECTION( state, section ) {
 		section.open = true;
 		state.sections.push( section );
 	},
-	REMOVE_SECTION: function( state, index ) {
+	REMOVE_SECTION( state, index ) {
 		state.sections.splice( index, 1 );
 	},
-	REMOVE_SECTION_ITEM: function( state, payload ) {
-		var section = state.sections.find( function( section ) {
+	REMOVE_SECTION_ITEM( state, payload ) {
+		const section = state.sections.find( function( section ) {
 			return ( section.id === payload.section_id );
 		} );
 
-		var items = section.items || [],
+		let items = section.items || [],
 			item = payload.item,
 			index = -1;
 		items.forEach( function( it, i ) {
@@ -52,15 +52,20 @@ const CourseCurriculum = {
 		} );
 
 		if ( index !== -1 ) {
+			if ( payload.oldId !== undefined ) {
+				items[ index ].id = payload.oldId;
+				return;
+			}
+
 			if ( item.temp_id ) {
-				items[index].id = item.temp_id;
+				items[ index ].id = item.temp_id;
 			} else {
 				items.splice( index, 1 );
 			}
 		}
 	},
-	UPDATE_SECTION_ITEMS: function( state, payload ) {
-		var section = state.sections.find( function( section ) {
+	UPDATE_SECTION_ITEMS( state, payload ) {
+		const section = state.sections.find( function( section ) {
 			return parseInt( section.id ) === parseInt( payload.section_id );
 		} );
 
@@ -69,27 +74,27 @@ const CourseCurriculum = {
 		}
 		section.items = payload.items;
 	},
-	UPDATE_SECTION_ITEM: function( state, payload ) {
+	UPDATE_SECTION_ITEM( state, payload ) {
 
 	},
 
-	CLOSE_SECTION: function( state, section ) {
+	CLOSE_SECTION( state, section ) {
 		state.sections.forEach( function( _section, index ) {
 			if ( section.id === _section.id ) {
-				state.sections[index].open = false;
+				state.sections[ index ].open = false;
 			}
 		} );
 	},
 
-	OPEN_SECTION: function( state, section ) {
+	OPEN_SECTION( state, section ) {
 		state.sections.forEach( function( _section, index ) {
 			if ( section.id === _section.id ) {
-				state.sections[index].open = true;
+				state.sections[ index ].open = true;
 			}
 		} );
 	},
 
-	OPEN_ALL_SECTIONS: function( state ) {
+	OPEN_ALL_SECTIONS( state ) {
 		state.sections = state.sections.map( function( _section ) {
 			_section.open = true;
 
@@ -97,7 +102,7 @@ const CourseCurriculum = {
 		} );
 	},
 
-	CLOSE_ALL_SECTIONS: function( state ) {
+	CLOSE_ALL_SECTIONS( state ) {
 		state.sections = state.sections.map( function( _section ) {
 			_section.open = false;
 
@@ -105,31 +110,31 @@ const CourseCurriculum = {
 		} );
 	},
 
-	UPDATE_SECTION_REQUEST: function( state, sectionId ) {
+	UPDATE_SECTION_REQUEST( state, sectionId ) {
 		$Vue.set( state.statusUpdateSection, sectionId, 'updating' );
 	},
 
-	UPDATE_SECTION_SUCCESS: function( state, sectionId ) {
+	UPDATE_SECTION_SUCCESS( state, sectionId ) {
 		$Vue.set( state.statusUpdateSection, sectionId, 'successful' );
 	},
 
-	UPDATE_SECTION_FAILURE: function( state, sectionId ) {
+	UPDATE_SECTION_FAILURE( state, sectionId ) {
 		$Vue.set( state.statusUpdateSection, sectionId, 'failed' );
 	},
 
-	UPDATE_SECTION_ITEM_REQUEST: function( state, itemId ) {
+	UPDATE_SECTION_ITEM_REQUEST( state, itemId ) {
 		$Vue.set( state.statusUpdateSectionItem, itemId, 'updating' );
 	},
 
-	UPDATE_SECTION_ITEM_SUCCESS: function( state, itemId ) {
+	UPDATE_SECTION_ITEM_SUCCESS( state, itemId ) {
 		$Vue.set( state.statusUpdateSectionItem, itemId, 'successful' );
 	},
 
-	UPDATE_SECTION_ITEM_FAILURE: function( state, itemId ) {
+	UPDATE_SECTION_ITEM_FAILURE( state, itemId ) {
 		$Vue.set( state.statusUpdateSectionItem, itemId, 'failed' );
 	},
-	APPEND_EMPTY_ITEM_TO_SECTION: function( state, data ) {
-		var section = state.sections.find( function( section ) {
+	APPEND_EMPTY_ITEM_TO_SECTION( state, data ) {
+		const section = state.sections.find( function( section ) {
 			return parseInt( section.id ) === parseInt( data.section_id );
 		} );
 
@@ -139,8 +144,8 @@ const CourseCurriculum = {
 
 		section.items.push( { id: data.item.id, title: data.item.title, type: 'empty-item' } );
 	},
-	UPDATE_ITEM_SECTION_BY_ID: function( state, data ) {
-		var section = state.sections.find( function( section ) {
+	UPDATE_ITEM_SECTION_BY_ID( state, data ) {
+		const section = state.sections.find( function( section ) {
 			return parseInt( section.id ) === parseInt( data.section_id );
 		} );
 
@@ -148,17 +153,17 @@ const CourseCurriculum = {
 			return;
 		}
 
-		for ( var i = 0; i < section.items.length; i++ ) {
+		for ( let i = 0; i < section.items.length; i++ ) {
 			try {
-				if ( ! section.items[i] ) {
+				if ( ! section.items[ i ] ) {
 					continue;
 				}
 
-				var item_id = section.items[i].id;
+				const item_id = section.items[ i ].id;
 
 				if ( item_id ) {
-					if ( data.items[item_id] ) {
-						$Vue.set( section.items, i, data.items[item_id] );
+					if ( data.items[ item_id ] ) {
+						$Vue.set( section.items, i, data.items[ item_id ] );
 					}
 				}
 			} catch ( ex ) {

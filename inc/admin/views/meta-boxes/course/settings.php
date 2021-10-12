@@ -94,7 +94,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'yes'
 				),
 				'_lp_allow_course_repurchase'  => new LP_Meta_Box_Checkbox_Field(
-					'Allow Repurchase',
+					__( 'Allow Repurchase', 'learnpress' ),
 					esc_html__( 'Allow users to repurchase this course after course finished or blocked ( Do not apply to free courses ).', 'learnpress' ),
 					'no'
 				),

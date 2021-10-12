@@ -27,7 +27,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/sidebar.php' );
 	}
 
-	public function content( $user ) {
+	/**
+	 * @param LP_Profile $user
+	 */
+	public function content( LP_Profile $user ) {
 		$profile = LP_Global::profile();
 		$user_id = get_current_user_id();
 
@@ -38,6 +41,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		$current_tab = $profile->get_current_tab();
 
 		if ( 'settings' === $current_tab && ! $user_id ) {
+			return;
+		}
+
+		if ( $user->get_user()->get_id() != $user_id ) {
 			return;
 		}
 

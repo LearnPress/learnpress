@@ -1469,20 +1469,19 @@ function learn_press_get_currency_symbol( $currency = '' ) {
  * @param string $key
  *
  * @return string
+ * @editor tungnx
+ * @modify 4.1.4
  */
-function learn_press_get_page_link( $key ) {
-	$page_id = LP()->settings->get( $key . '_page_id' );
+function learn_press_get_page_link( string $key ): string {
+	$page_id = LP_Settings::get_option( $key . '_page_id' );
 	$link    = '';
 
 	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
-		$permalink = trailingslashit( get_permalink( $page_id ) );
-		$permalink = apply_filters( 'learn_press_get_page_link', $permalink, $page_id, $key );
-		$link      = apply_filters( 'learn-press/get-page-link', $permalink, $page_id, $key );
+		$permalink = get_permalink( $page_id );
+		$link      = apply_filters( 'learn-press/get-page-link', trailingslashit( $permalink ), $page_id, $key );
 	}
 
-	$link = apply_filters( 'learn_press_get_page_' . $key . '_link', $link, $page_id );
-
-	return apply_filters( 'learn-press/get-page-' . $key . '-link', $link ? trailingslashit( $link ) : '', $page_id );
+	return $link;
 }
 
 /**

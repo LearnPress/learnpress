@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @var LP_Order $order
  */
-if ( ! isset( $order ) || ! isset( $user_id ) ) {
+if ( ! isset( $order ) ) {
 	error_log( 'Invalid params on ' . __FILE__ );
 	return;
 }
@@ -24,6 +24,27 @@ $items = $order->get_items();
 
 if ( ! $items ) {
 	return;
+}
+
+$email_content = '';
+
+if ( $order->is_manual() ) {
+	$user_ids = $order->get_user_id();
+	if ( is_array( $user_ids ) ) {
+		$email_arr = [];
+		foreach ( $user_ids as $user_id ) {
+			$user = get_user_by( 'ID', $user_id );
+			if ( $user ) {
+				$email_arr[] = $user->user_email;
+			}
+		}
+
+		$email_content = implode( ',', $email_arr );
+	} else {
+		$email_content = $order->get_user_email( $user_ids );
+	}
+} else {
+	$email_content = $order->get_user_email( $order->get_user_id() );
 }
 
 echo '** ' . __( 'Order summary', 'learnpress' ) . " **\n";
@@ -36,7 +57,7 @@ echo '** ' . __( 'Payment Method', 'learnpress' ) . ': ' . $order->get_payment_m
 
 echo '** ' . __( 'Status', 'learnpress' ) . ': ' . strip_tags( $order->get_order_status_html() ) . " **\n";
 
-echo '** ' . __( 'User Email', 'learnpress' ) . ': ' . $order->get_user_email( $user_id ) . " **\n\n";
+echo '** ' . __( 'User Email', 'learnpress' ) . ': ' . $email_content . " **\n\n";
 
 
 $count = 0;

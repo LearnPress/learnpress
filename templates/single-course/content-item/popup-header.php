@@ -18,9 +18,13 @@ if ( ! $course || ! $user ) {
 	return;
 }
 
-$course_data    = $user->get_course_data( $course->get_id() );
-$course_results = $course_data->calculate_course_results();
-$percentage     = $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0;
+$percentage  = 0;
+$course_data = $user->get_course_data( $course->get_id() );
+
+if ( $course_data ) {
+	$course_results = $course_data->calculate_course_results();
+	$percentage     = $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0;
+}
 ?>
 
 <div id="popup-header">
@@ -38,6 +42,6 @@ $percentage     = $course_results['count_items'] ? absint( $course_results['comp
 				</div>
 			</div>
 		<?php endif; ?>
- 	</div>
+	</div>
 	<a href="<?php echo $course->get_permalink(); ?>" class="back-course"><i class="fa fa-times"></i></a>
- </div>
+</div>

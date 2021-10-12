@@ -800,8 +800,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param array $args
 		 *
 		 * @return array
+		 * @editor tungnx
+		 * @modify 4.1.4 - comment - not use
 		 */
-		public function get_popular_courses_bk( $args = array() ) {
+		/*public function get_popular_courses_bk( $args = array() ) {
 			global $wpdb;
 
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -833,15 +835,17 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			);
 
 			return $wpdb->get_col( $query );
-		}
+		}*/
 
 		/**
 		 * @param int|array    $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
+		 * @editor tungnx
+		 * @modify 4.1.4 - comment - not use
 		 */
-		public function count_by_orders( $course_id, $statuses = 'completed' ) {
+		/*public function count_by_orders( $course_id, $statuses = 'completed' ) {
 			return $this->count_by_orders2( $course_id, $statuses );
 			global $wpdb;
 
@@ -919,15 +923,17 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$course_id = reset( $course_ids );
 
 			return LP_Object_Cache::get( 'course-' . $course_id, 'learn-press/course-orders' );
-		}
+		}*/
 
 		/**
 		 * @param int|array    $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
+		 * @editor tungnx
+		 * @modify 4.1.4 - comment - not use
 		 */
-		public function count_by_orders2( $course_id, $statuses = 'completed' ) {
+		/*public function count_by_orders2( $course_id, $statuses = 'completed' ) {
 			global $wpdb;
 
 			settype( $statuses, 'array' );
@@ -968,14 +974,18 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return $count;
-		}
+		}*/
 
 		/**
 		 * @param int|array $course_id
 		 *
 		 * @return int
+		 * @deprecated
+		 * @editor tungnx
+		 * @modify 4.1.4 - comment - not use
 		 */
-		public function count_enrolled_users_by_orders( $course_id ) {
+		/*public function count_enrolled_users_by_orders( $course_id ) {
+			_deprecated_function( __FUNCTION__, '4.1.4' );
 			$completed  = get_post_meta( $course_id, 'order-completed', true );
 			$processing = get_post_meta( $course_id, 'order-processing', true );
 
@@ -985,10 +995,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$count    = $this->count_by_orders( $course_id, $statuses );
 
 			return $count;
-		}
+		}*/
 
-		public function update_course_orders( $courses ) {
+		/*public function update_course_orders( $courses ) {
 			LP_Repair_Database::instance()->sync_course_orders();
-		}
+		}*/
 	}
 }

@@ -12,8 +12,10 @@ add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
  * Filter post types the user can access in admin
  *
  * @param $query
+ * @editor tungnx
+ * @modify 4.1.4 - comment - not use make redundancy
  */
-function _learn_press_set_user_items( $query ) {
+/*function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
 	if ( ! function_exists( 'wp_get_current_user' ) ) {
@@ -57,7 +59,7 @@ function _learn_press_set_user_items( $query ) {
 	add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
 }
 
-add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );
+add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );*/
 
 /**
  * Restrict user views
@@ -65,8 +67,10 @@ add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );
  * @param $views
  *
  * @return mixed
+ * @editor tungnx
+ * @modify 4.1.4 - comment - not see use anywhere
  */
-function _learn_press_restrict_view_items( $views ) {
+/*function _learn_press_restrict_view_items( $views ) {
 	$post_type = get_query_var( 'post_type' );
 	$new_views = array(
 		'all'     => __( 'All', 'learnpress' ),
@@ -107,7 +111,7 @@ function _learn_press_restrict_view_items( $views ) {
 	unset( $views['mine'] );
 
 	return $views;
-}
+}*/
 
 /**
  * Update permalink structure for course

@@ -197,6 +197,18 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.4 (2021-10-0x) =
+~ Fixed security: when user share profile, another user can see settings as change password, change info.
+~ Fixed minor bugs.
+~ Modify: not scroll to title courses when load first.
+~ Fixed: get incorrect key setting "archive course layout".
+~ Fixed: get value "From name", "Footer text" setting Email.
+~ Removed: option set "From address" email, removed hook "wp_mail_from" make some site can't send email when install LP.
+~ Comment some functions deprecated: "_learn_press_restrict_view_items", "_learn_press_set_user_items"
+~ Added: hook "learnpress/course/template/price/can-show"
+~ Added: filter "before_show_lp_widget_content"
+~ Show icons on the child Settings tab - Profile page
+
 = 4.1.3.1 (2021-09-15) =
 ~ Fixed: some shortcode of latex show incorrect on question answer.
 ~ Added: hooks for course_continue_button, course_purchase_button, course_enroll_button.

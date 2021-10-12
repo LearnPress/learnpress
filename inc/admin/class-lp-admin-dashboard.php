@@ -41,9 +41,10 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 */
 		public function order_statuses() {
 			?>
-
+			<ul class="lp-order-statuses lp_append_data">
+				<?php lp_skeleton_animation_html( 4, 100, 'height: 30px;border-radius:4px;' ); ?>
+			</ul>
 			<ul class="lp-order-statuses">
-				<?php lp_skeleton_animation_html( 4, 100 , 'height: 30px;border-radius:4px;' ); ?>
 				<?php
 				$eduma_data = $this->_get_theme_info( 14058034 );
 

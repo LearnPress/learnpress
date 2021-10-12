@@ -237,6 +237,14 @@ body {
 								background: #fff;
 							}
 						}
+						&:hover {
+							>a {
+								i {
+									color: var(--lp-primary-color);
+									background: #fff;
+								}
+							}
+						}
 					}
 				}
 
@@ -338,6 +346,9 @@ body {
 
 							> a {
 								color: #ffb606;
+								i {
+									color: #ffb606;
+								}
 							}
 						}
 					}

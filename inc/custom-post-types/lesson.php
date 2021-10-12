@@ -323,7 +323,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function lesson_assigned() {
-			//learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+			learn_press_admin_view( 'meta-boxes/course/assigned.php' );
 		}
 
 		/**

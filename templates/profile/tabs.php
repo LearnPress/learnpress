@@ -70,7 +70,14 @@ $profile = LP_Profile::instance();
 							?>
 
 							<li class="<?php echo implode( ' ', $classes ); ?>">
-								<a href="<?php echo esc_url( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a>
+								<a href="<?php echo esc_url( $section_link ); ?>">
+									<?php
+									if ( ! empty( $section_data['icon'] ) ) {
+										echo $section_data['icon'];
+									}
+									?>
+									<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $section_data['title'], $tab_key ); ?>
+								</a>
 							</li>
 
 						<?php } ?>
