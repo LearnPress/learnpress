@@ -39,8 +39,8 @@ $createds = array(
 	'pending' => esc_html__( 'Pending', 'learnpress' ),
 );
 
-$enrolled_active = ! learn_press_user_maybe_is_a_teacher() ? 'in-progress' : '';
-$tab_active      = ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'created';
+$enrolled_active = apply_filters( 'learnpress/profile/tab/enrolled/subtab-active', ! learn_press_user_maybe_is_a_teacher() ? 'in-progress' : '' );
+$tab_active      = apply_filters( 'learnpress/profile/tab-active', ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'created' );
 ?>
 
 <div class="learn-press-subtab-content">
