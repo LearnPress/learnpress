@@ -18,7 +18,6 @@ class Quiz extends Component {
 	}
 
 	componentDidMount() {
-		const answered = localStorage.getItem( 'answered' );
 		const { settings, setQuizData } = this.props;
 
 		const { question_ids, questions_per_page } = settings;
@@ -28,7 +27,12 @@ class Quiz extends Component {
 		settings.currentPage = 1;
 		settings.numPages = chunks.length;
 		settings.pages = chunks;
-		settings.answered = JSON.parse( answered );
+
+		const answered = settings.id ? localStorage.getItem( `LP_Quiz_${ settings.id }_Answered` ) : false;
+
+		if ( answered ) {
+			settings.answered = JSON.parse( answered );
+		}
 
 		setQuizData( settings );
 	}
