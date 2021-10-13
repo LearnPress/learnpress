@@ -28,6 +28,12 @@ class Quiz extends Component {
 		settings.numPages = chunks.length;
 		settings.pages = chunks;
 
+		const answered = settings.id ? localStorage.getItem( `LP_Quiz_${ settings.id }_Answered` ) : false;
+
+		if ( answered ) {
+			settings.answered = JSON.parse( answered );
+		}
+
 		setQuizData( settings );
 	}
 

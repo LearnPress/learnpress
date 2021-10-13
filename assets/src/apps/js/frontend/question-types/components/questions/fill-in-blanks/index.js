@@ -3,6 +3,18 @@ import QuestionBase from '../../question-base';
 
 class QuestionFillInBlanks extends QuestionBase {
 	componentDidMount() {
+		const { answered } = this.props;
+
+		if ( answered ) {
+			const allFIBs = document.querySelectorAll( '.lp-fib-input > input' );
+
+			[ ...allFIBs ].map( ( ele ) => {
+				if ( answered[ ele.dataset.id ] ) {
+					ele.value = answered[ ele.dataset.id ];
+				}
+			} );
+		}
+
 		this.updateFibAnswer();
 	}
 
@@ -14,15 +26,17 @@ class QuestionFillInBlanks extends QuestionBase {
 
 	updateFibAnswer = () => {
 		const allFIBs = document.querySelectorAll( '.lp-fib-input > input' );
-		const answered = {};
+		const { answered } = this.props;
+
+		const answereds = answered || {};
 
 		[ ...allFIBs ].map( ( ele ) => {
 			ele.addEventListener( 'input', ( e ) => {
-				this.setAnswered( answered, ele.dataset.id, e.target.value );
+				this.setAnswered( answereds, ele.dataset.id, e.target.value );
 			} );
 
 			ele.addEventListener( 'paste', ( e ) => {
-				this.setAnswered( answered, ele.dataset.id, e.target.value );
+				this.setAnswered( answereds, ele.dataset.id, e.target.value );
 			} );
 		} );
 	}
