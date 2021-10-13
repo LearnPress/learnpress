@@ -319,7 +319,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$exclude = array_flip( $exclude );
 
 				foreach ( $options as $k => $option ) {
-					$option['title'] = apply_filters( 'the_content', $option['title'] );
+					$option['title'] = do_shortcode( $option['title'] );
 
 					foreach ( $map as $k_map => $v_map ) {
 						if ( array_key_exists( $k_map, $option ) ) {
