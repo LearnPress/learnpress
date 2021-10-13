@@ -77,13 +77,27 @@ class QuestionFillInBlanks extends QuestionBase {
 		);
 	};
 
+	convertInputField = ( option ) => {
+		let title = option.title;
+
+		option.ids.map( ( id, index ) => {
+			const textReplace = '{{FIB_' + id + '}}';
+			let elContent = '<div class="lp-fib-input" style="display: inline-block; width: auto;">';
+			elContent += '<input type="text" data-id="' + id + '" value="" />';
+			elContent += '</div>';
+			title = title.replace( textReplace, elContent );
+		} );
+
+		return title;
+	}
+
 	render() {
 		return (
 			<>
 				<div className="lp-fib-content">
 					{ this.getOptions().map( ( option ) => {
 						return (
-							<div key={ `blank-${ option.uid }` } dangerouslySetInnerHTML={ { __html: option.title || option.value } }></div>
+							<div key={ `blank-${ option.uid }` } dangerouslySetInnerHTML={ { __html: this.convertInputField( option ) || option.value } }></div>
 						);
 					} ) }
 				</div>

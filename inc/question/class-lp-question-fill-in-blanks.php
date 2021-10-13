@@ -60,7 +60,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 				3
 			);
 
-			add_filter( 'learn-press/question/fib/regex-content', array( $this, 'match_shortcode' ), 10, 4 );
+			add_filter( 'learn-press/question/fib/regex-content', array( $this, 'match_shortcode_api' ), 10, 4 );
 		}
 
 		public function fib_get_ids( $content ) {
@@ -93,7 +93,11 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			return $output;
 		}
 
-		public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
+		/**
+		 * @editor tungnnx
+		 * @modify 4.1.4 comment - not use - replaced to "match_shortcode_api" function
+		 */
+		/*public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
 			if ( ! empty( $content ) ) {
 				preg_match_all(
 					'/' . get_shortcode_regex( array( 'fib' ) ) . '/',
@@ -140,7 +144,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			}
 
 			return $content;
-		}
+		}*/
 
 		public function match_shortcode_api( $content, $answer_id, $show_answer = false, $answered = '' ) {
 			if ( ! empty( $content ) ) {
@@ -162,22 +166,20 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 							$ids = $atts['id'];
 						}
 
-						$fill = ! empty( $atts['fill'] ) ? $atts['fill'] : '';
+						$fill = $atts['fill'] ?? '';
 
 						if ( $show_answer ) {
-							$answer = isset( $answered[ $ids ] ) ? $answered[ $ids ] : '';
+							$answer = $answered[ $ids ] ?? '';
 
-							$is_correct = '';
+							$is_correct = 'fail';
 
-							if ( ! empty( $answer ) ) {
-								$blanks = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
+							$blanks = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
 
-								if ( ! empty( $blanks ) ) {
-									$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? 'correct' : 'fail';
-								}
+							if ( ! empty( $blanks ) ) {
+								$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? 'correct' : 'fail';
 							}
 
-							$answer_html = ( ! empty( $answer ) && $is_correct === 'fail' ) ? '<span class="lp-fib-answered__answer">' . $answer . '</span> &rarr; ' : '';
+							$answer_html = $is_correct === 'fail' ? '<span class="lp-fib-answered__answer">' . $answer . '</span> &rarr; ' : '';
 							$new_str     = '<span class="lp-fib-answered ' . $is_correct . '" id="' . esc_attr( $ids ) . '">' . $answer_html . '<span class="lp-fib-answered__fill">' . $fill . '</span></span>';
 						} else {
 							$new_str = '{{FIB_' . esc_attr( $ids ) . '}}';
@@ -374,24 +376,19 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 						$blanks = $answer->get_meta( '_blanks' );
 					}
 
-					$return = array(
-						'correct'  => false,
-						'mark'     => 0,
-						'blanks'   => array(),
-						'answered' => array(),
-					);
+					$return['blanks']   = [];
+					$return['answered'] = [];
 
 					if ( $blanks ) {
 						$point_per_blank = $this->get_mark() / count( $blanks );
 
 						foreach ( $user_answer as $answer_id => $answer_value ) {
-							$answer_id     = trim( $answer_id );
-							$blank_correct = false;
+							$answer_id = trim( $answer_id );
 
 							foreach ( $blanks as $blank ) {
 								if ( $answer_id === $blank['id'] ) {
-									$user_fill     = ! empty( $answer_value ) ? trim( $answer_value ) : '';
-									$blank_correct = $this->check_answer( $blank, $user_fill );
+									$user_fill     = trim( $answer_value );
+									$blank_correct = $this->check_answer( $blank, $answer_value );
 
 									$return['blanks'][ $answer_id ]   = $blank_correct;
 									$return['answered'][ $answer_id ] = $user_fill;
@@ -413,15 +410,19 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			}
 		}
 
-		public function check_answer( $blank, $user_fill ) {
-			$fill       = ! empty( $blank['fill'] ) ? trim( $blank['fill'] ) : '';
+		/**
+		 * Check answer fill in blank
+		 *
+		 * @param array $blank
+		 * @param $user_fill
+		 *
+		 * @return bool
+		 */
+		public function check_answer( array $blank, $user_fill ): bool {
+			$fill       = isset( $blank['fill'] ) ? trim( $blank['fill'] ) : '';
 			$comparison = ! empty( $blank['comparison'] ) ? $blank['comparison'] : false;
-			$match_case = ! empty( $blank['match_case'] ) ? ! ! $blank['match_case'] : false;
-			$user_fill  = ! empty( $user_fill ) ? trim( $user_fill ) : '';
-
-			if ( empty( $user_fill ) ) {
-				return;
-			}
+			$match_case = ! empty( $blank['match_case'] ) && ! ! $blank['match_case'];
+			$user_fill  = trim( $user_fill );
 
 			$blank_correct = false;
 
