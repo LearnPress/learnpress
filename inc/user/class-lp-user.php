@@ -280,7 +280,7 @@ class LP_User extends LP_Abstract_User {
 				throw new Exception( esc_html__( 'Course is not public', 'learnpress' ) );
 			}
 
-			if ( $course->get_external_link() ) {
+			if ( $course->get_external_link() && ! $this->has_purchased_course( $course_id ) ) {
 				throw new Exception( esc_html__( 'Course is External', 'learnpress' ) );
 			}
 

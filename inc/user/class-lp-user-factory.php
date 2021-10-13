@@ -529,7 +529,7 @@ class LP_User_Factory {
 		try {
 			$course      = learn_press_get_course( $item['course_id'] );
 			$auto_enroll = LP_Settings::is_auto_start_course();
-			$external_link = $course->get_external_link();
+
 			// Data user_item for save database
 			$user_item_data = [
 				'user_id' => $user->get_id(),
@@ -537,12 +537,14 @@ class LP_User_Factory {
 				'ref_id'  => $order->get_id(),
 			];
 
-			if ( $auto_enroll || ! empty($external_link) ) {
+			if ( $auto_enroll ) {
 				$user_item_data['status']     = LP_COURSE_ENROLLED;
 				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
-			} elseif ( ! $course->is_free() ) {
+			} else {
 				$user_item_data['status'] = LP_COURSE_PURCHASED;
 			}
+
+			$user_item_data = apply_filters( 'learnpress/lp_order/item/handle_item_manual_order_completed', $user_item_data, $order, $user, $course, $item );
 
 			if ( isset( $user_item_data['status'] ) ) {
 				$user_item_new = new LP_User_Item_Course( $user_item_data );

@@ -537,13 +537,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 */
 	public function course_external_button() {
 		$course = LP_Global::course();
+		$user   = LP_Global::user();
 
 		if ( ! $course ) {
 			return;
 		}
 
 		$link = $course->get_external_link();
-		if ( empty( $link ) ) {
+		if ( empty( $link ) || $user->has_purchased_course( $course->get_id() ) ) {
 			return;
 		}
 
