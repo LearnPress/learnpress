@@ -194,18 +194,18 @@ class LP_Checkout {
 					$default_fields = array();
 
 					if ( isset( $_POST['reg_first_name'] ) ) {
-						$default_fields['first_name'] = $_POST['reg_first_name'];
+						$default_fields['first_name'] = LP_Helper::maybe_unserialize( $_POST['reg_first_name'] );
 					}
 
 					if ( isset( $_POST['reg_last_name'] ) ) {
-						$default_fields['last_name'] = $_POST['reg_last_name'];
+						$default_fields['last_name'] = LP_Helper::maybe_unserialize( $_POST['reg_last_name'] );
 					}
 
 					if ( isset( $_POST['reg_display_name'] ) ) {
-						$default_fields['display_name'] = $_POST['reg_display_name'];
+						$default_fields['display_name'] = LP_Helper::maybe_unserialize( $_POST['reg_display_name'] );
 					}
 
-					$update_meta = isset( $_POST['_lp_custom_register_form'] ) ? $_POST['_lp_custom_register_form'] : array();
+					$update_meta = isset( $_POST['_lp_custom_register_form'] ) ? LP_Helper::maybe_unserialize( $_POST['_lp_custom_register_form'] ) : array();
 
 					$user_id = LP_Forms_Handler::learnpress_create_new_customer(
 						$this->checkout_form_data['reg_email'],
@@ -508,7 +508,7 @@ class LP_Checkout {
 					}
 				}
 
-				$this->checkout_form_data[ $name ] = $_POST[ $name ];
+				$this->checkout_form_data[ $name ] = LP_Helper::maybe_unserialize( $_POST[ $name ] );
 
 				break;
 			case 'checkout-login':
@@ -526,7 +526,7 @@ class LP_Checkout {
 					}
 				}
 
-				$this->checkout_form_data[ $name ] = $_POST[ $name ];
+				$this->checkout_form_data[ $name ] = LP_Helper::maybe_unserialize( $_POST[ $name ] );
 				break;
 			case 'guest-checkout':
 				if ( empty( $_POST['guest_email'] ) ) {
@@ -535,8 +535,8 @@ class LP_Checkout {
 					return new WP_Error( 'email_invalid', __( 'Your email is not a valid.', 'learnpress' ) );
 				}
 
-				$this->guest_email     = $_POST[ $name ];
-				$this->_checkout_email = $_POST[ $name ];
+				$this->guest_email     = LP_Helper::maybe_unserialize( $_POST[ $name ] );
+				$this->_checkout_email = LP_Helper::maybe_unserialize( $_POST[ $name ] );
 		}
 
 		return $validate;

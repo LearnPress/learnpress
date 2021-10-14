@@ -38,11 +38,11 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 					return;
 				}
 
-				$course_id = $_POST['course_id'];
+				$course_id = (int) $_POST['course_id'];
 
 				$this->lp_course = new LP_Course( $course_id );
 
-				switch ( $_POST['handle_name'] ) {
+				switch ( LP_Helper::sanitize_params_submitted( $_POST['handle_name'] ) ) {
 					case 'save_post':
 						$this->save_post();
 						break;

@@ -57,8 +57,8 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 				$range                            = learn_press_get_request( 'range' );
 				$from_time                        = strtotime( $range[0] );
 				$to_time                          = strtotime( $range[1] );
-				list( $from_d, $from_m, $from_y ) = explode( ' ', date( 'd m Y', $from_time ) );
-				list( $to_d, $to_m, $to_y )       = explode( ' ', date( 'd m Y', $to_time ) );
+				list( $from_d, $from_m, $from_y ) = explode( ' ', gmdate( 'd m Y', $from_time ) );
+				list( $to_d, $to_m, $to_y )       = explode( ' ', gmdate( 'd m Y', $to_time ) );
 
 				if ( $from_y != $to_y ) {
 					$response = learn_press_get_chart_users( $to_time, 'years', $to_y - $from_y + 1 );
@@ -81,8 +81,8 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 
 				if ( $results ) {
 					$_POST['range'] = array(
-						date( 'Y/m/d', strtotime( $results->from ) ),
-						date( 'Y/m/d', strtotime( $results->to ) ),
+						gmdate( 'Y/m/d', strtotime( $results->from ) ),
+						gmdate( 'Y/m/d', strtotime( $results->to ) ),
 					);
 					$_POST['type']  = 'user-custom-time';
 					$this->load_chart();
@@ -104,11 +104,11 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 				$range                            = learn_press_get_request( 'range' );
 				$from_time                        = strtotime( $range[0] );
 				$to_time                          = strtotime( $range[1] );
-				list( $from_d, $from_m, $from_y ) = explode( ' ', date( 'd m Y', $from_time ) );
-				list( $to_d, $to_m, $to_y )       = explode( ' ', date( 'd m Y', $to_time ) );
+				list( $from_d, $from_m, $from_y ) = explode( ' ', gmdate( 'd m Y', $from_time ) );
+				list( $to_d, $to_m, $to_y )       = explode( ' ', gmdate( 'd m Y', $to_time ) );
 
 				if ( $from_y != $to_y ) {
-					$months = abs( ( date( 'Y', $to_time ) - date( 'Y', $from_time ) ) * 12 + ( date( 'm', $to_time ) - date( 'm', $from_time ) ) ) + 1;
+					$months = abs( ( gmdate( 'Y', $to_time ) - gmdate( 'Y', $from_time ) ) * 12 + ( gmdate( 'm', $to_time ) - gmdate( 'm', $from_time ) ) ) + 1;
 					if ( $months > 12 ) {
 						$response = learn_press_get_chart_courses( $to_time, 'years', $to_y - $from_y + 1 );
 					} else {
@@ -140,8 +140,8 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 
 				if ( $results ) {
 					$_POST['range'] = array(
-						date( 'Y/m/d', strtotime( $results->from ) ),
-						date( 'Y/m/d', strtotime( $results->to ) ),
+						gmdate( 'Y/m/d', strtotime( $results->from ) ),
+						gmdate( 'Y/m/d', strtotime( $results->to ) ),
 					);
 					$_POST['type']  = 'course-custom-time';
 					$this->load_chart();
@@ -163,11 +163,11 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 				$range                            = learn_press_get_request( 'range' );
 				$from_time                        = strtotime( $range[0] );
 				$to_time                          = strtotime( $range[1] );
-				list( $from_d, $from_m, $from_y ) = explode( ' ', date( 'd m Y', $from_time ) );
-				list( $to_d, $to_m, $to_y )       = explode( ' ', date( 'd m Y', $to_time ) );
+				list( $from_d, $from_m, $from_y ) = explode( ' ', gmdate( 'd m Y', $from_time ) );
+				list( $to_d, $to_m, $to_y )       = explode( ' ', gmdate( 'd m Y', $to_time ) );
 
 				if ( $from_y != $to_y ) {
-					$months = abs( ( date( 'Y', $to_time ) - date( 'Y', $from_time ) ) * 12 + ( date( 'm', $to_time ) - date( 'm', $from_time ) ) ) + 1;
+					$months = abs( ( gmdate( 'Y', $to_time ) - gmdate( 'Y', $from_time ) ) * 12 + ( gmdate( 'm', $to_time ) - gmdate( 'm', $from_time ) ) ) + 1;
 					if ( $months > 12 ) {
 						$response = learn_press_get_chart_orders( $to_time, 'years', $to_y - $from_y + 1 );
 					} else {
@@ -200,8 +200,8 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 
 				if ( $results ) {
 					$_POST['range'] = array(
-						date( 'Y/m/d', strtotime( $results->from ) ),
-						date( 'Y/m/d', strtotime( $results->to ) ),
+						gmdate( 'Y/m/d', strtotime( $results->from ) ),
+						gmdate( 'Y/m/d', strtotime( $results->to ) ),
 					);
 					$_POST['type']  = 'order-custom-time';
 					$this->load_chart();

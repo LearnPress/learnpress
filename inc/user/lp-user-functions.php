@@ -2258,13 +2258,15 @@ add_action(
 	function() {
 		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
 
+		$custom_fields = LP_Helper::sanitize_params_submitted( $custom_fields );
+
 		if ( ! empty( $custom_fields ) ) {
 			$output = array();
 
 			foreach ( $custom_fields as $key => $field ) {
 				if ( ! isset( $field['id'] ) ) {
 					$output[ $key ] = array(
-						'id'       => sanitize_key( $field['name'] ),
+						'id'       => $field['name'],
 						'name'     => $field['name'] ?? '',
 						'type'     => $field['type'] ?? '',
 						'required' => $field['required'] ?? '',
