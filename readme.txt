@@ -204,10 +204,17 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: get incorrect key setting "archive course layout".
 ~ Fixed: get value "From name", "Footer text" setting Email.
 ~ Removed: option set "From address" email, removed hook "wp_mail_from" make some site can't send email when install LP.
-~ Comment some functions deprecated: "_learn_press_restrict_view_items", "_learn_press_set_user_items"
-~ Added: hook "learnpress/course/template/price/can-show"
-~ Added: filter "before_show_lp_widget_content"
-~ Show icons on the child Settings tab - Profile page
+~ Comment some functions deprecated: "_learn_press_restrict_view_items", "_learn_press_set_user_items".
+~ Added: hook "learnpress/course/template/price/can-show".
+~ Added: filter "before_show_lp_widget_content".
+~ Show icons on the child Settings tab - Profile page.
+~ Fixed: security CVE-2021-39348, set sanitize for some params missing.
+~ Fixed: case answer's question Fill in blank = "0" always incorrect.
+~ Fixed: case content of question answers will change by hook apply_filters( 'the_content') when reload page, change to do_shortcode().
+~ Fixed: store answer of user when reload page will lose.
+~ Added: hooks apply_filters('learnpress/profile/tab/enrolled/subtab-active'), apply_filters('learnpress/profile/tab-active').
+~ Modified: functions course_external_button, can_enroll_course with case course is external and purchased course.
+
 
 = 4.1.3.1 (2021-09-15) =
 ~ Fixed: some shortcode of latex show incorrect on question answer.
