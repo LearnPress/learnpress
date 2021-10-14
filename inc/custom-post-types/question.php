@@ -284,7 +284,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$types         = array_keys( learn_press_question_types() );
 				$question_type = reset( $types );
 			} else {
-				$question_type = $_REQUEST['question-type'];
+				$question_type = LP_Helper::sanitize_params_submitted( $_REQUEST['question-type'] );
 			}
 
 			update_post_meta( $question_id, '_lp_type', $question_type );
