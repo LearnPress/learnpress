@@ -34,7 +34,7 @@ class LP_Meta_Box_WP_Editor_Field extends LP_Meta_Box_Field {
 
 		$meta     = $this->meta_value( $thepostid );
 		$value    = ! $meta && ! empty( $this->default ) ? $this->default : $meta;
-		$value    = isset( $extra['value'] ) ? $extra['value'] : $value;
+		$value    = $extra['value'] ?? $value;
 		$desc_tip = $extra['desc_tip'] ?? '';
 
 		echo '<div class="lp-meta-box__wp-editor form-field ' . $this->id . '_field ' . $wrapper_class . '">

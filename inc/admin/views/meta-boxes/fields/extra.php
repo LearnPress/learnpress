@@ -33,7 +33,7 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 						<?php foreach ( $fields as $field ) : ?>
 							<div class="lp_course_extra_meta_box__field">
 								<span class="sort"></span>
-								<input name="<?php echo esc_attr( $this->id ); ?>[]" value="<?php echo $field; ?>" type="text" class="lp_course_extra_meta_box__input">
+								<input name="<?php echo esc_attr( $this->id ); ?>[]" value="<?php echo esc_attr( $field ); ?>" type="text" class="lp_course_extra_meta_box__input">
 								<a href="#" class="delete"></a>
 							</div>
 						<?php endforeach; ?>
