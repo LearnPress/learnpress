@@ -208,13 +208,14 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: hook "learnpress/course/template/price/can-show".
 ~ Added: filter "before_show_lp_widget_content".
 ~ Show icons on the child Settings tab - Profile page.
-~ Fixed: security CVE-2021-39348, set sanitize for some params missing.
 ~ Fixed: case answer's question Fill in blank = "0" always incorrect.
 ~ Fixed: case content of question answers will change by hook apply_filters( 'the_content') when reload page, change to do_shortcode().
 ~ Fixed: store answer of user when reload page will lose.
 ~ Added: hooks apply_filters('learnpress/profile/tab/enrolled/subtab-active'), apply_filters('learnpress/profile/tab-active').
 ~ Modified: functions course_external_button, can_enroll_course with case course is external and purchased course.
 
+= 4.1.3.2 (2021-10-15) =
+~ Fixed: security CVE-2021-39348, set sanitize for some params missing.
 
 = 4.1.3.1 (2021-09-15) =
 ~ Fixed: some shortcode of latex show incorrect on question answer.

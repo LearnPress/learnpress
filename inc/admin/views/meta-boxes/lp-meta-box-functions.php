@@ -472,9 +472,9 @@ function lp_metabox_custom_fields( $field, $values, $key ) {
 						?>
 						<td>
 							<input name="<?php echo esc_attr( $name ); ?>" type="<?php echo $val['type']; ?>"
-								   class="input-text"
-								   placeholder="<?php echo isset( $val['placeholder'] ) ? $val['placeholder'] : ''; ?>"
-								   value="<?php echo ! empty( $values[ $cfk ] ) ? $values[ $cfk ] : ''; ?>">
+								class="input-text"
+								placeholder="<?php echo isset( $val['placeholder'] ) ? esc_attr( $val['placeholder'] ) : ''; ?>"
+								value="<?php echo ! empty( $values[ $cfk ] ) ? esc_attr( $values[ $cfk ] ) : ''; ?>">
 						</td>
 						<?php
 						break;
@@ -488,13 +488,13 @@ function lp_metabox_custom_fields( $field, $values, $key ) {
 									foreach ( $val['options'] as $cfks => $cfselect ) {
 										?>
 										<option
-											value="<?php echo $cfks; ?>"
-															  <?php
-																echo ! empty( $values[ $cfk ] ) ? selected(
-																	$values[ $cfk ],
-																	(string) $cfks
-																) : '';
-																?>
+											value="<?php echo esc_attr( $cfks ); ?>"
+												<?php
+												echo ! empty( $values[ $cfk ] ) ? selected(
+													$values[ $cfk ],
+													(string) $cfks
+												) : '';
+												?>
 											><?php echo $cfselect; ?></option>
 										<?php
 									}

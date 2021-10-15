@@ -2253,7 +2253,7 @@ function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' )
 
 }
 
-add_action(
+/*add_action(
 	'admin_init',
 	function() {
 		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
@@ -2279,4 +2279,4 @@ add_action(
 			update_option( 'learn_press_register_profile_fields', $output );
 		}
 	}
-);
+);*/
