@@ -291,10 +291,10 @@ class LP_Jwt_Public {
 	public function determine_current_user( $user_id ) {
 		$rest_prefix   = trailingslashit( rest_get_url_prefix() );
 		$request_uri   = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
-		$valid_api_uri = strpos( $request_uri, $rest_prefix . $this->name );
+		$valid_api_uri = strpos( $request_uri, $rest_prefix . $this->name . '/' );
 
 		/**
-		 * Only check when rest url has wp-json/learnpress.
+		 * Only check when rest url has wp-json/learnpress/.
 		 */
 		if ( ! empty( $user_id ) || $valid_api_uri === false ) {
 			return $user_id;
@@ -304,10 +304,10 @@ class LP_Jwt_Public {
 		 * if the request URI is for validate the token don't do anything,
 		 * this avoid double calls to the validate_token function.
 		 */
-		$validate_token = strpos( $request_uri, 'token' );
+		$validate_token = strpos( $request_uri, '/token' );
 
 		/** All course is public so donot need token */
-		$is_rest_courses = strpos( $request_uri, 'courses' );
+		$is_rest_courses = strpos( $request_uri, '/courses' ) || strpos( $request_uri, '/reset-password' );
 
 		if ( $validate_token > 0 ) {
 			return $user_id;

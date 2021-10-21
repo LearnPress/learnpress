@@ -1,3 +1,4 @@
+###
 POST http://learnpress4.local/wp-json/learnpress/v1/token
 Content-Type: application/json
 
@@ -169,7 +170,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/users/1
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI5OTk2OSwibmJmIjoxNjI1Mjk5OTY5LCJleHAiOjE2MjU5MDQ3NjksImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.2j7AsEJP5E5F4fDaIaBTX-Bg_nbL9lj1mR6IwNGlrzk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYzNDUyNTg1NSwibmJmIjoxNjM0NTI1ODU1LCJleHAiOjE2MzUxMzA2NTUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.uAAeClTExJpT32jAa08oOQ0U71Vq95g3bTEwJ98wwUs
 
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/users/1/
@@ -208,4 +209,12 @@ Content-Type: application/json
 	"username": "student4",
 	"password": "student4",
 	"email": "student4@gmail.com"
+}
+
+###
+POST http://learnpress4.local/wp-json/learnpress/v1/users/reset-password
+Content-Type: application/json
+
+{
+	"user_login" : "daonham95@gmail.com"
 }

@@ -65,6 +65,22 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			)
 		);
 
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/reset-password',
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'reset_password' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(
+					'user_login' => array(
+						'description' => esc_html__( 'User or Email login.', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+				),
+			),
+		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -210,6 +226,22 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		}
 
 		return true;
+	}
+
+	public function reset_password( $request ) {
+		$user_login = $request['user_login'];
+		$reset      = LP_Forms_Handler::retrieve_password( $user_login );
+
+		if ( is_wp_error( $reset ) ) {
+			return $reset;
+		} else {
+			return rest_ensure_response(
+				array(
+					'code'    => 'success',
+					'message' => esc_html__( 'Please check your email to reset your password', 'learnpress' ),
+				)
+			);
+		}
 	}
 
 	protected function get_user( $id ) {

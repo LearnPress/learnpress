@@ -104,6 +104,9 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Instructor_Accepted']  = include_once 'emails/instructor/class-lp-email-instructor-accepted.php';
 			$this->emails['LP_Email_Instructor_Denied']    = include_once 'emails/instructor/class-lp-email-instructor-denied.php';
 
+			// Forgot Password
+			$this->emails['LP_Email_Reset_Password'] = include_once 'emails/types/class-lp-email-reset-password.php';
+
 			do_action( 'learnpress/emails/register', $this->emails );
 		}
 
@@ -129,7 +132,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * @editor tungnx
 		 * @reason comment - not use
 		 */
-		/*public static function init_email_notifications() {
+		/*
+		public static function init_email_notifications() {
 			self::instance();
 		}*/
 
@@ -138,7 +142,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		/*public static function queue_email() {
+		/*
+		public static function queue_email() {
 			$data_queue = array(
 				'filter' => current_filter(),
 				'args'   => func_get_args(),
@@ -153,7 +158,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * @reason not use
 		 * @deprecated 4.1.1
 		 */
-		/*public static function send_email() {
+		/*
+		public static function send_email() {
 			try {
 				$args = func_get_args();
 				self::instance();
