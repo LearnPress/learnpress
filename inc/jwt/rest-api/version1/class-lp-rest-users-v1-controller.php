@@ -79,7 +79,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 						'required'    => true,
 					),
 				),
-			),
+			)
 		);
 	}
 
