@@ -169,8 +169,10 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * @param bool   $echo
 		 *
 		 * @return string
+		 * @editor tungnx
+		 * @modify 4.1.4 comment - not used
 		 */
-		public function email_header( string $heading, bool $echo = true ): string {
+		/*public function email_header( string $heading, bool $echo = true ): string {
 			ob_start();
 			learn_press_get_template( 'emails/email-header.php', array( 'email_heading' => $heading ) );
 			$header = ob_get_clean();
@@ -179,7 +181,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			}
 
 			return $header;
-		}
+		}*/
 
 		/**
 		 * Email footer.
@@ -188,8 +190,10 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * @param bool   $echo
 		 *
 		 * @return string
+		 * @editor tungnx
+		 * @modify 4.1.4 comment - not used
 		 */
-		public function email_footer( string $footer_text, bool $echo = true ): string {
+		/*public function email_footer( string $footer_text, bool $echo = true ): string {
 			ob_start();
 			learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
 			$footer = ob_get_clean();
@@ -198,7 +202,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			}
 
 			return $footer;
-		}
+		}*/
 
 		public function set_current( $id ) {
 			$this->_last_current = $this->_current;
