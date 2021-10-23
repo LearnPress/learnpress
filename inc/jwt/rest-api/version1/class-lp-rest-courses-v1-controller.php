@@ -393,6 +393,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'tags':
 					$data['tags'] = $this->get_course_taxonomy( $id, 'course_tag' );
 					break;
+				case 'instructor':
+					$data['instructor'] = $this->get_instructor_info( $id, $request );
+					break;
 				case 'sections':
 					$data['sections'] = $this->get_all_items( $course );
 					break;
@@ -405,6 +408,27 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function get_instructor_info( $id, $request ) {
+		$user_id = get_post_meta( $id, '_lp_course_author', true );
+
+		$output = array();
+
+		$extra_info = learn_press_get_user_extra_profile_info( $user_id );
+
+		if ( $user_id ) {
+			$user = get_user_by( 'ID', absint( $user_id ) );
+
+			if ( $user ) {
+				$output['id']          = absint( $user_id );
+				$output['name']        = $user->display_name;
+				$output['description'] = $user->description;
+				$output['social']      = $extra_info;
+			}
+		}
+
+		return $output;
 	}
 
 	public function get_item_learned_ids( $request ) {
@@ -504,7 +528,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$curriculum  = $course->get_curriculum();
 		$user        = learn_press_get_current_user();
 		$user_course = $user ? $user->get_course_data( $course->get_id() ) : false;
-		$output      = [];
+		$output      = array();
 
 		if ( ! empty( $curriculum ) ) {
 			foreach ( $curriculum as $section ) {
@@ -795,6 +819,39 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 								'description' => __( 'Tag slug.', 'learnpress' ),
 								'type'        => 'string',
 								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+						),
+					),
+				),
+				'instructor'        => array(
+					'description' => __( 'Retrieves the course sections and items..', 'learnpress' ),
+					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'items'       => array(
+						'type'       => 'object',
+						'properties' => array(
+							'id'          => array(
+								'description' => __( 'User ID.', 'learnpress' ),
+								'type'        => 'integer',
+								'context'     => array( 'view' ),
+							),
+							'name'        => array(
+								'description' => __( 'Display name.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'description' => array(
+								'description' => __( 'Tag slug.', 'learnpress' ),
+								'type'        => 'string',
+								'context'     => array( 'view' ),
+								'readonly'    => true,
+							),
+							'social'      => array(
+								'description' => __( 'Social Infor.', 'learnpress' ),
+								'type'        => 'array',
+								'context'     => array( 'view' ),
 								'readonly'    => true,
 							),
 						),
