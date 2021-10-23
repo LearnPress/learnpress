@@ -449,7 +449,7 @@ class LP_Helper {
 					$value = sanitize_key( $value );
 					break;
 				default:
-					$value = sanitize_text_field( wp_unslash( $value ) );
+					$value = sanitize_text_field( $value );
 			}
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {

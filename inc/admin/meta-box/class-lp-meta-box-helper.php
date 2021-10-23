@@ -149,7 +149,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 						$value = '1' === $raw_value || 'yes' === $raw_value ? 'yes' : 'no';
 						break;
 					case 'textarea':
-						$value = wp_kses_post( trim( $raw_value ) );
+						$value = LP_Helper::sanitize_params_submitted( trim( $raw_value ), 'html' );
 						break;
 					case 'multiselect':
 					case 'multi_select_countries':
@@ -192,6 +192,8 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 								$value[ $cfsort ] = $feilds;
 							}
 						}
+
+						$value = LP_Helper::sanitize_params_submitted( $value );
 						break;
 
 					case 'image_advanced':
@@ -202,9 +204,10 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 						break;
 					case 'email-content':
 						$value = ! empty( $raw_value ) ? $raw_value : array();
+						$value = LP_Helper::sanitize_params_submitted( $value, 'html' );
 						break;
 					default:
-						$value = learnpress_clean( $raw_value );
+						$value = LP_Helper::sanitize_params_submitted( $raw_value );
 						break;
 				}
 

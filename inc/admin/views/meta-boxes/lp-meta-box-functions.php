@@ -18,10 +18,10 @@ function lp_meta_box_text_input_field( $field ) {
 	 * You must us hook default_{$meta_type}_metadata | Read more get_metadata_default() function
 	 */
 	$field['default']    = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
-	$field['value']      = isset( $field['value'] ) ? $field['value'] : $field['default'];
-	$field_id            = isset( $field['id'] ) ? esc_attr( $field['id'] ) : '';
-	$field['type_input'] = $field['type_input'] ?? 'text';
-	$field['desc_tip']   = $field['desc_tip'] ?? '';
+	$field['value']      = esc_attr( $field['value'] ?? '' );
+	$field_id            = esc_attr( $field['id'] ?? '' );
+	$field['type_input'] = esc_attr( $field['type_input'] ?? 'text' );
+	$field['desc_tip']   = esc_attr( $field['desc_tip'] ?? '' );
 
 	// Custom attribute handling
 	$custom_attributes = array();
@@ -61,9 +61,9 @@ function lp_meta_box_textarea_field( $field ) {
 	global $thepostid, $post;
 
 	$thepostid            = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field['placeholder'] = isset( $field['placeholder'] ) ? $field['placeholder'] : '';
-	$field['class']       = isset( $field['class'] ) ? $field['class'] : 'short';
-	$field['style']       = isset( $field['style'] ) ? $field['style'] : '';
+	$field['placeholder'] = esc_attr( $field['placeholder'] ?? '' );
+	$field['class']       = esc_attr( $field['class'] ?? 'short' );
+	$field['style']       = esc_attr( $field['style'] ?? '' );
 	$field['default']     = ( ! get_post_meta(
 		$thepostid,
 		$field['id'],
@@ -73,9 +73,9 @@ function lp_meta_box_textarea_field( $field ) {
 		$field['id'],
 		true
 	);
-	$field['value']       = isset( $field['value'] ) ? $field['value'] : $field['default'];
-	$field['desc_tip']    = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
-	$field['name']        = isset( $field['name'] ) ? $field['name'] : $field['id'];
+	$field['value']       = esc_attr( $field['value'] ?? $field['default'] );
+	$field['desc_tip']    = esc_attr( $field['desc_tip'] ?? false );
+	$field['name']        = esc_attr( $field['name'] ?? $field['id'] );
 
 	// Custom attribute handling
 	$custom_attributes = array();
@@ -472,9 +472,9 @@ function lp_metabox_custom_fields( $field, $values, $key ) {
 						?>
 						<td>
 							<input name="<?php echo esc_attr( $name ); ?>" type="<?php echo $val['type']; ?>"
-								   class="input-text"
-								   placeholder="<?php echo isset( $val['placeholder'] ) ? $val['placeholder'] : ''; ?>"
-								   value="<?php echo ! empty( $values[ $cfk ] ) ? $values[ $cfk ] : ''; ?>">
+								class="input-text"
+								placeholder="<?php echo isset( $val['placeholder'] ) ? esc_attr( $val['placeholder'] ) : ''; ?>"
+								value="<?php echo ! empty( $values[ $cfk ] ) ? esc_attr( $values[ $cfk ] ) : ''; ?>">
 						</td>
 						<?php
 						break;
@@ -488,13 +488,13 @@ function lp_metabox_custom_fields( $field, $values, $key ) {
 									foreach ( $val['options'] as $cfks => $cfselect ) {
 										?>
 										<option
-											value="<?php echo $cfks; ?>"
-															  <?php
-																echo ! empty( $values[ $cfk ] ) ? selected(
-																	$values[ $cfk ],
-																	(string) $cfks
-																) : '';
-																?>
+											value="<?php echo esc_attr( $cfks ); ?>"
+												<?php
+												echo ! empty( $values[ $cfk ] ) ? selected(
+													$values[ $cfk ],
+													(string) $cfks
+												) : '';
+												?>
 											><?php echo $cfselect; ?></option>
 										<?php
 									}

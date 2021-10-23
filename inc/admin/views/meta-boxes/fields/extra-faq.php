@@ -35,7 +35,7 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 							<div class="lp_course_faq_meta_box__field">
 								<label>
 									<span><?php esc_attr_e( 'Title', 'learnpress' ); ?></span>
-									<input type="text" name="_lp_faqs_question[]" value="<?php echo $faq[0]; ?>">
+									<input type="text" name="_lp_faqs_question[]" value="<?php echo esc_attr( $faq[0] ); ?>">
 								</label>
 								<label>
 									<span><?php esc_attr_e( 'Content', 'learnpress' ); ?></span>

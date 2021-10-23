@@ -79,7 +79,7 @@ $user = $profile->get_user();
 					case 'tel':
 						?>
 						<label for="description"><?php echo esc_html( $field['name'] ); ?></label>
-						<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" class="regular-text" value="<?php echo isset( $custom_profile[ $field['id'] ] ) ? $custom_profile[ $field['id'] ] : ''; ?>">
+						<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" class="regular-text" value="<?php echo esc_attr( $custom_profile[ $field['id'] ] ?? '' ); ?>">
 						<?php
 						break;
 					case 'textarea':
