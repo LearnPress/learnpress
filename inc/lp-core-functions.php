@@ -2583,7 +2583,7 @@ function learn_press_get_graduation_text( $slug ) {
 	return apply_filters( 'learn-press/get-graduation-text', $text, $slug );
 }
 
-function learn_press_execute_time( $n = 1 ) {
+/*function learn_press_execute_time( $n = 1 ) {
 	static $time;
 	if ( empty( $time ) ) {
 		$time = microtime( true );
@@ -2597,7 +2597,7 @@ function learn_press_execute_time( $n = 1 ) {
 
 		return $execute_time;
 	}
-}
+}*/
 
 if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
 	function learn_press_is_negative_value( $value ) {
@@ -2706,7 +2706,7 @@ function learn_press_sanitize_tooltip( $tooltip, $html = false ) {
 
 function learn_press_tooltip( $tooltip, $html = false ) {
 	$tooltip = learn_press_sanitize_tooltip( $tooltip, $html );
-	echo '<span class="learn-press-tooltip" data-tooltip="' . $tooltip . '"></span>';
+	echo '<span class="learn-press-tooltip" data-tooltip="' . esc_attr( $tooltip ) . '"></span>';
 }
 
 /**

@@ -5,6 +5,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if ( ! isset( $message ) ) {
+	return;
+}
+
 if ( ! isset( $type ) ) {
 	$type = 'success';
 }
@@ -20,17 +24,10 @@ if ( strpos( $type, 'notice-' ) === false ) {
 $classes = array( 'lp-notice', 'notice', $type );
 ?>
 
-<div
-<?php
-if ( ! empty( $id ) ) {
-	echo ' id="' . $id . '" ';
-}
-?>
-class="<?php echo implode( ' ', $classes ); ?>"
->
-	<p><?php echo $message; ?></p>
+<div id="<?php echo esc_attr( $id ?? '' ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+	<p><?php echo esc_html( $message ); ?></p>
 
 	<?php if ( $dismissible ) : ?>
-		<button class="notice-dismiss" data-dismiss-notice="<?php echo $id; ?>"></button>
+		<button class="notice-dismiss" data-dismiss-notice="<?php echo esc_attr( $id ?? '' ); ?>"></button>
 	<?php endif; ?>
 </div>

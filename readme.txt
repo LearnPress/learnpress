@@ -213,6 +213,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: store answer of user when reload page will lose.
 ~ Added: hooks apply_filters('learnpress/profile/tab/enrolled/subtab-active'), apply_filters('learnpress/profile/tab-active').
 ~ Modified: functions course_external_button, can_enroll_course with case course is external and purchased course.
+~ Sanitize: email_footer, email_header
+~ Removed: some functions not use on file class-lp-email.php: "get_variable", "get_object", "get_common_template_data", "data_to_variables"
 
 = 4.1.3.2 (2021-10-15) =
 ~ Fixed: security CVE-2021-39348, set sanitize for some params missing.

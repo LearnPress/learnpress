@@ -119,7 +119,7 @@ class LP_Debug {
 	 */
 	public static function var_dump( $variable, $file_path, $line ) {
 		echo '<pre>' . print_r( $variable, true ) . '</pre>';
-		echo 'FILE:' . $file_path . '<br> LINE:' . $line;
+		echo 'FILE:' . esc_html( $file_path ) . '<br> LINE:' . esc_html( $line );
 	}
 
 	/**

@@ -285,14 +285,22 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			$found = ! empty( $items[ $item_id ] );
 		}
 
-		return apply_filters( 'learn-press/section-has-item', $found, $item_id, $this->get_id(),
-			$this->get_course_id() );
+		return apply_filters(
+			'learn-press/section-has-item',
+			$found,
+			$item_id,
+			$this->get_id(),
+			$this->get_course_id()
+		);
 	}
 
 	public function get_slug() {
 		return $this->get_title() ? sanitize_title( $this->get_title() ) . '-' . $this->get_id() : $this->get_id();
 	}
 
+	/**
+	 * Set class section
+	 */
 	public function main_class() {
 		$class = array( 'section' );
 
@@ -306,11 +314,8 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			$class[] = 'closed';
 		}
 
-		$output = 'class="' . implode( ' ', $class ) . '"';
-
+		$output = 'class="' . esc_attr( implode( ' ', $class ) ) . '"';
 		echo ' ' . $output;
-
-		return $output;
 	}
 
 	public function set_position( $position ) {
