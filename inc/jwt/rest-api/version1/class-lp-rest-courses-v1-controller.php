@@ -390,6 +390,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'count_students':
 					$data['count_students'] = $course->count_students();
 					break;
+				case 'can_finish':
+					$data['can_finish'] = $this->check_can_finish( $course );
+					break;
 				case 'categories':
 					$data['categories'] = $this->get_course_taxonomy( $id, 'course_category' );
 					break;
@@ -411,6 +414,22 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function check_can_finish( $course ) {
+		$user = learn_press_get_current_user();
+
+		if ( $user && $course ) {
+			$check = $user->can_show_finish_course_btn( $course );
+
+			if ( $check['status'] === 'success' ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 
 	public function get_instructor_info( $id, $request ) {
@@ -788,6 +807,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'count_students'    => array(
 					'description' => __( 'Count student enrolled', 'learnpress' ),
 					'type'        => 'integer',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'can_finish'        => array(
+					'description' => __( 'Count student enrolled', 'learnpress' ),
+					'type'        => 'boolean',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
