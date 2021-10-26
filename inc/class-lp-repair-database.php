@@ -576,8 +576,9 @@ class LP_Repair_Database {
 		$course_curd = new LP_Course_CURD();
 
 		switch ( $post_type ) {
-			case LP_ORDER_CPT:
-				if ( $order = learn_press_get_order( $post_id ) ) {
+			case LP_ORDER_CPT: //Todo: tungnx should review code to rewrite
+				$order = learn_press_get_order( $post_id );
+				if ( $order ) {
 					$user_ids   = $order->get_users();
 					$course_ids = $order->get_item_ids();
 
