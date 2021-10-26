@@ -387,6 +387,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'excerpt':
 					$data['excerpt'] = $post->post_excerpt;
 					break;
+				case 'count_students':
+					$data['count_students'] = $course->count_students();
+					break;
+				case 'can_finish':
+					$data['can_finish'] = $this->check_can_finish( $course );
+					break;
 				case 'categories':
 					$data['categories'] = $this->get_course_taxonomy( $id, 'course_category' );
 					break;
@@ -408,6 +414,22 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function check_can_finish( $course ) {
+		$user = learn_press_get_current_user();
+
+		if ( $user && $course ) {
+			$check = $user->can_show_finish_course_btn( $course );
+
+			if ( $check['status'] === 'success' ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 
 	public function get_instructor_info( $id, $request ) {
@@ -679,6 +701,18 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$on_sale_ids = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
 
 			$args[ $on_sale_key ] += $on_sale_ids;
+		} elseif ( is_bool( $request['popular'] ) ) {
+			$on_popular_key = $request['popular'] ? 'post__in' : 'post__not_in';
+
+			$filter        = new LP_Course_Filter();
+			$filter->limit = $request['per_page'] ?? 10;
+			$filter->page  = $request['page'] ?? 1;
+
+			$on_popular_ids = LP_Course_DB::getInstance()->get_popular_courses( $filter );
+
+			$on_popular_ids = empty( $on_popular_ids ) ? array( 0 ) : $on_popular_ids;
+
+			$args[ $on_popular_key ] += $on_popular_ids;
 		}
 
 		return $args;
@@ -769,6 +803,18 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'description' => __( 'Retrieves the course excerpt..', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
+				),
+				'count_students'    => array(
+					'description' => __( 'Count student enrolled', 'learnpress' ),
+					'type'        => 'integer',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'can_finish'        => array(
+					'description' => __( 'Count student enrolled', 'learnpress' ),
+					'type'        => 'boolean',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
 				),
 				'categories'        => array(
 					'description' => __( 'List of categories.', 'learnpress' ),
@@ -1010,6 +1056,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		$params['on_sale'] = array(
 			'description'       => __( 'Get item learned by user.', 'learnpress' ),
+			'type'              => 'boolean',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+
+		$params['popular'] = array(
+			'description'       => __( 'Get item popularity.', 'learnpress' ),
 			'type'              => 'boolean',
 			'validate_callback' => 'rest_validate_request_arg',
 		);

@@ -131,23 +131,25 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_popular_courses( LP_Course_Filter $filter ): array {
+		$filter->page = 1;
+		$offset       = ( absint( $filter->page ) - 1 ) * $limit;
+		$sql_limit    = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+
 		$query = apply_filters(
 			'learn-press/course-curd/query-popular-courses',
 			$this->wpdb->prepare(
-				"
-					SELECT DISTINCT(item_id), COUNT(item_id) as total
+				"SELECT DISTINCT(item_id), COUNT(item_id) as total
 					FROM $this->tb_lp_user_items
 					WHERE item_type = %s
 					AND ( status = %s OR status = %s OR status = %s )
 					GROUP BY item_id
 					ORDER BY total DESC
-					LIMIT %d
+					{$sql_limit}
 				",
 				LP_COURSE_CPT,
 				LP_COURSE_ENROLLED,
 				LP_COURSE_FINISHED,
-				LP_COURSE_PURCHASED,
-				$filter->limit
+				LP_COURSE_PURCHASED
 			)
 		);
 
