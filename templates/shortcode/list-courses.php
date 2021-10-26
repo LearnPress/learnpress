@@ -18,7 +18,7 @@ if ( ! isset( $query ) ) {
 	<div class="lp-content-area">
 		<?php if ( ! empty( $title ) ) : ?>
 			<header class="learn-press-courses-header">
-				<h1><?php echo $title; ?></h1>
+				<h1><?php echo esc_html( $title ); ?></h1>
 			</header>
 		<?php endif; ?>
 

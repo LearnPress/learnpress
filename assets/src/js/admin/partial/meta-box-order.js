@@ -66,6 +66,7 @@
 					order_id: $( '#post_ID' ).val(),
 					items: [ item_id ],
 					'lp-ajax': 'remove_items_from_order',
+					remove_nonce: $( this ).closest( '.order-item-row' ).data( 'remove_nonce' ),
 				}, {
 					emulateJSON: true,
 					params: {},

@@ -2109,9 +2109,9 @@ add_action( 'learn-press/after-form-register-fields', 'lp_custom_register_fields
  */
 function lp_user_custom_register_fields( $user_id, $fields = array() ) {
 	if ( ! empty( $fields ) ) {
-		update_user_meta( $user_id, '_lp_custom_register', learnpress_clean( $fields ) );
+		update_user_meta( $user_id, '_lp_custom_register', LP_Helper::sanitize_params_submitted( $fields ) );
 	} elseif ( isset( $_POST['_lp_custom_register'] ) ) {
-		update_user_meta( $user_id, '_lp_custom_register', $_POST['_lp_custom_register'] );
+		update_user_meta( $user_id, '_lp_custom_register', LP_Helper::sanitize_params_submitted( $_POST['_lp_custom_register'] ) );
 	}
 }
 
