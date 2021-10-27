@@ -217,36 +217,32 @@ class LP_Course_DB extends LP_Database {
 		return $wpdb->get_col( $query );
 	}
 
-	public function get_courses_on_sale() {
+	public function get_courses_on_sale( $order = 'ASC' ) {
 		$args = array(
 			'post_type'      => LP_COURSE_CPT,
-			'orderby'        => 'ID',
-			'order'          => 'DESC',
+			'orderby'        => 'meta_value_num',
+			'order'          => $order,
+			'meta_key'       => '_lp_sale_price',
 			'posts_per_page' => -1,
-			'meta_query'     => array(
-				array(
-					'key'     => '_lp_sale_price',
-					'value'   => '',
-					'compare' => '!=',
-				),
-			),
 		);
 
 		$courses = get_posts( $args );
 
 		$output = array();
 
-		foreach ( (array) $courses as $course_object ) {
-			$course_id = $course_object->ID;
+		if ( ! empty( $courses ) ) {
+			foreach ( (array) $courses as $course_object ) {
+				$course_id = $course_object->ID;
 
-			$course = learn_press_get_course( $course_object->ID );
+				$course = learn_press_get_course( $course_object->ID );
 
-			if ( ! $course || empty( $course_id ) ) {
-				continue;
-			}
+				if ( ! $course || empty( $course_id ) ) {
+					continue;
+				}
 
-			if ( $course->has_sale_price() ) {
-				$output[] = $course_id;
+				if ( $course->has_sale_price() ) {
+					$output[] = $course_id;
+				}
 			}
 		}
 
