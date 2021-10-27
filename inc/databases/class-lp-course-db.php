@@ -131,9 +131,8 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_popular_courses( LP_Course_Filter $filter ): array {
-		$filter->page = 1;
-		$offset       = ( absint( $filter->page ) - 1 ) * $limit;
-		$sql_limit    = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+		$offset    = ( absint( $filter->page ) - 1 ) * $filter->limit;
+		$sql_limit = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
 
 		$query = apply_filters(
 			'learn-press/course-curd/query-popular-courses',
