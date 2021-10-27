@@ -823,7 +823,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'readonly'    => true,
 				),
 				'can_finish'        => array(
-					'description' => __( 'Count student enrolled', 'learnpress' ),
+					'description' => __( 'Can finish course', 'learnpress' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view' ),
 					'readonly'    => true,

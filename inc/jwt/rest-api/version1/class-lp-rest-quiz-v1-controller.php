@@ -369,6 +369,9 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'excerpt':
 					$data['excerpt'] = $post->post_excerpt;
 					break;
+				case 'can_finish_course':
+					$data['can_finish_course'] = $this->check_can_finish_course( $id );
+					break;
 				case 'assigned':
 					$data['assigned'] = $assigned;
 					break;
@@ -384,6 +387,34 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function check_can_finish_course( $id ) {
+		$user = learn_press_get_current_user();
+
+		if ( ! $user || ! $id ) {
+			return falase;
+		}
+
+		$course_id = $this->get_course_by_item_id( $id );
+
+		if ( empty( $course_id ) ) {
+			return false;
+		}
+
+		$course = learn_press_get_course( $course_id );
+
+		if ( $user && $course ) {
+			$check = $user->can_show_finish_course_btn( $course );
+
+			if ( $check['status'] === 'success' ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 
 	public function get_quiz_results( $quiz, $get_question = false ) {
@@ -603,6 +634,12 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'description' => __( 'Retrieves the course excerpt..', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
+				),
+				'can_finish_course' => array(
+					'description' => __( 'Can finish course', 'learnpress' ),
+					'type'        => 'boolean',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
 				),
 				'assigned'          => array(
 					'description' => __( 'Assigned.', 'learnpress' ),
