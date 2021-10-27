@@ -97,7 +97,8 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 		 * @editor tungnnx
 		 * @modify 4.1.4 comment - not use - replaced to "match_shortcode_api" function
 		 */
-		/*public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
+		/*
+		public function match_shortcode( $content, $answer_id, $show_answer = false, $answered = '' ) {
 			if ( ! empty( $content ) ) {
 				preg_match_all(
 					'/' . get_shortcode_regex( array( 'fib' ) ) . '/',
@@ -168,22 +169,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 						$fill = $atts['fill'] ?? '';
 
-						if ( $show_answer ) {
-							$answer = $answered[ $ids ] ?? '';
-
-							$is_correct = 'fail';
-
-							$blanks = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
-
-							if ( ! empty( $blanks ) ) {
-								$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? 'correct' : 'fail';
-							}
-
-							$answer_html = $is_correct === 'fail' ? '<span class="lp-fib-answered__answer">' . $answer . '</span> &rarr; ' : '';
-							$new_str     = '<span class="lp-fib-answered ' . $is_correct . '" id="' . esc_attr( $ids ) . '">' . $answer_html . '<span class="lp-fib-answered__fill">' . $fill . '</span></span>';
-						} else {
-							$new_str = '{{FIB_' . esc_attr( $ids ) . '}}';
-						}
+						$new_str = '{{FIB_' . esc_attr( $ids ) . '}}';
 
 						$content = str_replace( $shortcode[0], $new_str, $content );
 					}
@@ -191,6 +177,50 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			}
 
 			return $content;
+		}
+
+		public function get_answer_data( $content, $answer_id, $answered = '' ) {
+			$output = array();
+
+			if ( ! empty( $content ) ) {
+				preg_match_all(
+					'/' . get_shortcode_regex( array( 'fib' ) ) . '/',
+					$content,
+					$all_shortcode,
+					PREG_SET_ORDER
+				);
+
+				if ( ! empty( $all_shortcode ) ) {
+					foreach ( $all_shortcode as $shortcode ) {
+						$atts = shortcode_parse_atts( $shortcode[0] );
+
+						if ( empty( $atts['id'] ) ) {
+							$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
+							$ids = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
+						} else {
+							$ids = $atts['id'];
+						}
+
+						$fill = $atts['fill'] ?? '';
+
+						$answer = $answered[ $ids ] ?? '';
+
+						$is_correct = false;
+
+						$blanks = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
+
+						if ( ! empty( $blanks ) ) {
+							$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? true : false;
+						}
+
+						$output[ $ids ]['is_correct'] = $is_correct;
+						$output[ $ids ]['answer']     = $answer;
+						$output[ $ids ]['correct']    = $fill;
+					}
+				}
+			}
+
+			return $output;
 		}
 
 		public function sanitize_question_answers( $data ) {
@@ -288,6 +318,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 					$option['title']     = apply_filters( 'learn-press/question/fib/regex-content', $title, $option['question_answer_id'], $is_true, $fib_answer );
 					$option['ids']       = $this->fib_get_ids( $title );
 					$option['title_api'] = $this->match_shortcode_api( $title, $option['question_answer_id'], $is_true, $fib_answer );
+					$option['answers']   = $is_true ? $this->get_answer_data( $title, $option['question_answer_id'], $fib_answer ) : array();
 
 					foreach ( $map as $k_map => $v_map ) {
 						if ( array_key_exists( $k_map, $option ) ) {
@@ -376,8 +407,8 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 						$blanks = $answer->get_meta( '_blanks' );
 					}
 
-					$return['blanks']   = [];
-					$return['answered'] = [];
+					$return['blanks']   = array();
+					$return['answered'] = array();
 
 					if ( $blanks ) {
 						$point_per_blank = $this->get_mark() / count( $blanks );
@@ -413,7 +444,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 		/**
 		 * Check answer fill in blank
 		 *
-		 * @param array $blank
+		 * @param array     $blank
 		 * @param $user_fill
 		 *
 		 * @return bool

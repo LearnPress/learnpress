@@ -110,6 +110,8 @@ const checkAnswer = ( state, action ) => {
 };
 
 const submitQuiz = ( state, action ) => {
+	localStorage.removeItem( `LP_Quiz_${ state.id }_Answered` );
+
 	const questions = state.questions.map( ( question ) => {
 		const newArgs = {};
 
@@ -188,7 +190,6 @@ export const userQuiz = ( state = STORE_DATA, action ) => {
 			currentPage: action.currentPage,
 		};
 	case 'SUBMIT_QUIZ_SUCCESS':
-		localStorage.removeItem( 'answered' );
 		return submitQuiz( state, action );
 	case 'UPDATE_USER_QUESTION_ANSWERS':
 		return state.status === 'started' ? updateUserQuestionAnswer( state, action ) : state;

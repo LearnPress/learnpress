@@ -171,9 +171,9 @@ GET http://learnpress4.local/wp-json/wp/v2/users
 Content-Type: application/json
 
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/users/?per_page=2
+GET http://learnpress4.local/wp-json/learnpress/v1/users/?roles[]=lp_teacher&roles[]=administrator
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTgwMDYxMywibmJmIjoxNjI1ODAwNjEzLCJleHAiOjE2MjY0MDU0MTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.4IQCUUcgZG5KH335evg8ZkDADVC0KCte8zFfENtQ0FA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYzNTIxNzM5MiwibmJmIjoxNjM1MjE3MzkyLCJleHAiOjE2MzU4MjIxOTIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.d68sBM5k8dYqWb-3MBs1fBzdgldCfCG-rh_ZbdAYP2U
 
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/users/1
@@ -226,3 +226,16 @@ Content-Type: application/json
 {
 	"user_login" : "daonham95@gmail.com"
 }
+
+###
+POST http://test.thimpress.com/wp-json/learnpress/v1/token
+Content-Type: application/json
+
+{
+	"username": "admin",
+	"password": "admin"
+}
+
+###
+GET http://test.thimpress.com/wp-json/learnpress/v1/courses?page=2&per_page=10&search=&orderby=price&order=desc&v=dfhg
+

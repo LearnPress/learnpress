@@ -883,8 +883,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'extra_capabilities':
 					$data['extra_capabilities'] = (object) $user->caps;
 					break;
-				case 'avatar_urls':
-					$data['avatar_urls'] = rest_get_avatar_urls( $user );
+				case 'avatar_url':
+					$data['avatar_url'] = $this->get_profile_avatar( $user->ID );
+					break;
+				case 'instructor_data':
+					$data['instructor_data'] = $this->get_instructor_data( $user->ID );
 					break;
 				case 'meta':
 					$data['meta'] = $this->meta->get_value( $user->ID, $request );
@@ -899,6 +902,36 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		}
 
 		return $data;
+	}
+
+	public function get_profile_avatar( $user_id ) {
+		$user = learn_press_get_user( $user_id );
+
+		$avatar = $user->get_upload_profile_src();
+
+		return ! empty( $avatar ) ? $avatar : '';
+	}
+
+	public function get_instructor_data( $user_id ) {
+		$profile = learn_press_get_profile( $user_id );
+
+		$output = array();
+
+		if ( is_wp_error( $profile ) ) {
+			return $output;
+		}
+
+		$query  = $profile->query_courses( 'purchased' );
+		$counts = $query['counts'];
+
+		$output = array(
+			'enrolled_courses'  => absint( $counts['all'] ) ?? 0,
+			'completed_courses' => absint( $counts['finished'] ) ?? 0,
+			'courses'           => absint( count_user_posts( $user_id, LP_COURSE_CPT ) ),
+			'students'          => absint( learn_press_count_instructor_users( $user_id ) ),
+		);
+
+		return $output;
 	}
 
 	public function get_lp_data_tabs( $user, $request ) {
@@ -1184,6 +1217,16 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'type'        => 'array',
 					'context'     => array( 'view' ),
 				),
+				'avatar_url'         => array(
+					'description' => __( 'URL avatar' ),
+					'type'        => 'string',
+					'context'     => array( 'view' ),
+				),
+				'instructor_data'         => array(
+					'description' => __( 'Instructor data' ),
+					'type'        => 'array',
+					'context'     => array( 'view' ),
+				),
 				'custom_register'    => array(
 					'description' => __( 'Get custom register fields.' ),
 					'type'        => 'object',
@@ -1191,30 +1234,6 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				),
 			),
 		);
-
-		if ( get_option( 'show_avatars' ) ) {
-			$avatar_properties = array();
-
-			$avatar_sizes = rest_get_avatar_sizes();
-
-			foreach ( $avatar_sizes as $size ) {
-				$avatar_properties[ $size ] = array(
-					/* translators: %d: Avatar image size in pixels. */
-					'description' => sprintf( __( 'Avatar URL with image size of %d pixels.' ), $size ),
-					'type'        => 'string',
-					'format'      => 'uri',
-					'context'     => array( 'embed', 'view', 'edit' ),
-				);
-			}
-
-			$schema['properties']['avatar_urls'] = array(
-				'description' => __( 'Avatar URLs for the user.' ),
-				'type'        => 'object',
-				'context'     => array( 'embed', 'view', 'edit' ),
-				'readonly'    => true,
-				'properties'  => $avatar_properties,
-			);
-		}
 
 		$schema['properties']['meta'] = $this->meta->get_field_schema();
 

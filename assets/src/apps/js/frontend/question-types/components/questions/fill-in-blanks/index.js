@@ -80,11 +80,28 @@ class QuestionFillInBlanks extends QuestionBase {
 	convertInputField = ( option ) => {
 		let title = option.title;
 
+		const answers = option?.answers;
+
 		option.ids.map( ( id, index ) => {
 			const textReplace = '{{FIB_' + id + '}}';
-			let elContent = '<div class="lp-fib-input" style="display: inline-block; width: auto;">';
-			elContent += '<input type="text" data-id="' + id + '" value="" />';
-			elContent += '</div>';
+			let elContent = '';
+
+			const answerID = answers ? answers?.[ id ] : undefined;
+
+			if ( answerID ) { // If is answered,
+				elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
+
+				if ( ! answerID?.isCorrect ) {
+					elContent += `<span class="lp-fib-answered__answer">${ answerID?.answer ?? '' }</span> → `;
+				}
+
+				elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
+				elContent += '</span>';
+			} else {
+				elContent += '<div class="lp-fib-input" style="display: inline-block; width: auto;">';
+				elContent += '<input type="text" data-id="' + id + '" value="" />';
+				elContent += '</div>';
+			}
 			title = title.replace( textReplace, elContent );
 		} );
 

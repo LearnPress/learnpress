@@ -393,6 +393,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'can_finish':
 					$data['can_finish'] = $this->check_can_finish( $course );
 					break;
+				case 'duration':
+					$data['duration'] = learn_press_get_post_translated_duration( $id, esc_html__( 'Lifetime', 'learnpress' ) );
+					break;
 				case 'categories':
 					$data['categories'] = $this->get_course_taxonomy( $id, 'course_category' );
 					break;
@@ -400,7 +403,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['tags'] = $this->get_course_taxonomy( $id, 'course_tag' );
 					break;
 				case 'instructor':
-					$data['instructor'] = $this->get_instructor_info( $id, $request );
+					$data['instructor'] = $this->get_instructor_info( $id, $request, $course );
 					break;
 				case 'sections':
 					$data['sections'] = $this->get_all_items( $course );
@@ -432,12 +435,16 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return false;
 	}
 
-	public function get_instructor_info( $id, $request ) {
+	public function get_instructor_info( $id, $request, $course ) {
 		$user_id = get_post_meta( $id, '_lp_course_author', true );
 
 		$output = array();
 
 		$extra_info = learn_press_get_user_extra_profile_info( $user_id );
+
+		$instructor = $course->get_instructor();
+
+		$output['avatar'] = $instructor->get_upload_profile_src();
 
 		if ( $user_id ) {
 			$user = get_user_by( 'ID', absint( $user_id ) );
@@ -803,6 +810,11 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'description' => __( 'Retrieves the course excerpt..', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
+				),
+				'duration'          => array(
+					'description' => __( 'Duration', 'learnpress' ),
+					'type'        => 'string',
+					'context'     => array( 'view' ),
 				),
 				'count_students'    => array(
 					'description' => __( 'Count student enrolled', 'learnpress' ),
