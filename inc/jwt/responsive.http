@@ -35,7 +35,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses?learned=true
+GET http://learnpress4.local/wp-json/learnpress/v1/courses?on_sale=true
 Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYzNTEzNjYxMCwibmJmIjoxNjM1MTM2NjEwLCJleHAiOjE2MzU3NDE0MTAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19._eGVoYIw1YHxH9qB6IhIYiPUwJnMFi-lPtjBVASzTBc
 
@@ -228,12 +228,12 @@ Content-Type: application/json
 }
 
 ###
-POST http://test.thimpress.com/wp-json/learnpress/v1/token
+POST https://test.thimpress.com/wp-json/learnpress/v1/token?v=asdasd
 Content-Type: application/json
 
 {
-	"username": "admin",
-	"password": "admin"
+	"username": "pensive-tesla",
+	"password": "FXIOajZUlYoOrhT6kd"
 }
 
 ###
