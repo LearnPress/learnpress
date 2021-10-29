@@ -64,7 +64,6 @@
     "jquery": "^3.4.1",
     "mkdir": "0.0.2",
     "mkdirp": "^0.5.1",
-    "node-sass": "^4.9.0",
     "postcss-loader": "^2.1.5",
     "prettier-stylelint": "^0.4.2",
     "pump": "^1.0.3",
