@@ -123,7 +123,9 @@ class LP_Gateways {
 			if ( ! is_object( $gateway ) ) {
 				continue;
 			}
-
+			if ( $slug == 'woocommerce' ) {
+				continue;
+			}
 			/**
 			 * @deprecated
 			 */
