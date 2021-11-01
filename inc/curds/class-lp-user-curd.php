@@ -1618,8 +1618,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				// ORDER BY
 				$orderby = 'ORDER BY start_time DESC';
 
-				$unenrolled_course_ids = array();
-
 				if ( ! empty( $args['status'] ) ) {
 					switch ( $args['status'] ) {
 						case 'finished':
@@ -1664,10 +1662,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 
-				if ( empty( $args['status'] ) || $args['status'] === 'not-enrolled' ) {
-					$unenrolled_course_ids = $this->query_courses_by_order( $user_id );
-				}
-
 				// Comment by tungnx
 				//$where .= $wpdb->prepare( ' AND ui.status NOT IN(%s) ', 'pending' );
 
@@ -1679,30 +1673,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 
 				list( $select, $from, $join, $where, $having, $orderby ) = array_values( $query_parts );
-
-				/**
-				 * If there are some courses user has purchased and it's order is already completed
-				 * but for some reasons it is not inserted into table user-items.
-				 *
-				 * In this case we temporary to add it to table user-items (by using a transaction)
-				 * and query it back and then restore data by rollback that transaction.
-				 */
-				if ( $unenrolled_course_ids ) {
-					//LP_Debug::startTransaction();
-
-					foreach ( $unenrolled_course_ids as $unenrolled_course_id ) {
-						$wpdb->insert(
-							$wpdb->learnpress_user_items,
-							array(
-								'user_id'   => $user_id,
-								'item_id'   => $unenrolled_course_id,
-								'item_type' => LP_COURSE_CPT,
-								'status'    => 'purchased',
-							),
-							array( '%d', '%d', '%s', '%s' )
-						);
-					}
-				}
 
 				if ( $args['limit'] > 0 ) {
 					$limit = "LIMIT {$offset}, {$limit}";
@@ -1731,10 +1701,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				do_action( 'learnpress/user-curd/query_string_purchased_courses', $sql );
 
 				$items = $wpdb->get_results( $sql );
-
-				if ( $unenrolled_course_ids ) {
-					//LP_Debug::rollbackTransaction();
-				}
 
 				if ( $items ) {
 					$count      = $wpdb->get_var( 'SELECT FOUND_ROWS()' );
@@ -1768,7 +1734,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					GROUP BY item_id
 				";
 
-				if ( $user_item_ids = $wpdb->get_col( $sql ) ) {
+				$user_item_ids = $wpdb->get_col( $sql );
+				if ( $user_item_ids ) {
 					$rows = $wpdb->get_results(
 						"
 						SELECT status, COUNT(user_item_id) count
