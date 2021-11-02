@@ -747,7 +747,10 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					}
 					// apply CSS styles inline for picky email clients
 					$emogrifier = new Emogrifier( $content, $css );
-					$content    = $emogrifier->emogrify();
+
+					do_action( 'learnpress_emogrifier', $emogrifier, $this );
+
+					$content = $emogrifier->emogrify();
 
 				} catch ( Exception $e ) {
 
