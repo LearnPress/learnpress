@@ -1979,8 +1979,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_course_order( int $course_id ) {
 			$lp_order    = false;
-			$lp_db       = LP_Database::getInstance();
-			$lp_order_id = $lp_db->get_last_lp_order_is_last_of_user_course( $this->get_id(), $course_id );
+			$lp_order_db = LP_Order_DB::getInstance();
+			$lp_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $this->get_id(), $course_id );
 
 			if ( $lp_order_id ) {
 				$lp_order = new LP_Order( $lp_order_id );

@@ -750,6 +750,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @updated 3.1.0
 	 *
 	 * @return bool|mixed
+	 * @throws Exception
 	 */
 	public function update( $force = false, $wp_error = false ) {
 

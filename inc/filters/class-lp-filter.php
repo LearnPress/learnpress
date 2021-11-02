@@ -32,7 +32,7 @@ class LP_Filter {
 	/**
 	 * @var int
 	 */
-	public $page = 0;
+	public $page = 1;
 	/**
 	 * @var string
 	 */

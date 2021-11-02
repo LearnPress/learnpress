@@ -41,14 +41,16 @@ function learn_press_default_order_status( $prefix = '' ) {
  * }
  *
  * @return LP_Order|WP_Error
+ * @editor tungnx
+ * @modify 4.1.4 - comment - not use
  */
-function learn_press_create_order( $order_data ) {
+/*function learn_press_create_order( $order_data ) {
 
 	$order = new LP_Order();
 	$order->save();
 
 	return $order;
-}
+}*/
 
 /**
  * Create a new order or update an existing
@@ -60,13 +62,13 @@ function learn_press_create_order( $order_data ) {
  * @throws Exception
  */
 
-function learn_press_update_order( $order_data ) {
+/*function learn_press_update_order( $order_data ) {
 	if ( empty( $order_data['order_id'] ) ) {
 		throw new Exception( __( 'Invalid order ID when updating.', 'learnpress' ) );
 	}
 
 	return learn_press_create_order( $order_data );
-}
+}*/
 
 /**************************/
 /**

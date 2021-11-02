@@ -30,8 +30,12 @@ class LP_User_Items_Result_DB extends LP_Database {
 
 		$limit = absint( $limit ) ?? 3;
 
-		$query = $wpdb->prepare( "SELECT result FROM $wpdb->learnpress_user_item_results WHERE user_item_id=%d ORDER BY id DESC LIMIT %d",
-			$user_item_id, $limit + 1 );
+		$query = $wpdb->prepare(
+			"SELECT result FROM $wpdb->learnpress_user_item_results
+			WHERE user_item_id=%d ORDER BY id DESC LIMIT %d",
+			$user_item_id,
+			$limit + 1
+		);
 
 		$col = $wpdb->get_col( $query );
 
@@ -78,7 +82,8 @@ class LP_User_Items_Result_DB extends LP_Database {
 			$wpdb->prepare(
 				"SELECT MAX(id) id FROM $wpdb->learnpress_user_item_results
 				WHERE user_item_id=%d
-				", $user_item_id
+				",
+				$user_item_id
 			)
 		);
 
@@ -149,6 +154,41 @@ class LP_User_Items_Result_DB extends LP_Database {
 		global $wpdb;
 
 		$wpdb->query( "DELETE FROM {$wpdb->learnpress_user_item_results}" );
+	}
+
+	/**
+	 * Delete all rows in user_item_ids
+	 *
+	 * @param LP_User_Items_Filter $filter $filter->user_item_ids
+	 *
+	 * @return bool|int
+	 * @throws Exception
+	 * @since 4.1.4
+	 * @author tungnx
+	 * @version 1.0.0
+	 */
+	public function remove_user_item_results( LP_User_Items_Filter $filter ) {
+		// Check valid user.
+		if ( ! is_user_logged_in() || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
+			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+		}
+
+		if ( empty( $filter->user_item_ids ) ) {
+			return 1;
+		}
+
+		$where = 'WHERE 1=1 ';
+
+		$where .= $this->wpdb->prepare(
+			'AND user_item_id IN(' . LP_Helper::db_format_array( $filter->user_item_ids, '%d' ) . ')',
+			$filter->user_item_ids
+		);
+
+		return $this->wpdb->query(
+			"DELETE FROM {$this->tb_lp_user_item_results}
+			{$where}
+			"
+		);
 	}
 
 	public static function instance() {

@@ -56,6 +56,10 @@ if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 		 * @var int
 		 */
 		public $parent_id = 0;
+		/**
+		 * @var int[]
+		 */
+		public $user_item_ids = [];
 
 		public function __construct() {
 
