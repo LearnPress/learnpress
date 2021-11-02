@@ -695,18 +695,19 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-		 * Rest API for Continue in single course.
-		 *
-		 * @param WP_REST_Request $request
-		 *
-		 * @throws Exception .
-		 * @editor minhpd
-		 */
+	 * Rest API for Continue in single course.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @throws Exception .
+	 * @editor minhpd
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 */
 	public function continue_course( WP_REST_Request $request ) {
-
-		$params           = $request->get_params();
-		$response         = new LP_REST_Response();
-		$response->data   = '';
+		$params         = $request->get_params();
+		$response       = new LP_REST_Response();
+		$response->data = '';
 
 		try {
 			$flag_found = false;
@@ -716,11 +717,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			$user        = learn_press_get_user( $user_id );
 			$course      = learn_press_get_course( $course_id );
-			$items_id    = $course->get_item_ids();
-			$total_items = count( $course );
+			$item_ids    = $course->get_item_ids();
+			$total_items = count( $item_ids );
 
-			if ( ! empty( $items_id ) ) {
-				foreach ( $items_id as $item ) {
+			if ( ! empty( $item_ids ) ) {
+				foreach ( $item_ids as $item ) {
 					if ( ! $user->has_completed_item( $item, $course_id ) ) {
 						$item_link  = $course->get_item_link( $item );
 						$flag_found = true;
@@ -730,7 +731,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				if ( ! $flag_found ) {
 					$index_item_id_last = $total_items - 1;
-					$item_id_last       = $items_id[ $index_item_id_last ];
+					$item_id_last       = $item_ids[ $index_item_id_last ];
 					$item_link          = $course->get_item_link( $item_id_last );
 				}
 			}
