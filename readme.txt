@@ -215,6 +215,9 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modified: functions course_external_button, can_enroll_course with case course is external and purchased course.
 ~ Sanitize: email_footer, email_header
 ~ Removed: some functions not use on file class-lp-email.php: "get_variable", "get_object", "get_common_template_data", "data_to_variables"
+~ Fix show explanation when reload site.
+~ Fix show message: "Your order is waiting for processing" when LP Order status is processing.
+~ Fixed: condition get link last item if all items completed - on button continue.
 
 = 4.1.3.2 (2021-10-15) =
 ~ Fixed: security CVE-2021-39348, set sanitize for some params missing.

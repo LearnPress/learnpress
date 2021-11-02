@@ -707,21 +707,31 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$params           = $request->get_params();
 		$response         = new LP_REST_Response();
 		$response->data   = '';
-		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			$course_id = isset( $params['courseId'] ) ? $params['courseId'] : false;
-			$user_id   = isset( $params['userId'] ) ? $params['userId'] : false;
+			$flag_found = false;
+			$item_link  = '';
+			$course_id  = $params['courseId'] ?? false;
+			$user_id    = $params['userId'] ?? false;
 
-			$user     = learn_press_get_user( $user_id );
-			$course   = learn_press_get_course( $course_id );
-			$items_id = $course->get_item_ids();
+			$user        = learn_press_get_user( $user_id );
+			$course      = learn_press_get_course( $course_id );
+			$items_id    = $course->get_item_ids();
+			$total_items = count( $course );
 
-			foreach ( $items_id as $item ) {
+			if ( ! empty( $items_id ) ) {
+				foreach ( $items_id as $item ) {
+					if ( ! $user->has_completed_item( $item, $course_id ) ) {
+						$item_link  = $course->get_item_link( $item );
+						$flag_found = true;
+						break;
+					}
+				}
 
-				if ( ! $user->has_completed_item( $item, $course_id ) ) {
-					$item_link = $course->get_item_link( $item );
-					break;
+				if ( ! $flag_found ) {
+					$index_item_id_last = $total_items - 1;
+					$item_id_last       = $items_id[ $index_item_id_last ];
+					$item_link          = $course->get_item_link( $item_id_last );
 				}
 			}
 
