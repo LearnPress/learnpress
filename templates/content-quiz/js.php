@@ -72,6 +72,7 @@ $questions = learn_press_rest_prepare_user_questions(
 		'checked_questions'   => $checked_questions,
 		'answered'            => $answered,
 		'show_correct_review' => $show_correct_review,
+		'status'              => $status,
 	)
 );
 
