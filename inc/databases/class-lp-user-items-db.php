@@ -403,6 +403,125 @@ class LP_User_Items_DB extends LP_Database {
 
 		return $result;
 	}
+
+	/**
+	 * Get items is course has user
+	 *
+	 * @param LP_User_Items_Filter $filter $filter->user_id, $filter->item_id
+	 *
+	 * @throws Exception
+	 * @author tungnx
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 */
+	public function get_ids_course_user( LP_User_Items_Filter $filter ): array {
+		$query = $this->wpdb->prepare(
+			"SELECT user_item_id FROM {$this->tb_lp_user_items}
+			WHERE user_id = %d
+			AND item_id = %d
+			AND item_type = %s
+			",
+			$filter->user_id,
+			$filter->item_id,
+			LP_COURSE_CPT
+		);
+
+		return $this->wpdb->get_col( $query );
+	}
+
+	/**
+	 * Get items of course has user
+	 *
+	 * @param LP_User_Items_Filter $filter user_item_ids
+	 *
+	 * @throws Exception
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 */
+	public function get_item_ids_of_user_course( LP_User_Items_Filter $filter ): array {
+		if ( empty( $filter->user_item_ids ) ) {
+			return [];
+		}
+
+		$where = 'WHERE 1=1 ';
+
+		$where .= $this->wpdb->prepare(
+			'AND parent_id IN(' . LP_Helper::db_format_array( $filter->user_item_ids, '%d' ) . ')',
+			$filter->user_item_ids
+		);
+
+		return $this->wpdb->get_col(
+			"SELECT user_item_id FROM {$this->tb_lp_user_items}
+			{$where}
+			"
+		);
+	}
+
+	/**
+	 * Remove rows IN user_item_ids
+	 *
+	 * @param LP_User_Items_Filter $filter $filter->user_item_ids
+	 *
+	 * @throws Exception
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 */
+	public function remove_user_item_ids( LP_User_Items_Filter $filter ) {
+		// Check valid user.
+		if ( ! is_user_logged_in() || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
+			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+		}
+
+		if ( empty( $filter->user_item_ids ) ) {
+			return 1;
+		}
+
+		$where = 'WHERE 1=1 ';
+
+		$where .= $this->wpdb->prepare(
+			'AND user_item_id IN(' . LP_Helper::db_format_array( $filter->user_item_ids, '%d' ) . ')',
+			$filter->user_item_ids
+		);
+
+		return $this->wpdb->query(
+			"DELETE FROM {$this->tb_lp_user_items}
+			{$where}
+			"
+		);
+	}
+
+	/**
+	 * Remove user_itemmeta has list user_item_ids
+	 *
+	 * @param LP_User_Items_Filter $filter $filter->user_item_ids
+	 *
+	 * @throws Exception
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 */
+	public function remove_user_itemmeta( LP_User_Items_Filter $filter ) {
+		// Check valid user.
+		if ( ! is_user_logged_in() || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
+			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+		}
+
+		if ( empty( $filter->user_item_ids ) ) {
+			return 1;
+		}
+
+		$where = 'WHERE 1=1 ';
+
+		$where .= $this->wpdb->prepare(
+			'AND learnpress_user_item_id IN(' . LP_Helper::db_format_array( $filter->user_item_ids, '%d' ) . ')',
+			$filter->user_item_ids
+		);
+
+		return $this->wpdb->query(
+			"DELETE FROM {$this->tb_lp_user_itemmeta}
+			{$where}
+			"
+		);
+	}
 }
 
 LP_Course_DB::getInstance();
