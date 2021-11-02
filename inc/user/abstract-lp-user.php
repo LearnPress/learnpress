@@ -1974,14 +1974,19 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|LP_Order
 		 * @editor tungnx
 		 * @throws Exception
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 * @since 4.1.1
 		 */
 		public function get_course_order( int $course_id ) {
-			$user_course = $this->get_course_data( $course_id );
-			$user_course->get_order();
+			$lp_order    = false;
+			$lp_db       = LP_Database::getInstance();
+			$lp_order_id = $lp_db->get_last_lp_order_is_last_of_user_course( $this->get_id(), $course_id );
 
-			return $user_course->get_order();
+			if ( $lp_order_id ) {
+				$lp_order = new LP_Order( $lp_order_id );
+			}
+
+			return $lp_order;
 		}
 
 		/**

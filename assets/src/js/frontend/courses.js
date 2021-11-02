@@ -74,13 +74,11 @@ const lpArchiveRequestCourse = ( args ) => {
 		listCourse.innerHTML = skeletonClone;
 	}
 
-	fetch( lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args, userID } ), {
+	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args, userID } );
+
+	wp.apiFetch( {
+		path: 'lp/v1/courses/archive-course' + urlCourseArchive.search,
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	} ).then( ( response ) => {
-		return response.json();
 	} ).then( ( response ) => {
 		if ( typeof response.data.content !== 'undefined' && listCourse ) {
 			listCourse.innerHTML = response.data.content || '';

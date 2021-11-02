@@ -208,7 +208,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( self::$_folder_source . 'js/frontend/courses' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'lp-utils' ),
+					array( 'lp-global', 'lp-utils', 'wp-api-fetch' ),
 					array( LP_PAGE_COURSES ),
 					0,
 					1
