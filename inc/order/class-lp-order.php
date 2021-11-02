@@ -641,10 +641,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				array(
 					'order_item_name' => $item['order_item_name'],
 					'order_id'        => $this->get_id(),
+					'item_id'         => $item['item_id'] ?? 0,
+					'item_type'       => $item['item_type'] ?? '',
 				),
 				array(
 					'%s',
 					'%d',
+					'%d',
+					'%s',
 				)
 			);
 
