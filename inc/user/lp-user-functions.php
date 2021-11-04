@@ -1831,7 +1831,7 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 	$instantCheck     = $args['instant_check'];
 	$quizStatus       = $args['quiz_status'];
 	$answered         = $args['answered'];
-	$status           = $args['status'];
+	$status           = $args['status'] ?? '';
 	$questions        = array();
 
 	if ( $question_ids ) {
@@ -1845,7 +1845,7 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 			$theHint        = $question->get_hint();
 			$theExplanation = '';
 
-			if ( $instantCheck ) {
+			if ( $instantCheck || $status == 'completed' ) {
 				$theExplanation = $question->get_explanation();
 				$checked        = in_array( $id, $checkedQuestions );
 				$hasExplanation = ! ! $theExplanation;
