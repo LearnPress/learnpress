@@ -203,7 +203,11 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 						$fill = $atts['fill'] ?? '';
 
-						$answer = $answered[ $ids ] ?? '';
+						if ( is_array( $answered ) ) {
+							$answer = $answered[ $ids ] ?? '';
+						} else {
+							$answer = '';
+						}
 
 						$is_correct = false;
 
