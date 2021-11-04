@@ -460,7 +460,7 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Remove rows IN user_item_ids
 	 *
-	 * @param LP_User_Items_Filter $filter $filter->user_item_ids
+	 * @param LP_User_Items_Filter $filter $filter->user_item_ids, $filter->user_id
 	 *
 	 * @throws Exception
 	 * @since 4.1.4
@@ -469,7 +469,7 @@ class LP_User_Items_DB extends LP_Database {
 	public function remove_user_item_ids( LP_User_Items_Filter $filter ) {
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
-			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FILE__ );
 		}
 
 		if ( empty( $filter->user_item_ids ) ) {
@@ -493,7 +493,7 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Remove user_itemmeta has list user_item_ids
 	 *
-	 * @param LP_User_Items_Filter $filter $filter->user_item_ids
+	 * @param LP_User_Items_Filter $filter $filter->user_item_ids, $filter->user_id
 	 *
 	 * @throws Exception
 	 * @since 4.1.4
@@ -502,7 +502,7 @@ class LP_User_Items_DB extends LP_Database {
 	public function remove_user_itemmeta( LP_User_Items_Filter $filter ) {
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
-			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FILE__ );
 		}
 
 		if ( empty( $filter->user_item_ids ) ) {
@@ -539,7 +539,7 @@ class LP_User_Items_DB extends LP_Database {
 		try {
 			// Check valid user.
 			if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $user_id ) ) {
-				throw new Exception( __( 'User invalid!', 'learnpress' ) );
+				throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FILE__ );
 			}
 
 			// Get all user_item_ids has user_id and course_id
@@ -563,6 +563,7 @@ class LP_User_Items_DB extends LP_Database {
 			// Delete on tb lp_user_items
 			$filter                = new LP_User_Items_Filter();
 			$filter->user_item_ids = $user_item_ids_concat;
+			$filter->user_id       = $user_id;
 			$lp_user_items_db->remove_user_item_ids( $filter );
 
 			// Delete user_itemmeta
