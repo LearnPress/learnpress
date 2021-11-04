@@ -433,7 +433,11 @@ class LP_Repair_Database {
 		}
 	}
 
-	public function add_order_to_user_meta( $order_id ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
+	 */
+	/*public function add_order_to_user_meta( $order_id ) {
 		$order = learn_press_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -476,7 +480,7 @@ class LP_Repair_Database {
 		}
 
 		return true;
-	}
+	}*/
 
 	public function save_course( $course_id ) {
 		$this->sync_course_data( $course_id );

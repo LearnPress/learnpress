@@ -350,7 +350,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			$class = 'order-status order-status-' . sanitize_title( $status );
-			$html  = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status, $this );
+			$html  = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status );
 
 			return apply_filters( 'learn_press_order_status_html', $html, $this );
 		}
@@ -420,9 +420,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_customer_name() {
 			$customer_name = '';
 			$customer      = false;
-			if ( 'auto-draft' === get_post_status( $this->get_id() ) ) {
-			} else {
-				if ( $user_id = $this->get_data( 'user_id' ) ) {
+			if ( 'auto-draft' !== get_post_status( $this->get_id() ) ) {
+				$user_id = $this->get_data( 'user_id' );
+				if ( $user_id ) {
 					settype( $user_id, 'array' );
 					$customer_name = array();
 					foreach ( $user_id as $uid ) {
@@ -543,7 +543,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				foreach ( $metas as $k => $v ) {
 					$item[ preg_replace( '!^_!', '', $k ) ] = LP_Helper::maybe_unserialize( $v[0] );
 				}
-			};
+			}
 		}
 
 		/**
@@ -555,8 +555,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$wpdb->prepare(
 					"
 				DELETE FROM itemmeta
-				USING {$wpdb->learnpress_order_itemmeta} itemmeta
-				INNER JOIN {$wpdb->learnpress_order_items} items
+				USING $wpdb->learnpress_order_itemmeta itemmeta
+				INNER JOIN $wpdb->learnpress_order_items items
 				WHERE itemmeta.learnpress_order_item_id = items.order_item_id
 				AND items.order_id = %d",
 					$this->get_id()
@@ -783,7 +783,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$users = $this->get_users();
 			$uid   = reset( $users );
 
-			if ( false === ( $user = learn_press_get_user( $uid ) ) ) {
+			$user = learn_press_get_user( $uid );
+			if ( false === $user ) {
 				return false;
 			}
 
@@ -826,7 +827,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				} else {
 					$found_selected = false;
 				}
-				echo sprintf( '<option value="%d"%s>%s</option>', $user->get_id(), selected( $found_selected, true, false ), $user->user_login );
+				echo sprintf( '<option value="%d" %s>%s</option>', esc_attr( $user->get_id() ), selected( $found_selected, true, false ), esc_html( $user->user_login ) );
 			}
 			echo '</select>';
 		}
@@ -936,7 +937,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				),
 			);
 
-			if ( $cancel_url = $this->get_cancel_order_url() ) {
+			$cancel_url = $this->get_cancel_order_url();
+			if ( $cancel_url ) {
 				$actions['cancel'] = array(
 					'url'  => $this->get_cancel_order_url(),
 					'text' => __( 'Cancel', 'learnpress' ),
@@ -1012,7 +1014,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			/**
 			 * Get meta as multiple keys for backward compatibility with older version
 			 */
-			if ( $user_ids = get_post_meta( $this->get_id(), '_user_id' ) ) {
+			$user_ids = get_post_meta( $this->get_id(), '_user_id' );
+			if ( $user_ids ) {
 				global $wpdb;
 				if ( is_array( $user_ids[0] ) ) {
 					$user_ids = reset( $user_ids );
@@ -1042,7 +1045,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function get_user_data() {
 			$data = array();
-			if ( $user_ids = $this->get_data( 'user_id' ) ) {
+
+			$user_ids = $this->get_data( 'user_id' );
+			if ( $user_ids ) {
 				$user_ids = (array) $user_ids;
 				if ( is_array( $user_ids ) ) {
 					foreach ( $user_ids as $user_id ) {
