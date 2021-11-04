@@ -84,7 +84,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	}
 
 	public function get_items_permissions_check( $request ) {
-		if ( ! empty( $request['roles'] ) && ! current_user_can( 'list_users' ) ) {
+		if ( ! empty( $request['roles'] ) && ! ( in_array( 'lp_teacher', $request['roles'] ) || in_array( 'subscriber', $request['roles'] ) ) && ! current_user_can( 'list_users' ) ) {
 			return new WP_Error(
 				'rest_user_cannot_view',
 				__( 'Sorry, you are not allowed to filter users by role.' ),
@@ -898,10 +898,17 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'custom_register':
 					$data['custom_register'] = $this->custom_register( $user );
 					break;
+				case 'social':
+					$data['social'] = $this->get_social_data( $user->ID );
+					break;
 			}
 		}
 
 		return $data;
+	}
+
+	public function get_social_data( $user_id ) {
+		return learn_press_get_user_extra_profile_info( $user_id );
 	}
 
 	public function get_profile_avatar( $user_id ) {
@@ -1222,13 +1229,18 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'type'        => 'string',
 					'context'     => array( 'view' ),
 				),
-				'instructor_data'         => array(
+				'instructor_data'    => array(
 					'description' => __( 'Instructor data' ),
 					'type'        => 'array',
 					'context'     => array( 'view' ),
 				),
 				'custom_register'    => array(
 					'description' => __( 'Get custom register fields.' ),
+					'type'        => 'object',
+					'context'     => array( 'view' ),
+				),
+				'social'             => array(
+					'description' => __( 'Get social fields.' ),
 					'type'        => 'object',
 					'context'     => array( 'view' ),
 				),

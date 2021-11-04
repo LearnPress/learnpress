@@ -411,12 +411,25 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'course_data':
 					$data['course_data'] = $this->get_course_data_for_current_user( $id, $request );
 					break;
+				case 'rating':
+					$data['rating'] = $this->get_course_rating( $id );
+					break;
 			}
 		}
 
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function get_course_rating( $id ) {
+		if ( ! function_exists( 'learn_press_get_course_rate' ) ) {
+			return false;
+		}
+
+		$course_rate = learn_press_get_course_rate( $id );
+
+		return ! empty( $course_rate ) ? floatval( number_format( $course_rate, 1 ) ) : 0;
 	}
 
 	public function check_can_finish( $course ) {
@@ -825,6 +838,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'can_finish'        => array(
 					'description' => __( 'Can finish course', 'learnpress' ),
 					'type'        => 'boolean',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'rating'            => array(
+					'description' => __( 'Course Review add-on', 'learnpress' ),
+					'type'        => array( 'boolean', 'integer' ),
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
