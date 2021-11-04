@@ -29,7 +29,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$order->set_order_key( learn_press_generate_order_key() );
 
 		$order_data = array(
-			'post_author'   => '1',
+			'post_author'   => get_current_user_id(),
 			'post_parent'   => $order->get_parent_id(),
 			'post_type'     => LP_ORDER_CPT,
 			'post_status'   => $order->get_order_status(),

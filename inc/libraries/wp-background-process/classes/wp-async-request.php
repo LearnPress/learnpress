@@ -163,7 +163,15 @@ abstract class WP_Async_Request {
 		// Don't lock up other requests while processing
 		session_write_close();
 
-		check_ajax_referer( $this->identifier, 'nonce' );
+		/**
+		 * set params $_POST['lp_no_check_referer'] = 1
+		 * for case: send request when user not login, but get request when user logged
+		 * @editor tungnx
+		 * @modify 4.1.4
+		 */
+		if( ! isset( $_POST['lp_no_check_referer'] ) ) {
+			check_ajax_referer( $this->identifier, 'nonce' );
+		}
 
 		$this->handle();
 
