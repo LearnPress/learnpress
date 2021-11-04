@@ -19,7 +19,7 @@ class LP_User_Factory {
 	public static $_deleted_users = array();
 
 	/**
-	 *
+	 * Init hooks
 	 */
 	public static function init() {
 		self::$_guest_transient = WEEK_IN_SECONDS;
@@ -80,8 +80,9 @@ class LP_User_Factory {
 	 * @version 1.0.1
 	 */
 	protected static function _update_user_item_order_pending( $order, $old_status, $new_status ) {
-		$items       = $order->get_items();
-		$lp_order_db = LP_Order_DB::getInstance();
+		$items            = $order->get_items();
+		$lp_order_db      = LP_Order_DB::getInstance();
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		if ( ! $items ) {
 			return;
@@ -101,7 +102,7 @@ class LP_User_Factory {
 					continue;
 				}
 
-				self::delete_user_items_old( $user_id, $course_id );
+				$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 			}
 		}
 	}
@@ -160,8 +161,7 @@ class LP_User_Factory {
 	 * @version 1.0.2
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, LP_User $user, $item ) {
-		$lp_user_items_db          = LP_User_Items_DB::getInstance();
-		$can_delete_user_items_old = false;
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
 			$course      = learn_press_get_course( $item['course_id'] );
@@ -206,8 +206,6 @@ class LP_User_Factory {
 
 					do_action( 'lp/allow_repurchase_options/continue/db/update', $user_item_data, $latest_user_item_id );
 				} elseif ( $allow_repurchase_type === 'reset' ) {
-					$can_delete_user_items_old = true;
-
 					if ( $auto_enroll ) {
 						$user_item_data['status']     = LP_COURSE_ENROLLED;
 						$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
@@ -218,8 +216,6 @@ class LP_User_Factory {
 
 				learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
 			} elseif ( ! $course->is_free() ) { // First purchase course
-				$can_delete_user_items_old = true;
-
 				// Set data for create user_item
 				if ( $auto_enroll ) {
 					$user_item_data['status']     = LP_COURSE_ENROLLED;
@@ -231,11 +227,6 @@ class LP_User_Factory {
 				// Set data for create user_item
 				$user_item_data['status']     = LP_COURSE_ENROLLED;
 				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
-			}
-
-			// Delete user_items old
-			if ( $can_delete_user_items_old ) {
-				self::delete_user_items_old();
 			}
 
 			$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
@@ -278,9 +269,6 @@ class LP_User_Factory {
 			$user_item_data = apply_filters( 'learnpress/lp_order/item/handle_item_manual_order_completed', $user_item_data, $order, $user, $course, $item );
 
 			if ( isset( $user_item_data['status'] ) ) {
-				// Deleted item courses old of user
-				self::delete_user_items_old( $user_item_data['user_id'], $user_item_data['item_id'] );
-
 				$user_item_new = new LP_User_Item_Course( $user_item_data );
 				$result        = $user_item_new->update();
 
@@ -290,55 +278,6 @@ class LP_User_Factory {
 			}
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
-		}
-	}
-
-	/**
-	 * Delete user_item_ids old when order completed
-	 *
-	 * @param int $user_id
-	 * @param int $course_id
-	 */
-	public static function delete_user_items_old( int $user_id = 0, int $course_id = 0 ) {
-		$lp_user_items_db     = LP_User_Items_DB::getInstance();
-		$lp_user_item_results = LP_User_Items_Result_DB::instance();
-
-		try {
-			// Check valid user.
-			if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $user_id ) ) {
-				throw new Exception( __( 'User invalid!', 'learnpress' ) );
-			}
-
-			// Get all user_item_ids has user_id and course_id
-			$filter          = new LP_User_Items_Filter();
-			$filter->user_id = $user_id;
-			$filter->item_id = $course_id;
-
-			$user_course_ids = $lp_user_items_db->get_ids_course_user( $filter );
-
-			if ( empty( $user_course_ids ) ) {
-				return;
-			}
-
-			// Get user_item_ids has parent in $user_course_ids
-			$filter                = new LP_User_Items_Filter();
-			$filter->user_item_ids = $user_course_ids;
-			$user_item_ids         = $lp_user_items_db->get_item_ids_of_user_course( $filter );
-
-			$user_item_ids_concat = array_merge( $user_course_ids, $user_item_ids );
-
-			// Delete on tb lp_user_items
-			$filter                = new LP_User_Items_Filter();
-			$filter->user_item_ids = $user_item_ids_concat;
-			$lp_user_items_db->remove_user_item_ids( $filter );
-
-			// Delete user_itemmeta
-			$lp_user_items_db->remove_user_itemmeta( $filter );
-
-			// Delete user_item_results
-			$lp_user_item_results->remove_user_item_results( $filter );
-		} catch ( Throwable $e ) {
-
 		}
 	}
 

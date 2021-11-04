@@ -522,6 +522,58 @@ class LP_User_Items_DB extends LP_Database {
 			"
 		);
 	}
+
+	/**
+	 * Delete user_item_ids by user_id and course_id
+	 *
+	 * @param int $user_id
+	 * @param int $course_id
+	 * @author tungnx
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 */
+	public function delete_user_items_old( int $user_id = 0, int $course_id = 0 ) {
+		$lp_user_items_db     = LP_User_Items_DB::getInstance();
+		$lp_user_item_results = LP_User_Items_Result_DB::instance();
+
+		try {
+			// Check valid user.
+			if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $user_id ) ) {
+				throw new Exception( __( 'User invalid!', 'learnpress' ) );
+			}
+
+			// Get all user_item_ids has user_id and course_id
+			$filter          = new LP_User_Items_Filter();
+			$filter->user_id = $user_id;
+			$filter->item_id = $course_id;
+
+			$user_course_ids = $lp_user_items_db->get_ids_course_user( $filter );
+
+			if ( empty( $user_course_ids ) ) {
+				return;
+			}
+
+			// Get user_item_ids has parent in $user_course_ids
+			$filter                = new LP_User_Items_Filter();
+			$filter->user_item_ids = $user_course_ids;
+			$user_item_ids         = $lp_user_items_db->get_item_ids_of_user_course( $filter );
+
+			$user_item_ids_concat = array_merge( $user_course_ids, $user_item_ids );
+
+			// Delete on tb lp_user_items
+			$filter                = new LP_User_Items_Filter();
+			$filter->user_item_ids = $user_item_ids_concat;
+			$lp_user_items_db->remove_user_item_ids( $filter );
+
+			// Delete user_itemmeta
+			$lp_user_items_db->remove_user_itemmeta( $filter );
+
+			// Delete user_item_results
+			$lp_user_item_results->remove_user_item_results( $filter );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+	}
 }
 
 LP_Course_DB::getInstance();

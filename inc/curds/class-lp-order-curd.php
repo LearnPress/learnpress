@@ -25,8 +25,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	public function create( &$order ) {
-
-		$order->set_order_date( current_time( 'timestamp' ) );
+		$order->set_order_date( current_time( 'mysql' ) );
 		$order->set_order_key( learn_press_generate_order_key() );
 
 		$order_data = array(
@@ -279,9 +278,9 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// If there is no items in the order then set it status to Pending
 		$status = $order->get_status() ? $order->get_status() : learn_press_default_order_status();
-		if ( in_array( $status, array( 'completed', 'processing' ) ) && ! $order->get_items() ) {
+		/*if ( in_array( $status, array( 'completed', 'processing' ) ) && ! $order->get_items() ) {
 			$status = 'pending';
-		}
+		}*/
 
 		$post_data = array(
 			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
