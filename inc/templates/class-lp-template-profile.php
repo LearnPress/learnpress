@@ -44,7 +44,9 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( $user->get_user()->get_id() != $user_id ) {
+		$privacy = get_user_meta( $user->get_user()->get_id() , '_lp_profile_privacy', true );
+
+		if ( $user->get_user()->get_id() != $user_id && empty( $privacy )) {
 			return;
 		}
 
