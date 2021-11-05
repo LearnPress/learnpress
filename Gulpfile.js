@@ -6,7 +6,7 @@ const cache = require( 'gulp-cache' );
 const lineec = require( 'gulp-line-ending-corrector' );
 const notify = require( 'gulp-notify' );
 const rename = require( 'gulp-rename' );
-const sass = require( 'gulp-sass' );
+const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const replace = require( 'gulp-replace' );
 const uglify = require( 'gulp-uglify-es' ).default;
 const zip = require( 'gulp-vinyl-zip' );
@@ -16,7 +16,7 @@ const uglifycss = require( 'gulp-uglifycss' );
 const del = require( 'del' );
 const beep = require( 'beepbeep' );
 const readFile = require( 'read-file' );
-var wpPot = require('gulp-wp-pot');
+const wpPot = require( 'gulp-wp-pot' );
 
 let currentVer = null;
 
@@ -85,14 +85,7 @@ gulp.task( 'styles', () => {
 		.src( [ 'assets/src/scss/**/*.scss' ] )
 		.pipe( plumber( errorHandler ) )
 		// .pipe( sourcemaps.init() )
-		.pipe(
-			sass( {
-				errLogToConsole: true,
-				outputStyle: 'expanded',
-				precision: 10,
-			} )
-		)
-		.on( 'error', sass.logError )
+		.pipe(sass.sync().on('error', sass.logError))
 		// .pipe( sourcemaps.write( './' ) )
 		.pipe( lineec() )
 		.pipe( gulp.dest( 'assets/css' ) );
@@ -185,14 +178,14 @@ gulp.task( 'noticeReleases', () => {
 	);
 } );
 
-gulp.task('makepot', function() {
-	return gulp.src(['./**/*.php', '!node_modules/**', '!releases/**', '!vendor/**'])
-		.pipe(wpPot( {
+gulp.task( 'makepot', function() {
+	return gulp.src( [ './**/*.php', '!node_modules/**', '!releases/**', '!vendor/**' ] )
+		.pipe( wpPot( {
 			domain: 'learnpress',
-			package: 'learnpress'
-		} ))
-		.pipe(gulp.dest('./languages/learnpress.pot'));
-});
+			package: 'learnpress',
+		} ) )
+		.pipe( gulp.dest( './languages/learnpress.pot' ) );
+} );
 
 gulp.task(
 	'build',
