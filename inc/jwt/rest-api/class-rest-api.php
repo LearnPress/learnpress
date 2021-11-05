@@ -35,11 +35,12 @@ class LP_Jwt_RestApi {
 
 	protected function get_v1_controllers() {
 		return array(
-			'courses'   => 'LP_Jwt_Courses_V1_Controller',
-			'lessons'   => 'LP_Jwt_Lessons_V1_Controller',
-			'quiz'      => 'LP_Jwt_Quiz_V1_Controller',
-			'questions' => 'LP_Jwt_Questions_V1_Controller',
-			'users'     => 'LP_Jwt_Users_V1_Controller',
+			'courses'         => 'LP_Jwt_Courses_V1_Controller',
+			'lessons'         => 'LP_Jwt_Lessons_V1_Controller',
+			'quiz'            => 'LP_Jwt_Quiz_V1_Controller',
+			'questions'       => 'LP_Jwt_Questions_V1_Controller',
+			'users'           => 'LP_Jwt_Users_V1_Controller',
+			'course_category' => 'LP_Jwt_Course_Category_V1_Controller',
 		);
 	}
 

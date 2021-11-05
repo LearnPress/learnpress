@@ -307,7 +307,7 @@ class LP_Jwt_Public {
 		$validate_token = strpos( $request_uri, '/token' );
 
 		/** All course is public so donot need token */
-		$is_rest_courses = strpos( $request_uri, '/courses' ) || strpos( $request_uri, '/reset-password' );
+		$is_rest_courses = strpos( $request_uri, '/courses' ) || strpos( $request_uri, '/reset-password' ) || strpos( $request_uri, '/course_category' );
 
 		if ( $validate_token > 0 ) {
 			return $user_id;
