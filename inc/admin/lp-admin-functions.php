@@ -2486,8 +2486,10 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
  * @param int $post_id
  *
  * @since 3.2.0
+ * @editor tungnx
+ * @modify 1.4.1 - comment - not use
  */
-function learn_press_maybe_sync_data( $post_id ) {
+/*function learn_press_maybe_sync_data( $post_id ) {
 	$post_type = get_post_type( $post_id );
 
 	switch ( $post_type ) {
@@ -2500,9 +2502,9 @@ function learn_press_maybe_sync_data( $post_id ) {
 			break;
 		default:
 	}
-}
+}*/
 
-add_action( 'save_post', 'learn_press_maybe_sync_data' );
+//add_action( 'save_post', 'learn_press_maybe_sync_data' );
 
 /**
  * Return id of current screen.
