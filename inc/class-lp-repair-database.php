@@ -412,9 +412,9 @@ class LP_Repair_Database {
 
 		settype( $user_ids, 'array' );
 		foreach ( $user_ids as $user_id ) {
-			$user_orders = get_user_meta( $user_id, 'orders', true );
+			delete_user_meta( $user_id, 'orders' );
 
-			if ( $user_orders ) {
+			/*if ( $user_orders ) {
 				foreach ( $user_orders as $course_id => $course_orders ) {
 					$course_orders = array_unique( $course_orders );
 					if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
@@ -429,7 +429,7 @@ class LP_Repair_Database {
 				}
 			}
 
-			update_user_meta( $user_id, 'order', $user_orders );
+			update_user_meta( $user_id, 'order', $user_orders );*/
 		}
 	}
 
@@ -580,18 +580,18 @@ class LP_Repair_Database {
 		$course_curd = new LP_Course_CURD();
 
 		switch ( $post_type ) {
-			case LP_ORDER_CPT: //Todo: tungnx should review code to rewrite
+			/*case LP_ORDER_CPT:
 				$order = learn_press_get_order( $post_id );
 				if ( $order ) {
 					$user_ids   = $order->get_users();
 					$course_ids = $order->get_item_ids();
 
 					//$this->sync_course_orders( $course_ids );
-					$this->sync_user_orders( $user_ids );
+					//$this->sync_user_orders( $user_ids );
 				}
 
-				break;
-			case LP_COURSE_CPT:
+				break;*/
+			case LP_COURSE_CPT: //Todo: tungnx should review code to rewrite
 			default:
 				// Course is support type of this item?
 				if ( learn_press_is_support_course_item_type( $post_type ) ) {
@@ -790,29 +790,33 @@ class LP_Repair_Database {
 	 * Sync orders for each user
 	 *
 	 * @param array $users
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function sync_user_orders( $users = array() ) {
+	/*public function sync_user_orders( $users = array() ) {
 		$api = new LP_User_CURD();
 		settype( $users, 'array' );
 
 		foreach ( $users as $user ) {
-			if ( ! $orders = $api->read_orders( $user ) ) {
+			$orders = $api->read_orders( $user );
+			if ( ! $orders ) {
 				continue;
 			}
 			$orders = array_map( 'array_unique', $orders );
 			update_user_meta( $user, 'orders', $orders );
 		}
-
-	}
+	}*/
 
 	/**
 	 * Sync courses for each user
 	 *
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function sync_user_courses() {
+	/*public function sync_user_courses() {
 		// echo __FUNCTION__;
-	}
+	}*/
 
 
 	/**
@@ -874,7 +878,8 @@ class LP_Repair_Database {
 				LP_COURSE_CPT
 			);
 
-			if ( $course_ids = $wpdb->get_col( $query ) ) {
+			$course_ids = $wpdb->get_col( $query );
+			if ( $course_ids ) {
 				$user = learn_press_get_user( $uid );
 				foreach ( $course_ids as $course_id ) {
 					$item_course     = $user->get_course_data( $course_id );

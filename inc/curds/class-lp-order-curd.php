@@ -25,6 +25,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	public function create( &$order ) {
+		if ( ! $order instanceof LP_Order ) {
+			return false;
+		}
+
 		$order->set_order_date( current_time( 'mysql' ) );
 		$order->set_order_key( learn_press_generate_order_key() );
 

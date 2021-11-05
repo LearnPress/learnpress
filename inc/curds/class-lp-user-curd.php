@@ -469,162 +469,164 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param array   $args
 	 *
 	 * @return array|bool|mixed
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function read_orders( $user_id, $args = array() ) {
-		$user = learn_press_get_user( $user_id );
-
-		if ( ! $user_id || ! $user ) {
-			return false;
-		}
-
-		$cache_key = false;
-
-		if ( $args ) {
-			$args = wp_parse_args(
-				$args,
-				array(
-					'group_by_order' => false,
-					'status'         => '',
-				)
-			);
-
-			ksort( $args );
-			$cache_key = md5( serialize( $args ) );
-
-			/**
-			 * Get orders from cache by args
-			 */
-			$orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'learn-press/user-orders' );
-
-			if ( false !== $orders ) {
-				return $orders;
-			}
-		}
-
-		$orders = LP_Object_Cache::get( 'user-' . $user_id, 'learn-press/user-orders' );
-
-		if ( false === $orders ) {
-			global $wpdb;
-
-			$orders                = array();
-			$post_status_in        = learn_press_get_order_statuses( true, true );
-			$post_status_in_format = array_fill( 0, sizeof( $post_status_in ), '%s' );
-
-			// Get order by user
-			$sql_orders = $wpdb->prepare(
-				"
-				SELECT ID, post_title, post_name, post_status, post_type, post_parent, post_date
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %d
-			",
-				'_user_id',
-				$user_id
-			);
-
-			/**
-			 * Get order checked out by Guest but with the email of the user are getting
-			 */
-			$sql_guest_orders = $wpdb->prepare(
-				"
-				SELECT ID, post_title, post_name, post_status, post_type, post_parent, post_date
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
-				LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
-			",
-				'_checkout_email',
-				$user->get_email(),
-				'_user_id'
-			);
-
-			/**
-			 * The rest
-			 */
-			$sql_rest = $wpdb->prepare(
-				'
-				HAVING p.post_type = %s
-				AND p.post_status IN(' . join( ',', $post_status_in_format ) . ')
-				ORDER BY ID DESC
-			',
-				array_merge(
-					array(
-						LP_ORDER_CPT,
-					),
-					$post_status_in
-				)
-			);
-
-			$sql = $sql_orders . ' UNION ' . $sql_guest_orders . $sql_rest;
-
-			$order_posts = $wpdb->get_results( $sql );
-
-			if ( $order_posts ) {
-				$order_ids = array();
-				foreach ( $order_posts as $order_post ) {
-
-					// Put post into cache to user later ... maybe.
-					$_post = sanitize_post( $order_post, 'raw' );
-					wp_cache_add( $_post->ID, $_post, 'posts' );
-
-					$order_ids[] = $_post->ID;
-				}
-
-				$order_ids_format = array_fill( 0, sizeof( $order_ids ), '%d' );
-				$query            = $wpdb->prepare(
-					"
-						SELECT meta_value as course_id, order_id
-						FROM {$wpdb->learnpress_order_items} oi
-						INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-						WHERE oi.order_id IN (" . join( ',', $order_ids_format ) . ')
-						ORDER BY FIELD(order_id, ' . join( ',', $order_ids_format ) . ')
-					',
-					array_merge( array( '_course_id' ), $order_ids, $order_ids )
-				);
-
-				if ( $results = $wpdb->get_results( $query ) ) {
-					foreach ( $results as $result ) {
-						if ( empty( $orders[ $result->course_id ] ) ) {
-							$orders[ $result->course_id ] = array();
-						}
-						$orders[ $result->course_id ][] = $result->order_id;
-					}
-				}
-			}
-			// Store to cache
-			LP_Object_Cache::set( 'user-' . $user_id, $orders, 'learn-press/user-orders' );
-		}
-
-		if ( $orders ) {
-
-			/*** TEST CACHE */
-			$all_orders = call_user_func_array( 'array_merge', $orders );
-			$curd       = new LP_Object_Data_CURD();
-			$curd->read_meta_by_ids( $all_orders, 'post' );
-
-			if ( array_key_exists( 'status', $args ) && $args['status'] ) {
-				LP_Helper::sanitize_order_status( $args['status'] );
-
-				$statuses = (array) $args['status'];
-				foreach ( $orders as $course_id => $order_ids ) {
-					$orders[ $course_id ] = array();
-					foreach ( $order_ids as $order_id ) {
-						if ( in_array( get_post_status( $order_id ), $statuses ) ) {
-							$orders[ $course_id ][] = $order_id;
-						}
-					}
-				}
-			}
-
-			if ( array_key_exists( 'group_by_order', $args ) && $args['group_by_order'] ) {
-				$this->_group_orders( $orders );
-			}
-		}
-
-		if ( $cache_key ) {
-			LP_Object_Cache::set( "user-{$user_id}-" . $cache_key, $orders, 'learn-press/user-orders' );
-		}
-
-		return $orders;
-	}
+//	public function read_orders( $user_id, $args = array() ) {
+//		$user = learn_press_get_user( $user_id );
+//
+//		if ( ! $user_id || ! $user ) {
+//			return false;
+//		}
+//
+//		$cache_key = false;
+//
+//		if ( $args ) {
+//			$args = wp_parse_args(
+//				$args,
+//				array(
+//					'group_by_order' => false,
+//					'status'         => '',
+//				)
+//			);
+//
+//			ksort( $args );
+//			$cache_key = md5( serialize( $args ) );
+//
+//			/**
+//			 * Get orders from cache by args
+//			 */
+//			$orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'learn-press/user-orders' );
+//
+//			if ( false !== $orders ) {
+//				return $orders;
+//			}
+//		}
+//
+//		$orders = LP_Object_Cache::get( 'user-' . $user_id, 'learn-press/user-orders' );
+//
+//		if ( false === $orders ) {
+//			global $wpdb;
+//
+//			$orders                = array();
+//			$post_status_in        = learn_press_get_order_statuses( true, true );
+//			$post_status_in_format = array_fill( 0, sizeof( $post_status_in ), '%s' );
+//
+//			// Get order by user
+//			$sql_orders = $wpdb->prepare(
+//				"
+//				SELECT ID, post_title, post_name, post_status, post_type, post_parent, post_date
+//				FROM {$wpdb->posts} p
+//				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %d
+//			",
+//				'_user_id',
+//				$user_id
+//			);
+//
+//			/**
+//			 * Get order checked out by Guest but with the email of the user are getting
+//			 */
+//			$sql_guest_orders = $wpdb->prepare(
+//				"
+//				SELECT ID, post_title, post_name, post_status, post_type, post_parent, post_date
+//				FROM {$wpdb->posts} p
+//				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
+//				LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
+//			",
+//				'_checkout_email',
+//				$user->get_email(),
+//				'_user_id'
+//			);
+//
+//			/**
+//			 * The rest
+//			 */
+//			$sql_rest = $wpdb->prepare(
+//				'
+//				HAVING p.post_type = %s
+//				AND p.post_status IN(' . join( ',', $post_status_in_format ) . ')
+//				ORDER BY ID DESC
+//			',
+//				array_merge(
+//					array(
+//						LP_ORDER_CPT,
+//					),
+//					$post_status_in
+//				)
+//			);
+//
+//			$sql = $sql_orders . ' UNION ' . $sql_guest_orders . $sql_rest;
+//
+//			$order_posts = $wpdb->get_results( $sql );
+//
+//			if ( $order_posts ) {
+//				$order_ids = array();
+//				foreach ( $order_posts as $order_post ) {
+//
+//					// Put post into cache to user later ... maybe.
+//					$_post = sanitize_post( $order_post, 'raw' );
+//					wp_cache_add( $_post->ID, $_post, 'posts' );
+//
+//					$order_ids[] = $_post->ID;
+//				}
+//
+//				$order_ids_format = array_fill( 0, sizeof( $order_ids ), '%d' );
+//				$query            = $wpdb->prepare(
+//					"
+//						SELECT meta_value as course_id, order_id
+//						FROM {$wpdb->learnpress_order_items} oi
+//						INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+//						WHERE oi.order_id IN (" . join( ',', $order_ids_format ) . ')
+//						ORDER BY FIELD(order_id, ' . join( ',', $order_ids_format ) . ')
+//					',
+//					array_merge( array( '_course_id' ), $order_ids, $order_ids )
+//				);
+//
+//				if ( $results = $wpdb->get_results( $query ) ) {
+//					foreach ( $results as $result ) {
+//						if ( empty( $orders[ $result->course_id ] ) ) {
+//							$orders[ $result->course_id ] = array();
+//						}
+//						$orders[ $result->course_id ][] = $result->order_id;
+//					}
+//				}
+//			}
+//			// Store to cache
+//			LP_Object_Cache::set( 'user-' . $user_id, $orders, 'learn-press/user-orders' );
+//		}
+//
+//		if ( $orders ) {
+//
+//			/*** TEST CACHE */
+//			$all_orders = call_user_func_array( 'array_merge', $orders );
+////			$curd       = new LP_Object_Data_CURD();
+////			$curd->read_meta_by_ids( $all_orders, 'post' );
+//
+//			if ( array_key_exists( 'status', $args ) && $args['status'] ) {
+//				LP_Helper::sanitize_order_status( $args['status'] );
+//
+//				$statuses = (array) $args['status'];
+//				foreach ( $orders as $course_id => $order_ids ) {
+//					$orders[ $course_id ] = array();
+//					foreach ( $order_ids as $order_id ) {
+//						if ( in_array( get_post_status( $order_id ), $statuses ) ) {
+//							$orders[ $course_id ][] = $order_id;
+//						}
+//					}
+//				}
+//			}
+//
+//			if ( array_key_exists( 'group_by_order', $args ) && $args['group_by_order'] ) {
+//				$this->_group_orders( $orders );
+//			}
+//		}
+//
+//		if ( $cache_key ) {
+//			LP_Object_Cache::set( "user-{$user_id}-" . $cache_key, $orders, 'learn-press/user-orders' );
+//		}
+//
+//		return $orders;
+//	}
 
 	protected function _group_orders( &$orders ) {
 		$groups = array();
