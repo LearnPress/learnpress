@@ -35,8 +35,8 @@ class LP_Repair_Database {
 		add_action( 'learn-press/removed-course-item', array( $this, 'removed_course_item' ), 10 );
 		add_action( 'learn-press/transition-course-item-status', array( $this, 'transition_course_item_status' ), 10, 4 );
 
-		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
-		add_action( 'deleted_post', array( $this, 'deleted_post' ) );
+		//add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
+		// add_action( 'deleted_post', array( $this, 'deleted_post' ) );
 		// add_action( 'save_post', array( $this, 'save_post' ) );
 	}
 
@@ -47,8 +47,10 @@ class LP_Repair_Database {
 	 * @param int $post_id
 	 *
 	 * @since 3.1.0
+	 * @editor 4.1.4
+	 * @modify comment - not use
 	 */
-	public function before_delete_post( $post_id ) {
+	/*public function before_delete_post( $post_id ) {
 		global $wpdb;
 		// LP_Debug::startTransaction();
 		$post_type = get_post_type( $post_id );
@@ -66,7 +68,7 @@ class LP_Repair_Database {
 		}
 
 		$this->deleting_posts[ $post_id ] = $data;
-	}
+	}*/
 
 	/**
 	 * Do stuff after post deleted.
@@ -75,7 +77,7 @@ class LP_Repair_Database {
 	 *
 	 * @since 3.1.0
 	 */
-	public function deleted_post( $post_id ) {
+	/*public function deleted_post( $post_id ) {
 		try {
 			if ( ! empty( $this->deleting_posts[ $post_id ] ) ) {
 				$data      = $this->deleting_posts[ $post_id ];
@@ -102,7 +104,7 @@ class LP_Repair_Database {
 
 		// LP_Debug::rollbackTransaction();
 		// die();
-	}
+	}*/
 
 	/**
 	 * Remove order items and it meta data from tables
@@ -113,8 +115,10 @@ class LP_Repair_Database {
 	 *
 	 * @return bool|int[]
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 comment - not use
 	 */
-	public function remove_order_items( $order_id ) {
+	/*public function remove_order_items( $order_id ) {
 		global $wpdb;
 
 		if ( is_array( $order_id ) ) {
@@ -155,19 +159,21 @@ class LP_Repair_Database {
 		$wpdb->query( $query );
 
 		return $order_item_id;
-	}
+	}*/
 
 	/**
 	 * @param int[] $order_ids
+	 * @editor tungnx
+	 * @modify 4.1.4 comment - not use
 	 */
-	public function remove_child_orders( $order_ids ) {
+	/*public function remove_child_orders( $order_ids ) {
 		global $wpdb;
 
 		foreach ( $order_ids as $order_id ) {
 			wp_delete_post( $order_id );
 		}
 
-	}
+	}*/
 
 	/**
 	 * Remove user items from table learnpress_user_items
@@ -179,8 +185,10 @@ class LP_Repair_Database {
 	 *
 	 * @return bool
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function remove_user_items_by_order_id( $order_id ) {
+	/*public function remove_user_items_by_order_id( $order_id ) {
 		if ( is_array( $order_id ) ) {
 			foreach ( $order_id as $oid ) {
 				$this->remove_user_items_by_order_id( $oid );
@@ -209,7 +217,7 @@ class LP_Repair_Database {
 		$this->remove_user_items_by_user_item_id( $user_item_ids, true );
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Remove user item from table user-items by primary key user_item_id.
@@ -219,8 +227,10 @@ class LP_Repair_Database {
 	 * @param bool  $remove_child - Optional. TRUE will remove it's child
 	 *
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function remove_user_items_by_user_item_id( $user_item_id, $remove_child = true ) {
+	/*public function remove_user_items_by_user_item_id( $user_item_id, $remove_child = true ) {
 		global $wpdb;
 
 		settype( $user_item_id, 'array' );
@@ -259,7 +269,7 @@ class LP_Repair_Database {
 		foreach ( $user_item_id as $delete_id ) {
 			LP_User_Items_Result_DB::instance()->delete( $delete_id );
 		}
-	}
+	}*/
 
 	/**
 	 * Remove user item from table user-items by specific user-id and item-id.
@@ -269,8 +279,10 @@ class LP_Repair_Database {
 	 *
 	 * @return array|bool
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify comment - not use
 	 */
-	public function remove_user_item( $user_id, $item_id ) {
+	/*public function remove_user_item( $user_id, $item_id ) {
 		global $wpdb;
 
 		// Find user-item-id for passed user-id and item-id
@@ -295,7 +307,7 @@ class LP_Repair_Database {
 		$this->remove_user_items_by_user_item_id( $user_item_ids );
 
 		return $user_item_ids;
-	}
+	}*/
 
 	/**
 	 * Remove user item from table user-items by user-id.
@@ -306,8 +318,10 @@ class LP_Repair_Database {
 	 *
 	 * @return bool
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function remove_user_item_by_user( $user_id ) {
+	/*public function remove_user_item_by_user( $user_id ) {
 		global $wpdb;
 
 		// If multi users passed, loop through each user
@@ -337,7 +351,7 @@ class LP_Repair_Database {
 		$this->remove_user_items_by_user_item_id( $user_item_ids );
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Remove user item from table user-items by item-id.
@@ -348,8 +362,10 @@ class LP_Repair_Database {
 	 *
 	 * @return array|bool
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function remove_user_item_by_item_id( $item_id ) {
+	/*public function remove_user_item_by_item_id( $item_id ) {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
@@ -370,7 +386,7 @@ class LP_Repair_Database {
 		$this->remove_user_items_by_user_item_id( $user_item_ids );
 
 		return $user_item_ids;
-	}
+	}*/
 
 	/**
 	 * Retrieve child items from an user-item-id.
@@ -379,8 +395,10 @@ class LP_Repair_Database {
 	 *
 	 * @return array
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function get_user_items_by_parent_id( $parent_ids ) {
+	/*public function get_user_items_by_parent_id( $parent_ids ) {
 		global $wpdb;
 		settype( $parent_ids, 'array' );
 		$format = array_fill( 0, sizeof( $parent_ids ), '%d' );
@@ -395,7 +413,7 @@ class LP_Repair_Database {
 		);
 
 		return $wpdb->get_col( $query );
-	}
+	}*/
 
 	/**
 	 * Remove an order from user-meta.
@@ -404,34 +422,36 @@ class LP_Repair_Database {
 	 * @param int   $order_id
 	 *
 	 * @since 3.1.0
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
 	 */
-	public function remove_order_from_user_meta( $user_ids, $order_id ) {
-		if ( ! $user_ids ) {
-			return;
-		}
-
-		settype( $user_ids, 'array' );
-		foreach ( $user_ids as $user_id ) {
-			delete_user_meta( $user_id, 'orders' );
-
-			/*if ( $user_orders ) {
-				foreach ( $user_orders as $course_id => $course_orders ) {
-					$course_orders = array_unique( $course_orders );
-					if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
-						unset( $course_orders[ $in_pos ] );
-					}
-
-					if ( ! $course_orders ) {
-						unset( $user_orders[ $course_id ] );
-					} else {
-						$user_orders[ $course_id ] = $course_orders;
-					}
-				}
-			}
-
-			update_user_meta( $user_id, 'order', $user_orders );*/
-		}
-	}
+//	public function remove_order_from_user_meta( $user_ids, $order_id ) {
+//		if ( ! $user_ids ) {
+//			return;
+//		}
+//
+//		settype( $user_ids, 'array' );
+//		foreach ( $user_ids as $user_id ) {
+//			delete_user_meta( $user_id, 'orders' );
+//
+//			/*if ( $user_orders ) {
+//				foreach ( $user_orders as $course_id => $course_orders ) {
+//					$course_orders = array_unique( $course_orders );
+//					if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
+//						unset( $course_orders[ $in_pos ] );
+//					}
+//
+//					if ( ! $course_orders ) {
+//						unset( $user_orders[ $course_id ] );
+//					} else {
+//						$user_orders[ $course_id ] = $course_orders;
+//					}
+//				}
+//			}
+//
+//			update_user_meta( $user_id, 'order', $user_orders );*/
+//		}
+//	}
 
 	/**
 	 * @editor tungnx
@@ -513,7 +533,11 @@ class LP_Repair_Database {
 		$this->sync_course_data( $course_id );
 	}
 
-	public function get_user_item_type( $item_id ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
+	 */
+	/*public function get_user_item_type( $item_id ) {
 		global $wpdb;
 		if ( ! $item_type = get_post_type( $item_id ) ) {
 			$query     = $wpdb->prepare(
@@ -529,9 +553,13 @@ class LP_Repair_Database {
 		}
 
 		return $item_type;
-	}
+	}*/
 
-	public function remove_user_itemx( $item_id ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
+	 */
+	/*public function remove_user_itemx( $item_id ) {
 		global $wpdb;
 
 		$query = "
@@ -569,7 +597,7 @@ class LP_Repair_Database {
 		}
 
 		$query .= $where;
-	}
+	}*/
 
 	/**
 	 * @param int $post_id
@@ -860,7 +888,11 @@ class LP_Repair_Database {
 		}
 	}
 
-	public function calculate_course_results( $user_id ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
+	 */
+	/*public function calculate_course_results( $user_id ) {
 		settype( $user_id, 'array' );
 
 		global $wpdb;
@@ -900,9 +932,13 @@ class LP_Repair_Database {
 				}
 			}
 		}
-	}
+	}*/
 
-	public function remove_older_post_meta() {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4 - comment - not use
+	 */
+	/*public function remove_older_post_meta() {
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -919,7 +955,7 @@ class LP_Repair_Database {
 			'%' . $wpdb->esc_like( '_lpr_' ) . '%'
 		);
 		$wpdb->query( $query );
-	}
+	}*/
 
 	/**
 	 * Get all ids of existing courses

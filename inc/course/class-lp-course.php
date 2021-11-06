@@ -50,6 +50,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			}
 
 			$user = learn_press_get_current_user();
+			if ( $user instanceof LP_User_Guest ) {
+				return 0;
+			}
 
 			$this->_viewing_item = $item;
 			$item->set_course( $this );

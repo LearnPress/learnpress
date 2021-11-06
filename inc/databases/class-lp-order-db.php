@@ -60,5 +60,93 @@ class LP_Order_DB extends LP_Database {
 
 		return $this->wpdb->get_var( $query );
 	}
+
+	/**
+	 * Get order_item_ids by order_id
+	 *
+	 * @param int $order_id
+	 * @author tungnx
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 * @return array
+	 */
+	public function get_order_item_ids( int $order_id ): array {
+		$query = $this->wpdb->prepare(
+			"SELECT order_item_id FROM $this->tb_lp_order_items
+			WHERE order_id = %d
+			",
+			$order_id
+		);
+
+		return $this->wpdb->get_col( $query );
+	}
+
+	/**
+	 * Delete row IN order_item_ids
+	 *
+	 * @param LP_Order_Filter $filter
+	 * @author tungnx
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 * @return bool|int
+	 * @throws Exception
+	 */
+	public function delete_order_item( LP_Order_Filter $filter ) {
+		// Check valid user.
+		if ( ! current_user_can( 'administrator' ) ) {
+			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+		}
+
+		if ( empty( $filter->order_item_ids ) ) {
+			return 1;
+		}
+
+		$where = 'WHERE 1=1 ';
+
+		$where .= $this->wpdb->prepare(
+			'AND order_item_id IN(' . LP_Helper::db_format_array( $filter->order_item_ids, '%d' ) . ')',
+			$filter->order_item_ids
+		);
+
+		return $this->wpdb->query(
+			"DELETE FROM {$this->tb_lp_order_items}
+			{$where}
+			"
+		);
+	}
+
+	/**
+	 * Delete row IN order_item_ids
+	 *
+	 * @param LP_Order_Filter $filter
+	 * @author tungnx
+	 * @since 4.1.4
+	 * @version 1.0.0
+	 * @return bool|int
+	 * @throws Exception
+	 */
+	public function delete_order_itemmeta( LP_Order_Filter $filter ) {
+		// Check valid user.
+		if ( ! current_user_can( 'administrator' ) ) {
+			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+		}
+
+		if ( empty( $filter->order_item_ids ) ) {
+			return 1;
+		}
+
+		$where = 'WHERE 1=1 ';
+
+		$where .= $this->wpdb->prepare(
+			'AND learnpress_order_item_id IN(' . LP_Helper::db_format_array( $filter->order_item_ids, '%d' ) . ')',
+			$filter->order_item_ids
+		);
+
+		return $this->wpdb->query(
+			"DELETE FROM {$this->tb_lp_order_itemmeta}
+			{$where}
+			"
+		);
+	}
 }
 

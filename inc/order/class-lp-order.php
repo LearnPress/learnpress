@@ -419,13 +419,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function get_customer_name() {
 			$customer_name = '';
-			$customer      = false;
+
 			if ( 'auto-draft' !== get_post_status( $this->get_id() ) ) {
-				$user_id = $this->get_data( 'user_id' );
-				if ( $user_id ) {
-					settype( $user_id, 'array' );
+				$user_ids = $this->get_users();
+				if ( ! empty( $user_ids ) ) {
 					$customer_name = array();
-					foreach ( $user_id as $uid ) {
+					foreach ( $user_ids as $uid ) {
 						$customer = learn_press_get_user( $uid );
 						if ( $customer && $customer->is_exists() ) {
 							if ( $customer->get_data( 'display_name' ) ) {
@@ -462,10 +461,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return apply_filters( 'learn-press/order/guest-customer-name', $customer_name );
 		}
 
-		public function customer_exists() {
-
+		/*public function customer_exists() {
 			return false !== get_userdata( $this->get_data( 'user_id' ) );
-		}
+		}*/
 
 		/**
 		 * Get items of the order
@@ -801,12 +799,15 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 		/**
 		 * Get user id in array.
-		 *
+		 * user_id = 0 -> User type Guest
 		 * @return int[]
+		 * @editor tungnx
+		 * @modify 4.1.4
+		 * @version 1.0.1
 		 */
 		public function get_users(): array {
-			$users = $this->get_data( 'user_id', 0 );
-			if ( $users ) {
+			$users = $this->get_user_id();
+			if ( $users !== -1 ) {
 				settype( $users, 'array' );
 				$users = array_unique( $users );
 			} else {
@@ -1000,8 +1001,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return bool
 		 * @since 2.1.5
 		 */
-		public function is_multi_users() {
-			return is_array( $this->get_data( 'user_id' ) );
+		public function is_multi_users(): bool {
+			return is_array( $this->get_user_id() );
 		}
 
 		/**
@@ -1040,32 +1041,29 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Get email of user has bought this order.
 		 * In case this order is for multi users return an array with multi email addresses.
 		 *
-		 * @return mixed|array
+		 * @return array
 		 * @since 2.1.5
 		 */
-		public function get_user_data() {
+		public function get_user_data(): array {
 			$data = array();
 
-			$user_ids = $this->get_data( 'user_id' );
-			if ( $user_ids ) {
-				$user_ids = (array) $user_ids;
-				if ( is_array( $user_ids ) ) {
-					foreach ( $user_ids as $user_id ) {
-						$user = learn_press_get_user( $user_id );
-						if ( $user->is_exists() ) {
-							$data[ $user_id ] = $user->get_data(
-								array(
-									'id',
-									'email',
-									'user_login',
-									'description',
-									'first_name',
-									'last_name',
-									'nickname',
-									'display_name',
-								)
-							);
-						}
+			$user_ids = $this->get_users();
+			if ( ! empty( $user_ids ) ) {
+				foreach ( $user_ids as $user_id ) {
+					$user = learn_press_get_user( $user_id );
+					if ( $user->is_exists() ) {
+						$data[ $user_id ] = $user->get_data(
+							array(
+								'id',
+								'email',
+								'user_login',
+								'description',
+								'first_name',
+								'last_name',
+								'nickname',
+								'display_name',
+							)
+						);
 					}
 				}
 			}
@@ -1124,12 +1122,21 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/**
+		 * Set 1 for is user guest
+		 *
+		 * @param int $user_type_guest
+		 */
+		public function set_user_type_guest( int $user_type_guest ) {
+			$this->_set_data( 'user_type_guest', $user_type_guest );
+		}
+
+		/**
 		 * Get user's ids of order.
 		 *
 		 * @return array|int
 		 */
 		public function get_user_id() {
-			return $this->get_data( 'user_id', 0 );
+			return $this->get_data( 'user_id', -1 );
 		}
 
 		/**
@@ -1354,6 +1361,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.0
 		 */
 		public function check_can_delete_item_old( LP_Course $course ): bool {
+			$user_current = learn_press_get_current_user();
+			if ( $user_current instanceof LP_User_Guest ) {
+				return false;
+			}
+
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 			/**

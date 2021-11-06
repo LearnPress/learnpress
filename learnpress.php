@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.1.4-beta-11
+ * Version: 4.1.4-beta-12
  * Author URI: http://thimpress.com
  * Requires at least: 5.6
  * Tested up to: 5.8
@@ -246,6 +246,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/filters/class-lp-filter.php';
 			require_once 'inc/filters/class-lp-post-type-filter.php';
 			require_once 'inc/filters/class-lp-course-filter.php';
+			require_once 'inc/filters/class-lp-order-filter.php';
 			require_once 'inc/filters/class-lp-question-filter.php';
 			require_once 'inc/filters/class-lp-user-items-filter.php';
 

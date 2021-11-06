@@ -901,6 +901,75 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public static function order_exports( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/exports-invoice.php', array( 'order' => new LP_Order( $post ) ) );
 		}
+
+		/**
+		 * Before post deleted
+		 *
+		 * @author tungnx
+		 * @since 4.1.4
+		 * @version 1.0.0
+		 */
+		public function before_delete( int $order_id ) {
+			$lp_order_db      = LP_Order_DB::getInstance();
+			$lp_user_items_db = LP_User_Items_DB::getInstance();
+
+			try {
+				$order = learn_press_get_order( $order_id );
+
+				if ( ! $order ) {
+					return;
+				}
+
+				$order_item_ids = $lp_order_db->get_order_item_ids( $order_id );
+
+				if ( empty( $order_item_ids ) ) {
+					return;
+				}
+
+				$user_ids = $order->get_users();
+
+				foreach ( $user_ids as $user_id ) {
+					delete_user_meta( $user_id, 'orders' );
+
+					foreach ( $order->get_item_ids() as $course_id ) {
+						// Check this order is the latest by user and course_id
+						$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
+						if ( $last_order_id && $last_order_id != $order->get_id() ) {
+							continue;
+						}
+
+						$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+					}
+				}
+
+				// Delete lp_order_item, lp_order_itemmeta
+				$filter_delete                 = new LP_Order_Filter();
+				$filter_delete->order_item_ids = $order_item_ids;
+				$lp_order_db->delete_order_item( $filter_delete );
+				$lp_order_db->delete_order_itemmeta( $filter_delete );
+				// End
+
+				//$this->remove_user_items_by_order_id( $order_id );
+
+				if ( ! empty( $data['child'] ) ) {
+					//$this->remove_child_orders( $data['child'] );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() . '>' . __FILE__ );
+			}
+		}
+
+		/**
+		 * Action delete Order
+		 *
+		 * @param int $order_id
+		 * @author tungnx
+		 * @since 4.1.4
+		 * @version 1.0.0
+		 */
+		public function deleted_post( int $order_id ) {
+
+		}
 	}
 
 	// end LP_Order_Post_Type

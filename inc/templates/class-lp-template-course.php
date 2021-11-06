@@ -211,7 +211,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 				throw new Exception( 'Course is type external, so can not purchase' );
 			}
 
-			if ( ! $user->can_purchase_course( $course->get_id() ) ) {
+			if ( ! $user instanceof LP_User_Guest && ! $user->can_purchase_course( $course->get_id() ) ) {
 				throw new Exception( 'You can not purchase course' );
 			}
 

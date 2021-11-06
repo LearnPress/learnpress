@@ -16,7 +16,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	}
 
 	public function save() {
-		$course_permalink = empty( $_POST['learn_press_course_base'] ) ? '' : $_POST['learn_press_course_base'];
+		$course_permalink = LP_Helper::sanitize_params_submitted( $_POST['learn_press_course_base'] ?? '' );
 
 		if ( ! $course_permalink ) {
 			return;
