@@ -86,20 +86,18 @@ function learn_press_get_current_user_id() {
  * @param bool $create_temp - Optional. Create temp user if user is not logged in.
  *
  * @return bool|LP_User|LP_User_Guest
+ * @editor tungnx
+ * @modify 4.1.4
+ * @version 1.0.1
  */
-function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
-	static $current_user = false;
-
+function learn_press_get_current_user( $create_temp = true ) {
 	$user_id = get_current_user_id();
 
 	if ( $user_id ) {
-		if ( ! $current_user || $force_new ) {
-			$current_user = learn_press_get_user( $user_id, $force_new );
-		}
-
-		return $current_user;
+		return learn_press_get_user( $user_id );
 	}
 
+	// Return LP_User_Guest
 	return learn_press_get_user( 0 );
 }
 
@@ -122,7 +120,6 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 		}
 
 		if ( ! $user_id && isset( LP()->session ) ) {
-
 			if ( ! LP()->session->guest_user_id ) {
 				LP()->session->set_customer_session_cookie( 1 );
 				LP()->session->guest_user_id = time();

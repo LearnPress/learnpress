@@ -41,6 +41,13 @@ class LP_User extends LP_Abstract_User {
 			$view->flag = true;
 
 			return $view;
+		} elseif ( ! is_user_logged_in() ) {
+			$view->message = __(
+				'This content is protected, please login, enroll course to view this content!',
+				'learnpress'
+			);
+
+			return $view;
 		}
 
 		if ( $course->is_publish() ) {
