@@ -123,8 +123,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				$result['message'] = $order->get_error_message();
 				$result['result']  = 'error';
 			} else {
-				$result['message']  = sprintf( __( 'The order %s has been successfully recovered.', 'learnpress' ),
-					$order_key );
+				$result['message']  = sprintf(
+					__( 'The order %s has been successfully recovered.', 'learnpress' ),
+					$order_key
+				);
 				$result['redirect'] = $order->get_view_order_url();
 			}
 
@@ -150,13 +152,17 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			if ( email_exists( $email ) ) {
 				$response['exists'] = $email;
-				$output             = '<div class="lp-guest-checkout-output">' . __( 'Your email is already exists. Continue with this email?',
-						'learnpress' ) . '</div>';
+				$output             = '<div class="lp-guest-checkout-output">' . __(
+					'Your email is already exists. Continue with this email?',
+					'learnpress'
+				) . '</div>';
 			} else {
 				$output = '<label class="lp-guest-checkout-output">
 					<input type="checkbox" name="checkout-email-option" value="new-account">
-				' . __( 'Create new account with this email? Account information will be sent to this email.',
-						'learnpress' ) . '
+				' . __(
+					'Create new account with this email? Account information will be sent to this email.',
+					'learnpress'
+				) . '
 				</label>';
 			}
 

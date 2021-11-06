@@ -108,6 +108,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$course_id = get_the_ID();
 				}
 
+				if ( $this instanceof LP_User_Guest ) {
+					throw new Exception( 'User is Guest' );
+				}
+
 				$filter           = new LP_User_Items_Filter();
 				$filter->item_id  = $course_id;
 				$filter->user_id  = $this->get_id();

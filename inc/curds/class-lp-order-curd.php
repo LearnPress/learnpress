@@ -493,29 +493,40 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Validations
 			if ( ! $order ) {
-				throw new Exception( esc_html__( 'Invalid order.', 'learnpress' ), 1000 );
+				throw new Exception( esc_html__( 'Invalid order.', 'learnpress' ) );
 			}
 
 			if ( ! $order->is_guest() ) {
-				throw new Exception( esc_html__( 'Order is already assigned.', 'learnpress' ), 1010 );
+				throw new Exception( esc_html__( 'Order is already assigned.', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_user( $user_id );
 
-			if ( ! $user ) {
-				throw new Exception( esc_html__( 'User does not exist.', 'learnpress' ), 1020 );
+			if ( ! $user || $user instanceof LP_User_Guest ) {
+				throw new Exception( esc_html__( 'User invalid!.', 'learnpress' ) );
 			}
 
-			global $wpdb;
+			if ( $order->get_checkout_email() !== $user->get_email() ) {
+				throw new Exception( esc_html__( 'Order key invalid with Email!', 'learnpress' ) );
+			}
 
 			// Set user to order and update
 			$order->set_user_id( $user_id );
 			$order->save();
 
+			// Update user_id of lp_user_item
+			if ( $order->is_completed() ) {
+				$lp_user_items_db = LP_User_Items_DB::getInstance();
+				$filter           = new LP_User_Items_Filter();
+				$filter->user_id  = $user_id;
+				$filter->ref_id   = $order->get_id();
+				$lp_user_items_db->update_user_id_by_order( $filter );
+			}
+
 			// Trigger action
 			do_action( 'learn-press/order/recovered-successful', $order->get_id(), $user_id );
 		} catch ( Exception $ex ) {
-			return new WP_Error( $ex->getCode(), $ex->getMessage() );
+			return new WP_Error( 'lp_order_recover_error', $ex->getMessage() );
 		}
 
 		return $order;
