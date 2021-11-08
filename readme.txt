@@ -197,9 +197,8 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.4 (2021-10-0x) =
+= 4.1.4 (2021-11-08) =
 ~ Fixed security: when user share profile, another user can see settings as change password, change info.
-~ Fixed minor bugs.
 ~ Modify: not scroll to title courses when load first.
 ~ Fixed: get incorrect key setting "archive course layout".
 ~ Fixed: get value "From name", "Footer text" setting Email.
@@ -213,11 +212,14 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: store answer of user when reload page will lose.
 ~ Added: hooks apply_filters('learnpress/profile/tab/enrolled/subtab-active'), apply_filters('learnpress/profile/tab-active').
 ~ Modified: functions course_external_button, can_enroll_course with case course is external and purchased course.
-~ Sanitize: email_footer, email_header
+~ Sanitize: email_footer, email_header.
 ~ Removed: some functions not use on file class-lp-email.php: "get_variable", "get_object", "get_common_template_data", "data_to_variables"
 ~ Fix show explanation when reload site.
 ~ Fix show message: "Your order is waiting for processing" when LP Order status is processing.
 ~ Fixed: condition get link last item if all items completed - on button continue.
+~ Fixed: show explanation.
+~ Fixed: error user login with mail buy as Guest and LP Oder completed but can't view course.
+~ Fixed: error, <a href="https://blog.szfszf.top/static/papers/LearnPress_4.1.3.2_sql_injection_1cf8665be17b7708a3f180067fd2d50b.html">sql injection</a>, sanitize feature duplicate post (Course, Lesson, Quiz v.v...)
 
 = 4.1.3.2 (2021-10-15) =
 ~ Fixed: security CVE-2021-39348, set sanitize for some params missing.
