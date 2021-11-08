@@ -278,93 +278,102 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
-	 * @throws Exception
+	 * Calculate course result
 	 */
 	public function calculate_course_results() {
-		$course = $this->get_course();
+		$results = array(
+			'count_items'     => 0,
+			'completed_items' => 0,
+		);
 
-		if ( ! $course ) {
-			return false;
-		}
+		try {
+			$course = $this->get_course();
 
-		$evaluate_type = $course->get_evaluation_results_method();
+			if ( ! $course ) {
+				throw new Exception( 'Course invalid!' );
+			}
 
-		$this->load();
+			$evaluate_type = $course->get_evaluation_results_method();
 
-		switch ( $evaluate_type ) {
-			case 'evaluate_lesson':
-				$results = $this->_evaluate_course_by_lesson();
-				break;
+			$this->load();
 
-			case 'evaluate_final_quiz':
-				$results = $this->_evaluate_course_by_final_quiz();
-				break;
+			switch ( $evaluate_type ) {
+				case 'evaluate_lesson':
+					$results = $this->_evaluate_course_by_lesson();
+					break;
 
-			case 'evaluate_quiz':
-				$results = $this->_evaluate_results_by_passed_per_all_quizzes();
-				break;
+				case 'evaluate_final_quiz':
+					$results = $this->_evaluate_course_by_final_quiz();
+					break;
 
-			case 'evaluate_questions':
-				$results = $this->_evaluate_course_by_question();
-				break;
+				case 'evaluate_quiz':
+					$results = $this->_evaluate_results_by_passed_per_all_quizzes();
+					break;
 
-			case 'evaluate_mark':
-				$results = $this->_evaluate_course_by_mark();
-				break;
+				case 'evaluate_questions':
+					$results = $this->_evaluate_course_by_question();
+					break;
 
-			default:
-				$results = [ 'result' => 0 ];
-				$results = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $evaluate_type, $this );
-		}
+				case 'evaluate_mark':
+					$results = $this->_evaluate_course_by_mark();
+					break;
 
-		if ( ! is_array( $results ) ) {
-			$results = array();
-		}
+				default:
+					$results = [ 'result' => 0 ];
+					$results = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $evaluate_type, $this );
+			}
 
-		$count_items     = $course->count_items();
-		$completed_items = $this->get_completed_items();
-		$results         = array_merge(
-			array(
-				'count_items'     => $count_items,
-				'completed_items' => $completed_items,
-				'items'           => array(
-					'quiz'   => array(
-						'completed' => $this->get_completed_items( LP_QUIZ_CPT ),
-						'passed'    => $this->get_passed_items( LP_QUIZ_CPT ),
-						'total'     => $course->count_items( LP_QUIZ_CPT ),
+			if ( ! is_array( $results ) ) {
+				$results = array();
+			}
+
+			$count_items     = $course->count_items();
+			$completed_items = $this->get_completed_items();
+			$results         = array_merge(
+				array(
+					'count_items'     => $count_items,
+					'completed_items' => $completed_items,
+					'items'           => array(
+						'quiz'   => array(
+							'completed' => $this->get_completed_items( LP_QUIZ_CPT ),
+							'passed'    => $this->get_passed_items( LP_QUIZ_CPT ),
+							'total'     => $course->count_items( LP_QUIZ_CPT ),
+						),
+						'lesson' => array(
+							'completed' => $this->get_completed_items( LP_LESSON_CPT ),
+							'total'     => $course->count_items( LP_LESSON_CPT ),
+						),
 					),
-					'lesson' => array(
-						'completed' => $this->get_completed_items( LP_LESSON_CPT ),
-						'total'     => $course->count_items( LP_LESSON_CPT ),
-					),
+					'skipped_items'   => $count_items - $completed_items,
+					'status'          => $this->get_status(),
+					'evaluate_type'   => $evaluate_type,
 				),
-				'skipped_items'   => $count_items - $completed_items,
-				'status'          => $this->get_status(),
-				'evaluate_type'   => $evaluate_type,
-			),
-			$results
-		);
+				$results
+			);
 
-		$graduation = '';
+			$graduation = '';
 
-		if ( ! $this->is_purchased() ) {
-			$graduation = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
+			if ( ! $this->is_purchased() ) {
+				$graduation = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
+			}
+
+			$results = apply_filters(
+				'learn-press/update-course-results',
+				$results,
+				$this->get_item_id(),
+				$this->get_user_id(),
+				$this
+			);
+
+			LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results ) );
+
+			learn_press_update_user_item_field(
+				array( 'graduation' => $graduation ),
+				array( 'user_item_id' => $this->get_user_item_id() )
+			);
+		} catch ( Throwable $e ) {
+
 		}
-
-		$results = apply_filters(
-			'learn-press/update-course-results',
-			$results,
-			$this->get_item_id(),
-			$this->get_user_id(),
-			$this
-		);
-
-		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results ) );
-
-		learn_press_update_user_item_field(
-			array( 'graduation' => $graduation ),
-			array( 'user_item_id' => $this->get_user_item_id() )
-		);
 
 		return $results;
 	}

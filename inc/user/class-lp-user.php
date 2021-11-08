@@ -249,16 +249,19 @@ class LP_User extends LP_Abstract_User {
 	 * @param int $course_id
 	 *
 	 * @return bool
-	 * @throws Exception
 	 */
 	public function has_enrolled_or_finished( int $course_id ): bool {
 		$status = true;
 
-		$user_course = $this->get_course_data( $course_id );
+		try {
+			$user_course = $this->get_course_data( $course_id );
 
-		if ( ! $user_course ) {
-			$status = false;
-		} elseif ( ! $user_course->is_enrolled() && ! $user_course->is_finished() ) {
+			if ( ! $user_course ) {
+				$status = false;
+			} elseif ( ! $user_course->is_enrolled() && ! $user_course->is_finished() ) {
+				$status = false;
+			}
+		} catch ( Throwable $e ) {
 			$status = false;
 		}
 
