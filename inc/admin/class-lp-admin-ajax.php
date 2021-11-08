@@ -427,7 +427,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @note tungnx checked has use
 		 */
 		public static function duplicator() {
-			$post_id = LP_Request::get_string( 'id' );
+			$post_id = intval( $_GET['id'] ?? 0 );
 
 			// get post type
 			$post_type = learn_press_get_post_type( $post_id );
