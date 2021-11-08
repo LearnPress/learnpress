@@ -214,9 +214,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$user                = learn_press_get_user( get_current_user_id() );
 
 			if ( current_user_can( 'administrator' ) ||
-				 ( current_user_can( LP_TEACHER_ROLE ) &&
-				   $this->get_author()->get_id() === $user->get_id() )
-			) {
+				( current_user_can( LP_TEACHER_ROLE ) && $this->get_author()->get_id() === $user->get_id() ) ) {
 				return $timestamp_remaining;
 			}
 
@@ -228,7 +226,15 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return $timestamp_remaining;
 			}
 
+			if ( $user instanceof LP_User_Guest ) {
+				return $timestamp_remaining;
+			}
+
 			$course_item_data = $user->get_course_data( $this->get_id() );
+
+			if ( ! $course_item_data ) {
+				return $timestamp_remaining;
+			}
 
 			$course_start_time   = $course_item_data->get_start_time()->get_raw_date();
 			$duration            = $this->get_data( 'duration' );
