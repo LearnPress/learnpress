@@ -207,17 +207,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 				throw new Exception( 'User or Course is not exists' );
 			}
 
-			if ( $course->get_external_link() ) {
-				throw new Exception( 'Course is type external, so can not purchase' );
-			}
-
 			if ( ! $user->can_purchase_course( $course->get_id() ) ) {
 				throw new Exception( 'You can not purchase course' );
-			}
-
-			// Course is not require enrolling.
-			if ( $course->is_no_required_enroll() ) {
-				throw new Exception( 'Course is type no required enroll' );
 			}
 		} catch ( Throwable $e ) {
 			$can_show = false;

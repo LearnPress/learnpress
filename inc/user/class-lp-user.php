@@ -329,9 +329,10 @@ class LP_User extends LP_Abstract_User {
 	 * @throws Exception
 	 * @author nhamdv
 	 * @editor tungnx
-	 * @modify 4.1.3
+	 * @modify 4.1.4
+	 * @version 1.0.3
 	 */
-	public function can_purchase_course( int $course_id ): bool {
+	public function can_purchase_course( int $course_id = 0 ): bool {
 		$can_purchase = true;
 		$course       = learn_press_get_course( $course_id );
 
@@ -346,6 +347,15 @@ class LP_User extends LP_Abstract_User {
 
 			if ( $course->is_free() ) {
 				throw new Exception( 'Course is free' );
+			}
+
+			if ( $course->get_external_link() ) {
+				throw new Exception( 'Course is type external, so can not purchase' );
+			}
+
+			// Course is not require enrolling.
+			if ( $course->is_no_required_enroll() ) {
+				throw new Exception( 'Course is type no required enroll' );
 			}
 
 			if ( $this->can_retry_course( $course_id ) ) {
