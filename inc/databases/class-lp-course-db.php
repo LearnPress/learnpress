@@ -358,6 +358,27 @@ class LP_Course_DB extends LP_Database {
 
 		return (int) $this->wpdb->get_var( $query );
 	}
+
+	/**
+	 * Get total items of course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return int
+	 */
+	public function get_total_items( int $course_id = 0 ): int {
+		$query = $this->wpdb->prepare(
+			"
+			SELECT COUNT(si.item_id) as total
+			FROM $this->tb_lp_section_items si
+			INNER JOIN $this->tb_lp_sections s ON s.section_id = si.section_id
+			WHERE s.section_course_id = %d
+			",
+			$course_id
+		);
+
+		return (int) $this->wpdb->get_var( $query );
+	}
 }
 
 LP_Course_DB::getInstance();

@@ -63,17 +63,59 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$lp_course_db = $this->lp_course_db;
 			$lp_course    = $this->lp_course;
 
-			// Set first item id
-			$first_item_id = $lp_course_db->get_first_item_id( $lp_course->get_id() );
-			$extra_info    = $this->lp_course->get_info_extra_for_fast_query();
+			$this->save_extra_info();
 
-			$extra_info->first_item_id = $first_item_id;
+			$this->review_post_author();
 
-			// Save post meta
-			$lp_course->set_info_extra_for_fast_query( $extra_info );
-			// End set first item id
+			// Clear cache
+			$lp_course_cache = LP_Course_Cache::instance();
+			$key_cache_arr   = [];
+			foreach ( $key_cache_arr as $key_cache ) {
+				$lp_course_cache->clear( $key_cache );
+			}
+			// End
+		}
 
-			// Check user is Instructor and enable review post of Instructor
+		/**
+		 * Save Extra info of course
+		 *
+		 * @author tungnx
+		 * @since 4.1.4.1
+		 * @version 1.0.0
+		 */
+		protected function save_extra_info() {
+			$lp_course_db = $this->lp_course_db;
+			$lp_course    = $this->lp_course;
+
+			try {
+				$extra_info = $this->lp_course->get_info_extra_for_fast_query();
+
+				// Get and set first item id
+				$first_item_id             = $lp_course_db->get_first_item_id( $lp_course->get_id() );
+				$extra_info->first_item_id = $first_item_id;
+
+				// Get and set total items courses
+				$total_items             = $lp_course_db->get_total_items( $lp_course->get_id() );
+				$extra_info->total_items = $total_items;
+
+				// Save post meta
+				$lp_course->set_info_extra_for_fast_query( $extra_info );
+				// End set first item id
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Check user is Instructor and enable review post of Instructor
+		 *
+		 * @author tungnx
+		 * @since 4.1.4.1
+		 * @version 1.0.0
+		 */
+		protected function review_post_author() {
+			$lp_course = $this->lp_course;
+
 			$user            = learn_press_get_current_user();
 			$required_review = LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
 
@@ -85,14 +127,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 					),
 					array( '%d', '%s' )
 				);
-			}
-			// End
-
-			// Clear cache
-			$lp_course_cache = LP_Course_Cache::instance();
-			$key_cache_arr   = [];
-			foreach ( $key_cache_arr as $key_cache ) {
-				$lp_course_cache->clear( $key_cache );
 			}
 			// End
 		}

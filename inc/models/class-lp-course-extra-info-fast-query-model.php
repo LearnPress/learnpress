@@ -4,7 +4,7 @@
  * Class LP_Course_Extra_Info_Fast_Query_Model
  *
  * @author tungnnx
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.1.3
  */
 class LP_Course_Extra_Info_Fast_Query_Model {
@@ -12,6 +12,10 @@ class LP_Course_Extra_Info_Fast_Query_Model {
 	 * @var int First item of Course
 	 */
 	public $first_item_id = 0;
+	/**
+	 * @var int Total items of course
+	 */
+	public $total_items = 0;
 
 	/**
 	 * Mapper stdclass to model
