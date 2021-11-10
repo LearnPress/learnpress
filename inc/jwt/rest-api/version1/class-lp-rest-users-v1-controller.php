@@ -732,8 +732,6 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		if ( isset( $registered['who'] ) && ! empty( $request['who'] ) && 'authors' === $request['who'] ) {
 			$prepared_args['who'] = 'authors';
-		} elseif ( ! current_user_can( 'list_users' ) ) {
-			$prepared_args['has_published_posts'] = get_post_types( array( 'show_in_rest' => true ), 'names' );
 		}
 
 		if ( ! empty( $prepared_args['search'] ) ) {
@@ -932,8 +930,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		$counts = $query['counts'];
 
 		$output = array(
-			'enrolled_courses'  => absint( $counts['all'] ) ?? 0,
-			'completed_courses' => absint( $counts['finished'] ) ?? 0,
+			'enrolled_courses'  => isset( $counts['all'] ) ? absint( $counts['all'] ) : 0,
+			'completed_courses' => isset( $counts['finished'] ) ? absint( $counts['finished'] ) : 0,
 			'courses'           => absint( count_user_posts( $user_id, LP_COURSE_CPT ) ),
 			'students'          => absint( learn_press_count_instructor_users( $user_id ) ),
 		);
@@ -944,32 +942,34 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	public function get_lp_data_tabs( $user, $request ) {
 		$output = array();
 
-		if ( function_exists( 'learn_press_get_user_profile_tabs' ) ) {
-			$tabs = learn_press_get_user_profile_tabs();
+		if ( get_current_user_id() === $user->ID || current_user_can( 'list_users' ) ) {
+			if ( function_exists( 'learn_press_get_user_profile_tabs' ) ) {
+				$tabs = learn_press_get_user_profile_tabs();
 
-			$content = array(
-				'overview' => $this->get_overview_tab_contents( $user ),
-				'courses'  => $this->get_course_tab_contents( $request ),
-				'quiz'     => $this->get_quiz_tab_contents( $request ),
-				'orders'   => $this->get_order_content_tab( $request ),
-			);
-
-			foreach ( $tabs->get() as $key => $tab ) {
-				$output[ $key ] = array(
-					'title'    => $tab['title'] ?? '',
-					'slug'     => $tab['slug'] ?? '',
-					'priority' => $tab['priority'] ?? '',
-					'icon'     => $tab['icon'] ?? '',
-					'content'  => $content[ $key ] ?? '',
+				$content = array(
+					'overview' => $this->get_overview_tab_contents( $user ),
+					'courses'  => $this->get_course_tab_contents( $request ),
+					'quiz'     => $this->get_quiz_tab_contents( $request ),
+					'orders'   => $this->get_order_content_tab( $request ),
 				);
 
-				if ( ! empty( $tab['sections'] ) ) {
-					foreach ( $tab['sections'] as $section_key => $section ) {
-						$output[ $key ]['section'][ $section_key ] = array(
-							'title'    => $section['title'] ?? '',
-							'slug'     => $section['slug'] ?? '',
-							'priority' => $section['priority'] ?? '',
-						);
+				foreach ( $tabs->get() as $key => $tab ) {
+					$output[ $key ] = array(
+						'title'    => $tab['title'] ?? '',
+						'slug'     => $tab['slug'] ?? '',
+						'priority' => $tab['priority'] ?? '',
+						'icon'     => $tab['icon'] ?? '',
+						'content'  => $content[ $key ] ?? '',
+					);
+
+					if ( ! empty( $tab['sections'] ) ) {
+						foreach ( $tab['sections'] as $section_key => $section ) {
+							$output[ $key ]['section'][ $section_key ] = array(
+								'title'    => $section['title'] ?? '',
+								'slug'     => $section['slug'] ?? '',
+								'priority' => $section['priority'] ?? '',
+							);
+						}
 					}
 				}
 			}
