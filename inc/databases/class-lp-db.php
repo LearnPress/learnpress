@@ -523,4 +523,26 @@ class LP_Database {
 
 		return $result;
 	}
+
+	/**
+	 * Check key postmeta exist on Database
+	 *
+	 * @param int $post_id
+	 * @param string $key
+	 *
+	 * @return bool|int
+	 */
+	public function check_key_postmeta_exists( int $post_id = 0, string $key = '' ) {
+		return $this->wpdb->query(
+			$this->wpdb->prepare(
+				"
+				SELECT meta_id FROM $this->tb_postmeta
+				WHERE meta_key = %s
+				AND post_id = %d
+				",
+				$key,
+				$post_id
+			)
+		);
+	}
 }

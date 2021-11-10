@@ -8,18 +8,19 @@ function lp_meta_box_text_input_field( $field ) {
 	global $thepostid, $post;
 
 	$thepostid            = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field['placeholder'] = $field['placeholder'] ?? '';
-	$class                = ! empty( $field['class'] ) ? 'class="' . esc_attr( $field['class'] ) . '"' : '';
-	$style                = ! empty( $field['style'] ) ? 'style="' . esc_attr( $field['style'] ) . '"' : '';
-	$wrapper_class        = ! empty( $field['wrapper_class'] ) ? esc_attr( $field['wrapper_class'] ) : '';
+	$field['placeholder'] = esc_attr( $field['placeholder'] ?? '' );
+	$field['class']       = esc_attr( $field['class'] ?? '' );
+	$field['style']       = esc_attr( $field['style'] ?? '' );
+	$wrapper_class        = esc_attr( $field['wrapper_class'] ?? '' );
 
 	/**
 	 * If you want to set default value for input text
 	 * You must us hook default_{$meta_type}_metadata | Read more get_metadata_default() function
 	 */
-	$field['default']    = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
-	$field['value']      = esc_attr( $field['value'] ?? $field['default'] );
-	$field_id            = esc_attr( $field['id'] ?? '' );
+	$value_exists        = LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $field['id'] );
+	$value               = get_post_meta( $thepostid, $field['id'], true );
+	$field['value']      = $value_exists ? $value : ( $field['default'] ?? '' );
+	$field['id']         = esc_attr( $field['id'] ?? '' );
 	$field['type_input'] = esc_attr( $field['type_input'] ?? 'text' );
 	$field['desc_tip']   = esc_attr( $field['desc_tip'] ?? '' );
 
@@ -32,14 +33,20 @@ function lp_meta_box_text_input_field( $field ) {
 		}
 	}
 
-	echo '<div class="form-field ' . $field_id . '_field ' . $wrapper_class . '">
-		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
+	$custom_attributes_str = implode( ' ', $custom_attributes );
+	?>
 
-	echo '<input type="' . esc_attr( $field['type_input'] ) . '" ' . $class . ' ' . $style . ' name="' . $field['id'] . '" id="' . $field['id'] . '" value="' . $field['value'] . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" ' . implode(
-		' ',
-		$custom_attributes
-	) . ' /> ';
+	<div class="form-field <?php echo $field['id'] . '_field ' . $wrapper_class; ?>">
+		<label for="<?php echo $field['id']; ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+		<input type="<?php echo $field['type_input']; ?>"
+			class="<?php echo $field['class']; ?>"
+			style="<?php echo $field['style']; ?>"
+			name="<?php echo $field['id']; ?>"
+			id="<?php echo $field['id']; ?>"
+			value="<?php echo $field['value']; ?>"
+			placeholder="<?php echo $field['placeholder']; ?>" <?php echo $custom_attributes_str; ?> />
 
+	<?php
 	if ( ! empty( $field['description'] ) ) {
 		echo '<p class="description">';
 		echo '<span>' . wp_kses_post( $field['description'] ) . '</span>';
@@ -49,7 +56,9 @@ function lp_meta_box_text_input_field( $field ) {
 		}
 		echo '</p>';
 	}
-	echo '</div>';
+	?>
+	</div>
+	<?php
 }
 
 /**
@@ -61,20 +70,14 @@ function lp_meta_box_textarea_field( $field ) {
 	global $thepostid, $post;
 
 	$thepostid            = empty( $thepostid ) ? $post->ID : $thepostid;
+	$field['id']          = esc_attr( $field['id'] ?? '' );
 	$field['placeholder'] = esc_attr( $field['placeholder'] ?? '' );
 	$field['class']       = esc_attr( $field['class'] ?? 'short' );
 	$field['style']       = esc_attr( $field['style'] ?? '' );
-	$field['default']     = ( ! get_post_meta(
-		$thepostid,
-		$field['id'],
-		true
-	) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta(
-		$thepostid,
-		$field['id'],
-		true
-	);
-	$field['value']       = esc_attr( $field['value'] ?? $field['default'] );
-	$field['desc_tip']    = esc_attr( $field['desc_tip'] ?? false );
+	$value_exists         = LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $field['id'] );
+	$value                = get_post_meta( $thepostid, $field['id'], true );
+	$field['value']       = esc_textarea( $value_exists ? $value : ( $field['default'] ?? '' ) );
+	$field['desc_tip']    = esc_attr( $field['desc_tip'] ?? '' );
 	$field['name']        = esc_attr( $field['name'] ?? $field['id'] );
 
 	// Custom attribute handling
@@ -85,14 +88,18 @@ function lp_meta_box_textarea_field( $field ) {
 		}
 	}
 
-	echo '<p class="form-field ' . esc_attr( $field['id'] ) . '_field ' . '">
-		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
+	$custom_attributes_str = implode( ' ', $custom_attributes );
+	?>
 
-	echo '<textarea class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '"  name="' . esc_attr( $field['name'] ) . '" id="' . esc_attr( $field['id'] ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" rows="5" ' . implode(
-		' ',
-		$custom_attributes
-	) . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
-
+	<p class="form-field  <?php echo $field['id'] . '_field '; ?>">
+		<label for="<?php echo $field['id']; ?>>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+		<textarea class="<?php echo $field['class']; ?>"
+			style="<?php echo $field['style']; ?>"
+			name="<?php echo $field['name']; ?>"
+			id="<?php $field['id']; ?>"
+			placeholder="<?php echo $field['placeholder']; ?>"
+			rows="5" <?php echo $custom_attributes_str; ?>><?php echo $field['value']; ?></textarea>
+	<?php
 	if ( ! empty( $field['description'] ) ) {
 		echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
 
@@ -100,8 +107,9 @@ function lp_meta_box_textarea_field( $field ) {
 			learn_press_quick_tip( $field['desc_tip'] );
 		}
 	}
-
-	echo '</p>';
+	?>
+	</p>
+	<?php
 }
 
 /**
@@ -112,12 +120,12 @@ function lp_meta_box_textarea_field( $field ) {
 function lp_meta_box_checkbox_field( $field ) {
 	global $thepostid, $post;
 
-	$thepostid     = empty( $thepostid ) ? $post->ID : $thepostid;
-	$class         = ! empty( $field['class'] ) ? 'class="' . esc_attr( $field['class'] ) . '"' : '';
-	$style         = ! empty( $field['style'] ) ? 'style="' . esc_attr( $field['style'] ) . '"' : '';
-	$wrapper_class = ! empty( $field['wrapper_class'] ) ? esc_attr( $field['wrapper_class'] ) : '';
-	$name          = ! empty( $field['name'] ) ? esc_attr( $field['name'] ) : esc_attr( $field['id'] );
-	$name          = 'name="' . $name . '"';
+	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
+	$field['id']    = esc_attr( $field['id'] ?? '' );
+	$field['class'] = esc_attr( $field['class'] ?? '' );
+	$field['style'] = esc_attr( $field['style'] ?? '' );
+	$wrapper_class  = esc_attr( $field['wrapper_class'] ?? '' );
+	$name           = ! empty( $field['name'] ) ? esc_attr( $field['name'] ) : esc_attr( $field['id'] );
 
 	$value_db = get_post_meta( $thepostid, $field['id'], true );
 
@@ -134,14 +142,22 @@ function lp_meta_box_checkbox_field( $field ) {
 		}
 	}
 
-	echo '<div class="form-field ' . esc_attr( $field['id'] ) . '_field ' . $wrapper_class . '">
-		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
+	$custom_attributes_str = implode( ' ', $custom_attributes );
+	?>
 
-	echo '<input type="checkbox" ' .
-		 $class . ' ' . $style . ' ' . $name . ' ' . $checked . '
-		 id="' . esc_attr( $field['id'] ) . '" ' .
-		 implode( ' ', $custom_attributes ) . '/> ';
+	<div class="form-field <?php echo $field['id'] . '_field'; ?>" <?php echo $wrapper_class; ?>>
+		<label for="<?php echo $field['id']; ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
 
+	<input type="checkbox"
+		class="<?php echo $field['class']; ?>"
+		style="<?php echo $field['style']; ?>"
+		name="<?php echo $name; ?>"
+		id="<?php echo $field['id']; ?>"
+		<?php echo $checked; ?>
+
+		<?php echo $custom_attributes_str; ?> />
+
+	<?php
 	if ( ! empty( $field['description'] ) ) {
 		echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
 
@@ -149,8 +165,9 @@ function lp_meta_box_checkbox_field( $field ) {
 			learn_press_quick_tip( $field['desc_tip'] );
 		}
 	}
-
-	echo '</div>';
+	?>
+	</div>
+	<?php
 }
 
 /**

@@ -33,11 +33,12 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 		$style         = ! empty( $extra['style'] ) ? 'style="' . esc_attr( $extra['style'] ) . '"' : '';
 		$wrapper_class = ! empty( $extra['wrapper_class'] ) ? esc_attr( $extra['wrapper_class'] ) : '';
 
-		$meta       = $this->meta_value( $thepostid );
-		$value      = ! $meta && ! empty( $this->default ) ? $this->default : $meta;
-		$value      = esc_attr( $extra['value'] ?? $value );
-		$type_input = $extra['type_input'] ?? 'text';
-		$desc_tip   = $extra['desc_tip'] ?? '';
+		$meta_exists = LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $this->id );
+		$meta        = get_post_meta( $thepostid, $this->id, true );
+		$value       = $meta_exists ? $meta : ( $this->default ?? '' );
+		$value       = esc_attr( $extra['value'] ?? $value );
+		$type_input  = $extra['type_input'] ?? 'text';
+		$desc_tip    = $extra['desc_tip'] ?? '';
 
 		// Custom attribute handling
 		$custom_attributes = array();
