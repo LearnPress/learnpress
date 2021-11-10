@@ -18,7 +18,7 @@ function lp_meta_box_text_input_field( $field ) {
 	 * You must us hook default_{$meta_type}_metadata | Read more get_metadata_default() function
 	 */
 	$field['default']    = ( ! get_post_meta( $thepostid, $field['id'], true ) && isset( $field['default'] ) ) ? $field['default'] : get_post_meta( $thepostid, $field['id'], true );
-	$field['value']      = esc_attr( $field['value'] ?? '' );
+	$field['value']      = esc_attr( $field['value'] ?? $field['default'] );
 	$field_id            = esc_attr( $field['id'] ?? '' );
 	$field['type_input'] = esc_attr( $field['type_input'] ?? 'text' );
 	$field['desc_tip']   = esc_attr( $field['desc_tip'] ?? '' );
