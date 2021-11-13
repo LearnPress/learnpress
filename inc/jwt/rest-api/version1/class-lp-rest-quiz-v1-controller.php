@@ -82,7 +82,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					),
 					'answered'    => array(
 						'description' => esc_html__( 'Answer this question.', 'learnpress' ),
-						'type'        => 'string',
+						'type'        => array( 'array', 'string', 'object' ),
 					),
 				),
 				array(
