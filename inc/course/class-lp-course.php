@@ -370,5 +370,47 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				error_log( $e->getMessage() );
 			}
 		}
+
+		/**
+		 * Get info total items of Course
+		 *
+		 * @param string $type
+		 * @param bool $include_preview
+		 * @author tungnx
+		 * @since 4.1.4.1
+		 * @version 1.0.0
+		 * @return int
+		 */
+		public function count_items( $type = '', $include_preview = true ): int {
+			// Get cache
+			$lp_course_cache = LP_Course_Cache::instance();
+			$key_cache       = $this->get_id() . '/total_items';
+			$total_items     = $lp_course_cache->get_cache( $key_cache );
+			$count_items     = 0;
+
+			if ( ! $total_items ) {
+				$extra_info = $this->get_info_extra_for_fast_query();
+
+				if ( ! $extra_info->total_items ) {
+					$total_items             = LP_Course_DB::getInstance()->get_total_items( $this->get_id() );
+					$extra_info->total_items = $total_items;
+
+					// Save post meta
+					$this->set_info_extra_for_fast_query( $extra_info );
+				} else {
+					$total_items = $extra_info->total_items;
+				}
+			}
+
+			if ( ! empty( $total_items ) ) {
+				if ( ! empty( $type ) ) {
+					$count_items = $total_items->{$type};
+				} else {
+					$count_items = $total_items->count_items;
+				}
+			}
+
+			return apply_filters( 'learn-press/course/count-items', $count_items, $this->get_id() );
+		}
 	}
 }

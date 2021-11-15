@@ -942,6 +942,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $wpdb->get_results( $query );
 		}
 
+		//TODO tungnx: check this function, no see use anywhere
 		public function get_current_results( $quiz_id, $course_id = 0 ) {
 			$course_id = $this->_get_course( $course_id );
 
@@ -2435,7 +2436,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				return false;
 			}
 
-			return $course_results['completed_items'] >= $course->count_items( '', true );
+			return $course_results['completed_items'] >= $course->count_items();
 		}
 
 		public function get_role() {

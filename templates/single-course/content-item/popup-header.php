@@ -37,7 +37,7 @@ if ( $course_data ) {
 
 		<?php if ( $user->has_enrolled_or_finished( $course->get_id() ) ) : ?>
 			<div class="items-progress">
-				<span class="number"><?php printf( __( '%1$s of %2$d items', 'learnpress' ), '<span class="items-completed">' . esc_html( $completed_items ) . '</span>', $course->count_items( '', true ) ); ?></span>
+				<span class="number"><?php printf( __( '%1$s of %2$d items', 'learnpress' ), '<span class="items-completed">' . esc_html( $completed_items ) . '</span>', $course->count_items() ); ?></span>
 				<div class="learn-press-progress">
 					<div class="learn-press-progress__active" data-value="<?php echo $percentage; ?>%;">
 					</div>

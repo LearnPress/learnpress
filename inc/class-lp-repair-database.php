@@ -26,14 +26,14 @@ class LP_Repair_Database {
 	 * @access protected
 	 */
 	protected function __construct() {
-		add_action( 'save_post', array( $this, 'save_post' ), 0 );
+		//add_action( 'save_post', array( $this, 'save_post' ), 0 );
 		// add_action( 'deleted_post', array( $this, 'save_post' ), 0 );
 		// add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 5000, 3 );
 		// add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_course' ), 5000, 2 );
-		add_action( 'learn-press/save-course', array( $this, 'save_course' ), 5000, 1 );
-		add_action( 'learn-press/added-course-item', array( $this, 'added_course_item' ), 10, 2 );
-		add_action( 'learn-press/removed-course-item', array( $this, 'removed_course_item' ), 10 );
-		add_action( 'learn-press/transition-course-item-status', array( $this, 'transition_course_item_status' ), 10, 4 );
+		//add_action( 'learn-press/save-course', array( $this, 'save_course' ), 5000, 1 );
+		//add_action( 'learn-press/added-course-item', array( $this, 'added_course_item' ), 10, 2 );
+		//add_action( 'learn-press/removed-course-item', array( $this, 'removed_course_item' ), 10 );
+		//add_action( 'learn-press/transition-course-item-status', array( $this, 'transition_course_item_status' ), 10, 4 );
 
 		//add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
 		// add_action( 'deleted_post', array( $this, 'deleted_post' ) );
@@ -502,36 +502,52 @@ class LP_Repair_Database {
 		return true;
 	}*/
 
-	public function save_course( $course_id ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
+	 */
+	/*public function save_course( $course_id ) {
 		$this->sync_course_data( $course_id );
-	}
+	}*/
 
-	public function removed_course_item( $course_id ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
+	 */
+	/*public function removed_course_item( $course_id ) {
 		$this->sync_course_data( $course_id );
-	}
+	}*/
 
 	/**
 	 * @param int $item_id
 	 * @param int $course_id
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
 	 */
-	public function added_course_item( $item_id, $course_id ) {
+	/*public function added_course_item( $item_id, $course_id ) {
 		$this->sync_course_data( $course_id );
-	}
+	}*/
 
 	/**
 	 * @param int $item_id
 	 * @param int $course_id
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
 	 */
-	public function removed_item_from_course( $item_id, $course_id ) {
+	/*public function removed_item_from_course( $item_id, $course_id ) {
 		$this->sync_course_data( $course_id );
-	}
+	}*/
 
-	public function transition_course_item_status( $item_id, $course_id, $old, $new ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
+	 */
+	/*public function transition_course_item_status( $item_id, $course_id, $old, $new ) {
 		if ( $old === $new ) {
 			return;
 		}
 		$this->sync_course_data( $course_id );
-	}
+	}*/
 
 	/**
 	 * @editor tungnx
@@ -601,40 +617,42 @@ class LP_Repair_Database {
 
 	/**
 	 * @param int $post_id
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
 	 */
-	public function save_post( $post_id ) {
-		global $wpdb;
-		$post_type   = get_post_type( $post_id );
-		$course_curd = new LP_Course_CURD();
-
-		switch ( $post_type ) {
-			/*case LP_ORDER_CPT:
-				$order = learn_press_get_order( $post_id );
-				if ( $order ) {
-					$user_ids   = $order->get_users();
-					$course_ids = $order->get_item_ids();
-
-					//$this->sync_course_orders( $course_ids );
-					//$this->sync_user_orders( $user_ids );
-				}
-
-				break;*/
-			case LP_COURSE_CPT: //Todo: tungnx should review code to rewrite
-			default:
-				// Course is support type of this item?
-				if ( learn_press_is_support_course_item_type( $post_type ) ) {
-
-					// Find it course
-					$course_ids = $course_curd->get_course_by_item( $post_id );
-				} else {
-					$course_ids = array( $post_id );
-				}
-
-				foreach ( $course_ids as $course_id ) {
-					$this->sync_course_data( $course_id );
-				}
-		}
-	}
+//	public function save_post( $post_id ) {
+//		global $wpdb;
+//		$post_type   = get_post_type( $post_id );
+//		$course_curd = new LP_Course_CURD();
+//
+//		switch ( $post_type ) {
+//			/*case LP_ORDER_CPT:
+//				$order = learn_press_get_order( $post_id );
+//				if ( $order ) {
+//					$user_ids   = $order->get_users();
+//					$course_ids = $order->get_item_ids();
+//
+//					//$this->sync_course_orders( $course_ids );
+//					//$this->sync_user_orders( $user_ids );
+//				}
+//
+//				break;*/
+//			case LP_COURSE_CPT: //Todo: tungnx should review code to rewrite
+//			default:
+//				// Course is support type of this item?
+//				if ( learn_press_is_support_course_item_type( $post_type ) ) {
+//
+//					// Find it course
+//					$course_ids = $course_curd->get_course_by_item( $post_id );
+//				} else {
+//					$course_ids = array( $post_id );
+//				}
+//
+//				foreach ( $course_ids as $course_id ) {
+//					$this->sync_course_data( $course_id );
+//				}
+//		}
+//	}
 
 	/**
 	 * Sync course data when saving post.
@@ -644,7 +662,7 @@ class LP_Repair_Database {
 	 * @version 3.1.1
 	 * @since 3.1.0
 	 */
-	public function sync_course_data( int $course_id ) {
+	/*public function sync_course_data( int $course_id ) {
 		$user_curd   = new LP_User_CURD();
 		$course_curd = new LP_Course_CURD();
 
@@ -655,7 +673,7 @@ class LP_Repair_Database {
 		}
 
 		update_post_meta( $course_id, 'count_items', $count_items );
-	}
+	}*/
 
 	/**
 	 * Sync all

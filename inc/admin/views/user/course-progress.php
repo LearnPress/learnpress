@@ -1,4 +1,12 @@
 <?php
+/**
+ * @author Thimpress
+ * @version 1.0.0
+ */
+
+if ( ! isset( $user ) || ! isset( $course ) ) {
+	return;
+}
 $course_data       = $user->get_course_data( $course->get_id() );
 $course_results    = $course_data->get_results( false );
 $passing_condition = $course->get_passing_condition();
@@ -13,7 +21,7 @@ $passing_condition = $course->get_passing_condition();
 			<h4 class="lp-course-progress-heading"><?php echo esc_html__( 'Items completed:', 'learnpress' ); ?></h4>
 		<?php endif; ?>
 
-		<span class="number"><?php printf( __( '%1$d of %2$d items', 'learnpress' ), $course_results['completed_items'], $course->count_items( '', true ) ); ?></span>
+		<span class="number"><?php printf( __( '%1$d of %2$d items', 'learnpress' ), $course_results['completed_items'], $course->count_items() ); ?></span>
 
 		<div class="learn-press-progress lp-course-progress">
 			<div class="progress-bg lp-progress-bar">
