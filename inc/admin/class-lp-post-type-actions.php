@@ -21,7 +21,7 @@ class LP_Post_Type_Actions {
 	 * LP_Post_Type_Actions constructor.
 	 */
 	protected function __construct() {
-		add_action( 'save_post', array( $this, 'save_post' ) );
+		//add_action( 'save_post', array( $this, 'save_post' ) );
 		add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 10, 3 );
 		add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_section' ), 10, 2 );
 
@@ -147,7 +147,11 @@ class LP_Post_Type_Actions {
 		do_action( 'learn-press/removed-course-item', $course_id );
 	}
 
-	public function save_post( $post_id ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4.1 comment - not use
+	 */
+	/*public function save_post( $post_id ) {
 		$post_type = get_post_type( $post_id );
 
 		if ( LP_COURSE_CPT === $post_type ) {
@@ -155,7 +159,7 @@ class LP_Post_Type_Actions {
 		} elseif ( learn_press_is_support_course_item_type( $post_type ) ) {
 			$this->add( 'update-post', $post_id );
 		}
-	}
+	}*/
 
 	public function is_course( $post ) {
 		if ( is_numeric( $post ) ) {

@@ -381,7 +381,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @version 1.0.0
 		 * @return int
 		 */
-		public function count_items( $type = '', $include_preview = true ): int {
+		public function count_items( string $type = '', bool $include_preview = true ): int {
 			// Get cache
 			$lp_course_cache = LP_Course_Cache::instance();
 			$key_cache       = $this->get_id() . '/total_items';
