@@ -815,8 +815,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param bool $force
 		 *
 		 * @return mixed|null|void
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function get_quiz_history( $quiz_id, $course_id = 0, $history_id = null, $force = false ) {
+		/*public function get_quiz_history( $quiz_id, $course_id = 0, $history_id = null, $force = false ) {
 			$course_id = $this->_get_course( $course_id );
 
 			$course = learn_press_get_course( $course_id );
@@ -922,9 +924,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$this,
 				$quiz_id
 			);
-		}
+		}*/
 
-		private function _get_quiz_meta( $user_item_id ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
+		 */
+		/*private function _get_quiz_meta( $user_item_id ) {
 			global $wpdb;
 			settype( $user_item_id, 'array' );
 			$in = array_fill( 0, sizeof( $user_item_id ), '%d' );
@@ -940,10 +946,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			);
 
 			return $wpdb->get_results( $query );
-		}
+		}*/
 
-		//TODO tungnx: check this function, no see use anywhere
-		public function get_current_results( $quiz_id, $course_id = 0 ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 comment - not use
+		 */
+		/*public function get_current_results( $quiz_id, $course_id = 0 ) {
 			$course_id = $this->_get_course( $course_id );
 
 			$history = $this->get_quiz_history( $quiz_id, $course_id );
@@ -953,7 +962,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $current;
-		}
+		}*/
 
 		/**
 		 * Check if user has at least one role.

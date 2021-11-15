@@ -140,6 +140,9 @@ add_action(
 	LP()->template( 'course' )->callback( 'single-course/meta/level' ),
 	20
 );
+/**
+ * @see LP_Template_Course::count_object()
+ */
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'count_object' ), 20 );
 add_action(
 	'learn-press/after-courses-loop-item',
@@ -289,6 +292,9 @@ add_action(
 	LP()->template( 'course' )->callback( 'single-course/meta/level' ),
 	20
 );
+/**
+ * @see LP_Template_Course::count_object()
+ */
 add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )->func( 'count_object' ), 20 );
 
 

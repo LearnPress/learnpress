@@ -445,6 +445,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.0
+		 * Todo: tungnx - should review and rewrite
 		 */
 		public function get_items( $type = '', $preview = true ) {
 			$this->load();
@@ -1615,8 +1616,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param bool         $include_preview - Optional. False to exclude if item is preview
 		 *
 		 * @return int
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function count_items( $type = '', $include_preview = true ) {
+		/*public function count_items( $type = '', $include_preview = true ) {
 			global $wpdb;
 
 			$item_types       = learn_press_get_course_item_types();
@@ -1665,7 +1668,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn-press/count-items', $count_items, $type, $include_preview, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Count all items are 'Preview' in a course.

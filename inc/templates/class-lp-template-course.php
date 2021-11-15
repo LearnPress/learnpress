@@ -794,6 +794,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	}
 
+	/**
+	 * Template show count items
+	 *
+	 * @since 4.0.0
+	 * @version 1.0.1
+	 * @editor tungnx
+	 */
 	public function count_object() {
 		$course = learn_press_get_course();
 
@@ -801,15 +808,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$lessons = $course->get_items( LP_LESSON_CPT );
-		$quizzes = $course->get_items( LP_QUIZ_CPT );
-
-		$lessons  = count( $lessons );
-		$quizzes  = count( $quizzes );
+		$lessons  = $course->count_items( LP_LESSON_CPT );
+		$quizzes  = $course->count_items( LP_QUIZ_CPT );
 		$students = $course->count_students();
 
 		$counts = apply_filters(
-			'learn-press/count-meta-objects',
+			'learnpress/course/count/items',
 			array(
 				'lesson'  => sprintf(
 					'<span class="meta-number">' . _n( '%d lesson', '%d lessons', $lessons, 'learnpress' ) . '</span>',

@@ -84,17 +84,25 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * @version 1.0.0
 		 */
 		protected function save_extra_info() {
-			$lp_course_db = $this->lp_course_db;
-			$lp_course    = $this->lp_course;
+			$lp_course_db    = $this->lp_course_db;
+			$lp_course       = $this->lp_course;
+			$lp_course_cache = LP_Course_Cache::instance();
+			$course_id       = $lp_course->get_id();
 
 			try {
 				$extra_info = $this->lp_course->get_info_extra_for_fast_query();
 
 				// Get and set first item id
+				// Clean cache
+				$key_cache_first_item_id = "$course_id/first_item_id";
+				$lp_course_cache->clear( $key_cache_first_item_id );
 				$first_item_id             = $lp_course_db->get_first_item_id( $lp_course->get_id() );
 				$extra_info->first_item_id = $first_item_id;
 
 				// Get and set total items courses
+				// Clean cache
+				$key_cache_total_items = "$course_id/total_items";
+				$lp_course_cache->clear( $key_cache_total_items );
 				$total_items             = $lp_course_db->get_total_items( $lp_course->get_id() );
 				$extra_info->total_items = $total_items;
 
