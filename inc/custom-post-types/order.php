@@ -340,8 +340,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				$created_via = $order->get_created_via();
 				if ( empty( $created_via ) ) {
-					$user_id = learn_press_get_request( 'order-customer' );
 					$order->set_created_via( 'manual' );
+				}
+
+				if ( isset( $_POST['order-customer'] ) ) {
+					$user_id = LP_Helper::sanitize_params_submitted( $_POST['order-customer'] );
 					$order->set_user_id( $user_id );
 				}
 
