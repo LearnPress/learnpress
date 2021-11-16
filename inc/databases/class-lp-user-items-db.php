@@ -254,13 +254,13 @@ class LP_User_Items_DB extends LP_Database {
 	public function get_total_courses_has_status( int $user_id, string $status ): int {
 		$query = $this->wpdb->prepare(
 			"
-			SELECT COUNT(DISTINCT(item_id)) total
-			FROM $this->tb_lp_user_items
+			SELECT COUNT(DISTINCT(ui.item_id)) total
+			FROM $this->tb_lp_user_items AS ui
 				INNER JOIN $this->tb_posts AS p
-				ON item_id = p.ID
-			WHERE item_type = %s
-			AND user_id = %d
-			AND graduation = %s
+				ON ui.item_id = p.ID
+			WHERE ui.item_type = %s
+			AND ui.user_id = %d
+			AND ui.graduation = %s
 			AND p.post_status = 'publish'
 			",
 			LP_COURSE_CPT,
@@ -468,9 +468,9 @@ class LP_User_Items_DB extends LP_Database {
 	 */
 	public function remove_user_item_ids( LP_User_Items_Filter $filter ) {
 		// Check valid user.
-		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
+		/*if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
 			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
-		}
+		}*/
 
 		if ( empty( $filter->user_item_ids ) ) {
 			return 1;
@@ -501,9 +501,9 @@ class LP_User_Items_DB extends LP_Database {
 	 */
 	public function remove_user_itemmeta( LP_User_Items_Filter $filter ) {
 		// Check valid user.
-		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
+		/*if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
 			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
-		}
+		}*/
 
 		if ( empty( $filter->user_item_ids ) ) {
 			return 1;
@@ -538,9 +538,9 @@ class LP_User_Items_DB extends LP_Database {
 
 		try {
 			// Check valid user.
-			if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $user_id ) ) {
+			/*if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $user_id ) ) {
 				throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
-			}
+			}*/
 
 			// Get all user_item_ids has user_id and course_id
 			$filter          = new LP_User_Items_Filter();
@@ -572,7 +572,7 @@ class LP_User_Items_DB extends LP_Database {
 			// Delete user_item_results
 			$lp_user_item_results->remove_user_item_results( $filter );
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 		}
 	}
 
@@ -587,7 +587,7 @@ class LP_User_Items_DB extends LP_Database {
 	public function update_user_id_by_order( LP_User_Items_Filter $filter ) {
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
-			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+			throw new Exception( __FUNCTION__ . ': User invalid!' );
 		}
 
 		$query = $this->wpdb->prepare(

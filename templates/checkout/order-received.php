@@ -42,6 +42,14 @@ echo wp_sprintf(
 
 ?>
 <table class="order_details">
+	<?php if ( isset( $_GET['key'] ) && ! is_user_logged_in() ) : ?>
+		<tr class="order-key">
+			<th><?php esc_html_e( 'Order Key', 'learnpress' ); ?></th>
+			<td>
+				<?php echo esc_html( $_GET['key'] ); ?>
+			</td>
+		</tr>
+	<?php endif; ?>
 	<tr class="order">
 		<th><?php esc_html_e( 'Order Number', 'learnpress' ); ?></th>
 		<td>

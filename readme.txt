@@ -197,6 +197,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.4.1 (2021-11-xx) =
+~ Fixed: metabox textarea
+~ Save info total items (quiz, question,...) of course when saving the course - improve performance
+~ Fixed: error change user Guest to another user on LP Order not save
+~ Fixed: Guest buy course with user exists
+~ Fixed: Guest buy course with create account
+
 = 4.1.4 (2021-11-08) =
 ~ Fixed security: when user share profile, another user can see settings as change password, change info.
 ~ Modify: not scroll to title courses when load first.

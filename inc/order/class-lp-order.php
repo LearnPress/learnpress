@@ -667,7 +667,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 				do_action( 'learn-press/added-order-item-data', $order_item_id, $item, $this->get_id() );
 			} catch ( Throwable $e ) {
-
+				error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 			}
 
 			return $order_item_id;
@@ -1361,10 +1361,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.0
 		 */
 		public function check_can_delete_item_old( LP_Course $course ): bool {
-			$user_current = learn_press_get_current_user();
+			/*$user_current = learn_press_get_current_user();
 			if ( $user_current instanceof LP_User_Guest ) {
 				return false;
-			}
+			}*/
 
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
 

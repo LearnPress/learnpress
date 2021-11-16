@@ -169,9 +169,9 @@ class LP_User_Items_Result_DB extends LP_Database {
 	 */
 	public function remove_user_item_results( LP_User_Items_Filter $filter ) {
 		// Check valid user.
-		if ( ! is_user_logged_in() || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
+		/*if ( ! is_user_logged_in() || ( ! current_user_can( 'administrator' ) && get_current_user_id() != $filter->user_id ) ) {
 			throw new Exception( __( 'User invalid!', 'learnpress' ) );
-		}
+		}*/
 
 		if ( empty( $filter->user_item_ids ) ) {
 			return 1;

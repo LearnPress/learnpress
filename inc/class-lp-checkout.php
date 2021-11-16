@@ -92,7 +92,7 @@ class LP_Checkout {
 	public function __construct() {
 		add_filter( 'learn-press/validate-checkout-field', array( $this, 'validate_fields' ), 10, 3 );
 		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10, 3 );
-		add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
+		//add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
 
 		$this->_checkout_email = LP()->session->get( 'checkout-email' );
 	}
@@ -104,8 +104,10 @@ class LP_Checkout {
 	 * @param int   $order_id
 	 *
 	 * @return mixed
+	 * @editor tungnx
+	 * @modify 4.1.4 - merge to function create_order
 	 */
-	public function process_customer( $result, $order_id ) {
+	/*public function process_customer( $result, $order_id ) {
 		try {
 			if ( ! $this->is_enable_guest_checkout() ) {
 				throw new Exception( '' );
@@ -147,7 +149,7 @@ class LP_Checkout {
 		}
 
 		return $result;
-	}
+	}*/
 
 	/**
 	 * @return int|WP_Error
@@ -376,10 +378,36 @@ class LP_Checkout {
 				do_action( 'learn-press/checkout/new-order', $order_id );
 			}
 
+			$user_id = 0;
 			if ( is_user_logged_in() ) {
 				$user_id = get_current_user_id();
 			} else {
-				$user_id = 0;
+				$checkout_option = isset( $_POST['checkout-email-option'] ) ? LP_Helper::sanitize_params_submitted( $_POST['checkout-email-option'] ) : '';
+
+				// Create new user if buy with Guest and tick "Create new Account"
+				if ( $checkout_option === 'new-account' ) {
+					if ( $this->checkout_email_exists() ) {
+						throw new Exception( 'NEW ACCOUNT EMAIL IS EXISTED', 0 );
+					}
+
+					$order->set_meta( '_create_account', 'yes' );
+
+					$user_id = $this->_create_account();
+
+					if ( ! is_wp_error( $user_id ) ) {
+						wp_new_user_notification( $user_id, null, apply_filters( 'learn-press/email-create-new-user-when-checkout', 'user' ) );
+					}
+				} else { // Set user id for Order if buy with Guest and email exists on the user
+					$user = get_user_by( 'email', $this->get_checkout_email() );
+
+					if ( $order->is_guest() && $user ) {
+						$user_id = $user->ID;
+					}
+				}
+
+				if ( $user_id ) {
+					$order->set_user_id( $user_id );
+				}
 			}
 
 			$order->set_customer_note( $this->order_comment );
