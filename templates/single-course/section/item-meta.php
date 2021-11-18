@@ -23,7 +23,7 @@ $user = LP_Global::user();
 
 	<?php do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item ); ?>
 
-	<?php if ( $item->is_preview() && ! $user->has_completed_item( $item->get_id(), $course->get_id() ) ) : ?>
+	<?php if ( $item->is_preview() && $user && ! $user->has_completed_item( $item->get_id(), $course->get_id() ) ) : ?>
 		<span class="item-meta course-item-preview"
 			  data-preview="<?php esc_attr_e( 'Preview', 'learnpress' ); ?>"></span>
 
