@@ -175,7 +175,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_order_key() {
-			return $this->get_data( 'order_key' );
+			return $this->get_data( 'order_key', '' );
 		}
 
 		/**
