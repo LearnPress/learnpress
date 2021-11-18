@@ -451,8 +451,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 * @since 3.1.0
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function count_items( $course_id, $context = 'view' ) {
+		/*public function count_items( $course_id, $context = 'view' ) {
 			global $wpdb;
 			$params = array( $course_id );
 			$sql    = "
@@ -478,7 +480,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return $stats_object;
-		}
+		}*/
 
 		/**
 		 * Read sections of a bundle of courses by ids
