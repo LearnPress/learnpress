@@ -247,6 +247,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/filters/class-lp-post-type-filter.php';
 			require_once 'inc/filters/class-lp-course-filter.php';
 			require_once 'inc/filters/class-lp-order-filter.php';
+			require_once 'inc/filters/class-lp-section-filter.php';
 			require_once 'inc/filters/class-lp-question-filter.php';
 			require_once 'inc/filters/class-lp-user-items-filter.php';
 

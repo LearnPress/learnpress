@@ -11,11 +11,10 @@ defined( 'ABSPATH' ) || exit();
 
 /**
  * @param int $the_course
- * @param array|string $args
  *
- * @return LP_Course|mixed
+ * @return bool|LP_Course|mixed
  */
-function learn_press_get_course( $the_course = 0 ) {
+function learn_press_get_course( int $the_course = 0 ) {
 	if ( 0 === $the_course ) {
 		$the_course = get_the_ID();
 	}
@@ -23,13 +22,17 @@ function learn_press_get_course( $the_course = 0 ) {
 	return LP_Course::get_course( $the_course );
 }
 
-function learn_press_get_course_by_id( $id ) {
+/**
+ * @editor tungnx
+ * @modify 4.1.4.1 - comment - not use
+ */
+/*function learn_press_get_course_by_id( $id ) {
 	if ( false !== ( $courses = LP_Object_Cache::get( 'object', 'learn-press/courses' ) ) ) {
 		return ! empty( $courses[ $id ] ) ? $courses[ $id ] : false;
 	}
 
 	return false;
-}
+}*/
 
 /**
  * Create nonce for course action.

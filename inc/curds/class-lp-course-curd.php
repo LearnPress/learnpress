@@ -84,12 +84,14 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param object $course_id
 		 *
 		 * @since 3.0.0
+		 * @editor tungnx
+		 * @modify 4.1.4.1
 		 */
 		public function delete( &$course_id ) {
 			// section curd
-			$curd = new LP_Section_CURD( $course_id );
+			// $curd = new LP_Section_CURD( $course_id );
 			// clear course items
-			$curd->clear();
+			// $curd->clear();
 		}
 
 		/**
@@ -449,8 +451,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 * @since 3.1.0
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function count_items( $course_id, $context = 'view' ) {
+		/*public function count_items( $course_id, $context = 'view' ) {
 			global $wpdb;
 			$params = array( $course_id );
 			$sql    = "
@@ -476,7 +480,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return $stats_object;
-		}
+		}*/
 
 		/**
 		 * Read sections of a bundle of courses by ids
@@ -590,8 +594,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * Remove all course data from database, includes section and course's items
 		 *
 		 * @param $course_id
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function remove_course( $course_id ) {
+		/*public function remove_course( $course_id ) {
 			global $wpdb;
 
 			$section_ids = $wpdb->get_col(
@@ -622,7 +628,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			);
 			$wpdb->query( $query );
 			learn_press_reset_auto_increment( 'learnpress_sections' );
-		}
+		}*/
 
 		/**
 		 * Get recent courses.
