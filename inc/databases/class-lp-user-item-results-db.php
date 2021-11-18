@@ -149,20 +149,12 @@ class LP_User_Items_Result_DB extends LP_Database {
 		return $delete;
 	}
 
-	/** Delete all record in table */
-	public function delete_all() {
-		global $wpdb;
-
-		$wpdb->query( "DELETE FROM {$wpdb->learnpress_user_item_results}" );
-	}
-
 	/**
 	 * Delete all rows in user_item_ids
 	 *
 	 * @param LP_User_Items_Filter $filter $filter->user_item_ids
 	 *
 	 * @return bool|int
-	 * @throws Exception
 	 * @since 4.1.4
 	 * @author tungnx
 	 * @version 1.0.0

@@ -405,6 +405,36 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
+	 * Get user_item_id by course_id
+	 *
+	 * @param LP_User_Items_Filter $filter $filter->item_id
+	 *
+	 * @return array
+	 */
+	public function get_user_items_by_course( LP_User_Items_Filter $filter ): array {
+		try {
+			// Check valid user.
+			if ( ! is_user_logged_in() ) {
+				throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+			}
+
+			$query = $this->wpdb->prepare(
+				"SELECT user_item_id FROM $this->tb_lp_user_items
+				WHERE item_id = %d
+				AND item_type = %s
+				",
+				$filter->item_id,
+				LP_COURSE_CPT
+			);
+
+			return $this->wpdb->get_col( $query );
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ':' . $e->getMessage() );
+			return array();
+		}
+	}
+
+	/**
 	 * Get items is course has user
 	 *
 	 * @param LP_User_Items_Filter $filter $filter->user_id, $filter->item_id
@@ -416,7 +446,7 @@ class LP_User_Items_DB extends LP_Database {
 	 */
 	public function get_ids_course_user( LP_User_Items_Filter $filter ): array {
 		$query = $this->wpdb->prepare(
-			"SELECT user_item_id FROM {$this->tb_lp_user_items}
+			"SELECT user_item_id FROM $this->tb_lp_user_items
 			WHERE user_id = %d
 			AND item_id = %d
 			AND item_type = %s
@@ -553,24 +583,12 @@ class LP_User_Items_DB extends LP_Database {
 				return;
 			}
 
-			// Get user_item_ids has parent in $user_course_ids
-			$filter                = new LP_User_Items_Filter();
-			$filter->user_item_ids = $user_course_ids;
-			$user_item_ids         = $lp_user_items_db->get_item_ids_of_user_course( $filter );
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				return;
+			}
 
-			$user_item_ids_concat = array_merge( $user_course_ids, $user_item_ids );
-
-			// Delete on tb lp_user_items
-			$filter                = new LP_User_Items_Filter();
-			$filter->user_item_ids = $user_item_ids_concat;
-			$filter->user_id       = $user_id;
-			$lp_user_items_db->remove_user_item_ids( $filter );
-
-			// Delete user_itemmeta
-			$lp_user_items_db->remove_user_itemmeta( $filter );
-
-			// Delete user_item_results
-			$lp_user_item_results->remove_user_item_results( $filter );
+			$course->delete_user_item_and_result( $user_course_ids );
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 		}

@@ -130,8 +130,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return bool
 	 * @since 3.0.0
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
 	 */
-	public function clear() {
+	/*public function clear() {
 
 		$sections_ids = LP_Object_Cache::get( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
 
@@ -158,7 +160,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		LP_Course_Utils::set_cache_db_sections( $this->course_id, false );
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Load data from database.

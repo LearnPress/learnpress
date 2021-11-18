@@ -248,9 +248,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function before_delete( int $post_id ) {
 			// course curd
-			$curd = new LP_Course_CURD();
-			// remove all items from each section and delete course's sections
-			$curd->delete( $post_id );
+			//$curd = new LP_Course_CURD();
+			//$curd->remove_course( $post_id );
+			$course = learn_press_get_course( $post_id );
+			if ( ! $course ) {
+				return;
+			}
+			$course->delete_relate_data_when_delete_course();
 		}
 
 		/**
