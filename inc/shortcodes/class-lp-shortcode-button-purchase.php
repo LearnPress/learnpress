@@ -58,10 +58,14 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 
 			$course = learn_press_get_course( $course_id );
 
-			if ( $course_id && $course ) {
+			if ( $course_id && $course && ! $course->is_free() ) {
 				LP_Global::set_course( $course );
 				global $post;
+				$enqueued = wp_script_is( 'lp-single-course', 'enqueued' );
 
+				if( ! $enqueued ) {
+					wp_enqueue_script( 'lp-single-course');
+				}
 				$post = get_post( $course_id );
 
 				setup_postdata( $post );
