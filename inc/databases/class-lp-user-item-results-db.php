@@ -51,18 +51,18 @@ class LP_User_Items_Result_DB extends LP_Database {
 	 *
 	 * @param integer $user_item_id
 	 *
-	 * @return void
+	 * @return array|bool
 	 */
-	public function get_result( $user_item_id = 0 ) {
+	public function get_result( int $user_item_id = 0 ) {
 		if ( ! $user_item_id ) {
 			return false;
 		}
 
 		$result = $this->wpdb->get_var(
 			$this->wpdb->prepare(
-				"
-				SELECT result FROM $this->tb_lp_user_item_results
-				WHERE user_item_id=%d ORDER BY id DESC LIMIT 1
+				"SELECT result FROM $this->tb_lp_user_item_results
+				WHERE user_item_id = %d
+				ORDER BY id DESC LIMIT 1
 				",
 				$user_item_id
 			)

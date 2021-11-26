@@ -426,7 +426,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $user_item ) && isset( $user_item->$field ) ) {
 			$got_status = $user_item->$field;
 		} else {
-			$got_status = '';
+			$got_status = '---';
 		}
 
 		$this->set_data( $field, $got_status );
@@ -479,7 +479,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return int
 	 */
 	public function get_user_item_id() {
-		return $this->get_data( 'user_item_id' );
+		return intval( $this->get_data( 'user_item_id' ) );
 	}
 
 	/**
@@ -957,10 +957,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	public function complete( $status = 'completed' ) {
 		global $wpdb;
 
-		$end_time  = new LP_Datetime();
-		$null_time = '0000-00-00 00:00';
+		//$end_time  = new LP_Datetime();
+		$null_time = null;
 
-		$this->set_end_time( $end_time->toSql( false ) );
+		$this->set_end_time( current_time( 'mysql', 1 ) );
 		$this->set_status( $status );
 		$this->update();
 

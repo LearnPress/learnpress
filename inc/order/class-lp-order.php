@@ -465,13 +465,21 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return false !== get_userdata( $this->get_data( 'user_id' ) );
 		}*/
 
+		public $order_items_loaded = false;
+
 		/**
 		 * Get items of the order
 		 *
 		 * @return mixed
 		 */
 		public function get_items() {
+			if ( $this->order_items_loaded ) {
+				return $this->order_items_loaded;
+			}
+
 			$items = $this->_curd->read_items( $this );
+
+			$this->order_items_loaded = $items;
 
 			return apply_filters( 'learn-press/order-items', $items );
 		}

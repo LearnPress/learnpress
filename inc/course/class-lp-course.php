@@ -409,7 +409,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn-press/course/count-items', $count_items, $this->get_id() );
+			return apply_filters( 'learn-press/course/count-items', intval( $count_items ), $this->get_id() );
 		}
 
 		/**

@@ -37,6 +37,10 @@ class LP_Filter {
 	 * @var string
 	 */
 	public $select = '';
+	/**
+	 * @var string
+	 */
+	public $query_type = 'get_results';
 
 	public function __construct() {
 		$this->limit = apply_filters( 'lp/filter/limit', $this->limit );

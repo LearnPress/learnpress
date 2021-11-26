@@ -3444,58 +3444,41 @@ function learn_press_default_course_levels() {
  * @since 3.x.x
  */
 function learn_press_course_evaluation_methods( $return = '', $final_quizz_passing = '' ) {
-	global $thepostid;
+	global $post;
 
 	$course_tip     = '<span class="learn-press-tip">%s</span>';
-	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $thepostid . '" data-loading="' . esc_attr__(
+	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $post->ID . '" data-loading="' . esc_attr__(
 		'Loading...',
 		'learnpress'
 	) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
 
 	$course_desc = array(
-		'evaluate_lesson'     => __(
-			'Evaluate by number of lessons completed per number of total lessons.',
-			'learnpress'
-		)
-								. sprintf(
-									'<p>%s</p>',
-									__(
-										'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%',
-										'learnpress'
-									)
-								),
+		'evaluate_lesson'     => sprintf(
+			'<p>%s<br/>%s</p>',
+			__( 'Evaluate by the number of lessons completed per total number of lessons.', 'learnpress' ),
+			__( 'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 (50.%)', 'learnpress' )
+		),
 		'evaluate_final_quiz' => __(
-			'Evaluate by results of final quiz in course. Click to Get Passing Grade to get and update Final Quiz',
+			'Evaluate by result of final quiz in the course. You have to add a quiz to the end of the course.',
 			'learnpress'
 		),
-		'evaluate_quizzes'    => __(
-			'Evaluate as a percentage of completed quizzes on the total number of quizzes.',
-			'learnpress'
-		)
-								. __(
-									'<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: 50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>',
-									'learnpress'
-								),
-		'evaluate_quiz'       => __(
-			'<p>Evaluate by number of quizzes passed per number of total quizzes.</p>',
-			'learnpress'
-		)
-								. __(
-									'<p>E.g: Course has 10 quizzes and user passed 5 quizzes then the result = 5/10 = 50%.</p>',
-									'learnpress'
-								),
-		'evaluate_questions'  => __(
-			'Evaluate by achieved points of question passed per total point of all questions.',
-			'learnpress'
-		)
-								. sprintf(
-									'<p>%s</p>',
-									__(
-										'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%.',
-										'learnpress'
-									)
-								),
-		'evaluate_mark'       => __( 'Evaluate by achieved marks per total marks of all questions.', 'learnpress' ),
+		'evaluate_quiz'       => sprintf(
+			'<p>%s<br/>%s</p>',
+			__( 'Evaluate by the number of quizzes passed per total number of quizzes.', 'learnpress' ),
+			__(
+				'E.g: The course has 10 quizzes and the user passed 5 quizzes then the result = 5/10 (50%).',
+				'learnpress'
+			)
+		),
+		'evaluate_questions'  => sprintf(
+			'<p>%s<br/>%s</p>',
+			__( 'Evaluate by total number of correct answers per total number of questions.', 'learnpress' ),
+			__(
+				'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 (50%).',
+				'learnpress'
+			)
+		),
+		'evaluate_mark'       => __( 'Evaluate by total score achieved per total score of the questions.', 'learnpress' ),
 	);
 
 	$methods = apply_filters(

@@ -210,11 +210,11 @@ class LP_User extends LP_Abstract_User {
 		$result_check->message = '';
 
 		try {
-			$order = $this->get_course_order( $course_id );
+			/*$order = $this->get_course_order( $course_id );
 
 			if ( ! $order || ! $order->is_completed() ) {
 				throw new Exception( esc_html__( 'Order is not completed', 'learnpress' ) );
-			}
+			}*/
 
 			$user_course = $this->get_course_data( $course_id );
 
@@ -422,11 +422,11 @@ class LP_User extends LP_Abstract_User {
 	 * @return array
 	 * @author nhamdv
 	 * @editor tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function can_show_finish_course_btn( $course ): array {
 		$return = array(
-			'status'  => 'fail',
+			'status'  => 'success',
 			'message' => '',
 		);
 
@@ -437,37 +437,44 @@ class LP_User extends LP_Abstract_User {
 
 			$course_id = $course->get_id();
 
-			/**
-			 * Re-calculate result course of user
-			 */
-			$course_data    = $this->get_course_data( $course_id );
-			$course_results = $course_data->calculate_course_results();
-			// End
+			if ( $this->has_finished_course( $course_id ) ) {
+				throw new Exception( esc_html__( 'Course is has finished.', 'learnpress' ) );
+			}
 
-			// Get result to check
-			$is_all_completed = $this->is_completed_all_items( $course_id );
+			if ( ! $this->has_enrolled_course( $course_id ) ) {
+				throw new Exception( esc_html__( 'Course is not enroll.', 'learnpress' ) );
+			}
 
 			if ( ! $this->is_course_in_progress( $course_id ) ) {
 				throw new Exception( esc_html__( 'Error: Course is not in-progress.', 'learnpress' ) );
 			}
 
-			$has_finish = get_post_meta( $course_id, '_lp_has_finish', true ) ? get_post_meta( $course_id, '_lp_has_finish', true ) : 'yes';
-			$is_passed  = $this->has_reached_passing_condition( $course_id );
+			$course_data = $this->get_course_data( $course_id );
 
-			if ( ! $is_passed && $has_finish === 'no' ) {
-				throw new Exception( esc_html__( 'Error: Course is not has finish.', 'learnpress' ) );
-			}
+			if ( $course_data ) {
+				$course_result = $course_data->get_result();
 
-			if ( ! $is_all_completed && $has_finish === 'yes' && ! $is_passed ) {
-				throw new Exception( esc_html__( 'Error: Cannot finish course.', 'learnpress' ) );
+				if ( ! $course_result['pass'] ) {
+					// Get option Can finish course if completed all item without pass
+					$can_finish = get_post_meta( $course_id, '_lp_has_finish', true ) ?? 'yes';
+
+					if ( $can_finish == 'yes' ) {
+						// Check completed all items
+						$is_all_completed = $this->is_completed_all_items( $course_id );
+						if ( ! $is_all_completed ) {
+							throw new Exception( 'All items not completed and Course not pass' );
+						}
+					} else {
+						throw new Exception( 'Course not pass' );
+					}
+				}
 			}
 
 			if ( ! apply_filters( 'lp_can_finish_course', true ) ) {
 				throw new Exception( esc_html__( 'Error: Filter disable finish course.', 'learnpress' ) );
 			}
-
-			$return['status'] = 'success';
 		} catch ( Exception $e ) {
+			$return['status']  = 'false';
 			$return['message'] = $e->getMessage();
 		}
 

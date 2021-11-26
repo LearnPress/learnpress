@@ -48,7 +48,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function items_progress( $request ) {
 		$params         = $request->get_params();
 		$course_id      = $params['courseId'] ?? false;
-		$user_id        = $params['userId'] ?? false;
+		$user_id        = get_current_user_id();
 		$response       = new LP_REST_Response();
 		$response->data = '';
 

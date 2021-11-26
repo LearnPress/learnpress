@@ -248,7 +248,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_passing_grade_type() {
-			return $this->get_data( 'passing_grade_type' );
+			return $this->get_data( 'passing_grade_type', 'percentage' );
 		}
 
 		/**
@@ -263,7 +263,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function get_passing_grade() {
 			$type  = $this->get_passing_grade_type();
-			$value = $this->get_data( 'passing_grade' );
+			$value = $this->get_data( 'passing_grade', 0 );
 
 			switch ( $type ) {
 				case 'point':

@@ -1103,6 +1103,10 @@ div.order-recover {
 
 		> li {
 			list-style: none;
+
+			&:hover {
+				cursor: pointer;
+			}
 		}
 
 		a {

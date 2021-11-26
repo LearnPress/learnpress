@@ -36,7 +36,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$this->rest_base = 'users';
 		parent::__construct();
 
-		add_filter( 'rest_pre_dispatch', array( $this, 'rest_pre_dispatch' ), 10, 3 );
+		// tungnx - 4.1.4.1 - comment - not use - run wrong
+		// add_filter( 'rest_pre_dispatch', array( $this, 'rest_pre_dispatch' ), 10, 3 );
 	}
 
 	/**
@@ -47,8 +48,10 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return mixed
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use - run wrong
 	 */
-	public function rest_pre_dispatch( $null, $server, $request ) {
+	/*public function rest_pre_dispatch( $null, $server, $request ) {
 		$user_id   = get_current_user_id();
 		$item_id   = $request['item_id'] ?? 0;
 		$course_id = $request['course_id'] ?? 0;
@@ -69,7 +72,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return $null;
-	}
+	}*/
 
 	/**
 	 * Register rest routes.

@@ -203,6 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: error change user Guest to another user on LP Order not save
 ~ Fixed: Guest buy course with user exists
 ~ Fixed: Guest buy course with create account
+~ Fixed: High CPU (many query) when user login view single course
 
 = 4.1.4 (2021-11-08) =
 ~ Fixed security: when user share profile, another user can see settings as change password, change info.

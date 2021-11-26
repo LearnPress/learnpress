@@ -62,41 +62,13 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Get data user_items by course_id, quiz_id, user_id
-	 *
-	 * @param [type] $course_id
-	 * @param [type] $item_id
-	 * @param [type] $user_id
-	 * @return array
-	 */
-	public function get_result_by_item_id( $course_id, $item_id, $user_id ) {
-		if ( empty( $course_id ) || empty( $item_id ) ) {
-			return false;
-		}
-
-		$query = $this->wpdb->prepare(
-			"SELECT * FROM {$this->tb_lp_user_items}
-			WHERE ref_id = %d
-			AND item_id = %d
-			AND user_id=%d
-			ORDER BY user_item_id DESC",
-			$course_id,
-			$item_id,
-			$user_id
-		);
-
-		$results = $this->wpdb->get_row( $query, ARRAY_A );
-
-		return $results;
-	}
-
-	/**
 	 * Remove items' of course and user learned
 	 *
 	 * @param LP_User_Items_Filter $filter .
 	 *
 	 * @return bool|int
 	 * @throws Exception .
+	 * @TODO tungnx - recheck this function
 	 */
 	public function remove_items_of_user_course( LP_User_Items_Filter $filter ) {
 		$query_extra = '';
@@ -122,7 +94,7 @@ class LP_User_Items_DB extends LP_Database {
 		return $this->wpdb->query( $query );
 	}
 
-	public function get_item_status( $item_id, $course_id ) {
+	/*public function get_item_status( $item_id, $course_id ) {
 		$query = $this->wpdb->prepare(
 			"
 			SELECT status FROM {$this->tb_lp_user_items}
@@ -136,7 +108,7 @@ class LP_User_Items_DB extends LP_Database {
 		);
 
 		return $this->wpdb->get_var( $query );
-	}
+	}*/
 
 	/**
 	 * Insert/Update extra value
@@ -202,6 +174,7 @@ class LP_User_Items_DB extends LP_Database {
 			)
 		);
 	}
+
 	/**
 	 * Re-set current item
 	 * @param $course_id
@@ -274,34 +247,6 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Get status course by order_id
-	 *
-	 * @param int $order_id
-	 * @throws Exception
-	 * @return null|string
-	 */
-	public function get_status_by_order_id( int $order_id ) {
-		$query = $this->wpdb->prepare(
-			"
-			SELECT status
-			FROM $this->tb_lp_user_items
-			WHERE ref_type = %s
-			AND ref_id = %d
-			AND item_type = %s
-			",
-			LP_ORDER_CPT,
-			$order_id,
-			LP_COURSE_CPT
-		);
-
-		$result = $this->wpdb->get_var( $query );
-
-		$this->check_execute_has_error();
-
-		return $result;
-	}
-
-	/**
 	 * Get the newest item is course of user
 	 *
 	 * @param LP_User_Items_Filter $filter
@@ -364,6 +309,40 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
+	 * Get items of course by item type
+	 *
+	 * @param LP_User_Items_Filter $filter {$filter->parent_id, $filter->item_type, [$filter->item_id]}
+	 * @throws Exception
+	 */
+	public function get_user_course_items_by_item_type( LP_User_Items_Filter $filter ) {
+
+		$AND = '';
+
+		if ( $filter->item_type ) {
+			$AND .= $this->wpdb->prepare( ' AND item_type = %s', $filter->item_type );
+		}
+
+		if ( $filter->item_id ) {
+			$AND .= $this->wpdb->prepare( ' AND item_id = %d', $filter->item_id );
+		}
+
+		$query = $this->wpdb->prepare(
+			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time, parent_id
+			FROM $this->tb_lp_user_items
+			WHERE parent_id = %d
+			$AND
+			",
+			$filter->parent_id
+		);
+
+		$result = $this->wpdb->{$filter->query_type}( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
 	 * Query table learnpress_user_items
 	 *
 	 * @param LP_User_Items_Filter $filter
@@ -380,9 +359,9 @@ class LP_User_Items_DB extends LP_Database {
 		foreach ( $vars as $var ) {
 			if ( ! empty( $filter->{$var} ) ) {
 				if ( empty( $WHERE ) ) {
-					$WHERE = ' WHERE' . $filter->{$var};
+					$WHERE .= $this->wpdb->prepare( "WHERE . $filter->{$var} = %s", $filter->{$var} );
 				} else {
-					$WHERE = ' AND' . $filter->{$var};
+					$WHERE .= $this->wpdb->prepare( " AND . $filter->{$var} = %s ", $filter->{$var} );
 				}
 			}
 		}
@@ -391,13 +370,10 @@ class LP_User_Items_DB extends LP_Database {
 			"
 			SELECT $filter->select FROM $this->tb_lp_user_items
 			$WHERE
-			",
-			$filter->item_type,
-			$filter->item_id,
-			$filter->user_id
+			"
 		);
 
-		$result = $this->wpdb->get_var( $query );
+		$result = $this->wpdb->{$filter->query_type}( $query );
 
 		$this->check_execute_has_error();
 
@@ -620,6 +596,44 @@ class LP_User_Items_DB extends LP_Database {
 		);
 
 		return $this->wpdb->query( $query );
+	}
+
+	/**
+	 * Count items by type and total by status
+	 * @throws Exception
+	 *
+	 * @return null|object
+	 */
+	public function count_items_of_course_with_status( LP_User_Items_Filter $filter ) {
+		$item_types       = learn_press_get_course_item_types();
+		$count_item_types = count( $item_types );
+		$i                = 0;
+
+		//$user_course = $this->get_last_user_course( $filter );
+
+		$query_count  = '';
+		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS count_status,', $filter->status );
+
+		foreach ( $item_types as $item_type ) {
+			$i++;
+			$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s AND ui.item_type = %s) AS %s,', $filter->status, $item_type, $item_type . '_status_' . $filter->status );
+			$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s AND ui.item_type = %s) AS %s', $filter->graduation, $item_type, $item_type . '_graduation_' . $filter->graduation );
+
+			if ( $i < $count_item_types ) {
+				$query_count .= ',';
+			}
+		}
+
+		$query = $this->wpdb->prepare(
+			'SELECT ' . $query_count . ' FROM ' . $this->tb_lp_user_items . ' ui
+			WHERE parent_id = %d
+			',
+			$filter->parent_id
+		);
+
+		$total_items = $this->wpdb->get_row( $query );
+
+		return $total_items;
 	}
 }
 

@@ -90,6 +90,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$this->_curd->load( $this );
 		}
 
+		// To set data if query first on load page
+		public $is_get_course_data = false;
+
 		/**
 		 * Get data for a course user has enrolled.
 		 *
@@ -102,6 +105,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_course_data( int $course_id = 0 ) {
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
+
+			if ( $this->is_get_course_data ) {
+				return $this->is_get_course_data;
+			}
 
 			try {
 				if ( ! $course_id ) {
@@ -123,6 +130,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					//Todo: tungnx - need debug to check
 					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
+
+				$this->is_get_course_data = $object_course_data;
 			} catch ( Throwable $e ) {
 				$object_course_data = false;
 			}
@@ -477,11 +486,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 * @author tungnx
 		 */
-		public function getItemStatus( $item_id, $course_id ) {
+		/*public function getItemStatus( $item_id, $course_id ) {
 			$status = LP_User_Items_DB::getInstance()->get_item_status( $item_id, $course_id );
 
 			return $status;
-		}
+		}*/
 
 		/**
 		 * Update viewing item data into database.
@@ -1188,15 +1197,25 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( $course ) {
 				$user_course = $this->get_course_data( $course_id );
 
-				$return = $user_course->finish();
+				$result = $user_course->calculate_course_results();
 
-				$user_course->calculate_course_results();
+				// Save result for course
+				LP_User_Items_Result_DB::instance()->update( $user_course->get_user_item_id(), wp_json_encode( $result ) );
+
+				if ( $result['pass'] ) {
+					$graduation = LP_COURSE_GRADUATION_PASSED;
+				} else {
+					$graduation = LP_COURSE_GRADUATION_FAILED;
+				}
+
+				$user_course->set_graduation( $graduation );
+				$user_course->save();
+
+				$return = $user_course->complete( 'finished' );
 
 				if ( $return ) {
 					do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 				}
-
-				wp_cache_flush();
 			}
 
 			return apply_filters( 'learn-press/user-course-finished-data', $return, $course_id, $this->get_id() );
@@ -2421,12 +2440,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
 		}
 
-		public function has_reached_passing_condition( $course_id ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
+		 */
+		/*public function has_reached_passing_condition( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			$result = $this->evaluate_course_results( $course_id );
 
 			return $return = $result >= $course->get_passing_condition();
-		}
+		}*/
 
 		/**
 		 * Check if all items in course completed.
@@ -2439,7 +2462,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$course_data = $this->get_course_data( $course_id );
 
-			$course_results = $course_data->get_results( false );
+			$course_results = $course_data->get_result();
 
 			if ( ! isset( $course_results['completed_items'] ) ) {
 				return false;
