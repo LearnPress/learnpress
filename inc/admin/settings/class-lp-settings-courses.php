@@ -56,8 +56,12 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	 * @return array
 	 */
 	public function get_settings( $section = null, $tab = null ) {
-
-		$generate_course_thumbnail = get_option( 'learn_press_generate_course_thumbnail' ) ? get_option( 'learn_press_generate_course_thumbnail' ) : 'no';
+		$generate_course_thumbnail         = get_option( 'learn_press_generate_course_thumbnail' ) ?? 'no';
+		$des_option_redirect_finish_course = wp_sprintf(
+			'%s<br>%s',
+			esc_html__( 'The site will be redirected to the URL added after clicking finish course button.', 'learnpress' ),
+			esc_html__( 'Set blank, the site will be redirected to the single course page', 'learnpress' )
+		);
 
 		$settings = apply_filters(
 			'learn-press/courses-settings-fields',
@@ -116,12 +120,12 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'    => 'image-dimensions',
 						),
 						array(
-							'title'       => esc_html__( 'Redirect when finish course ', 'learnpress' ),
+							'title'       => esc_html__( 'Redirect when finish course', 'learnpress' ),
 							'id'          => 'course_finish_redirect',
 							'default'     => '',
 							'type'        => 'url',
 							'placeholder' => 'https://learnpress.com/',
-							'desc'        => esc_html__( 'The site will be redirected to the URL added after clicking finish course button.', 'learnpress' ),
+							'desc'        => $des_option_redirect_finish_course,
 						),
 						array(
 							'type' => 'sectionend',
