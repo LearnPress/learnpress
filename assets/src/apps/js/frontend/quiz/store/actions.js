@@ -131,7 +131,16 @@ export function* submitQuiz() {
 		return;
 	}
 
-	const answered = getQuestionsSelectedAnswers();
+	let answered = getQuestionsSelectedAnswers();
+
+	if ( Object.keys(answered).length === 0 && lpQuizSettings.checkNorequizenroll == '1' ){
+		const data = JSON.parse(localStorage.getItem( `LP_Quiz_${ itemId }_Answered` ));
+
+		for ( let [k, v] of Object.entries(data) ) {
+			answered[k] = v.answered;
+		}
+	}
+
 	let response = yield apiFetch( {
 		path: 'lp/v1/users/submit-quiz',
 		method: 'POST',
