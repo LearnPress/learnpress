@@ -206,6 +206,9 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 						$value = ! empty( $raw_value ) ? $raw_value : array();
 						$value = LP_Helper::sanitize_params_submitted( $value, 'html' );
 						break;
+					case 'url':
+						$value = ! empty( $raw_value ) ? esc_url( $raw_value ) : '';
+						break;
 					default:
 						$value = LP_Helper::sanitize_params_submitted( $raw_value );
 						break;

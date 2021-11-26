@@ -15,7 +15,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'checkout:nopriv',
 				'complete-lesson',
 				'finish-course', // finish_course.
-				//'retake-course', // retake_course.
+				// 'retake-course', // retake_course.
 				'external-link:nopriv',
 				'save-uploaded-user-avatar',
 				'load-more-courses',
@@ -254,11 +254,14 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
 
-			$finished = $user->finish_course( $course_id );
+			$finished    = $user->finish_course( $course_id );
+			$lp_redirect = LP_Settings::get_option( 'course_finish_redirect' );
+			$redirect    = ! empty( $lp_redirect ) ? $lp_redirect : get_the_permalink( $course_id );
+
 			$response = array(
 				'redirect' => apply_filters(
 					'learn-press/finish-course-redirect',
-					get_the_permalink( $course_id ),
+					$redirect,
 					$course_id
 				),
 			);
@@ -340,7 +343,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 *
 		 * @TODO move this function to API
 		 */
-		/*public static function retake_course() {
+		/*
+		public static function retake_course() {
 			$security  = LP_Request::get_string( 'retake-course-nonce' );
 			$course_id = LP_Request::get_int( 'retake-course' );
 			$user      = learn_press_get_current_user();

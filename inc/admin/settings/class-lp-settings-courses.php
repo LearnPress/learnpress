@@ -116,6 +116,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'    => 'image-dimensions',
 						),
 						array(
+							'title'       => esc_html__( 'Redirect when finish course ', 'learnpress' ),
+							'id'          => 'course_finish_redirect',
+							'default'     => '',
+							'type'        => 'url',
+							'placeholder' => 'https://learnpress.com/',
+							'desc'        => esc_html__( 'The site will be redirected to the URL added after clicking finish course button.', 'learnpress' ),
+						),
+						array(
 							'type' => 'sectionend',
 						),
 					)
