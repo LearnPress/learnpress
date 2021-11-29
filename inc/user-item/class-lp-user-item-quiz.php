@@ -174,7 +174,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
-	 * @deprecated
+	 * Get result
 	 *
 	 * @param string $prop
 	 * @param bool   $force
@@ -375,6 +375,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			if ( $this->get_status() === 'completed' ) {
 				$grade = $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed';
+				$this->_set_data( 'graduation', $grade );
 			}
 
 			$result['question_count'] = count( $questions );
@@ -397,6 +398,19 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Calculate result of quiz.
+	 *
+	 * @return array
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @author tungnx
+	 * @since 4.1.4.1
+	 */
+	public function calculate_quiz_result(): array {
+		return array();
 	}
 
 	protected function _get_results() {
