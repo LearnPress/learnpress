@@ -310,11 +310,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$question_ids = $quiz_results->getQuestions( 'ids' );
 			$answered     = $quiz_results->getAnswered();
 
-			$expiration_time = $user_quiz->get_expiration_time();
+			$time_remaining = $user_quiz->get_timestamp_remaining();
+			//$expiration_time = $user_quiz->get_expiration_time();
 
-			if ( $expiration_time && ! $expiration_time->is_null() ) {
+			/*if ( $expiration_time && ! $expiration_time->is_null() ) {
 				$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
-			}
+			}*/
 
 			$questions = learn_press_rest_prepare_user_questions(
 				$question_ids,
@@ -335,11 +336,11 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			);
 
 			// Error get_start_time when ajax call.
-			if ( isset( $total_time ) ) {
-				$expiration            = $expiration_time->toSql( false );
-				$results['total_time'] = $total_time;
-				$results['end_time']   = $expiration;
-			}
+//			if ( isset( $total_time ) ) {
+				//$expiration            = $expiration_time->toSql( false );
+				$results['total_time'] = $time_remaining;
+				//$results['end_time']   = $expiration;
+//			}
 
 			$results['duration'] = $duration ? $duration->get() : false;
 			$results['answered'] = $quiz_results->getQuestions();

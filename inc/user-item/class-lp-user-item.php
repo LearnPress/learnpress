@@ -223,10 +223,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return $this
 	 */
 	public function set_start_time( $time ) {
-		/*$this->_set_data_date( 'start_time', $time );
-
-		return $this;*/
-		$this->set_data( 'start_time', $time );
+		$this->_set_data_date( 'start_time', $time );
 
 		return $this;
 	}
@@ -297,7 +294,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return $this
 	 */
 	public function set_end_time( $time ) {
-		$this->set_data( 'start_time', $time );
+		if ( $time && '0000-00-00 00:00:00' !== $time ) {
+			$this->_set_data_date( 'end_time', $time );
+		} else {
+			$this->_set_data( 'end_time', '' );
+		}
 
 		return $this;
 	}

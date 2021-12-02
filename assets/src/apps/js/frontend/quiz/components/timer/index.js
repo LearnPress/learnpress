@@ -11,14 +11,14 @@ const Timer = () => {
 	const { submitQuiz } = dispatch( 'learnpress/quiz' );
 
 	const totalTime = getData( 'totalTime' ) ? getData( 'totalTime' ) : getData( 'duration' );
-	const endTime = getData( 'endTime' );
+/*	const endTime = getData( 'endTime' );
 
 	const d1 = new Date( endTime.replace( /-/g, '/' ) );
 	const d2 = new Date();
 	const tz = new Date().getTimezoneOffset();
-	const t = parseInt( ( d1.getTime() / 1000 ) - ( ( d2.getTime() / 1000 ) + ( tz * 60 ) ) );
+	const t = parseInt( ( d1.getTime() / 1000 ) - ( ( d2.getTime() / 1000 ) + ( tz * 60 ) ) );*/
 
-	const [ seconds, setSeconds ] = useState( t > 0 ? t : 0 );
+	const [ seconds, setSeconds ] = useState( totalTime );
 
 	useEffect( () => {
 		const myInterval = setInterval( () => {

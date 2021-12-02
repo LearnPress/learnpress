@@ -35,12 +35,12 @@ if ( $user_quiz ) {
 	$status            = $user_quiz->get_status();
 	$quiz_results      = $user_quiz->get_results( '' );
 	$checked_questions = $user_quiz->get_checked_questions();
-	$expiration_time   = $user_quiz->get_expiration_time();
+	//$expiration_time   = $user_quiz->get_expiration_time();
 
 	// If expiration time is specific then calculate total time
-	if ( $expiration_time && ! $expiration_time->is_null() ) {
+	/*if ( $expiration_time && ! $expiration_time->is_null() ) {
 		$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
-	}
+	}*/
 
 	$user_js = array(
 		'status'            => $status,
@@ -50,10 +50,12 @@ if ( $user_quiz ) {
 		'retaken'           => absint( $user_quiz->get_retaken_count() ),
 	);
 
-	if ( isset( $total_time ) ) {
-		$user_js['total_time'] = $total_time;
-		$user_js['endTime']    = $expiration_time->toSql( false );
-	}
+	$time_remaining = $user_quiz->get_timestamp_remaining();
+
+//	if ( isset( $total_time ) ) {
+		$user_js['total_time'] = $time_remaining;
+		//$user_js['endTime']    = $expiration_time->toSql( false );
+//	}
 
 	if ( $quiz_results ) {
 		$user_js['results'] = $quiz_results->get();

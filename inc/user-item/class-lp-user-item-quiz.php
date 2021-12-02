@@ -253,6 +253,39 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
+	 * Get Timestamp remaining when user doing quiz
+	 *
+	 */
+	public function get_timestamp_remaining(): int {
+		$timestamp_remaining = - 1;
+		$quiz                = learn_press_get_quiz( $this->get_item_id() );
+
+		if ( ! $quiz ) {
+			return $timestamp_remaining;
+		}
+
+		$parent_id = $this->get_parent_id();
+
+		$duration = $quiz->get_duration()->get() . ' second';
+
+		$filter              = new LP_User_Items_Filter();
+		$filter->parent_id   = $parent_id;
+		$filter->item_id     = $this->get_item_id();
+		$filter->user_id     = get_current_user_id();
+		$user_quiz           = LP_User_Items_DB::getInstance()->get_user_course_item( $filter );
+		$course_start_time   = $user_quiz->start_time;
+		$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
+		$timestamp_current   = strtotime( current_time( 'mysql', 1 ) );
+		$timestamp_remaining = $timestamp_expire - $timestamp_current;
+
+		if ( $timestamp_remaining < 0 ) {
+			$timestamp_remaining = 0;
+		}
+
+		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+	}
+
+	/**
 	 * Get all attempts of a quiz.
 	 *
 	 * @param string $args
@@ -815,13 +848,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	/**
 	 * @deprecated
+	 *
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
 	 */
-	public function finish() {
+	/*public function finish() {
 		$this->complete( 'completed' );
 
 		// Force to re-calculate quiz results and update cache.
 		$r = $this->get_results( '', true );
-	}
+	}*/
 
 	public function is_review_questions() {
 		return LP_Global::quiz_question() && ( $this->get_status() === 'completed' );
