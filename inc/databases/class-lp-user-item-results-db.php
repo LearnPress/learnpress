@@ -71,7 +71,15 @@ class LP_User_Items_Result_DB extends LP_Database {
 		return $result && is_string( $result ) ? json_decode( $result, true ) : false;
 	}
 
-	public function update( $user_item_id = 0, $result = null ) {
+	/**
+	 * Update or Insert result
+	 *
+	 * @param int $user_item_id
+	 * @param string $result
+	 *
+	 * @return bool|int
+	 */
+	public function update( int $user_item_id = 0, string $result = '' ) {
 		global $wpdb;
 
 		if ( ! $user_item_id ) {

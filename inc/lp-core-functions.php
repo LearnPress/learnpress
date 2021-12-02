@@ -3521,10 +3521,12 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
  *
  * @return int|string
  * @since 4.0.0
+ * @editor tungnx
+ * @modify 4.1.4.1 - comment - not use
  */
-function learn_press_mysql_time( $gmt = true ) {
+/*function learn_press_mysql_time( $gmt = true ) {
 	return current_time( 'mysql', $gmt );
-}
+}*/
 
 /**
  * Wrap WP Core function current_time with timestamp format.

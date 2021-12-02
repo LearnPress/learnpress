@@ -231,10 +231,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @return array|mixed
+		 * Enable review quiz
+		 *
+		 * @return bool
 		 */
-		public function get_review_questions() {
-			return $this->get_data( 'review_questions' ) === 'yes';
+		public function get_review_questions(): bool {
+			return 'yes' === $this->get_data( 'review_questions', 'yes' );
 		}
 
 		/**
@@ -547,7 +549,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @editor tungnx
 		 * @throws Exception
 		 * @version 1.0.1
-		 * @since 3.x.x
 		 * @since 3.2.0
 		 *
 		 */
@@ -1004,12 +1005,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		// }
 
 		/**
-		 * @deprecated
+		 * Get option skip question will be minus points
 		 *
 		 * @return bool
 		 */
-		public function get_minus_skip_questions() {
-			return 'yes' === $this->get_data( 'minus_skip_questions' );
+		public function get_minus_skip_questions(): bool {
+			return 'yes' === $this->get_data( 'minus_skip_questions', 'no' );
 		}
 
 		/**

@@ -119,7 +119,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['start_time'] ) ) {
 			$this->set_start_time( $item['start_time'] );
 		} else {
-			$this->set_start_time( learn_press_mysql_time( true ) );
+			$this->set_start_time( current_time( 'mysql', 1 ) );
 		}
 
 		if ( ! empty( $item['end_time'] ) ) {
@@ -223,7 +223,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return $this
 	 */
 	public function set_start_time( $time ) {
-		$this->_set_data_date( 'start_time', $time );
+		/*$this->_set_data_date( 'start_time', $time );
+
+		return $this;*/
+		$this->set_data( 'start_time', $time );
 
 		return $this;
 	}
@@ -289,17 +292,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set end-time for item.
 	 *
-	 * @param bool  $bound_to_gmt - Optional. Calculate gmt of end-time and update
 	 * @param mixed $time
 	 *
 	 * @return $this
 	 */
 	public function set_end_time( $time ) {
-		if ( $time && '0000-00-00 00:00:00' !== $time ) {
-			$this->_set_data_date( 'end_time', $time );
-		} else {
-			$this->_set_data( 'end_time', '' );
-		}
+		$this->set_data( 'start_time', $time );
 
 		return $this;
 	}
@@ -677,12 +675,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$columns = array();
 
 		foreach ( $this->get_data() as $k => $v ) {
-			switch ( $k ) {
+			/*switch ( $k ) {
 				case 'start_time':
 				case 'end_time':
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql( false ) : $v;
 					break;
-			}
+			}*/
 			$columns[ $k ] = $v;
 		}
 
@@ -965,18 +963,16 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$this->update();
 
 		$query = $wpdb->prepare(
-			"
-				SELECT user_item_id
+			"SELECT user_item_id
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
 					AND item_id = %d
-					AND start_time <> %s AND end_time <> %s
 					AND status = %s
+				GROUP BY user_item_id DESC
+				LIMIT 1
 			",
 			$this->get_user_id(),
 			$this->get_item_id(),
-			$null_time,
-			$null_time,
 			$status
 		);
 

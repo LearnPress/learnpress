@@ -73,7 +73,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		$results['questions'] = $questions;
 
-		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results->get() ) );
+		//LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results->get() ) );
 
 		$this->calculate_results();
 
@@ -108,12 +108,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 * @return bool|mixed
 	 */
-	public function update( $force = false, $wp_error = false ) {
+	/*public function update( $force = false, $wp_error = false ) {
 		$return = parent::update( $force, $wp_error );
 		$this->calculate_results();
 
 		return $return;
-	}
+	}*/
 
 	/**
 	 * Get list of data to update to database
@@ -290,12 +290,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return bool|array
 	 */
 	public function get_questions() {
-		$ids = $this->get_meta( 'questions' );
-
-		if ( $ids === false ) {
-			$quiz = learn_press_get_quiz( $this->get_item_id() );
-			$ids  = $quiz->get_question_ids();
-		}
+		$quiz = learn_press_get_quiz( $this->get_item_id() );
+		$ids  = $quiz->get_question_ids();
 
 		return apply_filters( 'learn-press/user-item-quiz-questions', $ids, $this->get_user_id(), $this );
 	}
@@ -394,7 +390,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		if ( $is_has_change ) {
-			LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $result ) );
+			//LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $result ) );
 		}
 
 		return $result;
@@ -403,14 +399,112 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Calculate result of quiz.
 	 *
+	 * @param array $answered [question_id => answered]
+	 *
 	 * @return array
-	 * @throws Exception
 	 * @version 1.0.0
 	 * @author tungnx
 	 * @since 4.1.4.1
 	 */
-	public function calculate_quiz_result(): array {
-		return array();
+	public function calculate_quiz_result( array $answered ): array {
+		$result = array(
+			'questions'         => array(),
+			'mark'              => 0,
+			'user_mark'         => 0,
+			'question_count'    => 0,
+			'question_empty'    => 0,
+			'question_answered' => 0,
+			'question_wrong'    => 0,
+			'question_correct'  => 0,
+			'status'            => 'completed',
+			'result'            => 0,
+			'time_spend'        => '',
+			'passing_grade'     => '',
+			'pass'              => 0,
+		);
+
+		try {
+			$quiz = learn_press_get_quiz( $this->get_item_id() );
+
+			if ( ! $quiz ) {
+				throw new Exception();
+			}
+
+			$question_ids             = $quiz->get_questions();
+			$result['mark']           = $quiz->get_mark();
+			$result['question_count'] = count( $question_ids );
+			$result['time_spend']     = $this->get_time_interval( 'display' );
+			$result['passing_grade']  = $quiz->get_passing_grade();
+
+			foreach ( $question_ids as $question_id ) {
+				$question = LP_Question::get_question( $question_id );
+				$point    = floatval( $question->get_mark() );
+
+				$result['questions'][ $question_id ]             = [];
+				$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
+
+				if ( isset( $answered[ $question_id ] ) ) { // User's answer
+					$result['question_answered']++;
+
+					$check = $question->check( $answered[ $question_id ] );
+					if ( $check['correct'] ) {
+						$result['question_correct']++;
+						$result['user_mark'] += $point;
+
+						$result['questions'][ $question_id ]['correct'] = true;
+						$result['questions'][ $question_id ]['mark']    = $point;
+					} else {
+						if ( $quiz->get_negative_marking() ) {
+							$result['user_mark'] -= $point;
+						}
+						$result['question_wrong']++;
+
+						$result['questions'][ $question_id ]['correct'] = false;
+						$result['questions'][ $question_id ]['mark']    = 0;
+					}
+				} else { // User skip question
+					if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
+						$result['user_mark'] -= $point;
+					}
+					$result['question_empty']++;
+
+					$result['questions'][ $question_id ]['correct'] = false;
+					$result['questions'][ $question_id ]['mark']    = 0;
+				}
+
+				$can_review_quiz = get_post_meta( $quiz->get_id(), '_lp_review', true ) === 'yes';
+				if ( $can_review_quiz ) {
+					$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
+					$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
+						$question,
+						array(
+							'include_is_true' => get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
+							'answer'          => $answered[ $question_id ] ?? '',
+						)
+					);
+				}
+			}
+
+			if ( $result['user_mark'] > 0 && $result['mark'] > 0 ) {
+				$result['result'] = round( $result['user_mark'] * 100 / $result['mark'], 2, PHP_ROUND_HALF_DOWN );
+			}
+
+			$passing_grade = $quiz->get_data( 'passing_grade', 0 );
+			if ( $result['result'] >= $passing_grade ) {
+				$result['pass'] = 1;
+			} else {
+				$result['pass'] = 0;
+			}
+
+			//$result['answered'] = $answered;
+			//$results['status']   = $quiz->get_status();
+			//$result['results']  = $result;
+			//$result['attempts'] = $this->get_attempts();
+		} catch ( Throwable $e ) {
+
+		}
+
+		return $result;
 	}
 
 	protected function _get_results() {
@@ -590,7 +684,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		try {
 			if ( $this->can_check_answer( $question_id ) ) {
-				$this->add_question_answer( $question_id, $answered );
+				$this->add_question_answer( $answered );
 				$this->add_checked_question( $question_id );
 
 				$question            = learn_press_get_question( $question_id );
@@ -713,11 +807,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return apply_filters( 'learn-press/user-quiz/can-hint-answer', true, $this->get_id(), $this->get_course_id() );
 	}
 
-	public function complete( $status = 'completed' ) {
+	/*public function complete( $status = 'completed' ) {
 		parent::complete( $status );
 
 		$this->update();
-	}
+	}*/
 
 	/**
 	 * @deprecated

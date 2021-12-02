@@ -328,7 +328,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$this->_course = $course;
 
 			if ( $this->is_finished() ) {
-				// Get result from lp_user_items
+				// Get result from lp_user_item_results
 				// Todo: tungnx - set cache
 				return LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 			}
@@ -764,6 +764,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$filter->item_type  = LP_QUIZ_CPT;
 			$filter->item_id    = $quiz_final_id;
 			$user_quiz          = $lp_user_items_db->get_user_course_items_by_item_type( $filter );
+
+			if ( ! $user_quiz ) {
+				throw new Exception();
+			}
 
 			// Get result did quiz
 			$quiz_result = $lp_user_item_result_db->get_result( $user_quiz->user_item_id );
@@ -1231,12 +1235,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return LP_User_Item[]
 	 */
 	public function get_items( $refresh = false ) {
-		$this->read_items( $refresh );
+		return $this->read_items( $refresh );
 
-		return LP_Object_Cache::get(
+		/*return LP_Object_Cache::get(
 			$this->get_user_id() . '-' . $this->get_id(),
 			'learn-press/user-course-item-objects'
-		);
+		);*/
 	}
 
 	/**
@@ -1547,7 +1551,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			if ( in_array( $item->get_status(), array( 'completed', 'finished' ) ) ) {
 
 				if ( ! $item->get_end_time() || $item->get_end_time()->is_null() ) {
-					$item->set_end_time( new LP_Datetime(), true );
+					$item->set_end_time( current_time( 'mysql', 1 ) );
 				}
 			}
 

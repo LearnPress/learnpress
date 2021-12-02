@@ -1592,8 +1592,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						);
 					}
 					// TODO: conflict???
-					$time = new LP_Datetime();
-					$item->set_end_time( $time->toSql( false ) );
+					//$time = new LP_Datetime();
+					$item->set_end_time( current_time( 'mysql', 1 ) );
 					$item->set_status( 'completed' );
 					$item->set_graduation( apply_filters( 'learn-press/complete-lesson-graduation', 'passed' ) );
 

@@ -1776,10 +1776,10 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
 
 	$user_item->set_status( 'started' )
-			  ->set_start_time( current_time( 'mysql', false ) ) // Error Retake when change timezone - Nhamdv
-			  ->set_end_time( '' )
-			  ->set_graduation( 'in-progress' )
-			  ->update();
+				->set_start_time( current_time( 'mysql', 1 ) ) // Error Retake when change timezone - Nhamdv
+				->set_end_time( '' )
+				->set_graduation( 'in-progress' )
+				->update();
 
 	// Error Retake when change timezone - Nhamdv
 	learn_press_update_user_item_field(
@@ -2251,7 +2251,8 @@ function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' )
 
 }
 
-/*add_action(
+/*
+add_action(
 	'admin_init',
 	function() {
 		$custom_fields = LP()->settings()->get( 'register_profile_fields' );

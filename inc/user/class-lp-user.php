@@ -594,15 +594,6 @@ class LP_User extends LP_Abstract_User {
 		$return = false;
 
 		try {
-			// Validate course and quiz
-			/*_verify_course_item = $this->_verify_course_item( $quiz_id, $course_id );
-			if ( $course_id ) {
-				throw new Exception(
-					__( 'Course is not exists or does not contain the quiz', 'learnpress' ),
-					LP_INVALID_QUIZ_OR_COURSE
-				);
-			}*/
-
 			// If user has already finished the course
 			if ( $this->has_finished_course( $course_id ) ) {
 				throw new Exception(
@@ -620,13 +611,15 @@ class LP_User extends LP_Abstract_User {
 				);
 			}
 
+			/**
+			 * @var LP_User_Item_Quiz $user_quiz
+			 */
 			$user_quiz = $this->get_item_data( $quiz_id, $course_id );
-
-			$user_quiz->finish();
+			$user_quiz->complete();
 
 			do_action( 'learn-press/user/quiz-finished', $quiz_id, $course_id, $this->get_id() );
 		} catch ( Exception $ex ) {
-			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
+			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : true;
 		}
 
 		return $return;
