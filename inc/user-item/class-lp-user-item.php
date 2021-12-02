@@ -676,12 +676,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$columns = array();
 
 		foreach ( $this->get_data() as $k => $v ) {
-			/*switch ( $k ) {
+			switch ( $k ) {
 				case 'start_time':
 				case 'end_time':
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql( false ) : $v;
 					break;
-			}*/
+			}
 			$columns[ $k ] = $v;
 		}
 
