@@ -132,7 +132,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					// 'callback' => array( $this, 'submit_quiz' ),
-					'callback' => array( $this, 'submit_quiz_new' ),
+					'callback'            => array( $this, 'submit_quiz_new' ),
 					// 'permission_callback' => array( $this, 'check_admin_permission' ),
 					'permission_callback' => '__return_true',
 					'args'                => $this->get_item_endpoint_args(),
@@ -333,14 +333,15 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results = array(
 				'question_ids' => $question_ids,
 				'questions'    => $questions,
+				'total_time'   => $time_remaining,
 			);
 
 			// Error get_start_time when ajax call.
-//			if ( isset( $total_time ) ) {
+			//          if ( isset( $total_time ) ) {
 				//$expiration            = $expiration_time->toSql( false );
-				$results['total_time'] = $time_remaining;
+				//$results['total_time'] = $time_remaining;
 				//$results['end_time']   = $expiration;
-//			}
+			//          }
 
 			$results['duration'] = $duration ? $duration->get() : false;
 			$results['answered'] = $quiz_results->getQuestions();
@@ -490,6 +491,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$item_id     = $request['item_id'];
 			$course_id   = $request['course_id'];
 			$answered    = $request['answered'];
+			$time_spend  = $request['time_spend'];
 			$user        = learn_press_get_user( $user_id );
 			$course      = learn_press_get_course( $course_id );
 			$user_course = $user->get_course_data( $course_id );
@@ -548,7 +550,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					throw new Exception();
 				}
 
-				$user_quiz->set_end_time( current_time( 'mysql', 1 ) );
+				$end_time = date( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
+				$user_quiz->set_end_time( $end_time );
 
 				//              /*if ( $user_quiz ) {
 				//                  $user_quiz->add_question_answer( $answered );

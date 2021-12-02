@@ -131,15 +131,24 @@ export function* submitQuiz() {
 		return;
 	}
 
-	let answered = getQuestionsSelectedAnswers();
+	const answered = getQuestionsSelectedAnswers();
 
-	if ( Object.keys(answered).length === 0 && lpQuizSettings.checkNorequizenroll == '1' ){
-		const data = JSON.parse(localStorage.getItem( `LP_Quiz_${ itemId }_Answered` ));
+	if ( Object.keys( answered ).length === 0 && lpQuizSettings.checkNorequizenroll == '1' ) {
+		const data = JSON.parse( localStorage.getItem( `LP_Quiz_${ itemId }_Answered` ) );
 
-		for ( let [k, v] of Object.entries(data) ) {
-			answered[k] = v.answered;
+		for ( const [ k, v ] of Object.entries( data ) ) {
+			answered[ k ] = v.answered;
 		}
 	}
+
+	// Get time spend did quiz - tungnx
+	let timeSpend = 0;
+	const elTimeSpend = document.querySelector( 'input[name=lp-quiz-time-spend]' );
+
+	if ( elTimeSpend ) {
+		timeSpend = elTimeSpend.value;
+	}
+	// End
 
 	let response = yield apiFetch( {
 		path: 'lp/v1/users/submit-quiz',
@@ -148,6 +157,7 @@ export function* submitQuiz() {
 			item_id: itemId,
 			course_id: courseId,
 			answered,
+			time_spend: timeSpend,
 		},
 	} );
 

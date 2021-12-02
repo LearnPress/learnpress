@@ -959,7 +959,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		//$end_time  = new LP_Datetime();
 		$null_time = null;
 
-		$this->set_end_time( current_time( 'mysql', 1 ) );
+		if ( ! $this->get_end_time() ) {
+			$this->set_end_time( current_time( 'mysql', 1 ) );
+		}
+
 		$this->set_status( $status );
 		$this->update();
 
