@@ -81,13 +81,13 @@ class LP_Question_DB extends LP_Database {
                 SELECT qq.question_id
                 FROM {$this->tb_lp_quiz_questions} AS qq
                 INNER JOIN {$this->tb_posts} AS p
-                ON p.ID = qq.question_id
+                ON p.ID = qq.quiz_id
                 WHERE p.post_type = %s
             )
             AND p.post_status NOT IN(%s, %s)
             $query_append",
 			LP_QUESTION_CPT,
-			LP_QUESTION_CPT,
+			LP_QUIZ_CPT,
 			'auto-draft',
 			'trash'
 		);

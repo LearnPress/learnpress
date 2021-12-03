@@ -2914,7 +2914,7 @@ function learn_press_get_unassigned_items( $type = '' ) {
             SELECT p.ID
             FROM {$wpdb->posts} p
             WHERE p.post_type IN(" . join( ',', $format ) . ")
-            AND p.ID IN(
+            AND p.ID NOT IN(
                 SELECT si.item_id
                 FROM {$wpdb->learnpress_section_items} si
                 INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
