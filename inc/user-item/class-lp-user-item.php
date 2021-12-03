@@ -953,21 +953,29 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $this->get_status() === $status;
 	}
 
+	/**
+	 * Complete item
+	 *
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - should review to improve
+	 * @version 4.0.1
+	 */
 	public function complete( $status = 'completed' ) {
 		global $wpdb;
 
 		//$end_time  = new LP_Datetime();
-		$null_time = null;
+		//$null_time = null;
 
-		if ( ! $this->get_end_time() ) {
+		try {
+			//if ( ! $this->get_end_time() ) {
 			$this->set_end_time( current_time( 'mysql', 1 ) );
-		}
+			//}
 
-		$this->set_status( $status );
-		$this->update();
+			$this->set_status( $status );
+			$this->update();
 
-		$query = $wpdb->prepare(
-			"SELECT user_item_id
+			/*$query = $wpdb->prepare(
+				"SELECT user_item_id
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
 					AND item_id = %d
@@ -975,12 +983,18 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				GROUP BY user_item_id DESC
 				LIMIT 1
 			",
-			$this->get_user_id(),
-			$this->get_item_id(),
-			$status
-		);
+				$this->get_user_id(),
+				$this->get_item_id(),
+				$status
+			);
 
-		return $wpdb->get_var( $query );
+			return $wpdb->get_var( $query );*/
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ':' . $e->getMessage() );
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
