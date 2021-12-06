@@ -103,58 +103,43 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @param array $views
 		 *
-		 * @return mixed
+		 * @return array
 		 * @since 3.0.0
-		 *
+		 * @editor tungnx
+		 * @modify 4.1.4.1
 		 */
-		public function views_pages( $views ) {
-			$unassigned_items = learn_press_get_unassigned_items( LP_LESSON_CPT );
-			$unassigned_text  = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
-			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
-				$views['lesson-unassigned'] = sprintf(
-					'<a href="%s" class="current">%s</a>',
+		public function views_pages( array $views ): array {
+			$count_unassigned_lesson = LP_Course_DB::getInstance()->get_total_item_unassigned( LP_LESSON_CPT );
+
+			if ( $count_unassigned_lesson > 0 ) {
+				$views['unassigned'] = sprintf(
+					'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
 					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
-					$unassigned_text
-				);
-			} else {
-				$views['lesson-unassigned'] = sprintf(
-					'<a href="%s">%s</a>',
-					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
-					$unassigned_text
+					isset( $_GET['unassigned'] ) ? 'current' : '',
+					__( 'Unassigned', 'learnpress' ),
+					$count_unassigned_lesson
 				);
 			}
 
 			$total_preview_items = LP_Lesson_DB::getInstance()->get_total_preview_items();
-			$preview_text        = sprintf( __( 'Preview %s', 'learnpress' ), '<span class="count">(' . $total_preview_items . ')</span>' );
-
-			if ( 'yes' === LP_Request::get( 'preview' ) ) {
+			if ( $total_preview_items > 0 ) {
 				$views['lesson-preview'] = sprintf(
-					'<a href="%s" class="current">%s</a>',
+					'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
 					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=yes' ),
-					$preview_text
-				);
-			} else {
-				$views['lesson-preview'] = sprintf(
-					'<a href="%s">%s</a>',
-					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=yes' ),
-					$preview_text
+					isset( $_GET['preview'] ) && $_GET['preview'] === 'yes' ? 'current' : '',
+					__( 'Preview', 'learnpress' ),
+					$total_preview_items
 				);
 			}
 
 			$total_no_preview_items = LP_Lesson_DB::getInstance()->get_total_no_preview_items( $total_preview_items );
-			$no_preview_text        = sprintf( __( 'No Preview %s', 'learnpress' ), '<span class="count">(' . $total_no_preview_items . ')</span>' );
-
-			if ( 'no' === LP_Request::get( 'preview' ) ) {
+			if ( $total_no_preview_items > 0 ) {
 				$views['lesson-no-preview'] = sprintf(
-					'<a href="%s" class="current">%s</a>',
+					'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
 					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=no' ),
-					$no_preview_text
-				);
-			} else {
-				$views['lesson-no-preview'] = sprintf(
-					'<a href="%s">%s</a>',
-					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=no' ),
-					$no_preview_text
+					isset( $_GET['preview'] ) && $_GET['preview'] === 'no' ? 'current' : '',
+					__( 'No Preview', 'learnpress' ),
+					$total_no_preview_items
 				);
 			}
 

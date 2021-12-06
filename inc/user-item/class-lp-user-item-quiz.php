@@ -364,7 +364,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		if ( $questions ) {
 			foreach ( $questions as $question_id => $last_checked ) {
-				$question          = LP_Question::get_question( $question_id );
+				$question = LP_Question::get_question( $question_id );
+				if ( ! $question ) {
+					continue;
+				}
+
 				$answered          = array_key_exists( 'answered', $last_checked ) ? $last_checked['answered'] : '';
 				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
 				$check['answered'] = $answered;

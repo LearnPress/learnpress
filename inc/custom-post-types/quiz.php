@@ -56,23 +56,18 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 *
 		 * @param array $views
 		 *
-		 * @return mixed
+		 * @return array
 		 */
-		public function views_pages( $views ) {
-			$unassigned_items = learn_press_get_unassigned_items( LP_QUIZ_CPT );
-			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+		public function views_pages( array $views ): array {
+			$count_unassigned_quiz = LP_Course_DB::getInstance()->get_total_item_unassigned( LP_QUIZ_CPT );
 
-			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
+			if ( $count_unassigned_quiz > 0 ) {
 				$views['unassigned'] = sprintf(
-					'<a href="%s" class="current">%s</a>',
+					'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
 					admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&unassigned=yes' ),
-					$text
-				);
-			} else {
-				$views['unassigned'] = sprintf(
-					'<a href="%s">%s</a>',
-					admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&unassigned=yes' ),
-					$text
+					isset( $_GET['unassigned'] ) ? 'current' : '',
+					__( 'Unassigned', 'learnpress' ),
+					$count_unassigned_quiz
 				);
 			}
 

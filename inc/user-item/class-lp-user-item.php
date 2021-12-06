@@ -139,8 +139,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['status'] ) ) {
 			$this->set_status( $item['status'] );
 		} else {
-			$status = $this->get_user_item_id() ? learn_press_default_user_item_status( $item_id ) : '';
-			$this->set_status( $status );
+			$this->set_status( '' );
 		}
 
 		if ( ! empty( $item['ref_id'] ) ) {
@@ -425,7 +424,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $user_item ) && isset( $user_item->$field ) ) {
 			$got_status = $user_item->$field;
 		} else {
-			$got_status = '---';
+			$got_status = '';
 		}
 
 		$this->set_data( $field, $got_status );

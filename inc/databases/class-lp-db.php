@@ -128,13 +128,12 @@ class LP_Database {
 		}
 
 		if ( ! empty( $filter->post_status ) ) {
-			$query_append .= ' AND post_status = \'' . $filter->post_status . '\'';
+			$query_append .= $this->wpdb->prepare( ' AND post_status = %s', $filter->post_status );
 		}
 
 		$query = $this->wpdb->prepare(
-			"
-			SELECT Count(ID) FROM $this->tb_posts
-			WHERE post_type = '%s'
+			"SELECT Count(ID) FROM $this->tb_posts
+			WHERE post_type = %s
 			AND post_author = %d
 			{$query_append}",
 			$filter->post_type,

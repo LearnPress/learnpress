@@ -2894,6 +2894,7 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
  *
  * @return array
  * @since 3.0.0
+ * @deprecated 4.1.4.1
  */
 function learn_press_get_unassigned_items( $type = '' ) {
 	global $wpdb;

@@ -355,6 +355,13 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					$results_evaluate = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $evaluate_type, $this );
 			}
 
+			if ( ! is_array( $results_evaluate ) ) {
+				$results_evaluate = [
+					'result' => 0,
+					'pass'   => 0,
+				];
+			}
+
 			$completed_items = intval( $count_items_completed->count_status ?? 0 );
 
 			$item_types = learn_press_get_course_item_types();

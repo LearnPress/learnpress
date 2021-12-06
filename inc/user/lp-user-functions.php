@@ -1462,7 +1462,7 @@ function learn_press_hk_before_start_quiz( $true, $quiz_id, $course_id, $user_id
 
 add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz', 10, 4 );
 
-function learn_press_default_user_item_status( $item_id ) {
+/*function learn_press_default_user_item_status( $item_id ) {
 	$status = '';
 	switch ( learn_press_get_post_type( $item_id ) ) {
 		case LP_LESSON_CPT:
@@ -1476,7 +1476,7 @@ function learn_press_default_user_item_status( $item_id ) {
 	}
 
 	return apply_filters( 'learn-press/default-user-item-status', $status, $item_id );
-}
+}*/
 
 /**
  * Get current state of distraction mode
