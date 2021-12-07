@@ -285,9 +285,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 			//$results = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 
-			if ( is_array( $results ) && array_key_exists( 'result', $results ) ) {
-				$results = $this->calculate_course_results();
-			}
+			//if ( is_array( $results ) && array_key_exists( 'result', $results ) ) {
+			$results = $this->calculate_course_results();
+			//}
 
 			LP_Object_Cache::set(
 				'course-' . $this->get_item_id() . '-' . $this->get_user_id(),

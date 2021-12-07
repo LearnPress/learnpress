@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Views
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || die;
@@ -13,8 +13,13 @@ if ( ! isset( $user_id ) ) {
 	return;
 }
 
-$profile = LP_Profile::instance( $user_id );
-$user    = $profile->get_user();
+$profile           = LP_Profile::instance( $user_id );
+$user              = $profile->get_user();
+$link_user_profile = add_query_arg( [ 'tab' => 'enrolled' ], learn_press_user_profile_link( $user_id ) . 'courses' );
+echo wp_sprintf( '<p><b>%s</b> <a href="%s" target="_blank">%s</a></p>', __( 'Course list of user enrolled', 'learnpress' ), $link_user_profile, __( 'View', 'learnpress' ) );
+
+return;
+
 $query   = $profile->query_courses( 'purchased' );
 ?>
 
@@ -41,11 +46,14 @@ $query   = $profile->query_courses( 'purchased' );
 			<tbody>
 				<?php foreach ( $course_ids as $course_id ) : ?>
 					<?php
-					$course_id      = absint( $course_id->get_id() );
-					$course         = learn_press_get_course( $course_id );
+					$course_id = absint( $course_id->get_id() );
+					$course    = learn_press_get_course( $course_id );
+					if ( ! $course ) {
+						continue;
+					}
 					$course_data    = $user->get_course_data( $course_id );
-					$course_results = $course_data->get_results( '' );
-					$status         = $course_results['status'];
+					$course_result = $course_data->get_result();
+					$status         = $course_result['status'];
 					$grade          = $course_data->get_graduation_text();
 					?>
 
@@ -84,11 +92,8 @@ $query   = $profile->query_courses( 'purchased' );
 										$label_class[] = 'warning';
 									}
 									break;
-								case 'enrolled':
-									$icon          = '<i class="far fa-check-circle"></i>';
-									$label_class[] = 'warning';
-									break;
 								case 'in-progress':
+								case 'enrolled':
 									$icon          = '<i class="far fa-check-circle"></i>';
 									$label_class[] = 'warning';
 									break;
@@ -107,7 +112,7 @@ $query   = $profile->query_courses( 'purchased' );
 						</td>
 
 						<td class="manage-column column-results">
-							<?php learn_press_admin_view( 'user/course-progress', compact( 'user', 'course' ) ); ?>
+							<?php learn_press_admin_view( 'user/course-progress', compact( 'user', 'course', 'course_result' ) ); ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>

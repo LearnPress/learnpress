@@ -33,7 +33,9 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			$current_user = learn_press_get_current_user();
 			$viewing_user = true;
 
-			if ( empty( $wp->query_vars['user'] ) ) {
+			if ( current_user_can( ADMIN_ROLE ) ) {
+				$viewing_user = true;
+			} elseif ( empty( $wp->query_vars['user'] ) ) {
 				$viewing_user = $current_user;
 			} else {
 				$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );

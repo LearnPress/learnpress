@@ -446,7 +446,7 @@ class LP_Profile_Tab extends LP_Array_Access {
 	}
 
 	public function user_can_view() {
-		if ( $this->is_public() ) {
+		if ( $this->is_public() || current_user_can( ADMIN_ROLE ) ) {
 			return true;
 		}
 

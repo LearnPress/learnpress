@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.9
+ * @version  4.0.10
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -40,7 +40,11 @@ $createds = array(
 );
 
 $enrolled_active = apply_filters( 'learnpress/profile/tab/enrolled/subtab-active', ! learn_press_user_maybe_is_a_teacher() ? 'in-progress' : '' );
-$tab_active      = apply_filters( 'learnpress/profile/tab-active', ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'created' );
+$tab_active      = $_GET['tab'] ?? '';
+if ( ! $tab_active ) {
+	$tab_active = ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'created';
+}
+$tab_active = apply_filters( 'learnpress/profile/tab-active', $tab_active );
 ?>
 
 <div class="learn-press-subtab-content">

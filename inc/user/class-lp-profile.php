@@ -496,7 +496,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$tab         = substr( $capability, strlen( 'view-tab-' ) );
 			$public_tabs = $this->get_default_public_tabs();
 
-			if ( in_array( $tab, $public_tabs ) || $this->is_current_user() ) {
+			if ( current_user_can( ADMIN_ROLE ) ) {
+				$can = true;
+			} elseif ( in_array( $tab, $public_tabs ) || $this->is_current_user() ) {
 				$can = true;
 			} else {
 				if ( empty( $this->_privacy['view-tab-dashboard'] ) || ( false === $this->_privacy['view-tab-dashboard'] ) ) {

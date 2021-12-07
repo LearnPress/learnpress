@@ -6,12 +6,14 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
 
-$profile = LP_Profile::instance();
+if ( ! isset( $user ) || ! isset( $profile ) ) {
+	return;
+}
 ?>
 
 <div id="profile-nav">
@@ -27,6 +29,14 @@ $profile = LP_Profile::instance();
 		foreach ( $profile->get_tabs()->tabs() as $tab_key => $profile_tab ) {
 			if ( ! is_object( $profile_tab ) || ! $profile_tab || $profile_tab->is_hidden() || ! $profile_tab->user_can_view() ) {
 				continue;
+			}
+
+			// Admin view another user profile
+			if ( $profile->get_user()->get_id() !== get_current_user_id() && current_user_can( ADMIN_ROLE ) ) {
+				$tab_key_hidden_admin_view_user = [ 'settings', 'logout' ];
+				if ( in_array( $tab_key, $tab_key_hidden_admin_view_user ) ) {
+					continue;
+				}
 			}
 
 			$slug        = $profile->get_slug( $profile_tab, $tab_key );
