@@ -92,13 +92,13 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'type'    => 'checkbox',
 					'desc'    => esc_html__( 'Enable debug mode for developer.', 'learnpress' ),
 				),
-				array(
-					'title'   => esc_html__( 'Enable Jwt Rest API', 'learnpress' ),
-					'id'      => 'enable_jwt_rest_api',
-					'default' => 'no',
-					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Enable Rest API build for app, mobile...etc.', 'learnpress' ),
-				),
+				// array(
+				// 	'title'   => esc_html__( 'Enable Jwt Rest API', 'learnpress' ),
+				// 	'id'      => 'enable_jwt_rest_api',
+				// 	'default' => 'no',
+				// 	'type'    => 'checkbox',
+				// 	'desc'    => esc_html__( 'Enable Rest API build for app, mobile...etc.', 'learnpress' ),
+				// ),
 				array(
 					'title'   => esc_html__( 'Hard Cache', 'learnpress' ),
 					'id'      => 'enable_hard_cache',
