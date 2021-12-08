@@ -550,7 +550,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					throw new Exception();
 				}
 
-				$end_time = date( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
+				$end_time = gmdate( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
 				$user_quiz->set_end_time( $end_time );
 
 				//              /*if ( $user_quiz ) {

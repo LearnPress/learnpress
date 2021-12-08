@@ -7,12 +7,12 @@
  * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Templates
- * @version  4.1.3
+ * @version  4.1.4
  */
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $course || ! $user ) {
+if ( ! isset( $course ) || ! isset( $user ) || ! isset( $instance ) || ! isset( $course_results ) || ! isset( $course_data ) ) {
 	return;
 }
 ?>
@@ -23,10 +23,7 @@ if ( ! $course || ! $user ) {
 	<?php
 	learn_press_get_template(
 		'single-course/sidebar/user-progress.php',
-		array(
-			'user'   => $user,
-			'course' => $course,
-		)
+		compact( 'user', 'course', 'course_data', 'course_results' )
 	);
 	?>
 </div>

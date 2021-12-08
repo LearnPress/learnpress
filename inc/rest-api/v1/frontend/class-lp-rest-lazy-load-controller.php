@@ -84,34 +84,49 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * Load user_progress in single course.
 	 *
-	 * @author Nhamdv <email@email.com>
+	 * @param WP_REST_Request $request
 	 *
-	 * @return void
+	 * @return LP_REST_Response
+	 * @author Nhamdv <email@email.com>
+	 * @editor tungnx
+	 * @version 1.0.1
+	 * @sicne 4.0.0
 	 */
-	public function user_progress( $request ) {
+	public function user_progress( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
-		$course_id      = isset( $params['courseId'] ) ? $params['courseId'] : false;
-		$user_id        = isset( $params['userId'] ) ? $params['userId'] : false;
+		$course_id      = $params['courseId'] ?? false;
+		$user_id        = $params['userId'] ?? false;
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
 		if ( $course_id && $user_id ) {
 			$course = learn_press_get_course( $course_id );
-			$user   = learn_press_get_user( $user_id );
-
-			if ( $course && $user ) {
-				$response->status = 'success';
-				$response->data   = learn_press_get_template_content(
-					'single-course/sidebar/user-progress',
-					array(
-						'course' => $course,
-						'user'   => $user,
-					)
-				);
+			if ( ! $course ) {
+				$response->message = __( 'Course is invalid', 'learnpress' );
+				return $response;
 			}
+
+			$user = learn_press_get_user( $user_id );
+			if ( $user->is_guest() ) {
+				$response->message = __( 'You are Guest', 'learnpress' );
+				return $response;
+			}
+
+			$course_data = $user->get_course_data( $course->get_id() );
+			if ( ! $course_data ) {
+				return $response;
+			}
+
+			$course_results = $course_data->calculate_course_results();
+
+			$response->status = 'success';
+			$response->data   = learn_press_get_template_content(
+				'single-course/sidebar/user-progress',
+				compact( 'user', 'course', 'course_data', 'course_results' )
+			);
 		}
 
-		return rest_ensure_response( $response );
+		return $response;
 	}
 
 	/**

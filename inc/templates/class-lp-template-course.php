@@ -1060,7 +1060,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
-		if ( ! $course || ! $user ) {
+		if ( ! $course ) {
 			return;
 		}
 
@@ -1073,12 +1073,16 @@ class LP_Template_Course extends LP_Abstract_Template {
 			echo lp_skeleton_animation_html( 3 );
 			echo '</div>';
 		} else {
+			$course_data = $user->get_course_data( $course->get_id() );
+			if ( ! $course_data ) {
+				return;
+			}
+
+			$course_results = $course_data->calculate_course_results();
+
 			learn_press_get_template(
 				'single-course/sidebar/user-progress',
-				array(
-					'course' => $course,
-					'user'   => $user,
-				)
+				compact( 'user', 'course', 'course_data', 'course_results' )
 			);
 		}
 	}
