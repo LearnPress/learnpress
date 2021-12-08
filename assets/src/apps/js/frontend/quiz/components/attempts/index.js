@@ -19,7 +19,7 @@ const Attempts = () => {
 						<thead>
 							<tr>
 								<th className="quiz-attempts__questions">{ __( 'Questions', 'learnpress' ) }</th>
-								<th className="quiz-attempts__spend">{ __( 'Time spend', 'learnpress' ) }</th>
+								<th className="quiz-attempts__spend">{ __( 'Time spent', 'learnpress' ) }</th>
 								<th className="quiz-attempts__marks">{ __( 'Marks', 'learnpress' ) }</th>
 								<th className="quiz-attempts__grade">{ __( 'Passing grade', 'learnpress' ) }</th>
 								<th className="quiz-attempts__result">{ __( 'Result', 'learnpress' ) }</th>

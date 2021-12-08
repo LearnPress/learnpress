@@ -36,7 +36,7 @@ $filters       = $profile->get_quizzes_filters( $filter_status );
 				<tr>
 					<th class="column-quiz"><?php esc_html_e( 'Quiz', 'learnpress' ); ?></th>
 					<th class="column-status"><?php esc_html_e( 'Result', 'learnpress' ); ?></th>
-					<th class="column-time-interval"><?php esc_html_e( 'Time spend', 'learnpress' ); ?></th>
+					<th class="column-time-interval"><?php esc_html_e( 'Time spent', 'learnpress' ); ?></th>
 					<th class="column-date"><?php esc_html_e( 'Date', 'learnpress' ); ?></th>
 				</tr>
 			</thead>

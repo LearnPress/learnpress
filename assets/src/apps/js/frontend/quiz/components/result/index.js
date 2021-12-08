@@ -188,11 +188,11 @@ const Result = () => {
 
 			<ul className="result-statistic">
 				<li className="result-statistic-field result-time-spend">
-					<span>{ __( 'Time spend', 'learnpress' ) }</span>
+					<span>{ __( 'Time spent', 'learnpress' ) }</span>
 					<p>{ results.timeSpend }</p>
 				</li>
 				<li className="result-statistic-field result-point">
-					<span>{ __( 'Point', 'learnpress' ) }</span>
+					<span>{ __( 'Points', 'learnpress' ) }</span>
 					<p>{ results.userMark } / { results.mark }</p>
 				</li>
 				<li className="result-statistic-field result-questions">

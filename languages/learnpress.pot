@@ -7262,7 +7262,7 @@ msgstr ""
 #: templates/profile/tabs/quizzes.php:39
 #: assets/js/dist/frontend/quiz.js:22
 #: assets/js/dist/frontend/quiz.js:191
-msgid "Time spend"
+msgid "Time spent"
 msgstr ""
 
 #: templates/profile/tabs/quizzes.php:97
@@ -7491,7 +7491,7 @@ msgid "Your Result"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.js:195
-msgid "Point"
+msgid "Points"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.js:203
