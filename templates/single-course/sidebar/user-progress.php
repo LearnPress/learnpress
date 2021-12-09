@@ -34,7 +34,7 @@ if ( ! empty( $course_results['items'] ) ) {
 		<span class="number" title="<?php esc_attr( sprintf( __( 'Failed %1$d, Passed %2$d', 'learnpress' ), $quiz_false, $course_results['items']['quiz']['passed'] ) ); ?>"><?php printf( __( '%1$d/%2$d', 'learnpress' ), $course_results['items']['quiz']['completed'], $course_results['items']['quiz']['total'] ); ?></span>
 	</div>
 
-	<?php do_action( 'learn-press/user-item-progress' ); ?>
+	<?php do_action( 'learn-press/user-item-progress', $course_results ); ?>
 
 	<div class="course-progress">
 		<h4 class="items-progress__heading">

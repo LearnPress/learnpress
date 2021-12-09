@@ -19,9 +19,9 @@ class LP_Jwt_Auth {
 		$this->version = 'v1';
 
 		// Is enable rest api?
-		if ( LP()->settings()->get( 'enable_jwt_rest_api' ) !== 'yes' ) {
-			return;
-		}
+		// if ( LP()->settings()->get( 'enable_jwt_rest_api' ) !== 'yes' ) {
+		// 	return;
+		// }
 
 		$this->includes();
 		$this->define_hooks();
