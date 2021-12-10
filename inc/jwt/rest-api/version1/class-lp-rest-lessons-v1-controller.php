@@ -292,6 +292,9 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'can_finish_course':
 					$data['can_finish_course'] = $this->check_can_finish_course( $id );
 					break;
+				case 'duration':
+					$data['duration'] = learn_press_get_post_translated_duration( $id, esc_html__( 'Lifetime', 'learnpress' ) );
+					break;
 				case 'assigned':
 					$data['assigned'] = $assigned;
 					break;
@@ -475,6 +478,11 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'type'        => 'boolean',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
+				),
+				'duration'          => array(
+					'description' => __( 'Duration', 'learnpress' ),
+					'type'        => 'string',
+					'context'     => array( 'view' ),
 				),
 				'assigned'          => array(
 					'description' => __( 'Assigned.', 'learnpress' ),
