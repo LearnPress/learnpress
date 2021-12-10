@@ -393,6 +393,15 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'can_finish':
 					$data['can_finish'] = $this->check_can_finish( $course );
 					break;
+				case 'can_retake':
+					$data['can_retake'] = $this->check_can_retake( $id );
+					break;
+				case 'ratake_count':
+					$data['ratake_count'] = (int) $course->get_data( 'retake_count' );
+					break;
+				case 'rataken':
+					$data['rataken'] = $this->get_retaken_count( $id );
+					break;
 				case 'duration':
 					$data['duration'] = learn_press_get_post_translated_duration( $id, esc_html__( 'Lifetime', 'learnpress' ) );
 					break;
@@ -420,6 +429,33 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function get_retaken_count( $id ) {
+		$user             = learn_press_get_current_user();
+		$user_course_data = $user->get_course_data( $id );
+
+		if ( ! $user_course_data ) {
+			return 0;
+		}
+
+		return absint( $user_course_data->get_retaken_count() );
+	}
+
+	public function check_can_retake( $id ) {
+		$user = learn_press_get_current_user();
+
+		if ( $user ) {
+			$can_retake_times = $user->can_retry_course( $id );
+
+			if ( $can_retake_times ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 
 	public function get_course_rating( $id ) {
@@ -838,6 +874,24 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'can_finish'        => array(
 					'description' => __( 'Can finish course', 'learnpress' ),
 					'type'        => 'boolean',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'can_retake'        => array(
+					'description' => __( 'Can retake course', 'learnpress' ),
+					'type'        => 'boolean',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'ratake_count'      => array(
+					'description' => __( 'Total retake', 'learnpress' ),
+					'type'        => 'integer',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'rataken'           => array(
+					'description' => __( 'Retaken', 'learnpress' ),
+					'type'        => 'integer',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
