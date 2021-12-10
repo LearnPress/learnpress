@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $user ) || ! isset( $course ) ) {
+if ( ! isset( $user ) || ! isset( $course ) || ! isset( $course_data ) || ! isset( $course_results ) ) {
 	return;
 }
 
