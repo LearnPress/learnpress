@@ -13,14 +13,15 @@ if ( ! isset( $user_id ) ) {
 	return;
 }
 
-$profile           = LP_Profile::instance( $user_id );
-$user              = $profile->get_user();
-$link_user_profile = add_query_arg( [ 'tab' => 'enrolled' ], learn_press_user_profile_link( $user_id ) . 'courses' );
+$profile              = LP_Profile::instance( $user_id );
+$user                 = $profile->get_user();
+$slug_profile_courses = LP()->settings()->get( 'profile_endpoints.courses', 'courses' );
+$link_user_profile    = add_query_arg( [ 'tab' => 'enrolled' ], learn_press_user_profile_link( $user_id ) . $slug_profile_courses );
 echo wp_sprintf( '<p><b>%s</b> <a href="%s" target="_blank">%s</a></p>', __( 'Course list of user enrolled', 'learnpress' ), $link_user_profile, __( 'View', 'learnpress' ) );
 
 return;
 
-$query   = $profile->query_courses( 'purchased' );
+$query = $profile->query_courses( 'purchased' );
 ?>
 
 <div class="lp-admin-profile-courses">
@@ -51,10 +52,10 @@ $query   = $profile->query_courses( 'purchased' );
 					if ( ! $course ) {
 						continue;
 					}
-					$course_data    = $user->get_course_data( $course_id );
+					$course_data   = $user->get_course_data( $course_id );
 					$course_result = $course_data->get_result();
-					$status         = $course_result['status'];
-					$grade          = $course_data->get_graduation_text();
+					$status        = $course_result['status'];
+					$grade         = $course_data->get_graduation_text();
 					?>
 
 					<tr>
