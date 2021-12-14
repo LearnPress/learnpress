@@ -90,9 +90,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$this->_curd->load( $this );
 		}
 
-		// To set data if query first on load page
-		public $is_get_course_data = false;
-
 		/**
 		 * Get data for a course user has enrolled.
 		 *
@@ -105,10 +102,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_course_data( int $course_id = 0 ) {
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
-
-			if ( $this->is_get_course_data ) {
-				return $this->is_get_course_data;
-			}
 
 			try {
 				if ( ! $course_id ) {
@@ -130,8 +123,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					//Todo: tungnx - need debug to check
 					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
-
-				$this->is_get_course_data = $object_course_data;
 			} catch ( Throwable $e ) {
 				$object_course_data = false;
 			}

@@ -60,7 +60,7 @@ if ( ! empty( $course_results['items'] ) ) {
 		</h4>
 
 		<div class="lp-course-status">
-			<span class="number"><?php echo round( $course_results['result'], 2 ); ?><span class="percentage-sign">%</span></span>
+			<span class="number"><?php echo $course_results['result']; ?><span class="percentage-sign">%</span></span>
 		</div>
 
 		<div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>"

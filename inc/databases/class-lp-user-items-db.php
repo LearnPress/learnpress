@@ -31,32 +31,40 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get items by user_item_id | this is id where item_id = course_id
 	 *
-	 * @param int $user_item_id_by_course_id
-	 * @param int $user_id
+	 * @param LP_User_Items_Filter $filter
+	 * @param bool $force_cache
 	 *
 	 * @return object
 	 * @throws Exception
+	 * Todo: tungnx need set paginate - apply when do load API
 	 */
-	public function get_course_items_by_user_item_id( $user_item_id_by_course_id = 0, $user_id = 0 ) {
+	public function get_user_course_items( LP_User_Items_Filter $filter, bool $force_cache = false ) {
 		if ( empty( $user_item_id_by_course_id ) || empty( $user_id ) ) {
 			return null;
 		}
 
+		$key_first_cache    = 'course_items/' . $filter->parent_id;
+		$course_items_cache = LP_Cache::cache_load_first( 'get', $key_first_cache );
+		if ( false !== $course_items_cache && ! $force_cache ) {
+			return $course_items_cache;
+		}
+
 		$query = $this->wpdb->prepare(
-			"
-			SELECT * FROM {$this->tb_lp_user_items}
+			"SELECT * FROM $this->tb_lp_user_items
 			WHERE parent_id = %d
 			AND ref_type = %s
 			AND user_id = %d
 			",
-			$user_item_id_by_course_id,
+			$filter->parent_id,
 			LP_COURSE_CPT,
-			$user_id
+			$filter->user_id
 		);
 
 		$course_items = $this->wpdb->get_results( $query );
 
 		$this->check_execute_has_error();
+
+		LP_Cache::cache_load_first( 'set', $key_first_cache, $course_items );
 
 		return $course_items;
 	}
