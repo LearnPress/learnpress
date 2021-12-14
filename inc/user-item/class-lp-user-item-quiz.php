@@ -177,12 +177,22 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Get result
 	 *
 	 * @param string $prop
-	 * @param bool   $force
 	 *
 	 * @return array|bool|mixed
 	 */
-	public function get_result( $prop = 'result', $force = false ) {
-		return $this->get_results( $prop, $force );
+	public function get_result( $prop = '' ) {
+		$result = $this->calculate_quiz_result();
+
+		// Fix temporary for case call 'grade' - addons called
+		if ( 'grade' === $prop ) {
+			if ( $result['pass'] ) {
+				$result['grade'] = 'passed';
+			} else {
+				$result['grade'] = 'failed';
+			}
+		}
+
+		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
 	}
 
 	/**
@@ -255,31 +265,40 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Get Timestamp remaining when user doing quiz
 	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @sicne 4.1.4.1
+	 * @return int
 	 */
 	public function get_timestamp_remaining(): int {
 		$timestamp_remaining = - 1;
-		$quiz                = learn_press_get_quiz( $this->get_item_id() );
 
-		if ( ! $quiz ) {
-			return $timestamp_remaining;
-		}
+		try {
+			$quiz = learn_press_get_quiz( $this->get_item_id() );
 
-		$parent_id = $this->get_parent_id();
+			if ( ! $quiz || LP_ITEM_STARTED != $this->get_status() ) {
+				return $timestamp_remaining;
+			}
 
-		$duration = $quiz->get_duration()->get() . ' second';
+			$parent_id = $this->get_parent_id();
 
-		$filter              = new LP_User_Items_Filter();
-		$filter->parent_id   = $parent_id;
-		$filter->item_id     = $this->get_item_id();
-		$filter->user_id     = get_current_user_id();
-		$user_quiz           = LP_User_Items_DB::getInstance()->get_user_course_item( $filter );
-		$course_start_time   = $user_quiz->start_time;
-		$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
-		$timestamp_current   = strtotime( current_time( 'mysql', 1 ) );
-		$timestamp_remaining = $timestamp_expire - $timestamp_current;
+			$duration = $quiz->get_duration()->get() . ' second';
 
-		if ( $timestamp_remaining < 0 ) {
-			$timestamp_remaining = 0;
+			$filter              = new LP_User_Items_Filter();
+			$filter->parent_id   = $parent_id;
+			$filter->item_id     = $this->get_item_id();
+			$filter->user_id     = get_current_user_id();
+			$user_quiz           = LP_User_Items_DB::getInstance()->get_user_course_item( $filter, true );
+			$course_start_time   = $user_quiz->start_time;
+			$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
+			$timestamp_current   = strtotime( current_time( 'mysql', 1 ) );
+			$timestamp_remaining = $timestamp_expire - $timestamp_current;
+
+			if ( $timestamp_remaining < 0 ) {
+				$timestamp_remaining = 0;
+			}
+		} catch ( Throwable $e ) {
+
 		}
 
 		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
@@ -443,7 +462,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @author tungnx
 	 * @since 4.1.4.1
 	 */
-	public function calculate_quiz_result( array $answered ): array {
+	public function calculate_quiz_result( array $answered = array() ): array {
 		$result = array(
 			'questions'         => array(),
 			'mark'              => 0,
@@ -453,7 +472,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'question_answered' => 0,
 			'question_wrong'    => 0,
 			'question_correct'  => 0,
-			'status'            => 'completed',
+			'status'            => '',
 			'result'            => 0,
 			'time_spend'        => '',
 			'passing_grade'     => '',
@@ -542,6 +561,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		return $result;
+	}
+
+	public function get_option_answer() {
+
 	}
 
 	protected function _get_results() {

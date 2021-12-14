@@ -1619,8 +1619,8 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 		$args,
 		array(
 			'item_type'  => LP_QUIZ_CPT,
-			'status'     => 'started',
-			'graduation' => 'in-progress',
+			'status'     => LP_ITEM_STARTED,
+			'graduation' => LP_COURSE_GRADUATION_IN_PROGRESS,
 			'user_id'    => get_current_user_id(),
 		)
 	);
@@ -1713,6 +1713,9 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 		do_action( 'learn-press/user-started-quiz', $user_quiz, $quiz_id, $user_id, $course_id );
 	}
 
+	// Reset first cache
+	$user_quiz->get_status( 'status', true );
+
 	return $user_quiz;
 }
 
@@ -1744,7 +1747,7 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	    WHERE user_item_id = (SELECT max(user_item_id)
 	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_id = %d AND item_id = %d AND status IN ('enrolled', 'in-progress'))
-	",
+		",
 		$user_id,
 		$course_id
 	);
@@ -1775,21 +1778,24 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	// Remove user_item_meta.
 	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
 
-	$user_item->set_status( 'started' )
+	$user_item->set_status( LP_ITEM_STARTED )
 				->set_start_time( current_time( 'mysql', 1 ) ) // Error Retake when change timezone - Nhamdv
 				->set_end_time( '' )
-				->set_graduation( 'in-progress' )
+				->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
 				->update();
 
+	// Reset first cache
+	$user_item->get_status( 'status', true );
+
 	// Error Retake when change timezone - Nhamdv
-	learn_press_update_user_item_field(
-		array(
-			'start_time' => current_time( 'mysql', true ),
-		),
-		array(
-			'user_item_id' => $data->user_item_id,
-		)
-	);
+	//  learn_press_update_user_item_field(
+	//      array(
+	//          'start_time' => current_time( 'mysql', true ),
+	//      ),
+	//      array(
+	//          'user_item_id' => $data->user_item_id,
+	//      )
+	//  );
 
 	return $user_item;
 }

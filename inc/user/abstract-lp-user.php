@@ -439,6 +439,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return mixed
 		 * @since 3.0.0
+		 * @version 1.0.1
+		 * @editor tungnx
+		 * @modify 4.1.4.1
 		 */
 		public function get_item_grade( $item_id, $course_id = 0 ) {
 			if ( ! $course_id ) {
@@ -448,10 +451,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$grade = false;
 
 			$course_data = $this->get_course_data( $course_id );
-			$item_result = $course_data->get_item_result( $item_id, false );
 
-			if ( $course_data && $item_result ) {
-				$grade = isset( $item_result['graduation'] ) ? $item_result['graduation'] : false;
+			if ( $course_data ) {
+				$grade = $course_data->get_item_result( $item_id, 'grade' );
 			}
 
 			return apply_filters( 'learn-press/user-item-grade', $grade, $item_id, $this->get_id(), $course_id );

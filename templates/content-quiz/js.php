@@ -9,9 +9,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$user                = learn_press_get_current_user();
-$course              = LP_Global::course();
-$quiz                = LP_Global::course_item_quiz();
+$user   = learn_press_get_current_user();
+$course = LP_Global::course();
+if ( ! $course ) {
+	return;
+}
+
+$quiz = LP_Global::course_item_quiz();
+if ( ! $quiz ) {
+	return;
+}
+
 $total_question      = $quiz->count_questions();
 $questions           = array();
 $show_check          = $quiz->get_instant_check();
@@ -19,7 +27,10 @@ $show_correct_review = $quiz->get_show_correct_review();
 $user_js             = array();
 
 
-$user_course       = $user->get_course_data( $course->get_id() );
+$user_course = $user->get_course_data( $course->get_id() );
+/**
+ * @var LP_User_Item_Quiz $user_quiz
+ */
 $user_quiz         = $user_course ? $user_course->get_item( $quiz->get_id() ) : false;
 $answered          = array();
 $status            = '';
@@ -50,12 +61,8 @@ if ( $user_quiz ) {
 		'retaken'           => absint( $user_quiz->get_retaken_count() ),
 	);
 
-	$time_remaining = $user_quiz->get_timestamp_remaining();
-
-//	if ( isset( $total_time ) ) {
-		$user_js['total_time'] = $time_remaining;
-		//$user_js['endTime']    = $expiration_time->toSql( false );
-//	}
+	$time_remaining        = $user_quiz->get_timestamp_remaining();
+	$user_js['total_time'] = $time_remaining;
 
 	if ( $quiz_results ) {
 		$user_js['results'] = $quiz_results->get();

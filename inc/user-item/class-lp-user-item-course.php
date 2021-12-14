@@ -1402,8 +1402,13 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function get_item_result( $item_id, $prop = 'result' ) {
 		$item = $this->get_item( $item_id );
 
-		if ( $item ) {
-			return $item->get_results( $prop );
+		if ( $item instanceof LP_User_Item_Quiz ) {
+			/**
+			 * @var LP_User_Item_Quiz $item
+			 */
+			return $item->get_graduation();
+		} elseif ( $item ) {
+			return $item->get_result( $prop );
 		}
 
 		return false;

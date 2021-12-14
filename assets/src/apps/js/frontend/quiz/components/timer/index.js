@@ -10,7 +10,7 @@ const Timer = () => {
 	const { getData } = select( 'learnpress/quiz' );
 	const { submitQuiz } = dispatch( 'learnpress/quiz' );
 
-	const totalTime = getData( 'totalTime' ) ? getData( 'totalTime' ) : getData( 'duration' );
+	const totalTime = getData( 'totalTime' );
 	const durationTime = getData( 'duration' );
 	/*	const endTime = getData( 'endTime' );
 

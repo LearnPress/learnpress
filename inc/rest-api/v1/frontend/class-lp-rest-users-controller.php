@@ -246,45 +246,69 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * User starts a quiz.
 	 *
-	 * @throws
-	 *
 	 * @param WP_REST_Request $request
 	 *
+	 * @editor tungnx
+	 * @version 1.0.1
+	 * @sicne 4.0.0
 	 * @return WP_REST_Response
 	 */
 	public function start_quiz( WP_REST_Request $request ): WP_REST_Response {
 		$user_id   = get_current_user_id();
-		$item_id   = $request['item_id'];
-		$course_id = $request['course_id'];
-		$user      = learn_press_get_user( $user_id );
-		$course    = learn_press_get_course( $course_id );
-		$quiz      = learn_press_get_quiz( $item_id );
-
-		// For no required enroll
-		if ( $course->is_no_required_enroll() ) {
-			if ( $quiz->get_retake_count() >= 0 ) {
-				learn_press_remove_cookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '' );
-			}
-			$no_required_enroll = new LP_Course_No_Required_Enroll();
-			$response           = $no_required_enroll->guest_start_quiz( $course_id, $item_id );
-
-			return rest_ensure_response( $response );
-		}
-
-		if ( $user->has_started_quiz( $item_id, $course_id ) ) {
-			$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
-		} else {
-			$user_quiz = $user->start_quiz( $item_id, $course_id, true );
-		}
-
-		$success = ! is_wp_error( $user_quiz );
-
-		$response = array(
-			'success' => $success,
-			'message' => ! $success ? $user_quiz->get_error_message() : __( 'Success!', 'learnpress' ),
+		$item_id   = $request['item_id'] ?? 0;
+		$course_id = $request['course_id'] ?? 0;
+		$results   = array(
+			'question_ids' => array(),
+			'questions'    => array(),
+			'total_time'   => 0,
+		);
+		$response  = array(
+			'success' => 0,
+			'message' => '',
 		);
 
-		if ( $success ) {
+		try {
+			$user   = learn_press_get_user( $user_id );
+			$course = learn_press_get_course( $course_id );
+			$quiz   = learn_press_get_quiz( $item_id );
+
+			if ( ! $course ) {
+				throw new Exception( __( 'Course is invalid!', 'learnpress' ) );
+			}
+
+			if ( ! $quiz ) {
+				throw new Exception( __( 'Quiz is invalid!', 'learnpress' ) );
+			}
+
+			// For no required enroll course
+			if ( $user->is_guest() && $course->is_no_required_enroll() ) {
+				if ( $quiz->get_retake_count() >= 0 ) {
+					learn_press_remove_cookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '' );
+				}
+				$no_required_enroll = new LP_Course_No_Required_Enroll();
+				$response           = $no_required_enroll->guest_start_quiz( $course_id, $item_id );
+
+				return rest_ensure_response( $response );
+			}
+
+			// Require enroll course
+			if ( $user->has_started_quiz( $item_id, $course_id ) ) {
+				/**
+				 * @var LP_User_Item_Quiz $user_quiz
+				 */
+				$user_quiz           = $user->retake_quiz( $item_id, $course_id, true );
+				$results['answered'] = []; // Reset answered before on js
+			} else {
+				/**
+				 * @var LP_User_Item_Quiz $user_quiz
+				 */
+				$user_quiz = $user->start_quiz( $item_id, $course_id, true );
+			}
+
+			if ( is_wp_error( $user_quiz ) ) {
+				throw new Exception( $user_quiz->get_error_message() );
+			}
+
 			/**
 			 * Clear cache result quiz
 			 * Cache set on @see LP_User_Item_Quiz::get_results
@@ -294,65 +318,38 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$lp_quiz_cache->clear( $key_cache );
 			// End
 
-			$user_quiz->set_user_id( $user->get_id() );
-			$course              = LP_Course::get_course( $course_id );
-			$quiz                = LP_Quiz::get_quiz( $item_id );
-			$show_hint           = $quiz->get_show_hint();
 			$show_check          = $quiz->get_instant_check();
 			$duration            = $quiz->get_duration();
 			$show_correct_review = $quiz->get_show_correct_review();
-
-			$status            = $user_quiz->get_status();
-			$checked_questions = $user_quiz->get_checked_questions();
-			$hinted_questions  = $user_quiz->get_hint_questions();
-			$quiz_results      = $user_quiz->get_results( '', true );
-
-			$question_ids = $quiz_results->getQuestions( 'ids' );
-			$answered     = $quiz_results->getAnswered();
-
-			$time_remaining = $user_quiz->get_timestamp_remaining();
-			//$expiration_time = $user_quiz->get_expiration_time();
-
-			/*if ( $expiration_time && ! $expiration_time->is_null() ) {
-				$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
-			}*/
+			$question_ids        = $quiz->get_question_ids();
+			$status              = $user_quiz->get_status();
+			$checked_questions   = $user_quiz->get_checked_questions();
+			$hinted_questions    = $user_quiz->get_hint_questions();
+			$time_remaining      = $user_quiz->get_timestamp_remaining();
 
 			$questions = learn_press_rest_prepare_user_questions(
 				$question_ids,
 				array(
-					'instant_hint'        => $show_hint,
 					'instant_check'       => $show_check,
 					'quiz_status'         => $status,
 					'checked_questions'   => $checked_questions,
 					'hinted_questions'    => $hinted_questions,
-					'answered'            => $answered,
+					'answered'            => [],
 					'show_correct_review' => $show_correct_review,
 				)
 			);
 
-			$results = array(
-				'question_ids' => $question_ids,
-				'questions'    => $questions,
-				'total_time'   => $time_remaining,
-			);
-
-			// Error get_start_time when ajax call.
-			//          if ( isset( $total_time ) ) {
-				//$expiration            = $expiration_time->toSql( false );
-				//$results['total_time'] = $time_remaining;
-				//$results['end_time']   = $expiration;
-			//          }
-
-			$results['duration'] = $duration ? $duration->get() : false;
-			$results['answered'] = $quiz_results->getQuestions();
-			$results['status']   = $quiz_results->get( 'status' );
-			$results['results']  = $quiz_results->get();
-			$results['retaken']  = absint( $user_quiz->get_retaken_count() );
-
+			$results['question_ids'] = $question_ids;
+			$results['questions']    = $questions;
+			$results['total_time']   = $time_remaining;
+			$results['duration']     = $duration ? $duration->get() : false;
+			$results['status']       = $status; // Must be started
+			$results['retaken']      = absint( $user_quiz->get_retaken_count() );
 			$results['attempts']     = $user_quiz->get_attempts();
 			$results['user_item_id'] = $user_quiz->get_user_item_id();
-
-			$response['results'] = $results;
+			$response['results']     = $results;
+		} catch ( Throwable $e ) {
+			$response['message'] = $e->getMessage();
 		}
 
 		return rest_ensure_response( $response );
@@ -364,7 +361,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return mixed|WP_REST_Response
 	 */
-	public function submit_quiz( $request ) {
+	/*public function submit_quiz_bk( $request ) {
 		$user_id     = get_current_user_id();
 		$item_id     = $request['item_id'];
 		$course_id   = $request['course_id'];
@@ -467,7 +464,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			}
 		}
 		return rest_ensure_response( $response );
-	}
+	}*/
 
 	/**
 	 * Submit quiz answer
@@ -553,10 +550,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$end_time = gmdate( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
 				$user_quiz->set_end_time( $end_time );
 
-				//              /*if ( $user_quiz ) {
-				//                  $user_quiz->add_question_answer( $answered );
-				//              }*/
-
 				// Calculate quiz result and save
 				$result = $user_quiz->calculate_quiz_result( $answered );
 				// Save
@@ -574,7 +567,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'message' => __( 'Success!', 'learnpress' ),
 				);
 
-				$result['status']    = $user_quiz->get_status();
+				$result['status']    = $user_quiz->get_status(); // Must be completed
 				$result['attempts']  = $user_quiz->get_attempts();
 				$result['results']   = $result;
 				$response['results'] = $result;

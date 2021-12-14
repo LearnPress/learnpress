@@ -121,6 +121,9 @@ class LP_Global {
 	 * @return LP_User|LP_User_Guest|false
 	 */
 	public static function user() {
+		/**
+		 * @see learn_press_setup_user
+		 */
 		global $lp_user;
 
 		return $lp_user;

@@ -399,42 +399,39 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Get item status.
 	 *
 	 * @param string $field
-	 * @return string
-	 * @throws Exception
+	 * @param bool $force_cache Reset first cache
 	 *
+	 * @version 1.0.1
+	 * @return string
 	 * @editor tungnx
 	 * @modify 4.1.3
-	 * @Todo: tungnx - after should set status when new instance or save, update, get_status only return status.
 	 */
-	public function get_status( string $field = 'status' ): string {
-		// if ( ! empty( $this->get_data( $field, '' ) ) ) {
-		// return $this->get_data( $field );
-		// }
+	public function get_status( string $field = 'status', bool $force_cache = false ): string {
+		/*if ( ! is_null( $this->get_data( $field, null ) && ! $force_cache ) ) {
+			return $this->get_data( $field );
+		}*/
 
-		$status = LP_Cache::cache_load_first( 'get', $this->get_item_id() );
-		if ( false !==$status ) {
-			return $status;
+		$got_status = '';
+
+		try {
+			$lp_user_item = LP_User_Items_DB::getInstance();
+			$filter       = new LP_User_Items_Filter();
+
+			$filter->user_id   = $this->get_user_id();
+			$filter->item_id   = $this->get_item_id();
+			$filter->ref_id    = $this->get_data( 'ref_id' );
+			$filter->parent_id = $this->get_parent_id();
+
+			$user_item = $lp_user_item->get_user_course_item( $filter, $force_cache );
+
+			if ( ! empty( $user_item ) && isset( $user_item->$field ) ) {
+				$got_status = $user_item->$field;
+			}
+
+			$this->set_data( $field, $got_status );
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ':' . $e->getMessage() );
 		}
-
-		$lp_user_item = LP_User_Items_DB::getInstance();
-		$filter       = new LP_User_Items_Filter();
-
-		$filter->user_id   = $this->get_user_id();
-		$filter->item_id   = $this->get_item_id();
-		$filter->ref_id    = $this->get_data( 'ref_id' );
-		$filter->parent_id = $this->get_parent_id();
-
-		$user_item = $lp_user_item->get_user_course_item( $filter );
-
-		if ( ! empty( $user_item ) && isset( $user_item->$field ) ) {
-			$got_status = $user_item->$field;
-		} else {
-			$got_status = '';
-		}
-
-		LP_Cache::cache_load_first( 'set', $this->get_item_id(), $got_status );
-
-		$this->set_data( $field, $got_status );
 
 		return $got_status;
 	}

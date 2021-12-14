@@ -130,7 +130,7 @@ const Status = () => {
 						</button>
 					</div>
 
-					{ totalTime && duration && <Timer /> }
+					{ duration && <Timer /> }
 				</div>
 			</div>
 		</div>

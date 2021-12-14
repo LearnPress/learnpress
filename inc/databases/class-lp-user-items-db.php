@@ -83,11 +83,10 @@ class LP_User_Items_DB extends LP_Database {
 		}
 
 		$query = $this->wpdb->prepare(
-			"
-			DELETE FROM {$this->tb_lp_user_items}
+			"DELETE FROM {$this->tb_lp_user_items}
 			WHERE parent_id = %d
 			$query_extra;
-		",
+			",
 			$filter->parent_id
 		);
 
@@ -249,15 +248,21 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Get the newest item is course of user
 	 *
-	 * @param LP_User_Items_Filter $filter
-	 * @throws Exception
+	 * @param LP_User_Items_Filter $filter {course_id, user_id}
+	 * @param bool $force_cache Reset first cache
 	 *
 	 * @return null|object
+	 * @throws Exception
 	 */
-	public function get_last_user_course( LP_User_Items_Filter $filter ) {
+	public function get_last_user_course( LP_User_Items_Filter $filter, bool $force_cache = false ) {
+		$key_load_first = 'user_course/' . $filter->item_id;
+		$user_course    = LP_Cache::cache_load_first( 'get', $key_load_first );
+		if ( false !== $user_course && ! $force_cache ) {
+			return $user_course;
+		}
+
 		$query = $this->wpdb->prepare(
-			"
-			SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time
+			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time
 			FROM $this->tb_lp_user_items
 			WHERE item_type = %s
 			AND item_id = %d
@@ -274,21 +279,30 @@ class LP_User_Items_DB extends LP_Database {
 
 		$this->check_execute_has_error();
 
+		LP_Cache::cache_load_first( 'set', $key_load_first, $result );
+
 		return $result;
 	}
 
 	/**
 	 * Get item of user and course
 	 *
-	 * @param LP_User_Items_Filter $filter
-	 * @throws Exception
+	 * @param LP_User_Items_Filter $filter {parent_id, item_id, user_id}
+	 * @param bool $force_cache Reset first cache
 	 *
 	 * @return null|object
+	 * @throws Exception
 	 */
-	public function get_user_course_item( LP_User_Items_Filter $filter ) {
+	public function get_user_course_item( LP_User_Items_Filter $filter, bool $force_cache = false ) {
+		$key_load_first = 'user_course_item/' . $filter->user_id . '/' . $filter->item_id;
+		$user_course    = LP_Cache::cache_load_first( 'get', $key_load_first );
+
+		if ( false !== $user_course && ! $force_cache ) {
+			return $user_course;
+		}
+
 		$query = $this->wpdb->prepare(
-			"
-			SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time, parent_id
+			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time, parent_id
 			FROM $this->tb_lp_user_items
 			WHERE parent_id = %d
 			AND item_id = %d
@@ -304,6 +318,8 @@ class LP_User_Items_DB extends LP_Database {
 		$result = $this->wpdb->get_row( $query );
 
 		$this->check_execute_has_error();
+
+		LP_Cache::cache_load_first( 'set', $key_load_first, $result );
 
 		return $result;
 	}
