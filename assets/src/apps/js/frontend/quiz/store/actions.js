@@ -131,9 +131,9 @@ export function* submitQuiz() {
 		return;
 	}
 
-	const answered = getQuestionsSelectedAnswers();
+	let answered = getQuestionsSelectedAnswers();
 
-	if ( Object.keys( answered ).length === 0 && lpQuizSettings.checkNorequizenroll == '1' ) {
+	if ( Object.keys( answered ).length === 0 && lpQuizSettings.checkNorequizenroll === '1' ) {
 		const data = JSON.parse( localStorage.getItem( `LP_Quiz_${ itemId }_Answered` ) );
 
 		for ( const [ k, v ] of Object.entries( data ) ) {
