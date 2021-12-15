@@ -505,7 +505,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $orderby;
 		}
 
-		public function posts_join_paged( $join ) {
+		/*public function posts_join_paged( $join ) {
 			global $wpdb, $wp_query;
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
@@ -519,7 +519,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			$join .= " LEFT JOIN {$wpdb->users} uu ON pm1.meta_value = uu.ID";
 
 			return $join;
-		}
+		}*/
 
 		/**
 		 * Make our custom columns can be sortable
