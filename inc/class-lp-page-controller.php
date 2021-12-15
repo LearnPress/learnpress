@@ -244,11 +244,15 @@ class LP_Page_Controller {
 		 * @var WP_Query $wp_query
 		 * @var LP_Course $lp_course
 		 * @var LP_Course_Item|LP_Quiz|LP_Lesson $lp_course_item
-		 * @var LP_Question $lp_quiz_question
 		 */
-		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
+		global $wp, $wp_query, $lp_course, $lp_course_item;
 
-		if ( LP_COURSE_CPT !== learn_press_get_post_type( $post->ID ) ) {
+		if ( LP_COURSE_CPT !== $post->post_type ) {
+			return $post;
+		}
+
+		$course = learn_press_get_course( $post->ID );
+		if ( ! $course ) {
 			return $post;
 		}
 
@@ -256,34 +260,28 @@ class LP_Page_Controller {
 			$GLOBALS['preview_course'] = $post->ID;
 		}
 
-		if ( ! empty( $courses[ $post->ID ] ) ) {
+		/*if ( ! array_key_exists( $post->ID, $courses ) ) {
 			return $post;
-		}
+		}*/
 
-		$courses[ $post->ID ] = true;
-		$vars                 = $wp->query_vars;
+		//$courses[ $post->ID ] = true;
+		$vars = $wp->query_vars;
 
 		if ( empty( $vars['course-item'] ) ) {
-			return false;
+			return $post;
 		}
 
 		if ( ! $wp_query->is_main_query() ) {
 			return $post;
 		}
 
-		if ( $wp_query->queried_object_id !== $lp_course->get_id() ) {
-			return $post;
-		}
-
 		try {
-
 			// If item name is set in query vars
 			if ( ! is_numeric( $vars['course-item'] ) ) {
 				$item_type = $vars['item-type'];
 				$post_item = learn_press_get_post_by_name( $vars['course-item'], $item_type );
 			} else {
 				$post_item = get_post( absint( $vars['course-item'] ) );
-				$item_type = $post->post_type;
 			}
 
 			if ( ! $post_item ) {
@@ -295,8 +293,6 @@ class LP_Page_Controller {
 			if ( ! $lp_course_item ) {
 				return $post;
 			}
-
-			$user = learn_press_get_current_user();
 
 			$lp_course->set_viewing_item( $lp_course_item );
 		} catch ( Exception $ex ) {
