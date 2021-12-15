@@ -508,6 +508,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						return $return;
 					}
 
+					if ( $item instanceof LP_User_Item_Quiz ) {
+						return $return;
+					}
+
 					$item->set_ref_id( $course_id );
 					$item->set_parent_id( $course_data->get_user_item_id() );
 
