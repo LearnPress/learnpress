@@ -159,7 +159,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'order' => $order ) );
+		//learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'order' => $order ) );
 	}
 
 	public function order_message() {
