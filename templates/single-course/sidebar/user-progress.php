@@ -52,7 +52,7 @@ if ( ! empty( $course_results['items'] ) ) {
 		</div>
 	<?php endif; ?>
 
-	<?php do_action( 'learn-press/user-item-progress', $course_results, $course_data ); ?>
+	<?php do_action( 'learn-press/user-item-progress', $course_results, $course_data, $user, $course ); ?>
 
 	<div class="course-progress">
 		<h4 class="items-progress__heading">
