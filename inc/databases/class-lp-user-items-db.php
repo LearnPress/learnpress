@@ -259,7 +259,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_last_user_course( LP_User_Items_Filter $filter, bool $force_cache = false ) {
-		$key_load_first = 'user_course/' . $filter->item_id;
+		$key_load_first = 'user_course/' . $filter->user_id . '/' . $filter->item_id;
 		$user_course    = LP_Cache::cache_load_first( 'get', $key_load_first );
 		if ( false !== $user_course && ! $force_cache ) {
 			return $user_course;

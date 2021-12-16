@@ -278,8 +278,8 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			$question = LP_Question::get_question( $question_id );
 			$answers  = $question->get_answers();
 
-			foreach ( $answers as $answer_id ) {
-				learn_press_delete_question_answer_meta( $answer_id, '_blanks', '', true );
+			foreach ( $answers as $answer ) {
+				learn_press_delete_question_answer_meta( $answer->get_id(), '_blanks', '', true );
 			}
 		}
 
