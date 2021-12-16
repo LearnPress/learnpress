@@ -24,6 +24,7 @@ $total_question      = $quiz->count_questions();
 $questions           = array();
 $show_check          = $quiz->get_instant_check();
 $show_correct_review = $quiz->get_show_correct_review();
+$question_ids        = $quiz->get_question_ids();
 $user_js             = array();
 
 
@@ -40,18 +41,10 @@ $crypto_js_aes = false;
 $editable      = $user->is_admin() || get_post_field( $user->is_author_of( $course->get_id() ) );
 $max_retrying  = learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() );
 
-$question_ids = array();
-
 if ( $user_quiz ) {
 	$status            = $user_quiz->get_status();
-	$quiz_results      = $user_quiz->get_results( '' );
+	$quiz_results      = $user_quiz->get_result();
 	$checked_questions = $user_quiz->get_checked_questions();
-	//$expiration_time   = $user_quiz->get_expiration_time();
-
-	// If expiration time is specific then calculate total time
-	/*if ( $expiration_time && ! $expiration_time->is_null() ) {
-		$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
-	}*/
 
 	$user_js = array(
 		'status'            => $status,
@@ -65,11 +58,8 @@ if ( $user_quiz ) {
 	$user_js['total_time'] = $time_remaining;
 
 	if ( $quiz_results ) {
-		$user_js['results'] = $quiz_results->get();
-		$answered           = $quiz_results->getQuestions();
-		$question_ids       = $quiz_results->getQuestions( 'ids' );
-	} else {
-		$question_ids = $quiz->get_question_ids();
+		$user_js['results'] = $quiz_results;
+		$answered           = $quiz_results['questions'];
 	}
 }
 
@@ -84,10 +74,6 @@ $questions = learn_press_rest_prepare_user_questions(
 		'status'              => $status,
 	)
 );
-
-if ( empty( $question_ids ) ) {
-	$question_ids = $quiz->get_question_ids();
-}
 
 $duration = $quiz->get_duration();
 

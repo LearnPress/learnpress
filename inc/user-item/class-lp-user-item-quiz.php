@@ -480,9 +480,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		);
 
 		try {
-			//          if ( LP_ITEM_COMPLETED === $this->get_status() ) {
-			//              $result = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
-			//          }
+			if ( LP_ITEM_COMPLETED === $this->get_status() ) {
+				$result = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+
+				return $result;
+			}
 
 			$quiz = learn_press_get_quiz( $this->get_item_id() );
 

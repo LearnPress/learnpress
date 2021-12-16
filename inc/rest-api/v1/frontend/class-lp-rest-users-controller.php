@@ -579,6 +579,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 				$result['status']    = $user_quiz->get_status(); // Must be completed
 				$result['attempts']  = $user_quiz->get_attempts();
+				$result['answered']  = $result['questions'];
 				$result['results']   = $result;
 				$response['results'] = $result;
 			}
