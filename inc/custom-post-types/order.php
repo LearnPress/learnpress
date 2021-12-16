@@ -505,21 +505,23 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			return $orderby;
 		}
 
-		/*public function posts_join_paged( $join ) {
+		public function posts_join_paged( $join ) {
 			global $wpdb, $wp_query;
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
 			}
-			$s     = $wp_query->get( 's' );
+
 			$join .= " INNER JOIN {$wpdb->postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
 			$join .= " INNER JOIN {$wpdb->postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+
+			$s = $wp_query->get( 's' );
 			if ( $s ) {
 				$join .= " INNER JOIN {$wpdb->learnpress_order_items} loi ON {$wpdb->posts}.ID = loi.order_id";
 			}
 			$join .= " LEFT JOIN {$wpdb->users} uu ON pm1.meta_value = uu.ID";
 
 			return $join;
-		}*/
+		}
 
 		/**
 		 * Make our custom columns can be sortable
