@@ -704,8 +704,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return WP_Error|mixed
 		 * @since 3.0.0
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function check_question( $question_id, $quiz_id, $course_id ) {
+		/*public function check_question( $question_id, $quiz_id, $course_id ) {
 			if ( ! $course = learn_press_get_course( $course_id ) ) {
 				return false;
 			}
@@ -723,7 +725,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
 
 			return $quiz_data->check_question( $question_id );
-		}
+		}*/
 
 		/**
 		 * Mark question that user has checked.
@@ -767,9 +769,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return bool
+		 * @deprecated 4.1.4.1
 		 */
 		public function can_check_answer( $quiz_id, $course_id = 0 ) {
-
+			_deprecated_function( __FUNCTION__, '4.1.4.1' );
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}

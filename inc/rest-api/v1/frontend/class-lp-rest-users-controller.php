@@ -550,6 +550,16 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$end_time = gmdate( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
 				$user_quiz->set_end_time( $end_time );
 
+				// For case save result when check instant answer
+				$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
+				if ( $result_instant_check ) {
+					foreach ( $result_instant_check['questions'] as $question_answer_id => $question_answer ) {
+						if ( ! empty( $question_answer['answered'] ) ) {
+							$answered[ $question_answer_id ] = $question_answer['answered'];
+						}
+					}
+				}
+
 				// Calculate quiz result and save
 				$result = $user_quiz->calculate_quiz_result( $answered );
 				// Save
@@ -599,53 +609,50 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function check_answer( $request ) {
-		$question_id = $request['question_id'];
-		$answered    = $request['answered'];
-		$course_id   = $request['course_id'];
-		$quiz_id     = $request['item_id'];
-		$course      = learn_press_get_course( $course_id );
-		$checked     = false;
-
-		if ( $course->is_no_required_enroll() ) {
-			$no_required_enroll = new LP_Course_No_Required_Enroll();
-			$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
-		} else {
-			$user = learn_press_get_current_user();
-
-			if ( $user ) {
-				$user_course = $user->get_course_data( $course_id );
-
-				if ( $user_course ) {
-					$user_item = $user_course->get_item( $quiz_id );
-					$checked   = $user_item->check_question( $question_id, $answered );
-				}
-			}
-		}
-
-		if ( is_wp_error( $checked ) || ! $checked ) {
-			return rest_ensure_response(
-				new WP_Error(
-					'cannot_check_answer',
-					is_wp_error( $checked ) ? $checked->get_error_message() : esc_html__( 'Cannot check answer question!', 'learnpress' ),
-					array(
-						'status' => 403,
-					)
-				)
-			);
-		}
-
-		$question = learn_press_get_question( $question_id );
 		$response = array(
-			'explanation' => $question->get_explanation(),
-			'options'     => learn_press_get_question_options_for_js(
-				$question,
-				array(
-					'include_is_true' => true,
-					'answer'          => $answered,
-				)
-			),
-			'result'      => $checked,
+			'status'  => 'error',
+			'message' => '',
 		);
+
+		try {
+			$question_id = $request['question_id'] ?? 0;
+			$answered    = $request['answered'] ?? '';
+			$course_id   = $request['course_id'] ?? 0;
+			$quiz_id     = $request['item_id'] ?? 0;
+			$course      = learn_press_get_course( $course_id );
+			$checked     = [];
+
+			if ( $course->is_no_required_enroll() ) {
+				$no_required_enroll = new LP_Course_No_Required_Enroll();
+				$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
+			} else {
+				$user = learn_press_get_current_user();
+				if ( $user->is_guest() ) {
+					throw new Exception( 'User is invalid!', 'learnrpess' );
+				}
+
+				$user_course = $user->get_course_data( $course_id );
+				if ( ! $user_course ) {
+					throw new Exception( 'User\'s course no data!', 'learnrpess' );
+				}
+
+				$user_quiz = $user_course->get_item( $quiz_id );
+				if ( ! $user_quiz ) {
+					throw new Exception( 'User\'s quiz no data!', 'learnrpess' );
+				}
+
+				$checked = $user_quiz->instant_check_question( $question_id, $answered );
+			}
+
+			$question                = learn_press_get_question( $question_id );
+			$response['explanation'] = $question->get_explanation();
+			$response['options']     = learn_press_get_question_options_for_js( $question, array( 'answer' => $answered ) );
+			$response['result']      = $checked;
+			$response['status']      = 'success';
+		} catch ( Throwable $e ) {
+			$response['message'] = $e->getMessage();
+		}
+
 		return rest_ensure_response( $response );
 	}
 

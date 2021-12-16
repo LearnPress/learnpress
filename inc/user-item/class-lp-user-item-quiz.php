@@ -455,7 +455,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Calculate result of quiz.
 	 *
-	 * @param array $answered [question_id => answered]
+	 * @param array $answered [question_id => answered, 'instant_check' => 0]
 	 *
 	 * @return array
 	 * @version 1.0.0
@@ -480,6 +480,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		);
 
 		try {
+			//          if ( LP_ITEM_COMPLETED === $this->get_status() ) {
+			//              $result = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+			//          }
+
 			$quiz = learn_press_get_quiz( $this->get_item_id() );
 
 			if ( ! $quiz ) {
@@ -496,8 +500,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$question = LP_Question::get_question( $question_id );
 				$point    = floatval( $question->get_mark() );
 
+				//if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
 				$result['questions'][ $question_id ]             = [];
 				$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
+				//}
 
 				if ( isset( $answered[ $question_id ] ) ) { // User's answer
 					$result['question_answered']++;
@@ -518,7 +524,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						$result['questions'][ $question_id ]['correct'] = false;
 						$result['questions'][ $question_id ]['mark']    = 0;
 					}
-				} else { // User skip question
+				} elseif ( ! array_key_exists( 'instant_check', $answered ) ) { // User skip question
 					if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
 						$result['user_mark'] -= $point;
 					}
@@ -529,7 +535,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				}
 
 				$can_review_quiz = get_post_meta( $quiz->get_id(), '_lp_review', true ) === 'yes';
-				if ( $can_review_quiz ) {
+				if ( $can_review_quiz && ! array_key_exists( 'instant_check', $answered ) ) {
 					$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
 					$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
 						$question,
@@ -700,7 +706,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 * @return array
 	 */
-	public function get_checked_questions() {
+	public function get_checked_questions(): array {
 		$value = $this->get_meta( '_lp_question_checked', true );
 
 		if ( $value ) {
@@ -734,28 +740,46 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
-	 * @param int   $question_id
+	 * Instant check question
+	 *
+	 * @param int $question_id
 	 * @param mixed $answered
 	 *
-	 * @return mixed
+	 * @return array
+	 * @throws Exception
 	 */
-	public function check_question( $question_id, $answered = null ) {
-		$checked = false;
-
-		try {
-			if ( $this->can_check_answer( $question_id ) ) {
-				$this->add_question_answer( $answered );
-				$this->add_checked_question( $question_id );
-
-				$question            = learn_press_get_question( $question_id );
-				$checked             = $question->check( $answered );
-				$checked['answered'] = $answered;
-			} else {
-				throw new Exception( __( 'Cannot check answer the question.', 'learnpress' ), 1010 );
-			}
-		} catch ( Exception $ex ) {
-			return new WP_Error( $ex->getCode(), $ex->getMessage() );
+	public function instant_check_question( int $question_id, $answered = null ): array {
+		$question = learn_press_get_question( $question_id );
+		if ( ! $question ) {
+			throw new Exception( __( 'Question is invalid!', 'learnpress' ) );
 		}
+
+		$can_check = $this->can_check_answer( $question_id );
+		if ( ! $can_check ) {
+			throw new Exception( __( 'Cannot check answer the question.', 'learnpress' ) );
+		}
+
+		$answered_check = [
+			'instant_check' => 1,
+			$question_id    => $answered,
+		];
+
+		// For case save result when check instant answer
+		$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+		if ( $result_instant_check ) {
+			foreach ( $result_instant_check['questions'] as $question_answer_id => $question_answer ) {
+				if ( ! empty( $question_answer['answered'] ) ) {
+					$answered_check[ $question_answer_id ] = $question_answer['answered'];
+				}
+			}
+		}
+
+		$result_answer = $this->calculate_quiz_result( $answered_check );
+
+		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), json_encode( $result_answer ) );
+		$this->add_checked_question( $question_id );
+
+		$checked['answered'] = $answered;
 
 		return $checked;
 	}
@@ -805,9 +829,13 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 * @return bool
 	 */
-	public function can_check_answer( $question_id = null ) {
-		$quiz = learn_press_get_quiz( $this->get_item_id() );
+	public function can_check_answer( int $question_id = 0 ) : bool {
 		$can  = false;
+		$quiz = learn_press_get_quiz( $this->get_item_id() );
+
+		if ( ! $quiz ) {
+			return $can;
+		}
 
 		if ( $quiz->get_instant_check() && $this->get_status() === 'started' ) {
 			$can = ! $this->has_checked_question( $question_id );
