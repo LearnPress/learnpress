@@ -435,7 +435,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 							}
 						}
 
-						if ( floatval( $return['mark'] ) > 0 ) {
+						if ( floatval( $return['mark'] ) == 1 ) {
 							$return['correct'] = true;
 						}
 					}
