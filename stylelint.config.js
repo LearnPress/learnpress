@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-	extends: [ 'stylelint-config-wordpress/scss', 'prettier-stylelint/index.js' ],
+	extends: [ '@wordpress/stylelint-config', 'prettier-stylelint/index.js' ],
 	plugins: 'stylelint-order',
 	rules: {
 		'max-line-length': 255,
