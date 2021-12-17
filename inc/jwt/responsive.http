@@ -35,9 +35,9 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses?on_sale=true
+GET http://learnpress4.local/wp-json/learnpress/v1/courses?learned=true&per_page=1&order=desc&course_filter=in-progress&optimize=sections
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYzNTEzNjYxMCwibmJmIjoxNjM1MTM2NjEwLCJleHAiOjE2MzU3NDE0MTAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19._eGVoYIw1YHxH9qB6IhIYiPUwJnMFi-lPtjBVASzTBc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYzOTcxMTI2OCwibmJmIjoxNjM5NzExMjY4LCJleHAiOjE2NDAzMTYwNjgsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.o4T_GPJY34KtMq-7Fe7gBE_7ZZapdT6ZJfpheObdxbE
 
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
@@ -210,14 +210,8 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 }
 
 ####
-POST http://learnpress4.local/wp-json/wp/v2/users/
+GET http://learnpress4.local/wp-json/wp/v2/users/
 Content-Type: application/json
-
-{
-	"username": "student4",
-	"password": "student4",
-	"email": "student4@gmail.com"
-}
 
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/users/reset-password
@@ -228,7 +222,7 @@ Content-Type: application/json
 }
 
 ###
-POST https://test.thimpress.com/wp-json/learnpress/v1/token?v=asdasd
+POST https://test.thimpress.com/wp-json/learnpress/v1/token?v=asdasdsdd
 Content-Type: application/json
 
 {
@@ -237,5 +231,5 @@ Content-Type: application/json
 }
 
 ###
-GET http://test.thimpress.com/wp-json/learnpress/v1/courses?page=2&per_page=10&search=&orderby=price&order=desc&v=dfhg
-
+GET https://test.thimpress.com/wp-json/wp/v2/posts?v=qweqwedsfdsfds
+Content-Type: application/json

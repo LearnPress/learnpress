@@ -343,7 +343,7 @@ class LP_Jwt_Public {
 				'lp_jwt_auth_no_auth_header',
 				esc_html__( 'Authorization header not found.', 'learnpress' ),
 				array(
-					'status' => 403,
+					'status' => 401,
 				)
 			);
 		}
@@ -359,7 +359,7 @@ class LP_Jwt_Public {
 				'lp_jwt_auth_bad_auth_header',
 				esc_html__( 'Authentication token is missing.', 'learnpress' ),
 				array(
-					'status' => 403,
+					'status' => 401,
 				)
 			);
 		}
@@ -372,7 +372,7 @@ class LP_Jwt_Public {
 				'lp_jwt_auth_bad_config',
 				esc_html__( 'LearnPress JWT is not configurated properly, please contact the admin', 'learnpress' ),
 				array(
-					'status' => 403,
+					'status' => 401,
 				)
 			);
 		}
@@ -387,7 +387,7 @@ class LP_Jwt_Public {
 					'lp_jwt_auth_bad_iss',
 					esc_html__( 'The iss do not match with this server', 'learnpress' ),
 					array(
-						'status' => 403,
+						'status' => 401,
 					)
 				);
 			}
@@ -398,7 +398,7 @@ class LP_Jwt_Public {
 					'lp_jwt_auth_bad_request',
 					esc_html__( 'User ID not found in the token', 'learnpress' ),
 					array(
-						'status' => 403,
+						'status' => 401,
 					)
 				);
 			}
@@ -408,7 +408,7 @@ class LP_Jwt_Public {
 					'rest_authentication_missing_token_expiration',
 					esc_html__( 'Token must have an expiration.', 'learnpress' ),
 					array(
-						'status' => 403,
+						'status' => 401,
 					)
 				);
 			}
@@ -418,7 +418,7 @@ class LP_Jwt_Public {
 					'rest_authentication_token_expired',
 					esc_html__( 'Token has expired.', 'learnpress' ),
 					array(
-						'status' => 403,
+						'status' => 401,
 					)
 				);
 			}
@@ -442,7 +442,7 @@ class LP_Jwt_Public {
 				'lp_jwt_auth_invalid_token',
 				$e->getMessage(),
 				array(
-					'status' => 403,
+					'status' => 401,
 				)
 			);
 		}

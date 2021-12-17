@@ -236,7 +236,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$check  = $user->can_show_finish_course_btn( $course );
 
 			if ( $check['status'] !== 'success' ) {
-				throw new Exception( $check['message'] );
+				throw new Exception( $check['message'] ?? esc_html__( 'Can not finish course.', 'learnpress' ) );
 			}
 
 			$finished = $user->finish_course( $course_id );
@@ -347,6 +347,15 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data = array();
 
 		foreach ( $fields as $field ) {
+			if ( ! empty( $request['optimize'] ) ) {
+				$disables = is_bool( $request['optimize'] ) ? 'sections,course_data,instructor,meta_data,tags,can_finish,can_retake,count_students,rataken,ratake_count' : $request['optimize'];
+				$disable  = explode( ',', $disables );
+
+				if ( ! empty( $disable ) && in_array( $field, $disable ) ) {
+					continue;
+				}
+			}
+
 			switch ( $field ) {
 				case 'id':
 					$data['id'] = $course->get_id();
@@ -422,6 +431,15 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					break;
 				case 'rating':
 					$data['rating'] = $this->get_course_rating( $id );
+					break;
+				case 'price':
+					$data['price'] = floatval( $course->get_price() );
+					break;
+				case 'origin_price':
+					$data['origin_price'] = floatval( $course->get_origin_price() );
+					break;
+				case 'sale_price':
+					$data['sale_price'] = floatval( $course->get_sale_price() );
 					break;
 			}
 		}
@@ -538,35 +556,17 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$user_id = get_current_user_id();
 
 		if ( ! $user_id ) {
-			return;
-		}
-
-		$profile = learn_press_get_profile( $user_id );
-
-		$orders = $profile->get_user_orders( array( 'status' => 'completed' ) );
-
-		$course_ids = array();
-
-		if ( $orders ) {
-			foreach ( $orders as $order ) {
-				$course_ids = array_merge( array_values( $order ), $course_ids );
-			}
-		}
-
-		if ( empty( $course_ids ) ) {
 			return false;
 		}
 
-		$ids = implode( ',', $course_ids );
-
 		$filter = ! empty( $request['course_filter'] ) ? $request['course_filter'] : false;
-		$where  = $wpdb->prepare( 'user_id=%d AND item_type=%s AND item_id IN (%1s)', $user_id, $this->post_type, $ids ); // phpcs:ignore
+		$where  = $wpdb->prepare( 'user_id=%d AND item_type=%s', $user_id, $this->post_type ); // phpcs:ignore
 
 		if ( $filter ) {
 			if ( $filter === 'in-progress' ) {
-				$where .= $wpdb->prepare( ' AND status=%s', 'enrolled' );
+				$where .= $wpdb->prepare( ' AND status=%s AND graduation=%s', 'enrolled', 'in-progress' );
 			} elseif ( in_array( $filter, array( 'passed', 'failed' ) ) ) { // is "passed" or "failed"
-				$where .= $wpdb->prepare( ' AND graduation=%s', $filter );
+				$where .= $wpdb->prepare( ' AND status=%s AND graduation=%s', 'finished', $filter );
 			}
 		}
 
@@ -931,6 +931,24 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
+				'price'             => array(
+					'description' => __( 'Course Price', 'learnpress' ),
+					'type'        => 'integer',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'origin_price'      => array(
+					'description' => __( 'Course Origin Price', 'learnpress' ),
+					'type'        => 'integer',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'sale_price'        => array(
+					'description' => __( 'Course Sale Price', 'learnpress' ),
+					'type'        => 'integer',
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
 				'categories'        => array(
 					'description' => __( 'List of categories.', 'learnpress' ),
 					'type'        => 'array',
@@ -1175,10 +1193,15 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
-		$params['popular'] = array(
+		$params['popular']  = array(
 			'description'       => __( 'Get item popularity.', 'learnpress' ),
 			'type'              => 'boolean',
 			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['optimize'] = array(
+			'description'       => __( 'Disable some fields schema.', 'learnpress' ),
+			'type'              => array( 'boolean', 'string' ),
+			'validate_callback' => 'wp_parse_id_list',
 		);
 
 		return $params;
