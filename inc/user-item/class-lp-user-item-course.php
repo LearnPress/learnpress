@@ -285,7 +285,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				throw new Exception( 'Course invalid!' );
 			}
 
-			$key_first_cache = 'calculate_course/' . $course->get_id();
+			$key_first_cache = 'calculate_course/' . $this->get_user_id() . '/' . $course->get_id();
 			$results_cache   = LP_Cache::cache_load_first( 'get', $key_first_cache );
 			if ( false !== $results_cache && ! $force_cache ) {
 				return $results_cache;

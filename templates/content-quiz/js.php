@@ -42,7 +42,7 @@ $editable      = $user->is_admin() || get_post_field( $user->is_author_of( $cour
 $max_retrying  = learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() );
 
 if ( $user_quiz ) {
-	$status        = $user_quiz->get_status();
+	$status       = $user_quiz->get_status();
 	$quiz_results = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
 
 	if ( ! $quiz_results ) {
