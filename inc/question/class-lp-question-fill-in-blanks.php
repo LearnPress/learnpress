@@ -405,17 +405,14 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 			if ( $answers ) {
 				foreach ( $answers as $key => $answer ) {
-					if ( '' === learn_press_get_question_answer_meta( $answer->get_id(), '_blanks', true ) ) {
-						// $blanks = LP_Addon_Fill_In_Blank::instance()->upgrader->upgrade_question( $this->get_id() );
-					} else {
-						$blanks = $answer->get_meta( '_blanks' );
-					}
+					$blanks            = $answer->get_meta( '_blanks' );
+					$total_field_input = count( $blanks );
 
 					$return['blanks']   = array();
 					$return['answered'] = array();
 
 					if ( $blanks ) {
-						$point_per_blank = $this->get_mark() / count( $blanks );
+						$total_answer_correct = 0;
 
 						foreach ( $user_answer as $answer_id => $answer_value ) {
 							$answer_id = trim( $answer_id );
@@ -429,14 +426,15 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 									$return['answered'][ $answer_id ] = $user_fill;
 
 									if ( $blank_correct ) {
-										$return['mark'] += floatval( $point_per_blank );
+										$total_answer_correct++;
 									}
 								}
 							}
 						}
 
-						if ( floatval( $return['mark'] ) == 1 ) {
+						if ( $total_answer_correct === $total_field_input ) {
 							$return['correct'] = true;
+							$return['mark']    = $this->get_mark();
 						}
 					}
 				}

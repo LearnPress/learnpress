@@ -98,13 +98,26 @@ const checkAnswer = ( state, action ) => {
 		return { ...question, ...newArgs };
 	} );
 
+	const answered = {
+		...state.answered,
+		[ action.questionId ]: action.result,
+	};
+
+	let newAnswered = localStorage.getItem( `LP_Quiz_${ state.id }_Answered` );
+
+	if ( newAnswered ) {
+		newAnswered = {
+			...JSON.parse( newAnswered ),
+			...answered,
+		}
+
+		localStorage.setItem( `LP_Quiz_${ state.id }_Answered`, JSON.stringify( newAnswered ) );
+	}
+
 	return {
 		...state,
 		questions: [ ...questions ],
-		answered: {
-			...state.answered,
-			[ action.questionId ]: action.result,
-		},
+		answered: answered,
 		checkedQuestions: [ ...state.checkedQuestions, action.questionId ],
 	};
 };

@@ -505,6 +505,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				//if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
 				$result['questions'][ $question_id ]             = [];
 				$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
+
 				//}
 
 				if ( isset( $answered[ $question_id ] ) ) { // User's answer
@@ -782,6 +783,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$this->add_checked_question( $question_id );
 
 		$checked['answered'] = $answered;
+		$checked['mark']     = $result_answer['questions'][ $question_id ]['mark'];
 
 		return $checked;
 	}

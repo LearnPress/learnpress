@@ -448,7 +448,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							}
 						}
 
-						do_action( 'lp_course_data_setting_tab_content' );
+						do_action( 'lp_course_data_setting_tab_content', $post );
 						?>
 					</div>
 				</div>
