@@ -241,7 +241,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			$url = get_author_posts_url( $user->get_id() );
 		}
 
-		return $url;
+		return apply_filters( 'learnpress/profile/tab/link', $url, $tab, $with_section, $user );
 	}
 
 	/**
