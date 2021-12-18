@@ -47,7 +47,7 @@ class LP_User_Items_Result_DB extends LP_Database {
 	}
 
 	/**
-	 * Get lastest result.
+	 * Get latest result.
 	 *
 	 * @param integer $user_item_id
 	 *

@@ -45,8 +45,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 * @return array|bool|LP_Quiz_Results|mixed
 	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
 	 */
-	public function add_question_answer( $id, $values = null ) {
+	/*public function add_question_answer( $id, $values = null ) {
 		$results = $this->get_results( '' );
 
 		if ( ! $results ) {
@@ -82,7 +84,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		LP_Object_Cache::set( $cache_key, false, 'learn-press/quiz-result' );
 
 		return $this->get_results( '' );
-	}
+	}*/
 
 	public function get_question_answer( $id ) {
 		$results = $this->get_results( '' );
