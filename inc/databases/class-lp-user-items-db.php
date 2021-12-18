@@ -655,6 +655,57 @@ class LP_User_Items_DB extends LP_Database {
 
 		return $total_items;
 	}
+
+	/**
+	 * Get quizzes of user
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 *
+	 * @return null|object
+	 * @throws Exception
+	 */
+	public function get_user_quizzes( LP_User_Items_Filter $filter ) {
+		$this->wpdb->query( "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))" );
+		$offset = ( absint( $filter->page ) - 1 ) * $filter->limit;
+
+		$WHERE = '';
+
+		if ( ! empty( $filter->graduation ) ) {
+			$WHERE .= $this->wpdb->prepare( 'AND graduation = %s ', $filter->graduation );
+		}
+
+		if ( ! empty( $filter->status ) ) {
+			$WHERE .= $this->wpdb->prepare( 'AND status = %s ', $filter->status );
+		}
+
+		$query = $this->wpdb->prepare(
+			"SELECT * FROM $this->tb_lp_user_items
+			WHERE user_item_id IN (
+				SELECT DISTINCT MAX(user_item_id)
+				FROM $this->tb_lp_user_items
+				WHERE user_id = %d
+				AND item_type = %s
+				AND status IN (%s, %s)
+				GROUP BY item_id
+			)
+			$WHERE
+			ORDER BY user_item_id DESC
+			LIMIT %d, %d
+			",
+			$filter->user_id,
+			LP_QUIZ_CPT,
+			LP_ITEM_STARTED,
+			LP_ITEM_COMPLETED,
+			$offset,
+			$filter->limit
+		);
+
+		$result = $this->wpdb->get_results( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
 }
 
 LP_Course_DB::getInstance();

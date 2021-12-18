@@ -40,10 +40,13 @@ $checked_questions = array();
 $crypto_js_aes = false;
 $editable      = $user->is_admin() || get_post_field( $user->is_author_of( $course->get_id() ) );
 $max_retrying  = learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() );
+$quiz_results  = null;
 
 if ( $user_quiz ) {
-	$status       = $user_quiz->get_status();
-	$quiz_results = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
+	$status = $user_quiz->get_status();
+	if ( LP_ITEM_STARTED === $status ) {
+		$quiz_results = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
+	}
 
 	if ( ! $quiz_results ) {
 		$quiz_results = $user_quiz->get_result();

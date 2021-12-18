@@ -704,4 +704,41 @@ class LP_User extends LP_Abstract_User {
 
 		return $return;
 	}
+
+	/**
+	 * Get quiz's user learning or completed
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 *
+	 * @return LP_Query_List_Table
+	 */
+	public function get_user_quizzes( LP_User_Items_Filter $filter ): LP_Query_List_Table {
+		$quizzes = [
+			'total' => 0,
+			'items' => [],
+			'pages' => 0,
+		];
+
+		try {
+			$user_quizzes = LP_User_Items_DB::getInstance()->get_user_quizzes( $filter );
+
+			if ( $user_quizzes ) {
+				$count = LP_User_Items_DB::getInstance()->wpdb->get_var( 'SELECT FOUND_ROWS()' );
+
+				$quizzes['total'] = $count;
+				$quizzes['pages'] = ceil( $count / $filter->limit );
+
+				foreach ( $user_quizzes as $item ) {
+					$quizzes['items'][] = new LP_User_Item_Quiz( $item );
+				}
+			}
+
+			$quizzes['single'] = __( 'quiz', 'learnpress' );
+			$quizzes['plural'] = __( 'quizzes', 'learnpress' );
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+		}
+
+		return new LP_Query_List_Table( $quizzes );
+	}
 }

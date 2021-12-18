@@ -483,6 +483,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			if ( LP_ITEM_COMPLETED === $this->get_status() ) {
 				$result = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 
+				if ( isset( $result['user_mark'] ) && $result['user_mark'] < 0 ) {
+					$result['user_mark'] = 0;
+				}
+
 				return $result;
 			}
 
@@ -550,6 +554,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				}
 			}
 
+			if ( $result['user_mark'] < 0 ) {
+				$result['user_mark'] = 0;
+			}
+
 			if ( $result['user_mark'] > 0 && $result['mark'] > 0 ) {
 				$result['result'] = round( $result['user_mark'] * 100 / $result['mark'], 2, PHP_ROUND_HALF_DOWN );
 			}
@@ -584,8 +592,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $this->get_graduation();
 	}
 
-	public function get_percent_result( $decimal = 1 ) {
-		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
+	public function get_percent_result( $decimal = 2 ) {
+		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
 	}
 
 	public function get_time_interval( $context = '' ) {
