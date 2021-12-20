@@ -351,10 +351,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					esc_html__( 'The condition that must be achieved to finish the course.', 'learnpress' ),
 					'80',
 					array(
-						'type'              => 'number',
+						'type_input'        => 'number',
 						'custom_attributes' => array(
 							'min'  => '0',
 							'step' => '1',
+							'max'  => '100',
 						),
 						'style'             => 'width: 60px;',
 					)

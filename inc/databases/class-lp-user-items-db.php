@@ -39,7 +39,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * Todo: tungnx need set paginate - apply when do load API
 	 */
 	public function get_user_course_items( LP_User_Items_Filter $filter, bool $force_cache = false ) {
-		$key_first_cache    = 'course_items/' . $filter->parent_id;
+		$key_first_cache    = 'course_items/' . $filter->user_id . '/' . $filter->parent_id;
 		$course_items_cache = LP_Cache::cache_load_first( 'get', $key_first_cache );
 		if ( false !== $course_items_cache && ! $force_cache ) {
 			return $course_items_cache;
