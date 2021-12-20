@@ -76,7 +76,7 @@ $questions = learn_press_rest_prepare_user_questions(
 	array(
 		'instant_check'       => $show_check,
 		'quiz_status'         => $status,
-		'checked_questions'   => $checked_questions,
+		//'checked_questions'   => $checked_questions,
 		'answered'            => $answered,
 		'show_correct_review' => $show_correct_review,
 		'status'              => $status,
@@ -98,6 +98,7 @@ $js = array(
 	'status'              => '',
 	'attempts'            => array(),
 	'answered'            => $answered ? (object) $answered : new stdClass(),
+	'checked_questions'   => array(),
 	'passing_grade'       => $quiz->get_passing_grade(),
 	'negative_marking'    => $quiz->get_negative_marking(),
 	'show_correct_review' => $show_correct_review,
@@ -114,13 +115,13 @@ $js = array(
 	'results'             => array(),
 );
 
-if ( $course->is_no_required_enroll() ) {
+/*if ( $course->is_no_required_enroll() ) {
 	$cookie_user_status = 'quiz_submit_status_' . $course->get_id() . '_' . $quiz->get_id() . '';
 	if ( ! empty( $_COOKIE[ $cookie_user_status ] ) ) {
 		$js_status    = $_COOKIE[ $cookie_user_status ];
 		$js['status'] = $js_status;
 	}
-}
+}*/
 
 $js = array_merge( $js, $user_js );
 

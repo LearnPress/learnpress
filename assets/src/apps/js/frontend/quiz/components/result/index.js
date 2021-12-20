@@ -160,14 +160,15 @@ const Result = () => {
 	}
 
 	const classNames = [ 'quiz-result', graduation ];
+
 	//Re-write value to results.timeSpend
-	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
+	/*if ( lpQuizSettings.checkNorequizenroll === 1 ) {
 		const timespendStart = window.localStorage.getItem( 'quiz_start_' + QuizID ),
 			timespendEnd = window.localStorage.getItem( 'quiz_end_' + QuizID );
 		if ( timespendStart && timespendEnd ) {
 			results.timeSpend = timeDifference( timespendStart, timespendEnd ).duration;
 		}
-	}
+	}*/
 	return (
 		<div className={ classNames.join( ' ' ) }>
 			<h3 className="result-heading">{ __( 'Your Result', 'learnpress' ) }</h3>

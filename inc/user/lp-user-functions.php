@@ -1857,10 +1857,11 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 			 $mark = $question->get_mark() ? $question->get_mark() : 1;
 
 			$questionData = array(
-				'id'    => absint( $id ),
-				'title' => $question->get_title(),
-				'type'  => $question->get_type(),
-				'point' => $mark,
+				'object' => $question,
+				'id'     => absint( $id ),
+				'title'  => $question->get_title(),
+				'type'   => $question->get_type(),
+				'point'  => $mark,
 			);
 
 			$content = $question->get_content();

@@ -23,10 +23,11 @@ export function setQuizData( key, data ) {
 	} else {
 		data = key;
 	}
+
 	// Save all data for no required enroll available
-	if ( lpQuizSettings.checkNorequizenroll == '1' && window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) !== null ) {
+	/*if ( lpQuizSettings.checkNorequizenroll === 1 && window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) !== null ) {
 		data = JSON.parse( window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) );
-	}
+	}*/
 
 	return {
 		type: 'SET_QUIZ_DATA',
@@ -92,9 +93,20 @@ const startQuiz = function*() {
 		},
 	} );
 
-	response = Hook.applyFilters( 'request-start-quiz-response', response, itemId, courseId );
+	if( response.status !== 'error' ) {
+		response = Hook.applyFilters( 'request-start-quiz-response', response, itemId, courseId );
 
-	yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );
+		// No require enroll
+		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+			const keyQuizOff = 'quiz_off_' + lpQuizSettings.id;
+			window.localStorage.removeItem( keyQuizOff );
+			let quizDataOff = {'endTime' : Date.now() + response.results.duration * 1000, 'status' : response.results.status};
+
+			window.localStorage.setItem( keyQuizOff, JSON.stringify(quizDataOff) );
+		}
+
+		yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );
+	}
 };
 
 export { startQuiz };
@@ -133,13 +145,13 @@ export function* submitQuiz() {
 
 	let answered = getQuestionsSelectedAnswers();
 
-	if ( Object.keys( answered ).length === 0 && lpQuizSettings.checkNorequizenroll === 1 ) {
+	/*if ( Object.keys( answered ).length === 0 && lpQuizSettings.checkNorequizenroll === 1 ) {
 		const data = JSON.parse( localStorage.getItem( `LP_Quiz_${ itemId }_Answered` ) );
 
 		for ( const [ k, v ] of Object.entries( data ) ) {
 			answered[ k ] = v.answered;
 		}
-	}
+	}*/
 
 	// Get time spend did quiz - tungnx
 	let timeSpend = 0;
@@ -161,21 +173,30 @@ export function* submitQuiz() {
 		},
 	} );
 
-	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
-		// Remove & set storage end_time
-		window.localStorage.removeItem( 'quiz_end_' + lpQuizSettings.id );
-		window.localStorage.setItem( 'quiz_end_' + lpQuizSettings.id, Date.now() );
-	}
-
 	response = Hook.applyFilters( 'request-submit-quiz-response', response, itemId, courseId );
 
-	if ( response.success ) {
+	if( response.status === 'success' ) {
+		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+			const keyQuizOff = 'quiz_off_' + lpQuizSettings.id;
+			const quizDataOffStr = window.localStorage.getItem( keyQuizOff );
+			if( null !== quizDataOffStr ) {
+				const quizDataOff = JSON.parse( quizDataOffStr );
+
+				quizDataOff.status = response.results.status;
+				quizDataOff.results = response.results.results;
+
+				window.localStorage.setItem( keyQuizOff, JSON.stringify(quizDataOff) );
+			}
+		}
+
+		console.log(response.results)
+
 		yield _dispatch( 'learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys( response.results ), itemId, courseId );
 	}
 
-	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
+	/*if ( lpQuizSettings.checkNorequizenroll == '1' ) {
 		localStorage.setItem( 'quiz_userdata_' + lpQuizSettings.id, JSON.stringify( wpSelect( 'learnpress/quiz' ).getData() ) );
-	}
+	}*/
 }
 
 export function updateUserQuestionAnswers( questionId, answers, quizId, courseId = 0, userId = 0 ) {

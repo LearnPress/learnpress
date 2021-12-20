@@ -6,6 +6,32 @@ const { modal: { default: Modal } } = LP;
 export default Quiz;
 
 export const init = ( elem, settings ) => {
+	// For no require enroll
+	if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+		const keyQuizOff = 'quiz_off_' + lpQuizSettings.id;
+		const quizDataOffStr = window.localStorage.getItem( keyQuizOff );
+
+		if( null !== quizDataOffStr ) {
+			const quizDataOff = JSON.parse( quizDataOffStr );
+			settings.status = quizDataOff.status;
+
+			if( 'started' === quizDataOff.status ) {
+				const now = Date.now();
+
+				settings.total_time = Math.floor(( quizDataOff.endTime - now ) / 1000);
+			} else if ( 'completed' === quizDataOff.status ) {
+
+				console.log(quizDataOff);
+				settings.results = quizDataOff.results;
+				settings.answered = quizDataOff.results.answered;
+				settings.questions = quizDataOff.results.questions;
+				//settings.questions = quizDataOff.results.questions;
+			}
+		}
+	}
+
+	console.log(settings);
+
 	wp.element.render(
 		<Modal><Quiz settings={ settings } /></Modal>,
 		[ ...document.querySelectorAll( elem ) ][ 0 ]

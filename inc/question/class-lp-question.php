@@ -206,7 +206,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_mark() {
-			return $this->get_data( 'mark' );
+			return $this->get_data( 'mark', 1 );
 		}
 
 		/**
