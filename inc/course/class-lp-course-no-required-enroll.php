@@ -23,34 +23,14 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		}
 
 		/**
-		 * @param string $prop
-		 * @param false $force
-		 * @param int $quiz_id
-		 * @param null $answered
-		 * @param int $course_id
-		 *
-		 * @return array|mixed|string
-		 */
-		public function guest_quiz_get_results( $quiz, $answered = null ) {
-
-			$result                   = $this->guest_calculate_results_quiz( $quiz, $answered );
-			$result['user_item_id']   = '';
-			$result['interval']       = array();
-			$result['graduation']     = '';
-			$result['graduationText'] = '';
-
-			return $result;
-		}
-
-		/**
-		 * Get result answer quiz of user guest
+		 * Get result do quiz
 		 *
 		 * @param $quiz
-		 * @param $answered
+		 * @param null $answered
 		 *
 		 * @return array
 		 */
-		public function guest_calculate_results_quiz( $quiz, $answered ): array {
+		public function get_result_quiz( $quiz, $answered = null ): array {
 			$result = array(
 				'questions'         => array(),
 				'mark'              => $quiz->get_mark(),
@@ -85,8 +65,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$point = floatval( $question->get_mark() );
 
 				//if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
-				$result['questions'][ $question_id ]             = $question_info;
-				$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
+				$result['questions'][ $question_id ]            = $question_info;
+				$result['answered'][ $question_id ]             = [];
+				$result['answered'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
 
 				//}
 
@@ -98,16 +79,16 @@ if ( ! class_exists( 'LP_Course' ) ) {
 						$result['question_correct']++;
 						$result['user_mark'] += $point;
 
-						$result['questions'][ $question_id ]['correct'] = true;
-						$result['questions'][ $question_id ]['mark']    = $point;
+						$result['answered'][ $question_id ]['correct'] = true;
+						$result['answered'][ $question_id ]['mark']    = $point;
 					} else {
 						if ( $quiz->get_negative_marking() ) {
 							$result['user_mark'] -= $point;
 						}
 						$result['question_wrong']++;
 
-						$result['questions'][ $question_id ]['correct'] = false;
-						$result['questions'][ $question_id ]['mark']    = 0;
+						$result['answered'][ $question_id ]['correct'] = false;
+						$result['answered'][ $question_id ]['mark']    = 0;
 					}
 				} elseif ( ! array_key_exists( 'instant_check', $answered ) ) { // User skip question
 					if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
@@ -115,8 +96,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					}
 					$result['question_empty']++;
 
-					$result['questions'][ $question_id ]['correct'] = false;
-					$result['questions'][ $question_id ]['mark']    = 0;
+					$result['answered'][ $question_id ]['correct'] = false;
+					$result['answered'][ $question_id ]['mark']    = 0;
 				}
 
 				$can_review_quiz = get_post_meta( $quiz->get_id(), '_lp_review', true ) === 'yes';
@@ -260,6 +241,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$results['retaken']      = 0;
 			$results['attempts']     = [];
 			$results['user_item_id'] = 0;
+			$results['answered']     = [];
 			$response['results']     = $results;
 
 			return $response;

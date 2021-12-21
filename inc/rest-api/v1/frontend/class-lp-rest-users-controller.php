@@ -508,10 +508,10 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					throw new Exception( __( 'Quiz is invalid!', 'learnpress' ) );
 				}
 
-				$result = $no_required_enroll->guest_quiz_get_results( $quiz, $answered );
+				$result = $no_required_enroll->get_result_quiz( $quiz, $answered );
 
 				$result['status']    = LP_ITEM_COMPLETED;
-				$result['answered']  = $result['questions'];
+				//$result['answered']  = $result['questions'];
 				$result['attempts']  = [];
 				$result['results']   = $result;
 				$response['status']  = 'success';

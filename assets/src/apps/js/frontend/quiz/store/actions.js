@@ -186,6 +186,7 @@ export function* submitQuiz() {
 				quizDataOff.results = response.results.results;
 
 				window.localStorage.setItem( keyQuizOff, JSON.stringify(quizDataOff) );
+				window.localStorage.removeItem( 'LP_Quiz_' + lpQuizSettings.id + '_Answered' );
 			}
 		}
 
