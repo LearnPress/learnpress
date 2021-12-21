@@ -63,8 +63,8 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 				global $post;
 				$enqueued = wp_script_is( 'lp-single-course', 'enqueued' );
 
-				if( ! $enqueued ) {
-					wp_enqueue_script( 'lp-single-course');
+				if ( ! $enqueued ) {
+					wp_enqueue_script( 'lp-single-course' );
 				}
 				$post = get_post( $course_id );
 
