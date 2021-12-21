@@ -315,7 +315,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					break;
 				case 'evaluate_questions':
 				case 'evaluate_mark':
-					$results_evaluate = $this->evaluate_course_by_question( $evaluate_type, $course );
+					$results_evaluate = $this->evaluate_course_by_question( $evaluate_type );
 					break;
 				default:
 					$results_evaluate = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $evaluate_type, $this );
@@ -667,7 +667,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Evaluate course result by lessons.
 	 *
 	 * @param $count_items_completed
-	 * @param int                   $total_item_lesson
+	 * @param int $total_item_lesson
 	 *
 	 * @return array
 	 * @author tungnx
@@ -793,11 +793,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @since 4.1.4.1
 	 * @version 1.0.0
 	 */
-	private function evaluate_course_by_questions( &$evaluate, $lp_quizzes, $total_questions_of_course ) {
-		$lp_quiz_db              = LP_Quiz_DB::getInstance();
+	private function evaluate_course_by_questions( &$evaluate, $lp_quizzes, $total_questions ) {
 		$lp_user_item_results_db = LP_User_Items_Result_DB::instance();
 		$count_questions_correct = 0;
-		// get question correct by user
+
+		// get questions correct
 		foreach ( $lp_quizzes as $lp_quiz ) {
 			$lp_quiz_result = $lp_user_item_results_db->get_result( $lp_quiz->user_item_id );
 			if ( $lp_quiz_result ) {
@@ -805,8 +805,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			}
 		}
 
-		if ( $total_questions_of_course && $count_questions_correct ) {
-			$evaluate['result'] = $count_questions_correct * 100 / $total_questions_of_course;
+		if ( $total_questions && $count_questions_correct ) {
+			$evaluate['result'] = $count_questions_correct * 100 / $total_questions;
 
 			$passing_condition = $this->_course->get_passing_condition();
 			if ( $evaluate['result'] >= $passing_condition ) {
@@ -850,7 +850,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @since 4.1.4.1
 	 * @version 1.0.0
 	 */
-	protected function evaluate_course_by_question( string $evaluate_type, LP_Course $course ): array {
+	protected function evaluate_course_by_question( string $evaluate_type ): array {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 		$evaluate         = array(
 			'result' => 0,
@@ -867,13 +867,17 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			// get quiz_ids
 			$filter_get_quiz_ids            = new LP_User_Items_Filter();
 			$filter_get_quiz_ids->parent_id = $user_course->user_item_id;
-			$filter_get_quiz_ids->user_id   = $user_course->user_id;
-			$items_started                  = $lp_user_items_db->get_user_course_items( $filter_get_quiz_ids );
-			$quizzes_started                = array();
+			$filter_get_quiz_ids->item_type = LP_QUIZ_CPT;
+			$lp_quizzes                     = $lp_user_items_db->get_user_course_items_by_item_type( $filter_get_quiz_ids );
 
-			// create variable to store total question and total mark by question in course
-			$total_questions_of_course = 0;
-			$total_mark_question       = 0;
+			// Get total questions, mark
+			$course = $this->_course;
+			if ( is_int( $course ) ) {
+				$course = learn_press_get_course( $course );
+			}
+
+			$total_questions     = 0;
+			$total_mark_question = 0;
 
 			// get all item by course
 			$items = $course->get_item_ids();
@@ -881,24 +885,18 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			foreach ( $items as $item_id ) {
 				$item = $course->get_item( $item_id );
 				if ( $item->get_item_type() == LP_QUIZ_CPT ) {
-					$total_questions_of_course += count( $item->get_questions() );
-					$total_mark_question       += $item->get_mark();
+					$total_questions     += count( $item->get_questions() );
+					$total_mark_question += $item->get_mark();
 				}
 			}
-
-			// get result quiz complete by user progress
-			foreach ( $items_started as $item_started ) {
-				if ( $item_started->item_type == LP_QUIZ_CPT ) {
-					$quizzes_started[] = $item_started;
-				}
-			}
+			// End get total questions, mark
 
 			switch ( $evaluate_type ) {
 				case 'evaluate_questions':
-					$this->evaluate_course_by_questions( $evaluate, $quizzes_started, $total_questions_of_course );
+					$this->evaluate_course_by_questions( $evaluate, $lp_quizzes, $total_questions );
 					break;
 				case 'evaluate_mark':
-					$this->evaluate_course_by_mark( $evaluate, $quizzes_started, $total_mark_question );
+					$this->evaluate_course_by_mark( $evaluate, $lp_quizzes, $total_mark_question );
 					break;
 				default:
 					break;
@@ -1376,7 +1374,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * @param        $item_id
-	 * @param string  $prop
+	 * @param string $prop
 	 *
 	 * @return bool|float|int
 	 * @throws Exception
@@ -1442,7 +1440,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				'url'          => $course->get_permalink(),
 				'result'       => $this->get_results(),
 				'current_item' => $item ? $item->get_id() : false,
-				// 'items'        => $this->get_items_for_js(),
+				//'items'        => $this->get_items_for_js(),
 			);
 		}
 
