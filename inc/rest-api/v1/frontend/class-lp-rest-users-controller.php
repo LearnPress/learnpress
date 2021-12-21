@@ -339,7 +339,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				)
 			);
 
-			$results['status']       = 'success';
 			$results['question_ids'] = $question_ids;
 			$results['questions']    = $questions;
 			$results['total_time']   = $time_remaining;
@@ -348,6 +347,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['retaken']      = absint( $user_quiz->get_retaken_count() );
 			$results['attempts']     = $user_quiz->get_attempts();
 			$results['user_item_id'] = $user_quiz->get_user_item_id();
+			$response['status']     = 'success';
 			$response['results']     = $results;
 		} catch ( Throwable $e ) {
 			$response['message'] = $e->getMessage();
@@ -510,7 +510,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 				$result = $no_required_enroll->get_result_quiz( $quiz, $answered );
 
-				$result['status']    = LP_ITEM_COMPLETED;
+				$result['status'] = LP_ITEM_COMPLETED;
 				//$result['answered']  = $result['questions'];
 				$result['attempts']  = [];
 				$result['results']   = $result;
@@ -560,15 +560,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$user_quiz->complete();
-			$response = array(
-				'success' => true,
-				'message' => __( 'Success!', 'learnpress' ),
-			);
 
 			$result['status']    = $user_quiz->get_status(); // Must be completed
 			$result['attempts']  = $user_quiz->get_attempts();
 			$result['answered']  = $result['questions'];
 			$result['results']   = $result;
+			$response['status']  = 'success';
 			$response['results'] = $result;
 		} catch ( Throwable $e ) {
 			$response['message'] = $e->getMessage();
@@ -611,7 +608,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$checked     = [];
 
 			if ( $course->is_no_required_enroll() ) {
-				$no_required_enroll = new LP_Course_No_Required_Enroll();
+				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
 				$checked            = $no_required_enroll->guest_check_question( $question_id, $answered );
 			} else {
 				$user = learn_press_get_current_user();

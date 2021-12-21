@@ -404,6 +404,9 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 			$blanks  = array();
 
 			if ( $answers ) {
+				/**
+				 * @var LP_Question_Answer_Option $answer
+				 */
 				foreach ( $answers as $key => $answer ) {
 					$blanks            = $answer->get_meta( '_blanks' );
 					$total_field_input = count( $blanks );

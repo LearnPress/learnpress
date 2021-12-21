@@ -93,16 +93,16 @@ const startQuiz = function*() {
 		},
 	} );
 
-	if( response.status !== 'error' ) {
+	if ( response.status !== 'error' ) {
 		response = Hook.applyFilters( 'request-start-quiz-response', response, itemId, courseId );
 
 		// No require enroll
 		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
 			const keyQuizOff = 'quiz_off_' + lpQuizSettings.id;
 			window.localStorage.removeItem( keyQuizOff );
-			let quizDataOff = {'endTime' : Date.now() + response.results.duration * 1000, 'status' : response.results.status};
+			const quizDataOff = { endTime: ( Date.now() + response.results.duration * 1000 ), status: response.results.status };
 
-			window.localStorage.setItem( keyQuizOff, JSON.stringify(quizDataOff) );
+			window.localStorage.setItem( keyQuizOff, JSON.stringify( quizDataOff ) );
 		}
 
 		yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );
@@ -143,15 +143,20 @@ export function* submitQuiz() {
 		return;
 	}
 
-	let answered = getQuestionsSelectedAnswers();
+	const answered = getQuestionsSelectedAnswers();
 
-	/*if ( Object.keys( answered ).length === 0 && lpQuizSettings.checkNorequizenroll === 1 ) {
-		const data = JSON.parse( localStorage.getItem( `LP_Quiz_${ itemId }_Answered` ) );
+	if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+		const keyAnswer = `LP_Quiz_${ itemId }_Answered`;
+		const answerDataStr = localStorage.getItem( keyAnswer );
 
-		for ( const [ k, v ] of Object.entries( data ) ) {
-			answered[ k ] = v.answered;
+		if ( null !== answerDataStr ) {
+			const data = JSON.parse( answerDataStr );
+
+			for ( const [ k, v ] of Object.entries( data ) ) {
+				answered[ k ] = v.answered;
+			}
 		}
-	}*/
+	}
 
 	// Get time spend did quiz - tungnx
 	let timeSpend = 0;
@@ -175,22 +180,22 @@ export function* submitQuiz() {
 
 	response = Hook.applyFilters( 'request-submit-quiz-response', response, itemId, courseId );
 
-	if( response.status === 'success' ) {
+	if ( response.status === 'success' ) {
 		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
 			const keyQuizOff = 'quiz_off_' + lpQuizSettings.id;
 			const quizDataOffStr = window.localStorage.getItem( keyQuizOff );
-			if( null !== quizDataOffStr ) {
+			if ( null !== quizDataOffStr ) {
 				const quizDataOff = JSON.parse( quizDataOffStr );
 
 				quizDataOff.status = response.results.status;
 				quizDataOff.results = response.results.results;
 
-				window.localStorage.setItem( keyQuizOff, JSON.stringify(quizDataOff) );
+				window.localStorage.setItem( keyQuizOff, JSON.stringify( quizDataOff ) );
 				window.localStorage.removeItem( 'LP_Quiz_' + lpQuizSettings.id + '_Answered' );
 			}
 		}
 
-		console.log(response.results)
+		//console.log( response.results );
 
 		yield _dispatch( 'learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys( response.results ), itemId, courseId );
 	}
@@ -250,7 +255,39 @@ export function* checkAnswer( id ) {
 		},
 	} );
 
-	yield _dispatch( 'learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys( result ) );
+	if ( result.status === 'success' ) {
+		// No require enroll
+		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+			const keyQuizOff = 'quiz_off_' + lpQuizSettings.id;
+			const quizDataOffStr = window.localStorage.getItem( keyQuizOff );
+
+			if ( null !== quizDataOffStr ) {
+				const quizDataOff = JSON.parse( quizDataOffStr );
+
+				const questionOptions = result.options;
+
+				if ( undefined === quizDataOff.checked_questions ) {
+					quizDataOff.checked_questions = [];
+					quizDataOff.checked_questions.push( id );
+				} else if ( -1 === quizDataOff.checked_questions.indexOf( id ) ) {
+					quizDataOff.checked_questions.push( id );
+				}
+
+				if ( undefined === quizDataOff.question_options ) {
+					quizDataOff.question_options = {};
+					quizDataOff.question_options[ id ] = questionOptions;
+				} else if ( undefined === quizDataOff.question_options[ id ] ) {
+					quizDataOff.question_options[ id ] = questionOptions;
+				}
+
+				window.localStorage.setItem( keyQuizOff, JSON.stringify( quizDataOff ) );
+
+				//console.log( quizDataOff );
+			}
+		}
+
+		yield _dispatch( 'learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys( result ) );
+	}
 }
 
 export function markQuestionRendered( questionId ) {
