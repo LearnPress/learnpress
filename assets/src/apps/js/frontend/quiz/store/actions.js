@@ -103,6 +103,19 @@ const startQuiz = function*() {
 			const quizDataOff = { endTime: ( Date.now() + response.results.duration * 1000 ), status: response.results.status };
 
 			window.localStorage.setItem( keyQuizOff, JSON.stringify( quizDataOff ) );
+
+			// Set Retake quiz
+			const keyQuizOffRetaken = 'quiz_off_retaken_' + lpQuizSettings.id;
+			let quizOffRetaken = window.localStorage.getItem( keyQuizOffRetaken );
+
+			if ( null === quizOffRetaken ) {
+				quizOffRetaken = 0;
+			} else {
+				quizOffRetaken++;
+			}
+
+			window.localStorage.setItem( keyQuizOffRetaken, quizOffRetaken );
+			// End
 		}
 
 		yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );

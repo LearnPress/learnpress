@@ -42,7 +42,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				'question_correct'  => 0,
 				'status'            => LP_ITEM_COMPLETED,
 				'result'            => 0,
-				'time_spend'        => '123',
+				'time_spend'        => 0,
 				'passing_grade'     => $quiz->get_passing_grade(),
 				'answered'          => array(),
 				'pass'              => 0,

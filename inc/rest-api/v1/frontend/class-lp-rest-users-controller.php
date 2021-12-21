@@ -347,7 +347,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['retaken']      = absint( $user_quiz->get_retaken_count() );
 			$results['attempts']     = $user_quiz->get_attempts();
 			$results['user_item_id'] = $user_quiz->get_user_item_id();
-			$response['status']     = 'success';
+			$response['status']      = 'success';
 			$response['results']     = $results;
 		} catch ( Throwable $e ) {
 			$response['message'] = $e->getMessage();
@@ -489,7 +489,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$item_id    = $request['item_id'] ?? 0;
 			$course_id  = $request['course_id'] ?? 0;
 			$answered   = $request['answered'] ?? [];
-			$time_spend = $request['time_spend'] ?? '';
+			$time_spend = $request['time_spend'] ?? 0;
 			$user       = learn_press_get_user( $user_id );
 			$course     = learn_press_get_course( $course_id );
 
@@ -509,6 +509,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				}
 
 				$result = $no_required_enroll->get_result_quiz( $quiz, $answered );
+
+				// Set time spent
+				$interval             = new LP_Duration( $time_spend );
+				$interval             = $interval->to_timer();
+				$result['time_spend'] = $interval;
+				// End
 
 				$result['status'] = LP_ITEM_COMPLETED;
 				//$result['answered']  = $result['questions'];

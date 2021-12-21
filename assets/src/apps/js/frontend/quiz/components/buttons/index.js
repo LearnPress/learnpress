@@ -414,8 +414,9 @@ export default compose( [
 			data.question = getCurrentQuestion( 'object' );
 		}
 
-		if ( lpQuizSettings.checkNorequizenroll == '1' ) {
-			const retakenCurrent = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
+		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+			const retakenCurrent = window.localStorage.getItem( 'quiz_off_retaken_' + lpQuizSettings.id );
+
 			if ( getData( 'retakeCount' ) > retakenCurrent ) {
 				data.retakeNumber = getData( 'retakeCount' ) - retakenCurrent;
 				data.canRetry = true;
