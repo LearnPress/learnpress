@@ -175,22 +175,14 @@ const getQuestionsSelectedAnswers = function( state, questionId ) {
 			continue;
 		}
 
-		if ( lpQuizSettings.checknorequizenroll == '1' ) {
+		// Answer filled by user
+		if ( ( data[ loopId ].temp || data[ loopId ].blanks ) ) {
 			// If specific a question then return it only.
 			if ( questionId && loopId === questionId ) {
 				return data[ loopId ].answered;
 			}
-			returnData[ loopId ] = data[ loopId ].answered;
-		} else {
-			// Answer filled by user
-			if ( ( data[ loopId ].temp || data[ loopId ].blanks ) ) {
-				// If specific a question then return it only.
-				if ( questionId && loopId === questionId ) {
-					return data[ loopId ].answered;
-				}
 
-				returnData[ loopId ] = data[ loopId ].answered;
-			}
+			returnData[ loopId ] = data[ loopId ].answered;
 		}
 	}
 
