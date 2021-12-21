@@ -565,7 +565,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$completed_items = 0;
 		$course_data     = $user->get_course_data( $course->get_id() );
 
-		if ( $course_data ) {
+		if ( $course_data && ! $course->is_no_required_enroll() ) {
 			$course_results  = $course_data->get_result();
 			$completed_items = $course_results['completed_items'];
 			$percentage      = $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0;
