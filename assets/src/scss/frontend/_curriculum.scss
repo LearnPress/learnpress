@@ -1139,53 +1139,11 @@ body {
 	}
 }
 
-.learn-press-course-results-progress {
-	margin-right: -4%;
-
-	.items-progress,
-	.course-progress {
-		float: left;
-		width: 46%;
-		margin-right: 4%;
-		margin-bottom: 30px;
-
-		.items-progress__heading {
-			margin-bottom: 10px;
+.course-progress {
+	.lp-progress-bar {
+		&:hover {
+			cursor: pointer;
 		}
-
-		.lp-progress-bar {
-			overflow: hidden;
-			position: relative;
-			height: 10px;
-			border-radius: 5px;
-
-			.lp-progress-value {
-				position: absolute;
-				width: 100%;
-				height: 10px;
-				margin-left: -100%;
-				border-radius: 5px;
-			}
-		}
-
-		.lp-course-status {
-
-			.grade {
-
-				&.failed {
-					background: #f00;
-				}
-
-				&.passed {
-					background: #3eadff;
-				}
-			}
-		}
-	}
-
-	&::after {
-
-		@include clear-fix();
 	}
 }
 

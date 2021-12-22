@@ -50,7 +50,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Enroll' ) ) {
 
 			$atts = $this->_atts;
 
-			if ( '@current' === $atts['id'] ) {
+			if ( 'current' === $atts['id'] ) {
 				$course_id = learn_press_is_course() ? get_the_ID() : 0;
 			} else {
 				$course_id = $atts['id'];

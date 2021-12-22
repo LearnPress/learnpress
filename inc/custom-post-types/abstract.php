@@ -553,7 +553,7 @@ abstract class LP_Abstract_Post_Type {
 		return $join;
 	}
 
-	public function _posts_where_paged( $where ) {
+	final function _posts_where_paged( $where ) {
 		if ( ! $this->_check_post() ) {
 			return $where;
 		}
@@ -747,7 +747,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function columns_content( $column, $post_id = 0 ) {
-
+		// Implement from child
 	}
 
 	/**

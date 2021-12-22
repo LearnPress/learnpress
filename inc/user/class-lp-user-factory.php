@@ -273,6 +273,10 @@ class LP_User_Factory {
 
 			$user_item_data = apply_filters( 'learnpress/lp_order/item/handle_item_manual_order_completed', $user_item_data, $order, $user, $course, $item );
 
+			// Delete lp_user_items old
+			LP_User_Items_DB::getInstance()->delete_user_items_old( $user->get_id(), $course->get_id() );
+			// End
+
 			if ( isset( $user_item_data['status'] ) ) {
 				$user_item_new = new LP_User_Item_Course( $user_item_data );
 				$result        = $user_item_new->update();

@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit();
 		setup_postdata( $post );
 
 		$course_data    = $user->get_course_data( $id );
-		$course_results = $course_data->calculate_course_results();
+		$course_results = $course_data->get_result();
 		learn_press_get_template( 'content-course.php' );
 	}
 

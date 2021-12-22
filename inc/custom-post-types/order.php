@@ -369,7 +369,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			<script type="text/javascript">
 				jQuery(function ($) {
 					$('#post-search-input').prop('placeholder',
-						'<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>').css('width', 400)
+						'<?php esc_attr_e( 'Order number, course name etc...', 'learnpress' ); ?>').css('width', 300)
 				})
 			</script>
 			<?php
@@ -404,8 +404,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			# filter by user id
 			preg_match( "#{$wpdb->posts}\.post_author IN\s*\((\d+)\)#", $where, $matches );
 			if ( ! empty( $matches ) && isset( $matches[1] ) ) {
-				$author_id = intval( $matches[1] );
-				$sql       = ' ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)';
+				$author_id     = intval( $matches[1] );
+				$author_id_str = $wpdb->prepare( '%"%d"%', $author_id );
+				//$sql       = ' ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)';
 
 				$sql = " {$wpdb->posts}.ID IN ( SELECT
 						IF( p.post_parent >0, p.post_parent, p.ID)
@@ -413,14 +414,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						{$wpdb->posts} AS p
 							INNER JOIN
 						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s
-								AND m.meta_key = %s
-							INNER JOIN
-						{$wpdb->users} u on m.meta_value = u.ID
-					WHERE
-						p.post_type = 'lp_order'
-							AND u.ID = %d ) ";
+								AND m.meta_key = %s AND  (meta_value = %d OR meta_value like %s )
+							)
+						";
 
-				$sql   = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id ) );
+				$sql   = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id, $author_id_str ) );
 				$where = str_replace( $matches[0], $sql, $where );
 			}
 
@@ -447,6 +445,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						OR {$wpdb->posts}.ID LIKE %s
 					) ";
 				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
+				//print_r($sql);die('ccc');
 				# search order via course name
 				$sql .= ' OR ' . $wpdb->prepare(
 					" {$wpdb->posts}.ID IN (
@@ -511,9 +510,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! $this->is_page_list_posts_on_backend() ) {
 				return $join;
 			}
-			$s     = $wp_query->get( 's' );
+
 			$join .= " INNER JOIN {$wpdb->postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
 			$join .= " INNER JOIN {$wpdb->postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+
+			$s = $wp_query->get( 's' );
 			if ( $s ) {
 				$join .= " INNER JOIN {$wpdb->learnpress_order_items} loi ON {$wpdb->posts}.ID = loi.order_id";
 			}

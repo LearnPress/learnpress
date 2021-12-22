@@ -197,12 +197,27 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.4.1 (2021-11-xx) =
-~ Fixed: metabox textarea
-~ Save info total items (quiz, question,...) of course when saving the course - improve performance
-~ Fixed: error change user Guest to another user on LP Order not save
-~ Fixed: Guest buy course with user exists
-~ Fixed: Guest buy course with create account
+= 4.1.4.1 (2021-12-21) =
+~ Added: settings redirect when finish course.
+~ Added: enqueue script by shortcode button purchase.
+~ Fixed: error save value on the textarea format code HTML.
+~ Fixed: error timezone is different UTC-0 will finish quiz soon.
+~ Save info total items (quiz, question,...) of course when saving the course - improve performance.
+~ Fixed: error change user Guest to another user on LP Order not save.
+~ Fixed: Guest buy course with user exists.
+~ Fixed: Guest buy course with create account.
+~ Fixed: High CPU (many query) when user login view single course.
+~ Fixed: No require enroll.
+~ Changed: view course's user on the Backend to the profile's user.
+~ Modified: submit quiz, get result course, quiz.
+~ Fixed: query get orders on Profile page.
+~ Fixed: query get orders by user (multiple user) on the Backend.
+~ Modified: delete course will delete section, section_items, lp_user_items, user_itemmeta.
+~ Saved: info total items of course when save course - to make call fast.
+~ Rewrite: function count total items of the Course.
+~ Fixed: get course id when click Get Passing Grade in Evaluate via results of the final quiz.
+~ Fixed: count Unassigned questions.
+~ Changed logic check "fill in blank" question: user answer right all fields will get point of question, one of answer wrong, the question is fail and get point = 0.
 
 = 4.1.4 (2021-11-08) =
 ~ Fixed security: when user share profile, another user can see settings as change password, change info.

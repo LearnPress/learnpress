@@ -1462,7 +1462,7 @@ function learn_press_hk_before_start_quiz( $true, $quiz_id, $course_id, $user_id
 
 add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz', 10, 4 );
 
-function learn_press_default_user_item_status( $item_id ) {
+/*function learn_press_default_user_item_status( $item_id ) {
 	$status = '';
 	switch ( learn_press_get_post_type( $item_id ) ) {
 		case LP_LESSON_CPT:
@@ -1476,7 +1476,7 @@ function learn_press_default_user_item_status( $item_id ) {
 	}
 
 	return apply_filters( 'learn-press/default-user-item-status', $status, $item_id );
-}
+}*/
 
 /**
  * Get current state of distraction mode
@@ -1619,8 +1619,8 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 		$args,
 		array(
 			'item_type'  => LP_QUIZ_CPT,
-			'status'     => 'started',
-			'graduation' => 'in-progress',
+			'status'     => LP_ITEM_STARTED,
+			'graduation' => LP_COURSE_GRADUATION_IN_PROGRESS,
 			'user_id'    => get_current_user_id(),
 		)
 	);
@@ -1713,6 +1713,9 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 		do_action( 'learn-press/user-started-quiz', $user_quiz, $quiz_id, $user_id, $course_id );
 	}
 
+	// Reset first cache
+	$user_quiz->get_status( 'status', true );
+
 	return $user_quiz;
 }
 
@@ -1744,7 +1747,7 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	    WHERE user_item_id = (SELECT max(user_item_id)
 	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_id = %d AND item_id = %d AND status IN ('enrolled', 'in-progress'))
-	",
+		",
 		$user_id,
 		$course_id
 	);
@@ -1775,21 +1778,24 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	// Remove user_item_meta.
 	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
 
-	$user_item->set_status( 'started' )
-			  ->set_start_time( current_time( 'mysql', false ) ) // Error Retake when change timezone - Nhamdv
-			  ->set_end_time( '' )
-			  ->set_graduation( 'in-progress' )
-			  ->update();
+	$user_item->set_status( LP_ITEM_STARTED )
+				->set_start_time( current_time( 'mysql', 1 ) ) // Error Retake when change timezone - Nhamdv
+				->set_end_time( '' )
+				->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
+				->update();
+
+	// Reset first cache
+	$user_item->get_status( 'status', true );
 
 	// Error Retake when change timezone - Nhamdv
-	learn_press_update_user_item_field(
-		array(
-			'start_time' => current_time( 'mysql', true ),
-		),
-		array(
-			'user_item_id' => $data->user_item_id,
-		)
-	);
+	//  learn_press_update_user_item_field(
+	//      array(
+	//          'start_time' => current_time( 'mysql', true ),
+	//      ),
+	//      array(
+	//          'user_item_id' => $data->user_item_id,
+	//      )
+	//  );
 
 	return $user_item;
 }
@@ -1851,10 +1857,11 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 			 $mark = $question->get_mark() ? $question->get_mark() : 1;
 
 			$questionData = array(
-				'id'    => absint( $id ),
-				'title' => $question->get_title(),
-				'type'  => $question->get_type(),
-				'point' => $mark,
+				'object' => $question,
+				'id'     => absint( $id ),
+				'title'  => $question->get_title(),
+				'type'   => $question->get_type(),
+				'point'  => $mark,
 			);
 
 			$content = $question->get_content();
@@ -2199,10 +2206,16 @@ function learn_press_get_user_extra_profile_fields() {
 	return apply_filters( 'learn-press/user-extra-profile-fields', $fields );
 }
 
+/**
+ * Show courses user enrolled on backend
+ *
+ * @param $user
+ *
+ * @return void
+ */
 function learn_press_user_profile_data( $user ) {
 	learn_press_admin_view( 'user/courses.php', array( 'user_id' => $user->ID ) );
 }
-
 add_action( 'show_user_profile', 'learn_press_user_profile_data', 1000 );
 add_action( 'edit_user_profile', 'learn_press_user_profile_data', 1000 );
 
@@ -2251,7 +2264,8 @@ function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' )
 
 }
 
-/*add_action(
+/*
+add_action(
 	'admin_init',
 	function() {
 		$custom_fields = LP()->settings()->get( 'register_profile_fields' );

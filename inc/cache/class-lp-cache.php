@@ -5,7 +5,7 @@
  *
  * @author tungnx
  * @since 4.0.8
- * @version 1.0.1
+ * @version 1.0.2
  */
 defined( 'ABSPATH' ) || exit();
 
@@ -50,8 +50,8 @@ class LP_Cache {
 	 * $expire = -1 is  get default expire time on one day(DAY_IN_SECONDS)
 	 *
 	 * @param string $key
-	 * @param mixed $data
-	 * @param int $expire
+	 * @param mixed  $data
+	 * @param int    $expire
 	 */
 	public function set_cache( string $key, $data, int $expire = -1 ) {
 		if ( -1 === $expire ) {
@@ -68,6 +68,35 @@ class LP_Cache {
 	 */
 	public function get_cache( string $key ) {
 		return wp_cache_get( $key, $this->key_group );
+	}
+
+	/**
+	 * Set value for first load page on one process
+	 * Apply for query call same
+	 *
+	 * @param string $type
+	 * @param string $key
+	 * @param $val mixed
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @sicne 4.1.4.1
+	 * @return false|mixed|string
+	 */
+	public static function cache_load_first( string $type = 'get', string $key = '', $val = '' ) {
+		static $first_set_value = array();
+
+		if ( 'get' === $type ) {
+			if ( ! array_key_exists( $key, $first_set_value ) ) {
+				return false;
+			} else {
+				return $first_set_value[ $key ];
+			}
+		} elseif ( 'set' === $type ) {
+			$first_set_value[ $key ] = $val;
+
+			return $first_set_value[ $key ];
+		}
 	}
 
 	/**

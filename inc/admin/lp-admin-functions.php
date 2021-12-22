@@ -2624,24 +2624,4 @@ function learn_press_get_orders_status_chart_data() {
 	return $data;
 }
 
-function learn_press_option_course_evaluation_method( $method ) {
-	global $post;
-
-	$evaluation_by = get_post_meta( $post->ID, '_lp_course_result_quiz', true );
-	switch ( $method ) {
-		case 'evaluate_quiz':
-			?>
-			<p id="course_evaluation_method_quiz_options">
-				<input type="checkbox" id="lp-course-result-evaluate-final-quiz" name="_lp_course_result_quiz"
-					   value="final_quiz" <?php checked( $evaluation_by === 'final_quiz' ); ?> />
-				<label for="lp-course-result-evaluate-final-quiz">
-					<?php _e( 'Only check <strong><em>the final quiz</em></strong> result', 'learnpress' ); ?>
-				</label>
-			</p>
-			<?php
-	}
-}
-
-add_action( 'learn-press/option-course-evaluation-method', 'learn_press_option_course_evaluation_method' );
-
 require_once 'class-lp-post-type-actions.php';

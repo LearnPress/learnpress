@@ -5,48 +5,33 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 4.0.8
+ * @version 4.0.9
  */
 defined( 'ABSPATH' ) || exit();
 if ( ! class_exists( 'LP_Course' ) ) {
 	class LP_Course_No_Required_Enroll {
+		public $_course;
+
 		/**
 		 * LP_Course_No_Required_Enroll constructor.
-		 */
-		public function __construct() {}
-		/**
-		 * @param string $prop
-		 * @param false $force
-		 * @param int $quiz_id
-		 * @param null $answered
-		 * @param int $course_id
 		 *
-		 * @return array|mixed|string
+		 * @editor tungnx
+		 * @modify 4.1.4.1
 		 */
-		public function guest_quiz_get_results( $prop = 'result', $force = false, $quiz_id = 0, $answered = null, $course_id = 0 ) {
-
-			$result                   = $this->guest_calculate_results_quiz( $quiz_id, $answered, $course_id );
-			$result['user_item_id']   = '';
-			$result['interval']       = array();
-			$result['graduation']     = '';
-			$result['graduationText'] = '';
-			return $prop ? $result[ $prop ] : $result;
+		public function __construct( LP_Course $course ) {
+			$this->_course = $course;
 		}
 
 		/**
-		 * @param $quiz_id
-		 * @param $answered
-		 * @param $course_id
+		 * Get result do quiz
+		 *
+		 * @param $quiz
+		 * @param null $answered
 		 *
 		 * @return array
 		 */
-		public function guest_calculate_results_quiz( $quiz_id, $answered, $course_id ) {
-			$quiz         = learn_press_get_quiz( $quiz_id );
-			$course       = learn_press_get_course( $course_id );
-			$last_results = array();
-
-			$questions = array_fill_keys( $quiz->get_question_ids(), array() );
-			$result    = array(
+		public function get_result_quiz( $quiz, $answered = null ): array {
+			$result = array(
 				'questions'         => array(),
 				'mark'              => $quiz->get_mark(),
 				'user_mark'         => 0,
@@ -55,61 +40,94 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				'question_answered' => 0,
 				'question_wrong'    => 0,
 				'question_correct'  => 0,
-				'status'            => 'completed',
+				'status'            => LP_ITEM_COMPLETED,
 				'result'            => 0,
 				'time_spend'        => 0,
 				'passing_grade'     => $quiz->get_passing_grade(),
+				'answered'          => array(),
+				'pass'              => 0,
 			);
-			if ( $questions ) {
-				foreach ( $questions as $question_id => $last_checked ) {
-					$question = LP_Question::get_question( $question_id );
-					$answer   = $answered[ $question_id ] ?? false;
-					$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answer ), $question_id );
-					if ( $answer && $check['correct'] ) {
-						$result['question_correct'] ++;
-						$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
-					} else {
-						$negative_marking = apply_filters( 'learn-press/get-negative-marking-value', floatval( $question->get_mark() ), $question_id, $quiz->get_id() );
 
-						// If answered is empty consider user has skipped question
-						if ( ! $answer ) {
-							if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
-								$result['user_mark'] -= $negative_marking;
-							}
-							$result['question_empty'] ++;
-						} else {
-							if ( $quiz->get_negative_marking() ) {
-								$result['user_mark'] -= $negative_marking;
-							}
-							$result['question_wrong'] ++;
-						}
-					}
-					$result['questions'][ $question_id ] = apply_filters( 'learn-press/question-results-data', $last_checked ? array_merge( $last_checked, $check ) : $check, $question_id, $quiz->get_id() );
+			$question_ids             = $quiz->get_questions();
+			$result['question_count'] = count( $question_ids );
 
-					if ( $answer ) {
-						$result['question_answered'] ++;
-					}
+			$questions = learn_press_rest_prepare_user_questions( $question_ids );
+
+			foreach ( $questions as $key => $question_info ) {
+				$question_id = $question_info['id'];
+				//$question = learn_press_get_question( $question_id );
+				$question = $question_info['object'];
+
+				if ( ! $question ) {
+					continue;
 				}
 
-				$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;
+				$point = floatval( $question->get_mark() );
 
-				$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
-				$result['result'] = $percent;
-				$grade            = '';
+				//if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
+				$result['questions'][ $question_id ]            = $question_info;
+				$result['answered'][ $question_id ]             = [];
+				$result['answered'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
 
-				$grade = $percent >= $quiz->get_passing_grade() ? 'passed' : 'failed';
+				//}
 
-				$result['question_count'] = count( $questions );
+				if ( isset( $answered[ $question_id ] ) ) { // User's answer
+					$result['question_answered']++;
 
-				learn_press_update_user_item_field(
-					array(
-						'graduation' => $grade,
-					),
-					array(
-						'user_item_id' => '',
-					)
-				);
+					$check = $question->check( $answered[ $question_id ] );
+					if ( $check['correct'] ) {
+						$result['question_correct']++;
+						$result['user_mark'] += $point;
+
+						$result['answered'][ $question_id ]['correct'] = true;
+						$result['answered'][ $question_id ]['mark']    = $point;
+					} else {
+						if ( $quiz->get_negative_marking() ) {
+							$result['user_mark'] -= $point;
+						}
+						$result['question_wrong']++;
+
+						$result['answered'][ $question_id ]['correct'] = false;
+						$result['answered'][ $question_id ]['mark']    = 0;
+					}
+				} elseif ( ! array_key_exists( 'instant_check', $answered ) ) { // User skip question
+					if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
+						$result['user_mark'] -= $point;
+					}
+					$result['question_empty']++;
+
+					$result['answered'][ $question_id ]['correct'] = false;
+					$result['answered'][ $question_id ]['mark']    = 0;
+				}
+
+				$can_review_quiz = get_post_meta( $quiz->get_id(), '_lp_review', true ) === 'yes';
+				if ( $can_review_quiz && ! array_key_exists( 'instant_check', $answered ) ) {
+					$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
+					$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
+						$question,
+						array(
+							'include_is_true' => get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
+							'answer'          => $answered[ $question_id ] ?? '',
+						)
+					);
+				}
 			}
+
+			if ( $result['user_mark'] < 0 ) {
+				$result['user_mark'] = 0;
+			}
+
+			if ( $result['user_mark'] > 0 && $result['mark'] > 0 ) {
+				$result['result'] = round( $result['user_mark'] * 100 / $result['mark'], 2, PHP_ROUND_HALF_DOWN );
+			}
+
+			$passing_grade = $quiz->get_data( 'passing_grade', 0 );
+			if ( $result['result'] >= $passing_grade ) {
+				$result['pass'] = 1;
+			} else {
+				$result['pass'] = 0;
+			}
+
 			return $result;
 		}
 
@@ -123,7 +141,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$quiz         = learn_press_get_quiz( $quiz_id );
 			$question_ids = $quiz->get_question_ids();
 			foreach ( $question_ids as $question_id ) {
-				$question       = learn_press_get_question( $question_id );
+				$question               = learn_press_get_question( $question_id );
 				$result[ $question_id ] = array(
 					'correct'  => $question->show_correct_answers(),
 					'mark'     => $question->get_mark(),
@@ -140,7 +158,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @return array
 		 */
-		public function guest_quiz_get_attempts( $quiz_id, $answered, $course_id ) {
+		/*public function guest_quiz_get_attempts( $quiz_id, $answered, $course_id ) {
 			$conclude = $this->guest_calculate_results_quiz( $quiz_id, $answered, $course_id );
 			// object initialization
 			$result_obj = new StdClass();
@@ -159,7 +177,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$result                        = array();
 			$result[]                      = $result_obj;
 			return $result;
-		}
+		}*/
 
 		/**
 		 * @param $question_id
@@ -176,65 +194,56 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			}
 			return $checked;
 		}
-		public function guest_start_quiz( $course_id, $item_id ) {
-			$success  = true;
+
+		/**
+		 * Start quiz
+		 *
+		 * @param LP_Quiz $quiz
+		 *
+		 * @return array
+		 * @throws Exception
+		 * @editor tungnx
+		 * @modify 4.1.4.1
+		 */
+		public function guest_start_quiz( LP_Quiz $quiz ): array {
 			$response = array(
-				'success' => $success,
-				'message' => __( 'Success!', 'learnpress' ),
+				'status'  => 'error',
+				'message' => '',
 			);
 
-			if ( $success ) {
-				$course              = LP_Course::get_course( $course_id );
-				$quiz                = LP_Quiz::get_quiz( $item_id );
-				$show_hint           = $quiz->get_show_hint();
-				$show_check          = $quiz->get_show_check_answer();
-				$duration            = $quiz->get_duration();
-				$show_correct_review = $quiz->get_show_correct_review();
+			$show_check          = $quiz->get_instant_check();
+			$duration            = $quiz->get_duration();
+			$show_correct_review = $quiz->get_show_correct_review();
+			$question_ids        = $quiz->get_question_ids();
+			$status              = LP_ITEM_STARTED;
+			$checked_questions   = [];
+			$hinted_questions    = [];
+			$time_remaining      = $duration->get();
 
-				$status            = 'started';
-				$checked_questions = '';
-				$hinted_questions  = '';
-				$quiz_results      = '';
+			$questions = learn_press_rest_prepare_user_questions(
+				$question_ids,
+				array(
+					'instant_check'       => $show_check,
+					'quiz_status'         => $status,
+					'checked_questions'   => $checked_questions,
+					'hinted_questions'    => $hinted_questions,
+					'answered'            => [],
+					'show_correct_review' => $show_correct_review,
+				)
+			);
 
-				$question_ids = $quiz->get_question_ids();
-				$answered     = '';
+			$response['status']      = 'success';
+			$results['question_ids'] = $question_ids;
+			$results['questions']    = $questions;
+			$results['total_time']   = $time_remaining;
+			$results['duration']     = $duration->get();
+			$results['status']       = $status; // Must be started
+			$results['retaken']      = 0;
+			$results['attempts']     = [];
+			$results['user_item_id'] = 0;
+			$results['answered']     = [];
+			$response['results']     = $results;
 
-				$questions = learn_press_rest_prepare_user_questions(
-					$question_ids,
-					array(
-						'instant_hint'        => $show_hint,
-						'instant_check'       => $show_check,
-						'quiz_status'         => $status,
-						'checked_questions'   => $checked_questions,
-						'hinted_questions'    => $hinted_questions,
-						'answered'            => $answered,
-						'show_correct_review' => $show_correct_review,
-					)
-				);
-
-				$results = array(
-					'question_ids' => $question_ids,
-					'questions'    => $questions,
-				);
-
-				// Error get_start_time when ajax call.
-				if ( isset( $total_time ) ) {
-					$expiration            = '';
-					$results['total_time'] = '';
-					$results['end_time']   = '';
-				}
-
-				$results['duration'] = $duration ? $duration->get() : false;
-				$results['answered'] = '';
-				$results['status']   = 'started';
-				$results['results']  = '';
-				$results['retaken']  = absint( $quiz->get_retake_count() );
-
-				$results['attempts']     = '';
-				$results['user_item_id'] = '';
-
-				$response['results'] = $results;
-			}
 			return $response;
 		}
 	}

@@ -241,7 +241,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			$url = get_author_posts_url( $user->get_id() );
 		}
 
-		return $url;
+		return apply_filters( 'learnpress/profile/tab/link', $url, $tab, $with_section, $user );
 	}
 
 	/**
@@ -446,7 +446,7 @@ class LP_Profile_Tab extends LP_Array_Access {
 	}
 
 	public function user_can_view() {
-		if ( $this->is_public() ) {
+		if ( $this->is_public() || current_user_can( ADMIN_ROLE ) ) {
 			return true;
 		}
 

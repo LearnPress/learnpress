@@ -40,7 +40,7 @@ const LP_ORDER_CPT    = 'lp_order';
 
 // Role of user .
 const LP_TEACHER_ROLE = 'lp_teacher';
-const ADMIN_ROLE = 'administrator';
+const ADMIN_ROLE      = 'administrator';
 
 // Turn debug mode on/off.
 //define( 'LP_DEBUG', true );
@@ -93,6 +93,8 @@ const LP_BLOCK_COURSE_PURCHASE        = 'block_course_purchased';
 const LP_COURSE_ENROLLED  = 'enrolled';
 const LP_COURSE_FINISHED  = 'finished';
 const LP_COURSE_PURCHASED = 'purchased';
+const LP_ITEM_COMPLETED   = 'completed';
+const LP_ITEM_STARTED     = 'started';
 
 // Graduation user item course
 const LP_COURSE_GRADUATION_IN_PROGRESS = 'in-progress';

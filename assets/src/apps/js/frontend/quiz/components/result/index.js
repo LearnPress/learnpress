@@ -160,14 +160,15 @@ const Result = () => {
 	}
 
 	const classNames = [ 'quiz-result', graduation ];
+
 	//Re-write value to results.timeSpend
-	if ( lpQuizSettings.checkNorequizenroll == '1' ) {
+	/*if ( lpQuizSettings.checkNorequizenroll === 1 ) {
 		const timespendStart = window.localStorage.getItem( 'quiz_start_' + QuizID ),
 			timespendEnd = window.localStorage.getItem( 'quiz_end_' + QuizID );
 		if ( timespendStart && timespendEnd ) {
 			results.timeSpend = timeDifference( timespendStart, timespendEnd ).duration;
 		}
-	}
+	}*/
 	return (
 		<div className={ classNames.join( ' ' ) }>
 			<h3 className="result-heading">{ __( 'Your Result', 'learnpress' ) }</h3>
@@ -188,11 +189,11 @@ const Result = () => {
 
 			<ul className="result-statistic">
 				<li className="result-statistic-field result-time-spend">
-					<span>{ __( 'Time spend', 'learnpress' ) }</span>
+					<span>{ __( 'Time spent', 'learnpress' ) }</span>
 					<p>{ results.timeSpend }</p>
 				</li>
 				<li className="result-statistic-field result-point">
-					<span>{ __( 'Point', 'learnpress' ) }</span>
+					<span>{ __( 'Points', 'learnpress' ) }</span>
 					<p>{ results.userMark } / { results.mark }</p>
 				</li>
 				<li className="result-statistic-field result-questions">

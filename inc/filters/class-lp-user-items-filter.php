@@ -35,6 +35,10 @@ if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 		/**
 		 * @var string
 		 */
+		public $graduation = '';
+		/**
+		 * @var string
+		 */
 		public $item_type = '';
 		/**
 		 * @var int

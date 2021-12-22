@@ -30,13 +30,13 @@ defined( 'ABSPATH' ) || exit();
 		$post   = get_post( $id );
 		setup_postdata( $post );
 
-		$course_data    = $user->get_course_data( $id );
-		$course_results = $course_data->calculate_course_results();
+		$course_data   = $user->get_course_data( $id );
+		$course_result = $course_data->get_result();
 		?>
 		<div class="lp_profile_course_progress__item">
 			<div><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php echo $course->get_image( 'course_thumbnail' ); ?></a></div>
 			<div><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></div>
-			<div><?php echo absint( $course_results['result'] ); ?>%</div>
+			<div><?php echo $course_result['result']; ?>%</div>
 			<div><?php echo ! empty( $course_data->get_expiration_time() ) ? $course_data->get_expiration_time() : '-'; ?></div>
 			<div><?php echo ! empty( $course_data->get_end_time() ) ? $course_data->get_end_time() : '-'; ?></div>
 		</div>

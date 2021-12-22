@@ -119,7 +119,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['start_time'] ) ) {
 			$this->set_start_time( $item['start_time'] );
 		} else {
-			$this->set_start_time( learn_press_mysql_time( true ) );
+			$this->set_start_time( current_time( 'mysql', 1 ) );
 		}
 
 		if ( ! empty( $item['end_time'] ) ) {
@@ -139,8 +139,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['status'] ) ) {
 			$this->set_status( $item['status'] );
 		} else {
-			$status = $this->get_user_item_id() ? learn_press_default_user_item_status( $item_id ) : '';
-			$this->set_status( $status );
+			$this->set_status( '' );
 		}
 
 		if ( ! empty( $item['ref_id'] ) ) {
@@ -289,7 +288,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set end-time for item.
 	 *
-	 * @param bool  $bound_to_gmt - Optional. Calculate gmt of end-time and update
 	 * @param mixed $time
 	 *
 	 * @return $this
@@ -401,35 +399,39 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Get item status.
 	 *
 	 * @param string $field
-	 * @return string
-	 * @throws Exception
+	 * @param bool $force_cache Reset first cache
 	 *
+	 * @version 1.0.1
+	 * @return string
 	 * @editor tungnx
 	 * @modify 4.1.3
-	 * @Todo: tungnx - after should set status when new instance or save, update, get_status only return status.
 	 */
-	public function get_status( string $field = 'status' ): string {
-		if ( ! empty( $this->get_data( $field, '' ) ) ) {
+	public function get_status( string $field = 'status', bool $force_cache = false ): string {
+		/*if ( ! is_null( $this->get_data( $field, null ) && ! $force_cache ) ) {
 			return $this->get_data( $field );
+		}*/
+
+		$got_status = '';
+
+		try {
+			$lp_user_item = LP_User_Items_DB::getInstance();
+			$filter       = new LP_User_Items_Filter();
+
+			$filter->user_id   = $this->get_user_id();
+			$filter->item_id   = $this->get_item_id();
+			$filter->ref_id    = $this->get_data( 'ref_id' );
+			$filter->parent_id = $this->get_parent_id();
+
+			$user_item = $lp_user_item->get_user_course_item( $filter, $force_cache );
+
+			if ( ! empty( $user_item ) && isset( $user_item->$field ) ) {
+				$got_status = $user_item->$field;
+			}
+
+			$this->set_data( $field, $got_status );
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ':' . $e->getMessage() );
 		}
-
-		$lp_user_item = LP_User_Items_DB::getInstance();
-		$filter       = new LP_User_Items_Filter();
-
-		$filter->user_id   = $this->get_user_id();
-		$filter->item_id   = $this->get_item_id();
-		$filter->ref_id    = $this->get_data( 'ref_id' );
-		$filter->parent_id = $this->get_parent_id();
-
-		$user_item = $lp_user_item->get_user_course_item( $filter );
-
-		if ( ! empty( $user_item ) && isset( $user_item->$field ) ) {
-			$got_status = $user_item->$field;
-		} else {
-			$got_status = '';
-		}
-
-		$this->set_data( $field, $got_status );
 
 		return $got_status;
 	}
@@ -442,7 +444,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @editor tungnx
 	 * @reason comment - not use
 	 */
-	/*public function is_available() {
+	/*
+	public function is_available() {
 		if ( null === $this->_is_available ) {
 			$user                = $this->get_user();
 			$order               = $user->get_course_order( $this->get_item_id() );
@@ -479,7 +482,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return int
 	 */
 	public function get_user_item_id() {
-		return $this->get_data( 'user_item_id' );
+		return intval( $this->get_data( 'user_item_id' ) );
 	}
 
 	/**
@@ -769,6 +772,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		$return = learn_press_update_user_item_field( $data, $where );
 
+		// Clear cache first status
+		$this->get_status( 'status', true );
+
 		if ( $return ) {
 			foreach ( (array) $return as $k => $v ) {
 				$this->_set_data( $k, $v );
@@ -776,10 +782,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->_changes = array();
 		}
 
-		$data_course = $this->get_parent();
+		/*$data_course = $this->get_parent();
 		if ( $data_course ) {
 			$data_course->calculate_course_results();
-		}
+		}*/
 
 		return $return;
 	}
@@ -789,7 +795,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @reason commnet - not use
 	 * @modify 4.1.2
 	 */
-	/*public function is_course_item() {
+	/*
+	public function is_course_item() {
 		return learn_press_is_support_course_item_type( $this->get_data( 'item_type' ) );
 	}*/
 
@@ -852,7 +859,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @modify 4.1.2
 	 * @reason comment - not use
 	 */
-	/*public function count_history() {
+	/*
+	public function count_history() {
 		if ( $items = $this->get_history() ) {
 			return sizeof( $items );
 		}
@@ -865,7 +873,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @modify 4.1.2
 	 * @reason comment - not use
 	 */
-	/*public function remove_user_items_history( $keep = 10 ) {
+	/*
+	public function remove_user_items_history( $keep = 10 ) {
 		learn_press_remove_user_items_history(
 			$this->get_item_id(),
 			$this->get_course( 'id' ),
@@ -954,33 +963,49 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $this->get_status() === $status;
 	}
 
+	/**
+	 * Complete item
+	 *
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - should review to improve
+	 * @version 4.0.1
+	 */
 	public function complete( $status = 'completed' ) {
 		global $wpdb;
 
-		$end_time  = new LP_Datetime();
-		$null_time = '0000-00-00 00:00';
+		// $end_time  = new LP_Datetime();
+		// $null_time = null;
 
-		$this->set_end_time( $end_time->toSql( false ) );
-		$this->set_status( $status );
-		$this->update();
+		try {
+			// if ( ! $this->get_end_time() ) {
+			$this->set_end_time( current_time( 'mysql', 1 ) );
+			// }
 
-		$query = $wpdb->prepare(
-			"
-				SELECT user_item_id
+			$this->set_status( $status );
+			$this->update();
+
+			/*
+			$query = $wpdb->prepare(
+				"SELECT user_item_id
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
 					AND item_id = %d
-					AND start_time <> %s AND end_time <> %s
 					AND status = %s
+				GROUP BY user_item_id DESC
+				LIMIT 1
 			",
-			$this->get_user_id(),
-			$this->get_item_id(),
-			$null_time,
-			$null_time,
-			$status
-		);
+				$this->get_user_id(),
+				$this->get_item_id(),
+				$status
+			);
 
-		return $wpdb->get_var( $query );
+			return $wpdb->get_var( $query );*/
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ':' . $e->getMessage() );
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -988,7 +1013,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @modify 4.1.2
 	 * @reason comment - not use
 	 */
-	/*public function delete_meta_data( $include = '', $exclude = '' ) {
+	/*
+	public function delete_meta_data( $include = '', $exclude = '' ) {
 		global $wpdb;
 
 		$where = '';

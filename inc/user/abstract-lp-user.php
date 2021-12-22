@@ -430,6 +430,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return mixed
 		 * @since 3.0.0
+		 * @version 1.0.1
+		 * @editor tungnx
+		 * @modify 4.1.4.1
 		 */
 		public function get_item_grade( $item_id, $course_id = 0 ) {
 			if ( ! $course_id ) {
@@ -439,10 +442,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$grade = false;
 
 			$course_data = $this->get_course_data( $course_id );
-			$item_result = $course_data->get_item_result( $item_id, false );
 
-			if ( $course_data && $item_result ) {
-				$grade = isset( $item_result['graduation'] ) ? $item_result['graduation'] : false;
+			if ( $course_data ) {
+				$grade = $course_data->get_item_result( $item_id, 'grade' );
 			}
 
 			return apply_filters( 'learn-press/user-item-grade', $grade, $item_id, $this->get_id(), $course_id );
@@ -477,11 +479,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 * @author tungnx
 		 */
-		public function getItemStatus( $item_id, $course_id ) {
+		/*public function getItemStatus( $item_id, $course_id ) {
 			$status = LP_User_Items_DB::getInstance()->get_item_status( $item_id, $course_id );
 
 			return $status;
-		}
+		}*/
 
 		/**
 		 * Update viewing item data into database.
@@ -503,6 +505,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$item = LP_User_Item::get_item_object( $item_id );
 
 					if ( ! $item ) {
+						return $return;
+					}
+
+					if ( $item instanceof LP_User_Item_Quiz ) {
 						return $return;
 					}
 
@@ -698,8 +704,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return WP_Error|mixed
 		 * @since 3.0.0
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function check_question( $question_id, $quiz_id, $course_id ) {
+		/*public function check_question( $question_id, $quiz_id, $course_id ) {
 			if ( ! $course = learn_press_get_course( $course_id ) ) {
 				return false;
 			}
@@ -717,7 +725,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
 
 			return $quiz_data->check_question( $question_id );
-		}
+		}*/
 
 		/**
 		 * Mark question that user has checked.
@@ -761,9 +769,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return bool
+		 * @deprecated 4.1.4.1
 		 */
 		public function can_check_answer( $quiz_id, $course_id = 0 ) {
-
+			_deprecated_function( __FUNCTION__, '4.1.4.1' );
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
@@ -1188,15 +1197,25 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( $course ) {
 				$user_course = $this->get_course_data( $course_id );
 
-				$return = $user_course->finish();
+				$result = $user_course->calculate_course_results();
 
-				$user_course->calculate_course_results();
+				// Save result for course
+				LP_User_Items_Result_DB::instance()->update( $user_course->get_user_item_id(), wp_json_encode( $result ) );
+
+				if ( $result['pass'] ) {
+					$graduation = LP_COURSE_GRADUATION_PASSED;
+				} else {
+					$graduation = LP_COURSE_GRADUATION_FAILED;
+				}
+
+				$user_course->set_graduation( $graduation );
+				$user_course->save();
+
+				$return = $user_course->complete( 'finished' );
 
 				if ( $return ) {
 					do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 				}
-
-				wp_cache_flush();
 			}
 
 			return apply_filters( 'learn-press/user-course-finished-data', $return, $course_id, $this->get_id() );
@@ -1573,8 +1592,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						);
 					}
 					// TODO: conflict???
-					$time = new LP_Datetime();
-					$item->set_end_time( $time->toSql( false ) );
+					//$time = new LP_Datetime();
+					$item->set_end_time( current_time( 'mysql', 1 ) );
 					$item->set_status( 'completed' );
 					$item->set_graduation( apply_filters( 'learn-press/complete-lesson-graduation', 'passed' ) );
 
@@ -2421,12 +2440,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
 		}
 
-		public function has_reached_passing_condition( $course_id ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
+		 */
+		/*public function has_reached_passing_condition( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			$result = $this->evaluate_course_results( $course_id );
 
 			return $return = $result >= $course->get_passing_condition();
-		}
+		}*/
 
 		/**
 		 * Check if all items in course completed.
@@ -2439,7 +2462,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$course_data = $this->get_course_data( $course_id );
 
-			$course_results = $course_data->get_results( false );
+			$course_results = $course_data->get_result();
 
 			if ( ! isset( $course_results['completed_items'] ) ) {
 				return false;

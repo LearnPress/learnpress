@@ -89,7 +89,7 @@
 				this.avatar = response.url;
 				$( '<img/>' )
 					.attr( 'src', response.url )
-					.load( function() {
+					.on( 'load', function() {
 						that.model.set( $.extend( response, {
 							width: this.width,
 							height: this.height,

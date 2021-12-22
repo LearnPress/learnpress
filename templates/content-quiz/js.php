@@ -9,17 +9,29 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$user                = learn_press_get_current_user();
-$course              = LP_Global::course();
-$quiz                = LP_Global::course_item_quiz();
+$user   = learn_press_get_current_user();
+$course = LP_Global::course();
+if ( ! $course ) {
+	return;
+}
+
+$quiz = LP_Global::course_item_quiz();
+if ( ! $quiz ) {
+	return;
+}
+
 $total_question      = $quiz->count_questions();
 $questions           = array();
 $show_check          = $quiz->get_instant_check();
 $show_correct_review = $quiz->get_show_correct_review();
+$question_ids        = $quiz->get_question_ids();
 $user_js             = array();
 
 
-$user_course       = $user->get_course_data( $course->get_id() );
+$user_course = $user->get_course_data( $course->get_id() );
+/**
+ * @var LP_User_Item_Quiz $user_quiz
+ */
 $user_quiz         = $user_course ? $user_course->get_item( $quiz->get_id() ) : false;
 $answered          = array();
 $status            = '';
@@ -28,19 +40,19 @@ $checked_questions = array();
 $crypto_js_aes = false;
 $editable      = $user->is_admin() || get_post_field( $user->is_author_of( $course->get_id() ) );
 $max_retrying  = learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() );
-
-$question_ids = array();
+$quiz_results  = null;
 
 if ( $user_quiz ) {
-	$status            = $user_quiz->get_status();
-	$quiz_results      = $user_quiz->get_results( '' );
-	$checked_questions = $user_quiz->get_checked_questions();
-	$expiration_time   = $user_quiz->get_expiration_time();
-
-	// If expiration time is specific then calculate total time
-	if ( $expiration_time && ! $expiration_time->is_null() ) {
-		$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
+	$status = $user_quiz->get_status();
+	if ( LP_ITEM_STARTED === $status ) {
+		$quiz_results = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
 	}
+
+	if ( ! $quiz_results ) {
+		$quiz_results = $user_quiz->get_result();
+	}
+
+	$checked_questions = $user_quiz->get_checked_questions();
 
 	$user_js = array(
 		'status'            => $status,
@@ -50,17 +62,12 @@ if ( $user_quiz ) {
 		'retaken'           => absint( $user_quiz->get_retaken_count() ),
 	);
 
-	if ( isset( $total_time ) ) {
-		$user_js['total_time'] = $total_time;
-		$user_js['endTime']    = $expiration_time->toSql( false );
-	}
+	$time_remaining        = $user_quiz->get_timestamp_remaining();
+	$user_js['total_time'] = $time_remaining;
 
 	if ( $quiz_results ) {
-		$user_js['results'] = $quiz_results->get();
-		$answered           = $quiz_results->getQuestions();
-		$question_ids       = $quiz_results->getQuestions( 'ids' );
-	} else {
-		$question_ids = $quiz->get_question_ids();
+		$user_js['results'] = $quiz_results;
+		$answered           = $quiz_results['questions'];
 	}
 }
 
@@ -75,10 +82,6 @@ $questions = learn_press_rest_prepare_user_questions(
 		'status'              => $status,
 	)
 );
-
-if ( empty( $question_ids ) ) {
-	$question_ids = $quiz->get_question_ids();
-}
 
 $duration = $quiz->get_duration();
 
@@ -95,6 +98,7 @@ $js = array(
 	'status'              => '',
 	'attempts'            => array(),
 	'answered'            => $answered ? (object) $answered : new stdClass(),
+	'checked_questions'   => array(),
 	'passing_grade'       => $quiz->get_passing_grade(),
 	'negative_marking'    => $quiz->get_negative_marking(),
 	'show_correct_review' => $show_correct_review,
@@ -111,13 +115,13 @@ $js = array(
 	'results'             => array(),
 );
 
-if ( $course->is_no_required_enroll() ) {
+/*if ( $course->is_no_required_enroll() ) {
 	$cookie_user_status = 'quiz_submit_status_' . $course->get_id() . '_' . $quiz->get_id() . '';
 	if ( ! empty( $_COOKIE[ $cookie_user_status ] ) ) {
 		$js_status    = $_COOKIE[ $cookie_user_status ];
 		$js['status'] = $js_status;
 	}
-}
+}*/
 
 $js = array_merge( $js, $user_js );
 

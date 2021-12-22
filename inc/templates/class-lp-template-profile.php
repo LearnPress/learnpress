@@ -40,13 +40,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 		$current_tab = $profile->get_current_tab();
 
-		if ( 'settings' === $current_tab && ! $user_id ) {
+		if ( 'settings' === $current_tab && ( ! $user_id || $user_id != $profile->get_user()->get_id() ) ) {
 			return;
 		}
 
-		$privacy = get_user_meta( $user->get_user()->get_id() , '_lp_profile_privacy', true );
+		$privacy = get_user_meta( $user->get_user()->get_id(), '_lp_profile_privacy', true );
 
-		if ( $user->get_user()->get_id() != $user_id && empty( $privacy )) {
+		if ( ! current_user_can( ADMIN_ROLE ) && ( $user->get_user()->get_id() != $user_id && empty( $privacy ) ) ) {
 			return;
 		}
 
@@ -68,7 +68,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
+		learn_press_get_template( 'profile/tabs.php', compact( 'user', 'profile' ) );
 	}
 
 	public function dashboard_statistic() {
@@ -159,7 +159,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'order' => $order ) );
+		//learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'order' => $order ) );
 	}
 
 	public function order_message() {

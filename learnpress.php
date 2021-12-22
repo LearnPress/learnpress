@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.1.4.1-beta-1
+ * Version: 4.1.4.1
  * Author URI: http://thimpress.com
  * Requires at least: 5.6
  * Tested up to: 5.8
@@ -375,7 +375,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
 			require_once 'inc/class-lp-schedules.php';
-			//require_once 'inc/class-lp-preview-course.php';
+			// require_once 'inc/class-lp-preview-course.php';
 
 			require_once 'inc/class-lp-widget.php';
 			require_once 'inc/lp-widget-functions.php';
@@ -401,7 +401,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/jwt/class-jwt-auth.php';
 
 			// Comment by tungnx
-			/*if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
+			/*
+			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
 			}*/
 
@@ -461,9 +462,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return string
 		 */
-		//      private function plugin_basename() {
-		//          return learn_press_plugin_basename( __FILE__ );
-		//      }
+		// private function plugin_basename() {
+		// return learn_press_plugin_basename( __FILE__ );
+		// }
 
 		/**
 		 * Magic function to get Learnpress data.
@@ -475,7 +476,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @editor tungnx
 		 * @modify 4.1.3.1 - comment
 		 */
-		/*public function __get( $key ) {
+		/*
+		public function __get( $key ) {
 			return false;
 		}*/
 
@@ -554,7 +556,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			$this->init();
 
-			//Todo: tungnx - remove this code after handle ajax on page learn-press-addons
+			// Todo: tungnx - remove this code after handle ajax on page learn-press-addons
 			require_once 'inc/background-process/class-lp-background-query-items.php';
 			require_once 'inc/background-process/class-lp-background-installer.php';
 
@@ -586,7 +588,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					)
 				);
 
-				//$lp_addon_info    = get_plugin_data( WP_PLUGIN_DIR . '/' . $lp_addon );
+				// $lp_addon_info    = get_plugin_data( WP_PLUGIN_DIR . '/' . $lp_addon );
 				$lp_addon_version = $lp_addon_info['Version'];
 
 				$addon                  = new Lp_Addon();
@@ -646,7 +648,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$this->admin_api     = new LP_Admin_Core_API();
 			$this->theme_support = LP_Theme_Support::instance();
 
-			//$this->view_log();
+			// $this->view_log();
 
 			$this->get_session();
 
@@ -672,7 +674,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @deprecated 3.2.8
 		 * @editor tungnx
 		 */
-		/*public function view_log() {
+		/*
+		public function view_log() {
 			if ( ! empty( $_REQUEST['view-log'] ) ) {
 				$log = LP_Helper::sanitize_params_submitted( $_REQUEST['view-log'] );
 				echo '<pre>';

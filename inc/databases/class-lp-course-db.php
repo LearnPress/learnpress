@@ -404,6 +404,42 @@ class LP_Course_DB extends LP_Database {
 
 		return $total_items;
 	}
+
+	/**
+	 * Count all item are unassigned to any courses.
+	 *
+	 * @param string $item_type (type item Lesson, Quiz, Assignment, H5P ...)
+	 *
+	 * @return int
+	 * @since 4.1.4.1
+	 * @author tungnx
+	 * @version 1.0.0
+	 */
+	function get_total_item_unassigned( string $item_type ): int {
+		$query_append = '';
+		if ( ! current_user_can( 'administrator' ) ) {
+			$query_append .= $this->wpdb->prepare( ' AND post_author = %d', get_current_user_id() );
+		}
+
+		$query = $this->wpdb->prepare(
+			"SELECT COUNT(p.ID) as total
+            FROM $this->tb_posts AS p
+            WHERE p.post_type = %s
+            AND p.ID NOT IN(
+                SELECT si.item_id
+                FROM {$this->tb_lp_section_items} AS si
+                WHERE si.item_type = %s
+            )
+            AND p.post_status NOT IN(%s, %s)
+            $query_append",
+			$item_type,
+			$item_type,
+			'auto-draft',
+			'trash'
+		);
+
+		return (int) $this->wpdb->get_var( $query );
+	}
 }
 
 LP_Course_DB::getInstance();

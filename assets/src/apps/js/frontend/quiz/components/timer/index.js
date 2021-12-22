@@ -10,15 +10,17 @@ const Timer = () => {
 	const { getData } = select( 'learnpress/quiz' );
 	const { submitQuiz } = dispatch( 'learnpress/quiz' );
 
-	const totalTime = getData( 'totalTime' ) ? getData( 'totalTime' ) : getData( 'duration' );
-	const endTime = getData( 'endTime' );
+	const totalTime = getData( 'totalTime' );
+	const durationTime = getData( 'duration' );
+	/*	const endTime = getData( 'endTime' );
 
 	const d1 = new Date( endTime.replace( /-/g, '/' ) );
 	const d2 = new Date();
 	const tz = new Date().getTimezoneOffset();
-	const t = parseInt( ( d1.getTime() / 1000 ) - ( ( d2.getTime() / 1000 ) + ( tz * 60 ) ) );
+	const t = parseInt( ( d1.getTime() / 1000 ) - ( ( d2.getTime() / 1000 ) + ( tz * 60 ) ) );*/
 
-	const [ seconds, setSeconds ] = useState( t > 0 ? t : 0 );
+	const [ seconds, setSeconds ] = useState( totalTime );
+	let [ timeSpend, setTimeSpend ] = useState( 0 );
 
 	useEffect( () => {
 		const myInterval = setInterval( () => {
@@ -27,6 +29,8 @@ const Timer = () => {
 
 			if ( remainSeconds > 0 ) {
 				setSeconds( remainSeconds );
+				timeSpend++;
+				setTimeSpend( durationTime - remainSeconds );
 			} else {
 				clearInterval( myInterval );
 				submitQuiz();
@@ -34,7 +38,7 @@ const Timer = () => {
 		}, 1000 );
 
 		return () => clearInterval( myInterval );
-	}, [ seconds ] );
+	}, [ seconds, timeSpend ] );
 
 	const formatTime = ( separator = ':' ) => {
 		const t = [];
@@ -59,6 +63,7 @@ const Timer = () => {
 		<div className="countdown">
 			<i className="fas fa-stopwatch"></i>
 			<span>{ formatTime() }</span>
+			<input type="hidden" name="lp-quiz-time-spend" value={ timeSpend } />
 		</div>
 	);
 };

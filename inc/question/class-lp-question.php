@@ -206,7 +206,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_mark() {
-			return $this->get_data( 'mark' );
+			return $this->get_data( 'mark', 1 );
 		}
 
 		/**
@@ -314,7 +314,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			$options = $this->get_data( 'answer_options' );
 
-			// Remove key if it present in $exclude.
+			// Remove key if it in $exclude.
 			if ( $options && ( $exclude || $map ) ) {
 				$exclude = array_flip( $exclude );
 

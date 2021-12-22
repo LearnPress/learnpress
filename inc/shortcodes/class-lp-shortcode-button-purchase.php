@@ -50,7 +50,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 
 			$atts = $this->_atts;
 
-			if ( '@current' === $atts['id'] ) {
+			if ( 'current' === $atts['id'] ) {
 				$course_id = learn_press_is_course() ? get_the_ID() : 0;
 			} else {
 				$course_id = $atts['id'];
@@ -63,8 +63,8 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 				global $post;
 				$enqueued = wp_script_is( 'lp-single-course', 'enqueued' );
 
-				if( ! $enqueued ) {
-					wp_enqueue_script( 'lp-single-course');
+				if ( ! $enqueued ) {
+					wp_enqueue_script( 'lp-single-course' );
 				}
 				$post = get_post( $course_id );
 

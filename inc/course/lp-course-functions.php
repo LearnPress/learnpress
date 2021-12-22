@@ -948,11 +948,11 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 /*function learn_press_get_item_course( $item_id ) {
 	global $wpdb;
 	$query = $wpdb->prepare( "
-        SELECT section_course_id
-        FROM {$wpdb->learnpress_sections} s
-        INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
-        WHERE si.item_id = %d
-    ", $item_id );
+		SELECT section_course_id
+		FROM {$wpdb->learnpress_sections} s
+		INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+		WHERE si.item_id = %d
+	", $item_id );
 
 	return (int) $wpdb->get_var( $query );
 }*/
@@ -1057,29 +1057,37 @@ function learn_press_mark_user_just_logged_in() {
 
 add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
 
-function learn_press_translate_course_result_required( $course, $passing_condition = null ) {
+function learn_press_translate_course_result_required( $course ) {
 	if ( ! $course ) {
-		$course = learn_press_get_course();
+		return '';
 	}
 
-	if ( $passing_condition === null ) {
-		$passing_condition = $course->get_passing_condition();
-	}
+	$passing_condition = $course->get_passing_condition();
 
-	switch ( $course->get_evaluation_results_method() ) {
+	$evaluate_type = $course->get_data( 'course_result', 'evaluate_lesson' );
+	switch ( $evaluate_type ) {
 		case 'evaluate_lesson':
-			$label = esc_html__( 'Lessons Completed', 'learnpress' );
+			$label = esc_html__( 'lessons completed per total number of lessons.', 'learnpress' );
 			break;
 		case 'evaluate_quiz':
-			$label = esc_html__( 'Quizzes Completed', 'learnpress' );
+			$label = esc_html__( 'quizzes passed per total number of quizzes.', 'learnpress' );
 			break;
 		case 'evaluate_final_quiz':
 			$label = esc_html__( 'Final Quiz', 'learnpress' );
 			break;
+		case 'evaluate_questions':
+			$label = esc_html__( 'correct answers per total number of questions.', 'learnpress' );
+			break;
+		case 'evaluate_mark':
+			$label = esc_html__( 'score achieved per total score of the questions.', 'learnpress' );
+			break;
 		default:
-			$label = '';
+			$label = apply_filters( 'learnpress/message/evaluate/' . $evaluate_type, $evaluate_type );
 			break;
 	}
 
-	return apply_filters( 'learn-press/translate-course-result-required', sprintf( __( 'Require %1$s %2$s', 'learnpress' ), $passing_condition . '%', $label ) );
+	return apply_filters(
+		'learnpress/message/evaluate',
+		wp_sprintf( '%1$s %2$s %3$s', __( 'Require', 'learnpress' ), $passing_condition . '%', $label )
+	);
 }

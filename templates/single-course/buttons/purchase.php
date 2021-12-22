@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -15,7 +15,7 @@ if ( ! isset( $course ) ) {
 	$course = learn_press_get_course();
 }
 
-$classes_purchase = 'purchase-course';
+$classes_purchase  = 'purchase-course';
 $classes_purchase .= ( LP()->checkout()->is_enable_guest_checkout() ) ? ' guest_checkout' : '';
 
 $classes_purchase = apply_filters( 'lp/btn/purchase/classes', $classes_purchase );
@@ -30,7 +30,7 @@ $classes_purchase = apply_filters( 'lp/btn/purchase/classes', $classes_purchase 
 		<input type="hidden" name="purchase-course" value="<?php echo esc_attr( $course->get_id() ); ?>"/>
 
 		<button class="lp-button button button-purchase-course">
-			<?php echo esc_html( apply_filters( 'learn-press/purchase-course-button-text', esc_html__( 'Buy Now', 'learnpress' ) ) ); ?>
+			<?php echo esc_html( apply_filters( 'learn-press/purchase-course-button-text', esc_html__( 'Buy Now', 'learnpress' ), $course->get_id() ) ); ?>
 		</button>
 
 		<?php do_action( 'learn-press/after-purchase-button' ); ?>

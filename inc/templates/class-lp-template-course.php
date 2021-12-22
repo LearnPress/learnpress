@@ -442,8 +442,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @param LP_User|LP_User_Guest $user
 	 *
 	 * @return array
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use - replace on function can_show_finish_course_btn on LP_User
 	 */
-	public function can_show_finish_course_btn( $course, $user ): array {
+	/*public function can_show_finish_course_btn( $course, $user ): array {
 		$return = [
 			'flag'    => false,
 			'message' => '',
@@ -466,7 +468,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 				throw new Exception( esc_html__( 'Error: Course is not in-progress.', 'learnpress' ) );
 			}
 
-			$has_finish = get_post_meta( $course_id, '_lp_has_finish', true ) ? get_post_meta( $course_id, '_lp_has_finish', true ) : 'yes';
+			// Get option Allow show finish button when the student has completed all items but has not passed the course assessment.
+			$has_finish = get_post_meta( $course_id, '_lp_has_finish', true ) ?? 'yes';
 			$is_passed  = $user->has_reached_passing_condition( $course_id );
 
 			if ( ! $is_passed && $has_finish === 'no' ) {
@@ -474,11 +477,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 
 			if ( $course_data ) {
-				$course_results = $course_data->calculate_course_results();
+				$course_result = $course_data->get_result();
 
 				$is_all_completed = $user->is_completed_all_items( $course_id );
 
-				if ( ! $is_all_completed && $has_finish === 'yes' && ! $is_passed ) {
+				if ( ! $is_all_completed && $has_finish === 'yes' && ! $course_result['pass'] ) {
 					throw new Exception( esc_html__( 'Error: Cannot finish course.', 'learnpress' ) );
 				}
 			}
@@ -493,7 +496,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		return $return;
-	}
+	}*/
 
 	public function course_finish_button() {
 		$user   = LP_Global::user();
@@ -504,9 +507,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$check = $this->can_show_finish_course_btn( $course, $user );
+		$check = $user->can_show_finish_course_btn( $course );
 
-		if ( ! $check['flag'] ) {
+		if ( 'success' !== $check['status'] ) {
 			return;
 		}
 
@@ -551,7 +554,24 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function popup_header() {
-		learn_press_get_template( 'single-course/content-item/popup-header' );
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		if ( ! $user || ! $course ) {
+			return;
+		}
+
+		$percentage      = 0;
+		$completed_items = 0;
+		$course_data     = $user->get_course_data( $course->get_id() );
+
+		if ( $course_data && ! $course->is_no_required_enroll() ) {
+			$course_results  = $course_data->get_result();
+			$completed_items = $course_results['completed_items'];
+			$percentage      = $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0;
+		}
+
+		learn_press_get_template( 'single-course/content-item/popup-header', compact( 'user', 'course', 'completed_items', 'percentage' ) );
 	}
 
 	public function popup_sidebar() {
@@ -1040,7 +1060,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
-		if ( ! $course || ! $user ) {
+		if ( ! $course ) {
 			return;
 		}
 
@@ -1053,12 +1073,16 @@ class LP_Template_Course extends LP_Abstract_Template {
 			echo lp_skeleton_animation_html( 3 );
 			echo '</div>';
 		} else {
+			$course_data = $user->get_course_data( $course->get_id() );
+			if ( ! $course_data ) {
+				return;
+			}
+
+			$course_results = $course_data->calculate_course_results();
+
 			learn_press_get_template(
 				'single-course/sidebar/user-progress',
-				array(
-					'course' => $course,
-					'user'   => $user,
-				)
+				compact( 'user', 'course', 'course_data', 'course_results' )
 			);
 		}
 	}

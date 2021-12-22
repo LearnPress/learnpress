@@ -4,7 +4,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -13,10 +13,27 @@ if ( ! LP_Profile::instance()->current_user_can( 'view-tab-quizzes' ) ) {
 	return;
 }
 
-$profile       = learn_press_get_profile();
-$filter_status = LP_Request::get_string( 'filter-status' );
-$query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
-$filters       = $profile->get_quizzes_filters( $filter_status );
+global $wp;
+
+$profile      = learn_press_get_profile();
+$user_profile = learn_press_get_user( $profile->get_user_data( 'id' ) );
+
+$filter             = new LP_User_Items_Filter();
+$filter->user_id    = $user_profile->get_id();
+$filter->limit      = apply_filters( 'learnpress/user/quizzes/limit', 5 );
+$filter->status     = LP_Helper::sanitize_params_submitted( $_GET['filter-status'] ?? '' );
+$filter->graduation = LP_Helper::sanitize_params_submitted( $_GET['filter-graduation'] ?? '' );
+$query              = $user_profile->get_user_quizzes( $filter );
+
+$current_filter = '';
+
+if ( ! empty( $filter->status ) ) {
+	$current_filter = $filter->status;
+} elseif ( ! empty( $filter->graduation ) ) {
+	$current_filter = $filter->graduation;
+}
+
+$filters = $profile->get_quizzes_filters( $current_filter );
 ?>
 
 <div class="learn-press-subtab-content">
@@ -36,16 +53,20 @@ $filters       = $profile->get_quizzes_filters( $filter_status );
 				<tr>
 					<th class="column-quiz"><?php esc_html_e( 'Quiz', 'learnpress' ); ?></th>
 					<th class="column-status"><?php esc_html_e( 'Result', 'learnpress' ); ?></th>
-					<th class="column-time-interval"><?php esc_html_e( 'Time spend', 'learnpress' ); ?></th>
+					<th class="column-time-interval"><?php esc_html_e( 'Time spent', 'learnpress' ); ?></th>
 					<th class="column-date"><?php esc_html_e( 'Date', 'learnpress' ); ?></th>
 				</tr>
 			</thead>
 
 			<tbody>
-				<?php foreach ( $query['items'] as $user_quiz ) : ?>
-					<?php
-					$quiz    = learn_press_get_quiz( $user_quiz->get_id() );
-					$courses = learn_press_get_item_courses( array( $user_quiz->get_id() ) );
+				<?php
+				/**
+				 * @var LP_User_Item_Quiz $user_quiz
+				 */
+				foreach ( $query['items'] as $user_quiz ) :
+					$result_quiz = $user_quiz->get_result();
+					$quiz        = learn_press_get_quiz( $user_quiz->get_id() );
+					$courses     = learn_press_get_item_courses( array( $user_quiz->get_id() ) );
 					?>
 
 					<tr>
@@ -66,8 +87,8 @@ $filters       = $profile->get_quizzes_filters( $filter_status );
 
 						<td class="column-status">
 							<span class="result-percent"><?php echo $user_quiz->get_percent_result(); ?></span>
-							<span class="lp-label label-<?php echo esc_attr( $user_quiz->get_results( 'status' ) ); ?>">
-							<?php echo $user_quiz->get_status_label(); ?>
+							<span class="lp-label label-<?php echo esc_attr( $user_quiz->get_status() ); ?>">
+							<?php echo wp_sprintf( '%s', esc_attr( $user_quiz->get_status_label() ) ); ?>
 						</span>
 						</td>
 						<td class="column-time-interval">

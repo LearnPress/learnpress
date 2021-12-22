@@ -70,34 +70,27 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @param array $views
 		 *
-		 * @return mixed
+		 * @return array
 		 * @since 3.0.1
 		 * @editor tungnx
 		 */
-		public function views_pages( $views ) {
-			$user_id          = get_current_user_id();
-			$unassigned_items = LP_Question_DB::getInstance()->get_total_question_unassigned();
-			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . $unassigned_items . ')</span>' );
+		public function views_pages( array $views ): array {
+			$count_unassigned_questions = LP_Question_DB::getInstance()->get_total_question_unassigned();
 
-			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
+			if ( $count_unassigned_questions > 0 ) {
 				$views['unassigned'] = sprintf(
-					'<a href="%s" class="current">%s</a>',
+					'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
 					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
-					$text
-				);
-			} else {
-				$views['unassigned'] = sprintf(
-					'<a href="%s">%s</a>',
-					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
-					$text
+					isset( $_GET['unassigned'] ) ? 'current' : '',
+					__( 'Unassigned', 'learnpress' ),
+					$count_unassigned_questions
 				);
 			}
 
 			// Get count question
-			if ( ! current_user_can( 'administrator' ) ) {
+			/*if ( ! current_user_can( 'administrator' ) ) {
 				$filter             = new LP_Question_Filter();
-				$filter->_post_type = LP_QUESTION_CPT;
-				$filter->_user_id   = $user_id;
+				$filter->post_author   = $user_id;
 
 				$totalPostAllStatus = LP_Database::getInstance()->get_count_post_of_user( $filter );
 				$views['all']       = wp_sprintf( '<a href="edit.php?post_type=lp_question" class="current" aria-current="page">All <span class="count">(%d)</span></a>', $totalPostAllStatus );
@@ -113,7 +106,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					$totalPostPublish     = LP_Database::getInstance()->get_count_post_of_user( $filter );
 					$views['publish']     = wp_sprintf( '<a href="edit.php?post_type=lp_question&post_status=publish" class="current" aria-current="page">Published <span class="count">(%d)</span></a>', $totalPostPublish );
 				}
-			}
+			}*/
 
 			return $views;
 		}
@@ -428,20 +421,12 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				global $wpdb;
-				$where .= $wpdb->prepare(
-					"
-                    AND {$wpdb->posts}.ID NOT IN(
+				$where .= " AND {$wpdb->posts}.ID NOT IN(
                         SELECT qq.question_id
                         FROM {$wpdb->learnpress_quiz_questions} qq
-                        INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
-                        WHERE p.post_type = %s
                     )
-                ",
-					LP_QUESTION_CPT
-				);
+                ";
 			}
-
-			$posts_where_paged = true;
 
 			return $where;
 		}

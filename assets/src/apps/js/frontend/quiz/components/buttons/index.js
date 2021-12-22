@@ -18,10 +18,14 @@ class Buttons extends Component {
 				return;
 			}
 		}
-		if ( lpQuizSettings.checkNorequizenroll == '1' ) {
-			// remove & set start_time to local.storage
+
+		// No require enroll
+		/*if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+			// Reset data
 			window.localStorage.removeItem( 'quiz_start_' + lpQuizSettings.id );
+			window.localStorage.removeItem( 'quiz_userdata_' + lpQuizSettings.id );
 			window.localStorage.setItem( 'quiz_start_' + lpQuizSettings.id, Date.now() );
+
 			// Set retake to local.storage
 			const retakenNumber = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
 			if ( retakenNumber >= 1 ) {
@@ -29,9 +33,8 @@ class Buttons extends Component {
 			} else {
 				window.localStorage.setItem( 'quiz_retake_' + lpQuizSettings.id, 1 );
 			}
-			// Reset User Data
-			window.localStorage.removeItem( 'quiz_userdata_' + lpQuizSettings.id );
-		}
+		}*/
+
 		startQuiz();
 	};
 
@@ -411,8 +414,9 @@ export default compose( [
 			data.question = getCurrentQuestion( 'object' );
 		}
 
-		if ( lpQuizSettings.checkNorequizenroll == '1' ) {
-			const retakenCurrent = window.localStorage.getItem( 'quiz_retake_' + lpQuizSettings.id );
+		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+			const retakenCurrent = window.localStorage.getItem( 'quiz_off_retaken_' + lpQuizSettings.id );
+
 			if ( getData( 'retakeCount' ) > retakenCurrent ) {
 				data.retakeNumber = getData( 'retakeCount' ) - retakenCurrent;
 				data.canRetry = true;

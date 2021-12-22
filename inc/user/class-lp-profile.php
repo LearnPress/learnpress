@@ -496,7 +496,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$tab         = substr( $capability, strlen( 'view-tab-' ) );
 			$public_tabs = $this->get_default_public_tabs();
 
-			if ( in_array( $tab, $public_tabs ) || $this->is_current_user() ) {
+			if ( current_user_can( ADMIN_ROLE ) ) {
+				$can = true;
+			} elseif ( in_array( $tab, $public_tabs ) || $this->is_current_user() ) {
 				$can = true;
 			} else {
 				if ( empty( $this->_privacy['view-tab-dashboard'] ) || ( false === $this->_privacy['view-tab-dashboard'] ) ) {
@@ -861,8 +863,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$defaults = array(
 				'all'       => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
 				'completed' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {

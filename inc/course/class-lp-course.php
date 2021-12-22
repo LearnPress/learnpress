@@ -75,7 +75,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				'students'                 => 0,
 				'retake_count'             => 0,
 				'featured'                 => 'no',
-				'block_lesson_content'     => 'no',
+				//'block_lesson_content'     => 'no',
 				'external_link_buy_course' => '',
 				'course_result'            => 'evaluate_lesson',
 				'passing_condition'        => 80,
@@ -409,7 +409,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn-press/course/count-items', $count_items, $this->get_id() );
+			return apply_filters( 'learn-press/course/count-items', intval( $count_items ), $this->get_id() );
 		}
 
 		/**

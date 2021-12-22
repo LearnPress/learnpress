@@ -156,10 +156,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return array
 		 */
 		public function get_class( $more = '', $user_id = 0 ) {
-			/**
-			 * @var LP_Course_Item $lp_course_item
-			 */
-			global $lp_course_item;
 			$course_id = get_the_ID();
 
 			if ( empty( $GLOBALS['get_class'] ) ) {

@@ -2894,6 +2894,7 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
  *
  * @return array
  * @since 3.0.0
+ * @deprecated 4.1.4.1
  */
 function learn_press_get_unassigned_items( $type = '' ) {
 	global $wpdb;
@@ -2914,7 +2915,7 @@ function learn_press_get_unassigned_items( $type = '' ) {
             SELECT p.ID
             FROM {$wpdb->posts} p
             WHERE p.post_type IN(" . join( ',', $format ) . ")
-            AND p.ID IN(
+            AND p.ID NOT IN(
                 SELECT si.item_id
                 FROM {$wpdb->learnpress_section_items} si
                 INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
@@ -3453,49 +3454,32 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
 	) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
 
 	$course_desc = array(
-		'evaluate_lesson'     => __(
-			'Evaluate by number of lessons completed per number of total lessons.',
-			'learnpress'
-		)
-								. sprintf(
-									'<p>%s</p>',
-									__(
-										'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%',
-										'learnpress'
-									)
-								),
+		'evaluate_lesson'     => sprintf(
+			'<p>%s<br/>%s</p>',
+			__( 'Evaluate by the number of lessons completed per total number of lessons.', 'learnpress' ),
+			__( 'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 (50.%)', 'learnpress' )
+		),
 		'evaluate_final_quiz' => __(
-			'Evaluate by results of final quiz in course. Click to Get Passing Grade to get and update Final Quiz',
+			'Evaluate by result of final quiz in the course. You have to add a quiz to the end of the course.',
 			'learnpress'
 		),
-		'evaluate_quizzes'    => __(
-			'Evaluate as a percentage of completed quizzes on the total number of quizzes.',
-			'learnpress'
-		)
-								. __(
-									'<p>E.g: Course has 3 quizzes and user completed quiz 1: 30% correct, quiz 2: 50% corect, quiz 3: 100% correct => Result: (30% + 50% + 100%) / 3 = 60%.</p>',
-									'learnpress'
-								),
-		'evaluate_quiz'       => __(
-			'<p>Evaluate by number of quizzes passed per number of total quizzes.</p>',
-			'learnpress'
-		)
-								. __(
-									'<p>E.g: Course has 10 quizzes and user passed 5 quizzes then the result = 5/10 = 50%.</p>',
-									'learnpress'
-								),
-		'evaluate_questions'  => __(
-			'Evaluate by achieved points of question passed per total point of all questions.',
-			'learnpress'
-		)
-								. sprintf(
-									'<p>%s</p>',
-									__(
-										'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 = 50%.',
-										'learnpress'
-									)
-								),
-		'evaluate_mark'       => __( 'Evaluate by achieved marks per total marks of all questions.', 'learnpress' ),
+		'evaluate_quiz'       => sprintf(
+			'<p>%s<br/>%s</p>',
+			__( 'Evaluate by the number of quizzes passed per total number of quizzes.', 'learnpress' ),
+			__(
+				'E.g: The course has 10 quizzes and the user passed 5 quizzes then the result = 5/10 (50%).',
+				'learnpress'
+			)
+		),
+		'evaluate_questions'  => sprintf(
+			'<p>%s<br/>%s</p>',
+			__( 'Evaluate by total number of correct answers per total number of questions.', 'learnpress' ),
+			__(
+				'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 (50%).',
+				'learnpress'
+			)
+		),
+		'evaluate_mark'       => __( 'Evaluate by total score achieved per total score of the questions.', 'learnpress' ),
 	);
 
 	$methods = apply_filters(
@@ -3538,10 +3522,12 @@ function learn_press_course_evaluation_methods( $return = '', $final_quizz_passi
  *
  * @return int|string
  * @since 4.0.0
+ * @editor tungnx
+ * @modify 4.1.4.1 - comment - not use
  */
-function learn_press_mysql_time( $gmt = true ) {
+/*function learn_press_mysql_time( $gmt = true ) {
 	return current_time( 'mysql', $gmt );
-}
+}*/
 
 /**
  * Wrap WP Core function current_time with timestamp format.

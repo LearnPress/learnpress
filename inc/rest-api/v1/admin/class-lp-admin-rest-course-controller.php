@@ -44,7 +44,7 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function get_final_quiz( WP_REST_Request $request ) {
 		$params         = $request->get_params();
-		$course_id      = isset( $params['courseId'] ) ? $params['courseId'] : false;
+		$course_id      = $params['courseId'] ?? false;
 		$response       = new LP_REST_Response();
 		$response->data = '';
 		$final_quiz     = '';

@@ -596,10 +596,7 @@ add_action( 'the_post', 'learn_press_setup_object_data' );
 function learn_press_setup_user() {
 	$GLOBALS['lp_user'] = learn_press_get_current_user();
 }
-
-if ( ! is_admin() ) {
-	add_action( 'init', 'learn_press_setup_user', 1000 );
-}
+add_action( 'init', 'learn_press_setup_user', 1000 );
 
 /**
  * Display a message immediately with out push into queue

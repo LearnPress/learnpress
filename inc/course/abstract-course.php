@@ -56,7 +56,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			'students'             => 0,
 			'retake_count'         => 0,
 			'featured'             => '',
-			'block_lesson_content' => '',
+			//'block_lesson_content' => '',
 			'course_result'        => '',
 			'passing_conditional'  => '',
 			'external_link'        => '',
@@ -152,7 +152,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'fake_students'                  => get_post_meta( $id, '_lp_students', true ),
 					'retake_count'                   => get_post_meta( $id, '_lp_retake_count', true ),
 					'featured'                       => get_post_meta( $id, '_lp_featured', true ),
-					'block_lesson_content'           => get_post_meta( $id, '_lp_block_lesson_content', true ),
+					//'block_lesson_content'           => get_post_meta( $id, '_lp_block_lesson_content', true ),
 					'course_result'                  => get_post_meta( $id, '_lp_course_result', true ),
 					'passing_condition'              => get_post_meta( $id, '_lp_passing_condition', true ),
 					'final_quiz'                     => get_post_meta( $id, '_lp_final_quiz', true ),
@@ -1392,7 +1392,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 		}
 
-		protected function _evaluate_course_by_items( $user_id = 0, $force = false, $type = '' ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 comment - not use
+		 */
+		/*protected function _evaluate_course_by_items( $user_id = 0, $force = false, $type = '' ) {
 			$items  = $this->get_curriculum_items();
 			$result = 0;
 
@@ -1402,9 +1406,13 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn_press_course_results_by_items', $result, $this->get_id(), $user_id );
-		}
+		}*/
 
-		protected function _evaluate_course_by_lessons( $user_id = 0, $force = false, $type = '' ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 comment - not use
+		 */
+		/*protected function _evaluate_course_by_lessons( $user_id = 0, $force = false, $type = '' ) {
 			$lessons = $this->get_items( LP_LESSON_CPT );
 			$result  = 0;
 
@@ -1414,7 +1422,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn_press_course_results_by_items', $result, $this->get_id(), $user_id );
-		}
+		}*/
 
 		/**
 		 * Get achieved point of all quizzes per total points of all quizzes
@@ -1463,7 +1471,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			);
 		}*/
 
-		public function enable_evaluate_item( $item_id, $user_id = 0 ) {
+		/**
+		 * @editor tungnx
+		 * @deprecated 4.1.4.1 comment - not use
+		 */
+		/*public function enable_evaluate_item( $item_id, $user_id = 0 ) {
 			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
@@ -1475,9 +1487,13 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$user_id,
 				$this->get_id()
 			);
-		}
+		}*/
 
-		public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 comment - not use
+		 */
+		/*public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
 			$quizzes        = $this->get_items( LP_QUIZ_CPT );
 			$user           = learn_press_get_user( $user_id );
 			$results        = array();
@@ -1515,11 +1531,15 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$this->get_id(),
 				$user_id
 			);
-		}
+		}*/
 
-		public function is_evaluation( $thing ) {
+		/**
+		 * @editor tungnx
+		 * @modify 4.1.4.1 comment - not use
+		 */
+		/*public function is_evaluation( $thing ) {
 			return $this->get_evaluation_results_method() == $thing;
-		}
+		}*/
 
 		/**
 		 * Get number of lessons user has completed
@@ -1528,8 +1548,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param bool    $force
 		 *
 		 * @return int|mixed|null|void
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function get_completed_lessons( $user_id, $force = false ) {
+		/*public function get_completed_lessons( $user_id, $force = false ) {
 			$key = $user_id . '-' . $this->get_id();
 
 			$completed_lessons = LP_Cache::get_completed_lessons( false, array() );
@@ -1569,7 +1591,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$this->get_id(),
 				$user_id
 			);
-		}
+		}*/
 
 
 		/**
@@ -1580,8 +1602,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param string  $type
 		 *
 		 * @return int|bool
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
+		/*public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
 			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
@@ -1590,15 +1614,17 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$items = $user ? $user->get_completed_items( $this->get_id() ) : false;
 
 			return apply_filters( 'learn-press/user-completed-items', $items, $user_id, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * @param int  $user_id
 		 * @param bool $force
 		 *
 		 * @return mixed
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function count_completed_items( $user_id = 0, $force = false, $type = '' ) {
+		/*public function count_completed_items( $user_id = 0, $force = false, $type = '' ) {
 			$items = $this->get_completed_items( $user_id, $force, $type );
 			$count = 0;
 
@@ -1607,7 +1633,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn_press_count_user_completed_items', $count, $this->get_id(), $user_id );
-		}
+		}*/
 
 		/**
 		 * Count all items in a course.
@@ -1674,8 +1700,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Count all items are 'Preview' in a course.
 		 *
 		 * @return int
+		 * @editor tungnx
+		 * @deprecated 4.1.4.1 - comment - not use
 		 */
-		public function count_preview_items() {
+		/*public function count_preview_items() {
 			$count_preview = $this->get_preview_items();
 
 			if ( false === $count_preview ) {
@@ -1698,7 +1726,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn-press/count-preview-items', $count_preview, $this->get_id() );
-		}
+		}*/
 
 		public function get_preview_items() {
 			return LP_Object_Cache::get( 'course-' . $this->get_id(), 'learn-press/course-preview-items' );
@@ -1729,10 +1757,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Return TRUE if option to block course's items after course is exceeded turn on.
 		 *
 		 * @return bool
+		 * @editor tungnx
+		 * @deprecated 4.1.4.1
 		 */
-		public function is_block_item_content() {
+		/*public function is_block_item_content() {
 			return $this->get_data( 'block_lesson_content' ) === 'yes';
-		}
+		}*/
 
 		/**
 		 * Calculate results of course by final quiz
@@ -1741,15 +1771,21 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param boolean $force
 		 *
 		 * @return mixed|null
+		 * @editor tungnx
+		 * @deprecated 4.1.4.1 - comment - not use
 		 */
-		public function _evaluate_course_by_quiz( $user_id, $force = false ) {
+		/*public function _evaluate_course_by_quiz( $user_id, $force = false ) {
 			$user        = learn_press_get_user( $user_id );
 			$user_course = $user->get_course_data( $this->get_id() );
 
 			return $user_course ? $user_course->get_results( '' ) : 0;
-		}
+		}*/
 
-		public function evaluate_quiz( $quiz_id, $user_id, $force = false ) {
+		/**
+		 * @editor tungnx
+		 * @deprecated 4.1.4.1 - comment - not use
+		 */
+		/*public function evaluate_quiz( $quiz_id, $user_id, $force = false ) {
 			$user    = learn_press_get_user( $user_id );
 			$results = $user->get_quiz_results( $quiz_id, $this->get_id() );
 
@@ -1767,7 +1803,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return $result;
-		}
+		}*/
 
 
 		/**
@@ -1855,8 +1891,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param mixed
 		 *
 		 * @return mixed
+		 * @editor tungnx
+		 * @deprecated 4.1.4.1
 		 */
-		public function get_user_expired_time( $user_id = 0, $args = array() ) {
+		/*public function get_user_expired_time( $user_id = 0, $args = array() ) {
 			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
@@ -1873,7 +1911,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn_press_user_course_expired_time', $expired, $user_id, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Checks if this course has expired
@@ -1883,7 +1921,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function is_expired( $user_id = 0, $args = array() ) {
+		/*public function is_expired( $user_id = 0, $args = array() ) {
 			settype( $args, 'array' );
 
 			if ( ! $user_id ) {
@@ -1893,7 +1931,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$expired = $this->get_user_expired_time( $user_id, $args );
 
 			return apply_filters( 'learn_press_user_course_expired', $expired !== false ? ( $expired - current_time( 'timestamp' ) ) : false );
-		}
+		}*/
 
 		/**
 		 * Output params for single course page
@@ -2051,8 +2089,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return string
 		 * @since 3.x.x
+		 * @editor tungnx
+		 * @modify 4.1.4.1 - comment - not use
 		 */
-		public function get_evaluation_results_method() {
+		/*public function get_evaluation_results_method() {
 			if ( empty( $this->_data['evaluation_results'] ) ) {
 				$all_methods = learn_press_course_evaluation_methods( 'keys' );
 				$method      = get_post_meta( $this->get_id(), '_lp_course_result', true );
@@ -2077,7 +2117,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$this->get_id(),
 				$this
 			);
-		}
+		}*/
 
 		public function is_featured() {
 			return apply_filters(
