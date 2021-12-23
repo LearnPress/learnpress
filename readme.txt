@@ -197,7 +197,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.4.1 (2021-12-21) =
+= 4.1.4.1 (2021-12-22) =
 ~ Added: settings redirect when finish course.
 ~ Added: enqueue script by shortcode button purchase.
 ~ Fixed: error save value on the textarea format code HTML.

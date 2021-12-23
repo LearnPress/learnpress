@@ -305,16 +305,21 @@ class LP_User_Items_DB extends LP_Database {
 			return $user_course;
 		}
 
+		$WHERE = 'WHERE 1=1 ';
+
+		if ( $filter->parent_id ) {
+			$WHERE .= $this->wpdb->prepare( 'AND parent_id = %d', $filter->parent_id );
+		}
+
 		$query = $this->wpdb->prepare(
 			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time, parent_id
 			FROM $this->tb_lp_user_items
-			WHERE parent_id = %d
+			$WHERE
 			AND item_id = %d
 			AND user_id = %d
 			ORDER BY user_item_id DESC
 			LIMIT 1
 			",
-			$filter->parent_id,
 			$filter->item_id,
 			$filter->user_id
 		);
