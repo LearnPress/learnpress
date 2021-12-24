@@ -308,16 +308,16 @@ class LP_User_Items_DB extends LP_Database {
 		$WHERE = 'WHERE 1=1 ';
 
 		if ( $filter->parent_id ) {
-			$WHERE .= $this->wpdb->prepare( 'AND parent_id = %d', $filter->parent_id );
+			$WHERE .= $this->wpdb->prepare( 'AND parent_id = %d ', $filter->parent_id );
 		}
 
 		if ( $filter->ref_id ) {
-			$WHERE .= $this->wpdb->prepare( 'AND ref_id = %d', $filter->parent_id );
-			$WHERE .= $this->wpdb->prepare( 'AND ref_type = %s', LP_COURSE_CPT );
+			$WHERE .= $this->wpdb->prepare( 'AND ref_id = %d ', $filter->parent_id );
+			$WHERE .= $this->wpdb->prepare( 'AND ref_type = %s ', LP_COURSE_CPT );
 		}
 
 		if ( $filter->item_type ) {
-			$WHERE .= $this->wpdb->prepare( 'AND item_type = %s', $filter->item_type );
+			$WHERE .= $this->wpdb->prepare( 'AND item_type = %s ', $filter->item_type );
 		}
 
 		$query = $this->wpdb->prepare(
