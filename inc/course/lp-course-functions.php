@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit();
  */
 function learn_press_get_course( int $the_course = 0 ) {
 	if ( 0 === $the_course ) {
-		$the_course = get_the_ID();
+		$the_course = get_the_ID() ? get_the_ID() : 0;
 	}
 
 	return LP_Course::get_course( $the_course );

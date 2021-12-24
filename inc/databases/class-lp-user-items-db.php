@@ -316,6 +316,10 @@ class LP_User_Items_DB extends LP_Database {
 			$WHERE .= $this->wpdb->prepare( 'AND ref_type = %s', LP_COURSE_CPT );
 		}
 
+		if ( $filter->item_type ) {
+			$WHERE .= $this->wpdb->prepare( 'AND item_type = %s', $filter->item_type );
+		}
+
 		$query = $this->wpdb->prepare(
 			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time, parent_id
 			FROM $this->tb_lp_user_items

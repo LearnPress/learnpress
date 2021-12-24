@@ -871,6 +871,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$lp_quizzes                     = $lp_user_items_db->get_user_course_items_by_item_type( $filter_get_quiz_ids );
 
 			// Get total questions, mark
+			// Todo: Tungnx - save (questions, mark) total when save quiz, course, if not query again
 			$course = $this->_course;
 			if ( is_int( $course ) ) {
 				$course = learn_press_get_course( $course );
