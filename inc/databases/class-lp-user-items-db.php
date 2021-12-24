@@ -312,8 +312,11 @@ class LP_User_Items_DB extends LP_Database {
 		}
 
 		if ( $filter->ref_id ) {
-			$WHERE .= $this->wpdb->prepare( 'AND ref_id = %d ', $filter->parent_id );
-			$WHERE .= $this->wpdb->prepare( 'AND ref_type = %s ', LP_COURSE_CPT );
+			$WHERE .= $this->wpdb->prepare( 'AND ref_id = %d ', $filter->ref_id );
+		}
+
+		if ( $filter->ref_type ) {
+			$WHERE .= $this->wpdb->prepare( 'AND ref_type = %s ', $filter->ref_type );
 		}
 
 		if ( $filter->item_type ) {
