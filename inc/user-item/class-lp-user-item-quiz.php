@@ -314,7 +314,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return array
 	 */
 	public function get_attempts( $limit = 3 ) {
-		$limit = isset( $limit ) ? $limit : 3;
+		$limit = $limit ?? 3;
 
 		$limit = absint( apply_filters( 'lp/quiz/get-attempts/limit', $limit ) );
 
