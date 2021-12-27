@@ -1929,12 +1929,16 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
  *
  * @since 4.0.0
  */
-function learn_press_append_user_profile_fields( $user ) {
-	learn_press_admin_view( 'backend-user-profile', array( 'user' => $user ) );
-}
+/*function learn_press_append_user_profile_fields( $user ) {
+	if ( ! is_admin() ) {
+		return;
+	}
 
-add_action( 'show_user_profile', 'learn_press_append_user_profile_fields' );
-add_action( 'edit_user_profile', 'learn_press_append_user_profile_fields' );
+	learn_press_admin_view( 'backend-user-profile', array( 'user' => $user ) );
+}*/
+
+//add_action( 'show_user_profile', 'learn_press_append_user_profile_fields' );
+//add_action( 'edit_user_profile', 'learn_press_append_user_profile_fields' );
 
 /**
  * Update extra profile data upon update user.
@@ -2214,9 +2218,14 @@ function learn_press_get_user_extra_profile_fields() {
  * @return void
  */
 function learn_press_user_profile_data( $user ) {
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	learn_press_admin_view( 'backend-user-profile', array( 'user' => $user ) );
 	learn_press_admin_view( 'user/courses.php', array( 'user_id' => $user->ID ) );
 }
-add_action( 'show_user_profile', 'learn_press_user_profile_data', 1000 );
+//add_action( 'show_user_profile', 'learn_press_user_profile_data', 1000 );
 add_action( 'edit_user_profile', 'learn_press_user_profile_data', 1000 );
 
 function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' ) {
