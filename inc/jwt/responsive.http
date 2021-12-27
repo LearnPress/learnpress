@@ -35,9 +35,8 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses?learned=true&per_page=1&order=desc&course_filter=in-progress&optimize=sections
+GET http://learnpress4.local/wp-json/learnpress/v1/courses?author[]=7&optimize=true
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYzOTcxMTI2OCwibmJmIjoxNjM5NzExMjY4LCJleHAiOjE2NDAzMTYwNjgsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.o4T_GPJY34KtMq-7Fe7gBE_7ZZapdT6ZJfpheObdxbE
 
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.

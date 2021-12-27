@@ -407,6 +407,8 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		$args['post_parent__in']     = $request['parent'];
 		$args['post_parent__not_in'] = $request['parent_exclude'];
 		$args['s']                   = $request['search'];
+		$args['author__in']          = $request['author'];
+		$args['author__not_in']      = $request['author_exclude'];
 		$args['fields']              = $this->get_fields_for_response( $request );
 
 		if ( 'date' === $args['orderby'] ) {
@@ -500,7 +502,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		$params['context']            = $this->get_context_param();
 		$params['context']['default'] = 'view';
 
-		$params['page']     = array(
+		$params['page']           = array(
 			'description'       => __( 'Current page of the collection.', 'learnpress' ),
 			'type'              => 'integer',
 			'default'           => 1,
@@ -508,7 +510,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 			'minimum'           => 1,
 		);
-		$params['per_page'] = array(
+		$params['per_page']       = array(
 			'description'       => __( 'Maximum number of items to be returned in result set.', 'learnpress' ),
 			'type'              => 'integer',
 			'default'           => 10,
@@ -517,25 +519,25 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['search']   = array(
+		$params['search']         = array(
 			'description'       => __( 'Limit results to those matching a string.', 'learnpress' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['after']    = array(
+		$params['after']          = array(
 			'description'       => __( 'Limit response to resources published after a given ISO8601 compliant date.', 'learnpress' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['before']   = array(
+		$params['before']         = array(
 			'description'       => __( 'Limit response to resources published before a given ISO8601 compliant date.', 'learnpress' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['exclude']  = array(
+		$params['exclude']        = array(
 			'description'       => __( 'Ensure result set excludes specific IDs.', 'learnpress' ),
 			'type'              => 'array',
 			'items'             => array(
@@ -544,7 +546,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'default'           => array(),
 			'sanitize_callback' => 'wp_parse_id_list',
 		);
-		$params['include']  = array(
+		$params['include']        = array(
 			'description'       => __( 'Limit result set to specific ids.', 'learnpress' ),
 			'type'              => 'array',
 			'items'             => array(
@@ -553,20 +555,20 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'default'           => array(),
 			'sanitize_callback' => 'wp_parse_id_list',
 		);
-		$params['offset']   = array(
+		$params['offset']         = array(
 			'description'       => __( 'Offset the result set by a specific number of items.', 'learnpress' ),
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['order']    = array(
+		$params['order']          = array(
 			'description'       => __( 'Order sort attribute ascending or descending.', 'learnpress' ),
 			'type'              => 'string',
 			'default'           => 'desc',
 			'enum'              => array( 'asc', 'desc' ),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['orderby']  = array(
+		$params['orderby']        = array(
 			'description'       => __( 'Sort collection by object attribute.', 'learnpress' ),
 			'type'              => 'string',
 			'default'           => 'date',
@@ -580,7 +582,23 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['learned']  = array(
+		$params['author']         = array(
+			'description' => __( 'Limit result set to posts assigned to specific authors.', 'learnpress' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+		$params['author_exclude'] = array(
+			'description' => __( 'Ensure result set excludes posts assigned to specific authors.', 'learnpress' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+		$params['learned']        = array(
 			'description'       => __( 'Get item learned by user.', 'learnpress' ),
 			'type'              => 'boolean',
 			'default'           => false,
