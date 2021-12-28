@@ -343,7 +343,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					$course_result_desc,
 					'evaluate_lesson',
 					array(
-						'options' => learn_press_course_evaluation_methods( '', $final_quizz_passing ),
+						'options' => learn_press_course_evaluation_methods( $thepostid, '', $final_quizz_passing ),
 					)
 				),
 				'_lp_passing_condition' => new LP_Meta_Box_Text_Field(

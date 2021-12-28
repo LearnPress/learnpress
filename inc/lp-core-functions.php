@@ -3444,11 +3444,9 @@ function learn_press_default_course_levels() {
  * @return array
  * @since 3.x.x
  */
-function learn_press_course_evaluation_methods( $return = '', $final_quizz_passing = '' ) {
-	global $post;
-
+function learn_press_course_evaluation_methods( $postid, $return = '', $final_quizz_passing = '' ) {
 	$course_tip     = '<span class="learn-press-tip">%s</span>';
-	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $post->ID . '" data-loading="' . esc_attr__(
+	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $postid . '" data-loading="' . esc_attr__(
 		'Loading...',
 		'learnpress'
 	) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
