@@ -54,7 +54,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			'archive-course'  => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'archive_course' ),
+					'callback'            => array( $this, 'list_courses' ),
 					'permission_callback' => '__return_true',
 				),
 			),
@@ -104,6 +104,79 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function check_admin_permission(): bool {
 		return LP_REST_Authentication::check_admin_permission();
+	}
+
+	/**
+	 * Get list courses
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 */
+	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$filter             = new LP_Course_Filter();
+			$filter->page       = absint( $request['paged'] ?? 1 );
+			$filter->post_title = LP_Helper::sanitize_params_submitted( $request['s'] ?? '' );
+			$term_ids_str       = LP_Helper::sanitize_params_submitted( $request['term_id'] ?? '' );
+			if ( ! empty( $term_ids_str ) ) {
+				$term_ids         = explode( ',', $term_ids_str );
+				$filter->term_ids = $term_ids;
+			}
+			$filter->order_by = LP_Helper::sanitize_params_submitted( $request['orderby'] ?? '' );
+			$filter->order    = LP_Helper::sanitize_params_submitted( $request['order'] ?? '' );
+			$filter->limit    = LP_Settings::get_option( 'archive_course_limit', 10 );
+
+			$total_rows = 0;
+			$courses    = LP_Course::get_courses( $filter, $total_rows );
+
+			ob_start();
+
+			if ( $courses ) {
+				global $post, $wp;
+
+				$archive_link = get_post_type_archive_link( LP_COURSE_CPT );
+
+				if ( isset( $term_link ) && ! is_wp_error( $term_link ) ) {
+					$archive_link = $term_link;
+				}
+
+				$base = esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
+				$base = str_replace( home_url( $wp->request ) . '/', $archive_link, $base );
+
+				$total_page = floor( $total_rows / $filter->limit );
+				if ( $total_rows % $filter->limit !== 0 ) {
+					$total_page++;
+				}
+				$response->data->pagination = learn_press_get_template_content(
+					'loop/course/pagination.php',
+					array(
+						'total' => $total_page,
+						'paged' => $filter->page,
+						'base'  => $base,
+					)
+				);
+
+				foreach ( $courses as $post ) {
+					setup_postdata( $post );
+					learn_press_get_template_part( 'content', 'course' );
+				}
+
+				wp_reset_postdata();
+			} else {
+				LP()->template( 'course' )->no_courses_found();
+			}
+
+			$response->status        = 'success';
+			$response->data->content = ob_get_clean();
+		} catch ( Throwable $e ) {
+
+		}
+
+		return apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response );
 	}
 
 	public function archive_course( WP_REST_Request $request ) {

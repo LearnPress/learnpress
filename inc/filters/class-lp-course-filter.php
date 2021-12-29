@@ -17,5 +17,16 @@ if ( class_exists( 'LP_Question_Filter' ) ) {
 }
 
 class LP_Course_Filter extends LP_Post_Type_Filter {
-	public $post_type = 'lp_course';
+	/**
+	 * @var string
+	 */
+	public $post_type = LP_COURSE_CPT;
+	/**
+	 * @var string
+	 */
+	public $status = '';
+	/**
+	 * @var string
+	 */
+	public $graduation = '';
 }

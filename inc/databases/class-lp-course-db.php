@@ -440,6 +440,77 @@ class LP_Course_DB extends LP_Database {
 
 		return (int) $this->wpdb->get_var( $query );
 	}
+
+	/**
+	 * Get Courses
+	 *
+	 * @param LP_Course_Filter $filter
+	 * @param int $total_rows return total_rows
+	 *
+	 * @return array|null
+	 * @throws Exception
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.1.4.2
+	 */
+	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+		// Where
+		$WHERE  = 'WHERE 1=1 ';
+		$WHERE .= $this->wpdb->prepare( 'AND p.post_type = %s ', $filter->post_type );
+		$WHERE .= $this->wpdb->prepare( 'AND p.post_status = %s ', $filter->post_status );
+
+		// Inner join
+		$INNER_JOIN = '';
+		if ( ! empty( $filter->term_ids ) ) {
+			$INNER_JOIN .= "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id ";
+
+			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
+			$WHERE          .= $this->wpdb->prepare( "AND r_term.term_taxonomy_id IN ('" . $term_ids_format . "') ", $filter->term_ids );
+		}
+
+		if ( $filter->post_title ) {
+			$WHERE .= $this->wpdb->prepare( 'AND p.post_title LIKE %s ', $filter->post_title . '%' );
+		}
+
+		// Order by
+		$ORDER_BY = 'ORDER BY ';
+		if ( $filter->order_by ) {
+			$ORDER_BY .= 'p.' . $filter->order_by . ' ' . $filter->order;
+		} else {
+			$ORDER_BY .= 'p.ID DESC ';
+		}
+
+		// Limit
+		$offset = $filter->limit * ( $filter->page - 1 );
+		$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+
+		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN );
+		$WHERE      = apply_filters( 'lp/courses/query/where', $WHERE );
+
+		// Query
+		$query = "SELECT * FROM $this->tb_posts AS p
+			$INNER_JOIN
+			$WHERE
+			$ORDER_BY
+			$LIMIT
+		";
+
+		$result = $this->wpdb->get_results( $query );
+
+		if ( $result ) {
+			// Query total rows
+			$query_total = "SELECT COUNT(ID) FROM $this->tb_posts AS p
+			$INNER_JOIN
+			$WHERE
+			";
+
+			$total_rows = $this->wpdb->get_var( $query_total );
+		}
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
 }
 
 LP_Course_DB::getInstance();

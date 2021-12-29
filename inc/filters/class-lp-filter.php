@@ -24,7 +24,7 @@ class LP_Filter {
 	/**
 	 * @var string
 	 */
-	public $order_by_desc = '';
+	public $order = '';
 	/**
 	 * @var string
 	 */

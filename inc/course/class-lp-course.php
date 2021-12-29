@@ -32,10 +32,12 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param $data
 		 *
 		 * @return array
+		 * @editor tungnx
+		 * @modify 4.1.4.2 - comment - not use
 		 */
-		public static function log( $data ) {
+		/*public static function log( $data ) {
 			return $data;
-		}
+		}*/
 
 		/**
 		 * Set item is viewing in single course.
@@ -485,6 +487,37 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			} catch ( Throwable $e ) {
 				error_log( __FUNCTION__ . ':' . $e->getMessage() );
 			}
+		}
+
+		/**
+		 * Get list course
+		 *
+		 * @param LP_Course_Filter $filter
+		 * @param int $total_rows
+		 *
+		 * @return array|null
+		 * @author tungnx
+		 * @version 1.0.0
+		 * @sicne 4.1.4.2
+		 */
+		public static function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+			try {
+				/*$key_cache     = md5( json_encode( $filter ) );
+				$courses_cache = LP_Cache::instance()->get_cache( $key_cache );
+
+				if ( false !== $courses_cache ) {
+					return $courses_cache;
+				}*/
+
+				$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
+				//LP_Cache::instance()->set_cache( $key_cache, $courses );
+			} catch ( Throwable $e ) {
+				$courses = null;
+
+				error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+			}
+
+			return $courses;
 		}
 	}
 }
