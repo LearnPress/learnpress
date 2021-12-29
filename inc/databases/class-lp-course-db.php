@@ -469,7 +469,7 @@ class LP_Course_DB extends LP_Database {
 		}
 
 		if ( $filter->post_title ) {
-			$WHERE .= $this->wpdb->prepare( 'AND p.post_title LIKE %s ', $filter->post_title . '%' );
+			$WHERE .= $this->wpdb->prepare( 'AND p.post_title LIKE %s ', '%' . $filter->post_title . '%' );
 		}
 
 		// Order by
