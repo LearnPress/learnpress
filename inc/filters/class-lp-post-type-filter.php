@@ -29,13 +29,17 @@ if ( ! class_exists( 'LP_Post_Type_Filter' ) ) {
 		 */
 		public $post_status = 'publish';
 		/**
-		 * @var string
+		 * @var int
 		 */
-		public $post_author = '';
+		public $post_author = 0;
 		/**
 		 * @var array
 		 */
 		public $term_ids = array();
+		/**
+		 * @var array
+		 */
+		public $fields = array();
 
 		public function __construct() {
 

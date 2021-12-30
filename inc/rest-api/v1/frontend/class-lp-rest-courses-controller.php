@@ -121,7 +121,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter             = new LP_Course_Filter();
 			$filter->page       = absint( $request['paged'] ?? 1 );
 			$filter->post_title = LP_Helper::sanitize_params_submitted( $request['s'] ?? '' );
-			$term_ids_str       = LP_Helper::sanitize_params_submitted( $request['term_id'] ?? '' );
+			$fields_str         = LP_Helper::sanitize_params_submitted( $request['c_fields'] ?? '' );
+			if ( ! empty( $fields_str ) ) {
+				$fields         = explode( ',', $fields_str );
+				$filter->fields = $fields;
+			}
+			$filter->post_author = LP_Helper::sanitize_params_submitted( $request['c_author'] ?? 0 );
+			$term_ids_str        = LP_Helper::sanitize_params_submitted( $request['term_id'] ?? '' );
 			if ( ! empty( $term_ids_str ) ) {
 				$term_ids         = explode( ',', $term_ids_str );
 				$filter->term_ids = $term_ids;

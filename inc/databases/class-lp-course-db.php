@@ -454,6 +454,16 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.1.4.2
 	 */
 	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+		// Fields select
+		$FIELDS = '*';
+		if ( ! empty( $filter->fields ) ) {
+			foreach ( $filter->fields as $k => $field ) {
+				$filter->fields[ $k ] = 'p.' . $field;
+			}
+
+			$FIELDS = implode( ',', $filter->fields );
+		}
+
 		// Where
 		$WHERE  = 'WHERE 1=1 ';
 		$WHERE .= $this->wpdb->prepare( 'AND p.post_type = %s ', $filter->post_type );
@@ -468,8 +478,14 @@ class LP_Course_DB extends LP_Database {
 			$WHERE          .= $this->wpdb->prepare( "AND r_term.term_taxonomy_id IN ('" . $term_ids_format . "') ", $filter->term_ids );
 		}
 
+		// Title
 		if ( $filter->post_title ) {
 			$WHERE .= $this->wpdb->prepare( 'AND p.post_title LIKE %s ', '%' . $filter->post_title . '%' );
+		}
+
+		// Author
+		if ( $filter->post_author ) {
+			$WHERE .= $this->wpdb->prepare( 'AND p.post_author = %d ', $filter->post_author );
 		}
 
 		// Order by
@@ -484,11 +500,12 @@ class LP_Course_DB extends LP_Database {
 		$offset = $filter->limit * ( $filter->page - 1 );
 		$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
 
-		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN );
-		$WHERE      = apply_filters( 'lp/courses/query/where', $WHERE );
+		$FIELDS     = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
+		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );
+		$WHERE      = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
 
 		// Query
-		$query = "SELECT * FROM $this->tb_posts AS p
+		$query = "SELECT $FIELDS FROM $this->tb_posts AS p
 			$INNER_JOIN
 			$WHERE
 			$ORDER_BY
