@@ -34,9 +34,9 @@ class LP_Filter {
 	 */
 	public $page = 1;
 	/**
-	 * @var string
+	 * @var array
 	 */
-	public $select = '';
+	public $fields = '';
 	/**
 	 * @var string
 	 */

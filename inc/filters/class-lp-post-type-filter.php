@@ -36,10 +36,6 @@ if ( ! class_exists( 'LP_Post_Type_Filter' ) ) {
 		 * @var array
 		 */
 		public $term_ids = array();
-		/**
-		 * @var array
-		 */
-		public $fields = array();
 
 		public function __construct() {
 

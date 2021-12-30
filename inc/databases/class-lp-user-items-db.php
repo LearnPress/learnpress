@@ -380,44 +380,6 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Query table learnpress_user_items
-	 *
-	 * @param LP_User_Items_Filter $filter
-	 */
-	public function get_user_items( LP_User_Items_Filter $filter ) {
-		if ( empty( $filter->select ) ) {
-			$filter->select = '*';
-		}
-
-		$WHERE = '';
-
-		$vars = get_class_vars( $this );
-
-		foreach ( $vars as $var ) {
-			if ( ! empty( $filter->{$var} ) ) {
-				if ( empty( $WHERE ) ) {
-					$WHERE .= $this->wpdb->prepare( "WHERE . $filter->{$var} = %s", $filter->{$var} );
-				} else {
-					$WHERE .= $this->wpdb->prepare( " AND . $filter->{$var} = %s ", $filter->{$var} );
-				}
-			}
-		}
-
-		$query = $this->wpdb->prepare(
-			"
-			SELECT $filter->select FROM $this->tb_lp_user_items
-			$WHERE
-			"
-		);
-
-		$result = $this->wpdb->{$filter->query_type}( $query );
-
-		$this->check_execute_has_error();
-
-		return $result;
-	}
-
-	/**
 	 * Get user_item_id by course_id
 	 *
 	 * @param LP_User_Items_Filter $filter $filter->item_id
@@ -718,6 +680,87 @@ class LP_User_Items_DB extends LP_Database {
 		);
 
 		$result = $this->wpdb->get_results( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
+	 * Get courses only by course's user are learning
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 * @param int $total_rows
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.1.4.2
+	 * @return null|array
+	 * @throws Exception
+	 */
+	public function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+		// Fields select
+		$FIELDS = '*';
+		if ( ! empty( $filter->fields ) ) {
+			foreach ( $filter->fields as $k => $field ) {
+				$filter->fields[ $k ] = 'ui.' . $field;
+			}
+
+			$FIELDS = implode( ',', $filter->fields );
+		}
+
+		// Where
+		$WHERE  = 'WHERE 1=1 ';
+		$WHERE .= $this->wpdb->prepare( 'AND ui.item_type = %s ', LP_COURSE_CPT );
+
+		// Status
+		if ( $filter->status ) {
+			$WHERE .= $this->wpdb->prepare( 'AND ui.status = %s ', $filter->status );
+		}
+
+		// Inner join
+		$INNER_JOIN = '';
+
+		// User
+		if ( $filter->user_id ) {
+			$WHERE .= $this->wpdb->prepare( 'AND ui.user_id = %d ', $filter->user_id );
+		}
+
+		// Order by
+		$ORDER_BY = 'ORDER BY ';
+		if ( $filter->order_by ) {
+			$ORDER_BY .= 'ui.' . $filter->order_by . ' ' . $filter->order;
+		} else {
+			$ORDER_BY .= 'ui.user_item_id DESC ';
+		}
+
+		// Limit
+		$offset = $filter->limit * ( $filter->page - 1 );
+		$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+
+		$FIELDS     = apply_filters( 'lp/user/courses/query/fields', $FIELDS, $filter );
+		$INNER_JOIN = apply_filters( 'lp/user/courses/query/inner_join', $INNER_JOIN, $filter );
+		$WHERE      = apply_filters( 'lp/user/courses/query/where', $WHERE, $filter );
+
+		// Query
+		$query = "SELECT $FIELDS FROM $this->tb_lp_user_items AS ui
+			$INNER_JOIN
+			$WHERE
+			$ORDER_BY
+			$LIMIT
+		";
+
+		$result = $this->wpdb->get_results( $query );
+
+		if ( $result ) {
+			// Query total rows
+			$query_total = "SELECT COUNT(user_item_id) FROM $this->tb_lp_user_items AS ui
+			$INNER_JOIN
+			$WHERE
+			";
+
+			$total_rows = $this->wpdb->get_var( $query_total );
+		}
 
 		$this->check_execute_has_error();
 
