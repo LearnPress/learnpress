@@ -743,22 +743,60 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param string $type - Optional. [own, purchased, enrolled, etc]
 		 * @param array  $args - Optional.
 		 *
-		 * @return bool|LP_Query_List_Table
+		 * @return LP_Query_List_Table
 		 */
-		public function query_courses( string $type = 'own', array $args = array() ) {
-			$query = false;
+		public function query_courses( string $type = 'own', array $args = array() ): LP_Query_List_Table {
+			$courses = array();
+
 			switch ( $type ) {
 				case 'purchased':
-					$query = $this->_curd->query_purchased_courses( $this->get_user_data( 'id' ), $args );
-					break;
-				case 'enrolled':
+					// $query = $this->_curd->query_purchased_courses( $this->get_user_data( 'id' ), $args );
+					$filter          = new LP_User_Items_Filter();
+					$filter->fields  = array( 'item_id' );
+					$filter->user_id = $this->get_user_data( 'id' );
+					$status          = $args['status'] ?? '';
+					if ( $status != LP_COURSE_FINISHED ) {
+						$filter->graduation = $status;
+					} else {
+						$filter->status = $status;
+					}
+					$filter->page   = $args['paged'] ?? 1;
+					$filter->limit  = $args['limit'] ?? 0;
+					$total_rows     = 0;
+					$result_courses = LP_User_Item_Course::get_user_courses( $filter, $total_rows );
+
+					$course_ids = LP_Course::get_course_ids( $result_courses, 'item_id' );
+
+					$courses = array(
+						'total' => $total_rows,
+						'paged' => $filter->page,
+						'limit' => $filter->limit,
+						'items' => $course_ids,
+					);
 					break;
 				case 'own':
-					$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
+					//$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
+					$filter              = new LP_Course_Filter();
+					$filter->fields      = array( 'ID' );
+					$filter->post_author = $this->get_user_data( 'id' );
+					$filter->post_status = $args['status'] ?? '';
+					$filter->page        = $args['paged'] ?? 1;
+					$filter->limit       = $args['limit'] ?? 0;
+					$total_rows          = 0;
+					$result_courses      = LP_Course::get_courses( $filter, $total_rows );
+
+					$course_ids = LP_Course::get_course_ids( $result_courses );
+
+					$courses = array(
+						'total' => $total_rows,
+						'paged' => $filter->page,
+						'limit' => $filter->limit,
+						'items' => $course_ids,
+					);
 					break;
 			}
 
-			return $query;
+			return new LP_Query_List_Table( $courses );
 		}
 
 		/**

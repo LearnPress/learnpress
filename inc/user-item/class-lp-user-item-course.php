@@ -861,7 +861,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$user_course = $this->get_last_user_course();
 
 			if ( ! $user_course ) {
-				throw new Exception( '' );
+				throw new Exception( 'User course not exists!' );
 			}
 
 			// get quiz_ids
@@ -1677,5 +1677,36 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return $user_course;
+	}
+
+	/**
+	 * Get courses only by course's user are learning
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 * @param int $total_rows return total row query
+	 *
+	 * @return array|null
+	 */
+	public static function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows ) {
+		try {
+			/*$key_cache     = md5( json_encode( $filter ) );
+			$courses_cache = LP_Cache::instance()->get_cache( $key_cache );
+
+			if ( false !== $courses_cache ) {
+				return $courses_cache;
+			}*/
+
+			$courses = LP_User_Items_DB::getInstance()->get_user_courses( $filter, $total_rows );
+			//LP_Cache::instance()->set_cache( $key_cache, $courses );
+		} catch ( Throwable $e ) {
+			$courses = null;
+			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+		}
+
+		return $courses;
+	}
+
+	public function get_total_users_learn_course( LP_User_Items_Filter $filter ) {
+
 	}
 }

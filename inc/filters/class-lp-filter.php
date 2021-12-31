@@ -4,7 +4,7 @@
  *
  * @author  tungnx
  * @package LearnPress/Classes/Filters
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 /**
@@ -36,7 +36,7 @@ class LP_Filter {
 	/**
 	 * @var array
 	 */
-	public $fields = '';
+	public $fields = array();
 	/**
 	 * @var string
 	 */

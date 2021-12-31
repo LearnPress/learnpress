@@ -513,11 +513,27 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				//LP_Cache::instance()->set_cache( $key_cache, $courses );
 			} catch ( Throwable $e ) {
 				$courses = null;
-
 				error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 			}
 
 			return $courses;
+		}
+
+		/**
+		 * Get course_ids
+		 *
+		 * @param array $courses Array object [{ ID: 1, post_title = '' }]
+		 * @param string $key
+		 *
+		 * @return array
+		 */
+		public static function get_course_ids( array $courses, string $key = 'ID' ): array {
+			$course_ids = array();
+			foreach ( $courses as $course ) {
+				$course_ids[] = $course->{$key};
+			}
+
+			return $course_ids;
 		}
 	}
 }

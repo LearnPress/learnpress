@@ -501,8 +501,11 @@ class LP_Course_DB extends LP_Database {
 		}
 
 		// Limit
-		$offset = $filter->limit * ( $filter->page - 1 );
-		$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+		$LIMIT = '';
+		if ( $filter->limit != -1 ) {
+			$offset = $filter->limit * ( $filter->page - 1 );
+			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+		}
 
 		$FIELDS     = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
 		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );

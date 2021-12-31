@@ -89,14 +89,13 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function course_tab( $request ) {
-		$request        = $request->get_params();
-		$user_id        = $request['userID'];
-		$status         = $request['status'] ?? '';
-		$paged          = $request['paged'] ?? 1;
-		$query_type     = $request['query'] ?? 'purchased';
-		$layout         = $request['layout'] ?? 'grid';
-		$response       = new LP_REST_Response();
-		$response->data = '';
+		$params     = $request->get_params();
+		$user_id    = $params['userID'] ?? 0;
+		$status     = $params['status'] ?? '';
+		$paged      = $params['paged'] ?? 1;
+		$query_type = $params['query'] ?? 'purchased';
+		$layout     = $params['layout'] ?? 'grid';
+		$response   = new LP_REST_Response();
 
 		try {
 			if ( empty( $user_id ) ) {
@@ -141,7 +140,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'No User available!', 'learnpress' ) );
 			}
 
-			do_action( 'learnpress/rest/frontend/profile/course_tab', $request );
+			do_action( 'learnpress/rest/frontend/profile/course_tab', $params );
 
 			$num_pages    = $query->get_pages();
 			$current_page = $query->get_paged();
@@ -153,7 +152,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'user'         => $user,
 					'course_ids'   => $course_ids,
-					'num_pages'    => absint( $num_pages ) > 1 ? absint( $num_pages ) : 1,
+					'num_pages'    => max( absint( $num_pages ), 1 ),
 					'current_page' => absint( $current_page ),
 				)
 			);

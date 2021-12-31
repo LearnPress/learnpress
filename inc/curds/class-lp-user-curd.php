@@ -716,8 +716,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $user_item_id
 	 *
 	 * @return array|bool
+	 * @editor tungnx
+	 * @deprecated 4.1.4.2
 	 */
-	public function read_course_items_by_user_item_id( $user_item_id ) {
+	/*public function read_course_items_by_user_item_id( $user_item_id ) {
 		global $wpdb;
 
 		if ( ! $user_item_id ) {
@@ -736,9 +738,13 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$items = $wpdb->get_results( $query );
 
 		return $items;
-	}
+	}*/
 
-	public function read_course_data( $course_id, $user_id ) {
+	/**
+	 * @editor tungnx
+	 * @deprecated 4.1.4.2
+	 */
+	/*public function read_course_data( $course_id, $user_id ) {
 		global $wpdb;
 
 		$course                 = learn_press_get_course( $course_id );
@@ -785,7 +791,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return false;
-	}
+	}*/
 
 	/**
 	 * Get a row in table user-items by user_item_id key
@@ -793,8 +799,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $user_item_id
 	 *
 	 * @return object
+	 * @editor tungnx
+	 * @deprecated 4.1.4.2
 	 */
-	public function get_item_by_user_item_id( $user_item_id ) {
+	/*public function get_item_by_user_item_id( $user_item_id ) {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
@@ -803,7 +811,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		);
 
 		return $wpdb->get_row( $query );
-	}
+	}*/
 
 	/**
 	 * Load user items by item_id of course item
@@ -812,8 +820,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param bool   $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
+	 * @editor tungnx
+	 * @deprecated 4.1.4.2
 	 */
-	public function read_course_items_bak( &$parent_item, $force = false ) {
+	/*public function read_course_items_bak( &$parent_item, $force = false ) {
 		global $wpdb;
 
 		$item_types = learn_press_get_course_item_types();
@@ -864,7 +874,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Get all items user has already started/completed.
@@ -1350,7 +1360,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 */
-	public function delete_by_user_item_id( $user_item_id ) {
+	/*public function delete_by_user_item_id( $user_item_id ) {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
@@ -1382,7 +1392,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		);
 
 		return $wpdb->query( $query );
-	}
+	}*/
 
 	/**
 	 * Query own courses of an user.
@@ -1391,8 +1401,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param array $args
 	 *
 	 * @return LP_Query_List_Table
+	 * @editor tungnx
+	 * @modify 4.1.4.2 - comment
+	 * @deprecated 4.1.4.2
 	 */
-	public function query_own_courses( int $user_id = 0, array $args = array() ): LP_Query_List_Table {
+	/*public function query_own_courses( int $user_id = 0, array $args = array() ): LP_Query_List_Table {
 		global $wpdb, $wp;
 		$paged = 1;
 
@@ -1506,7 +1519,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$courses['plural'] = __( 'courses', 'learnpress' );
 
 		return new LP_Query_List_Table( $courses );
-	}
+	}*/
 
 	/**
 	 * Query courses by user
@@ -1515,8 +1528,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param array $args
 	 *
 	 * @return LP_Query_List_Table
+	 * @editor tungnx
+	 * @modify 4.1.4.2 - comment
+	 * @deprecated 4.1.4.2
 	 */
-	public function query_purchased_courses( int $user_id = 0, array $args = array() ): LP_Query_List_Table {
+	/*public function query_purchased_courses( int $user_id = 0, array $args = array() ): LP_Query_List_Table {
 		global $wpdb, $wp;
 		$paged = 1;
 
@@ -1794,7 +1810,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$courses['plural'] = __( 'courses', 'learnpress' );
 
 		return new LP_Query_List_Table( $courses );
-	}
+	}*/
 
 	/**
 	 * Get courses user has purchased via orders are completed

@@ -3565,19 +3565,24 @@ function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
 }
 
 /**
- * Count all users has enrolled to courses of an instructor.
+ * Count all users has enrolled courses of an instructor.
  *
- * @param int $instructor_id .
+ * @param int $instructor_id . Author of course
  *
  * @return float|int
  * @since 4.0.0
  */
-function learn_press_count_instructor_users( $instructor_id = 0 ) {
+function learn_press_count_instructor_users( int $instructor_id = 0 ) {
 	global $wpdb;
 
-	$curd        = new LP_User_CURD();
+	/*$curd        = new LP_User_CURD();
 	$own_courses = $curd->query_own_courses( $instructor_id );
-	$course_ids  = $own_courses->get_items();
+	$course_ids  = $own_courses->get_items();*/
+	$filter              = new LP_Course_Filter();
+	$filter->post_author = $instructor_id;
+	$filter->limit       = -1;
+	$courses             = LP_Course::get_courses( $filter );
+	$course_ids          = LP_Course::get_course_ids( $courses );
 
 	if ( ! empty( $course_ids ) ) {
 		$query = $wpdb->prepare(

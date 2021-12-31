@@ -2234,7 +2234,25 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return LP_Query_List_Table
 		 */
 		public function get_purchased_courses( array $args = array() ): LP_Query_List_Table {
-			return $this->_curd->query_purchased_courses( $this->get_id(), $args );
+			$filter          = new LP_User_Items_Filter();
+			$filter->fields  = array( 'item_id' );
+			$filter->user_id = $this->get_id();
+			$filter->status  = $args['status'] ?? '';
+			$filter->page    = $args['paged'] ?? 1;
+			$filter->limit   = $args['limit'] ?? 0;
+			$total_rows      = 0;
+			$result_courses  = LP_User_Item_Course::get_user_courses( $filter, $total_rows );
+
+			$course_ids = LP_Course::get_course_ids( $result_courses, 'item_id' );
+
+			$courses = array(
+				'total' => $total_rows,
+				'paged' => $filter->page,
+				'limit' => $filter->limit,
+				'items' => $course_ids,
+			);
+
+			return new LP_Query_List_Table( $courses );
 		}
 
 		/**

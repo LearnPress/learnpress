@@ -718,6 +718,11 @@ class LP_User_Items_DB extends LP_Database {
 			$WHERE .= $this->wpdb->prepare( 'AND ui.status = %s ', $filter->status );
 		}
 
+		// Graduation
+		if ( $filter->graduation ) {
+			$WHERE .= $this->wpdb->prepare( 'AND ui.graduation = %s ', $filter->graduation );
+		}
+
 		// Inner join
 		$INNER_JOIN = '';
 
@@ -765,6 +770,10 @@ class LP_User_Items_DB extends LP_Database {
 		$this->check_execute_has_error();
 
 		return $result;
+	}
+
+	public function get_total_users_learn_course( LP_User_Items_Filter $filter ) {
+
 	}
 }
 
