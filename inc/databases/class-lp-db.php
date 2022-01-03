@@ -546,4 +546,25 @@ class LP_Database {
 			)
 		);
 	}
+
+	/**
+	 * Get total pages
+	 *
+	 * @param int $limit
+	 * @param int $total_rows
+	 *
+	 * @return false|float
+	 */
+	public static function get_total_pages( int $limit = 0, int $total_rows = 0 ) {
+		if ( $limit == 0 ) {
+			return 0;
+		}
+
+		$total_pages = floor( $total_rows / $limit );
+		if ( $total_rows % $limit !== 0 ) {
+			$total_pages++;
+		}
+
+		return $total_pages;
+	}
 }

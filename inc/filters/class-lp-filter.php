@@ -18,6 +18,10 @@ class LP_Filter {
 	 */
 	public $limit = 10;
 	/**
+	 * @var int
+	 */
+	public $max_limit = 100;
+	/**
 	 * @var string
 	 */
 	public $order_by = '';
@@ -38,12 +42,25 @@ class LP_Filter {
 	 */
 	public $fields = array();
 	/**
+	 * @var array
+	 */
+	public $where = array();
+	/**
+	 * @var array
+	 */
+	public $join = array();
+	/**
+	 * @var bool set true to return total_rows only
+	 */
+	public $query_count = false;
+	/**
 	 * @var string
 	 */
 	public $query_type = 'get_results';
 
 	public function __construct() {
-		$this->limit = apply_filters( 'lp/filter/limit', $this->limit );
+		$this->limit     = apply_filters( 'lp/filter/limit', $this->limit );
+		$this->max_limit = apply_filters( 'lp/filter/max/limit', $this->max_limit );
 	}
 }
 

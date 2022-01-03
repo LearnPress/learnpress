@@ -447,13 +447,15 @@ class LP_Course_DB extends LP_Database {
 	 * @param LP_Course_Filter $filter
 	 * @param int $total_rows return total_rows
 	 *
-	 * @return array|null
+	 * @return array|null|int
 	 * @throws Exception
 	 * @author tungnx
 	 * @version 1.0.0
 	 * @since 4.1.4.2
 	 */
 	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+		$result = null;
+
 		// Fields select
 		$FIELDS = '*';
 		if ( ! empty( $filter->fields ) ) {
@@ -501,37 +503,49 @@ class LP_Course_DB extends LP_Database {
 		}
 
 		// Limit
-		$LIMIT = '';
-		if ( $filter->limit != -1 ) {
-			$offset = $filter->limit * ( $filter->page - 1 );
-			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+		$LIMIT         = '';
+		$filter->limit = absint( $filter->limit );
+		if ( $filter->limit > $filter->max_limit ) {
+			$filter->limit = $filter->max_limit;
 		}
+		$offset = $filter->limit * ( $filter->page - 1 );
+		$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
 
-		$FIELDS     = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
+		$FIELDS = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
+
+		foreach ( $filter->join as $join ) {
+			$INNER_JOIN .= $join;
+		}
 		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );
-		$WHERE      = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
+
+		foreach ( $filter->where as $where ) {
+			$WHERE .= $where;
+		}
+		$WHERE = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
 
 		// Query
-		$query = "SELECT $FIELDS FROM $this->tb_posts AS p
+		if ( ! $filter->query_count ) {
+			$query  = "SELECT $FIELDS FROM $this->tb_posts AS p
 			$INNER_JOIN
 			$WHERE
 			$ORDER_BY
 			$LIMIT
-		";
-
-		$result = $this->wpdb->get_results( $query );
-
-		if ( $result ) {
-			// Query total rows
-			$query_total = "SELECT COUNT(ID) FROM $this->tb_posts AS p
-			$INNER_JOIN
-			$WHERE
 			";
-
-			$total_rows = $this->wpdb->get_var( $query_total );
+			$result = $this->wpdb->get_results( $query );
 		}
 
+		// Query total rows
+		$query_total = "SELECT COUNT(ID) FROM $this->tb_posts AS p
+		$INNER_JOIN
+		$WHERE
+		";
+		$total_rows  = (int) $this->wpdb->get_var( $query_total );
+
 		$this->check_execute_has_error();
+
+		if ( $filter->query_count ) {
+			return $total_rows;
+		}
 
 		return $result;
 	}
