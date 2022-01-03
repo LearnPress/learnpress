@@ -9,18 +9,25 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'statistic'  => array(
+			'statistic'     => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'statistic' ),
-					'permission_callback' => array( $this, 'check_admin_permission' ),
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'course-tab' => array(
+			'course-tab'    => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'course_tab' ),
-					'permission_callback' => array( $this, 'check_admin_permission' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+				),
+			),
+			'course-attend' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'course_attend' ),
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 		);
@@ -28,7 +35,14 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
-	public function check_admin_permission( $request ) {
+	/**
+	 * Check permission
+	 *
+	 * @param $request
+	 *
+	 * @return bool
+	 */
+	public function check_permission( $request ): bool {
 		$user_id = $request->get_param( 'userID' );
 
 		if ( empty( $user_id ) ) {
@@ -170,4 +184,40 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		return rest_ensure_response( $response );
 	}
 
+	/**
+	 * Get course's user attend
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @author tungnx
+	 * @since 4.1.4.2
+	 * @version 1.0.0
+	 * @return LP_REST_Response
+	 */
+	public function course_attend( WP_REST_Request $request ): LP_REST_Response {
+		$params   = $request->get_params();
+		$user_id  = get_current_user_id();
+		$status   = $params['status'] ?? '';
+		$paged    = $params['paged'] ?? 1;
+		$layout   = $params['layout'] ?? 'grid';
+		$response = new LP_REST_Response();
+
+		try {
+			if ( ! $user_id ) {
+				throw new Exception( __( 'User is invalid!', 'learnpress' ) );
+			}
+
+			$filter                      = new LP_User_Items_Filter();
+			$filter->limit               = LP_Settings::get_option( 'archive_course_limit', 6 );
+			$filter->user_id             = $user_id;
+			$total_rows                  = 0;
+			$courses                     = LP_User_Item_Course::get_user_courses( $filter, $total_rows );
+			$response->data->courses     = $courses;
+			$response->data->total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
 }

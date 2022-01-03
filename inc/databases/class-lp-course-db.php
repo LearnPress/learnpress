@@ -513,15 +513,11 @@ class LP_Course_DB extends LP_Database {
 
 		$FIELDS = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
 
-		foreach ( $filter->join as $join ) {
-			$INNER_JOIN .= $join;
-		}
-		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );
+		$INNER_JOIN .= implode( ' ', $filter->join );
+		$INNER_JOIN  = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );
 
-		foreach ( $filter->where as $where ) {
-			$WHERE .= $where;
-		}
-		$WHERE = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
+		$WHERE .= implode( ' ', $filter->where );
+		$WHERE  = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
 
 		// Query
 		if ( ! $filter->query_count ) {
