@@ -61,17 +61,22 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( $profile->get_error_message() );
 			}
 
-			$query = $profile->query_courses( 'purchased' );
+			/*$query = $profile->query_courses( 'purchased' );
 
-			$counts = $query['counts'];
+			$counts = $query['counts'];*/
 
 			// Count total courses has status 'in-progress'
-			$total_courses_has_status = $lp_user_items_db->get_total_courses_has_status( $user_id, 'in-progress' );
+			// $total_courses_has_status = $lp_user_items_db->get_total_courses_has_status( $user_id, 'in-progress' );
+
+			$filter            = new LP_User_Items_Filter();
+			$filter->user_id   = $user_id;
+			$filter->item_type = LP_COURSE_CPT;
+			$count_status      = $lp_user_items_db->count_status_by_items( $filter );
 
 			$statistic = array(
-				'enrolled_courses'  => $counts['all'] ?? 0,
-				'active_courses'    => $total_courses_has_status,
-				'completed_courses' => $counts['finished'] ?? 0,
+				'enrolled_courses'  => $count_status->{LP_COURSE_PURCHASED} + $count_status->{LP_COURSE_ENROLLED} + $count_status->{LP_COURSE_FINISHED},
+				'active_courses'    => $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS},
+				'completed_courses' => $count_status->{LP_COURSE_FINISHED} ?? 0,
 				'total_courses'     => count_user_posts( $user_id, LP_COURSE_CPT ),
 				'total_users'       => learn_press_count_instructor_users( $user_id ),
 			);
@@ -145,10 +150,10 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$num_pages    = $query->get_pages();
 			$current_page = $query->get_paged();
 
-			$content = $layout === 'grid' ? 'profile/tabs/courses/course-grid' : 'profile/tabs/courses/course-list';
+			$template = $layout === 'grid' ? 'profile/tabs/courses/course-grid' : 'profile/tabs/courses/course-list';
 
 			$response->data   = learn_press_get_template_content(
-				$content,
+				$template,
 				array(
 					'user'         => $user,
 					'course_ids'   => $course_ids,
