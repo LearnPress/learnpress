@@ -205,7 +205,6 @@ gulp.task(
 		'copyReleases',
 		'updateReadme',
 		'zipReleases',
-		'cleanReleaseFolder',
 		( done ) => {
 			done();
 		}
@@ -213,5 +212,9 @@ gulp.task(
 );
 
 gulp.task( 'release', gulp.series( 'build', 'noticeReleases', ( done ) => {
+	done();
+} ) );
+
+gulp.task( 'release1', gulp.series( 'build', 'cleanReleaseFolder', 'noticeReleases', ( done ) => {
 	done();
 } ) );
