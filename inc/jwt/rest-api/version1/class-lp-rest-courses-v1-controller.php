@@ -596,7 +596,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'start_time'      => $course_data->get_start_time() ? lp_jwt_prepare_date_response( $course_data->get_start_time()->toSql( false ) ) : null,
 			'end_time'        => $course_data->get_end_time() ? lp_jwt_prepare_date_response( $course_data->get_end_time()->toSql( false ) ) : null,
 			'expiration_time' => $course_data->get_expiration_time() ? lp_jwt_prepare_date_response( $course_data->get_expiration_time()->toSql( false ) ) : '',
-			'result'          => LP_User_Items_Result_DB::instance()->get_result( $course_data->get_user_item_id() ),
+			'result'          => $course_data->calculate_course_results(),
 		);
 	}
 

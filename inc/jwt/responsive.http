@@ -50,7 +50,6 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## If have token will show course_data for this user: course_data: graduation, status....
 GET http://learnpress4.local/wp-json/learnpress/v1/courses/196
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyNTI4MTg0MCwibmJmIjoxNjI1MjgxODQwLCJleHAiOjE2MjU4ODY2NDAsImRhdGEiOnsidXNlciI6eyJpZCI6IjIifX19.7QC81ori9AatTPpJszo1xkq0lzeKOh8eO8qcIll9bk8
 
 
 ## Enroll course.
@@ -232,3 +231,12 @@ Content-Type: application/json
 ###
 GET https://test.thimpress.com/wp-json/wp/v2/posts?v=qweqwedsfdsfds
 Content-Type: application/json
+
+###
+GET http://learnpress4.local/wp-json/learnpress/v1/sections/sections-by-course-id/205
+Content-Type: application/json
+
+###
+GET http://learnpress4.local/wp-json/learnpress/v1/section-items/items/8
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0MDkyMTQ5OCwibmJmIjoxNjQwOTIxNDk4LCJleHAiOjE2NDE1MjYyOTgsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.nv7SgzB0JDQLSipszofbamoXyQHPPhx8IuO7-ISAGVU

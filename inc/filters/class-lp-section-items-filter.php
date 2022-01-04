@@ -12,29 +12,21 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Section_Filter' ) ) {
+if ( class_exists( 'LP_Section_Items_Filter' ) ) {
 	return;
 }
 
-class LP_Section_Filter extends LP_Filter {
+class LP_Section_Items_Filter extends LP_Filter {
 	/**
 	 * @var int
 	 */
-	public $author_id_course = 0;
-	/**
-	 * @var int
-	 */
-	public $section_course_id = 0;
+	public $search_title = '';
 	/**
 	 * @var int[]
 	 */
-	public $section_ids = [];
+	public $item_ids = [];
 	/**
 	 * @var int[]
 	 */
-	public $section_not_ids = [];
-	/**
-	 * @var string
-	 */
-	public $search_section = '';
+	public $item_not_ids = [];
 }
