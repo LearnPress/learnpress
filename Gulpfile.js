@@ -187,6 +187,11 @@ gulp.task( 'makepot', function() {
 		.pipe( gulp.dest( './languages/learnpress.pot' ) );
 } );
 
+// Clean folder to releases.
+gulp.task( 'cleanReleaseFolder', () => {
+	return del( './releases/learnpress/' );
+} );
+
 gulp.task(
 	'build',
 	gulp.series(
@@ -200,6 +205,7 @@ gulp.task(
 		'copyReleases',
 		'updateReadme',
 		'zipReleases',
+		'cleanReleaseFolder',
 		( done ) => {
 			done();
 		}
