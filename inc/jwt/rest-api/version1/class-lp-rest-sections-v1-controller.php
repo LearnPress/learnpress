@@ -53,7 +53,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 		$filters->section_ids       = $request['include'];
 		$filters->section_not_ids   = $request['exclude'];
 
-		$query_results = LP_Sessions_DB::getInstance()->get_sections_by_course_id( $filters );
+		$query_results = LP_Section_DB::getInstance()->get_sections_by_course_id( $filters );
 
 		if ( is_wp_error( $query_results ) ) {
 			return $query_results;

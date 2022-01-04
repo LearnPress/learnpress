@@ -77,7 +77,11 @@ class LP_Jwt_Section_Items_V1_Controller extends LP_REST_Jwt_Controller {
 		$filters->item_ids     = $request['include'];
 		$filters->item_not_ids = $request['exclude'];
 
-		$query_results = LP_Sessions_DB::getInstance()->get_section_items_by_section_id( $filters );
+		$query_results = LP_Section_DB::getInstance()->get_section_items_by_section_id( $filters );
+
+		if ( is_wp_error( $query_results ) ) {
+			return $query_results;
+		}
 
 		$results = $query_results['results'];
 
