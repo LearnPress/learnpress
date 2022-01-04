@@ -511,22 +511,24 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					)
 				);
 
-				$enrolled_ids = array();
-				if ( ! empty( $query_enrolled['items'] ) ) {
-					foreach ( $query_enrolled['items'] as $enrolled_item ) {
-						$course_data = $user->get_course_data( $enrolled_item->get_id() );
+				if ( empty( $query_enrolled['items'] ) ) {
+					continue;
+				}
 
-						if ( $course_data ) {
-							$enrolled_ids[] = array(
-								'id'         => $enrolled_item->get_id() ?? '',
-								'graduation' => ! empty( $course_data->get_graduation() ) ? $course_data->get_graduation() : '',
-								'status'     => ! empty( $course_data->get_status() ) ? $course_data->get_status() : '',
-								'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
-								'end_time'   => lp_jwt_prepare_date_response( $course_data->get_end_time() ? $course_data->get_end_time()->toSql( false ) : '' ),
-								'expiration' => lp_jwt_prepare_date_response( $course_data->get_expiration_time() ? $course_data->get_expiration_time()->toSql( false ) : '' ),
-								'results'    => array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $course_data->get_user_item_id(), 4, false ) ),
-							);
-						}
+				$enrolled_ids = array();
+				foreach ( $query_enrolled['items'] as $enrolled_item ) {
+					$course_data = $user->get_course_data( $enrolled_item );
+
+					if ( $course_data ) {
+						$enrolled_ids[] = array(
+							'id'         => $enrolled_item ?? '',
+							'graduation' => ! empty( $course_data->get_graduation() ) ? $course_data->get_graduation() : '',
+							'status'     => ! empty( $course_data->get_status() ) ? $course_data->get_status() : '',
+							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
+							'end_time'   => lp_jwt_prepare_date_response( $course_data->get_end_time() ? $course_data->get_end_time()->toSql( false ) : '' ),
+							'expiration' => lp_jwt_prepare_date_response( $course_data->get_expiration_time() ? $course_data->get_expiration_time()->toSql( false ) : '' ),
+							'results'    => array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $course_data->get_user_item_id(), 4, false ) ),
+						);
 					}
 				}
 
