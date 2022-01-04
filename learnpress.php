@@ -230,6 +230,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// LP Cache
 			require_once 'inc/cache/class-lp-cache.php';
+			require_once 'inc/cache/class-lp-courses-cache.php';
 			require_once 'inc/cache/class-lp-course-cache.php';
 			require_once 'inc/cache/class-lp-quiz-cache.php';
 

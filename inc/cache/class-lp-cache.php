@@ -10,7 +10,6 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Cache {
-	protected static $instance;
 	/**
 	 * @var string Key group parent
 	 */
@@ -27,19 +26,6 @@ class LP_Cache {
 	 * @var float|int default expire
 	 */
 	protected $expire = DAY_IN_SECONDS;
-
-	/**
-	 * Get instance
-	 *
-	 * @return LP_Cache
-	 */
-	public static function instance(): LP_Cache {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
 
 	protected function __construct() {
 		$this->key_group = $this->key_group_parent . $this->key_group_child;

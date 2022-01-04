@@ -140,6 +140,17 @@ class LP_Install_Sample_Data {
 			if ( $price ) {
 				update_post_meta( $course_id, '_lp_price', $price );
 			}
+
+			/**
+			 * Save info course in background.
+			 */
+			$bg = LP_Background_Single_Course::instance();
+			$bg->data(
+				array(
+					'handle_name' => 'save_post',
+					'course_id'   => $course_id,
+				)
+			)->dispatch();
 			?>
 
 			<div class="lp-install-sample__response success">

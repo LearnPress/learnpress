@@ -16,9 +16,9 @@ class LP_Course_Cache extends LP_Cache {
 	/**
 	 * Get instance
 	 *
-	 * @return LP_Cache
+	 * @return self
 	 */
-	public static function instance(): LP_Cache {
+	public static function instance(): self {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}

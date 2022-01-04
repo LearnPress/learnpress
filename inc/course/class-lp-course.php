@@ -495,22 +495,33 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param LP_Course_Filter $filter
 		 * @param int $total_rows
 		 *
-		 * @return array|null
+		 * @return array|null|string|int
 		 * @author tungnx
 		 * @version 1.0.0
 		 * @sicne 4.1.4.2
 		 */
 		public static function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
 			try {
-				/*$key_cache     = md5( json_encode( $filter ) );
-				$courses_cache = LP_Cache::instance()->get_cache( $key_cache );
+				$key_cache            = md5( json_encode( $filter ) );
+				$key_cache_total_rows = md5( json_encode( $filter ) . 'total_rows' );
+				$courses_cache        = LP_Courses_Cache::instance()->get_cache( $key_cache );
 
 				if ( false !== $courses_cache ) {
+					$total_rows = LP_Courses_Cache::instance()->get_cache( $key_cache_total_rows );
 					return $courses_cache;
-				}*/
+				}
 
 				$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
-				//LP_Cache::instance()->set_cache( $key_cache, $courses );
+
+				LP_Courses_Cache::instance()->set_cache( $key_cache, $courses );
+				LP_Courses_Cache::instance()->set_cache( $key_cache_total_rows, $total_rows );
+
+				/**
+				 * Save key cache to array to clear
+				 * @see LP_Background_Single_Course::save_post()
+				 */
+				LP_Courses_Cache::instance()->save_cache_keys( $key_cache );
+				LP_Courses_Cache::instance()->save_cache_keys( $key_cache_total_rows );
 			} catch ( Throwable $e ) {
 				$courses = null;
 				error_log( __FUNCTION__ . ': ' . $e->getMessage() );
