@@ -527,7 +527,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
 							'end_time'   => lp_jwt_prepare_date_response( $course_data->get_end_time() ? $course_data->get_end_time()->toSql( false ) : '' ),
 							'expiration' => lp_jwt_prepare_date_response( $course_data->get_expiration_time() ? $course_data->get_expiration_time()->toSql( false ) : '' ),
-							'results'    => array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $course_data->get_user_item_id(), 4, false ) ),
+							'results'    => $course_data->calculate_course_results(),
 						);
 					}
 				}
@@ -578,8 +578,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	public function get_quiz_tab_contents( $request ) {
 		$output = array();
 
-		$profile = learn_press_get_profile( $request['id'] );
-		$filters = array(
+		$user_profile = learn_press_get_user( $request['id'] );
+		$filters      = array(
 			'all'         => '',
 			'finished'    => 'completed',
 			'passed'      => 'passed',
@@ -587,15 +587,14 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			'in-progress' => 'in-progress',
 		);
 
-		if ( method_exists( $profile, 'query_quizzes' ) ) {
-			foreach ( $filters as $key => $filter ) {
-				$query = $profile->query_quizzes(
-					array(
-						'status' => $filter,
-						'limit'  => $request['per_page'] ?? '100',
-						'paged'  => $request['paged'] ?? 1,
-					)
-				);
+		if ( method_exists( $user_profile, 'get_user_quizzes' ) ) {
+			foreach ( $filters as $key => $quiz_filter ) {
+				$filter             = new LP_User_Items_Filter();
+				$filter->user_id    = $request['id'];
+				$filter->limit      = 100;
+				$filter->status     = $quiz_filter === 'complete' ? 'complete' : '';
+				$filter->graduation = $quiz_filter !== 'complete' ? $quiz_filter : '';
+				$query              = $user_profile->get_user_quizzes( $filter );
 
 				$ids = array();
 				if ( ! empty( $query['items'] ) ) {
@@ -606,8 +605,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 							'graduation' => $item->get_graduation() ?? '',
 							'start_time' => $item->get_start_time() ? lp_jwt_prepare_date_response( $item->get_start_time()->toSql( false ) ) : '',
 							'end_time'   => $item->get_end_time() ? lp_jwt_prepare_date_response( $item->get_end_time()->toSql( false ) ) : '',
-							'data'       => $filter !== 'in-progress' ? LP_User_Items_Result_DB::instance()->get_result( $item->get_user_item_id() ) : array(),
-							'attempt'    => $filter !== 'in-progress' ? array_map( 'json_decode', LP_User_Items_Result_DB::instance()->get_results( $item->get_user_item_id(), 4, false ) ) : array(),
+							'data'       => $filter !== 'in-progress' ? $item->calculate_quiz_result() : array(),
+							'attempt'    => $filter !== 'in-progress' ? $item->get_attempts() : array(),
 						);
 					}
 				}
@@ -954,7 +953,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				$content = array(
 					'overview' => $this->get_overview_tab_contents( $user ),
 					'courses'  => $this->get_course_tab_contents( $request ),
-					'quiz'     => $this->get_quiz_tab_contents( $request ),
+					'quizzes'  => $this->get_quiz_tab_contents( $request ),
 					'orders'   => $this->get_order_content_tab( $request ),
 				);
 
