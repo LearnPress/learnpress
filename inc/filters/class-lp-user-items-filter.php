@@ -64,6 +64,10 @@ if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 		 * @var int[]
 		 */
 		public $user_item_ids = [];
+		/**
+		 * @var string
+		 */
+		public $field_count = 'user_item_id';
 
 		public function __construct() {
 

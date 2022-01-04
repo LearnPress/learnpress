@@ -3569,15 +3569,53 @@ function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
  *
  * @param int $instructor_id . Author of course
  *
- * @return float|int
+	SELECT COUNT(DISTINCT (user_id)) AS total
+	FROM wp_learnpress_user_items
+	WHERE 1 = 1
+	AND item_type = 'lp_course'
+	AND item_id IN (
+		SELECT ID
+		FROM wp_posts
+		WHERE post_author = 1
+		AND post_type = 'lp_course'
+		AND post_status = 'publish'
+	);
+ *
+ * @return int
  * @since 4.0.0
+ * @editor tungnx
+ * @version 1.0.1
  */
-function learn_press_count_instructor_users( int $instructor_id = 0 ) {
-	global $wpdb;
+function learn_press_count_instructor_users( int $instructor_id = 0 ): int {
+	try {
+		$filter_course                      = new LP_Course_Filter();
+		$filter_course->fields              = array( 'ID' );
+		$filter_course->post_author         = $instructor_id;
+		$filter_course->post_status         = 'publish';
+		$filter_course->return_string_query = true;
+		$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
+
+		$filter              = new LP_User_Items_Filter();
+		$filter->fields      = array( 'DISTINCT (ui.user_id)' );
+		$filter->field_count = 'DISTINCT (ui.user_id)';
+		$filter->where       = array();
+		$filter->where[]     = "AND item_id IN ({$query_courses_str})";
+		$filter->query_count = true;
+
+		return LP_User_Item_Course::get_user_courses( $filter );
+		//return LP_User_Items_DB::getInstance()->get_user_courses( $filter );
+	} catch ( Throwable $e ) {
+		error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+
+		return 0;
+	}
 
 	/*$curd        = new LP_User_CURD();
 	$own_courses = $curd->query_own_courses( $instructor_id );
 	$course_ids  = $own_courses->get_items();*/
+
+	/*
+	global $wpdb;
 	$filter              = new LP_Course_Filter();
 	$filter->post_author = $instructor_id;
 	$filter->limit       = -1;
@@ -3607,7 +3645,7 @@ function learn_press_count_instructor_users( int $instructor_id = 0 ) {
 		}
 	}
 
-	return 0;
+	return 0;*/
 }
 
 /**

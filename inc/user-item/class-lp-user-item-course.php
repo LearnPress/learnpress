@@ -1685,9 +1685,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param LP_User_Items_Filter $filter
 	 * @param int $total_rows return total row query
 	 *
-	 * @return array|null
+	 * @return array|null|int|string
 	 */
-	public static function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows ) {
+	public static function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
 		try {
 			/*$key_cache     = md5( json_encode( $filter ) );
 			$courses_cache = LP_Cache::instance()->get_cache( $key_cache );

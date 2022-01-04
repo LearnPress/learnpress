@@ -731,19 +731,11 @@ class LP_User_Items_DB extends LP_Database {
 	 * @author tungnx
 	 * @version 1.0.0
 	 * @since 4.1.4.2
-	 * @return null|array
+	 * @return null|array|string|int
 	 * @throws Exception
 	 */
 	public function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
-		// Fields select
-		$FIELDS = '*';
-		if ( ! empty( $filter->fields ) ) {
-			foreach ( $filter->fields as $k => $field ) {
-				$filter->fields[ $k ] = 'ui.' . $field;
-			}
-
-			$FIELDS = implode( ',', $filter->fields );
-		}
+		$result = null;
 
 		// Where
 		$WHERE  = 'WHERE 1=1 ';
@@ -768,48 +760,66 @@ class LP_User_Items_DB extends LP_Database {
 		}
 
 		// Order by
-		$ORDER_BY = 'ORDER BY ';
+		$ORDER_BY = '';
 		if ( $filter->order_by ) {
-			$ORDER_BY .= 'ui.' . $filter->order_by . ' ' . $filter->order;
-		} else {
-			$ORDER_BY .= 'ui.user_item_id DESC ';
+			$ORDER_BY .= 'ORDER BY ui.' . $filter->order_by . ' ' . $filter->order;
 		}
 
 		// Limit
-		$offset = $filter->limit * ( $filter->page - 1 );
-		$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+		$LIMIT = '';
+		if ( ! $filter->return_string_query ) {
+			$filter->limit = absint( $filter->limit );
+			if ( $filter->limit > $filter->max_limit ) {
+				$filter->limit = $filter->max_limit;
+			}
+			$offset = $filter->limit * ( $filter->page - 1 );
+			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+		}
 
-		$FIELDS     = apply_filters( 'lp/user/courses/query/fields', $FIELDS, $filter );
-		$INNER_JOIN = apply_filters( 'lp/user/courses/query/inner_join', $INNER_JOIN, $filter );
-		$WHERE      = apply_filters( 'lp/user/courses/query/where', $WHERE, $filter );
+		// Fields select
+		$FIELDS = '*';
+		if ( ! empty( $filter->fields ) ) {
+			$FIELDS = implode( ',', $filter->fields );
+		}
+		$FIELDS = apply_filters( 'lp/user/courses/query/fields', $FIELDS, $filter );
 
-		// Query
-		$query = "SELECT $FIELDS FROM $this->tb_lp_user_items AS ui
+		$INNER_JOIN .= implode( ' ', $filter->join );
+		$INNER_JOIN  = apply_filters( 'lp/user/courses/query/inner_join', $INNER_JOIN, $filter );
+
+		$WHERE .= implode( ' ', $filter->where );
+		$WHERE  = apply_filters( 'lp/user/courses/query/where', $WHERE, $filter );
+
+		if ( ! $filter->query_count ) {
+			// Query
+			$query = "SELECT $FIELDS FROM $this->tb_lp_user_items AS ui
 			$INNER_JOIN
 			$WHERE
 			$ORDER_BY
 			$LIMIT
-		";
-
-		$result = $this->wpdb->get_results( $query );
-
-		if ( $result ) {
-			// Query total rows
-			$query_total = "SELECT COUNT(user_item_id) FROM $this->tb_lp_user_items AS ui
-			$INNER_JOIN
-			$WHERE
 			";
 
-			$total_rows = $this->wpdb->get_var( $query_total );
+			if ( $filter->return_string_query ) {
+				return $query;
+			}
+
+			$result = $this->wpdb->get_results( $query );
+		}
+
+		// Query total rows
+		$query_total = "SELECT COUNT($filter->field_count) FROM $this->tb_lp_user_items AS ui
+		$INNER_JOIN
+		$WHERE
+		";
+
+		$total_rows = (int) $this->wpdb->get_var( $query_total );
+
+		if ( $filter->query_count ) {
+			return $total_rows;
 		}
 
 		$this->check_execute_has_error();
 
 		return $result;
-	}
-
-	public function get_total_users_learn_course( LP_User_Items_Filter $filter ) {
-
 	}
 }
 

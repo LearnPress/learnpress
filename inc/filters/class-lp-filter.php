@@ -54,6 +54,14 @@ class LP_Filter {
 	 */
 	public $query_count = false;
 	/**
+	 * @var string Ex: ID, for query: COUNT(ID)
+	 */
+	public $field_count = '';
+	/**
+	 * @var bool set true to return string query
+	 */
+	public $return_string_query = false;
+	/**
 	 * @var string
 	 */
 	public $query_type = 'get_results';
