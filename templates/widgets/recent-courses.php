@@ -7,13 +7,18 @@
  * @author  ThimPress
  * @category Widgets
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
 
+if ( ! isset( $instance ) ) {
+	return;
+}
+
 if ( ! isset( $courses ) ) {
 	esc_html_e( 'No courses', 'learnpress' );
+
 	return;
 }
 
@@ -53,19 +58,26 @@ global $post;
 					<!-- course content -->
 					<?php if ( ! empty( $instance['desc_length'] ) && absint( $instance['desc_length'] ) > 0 ) : ?>
 						<div class="lp-widget-course__description">
-							<?php echo wp_kses_post( $course->get_content( 'raw', absint( $instance['desc_length'] ), '...' ) ); ?></div>
+							<?php echo wp_kses_post( $course->get_content( 'raw', absint( $instance['desc_length'] ), '...' ) ); ?>
+						</div>
 					<?php endif; ?>
 
 					<div class="lp-widget-course__meta">
 						<!-- price -->
 						<?php if ( ! empty( $instance['show_price'] ) ) : ?>
-							<div class="lp-widget-course__price"><?php echo wp_kses_post( $course->get_price_html() ); ?></div>
+							<div class="course-price">
+								<div class="lp-widget-course__price">
+									<?php echo wp_kses_post( $course->get_course_price_html() ); ?>
+								</div>
+							</div>
 						<?php endif; ?>
 
 						<!-- instructor -->
 						<?php if ( ! empty( $instance['show_teacher'] ) ) : ?>
 							<div class="lp-widget-course__instructor">
-								<span class="lp-widget-course__instructor__avatar"><?php echo $course->get_instructor()->get_profile_picture(); ?></span>
+								<span class="lp-widget-course__instructor__avatar">
+									<?php echo $course->get_instructor()->get_profile_picture(); ?>
+								</span>
 								<?php echo $course->get_instructor_html(); ?>
 							</div>
 						<?php endif; ?>
@@ -79,7 +91,8 @@ global $post;
 
 	<div class="lp-widget-recent-courses__footer">
 		<?php if ( ! empty( $instance['bottom_link_text'] ) && learn_press_get_page_link( 'courses' ) ) : ?>
-			<a class="lp-widget-recent-courses__footer__link" href="<?php echo esc_url( learn_press_get_page_link( 'courses' ) ); ?>" rel="nofllow">
+			<a class="lp-widget-recent-courses__footer__link"
+			   href="<?php echo esc_url( learn_press_get_page_link( 'courses' ) ); ?>" rel="nofllow">
 				<?php echo wp_kses_post( $instance['bottom_link_text'] ); ?>
 			</a>
 		<?php endif; ?>

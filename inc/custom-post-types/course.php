@@ -627,23 +627,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 
 				case 'price':
-					$price   = $course->get_price();
-					$is_paid = ! $course->is_free();
-
-					$origin_price = '';
-					if ( $course->get_origin_price() && $course->has_sale_price() ) {
-						$origin_price = sprintf( '<span class="origin-price">%s</span>', $course->get_origin_price_html() );
-					}
-
-					if ( $is_paid ) {
-						echo sprintf( '<a href="%s" class="price">%s%s</a>', add_query_arg( 'filter_price', $price ), $origin_price, learn_press_format_price( $course->get_price(), true ) );
-					} else {
-						echo sprintf( '<a href="%s" class="price">%s%s</a>', add_query_arg( 'filter_price', 0 ), $origin_price, esc_html__( 'Free', 'learnpress' ) );
-
-						if ( ! $course->is_required_enroll() ) {
-							printf( '<p class="description">(%s)</p>', esc_html__( 'No requirement enroll', 'learnpress' ) );
-						}
-					}
+					echo $course->get_course_price_html();
 					break;
 				case 'students':
 					$count = $course->get_total_user_enrolled_or_purchased();
@@ -672,6 +656,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				[
 					'handle_name' => 'save_post',
 					'course_id'   => $post_id,
+					'data'        => $_POST ?? array(),
 				]
 			)->dispatch();
 		}

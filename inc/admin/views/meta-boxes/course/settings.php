@@ -30,7 +30,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'target'   => 'price_course_data',
 					'icon'     => 'dashicons-cart',
 					'priority' => 20,
-					'content'  => $this->price( $post_id ),
+					'content'  => $this->lp_price( $post_id ),
 				),
 				'extra'      => array(
 					'label'    => esc_html__( 'Extra Information', 'learnpress' ),
@@ -184,7 +184,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		);
 	}
 
-	public function price( $thepostid ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4.2 - replace to lp_price function
+	 */
+	/*public function price( $thepostid ) {
 		$post = get_post( $thepostid );
 
 		$thepostid = ! empty( $thepostid ) ? $thepostid : absint( $post->ID );
@@ -209,6 +213,81 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					esc_html__( 'Regular price', 'learnpress' ),
 					sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() ),
 					$price,
+					array(
+						'type_input'        => 'number',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '0.01',
+						),
+						'style'             => 'width: 70px;',
+						'class'             => 'lp_meta_box_regular_price',
+					)
+				),
+				'_lp_sale_price'         => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Sale price', 'learnpress' ),
+					'<a href="#" class="lp_sale_price_schedule">' . esc_html__( 'Schedule', 'learnpress' ) . '</a>',
+					$sale_price,
+					array(
+						'type_input'        => 'number',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '0.01',
+						),
+						'style'             => 'width: 70px;',
+						'class'             => 'lp_meta_box_sale_price',
+					)
+				),
+				'_lp_sale_start'         => new LP_Meta_Box_Date_Field(
+					esc_html__( 'Sale start dates', 'learnpress' ),
+					'',
+					'',
+					array(
+						'wrapper_class' => 'lp_sale_start_dates_fields',
+						'placeholder'   => _x( 'From&hellip;', 'placeholder', 'learnpress' ),
+					)
+				),
+				'_lp_sale_end'           => new LP_Meta_Box_Date_Field(
+					esc_html__( 'Sale end dates', 'learnpress' ),
+					'',
+					'',
+					array(
+						'wrapper_class' => 'lp_sale_end_dates_fields',
+						'placeholder'   => _x( 'To&hellip;', 'placeholder', 'learnpress' ),
+						'cancel'        => true,
+					)
+				),
+				'_lp_no_required_enroll' => new LP_Meta_Box_Checkbox_Field(
+					esc_html__( 'No requirement enroll', 'learnpress' ),
+					esc_html__( 'Students can see the content of all course items and do the quiz without login.', 'learnpress' ),
+					'no'
+				),
+			)
+		);
+	}*/
+
+	/**
+	 * Setting course price
+	 *
+	 * @param $post_id
+	 *
+	 * @author tungnx
+	 * @since 4.1.4.2
+	 * @version 1.0.0
+	 * @return array
+	 */
+	public function lp_price( $post_id ): array {
+		$key_exists    = LP_Database::getInstance()->check_key_postmeta_exists( $post_id, '_lp_regular_price' );
+		$price         = get_post_meta( $post_id, '_lp_price', true );
+		$regular_price = $key_exists ? get_post_meta( $post_id, '_lp_regular_price', true ) : $price;
+		$sale_price    = get_post_meta( $post_id, '_lp_sale_price', true );
+
+		return apply_filters(
+			'lp/course/meta-box/fields/price',
+			array(
+				'_lp_regular_price'      => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Regular price', 'learnpress' ),
+					sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() ),
+					$regular_price,
 					array(
 						'type_input'        => 'number',
 						'custom_attributes' => array(

@@ -541,62 +541,37 @@ function learn_press_count_orders( $args = array() ) {
  * Format price with currency and other settings.
  *
  * @param float $price
- * @param array $args
+ * @param string $currency
  *
- * @return int|string
+ * @return string
  */
-function learn_press_format_price( $price, $args = array() ) {
-	if ( is_bool( $args ) || is_string( $args ) ) {
-		$with_currency = $args;
-	} else {
-		$with_currency = false;
-	}
+function learn_press_format_price( $price = 0, $currency = '' ): string {
 	if ( ! is_numeric( $price ) ) {
 		$price = 0;
 	}
-	$settings = LP()->settings;
-	$before   = $after = '';
-	$args     = wp_parse_args(
-		$args,
-		array(
-			'with_currency'       => $with_currency,
-			'decimals_separator'  => false,
-			'number_of_decimals'  => false,
-			'thousands_separator' => false,
-		)
-	);
 
-	$with_currency       = $args['with_currency'];
-	$thousands_separator = $args['thousands_separator'] === false ? $settings->get( 'thousands_separator', ',' ) : $args['thousands_separator'];
-	$number_of_decimals  = $args['number_of_decimals'] === false ? $settings->get( 'number_of_decimals', 2 ) : $args['number_of_decimals'];
-	$decimals_separator  = $args['decimals_separator'] === false ? $settings->get( 'decimals_separator', '.' ) : $args['decimals_separator'];
+	$before = $after = '';
 
-	if ( $with_currency ) {
-		if ( gettype( $with_currency ) != 'string' ) {
-			$currency = learn_press_get_currency_symbol();
-		} else {
-			$currency = $with_currency;
-		}
+	$currency            = is_string( $currency ) && '' !== $currency ? $currency : learn_press_get_currency_symbol();
+	$thousands_separator = LP_Settings::get_option( 'thousands_separator', ',' );
+	$number_of_decimals  = LP_Settings::get_option( 'number_of_decimals', 2 );
+	$decimals_separator  = LP_Settings::get_option( 'decimals_separator', '.' );
 
-		switch ( $settings->get( 'currency_pos' ) ) {
-			default:
-				$before = $currency;
-				break;
-			case 'left_with_space':
-				$before = $currency . ' ';
-				break;
-			case 'right':
-				$after = $currency;
-				break;
-			case 'right_with_space':
-				$after = ' ' . $currency;
-		}
+	switch ( LP_Settings::get_option( 'currency_pos' ) ) {
+		default:
+			$before = $currency;
+			break;
+		case 'left_with_space':
+			$before = $currency . ' ';
+			break;
+		case 'right':
+			$after = $currency;
+			break;
+		case 'right_with_space':
+			$after = ' ' . $currency;
 	}
 
-	$price =
-		$before . number_format( $price, $number_of_decimals, $decimals_separator, $thousands_separator ) . $after;
-
-	return $price;
+	return $before . number_format( $price, $number_of_decimals, $decimals_separator, $thousands_separator ) . $after;
 }
 
 /**
@@ -832,15 +807,19 @@ add_action( 'init', 'learn_press_cancel_order_process' );
  *
  */
 
-function learn_press_get_total_price_order_complete(){
+function learn_press_get_total_price_order_complete() {
 	global $wpdb;
 
-	$query = $wpdb->prepare("SELECT SUM(meta_value) as order_total From `{$wpdb->prefix}postmeta` as mt
-	INNER JOIN `{$wpdb->prefix}posts` as p ON p.id = mt.post_id
-	WHERE p.post_type = %s AND mt.meta_key = %s
-	", LP_ORDER_CPT , '_order_total');
+	$query = $wpdb->prepare(
+		"SELECT SUM(meta_value) as order_total From `{$wpdb->prefix}postmeta` as mt
+		INNER JOIN `{$wpdb->prefix}posts` as p ON p.id = mt.post_id
+		WHERE p.post_type = %s AND mt.meta_key = %s
+		",
+		LP_ORDER_CPT,
+		'_order_total'
+	);
 
-	$total = $wpdb->get_results($query)[0]->order_total;
+	$total = $wpdb->get_results( $query )[0]->order_total;
 
 	return learn_press_format_price( $total, true );
 

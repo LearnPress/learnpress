@@ -45,22 +45,22 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @var array
 		 */
 		protected $_data = array(
-			'status'               => '',
-			'require_enrollment'   => '',
-			'price'                => '',
-			'sale_price'           => '',
-			'sale_start'           => '',
-			'sale_end'             => '',
-			'duration'             => 0,
-			'max_students'         => 0,
-			'students'             => 0,
-			'retake_count'         => 0,
-			'featured'             => '',
-			//'block_lesson_content' => '',
-			'course_result'        => '',
-			'passing_conditional'  => '',
-			'external_link'        => '',
-			'payment'              => '',
+			'status'              => '',
+			'require_enrollment'  => '',
+			'price'               => '',
+			'regular_price'       => '',
+			'sale_price'          => '',
+			'sale_start'          => '',
+			'sale_end'            => '',
+			'duration'            => 0,
+			'max_students'        => 0,
+			'students'            => 0,
+			'retake_count'        => 0,
+			'featured'            => '',
+			'course_result'       => '',
+			'passing_conditional' => '',
+			'external_link'       => '',
+			'payment'             => '',
 		);
 
 		protected $_loaded = false;
@@ -138,11 +138,19 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function load_data() {
 			$id          = $this->get_id();
 			$post_object = get_post( $id );
+
+			// Regular price
+			$regular_price = get_post_meta( $id, '_lp_price', true ); // For LP version < 1.4.1.2
+			if ( metadata_exists( 'post', $this->get_id(), '_lp_regular_price' ) ) {
+				$regular_price = get_post_meta( $id, '_lp_regular_price', true );
+			}
+
 			$this->_set_data(
 				array(
 					'status'                         => $post_object->post_status,
 					'no_required_enroll'             => get_post_meta( $id, '_lp_no_required_enroll', true ),
 					'price'                          => get_post_meta( $id, '_lp_price', true ),
+					'regular_price'                  => $regular_price,
 					'sale_price'                     => get_post_meta( $id, '_lp_sale_price', true ),
 					'sale_start'                     => get_post_meta( $id, '_lp_sale_start', true ),
 					'sale_end'                       => get_post_meta( $id, '_lp_sale_end', true ),
@@ -152,7 +160,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'fake_students'                  => get_post_meta( $id, '_lp_students', true ),
 					'retake_count'                   => get_post_meta( $id, '_lp_retake_count', true ),
 					'featured'                       => get_post_meta( $id, '_lp_featured', true ),
-					//'block_lesson_content'           => get_post_meta( $id, '_lp_block_lesson_content', true ),
 					'course_result'                  => get_post_meta( $id, '_lp_course_result', true ),
 					'passing_condition'              => get_post_meta( $id, '_lp_passing_condition', true ),
 					'final_quiz'                     => get_post_meta( $id, '_lp_final_quiz', true ),
@@ -710,34 +717,25 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return bool|mixed
 		 * @deprecated
+		 * @editor tungnx
+		 * @modify 4.1.4.2 comment
 		 */
-		public function get_course_info( $user_id = null ) {
+		/*public function get_course_info( $user_id = null ) {
 			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
 			$user = learn_press_get_user( $user_id );
 
 			return $user ? $user->get_course_info( $this->get_id() ) : false;
-		}
+		}*/
 
 		/**
-		 * Check if a course is FREE or need to pay or enroll
+		 * Check if a course is Free
 		 *
 		 * @return bool
 		 */
-		public function is_free() {
-			return apply_filters( 'learn-press/course-is-free', $this->get_price() == 0, $this->get_id() );
-		}
-
-		/**
-		 * Get the origin price of course
-		 *
-		 * @return mixed
-		 */
-		public function get_origin_price() {
-			$price = $this->get_data( 'price' );
-
-			return $price;
+		public function is_free(): bool {
+			return apply_filters( 'learn-press/course/is-free', $this->get_price() == 0, $this->get_id() );
 		}
 
 		/**
@@ -747,73 +745,91 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_sale_price() {
-			return $this->has_sale_price() ? floatval( $this->get_data( 'sale_price' ) ) : false;
+			return floatval( $this->get_data( 'sale_price', 0 ) );
 		}
 
 		/**
-		 * Check if course has 'sale price'
+		 * Check course has 'sale price'
 		 *
 		 * @return mixed
 		 */
 		public function has_sale_price() {
-			$has_sale_price = metadata_exists( 'post', $this->get_id(), '_lp_sale_price' );
-			$sale_price     = $this->get_data( 'sale_price' );
+			$has_sale_price = false;
+			$regular_price  = $this->get_regular_price();
+			$sale_price     = $this->get_sale_price();
+			$start_date     = $this->get_data( 'sale_start', '' );
+			$end_date       = $this->get_data( 'sale_end', '' );
 
-			if ( $has_sale_price ) {
-				$has_sale_price = is_numeric( $sale_price );
+			if ( $regular_price > $sale_price && $sale_price > 0 ) {
+				$has_sale_price = true;
 			}
 
-			if ( $has_sale_price ) {
-				$has_sale_price = ( $sale_price = floatval( $sale_price ) ) >= 0;
+			// Check in days sale
+			if ( $has_sale_price && '' !== $start_date && '' !== $end_date ) {
+				$now   = time();
+				$end   = strtotime( $end_date );
+				$start = strtotime( $start_date );
+
+				$has_sale_price = $now >= $start && $now <= $end;
 			}
 
-			if ( $has_sale_price ) {
-				$start_date = $this->get_data( 'sale_start' );
-				$end_date   = $this->get_data( 'sale_end' );
-				$now        = current_time( 'timestamp' );
-				$end        = strtotime( $end_date );
-				$start      = strtotime( $start_date );
-
-				$has_sale_price = ( ( $now >= $start || ! $start_date ) && ( $now <= $end || ! $end_date ) );
-			}
-
-			if ( $has_sale_price ) {
-				$has_sale_price = is_numeric( $this->get_data( 'price' ) ) && $sale_price < $this->get_data( 'price' );
-			}
-
-			return apply_filters( 'learn-press/course-has-sale-price', $has_sale_price, $this->get_id() );
+			return apply_filters( 'learn-press/course/has-sale-price', $has_sale_price, $this->get_id() );
 		}
 
 		/**
-		 * Get the price of course. If sale price is set and the dates is valid then
-		 * return the sale price.
+		 * Get the regular price of course.
+		 *
+		 * @return float
+		 */
+		public function get_regular_price(): float {
+			$price = floatval( $this->get_data( 'regular_price', 0 ) );
+
+			return apply_filters( 'learn-press/course/regular-price', $price, $this->get_id() );
+		}
+
+		/**
+		 * Get the regular price format of course.
+		 *
+		 * @since 4.1.4.2
+		 * @version 1.0.0
+		 * @author tungnx
+		 * @return mixed
+		 */
+		public function get_regular_price_html() {
+			$price = learn_press_format_price( $this->get_regular_price(), true );
+
+			return apply_filters( 'learn-press/course/regular-price', $price, $this->get_id() );
+		}
+
+		/**
+		 * Get the price of course.
 		 *
 		 * @return mixed
 		 */
 		public function get_price() {
-			$price = floatval( $this->get_data( 'price' ) );
-
-			if ( ! $price ) {
-				$price = 0;
+			if ( $this->has_sale_price() ) {
+				$price = $this->get_sale_price();
 			} else {
-				$sale_price = $this->get_sale_price();
-				if ( false !== $sale_price ) {
-					$price = $sale_price;
-				}
+				$price = $this->get_regular_price();
 			}
 
-			// @deprecated
-			$price = apply_filters( 'learn_press_course_price', $price, $this );
+			// For case set sale by days range
+			update_post_meta( $this->get_id(), '_lp_price', $price );
 
-			return apply_filters( 'learn-press/course-price', $price, $this->get_id() );
+			return apply_filters( 'learn-press/course/price', $price, $this->get_id() );
 		}
 
 		/**
-		 * Get the price of course with html
+		 * Get html course price
 		 *
-		 * @return mixed
+		 * @author tungnx
+		 * @since 4.1.4.2
+		 * @version 1.0.0
+		 * @return mixed|void
 		 */
-		public function get_price_html() {
+		public function get_course_price_html() {
+			$price_html = '';
+
 			if ( $this->is_free() ) {
 				$price_html = apply_filters(
 					'learn_press_course_price_html_free',
@@ -821,30 +837,61 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$this
 				);
 			} else {
-				$price      = $this->get_price();
-				$price      = learn_press_format_price( $price, true );
-				$price_html = apply_filters( 'learn_press_course_price_html', $price, $this );
+				if ( $this->has_sale_price() ) {
+					$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
+				}
+
+				$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
+				$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
 			}
 
 			return $price_html;
 		}
 
+		/**
+		 * Get the price of course with html
+		 *
+		 * @editor tungnx
+		 * @modify 4.1.4.2
+		 * @version 1.0.1
+		 * @return mixed
+		 * @deprecated 4.1.4.2
+		 */
+		public function get_price_html() {
+			$price_html = '';
+
+			if ( $this->is_free() ) {
+				$price_html = apply_filters(
+					'learn_press_course_price_html_free',
+					esc_html__( 'Free', 'learnpress' ),
+					$this
+				);
+			} else {
+				$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
+				$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
+			}
+
+			return $price_html;
+		}
+
+		/**
+		 * Get the origin price of course
+		 *
+		 * @return float
+		 * @deprecated 4.1.4.2
+		 */
+		public function get_origin_price() {
+			return $this->get_regular_price();
+		}
 
 		/**
 		 * Get the price of course with html
 		 *
 		 * @return mixed
+		 * @deprecated 4.1.4.2
 		 */
 		public function get_origin_price_html() {
-			$origin_price_html = '';
-			$origin_price      = $this->get_origin_price();
-
-			if ( $origin_price ) {
-				$origin_price      = learn_press_format_price( $origin_price, true );
-				$origin_price_html = apply_filters( 'learn_press_course_origin_price_html', $origin_price, $this );
-			}
-
-			return $origin_price_html;
+			return $this->get_regular_price_html();
 		}
 
 		/**
@@ -2068,7 +2115,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array
 		 * @since 4.0.0
 		 */
-		public function get_faqs() {
+		public function get_faqs(): array {
 			$faqs = array();
 			$data = get_post_meta( $this->get_id(), '_lp_faqs', true );
 
@@ -2119,7 +2166,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			);
 		}*/
 
-		public function is_featured() {
+		/**
+		 * Get course is set featured
+		 *
+		 * @return bool
+		 */
+		public function is_featured(): bool {
 			return apply_filters(
 				'learn-press/course-is-featured',
 				get_post_meta( $this->get_id(), '_lp_featured', true ) === 'yes',

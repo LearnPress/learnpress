@@ -72,7 +72,7 @@ if ( ! isset( $order ) ) {
 
 						<td class="course-total">
 							<?php
-							$origin_price = $course->get_origin_price_html();
+							$origin_price = $course->get_regular_price_html();
 
 							if ( $course->has_sale_price() ) {
 								echo '<span class="course-origin-price">' . $origin_price . '</span>';

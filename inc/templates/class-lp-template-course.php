@@ -168,14 +168,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_pricing() {
-		$can_show = true;
-		$course   = learn_press_get_course();
-		$user     = learn_press_get_current_user();
+		$can_show   = true;
+		$course     = learn_press_get_course();
+		$user       = learn_press_get_current_user();
+		$price_html = '';
 
 		try {
 			if ( $user && $user->has_enrolled_course( get_the_ID() ) ) {
 				throw new Exception( 'User has enrolled course' );
 			}
+
+			$price_html = $course->get_course_price_html();
 		} catch ( Throwable $e ) {
 			$can_show = false;
 		}
@@ -186,7 +189,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		learn_press_get_template( 'single-course/price' );
+		learn_press_get_template( 'single-course/price', compact( 'course', 'user', 'price_html' ) );
 	}
 
 	/**
@@ -643,7 +646,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function courses_loop_item_price() {
-		learn_press_get_template( 'loop/course/price' );
+		$course = learn_press_get_course();
+		if ( ! $course ) {
+			return;
+		}
+
+		$price_html = $course->get_course_price_html();
+		learn_press_get_template( 'loop/course/price', compact( 'course', 'price_html' ) );
 	}
 
 	public function begin_courses_loop() {
