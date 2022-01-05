@@ -593,9 +593,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_footer_text(): string {
-			$text = LP_Helper::sanitize_params_submitted( $this->settings->get( 'emails_general.footer_text', 'LearnPress' ), 'html' );
+			$text = LP()->settings->get( 'emails_general.footer_text', 'LearnPress' );
 
-			return $this->format_string( $text );
+			return LP_Helper::sanitize_params_submitted( $text, 'html' );
 		}
 
 		/**
