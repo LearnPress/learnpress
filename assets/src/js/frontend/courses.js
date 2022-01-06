@@ -47,7 +47,6 @@ let isLoading = false;
 let firstLoad = 1;
 const lpArchiveRequestCourse = ( args ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
-	const userID = lpGlobalSettings.user_id || '';
 
 	if ( ! wpRestUrl ) {
 		return;
@@ -74,7 +73,7 @@ const lpArchiveRequestCourse = ( args ) => {
 		listCourse.innerHTML = skeletonClone;
 	}
 
-	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args, userID } );
+	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args } );
 
 	wp.apiFetch( {
 		path: 'lp/v1/courses/archive-course' + urlCourseArchive.search,
@@ -88,15 +87,15 @@ const lpArchiveRequestCourse = ( args ) => {
 
 		lpArchiveSearchCourse();
 
+		const paginationEle = document.querySelector( '.learn-press-pagination' );
+		if ( paginationEle ) {
+			paginationEle.remove();
+		}
+
 		if ( typeof pagination !== 'undefined' ) {
 			const paginationHTML = new DOMParser().parseFromString( pagination, 'text/html' );
 			const paginationNewNode = paginationHTML.querySelector( '.learn-press-pagination' );
 			//const paginationInnerHTML = paginationSelector && paginationSelector.innerHTML;
-			const paginationEle = document.querySelector( '.learn-press-pagination' );
-
-			if ( paginationEle ) {
-				paginationEle.remove();
-			}
 
 			if ( paginationNewNode ) {
 				listCourse.after( paginationNewNode );
@@ -132,6 +131,7 @@ const lpArchiveSearchCourse = () => {
 		const taxonomy = s.querySelector( '[name="taxonomy"]' ).value || '';
 		const termID = s.querySelector( '[name="term_id"]' ).value || '';
 		const btn = s.querySelector( '[type="submit"]' );
+		let timeOutSearch;
 
 		search.addEventListener( 'keyup', ( event ) => {
 			event.preventDefault();
@@ -139,18 +139,26 @@ const lpArchiveSearchCourse = () => {
 			const s = event.target.value;
 
 			if ( ! s || ( s && s.length > 2 ) ) {
-				btn.classList.add( 'loading' );
+				if ( undefined !== timeOutSearch ) {
+					clearTimeout( timeOutSearch );
+				}
 
-				lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
+				timeOutSearch = setTimeout( function() {
+					btn.classList.add( 'loading' );
 
-				const url = lpArchiveAddQueryArgs( action, {
-					post_type: postType,
-					taxonomy,
-					term_id: termID,
-					s,
-				} );
+					delete lpArchiveSkeleton.paged;
 
-				window.history.pushState( '', '', url );
+					lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
+
+					const url = lpArchiveAddQueryArgs( action, {
+						post_type: postType,
+						taxonomy,
+						term_id: termID,
+						s,
+					} );
+
+					window.history.pushState( '', '', url );
+				}, 800 );
 			}
 		} );
 
