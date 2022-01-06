@@ -471,7 +471,12 @@ class LP_Course_DB extends LP_Database {
 			$INNER_JOIN .= "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id ";
 
 			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
-			$WHERE          .= $this->wpdb->prepare( "AND r_term.term_taxonomy_id IN (" . $term_ids_format . ") ", $filter->term_ids );
+			$WHERE          .= $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ') ', $filter->term_ids );
+		}
+
+		if ( 'price' === $filter->order_by ) {
+			$INNER_JOIN .= "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id ";
+			$WHERE      .= $this->wpdb->prepare( 'AND meta_key = %s ', '_lp_price' );
 		}
 
 		// Title
@@ -487,7 +492,11 @@ class LP_Course_DB extends LP_Database {
 		// Order by
 		$ORDER_BY = '';
 		if ( $filter->order_by ) {
-			$ORDER_BY .= 'ORDER BY p.' . $filter->order_by . ' ' . $filter->order;
+			if ( 'price' === $filter->order_by ) {
+				$ORDER_BY .= 'ORDER BY CAST( pm.meta_value AS UNSIGNED ) ' . $filter->order . ' ';
+			} else {
+				$ORDER_BY .= 'ORDER BY p.' . $filter->order_by . ' ' . $filter->order . ' ';
+			}
 		}
 
 		// Limit
