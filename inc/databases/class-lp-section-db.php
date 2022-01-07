@@ -249,6 +249,26 @@ class LP_Section_DB extends LP_Database {
 			'pages'   => (int) ceil( $total / (int) $filter->limit ),
 		);
 	}
+
+	public function get_course_id_by_section( int $section_id ) : int {
+		static $output;
+
+		global $wpdb;
+
+		if ( empty( $section_id ) ) {
+			return false;
+		}
+
+		if ( ! isset( $output ) ) {
+			$output = $wpdb->get_var( $wpdb->prepare( "SELECT section_course_id FROM {$wpdb->learnpress_sections} WHERE section_id = %d ORDER BY section_id DESC LIMIT 1", $section_id ) );
+		}
+
+		if ( $output ) {
+			return absint( $output );
+		}
+
+		return false;
+	}
 }
 
 LP_Section_DB::getInstance();

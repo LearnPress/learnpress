@@ -31,7 +31,7 @@ class LP_Jwt_Section_Items_V1_Controller extends LP_REST_Jwt_Controller {
 			return new WP_Error( 'lp_section_not_section_id', __( 'Sorry, Invalid Section ID param.', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
-		$course_id = $this->get_course_id_by_section( $request['section_id'] );
+		$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $request['section_id'] );
 
 		if ( ! $course_id ) {
 			return new WP_Error( 'lp_section_not_course', __( 'Please assigned section to Course.', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
@@ -45,26 +45,6 @@ class LP_Jwt_Section_Items_V1_Controller extends LP_REST_Jwt_Controller {
 		}
 
 		return true;
-	}
-
-	public function get_course_id_by_section( int $section_id ) : int {
-		static $output;
-
-		global $wpdb;
-
-		if ( empty( $section_id ) ) {
-			return false;
-		}
-
-		if ( ! isset( $output ) ) {
-			$output = $wpdb->get_var( $wpdb->prepare( "SELECT section_course_id FROM {$wpdb->learnpress_sections} WHERE section_id = %d ORDER BY section_id DESC LIMIT 1", $section_id ) );
-		}
-
-		if ( $output ) {
-			return absint( $output );
-		}
-
-		return false;
 	}
 
 	public function get_section_items( $request ) {
@@ -113,7 +93,7 @@ class LP_Jwt_Section_Items_V1_Controller extends LP_REST_Jwt_Controller {
 	public function get_sections_data( $item_data, $context, $request ) {
 		$fields = $this->get_fields_for_response( $request );
 
-		$course_id = $this->get_course_id_by_section( $request['section_id'] );
+		$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $request['section_id'] );
 
 		$item_id = absint( $item_data['ID'] );
 

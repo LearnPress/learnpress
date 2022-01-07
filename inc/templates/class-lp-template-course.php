@@ -69,7 +69,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$can_retake_times = $user->can_retry_course( $course->get_id() );
 
-		//Course has no items
+		// Course has no items
 		if ( empty( $course->get_item_ids() ) ) {
 			return;
 		}
@@ -92,7 +92,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @editor tungnx
 	 * @modify 4.1.3
 	 */
-	/*public function loop_item_user_progress() {
+	/*
+	public function loop_item_user_progress() {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
@@ -128,31 +129,24 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @param LP_Quiz|LP_Lesson $item
 	 */
 	public function item_meta_duration( $item ) {
-		$duration = $item->get_duration();
+		$duration = learn_press_get_post_translated_duration( $item->get_id(), false );
 
-		if ( is_a( $duration, 'LP_Duration' ) && $duration->get() ) {
-			$format = array(
-				'day'    => _x( '%s day', 'duration', 'learnpress' ),
-				'hour'   => _x( '%s hour', 'duration', 'learnpress' ),
-				'minute' => _x( '%s min', 'duration', 'learnpress' ),
-				'second' => _x( '%s sec', 'duration', 'learnpress' ),
-			);
-
-			echo '<span class="item-meta duration">' . $duration->to_timer( $format, true ) . '</span>';
-		} elseif ( is_string( $duration ) && strlen( $duration ) ) {
+		if ( $duration ) {
 			echo '<span class="item-meta duration">' . $duration . '</span>';
 		}
 	}
 
 	/**
-	 * @param LP_Quiz $item
+	 * @var LP_Course_Item $item
 	 */
 	public function quiz_meta_final( $item ) {
-		$course = LP_Global::course();
-		if ( ! $course->is_final_quiz( $item->get_id() ) ) {
+		$course = $item->get_course();
+
+		if ( ! $course || ! $course->is_final_quiz( $item->get_id() ) ) {
 			return;
 		}
-		echo '<span class="item-meta final-quiz">' . __( 'Final', 'learnpress' ) . '</span>';
+
+		echo '<span class="item-meta final-quiz">' . esc_html__( 'Final', 'learnpress' ) . '</span>';
 	}
 
 	public function course_button() {
@@ -233,10 +227,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		learn_press_get_template(
 			$args_load_tmpl['template_name'],
-			[
+			array(
 				'user'   => $user,
 				'course' => $course,
-			],
+			),
 			$args_load_tmpl['template_path'],
 			$args_load_tmpl['default_path']
 		);
@@ -279,10 +273,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$args = [
+		$args = array(
 			'user'   => $user,
 			'course' => $course,
-		];
+		);
 
 		learn_press_get_template( 'single-course/buttons/enroll.php', $args );
 	}
@@ -387,6 +381,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	/**
 	 * Show template "continue" button con single course
+	 *
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.3.1
@@ -430,10 +425,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$args = [
+		$args = array(
 			'user'   => $user,
 			'course' => $course,
-		];
+		);
 
 		learn_press_get_template( 'single-course/buttons/continue.php', $args );
 	}
@@ -448,7 +443,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @editor tungnx
 	 * @modify 4.1.4.1 - comment - not use - replace on function can_show_finish_course_btn on LP_User
 	 */
-	/*public function can_show_finish_course_btn( $course, $user ): array {
+	/*
+	public function can_show_finish_course_btn( $course, $user ): array {
 		$return = [
 			'flag'    => false,
 			'message' => '',
@@ -623,7 +619,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_curriculum() {
-		learn_press_get_template( 'single-course/tabs/curriculum' );
+		if ( ! learn_press_override_templates() || ( learn_press_override_templates() && has_filter( 'lp/template-course/course_curriculum/skeleton' ) ) ) {
+			echo '<div class="learnpress-course-curriculum">';
+			echo lp_skeleton_animation_html( 3 );
+			echo '</div>';
+		} else {
+			learn_press_get_template( 'single-course/tabs/curriculum' );
+		}
 	}
 
 	/**
@@ -711,7 +713,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @reason comment - not use
 	 * @since 4.1.2
 	 */
-	/*public function remaining_time() {
+	/*
+	public function remaining_time() {
 
 		if ( ! $course = LP_Global::course() ) {
 			return;

@@ -2,6 +2,7 @@ import SingleCourse from './single-course/index';
 import { addQueryArgs } from '@wordpress/url';
 import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
 import lpModalOverlay from '../utils/lp-modal-overlay';
+import courseCurriculumSkeleton from './single-curriculum/skeleton';
 
 export default SingleCourse;
 
@@ -304,47 +305,6 @@ const courseProgress = () => {
 	};
 };
 
-// Rest API load content in Tab Curriculum - Nhamdv.
-const courseCurriculum = () => {
-	const elements = document.querySelectorAll( '.course-tab-panel-curriculum' );
-
-	if ( ! elements.length ) {
-		return;
-	}
-
-	if ( 'IntersectionObserver' in window ) {
-		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
-			entries.forEach( ( entry ) => {
-				if ( entry.isIntersecting ) {
-					const ele = entry.target;
-
-					setTimeout( function() {
-						getResponse( ele );
-					}, 1000 );
-
-					eleObserver.unobserve( ele );
-				}
-			} );
-		} );
-
-		[ ...elements ].map( ( ele ) => eleObserver.observe( ele ) );
-	}
-
-	const getResponse = async ( ele ) => {
-		const response = await wp.apiFetch( {
-			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-				courseId: lpGlobalSettings.post_id || '',
-				userId: lpGlobalSettings.user_id || '',
-			} ),
-			method: 'GET',
-		} );
-
-		const { data } = response;
-
-		ele.innerHTML = data;
-	};
-};
-
 const accordionExtraTab = () => {
 	const elements = document.querySelectorAll( '.course-extra-box' );
 
@@ -415,5 +375,5 @@ $( window ).on( 'load', () => {
 	courseProgress();
 	courseContinue();
 	lpModalOverlayCompleteItem.init();
-	// courseCurriculum();
+	courseCurriculumSkeleton();
 } );

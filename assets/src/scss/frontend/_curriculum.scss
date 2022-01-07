@@ -863,6 +863,76 @@ ul.learn-press-nav-tabs {
 					background: #d9e0f1;
 				}
 			}
+
+			.section-item__loadmore {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				button {
+					display: inline-flex;
+					margin-right: auto;
+					margin-left: auto;
+					padding: 10px 20px;
+					border: none;
+					border-radius: 4px;
+					outline: none;
+					color: #222;
+					background: #f7f7f7;
+					box-shadow: none;
+					font-weight: 500;
+					justify-content: center;
+					align-items: center;
+				}
+
+				&.loading {
+
+					button {
+
+						&::before {
+							display: inline-block;
+							margin-right: 5px;
+							font-family: "Font Awesome 5 Free";
+							font-weight: 900;
+							content: "\f110";
+
+							@include animation(lp-rotating 1s linear infinite);
+						}
+					}
+				}
+			}
+		}
+
+		.curriculum-more {
+
+			&__button {
+				display: flex;
+				width: 100%;
+				margin-top: 20px;
+				margin-bottom: 20px;
+				padding-top: 10px;
+				padding-bottom: 10px;
+				border: none;
+				outline: none;
+				color: #fff;
+				background: #333;
+				box-shadow: none;
+				justify-content: center;
+				align-items: center;
+
+				&.loading {
+
+					&::before {
+						display: inline-block;
+						margin-right: 5px;
+						font-family: "Font Awesome 5 Free";
+						font-weight: 900;
+						content: "\f110";
+
+						@include animation(lp-rotating 1s linear infinite);
+					}
+				}
+			}
 		}
 	}
 }
@@ -1140,7 +1210,9 @@ body {
 }
 
 .course-progress {
+
 	.lp-progress-bar {
+
 		&:hover {
 			cursor: pointer;
 		}
@@ -1311,14 +1383,18 @@ body {
 }
 
 .viewing-course-item {
+
 	#learn-press-course-curriculum {
+
 		.section-header {
+
 			.section-desc {
 				display: none;
 			}
 		}
 	}
 }
+
 /***********/
 .course-meta {
 	display: flex;

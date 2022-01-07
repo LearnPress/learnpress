@@ -188,6 +188,101 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			);
 		}
 
+		public function get_class_v2( $course_id, $item_id, $can_view_item, $more = array() ) {
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course ) {
+				return $more;
+			}
+
+			$defaults = array_merge(
+				array(
+					'course-item',
+					'course-item-' . $this->get_item_type(),
+					'course-item-' . $item_id,
+				),
+				(array) $more
+			);
+
+			$user = learn_press_get_user( get_current_user_id() );
+
+			if ( ! $user ) {
+				return $defaults;
+			}
+
+			$is_free            = $course->is_free();
+			$enrolled           = $user->has_enrolled_or_finished( $course_id );
+			$no_required_enroll = $course->is_no_required_enroll();
+
+			$post_format = $this->get_format();
+			if ( 'standard' !== $post_format && $post_format ) {
+				$defaults[] = 'course-item-type-' . $post_format;
+			}
+
+			if ( $no_required_enroll ) {
+				$defaults[] = 'item-free';
+			} elseif ( ! $enrolled ) {
+				$defaults['item-locked'] = 'item-locked';
+
+				if ( $this->is_preview() ) {
+					$defaults['item-preview'] = 'item-preview';
+					$defaults['has-status']   = 'has-status';
+					unset( $defaults['item-locked'] );
+				}
+			} elseif ( ! $can_view_item->flag ) {
+				$defaults[] = 'item-locked';
+			} else {
+				$item_status = $user->get_item_status( $item_id, $course_id );
+				$item_grade  = $user->get_item_grade( $item_id, $course_id );
+
+				if ( $item_status ) {
+					$defaults[] = 'has-status';
+					$defaults[] = 'status-' . $item_status;
+				}
+
+				switch ( $item_status ) {
+					case 'started':
+						break;
+					case 'completed':
+						$defaults[] = $item_grade;
+						break;
+					default:
+						if ( $this->is_preview() ) {
+							$defaults['item-preview'] = 'item-preview';
+							$defaults['has-status']   = 'has-status';
+						}
+
+						$item_class = apply_filters(
+							'learn-press/course-item-status-class',
+							$item_status,
+							$item_grade,
+							$this->get_item_type(),
+							$item_id,
+							$course_id
+						);
+
+						if ( $item_class ) {
+							$defaults[] = $item_class;
+						}
+				}
+			}
+
+			$classes = apply_filters(
+				'learn-press/course-item-class',
+				$defaults,
+				$this->get_item_type(),
+				$item_id,
+				$course_id
+			);
+
+			// Filter unwanted values.
+			$classes = is_array( $classes ) ? $classes : explode( ' ', $classes );
+			$classes = array_filter( $classes );
+			$classes = array_unique( $classes );
+
+			return $classes;
+		}
+
 		public function get_status_title() {
 			$course_id      = get_the_ID();
 			$status_message = '';
@@ -291,7 +386,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @since 3.x.x
 		 */
 		public static function get_item( $item_id = 0, $course_id = 0, $item_type = '' ) {
-			/*$lp_course_cache = LP_Course_Cache::instance();
+			/*
+			$lp_course_cache = LP_Course_Cache::instance();
 			$key_cache       = sprintf( '%d/item_id/%d', $course_id, $item_id );
 			$item            = $lp_course_cache->get_cache( $key_cache );*/
 
@@ -342,7 +438,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 						}
 					}
 
-					//$lp_course_cache->set_cache( $key_cache, $item );
+					// $lp_course_cache->set_cache( $key_cache, $item );
 				}
 			}
 
@@ -537,7 +633,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		public function is_blocked( $course_id = 0, $user_id = 0 ) {
 			_deprecated_function( __FUNCTION__, '4.1.3' );
 
-			/*if ( ! $user_id ) {
+			/*
+			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
 
@@ -612,7 +709,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @editor tungnx
 		 * @modify 4.1.3
 		 */
-		/*protected function _parse_item_block_status( $course_id, $user_id, $cache_key ) {
+		/*
+		protected function _parse_item_block_status( $course_id, $user_id, $cache_key ) {
 			$course = learn_press_get_course( $course_id );
 
 			if ( ! $course ) {
@@ -677,7 +775,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @editor tungnx
 		 * @modify 4.1.3
 		 */
-		/*protected function _item_is_blocked( $user, $course, $course_item_data ) {
+		/*
+		protected function _item_is_blocked( $user, $course, $course_item_data ) {
 			if ( in_array( 'administrator', $user->get_roles() ) ) {
 				$blocked = 'no';
 			} elseif ( $user->has_course_status( $course->get_id(), learn_press_course_enrolled_slugs() ) ) {

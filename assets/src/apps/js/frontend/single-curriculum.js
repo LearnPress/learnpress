@@ -2,6 +2,7 @@ const $ = jQuery;
 import SingleCurriculums from './single-curriculum/index';
 import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
 import scrollToItemCurrent from './single-curriculum/scrolltoitem';
+import courseCurriculumSkeleton from './single-curriculum/skeleton';
 
 export default SingleCurriculums;
 
@@ -15,6 +16,7 @@ export const init = () => {
 document.addEventListener( 'DOMContentLoaded', function( event ) {
 	LP.Hook.doAction( 'course-ready' );
 	lpModalOverlayCompleteItem.init();
+	courseCurriculumSkeleton();
 	scrollToItemCurrent.init();
 	//init();
 } );
