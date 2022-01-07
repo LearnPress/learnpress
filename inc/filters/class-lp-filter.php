@@ -22,7 +22,11 @@ class LP_Filter {
 	 */
 	public $max_limit = 100;
 	/**
-	 * @var string
+	 * @var string For switch case sort
+	 */
+	public $sort_by = '';
+	/**
+	 * @var string For direct query
 	 */
 	public $order_by = '';
 	/**

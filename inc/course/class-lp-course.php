@@ -511,7 +511,26 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					return $courses_cache;
 				}
 
-				$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
+				$sort_by_custom = apply_filters( 'lp/courses/query/sort_by', 'custom' );
+
+				switch ( $filter->sort_by ) {
+					case 'price':
+					case 'price_low':
+						if ( 'price_low' === $filter->sort_by ) {
+							$filter->order = 'ASC';
+						}
+						$courses = LP_Course_DB::getInstance()->get_courses_sort_by_price( $filter, $total_rows );
+						break;
+					case 'on_sale':
+						$courses = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter, $total_rows );
+						break;
+					case $sort_by_custom:
+						do_action( 'lp/courses/query/' . $filter->sort_by, $filter, $total_rows );
+						break;
+					default:
+						$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
+						break;
+				}
 
 				LP_Courses_Cache::instance()->set_cache( $key_cache, $courses );
 				LP_Courses_Cache::instance()->set_cache( $key_cache_total_rows, $total_rows );

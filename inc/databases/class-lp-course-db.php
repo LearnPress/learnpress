@@ -457,46 +457,54 @@ class LP_Course_DB extends LP_Database {
 		$result = null;
 
 		// Where
-		$WHERE  = 'WHERE 1=1 ';
-		$WHERE .= $this->wpdb->prepare( 'AND p.post_type = %s ', $filter->post_type );
+		$WHERE   = array( 'WHERE 1=1' );
+		$WHERE[] = $this->wpdb->prepare( 'AND p.post_type = %s', $filter->post_type );
 
 		// Status
 		if ( $filter->post_status ) {
-			$WHERE .= $this->wpdb->prepare( 'AND p.post_status = %s ', $filter->post_status );
+			$WHERE[] = $this->wpdb->prepare( 'AND p.post_status = %s', $filter->post_status );
 		}
 
 		// Inner join
-		$INNER_JOIN = '';
+		$INNER_JOIN = array();
+		// Term ids
 		if ( ! empty( $filter->term_ids ) ) {
-			$INNER_JOIN .= "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id ";
+			$INNER_JOIN[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
 
 			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
-			$WHERE          .= $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ') ', $filter->term_ids );
-		}
-
-		if ( 'price' === $filter->order_by ) {
-			$INNER_JOIN .= "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id ";
-			$WHERE      .= $this->wpdb->prepare( 'AND meta_key = %s ', '_lp_price' );
+			$WHERE[]         = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
 		}
 
 		// Title
 		if ( $filter->post_title ) {
-			$WHERE .= $this->wpdb->prepare( 'AND p.post_title LIKE %s ', '%' . $filter->post_title . '%' );
+			$WHERE[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $filter->post_title . '%' );
 		}
 
 		// Author
 		if ( $filter->post_author ) {
-			$WHERE .= $this->wpdb->prepare( 'AND p.post_author = %d ', $filter->post_author );
+			$WHERE[] = $this->wpdb->prepare( 'AND p.post_author = %d', $filter->post_author );
 		}
+
+		// Fields select
+		$FIELDS = '*';
+		if ( ! empty( $filter->fields ) ) {
+			$FIELDS = implode( ',', array_unique( $filter->fields ) );
+		}
+		$FIELDS = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
+
+		$INNER_JOIN = array_merge( $INNER_JOIN, $filter->join );
+		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );
+		$INNER_JOIN = implode( ' ', array_unique( $INNER_JOIN ) );
+
+		$WHERE = array_merge( $WHERE, $filter->where );
+		$WHERE = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
+		$WHERE = implode( ' ', array_unique( $WHERE ) );
 
 		// Order by
 		$ORDER_BY = '';
 		if ( $filter->order_by ) {
-			if ( 'price' === $filter->order_by ) {
-				$ORDER_BY .= 'ORDER BY CAST( pm.meta_value AS UNSIGNED ) ' . $filter->order . ' ';
-			} else {
-				$ORDER_BY .= 'ORDER BY p.' . $filter->order_by . ' ' . $filter->order . ' ';
-			}
+			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order . ' ';
+			$ORDER_BY  = apply_filters( 'lp/courses/query/order_by', $ORDER_BY, $filter );
 		}
 
 		// Limit
@@ -509,19 +517,6 @@ class LP_Course_DB extends LP_Database {
 			$offset = $filter->limit * ( $filter->page - 1 );
 			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
 		}
-
-		// Fields select
-		$FIELDS = '*';
-		if ( ! empty( $filter->fields ) ) {
-			$FIELDS = implode( ',', $filter->fields );
-		}
-		$FIELDS = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
-
-		$INNER_JOIN .= implode( ' ', $filter->join );
-		$INNER_JOIN  = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );
-
-		$WHERE .= implode( ' ', $filter->where );
-		$WHERE  = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
 
 		// Query
 		if ( ! $filter->query_count ) {
@@ -553,6 +548,38 @@ class LP_Course_DB extends LP_Database {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Get list courses sort by price
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.1.4.2
+	 * @throws Exception
+	 */
+	public function get_courses_sort_by_price( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+		$filter->join[]   = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where[]  = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_price' );
+		$filter->order_by = 'CAST( pm.meta_value AS UNSIGNED )';
+
+		return self::get_courses( $filter, $total_rows );
+	}
+
+	/**
+	 * Get list courses is on sale
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.1.4.2
+	 * @throws Exception
+	 */
+	public function get_courses_sort_by_sale( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_sale_price' );
+		$filter->where[] = $this->wpdb->prepare( 'AND CAST( pm.meta_value AS UNSIGNED ) > %d', 0 );
+
+		return self::get_courses( $filter, $total_rows );
 	}
 }
 

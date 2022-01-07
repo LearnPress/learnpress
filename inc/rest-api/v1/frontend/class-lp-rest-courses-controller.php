@@ -125,9 +125,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$term_ids         = explode( ',', $term_ids_str );
 				$filter->term_ids = $term_ids;
 			}
-			$filter->order_by = LP_Helper::sanitize_params_submitted( $request['orderby'] ?? '' );
-			$filter->order    = LP_Helper::sanitize_params_submitted( $request['order'] ?? '' );
-			$filter->limit    = LP_Settings::get_option( 'archive_course_limit', 10 );
+			$filter->sort_by = LP_Helper::sanitize_params_submitted( $request['orderby'] ?? '' );
+			$filter->order   = LP_Helper::sanitize_params_submitted( $request['order'] ?? '' );
+			$filter->limit   = LP_Settings::get_option( 'archive_course_limit', 10 );
 
 			$total_rows = 0;
 			$courses    = LP_Course::get_courses( $filter, $total_rows );
