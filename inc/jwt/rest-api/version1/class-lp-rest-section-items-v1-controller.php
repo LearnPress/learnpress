@@ -97,7 +97,11 @@ class LP_Jwt_Section_Items_V1_Controller extends LP_REST_Jwt_Controller {
 
 		$item_id = absint( $item_data['ID'] );
 
-		$course_item = \LP_Course_Item::get_item( $item_id, $course_id );
+		$course_item = \LP_Course_Item::get_item( $item_id );
+
+		if ( method_exists( $course_item, 'set_course' ) ) {
+			$course_item->set_course( absint( $course_id ) );
+		}
 
 		// Check if item is not exists or deactive add-on( Assignment, H5P, etc )
 		if ( ! $course_item instanceof LP_Course_Item ) {
