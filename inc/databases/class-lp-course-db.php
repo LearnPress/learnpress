@@ -216,7 +216,11 @@ class LP_Course_DB extends LP_Database {
 		return $wpdb->get_col( $query );
 	}
 
-	public function get_courses_on_sale( $order = 'ASC' ) {
+	/**
+	 * @editor tungnx
+	 * @modify 4.1.4.2 - comment
+	 */
+	/*public function get_courses_on_sale( $order = 'ASC' ) {
 		$args = array(
 			'post_type'      => LP_COURSE_CPT,
 			'orderby'        => 'meta_value_num',
@@ -246,7 +250,7 @@ class LP_Course_DB extends LP_Database {
 		}
 
 		return $output;
-	}
+	}*/
 
 	/**
 	 * Get list user ids enrolled by course
