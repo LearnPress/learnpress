@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_User_Items_DB
  *
  * @since 3.2.8.6
- * @version 1.0.2
+ * @version 1.0.3
  * @author tungnx
  */
 class LP_User_Items_DB extends LP_Database {
@@ -738,31 +738,47 @@ class LP_User_Items_DB extends LP_Database {
 		$result = null;
 
 		// Where
-		$WHERE  = 'WHERE 1=1 ';
-		$WHERE .= $this->wpdb->prepare( 'AND ui.item_type = %s ', LP_COURSE_CPT );
+		$WHERE   = array( 'WHERE 1=1' );
+		$WHERE[] = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
 
 		// Status
 		if ( $filter->status ) {
-			$WHERE .= $this->wpdb->prepare( 'AND ui.status = %s ', $filter->status );
+			$WHERE[] = $this->wpdb->prepare( 'AND ui.status = %s', $filter->status );
 		}
 
 		// Graduation
 		if ( $filter->graduation ) {
-			$WHERE .= $this->wpdb->prepare( 'AND ui.graduation = %s ', $filter->graduation );
+			$WHERE[] = $this->wpdb->prepare( 'AND ui.graduation = %s', $filter->graduation );
 		}
-
-		// Inner join
-		$INNER_JOIN = '';
 
 		// User
 		if ( $filter->user_id ) {
-			$WHERE .= $this->wpdb->prepare( 'AND ui.user_id = %d ', $filter->user_id );
+			$WHERE[] = $this->wpdb->prepare( 'AND ui.user_id = %d', $filter->user_id );
 		}
+
+		// Inner join
+		$INNER_JOIN = array();
+
+		// Fields select
+		$FIELDS = '*';
+		if ( ! empty( $filter->fields ) ) {
+			$FIELDS = implode( ',', $filter->fields );
+		}
+		$FIELDS = apply_filters( 'lp/user/courses/query/fields', $FIELDS, $filter );
+
+		$INNER_JOIN = array_merge( $INNER_JOIN, $filter->join );
+		$INNER_JOIN = apply_filters( 'lp/user/courses/query/inner_join', $INNER_JOIN, $filter );
+		$INNER_JOIN = implode( ' ', array_unique( $INNER_JOIN ) );
+
+		$WHERE = array_merge( $WHERE, $filter->where );
+		$WHERE = apply_filters( 'lp/user/courses/query/where', $WHERE, $filter );
+		$WHERE = implode( ' ', array_unique( $WHERE ) );
 
 		// Order by
 		$ORDER_BY = '';
 		if ( $filter->order_by ) {
-			$ORDER_BY .= 'ORDER BY ui.' . $filter->order_by . ' ' . $filter->order;
+			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order;
+			$ORDER_BY  = apply_filters( 'lp/user/courses/query/order_by', $ORDER_BY, $filter );
 		}
 
 		// Limit
@@ -775,19 +791,6 @@ class LP_User_Items_DB extends LP_Database {
 			$offset = $filter->limit * ( $filter->page - 1 );
 			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
 		}
-
-		// Fields select
-		$FIELDS = '*';
-		if ( ! empty( $filter->fields ) ) {
-			$FIELDS = implode( ',', $filter->fields );
-		}
-		$FIELDS = apply_filters( 'lp/user/courses/query/fields', $FIELDS, $filter );
-
-		$INNER_JOIN .= implode( ' ', $filter->join );
-		$INNER_JOIN  = apply_filters( 'lp/user/courses/query/inner_join', $INNER_JOIN, $filter );
-
-		$WHERE .= implode( ' ', $filter->where );
-		$WHERE  = apply_filters( 'lp/user/courses/query/where', $WHERE, $filter );
 
 		if ( ! $filter->query_count ) {
 			// Query
