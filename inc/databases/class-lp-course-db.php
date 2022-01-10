@@ -585,6 +585,22 @@ class LP_Course_DB extends LP_Database {
 
 		return self::get_courses( $filter, $total_rows );
 	}
+
+	/**
+	 * Get list courses is on feature
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.1.4.2
+	 * @throws Exception
+	 */
+	public function get_courses_sort_by_feature( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_featured' );
+		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_value = %s', 'yes' );
+
+		return self::get_courses( $filter, $total_rows );
+	}
 }
 
 LP_Course_DB::getInstance();

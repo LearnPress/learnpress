@@ -524,6 +524,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					case 'on_sale':
 						$courses = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter, $total_rows );
 						break;
+					case 'on_feature':
+						$courses = LP_Course_DB::getInstance()->get_courses_sort_by_feature( $filter, $total_rows );
+						break;
 					case $sort_by_custom:
 						do_action( 'lp/courses/query/' . $filter->sort_by, $filter, $total_rows );
 						break;
