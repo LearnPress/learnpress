@@ -75,7 +75,7 @@ class LP_Object_Cache {
 	}
 
 	public static function init() {
-		add_action( 'shutdown', array( __CLASS__, 'wp_cache_flush' ), 9999 );
+		// add_action( 'shutdown', array( __CLASS__, 'wp_cache_flush' ), 9999 );
 	}
 
 	public static function wp_cache_flush() {
@@ -297,7 +297,7 @@ class LP_Object_Cache {
 	public static function flush() {
 
 		if ( self::$_use_core ) {
-			return wp_cache_flush();
+			// return wp_cache_flush();
 		}
 
 		$self = self::instance();
