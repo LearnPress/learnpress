@@ -1369,10 +1369,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.0
 		 */
 		public function check_can_delete_item_old( LP_Course $course ): bool {
-			/*$user_current = learn_press_get_current_user();
-			if ( $user_current instanceof LP_User_Guest ) {
-				return false;
-			}*/
+			$can_delete = false;
 
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
 
@@ -1402,10 +1399,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			 * Will deleted lp_user_items old
 			 */
 			if ( $course->is_free() || empty( $allow_repurchase_type ) || ! $course->allow_repurchase() || $allow_repurchase_type != 'keep' ) {
-				return true;
+				$can_delete = true;
 			}
 
-			return false;
+			return apply_filters( 'learnpress/order/can_delete_old_item', $can_delete, $course );
 		}
 	}
 }
