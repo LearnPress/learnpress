@@ -30,29 +30,143 @@ export default function courseCurriculumSkeleton() {
 
 	const getResponse = async ( ele ) => {
 		const skeleton = ele.querySelector( '.lp-skeleton-animation' );
+		const itemID = ele.dataset.id;
+		const sectionID = ele.dataset.section;
 
 		try {
+			const page = 1;
 			const response = await apiFetch( {
 				path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
 					courseId: lpGlobalSettings.post_id || '',
-					page: 1,
+					page: page,
+					sectionID: sectionID || ''
 				} ),
 				method: 'GET',
 			} );
 
-			const { data, status, message } = response;
+			const { data, status, message, section_ids } = response;
 
 			if ( status  === 'error' ) {
 				throw new Error( message || "Error" );
 			}
 
-			data && ele.insertAdjacentHTML( 'beforeend', data );
+			let returnData = data;
+
+			if ( sectionID ) {
+				if ( section_ids && ! section_ids.includes( sectionID ) ) {
+					const response2 = await getResponsive( '', page + 1, sectionID );
+
+					if ( response2 ) {
+						const { data2, pages2, page2 } = response2;
+
+						await parseContentItems({ele, returnData, sectionID, itemID, data2, pages2, page2});
+					}
+				} else {
+					await parseContentItems({ele, returnData, sectionID, itemID});
+				}
+ 			} else {
+				returnData && ele.insertAdjacentHTML( 'beforeend', returnData );
+			 }
 		} catch ( error ) {
 			ele.insertAdjacentHTML( 'beforeend', `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/lazy-load/course-curriculum' }</div>` );
 		}
 
 		skeleton && skeleton.remove();
 	};
+
+	const parseContentItems = async ({ ele, returnData, sectionID, itemID, data2, pages2, page2 }) => {
+		var parser = new DOMParser();
+		var doc = parser.parseFromString(returnData, 'text/html');
+
+		if ( data2 ) {
+			const sections = doc.querySelector('.curriculum-sections' );
+
+			const loadMoreBtn = doc.querySelector( '.curriculum-more__button' );
+
+			if ( loadMoreBtn ) {
+				if ( pages2 <= page2 ) {
+					loadMoreBtn.remove();
+				} else {
+					loadMoreBtn.dataset.page = page2;
+				}
+			}
+
+			sections.insertAdjacentHTML( 'beforeend', data2 );
+		}
+
+		const section = doc.querySelector( `[data-section-id="${sectionID}"]` );
+
+		if ( section ) {
+			const items = section.querySelectorAll( '.course-item' );
+			const item_ids = [...items].map( ( item ) => item.dataset.id );
+			const sectionContent = section.querySelector( '.section-content' );
+			const itemLoadMore = section.querySelector('.section-item__loadmore');
+
+			if ( itemID && ! item_ids.includes( itemID ) ) {
+				const responseItem = await getResponsiveItem( '', 2, sectionID, itemID );
+
+				const { data3, pages3, paged3 } = responseItem;
+
+				if ( pages3 <= paged3 ) {
+					itemLoadMore.remove();
+				} else {
+					itemLoadMore.dataset.page = paged3;
+				}
+
+				if ( data3 && sectionContent ) {
+					sectionContent.insertAdjacentHTML( 'beforeend', data3 );
+				}
+			}
+		}
+
+		ele.insertAdjacentHTML( 'beforeend', doc.body.innerHTML );
+	}
+
+	const getResponsiveItem = async ( returnData, paged, sectionID, itemID ) => {
+		const response = await apiFetch( {
+			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum-items', {
+				sectionId: sectionID || '',
+				page: paged,
+			} ),
+			method: 'GET',
+		} );
+
+		const { data, pages, status, message, item_ids } = response;
+
+		if ( status === 'success' ) {
+			returnData += data;
+
+			if ( sectionID && item_ids && itemID && ! item_ids.includes( itemID ) ) {
+				return getResponsiveItem( returnData, paged + 1, sectionID, itemID );
+			}
+		}
+
+		return { data3: returnData, pages3: pages, paged3: paged, status3: status, message3: message };
+	}
+
+	const getResponsive = async ( returnData, page, sectionID ) => {
+		const response = await apiFetch( {
+			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
+				courseId: lpGlobalSettings.post_id || '',
+				page: page,
+				sectionID: sectionID || '',
+				loadMore: true,
+			} ),
+			method: 'GET',
+		} );
+
+		const { data, pages, status, message, section_ids } = response;
+
+		if ( status === 'success' ) {
+			returnData += data;
+
+			if ( sectionID && section_ids && ! section_ids.includes( sectionID ) ) {
+				return getResponsive( returnData, page + 1, sectionID );
+			}
+		}
+
+		return { data2: returnData, pages2: pages, page2: page, status2: status, message2: message };
+	}
 
 	Sekeleton();
 
@@ -70,27 +184,21 @@ export default function courseCurriculumSkeleton() {
 				sectionBtn.classList.add( 'loading' );
 
 				try {
-					const response = await apiFetch( {
-						path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum-items', {
-							sectionId: sectionId || '',
-							page: paged + 1,
-						} ),
-						method: 'GET',
-					} );
+					const response = await getResponsiveItem( '', paged + 1, sectionId, '' );
 
-					const { data, pages, status, message } = response;
+					const { data3, pages3, status3, message3 } = response;
 
-					if ( status === 'error' ) {
-						throw new Error( message || "Error" );
+					if ( status3 === 'error' ) {
+						throw new Error( message3 || "Error" );
 					}
 
-					if ( pages <= paged + 1 ) {
+					if ( pages3 <= paged + 1 ) {
 						sectionBtn.remove();
 					} else {
 						sectionBtn.dataset.page = paged + 1;
 					}
 
-					sectionContent.insertAdjacentHTML( 'beforeend', data );
+					sectionContent.insertAdjacentHTML( 'beforeend', data3 );
 				} catch( e ) {
 					sectionContent.insertAdjacentHTML( 'beforeend', `<div class="lp-ajax-message error" style="display:block">${ e.message || 'Error: Query lp/v1/lazy-load/course-curriculum' }</div>` );
 				}
@@ -112,28 +220,21 @@ export default function courseCurriculumSkeleton() {
 					moreSection.classList.add( 'loading' );
 
 					try{
-						const response = await apiFetch( {
-							path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-								courseId: lpGlobalSettings.post_id || '',
-								page: paged + 1,
-								loadMore: true,
-							} ),
-							method: 'GET',
-						} );
+						const response2 = await getResponsive( '', paged + 1, '' );
 
-						const { data, pages, status, message } = response;
+						const { data2, pages2, status2, message2 } = response2;
 
-						if ( status === 'error' ) {
-							throw new Error( message || "Error" );
+						if ( status2 === 'error' ) {
+							throw new Error( message2|| "Error" );
 						}
 
-						if ( pages <= paged + 1 ) {
+						if ( pages2 <= paged + 1 ) {
 							moreSection.remove();
 						} else {
 							moreSection.dataset.page = paged + 1;
 						}
 
-						sections.insertAdjacentHTML( 'beforeend', data );
+						sections.insertAdjacentHTML( 'beforeend', data2 );
 					} catch( e ) {
 						sections.insertAdjacentHTML( 'beforeend', `<div class="lp-ajax-message error" style="display:block">${ e.message || 'Error: Query lp/v1/lazy-load/course-curriculum' }</div>` );
 					}

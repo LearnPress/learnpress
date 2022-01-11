@@ -620,7 +620,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_curriculum() {
 		if ( ! learn_press_override_templates() || ( learn_press_override_templates() && has_filter( 'lp/template-course/course_curriculum/skeleton' ) ) ) {
-			echo '<div class="learnpress-course-curriculum">';
+			$course_item = LP_Global::course_item();
+
+			if ( $course_item ) { // Check if current item is viewable
+				$item_id    = $course_item->get_id();
+				$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( absint( $item_id ) );
+			}
+
+			echo '<div class="learnpress-course-curriculum" data-section="' . ( $section_id ?? '' ) . '" data-id="' . ( $item_id ?? '' ) . '">';
 			echo lp_skeleton_animation_html( 3 );
 			echo '</div>';
 		} else {

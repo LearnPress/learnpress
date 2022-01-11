@@ -269,6 +269,22 @@ class LP_Section_DB extends LP_Database {
 
 		return false;
 	}
+
+	public function get_section_id_by_item_id( $item_id ) {
+		global $wpdb;
+
+		if ( empty( $item_id ) ) {
+			return false;
+		}
+
+		$section_id = $wpdb->get_var( $wpdb->prepare( "SELECT section_id FROM {$wpdb->learnpress_section_items} WHERE item_id = %d ORDER BY section_id DESC LIMIT 1", $item_id ) );
+
+		if ( $section_id ) {
+			return absint( $section_id );
+		}
+
+		return false;
+	}
 }
 
 LP_Section_DB::getInstance();

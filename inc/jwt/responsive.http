@@ -41,9 +41,9 @@ Content-Type: application/json
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://learnpress4.local/wp-json/learnpress/v1/courses?orderby=price&order=desc
+GET http://learnpress4.local/wp-json/learnpress/v1/courses?learned=true&per_page=1&order=desc&course_filter=in-progress
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYzNTEzNjYxMCwibmJmIjoxNjM1MTM2NjEwLCJleHAiOjE2MzU3NDE0MTAsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19._eGVoYIw1YHxH9qB6IhIYiPUwJnMFi-lPtjBVASzTBc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0MTg3MTM3NSwibmJmIjoxNjQxODcxMzc1LCJleHAiOjE2NDI0NzYxNzUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.NvKdO6v4ylCjLNc06Q7S6T9GIdNL5i4YAyPC0p776lE
 
 
 ### Get content Course

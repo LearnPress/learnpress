@@ -149,13 +149,14 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function course_curriculum( $request ) {
 		$params = $request->get_params();
 
-		$course_id = isset( $params['courseId'] ) ? $params['courseId'] : false;
-		$per_page  = isset( $params['per_page'] ) ? $params['per_page'] : 2;
-		$page      = isset( $params['page'] ) ? $params['page'] : 1;
-		$order     = isset( $params['order'] ) ? $params['order'] : 'ASC';
-		$search    = isset( $params['search'] ) ? $params['search'] : '';
-		$include   = isset( $params['include'] ) ? $params['include'] : array();
-		$exclude   = isset( $params['exclude'] ) ? $params['exclude'] : array();
+		$course_id  = isset( $params['courseId'] ) ? absint( $params['courseId'] ) : 0;
+		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 2;
+		$page       = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
+		$order      = isset( $params['order'] ) ? $params['order'] : 'ASC';
+		$search     = isset( $params['search'] ) ? $params['search'] : '';
+		$include    = isset( $params['include'] ) ? $params['include'] : array();
+		$exclude    = isset( $params['exclude'] ) ? $params['exclude'] : array();
+		$section_id = isset( $params['sectionID'] ) ? $params['sectionID'] : false;
 
 		$response       = new LP_REST_Response();
 		$response->data = '';
@@ -201,6 +202,10 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 					)
 				);
 			}
+
+			if ( $section_id ) {
+				$response->section_ids = wp_list_pluck( $sections['results'], 'section_id' );
+			}
 		} catch ( \Throwable $th ) {
 			$response->message = $th->getMessage();
 		}
@@ -217,11 +222,11 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function course_curriculum_items( $request ) {
 		$params = $request->get_params();
 
-		$section_id = isset( $params['sectionId'] ) ? $params['sectionId'] : false;
-		$per_page   = isset( $params['per_page'] ) ? $params['per_page'] : 5;
-		$page       = isset( $params['page'] ) ? $params['page'] : 1;
+		$section_id = isset( $params['sectionId'] ) ? absint( $params['sectionId'] ) : 0;
+		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 5;
+		$page       = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
 		$order      = isset( $params['order'] ) ? $params['order'] : 'ASC';
-		$search     = isset( $params['search'] ) ? $params['search'] : '';
+		$search     = isset( $params['search'] ) ? wp_unslash( $params['search'] ) : '';
 		$include    = isset( $params['include'] ) ? $params['include'] : array();
 		$exclude    = isset( $params['exclude'] ) ? $params['exclude'] : array();
 
@@ -285,7 +290,8 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			$response->data = $content;
+			$response->data     = $content;
+			$response->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
 		} catch ( \Throwable $th ) {
 			$response->message = $th->getMessage();
 		}
