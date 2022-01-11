@@ -2,6 +2,7 @@
 // Rest API load content in Tab Curriculum - Nhamdv.
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
+import scrollToItemCurrent from './scrolltoitem';
 
 export default function courseCurriculumSkeleton() {
 	const Sekeleton = () => {
@@ -120,6 +121,8 @@ export default function courseCurriculumSkeleton() {
 		}
 
 		ele.insertAdjacentHTML( 'beforeend', doc.body.innerHTML );
+
+		scrollToItemCurrent.init();
 	}
 
 	const getResponsiveItem = async ( returnData, paged, sectionID, itemID ) => {
