@@ -22,9 +22,9 @@ class LP_Filter {
 	 */
 	public $max_limit = 100;
 	/**
-	 * @var string For switch case sort
+	 * @var array query ON
 	 */
-	public $sort_by = '';
+	public $sort_by = array();
 	/**
 	 * @var string For direct query
 	 */

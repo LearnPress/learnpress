@@ -491,6 +491,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 		/**
 		 * Get list course
+		 * Order By: price, title, rating, date ...
+		 * Order: ASC, DES
 		 *
 		 * @param LP_Course_Filter $filter
 		 * @param int $total_rows
@@ -511,29 +513,47 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					return $courses_cache;
 				}
 
-				$sort_by_custom = apply_filters( 'lp/courses/query/sort_by', 'custom' );
-
-				switch ( $filter->sort_by ) {
+				// Order by
+				switch ( $filter->order_by ) {
 					case 'price':
 					case 'price_low':
-						if ( 'price_low' === $filter->sort_by ) {
+						if ( 'price_low' === $filter->order_by ) {
 							$filter->order = 'ASC';
 						}
-						$courses = LP_Course_DB::getInstance()->get_courses_sort_by_price( $filter, $total_rows );
-						break;
-					case 'on_sale':
-						$courses = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter, $total_rows );
-						break;
-					case 'on_feature':
-						$courses = LP_Course_DB::getInstance()->get_courses_sort_by_feature( $filter, $total_rows );
-						break;
-					case $sort_by_custom:
-						do_action( 'lp/courses/query/' . $filter->sort_by, $filter, $total_rows );
+
+						$filter = LP_Course_DB::getInstance()->get_courses_sort_by_price( $filter );
 						break;
 					default:
-						$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
+						$filter = apply_filters( 'lp/courses/filter/order_by/' . $filter->order_by, $filter );
 						break;
 				}
+
+				// Sort by
+				$filter->sort_by = (array) $filter->sort_by;
+				foreach ( $filter->sort_by as $sort_by ) {
+					$filter_tmp                      = clone $filter;
+					$filter_tmp->fields              = array( 'ID' );
+					$filter_tmp->return_string_query = true;
+
+					switch ( $sort_by ) {
+						case 'on_sale':
+							$filter_tmp = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter_tmp );
+							break;
+						case 'on_feature':
+							$filter_tmp = LP_Course_DB::getInstance()->get_courses_sort_by_feature( $filter_tmp );
+							break;
+						default:
+							$filter_tmp = apply_filters( 'lp/courses/filter/sort_by' . $filter->sort_by, $filter_tmp );
+							break;
+					}
+
+					$query_courses_str = LP_Course_DB::getInstance()->get_courses( $filter_tmp );
+
+					$filter->where[] = "AND ID IN ({$query_courses_str})";
+				}
+
+				// Query get results
+				$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
 
 				LP_Courses_Cache::instance()->set_cache( $key_cache, $courses );
 				LP_Courses_Cache::instance()->set_cache( $key_cache_total_rows, $total_rows );

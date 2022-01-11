@@ -49,6 +49,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'list_courses' ),
 					'permission_callback' => '__return_true',
+					'args'                => [],
 				),
 			),
 			'(?P<key>[\w]+)'  => array(
@@ -125,9 +126,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$term_ids         = explode( ',', $term_ids_str );
 				$filter->term_ids = $term_ids;
 			}
-			$filter->sort_by = LP_Helper::sanitize_params_submitted( $request['orderby'] ?? '' );
-			$filter->order   = LP_Helper::sanitize_params_submitted( $request['order'] ?? '' );
-			$filter->limit   = LP_Settings::get_option( 'archive_course_limit', 10 );
+
+			$on_sale                               = absint( $request['on_sale'] ?? '0' );
+			1 === $on_sale ? $filter->sort_by[]    = 'on_sale' : '';
+			$on_feature                            = absint( $request['on_feature'] ?? '0' );
+			1 === $on_feature ? $filter->sort_by[] = 'on_feature' : '';
+
+			$filter->order_by = LP_Helper::sanitize_params_submitted( $request['order_by'] ?? 'post_date' );
+			$filter->order    = LP_Helper::sanitize_params_submitted( $request['order'] ?? 'DESC' );
+			$filter->limit    = LP_Settings::get_option( 'archive_course_limit', 10 );
 
 			$total_rows = 0;
 			$courses    = LP_Course::get_courses( $filter, $total_rows );

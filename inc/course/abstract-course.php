@@ -809,7 +809,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function get_price() {
 			if ( $this->has_sale_price() ) {
 				$price = $this->get_sale_price();
+				// Add key _lp_course_is_sale for query
+				update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
 			} else {
+				// Delete key _lp_course_is_sale
+				delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
 				$price = $this->get_regular_price();
 			}
 
@@ -867,7 +871,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$this
 				);
 			} else {
-				$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
+				$price_html .= learn_press_format_price( $this->get_price() );
 				$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
 			}
 
