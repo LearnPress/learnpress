@@ -506,7 +506,7 @@ class LP_Course_DB extends LP_Database {
 
 		// Order by
 		$ORDER_BY = '';
-		if ( $filter->order_by ) {
+		if ( ! $filter->return_string_query && $filter->order_by ) {
 			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order . ' ';
 			$ORDER_BY  = apply_filters( 'lp/courses/query/order_by', $ORDER_BY, $filter );
 		}

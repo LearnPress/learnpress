@@ -513,21 +513,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					return $courses_cache;
 				}
 
-				// Order by
-				switch ( $filter->order_by ) {
-					case 'price':
-					case 'price_low':
-						if ( 'price_low' === $filter->order_by ) {
-							$filter->order = 'ASC';
-						}
-
-						$filter = LP_Course_DB::getInstance()->get_courses_sort_by_price( $filter );
-						break;
-					default:
-						$filter = apply_filters( 'lp/courses/filter/order_by/' . $filter->order_by, $filter );
-						break;
-				}
-
 				// Sort by
 				$filter->sort_by = (array) $filter->sort_by;
 				foreach ( $filter->sort_by as $sort_by ) {
@@ -550,6 +535,21 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$query_courses_str = LP_Course_DB::getInstance()->get_courses( $filter_tmp );
 
 					$filter->where[] = "AND ID IN ({$query_courses_str})";
+				}
+
+				// Order by
+				switch ( $filter->order_by ) {
+					case 'price':
+					case 'price_low':
+						if ( 'price_low' === $filter->order_by ) {
+							$filter->order = 'ASC';
+						}
+
+						$filter = LP_Course_DB::getInstance()->get_courses_sort_by_price( $filter );
+						break;
+					default:
+						$filter = apply_filters( 'lp/courses/filter/order_by/' . $filter->order_by, $filter );
+						break;
 				}
 
 				// Query get results
