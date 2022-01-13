@@ -43,13 +43,13 @@ class LP_Assets extends LP_Abstract_Assets {
 					array()
 				),
 				'learnpress'         => new LP_Asset_Key(
-					self::url( 'css/learnpress' . $is_rtl . '.css' ),
+					self::url( 'css/learnpress' . $is_rtl . self::$_min_assets . '.css' ),
 					array( 'lp-font-awesome-5', 'lp-bundle' ),
 					array( LP_PAGE_COURSES, LP_PAGE_SINGLE_COURSE, LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ, LP_PAGE_QUESTION, LP_PAGE_CHECKOUT, LP_PAGE_BECOME_A_TEACHER ),
 					0
 				),
 				'learnpress-widgets' => new LP_Asset_Key(
-					self::url( 'css/widgets' . $is_rtl . '.css' ),
+					self::url( 'css/widgets' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
 					array(),
 					0

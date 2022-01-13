@@ -103,7 +103,7 @@ gulp.task( 'watch', gulp.series( 'clearCache', () => {
 // Min CSS frontend.
 gulp.task( 'mincss', () => {
 	return gulp
-		.src( [ 'assets/src/css/**/*.css', '!assets/src/css/vendor/*.css' ] )
+		.src( [ 'assets/css/**/*.css', '!assets/css/**/*.min.css' ] )
 		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( uglifycss() )
 		.pipe( lineec() )
@@ -204,7 +204,7 @@ gulp.task(
 		'clearJsFrontend',
 		'minJsAdmin',
 		'minJsFrontend',
-		// 'mincss',
+		'mincss',
 		'cleanReleases',
 		'copyReleases',
 		'updateReadme',

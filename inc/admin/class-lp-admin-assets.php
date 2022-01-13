@@ -282,6 +282,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles(): array {
+		$is_rtl = is_rtl() ? '-rtl' : '';
+
 		return apply_filters(
 			'learn-press/admin-default-styles',
 			array(
@@ -301,13 +303,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					$this->url( 'css/bundle.min.css' )
 				),
 				'learn-press-admin'     => new LP_Asset_Key(
-					$this->url( 'css/admin/admin.css' ),
+					$this->url( 'css/admin/admin' . $is_rtl . self::$_min_assets . '.css' ),
 					array( 'wp-color-picker', 'wp-components', 'select2', 'jquery-ui', 'jquery-ui-timepicker', 'font-awesome' ),
 					array(),
 					0
 				),
 				'learn-press-statistic' => new LP_Asset_Key(
-					LP_CSS_URL . 'admin/statistic.css',
+					LP_CSS_URL . 'admin/statistic' . $is_rtl . self::$_min_assets . '.css',
 					array(),
 					array( 'learners_page_learn-press-statistics' ),
 					0
