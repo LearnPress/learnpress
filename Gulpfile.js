@@ -17,6 +17,7 @@ const del = require( 'del' );
 const beep = require( 'beepbeep' );
 const readFile = require( 'read-file' );
 const wpPot = require( 'gulp-wp-pot' );
+const rtlcss = require( 'gulp-rtlcss' );
 
 let currentVer = null;
 
@@ -88,6 +89,9 @@ gulp.task( 'styles', () => {
 		.pipe(sass.sync().on('error', sass.logError))
 		// .pipe( sourcemaps.write( './' ) )
 		.pipe( lineec() )
+		.pipe( gulp.dest( 'assets/css' ) )
+		.pipe( rtlcss() )
+		.pipe( rename( { suffix: '-rtl' } ) )
 		.pipe( gulp.dest( 'assets/css' ) );
 } );
 
