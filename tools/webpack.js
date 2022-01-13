@@ -91,23 +91,6 @@ const options = {
 			},
 		},
 		{
-			src: [
-				'./assets/src/css/vendor/jquery.tipsy.css',
-			],
-			dest( code ) {
-				return minifyCssDest( `assets/css/bundle`, code );
-			},
-		},
-		{
-			src: [
-				'./assets/src/css/vendor/font-awesome.min.css',
-				'./assets/src/css/vendor/jquery.tipsy.css',
-			],
-			dest( code ) {
-				return minifyCssDest( `assets/css/admin.bundle`, code );
-			},
-		},
-		{
 			src: [ './assets/src/js/vendor/chart.min.js' ],
 			dest( code ) {
 				return minifyJsDest( `assets/js/vendor/chart`, code );

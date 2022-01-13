@@ -111,7 +111,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-api-fetch',
 						'jquery-ui-timepicker-addon',
 					),
-					array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_COURSE_CPT, 'learnpress_page_learn-press-settings' ),
+					array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_COURSE_CPT, LP_ORDER_CPT, 'learnpress_page_learn-press-settings' ),
 					0,
 					1
 				),
@@ -299,12 +299,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'jquery-ui-timepicker'  => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/jquery-ui-timepicker-addon.css' )
 				),
-				'learn-press-bundle'    => new LP_Asset_Key(
-					$this->url( 'css/bundle.min.css' )
+				'jquery-tipsy'          => new LP_Asset_Key(
+					$this->url( 'src/css/vendor/jquery.tipsy.css' )
 				),
 				'learn-press-admin'     => new LP_Asset_Key(
 					$this->url( 'css/admin/admin' . $is_rtl . self::$_min_assets . '.css' ),
-					array( 'wp-color-picker', 'wp-components', 'select2', 'jquery-ui', 'jquery-ui-timepicker', 'font-awesome' ),
+					array( 'wp-color-picker', 'wp-components', 'select2', 'jquery-ui', 'jquery-ui-timepicker', 'font-awesome', 'jquery-tipsy' ),
 					array(),
 					0
 				),
