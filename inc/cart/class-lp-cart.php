@@ -155,9 +155,9 @@ class LP_Cart {
 					if ( ! $course->is_in_stock() ) {
 						throw new Exception( __( 'Sorry! The number of enrolled students has reached limit', 'learnpress' ) );
 					}
-					break;
 
 					$item_data['data'] = $course;
+					break;
 				default:
 					$item_data = apply_filters( 'learnpress/cart/add-item/item_type_' . $item_type, $item_id, $item_data );
 					break;
