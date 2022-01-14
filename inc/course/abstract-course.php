@@ -837,7 +837,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( $this->is_free() ) {
 				$price_html = apply_filters(
 					'learn_press_course_price_html_free',
-					esc_html__( 'Free', 'learnpress' ),
+					sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) ),
 					$this
 				);
 			} else {
