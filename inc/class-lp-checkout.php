@@ -427,12 +427,10 @@ class LP_Checkout {
 
 			// Store the line items to the new/resumed order
 			foreach ( $cart->get_items() as $item ) {
-				$course = learn_press_get_course( $item['item_id'] );
+				$item_type = get_post_type( $item['item_id'] );
 
-				if ( empty( $item['order_item_name'] ) && ! empty( $item['item_id'] ) && $course ) {
-					$item['order_item_name'] = $course->get_title();
-				} else {
-					throw new Exception( sprintf( __( 'Item does not exist!', 'learnpress' ), 402 ) );
+				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
+					continue;
 				}
 
 				$item_id = $order->add_item( $item );
@@ -689,10 +687,10 @@ class LP_Checkout {
 			$messages = array();
 
 			foreach ( $cart->get_items() as $item ) {
-				$course = learn_press_get_course( $item['item_id'] );
+				$item_type = get_post_type( $item['item_id'] );
 
-				if ( ! $course || ! $course->is_purchasable() ) {
-					throw new Exception( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), $course->get_title() ) );
+				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
+					throw new Exception( __( 'Type item buy invalid!', 'learnpress' ) );
 				}
 			}
 
