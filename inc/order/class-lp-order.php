@@ -587,6 +587,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @return int
 		 * @throws Exception
+		 * @editor tungnx
+		 * @modify 4.1.4.2
 		 */
 		public function add_item( $item ): int {
 			global $wpdb;
@@ -601,33 +603,21 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					);
 				}
 
-				$course = learn_press_get_course( $item['item_id'] );
-				if ( ! $course ) {
+				$item_type = get_post_type( $item['item_id'] );
+				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
 					return false;
 				}
 
 				$item = wp_parse_args(
 					$item,
 					array(
+						'item_id'         => 0,
+						'item_type'       => '',
 						'order_item_name' => '',
 						'quantity'        => 1,
 						'meta'            => array(),
 					)
 				);
-
-				if ( ! array_key_exists( 'subtotal', $item ) ) {
-					$item['subtotal'] = $course->get_price() * $item['quantity'];
-				}
-
-				if ( ! array_key_exists( 'total', $item ) ) {
-					$item['total'] = $course->get_price() * $item['quantity'];
-				}
-
-				$item = apply_filters( 'learn-press/order-item-data', $item, $this->get_id() );
-
-				if ( ! $item ) {
-					return false;
-				}
 
 				// Insert new order item
 				$wpdb->insert(
@@ -636,7 +626,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						'order_item_name' => $item['order_item_name'],
 						'order_id'        => $this->get_id(),
 						'item_id'         => $item['item_id'],
-						'item_type'       => get_post_type( $item['item_id'] ),
+						'item_type'       => $item_type,
 					),
 					array(
 						'%s',
@@ -648,24 +638,38 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$order_item_id = absint( $wpdb->insert_id );
 				// End insert new order item
 
-				if ( $this->check_can_delete_item_old( $course ) ) {
-					// Delete lp_user_items old
-					$user_ids = $this->get_users();
-					foreach ( $user_ids as $user_id ) {
-						$lp_user_items_db->delete_user_items_old( $user_id, $course->get_id() );
-					}
-					// End
+				switch ( $item_type ) {
+					case LP_COURSE_CPT:
+						$course = learn_press_get_course( $item['item_id'] );
+
+						if ( ! array_key_exists( 'subtotal', $item ) ) {
+							$item['subtotal'] = $course->get_price() * $item['quantity'];
+						}
+
+						if ( ! array_key_exists( 'total', $item ) ) {
+							$item['total'] = $course->get_price() * $item['quantity'];
+						}
+
+						if ( $this->check_can_delete_item_old( $course ) ) {
+							// Delete lp_user_items old
+							$user_ids = $this->get_users();
+							foreach ( $user_ids as $user_id ) {
+								$lp_user_items_db->delete_user_items_old( $user_id, $course->get_id() );
+							}
+							// End
+						}
+
+						learn_press_add_order_item_meta( $order_item_id, '_course_id', $item['item_id'] );
+						break;
+					default:
+						$item = apply_filters( 'learnpress/order/add-item/item_type_' . $item_type, $item );
+						break;
 				}
 
-				/**
-				 * @since 3.0.0
-				 */
-				do_action( 'learn-press/added-order-item', $order_item_id, $item, $this->get_id() );
-
-				learn_press_add_order_item_meta( $order_item_id, '_course_id', $item['item_id'] );
-				learn_press_add_order_item_meta( $order_item_id, '_quantity', $item['quantity'] );
-				learn_press_add_order_item_meta( $order_item_id, '_subtotal', $item['subtotal'] );
-				learn_press_add_order_item_meta( $order_item_id, '_total', $item['total'] );
+				// Add meta data
+				learn_press_add_order_item_meta( $order_item_id, '_quantity', $item['quantity'] ?? 0 );
+				learn_press_add_order_item_meta( $order_item_id, '_subtotal', $item['subtotal'] ?? 0 );
+				learn_press_add_order_item_meta( $order_item_id, '_total', $item['total'] ?? 0 );
 
 				if ( is_array( $item['meta'] ) ) {
 					foreach ( $item['meta'] as $k => $v ) {

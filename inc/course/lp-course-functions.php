@@ -82,6 +82,21 @@ function learn_press_get_course_item_types() {
 }
 
 /**
+ * Get type of items can purchase on LP Order.
+ * Default: ['lp_course', 'lp_certificate']
+ *
+ * @return mixed
+ * @since 3.0.0
+ *
+ */
+function learn_press_get_item_types_can_purchase() {
+	return apply_filters(
+		'learn-press/purchase/item-types/can-purchase',
+		array( LP_COURSE_CPT )
+	);
+}
+
+/**
  * Get the courses that a item is assigned to
  *
  * @param $item
