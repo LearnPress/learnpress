@@ -3,6 +3,7 @@
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 import scrollToItemCurrent from './scrolltoitem';
+import { searchCourseContent } from './components/search';
 
 export default function courseCurriculumSkeleton() {
 	const Sekeleton = () => {
@@ -73,6 +74,8 @@ export default function courseCurriculumSkeleton() {
 		}
 
 		skeleton && skeleton.remove();
+
+		searchCourseContent();
 	};
 
 	const parseContentItems = async ({ ele, returnData, sectionID, itemID, data2, pages2, page2 }) => {
@@ -207,6 +210,8 @@ export default function courseCurriculumSkeleton() {
 				}
 
 				sectionBtn.classList.remove( 'loading' );
+
+				searchCourseContent();
 			}
 		});
 
@@ -243,6 +248,8 @@ export default function courseCurriculumSkeleton() {
 					}
 
 					moreSection.classList.remove( 'loading' );
+
+					searchCourseContent();
 				}
 			}
 		});

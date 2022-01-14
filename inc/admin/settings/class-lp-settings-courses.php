@@ -133,6 +133,34 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 					)
 				),
 				apply_filters(
+					'learn-press/course-settings-fields/curriculum',
+					array(
+						array(
+							'type'  => 'title',
+							'title' => esc_html__( 'Curriculum Settings', 'learnpress' ),
+							'id'    => 'lp_metabox_curriculum_setting',
+						),
+						array(
+							'title'   => esc_html__( 'Section Per Page', 'learnpress' ),
+							'id'      => 'section_per_page',
+							'default' => 2,
+							'type'    => 'number',
+							'desc'    => esc_html__( 'Number of sections displayed per page ( Enter -1 for display all sections).', 'learnpress' ),
+						),
+						array(
+							'title'   => esc_html__( 'Course Item Per Page', 'learnpress' ),
+							'id'      => 'course_item_per_page',
+							'default' => 5,
+							'type'    => 'number',
+							'desc'    => esc_html__( 'Number of course items displayed per page in section ( Enter -1 for display all course items).', 'learnpress' ),
+						),
+						array(
+							'type' => 'sectionend',
+							'id'   => 'lp_metabox_curriculum_setting',
+						),
+					)
+				),
+				apply_filters(
 					'learn-press/course-settings-fields/single',
 					array(
 						array(

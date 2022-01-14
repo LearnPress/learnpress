@@ -240,3 +240,8 @@ Content-Type: application/json
 GET http://learnpress4.local/wp-json/learnpress/v1/section-items/items/8
 Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0MDkyMTQ5OCwibmJmIjoxNjQwOTIxNDk4LCJleHAiOjE2NDE1MjYyOTgsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.nv7SgzB0JDQLSipszofbamoXyQHPPhx8IuO7-ISAGVU
+
+###
+GET https://test.thimpress.com/wp-json/learnpress/v1/courses?learned=true&per_page=1&order=desc&course_filter=in-progress?v=ddsadsadios
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGVzdC50aGltcHJlc3MuY29tIiwiaWF0IjoxNjQyMDY4NTk0LCJuYmYiOjE2NDIwNjg1OTQsImV4cCI6MTY0MjY3MzM5NCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.rRRLon3MJel4MFjm6O5XqwdDqfr3s0xlNjVIeghW2Js

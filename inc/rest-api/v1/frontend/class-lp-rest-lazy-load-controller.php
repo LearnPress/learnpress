@@ -150,7 +150,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$params = $request->get_params();
 
 		$course_id  = isset( $params['courseId'] ) ? absint( $params['courseId'] ) : 0;
-		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 2;
+		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : LP()->settings->get( 'section_per_page', 2 );
 		$page       = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
 		$order      = isset( $params['order'] ) ? $params['order'] : 'ASC';
 		$search     = isset( $params['search'] ) ? $params['search'] : '';
@@ -223,7 +223,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$params = $request->get_params();
 
 		$section_id = isset( $params['sectionId'] ) ? absint( $params['sectionId'] ) : 0;
-		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 5;
+		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : LP()->settings->get( 'course_item_per_page', 5 );
 		$page       = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
 		$order      = isset( $params['order'] ) ? $params['order'] : 'ASC';
 		$search     = isset( $params['search'] ) ? wp_unslash( $params['search'] ) : '';
