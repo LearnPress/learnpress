@@ -1079,6 +1079,7 @@ function learn_press_update_user_profile() {
  */
 function learn_press_update_user_profile_avatar() {
 	$user_id = get_current_user_id();
+	$data    = learn_press_get_request( 'lp-user-avatar-crop' );
 
 	if ( ! $user_id ) {
 		return new WP_Error( 2, 'User is invalid!' );
@@ -1092,9 +1093,11 @@ function learn_press_update_user_profile_avatar() {
 		return false;
 	}
 
-	$data = learn_press_get_request( 'lp-user-avatar-crop' );
+	$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
 
-	if ( ! $data || ! ( $path = $upload_dir['basedir'] . $data['name'] ) && file_exists( $path ) ) {
+	$path = $upload_dir['basedir'] . $path_img;
+
+	if ( ! file_exists( $path ) ) {
 		return false;
 	}
 
@@ -1144,15 +1147,8 @@ function learn_press_update_user_profile_avatar() {
 	$new_avatar = false;
 
 	if ( file_exists( $output ) ) {
-
-		$old_avatar = get_user_meta( $user_id, '_lp_profile_picture', true );
-
-		if ( file_exists( $upload_dir['basedir'] . '/' . $old_avatar ) ) {
-			@unlink( $upload_dir['basedir'] . '/' . $old_avatar );
-		}
-
 		$new_avatar = preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname;
-		update_user_meta( $user_id, '_lp_profile_picture', $new_avatar );
+		update_user_meta( $user_id, '_lp_profile_picture', '/' . $new_avatar );
 		update_user_meta( $user_id, '_lp_profile_picture_changed', 'yes' );
 
 		$new_avatar = $upload_dir['baseurl'] . '/' . $new_avatar;

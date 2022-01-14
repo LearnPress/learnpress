@@ -11,13 +11,13 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'checkout-user-email-exists:nopriv',
 				'recover-order',
 				'request-become-a-teacher:nonce',
-				'upload-user-avatar',
+				// 'upload-user-avatar',
 				'checkout:nopriv',
 				'complete-lesson',
 				'finish-course', // finish_course.
 				// 'retake-course', // retake_course.
 				'external-link:nopriv',
-				'save-uploaded-user-avatar',
+				// 'save-uploaded-user-avatar',
 				'load-more-courses',
 			);
 
@@ -40,7 +40,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				LP_Request::register_ajax( $action, $callback );
 			}
 
-			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
+			//add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
 		}
 
 		public static function load_more_courses() {
@@ -171,7 +171,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			learn_press_maybe_send_json( $response );
 		}
 
-		public static function upload_user_avatar() {
+		/*public static function upload_user_avatar() {
 			$file       = $_FILES['lp-upload-avatar'];
 			$upload_dir = learn_press_user_profile_picture_upload_dir();
 
@@ -196,40 +196,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			learn_press_send_json( $result );
-		}
-
-		public static function save_uploaded_user_avatar() {
-			$avatar_data = wp_parse_args(
-				LP_Request::get( 'lp-user-avatar-crop' ),
-				array(
-					'name'   => '',
-					'width'  => '',
-					'height' => '',
-					'points' => '',
-					'nonce'  => '',
-				)
-			);
-
-			$current_user_id = get_current_user_id();
-
-			if ( ! wp_verify_nonce( $avatar_data['nonce'], 'save-uploaded-profile-' . $current_user_id ) ) {
-				die( 'ERROR VERIFY NONCE!' );
-			}
-
-			$url = learn_press_update_user_profile_avatar();
-			if ( $url ) {
-				$user = learn_press_get_current_user();
-
-				learn_press_send_json(
-					array(
-						'success' => true,
-						'avatar'  => sprintf( '<img src="%s" />', $url ),
-					)
-				);
-			};
-
-			wp_die();
-		}
+		}*/
 
 		public static function _user_avatar_upload_dir( $dir ) {
 			$dir = learn_press_user_profile_picture_upload_dir();

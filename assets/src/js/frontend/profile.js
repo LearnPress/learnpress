@@ -24,7 +24,8 @@
 			e.preventDefault();
 			const self = this;
 			$.ajax( {
-				url: '?lp-ajax=save-uploaded-user-avatar',
+				//url: '?lp-ajax=save-uploaded-user-avatar',
+				url: ( typeof lpGlobalSettings !== 'undefined' ? lpGlobalSettings.ajax : '' ).addQueryVar( 'action', 'learnpress_save-uploaded-user-avatar' ),
 				data: this.$( '.lp-avatar-crop-image' ).serializeJSON(),
 				type: 'post',
 				success( response ) {
@@ -53,11 +54,20 @@
 				return;
 			}
 
-			this.$().removeAttr( 'data-custom' );
-			this.$( '.profile-picture' ).toggleClass( 'profile-avatar-current' );
-			this.$( '#submit' ).prop( 'disabled', false );
+			const el = this;
 
-			$( '.lp-user-profile-avatar' ).html( this.$( '.profile-avatar-current' ).find( 'img' ).clone() );
+			$.ajax( {
+				url: ( typeof lpGlobalSettings !== 'undefined' ? lpGlobalSettings.ajax : '' ).addQueryVar( 'action', 'learnpress_remove-avatar' ),
+				data: {},
+				type: 'post',
+				success( response ) {
+					el.$().removeAttr( 'data-custom' );
+					el.$( '.profile-picture' ).toggleClass( 'profile-avatar-current' );
+					el.$( '#submit' ).prop( 'disabled', false );
+
+					$( '.lp-user-profile-avatar' ).html( el.$( '.profile-avatar-current' ).find( 'img' ).clone() );
+				},
+			} );
 		},
 		_upload( e ) {
 			e.preventDefault();
