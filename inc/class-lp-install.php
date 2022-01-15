@@ -9,27 +9,12 @@
 
 defined( 'ABSPATH' ) || exit();
 
-define( 'LEARN_PRESS_UPDATE_DATABASE', true );
-
 if ( ! function_exists( 'LP_Install' ) ) {
 
 	/**
 	 * Class LP_Install
 	 */
 	class LP_Install {
-
-		/**
-		 * Hold the file for each update
-		 *
-		 * @var array
-		 */
-		private static $_update_files = array();
-
-		/**
-		 * @var null
-		 */
-		private static $_is_old_version = null;
-
 		/**
 		 * Default static pages used by LP
 		 *
@@ -41,8 +26,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * Init action.
 		 */
 		public static function init() {
-			self::get_update_files();
-
 			add_action( 'learn-press/activate', array( __CLASS__, 'on_activate' ) );
 			add_action( 'admin_init', array( __CLASS__, 'do_install' ) );
 			add_action( 'admin_init', array( __CLASS__, 'subscription_button' ) );
@@ -269,33 +252,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		}
 
 		/**
-		 * Create log directory and add some files for security.
-		 */
-		/*public static function _create_log_path() {
-			$files = array(
-				array(
-					'base'    => LP_LOG_PATH,
-					'file'    => '.htaccess',
-					'content' => 'deny from all',
-				),
-				array(
-					'base'    => LP_LOG_PATH,
-					'file'    => 'index.html',
-					'content' => '',
-				),
-			);
-
-			foreach ( $files as $file ) {
-				if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
-					if ( $file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ) ) {
-						fwrite( $file_handle, $file['content'] );
-						fclose( $file_handle );
-					}
-				}
-			}
-		}*/
-
-		/**
 		 * Remove learnpress page if total of learn page > 10
 		 *
 		 * @return mixed
@@ -472,207 +428,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			return $page_id;
 		}
 
-		/**********************************/
-
-		public static function include_update() {
-			if ( ! self::$_update_files ) {
-				return;
-			}
-
-			$versions       = array_keys( self::$_update_files );
-			$latest_version = end( $versions );
-
-			// Update LearnPress from 0.9.x to 1.0
-			if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
-				learn_press_include( 'updates/' . self::$_update_files[ $latest_version ] );
-			}
-		}
-
-		public static function hide_upgrade_notice() {
-			$ask_again  = learn_press_get_request( 'ask_again' );
-			$expiration = DAY_IN_SECONDS;
-
-			if ( $ask_again == 'no' ) {
-				$expiration = 0;
-			}
-
-			set_transient( 'learn_press_upgrade_courses_ask_again', $ask_again, $expiration );
-
-			learn_press_send_json(
-				array(
-					'result'  => 'success',
-					'message' => sprintf( '<p>%s</p>', __( 'Thank you for using LearnPress', 'learnpress' ) ),
-				)
-			);
-		}
-
-		public static function upgrade_wizard() {
-			require_once LP_PLUGIN_PATH . '/inc/updates/_update-from-0.9.php';
-		}
-
-		/**
-		 * Scan folder updates to get update patches.
-		 */
-		public static function get_update_files() {
-			if ( ! self::$_update_files ) {
-				require_once ABSPATH . 'wp-admin/includes/file.php';
-
-				if ( WP_Filesystem() ) {
-
-					/**
-					 * @var WP_Filesystem_Base $wp_filesystem
-					 */
-					global $wp_filesystem;
-
-					$files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates' );
-
-					if ( $files ) {
-						foreach ( $files as $file ) {
-							if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
-								self::$_update_files [ $matches[1] ] = $file['name'];
-							}
-						}
-					}
-				}
-				/**
-				 * Sort files by version
-				 */
-				if ( self::$_update_files ) {
-					ksort( self::$_update_files );
-				}
-
-				if ( file_exists( LP_PLUGIN_PATH . '/inc/updates/learnpress-update-x.x.x.php' ) ) {
-					self::$_update_files['9.9.9'] = 'learnpress-update-x.x.x.php';
-				}
-			}
-
-		}
-
-		/**
-		 * Check version
-		 */
-		/*public static function check_version() {
-			if ( ! defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LP()->version ) ) {
-				self::install();
-			}
-		}*/
-
 		private static function _create_cron_jobs() {
 			wp_clear_scheduled_hook( 'learn_press_cleanup_sessions' );
 			wp_schedule_event( time(), apply_filters( 'learn_press_cleanup_session_recurrence', 'twicedaily' ),
 				'learn_press_cleanup_sessions' );
 		}
-
-		/*private function _is_old_version() {
-			if ( is_null( self::$_is_old_version ) ) {
-				$is_old_version = get_transient( 'learn_press_is_old_version' );
-
-				if ( empty( $is_old_version ) ) {
-					if ( ! get_option( 'learnpress_db_version' ) ||
-					     get_posts(
-						     array(
-							     'post_type'      => 'lpr_course',
-							     'post_status'    => 'any',
-							     'posts_per_page' => 1,
-						     )
-					     )
-					) {
-						$is_old_version = 'yes';
-					}
-					if ( empty( $is_old_version ) ) {
-						$is_old_version = 'no';
-					}
-					set_transient( 'learn_press_is_old_version', $is_old_version );
-				}
-				self::$_is_old_version = $is_old_version == 'yes';
-			}
-
-			return self::$_is_old_version;
-		}*/
-
-		/**
-		 * Find if there is any old course and did not upgrade
-		 * If a course has got a meta key like _learn_press_upgraded that means it is not upgraded
-		 *
-		 * @return mixed
-		 */
-		/*private static function _has_old_posts() {
-			global $wpdb;
-			$query = $wpdb->prepare(
-				"
-			SELECT DISTINCT p.ID, pm.meta_value as upgraded
-			FROM {$wpdb->posts} p
-			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-			WHERE post_type = %s
-			HAVING upgraded IS NULL
-			LIMIT 0, 1
-		",
-				'_learn_press_upgraded',
-				'lpr_course'
-			);
-
-			return $wpdb->get_row( $query );
-		}*/
-
-		private static function _has_new_table() {
-			global $wpdb;
-			$query = $wpdb->prepare(
-				'
-			SELECT COUNT(*)
-			FROM information_schema.tables
-			WHERE table_schema = %s
-			AND table_name LIKE %s
-		',
-				DB_NAME,
-				'%learnpress_sections%'
-			);
-
-			return $wpdb->get_var( $query ) ? true : false;
-		}
-
-		/*private static function _need_to_update() {
-			return self::_has_old_posts() || self::_has_old_teacher_role();
-		}*/
-
-		/*private static function _has_old_teacher_role() {
-			global $wpdb;
-			$query = $wpdb->prepare(
-				"
-			SELECT um.*
-			FROM {$wpdb->users} u
-			INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
-			WHERE um.meta_value LIKE %s
-			LIMIT 0, 1
-		",
-				'wp_capabilities',
-				'%"lpr_teacher"%'
-			);
-
-			return $wpdb->get_results( $query );
-		}*/
-
-		/*private static function _has_new_posts() {
-			$new_post = get_posts(
-				array(
-					'post_type'      => 'lp_course',
-					'post_status'    => 'any',
-					'posts_per_page' => 1,
-				)
-			);
-
-			return sizeof( $new_post ) > 0;
-		}*/
-
-//		public static function update_db_version( $version = null ) {
-//			delete_option( 'learnpress_db_version' );
-//			update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
-//		}
-
-//		public static function update_version( $version = null ) {
-//			delete_option( 'learnpress_version' );
-//			update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
-//		}
-
 
 		/**
 		 * Build sql queries to create tables.
