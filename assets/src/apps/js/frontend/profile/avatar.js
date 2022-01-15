@@ -120,28 +120,30 @@ export default function Avatar() {
 	}
 
 	async function removeAvatar() {
-		setLoading( { remove: true });
-		try {
-			const response = await apiFetch( {
-				path: 'lp/v1/profile/remove-avatar',
-				method: 'POST',
-			});
+		if ( confirm( __( 'Are you sure you want to remove your avatar?', 'learnpress' ) ) ) {
+			setLoading( { remove: true });
+			try {
+				const response = await apiFetch( {
+					path: 'lp/v1/profile/remove-avatar',
+					method: 'POST',
+				});
 
-			const { data, status, message } = await response;
+				const { data, status, message } = await response;
 
-			setNotice({
-				type: status,
-				message: message,
-			})
+				setNotice({
+					type: status,
+					message: message,
+				})
 
-			setFile('');
-		} catch (e) {
-			setNotice({
-				type: 'error',
-				message: e.message || '',
-			})
+				setFile('');
+			} catch (e) {
+				setNotice({
+					type: 'error',
+					message: e.message || '',
+				})
+			}
+			setLoading( { remove: false } );
 		}
-		setLoading( { remove: false } );
 	}
 
 	return(
