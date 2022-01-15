@@ -237,8 +237,11 @@ body {
 								background: #fff;
 							}
 						}
+
 						&:hover {
+
 							>a {
+
 								i {
 									color: var(--lp-primary-color);
 									background: #fff;
@@ -346,6 +349,7 @@ body {
 
 							> a {
 								color: #ffb606;
+
 								i {
 									color: #ffb606;
 								}
@@ -1135,6 +1139,57 @@ div.order-recover {
 
 			&.active {
 				color: var(--lp-primary-color);
+			}
+		}
+	}
+}
+
+.learnpress_avatar {
+
+	&__form {
+
+		label {
+			display: inline-block;
+		}
+
+		input[type="file"] {
+			display: none;
+		}
+
+		&__upload {
+			display: flex;
+			width: 200px;
+			height: 200px;
+			border: 1px dashed #ccc;
+			border-radius: 3px;
+			background-color: #fafafa;
+			font-size: 14px;
+			font-weight: 300;
+			font-style: italic;
+			line-height: 43px;
+			text-align: center;
+			cursor: pointer;
+			align-items: center;
+			justify-content: center;
+
+			div {
+				line-height: 1.4;
+			}
+		}
+	}
+
+	&__button {
+
+		&--loading {
+
+			&::before {
+				display: inline-block;
+				margin-right: 5px;
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				content: "\f110";
+
+				@include animation(lp-rotating 1s linear infinite);
 			}
 		}
 	}

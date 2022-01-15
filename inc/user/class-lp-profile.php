@@ -1069,14 +1069,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					if ( file_exists( $file_path ) ) {
 						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
 
-						if ( $user->get_data( 'profile_picture_changed' ) == 'yes' ) {
-							$uploaded_profile_src = add_query_arg(
-								'r',
-								md5( rand( 0, 10 ) / rand( 1, 1000000 ) ),
-								$user->get_data( 'uploaded_profile_src' )
-							);
-							delete_user_meta( $user->get_id(), '_lp_profile_picture_changed' );
-						}
+						// if ( $user->get_data( 'profile_picture_changed' ) == 'yes' ) {
+						// 	$uploaded_profile_src = add_query_arg(
+						// 		'r',
+						// 		md5( rand( 0, 10 ) / rand( 1, 1000000 ) ),
+						// 		$user->get_data( 'uploaded_profile_src' )
+						// 	);
+						// 	delete_user_meta( $user->get_id(), '_lp_profile_picture_changed' );
+						// }
 					} else {
 						$uploaded_profile_src = false;
 					}

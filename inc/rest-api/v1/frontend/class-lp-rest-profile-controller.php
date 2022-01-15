@@ -30,6 +30,33 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
+			'get-avatar'    => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_avatar' ),
+					'permission_callback' => function() {
+						return get_current_user_id() ? true : false;
+					},
+				),
+			),
+			'upload-avatar' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'upload_avatar' ),
+					'permission_callback' => function() {
+						return get_current_user_id() ? true : false;
+					},
+				),
+			),
+			'remove-avatar' => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'remove_avatar' ),
+					'permission_callback' => function() {
+						return get_current_user_id() ? true : false;
+					},
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -58,6 +85,110 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		return true;
 	}
 
+	public function get_avatar( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+
+		$thumb_size = learn_press_get_avatar_thumb_size();
+
+		$profile    = learn_press_get_profile( get_current_user_id() );
+		$avatar_url = $profile->get_upload_profile_src();
+
+		$response->data->width  = $thumb_size['width'];
+		$response->data->height = $thumb_size['height'];
+		$response->data->url    = $avatar_url ? $avatar_url : '';
+
+		return rest_ensure_response( $response );
+	}
+
+	public function upload_avatar( WP_REST_Request $request ) {
+		$file_base64 = $request->get_param( 'file' );
+		$response    = new LP_REST_Response();
+
+		try {
+			$user_id = get_current_user_id();
+
+			if ( ! $user_id ) {
+				throw new Exception( __( 'User not found', 'learnpress' ) );
+			}
+
+			if ( empty( $file_base64 ) ) {
+				throw new Exception( __( 'File not found', 'learnpress' ) );
+			}
+
+			$upload_dir = learn_press_user_profile_picture_upload_dir( true );
+
+			if ( ! LP_WP_Filesystem::instance()->is_writable( $upload_dir['path'] ) ) {
+				throw new Exception( __( 'Upload directory is not writable', 'learnpress' ) );
+			}
+
+			// Delete old image if exists
+			$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
+
+			if ( $path_img ) {
+				$path = $upload_dir['basedir'] . '/' . $path_img;
+
+				if ( file_exists( $path ) ) {
+					LP_WP_Filesystem::instance()->unlink( $path );
+				}
+			}
+
+			$file_name = md5( $user_id . microtime( true ) ) . '.jpeg';
+
+			$file_base64 = str_replace( 'data:image/jpeg;base64,', '', $file_base64 );
+			$file_base64 = base64_decode( $file_base64 );
+
+			$put_content = LP_WP_Filesystem::instance()->put_contents( $upload_dir['path'] . '/' . $file_name, $file_base64, FS_CHMOD_FILE );
+
+			if ( ! $put_content ) {
+				throw new Exception( __( 'Can not write file', 'learnpress' ) );
+			}
+
+			update_user_meta( $user_id, '_lp_profile_picture', $upload_dir['subdir'] . '/' . $file_name );
+
+			$response->status  = 'success';
+			$response->message = __( 'Avatar updated', 'learnpress' );
+		} catch ( \Throwable $th ) {
+			$response->message = $th->getMessage();
+		}
+
+		return rest_ensure_response( $response );
+	}
+
+	public function remove_avatar( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+
+		try {
+			$user_id = get_current_user_id();
+
+			if ( ! $user_id ) {
+				throw new Exception( esc_html__( 'User is invalid', 'learnpress' ) );
+			}
+
+			$upload_dir = learn_press_user_profile_picture_upload_dir( true );
+
+			if ( ! LP_WP_Filesystem::instance()->is_writable( $upload_dir['path'] ) ) {
+				throw new Exception( __( 'Upload directory is not writable', 'learnpress' ) );
+			}
+
+			$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
+
+			if ( $path_img ) {
+				$path = $upload_dir['basedir'] . '/' . $path_img;
+
+				if ( file_exists( $path ) ) {
+					LP_WP_Filesystem::instance()->unlink( $path );
+
+					$response->status  = 'success';
+					$response->message = esc_html__( 'Profile picture remove successfully', 'learnpress' );
+				}
+			}
+		} catch ( \Throwable $th ) {
+			$response->message = $th->getMessage();
+		}
+
+		return rest_ensure_response( $response );
+	}
+
 	public function statistic( WP_REST_Request $request ) {
 		$user_id          = $request->get_param( 'userID' );
 		$response         = new LP_REST_Response();
@@ -75,7 +206,8 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( $profile->get_error_message() );
 			}
 
-			/*$query = $profile->query_courses( 'purchased' );
+			/*
+			$query = $profile->query_courses( 'purchased' );
 
 			$counts = $query['counts'];*/
 

@@ -210,26 +210,11 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'lp-profile-user'      => new LP_Asset_Key(
-					self::url( self::$_folder_source . 'js/frontend/profile' . self::$_min_assets . '.js' ),
-					array(
-						'lp-global',
-						'lp-utils',
-						'plupload',
-						'backbone',
-						'jquery-ui-slider',
-						'jquery-ui-draggable',
-						'jquery-touch-punch',
-					),
-					array( LP_PAGE_PROFILE ),
-					0,
-					1
-				),
 				'lp-profile-v2'        => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
 					array_merge(
 						$wp_js,
-						array( 'wp-i18n' )
+						array( 'wp-i18n', 'lp-utils' )
 					),
 					array( LP_PAGE_PROFILE ),
 					0,

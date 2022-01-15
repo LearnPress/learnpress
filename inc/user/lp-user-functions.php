@@ -1074,90 +1074,90 @@ function learn_press_update_user_profile() {
 
 // add_action( 'init', 'learn_press_update_user_profile' );
 
-/**
- * Update user avatar
- */
-function learn_press_update_user_profile_avatar() {
-	$user_id = get_current_user_id();
-	$data    = learn_press_get_request( 'lp-user-avatar-crop' );
+// /**
+//  * Update user avatar
+//  */
+// function learn_press_update_user_profile_avatar() {
+// 	$user_id = get_current_user_id();
+// 	$data    = learn_press_get_request( 'lp-user-avatar-crop' );
 
-	if ( ! $user_id ) {
-		return new WP_Error( 2, 'User is invalid!' );
-	}
+// 	if ( ! $user_id ) {
+// 		return new WP_Error( 2, 'User is invalid!' );
+// 	}
 
-	$upload_dir = learn_press_user_profile_picture_upload_dir();
+// 	$upload_dir = learn_press_user_profile_picture_upload_dir();
 
-	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
-		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
+// 	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
+// 		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
 
-		return false;
-	}
+// 		return false;
+// 	}
 
-	$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
+// 	$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
 
-	$path = $upload_dir['basedir'] . $path_img;
+// 	$path = $upload_dir['basedir'] . $path_img;
 
-	if ( ! file_exists( $path ) ) {
-		return false;
-	}
+// 	if ( ! file_exists( $path ) ) {
+// 		return false;
+// 	}
 
-	$filetype = wp_check_filetype( $path );
+// 	$filetype = wp_check_filetype( $path );
 
-	if ( 'jpg' == $filetype['ext'] ) {
-		$im = imagecreatefromjpeg( $path );
-	} elseif ( 'png' == $filetype['ext'] ) {
-		$im = imagecreatefrompng( $path );
-	}
+// 	if ( 'jpeg' == $filetype['ext'] ) {
+// 		$im = imagecreatefromjpeg( $path );
+// 	} elseif ( 'png' == $filetype['ext'] ) {
+// 		$im = imagecreatefrompng( $path );
+// 	}
 
-	if ( ! isset( $im ) ) {
-		return false;
-	}
+// 	if ( ! isset( $im ) ) {
+// 		return false;
+// 	}
 
-	$points  = explode( ',', $data['points'] );
-	$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+// 	$points  = explode( ',', $data['points'] );
+// 	$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
 
-	if ( ! $im ) {
-		return false;
-	}
+// 	if ( ! $im ) {
+// 		return false;
+// 	}
 
-	$dst_x = 0;
-	$dst_y = 0;
-	$dst_w = $data['width'];
-	$dst_h = $data['height'];
-	$src_x = $points[0];
-	$src_y = $points[1];
-	$src_w = $points[2] - $points[0];
-	$src_h = $points[3] - $points[1];
+// 	$dst_x = 0;
+// 	$dst_y = 0;
+// 	$dst_w = $data['width'];
+// 	$dst_h = $data['height'];
+// 	$src_x = $points[0];
+// 	$src_y = $points[1];
+// 	$src_w = $points[2] - $points[0];
+// 	$src_h = $points[3] - $points[1];
 
-	imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
+// 	imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
 
-	$newname = md5( $user_id . microtime( true ) );
-	$output  = dirname( $path );
+// 	$newname = md5( $user_id . microtime( true ) );
+// 	$output  = dirname( $path );
 
-	if ( 'jpg' == $filetype['ext'] ) {
-		$newname .= '.jpg';
-		$output  .= '/' . $newname;
-		imagejpeg( $im_crop, $output );
-	} elseif ( 'png' == $filetype['ext'] ) {
-		$newname .= '.png';
-		$output  .= '/' . $newname;
-		imagepng( $im_crop, $output );
-	}
+// 	if ( 'jpeg' == $filetype['ext'] ) {
+// 		$newname .= '.jpeg';
+// 		$output  .= '/' . $newname;
+// 		imagejpeg( $im_crop, $output );
+// 	} elseif ( 'png' == $filetype['ext'] ) {
+// 		$newname .= '.png';
+// 		$output  .= '/' . $newname;
+// 		imagepng( $im_crop, $output );
+// 	}
 
-	$new_avatar = false;
+// 	$new_avatar = false;
 
-	if ( file_exists( $output ) ) {
-		$new_avatar = preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname;
-		update_user_meta( $user_id, '_lp_profile_picture', '/' . $new_avatar );
-		update_user_meta( $user_id, '_lp_profile_picture_changed', 'yes' );
+// 	if ( file_exists( $output ) ) {
+// 		$new_avatar = preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname;
+// 		update_user_meta( $user_id, '_lp_profile_picture', '/' . $new_avatar );
+// 		update_user_meta( $user_id, '_lp_profile_picture_changed', 'yes' );
 
-		$new_avatar = $upload_dir['baseurl'] . '/' . $new_avatar;
-	}
+// 		$new_avatar = $upload_dir['baseurl'] . '/' . $new_avatar;
+// 	}
 
-	@unlink( $path );
+// 	@unlink( $path );
 
-	return $new_avatar;
-}
+// 	return $new_avatar;
+// }
 
 // add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
 
