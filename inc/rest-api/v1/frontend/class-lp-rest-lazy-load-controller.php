@@ -149,14 +149,14 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function course_curriculum( $request ) {
 		$params = $request->get_params();
 
-		$course_id  = isset( $params['courseId'] ) ? absint( $params['courseId'] ) : 0;
-		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : LP()->settings->get( 'section_per_page', 2 );
-		$page       = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
-		$order      = isset( $params['order'] ) ? $params['order'] : 'ASC';
-		$search     = isset( $params['search'] ) ? $params['search'] : '';
-		$include    = isset( $params['include'] ) ? $params['include'] : array();
-		$exclude    = isset( $params['exclude'] ) ? $params['exclude'] : array();
-		$section_id = isset( $params['sectionID'] ) ? $params['sectionID'] : false;
+		$course_id  = absint( $params['courseId'] ?? 0 );
+		$per_page   = absint( $params['per_page'] ?? LP()->settings()->get( 'section_per_page', 2 ) );
+		$page       = absint( $params['page'] ?? 1 );
+		$order      = wp_unslash( $params['order'] ?? 'ASC' );
+		$search     = wp_unslash( $params['search'] ?? '' );
+		$include    = wp_unslash( $params['include'] ?? array() );
+		$exclude    = wp_unslash( $params['exclude'] ?? array() );
+		$section_id = wp_unslash( $params['sectionID'] ?? false );
 
 		$response       = new LP_REST_Response();
 		$response->data = '';
@@ -222,13 +222,13 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function course_curriculum_items( $request ) {
 		$params = $request->get_params();
 
-		$section_id = isset( $params['sectionId'] ) ? absint( $params['sectionId'] ) : 0;
-		$per_page   = isset( $params['per_page'] ) ? absint( $params['per_page'] ) : LP()->settings->get( 'course_item_per_page', 5 );
-		$page       = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
-		$order      = isset( $params['order'] ) ? $params['order'] : 'ASC';
-		$search     = isset( $params['search'] ) ? wp_unslash( $params['search'] ) : '';
-		$include    = isset( $params['include'] ) ? $params['include'] : array();
-		$exclude    = isset( $params['exclude'] ) ? $params['exclude'] : array();
+		$section_id = absint( $params['sectionId'] ?? 0 );
+		$per_page   = absint( $params['per_page'] ?? LP()->settings()->get( 'course_item_per_page', 5 ) );
+		$page       = absint( $params['page'] ?? 1 );
+		$order      = wp_unslash( $params['order'] ?? 'ASC' );
+		$search     = wp_unslash( $params['search'] ?? '' );
+		$include    = wp_unslash( $params['include'] ?? array() );
+		$exclude    = wp_unslash( $params['exclude'] ?? array() );
 
 		$response       = new LP_REST_Response();
 		$response->data = '';

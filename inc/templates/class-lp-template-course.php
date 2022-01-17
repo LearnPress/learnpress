@@ -626,10 +626,21 @@ class LP_Template_Course extends LP_Abstract_Template {
 				$item_id    = $course_item->get_id();
 				$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( absint( $item_id ) );
 			}
+			?>
+			<div class="learnpress-course-curriculum" data-section="<?php echo $section_id ?? ''; ?>" data-id="<?php echo $item_id ?? ''; ?>">
+				<ul class="lp-skeleton-animation">
+					<li style="width: 100%; height: 50px"></li>
+					<li style="width: 100%; height: 20px"></li>
+					<li style="width: 100%; height: 20px"></li>
+					<li style="width: 100%; height: 20px"></li>
 
-			echo '<div class="learnpress-course-curriculum" data-section="' . ( $section_id ?? '' ) . '" data-id="' . ( $item_id ?? '' ) . '">';
-			echo lp_skeleton_animation_html( 3 );
-			echo '</div>';
+					<li style="width: 100%; height: 50px; margin-top: 40px;"></li>
+					<li style="width: 100%; height: 20px"></li>
+					<li style="width: 100%; height: 20px"></li>
+					<li style="width: 100%; height: 20px"></li>
+				</ul>
+			</div>
+			<?php
 		} else {
 			learn_press_get_template( 'single-course/tabs/curriculum' );
 		}
