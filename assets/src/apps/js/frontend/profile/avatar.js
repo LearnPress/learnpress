@@ -96,27 +96,27 @@ export default function Avatar() {
 		const file = await readFile( fileUpload );
 
 		var img = new Image();
-		img.src = file;
+		img.src = await file;
 		img.onload = await function() {
 			setNaturalWidth( img.naturalWidth );
 			setNaturalHeight( img.naturalHeight );
+
+            let error = '';
+            if ( parseInt( fileUpload.size ) > 2440701 ) {
+                error = __( 'File size too large. You need to upload a file < 2MB', 'learnpress' );
+            } else if ( img.naturalWidth > 600 || img.naturalHeight > 600 ) {
+                error = __( 'You image upload is too large', 'learnpress' );
+            } else if ( img.naturalWidth < width || img.naturalHeight < height ) {
+                error = __( `You image upload is smaller than the ${width}x${height}`, 'learnpress' );
+            }
+
+            if ( error ) {
+                setUploadError( error );
+            } else {
+                setUploadError( '' );
+                setFile(file);
+            }
 		};
-
-		let error = '';
-		if ( parseInt( fileUpload.size ) > 2440701 ) {
-			error = __( 'File size too large. You need to upload a file < 2MB', 'learnpress' );
-		} else if ( img.naturalWidth > 600 || img.naturalHeight > 600 ) {
-			error = __( 'You image upload is too large', 'learnpress' );
-		} else if ( img.naturalWidth < width || img.naturalHeight < height ) {
-			error = __( `You image upload is smaller than the ${width}x${height}`, 'learnpress' );
-		}
-
-		if ( error ) {
-			setUploadError( error );
-		} else {
-			setUploadError( '' );
-			setFile(file);
-		}
 	}
 
 	async function removeAvatar() {
