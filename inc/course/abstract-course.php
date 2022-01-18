@@ -742,10 +742,16 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get the sale price of course. Check if sale price is set
 		 * and the dates are valid.
 		 *
-		 * @return mixed
+		 * @return string|float
 		 */
 		public function get_sale_price() {
-			return floatval( $this->get_data( 'sale_price', 0 ) );
+			$sale_price_value = $this->get_data( 'sale_price', '' );
+
+			if ( '' !== $sale_price_value ) {
+				return floatval( $sale_price_value );
+			}
+
+			return $sale_price_value;
 		}
 
 		/**
@@ -760,7 +766,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$start_date     = $this->get_data( 'sale_start', '' );
 			$end_date       = $this->get_data( 'sale_end', '' );
 
-			if ( $regular_price > $sale_price && $sale_price > 0 ) {
+			if ( $regular_price > $sale_price && is_float( $sale_price ) ) {
 				$has_sale_price = true;
 			}
 
@@ -835,7 +841,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$price_html = '';
 
 			if ( $this->is_free() ) {
-				$price_html = apply_filters(
+				if ( is_float( $this->get_sale_price() ) ) {
+					$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
+				}
+
+				$price_html .= apply_filters(
 					'learn_press_course_price_html_free',
 					sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) ),
 					$this
