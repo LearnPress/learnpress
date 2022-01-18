@@ -175,7 +175,7 @@ export default function Avatar() {
 						<>
 							{ naturalHeight && naturalWidth ? (
 								<div className="learnpress_avatar__cropper">
-									<div style={ { position: 'relative', width: naturalWidth, height: naturalHeight, zIndex: 9999, maxWidth: '100%' } }>
+									<div style={ { position: 'relative', width: naturalWidth, height: naturalHeight, zIndex: 9999, maxWidth: '100%', maxHeight: '800px' } }>
 										<Cropper
 											image={ file }
 											crop={ crop }
