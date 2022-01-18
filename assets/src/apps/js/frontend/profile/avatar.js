@@ -56,6 +56,27 @@ export default function Avatar() {
 		setCroppedAreaPixels( croppedAreaPixels );
 	}, [] );
 
+	const base64Resize = ( base64, width, height ) => {
+		return new Promise( ( resolve, reject ) => {
+			const canvas = document.createElement( 'canvas' );
+			const img = document.createElement( 'img' );
+			img.src = base64;
+			img.setAttribute( 'crossOrigin', 'anonymous' );
+			img.onload = () => {
+				if ( img.naturalWidth > width || img.naturalHeight > height ) {
+					canvas.width = width;
+					canvas.height = height;
+					const ctx = canvas.getContext( '2d' );
+					ctx.drawImage( img, 0, 0, width, height );
+					resolve( canvas.toDataURL( 'image/jpeg' ) );
+				}
+
+				resolve( base64 );
+			};
+			img.onerror = ( err ) => reject( err );
+		} );
+	};
+
 	const updateAvatar = useCallback( async () => {
 		setLoading( { save: true } );
 
@@ -66,10 +87,12 @@ export default function Avatar() {
 				rotation,
 			);
 
+			const imageResize = await base64Resize( croppedImage, width, height );
+
 			const response = await apiFetch( {
 				path: 'lp/v1/profile/upload-avatar',
 				method: 'POST',
-				data: { file: croppedImage || '' },
+				data: { file: imageResize || '' },
 			} );
 
 			const { data, status, message } = await response;
@@ -104,8 +127,6 @@ export default function Avatar() {
 			let error = '';
 			if ( parseInt( fileUpload.size ) > 2440701 ) {
 				error = __( 'File size too large. You need to upload a file < 2MB', 'learnpress' );
-			} else if ( img.naturalWidth > 700 || img.naturalHeight > 700 ) {
-				error = __( 'You image upload is too large. Please upload image with size < 700x700', 'learnpress' );
 			} else if ( img.naturalWidth < width || img.naturalHeight < height ) {
 				error = sprintf( __( 'You image upload is smaller than the %1$sx$%2$s', 'learnpress' ), width, height );
 			}
@@ -154,7 +175,7 @@ export default function Avatar() {
 						<>
 							{ naturalHeight && naturalWidth ? (
 								<div className="learnpress_avatar__cropper">
-									<div style={ { position: 'relative', width: naturalWidth, height: naturalHeight, zIndex: 9999 } }>
+									<div style={ { position: 'relative', width: naturalWidth, height: naturalHeight, zIndex: 9999, maxWidth: '100%' } }>
 										<Cropper
 											image={ file }
 											crop={ crop }
