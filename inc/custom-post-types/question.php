@@ -39,7 +39,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 11 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
-			//$this->add_map_method( 'before_delete', 'before_delete_question' );
+			// $this->add_map_method( 'before_delete', 'before_delete_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -88,7 +88,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			// Get count question
-			/*if ( ! current_user_can( 'administrator' ) ) {
+			/*
+			if ( ! current_user_can( 'administrator' ) ) {
 				$filter             = new LP_Question_Filter();
 				$filter->post_author   = $user_id;
 
@@ -262,7 +263,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add default answer when save new question action.
 		 *
-		 * @param int $post_id
+		 * @param int     $post_id
 		 * @param WP_Post $post
 		 * @since 3.0.0
 		 */
@@ -486,6 +487,25 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			learn_press_admin_view( 'meta-boxes/quiz/assigned.php' );
 		}
 
+		public function meta_boxes() {
+			return array(
+				'question_assigned' => array(
+					'title'    => esc_html__( 'Assigned', 'learnpress' ),
+					'callback' => function( $post ) {
+						learn_press_admin_view( 'meta-boxes/quiz/assigned.php' );
+					},
+					'context'  => 'side',
+					'priority' => 'high',
+				),
+				'question-editor'   => array(
+					'title'    => esc_html__( 'Answer Options', 'learnpress' ),
+					'callback' => array( $this, 'admin_editor' ),
+					'context'  => 'normal',
+					'priority' => 'high',
+				),
+			);
+		}
+
 		/**
 		 * @return LP_Question_Post_Type|null
 		 *
@@ -493,7 +513,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public static function instance() {
 			if ( ! self::$_instance ) {
-				/*$args            = array(
+				/*
+				$args            = array(
 					'default_meta' => array(
 						'_lp_mark' => 1,
 						'_lp_type' => 'true_or_false',
@@ -508,8 +529,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 	$question_post_type = LP_Question_Post_Type::instance();
 
-	//Todo: Nhamdv see to rewrite
-	$question_post_type
-		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'question_assigned', 'side', 'high' )
-		->add_meta_box( 'question-editor', esc_html__( 'Answer Options', 'learnpress' ), 'admin_editor', 'normal', 'high', 1 );
+	// Todo: Nhamdv see to rewrite
+	// $question_post_type
+	// ->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'question_assigned', 'side', 'high' )
+	// ->add_meta_box( 'question-editor', esc_html__( 'Answer Options', 'learnpress' ), 'admin_editor', 'normal', 'high', 1 );
 }

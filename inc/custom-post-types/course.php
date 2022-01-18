@@ -38,7 +38,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
 
 			// Comment by tungnx
-			//add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_course_editor' ) );
+			// add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_course_editor' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'add_script_data' ) );
 		}
 
@@ -231,7 +231,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @editor tungnx
 		 * @reason not use
 		 */
-		/*public function data_course_editor() {
+		/*
+		public function data_course_editor() {
 			if ( LP_COURSE_CPT !== get_post_type() ) {
 				return;
 			}
@@ -248,8 +249,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function before_delete( int $post_id ) {
 			// course curd
-			//$curd = new LP_Course_CURD();
-			//$curd->remove_course( $post_id );
+			// $curd = new LP_Course_CURD();
+			// $curd->remove_course( $post_id );
 			$course = learn_press_get_course( $post_id );
 			if ( ! $course ) {
 				return;
@@ -450,7 +451,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @since modify 4.0.9
 		 * @reason this function of LP old, LP4 no need.
 		 */
-		/*private function _update_price( WP_Post $post ) {
+		/*
+		private function _update_price( WP_Post $post ) {
 			global $wpdb;
 
 			$request          = $_POST;
@@ -492,7 +494,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @reason not use
 		 * @return bool
 		 */
-		/*private function _validate_sale_price_date() {
+		/*
+		private function _validate_sale_price_date() {
 			$now              = current_time( 'timestamp' );
 			$sale_price_start = learn_press_get_request( '_lp_sale_start' );
 			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
@@ -599,7 +602,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							$html_items[]     = sprintf( _n( '<strong>%d</strong> ' . $singular_name, '<strong>%d</strong> ' . $plural_name, $count_item, 'learnpress' ), $count_item );
 						}
 
-						/*if ( $stats_objects ) {
+						/*
+						if ( $stats_objects ) {
 							foreach ( $stats_objects as $type => $count ) {
 								if ( ! $count || ! isset( $post_types[ $type ] ) ) {
 									continue;
@@ -637,11 +641,22 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
+		public function meta_boxes() {
+			return array(
+				'course-editor' => array(
+					'title'    => esc_html__( 'Curriculum', 'learnpress' ),
+					'callback' => array( $this, 'admin_editor' ),
+					'context'  => 'normal',
+					'priority' => 'high',
+				),
+			);
+		}
+
 		/**
 		 * Save course post
 		 * Should write run background if handle big and need more time
 		 *
-		 * @param int $post_id
+		 * @param int     $post_id
 		 * @param WP_Post $post
 		 * @since 4.0.9
 		 * @version 1.0.0
@@ -653,11 +668,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$bg = LP_Background_Single_Course::instance();
 
 			$bg->data(
-				[
+				array(
 					'handle_name' => 'save_post',
 					'course_id'   => $post_id,
 					'data'        => $_POST ?? array(),
-				]
+				)
 			)->dispatch();
 		}
 
@@ -677,5 +692,5 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 	$course_post_type = LP_Course_Post_Type::instance();
 
-	$course_post_type->add_meta_box( 'course-editor', esc_html__( 'Curriculum', 'learnpress' ), 'admin_editor', 'normal', 'high' );
+	// $course_post_type->add_meta_box( 'course-editor', esc_html__( 'Curriculum', 'learnpress' ), 'admin_editor', 'normal', 'high' );
 }

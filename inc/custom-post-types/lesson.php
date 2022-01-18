@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type ) {
 
-			//$this->add_map_method( 'before_delete', 'before_delete_lesson' );
+			// $this->add_map_method( 'before_delete', 'before_delete_lesson' );
 			// hide View Lesson link if not assigned to course
 
 			add_filter( 'views_edit-' . LP_LESSON_CPT, array( $this, 'views_pages' ), 10 );
@@ -201,7 +201,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @param int $post_id
 		 *
 		 * @since 3.0.0
-		 *
 		 */
 		public function before_delete_lesson( $post_id = 0 ) {
 			$curd = new LP_Lesson_CURD();
@@ -257,7 +256,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {
@@ -307,8 +306,19 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public static function lesson_assigned() {
+		public function lesson_assigned() {
 			learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+		}
+
+		public function meta_boxes() {
+			return array(
+				'lesson_assigned' => array(
+					'title'    => esc_html__( 'Assigned', 'learnpress' ),
+					'callback' => array( $this, 'lesson_assigned' ),
+					'context'  => 'side',
+					'priority' => 'high',
+				),
+			);
 		}
 
 		/**
@@ -325,7 +335,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 	$lesson_post_type = LP_Lesson_Post_Type::instance();
 
-	//Todo: Nhamdv see to rewrite
-	$lesson_post_type
-		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
+	// Todo: Nhamdv see to rewrite
+	// $lesson_post_type
+	// ->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
 }

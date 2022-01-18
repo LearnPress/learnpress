@@ -421,8 +421,27 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public static function quiz_assigned() {
-			learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+		// public static function quiz_assigned() {
+		// 	learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+		// }
+
+		public function meta_boxes() {
+			return array(
+				'quiz_assigned' => array(
+					'title'    => esc_html__( 'Assigned', 'learnpress' ),
+					'callback' => function( $post ) {
+						learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+					},
+					'context'  => 'side',
+					'priority' => 'high',
+				),
+				'quiz-editor'   => array(
+					'title'    => esc_html__( 'Questions', 'learnpress' ),
+					'callback' => array( $this, 'admin_editor' ),
+					'context'  => 'normal',
+					'priority' => 'high',
+				),
+			);
 		}
 
 		/**
@@ -455,7 +474,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 	$quiz_post_type = LP_Quiz_Post_Type::instance();
 
 	//Todo: Nhamdv see to rewrite
-	$quiz_post_type
-		->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' )
-		->add_meta_box( 'quiz-editor', esc_html__( 'Questions', 'learnpress' ), 'admin_editor', 'normal', 'high' );
+	// $quiz_post_type
+	// 	->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' )
+	// 	->add_meta_box( 'quiz-editor', esc_html__( 'Questions', 'learnpress' ), 'admin_editor', 'normal', 'high' );
 }

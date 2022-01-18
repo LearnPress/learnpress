@@ -49,7 +49,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @var array
 	 */
-	//protected $_map_methods = array();
+	// protected $_map_methods = array();
 
 	/**
 	 * @var array
@@ -87,21 +87,24 @@ abstract class LP_Abstract_Post_Type {
 		// Show actions link on list post admin.
 		add_filter( 'post_row_actions', array( $this, '_post_row_actions' ), 10, 2 );
 
-		//Todo: Nhamdv see to rewrite
+		// New metabox: Nhamdv
+		add_action( 'add_meta_boxes', array( $this, 'render_meta_box' ), 0 );
+
+		// After update h5p and withdraw will remove it.
 		add_action( 'load-post.php', array( $this, 'add_meta_boxes' ), 0 );
 		add_action( 'load-post-new.php', array( $this, 'add_meta_boxes' ), 0 );
-		//End
+		// End
 
 		// Comment by tungnx
-		//add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-		//add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
+		// add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+		// add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 
 		// Comment by tungnx
-		//add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
-		//add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
+		// add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
+		// add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
 
 		// Comment by tungnx - not use
-		//add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
+		// add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
 		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
@@ -118,12 +121,13 @@ abstract class LP_Abstract_Post_Type {
 			add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
 		}
 
-		/*if ( $args['default_meta'] ) {
+		/*
+		if ( $args['default_meta'] ) {
 			$this->_default_metas = $args['default_meta'];
 		}*/
 
 		// Comment by tungnx
-		//add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
+		// add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
 	}
 
 	/**
@@ -163,7 +167,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * In child-class use function save()
 	 *
-	 * @param int $post_id
+	 * @param int     $post_id
 	 * @param WP_Post $post
 	 * @editor tungnx
 	 * @since modify 4.0.9
@@ -177,15 +181,15 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		// prevent loop action
-		//remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
-		//$func_args = func_get_args();
+		// remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		// $func_args = func_get_args();
 
-		//var_dump($post_id, $post, $func_args);die;
+		// var_dump($post_id, $post, $func_args);die;
 
-		//$this->_call_method( 'save', $func_args );
+		// $this->_call_method( 'save', $func_args );
 		$this->save( $post_id, $post );
-		//$this->_flush_cache();
-		//add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		// $this->_flush_cache();
+		// add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 	}
 
 	/**
@@ -285,7 +289,8 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		// Comment by tungnx - not use on here, wrote on js
-		/*if ( $pagenow === 'edit.php' ) {
+		/*
+		if ( $pagenow === 'edit.php' ) {
 			$option = sprintf( '<option value="">%s</option>', __( 'Search by user', 'learnpress' ) );
 			$user   = get_user_by( 'id', LP_Request::get_int( 'author' ) );
 
@@ -358,7 +363,8 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	// Comment by tungnx - no see use
-	/*public function maybe_remove_features() {
+	/*
+	public function maybe_remove_features() {
 		if ( ! $this->_remove_features ) {
 			return;
 		}
@@ -369,7 +375,8 @@ abstract class LP_Abstract_Post_Type {
 	}*/
 
 	// Comment by tungnx - no see use
-	/*public function remove_feature( $feature ) {
+	/*
+	public function remove_feature( $feature ) {
 		if ( is_array( $feature ) ) {
 			foreach ( $feature as $fea ) {
 				$this->remove_feature( $fea );
@@ -380,7 +387,8 @@ abstract class LP_Abstract_Post_Type {
 	}*/
 
 	// Comment by tungnx - not use
-	/*public function update_default_meta() {
+	/*
+	public function update_default_meta() {
 		global $wp_query, $post;
 
 		if ( ! $post ) {
@@ -519,7 +527,8 @@ abstract class LP_Abstract_Post_Type {
 	 * @editor tungnx
 	 * @reason not use
 	 */
-	/*private function _is_archive() {
+	/*
+	private function _is_archive() {
 		global $pagenow, $post_type;
 		if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( $this->_post_type != LP_Request::get_string( 'post_type' ) ) ) {
 			return false;
@@ -529,8 +538,8 @@ abstract class LP_Abstract_Post_Type {
 	}*/
 
 	protected function _flush_cache() {
-		//LP_Hard_Cache::flush();
-		//wp_cache_flush();
+		// LP_Hard_Cache::flush();
+		// wp_cache_flush();
 	}
 
 	public function _posts_fields( $fields ) {
@@ -607,12 +616,47 @@ abstract class LP_Abstract_Post_Type {
 		return true;
 	}
 
+	/**
+	 * New Metabox instance
+	 *
+	 * @author Nhamdv
+	 *
+	 * @return void
+	 */
+	public function meta_boxes() {
+		return array();
+	}
+
+	/**
+	 * Render Metabox.
+	 *
+	 * @author Nhamdv
+	 *
+	 * @return void
+	 */
+	public function render_meta_box() {
+		$add_meta_box = $this->meta_boxes();
+		$metaboxes    = ! empty( $add_meta_box ) && is_array( $add_meta_box ) ? $add_meta_box : array();
+
+		$metaboxes = apply_filters( 'learnpress/custom-post-type/add-meta-box', $metaboxes, $this->_post_type );
+
+		if ( ! empty( $metaboxes ) ) {
+			foreach ( $metaboxes as $metabox_id => $metabox ) {
+				if ( isset( $metabox['callback'] ) ) {
+					add_meta_box( $metabox_id, $metabox['title'] ?? esc_html__( 'Unknown', 'learnpress' ), $metabox['callback'], $metabox['post_type'] ?? $this->_post_type, $metabox['context'] ?? 'normal', $metabox['priority'] ?? 'high' );
+				}
+			}
+		}
+	}
+
+	// Todo: after update metabox in h5p and withdraw will remove this function
 	public function add_meta_box( $id, $title, $callback = null, $context = 'advanced', $priority = 'default', $callback_args = null ) {
 		$this->_meta_boxes[ $id ] = func_get_args();
 
 		return $this;
 	}
 
+	// Todo: after update metabox in h5p and withdraw will remove this function
 	public function add_meta_boxes() {
 		if ( $this->_post_type != learn_press_get_requested_post_type() ) {
 			return;
@@ -777,7 +821,7 @@ abstract class LP_Abstract_Post_Type {
 	 * Show actions on list post
 	 *
 	 * @param string[] $actions
-	 * @param WP_Post $post
+	 * @param WP_Post  $post
 	 * @return array|false|mixed
 	 */
 	public function _post_row_actions( $actions, $post ) {
@@ -799,27 +843,32 @@ abstract class LP_Abstract_Post_Type {
 	 * @editor tungnx
 	 * @reason not use
 	 */
-	/*public function register_post_type() {
+	/*
+	public function register_post_type() {
 		return $this;
 	}*/
 
 	// Comment by tungnx - not use
-	/*public function admin_params() {
+	/*
+	public function admin_params() {
 		return $this;
 	}*/
 
 	// Comment by tungnx - not use
-	/*public function admin_scripts() {
+	/*
+	public function admin_scripts() {
 		return $this;
 	}*/
 
 	// Comment by tungnx - not use
-	/*public function admin_styles() {
+	/*
+	public function admin_styles() {
 		return $this;
 	}*/
 
 	// Comment by tungnx
-	/*public function print_js_template() {
+	/*
+	public function print_js_template() {
 		return $this;
 	}*/
 
@@ -828,7 +877,8 @@ abstract class LP_Abstract_Post_Type {
 	 * @reason comment by write difficult for another developer, difficult development
 	 * @since modify 4.0.9
 	 */
-	/*public function add_map_method( $origin, $replace, $single = false ) {
+	/*
+	public function add_map_method( $origin, $replace, $single = false ) {
 		if ( $single ) {
 			$this->_map_methods[ $origin ] = $replace;
 		} else {
@@ -848,7 +898,8 @@ abstract class LP_Abstract_Post_Type {
 	 * @param $messages
 	 * @return array|mixed
 	 */
-	/*private function _get_map_method( $origin ) {
+	/*
+	private function _get_map_method( $origin ) {
 		if ( ! empty( $this->_map_methods[ $origin ] ) ) {
 			if ( is_array( $this->_map_methods[ $origin ] ) ) {
 				$callback = array();
@@ -871,7 +922,8 @@ abstract class LP_Abstract_Post_Type {
 	 * @param $messages
 	 * @return array|mixed
 	 */
-	/*private function _call_method( $name, $args = false ) {
+	/*
+	private function _call_method( $name, $args = false ) {
 		$callbacks = $this->_get_map_method( $name );
 		if ( is_array( $callbacks[0] ) ) {
 			$return = array();
@@ -945,7 +997,8 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	// Deprecated functions
-	/*private function _get_orderby() {
+	/*
+	private function _get_orderby() {
 		_deprecated_function( __FUNCTION__, '4.1.0' );
 	}
 	public function _get_search(): string {
@@ -959,47 +1012,47 @@ abstract class LP_Abstract_Post_Type {
 }
 
 // Comment by tungnx - not use
-//class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
-//	/**
-//	 * Get string for searching
-//	 *
-//	 * @return string
-//	 */
-//	protected function _get_search() {
-//		return LP_Request::get( 's' );
-//	}
+// class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
+// **
+// * Get string for searching
+// *
+// * @return string
+// */
+// protected function _get_search() {
+// return LP_Request::get( 's' );
+// }
 //
-//	/**
-//	 * @return string
-//	 */
-//	protected function _get_order() {
-//		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
-//	}
+// **
+// * @return string
+// */
+// protected function _get_order() {
+// return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
+// }
 //
-//	/**
-//	 * @return mixed
-//	 */
-//	protected function _get_orderby() {
-//		return LP_Request::get( 'orderby' );
-//	}
+// **
+// * @return mixed
+// */
+// protected function _get_orderby() {
+// return LP_Request::get( 'orderby' );
+// }
 //
-//	/**
-//	 * Return TRUE if this post-type is support Gutenberg editor.
-//	 *
-//	 * @since 3.3.0
-//	 *
-//	 * @return bool
-//	 */
-//	public function is_support_gutenberg() {
-//		$post_types = array(
-//			LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
-//			LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
-//			LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
-//			LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
-//		);
+// **
+// * Return TRUE if this post-type is support Gutenberg editor.
+// *
+// * @since 3.3.0
+// *
+// * @return bool
+// */
+// public function is_support_gutenberg() {
+// $post_types = array(
+// LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
+// LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
+// LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
+// LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
+// );
 //
-//		$support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
+// $support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
 //
-//		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
-//	}
-//}
+// return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
+// }
+// }
