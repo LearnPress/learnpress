@@ -159,7 +159,7 @@ class LP_Cart {
 					$item_data['data'] = $course;
 					break;
 				default:
-					$item_data = apply_filters( 'learnpress/cart/add-item/item_type_' . $item_type, $item_data, $item_id );
+					$item_data = apply_filters( 'learnpress/cart/add-item/item_type_' . $item_type, $item_data, $item_id, $quantity );
 					break;
 			}
 
@@ -170,12 +170,12 @@ class LP_Cart {
 			$this->_cart_content[ $cart_id ] = apply_filters(
 				'learn_press_add_cart_item',
 				array_merge(
-					$item_data,
 					array(
 						'item_id'  => $item_id,
 						'quantity' => $quantity,
-						// 'data'     => array(),
-					)
+						'data'     => array(),
+					),
+					$item_data
 				)
 			);
 
@@ -243,7 +243,7 @@ class LP_Cart {
 						$subtotal = $course->get_price() * absint( $item['quantity'] );
 						break;
 					default:
-						$subtotal = apply_filters( 'learnpress/order/calculate_sub_total/item_type_' . $item_type, $subtotal, $item );
+						$subtotal = apply_filters( 'learnpress/cart/calculate_sub_total/item_type_' . $item_type, $subtotal, $item );
 						break;
 				}
 
