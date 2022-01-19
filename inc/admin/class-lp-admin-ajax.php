@@ -1200,7 +1200,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Upload avatar of user
 		 *
 		 * @editor tungnx
-		 * @modify 4.1.4.2
+		 * @modify 4.1.5
 		 */
 		// public static function upload_user_avatar() {
 		// 	$user_id = get_current_user_id();
@@ -1290,7 +1290,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		//  * Remove avatar of user
 		//  *
 		//  * @author tungnx
-		//  * @since 4.1.4.2
+		//  * @since 4.1.5
 		//  * @version 1.0.0
 		//  * @return void
 		//  */

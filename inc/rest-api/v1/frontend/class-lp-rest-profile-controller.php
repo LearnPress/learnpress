@@ -322,7 +322,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @author tungnx
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 * @version 1.0.0
 	 * @return LP_REST_Response
 	 */

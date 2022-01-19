@@ -717,7 +717,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array|bool
 	 * @editor tungnx
-	 * @deprecated 4.1.4.2
+	 * @deprecated 4.1.5
 	 */
 	/*public function read_course_items_by_user_item_id( $user_item_id ) {
 		global $wpdb;
@@ -742,7 +742,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 	/**
 	 * @editor tungnx
-	 * @deprecated 4.1.4.2
+	 * @deprecated 4.1.5
 	 */
 	/*public function read_course_data( $course_id, $user_id ) {
 		global $wpdb;
@@ -800,7 +800,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return object
 	 * @editor tungnx
-	 * @deprecated 4.1.4.2
+	 * @deprecated 4.1.5
 	 */
 	/*public function get_item_by_user_item_id( $user_item_id ) {
 		global $wpdb;
@@ -821,7 +821,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return bool
 	 * @editor tungnx
-	 * @deprecated 4.1.4.2
+	 * @deprecated 4.1.5
 	 */
 	/*public function read_course_items_bak( &$parent_item, $force = false ) {
 		global $wpdb;
@@ -1402,8 +1402,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return LP_Query_List_Table
 	 * @editor tungnx
-	 * @modify 4.1.4.2 - comment
-	 * @deprecated 4.1.4.2
+	 * @modify 4.1.5 - comment
+	 * @deprecated 4.1.5
 	 */
 	/*public function query_own_courses( int $user_id = 0, array $args = array() ): LP_Query_List_Table {
 		global $wpdb, $wp;
@@ -1529,8 +1529,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return LP_Query_List_Table
 	 * @editor tungnx
-	 * @modify 4.1.4.2 - comment
-	 * @deprecated 4.1.4.2
+	 * @modify 4.1.5 - comment
+	 * @deprecated 4.1.5
 	 */
 	/*public function query_purchased_courses( int $user_id = 0, array $args = array() ): LP_Query_List_Table {
 		global $wpdb, $wp;

@@ -4,7 +4,7 @@
  * Class LP_Courses_Cache
  *
  * @author tungnx
- * @since 4.1.4.2
+ * @since 4.1.5
  * @version 1.0.0
  */
 defined( 'ABSPATH' ) || exit();

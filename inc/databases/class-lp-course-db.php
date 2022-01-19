@@ -218,7 +218,7 @@ class LP_Course_DB extends LP_Database {
 
 	/**
 	 * @editor tungnx
-	 * @modify 4.1.4.2 - comment
+	 * @modify 4.1.5 - comment
 	 */
 	/*public function get_courses_on_sale( $order = 'ASC' ) {
 		$args = array(
@@ -455,7 +455,7 @@ class LP_Course_DB extends LP_Database {
 	 * @throws Exception
 	 * @author tungnx
 	 * @version 1.0.0
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 */
 	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
 		$result = null;
@@ -560,7 +560,7 @@ class LP_Course_DB extends LP_Database {
 	 * @param LP_Course_Filter $filter
 	 *
 	 * @return LP_Course_Filter
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 * @author tungnx
 	 * @version 1.0.0
 	 */
@@ -578,7 +578,7 @@ class LP_Course_DB extends LP_Database {
 	 * @param LP_Course_Filter $filter
 	 *
 	 * @return  LP_Course_Filter
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 * @author tungnx
 	 * @version 1.0.0
 	 */
@@ -597,7 +597,7 @@ class LP_Course_DB extends LP_Database {
 	 * @return  LP_Course_Filter
 	 * @author tungnx
 	 * @version 1.0.0
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 */
 	public function get_courses_sort_by_feature( LP_Course_Filter $filter ): LP_Course_Filter {
 		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";

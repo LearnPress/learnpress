@@ -718,7 +718,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool|mixed
 		 * @deprecated
 		 * @editor tungnx
-		 * @modify 4.1.4.2 comment
+		 * @modify 4.1.5 comment
 		 */
 		/*public function get_course_info( $user_id = null ) {
 			if ( ! $user_id ) {
@@ -796,7 +796,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get the regular price format of course.
 		 *
-		 * @since 4.1.4.2
+		 * @since 4.1.5
 		 * @version 1.0.0
 		 * @author tungnx
 		 * @return mixed
@@ -833,7 +833,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get html course price
 		 *
 		 * @author tungnx
-		 * @since 4.1.4.2
+		 * @since 4.1.5
 		 * @version 1.0.0
 		 * @return mixed|void
 		 */
@@ -866,10 +866,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get the price of course with html
 		 *
 		 * @editor tungnx
-		 * @modify 4.1.4.2
+		 * @modify 4.1.5
 		 * @version 1.0.1
 		 * @return mixed
-		 * @deprecated 4.1.4.2
+		 * @deprecated 4.1.5
 		 */
 		public function get_price_html() {
 			$price_html = '';
@@ -892,7 +892,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get the origin price of course
 		 *
 		 * @return float
-		 * @deprecated 4.1.4.2
+		 * @deprecated 4.1.5
 		 */
 		public function get_origin_price() {
 			return $this->get_regular_price();
@@ -902,7 +902,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get the price of course with html
 		 *
 		 * @return mixed
-		 * @deprecated 4.1.4.2
+		 * @deprecated 4.1.5
 		 */
 		public function get_origin_price_html() {
 			return $this->get_regular_price_html();

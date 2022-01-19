@@ -33,7 +33,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @return array
 		 * @editor tungnx
-		 * @modify 4.1.4.2 - comment - not use
+		 * @modify 4.1.5 - comment - not use
 		 */
 		/*public static function log( $data ) {
 			return $data;
@@ -500,7 +500,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return array|null|string|int
 		 * @author tungnx
 		 * @version 1.0.0
-		 * @sicne 4.1.4.2
+		 * @sicne 4.1.5
 		 */
 		public static function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
 			try {

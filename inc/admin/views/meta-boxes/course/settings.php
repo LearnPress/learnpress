@@ -186,7 +186,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 	/**
 	 * @editor tungnx
-	 * @modify 4.1.4.2 - replace to lp_price function
+	 * @modify 4.1.5 - replace to lp_price function
 	 */
 	/*public function price( $thepostid ) {
 		$post = get_post( $thepostid );
@@ -271,7 +271,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 * @param $post_id
 	 *
 	 * @author tungnx
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 * @version 1.0.0
 	 * @return array
 	 */

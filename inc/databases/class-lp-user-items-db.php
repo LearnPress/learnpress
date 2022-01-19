@@ -252,7 +252,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @param LP_User_Items_Filter $filter {user_id, item_type}
 	 *
 	 * @author tungnx
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 * @version 1.0.0
 	 * @return object|null
 	 * @throws Exception
@@ -730,7 +730,7 @@ class LP_User_Items_DB extends LP_Database {
 	 *
 	 * @author tungnx
 	 * @version 1.0.0
-	 * @since 4.1.4.2
+	 * @since 4.1.5
 	 * @return null|array|string|int
 	 * @throws Exception
 	 */

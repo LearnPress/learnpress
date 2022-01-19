@@ -588,7 +588,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return int
 		 * @throws Exception
 		 * @editor tungnx
-		 * @modify 4.1.4.2
+		 * @modify 4.1.5
 		 */
 		public function add_item( $item ): int {
 			global $wpdb;
