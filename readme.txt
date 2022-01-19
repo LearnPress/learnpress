@@ -197,6 +197,15 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.5 (2022-01-21) =
+~ Modified: optimize, handle cache for query courses.
+~ Added: meta key '_lp_regular_price'.
+~ Modified: get price of course.
+~ Added: "get_user_courses" function.
+~ Fixed: security avatar image (Arbitrary Image Renaming).
+~ Modified: upload avatar image.
+~ Fixed: RTL style.
+
 = 4.1.4.1 (2021-12-22) =
 ~ Added: settings redirect when finish course.
 ~ Added: enqueue script by shortcode button purchase.
