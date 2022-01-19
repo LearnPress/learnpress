@@ -157,6 +157,9 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 
 
 if ( ! function_exists( 'learn_press_content_item_body_class' ) ) {
+	// Add more assets into page that displaying content of an item
+	add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
+
 	function learn_press_content_item_body_class( $classes ) {
 		global $lp_course_item;
 
@@ -239,13 +242,17 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 }
 add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
 
-if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
+/**
+ * @editor tungnx
+ * @modify 4.1.5 - comment - not use
+ */
+//if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 	/**
 	 * If user is viewing content of an item instead of the whole course
 	 * then remove all content of course and replace with content of
 	 * that item.
 	 */
-	function learn_press_control_displaying_course_item() {
+	/*function learn_press_control_displaying_course_item() {
 		global $wp_filter;
 
 		// Remove all hooks added to content of whole course.
@@ -264,15 +271,16 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 				unset( $wp_filter[ "learn-press/{$hook}" ] );
 			}
 		}
+	}*/
+//}
 
-		// Add more assets into page that displaying content of an item
-		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
-	}
-}
-
-if ( ! function_exists( 'learn_press_single_course_args' ) ) {
+/**
+ * @editor tungnx
+ * @modify 4.1.5 - comment - not use from 4.1.4
+ */
+//if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 	// Todo: check why call more time - tungnx
-	function learn_press_single_course_args() {
+	/*function learn_press_single_course_args() {
 		static $output = array();
 
 		if ( ! $output ) {
@@ -289,8 +297,8 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 		}
 
 		return $output;
-	}
-}
+	}*/
+//}
 
 if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {

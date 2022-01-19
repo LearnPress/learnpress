@@ -205,6 +205,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: security avatar image (Arbitrary Image Renaming).
 ~ Modified: upload avatar image.
 ~ Fixed: RTL style.
+~ Modified: optimize load Curriculum via API, fast for big data (larger thousands items).
 
 = 4.1.4.1 (2021-12-22) =
 ~ Added: settings redirect when finish course.

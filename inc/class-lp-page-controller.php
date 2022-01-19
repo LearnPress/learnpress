@@ -35,7 +35,7 @@ class LP_Page_Controller {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		// Comment by tungnx
-		add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
+		// add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
 		//add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
