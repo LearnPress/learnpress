@@ -117,6 +117,12 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			$upload_dir = learn_press_user_profile_picture_upload_dir( true );
 
+			$target_dir = LP_WP_Filesystem::instance()->is_dir( $upload_dir['path'] );
+
+			if ( ! $target_dir ) {
+				wp_mkdir_p( $upload_dir['path'] );
+			}
+
 			if ( ! LP_WP_Filesystem::instance()->is_writable( $upload_dir['path'] ) ) {
 				throw new Exception( __( 'Upload directory is not writable', 'learnpress' ) );
 			}
@@ -165,6 +171,12 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$upload_dir = learn_press_user_profile_picture_upload_dir( true );
+
+			$target_dir = LP_WP_Filesystem::instance()->is_dir( $upload_dir['path'] );
+
+			if ( ! $target_dir ) {
+				wp_mkdir_p( $upload_dir['path'] );
+			}
 
 			if ( ! LP_WP_Filesystem::instance()->is_writable( $upload_dir['path'] ) ) {
 				throw new Exception( __( 'Upload directory is not writable', 'learnpress' ) );
