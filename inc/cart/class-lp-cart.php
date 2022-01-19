@@ -159,11 +159,11 @@ class LP_Cart {
 					$item_data['data'] = $course;
 					break;
 				default:
-					$item_data = apply_filters( 'learnpress/cart/add-item/item_type_' . $item_type, $item_id, $item_data );
+					$item_data = apply_filters( 'learnpress/cart/add-item/item_type_' . $item_type, $item_data, $item_id );
 					break;
 			}
 
-			$item_data = apply_filters( 'learnpress/cart/item-data', $item_data, $item_id );
+			// $item_data = apply_filters( 'learnpress/cart/item-data', $item_data, $item_id );
 
 			$cart_id = $this->generate_cart_id( $item_id, $item_data );
 
@@ -174,7 +174,7 @@ class LP_Cart {
 					array(
 						'item_id'  => $item_id,
 						'quantity' => $quantity,
-						'data'     => array(),
+						// 'data'     => array(),
 					)
 				)
 			);
@@ -184,7 +184,7 @@ class LP_Cart {
 			/**
 			 * @see LP_Cart::calculate_totals()
 			 */
-			do_action( 'learn-press/add-to-cart', $item_data, $quantity, $item_data, $cart_id );
+			do_action( 'learn-press/add-to-cart', $item_id, $quantity, $item_data, $cart_id );
 
 			return $cart_id;
 		} catch ( Exception $e ) {
@@ -224,19 +224,30 @@ class LP_Cart {
 	 * Re-calculate cart totals and update data to session
 	 */
 	public function calculate_totals() {
+		$total       = $subtotal = 0;
 		$this->total = $this->subtotal = 0;
 		$items       = $this->get_cart();
 
 		if ( $items ) {
 			foreach ( $items as $cart_id => $item ) {
-				$course = learn_press_get_course( $item['item_id'] );
 
-				if ( ! $course ) {
+				$item_type = get_post_type( $item['item_id'] );
+
+				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
 					continue;
 				}
 
-				$subtotal = apply_filters( 'learn-press/calculate_sub_total', $course->get_price() * absint( $item['quantity'] ), $item );
-				$total    = $subtotal;
+				switch ( $item_type ) {
+					case LP_COURSE_CPT:
+						$course   = learn_press_get_course( $item['item_id'] );
+						$subtotal = $course->get_price() * absint( $item['quantity'] );
+						break;
+					default:
+						$subtotal = apply_filters( 'learnpress/order/calculate_sub_total/item_type_' . $item_type, $subtotal, $item );
+						break;
+				}
+
+				$total = $subtotal;
 
 				$this->_cart_content[ $cart_id ]['subtotal'] = $subtotal;
 				$this->_cart_content[ $cart_id ]['total']    = $total;
@@ -282,21 +293,31 @@ class LP_Cart {
 	public function get_cart_from_session() {
 		if ( ! did_action( 'learn_press_get_cart_from_session' ) ) {
 			$cart = learn_press_session_get( $this->_cart_session_key );
-
+			$data = array();
 			if ( $cart ) {
 				foreach ( $cart as $cart_id => $values ) {
 					if ( ! empty( $values['item_id'] ) ) {
-						$course = learn_press_get_course( $values['item_id'] );
 
-						if ( $course && $course->exists() && $values['quantity'] > 0 ) {
-
-							if ( ! $course->is_purchasable() ) {
-								learn_press_add_message( sprintf( __( '%s has been removed from your cart because it can no longer be purchased.', 'learnpress' ), $course->get_title() ), 'error' );
-								do_action( 'learn-press/remove-cart-item-from-session', $cart, $values );
-							} else {
-								$data                            = array_merge( $values, array( 'data' => $course ) );
-								$this->_cart_content[ $cart_id ] = apply_filters( 'learn-press/get-cart-item-from-session', $data, $values, $cart_id );
-							}
+						$item_type = get_post_type( $values['item_id'] );
+						if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
+							return false;
+						}
+						switch ( $item_type ) {
+							case LP_COURSE_CPT:
+								$course = learn_press_get_course( $values['item_id'] );
+								if ( $course && $course->exists() && $values['quantity'] > 0 ) {
+									if ( ! $course->is_purchasable() ) {
+										learn_press_add_message( sprintf( __( '%s has been removed from your cart because it can no longer be purchased.', 'learnpress' ), $course->get_title() ), 'error' );
+										do_action( 'learn-press/remove-cart-item-from-session', $cart, $values );
+									} else {
+										$data                            = array_merge( $values, array( 'data' => $course ) );
+										$this->_cart_content[ $cart_id ] = $data;
+									}
+								}
+								break;
+							default:
+								$this->_cart_content[ $cart_id ] = apply_filters( 'learn-press/get-cart-item-from-session/item_type_' . $item_type, $data, $values, $cart_id );
+								break;
 						}
 					}
 				}

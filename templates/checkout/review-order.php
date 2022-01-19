@@ -46,7 +46,7 @@ $cart = learn_press_get_checkout_cart();
 								<?php echo $_course->get_image(); ?>
 							</td>
 							<td class="course-name">
-								<a href="<?php the_permalink( $item_id ); ?>">
+								<a href="<?php echo apply_filters( 'learn-press/review-order/cart-item-link', get_the_permalink( $item_id ), $cart_item ); ?>">
 									<?php echo apply_filters( 'learn-press/review-order/cart-item-name', $_course->get_title(), $cart_item, $cart_item_key ); ?>
 								</a>
 

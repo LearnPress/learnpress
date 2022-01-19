@@ -2239,7 +2239,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$filter->user_id = $this->get_id();
 			$filter->status  = $args['status'] ?? '';
 			$filter->page    = $args['paged'] ?? 1;
-			$filter->limit   = $args['limit'] ?? 0;
+			$filter->limit   = $args['limit'] ?? $filter->limit;
 			$total_rows      = 0;
 			$result_courses  = LP_User_Item_Course::get_user_courses( $filter, $total_rows );
 
