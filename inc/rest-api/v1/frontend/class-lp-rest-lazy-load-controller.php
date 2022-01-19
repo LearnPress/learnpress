@@ -1,4 +1,5 @@
 <?php
+
 class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
 		$this->namespace = 'lp/v1';
@@ -13,7 +14,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'user_progress' ),
-					'permission_callback' => function() {
+					'permission_callback' => function () {
 						return is_user_logged_in();
 					},
 				),
@@ -48,6 +49,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 * Load items progress in single curriculum items.
 	 *
 	 * @param [type] $request
+	 *
 	 * @return WP_REST_Response|WP_Error
 	 *
 	 * @author Nhamdv <daonham95>
@@ -114,12 +116,14 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
 				$response->message = __( 'Course is invalid', 'learnpress' );
+
 				return $response;
 			}
 
 			$user = learn_press_get_user( $user_id );
 			if ( $user->is_guest() ) {
 				$response->message = __( 'You are Guest', 'learnpress' );
+
 				return $response;
 			}
 
@@ -141,16 +145,20 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Load course items in tab Curriculum and sidebar in Single Course Curriculums
+	 * Load sections of single course
 	 *
-	 * @param [type] $request
+	 * @param WP_REST_Request $request
+	 *
 	 * @return void
+	 * @author nhamdv
+	 * @since 4.1.5
+	 * @version 1.0.0
 	 */
-	public function course_curriculum( $request ) {
+	public function course_curriculum( WP_REST_Request $request ) {
 		$params = $request->get_params();
 
 		$course_id  = absint( $params['courseId'] ?? 0 );
-		$per_page   = absint( $params['per_page'] ?? LP()->settings()->get( 'section_per_page', 2 ) );
+		$per_page   = LP()->settings()->get( 'section_per_page', 2 );
 		$page       = absint( $params['page'] ?? 1 );
 		$order      = wp_unslash( $params['order'] ?? 'ASC' );
 		$search     = wp_unslash( $params['search'] ?? '' );
@@ -214,16 +222,20 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Load course items in tab Curriculum and sidebar in Single Course Curriculums
+	 * Load items' section on the single course
 	 *
-	 * @param [type] $request
+	 * @param WP_REST_Request $request
+	 *
 	 * @return void
+	 * @author nhamdv
+	 * @since 4.1.5
+	 * @version 1.0.0
 	 */
-	public function course_curriculum_items( $request ) {
+	public function course_curriculum_items( WP_REST_Request $request ) {
 		$params = $request->get_params();
 
 		$section_id = absint( $params['sectionId'] ?? 0 );
-		$per_page   = absint( $params['per_page'] ?? LP()->settings()->get( 'course_item_per_page', 5 ) );
+		$per_page   = LP()->settings()->get( 'course_item_per_page', 5 );
 		$page       = absint( $params['page'] ?? 1 );
 		$order      = wp_unslash( $params['order'] ?? 'ASC' );
 		$search     = wp_unslash( $params['search'] ?? '' );
@@ -250,7 +262,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$section_items = LP_Section_DB::getInstance()->get_section_items_by_section_id( $filters );
 
 			if ( is_wp_error( $section_items ) ) {
-				throw new Exception( $sections->get_error_message() );
+				throw new Exception( $section_items->get_error_message() );
 			}
 
 			$response->status = 'success';
