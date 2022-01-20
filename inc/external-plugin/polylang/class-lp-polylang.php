@@ -2,6 +2,10 @@
 
 /**
  * @class LP_Polylang
+ *
+ * @since 4.1.5
+ * @version 1.0.0
+ * @author tungnx
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,10 +20,30 @@ class LP_Polylang {
 	}
 
 	public function hooks() {
-		add_filter( 'lp/template/archive-course/skeleton/args', [ $this, 'localize_script' ] );
-		add_filter( 'lp/rest-api/frontend/course/archive_course/query_args', [ $this, 'query_courses' ], 10, 2 );
 		add_filter( 'learn-press/general-settings-fields', [ $this, 'general_settings_fields' ], 10, 2 );
-		//add_filter( 'learn-press/get-page-link', [ $this, 'get_page_link' ], 10, 3 );
+		add_filter( 'learn_press_get_page_id', [ $this, 'get_page_id' ], 10, 2 );
+		add_filter( 'lp/template/archive-course/skeleton/args', [ $this, 'localize_script' ] );
+		add_filter( 'lp/api/courses/filter', [ $this, 'filter_query_courses' ], 10, 2 );
+		add_filter( 'pll_the_language_link', [ $this, 'get_link_switcher' ], 10, 3 );
+	}
+
+	/**
+	 * Get page_id config on LP Settings
+	 *
+	 * @param int $page_id
+	 * @param string $name
+	 *
+	 * @return int
+	 */
+	public function get_page_id( int $page_id = 0, string $name ): int {
+		$lang_default = pll_default_language();
+		$lang_current = pll_current_language();
+
+		if ( $lang_current != $lang_default ) {
+			$page_id = LP_Settings::get_option( "{$name}_page_id_{$lang_current}" );
+		}
+
+		return $page_id;
 	}
 
 	/**
@@ -36,30 +60,20 @@ class LP_Polylang {
 	/**
 	 * Query get course by current language
 	 *
-	 * @param array $args
+	 * @param LP_Course_Filter $filter
 	 * @param WP_REST_Request $request
 	 *
-	 * @return array
+	 * @return LP_Course_Filter
 	 */
-	public function query_courses( array $args, WP_REST_Request $request ): array {
+	public function filter_query_courses( LP_Course_Filter $filter, WP_REST_Request $request ): LP_Course_Filter {
 		$pll_current_lang = $request['pll-current-lang'] ?? '';
+		$lp_db            = LP_Database::getInstance();
 
-		if ( ! empty( $pll_current_lang ) ) {
-			$args_query_pll = [
-				'taxonomy' => 'language',
-				'field'    => 'slug',
-				'terms'    => $pll_current_lang,
-			];
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS term ON r_term.term_taxonomy_id = term.term_id";
+		$filter->where[] = $lp_db->wpdb->prepare( 'AND term.slug = %s', $pll_current_lang );
 
-			if ( ! isset( $args['tax_query'] ) ) {
-				$args['tax_query'] = [ $args_query_pll ];
-			} else {
-				$args['tax_query']['relation'] = 'AND';
-				$args['tax_query'][]           = $args_query_pll;
-			}
-		}
-
-		return $args;
+		return $filter;
 	}
 
 	/**
@@ -69,36 +83,34 @@ class LP_Polylang {
 		$default_lang = pll_default_language();
 		$current_lang = pll_current_language();
 
+		$field_arr = [ 'courses_page_id', 'profile_page_id', 'checkout_page_id', 'become_a_teacher_page_id', 'term_conditions_page_id' ];
+		$field_arr = apply_filters( 'lp_pll/name-fields', $field_arr );
+
 		if ( $default_lang != $current_lang ) {
-			// Set name field with lang for set "page id archive courses"
-			$fields[1]['id'] = $fields[1]['id'] . '_' . $current_lang;
+			// Set name field with lang
+			foreach ( $fields as $k => $field ) {
+				if ( isset( $field['id'] ) && in_array( $field['id'], $field_arr ) ) {
+					$fields[ $k ]['id'] = $field['id'] . '_' . $current_lang;
+				}
+			}
 		}
 
 		return $fields;
 	}
 
-	/**
-	 * Get permalink archive courses page
-	 *
-	 * @param string $permalink
-	 * @param int $page_id
-	 * @param string $key
-	 *
-	 * @return string
-	 */
-	public function get_page_link( string $permalink, int $page_id, string $key ): string {
-		if ( 'courses' === $key ) {
-			$default_lang = pll_default_language();
-			$current_lang = pll_current_language();
+	public function get_link_switcher( $url, $slug, $locale ) {
+		$slug_lang = '';
 
-			if ( $default_lang != $current_lang ) {
-				// Get option by current lang
-				$archive_course_id_lang = LP_Settings::get_option( $key . '_page_id_' . $current_lang );
-				$permalink              = trailingslashit( get_permalink( $archive_course_id_lang ) );
-			}
+		if ( $slug !== pll_default_language() ) {
+			$slug_lang = '_' . $slug;
 		}
 
-		return $permalink;
+		if ( '' !== LP_Page_Controller::page_current() ) {
+			$name_page = str_replace( 'lp_page_', '', LP_Page_Controller::page_current() );
+			$url       = get_permalink( LP_Settings::get_option( $name_page . '_page_id' . $slug_lang ) );
+		}
+
+		return $url;
 	}
 
 	/**

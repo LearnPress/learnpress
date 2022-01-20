@@ -137,6 +137,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter->limit    = LP_Settings::get_option( 'archive_course_limit', 10 );
 
 			$total_rows = 0;
+			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
 			$courses    = LP_Course::get_courses( $filter, $total_rows );
 
 			$return_type = $request['return_type'] ?? 'html';

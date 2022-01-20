@@ -15,7 +15,7 @@ class LP_Database {
 	public $wpdb;
 	public $tb_lp_user_items, $tb_lp_user_itemmeta;
 	public $tb_posts, $tb_postmeta, $tb_options;
-	public $tb_term_relationships;
+	public $tb_terms, $tb_term_relationships;
 	public $tb_lp_order_items, $tb_lp_order_itemmeta;
 	public $tb_lp_sections, $tb_lp_section_items;
 	public $tb_lp_quiz_questions;
@@ -39,6 +39,7 @@ class LP_Database {
 		$this->tb_posts                  = $wpdb->posts;
 		$this->tb_postmeta               = $wpdb->postmeta;
 		$this->tb_options                = $wpdb->options;
+		$this->tb_terms                  = $wpdb->terms;
 		$this->tb_term_relationships     = $wpdb->term_relationships;
 		$this->tb_lp_user_items          = $prefix . 'learnpress_user_items';
 		$this->tb_lp_user_itemmeta       = $prefix . 'learnpress_user_itemmeta';

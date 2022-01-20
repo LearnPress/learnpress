@@ -528,7 +528,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 							$filter_tmp = LP_Course_DB::getInstance()->get_courses_sort_by_feature( $filter_tmp );
 							break;
 						default:
-							$filter_tmp = apply_filters( 'lp/courses/filter/sort_by' . $filter->sort_by, $filter_tmp );
+							$filter_tmp = apply_filters( 'lp/courses/filter/sort_by' . $sort_by, $filter_tmp );
 							break;
 					}
 
@@ -553,6 +553,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				}
 
 				// Query get results
+				$filter  = apply_filters( 'lp/courses/filter', $filter );
 				$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
 
 				LP_Courses_Cache::instance()->set_cache( $key_cache, $courses );

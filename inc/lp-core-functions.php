@@ -702,12 +702,14 @@ if ( ! function_exists( 'learn_press_is_ajax' ) ) {
  *
  * @return int
  */
-function learn_press_get_page_id( $name ) {
+function learn_press_get_page_id( string $name ): int {
 	$page_id = LP_Settings::instance()->get( "{$name}_page_id", false );
 
 	if ( function_exists( 'icl_object_id' ) ) {
 		$page_id = icl_object_id( $page_id, 'page', false, defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '' );
 	}
+
+	$page_id = (int) $page_id;
 
 	return apply_filters( 'learn_press_get_page_id', $page_id, $name );
 }
@@ -1473,7 +1475,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
  * @modify 4.1.4
  */
 function learn_press_get_page_link( string $key ): string {
-	$page_id = LP_Settings::get_option( $key . '_page_id' );
+	$page_id = learn_press_get_page_id( $key );
 	$link    = '';
 
 	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
