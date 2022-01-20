@@ -40,7 +40,7 @@ class LP_Polylang {
 		$lang_current = pll_current_language();
 
 		if ( $lang_current != $lang_default ) {
-			$page_id = LP_Settings::get_option( "{$name}_page_id_{$lang_current}" );
+			$page_id = absint( LP_Settings::get_option( "{$name}_page_id_{$lang_current}" ) );
 		}
 
 		return $page_id;
