@@ -36,6 +36,10 @@ class LP_Polylang {
 	 * @return int
 	 */
 	public function get_page_id( int $page_id = 0, string $name ): int {
+		if ( ! is_callable( 'pll_default_language' ) ) {
+			return $page_id;
+		}
+
 		$lang_default = pll_default_language();
 		$lang_current = pll_current_language();
 

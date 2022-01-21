@@ -26,6 +26,7 @@ const buildPackages = [
 
 	// Frontend
 	'frontend/modal',
+	'frontend/courses',
 	'frontend/single-course',
 	'frontend/single-curriculum',
 	'frontend/question-types',

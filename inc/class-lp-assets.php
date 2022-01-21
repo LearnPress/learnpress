@@ -204,13 +204,13 @@ class LP_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'lp-courses'           => new LP_Asset_Key(
-					self::url( self::$_folder_source . 'js/frontend/courses' . self::$_min_assets . '.js' ),
+					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
 					array( 'lp-global', 'lp-utils', 'wp-api-fetch' ),
 					array( LP_PAGE_COURSES ),
 					0,
 					1
 				),
-				'lp-profile-v2'        => new LP_Asset_Key(
+				'lp-profile'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
 					array_merge(
 						$wp_js,
