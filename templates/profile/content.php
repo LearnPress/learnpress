@@ -11,17 +11,9 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $user ) ) {
-	$user = learn_press_get_current_user();
+if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( $profile_tab ) ) {
+	return;
 }
-
-$profile = learn_press_get_profile();
-/**
- * LP_Profile_Tabs
- */
-$tabs        = $profile->get_tabs();
-$tab_key     = $profile->get_current_tab();
-$profile_tab = $tabs->get( $tab_key );
 ?>
 
 <article id="profile-content" class="lp-profile-content">

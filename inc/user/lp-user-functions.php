@@ -345,7 +345,7 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	return apply_filters( 'learn_press_current_user_can_view_profile_section', $view, $section, $user );
 }
 
-function learn_press_profile_tab_courses_content( $current, $tab, $user ) {
+/*function learn_press_profile_tab_courses_content( $current, $tab, $user ) {
 	learn_press_get_template(
 		'profile/tabs/courses.php',
 		array(
@@ -354,7 +354,7 @@ function learn_press_profile_tab_courses_content( $current, $tab, $user ) {
 			'tab'     => $tab,
 		)
 	);
-}
+}*/
 
 function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
 	learn_press_get_template(

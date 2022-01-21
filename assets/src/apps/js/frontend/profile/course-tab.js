@@ -3,12 +3,79 @@ import { addQueryArgs } from '@wordpress/url';
 // Rest API load content course enrolled, created - Nhamdv.
 const courseTab = () => {
 	const elements = document.querySelectorAll( '.learn-press-course-tab__filter__content' );
+	const getResponse = ( ele, dataset, append = false, viewMoreEle = false ) => {
+		wp.apiFetch( {
+			path: addQueryArgs( 'lp/v1/profile/course-tab', dataset ),
+			method: 'GET',
+		} ).then( ( response ) => {
+			const skeleton = ele.querySelector( '.lp-skeleton-animation' );
+			skeleton && skeleton.remove();
+
+			if ( response.status === 'success' && response.data ) {
+				if ( append ) {
+					ele.innerHTML += response.data;
+				} else {
+					ele.innerHTML = response.data;
+				}
+			} else if ( append ) {
+				ele.innerHTML += `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
+			} else {
+				ele.innerHTML = `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
+			}
+
+			if ( viewMoreEle ) {
+				viewMoreEle.classList.remove( 'loading' );
+
+				const paged = viewMoreEle.dataset.paged;
+				const numberPage = viewMoreEle.dataset.number;
+
+				if ( numberPage <= paged ) {
+					viewMoreEle.remove();
+				}
+
+				viewMoreEle.dataset.paged = parseInt( paged ) + 1;
+			}
+
+			viewMore( ele, dataset );
+		} ).catch( ( error ) => {
+			if ( append ) {
+				ele.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
+			} else {
+				ele.innerHTML = `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
+			}
+
+			if ( viewMoreEle ) {
+				viewMoreEle.classList.remove( 'loading' );
+
+				const paged = viewMoreEle.dataset.paged;
+				const numberPage = viewMoreEle.dataset.number;
+
+				if ( numberPage <= paged ) {
+					viewMoreEle.remove();
+				}
+
+				viewMoreEle.dataset.paged = parseInt( paged ) + 1;
+			}
+		} );
+	};
 
 	if ( ! elements.length ) {
 		return;
 	}
 
-	if ( 'IntersectionObserver' in window ) {
+	elements.forEach( function( ele ) {
+		const elArgCourseCreated = document.querySelector( '[name="args_query_user_courses_created"]' );
+		const elArgCourseAttend = document.querySelector( '[name="args_query_user_courses_attend"]' );
+		if ( ! elArgCourseCreated ) {
+			return;
+		}
+
+		const data = JSON.parse( elArgCourseCreated.value );
+
+		getResponse( ele, data );
+	} );
+
+	/*if ( 'IntersectionObserver' in window ) {
 		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
 			entries.forEach( ( entry ) => {
 				if ( entry.isIntersecting ) {
@@ -23,7 +90,7 @@ const courseTab = () => {
 		} );
 
 		[ ...elements ].map( ( ele ) => eleObserver.observe( ele ) );
-	}
+	}*/
 
 	const changeFilter = () => {
 		const tabs = document.querySelectorAll( '.learn-press-course-tab-filters' );
@@ -87,66 +154,6 @@ const courseTab = () => {
 		} );
 	};
 	changeTab();
-
-	const getResponse = async ( ele, dataset, append = false, viewMoreEle = false ) => {
-		try {
-			const response = await wp.apiFetch( {
-				path: addQueryArgs( 'lp/v1/profile/course-tab', dataset ),
-				method: 'GET',
-			} );
-
-			if ( response ) {
-				const skeleton = ele.querySelector( '.lp-skeleton-animation' );
-				skeleton && skeleton.remove();
-
-				if ( response.status === 'success' && response.data ) {
-					if ( append ) {
-						ele.innerHTML += response.data;
-					} else {
-						ele.innerHTML = response.data;
-					}
-				} else if ( append ) {
-					ele.innerHTML += `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
-				} else {
-					ele.innerHTML = `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
-				}
-
-				if ( viewMoreEle ) {
-					viewMoreEle.classList.remove( 'loading' );
-
-					const paged = viewMoreEle.dataset.paged;
-					const numberPage = viewMoreEle.dataset.number;
-
-					if ( numberPage <= paged ) {
-						viewMoreEle.remove();
-					}
-
-					viewMoreEle.dataset.paged = parseInt( paged ) + 1;
-				}
-
-				viewMore( ele, dataset );
-			}
-		} catch ( error ) {
-			if ( append ) {
-				ele.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
-			} else {
-				ele.innerHTML = `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
-			}
-
-			if ( viewMoreEle ) {
-				viewMoreEle.classList.remove( 'loading' );
-
-				const paged = viewMoreEle.dataset.paged;
-				const numberPage = viewMoreEle.dataset.number;
-
-				if ( numberPage <= paged ) {
-					viewMoreEle.remove();
-				}
-
-				viewMoreEle.dataset.paged = parseInt( paged ) + 1;
-			}
-		}
-	};
 
 	const viewMore = ( ele, dataset ) => {
 		const viewMoreEle = ele.querySelector( 'button[data-paged]' );

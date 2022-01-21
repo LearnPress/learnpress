@@ -11,62 +11,45 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! LP_Profile::instance()->current_user_can( 'view-tab-courses' ) ) {
+if ( ! isset( $user ) || ! isset( $tab_active ) || ! isset( $courses_enrolled_tab ) ||
+	! isset( $courses_created_tab ) || ! isset( $courses_enrolled_tab_active ) ||
+	! isset( $args_query_user_courses_attend ) || ! isset( $args_query_user_courses_created ) ||
+	! isset( $args_query_user_courses_statistic ) ) {
 	return;
 }
-
-$user = LP_Profile::instance()->get_user();
-
-$data_course_progress = apply_filters(
-	'learnpress/template/profile/tabs/courses/course_progress',
-	array(
-		'userID' => $user->get_id(),
-		'status' => 'in-progress',
-	)
-);
-
-$enrolleds = array(
-	''            => esc_html__( 'All', 'learnpress' ),
-	'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
-	'finished'    => esc_html__( 'Finished', 'learnpress' ),
-	'passed'      => esc_html__( 'Passed', 'learnpress' ),
-	'failed'      => esc_html__( 'Failed', 'learnpress' ),
-);
-
-$createds = array(
-	''        => esc_html__( 'All', 'learnpress' ),
-	'publish' => esc_html__( 'Publish', 'learnpress' ),
-	'pending' => esc_html__( 'Pending', 'learnpress' ),
-);
-
-$enrolled_active = apply_filters( 'learnpress/profile/tab/enrolled/subtab-active', ! learn_press_user_maybe_is_a_teacher() ? 'in-progress' : '' );
-$tab_active      = $_GET['tab'] ?? '';
-if ( ! $tab_active ) {
-	$tab_active = ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'created';
-}
-$tab_active = apply_filters( 'learnpress/profile/tab-active', $tab_active );
 ?>
 
 <div class="learn-press-subtab-content">
-	<div class="learn-press-profile-course__statistic"
-		data-ajax="<?php echo htmlentities( wp_json_encode( array( 'userID' => $user->get_id() ) ) ); ?>">
+	<div class="learn-press-profile-course__statistic">
 		<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
+		<input type="hidden" name="args_query_user_courses_statistic"
+			value="<?php echo htmlentities( wp_json_encode( $args_query_user_courses_statistic ) ); ?>">
 	</div>
 
 	<div class="learn-press-profile-course__tab">
 		<ul class="learn-press-profile-course__tab__inner">
-			<li><a class="<?php echo $tab_active === 'enrolled' ? 'active' : ''; ?>" data-tab="enrolled"><?php esc_html_e( 'Enrolled', 'learnpress' ); ?></a></li>
+			<li>
+				<a class="<?php echo $tab_active === 'enrolled' ? 'active' : ''; ?>" data-tab="enrolled">
+					<?php esc_html_e( 'Enrolled', 'learnpress' ); ?>
+				</a>
+			</li>
 
 			<?php if ( learn_press_user_maybe_is_a_teacher() ) : ?>
-				<li><a class="<?php echo $tab_active === 'created' ? 'active' : ''; ?>" data-tab="created"><?php esc_html_e( 'Created', 'learnpress' ); ?></a></li>
+				<li>
+					<a class="<?php echo $tab_active === 'created' ? 'active' : ''; ?>" data-tab="created">
+						<?php esc_html_e( 'Created', 'learnpress' ); ?>
+					</a>
+				</li>
 			<?php endif; ?>
 		</ul>
 
-		<div class="learn-press-course-tab-enrolled learn-press-course-tab-filters" data-tab="enrolled" style="<?php echo $tab_active !== 'enrolled' ? 'display: none;' : ''; ?>">
+		<div class="learn-press-course-tab-enrolled learn-press-course-tab-filters" data-tab="enrolled"
+			style="<?php echo $tab_active !== 'enrolled' ? 'display: none;' : ''; ?>">
 			<ul class="learn-press-filters">
-				<?php foreach ( $enrolleds as $key => $enrolled ) : ?>
+				<?php foreach ( $courses_enrolled_tab as $key => $enrolled ) : ?>
 					<li>
-						<a class="<?php echo $key === $enrolled_active ? 'active' : ''; ?>" data-tab="<?php echo $key === '' ? 'all' : $key; ?>">
+						<a class="<?php echo $key === $courses_enrolled_tab_active ? 'active' : ''; ?>"
+							data-tab="<?php echo $key === '' ? 'all' : $key; ?>">
 							<?php echo esc_html( $enrolled ); ?>
 						</a>
 					</li>
@@ -74,31 +57,40 @@ $tab_active = apply_filters( 'learnpress/profile/tab-active', $tab_active );
 			</ul>
 
 			<div class="learn-press-profile-course__progress">
-				<?php foreach ( $enrolleds as $key => $enrolled ) : ?>
-					<div class="learn-press-course-tab__filter__content" data-tab="<?php echo $key === '' ? 'all' : $key; ?>" data-ajax="<?php echo htmlentities( wp_json_encode( [ 'userID' => $user->get_id(), 'status' => $key, 'query' => 'purchased', 'layout' => 'list' ] ) ); ?>" style="<?php echo $key !== $enrolled_active ? 'display: none' : ''; ?>"> <?php // phpcs:ignore ?>
+				<?php foreach ( $courses_enrolled_tab as $key => $enrolled ) : ?>
+					<div class="learn-press-course-tab__filter__content"
+						data-tab="<?php echo $key === '' ? 'all' : $key; ?>"
+						style="<?php echo $key !== $courses_enrolled_tab_active ? 'display: none' : ''; ?>"> <?php // phpcs:ignore ?>
 						<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
 					</div>
 				<?php endforeach; ?>
+				<input type="hidden" name="args_query_user_courses_attend"
+					value="<?php echo htmlentities( wp_json_encode( $args_query_user_courses_attend ) ); ?>">
 			</div>
 		</div>
 
 		<?php if ( learn_press_user_maybe_is_a_teacher() ) : ?>
-			<div class="learn-press-course-tab-created learn-press-course-tab-filters" data-tab="created" style="<?php echo $tab_active !== 'created' ? 'display: none;' : ''; ?>">
+			<div class="learn-press-course-tab-created learn-press-course-tab-filters" data-tab="created"
+				style="<?php echo $tab_active !== 'created' ? 'display: none;' : ''; ?>">
 				<ul class="learn-press-filters">
-					<?php foreach ( $createds as $key => $created ) : ?>
+					<?php foreach ( $courses_created_tab as $key => $created ) : ?>
 						<li>
-							<a class="<?php echo $key === '' ? 'active' : ''; ?>" data-tab="<?php echo $key === '' ? 'all' : $key; ?>">
+							<a class="<?php echo $key === '' ? 'active' : ''; ?>"
+								data-tab="<?php echo $key === '' ? 'all' : $key; ?>">
 								<?php echo esc_html( $created ); ?>
 							</a>
 						</li>
 					<?php endforeach; ?>
 				</ul>
 
-				<?php foreach ( $createds as $key => $created ) : ?>
-					<div class="learn-press-course-tab__filter__content" data-tab="<?php echo $key === '' ? 'all' : $key; ?>" data-ajax="<?php echo htmlentities( wp_json_encode( [ 'userID' => $user->get_id(), 'status' => $key, 'query' => 'own' ] ) ); ?>" style="<?php echo $key !== '' ? 'display: none' : ''; ?>"> <?php // phpcs:ignore ?>
+				<?php foreach ( $courses_created_tab as $key => $created ) : ?>
+					<div class="learn-press-course-tab__filter__content"
+						data-tab="<?php echo $key === '' ? 'all' : $key; ?>" style="<?php echo $key !== '' ? 'display: none' : ''; ?>"> <?php // phpcs:ignore ?>
 						<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
 					</div>
 				<?php endforeach; ?>
+				<input type="hidden" name="args_query_user_courses_created"
+					value="<?php echo htmlentities( wp_json_encode( $args_query_user_courses_created ) ); ?>">
 			</div>
 		<?php endif; ?>
 	</div>

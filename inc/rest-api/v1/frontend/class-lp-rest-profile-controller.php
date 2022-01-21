@@ -253,7 +253,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 	public function course_tab( $request ) {
 		$params     = $request->get_params();
-		$user_id    = $params['userID'] ?? 0;
+		$user_id    = $params['userID'] ?? get_current_user_id();
 		$status     = $params['status'] ?? '';
 		$paged      = $params['paged'] ?? 1;
 		$query_type = $params['query'] ?? 'purchased';

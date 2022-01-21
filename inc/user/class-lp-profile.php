@@ -245,7 +245,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					'courses'       => array(
 						'title'    => esc_html__( 'Courses', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.courses', 'courses' ),
-						'callback' => array( $this, 'tab_courses' ),
+						'callback' => array( LP_Template_Profile::class, 'tab_courses' ),
 						'priority' => 1,
 						'icon'     => '<i class="fas fa-book-open"></i>',
 					),

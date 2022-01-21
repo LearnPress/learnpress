@@ -31,7 +31,12 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 
 	foreach ( $course_ids as $id ) {
 		$course = learn_press_get_course( $id );
-		$post   = get_post( $id );
+
+		if ( ! $course ) {
+			continue;
+		}
+
+		$post = get_post( $id );
 		setup_postdata( $post );
 
 		$course_data   = $user->get_course_data( $id );
