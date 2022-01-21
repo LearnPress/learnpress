@@ -223,8 +223,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Remap final quiz for each course
 		 *
 		 * @since 3.1.0
+		 * @editor tungnx
+		 * @deprecated 4.1.5
 		 */
-		public static function sync_course_final_quiz() {
+		/*public static function sync_course_final_quiz() {
 			if ( empty( $_REQUEST['sync'] ) ) {
 				die();
 			}
@@ -241,7 +243,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( array( 'result' => 'success' ) );
 
 			die();
-		}
+		}*/
 
 		/**
 		 * @editor tungnx

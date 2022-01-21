@@ -979,6 +979,7 @@ class LP_Repair_Database {
 	 * Get all ids of existing courses
 	 *
 	 * @return array
+	 * @deprecated 4.1.5
 	 */
 	public function get_all_courses() {
 		global $wpdb;
