@@ -20,7 +20,7 @@ class LP_Jwt_Auth {
 
 		// Is enable rest api?
 		// if ( LP()->settings()->get( 'enable_jwt_rest_api' ) !== 'yes' ) {
-		// 	return;
+		// return;
 		// }
 
 		$this->includes();
@@ -28,8 +28,12 @@ class LP_Jwt_Auth {
 	}
 
 	private function includes() {
+		// JWT Classes.
+		foreach ( glob( LP_PLUGIN_PATH . 'inc/jwt/includes/php-jwt/*.php' ) as $filename ) {
+			require_once $filename;
+		}
+
 		// Authentic.
-		require_once LP_PLUGIN_PATH . 'inc/jwt/includes/vendor/autoload.php';
 		require_once LP_PLUGIN_PATH . 'inc/jwt/includes/class-jwt-public.php';
 
 		// Include Rest API.
