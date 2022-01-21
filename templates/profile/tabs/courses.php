@@ -64,7 +64,7 @@ if ( ! isset( $user ) || ! isset( $tab_active ) || ! isset( $courses_enrolled_ta
 						<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
 					</div>
 				<?php endforeach; ?>
-				<input type="hidden" name="args_query_user_courses_attend"
+				<input class="lp_profile_tab_input_param" type="hidden" name="args_query_user_courses_attend"
 					value="<?php echo htmlentities( wp_json_encode( $args_query_user_courses_attend ) ); ?>">
 			</div>
 		</div>
@@ -83,14 +83,16 @@ if ( ! isset( $user ) || ! isset( $tab_active ) || ! isset( $courses_enrolled_ta
 					<?php endforeach; ?>
 				</ul>
 
-				<?php foreach ( $courses_created_tab as $key => $created ) : ?>
-					<div class="learn-press-course-tab__filter__content"
-						data-tab="<?php echo $key === '' ? 'all' : $key; ?>" style="<?php echo $key !== '' ? 'display: none' : ''; ?>"> <?php // phpcs:ignore ?>
-						<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
-					</div>
-				<?php endforeach; ?>
-				<input type="hidden" name="args_query_user_courses_created"
-					value="<?php echo htmlentities( wp_json_encode( $args_query_user_courses_created ) ); ?>">
+				<div class="learn-press-profile-course__progress">
+					<?php foreach ( $courses_created_tab as $key => $created ) : ?>
+						<div class="learn-press-course-tab__filter__content"
+							data-tab="<?php echo $key === '' ? 'all' : $key; ?>" style="<?php echo $key !== '' ? 'display: none' : ''; ?>"> <?php // phpcs:ignore ?>
+							<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
+						</div>
+					<?php endforeach; ?>
+					<input class="lp_profile_tab_input_param" type="hidden" name="args_query_user_courses_created"
+						value="<?php echo htmlentities( wp_json_encode( $args_query_user_courses_created ) ); ?>">
+				</div>
 			</div>
 		<?php endif; ?>
 	</div>

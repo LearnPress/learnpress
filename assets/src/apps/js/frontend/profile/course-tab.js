@@ -3,6 +3,7 @@ import { addQueryArgs } from '@wordpress/url';
 // Rest API load content course enrolled, created - Nhamdv.
 const courseTab = () => {
 	const elements = document.querySelectorAll( '.learn-press-course-tab__filter__content' );
+
 	const getResponse = ( ele, dataset, append = false, viewMoreEle = false ) => {
 		wp.apiFetch( {
 			path: addQueryArgs( 'lp/v1/profile/course-tab', dataset ),
@@ -59,28 +60,14 @@ const courseTab = () => {
 		} );
 	};
 
-	if ( ! elements.length ) {
-		return;
-	}
-
-	elements.forEach( function( ele ) {
-		const elArgCourseCreated = document.querySelector( '[name="args_query_user_courses_created"]' );
-		const elArgCourseAttend = document.querySelector( '[name="args_query_user_courses_attend"]' );
-		if ( ! elArgCourseCreated ) {
-			return;
-		}
-
-		const data = JSON.parse( elArgCourseCreated.value );
-
-		getResponse( ele, data );
-	} );
-
-	/*if ( 'IntersectionObserver' in window ) {
+	if ( 'IntersectionObserver' in window ) {
 		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
 			entries.forEach( ( entry ) => {
 				if ( entry.isIntersecting ) {
 					const ele = entry.target;
-					const data = JSON.parse( ele.dataset.ajax );
+
+					const params = ele.parentNode.querySelector( '.lp_profile_tab_input_param' );
+					const data = { ...JSON.parse( params.value ), status: ele.dataset.tab || '' };
 
 					getResponse( ele, data );
 
@@ -89,8 +76,17 @@ const courseTab = () => {
 			} );
 		} );
 
-		[ ...elements ].map( ( ele ) => eleObserver.observe( ele ) );
-	}*/
+		[ ...elements ].map( ( ele ) => {
+			if ( ele.dataset.tab !== 'all' ) {
+				eleObserver.observe( ele );
+			} else {
+				const params = ele.parentNode.querySelector( '.lp_profile_tab_input_param' );
+				const data = { ...JSON.parse( params.value ), status: ele.dataset.tab || '' };
+
+				getResponse( ele, data );
+			}
+		} );
+	}
 
 	const changeFilter = () => {
 		const tabs = document.querySelectorAll( '.learn-press-course-tab-filters' );
