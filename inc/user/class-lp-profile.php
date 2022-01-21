@@ -761,7 +761,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						$filter->status = $status;
 					}
 					$filter->page   = $args['paged'] ?? 1;
-					$filter->limit  = $args['limit'] ?? 0;
+					$filter->limit  = $args['limit'] ?? $filter->limit;
 					$total_rows     = 0;
 					$result_courses = LP_User_Item_Course::get_user_courses( $filter, $total_rows );
 
@@ -779,9 +779,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter              = new LP_Course_Filter();
 					$filter->fields      = array( 'ID' );
 					$filter->post_author = $this->get_user_data( 'id' );
-					$filter->post_status = $args['status'] ?? '';
+					$filter->post_status = isset( $args['status'] ) && ! empty( $args['status'] ) ? $args['status'] : array( 'publish', 'pending' );
 					$filter->page        = $args['paged'] ?? 1;
-					$filter->limit       = $args['limit'] ?? 0;
+					$filter->limit       = $args['limit'] ?? $filter->limit;
 					$total_rows          = 0;
 					$result_courses      = LP_Course::get_courses( $filter, $total_rows );
 

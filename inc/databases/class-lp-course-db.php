@@ -465,8 +465,10 @@ class LP_Course_DB extends LP_Database {
 		$WHERE[] = $this->wpdb->prepare( 'AND p.post_type = %s', $filter->post_type );
 
 		// Status
-		if ( $filter->post_status ) {
-			$WHERE[] = $this->wpdb->prepare( 'AND p.post_status = %s', $filter->post_status );
+		$filter->post_status = (array) $filter->post_status;
+		if ( ! empty( $filter->post_status ) ) {
+			$post_status_format = LP_Helper::db_format_array( $filter->post_status, '%s' );
+			$WHERE[]            = $this->wpdb->prepare( 'AND p.post_status IN (' . $post_status_format . ')', $filter->post_status );
 		}
 
 		// Inner join

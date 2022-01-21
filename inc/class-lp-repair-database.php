@@ -869,42 +869,44 @@ class LP_Repair_Database {
 	 * Sync final quiz for each course.
 	 *
 	 * @param array $courses
+	 * @editor tungnx
+	 * @deprecated 4.1.5
 	 */
-	public function sync_course_final_quiz( $courses = array() ) {
-		settype( $courses, 'array' );
-
-		foreach ( $courses as $course_id ) {
-			$course = learn_press_get_course( $course_id );
-
-			if ( ! $course ) {
-				continue;
-			}
-
-			/**
-			 * If course result is not set to final-quiz
-			 */
-			if ( $course->get_data( 'course_result' ) !== 'evaluate_final_quiz' ) {
-				delete_post_meta( $course_id, '_lp_final_quiz' );
-				continue;
-			}
-
-			$items = $course->get_item_ids();
-			if ( $items ) {
-				foreach ( $items as $item ) {
-					if ( learn_press_get_post_type( $item ) === LP_QUIZ_CPT ) {
-						$final_quiz = $item;
-					}
-				}
-			}
-
-			if ( isset( $final_quiz ) ) {
-				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
-			} else {
-				delete_post_meta( $course_id, '_lp_final_quiz' );
-				update_post_meta( $course_id, '_lp_course_result', 'evaluate_lesson' );
-			}
-		}
-	}
+//	public function sync_course_final_quiz( $courses = array() ) {
+//		settype( $courses, 'array' );
+//
+//		foreach ( $courses as $course_id ) {
+//			$course = learn_press_get_course( $course_id );
+//
+//			if ( ! $course ) {
+//				continue;
+//			}
+//
+//			/**
+//			 * If course result is not set to final-quiz
+//			 */
+//			if ( $course->get_data( 'course_result' ) !== 'evaluate_final_quiz' ) {
+//				delete_post_meta( $course_id, '_lp_final_quiz' );
+//				continue;
+//			}
+//
+//			$items = $course->get_item_ids();
+//			if ( $items ) {
+//				foreach ( $items as $item ) {
+//					if ( learn_press_get_post_type( $item ) === LP_QUIZ_CPT ) {
+//						$final_quiz = $item;
+//					}
+//				}
+//			}
+//
+//			if ( isset( $final_quiz ) ) {
+//				update_post_meta( $course_id, '_lp_final_quiz', $final_quiz );
+//			} else {
+//				delete_post_meta( $course_id, '_lp_final_quiz' );
+//				update_post_meta( $course_id, '_lp_course_result', 'evaluate_lesson' );
+//			}
+//		}
+//	}
 
 	/**
 	 * @editor tungnx

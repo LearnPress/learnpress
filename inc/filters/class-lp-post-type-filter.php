@@ -25,9 +25,9 @@ if ( ! class_exists( 'LP_Post_Type_Filter' ) ) {
 		 */
 		public $post_title = '';
 		/**
-		 * @var string
+		 * @var array
 		 */
-		public $post_status = 'publish';
+		public $post_status = array( 'publish' );
 		/**
 		 * @var int
 		 */
