@@ -81,7 +81,7 @@ const courseTab = () => {
 				eleObserver.observe( ele );
 			} else {
 				const params = ele.parentNode.querySelector( '.lp_profile_tab_input_param' );
-				const data = { ...JSON.parse( params.value ), status: ele.dataset.tab || '' };
+				const data = { ...JSON.parse( params.value ), status: ele.dataset.tab === 'all' ? '' : ele.dataset.tab || '' };
 
 				getResponse( ele, data );
 			}
