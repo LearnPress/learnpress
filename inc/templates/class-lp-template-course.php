@@ -684,7 +684,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_item_content() {
-		$item = LP_Global::course_item();
+		$course = learn_press_get_course();
+		$item   = LP_Global::course_item();
 
 		// if ( $item->is_blocked() ) {
 		// learn_press_get_template( 'global/block-content.php' );
@@ -710,7 +711,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 		// End
 
 		// Get timestamp remaining duration of course
-		$timestamp_remaining = $item->get_course()->timestamp_remaining_duration();
+		/*$course_item = $item->get_course();
+		if ( ! $course_item ) {
+			return;
+		}*/
+
+		$timestamp_remaining = $course->timestamp_remaining_duration();
 
 		if ( $timestamp_remaining > 0 ) {
 			echo '<input type="hidden" name="lp-course-timestamp-remaining" value="' . esc_attr( $timestamp_remaining ) . '">';
