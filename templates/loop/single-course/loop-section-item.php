@@ -21,7 +21,7 @@ if ( empty( $section_item ) || empty( $course_item ) || empty( $can_view_item ) 
 ?>
 
 <li class="course-item <?php echo implode( ' ', $course_item->get_class_v2( $course_id, $section_item['ID'], $can_view_item ) ); ?>" data-id="<?php echo esc_attr( $section_item['ID'] ); ?>">
-	<a class="section-item-link" href="<?php echo $can_view_item->flag ? $course_item->get_permalink() : ''; ?>">
+	<a class="section-item-link" href="<?php echo $course_item->get_permalink(); ?>">
 		<span class="item-name"><?php echo esc_html( $section_item['post_title'] ); ?></span>
 
 		<div class="course-item-meta">
