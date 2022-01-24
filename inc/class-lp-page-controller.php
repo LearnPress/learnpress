@@ -288,6 +288,22 @@ class LP_Page_Controller {
 				return $post;
 			}
 
+			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $post_item->ID );
+
+			if ( ! $section_id ) {
+				throw new Exception( __( 'The item is not assigned to any section', 'learnpress' ) );
+			}
+
+			$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
+
+			if ( ! $course_id ) {
+				throw new Exception( __( 'The item is not assigned to any course', 'learnpress' ) );
+			}
+
+			if ( $course_id != $post->ID ) {
+				throw new Exception( __( 'The item is not assigned to this course', 'learnpress' ) );
+			}
+
 			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) );
 
 			if ( ! $lp_course_item ) {

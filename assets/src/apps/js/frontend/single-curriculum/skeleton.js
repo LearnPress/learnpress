@@ -152,7 +152,7 @@ export default function courseCurriculumSkeleton() {
 		if ( status === 'success' ) {
 			returnData += data;
 
-			if ( sectionID && section_ids && ! section_ids.includes( sectionID ) ) {
+			if ( sectionID && section_ids && section_ids.length > 0 && ! section_ids.includes( sectionID ) ) {
 				return getResponsive( returnData, page + 1, sectionID );
 			}
 		}
