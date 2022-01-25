@@ -26,26 +26,6 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 		 */
 		public function __construct( $atts = '' ) {
 			parent::__construct( $atts );
-
-			$user = learn_press_get_current_user( false );
-			if ( ! $user || $user instanceof LP_User_Guest ) {
-				self::add_message( sprintf( __( 'Please %s to send your request!', 'learnpress' ), sprintf( '<a href="%s">%s</a>', learn_press_get_login_url(), _x( 'login', 'become-teacher-form', 'learnpress' ) ) ), 'login' );
-			} else {
-				if ( self::has_sent() ) {
-					self::add_message( __( 'Your have already sent the request. Please wait for approvement.', 'learnpress' ), 'sent' );
-				} elseif ( learn_press_user_maybe_is_a_teacher() ) {
-					self::add_message( __( 'You are a teacher!', 'learnpress' ), 'is-teacher' );
-				}
-			}
-		}
-
-		/**
-		 * Check if the message has already sent.
-		 *
-		 * @return bool
-		 */
-		public static function has_sent() {
-			return learn_press_become_teacher_sent();
 		}
 
 		/**
@@ -86,47 +66,39 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 		public function output() {
 			ob_start();
 
-			$user    = learn_press_get_current_user();
 			$message = '';
-			$code    = 0;
 			$atts    = $this->get_atts();
+			$user    = learn_press_get_current_user( false );
 
-			if ( ! is_user_logged_in() ) {
-				$message = __( 'Please login to fill in this form.', 'learnpress' );
-				$code    = 1;
-			} elseif ( in_array( LP_TEACHER_ROLE, $user->get_roles() ) ) {
-				$message = __( 'You are a teacher now.', 'learnpress' );
-				$code    = 2;
-			} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->get_id() ) == 'yes' ) {
-				$message = __( 'Your request has been sent! We will get back to you soon!', 'learnpress' );
-				$code    = 3;
-			} elseif ( learn_press_user_maybe_is_a_teacher() ) {
-				$message = __( 'Your role is allowed to create a course.', 'learnpress' );
-				$code    = 4;
+			if ( ! $user || $user instanceof LP_User_Guest ) {
+				$message = sprintf( esc_html__( 'Please %s to send your request!', 'learnpress' ), sprintf( '<strong><a href="%s">%s</a></strong>', learn_press_get_login_url(), _x( 'login', 'become-teacher-form', 'learnpress' ) ) );
+			} else {
+				if ( learn_press_become_teacher_sent() ) {
+					$message = esc_html__( 'Your have already sent the request. Please wait for approvement.', 'learnpress' );
+				} elseif ( learn_press_user_maybe_is_a_teacher() ) {
+					$message = esc_html__( 'You are a teacher!', 'learnpress' );
+				}
 			}
 
-			if ( apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
+			if ( apply_filters( 'learn_press_become_a_teacher_display_form', true, $message ) ) {
 				$atts = shortcode_atts(
 					array(
-						'method'                     => 'post',
-						'action'                     => '',
-						'title'                      => __( 'Become a Teacher', 'learnpress' ),
-						'description'                => __( 'Fill in your information and send us to become a teacher.', 'learnpress' ),
-						'submit_button_text'         => __( 'Submit', 'learnpress' ),
-						'submit_button_process_text' => __( 'Processing', 'learnpress' ),
+						'title'                      => esc_html__( 'Become a Teacher', 'learnpress' ),
+						'description'                => esc_html__( 'Fill in your information and send us to become a teacher.', 'learnpress' ),
+						'submit_button_text'         => esc_html__( 'Submit', 'learnpress' ),
+						'submit_button_process_text' => esc_html__( 'Processing', 'learnpress' ),
 					),
 					$atts
 				);
 
-				$args = array_merge(
-					array(
-						'code'    => $code,
-						'message' => $message,
-					),
-					$atts
-				);
+				wp_enqueue_style( 'learnpress' );
+				wp_enqueue_script( 'lp-become-a-teacher' );
 
-				learn_press_get_template( 'global/become-teacher-form.php', $args );
+				if ( empty( $message ) || ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->editor->is_edit_mode() ) ) {
+					learn_press_get_template( 'global/become-teacher-form.php', $atts );
+				} else {
+					learn_press_display_message( $message );
+				}
 			}
 
 			return ob_get_clean();

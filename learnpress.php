@@ -355,9 +355,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-quiz-results.php';
 			require_once 'inc/class-lp-session-handler.php';
 
-			if ( ! is_admin() ) {
-				require_once 'inc/class-lp-shortcodes.php';
-			}
+			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .
 			require_once 'inc/lp-template-functions.php';
@@ -378,6 +376,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-page-controller.php';
 			require_once 'inc/class-lp-schedules.php';
 			// require_once 'inc/class-lp-preview-course.php';
+
+			if ( defined( 'ELEMENTOR_VERSION' ) ) {
+				require_once 'inc/elementor/class-lp-elementor.php';
+			}
 
 			require_once 'inc/class-lp-widget.php';
 			require_once 'inc/lp-widget-functions.php';

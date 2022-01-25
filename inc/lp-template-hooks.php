@@ -502,29 +502,6 @@ add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'dash
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'login_form' ), 10 );
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'register_form' ), 15 );
 
-/** BEGIN: Become teacher form */
-
-/**
- * @see LP_Template_General::become_teacher_messages()
- * @see LP_Template_General::become_teacher_heading()
- * @see LP_Template_General::become_teacher_form_fields()
- * @see LP_Template_General::become_teacher_button()
- */
-add_action(
-	'learn-press/before-become-teacher-form',
-	LP()->template( 'general' )->func( 'become_teacher_messages' ),
-	10
-);
-add_action(
-	'learn-press/before-become-teacher-form',
-	LP()->template( 'general' )->func( 'become_teacher_heading' ),
-	20
-);
-add_action( 'learn-press/become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_form_fields' ), 10 );
-add_action( 'learn-press/after-become-teacher-form', LP()->template( 'general' )->func( 'become_teacher_button' ), 10 );
-/** END: Become teacher form */
-
-
 /** BEGIN: Checkout page */
 add_action( 'learn-press/before-checkout-form', LP()->template( 'checkout' )->func( 'review_order' ), 10 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_logged_in' ), 20 );
@@ -534,7 +511,6 @@ add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->fun
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'order_comment' ), 60 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'payment' ), 70 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'terms' ), 80 );
-
 
 // ******************************************************************************************************************* //
 
