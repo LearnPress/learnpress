@@ -126,14 +126,25 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			$question = LP_Question::get_question( $post->ID );
 			$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+			$type     = $question->get_type();
 
 			if ( empty( $answers ) ) {
 				$answers = array(
 					array(
+						'order'              => 1,
 						'question_answer_id' => 0,
-						'title'              => '',
+						'is_true'            => 'yes',
+						'title'              => esc_html__( 'Correct', 'learnpress' ),
+					),
+					array(
+						'order'              => 2,
+						'question_answer_id' => 0,
+						'is_true'            => '',
+						'title'              => esc_html__( 'Incorrect', 'learnpress' ),
 					),
 				);
+
+				$type = 'true_or_false';
 			}
 
 			wp_localize_script(
@@ -148,8 +159,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 							'open'                 => false,
 							'title'                => get_the_title( $post->ID ),
 							'type'                 => array(
-								'key'   => $question->get_type(),
-								'label' => $question->get_type_label(),
+								'key'   => $type,
+								'label' => learn_press_question_types()[ $type ],
 							),
 							'answers'              => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID, 0 ),
 							'ajax'                 => admin_url( '' ),

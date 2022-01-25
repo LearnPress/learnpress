@@ -335,8 +335,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					$func = '_convert_answers_multi_choice_to_single_choice';
 				} elseif ( ( $old_type == 'multi_choice' || $old_type == 'single_choice' ) && 'true_or_false' == $new_type ) {
 					$func = '_convert_answers_to_true_or_false';
-				} elseif ( ( $old_type == 'true_or_false' && ( $new_type == 'single_choice' || $new_type == 'multi_choice' ) ) || ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) {
-					$func = '';
 				} else {
 					// for rest, clear answer data and create default
 					$func = '_convert_default_answers';
