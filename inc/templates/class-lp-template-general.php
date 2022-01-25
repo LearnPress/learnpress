@@ -62,45 +62,6 @@ class LP_Template_General extends LP_Abstract_Template {
 		learn_press_get_template( 'global/breadcrumb.php', $args );
 	}
 
-	public function become_teacher_messages() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-		if ( ! $messages ) {
-			return;
-		}
-
-		learn_press_get_template( 'global/become-teacher-form/message.php', array( 'messages' => $messages ) );
-	}
-
-	public function become_teacher_heading() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-		if ( $messages ) {
-			return;
-		}
-		?>
-		<h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
-		<?php
-	}
-
-	public function become_teacher_form_fields() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-
-		if ( $messages ) {
-			return;
-		}
-
-		learn_press_get_template( 'global/become-teacher-form/form-fields.php' );
-	}
-
-	public function become_teacher_button() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-
-		if ( $messages ) {
-			return;
-		}
-
-		learn_press_get_template( 'global/become-teacher-form/button.php' );
-	}
-
 	/**
 	 * Get header for course page
 	 */
