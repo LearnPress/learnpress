@@ -845,11 +845,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
 				}
 
-				$price_html .= apply_filters(
-					'learn_press_course_price_html_free',
-					sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) ),
-					$this
-				);
+				$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
+				$price_html  = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
 			} else {
 				if ( $this->has_sale_price() ) {
 					$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
