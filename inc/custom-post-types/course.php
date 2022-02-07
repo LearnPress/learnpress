@@ -558,7 +558,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				unset( $columns['instructor'] );
 			}
 
-			return $columns;
+			return apply_filters( 'lp/admin/courses/columns', $columns );
 		}
 
 		/**
