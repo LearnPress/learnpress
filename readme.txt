@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 5.8
 Requires PHP: 7.0
-Stable tag: 4.1.5
+Stable tag: 4.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -196,6 +196,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.1.6 (2022-xx-xx) =
+~ Fixed: set duration quiz = 0.
 
 = 4.1.5 (2022-01-24) =
 ~ Modified: optimize, handle cache for query courses.
