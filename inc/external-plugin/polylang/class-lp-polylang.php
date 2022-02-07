@@ -56,6 +56,10 @@ class LP_Polylang {
 	 * @return array
 	 */
 	public function localize_script( array $args ): array {
+		if ( ! function_exists( 'pll_current_language' ) ) {
+			return $args;
+		}
+
 		$args['pll-current-lang'] = pll_current_language();
 
 		return $args;
@@ -71,7 +75,12 @@ class LP_Polylang {
 	 */
 	public function filter_query_courses( LP_Course_Filter $filter, WP_REST_Request $request ): LP_Course_Filter {
 		$pll_current_lang = $request['pll-current-lang'] ?? '';
-		$lp_db            = LP_Database::getInstance();
+
+		if ( empty( $pll_current_lang ) ) {
+			return $filter;
+		}
+
+		$lp_db = LP_Database::getInstance();
 
 		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
 		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS term ON r_term.term_taxonomy_id = term.term_id";
@@ -109,7 +118,9 @@ class LP_Polylang {
 			$slug_lang = '_' . $slug;
 		}
 
-		if ( '' !== LP_Page_Controller::page_current() ) {
+		$arr_page = array( LP_PAGE_COURSES, LP_PAGE_PROFILE );
+
+		if ( in_array( LP_Page_Controller::page_current(), $arr_page ) ) {
 			$name_page = str_replace( 'lp_page_', '', LP_Page_Controller::page_current() );
 			$url       = get_permalink( LP_Settings::get_option( $name_page . '_page_id' . $slug_lang ) );
 		}

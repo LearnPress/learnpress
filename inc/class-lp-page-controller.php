@@ -921,7 +921,7 @@ class LP_Page_Controller {
 	 * @since 3.2.8
 	 * @author tungnx
 	 */
-	public static function page_current() {
+	public static function page_current(): string {
 		if ( learn_press_is_checkout() ) {
 			return LP_PAGE_CHECKOUT;
 		} elseif ( LP_Global::course_item_quiz() ) {

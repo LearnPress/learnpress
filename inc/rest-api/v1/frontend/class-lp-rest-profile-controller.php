@@ -232,8 +232,8 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$count_status      = $lp_user_items_db->count_status_by_items( $filter );
 
 			$statistic = array(
-				'enrolled_courses'  => $count_status->{LP_COURSE_PURCHASED} + $count_status->{LP_COURSE_ENROLLED} + $count_status->{LP_COURSE_FINISHED},
-				'active_courses'    => $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS},
+				'enrolled_courses'  => $count_status->{LP_COURSE_PURCHASED} ?? 0 + $count_status->{LP_COURSE_ENROLLED} ?? 0 + $count_status->{LP_COURSE_FINISHED} ?? 0,
+				'active_courses'    => $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0,
 				'completed_courses' => $count_status->{LP_COURSE_FINISHED} ?? 0,
 				'total_courses'     => count_user_posts( $user_id, LP_COURSE_CPT ),
 				'total_users'       => learn_press_count_instructor_users( $user_id ),
