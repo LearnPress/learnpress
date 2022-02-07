@@ -85,7 +85,6 @@ const Status = () => {
 	const questionsPerPage = getData( 'questionsPerPage' );
 	const questionsCount = getData( 'questionIds' ).length;
 	const submitting = getData( 'submitting' );
-	const totalTime = getData( 'totalTime' );
 	const duration = getData( 'duration' );
 	const userMark = getUserMark();
 
@@ -130,7 +129,7 @@ const Status = () => {
 						</button>
 					</div>
 
-					{ duration && <Timer /> }
+					{ <Timer /> }
 				</div>
 			</div>
 		</div>

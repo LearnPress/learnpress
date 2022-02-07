@@ -21,19 +21,26 @@ const Timer = () => {
 
 	const [ seconds, setSeconds ] = useState( totalTime );
 	let [ timeSpend, setTimeSpend ] = useState( 0 );
+	const limitTime = totalTime > 0;
 
 	useEffect( () => {
 		const myInterval = setInterval( () => {
-			let remainSeconds = seconds;
-			remainSeconds -= 1;
+			if ( limitTime ) {
+				let remainSeconds = seconds;
+				remainSeconds -= 1;
 
-			if ( remainSeconds > 0 ) {
-				setSeconds( remainSeconds );
+				if ( remainSeconds > 0 ) {
+					setSeconds( remainSeconds );
+					timeSpend++;
+					setTimeSpend( durationTime - remainSeconds );
+				} else {
+					clearInterval( myInterval );
+					submitQuiz();
+				}
+			} else { // Apply when set duration = 0
 				timeSpend++;
-				setTimeSpend( durationTime - remainSeconds );
-			} else {
-				clearInterval( myInterval );
-				submitQuiz();
+				setTimeSpend( timeSpend );
+				setSeconds( timeSpend );
 			}
 		}, 1000 );
 
