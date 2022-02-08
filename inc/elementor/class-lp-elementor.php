@@ -6,6 +6,7 @@ class LP_Elementor_Widgets {
 
 	const WIDGETS = array(
 		'become-a-teacher' => 'LP_Elementor_Widget_Become_A_Teacher',
+		'login-form'       => 'LP_Elementor_Widget_Login_Form',
 	);
 
 	public function __construct() {
@@ -16,6 +17,10 @@ class LP_Elementor_Widgets {
 
 	public function register_widgets( $widgets_manager ) {
 		if ( ! empty( self::WIDGETS ) ) {
+
+			// Abstract class for widgets.
+			require_once LP_PLUGIN_PATH . 'inc/elementor/widgets/widget-base.php';
+
 			foreach ( self::WIDGETS as $widget => $class ) {
 				$class = sprintf( '\Elementor\%s', $class );
 
