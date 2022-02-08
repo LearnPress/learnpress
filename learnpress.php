@@ -378,7 +378,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// require_once 'inc/class-lp-preview-course.php';
 
 			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				require_once 'inc/elementor/class-lp-elementor.php';
+				require_once 'inc/external-plugin/elementor/class-lp-elementor.php';
 			}
 
 			require_once 'inc/class-lp-widget.php';

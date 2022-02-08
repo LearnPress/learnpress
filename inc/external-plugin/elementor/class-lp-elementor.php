@@ -19,13 +19,13 @@ class LP_Elementor_Widgets {
 		if ( ! empty( self::WIDGETS ) ) {
 
 			// Abstract class for widgets.
-			require_once LP_PLUGIN_PATH . 'inc/elementor/widgets/widget-base.php';
+			require_once LP_PLUGIN_PATH . 'inc/external-plugin/elementor/widgets/widget-base.php';
 
 			foreach ( self::WIDGETS as $widget => $class ) {
 				$class = sprintf( '\Elementor\%s', $class );
 
 				if ( ! class_exists( $class ) ) {
-					$widget_path = LP_PLUGIN_PATH . 'inc/elementor/widgets/' . $widget . '.php';
+					$widget_path = LP_PLUGIN_PATH . 'inc/external-plugin/elementor/widgets/' . $widget . '.php';
 
 					if ( file_exists( $widget_path ) ) {
 						require_once $widget_path;
