@@ -608,6 +608,24 @@ class LP_Course_DB extends LP_Database {
 
 		return $filter;
 	}
+
+	/**
+	 * Get list courses is on popular
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @return  LP_Course_Filter
+	 * @author minhpd
+	 * @version 1.0.0
+	 * @since 4.1.5
+	 */
+	public function get_courses_sort_by_popular( LP_Course_Filter $filter ): LP_Course_Filter {
+		$filter->fields  = array( 'DISTINCT(item_id)' );
+		$filter->join[]  = "INNER JOIN $this->tb_lp_user_items AS ui ON p.ID = ui.item_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
+		$filter->where[] = $this->wpdb->prepare( 'AND ( ui.status = %s OR ui.status = %s OR ui.status = %s )', LP_COURSE_ENROLLED, LP_COURSE_FINISHED, LP_COURSE_PURCHASED );
+		return $filter;
+	}
 }
 
 LP_Course_DB::getInstance();
