@@ -198,7 +198,8 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.1.6 (2022-xx-xx) =
-~ Fixed: set duration quiz = 0.
+~ Fixed: case set duration quiz = 0.
+~ Fixed: case set password for quiz.
 
 = 4.1.5 (2022-01-24) =
 ~ Modified: optimize, handle cache for query courses.

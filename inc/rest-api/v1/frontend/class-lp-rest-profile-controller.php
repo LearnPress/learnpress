@@ -275,7 +275,8 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 						'status' => $status,
 						'limit'  => LP_Settings::get_option( 'archive_course_limit', 6 ),
 						'paged'  => $paged,
-					)
+					),
+					$request
 				)
 			);
 
