@@ -12,7 +12,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Header for page
  */
-get_header( 'course' );
+if ( empty( $is_block_theme ) ) {
+	get_header( 'course' );
+}
 
 /**
  * @since 3.0.0
@@ -39,4 +41,6 @@ do_action( 'learn-press/sidebar' );
 /**
  * Footer for page
  */
-get_footer( 'course' );
+if ( empty( $is_block_theme ) ) {
+	get_footer( 'course' );
+}

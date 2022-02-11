@@ -36,7 +36,7 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		// Comment by tungnx
 		// add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
-		//add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
+		// add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
@@ -49,6 +49,49 @@ class LP_Page_Controller {
 		// Yoast seo
 		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
+	}
+
+	private function has_block_template( $template_name ) {
+		if ( ! $template_name ) {
+			return false;
+		}
+
+		$has_template      = false;
+		$template_name     = str_replace( 'course', LP_COURSE_CPT, $template_name );
+		$template_filename = $template_name . '.html';
+		// Since Gutenberg 12.1.0, the conventions for block templates directories have changed,
+		// we should check both these possible directories for backwards-compatibility.
+		$possible_templates_dirs = array( 'templates', 'block-templates' );
+
+		// Combine the possible root directory names with either the template directory
+		// or the stylesheet directory for child themes, getting all possible block templates
+		// locations combinations.
+		$filepath        = DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template_filename;
+		$legacy_filepath = DIRECTORY_SEPARATOR . 'block-templates' . DIRECTORY_SEPARATOR . $template_filename;
+		$possible_paths  = array(
+			get_stylesheet_directory() . $filepath,
+			get_stylesheet_directory() . $legacy_filepath,
+			get_template_directory() . $filepath,
+			get_template_directory() . $legacy_filepath,
+		);
+
+		// Check the first matching one.
+		foreach ( $possible_paths as $path ) {
+			if ( is_readable( $path ) ) {
+				$has_template = true;
+				break;
+			}
+		}
+
+		/**
+		 * Filters the value of the result of the block template check.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param boolean $has_template value to be filtered.
+		 * @param string $template_name The name of the template.
+		 */
+		return (bool) apply_filters( 'learnpress_has_block_template', $has_template, $template_name );
 	}
 
 	/**
@@ -205,7 +248,8 @@ class LP_Page_Controller {
 	 * @editor tungnx
 	 * @modify 4.1.3 - comment - not use
 	 */
-	/*public function maybe_redirect_quiz( $template ) {
+	/*
+	public function maybe_redirect_quiz( $template ) {
 		$course   = LP_Global::course();
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
@@ -260,11 +304,12 @@ class LP_Page_Controller {
 			$GLOBALS['preview_course'] = $post->ID;
 		}
 
-		/*if ( ! array_key_exists( $post->ID, $courses ) ) {
+		/*
+		if ( ! array_key_exists( $post->ID, $courses ) ) {
 			return $post;
 		}*/
 
-		//$courses[ $post->ID ] = true;
+		// $courses[ $post->ID ] = true;
 		$vars = $wp->query_vars;
 
 		if ( empty( $vars['course-item'] ) ) {
@@ -326,7 +371,8 @@ class LP_Page_Controller {
 	 * @reason not use
 	 * @deprecated 4.0.0
 	 */
-	/*public function set_404( $is_404 ) {
+	/*
+	public function set_404( $is_404 ) {
 		global $wp_query;
 		$wp_query->is_404 = $this->_is_404 = (bool) $is_404;
 	}*/
@@ -395,7 +441,7 @@ class LP_Page_Controller {
 			return $template;
 		}
 
-		//$this->_maybe_redirect_courses_page();
+		// $this->_maybe_redirect_courses_page();
 
 		$default_template = $this->get_page_template();
 
@@ -429,7 +475,9 @@ class LP_Page_Controller {
 		$page_template = '';
 
 		if ( is_singular( LP_COURSE_CPT ) ) {
-			$page_template = 'single-course.php';
+			if ( ! self::has_block_template( 'single-course' ) ) {
+				$page_template = 'single-course.php';
+			}
 
 			if ( $this->_is_single() ) {
 				global $post;
@@ -446,13 +494,15 @@ class LP_Page_Controller {
 			if ( is_tax( 'course_category' ) || is_tax( 'course_tag' ) ) {
 				$page_template = 'taxonomy-' . $object->taxonomy . '.php';
 
-				if ( ! file_exists( learn_press_locate_template( $page_template ) ) ) {
+				if ( self::has_block_template( 'taxonomy-' . $object->taxonomy ) ) {
+					$page_template = '';
+				} elseif ( ! file_exists( learn_press_locate_template( $page_template ) ) && ! self::has_block_template( 'archive-course' ) ) {
 					$page_template = 'archive-course.php';
 				}
-			} else {
+			} elseif ( ! self::has_block_template( 'archive-course' ) ) {
 				$page_template = 'archive-course.php';
 			}
-		} elseif ( is_post_type_archive( LP_COURSE_CPT ) || ( ! empty( learn_press_get_page_id( 'courses' ) ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) {
+		} elseif ( ( is_post_type_archive( LP_COURSE_CPT ) || ( ! empty( learn_press_get_page_id( 'courses' ) ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) && ! self::has_block_template( 'archive-course' ) ) {
 			$page_template = 'archive-course.php';
 		} elseif ( learn_press_is_checkout() ) {
 			$page_template = 'pages/checkout.php';
@@ -773,8 +823,8 @@ class LP_Page_Controller {
 
 		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == $page_courses_id ) {
 			$is_archive_course = 1;
-			//$q->is_home = false;
-			//$q->set( 'page_id', get_option( 'page_on_front' ) );
+			// $q->is_home = false;
+			// $q->set( 'page_id', get_option( 'page_on_front' ) );
 		}
 
 		/**
@@ -783,7 +833,8 @@ class LP_Page_Controller {
 		if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $page_courses_id && $q->get( 'page_id' ) == $page_courses_id ) {
 			$is_archive_course = 1;
 
-			/*global $wp_post_types;
+			/*
+			global $wp_post_types;
 
 			$course_page                                = get_post( $page_courses_id );
 			$this->_queried_object                      = $course_page;
