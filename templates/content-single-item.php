@@ -15,7 +15,9 @@ defined( 'ABSPATH' ) || exit();
  *
  * @see LP_Template_General::template_header()
  */
-do_action( 'learn-press/template-header' );
+if ( empty( $is_block_theme ) ) {
+	do_action( 'learn-press/template-header' );
+}
 
 /**
  * LP Hook
@@ -69,4 +71,6 @@ do_action( 'learn-press/after-single-course' );
  *
  * @see LP_Template_General::template_footer()
  */
-do_action( 'learn-press/template-footer' );
+if ( empty( $is_block_theme ) ) {
+	do_action( 'learn-press/template-footer' );
+}

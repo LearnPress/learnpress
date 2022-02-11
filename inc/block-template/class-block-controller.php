@@ -49,7 +49,7 @@ class LP_Block_Template_Controller {
 	}
 
 	public function render_content_block_template( $attributes ) {
-		$templates = array( 'archive-course', 'single-course' );
+		$templates = array( 'archive-course', 'single-course', 'content-single-item' );
 
 		if ( in_array( $attributes['template'], $templates, true ) ) {
 			return learn_press_get_template_content( $attributes['template'], array( 'is_block_theme' => true ) );
@@ -165,6 +165,9 @@ class LP_Block_Template_Controller {
 			if ( ! empty( $wp->query_vars['course-item'] ) && $template_slug === 'single-lp_course' ) {
 				$template_slug = '';
 			}
+
+			$template_slug = $template_slug === 'content-single-lp_course-item' ? 'single-lp_course' : $template_slug;
+
 			// This template does not have a slug we're looking for. Skip it.
 			if ( is_array( $slugs ) && count( $slugs ) > 0 && ! in_array( $template_slug, $slugs, true ) ) {
 				continue;

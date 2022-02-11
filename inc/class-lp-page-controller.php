@@ -484,7 +484,7 @@ class LP_Page_Controller {
 				setup_postdata( $post );
 
 				$course_item = LP_Global::course_item();
-				if ( $course_item ) {
+				if ( $course_item && ! self::has_block_template( 'content-single-course-item' ) ) {
 					$page_template = 'content-single-item.php';
 				}
 			}
