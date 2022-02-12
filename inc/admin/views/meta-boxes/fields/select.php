@@ -99,12 +99,6 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		if ( ! isset( $_POST[ $this->id ] ) ) {
-			return;
-		}
-
-		$value = LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] );
-
 		$multil_meta = isset( $this->extra['multil_meta'] ) ? $this->extra['multil_meta'] : false;
 
 		if ( $multil_meta ) {
@@ -125,6 +119,14 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				add_post_meta( $post_id, $this->id, $level_id, false );
 			}
 		} else {
+			$multilple = ! empty( $this->extra['multiple'] ) ? true : false;
+
+			if ( ! isset( $_POST[ $this->id ] ) && ! $multilple ) {
+				return;
+			}
+
+			$value = ! empty( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
+
 			update_post_meta( $post_id, $this->id, $value );
 		}
 	}
