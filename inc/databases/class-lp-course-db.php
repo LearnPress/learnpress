@@ -480,6 +480,11 @@ class LP_Course_DB extends LP_Database {
 			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
 			$WHERE[]         = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
 		}
+		// ID
+		if( ! empty( $filter->post_ids ) ) {
+			$list_ids_format = LP_Helper::db_format_array( $filter->post_ids, '%d' );
+			$WHERE[]         = $this->wpdb->prepare( 'AND p.ID IN (' . $list_ids_format . ')', $filter->post_ids );
+		}
 
 		// Title
 		if ( $filter->post_title ) {

@@ -45,12 +45,21 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 			)
 		);
 		$this->add_control(
+			'post_id',
+			array(
+				'label'   => esc_html__( 'Select Course', 'learnpress' ),
+				'type'    => Controls_Manager::SELECT,
+				'options' => $this->get_all_courses( array( '0' => esc_html__( 'All', 'learnpress' ) ) ),
+				'default' => '0',
+			)
+		);
+		$this->add_control(
 			'cat_id',
 			array(
 				'label'   => esc_html__( 'Select Category', 'learnpress' ),
-				'default' => '',
 				'type'    => Controls_Manager::SELECT,
-				'options' => $this->get_cat_taxonomy( 'course_category', array( '' => esc_html__( 'All', 'learnpress' ) ) ),
+				'options' => $this->get_cat_taxonomy( array( '0' => esc_html__( 'All', 'learnpress' ) ) ),
+				'default' => '0',
 			)
 		);
 		$this->add_control(
@@ -91,13 +100,11 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 		$this->end_controls_section();
 	}
 
-	protected function get_cat_taxonomy( $taxomony = 'category', $cats = false ) {
-		if ( ! $cats ) {
-			$cats = array();
-		}
+	protected function get_cat_taxonomy( $cats = array() ) {
+
 		$terms = new \WP_Term_Query(
 			array(
-				'taxonomy'     => $taxomony,
+				'taxonomy'     => 'course_category',
 				'pad_counts'   => 1,
 				'hierarchical' => 1,
 				'hide_empty'   => 1,
@@ -107,6 +114,7 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 		);
 
 		if ( is_wp_error( $terms ) ) {
+			return $cats;
 		} else {
 			if ( empty( $terms->terms ) ) {
 			} else {
@@ -123,6 +131,22 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 		return $cats;
 	}
 
+	protected function get_all_courses( $data = array() ) {
+		$args    = array(
+			'post_type'      => LP_COURSE_CPT,
+			'posts_per_page' => -1,
+		);
+		$courses = get_posts( $args );
+		if ( is_wp_error( $courses ) ) {
+			return $data;
+		}
+		foreach ( $courses as $course ) {
+			$data[ $course->ID ] = $course->post_title;
+		}
+
+		return $data;
+	}
+
 	public function render() {
 		$settings      = $this->get_settings_for_display();
 		$filter        = new \LP_Course_Filter();
@@ -136,6 +160,10 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 
 		if ( $settings['order_by'] ) {
 			$filter->order .= $settings['order_by'];
+		}
+
+		if ( $settings['post_id'] ) {
+			$filter->post_ids = array( $settings['post_id'] );
 		}
 
 		switch ( $course_type ) {
