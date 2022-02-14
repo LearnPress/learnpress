@@ -91,7 +91,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ###
 GET http://learnpress4.local/wp-json/learnpress/v1/lessons
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTYyODc1ODI3MiwibmJmIjoxNjI4NzU4MjcyLCJleHAiOjE2MjkzNjMwNzIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.KQXpjBcVWbw7R7lvoVkJMnqUSontyBUxRn9z9NsjEXA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0NDgzNjQ0NSwibmJmIjoxNjQ0ODM2NDQ1LCJleHAiOjE2NDU0NDEyNDUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.e_tX-kD-51vLUMdt0TBSzZ1rt6Zea9QzOdat5N6K6bY
 
 ## In student: You can get lesson by course is enrolled
 ###
@@ -141,7 +141,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/quiz/finish
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0NDgwNDUyMiwibmJmIjoxNjQ0ODA0NTIyLCJleHAiOjE2NDU0MDkzMjIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.zWvrzrAiMdd7oyU9P2E-vTNWxlvcQ3IZjlswXWpyPgk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0NDgzNTY1NywibmJmIjoxNjQ0ODM1NjU3LCJleHAiOjE2NDU0NDA0NTcsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.Zm_-2CyEYeuiEiTkbxX4q4dKYGBFYFna77XKUGYTAEk
 
 {
 	"id": 11,
@@ -185,10 +185,11 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ### Change Password
 POST http://learnpress4.local/wp-json/learnpress/v1/users/change-password/
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0NDgwNDUyMiwibmJmIjoxNjQ0ODA0NTIyLCJleHAiOjE2NDU0MDkzMjIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.zWvrzrAiMdd7oyU9P2E-vTNWxlvcQ3IZjlswXWpyPgk
 
 {
-	"old_password": "student",
-	"new_password": "123456"
+	"old_password": "123456",
+	"new_password": "admin"
 }
 
 ###

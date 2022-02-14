@@ -310,16 +310,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			);
 		}
 
-		$user_id = wp_update_user(
-			array(
-				'ID'        => $user->ID,
-				'user_pass' => $new_password,
-			)
-		);
-
-		if ( $user_id instanceof WP_Error ) {
-			return $user_id;
-		}
+		wp_set_password( $new_password, $user->ID );
 
 		return rest_ensure_response(
 			array(
