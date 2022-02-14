@@ -81,6 +81,28 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/change-password',
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'change_password' ),
+				'permission_callback' => array( $this, 'update_item_password_permissions' ),
+				'args'                => array(
+					'old_password' => array(
+						'description' => esc_html__( 'Old Password', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+					'new_password' => array(
+						'description' => esc_html__( 'New Password', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+				),
+			)
+		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -168,6 +190,28 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return true;
 	}
 
+	public function update_item_password_permissions( $request ) {
+		$user = wp_get_current_user();
+
+		if ( ! $user ) {
+			return new WP_Error(
+				'rest_cannot_update',
+				__( 'Sorry, you are not allowed to update this user.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+			return new WP_Error(
+				'rest_cannot_edit',
+				__( 'Sorry, you are not allowed to edit this user.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		return true;
+	}
+
 	/**
 	 * Determines if the current user is allowed to make the desired roles change.
 	 *
@@ -242,6 +286,47 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				)
 			);
 		}
+	}
+
+	public function change_password( $request ) {
+		$old_password = $request['old_password'];
+		$new_password = $request['new_password'];
+
+		$user = wp_get_current_user();
+
+		if ( ! $user || ( empty( $old_password ) || empty( $new_password ) ) ) {
+			return new WP_Error(
+				'rest_user_cannot_change_password',
+				__( 'Sorry, you are not allowed to change password.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		if ( ! wp_check_password( $old_password, $user->user_pass, $user->ID ) ) {
+			return new WP_Error(
+				'rest_user_incorrect_password',
+				__( 'Your current password is incorrect.' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		$user_id = wp_update_user(
+			array(
+				'ID'        => $user->ID,
+				'user_pass' => $new_password,
+			)
+		);
+
+		if ( $user_id instanceof WP_Error ) {
+			return $user_id;
+		}
+
+		return rest_ensure_response(
+			array(
+				'code'    => 'success',
+				'message' => esc_html__( 'Your password has been updated, Please login again to continue!', 'learnpress' ),
+			)
+		);
 	}
 
 	protected function get_user( $id ) {
@@ -332,6 +417,14 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		if ( is_wp_error( $user_id ) ) {
 			return $user_id;
+		}
+
+		if ( ! empty( $request['avatar_url'] ) ) {
+			$controller = new LP_REST_Profile_Controller();
+
+			$request->set_param( 'file', $request['avatar_url'] );
+
+			$uploaded_avatar = $controller->upload_avatar( $request );
 		}
 
 		$user = get_user_by( 'id', $user_id );
@@ -888,6 +981,10 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'avatar_url':
 					$data['avatar_url'] = $this->get_profile_avatar( $user->ID );
 					break;
+				case 'avatar_size':
+					$data['avatar_size']['width']  = learn_press_get_avatar_thumb_size()['width'];
+					$data['avatar_size']['height'] = learn_press_get_avatar_thumb_size()['height'];
+					break;
 				case 'instructor_data':
 					$data['instructor_data'] = $this->get_instructor_data( $user->ID );
 					break;
@@ -1231,6 +1328,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'avatar_url'         => array(
 					'description' => __( 'URL avatar' ),
 					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'avatar_size'        => array(
+					'description' => __( 'URL avatar size' ),
+					'type'        => 'array',
 					'context'     => array( 'view' ),
 				),
 				'instructor_data'    => array(
