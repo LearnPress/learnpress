@@ -294,7 +294,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		$user = wp_get_current_user();
 
-		if ( ! $user || ( empty( $old_password ) || empty( $new_password ) ) ) {
+		if ( ! $user || ! $user->ID || ( empty( $old_password ) || empty( $new_password ) ) ) {
 			return new WP_Error(
 				'rest_user_cannot_change_password',
 				__( 'Sorry, you are not allowed to change password.' ),

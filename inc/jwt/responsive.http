@@ -183,12 +183,11 @@ Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0NDgwNDUyMiwibmJmIjoxNjQ0ODA0NTIyLCJleHAiOjE2NDU0MDkzMjIsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.zWvrzrAiMdd7oyU9P2E-vTNWxlvcQ3IZjlswXWpyPgk
 
 ### Change Password
-POST http://learnpress4.local/wp-json/learnpress/v1/users/change-password
+POST http://learnpress4.local/wp-json/learnpress/v1/users/change-password/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sZWFybnByZXNzNC5sb2NhbCIsImlhdCI6MTY0NDgyOTkwMSwibmJmIjoxNjQ0ODI5OTAxLCJleHAiOjE2NDU0MzQ3MDEsImRhdGEiOnsidXNlciI6eyJpZCI6IjMifX19.eFCECFb5fA_SSGFT455VIEfr61YP7As7qLVxRuph90E
 
 {
-	"old_password": "admin",
+	"old_password": "student",
 	"new_password": "123456"
 }
 
