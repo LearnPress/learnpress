@@ -419,6 +419,35 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			return $user_id;
 		}
 
+		$files = $request->get_file_params();
+
+		if ( ! empty( $files['lp_avatar_file'] ) ) {
+			$file = $files['lp_avatar_file'];
+
+			if ( ! empty( $file['name'] ) ) {
+				list($width, $height) = getimagesize( $file['tmp_name'] );
+
+				$upload_size = learn_press_get_avatar_thumb_size();
+
+				if ( $width != $upload_size['width'] || $height != $upload_size['height'] ) {
+					return new WP_Error(
+						'rest_user_invalid_avatar_dimensions',
+						sprintf( __( 'Invalid avatar dimensions. Please upload a new avatar width size %1$1sx%2$2s' ), $upload_size['width'], $upload_size['height'] ),
+						array( 'status' => 400 )
+					);
+				}
+
+				$data   = file_get_contents( $file['tmp_name'] );
+				$base64 = base64_encode( $data );
+
+				$controller = new LP_REST_Profile_Controller();
+
+				$request->set_param( 'file', $base64 );
+
+				$uploaded_avatar = $controller->upload_avatar( $request );
+			}
+		}
+
 		if ( ! empty( $request['avatar_url'] ) ) {
 			$controller = new LP_REST_Profile_Controller();
 
