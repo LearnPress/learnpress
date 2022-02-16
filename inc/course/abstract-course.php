@@ -772,7 +772,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			// Check in days sale
 			if ( $has_sale_price && '' !== $start_date && '' !== $end_date ) {
-				$now   = time();
+				$now   = strtotime( get_date_from_gmt( gmdate( 'Y-m-d H:i:s', time() ), 'Y-m-d H:i:s' ) );
 				$end   = strtotime( $end_date );
 				$start = strtotime( $start_date );
 
