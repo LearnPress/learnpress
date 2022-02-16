@@ -763,6 +763,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter->page   = $args['paged'] ?? 1;
 					$filter->limit  = $args['limit'] ?? $filter->limit;
 					$total_rows     = 0;
+					$filter         = apply_filters( 'lp/api/profile/courses/purchased/filter', $filter, $args );
 					$result_courses = LP_User_Item_Course::get_user_courses( $filter, $total_rows );
 
 					$course_ids = LP_Course::get_course_ids( $result_courses, 'item_id' );
@@ -783,6 +784,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter->page        = $args['paged'] ?? 1;
 					$filter->limit       = $args['limit'] ?? $filter->limit;
 					$total_rows          = 0;
+					$filter              = apply_filters( 'lp/api/profile/courses/own/filter', $filter, $args );
 					$result_courses      = LP_Course::get_courses( $filter, $total_rows );
 
 					$course_ids = LP_Course::get_course_ids( $result_courses );

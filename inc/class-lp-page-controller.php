@@ -36,7 +36,7 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		// Comment by tungnx
 		// add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
-		//add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
+		// add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
@@ -49,6 +49,33 @@ class LP_Page_Controller {
 		// Yoast seo
 		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
+
+		// edit link item course when form search default wp
+		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
+	}
+
+	/**
+	 * edit link item course when form search default wp
+	 *
+	 * @param string $post_link
+	 * @param object $post
+	 */
+	public function post_type_link( $post_link, $post ) {
+		$args            = array( LP_LESSON_CPT, LP_QUIZ_CPT );
+		$items_supported = apply_filters( 'learn-press/post-type/item-course/permalink', $args );
+		$item_id         = $post->ID;
+
+		if ( in_array( $post->post_type, $items_supported ) ) {
+			$curd      = new LP_Course_CURD();
+			$course_id = $curd->get_course_by_item( $item_id );
+
+			if ( ! empty( $course_id ) ) {
+				$course    = learn_press_get_course( $course_id[0] );
+				$post_link = $course->get_item_link( $item_id );
+			}
+		}
+
+		return $post_link;
 	}
 
 	/**
@@ -205,7 +232,8 @@ class LP_Page_Controller {
 	 * @editor tungnx
 	 * @modify 4.1.3 - comment - not use
 	 */
-	/*public function maybe_redirect_quiz( $template ) {
+	/*
+	public function maybe_redirect_quiz( $template ) {
 		$course   = LP_Global::course();
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
@@ -260,11 +288,12 @@ class LP_Page_Controller {
 			$GLOBALS['preview_course'] = $post->ID;
 		}
 
-		/*if ( ! array_key_exists( $post->ID, $courses ) ) {
+		/*
+		if ( ! array_key_exists( $post->ID, $courses ) ) {
 			return $post;
 		}*/
 
-		//$courses[ $post->ID ] = true;
+		// $courses[ $post->ID ] = true;
 		$vars = $wp->query_vars;
 
 		if ( empty( $vars['course-item'] ) ) {
@@ -326,7 +355,8 @@ class LP_Page_Controller {
 	 * @reason not use
 	 * @deprecated 4.0.0
 	 */
-	/*public function set_404( $is_404 ) {
+	/*
+	public function set_404( $is_404 ) {
 		global $wp_query;
 		$wp_query->is_404 = $this->_is_404 = (bool) $is_404;
 	}*/
@@ -395,7 +425,7 @@ class LP_Page_Controller {
 			return $template;
 		}
 
-		//$this->_maybe_redirect_courses_page();
+		// $this->_maybe_redirect_courses_page();
 
 		$default_template = $this->get_page_template();
 
@@ -773,8 +803,8 @@ class LP_Page_Controller {
 
 		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == $page_courses_id ) {
 			$is_archive_course = 1;
-			//$q->is_home = false;
-			//$q->set( 'page_id', get_option( 'page_on_front' ) );
+			// $q->is_home = false;
+			// $q->set( 'page_id', get_option( 'page_on_front' ) );
 		}
 
 		/**
@@ -783,7 +813,8 @@ class LP_Page_Controller {
 		if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $page_courses_id && $q->get( 'page_id' ) == $page_courses_id ) {
 			$is_archive_course = 1;
 
-			/*global $wp_post_types;
+			/*
+			global $wp_post_types;
 
 			$course_page                                = get_post( $page_courses_id );
 			$this->_queried_object                      = $course_page;
@@ -838,10 +869,10 @@ class LP_Page_Controller {
 
 		// Remove param post_format and redirect
 		if ( isset( $q->query_vars['post_format'] ) ) {
-			$link_redirect = remove_query_arg( 'post_format', LP_Helper::getUrlCurrent() );
-
-			wp_redirect( $link_redirect );
-			die;
+			$q->is_404 = true;
+			// $link_redirect = remove_query_arg( 'post_format', LP_Helper::getUrlCurrent() );
+			// wp_redirect( $link_redirect );
+			// die;
 		}
 
 		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
