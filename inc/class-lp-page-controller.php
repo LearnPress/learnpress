@@ -55,24 +55,89 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * edit link item course when form search default wp
+	 * Set link item course when form search default wp
 	 *
 	 * @param string $post_link
 	 * @param object $post
 	 */
 	public function post_type_link( $post_link, $post ) {
-		$args            = array( LP_LESSON_CPT, LP_QUIZ_CPT );
-		$items_supported = apply_filters( 'learn-press/post-type/item-course/permalink', $args );
-		$item_id         = $post->ID;
+		// Set item's course permalink
+		$course_item_types = learn_press_get_course_item_types();
+		$item_id           = $post->ID;
 
-		if ( in_array( $post->post_type, $items_supported ) ) {
-			$curd      = new LP_Course_CURD();
-			$course_id = $curd->get_course_by_item( $item_id );
+		if ( in_array( $post->post_type, $course_item_types ) ) {
+			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id );
 
-			if ( ! empty( $course_id ) ) {
-				$course    = learn_press_get_course( $course_id[0] );
-				$post_link = $course->get_item_link( $item_id );
+			if ( $section_id ) {
+				return $post_link;
 			}
+
+			$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
+
+			if ( ! $course_id ) {
+				return $post_link;
+			}
+
+			$course    = learn_press_get_course( $course_id );
+			$post_link = $course->get_item_link( $item_id );
+		} elseif ( LP_COURSE_CPT === $post->post_type ) {
+			// Abort early if the placeholder rewrite tag isn't in the generated URL
+			if ( false === strpos( $post_link, '%' ) ) {
+				return $post_link;
+			}
+
+			// Get the custom taxonomy terms in use by this post
+			$terms = get_the_terms( $post->ID, 'course_category' );
+
+			if ( ! empty( $terms ) ) {
+				$terms           = _learn_press_usort_terms_by_ID( $terms ); // order by ID
+				$category_object = apply_filters(
+					'learn_press_course_post_type_link_course_category',
+					$terms[0],
+					$terms,
+					$post
+				);
+				$category_object = get_term( $category_object, 'course_category' );
+				$course_category = $category_object->slug;
+
+				$parent = $category_object->parent;
+				if ( $parent ) {
+					$ancestors = get_ancestors( $category_object->term_id, 'course_category' );
+					foreach ( $ancestors as $ancestor ) {
+						$ancestor_object = get_term( $ancestor, 'course_category' );
+						$course_category = $ancestor_object->slug . '/' . $course_category;
+					}
+				}
+			} else {
+				// If no terms are assigned to this post, use a string instead (can't leave the placeholder there)
+				$course_category = _x( 'uncategorized', 'slug', 'learnpress' );
+			}
+
+			$find = array(
+				'%year%',
+				'%monthnum%',
+				'%day%',
+				'%hour%',
+				'%minute%',
+				'%second%',
+				'%post_id%',
+				'%category%',
+				'%course_category%',
+			);
+
+			$replace = array(
+				date_i18n( 'Y', strtotime( $post->post_date ) ),
+				date_i18n( 'm', strtotime( $post->post_date ) ),
+				date_i18n( 'd', strtotime( $post->post_date ) ),
+				date_i18n( 'H', strtotime( $post->post_date ) ),
+				date_i18n( 'i', strtotime( $post->post_date ) ),
+				date_i18n( 's', strtotime( $post->post_date ) ),
+				$post->ID,
+				$course_category,
+				$course_category,
+			);
+
+			$post_link = str_replace( $find, $replace, $post_link );
 		}
 
 		return $post_link;
