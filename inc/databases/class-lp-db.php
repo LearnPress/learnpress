@@ -91,27 +91,6 @@ class LP_Database {
 	}
 
 	/**
-	 * Get list Item by post type and user id
-	 *
-	 * @param string $post_type .
-	 * @param int    $user_id .
-	 *
-	 * @return array
-	 */
-	public function getListItem( $post_type = '', $user_id = 0 ) {
-		$query = $this->wpdb->prepare(
-			"
-			SELECT ID FROM $this->tb_posts
-			WHERE post_type = %s
-			AND post_author = %d",
-			$post_type,
-			$user_id
-		);
-
-		return $this->wpdb->get_col( $query );
-	}
-
-	/**
 	 * Get total Item by post type and user id
 	 *
 	 * @param LP_Post_Type_Filter $filter
