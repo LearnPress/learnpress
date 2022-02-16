@@ -40,7 +40,8 @@ class LP_Gateways {
 	public function init() {
 		if ( ! $this->payment_gateways ) {
 			$gateways = array(
-				'paypal' => 'LP_Gateway_Paypal',
+				'paypal'          => 'LP_Gateway_Paypal',
+				'offline-payment' => 'LP_Gateway_Offline_Payment',
 			);
 			// Filter
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
