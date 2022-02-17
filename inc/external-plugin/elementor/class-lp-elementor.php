@@ -7,6 +7,8 @@ class LP_Elementor_Widgets {
 	const WIDGETS = array(
 		'become-a-teacher' => 'LP_Elementor_Widget_Become_A_Teacher',
 		'login-form'       => 'LP_Elementor_Widget_Login_Form',
+		'register-form'    => 'LP_Elementor_Widget_Register_Form',
+		'list-courses'     => 'LP_Elementor_Widget_List_Courses',
 	);
 
 	public function __construct() {

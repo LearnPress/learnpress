@@ -19,6 +19,90 @@ abstract class LP_Elementor_Widget_Base extends Widget_Base {
 		return '';
 	}
 
+	public function register_control_style_form_title( $title_selector = '' ) {
+		if ( empty( $title_selector ) ) {
+			return;
+		}
+		$this->start_controls_section(
+			'section_style_title',
+			array(
+				'label' => esc_html__( 'Title', 'learnpress' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			)
+		);
+
+		$this->add_responsive_control(
+			'title_align',
+			array(
+				'label'     => esc_html__( 'Alignment', 'thim-elementorkits' ),
+				'type'      => Controls_Manager::CHOOSE,
+				'options'   => array(
+					'left'   => array(
+						'title' => esc_html__( 'Left', 'thim-elementorkits' ),
+						'icon'  => 'eicon-text-align-left',
+					),
+					'center' => array(
+						'title' => esc_html__( 'Center', 'thim-elementorkits' ),
+						'icon'  => 'eicon-text-align-center',
+					),
+					'right'  => array(
+						'title' => esc_html__( 'Right', 'thim-elementorkits' ),
+						'icon'  => 'eicon-text-align-right',
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $title_selector => 'text-align: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'title_color',
+			array(
+				'label'     => esc_html__( 'Color', 'thim-elementorkits' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $title_selector => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'title_typography',
+				'selector' => '{{WRAPPER}} ' . $title_selector,
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Text_Shadow::get_type(),
+			array(
+				'name'     => 'title_shadow',
+				'selector' => '{{WRAPPER}} ' . $title_selector,
+			)
+		);
+
+		$this->add_responsive_control(
+			'title_spacing',
+			array(
+				'label'     => esc_html__( 'Spacing', 'thim-elementorkits' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => array(
+					'px' => array(
+						'max' => 100,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $title_selector => 'margin-bottom: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+
+	}
+
 	public function register_control_style_form_button( $button_selector = '' ) {
 		if ( empty( $button_selector ) ) {
 			return;

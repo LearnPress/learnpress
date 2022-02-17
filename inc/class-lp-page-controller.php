@@ -932,14 +932,6 @@ class LP_Page_Controller {
 
 		$post_type_apply_404 = array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' );
 
-		// Remove param post_format and redirect
-		if ( isset( $q->query_vars['post_format'] ) ) {
-			$q->is_404 = true;
-			// $link_redirect = remove_query_arg( 'post_format', LP_Helper::getUrlCurrent() );
-			// wp_redirect( $link_redirect );
-			// die;
-		}
-
 		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
 			$flag_load_404 = true;
 			$user          = wp_get_current_user();
