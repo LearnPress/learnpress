@@ -480,6 +480,11 @@ class LP_Course_DB extends LP_Database {
 			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
 			$WHERE[]         = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
 		}
+		// ID
+		if( ! empty( $filter->post_ids ) ) {
+			$list_ids_format = LP_Helper::db_format_array( $filter->post_ids, '%d' );
+			$WHERE[]         = $this->wpdb->prepare( 'AND p.ID IN (' . $list_ids_format . ')', $filter->post_ids );
+		}
 
 		// Title
 		if ( $filter->post_title ) {
@@ -606,6 +611,24 @@ class LP_Course_DB extends LP_Database {
 		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_featured' );
 		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_value = %s', 'yes' );
 
+		return $filter;
+	}
+
+	/**
+	 * Get list courses is on popular
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @return  LP_Course_Filter
+	 * @author minhpd
+	 * @version 1.0.0
+	 * @since 4.1.5
+	 */
+	public function get_courses_sort_by_popular( LP_Course_Filter $filter ): LP_Course_Filter {
+		$filter->fields  = array( 'DISTINCT(item_id)' );
+		$filter->join[]  = "INNER JOIN $this->tb_lp_user_items AS ui ON p.ID = ui.item_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
+		$filter->where[] = $this->wpdb->prepare( 'AND ( ui.status = %s OR ui.status = %s OR ui.status = %s )', LP_COURSE_ENROLLED, LP_COURSE_FINISHED, LP_COURSE_PURCHASED );
 		return $filter;
 	}
 }
