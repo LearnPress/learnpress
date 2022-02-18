@@ -29,6 +29,7 @@ $bg-course-featured: #93f;
 @import "frontend/comments";
 @import "frontend/base";
 @import "frontend/skeleton-animation";
+@import "frontend/twentytwentytwo";
 
 input[type="text"],
 input[type="email"],
@@ -674,6 +675,7 @@ ul.list-table-nav {
 		}
 	}
 }
-.course-price:empty{
-	display: none!important;
+
+.course-price:empty {
+	display: none !important;
 }

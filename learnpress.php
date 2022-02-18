@@ -372,6 +372,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/class-lp-ajax.php';
 			}
 
+			// Block Templates
+			require_once 'inc/block-template/class-block-until.php';
+			require_once 'inc/block-template/class-block-controller.php';
+
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
 			require_once 'inc/class-lp-schedules.php';

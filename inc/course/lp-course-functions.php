@@ -443,7 +443,7 @@ function learn_press_is_support_course_item_type( $type ) {
 			$support = $support && learn_press_is_support_course_item_type( $t );
 		}
 	} else {
-		$support = $type && ! empty( $types[ $type ] );
+		$support = is_string( $type ) && $type && ! empty( $types[ $type ] );
 	}
 
 	return $support;

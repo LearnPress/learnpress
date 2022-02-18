@@ -1,0 +1,18 @@
+.learnpress.theme-twentytwentytwo, .learnpress.twentytwentytwo {
+
+	.wp-site-blocks {
+		max-width: none;
+		padding-right: 0;
+		padding-left: 0;
+
+		> .wp-block-group {
+			max-width: none;
+			margin-right: auto;
+			margin-left: auto;
+		}
+	}
+
+	.lp-archive-courses {
+		max-width: none;
+	}
+}
