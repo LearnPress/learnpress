@@ -633,8 +633,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					$course_data = $user->get_course_data( $enrolled_item );
 
 					if ( $course_data ) {
+						$post = get_post( $enrolled_item );
+
 						$enrolled_ids[] = array(
 							'id'         => $enrolled_item ?? '',
+							'title'      => $post->post_title,
 							'graduation' => ! empty( $course_data->get_graduation() ) ? $course_data->get_graduation() : '',
 							'status'     => ! empty( $course_data->get_status() ) ? $course_data->get_status() : '',
 							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
