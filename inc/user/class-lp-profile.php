@@ -1062,7 +1062,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$uploaded_profile_src = $user->get_data( 'uploaded_profile_src' );
 
 			if ( empty( $uploaded_profile_src ) ) {
-				$profile_picture = $user->get_data( 'profile_picture' );
+				$profile_picture = get_user_meta( $user->get_id(), '_lp_profile_picture', true );
 
 				if ( $profile_picture ) {
 					$upload    = learn_press_user_profile_picture_upload_dir();

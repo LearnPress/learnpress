@@ -81,6 +81,28 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/change-password',
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'change_password' ),
+				'permission_callback' => array( $this, 'update_item_password_permissions' ),
+				'args'                => array(
+					'old_password' => array(
+						'description' => esc_html__( 'Old Password', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+					'new_password' => array(
+						'description' => esc_html__( 'New Password', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+				),
+			)
+		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -168,6 +190,28 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return true;
 	}
 
+	public function update_item_password_permissions( $request ) {
+		$user = wp_get_current_user();
+
+		if ( ! $user ) {
+			return new WP_Error(
+				'rest_cannot_update',
+				__( 'Sorry, you are not allowed to update this user.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+			return new WP_Error(
+				'rest_cannot_edit',
+				__( 'Sorry, you are not allowed to edit this user.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		return true;
+	}
+
 	/**
 	 * Determines if the current user is allowed to make the desired roles change.
 	 *
@@ -242,6 +286,38 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				)
 			);
 		}
+	}
+
+	public function change_password( $request ) {
+		$old_password = $request['old_password'];
+		$new_password = $request['new_password'];
+
+		$user = wp_get_current_user();
+
+		if ( ! $user || ! $user->ID || ( empty( $old_password ) || empty( $new_password ) ) ) {
+			return new WP_Error(
+				'rest_user_cannot_change_password',
+				__( 'Sorry, you are not allowed to change password.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		if ( ! wp_check_password( $old_password, $user->user_pass, $user->ID ) ) {
+			return new WP_Error(
+				'rest_user_incorrect_password',
+				__( 'Your current password is incorrect.' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		wp_set_password( $new_password, $user->ID );
+
+		return rest_ensure_response(
+			array(
+				'code'    => 'success',
+				'message' => esc_html__( 'Your password has been updated, Please login again to continue!', 'learnpress' ),
+			)
+		);
 	}
 
 	protected function get_user( $id ) {
@@ -332,6 +408,43 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		if ( is_wp_error( $user_id ) ) {
 			return $user_id;
+		}
+
+		$files = $request->get_file_params();
+
+		if ( ! empty( $files['lp_avatar_file'] ) ) {
+			$file = $files['lp_avatar_file'];
+
+			if ( ! empty( $file['name'] ) ) {
+				list($width, $height) = getimagesize( $file['tmp_name'] );
+
+				$upload_size = learn_press_get_avatar_thumb_size();
+
+				if ( $width != $upload_size['width'] || $height != $upload_size['height'] ) {
+					return new WP_Error(
+						'rest_user_invalid_avatar_dimensions',
+						sprintf( __( 'Invalid avatar dimensions. Please upload a new avatar width size %1$1sx%2$2s' ), $upload_size['width'], $upload_size['height'] ),
+						array( 'status' => 400 )
+					);
+				}
+
+				$data   = file_get_contents( $file['tmp_name'] );
+				$base64 = base64_encode( $data );
+
+				$controller = new LP_REST_Profile_Controller();
+
+				$request->set_param( 'file', $base64 );
+
+				$uploaded_avatar = $controller->upload_avatar( $request );
+			}
+		}
+
+		if ( ! empty( $request['avatar_url'] ) ) {
+			$controller = new LP_REST_Profile_Controller();
+
+			$request->set_param( 'file', $request['avatar_url'] );
+
+			$uploaded_avatar = $controller->upload_avatar( $request );
 		}
 
 		$user = get_user_by( 'id', $user_id );
@@ -520,8 +633,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					$course_data = $user->get_course_data( $enrolled_item );
 
 					if ( $course_data ) {
+						$post = get_post( $enrolled_item );
+
 						$enrolled_ids[] = array(
 							'id'         => $enrolled_item ?? '',
+							'title'      => $post->post_title,
 							'graduation' => ! empty( $course_data->get_graduation() ) ? $course_data->get_graduation() : '',
 							'status'     => ! empty( $course_data->get_status() ) ? $course_data->get_status() : '',
 							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
@@ -888,6 +1004,10 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'avatar_url':
 					$data['avatar_url'] = $this->get_profile_avatar( $user->ID );
 					break;
+				case 'avatar_size':
+					$data['avatar_size']['width']  = learn_press_get_avatar_thumb_size()['width'];
+					$data['avatar_size']['height'] = learn_press_get_avatar_thumb_size()['height'];
+					break;
 				case 'instructor_data':
 					$data['instructor_data'] = $this->get_instructor_data( $user->ID );
 					break;
@@ -1231,6 +1351,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'avatar_url'         => array(
 					'description' => __( 'URL avatar' ),
 					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'avatar_size'        => array(
+					'description' => __( 'URL avatar size' ),
+					'type'        => 'array',
 					'context'     => array( 'view' ),
 				),
 				'instructor_data'    => array(
