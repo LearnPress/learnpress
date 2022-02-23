@@ -23,6 +23,7 @@ class LP_Block_Template_Controller {
 		add_filter( 'get_block_templates', array( $this, 'add_block_templates' ), 10, 3 );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'block_editor' ) );
 		add_action( 'init', array( $this, 'register_block_template_post_type' ) );
+		add_filter( 'pre_get_block_file_template', array( $this, 'maybe_return_blocks_template' ), 10, 3 );
 	}
 
 	public function block_editor() {
@@ -46,6 +47,78 @@ class LP_Block_Template_Controller {
 				'render_callback' => array( $this, 'render_content_block_template' ),
 			)
 		);
+	}
+
+	public function maybe_return_blocks_template( $template, $id, $template_type ) {
+		// 'get_block_template' was introduced in WP 5.9. We need to support
+		// 'gutenberg_get_block_template' for previous versions of WP with
+		// Gutenberg enabled.
+		if (
+			! function_exists( 'gutenberg_get_block_template' ) &&
+			! function_exists( 'get_block_template' )
+		) {
+			return $template;
+		}
+		$template_name_parts = explode( '//', $id );
+		if ( count( $template_name_parts ) < 2 ) {
+			return $template;
+		}
+		list( , $slug ) = $template_name_parts;
+
+		// Remove the filter at this point because if we don't then this function will infinite loop.
+		remove_filter( 'pre_get_block_file_template', array( $this, 'maybe_return_blocks_template' ), 10, 3 );
+
+		// Check if the theme has a saved version of this template before falling back to the woo one. Please note how
+		// the slug has not been modified at this point, we're still using the default one passed to this hook.
+		$maybe_template = function_exists( 'gutenberg_get_block_template' ) ?
+			gutenberg_get_block_template( $id, $template_type ) :
+			get_block_template( $id, $template_type );
+
+		if ( null !== $maybe_template ) {
+			add_filter( 'pre_get_block_file_template', array( $this, 'maybe_return_blocks_template' ), 10, 3 );
+			return $maybe_template;
+		}
+
+		// Theme-based template didn't exist, try switching the theme to woocommerce and try again. This function has
+		// been unhooked so won't run again.
+		add_filter( 'get_block_file_template', array( $this, 'get_single_block_template' ), 10, 3 );
+		$maybe_template = function_exists( 'gutenberg_get_block_template' ) ?
+			gutenberg_get_block_template( LP_Block_Template_Utils::PLUGIN_SLUG . '//' . $slug, $template_type ) :
+			get_block_template( LP_Block_Template_Utils::PLUGIN_SLUG . '//' . $slug, $template_type );
+
+		// Re-hook this function, it was only unhooked to stop recursion.
+		add_filter( 'pre_get_block_file_template', array( $this, 'maybe_return_blocks_template' ), 10, 3 );
+		remove_filter( 'get_block_file_template', array( $this, 'get_single_block_template' ), 10, 3 );
+		if ( null !== $maybe_template ) {
+			return $maybe_template;
+		}
+
+		// At this point we haven't had any luck finding a template. Give up and let Gutenberg take control again.
+		return $template;
+	}
+
+	public function get_single_block_template( $template, $id, $template_type ) {
+
+		// The template was already found before the filter runs, just return it immediately.
+		if ( null !== $template ) {
+			return $template;
+		}
+
+		$template_name_parts = explode( '//', $id );
+		if ( count( $template_name_parts ) < 2 ) {
+			return $template;
+		}
+		list( , $slug ) = $template_name_parts;
+
+		// If this blocks template doesn't exist then we should just skip the function and let Gutenberg handle it.
+		if ( ! $this->block_template_is_available( $slug, $template_type ) ) {
+			return $template;
+		}
+
+		$available_templates = $this->get_block_templates( array( $slug ), $template_type );
+		return ( is_array( $available_templates ) && count( $available_templates ) > 0 )
+			? LP_Block_Template_Utils::instance()->gutenberg_build_template_result_from_file( $available_templates[0], $available_templates[0]->type )
+			: $template;
 	}
 
 	public function render_content_block_template( $attributes ) {
