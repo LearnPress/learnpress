@@ -48,7 +48,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @editor tungnx
 	 * @modify 4.1.4.1 - comment - not use
 	 */
-	/*public function add_question_answer( $id, $values = null ) {
+	/*
+	public function add_question_answer( $id, $values = null ) {
 		$results = $this->get_results( '' );
 
 		if ( ! $results ) {
@@ -110,7 +111,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 * @return bool|mixed
 	 */
-	/*public function update( $force = false, $wp_error = false ) {
+	/*
+	public function update( $force = false, $wp_error = false ) {
 		$return = parent::update( $force, $wp_error );
 		$this->calculate_results();
 
@@ -201,9 +203,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Calculate result of quiz.
 	 *
 	 * @param string $prop
-	 * @param bool $force - Optional. Force to refresh cache.
+	 * @param bool   $force - Optional. Force to refresh cache.
 	 *
-	 * Clear cache on
+	 *   Clear cache on
 	 * @see LP_REST_Users_Controller::start_quiz() | retake quiz
 	 *
 	 * @return LP_Quiz_Results|bool|mixed
@@ -223,11 +225,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$result    = $lp_quiz_cache->get_cache( $key_cache );
 
 		if ( false === $result || $force ) {
-			//$result = $this->_get_results();
+			// $result = $this->_get_results();
 
-			//if ( false === $result ) {
+			// if ( false === $result ) {
 			$result = $this->calculate_results();
-			//}
+			// }
 
 			$lp_quiz_cache->set_cache( $key_cache, $result );
 		}
@@ -448,7 +450,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		if ( $is_has_change ) {
-			//LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $result ) );
+			// LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $result ) );
 		}
 
 		return $result;
@@ -508,11 +510,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$question = LP_Question::get_question( $question_id );
 				$point    = floatval( $question->get_mark() );
 
-				//if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
-				$result['questions'][ $question_id ]             = [];
+				// if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
+				$result['questions'][ $question_id ]             = array();
 				$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
 
-				//}
+				// }
 
 				if ( isset( $answered[ $question_id ] ) ) { // User's answer
 					$result['question_answered']++;
@@ -571,10 +573,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$result['pass'] = 0;
 			}
 
-			//$result['answered'] = $answered;
-			//$results['status']   = $quiz->get_status();
-			//$result['results']  = $result;
-			//$result['attempts'] = $this->get_attempts();
+			// $result['answered'] = $answered;
+			// $results['status']   = $quiz->get_status();
+			// $result['results']  = $result;
+			// $result['attempts'] = $this->get_attempts();
 		} catch ( Throwable $e ) {
 
 		}
@@ -755,7 +757,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Instant check question
 	 *
-	 * @param int $question_id
+	 * @param int   $question_id
 	 * @param mixed $answered
 	 *
 	 * @return array
@@ -772,10 +774,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			throw new Exception( __( 'Cannot check answer the question.', 'learnpress' ) );
 		}
 
-		$answered_check = [
+		$answered_check = array(
 			'instant_check' => 1,
 			$question_id    => $answered,
-		];
+		);
 
 		// For case save result when check instant answer
 		$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
@@ -794,6 +796,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		$checked['answered'] = $answered;
 		$checked['mark']     = $result_answer['questions'][ $question_id ]['mark'];
+		$checked['correct']  = $result_answer['questions'][ $question_id ]['correct'];
 
 		return $checked;
 	}
@@ -909,7 +912,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return apply_filters( 'learn-press/user-quiz/can-hint-answer', true, $this->get_id(), $this->get_course_id() );
 	}
 
-	/*public function complete( $status = 'completed' ) {
+	/*
+	public function complete( $status = 'completed' ) {
 		parent::complete( $status );
 
 		$this->update();
@@ -921,7 +925,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @editor tungnx
 	 * @modify 4.1.4.1 - comment - not use
 	 */
-	/*public function finish() {
+	/*
+	public function finish() {
 		$this->complete( 'completed' );
 
 		// Force to re-calculate quiz results and update cache.
