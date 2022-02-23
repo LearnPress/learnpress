@@ -80,10 +80,6 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						'description' => esc_html__( 'Question ID.', 'learnpress' ),
 						'type'        => 'integer',
 					),
-					'answered'    => array(
-						'description' => esc_html__( 'Answer this question.', 'learnpress' ),
-						'type'        => array( 'array', 'string', 'object' ),
-					),
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
