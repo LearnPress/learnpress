@@ -121,10 +121,23 @@ class LP_Block_Template_Controller {
 			: $template;
 	}
 
+	/**
+	 * Render block template
+	 *
+	 * @param $attributes
+	 *
+	 * @return false|string
+	 */
 	public function render_content_block_template( $attributes ) {
-		$templates = array( 'archive-course', 'single-course', 'content-single-item' );
+		$templates    = array( 'archive-course', 'single-course', 'content-single-item' );
+		$current_page = LP_Page_Controller::page_current();
 
 		if ( in_array( $attributes['template'], $templates, true ) ) {
+			// Fix something detected wrong template. - tungnx
+			if ( LP_PAGE_SINGLE_COURSE == $current_page ) {
+				$attributes['template'] = 'single-course';
+			}
+
 			return learn_press_get_template_content( $attributes['template'], array( 'is_block_theme' => true ) );
 		} else {
 			ob_start();
