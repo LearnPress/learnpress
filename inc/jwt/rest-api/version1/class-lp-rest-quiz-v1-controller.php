@@ -448,11 +448,6 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$checked_questions = $user_quiz->get_checked_questions();
 			$expiration_time   = $user_quiz->get_expiration_time();
 
-			// If expiration time is specific then calculate total time
-			if ( $expiration_time && ! $expiration_time->is_null() ) {
-				$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
-			}
-
 			$output = array(
 				'status'            => $status,
 				'attempts'          => $user_quiz->get_attempts(),
@@ -461,10 +456,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'retaken'           => absint( $user_quiz->get_retaken_count() ),
 			);
 
-			if ( isset( $total_time ) ) {
-				$output['total_time'] = lp_jwt_prepare_date_response( $total_time );
-				$output['endTime']    = lp_jwt_prepare_date_response( $expiration_time->toSql( false ) );
-			}
+			$output['total_time'] = $user_quiz->get_timestamp_remaining();
 
 			if ( $quiz_results ) {
 				$output['results'] = $quiz_results->get();
