@@ -114,6 +114,7 @@ $js = array(
 	'edit_permalink'      => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
 	'results'             => array(),
 	'required_password'   => post_password_required( $quiz->get_id() ),
+	'allow_retake'        => $quiz->get_retake_count() == -1 ? true : false,
 );
 
 /*

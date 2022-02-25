@@ -1766,7 +1766,11 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 
 	$user_item = new LP_User_Item_Quiz( $data );
 
-	$user_item->update_retake_count();
+	$ratake_count = get_post_meta( $quiz_id, '_lp_retake_count', true );
+
+	if ( $ratake_count > 0 ) {
+		$user_item->update_retake_count();
+	}
 
 	// Create new result in table learnpress_user_item_results.
 	LP_User_Items_Result_DB::instance()->insert( $data->user_item_id );

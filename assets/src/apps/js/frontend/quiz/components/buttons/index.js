@@ -217,9 +217,10 @@ class Buttons extends Component {
 			questionsPerPage,
 			canRetry,
 			retakeNumber,
-			requiredPassword
+			requiredPassword,
+			allowRetake
 		} = this.props;
-
+		console.log(allowRetake);
 		const classNames = [ 'quiz-buttons' ];
 
 		if ( status === 'started' || isReviewing ) {
@@ -262,9 +263,10 @@ class Buttons extends Component {
 
 						{ ( ( status === 'completed' && canRetry ) || -1 !== [ '', 'viewed' ].indexOf( status ) ) && ! isReviewing && ! requiredPassword && (
 							<button className="lp-button start" onClick={ this.startQuiz }>
-								{ ( status === 'completed' ) ? `${ __( 'Retake', 'learnpress' ) }${ retakeNumber ? ` (${ retakeNumber })` : '' }` :	__( 'Start', 'learnpress' ) }
+								{ ( status === 'completed' ) ? `${ __( 'Retake', 'learnpress' ) } ${ ! allowRetake ? ` ${ retakeNumber ? ` (${ retakeNumber })` : '' }`: '' } `  :	__( 'Start', 'learnpress' ) }
 							</button>
 						) }
+
 
 						{ ( 'started' === status || isReviewing ) && ( numPages > 1 ) && (
 							<>
@@ -410,6 +412,7 @@ export default compose( [
 			message: getData( 'messageResponse' ) || false,
 			success: getData( 'successResponse' ) !== undefined ? getData( 'successResponse' ) : true,
 			requiredPassword: getData( 'requiredPassword' ),
+			allowRetake : getData('allowRetake')
 		};
 
 		if ( data.questionsPerPage === 1 ) {
