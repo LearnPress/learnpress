@@ -220,7 +220,7 @@ class Buttons extends Component {
 			requiredPassword,
 			allowRetake
 		} = this.props;
-		console.log(allowRetake);
+
 		const classNames = [ 'quiz-buttons' ];
 
 		if ( status === 'started' || isReviewing ) {
@@ -427,6 +427,10 @@ export default compose( [
 				data.canRetry = true;
 			} else {
 				data.canRetry = false;
+			}
+
+			if ( data.allowRetake ) {
+				data.canRetry = true;
 			}
 		}
 
