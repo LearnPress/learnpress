@@ -527,9 +527,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 						case 'on_feature':
 							$filter_tmp = LP_Course_DB::getInstance()->get_courses_sort_by_feature( $filter_tmp );
 							break;
-						case 'on_popular':
-							$filter_tmp = LP_Course_DB::getInstance()->get_courses_sort_by_popular( $filter_tmp );
-							break;
 						default:
 							$filter_tmp = apply_filters( 'lp/courses/filter/sort_by' . $sort_by, $filter_tmp );
 							break;
@@ -548,7 +545,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 							$filter->order = 'ASC';
 						}
 
-						$filter = LP_Course_DB::getInstance()->get_courses_sort_by_price( $filter );
+						$filter = LP_Course_DB::getInstance()->get_courses_order_by_price( $filter );
+						break;
+					case 'popular':
+						$filter = LP_Course_DB::getInstance()->get_courses_order_by_popular( $filter );
 						break;
 					default:
 						$filter = apply_filters( 'lp/courses/filter/order_by/' . $filter->order_by, $filter );

@@ -4,7 +4,7 @@
  *
  * @author  tungnx
  * @package LearnPress/Classes/Filters
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 /**
@@ -26,7 +26,11 @@ class LP_Filter {
 	 */
 	public $sort_by = array();
 	/**
-	 * @var string For direct query
+	 * @var string
+	 */
+	public $group_by = '';
+	/**
+	 * @var string
 	 */
 	public $order_by = '';
 	/**
@@ -41,6 +45,22 @@ class LP_Filter {
 	 * @var int
 	 */
 	public $page = 1;
+	/**
+	 * Name table query Or Query nested
+	 * EX: FROM 'wp_posts'
+	 * OR: FROM (SELECT * FROM 'wp_posts') AS P
+	 *
+	 * @var string
+	 */
+	public $collection = '';
+	/**
+	 * Alias collection
+	 * EX: FROM 'wp_posts' AS p
+	 * "p" is alias
+	 *
+	 * @var string
+	 */
+	public $collection_alias = '';
 	/**
 	 * @var array
 	 */
@@ -60,7 +80,7 @@ class LP_Filter {
 	/**
 	 * @var string Ex: ID, for query: COUNT(ID)
 	 */
-	public $field_count = '';
+	public $field_count = 'ID';
 	/**
 	 * @var bool set true to return string query
 	 */
