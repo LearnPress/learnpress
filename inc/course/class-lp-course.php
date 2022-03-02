@@ -503,6 +503,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @sicne 4.1.5
 		 */
 		public static function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+			$lp_course_db = LP_Course_DB::getInstance();
+
 			try {
 				$key_cache            = md5( json_encode( $filter ) );
 				$key_cache_total_rows = md5( json_encode( $filter ) . 'total_rows' );
@@ -522,17 +524,17 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 					switch ( $sort_by ) {
 						case 'on_sale':
-							$filter_tmp = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter_tmp );
+							$filter_tmp = $lp_course_db->get_courses_sort_by_sale( $filter_tmp );
 							break;
 						case 'on_feature':
-							$filter_tmp = LP_Course_DB::getInstance()->get_courses_sort_by_feature( $filter_tmp );
+							$filter_tmp = $lp_course_db->get_courses_sort_by_feature( $filter_tmp );
 							break;
 						default:
 							$filter_tmp = apply_filters( 'lp/courses/filter/sort_by' . $sort_by, $filter_tmp );
 							break;
 					}
 
-					$query_courses_str = LP_Course_DB::getInstance()->get_courses( $filter_tmp );
+					$query_courses_str = $lp_course_db->get_courses( $filter_tmp );
 
 					$filter->where[] = "AND ID IN ({$query_courses_str})";
 				}
@@ -545,10 +547,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 							$filter->order = 'ASC';
 						}
 
-						$filter = LP_Course_DB::getInstance()->get_courses_order_by_price( $filter );
+						$filter = $lp_course_db->get_courses_order_by_price( $filter );
 						break;
 					case 'popular':
-						$filter = LP_Course_DB::getInstance()->get_courses_order_by_popular( $filter );
+						$filter = $lp_course_db->get_courses_order_by_popular( $filter );
 						break;
 					default:
 						$filter = apply_filters( 'lp/courses/filter/order_by/' . $filter->order_by, $filter );

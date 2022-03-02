@@ -358,6 +358,27 @@ class LP_Database {
 	}
 
 	/**
+	 * Get list columns name of table
+	 *
+	 * @param string $name_table
+	 *
+	 * @return array
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.1.6
+	 * @author tungnx
+	 */
+	public function get_cols_of_table( string $name_table ): array {
+		$query = "SHOW COLUMNS FROM $name_table";
+
+		$result = $this->wpdb->get_col( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
 	 * Create table learnpress_user_item_results
 	 *
 	 * @return bool|int
@@ -604,6 +625,7 @@ class LP_Database {
 			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
 		}
 
+		$COLLECTION = '';
 		if ( ! empty( $filter->collection ) ) {
 			$COLLECTION = $filter->collection;
 		}
@@ -625,6 +647,9 @@ class LP_Database {
 
 			if ( $filter->return_string_query ) {
 				return $query;
+			} elseif ( ! empty( $filter->union ) ) {
+				$query  = implode( ' UNION ', array_unique( $filter->union ) );
+				$query .= $LIMIT;
 			}
 
 			$result = $this->wpdb->get_results( $query );

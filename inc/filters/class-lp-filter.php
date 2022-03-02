@@ -68,11 +68,19 @@ class LP_Filter {
 	/**
 	 * @var array
 	 */
+	public $exclude_fields = array();
+	/**
+	 * @var array
+	 */
 	public $where = array();
 	/**
 	 * @var array
 	 */
 	public $join = array();
+	/**
+	 * @var array
+	 */
+	public $union = array();
 	/**
 	 * @var bool set true to return total_rows only
 	 */
