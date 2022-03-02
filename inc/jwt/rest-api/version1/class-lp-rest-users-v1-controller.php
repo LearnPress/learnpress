@@ -282,7 +282,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			return rest_ensure_response(
 				array(
 					'code'    => 'success',
-					'message' => esc_html__( 'Please check your email to reset your password', 'learnpress' ),
+					'message' => esc_html__( 'A link to reset your password has been emailed to you.', 'learnpress' ),
 				)
 			);
 		}
