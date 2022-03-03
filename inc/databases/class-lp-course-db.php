@@ -454,111 +454,63 @@ class LP_Course_DB extends LP_Database {
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @author tungnx
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.1.5
 	 */
 	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
-		$result = null;
+		$default_fields = $this->get_cols_of_table( $this->tb_posts );
+		$filter->fields = array_merge( $default_fields, $filter->fields );
+
+		if ( empty( $filter->collection ) ) {
+			$filter->collection = $this->tb_posts;
+		}
+
+		if ( empty( $filter->collection_alias ) ) {
+			$filter->collection_alias = 'p';
+		}
 
 		// Where
-		$WHERE   = array( 'WHERE 1=1' );
-		$WHERE[] = $this->wpdb->prepare( 'AND p.post_type = %s', $filter->post_type );
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_type = %s', $filter->post_type );
 
 		// Status
 		$filter->post_status = (array) $filter->post_status;
 		if ( ! empty( $filter->post_status ) ) {
 			$post_status_format = LP_Helper::db_format_array( $filter->post_status, '%s' );
-			$WHERE[]            = $this->wpdb->prepare( 'AND p.post_status IN (' . $post_status_format . ')', $filter->post_status );
+			$filter->where[]    = $this->wpdb->prepare( 'AND p.post_status IN (' . $post_status_format . ')', $filter->post_status );
 		}
 
-		// Inner join
-		$INNER_JOIN = array();
 		// Term ids
 		if ( ! empty( $filter->term_ids ) ) {
-			$INNER_JOIN[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
 
 			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
-			$WHERE[]         = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
+			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
 		}
-		// ID
-		if( ! empty( $filter->post_ids ) ) {
+
+		// course ids
+		if ( ! empty( $filter->post_ids ) ) {
 			$list_ids_format = LP_Helper::db_format_array( $filter->post_ids, '%d' );
-			$WHERE[]         = $this->wpdb->prepare( 'AND p.ID IN (' . $list_ids_format . ')', $filter->post_ids );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.ID IN (' . $list_ids_format . ')', $filter->post_ids );
 		}
 
 		// Title
 		if ( $filter->post_title ) {
-			$WHERE[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $filter->post_title . '%' );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $filter->post_title . '%' );
 		}
 
 		// Author
 		if ( $filter->post_author ) {
-			$WHERE[] = $this->wpdb->prepare( 'AND p.post_author = %d', $filter->post_author );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author = %d', $filter->post_author );
+		}
+		// Authors
+		if ( ! empty( $filter->post_authors ) ) {
+			$post_authors_format = LP_Helper::db_format_array( $filter->post_authors, '%d' );
+			$filter->where[]     = $this->wpdb->prepare( 'AND p.ID IN (' . $post_authors_format . ')', $filter->post_authors );
 		}
 
-		// Fields select
-		$FIELDS = '*';
-		if ( ! empty( $filter->fields ) ) {
-			$FIELDS = implode( ',', array_unique( $filter->fields ) );
-		}
-		$FIELDS = apply_filters( 'lp/courses/query/fields', $FIELDS, $filter );
+		$filter = apply_filters( 'lp/course/query/filter', $filter );
 
-		$INNER_JOIN = array_merge( $INNER_JOIN, $filter->join );
-		$INNER_JOIN = apply_filters( 'lp/courses/query/inner_join', $INNER_JOIN, $filter );
-		$INNER_JOIN = implode( ' ', array_unique( $INNER_JOIN ) );
-
-		$WHERE = array_merge( $WHERE, $filter->where );
-		$WHERE = apply_filters( 'lp/courses/query/where', $WHERE, $filter );
-		$WHERE = implode( ' ', array_unique( $WHERE ) );
-
-		// Order by
-		$ORDER_BY = '';
-		if ( ! $filter->return_string_query && $filter->order_by ) {
-			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order . ' ';
-			$ORDER_BY  = apply_filters( 'lp/courses/query/order_by', $ORDER_BY, $filter );
-		}
-
-		// Limit
-		$LIMIT = '';
-		if ( ! $filter->return_string_query ) {
-			$filter->limit = absint( $filter->limit );
-			if ( $filter->limit > $filter->max_limit ) {
-				$filter->limit = $filter->max_limit;
-			}
-			$offset = $filter->limit * ( $filter->page - 1 );
-			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
-		}
-
-		// Query
-		if ( ! $filter->query_count ) {
-			$query = "SELECT $FIELDS FROM $this->tb_posts AS p
-			$INNER_JOIN
-			$WHERE
-			$ORDER_BY
-			$LIMIT
-			";
-
-			if ( $filter->return_string_query ) {
-				return $query;
-			}
-
-			$result = $this->wpdb->get_results( $query );
-		}
-
-		// Query total rows
-		$query_total = "SELECT COUNT($filter->field_count) FROM $this->tb_posts AS p
-		$INNER_JOIN
-		$WHERE
-		";
-		$total_rows  = (int) $this->wpdb->get_var( $query_total );
-
-		$this->check_execute_has_error();
-
-		if ( $filter->query_count ) {
-			return $total_rows;
-		}
-
-		return $result;
+		return $this->execute( $filter, $total_rows );
 	}
 
 	/**
@@ -571,7 +523,7 @@ class LP_Course_DB extends LP_Database {
 	 * @author tungnx
 	 * @version 1.0.0
 	 */
-	public function get_courses_sort_by_price( LP_Course_Filter $filter ): LP_Course_Filter {
+	public function get_courses_order_by_price( LP_Course_Filter $filter ): LP_Course_Filter {
 		$filter->join[]   = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
 		$filter->where[]  = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_price' );
 		$filter->order_by = 'CAST( pm.meta_value AS UNSIGNED )';
@@ -616,19 +568,56 @@ class LP_Course_DB extends LP_Database {
 
 	/**
 	 * Get list courses is on popular
-	 *
+	 * Use "UNION" to merge 2 query
 	 * @param LP_Course_Filter $filter
 	 *
 	 * @return  LP_Course_Filter
-	 * @author minhpd
+	 * @throws Exception
 	 * @version 1.0.0
-	 * @since 4.1.5
+	 * @since 4.1.6
+	 * @author minhpd
 	 */
-	public function get_courses_sort_by_popular( LP_Course_Filter $filter ): LP_Course_Filter {
-		$filter->fields  = array( 'DISTINCT(item_id)' );
-		$filter->join[]  = "INNER JOIN $this->tb_lp_user_items AS ui ON p.ID = ui.item_id";
-		$filter->where[] = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
-		$filter->where[] = $this->wpdb->prepare( 'AND ( ui.status = %s OR ui.status = %s OR ui.status = %s )', LP_COURSE_ENROLLED, LP_COURSE_FINISHED, LP_COURSE_PURCHASED );
+	public function get_courses_order_by_popular( LP_Course_Filter $filter ): LP_Course_Filter {
+		// Set list name columns get
+		$columns_table_posts = $this->get_cols_of_table( $this->tb_posts );
+		$filter->fields      = array_merge( $columns_table_posts, $filter->fields );
+
+		$filter_user_course       = clone $filter;
+		$filter_course_not_attend = clone $filter;
+
+		// Query get users total attend courses
+		// $filter_user_course->fields[]            = 'ID';
+		$filter_user_course->fields[] = 'COUNT(DISTINCT (ID)) AS total';
+		//$filter_user_course->fields              = array_merge( $filter->fields, $filter_user_course->fields );
+		$filter_user_course->join[]              = "INNER JOIN {$this->tb_lp_user_items} AS ui ON p.ID = ui.item_id";
+		$filter_user_course->where[]             = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
+		$filter_user_course->where[]             = $this->wpdb->prepare(
+			'AND (status = %s OR status = %s OR status = %s)',
+			LP_COURSE_ENROLLED,
+			LP_COURSE_PURCHASED,
+			LP_COURSE_FINISHED
+		);
+		$filter_user_course->group_by            = 'p.ID';
+		$filter_user_course->return_string_query = true;
+		$query_user_course                       = LP_Course_DB::getInstance()->get_courses( $filter_user_course );
+
+		// Query get courses not attend
+		$filter_user_course_cl              = clone $filter_user_course;
+		$filter_user_course_cl->only_fields = array( 'ID' );
+		$query_user_course_for_not_in       = LP_Course_DB::getInstance()->get_courses( $filter_user_course_cl );
+
+		//$filter_course_not_attend->fields[]            = 'ID';
+		$filter_course_not_attend->fields[] = '0 AS total';
+		//$filter_course_not_attend->fields              = array_merge( $filter->fields, $filter_course_not_attend->fields );
+		$filter_course_not_attend->where[]             = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
+		$filter_course_not_attend->order_by            = 'total';
+		$filter_course_not_attend->order               = 'DESC';
+		$filter_course_not_attend->return_string_query = true;
+		$query_course_not_attend                       = LP_Course_DB::getInstance()->get_courses( $filter_course_not_attend );
+
+		$filter->union[] = $query_user_course;
+		$filter->union[] = $query_course_not_attend;
+
 		return $filter;
 	}
 }

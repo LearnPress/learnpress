@@ -774,6 +774,13 @@ class LP_User_Items_DB extends LP_Database {
 		$WHERE = apply_filters( 'lp/user/courses/query/where', $WHERE, $filter );
 		$WHERE = implode( ' ', array_unique( $WHERE ) );
 
+		// Group by
+		$GROUP_BY = '';
+		if ( $filter->group_by ) {
+			$GROUP_BY .= 'GROUP BY ' . $filter->group_by;
+			$GROUP_BY  = apply_filters( 'lp/user/courses/query/group_by', $GROUP_BY, $filter );
+		}
+
 		// Order by
 		$ORDER_BY = '';
 		if ( $filter->order_by ) {
@@ -797,6 +804,7 @@ class LP_User_Items_DB extends LP_Database {
 			$query = "SELECT $FIELDS FROM $this->tb_lp_user_items AS ui
 			$INNER_JOIN
 			$WHERE
+			$GROUP_BY
 			$ORDER_BY
 			$LIMIT
 			";

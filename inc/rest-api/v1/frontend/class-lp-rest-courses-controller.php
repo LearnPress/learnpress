@@ -116,9 +116,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter->page       = absint( $request['paged'] ?? 1 );
 			$filter->post_title = LP_Helper::sanitize_params_submitted( $request['s'] ?? '' );
 			$fields_str         = LP_Helper::sanitize_params_submitted( $request['c_fields'] ?? '' );
+			$fields_exclude_str = LP_Helper::sanitize_params_submitted( $request['c_exclude_fields'] ?? '' );
 			if ( ! empty( $fields_str ) ) {
 				$fields         = explode( ',', $fields_str );
 				$filter->fields = $fields;
+			}
+			if ( ! empty( $fields_exclude_str ) ) {
+				$fields_exclude         = explode( ',', $fields_exclude_str );
+				$filter->exclude_fields = $fields_exclude;
 			}
 			$filter->post_author = LP_Helper::sanitize_params_submitted( $request['c_author'] ?? 0 );
 			$term_ids_str        = LP_Helper::sanitize_params_submitted( $request['term_id'] ?? '' );
@@ -149,6 +154,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			} else {
 				// For return data has html
 				if ( $courses ) {
+					// Get only course ids
+					$courses = LP_Course::get_course_ids( $courses );
 					ob_start();
 
 					global $post, $wp;
@@ -191,7 +198,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		return apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response );
 	}
 
-	public function archive_course( WP_REST_Request $request ) {
+	/*public function archive_course( WP_REST_Request $request ) {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 
@@ -283,7 +290,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$response->data->content = ob_get_clean();
 
 		return rest_ensure_response( apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response ) );
-	}
+	}*/
 
 	/**
 	 * Rest API for Enroll in single course.
