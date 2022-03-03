@@ -3591,7 +3591,7 @@ function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
 function learn_press_count_instructor_users( int $instructor_id = 0 ): int {
 	try {
 		$filter_course                      = new LP_Course_Filter();
-		$filter_course->fields              = array( 'ID' );
+		$filter_course->only_fields         = array( 'ID' );
 		$filter_course->post_author         = $instructor_id;
 		$filter_course->post_status         = 'publish';
 		$filter_course->return_string_query = true;

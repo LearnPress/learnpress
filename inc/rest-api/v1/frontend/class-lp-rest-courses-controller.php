@@ -177,7 +177,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						)
 					);
 
-					foreach ( $courses as $post ) {
+					// Todo: tungnx - should rewrite call template
+					foreach ( $courses as $course_id ) {
+						$post = get_post( $course_id );
 						setup_postdata( $post );
 						learn_press_get_template_part( 'content', 'course' );
 					}
