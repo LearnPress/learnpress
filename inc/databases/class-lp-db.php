@@ -586,7 +586,18 @@ class LP_Database {
 
 		// Fields select
 		$FIELDS = '*';
-		if ( ! empty( $filter->fields ) ) {
+		if ( ! empty( $filter->only_fields ) ) {
+			$FIELDS = implode( ',', array_unique( $filter->only_fields ) );
+		} elseif ( ! empty( $filter->fields ) ) {
+			// exclude more fields
+			if ( ! empty( $filter->exclude_fields ) ) {
+				foreach ( $filter->exclude_fields as  $field ) {
+					$index_field = array_search( $field, $filter->fields );
+					if ( $index_field ) {
+						unset( $filter->fields[ $index_field ] );
+					}
+				}
+			}
 			$FIELDS = implode( ',', array_unique( $filter->fields ) );
 		}
 		$FIELDS = apply_filters( 'lp/query/fields', $FIELDS, $filter );

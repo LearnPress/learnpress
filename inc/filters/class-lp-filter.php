@@ -66,6 +66,14 @@ class LP_Filter {
 	 */
 	public $fields = array();
 	/**
+	 * For get only columns set on it
+	 *
+	 * @var array
+	 */
+	public $only_fields = array();
+	/**
+	 * Exclude columns set on fields
+	 *
 	 * @var array
 	 */
 	public $exclude_fields = array();

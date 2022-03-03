@@ -458,7 +458,8 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.1.5
 	 */
 	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
-		$result = null;
+		$default_fields = $this->get_cols_of_table( $this->tb_posts );
+		$filter->fields = array_merge( $default_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
 			$filter->collection = $this->tb_posts;
@@ -475,7 +476,7 @@ class LP_Course_DB extends LP_Database {
 		$filter->post_status = (array) $filter->post_status;
 		if ( ! empty( $filter->post_status ) ) {
 			$post_status_format = LP_Helper::db_format_array( $filter->post_status, '%s' );
-			$filter->where[] = $this->wpdb->prepare( 'AND p.post_status IN (' . $post_status_format . ')', $filter->post_status );
+			$filter->where[]    = $this->wpdb->prepare( 'AND p.post_status IN (' . $post_status_format . ')', $filter->post_status );
 		}
 
 		// Term ids
@@ -501,6 +502,13 @@ class LP_Course_DB extends LP_Database {
 		if ( $filter->post_author ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author = %d', $filter->post_author );
 		}
+		// Authors
+		if ( ! empty( $filter->post_authors ) ) {
+			$post_authors_format = LP_Helper::db_format_array( $filter->post_authors, '%d' );
+			$filter->where[]     = $this->wpdb->prepare( 'AND p.ID IN (' . $post_authors_format . ')', $filter->post_authors );
+		}
+
+		$filter = apply_filters( 'lp/course/query/filter', $filter );
 
 		return $this->execute( $filter, $total_rows );
 	}
@@ -575,13 +583,12 @@ class LP_Course_DB extends LP_Database {
 		$filter->fields      = array_merge( $columns_table_posts, $filter->fields );
 
 		$filter_user_course       = clone $filter;
-		$filter_user_course_cl    = new LP_Course_Filter();
 		$filter_course_not_attend = clone $filter;
 
 		// Query get users total attend courses
-		$filter_user_course->fields[]            = 'ID';
-		$filter_user_course->fields[]            = 'COUNT(DISTINCT (ID)) AS total';
-		$filter_user_course->fields              = array_merge( $filter->fields, $filter_user_course->fields );
+		// $filter_user_course->fields[]            = 'ID';
+		$filter_user_course->fields[] = 'COUNT(DISTINCT (ID)) AS total';
+		//$filter_user_course->fields              = array_merge( $filter->fields, $filter_user_course->fields );
 		$filter_user_course->join[]              = "INNER JOIN {$this->tb_lp_user_items} AS ui ON p.ID = ui.item_id";
 		$filter_user_course->where[]             = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
 		$filter_user_course->where[]             = $this->wpdb->prepare(
@@ -595,13 +602,13 @@ class LP_Course_DB extends LP_Database {
 		$query_user_course                       = LP_Course_DB::getInstance()->get_courses( $filter_user_course );
 
 		// Query get courses not attend
-		$filter_user_course_cl         = clone $filter_user_course;
-		$filter_user_course_cl->fields = array( 'ID' );
-		$query_user_course_for_not_in  = LP_Course_DB::getInstance()->get_courses( $filter_user_course_cl );
+		$filter_user_course_cl              = clone $filter_user_course;
+		$filter_user_course_cl->only_fields = array( 'ID' );
+		$query_user_course_for_not_in       = LP_Course_DB::getInstance()->get_courses( $filter_user_course_cl );
 
-		$filter_course_not_attend->fields[]            = 'ID';
-		$filter_course_not_attend->fields[]            = '0 AS total';
-		$filter_course_not_attend->fields              = array_merge( $filter->fields, $filter_course_not_attend->fields );
+		//$filter_course_not_attend->fields[]            = 'ID';
+		$filter_course_not_attend->fields[] = '0 AS total';
+		//$filter_course_not_attend->fields              = array_merge( $filter->fields, $filter_course_not_attend->fields );
 		$filter_course_not_attend->where[]             = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
 		$filter_course_not_attend->order_by            = 'total';
 		$filter_course_not_attend->order               = 'DESC';
