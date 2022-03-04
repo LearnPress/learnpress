@@ -1000,7 +1000,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					$data['avatar_size']['height'] = learn_press_get_avatar_thumb_size()['height'];
 					break;
 				case 'instructor_data':
-					$data['instructor_data'] = $this->get_instructor_data( $user->ID );
+					// $data['instructor_data'] = $this->get_instructor_data( $user->ID );
 					$data['instructor_data'] = LP_Profile::instance( $user->ID )->get_statistic_info();
 					break;
 				case 'meta':
