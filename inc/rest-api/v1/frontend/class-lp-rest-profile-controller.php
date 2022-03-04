@@ -202,10 +202,9 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function statistic( WP_REST_Request $request ) {
-		$user_id          = $request->get_param( 'userID' );
-		$response         = new LP_REST_Response();
-		$response->data   = '';
-		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$user_id        = $request->get_param( 'userID' );
+		$response       = new LP_REST_Response();
+		$response->data = '';
 
 		try {
 			if ( empty( $user_id ) ) {
@@ -230,7 +229,6 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			$response->data   = learn_press_get_template_content( 'profile/tabs/courses/general-statistic', compact( 'statistic', 'user' ) );
 			$response->status = 'success';
-
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
