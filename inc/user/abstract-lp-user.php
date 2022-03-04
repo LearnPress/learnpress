@@ -2232,8 +2232,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param array $args
 		 *
 		 * @return LP_Query_List_Table
+		 * @editor tungnx
+		 * @deprecated 4.1.6
 		 */
-		public function get_purchased_courses( array $args = array() ): LP_Query_List_Table {
+		/*public function get_purchased_courses( array $args = array() ): LP_Query_List_Table {
 			$filter          = new LP_User_Items_Filter();
 			$filter->fields  = array( 'item_id' );
 			$filter->user_id = $this->get_id();
@@ -2253,7 +2255,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			);
 
 			return new LP_Query_List_Table( $courses );
-		}
+		}*/
 
 		/**
 		 * @return array

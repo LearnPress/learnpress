@@ -558,17 +558,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	}
 
 	public function get_overview_tab_contents( $user ) {
-		$output = array();
-
-		$query     = LP_Profile::instance()->query_courses( 'purchased' );
-		$counts    = $query['counts'];
-		$statistic = array(
-			'enrolled_courses'  => isset( $counts['all'] ) ? $counts['all'] : 0,
-			'active_courses'    => isset( $counts['in-progress'] ) ? $counts['in-progress'] : 0,
-			'completed_courses' => isset( $counts['finished'] ) ? $counts['finished'] : 0,
-			'total_courses'     => count_user_posts( $user->ID, LP_COURSE_CPT ),
-			'total_users'       => learn_press_count_instructor_users( $user->ID ),
-		);
+		$output    = array();
+		$statistic = LP_Profile::instance( $user->get_id )->get_statistic_info();
 
 		$output['statistic'] = array_map( 'absint', $statistic );
 
@@ -1010,6 +1001,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					break;
 				case 'instructor_data':
 					$data['instructor_data'] = $this->get_instructor_data( $user->ID );
+					$data['instructor_data'] = LP_Profile::instance( $user->ID )->get_statistic_info();
 					break;
 				case 'meta':
 					$data['meta'] = $this->meta->get_value( $user->ID, $request );
@@ -1041,7 +1033,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return ! empty( $avatar ) ? $avatar : '';
 	}
 
-	public function get_instructor_data( $user_id ) {
+	/**
+	 * @editor tungnx
+	 * @deprecated 4.1.6
+	 */
+	/*public function get_instructor_data( $user_id ) {
 		$profile = learn_press_get_profile( $user_id );
 
 		$output = array();
@@ -1061,7 +1057,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		);
 
 		return $output;
-	}
+	}*/
 
 	public function get_lp_data_tabs( $user, $request ) {
 		$output = array();

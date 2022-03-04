@@ -105,6 +105,10 @@ class LP_Filter {
 	 * @var string
 	 */
 	public $query_type = 'get_results';
+	/**
+	 * @var object stdclass
+	 */
+	public $filter_extra;
 
 	public function __construct() {
 		$this->limit     = apply_filters( 'lp/filter/limit', $this->limit );

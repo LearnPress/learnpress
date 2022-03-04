@@ -480,8 +480,9 @@ add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->fu
 
 /**
  * @see LP_Template_Profile::dashboard_logged_in()
+ * @deprecated 4.1.6
  */
-add_action( 'learn-press/profile/before-dashboard', LP()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
+// add_action( 'learn-press/profile/before-dashboard', LP()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
 add_action(
 	'learn-press/profile/dashboard-summary',
 	LP()->template( 'profile' )->func( 'dashboard_featured_courses' ),

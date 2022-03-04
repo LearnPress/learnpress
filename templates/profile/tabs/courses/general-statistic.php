@@ -4,16 +4,15 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
 
-if ( empty( $statistic ) ) {
+if ( empty( $statistic ) || empty( $user ) ) {
 	return;
 }
 
-$user = LP_Profile::instance()->get_user();
 ?>
 
 <div id="dashboard-general-statistic">

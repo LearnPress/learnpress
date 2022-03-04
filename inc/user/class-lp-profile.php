@@ -751,10 +751,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			switch ( $type ) {
 				case 'purchased':
 					// $query = $this->_curd->query_purchased_courses( $this->get_user_data( 'id' ), $args );
-					$filter          = new LP_User_Items_Filter();
-					$filter->fields  = array( 'item_id' );
-					$filter->user_id = $this->get_user_data( 'id' );
-					$status          = $args['status'] ?? '';
+					$filter              = new LP_User_Items_Filter();
+					$filter->only_fields = array( 'DISTINCT (item_id) AS item_id' );
+					$filter->field_count = 'ui.item_id';
+					$filter->user_id     = $this->get_user_data( 'id' );
+					$status              = $args['status'] ?? '';
 					if ( $status != LP_COURSE_FINISHED ) {
 						$filter->graduation = $status;
 					} else {
@@ -1120,6 +1121,56 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public static function get_option_publish_profile(): string {
 			return LP_Settings::get_option( 'publish_profile', 'no' );
+		}
+
+		/**
+		 * Get statistic info of user
+		 *
+		 * @return array
+		 * @since 4.1.6
+		 * @version 1.0.0
+		 */
+		public function get_statistic_info(): array {
+			$user      = $this->_user;
+			$statistic = array(
+				'enrolled_courses'  => 0,
+				'active_courses'    => 0,
+				'completed_courses' => 0,
+				'total_courses'     => 0,
+				'total_users'       => 0,
+			);
+
+			try {
+				if ( ! $user ) {
+					throw new Exception( 'User is invalid!' );
+				}
+
+				$user_id          = $user->get_id();
+				$lp_user_items_db = LP_User_Items_DB::getInstance();
+
+				// Count status
+				$filter            = new LP_User_Items_Filter();
+				$filter->user_id   = $user_id;
+				$filter->item_type = LP_COURSE_CPT;
+				$count_status      = $lp_user_items_db->count_status_by_items( $filter );
+
+				// Get total users attend course of author
+				$count_users_attend_courses_of_author = 0;
+				if ( $user->can_create_course() ) {
+					$filter_count_users                   = $lp_user_items_db->count_user_attend_courses_of_author( $user_id );
+					$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
+				}
+
+				$statistic['enrolled_courses']  = $count_status->{LP_COURSE_PURCHASED} ?? 0 + $count_status->{LP_COURSE_ENROLLED} ?? 0 + $count_status->{LP_COURSE_FINISHED} ?? 0;
+				$statistic['active_courses']    = $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
+				$statistic['completed_courses'] = $count_status->{LP_COURSE_FINISHED} ?? 0;
+				$statistic['total_courses']     = count_user_posts( $user_id, LP_COURSE_CPT, true );
+				$statistic['total_users']       = $count_users_attend_courses_of_author;
+			} catch ( Throwable $e ) {
+
+			}
+
+			return apply_filters( 'lp/profile/statistic', $statistic, $user );
 		}
 
 		/**

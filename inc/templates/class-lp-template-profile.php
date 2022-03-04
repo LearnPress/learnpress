@@ -158,7 +158,11 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		);
 	}
 
-	public function dashboard_statistic() {
+	/**
+	 * @author tungnx
+	 * @deprecated 4.1.6
+	 */
+	/*public function dashboard_statistic() {
 		$user      = $this->get_user();
 		$query     = LP_Profile::instance()->query_courses( 'purchased' );
 		$counts    = $query['counts'];
@@ -171,7 +175,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		);
 
 		learn_press_get_template( 'profile/tabs/courses/general-statistic', compact( 'statistic' ) );
-	}
+	}*/
 
 	public function dashboard_featured_courses() {
 		$profile_privacy = $this->get_user()->get_extra_data(

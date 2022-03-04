@@ -3587,68 +3587,68 @@ function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
  * @since 4.0.0
  * @editor tungnx
  * @version 1.0.1
+ * @deprecated 4.1.6 replace to "get_statistic_info" function
  */
-function learn_press_count_instructor_users( int $instructor_id = 0 ): int {
-	try {
-		$filter_course                      = new LP_Course_Filter();
-		$filter_course->only_fields         = array( 'ID' );
-		$filter_course->post_author         = $instructor_id;
-		$filter_course->post_status         = 'publish';
-		$filter_course->return_string_query = true;
-		$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
-
-		$filter              = new LP_User_Items_Filter();
-		$filter->fields      = array( 'DISTINCT (ui.user_id)' );
-		$filter->field_count = 'DISTINCT (ui.user_id)';
-		$filter->where       = array();
-		$filter->where[]     = "AND item_id IN ({$query_courses_str})";
-		$filter->query_count = true;
-
-		return LP_User_Item_Course::get_user_courses( $filter );
-		//return LP_User_Items_DB::getInstance()->get_user_courses( $filter );
-	} catch ( Throwable $e ) {
-		error_log( __FUNCTION__ . ': ' . $e->getMessage() );
-
-		return 0;
-	}
-
-	/*$curd        = new LP_User_CURD();
-	$own_courses = $curd->query_own_courses( $instructor_id );
-	$course_ids  = $own_courses->get_items();*/
-
-	/*
-	global $wpdb;
-	$filter              = new LP_Course_Filter();
-	$filter->post_author = $instructor_id;
-	$filter->limit       = -1;
-	$courses             = LP_Course::get_courses( $filter );
-	$course_ids          = LP_Course::get_course_ids( $courses );
-
-	if ( ! empty( $course_ids ) ) {
-		$query = $wpdb->prepare(
-			"
-			SELECT COUNT(user_id)
-			FROM (
-				SELECT item_id, user_id
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_type = %s
-				GROUP BY item_id, user_id
-				HAVING item_id IN(" . join( ',', $course_ids ) . ')
-			) X
-			GROUP BY item_id
-		',
-			LP_COURSE_CPT
-		);
-
-		$rows = $wpdb->get_col( $query );
-
-		if ( $rows ) {
-			return array_sum( $rows );
-		}
-	}
-
-	return 0;*/
-}
+//function learn_press_count_instructor_users( int $instructor_id = 0 ): int {
+//	try {
+//		$filter_course                      = new LP_Course_Filter();
+//		$filter_course->only_fields         = array( 'ID' );
+//		$filter_course->post_author         = $instructor_id;
+//		$filter_course->post_status         = 'publish';
+//		$filter_course->return_string_query = true;
+//		$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
+//
+//		$filter              = new LP_User_Items_Filter();
+//		$filter->only_fields = array( 'DISTINCT (ui.user_id)' );
+//		$filter->field_count = 'DISTINCT (ui.user_id)';
+//		$filter->where[]     = "AND item_id IN ({$query_courses_str})";
+//		$filter->query_count = true;
+//
+//		return LP_User_Item_Course::get_user_courses( $filter );
+//		//return LP_User_Items_DB::getInstance()->get_user_courses( $filter );
+//	} catch ( Throwable $e ) {
+//		error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+//
+//		return 0;
+//	}
+//
+//	/*$curd        = new LP_User_CURD();
+//	$own_courses = $curd->query_own_courses( $instructor_id );
+//	$course_ids  = $own_courses->get_items();*/
+//
+//	/*
+//	global $wpdb;
+//	$filter              = new LP_Course_Filter();
+//	$filter->post_author = $instructor_id;
+//	$filter->limit       = -1;
+//	$courses             = LP_Course::get_courses( $filter );
+//	$course_ids          = LP_Course::get_course_ids( $courses );
+//
+//	if ( ! empty( $course_ids ) ) {
+//		$query = $wpdb->prepare(
+//			"
+//			SELECT COUNT(user_id)
+//			FROM (
+//				SELECT item_id, user_id
+//				FROM {$wpdb->learnpress_user_items}
+//				WHERE item_type = %s
+//				GROUP BY item_id, user_id
+//				HAVING item_id IN(" . join( ',', $course_ids ) . ')
+//			) X
+//			GROUP BY item_id
+//		',
+//			LP_COURSE_CPT
+//		);
+//
+//		$rows = $wpdb->get_col( $query );
+//
+//		if ( $rows ) {
+//			return array_sum( $rows );
+//		}
+//	}
+//
+//	return 0;*/
+//}
 
 /**
  * Get max retrying quiz allowed.
