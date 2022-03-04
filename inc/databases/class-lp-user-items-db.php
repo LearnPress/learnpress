@@ -247,6 +247,44 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
+	 * Get number status by status, graduation...
+	 *
+	 * @param LP_User_Items_Filter $filter {user_id, item_type}
+	 *
+	 * @author tungnx
+	 * @since 4.1.5
+	 * @version 1.0.1
+	 * @return object|null
+	 * @throws Exception
+	 */
+	public function count_status_by_items( LP_User_Items_Filter $filter ) {
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_IN_PROGRESS, LP_COURSE_GRADUATION_IN_PROGRESS );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_FAILED, LP_COURSE_GRADUATION_FAILED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_PASSED, LP_COURSE_GRADUATION_PASSED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_ENROLLED, LP_COURSE_ENROLLED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_PURCHASED, LP_COURSE_PURCHASED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_FINISHED, LP_COURSE_FINISHED );
+
+		$filter_user_attend_courses                      = new LP_User_Items_Filter();
+		$filter_user_attend_courses->only_fields         = array( 'MAX(ui.user_item_id) AS user_item_id' );
+		$filter_user_attend_courses->where[]             = $this->wpdb->prepare( 'AND ui.user_id = %s', $filter->user_id );
+		$filter_user_attend_courses->group_by            = 'ui.item_id';
+		$filter_user_attend_courses->return_string_query = true;
+		$query_get_course_attend                         = $this->get_user_courses( $filter_user_attend_courses );
+
+		$filter->where[]             = 'AND ui.user_item_id IN (' . $query_get_course_attend . ')';
+		$filter->return_string_query = true;
+
+		$filter = apply_filters( 'lp/user/course/query/count-status', $filter );
+
+		$query = $this->get_user_courses( $filter );
+
+		$this->check_execute_has_error();
+
+		return $this->wpdb->get_row( $query );
+	}
+
+	/**
 	 * Get number status by status, graduation.
 	 *
 	 * @param LP_User_Items_Filter $filter {user_id, item_type}
@@ -257,7 +295,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return object|null
 	 * @throws Exception
 	 */
-	public function count_status_by_items( LP_User_Items_Filter $filter ) {
+	public function count_status_by_items_bk( LP_User_Items_Filter $filter ) {
 		$query_count  = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_IN_PROGRESS, LP_COURSE_GRADUATION_IN_PROGRESS );
 		$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_FAILED, LP_COURSE_GRADUATION_FAILED );
 		$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_PASSED, LP_COURSE_GRADUATION_PASSED );
