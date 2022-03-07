@@ -1147,23 +1147,29 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 				$user_id          = $user->get_id();
 				$lp_user_items_db = LP_User_Items_DB::getInstance();
+				$lp_course_db     = LP_Course_DB::getInstance();
 
 				// Count status
 				$filter          = new LP_User_Items_Filter();
 				$filter->user_id = $user_id;
 				$count_status    = $lp_user_items_db->count_status_by_items( $filter );
 
-				// Get total users attend course of author
 				$count_users_attend_courses_of_author = 0;
+				$courses_of_author                    = 0;
 				if ( $user->can_create_course() ) {
+					// Get total users attend course of author
 					$filter_count_users                   = $lp_user_items_db->count_user_attend_courses_of_author( $user_id );
 					$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
+
+					// Get total courses publish of author
+					$filter_count_courses = $lp_course_db->count_courses_publish_of_author( $user_id );
+					$courses_of_author    = $lp_course_db->get_courses( $filter_count_courses );
 				}
 
 				$statistic['enrolled_courses']  = intval( $count_status->{LP_COURSE_PURCHASED} ?? 0 ) + intval( $count_status->{LP_COURSE_ENROLLED} ?? 0 ) + intval( $count_status->{LP_COURSE_FINISHED} ?? 0 );
 				$statistic['active_courses']    = $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
 				$statistic['completed_courses'] = $count_status->{LP_COURSE_FINISHED} ?? 0;
-				$statistic['total_courses']     = count_user_posts( $user_id, LP_COURSE_CPT, true );
+				$statistic['total_courses']     = $courses_of_author;
 				$statistic['total_users']       = $count_users_attend_courses_of_author;
 			} catch ( Throwable $e ) {
 

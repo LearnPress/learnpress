@@ -285,45 +285,6 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Get number status by status, graduation.
-	 *
-	 * @param LP_User_Items_Filter $filter {user_id, item_type}
-	 *
-	 * @author tungnx
-	 * @since 4.1.5
-	 * @version 1.0.0
-	 * @return object|null
-	 * @throws Exception
-	 */
-	public function count_status_by_items_bk( LP_User_Items_Filter $filter ) {
-		$query_count  = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_IN_PROGRESS, LP_COURSE_GRADUATION_IN_PROGRESS );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_FAILED, LP_COURSE_GRADUATION_FAILED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_PASSED, LP_COURSE_GRADUATION_PASSED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s,', LP_COURSE_ENROLLED, LP_COURSE_ENROLLED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s,', LP_COURSE_PURCHASED, LP_COURSE_PURCHASED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_FINISHED, LP_COURSE_FINISHED );
-
-		$query = $this->wpdb->prepare(
-			"SELECT $query_count
-				FROM $this->tb_lp_user_items AS ui
-				WHERE ui.user_item_id IN (
-				    SELECT MAX(ui.user_item_id) AS user_item_id
-				    FROM $this->tb_lp_user_items AS ui
-				    WHERE ui.item_type = %s
-				      AND ui.user_id = %d
-				    GROUP BY item_id
-				);
-			",
-			$filter->item_type,
-			$filter->user_id
-		);
-
-		$this->check_execute_has_error();
-
-		return $this->wpdb->get_row( $query );
-	}
-
-	/**
 	 * Get the newest item is course of user
 	 *
 	 * @param LP_User_Items_Filter $filter {course_id, user_id}
