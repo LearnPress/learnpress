@@ -8,7 +8,7 @@
 	/**
 	 * Checkout
 	 *
-	 * @param options
+	 * @param  options
 	 */
 	const Checkout = LP.Checkout = function( options ) {
 		const $formCheckout = $( '#learn-press-checkout-form' ),
@@ -85,8 +85,11 @@
 
 			const btnText = $buttonCheckout.text();
 
+			const urlHandle = new URL( options.ajaxurl );
+			urlHandle.searchParams.set( 'lp-ajax', 'checkout' );
+
 			$.ajax( {
-				url: options.ajaxurl + '/?lp-ajax=checkout',
+				url: urlHandle,
 				dataType: 'html',
 				data: formData,
 				type: 'POST',
@@ -158,8 +161,8 @@
 		/**
 		 * Append messages into document.
 		 *
-		 * @param message
-		 * @param wrap
+		 * @param  message
+		 * @param  wrap
 		 */
 		const showMessage = function( message, wrap = false ) {
 			removeMessage();
@@ -235,8 +238,8 @@
 		/**
 		 * Callback function for showing/hiding register form.
 		 *
-		 * @param e
-		 * @param toggle
+		 * @param  e
+		 * @param  toggle
 		 */
 		const _toggleRegisterForm = function( e, toggle ) {
 			toggle = $formRegister.find( '.learn-press-form-register' ).toggle( toggle ).is( ':visible' );
@@ -248,8 +251,8 @@
 		/**
 		 * Callback function for showing/hiding login form.
 		 *
-		 * @param e {Event}
-		 * @param toggle {boolean}
+		 * @param  e      {Event}
+		 * @param  toggle {boolean}
 		 * @private
 		 */
 		const _toggleLoginForm = function( e, toggle ) {
