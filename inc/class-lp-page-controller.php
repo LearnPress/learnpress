@@ -901,7 +901,7 @@ class LP_Page_Controller {
 			return $q;
 		}
 
-		// exclude item no of couse
+		// exclude item no assign any course
 		if ( $q->is_search() ) {
 			$exclude_quiz     = LP_Course_DB::getInstance()->get_item_ids_unassigned( LP_QUIZ_CPT );
 			$exclude_lesson   = LP_Course_DB::getInstance()->get_item_ids_unassigned( LP_LESSON_CPT );
