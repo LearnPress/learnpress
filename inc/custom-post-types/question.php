@@ -281,15 +281,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function save( int $post_id, WP_Post $post ) {
 			$question_id = $post_id;
 
-			if ( $post->post_status != 'auto-draft' ) {
-				return;
-			}
+			$question_type = LP_Helper::sanitize_params_submitted( $_REQUEST['question-type'] ?? '' );
 
-			if ( empty( $_REQUEST['question-type'] ) ) {
-				$types         = array_keys( learn_press_question_types() );
+			if ( empty( $question_type ) ) {
+				$types         = array_keys( LP_Question::get_types() );
 				$question_type = reset( $types );
-			} else {
-				$question_type = LP_Helper::sanitize_params_submitted( $_REQUEST['question-type'] );
 			}
 
 			update_post_meta( $question_id, '_lp_type', $question_type );
