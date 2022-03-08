@@ -901,11 +901,24 @@ class LP_Page_Controller {
 			return $q;
 		}
 
-		// exclude item no assign any course
+		// Exclude item not assign
 		if ( $q->is_search() ) {
-			$exclude_quiz     = LP_Course_DB::getInstance()->get_item_ids_unassigned( LP_QUIZ_CPT );
-			$exclude_lesson   = LP_Course_DB::getInstance()->get_item_ids_unassigned( LP_LESSON_CPT );
-			$list_ids_exclude = apply_filters( 'learn_press/is_search/exclude_item_not_of_course', wp_list_pluck( array_merge( $exclude_quiz, $exclude_lesson ), 'ID' ), $q );
+			// Exclude item not assign any course
+			$course_item_types = learn_press_get_course_item_types();
+			$list_ids_exclude  = array();
+
+			foreach ( $course_item_types as $item_type ) {
+				$exclude_item = LP_Course_DB::getInstance()->get_item_ids_unassigned( $item_type );
+				$exclude_item = LP_Course_DB::get_values_by_key( $exclude_item );
+
+				$list_ids_exclude = array_merge( $list_ids_exclude, $exclude_item );
+			}
+
+			// Exclude question not assign any quiz
+			$question_ids     = LP_Question_DB::getInstance()->get_questions_not_assign_quiz();
+			$question_ids     = LP_Course_DB::get_values_by_key( $question_ids );
+			$list_ids_exclude = array_merge( $list_ids_exclude, $question_ids );
+
 			if ( ! empty( $list_ids_exclude ) ) {
 				$q->set( 'post__not_in', $list_ids_exclude );
 			}

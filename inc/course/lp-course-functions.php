@@ -72,9 +72,11 @@ function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0
  *
  * @return mixed
  * @since 3.0.0
- *
+ * @editor tungnx
+ * @version  1.0.1
+ * @return array
  */
-function learn_press_get_course_item_types() {
+function learn_press_get_course_item_types( bool $return_only_value = true ): array {
 	return apply_filters(
 		'learn-press/course-item-type',
 		array( LP_LESSON_CPT, LP_QUIZ_CPT )

@@ -252,6 +252,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/filters/class-lp-section-items-filter.php';
 			require_once 'inc/filters/class-lp-question-filter.php';
 			require_once 'inc/filters/class-lp-user-items-filter.php';
+			require_once 'inc/filters/class-lp-quiz-questions-filter.php';
 
 			// Query Database .
 			require_once 'inc/databases/class-lp-db.php';
@@ -260,6 +261,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-lp-lesson-db.php';
 			require_once 'inc/databases/class-lp-section-db.php';
 			require_once 'inc/databases/class-lp-quiz-db.php';
+			require_once 'inc/databases/class-lp-quiz-questions.php';
 			require_once 'inc/databases/class-lp-sessions-db.php';
 			require_once 'inc/databases/class-lp-question-db.php';
 			require_once 'inc/databases/class-lp-user-items-db.php';

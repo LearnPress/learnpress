@@ -679,4 +679,19 @@ class LP_Database {
 
 		return $result;
 	}
+
+	/**
+	 * @param array $arr_object
+	 * @param string $key
+	 *
+	 * @return array
+	 */
+	public static function get_values_by_key( array $arr_object, string $key = 'ID' ): array {
+		$arr_object_ids = array();
+		foreach ( $arr_object as $object ) {
+			$arr_object_ids[] = $object->{$key};
+		}
+
+		return $arr_object_ids;
+	}
 }
