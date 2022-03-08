@@ -418,7 +418,7 @@ class LP_Plugins_Helper {
 	/**
 	 * Initialize
 	 */
-	public static function init() {
+	/*public static function init() {
 		require_once LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php';
 
 		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' ) || ! wp_verify_nonce( LP_Request::get( '_wpnonce' ), 'lp-check-updates' ) ) {
@@ -429,7 +429,7 @@ class LP_Plugins_Helper {
 
 		wp_redirect( remove_query_arg( array( 'force-check-update', '_wpnonce' ) ) );
 		exit();
-	}
+	}*/
 }
 
 /**
@@ -440,4 +440,4 @@ class LP_Plugins_Helper {
 add_filter( 'extra_plugin_headers', array( 'LP_Plugins_Helper', 'add_on_header' ) );
 
 // Init hooks, etc...
-add_action( 'init', array( 'LP_Plugins_Helper', 'init' ) );
+// add_action( 'init', array( 'LP_Plugins_Helper', 'init' ) );

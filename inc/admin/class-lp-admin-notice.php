@@ -56,7 +56,7 @@ class LP_Admin_Notice {
 	 * LP_Admin_Notice construct
 	 */
 	protected function __construct() {
-		add_action( 'init', array( $this, 'dismiss_notice' ) );
+		// add_action( 'init', array( $this, 'dismiss_notice' ) );
 		add_action( 'init', array( $this, 'load' ) );
 		add_action( 'admin_notices', array( $this, 'show_notices' ), 90 );
 	}
@@ -234,7 +234,7 @@ class LP_Admin_Notice {
 	/**
 	 * @since 3.2.6
 	 */
-	public function dismiss_notice() {
+	/*public function dismiss_notice() {
 		$id = LP_Request::get( 'lp-dismiss-notice' );
 
 		if ( ! $id ) {
@@ -265,7 +265,7 @@ class LP_Admin_Notice {
 				$id
 			)
 		);
-	}
+	}*/
 
 	/**
 	 * Update option to turn-off a notice.
