@@ -68,7 +68,7 @@ class LP_Page_Controller {
 		if ( in_array( $post->post_type, $course_item_types ) ) {
 			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id );
 
-			if ( $section_id ) {
+			if ( ! $section_id ) {
 				return $post_link;
 			}
 
@@ -80,6 +80,7 @@ class LP_Page_Controller {
 
 			$course    = learn_press_get_course( $course_id );
 			$post_link = $course->get_item_link( $item_id );
+
 		} elseif ( LP_COURSE_CPT === $post->post_type ) {
 			// Abort early if the placeholder rewrite tag isn't in the generated URL
 			if ( false === strpos( $post_link, '%' ) ) {
@@ -898,6 +899,16 @@ class LP_Page_Controller {
 		// Affect only the main query and not in admin
 		if ( ! $q->is_main_query() && ! is_admin() ) {
 			return $q;
+		}
+
+		// exclude item no of couse
+		if ( $q->is_search() ) {
+			$exclude_quiz     = LP_Course_DB::getInstance()->get_item_ids_unassigned( LP_QUIZ_CPT );
+			$exclude_lesson   = LP_Course_DB::getInstance()->get_item_ids_unassigned( LP_LESSON_CPT );
+			$list_ids_exclude = apply_filters( 'learn_press/is_search/exclude_item_not_of_course', wp_list_pluck( array_merge( $exclude_quiz, $exclude_lesson ), 'ID' ), $q );
+			if ( ! empty( $list_ids_exclude ) ) {
+				$q->set( 'post__not_in', $list_ids_exclude );
+			}
 		}
 
 		$is_archive_course = false;

@@ -446,6 +446,42 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
+	 * list id item are unassigned to any courses.
+	 *
+	 * @param string $item_type (type item Lesson, Quiz, Assignment, H5P ...)
+	 *
+	 * @return int
+	 * @since 4.1.5
+	 * @author tungnx
+	 * @version 1.0.0
+	 */
+	public function get_item_ids_unassigned( string $item_type ) {
+		$query_append = '';
+		if ( ! current_user_can( 'administrator' ) ) {
+			$query_append .= $this->wpdb->prepare( ' AND post_author = %d', get_current_user_id() );
+		}
+
+		$query = $this->wpdb->prepare(
+			"SELECT p.ID
+            FROM $this->tb_posts AS p
+            WHERE p.post_type = %s
+            AND p.ID NOT IN(
+                SELECT si.item_id
+                FROM {$this->tb_lp_section_items} AS si
+                WHERE si.item_type = %s
+            )
+            AND p.post_status NOT IN(%s, %s)
+            $query_append",
+			$item_type,
+			$item_type,
+			'auto-draft',
+			'trash'
+		);
+
+		return $this->wpdb->get_results( $query );;
+	}
+
+	/**
 	 * Get Courses
 	 *
 	 * @param LP_Course_Filter $filter
