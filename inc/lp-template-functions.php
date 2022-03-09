@@ -1160,7 +1160,9 @@ if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 			return;
 		}
 
+		add_filter( 'deprecated_file_trigger_error', '__return_false' );
 		comments_template();
+		remove_filter( 'deprecated_file_trigger_error', '__return_false' );
 
 		wp_reset_postdata();
 	}

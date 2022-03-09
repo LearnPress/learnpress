@@ -843,7 +843,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( $lesson->setup_postdata() ) {
 
 			if ( comments_open() || get_comments_number() ) {
+				add_filter( 'deprecated_file_trigger_error', '__return_false' );
 				comments_template();
+				remove_filter( 'deprecated_file_trigger_error', '__return_false' );
 			}
 			$lesson->reset_postdata();
 		}
@@ -1040,7 +1042,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		global $post;
 
 		if ( comments_open() || get_comments_number() ) {
+			add_filter( 'deprecated_file_trigger_error', '__return_false' );
 			comments_template();
+			remove_filter( 'deprecated_file_trigger_error', '__return_false' );
 		}
 	}
 
