@@ -260,6 +260,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-lp-course-db.php';
 			require_once 'inc/databases/class-lp-lesson-db.php';
 			require_once 'inc/databases/class-lp-section-db.php';
+			require_once 'inc/databases/class-lp-section-items-db.php';
 			require_once 'inc/databases/class-lp-quiz-db.php';
 			require_once 'inc/databases/class-lp-quiz-questions.php';
 			require_once 'inc/databases/class-lp-sessions-db.php';

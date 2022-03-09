@@ -109,8 +109,10 @@ class LP_Question_DB extends LP_Database {
 		if ( is_null( $filter ) ) {
 			$filter = new LP_Question_Filter();
 		}
-		$filter->only_fields = array( 'q.ID' );
-		$filter->where[]     = 'AND ID NOT IN(' . $query_question_ids_assigned . ')';
+		$filter->collection_alias = 'q';
+		$filter->only_fields      = array( 'q.ID' );
+		$filter->where[]          = 'AND ID NOT IN(' . $query_question_ids_assigned . ')';
+		$filter->where[]          = $this->wpdb->prepare( 'AND q.post_status not IN(%s, %s)', 'trash', 'auto-draft' );
 
 		return $this->get_questions( $filter );
 	}
@@ -118,13 +120,18 @@ class LP_Question_DB extends LP_Database {
 	/**
 	 * Count all questions are unassigned to any quiz.
 	 *
+	 * @param LP_Question_Filter|null $filter
+	 *
 	 * @return int
 	 * @throws Exception
 	 * @since 3.0.0
 	 * @version 1.0.1
 	 */
-	function get_total_question_unassigned(): int {
-		$filter              = new LP_Question_Filter();
+	function get_total_question_unassigned( LP_Question_Filter $filter = null ): int {
+		if ( is_null( $filter ) ) {
+			$filter = new LP_Question_Filter();
+		}
+
 		$filter->query_count = true;
 		$filter->post_status = array();
 		$filter->field_count = 'ID';

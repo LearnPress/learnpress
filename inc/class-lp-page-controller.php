@@ -908,8 +908,10 @@ class LP_Page_Controller {
 			$list_ids_exclude  = array();
 
 			foreach ( $course_item_types as $item_type ) {
-				$exclude_item = LP_Course_DB::getInstance()->get_item_ids_unassigned( $item_type );
-				$exclude_item = LP_Course_DB::get_values_by_key( $exclude_item );
+				$filter            = new LP_Post_Type_Filter();
+				$filter->post_type = $item_type;
+				$exclude_item      = LP_Course_DB::getInstance()->get_item_ids_unassigned( $filter );
+				$exclude_item      = LP_Course_DB::get_values_by_key( $exclude_item );
 
 				$list_ids_exclude = array_merge( $list_ids_exclude, $exclude_item );
 			}

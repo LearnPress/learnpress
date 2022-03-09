@@ -72,42 +72,32 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.1
+		 * @version 1.0.1
 		 * @editor tungnx
 		 */
 		public function views_pages( array $views ): array {
-			$count_unassigned_questions = LP_Question_DB::getInstance()->get_total_question_unassigned();
+			$lp_question_db = LP_Question_DB::getInstance();
 
-			if ( $count_unassigned_questions > 0 ) {
-				$views['unassigned'] = sprintf(
-					'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
-					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
-					isset( $_GET['unassigned'] ) ? 'current' : '',
-					__( 'Unassigned', 'learnpress' ),
-					$count_unassigned_questions
-				);
-			}
+			try {
+				$filter = new LP_Question_Filter();
+				/*if ( ! current_user_can( 'administrator' ) ) {
+					$filter->where[] = $lp_question_db->wpdb->prepare( 'AND post_author = %d', get_current_user_id() );
+				}*/
 
-			// Get count question
-			/*
-			if ( ! current_user_can( 'administrator' ) ) {
-				$filter             = new LP_Question_Filter();
-				$filter->post_author   = $user_id;
+				$count_unassigned_questions = $lp_question_db->get_total_question_unassigned( $filter );
 
-				$totalPostAllStatus = LP_Database::getInstance()->get_count_post_of_user( $filter );
-				$views['all']       = wp_sprintf( '<a href="edit.php?post_type=lp_question" class="current" aria-current="page">All <span class="count">(%d)</span></a>', $totalPostAllStatus );
-
-				if ( 0 === $totalPostAllStatus ) {
-					unset( $views['publish'] );
-					unset( $views['unassigned'] );
-					unset( $views['trash'] );
-					unset( $views['draft'] );
-					unset( $views['pending'] );
-				} elseif ( isset( $views['publish'] ) ) {
-					$filter->_post_status = 'publish';
-					$totalPostPublish     = LP_Database::getInstance()->get_count_post_of_user( $filter );
-					$views['publish']     = wp_sprintf( '<a href="edit.php?post_type=lp_question&post_status=publish" class="current" aria-current="page">Published <span class="count">(%d)</span></a>', $totalPostPublish );
+				if ( $count_unassigned_questions > 0 ) {
+					$views['unassigned'] = sprintf(
+						'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
+						admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
+						isset( $_GET['unassigned'] ) ? 'current' : '',
+						__( 'Unassigned', 'learnpress' ),
+						$count_unassigned_questions
+					);
 				}
-			}*/
+			} catch ( Throwable $e ) {
+
+			}
 
 			return $views;
 		}
