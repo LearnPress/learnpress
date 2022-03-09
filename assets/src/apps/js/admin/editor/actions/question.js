@@ -1,11 +1,13 @@
 const Question = {
-	changeQuestionType: function( context, payload ) {
+	changeQuestionType( context, payload ) {
+		const draftQuestion = undefined !== payload.question ? payload.question : '';
+
 		LP.Request( {
 			type: 'change-question-type',
 			question_type: payload.type,
-			draft_question: context.getters.autoDraft ? JSON.stringify( payload.question ) : '',
+			draft_question: context.getters.autoDraft ? draftQuestion : '',
 		} ).then( function( response ) {
-			var result = response.body;
+			const result = response.body;
 
 			if ( result.success ) {
 				context.commit( 'UPDATE_AUTO_DRAFT_STATUS', false );
@@ -14,13 +16,13 @@ const Question = {
 		} );
 	},
 
-	updateAnswersOrder: function( context, order ) {
+	updateAnswersOrder( context, order ) {
 		LP.Request( {
 			type: 'sort-answer',
-			order: order,
+			order,
 		} ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 				if ( result.success ) {
 					// context.commit('SET_ANSWERS', result.data);
 				}
@@ -28,7 +30,7 @@ const Question = {
 		);
 	},
 
-	updateAnswerTitle: function( context, answer ) {
+	updateAnswerTitle( context, answer ) {
 		if ( typeof answer.question_answer_id == 'undefined' ) {
 			return;
 		}
@@ -37,17 +39,17 @@ const Question = {
 
 		LP.Request( {
 			type: 'update-answer-title',
-			answer: answer,
+			answer,
 		} );
 	},
 
-	updateCorrectAnswer: function( context, correct ) {
+	updateCorrectAnswer( context, correct ) {
 		LP.Request( {
 			type: 'change-correct',
 			correct: JSON.stringify( correct ),
 		} ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 				if ( result.success ) {
 					context.commit( 'UPDATE_ANSWERS', result.data );
 					context.commit( 'UPDATE_AUTO_DRAFT_STATUS', false );
@@ -56,14 +58,14 @@ const Question = {
 		);
 	},
 
-	deleteAnswer: function( context, payload ) {
+	deleteAnswer( context, payload ) {
 		context.commit( 'DELETE_ANSWER', payload.id );
 		LP.Request( {
 			type: 'delete-answer',
 			answer_id: payload.id,
 		} ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 
 				if ( result.success ) {
 					context.commit( 'SET_ANSWERS', result.data );
@@ -73,13 +75,13 @@ const Question = {
 			} );
 	},
 
-	newAnswer: function( context, data ) {
+	newAnswer( context, data ) {
 		context.commit( 'ADD_NEW_ANSWER', data.answer );
 		LP.Request( {
 			type: 'new-answer',
 		} ).then(
 			function( response ) {
-				var result = response.body;
+				const result = response.body;
 
 				if ( result.success ) {
 					context.commit( 'UPDATE_ANSWERS', result.data );
@@ -89,7 +91,7 @@ const Question = {
 			} );
 	},
 
-	newRequest: function( context ) {
+	newRequest( context ) {
 		context.commit( 'INCREASE_NUMBER_REQUEST' );
 		context.commit( 'UPDATE_STATUS', 'loading' );
 
@@ -98,7 +100,7 @@ const Question = {
 		};
 	},
 
-	requestCompleted: function( context, status ) {
+	requestCompleted( context, status ) {
 		context.commit( 'DECREASE_NUMBER_REQUEST' );
 
 		if ( context.getters.currentRequest === 0 ) {

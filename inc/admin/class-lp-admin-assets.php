@@ -22,6 +22,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return array
 	 */
 	protected function _get_script_data(): array {
+		$current_screen = get_current_screen();
+
 		return array(
 			'learn-press-global'         => learn_press_global_script_params(),
 			'learn-press-meta-box-order' => apply_filters(
@@ -46,6 +48,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'ajax'                 => admin_url( 'admin-ajax.php' ),
 					'questionTypes'        => learn_press_question_types(),
 					'supportAnswerOptions' => learn_press_get_question_support_answer_options(),
+					'screen'               => $current_screen,
 				)
 			),
 		);

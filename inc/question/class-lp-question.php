@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *
 		 * @var string
 		 */
-		protected $_question_type = 'single_choice';
+		protected $_question_type = 'true_or_false';
 
 		/**
 		 * @var string

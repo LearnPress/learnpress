@@ -108,15 +108,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public function data_question_editor() {
+			global $post;
+
 			if ( LP_QUESTION_CPT !== get_post_type() ) {
 				return;
 			}
 
-			global $post, $pagenow;
-
 			$question = LP_Question::get_question( $post->ID );
-			$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
-			$type     = $question->get_type();
+			$type = $question->get_type();
+			$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 
 			if ( empty( $answers ) ) {
 				$answers = array(
@@ -269,7 +269,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public function save( int $post_id, WP_Post $post ) {
-			$question_id = $post_id;
+			/*$question_id = $post_id;
 
 			$question_type = LP_Helper::sanitize_params_submitted( $_REQUEST['question-type'] ?? '' );
 
@@ -284,7 +284,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			if ( $question->is_support( 'answer-options' ) ) {
 				$question->create_default_answers();
-			}
+			}*/
 		}
 
 		/**

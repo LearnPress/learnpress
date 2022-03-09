@@ -316,9 +316,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question_id = $question->get_id();
 			$old_type    = $question->get_type();
 
-			if ( $old_type == $new_type ) {
+			/*if ( $old_type == $new_type ) {
 				return false;
-			}
+			}*/
 
 			$answer_options = $question->get_data( 'answer_options' );
 
