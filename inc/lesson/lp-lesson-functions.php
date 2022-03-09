@@ -57,7 +57,9 @@ function learn_press_lesson_comment_form() {
 
 	if ( $lesson->setup_postdata() ) {
 		if ( comments_open() || get_comments_number() ) {
+			add_filter( 'deprecated_file_trigger_error', '__return_false' );
 			comments_template();
+			remove_filter( 'deprecated_file_trigger_error', '__return_false' );
 		}
 
 		$lesson->reset_postdata();
