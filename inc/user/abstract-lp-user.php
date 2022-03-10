@@ -361,22 +361,22 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return boolean
 		 */
-		public function has_retake_quiz( $quiz_id, $course_id ) {
+		public function has_retake_quiz( $quiz_id, $course_id ): bool {
 			$user_quiz = $this->get_item_data( $quiz_id, $course_id );
+			$flag      = false;
 
 			if ( $user_quiz ) {
-				$retaken = $user_quiz->get_retaken_count();
-				$count   = get_post_meta( $quiz_id, '_lp_retake_count', true );
+				$retaken       = $user_quiz->get_retaken_count();
+				$retake_config = get_post_meta( $quiz_id, '_lp_retake_count', true );
 
-				// Retake is disable.
-				if ( ! $count ) {
-					return false;
+				if ( $retake_config == '-1' ) { // For no limit
+					$flag = true;
+				} elseif ( absint( $retaken ) < absint( $retake_config ) ) {
+					$flag = true;
 				}
-
-				return absint( $retaken ) < absint( $count ) ? true : false;
 			}
 
-			return false;
+			return apply_filters( 'lp/quiz/can-retake', $flag );
 		}
 
 		/**
