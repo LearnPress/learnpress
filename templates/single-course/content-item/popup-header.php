@@ -11,7 +11,8 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) || ! isset( $completed_items ) ) {
+if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
+	! isset( $completed_items ) || ! isset( $total_items ) ) {
 	return;
 }
 ?>
@@ -23,7 +24,7 @@ if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) || ! isset
 		</h2>
 
 		<?php if ( $user->has_enrolled_or_finished( $course->get_id() ) ) : ?>
-			<div class="items-progress">
+			<div class="items-progress" data-total-items="<?php echo $total_items; ?>">
 				<span class="number">
 					<?php echo wp_sprintf( '<span class="items-completed">%1$s</span> of %2$d %3$s', esc_html( $completed_items ), esc_html( $course->count_items() ), __( 'items', 'learnpress' ) ); ?>
 				</span>

@@ -561,16 +561,18 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		$percentage      = 0;
+		$total_items     = 0;
 		$completed_items = 0;
 		$course_data     = $user->get_course_data( $course->get_id() );
 
 		if ( $course_data && ! $course->is_no_required_enroll() ) {
 			$course_results  = $course_data->get_result();
 			$completed_items = $course_results['completed_items'];
+			$total_items     = $course_results['count_items'];
 			$percentage      = $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0;
 		}
 
-		learn_press_get_template( 'single-course/content-item/popup-header', compact( 'user', 'course', 'completed_items', 'percentage' ) );
+		learn_press_get_template( 'single-course/content-item/popup-header', compact( 'user', 'course', 'total_items', 'completed_items', 'percentage' ) );
 	}
 
 	public function popup_sidebar() {
