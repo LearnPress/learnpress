@@ -11,6 +11,18 @@ $section_range  = LP_Install_Sample_Data::$section_range;
 $item_range     = LP_Install_Sample_Data::$item_range;
 $question_range = LP_Install_Sample_Data::$question_range;
 $answer_range   = LP_Install_Sample_Data::$answer_range;
+/**
+ * Format hooks
+ */
+$hooks = apply_filters(
+	'lp/install-sample/hooks',
+	array(
+		/*array(
+			'class'  => 'class_name',
+			'action' => 'action_name',
+		),*/
+	)
+);
 ?>
 
 <div class="lp-install-sample">
@@ -48,6 +60,7 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 				<p><?php esc_html_e( 'Course price', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="" min="0" name="course-price">
 			</li>
+			<input name="hooks" type="hidden" value="<?php echo esc_attr( htmlspecialchars( json_encode( $hooks ) ) ); ?>">
 		</ul>
 	</fieldset>
 
