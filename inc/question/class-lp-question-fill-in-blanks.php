@@ -492,7 +492,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 					if ( $match_case ) {
 						$blank_correct = strcmp( $user_fill, $fill ) == 0;
 					} else {
-						$blank_correct = strcasecmp( $user_fill, $fill ) == 0;
+						$blank_correct = strcasecmp( mb_strtolower( $user_fill, 'UTF-8' ), mb_strtolower( $fill, 'UTF-8' ) ) == 0;
 					}
 			}
 
