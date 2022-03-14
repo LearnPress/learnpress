@@ -172,8 +172,8 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 				$courses           = \LP_Course::get_courses( $filter );
 				break;
 			case 'popular':
-				$filter->sort_by = 'on_popular';
-				$courses         = \LP_Course::get_courses( $filter );
+				$filter->order_by = 'popular';
+				$courses          = \LP_Course::get_courses( $filter );
 				break;
 			case 'featured':
 				$filter->sort_by = 'on_feature';
@@ -184,7 +184,7 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 		}
 
 		if ( empty( $courses ) ) {
-			return;
+			LP()->template( 'course' )->no_courses_found();
 		}
 		?>
 		<div class="lp-archive-courses">
