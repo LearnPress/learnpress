@@ -545,6 +545,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					case 'price_low':
 						if ( 'price_low' === $filter->order_by ) {
 							$filter->order = 'ASC';
+						} else {
+							$filter->order = 'DESC';
 						}
 
 						$filter = $lp_course_db->get_courses_order_by_price( $filter );

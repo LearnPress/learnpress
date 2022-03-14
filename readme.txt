@@ -199,17 +199,18 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.1.6 (2022-03-14) =
 ~ Compatible: with "Polylang" plugin.
-~ Fixed: case set duration quiz = 0.
-~ Fixed: case set password for quiz.
+~ Compatible LP Shortcode with Elementor.
+~ Compatible: with block theme (Gutenberg).
 ~ Added: set -1 value for no limit Retake Quiz.
 ~ Added: order by popular courses on API.
+~ Fixed: case set duration quiz = 0.
+~ Fixed: case set password for quiz.
 ~ Fixed: create new question didn't set type.
 ~ Fixed: when search global WP with ?s= will not search item's course and question not assign.
 ~ Fixed: "Active Courses" empty on the Profile page.
-~ Compatible: with block theme (Gutenberg)
 ~ Fixed: security does not sanitise and escape the lp-dismiss-notice.
 ~ Fixed: error many times redirect when access link domain/type/not_found.
-~ Compatible LP Shortcode with Elementor.
+~ Fixed: compare string answer not set "Match case" type Fill In Blank Question.
 
 = 4.1.5 (2022-01-24) =
 ~ Modified: optimize, handle cache for query courses.
