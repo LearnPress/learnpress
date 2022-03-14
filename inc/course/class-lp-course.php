@@ -519,7 +519,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$filter->sort_by = (array) $filter->sort_by;
 				foreach ( $filter->sort_by as $sort_by ) {
 					$filter_tmp                      = clone $filter;
-					$filter_tmp->fields              = array( 'ID' );
+					$filter_tmp->only_fields         = array( 'ID' );
 					$filter_tmp->return_string_query = true;
 
 					switch ( $sort_by ) {
