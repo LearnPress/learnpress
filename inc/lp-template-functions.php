@@ -1868,10 +1868,10 @@ function lp_archive_skeleton_get_args() {
 	$params = apply_filters(
 		'lp/template/archive-course/skeleton/args',
 		array(
-			'paged'   => 1,
-			's'       => '',
-			'orderby' => '',
-			'order'   => '',
+			'paged'    => 1,
+			'c_search' => '',
+			'orderby'  => '',
+			'order'    => '',
 		)
 	);
 
@@ -1884,8 +1884,8 @@ function lp_archive_skeleton_get_args() {
 
 	if ( learn_press_is_course_archive() ) {
 		foreach ( $params as $key => $param ) {
-			if ( get_query_var( $key ) ) {
-				$args[ $key ] = get_query_var( $key );
+			if ( isset( $_REQUEST[ $key ] ) ) {
+				$args[ $key ] = $_REQUEST[ $key ];
 			} else {
 				$args[ $key ] = $param;
 			}

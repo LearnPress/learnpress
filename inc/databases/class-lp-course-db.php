@@ -522,7 +522,7 @@ class LP_Course_DB extends LP_Database {
 		// Authors
 		if ( ! empty( $filter->post_authors ) ) {
 			$post_authors_format = LP_Helper::db_format_array( $filter->post_authors, '%d' );
-			$filter->where[]     = $this->wpdb->prepare( 'AND p.ID IN (' . $post_authors_format . ')', $filter->post_authors );
+			$filter->where[]     = $this->wpdb->prepare( 'AND p.post_author IN (' . $post_authors_format . ')', $filter->post_authors );
 		}
 
 		$filter = apply_filters( 'lp/course/query/filter', $filter );

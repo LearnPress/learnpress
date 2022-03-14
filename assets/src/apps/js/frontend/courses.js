@@ -125,8 +125,8 @@ const lpArchiveSearchCourse = () => {
 	const searchForm = document.querySelectorAll( 'form.search-courses' );
 
 	searchForm.forEach( ( s ) => {
-		const search = s.querySelector( 'input[name="s"]' );
-		const action = s.getAttribute( 'action' );
+		const search = s.querySelector( 'input[name="c_search"]' );
+		const urlAction = s.getAttribute( 'action' );
 		const postType = s.querySelector( '[name="post_type"]' ).value || '';
 		const taxonomy = s.querySelector( '[name="taxonomy"]' ).value || '';
 		const termID = s.querySelector( '[name="term_id"]' ).value || '';
@@ -148,14 +148,21 @@ const lpArchiveSearchCourse = () => {
 
 					delete lpArchiveSkeleton.paged;
 
-					lpArchiveRequestCourse( { ...lpArchiveSkeleton, s } );
+					const url = new URL( urlAction );
+					const urlCurrent = new URL( document.location );
+					urlCurrent.searchParams.delete( 'c_search' );
+					urlCurrent.searchParams.append( 'c_search', s );
+					const strParams = urlCurrent.searchParams.toString();
+					const params = strParams.split( '&' );
 
-					const url = lpArchiveAddQueryArgs( action, {
-						post_type: postType,
-						taxonomy,
-						term_id: termID,
-						s,
+					const objectParams = {};
+					params.forEach( ( val, i ) => {
+						const keyVal = val.split( '=' );
+						objectParams[ keyVal[ 0 ] ] = keyVal[ 1 ];
+						url.searchParams.append( keyVal[ 0 ], keyVal[ 1 ] );
 					} );
+
+					lpArchiveRequestCourse( { ...objectParams } );
 
 					window.history.pushState( '', '', url );
 				}, 800 );
@@ -165,7 +172,7 @@ const lpArchiveSearchCourse = () => {
 		s.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
 
-			const eleSearch = s.querySelector( 'input[name="s"]' );
+			const eleSearch = s.querySelector( 'input[name="c_search"]' );
 			eleSearch && eleSearch.dispatchEvent( new Event( 'keyup' ) );
 		} );
 	} );
