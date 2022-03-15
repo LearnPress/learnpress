@@ -5,7 +5,7 @@ const lpArchiveAddQueryArgs = ( endpoint, args ) => {
 	const url = new URL( endpoint );
 
 	Object.keys( args ).forEach( ( arg ) => {
-		url.searchParams.append( arg, args[ arg ] );
+		url.searchParams.set( arg, args[ arg ] );
 	} );
 
 	return url;
@@ -18,27 +18,11 @@ const lpArchiveCourse = () => {
 		return;
 	}
 
-	if ( 'IntersectionObserver' in window ) {
-		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
-			entries.forEach( ( entry ) => {
-				if ( entry.isIntersecting ) {
-					const ele = entry.target;
-
-					if ( ! lpArchiveSkeleton ) {
-						return;
-					}
-
-					//setTimeout( function() {
-					lpArchiveRequestCourse( lpArchiveSkeleton );
-					//}, 600 );
-
-					eleObserver.unobserve( ele );
-				}
-			} );
-		} );
-
-		[ ...elements ].map( ( ele ) => eleObserver.observe( ele ) );
+	if ( ! lpArchiveSkeleton ) {
+		return;
 	}
+
+	lpArchiveRequestCourse( lpArchiveSkeleton );
 };
 
 let skeleton;
@@ -110,7 +94,9 @@ window.lpArchiveRequestCourse = ( args ) => {
 
 		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
 
-		//LPArchiveCourseInit();
+		// Push url
+		const urlPush = lpArchiveAddQueryArgs( document.location, args );
+		window.history.pushState( '', '', urlPush );
 
 		// Scroll to archive element
 		if ( ! firstLoad ) {
@@ -237,6 +223,6 @@ function LPArchiveCourseInit() {
 	lpArchiveGridListCourse();
 }
 
-//document.addEventListener( 'DOMContentLoaded', function( event ) {
-LPArchiveCourseInit();
-//} );
+document.addEventListener( 'DOMContentLoaded', function( event ) {
+	LPArchiveCourseInit();
+} );

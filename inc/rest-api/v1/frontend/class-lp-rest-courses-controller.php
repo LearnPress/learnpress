@@ -142,8 +142,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$on_feature                            = absint( $request['on_feature'] ?? '0' );
 			1 === $on_feature ? $filter->sort_by[] = 'on_feature' : '';
 
-			$filter->order_by = LP_Helper::sanitize_params_submitted( $request['order_by'] ?? 'post_date' );
-			$filter->order    = LP_Helper::sanitize_params_submitted( $request['order'] ?? 'DESC' );
+			$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $request['order_by'] ) ? $request['order_by'] : 'post_date' );
+			$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $request['order'] ) ? $request['order'] : 'DESC' );
 			$filter->limit    = LP_Settings::get_option( 'archive_course_limit', 10 );
 
 			$total_rows = 0;
