@@ -196,7 +196,13 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				$content = '';
 
 				foreach ( $sections['results'] as $section ) {
-					$content .= learn_press_get_template_content( 'loop/single-course/loop-section', array( 'section' => $section ) );
+					$content .= learn_press_get_template_content(
+						'loop/single-course/loop-section',
+						array(
+							'section'   => $section,
+							'course_id' => $course_id,
+						)
+					);
 				}
 
 				$response->data = $content;
@@ -270,7 +276,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 			$content = '';
 
-			foreach ( $section_items['results'] as $section_item ) {
+			foreach ( $section_items['results'] as $key => $section_item ) {
 				$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
 
 				if ( $course_id ) {
@@ -297,6 +303,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 							'can_view_item' => $can_view_item,
 							'course_id'     => $course_id,
 							'user'          => $user,
+							'key'           => absint( ( ( $page - 1 ) * $per_page ) + $key + 1 ),
 						)
 					);
 				}

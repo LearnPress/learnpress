@@ -45,7 +45,7 @@ let skeleton;
 let skeletonClone;
 let isLoading = false;
 let firstLoad = 1;
-const lpArchiveRequestCourse = ( args ) => {
+window.lpArchiveRequestCourse = ( args ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
 
 	if ( ! wpRestUrl ) {
