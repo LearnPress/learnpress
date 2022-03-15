@@ -1,0 +1,282 @@
+# THIS IS A GENERATED FILE. DO NOT EDIT DIRECTLY.
+
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:118
+msgid "Reset course progress"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:120
+msgid "This action will reset progress of a course for all users have enrolled."
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:121
+msgid "Search results only show course have user data."
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:124
+msgid "Search course by name"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:154
+msgid "ID"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:155
+msgid "Name"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:156
+msgid "Students"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/tools/reset-data/course.js:185
+msgid "Reset now"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:288
+msgid "Words fill"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:306
+msgid "Tip"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:313
+#: assets/src/apps/js/frontend/profile/avatar.js:201
+msgid "Remove"
+msgstr ""
+
+#: assets/src/apps/js/admin/react/question/index.js:319
+msgid "Add Blank"
+msgstr ""
+
+#: assets/src/apps/js/blocks/category.js:8
+msgid "LearnPress"
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/edit.js:9
+msgid "LearnPress Single Course Template"
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/edit.js:13
+msgid "LearnPress Course Archive Template"
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/edit.js:32
+#. %s is the template title
+msgid ""
+"This is an editor placeholder for the %s. On your store this will be "
+"replaced by the template and display with your course image(s), title, "
+"price, etc. You can move this placeholder around and add further blocks "
+"around it to extend the template."
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/index.js:13
+msgid "Renders LearnPress PHP templates."
+msgstr ""
+
+#: assets/src/apps/js/frontend/modal/index.js:41
+msgid "OK"
+msgstr ""
+
+#: assets/src/apps/js/frontend/modal/index.js:44
+msgid "Cancel"
+msgstr ""
+
+#: assets/src/apps/js/frontend/profile/avatar.js:131
+msgid "File size too large. You need to upload a file < 2MB"
+msgstr ""
+
+#: assets/src/apps/js/frontend/profile/avatar.js:133
+msgid "Image size must be greater than or equal to %1$sx%2$spx"
+msgstr ""
+
+#: assets/src/apps/js/frontend/profile/avatar.js:146
+msgid "Are you sure you want to remove your avatar?"
+msgstr ""
+
+#: assets/src/apps/js/frontend/profile/avatar.js:192
+msgid "Save"
+msgstr ""
+
+#: assets/src/apps/js/frontend/profile/avatar.js:200
+msgid "Replace"
+msgstr ""
+
+#: assets/src/apps/js/frontend/profile/avatar.js:215
+msgid "Upload"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:98
+msgid "LP Error: can not set answers"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:147
+msgid "Render function should be overwritten from base."
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:207
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:74
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:214
+msgid "Correct"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:207
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:75
+msgid "Incorrect"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/question-base/index.js:208
+msgid "%d/%d point"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:72
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:206
+msgid "Points"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:73
+msgid "point"
+msgstr ""
+
+#: assets/src/apps/js/frontend/question-types/index.js:34
+msgid "Question <code>%s</code> invalid!"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:15
+msgid "Last Attempted"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:21
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:210
+msgid "Questions"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:22
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:202
+msgid "Time spent"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:23
+msgid "Marks"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:24
+msgid "Passing grade"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/attempts/index.js:25
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:298
+msgid "Result"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:40
+msgid "Check answer"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:43
+msgid "You need to answer the question before check answer."
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-hint.js:22
+#: assets/src/apps/js/frontend/quiz/components/questions/question.js:177
+msgid "Hint"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:16
+msgid "Are you sure you want to retake quiz?"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:104
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:67
+msgid "Are you sure to submit quiz?"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:158
+msgid "Prev"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:202
+msgid "Next"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:266
+msgid "Retake"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:266
+msgid "Start"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:287
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:128
+msgid "Finish Quiz"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/buttons/index.js:307
+msgid "Review"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/meta/index.js:20
+msgid "Duration:"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/meta/index.js:25
+msgid "Passing grade:"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/meta/index.js:30
+msgid "Questions:"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/questions/question.js:87
+msgid "Edit"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/questions/question.js:163
+msgid "Explanation"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:167
+msgid "Passed"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:169
+msgid "Failed"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:184
+msgid "Your Result"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:218
+msgid "Wrong"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/result/index.js:222
+msgid "Skipped"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:105
+msgid "Question <span>%d to %d of %d</span>"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:107
+msgid "Question <span>%d of %d</span>"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:110
+msgid "Question <span>%d to %d</span>"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:119
+msgid "Earned Point: %s"
+msgstr ""
+
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:128
+msgid "Submitting..."
+msgstr ""
+
+# THIS IS THE END OF THE GENERATED FILE.

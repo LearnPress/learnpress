@@ -1,11 +1,3 @@
 {
-	"presets": ["@wordpress/babel-preset-default"],
-	"plugins": [
-		[
-			"@wordpress/babel-plugin-makepot",
-			{
-				"output": "languages/learnpress-js.pot"
-			}
-		]
-	]
+	"presets": ["@wordpress/babel-preset-default"]
 }

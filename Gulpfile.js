@@ -70,6 +70,8 @@ const releasesFiles = [
 	'!.babelrc',
 	'!inc/**/*.http',
 	'!packages/**',
+	'!languages/strings/**',
+	'!languages/learnpress-js.pot',
 ];
 
 const errorHandler = ( r ) => {
