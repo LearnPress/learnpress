@@ -1,8 +1,15 @@
 const path = require( 'path' );
-const webpack = require( 'webpack' );
-const tools = require( './tools/webpack' );
+const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
+
+const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
+const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
+const MergeIntoSingleFilePlugin = require( 'webpack-merge-and-include-globally' );
+const LearnPressDependencyExtractionWebpackPlugin = require( './packages/dependecy-extraction-webpack-plugin' );
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
+	...defaultConfig,
 	entry: {
 		'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
 		'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
@@ -15,34 +22,81 @@ module.exports = {
 		'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',
 		'./assets/js/dist/admin/pages/widgets': './assets/src/apps/js/admin/pages/widgets.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
+
+		'./assets/js/dist/js/data-controls': {
+			import: './assets/src/apps/js/data-controls.js',
+			library: {
+				name: [ 'LP', 'dataControls' ],
+				type: 'window',
+			},
+		},
+		'./assets/js/dist/frontend/modal': {
+			import: './assets/src/apps/js/frontend/modal.js',
+			library: {
+				name: [ 'LP', 'modal' ],
+				type: 'window',
+			},
+		},
+		'./assets/js/dist/frontend/quiz': {
+			import: './assets/src/apps/js/frontend/quiz.js',
+			library: {
+				name: [ 'LP', 'quiz' ],
+				type: 'window',
+			},
+		},
+		'./assets/js/dist/frontend/lp-configs': {
+			import: './assets/src/apps/js/frontend/lp-configs.js',
+			library: {
+				name: [ 'LP', 'config' ],
+				type: 'window',
+			},
+		},
+		'./assets/js/dist/frontend/question-types': {
+			import: './assets/src/apps/js/frontend/question-types.js',
+			library: {
+				name: [ 'LP', 'questionTypes' ],
+				type: 'window',
+			},
+		},
+		'./assets/js/dist/frontend/courses': './assets/src/apps/js/frontend/courses.js',
+		'./assets/js/dist/frontend/checkout': './assets/src/apps/js/frontend/checkout.js',
+		'./assets/js/dist/frontend/single-course': './assets/src/apps/js/frontend/single-course.js',
+		'./assets/js/dist/frontend/single-curriculum': './assets/src/apps/js/frontend/single-curriculum.js',
+		'./assets/js/dist/frontend/lesson': './assets/src/apps/js/frontend/lesson.js',
+		'./assets/js/dist/frontend/custom': './assets/src/apps/js/frontend/custom.js',
+		'./assets/js/dist/frontend/profile': './assets/src/apps/js/frontend/profile.js',
+		'./assets/js/dist/frontend/widgets': './assets/src/apps/js/frontend/widgets.js',
+		'./assets/js/dist/blocks/index': './assets/src/apps/js/blocks/index.js',
 	},
 	output: {
 		path: path.resolve( __dirname ),
-		filename: 'production' === process.env.NODE_ENV ? '[name].min.js' : '[name].js',
-	},
-	watch: false,
-	devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map',
-	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				exclude: /(node_modules|bower_components)/,
-				use: {
-					loader: 'babel-loader',
-					options: {
-						presets: [
-							'@babel/preset-env',
-						],
-						plugins: [
-						    '@babel/plugin-transform-async-to-generator',
-							'@babel/plugin-proposal-object-rest-spread',
-						],
-					},
-				},
-			},
-		],
+		filename: '[name]' + ( isProduction ? '.min.js' : '.js' ),
 	},
 	plugins: [
-		tools.mergeAndCompressJs,
-	],
+		process.env.WP_BUNDLE_ANALYZER && new BundleAnalyzerPlugin(),
+
+		// WP_NO_EXTERNALS global variable controls whether scripts' assets get
+		// generated, and the default externals set.
+		! process.env.WP_NO_EXTERNALS && new DependencyExtractionWebpackPlugin(),
+
+		new MergeIntoSingleFilePlugin( {
+			files: {
+				'assets/js/vendor/plugins.all.js': [
+					'./assets/src/js/vendor/watch.js',
+					'./assets/src/js/vendor/jquery/jquery-scrollTo.js',
+					'./assets/src/js/vendor/jquery/jquery-timer.js',
+					'./assets/src/js/vendor/jquery/jquery.tipsy.js',
+				],
+				'assets/js/vendor/vue/vue_libs.js': [
+					'./assets/src/js/vendor/vue/vue.js',
+					'./assets/src/js/vendor/vue/vuex.js',
+					'./assets/src/js/vendor/vue/vue-resource.js',
+				],
+			},
+		} ),
+		new LearnPressDependencyExtractionWebpackPlugin( {
+			namespace: '@learnpress',
+			library: 'LP',
+		} ),
+	].filter( Boolean ),
 };

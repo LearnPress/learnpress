@@ -73,7 +73,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press/admin-default-scripts',
 			array(
 				// need build if change source vue
-				'vue-libs'                          => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs' . self::$_min_assets . '.js' ) ),
+				'vue-libs'                          => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs.js' ) ),
 				'select2'                           => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
 				'jquery-tipsy'                      => new LP_Asset_Key( $this->url( 'src/js/vendor/jquery/jquery-tipsy.js' ) ),
 				'jspdf'                             => new LP_Asset_Key( $this->url( 'src/js/vendor/jspdf.min.js' ) ),
