@@ -29,7 +29,7 @@ let skeleton;
 let skeletonClone;
 let isLoading = false;
 let firstLoad = 1;
-window.lpArchiveRequestCourse = ( args, callBackDone ) => {
+window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
 
 	if ( ! wpRestUrl ) {
@@ -86,6 +86,12 @@ window.lpArchiveRequestCourse = ( args, callBackDone ) => {
 				lpArchivePaginationCourse();
 			}
 		}
+
+		wp.hooks.doAction( 'lp-js-get-courses', response );
+
+		if ( typeof callBackSuccess === 'function' ) {
+			callBackSuccess( response );
+		}
 	} ).catch( ( error ) => {
 		listCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/courses/archive-course' }</div>`;
 	} ).finally( () => {
@@ -103,10 +109,6 @@ window.lpArchiveRequestCourse = ( args, callBackDone ) => {
 			archive.scrollIntoView();
 		} else {
 			firstLoad = 0;
-		}
-
-		if ( typeof callBackDone === 'function' ) {
-			callBackDone();
 		}
 	} );
 };

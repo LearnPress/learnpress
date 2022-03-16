@@ -195,6 +195,23 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				}
 
 				$response->data->content = ob_get_clean();
+				$response->data->totals  = $total_rows;
+
+				$from = 1 + ( $filter->page - 1 ) * $filter->limit;
+				$to   = ( $filter->page * $filter->limit > $total_rows ) ? $total_rows : $filter->page * $filter->limit;
+
+				if ( 0 === $total_rows ) {
+					$response->data->from_to = '';
+				} elseif ( 1 === $total_rows ) {
+					$response->data->from_to = esc_html__( 'Showing only one result', 'learnpress' );
+				} else {
+					if ( $from == $to ) {
+						$response->data->from_to = sprintf( esc_html__( 'Showing last course of %s results', 'learnpress' ), $total_rows );
+					} else {
+						$from_to                 = $from . '-' . $to;
+						$response->data->from_to = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
+					}
+				}
 			}
 
 			$response->status = 'success';
