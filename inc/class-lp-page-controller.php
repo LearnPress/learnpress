@@ -968,8 +968,10 @@ class LP_Page_Controller {
 			$is_archive_course = 1;
 		}
 
+		$apply_lazy_load_for_theme = apply_filters( 'lp/page/courses/query/lazy_load', false );
+
 		if ( $is_archive_course ) {
-			if ( lp_is_archive_course_load_via_api() && ! class_exists( 'TP' ) ) {
+			if ( ( lp_is_archive_course_load_via_api() && ! class_exists( 'TP' ) ) || $apply_lazy_load_for_theme ) {
 				LP()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 				/**
 				 * If page is archive course - query set posts_per_page = 1

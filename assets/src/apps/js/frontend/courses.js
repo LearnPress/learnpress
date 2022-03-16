@@ -29,7 +29,7 @@ let skeleton;
 let skeletonClone;
 let isLoading = false;
 let firstLoad = 1;
-window.lpArchiveRequestCourse = ( args ) => {
+window.lpArchiveRequestCourse = ( args, callBackDone ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
 
 	if ( ! wpRestUrl ) {
@@ -104,6 +104,10 @@ window.lpArchiveRequestCourse = ( args ) => {
 		} else {
 			firstLoad = 0;
 		}
+
+		if ( typeof callBackDone === 'function' ) {
+			callBackDone();
+		}
 	} );
 };
 
@@ -136,8 +140,7 @@ const lpArchiveSearchCourse = () => {
 
 					const url = new URL( urlAction );
 					const urlCurrent = new URL( document.location );
-					urlCurrent.searchParams.delete( 'c_search' );
-					urlCurrent.searchParams.append( 'c_search', s );
+					urlCurrent.searchParams.set( 'c_search', s );
 					const strParams = urlCurrent.searchParams.toString();
 					const params = strParams.split( '&' );
 
