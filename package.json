@@ -50,8 +50,6 @@
         "sass": "^1.43.4",
         "stylelint": "^13.7.0",
         "stylelint-order": "^4.1.0",
-        "uglify-js": "^3.13.9",
-        "uglifycss": "0.0.29",
         "webpack": "^5.70.0",
         "webpack-merge-and-include-globally": "^2.3.4"
     },
