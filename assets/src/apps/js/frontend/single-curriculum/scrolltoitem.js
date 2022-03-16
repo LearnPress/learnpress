@@ -35,7 +35,7 @@ const scrollToItemCurrent = {
 					elCourseCurriculumn.scrollTop();
 
 				elCourseCurriculumn.animate( {
-					scrollTop: offset - heightSectionHeader,
+					scrollTop: LP.Hook.applyFilters( 'scroll-item-current', offset - heightSectionHeader ),
 				}, 800 );
 			}
 		};
