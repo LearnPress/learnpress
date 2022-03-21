@@ -128,7 +128,7 @@ const lpArchiveSearchCourse = () => {
 		search.addEventListener( 'keyup', ( event ) => {
 			event.preventDefault();
 
-			const s = event.target.value;
+			const s = event.target.value.trim();
 
 			if ( ! s || ( s && s.length > 2 ) ) {
 				if ( undefined !== timeOutSearch ) {
