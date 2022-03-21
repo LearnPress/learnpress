@@ -20,16 +20,19 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
 > Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have LearnPress Theme Bundle included already.
-> [Eduma â€“ Education WordPress Theme](https://1.envato.market/G5Ook) (#1 Selling Education WordPress Theme).
+> [Eduma | Education WordPress Theme](https://1.envato.market/G5Ook) (#1 Selling Education WordPress Theme).
 > [Coaching | Life & Fitness Coaching WordPress Theme](https://1.envato.market/Xq2Ra) (Rising Star).
 > [CorpTrain | Corporate Training WordPress Theme](https://1.envato.market/13Zkd) (Potential).
 
-###LMS & Education WordPress Themes###
+###ONLINE LMS & EDUCATION WORDPRESS THEMES###
 
-Take a look at **[Premium Theme](https://1.envato.market/AoKx3D)** (someone calls it LMS WordPress Template) we designed to work with LearnPress. All developers are welcome to develop WordPress LMS Theme based on LMS Plugin for WordPress - LearnPress. More WordPress LMS Themes are coming soon, both free and premium WordPress Themes for LearnPress.
-LearnPress Mobile provides easy access to all courses on mobile and tablet devices. LearnPress Mobile is customizable, you can build your own LMS Mobile App following your style. This LMS Mobile App brings to your students a new learning experience when they can manage and track their courses as well as instructors.
+Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.envato.market/AoKx3D)** that are developed to work perfectly with LearnPress LMS WordPress Plugin. These incredible WordPress Themes are the best for your Online LMS & Education websites using LearnPress with the clean and modern design. From more than 50 demos, you can easily chose the most suitable one which fits your purpose and customize it as your style.
 
-LearnPress Mobile is a complete LMS Mobile App built with React Native technology. If you have Online Education & LMS websites using Eduma WordPress Theme or LearnPress LMS WordPress Plugin, LearnPress Mobile supports you to convert your current websites to LMS Mobile App easily.
+
+###LEARNPRESS MOBILE APP###
+
+ **[LearnPress Mobile App](https://thimpress.com/eduma-mobile-app)**  is an LMS Mobile App for iOS & Android built with React Native Technology. If you have Online Education & LMS websites using WordPress Themes or LearnPress Plugin, LearnPress Mobile App supports you to convert your current websites to LMS Mobile App easily. Your LMS Mobile App will be on both App Store and Google Play Store. All courses will be synced immediately between your Online Education & LMS Website and your LMS Mobile App.This LMS Mobile App brings to your students a new learning experience when they can manage and track their courses as well as instructors.
+
 
 
 ###LearnPress Tutorials###
@@ -90,7 +93,7 @@ We are developing and improving LearnPress day by day and bringing you more new 
 - [myCRED add-on for LearnPress](https://thimpress.com/product/mycred-add-on-for-learnpress/) - add myCRED support for LearnPress WordPress LMS plugin, you can add point system to your eLearning WordPress site using LearnPress + myCRED add-on.
 - [Certificates add-on for LearnPress](https://thimpress.com/product/certificates-add-on-for-learnpress/) -  add drag & drop certificates builder as well as select designed certificate for each LMS course, your students will get particular certificates when they finished their courses.
 - [Co-instructors add-on for LearnPress](https://thimpress.com/product/co-instructors-add-on-for-learnpress/) - multiple instructors support for each LMS course.
-- [Collections add-on for LearnPress](https://thimpress.com/product/collections-add-on-for-learnpress/) â€“ create LMS courses collection, this is helpful if you want to combine multiple LMS courses into a collection for a group of skills.
+- [Collections add-on for LearnPress](https://thimpress.com/product/collections-add-on-for-learnpress/) – create LMS courses collection, this is helpful if you want to combine multiple LMS courses into a collection for a group of skills.
 - [Stripe Payment method for LearnPress](https://thimpress.com/product/stripe-add-on-for-learnpress/) - Stripe payment method for LearnPress WordPress LMS Plugin.
 - [2Checkout add-on for LearnPress](https://thimpress.com/product/2checkout-add-learnpress/) - make LearnPress plugin ready to use 2Checkout payment gateway to pay for courses.
 - [Authorize.Net add-ons for LearnPress](https://thimpress.com/product/authorize-net-add-ons-learnpress/) - Authorize.Net payment method for LearnPress WordPress LMS Plugin.
@@ -363,7 +366,7 @@ https://www.transifex.com/projects/p/learnpress/
 = 4.0.4 =
 ~ Fixed: get option "archive_course_limit" default value if empty.
 ~ Fixed: Profile shortcode.
-~ Fixed: error table "learnpress_user_itemmeta" doesnâ€™t exist when install new.
+~ Fixed: error table "learnpress_user_itemmeta" doesn’t exist when install new.
 ~ Fixed: style comment function.
 ~ Added: form comment on course.
 ~ Fixed: js itemProgress undefined in Eduma theme
@@ -645,7 +648,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed issue vulnerabilities.
 ~ Fixed issue related to object cache when doing quiz.
 ~ Fixed lesson 404 with Polylang.
-~ Fixed PHP Fatal error class â€˜LP_Plugins_Helperâ€™ not found
+~ Fixed PHP Fatal error class ‘LP_Plugins_Helper’ not found
 
 = 3.0.12 =
 ~ Fixed minor bug in gradebook list in admin
