@@ -63,18 +63,6 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 			)
 		);
 		$this->add_control(
-			'order_by',
-			array(
-				'label'   => esc_html__( 'Order By', 'learnpress' ),
-				'type'    => Controls_Manager::SELECT,
-				'options' => array(
-					'desc' => esc_html__( 'DESC', 'learnpress' ),
-					'asc'  => esc_html__( 'ASC', 'learnpress' ),
-				),
-				'default' => 'desc',
-			)
-		);
-		$this->add_control(
 			'course_type',
 			array(
 				'label'   => esc_html__( 'Course Type', 'learnpress' ),
@@ -86,6 +74,21 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 					'featured' => esc_html__( 'Featured', 'learnpress' ),
 				),
 				'default' => '',
+			)
+		);
+		$this->add_control(
+			'order_by',
+			array(
+				'label'     => esc_html__( 'Order By', 'learnpress' ),
+				'type'      => Controls_Manager::SELECT,
+				'options'   => array(
+					'desc' => esc_html__( 'DESC', 'learnpress' ),
+					'asc'  => esc_html__( 'ASC', 'learnpress' ),
+				),
+				'default'   => 'desc',
+				'condition' => array(
+					'course_type!' => 'popular',
+				),
 			)
 		);
 		$this->add_control(
