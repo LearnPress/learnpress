@@ -403,6 +403,12 @@ ul.learn-press-nav-tabs {
 			background: #fff;
 			list-style: none;
 
+			.closed {
+				.section-item__loadmore {
+					display: none;
+				}
+			}
+
 			.section {
 				margin: 0;
 				padding: 0 0 42px 0;
