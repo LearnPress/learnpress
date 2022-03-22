@@ -115,8 +115,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter             = new LP_Course_Filter();
 			$filter->page       = absint( $request['paged'] ?? 1 );
 			$filter->post_title = LP_Helper::sanitize_params_submitted( $request['c_search'] ?? '' );
-			$fields_str         = LP_Helper::sanitize_params_submitted( $request['c_fields'] ?? '' );
-			$fields_exclude_str = LP_Helper::sanitize_params_submitted( $request['c_exclude_fields'] ?? '' );
+			$fields_str         = LP_Helper::sanitize_params_submitted( urldecode( $request['c_fields'] ) ?? '' );
+			$fields_exclude_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_exclude_fields'] ) ?? '' );
 			if ( ! empty( $fields_str ) ) {
 				$fields         = explode( ',', $fields_str );
 				$filter->fields = $fields;
@@ -131,7 +131,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$author_ids           = explode( ',', $author_ids_str );
 				$filter->post_authors = $author_ids;
 			}
-			$term_ids_str = LP_Helper::sanitize_params_submitted( $request['term_id'] ?? '' );
+			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ) ?? '' );
 			if ( ! empty( $term_ids_str ) ) {
 				$term_ids         = explode( ',', $term_ids_str );
 				$filter->term_ids = $term_ids;
@@ -145,12 +145,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $request['order_by'] ) ? $request['order_by'] : 'post_date' );
 			$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $request['order'] ) ? $request['order'] : 'DESC' );
 			$filter->limit    = LP_Settings::get_option( 'archive_course_limit', 10 );
+			$return_type      = $request['return_type'] ?? 'html';
+			if ( 'json' !== $return_type ) {
+				$filter->only_fields = array( 'ID' );
+			}
 
-			$total_rows = 0;
-			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
-			$courses    = LP_Course::get_courses( $filter, $total_rows );
-
-			$return_type = $request['return_type'] ?? 'html';
+			$total_rows  = 0;
+			$filter      = apply_filters( 'lp/api/courses/filter', $filter, $request );
+			$courses     = LP_Course::get_courses( $filter, $total_rows );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 
 			if ( 'json' === $return_type ) {
@@ -159,11 +161,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			} else {
 				// For return data has html
 				if ( $courses ) {
-					// Get only course ids
-					$courses = LP_Course::get_course_ids( $courses );
-					ob_start();
-
-					global $post, $wp;
+					global $wp;
 					$archive_link = get_post_type_archive_link( LP_COURSE_CPT );
 
 					if ( isset( $term_link ) && ! is_wp_error( $term_link ) ) {
@@ -182,9 +180,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						)
 					);
 
+					ob_start();
+
 					// Todo: tungnx - should rewrite call template
-					foreach ( $courses as $course_id ) {
-						$post = get_post( $course_id );
+					foreach ( $courses as $course ) {
+						$post = get_post( $course->ID );
 						setup_postdata( $post );
 						learn_press_get_template_part( 'content', 'course' );
 					}

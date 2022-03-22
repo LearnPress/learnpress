@@ -1047,9 +1047,18 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @Todo: view and rewrite this function
 		 */
 		public function count_students(): int {
+			$key_cache = "{$this->get_id()}/total-students";
+			$total     = LP_Course_Cache::instance()->get_cache( $key_cache );
+
+			if ( $total ) {
+				return $total;
+			}
+
 			$lp_course_db = LP_Course_DB::getInstance();
 			$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
 			$total       += $this->get_fake_students();
+
+			LP_Course_Cache::instance()->set_cache( $key_cache, $total, 6 * HOUR_IN_SECONDS );
 
 			return $total;
 		}
