@@ -246,7 +246,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 
 			$response->status  = 'success';
-			$response->message = esc_html__( 'Congrats! You complete Course is successfully', 'learnpress' );
+			$response->message = esc_html__( 'Congrats! You have completed the Course.', 'learnpress' );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
