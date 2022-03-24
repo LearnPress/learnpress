@@ -379,12 +379,25 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 	}
 }
 
+/**
+ * @return bool
+ * @deprecated 4.1.6.1
+ * We will remove on version 4.1.7, you can use "get_status" function on the class LP_User_Item_Quiz to replace
+ */
 function learn_press_is_review_questions() {
+	_deprecated_function( __FUNCTION__, '4.1.6.1' );
+
 	$item = LP_Global::course_item();
 	$user = learn_press_get_current_user();
 
 	if ( $item && $user ) {
-		$quiz_data = $user->get_item_data( $item->get_id(), LP_Global::course( 'id' ) );
+		$course = LP_Global::course();
+
+		if ( ! $course ) {
+			return false;
+		}
+
+		$quiz_data = $user->get_item_data( $item->get_id(), $course->get_id() );
 
 		return $quiz_data && $quiz_data->is_review_questions();
 	}

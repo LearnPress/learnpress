@@ -2851,12 +2851,16 @@ if ( ! function_exists( 'learn_press_get_widget_course_object' ) ) {
 	 * @param $query
 	 *
 	 * @return array
+	 * @deprecated v4.1.6.1 - we will remove on the version 4.1.7
 	 */
 	function learn_press_get_widget_course_object( $query ) {
+
+		_deprecated_function( __FUNCTION__, '4.1.6.1' );
+
 		global $wpdb;
 
-		if ( $posts = $wpdb->get_results( $query ) ) {
-
+		$posts = $wpdb->get_results( $query );
+		if ( $posts ) {
 			// get lp courses object from WordPress post
 			$courses = array_map( 'learn_press_get_lp_course', $posts );
 			$courses = array_filter( $courses );
@@ -2876,8 +2880,11 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
 	 * @param object - reference $post WordPress post object
 	 *
 	 * @return LP_Course course
+	 * @deprecated v4.1.6.1 - we will remove on the version 4.1.7
 	 */
 	function learn_press_get_lp_course( $post ) {
+		_deprecated_function( __FUNCTION__, '4.1.6.1' );
+
 		$id     = $post->ID;
 		$course = null;
 		if ( ! empty( $id ) ) {

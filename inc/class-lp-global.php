@@ -103,9 +103,10 @@ class LP_Global {
 	 * @return LP_Course|bool|int
 	 */
 	public static function course( $id = false ) {
-		global $lp_course;
+		/*global $lp_course;
 
-		return is_a( $lp_course, 'LP_Course' ) ? ( $id ? $lp_course->get_id() : $lp_course ) : false;
+		return is_a( $lp_course, 'LP_Course' ) ? ( $id ? $lp_course->get_id() : $lp_course ) : false;*/
+		return learn_press_get_course();
 	}
 
 	public static function set_course( $course ) {

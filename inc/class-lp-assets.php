@@ -77,6 +77,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp_rest_url'                        => get_rest_url(),
 				'nonce'                              => wp_create_nonce( 'wp_rest' ),
 				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ),
+				'is_course_archive'                  => learn_press_is_courses(),
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'            => home_url(),

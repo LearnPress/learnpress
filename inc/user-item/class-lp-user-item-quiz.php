@@ -912,28 +912,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return apply_filters( 'learn-press/user-quiz/can-hint-answer', true, $this->get_id(), $this->get_course_id() );
 	}
 
-	/*
-	public function complete( $status = 'completed' ) {
-		parent::complete( $status );
-
-		$this->update();
-	}*/
-
 	/**
-	 * @deprecated
-	 *
-	 * @editor tungnx
-	 * @modify 4.1.4.1 - comment - not use
+	 * @return bool
 	 */
-	/*
-	public function finish() {
-		$this->complete( 'completed' );
-
-		// Force to re-calculate quiz results and update cache.
-		$r = $this->get_results( '', true );
-	}*/
-
-	public function is_review_questions() {
+	public function is_review_questions(): bool {
 		return LP_Global::quiz_question() && ( $this->get_status() === 'completed' );
 	}
 }
