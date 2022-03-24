@@ -147,7 +147,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter->limit    = LP_Settings::get_option( 'archive_course_limit', 10 );
 			$return_type      = $request['return_type'] ?? 'html';
 			if ( 'json' !== $return_type ) {
-				$filter->only_fields = array( 'ID' );
+				$filter->only_fields = array( 'DISTINCT(ID) AS ID' );
 			}
 
 			$total_rows  = 0;
@@ -161,7 +161,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			} else {
 				// For return data has html
 				if ( $courses ) {
-					global $wp;
+					global $wp, $post;
 					$archive_link = get_post_type_archive_link( LP_COURSE_CPT );
 
 					if ( isset( $term_link ) && ! is_wp_error( $term_link ) ) {

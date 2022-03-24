@@ -1,5 +1,14 @@
+const urlCourses = lpGlobalSettings.courses_url || '';
+const urlCurrent = document.location.href;
+let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
 
-//const { debounce } = lodash;
+if( lpGlobalSettings.is_course_archive ) {
+	const queryString = window.location.search;
+
+	if( ! queryString.length ) {
+		filterCourses = {};
+	}
+}
 
 const lpArchiveAddQueryArgs = ( endpoint, args ) => {
 	const url = new URL( endpoint );
@@ -18,11 +27,7 @@ const lpArchiveCourse = () => {
 		return;
 	}
 
-	if ( ! lpArchiveSkeleton ) {
-		return;
-	}
-
-	lpArchiveRequestCourse( lpArchiveSkeleton );
+	lpArchiveRequestCourse( filterCourses );
 };
 
 let skeleton;
@@ -57,7 +62,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		listCourse.innerHTML = skeletonClone;
 	}
 
-	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...args } );
+	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...lpArchiveSkeleton, ...args } );
 
 	wp.apiFetch( {
 		path: 'lp/v1/courses/archive-course' + urlCourseArchive.search,
@@ -100,28 +105,27 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 
 		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
 
-		// Push url
-		const urlPush = lpArchiveAddQueryArgs( document.location, args );
-		window.history.pushState( '', '', urlPush );
-
-		// Scroll to archive element
 		if ( ! firstLoad ) {
+			// Scroll to archive element
 			archive.scrollIntoView();
 		} else {
 			firstLoad = 0;
 		}
+
+		// Save filter courses to Storage
+		window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
+		// Change url by params filter courses
+		const urlPush = lpArchiveAddQueryArgs( document.location, args );
+		window.history.pushState( '', '', urlPush );
 	} );
 };
 
 const lpArchiveSearchCourse = () => {
 	const searchForm = document.querySelectorAll( 'form.search-courses' );
+	let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
 
 	searchForm.forEach( ( s ) => {
 		const search = s.querySelector( 'input[name="c_search"]' );
-		const urlAction = s.getAttribute( 'action' );
-		const postType = s.querySelector( '[name="post_type"]' ).value || '';
-		const taxonomy = s.querySelector( '[name="taxonomy"]' ).value || '';
-		const termID = s.querySelector( '[name="term_id"]' ).value || '';
 		const btn = s.querySelector( '[type="submit"]' );
 		let timeOutSearch;
 
@@ -138,24 +142,10 @@ const lpArchiveSearchCourse = () => {
 				timeOutSearch = setTimeout( function() {
 					btn.classList.add( 'loading' );
 
-					delete lpArchiveSkeleton.paged;
+					filterCourses.c_search = s;
+					filterCourses.paged = 1;
 
-					const url = new URL( urlAction );
-					const urlCurrent = new URL( document.location );
-					urlCurrent.searchParams.set( 'c_search', s );
-					const strParams = urlCurrent.searchParams.toString();
-					const params = strParams.split( '&' );
-
-					const objectParams = {};
-					params.forEach( ( val, i ) => {
-						const keyVal = val.split( '=' );
-						objectParams[ keyVal[ 0 ] ] = keyVal[ 1 ];
-						url.searchParams.append( keyVal[ 0 ], keyVal[ 1 ] );
-					} );
-
-					lpArchiveRequestCourse( { ...objectParams } );
-
-					window.history.pushState( '', '', url );
+					lpArchiveRequestCourse( { ...filterCourses } );
 				}, 800 );
 			}
 		} );
