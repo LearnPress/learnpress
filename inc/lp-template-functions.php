@@ -302,7 +302,12 @@ add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
 
 if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
-		$args   = array();
+		$args = array();
+
+		if ( LP_PAGE_QUIZ !== LP_Page_Controller::page_current() ) {
+			return $args;
+		}
+
 		$quiz   = LP_Global::course_item_quiz();
 		$course = LP_Global::course();
 
