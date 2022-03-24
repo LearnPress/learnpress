@@ -5,7 +5,7 @@ let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses'))
 if( lpGlobalSettings.is_course_archive ) {
 	const queryString = window.location.search;
 
-	if( ! queryString.length ) {
+	if( ! queryString.length && urlCurrent.search('page') === -1 ) {
 		filterCourses = {};
 	}
 }
@@ -166,23 +166,19 @@ const lpArchivePaginationCourse = () => {
 		event.preventDefault();
 		event.stopPropagation();
 
+		let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
+
+
 		const urlString = event.currentTarget.getAttribute( 'href' );
 
 		if ( urlString ) {
-			const url = new URL( urlString );
-
-			const params = {};
-			url.searchParams.forEach( ( key, value ) => {
-				params[ value ] = key;
-			} );
-
 			const current = [ ...paginationEle ].filter( ( el ) => el.classList.contains( 'current' ) );
-
 			const paged = event.currentTarget.textContent || ( ele.classList.contains( 'next' ) && parseInt( current[ 0 ].textContent ) + 1 ) || ( ele.classList.contains( 'prev' ) && parseInt( current[ 0 ].textContent ) - 1 );
+			filterCourses.paged = paged;
 
-			lpArchiveRequestCourse( { ...params, paged } );
+			lpArchiveRequestCourse( { ...filterCourses } );
 
-			window.history.pushState( '', '', urlString );
+			// window.history.pushState( '', '', urlString );
 		}
 	} ) );
 };
