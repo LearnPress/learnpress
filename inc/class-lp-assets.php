@@ -80,7 +80,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'is_course_archive'                  => learn_press_is_courses(),
 			),
 			'lp-checkout'     => array(
-				'ajaxurl'            => home_url(),
+				'ajaxurl'            => home_url( '/' ),
 				'user_checkout'      => LP()->checkout()->get_checkout_email(),
 				'i18n_processing'    => esc_html__( 'Processing', 'learnpress' ),
 				'i18n_redirecting'   => esc_html__( 'Redirecting', 'learnpress' ),
