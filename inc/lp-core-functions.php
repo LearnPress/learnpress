@@ -2851,12 +2851,16 @@ if ( ! function_exists( 'learn_press_get_widget_course_object' ) ) {
 	 * @param $query
 	 *
 	 * @return array
+	 * @deprecated v4.1.6.1 - we will remove on the version 4.1.7
 	 */
 	function learn_press_get_widget_course_object( $query ) {
+
+		_deprecated_function( __FUNCTION__, '4.1.6.1' );
+
 		global $wpdb;
 
-		if ( $posts = $wpdb->get_results( $query ) ) {
-
+		$posts = $wpdb->get_results( $query );
+		if ( $posts ) {
 			// get lp courses object from WordPress post
 			$courses = array_map( 'learn_press_get_lp_course', $posts );
 			$courses = array_filter( $courses );
@@ -2876,8 +2880,11 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
 	 * @param object - reference $post WordPress post object
 	 *
 	 * @return LP_Course course
+	 * @deprecated v4.1.6.1 - we will remove on the version 4.1.7
 	 */
 	function learn_press_get_lp_course( $post ) {
+		_deprecated_function( __FUNCTION__, '4.1.6.1' );
+
 		$id     = $post->ID;
 		$course = null;
 		if ( ! empty( $id ) ) {
@@ -2896,9 +2903,11 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
  *
  * @return array
  * @since 3.0.0
- * @deprecated 4.1.4.1
+ * @deprecated 4.1.4.1 - Will remove on version 4.1.7
  */
 function learn_press_get_unassigned_items( $type = '' ) {
+	_deprecated_function( __FUNCTION__, '4.1.6.1' );
+
 	global $wpdb;
 
 	if ( ! $type ) {
@@ -2943,8 +2952,11 @@ function learn_press_get_unassigned_items( $type = '' ) {
  *
  * @return array
  * @since 3.0.0
+ * @deprecated 4.1.6.1 - Will remove on version 4.1.7
  */
 function learn_press_get_unassigned_questions() {
+	_deprecated_function( __FUNCTION__, '4.1.6.1' );
+
 	global $wpdb;
 
 	if ( false === ( $questions = LP_Object_Cache::get( 'questions', 'learn-press/unassigned' ) ) ) {
@@ -3045,8 +3057,10 @@ function learn_press_date() {
  * @param int $keep
  *
  * @since 3.0.8
+ * @deprecated 4.1.6.1 - Will remove on version 4.1.7
  */
 function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, $keep = 10 ) {
+	_deprecated_function( __FUNCTION__, '4.1.6.1' );
 
 	$user = learn_press_get_user( $user_id );
 	if ( $rows = $user->get_item_archive( $item_id, $course_id ) ) {
@@ -3097,7 +3111,9 @@ function learn_press_get_block_course_item_types() {
  * @since 3.1.0
  */
 function learn_press_get_post_type( $post ) {
-	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
+	$post_types = LP_Object_Cache::get( 'post-types', 'learn-press' );
+
+	if ( false === $post_types ) {
 		$post_types = array();
 	}
 

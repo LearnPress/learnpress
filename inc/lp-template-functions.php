@@ -302,12 +302,19 @@ add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
 
 if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
-		$args   = array();
+		$args = array();
+
+		if ( LP_PAGE_QUIZ !== LP_Page_Controller::page_current() ) {
+			return $args;
+		}
+
 		$quiz   = LP_Global::course_item_quiz();
 		$course = LP_Global::course();
-		if ( $quiz ) {
+
+		if ( $quiz && $course ) {
 			$user      = LP_Global::user();
-			$user_quiz = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) );
+			$course_id = $course->get_id();
+			$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
 
 			if ( $user_quiz ) {
 				$remaining_time = $user_quiz->get_time_remaining();
@@ -319,7 +326,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 				'id'                  => $quiz->get_id(),
 				'totalTime'           => $quiz->get_duration()->get(),
 				'remainingTime'       => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
-				'status'              => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) ),
+				'status'              => $user->get_item_status( $quiz->get_id(), $course_id ),
 				'checkNorequizenroll' => $course->is_no_required_enroll(),
 				'navigationPosition'  => LP_Settings::get_option( 'navigation_position', 'yes' ),
 			);
@@ -568,38 +575,6 @@ if ( ! function_exists( 'learn_press_course_class' ) ) {
 		return apply_filters( 'learn_press_course_class', $classes );
 	}
 }
-/**
- * When the_post is called, put course data into a global.
- *
- * @param mixed $post
- *
- * @return LP_Course
- */
-function learn_press_setup_object_data( $post ) {
-	$object = null;
-
-	if ( is_int( $post ) ) {
-		$post = get_post( $post );
-	}
-
-	if ( ! $post ) {
-		return $object;
-	}
-
-	if ( LP_COURSE_CPT === $post->post_type ) {
-		if ( isset( $GLOBALS['course'] ) ) {
-			unset( $GLOBALS['course'] );
-		}
-
-		$object = learn_press_get_course( $post->ID );
-
-		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
-	}
-
-	return $object;
-}
-
-add_action( 'the_post', 'learn_press_setup_object_data' );
 
 function learn_press_setup_user() {
 	$GLOBALS['lp_user'] = learn_press_get_current_user();

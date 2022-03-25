@@ -302,36 +302,6 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 	return $has_role;
 }
 
-/**
- * Add user profile link into admin bar
- */
-function learn_press_edit_admin_bar() {
-	global $wp_admin_bar;
-
-	$profile = learn_press_get_page_id( 'profile' );
-
-	if ( $profile && learn_press_get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' ) {
-		$user_id = learn_press_get_current_user_id();
-
-		$wp_admin_bar->add_menu(
-			array(
-				'id'     => 'course_profile',
-				'parent' => 'user-actions',
-				'title'  => get_the_title( $profile ),
-				'href'   => learn_press_user_profile_link( $user_id, false ),
-			)
-		);
-	}
-
-	$current_user = wp_get_current_user();
-
-	if ( in_array( LP_TEACHER_ROLE, $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
-		return;
-	}
-}
-
-add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );
-
 function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;

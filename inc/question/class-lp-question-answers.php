@@ -404,13 +404,14 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 				} elseif ( ! $is_checked && $is_true ) {
 					$classes[] = 'answered-wrong';
 				}
-			} elseif ( learn_press_is_review_questions() ) {
+			}
+			/*elseif ( learn_press_is_review_questions() ) {
 				if ( $is_checked && $is_true ) {
 					$classes[] = 'answered-correct';
 				} elseif ( $is_checked && ! $is_true ) {
 					$classes[] = 'answered-wrong';
 				}
-			}
+			}*/
 
 			// sanitize unwanted classes
 			$classes = LP_Helper::sanitize_array( $classes );

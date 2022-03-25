@@ -24,9 +24,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function get_course() {
-		global $post;
+		// global $post;
 
-		$this->course = LP_Global::course();
+		$this->course = learn_press_get_course();
 	}
 
 	public function course_sidebar_preview() {
@@ -499,7 +499,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_finish_button() {
 		$user   = LP_Global::user();
-		$course = LP_Global::course();
+		$course = learn_press_get_course();
+
+		if ( ! $course ) {
+			return;
+		}
 
 		// Course has no items
 		if ( empty( $course->get_item_ids() ) ) {

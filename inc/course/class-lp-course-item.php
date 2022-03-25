@@ -490,7 +490,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return string
 		 */
 		public function create_nonce( $action = '', $course_id = 0, $user_id = 0 ) {
-			if ( ! $course_id ) {
+			if ( ! $course_id && $this->get_course() ) {
 				$course_id = $this->get_course()->get_id();
 			}
 

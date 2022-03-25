@@ -32,7 +32,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$this->_user_id   = $the_user;
 		$this->_course_id = $the_course;
 
-		add_action( 'init', array( $this, 'init' ) );
+		// add_action( 'init', array( $this, 'init' ) );
 	}
 
 	/**

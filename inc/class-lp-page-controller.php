@@ -52,7 +52,44 @@ class LP_Page_Controller {
 
 		// edit link item course when form search default wp
 		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
+		// add_action( 'the_post', array( $this, 'learn_press_setup_object_data' ) );
+
+		// Set link profile to admin menu
+		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
 	}
+
+	/**
+	 * When the_post is called, put course data into a global.
+	 *
+	 * Todo: after replace code LP::course()
+	 *
+	 * @param mixed $post
+	 *
+	 * @return LP_Course
+	 */
+	/*public function learn_press_setup_object_data( $post ) {
+		$object = null;
+
+		if ( is_int( $post ) ) {
+			$post = get_post( $post );
+		}
+
+		if ( ! $post ) {
+			return $object;
+		}
+
+		if ( LP_COURSE_CPT === $post->post_type ) {
+			if ( isset( $GLOBALS['course'] ) ) {
+				unset( $GLOBALS['course'] );
+			}
+
+			$object = learn_press_get_course( $post->ID );
+
+			LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
+		}
+
+		return $object;
+	}*/
 
 	/**
 	 * Set link item course when form search default wp
@@ -369,20 +406,20 @@ class LP_Page_Controller {
 	/**
 	 * @param $post
 	 *
+	 * @return mixed
 	 * @editor tungnx
 	 * todo check this function, can remove or rewrite
-	 * @return false
 	 */
-	public function setup_data( $post ) {
-		static $courses = array();
-
+	public function setup_data( $post ): WP_Post {
 		/**
 		 * @var WP $wp
 		 * @var WP_Query $wp_query
 		 * @var LP_Course $lp_course
 		 * @var LP_Course_Item|LP_Quiz|LP_Lesson $lp_course_item
 		 */
-		global $wp, $wp_query, $lp_course, $lp_course_item;
+		global $wp, $wp_query, $lp_course_item;
+
+		$lp_course = learn_press_get_course();
 
 		if ( LP_COURSE_CPT !== $post->post_type ) {
 			return $post;
@@ -393,16 +430,15 @@ class LP_Page_Controller {
 			return $post;
 		}
 
+		/**
+		 * @deprecated v4.1.6.1 LP()->global['course'], $GLOBALS['course']
+		 */
+		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
+
 		if ( wp_verify_nonce( LP_Request::get( 'preview' ), 'preview-' . $post->ID ) ) {
 			$GLOBALS['preview_course'] = $post->ID;
 		}
 
-		/*
-		if ( ! array_key_exists( $post->ID, $courses ) ) {
-			return $post;
-		}*/
-
-		// $courses[ $post->ID ] = true;
 		$vars = $wp->query_vars;
 
 		if ( empty( $vars['course-item'] ) ) {
@@ -1114,6 +1150,38 @@ class LP_Page_Controller {
 		}
 
 		return self::$_instance;
+	}
+
+	/**
+	 * Add user profile link into admin bar
+	 *
+	 * @editor tungnx
+	 * @version 1.0.1
+	 * @since  3.0.0
+	 */
+	public function learn_press_edit_admin_bar() {
+		global $wp_admin_bar;
+
+		$current_user = wp_get_current_user();
+
+		if ( ! in_array( LP_TEACHER_ROLE, $current_user->roles ) && ! in_array( 'administrator', $current_user->roles ) ) {
+			return;
+		}
+
+		$page_profile_id = learn_press_get_page_id( 'profile' );
+
+		if ( $page_profile_id && get_post_status( $page_profile_id ) != 'trash' ) {
+			$user_id = $current_user->ID;
+
+			$wp_admin_bar->add_menu(
+				array(
+					'id'     => 'course_profile',
+					'parent' => 'user-actions',
+					'title'  => get_the_title( $page_profile_id ),
+					'href'   => learn_press_user_profile_link( $user_id, false ),
+				)
+			);
+		}
 	}
 }
 
