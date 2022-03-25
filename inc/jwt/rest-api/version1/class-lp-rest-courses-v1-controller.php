@@ -246,7 +246,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 
 			$response->status  = 'success';
-			$response->message = esc_html__( 'Congrats! You complete Course is successfully', 'learnpress' );
+			$response->message = esc_html__( 'Congrats! You have completed the Course.', 'learnpress' );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
@@ -760,7 +760,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$args['orderby'] = 'menu_order title';
 				break;
 			case 'title':
-				$args['orderby'] = 'title';
+				$args['orderby'] = 'post_title';
 				$args['order']   = ( 'DESC' === $order ) ? 'DESC' : 'ASC';
 				break;
 			case 'relevance':
@@ -782,24 +782,27 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		if ( is_bool( $request['on_sale'] ) ) {
 			$on_sale_key = $request['on_sale'] ? 'post__in' : 'post__not_in';
-			// $on_sale_ids = LP_Course_DB::getInstance()->get_courses_on_sale();
-			$filter          = new LP_Course_Filter();
-			$filter->fields  = array( 'ID' );
-			$filter->sort_by = 'on_sale';
-			$on_sale_ids     = LP_Course::get_courses( $filter );
-			$on_sale_ids     = LP_Course::get_course_ids( $on_sale_ids );
 
-			// $on_sale_ids = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
+			$filter          = new LP_Course_Filter();
+			$filter->only_fields  = array( 'ID' );
+
+			$filter = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter );
+			$on_sale_ids = LP_Course_DB::getInstance()->get_courses( $filter );
+			$on_sale_ids = LP_course::get_course_ids( $on_sale_ids );
+			$on_sale_ids = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
 
 			$args[ $on_sale_key ] += $on_sale_ids;
 		} elseif ( is_bool( $request['popular'] ) ) {
 			$on_popular_key = $request['popular'] ? 'post__in' : 'post__not_in';
 
 			$filter        = new LP_Course_Filter();
+			$filter->only_fields  = array( 'ID' );
 			$filter->limit = $request['per_page'] ?? 10;
 			$filter->page  = $request['page'] ?? 1;
 
-			$on_popular_ids = LP_Course_DB::getInstance()->get_popular_courses( $filter );
+			$filter = LP_Course_DB::getInstance()->get_courses_order_by_popular( $filter );
+			$on_popular_ids = LP_Course_DB::getInstance()->get_courses( $filter );
+			$on_popular_ids = LP_course::get_course_ids( $on_popular_ids );
 
 			$on_popular_ids = empty( $on_popular_ids ) ? array( 0 ) : $on_popular_ids;
 
