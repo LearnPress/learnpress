@@ -219,6 +219,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $return;
 	}
 
+	/**
+	 * @return void
+	 * @deprecated 4.1.6.1
+	 */
 	public function init() {
 		if ( $this->_user_id || $this->_course_id ) {
 			if ( ! $this->_course_id ) {

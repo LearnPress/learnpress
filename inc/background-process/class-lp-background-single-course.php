@@ -83,21 +83,41 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		}
 
 		protected function save_price() {
-			$regular_price = $this->data['_lp_regular_price'] ?? '';
-			$sale_price    = $this->data['_lp_sale_price'] ?? '';
-			$price         = 0;
+			$has_sale_price = false;
+			$regular_price  = $this->data['_lp_regular_price'] ?? '';
+			$sale_price     = $this->data['_lp_sale_price'] ?? '';
+			$start_date     = $this->data['_lp_sale_start'] ?? '';
+			$end_date       = $this->data['_lp_sale_end'] ?? '';
+			$price          = 0;
 
 			if ( '' != $regular_price ) {
 				$price = $regular_price;
 
 				if ( '' != $sale_price ) {
 					if ( floatval( $sale_price ) < floatval( $regular_price ) ) {
-						$price = $sale_price;
+						$price          = $sale_price;
+						$has_sale_price = true;
+					}
+
+					// Check in days sale
+					if ( '' !== $start_date && '' !== $end_date ) {
+						$now   = strtotime( get_date_from_gmt( gmdate( 'Y-m-d H:i:s', time() ) ) );
+						$end   = strtotime( $end_date );
+						$start = strtotime( $start_date );
+
+						$has_sale_price = $now >= $start && $now <= $end;
 					}
 				}
 			}
 
 			update_post_meta( $this->lp_course->get_id(), '_lp_price', $price );
+
+			// Update course is sale
+			if ( $has_sale_price ) {
+				update_post_meta( $this->lp_course->get_id(), '_lp_course_is_sale', 1 );
+			} else {
+				delete_post_meta( $this->lp_course->get_id(), '_lp_course_is_sale' );
+			}
 		}
 
 		/**
