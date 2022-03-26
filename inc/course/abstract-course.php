@@ -124,6 +124,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Read course data.
 		 * - Curriculum: sections, items, etc...
 		 *
+		 * Todo: optimize this function
+		 *
 		 * @since 3.0.0
 		 * @editor tungnx
 		 * @version 1.0.1

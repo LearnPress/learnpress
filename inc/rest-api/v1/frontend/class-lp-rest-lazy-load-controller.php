@@ -197,10 +197,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				foreach ( $sections['results'] as $section ) {
 					$content .= learn_press_get_template_content(
 						'loop/single-course/loop-section',
-						array(
-							'section'   => $section,
-							'course_id' => $course_id,
-						)
+						compact( 'sections', 'section', 'course_id', 'filters' )
 					);
 				}
 			} else {
@@ -219,7 +216,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$response->data->content = $content;
 
 			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
-			if ( defined( 'THEM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.0', '<=' ) ) {
+			if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
 				$response->pages = $sections['pages'];
 				$response->data  = $content;
 			}
@@ -294,16 +291,12 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 						$can_view_item           = $user->can_view_item( $section_item['ID'], $can_view_content_course );
 					}
 
+					// Ordinal numbers
+					$key = absint( ( ( $page - 1 ) * $per_page ) + $key + 1 );
+
 					$content .= learn_press_get_template_content(
 						'loop/single-course/loop-section-item',
-						array(
-							'section_item'  => $section_item,
-							'course_item'   => $course_item,
-							'can_view_item' => $can_view_item,
-							'course_id'     => $course_id,
-							'user'          => $user,
-							'key'           => absint( ( ( $page - 1 ) * $per_page ) + $key + 1 ),
-						)
+						compact( 'section_item', 'course_item', 'can_view_item', 'course_id', 'user', 'key' )
 					);
 				}
 			}
@@ -314,7 +307,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 			$response->status = 'success';
 			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
-			if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.0', '<=' ) ) {
+			if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
 				$response->pages    = $section_items['pages'];
 				$response->data     = $content;
 				$response->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
