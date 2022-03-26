@@ -40,7 +40,7 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
-		add_filter( 'the_post', array( $this, 'setup_data' ) );
+		add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
@@ -404,13 +404,15 @@ class LP_Page_Controller {
 	}*/
 
 	/**
+	 * Load data for item of course
+	 *
 	 * @param $post
 	 *
 	 * @return mixed
 	 * @editor tungnx
-	 * todo check this function, can remove or rewrite
+	 * Todo: should remove this function when load true type post's item
 	 */
-	public function setup_data( $post ): WP_Post {
+	public function setup_data_for_item_course( $post ): WP_Post {
 		/**
 		 * @var WP $wp
 		 * @var WP_Query $wp_query
@@ -462,7 +464,13 @@ class LP_Page_Controller {
 				return $post;
 			}
 
-			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $post_item->ID );
+			/**
+			 * Comment for reason some page-builder run wrong
+			 *
+			 * 1. Anywhere elementor
+			 * 2. WPBakery
+			 */
+			/*$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $post_item->ID );
 
 			if ( ! $section_id ) {
 				throw new Exception( __( 'The item is not assigned to any section', 'learnpress' ) );
@@ -476,7 +484,7 @@ class LP_Page_Controller {
 
 			if ( $course_id != $post->ID ) {
 				throw new Exception( __( 'The item is not assigned to this course', 'learnpress' ) );
-			}
+			}*/
 
 			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) );
 
