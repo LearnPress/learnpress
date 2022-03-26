@@ -123,15 +123,37 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Read course data.
 		 * - Curriculum: sections, items, etc...
+		 *
+		 * @since 3.0.0
+		 * @editor tungnx
+		 * @version 1.0.1
 		 */
 		public function load() {
-
 			if ( $this->_loaded ) {
 				return;
 			}
 
 			$this->load_data();
-			$this->load_curriculum();
+
+			$can_load_curriculum = false;
+			// Check if edit course, single course, single item can be load
+			if ( in_array( LP_Page_Controller::page_current(), array( LP_PAGE_SINGLE_COURSE, LP_PAGE_SINGLE_COURSE_CURRICULUM ) ) ) {
+				$can_load_curriculum = true;
+			} elseif ( is_admin() && is_callable( 'get_current_screen' ) ) {
+				$current_screen = get_current_screen();
+				if ( $current_screen && LP_COURSE_CPT === $current_screen->id ) {
+					$can_load_curriculum = true;
+				}
+			} elseif ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+				if ( isset( $_REQUEST['sectionID'] ) ) {
+					$can_load_curriculum = true;
+				}
+			}
+
+			if ( $can_load_curriculum ) {
+				$this->load_curriculum();
+			}
+
 			$this->_loaded = true;
 		}
 

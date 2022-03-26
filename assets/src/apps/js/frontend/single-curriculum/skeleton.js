@@ -38,7 +38,10 @@ export default function courseCurriculumSkeleton() {
 				throw new Error( message || 'Error' );
 			}
 
-			const returnData = data;
+			let returnData = data.content;
+			if( undefined === returnData ) { // For old Eduma <= 4.6.0
+				returnData = data;
+			}
 
 			if ( sectionID ) {
 				if ( section_ids && ! section_ids.includes( sectionID ) ) {

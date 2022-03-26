@@ -6,14 +6,19 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  4.1.5
+ * @version  4.1.6
  */
 
 defined( 'ABSPATH' ) || exit();
 
-// PARAM: course_id, sections, filters is required.
+if ( empty( $args ) ) {
+	return;
+}
 
-if ( empty( $sections ) || empty( $course_id ) ) {
+if ( isset( $args['sections'] ) && isset( $args['filters'] ) ) {
+	$sections = $args['sections'];
+	$filters  = $args['filters'];
+} else {
 	return;
 }
 ?>
@@ -22,9 +27,12 @@ if ( empty( $sections ) || empty( $course_id ) ) {
 	<div class="curriculum-scrollable">
 		<?php if ( $sections['total'] > 0 ) : ?>
 			<ul class="curriculum-sections">
-				<?php foreach ( $sections['results'] as $section ) : ?>
-					<?php learn_press_get_template( 'loop/single-course/loop-section', array( 'section' => $section ) ); ?>
-				<?php endforeach; ?>
+				<?php
+				foreach ( $sections['results'] as $section ) :
+					$args['section'] = $section;
+					learn_press_get_template( 'loop/single-course/loop-section', $args );
+				endforeach;
+				?>
 			</ul>
 		<?php else : ?>
 			<?php
