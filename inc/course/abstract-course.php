@@ -145,7 +145,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$can_load_curriculum = true;
 				}
 			} elseif ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
-				if ( isset( $_REQUEST['sectionID'] ) ) {
+				if ( isset( $_REQUEST['sectionID'] ) || isset( $_REQUEST['sectionId'] ) ) {
 					$can_load_curriculum = true;
 				}
 			}
