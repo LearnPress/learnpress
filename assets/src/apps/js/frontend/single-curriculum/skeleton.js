@@ -126,17 +126,26 @@ export default function courseCurriculumSkeleton() {
 			method: 'GET',
 		} );
 
-		const { data, pages, status, message, item_ids } = response;
+		let { data, status, pages, message } = response;
+		let item_ids;
 
 		if ( status === 'success' ) {
-			returnData += data;
+			let dataTmp = data.content;
+			item_ids = data.item_ids;
+
+			if( undefined === dataTmp ) { // For old Eduma <= 4.6.0
+				dataTmp = data;
+				item_ids = response.item_ids;
+			}
+
+			returnData += dataTmp;
 
 			if ( sectionID && item_ids && itemID && ! item_ids.includes( itemID ) ) {
 				return getResponsiveItem( returnData, paged + 1, sectionID, itemID );
 			}
 		}
 
-		return { data3: returnData, pages3: pages, paged3: paged, status3: status, message3: message };
+		return { data3: returnData, pages3: pages || data.pages, status3: status, message3: message };
 	};
 
 	const getResponsive = async ( returnData, page, sectionID ) => {
