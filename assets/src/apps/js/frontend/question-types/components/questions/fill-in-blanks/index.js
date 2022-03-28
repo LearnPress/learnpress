@@ -39,7 +39,7 @@ class QuestionFillInBlanks extends QuestionBase {
 				this.setAnswered( answereds, ele.dataset.id, e.target.value );
 			} );
 		} );
-	}
+	};
 
 	setAnswered = ( answered, id, value ) => {
 		const {
@@ -78,6 +78,8 @@ class QuestionFillInBlanks extends QuestionBase {
 	};
 
 	convertInputField = ( option ) => {
+		const { answered, isReviewing } = this.props;
+
 		let title = option.title;
 
 		const answers = option?.answers;
@@ -86,35 +88,31 @@ class QuestionFillInBlanks extends QuestionBase {
 			const textReplace = '{{FIB_' + id + '}}';
 			let elContent = '';
 
-			if ( this.props.status === 'completed' ) {
-				if ( this.props.showCorrectReview ) {
-					const answerID = answers ? answers?.[ id ] : undefined;
-					const answered = this.props.answered ? this.props.answered?.[ id ] : undefined;
+			const answerID = answers ? answers?.[ id ] : undefined;
 
-					elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
+			if ( answerID || isReviewing ) { // If is answered,
+				elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
 
-					if ( ! answerID?.isCorrect ) {
-						elContent += `<span class="lp-fib-answered__answer">${ answerID?.answer ?? '' }</span> → `;
-					}
-
-					elContent += `<span class="lp-fib-answered__fill">${ answered ?? '' }</span>`;
-					elContent += '</span>';
-				} else {
-					elContent += `<span class="lp-fib-answered">`;
-					elContent += `<span class="lp-fib-answered__fill">${ this.props.answered?.[ id ] }</span>`;
-					elContent += '</span>';
+				if ( ! answerID?.isCorrect ) {
+					elContent += `<span class="lp-fib-answered__answer">${ answered?.[ id ] ?? '' }</span>`;
 				}
+
+				if ( ! answerID?.isCorrect && answerID?.correct ) {
+					elContent += ' → ';
+				}
+
+				elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
+				elContent += '</span>';
 			} else {
 				elContent += '<div class="lp-fib-input" style="display: inline-block; width: auto;">';
 				elContent += '<input type="text" data-id="' + id + '" value="" />';
 				elContent += '</div>';
 			}
-
 			title = title.replace( textReplace, elContent );
 		} );
 
 		return title;
-	}
+	};
 
 	render() {
 		return (
