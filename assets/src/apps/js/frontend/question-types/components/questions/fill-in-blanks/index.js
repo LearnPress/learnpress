@@ -80,6 +80,10 @@ class QuestionFillInBlanks extends QuestionBase {
 	convertInputField = ( option ) => {
 		const { answered, isReviewing, showCorrectReview, isCheckedAnswer } = this.props;
 
+		if( answered === undefined ) {
+			this.setAnswered( '', '', '' );
+		}
+
 		let title = option.title;
 
 		const answers = option?.answers;
