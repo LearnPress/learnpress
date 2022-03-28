@@ -31,6 +31,10 @@ class QuestionFillInBlanks extends QuestionBase {
 		const answereds = answered || {};
 
 		[ ...allFIBs ].map( ( ele ) => {
+			if ( answered === undefined ) {
+				ele.value = '';
+			}
+
 			ele.addEventListener( 'input', ( e ) => {
 				this.setAnswered( answereds, ele.dataset.id, e.target.value );
 			} );
@@ -80,10 +84,6 @@ class QuestionFillInBlanks extends QuestionBase {
 	convertInputField = ( option ) => {
 		const { answered, isReviewing, showCorrectReview, isCheckedAnswer } = this.props;
 
-		if( answered === undefined ) {
-			this.setAnswered( '', '', '' );
-		}
-
 		let title = option.title;
 
 		const answers = option?.answers;
@@ -112,6 +112,7 @@ class QuestionFillInBlanks extends QuestionBase {
 				elContent += '<input type="text" data-id="' + id + '" value="" />';
 				elContent += '</div>';
 			}
+
 			title = title.replace( textReplace, elContent );
 		} );
 
