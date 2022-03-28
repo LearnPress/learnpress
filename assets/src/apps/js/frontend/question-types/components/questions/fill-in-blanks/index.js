@@ -86,21 +86,22 @@ class QuestionFillInBlanks extends QuestionBase {
 			const textReplace = '{{FIB_' + id + '}}';
 			let elContent = '';
 
-			const answerID = answers ? answers?.[ id ] : undefined;
+			if ( this.props.status === 'completed' ) {
+				if ( this.props.showCorrectReview ) {
+					const answerID = answers ? answers?.[ id ] : undefined;
+					const answered = this.props.answered ? this.props.answered?.[ id ] : undefined;
 
-			if ( answerID ) { // If is answered,
-				if ( this.props.isCheckedAnswer ) {
 					elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
 
 					if ( ! answerID?.isCorrect ) {
 						elContent += `<span class="lp-fib-answered__answer">${ answerID?.answer ?? '' }</span> → `;
 					}
 
-					elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
+					elContent += `<span class="lp-fib-answered__fill">${ answered ?? '' }</span>`;
 					elContent += '</span>';
 				} else {
 					elContent += `<span class="lp-fib-answered">`;
-					elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
+					elContent += `<span class="lp-fib-answered__fill">${ this.props.answered?.[ id ] }</span>`;
 					elContent += '</span>';
 				}
 			} else {
@@ -108,6 +109,7 @@ class QuestionFillInBlanks extends QuestionBase {
 				elContent += '<input type="text" data-id="' + id + '" value="" />';
 				elContent += '</div>';
 			}
+
 			title = title.replace( textReplace, elContent );
 		} );
 
