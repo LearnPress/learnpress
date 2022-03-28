@@ -89,14 +89,20 @@ class QuestionFillInBlanks extends QuestionBase {
 			const answerID = answers ? answers?.[ id ] : undefined;
 
 			if ( answerID ) { // If is answered,
-				elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
+				if ( this.props.isCheckedAnswer ) {
+					elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
 
-				if ( ! answerID?.isCorrect ) {
-					elContent += `<span class="lp-fib-answered__answer">${ answerID?.answer ?? '' }</span> → `;
+					if ( ! answerID?.isCorrect ) {
+						elContent += `<span class="lp-fib-answered__answer">${ answerID?.answer ?? '' }</span> → `;
+					}
+
+					elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
+					elContent += '</span>';
+				} else {
+					elContent += `<span class="lp-fib-answered">`;
+					elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
+					elContent += '</span>';
 				}
-
-				elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
-				elContent += '</span>';
 			} else {
 				elContent += '<div class="lp-fib-input" style="display: inline-block; width: auto;">';
 				elContent += '<input type="text" data-id="' + id + '" value="" />';

@@ -485,10 +485,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		try {
 			if ( LP_ITEM_COMPLETED === $this->get_status() ) {
-				$result = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+				$result_tmp = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 
-				if ( isset( $result['user_mark'] ) && $result['user_mark'] < 0 ) {
-					$result['user_mark'] = 0;
+				if ( $result_tmp ) {
+					if ( isset( $result_tmp['user_mark'] ) && $result_tmp['user_mark'] < 0 ) {
+						$result_tmp['user_mark'] = 0;
+					}
+
+					$result = $result_tmp;
 				}
 
 				return $result;
