@@ -10,8 +10,14 @@
 defined( 'ABSPATH' ) || exit();
 
 /**
- * @param int $the_course
+ * Get course current on single course or course by id
+ * Only use learn_press_get_course() on the single page
+ * Another page use learn_press_get_course(id)
  *
+ * @param int $the_course
+ * @since 3.0.0
+ * @version 1.0.1
+ * @editor tungnx
  * @return bool|LP_Course|mixed
  */
 function learn_press_get_course( int $the_course = 0 ) {
