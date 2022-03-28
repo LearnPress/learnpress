@@ -78,7 +78,7 @@ class QuestionFillInBlanks extends QuestionBase {
 	};
 
 	convertInputField = ( option ) => {
-		const { answered, isReviewing } = this.props;
+		const { answered, isReviewing, showCorrectReview, isCheckedAnswer } = this.props;
 
 		let title = option.title;
 
@@ -91,7 +91,7 @@ class QuestionFillInBlanks extends QuestionBase {
 			const answerID = answers ? answers?.[ id ] : undefined;
 
 			if ( answerID || isReviewing ) { // If is answered,
-				elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
+				elContent += `<span class="lp-fib-answered ${ showCorrectReview || isCheckedAnswer ? (answerID?.isCorrect ? 'correct' : 'fail') : '' } : '' ">`;
 
 				if ( ! answerID?.isCorrect ) {
 					elContent += `<span class="lp-fib-answered__answer">${ answered?.[ id ] ?? '' }</span>`;
