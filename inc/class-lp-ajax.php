@@ -270,7 +270,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$nonce_action = $item->get_nonce_action( 'complete', $course_id, $user->get_id() );
 			try {
 				// security check
-				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
+				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, 'lesson-complete' ) ) ) {
 					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ), 8000 );
 				}
 
