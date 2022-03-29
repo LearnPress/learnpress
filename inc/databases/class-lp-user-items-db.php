@@ -748,6 +748,9 @@ class LP_User_Items_DB extends LP_Database {
 		// Join to table posts check course exists
 		$filter->join[] = "INNER JOIN {$this->tb_posts} AS p ON p.ID = $filter->collection_alias.item_id";
 
+		// Get courses publish
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_status = %s', 'publish' );
+
 		$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.item_type = %s", LP_COURSE_CPT );
 
 		// Status
