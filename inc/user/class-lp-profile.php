@@ -746,13 +746,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return LP_Query_List_Table
 		 */
 		public function query_courses( string $type = 'own', array $args = array() ): LP_Query_List_Table {
-			$courses = array();
+			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$courses          = array();
 
 			switch ( $type ) {
 				case 'purchased':
 					// $query = $this->_curd->query_purchased_courses( $this->get_user_data( 'id' ), $args );
 					$filter              = new LP_User_Items_Filter();
 					$filter->only_fields = array( 'DISTINCT (item_id) AS item_id' );
+					$filter->join[]      = "INNER JOIN {$lp_user_items_db->tb_posts} AS p ON p.ID = ui.item_id";
 					$filter->field_count = 'ui.item_id';
 					$filter->user_id     = $this->get_user_data( 'id' );
 					$status              = $args['status'] ?? '';
