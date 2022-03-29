@@ -161,15 +161,20 @@ export default function courseCurriculumSkeleton() {
 
 		const { data, pages, status, message, section_ids } = response;
 
+		let returnDataTmp = data.content;
+		if( undefined === returnData ) { // For old Eduma <= 4.6.0
+			returnDataTmp = data;
+		}
+
 		if ( status === 'success' ) {
-			returnData += data;
+			returnData += returnDataTmp;
 
 			if ( sectionID && section_ids && section_ids.length > 0 && ! section_ids.includes( sectionID ) ) {
 				return getResponsive( returnData, page + 1, sectionID );
 			}
 		}
 
-		return { data2: returnData, pages2: pages, page2: page, status2: status, message2: message };
+		return { data2: returnData, pages2: pages || data.pages, page2: page, status2: status, message2: message };
 	};
 
 	Sekeleton();
