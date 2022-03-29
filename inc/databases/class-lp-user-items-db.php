@@ -745,21 +745,24 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->collection_alias = 'ui';
 		}
 
+		// Join to table posts check course exists
+		$filter->join[] = "INNER JOIN {$this->tb_posts} AS p ON p.ID = $filter->collection_alias.item_id";
+
 		$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.item_type = %s", LP_COURSE_CPT );
 
 		// Status
 		if ( $filter->status ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND ui.status = %s', $filter->status );
+			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.status = %s", $filter->status );
 		}
 
 		// Graduation
 		if ( $filter->graduation ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND ui.graduation = %s', $filter->graduation );
+			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.graduation = %s", $filter->graduation );
 		}
 
 		// User
 		if ( $filter->user_id ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_id = %d', $filter->user_id );
+			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.user_id = %d", $filter->user_id );
 		}
 
 		$filter = apply_filters( 'lp/user/course/query/filter', $filter );
