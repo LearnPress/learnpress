@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import scrollToItemCurrent from './scrolltoitem';
 import { searchCourseContent } from './components/search';
 
-export default function courseCurriculumSkeleton() {
+export default function courseCurriculumSkeleton( courseID = '' ) {
 	const Sekeleton = () => {
 		const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 
@@ -25,7 +25,7 @@ export default function courseCurriculumSkeleton() {
 			const page = 1;
 			const response = await apiFetch( {
 				path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-					courseId: lpGlobalSettings.post_id || '',
+					courseId: courseID || lpGlobalSettings.post_id || '',
 					page,
 					sectionID: sectionID || '',
 				} ),
@@ -39,7 +39,7 @@ export default function courseCurriculumSkeleton() {
 			}
 
 			let returnData = data.content;
-			if( undefined === returnData ) { // For old Eduma <= 4.6.0
+			if ( undefined === returnData ) { // For old Eduma <= 4.6.0
 				returnData = data;
 			}
 
@@ -126,14 +126,14 @@ export default function courseCurriculumSkeleton() {
 			method: 'GET',
 		} );
 
-		let { data, status, pages, message } = response;
+		const { data, status, pages, message } = response;
 		let item_ids;
 
 		if ( status === 'success' ) {
 			let dataTmp = data.content;
 			item_ids = data.item_ids;
 
-			if( undefined === dataTmp ) { // For old Eduma <= 4.6.0
+			if ( undefined === dataTmp ) { // For old Eduma <= 4.6.0
 				dataTmp = data;
 				item_ids = response.item_ids;
 			}
@@ -151,7 +151,7 @@ export default function courseCurriculumSkeleton() {
 	const getResponsive = async ( returnData, page, sectionID ) => {
 		const response = await apiFetch( {
 			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-				courseId: lpGlobalSettings.post_id || '',
+				courseId: courseID || lpGlobalSettings.post_id || '',
 				page,
 				sectionID: sectionID || '',
 				loadMore: true,
@@ -162,7 +162,7 @@ export default function courseCurriculumSkeleton() {
 		const { data, pages, status, message, section_ids } = response;
 
 		let returnDataTmp = data.content;
-		if( undefined === returnData ) { // For old Eduma <= 4.6.0
+		if ( undefined === returnData ) { // For old Eduma <= 4.6.0
 			returnDataTmp = data;
 		}
 
