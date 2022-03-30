@@ -103,6 +103,7 @@ a {
 		padding: 0;
 		list-style: none;
 		position: relative;
+		min-height: 300px;
 
 		@include flex();
 		@include flex-wrap(wrap);

@@ -203,6 +203,16 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.1 (2022-03-30) =
+~ Optimize.
+~ Fixed: error show input when retake Fill In Blank - off option "Show correct answer".
+~ Modified: filter query courses API.
+~ Hide load more item button which section it hide.
+~ Fixed: save course is sale when edit course.
+~ Added: hook "learn-press/user/quiz-finished".
+~ Fixed: error site use sub-folder domain will be error 301 when checkout.
+~ Fixed: error show "The item is not assigned to this course" on Page builder.
+
 = 4.1.6 (2022-03-14) =
 ~ Compatible: with "Polylang" plugin.
 ~ Compatible LP Shortcode with Elementor.
