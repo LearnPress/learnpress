@@ -724,6 +724,10 @@ a {
 			background: linear-gradient(90deg, hsla(0, 0%, 74.5%, 0.2) 25%, hsla(0, 0%, 50.6%, 0.24) 37%, hsla(0, 0%, 74.5%, 0.2) 63%);
 			animation: lp-skeleton-loading 1.4s ease infinite;
 			background-size: 400% 100%;
+
+			li {
+				display: none;
+			}
 		}
 	}
 
