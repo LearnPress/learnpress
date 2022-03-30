@@ -59,7 +59,8 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		skeleton = document.querySelector( '.lp-archive-course-skeleton' );
 		skeletonClone = skeleton.outerHTML;
 	} else {
-		listCourse.innerHTML = skeletonClone;
+		listCourse.append(skeleton);
+		// return;
 	}
 
 	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...lpArchiveSkeleton, ...args } );
@@ -168,7 +169,6 @@ const lpArchivePaginationCourse = () => {
 
 		let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
 
-
 		const urlString = event.currentTarget.getAttribute( 'href' );
 
 		if ( urlString ) {
@@ -177,8 +177,6 @@ const lpArchivePaginationCourse = () => {
 			filterCourses.paged = paged;
 
 			lpArchiveRequestCourse( { ...filterCourses } );
-
-			// window.history.pushState( '', '', urlString );
 		}
 	} ) );
 };
