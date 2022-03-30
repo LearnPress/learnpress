@@ -108,7 +108,8 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 
 		if ( ! firstLoad ) {
 			// Scroll to archive element
-			archive.scrollIntoView();
+			const optionScroll = { behavior: "smooth" };
+			archive.scrollIntoView( optionScroll );
 		} else {
 			firstLoad = 0;
 		}
