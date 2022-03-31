@@ -435,7 +435,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 			$this->set_data( $field, $got_status );
 		} catch ( Throwable $e ) {
-			error_log( __FUNCTION__ . ':' . $e->getMessage() );
+			LP_Debug::error_log( __FUNCTION__ . ':' . $e->getMessage() );
 		}
 
 		return $got_status;

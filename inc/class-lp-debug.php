@@ -134,6 +134,19 @@ class LP_Debug {
 	}
 
 	/**
+	 * Set error log
+	 *
+	 * @param string $message
+	 *
+	 * @return void
+	 */
+	public static function error_log( string $message ) {
+		if ( LP_Debug::is_debug() ) {
+			error_log( $message );
+		}
+	}
+
+	/**
 	 * @return LP_Debug|null
 	 */
 	public static function instance() {
