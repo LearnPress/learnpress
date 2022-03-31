@@ -212,6 +212,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: hook "learn-press/user/quiz-finished".
 ~ Fixed: error site use sub-folder domain will be error 301 when checkout.
 ~ Fixed: error show "The item is not assigned to this course" on Page builder.
+~ Fixed: error style RTL item-actions.
 
 = 4.1.6 (2022-03-14) =
 ~ Compatible: with "Polylang" plugin.
