@@ -509,6 +509,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$result['question_count'] = count( $question_ids );
 			$result['time_spend']     = $this->get_time_interval( 'display' );
 			$result['passing_grade']  = $quiz->get_passing_grade();
+			$checked_questions = $this->get_checked_questions();
 
 			foreach ( $question_ids as $question_id ) {
 				$question = LP_Question::get_question( $question_id );
@@ -551,11 +552,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 				$can_review_quiz = get_post_meta( $quiz->get_id(), '_lp_review', true ) === 'yes';
 				if ( $can_review_quiz && ! array_key_exists( 'instant_check', $answered ) ) {
+
 					$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
 					$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
 						$question,
 						array(
-							'include_is_true' => get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
+							'include_is_true' => in_array( $question_id, $checked_questions ) || get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
 							'answer'          => $answered[ $question_id ] ?? '',
 						)
 					);

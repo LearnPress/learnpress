@@ -57,7 +57,6 @@ export default compose(
 			keyPressed: getData( 'keyPressed' ),
 			showCorrectReview: getData( 'showCorrectReview' ),
 			isReviewing: getData( 'mode' ) === 'reviewing',
-			resultQuestions: getData( 'results' ).questions?.[ id ],
 		};
 	} ),
 	withDispatch( () => {
