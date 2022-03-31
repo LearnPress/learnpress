@@ -17,7 +17,7 @@ class QuestionTypes extends Component {
 		} );
 
 		return types[ question.type ];
-	}
+	};
 
 	render() {
 		const {
@@ -57,6 +57,7 @@ export default compose(
 			keyPressed: getData( 'keyPressed' ),
 			showCorrectReview: getData( 'showCorrectReview' ),
 			isReviewing: getData( 'mode' ) === 'reviewing',
+			resultQuestions: getData( 'results' ).questions?.[ id ],
 		};
 	} ),
 	withDispatch( () => {
