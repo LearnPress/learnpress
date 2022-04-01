@@ -310,7 +310,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			);
 		}
 
-		if ( apply_filters( 'learnpress_rest_api_user_change_password', true ) ) {
+		if ( apply_filters( 'learnpress_rest_api_user_change_password', true, $user ) ) {
 			wp_set_password( $new_password, $user->ID );
 		} else {
 			return new WP_Error(
