@@ -98,9 +98,9 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			if ( itemID && ! item_ids.includes( itemID ) ) {
 				const responseItem = await getResponsiveItem( '', 2, sectionID, itemID );
 
-				const { data3, pages3, paged3 } = responseItem;
+				const { data3, pages3, paged3, page } = responseItem;
 
-				if ( pages3 <= paged3 ) {
+				if ( pages3 <= paged3 || pages3 <= page ) {
 					itemLoadMore.remove();
 				} else {
 					itemLoadMore.dataset.page = paged3;
@@ -127,6 +127,9 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		} );
 
 		const { data, status, pages, message } = response;
+
+		const { page } = data;
+
 		let item_ids;
 
 		if ( status === 'success' ) {
@@ -145,7 +148,7 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			}
 		}
 
-		return { data3: returnData, pages3: pages || data.pages, status3: status, message3: message };
+		return { data3: returnData, pages3: pages || data.pages, status3: status, message3: message, page: page || 0 };
 	};
 
 	const getResponsive = async ( returnData, page, sectionID ) => {
