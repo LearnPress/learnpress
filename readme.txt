@@ -214,6 +214,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: error show "The item is not assigned to this course" on Page builder.
 ~ Fixed: error style RTL item-actions.
 ~ Fixed: case user guest buy course and not login, back to this course will not show button "purchase course".
+~ Added: hook do_action( 'login_form' ) on the page LP Checkout, form "Login".
 
 = 4.1.6 (2022-03-14) =
 ~ Compatible: with "Polylang" plugin.
