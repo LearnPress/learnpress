@@ -213,6 +213,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 			$response->status        = 'success';
 			$response->data->pages   = $sections['pages'];
+			$response->data->page    = $filters->page;
 			$response->data->content = $content;
 
 			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
@@ -302,6 +303,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$response->data->pages    = $section_items['pages'];
+			$response->data->page     = $filters->page;
 			$response->data->content  = $content;
 			$response->data->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
 
