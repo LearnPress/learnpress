@@ -310,7 +310,15 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			);
 		}
 
-		wp_set_password( $new_password, $user->ID );
+		if ( apply_filters( 'learnpress_rest_api_user_change_password', true ) ) {
+			wp_set_password( $new_password, $user->ID );
+		} else {
+			return new WP_Error(
+				'rest_user_cannot_change_password',
+				__( 'Sorry, you are not allowed to change password.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
 
 		return rest_ensure_response(
 			array(
