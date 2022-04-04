@@ -204,7 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.1.6.2 (2022-04-04) =
-~ Fixed: go to last item of section still show button "load more items"
+~ Fixed: go to last item of section still show button "load more items".
 ~ Fixed: "Undefined" when click "load more sections" on theme Eduma.
 
 = 4.1.6.1 (2022-04-01) =
