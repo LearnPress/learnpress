@@ -165,7 +165,7 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		const { data, pages, status, message, section_ids } = response;
 
 		let returnDataTmp = data.content;
-		if ( undefined === returnData ) { // For old Eduma <= 4.6.0
+		if ( undefined === returnDataTmp ) { // For old Eduma <= 4.6.0
 			returnDataTmp = data;
 		}
 

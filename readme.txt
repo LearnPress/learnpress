@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 4.1.6
+Stable tag: 4.1.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -203,7 +203,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.6.1 (2022-03-30) =
+= 4.1.6.2 (2022-04-04) =
+~ Fixed: go to last item of section still show button "load more items"
+~ Fixed: "Undefined" when click "load more sections" on theme Eduma.
+
+= 4.1.6.1 (2022-04-01) =
 ~ Optimize.
 ~ Fixed: error show input when retake Fill In Blank - off option "Show correct answer".
 ~ Modified: filter query courses API.
