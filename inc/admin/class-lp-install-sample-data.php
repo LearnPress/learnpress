@@ -134,30 +134,33 @@ class LP_Install_Sample_Data {
 			}
 
 			$hooks = LP_Helper::sanitize_params_submitted( $_REQUEST['hooks'] ?? array() );
-			$hooks = (array) json_decode( $hooks );
 
-			/*$wpml_settings = array();
-			global $wpdb;
-			$wpml = new WPML_Admin_Post_Actions( $wpml_settings, $wpdb );
-			$wpml->save_post_actions( $course_id, get_post( $course_id ) );*/
-
-			$args = array();
 			if ( ! empty( $hooks ) ) {
-				foreach ( $hooks as $hook ) {
-					if ( isset( $hook->class ) && isset( $hook->action ) ) {
-						$class_name  = $hook->class;
-						$action_name = $hook->action;
+				$hooks = (array) json_decode( $hooks );
 
-						switch ( $action_name ) {
-							case 'save_post':
-								$args = $course_id;
-								break;
-							default:
-								break;
-						}
+				/*$wpml_settings = array();
+				global $wpdb;
+				$wpml = new WPML_Admin_Post_Actions( $wpml_settings, $wpdb );
+				$wpml->save_post_actions( $course_id, get_post( $course_id ) );*/
 
-						if ( is_callable( array( $class_name, $action_name ) ) ) {
-							call_user_func( array( $class_name, $action_name ), $args );
+				$args = array();
+				if ( ! empty( $hooks ) ) {
+					foreach ( $hooks as $hook ) {
+						if ( isset( $hook->class ) && isset( $hook->action ) ) {
+							$class_name  = $hook->class;
+							$action_name = $hook->action;
+
+							switch ( $action_name ) {
+								case 'save_post':
+									$args = $course_id;
+									break;
+								default:
+									break;
+							}
+
+							if ( is_callable( array( $class_name, $action_name ) ) ) {
+								call_user_func( array( $class_name, $action_name ), $args );
+							}
 						}
 					}
 				}
