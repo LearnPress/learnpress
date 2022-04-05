@@ -160,6 +160,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$new_course_section_curd = new LP_Section_CURD( $new_course_id );
 
 				// curriculum course
+				$course->load_curriculum();
 				$curriculum = $course->get_curriculum_raw();
 
 				// quiz curd
