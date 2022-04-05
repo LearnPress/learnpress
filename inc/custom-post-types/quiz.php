@@ -288,12 +288,34 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					);
 					break;
 				case 'duration':
-					$duration = learn_press_human_time_to_seconds( get_post_meta( $post_id, '_lp_duration', true ) );
+					$duration_str = get_post_meta( $post_id, '_lp_duration', true );
+					$duration     = (int) $duration_str;
+
 					if ( $duration > 0 ) {
-						echo gmdate( 'H:i:s', $duration );
+						$duration_str    .= 's';
+						$duration_str_arr = explode( ' ', $duration_str );
+						$type_time        = '';
+						switch ( $duration_str_arr[1] ) {
+							case 'hours':
+								$type_time = __( 'hours', 'learnpress' );
+								break;
+							case 'minutes':
+								$type_time = __( 'minutes', 'learnpress' );
+								break;
+							case 'days':
+								$type_time = __( 'days', 'learnpress' );
+								break;
+							case 'weeks':
+								$type_time = __( 'weeks', 'learnpress' );
+								break;
+						}
+
+						$duration_str = sprintf( '%1$s %2$s', $duration_str_arr[0], $type_time );
 					} else {
-						echo '-';
+						$duration_str = '--';
 					}
+
+					echo $duration_str;
 					break;
 				case 'preview':
 					printf(
