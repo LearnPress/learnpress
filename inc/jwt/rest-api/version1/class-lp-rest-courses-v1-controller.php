@@ -626,7 +626,6 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 * @version 4.0.1
 	 */
 	public function get_all_items( $course ): array {
-		$course->load_curriculum();
 		$curriculum  = $course->get_curriculum();
 		$user        = learn_press_get_current_user();
 		$user_course = $user ? $user->get_course_data( $course->get_id() ) : false;

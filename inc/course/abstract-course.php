@@ -465,6 +465,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool|LP_Course_Section[]
 		 */
 		public function get_curriculum( $section_id = 0, $force = false ) {
+			$this->load_curriculum();
 			return $this->get_sections( 'object', $section_id );
 		}
 
