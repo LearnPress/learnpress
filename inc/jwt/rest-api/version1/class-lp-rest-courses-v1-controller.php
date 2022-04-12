@@ -129,6 +129,27 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/verify-receipt',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'verify_receipt' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(
+					'context'      => $this->get_context_param(
+						array(
+							'default' => 'edit',
+						)
+					),
+					'receipt-data' => array(
+						'description' => esc_html__( 'Receipt data.', 'learnpress' ),
+						'type'        => 'string',
+					),
+				),
+			),
+		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -209,6 +230,98 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		return learn_press_get_course( $id );
+	}
+
+	public function verify_receipt( $request ) {
+		$response = new LP_REST_Response();
+		$receipt  = ! empty( $request['receipt-data'] ) ? $request['receipt-data'] : '';
+		$password = apply_filters( 'learnpress_in_app_purchase_secret_key', '' );
+
+		try {
+			if ( empty( $receipt ) ) {
+				throw new Exception( __( 'Receipt data is empty.', 'learnpress' ) );
+			}
+
+			if ( empty( $password ) ) {
+				throw new Exception( __( 'Secret key is empty.', 'learnpress' ) );
+			}
+
+			$url = ! empty( $request['is_sanbox'] ) ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+
+			$verify = wp_remote_post(
+				$url,
+				array(
+					'method'  => 'POST',
+					'timeout' => 60,
+					'body'    => wp_json_encode(
+						array(
+							'receipt-data' => $receipt,
+							'password'     => $password,
+						)
+					),
+				)
+			);
+
+			if ( is_wp_error( $verify ) ) {
+				throw new Exception( $verify->get_error_message() );
+			}
+
+			$body = json_decode( wp_remote_retrieve_body( $verify ) );
+
+			if ( $body->status !== 0 ) {
+				throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
+			}
+
+			if ( empty( $body->receipt->in_app[0]->product_id ) ) {
+				throw new Exception( __( 'Course id is invalid.', 'learnpress' ) );
+			}
+
+			$course_id = $body->receipt->in_app[0]->product_id;
+
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course ) {
+				throw new Exception( __( 'Course is not exists.', 'learnpress' ) );
+			}
+			$user = learn_press_get_current_user();
+
+			$cart     = LP()->cart;
+			$checkout = LP_Checkout::instance();
+
+			if ( ! learn_press_enable_cart() ) {
+				$order_awaiting_payment = LP()->session->order_awaiting_payment;
+				$cart->empty_cart();
+				LP()->session->order_awaiting_payment = $order_awaiting_payment;
+			}
+
+			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
+
+			if ( ! $cart_id ) {
+				throw new Exception( esc_html__( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
+			}
+
+			if ( is_user_logged_in() ) {
+				$order_id = $checkout->create_order();
+
+				if ( is_wp_error( $order_id ) ) {
+					throw new Exception( $order_id->get_error_message() );
+				}
+
+				$order = new LP_Order( $order_id );
+
+				$order->payment_complete();
+
+				$cart->empty_cart();
+			}
+
+			$response->status  = 'success';
+			$response->message = esc_html__( 'Verify Receipt Data successfully.', 'learnpress' );
+		} catch ( \Throwable $th ) {
+			$response->status  = 'error';
+			$response->message = $th->getMessage();
+		}
+
+		return rest_ensure_response( $response );
 	}
 
 	public function enroll_course( $request ) {
@@ -783,10 +896,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		if ( is_bool( $request['on_sale'] ) ) {
 			$on_sale_key = $request['on_sale'] ? 'post__in' : 'post__not_in';
 
-			$filter          = new LP_Course_Filter();
-			$filter->only_fields  = array( 'ID' );
+			$filter              = new LP_Course_Filter();
+			$filter->only_fields = array( 'ID' );
 
-			$filter = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter );
+			$filter      = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter );
 			$on_sale_ids = LP_Course_DB::getInstance()->get_courses( $filter );
 			$on_sale_ids = LP_course::get_course_ids( $on_sale_ids );
 			$on_sale_ids = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
@@ -795,12 +908,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		} elseif ( is_bool( $request['popular'] ) ) {
 			$on_popular_key = $request['popular'] ? 'post__in' : 'post__not_in';
 
-			$filter        = new LP_Course_Filter();
-			$filter->only_fields  = array( 'ID' );
-			$filter->limit = $request['per_page'] ?? 10;
-			$filter->page  = $request['page'] ?? 1;
+			$filter              = new LP_Course_Filter();
+			$filter->only_fields = array( 'ID' );
+			$filter->limit       = $request['per_page'] ?? 10;
+			$filter->page        = $request['page'] ?? 1;
 
-			$filter = LP_Course_DB::getInstance()->get_courses_order_by_popular( $filter );
+			$filter         = LP_Course_DB::getInstance()->get_courses_order_by_popular( $filter );
 			$on_popular_ids = LP_Course_DB::getInstance()->get_courses( $filter );
 			$on_popular_ids = LP_course::get_course_ids( $on_popular_ids );
 

@@ -330,6 +330,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		if ( empty( $screen_id ) ) {
 			return;
 		}
+		wp_enqueue_media();
 
 		$this->handle_js( $screen_id );
 
