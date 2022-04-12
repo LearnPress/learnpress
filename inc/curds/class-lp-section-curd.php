@@ -312,6 +312,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function get_section_items( $section_id ) {
 		$course = learn_press_get_course( $this->course_id );
+		$course->load_curriculum();
 
 		$sections = $course->get_curriculum_raw();
 
@@ -398,7 +399,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array
 	 */
 	public function add_items_section( $section_id, $items = array() ) {
-		$order         = 1;
+		// $order         = 1;
 		$current_items = $this->get_section_items( $section_id );
 		// allow hook
 		do_action( 'learn-press/before-add-items-section', $items, $section_id, $this->course_id );
@@ -407,7 +408,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$all_items = array_merge( $current_items, $items );
 		$result    = array();
-		foreach ( $all_items as $item ) {
+		foreach ( $all_items as $key => $item ) {
 
 			$item  = (array) $item;
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
@@ -415,7 +416,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			if ( $exist ) {
 				$a = $wpdb->update(
 					$wpdb->learnpress_section_items,
-					array( 'item_order' => $order ),
+					array( 'item_order' => $key ),
 					array(
 						'section_id' => $section_id,
 						'item_id'    => $item['id'],
@@ -427,7 +428,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					array(
 						'section_id' => $section_id,
 						'item_id'    => $item['id'],
-						'item_order' => $order,
+						'item_order' => $key,
 						'item_type'  => $item['type'],
 					)
 				);
@@ -451,7 +452,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 
 			$result[] = $item;
-			$order ++;
+			// $order ++;
 		}
 
 		LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'learn-press/course-section-items' );
