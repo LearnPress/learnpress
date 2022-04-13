@@ -465,7 +465,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool|LP_Course_Section[]
 		 */
 		public function get_curriculum( $section_id = 0, $force = false ) {
-			$this->load_curriculum();
 			return $this->get_sections( 'object', $section_id );
 		}
 
@@ -523,6 +522,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function get_item_types( $group = false ) {
 			$cache_key = $group ? 'course-item-group-types' : 'course-item-types';
 			$items     = LP_Object_Cache::get( 'course-' . $this->get_id(), "learn-press/{$cache_key}" );
+			$items     = false;
 
 			if ( false === $items ) {
 				$item_types = array();
@@ -1212,9 +1212,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Item Link = Course Permalink + SLUG + Item Slug
 		 *
 		 * @since 3.0.0
+		 * @deprecated 3.1.6.3
 		 */
-		public function get_item_links() {
+		/*public function get_item_links() {
 			$item_links = LP_Object_Cache::get( 'course-' . $this->get_id(), 'learn-press/course-item-links' );
+			$item_links = false;
 
 			if ( false === $item_links ) {
 				$items = $this->get_item_ids();
@@ -1293,22 +1295,37 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return $item_links;
-		}
+		}*/
 
 		/**
+		 * Get item's link
+		 *
 		 * @param int $item_id
 		 *
+		 * @editor tungnx
+		 * @since 3.0.0
+		 * @version 1.0.1
 		 * @return string
 		 */
 		public function get_item_link( int $item_id ): string {
-			$item_link  = '';
-			$item_links = $this->get_item_links();
+			$item_link = '';
+			$item_type = get_post_type( $item_id );
 
-			if ( false !== $item_links ) {
-				if ( ! empty( $item_links[ $item_id ] ) ) {
-					$item_link = $item_links[ $item_id ];
-				}
-			}
+			$course_permalink = trailingslashit( $this->get_permalink() );
+			$item_slug        = get_post_field( 'post_name', $item_id );
+
+			$slug_prefixes = apply_filters(
+				'learn-press/course/custom-item-prefixes',
+				array(
+					LP_QUIZ_CPT   => sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug', 'quiz' ) ),
+					LP_LESSON_CPT => sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug', 'lesson' ) ),
+				),
+				$this->get_id()
+			);
+
+			$slug_prefix = trailingslashit( $slug_prefixes[ $item_type ] ?? '' );
+
+			$item_link = $course_permalink . $slug_prefix . $item_slug;
 
 			return apply_filters( 'learn-press/course/item-link', $item_link, $item_id, $this );
 		}
@@ -2106,6 +2123,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @version 4.0.0
 		 */
 		public function get_sections( $return = 'object', $section_id = 0 ) {
+			$this->load_curriculum();
 			$sections = LP_Course_Utils::get_cached_db_sections( $this->get_id() );
 
 			if ( false === $sections ) {

@@ -312,7 +312,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function get_section_items( $section_id ) {
 		$course = learn_press_get_course( $this->course_id );
-		$course->load_curriculum();
 
 		$sections = $course->get_curriculum_raw();
 
