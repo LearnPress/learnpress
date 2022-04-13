@@ -202,8 +202,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 * @since 3.0.0
+	 * @deprecated 4.1.6.3
 	 */
-	public function read_sections_ids() {
+	/*public function read_sections_ids() {
 
 		// Get course's sections id data from cache
 		$ids = LP_Object_Cache::get( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
@@ -217,7 +218,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $ids;
-	}
+	}*/
 
 	/**
 	 * Read all items from DB

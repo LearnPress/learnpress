@@ -137,7 +137,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			$this->load_data();
 
-			$can_load_curriculum = false;
+			/*$can_load_curriculum = false;
 			// Check if edit course, single course, single item can be load
 			if ( in_array( LP_Page_Controller::page_current(), array( LP_PAGE_SINGLE_COURSE, LP_PAGE_SINGLE_COURSE_CURRICULUM ) ) ) {
 				$can_load_curriculum = true;
@@ -154,7 +154,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			if ( $can_load_curriculum ) {
 				$this->load_curriculum();
-			}
+			}*/
 
 			$this->_loaded = true;
 		}
