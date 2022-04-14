@@ -235,48 +235,69 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function verify_receipt( $request ) {
 		$response = new LP_REST_Response();
 		$receipt  = ! empty( $request['receipt-data'] ) ? $request['receipt-data'] : '';
-		$password = apply_filters( 'learnpress_in_app_purchase_secret_key', '' );
+		$is_ios   = ! empty( $request['is-ios'] ) ? true : false;
+		$password = LP()->settings()->get( 'in_app_purchase_apple_shared_secret', '' );
 
 		try {
 			if ( empty( $receipt ) ) {
 				throw new Exception( __( 'Receipt data is empty.', 'learnpress' ) );
 			}
 
-			if ( empty( $password ) ) {
-				throw new Exception( __( 'Secret key is empty.', 'learnpress' ) );
+			if ( $is_ios ) {
+				if ( empty( $password ) ) {
+					throw new Exception( __( 'Secret key is empty.', 'learnpress' ) );
+				}
+
+				$url = LP()->settings()->get( 'in_app_purchase_apple_sandbox' ) === 'yes' ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+
+				$verify = wp_remote_post(
+					$url,
+					array(
+						'method'  => 'POST',
+						'timeout' => 60,
+						'body'    => wp_json_encode(
+							array(
+								'receipt-data' => $receipt,
+								'password'     => $password,
+							)
+						),
+					)
+				);
+
+				if ( is_wp_error( $verify ) ) {
+					throw new Exception( $verify->get_error_message() );
+				}
+
+				$body = json_decode( wp_remote_retrieve_body( $verify ) );
+
+				if ( $body->status !== 0 ) {
+					throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
+				}
+
+				if ( empty( $body->receipt->in_app[0]->product_id ) ) {
+					throw new Exception( __( 'Course id is invalid.', 'learnpress' ) );
+				}
+
+				$course_id = $body->receipt->in_app[0]->product_id;
+			} else {
+				$package_name = $receipt['packageName'] ?? '';
+				$course_id    = $receipt['productId'] ?? '';
+				$order_id     = $receipt['orderId'] ?? '';
+
+				if ( ! function_exists( 'learnpress_in_app_purchase_get_access_token' ) ) {
+					throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
+				}
+
+				$access_token = learnpress_in_app_purchase_get_access_token();
+
+				$verify = wp_remote_get( 'https://androidpublisher.googleapis.com/androidpublisher/v3/applications/' . $package_name . '/purchases/products/' . $course_id . '/tokens/' . $access_token );
+
+				$body = json_decode( wp_remote_retrieve_body( $verify ) );
+
+				if ( isset( $body['error']['message'] ) ) {
+					throw new Exception( $body['error']['message'] );
+				}
 			}
-
-			$url = ! empty( $request['is_sanbox'] ) ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
-
-			$verify = wp_remote_post(
-				$url,
-				array(
-					'method'  => 'POST',
-					'timeout' => 60,
-					'body'    => wp_json_encode(
-						array(
-							'receipt-data' => $receipt,
-							'password'     => $password,
-						)
-					),
-				)
-			);
-
-			if ( is_wp_error( $verify ) ) {
-				throw new Exception( $verify->get_error_message() );
-			}
-
-			$body = json_decode( wp_remote_retrieve_body( $verify ) );
-
-			if ( $body->status !== 0 ) {
-				throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
-			}
-
-			if ( empty( $body->receipt->in_app[0]->product_id ) ) {
-				throw new Exception( __( 'Course id is invalid.', 'learnpress' ) );
-			}
-
-			$course_id = $body->receipt->in_app[0]->product_id;
 
 			$course = learn_press_get_course( $course_id );
 
