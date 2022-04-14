@@ -281,8 +281,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$course_id = $body->receipt->in_app[0]->product_id;
 			} else {
 				$package_name = $receipt['packageName'] ?? '';
-				$course_id    = $receipt['productId'] ?? '';
-				$order_id     = $receipt['orderId'] ?? '';
+				$course_id    = ! empty( $receipt['productId'] ) ? absint( $receipt['productId'] ) : '';
 
 				if ( ! function_exists( 'learnpress_in_app_purchase_get_access_token' ) ) {
 					throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
