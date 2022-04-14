@@ -280,7 +280,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 				$course_id = $body->receipt->in_app[0]->product_id;
 			} else {
-				var_dump( $receipt ); die;
+				return $receipt;
 				$package_name   = $receipt['packageName'] ?? '';
 				$course_id      = ! empty( $receipt['productId'] ) ? absint( $receipt['productId'] ) : 0;
 				$purchase_token = $receipt['purchaseToken'] ?? '';
