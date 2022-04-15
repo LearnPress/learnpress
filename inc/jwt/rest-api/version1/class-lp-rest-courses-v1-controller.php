@@ -148,7 +148,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						'type'        => 'string',
 					),
 				),
-			),
+			)
 		);
 	}
 
