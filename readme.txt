@@ -203,6 +203,14 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.3 (2022-04-15) =
+~ Fixed: sort section of course.
+~ Fixed: sort item of course's section when edit course.
+~ Fixed: sometime call get_curriculum empty.
+~ Modified: fixed when set seconds big (about 100 hours), can't convert to format time right.
+~ Fixed: duplicate course not duplicate sections, items.
+~ Fixed: error wp.media on page Email setting.
+
 = 4.1.6.2 (2022-04-04) =
 ~ Fixed: go to last item of section still show button "load more items".
 ~ Fixed: "Undefined" when click "load more sections" on theme Eduma.
