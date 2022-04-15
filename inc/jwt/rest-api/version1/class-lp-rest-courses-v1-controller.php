@@ -295,8 +295,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 				$body = json_decode( wp_remote_retrieve_body( $verify ) );
 
-				if ( isset( $body['error']['message'] ) ) {
-					throw new Exception( $body['error']['message'] );
+				if ( isset( $body->error->message ) ) {
+					throw new Exception( $body->error->message );
 				}
 			}
 
