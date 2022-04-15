@@ -1,4 +1,4 @@
-<?php $option_value = $value['value']; ?>
+<?php $option_value = apply_filters( 'lp_metabox_setting_ouput_textarea', esc_textarea( $value['value'] ), $value, $value['value'] ); ?>
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
@@ -14,6 +14,6 @@
 			class="<?php echo esc_attr( $value['class'] ); ?>"
 			placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>"
 		<?php echo implode( ' ', $custom_attributes ); ?>
-			><?php echo esc_textarea( $option_value ); ?></textarea>
+			><?php echo $option_value; ?></textarea>
 	</td>
 </tr>
