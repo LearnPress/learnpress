@@ -210,6 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modified: fixed when set seconds big (about 100 hours), can't convert to format time right.
 ~ Fixed: duplicate course not duplicate sections, items.
 ~ Fixed: error wp.media on page Email setting.
+~ Fixed: count wrong order on the backend.
 
 = 4.1.6.2 (2022-04-04) =
 ~ Fixed: go to last item of section still show button "load more items".
