@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 4.1.6.1
+Stable tag: 4.1.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -203,7 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.6.3 (2022-04-15) =
+= 4.1.6.3 (2022-04-20) =
 ~ Fixed: sort section of course.
 ~ Fixed: sort item of course's section when edit course.
 ~ Fixed: sometime call get_curriculum empty.
