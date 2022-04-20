@@ -68,7 +68,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'enroll_course' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'get_course_need_login_check' ),
 					'args'                => array(
 						'context' => $this->get_context_param(
 							array(
@@ -160,6 +160,18 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'rest_forbidden_context',
 				__( 'Sorry, you are not allowed to edit posts in this post type.' ),
 				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		return true;
+	}
+
+	public function get_course_need_login_check( $request ) {
+		if ( ! is_user_logged_in() ) {
+			return new WP_Error(
+				'rest_forbidden_context',
+				__( 'Please login to continue' ),
+				array( 'status' => 401 )
 			);
 		}
 
