@@ -218,8 +218,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
 			if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
-				$response->pages = $sections['pages'];
-				$response->data  = $content;
+				$response->pages       = $sections['pages'];
+				$response->data        = $content;
+				$response->section_ids = wp_list_pluck( $sections['results'], 'section_id' );
 			}
 		} catch ( \Throwable $th ) {
 			$response->message = $th->getMessage();
@@ -311,6 +312,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
 			if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
 				$response->pages    = $section_items['pages'];
+				$response->page     = $filters->page;
 				$response->data     = $content;
 				$response->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
 			}

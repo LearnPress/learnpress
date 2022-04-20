@@ -32,7 +32,8 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				method: 'GET',
 			} );
 
-			const { data, status, message, section_ids } = response;
+			const { data, status, message } = response;
+			let section_ids = data.section_ids;
 
 			if ( status === 'error' ) {
 				throw new Error( message || 'Error' );
@@ -41,6 +42,7 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			let returnData = data.content;
 			if ( undefined === returnData ) { // For old Eduma <= 4.6.0
 				returnData = data;
+				section_ids = response.section_ids;
 			}
 
 			if ( sectionID ) {
@@ -103,7 +105,7 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				if ( pages3 <= paged3 || pages3 <= page ) {
 					itemLoadMore.remove();
 				} else {
-					itemLoadMore.dataset.page = paged3;
+					itemLoadMore.dataset.page = page;
 				}
 
 				if ( data3 && sectionContent ) {
