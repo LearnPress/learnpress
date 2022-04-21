@@ -203,54 +203,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * load files anywhere, both frontend and backend
-		 *
-		 * @return void
-		 */
-		private function include_files_global() {
-			// Query Database .
-			require_once 'inc/databases/class-lp-db.php';
-			require_once 'inc/databases/class-lp-order-db.php';
-			require_once 'inc/databases/class-lp-course-db.php';
-			require_once 'inc/databases/class-lp-lesson-db.php';
-			require_once 'inc/databases/class-lp-section-db.php';
-			require_once 'inc/databases/class-lp-section-items-db.php';
-			require_once 'inc/databases/class-lp-quiz-db.php';
-			require_once 'inc/databases/class-lp-quiz-questions.php';
-			require_once 'inc/databases/class-lp-sessions-db.php';
-			require_once 'inc/databases/class-lp-question-db.php';
-			require_once 'inc/databases/class-lp-user-items-db.php';
-			require_once 'inc/databases/class-lp-user-item-results-db.php';
-
-			// Read files config on folder config .
-			require_once 'inc/Helper/Config.php';
-
-			// File system .
-			require_once 'inc/class-lp-file-system.php';
-
-			// File helper
-			require_once 'inc/class-lp-helper.php';
-
-			// File handle install LP
-			require_once 'inc/class-lp-install.php';
-		}
-
-		private function include_files_admin() {
-			if ( ! is_admin() ) {
-				return;
-			}
-
-			require_once 'inc/admin/class-lp-admin-notice.php';
-		}
-
-		private function include_files_frontend() {
-			if ( is_admin() ) {
-				return;
-			}
-
-		}
-
-		/**
 		 * Includes needed files.
 		 */
 		public function includes() {
@@ -279,7 +231,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-course-query.php';
-			require_once 'inc/class-lp-utils.php';
+			// require_once 'inc/class-lp-utils.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
@@ -287,12 +239,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Models
 			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
-
-			// LP Cache
-			require_once 'inc/cache/class-lp-cache.php';
-			require_once 'inc/cache/class-lp-courses-cache.php';
-			require_once 'inc/cache/class-lp-course-cache.php';
-			require_once 'inc/cache/class-lp-quiz-cache.php';
 
 			// Abstract Meta-box.
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
@@ -302,17 +248,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/background-process/abstract-background-process.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 			require_once 'inc/background-process/class-lp-background-single-email.php';
-
-			// Filter query .
-			require_once 'inc/filters/class-lp-filter.php';
-			require_once 'inc/filters/class-lp-post-type-filter.php';
-			require_once 'inc/filters/class-lp-course-filter.php';
-			require_once 'inc/filters/class-lp-order-filter.php';
-			require_once 'inc/filters/class-lp-section-filter.php';
-			require_once 'inc/filters/class-lp-section-items-filter.php';
-			require_once 'inc/filters/class-lp-question-filter.php';
-			require_once 'inc/filters/class-lp-user-items-filter.php';
-			require_once 'inc/filters/class-lp-quiz-questions-filter.php';
 
 			// curds .
 			require_once 'inc/curds/class-lp-helper-curd.php';
@@ -366,7 +301,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/models/steps/class-lp-group-step.php';
 			include_once 'inc/models/steps/class-lp-step.php';
 
-			require_once 'inc/class-lp-repair-database.php';
+			// require_once 'inc/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
 
 			// Register custom-post-type and taxonomies .
@@ -464,6 +399,71 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}*/
 
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
+		}
+
+		/**
+		 * load files anywhere, both frontend and backend
+		 *
+		 * @return void
+		 */
+		private function include_files_global() {
+			// Filter query .
+			require_once 'inc/filters/class-lp-filter.php';
+			require_once 'inc/filters/class-lp-post-type-filter.php';
+			require_once 'inc/filters/class-lp-course-filter.php';
+			require_once 'inc/filters/class-lp-order-filter.php';
+			require_once 'inc/filters/class-lp-section-filter.php';
+			require_once 'inc/filters/class-lp-section-items-filter.php';
+			require_once 'inc/filters/class-lp-question-filter.php';
+			require_once 'inc/filters/class-lp-user-items-filter.php';
+			require_once 'inc/filters/class-lp-quiz-questions-filter.php';
+
+			// Query Database .
+			require_once 'inc/databases/class-lp-db.php';
+			require_once 'inc/databases/class-lp-order-db.php';
+			require_once 'inc/databases/class-lp-course-db.php';
+			require_once 'inc/databases/class-lp-lesson-db.php';
+			require_once 'inc/databases/class-lp-section-db.php';
+			require_once 'inc/databases/class-lp-section-items-db.php';
+			require_once 'inc/databases/class-lp-quiz-db.php';
+			require_once 'inc/databases/class-lp-quiz-questions.php';
+			require_once 'inc/databases/class-lp-sessions-db.php';
+			require_once 'inc/databases/class-lp-question-db.php';
+			require_once 'inc/databases/class-lp-user-items-db.php';
+			require_once 'inc/databases/class-lp-user-item-results-db.php';
+
+			// Read files config on folder config .
+			require_once 'inc/Helper/Config.php';
+
+			// File system .
+			require_once 'inc/class-lp-file-system.php';
+
+			// File helper
+			require_once 'inc/class-lp-helper.php';
+
+			// File handle install LP
+			require_once 'inc/class-lp-install.php';
+
+			// LP Cache
+			require_once 'inc/cache/class-lp-cache.php';
+			require_once 'inc/cache/class-lp-courses-cache.php';
+			require_once 'inc/cache/class-lp-course-cache.php';
+			require_once 'inc/cache/class-lp-quiz-cache.php';
+		}
+
+		private function include_files_admin() {
+			if ( ! is_admin() ) {
+				return;
+			}
+
+			require_once 'inc/admin/class-lp-admin-notice.php';
+		}
+
+		private function include_files_frontend() {
+			if ( is_admin() ) {
+				return;
+			}
+
 		}
 
 		/**
@@ -903,9 +903,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return LearnPress
 		 */
 		public static function instance() {
-			update_option( 'learnpress_version', LEARNPRESS_VERSION );
-
 			if ( is_null( self::$_instance ) ) {
+				update_option( 'learnpress_version', LEARNPRESS_VERSION );
 				self::$_instance = new self();
 			}
 

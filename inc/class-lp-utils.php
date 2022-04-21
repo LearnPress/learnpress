@@ -4,6 +4,7 @@
  * Class LP_Utils
  *
  * Utilities.
+ * @deprecated 4.1.6.4
  */
 class LP_Utils {
 
