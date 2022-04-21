@@ -838,18 +838,24 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_price() {
-			if ( $this->has_sale_price() ) {
-				$price = $this->get_sale_price();
-				// Add key _lp_course_is_sale for query
-				update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
-			} else {
-				// Delete key _lp_course_is_sale
-				delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
-				$price = $this->get_regular_price();
-			}
+			$price = LP_Cache::cache_load_first( 'get', 'course-price-' . $this->get_id() );
 
-			// For case set sale by days range
-			update_post_meta( $this->get_id(), '_lp_price', $price );
+			if ( false === $price ) {
+				if ( $this->has_sale_price() ) {
+					$price = $this->get_sale_price();
+					// Add key _lp_course_is_sale for query
+					update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
+				} else {
+					// Delete key _lp_course_is_sale
+					delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
+					$price = $this->get_regular_price();
+				}
+
+				// For case set sale by days range
+				update_post_meta( $this->get_id(), '_lp_price', $price );
+
+				LP_Cache::cache_load_first( 'set', 'course-price-' . $this->get_id(), $price );
+			}
 
 			return apply_filters( 'learn-press/course/price', $price, $this->get_id() );
 		}

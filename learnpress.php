@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.1.6.3
+ * Version: 4.1.6.4-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 5.6
  * Tested up to: 5.9
@@ -156,7 +156,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// define table prefixes .
 			$this->define_tables();
 
-			// include files .
+			// Include files .
 			$this->includes();
 
 			// hooks .
@@ -203,15 +203,75 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
+		 * load files anywhere, both frontend and backend
+		 *
+		 * @return void
+		 */
+		private function include_files_global() {
+			// Query Database .
+			require_once 'inc/databases/class-lp-db.php';
+			require_once 'inc/databases/class-lp-order-db.php';
+			require_once 'inc/databases/class-lp-course-db.php';
+			require_once 'inc/databases/class-lp-lesson-db.php';
+			require_once 'inc/databases/class-lp-section-db.php';
+			require_once 'inc/databases/class-lp-section-items-db.php';
+			require_once 'inc/databases/class-lp-quiz-db.php';
+			require_once 'inc/databases/class-lp-quiz-questions.php';
+			require_once 'inc/databases/class-lp-sessions-db.php';
+			require_once 'inc/databases/class-lp-question-db.php';
+			require_once 'inc/databases/class-lp-user-items-db.php';
+			require_once 'inc/databases/class-lp-user-item-results-db.php';
+
+			// Read files config on folder config .
+			require_once 'inc/Helper/Config.php';
+
+			// File system .
+			require_once 'inc/class-lp-file-system.php';
+
+			// File helper
+			require_once 'inc/class-lp-helper.php';
+
+			// File handle install LP
+			require_once 'inc/class-lp-install.php';
+		}
+
+		private function include_files_admin() {
+			if ( ! is_admin() ) {
+				return;
+			}
+
+			require_once 'inc/admin/class-lp-admin-notice.php';
+		}
+
+		private function include_files_frontend() {
+			if ( is_admin() ) {
+				return;
+			}
+
+		}
+
+		/**
 		 * Includes needed files.
 		 */
 		public function includes() {
-			require_once 'inc/class-lp-file-system.php';
-			require_once 'inc/class-lp-helper.php';
+			// Include required files load anywhere, both frontend and backend.
+			$this->include_files_global();
+
+			// include files when LP ready run - after setup success .
+			if ( ! LP_Install::instance()->tables_install_done() ) {
+				return;
+			}
+
+			// Include required files Backend.
+			$this->include_files_admin();
+
+			// Include required files Frontend.
+			$this->include_files_frontend();
+
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-factory.php';
 			require_once 'inc/class-lp-datetime.php';
-			require_once 'inc/class-lp-hard-cache.php';
+			// require_once 'inc/class-lp-hard-cache.php';
 			require_once 'inc/interfaces/interface-curd.php';
 			require_once 'inc/abstracts/abstract-array-access.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
@@ -254,20 +314,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/filters/class-lp-user-items-filter.php';
 			require_once 'inc/filters/class-lp-quiz-questions-filter.php';
 
-			// Query Database .
-			require_once 'inc/databases/class-lp-db.php';
-			require_once 'inc/databases/class-lp-order-db.php';
-			require_once 'inc/databases/class-lp-course-db.php';
-			require_once 'inc/databases/class-lp-lesson-db.php';
-			require_once 'inc/databases/class-lp-section-db.php';
-			require_once 'inc/databases/class-lp-section-items-db.php';
-			require_once 'inc/databases/class-lp-quiz-db.php';
-			require_once 'inc/databases/class-lp-quiz-questions.php';
-			require_once 'inc/databases/class-lp-sessions-db.php';
-			require_once 'inc/databases/class-lp-question-db.php';
-			require_once 'inc/databases/class-lp-user-items-db.php';
-			require_once 'inc/databases/class-lp-user-item-results-db.php';
-
 			// curds .
 			require_once 'inc/curds/class-lp-helper-curd.php';
 			require_once 'inc/curds/class-lp-course-curd.php';
@@ -307,7 +353,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( is_admin() ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-				require_once 'inc/admin/class-lp-admin-notice.php';
+
 				require_once 'inc/admin/class-lp-admin.php';
 				require_once 'inc/admin/settings/abstract-settings-page.php';
 			}
@@ -431,6 +477,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'activate_' . LP_PLUGIN_BASENAME, array( $this, 'on_activate' ) );
 			add_action( 'deactivate_' . LP_PLUGIN_BASENAME, array( $this, 'on_deactivate' ) );
 
+			if ( ! LP_Install::instance()->tables_install_done() ) {
+				return;
+			}
+
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
@@ -500,6 +550,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @hook  learn_press_activate
 		 */
 		public function on_activate() {
+			LP_Install::instance()->on_activate();
 			do_action( 'learn-press/activate', $this );
 		}
 
@@ -569,7 +620,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Todo: tungnx - remove this code after handle ajax on page learn-press-addons
 			require_once 'inc/background-process/class-lp-background-query-items.php';
-			require_once 'inc/background-process/class-lp-background-installer.php';
+			// require_once 'inc/background-process/class-lp-background-installer.php';
 
 			require_once 'inc/lp-template-hooks.php';
 

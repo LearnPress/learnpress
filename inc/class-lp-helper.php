@@ -555,4 +555,16 @@ class LP_Helper {
 	public static function get_link_no_cache( string $link ): string {
 		return add_query_arg( 'no-cache', uniqid(), $link );
 	}
+
+	/**
+	 * Check string is json
+	 *
+	 * @param string $str
+	 *
+	 * @return bool
+	 */
+	public static function is_json( string $str ): bool {
+		json_decode( $str );
+		return json_last_error() === JSON_ERROR_NONE;
+	}
 }
