@@ -256,6 +256,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 
 			if ( $is_ios ) {
+				$course_id = ! empty( $request['course-id'] ) ? absint( $request['course-id'] ) : 0;
+
 				if ( empty( $password ) ) {
 					throw new Exception( __( 'Secret key is empty.', 'learnpress' ) );
 				}
@@ -286,11 +288,22 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
 				}
 
-				if ( empty( $body->receipt->in_app[0]->product_id ) ) {
+				$latest_receipt_info = ! empty( $body->latest_receipt_info ) ? $body->latest_receipt_info : array();
+
+				if ( empty( $latest_receipt_info ) ) {
 					throw new Exception( __( 'Course id is invalid.', 'learnpress' ) );
 				}
 
-				$course_id = $body->receipt->in_app[0]->product_id;
+				$course_ids = array_map(
+					function( $receipt_id ) {
+						return absint( $receipt_id->product_id );
+					},
+					$latest_receipt_info
+				);
+
+				if ( ! in_array( $course_id, $course_ids ) ) {
+					throw new Exception( __( 'Course id is invalid.', 'learnpress' ) );
+				}
 			} else {
 				$receipt        = json_decode( $receipt, true );
 				$package_name   = $receipt['packageName'] ?? '';
