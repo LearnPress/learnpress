@@ -203,6 +203,12 @@ function learn_press_admin_course_tabs() {
 		return;
 	}
 
+	$wp_screen = get_current_screen();
+
+	if ( ! $wp_screen || 'edit-lp_course' !== $wp_screen->id ) {
+		return;
+	}
+
 	$admin_tabs = apply_filters(
 		'learn_press_admin_tabs_info',
 		array(
