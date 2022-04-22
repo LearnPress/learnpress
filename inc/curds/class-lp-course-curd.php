@@ -244,6 +244,12 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return array
 		 */
 		public function read_course_items( $course_id, $publish_only = true, $section_ids = array() ) {
+			static $results = null;
+
+			if ( ! is_null( $results ) ) {
+				return $results;
+			}
+
 			global $wpdb;
 			$where = '';
 
@@ -288,7 +294,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$course_id
 			);
 
-			return $wpdb->get_results( $query );
+			$results = $wpdb->get_results( $query );
+
+			return $results;
 		}
 
 		/**

@@ -113,7 +113,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				return;
 			}
 
-			$factory   = LP_Factory::get_order_factory();
+			$factory   = new LP_Order_CURD();
 			$user_id   = get_current_user_id();
 			$order_key = LP_Request::get_string( 'order-key' );
 			$order     = $factory->recover( $order_key, $user_id );

@@ -409,15 +409,4 @@ class LP_Settings {
 	}
 }
 
-if ( ! function_exists( 'lp_settings' ) ) {
-	/**
-	 * Instance lp setting
-	 *
-	 * @return LP_Settings|null
-	 */
-	function lp_settings() {
-		return LP_Settings::instance();
-	}
-
-	lp_settings();
-}
+LP_Settings::instance();

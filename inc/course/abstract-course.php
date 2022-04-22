@@ -838,9 +838,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_price() {
-			$price = LP_Cache::cache_load_first( 'get', 'course-price-' . $this->get_id() );
+			static $price = null;
 
-			if ( false === $price ) {
+			if ( is_null( $price ) ) {
 				if ( $this->has_sale_price() ) {
 					$price = $this->get_sale_price();
 					// Add key _lp_course_is_sale for query
@@ -853,8 +853,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				// For case set sale by days range
 				update_post_meta( $this->get_id(), '_lp_price', $price );
-
-				LP_Cache::cache_load_first( 'set', 'course-price-' . $this->get_id(), $price );
 			}
 
 			return apply_filters( 'learn-press/course/price', $price, $this->get_id() );
@@ -1110,8 +1108,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function get_total_user_enrolled_or_purchased(): int {
-			$lp_course_db = LP_Course_DB::getInstance();
-			return $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+			static $total_user_enrolled = null;
+
+			if ( is_null( $total_user_enrolled ) ) {
+				$lp_course_db        = LP_Course_DB::getInstance();
+				$total_user_enrolled = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+			}
+
+			return $total_user_enrolled;
 		}
 
 		/**

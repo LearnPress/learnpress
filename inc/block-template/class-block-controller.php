@@ -226,10 +226,17 @@ class LP_Block_Template_Controller {
 	}
 
 	public function get_block_templates( $slugs = array(), $template_type = 'wp_template' ) {
+		static $templates = null;
+
+		if ( ! is_null( $templates ) ) {
+			return $templates;
+		}
+
 		$templates_from_db = $this->get_block_templates_from_db( $slugs, $template_type );
 		$templates_from_lp = $this->get_block_templates_from_learnpress( $slugs, $templates_from_db, $template_type );
+		$templates         = array_merge( $templates_from_db, $templates_from_lp );
 
-		return array_merge( $templates_from_db, $templates_from_lp );
+		return $templates;
 	}
 
 	public function get_block_templates_from_learnpress( $slugs, $already_found_templates, $template_type = 'wp_template' ) {

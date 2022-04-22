@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-$user_agree_terms         = (int) lp_settings()->get( 'agree_terms', 0 );
+$user_agree_terms         = (int) LP_Settings::instance()->get( 'agree_terms', 0 );
 $check_lp_need_upgrade_db = LP_Updater::instance()->check_lp_db_need_upgrade();
 
 if ( ! $check_lp_need_upgrade_db ) {

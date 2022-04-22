@@ -221,7 +221,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$this->include_files_frontend();
 
 			require_once 'inc/class-lp-settings.php';
-			require_once 'inc/class-lp-factory.php';
+			// require_once 'inc/class-lp-factory.php';
 			require_once 'inc/class-lp-datetime.php';
 			// require_once 'inc/class-lp-hard-cache.php';
 			require_once 'inc/interfaces/interface-curd.php';
@@ -237,8 +237,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache.php';
 			require_once 'inc/class-lp-asset-key.php';
 
-			// Models
-			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
+
 
 			// Abstract Meta-box.
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
@@ -449,6 +448,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache/class-lp-courses-cache.php';
 			require_once 'inc/cache/class-lp-course-cache.php';
 			require_once 'inc/cache/class-lp-quiz-cache.php';
+
+			// Models
+			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
 		}
 
 		private function include_files_admin() {
