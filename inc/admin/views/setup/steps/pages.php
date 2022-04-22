@@ -19,8 +19,7 @@ $settings = LP()->settings();
 <table class="form-field">
 	<tr>
 		<th>
-			<?php _e( 'Courses', 'learnpress' ); ?>
-			<?php learn_press_quick_tip( __( 'Page will display all courses inside.', 'learnpress' ) ); ?>
+			<?php _e( 'Page: show list Courses', 'learnpress' ); ?>
 		</th>
 		<td>
 			<?php learn_press_pages_dropdown( 'settings[pages][courses_page_id]', $settings->get( 'courses_page_id' ) ); ?>
@@ -28,8 +27,7 @@ $settings = LP()->settings();
 	</tr>
 	<tr>
 		<th>
-			<?php _e( 'Profile', 'learnpress' ); ?>
-			<?php learn_press_quick_tip( __( 'Page will display content of user profile.', 'learnpress' ) ); ?>
+			<?php _e( 'Page: Profile', 'learnpress' ); ?>
 		</th>
 		<td>
 			<?php learn_press_pages_dropdown( 'settings[pages][profile_page_id]', $settings->get( 'profile_page_id' ) ); ?>
@@ -37,8 +35,7 @@ $settings = LP()->settings();
 	</tr>
 	<tr>
 		<th>
-			<?php _e( 'Checkout', 'learnpress' ); ?>
-			<?php learn_press_quick_tip( __( 'Page will display content of form for processing checkout.', 'learnpress' ) ); ?>
+			<?php _e( 'Page: Checkout', 'learnpress' ); ?>
 		</th>
 		<td>
 			<?php learn_press_pages_dropdown( 'settings[pages][checkout_page_id]', $settings->get( 'checkout_page_id' ) ); ?>
@@ -46,8 +43,7 @@ $settings = LP()->settings();
 	</tr>
 	<tr>
 		<th>
-			<?php _e( 'Become a Teacher', 'learnpress' ); ?>
-			<?php learn_press_quick_tip( __( 'Page will display the form for submitting request to become a teacher.', 'learnpress' ) ); ?>
+			<?php _e( 'Page: Become a Teacher', 'learnpress' ); ?>
 		</th>
 		<td>
 			<?php learn_press_pages_dropdown( 'settings[pages][become_a_teacher_page_id]', $settings->get( 'become_a_teacher_page_id' ) ); ?>
@@ -55,7 +51,7 @@ $settings = LP()->settings();
 	</tr>
 	<tr>
 		<th>
-			<?php _e( 'Terms and Conditions', 'learnpress' ); ?>
+			<?php _e( 'Page: Terms and Conditions', 'learnpress' ); ?>
 		</th>
 		<td>
 			<?php learn_press_pages_dropdown( 'settings[pages][term_conditions_page_id]', $settings->get( 'term_conditions_page_id' ) ); ?>

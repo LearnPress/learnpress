@@ -127,23 +127,6 @@
 		} );
 	};
 
-	const installSampleCourse = function installSampleCourse( e ) {
-		e.preventDefault();
-
-		const $button = $( this );
-		blockContent();
-
-		$.post( {
-			url: $( this ).attr( 'href' ),
-			dataType: 'html',
-			data: {},
-			success( res ) {
-				blockContent( false );
-				$button.replaceWith( $( res ).find( 'a:first' ).addClass( 'button button-primary' ) );
-			},
-		} );
-	};
-
 	function isEmail( email ) {
 		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test( email );
@@ -158,7 +141,6 @@
 			on( 'click', '.buttons .button', navPages ).
 			on( 'change', '#currency', updateCurrency ).
 			on( 'change', 'input, select', updatePrice ).
-			on( 'click', '#create-pages', createPages ).
-			on( 'click', '#install-sample-course', installSampleCourse );
+			on( 'click', '#create-pages', createPages );
 	} );
 }( jQuery ) );

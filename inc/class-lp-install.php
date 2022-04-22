@@ -60,10 +60,16 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			$this->create_tables();
 
+			if ( ! self::tables_install_done() ) {
+				return;
+			}
+
+			update_option( 'learn_press_install', 'yes' );
+
 			// Set permalink is "Post name".
 			if ( ! get_option( 'permalink_structure' ) ) {
 				update_option( 'permalink_structure', '/%postname%/' );
-				flush_rewrite_rules();
+				// flush_rewrite_rules();
 			}
 
 			// Force option users_can_register to ON.
@@ -282,7 +288,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				SELECT *
 	            FROM {$wpdb->posts} p
 	            INNER JOIN  {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key= %s AND p.post_type = %s
-	        ",
+	            ",
 				'_learn_press_page',
 				'page'
 			);

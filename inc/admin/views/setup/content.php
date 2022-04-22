@@ -9,6 +9,10 @@
 
 defined( 'ABSPATH' ) or exit;
 $wizard = LP_Setup_Wizard::instance();
+
+if ( ! isset( $steps ) ) {
+	return;
+}
 ?>
 
 <div id="main">
@@ -22,7 +26,8 @@ $wizard = LP_Setup_Wizard::instance();
 		</ul>
 		<div class="lp-setup-progress">
 			<div class="active"
-				 style="width: <?php echo intval( ( $wizard->get_step_position() + 1 ) / sizeof( $steps ) * 100 ); ?>%;"></div>
+				style="width: <?php echo intval( ( $wizard->get_step_position() + 1 ) / sizeof( $steps ) * 100 ); ?>%;">
+			</div>
 		</div>
 	</div>
 	<form id="learn-press-setup-form" class="lp-setup-content" name="lp-setup" method="post">
@@ -30,44 +35,12 @@ $wizard = LP_Setup_Wizard::instance();
 		$step = $wizard->get_current_step( false );
 		?>
 		<input type="hidden" name="lp-setup-nonce"
-			   value="<?php echo wp_create_nonce( 'lp-setup-step-' . $step['slug'] ); ?>">
+			value="<?php echo wp_create_nonce( 'lp-setup-step-' . $step['slug'] ); ?>">
 		<input type="hidden" name="lp-setup-step"
-			   value="<?php echo $step['slug']; ?>">
+			value="<?php echo $step['slug']; ?>">
 		<?php call_user_func( $step['callback'] ); ?>
 		<?php if ( ! $wizard->is_last_step() ) { ?>
 			<div class="buttons">
-
-<!--				--><?php // if ( ! $wizard->is_first_step() && ! ( array_key_exists( 'skip_prev_button', $step ) && $step['skip_prev_button'] === false ) ) { ?>
-<!--                    <a class="button button-skip-prev ajax"-->
-<!--                       href="--><?php // echo add_query_arg( 'skip', 'yes', $wizard->get_prev_url() ); ?><!--">-->
-<!--						-->
-			<?php
-			// if ( ! empty( $step['skip_prev_button'] ) ) {
-			// echo $step['skip_prev_button'];
-			// } else {
-			// _e( 'Skip to prev step', 'learnpress' );
-			// }
-			//
-			?>
-<!--                    </a>-->
-<!--				--><?php // } ?>
-
-<!--				--><?php // if ( ! $wizard->is_first_step() && ! $wizard->is_last_step() && ! ( array_key_exists( 'skip_next_button', $step ) && $step['skip_next_button'] === false ) ) { ?>
-<!--                    <a class="button button-skip-next"-->
-<!--                       href="--><?php // echo add_query_arg( 'skip', 'yes', $wizard->get_next_url() ); ?><!--">-->
-<!--						-->
-			<?php
-			// if ( ! empty( $step['skip_prev_button'] ) ) {
-			// echo $step['skip_prev_button'];
-			// } else {
-			// _e( 'Skip', 'learnpress' );
-			// }
-			//
-			?>
-<!--                    </a>-->
-<!--				--><?php // } ?>
-
-
 				<?php if ( ! $wizard->is_first_step() && ! ( array_key_exists( 'back_button', $step ) && $step['back_button'] === false ) ) { ?>
 					<a class="button button-prev" href="<?php echo $wizard->get_prev_url(); ?>">
 						<?php

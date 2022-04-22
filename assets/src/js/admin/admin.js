@@ -302,7 +302,11 @@
 		$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
 		$( '.learn-press-tip' ).LP( 'QuickTip' ); //$('.learn-press-tabs').LP('AdminTab');
 
-		$( document ).on( 'click', '#learn-press-create-pages', createPages ).on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage ).on( 'click', '.plugin-action-buttons a', pluginActions ).on( 'click', '[data-remove-confirm]', preventDefault ).on( 'mousedown', '.lp-sortable-handle', function( e ) {
+		$( document ).on( 'click', '#learn-press-create-pages', createPages )
+			.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
+			.on( 'click', '.plugin-action-buttons a', pluginActions )
+			.on( 'click', '[data-remove-confirm]', preventDefault )
+			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
 			$( 'html, body' ).addClass( 'lp-item-moving' );
 			$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );
 		} ).on( 'mouseup', function( e ) {

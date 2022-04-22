@@ -32,7 +32,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ), 1 );
 			//add_action( 'admin_head', array( $this, 'admin_colors' ) );
-			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
+			// add_action( 'admin_init', array( $this, 'admin_redirect' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
@@ -584,14 +584,15 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 		/**
 		 * Redirect to setup page if we have just activated LP
+		 * @depecated 4.1.6.4
 		 */
-		public function admin_redirect() {
+		/*public function admin_redirect() {
 			if ( 'yes' === get_transient( 'lp_activation_redirect' ) && current_user_can( 'install_plugins' ) ) {
 				delete_transient( 'lp_activation_redirect' );
 
-				wp_safe_redirect( admin_url( 'index.php?page=lp-setup' ) );
+				exit( wp_safe_redirect( admin_url( 'index.php?page=lp-setup' ) ) );
 			}
-		}
+		}*/
 
 		/**
 		 * Custom admin body classes.

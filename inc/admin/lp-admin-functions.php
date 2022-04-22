@@ -236,7 +236,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$id = $name;
 	}
 
-	$class .= 'list-pages lp-list-pages';
+	$class .= 'list-pages lp-list-pages learn-press-select2';
 
 	$args    = array(
 		'name'             => $name,
