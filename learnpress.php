@@ -548,8 +548,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Trigger this function while activating Learnpress.
 		 *
 		 * @since 3.0.0
-		 *
-		 * @hook  learn_press_activate
+		 * @version 4.1.4.1
 		 */
 		public function on_activate() {
 			LP_Install::instance()->on_activate();

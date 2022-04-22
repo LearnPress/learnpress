@@ -3,6 +3,8 @@
  * List tables for the database
  *
  * @version 4
+ * @since 4.1.6.4
+ * @version 1.0.0
  */
 
 $lp_db = LP_Database::getInstance();

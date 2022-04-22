@@ -782,7 +782,11 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 	}
 }
 
+/**
+ * @depecated 4.1.6.4
+ */
 function learn_press_template_redirect() {
+	_deprecated_function( __FUNCTION__, '4.1.6.4' );
 	global $wp_query, $wp;
 
 	// When default permalinks are enabled, redirect shop page to post type archive url
@@ -792,7 +796,7 @@ function learn_press_template_redirect() {
 	}
 }
 
-add_action( 'template_redirect', 'learn_press_template_redirect' );
+// add_action( 'template_redirect', 'learn_press_template_redirect' );
 
 
 /**

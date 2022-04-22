@@ -622,16 +622,18 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function notice_required_permalink() {
 			if ( current_user_can( 'manage_options' ) ) {
 				if ( ! get_option( 'permalink_structure' ) ) {
-					learn_press_add_notice(
-						sprintf(
-							__(
-								'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
-								'learnpress'
-							),
+					?>
+					<div class="notice notice-error">
+						<p>
+						<?php
+						echo sprintf(
+							'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
 							admin_url( 'options-permalink.php' )
-						),
-						'error'
-					);
+						)
+						?>
+						</p>
+					</div>
+					<?php
 				}
 			}
 		}

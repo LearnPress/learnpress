@@ -60,19 +60,16 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			$this->create_tables();
 
-			/*// Force option permalink to 'postname'.
+			// Set permalink is "Post name".
 			if ( ! get_option( 'permalink_structure' ) ) {
 				update_option( 'permalink_structure', '/%postname%/' );
+				flush_rewrite_rules();
 			}
 
 			// Force option users_can_register to ON.
 			if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
 			}
-
-			if ( ! get_option( 'learn_press_currency' ) ) {
-				update_option( 'learn_press_currency', 'USD' );
-			}*/
 		}
 
 		/**

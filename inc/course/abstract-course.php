@@ -1327,8 +1327,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$slug_prefixes = apply_filters(
 				'learn-press/course/custom-item-prefixes',
 				array(
-					LP_QUIZ_CPT   => sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug', 'quiz' ) ),
-					LP_LESSON_CPT => sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug', 'lesson' ) ),
+					LP_QUIZ_CPT   => sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug', 'quizzes' ) ),
+					LP_LESSON_CPT => sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug', 'lessons' ) ),
 				),
 				$this->get_id()
 			);
