@@ -45,7 +45,7 @@ $active_tab   = '';
 		}
 		?>
 
-		<input type="radio" name="<?php echo $unique_group; ?>>" class="learn-press-tabs__checker" <?php echo $checked; ?> id="<?php echo esc_attr( $unique_group . '__' . $section_key ); ?>"/>
+		<input type="radio" name="<?php echo $unique_group; ?>" class="learn-press-tabs__checker" <?php echo $checked; ?> id="<?php echo esc_attr( $unique_group . '__' . $section_key ); ?>"/>
 	<?php } ?>
 
 	<ul class="learn-press-tabs__nav" data-tabs="<?php echo count( $visible_tabs ); ?>">

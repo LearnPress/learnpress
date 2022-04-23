@@ -273,9 +273,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
 
-			if ( get_option( 'learn_press_status' ) !== 'installed' ) {
+			/*if ( get_option( 'learn_press_status' ) !== 'installed' ) {
 				require_once 'inc/class-lp-install.php';
-			}
+			}*/
 
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';

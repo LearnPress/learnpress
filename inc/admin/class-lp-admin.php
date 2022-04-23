@@ -548,7 +548,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			if ( 'yes' === get_option( 'learn_press_install' ) ) {
+			if ( ! get_option( 'learn_press_setup_wizard_completed', false ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
 			}
 

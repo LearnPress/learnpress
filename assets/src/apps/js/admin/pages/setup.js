@@ -45,7 +45,7 @@
 		$main = $newContent;
 	};
 
-	const navPages = function navPages( e ) {
+	/*const navPages = function navPages( e ) {
 		e.preventDefault();
 
 		if ( ! checkForm( $setupForm ) ) {
@@ -69,7 +69,7 @@
 				$main.removeClass( 'loading' );
 			},
 		} );
-	};
+	};*/
 
 	const updateCurrency = function updateCurrency() {
 		const m = $( this ).children( ':selected' ).html().match( /\((.*)\)/ ),
@@ -138,7 +138,7 @@
 		$( '.learn-press-select2' ).select2();
 
 		$( document ).
-			on( 'click', '.buttons .button', navPages ).
+			// on( 'click', '.buttons .button', navPages ).
 			on( 'change', '#currency', updateCurrency ).
 			on( 'change', 'input, select', updatePrice ).
 			on( 'click', '#create-pages', createPages );

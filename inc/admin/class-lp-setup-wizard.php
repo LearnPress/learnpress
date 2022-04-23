@@ -112,9 +112,10 @@ class LP_Setup_Wizard {
 		}
 
 		if ( 'finish' === LP_Request::get_string( 'step' ) ) {
-			delete_option( 'learn_press_install' );
 
 			LP_Install::create_options();
+
+			update_option( 'learn_press_setup_wizard_completed', 'yes' );
 		}
 
 		// LP_Install::create_tables();
@@ -143,11 +144,13 @@ class LP_Setup_Wizard {
 		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
 		wp_enqueue_style( 'lp-select2', $assets->url( 'src/css/vendor/select2.min.css' ) );
 
-		$assets->enqueue_script( 'learn-press-global' );
 		wp_enqueue_script( 'lp-select2', $assets->url( 'src/js/vendor/select2.full.min.js' ) );
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/dist/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'src/js/admin/admin.js' ), uniqid(), true );
-		wp_enqueue_script( 'lp-setup', $assets->url( 'js/dist/admin/pages/setup.js' ), array( 'jquery', 'lp-admin' ), uniqid(), true );
+		wp_enqueue_script( 'drop-down-page', $assets->url( 'src/js/admin/share/dropdown-pages.js' ), uniqid(), true );
+		wp_register_script( 'lp-setup', $assets->url( 'js/dist/admin/pages/setup.js' ), array( 'jquery', 'lp-admin' ), uniqid(), true );
+		wp_localize_script( 'lp-setup', 'lpGlobalSettings', learn_press_global_script_params() );
+		wp_enqueue_script( 'lp-setup' );
 		learn_press_admin_view( 'setup/header' );
 		learn_press_admin_view( 'setup/content', array( 'steps' => $this->get_steps() ) );
 		learn_press_admin_view( 'setup/footer' );
