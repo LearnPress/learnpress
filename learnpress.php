@@ -22,10 +22,12 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
-	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
+	require_once 'inc/lp-constants.php';
 }
 
 if ( ! class_exists( 'LearnPress' ) ) {
+
+
 
 	/**
 	 * Class LearnPress
@@ -167,9 +169,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Define constant.
 		 */
 		protected function plugin_defines() {
-			if ( ! defined( 'LP_PLUGIN_BASENAME' ) ) {
-				define( 'LP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-			}
+
 		}
 
 		/**
@@ -237,16 +237,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache.php';
 			require_once 'inc/class-lp-asset-key.php';
 
-
-
 			// Abstract Meta-box.
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
-
-			// Background processes.
-			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
-			require_once 'inc/background-process/abstract-background-process.php';
-			require_once 'inc/background-process/class-lp-background-single-course.php';
-			require_once 'inc/background-process/class-lp-background-single-email.php';
 
 			// curds .
 			require_once 'inc/curds/class-lp-helper-curd.php';
@@ -451,6 +443,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Models
 			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
+
+			// Background processes.
+			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
+			require_once 'inc/background-process/abstract-background-process.php';
+			require_once 'inc/background-process/class-lp-background-single-course.php';
+			require_once 'inc/background-process/class-lp-background-single-email.php';
 		}
 
 		private function include_files_admin() {
@@ -476,6 +474,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				add_action( 'admin_notices', array( $this, 'error' ) );
 			}
 
+			// Add links setting|document|addon on plugins page.
+			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
+
 			add_action( 'activate_' . LP_PLUGIN_BASENAME, array( $this, 'on_activate' ) );
 			add_action( 'deactivate_' . LP_PLUGIN_BASENAME, array( $this, 'on_deactivate' ) );
 
@@ -490,6 +491,23 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Check require version thim-core.
 			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
+		}
+
+		/**
+		 * Add links to Documentation and Extensions in plugin's list of action links
+		 *
+		 * @since 4.3.11
+		 *
+		 * @param array $links Array of action links
+		 *
+		 * @return array
+		 */
+		public function plugin_links( array $links ): array {
+			$links[] = '<a href="' . admin_url( 'admin.php?page=learn-press-settings' ) . '">' . __( 'Settings', 'learnpress' ) . '</a>';
+			$links[] = '<a href="https://learnpress.io/docs/" target="_blank">' . __( 'Documentation', 'learnpress' ) . '</a>';
+			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn-press-addons' . '">' . __( 'Add-ons', 'learnpress' ) . '</a>';
+
+			return $links;
 		}
 
 		public function error() {
@@ -905,7 +923,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public static function instance() {
 			if ( is_null( self::$_instance ) ) {
-				update_option( 'learnpress_version', LEARNPRESS_VERSION );
 				self::$_instance = new self();
 			}
 
