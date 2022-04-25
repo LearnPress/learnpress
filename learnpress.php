@@ -143,6 +143,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public $theme_support = null;
 
+		public $gateways = null;
+
 		/**
 		 * LearnPress constructor.
 		 */
@@ -503,9 +505,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return array
 		 */
 		public function plugin_links( array $links ): array {
-			$links[] = '<a href="' . admin_url( 'admin.php?page=learn-press-settings' ) . '">' . __( 'Settings', 'learnpress' ) . '</a>';
-			$links[] = '<a href="https://learnpress.io/docs/" target="_blank">' . __( 'Documentation', 'learnpress' ) . '</a>';
-			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn-press-addons' . '">' . __( 'Add-ons', 'learnpress' ) . '</a>';
+			$links[] = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=learn-press-settings' ), __( 'Settings', 'learnpress' ) );
+			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', 'https://learnpress.io/docs/', __( 'Documentation', 'learnpress' ) );
+			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', get_admin_url() . '/admin.php?page=learn-press-addons', __( 'Add-ons', 'learnpress' ) );
 
 			return $links;
 		}
