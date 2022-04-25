@@ -886,7 +886,7 @@ function learn_press_get_template( $template_name = '', $args = array(), $templa
 		$log = sprintf( 'TEMPLATE MISSING: Template %s doesn\'t exists.', $template_name );
 		error_log( $log );
 
-		if ( learn_press_is_debug() ) {
+		if ( LP_Debug::is_debug() ) {
 			echo sprintf( '<span title="%s" class="learn-press-template-warning"></span>', $log );
 		}
 

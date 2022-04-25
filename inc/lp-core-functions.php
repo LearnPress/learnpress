@@ -129,9 +129,10 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
  *
  * @return bool
  * @editor tungnx
- * @todo comment this function - replace with LP_Debug::is_debug()
+ * @depecated 4.1.6.4
  */
 function learn_press_is_debug() {
+	_deprecated_function( __FUNCTION__, '4.1.6.4' );
 	return LP_Debug::is_debug();
 }
 
@@ -2667,7 +2668,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 add_filter( 'comment_reply_link', 'learn_press_comment_reply_link', 10, 4 );
 
 function learn_press_deprecated_function( $function, $version, $replacement = null ) {
-	if ( learn_press_is_debug() ) {
+	if ( LP_Debug::is_debug() ) {
 		_deprecated_function( $function, $version, $replacement );
 	}
 }
@@ -3154,13 +3155,6 @@ function learn_press_cache_add_post_type( $id, $type = '' ) {
 	}
 
 	LP_Object_Cache::set( 'post-types', $post_types, 'learn-press' );
-}
-
-function _learn_press_deprecated_function( $function, $version, $replacement = null ) {
-	if ( ! learn_press_is_debug() ) {
-		return;
-	}
-	_deprecated_function( $function, $version, $replacement = null );
 }
 
 function learn_press_has_option( $name ) {

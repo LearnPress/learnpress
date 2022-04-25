@@ -469,9 +469,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					}
 				}
 
-				flush_rewrite_rules( true );
+				flush_rewrite_rules();
 			} catch ( Exception $ex ) {
-
+				error_log( $ex->getMessage() );
 			}
 		}
 

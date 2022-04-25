@@ -34,7 +34,7 @@ class LP_Abstract_Template {
 		$log = sprintf( 'Template %s::%s doesn\'t exists.', get_class( $this ), $name );
 		error_log( $log );
 
-		if ( learn_press_is_debug() ) {
+		if ( LP_Debug::is_debug() ) {
 			echo sprintf( '<span title="%s" class="learn-press-template-warning"></span>', $log );
 		}
 	}

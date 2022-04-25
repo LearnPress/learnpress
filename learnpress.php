@@ -222,7 +222,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Include required files Frontend.
 			$this->include_files_frontend();
 
-			require_once 'inc/class-lp-settings.php';
+			// require_once 'inc/class-lp-settings.php';
 			// require_once 'inc/class-lp-factory.php';
 			require_once 'inc/class-lp-datetime.php';
 			// require_once 'inc/class-lp-hard-cache.php';
@@ -230,20 +230,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-array-access.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
-			require_once 'inc/abstracts/abstract-assets.php';
+			// require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-course-query.php';
 			// require_once 'inc/class-lp-utils.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
-			require_once 'inc/class-lp-asset-key.php';
+			// require_once 'inc/class-lp-asset-key.php';
 
 			// Abstract Meta-box.
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
 			// curds .
-			require_once 'inc/curds/class-lp-helper-curd.php';
+			// require_once 'inc/curds/class-lp-helper-curd.php';
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
 			require_once 'inc/curds/class-lp-lesson-curd.php';
@@ -253,9 +253,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-user-curd.php';
 			require_once 'inc/curds/class-lp-user-item-curd.php';
 
-			require_once 'inc/class-lp-backward-plugins.php';
-			require_once 'inc/class-lp-debug.php';
-			require_once 'inc/class-lp-global.php';
+			// require_once 'inc/class-lp-backward-plugins.php';
+			// require_once 'inc/class-lp-debug.php';
+			// require_once 'inc/class-lp-global.php';
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 			require_once 'inc/course/class-lp-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';
@@ -287,7 +287,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			if ( ! is_admin() ) {
-				require_once 'inc/class-lp-assets.php';
+				// require_once 'inc/class-lp-assets.php';
 				require_once 'inc/course/class-model-user-can-view-course-item.php';
 			}
 
@@ -451,6 +451,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/background-process/abstract-background-process.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 			require_once 'inc/background-process/class-lp-background-single-email.php';
+
+			// Assets object
+			require_once 'inc/class-lp-asset-key.php';
+			require_once 'inc/abstracts/abstract-assets.php';
+
+			// Debug class
+			require_once 'inc/class-lp-debug.php';
+
+			require_once 'inc/class-lp-settings.php';
+			require_once 'inc/class-lp-global.php';
 		}
 
 		private function include_files_admin() {
@@ -466,6 +476,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				return;
 			}
 
+			require_once 'inc/class-lp-assets.php';
 		}
 
 		/**

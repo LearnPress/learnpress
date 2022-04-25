@@ -47,7 +47,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		);
 
 		$this->_load_questions( $quiz );
-		$this->_update_meta_cache( $quiz );
+		// $this->_update_meta_cache( $quiz );
 
 		return $quiz;
 	}
@@ -107,8 +107,11 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 	/**
 	 * @param LP_Quiz $quiz
+	 *
+	 * @depecated 4.1.6.4
 	 */
 	protected function _update_meta_cache( &$quiz ) {
+		_deprecated_function( __FUNCTION__, '4.1.6.4' );
 		$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
 
 		if ( false === $meta_ids ) {
@@ -116,7 +119,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		} else {
 			$meta_ids[] = $quiz->get_id();
 		}
-		LP_Helper_CURD::update_meta_cache( $meta_ids );
+
+		// LP_Helper_CURD::update_meta_cache( $meta_ids );
 	}
 
 	/**

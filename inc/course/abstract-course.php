@@ -244,7 +244,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				LP_Course_Utils::set_section_items( $section_id, $its );
 			}
 
-			learn_press_cache_add_post_type( $item_by_types );
+			// learn_press_cache_add_post_type( $item_by_types );
 
 			/*
 			return ;
@@ -1184,9 +1184,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$item = false;
 
 			if ( $this->has_item( $item_id ) ) {
-				if ( false === wp_cache_get( $item_id, 'posts' ) ) {
+				/*if ( false === wp_cache_get( $item_id, 'posts' ) ) {
 					LP_Helper_CURD::cache_posts( $this->get_item_ids() );
-				}
+				}*/
 
 				$item = LP_Course_Item::get_item( $item_id, $this->get_id() );
 			}
