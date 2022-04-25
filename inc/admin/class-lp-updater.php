@@ -234,7 +234,7 @@ class LP_Updater {
 		$lp_version         = (int) LP()->version;
 
 		if ( array_key_exists( $db_current_version, $this->db_map_version )
-			 && $this->db_map_version[ $db_current_version ] === $lp_version ) {
+			&& $this->db_map_version[ $db_current_version ] === $lp_version ) {
 			return $this->db_map_version[ $db_current_version ];
 		}
 
@@ -283,7 +283,7 @@ class LP_Updater {
 				$name_class_handle_upgrade = 'LP_Upgrade_' . $db_version_up_to;
 
 				if ( class_exists( $name_class_handle_upgrade )
-					 && is_callable( array( $name_class_handle_upgrade, 'get_instance' ) ) ) {
+					&& is_callable( array( $name_class_handle_upgrade, 'get_instance' ) ) ) {
 					$class_handle = $name_class_handle_upgrade::get_instance();
 				}
 			}
@@ -325,9 +325,9 @@ class LP_Updater {
 	 * @return bool|LP_Updater
 	 */
 	public static function instance() {
-		static $instance = false;
+		static $instance = null;
 
-		if ( ! $instance ) {
+		if ( is_null( $instance ) ) {
 			$instance = new self();
 		}
 

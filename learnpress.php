@@ -224,12 +224,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// require_once 'inc/class-lp-settings.php';
 			// require_once 'inc/class-lp-factory.php';
-			require_once 'inc/class-lp-datetime.php';
+			// require_once 'inc/class-lp-datetime.php';
 			// require_once 'inc/class-lp-hard-cache.php';
-			require_once 'inc/interfaces/interface-curd.php';
-			require_once 'inc/abstracts/abstract-array-access.php';
-			require_once 'inc/abstracts/abstract-object-data.php';
-			require_once 'inc/abstracts/abstract-post-data.php';
+			// require_once 'inc/interfaces/interface-curd.php';
+			// require_once 'inc/abstracts/abstract-array-access.php';
+			// require_once 'inc/abstracts/abstract-object-data.php';
+			// require_once 'inc/abstracts/abstract-post-data.php';
 			// require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-course-query.php';
@@ -256,7 +256,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// require_once 'inc/class-lp-backward-plugins.php';
 			// require_once 'inc/class-lp-debug.php';
 			// require_once 'inc/class-lp-global.php';
-			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+			// require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 			require_once 'inc/course/class-lp-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';
 			require_once 'inc/course/class-lp-course-no-required-enroll.php';
@@ -275,12 +275,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-request-handler.php';
 			require_once 'inc/abstract-settings.php';
 			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
-			require_once 'inc/class-lp-rest-response.php';
+			// require_once 'inc/class-lp-rest-response.php';
 
-			include_once 'inc/admin/class-lp-updater.php';
+			// include_once 'inc/admin/class-lp-updater.php';
 
 			if ( is_admin() ) {
-				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+				// require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 
 				require_once 'inc/admin/class-lp-admin.php';
 				require_once 'inc/admin/settings/abstract-settings-page.php';
@@ -288,7 +288,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( ! is_admin() ) {
 				// require_once 'inc/class-lp-assets.php';
-				require_once 'inc/course/class-model-user-can-view-course-item.php';
+				// require_once 'inc/course/class-model-user-can-view-course-item.php';
 			}
 
 			include_once 'inc/models/steps/class-lp-group-step.php';
@@ -305,9 +305,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/custom-post-types/question.php';
 			require_once 'inc/custom-post-types/order.php';
 
-			if ( defined( 'LP_USE_ATTRIBUTES' ) && LP_USE_ATTRIBUTES ) {
+			/*if ( defined( 'LP_USE_ATTRIBUTES' ) && LP_USE_ATTRIBUTES ) {
 				require_once 'inc/attributes/lp-attributes-functions.php';
-			}
+			}*/
 
 			require_once 'inc/course/lp-course-functions.php';
 			require_once 'inc/course/abstract-course.php';
@@ -374,16 +374,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			 *
 			 * @since 3.2.6
 			 */
-			require_once 'inc/abstracts/abstract-rest-api.php';
-			require_once 'inc/abstracts/abstract-rest-controller.php';
-			require_once 'inc/rest-api/class-lp-core-api.php';
-			require_once 'inc/rest-api/class-lp-admin-core-api.php';
+			// require_once 'inc/abstracts/abstract-rest-api.php';
+			// require_once 'inc/abstracts/abstract-rest-controller.php';
+			// require_once 'inc/rest-api/class-lp-core-api.php';
+			// require_once 'inc/rest-api/class-lp-admin-core-api.php';
 
-			include_once 'inc/theme-support/class-theme-support-base.php';
-			include_once 'inc/class-lp-theme-support.php';
+			// include_once 'inc/theme-support/class-theme-support-base.php';
+			// include_once 'inc/class-lp-theme-support.php';
 
 			/** Jwt */
-			include_once 'inc/jwt/class-jwt-auth.php';
+			// include_once 'inc/jwt/class-jwt-auth.php';
 
 			// Comment by tungnx
 			/*
@@ -461,6 +461,32 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-global.php';
+			require_once 'inc/class-lp-datetime.php';
+
+			require_once 'inc/interfaces/interface-curd.php';
+			require_once 'inc/abstracts/abstract-array-access.php';
+			require_once 'inc/abstracts/abstract-object-data.php';
+			require_once 'inc/abstracts/abstract-post-data.php';
+
+			// Todo: tungnx check those files.
+			require_once 'inc/abstracts/abstract-object-query.php';
+			require_once 'inc/class-lp-course-query.php';
+			require_once 'inc/abstracts/abstract-addon.php';
+			require_once 'inc/class-lp-thumbnail-helper.php';
+			require_once 'inc/cache.php';
+
+			// API
+			require_once 'inc/class-lp-rest-response.php';
+			require_once 'inc/abstracts/abstract-rest-api.php';
+			require_once 'inc/abstracts/abstract-rest-controller.php';
+			require_once 'inc/rest-api/class-lp-core-api.php';
+			require_once 'inc/rest-api/class-lp-admin-core-api.php';
+
+			// include_once 'inc/theme-support/class-theme-support-base.php';
+			// include_once 'inc/class-lp-theme-support.php';
+
+			/** Jwt */
+			include_once 'inc/jwt/class-jwt-auth.php';
 		}
 
 		private function include_files_admin() {
@@ -469,6 +495,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			require_once 'inc/admin/class-lp-admin-notice.php';
+
+			require_once 'inc/admin/class-lp-updater.php';
+
+			// Meta box helper
+			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 		}
 
 		private function include_files_frontend() {
@@ -477,6 +508,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			require_once 'inc/class-lp-assets.php';
+
+			require_once 'inc/course/class-model-user-can-view-course-item.php';
 		}
 
 		/**

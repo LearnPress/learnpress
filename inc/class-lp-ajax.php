@@ -18,7 +18,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				// 'retake-course', // retake_course.
 				'external-link:nopriv',
 				// 'save-uploaded-user-avatar',
-				'load-more-courses',
+				// 'load-more-courses',
 			);
 
 			$ajax_events = apply_filters( 'learn-press/ajax/events', $ajax_events );
@@ -43,7 +43,11 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			//add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
 		}
 
-		public static function load_more_courses() {
+		/**
+		 * @depecated v4.1.6.4
+		 */
+		/*public static function load_more_courses() {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.1.6.4' );
 			$type     = LP_Request::get( 'type' );
 			$user_id  = LP_Request::get_int( 'user', 0 );
 			$paged    = LP_Request::get_int( 'current_page', 1 );
@@ -77,7 +81,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			learn_press_get_template( $template, $template_args );
 
 			wp_die();
-		}
+		}*/
 
 		public static function external_link() {
 			$nonce  = LP_Request::get( 'nonce' );
