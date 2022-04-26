@@ -838,9 +838,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_price() {
-			static $price = null;
+			$key_cache = "{$this->get_id()}/price";
+			$price     = LP_Course_Cache::cache_load_first( 'get', $key_cache );
 
-			if ( is_null( $price ) ) {
+			if ( ! $price ) {
 				if ( $this->has_sale_price() ) {
 					$price = $this->get_sale_price();
 					// Add key _lp_course_is_sale for query
@@ -853,6 +854,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				// For case set sale by days range
 				update_post_meta( $this->get_id(), '_lp_price', $price );
+
+				LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
 			}
 
 			return apply_filters( 'learn-press/course/price', $price, $this->get_id() );
