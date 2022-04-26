@@ -20,7 +20,9 @@ defined( 'ABSPATH' ) || exit();
  * @editor tungnx
  * @return bool|LP_Course|mixed
  */
-function learn_press_get_course( int $the_course = 0 ) {
+function learn_press_get_course( $the_course = 0 ) {
+	$the_course = (int) $the_course;
+
 	if ( 0 === $the_course ) {
 		$the_course = get_the_ID() ? get_the_ID() : 0;
 	}
