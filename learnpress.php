@@ -530,7 +530,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
-			add_action( 'init', array( $this, 'wp_init' ), 10 );
+			// add_action( 'init', array( $this, 'wp_init' ), 10 );
 
 			// Check require version thim-core.
 			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
@@ -613,7 +613,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_activate() {
 			LP_Install::instance()->on_activate();
-			do_action( 'learn-press/activate', $this );
+			// do_action( 'learn-press/activate', $this );
 		}
 
 		/**
@@ -777,7 +777,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$this->get_session();
 
 			$this->settings = $this->settings();
-			$this->utils    = LP_Utils::instance();
+			// $this->utils    = LP_Utils::instance();
 
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
