@@ -164,11 +164,15 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			method: 'GET',
 		} );
 
-		const { data, pages, status, message, section_ids } = response;
+		const { data, status, message } = response;
 
 		let returnDataTmp = data.content;
+		let section_ids = data.section_ids;
+		let pages = data.pages;
 		if ( undefined === returnDataTmp ) { // For old Eduma <= 4.6.0
 			returnDataTmp = data;
+			section_ids = response.section_ids;
+			pages = response.pages;
 		}
 
 		if ( status === 'success' ) {
