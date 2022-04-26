@@ -414,22 +414,6 @@ class LP_Plugins_Helper {
 
 		return $headers;
 	}
-
-	/**
-	 * Initialize
-	 */
-	/*public static function init() {
-		require_once LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php';
-
-		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' ) || ! wp_verify_nonce( LP_Request::get( '_wpnonce' ), 'lp-check-updates' ) ) {
-			return;
-		}
-
-		LP_Background_Query_Items::instance()->force_update();
-
-		wp_redirect( remove_query_arg( array( 'force-check-update', '_wpnonce' ) ) );
-		exit();
-	}*/
 }
 
 /**

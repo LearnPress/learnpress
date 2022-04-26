@@ -37,6 +37,10 @@ $all_themes = array(
 	),
 );
 
+require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
+$lp_query_items_bg = new LP_Background_Query_Items();
+$lp_query_items_bg->query_related_themes();
+
 foreach ( $all_themes as $themes ) {
 	if ( $themes['items'] ) {
 		?>

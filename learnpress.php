@@ -26,9 +26,6 @@ if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 }
 
 if ( ! class_exists( 'LearnPress' ) ) {
-
-
-
 	/**
 	 * Class LearnPress
 	 *
@@ -684,7 +681,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$this->init();
 
 			// Todo: tungnx - remove this code after handle ajax on page learn-press-addons
-			require_once 'inc/background-process/class-lp-background-query-items.php';
+			// require_once 'inc/background-process/class-lp-background-query-items.php';
 			// require_once 'inc/background-process/class-lp-background-installer.php';
 
 			require_once 'inc/lp-template-hooks.php';
