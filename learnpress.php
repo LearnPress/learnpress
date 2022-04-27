@@ -32,13 +32,18 @@ if ( ! class_exists( 'LearnPress' ) ) {
 	 * Version 3.0.0
 	 */
 	class LearnPress {
-
 		/**
 		 * Current version of the plugin
 		 *
 		 * @var string
 		 */
 		public $version = LEARNPRESS_VERSION;
+		/**
+		 * Version database require, use for this LP source
+		 *
+		 * @var int
+		 */
+		public $db_version = 4;
 
 		/**
 		 * The single instance of the class

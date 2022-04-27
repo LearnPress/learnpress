@@ -810,7 +810,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
 			include_once 'class-lp-admin-assets.php';
 			include_once 'class-lp-admin-dashboard.php';
-			include_once 'class-lp-admin-tools.php';
+			// include_once 'class-lp-admin-tools.php';
 			include_once 'class-lp-admin-ajax.php';
 			include_once 'editor/class-lp-admin-editor.php';
 			include_once 'class-lp-admin-menu.php';
@@ -819,7 +819,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-modal-search-items.php';
 			include_once 'class-lp-modal-search-users.php';
 			include_once 'class-lp-setup-wizard.php';
-			//          include_once 'class-lp-updater.php';
+			// include_once 'class-lp-updater.php';
 			include_once 'class-lp-install-sample-data.php';
 			include_once 'class-lp-reset-data.php';
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';

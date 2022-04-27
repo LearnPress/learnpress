@@ -116,7 +116,7 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 			$result->message = sprintf(
 				'%s %s',
 				__( 'The LP Database is Latest:', 'learnpress' ),
-				'v' . get_option( 'learnpress_db_version' )
+				'v' . get_option( LP_KEY_DB_VERSION )
 			);
 			wp_send_json( $result );
 		}
@@ -197,7 +197,7 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$result = $lp_db->drop_table( $lp_db->tb_lp_upgrade_db );
-			update_option( 'learnpress_db_version', 3 );
+			update_option( LP_KEY_DB_VERSION, 3 );
 
 			foreach ( $tables as $table ) {
 				// Drop - Rename tables bk.

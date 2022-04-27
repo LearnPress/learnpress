@@ -64,7 +64,13 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				return;
 			}
 
-			// update_option( 'learn_press_install', 'yes' );
+			// Check if LP install before has db version
+			if ( ! get_option( LP_KEY_DB_VERSION, false ) ) {
+				// Save database version of LP
+				update_option( LP_KEY_DB_VERSION, LearnPress::instance()->db_version );
+			}
+
+			update_option( 'learnpress_version', LearnPress::instance()->version );
 
 			// Create pages default.
 			self::create_pages();
@@ -111,9 +117,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		/**
 		 * Run installation after LearnPress is activated.
+		 *
+		 * @depecated 4.1.6.4
 		 */
 		public static function install() {
-			self::create_options();
+			_deprecated_function( __FUNCTION__, '4.1.6.4' );
+			/*self::create_options();
 			self::_create_pages();
 			self::_create_cron_jobs();
 			self::_delete_transients();
@@ -136,7 +145,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			//if ( ! get_option( 'learnpress_db_version' ) ) {
 			update_option( 'learnpress_db_version', (int) LEARNPRESS_VERSION );
-			//}
+			//}*/
 		}
 
 		protected static function _clear_backgrounds() {

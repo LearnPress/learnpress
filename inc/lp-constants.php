@@ -8,6 +8,7 @@ $plugin_info = get_plugin_data( LP_PLUGIN_FILE );
 
 // version.
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
+const LP_KEY_DB_VERSION = 'learnpress_db_version';
 
 //define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 

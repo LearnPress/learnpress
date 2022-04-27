@@ -1523,9 +1523,9 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			// Delete some fields not use.
 
 			// Finish upgrade.
-			update_option( 'learnpress_db_version', '4' );
-			update_option( 'learnpress_version', LEARNPRESS_VERSION );
-			delete_option( 'lp_db_need_upgrade' );
+			update_option( LP_KEY_DB_VERSION, 4 );
+			// update_option( 'learnpress_version', LEARNPRESS_VERSION );
+			// delete_option( 'lp_db_need_upgrade' );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
 			return $response;
