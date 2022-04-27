@@ -841,7 +841,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$key_cache = "{$this->get_id()}/price";
 			$price     = LP_Course_Cache::cache_load_first( 'get', $key_cache );
 
-			if ( ! $price ) {
+			if ( false === $price ) {
 				if ( $this->has_sale_price() ) {
 					$price = $this->get_sale_price();
 					// Add key _lp_course_is_sale for query

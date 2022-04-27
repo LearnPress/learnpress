@@ -228,12 +228,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// require_once 'inc/abstracts/abstract-object-data.php';
 			// require_once 'inc/abstracts/abstract-post-data.php';
 			// require_once 'inc/abstracts/abstract-assets.php';
-			require_once 'inc/abstracts/abstract-object-query.php';
-			require_once 'inc/class-lp-course-query.php';
+			// require_once 'inc/abstracts/abstract-object-query.php';
+			// require_once 'inc/class-lp-course-query.php';
 			// require_once 'inc/class-lp-utils.php';
-			require_once 'inc/abstracts/abstract-addon.php';
-			require_once 'inc/class-lp-thumbnail-helper.php';
-			require_once 'inc/cache.php';
+			// require_once 'inc/abstracts/abstract-addon.php';
+			// require_once 'inc/class-lp-thumbnail-helper.php';
+			// require_once 'inc/cache.php';
 			// require_once 'inc/class-lp-asset-key.php';
 
 			// Abstract Meta-box.
@@ -472,6 +472,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
 
+			require_once 'inc/admin/class-lp-updater.php';
+
 			// API
 			require_once 'inc/class-lp-rest-response.php';
 			require_once 'inc/abstracts/abstract-rest-api.php';
@@ -492,8 +494,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			require_once 'inc/admin/class-lp-admin-notice.php';
-
-			require_once 'inc/admin/class-lp-updater.php';
 
 			// Meta box helper
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
@@ -768,9 +768,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Init LearnPress when WP initialises
 		 */
 		public function init() {
-			$this->api           = new LP_Core_API();
-			$this->admin_api     = new LP_Admin_Core_API();
-			$this->theme_support = LP_Theme_Support::instance();
+			$this->api       = new LP_Core_API();
+			$this->admin_api = new LP_Admin_Core_API();
+			// $this->theme_support = LP_Theme_Support::instance();
 
 			// $this->view_log();
 

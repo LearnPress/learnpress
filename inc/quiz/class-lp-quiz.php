@@ -128,7 +128,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'review_questions'    => 'no',
+				'review'              => 'no',
 				'duration'            => '10 minute',
 				'passing_grade'       => 80,
 				'negative_marking'    => 'no',
