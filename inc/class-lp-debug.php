@@ -10,23 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LP_Debug {
-
-	/**
-	 * @var array Stores open file _handles.
-	 * @access private
-	 */
-	private $_handles;
-
 	/**
 	 * @var null
 	 */
 	private static $_instance = null;
-
 	/**
 	 * @var array
 	 */
 	private static $_time = array();
-
 	/**
 	 * Constructor for the logger.
 	 */
@@ -130,7 +121,7 @@ class LP_Debug {
 	 * @editor tungnx
 	 */
 	public static function is_debug(): bool {
-		return LP_Settings::get_option( 'debug', 'no' ) == 'yes';
+		return LP_Settings::get_option( 'debug', 'no' ) === 'yes';
 	}
 
 	/**

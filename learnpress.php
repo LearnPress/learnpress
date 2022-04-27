@@ -102,20 +102,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public $global = array();
 
 		/**
-		 * Manage all processes run in background.
-		 *
-		 * @var LP_Abstract_Background_Process[]
-		 */
-		public $backgrounds = array();
-
-		/**
-		 * @var LP_Admin_Notice
-		 *
-		 * @since 3.2.6
-		 */
-		public $admin_notices = null;
-
-		/**
 		 * @var LP_Template
 		 */
 		public $template = null;
@@ -242,41 +228,41 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// require_once 'inc/class-lp-asset-key.php';
 
 			// Abstract Meta-box.
-			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
+			// include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
 			// curds .
 			// require_once 'inc/curds/class-lp-helper-curd.php';
-			require_once 'inc/curds/class-lp-course-curd.php';
+			/*require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
 			require_once 'inc/curds/class-lp-lesson-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';
 			require_once 'inc/curds/class-lp-question-curd.php';
 			require_once 'inc/curds/class-lp-order-curd.php';
 			require_once 'inc/curds/class-lp-user-curd.php';
-			require_once 'inc/curds/class-lp-user-item-curd.php';
+			require_once 'inc/curds/class-lp-user-item-curd.php';*/
 
 			// require_once 'inc/class-lp-backward-plugins.php';
 			// require_once 'inc/class-lp-debug.php';
 			// require_once 'inc/class-lp-global.php';
 			// require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-			require_once 'inc/course/class-lp-course-item.php';
+			/*require_once 'inc/course/class-lp-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';
 			require_once 'inc/course/class-lp-course-no-required-enroll.php';
 			require_once 'inc/user-item/class-lp-user-item.php';
-			require_once 'inc/user-item/class-lp-user-item-course.php';
+			require_once 'inc/user-item/class-lp-user-item-course.php';*/
 
-			require_once 'inc/lp-deprecated.php'; // Will remove if Eduma and guest update all 4.0.0
+			/*require_once 'inc/lp-deprecated.php'; // Will remove if Eduma and guest update all 4.0.0
 			require_once 'inc/lp-core-functions.php';
-			require_once 'inc/class-lp-autoloader.php';
+			require_once 'inc/class-lp-autoloader.php';*/
 
 			/*if ( get_option( 'learn_press_status' ) !== 'installed' ) {
 				require_once 'inc/class-lp-install.php';
 			}*/
 
-			require_once 'inc/lp-webhooks.php';
+			/*require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
 			require_once 'inc/abstract-settings.php';
-			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
+			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';*/
 			// require_once 'inc/class-lp-rest-response.php';
 
 			// include_once 'inc/admin/class-lp-updater.php';
@@ -284,8 +270,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			if ( is_admin() ) {
 				// require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 
-				require_once 'inc/admin/class-lp-admin.php';
-				require_once 'inc/admin/settings/abstract-settings-page.php';
+				// require_once 'inc/admin/class-lp-admin.php';
+				// require_once 'inc/admin/settings/abstract-settings-page.php';
 			}
 
 			if ( ! is_admin() ) {
@@ -293,8 +279,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				// require_once 'inc/course/class-model-user-can-view-course-item.php';
 			}
 
-			include_once 'inc/models/steps/class-lp-group-step.php';
-			include_once 'inc/models/steps/class-lp-step.php';
+			/*include_once 'inc/models/steps/class-lp-group-step.php';
+			include_once 'inc/models/steps/class-lp-step.php';*/
 
 			// require_once 'inc/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
@@ -355,21 +341,21 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/block-template/class-block-until.php';
 			require_once 'inc/block-template/class-block-controller.php';
 
-			require_once 'inc/class-lp-multi-language.php';
-			require_once 'inc/class-lp-page-controller.php';
-			require_once 'inc/class-lp-schedules.php';
+			// require_once 'inc/class-lp-multi-language.php';
+			// require_once 'inc/class-lp-page-controller.php';
+			// require_once 'inc/class-lp-schedules.php';
 			// require_once 'inc/class-lp-preview-course.php';
 
-			if ( defined( 'ELEMENTOR_VERSION' ) ) {
+			/*if ( defined( 'ELEMENTOR_VERSION' ) ) {
 				require_once 'inc/external-plugin/elementor/class-lp-elementor.php';
-			}
+			}*/
 
-			require_once 'inc/class-lp-widget.php';
-			require_once 'inc/lp-widget-functions.php';
+			// require_once 'inc/class-lp-widget.php';
+			// require_once 'inc/lp-widget-functions.php';
 
 			// Handle steps.
-			require_once 'inc/handle-steps/class-lp-handle-steps.php';
-			require_once 'inc/handle-steps/class-lp-handle-upgrade-db-steps.php';
+			// require_once 'inc/handle-steps/class-lp-handle-steps.php';
+			// require_once 'inc/handle-steps/class-lp-handle-upgrade-db-steps.php';
 
 			/**
 			 * REST APIs
@@ -402,6 +388,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
+			require_once 'inc/class-lp-multi-language.php';
+
 			// Filter query .
 			require_once 'inc/filters/class-lp-filter.php';
 			require_once 'inc/filters/class-lp-post-type-filter.php';
@@ -436,17 +424,21 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// File helper
 			require_once 'inc/class-lp-helper.php';
 
-			// File handle install LP
-			require_once 'inc/class-lp-install.php';
+			// Models
+			require_once 'inc/models/class-lp-rest-response.php';
+			include_once 'inc/models/steps/class-lp-group-step.php';
+			include_once 'inc/models/steps/class-lp-step.php';
+			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
+
+			// Handle steps.
+			require_once 'inc/handle-steps/class-lp-handle-steps.php';
+			require_once 'inc/handle-steps/class-lp-handle-upgrade-db-steps.php';
 
 			// LP Cache
 			require_once 'inc/cache/class-lp-cache.php';
 			require_once 'inc/cache/class-lp-courses-cache.php';
 			require_once 'inc/cache/class-lp-course-cache.php';
 			require_once 'inc/cache/class-lp-quiz-cache.php';
-
-			// Models
-			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
 
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
@@ -470,6 +462,30 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
 
+			require_once 'inc/curds/class-lp-course-curd.php';
+			require_once 'inc/curds/class-lp-section-curd.php';
+			require_once 'inc/curds/class-lp-lesson-curd.php';
+			require_once 'inc/curds/class-lp-quiz-curd.php';
+			require_once 'inc/curds/class-lp-question-curd.php';
+			require_once 'inc/curds/class-lp-order-curd.php';
+			require_once 'inc/curds/class-lp-user-curd.php';
+			require_once 'inc/curds/class-lp-user-item-curd.php';
+
+			require_once 'inc/course/class-lp-course-item.php';
+			require_once 'inc/course/class-lp-course-section.php';
+			require_once 'inc/course/class-lp-course-no-required-enroll.php';
+			require_once 'inc/user-item/class-lp-user-item.php';
+			require_once 'inc/user-item/class-lp-user-item-course.php';
+
+			require_once 'inc/lp-deprecated.php'; // Will remove if Eduma and guest update all 4.0.0
+			require_once 'inc/lp-core-functions.php';
+			require_once 'inc/class-lp-autoloader.php';
+
+			require_once 'inc/lp-webhooks.php';
+			require_once 'inc/class-lp-request-handler.php';
+			require_once 'inc/abstract-settings.php';
+			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
+
 			// Todo: tungnx check those files.
 			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-course-query.php';
@@ -480,7 +496,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/class-lp-updater.php';
 
 			// API
-			require_once 'inc/class-lp-rest-response.php';
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';
 			require_once 'inc/rest-api/class-lp-core-api.php';
@@ -491,6 +506,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			/** Jwt */
 			include_once 'inc/jwt/class-jwt-auth.php';
+
+			require_once 'inc/class-lp-widget.php';
+			require_once 'inc/lp-widget-functions.php';
+
+			// For plugin Elementor
+			if ( defined( 'ELEMENTOR_VERSION' ) ) {
+				require_once 'inc/external-plugin/elementor/class-lp-elementor.php';
+			}
+
+			require_once 'inc/class-lp-page-controller.php';
 		}
 
 		private function include_files_admin() {
@@ -500,8 +525,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/admin/class-lp-admin-notice.php';
 
+			// File handle install LP
+			require_once 'inc/class-lp-install.php';
+
 			// Meta box helper
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
+
+			require_once 'inc/admin/class-lp-admin.php';
+			require_once 'inc/admin/settings/abstract-settings-page.php';
 		}
 
 		private function include_files_frontend() {
@@ -786,8 +818,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
-			} else {
-				$this->admin_notices = LP_Admin_Notice::instance();
 			}
 
 			// Email hook notify

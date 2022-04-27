@@ -350,6 +350,4 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 			return $output;
 		}
 	}
-
-	LP_WP_Filesystem::instance();
 }
