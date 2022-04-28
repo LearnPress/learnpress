@@ -72,26 +72,34 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 		 * Show widget in frontend.
 		 */
 		public function lp_rest_api_content( $instance, $params ) {
-			$instance['show_teacher']     = $instance['show_teacher'] ?? 1;
-			$instance['show_thumbnail']   = $instance['show_thumbnail'] ?? 1;
-			$instance['limit']            = $instance['limit'] ?? 4;
-			$instance['desc_length']      = $instance['desc_length'] ?? 10;
-			$instance['show_price']       = $instance['show_price'] ?? 1;
-			$instance['css_class']        = $instance['css_class'] ?? '';
-			$instance['bottom_link_text'] = $instance['bottom_link_text'] ?? esc_html__( 'Go to Courses', 'learnpress' );
+			$data         = '';
+			$lp_course_db = LP_Course_DB::getInstance();
 
-			$filter        = new LP_Course_Filter();
-			$filter->limit = $instance['limit'];
+			try {
+				$instance['show_teacher']     = $instance['show_teacher'] ?? 1;
+				$instance['show_thumbnail']   = $instance['show_thumbnail'] ?? 1;
+				$instance['limit']            = $instance['limit'] ?? 3;
+				$instance['desc_length']      = $instance['desc_length'] ?? 10;
+				$instance['show_price']       = $instance['show_price'] ?? 1;
+				$instance['css_class']        = $instance['css_class'] ?? '';
+				$instance['bottom_link_text'] = $instance['bottom_link_text'] ?? esc_html__( 'Go to Courses', 'learnpress' );
 
-			$courses = LP_Course_DB::getInstance()->get_popular_courses( $filter );
+				$filter        = new LP_Course_Filter();
+				$filter->limit = $instance['limit'];
+				$lp_course_db->get_courses_order_by_popular( $filter );
+				$courses = $lp_course_db->get_courses( $filter );
+				$courses = $lp_course_db->get_values_by_key( $courses, 'ID' );
 
-			$data = learn_press_get_template_content(
-				'widgets/popular-courses.php',
-				array(
-					'courses'  => $courses,
-					'instance' => $instance,
-				)
-			);
+				$data = learn_press_get_template_content(
+					'widgets/popular-courses.php',
+					array(
+						'courses'  => $courses,
+						'instance' => $instance,
+					)
+				);
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e->getMessage() );
+			}
 
 			return $data;
 		}

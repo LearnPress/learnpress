@@ -799,15 +799,16 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return array
 		 * @author tungnx
 		 * @version 1.0.0
+		 * @depecated 4.1.6.4
 		 */
-		public function get_popular_courses( array $args = array() ): array {
+		/*public function get_popular_courses( array $args = array() ): array {
 			$lp_db = LP_Course_DB::getInstance();
 
 			$filter        = new LP_Course_Filter();
 			$filter->limit = $args['limit'];
 
 			return $lp_db->get_popular_courses( $filter );
-		}
+		}*/
 
 		/**
 		 * Get popular courses.
