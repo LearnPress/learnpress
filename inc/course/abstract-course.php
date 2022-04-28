@@ -1111,11 +1111,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function get_total_user_enrolled_or_purchased(): int {
-			static $total_user_enrolled = null;
+			$key_cache           = "{$this->get_id()}/total-students-attended";
+			$total_user_enrolled = LP_Course_Cache::cache_load_first( 'get', $key_cache );
 
-			if ( is_null( $total_user_enrolled ) ) {
+			if ( false === $total_user_enrolled ) {
 				$lp_course_db        = LP_Course_DB::getInstance();
 				$total_user_enrolled = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+
+				LP_Course_Cache::cache_load_first( 'set', $key_cache, $total_user_enrolled );
 			}
 
 			return $total_user_enrolled;
