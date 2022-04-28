@@ -58,7 +58,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * @var int
 		 */
-		protected static $_loaded = 0;
+		// protected static $_loaded = 0;
 
 		/**
 		 * @var string
@@ -116,10 +116,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			$this->_options = $args;
 			$this->_init();
-			self::$_loaded ++;
-			if ( self::$_loaded == 1 ) {
-				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-			}
+			// self::$_loaded ++;
 		}
 
 		public function add_support( $feature, $type = 'yes' ) {
@@ -143,21 +140,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 		public static function get_type_support_answer_options() {
 
-		}
-
-		/**
-		 * Debug log.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param $data
-		 *
-		 * @return array
-		 */
-		public static function log( $data ) {
-			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-			return $data;
 		}
 
 		/**

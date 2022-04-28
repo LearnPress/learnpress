@@ -210,176 +210,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Include required files Frontend.
 			$this->include_files_frontend();
 
-			// require_once 'inc/class-lp-settings.php';
-			// require_once 'inc/class-lp-factory.php';
-			// require_once 'inc/class-lp-datetime.php';
-			// require_once 'inc/class-lp-hard-cache.php';
-			// require_once 'inc/interfaces/interface-curd.php';
-			// require_once 'inc/abstracts/abstract-array-access.php';
-			// require_once 'inc/abstracts/abstract-object-data.php';
-			// require_once 'inc/abstracts/abstract-post-data.php';
-			// require_once 'inc/abstracts/abstract-assets.php';
-			// require_once 'inc/abstracts/abstract-object-query.php';
-			// require_once 'inc/class-lp-course-query.php';
-			// require_once 'inc/class-lp-utils.php';
-			// require_once 'inc/abstracts/abstract-addon.php';
-			// require_once 'inc/class-lp-thumbnail-helper.php';
-			// require_once 'inc/cache.php';
-			// require_once 'inc/class-lp-asset-key.php';
-
-			// Abstract Meta-box.
-			// include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
-
-			// curds .
-			// require_once 'inc/curds/class-lp-helper-curd.php';
-			/*require_once 'inc/curds/class-lp-course-curd.php';
-			require_once 'inc/curds/class-lp-section-curd.php';
-			require_once 'inc/curds/class-lp-lesson-curd.php';
-			require_once 'inc/curds/class-lp-quiz-curd.php';
-			require_once 'inc/curds/class-lp-question-curd.php';
-			require_once 'inc/curds/class-lp-order-curd.php';
-			require_once 'inc/curds/class-lp-user-curd.php';
-			require_once 'inc/curds/class-lp-user-item-curd.php';*/
-
-			// require_once 'inc/class-lp-backward-plugins.php';
-			// require_once 'inc/class-lp-debug.php';
-			// require_once 'inc/class-lp-global.php';
-			// require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-			/*require_once 'inc/course/class-lp-course-item.php';
-			require_once 'inc/course/class-lp-course-section.php';
-			require_once 'inc/course/class-lp-course-no-required-enroll.php';
-			require_once 'inc/user-item/class-lp-user-item.php';
-			require_once 'inc/user-item/class-lp-user-item-course.php';*/
-
-			/*require_once 'inc/lp-deprecated.php'; // Will remove if Eduma and guest update all 4.0.0
-			require_once 'inc/lp-core-functions.php';
-			require_once 'inc/class-lp-autoloader.php';*/
-
-			/*if ( get_option( 'learn_press_status' ) !== 'installed' ) {
-				require_once 'inc/class-lp-install.php';
-			}*/
-
-			/*require_once 'inc/lp-webhooks.php';
-			require_once 'inc/class-lp-request-handler.php';
-			require_once 'inc/abstract-settings.php';
-			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';*/
-			// require_once 'inc/class-lp-rest-response.php';
-
-			// include_once 'inc/admin/class-lp-updater.php';
-
-			if ( is_admin() ) {
-				// require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-
-				// require_once 'inc/admin/class-lp-admin.php';
-				// require_once 'inc/admin/settings/abstract-settings-page.php';
-			}
-
-			if ( ! is_admin() ) {
-				// require_once 'inc/class-lp-assets.php';
-				// require_once 'inc/course/class-model-user-can-view-course-item.php';
-			}
-
-			/*include_once 'inc/models/steps/class-lp-group-step.php';
-			include_once 'inc/models/steps/class-lp-step.php';*/
-
-			// require_once 'inc/class-lp-repair-database.php';
-			require_once 'inc/question/class-lp-question.php';
-
-			// Register custom-post-type and taxonomies .
-			require_once 'inc/custom-post-types/abstract.php';
-			require_once 'inc/custom-post-types/course.php';
-			require_once 'inc/custom-post-types/lesson.php';
-			require_once 'inc/custom-post-types/quiz.php';
-			require_once 'inc/custom-post-types/question.php';
-			require_once 'inc/custom-post-types/order.php';
-
-			/*if ( defined( 'LP_USE_ATTRIBUTES' ) && LP_USE_ATTRIBUTES ) {
-				require_once 'inc/attributes/lp-attributes-functions.php';
-			}*/
-
-			require_once 'inc/course/lp-course-functions.php';
-			require_once 'inc/course/abstract-course.php';
-			require_once 'inc/course/class-lp-course.php';
-			require_once 'inc/course/class-lp-course-utils.php';
-			require_once 'inc/quiz/lp-quiz-functions.php';
-			require_once 'inc/quiz/class-lp-quiz.php';
-			require_once 'inc/lesson/lp-lesson-functions.php';
-			require_once 'inc/order/lp-order-functions.php';
-			require_once 'inc/order/class-lp-order.php';
-			// require_once 'inc/class-lp-gdpr.php';
-
-			// user API
-			require_once 'inc/user/lp-user-functions.php';
-			require_once 'inc/user/class-lp-user-factory.php';
-			require_once 'inc/user/abstract-lp-user.php';
-			require_once 'inc/user/class-lp-user.php';
-			require_once 'inc/user/class-lp-profile.php';
-			require_once 'inc/user-item/class-lp-user-item.php';
-			require_once 'inc/user-item/class-lp-user-item-course.php';
-			require_once 'inc/user-item/class-lp-user-item-quiz.php';
-			require_once 'inc/user-item/class-lp-quiz-results.php';
-			require_once 'inc/class-lp-session-handler.php';
-
-			require_once 'inc/class-lp-shortcodes.php';
-
-			// include template functions .
-			require_once 'inc/lp-template-functions.php';
-			require_once 'inc/templates/abstract-template.php';
-			require_once 'inc/class-lp-template.php';
-
-			require_once 'inc/cart/class-lp-cart.php';
-			require_once 'inc/cart/lp-cart-functions.php';
-			require_once 'inc/gateways/class-lp-gateway-abstract.php';
-			require_once 'inc/gateways/class-lp-gateways.php';
-			require_once 'inc/admin/class-lp-admin-ajax.php';
-
-			if ( ! is_admin() ) {
-				require_once 'inc/class-lp-ajax.php';
-			}
-
-			// Block Templates
-			require_once 'inc/block-template/class-block-until.php';
-			require_once 'inc/block-template/class-block-controller.php';
-
-			// require_once 'inc/class-lp-multi-language.php';
-			// require_once 'inc/class-lp-page-controller.php';
-			// require_once 'inc/class-lp-schedules.php';
-			// require_once 'inc/class-lp-preview-course.php';
-
-			/*if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				require_once 'inc/external-plugin/elementor/class-lp-elementor.php';
-			}*/
-
-			// require_once 'inc/class-lp-widget.php';
-			// require_once 'inc/lp-widget-functions.php';
-
-			// Handle steps.
-			// require_once 'inc/handle-steps/class-lp-handle-steps.php';
-			// require_once 'inc/handle-steps/class-lp-handle-upgrade-db-steps.php';
-
-			/**
-			 * REST APIs
-			 *
-			 * @since 3.2.6
-			 */
-			// require_once 'inc/abstracts/abstract-rest-api.php';
-			// require_once 'inc/abstracts/abstract-rest-controller.php';
-			// require_once 'inc/rest-api/class-lp-core-api.php';
-			// require_once 'inc/rest-api/class-lp-admin-core-api.php';
-
-			// include_once 'inc/theme-support/class-theme-support-base.php';
-			// include_once 'inc/class-lp-theme-support.php';
-
-			/** Jwt */
-			// include_once 'inc/jwt/class-jwt-auth.php';
-
-			// Comment by tungnx
-			/*
-			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
-				include_once 'local-debug.php';
-			}*/
-
-			$GLOBALS['lp_query'] = $this->query = new LP_Query();
+			new LP_Query();
 		}
 
 		/**
@@ -457,6 +288,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-global.php';
 			require_once 'inc/class-lp-datetime.php';
 
+			// Register custom-post-type and taxonomies .
+			require_once 'inc/custom-post-types/abstract.php';
+			require_once 'inc/custom-post-types/course.php';
+			require_once 'inc/custom-post-types/lesson.php';
+			require_once 'inc/custom-post-types/quiz.php';
+			require_once 'inc/custom-post-types/question.php';
+			require_once 'inc/custom-post-types/order.php';
+
 			require_once 'inc/interfaces/interface-curd.php';
 			require_once 'inc/abstracts/abstract-array-access.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
@@ -472,6 +311,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-user-item-curd.php';
 
 			require_once 'inc/course/class-lp-course-item.php';
+			require_once 'inc/question/class-lp-question.php';
 			require_once 'inc/course/class-lp-course-section.php';
 			require_once 'inc/course/class-lp-course-no-required-enroll.php';
 			require_once 'inc/user-item/class-lp-user-item.php';
@@ -493,7 +333,44 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
 
+			// Class handle check db of LP need to upgrade?
 			require_once 'inc/admin/class-lp-updater.php';
+
+			require_once 'inc/course/lp-course-functions.php';
+			require_once 'inc/course/abstract-course.php';
+			require_once 'inc/course/class-lp-course.php';
+			require_once 'inc/course/class-lp-course-utils.php';
+			require_once 'inc/quiz/lp-quiz-functions.php';
+			require_once 'inc/quiz/class-lp-quiz.php';
+			require_once 'inc/lesson/lp-lesson-functions.php';
+			require_once 'inc/order/lp-order-functions.php';
+			require_once 'inc/order/class-lp-order.php';
+
+			require_once 'inc/user/lp-user-functions.php';
+			require_once 'inc/user/class-lp-user-factory.php';
+			require_once 'inc/user/abstract-lp-user.php';
+			require_once 'inc/user/class-lp-user.php';
+			require_once 'inc/user/class-lp-profile.php';
+			require_once 'inc/user-item/class-lp-user-item.php';
+			require_once 'inc/user-item/class-lp-user-item-course.php';
+			require_once 'inc/user-item/class-lp-user-item-quiz.php';
+			require_once 'inc/user-item/class-lp-quiz-results.php';
+			require_once 'inc/class-lp-session-handler.php';
+
+			require_once 'inc/class-lp-shortcodes.php';
+
+			// include template functions .
+			require_once 'inc/lp-template-functions.php';
+			require_once 'inc/templates/abstract-template.php';
+			require_once 'inc/class-lp-template.php';
+
+			// Cart
+			require_once 'inc/cart/class-lp-cart.php';
+			require_once 'inc/cart/lp-cart-functions.php';
+
+			// Block Templates
+			require_once 'inc/block-template/class-block-until.php';
+			require_once 'inc/block-template/class-block-controller.php';
 
 			// API
 			require_once 'inc/abstracts/abstract-rest-api.php';
@@ -516,6 +393,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			require_once 'inc/class-lp-page-controller.php';
+
+			require_once 'inc/gateways/class-lp-gateway-abstract.php';
+			require_once 'inc/gateways/class-lp-gateways.php';
 		}
 
 		private function include_files_admin() {
@@ -534,6 +414,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/admin/class-lp-admin.php';
 			require_once 'inc/admin/settings/abstract-settings-page.php';
+
+			require_once 'inc/admin/class-lp-admin-ajax.php';
 		}
 
 		private function include_files_frontend() {
@@ -544,6 +426,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-assets.php';
 
 			require_once 'inc/course/class-model-user-can-view-course-item.php';
+
+			require_once 'inc/class-lp-ajax.php';
 		}
 
 		/**

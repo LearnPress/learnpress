@@ -1169,7 +1169,11 @@ function learn_press_label_html( $label, $type = '' ) {
 	<?php
 }
 
+/**
+ * @depecated 4.1.6.4
+ */
 function learn_press_get_course_redirect( $link ) {
+	_deprecated_function( __FUNCTION__, '4.1.6.4' );
 	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
 		return $link;
 	}
