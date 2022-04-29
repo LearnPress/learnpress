@@ -117,7 +117,8 @@ abstract class LP_Abstract_Settings {
 					}
 
 					// Get value from option
-					if ( false === ( $std = get_option( $option_name ) ) ) {
+					$std = get_option( $option_name );
+					if ( false === $std ) {
 						$std = array_key_exists( 'default', $field ) ? $field['default'] : '';
 					}
 

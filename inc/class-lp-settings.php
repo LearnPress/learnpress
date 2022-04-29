@@ -199,7 +199,7 @@ class LP_Settings {
 
 	public function refresh() {
 		if ( $this->_load_data ) {
-			$this->_load_options( true );
+			// $this->_load_options( true );
 		}
 
 		return $this;

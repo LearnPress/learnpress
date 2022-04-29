@@ -398,6 +398,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/gateways/class-lp-gateways.php';
 		}
 
+		/**
+		 * Include file run on backend
+		 */
 		private function include_files_admin() {
 			if ( ! is_admin() ) {
 				return;
@@ -418,6 +421,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/class-lp-admin-ajax.php';
 		}
 
+		/**
+		 * Include file run on frontend
+		 */
 		private function include_files_frontend() {
 			if ( is_admin() ) {
 				return;
@@ -833,11 +839,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			return $this->plugin_url( "assets/images/{$file}" );
-		}
-
-		public function flush_rewrite_rules() {
-			// LP()->session->flush_rewrite_rules = true;
-			flush_rewrite_rules();
 		}
 
 		/**

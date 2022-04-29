@@ -113,7 +113,7 @@ class LP_Setup_Wizard {
 
 		if ( 'finish' === LP_Request::get_string( 'step' ) ) {
 
-			LP_Install::create_options();
+			// LP_Install::create_options();
 
 			update_option( 'learn_press_setup_wizard_completed', 'yes' );
 		}
@@ -123,7 +123,7 @@ class LP_Setup_Wizard {
 		$this->save();
 
 		// Refresh new changes
-		LP()->settings()->refresh();
+		// LP()->settings()->refresh();
 
 		$assets = learn_press_admin_assets();
 

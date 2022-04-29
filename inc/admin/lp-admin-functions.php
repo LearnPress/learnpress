@@ -111,9 +111,10 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 	 * Default admin settings pages
 	 *
 	 * @return mixed
+	 * @depecated 4.1.6.4
 	 */
-	function learn_press_settings_tabs_array() {
-		$default_tabs = array(
+	/*function learn_press_settings_tabs_array() {
+		$tabs = array(
 			'general'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-general.php',
 			'courses'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-courses.php',
 			'profile'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-profile.php',
@@ -122,10 +123,8 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 			'advanced' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 		);
 
-		$tabs = apply_filters( 'learn_press_settings_tabs_array', $default_tabs );
-
 		return apply_filters( 'learn-press/admin/settings-tabs-array', $tabs );
-	}
+	}*/
 }
 
 function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {
