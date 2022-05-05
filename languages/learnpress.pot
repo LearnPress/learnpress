@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.1.6.4-beta-1\n"
+"Project-Id-Version: LearnPress 4.1.6.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lp-doing\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-04-26T09:57:25+03:00\n"
+"POT-Creation-Date: 2022-05-05T05:09:25+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: learnpress\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: inc/admin/class-lp-admin.php:135
 #: inc/admin/class-lp-admin.php:143
-#: inc/admin/lp-admin-functions.php:1702
+#: inc/admin/lp-admin-functions.php:1701
 #: inc/admin/settings/class-lp-settings-emails.php:161
 #: inc/external-plugin/elementor/class-lp-elementor.php:41
 #: assets/js/dist/frontend/quiz.min.js:8
@@ -38,6 +38,109 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "http://thimpress.com"
+msgstr ""
+
+#: config/settings/general.php:13
+msgid "Pages setup"
+msgstr ""
+
+#: config/settings/general.php:17
+msgid "All courses page"
+msgstr ""
+
+#: config/settings/general.php:23
+msgid "Profile page"
+msgstr ""
+
+#: config/settings/general.php:29
+msgid "Checkout page"
+msgstr ""
+
+#: config/settings/general.php:35
+msgid "Become instructors page"
+msgstr ""
+
+#: config/settings/general.php:41
+msgid "Terms and conditions"
+msgstr ""
+
+#: config/settings/general.php:47
+msgid "Logout Redirect"
+msgstr ""
+
+#: config/settings/general.php:51
+msgid "The page where user will be redirected to after logging out."
+msgstr ""
+
+#: config/settings/general.php:57
+#: config/settings/general.php:62
+#: inc/admin/views/setup/setup-paypal.php:28
+#: inc/admin/views/setup/steps/currency.php:17
+#: inc/admin/views/setup/steps/currency.php:21
+msgid "Currency"
+msgstr ""
+
+#: config/settings/general.php:59
+msgid "Setting up your currency unit and its formatting."
+msgstr ""
+
+#: config/settings/general.php:70
+#: inc/admin/views/setup/steps/currency.php:37
+msgid "Currency position"
+msgstr ""
+
+#: config/settings/general.php:71
+msgid "This controls the position of the currency symbol."
+msgstr ""
+
+#: config/settings/general.php:78
+msgid "Thousands separator"
+msgstr ""
+
+#: config/settings/general.php:79
+msgid "This sets the thousand separator of displayed prices."
+msgstr ""
+
+#: config/settings/general.php:86
+msgid "Decimals separator"
+msgstr ""
+
+#: config/settings/general.php:87
+msgid "This sets the decimal separator of displayed prices."
+msgstr ""
+
+#: config/settings/general.php:94
+msgid "Number of decimals"
+msgstr ""
+
+#: config/settings/general.php:95
+msgid "This sets the number of decimal points shown in displayed prices."
+msgstr ""
+
+#: config/settings/general.php:105
+#: inc/admin/settings/class-lp-settings-advanced.php:56
+#: inc/admin/views/addons/html-themes.php:35
+msgid "Other"
+msgstr ""
+
+#: config/settings/general.php:109
+msgid "Publish profile"
+msgstr ""
+
+#: config/settings/general.php:113
+msgid "This option will add a sub-item \"Privacy\" under Setting tab on the Profile page. If users want to publish or hide their course, quiz tab when other users visit their profile page, they need to enable/disable that option in the Privacy section."
+msgstr ""
+
+#: config/settings/general.php:114
+msgid "Public all user profile page (Overview tab only)."
+msgstr ""
+
+#: config/settings/general.php:117
+msgid "Instructor registration"
+msgstr ""
+
+#: config/settings/general.php:118
+msgid "Enable the option in all registration forms."
 msgstr ""
 
 #: inc/abstract-settings.php:89
@@ -665,78 +768,78 @@ msgctxt "copy lesson"
 msgid "Duplicate"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:223
+#: inc/admin/lp-admin-functions.php:222
 msgid "[ Add a new page ]"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:246
+#: inc/admin/lp-admin-functions.php:245
 msgid "Select Page"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:264
+#: inc/admin/lp-admin-functions.php:263
 #: inc/admin/meta-box/fields/select-page.php:24
 msgid "Select a page&hellip;"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:292
+#: inc/admin/lp-admin-functions.php:291
 msgctxt "drop down pages"
 msgid "or"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:295
+#: inc/admin/lp-admin-functions.php:294
 msgid "Create new"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:300
+#: inc/admin/lp-admin-functions.php:299
 msgid "New page title"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:302
+#: inc/admin/lp-admin-functions.php:301
 msgid "Ok [Enter]"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:304
+#: inc/admin/lp-admin-functions.php:303
 msgid "Cancel [ESC]"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:309
+#: inc/admin/lp-admin-functions.php:308
 msgid "Edit page"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:312
+#: inc/admin/lp-admin-functions.php:311
 msgid "View page"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:412
+#: inc/admin/lp-admin-functions.php:411
 msgid "Minutes"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:456
-#: inc/admin/lp-admin-functions.php:502
+#: inc/admin/lp-admin-functions.php:455
+#: inc/admin/lp-admin-functions.php:501
 #: inc/admin/settings/class-lp-settings-emails.php:148
 msgid "Plain Text"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:457
-#: inc/admin/lp-admin-functions.php:503
+#: inc/admin/lp-admin-functions.php:456
+#: inc/admin/lp-admin-functions.php:502
 #: inc/admin/settings/class-lp-settings-emails.php:149
 msgid "HTML"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:702
+#: inc/admin/lp-admin-functions.php:701
 #: inc/admin/views/addons/html-loop-theme.php:45
 msgid "Get it now"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:704
+#: inc/admin/lp-admin-functions.php:703
 #: inc/admin/views/addons/html-loop-theme.php:46
 msgid "View Demo"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1016
-#: inc/admin/lp-admin-functions.php:1210
-#: inc/admin/lp-admin-functions.php:1426
-#: inc/admin/lp-admin-functions.php:2302
+#: inc/admin/lp-admin-functions.php:1015
+#: inc/admin/lp-admin-functions.php:1209
+#: inc/admin/lp-admin-functions.php:1425
+#: inc/admin/lp-admin-functions.php:2301
 #: inc/admin/views/statistics/courses.php:27
 #: inc/admin/views/statistics/courses.php:42
 #: inc/admin/views/statistics/general.php:43
@@ -758,7 +861,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1021
+#: inc/admin/lp-admin-functions.php:1020
 #: inc/admin/views/statistics/courses.php:9
 #: inc/admin/views/statistics/general.php:9
 #: inc/admin/views/statistics/orders.php:9
@@ -767,7 +870,7 @@ msgstr ""
 msgid "Instructors"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1026
+#: inc/admin/lp-admin-functions.php:1025
 #: inc/admin/views/statistics/courses.php:8
 #: inc/admin/views/statistics/general.php:8
 #: inc/admin/views/statistics/orders.php:8
@@ -778,16 +881,16 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1215
-#: inc/admin/lp-admin-functions.php:2307
+#: inc/admin/lp-admin-functions.php:1214
+#: inc/admin/lp-admin-functions.php:2306
 #: inc/templates/class-lp-template-profile.php:112
 #: inc/user/class-lp-profile.php:841
 msgid "Publish"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1220
-#: inc/admin/lp-admin-functions.php:1436
-#: inc/admin/lp-admin-functions.php:2312
+#: inc/admin/lp-admin-functions.php:1219
+#: inc/admin/lp-admin-functions.php:1435
+#: inc/admin/lp-admin-functions.php:2311
 #: inc/admin/views/statistics/courses.php:44
 #: inc/admin/views/statistics/general.php:61
 #: inc/admin/views/statistics/orders.php:65
@@ -796,24 +899,24 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1225
-#: inc/admin/lp-admin-functions.php:2317
+#: inc/admin/lp-admin-functions.php:1224
+#: inc/admin/lp-admin-functions.php:2316
 #: inc/admin/views/statistics/courses.php:45
 #: inc/admin/views/statistics/general.php:62
 msgid "Paid"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1230
-#: inc/admin/lp-admin-functions.php:2322
+#: inc/admin/lp-admin-functions.php:1229
+#: inc/admin/lp-admin-functions.php:2321
 #: inc/admin/views/statistics/courses.php:46
 #: inc/admin/views/statistics/general.php:63
-#: inc/course/abstract-course.php:877
-#: inc/course/abstract-course.php:906
+#: inc/course/abstract-course.php:880
+#: inc/course/abstract-course.php:909
 #: templates/order/order-details.php:43
 msgid "Free"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1431
+#: inc/admin/lp-admin-functions.php:1430
 #: inc/admin/views/statistics/orders.php:64
 #: inc/class-lp-gdpr.php:463
 #: inc/user-item/class-lp-user-item-quiz.php:146
@@ -822,23 +925,23 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1464
+#: inc/admin/lp-admin-functions.php:1463
 msgid "Pending Courses / Publish Courses"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1465
+#: inc/admin/lp-admin-functions.php:1464
 msgid "Free Courses / Priced Courses"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1845
+#: inc/admin/lp-admin-functions.php:1844
 msgid " Copy"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1971
+#: inc/admin/lp-admin-functions.php:1970
 msgid "Question id %s does not exist."
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1975
+#: inc/admin/lp-admin-functions.php:1974
 msgid "Quiz id %s does not exist."
 msgstr ""
 
@@ -989,19 +1092,13 @@ msgstr ""
 msgid "Secondary color"
 msgstr ""
 
-#: inc/admin/settings/class-lp-settings-advanced.php:56
-#: inc/admin/settings/class-lp-settings-general.php:133
-#: inc/admin/views/addons/html-themes.php:35
-msgid "Other"
-msgstr ""
-
 #: inc/admin/settings/class-lp-settings-advanced.php:60
 msgid "Enable gutenberg"
 msgstr ""
 
 #: inc/admin/settings/class-lp-settings-advanced.php:72
 #: inc/admin/settings/class-lp-settings-courses.php:177
-#: inc/course/lp-course-functions.php:462
+#: inc/course/lp-course-functions.php:464
 #: inc/custom-post-types/lesson.php:158
 #: inc/lp-core-functions.php:418
 #: inc/lp-template-functions.php:1067
@@ -1010,7 +1107,7 @@ msgstr ""
 
 #: inc/admin/settings/class-lp-settings-advanced.php:79
 #: inc/admin/settings/class-lp-settings-courses.php:185
-#: inc/course/lp-course-functions.php:463
+#: inc/course/lp-course-functions.php:465
 #: inc/custom-post-types/question.php:320
 #: inc/custom-post-types/quiz.php:87
 #: inc/lp-core-functions.php:419
@@ -1194,103 +1291,6 @@ msgstr ""
 msgid "Footer text"
 msgstr ""
 
-#: inc/admin/settings/class-lp-settings-general.php:41
-msgid "Pages setup"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:45
-msgid "All courses page"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:51
-msgid "Profile page"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:57
-msgid "Checkout page"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:63
-msgid "Become instructors page"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:69
-msgid "Terms and conditions"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:75
-msgid "Logout Redirect"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:79
-msgid "The page where user will be redirected to after logging out."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:85
-#: inc/admin/settings/class-lp-settings-general.php:90
-#: inc/admin/views/setup/setup-paypal.php:28
-#: inc/admin/views/setup/steps/currency.php:17
-#: inc/admin/views/setup/steps/currency.php:21
-msgid "Currency"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:87
-msgid "Setting up your currency unit and its formatting."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:98
-#: inc/admin/views/setup/steps/currency.php:37
-msgid "Currency position"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:99
-msgid "This controls the position of the currency symbol."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:106
-msgid "Thousands separator"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:107
-msgid "This sets the thousand separator of displayed prices."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:114
-msgid "Decimals separator"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:115
-msgid "This sets the decimal separator of displayed prices."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:122
-msgid "Number of decimals"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:123
-msgid "This sets the number of decimal points shown in displayed prices."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:137
-msgid "Publish profile"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:141
-msgid "This option will add a sub-item \"Privacy\" under Setting tab on the Profile page. If users want to publish or hide their course, quiz tab when other users visit their profile page, they need to enable/disable that option in the Privacy section."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:142
-msgid "Public all user profile page (Overview tab only)."
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:145
-msgid "Instructor registration"
-msgstr ""
-
-#: inc/admin/settings/class-lp-settings-general.php:146
-msgid "Enable the option in all registration forms."
-msgstr ""
-
 #: inc/admin/settings/class-lp-settings-payments.php:24
 #: inc/admin/settings/class-lp-settings-payments.php:120
 msgid "Payments"
@@ -1452,7 +1452,7 @@ msgstr ""
 #: inc/admin/settings/class-lp-settings-profile.php:188
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/user/class-lp-profile.php:274
-#: learnpress.php:549
+#: learnpress.php:476
 msgid "Settings"
 msgstr ""
 
@@ -1511,7 +1511,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:551
+#: learnpress.php:478
 msgid "Add-ons"
 msgstr ""
 
@@ -1539,7 +1539,7 @@ msgstr ""
 msgid "LearnPress Settings"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-settings.php:48
+#: inc/admin/sub-menus/class-lp-submenu-settings.php:58
 msgid "Save settings"
 msgstr ""
 
@@ -3327,7 +3327,7 @@ msgid "Grade"
 msgstr ""
 
 #: inc/class-lp-page-controller.php:151
-#: inc/course/lp-course-functions.php:174
+#: inc/course/lp-course-functions.php:176
 msgctxt "slug"
 msgid "uncategorized"
 msgstr ""
@@ -3404,23 +3404,23 @@ msgstr ""
 msgid "There is no options for this widget."
 msgstr ""
 
-#: inc/course/abstract-course.php:998
-#: inc/course/abstract-course.php:1018
+#: inc/course/abstract-course.php:1001
+#: inc/course/abstract-course.php:1021
 #: inc/lesson/class-lp-lesson.php:104
 #: inc/quiz/class-lp-quiz.php:637
 msgid "The function %s doesn't exist"
 msgstr ""
 
-#: inc/course/abstract-course.php:1999
+#: inc/course/abstract-course.php:2005
 msgid "This course will end within next %s"
 msgstr ""
 
-#: inc/course/abstract-course.php:2076
+#: inc/course/abstract-course.php:2082
 msgctxt "External Link button text"
 msgid "More Info"
 msgstr ""
 
-#: inc/course/abstract-course.php:2123
+#: inc/course/abstract-course.php:2129
 msgid "Tags: "
 msgstr ""
 
@@ -3444,11 +3444,11 @@ msgctxt "course item status title"
 msgid "Unread"
 msgstr ""
 
-#: inc/course/lp-course-functions.php:765
+#: inc/course/lp-course-functions.php:767
 msgid "Edit this item"
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1007
+#: inc/course/lp-course-functions.php:1009
 #: inc/lp-core-functions.php:2574
 #: inc/templates/class-lp-template-profile.php:103
 #: inc/user-item/class-lp-user-item-quiz.php:147
@@ -3459,7 +3459,7 @@ msgstr ""
 msgid "Passed"
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1010
+#: inc/course/lp-course-functions.php:1012
 #: inc/lp-core-functions.php:2577
 #: inc/templates/class-lp-template-profile.php:104
 #: inc/user-item/class-lp-user-item-quiz.php:148
@@ -3470,7 +3470,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1013
+#: inc/course/lp-course-functions.php:1015
 #: inc/lp-core-functions.php:2580
 #: inc/lp-deprecated.php:403
 #: inc/templates/class-lp-template-profile.php:101
@@ -3482,27 +3482,27 @@ msgstr ""
 msgid "In Progress"
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1093
+#: inc/course/lp-course-functions.php:1095
 msgid "lessons completed per total number of lessons."
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1096
+#: inc/course/lp-course-functions.php:1098
 msgid "quizzes passed per total number of quizzes."
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1099
+#: inc/course/lp-course-functions.php:1101
 msgid "Final Quiz"
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1102
+#: inc/course/lp-course-functions.php:1104
 msgid "correct answers per total number of questions."
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1105
+#: inc/course/lp-course-functions.php:1107
 msgid "score achieved per total score of the questions."
 msgstr ""
 
-#: inc/course/lp-course-functions.php:1114
+#: inc/course/lp-course-functions.php:1116
 msgid "Require"
 msgstr ""
 
@@ -6070,28 +6070,28 @@ msgid "Jersey pound"
 msgstr ""
 
 #: inc/lp-core-functions.php:1565
-#: inc/lp-template-functions.php:1686
+#: inc/lp-template-functions.php:1690
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1569
-#: inc/lp-template-functions.php:1682
+#: inc/lp-template-functions.php:1686
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1574
-#: inc/lp-template-functions.php:1677
+#: inc/lp-template-functions.php:1681
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1578
-#: inc/lp-template-functions.php:1671
+#: inc/lp-template-functions.php:1675
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -6285,41 +6285,41 @@ msgid "Overview"
 msgstr ""
 
 #: inc/lp-template-functions.php:1061
-#: inc/lp-template-functions.php:1240
+#: inc/lp-template-functions.php:1244
 #: inc/templates/class-lp-template-course.php:149
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:1560
+#: inc/lp-template-functions.php:1564
 msgid "Course Sidebar"
 msgstr ""
 
-#: inc/lp-template-functions.php:1562
+#: inc/lp-template-functions.php:1566
 msgid "Widgets in this area will be shown in single course"
 msgstr ""
 
-#: inc/lp-template-functions.php:1571
+#: inc/lp-template-functions.php:1575
 msgid "All Courses"
 msgstr ""
 
-#: inc/lp-template-functions.php:1573
+#: inc/lp-template-functions.php:1577
 msgid "Widgets in this area will be shown in all courses page"
 msgstr ""
 
-#: inc/lp-template-functions.php:1710
-#: inc/lp-template-functions.php:1719
+#: inc/lp-template-functions.php:1714
+#: inc/lp-template-functions.php:1723
 msgid "All levels"
 msgstr ""
 
-#: inc/lp-template-functions.php:1720
+#: inc/lp-template-functions.php:1724
 msgid "Beginner"
 msgstr ""
 
-#: inc/lp-template-functions.php:1721
+#: inc/lp-template-functions.php:1725
 msgid "Intermediate"
 msgstr ""
 
-#: inc/lp-template-functions.php:1722
+#: inc/lp-template-functions.php:1726
 msgid "Expert"
 msgstr ""
 
@@ -6453,31 +6453,31 @@ msgstr ""
 msgid "False"
 msgstr ""
 
-#: inc/question/class-lp-question.php:374
+#: inc/question/class-lp-question.php:356
 msgid "True Or False"
 msgstr ""
 
-#: inc/question/class-lp-question.php:375
+#: inc/question/class-lp-question.php:357
 msgid "Multi Choice"
 msgstr ""
 
-#: inc/question/class-lp-question.php:376
+#: inc/question/class-lp-question.php:358
 msgid "Single Choice"
 msgstr ""
 
-#: inc/question/class-lp-question.php:377
+#: inc/question/class-lp-question.php:359
 msgid "Fill In Blanks"
 msgstr ""
 
-#: inc/question/class-lp-question.php:617
+#: inc/question/class-lp-question.php:599
 msgid "First option"
 msgstr ""
 
-#: inc/question/class-lp-question.php:623
+#: inc/question/class-lp-question.php:605
 msgid "Second option"
 msgstr ""
 
-#: inc/question/class-lp-question.php:629
+#: inc/question/class-lp-question.php:611
 msgid "Third option"
 msgstr ""
 
@@ -7174,7 +7174,7 @@ msgstr ""
 
 #: inc/widgets/featured-courses.php:88
 #: inc/widgets/popular-courses.php:62
-#: inc/widgets/popular-courses.php:81
+#: inc/widgets/popular-courses.php:85
 #: inc/widgets/recent-courses.php:66
 #: inc/widgets/recent-courses.php:83
 msgid "Go to Courses"
@@ -7204,11 +7204,11 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:550
+#: learnpress.php:477
 msgid "Documentation"
 msgstr ""
 
-#: learnpress.php:562
+#: learnpress.php:489
 msgid "LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)"
 msgstr ""
 

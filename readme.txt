@@ -203,6 +203,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.4 (2022-05-05) =
+~ Modified: setup require tables for LearnPress when activate plugin.
+~ Modified: setup wizard.
+~ Optimized: code.
+~ Fixed don't scroll to item of section > config "Section Per Page".
+
 = 4.1.6.3 (2022-04-20) =
 ~ Fixed: sort section of course.
 ~ Fixed: sort item of course's section when edit course.
