@@ -486,7 +486,7 @@ class LP_Page_Controller {
 				throw new Exception( __( 'The item is not assigned to this course', 'learnpress' ) );
 			}*/
 
-			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) );
+			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID, $course->get_id() ) );
 
 			if ( ! $lp_course_item ) {
 				return $post;
