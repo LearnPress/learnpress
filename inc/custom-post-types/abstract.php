@@ -429,7 +429,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @editor tungnx
 	 * @todo Review and move to place correct
 	 */
-	public function maybe_remove_assigned( WP_Post $post ) {
+	public function maybe_remove_assigned( WP_Post $post = null ) {
 		global $wpdb;
 
 		if ( ! $post ) {
