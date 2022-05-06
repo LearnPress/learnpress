@@ -142,13 +142,12 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * @since 2.0
 		 */
 		private function _get_data() {
-
 			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 			$api = get_transient( 'lp_plugin_status' );
 
-			if ( false === $api ) {
+			if ( false === $api || is_wp_error( $api ) ) {
 				$api = plugins_api(
 					'plugin_information',
 					array(
@@ -163,7 +162,9 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 					)
 				);
 
-				set_transient( 'lp_plugin_status', $api, 12 * HOUR_IN_SECONDS );
+				if ( ! is_wp_error( $api ) ) {
+					set_transient( 'lp_plugin_status', $api, 12 * HOUR_IN_SECONDS );
+				}
 			}
 
 			return $api;
