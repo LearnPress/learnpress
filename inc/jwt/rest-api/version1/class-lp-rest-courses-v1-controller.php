@@ -862,6 +862,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return array();
 		}
 
+		if ( ! class_exists( 'LP_Meta_Box' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
+		}
+
 		if ( ! class_exists( 'LP_Meta_Box_Course' ) ) {
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
 		}

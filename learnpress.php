@@ -392,6 +392,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/external-plugin/elementor/class-lp-elementor.php';
 			}
 
+			// TODO: update frontend editor before move to function include_files_admin.
+			require_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
+
 			require_once 'inc/class-lp-page-controller.php';
 
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
@@ -413,7 +416,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Meta box helper
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
 			require_once 'inc/admin/class-lp-admin.php';
 			require_once 'inc/admin/settings/abstract-settings-page.php';
