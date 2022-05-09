@@ -2054,23 +2054,26 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
  * Add all endpoints from settings to the pages.
  */
 function learn_press_add_endpoints() {
-	$settings = LP()->settings();
+	$settings = LP_Settings::instance();
 
-	if ( $endpoints = $settings->get_checkout_endpoints() ) {
+	$endpoints = $settings->get_checkout_endpoints();
+	if ( $endpoints ) {
 		foreach ( $endpoints as $endpoint => $value ) {
 			LP()->query_vars[ $endpoint ] = $value;
 			add_rewrite_endpoint( $value, EP_PAGES );
 		}
 	}
 
-	if ( $endpoints = $settings->get_profile_endpoints() ) {
+	$endpoints = $settings->get_profile_endpoints();
+	if ( $endpoints ) {
 		foreach ( $endpoints as $endpoint => $value ) {
 			LP()->query_vars[ $endpoint ] = $value;
 			add_rewrite_endpoint( $value, EP_PAGES );
 		}
 	}
 
-	if ( $endpoints = LP()->settings->get( 'quiz_endpoints' ) ) {
+	$endpoints = $settings->get( 'quiz_endpoints' );
+	if ( $endpoints ) {
 		foreach ( $endpoints as $endpoint => $value ) {
 			$endpoint                     = preg_replace( '!_!', '-', $endpoint );
 			LP()->query_vars[ $endpoint ] = $value;

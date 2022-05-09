@@ -113,7 +113,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
 		$is_guest = false;
-		if ( $user_id != LP()->session->guest_user_id ) {
+		if ( ! is_null( LP()->session ) && $user_id != LP()->session->guest_user_id ) {
 			if ( $current && ! get_user_by( 'id', $user_id ) ) {
 				$user_id = get_current_user_id();
 			}
@@ -159,7 +159,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
  */
 function learn_press_add_user_roles() {
 
-	$settings = LP()->settings;
+	$settings = LP_Settings::instance();
 
 	/* translators: user role */
 	_x( 'LP Instructor', 'User role' );

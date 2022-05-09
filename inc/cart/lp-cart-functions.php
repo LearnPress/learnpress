@@ -58,7 +58,7 @@ function learn_press_clear_cart_after_payment() {
 
 	if ( ! empty( $wp->query_vars['lp-order-received'] ) ) {
 		$order_id  = absint( $wp->query_vars['lp-order-received'] );
-		$order_key = isset( $_GET['key'] ) ? $_GET['key'] : '';
+		$order_key = $_GET['key'] ?? '';
 		$order     = learn_press_get_order( $order_id );
 
 		if ( $order_id > 0 && $order ) {
@@ -68,7 +68,7 @@ function learn_press_clear_cart_after_payment() {
 		}
 	}
 
-	if ( LP()->session->order_awaiting_payment > 0 ) {
+	if ( ! is_null( LP()->session ) && LP()->session->order_awaiting_payment > 0 ) {
 		$order = learn_press_get_order( LP()->session->order_awaiting_payment );
 
 		if ( $order && $order->id > 0 ) {

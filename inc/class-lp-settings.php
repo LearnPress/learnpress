@@ -30,7 +30,7 @@ class LP_Settings {
 	/**
 	 * @var bool
 	 */
-	protected static $_instance = false;
+	protected static $_instance = null;
 
 	/**
 	 * Constructor.
@@ -240,7 +240,7 @@ class LP_Settings {
 	 * @return bool|LP_Settings
 	 */
 	public static function instance() {
-		if ( empty( self::$_instance ) ) {
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}
 
@@ -345,7 +345,7 @@ class LP_Settings {
 			);
 
 			$endpoints = array();
-			$settings  = LP()->settings->get( 'checkout_endpoints' );
+			$settings  = LP_Settings::instance()->get( 'checkout_endpoints' );
 
 			if ( $settings ) {
 				foreach ( $settings as $k => $v ) {
@@ -379,7 +379,7 @@ class LP_Settings {
 			$defaults  = array();
 			$endpoints = array();
 
-			$settings = LP()->settings->get( 'profile_endpoints' );
+			$settings = LP_Settings::instance()->get( 'profile_endpoints' );
 			if ( $settings ) {
 				foreach ( $settings as $k => $v ) {
 					$k               = preg_replace( '!_!', '-', $k );

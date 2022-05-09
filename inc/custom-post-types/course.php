@@ -152,8 +152,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Register course taxonomy.
 		 */
 		public function register_taxonomy() {
-
-			$settings = LP()->settings;
+			$settings = LP_Settings::instance();
 
 			$category_base = $settings->get( 'course_category_base' );
 

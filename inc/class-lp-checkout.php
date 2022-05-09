@@ -94,7 +94,9 @@ class LP_Checkout {
 		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10, 3 );
 		//add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
 
-		$this->_checkout_email = LP()->session->get( 'checkout-email' );
+		if ( ! is_null( LP()->session ) ) {
+			$this->_checkout_email = LP()->session->get( 'checkout-email' );
+		}
 	}
 
 	/**
