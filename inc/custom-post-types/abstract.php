@@ -67,9 +67,11 @@ abstract class LP_Abstract_Post_Type {
 	 * @param string
 	 * @param mixed
 	 */
-	public function __construct( $post_type, $args = '' ) {
+	public function __construct( $post_type = '', $args = '' ) {
 
-		$this->_post_type = $post_type;
+		if ( ! empty( $post_type ) ) {
+			$this->_post_type = $post_type;
+		}
 		add_action( 'init', array( $this, '_do_register' ) );
 		add_action( 'save_post', array( $this, '_do_save_post' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
@@ -150,6 +152,8 @@ abstract class LP_Abstract_Post_Type {
 
 		if ( $args ) {
 			register_post_type( $this->_post_type, $args );
+
+			flush_rewrite_rules();
 		}
 	}
 

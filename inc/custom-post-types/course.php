@@ -30,8 +30,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param string
 		 */
-		public function __construct( $post_type ) {
-			parent::__construct( $post_type );
+		public function __construct() {
+			parent::__construct();
 
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
@@ -682,7 +682,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function instance() {
 			if ( ! self::$_instance ) {
-				self::$_instance = new self( LP_COURSE_CPT );
+				self::$_instance = new self();
 			}
 
 			return self::$_instance;

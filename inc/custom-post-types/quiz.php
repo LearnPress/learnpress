@@ -37,7 +37,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @param $post_type
 		 * @param mixed
 		 */
-		public function __construct( $post_type, $args = '' ) {
+		public function __construct() {
 
 			//$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
@@ -46,7 +46,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
-			parent::__construct( $post_type, $args );
+			parent::__construct();
 		}
 
 		/**
@@ -471,7 +471,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public static function instance() {
 			if ( ! self::$_instance ) {
-				self::$_instance = new self( LP_QUIZ_CPT, '' );
+				self::$_instance = new self();
 			}
 
 			return self::$_instance;

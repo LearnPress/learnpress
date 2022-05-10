@@ -1000,6 +1000,7 @@ add_action( 'transition_post_status', 'learn_press_publish_course', 10, 3 );
  * @param $user_id
  *
  * @return WP_Query
+ * @depecated 4.1.6.4
  */
 function learn_press_get_enrolled_courses( $user_id ) {
 	return LP()->get_user( $user_id )->get( 'enrolled-courses' );

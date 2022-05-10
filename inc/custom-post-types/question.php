@@ -31,7 +31,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param $post_type
 		 * @param mixed
 		 */
-		public function __construct( $post_type, $args = '' ) {
+		public function __construct() {
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
@@ -41,7 +41,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			// $this->add_map_method( 'before_delete', 'before_delete_question' );
 
-			parent::__construct( $post_type, $args );
+			parent::__construct();
 		}
 
 		/**
@@ -517,7 +517,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'_lp_type' => 'true_or_false',
 					),
 				);*/
-				self::$_instance = new self( LP_QUESTION_CPT );
+				self::$_instance = new self();
 			}
 
 			return self::$_instance;

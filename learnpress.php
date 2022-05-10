@@ -449,8 +449,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
 
-			add_action( 'activate_' . LP_PLUGIN_BASENAME, array( $this, 'on_activate' ) );
-			add_action( 'deactivate_' . LP_PLUGIN_BASENAME, array( $this, 'on_deactivate' ) );
+			register_activation_hook( LP_PLUGIN_FILE, array( $this, 'on_activate' ) );
+			register_deactivation_hook( LP_PLUGIN_FILE, array( $this, 'on_deactivate' ) );
+			// add_action( 'deactivate_' . LP_PLUGIN_BASENAME, array( $this, 'on_deactivate' ) );
 
 			if ( ! LP_Install::instance()->tables_install_done() ) {
 				return;
