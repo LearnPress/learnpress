@@ -70,8 +70,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				update_option( LP_KEY_DB_VERSION, LearnPress::instance()->db_version );
 			}
 
-			update_option( 'learnpress_version', LearnPress::instance()->version );
-
 			// Create pages default.
 			self::create_pages();
 

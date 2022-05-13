@@ -17,7 +17,8 @@ class LP_Template_Checkout extends LP_Abstract_Template {
 	}
 
 	public function review_order() {
-		learn_press_get_template( 'checkout/review-order' );
+		$cart = learn_press_get_checkout_cart();
+		learn_press_get_template( 'checkout/review-order', compact( 'cart' ) );
 	}
 
 	public function payment() {

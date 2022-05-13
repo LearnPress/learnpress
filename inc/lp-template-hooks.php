@@ -504,6 +504,9 @@ add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'logi
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'register_form' ), 15 );
 
 /** BEGIN: Checkout page */
+/**
+ * @see LP_Template_Checkout::review_order()
+ */
 add_action( 'learn-press/before-checkout-form', LP()->template( 'checkout' )->func( 'review_order' ), 10 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_logged_in' ), 20 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_register' ), 30 );

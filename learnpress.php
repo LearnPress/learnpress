@@ -142,6 +142,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			self::$_instance = $this;
 
+			update_option( 'learnpress_version', $this->version );
+
 			// Define constant .
 			$this->plugin_defines();
 

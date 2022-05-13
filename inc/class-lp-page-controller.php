@@ -641,7 +641,7 @@ class LP_Page_Controller {
 			}
 		} elseif ( ( is_post_type_archive( LP_COURSE_CPT ) || ( ! empty( learn_press_get_page_id( 'courses' ) ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) && ! self::has_block_template( 'archive-course' ) ) {
 			$page_template = 'archive-course.php';
-		} elseif ( learn_press_is_checkout() ) {
+		} elseif ( learn_press_is_checkout() && ! self::has_block_template( 'page-lp_checkout' ) ) {
 			$page_template = 'pages/checkout.php';
 		}
 

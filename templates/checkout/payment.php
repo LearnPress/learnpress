@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit();
 	do_action( 'learn-press/before-payment-methods' );
 
 	// Show payments if cart total > 0 and have at least one payment method.
-	if ( LP()->cart->needs_payment() && $available_gateways ) {
+	if ( LP()->cart && LP()->cart->needs_payment() && $available_gateways ) {
 		?>
 		<h4>
 			<?php esc_html_e( 'Payment', 'learnpress' ); ?>

@@ -104,11 +104,11 @@ class LP_Debug {
 	/**
 	 * Show value of variable
 	 *
-	 * @param $variable
-	 * @param $file_path
-	 * @param $line
+	 * @param mixed $variable
+	 * @param string $file_path
+	 * @param string $line
 	 */
-	public static function var_dump( $variable, $file_path, $line ) {
+	public static function var_dump( $variable, string $file_path = '', string $line = '' ) {
 		echo '<pre>' . print_r( $variable, true ) . '</pre>';
 		echo 'FILE:' . esc_html( $file_path ) . '<br> LINE:' . esc_html( $line );
 	}

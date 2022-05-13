@@ -20,10 +20,29 @@ class LP_Block_Template_Controller {
 
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'render_block_template' ) );
+		// Detected file block template html.
 		add_filter( 'get_block_templates', array( $this, 'add_block_templates' ), 10, 3 );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'block_editor' ) );
 		add_action( 'init', array( $this, 'register_block_template_post_type' ) );
 		add_filter( 'pre_get_block_file_template', array( $this, 'maybe_return_blocks_template' ), 10, 3 );
+		add_filter( 'page_template_hierarchy', array( $this, 'page_template_hierarchy' ), 10, 3 );
+	}
+
+	/**
+	 * Fixed error on the function 'resolve_block_template' when call usort()
+	 *
+	 * apply_filters( "{$type}_template_hierarchy", $templates )
+	 *
+	 * @param array $templates
+	 *
+	 * @return array|string[]
+	 */
+	public function page_template_hierarchy( array $templates = array() ): array {
+		if ( LP_PAGE_CHECKOUT === LP_Page_Controller::page_current() ) {
+			$templates = array( 'page-lp_checkout' );
+		}
+
+		return $templates;
 	}
 
 	public function block_editor() {
@@ -53,10 +72,7 @@ class LP_Block_Template_Controller {
 		// 'get_block_template' was introduced in WP 5.9. We need to support
 		// 'gutenberg_get_block_template' for previous versions of WP with
 		// Gutenberg enabled.
-		if (
-			! function_exists( 'gutenberg_get_block_template' ) &&
-			! function_exists( 'get_block_template' )
-		) {
+		if ( ! function_exists( 'gutenberg_get_block_template' ) && ! function_exists( 'get_block_template' ) ) {
 			return $template;
 		}
 		$template_name_parts = explode( '//', $id );
@@ -129,7 +145,7 @@ class LP_Block_Template_Controller {
 	 * @return false|string
 	 */
 	public function render_content_block_template( $attributes ) {
-		$templates    = array( 'archive-course', 'single-course', 'content-single-item' );
+		$templates    = array( 'archive-course', 'single-course', 'content-single-item', 'pages/checkout' );
 		$current_page = LP_Page_Controller::page_current();
 
 		if ( in_array( $attributes['template'], $templates, true ) ) {
@@ -158,16 +174,29 @@ class LP_Block_Template_Controller {
 			add_filter( 'learnpress_has_block_template', '__return_true', 10, 0 );
 		} elseif ( ( is_post_type_archive( LP_COURSE_CPT ) || ( ! empty( learn_press_get_page_id( 'courses' ) ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) && ! LP_Block_Template_Utils::instance()->theme_has_template( 'archive-lp_course' ) && $this->block_template_is_available( 'archive-lp_course' ) ) {
 			add_filter( 'learnpress_has_block_template', '__return_true', 10, 0 );
+		} elseif ( LP_PAGE_CHECKOUT === LP_Page_Controller::page_current() ) {
+			add_filter( 'learnpress_has_block_template', '__return_true', 10, 0 );
 		}
 	}
 
+	/**
+	 * Detected if a block template is available
+	 *
+	 * @param $query_result
+	 * @param $query
+	 * @param $template_type
+	 *
+	 * @return array|mixed
+	 */
 	public function add_block_templates( $query_result, $query, $template_type ) {
 		if ( ! LP_Block_Template_Utils::instance()->supports_block_templates() ) {
 			return $query_result;
 		}
 
-		$post_type      = isset( $query['post_type'] ) ? $query['post_type'] : '';
-		$slugs          = isset( $query['slug__in'] ) ? $query['slug__in'] : array();
+		$post_type = $query['post_type'] ?? '';
+		$slugs     = $query['slug__in'] ?? array();
+
+		// Get file block template html.
 		$template_files = $this->get_block_templates( $slugs, $template_type );
 
 		// @todo: Add apply_filters to _gutenberg_get_template_files() in Gutenberg to prevent duplication of logic.
@@ -201,8 +230,7 @@ class LP_Block_Template_Controller {
 			if ( 'custom' !== $template_file->source ) {
 				$template = LP_Block_Template_Utils::instance()->gutenberg_build_template_result_from_file( $template_file, $template_type );
 			} else {
-				$template_file->title = ! LP_Block_Template_Utils::instance()->convert_slug_to_title( $template_file->slug );
-				$query_result[]       = $template_file;
+				$query_result[] = $template_file;
 				continue;
 			}
 
@@ -225,20 +253,43 @@ class LP_Block_Template_Controller {
 		return $query_result;
 	}
 
-	public function get_block_templates( $slugs = array(), $template_type = 'wp_template' ) {
+	/**
+	 * Get content block
+	 *
+	 * @param array $slugs
+	 * @param string $template_type
+	 *
+	 * @return mixed
+	 */
+	public function get_block_templates( array $slugs = array(), string $template_type = 'wp_template' ) {
 		static $templates = null;
 
 		if ( ! is_null( $templates ) ) {
 			return $templates;
 		}
 
+		// Fixed page Checkout
+		if ( LP_PAGE_CHECKOUT === LP_Page_Controller::page_current() ) {
+			$slugs[] = 'page-lp_checkout';
+		}
+
+		// Get content template form DB on table posts, with post_type = $template_type.
 		$templates_from_db = $this->get_block_templates_from_db( $slugs, $template_type );
+
+		// Get content from file default.
 		$templates_from_lp = $this->get_block_templates_from_learnpress( $slugs, $templates_from_db, $template_type );
 		$templates         = array_merge( $templates_from_db, $templates_from_lp );
 
 		return $templates;
 	}
 
+	/**
+	 * @param array $slugs
+	 * @param $already_found_templates
+	 * @param string $template_type
+	 *
+	 * @return array
+	 */
 	public function get_block_templates_from_learnpress( $slugs, $already_found_templates, $template_type = 'wp_template' ) {
 		global $wp;
 
@@ -261,15 +312,20 @@ class LP_Block_Template_Controller {
 
 			$template_slug = $template_slug === 'content-single-lp_course-item' ? 'single-lp_course' : $template_slug;
 
-			// This template does not have a slug we're looking for. Skip it.
-			if ( is_array( $slugs ) && count( $slugs ) > 0 && ! in_array( $template_slug, $slugs, true ) ) {
+			if ( LP_PAGE_CHECKOUT === LP_Page_Controller::page_current() ) {
+				if ( str_contains( $template_file, 'page-lp_checkout' ) ) {
+					$template_slug = $slugs[0];
+					$templates[]   = LP_Block_Template_Utils::instance()->create_new_block_template_object( $template_file, $template_type, $template_slug );
+					continue;
+				}
+			} elseif ( is_array( $slugs ) && count( $slugs ) > 0 && ! in_array( $template_slug, $slugs, true ) ) {
+				// This template does not have a slug we're looking for. Skip it.
 				continue;
 			}
 
 			// If the theme already has a template, or the template is already in the list (i.e. it came from the
 			// database) then we should not overwrite it with the one from the filesystem.
-			if (
-				LP_Block_Template_Utils::instance()->theme_has_template( $template_slug ) ||
+			if ( LP_Block_Template_Utils::instance()->theme_has_template( $template_slug ) ||
 				count(
 					array_filter(
 						$already_found_templates,
@@ -298,6 +354,9 @@ class LP_Block_Template_Controller {
 
 			// At this point the template only exists in the Blocks filesystem and has not been saved in the DB,
 			// or superseded by the theme.
+			/*if ( ! isset( $templates[ $template_slug ] ) ) {
+				$templates[ $template_slug ] = LP_Block_Template_Utils::instance()->create_new_block_template_object( $template_file, $template_type, $template_slug );
+			}*/
 			$templates[] = LP_Block_Template_Utils::instance()->create_new_block_template_object( $template_file, $template_type, $template_slug );
 		}
 
