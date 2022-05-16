@@ -203,7 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.6.4 (2022-05-16) =
+= 4.1.6.5 (2022-05-16) =
 ~ Fixed: error with block theme 2022.
 ~ Fixed: error with LP Addon Frontend Editor.
 
