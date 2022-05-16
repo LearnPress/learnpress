@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 4.1.6.3
+Stable tag: 4.1.6.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -202,6 +202,10 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.1.6.4 (2022-05-16) =
+~ Fixed: error with block theme 2022.
+~ Fixed: error with LP Addon Frontend Editor.
 
 = 4.1.6.4 (2022-05-05) =
 ~ Modified: setup require tables for LearnPress when activate plugin.
