@@ -15,7 +15,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 			array(
 				'_lp_duration'             => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
-					'Set 0 for no limit, larger than 0 for limit',
+					esc_html__( 'Set 0 for no limit, larger than 0 for limit', 'learnpress' ),
 					'0',
 					array(
 						'default_time'      => 'minute',
