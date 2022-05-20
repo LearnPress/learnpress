@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
-$user   = LP_Global::user();
+$user   = learn_press_get_current_user();
 ?>
 
 <div id="popup-footer">

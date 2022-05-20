@@ -771,7 +771,7 @@ if ( ! function_exists( 'learn_press_course_price' ) ) {
 	 */
 	function learn_press_course_price() {
 		_deprecated_function( __FUNCTION__, '4.0.0' );
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$course = LP_Global::course();
 
 		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
@@ -883,7 +883,7 @@ if ( ! function_exists( 'learn_press_content_item_quiz_title' ) ) {
 if ( ! function_exists( 'learn_press_content_item_quiz_intro' ) ) {
 	function learn_press_content_item_quiz_intro() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz->get_id(), $course->get_id() ) ) {
@@ -929,7 +929,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_progress' ) ) {
 	function learn_press_content_item_summary_quiz_progress() {
 		$course = LP_Global::course();
 		$quiz   = LP_Global::course_item_quiz();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 
 		if ( ! $user ) {
 			return;
@@ -960,7 +960,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_result' ) ) {
 
 	function learn_press_content_item_summary_quiz_result() {
 		$quiz = LP_Global::course_item_quiz();
-		$user = LP_Global::user();
+		$user = learn_press_get_current_user();
 		if ( ! $user->has_completed_quiz( $quiz->get_id(), get_the_ID() ) ) {
 			return;
 		}
@@ -1483,7 +1483,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 		$quiz = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
 			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$user        = learn_press_get_current_user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 
@@ -1507,7 +1507,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_questions' ) ) {
 		$quiz = LP_Global::course_item_quiz();
 		if ( $questions = $quiz->get_questions() ) {
 			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$user        = learn_press_get_current_user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
 			global $lp_quiz_question;
@@ -1528,7 +1528,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) 
 
 	function learn_press_content_item_summary_question_numbers() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $quiz->get_show_hide_question() ) {
@@ -1551,7 +1551,7 @@ if ( ! function_exists( 'learn_press_quiz_nav_buttons' ) ) {
 
 	function learn_press_quiz_nav_buttons() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( array( 'started', 'completed' ), $quiz->get_id(), $course->get_id() ) ) {
@@ -1570,7 +1570,7 @@ if ( ! function_exists( 'learn_press_quiz_start_button' ) ) {
 
 	function learn_press_quiz_start_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( $user->has_course_status( $course->get_id(), array( 'finished' ) ) || $user->has_quiz_status(
@@ -1596,7 +1596,7 @@ if ( ! function_exists( 'learn_press_quiz_continue_button' ) ) {
 
 	function learn_press_quiz_continue_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
@@ -1615,7 +1615,7 @@ if ( ! function_exists( 'learn_press_quiz_complete_button' ) ) {
 
 	function learn_press_quiz_complete_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( $user->has_course_status( $course->get_id(), array( 'finished' ) ) || ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
@@ -1629,7 +1629,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 
 	function learn_press_quiz_redo_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
@@ -1648,7 +1648,7 @@ if ( ! function_exists( 'learn_press_quiz_result_button' ) ) {
 
 	function learn_press_quiz_result_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
@@ -1671,7 +1671,7 @@ if ( ! function_exists( 'learn_press_quiz_summary_button' ) ) {
 
 	function learn_press_quiz_summary_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
@@ -1690,7 +1690,7 @@ if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
 
 	function learn_press_quiz_check_button() {
 		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $quiz->is_viewing_question() ) {
@@ -1713,7 +1713,7 @@ if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 
 	function learn_press_quiz_hint_button() {
 		$course   = LP_Global::course();
-		$user     = LP_Global::user();
+		$user     = learn_press_get_current_user();
 		$quiz     = LP_Global::course_item_quiz();
 		$question = LP_Global::quiz_question();
 
@@ -1901,7 +1901,7 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content_blocked' ) ) {
 
 if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
 	function learn_press_content_item_lesson_complete_button() {
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 		$course = LP_Global::course();
 		$lesson = LP_Global::course_item();
 
@@ -1931,7 +1931,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 		$quiz = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
 			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$user        = learn_press_get_current_user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 

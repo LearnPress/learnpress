@@ -608,7 +608,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'Invalid course', 'learnpress' ) );
 			}
 
-			$user = LP_Global::user();
+			$user = learn_press_get_current_user();
 
 			// if ( ! is_user_logged_in() ) {
 			// throw new Exception( esc_html__( 'Please login!', 'learnpress' ) );

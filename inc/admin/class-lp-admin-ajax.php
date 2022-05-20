@@ -367,61 +367,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
-		 * Send data to join newsletter or dismiss.
-		 *
-		 * [
-		 *  This function has deprecated since 3.2.6 from this class.
-		 *  Please check class LP_Admin and hook learn-press/dismissed-notice-response for more details.
-		 *  Newsletter function be hooked to the hook above to send subscription when
-		 *  notice has already dismissed.
-		 * ]
-		 *
-		 * @deprecated
-		 *
-		 * @since 3.0.10
-		 * @editable tungnx
-		 * @model 4.1.4 comment - not use
-		 */
-		/*public static function join_newsletter() {
-			$context = LP_Request::get_string( 'context' );
-			if ( ! $context || $context != 'newsletter' ) {
-				update_option( 'learn-press-dismissed-newsletter-button', 1 );
-				learn_press_send_json_success( __( 'Dismissed!', 'learnpress' ) );
-			}
-			$user = learn_press_get_current_user();
-			if ( ! $user || $user->get_email() == '' ) {
-				learn_press_send_json_error( __( 'Fail while joining newsletter! Please try again!', 'learnpress' ) );
-			}
-			$url      = 'https://thimpress.com/mailster/subscribe';
-			$response = wp_remote_post(
-				$url,
-				array(
-					'method'      => 'POST',
-					'timeout'     => 45,
-					'redirection' => 5,
-					'httpversion' => '1.0',
-					'blocking'    => true,
-					'headers'     => array(),
-					'body'        => array(
-						'_referer' => 'extern',
-						'_nonce'   => '4b266caf7b',
-						'formid'   => '19',
-						'email'    => $user->get_email(),
-						'website'  => site_url(),
-					),
-					'cookies'     => array(),
-				)
-			);
-			if ( is_wp_error( $response ) ) {
-				$error_message = $response->get_error_message();
-				learn_press_send_json_error( __( 'Something went wrong: ', 'learnpress' ) . $error_message );
-			} else {
-				update_option( 'learn-press-dismissed-newsletter-button', 1 );
-				learn_press_send_json_success( __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.', 'learnpress' ) );
-			}
-		}*/
-
-		/**
 		 * Duplicate course, lesson, quiz, question.
 		 *
 		 * @since 3.0.0
