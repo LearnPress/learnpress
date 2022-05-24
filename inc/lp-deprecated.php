@@ -1806,7 +1806,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 			return;
 		}
 
-		if ( 'yes' === LP()->settings()->get( 'enable_register_profile' ) || 'yes' === LP()->settings()->get( 'enable_login_profile' ) ) {
+		if ( 'yes' === LP_Settings::instance()->get( 'enable_register_profile' ) || 'yes' === LP_Settings::instance()->get( 'enable_login_profile' ) ) {
 			return;
 		}
 
@@ -1827,7 +1827,7 @@ if ( ! function_exists( 'learn_press_profile_login_form' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
+		if ( 'yes' !== LP_Settings::instance()->get( 'enable_login_profile' ) ) {
 			return;
 		}
 
@@ -1847,7 +1847,7 @@ if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+		if ( 'yes' !== LP_Settings::instance()->get( 'enable_register_profile' ) ) {
 			return;
 		}
 
@@ -2071,7 +2071,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_own' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_own_limit', $limit );
 		$courses           = $user->get( 'own-courses', array( 'limit' => $limit ) );
 		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
@@ -2093,7 +2093,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_learning' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_learning_limit', $limit );
 		$courses           = $user->get(
 			'enrolled-courses',
@@ -2120,7 +2120,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_purchased' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_purchased_limit', $limit );
 		$courses           = $user->get( 'purchased-courses', array( 'limit' => $limit ) );
 		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
@@ -2141,7 +2141,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_finished' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_finished_limit', $limit );
 		$courses           = $user->get(
 			'enrolled-courses',
@@ -2187,7 +2187,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_all' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_all_limit', $limit );
 		$courses           = $user->get( 'courses', array( 'limit' => $limit ) );
 		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );

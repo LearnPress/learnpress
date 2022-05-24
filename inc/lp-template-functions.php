@@ -1360,8 +1360,8 @@ function learn_press_is_learning_course( $course_id = 0 ) {
  */
 if ( ! function_exists( 'learn_press_print_custom_styles' ) ) {
 	function learn_press_print_custom_styles() {
-		$primary_color   = LP()->settings()->get( 'primary_color' );
-		$secondary_color = LP()->settings()->get( 'secondary_color' );
+		$primary_color   = LP_Settings::instance()->get( 'primary_color' );
+		$secondary_color = LP_Settings::instance()->get( 'secondary_color' );
 		?>
 
 		<style id="learn-press-custom-css">
@@ -1485,7 +1485,7 @@ add_filter(
 	function ( $html, $item_id, $course_id ) {
 		$user = learn_press_get_current_user();
 
-		$course_blocking = LP()->settings()->get( 'course_blocking' );
+		$course_blocking = LP_Settings::instance()->get( 'course_blocking' );
 		$course_data     = $user->get_course_data( $course_id );
 		// $end_time        = $course_data->get_end_time_gmt();3
 		// $expired_time    = $course_data->get_expiration_time_gmt();

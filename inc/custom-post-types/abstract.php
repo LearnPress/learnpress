@@ -184,16 +184,7 @@ abstract class LP_Abstract_Post_Type {
 			return;
 		}
 
-		// prevent loop action
-		// remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
-		// $func_args = func_get_args();
-
-		// var_dump($post_id, $post, $func_args);die;
-
-		// $this->_call_method( 'save', $func_args );
 		$this->save( $post_id, $post );
-		// $this->_flush_cache();
-		// add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 	}
 
 	/**
@@ -365,58 +356,6 @@ abstract class LP_Abstract_Post_Type {
 
 		return 0;
 	}
-
-	// Comment by tungnx - no see use
-	/*
-	public function maybe_remove_features() {
-		if ( ! $this->_remove_features ) {
-			return;
-		}
-
-		foreach ( $this->_remove_features as $feature ) {
-			remove_post_type_support( $this->_post_type, $feature );
-		}
-	}*/
-
-	// Comment by tungnx - no see use
-	/*
-	public function remove_feature( $feature ) {
-		if ( is_array( $feature ) ) {
-			foreach ( $feature as $fea ) {
-				$this->remove_feature( $fea );
-			}
-		} else {
-			$this->_remove_features[] = $feature;
-		}
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function update_default_meta() {
-		global $wp_query, $post;
-
-		if ( ! $post ) {
-			return;
-		}
-
-		if ( empty( $post->post_type ) ) {
-			return;
-		}
-
-		if ( $post->post_type != $this->_post_type ) {
-			return;
-		}
-
-		if ( empty( $this->_default_metas ) ) {
-			return;
-		}
-
-		foreach ( $this->_default_metas as $k => $v ) {
-			if ( ! metadata_exists( 'post', $post->ID, $k ) ) {
-				update_post_meta( $post->ID, $k, $v );
-			}
-		}
-	}*/
 
 	public function remove_auto_save_script() {
 		global $post;
@@ -840,108 +779,6 @@ abstract class LP_Abstract_Post_Type {
 		return $actions;
 	}
 
-	/**
-	 * Those functions should be extended from child class to override
-	 *
-	 * @return mixed
-	 * @editor tungnx
-	 * @reason not use
-	 */
-	/*
-	public function register_post_type() {
-		return $this;
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function admin_params() {
-		return $this;
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function admin_scripts() {
-		return $this;
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function admin_styles() {
-		return $this;
-	}*/
-
-	// Comment by tungnx
-	/*
-	public function print_js_template() {
-		return $this;
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @reason comment by write difficult for another developer, difficult development
-	 * @since modify 4.0.9
-	 */
-	/*
-	public function add_map_method( $origin, $replace, $single = false ) {
-		if ( $single ) {
-			$this->_map_methods[ $origin ] = $replace;
-		} else {
-			if ( empty( $this->_map_methods[ $origin ] ) ) {
-				$this->_map_methods[ $origin ] = array( $replace );
-			} else {
-				$this->_map_methods[ $origin ][] = $replace;
-			}
-		}
-
-		return $this;
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @reason comment by write difficult for another developer, difficult development
-	 * @param $messages
-	 * @return array|mixed
-	 */
-	/*
-	private function _get_map_method( $origin ) {
-		if ( ! empty( $this->_map_methods[ $origin ] ) ) {
-			if ( is_array( $this->_map_methods[ $origin ] ) ) {
-				$callback = array();
-				foreach ( $this->_map_methods[ $origin ] as $method ) {
-					$callback[] = array( $this, $method );
-				}
-			} else {
-				$callback = array( $this, $this->_map_methods[ $origin ] );
-			}
-		} else {
-			$callback = array( $this, $origin );
-		}
-
-		return $callback;
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @reason comment by write difficult for another developer, difficult development
-	 * @param $messages
-	 * @return array|mixed
-	 */
-	/*
-	private function _call_method( $name, $args = false ) {
-		$callbacks = $this->_get_map_method( $name );
-		if ( is_array( $callbacks[0] ) ) {
-			$return = array();
-			foreach ( $callbacks as $callback ) {
-				$_return = call_user_func_array( $callback, $args );
-				$return  = array_merge( $return, (array) $_return );
-			}
-		} else {
-			$return = call_user_func_array( $callbacks, $args );
-		}
-
-		return $return;
-	}*/
-
 	public function updated_messages( $messages ) {
 		$post             = get_post();
 		$post_type        = get_post_type( $post );
@@ -999,64 +836,4 @@ abstract class LP_Abstract_Post_Type {
 
 		return $messages;
 	}
-
-	// Deprecated functions
-	/*
-	private function _get_orderby() {
-		_deprecated_function( __FUNCTION__, '4.1.0' );
-	}
-	public function _get_search(): string {
-		return LP_Request::get( 's' );
-	}
-	protected function _get_order(): string {
-
-	}*/
-
-	// End deprecated
 }
-
-// Comment by tungnx - not use
-// class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
-// **
-// * Get string for searching
-// *
-// * @return string
-// */
-// protected function _get_search() {
-// return LP_Request::get( 's' );
-// }
-//
-// **
-// * @return string
-// */
-// protected function _get_order() {
-// return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
-// }
-//
-// **
-// * @return mixed
-// */
-// protected function _get_orderby() {
-// return LP_Request::get( 'orderby' );
-// }
-//
-// **
-// * Return TRUE if this post-type is support Gutenberg editor.
-// *
-// * @since 3.3.0
-// *
-// * @return bool
-// */
-// public function is_support_gutenberg() {
-// $post_types = array(
-// LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
-// LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
-// LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
-// LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
-// );
-//
-// $support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
-//
-// return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
-// }
-// }

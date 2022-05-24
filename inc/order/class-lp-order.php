@@ -882,7 +882,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			$view_order_url      = learn_press_get_endpoint_url( 'view-order', $this->get_id(), learn_press_get_page_link( 'profile' ) );
 			$user                = learn_press_get_current_user();
-			$view_order_endpoint = LP()->settings->get( 'profile_endpoints.order-details' );
+			$view_order_endpoint = LP_Settings::instance()->get( 'profile_endpoints.order-details' );
 
 			if ( ! $view_order_endpoint ) {
 				$view_order_endpoint = 'order-details';
@@ -921,7 +921,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$url = false;
 			if ( $this->has_status( 'pending' ) ) {
 				$user = learn_press_get_current_user();
-				$url  = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+				$url  = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.profile-orders' ) );
 				if ( ! $force ) {
 					$url = add_query_arg( 'cancel-order', $this->get_id(), $url );
 				} else {

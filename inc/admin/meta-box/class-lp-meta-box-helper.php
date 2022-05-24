@@ -308,7 +308,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 					$option_value = $option_values[ $key ];
 
 					if ( is_array( $option_value ) && isset( $key_child )
-						 && array_key_exists( $key_child, $option_value ) ) {
+						&& array_key_exists( $key_child, $option_value ) ) {
 						$option_value = $option_value[ $key_child ];
 					}
 				} else {
@@ -316,7 +316,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				}
 			} else {
 				// Single value
-				$option_value = LP()->settings->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
+				$option_value = LP_Settings::instance()->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
 			}
 
 			if ( ! is_array( $option_value ) && ! is_null( $option_value ) ) {

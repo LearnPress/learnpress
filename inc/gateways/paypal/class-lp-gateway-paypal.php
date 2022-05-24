@@ -106,7 +106,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$this->paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
 
 			// get settings
-			$this->settings = LP()->settings()->get_group( 'paypal', '' );
+			$this->settings = LP_Settings::instance()->get_group( 'paypal', '' );
 
 			$this->enabled = $this->settings->get( 'enable' );
 

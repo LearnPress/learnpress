@@ -12,10 +12,10 @@ defined( 'ABSPATH' ) || exit;
 
 function learnpress_gutenberg_disable_cpt( $can_edit, $post_type ) {
 	$post_types = array(
-		LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
-		LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
-		LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
-		LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
+		LP_COURSE_CPT   => LP_Settings::instance()->get( 'enable_gutenberg_course' ),
+		LP_LESSON_CPT   => LP_Settings::instance()->get( 'enable_gutenberg_lesson' ),
+		LP_QUIZ_CPT     => LP_Settings::instance()->get( 'enable_gutenberg_quiz' ),
+		LP_QUESTION_CPT => LP_Settings::instance()->get( 'enable_gutenberg_question' ),
 	);
 
 	foreach ( $post_types as $key => $pt ) {
@@ -1043,7 +1043,7 @@ function learn_press_currency_positions( $currency = false ) {
 		$currency = learn_press_get_currency_symbol();
 	}
 
-	$settings = LP()->settings();
+	$settings = LP_Settings::instance();
 
 	$thousands_separator = '';
 	$decimals_separator  = $settings->get( 'decimals_separator', '.' );
@@ -1496,7 +1496,7 @@ function learn_press_get_page_link( string $key ): string {
  * @return string
  */
 function learn_press_get_page_title( $key ) {
-	$page_id = LP()->settings->get( $key . '_page_id' );
+	$page_id = LP_Settings::instance()->get( $key . '_page_id' );
 	$title   = '';
 
 	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
@@ -2010,7 +2010,7 @@ function learn_press_get_login_url( $redirect = null ) {
 	$url          = wp_login_url( $redirect );
 	$profile_page = learn_press_get_page_link( 'profile' );
 
-	if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && $profile_page ) {
+	if ( 'yes' === LP_Settings::instance()->get( 'enable_login_profile' ) && $profile_page ) {
 		$parse_url = parse_url( $url );
 		$url       = $profile_page . ( ! empty( $parse_url['query'] ) ? '?' . $parse_url['query'] : '' );
 	}

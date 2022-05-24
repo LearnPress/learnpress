@@ -650,7 +650,7 @@ function learn_press_footer_advertisement() {
 	}
 
 	// Disable shuffle themes for 3 days
-	$shuffle = LP()->settings()->get( 'ad_shuffle_themes' );
+	$shuffle = LP_Settings::instance()->get( 'ad_shuffle_themes' );
 
 	if ( ! $shuffle ) {
 		if ( wp_next_scheduled( 'learn-press/schedule-enable-shuffle-themes' ) === false ) {

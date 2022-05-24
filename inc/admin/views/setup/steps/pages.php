@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) or exit;
 
-$settings = LP()->settings();
+$settings = LP_Settings::instance();
 ?>
 <h2><?php _e( 'Static Pages', 'learnpress' ); ?></h2>
 

@@ -241,7 +241,7 @@ class LP_Page_Controller {
 		global $wp_query;
 		$flag_title_course = false;
 
-		$course_archive_page_id = LP()->settings()->get( 'courses_page_id', 0 );
+		$course_archive_page_id = LP_Settings::instance()->get( 'courses_page_id', 0 );
 
 		// Set title course archive page
 		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&

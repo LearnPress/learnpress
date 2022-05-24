@@ -259,7 +259,7 @@ class LP_Forms_Handler {
 			return new WP_Error( 'registration-error-confirm-password', __( 'Confirmation password incorrect!.', 'learnpress' ) );
 		}
 
-		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
 
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {
@@ -326,7 +326,7 @@ class LP_Forms_Handler {
 			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
 		}
 
-		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
 
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {

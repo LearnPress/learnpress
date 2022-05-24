@@ -116,8 +116,8 @@ class LP_Query {
 			$has_category = true;
 		}
 
-		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
-		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
+		$custom_slug_lesson = sanitize_title_with_dashes( LP_Settings::instance()->get( 'lesson_slug' ) );
+		$custom_slug_quiz   = sanitize_title_with_dashes( LP_Settings::instance()->get( 'quiz_slug' ) );
 
 		/**
 		 * Use urldecode to convert an encoded string to normal.

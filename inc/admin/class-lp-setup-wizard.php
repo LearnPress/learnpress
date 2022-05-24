@@ -56,7 +56,7 @@ class LP_Setup_Wizard {
 	 */
 	public static function get_price_format() {
 		self::instance()->save();
-		LP()->settings()->refresh();
+		// LP_Settings::instance()->refresh();
 		echo learn_press_format_price( 1234.56, true );
 		die();
 	}
@@ -123,7 +123,7 @@ class LP_Setup_Wizard {
 		$this->save();
 
 		// Refresh new changes
-		// LP()->settings()->refresh();
+		// LP_Settings::instance()->refresh();
 
 		$assets = learn_press_admin_assets();
 

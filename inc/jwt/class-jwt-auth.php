@@ -19,7 +19,7 @@ class LP_Jwt_Auth {
 		$this->version = 'v1';
 
 		// Is enable rest api?
-		// if ( LP()->settings()->get( 'enable_jwt_rest_api' ) !== 'yes' ) {
+		// if ( LP_Settings::instance()->get( 'enable_jwt_rest_api' ) !== 'yes' ) {
 		// return;
 		// }
 

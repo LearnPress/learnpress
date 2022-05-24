@@ -658,7 +658,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$settings = LP()->settings();
+		$settings = LP_Settings::instance();
 		$response = array(
 			'result' => $settings->get(),
 		);
@@ -672,7 +672,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_item( $request ) {
-		$settings = LP()->settings();
+		$settings = LP_Settings::instance();
 		$response = array(
 			'result' => $settings->get( $request['key'] ),
 		);
@@ -687,7 +687,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function update_item( $request ) {
 		$response = array();
-		$settings = LP()->settings();
+		$settings = LP_Settings::instance();
 		$option   = $settings->get( $request['key'] );
 
 		$settings->update( $request['key'], $request['data'] );

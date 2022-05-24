@@ -15,7 +15,7 @@ if ( ! isset( $user_id ) ) {
 
 $profile              = LP_Profile::instance( $user_id );
 $user                 = $profile->get_user();
-$slug_profile_courses = LP()->settings()->get( 'profile_endpoints.courses', 'courses' );
+$slug_profile_courses = LP_Settings::instance()->get( 'profile_endpoints.courses', 'courses' );
 $link_user_profile    = add_query_arg( [ 'tab' => 'enrolled' ], learn_press_user_profile_link( $user_id ) . $slug_profile_courses );
 echo wp_sprintf( '<p><b>%s</b> <a href="%s" target="_blank">%s</a></p>', __( 'Course list of user enrolled', 'learnpress' ), $link_user_profile, __( 'View', 'learnpress' ) );
 

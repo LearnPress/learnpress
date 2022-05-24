@@ -238,7 +238,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tabs() {
 			if ( $this->_tabs === null ) {
-				$settings        = LP()->settings();
+				$settings        = LP_Settings::instance();
 				$course_sections = array();
 
 				$this->_default_settings = array(
@@ -343,7 +343,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				update_option( 'learn_press_profile_avatar', 'yes' );
 			}
 
-			$setting_avatar = LP()->settings()->get( 'profile_endpoints.settings-avatar' );
+			$setting_avatar = LP_Settings::instance()->get( 'profile_endpoints.settings-avatar' );
 
 			if ( ! $setting_avatar ) {
 				$profile_endpoints['settings-basic-information'] = 'basic-information';
@@ -354,7 +354,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				add_rewrite_rule( '(.?.+?)/avatar(/(.*))?/?$', 'index.php?pagename=$matches[1]&section=avatar', 'top' );
 			}
 
-			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
+			return LP_Settings::instance()->get( 'profile_avatar' ) === 'yes';
 		}
 
 		/**
@@ -713,7 +713,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$query['pagination'] = learn_press_paging_nav(
 						array(
 							'num_pages' => $query['num_pages'],
-							'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP()->settings->get( 'profile_endpoints.profile-orders' ) ),
+							'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP_Settings::instance()->get( 'profile_endpoints.profile-orders' ) ),
 							'format'    => $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( '%#%', '' ) : '?paged=%#%',
 							'echo'      => false,
 							'paged'     => $args['paged'],
@@ -1016,7 +1016,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function enable_login() {
-			return 'yes' === LP()->settings()->get( 'enable_login_profile' );
+			return 'yes' === LP_Settings::instance()->get( 'enable_login_profile' );
 		}
 
 		/**
@@ -1025,7 +1025,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function enable_register() {
-			return 'yes' === LP()->settings()->get( 'enable_register_profile' );
+			return 'yes' === LP_Settings::instance()->get( 'enable_register_profile' );
 		}
 
 		/**
