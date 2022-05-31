@@ -223,7 +223,7 @@ if ( ! class_exists( 'LP_Course_Attributes' ) ) {
 		 * @return string
 		 */
 		public function terms_row_actions( $tax ) {
-			$uri           = wp_doing_ajax() ? wp_get_referer() : $_SERVER['REQUEST_URI'];
+			$uri           = wp_doing_ajax() ? wp_get_referer() : esc_url( $_SERVER['REQUEST_URI'] );
 			$edit_link     = add_query_arg(
 				'wp_http_referer',
 				urlencode( wp_unslash( $uri ) ),

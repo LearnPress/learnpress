@@ -421,7 +421,7 @@ class LP_Helper {
 	public static function getUrlCurrent() {
 		$schema = is_ssl() ? 'https://' : 'http://';
 
-		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( $_SERVER['REQUEST_URI'] );
+		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( esc_url( $_SERVER['REQUEST_URI'] ) );
 	}
 
 	/**

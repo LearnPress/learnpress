@@ -316,7 +316,7 @@ function learn_press_get_current_url() {
 	static $current_url;
 
 	if ( ! $current_url ) {
-		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
+		$url = untrailingslashit( esc_url( $_SERVER['REQUEST_URI'] ) );
 
 		if ( ! preg_match( '!^https?!', $url ) ) {
 			$siteurl    = trailingslashit( get_home_url() );
