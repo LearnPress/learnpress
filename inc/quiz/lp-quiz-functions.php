@@ -391,7 +391,7 @@ function learn_press_is_review_questions() {
 	$user = learn_press_get_current_user();
 
 	if ( $item && $user ) {
-		$course = LP_Global::course();
+		$course = learn_press_get_course();
 
 		if ( ! $course ) {
 			return false;

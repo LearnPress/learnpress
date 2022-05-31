@@ -618,7 +618,8 @@ if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
  *
  */
 function learn_press_comment_post_item_course( $post_id ) {
-	if ( ! $course = LP_Global::course() ) {
+	$course = learn_press_get_course();
+	if ( ! $course ) {
 		return;
 	}
 
@@ -644,14 +645,16 @@ function learn_press_item_comment_link( $link, $comment, $args, $cpage ) {
 	 * Ensure there is a course
 	 */
 	if ( empty( $_POST['comment-post-item-course'] ) ) {
-		if ( $course = LP_Global::course() ) {
+		$course = learn_press_get_course();
+		if ( $course ) {
 			$post_id = $course->get_id();
 		}
 	} else {
 		$post_id = absint( $_POST['comment-post-item-course'] );
 	}
 
-	if ( $course = learn_press_get_course( $post_id ) ) {
+	$course = learn_press_get_course( $post_id );
+	if ( $course ) {
 		$link = str_replace( get_the_permalink( $comment_post_ID ), $course->get_item_link( $comment_post_ID ), $link );
 	}
 
@@ -926,7 +929,7 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
-		$course = LP_Global::course();
+		$course = learn_press_get_course();
 
 		if ( ! $course && ( $course_id = learn_press_get_item_course( $post->ID ) ) ) {
 			$course = learn_press_get_course( $course_id );

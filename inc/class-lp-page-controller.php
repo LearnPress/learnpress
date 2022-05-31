@@ -380,7 +380,7 @@ class LP_Page_Controller {
 	 */
 	/*
 	public function maybe_redirect_quiz( $template ) {
-		$course   = LP_Global::course();
+		$course   = learn_press_get_course();
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
 		$redirect = false;

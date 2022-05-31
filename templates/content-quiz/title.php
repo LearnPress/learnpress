@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit();
 
 $quiz   = LP_Global::course_item_quiz();
-$course = LP_Global::course();
+$course = learn_press_get_course();
 $title  = $quiz->get_heading_title( 'display' );
 
 if ( ! $title ) {

@@ -132,7 +132,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 		$question = $quiz->get_viewing_question();
 
 		if ( $question ) {
-			$course      = LP_Global::course();
+			$course      = learn_press_get_course();
 			$user        = learn_press_get_current_user();
 			$answered    = false;
 			$course_data = $user->get_course_data( $course->get_id() );
@@ -284,7 +284,7 @@ add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
 		static $output = array();
 
 		if ( ! $output ) {
-			$course = LP_Global::course();
+			$course = learn_press_get_course();
 
 			if ( $course && $course->get_id() ) {
 				$user        = learn_press_get_current_user();
@@ -309,7 +309,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 		}
 
 		$quiz   = LP_Global::course_item_quiz();
-		$course = LP_Global::course();
+		$course = learn_press_get_course();
 
 		if ( $quiz && $course ) {
 			$user      = learn_press_get_current_user();
@@ -1236,7 +1236,7 @@ function learn_press_get_course_redirect( $link ) {
  * @param LP_Quiz $item
  */
 function learn_press_quiz_meta_final( $item ) {
-	$course = LP_Global::course();
+	$course = learn_press_get_course();
 
 	if ( ! $course->is_final_quiz( $item->get_id() ) ) {
 		return;
@@ -1332,7 +1332,7 @@ add_filter( 'body_class', 'learn_press_body_classes', 10 );
  */
 function learn_press_is_learning_course( $course_id = 0 ) {
 	$user        = learn_press_get_current_user();
-	$course      = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
+	$course      = learn_press_get_course( $course_id );
 	$is_learning = false;
 	$has_status  = false;
 

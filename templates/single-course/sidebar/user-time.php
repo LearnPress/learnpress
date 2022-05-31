@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  */
 $time   = current_time( 'mysql', true );
 $user   = learn_press_get_current_user();
-$course = LP_Global::course();
+$course = learn_press_get_course();
 ?>
 
 <div class="course-time">
