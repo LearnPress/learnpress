@@ -27,17 +27,25 @@ const lpArchiveCourse = () => {
 		return;
 	}
 
-	lpArchiveRequestCourse( filterCourses );
+	if ( skeleton && ! elNoLoadAjaxFirst ) {
+		lpArchiveRequestCourse( filterCourses );
+	}
 };
 
 let skeleton;
 let skeletonClone;
 let isLoading = false;
 let firstLoad = 1;
+let elNoLoadAjaxFirst = null;
+
 window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
 
 	if ( ! wpRestUrl ) {
+		return;
+	}
+
+	if ( ! skeleton ) {
 		return;
 	}
 
@@ -56,7 +64,6 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 	isLoading = true;
 
 	if ( ! skeletonClone ) {
-		skeleton = document.querySelector( '.lp-archive-course-skeleton' );
 		skeletonClone = skeleton.outerHTML;
 	} else {
 		listCourse.append(skeleton);
@@ -132,6 +139,9 @@ const lpArchiveSearchCourse = () => {
 		let timeOutSearch;
 
 		search.addEventListener( 'keyup', ( event ) => {
+			if( skeleton ) {
+				skeleton.style.display = 'block';
+			}
 			event.preventDefault();
 
 			const s = event.target.value.trim();
@@ -167,6 +177,10 @@ const lpArchivePaginationCourse = () => {
 	paginationEle.length > 0 && paginationEle.forEach( ( ele ) => ele.addEventListener( 'click', ( event ) => {
 		event.preventDefault();
 		event.stopPropagation();
+
+		if( skeleton ) {
+			skeleton.style.display = 'block';
+		}
 
 		let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
 
@@ -208,9 +222,16 @@ const lpArchiveGridListCourseHandle = () => {
 };
 
 function LPArchiveCourseInit() {
+	skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+	elNoLoadAjaxFirst = document.querySelector( '.no-first-load-ajax' );
 	lpArchiveCourse();
 	lpArchiveGridListCourseHandle();
 	lpArchiveGridListCourse();
+
+	if ( elNoLoadAjaxFirst ) {
+		lpArchivePaginationCourse();
+		lpArchiveSearchCourse();
+	}
 }
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {

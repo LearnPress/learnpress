@@ -23,7 +23,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 			'learn-press/admin/settings-tabs-array',
 			array(
 				'general'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-general.php',
-				'courses'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-courses.php',
+				'courses'  => new LP_Settings_Courses(),
 				'profile'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-profile.php',
 				'payments' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
 				'emails'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',

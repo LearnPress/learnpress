@@ -2033,7 +2033,7 @@ ORDER BY MAX(user_item_id) DESC";
 				if ( $items ) {
 					$count      = $wpdb->get_var( 'SELECT FOUND_ROWS()' );
 					$course_ids = wp_list_pluck( $items, 'item_id' );
-					LP_Helper::cache_posts( $course_ids );
+					// LP_Helper::cache_posts( $course_ids );
 
 					$quizzes['total'] = $count;
 					$quizzes['pages'] = ceil( $count / $args['limit'] );

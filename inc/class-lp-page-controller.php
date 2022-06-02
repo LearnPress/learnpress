@@ -56,6 +56,23 @@ class LP_Page_Controller {
 
 		// Set link profile to admin menu
 		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
+		add_action( 'plugins_loaded', array( $this, 'lp_rest_api_called' ) );
+	}
+
+	/**
+	 * Optimize when Rest API LP called
+	 *
+	 * @return void
+	 */
+	public function lp_rest_api_called() {
+		if ( LP_Helper::isRestApiLP() ) {
+			if ( ! defined( 'SHORTINIT' ) ) {
+				define( 'SHORTINIT', true );
+			}
+
+			// Remove hook wp_loaded because query default WP run on it (it hooks 'pre_get_posts',...)
+			remove_all_actions( 'wp_loaded' );
+		}
 	}
 
 	/**
@@ -1015,7 +1032,7 @@ class LP_Page_Controller {
 		$apply_lazy_load_for_theme = apply_filters( 'lp/page/courses/query/lazy_load', false );
 
 		if ( $is_archive_course ) {
-			if ( ( lp_is_archive_course_load_via_api() && ! class_exists( 'TP' ) ) || $apply_lazy_load_for_theme ) {
+			if ( ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() && ! class_exists( 'TP' ) ) || $apply_lazy_load_for_theme ) {
 				LP()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 				/**
 				 * If page is archive course - query set posts_per_page = 1
@@ -1024,9 +1041,27 @@ class LP_Page_Controller {
 				 * Current, apply only for LP, not apply for theme Thimpress, because theme override
 				 */
 				$q->set( 'posts_per_page', 1 );
+				$q->set( 'posts_per_archive_page', 10 );
+				$q->set( 'nopaging', true );
 			} else {
 				$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
 				$q->set( 'posts_per_page', $limit );
+				// $q->set( 'cache_results', true );
+
+				if ( isset( $_REQUEST['c_search'] ) ) {
+					$filter_courses              = new LP_Course_Filter();
+					$filter_courses->only_fields = [ 'ID' ];
+					$filter_courses->post_title  = $_REQUEST['c_search'];
+
+					$courses    = LP_Course::get_courses( $filter_courses );
+					$course_ids = array( -1 ); // Set if empty $course_ids will return 'no courses found' message
+
+					if ( $courses ) {
+						$course_ids = LP_Database::getInstance()->get_values_by_key( $courses );
+					}
+
+					$q->set( 'post__in', $course_ids );
+				}
 			}
 		}
 

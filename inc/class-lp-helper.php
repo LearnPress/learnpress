@@ -418,10 +418,21 @@ class LP_Helper {
 	 * @since  3.2.6.8
 	 * @author tungnx
 	 */
-	public static function getUrlCurrent() {
+	public static function getUrlCurrent(): string {
 		$schema = is_ssl() ? 'https://' : 'http://';
 
 		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( esc_url( $_SERVER['REQUEST_URI'] ) );
+	}
+
+	/**
+	 * Check request is rest api
+	 *
+	 * @since 4.1.6.6
+	 * @author tungnx
+	 * @return bool|int
+	 */
+	public static function isRestApiLP() {
+		return strpos( self::getUrlCurrent(), '/wp-json/lp/' );
 	}
 
 	/**

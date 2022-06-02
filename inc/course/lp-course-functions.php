@@ -986,7 +986,7 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 }*/
 
 
-add_filter( 'template_include', 'learn_press_prepare_archive_courses' );
+/*add_filter( 'template_include', 'learn_press_prepare_archive_courses' );
 function learn_press_prepare_archive_courses( $template ) {
 	global $wp_query;
 	$query = ! empty( LP()->wp_query ) ? LP()->wp_query : $wp_query;
@@ -1003,7 +1003,7 @@ function learn_press_prepare_archive_courses( $template ) {
 	}
 
 	return $template;
-}
+}*/
 
 function learn_press_course_grade_html( $grade, $echo = true ) {
 	$html = '';

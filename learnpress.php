@@ -287,6 +287,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-debug.php';
 
 			require_once 'inc/class-lp-settings.php';
+			require_once 'inc/abstract-settings.php';
+			require_once 'inc/settings/abstract-settings-page.php';
+			require_once 'inc/settings/class-lp-settings-courses.php';
 			require_once 'inc/class-lp-global.php';
 			require_once 'inc/class-lp-datetime.php';
 
@@ -325,7 +328,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
-			require_once 'inc/abstract-settings.php';
+
 			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
 
 			// Todo: tungnx check those files.
@@ -420,7 +423,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 
 			require_once 'inc/admin/class-lp-admin.php';
-			require_once 'inc/admin/settings/abstract-settings-page.php';
+			// require_once 'inc/admin/settings/abstract-settings-page.php';
 
 			require_once 'inc/admin/class-lp-admin-ajax.php';
 		}
