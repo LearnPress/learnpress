@@ -934,16 +934,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function logout_url( $redirect = false ) {
 			if ( $this->enable_login() ) {
 				$profile_url = learn_press_get_page_link( 'profile' );
-				$url         = add_query_arg(
-					array(
-						'lp-logout' => 'true',
-						'nonce'     => wp_create_nonce( 'lp-logout' ),
-					),
-					untrailingslashit( $profile_url )
+				$url         = esc_url(
+					add_query_arg(
+						array(
+							'lp-logout' => 'true',
+							'nonce'     => wp_create_nonce( 'lp-logout' ),
+						),
+						untrailingslashit( $profile_url )
+					)
 				);
 
 				if ( $redirect !== false ) {
-					$url = add_query_arg( 'redirect', urlencode( $redirect ), $url );
+					$url = esc_url( add_query_arg( 'redirect', urlencode( $redirect ), $url ) );
 				}
 			} else {
 				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );

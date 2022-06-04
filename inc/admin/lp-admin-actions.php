@@ -261,9 +261,17 @@ function learn_press_admin_course_tabs() {
 		echo '<h2 class="nav-tab-wrapper lp-nav-tab-wrapper">';
 
 		foreach ( $admin_tabs_on_page[ $current_page_id ] as $admin_tab_id ) {
-
 			$class = ( $admin_tabs[ $admin_tab_id ]['id'] == $current_page_id ) ? 'nav-tab nav-tab-active' : 'nav-tab';
-			echo '<a href="' . admin_url( $admin_tabs[ $admin_tab_id ]['link'] ) . '" class="' . $class . ' nav-tab-' . $admin_tabs[ $admin_tab_id ]['id'] . '">' . $admin_tabs[ $admin_tab_id ]['name'] . '</a>';
+			// echo '<a href="' . admin_url( $admin_tabs[ $admin_tab_id ]['link'] ) . '" class="' . $class . ' nav-tab-' . $admin_tabs[ $admin_tab_id ]['id'] . '">' . $admin_tabs[ $admin_tab_id ]['name'] . '</a>';
+			echo wp_kses(
+				sprintf(
+					'<a href="%s" class="%s">%s</a>',
+					admin_url( $admin_tabs[ $admin_tab_id ]['link'] ),
+					$class . ' nav-tab-' . $admin_tabs[ $admin_tab_id ]['id'],
+					$admin_tabs[ $admin_tab_id ]['name']
+				),
+				true
+			);
 		}
 
 		echo '</h2>';

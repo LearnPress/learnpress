@@ -141,7 +141,7 @@ $user_ip      = $order->get_user_ip_address();
 			<?php $note = $post->post_excerpt; ?>
 			<?php if ( ! empty( $note ) ) : ?>
 				<label><?php esc_html_e( 'Customer Note', 'learnpress' ); ?></label>
-				<p class="order-note description"><?php echo $note; ?></p>
+				<p class="order-note description"><?php echo wp_kses_post( $note ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>

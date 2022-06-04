@@ -35,7 +35,7 @@ if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 			return $redirect;
 		}
 
-		return add_query_arg( 'content-item-only', 'yes', $_REQUEST['content-item-only-redirect'] );
+		return esc_url( add_query_arg( 'content-item-only', 'yes', LP_Helper::sanitize_params_submitted( $_REQUEST['content-item-only-redirect'] ) ) );
 	}
 }
 add_filter( 'comment_post_redirect', 'learn_press_get_only_content_permalink', 10, 2 );

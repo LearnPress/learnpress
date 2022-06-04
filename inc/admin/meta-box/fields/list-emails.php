@@ -16,17 +16,19 @@
 			$group = '';
 
 			if ( $email->group ) {
-				$url = add_query_arg(
-					array(
-						'section'     => $email->group->group_id,
-						'sub-section' => $email->id,
-					),
-					admin_url( 'admin.php?page=learn-press-settings&tab=emails' )
+				$url = esc_url(
+					add_query_arg(
+						array(
+							'section'     => $email->group->group_id,
+							'sub-section' => $email->id,
+						),
+						admin_url( 'admin.php?page=learn-press-settings&tab=emails' )
+					)
 				);
 
 				$group = $email->group;
 			} else {
-				$url = add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) );
+				$url = esc_url( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
 			}
 			?>
 

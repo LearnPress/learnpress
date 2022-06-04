@@ -314,7 +314,7 @@ class LP_Setup_Wizard {
 			$at ++;
 		}
 
-		return add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) );
+		return esc_url( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );
 	}
 
 	/**
@@ -330,7 +330,7 @@ class LP_Setup_Wizard {
 			$at --;
 		}
 
-		return add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) );
+		return esc_url( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );
 	}
 
 	/**

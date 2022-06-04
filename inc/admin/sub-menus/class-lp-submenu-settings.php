@@ -91,7 +91,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		do_action( 'learn-press/update-settings/updated', $this );
 
 		// Filter redirect
-		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );
+		$redirect = apply_filters( 'learn-press/update-settings/redirect', esc_url( add_query_arg( 'settings-updated', 'yes' ) ), $this );
 
 		if ( $redirect ) {
 			wp_redirect( $redirect );

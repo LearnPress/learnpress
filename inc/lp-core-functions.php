@@ -209,32 +209,16 @@ function learn_press_include( $file, $folder = 'inc', $include_once = true ) {
  * @return mixed
  */
 function learn_press_get_ip() {
-	// Just get the headers if we can or else use the SERVER global
-	if ( function_exists( 'apache_request_headers' ) ) {
-		$headers = apache_request_headers();
-	} else {
-		$headers = $_SERVER;
+	if ( isset( $_SERVER['HTTP_X_REAL_IP'] ) ) {
+		return sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) );
+	} elseif ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+		// Proxy servers can send through this header like this: X-Forwarded-For: client1, proxy1, proxy2
+		// Make sure we always only send through the first IP in the list which should always be the client IP.
+		return (string) rest_is_ip_address( trim( current( preg_split( '/,/', sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) ) ) ) );
+	} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+		return sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
 	}
-	// Get the forwarded IP if it exists
-	if ( array_key_exists( 'X-Forwarded-For', $headers ) &&
-		 (
-			 filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-			 filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-	) {
-		$the_ip = $headers['X-Forwarded-For'];
-	} elseif (
-		array_key_exists( 'HTTP_X_FORWARDED_FOR', $headers ) &&
-		(
-			filter_var( $headers['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-			filter_var( $headers['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 )
-		)
-	) {
-		$the_ip = $headers['HTTP_X_FORWARDED_FOR'];
-	} else {
-		$the_ip = $_SERVER['REMOTE_ADDR'];
-	}
-
-	return esc_sql( $the_ip );
+	return '';
 }
 
 /**
@@ -330,7 +314,7 @@ function learn_press_get_current_url() {
 
 			if ( $home_query ) {
 				parse_str( untrailingslashit( $home_query ), $home_query );
-				$url = add_query_arg( $home_query, $url );
+				$url = esc_url( add_query_arg( $home_query, $url ) );
 			}
 
 			$segs1 = explode( '/', $siteurl );
@@ -1807,23 +1791,21 @@ function learn_press_maybe_send_json( $data, $callback = null ) {
  * @return mixed
  */
 function learn_press_get_request( $key, $default = null, $hash = null ) {
-	$return = $default;
+	$return = LP_Helper::sanitize_params_submitted( $default );
 
 	if ( $hash ) {
 		if ( ! empty( $hash[ $key ] ) ) {
-			$return = $hash[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $hash[ $key ] );
 		}
 	} else {
 		if ( ! empty( $_POST[ $key ] ) ) {
-			$return = $_POST[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $_POST[ $key ] );
 		} elseif ( ! empty( $_GET[ $key ] ) ) {
-			$return = $_GET[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $_GET[ $key ] );
 		} elseif ( ! empty( $_REQUEST[ $key ] ) ) {
-			$return = $_REQUEST[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] );
 		}
 	}
-
-	$return = LP_Helper::sanitize_params_submitted( $return );
 
 	return $return;
 }
@@ -2045,7 +2027,7 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 		$url = trailingslashit( $url ) . ( $name ? $name . '/' : '' ) . $value . $query_string;
 
 	} else {
-		$url = add_query_arg( $name, $value, $url );
+		$url = esc_url( add_query_arg( $name, $value, $url ) );
 	}
 
 	return apply_filters( 'learn_press_get_endpoint_url', esc_url( $url ), $name, $value, $url );
@@ -2217,14 +2199,14 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	$current = '';
 
 	if ( ! empty( $_REQUEST['tab'] ) ) {
-		$current = $_REQUEST['tab'];
+		$current = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] );
 	} elseif ( ! empty( $wp_query->query_vars['tab'] ) ) {
 		$current = $wp_query->query_vars['tab'];
 	} elseif ( ! empty( $wp->query_vars['view'] ) ) {
 		$current = $wp->query_vars['view'];
 	} else {
-		if ( $default && $tabs = learn_press_get_user_profile_tabs() ) {
-
+		$tabs = learn_press_get_user_profile_tabs();
+		if ( $default && $tabs ) {
 			// Fixed for array_keys does not work with ArrayAccess instance
 			if ( $tabs instanceof LP_Profile_Tabs ) {
 				$tabs = $tabs->tabs();

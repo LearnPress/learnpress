@@ -256,7 +256,7 @@ abstract class LP_Abstract_Post_Type {
 			'author'    => get_the_author_meta( 'ID' ),
 		);
 
-		$author_link = add_query_arg( $args, 'edit.php' );
+		$author_link = esc_url( add_query_arg( $args, 'edit.php' ) );
 		echo sprintf( '<span class="post-author">%s<a href="%s">%s</a></span>', get_avatar( get_the_author_meta( 'ID' ), 32 ), $author_link, get_the_author() );
 	}
 

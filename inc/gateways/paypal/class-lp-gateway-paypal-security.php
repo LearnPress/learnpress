@@ -42,12 +42,14 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal {
 
 			$L_BUTTONVARS[] = 'business=' . $paypal_email;
 			//$L_BUTTONVARS[] = 'item_name=' . learn_press_get_cart_description();
-			$L_BUTTONVARS[] = 'return=' . add_query_arg(
-				array(
-					'learn-press-transaction-method' => 'paypal-standard-secure',
-					'paypal-nonce'                   => $nonce,
-				),
-				learn_press_get_cart_course_url()
+			$L_BUTTONVARS[] = 'return=' . esc_url(
+				add_query_arg(
+					array(
+						'learn-press-transaction-method' => 'paypal-standard-secure',
+						'paypal-nonce'                   => $nonce,
+					),
+					learn_press_get_cart_course_url()
+				)
 			);
 			$L_BUTTONVARS[] = 'currency_code=' . learn_press_get_currency();//$general_settings['default-currency'];
 			$L_BUTTONVARS[] = 'notify_url=' . learn_press_get_web_hook( 'paypal-standard-secure' );

@@ -923,9 +923,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$user = learn_press_get_current_user();
 				$url  = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.profile-orders' ) );
 				if ( ! $force ) {
-					$url = add_query_arg( 'cancel-order', $this->get_id(), $url );
+					$url = esc_url( add_query_arg( 'cancel-order', $this->get_id(), $url ) );
 				} else {
-					$url = add_query_arg( 'cancelled-order', $this->get_id(), $url );
+					$url = esc_url( add_query_arg( 'cancelled-order', $this->get_id(), $url ) );
 				}
 
 				$url = wp_nonce_url( $url, 'cancel-order', 'lp-nonce' );

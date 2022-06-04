@@ -893,7 +893,7 @@ add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_p
 function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	// Redirect to login page if user is not logged in
 	if ( ! is_user_logged_in() ) {
-		$return_url = add_query_arg( $_POST, get_the_permalink( $course_id ) );
+		$return_url = esc_url( add_query_arg( $_POST, get_the_permalink( $course_id ) ) );
 		$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
 		$redirect   = apply_filters(
 			'learn_press_purchase_course_login_redirect',
@@ -1406,7 +1406,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
 			$url = trailingslashit( $profile_link . join( '/', array_values( $args ) ) );
 		} else {
-			$url = add_query_arg( $args, $profile_link );
+			$url = esc_url( add_query_arg( $args, $profile_link ) );
 		}
 	} else {
 		$url = get_author_posts_url( $user_id );

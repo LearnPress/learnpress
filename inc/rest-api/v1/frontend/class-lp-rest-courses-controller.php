@@ -115,8 +115,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter             = new LP_Course_Filter();
 			$filter->page       = absint( $request['paged'] ?? 1 );
 			$filter->post_title = LP_Helper::sanitize_params_submitted( $request['c_search'] ?? '' );
-			$fields_str         = LP_Helper::sanitize_params_submitted( urldecode( $request['c_fields'] ) ?? '' );
-			$fields_exclude_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_exclude_fields'] ) ?? '' );
+			$fields_str         = LP_Helper::sanitize_params_submitted( urldecode( $request['c_fields'] ?? '' ) );
+			$fields_exclude_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_exclude_fields'] ?? '' ) );
 			if ( ! empty( $fields_str ) ) {
 				$fields         = explode( ',', $fields_str );
 				$filter->fields = $fields;

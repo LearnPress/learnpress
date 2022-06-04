@@ -224,15 +224,17 @@ if ( ! class_exists( 'LP_Course_Attributes' ) ) {
 		 */
 		public function terms_row_actions( $tax ) {
 			$uri           = wp_doing_ajax() ? wp_get_referer() : esc_url( $_SERVER['REQUEST_URI'] );
-			$edit_link     = add_query_arg(
-				'wp_http_referer',
-				urlencode( wp_unslash( $uri ) ),
+			$edit_link     = esc_url(
 				add_query_arg(
-					array(
-						'taxonomy'  => LP_COURSE_ATTRIBUTE . '-' . $tax->slug,
-						'post_type' => LP_COURSE_CPT,
-					),
-					admin_url( 'term.php' )
+					'wp_http_referer',
+					urlencode( wp_unslash( $uri ) ),
+					add_query_arg(
+						array(
+							'taxonomy'  => LP_COURSE_ATTRIBUTE . '-' . $tax->slug,
+							'post_type' => LP_COURSE_CPT,
+						),
+						admin_url( 'term.php' )
+					)
 				)
 			);
 			$terms_actions = array(

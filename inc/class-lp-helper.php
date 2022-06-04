@@ -564,7 +564,7 @@ class LP_Helper {
 	 * without cache - because some cache(redis) will cache page with user anonymous
 	 */
 	public static function get_link_no_cache( string $link ): string {
-		return add_query_arg( 'no-cache', uniqid(), $link );
+		return esc_url( add_query_arg( 'no-cache', uniqid(), $link ) );
 	}
 
 	/**

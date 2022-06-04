@@ -679,7 +679,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 					}
 				}
 			} else {
-				$permalink = add_query_arg( array( 'question', $question_id ), $permalink );
+				$permalink = esc_url( add_query_arg( array( 'question', $question_id ), $permalink ) );
 			}
 
 			// @deprecated

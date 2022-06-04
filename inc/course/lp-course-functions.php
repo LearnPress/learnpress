@@ -900,12 +900,14 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
  */
 function learn_press_get_preview_url( $post_id ) {
 	return
-		add_query_arg(
-			array(
-				'lp-preview' => $post_id,
-				'_wpnonce'   => wp_create_nonce( 'lp-preview' ),
-			),
-			trailingslashit( get_home_url() /* SITE_URL */ )
+		esc_url(
+			add_query_arg(
+				array(
+					'lp-preview' => $post_id,
+					'_wpnonce'   => wp_create_nonce( 'lp-preview' ),
+				),
+				trailingslashit( get_home_url() )
+			)
 		);
 }
 
