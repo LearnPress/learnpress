@@ -123,7 +123,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				return;
 			}
 
-			$value = ! empty( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : '';
+			$value = ! empty( $_POST[ $this->id ] ) ? sanitize_text_field( wp_unslash( $_POST[ $this->id ] ) ) : '';
 
 			$multilple = ! empty( $this->extra['multiple'] ) ? true : false;
 
