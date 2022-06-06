@@ -1,6 +1,11 @@
 const urlCourses = lpGlobalSettings.courses_url || '';
 const urlCurrent = document.location.href;
 let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
+let skeleton;
+let skeletonClone;
+let isLoading = false;
+let firstLoad = 1;
+let elNoLoadAjaxFirst = null;
 
 if( lpGlobalSettings.is_course_archive ) {
 	const queryString = window.location.search;
@@ -21,22 +26,22 @@ const lpArchiveAddQueryArgs = ( endpoint, args ) => {
 };
 
 const lpArchiveCourse = () => {
-	const elements = document.querySelectorAll( '.lp-archive-course-skeleton' );
+	skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+	elNoLoadAjaxFirst = document.querySelector( '.no-first-load-ajax' );
 
-	if ( ! elements.length ) {
+	if ( ! skeleton ) {
 		return;
 	}
 
 	if ( skeleton && ! elNoLoadAjaxFirst ) {
 		lpArchiveRequestCourse( filterCourses );
 	}
-};
 
-let skeleton;
-let skeletonClone;
-let isLoading = false;
-let firstLoad = 1;
-let elNoLoadAjaxFirst = null;
+	if ( elNoLoadAjaxFirst ) {
+		lpArchivePaginationCourse();
+		lpArchiveSearchCourse();
+	}
+};
 
 window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 	const wpRestUrl = lpGlobalSettings.lp_rest_url;
@@ -66,7 +71,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 	if ( ! skeletonClone ) {
 		skeletonClone = skeleton.outerHTML;
 	} else {
-		listCourse.append(skeleton);
+		listCourse.append( skeleton );
 		// return;
 	}
 
@@ -109,7 +114,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		listCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/courses/archive-course' }</div>`;
 	} ).finally( () => {
 		isLoading = false;
-		skeleton && skeleton.remove();
+		// skeleton && skeleton.remove();
 
 		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
 
@@ -222,16 +227,9 @@ const lpArchiveGridListCourseHandle = () => {
 };
 
 function LPArchiveCourseInit() {
-	skeleton = document.querySelector( '.lp-archive-course-skeleton' );
-	elNoLoadAjaxFirst = document.querySelector( '.no-first-load-ajax' );
 	lpArchiveCourse();
 	lpArchiveGridListCourseHandle();
 	lpArchiveGridListCourse();
-
-	if ( elNoLoadAjaxFirst ) {
-		lpArchivePaginationCourse();
-		lpArchiveSearchCourse();
-	}
 }
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {

@@ -254,7 +254,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @since 3.2.8
 	 */
 	public function load_scripts() {
-		$page_current = lp_page_controller()::page_current();
+		$page_current = LP_Page_Controller::page_current();
 		$this->handle_js( $page_current );
 		$this->handle_style( $page_current );
 
