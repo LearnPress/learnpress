@@ -69,7 +69,6 @@
 		background: #f5f5f5;
 		font-size: 20px;
 		cursor: pointer;
-
 		@include border-radius(4px);
 		@include transition(background linear 0.25s);
 
@@ -116,10 +115,10 @@
 
 			&::after {
 				position: absolute;
-				top: 15px;
-				left: 9px;
+				top: 50%;
+				left: 50%;
+				@include transform(translate(-50%, -50%));
 				box-sizing: content-box;
-				margin-top: -10px;
 				opacity: 0;
 				color: #3db748;
 				font-family: "Font Awesome 5 Free";
@@ -291,7 +290,6 @@ button[data-counter] {
 
 		.result-message {
 			background: $primary-color-course-item-status;
-
 			&::after {
 				content: "\f00c";
 			}
@@ -300,12 +298,15 @@ button[data-counter] {
 
 	.result-message {
 		margin-bottom: 30px;
-		padding: 10px 0;
+		padding: 10px 0 !important;
 		color: #fff;
 		background: #f02425;
 		font-size: 16px;
+		line-height: 22px;
 		font-weight: 400;
-
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		@include border-radius(4px);
 
 		&::after {
@@ -382,7 +383,9 @@ button[data-counter] {
 		.result-statistic-field {
 			display: flex;
 			margin: 0;
-
+			+ li {
+				border-top: 1px dashed #ccc;
+			}
 			span,
 			p {
 				margin: 0;

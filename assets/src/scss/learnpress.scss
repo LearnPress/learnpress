@@ -172,6 +172,7 @@ footer {
 				color: var(--lp-primary-color);
 			}
 		}
+
 	}
 
 	i {
@@ -312,12 +313,9 @@ footer {
 	}
 }
 
-#learn-press-course-tabs {
+.lp-entry-content .course-tabs {
 	margin-bottom: 40px;
-
-	&.course-tabs {
-		margin-top: 54px;
-	}
+	margin-top: 54px;
 }
 
 /* Archive */
@@ -607,7 +605,7 @@ ul.list-table-nav {
 	}
 }
 
-#learn-press-course-tabs {
+.course-tabs {
 
 	input[name="learn-press-course-tab-radio"],
 	.course-tab-panel {
@@ -617,34 +615,15 @@ ul.list-table-nav {
 	.course-nav {
 
 		label {
-			display: block;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			margin: 0;
 			padding: 18px 10px;
 			font-size: 16px;
 			font-weight: 600;
-			text-align: center;
 			text-transform: capitalize;
 			cursor: pointer;
-
-		}
-	}
-
-	@for $i from 1 to 10 {
-		input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .course-tab-panels {
-			.course-tab-panel:nth-child(#{$i}) {
-				display: block;
-			}
-		}
-
-		input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .learn-press-nav-tabs {
-			.course-nav:nth-child(#{$i}) {
-				border-bottom: 0;
-
-				label {
-					color: var(--lp-primary-color);
-					background: #fff;
-				}
-			}
 		}
 	}
 }
@@ -678,4 +657,23 @@ ul.list-table-nav {
 
 .course-price:empty {
 	display: none !important;
+}
+.quiz-attempts {
+  table {
+	border-spacing: 0;
+	border-left: 1px solid var(--lp-secondary-color);
+	border-top: 1px solid var(--lp-secondary-color);
+	width: 100%;
+	tr {
+		th, td {
+			border-right: 1px solid var(--lp-secondary-color);
+			border-bottom: 1px solid var(--lp-secondary-color);
+			padding: 5px 15px;
+			text-align: center;
+		}
+		th {
+			font-weight: 500;
+		}
+	}
+  }
 }
