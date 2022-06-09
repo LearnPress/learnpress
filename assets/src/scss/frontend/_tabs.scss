@@ -6,13 +6,6 @@
 		display: none;
 
 		@for $i from 0 through 9 {
-			//input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
-			//    background: #f5f5f5;
-			//
-			//    &:before {
-			//        color: var(--lp-primary-color);
-			//    }
-			//}
 
 			&:nth-child(#{$i+1}):checked ~ .learn-press-tabs__nav {
 				.learn-press-tabs__tab:nth-child(#{$i+1}) {
@@ -193,6 +186,7 @@
 
 		a {
 			color: #333;
+			cursor: pointer;
 
 			& + span {
 				color: #333;

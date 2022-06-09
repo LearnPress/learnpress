@@ -333,14 +333,11 @@ footer {
 }
 
 .learn-press-progress {
-	position: relative;
-
 	.progress-bg {
 		overflow: hidden;
 		position: relative;
 		height: 6px;
 		background: #ccc;
-
 		@include border-radius(5px);
 
 		.progress-active {
@@ -506,24 +503,22 @@ ul.list-table-nav {
 	}
 }
 
-.course-summary {
 
-	.course-summary-sidebar {
-		position: relative;
+.course-summary-sidebar {
+	position: relative;
 
-		&.slide-down {
+	&.slide-down {
 
-			.course-summary-sidebar__inner {
-				position: fixed;
-				top: 0;
-			}
+		.course-summary-sidebar__inner {
+			position: fixed;
+			top: 0;
 		}
+	}
 
-		&.slide-top {
+	&.slide-top {
 
-			.course-summary-sidebar__inner {
-				position: absolute;
-			}
+		.course-summary-sidebar__inner {
+			position: absolute;
 		}
 	}
 }

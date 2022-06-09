@@ -159,9 +159,7 @@ body {
 		margin-top: 0;
 		border: 1px solid rgba(0, 0, 0, 0.1);
 		border-top: 0;
-		//border-radius: 4px;
 		background: #fff;
-		//box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.1);
 
 		@media (max-width: 990px) {
 			width: 100%;
@@ -171,12 +169,7 @@ body {
 				max-width: 150px;
 			}
 		}
-
-		//@media (max-width: 767px) {
-		//	width: 100%;
-		//}
 	}
-
 
 	#profile-nav {
 
@@ -380,7 +373,6 @@ body {
 					border-right: 1px solid rgba(204, 204, 204, 0.3);
 
 					> a {
-						//font-size: 0;
 						height: auto;
 						padding: 0 20px 0 45px;
 
@@ -846,8 +838,11 @@ div.order-recover {
 			align-items: center;
 			padding: 15px;
 			border-top: 1px solid #eee;
-			grid-template-columns: 90px 1fr 80px 140px 140px;
+			grid-template-columns: 90px 1fr 80px 190px 140px;
 			column-gap: 20px;
+			div img {
+				display: none;
+			}
 		}
 
 		&__header {

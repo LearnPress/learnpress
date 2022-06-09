@@ -203,38 +203,6 @@
 				}
 			}
 
-			//input[type="radio"],
-			//input[type="checkbox"] {
-			//    &:before,
-			//    &:after {
-			//        position: absolute;
-			//        _background: #FF0000;
-			//        border: none;
-			//        content: '';
-			//        display: inline-block;
-			//        left: 50%;
-			//        top: 50%;
-			//        @include border-radius(2px);
-			//        @include transform(rotate(-45deg));
-			//    }
-			//
-			//    &:before {
-			//        width: 2px;
-			//        height: 18px;
-			//        margin-top: -9px;
-			//        margin-left: -1px;
-			//    }
-			//
-			//    &:after {
-			//        width: 18px;
-			//        height: 2px;
-			//        margin-top: -1px;
-			//        margin-left: -9px;
-			//        border: none;
-			//        opacity: 1;
-			//    }
-			//}
-
 			input[type="radio"]:checked,
 			input[type="checkbox"]:checked {
 
@@ -255,25 +223,6 @@ button[data-counter] {
 	&::after {
 		padding-left: 5px;
 		content: "(+" attr(data-counter) ")";
-		//position: absolute;
-		//top: -10px;
-		//right: -10px;
-		//border-radius: 50%;
-		//height: 20px;
-		//background: #00adff;
-		//min-width: 20px;
-		//line-height: 20px;
-		//text-align: center;
-		//font-size: 12px;
-		//font-weight: normal;
-		//z-index: 10;
-	}
-
-	&:hover {
-
-		&::after {
-			//background: #52c8ff;
-		}
 	}
 }
 
@@ -346,18 +295,6 @@ button[data-counter] {
 		.result-message {
 			font-size: 14px;
 		}
-	}
-
-	&.failed {
-
-		/*.result-achieved {
-            color: #c55757;
-        }
-        .result-message {
-            strong {
-                color: #c55757;
-            }
-        }*/
 	}
 
 	&.passed {
@@ -508,8 +445,6 @@ button[data-counter] {
 		min-width: 120px;
 		margin-right: 5px;
 		padding: 12px 29px;
-		//border: 1px solid var(--lp-secondary-color);
-		//border-radius: 3px;
 		color: #333;
 		background: #fff;
 		font-size: 14px;
@@ -573,7 +508,6 @@ button[data-counter] {
 		text-transform: uppercase;
 
 		&:hover {
-			//color: var(--lp-secondary-color);
 			background: var(--lp-secondary-color);
 		}
 	}
@@ -649,10 +583,6 @@ button[data-counter] {
 
 				a {
 					color: #f00;
-
-					&::after {
-						//content: "\f05e";
-					}
 				}
 			}
 
@@ -660,10 +590,6 @@ button[data-counter] {
 
 				a {
 					color: #00adff;
-
-					&::after {
-						//content: "\f00c";
-					}
 				}
 
 				&.current {
@@ -846,14 +772,6 @@ button[data-counter] {
 	}
 }
 
-.quiz-results,
-.quiz-content,
-.quiz-questions,
-.quiz-buttons,
-.quiz-attempts {
-	margin-bottom: 60px;
-}
-
 .quiz-result {
 
 	.result-grade {
@@ -901,13 +819,7 @@ button[data-counter] {
 		.result-grade {
 
 			svg {
-
 				@include transform(rotate(-90deg));
-
-				circle {
-					//stroke: #3eacff;
-					//stroke: #4CAF50;
-				}
 			}
 
 			.result-achieved {
@@ -1016,9 +928,6 @@ button[data-counter] {
 			}
 		}
 
-		&.answered-correct {
-		}
-
 		&.answered-wrong {
 
 			.option-title {
@@ -1033,7 +942,6 @@ button[data-counter] {
 		margin-bottom: 18px;
 		color: #333;
 		font-size: 18px;
-		font-weight: normal;
 		font-weight: 500;
 
 		.edit-link {
@@ -1195,14 +1103,6 @@ button[data-counter] {
 			&.one-paragraph {
 				line-height: 3;
 			}
-		}
-	}
-
-	&:not(.question-answered) {
-
-		input[type="radio"]:checked + .option-title,
-		input[type="checkbox"]:checked + .option-title {
-			//border-color: #99aee4;
 		}
 	}
 }
