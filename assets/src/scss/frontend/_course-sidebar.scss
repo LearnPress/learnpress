@@ -90,20 +90,19 @@
 				flex: 1 1 auto;
 			}
 
-			.number {
-				display: block;
-				margin: 0;
-				color: #666;
-				font-size: 16px;
-				font-weight: 300;
-				line-height: 16px;
-				text-align: right;
-			}
-
 			.learn-press-progress {
 				clear: both;
 				width: 100%;
 			}
+		}
+		.number {
+			display: block;
+			margin: 0;
+			color: #666;
+			font-size: 16px;
+			font-weight: 300;
+			line-height: 16px;
+			text-align: right;
 		}
 	}
 }
@@ -142,25 +141,25 @@
 		margin-bottom: 28px;
 		padding-bottom: 8px;
 		border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+	}
 
-		.course-time-row {
-			display: flex;
+	.course-time-row {
+		display: flex;
+		color: #666;
+		font-size: 16px;
+		font-weight: 300;
+		justify-content: space-between;
+
+		strong {
+			color: #333;
+			font-weight: 500;
+		}
+
+		time {
 			color: #666;
 			font-size: 16px;
 			font-weight: 300;
-			justify-content: space-between;
-
-			strong {
-				color: #333;
-				font-weight: 500;
-			}
-
-			time {
-				color: #666;
-				font-size: 16px;
-				font-weight: 300;
-				line-height: 24px;
-			}
+			line-height: 24px;
 		}
 	}
 

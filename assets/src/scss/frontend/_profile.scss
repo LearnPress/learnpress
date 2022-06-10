@@ -9,7 +9,7 @@ body {
 	}
 }
 
-#learn-press-profile {
+.lp-user-profile {
 	overflow: hidden;
 	position: relative;
 	background: #fff;
@@ -21,6 +21,10 @@ body {
 			width: 100%;
 			height: auto;
 			border-radius: unset;
+			display: block;
+		}
+		+ .lp-user-profile-socials {
+			margin-top: 10px;
 		}
 	}
 
@@ -28,7 +32,6 @@ body {
 		display: flex;
 		position: relative;
 		z-index: 1;
-		margin-top: -17px;
 		justify-content: center;
 		-webkit-flex-wrap: wrap;
 		-ms-flex-wrap: wrap;
@@ -59,42 +62,6 @@ body {
 	.wrapper-profile-header {
 		color: #fff;
 		background: var(--lp-secondary-color);
-
-		.lp-profile-content-area {
-			position: relative;
-			min-height: 345px;
-			padding-top: 50px;
-		}
-
-		.lp-profile-left {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			width: 270px;
-			padding: 20px;
-			border: 1px solid rgba(0, 0, 0, 0.1);
-			border-bottom: 0;
-			background: #fff;
-		}
-
-		.lp-profile-right {
-			margin-left: 270px;
-			padding-right: 15px;
-			padding-left: 35px;
-
-			.lp-profile-username {
-				padding-bottom: 18px;
-				font-size: 18px;
-				font-weight: 500;
-				text-transform: capitalize;
-			}
-
-			.lp-profile-user-bio {
-				font-size: 16px;
-				font-weight: 300;
-				line-height: 26px;
-			}
-		}
 
 		@media (max-width: 990px) {
 
@@ -153,6 +120,59 @@ body {
 		}
 	}
 
+	.lp-profile-content-area {
+		position: relative;
+		padding-top: 50px;
+		padding-bottom: 50px;
+		display: flex;
+		align-items: center;
+	}
+
+	.lp-profile-left {
+		min-width: 270px;
+		max-width: 270px;
+		padding: 10px;
+		border: 10px solid #eaeaea;
+		border-radius: 3px;
+		box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
+		-webkit-box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
+		-moz-box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
+		-o-box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
+	}
+
+	.lp-profile-right {
+		padding-right: 15px;
+		padding-left: 35px;
+	}
+
+	.lp-profile-username {
+		padding-bottom: 10px;
+		font-size: 18px;
+		font-weight: 500;
+		text-transform: capitalize;
+		&::before, &::after {
+			content: "";
+			width: 30px;
+			height: 1px;
+			background-color: white;
+			display: inline-block;
+			vertical-align: middle;
+			margin: 0;
+		}
+		&::before {
+			margin-right: 5px;
+		}
+		&::after {
+			margin-left: 5px;
+		}
+	}
+
+	.lp-profile-user-bio {
+		font-size: 16px;
+		font-weight: 300;
+		line-height: 26px;
+	}
+
 	#profile-sidebar {
 		float: left;
 		width: 270px;
@@ -160,10 +180,10 @@ body {
 		border: 1px solid rgba(0, 0, 0, 0.1);
 		border-top: 0;
 		background: #fff;
+		margin-top: 58px;
 
 		@media (max-width: 990px) {
 			width: 100%;
-			margin-top: 58px;
 
 			.lp-user-profile-avatar {
 				max-width: 150px;
@@ -464,7 +484,7 @@ body {
 		}
 	}
 
-	#profile-content {
+	.lp-profile-content {
 		float: right;
 		width: calc(100% - 300px);
 		margin-bottom: 60px;
@@ -475,58 +495,35 @@ body {
 		}
 
 		@media (max-width: 767px) {
+			.learn-press-tabs__nav {
+				display: block;
+				width: 100%;
+				border: 0;
 
-			.learn-press-tabs {
+				&::after {
+					display: table;
+					clear: both;
+					content: "";
+				}
+				
+			}
 
-				.learn-press-tabs__nav {
-					display: block;
-					width: 100%;
+			.learn-press-tabs__tab {
+				float: left;
+				border-right: 0;
 
-					&::after {
-						display: table;
-						clear: both;
-						content: "";
-					}
-
-					border: 0;
-
-					.learn-press-tabs__tab {
-						float: left;
-						border-right: 0;
-
-						label {
-							padding-right: 25px;
-							padding-left: 25px;
-						}
-					}
+				label {
+					padding-right: 25px;
+					padding-left: 25px;
 				}
 			}
 		}
-
-		.lp-archive-courses {
-
-			ul.learn-press-courses {
-
-				.course {
-					margin: 0 0 40px 0;
-
-					.course-item {
-
-						.course-content {
-							padding: 20px 20px 12px 20px;
-
-							.course-categories,
-							.course-instructor {
-								margin-bottom: 14px;
-							}
-
-							.course-categories {
-								padding: 0;
-							}
-						}
-					}
-				}
-			}
+		
+		.course-categories, .course-instructor {
+			margin-bottom: 14px;
+		}
+		.course-categories {
+			padding: 0;
 		}
 
 		.lp-button {
@@ -544,23 +541,34 @@ body {
 			}
 		}
 
-		#profile-content-orders {
+		
+	}
 
-			.profile-orders {
+	ul.learn-press-courses {
+		.course {
+			margin: 0 0 40px 0;
+		}
+	}
 
-				.profile-heading {
-					display: none;
-				}
+	.profile-orders {
 
-				table {
-					margin-top: 0;
-				}
-			}
+		.profile-heading {
+			display: none;
+		}
 
-			.column-order-actions {
+		table {
+			margin-top: 0;
+		}
 
-				a {
-					margin-right: 6px;
+		.column-order-actions {
+
+			a {
+				margin-right: 6px;
+				color: black;
+				text-decoration: underline;
+				font-weight: 500;
+				&:hover, &:focus {
+					color: var(--lp-primary-color);
 				}
 			}
 		}
@@ -586,32 +594,14 @@ body {
 			border-radius: 4px;
 			background: #f9fafc;
 			text-align: center;
-
 			@media (max-width: 990px) {
 				width: 45%;
 			}
-
+	
 			@media (max-width: 767px) {
 				width: 100%;
 				margin: 0 15px 20px 15px;
 			}
-
-			.statistic-box__text {
-				margin: 0 0 7px 0;
-				padding: 0;
-				color: #666;
-				font-size: 18px;
-				font-weight: 400;
-				line-height: 1;
-			}
-
-			.statistic-box__number {
-				color: #333;
-				font-size: 18px;
-				font-weight: 500;
-				line-height: 1;
-			}
-
 			&:hover {
 				background: #eaeaea;
 			}
@@ -639,6 +629,26 @@ body {
 		}
 	}
 
+	.statistic-box {
+
+		.statistic-box__text {
+			margin: 0 0 7px 0;
+			padding: 0;
+			color: #666;
+			font-size: 18px;
+			font-weight: 400;
+			line-height: 1;
+		}
+
+		.statistic-box__number {
+			color: #333;
+			font-size: 18px;
+			font-weight: 500;
+			line-height: 1;
+		}
+		
+	}
+
 	.profile-courses {
 
 		& > h3 {
@@ -649,6 +659,37 @@ body {
 			font-weight: 600;
 			line-height: 1;
 			text-transform: capitalize;
+		}
+	}
+}
+.lp-profile-content {
+	table.lp-list-table {
+		border-spacing: 0;
+		border-top: 1px solid #ccc;
+		border-left: 1px solid #ccc;
+		margin-bottom: 40px;
+		tr {
+			th, td {
+				border-right: 1px solid #ccc;
+				border-bottom: 1px solid #ccc;
+				text-align: center;
+			}
+			td a {
+				color: var(--wp--preset--color--foreground);
+				font-weight: 400;
+				&:hover {
+					color: var(--lp-primary-color);
+				}
+			}
+		}
+	}
+	#profile-content-order-details {
+		h3 {
+			margin-top: 0;
+			font-size: 30px;
+			line-height: 1.5;
+			font-weight: 500;
+			font-family: var(--wp--preset--font-family--system-font);
 		}
 	}
 }

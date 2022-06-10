@@ -660,59 +660,6 @@ ul.learn-press-nav-tabs {
 				}
 			}
 
-			.course-item-meta {
-				display: table-cell;
-				padding: 10px 0;
-				text-align: right;
-				vertical-align: middle;
-				white-space: nowrap;
-
-				.item-meta {
-					display: inline-block;
-					margin-left: 14px;
-					border-radius: 3px;
-					color: #fff;
-					font-size: 14px;
-					line-height: 23px;
-					text-align: center;
-					vertical-align: middle;
-
-					&.final-quiz {
-						background: #14c4ff;
-					}
-
-					&.trans {
-						padding: 0;
-					}
-				}
-
-				.count-questions {
-					background: $primary-bg-questions;
-				}
-
-				.duration {
-					background: $primary-bg-duration;
-				}
-
-				.course-item-status {
-					padding: 0;
-					color: #999;
-
-					@include border-radius(50%);
-					@include box-sizing(border-box);
-
-					&::before {
-						font-family: "Font Awesome 5 Free";
-						font-size: 14px;
-						font-weight: 900;
-						vertical-align: middle;
-						text-transform: lowercase;
-						content: "\f00c";
-					}
-
-				}
-			}
-
 			&.course-item-lp_quiz {
 				.section-item-link::before {
 					content: "\f059";
@@ -749,23 +696,7 @@ ul.learn-press-nav-tabs {
 				}
 			}
 
-			&.item-preview {
 
-				.course-item-preview {
-					font-style: normal;
-					&::before {
-						color: #fff;
-						padding: 0 8px;
-						background: #00adff;
-						display: inline-flex;
-						align-items: center;
-						justify-content: center;
-						@include border-radius(3px);
-						vertical-align: baseline;
-						content: attr(data-preview);
-					}
-				}
-			}
 
 			&.item-locked {
 
@@ -831,6 +762,77 @@ ul.learn-press-nav-tabs {
 				&::before {
 					top: 0;
 					height: 100%;
+				}
+			}
+		}
+		.course-item-meta {
+			display: table-cell;
+			padding: 10px 0;
+			text-align: right;
+			vertical-align: middle;
+			white-space: nowrap;
+
+			.item-meta {
+				display: inline-block;
+				margin-left: 14px;
+				border-radius: 3px;
+				color: #fff;
+				font-size: 14px;
+				line-height: 23px;
+				text-align: center;
+				vertical-align: middle;
+				padding: 0 8px;
+
+				&.final-quiz {
+					background: #14c4ff;
+				}
+
+				&.trans {
+					padding: 0;
+				}
+			}
+
+			.count-questions {
+				background: $primary-bg-questions;
+			}
+
+			.duration {
+				background: $primary-bg-duration;
+			}
+
+			.course-item-status {
+				padding: 0;
+				color: #999;
+
+				@include border-radius(50%);
+				@include box-sizing(border-box);
+
+				&::before {
+					font-family: "Font Awesome 5 Free";
+					font-size: 14px;
+					font-weight: 900;
+					vertical-align: middle;
+					text-transform: lowercase;
+					content: "\f00c";
+				}
+
+			}
+		}
+		.item-preview {
+
+			.course-item-preview {
+				font-style: normal;
+				padding: 0;
+				&::before {
+					color: #fff;
+					padding: 0 8px;
+					background: #00adff;
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					@include border-radius(3px);
+					vertical-align: baseline;
+					content: attr(data-preview);
 				}
 			}
 		}
@@ -1340,14 +1342,6 @@ body {
 	.course-meta__pull-left,
 	.course-meta__pull-right {
 		display: flex;
-	}
-
-	.course-meta__pull-left {
-
-	}
-
-	.course-meta__pull-right {
-
 	}
 
 

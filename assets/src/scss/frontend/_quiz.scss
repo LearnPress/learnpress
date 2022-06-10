@@ -784,6 +784,7 @@ button[data-counter] {
 		padding: 50px;
 		justify-content: center;
 		align-items: center;
+		@include transform(none !important);
 
 		&::before,
 		svg {
@@ -1087,12 +1088,6 @@ button[data-counter] {
 					line-height: 1;
 
 					@include border-radius(4px);
-				}
-			}
-
-			&.paragraphs {
-
-				.blank-block {
 				}
 			}
 

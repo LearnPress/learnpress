@@ -83,3 +83,9 @@
 * {
 	box-sizing: border-box;
 }
+button {
+	cursor: pointer;
+}
+input, button, select, textarea {
+	outline: none;
+}

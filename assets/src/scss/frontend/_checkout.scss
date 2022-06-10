@@ -12,9 +12,10 @@
 			margin-top: 0;
 			margin-bottom: 18px;
 			color: #333;
-			font-size: 18px;
+			font-size: 24px;
 			font-weight: 600;
 			line-height: 1;
+			font-family: var(--wp--preset--font-family--system-font);
 		}
 	}
 
@@ -32,120 +33,127 @@
 	}
 }
 
-#learn-press-checkout-form {
+.lp-checkout-form {
 
 	.lp-checkout-form__after {
 		float: left;
+	}
 
-		.lp-checkout-block {
+	.lp-checkout-remember {
+		letter-spacing: 0;
+		margin-top: 0;
 
-			.lp-form-fields {
-				padding: 0 0 14px 0;
+		label {
+			width: auto;
+			color: #666;
+			font-size: 16px;
+			font-weight: 300;
+			line-height: 26px;
 
-				.form-field {
+			input[type="checkbox"] {
+				position: relative;
+				top: 3px;
+				width: 19px;
+				height: 19px;
+				margin: 0 4px 0 0;
+				border: 1px solid #ccc;
+				cursor: pointer;
+				-webkit-appearance: none;
 
-					.rwmb-input {
-
-						input:not([type="checkbox"]) {
-							width: 100%;
-							height: 43px;
-							padding: 0 22px;
-							border: 1px solid #ccc;
-							border-radius: 3px;
-							background-color: #fff;
-							font-size: 14px;
-							font-weight: 300;
-							font-style: italic;
-							line-height: 43px;
-
-							&:focus {
-								border-color: var(--lp-primary-color);
-								outline: 0;
-								color: #222;
-							}
-						}
-
-						::placeholder {
-							opacity: 1;
-							color: #999;
-						}
-
-						:-ms-input-placeholder {
-							color: #999;
-						}
-
-						::-ms-input-placeholder {
-							color: #999;
-						}
-
-						input:-webkit-autofill,
-						input:-webkit-autofill:hover,
-						input:-webkit-autofill:focus {
-							-webkit-box-shadow: 0 0 0 1000px #fff inset;
-							-webkit-text-fill-color: #999 !important;
-						}
-					}
+				&:focus {
+					outline: 0;
 				}
 			}
 
-			.lp-checkout-remember {
-				letter-spacing: 0;
-
-				label {
-					width: auto;
-					color: #666;
-					font-size: 16px;
-					font-weight: 300;
-					line-height: 26px;
-
-					input[type="checkbox"] {
-						position: relative;
-						top: 3px;
-						width: 19px;
-						height: 19px;
-						margin: 0 4px 0 0;
-						border: 1px solid #ccc;
-						cursor: pointer;
-						-webkit-appearance: none;
-
-						&:focus {
-							outline: 0;
-						}
-					}
-
-					input[type="checkbox"]:checked::after {
-						position: absolute;
-						top: 2px;
-						left: 2px;
-						color: #41abec;
-						font-family: "Font Awesome 5 Free";
-						font-size: 14px;
-						font-weight: 900;
-						line-height: 1;
-						content: "\f00c";
-					}
-				}
-
-				a {
-					color: #666;
-					font-size: 16px;
-					font-weight: 300;
-					line-height: 26px;
-					text-decoration: underline;
-					text-decoration-color: #ccc;
-
-					&:hover {
-						color: var(--lp-primary-color);
-						text-decoration-color: var(--lp-primary-color);
-					}
-				}
+			input[type="checkbox"]:checked::after {
+				position: absolute;
+				top: 2px;
+				left: 2px;
+				color: #41abec;
+				font-family: "Font Awesome 5 Free";
+				font-size: 14px;
+				font-weight: 900;
+				line-height: 1;
+				content: "\f00c";
 			}
+		}
+
+		a {
+			color: #666;
+			font-size: 16px;
+			font-weight: 300;
+			line-height: 26px;
+			text-decoration: underline;
+			text-decoration-color: #ccc;
+
+			&:hover {
+				color: var(--lp-primary-color);
+				text-decoration-color: var(--lp-primary-color);
+			}
+		}
+	}
+	.lp-form-fields {
+		padding: 0 0 14px 0;
+		label {
+			display: block;
+			margin-bottom: 10px;
+			font-size: 16px;
+		}
+		input {
+			height: 44px;
+			line-height: normal;
+			width: 100%;
+			padding: 0 15px;
+			border: 1px solid #ccc;
+		}
+	}
+
+	.rwmb-input {
+
+		input:not([type="checkbox"]) {
+			width: 100%;
+			height: 43px;
+			padding: 0 22px;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			background-color: #fff;
+			font-size: 14px;
+			font-weight: 300;
+			font-style: italic;
+			line-height: 43px;
+
+			&:focus {
+				border-color: var(--lp-primary-color);
+				outline: 0;
+				color: #222;
+			}
+		}
+
+		::placeholder {
+			opacity: 1;
+			color: #999;
+		}
+
+		:-ms-input-placeholder {
+			color: #999;
+		}
+
+		::-ms-input-placeholder {
+			color: #999;
+		}
+
+		input:-webkit-autofill,
+		input:-webkit-autofill:hover,
+		input:-webkit-autofill:focus {
+			-webkit-box-shadow: 0 0 0 1000px #fff inset;
+			-webkit-text-fill-color: #999 !important;
 		}
 	}
 }
 
-#learn-press-checkout-form {
+.lp-checkout-form {
 	margin: 0 -15px;
+	margin-top: 50px;
 
 	@media (max-width: 815px) {
 		display: flex;
@@ -320,7 +328,7 @@
 			a {
 				display: -webkit-box;
 				overflow: hidden;
-				color: #666;
+				color: #000;
 				-webkit-line-clamp: 1;
 				-webkit-box-orient: vertical;
 
@@ -473,58 +481,58 @@
 		margin: 0 0 24px 0;
 		padding: 0;
 		list-style: none;
+	}
 
-		.lp-payment-method {
+	.lp-payment-method {
+		position: relative;
+		margin: 0;
+
+		& > label {
+			display: flex;
+			align-items: center;
+		}
+
+		.gateway-input,
+		.gateway-icon {
+			vertical-align: middle;
+		}
+
+		.gateway-icon {
+			max-height: 32px;
+		}
+
+		.gateway-input {
 			position: relative;
-			margin: 0;
+			width: 20px;
+			height: 20px;
+			margin: 0 8px 0 0;
+			border: 1px solid #ccc;
+			background: #fff;
+			-webkit-appearance: none;
 
-			& > label {
-				display: flex;
-				align-items: center;
-			}
+			@include border-radius(50%);
 
-			.gateway-input,
-			.gateway-icon {
-				vertical-align: middle;
-			}
-
-			.gateway-icon {
-				max-height: 32px;
-			}
-
-			.gateway-input {
-				position: relative;
-				width: 20px;
-				height: 20px;
-				margin: 0 8px 0 0;
-				border: 1px solid #ccc;
-				background: #fff;
-				-webkit-appearance: none;
+			&::before {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 6px;
+				height: 6px;
+				background: #41abec;
+				transform: translate(-50%, -50%);
 
 				@include border-radius(50%);
+			}
+
+			&:checked {
 
 				&::before {
-					position: absolute;
-					top: 50%;
-					left: 50%;
-					width: 6px;
-					height: 6px;
-					background: #41abec;
-					transform: translate(-50%, -50%);
-
-					@include border-radius(50%);
+					content: "";
 				}
+			}
 
-				&:checked {
-
-					&::before {
-						content: "";
-					}
-				}
-
-				&:focus {
-					outline: 0;
-				}
+			&:focus {
+				outline: 0;
 			}
 		}
 	}
@@ -551,7 +559,6 @@
 					font-family: "Font Awesome 5 Free";
 					font-weight: 900;
 					content: "\f110";
-
 					@include animation(lp-rotating 1s linear infinite);
 				}
 			}
@@ -622,12 +629,6 @@
 			padding: 15px 20px;
 			border-top: 1px solid #ddd;
 			background: #f9f9f9;
-		}
-
-		.selected {
-
-			.payment-method-form {
-			}
 		}
 	}
 }

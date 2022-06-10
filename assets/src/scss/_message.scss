@@ -8,16 +8,15 @@ $msg-waring: #ffc107;
 	margin: 0 0 20px 0;
 	padding: 10px 12px 10px 15px;
 	border-top: 5px solid $msg-color;
-	border-bottom-right-radius: 5px;
-	border-bottom-left-radius: 5px;
+	border-radius: 0 0 5px 5px;
 	background: #f5f5f5;
+	width: 100%;
 
 	&.icon {
 		padding-left: 45px;
 
 		&::before {
 			background: $msg-color;
-
 		}
 
 		&::after {
@@ -64,7 +63,7 @@ $msg-waring: #ffc107;
 	}
 
 	&.error {
-		border-top: 5px solid $msg-error;
+		border-color: $msg-error;
 
 		&::before {
 			background: $msg-error;
@@ -72,19 +71,18 @@ $msg-waring: #ffc107;
 
 		&.icon {
 
-			&::before {
+			&::before, &::after {
 				background: $msg-error;
 			}
 
 			&::after {
-				background: $msg-error;
 				content: "\f00d";
 			}
 		}
 	}
 
 	&.warning {
-		border-top: 5px solid $msg-waring;
+		border-color: $msg-waring;
 
 		&::before {
 			background: $msg-waring;
@@ -92,19 +90,18 @@ $msg-waring: #ffc107;
 
 		&.icon {
 
-			&::before {
+			&::before, &::after {
 				background: $msg-waring;
 			}
 
 			&::after {
-				background: $msg-waring;
 				content: "\f00d";
 			}
 		}
 	}
 
 	&.success {
-		border-top: 5px solid $msg-success;
+		border-color: $msg-success;
 
 		&::before {
 			background: $msg-success;
@@ -112,12 +109,11 @@ $msg-waring: #ffc107;
 
 		&.icon {
 
-			&::before {
+			&::before, &::after {
 				background: $msg-success;
 			}
 
 			&::after {
-				background: $msg-success;
 				content: "\f129";
 			}
 		}

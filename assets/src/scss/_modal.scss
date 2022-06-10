@@ -16,14 +16,10 @@
 
 .wp-admin {
 	.lp-modal-dialog {
-
-		.lp-modal-content {
-			.lp-modal-header {
-				padding: 2em;
-
-				h3 {
-					font-size: 1.4em;
-				}
+		.lp-modal-header {
+			padding: 2em;
+			h3 {
+				font-size: 1.4em;
 			}
 		}
 	}
@@ -80,9 +76,6 @@
 
 	.lp-modal-header {
 		padding: 0 20px;
-	}
-
-	.lp-modal-body {
 	}
 
 	.lp-modal-footer {
@@ -151,12 +144,6 @@
 		.lp-button {
 			position: relative;
 			margin: 0 10px 0 10px;
-
-			&.modal-button-cancel {
-
-			}
 		}
 	}
-
-
 }

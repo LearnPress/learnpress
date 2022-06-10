@@ -157,7 +157,7 @@ footer {
 	padding: 0;
 	color: #333;
 	font-size: 14px;
-	font-weight: 500;
+	font-weight: 400;
 	list-style: none;
 
 	li {
@@ -165,9 +165,6 @@ footer {
 		margin: 0;
 
 		a {
-			color: #666;
-			font-weight: 300;
-
 			&:hover {
 				color: var(--lp-primary-color);
 			}
@@ -188,7 +185,7 @@ footer {
 
 	a {
 		color: #666;
-		font-weight: 300;
+		font-weight: 500;
 	}
 }
 
@@ -329,7 +326,10 @@ footer {
 
 .order-comments {
 	width: 100%;
+	padding: 15px;
 	min-height: 150px;
+	border: 1px solid #ccc;
+	resize: none;
 }
 
 .learn-press-progress {
