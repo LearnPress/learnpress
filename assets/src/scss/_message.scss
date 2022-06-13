@@ -6,7 +6,7 @@ $msg-waring: #ffc107;
 .learn-press-message {
 	position: relative;
 	margin: 0 0 20px 0;
-	padding: 10px 12px 10px 15px;
+	padding: 10px 50px 10px 15px;
 	border-top: 5px solid $msg-color;
 	border-radius: 0 0 5px 5px;
 	background: #f5f5f5;
@@ -117,5 +117,8 @@ $msg-waring: #ffc107;
 				content: "\f129";
 			}
 		}
+	}
+	a {
+		text-decoration: underline;
 	}
 }

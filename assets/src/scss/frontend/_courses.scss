@@ -6,8 +6,8 @@ a {
 }
 
 .lp-content-area {
-	width: 1170px;
-	max-width: 100%;
+	width: 100%;
+	max-width: 1170px;
 	margin: 0 auto;
 
 	@media (max-width: 1024px) {
@@ -93,9 +93,7 @@ a {
 		}
 	}
 	.course-item {
-		display: flex;
 		flex-direction: column;
-		position: relative;
 		height: 100%;
 		transition: all 0.3s;
 
@@ -379,18 +377,12 @@ a {
 		}
 	}
 
-
 	.course-summary-content {
 
-		.course-detail-info {
-			margin-bottom: 60px;
-			padding: 40px 0 10px 0;
-			color: #fff;
-			background: var(--lp-secondary-color);
-		}
-
-		.course-info-left {
-			width: 70%;
+		@media (min-width: 769px) {
+			.course-info-left {
+				width: calc(100% - 330px);
+			}
 		}
 
 		.course-title {
@@ -413,6 +405,16 @@ a {
 			width: 100%;
 		}
 		
+	}
+
+	.course-detail-info {
+		margin-bottom: 60px;
+		padding: 40px 0 10px 0;
+		color: #fff;
+		background: var(--lp-secondary-color);
+		@media (max-width: 767px) {
+			margin-bottom: 0;
+		}
 	}
 
 	.course-meta__pull-left {
@@ -575,11 +577,7 @@ a {
 			@media (max-width: 768px) {
 				width: 100%;
 				padding-right: 0;
-			}
-
-			@media (max-width: 767px) {
-				width: 100%;
-				margin-bottom: 30px;
+				margin-bottom: 50px;
 			}
 		}
 
@@ -661,6 +659,7 @@ a {
 		}
 
 	}
+
 }
 
 .learn-press-courses {
@@ -1155,3 +1154,88 @@ a {
 		background-color: #222;
 	}
 }
+
+.comment-respond {
+	.comment-reply-title {
+		font-size: 30px;
+		font-weight: 500;
+		line-height: 1.2;
+		margin-bottom: 15px;
+	}
+	.comment-form {
+		margin: 0 -15px;
+		> p {
+			margin-bottom: 15px;
+			padding: 0 15px;
+			label {
+				display: block;
+				margin-bottom: 10px;
+				font-size: 16px;
+				font-weight: 500;
+			}
+
+			textarea, > input {
+				border: 1px solid #ccc;
+				@include border-radius(3px);
+				resize: none;
+				max-width: 100%;
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+			textarea {
+				width: 100%;
+				display: block;
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+			> input {
+				&[type="text"], &[type="email"], &[type="url"] {
+					height: 40px;
+					line-height: normal;
+					width: 100%;
+				}
+			}
+			&.comment-notes, &.logged-in-as {
+				color: #666;
+				font-size: 16px;
+			}
+			&.logged-in-as {
+				a {
+					color: #666;
+					text-decoration: underline;
+					&:hover, &:focus {
+						color: var(--lp-primary-color);
+					}
+				}
+			}
+			&.comment-form-author, &.comment-form-email, &.comment-form-url {
+				width: 33.33%;
+				float: left;
+				@media (max-width: 575px) {
+					width: 100%;
+					float: unset;
+				}
+			}
+			&.comment-form-cookies-consent {
+				clear: both;
+				input {
+					padding: 0;
+				}
+				label {
+					display: inline;
+				}
+			}
+			input.submit {
+				background-color: var(--lp-primary-color);
+				border: 0;
+				height: 40px;
+				line-height: 40px;
+				font-size: 16px;
+				font-weight: 500;
+				margin-top: 15px;
+				cursor: pointer;
+			}
+		}
+	}
+}
+

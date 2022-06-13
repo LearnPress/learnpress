@@ -82,10 +82,15 @@
 
 * {
 	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 button {
 	cursor: pointer;
 }
 input, button, select, textarea {
 	outline: none;
+}
+a {
+	@include transition(.3s);
 }

@@ -151,8 +151,8 @@ footer {
 }
 
 .learn-press-breadcrumb {
-	width: 1170px;
-	max-width: 100%;
+	max-width: 1170px;
+	width: 100%;
 	margin: 0 auto 45px auto;
 	padding: 0;
 	color: #333;
@@ -284,6 +284,12 @@ footer {
 	}
 }
 
+.btn-base {
+	border-color: var(--lp-primary-color);
+	color: white;
+	background-color: var(--lp-primary-color);
+}
+
 .lp-ajax-message {
 	display: none;
 	margin-top: 20px;
@@ -311,7 +317,7 @@ footer {
 }
 
 .lp-entry-content .course-tabs {
-	margin-bottom: 40px;
+	margin-bottom: 60px;
 	margin-top: 54px;
 }
 
@@ -497,7 +503,6 @@ ul.list-table-nav {
 		margin-left: 0;
 
 		#comment {
-
 			@include box-sizing(border-box);
 		}
 	}
@@ -509,16 +514,19 @@ ul.list-table-nav {
 
 	&.slide-down {
 
-		.course-summary-sidebar__inner {
-			position: fixed;
-			top: 0;
+		@media (min-width: 769px) {
+			.course-summary-sidebar__inner {
+				position: fixed;
+				top: 0;
+			}
 		}
 	}
 
 	&.slide-top {
-
-		.course-summary-sidebar__inner {
-			position: absolute;
+		@media (min-width: 1200px) {
+			.course-summary-sidebar__inner {
+				position: absolute;
+			}
 		}
 	}
 }
@@ -654,21 +662,29 @@ ul.list-table-nav {
 	display: none !important;
 }
 .quiz-attempts {
-  table {
-	border-spacing: 0;
-	border-left: 1px solid var(--lp-secondary-color);
-	border-top: 1px solid var(--lp-secondary-color);
-	width: 100%;
-	tr {
-		th, td {
-			border-right: 1px solid var(--lp-secondary-color);
-			border-bottom: 1px solid var(--lp-secondary-color);
-			padding: 5px 15px;
-			text-align: center;
-		}
-		th {
-			font-weight: 500;
+	.attempts-heading {
+		margin-bottom: 15px;
+	}
+	table {
+		border-spacing: 0;
+		border-left: 1px solid var(--lp-secondary-color);
+		border-top: 1px solid var(--lp-secondary-color);
+		width: 100%;
+		tr {
+			th, td {
+				border-right: 1px solid var(--lp-secondary-color);
+				border-bottom: 1px solid var(--lp-secondary-color);
+				padding: 5px 15px;
+				text-align: center;
+			}
+			th {
+				font-weight: 500;
+			}
 		}
 	}
-  }
+}
+#popup-course .quiz-attempts {
+	@media (max-width: 575px) {
+		overflow-x: auto;
+	}
 }
