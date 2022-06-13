@@ -203,6 +203,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.6 (2022-06-13) =
+~ Fixed: security.
+~ Added: option "Enable loading ajax Courses on the Archive Course page".
+~ Added: option "No Page load Courses Ajax".
+
 = 4.1.6.5 (2022-05-16) =
 ~ Fixed: error with block theme 2022.
 ~ Fixed: error with LP Addon Frontend Editor.
