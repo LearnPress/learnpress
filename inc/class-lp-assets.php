@@ -241,8 +241,6 @@ class LP_Assets extends LP_Abstract_Assets {
 			)
 		);
 
-		wp_set_script_translations( 'lp-quiz', 'learnpress' );
-
 		return $scripts;
 	}
 

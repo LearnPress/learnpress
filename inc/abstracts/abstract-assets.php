@@ -124,6 +124,7 @@ abstract class LP_Abstract_Assets {
 		 * Path translate of a string on file ".pot" if have must map to js/dist
 		 */
 		wp_set_script_translations( 'lp-quiz', 'learnpress' );
+		wp_set_script_translations( 'lp-admin', 'learnpress' );
 	}
 
 	/**

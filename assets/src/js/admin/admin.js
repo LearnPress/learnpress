@@ -104,7 +104,7 @@
 				dataType: 'json',
 				s: '',
 			},
-			placeholder: 'Search by user',
+			placeholder: wp.i18n.__( 'Search by user', 'learnpress' ),
 			minimumInputLength: 3,
 			allowClear: true,
 		} ).on( 'select2:select', function() {
