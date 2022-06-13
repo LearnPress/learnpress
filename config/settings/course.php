@@ -60,15 +60,15 @@ return apply_filters(
 					'css'               => 'min-width: 50px; width: 50px;',
 				),
 				'courses_load_ajax'           => array(
-					'title'   => esc_html__( 'Enable loading ajax Courses on the Archive Course page', 'learnpress' ),
+					'title'   => esc_html__( 'Enable loading ajax Courses on the Course Archive page', 'learnpress' ),
 					'desc'    => __( 'On/Off <i>loading ajax Courses</i>', 'learnpress' ),
 					'id'      => 'courses_load_ajax',
 					'default' => 'yes',
 					'type'    => 'checkbox',
 				),
 				'course_no_first_page_ajax'   => array(
-					'title'           => esc_html__( 'No Page load Courses Ajax', 'learnpress' ),
-					'desc'            => esc_html__( 'Ajax is only applied when selecting pagination, filtering, searching and sorting. Not applicable when reloading course archive page.', 'learnpress' ),
+					'title'           => esc_html__( 'Not run Ajax when reloading Course Archive page', 'learnpress' ),
+					'desc'            => esc_html__( 'Ajax is only applied when selecting pagination, filtering, searching and sorting. Not applicable when reloading Course Archive page.', 'learnpress' ),
 					'id'              => 'courses_first_no_ajax',
 					'default'         => 'no',
 					'type'            => 'checkbox',
