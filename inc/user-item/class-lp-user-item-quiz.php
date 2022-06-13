@@ -509,7 +509,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$result['question_count'] = count( $question_ids );
 			$result['time_spend']     = $this->get_time_interval( 'display' );
 			$result['passing_grade']  = $quiz->get_passing_grade();
-			$checked_questions = $this->get_checked_questions();
+			$checked_questions        = $this->get_checked_questions();
 
 			foreach ( $question_ids as $question_id ) {
 				$question = LP_Question::get_question( $question_id );

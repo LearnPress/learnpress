@@ -68,7 +68,7 @@ return apply_filters(
 				),
 				'course_no_first_page_ajax'   => array(
 					'title'           => esc_html__( 'No Page load Courses Ajax', 'learnpress' ),
-					'desc'            => esc_html__( 'Apply Ajax Loading only for Paging, Filter and Sort, not for Page Archive Courses load', 'learnpress' ),
+					'desc'            => esc_html__( 'Ajax is only applied when selecting pagination, filtering, searching and sorting. Not applicable when reloading course archive page.', 'learnpress' ),
 					'id'              => 'courses_first_no_ajax',
 					'default'         => 'no',
 					'type'            => 'checkbox',
