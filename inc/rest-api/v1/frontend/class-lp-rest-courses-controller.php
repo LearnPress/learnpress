@@ -210,7 +210,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						setup_postdata( $post );
 
 						if ( $is_custom_template ) {
-							extract( $args_custom );
+							if ( $args_custom ) {
+								extract( $args_custom );
+							}
 
 							include $template_path;
 						} else {

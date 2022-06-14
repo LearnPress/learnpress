@@ -226,8 +226,8 @@ function learn_press_get_ip() {
  *
  * @return string
  */
-function learn_press_get_user_agent() {
-	return isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
+function learn_press_get_user_agent(): string {
+	return LP_Helper::sanitize_params_submitted( $_SERVER['HTTP_USER_AGENT'] ?? '' );
 }
 
 /**
@@ -1569,8 +1569,10 @@ function learn_press_seconds_to_weeks( int $secs = 0 ) {
 	return $result;
 }
 
-
-function learn_press_get_query_var( $var ) {
+/**
+ * @depecated since version 4.1.6.6
+ */
+/*function learn_press_get_query_var( $var ) {
 	global $wp_query;
 
 	$return = null;
@@ -1581,7 +1583,7 @@ function learn_press_get_query_var( $var ) {
 	}
 
 	return apply_filters( 'learn_press_query_var', $return, $var );
-}
+}*/
 
 function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $course_id ) {
 	if ( '' != get_option( 'permalink_structure' ) ) {
@@ -2537,8 +2539,8 @@ function learn_press_get_current_time() {
 
 function learn_press_get_requested_post_type() {
 	global $pagenow;
-	if ( $pagenow == 'post-new.php' && ! empty( $_GET['post_type'] ) ) {
-		$post_type = $_REQUEST['post_type'];
+	if ( $pagenow == 'post-new.php' && ! empty( $_REQUEST['post_type'] ) ) {
+		$post_type = LP_Helper::sanitize_params_submitted( $_REQUEST['post_type'] );
 	} else {
 		$post_id   = learn_press_get_post();
 		$post_type = learn_press_get_post_type( $post_id );
@@ -3406,12 +3408,12 @@ function learn_press_date_diff( $from, $to ) {
 
 function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 	if ( $namespace ) {
-		$cookie = ! empty( $_COOKIE[ $namespace ] ) ? (array) json_decode( stripslashes( $_COOKIE[ $namespace ] ) ) : array();
+		$cookie = ! empty( $_COOKIE[ $namespace ] ) ? (array) json_decode( LP_Helper::sanitize_params_submitted( stripslashes( $_COOKIE[ $namespace ] ), 'html' ) ) : array();
 	} else {
 		$cookie = $_COOKIE;
 	}
 
-	return isset( $cookie[ $name ] ) ? $cookie[ $name ] : null;
+	return $cookie[ $name ] ?? null;
 }
 
 /**

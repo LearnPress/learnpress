@@ -166,7 +166,7 @@ $user_ip      = $order->get_user_ip_address();
 					<?php endforeach; ?>
 				<?php endif; ?>
 
-				<tr class="no-order-items<?php echo $items ? ' hide-if-js' : ''; ?>">
+				<tr class="no-order-items<?php echo esc_attr( $items ) ? ' hide-if-js' : ''; ?>">
 					<td colspan="4"><?php esc_html_e( 'No order items', 'learnpress' ); ?></td>
 				</tr>
 			</tbody>
