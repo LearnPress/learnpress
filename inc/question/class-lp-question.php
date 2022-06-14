@@ -124,11 +124,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			LP_Global::add_object_feature( $this->object_type . '.' . $this->get_type(), $feature, $type );
 		}
 
-		public function is_support( $feature, $type = '' ) {
+		/*public function is_support( $feature, $type = '' ) {
 			$feature = $this->_sanitize_feature_key( $feature );
 
 			return LP_Global::object_is_support_feature( $this->object_type . '.' . $this->get_type(), $feature, $type );
-		}
+		}*/
 
 		public function get_supports() {
 			if ( empty( LP_Global::$object_support_features ) ) {
@@ -388,9 +388,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}
 
 			// Does this question support answer options?
-			if ( ! $this->is_support( 'answer_options' ) ) {
+			/*if ( ! $this->is_support( 'answer_options' ) ) {
 				return $updated;
-			}
+			}*/
 
 			$this->empty_answers();
 			if ( $answer_options = $this->get_data( 'answer_options' ) ) {

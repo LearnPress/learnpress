@@ -1858,15 +1858,15 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 
 			$with_true_or_false = ( $checked || ( $quizStatus == 'completed' && $args['show_correct_review'] ) );
 
-			if ( $question->is_support( 'answer-options' ) ) {
-				$questionData['options'] = learn_press_get_question_options_for_js(
-					$question,
-					array(
-						'include_is_true' => $with_true_or_false,
-						'answer'          => $answered[ $id ]['answered'] ?? '',
-					)
-				);
-			}
+			// if ( $question->is_support( 'answer-options' ) ) {
+			$questionData['options'] = learn_press_get_question_options_for_js(
+				$question,
+				array(
+					'include_is_true' => $with_true_or_false,
+					'answer'          => $answered[ $id ]['answered'] ?? '',
+				)
+			);
+			// }
 
 			$questions[] = $questionData;
 		}

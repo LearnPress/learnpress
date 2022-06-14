@@ -297,9 +297,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function admin_editor() {
 			$question = LP_Question::get_question();
 
-			if ( $question->is_support( 'answer-options' ) ) {
-				echo learn_press_admin_view_content( 'question/editor' );
-			}
+			//if ( $question->is_support( 'answer-options' ) ) {
+			echo learn_press_admin_view_content( 'question/editor' );
+			//}
 
 			ob_start();
 			do_action( 'learn-press/question-admin-editor', $question );
