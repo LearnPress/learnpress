@@ -10,7 +10,6 @@ body {
 }
 
 .lp-user-profile {
-	overflow: hidden;
 	position: relative;
 	background: #fff;
 
@@ -62,12 +61,13 @@ body {
 	.wrapper-profile-header {
 		color: #fff;
 		background: var(--lp-secondary-color);
+		position: relative;
 
 		@media (max-width: 990px) {
 
 			.lp-profile-content-area {
 				min-height: inherit;
-				padding: 20px 15px;
+				padding: 50px 15px;
 			}
 
 			.lp-profile-left {
@@ -118,6 +118,22 @@ body {
 				text-align: center;
 			}
 		}
+		&::before, &::after {
+			content: "";
+			height: 100%;
+			width: 100%;
+			background: var(--lp-secondary-color);
+			position: absolute;
+			top: 0;
+		}
+		&::before {
+			right: 100%;
+			left: auto;
+		}
+		&::after {
+			left: 100%;
+			right: auto;
+		}
 	}
 
 	.lp-profile-content-area {
@@ -126,6 +142,14 @@ body {
 		padding-bottom: 50px;
 		display: flex;
 		align-items: center;
+		@media (max-width: 650px) {
+			flex-direction: column;
+			.lp-profile-right {
+				text-align: center;
+				width: 100%;
+				padding: 50px 15px 0;
+			}
+		}
 	}
 
 	.lp-profile-left {
@@ -222,7 +246,7 @@ body {
 						width: 28px;
 						color: var(--lp-primary-color);
 						font-size: 12px;
-						line-height: 52px;
+						line-height: 53px;
 						text-align: left;
 					}
 
@@ -517,6 +541,9 @@ body {
 					padding-left: 25px;
 				}
 			}
+			.profile-orders {
+				overflow-x: scroll;
+			}
 		}
 		
 		.course-categories, .course-instructor {
@@ -587,7 +614,8 @@ body {
 		flex-wrap: wrap;
 
 		.statistic-box {
-			width: 270px;
+			min-width: 200px;
+			max-width: 270px;
 			margin: 0 15px 40px 15px;
 			padding: 27px 25px 15px 25px;
 			border: 1px solid #ccc;
@@ -600,7 +628,7 @@ body {
 	
 			@media (max-width: 767px) {
 				width: 100%;
-				margin: 0 15px 20px 15px;
+				margin: 0 15px 15px;
 			}
 			&:hover {
 				background: #eaeaea;
@@ -689,6 +717,7 @@ body {
 			font-size: 30px;
 			line-height: 1.5;
 			font-weight: 500;
+			margin-bottom: 15px;
 			font-family: var(--wp--preset--font-family--system-font);
 		}
 	}
@@ -873,6 +902,8 @@ div.order-recover {
 
 	.lp_profile_course_progress {
 		border: 1px solid #eee;
+		border-top: 0;
+		overflow-x: auto;
 
 		&__item {
 			display: grid;
@@ -882,12 +913,25 @@ div.order-recover {
 			grid-template-columns: 90px 1fr 80px 190px 140px;
 			column-gap: 20px;
 			div img {
-				display: none;
+				max-width: 60px;
+				height: auto;
+				@media (max-width: 575px) {
+					max-width: 100%;
+				}
+			}
+			@media (max-width: 575px) {
+				display: block;
 			}
 		}
 
 		&__header {
 			background-color: #eee;
+			@media (max-width: 575px) {
+				display: flex;
+				overflow-x: auto;
+				white-space: nowrap;
+				justify-content: flex-end;
+			}
 		}
 
 
@@ -912,18 +956,27 @@ div.order-recover {
 		}
 	}
 }
-
+.entry-content {
+	ul.learn-press-profile-course__tab__inner {
+		padding: 0;
+	}
+}
+.content ul.learn-press-courses {
+	margin-left: -15px;
+	margin-right: -15px;
+}
 .learn-press-profile-course__tab {
 
 	&__inner {
 		display: flex;
-		margin: 40px 0 0 0;
-		padding: 0;
+		margin: 40px 0 0 0 !important;
+		padding: 0 !important;
 		background: #eee;
 		list-style: none !important;
 
 		> li {
 			list-style: none;
+			margin: 0 !important;
 
 			&:hover {
 				cursor: pointer;
@@ -934,11 +987,21 @@ div.order-recover {
 			display: inline-block;
 			padding: 15px 30px;
 			font-weight: 600;
+			position: relative;
 
 			&.active {
-				border-top: 4px solid var(--lp-primary-color);
 				color: var(--lp-primary-color);
 				background: #fff;
+				&::before {
+					content: "";
+					height: 4px;
+					width: 100%;
+					background-color: var(--lp-primary-color);
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: auto;
+				}
 			}
 		}
 	}
@@ -1009,5 +1072,11 @@ div.order-recover {
 				@include animation(lp-rotating 1s linear infinite);
 			}
 		}
+	}
+}
+
+#primary {
+	.learn-press-courses[data-size="3"] .course {
+		width: 50%;
 	}
 }

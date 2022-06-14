@@ -692,12 +692,12 @@
 		right: 0;
 		bottom: 0;
 		left: 475px;
-		width: 792px;
+		width: 100%;
+		max-width: 792px;
 		height: 50px;
 		margin: 0 auto;
 		border-top: 1px solid #ebebeb;
 		background: #fff;
-
 		@include transition(left 0.25s);
 
 		@media (max-width: 1024px) {
@@ -1012,7 +1012,6 @@ body {
 			position: relative;
 		}
 
-
 	}
 }
 
@@ -1227,10 +1226,14 @@ body {
 					z-index: 99999;
 					bottom: 0;
 					left: 50%;
-					width: 792px;
-					height: 50px;
+					width: 100%;
+					max-width: 792px;
+					height: 49px;
 					margin-left: 237px;
 					transform: translateX(-50%);
+					@media (max-width: 768px) {
+						width: 100% !important;
+					}
 				}
 				&.nav-center {
 					height: 50px;
@@ -1245,10 +1248,6 @@ body {
 
 				.prev {
 					display: none;
-				}
-
-				.next {
-
 				}
 			}
 

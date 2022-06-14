@@ -51,8 +51,6 @@ body {
 }
 
 .wrap-fullwidth {
-	margin-right: -1000px;
-	margin-left: -1000px;
 
 	a,
 	button,
@@ -608,6 +606,12 @@ ul.list-table-nav {
 	}
 }
 
+#learn-press-item-comments {
+	@media (min-width: 769px) {
+		padding-bottom: 50px;
+	}
+}
+
 .course-tabs {
 
 	input[name="learn-press-course-tab-radio"],
@@ -649,8 +653,6 @@ ul.list-table-nav {
 @media screen and (max-width: 600px) {
 
 	ul.learn-press-courses {
-		margin-right: 0;
-
 		.course {
 			width: 100%;
 			margin-right: 0;

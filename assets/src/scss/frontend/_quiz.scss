@@ -413,6 +413,10 @@ button[data-counter] {
 			display: block;
 			height: auto;
 			text-align: center;
+			padding: 15px;
+			.questions-index {
+				margin-bottom: 10px;
+			}
 		}
 
 		> div {
@@ -420,6 +424,9 @@ button[data-counter] {
 			flex-direction: row-reverse;
 			flex: 0 0 50%;
 			align-items: center;
+			@media (max-width: 480px) {
+				justify-content: center;
+			}
 		}
 
 		.current-point {
@@ -736,20 +743,18 @@ button[data-counter] {
 		height: 100%;
 		border: 10px solid #14c4ff;
 		border-radius: 50%;
+		transform: rotate(45deg);
 
 	}
 
 	.before {
 		border-bottom-color: transparent;
 		border-left-color: transparent;
-		transform: rotate(45deg);
 	}
 
 	.after {
-		border-color: #14c4ff;
 		border-top-color: transparent;
 		border-right-color: transparent;
-		transform: rotate(45deg);
 	}
 
 	&.bg50 {

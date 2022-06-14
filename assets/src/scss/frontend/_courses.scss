@@ -25,6 +25,7 @@ a {
 }
 
 .lp-archive-courses {
+	width: 100%;
 
 	&.loading {
 
@@ -94,7 +95,7 @@ a {
 	}
 	.course-item {
 		flex-direction: column;
-		height: 100%;
+		display: flex;
 		transition: all 0.3s;
 
 		// Should change effect when hovering on wrap element instead of thumbnail only.
@@ -137,13 +138,11 @@ a {
 
 			a {
 				color: #059de9;
-
 				&:hover {
 					color: var(--lp-primary-color);
 				}
 			}
 		}
-		
 	}
 
 	.course-content {
@@ -412,8 +411,26 @@ a {
 		padding: 40px 0 10px 0;
 		color: #fff;
 		background: var(--lp-secondary-color);
+		position: relative;
 		@media (max-width: 767px) {
 			margin-bottom: 0;
+		}
+		&::before, &::after {
+			content: "";
+			width: 50%;
+			height: 100%;
+			background: var(--lp-secondary-color);
+			position: absolute;
+			top: 0;
+		}
+		
+		&::before {
+			right: 100%;
+			left: auto;
+		}
+		&::after {
+			left: 100%;
+			right: auto;
 		}
 	}
 
@@ -665,7 +682,7 @@ a {
 .learn-press-courses {
 	clear: both;
 	margin: 0 -15px;
-	padding: 0;
+	padding: 0 !important;
 	list-style: none;
 	position: relative;
 	@include flex();
@@ -1165,8 +1182,6 @@ a {
 	.comment-form {
 		margin: 0 -15px;
 		> p {
-			margin-bottom: 15px;
-			padding: 0 15px;
 			label {
 				display: block;
 				margin-bottom: 10px;
@@ -1174,31 +1189,11 @@ a {
 				font-weight: 500;
 			}
 
-			textarea, > input {
-				border: 1px solid #ccc;
-				@include border-radius(3px);
-				resize: none;
-				max-width: 100%;
-				padding-left: 15px;
-				padding-right: 15px;
-			}
-			textarea {
-				width: 100%;
-				display: block;
-				padding-top: 20px;
-				padding-bottom: 20px;
-			}
-			> input {
-				&[type="text"], &[type="email"], &[type="url"] {
-					height: 40px;
-					line-height: normal;
-					width: 100%;
-				}
-			}
 			&.comment-notes, &.logged-in-as {
 				color: #666;
 				font-size: 16px;
 			}
+
 			&.logged-in-as {
 				a {
 					color: #666;
@@ -1208,34 +1203,67 @@ a {
 					}
 				}
 			}
-			&.comment-form-author, &.comment-form-email, &.comment-form-url {
-				width: 33.33%;
-				float: left;
-				@media (max-width: 575px) {
-					width: 100%;
-					float: unset;
-				}
-			}
+			
 			&.comment-form-cookies-consent {
 				clear: both;
 				input {
 					padding: 0;
+					margin-right: 15px;
 				}
 				label {
 					display: inline;
 				}
 			}
-			input.submit {
-				background-color: var(--lp-primary-color);
-				border: 0;
+			
+		}
+		> p, > div {
+			padding: 0 15px;
+			margin-bottom: 15px;
+		}
+
+		input {
+			&[type="text"], &[type="email"], &[type="url"] {
 				height: 40px;
-				line-height: 40px;
-				font-size: 16px;
-				font-weight: 500;
-				margin-top: 15px;
-				cursor: pointer;
+				line-height: normal;
+				width: 100% !important;
+				margin-bottom: 15px;
 			}
 		}
+
+		input[type="submit"] {
+			background-color: var(--lp-primary-color);
+			border: 0;
+			min-height: 40px;
+			line-height: 40px;
+			padding: 0 15px;
+			font-size: 16px;
+			text-transform: capitalize;
+			font-weight: 500;
+			margin-top: 15px;
+			cursor: pointer;
+			color: white;
+		}
+
+		.comment-form-author, .comment-form-email, .comment-form-url {
+			width: 33.33%;
+			float: left;
+			@media (max-width: 575px) {
+				width: 100%;
+				float: unset;
+			}
+		}
+		textarea, input {
+			border: 1px solid #ccc;
+			@include border-radius(3px);
+			max-width: 100%;
+		}
+		textarea {
+			width: 100%;
+			display: block;
+			padding: 20px 15px;
+			resize: none;
+		}
+
 	}
 }
 

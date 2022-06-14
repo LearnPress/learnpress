@@ -285,111 +285,111 @@
 		padding: 0 20px;
 		border: 1px solid #ccc;
 		border-radius: 4px;
+	}
 
-		table {
-			width: 100%;
-			margin: 0;
-			border: 0;
+	table {
+		width: 100%;
+		margin: 0;
+		border: 0;
+	}
+
+	td,
+	th {
+		box-sizing: content-box;
+		border: 1px solid rgba(204, 204, 204, 0.3);
+		border-top: 0;
+		border-right: 0;
+		border-left: 0;
+		background: unset;
+		line-height: 1;
+		text-align: left;
+		vertical-align: inherit;
+
+		&:last-child {
+			padding-right: 0;
 		}
+	}
 
-		td,
-		th {
-			box-sizing: content-box;
-			border: 1px solid rgba(204, 204, 204, 0.3);
-			border-top: 0;
-			border-right: 0;
-			border-left: 0;
-			background: unset;
-			line-height: 1;
-			text-align: left;
-			vertical-align: inherit;
+	.course-name {
+		font-size: 16px;
+		font-weight: 600;
+		line-height: 26px;
 
-			&:last-child {
-				padding-right: 0;
+		a {
+			display: -webkit-box;
+			overflow: hidden;
+			color: #000;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+
+			&:hover {
+				color: var(--lp-primary-color);
 			}
 		}
+	}
 
-		.course-thumbnail {
-			width: 100px;
-			padding: 20px 13px 18px 0;
+	.col-number {
+		min-width: 50px;
+		color: #666;
+		font-size: 16px;
+		font-weight: 600;
+		line-height: 26px;
+		text-align: right;
+	}
 
-			>img {
-				width: 100px;
-				max-width: 100% !important;
-				height: auto !important;
-			}
-		}
+	.order-total {
 
-		.course-name {
-			font-size: 16px;
-			font-weight: 600;
-			line-height: 26px;
-
-			a {
-				display: -webkit-box;
-				overflow: hidden;
-				color: #000;
-				-webkit-line-clamp: 1;
-				-webkit-box-orient: vertical;
-
-				&:hover {
-					color: var(--lp-primary-color);
-				}
-			}
+		& > th {
+			padding: 24px 20px 24px 0;
 		}
 
 		.col-number {
-			min-width: 50px;
+			color: #333;
+			font-size: 26px;
+		}
+	}
+
+	tfoot {
+
+		.cart-subtotal {
 			color: #666;
 			font-size: 16px;
 			font-weight: 600;
 			line-height: 26px;
-			text-align: right;
+
+			& > th {
+				padding: 20px 20px 17px 0;
+			}
 		}
 
 		.order-total {
 
-			& > th {
-				padding: 24px 20px 24px 0;
-			}
-
-			.col-number {
+			th {
 				color: #333;
-				font-size: 26px;
-			}
-		}
-
-		tfoot {
-
-			.cart-subtotal {
-				color: #666;
 				font-size: 16px;
 				font-weight: 600;
 				line-height: 26px;
-
-				& > th {
-					padding: 20px 20px 17px 0;
-				}
 			}
+		}
 
-			.order-total {
+		tr:last-child {
+			border-width: 0;
 
-				th {
-					color: #333;
-					font-size: 16px;
-					font-weight: 600;
-					line-height: 26px;
-				}
-			}
-
-			tr:last-child {
+			td,
+			th {
 				border-width: 0;
-
-				td,
-				th {
-					border-width: 0;
-				}
 			}
+		}
+	}
+
+	.course-thumbnail {
+		width: 80px;
+		padding: 20px 13px 18px 0;
+
+		>img {
+			width: 100px;
+			max-width: 100% !important;
+			height: auto !important;
 		}
 	}
 }

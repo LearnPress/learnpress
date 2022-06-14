@@ -295,7 +295,6 @@
 
 ul.learn-press-nav-tabs {
 	display: flex;
-	max-height: 60px;
 	margin: 0;
 	padding: 0;
 	border: 1px solid rgba(204, 204, 204, 0.3);
@@ -409,7 +408,7 @@ ul.learn-press-nav-tabs {
 
 	ul.curriculum-sections {
 		position: relative;
-		z-index: 9999;
+		z-index: 499;
 		margin: 0;
 		padding: 0;
 		list-style: none;
@@ -423,6 +422,7 @@ ul.learn-press-nav-tabs {
 		.section {
 			margin: 0;
 			padding: 0 0 42px 0;
+			flex-wrap: wrap;
 
 			&:last-child {
 				padding: 0;
@@ -562,6 +562,10 @@ ul.learn-press-nav-tabs {
 			vertical-align: middle;
 			white-space: nowrap;
 		}
+	}
+
+	.section-item {
+		width: 100%;
 	}
 
 	.section-content {
@@ -826,6 +830,7 @@ ul.learn-press-nav-tabs {
 			font-size: 26px;
 			letter-spacing: 0;
 			text-transform: capitalize;
+			display: block;
 		}
 	}
 
@@ -1134,6 +1139,9 @@ body {
 			display: none;
 		}
 	}
+	.content-item-wrap {
+		margin-top: 50px;
+	}
 }
 
 /***********/
@@ -1192,7 +1200,7 @@ body {
 		align-items: center;
 		position: relative;
 		height: var(--extra-height);
-		margin: 0;
+		margin: 0 !important;
 		padding: 0 45px 0 38px;
 		background: rgba(181, 187, 211, 0.15);
 		font-size: 1.1rem;
@@ -1280,8 +1288,10 @@ body {
 			}
 		}
 	}
-	+ .comment-respond {
+
+	+ .comment-respond, + .comments-area {
 		margin-top: 60px;
+		margin-bottom: 30px;
 	}
 }
 

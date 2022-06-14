@@ -137,16 +137,20 @@
 	margin-left: 0;
 	list-style: none;
 
-	@media (max-width: 767px) {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		grid-gap: 15px;
-	}
+	
 
 	> li {
 		margin: 0;
 		font-size: 16px;
 		line-height: 24px;
+
+		@media (max-width: 767px) {
+			margin-right: 30px;
+			margin-left: 0;
+			&:last-child {
+				margin-right: 0;
+			}
+		}
 
 		> a,
 		> span {
