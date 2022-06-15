@@ -151,7 +151,7 @@ if ( ! class_exists( 'LP_Course_Attributes' ) ) {
 			if ( learn_press_delete_attribute_terms( $attribute ) ) {
 				learn_press_add_notice( 'Deleted attribute terms', 'learnpress' );
 			}
-			wp_redirect( remove_query_arg( 'remove-course-attribute-terms' ) );
+			wp_redirect( esc_url( remove_query_arg( 'remove-course-attribute-terms' ) ) );
 		}
 
 		/**

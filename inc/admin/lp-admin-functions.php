@@ -1661,7 +1661,7 @@ function _learn_press_reset_course_data() {
 
 	learn_press_reset_course_data( intval( $_REQUEST['reset-course-data'] ) );
 
-	wp_redirect( remove_query_arg( 'reset-course-data' ) );
+	wp_redirect( esc_url( remove_query_arg( 'reset-course-data' ) ) );
 }
 
 add_action( 'init', '_learn_press_reset_course_data' );

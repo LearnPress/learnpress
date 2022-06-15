@@ -1070,7 +1070,7 @@ function learn_press_course_passing_condition( $value, $format, $course_id ) {
 add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 3 );
 
 function learn_press_remove_query_var_enrolled_course( $redirect ) {
-	return remove_query_arg( 'enroll-course', $redirect );
+	return esc_url( remove_query_arg( 'enroll-course', $redirect ) );
 }
 
 add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_enrolled_course' );

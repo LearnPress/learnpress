@@ -695,12 +695,7 @@ abstract class LP_Abstract_Post_Type {
 					echo '&nbsp;|&nbsp;';
 					printf(
 						'<a href="%s">%s</a>',
-						remove_query_arg(
-							array(
-								'course',
-								'orderby',
-							)
-						),
+						esc_url( remove_query_arg( array( 'course', 'orderby' ) ) ),
 						__( 'Remove Filter', 'learnpress' )
 					);
 				}

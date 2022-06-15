@@ -765,7 +765,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 			wp_parse_str( $url_parts[1], $query_args );
 		}
 
-		$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
+		$pagenum_link = esc_url( remove_query_arg( array_keys( $query_args ), $pagenum_link ) );
 		$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
 		$format  = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos(
