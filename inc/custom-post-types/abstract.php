@@ -256,7 +256,7 @@ abstract class LP_Abstract_Post_Type {
 			'author'    => get_the_author_meta( 'ID' ),
 		);
 
-		$author_link = esc_url( add_query_arg( $args, 'edit.php' ) );
+		$author_link = esc_url_raw( add_query_arg( $args, 'edit.php' ) );
 		echo sprintf( '<span class="post-author">%s<a href="%s">%s</a></span>', get_avatar( get_the_author_meta( 'ID' ), 32 ), $author_link, get_the_author() );
 	}
 
@@ -685,7 +685,7 @@ abstract class LP_Abstract_Post_Type {
 		$courses = learn_press_get_item_courses( $post_id );
 		if ( $courses ) {
 			foreach ( $courses as $course ) {
-				echo '<div><a href="' . esc_url( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+				echo '<div><a href="' . esc_url_raw( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 				echo '<div class="row-actions">';
 				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
 				echo '&nbsp;|&nbsp;';
@@ -695,7 +695,7 @@ abstract class LP_Abstract_Post_Type {
 					echo '&nbsp;|&nbsp;';
 					printf(
 						'<a href="%s">%s</a>',
-						esc_url( remove_query_arg( array( 'course', 'orderby' ) ) ),
+						esc_url_raw( remove_query_arg( array( 'course', 'orderby' ) ) ),
 						__( 'Remove Filter', 'learnpress' )
 					);
 				}
@@ -803,7 +803,7 @@ abstract class LP_Abstract_Post_Type {
 		if ( $post_type_object->publicly_queryable ) {
 			$permalink = get_permalink( $post->ID );
 
-			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url_raw( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			switch ( $this->_post_type ) {
 				case LP_LESSON_CPT:
 				case LP_QUIZ_CPT:
@@ -812,7 +812,7 @@ abstract class LP_Abstract_Post_Type {
 				case LP_ORDER_CPT:
 					$order     = learn_press_get_order( $post->ID );
 					$view_link = $order->get_view_order_url();
-					$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $view_link ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
+					$view_link = sprintf( ' <a href="%s">%s</a>', esc_url_raw( $view_link ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
 					break;
 				case LP_QUESTION_CPT:
 					$view_link = '';
@@ -824,7 +824,7 @@ abstract class LP_Abstract_Post_Type {
 
 			$preview_permalink = learn_press_get_preview_url( $post->ID );
 
-			$preview_link                       = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$preview_link                       = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url_raw( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			$messages[ $this->_post_type ][8]  .= $preview_link;
 			$messages[ $this->_post_type ][10] .= $preview_link;
 		}

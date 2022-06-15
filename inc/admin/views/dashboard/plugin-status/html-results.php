@@ -12,7 +12,7 @@ if ( ! isset( $plugin_data ) || is_wp_error( $plugin_data ) ) {
 <div class="rss-widget">
 	<ul>
 		<li>
-			<a href="<?php echo esc_url( $plugin_data->homepage ); ?>" class="rsswidget" target="_blank"><?php echo esc_html( $plugin_data->name ); ?></a>
+			<a href="<?php echo esc_url_raw( $plugin_data->homepage ); ?>" class="rsswidget" target="_blank"><?php echo esc_html( $plugin_data->name ); ?></a>
 		</li>
 		<li>
 			<?php

@@ -42,7 +42,7 @@ if ( ! isset( $steps ) ) {
 		<?php if ( ! $wizard->is_last_step() ) { ?>
 			<div class="buttons">
 				<?php if ( ! $wizard->is_first_step() && ! ( array_key_exists( 'back_button', $step ) && $step['back_button'] === false ) ) { ?>
-					<a class="button button-prev" href="<?php echo esc_url( $wizard->get_prev_url() ); ?>">
+					<a class="button button-prev" href="<?php echo esc_url_raw( $wizard->get_prev_url() ); ?>">
 						<?php
 						if ( ! empty( $step['next_button'] ) ) {
 							echo $step['back_button'];
@@ -53,7 +53,7 @@ if ( ! isset( $steps ) ) {
 					</a>
 				<?php } ?>
 				<?php if ( ! $wizard->is_last_step() && ! ( array_key_exists( 'next_button', $step ) && $step['next_button'] === false ) ) { ?>
-					<a class="button button-next button-primary" href="<?php echo esc_url( $wizard->get_next_url() ); ?>">
+					<a class="button button-next button-primary" href="<?php echo esc_url_raw( $wizard->get_next_url() ); ?>">
 						<?php
 						if ( ! empty( $step['next_button'] ) ) {
 							echo $step['next_button'];

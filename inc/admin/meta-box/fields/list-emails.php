@@ -16,7 +16,7 @@
 			$group = '';
 
 			if ( $email->group ) {
-				$url = esc_url(
+				$url = esc_url_raw(
 					add_query_arg(
 						array(
 							'section'     => $email->group->group_id,
@@ -28,7 +28,7 @@
 
 				$group = $email->group;
 			} else {
-				$url = esc_url( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
+				$url = esc_url_raw( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
 			}
 			?>
 
@@ -37,7 +37,7 @@
 					<span class="change-email-status dashicons dashicons-yes" data-status="<?php echo $email->enable ? 'on' : 'off'; ?>" data-id="<?php echo $email->id; ?>"></span>
 				</td>
 				<td class="name">
-					<a href="<?php echo esc_url( $url ); ?>">
+					<a href="<?php echo esc_url_raw( $url ); ?>">
 						<?php
 						if ( $group ) {
 							echo join( ' &rarr; ', array( $group, $email->title ) );
@@ -48,7 +48,7 @@
 					</a>
 				</td>
 				<td class="description"><?php echo $email->description; ?></td>
-				<td class="manage"><a class="button" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Manage', 'learnpress' ); ?></a></td>
+				<td class="manage"><a class="button" href="<?php echo esc_url_raw( $url ); ?>"><?php esc_html_e( 'Manage', 'learnpress' ); ?></a></td>
 			</tr>
 		<?php } ?>
 	</tbody>

@@ -59,7 +59,7 @@ if ( ! $query_orders['items'] ) {
 
 					if ( $actions ) {
 						foreach ( $actions as $action ) {
-							printf( '<a href="%s">%s</a>', esc_url( $action['url'] ), $action['text'] );
+							printf( '<a href="%s">%s</a>', esc_url_raw( $action['url'] ), $action['text'] );
 						}
 					}
 					?>

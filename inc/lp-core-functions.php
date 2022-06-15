@@ -300,7 +300,7 @@ function learn_press_get_current_url() {
 	static $current_url;
 
 	if ( ! $current_url ) {
-		$url = untrailingslashit( esc_url( $_SERVER['REQUEST_URI'] ) );
+		$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 
 		if ( ! preg_match( '!^https?!', $url ) ) {
 			$siteurl    = trailingslashit( get_home_url() );
@@ -314,7 +314,7 @@ function learn_press_get_current_url() {
 
 			if ( $home_query ) {
 				parse_str( untrailingslashit( $home_query ), $home_query );
-				$url = esc_url( add_query_arg( $home_query, $url ) );
+				$url = esc_url_raw( add_query_arg( $home_query, $url ) );
 			}
 
 			$segs1 = explode( '/', $siteurl );
@@ -765,7 +765,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 			wp_parse_str( $url_parts[1], $query_args );
 		}
 
-		$pagenum_link = esc_url( remove_query_arg( array_keys( $query_args ), $pagenum_link ) );
+		$pagenum_link = esc_url_raw( remove_query_arg( array_keys( $query_args ), $pagenum_link ) );
 		$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
 		$format  = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos(
@@ -2029,10 +2029,10 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 		$url = trailingslashit( $url ) . ( $name ? $name . '/' : '' ) . $value . $query_string;
 
 	} else {
-		$url = esc_url( add_query_arg( $name, $value, $url ) );
+		$url = esc_url_raw( add_query_arg( $name, $value, $url ) );
 	}
 
-	return apply_filters( 'learn_press_get_endpoint_url', esc_url( $url ), $name, $value, $url );
+	return apply_filters( 'learn_press_get_endpoint_url', esc_url_raw( $url ), $name, $value, $url );
 }
 
 /**
@@ -2622,7 +2622,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 	if ( get_option( 'comment_registration' ) && ! is_user_logged_in() ) {
 		$link = sprintf(
 			'<a rel="nofollow" class="comment-reply-login" href="%s">%s</a>',
-			esc_url( wp_login_url( get_permalink() ) ),
+			esc_url_raw( wp_login_url( get_permalink() ) ),
 			$args['login_text']
 		);
 	} elseif ( $course_item ) {
@@ -2636,7 +2636,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 
 		$link = sprintf(
 			"<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
-			esc_url(
+			esc_url_raw(
 				add_query_arg(
 					array(
 						'replytocom' => $comment->comment_ID,

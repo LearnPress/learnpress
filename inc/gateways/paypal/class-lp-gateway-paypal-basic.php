@@ -18,7 +18,7 @@ class LP_Gateway_Paypal_Basic extends LP_Gateway_Paypal {
 			'quantity'      => '1',
 			'business'      => $this->paypal_email,
 			'item_name'     => learn_press_get_cart_description(),
-			'return'        => esc_url(
+			'return'        => esc_url_raw(
 				add_query_arg(
 					array(
 						'learn-press-transaction-method' => 'paypal-standard',

@@ -56,7 +56,7 @@ class LP_Thumbnail_Helper {
 			$image = LP()->image( 'no-image.png' );
 			$image = sprintf(
 				'<img src="%s" alt="%s">',
-				esc_url( $image ),
+				esc_url_raw( $image ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
 			);
 		}

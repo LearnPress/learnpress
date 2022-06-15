@@ -98,7 +98,7 @@ $user_ip      = $order->get_user_ip_address();
 							printf( '%s (%s) ', $order->get_customer_name(), $order->get_user( 'email' ) );
 
 							if ( $order->get_user_id( 'edit' ) ) {
-								printf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'user_id', absint( $order->get_user_id( 'edit' ) ), admin_url( 'user-edit.php' ) ) ), esc_html__( 'Profile', 'learnpress' ) );
+								printf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'user_id', absint( $order->get_user_id( 'edit' ) ), admin_url( 'user-edit.php' ) ) ), esc_html__( 'Profile', 'learnpress' ) );
 							}
 						} else {
 							echo $order->get_customer_name();

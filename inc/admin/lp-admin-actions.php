@@ -100,7 +100,7 @@ add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );*/
 		if ( $result->found_posts > 0 ) {
 			$views[ $view ] = sprintf(
 				'<a href="%s"' . $class . '>' . $name . ' <span class="count">(%d)</span></a>',
-				esc_url( add_query_arg( $query, $url ) ),
+				esc_url_raw( add_query_arg( $query, $url ) ),
 				$result->found_posts
 			);
 		} else {

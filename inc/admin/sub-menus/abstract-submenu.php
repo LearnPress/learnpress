@@ -407,7 +407,7 @@ abstract class LP_Abstract_Submenu {
 					<?php if ( $active_class ) { ?>
 						<span><?php echo $section_title; ?></span>
 					<?php } else { ?>
-						<a href="<?php echo esc_url( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
+						<a href="<?php echo esc_url_raw( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
 					<?php } ?>
 				</li>
 			<?php } ?>

@@ -421,7 +421,7 @@ class LP_Helper {
 	public static function getUrlCurrent(): string {
 		$schema = is_ssl() ? 'https://' : 'http://';
 
-		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( esc_url( $_SERVER['REQUEST_URI'] ) );
+		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 	}
 
 	/**
@@ -564,7 +564,7 @@ class LP_Helper {
 	 * without cache - because some cache(redis) will cache page with user anonymous
 	 */
 	public static function get_link_no_cache( string $link ): string {
-		return esc_url( add_query_arg( 'no-cache', uniqid(), $link ) );
+		return esc_url_raw( add_query_arg( 'no-cache', uniqid(), $link ) );
 	}
 
 	/**

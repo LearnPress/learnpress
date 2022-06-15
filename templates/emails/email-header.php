@@ -22,7 +22,7 @@ if ( ! isset( $email_heading ) ) {
 				<?php if ( isset( $image_header ) ) { ?>
 					<div id="template_header_image">
 						<p style="margin-top:0;">
-							<img src="<?php echo esc_url( $image_header ); ?>"
+							<img src="<?php echo esc_url_raw( $image_header ); ?>"
 								 alt="<?php echo get_bloginfo( 'name', 'display' ); ?>"/>
 						</p>
 					</div>

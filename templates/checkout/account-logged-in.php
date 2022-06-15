@@ -22,7 +22,7 @@ global $user_identity;
 	<p>
 		<?php printf( __( 'Logged in as <a href="%1$s">%2$s</a>.', 'learnpress' ), get_edit_user_link(), $user_identity ); ?>
 
-		<a href="<?php echo esc_url( wp_logout_url( get_permalink() ) ); ?>" title="<?php esc_attr_e( 'Log out of this account', 'learnpress' ); ?>">
+		<a href="<?php echo esc_url_raw( wp_logout_url( get_permalink() ) ); ?>" title="<?php esc_attr_e( 'Log out of this account', 'learnpress' ); ?>">
 			<?php esc_html_e( 'Log out &raquo;', 'learnpress' ); ?>
 		</a>
 	</p>

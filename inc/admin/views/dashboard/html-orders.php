@@ -37,7 +37,7 @@ foreach ( $specific_statuses as $status ) :
 
 	<li class="counter-number order-<?php echo str_replace( 'lp-', '', $status ); ?>">
 		<div class="counter-inner">
-			<a href="<?php echo esc_url( $url ); ?>">
+			<a href="<?php echo esc_url_raw( $url ); ?>">
 				<strong>
 					<?php
 					if ( $count ) {

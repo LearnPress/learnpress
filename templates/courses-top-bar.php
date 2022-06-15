@@ -15,7 +15,7 @@ $s       = LP_Request::get( 'c_search' );
 ?>
 
 <div class="lp-courses-bar <?php echo esc_attr( $active ); ?>">
-	<form class="search-courses" method="get" action="<?php echo esc_url( learn_press_get_page_link( 'courses' ) ); ?>">
+	<form class="search-courses" method="get" action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 		<input type="hidden" name="post_type" value="<?php echo esc_attr( LP_COURSE_CPT ); ?>">
 		<input type="hidden" name="taxonomy" value="<?php echo esc_attr( get_queried_object()->taxonomy ?? $_GET['taxonomy'] ?? '' ); ?>">
 		<input type="hidden" name="term_id" value="<?php echo esc_attr( get_queried_object()->term_id ?? $_GET['term_id'] ?? '' ); ?>">

@@ -837,9 +837,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$url = $this->get_current_url();
 
 			$defaults = array(
-				'all'     => sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'All', 'learnpress' ) ),
-				'publish' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'publish', $url ) ), esc_html__( 'Publish', 'learnpress' ) ),
-				'pending' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'pending', $url ) ), esc_html__( 'Pending', 'learnpress' ) ),
+				'all'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), esc_html__( 'All', 'learnpress' ) ),
+				'publish' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'publish', $url ) ), esc_html__( 'Publish', 'learnpress' ) ),
+				'pending' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'pending', $url ) ), esc_html__( 'Pending', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -869,11 +869,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function get_purchased_courses_filters( $current_filter = '' ) {
 			$url      = $this->get_current_url( false );
 			$defaults = array(
-				'all'          => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
-				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
-				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) ),
+				'all'          => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
+				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -903,10 +903,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function get_quizzes_filters( $current_filter = '' ) {
 			$url      = $this->get_current_url( false );
 			$defaults = array(
-				'all'       => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
-				'completed' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'all'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
+				'completed' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-graduation', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-graduation', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -934,7 +934,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function logout_url( $redirect = false ) {
 			if ( $this->enable_login() ) {
 				$profile_url = learn_press_get_page_link( 'profile' );
-				$url         = esc_url(
+				$url         = esc_url_raw(
 					add_query_arg(
 						array(
 							'lp-logout' => 'true',
@@ -945,7 +945,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				);
 
 				if ( $redirect !== false ) {
-					$url = esc_url( add_query_arg( 'redirect', urlencode( $redirect ), $url ) );
+					$url = esc_url_raw( add_query_arg( 'redirect', urlencode( $redirect ), $url ) );
 				}
 			} else {
 				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );

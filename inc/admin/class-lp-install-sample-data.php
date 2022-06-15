@@ -188,9 +188,9 @@ class LP_Install_Sample_Data {
 
 			<div class="lp-install-sample__response success">
 				<?php printf( __( 'Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
-				<a href="<?php echo esc_url( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
+				<a href="<?php echo esc_url_raw( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
 				|
-				<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
+				<a href="<?php echo esc_url_raw( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
 			</div>
 
 			<?php

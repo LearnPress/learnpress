@@ -66,7 +66,7 @@ $active_tab   = '';
 			?>
 
 			<li class="<?php echo implode( ' ', $classes ); ?>">
-				<label><a href="<?php echo esc_url( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a></label>
+				<label><a href="<?php echo esc_url_raw( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a></label>
 			</li>
 
 		<?php } ?>

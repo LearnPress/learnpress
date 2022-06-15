@@ -43,7 +43,7 @@ global $post;
 				<!-- course thumbnail -->
 				<?php if ( ! empty( $instance['show_thumbnail'] ) && $course->get_image( 'medium' ) ) : ?>
 					<div class="lp-widget-course__image">
-						<a href="<?php echo esc_url( $course->get_permalink() ); ?>">
+						<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>">
 							<?php echo $course->get_image( 'medium' ); ?>
 						</a>
 					</div>
@@ -51,7 +51,7 @@ global $post;
 
 				<div class="lp-widget-course__content">
 					<!-- course title -->
-					<a href="<?php echo esc_url( get_the_permalink( $course->get_id() ) ); ?>">
+					<a href="<?php echo esc_url_raw( get_the_permalink( $course->get_id() ) ); ?>">
 						<h3 class="lp-widget-course__title"><?php echo esc_html( $course->get_title() ); ?></h3>
 					</a>
 
@@ -92,7 +92,7 @@ global $post;
 	<div class="lp-widget-recent-courses__footer">
 		<?php if ( ! empty( $instance['bottom_link_text'] ) && learn_press_get_page_link( 'courses' ) ) : ?>
 			<a class="lp-widget-recent-courses__footer__link"
-			   href="<?php echo esc_url( learn_press_get_page_link( 'courses' ) ); ?>" rel="nofllow">
+			   href="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>" rel="nofllow">
 				<?php echo wp_kses_post( $instance['bottom_link_text'] ); ?>
 			</a>
 		<?php endif; ?>
