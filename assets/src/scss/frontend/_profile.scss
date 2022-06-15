@@ -723,7 +723,7 @@ body {
 	}
 }
 
-#learn-press-profile-basic-information,
+.profile-basic-information,
 form[name="profile-change-password"] {
 
 	.form-field {
@@ -933,8 +933,6 @@ div.order-recover {
 				justify-content: flex-end;
 			}
 		}
-
-
 	}
 }
 
@@ -964,6 +962,9 @@ div.order-recover {
 .content ul.learn-press-courses {
 	margin-left: -15px;
 	margin-right: -15px;
+	&[data-layout="list"] {
+		margin: 0;
+	}
 }
 .learn-press-profile-course__tab {
 

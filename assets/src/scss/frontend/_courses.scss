@@ -412,9 +412,7 @@ a {
 		color: #fff;
 		background: var(--lp-secondary-color);
 		position: relative;
-		@media (max-width: 767px) {
-			margin-bottom: 0;
-		}
+
 		&::before, &::after {
 			content: "";
 			width: 50%;
@@ -1159,12 +1157,12 @@ a {
 	padding: 20px;
 	background: #f7f7f7;
 
-	>ul {
+	> ul {
 		padding: 0;
 		list-style: none;
 	}
 
-	>a {
+	> a {
 		display: inline-block;
 		margin-top: 10px;
 		color: #fff;
@@ -1173,12 +1171,14 @@ a {
 }
 
 .comment-respond {
+
 	.comment-reply-title {
 		font-size: 30px;
 		font-weight: 500;
 		line-height: 1.2;
 		margin-bottom: 15px;
 	}
+
 	.comment-form {
 		margin: 0 -15px;
 		> p {
@@ -1208,7 +1208,7 @@ a {
 				clear: both;
 				input {
 					padding: 0;
-					margin-right: 15px;
+					margin-right: 8px;
 				}
 				label {
 					display: inline;
@@ -1216,6 +1216,7 @@ a {
 			}
 			
 		}
+
 		> p, > div {
 			padding: 0 15px;
 			margin-bottom: 15px;
@@ -1252,18 +1253,19 @@ a {
 				float: unset;
 			}
 		}
+
 		textarea, input {
 			border: 1px solid #ccc;
 			@include border-radius(3px);
 			max-width: 100%;
 		}
+
 		textarea {
 			width: 100%;
 			display: block;
 			padding: 20px 15px;
 			resize: none;
 		}
-
 	}
 }
 

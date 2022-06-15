@@ -91,6 +91,9 @@ button {
 input, button, select, textarea {
 	outline: none;
 }
+html {
+	overflow-x: hidden;
+}
 a {
 	@include transition(.3s);
 }

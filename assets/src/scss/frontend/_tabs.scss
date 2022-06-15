@@ -13,11 +13,11 @@
 					background: #fff;
 
 					label {
-
+						color: #ffb606;
 						a {
 							color: #ffb606;
 						}
-						color: #ffb606;
+						
 					}
 
 					&::before {
@@ -27,11 +27,9 @@
 					&::after {
 						background: #fff;
 					}
-
 				}
 			}
 		}
-
 	}
 
 	.learn-press-tabs__nav {
@@ -128,7 +126,6 @@
 			}
 		}
 	}
-
 }
 
 .learn-press-filters {
@@ -136,8 +133,6 @@
 	margin-bottom: 36px;
 	margin-left: 0;
 	list-style: none;
-
-	
 
 	> li {
 		margin: 0;

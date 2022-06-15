@@ -11,6 +11,10 @@
         &.learn-press-breadcrumb, &.course-nav-tabs{
             list-style: none; 
             padding: 0;
+            @media (max-width: 768px) {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
         }
     }
     ul, ol {
@@ -56,6 +60,20 @@
     }
     .content {
         z-index: 110;
+    }
+    .comment-respond .comment-form {
+        margin: 0;
+        > p, > div {
+            padding: 0;
+        }
+    } 
+    &.learnpress-profile {
+        .content {
+            z-index: 100;
+        }
+    }
+    #learn-press-item-comments {
+        background: #f6f6f6;
     }
 }
 
