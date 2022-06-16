@@ -24,6 +24,7 @@ body {
 		}
 		+ .lp-user-profile-socials {
 			margin-top: 10px;
+			margin-bottom: 5px;
 		}
 	}
 
@@ -37,17 +38,18 @@ body {
 		flex-wrap: wrap;
 
 		a {
-			display: inline-block;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
 			width: 40px;
 			height: 40px;
 			margin: 0 7px;
 			border: 1px solid #cfcfcf;
 			color: #666;
 			background: #fff;
-			font-size: 16px;
+			font-size: 14px;
 			line-height: 40px;
 			text-align: center;
-
 			@include border-radius(50%);
 
 			&:hover {
@@ -155,13 +157,9 @@ body {
 	.lp-profile-left {
 		min-width: 270px;
 		max-width: 270px;
-		padding: 10px;
-		border: 10px solid #eaeaea;
+		padding: 5px;
+		border: 2px solid #eaeaea;
 		border-radius: 3px;
-		box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
-		-webkit-box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
-		-moz-box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
-		-o-box-shadow: 0px 0px 20px rgb(255 0 144 / 80%);
 	}
 
 	.lp-profile-right {
@@ -290,7 +288,7 @@ body {
 
 				&.active,
 				&:hover {
-
+					background: var(--lp-primary-color);
 					> a {
 
 						&::after {
@@ -334,7 +332,7 @@ body {
 						display: none;
 					}
 				}
-			}
+			} 	
 
 			li {
 
@@ -359,7 +357,7 @@ body {
 
 				&.active,
 				&:hover {
-					background: var(--lp-primary-color);
+					
 
 					> a {
 						color: #fff;
