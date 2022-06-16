@@ -831,7 +831,6 @@ form[name="profile-change-password"] {
 #learn-press-profile-basic-information {
 
 	.form-fields {
-		margin: 0 -10px;
 
 		&::after {
 			display: block;
@@ -841,6 +840,25 @@ form[name="profile-change-password"] {
 
 		@media (max-width: 767px) {
 			margin: 0;
+		}
+	}
+	button[type="submit"] {
+		padding: 0 15px;
+		height: 40px;
+		line-height: 40px;
+		border: 0;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--lp-primary-color);
+		color: white;
+		font-size: 16px;
+		font-weight: 400;
+		@include transition(.3s);
+		@include border-radius(3px);
+		&:hover {
+			opacity: .5;
+			background-color: var(--lp-primary-color);
 		}
 	}
 }
