@@ -366,7 +366,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @param string $format
 	 *
-	 * @return string|LP_Datetime $time
+	 * @return string|LP_Datetime|null $time
 	 * @since 3.3.0
 	 */
 	public function get_expiration_time( $format = '' ) {
@@ -374,12 +374,18 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$start_time = $this->get_start_time( '', false );
 
 		if ( ! absint( $duration ) || ! $start_time ) {
-			return null;
+			$expire =  null;
+		} else {
+			$date = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
+			$expire = $this->format_time( $date, $format );
 		}
-
-		$date = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
-
-		return $this->format_time( $date, $format );
+		return apply_filters(
+			'learn-press/user-item/expiration-time',
+			$expire,
+			$format,
+			$this->get_user_item_id(),
+			$this->get_item_id()
+		);
 	}
 
 	/**
