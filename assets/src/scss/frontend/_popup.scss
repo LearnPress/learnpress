@@ -159,11 +159,11 @@
 		margin: 0 auto;
 		justify-content: space-between;
 		align-items: center;
+		padding-left: 15px;
+		padding-right: 15px;
 
 		@media (max-width: 1024px) {
 			width: 100%;
-			padding-right: 15px;
-			padding-left: 15px;
 		}
 
 		@media (max-width: 767px) {
@@ -577,6 +577,8 @@
 		position: relative;
 		margin: 70px 0 50px 0;
 		flex: 1;
+		padding-left: 15px;
+		padding-right: 15px;
 
 		.lp-button {
 			position: relative;
@@ -676,10 +678,6 @@
 					padding: 0;
 				}
 			}
-		}
-		@media (max-width: 1024px) {
-			padding-left: 15px;
-			padding-right: 15px;
 		}
 		@media (max-width: 767px) {
 			margin-top: 113px;

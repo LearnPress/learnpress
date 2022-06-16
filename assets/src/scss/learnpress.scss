@@ -316,7 +316,6 @@ footer {
 
 .lp-entry-content .course-tabs {
 	margin-bottom: 60px;
-	margin-top: 54px;
 }
 
 /* Archive */
@@ -626,8 +625,9 @@ ul.list-table-nav {
 			align-items: center;
 			justify-content: center;
 			margin: 0;
-			padding: 18px 10px;
+			padding: 17px 10px;
 			font-size: 16px;
+			line-height: 1;
 			font-weight: 600;
 			text-transform: capitalize;
 			cursor: pointer;
