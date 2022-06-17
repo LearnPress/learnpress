@@ -29,7 +29,7 @@
 
 .course-tab-panel {
 	display: none;
-	padding-top: 56px;
+	padding-top: 30px;
 
 	&.active {
 		display: block;
@@ -85,7 +85,7 @@
 				margin-right: 0;
 				margin-bottom: 30px;
 			}
-			
+
 		}
 
 		img {
@@ -421,7 +421,7 @@ ul.learn-press-nav-tabs {
 
 		.section {
 			margin: 0;
-			padding: 0 0 42px 0;
+			padding: 0;
 			flex-wrap: wrap;
 
 			&:last-child {
@@ -466,7 +466,7 @@ ul.learn-press-nav-tabs {
 				background: #d9e0f1;
 			}
 		}
-		
+
 	}
 
 	.section-item__loadmore {
@@ -827,7 +827,7 @@ ul.learn-press-nav-tabs {
 		.section-title {
 			padding: 0;
 			color: #666;
-			font-size: 26px;
+			font-size: 1.4rem;
 			letter-spacing: 0;
 			text-transform: capitalize;
 			display: block;
@@ -1195,7 +1195,7 @@ body {
 	border-radius: 5px;
 
 	&__title {
-		--extra-height: 54px;
+		--extra-height: 50px;
 		display: flex;
 		align-items: center;
 		position: relative;
@@ -1389,7 +1389,7 @@ input[name="course-extra-box-ratio"] {
 	.course-faqs-box__content {
 		display: none;
 	}
-	
+
 	.course-faqs-box__content-inner {
 		padding: 0 28px 33px 28px;
 		color: #666;
