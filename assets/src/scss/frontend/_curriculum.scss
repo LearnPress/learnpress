@@ -243,7 +243,7 @@
 		.featured-review__title {
 			margin-top: 0;
 			margin-bottom: 6px;
-			font-size: 18px;
+			font-size: 1.2rem;
 			font-weight: 500;
 		}
 
@@ -488,6 +488,8 @@ ul.learn-press-nav-tabs {
 			justify-content: center;
 			align-items: center;
 			cursor: pointer;
+			font-size: 0.8rem;
+			font-family: sans-serif;
 		}
 
 		&.loading {
@@ -838,8 +840,7 @@ ul.learn-press-nav-tabs {
 			width: 100%;
 			margin-top: 20px;
 			margin-bottom: 20px;
-			padding-top: 10px;
-			padding-bottom: 10px;
+			padding: 10px 0;
 			border: none;
 			outline: none;
 			color: #fff;
@@ -848,6 +849,8 @@ ul.learn-press-nav-tabs {
 			justify-content: center;
 			align-items: center;
 			cursor: pointer;
+			font-size: 1rem;
+			font-family: sans-serif;
 			&.loading {
 
 				&::before {
