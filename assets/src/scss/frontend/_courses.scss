@@ -126,7 +126,6 @@ a {
 		}
 
 		// <!-- .course-content
-		
 
 		.course-instructor {
 			float: left;
@@ -351,7 +350,6 @@ a {
 				content: "";
 				transition: all 0.3s;
 			}
-			
 		}
 
 		img {
@@ -387,7 +385,7 @@ a {
 		.course-title {
 			margin-bottom: 42px;
 			color: #fff;
-			font-size: 30px;
+			font-size: 1.5rem;
 			font-weight: 500;
 			line-height: 1;
 		}
@@ -403,7 +401,6 @@ a {
 		@media (max-width: 768px) {
 			width: 100%;
 		}
-		
 	}
 
 	.course-detail-info {
@@ -420,7 +417,7 @@ a {
 			position: absolute;
 			top: 0;
 		}
-		
+
 		&::before {
 			right: 100%;
 			left: auto;
@@ -1203,7 +1200,7 @@ a {
 					}
 				}
 			}
-			
+
 			&.comment-form-cookies-consent {
 				clear: both;
 				input {
@@ -1214,7 +1211,7 @@ a {
 					display: inline;
 				}
 			}
-			
+
 		}
 
 		> p, > div {

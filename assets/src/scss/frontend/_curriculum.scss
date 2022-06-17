@@ -37,7 +37,7 @@
 
 	&.course-tab-panel-instructor,
 	&.course-tab-panel-faqs {
-		padding-top: 60px;
+		padding-top: 30px;
 	}
 
 	&.course-tab-panel-reviews {
@@ -89,9 +89,8 @@
 		}
 
 		img {
-			width: 100%;
-			max-width: 96px;
-			height: auto;
+			width: 50px;
+			height: 50px;
 			margin-bottom: 20px;
 			border-radius: 50%;
 			object-fit: cover;
@@ -257,8 +256,7 @@
 		.featured-review__content {
 			position: relative;
 			color: #666;
-			font-size: 16px;
-			font-weight: 500;
+			font-size: 0.9rem;
 			font-style: italic;
 			line-height: 24px;
 
@@ -1250,7 +1248,7 @@ body {
 
 		li {
 			margin: 0;
-			padding: 22px 38px 14px;
+			padding: 10px 38px;
 			border-bottom: 1px solid rgba(204, 204, 204, 0.3);
 			color: #666;
 			font-size: 16px;
