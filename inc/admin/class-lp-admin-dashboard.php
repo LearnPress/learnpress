@@ -59,7 +59,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 					<li class="featured-theme">
 						<?php if ( isset( $eduma_data['name'] ) && isset( $eduma_data['price_cents'] ) ) : ?>
 							<p>
-								<a href="<?php echo esc_url( $eduma_data['url'] ); ?>">
+								<a href="<?php echo esc_url_raw( $eduma_data['url'] ); ?>">
 									<?php echo esc_html( $eduma_data['name'] ); ?>
 								</a> - <?php printf( '%s%s', '$', $eduma_data['price_cents'] / 100 ); ?>
 							</p>

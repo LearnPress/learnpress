@@ -41,7 +41,7 @@ if ( is_user_logged_in() ) {
 			<?php esc_html_e( 'Remember me', 'learnpress' ); ?>
 		</label>
 
-		<a class="lp-lost-password-link" href="<?php echo esc_url( wp_lostpassword_url() ); ?>">
+		<a class="lp-lost-password-link" href="<?php echo esc_url_raw( wp_lostpassword_url() ); ?>">
 			<?php esc_html_e( 'Lost password?', 'learnpress' ); ?>
 		</a>
 	</p>

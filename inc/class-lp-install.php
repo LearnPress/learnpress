@@ -168,8 +168,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		/**
 		 * Update default options for LP
+		 *
+		 * @editor tungnx - comment - not use on v4.1.6.6
 		 */
-		public static function create_options() {
+		/*public static function create_options() {
 			$settings_classes = array(
 				'LP_Settings_General'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',
 				'LP_Settings_Courses'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-courses.php',
@@ -250,7 +252,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 
 			ob_get_clean();
-		}
+		}*/
 
 		/**
 		 * Create tables required for LP

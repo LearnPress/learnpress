@@ -104,7 +104,7 @@
 				dataType: 'json',
 				s: '',
 			},
-			placeholder: 'Search by user',
+			placeholder: wp.i18n.__( 'Search by user', 'learnpress' ),
 			minimumInputLength: 3,
 			allowClear: true,
 		} ).on( 'select2:select', function() {
@@ -496,6 +496,20 @@
 				ele.parentNode.style.border = '2px solid orangered';
 			}
 		}
+
+		// Show/hide meta-box field with type checkbox
+		$( 'input' ).on( 'click' , function ( e ) {
+			const el = $( e.target );
+			const id = el.attr( 'id' );
+			const classHide = id.replace('learn_press_', '');
+			const elHide = $(`.show_if_${classHide}`);
+
+			if ( el.is(':checked') ) {
+				elHide.show();
+			} else {
+				elHide.hide();
+			}
+		});
 	};
 
 	$( document ).ready( onReady );

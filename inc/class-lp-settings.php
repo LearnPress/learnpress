@@ -194,7 +194,7 @@ class LP_Settings {
 			$value = $this->get( $key );
 		}
 		update_option( $this->_prefix . $key, $value );
-		$this->refresh();
+		// $this->refresh();
 	}
 
 	public function refresh() {

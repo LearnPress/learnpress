@@ -39,7 +39,7 @@ class LP_Hard_Cache {
 		if ( defined( 'LP_HARD_CACHE' ) ) {
 			self::$_lock = self::$_hard_lock = ! LP_HARD_CACHE;
 		} else {
-			self::$_lock = self::$_hard_lock = ! ( 'yes' === LP()->settings()->get( 'enable_hard_cache' ) );
+			self::$_lock = self::$_hard_lock = ! ( 'yes' === LP_Settings::instance()->get( 'enable_hard_cache' ) );
 		}
 
 		if ( self::is_locked() ) {

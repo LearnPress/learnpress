@@ -29,7 +29,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			$this->default_heading = __( 'New user order', 'learnpress' );
 
 			$this->recipients = get_option( 'admin_email' );
-			$this->recipient  = LP()->settings()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
+			$this->recipient  = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();
 		}

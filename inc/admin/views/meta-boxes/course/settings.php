@@ -407,7 +407,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						<div class="lp-metabox-evaluate-final_quiz__message">'
 					. sprintf( esc_html__( 'Passing Grade: %s', 'learpress' ), $passing_grade . '%' ) .
 					' - '
-					. sprintf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ) .
+					. sprintf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url_raw( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ) .
 					'</div>
 					</div>
 				';

@@ -297,9 +297,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function admin_editor() {
 			$question = LP_Question::get_question();
 
-			if ( $question->is_support( 'answer-options' ) ) {
-				echo learn_press_admin_view_content( 'question/editor' );
-			}
+			//if ( $question->is_support( 'answer-options' ) ) {
+			echo learn_press_admin_view_content( 'question/editor' );
+			//}
 
 			ob_start();
 			do_action( 'learn-press/question-admin-editor', $question );
@@ -359,7 +359,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					$quiz = $curd->get_quiz( $post_id );
 
 					if ( $quiz ) {
-						echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
+						echo '<div><a href="' . esc_url_raw( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
 						echo '<div class="row-actions">';
 						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), esc_html__( 'Edit', 'learnpress' ) );
 						echo '&nbsp;|&nbsp;';

@@ -124,11 +124,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			LP_Global::add_object_feature( $this->object_type . '.' . $this->get_type(), $feature, $type );
 		}
 
-		public function is_support( $feature, $type = '' ) {
+		/*public function is_support( $feature, $type = '' ) {
 			$feature = $this->_sanitize_feature_key( $feature );
 
 			return LP_Global::object_is_support_feature( $this->object_type . '.' . $this->get_type(), $feature, $type );
-		}
+		}*/
 
 		public function get_supports() {
 			if ( empty( LP_Global::$object_support_features ) ) {
@@ -388,9 +388,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}
 
 			// Does this question support answer options?
-			if ( ! $this->is_support( 'answer_options' ) ) {
+			/*if ( ! $this->is_support( 'answer_options' ) ) {
 				return $updated;
-			}
+			}*/
 
 			$this->empty_answers();
 			if ( $answer_options = $this->get_data( 'answer_options' ) ) {
@@ -685,7 +685,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public function setup_data( $quiz_id, $course_id = 0, $user_id = 0 ) {
 
 			$quiz   = learn_press_get_quiz( $quiz_id );
-			$course = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
+			$course = learn_press_get_course( $course_id );
 
 			if ( $user_id ) {
 				$user = learn_press_get_user( $user_id );
@@ -696,7 +696,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$show_correct = false;
 
 			if ( $user && $quiz && $course ) {
-				if ( $user_quiz = $user->get_quiz_data( $quiz->get_id(), $course->get_id() ) ) {
+				$user_quiz = $user->get_quiz_data( $quiz->get_id(), $course->get_id() );
+				if ( $user_quiz ) {
 					$has_checked  = $user->has_checked_answer( $this->get_id(), $quiz->get_id(), $course->get_id() );
 					$show_correct = $user_quiz->is_completed() && ( $has_checked || $quiz->get_show_result() ) ? 'yes' : false;
 					$answered     = $user_quiz->get_question_answer( $this->get_id() );

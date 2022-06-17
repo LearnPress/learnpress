@@ -128,7 +128,7 @@ class LP_Modal_Search_Users {
 					wp_parse_str( $url_parts[1], $query_args );
 				}
 
-				$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
+				$pagenum_link = esc_url_raw( remove_query_arg( array_keys( $query_args ), $pagenum_link ) );
 				$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
 				$pagination = paginate_links(

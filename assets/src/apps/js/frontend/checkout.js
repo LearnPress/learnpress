@@ -183,7 +183,11 @@
 				message = '<div class="learn-press-message ' + ( typeof ( wrap ) === 'string' ? wrap : '' ) + '">' + message + '</div>';
 			}
 
-			$formCheckout.prepend( message );
+			if ( Array.isArray( message ) ) {
+				message.map( ( msg ) => $formCheckout.prepend( '<div class="learn-press-message error">' + msg + '</div>') );
+			} else {
+				$formCheckout.prepend( '<div class="learn-press-message error">' + message + '</div>' );
+			}
 
 			$( 'html, body' ).animate( {
 				scrollTop: ( $formCheckout.offset().top - 100 ),

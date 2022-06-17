@@ -46,7 +46,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 			if ( wp_verify_nonce( $nonce ) ) {
 				delete_option( 'learnpress_cron_url_nonce' );
 
-				wp_redirect( remove_query_arg( array( 'generate-cron-url', '_wpnonce' ) ) );
+				wp_redirect( esc_url_raw( remove_query_arg( array( 'generate-cron-url', '_wpnonce' ) ) ) );
 				die();
 			}
 		}

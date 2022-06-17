@@ -27,7 +27,7 @@ class LP_Elementor_Widget_Register_Form extends LP_Elementor_Widget_Base {
 	}
 
 	public function render() {
-		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+		if ( 'yes' !== LP_Settings::instance()->get( 'enable_register_profile' ) ) {
 			learn_press_display_message( __( 'Register form is disabled', 'learnpress' ), 'error' );
 		}
 

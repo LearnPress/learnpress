@@ -271,7 +271,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) || 'yes' === LP()->settings()->get( 'enable_register_profile' ) ) {
+		if ( 'yes' === LP_Settings::instance()->get( 'enable_login_profile' ) || 'yes' === LP_Settings::instance()->get( 'enable_register_profile' ) ) {
 			return;
 		}
 
@@ -285,7 +285,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
+		if ( 'yes' !== LP_Settings::instance()->get( 'enable_login_profile' ) ) {
 			return;
 		}
 
@@ -299,7 +299,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) || ! get_option( 'users_can_register' ) ) {
+		if ( 'yes' !== LP_Settings::instance()->get( 'enable_register_profile' ) || ! get_option( 'users_can_register' ) ) {
 			return;
 		}
 

@@ -26,6 +26,6 @@ defined( 'ABSPATH' ) || exit;
 	<div class="logo">
 		<a href="javascript:void(0)">
 			<?php $logoUrl = LP_PLUGIN_URL . 'assets/images/icon-128x128.png'; ?>
-			<img src="<?php echo esc_url( $logoUrl ); ?>">
+			<img src="<?php echo esc_url_raw( $logoUrl ); ?>">
 		</a>
 	</div>

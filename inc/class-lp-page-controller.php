@@ -56,6 +56,23 @@ class LP_Page_Controller {
 
 		// Set link profile to admin menu
 		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
+		add_action( 'plugins_loaded', array( $this, 'lp_rest_api_called' ) );
+	}
+
+	/**
+	 * Optimize when Rest API LP called
+	 *
+	 * @return void
+	 */
+	public function lp_rest_api_called() {
+		if ( LP_Helper::isRestApiLP() ) {
+			if ( ! defined( 'SHORTINIT' ) ) {
+				define( 'SHORTINIT', true );
+			}
+
+			// Remove hook wp_loaded because query default WP run on it (it hooks 'pre_get_posts',...)
+			remove_all_actions( 'wp_loaded' );
+		}
 	}
 
 	/**
@@ -241,7 +258,7 @@ class LP_Page_Controller {
 		global $wp_query;
 		$flag_title_course = false;
 
-		$course_archive_page_id = LP()->settings()->get( 'courses_page_id', 0 );
+		$course_archive_page_id = LP_Settings::instance()->get( 'courses_page_id', 0 );
 
 		// Set title course archive page
 		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&
@@ -380,7 +397,7 @@ class LP_Page_Controller {
 	 */
 	/*
 	public function maybe_redirect_quiz( $template ) {
-		$course   = LP_Global::course();
+		$course   = learn_press_get_course();
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
 		$redirect = false;
@@ -706,51 +723,51 @@ class LP_Page_Controller {
 
 	/**
 	 * @return bool
+	 * @editor tungnx - comment 4.1.6.6
 	 */
-	protected function _maybe_redirect_courses_page() {
-		/**
-		 * If is archive course page and a static page is used for displaying courses
-		 * we need to redirect it to the right page
-		 */
-		if ( ! is_post_type_archive( LP_COURSE_CPT ) ) {
-			return false;
-		}
-
-		/**
-		 * @var WP_Query $wp_query
-		 * @var WP_Rewrite $wp_rewrite
-		 */
-		global $wp_query, $wp_rewrite;
-
-		$page_id = learn_press_get_page_id( 'courses' );
-
-		if ( $page_id && ( empty( $wp_query->queried_object_id ) || ! empty( $wp_query->queried_object_id ) && $page_id != $wp_query->queried_object_id ) ) {
-			$redirect = trailingslashit( learn_press_get_page_link( 'courses' ) );
-
-			if ( ! empty( $wp_query->query['paged'] ) ) {
-				if ( $wp_rewrite->using_permalinks() ) {
-					$redirect = $redirect . 'page/' . $wp_query->query['paged'] . '/';
-				} else {
-					$redirect = add_query_arg( 'paged', $wp_query->query['paged'], $redirect );
-				}
-			}
-
-			if ( isset( $_GET ) ) {
-				$_GET = array_map( 'stripslashes_deep', $_GET );
-				foreach ( $_GET as $k => $v ) {
-					$redirect = add_query_arg( $k, urlencode( $v ), $redirect );
-				}
-			}
-
-			if ( $page_id != get_option( 'page_on_front' ) && ! learn_press_is_current_url( $redirect ) ) {
-				wp_redirect( $redirect );
-				exit();
-			}
-		}
-
-		return false;
-	}
-
+	//  protected function _maybe_redirect_courses_page() {
+	//      /**
+	//       * If is archive course page and a static page is used for displaying courses
+	//       * we need to redirect it to the right page
+	//       */
+	//      if ( ! is_post_type_archive( LP_COURSE_CPT ) ) {
+	//          return false;
+	//      }
+	//
+	//      /**
+	//       * @var WP_Query $wp_query
+	//       * @var WP_Rewrite $wp_rewrite
+	//       */
+	//      global $wp_query, $wp_rewrite;
+	//
+	//      $page_id = learn_press_get_page_id( 'courses' );
+	//
+	//      if ( $page_id && ( empty( $wp_query->queried_object_id ) || ! empty( $wp_query->queried_object_id ) && $page_id != $wp_query->queried_object_id ) ) {
+	//          $redirect = trailingslashit( learn_press_get_page_link( 'courses' ) );
+	//
+	//          if ( ! empty( $wp_query->query['paged'] ) ) {
+	//              if ( $wp_rewrite->using_permalinks() ) {
+	//                  $redirect = $redirect . 'page/' . $wp_query->query['paged'] . '/';
+	//              } else {
+	//                  $redirect = add_query_arg( 'paged', $wp_query->query['paged'], $redirect );
+	//              }
+	//          }
+	//
+	//          if ( isset( $_GET ) ) {
+	//              $_GET = array_map( 'stripslashes_deep', $_GET );
+	//              foreach ( $_GET as $k => $v ) {
+	//                  $redirect = add_query_arg( $k, urlencode( $v ), $redirect );
+	//              }
+	//          }
+	//
+	//          if ( $page_id != get_option( 'page_on_front' ) && ! learn_press_is_current_url( $redirect ) ) {
+	//              wp_redirect( $redirect );
+	//              exit();
+	//          }
+	//      }
+	//
+	//      return false;
+	//  }
 
 	public function archive_content() {
 		ob_start();
@@ -1015,7 +1032,7 @@ class LP_Page_Controller {
 		$apply_lazy_load_for_theme = apply_filters( 'lp/page/courses/query/lazy_load', false );
 
 		if ( $is_archive_course ) {
-			if ( ( lp_is_archive_course_load_via_api() && ! class_exists( 'TP' ) ) || $apply_lazy_load_for_theme ) {
+			if ( ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) ) {
 				LP()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 				/**
 				 * If page is archive course - query set posts_per_page = 1
@@ -1024,9 +1041,130 @@ class LP_Page_Controller {
 				 * Current, apply only for LP, not apply for theme Thimpress, because theme override
 				 */
 				$q->set( 'posts_per_page', 1 );
+				$q->set( 'posts_per_archive_page', 1 );
+				$q->set( 'nopaging', true );
 			} else {
 				$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
 				$q->set( 'posts_per_page', $limit );
+				// $q->set( 'cache_results', true ); // it default true
+
+				// Search courses by keyword
+				$q->set( 's', $_REQUEST['c_search'] ?? '' );
+
+				// Meta query
+				$meta_query = [];
+				if ( isset( $_REQUEST['sort_by'] ) ) {
+					if ( 'on_paid' === $_REQUEST['sort_by'] ) {
+						$meta_query[] = array(
+							'key'     => '_lp_price',
+							'value'   => 0,
+							'compare' => '>',
+						);
+					}
+
+					if ( 'on_free' === $_REQUEST['sort_by'] ) {
+						$meta_query[] = array(
+							'key'     => '_lp_price',
+							'value'   => 0,
+							'compare' => '=',
+						);
+					}
+				}
+				$q->set( 'meta_query', $meta_query );
+				// End Meta query
+
+				// Tax query
+				$tax_query    = [];
+				$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['term_id'] ?? '' ) );
+				if ( ! empty( $term_ids_str ) ) {
+					$term_ids = explode( ',', $term_ids_str );
+
+					$tax_query[] = array(
+						'taxonomy' => 'course_category',
+						'field'    => 'term_id',
+						'terms'    => $term_ids,
+						'operator' => 'IN',
+					);
+				}
+
+				$q->set( 'tax_query', $tax_query );
+				// End Tax query
+
+				// Author query
+				if ( isset( $_REQUEST['c_author'] ) ) {
+					$author_ids = LP_Helper::sanitize_params_submitted( $_REQUEST['c_author'] );
+					$q->set( 'author__in', $author_ids );
+				}
+				// End Author query
+
+				// Order query
+				if ( isset( $_REQUEST['order_by'] ) ) {
+					$order_by = LP_Helper::sanitize_params_submitted( $_REQUEST['order_by'] );
+					$order    = 'DESC';
+
+					switch ( $order_by ) {
+						case 'post_title':
+							$order_by = 'title';
+							$order    = 'ASC';
+							break;
+						default:
+							$order_by = 'date';
+							break;
+					}
+
+					$q->set( 'orderby', $order_by );
+					$q->set( 'order', $order );
+				}
+
+				$q = apply_filters( 'lp/page-courses/query/legacy', $q );
+
+				/*if ( isset( $_REQUEST['isPageLoad'] ) ) {
+					$filter_courses              = new LP_Course_Filter();
+					$filter_courses->only_fields = [ 'ID' ];
+					$filter_courses->limit       = 1000;
+					$filter_courses->max_limit   = 1000;
+					$filter_courses->post_title  = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] ?? '' );
+					$fields_str                  = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['c_fields'] ?? '' ) );
+					$fields_exclude_str          = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['c_exclude_fields'] ?? '' ) );
+					if ( ! empty( $fields_str ) ) {
+						$fields                 = explode( ',', $fields_str );
+						$filter_courses->fields = $fields;
+					}
+					if ( ! empty( $fields_exclude_str ) ) {
+						$fields_exclude                 = explode( ',', $fields_exclude_str );
+						$filter_courses->exclude_fields = $fields_exclude;
+					}
+					$filter_courses->post_author = LP_Helper::sanitize_params_submitted( $_REQUEST['c_author'] ?? 0 );
+					$author_ids_str              = LP_Helper::sanitize_params_submitted( $_REQUEST['c_authors'] ?? 0 );
+					if ( ! empty( $author_ids_str ) ) {
+						$author_ids                   = explode( ',', $author_ids_str );
+						$filter_courses->post_authors = $author_ids;
+					}
+					$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['term_id'] ?? '' ) );
+					if ( ! empty( $term_ids_str ) ) {
+						$term_ids                 = explode( ',', $term_ids_str );
+						$filter_courses->term_ids = $term_ids;
+					}
+
+					$on_sale                                       = absint( $_REQUEST['on_sale'] ?? '0' );
+					1 === $on_sale ? $filter_courses->sort_by[]    = 'on_sale' : '';
+					$on_feature                                    = absint( $_REQUEST['on_feature'] ?? '0' );
+					1 === $on_feature ? $filter_courses->sort_by[] = 'on_feature' : '';
+
+					$filter_courses->order_by = LP_Helper::sanitize_params_submitted( ! empty( $_REQUEST['order_by'] ) ? $_REQUEST['order_by'] : 'post_date' );
+					$filter_courses->order    = LP_Helper::sanitize_params_submitted( ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'DESC' );
+
+					$filter_courses = apply_filters( 'lp/api/courses/filter', $filter_courses, $_REQUEST );
+
+					$courses    = LP_Course::get_courses( $filter_courses );
+					$course_ids = array( -1 ); // Set if empty $course_ids will return 'no courses found' message
+
+					if ( ! empty( $courses ) ) {
+						$course_ids = LP_Database::getInstance()->get_values_by_key( $courses );
+					}
+
+					$q->set( 'post__in', $course_ids );
+				}*/
 			}
 		}
 
@@ -1193,10 +1331,4 @@ class LP_Page_Controller {
 	}
 }
 
-if ( ! function_exists( 'lp_page_controller' ) ) {
-	function lp_page_controller() {
-		return LP_Page_Controller::instance();
-	}
-
-	lp_page_controller();
-}
+return LP_Page_Controller::instance();

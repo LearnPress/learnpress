@@ -238,7 +238,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tabs() {
 			if ( $this->_tabs === null ) {
-				$settings        = LP()->settings();
+				$settings        = LP_Settings::instance();
 				$course_sections = array();
 
 				$this->_default_settings = array(
@@ -343,7 +343,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				update_option( 'learn_press_profile_avatar', 'yes' );
 			}
 
-			$setting_avatar = LP()->settings()->get( 'profile_endpoints.settings-avatar' );
+			$setting_avatar = LP_Settings::instance()->get( 'profile_endpoints.settings-avatar' );
 
 			if ( ! $setting_avatar ) {
 				$profile_endpoints['settings-basic-information'] = 'basic-information';
@@ -354,7 +354,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				add_rewrite_rule( '(.?.+?)/avatar(/(.*))?/?$', 'index.php?pagename=$matches[1]&section=avatar', 'top' );
 			}
 
-			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
+			return LP_Settings::instance()->get( 'profile_avatar' ) === 'yes';
 		}
 
 		/**
@@ -713,7 +713,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$query['pagination'] = learn_press_paging_nav(
 						array(
 							'num_pages' => $query['num_pages'],
-							'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP()->settings->get( 'profile_endpoints.profile-orders' ) ),
+							'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP_Settings::instance()->get( 'profile_endpoints.profile-orders' ) ),
 							'format'    => $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( '%#%', '' ) : '?paged=%#%',
 							'echo'      => false,
 							'paged'     => $args['paged'],
@@ -837,9 +837,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$url = $this->get_current_url();
 
 			$defaults = array(
-				'all'     => sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'All', 'learnpress' ) ),
-				'publish' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'publish', $url ) ), esc_html__( 'Publish', 'learnpress' ) ),
-				'pending' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'pending', $url ) ), esc_html__( 'Pending', 'learnpress' ) ),
+				'all'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), esc_html__( 'All', 'learnpress' ) ),
+				'publish' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'publish', $url ) ), esc_html__( 'Publish', 'learnpress' ) ),
+				'pending' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'pending', $url ) ), esc_html__( 'Pending', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -869,11 +869,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function get_purchased_courses_filters( $current_filter = '' ) {
 			$url      = $this->get_current_url( false );
 			$defaults = array(
-				'all'          => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
-				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
-				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) ),
+				'all'          => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
+				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -903,10 +903,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function get_quizzes_filters( $current_filter = '' ) {
 			$url      = $this->get_current_url( false );
 			$defaults = array(
-				'all'       => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
-				'completed' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'all'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
+				'completed' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-graduation', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-graduation', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -934,16 +934,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function logout_url( $redirect = false ) {
 			if ( $this->enable_login() ) {
 				$profile_url = learn_press_get_page_link( 'profile' );
-				$url         = add_query_arg(
-					array(
-						'lp-logout' => 'true',
-						'nonce'     => wp_create_nonce( 'lp-logout' ),
-					),
-					untrailingslashit( $profile_url )
+				$url         = esc_url_raw(
+					add_query_arg(
+						array(
+							'lp-logout' => 'true',
+							'nonce'     => wp_create_nonce( 'lp-logout' ),
+						),
+						untrailingslashit( $profile_url )
+					)
 				);
 
 				if ( $redirect !== false ) {
-					$url = add_query_arg( 'redirect', urlencode( $redirect ), $url );
+					$url = esc_url_raw( add_query_arg( 'redirect', urlencode( $redirect ), $url ) );
 				}
 			} else {
 				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );
@@ -1016,7 +1018,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function enable_login() {
-			return 'yes' === LP()->settings()->get( 'enable_login_profile' );
+			return 'yes' === LP_Settings::instance()->get( 'enable_login_profile' );
 		}
 
 		/**
@@ -1025,7 +1027,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function enable_register() {
-			return 'yes' === LP()->settings()->get( 'enable_register_profile' );
+			return 'yes' === LP_Settings::instance()->get( 'enable_register_profile' );
 		}
 
 		/**

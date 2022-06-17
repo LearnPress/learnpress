@@ -537,7 +537,7 @@ class LP_User extends LP_Abstract_User {
 					LP_QUIZ_HAS_STARTED_OR_COMPLETED
 				);
 			}
-			$user = LP_Global::user();
+			$user = learn_press_get_current_user();
 
 			if ( $user->is_guest() ) {
 				// if course required enroll => print message "You have to login for starting quiz"

@@ -235,7 +235,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			if ( get_option( 'permalink_structure' ) ) {
 				$url = trailingslashit( $profile_link . join( '/', array_values( $args ) ) );
 			} else {
-				$url = add_query_arg( $args, $profile_link );
+				$url = esc_url_raw( add_query_arg( $args, $profile_link ) );
 			}
 		} else {
 			$url = get_author_posts_url( $user->get_id() );
@@ -293,7 +293,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {
-				$url = add_query_arg( $args, $url );
+				$url = esc_url_raw( add_query_arg( $args, $url ) );
 			} else {
 				$parts = array();
 

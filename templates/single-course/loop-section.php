@@ -94,7 +94,7 @@ $items = $section->get_items();
 					$item_link = apply_filters( 'learn-press/section-item-permalink', $item_link, $item, $section, $course );
 					?>
 
-					<a class="section-item-link" href="<?php echo $item_link ? esc_url( $item_link ) : 'javascript:void(0);'; ?>">
+					<a class="section-item-link" href="<?php echo $item_link ? esc_url_raw( $item_link ) : 'javascript:void(0);'; ?>">
 
 						<?php
 						do_action( 'learn-press/before-section-loop-item-title', $item, $section, $course );

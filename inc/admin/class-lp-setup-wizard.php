@@ -56,7 +56,7 @@ class LP_Setup_Wizard {
 	 */
 	public static function get_price_format() {
 		self::instance()->save();
-		LP()->settings()->refresh();
+		// LP_Settings::instance()->refresh();
 		echo learn_press_format_price( 1234.56, true );
 		die();
 	}
@@ -123,7 +123,7 @@ class LP_Setup_Wizard {
 		$this->save();
 
 		// Refresh new changes
-		// LP()->settings()->refresh();
+		// LP_Settings::instance()->refresh();
 
 		$assets = learn_press_admin_assets();
 
@@ -314,7 +314,7 @@ class LP_Setup_Wizard {
 			$at ++;
 		}
 
-		return add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) );
+		return esc_url_raw( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );
 	}
 
 	/**
@@ -330,7 +330,7 @@ class LP_Setup_Wizard {
 			$at --;
 		}
 
-		return add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) );
+		return esc_url_raw( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );
 	}
 
 	/**

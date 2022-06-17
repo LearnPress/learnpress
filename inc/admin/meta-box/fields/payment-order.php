@@ -16,7 +16,7 @@
 			<tr id="payment-<?php echo esc_attr( $gateway->get_id() ); ?>" data-payment="<?php echo esc_attr( $gateway->get_id() ); ?>">
 				<td class="order"><span class="dashicons dashicons-menu"></span></td>
 				<td class="name">
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=learn-press-settings&tab=payments&section=' . $gateway->get_id() ) ); ?>">
+					<a href="<?php echo esc_url_raw( admin_url( 'admin.php?page=learn-press-settings&tab=payments&section=' . $gateway->get_id() ) ); ?>">
 						<?php echo esc_html( $gateway->get_method_title() ); ?>
 					</a>
 				</td>

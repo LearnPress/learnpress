@@ -2379,7 +2379,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						$this->get_id(),
 						$this
 					);
-					$socials[ $k ] = sprintf( '<a href="%s">%s</a>', esc_url( $v ), $icon );
+					$socials[ $k ] = sprintf( '<a href="%s">%s</a>', esc_url_raw( $v ), $icon );
 				}
 			}
 

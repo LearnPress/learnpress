@@ -16,8 +16,8 @@ $action_links = LP_Plugins_Helper::get_add_on_action_link( $add_on, $file );
 	<div class="plugin-card-top">
 			<span class="plugin-icon">
 				<?php if ( ! is_array( $add_on['icons'] ) && $add_on['icons'] ) : ?>
-					<a href="<?php echo esc_url( $add_on['permarklink'] ); ?>">
-						<img src="<?php echo esc_url( $add_on['icons'] ); ?>">
+					<a href="<?php echo esc_url_raw( $add_on['permarklink'] ); ?>">
+						<img src="<?php echo esc_url_raw( $add_on['icons'] ); ?>">
 					</a>
 				<?php else : ?>
 					<img src="<?php echo LP_Plugins_Helper::get_add_on_icon( $add_on['icons'] ); ?>">

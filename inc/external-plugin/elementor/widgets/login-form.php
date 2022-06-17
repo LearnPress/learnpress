@@ -27,7 +27,7 @@ class LP_Elementor_Widget_Login_Form extends LP_Elementor_Widget_Base {
 	}
 
 	public function render() {
-		if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
+		if ( 'yes' !== \LP_Settings::get_option( 'enable_login_profile', 'no' ) ) {
 			learn_press_display_message( __( 'Login form is disabled', 'learnpress' ), 'error' );
 		}
 

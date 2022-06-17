@@ -578,12 +578,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( $order->is_multi_users() ) {
 				$actions['child-orders'] = sprintf(
 					'<a href="%s">%s</a>',
-					add_query_arg(
-						array(
-							'post_type' => LP_ORDER_CPT,
-							'parent'    => $post->ID,
-						),
-						admin_url( 'edit.php' )
+					esc_url_raw(
+						add_query_arg(
+							array(
+								'post_type' => LP_ORDER_CPT,
+								'parent'    => $post->ID,
+							),
+							admin_url( 'edit.php' )
+						)
 					),
 					__( 'View child orders', 'learnpress' )
 				);

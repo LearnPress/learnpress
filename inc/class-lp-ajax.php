@@ -262,9 +262,13 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$item_id   = LP_Request::get_int( 'id' );
 			$course_id = LP_Request::get_int( 'course_id' );
 
-			$post     = get_post( $item_id );
-			$user     = learn_press_get_current_user();
-			$course   = learn_press_get_course( $course_id );
+			$post   = get_post( $item_id );
+			$user   = learn_press_get_current_user();
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				return;
+			}
+
 			$response = array(
 				'result'   => 'success',
 				'redirect' => $course->get_item_link( $item_id ),

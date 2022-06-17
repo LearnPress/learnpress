@@ -248,7 +248,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$response = new LP_REST_Response();
 		$receipt  = ! empty( $request['receipt-data'] ) ? $request['receipt-data'] : '';
 		$is_ios   = ! empty( $request['is-ios'] ) ? true : false;
-		$password = LP()->settings()->get( 'in_app_purchase_apple_shared_secret', '' );
+		$password = LP_Settings::instance()->get( 'in_app_purchase_apple_shared_secret', '' );
 
 		try {
 			if ( empty( $receipt ) ) {
@@ -262,7 +262,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					throw new Exception( __( 'Secret key is empty.', 'learnpress' ) );
 				}
 
-				$url = LP()->settings()->get( 'in_app_purchase_apple_sandbox' ) === 'yes' ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+				$url = LP_Settings::instance()->get( 'in_app_purchase_apple_sandbox' ) === 'yes' ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
 
 				$verify = wp_remote_post(
 					$url,

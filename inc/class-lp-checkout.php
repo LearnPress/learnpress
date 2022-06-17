@@ -475,7 +475,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_guest_checkout() {
-		return apply_filters( 'learn-press/checkout/enable-guest', LP()->settings()->get( 'guest_checkout', 'no' ) == 'yes' );
+		return apply_filters( 'learn-press/checkout/enable-guest', LP_Settings::instance()->get( 'guest_checkout', 'no' ) == 'yes' );
 	}
 
 	/**
@@ -485,7 +485,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_login() {
-		return apply_filters( 'learn-press/checkout/enable-login', in_array( LP()->settings()->get( 'enable_login_checkout' ), array( '', 'yes' ) ) );
+		return apply_filters( 'learn-press/checkout/enable-login', in_array( LP_Settings::instance()->get( 'enable_login_checkout' ), array( '', 'yes' ) ) );
 	}
 
 	/**
@@ -495,7 +495,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_register() {
-		return apply_filters( 'learn-press/checkout/enable-register', in_array( LP()->settings()->get( 'enable_registration_checkout' ), array( '', 'yes' ) ) && get_option( 'users_can_register' ) );
+		return apply_filters( 'learn-press/checkout/enable-register', in_array( LP_Settings::instance()->get( 'enable_registration_checkout' ), array( '', 'yes' ) ) && get_option( 'users_can_register' ) );
 	}
 
 	/**

@@ -11,7 +11,10 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
+$course = learn_press_get_course();
+if ( ! $course ) {
+	return;
+}
 ?>
 
 <form name="course-external-link" class="course-external-link form-button lp-form" method="post">

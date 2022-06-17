@@ -1249,8 +1249,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$is_permalink    = '' !== get_option( 'permalink_structure' );
 					$is_draft        = 'draft' === get_post_status( $this->get_id() );
 					$custom_prefixes = array(
-						LP_QUIZ_CPT   => LP()->settings->get( 'quiz_slug' ),
-						LP_LESSON_CPT => LP()->settings->get( 'lesson_slug' ),
+						LP_QUIZ_CPT   => LP_Settings::instance()->get( 'quiz_slug' ),
+						LP_LESSON_CPT => LP_Settings::instance()->get( 'lesson_slug' ),
 					);
 
 					if ( empty( $custom_prefixes[ LP_QUIZ_CPT ] ) ) {
@@ -1333,8 +1333,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$slug_prefixes = apply_filters(
 				'learn-press/course/custom-item-prefixes',
 				array(
-					LP_QUIZ_CPT   => sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug', 'quizzes' ) ),
-					LP_LESSON_CPT => sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug', 'lessons' ) ),
+					LP_QUIZ_CPT   => sanitize_title_with_dashes( LP_Settings::instance()->get( 'quiz_slug', 'quizzes' ) ),
+					LP_LESSON_CPT => sanitize_title_with_dashes( LP_Settings::instance()->get( 'lesson_slug', 'lessons' ) ),
 				),
 				$this->get_id()
 			);

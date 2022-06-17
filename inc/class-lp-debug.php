@@ -65,7 +65,7 @@ class LP_Debug {
 		}
 
 		$time = microtime( true ) - self::$_time[ $name ];
-		echo "{$name} execution time = " . $time . "\n";
+		echo esc_html( wp_sprintf( '%s execution time = %s', $name, $time ) );
 		unset( self::$_time[ $name ] );
 	}
 
@@ -109,7 +109,7 @@ class LP_Debug {
 	 * @param string $line
 	 */
 	public static function var_dump( $variable, string $file_path = '', string $line = '' ) {
-		echo '<pre>' . print_r( $variable, true ) . '</pre>';
+		echo wp_kses( '<pre>' . print_r( $variable, true ) . '</pre>', true );
 		echo 'FILE:' . esc_html( $file_path ) . '<br> LINE:' . esc_html( $line );
 	}
 

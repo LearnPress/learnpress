@@ -28,7 +28,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Admin' ) ) {
 			$this->default_subject = __( '{{user_display_name}} has finished course', 'learnpress' );
 			$this->default_heading = __( 'User has finished course', 'learnpress' );
 
-			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
+			$this->recipient = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();
 		}

@@ -771,8 +771,8 @@ if ( ! function_exists( 'learn_press_course_price' ) ) {
 	 */
 	function learn_press_course_price() {
 		_deprecated_function( __FUNCTION__, '4.0.0' );
-		$user   = LP_Global::user();
-		$course = LP_Global::course();
+		$user   = learn_press_get_current_user();
+		$course = learn_press_get_course();
 
 		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
 			return;
@@ -882,8 +882,8 @@ if ( ! function_exists( 'learn_press_content_item_quiz_title' ) ) {
 
 if ( ! function_exists( 'learn_press_content_item_quiz_intro' ) ) {
 	function learn_press_content_item_quiz_intro() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz->get_id(), $course->get_id() ) ) {
@@ -927,9 +927,9 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_title' ) ) {
 if ( ! function_exists( 'learn_press_content_item_summary_quiz_progress' ) ) {
 
 	function learn_press_content_item_summary_quiz_progress() {
-		$course = LP_Global::course();
+		$course = learn_press_get_course();
 		$quiz   = LP_Global::course_item_quiz();
-		$user   = LP_Global::user();
+		$user   = learn_press_get_current_user();
 
 		if ( ! $user ) {
 			return;
@@ -960,7 +960,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_result' ) ) {
 
 	function learn_press_content_item_summary_quiz_result() {
 		$quiz = LP_Global::course_item_quiz();
-		$user = LP_Global::user();
+		$user = learn_press_get_current_user();
 		if ( ! $user->has_completed_quiz( $quiz->get_id(), get_the_ID() ) ) {
 			return;
 		}
@@ -1482,8 +1482,8 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 	function learn_press_content_item_summary_question_hint() {
 		$quiz = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
-			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$course      = learn_press_get_course();
+			$user        = learn_press_get_current_user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 
@@ -1506,8 +1506,8 @@ if ( ! function_exists( 'learn_press_content_item_summary_questions' ) ) {
 		return;
 		$quiz = LP_Global::course_item_quiz();
 		if ( $questions = $quiz->get_questions() ) {
-			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$course      = learn_press_get_course();
+			$user        = learn_press_get_current_user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
 			global $lp_quiz_question;
@@ -1527,8 +1527,8 @@ if ( ! function_exists( 'learn_press_content_item_summary_questions' ) ) {
 if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) {
 
 	function learn_press_content_item_summary_question_numbers() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $quiz->get_show_hide_question() ) {
@@ -1550,8 +1550,8 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) 
 if ( ! function_exists( 'learn_press_quiz_nav_buttons' ) ) {
 
 	function learn_press_quiz_nav_buttons() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( array( 'started', 'completed' ), $quiz->get_id(), $course->get_id() ) ) {
@@ -1569,8 +1569,8 @@ if ( ! function_exists( 'learn_press_quiz_nav_buttons' ) ) {
 if ( ! function_exists( 'learn_press_quiz_start_button' ) ) {
 
 	function learn_press_quiz_start_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( $user->has_course_status( $course->get_id(), array( 'finished' ) ) || $user->has_quiz_status(
@@ -1595,8 +1595,8 @@ if ( ! function_exists( 'learn_press_quiz_start_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_continue_button' ) ) {
 
 	function learn_press_quiz_continue_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
@@ -1614,8 +1614,8 @@ if ( ! function_exists( 'learn_press_quiz_continue_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_complete_button' ) ) {
 
 	function learn_press_quiz_complete_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( $user->has_course_status( $course->get_id(), array( 'finished' ) ) || ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
@@ -1628,8 +1628,8 @@ if ( ! function_exists( 'learn_press_quiz_complete_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 
 	function learn_press_quiz_redo_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
@@ -1647,8 +1647,8 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_result_button' ) ) {
 
 	function learn_press_quiz_result_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
@@ -1670,8 +1670,8 @@ if ( ! function_exists( 'learn_press_quiz_result_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_summary_button' ) ) {
 
 	function learn_press_quiz_summary_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() ) ) {
@@ -1689,8 +1689,8 @@ if ( ! function_exists( 'learn_press_quiz_summary_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
 
 	function learn_press_quiz_check_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 		$quiz   = LP_Global::course_item_quiz();
 
 		if ( ! $quiz->is_viewing_question() ) {
@@ -1712,8 +1712,8 @@ if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 
 	function learn_press_quiz_hint_button() {
-		$course   = LP_Global::course();
-		$user     = LP_Global::user();
+		$course   = learn_press_get_course();
+		$user     = learn_press_get_current_user();
 		$quiz     = LP_Global::course_item_quiz();
 		$question = LP_Global::quiz_question();
 
@@ -1806,7 +1806,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 			return;
 		}
 
-		if ( 'yes' === LP()->settings()->get( 'enable_register_profile' ) || 'yes' === LP()->settings()->get( 'enable_login_profile' ) ) {
+		if ( 'yes' === LP_Settings::instance()->get( 'enable_register_profile' ) || 'yes' === LP_Settings::instance()->get( 'enable_login_profile' ) ) {
 			return;
 		}
 
@@ -1827,7 +1827,7 @@ if ( ! function_exists( 'learn_press_profile_login_form' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
+		if ( 'yes' !== LP_Settings::instance()->get( 'enable_login_profile' ) ) {
 			return;
 		}
 
@@ -1847,7 +1847,7 @@ if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+		if ( 'yes' !== LP_Settings::instance()->get( 'enable_register_profile' ) ) {
 			return;
 		}
 
@@ -1901,8 +1901,8 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content_blocked' ) ) {
 
 if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
 	function learn_press_content_item_lesson_complete_button() {
-		$user   = LP_Global::user();
-		$course = LP_Global::course();
+		$user   = learn_press_get_current_user();
+		$course = learn_press_get_course();
 		$lesson = LP_Global::course_item();
 
 		if ( ! $course->is_required_enroll() ) {
@@ -1930,8 +1930,8 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 	function learn_press_content_item_summary_question_explanation() {
 		$quiz = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
-			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$course      = learn_press_get_course();
+			$user        = learn_press_get_current_user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 
@@ -2071,7 +2071,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_own' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_own_limit', $limit );
 		$courses           = $user->get( 'own-courses', array( 'limit' => $limit ) );
 		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
@@ -2093,7 +2093,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_learning' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_learning_limit', $limit );
 		$courses           = $user->get(
 			'enrolled-courses',
@@ -2120,7 +2120,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_purchased' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_purchased_limit', $limit );
 		$courses           = $user->get( 'purchased-courses', array( 'limit' => $limit ) );
 		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
@@ -2141,7 +2141,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_finished' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_finished_limit', $limit );
 		$courses           = $user->get(
 			'enrolled-courses',
@@ -2187,7 +2187,7 @@ if ( ! function_exists( 'learn_press_profile_tab_courses_all' ) ) {
 			'user'   => $user,
 			'subtab' => $tab,
 		);
-		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = LP_Settings::instance()->get( 'profile_courses_limit', 10 );
 		$limit             = apply_filters( 'learn_press_profile_tab_courses_all_limit', $limit );
 		$courses           = $user->get( 'courses', array( 'limit' => $limit ) );
 		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );

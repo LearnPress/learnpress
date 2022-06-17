@@ -301,12 +301,29 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				case 'results':
 					$data['results'] = $this->get_lesson_results( $object );
 					break;
+				case 'video_intro':
+					$data['video_intro'] = $this->get_video_intro( $id );
+					break;
 			}
 		}
 
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	public function get_video_intro( $id ) {
+		$video_intro = get_post_meta( $id, '_lp_lesson_video_intro', true );
+
+		if ( ! $video_intro ) {
+			return '';
+		}
+
+		if ( wp_oembed_get( $video_intro ) ) {
+			return wp_oembed_get( $video_intro );
+		}
+
+		return do_shortcode( $video_intro );
 	}
 
 	public function check_can_finish_course( $id ) {
@@ -527,6 +544,11 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 							'context'     => array( 'view', 'edit' ),
 						),
 					),
+				),
+				'video_intro'       => array(
+					'description' => __( 'Video intro.', 'learnpress' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
 				),
 			),
 		);

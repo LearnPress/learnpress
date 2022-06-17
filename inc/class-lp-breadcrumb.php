@@ -395,7 +395,7 @@ class LP_Breadcrumb {
 	 */
 	private function search_trail() {
 		if ( is_search() ) {
-			$this->add_crumb( sprintf( __( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() ), remove_query_arg( 'paged' ) );
+			$this->add_crumb( sprintf( __( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() ), esc_url_raw( remove_query_arg( 'paged' ) ) );
 		}
 	}
 

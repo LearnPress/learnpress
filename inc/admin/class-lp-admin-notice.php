@@ -424,7 +424,7 @@ class LP_Admin_Notice {
 			learn_press_update_user_option( 'hide-notice-' . $notice, 'yes' );
 		}
 
-		$redirect = apply_filters( 'learn_press_hide_notice_redirect', remove_query_arg( 'lp-hide-notice' ) );
+		$redirect = apply_filters( 'learn_press_hide_notice_redirect', esc_url_raw( remove_query_arg( 'lp-hide-notice' ) ) );
 		if ( $redirect ) {
 			wp_redirect( untrailingslashit( $redirect ) );
 			exit();

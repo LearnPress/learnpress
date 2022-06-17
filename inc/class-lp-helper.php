@@ -418,10 +418,21 @@ class LP_Helper {
 	 * @since  3.2.6.8
 	 * @author tungnx
 	 */
-	public static function getUrlCurrent() {
+	public static function getUrlCurrent(): string {
 		$schema = is_ssl() ? 'https://' : 'http://';
 
-		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( $_SERVER['REQUEST_URI'] );
+		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
+	}
+
+	/**
+	 * Check request is rest api
+	 *
+	 * @since 4.1.6.6
+	 * @author tungnx
+	 * @return bool|int
+	 */
+	public static function isRestApiLP() {
+		return strpos( self::getUrlCurrent(), '/wp-json/lp/' );
 	}
 
 	/**
@@ -553,7 +564,7 @@ class LP_Helper {
 	 * without cache - because some cache(redis) will cache page with user anonymous
 	 */
 	public static function get_link_no_cache( string $link ): string {
-		return add_query_arg( 'no-cache', uniqid(), $link );
+		return esc_url_raw( add_query_arg( 'no-cache', uniqid(), $link ) );
 	}
 
 	/**

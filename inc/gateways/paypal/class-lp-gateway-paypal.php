@@ -106,7 +106,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$this->paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
 
 			// get settings
-			$this->settings = LP()->settings()->get_group( 'paypal', '' );
+			$this->settings = LP_Settings::instance()->get_group( 'paypal', '' );
 
 			$this->enabled = $this->settings->get( 'enable' );
 
@@ -400,8 +400,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'charset'       => 'utf-8',
 					'rm'            => is_ssl() ? 2 : 1,
 					'upload'        => 1,
-					'return'        => esc_url( $this->get_return_url( $order ) ),
-					'cancel_return' => esc_url( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() /* SITE_URL */ ),
+					'return'        => esc_url_raw( $this->get_return_url( $order ) ),
+					'cancel_return' => esc_url_raw( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() /* SITE_URL */ ),
 					'bn'            => 'LearnPress_Cart',
 					'custom'        => json_encode( $custom ),
 					'notify_url'    => get_home_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',

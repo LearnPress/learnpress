@@ -76,7 +76,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 								foreach ( $courses as $course ) {
 									$course = LP_Course::get_course( $course->ID );
 									?>
-									<a href="<?php echo esc_url( $course->get_item_link( $user_quiz->get_id() ) ); ?>">
+									<a href="<?php echo esc_url_raw( $course->get_item_link( $user_quiz->get_id() ) ); ?>">
 										<?php echo esc_html( $quiz->get_title( 'display' ) ); ?>
 									</a>
 									<?php

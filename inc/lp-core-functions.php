@@ -12,10 +12,10 @@ defined( 'ABSPATH' ) || exit;
 
 function learnpress_gutenberg_disable_cpt( $can_edit, $post_type ) {
 	$post_types = array(
-		LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
-		LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
-		LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
-		LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
+		LP_COURSE_CPT   => LP_Settings::instance()->get( 'enable_gutenberg_course' ),
+		LP_LESSON_CPT   => LP_Settings::instance()->get( 'enable_gutenberg_lesson' ),
+		LP_QUIZ_CPT     => LP_Settings::instance()->get( 'enable_gutenberg_quiz' ),
+		LP_QUESTION_CPT => LP_Settings::instance()->get( 'enable_gutenberg_question' ),
 	);
 
 	foreach ( $post_types as $key => $pt ) {
@@ -209,32 +209,16 @@ function learn_press_include( $file, $folder = 'inc', $include_once = true ) {
  * @return mixed
  */
 function learn_press_get_ip() {
-	// Just get the headers if we can or else use the SERVER global
-	if ( function_exists( 'apache_request_headers' ) ) {
-		$headers = apache_request_headers();
-	} else {
-		$headers = $_SERVER;
+	if ( isset( $_SERVER['HTTP_X_REAL_IP'] ) ) {
+		return sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) );
+	} elseif ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+		// Proxy servers can send through this header like this: X-Forwarded-For: client1, proxy1, proxy2
+		// Make sure we always only send through the first IP in the list which should always be the client IP.
+		return (string) rest_is_ip_address( trim( current( preg_split( '/,/', sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) ) ) ) );
+	} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+		return sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
 	}
-	// Get the forwarded IP if it exists
-	if ( array_key_exists( 'X-Forwarded-For', $headers ) &&
-		 (
-			 filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-			 filter_var( $headers['X-Forwarded-For'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-	) {
-		$the_ip = $headers['X-Forwarded-For'];
-	} elseif (
-		array_key_exists( 'HTTP_X_FORWARDED_FOR', $headers ) &&
-		(
-			filter_var( $headers['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-			filter_var( $headers['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 )
-		)
-	) {
-		$the_ip = $headers['HTTP_X_FORWARDED_FOR'];
-	} else {
-		$the_ip = $_SERVER['REMOTE_ADDR'];
-	}
-
-	return esc_sql( $the_ip );
+	return '';
 }
 
 /**
@@ -242,8 +226,8 @@ function learn_press_get_ip() {
  *
  * @return string
  */
-function learn_press_get_user_agent() {
-	return isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
+function learn_press_get_user_agent(): string {
+	return LP_Helper::sanitize_params_submitted( $_SERVER['HTTP_USER_AGENT'] ?? '' );
 }
 
 /**
@@ -316,7 +300,7 @@ function learn_press_get_current_url() {
 	static $current_url;
 
 	if ( ! $current_url ) {
-		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
+		$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 
 		if ( ! preg_match( '!^https?!', $url ) ) {
 			$siteurl    = trailingslashit( get_home_url() );
@@ -330,7 +314,7 @@ function learn_press_get_current_url() {
 
 			if ( $home_query ) {
 				parse_str( untrailingslashit( $home_query ), $home_query );
-				$url = add_query_arg( $home_query, $url );
+				$url = esc_url_raw( add_query_arg( $home_query, $url ) );
 			}
 
 			$segs1 = explode( '/', $siteurl );
@@ -781,7 +765,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 			wp_parse_str( $url_parts[1], $query_args );
 		}
 
-		$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
+		$pagenum_link = esc_url_raw( remove_query_arg( array_keys( $query_args ), $pagenum_link ) );
 		$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
 		$format  = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos(
@@ -1043,7 +1027,7 @@ function learn_press_currency_positions( $currency = false ) {
 		$currency = learn_press_get_currency_symbol();
 	}
 
-	$settings = LP()->settings();
+	$settings = LP_Settings::instance();
 
 	$thousands_separator = '';
 	$decimals_separator  = $settings->get( 'decimals_separator', '.' );
@@ -1496,7 +1480,7 @@ function learn_press_get_page_link( string $key ): string {
  * @return string
  */
 function learn_press_get_page_title( $key ) {
-	$page_id = LP()->settings->get( $key . '_page_id' );
+	$page_id = LP_Settings::instance()->get( $key . '_page_id' );
 	$title   = '';
 
 	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
@@ -1585,8 +1569,10 @@ function learn_press_seconds_to_weeks( int $secs = 0 ) {
 	return $result;
 }
 
-
-function learn_press_get_query_var( $var ) {
+/**
+ * @depecated since version 4.1.6.6
+ */
+/*function learn_press_get_query_var( $var ) {
 	global $wp_query;
 
 	$return = null;
@@ -1597,7 +1583,7 @@ function learn_press_get_query_var( $var ) {
 	}
 
 	return apply_filters( 'learn_press_query_var', $return, $var );
-}
+}*/
 
 function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $course_id ) {
 	if ( '' != get_option( 'permalink_structure' ) ) {
@@ -1807,23 +1793,21 @@ function learn_press_maybe_send_json( $data, $callback = null ) {
  * @return mixed
  */
 function learn_press_get_request( $key, $default = null, $hash = null ) {
-	$return = $default;
+	$return = LP_Helper::sanitize_params_submitted( $default );
 
 	if ( $hash ) {
 		if ( ! empty( $hash[ $key ] ) ) {
-			$return = $hash[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $hash[ $key ] );
 		}
 	} else {
 		if ( ! empty( $_POST[ $key ] ) ) {
-			$return = $_POST[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $_POST[ $key ] );
 		} elseif ( ! empty( $_GET[ $key ] ) ) {
-			$return = $_GET[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $_GET[ $key ] );
 		} elseif ( ! empty( $_REQUEST[ $key ] ) ) {
-			$return = $_REQUEST[ $key ];
+			$return = LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] );
 		}
 	}
-
-	$return = LP_Helper::sanitize_params_submitted( $return );
 
 	return $return;
 }
@@ -2010,7 +1994,7 @@ function learn_press_get_login_url( $redirect = null ) {
 	$url          = wp_login_url( $redirect );
 	$profile_page = learn_press_get_page_link( 'profile' );
 
-	if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && $profile_page ) {
+	if ( 'yes' === LP_Settings::instance()->get( 'enable_login_profile' ) && $profile_page ) {
 		$parse_url = parse_url( $url );
 		$url       = $profile_page . ( ! empty( $parse_url['query'] ) ? '?' . $parse_url['query'] : '' );
 	}
@@ -2045,10 +2029,10 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 		$url = trailingslashit( $url ) . ( $name ? $name . '/' : '' ) . $value . $query_string;
 
 	} else {
-		$url = add_query_arg( $name, $value, $url );
+		$url = esc_url_raw( add_query_arg( $name, $value, $url ) );
 	}
 
-	return apply_filters( 'learn_press_get_endpoint_url', esc_url( $url ), $name, $value, $url );
+	return apply_filters( 'learn_press_get_endpoint_url', esc_url_raw( $url ), $name, $value, $url );
 }
 
 /**
@@ -2217,14 +2201,14 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	$current = '';
 
 	if ( ! empty( $_REQUEST['tab'] ) ) {
-		$current = $_REQUEST['tab'];
+		$current = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] );
 	} elseif ( ! empty( $wp_query->query_vars['tab'] ) ) {
 		$current = $wp_query->query_vars['tab'];
 	} elseif ( ! empty( $wp->query_vars['view'] ) ) {
 		$current = $wp->query_vars['view'];
 	} else {
-		if ( $default && $tabs = learn_press_get_user_profile_tabs() ) {
-
+		$tabs = learn_press_get_user_profile_tabs();
+		if ( $default && $tabs ) {
 			// Fixed for array_keys does not work with ArrayAccess instance
 			if ( $tabs instanceof LP_Profile_Tabs ) {
 				$tabs = $tabs->tabs();
@@ -2555,8 +2539,8 @@ function learn_press_get_current_time() {
 
 function learn_press_get_requested_post_type() {
 	global $pagenow;
-	if ( $pagenow == 'post-new.php' && ! empty( $_GET['post_type'] ) ) {
-		$post_type = $_REQUEST['post_type'];
+	if ( $pagenow == 'post-new.php' && ! empty( $_REQUEST['post_type'] ) ) {
+		$post_type = LP_Helper::sanitize_params_submitted( $_REQUEST['post_type'] );
 	} else {
 		$post_id   = learn_press_get_post();
 		$post_type = learn_press_get_post_type( $post_id );
@@ -2638,7 +2622,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 	if ( get_option( 'comment_registration' ) && ! is_user_logged_in() ) {
 		$link = sprintf(
 			'<a rel="nofollow" class="comment-reply-login" href="%s">%s</a>',
-			esc_url( wp_login_url( get_permalink() ) ),
+			esc_url_raw( wp_login_url( get_permalink() ) ),
 			$args['login_text']
 		);
 	} elseif ( $course_item ) {
@@ -2652,7 +2636,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 
 		$link = sprintf(
 			"<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
-			esc_url(
+			esc_url_raw(
 				add_query_arg(
 					array(
 						'replytocom' => $comment->comment_ID,
@@ -3424,12 +3408,12 @@ function learn_press_date_diff( $from, $to ) {
 
 function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 	if ( $namespace ) {
-		$cookie = ! empty( $_COOKIE[ $namespace ] ) ? (array) json_decode( stripslashes( $_COOKIE[ $namespace ] ) ) : array();
+		$cookie = ! empty( $_COOKIE[ $namespace ] ) ? (array) json_decode( LP_Helper::sanitize_params_submitted( stripslashes( $_COOKIE[ $namespace ] ), 'html' ) ) : array();
 	} else {
 		$cookie = $_COOKIE;
 	}
 
-	return isset( $cookie[ $name ] ) ? $cookie[ $name ] : null;
+	return $cookie[ $name ] ?? null;
 }
 
 /**

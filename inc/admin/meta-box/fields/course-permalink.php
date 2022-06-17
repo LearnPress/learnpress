@@ -1,7 +1,7 @@
 <?php
 flush_rewrite_rules();
 
-$settings = LP()->settings;
+$settings = LP_Settings::instance();
 global $wp_post_types;
 
 if ( ! empty( $wp_post_types[ LP_COURSE_CPT ] ) ) {

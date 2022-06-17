@@ -119,13 +119,17 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				add_post_meta( $post_id, $this->id, $level_id, false );
 			}
 		} else {
-			$multilple = ! empty( $this->extra['multiple'] ) ? true : false;
-
-			if ( ! isset( $_POST[ $this->id ] ) && ! $multilple ) {
+			if ( ! isset( $_POST[ $this->id ] ) ) {
 				return;
 			}
 
-			$value = ! empty( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
+			$value = ! empty( $_POST[ $this->id ] ) ? sanitize_text_field( wp_unslash( $_POST[ $this->id ] ) ) : '';
+
+			$multilple = ! empty( $this->extra['multiple'] ) ? true : false;
+
+			if ( $multilple ) {
+				$value = ! empty( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
+			}
 
 			update_post_meta( $post_id, $this->id, $value );
 		}

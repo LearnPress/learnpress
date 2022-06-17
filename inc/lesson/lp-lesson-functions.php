@@ -35,7 +35,7 @@ if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 			return $redirect;
 		}
 
-		return add_query_arg( 'content-item-only', 'yes', $_REQUEST['content-item-only-redirect'] );
+		return esc_url_raw( add_query_arg( 'content-item-only', 'yes', LP_Helper::sanitize_params_submitted( $_REQUEST['content-item-only-redirect'] ) ) );
 	}
 }
 add_filter( 'comment_post_redirect', 'learn_press_get_only_content_permalink', 10, 2 );
@@ -43,7 +43,7 @@ add_filter( 'comment_post_redirect', 'learn_press_get_only_content_permalink', 1
 function learn_press_lesson_comment_form() {
 	global $post;
 
-	$course = LP_Global::course();
+	$course = learn_press_get_course();
 	if ( ! $course ) {
 		return;
 	}

@@ -650,7 +650,7 @@ function learn_press_footer_advertisement() {
 	}
 
 	// Disable shuffle themes for 3 days
-	$shuffle = LP()->settings()->get( 'ad_shuffle_themes' );
+	$shuffle = LP_Settings::instance()->get( 'ad_shuffle_themes' );
 
 	if ( ! $shuffle ) {
 		if ( wp_next_scheduled( 'learn-press/schedule-enable-shuffle-themes' ) === false ) {
@@ -681,13 +681,13 @@ function learn_press_footer_advertisement() {
 
 			<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="slide-item">
 				<div class="slide-thumbnail">
-					<a href="<?php echo esc_url( $url ); ?>">
-						<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ); ?>"/>
+					<a href="<?php echo esc_url_raw( $url ); ?>">
+						<img src="<?php echo esc_url_raw( $theme['previews']['landscape_preview']['landscape_url'] ); ?>"/>
 					</a>
 				</div>
 
 				<div class="slide-detail">
-					<h2><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $theme['name'] ); ?></a></h2>
+					<h2><a href="<?php echo esc_url_raw( $url ); ?>"><?php echo esc_html( $theme['name'] ); ?></a></h2>
 					<p class="slide-description description-full">
 						<?php echo wp_kses_post( $full_description ); ?>
 					</p>
@@ -697,9 +697,9 @@ function learn_press_footer_advertisement() {
 					</p>
 
 					<p class="slide-controls">
-						<a href="<?php echo esc_url( $url ); ?>" class="button button-primary"
+						<a href="<?php echo esc_url_raw( $url ); ?>" class="button button-primary"
 						   target="_blank"><?php esc_html_e( 'Get it now', 'learnpress' ); ?></a>
-						<a href="<?php echo esc_url( $url_demo ); ?>" class="button"
+						<a href="<?php echo esc_url_raw( $url_demo ); ?>" class="button"
 						   target="_blank"><?php esc_html_e( 'View Demo', 'learnpress' ); ?></a>
 					</p>
 				</div>
@@ -1661,7 +1661,7 @@ function _learn_press_reset_course_data() {
 
 	learn_press_reset_course_data( intval( $_REQUEST['reset-course-data'] ) );
 
-	wp_redirect( remove_query_arg( 'reset-course-data' ) );
+	wp_redirect( esc_url_raw( remove_query_arg( 'reset-course-data' ) ) );
 }
 
 add_action( 'init', '_learn_press_reset_course_data' );

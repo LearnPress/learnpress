@@ -19,7 +19,7 @@ class LP_Jwt_Auth {
 		$this->version = 'v1';
 
 		// Is enable rest api?
-		// if ( LP()->settings()->get( 'enable_jwt_rest_api' ) !== 'yes' ) {
+		// if ( LP_Settings::instance()->get( 'enable_jwt_rest_api' ) !== 'yes' ) {
 		// return;
 		// }
 
@@ -62,7 +62,6 @@ class LP_Jwt_Auth {
 		add_filter( 'rest_api_init', array( $public, 'add_cors_support' ) );
 		add_filter( 'rest_pre_dispatch', array( $public, 'rest_pre_dispatch' ), 10, 2 );
 		add_filter( 'determine_current_user', array( $public, 'determine_current_user' ), 30 );
-		add_filter( 'template_redirect', array( $public, 'auto_login' ) );
 
 		// Rest API
 		add_action( 'init', array( $this, 'load_rest_api' ) );

@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, hungkv, manhnl, tunnhn, phonglq.foobl
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 4.1.6.5
+Stable tag: 4.1.6.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -202,6 +202,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.1.6.6 (2022-06-13) =
+~ Fixed: security.
+~ Added: option "Enable loading ajax Courses on the Archive Course page".
+~ Added: option "No Page load Courses Ajax".
 
 = 4.1.6.5 (2022-05-16) =
 ~ Fixed: error with block theme 2022.

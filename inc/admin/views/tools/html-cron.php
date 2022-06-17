@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) or die();
 			<input type="text" class="widefat" value="<?php echo esc_attr( learn_press_get_cron_url() ); ?>">
 			<p class="description"><?php esc_html_e( 'Use this url to setup cronjob on your server.', 'learnpress' ); ?></p>
 			<br/>
-			<a class="button" href="<?php echo wp_nonce_url( add_query_arg( 'generate-cron-url', '1' ) ); ?>"><?php esc_html_e( 'Generate new url', 'learnpress' ); ?></a>
+			<a class="button" href="<?php echo wp_nonce_url( esc_url_raw( add_query_arg( 'generate-cron-url', '1' ) ) ); ?>"><?php esc_html_e( 'Generate new url', 'learnpress' ); ?></a>
 		</td>
 	</tr>
 

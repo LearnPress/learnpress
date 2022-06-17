@@ -20,7 +20,7 @@ if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
 <div id="popup-header">
 	<div class="popup-header__inner">
 		<h2 class="course-title">
-			<a href="<?php echo esc_url( $course->get_permalink() ); ?>"><?php echo $course->get_title(); ?></a>
+			<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>"><?php echo $course->get_title(); ?></a>
 		</h2>
 
 		<?php if ( $user->has_enrolled_or_finished( $course->get_id() ) ) : ?>

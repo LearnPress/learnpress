@@ -11,8 +11,12 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$user                    = LP_Global::user();
-$course                  = LP_Global::course();
+$user   = learn_press_get_current_user();
+$course = learn_press_get_course();
+if ( ! $course ) {
+	return;
+}
+
 $course_item             = LP_Global::course_item();
 $can_view_content_course = $user->can_view_content_course( $course->get_id() );
 $can_view_content_item   = $user->can_view_item( $course_item->get_id(), $can_view_content_course );

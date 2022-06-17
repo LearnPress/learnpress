@@ -305,7 +305,7 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
-	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get(
+	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP_Settings::instance()->get(
 		'profile_endpoints.profile-orders',
 		'profile-orders'
 	) ) {
@@ -363,7 +363,7 @@ function learn_press_get_profile_user() {
  * Add instructor registration button to register page and admin bar
  */
 function learn_press_user_become_teacher_registration_form() {
-	if ( LP()->settings->get( 'instructor_registration' ) != 'yes' ) {
+	if ( LP_Settings::instance()->get( 'instructor_registration' ) != 'yes' ) {
 		return;
 	}
 	?>
@@ -846,7 +846,7 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 				$width    = $size['width'];
 			}
 
-			$avatar = '<img alt="' . esc_attr( $user->get_data( 'display_name' ) ) . '" src="' . esc_url( $profile_picture_src ) . '" class="avatar avatar-' . $img_size . ' photo" height="' . $height . '" width="' . $width . '" />';
+			$avatar = '<img alt="' . esc_attr( $user->get_data( 'display_name' ) ) . '" src="' . esc_url_raw( $profile_picture_src ) . '" class="avatar avatar-' . $img_size . ' photo" height="' . $height . '" width="' . $width . '" />';
 		}
 
 		return $avatar;
@@ -893,7 +893,7 @@ add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_p
 function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	// Redirect to login page if user is not logged in
 	if ( ! is_user_logged_in() ) {
-		$return_url = add_query_arg( $_POST, get_the_permalink( $course_id ) );
+		$return_url = esc_url_raw( add_query_arg( $_POST, get_the_permalink( $course_id ) ) );
 		$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
 		$redirect   = apply_filters(
 			'learn_press_purchase_course_login_redirect',
@@ -959,8 +959,9 @@ function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 }
 
 function learn_press_get_profile_endpoints() {
-	$endpoints = (array) LP()->settings->get( 'profile_endpoints' );
-	if ( $tabs = LP_Profile::instance()->get_tabs() ) {
+	$endpoints = (array) LP_Settings::instance()->get( 'profile_endpoints' );
+	$tabs      = LP_Profile::instance()->get_tabs();
+	if ( $tabs ) {
 		foreach ( $tabs as $slug => $info ) {
 			if ( empty( $endpoints[ $slug ] ) ) {
 				$endpoints[ $slug ] = $slug;
@@ -1405,7 +1406,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
 			$url = trailingslashit( $profile_link . join( '/', array_values( $args ) ) );
 		} else {
-			$url = add_query_arg( $args, $profile_link );
+			$url = esc_url_raw( add_query_arg( $args, $profile_link ) );
 		}
 	} else {
 		$url = get_author_posts_url( $user_id );
@@ -1857,15 +1858,15 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 
 			$with_true_or_false = ( $checked || ( $quizStatus == 'completed' && $args['show_correct_review'] ) );
 
-			if ( $question->is_support( 'answer-options' ) ) {
-				$questionData['options'] = learn_press_get_question_options_for_js(
-					$question,
-					array(
-						'include_is_true' => $with_true_or_false,
-						'answer'          => $answered[ $id ]['answered'] ?? '',
-					)
-				);
-			}
+			// if ( $question->is_support( 'answer-options' ) ) {
+			$questionData['options'] = learn_press_get_question_options_for_js(
+				$question,
+				array(
+					'include_is_true' => $with_true_or_false,
+					'answer'          => $answered[ $id ]['answered'] ?? '',
+				)
+			);
+			// }
 
 			$questions[] = $questionData;
 		}
@@ -1967,7 +1968,7 @@ function learn_press_social_profiles() {
 }
 
 function lp_add_default_fields( $fields ) {
-	$first_name = LP()->settings()->get( 'enable_register_first_name' );
+	$first_name = LP_Settings::instance()->get( 'enable_register_first_name' );
 
 	if ( $first_name === 'yes' ) {
 		?>
@@ -1980,7 +1981,7 @@ function lp_add_default_fields( $fields ) {
 		<?php
 	}
 
-	$last_name = LP()->settings()->get( 'enable_register_last_name' );
+	$last_name = LP_Settings::instance()->get( 'enable_register_last_name' );
 
 	if ( $last_name === 'yes' ) {
 		?>
@@ -1993,7 +1994,7 @@ function lp_add_default_fields( $fields ) {
 		<?php
 	}
 
-	$display_name = LP()->settings()->get( 'enable_register_display_name' );
+	$display_name = LP_Settings::instance()->get( 'enable_register_display_name' );
 
 	if ( $display_name === 'yes' ) {
 		?>
@@ -2011,7 +2012,7 @@ add_filter( 'learn-press/after-form-register-fields', 'lp_add_default_fields' );
 
 function lp_custom_register_fields_display() {
 	?>
-	<?php $custom_fields = LP()->settings()->get( 'register_profile_fields' ); ?>
+	<?php $custom_fields = LP_Settings::instance()->get( 'register_profile_fields' ); ?>
 
 	<?php if ( $custom_fields ) : ?>
 		<?php foreach ( $custom_fields as $custom_field ) : ?>
@@ -2111,7 +2112,7 @@ function lp_get_user_custom_register_fields( $user_id = 0 ) {
 }
 
 function lp_get_user_custom_fields() {
-	$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+	$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
 
 	$output = array();
 
@@ -2242,32 +2243,3 @@ function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' )
 	);
 
 }
-
-/*
-add_action(
-	'admin_init',
-	function() {
-		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
-
-		$custom_fields = LP_Helper::sanitize_params_submitted( $custom_fields );
-
-		if ( ! empty( $custom_fields ) ) {
-			$output = array();
-
-			foreach ( $custom_fields as $key => $field ) {
-				if ( ! isset( $field['id'] ) ) {
-					$output[ $key ] = array(
-						'id'       => $field['name'],
-						'name'     => $field['name'] ?? '',
-						'type'     => $field['type'] ?? '',
-						'required' => $field['required'] ?? '',
-					);
-				} else {
-					$output[ $key ] = $field;
-				}
-			}
-
-			update_option( 'learn_press_register_profile_fields', $output );
-		}
-	}
-);*/

@@ -132,8 +132,8 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 		$question = $quiz->get_viewing_question();
 
 		if ( $question ) {
-			$course      = LP_Global::course();
-			$user        = LP_Global::user();
+			$course      = learn_press_get_course();
+			$user        = learn_press_get_current_user();
 			$answered    = false;
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
@@ -284,10 +284,10 @@ add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
 		static $output = array();
 
 		if ( ! $output ) {
-			$course = LP_Global::course();
+			$course = learn_press_get_course();
 
 			if ( $course && $course->get_id() ) {
-				$user        = LP_Global::user();
+				$user        = learn_press_get_current_user();
 				$course_data = $user->get_course_data( $course->get_id() );
 
 				if ( $course_data ) {
@@ -309,10 +309,10 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 		}
 
 		$quiz   = LP_Global::course_item_quiz();
-		$course = LP_Global::course();
+		$course = learn_press_get_course();
 
 		if ( $quiz && $course ) {
-			$user      = LP_Global::user();
+			$user      = learn_press_get_current_user();
 			$course_id = $course->get_id();
 			$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
 
@@ -1236,7 +1236,7 @@ function learn_press_get_course_redirect( $link ) {
  * @param LP_Quiz $item
  */
 function learn_press_quiz_meta_final( $item ) {
-	$course = LP_Global::course();
+	$course = learn_press_get_course();
 
 	if ( ! $course->is_final_quiz( $item->get_id() ) ) {
 		return;
@@ -1332,7 +1332,7 @@ add_filter( 'body_class', 'learn_press_body_classes', 10 );
  */
 function learn_press_is_learning_course( $course_id = 0 ) {
 	$user        = learn_press_get_current_user();
-	$course      = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
+	$course      = learn_press_get_course( $course_id );
 	$is_learning = false;
 	$has_status  = false;
 
@@ -1360,8 +1360,8 @@ function learn_press_is_learning_course( $course_id = 0 ) {
  */
 if ( ! function_exists( 'learn_press_print_custom_styles' ) ) {
 	function learn_press_print_custom_styles() {
-		$primary_color   = LP()->settings()->get( 'primary_color' );
-		$secondary_color = LP()->settings()->get( 'secondary_color' );
+		$primary_color   = LP_Settings::instance()->get( 'primary_color' );
+		$secondary_color = LP_Settings::instance()->get( 'secondary_color' );
 		?>
 
 		<style id="learn-press-custom-css">
@@ -1485,7 +1485,7 @@ add_filter(
 	function ( $html, $item_id, $course_id ) {
 		$user = learn_press_get_current_user();
 
-		$course_blocking = LP()->settings()->get( 'course_blocking' );
+		$course_blocking = LP_Settings::instance()->get( 'course_blocking' );
 		$course_data     = $user->get_course_data( $course_id );
 		// $end_time        = $course_data->get_end_time_gmt();3
 		// $expired_time    = $course_data->get_expiration_time_gmt();

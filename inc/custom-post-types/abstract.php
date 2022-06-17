@@ -184,16 +184,7 @@ abstract class LP_Abstract_Post_Type {
 			return;
 		}
 
-		// prevent loop action
-		// remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
-		// $func_args = func_get_args();
-
-		// var_dump($post_id, $post, $func_args);die;
-
-		// $this->_call_method( 'save', $func_args );
 		$this->save( $post_id, $post );
-		// $this->_flush_cache();
-		// add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 	}
 
 	/**
@@ -265,7 +256,7 @@ abstract class LP_Abstract_Post_Type {
 			'author'    => get_the_author_meta( 'ID' ),
 		);
 
-		$author_link = add_query_arg( $args, 'edit.php' );
+		$author_link = esc_url_raw( add_query_arg( $args, 'edit.php' ) );
 		echo sprintf( '<span class="post-author">%s<a href="%s">%s</a></span>', get_avatar( get_the_author_meta( 'ID' ), 32 ), $author_link, get_the_author() );
 	}
 
@@ -365,58 +356,6 @@ abstract class LP_Abstract_Post_Type {
 
 		return 0;
 	}
-
-	// Comment by tungnx - no see use
-	/*
-	public function maybe_remove_features() {
-		if ( ! $this->_remove_features ) {
-			return;
-		}
-
-		foreach ( $this->_remove_features as $feature ) {
-			remove_post_type_support( $this->_post_type, $feature );
-		}
-	}*/
-
-	// Comment by tungnx - no see use
-	/*
-	public function remove_feature( $feature ) {
-		if ( is_array( $feature ) ) {
-			foreach ( $feature as $fea ) {
-				$this->remove_feature( $fea );
-			}
-		} else {
-			$this->_remove_features[] = $feature;
-		}
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function update_default_meta() {
-		global $wp_query, $post;
-
-		if ( ! $post ) {
-			return;
-		}
-
-		if ( empty( $post->post_type ) ) {
-			return;
-		}
-
-		if ( $post->post_type != $this->_post_type ) {
-			return;
-		}
-
-		if ( empty( $this->_default_metas ) ) {
-			return;
-		}
-
-		foreach ( $this->_default_metas as $k => $v ) {
-			if ( ! metadata_exists( 'post', $post->ID, $k ) ) {
-				update_post_meta( $post->ID, $k, $v );
-			}
-		}
-	}*/
 
 	public function remove_auto_save_script() {
 		global $post;
@@ -746,7 +685,7 @@ abstract class LP_Abstract_Post_Type {
 		$courses = learn_press_get_item_courses( $post_id );
 		if ( $courses ) {
 			foreach ( $courses as $course ) {
-				echo '<div><a href="' . esc_url( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+				echo '<div><a href="' . esc_url_raw( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 				echo '<div class="row-actions">';
 				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
 				echo '&nbsp;|&nbsp;';
@@ -756,12 +695,7 @@ abstract class LP_Abstract_Post_Type {
 					echo '&nbsp;|&nbsp;';
 					printf(
 						'<a href="%s">%s</a>',
-						remove_query_arg(
-							array(
-								'course',
-								'orderby',
-							)
-						),
+						esc_url_raw( remove_query_arg( array( 'course', 'orderby' ) ) ),
 						__( 'Remove Filter', 'learnpress' )
 					);
 				}
@@ -840,108 +774,6 @@ abstract class LP_Abstract_Post_Type {
 		return $actions;
 	}
 
-	/**
-	 * Those functions should be extended from child class to override
-	 *
-	 * @return mixed
-	 * @editor tungnx
-	 * @reason not use
-	 */
-	/*
-	public function register_post_type() {
-		return $this;
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function admin_params() {
-		return $this;
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function admin_scripts() {
-		return $this;
-	}*/
-
-	// Comment by tungnx - not use
-	/*
-	public function admin_styles() {
-		return $this;
-	}*/
-
-	// Comment by tungnx
-	/*
-	public function print_js_template() {
-		return $this;
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @reason comment by write difficult for another developer, difficult development
-	 * @since modify 4.0.9
-	 */
-	/*
-	public function add_map_method( $origin, $replace, $single = false ) {
-		if ( $single ) {
-			$this->_map_methods[ $origin ] = $replace;
-		} else {
-			if ( empty( $this->_map_methods[ $origin ] ) ) {
-				$this->_map_methods[ $origin ] = array( $replace );
-			} else {
-				$this->_map_methods[ $origin ][] = $replace;
-			}
-		}
-
-		return $this;
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @reason comment by write difficult for another developer, difficult development
-	 * @param $messages
-	 * @return array|mixed
-	 */
-	/*
-	private function _get_map_method( $origin ) {
-		if ( ! empty( $this->_map_methods[ $origin ] ) ) {
-			if ( is_array( $this->_map_methods[ $origin ] ) ) {
-				$callback = array();
-				foreach ( $this->_map_methods[ $origin ] as $method ) {
-					$callback[] = array( $this, $method );
-				}
-			} else {
-				$callback = array( $this, $this->_map_methods[ $origin ] );
-			}
-		} else {
-			$callback = array( $this, $origin );
-		}
-
-		return $callback;
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @reason comment by write difficult for another developer, difficult development
-	 * @param $messages
-	 * @return array|mixed
-	 */
-	/*
-	private function _call_method( $name, $args = false ) {
-		$callbacks = $this->_get_map_method( $name );
-		if ( is_array( $callbacks[0] ) ) {
-			$return = array();
-			foreach ( $callbacks as $callback ) {
-				$_return = call_user_func_array( $callback, $args );
-				$return  = array_merge( $return, (array) $_return );
-			}
-		} else {
-			$return = call_user_func_array( $callbacks, $args );
-		}
-
-		return $return;
-	}*/
-
 	public function updated_messages( $messages ) {
 		$post             = get_post();
 		$post_type        = get_post_type( $post );
@@ -971,7 +803,7 @@ abstract class LP_Abstract_Post_Type {
 		if ( $post_type_object->publicly_queryable ) {
 			$permalink = get_permalink( $post->ID );
 
-			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url_raw( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			switch ( $this->_post_type ) {
 				case LP_LESSON_CPT:
 				case LP_QUIZ_CPT:
@@ -980,7 +812,7 @@ abstract class LP_Abstract_Post_Type {
 				case LP_ORDER_CPT:
 					$order     = learn_press_get_order( $post->ID );
 					$view_link = $order->get_view_order_url();
-					$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $view_link ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
+					$view_link = sprintf( ' <a href="%s">%s</a>', esc_url_raw( $view_link ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
 					break;
 				case LP_QUESTION_CPT:
 					$view_link = '';
@@ -992,71 +824,11 @@ abstract class LP_Abstract_Post_Type {
 
 			$preview_permalink = learn_press_get_preview_url( $post->ID );
 
-			$preview_link                       = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$preview_link                       = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url_raw( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			$messages[ $this->_post_type ][8]  .= $preview_link;
 			$messages[ $this->_post_type ][10] .= $preview_link;
 		}
 
 		return $messages;
 	}
-
-	// Deprecated functions
-	/*
-	private function _get_orderby() {
-		_deprecated_function( __FUNCTION__, '4.1.0' );
-	}
-	public function _get_search(): string {
-		return LP_Request::get( 's' );
-	}
-	protected function _get_order(): string {
-
-	}*/
-
-	// End deprecated
 }
-
-// Comment by tungnx - not use
-// class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
-// **
-// * Get string for searching
-// *
-// * @return string
-// */
-// protected function _get_search() {
-// return LP_Request::get( 's' );
-// }
-//
-// **
-// * @return string
-// */
-// protected function _get_order() {
-// return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
-// }
-//
-// **
-// * @return mixed
-// */
-// protected function _get_orderby() {
-// return LP_Request::get( 'orderby' );
-// }
-//
-// **
-// * Return TRUE if this post-type is support Gutenberg editor.
-// *
-// * @since 3.3.0
-// *
-// * @return bool
-// */
-// public function is_support_gutenberg() {
-// $post_types = array(
-// LP_COURSE_CPT   => LP()->settings()->get( 'enable_gutenberg_course' ),
-// LP_LESSON_CPT   => LP()->settings()->get( 'enable_gutenberg_lesson' ),
-// LP_QUIZ_CPT     => LP()->settings()->get( 'enable_gutenberg_quiz' ),
-// LP_QUESTION_CPT => LP()->settings()->get( 'enable_gutenberg_question' ),
-// );
-//
-// $support = $post_types[ $this->_post_type ] === 'yes' ? true : false;
-//
-// return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
-// }
-// }

@@ -1,25 +1,25 @@
 <?php
-die(__FILE__);
+die( __FILE__ );
 
-class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
+class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal {
 	public function get_request_url( $order_id ) {
 		$user    = learn_press_get_current_user();
-		$sandbox = LP()->settings->get( 'paypal_sandbox' ) == 'yes';
+		$sandbox = LP_Settings::instance()->get( 'paypal_sandbox' ) == 'yes';
 
 		$payment_form = '';
 
 		$paypal_api_url     = $sandbox ? $this->paypal_nvp_api_sandbox_url : $this->paypal_nvp_api_live_url;// PAYPAL_NVP_API_SANDBOX_URL : PAYPAL_NVP_API_LIVE_URL;
 		$paypal_payment_url = $sandbox ? $this->paypal_payment_sandbox_url : $this->paypal_payment_sandbox_url;//'https://www.sandbox.paypal.com/cgi-bin/webscr' : 'https://www.paypal.com/cgi-bin/webscr';
 
-		$paypal_email         = $sandbox ? LP()->settings->get( 'paypal_sandbox_email' ) : LP()->settings->get( 'paypal_email' );
-		$paypal_api_username  = $sandbox ? LP()->settings->get( 'paypal_sandbox_api_username' ) : LP()->settings->get( 'paypal_api_username' );
-		$paypal_api_password  = $sandbox ? LP()->settings->get( 'paypal_sandbox_api_password' ) : LP()->settings->get( 'paypal_api_password' );
-		$paypal_api_signature = $sandbox ? LP()->settings->get( 'paypal_sandbox_api_signature' ) : LP()->settings->get( 'paypal_api_signature' );
+		$paypal_email         = $sandbox ? LP_Settings::instance()->get( 'paypal_sandbox_email' ) : LP_Settings::instance()->get( 'paypal_email' );
+		$paypal_api_username  = $sandbox ? LP_Settings::instance()->get( 'paypal_sandbox_api_username' ) : LP_Settings::instance()->get( 'paypal_api_username' );
+		$paypal_api_password  = $sandbox ? LP_Settings::instance()->get( 'paypal_sandbox_api_password' ) : LP_Settings::instance()->get( 'paypal_api_password' );
+		$paypal_api_signature = $sandbox ? LP_Settings::instance()->get( 'paypal_sandbox_api_signature' ) : LP_Settings::instance()->get( 'paypal_api_signature' );
 
-		if ( !empty( $paypal_email )
-			&& !empty( $paypal_api_username )
-			&& !empty( $paypal_api_password )
-			&& !empty( $paypal_api_signature )
+		if ( ! empty( $paypal_email )
+			&& ! empty( $paypal_api_username )
+			&& ! empty( $paypal_api_password )
+			&& ! empty( $paypal_api_signature )
 		) {
 
 			remove_filter( 'the_title', 'wptexturize' ); // remove this because it screws up the product titles in PayPal
@@ -38,11 +38,19 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 			$button_request['BUTTONTYPE'] = 'BUYNOW';
 			//$L_BUTTONVARS[]               = 'amount=' . learn_press_get_cart_total();
 			//$L_BUTTONVARS[]               = 'quantity=1';
-			$nonce                        = wp_create_nonce( 'learn-press-paypal-nonce' );
+			$nonce = wp_create_nonce( 'learn-press-paypal-nonce' );
 
 			$L_BUTTONVARS[] = 'business=' . $paypal_email;
 			//$L_BUTTONVARS[] = 'item_name=' . learn_press_get_cart_description();
-			$L_BUTTONVARS[] = 'return=' . add_query_arg( array( 'learn-press-transaction-method' => 'paypal-standard-secure', 'paypal-nonce' => $nonce ), learn_press_get_cart_course_url() );
+			$L_BUTTONVARS[] = 'return=' . esc_url_raw(
+				add_query_arg(
+					array(
+						'learn-press-transaction-method' => 'paypal-standard-secure',
+						'paypal-nonce'                   => $nonce,
+					),
+					learn_press_get_cart_course_url()
+				)
+			);
 			$L_BUTTONVARS[] = 'currency_code=' . learn_press_get_currency();//$general_settings['default-currency'];
 			$L_BUTTONVARS[] = 'notify_url=' . learn_press_get_web_hook( 'paypal-standard-secure' );
 			$L_BUTTONVARS[] = 'no_note=1';
@@ -53,13 +61,13 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 			$L_BUTTONVARS[] = 'custom=' . $temp_id;
 			$L_BUTTONVARS[] = 'no_shipping=1';
 
-			foreach($this->get_item_lines() as $k => $v){
+			foreach ( $this->get_item_lines() as $k => $v ) {
 				$L_BUTTONVARS[] = "{$k}={$v}";
 			}
 			$L_BUTTONVARS = apply_filters( 'learn_press_paypal_standard_secure_button_vars', $L_BUTTONVARS );
 			$count        = 0;
 			foreach ( $L_BUTTONVARS as $L_BUTTONVAR ) {
-				$button_request['L_BUTTONVAR' . $count] = $L_BUTTONVAR;
+				$button_request[ 'L_BUTTONVAR' . $count ] = $L_BUTTONVAR;
 				$count ++;
 			}
 
@@ -67,11 +75,12 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 
 			$response = wp_remote_post( $paypal_api_url, array( 'body' => $button_request ) );
 
-			if ( !is_wp_error( $response ) ) {
+			if ( ! is_wp_error( $response ) ) {
 				parse_str( wp_remote_retrieve_body( $response ), $response_array );
-				if ( !empty( $response_array['ACK'] ) && 'Success' === $response_array['ACK'] ) {
-					if ( !empty( $response_array['WEBSITECODE'] ) )
+				if ( ! empty( $response_array['ACK'] ) && 'Success' === $response_array['ACK'] ) {
+					if ( ! empty( $response_array['WEBSITECODE'] ) ) {
 						$payment_form = str_replace( array( "\r\n", "\r", "\n" ), '', stripslashes( $response_array['WEBSITECODE'] ) );
+					}
 				}
 			} else {
 				print_r( $response );

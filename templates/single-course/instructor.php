@@ -15,7 +15,10 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
+$course = learn_press_get_course();
+if ( ! $course ) {
+	return;
+}
 ?>
 
 <div class="course-author">
