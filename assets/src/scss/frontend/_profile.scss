@@ -332,7 +332,7 @@ body {
 						display: none;
 					}
 				}
-			} 	
+			}
 
 			li {
 
@@ -357,7 +357,7 @@ body {
 
 				&.active,
 				&:hover {
-					
+
 
 					> a {
 						color: #fff;
@@ -527,7 +527,7 @@ body {
 					clear: both;
 					content: "";
 				}
-				
+
 			}
 
 			.learn-press-tabs__tab {
@@ -543,7 +543,7 @@ body {
 				overflow-x: scroll;
 			}
 		}
-		
+
 		.course-categories, .course-instructor {
 			margin-bottom: 14px;
 		}
@@ -566,7 +566,7 @@ body {
 			}
 		}
 
-		
+
 	}
 
 	ul.learn-press-courses {
@@ -615,7 +615,7 @@ body {
 			min-width: 200px;
 			max-width: 270px;
 			margin: 0 15px 40px 15px;
-			padding: 27px 25px 15px 25px;
+			padding: 15px 20px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
 			background: #f9fafc;
@@ -623,7 +623,7 @@ body {
 			@media (max-width: 990px) {
 				width: 45%;
 			}
-	
+
 			@media (max-width: 767px) {
 				width: 100%;
 				margin: 0 15px 15px;
@@ -672,7 +672,7 @@ body {
 			font-weight: 500;
 			line-height: 1;
 		}
-		
+
 	}
 
 	.profile-courses {
