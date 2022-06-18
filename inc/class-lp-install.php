@@ -544,7 +544,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * @return bool
 		 */
 		public function tables_install_done(): bool {
-			return 'yes' === get_option( 'learn_press_check_tables', 'no' );
+			$install_done = get_option( 'learn_press_check_tables', 'no' );
+			if ( is_multisite() && 'yes' !== $install_done ) {
+				$this->create_tables();
+			}
+
+			return $install_done;
 		}
 	}
 }

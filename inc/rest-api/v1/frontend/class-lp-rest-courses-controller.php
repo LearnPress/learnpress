@@ -192,35 +192,49 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 					// Content items
 					ob_start();
-					$is_custom_template = false;
-					$template_path      = $request['template_path'] ?? '';
-					$args_custom        = [];
-					if ( ! empty( $request['template_path'] ) ) {
-						if ( isset( $request['args_custom'] ) ) {
-							$args_custom = json_decode( $request['args_custom'], true );
+					$template_path_item = urldecode( $request['template_path_item'] ?? '' );
+					$template_path      = urldecode( $request['template_path'] ?? '' ); // For wrapper all items, no foreach
+					$args_custom        = json_decode( wp_unslash( $request['args_custom'] ?? '' ), true );
+
+					// For custom template return all list courses no foreach
+					if ( ! empty( $template_path ) ) {
+						if ( is_array( $args_custom ) && ! empty( $args_custom ) ) {
+							extract( $args_custom );
 						}
 
-						$template_path      = urldecode( $request['template_path'] );
-						$is_custom_template = true;
-					}
-
-					// Todo: tungnx - should rewrite call template
-					foreach ( $courses as $course ) {
-						$post = get_post( $course->ID );
-						setup_postdata( $post );
-
-						if ( $is_custom_template ) {
-							if ( $args_custom ) {
-								extract( $args_custom );
+						if ( file_exists( $template_path ) ) {
+							include $template_path;
+						}
+					} else {
+						// For custom template return all list courses foreach
+						if ( ! empty( $template_path_item ) ) {
+							if ( isset( $request['args_custom'] ) ) {
+								$args_custom = json_decode( $request['args_custom'], true );
 							}
 
-							include $template_path;
-						} else {
-							learn_press_get_template_part( 'content', 'course' );
+							$template_path_item = urldecode( $template_path_item );
 						}
-					}
 
-					wp_reset_postdata();
+						// Todo: tungnx - should rewrite call template
+						foreach ( $courses as $course ) {
+							$post = get_post( $course->ID );
+							setup_postdata( $post );
+
+							if ( ! empty( $template_path_item ) ) {
+								if ( $args_custom ) {
+									extract( $args_custom );
+								}
+
+								if ( file_exists( $template_path_item ) ) {
+									include $template_path_item;
+								}
+							} else {
+								learn_press_get_template_part( 'content', 'course' );
+							}
+						}
+
+						wp_reset_postdata();
+					}
 					// End content items
 				} else {
 					LP()->template( 'course' )->no_courses_found();
