@@ -63,7 +63,6 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			$profile = LP_Global::profile();
 
 			wp_enqueue_style( 'learnpress' );
-			wp_enqueue_style( 'lp-font-awesome-5' );
 
 			ob_start();
 

@@ -1,16 +1,16 @@
 const urlCourses = lpGlobalSettings.courses_url || '';
 const urlCurrent = document.location.href;
-let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
+let filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 let skeleton;
 let skeletonClone;
 let isLoading = false;
 let firstLoad = 1;
 let elNoLoadAjaxFirst = null;
 
-if( lpGlobalSettings.is_course_archive ) {
+if ( lpGlobalSettings.is_course_archive ) {
 	const queryString = window.location.search;
 
-	if( ! queryString.length && urlCurrent.search('page') === -1 ) {
+	if ( ! queryString.length && urlCurrent.search( 'page' ) === -1 ) {
 		filterCourses = {};
 	}
 }
@@ -120,7 +120,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 
 		if ( ! firstLoad ) {
 			// Scroll to archive element
-			const optionScroll = { behavior: "smooth" };
+			const optionScroll = { behavior: 'smooth' };
 			archive.scrollIntoView( optionScroll );
 		} else {
 			firstLoad = 0;
@@ -136,7 +136,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 
 const lpArchiveSearchCourse = () => {
 	const searchForm = document.querySelectorAll( 'form.search-courses' );
-	let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
+	const filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 
 	searchForm.forEach( ( s ) => {
 		const search = s.querySelector( 'input[name="c_search"]' );
@@ -144,7 +144,7 @@ const lpArchiveSearchCourse = () => {
 		let timeOutSearch;
 
 		search.addEventListener( 'keyup', ( event ) => {
-			if( skeleton ) {
+			if ( skeleton ) {
 				skeleton.style.display = 'block';
 			}
 			event.preventDefault();
@@ -183,11 +183,12 @@ const lpArchivePaginationCourse = () => {
 		event.preventDefault();
 		event.stopPropagation();
 
-		if( skeleton ) {
+		if ( skeleton ) {
 			skeleton.style.display = 'block';
 		}
 
-		let filterCourses = JSON.parse(window.localStorage.getItem('lp_filter_courses')) || {};
+		let filterCourses = {};
+		filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 
 		const urlString = event.currentTarget.getAttribute( 'href' );
 
