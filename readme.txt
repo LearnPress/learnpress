@@ -203,6 +203,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.7 (2022-06-20) =
+~ Fixed: errors quiz when call API LP remove action 'wp_loaded'.
+~ Fixed: some minor bugs.
+~ Fixed: install tables for multiple sites.
+~ Fixed: save settings always return tab General.
+~ Fixed: layout 'select items' popup when edit course.=
+
 = 4.1.6.6 (2022-06-13) =
 ~ Fixed: security.
 ~ Added: option "Enable loading ajax Courses on the Archive Course page".
