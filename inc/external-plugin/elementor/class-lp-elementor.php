@@ -68,7 +68,7 @@ class LP_Elementor_Widgets {
 
 	public function enqueue_frontend_scripts() {
 		if ( ! wp_style_is( 'font-awesome-5-all' ) ) {
-			wp_enqueue_style( 'font-awesome-5-all', LP_PLUGIN_URL . 'src/css/vendor/font-awesome-5.min.css', array(), array() );
+			wp_enqueue_style( 'font-awesome-5-all', LP_PLUGIN_URL . 'assets/src/css/vendor/font-awesome-5.min.css', array(), array() );
 		}
 
 		if ( ! wp_style_is( 'learnpress' ) ) {
