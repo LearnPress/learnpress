@@ -232,7 +232,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'lp-become-a-teacher'  => new LP_Asset_Key(
-					self::url( self::$_folder_source . 'js/frontend/become-teacher' . self::$_min_assets . '.js' ),
+					self::url( 'js/dist/frontend/become-teacher' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'lp-utils' ),
 					array( LP_PAGE_BECOME_A_TEACHER ),
 					0,

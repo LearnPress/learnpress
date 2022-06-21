@@ -449,9 +449,10 @@ class LP_Cart {
 	 * Process action for purchase course button
 	 *
 	 * @param $course_id
+	 * @depecated 4.1.6.8
 	 */
 	public function purchase_course_handler( $course_id ) {
-
+		_deprecated_function( __FUNCTION__, '4.1.6.8' );
 		do_action( 'learn_press_before_purchase_course_handler', $course_id, $this );
 
 		if ( apply_filters( 'learn_press_purchase_single_course', true ) ) {
