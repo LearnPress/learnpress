@@ -39,6 +39,17 @@
     }
 }
 
+.learnpress {
+    #left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
+        padding: 0 !important;
+        list-style: none !important;
+    }
+}
+
+// Theme Avada
+
+
+
 // Theme DT the7
 .learnpress.dt-the7 {
     .learn-press-filters {
@@ -74,12 +85,6 @@
     }
     #learn-press-item-comments {
         background: #f6f6f6;
-    }
-    #popup-course {
-        position: unset;
-        #popup-header {
-            position: absolute;
-        }
     }
 }
 

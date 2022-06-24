@@ -1041,6 +1041,13 @@ div.order-recover {
 	}
 }
 
+.lp-profile-content {
+	ul {
+		list-style: none !important;
+		padding: 0 !important;
+	}
+}
+
 .learnpress_avatar {
 
 	&__form {
@@ -1095,5 +1102,11 @@ div.order-recover {
 #primary {
 	.learn-press-courses[data-size="3"] .course {
 		width: 50%;
+	}
+}
+
+body.learnpress {
+    .learn-press-tabs .learn-press-tabs__tab, .attachment-recent-works-thumbnail {
+		border-radius: 0;
 	}
 }
