@@ -1099,6 +1099,20 @@ div.order-recover {
 	}
 }
 
+button.learnpress_avatar__button {
+	height: 40px;
+	padding: 0 15px;
+	border: 0;
+	background: var(--lp-primary-color);
+	color: white;
+	margin-top: 15px;
+	border-radius: 3px;
+	+ button {
+		margin-left: 15px;
+		margin-right: 0;
+	}
+}
+
 #primary {
 	.learn-press-courses[data-size="3"] .course {
 		width: 50%;
