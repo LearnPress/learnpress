@@ -94,9 +94,6 @@
 				display: inline-block;
 			}
 
-			.column-compatibility {
-
-			}
 		}
 
 		&.premium {
@@ -111,7 +108,6 @@
 		}
 
 		&::after {
-
 			@include clear-fix();
 		}
 	}

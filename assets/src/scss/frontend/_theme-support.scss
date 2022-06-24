@@ -1,8 +1,99 @@
 /**
  * CSS for overriding some style defaults of themes
  */
-// Twenty Fifteen
-/**/
+
+ // Theme Divi
+ .lp-archive-courses {
+    ul {
+        list-style-type: revert;
+        padding:0 0 23px 1em;
+
+        &.learn-press-breadcrumb, &.course-nav-tabs{
+            list-style: none; 
+            padding: 0;
+            @media (max-width: 768px) {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+    }
+    ul, ol {
+        list-style-type:decimal;
+        list-style-position:inside;
+        padding:0 0 23px;
+    } 
+    ol ul {
+        padding:2px 0 2px 35px
+    }
+    ol ol {
+        padding:2px 0 2px 20px
+    }
+    thead, tr {
+        th {
+            padding:9px 24px
+        }
+    }
+    tr td{
+        border-top:1px solid #eee;
+        padding:6px 24px
+    }
+}
+
+.learnpress {
+    #left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
+        padding: 0 !important;
+        list-style: none !important;
+    }
+}
+
+// Theme Avada
+
+
+
+// Theme DT the7
+.learnpress.dt-the7 {
+    .learn-press-filters {
+        margin-bottom: 20px;
+    }
+    .learn-press-courses[data-size="3"] .course {
+        width: 50%;
+    }
+}
+
+// Theme Bridge
+
+.bridge.learnpress {
+    .lp-archive-courses {
+        margin-top: 100px;
+        ul.learn-press-breadcrumb  {
+            padding-top: 45px;
+        }
+    }
+    .content {
+        z-index: 110;
+    }
+    .comment-respond .comment-form {
+        margin: 0;
+        > p, > div {
+            padding: 0;
+        }
+    } 
+    &.learnpress-profile {
+        .content {
+            z-index: 100;
+        }
+    }
+    #learn-press-item-comments {
+        background: #f6f6f6;
+    }
+}
+
+// theme Astra
+
+.learnpress.ast-separate-container .ast-article-single {
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
 // Twenty Sixteen
 body {
