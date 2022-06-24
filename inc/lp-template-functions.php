@@ -87,7 +87,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 
 		if ( $tabs ) {
 			uasort( $tabs, 'learn_press_sort_list_by_priority_callback' );
-			$request_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+			$request_tab = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 			$has_active  = false;
 
 			foreach ( $tabs as $k => $v ) {
@@ -241,64 +241,6 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 	}
 }
 add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
-
-/**
- * @editor tungnx
- * @modify 4.1.5 - comment - not use
- */
-//if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
-	/**
-	 * If user is viewing content of an item instead of the whole course
-	 * then remove all content of course and replace with content of
-	 * that item.
-	 */
-	/*function learn_press_control_displaying_course_item() {
-		global $wp_filter;
-
-		// Remove all hooks added to content of whole course.
-		$hooks = array( 'content-learning-summary', 'content-landing-summary' );
-
-		if ( empty( $wp_filter['learn-press-backup-hooks'] ) ) {
-			$wp_filter['learn-press-backup-hooks'] = array();
-		}
-
-		foreach ( $hooks as $hook ) {
-			if ( isset( $wp_filter[ "learn-press/{$hook}" ] ) ) {
-				// Move to backup to restore it if needed.
-				$wp_filter['learn-press-backup-hooks'][ "learn-press/{$hook}" ] = $wp_filter[ "learn-press/{$hook}" ];
-
-				// Remove the origin hook
-				unset( $wp_filter[ "learn-press/{$hook}" ] );
-			}
-		}
-	}*/
-//}
-
-/**
- * @editor tungnx
- * @modify 4.1.5 - comment - not use from 4.1.4
- */
-//if ( ! function_exists( 'learn_press_single_course_args' ) ) {
-	// Todo: check why call more time - tungnx
-	/*function learn_press_single_course_args() {
-		static $output = array();
-
-		if ( ! $output ) {
-			$course = learn_press_get_course();
-
-			if ( $course && $course->get_id() ) {
-				$user        = learn_press_get_current_user();
-				$course_data = $user->get_course_data( $course->get_id() );
-
-				if ( $course_data ) {
-					$output = $course_data->get_js_args();
-				}
-			}
-		}
-
-		return $output;
-	}*/
-//}
 
 if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
@@ -1413,7 +1355,7 @@ function learn_press_content_item_summary_class( $more = '', $echo = true ) {
 	$output  = 'class="' . join( ' ', $classes ) . '"';
 
 	if ( $echo ) {
-		echo $output;
+		echo esc_attr( $output );
 	}
 
 	return $output;
@@ -1442,87 +1384,6 @@ function learn_press_maybe_load_comment_js() {
 }
 
 add_action( 'wp_enqueue_scripts', 'learn_press_maybe_load_comment_js' );
-
-/**
- * @editor     tungnx
- * @reason     not use
- * @deprecated 3.2.7.3
- */
-// add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
-//
-// function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id ) {
-// $user = learn_press_get_user( $user_id );
-//
-// if ( ! get_post_meta( $course_id, '_lp_submission', true ) ) {
-// update_post_meta( $course_id, '_lp_submission', 'yes' );
-// }
-// $_lp_submission = get_post_meta( $course_id, '_lp_submission', true );
-// if ( $_lp_submission === 'yes' ) {
-// if ( ! $user->is_logged_in() ) {
-// return 'not-logged-in';
-// } elseif ( ! $user->has_enrolled_course( $course_id ) ) {
-// return 'not-enrolled';
-// }
-// }
-//
-// return $view;
-// }
-
-/** 3.3.0 */
-// Comment by tungnx - not use
-/*
-add_filter(
-	'learn-press/can-view-item',
-	function ( $viewable, $item_id, $course_id ) {
-		return $viewable;
-	},
-	10,
-	3
-);
-
-add_filter(
-	'learn-press/course-item-content-html',
-	function ( $html, $item_id, $course_id ) {
-		$user = learn_press_get_current_user();
-
-		$course_blocking = LP_Settings::instance()->get( 'course_blocking' );
-		$course_data     = $user->get_course_data( $course_id );
-		// $end_time        = $course_data->get_end_time_gmt();3
-		// $expired_time    = $course_data->get_expiration_time_gmt();
-		ob_start();
-
-		switch ( $course_blocking ) {
-			case 'duration_expire':
-				if ( $course_data->is_exceeded() ) {
-					$html = __( 'Course duration is expired. Please contact admin site.', 'learnpress' );
-				}
-
-				break;
-			case 'course_finished':
-				if ( $user->has_finished_course( $course_id ) ) {
-					$html = __( 'You finished this course. Please contact admin site.', 'learnpress' );
-				}
-
-				break;
-			case 'duration_expire_or_course_finished':
-				if ( $course_data->is_exceeded() || $user->has_finished_course( $course_id ) ) {
-					$html = __( 'Course duration is expired or you finished course. Please contact admin site.',
-						'learnpress' );
-				}
-
-				var_dump( $course_data->is_exceeded(), $user->has_finished_course( $course_id ) );
-			default:
-		}
-		if ( $html ) {
-			echo $html;
-		}
-		$html = ob_get_clean();
-
-		return $html ? $html : false;
-	},
-	10,
-	3
-);*/
 
 /**
  * Get list layouts archive course setting
@@ -1758,7 +1619,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 
 function lp_skeleton_animation_html( $count_li = 3, $width = 'random', $styleli = '', $styleul = '' ) {
 	?>
-	<ul class="lp-skeleton-animation" style="<?php echo ! empty( $styleul ) ? $styleul : ''; ?>">
+	<ul class="lp-skeleton-animation" style="<?php echo esc_attr( $styleul ); ?>">
 		<?php for ( $i = 0; $i < absint( $count_li ); $i ++ ) : ?>
 			<li style="width: <?php echo $width === 'random' ? wp_rand( 60, 100 ) . '%' : $width; ?>; <?php echo ! empty( $styleli ) ? $styleli : ''; ?>"></li>
 		<?php endfor; ?>

@@ -12,10 +12,10 @@ defined( 'ABSPATH' ) || exit;
 
 function learnpress_gutenberg_disable_cpt( $can_edit, $post_type ) {
 	$post_types = array(
-		LP_COURSE_CPT   => LP_Settings::instance()->get( 'enable_gutenberg_course' ),
-		LP_LESSON_CPT   => LP_Settings::instance()->get( 'enable_gutenberg_lesson' ),
-		LP_QUIZ_CPT     => LP_Settings::instance()->get( 'enable_gutenberg_quiz' ),
-		LP_QUESTION_CPT => LP_Settings::instance()->get( 'enable_gutenberg_question' ),
+		LP_COURSE_CPT   => LP_Settings::get_option( 'enable_gutenberg_course', 'no' ),
+		LP_LESSON_CPT   => LP_Settings::get_option( 'enable_gutenberg_lesson', 'no' ),
+		LP_QUIZ_CPT     => LP_Settings::get_option( 'enable_gutenberg_quiz', 'no' ),
+		LP_QUESTION_CPT => LP_Settings::get_option( 'enable_gutenberg_question', 'no' ),
 	);
 
 	foreach ( $post_types as $key => $pt ) {
@@ -118,7 +118,7 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
 	$tip = sprintf( '<span class="learn-press-tip" ' . $atts . '>%s</span>', $tip );
 
 	if ( $echo ) {
-		echo $tip;
+		echo wp_kses_post( $tip );
 	}
 
 	return $tip;
@@ -411,8 +411,10 @@ function learn_press_section_item_types() {
  *
  * @param string $code
  * @param bool   $script_tag - wrap code between <script> tag
+ * @depecated 4.1.6.8
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
+	_deprecated_function( __FUNCTION__, '4.1.6.8' );
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 
 	if ( $script_tag ) {
@@ -574,9 +576,9 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 /**
  * Cache static pages
  *
- * @deprecated
+ * @deprecated 4.1.6.8
  */
-function learn_press_setup_pages() {
+/*function learn_press_setup_pages() {
 	global $wpdb;
 
 	$page_ids = LP_Object_Cache::get( 'static-page-ids', 'learn-press' );
@@ -617,7 +619,7 @@ function learn_press_setup_pages() {
 			wp_cache_add( $page->ID, $page, 'posts' );
 		}
 	}
-}
+}*/
 
 function learn_press_get_course_item_object( $post_type ) {
 	switch ( $post_type ) {
@@ -634,8 +636,11 @@ function learn_press_get_course_item_object( $post_type ) {
 
 /**
  * Print out js code in the queue
+ *
+ * @depecated 4.1.6.8
  */
 function learn_press_print_script() {
+	_deprecated_function( __FUNCTION__, '4.1.6.8' );
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 
 	if ( ! empty( $learn_press_queued_js ) ) {
@@ -648,7 +653,7 @@ function learn_press_print_script() {
 				$learn_press_queued_js = preg_replace( '/&#(x)?0*(?(1)27|39);?/i', "'", $learn_press_queued_js );
 				$learn_press_queued_js = str_replace( "\r", '', $learn_press_queued_js );
 
-				echo $learn_press_queued_js;
+				// echo $learn_press_queued_js;
 				?>
 			})
 		</script>
@@ -658,21 +663,22 @@ function learn_press_print_script() {
 	}
 
 	if ( ! empty( $learn_press_queued_js_tag ) ) {
-		echo $learn_press_queued_js_tag;
+		// echo $learn_press_queued_js_tag;
 	}
 }
 
-add_action( 'wp_footer', 'learn_press_print_script' );
-add_action( 'admin_footer', 'learn_press_print_script' );
+// add_action( 'wp_footer', 'learn_press_print_script' );
+// add_action( 'admin_footer', 'learn_press_print_script' );
 
 
 /**
  * @param string $str
  * @param int    $lines
+ * @depecated 4.1.6.8
  */
-function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
+/*function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
-}
+}*/
 
 if ( ! function_exists( 'learn_press_is_ajax' ) ) {
 	function learn_press_is_ajax() {
@@ -796,8 +802,8 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 
 		if ( $links ) {
 			?>
-			<div class="<?php echo $args['wrapper_class']; ?>">
-				<?php echo $links; ?>
+			<div class="<?php echo esc_attr( $args['wrapper_class'] ); ?>">
+				<?php echo  wp_kses_post( $links ); ?>
 			</div>
 			<?php
 		}
@@ -805,7 +811,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 		$output = ob_get_clean();
 
 		if ( $args['echo'] ) {
-			echo $output;
+			echo wp_kses_post( $output );
 		}
 
 		return $output;
@@ -2145,7 +2151,7 @@ function learn_press_get_checkout_cart() {
 	return apply_filters( 'learn_press_checkout_cart', LP()->cart );
 }
 
-function learn_press_front_scripts() {
+/*function learn_press_front_scripts() {
 	if ( is_admin() ) {
 		return;
 	}
@@ -2166,7 +2172,7 @@ function learn_press_front_scripts() {
 	}
 }
 
-add_action( 'wp_print_scripts', 'learn_press_front_scripts' );
+add_action( 'wp_print_scripts', 'learn_press_front_scripts' );*/
 
 function learn_press_user_time( $time, $format = 'timestamp' ) {
 	if ( is_string( $time ) ) {
@@ -3779,7 +3785,7 @@ require_once dirname( __FILE__ ) . '/lp-custom-hooks.php';
  * @return false
  * @author hungkv
  */
-function learnpress_disable_auto_update( $update, $item ) {
+/*function learnpress_disable_auto_update( $update, $item ) {
 	$plugins = array( // Plugins to  auto-update
 		'learnpress',
 	);
@@ -3788,8 +3794,7 @@ function learnpress_disable_auto_update( $update, $item ) {
 		return false;
 	}
 }
-add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );
-
+add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );*/
 
 add_action(
 	'in_plugin_update_message-learnpress/learnpress.php',

@@ -301,74 +301,6 @@ abstract class LP_Abstract_Assets {
 	}
 
 	/**
-	 * Register scripts and styles for admin.
-	 *
-	 * @editor tungnx
-	 * @reason not use
-	 * @deprecated 3.2.8
-	 */
-	/*protected function _register_scripts() {
-		$wp_scripts = $this->_get_wp_scripts();
-		$wp_styles  = $this->_get_wp_styles();
-
-		// No use cache if debug mode is turn on
-		$no_cache = '';
-		if ( learn_press_is_debug() ) {
-			$no_cache = microtime( true );
-		}
-
-		$default_scripts = $this->_get_scripts();
-		if ( $default_scripts ) {
-
-			foreach ( $default_scripts as $handle => $data ) {
-				if ( is_string( $data ) ) {
-					$data = array( 'url' => $data );
-				}
-
-				if ( empty( $data['url'] ) ) {
-					continue;
-				}
-
-				$data = wp_parse_args(
-					$data,
-					array(
-						'deps'      => null,
-						'ver'       => LEARNPRESS_VERSION,
-						'in_footer' => false,
-					)
-				);
-
-				wp_register_script(
-					$handle,
-					$no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'],
-					$data['deps'],
-					$data['ver'],
-					$data['in_footer']
-				);
-			}
-		}
-
-		$default_styles = $this->_get_styles();
-		if ( $default_styles ) {
-
-			foreach ( $default_styles as $handle => $data ) {
-				if ( is_string( $data ) ) {
-					$data = array( 'url' => $data );
-				}
-
-				$data = wp_parse_args(
-					$data,
-					array(
-						'deps' => null,
-						'ver'  => LEARNPRESS_VERSION,
-					)
-				);
-				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
-			}
-		}
-	}*/
-
-	/**
 	 * @param $handle
 	 *
 	 * @return string
@@ -457,15 +389,7 @@ abstract class LP_Abstract_Assets {
 		return LP_PLUGIN_URL . "assets/{$file}";
 	}
 
-	public static function add_param() {
+	/*public static function add_param() {
 
-	}
-
-	public static function add_var() {
-
-	}
-
-	public static function add_script_tag() {
-
-	}
+	}*/
 }

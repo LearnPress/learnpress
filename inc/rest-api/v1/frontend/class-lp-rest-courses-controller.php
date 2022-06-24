@@ -170,9 +170,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						$archive_link = $term_link;
 					}
 
-					$base = esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
-					$base = str_replace( home_url( $wp->request ) . '/', $archive_link, $base );
-
 					$template_pagination_path = $request['template_pagination_path'] ?? '';
 					if ( ! isset( $request['no_pagination'] ) ) {
 						if ( ! empty( $template_pagination_path ) ) {
@@ -183,7 +180,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 								array(
 									'total' => $total_pages,
 									'paged' => $filter->page,
-									'base'  => $base,
 								)
 							);
 						}

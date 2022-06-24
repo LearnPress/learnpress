@@ -9,8 +9,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! isset( $checked ) ) {
-	$checked = false;
+if ( ! isset( $title ) || ! isset( $items ) ) {
+	return;
 }
 ?>
 
@@ -23,7 +23,7 @@ if ( ! isset( $checked ) ) {
 		<div class="course-extra-box__content-inner">
 			<ul>
 				<?php foreach ( $items as $item ) : ?>
-					<li><?php echo $item; ?></li>
+					<li><?php echo wp_kses_post( $item ); ?></li>
 				<?php endforeach; ?>
 			</ul>
 		</div>

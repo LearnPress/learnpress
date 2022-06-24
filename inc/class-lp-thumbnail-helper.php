@@ -62,7 +62,7 @@ class LP_Thumbnail_Helper {
 		}
 
 		// @deprecated
-		$image = apply_filters( 'learn_press_course_image', $image, $course_id, $size, $attr );
+		// $image = apply_filters( 'learn_press_course_image', $image, $course_id, $size, $attr );
 
 		return $image;
 	}

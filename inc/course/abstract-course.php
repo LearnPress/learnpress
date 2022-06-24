@@ -362,31 +362,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @param string $field
-		 *
-		 * @return bool|int
-		 * @deprecated
-		 */
-		/*public function get_request_item( $field = 'id' ) {
-
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.11' );
-
-			$return = LP()->global['course-item'];
-			if ( ! empty( $_REQUEST['course-item'] ) ) {
-				$type = $_REQUEST['course-item'];
-				if ( $field == 'type' ) {
-					$return = $type;
-				} elseif ( $field == 'id' ) {
-					$return = ! empty( $_REQUEST[ $type . '_id' ] ) ? $_REQUEST[ $type . '_id' ] : 0;
-				} elseif ( $field == 'name' ) {
-					$return = ! empty( $_REQUEST[ $type ] ) ? $_REQUEST[ $type ] : false;
-				}
-			}
-
-			return $return;
-		}*/
-
-		/**
 		 * Course is exists if the post is not empty
 		 *
 		 * @return bool
@@ -408,6 +383,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param mixed
 		 *
 		 * @return bool
+		 * @depecated 4.0.0
 		 */
 		public function is_required_enroll() {
 

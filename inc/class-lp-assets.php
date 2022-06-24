@@ -241,6 +241,11 @@ class LP_Assets extends LP_Abstract_Assets {
 			)
 		);
 
+		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
+		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ) {
+			wp_dequeue_script( 'smoothPageScroll' );
+		}
+
 		return $scripts;
 	}
 
@@ -258,87 +263,6 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		do_action( 'learn-press/after-enqueue-scripts' );
 	}
-
-	/**
-	 * Check is currently in a screen required.
-	 *
-	 * @param array $screens
-	 *
-	 * @return bool
-	 * @since 3.3.0
-	 * @editor tungnx
-	 * @reason comment - not use
-	 */
-	/*
-	public function is_screen( $screens ) {
-		$pages = array(
-			'profile',
-			'become_a_teacher',
-			'term_conditions',
-			'checkout',
-			'courses',
-		);
-
-		$single_post_types                  = array();
-		$single_post_types[ LP_COURSE_CPT ] = 'course';
-		$is_screen                          = false;
-
-		if ( $screens === true || $screens === '*' ) {
-			$is_screen = true;
-		} else {
-			$screens = is_array( $screens ) ? $screens : array( $screens );
-			if ( in_array( 'learnpress', $screens ) ) {
-				foreach ( $pages as $page ) {
-					if ( $page === 'courses' && learn_press_is_courses() ) {
-						$is_screen = true;
-						break;
-					}
-
-					if ( is_post_type_archive( 'lp_collection' ) || is_singular( 'lp_collection' ) ) {
-						$is_screen = true;
-						break;
-					}
-
-					if ( learn_press_is_page( $page ) ) {
-						$is_screen = true;
-						break;
-					}
-
-					foreach ( $single_post_types as $post_type => $alias ) {
-						if ( is_singular( $post_type ) ) {
-							$is_screen = true;
-							break 2;
-						}
-					}
-				}
-			} else {
-				foreach ( $pages as $page ) {
-					if ( in_array( $page, $screens ) ) {
-						if ( $page === 'courses' && learn_press_is_courses() ) {
-							$is_screen = true;
-							break;
-						}
-
-						if ( learn_press_is_page( $page ) ) {
-							$is_screen = true;
-							break;
-						}
-					}
-				}
-			}
-
-			if ( ! $is_screen ) {
-				foreach ( $single_post_types as $post_type => $alias ) {
-					if ( is_singular( $post_type ) && in_array( $alias, $screens ) ) {
-						$is_screen = true;
-						break;
-					}
-				}
-			}
-		}
-
-		return $is_screen;
-	}*/
 
 	/**
 	 * Add lp overlay

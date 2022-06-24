@@ -41,7 +41,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 		<ul class="learn-press-filters">
 			<?php foreach ( $filters as $class => $link ) : ?>
 				<li class="<?php echo esc_attr( $class ); ?>">
-					<?php echo $link; ?>
+					<?php echo wp_kses_post( $link ); ?>
 				</li>
 			<?php endforeach; ?>
 		</ul>
@@ -86,16 +86,16 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 						</td>
 
 						<td class="column-status">
-							<span class="result-percent"><?php echo $user_quiz->get_percent_result(); ?></span>
+							<span class="result-percent"><?php echo wp_kses_post( $user_quiz->get_percent_result() ); ?></span>
 							<span class="lp-label label-<?php echo esc_attr( $user_quiz->get_status() ); ?>">
-							<?php echo wp_sprintf( '%s', esc_attr( $user_quiz->get_status_label() ) ); ?>
+							<?php echo wp_kses_post( wp_sprintf( '%s', esc_attr( $user_quiz->get_status_label() ) ) ); ?>
 						</span>
 						</td>
 						<td class="column-time-interval">
-							<?php echo $user_quiz->get_time_interval( 'display' ); ?>
+							<?php echo wp_kses_post( $user_quiz->get_time_interval( 'display' ) ); ?>
 						</td>
 						<td class="column-date">
-						<?php echo $user_quiz->get_start_time( 'i18n' ); ?>
+						<?php echo wp_kses_post( $user_quiz->get_start_time( 'i18n' ) ); ?>
 						</td>
 					</tr>
 
@@ -105,7 +105,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 			<tfoot>
 				<tr class="list-table-nav">
 					<td colspan="2" class="nav-text">
-						<?php echo $query->get_offset_text(); ?>
+						<?php echo wp_kses_post( $query->get_offset_text() ); ?>
 					</td>
 					<td colspan="2" class="nav-pages">
 						<?php $query->get_nav_numbers( true ); ?>

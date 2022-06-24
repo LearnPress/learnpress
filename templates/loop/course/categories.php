@@ -14,6 +14,6 @@ $categories = get_the_term_list( '', 'course_category' );
 
 <?php if ( ! empty( $categories ) ) : ?>
 	<div class="course-categories">
-		<?php echo $categories; ?>
+		<?php echo wp_kses_post( $categories ); ?>
 	</div>
 <?php endif; ?>

@@ -11,7 +11,11 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$user = learn_press_get_current_user();
+$user        = learn_press_get_current_user();
+$bat_name    = LP_Helper::sanitize_params_submitted( $_POST['bat_name'] ?? $user->get_display_name() );
+$bat_email   = LP_Helper::sanitize_params_submitted( $_POST['bat_email'] ?? $user->get_email() );
+$bat_phone   = LP_Helper::sanitize_params_submitted( $_POST['bat_phone'] ?? '' );
+$bat_message = LP_Helper::sanitize_params_submitted( $_POST['bat_message'] ?? '' );
 ?>
 
 <div id="learn-press-become-teacher-form" class="become-teacher-form learn-press-form">
@@ -29,19 +33,19 @@ $user = learn_press_get_current_user();
 
 				<li class="form-field">
 					<label for="bat_name"><?php esc_html_e( 'Name', 'learnpress' ); ?></label>
-					<input type="text" name="bat_name" required placeholder="<?php esc_attr_e( 'Your name', 'learnpress' ); ?>" value="<?php echo isset( $_POST['bat_name'] ) ? wp_unslash( $_POST['bat_name'] ) : $user->get_display_name(); ?>">
+					<input type="text" name="bat_name" required placeholder="<?php esc_attr_e( 'Your name', 'learnpress' ); ?>" value="<?php echo esc_attr( $bat_name ); ?>">
 				</li>
 				<li class="form-field">
 					<label for="bat_email"><?php esc_html_e( 'Email', 'learnpress' ); ?></label>
-					<input type="email" name="bat_email" required placeholder="<?php esc_attr_e( 'Your email address', 'learnpress' ); ?>" value="<?php echo isset( $_POST['bat_email'] ) ? wp_unslash( $_POST['bat_email'] ) : $user->get_email(); ?>">
+					<input type="email" name="bat_email" required placeholder="<?php esc_attr_e( 'Your email address', 'learnpress' ); ?>" value="<?php echo esc_attr( $bat_email ); ?>">
 				</li>
 				<li class="form-field">
 					<label for="bat_phone"><?php esc_html_e( 'Phone', 'learnpress' ); ?></label>
-					<input type="text" name="bat_phone" placeholder="<?php esc_attr_e( 'Your phone number', 'learnpress' ); ?>" value="<?php echo isset( $_POST['bat_phone'] ) ? wp_unslash( $_POST['bat_phone'] ) : ''; ?>">
+					<input type="text" name="bat_phone" placeholder="<?php esc_attr_e( 'Your phone number', 'learnpress' ); ?>" value="<?php echo esc_attr( $bat_phone ); ?>">
 				</li>
 				<li class="form-field">
 					<label for="bat_message"><?php esc_html_e( 'Message', 'learnpress' ); ?></label>
-					<textarea name="bat_message" placeholder="<?php esc_attr_e( 'Your message', 'learnpress' ); ?>"><?php echo isset( $_POST['bat_message'] ) ? wp_unslash( $_POST['bat_message'] ) : ''; ?></textarea>
+					<textarea name="bat_message" placeholder="<?php esc_attr_e( 'Your message', 'learnpress' ); ?>"><?php echo esc_attr( $bat_message ); ?></textarea>
 				</li>
 
 			<?php do_action( 'learnpress/become-a-teacher/after-form' ); ?>

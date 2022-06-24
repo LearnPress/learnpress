@@ -21,7 +21,7 @@ $bio = $user->get_description();
 <div class="lp-profile-right">
 
 	<div class="lp-profile-username">
-		<?php echo $user->get_display_name(); ?>
+		<?php echo wp_kses_post( $user->get_display_name() ); ?>
 	</div>
 	<?php if ( $bio ) : ?>
 		<div class="lp-profile-user-bio">

@@ -644,15 +644,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function notice_outdated_templates() {
 			if ( current_user_can( 'manage_options' ) ) {
-				$page = '';
-				$tab  = '';
-				if ( ! empty( $_REQUEST['page'] ) ) {
-					$page = $_REQUEST['page'];
-				}
-
-				if ( ! empty( $_REQUEST['tab'] ) ) {
-					$tab = $_REQUEST['tab'];
-				}
+				$page = LP_Helper::sanitize_params_submitted( $_REQUEST['page'] ?? '' );
+				$tab  = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 
 				if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
 					return;

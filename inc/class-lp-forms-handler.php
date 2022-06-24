@@ -105,9 +105,9 @@ class LP_Forms_Handler {
 					throw new Exception( $user->get_error_message() );
 				} else {
 					if ( ! empty( $_POST['redirect'] ) ) {
-						$redirect = wp_unslash( $_POST['redirect'] );
+						$redirect = LP_Helper::sanitize_params_submitted( $_POST['redirect'] );
 					} elseif ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
-						$redirect = wp_unslash( $_REQUEST['_wp_http_referer'] );
+						$redirect = LP_Helper::sanitize_params_submitted( $_REQUEST['_wp_http_referer'] );
 					} else {
 						$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
 					}

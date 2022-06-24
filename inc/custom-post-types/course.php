@@ -329,11 +329,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				return $where;
 			}
 
+			$filter_price = LP_Helper::sanitize_params_submitted( $_REQUEST['filter_price'] ?? 0 );
+
 			if ( array_key_exists( 'filter_price', $_REQUEST ) ) {
-				if ( $_REQUEST['filter_price'] == 0 ) {
+				if ( $filter_price == 0 ) {
 					$where .= ' AND ( pm_price.meta_value IS NULL || pm_price.meta_value = 0 )';
 				} else {
-					$where .= $wpdb->prepare( ' AND ( pm_price.meta_value = %s )', $_REQUEST['filter_price'] );
+					$where .= $wpdb->prepare( ' AND ( pm_price.meta_value = %s )', $filter_price );
 				}
 			}
 

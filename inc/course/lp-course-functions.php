@@ -342,22 +342,6 @@ function learn_press_course_enroll_required( $course_id = null ) {
 	return apply_filters( 'learn_press_course_enroll_required', $required, $course_id );
 }
 
-/**
- * Short function to check if a lesson id is not passed to a function
- * then try to get it from $_REQUEST
- *
- * @param null $lesson_id
- *
- * @return int|null
- */
-function learn_press_get_lesson_id( $lesson_id = null ) {
-	if ( ! $lesson_id ) {
-		$lesson_id = ! empty( $_REQUEST['lesson'] ) ? $_REQUEST['lesson'] : 0;
-	}
-
-	return $lesson_id;
-}
-
 function learn_press_get_all_courses( $args = array() ) {
 	$term    = '';
 	$exclude = '';

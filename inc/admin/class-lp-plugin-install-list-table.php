@@ -54,9 +54,9 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 	}
 
 	private function _get_items_from_wp( $args = array() ) {
-		$tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+		$tab = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 
-		if ( ! $tab ) {
+		if ( empty( $tab ) ) {
 			return;
 		}
 
@@ -153,8 +153,8 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 		global $learn_press_add_ons;
 		$this->upgrader = new LP_Upgrader();
 
-		$page = ! empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
-		$tab  = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+		$page = LP_Helper::sanitize_params_submitted( $_REQUEST['page'] ?? '' );
+		$tab  = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 
 		if ( 'learn-press-addons' != $page ) {
 			return;
@@ -326,7 +326,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 			'Tools'       => _x( 'Tools', 'Plugin installer group title' ),
 		);
 
-		$tab   = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+		$tab   = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 		$group = null;
 
 		foreach ( (array) $this->items as $kk => $plugin ) {
@@ -409,13 +409,6 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 				}
 			}
 
-			/*
-			$details_link   = self_admin_url( 'plugin-install.php?tab=plugin-information&amp;plugin=' . $plugin['slug'] .
-				'&amp;TB_iframe=true&amp;width=600&amp;height=550' );
-
-
-			$action_links[] = '<a href="' . esc_url_raw( $details_link ) . '" class="thickbox" aria-label="' . esc_attr( sprintf( __( 'More information about %s' ), $name ) ) . '" data-title="' . esc_attr( $name ) . '">' . __( 'More Details' ) . '</a>';
-			*/
 			if ( ! empty( $plugin['icons']['svg'] ) ) {
 				$plugin_icon_url = $plugin['icons']['svg'];
 			} elseif ( ! empty( $plugin['icons']['2x'] ) ) {
