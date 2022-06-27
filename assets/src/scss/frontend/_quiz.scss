@@ -117,14 +117,15 @@
 				position: absolute;
 				top: 50%;
 				left: 50%;
-				@include transform(translate(-51%, -51%));
+				@include transform(translate(-50%, -50%) rotate(45deg));
 				box-sizing: content-box;
 				color: #3db748;
-				background-color: #3db748;
-				width: 20px;
-				height: 20px;
+				width: 5px;
+				height: 9px;
+				border-right: 3px solid #3db748;
+				border-bottom: 3px solid #3db748;
 				opacity: 0;
-				border-radius: 3px;
+				margin-top: -2px;
 				content: "";
 			}
 
@@ -153,9 +154,6 @@
 			@include border-radius(50%);
 
 			&::before {
-				border-radius: 50%;
-			}
-			&::after {
 				border-radius: 50%;
 			}
 		}
@@ -870,23 +868,12 @@ button[data-counter] {
 
 			@include border-radius(4px);
 
-			&::after {
-				border-color: #d9e0f1;
-			}
-
 			&:disabled {
 				border-color: #ddd;
 				background: #f9f9f9;
 
 				&::after {
 					border-color: #ddd;
-				}
-			}
-
-			&:checked:not(:disabled) {
-
-				&::after {
-					border-color: #99aee4;
 				}
 			}
 		}
