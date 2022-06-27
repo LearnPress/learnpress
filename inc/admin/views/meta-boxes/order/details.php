@@ -137,6 +137,8 @@ $user_ip      = $order->get_user_ip_address();
 			<?php echo esc_html( $order->get_order_key() ); ?>
 		</div>
 
+		<?php do_action( 'lp/admin/order/detail/after-order-key', $order ); ?>
+
 		<div class="order-data-field order-data-note">
 			<?php $note = $post->post_excerpt; ?>
 			<?php if ( ! empty( $note ) ) : ?>

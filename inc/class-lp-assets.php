@@ -242,7 +242,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		);
 
 		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
-		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ) {
+		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ||
+		LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
+		LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
 			wp_dequeue_script( 'smoothPageScroll' );
 		}
 

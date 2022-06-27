@@ -384,7 +384,7 @@ class LP_Checkout {
 			if ( is_user_logged_in() ) {
 				$user_id = get_current_user_id();
 			} else {
-				$checkout_option = isset( $_POST['checkout-email-option'] ) ? LP_Helper::sanitize_params_submitted( $_POST['checkout-email-option'] ) : '';
+				$checkout_option = LP_Helper::sanitize_params_submitted( $_POST['checkout-email-option'] ?? '' );
 
 				// Create new user if buy with Guest and tick "Create new Account"
 				if ( $checkout_option === 'new-account' ) {
