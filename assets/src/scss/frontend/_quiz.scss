@@ -117,13 +117,15 @@
 				position: absolute;
 				top: 50%;
 				left: 50%;
-				@include transform(translate(-50%, -50%));
+				@include transform(translate(-51%, -51%));
 				box-sizing: content-box;
-				opacity: 0;
 				color: #3db748;
-				font-family: "Font Awesome 5 Free";
-				font-weight: 900;
-				content: "\f00c";
+				background-color: #3db748;
+				width: 20px;
+				height: 20px;
+				opacity: 0;
+				border-radius: 3px;
+				content: "";
 			}
 
 			&:checked {
@@ -151,6 +153,9 @@
 			@include border-radius(50%);
 
 			&::before {
+				border-radius: 50%;
+			}
+			&::after {
 				border-radius: 50%;
 			}
 		}
