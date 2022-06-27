@@ -97,7 +97,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return bool
 	 */
 	public function check_admin_permission(): bool {
-		return LP_REST_Authentication::check_admin_permission();
+		return LP_Abstract_API::check_admin_permission();
 	}
 
 	/**

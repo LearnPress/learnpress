@@ -678,6 +678,7 @@ a {
 	clear: both;
 	margin: 0 -15px;
 	padding: 0 !important;
+	min-height: 300px;
 	list-style: none;
 	position: relative;
 	@include flex();
@@ -988,6 +989,8 @@ a {
 	.lp-archive-course-skeleton {
 		position: absolute;
 		height: 100%;
+		//width: 100%;
+		// min-height: 300px;
 		background: linear-gradient(90deg, hsla(0, 0%, 74.5%, 0.2) 25%, hsla(0, 0%, 50.6%, 0.24) 37%, hsla(0, 0%, 74.5%, 0.2) 63%);
 		animation: lp-skeleton-loading 1.4s ease infinite;
 		background-size: 400% 100%;

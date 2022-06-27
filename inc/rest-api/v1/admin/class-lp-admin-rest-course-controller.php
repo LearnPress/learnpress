@@ -33,10 +33,6 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
-	public function check_admin_permission() {
-		return LP_REST_Authentication::check_admin_permission();
-	}
-
 	/**
 	 * Get Final Quiz in Course Settings.
 	 *

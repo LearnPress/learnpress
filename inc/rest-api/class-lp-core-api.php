@@ -21,15 +21,22 @@ class LP_Core_API extends LP_Abstract_API {
 	public function rest_api_includes() {
 		parent::rest_api_includes();
 
-		$path_version = DIRECTORY_SEPARATOR . $this->version . DIRECTORY_SEPARATOR . 'frontend';
+		$list_rest_fontend = array(
+			'class-lp-rest-settings-controller.php',
+			'class-lp-rest-users-controller.php',
+			'class-lp-rest-courses-controller.php',
+			'class-lp-rest-lazy-load-controller.php',
+			'class-lp-rest-profile-controller.php',
+			'class-lp-rest-orders-controller.php',
+			'class-lp-rest-widgets-controller.php',
+		);
 
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-settings-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-users-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-courses-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-lazy-load-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-profile-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-orders-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-rest-widgets-controller.php';
+		$path_version  = $this->version . '/frontend/';
+		$path_rest_api = LP_PLUGIN_PATH . 'inc/rest-api/' . $path_version;
+
+		foreach ( $list_rest_fontend as $rest_frontend ) {
+			include_once realpath( $path_rest_api . $rest_frontend );
+		}
 
 		do_action( 'learn-press/core-api/includes' );
 	}

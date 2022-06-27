@@ -10,14 +10,11 @@ $plugin_info = get_plugin_data( LP_PLUGIN_FILE );
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
 const LP_KEY_DB_VERSION = 'learnpress_db_version';
 
-//define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
-
 // Plugin paths and urls.
-define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( LP_PLUGIN_FILE ) ) );
+define( 'LP_PLUGIN_PATH', plugin_dir_path( LP_PLUGIN_FILE ) );
 define( 'LP_PLUGIN_BASENAME', plugin_basename( LP_PLUGIN_FILE ) );
 define( 'LP_PLUGIN_FOLDER_NAME', str_replace( array( '/', basename( LP_PLUGIN_FILE ) ), '', LP_PLUGIN_BASENAME ) );
 const LP_TEMPLATE_PATH = LP_PLUGIN_PATH . 'templates/';
-//define( 'LP_CONTENT_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
 define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', LP_PLUGIN_FILE ) ) );
 const LP_JS_URL  = LP_PLUGIN_URL . 'assets/js/';
 const LP_CSS_URL = LP_PLUGIN_URL . 'assets/css/';

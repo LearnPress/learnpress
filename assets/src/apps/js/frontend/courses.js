@@ -6,6 +6,7 @@ let skeletonClone;
 let isLoading = false;
 let firstLoad = 1;
 let elNoLoadAjaxFirst = null;
+let elArchive = null;
 
 if ( lpGlobalSettings.is_course_archive ) {
 	const queryString = window.location.search;
@@ -54,8 +55,8 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		return;
 	}
 
-	const archive = document.querySelector( '.lp-archive-courses' );
-	const archiveCourse = archive && archive.querySelector( 'div.lp-archive-courses .lp-content-area' );
+	elArchive = document.querySelector( '.lp-archive-courses' );
+	const archiveCourse = elArchive && elArchive.querySelector( 'div.lp-archive-courses .lp-content-area' );
 	const listCourse = archiveCourse && archiveCourse.querySelector( 'ul.learn-press-courses' );
 
 	if ( ! listCourse ) {
@@ -121,7 +122,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		if ( ! firstLoad ) {
 			// Scroll to archive element
 			const optionScroll = { behavior: 'smooth' };
-			archive.scrollIntoView( optionScroll );
+			elArchive.scrollIntoView( optionScroll );
 		} else {
 			firstLoad = 0;
 		}
@@ -183,9 +184,16 @@ const lpArchivePaginationCourse = () => {
 		event.preventDefault();
 		event.stopPropagation();
 
+		if ( ! elArchive ) {
+			return;
+		}
+
 		if ( skeleton ) {
 			skeleton.style.display = 'block';
 		}
+
+		// Scroll to archive element
+		elArchive.scrollIntoView( { behavior: 'smooth' } );
 
 		let filterCourses = {};
 		filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};

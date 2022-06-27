@@ -225,7 +225,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function check_admin_permission() {
-		return LP_REST_Authentication::check_admin_permission();
+		return LP_Abstract_API::check_admin_permission();
 	}
 
 	/**

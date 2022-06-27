@@ -73,7 +73,7 @@ class LP_Forms_Handler {
 		if ( isset( $_POST['username'], $_POST['password'] ) ) {
 			try {
 				$username = trim( LP_Helper::sanitize_params_submitted( $_POST['username'] ) );
-				$password = $_POST['password'];
+				$password = LP_Helper::sanitize_params_submitted( $_POST['password'] );
 				$remember = LP_Request::get_string( 'rememberme' );
 
 				if ( empty( $username ) ) {

@@ -4,6 +4,7 @@
  * Class LP_REST_Authentication
  *
  * @since 3.3.0
+ * @depecated 4.1.6.8
  */
 class LP_REST_Authentication {
 
@@ -178,15 +179,6 @@ class LP_REST_Authentication {
 	 */
 	public static function check_logged_in_permission() {
 		return ! ! self::get_wp_user_id();
-	}
-
-	/**
-	 * Check permission if user is administrator.
-	 *
-	 * @return bool
-	 */
-	public static function check_admin_permission() {
-		return current_user_can( ADMIN_ROLE );
 	}
 }
 
