@@ -407,7 +407,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		$args['post_parent__in']     = $request['parent'];
 		$args['post_parent__not_in'] = $request['parent_exclude'];
 		$args['s']                   = $request['search'];
-		$args['author__in']          = $request['author'];
+		$args['author__in']          = ! empty( $request['user'] ) ? $request['user'] : $request['author'];
 		$args['author__not_in']      = $request['author_exclude'];
 		$args['fields']              = $this->get_fields_for_response( $request );
 
@@ -592,6 +592,14 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		);
 		$params['author_exclude'] = array(
 			'description' => __( 'Ensure result set excludes posts assigned to specific authors.', 'learnpress' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+		$params['user']           = array(
+			'description' => __( 'Limit result set to posts assigned to specific authors.', 'learnpress' ),
 			'type'        => 'array',
 			'items'       => array(
 				'type' => 'integer',
