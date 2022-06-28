@@ -45,7 +45,7 @@ $active_tab   = '';
 		}
 		?>
 
-		<input type="radio" name="<?php echo $unique_group; ?>>" class="learn-press-tabs__checker" <?php echo $checked; ?> id="<?php echo esc_attr( $unique_group . '__' . $section_key ); ?>"/>
+		<input type="radio" name="<?php echo esc_attr( $unique_group ); ?>" class="learn-press-tabs__checker" <?php echo $checked; ?> id="<?php echo esc_attr( $unique_group . '__' . $section_key ); ?>"/>
 	<?php } ?>
 
 	<ul class="learn-press-tabs__nav" data-tabs="<?php echo count( $visible_tabs ); ?>">
@@ -65,8 +65,8 @@ $active_tab   = '';
 			$section_link = $profile->get_tab_link( $tab_key, $section_slug );
 			?>
 
-			<li class="<?php echo implode( ' ', $classes ); ?>">
-				<label><a href="<?php echo esc_url( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a></label>
+			<li class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+				<label><a href="<?php echo esc_url_raw( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a></label>
 			</li>
 
 		<?php } ?>

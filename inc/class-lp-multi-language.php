@@ -12,26 +12,6 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 	class LP_Multi_Language {
 		public static function init() {
 			self::load_plugin_text_domain( LP_PLUGIN_FILE );
-			$plugin = 'learnpress/learnpress.php';
-			add_filter( "plugin_action_links_$plugin", array( __CLASS__, 'plugin_links' ) );
-
-		}
-
-		/**
-		 * Add links to Documentation and Extensions in plugin's list of action links
-		 *
-		 * @since 4.3.11
-		 *
-		 * @param array $links Array of action links
-		 *
-		 * @return array
-		 */
-		public static function plugin_links( $links ) {
-			$links[] = '<a href="' . admin_url( 'admin.php?page=learn-press-settings' ) . '">' . __( 'Settings', 'learnpress' ) . '</a>';
-			$links[] = '<a href="https://learnpress.io/docs/">' . __( 'Documentation', 'learnpress' ) . '</a>';
-			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn-press-addons' . '">' . __( 'Add-ons', 'learnpress' ) . '</a>';
-
-			return $links;
 		}
 
 		/**

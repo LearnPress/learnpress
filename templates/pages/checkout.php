@@ -9,7 +9,9 @@
 
 defined( 'ABSPATH' ) or die;
 
-get_header();
+if ( empty( $is_block_theme ) ) {
+	get_header();
+}
 
 do_action( 'learn-press/before-main-content' );
 do_action( 'learnpress/template/pages/checkout/before-content' );
@@ -44,4 +46,6 @@ do_action( 'learnpress/template/pages/checkout/before-content' );
 do_action( 'learnpress/template/pages/checkout/after-content' );
 do_action( 'learn-press/after-main-content' );
 
-get_footer();
+if ( empty( $is_block_theme ) ) {
+	get_footer();
+}

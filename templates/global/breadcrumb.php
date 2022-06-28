@@ -23,7 +23,7 @@ foreach ( $breadcrumb as $key => $crumb ) {
 	echo '<li>';
 
 	if ( ! empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
-		echo '<a href="' . esc_url( $crumb[1] ) . '"><span>' . esc_html( $crumb[0] ) . '</span></a>';
+		echo '<a href="' . esc_url_raw( $crumb[1] ) . '"><span>' . esc_html( $crumb[0] ) . '</span></a>';
 	} else {
 		echo '<span>' . esc_html( $crumb[0] ) . '</span>';
 	}

@@ -18,7 +18,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				// 'retake-course', // retake_course.
 				'external-link:nopriv',
 				// 'save-uploaded-user-avatar',
-				'load-more-courses',
+				// 'load-more-courses',
 			);
 
 			$ajax_events = apply_filters( 'learn-press/ajax/events', $ajax_events );
@@ -43,7 +43,11 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			//add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
 		}
 
-		public static function load_more_courses() {
+		/**
+		 * @depecated v4.1.6.4
+		 */
+		/*public static function load_more_courses() {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.1.6.4' );
 			$type     = LP_Request::get( 'type' );
 			$user_id  = LP_Request::get_int( 'user', 0 );
 			$paged    = LP_Request::get_int( 'current_page', 1 );
@@ -77,7 +81,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			learn_press_get_template( $template, $template_args );
 
 			wp_die();
-		}
+		}*/
 
 		public static function external_link() {
 			$nonce  = LP_Request::get( 'nonce' );
@@ -113,7 +117,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				return;
 			}
 
-			$factory   = LP_Factory::get_order_factory();
+			$factory   = new LP_Order_CURD();
 			$user_id   = get_current_user_id();
 			$order_key = LP_Request::get_string( 'order-key' );
 			$order     = $factory->recover( $order_key, $user_id );
@@ -258,9 +262,13 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$item_id   = LP_Request::get_int( 'id' );
 			$course_id = LP_Request::get_int( 'course_id' );
 
-			$post     = get_post( $item_id );
-			$user     = learn_press_get_current_user();
-			$course   = learn_press_get_course( $course_id );
+			$post   = get_post( $item_id );
+			$user   = learn_press_get_current_user();
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				return;
+			}
+
 			$response = array(
 				'result'   => 'success',
 				'redirect' => $course->get_item_link( $item_id ),
@@ -270,7 +278,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$nonce_action = $item->get_nonce_action( 'complete', $course_id, $user->get_id() );
 			try {
 				// security check
-				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
+				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, 'lesson-complete' ) ) ) {
 					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ), 8000 );
 				}
 

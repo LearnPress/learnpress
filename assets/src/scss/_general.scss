@@ -185,15 +185,6 @@ $remove-icon-color: #e74c3c;
 				line-height: 46px;
 				text-align: center;
 				vertical-align: middle;
-
-				&.lp-box-data-remove {
-				}
-
-				&.lp-box-data-move {
-				}
-
-				&.lp-box-data-toggle {
-				}
 			}
 
 			&::after {
@@ -247,8 +238,6 @@ $remove-icon-color: #e74c3c;
 	}
 
 	thead {
-		tr {
-		}
 
 		th {
 			text-align: left;

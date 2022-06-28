@@ -42,7 +42,6 @@
 
 			.section-toggle {
 				flex: 0 0 40px;
-				//display: flex;
 				align-items: center;
 				text-align: center;
 				cursor: pointer;
@@ -79,4 +78,22 @@
 			}
 		}
 	}
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+button {
+	cursor: pointer;
+}
+input, button, select, textarea {
+	outline: none;
+}
+html {
+	overflow-x: hidden;
+}
+a {
+	@include transition(.3s);
 }

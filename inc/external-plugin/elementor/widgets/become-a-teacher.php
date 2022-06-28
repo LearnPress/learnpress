@@ -65,6 +65,7 @@ class LP_Elementor_Widget_Become_A_Teacher extends LP_Elementor_Widget_Base {
 
 		$this->end_controls_section();
 
+		$this->register_control_style_form_title( '#learn-press-become-teacher-form h3' );
 		$this->register_controls_style();
 		$this->register_control_style_form_field( '.become-teacher-fields', '.form-field' );
 		$this->register_control_style_form_button( '.become-teacher-form button[type="submit"]' );
@@ -72,83 +73,6 @@ class LP_Elementor_Widget_Become_A_Teacher extends LP_Elementor_Widget_Base {
 	}
 
 	protected function register_controls_style() {
-		$this->start_controls_section(
-			'section_style_title',
-			array(
-				'label' => esc_html__( 'Title', 'learnpress' ),
-				'tab'   => Controls_Manager::TAB_STYLE,
-			)
-		);
-
-		$this->add_responsive_control(
-			'title_align',
-			array(
-				'label'     => esc_html__( 'Alignment', 'thim-elementorkits' ),
-				'type'      => Controls_Manager::CHOOSE,
-				'options'   => array(
-					'left'   => array(
-						'title' => esc_html__( 'Left', 'thim-elementorkits' ),
-						'icon'  => 'eicon-text-align-left',
-					),
-					'center' => array(
-						'title' => esc_html__( 'Center', 'thim-elementorkits' ),
-						'icon'  => 'eicon-text-align-center',
-					),
-					'right'  => array(
-						'title' => esc_html__( 'Right', 'thim-elementorkits' ),
-						'icon'  => 'eicon-text-align-right',
-					),
-				),
-				'selectors' => array(
-					'{{WRAPPER}} #learn-press-become-teacher-form h3' => 'text-align: {{VALUE}}',
-				),
-			)
-		);
-
-		$this->add_control(
-			'title_color',
-			array(
-				'label'     => esc_html__( 'Color', 'thim-elementorkits' ),
-				'type'      => Controls_Manager::COLOR,
-				'selectors' => array(
-					'{{WRAPPER}} #learn-press-become-teacher-form h3' => 'color: {{VALUE}}',
-				),
-			)
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'     => 'title_typography',
-				'selector' => '{{WRAPPER}} #learn-press-become-teacher-form h3',
-			)
-		);
-
-		$this->add_group_control(
-			Group_Control_Text_Shadow::get_type(),
-			array(
-				'name'     => 'title_shadow',
-				'selector' => '{{WRAPPER}} #learn-press-become-teacher-form h3',
-			)
-		);
-
-		$this->add_responsive_control(
-			'title_spacing',
-			array(
-				'label'     => esc_html__( 'Spacing', 'thim-elementorkits' ),
-				'type'      => Controls_Manager::SLIDER,
-				'range'     => array(
-					'px' => array(
-						'max' => 100,
-					),
-				),
-				'selectors' => array(
-					'{{WRAPPER}} #learn-press-become-teacher-form h3' => 'margin-bottom: {{SIZE}}{{UNIT}};',
-				),
-			)
-		);
-
-		$this->end_controls_section();
 
 		$this->start_controls_section(
 			'section_style_description',

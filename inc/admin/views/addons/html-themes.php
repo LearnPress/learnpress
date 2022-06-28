@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit();
 
 $last_checked = LP_Background_Query_Items::instance()->get_last_checked( 'plugins_tp' );
-$check_url    = wp_nonce_url( add_query_arg( 'force-check-update', 'yes' ), 'lp-check-updates' );
+$check_url    = wp_nonce_url( esc_url_raw( add_query_arg( 'force-check-update', 'yes' ) ), 'lp-check-updates' );
 ?>
 
 <p><?php printf( __( 'Last checked %1$s. <a href="%2$s">Check again</a>', 'learnpress' ), human_time_diff( $last_checked ), $check_url ); ?></p>
@@ -36,6 +36,10 @@ $all_themes = array(
 		'items' => $other_themes,
 	),
 );
+
+require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
+$lp_query_items_bg = new LP_Background_Query_Items();
+$lp_query_items_bg->query_related_themes();
 
 foreach ( $all_themes as $themes ) {
 	if ( $themes['items'] ) {

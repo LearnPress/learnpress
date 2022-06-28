@@ -254,7 +254,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * @return string
 		 */
 		public function get_image_header() {
-			$image = LP()->settings->get( 'emails_general.header_image' );
+			$image = LP_Settings::instance()->get( 'emails_general.header_image' );
 
 			if ( ! empty( $image ) ) {
 				$image = wp_get_attachment_image_url( $image, 'full' );

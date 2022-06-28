@@ -33,10 +33,6 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
-	public function check_admin_permission() {
-		return LP_REST_Authentication::check_admin_permission();
-	}
-
 	/**
 	 * Get Final Quiz in Course Settings.
 	 *
@@ -82,7 +78,7 @@ class LP_REST_Admin_Course_Controller extends LP_Abstract_REST_Controller {
 				<div class="lp-metabox-evaluate-final_quiz__message">
 					<?php printf( esc_html__( 'Passing Grade: %s', 'learpress' ), $passing_grade . '%' ); ?>
 					-
-					<?php printf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ); ?>
+					<?php printf( esc_html__( 'Edit: %s', 'learnpress' ), '<a href="' . esc_url_raw( $url ) . '">' . get_the_title( $final_quiz ) . '</a>' ); ?>
 				</div>
 				<?php
 				$response->status = 'success';

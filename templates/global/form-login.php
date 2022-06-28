@@ -40,6 +40,9 @@ defined( 'ABSPATH' ) || exit();
 				<?php esc_html_e( 'Remember me', 'learnpress' ); ?>
 			</label>
 		</p>
+
+		<?php do_action( 'login_form' ); ?>
+
 		<p>
 			<input type="hidden" name="learn-press-login-nonce" value="<?php echo wp_create_nonce( 'learn-press-login' ); ?>">
 			<button type="submit"><?php esc_html_e( 'Login', 'learnpress' ); ?></button>

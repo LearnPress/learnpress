@@ -91,27 +91,6 @@ class LP_Database {
 	}
 
 	/**
-	 * Get list Item by post type and user id
-	 *
-	 * @param string $post_type .
-	 * @param int    $user_id .
-	 *
-	 * @return array
-	 */
-	public function getListItem( $post_type = '', $user_id = 0 ) {
-		$query = $this->wpdb->prepare(
-			"
-			SELECT ID FROM $this->tb_posts
-			WHERE post_type = %s
-			AND post_author = %d",
-			$post_type,
-			$user_id
-		);
-
-		return $this->wpdb->get_col( $query );
-	}
-
-	/**
 	 * Get total Item by post type and user id
 	 *
 	 * @param LP_Post_Type_Filter $filter
@@ -379,6 +358,27 @@ class LP_Database {
 	}
 
 	/**
+	 * Get list columns name of table
+	 *
+	 * @param string $name_table
+	 *
+	 * @return array
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.1.6
+	 * @author tungnx
+	 */
+	public function get_cols_of_table( string $name_table ): array {
+		$query = "SHOW COLUMNS FROM $name_table";
+
+		$result = $this->wpdb->get_col( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
 	 * Create table learnpress_user_item_results
 	 *
 	 * @return bool|int
@@ -567,5 +567,131 @@ class LP_Database {
 		}
 
 		return $total_pages;
+	}
+
+	/**
+	 * Get result query
+	 *
+	 * @return array|null|int|string
+	 * @throws Exception
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @since 4.1.6
+	 */
+	public function execute( LP_Filter $filter, int &$total_rows = 0 ) {
+		$result = null;
+
+		// Where
+		$WHERE = array( 'WHERE 1=1' );
+
+		// Fields select
+		$FIELDS = '*';
+		if ( ! empty( $filter->only_fields ) ) {
+			$FIELDS = implode( ',', array_unique( $filter->only_fields ) );
+		} elseif ( ! empty( $filter->fields ) ) {
+			// exclude more fields
+			if ( ! empty( $filter->exclude_fields ) ) {
+				foreach ( $filter->exclude_fields as  $field ) {
+					$index_field = array_search( $field, $filter->fields );
+					if ( $index_field ) {
+						unset( $filter->fields[ $index_field ] );
+					}
+				}
+			}
+			$FIELDS = implode( ',', array_unique( $filter->fields ) );
+		}
+		$FIELDS = apply_filters( 'lp/query/fields', $FIELDS, $filter );
+
+		$INNER_JOIN = array();
+		$INNER_JOIN = array_merge( $INNER_JOIN, $filter->join );
+		$INNER_JOIN = apply_filters( 'lp/query/inner_join', $INNER_JOIN, $filter );
+		$INNER_JOIN = implode( ' ', array_unique( $INNER_JOIN ) );
+
+		$WHERE = array_merge( $WHERE, $filter->where );
+		$WHERE = apply_filters( 'lp/query/where', $WHERE, $filter );
+		$WHERE = implode( ' ', array_unique( $WHERE ) );
+
+		// Group by
+		$GROUP_BY = '';
+		if ( $filter->group_by ) {
+			$GROUP_BY .= 'GROUP BY ' . $filter->group_by;
+			$GROUP_BY  = apply_filters( 'lp/query/group_by', $GROUP_BY, $filter );
+		}
+
+		// Order by
+		$ORDER_BY = '';
+		if ( ! $filter->return_string_query && $filter->order_by ) {
+			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order . ' ';
+			$ORDER_BY  = apply_filters( 'lp/query/order_by', $ORDER_BY, $filter );
+		}
+
+		// Limit
+		$LIMIT = '';
+		if ( ! $filter->return_string_query ) {
+			$filter->limit = absint( $filter->limit );
+			if ( $filter->limit > $filter->max_limit ) {
+				$filter->limit = $filter->max_limit;
+			}
+			$offset = $filter->limit * ( $filter->page - 1 );
+			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
+		}
+
+		$COLLECTION = '';
+		if ( ! empty( $filter->collection ) ) {
+			$COLLECTION = $filter->collection;
+		}
+
+		$ALIAS_COLLECTION = 'X';
+		if ( ! empty( $filter->collection_alias ) ) {
+			$ALIAS_COLLECTION = $filter->collection_alias;
+		}
+
+		// Query
+		$query = "SELECT $FIELDS FROM $COLLECTION AS $ALIAS_COLLECTION
+		$INNER_JOIN
+		$WHERE
+		$GROUP_BY
+		$ORDER_BY
+		$LIMIT
+		";
+
+		if ( $filter->return_string_query ) {
+			return $query;
+		} elseif ( ! empty( $filter->union ) ) {
+			$query  = implode( ' UNION ', array_unique( $filter->union ) );
+			$query .= $LIMIT;
+		}
+
+		if ( ! $filter->query_count ) {
+			$result = $this->wpdb->get_results( $query );
+		}
+
+		// Query total rows
+		$query       = str_replace( array( $LIMIT, $ORDER_BY ), '', $query );
+		$query_total = "SELECT COUNT($filter->field_count) FROM ($query) AS $ALIAS_COLLECTION";
+		$total_rows  = (int) $this->wpdb->get_var( $query_total );
+
+		$this->check_execute_has_error();
+
+		if ( $filter->query_count ) {
+			return $total_rows;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param array $arr_object
+	 * @param string $key
+	 *
+	 * @return array
+	 */
+	public static function get_values_by_key( array $arr_object, string $key = 'ID' ): array {
+		$arr_object_ids = array();
+		foreach ( $arr_object as $object ) {
+			$arr_object_ids[] = $object->{$key};
+		}
+
+		return $arr_object_ids;
 	}
 }

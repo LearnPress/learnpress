@@ -43,7 +43,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				throw new Exception( sprintf( __( 'Invalid quiz with ID "%d".', 'learnpress' ), $id ) );
 			}
 
-			LP_Helper_CURD::update_meta_cache( $quiz->get_id() );
+			// LP_Helper_CURD::update_meta_cache( $quiz->get_id() );
 
 			$quiz->set_data_via_methods(
 				array(
@@ -337,15 +337,17 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 			LP_Object_Cache::set( 'questions-' . $quiz_id, $question_ids, 'learn-press/quizzes' );
 
-			LP_Helper_CURD::cache_posts( $question_ids );
+			// LP_Helper_CURD::cache_posts( $question_ids );
 			$question_factory = new LP_Question_CURD();
 			$question_factory->load_answer_options( $question_ids );
 		}
 
 		/**
 		 * @param LP_Quiz $quiz
+		 * @depecated 4.1.6.4
 		 */
 		protected function _update_meta_cache( &$quiz ) {
+			_deprecated_function( __FUNCTION__, '4.1.6.4' );
 			$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
 
 			if ( false === $meta_ids ) {
@@ -353,9 +355,12 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			} else {
 				$meta_ids[] = $quiz->get_id();
 			}
-			LP_Helper_CURD::update_meta_cache( $meta_ids );
+			// LP_Helper_CURD::update_meta_cache( $meta_ids );
 		}
 
+		/**
+		 * @depecated 4.1.6.4
+		 */
 		protected function _load_question_answer_meta( $meta_ids ) {
 			global $wpdb;
 

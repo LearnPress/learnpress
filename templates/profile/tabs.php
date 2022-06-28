@@ -55,7 +55,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 			?>
 
 			<li class="<?php echo implode( ' ', $tab_classes ); ?>">
-				<a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
+				<a href="<?php echo esc_url_raw( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
 					<?php
 					if ( ! empty( $profile_tab['icon'] ) ) {
 						echo $profile_tab['icon'];
@@ -80,7 +80,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 							?>
 
 							<li class="<?php echo implode( ' ', $classes ); ?>">
-								<a href="<?php echo esc_url( $section_link ); ?>">
+								<a href="<?php echo esc_url_raw( $section_link ); ?>">
 									<?php
 									if ( ! empty( $section_data['icon'] ) ) {
 										echo $section_data['icon'];

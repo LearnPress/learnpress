@@ -51,16 +51,26 @@ const Result = () => {
 		}
 
 		const item = [ ...document.querySelectorAll( '#popup-header .items-progress' ) ][ 0 ];
+		const elCurriculumSections = document.querySelector( '.curriculum-sections' );
 
-		if ( item ) {
+		if ( item && elCurriculumSections ) {
+			const totalItems = item.dataset.totalItems;
+
 			const itemCompleted = item.querySelector( '.items-completed' );
+			const elProgress = item.querySelector( '.learn-press-progress__active' );
 
 			if ( itemCompleted ) {
-				const number = parseInt( itemCompleted.textContent );
+				// const number = parseInt( itemCompleted.textContent );
 
 				const allItemCompleted = document.querySelectorAll( '#popup-sidebar .course-curriculum .course-item.status-completed' );
 
 				itemCompleted.textContent = parseInt( allItemCompleted.length );
+
+				// Set progress
+				const perCent = parseInt( allItemCompleted.length ) * 100 / parseInt( totalItems );
+				const percentSet = 100 - perCent;
+
+				elProgress.style.left = '-' + percentSet + '%';
 			}
 		}
 	}, [ results ] );

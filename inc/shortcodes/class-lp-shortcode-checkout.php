@@ -42,7 +42,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 				$checkout_cart = learn_press_get_checkout_cart();
 
 				// Check cart has contents
-				if ( $checkout_cart->is_empty() ) {
+				if ( $checkout_cart && $checkout_cart->is_empty() ) {
 					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
 					learn_press_get_template( 'checkout/form.php' );
@@ -61,7 +61,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		 */
 		private function _order_received( $order_id = 0 ) {
 			$order_id       = absint( $order_id );
-			$order_key      = ! empty( $_GET['key'] ) ? LP_Helper::sanitize_params_submitted( $_GET['key'] ) : '';
+			$order_key      = LP_Helper::sanitize_params_submitted( $_GET['key'] ?? '' );
 			$order_received = learn_press_get_order( $order_id );
 
 			if ( ! $order_received ) {

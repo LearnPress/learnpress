@@ -325,7 +325,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 
 			$this->_option_id = 'emails_' . $this->id;
 
-			$this->settings = LP()->settings()->get_group( $this->_option_id, '' );
+			$this->settings = LP_Settings::instance()->get_group( $this->_option_id, '' );
 
 			/**
 			 * Init general options
@@ -337,8 +337,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			if ( $this->settings->get( 'email_content.format' ) ) {
 				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
 			} else {
-				if ( LP()->settings()->get( 'emails_general.default_email_content' ) ) {
-					$this->email_format = LP()->settings->get( 'emails_general.default_email_content' );
+				if ( LP_Settings::instance()->get( 'emails_general.default_email_content' ) ) {
+					$this->email_format = LP_Settings::instance()->get( 'emails_general.default_email_content' );
 				}
 			}
 
@@ -407,7 +407,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return mixed
 		 */
 		public function is_configured() {
-			return LP()->settings->get( $this->_option_id );
+			return LP_Settings::instance()->get( $this->_option_id );
 		}
 
 		/**
@@ -593,7 +593,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_footer_text(): string {
-			$text = LP()->settings->get( 'emails_general.footer_text', 'LearnPress' );
+			$text = LP_Settings::instance()->get( 'emails_general.footer_text', 'LearnPress' );
 
 			return LP_Helper::sanitize_params_submitted( $text, 'html' );
 		}
@@ -662,7 +662,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @modify 4.1.4 - comment - not override hook
 		 */
 		/*public function get_from_address(): string {
-			$email = LP()->settings->get( 'emails_general.from_email', get_option( 'admin_email' ) );
+			$email = LP_Settings::instance()->get( 'emails_general.from_email', get_option( 'admin_email' ) );
 
 			return sanitize_email( $email );
 		}*/
@@ -675,7 +675,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @version 1.0.1
 		 */
 		public function get_from_name(): string {
-			$name = LP()->settings->get( 'emails_general.from_name', get_option( 'blogname' ) );
+			$name = LP_Settings::instance()->get( 'emails_general.from_name', get_option( 'blogname' ) );
 
 			return LP_Helper::sanitize_params_submitted( $name );
 		}

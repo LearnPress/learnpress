@@ -54,9 +54,9 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 	}
 
 	private function _get_items_from_wp( $args = array() ) {
-		$tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+		$tab = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 
-		if ( ! $tab ) {
+		if ( empty( $tab ) ) {
 			return;
 		}
 
@@ -153,8 +153,8 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 		global $learn_press_add_ons;
 		$this->upgrader = new LP_Upgrader();
 
-		$page = ! empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
-		$tab  = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+		$page = LP_Helper::sanitize_params_submitted( $_REQUEST['page'] ?? '' );
+		$tab  = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 
 		if ( 'learn-press-addons' != $page ) {
 			return;
@@ -326,7 +326,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 			'Tools'       => _x( 'Tools', 'Plugin installer group title' ),
 		);
 
-		$tab   = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+		$tab   = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 		$group = null;
 
 		foreach ( (array) $this->items as $kk => $plugin ) {
@@ -387,14 +387,14 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 					case 'install':
 						if ( $status['url'] ) {
 							/* translators: 1: Plugin name and version. */
-							$action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Install %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install and Active', 'learnpress' ) . '</a>';
+							$action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Install %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install and Active', 'learnpress' ) . '</a>';
 						}
 
 						break;
 					case 'update_available':
 						if ( $status['url'] ) {
 							/* translators: 1: Plugin name and version */
-							$action_links[] = '<a class="update-now button thimpress" data-action="update-now" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Update %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now', 'learnpress' ) . '</a>';
+							$action_links[] = '<a class="update-now button thimpress" data-action="update-now" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Update %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now', 'learnpress' ) . '</a>';
 						}
 
 						break;
@@ -409,13 +409,6 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 				}
 			}
 
-			/*
-			$details_link   = self_admin_url( 'plugin-install.php?tab=plugin-information&amp;plugin=' . $plugin['slug'] .
-				'&amp;TB_iframe=true&amp;width=600&amp;height=550' );
-
-
-			$action_links[] = '<a href="' . esc_url( $details_link ) . '" class="thickbox" aria-label="' . esc_attr( sprintf( __( 'More information about %s' ), $name ) ) . '" data-title="' . esc_attr( $name ) . '">' . __( 'More Details' ) . '</a>';
-			*/
 			if ( ! empty( $plugin['icons']['svg'] ) ) {
 				$plugin_icon_url = $plugin['icons']['svg'];
 			} elseif ( ! empty( $plugin['icons']['2x'] ) ) {
@@ -455,9 +448,9 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 			?>
 			<div class="plugin-card plugin-card-<?php echo sanitize_html_class( $plugin['slug'] ); ?>">
 				<div class="plugin-card-top">
-					<a href="<?php echo esc_url( $details_link ); ?>" class="thickbox plugin-icon"><img src="<?php echo esc_attr( $plugin_icon_url ); ?>" /></a>
+					<a href="<?php echo esc_url_raw( $details_link ); ?>" class="thickbox plugin-icon"><img src="<?php echo esc_attr( $plugin_icon_url ); ?>" /></a>
 					<div class="name column-name">
-						<h3><a href="<?php echo esc_url( $details_link ); ?>" class="thickbox"><?php echo $title; ?></a></h3>
+						<h3><a href="<?php echo esc_url_raw( $details_link ); ?>" class="thickbox"><?php echo $title; ?></a></h3>
 					</div>
 					<div class="action-links">
 						<?php

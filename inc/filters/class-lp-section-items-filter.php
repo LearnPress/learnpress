@@ -20,6 +20,22 @@ class LP_Section_Items_Filter extends LP_Filter {
 	/**
 	 * @var int
 	 */
+	public $section_item_id = 0;
+	/**
+	 * @var int
+	 */
+	public $section_id = 0;
+	/**
+	 * @var int
+	 */
+	public $item_order = 0;
+	/**
+	 * @var string
+	 */
+	public $item_type = '';
+	/**
+	 * @var int
+	 */
 	public $search_title = '';
 	/**
 	 * @var int[]

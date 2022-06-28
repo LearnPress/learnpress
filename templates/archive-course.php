@@ -14,7 +14,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @see LP_Template_General::template_header()
  */
-do_action( 'learn-press/template-header' );
+if ( empty( $is_block_theme ) ) {
+	do_action( 'learn-press/template-header' );
+}
 
 /**
  * LP Hook
@@ -40,7 +42,7 @@ $page_title = learn_press_page_title( false );
 	do_action( 'learn-press/before-courses-loop' );
 	LP()->template( 'course' )->begin_courses_loop();
 
-	if ( lp_is_archive_course_load_via_api() ) {
+	if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
 		echo '<div class="lp-archive-course-skeleton" style="width:100%">';
 		echo lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
 		echo '</div>';
@@ -54,6 +56,12 @@ $page_title = learn_press_page_title( false );
 			endwhile;
 		} else {
 			LP()->template( 'course' )->no_courses_found();
+		}
+
+		if ( LP_Settings_Courses::is_ajax_load_courses() ) {
+			echo '<div class="lp-archive-course-skeleton no-first-load-ajax" style="width:100%; display: none">';
+			echo lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
+			echo '</div>';
 		}
 	}
 
@@ -81,4 +89,6 @@ $page_title = learn_press_page_title( false );
  *
  * @see   LP_Template_General::template_footer()
  */
-do_action( 'learn-press/template-footer' );
+if ( empty( $is_block_theme ) ) {
+	do_action( 'learn-press/template-footer' );
+}

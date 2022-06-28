@@ -28,7 +28,7 @@ if ( ! class_exists( 'LP_Email_Completed_Order_Admin' ) ) {
 			$this->default_subject = __( 'Order placed on {{order_date}} has been completed', 'learnpress' );
 			$this->default_heading = __( 'User order has been completed', 'learnpress' );
 			$this->recipients      = get_option( 'admin_email' );
-			$this->recipient       = LP()->settings->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
+			$this->recipient       = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();
 		}

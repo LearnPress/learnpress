@@ -68,6 +68,10 @@ const releasesFiles = [
 	'!editorconfig',
 	'!.travis.yml',
 	'!.babelrc',
+	'!inc/**/*.http',
+	'!packages/**',
+	'!languages/strings/**',
+	'!languages/learnpress-js.pot',
 ];
 
 const errorHandler = ( r ) => {
@@ -86,7 +90,7 @@ gulp.task( 'styles', () => {
 		.src( [ 'assets/src/scss/**/*.scss' ] )
 		.pipe( plumber( errorHandler ) )
 		// .pipe( sourcemaps.init() )
-		.pipe(sass.sync().on('error', sass.logError))
+		.pipe( sass.sync().on( 'error', sass.logError ) )
 		// .pipe( sourcemaps.write( './' ) )
 		.pipe( lineec() )
 		.pipe( gulp.dest( 'assets/css' ) )
@@ -222,3 +226,11 @@ gulp.task( 'release', gulp.series( 'build', 'noticeReleases', ( done ) => {
 gulp.task( 'release1', gulp.series( 'build', 'cleanReleaseFolder', 'noticeReleases', ( done ) => {
 	done();
 } ) );
+
+gulp.task( 'updatePot', () => {
+	return gulp
+		.src( [ './languages/learnpress.pot' ] )
+		.pipe( replace( /(assets\/)(.*)(.js)/g, 'assets/js/dist/frontend/quiz.min.js' ) )
+		.pipe( gulp.dest( './languages/' ) );
+} );
+

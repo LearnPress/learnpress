@@ -33,7 +33,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 	 * @return array
 	 */
 	public function get_settings( $section = null, $tab = null ) {
-		$settings      = LP()->settings();
+		$settings      = LP_Settings::instance();
 		$user          = wp_get_current_user();
 		$username      = $user->user_login;
 		$settings_slug = $settings->get( 'profile_endpoints.settings', 'settings' );

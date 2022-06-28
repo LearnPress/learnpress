@@ -32,14 +32,14 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
-				'lp-font-awesome-5'  => new LP_Asset_Key(
+				'font-awesome-5-all' => new LP_Asset_Key(
 					self::url( 'src/css/vendor/font-awesome-5.min.css' ),
 					array(),
 					array()
 				),
 				'learnpress'         => new LP_Asset_Key(
 					self::url( 'css/learnpress' . $is_rtl . self::$_min_assets . '.css' ),
-					array( 'lp-font-awesome-5' ),
+					array( 'font-awesome-5-all' ),
 					array( LP_PAGE_COURSES, LP_PAGE_SINGLE_COURSE, LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_QUIZ, LP_PAGE_QUESTION, LP_PAGE_CHECKOUT, LP_PAGE_BECOME_A_TEACHER, LP_PAGE_PROFILE ),
 					0
 				),
@@ -77,9 +77,10 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp_rest_url'                        => get_rest_url(),
 				'nonce'                              => wp_create_nonce( 'wp_rest' ),
 				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ),
+				'is_course_archive'                  => learn_press_is_courses(),
 			),
 			'lp-checkout'     => array(
-				'ajaxurl'            => home_url(),
+				'ajaxurl'            => home_url( '/' ),
 				'user_checkout'      => LP()->checkout()->get_checkout_email(),
 				'i18n_processing'    => esc_html__( 'Processing', 'learnpress' ),
 				'i18n_redirecting'   => esc_html__( 'Redirecting', 'learnpress' ),
@@ -136,8 +137,8 @@ class LP_Assets extends LP_Abstract_Assets {
 					array( 'jquery' )
 				),
 				'lp-checkout'          => new LP_Asset_Key(
-					self::url( self::$_folder_source . 'js/frontend/checkout' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'lp-utils' ),
+					self::url( 'js/dist/frontend/checkout' . self::$_min_assets . '.js' ),
+					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'jquery' ),
 					array( LP_PAGE_CHECKOUT ),
 					0,
 					1
@@ -205,7 +206,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'lp-utils', 'wp-api-fetch' ),
+					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'wp-hooks' ),
 					array( LP_PAGE_COURSES ),
 					0,
 					1
@@ -231,7 +232,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					1
 				),
 				'lp-become-a-teacher'  => new LP_Asset_Key(
-					self::url( self::$_folder_source . 'js/frontend/become-teacher' . self::$_min_assets . '.js' ),
+					self::url( 'js/dist/frontend/become-teacher' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'lp-utils' ),
 					array( LP_PAGE_BECOME_A_TEACHER ),
 					0,
@@ -240,7 +241,12 @@ class LP_Assets extends LP_Abstract_Assets {
 			)
 		);
 
-		wp_set_script_translations( 'lp-quiz', 'learnpress' );
+		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
+		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ||
+		LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
+		LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
+			wp_dequeue_script( 'smoothPageScroll' );
+		}
 
 		return $scripts;
 	}
@@ -253,93 +259,12 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @since 3.2.8
 	 */
 	public function load_scripts() {
-		$page_current = lp_page_controller()::page_current();
+		$page_current = LP_Page_Controller::page_current();
 		$this->handle_js( $page_current );
 		$this->handle_style( $page_current );
 
 		do_action( 'learn-press/after-enqueue-scripts' );
 	}
-
-	/**
-	 * Check is currently in a screen required.
-	 *
-	 * @param array $screens
-	 *
-	 * @return bool
-	 * @since 3.3.0
-	 * @editor tungnx
-	 * @reason comment - not use
-	 */
-	/*
-	public function is_screen( $screens ) {
-		$pages = array(
-			'profile',
-			'become_a_teacher',
-			'term_conditions',
-			'checkout',
-			'courses',
-		);
-
-		$single_post_types                  = array();
-		$single_post_types[ LP_COURSE_CPT ] = 'course';
-		$is_screen                          = false;
-
-		if ( $screens === true || $screens === '*' ) {
-			$is_screen = true;
-		} else {
-			$screens = is_array( $screens ) ? $screens : array( $screens );
-			if ( in_array( 'learnpress', $screens ) ) {
-				foreach ( $pages as $page ) {
-					if ( $page === 'courses' && learn_press_is_courses() ) {
-						$is_screen = true;
-						break;
-					}
-
-					if ( is_post_type_archive( 'lp_collection' ) || is_singular( 'lp_collection' ) ) {
-						$is_screen = true;
-						break;
-					}
-
-					if ( learn_press_is_page( $page ) ) {
-						$is_screen = true;
-						break;
-					}
-
-					foreach ( $single_post_types as $post_type => $alias ) {
-						if ( is_singular( $post_type ) ) {
-							$is_screen = true;
-							break 2;
-						}
-					}
-				}
-			} else {
-				foreach ( $pages as $page ) {
-					if ( in_array( $page, $screens ) ) {
-						if ( $page === 'courses' && learn_press_is_courses() ) {
-							$is_screen = true;
-							break;
-						}
-
-						if ( learn_press_is_page( $page ) ) {
-							$is_screen = true;
-							break;
-						}
-					}
-				}
-			}
-
-			if ( ! $is_screen ) {
-				foreach ( $single_post_types as $post_type => $alias ) {
-					if ( is_singular( $post_type ) && in_array( $alias, $screens ) ) {
-						$is_screen = true;
-						break;
-					}
-				}
-			}
-		}
-
-		return $is_screen;
-	}*/
 
 	/**
 	 * Add lp overlay

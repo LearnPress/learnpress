@@ -27,9 +27,8 @@ class LP_Polylang {
 		add_filter( 'lp/profile/args/user_courses_created', [ $this, 'wpml_arg_query_course' ] );
 		add_filter( 'lp/profile/args/user_courses_statistic', [ $this, 'wpml_arg_query_course' ] );
 		add_filter( 'learnpress/rest/frontend/profile/course_tab/query', [ $this, 'args_query_user_courses' ], 10, 2 );
-		add_filter( 'lp/api/courses/filter', [ $this, 'filter_query_courses' ], 10, 2 );
-		add_filter( 'lp/api/profile/courses/purchased/filter', [ $this, 'profile_filter_query_user_courses' ], 10, 2 );
-		add_filter( 'lp/api/profile/courses/own/filter', [ $this, 'profile_filter_query_courses' ], 10, 2 );
+		add_filter( 'lp/course/query/filter', [ $this, 'filter_query_courses' ], 10 );
+		add_filter( 'lp/user/course/query/filter', [ $this, 'filter_query_user_courses' ], 10 );
 		add_filter( 'pll_the_language_link', [ $this, 'get_link_switcher' ], 10, 3 );
 	}
 
@@ -41,7 +40,7 @@ class LP_Polylang {
 	 *
 	 * @return int
 	 */
-	public function get_page_id( int $page_id = 0, string $name ): int {
+	public function get_page_id( int $page_id = 0, string $name = '' ): int {
 		if ( ! is_callable( 'pll_default_language' ) ) {
 			return $page_id;
 		}
@@ -75,12 +74,11 @@ class LP_Polylang {
 	 * Query get course by current language
 	 *
 	 * @param LP_Course_Filter $filter
-	 * @param WP_REST_Request $request
 	 *
 	 * @return LP_Course_Filter
 	 */
-	public function filter_query_courses( LP_Course_Filter $filter, WP_REST_Request $request ): LP_Course_Filter {
-		$pll_current_lang = $request['pll-current-lang'] ?? '';
+	public function filter_query_courses( LP_Course_Filter $filter ): LP_Course_Filter {
+		$pll_current_lang = $_REQUEST['pll-current-lang'] ?? '';
 
 		if ( empty( $pll_current_lang ) ) {
 			return $filter;
@@ -99,12 +97,11 @@ class LP_Polylang {
 	 * Profile filter query get user course by current language
 	 *
 	 * @param LP_User_Items_Filter $filter
-	 * @param array $args
 	 *
 	 * @return LP_User_Items_Filter
 	 */
-	public function profile_filter_query_user_courses( LP_User_Items_Filter $filter, array $args ): LP_User_Items_Filter {
-		$pll_current_lang = $args['pll-current-lang'] ?? '';
+	public function filter_query_user_courses( LP_User_Items_Filter $filter ): LP_User_Items_Filter {
+		$pll_current_lang = $_REQUEST['pll-current-lang'] ?? '';
 
 		if ( empty( $pll_current_lang ) ) {
 			return $filter;
@@ -127,7 +124,7 @@ class LP_Polylang {
 	 *
 	 * @return LP_Course_Filter
 	 */
-	public function profile_filter_query_courses( LP_Course_Filter $filter, array $args ): LP_Course_Filter {
+	/*public function profile_filter_query_courses( LP_Course_Filter $filter, array $args ): LP_Course_Filter {
 		$pll_current_lang = $args['pll-current-lang'] ?? '';
 
 		if ( empty( $pll_current_lang ) ) {
@@ -141,7 +138,7 @@ class LP_Polylang {
 		$filter->where[] = $lp_db->wpdb->prepare( 'AND term.slug = %s', $pll_current_lang );
 
 		return $filter;
-	}
+	}*/
 
 	/**
 	 * Args get course by current language

@@ -213,31 +213,6 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 		learn_press_send_json( $response );
 	}
 
-	/**
-	 *
-	 */
-	/*public function scripts() {
-		if ( LP_Request::get( 'page' ) !== 'learn-press-statistics' ) {
-			return;
-		}
-		wp_enqueue_style( 'learn-press-statistic', LP_CSS_URL . 'admin/statistic.css' );
-
-		$exclude_assets = LP()->settings()->get( 'exclude_admin_libraries' );
-
-		if ( ! $exclude_assets || ! in_array( 'chartjs', $exclude_assets ) ) {
-			wp_enqueue_script( 'learn-press-chart', LP_JS_URL . 'vendor/chart.min.js' );
-		}
-
-		wp_enqueue_script(
-			'learn-press-statistic',
-			LP_JS_URL . 'admin/pages/statistic.js',
-			array(
-				'jquery',
-				'jquery-ui-datepicker',
-			)
-		);
-	}*/
-
 	public function page_content_courses() {
 		learn_press_admin_view( 'statistics/courses' );
 	}

@@ -72,9 +72,9 @@ if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
 	<div class="course-tab-panels">
 		<?php foreach ( $tabs as $key => $tab ) : ?>
 			<div class="course-tab-panel-<?php echo esc_attr( $key ); ?> course-tab-panel"
-				 id="<?php echo esc_attr( $tab['id'] ); ?>">
+				id="<?php echo esc_attr( $tab['id'] ); ?>">
 				<?php
-				if ( is_callable( $tab['callback'] ) ) {
+				if ( isset( $tab['callback'] ) && is_callable( $tab['callback'] ) ) {
 					call_user_func( $tab['callback'], $key, $tab );
 				} else {
 					do_action( 'learn-press/course-tab-content', $key, $tab );

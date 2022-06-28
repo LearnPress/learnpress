@@ -151,7 +151,7 @@ if ( ! class_exists( 'LP_Course_Attributes' ) ) {
 			if ( learn_press_delete_attribute_terms( $attribute ) ) {
 				learn_press_add_notice( 'Deleted attribute terms', 'learnpress' );
 			}
-			wp_redirect( remove_query_arg( 'remove-course-attribute-terms' ) );
+			wp_redirect( esc_url_raw( remove_query_arg( 'remove-course-attribute-terms' ) ) );
 		}
 
 		/**
@@ -223,28 +223,30 @@ if ( ! class_exists( 'LP_Course_Attributes' ) ) {
 		 * @return string
 		 */
 		public function terms_row_actions( $tax ) {
-			$uri           = wp_doing_ajax() ? wp_get_referer() : $_SERVER['REQUEST_URI'];
-			$edit_link     = add_query_arg(
-				'wp_http_referer',
-				urlencode( wp_unslash( $uri ) ),
+			$uri           = wp_doing_ajax() ? wp_get_referer() : esc_url_raw( $_SERVER['REQUEST_URI'] );
+			$edit_link     = esc_url_raw(
 				add_query_arg(
-					array(
-						'taxonomy'  => LP_COURSE_ATTRIBUTE . '-' . $tax->slug,
-						'post_type' => LP_COURSE_CPT,
-					),
-					admin_url( 'term.php' )
+					'wp_http_referer',
+					urlencode( wp_unslash( $uri ) ),
+					add_query_arg(
+						array(
+							'taxonomy'  => LP_COURSE_ATTRIBUTE . '-' . $tax->slug,
+							'post_type' => LP_COURSE_CPT,
+						),
+						admin_url( 'term.php' )
+					)
 				)
 			);
 			$terms_actions = array(
 				'edit'   => sprintf(
 					'<a href="%s" aria-label="%s" >%s </a > ',
-					esc_url( $edit_link ),
+					esc_url_raw( $edit_link ),
 					esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;', 'learnpress' ), $tax->name ) ),
 					__( 'Edit', 'learnpress' )
 				),
 				'delete' => sprintf(
 					'<a href="%s" aria-label="%s" >%s </a > ',
-					esc_url( add_query_arg( 'remove-course-attribute-terms', $tax->term_id ) ),
+					esc_url_raw( add_query_arg( 'remove-course-attribute-terms', $tax->term_id ) ),
 					'',
 					__( 'Clear', 'learnpress' )
 				),

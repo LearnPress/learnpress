@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $user   = learn_press_get_current_user();
-$course = LP_Global::course();
+$course = learn_press_get_course();
 if ( ! $course ) {
 	return;
 }
@@ -114,16 +114,8 @@ $js = array(
 	'edit_permalink'      => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
 	'results'             => array(),
 	'required_password'   => post_password_required( $quiz->get_id() ),
+	'allow_retake'        => $quiz->get_retake_count() == -1,
 );
-
-/*
-if ( $course->is_no_required_enroll() ) {
-	$cookie_user_status = 'quiz_submit_status_' . $course->get_id() . '_' . $quiz->get_id() . '';
-	if ( ! empty( $_COOKIE[ $cookie_user_status ] ) ) {
-		$js_status    = $_COOKIE[ $cookie_user_status ];
-		$js['status'] = $js_status;
-	}
-}*/
 
 $js = array_merge( $js, $user_js );
 

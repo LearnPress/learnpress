@@ -60,8 +60,14 @@ learn_press_admin_view( 'question/fill-in-blanks' );
 			mounted: function() {
 				var vm = this;
 
-				this.$watch('type', function() {
+				vm.$watch('type', function() {
 				});
+
+				if(lpAdminSettings.screen.action === 'add') {
+					$store.dispatch('changeQuestionType', {
+						type: vm.type
+					});
+				}
 			},
 			computed: {
 				type: function() {

@@ -376,7 +376,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 *
 		 * @param int    $item_id Item id.
 		 * @param int    $course_id .
-		 * @param string $item_type .
 		 *
 		 * @return LP_Course_Item|false
 		 * @Todo: tungnx - review - rewrite - set cache - check where call this function
@@ -385,7 +384,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @version 4.0.1
 		 * @since 3.x.x
 		 */
-		public static function get_item( $item_id = 0, $course_id = 0, $item_type = '' ) {
+		public static function get_item( $item_id = 0, $course_id = 0 ) {
 			/*
 			$lp_course_cache = LP_Course_Cache::instance();
 			$key_cache       = sprintf( '%d/item_id/%d', $course_id, $item_id );
@@ -490,7 +489,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return string
 		 */
 		public function create_nonce( $action = '', $course_id = 0, $user_id = 0 ) {
-			if ( ! $course_id ) {
+			if ( ! $course_id && $this->get_course() ) {
 				$course_id = $this->get_course()->get_id();
 			}
 

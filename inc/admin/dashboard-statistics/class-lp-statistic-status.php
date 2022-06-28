@@ -47,7 +47,7 @@ if ( ! class_exists( 'LP_Statistic_Status' ) ) {
 
 					<li>
 						<?php if ( $count ) : ?>
-							<a href="<?php echo esc_url( admin_url( 'edit.php?post_status=' . LP_ORDER_CPT . '&post_type=' . $status ) ); ?>" class="<?php echo esc_attr( $status ); ?>">
+							<a href="<?php echo esc_url_raw( admin_url( 'edit.php?post_status=' . LP_ORDER_CPT . '&post_type=' . $status ) ); ?>" class="<?php echo esc_attr( $status ); ?>">
 								<span><?php printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count ); ?></span>
 								<?php printf( '%s', $status_object->label ); ?>
 							</a>
@@ -62,7 +62,7 @@ if ( ! class_exists( 'LP_Statistic_Status' ) ) {
 
 				<li class="full-width featured-theme">
 					<p>
-						<a href="<?php echo esc_url( $eduma_data['item']['url'] ); ?>">
+						<a href="<?php echo esc_url_raw( $eduma_data['item']['url'] ); ?>">
 							<?php echo esc_html( $eduma_data['item']['item'] ); ?>
 						</a> - <?php printf( '%s%s', '$', $eduma_data['item']['cost'] ); ?>
 					</p>

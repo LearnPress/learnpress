@@ -28,7 +28,7 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 <table class="form-table">
 	<tbody>
 		<?php
-		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
 
 		if ( $custom_fields ) {
 			foreach ( $custom_fields as $field ) {

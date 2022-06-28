@@ -4,7 +4,7 @@
  *
  * @author  tungnx
  * @package LearnPress/Classes/Filters
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 /**
@@ -26,7 +26,11 @@ class LP_Filter {
 	 */
 	public $sort_by = array();
 	/**
-	 * @var string For direct query
+	 * @var string
+	 */
+	public $group_by = '';
+	/**
+	 * @var string
 	 */
 	public $order_by = '';
 	/**
@@ -42,9 +46,37 @@ class LP_Filter {
 	 */
 	public $page = 1;
 	/**
+	 * Name table query Or Query nested
+	 * EX: FROM 'wp_posts'
+	 * OR: FROM (SELECT * FROM 'wp_posts') AS P
+	 *
+	 * @var string
+	 */
+	public $collection = '';
+	/**
+	 * Alias collection
+	 * EX: FROM 'wp_posts' AS p
+	 * "p" is alias
+	 *
+	 * @var string
+	 */
+	public $collection_alias = '';
+	/**
 	 * @var array
 	 */
 	public $fields = array();
+	/**
+	 * For get only columns set on it
+	 *
+	 * @var array
+	 */
+	public $only_fields = array();
+	/**
+	 * Exclude columns set on fields
+	 *
+	 * @var array
+	 */
+	public $exclude_fields = array();
 	/**
 	 * @var array
 	 */
@@ -54,13 +86,17 @@ class LP_Filter {
 	 */
 	public $join = array();
 	/**
+	 * @var array
+	 */
+	public $union = array();
+	/**
 	 * @var bool set true to return total_rows only
 	 */
 	public $query_count = false;
 	/**
 	 * @var string Ex: ID, for query: COUNT(ID)
 	 */
-	public $field_count = '';
+	public $field_count = 'ID';
 	/**
 	 * @var bool set true to return string query
 	 */
@@ -69,6 +105,10 @@ class LP_Filter {
 	 * @var string
 	 */
 	public $query_type = 'get_results';
+	/**
+	 * @var object stdclass
+	 */
+	public $filter_extra;
 
 	public function __construct() {
 		$this->limit     = apply_filters( 'lp/filter/limit', $this->limit );

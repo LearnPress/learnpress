@@ -116,20 +116,20 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			}
 		}
 
-		$base = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $base ) ) );
+		$base = esc_url_raw( add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $base ) ) ) );
 
 		if ( $page > 1 ) {
 			$prev_page = $page - 1;
 			if ( $prev_page > $max_pages ) {
 				$prev_page = $max_pages;
 			}
-			$prev_link = add_query_arg( 'page', $prev_page, $base );
+			$prev_link = esc_url_raw( add_query_arg( 'page', $prev_page, $base ) );
 			$response->link_header( 'prev', $prev_link );
 		}
 
 		if ( $max_pages > $page ) {
 			$next_page = $page + 1;
-			$next_link = add_query_arg( 'page', $next_page, $base );
+			$next_link = esc_url_raw( add_query_arg( 'page', $next_page, $base ) );
 			$response->link_header( 'next', $next_link );
 		}
 
@@ -204,9 +204,9 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		$id = isset( $request['id'] ) ? absint( $request['id'] ) : 0;
 
 		if ( isset( $request['id'] ) ) {
-			$post = get_post( $id );
+			$existing_post = get_post( $id );
 
-			if ( empty( $post ) || empty( $post->ID ) || $this->post_type !== $post->post_type ) {
+			if ( empty( $existing_post ) || empty( $existing_post->ID ) || $this->post_type !== $existing_post->post_type ) {
 				return new WP_Error( 'rest_invalid_course', __( 'Invalid Course' ), array( 'status' => 404 ) );
 			}
 

@@ -33,14 +33,14 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @param $post_type
 		 */
-		public function __construct( $post_type ) {
+		public function __construct() {
 
 			// $this->add_map_method( 'before_delete', 'before_delete_lesson' );
 			// hide View Lesson link if not assigned to course
 
 			add_filter( 'views_edit-' . LP_LESSON_CPT, array( $this, 'views_pages' ), 10 );
 
-			parent::__construct( $post_type );
+			parent::__construct();
 		}
 
 		/**
@@ -326,7 +326,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public static function instance() {
 			if ( ! self::$_instance ) {
-				self::$_instance = new self( LP_LESSON_CPT );
+				self::$_instance = new self();
 			}
 
 			return self::$_instance;

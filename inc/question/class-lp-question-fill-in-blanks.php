@@ -169,7 +169,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 						$fill = $atts['fill'] ?? '';
 
-						$new_str = '{{FIB_' . esc_attr( $ids ) . '}}';
+						$new_str = ' {{FIB_' . esc_attr( $ids ) . '}} ';
 
 						$content = str_replace( $shortcode[0], $new_str, $content );
 					}
@@ -316,12 +316,12 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 				$exclude = array_flip( $exclude );
 
 				foreach ( $options as $k => $option ) {
-					$is_true             = ! isset( $exclude['is_true'] ) ? true : false;
+					$is_true             = ! isset( $exclude['is_true'] );
 					$fib_answer          = ! empty( $args['answer'] ) ? $args['answer'] : '';
 					$title               = $option['title'];
 					$option['title']     = apply_filters( 'learn-press/question/fib/regex-content', $title, $option['question_answer_id'], $is_true, $fib_answer );
 					$option['ids']       = $this->fib_get_ids( $title );
-					$option['title_api'] = $this->match_shortcode_api( $title, $option['question_answer_id'], $is_true, $fib_answer );
+					$option['title_api'] = wp_strip_all_tags( $this->match_shortcode_api( $title, $option['question_answer_id'], $is_true, $fib_answer ) );
 					$option['answers']   = $is_true ? $this->get_answer_data( $title, $option['question_answer_id'], $fib_answer ) : array();
 
 					foreach ( $map as $k_map => $v_map ) {
@@ -492,7 +492,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 					if ( $match_case ) {
 						$blank_correct = strcmp( $user_fill, $fill ) == 0;
 					} else {
-						$blank_correct = strcasecmp( $user_fill, $fill ) == 0;
+						$blank_correct = strcasecmp( mb_strtolower( $user_fill, 'UTF-8' ), mb_strtolower( $fill, 'UTF-8' ) ) == 0;
 					}
 			}
 

@@ -26,47 +26,6 @@
 			background: #eee;
 		}
 
-		.lp-item-step-left {
-			display: inline-flex;
-			align-items: center;
-			position: relative;
-			padding: 0 2em;
-
-			&::before {
-				display: block;
-				position: absolute;
-				z-index: 2;
-				width: 1em;
-				height: 1em;
-				border: 1px solid rgba(0, 0, 0, 0.1);
-				border-top: 1px solid #3498db;
-				border-radius: 50%;
-				opacity: 0;
-				content: "";
-				-webkit-animation: lp-rotating 0.8s linear infinite;
-				animation: lp-rotating 0.8s linear infinite;
-
-			}
-
-			&::after {
-				position: absolute;
-				z-index: 1;
-				left: 23px;
-				opacity: 0;
-				color: #4caf50;
-				font-family: Dashicons;
-				font-size: 1.5em;
-				content: "\f147";
-			}
-
-			input {
-			}
-		}
-
-		.lp-item-step-right {
-
-		}
-
 		&.running {
 
 			.lp-item-step-left {
@@ -135,6 +94,40 @@
 			opacity: 0;
 			background: #7c60d9bf;
 			transition: 0.8s linear;
+		}
+	}
+
+	.lp-item-step-left {
+		display: inline-flex;
+		align-items: center;
+		position: relative;
+		padding: 0 2em;
+
+		&::before {
+			display: block;
+			position: absolute;
+			z-index: 2;
+			width: 1em;
+			height: 1em;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-top: 1px solid #3498db;
+			border-radius: 50%;
+			opacity: 0;
+			content: "";
+			-webkit-animation: lp-rotating 0.8s linear infinite;
+			animation: lp-rotating 0.8s linear infinite;
+
+		}
+
+		&::after {
+			position: absolute;
+			z-index: 1;
+			left: 23px;
+			opacity: 0;
+			color: #4caf50;
+			font-family: Dashicons;
+			font-size: 1.5em;
+			content: "\f147";
 		}
 	}
 }

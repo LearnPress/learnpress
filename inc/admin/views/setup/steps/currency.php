@@ -9,7 +9,8 @@
 
 defined( 'ABSPATH' ) or exit;
 
-$settings      = LP()->settings()->refresh();
+// $settings      = LP_Settings::instance()->refresh();
+$settings      = LP_Settings::instance();
 $currency      = $settings->get( 'currency', 'USD' );
 $preview_price = '';
 ?>

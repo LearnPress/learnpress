@@ -12,13 +12,13 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! $course ) {
+if ( ! isset( $course ) || ! $course || ! isset( $instance ) ) {
 	return;
 }
 ?>
 
 <div class="lp_widget_course_info <?php echo esc_attr( $instance['css_class'] ); ?>">
-	<h3><?php echo $course->get_title(); ?></h3>
+	<h3><?php echo wp_kses_post( $course->get_title() ); ?></h3>
 
 	<ul class="lp-course-info-fields">
 		<li class="lp-course-info lessons">

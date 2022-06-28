@@ -94,7 +94,9 @@ class LP_Checkout {
 		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10, 3 );
 		//add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
 
-		$this->_checkout_email = LP()->session->get( 'checkout-email' );
+		if ( ! is_null( LP()->session ) ) {
+			$this->_checkout_email = LP()->session->get( 'checkout-email' );
+		}
 	}
 
 	/**
@@ -382,7 +384,7 @@ class LP_Checkout {
 			if ( is_user_logged_in() ) {
 				$user_id = get_current_user_id();
 			} else {
-				$checkout_option = isset( $_POST['checkout-email-option'] ) ? LP_Helper::sanitize_params_submitted( $_POST['checkout-email-option'] ) : '';
+				$checkout_option = LP_Helper::sanitize_params_submitted( $_POST['checkout-email-option'] ?? '' );
 
 				// Create new user if buy with Guest and tick "Create new Account"
 				if ( $checkout_option === 'new-account' ) {
@@ -473,7 +475,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_guest_checkout() {
-		return apply_filters( 'learn-press/checkout/enable-guest', LP()->settings()->get( 'guest_checkout', 'no' ) == 'yes' );
+		return apply_filters( 'learn-press/checkout/enable-guest', LP_Settings::instance()->get( 'guest_checkout', 'no' ) == 'yes' );
 	}
 
 	/**
@@ -483,7 +485,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_login() {
-		return apply_filters( 'learn-press/checkout/enable-login', in_array( LP()->settings()->get( 'enable_login_checkout' ), array( '', 'yes' ) ) );
+		return apply_filters( 'learn-press/checkout/enable-login', in_array( LP_Settings::instance()->get( 'enable_login_checkout' ), array( '', 'yes' ) ) );
 	}
 
 	/**
@@ -493,7 +495,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_register() {
-		return apply_filters( 'learn-press/checkout/enable-register', in_array( LP()->settings()->get( 'enable_registration_checkout' ), array( '', 'yes' ) ) && get_option( 'users_can_register' ) );
+		return apply_filters( 'learn-press/checkout/enable-register', in_array( LP_Settings::instance()->get( 'enable_registration_checkout' ), array( '', 'yes' ) ) && get_option( 'users_can_register' ) );
 	}
 
 	/**

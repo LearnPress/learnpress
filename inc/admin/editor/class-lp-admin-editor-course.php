@@ -110,6 +110,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			return;
 		}
 
+		$this->course ? $this->course->get_sections() : '';
 		$this->result = $this->section_curd->sort_sections( $order );
 
 		// update final quiz

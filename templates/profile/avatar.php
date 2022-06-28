@@ -13,5 +13,5 @@ $user = LP_Profile::instance()->get_user();
 ?>
 
 <div class="lp-user-profile-avatar">
-	<?php echo $user->get_profile_picture(); ?>
+	<?php echo wp_kses_post( $user->get_profile_picture() ); ?>
 </div>

@@ -110,7 +110,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'default'     => 'lp-order-received',
 					'placeholder' => 'lp-order-received',
 					'type'        => 'text',
-					'desc'        => sprintf( 'e.g. %s', "{$checkout_url}<code>" . LP()->settings()->get( 'checkout_endpoints.lp_order_received', 'lp-order-received' ) . '</code>' ),
+					'desc'        => sprintf( 'e.g. %s', "{$checkout_url}<code>" . LP_Settings::instance()->get( 'checkout_endpoints.lp_order_received', 'lp-order-received' ) . '</code>' ),
 				),
 			)
 		);

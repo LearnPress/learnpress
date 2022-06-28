@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || die();
 
 	<label>
 		<input type="checkbox" name="enable_hard_cache"
-			   value="1" <?php checked( LP()->settings()->get( 'enable_hard_cache' ), 'yes' ); ?>>
+			   value="1" <?php checked( LP_Settings::instance()->get( 'enable_hard_cache' ), 'yes' ); ?>>
 		<?php _e( 'Enable/Disable hard cache', 'learnpress' ); ?>
 	</label>
 	<p class="tools-button">

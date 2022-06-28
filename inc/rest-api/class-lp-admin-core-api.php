@@ -22,13 +22,20 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 	public function rest_api_includes() {
 		parent::rest_api_includes();
 
-		$path_version = DIRECTORY_SEPARATOR . $this->version . DIRECTORY_SEPARATOR . 'admin';
+		$list_rest_admin = array(
+			'class-lp-admin-rest-question-controller.php',
+			'class-lp-admin-rest-database-controller.php',
+			'class-lp-admin-rest-course-controller.php',
+			'class-lp-admin-rest-tools-controller.php',
+			'class-lp-admin-rest-reset-data-controller.php',
+		);
 
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-question-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-database-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-course-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-tools-controller.php';
-		include_once dirname( __FILE__ ) . $path_version . '/class-lp-admin-rest-reset-data-controller.php';
+		$path_version  = $this->version . '/admin/';
+		$path_rest_api = LP_PLUGIN_PATH . 'inc/rest-api/' . $path_version;
+
+		foreach ( $list_rest_admin as $rest_admin ) {
+			include_once realpath( $path_rest_api . $rest_admin );
+		}
 
 		do_action( 'learn-press/admin/core-api/includes' );
 	}

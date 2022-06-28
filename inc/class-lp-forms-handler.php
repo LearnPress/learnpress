@@ -14,10 +14,10 @@ class LP_Forms_Handler {
 	 */
 	public static function process_become_teacher() {
 		$args = array(
-			'bat_name'    => isset( $_POST['bat_name'] ) ? LP_Helper::sanitize_params_submitted( $_POST['bat_name'] ) : '',
-			'bat_email'   => isset( $_POST['bat_email'] ) ? LP_Helper::sanitize_params_submitted( $_POST['bat_email'] ) : '',
-			'bat_phone'   => isset( $_POST['bat_phone'] ) ? LP_Helper::sanitize_params_submitted( $_POST['bat_phone'] ) : '',
-			'bat_message' => isset( $_POST['bat_message'] ) ? LP_Helper::sanitize_params_submitted( $_POST['bat_message'] ) : '',
+			'bat_name'    => LP_Helper::sanitize_params_submitted( $_POST['bat_name'] ?? '' ),
+			'bat_email'   => LP_Helper::sanitize_params_submitted( $_POST['bat_email'] ?? '' ),
+			'bat_phone'   => LP_Helper::sanitize_params_submitted( $_POST['bat_phone'] ?? '' ),
+			'bat_message' => LP_Helper::sanitize_params_submitted( $_POST['bat_message'] ?? '' ),
 		);
 
 		$result = array(
@@ -73,7 +73,7 @@ class LP_Forms_Handler {
 		if ( isset( $_POST['username'], $_POST['password'] ) ) {
 			try {
 				$username = trim( LP_Helper::sanitize_params_submitted( $_POST['username'] ) );
-				$password = $_POST['password'];
+				$password = LP_Helper::sanitize_params_submitted( $_POST['password'] );
 				$remember = LP_Request::get_string( 'rememberme' );
 
 				if ( empty( $username ) ) {
@@ -105,9 +105,9 @@ class LP_Forms_Handler {
 					throw new Exception( $user->get_error_message() );
 				} else {
 					if ( ! empty( $_POST['redirect'] ) ) {
-						$redirect = wp_unslash( $_POST['redirect'] );
+						$redirect = LP_Helper::sanitize_params_submitted( $_POST['redirect'] );
 					} elseif ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
-						$redirect = wp_unslash( $_REQUEST['_wp_http_referer'] );
+						$redirect = LP_Helper::sanitize_params_submitted( $_REQUEST['_wp_http_referer'] );
 					} else {
 						$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
 					}
@@ -132,14 +132,14 @@ class LP_Forms_Handler {
 			return;
 		}
 
-		$username         = isset( $_POST['reg_username'] ) ? LP_Helper::sanitize_params_submitted( $_POST['reg_username'] ) : '';
-		$email            = isset( $_POST['reg_email'] ) ? LP_Helper::sanitize_params_submitted( $_POST['reg_email'] ) : '';
-		$password         = $_POST['reg_password'] ?? '';
-		$confirm_password = $_POST['reg_password2'] ?? '';
-		$first_name       = isset( $_POST['reg_first_name'] ) ? LP_Helper::sanitize_params_submitted( $_POST['reg_first_name'] ) : '';
-		$last_name        = isset( $_POST['reg_last_name'] ) ? LP_Helper::sanitize_params_submitted( $_POST['reg_last_name'] ) : '';
-		$display_name     = isset( $_POST['reg_display_name'] ) ? LP_Helper::sanitize_params_submitted( $_POST['reg_display_name'] ) : '';
-		$update_meta      = isset( $_POST['_lp_custom_register_form'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_custom_register_form'] ) : array();
+		$username         = LP_Helper::sanitize_params_submitted( $_POST['reg_username'] ?? '' );
+		$email            = LP_Helper::sanitize_params_submitted( $_POST['reg_email'] ?? '' );
+		$password         = LP_Helper::sanitize_params_submitted( $_POST['reg_password'] ?? '' );
+		$confirm_password = LP_Helper::sanitize_params_submitted( $_POST['reg_password2'] ?? '' );
+		$first_name       = LP_Helper::sanitize_params_submitted( $_POST['reg_first_name'] ?? '' );
+		$last_name        = LP_Helper::sanitize_params_submitted( $_POST['reg_last_name'] ?? '' );
+		$display_name     = LP_Helper::sanitize_params_submitted( $_POST['reg_display_name'] ?? '' );
+		$update_meta      = LP_Helper::sanitize_params_submitted( $_POST['_lp_custom_register_form'] ?? '' );
 
 		try {
 			$new_customer = self::learnpress_create_new_customer(
@@ -259,7 +259,7 @@ class LP_Forms_Handler {
 			return new WP_Error( 'registration-error-confirm-password', __( 'Confirmation password incorrect!.', 'learnpress' ) );
 		}
 
-		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
 
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {
@@ -326,7 +326,7 @@ class LP_Forms_Handler {
 			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
 		}
 
-		$custom_fields = LP()->settings()->get( 'register_profile_fields' );
+		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
 
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {

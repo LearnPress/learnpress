@@ -81,6 +81,50 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/change-password',
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'change_password' ),
+				'permission_callback' => array( $this, 'update_item_password_permissions' ),
+				'args'                => array(
+					'old_password' => array(
+						'description' => esc_html__( 'Old Password', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+					'new_password' => array(
+						'description' => esc_html__( 'New Password', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/delete',
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'delete_account' ),
+				'permission_callback' => array( $this, 'update_item_password_permissions' ),
+				'args'                => array(
+					'id'       => array(
+						'description' => esc_html__( 'User ID', 'learnpress' ),
+						'type'        => 'integer',
+						'required'    => true,
+					),
+					'password' => array(
+						'description' => esc_html__( 'Password', 'learnpress' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+				),
+			)
+		);
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -168,6 +212,28 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return true;
 	}
 
+	public function update_item_password_permissions( $request ) {
+		$user = wp_get_current_user();
+
+		if ( ! $user ) {
+			return new WP_Error(
+				'rest_cannot_update',
+				__( 'Sorry, you are not allowed to update this user.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+			return new WP_Error(
+				'rest_cannot_edit',
+				__( 'Sorry, you are not allowed to edit this user.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		return true;
+	}
+
 	/**
 	 * Determines if the current user is allowed to make the desired roles change.
 	 *
@@ -238,10 +304,90 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 			return rest_ensure_response(
 				array(
 					'code'    => 'success',
-					'message' => esc_html__( 'Please check your email to reset your password', 'learnpress' ),
+					'message' => esc_html__( 'A link to reset your password has been emailed to you.', 'learnpress' ),
 				)
 			);
 		}
+	}
+
+	public function delete_account( $request ) {
+		$user_id  = $request['id'];
+		$password = $request['password'];
+
+		$user = wp_get_current_user();
+
+		if ( ! $user || $user_id !== $user->ID ) {
+			return new WP_Error(
+				'rest_user_invalid_id',
+				__( 'Invalid user ID.', 'learnpress' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		if ( ! wp_check_password( $password, $user->data->user_pass, $user->ID ) ) {
+			return new WP_Error(
+				'rest_user_invalid_password',
+				__( 'Invalid password.', 'learnpress' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		if ( ! function_exists( 'wp_delete_user' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/user.php';
+		}
+
+		$delete = wp_delete_user( $user_id );
+
+		if ( is_wp_error( $delete ) ) {
+			return $delete;
+		} else {
+			return rest_ensure_response(
+				array(
+					'code'    => 'success',
+					'message' => esc_html__( 'Your account has been deleted.', 'learnpress' ),
+				)
+			);
+		}
+	}
+
+	public function change_password( $request ) {
+		$old_password = $request['old_password'];
+		$new_password = $request['new_password'];
+
+		$user = wp_get_current_user();
+
+		if ( ! $user || ! $user->ID || ( empty( $old_password ) || empty( $new_password ) ) ) {
+			return new WP_Error(
+				'rest_user_cannot_change_password',
+				__( 'Sorry, you are not allowed to change password.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		if ( ! wp_check_password( $old_password, $user->user_pass, $user->ID ) ) {
+			return new WP_Error(
+				'rest_user_incorrect_password',
+				__( 'Your current password is incorrect.' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		if ( apply_filters( 'learnpress_rest_api_user_change_password', true, $user ) ) {
+			wp_set_password( $new_password, $user->ID );
+		} else {
+			return new WP_Error(
+				'rest_user_cannot_change_password',
+				__( 'Sorry, you are not allowed to change password.' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		return rest_ensure_response(
+			array(
+				'code'    => 'success',
+				'message' => esc_html__( 'Your password has been updated, Please login again to continue!', 'learnpress' ),
+			)
+		);
 	}
 
 	protected function get_user( $id ) {
@@ -332,6 +478,43 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		if ( is_wp_error( $user_id ) ) {
 			return $user_id;
+		}
+
+		$files = $request->get_file_params();
+
+		if ( ! empty( $files['lp_avatar_file'] ) ) {
+			$file = $files['lp_avatar_file'];
+
+			if ( ! empty( $file['name'] ) ) {
+				list($width, $height) = getimagesize( $file['tmp_name'] );
+
+				$upload_size = learn_press_get_avatar_thumb_size();
+
+				if ( $width != $upload_size['width'] || $height != $upload_size['height'] ) {
+					return new WP_Error(
+						'rest_user_invalid_avatar_dimensions',
+						sprintf( __( 'Invalid avatar dimensions. Please upload a new avatar width size %1$1sx%2$2s' ), $upload_size['width'], $upload_size['height'] ),
+						array( 'status' => 400 )
+					);
+				}
+
+				$data   = file_get_contents( $file['tmp_name'] );
+				$base64 = base64_encode( $data );
+
+				$controller = new LP_REST_Profile_Controller();
+
+				$request->set_param( 'file', $base64 );
+
+				$uploaded_avatar = $controller->upload_avatar( $request );
+			}
+		}
+
+		if ( ! empty( $request['avatar_url'] ) ) {
+			$controller = new LP_REST_Profile_Controller();
+
+			$request->set_param( 'file', $request['avatar_url'] );
+
+			$uploaded_avatar = $controller->upload_avatar( $request );
 		}
 
 		$user = get_user_by( 'id', $user_id );
@@ -445,17 +628,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	}
 
 	public function get_overview_tab_contents( $user ) {
-		$output = array();
-
-		$query     = LP_Profile::instance()->query_courses( 'purchased' );
-		$counts    = $query['counts'];
-		$statistic = array(
-			'enrolled_courses'  => isset( $counts['all'] ) ? $counts['all'] : 0,
-			'active_courses'    => isset( $counts['in-progress'] ) ? $counts['in-progress'] : 0,
-			'completed_courses' => isset( $counts['finished'] ) ? $counts['finished'] : 0,
-			'total_courses'     => count_user_posts( $user->ID, LP_COURSE_CPT ),
-			'total_users'       => learn_press_count_instructor_users( $user->ID ),
-		);
+		$output    = array();
+		$statistic = LP_Profile::instance( $user->get_id )->get_statistic_info();
 
 		$output['statistic'] = array_map( 'absint', $statistic );
 
@@ -520,8 +694,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					$course_data = $user->get_course_data( $enrolled_item );
 
 					if ( $course_data ) {
+						$post = get_post( $enrolled_item );
+
 						$enrolled_ids[] = array(
 							'id'         => $enrolled_item ?? '',
+							'title'      => $post->post_title,
 							'graduation' => ! empty( $course_data->get_graduation() ) ? $course_data->get_graduation() : '',
 							'status'     => ! empty( $course_data->get_status() ) ? $course_data->get_status() : '',
 							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
@@ -888,8 +1065,13 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				case 'avatar_url':
 					$data['avatar_url'] = $this->get_profile_avatar( $user->ID );
 					break;
+				case 'avatar_size':
+					$data['avatar_size']['width']  = learn_press_get_avatar_thumb_size()['width'];
+					$data['avatar_size']['height'] = learn_press_get_avatar_thumb_size()['height'];
+					break;
 				case 'instructor_data':
-					$data['instructor_data'] = $this->get_instructor_data( $user->ID );
+					// $data['instructor_data'] = $this->get_instructor_data( $user->ID );
+					$data['instructor_data'] = LP_Profile::instance( $user->ID )->get_statistic_info();
 					break;
 				case 'meta':
 					$data['meta'] = $this->meta->get_value( $user->ID, $request );
@@ -921,6 +1103,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return ! empty( $avatar ) ? $avatar : '';
 	}
 
+	/**
+	 * @editor tungnx
+	 * @deprecated 4.1.6
+	 */
+	/*
 	public function get_instructor_data( $user_id ) {
 		$profile = learn_press_get_profile( $user_id );
 
@@ -941,7 +1128,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		);
 
 		return $output;
-	}
+	}*/
 
 	public function get_lp_data_tabs( $user, $request ) {
 		$output = array();
@@ -992,7 +1179,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		$output = array();
 
 		if ( function_exists( 'lp_get_user_custom_register_fields' ) ) {
-			$custom_fields  = LP()->settings()->get( 'register_profile_fields' );
+			$custom_fields  = LP_Settings::instance()->get( 'register_profile_fields' );
 			$custom_profile = lp_get_user_custom_register_fields( $user->ID );
 
 			if ( $custom_fields ) {
@@ -1231,6 +1418,11 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'avatar_url'         => array(
 					'description' => __( 'URL avatar' ),
 					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'avatar_size'        => array(
+					'description' => __( 'URL avatar size' ),
+					'type'        => 'array',
 					'context'     => array( 'view' ),
 				),
 				'instructor_data'    => array(

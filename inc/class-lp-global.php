@@ -98,14 +98,28 @@ class LP_Global {
 	}
 
 	/**
-	 * @param bool $id
+	 * @param bool $get_only_id
+	 * Todo: new call not use $get_only_id, only call LP_Global::courses()
+	 * Recommend use learn_press_get_course()
 	 *
+	 * @editor tungnx
+	 * @since 3.0.0
+	 * @version 1.0.1
 	 * @return LP_Course|bool|int
 	 */
-	public static function course( $id = false ) {
-		global $lp_course;
+	public static function course( $get_only_id = false ) {
+		$lp_course = learn_press_get_course();
 
-		return is_a( $lp_course, 'LP_Course' ) ? ( $id ? $lp_course->get_id() : $lp_course ) : false;
+		// Fix for old version use param $get_only_id
+		if ( $get_only_id ) {
+			if ( $lp_course ) {
+				return $lp_course->get_id();
+			} else {
+				return 0;
+			}
+		} else {
+			return $lp_course;
+		}
 	}
 
 	public static function set_course( $course ) {

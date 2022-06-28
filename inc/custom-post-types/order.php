@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @param $post_type
 		 */
-		public function __construct( $post_type ) {
+		public function __construct() {
 			add_action( 'init', array( $this, 'register_post_statues' ) );
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
@@ -43,7 +43,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
 			// add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
 
-			parent::__construct( $post_type );
+			parent::__construct();
 		}
 
 		/**
@@ -514,14 +514,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return $join;
 			}
 
-			$join .= " INNER JOIN {$wpdb->postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
-			$join .= " INNER JOIN {$wpdb->postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
-
 			$s = $wp_query->get( 's' );
 			if ( $s ) {
 				$join .= " INNER JOIN {$wpdb->learnpress_order_items} loi ON {$wpdb->posts}.ID = loi.order_id";
 			}
-			$join .= " LEFT JOIN {$wpdb->users} uu ON pm1.meta_value = uu.ID";
+
+			if ( isset( $_REQUEST['author'] ) ) {
+				$join .= " INNER JOIN {$wpdb->postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+				$join .= " INNER JOIN {$wpdb->postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+				$join .= " LEFT JOIN {$wpdb->users} uu ON pm1.meta_value = uu.ID";
+			}
 
 			return $join;
 		}
@@ -576,12 +578,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( $order->is_multi_users() ) {
 				$actions['child-orders'] = sprintf(
 					'<a href="%s">%s</a>',
-					add_query_arg(
-						array(
-							'post_type' => LP_ORDER_CPT,
-							'parent'    => $post->ID,
-						),
-						admin_url( 'edit.php' )
+					esc_url_raw(
+						add_query_arg(
+							array(
+								'post_type' => LP_ORDER_CPT,
+								'parent'    => $post->ID,
+							),
+							admin_url( 'edit.php' )
+						)
 					),
 					__( 'View child orders', 'learnpress' )
 				);
@@ -888,7 +892,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		public static function instance() {
 			if ( ! self::$_instance ) {
-				self::$_instance = new self( LP_ORDER_CPT );
+				self::$_instance = new self();
 			}
 
 			return self::$_instance;

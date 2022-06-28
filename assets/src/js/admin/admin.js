@@ -104,7 +104,7 @@
 				dataType: 'json',
 				s: '',
 			},
-			placeholder: 'Search by user',
+			placeholder: wp.i18n.__( 'Search by user', 'learnpress' ),
 			minimumInputLength: 3,
 			allowClear: true,
 		} ).on( 'select2:select', function() {
@@ -302,7 +302,11 @@
 		$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
 		$( '.learn-press-tip' ).LP( 'QuickTip' ); //$('.learn-press-tabs').LP('AdminTab');
 
-		$( document ).on( 'click', '#learn-press-create-pages', createPages ).on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage ).on( 'click', '.plugin-action-buttons a', pluginActions ).on( 'click', '[data-remove-confirm]', preventDefault ).on( 'mousedown', '.lp-sortable-handle', function( e ) {
+		$( document ).on( 'click', '#learn-press-create-pages', createPages )
+			.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
+			.on( 'click', '.plugin-action-buttons a', pluginActions )
+			.on( 'click', '[data-remove-confirm]', preventDefault )
+			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
 			$( 'html, body' ).addClass( 'lp-item-moving' );
 			$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );
 		} ).on( 'mouseup', function( e ) {
@@ -492,6 +496,20 @@
 				ele.parentNode.style.border = '2px solid orangered';
 			}
 		}
+
+		// Show/hide meta-box field with type checkbox
+		$( 'input' ).on( 'click' , function ( e ) {
+			const el = $( e.target );
+			const id = el.attr( 'id' );
+			const classHide = id.replace('learn_press_', '');
+			const elHide = $(`.show_if_${classHide}`);
+
+			if ( el.is(':checked') ) {
+				elHide.show();
+			} else {
+				elHide.hide();
+			}
+		});
 	};
 
 	$( document ).ready( onReady );

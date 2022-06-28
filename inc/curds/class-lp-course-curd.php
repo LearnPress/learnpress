@@ -160,6 +160,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$new_course_section_curd = new LP_Section_CURD( $new_course_id );
 
 				// curriculum course
+				// $course->load_curriculum();
 				$curriculum = $course->get_curriculum_raw();
 
 				// quiz curd
@@ -243,6 +244,13 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return array
 		 */
 		public function read_course_items( $course_id, $publish_only = true, $section_ids = array() ) {
+			// Tungnx: Comment because make not work with WPML.
+			/*static $results = null;
+
+			if ( ! is_null( $results ) ) {
+				return $results;
+			}*/
+
 			global $wpdb;
 			$where = '';
 
@@ -287,7 +295,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$course_id
 			);
 
-			return $wpdb->get_results( $query );
+			$results = $wpdb->get_results( $query );
+
+			return $results;
 		}
 
 		/**
@@ -790,15 +800,16 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return array
 		 * @author tungnx
 		 * @version 1.0.0
+		 * @depecated 4.1.6.4
 		 */
-		public function get_popular_courses( array $args = array() ): array {
+		/*public function get_popular_courses( array $args = array() ): array {
 			$lp_db = LP_Course_DB::getInstance();
 
 			$filter        = new LP_Course_Filter();
 			$filter->limit = $args['limit'];
 
 			return $lp_db->get_popular_courses( $filter );
-		}
+		}*/
 
 		/**
 		 * Get popular courses.

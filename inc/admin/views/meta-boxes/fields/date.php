@@ -41,7 +41,7 @@ class LP_Meta_Box_Date_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$value = isset( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : '';
+		$value = LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ?? '' );
 		update_post_meta( $post_id, $this->id, $value );
 	}
 }

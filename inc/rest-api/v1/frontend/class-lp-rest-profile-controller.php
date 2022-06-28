@@ -202,14 +202,19 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function statistic( WP_REST_Request $request ) {
-		$user_id          = $request->get_param( 'userID' );
-		$response         = new LP_REST_Response();
-		$response->data   = '';
-		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$user_id        = $request->get_param( 'userID' );
+		$response       = new LP_REST_Response();
+		$response->data = '';
 
 		try {
 			if ( empty( $user_id ) ) {
 				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
+			}
+
+			$user = learn_press_get_user( $user_id );
+
+			if ( ! $user ) {
+				throw new Exception( esc_html__( 'User not exists!', 'learnpress' ) );
 			}
 
 			$profile = learn_press_get_profile( $user_id );
@@ -218,32 +223,12 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( $profile->get_error_message() );
 			}
 
-			/*
-			$query = $profile->query_courses( 'purchased' );
-
-			$counts = $query['counts'];*/
-
-			// Count total courses has status 'in-progress'
-			// $total_courses_has_status = $lp_user_items_db->get_total_courses_has_status( $user_id, 'in-progress' );
-
-			$filter            = new LP_User_Items_Filter();
-			$filter->user_id   = $user_id;
-			$filter->item_type = LP_COURSE_CPT;
-			$count_status      = $lp_user_items_db->count_status_by_items( $filter );
-
-			$statistic = array(
-				'enrolled_courses'  => $count_status->{LP_COURSE_PURCHASED} ?? 0 + $count_status->{LP_COURSE_ENROLLED} ?? 0 + $count_status->{LP_COURSE_FINISHED} ?? 0,
-				'active_courses'    => $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0,
-				'completed_courses' => $count_status->{LP_COURSE_FINISHED} ?? 0,
-				'total_courses'     => count_user_posts( $user_id, LP_COURSE_CPT ),
-				'total_users'       => learn_press_count_instructor_users( $user_id ),
-			);
+			$statistic = $profile->get_statistic_info();
 
 			do_action( 'learnpress/rest/frontend/profile/statistic', $request );
 
-			$response->data   = learn_press_get_template_content( 'profile/tabs/courses/general-statistic', compact( 'statistic' ) );
+			$response->data   = learn_press_get_template_content( 'profile/tabs/courses/general-statistic', compact( 'statistic', 'user' ) );
 			$response->status = 'success';
-
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}

@@ -480,8 +480,9 @@ add_action( 'learn-press/profile/order-details', LP()->template( 'profile' )->fu
 
 /**
  * @see LP_Template_Profile::dashboard_logged_in()
+ * @deprecated 4.1.6
  */
-add_action( 'learn-press/profile/before-dashboard', LP()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
+// add_action( 'learn-press/profile/before-dashboard', LP()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
 add_action(
 	'learn-press/profile/dashboard-summary',
 	LP()->template( 'profile' )->func( 'dashboard_featured_courses' ),
@@ -503,6 +504,9 @@ add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'logi
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'register_form' ), 15 );
 
 /** BEGIN: Checkout page */
+/**
+ * @see LP_Template_Checkout::review_order()
+ */
 add_action( 'learn-press/before-checkout-form', LP()->template( 'checkout' )->func( 'review_order' ), 10 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_logged_in' ), 20 );
 add_action( 'learn-press/after-checkout-form', LP()->template( 'checkout' )->func( 'account_register' ), 30 );

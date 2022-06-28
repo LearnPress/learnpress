@@ -56,7 +56,7 @@ class LP_Query {
 		list( $pathinfo ) = explode( '?', $pathinfo );
 		$pathinfo         = str_replace( '%', '%25', $pathinfo );
 
-		list( $req_uri ) = explode( '?', $_SERVER['REQUEST_URI'] );
+		list( $req_uri ) = explode( '?', esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 		$self            = $_SERVER['PHP_SELF'];
 		$home_path       = trim( parse_url( home_url(), PHP_URL_PATH ), '/' );
 		$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
@@ -116,8 +116,8 @@ class LP_Query {
 			$has_category = true;
 		}
 
-		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
-		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
+		$custom_slug_lesson = sanitize_title_with_dashes( LP_Settings::instance()->get( 'lesson_slug' ) );
+		$custom_slug_quiz   = sanitize_title_with_dashes( LP_Settings::instance()->get( 'quiz_slug' ) );
 
 		/**
 		 * Use urldecode to convert an encoded string to normal.

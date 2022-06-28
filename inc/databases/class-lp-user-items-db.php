@@ -247,38 +247,37 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Get number status by status, graduation.
+	 * Get number status by status, graduation...
 	 *
 	 * @param LP_User_Items_Filter $filter {user_id, item_type}
 	 *
 	 * @author tungnx
 	 * @since 4.1.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @return object|null
 	 * @throws Exception
 	 */
 	public function count_status_by_items( LP_User_Items_Filter $filter ) {
-		$query_count  = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_IN_PROGRESS, LP_COURSE_GRADUATION_IN_PROGRESS );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_FAILED, LP_COURSE_GRADUATION_FAILED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s,', LP_COURSE_GRADUATION_PASSED, LP_COURSE_GRADUATION_PASSED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s,', LP_COURSE_ENROLLED, LP_COURSE_ENROLLED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s,', LP_COURSE_PURCHASED, LP_COURSE_PURCHASED );
-		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_FINISHED, LP_COURSE_FINISHED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_IN_PROGRESS, LP_COURSE_GRADUATION_IN_PROGRESS );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_FAILED, LP_COURSE_GRADUATION_FAILED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.graduation = %s) AS %s', LP_COURSE_GRADUATION_PASSED, LP_COURSE_GRADUATION_PASSED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_ENROLLED, LP_COURSE_ENROLLED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_PURCHASED, LP_COURSE_PURCHASED );
+		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_FINISHED, LP_COURSE_FINISHED );
 
-		$query = $this->wpdb->prepare(
-			"SELECT $query_count
-				FROM $this->tb_lp_user_items AS ui
-				WHERE ui.user_item_id IN (
-				    SELECT MAX(ui.user_item_id) AS user_item_id
-				    FROM $this->tb_lp_user_items AS ui
-				    WHERE ui.item_type = %s
-				      AND ui.user_id = %d
-				    GROUP BY item_id
-				);
-			",
-			$filter->item_type,
-			$filter->user_id
-		);
+		$filter_user_attend_courses                      = new LP_User_Items_Filter();
+		$filter_user_attend_courses->only_fields         = array( 'MAX(ui.user_item_id) AS user_item_id' );
+		$filter_user_attend_courses->where[]             = $this->wpdb->prepare( 'AND ui.user_id = %s', $filter->user_id );
+		$filter_user_attend_courses->group_by            = 'ui.item_id';
+		$filter_user_attend_courses->return_string_query = true;
+		$query_get_course_attend                         = $this->get_user_courses( $filter_user_attend_courses );
+
+		$filter->where[]             = 'AND ui.user_item_id IN (' . $query_get_course_attend . ')';
+		$filter->return_string_query = true;
+
+		$filter = apply_filters( 'lp/user/course/query/count-status', $filter );
+
+		$query = $this->get_user_courses( $filter );
 
 		$this->check_execute_has_error();
 
@@ -735,94 +734,71 @@ class LP_User_Items_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
-		$result = null;
+		$default_fields = $this->get_cols_of_table( $this->tb_lp_user_items );
+		$filter->fields = array_merge( $default_fields, $filter->fields );
 
-		// Where
-		$WHERE   = array( 'WHERE 1=1' );
-		$WHERE[] = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
+		if ( empty( $filter->collection ) ) {
+			$filter->collection = $this->tb_lp_user_items;
+		}
+
+		if ( empty( $filter->collection_alias ) ) {
+			$filter->collection_alias = 'ui';
+		}
+
+		// Join to table posts check course exists
+		$filter->join[] = "INNER JOIN {$this->tb_posts} AS p ON p.ID = $filter->collection_alias.item_id";
+
+		// Get courses publish
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_status = %s', 'publish' );
+
+		$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.item_type = %s", LP_COURSE_CPT );
 
 		// Status
 		if ( $filter->status ) {
-			$WHERE[] = $this->wpdb->prepare( 'AND ui.status = %s', $filter->status );
+			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.status = %s", $filter->status );
 		}
 
 		// Graduation
 		if ( $filter->graduation ) {
-			$WHERE[] = $this->wpdb->prepare( 'AND ui.graduation = %s', $filter->graduation );
+			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.graduation = %s", $filter->graduation );
 		}
 
 		// User
 		if ( $filter->user_id ) {
-			$WHERE[] = $this->wpdb->prepare( 'AND ui.user_id = %d', $filter->user_id );
+			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.user_id = %d", $filter->user_id );
 		}
 
-		// Inner join
-		$INNER_JOIN = array();
+		$filter = apply_filters( 'lp/user/course/query/filter', $filter );
 
-		// Fields select
-		$FIELDS = '*';
-		if ( ! empty( $filter->fields ) ) {
-			$FIELDS = implode( ',', $filter->fields );
-		}
-		$FIELDS = apply_filters( 'lp/user/courses/query/fields', $FIELDS, $filter );
+		return $this->execute( $filter, $total_rows );
+	}
 
-		$INNER_JOIN = array_merge( $INNER_JOIN, $filter->join );
-		$INNER_JOIN = apply_filters( 'lp/user/courses/query/inner_join', $INNER_JOIN, $filter );
-		$INNER_JOIN = implode( ' ', array_unique( $INNER_JOIN ) );
+	/**
+	 * Get total users attend courses of Author
+	 *
+	 * @param int $author_id
+	 *
+	 * @return LP_User_Items_Filter
+	 * @since 4.1.6
+	 * @version 1.0.0
+	 * @throws Exception
+	 */
+	public function count_user_attend_courses_of_author( int $author_id ): LP_User_Items_Filter {
+		$filter_course                      = new LP_Course_Filter();
+		$filter_course->only_fields         = array( 'ID' );
+		$filter_course->post_author         = $author_id;
+		$filter_course->post_status         = 'publish';
+		$filter_course->return_string_query = true;
+		$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
 
-		$WHERE = array_merge( $WHERE, $filter->where );
-		$WHERE = apply_filters( 'lp/user/courses/query/where', $WHERE, $filter );
-		$WHERE = implode( ' ', array_unique( $WHERE ) );
+		$filter              = new LP_User_Items_Filter();
+		$filter->item_type   = LP_COURSE_CPT;
+		$filter->only_fields = array( 'DISTINCT (ui.user_id)' );
+		$filter->field_count = 'DISTINCT (ui.user_id)';
+		$filter->where[]     = "AND item_id IN ({$query_courses_str})";
+		$filter->query_count = true;
 
-		// Order by
-		$ORDER_BY = '';
-		if ( $filter->order_by ) {
-			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order;
-			$ORDER_BY  = apply_filters( 'lp/user/courses/query/order_by', $ORDER_BY, $filter );
-		}
-
-		// Limit
-		$LIMIT = '';
-		if ( ! $filter->return_string_query ) {
-			$filter->limit = absint( $filter->limit );
-			if ( $filter->limit > $filter->max_limit ) {
-				$filter->limit = $filter->max_limit;
-			}
-			$offset = $filter->limit * ( $filter->page - 1 );
-			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
-		}
-
-		if ( ! $filter->query_count ) {
-			// Query
-			$query = "SELECT $FIELDS FROM $this->tb_lp_user_items AS ui
-			$INNER_JOIN
-			$WHERE
-			$ORDER_BY
-			$LIMIT
-			";
-
-			if ( $filter->return_string_query ) {
-				return $query;
-			}
-
-			$result = $this->wpdb->get_results( $query );
-		}
-
-		// Query total rows
-		$query_total = "SELECT COUNT($filter->field_count) FROM $this->tb_lp_user_items AS ui
-		$INNER_JOIN
-		$WHERE
-		";
-
-		$total_rows = (int) $this->wpdb->get_var( $query_total );
-
-		if ( $filter->query_count ) {
-			return $total_rows;
-		}
-
-		$this->check_execute_has_error();
-
-		return $result;
+		return apply_filters( 'lp/user/course/query/filter/count-users-attend-courses-of-author', $filter );
 	}
 }
 

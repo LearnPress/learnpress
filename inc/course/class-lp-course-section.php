@@ -82,7 +82,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			LP_Object_Cache::set( 'section-' . $this->get_id(), $items, 'learn-press/section-items' );
 		}
 
-		LP_Helper_CURD::cache_posts( $items );
+		// LP_Helper_CURD::cache_posts( $items );
 
 		foreach ( $items as $item ) {
 			$item_class = $this->_get_item( $item );

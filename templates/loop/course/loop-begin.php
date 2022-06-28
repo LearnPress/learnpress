@@ -11,4 +11,4 @@
 
 defined( 'ABSPATH' ) || exit();
 
-echo apply_filters( 'learn_press_course_loop_begin', '<ul class="learn-press-courses" data-layout="' . learn_press_get_courses_layout() . '">' );
+echo wp_kses_post( apply_filters( 'learn_press_course_loop_begin', '<ul class="learn-press-courses" data-layout="' . learn_press_get_courses_layout() . '">' ) );

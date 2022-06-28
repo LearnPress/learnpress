@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @depecated 4.1.6.4
+ */
 class LP_Factory {
 	/**
 	 * @return LP_User_CURD

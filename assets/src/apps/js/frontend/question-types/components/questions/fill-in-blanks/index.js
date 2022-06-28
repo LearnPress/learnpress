@@ -31,6 +31,10 @@ class QuestionFillInBlanks extends QuestionBase {
 		const answereds = answered || {};
 
 		[ ...allFIBs ].map( ( ele ) => {
+			if ( answered === undefined ) {
+				ele.value = '';
+			}
+
 			ele.addEventListener( 'input', ( e ) => {
 				this.setAnswered( answereds, ele.dataset.id, e.target.value );
 			} );
@@ -39,7 +43,7 @@ class QuestionFillInBlanks extends QuestionBase {
 				this.setAnswered( answereds, ele.dataset.id, e.target.value );
 			} );
 		} );
-	}
+	};
 
 	setAnswered = ( answered, id, value ) => {
 		const {
@@ -78,6 +82,8 @@ class QuestionFillInBlanks extends QuestionBase {
 	};
 
 	convertInputField = ( option ) => {
+		const { answered, isReviewing, showCorrectReview, isCheckedAnswer } = this.props;
+
 		let title = option.title;
 
 		const answers = option?.answers;
@@ -88,11 +94,15 @@ class QuestionFillInBlanks extends QuestionBase {
 
 			const answerID = answers ? answers?.[ id ] : undefined;
 
-			if ( answerID ) { // If is answered,
-				elContent += `<span class="lp-fib-answered ${ answerID?.isCorrect ? 'correct' : 'fail' }">`;
+			if ( answerID || isReviewing ) {
+				elContent += `<span class="lp-fib-answered ${ ( showCorrectReview || isCheckedAnswer ) && answerID?.correct ? ( answerID?.isCorrect ? 'correct' : 'fail' ) : '' }">`;
 
 				if ( ! answerID?.isCorrect ) {
-					elContent += `<span class="lp-fib-answered__answer">${ answerID?.answer ?? '' }</span> → `;
+					elContent += `<span class="lp-fib-answered__answer">${ answered?.[ id ] ?? '' }</span>`;
+				}
+
+				if ( ! answerID?.isCorrect && answerID?.correct ) {
+					elContent += ' → ';
 				}
 
 				elContent += `<span class="lp-fib-answered__fill">${ answerID?.correct ?? '' }</span>`;
@@ -102,11 +112,12 @@ class QuestionFillInBlanks extends QuestionBase {
 				elContent += '<input type="text" data-id="' + id + '" value="" />';
 				elContent += '</div>';
 			}
+
 			title = title.replace( textReplace, elContent );
 		} );
 
 		return title;
-	}
+	};
 
 	render() {
 		return (

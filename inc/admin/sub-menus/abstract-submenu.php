@@ -223,8 +223,8 @@ abstract class LP_Abstract_Submenu {
 		if ( ! $tabs ) {
 			return false;
 		}
-		$tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : false;
-		if ( ! $tab || empty( $tabs[ $tab ] ) ) {
+		$tab = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
+		if ( empty( $tab ) || empty( $tabs[ $tab ] ) ) {
 			$tab_keys = array_keys( $tabs );
 			$tab      = reset( $tab_keys );
 		}
@@ -281,8 +281,8 @@ abstract class LP_Abstract_Submenu {
 			return false;
 		}
 
-		$section = ! empty( $_REQUEST['section'] ) ? $_REQUEST['section'] : false;
-		if ( ! $section || empty( $sections[ $section ] ) ) {
+		$section = LP_Helper::sanitize_params_submitted( $_REQUEST['section'] ?? '' );
+		if ( empty( $section ) || empty( $sections[ $section ] ) ) {
 			$section_keys = array_keys( $sections );
 			$section      = reset( $section_keys );
 		}
@@ -407,7 +407,7 @@ abstract class LP_Abstract_Submenu {
 					<?php if ( $active_class ) { ?>
 						<span><?php echo $section_title; ?></span>
 					<?php } else { ?>
-						<a href="<?php echo esc_url( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
+						<a href="<?php echo esc_url_raw( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
 					<?php } ?>
 				</li>
 			<?php } ?>

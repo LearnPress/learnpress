@@ -17,7 +17,7 @@ class QuestionTypes extends Component {
 		} );
 
 		return types[ question.type ];
-	}
+	};
 
 	render() {
 		const {

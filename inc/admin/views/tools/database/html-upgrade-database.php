@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-$user_agree_terms         = (int) lp_settings()->get( 'agree_terms', 0 );
+$user_agree_terms         = (int) LP_Settings::instance()->get( 'agree_terms', 0 );
 $check_lp_need_upgrade_db = LP_Updater::instance()->check_lp_db_need_upgrade();
 
 if ( ! $check_lp_need_upgrade_db ) {
@@ -21,8 +21,7 @@ if ( ! $check_lp_need_upgrade_db ) {
 <div class="card" id="lp-tool-upgrade-db">
 	<h2><?php echo sprintf( '%s', __( 'Upgrade Database.', 'learnpress' ) ); ?></h2>
 	<p class="tools-button">
-		<a class="button lp-btn-upgrade-db"
-		   href="javascript:;">
+		<a class="button lp-btn-upgrade-db" href="javascript:;">
 			<?php esc_html_e( 'Upgrade now', 'learnpress' ); ?>
 		</a>
 		<span class="spinner"></span>
@@ -62,7 +61,7 @@ if ( ! $check_lp_need_upgrade_db ) {
 					<p>
 						<input type="checkbox" name="lp-agree-term">
 						<span>
-					<?php esc_html_e( 'I agree the new Terms of Service.', 'learnpress' ) ?>
+					<?php esc_html_e( 'I agree the new Terms of Service.', 'learnpress' ); ?>
 					</span>
 					</p>
 					<p class="error"><?php esc_html_e( 'Please agree terms before upgrade!', 'learnpress' ); ?></p>
@@ -86,7 +85,7 @@ if ( ! $check_lp_need_upgrade_db ) {
 		</div>
 	</div>
 	<div class="wrapper-lp-loading">
-		<?php lp_skeleton_animation_html(7) ?>
+		<?php lp_skeleton_animation_html( 7 ); ?>
 	</div>
 	<input type="hidden" name="message-when-upgrading"
 		   value="<?php esc_html_e( 'Please don\'t close this tab until the completed upgrade', 'learnpress' ); ?>"/>

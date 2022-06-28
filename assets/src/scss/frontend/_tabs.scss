@@ -6,13 +6,6 @@
 		display: none;
 
 		@for $i from 0 through 9 {
-			//input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
-			//    background: #f5f5f5;
-			//
-			//    &:before {
-			//        color: var(--lp-primary-color);
-			//    }
-			//}
 
 			&:nth-child(#{$i+1}):checked ~ .learn-press-tabs__nav {
 				.learn-press-tabs__tab:nth-child(#{$i+1}) {
@@ -20,11 +13,11 @@
 					background: #fff;
 
 					label {
-
+						color: #ffb606;
 						a {
 							color: #ffb606;
 						}
-						color: #ffb606;
+
 					}
 
 					&::before {
@@ -34,11 +27,9 @@
 					&::after {
 						background: #fff;
 					}
-
 				}
 			}
 		}
-
 	}
 
 	.learn-press-tabs__nav {
@@ -63,8 +54,9 @@
 		> label {
 			display: block;
 			margin: 0;
-			padding: 20px 65px 14px 65px;
+			padding: 18px 65px;
 			font-size: 18px;
+			line-height: 1;
 			font-weight: 600;
 			text-align: center;
 			text-transform: capitalize;
@@ -135,25 +127,26 @@
 			}
 		}
 	}
-
 }
 
 .learn-press-filters {
 	display: flex;
-	margin-bottom: 36px;
+	margin-bottom: 30px;
 	margin-left: 0;
 	list-style: none;
-
-	@media (max-width: 767px) {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		grid-gap: 15px;
-	}
 
 	> li {
 		margin: 0;
 		font-size: 16px;
 		line-height: 24px;
+
+		@media (max-width: 767px) {
+			margin-right: 30px;
+			margin-left: 0;
+			&:last-child {
+				margin-right: 0;
+			}
+		}
 
 		> a,
 		> span {
@@ -193,6 +186,7 @@
 
 		a {
 			color: #333;
+			cursor: pointer;
 
 			& + span {
 				color: #333;

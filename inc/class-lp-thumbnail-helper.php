@@ -56,13 +56,13 @@ class LP_Thumbnail_Helper {
 			$image = LP()->image( 'no-image.png' );
 			$image = sprintf(
 				'<img src="%s" alt="%s">',
-				esc_url( $image ),
+				esc_url_raw( $image ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
 			);
 		}
 
 		// @deprecated
-		$image = apply_filters( 'learn_press_course_image', $image, $course_id, $size, $attr );
+		// $image = apply_filters( 'learn_press_course_image', $image, $course_id, $size, $attr );
 
 		return $image;
 	}

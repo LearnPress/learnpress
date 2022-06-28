@@ -19,7 +19,17 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->page_title = esc_html__( 'LearnPress Settings', 'learnpress' );
 		$this->priority   = 30;
 
-		$this->tabs = learn_press_settings_tabs_array();
+		$this->tabs = apply_filters(
+			'learn-press/admin/settings-tabs-array',
+			array(
+				'general'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-general.php',
+				'courses'  => new LP_Settings_Courses(),
+				'profile'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-profile.php',
+				'payments' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
+				'emails'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',
+				'advanced' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
+			)
+		);
 
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
 		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array( $this, 'section_content' ) );
@@ -76,12 +86,12 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		$this->tabs[ $active_tab ]->save_settings( $this->get_active_section(), $this->get_sections() );
 
-		flush_rewrite_rules();
+		// flush_rewrite_rules();
 
 		do_action( 'learn-press/update-settings/updated', $this );
 
 		// Filter redirect
-		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );
+		$redirect = apply_filters( 'learn-press/update-settings/redirect', esc_url_raw( add_query_arg( 'settings-updated', 'yes' ) ), $this );
 
 		if ( $redirect ) {
 			wp_redirect( $redirect );

@@ -433,7 +433,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function load( &$order ) {
 		$the_id = $order->get_id();
 		if ( ! $the_id || LP_ORDER_CPT !== learn_press_get_post_type( $the_id ) ) {
-			if ( learn_press_is_debug() ) {
+			if ( LP_Debug::is_debug() ) {
 				throw new Exception( sprintf( __( 'Invalid order with ID "%d".', 'learnpress' ), $the_id ) );
 			}
 		}

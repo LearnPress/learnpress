@@ -15,7 +15,9 @@ defined( 'ABSPATH' ) || exit();
  *
  * @see LP_Template_General::template_header()
  */
-do_action( 'learn-press/template-header' );
+if ( empty( $is_block_theme ) ) {
+	do_action( 'learn-press/template-header' );
+}
 
 /**
  * LP Hook
@@ -28,13 +30,12 @@ do_action( 'learn-press/before-main-content' );
 do_action( 'learn-press/before-single-item' );
 ?>
 	<div id="popup-course" class="course-summary">
- 		<?php
+		<?php
 		/**
 		 * @since 4.0.6
 		 * @see single-button-toggle-sidebar - 5
 		 */
-
-		do_action('learn-press/single-button-toggle-sidebar');
+		do_action( 'learn-press/single-button-toggle-sidebar' );
 
 		/**
 		 * Get content item's course
@@ -69,4 +70,6 @@ do_action( 'learn-press/after-single-course' );
  *
  * @see LP_Template_General::template_footer()
  */
-do_action( 'learn-press/template-footer' );
+if ( empty( $is_block_theme ) ) {
+	do_action( 'learn-press/template-footer' );
+}

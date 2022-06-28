@@ -8,28 +8,28 @@ $plugin_info = get_plugin_data( LP_PLUGIN_FILE );
 
 // version.
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
-
-//define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
+const LP_KEY_DB_VERSION = 'learnpress_db_version';
 
 // Plugin paths and urls.
-define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( LP_PLUGIN_FILE ) ) );
-define( 'LP_TEMPLATE_PATH', LP_PLUGIN_PATH . 'templates/' );
-//define( 'LP_CONTENT_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
+define( 'LP_PLUGIN_PATH', plugin_dir_path( LP_PLUGIN_FILE ) );
+define( 'LP_PLUGIN_BASENAME', plugin_basename( LP_PLUGIN_FILE ) );
+define( 'LP_PLUGIN_FOLDER_NAME', str_replace( array( '/', basename( LP_PLUGIN_FILE ) ), '', LP_PLUGIN_BASENAME ) );
+const LP_TEMPLATE_PATH = LP_PLUGIN_PATH . 'templates/';
 define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', LP_PLUGIN_FILE ) ) );
-define( 'LP_JS_URL', LP_PLUGIN_URL . 'assets/js/' );
-define( 'LP_CSS_URL', LP_PLUGIN_URL . 'assets/css/' );
+const LP_JS_URL  = LP_PLUGIN_URL . 'assets/js/';
+const LP_CSS_URL = LP_PLUGIN_URL . 'assets/css/';
 
 // Log path.
 define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
 
 // Turn on/off cart.
-define( 'LP_ENABLE_CART', false );
+const LP_ENABLE_CART = false;
 
 // Cache group id.
-define( 'LP_SESSION_CACHE_GROUP', 'learn_press_session_id' );
+const LP_SESSION_CACHE_GROUP = 'learn_press_session_id';
 
 // Table prefix.
-define( 'LP_TABLE_PREFIX', 'learnpress_' );
+const LP_TABLE_PREFIX = 'learnpress_';
 
 // Define constants for custom post types.
 const LP_COURSE_CPT   = 'lp_course';
@@ -42,37 +42,16 @@ const LP_ORDER_CPT    = 'lp_order';
 const LP_TEACHER_ROLE = 'lp_teacher';
 const ADMIN_ROLE      = 'administrator';
 
-// Turn debug mode on/off.
-//define( 'LP_DEBUG', true );
-
 // Options.
-define( 'LP_USE_ATTRIBUTES', false );
-define( 'LP_WIDGET_PATH', LP_PLUGIN_PATH . 'inc/widgets' );
-define( 'LP_WIDGET_URL', LP_PLUGIN_URL . 'inc/widgets' );
-
-// Course access level.
-const LP_COURSE_ACCESS_LEVEL_0  = 0; // No accessible
-const LP_COURSE_ACCESS_LEVEL_10 = 10; // Normal users
-const LP_COURSE_ACCESS_LEVEL_20 = 20; // Author of course
-const LP_COURSE_ACCESS_LEVEL_30 = 30; // Admin site
-const LP_COURSE_ACCESS_LEVEL_35 = 35; // No require enrollment
-const LP_COURSE_ACCESS_LEVEL_40 = 40; // Ordered but not completed
-const LP_COURSE_ACCESS_LEVEL_50 = 50; // Order completed but not enrolled
-const LP_COURSE_ACCESS_LEVEL_55 = 55; // Enrolled but has blocked (access level = 0)
-const LP_COURSE_ACCESS_LEVEL_60 = 60; // User has already enrolled course
-const LP_COURSE_ACCESS_LEVEL_70 = 70; // User has already finished course
+const LP_USE_ATTRIBUTES = false;
 
 // Error codes.
-define( 'LP_INVALID_REQUEST', 100 );
-define( 'LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS', 110 );
-define( 'LP_REQUIRE_LOGIN', 120 );
-define( 'LP_PREVIEW_MODE', 130 );
-define( 'LP_INVALID_QUIZ_OR_COURSE', 140 );
-define( 'LP_COURSE_IS_FINISHED', 150 );
-define( 'LP_QUIZ_HAS_STARTED_OR_COMPLETED', 160 );
-define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
-define( 'LP_COMPLETE_ITEM_FAIL', 170 );
-define( 'LP_COMPRESS_ASSETS', false );
+const LP_REQUIRE_LOGIN                    = 120;
+const LP_INVALID_QUIZ_OR_COURSE           = 140;
+const LP_COURSE_IS_FINISHED               = 150;
+const LP_QUIZ_HAS_STARTED_OR_COMPLETED    = 160;
+const LP_ERROR_NO_PAYMENT_METHOD_SELECTED = 1000;
+const LP_COMPLETE_ITEM_FAIL               = 170;
 
 // Pages.
 const LP_PAGE_CHECKOUT                 = 'lp_page_checkout';
@@ -101,10 +80,5 @@ const LP_COURSE_GRADUATION_IN_PROGRESS = 'in-progress';
 const LP_COURSE_GRADUATION_PASSED      = 'passed';
 const LP_COURSE_GRADUATION_FAILED      = 'failed';
 
-// Enable lazyload animation placeholder.
+// Enable lazy-load animation placeholder.
 const LP_LAZY_LOAD_ANIMATION = true;
-
-/**
- * Thim Market library
- */
-define( 'TMP_ROOT', LP_PLUGIN_PATH . 'inc/libraries/' );

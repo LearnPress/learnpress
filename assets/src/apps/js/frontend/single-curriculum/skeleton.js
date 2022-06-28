@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import scrollToItemCurrent from './scrolltoitem';
 import { searchCourseContent } from './components/search';
 
-export default function courseCurriculumSkeleton() {
+export default function courseCurriculumSkeleton( courseID = '' ) {
 	const Sekeleton = () => {
 		const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 
@@ -25,20 +25,25 @@ export default function courseCurriculumSkeleton() {
 			const page = 1;
 			const response = await apiFetch( {
 				path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-					courseId: lpGlobalSettings.post_id || '',
+					courseId: courseID || lpGlobalSettings.post_id || '',
 					page,
 					sectionID: sectionID || '',
 				} ),
 				method: 'GET',
 			} );
 
-			const { data, status, message, section_ids } = response;
+			const { data, status, message } = response;
+			let section_ids = data.section_ids;
 
 			if ( status === 'error' ) {
 				throw new Error( message || 'Error' );
 			}
 
-			const returnData = data;
+			let returnData = data.content;
+			if ( undefined === returnData ) { // For old Eduma <= 4.6.0
+				returnData = data;
+				section_ids = response.section_ids;
+			}
 
 			if ( sectionID ) {
 				if ( section_ids && ! section_ids.includes( sectionID ) ) {
@@ -95,12 +100,12 @@ export default function courseCurriculumSkeleton() {
 			if ( itemID && ! item_ids.includes( itemID ) ) {
 				const responseItem = await getResponsiveItem( '', 2, sectionID, itemID );
 
-				const { data3, pages3, paged3 } = responseItem;
+				const { data3, pages3, paged3, page } = responseItem;
 
-				if ( pages3 <= paged3 ) {
+				if ( pages3 <= paged3 || pages3 <= page ) {
 					itemLoadMore.remove();
 				} else {
-					itemLoadMore.dataset.page = paged3;
+					itemLoadMore.dataset.page = page;
 				}
 
 				if ( data3 && sectionContent ) {
@@ -123,23 +128,35 @@ export default function courseCurriculumSkeleton() {
 			method: 'GET',
 		} );
 
-		const { data, pages, status, message, item_ids } = response;
+		const { data, status, pages, message } = response;
+
+		const { page } = data;
+
+		let item_ids;
 
 		if ( status === 'success' ) {
-			returnData += data;
+			let dataTmp = data.content;
+			item_ids = data.item_ids;
+
+			if ( undefined === dataTmp ) { // For old Eduma <= 4.6.0
+				dataTmp = data;
+				item_ids = response.item_ids;
+			}
+
+			returnData += dataTmp;
 
 			if ( sectionID && item_ids && itemID && ! item_ids.includes( itemID ) ) {
 				return getResponsiveItem( returnData, paged + 1, sectionID, itemID );
 			}
 		}
 
-		return { data3: returnData, pages3: pages, paged3: paged, status3: status, message3: message };
+		return { data3: returnData, pages3: pages || data.pages, status3: status, message3: message, page: page || 0 };
 	};
 
 	const getResponsive = async ( returnData, page, sectionID ) => {
 		const response = await apiFetch( {
 			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-				courseId: lpGlobalSettings.post_id || '',
+				courseId: courseID || lpGlobalSettings.post_id || '',
 				page,
 				sectionID: sectionID || '',
 				loadMore: true,
@@ -147,17 +164,26 @@ export default function courseCurriculumSkeleton() {
 			method: 'GET',
 		} );
 
-		const { data, pages, status, message, section_ids } = response;
+		const { data, status, message } = response;
+
+		let returnDataTmp = data.content;
+		let section_ids = data.section_ids;
+		let pages = data.pages;
+		if ( undefined === returnDataTmp ) { // For old Eduma <= 4.6.0
+			returnDataTmp = data;
+			section_ids = response.section_ids;
+			pages = response.pages;
+		}
 
 		if ( status === 'success' ) {
-			returnData += data;
+			returnData += returnDataTmp;
 
 			if ( sectionID && section_ids && section_ids.length > 0 && ! section_ids.includes( sectionID ) ) {
 				return getResponsive( returnData, page + 1, sectionID );
 			}
 		}
 
-		return { data2: returnData, pages2: pages, page2: page, status2: status, message2: message };
+		return { data2: returnData, pages2: pages || data.pages, page2: page, status2: status, message2: message };
 	};
 
 	Sekeleton();

@@ -15,7 +15,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 			array(
 				'_lp_duration'             => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
-					'',
+					esc_html__( 'Set 0 for no limit, larger than 0 for limit', 'learnpress' ),
 					'0',
 					array(
 						'default_time'      => 'minute',
@@ -56,12 +56,12 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 				),
 				'_lp_retake_count'         => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Retake', 'learnpress' ),
-					esc_html__( 'How many times the user can re-take this quiz. Set 0 to disable.', 'learnpress' ),
+					esc_html__( 'How many times the user can re-take this quiz. Set 0 to disable. Set -1 to infinite.', 'learnpress' ),
 					'',
 					array(
 						'type_input'        => 'number',
 						'custom_attributes' => array(
-							'min'  => '0',
+							'min'  => '-1',
 							'step' => '1',
 							'max'  => '100',
 						),

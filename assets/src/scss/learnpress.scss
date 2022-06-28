@@ -29,6 +29,7 @@ $bg-course-featured: #93f;
 @import "frontend/comments";
 @import "frontend/base";
 @import "frontend/skeleton-animation";
+@import "frontend/twentytwentytwo";
 
 input[type="text"],
 input[type="email"],
@@ -50,8 +51,6 @@ body {
 }
 
 .wrap-fullwidth {
-	margin-right: -1000px;
-	margin-left: -1000px;
 
 	a,
 	button,
@@ -150,13 +149,13 @@ footer {
 }
 
 .learn-press-breadcrumb {
-	width: 1170px;
-	max-width: 100%;
+	max-width: 1170px;
+	width: 100%;
 	margin: 0 auto 45px auto;
 	padding: 0;
 	color: #333;
 	font-size: 14px;
-	font-weight: 500;
+	font-weight: 400;
 	list-style: none;
 
 	li {
@@ -164,13 +163,11 @@ footer {
 		margin: 0;
 
 		a {
-			color: #666;
-			font-weight: 300;
-
 			&:hover {
 				color: var(--lp-primary-color);
 			}
 		}
+
 	}
 
 	i {
@@ -186,7 +183,7 @@ footer {
 
 	a {
 		color: #666;
-		font-weight: 300;
+		font-weight: 500;
 	}
 }
 
@@ -285,6 +282,12 @@ footer {
 	}
 }
 
+.btn-base {
+	border-color: var(--lp-primary-color);
+	color: white;
+	background-color: var(--lp-primary-color);
+}
+
 .lp-ajax-message {
 	display: none;
 	margin-top: 20px;
@@ -311,12 +314,8 @@ footer {
 	}
 }
 
-#learn-press-course-tabs {
-	margin-bottom: 40px;
-
-	&.course-tabs {
-		margin-top: 54px;
-	}
+.lp-entry-content .course-tabs {
+	margin-bottom: 60px;
 }
 
 /* Archive */
@@ -330,18 +329,18 @@ footer {
 
 .order-comments {
 	width: 100%;
+	padding: 15px;
 	min-height: 150px;
+	border: 1px solid #ccc;
+	resize: none;
 }
 
 .learn-press-progress {
-	position: relative;
-
 	.progress-bg {
 		overflow: hidden;
 		position: relative;
 		height: 6px;
 		background: #ccc;
-
 		@include border-radius(5px);
 
 		.progress-active {
@@ -501,27 +500,27 @@ ul.list-table-nav {
 		margin-left: 0;
 
 		#comment {
-
 			@include box-sizing(border-box);
 		}
 	}
 }
 
-.course-summary {
 
-	.course-summary-sidebar {
-		position: relative;
+.course-summary-sidebar {
+	position: relative;
 
-		&.slide-down {
+	&.slide-down {
 
+		@media (min-width: 769px) {
 			.course-summary-sidebar__inner {
 				position: fixed;
 				top: 0;
 			}
 		}
+	}
 
-		&.slide-top {
-
+	&.slide-top {
+		@media (min-width: 1200px) {
 			.course-summary-sidebar__inner {
 				position: absolute;
 			}
@@ -606,7 +605,13 @@ ul.list-table-nav {
 	}
 }
 
-#learn-press-course-tabs {
+#learn-press-item-comments {
+	@media (min-width: 769px) {
+		padding-bottom: 50px;
+	}
+}
+
+.course-tabs {
 
 	input[name="learn-press-course-tab-radio"],
 	.course-tab-panel {
@@ -616,34 +621,16 @@ ul.list-table-nav {
 	.course-nav {
 
 		label {
-			display: block;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			margin: 0;
-			padding: 18px 10px;
+			padding: 17px 10px;
 			font-size: 16px;
+			line-height: 1;
 			font-weight: 600;
-			text-align: center;
 			text-transform: capitalize;
 			cursor: pointer;
-
-		}
-	}
-
-	@for $i from 1 to 10 {
-		input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .course-tab-panels {
-			.course-tab-panel:nth-child(#{$i}) {
-				display: block;
-			}
-		}
-
-		input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .learn-press-nav-tabs {
-			.course-nav:nth-child(#{$i}) {
-				border-bottom: 0;
-
-				label {
-					color: var(--lp-primary-color);
-					background: #fff;
-				}
-			}
 		}
 	}
 }
@@ -666,14 +653,40 @@ ul.list-table-nav {
 @media screen and (max-width: 600px) {
 
 	ul.learn-press-courses {
-		margin-right: 0;
-
 		.course {
 			width: 100%;
 			margin-right: 0;
 		}
 	}
 }
-.course-price:empty{
-	display: none!important;
+
+.course-price:empty {
+	display: none !important;
+}
+.quiz-attempts {
+	.attempts-heading {
+		margin-bottom: 15px;
+	}
+	table {
+		border-spacing: 0;
+		border-left: 1px solid var(--lp-secondary-color);
+		border-top: 1px solid var(--lp-secondary-color);
+		width: 100%;
+		tr {
+			th, td {
+				border-right: 1px solid var(--lp-secondary-color);
+				border-bottom: 1px solid var(--lp-secondary-color);
+				padding: 5px 15px;
+				text-align: center;
+			}
+			th {
+				font-weight: 500;
+			}
+		}
+	}
+}
+#popup-course .quiz-attempts {
+	@media (max-width: 575px) {
+		overflow-x: auto;
+	}
 }

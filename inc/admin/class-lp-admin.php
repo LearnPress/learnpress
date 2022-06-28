@@ -32,7 +32,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ), 1 );
 			//add_action( 'admin_head', array( $this, 'admin_colors' ) );
-			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
+			// add_action( 'admin_init', array( $this, 'admin_redirect' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
@@ -129,13 +129,21 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			if ( $s && false !== stripos( $s, 'learnpress' ) ) {
-				$views['learnpress'] = sprintf( '<a href="%s" class="current">%s <span class="count">(%d/%d)</span></a>',
-					admin_url( 'plugins.php?s=learnpress' ), __( 'LearnPress', 'learnpress' ), $count_activated,
-					sizeof( $search ) );
+				$views['learnpress'] = sprintf(
+					'<a href="%s" class="current">%s <span class="count">(%d/%d)</span></a>',
+					admin_url( 'plugins.php?s=learnpress' ),
+					__( 'LearnPress', 'learnpress' ),
+					$count_activated,
+					sizeof( $search )
+				);
 			} else {
-				$views['learnpress'] = sprintf( '<a href="%s">%s <span class="count">(%d/%d)</span></a>',
-					admin_url( 'plugins.php?s=learnpress' ), __( 'LearnPress', 'learnpress' ), $count_activated,
-					sizeof( $search ) );
+				$views['learnpress'] = sprintf(
+					'<a href="%s">%s <span class="count">(%d/%d)</span></a>',
+					admin_url( 'plugins.php?s=learnpress' ),
+					__( 'LearnPress', 'learnpress' ),
+					$count_activated,
+					sizeof( $search )
+				);
 			}
 
 			return $views;
@@ -376,8 +384,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						}
 
 						if ( ! empty( $pages[ $plugin ][ $post ] ) ) {
-							echo sprintf( '<p class="for-plugin-page">(%s - %s)</p>', $plugin,
-								$pages[ $plugin ][ $post ] );
+							echo sprintf(
+								'<p class="for-plugin-page">(%s - %s)</p>',
+								$plugin,
+								$pages[ $plugin ][ $post ]
+							);
 						}
 					}
 			}
@@ -396,8 +407,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( $pages ) {
 				$text = sprintf( __( 'LearnPress Pages (%d)', 'learnpress' ), sizeof( $pages ) );
 				if ( 'yes' !== LP_Request::get( 'lp-page' ) ) {
-					$actions['lp-page'] = sprintf( '<a href="%s">%s</a>',
-						admin_url( 'edit.php?post_type=page&lp-page=yes' ), $text );
+					$actions['lp-page'] = sprintf(
+						'<a href="%s">%s</a>',
+						admin_url( 'edit.php?post_type=page&lp-page=yes' ),
+						$text
+					);
 				} else {
 					$actions['lp-page'] = $text;
 				}
@@ -439,10 +453,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' && $pending_request ) {
 				$actions = array();
 				if ( in_array( $user->ID, $pending_request ) ) {
-					$actions['accept']      = sprintf( '<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>',
-						_x( 'Accept', 'pending-request', 'learnpress' ) );
-					$actions['delete deny'] = sprintf( '<a class="submitdelete" href="' . admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ) . '">%s</a>',
-						_x( 'Deny', 'pending-request', 'learnpress' ) );
+					$actions['accept']      = sprintf(
+						'<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>',
+						_x( 'Accept', 'pending-request', 'learnpress' )
+					);
+					$actions['delete deny'] = sprintf(
+						'<a class="submitdelete" href="' . admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ) . '">%s</a>',
+						_x( 'Deny', 'pending-request', 'learnpress' )
+					);
 				}
 			}
 
@@ -510,8 +528,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				} else {
 					$class = '';
 				}
-				$views['pending-request'] = '<a href="' . admin_url( 'users.php?lp-action=pending-request' ) . '"' . $class . '>' . sprintf( __( 'Pending Request %s',
-						'learnpress' ), '<span class="count">(' . count( $pending_request ) . ')</span>' ) . '</a>';
+				$views['pending-request'] = '<a href="' . admin_url( 'users.php?lp-action=pending-request' ) . '"' . $class . '>' . sprintf(
+					__(
+						'Pending Request %s',
+						'learnpress'
+					),
+					'<span class="count">(' . count( $pending_request ) . ')</span>'
+				) . '</a>';
 			}
 
 			return $views;
@@ -525,24 +548,34 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			if ( 'yes' === get_option( 'learn_press_install' ) ) {
+			if ( ! get_option( 'learn_press_setup_wizard_completed', false ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
 			}
 
 			$action  = LP_Request::get( 'lp-action' );
 			$user_id = LP_Request::get_int( 'user_id' );
 
-			if ( ( in_array( $action,
-					array( 'accepted-request', 'denied-request' ) ) ) && ( $user_id ) && get_user_by( 'id',
-					$user_id ) ) {
+			if ( ( in_array(
+				$action,
+				array( 'accepted-request', 'denied-request' )
+			) ) && ( $user_id ) && get_user_by(
+				'id',
+				$user_id
+			) ) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				}
 				?>
 
 				<div class="updated notice">
-					<p><?php echo sprintf( __( 'User has %s to become a teacher.', 'learnpress' ),
-							$action == 'accepted-request' ? 'accepted' : 'denied' ); ?></p>
+					<p>
+					<?php
+					echo sprintf(
+						__( 'User has %s to become a teacher.', 'learnpress' ),
+						$action == 'accepted-request' ? 'accepted' : 'denied'
+					);
+					?>
+							</p>
 				</div>
 
 				<?php
@@ -551,14 +584,15 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 		/**
 		 * Redirect to setup page if we have just activated LP
+		 * @depecated 4.1.6.4
 		 */
-		public function admin_redirect() {
+		/*public function admin_redirect() {
 			if ( 'yes' === get_transient( 'lp_activation_redirect' ) && current_user_can( 'install_plugins' ) ) {
 				delete_transient( 'lp_activation_redirect' );
 
-				wp_safe_redirect( admin_url( 'index.php?page=lp-setup' ) );
+				exit( wp_safe_redirect( admin_url( 'index.php?page=lp-setup' ) ) );
 			}
-		}
+		}*/
 
 		/**
 		 * Custom admin body classes.
@@ -589,8 +623,18 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function notice_required_permalink() {
 			if ( current_user_can( 'manage_options' ) ) {
 				if ( ! get_option( 'permalink_structure' ) ) {
-					learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
-						'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
+					?>
+					<div class="notice notice-error">
+						<p>
+						<?php
+						echo sprintf(
+							'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
+							admin_url( 'options-permalink.php' )
+						)
+						?>
+						</p>
+					</div>
+					<?php
 				}
 			}
 		}
@@ -600,15 +644,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function notice_outdated_templates() {
 			if ( current_user_can( 'manage_options' ) ) {
-				$page = '';
-				$tab  = '';
-				if ( ! empty( $_REQUEST['page'] ) ) {
-					$page = $_REQUEST['page'];
-				}
-
-				if ( ! empty( $_REQUEST['tab'] ) ) {
-					$tab = $_REQUEST['tab'];
-				}
+				$page = LP_Helper::sanitize_params_submitted( $_REQUEST['page'] ?? '' );
+				$tab  = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
 
 				if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
 					return;
@@ -639,13 +676,22 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$current_screen = get_current_screen();
 			$pages          = learn_press_get_screens();
 
-			if ( isset( $current_screen->id ) && apply_filters( 'learn_press_display_admin_footer_text',
-					in_array( $current_screen->id, $pages ) ) ) {
+			if ( isset( $current_screen->id ) && apply_filters(
+				'learn_press_display_admin_footer_text',
+				in_array( $current_screen->id, $pages )
+			) ) {
 				if ( ! get_option( 'learn_press_message_user_rated' ) ) {
-					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %1$s&#9733;&#9733;&#9733;&#9733;&#9733;%2$s rating. A huge thanks from LearnPress team for your generous.',
-						'learnpress' ),
-						'<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)',
-							'learnpress' ) . '">', '</a>' );
+					$footer_text = sprintf(
+						__(
+							'If you like <strong>LearnPress</strong> please leave us a %1$s&#9733;&#9733;&#9733;&#9733;&#9733;%2$s rating. A huge thanks from LearnPress team for your generous.',
+							'learnpress'
+						),
+						'<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__(
+							'Thanks :)',
+							'learnpress'
+						) . '">',
+						'</a>'
+					);
 
 					ob_start();
 					?>
@@ -737,8 +783,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						$error_message   = $response->get_error_message();
 						$data['message'] = __( 'Something went wrong: ', 'learnpress' ) . $error_message;
 					} else {
-						$data['message'] = __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.',
-							'learnpress' );
+						$data['message'] = __(
+							'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.',
+							'learnpress'
+						);
 					}
 			}
 
@@ -755,7 +803,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
 			include_once 'class-lp-admin-assets.php';
 			include_once 'class-lp-admin-dashboard.php';
-			include_once 'class-lp-admin-tools.php';
+			// include_once 'class-lp-admin-tools.php';
 			include_once 'class-lp-admin-ajax.php';
 			include_once 'editor/class-lp-admin-editor.php';
 			include_once 'class-lp-admin-menu.php';
@@ -764,7 +812,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-modal-search-items.php';
 			include_once 'class-lp-modal-search-users.php';
 			include_once 'class-lp-setup-wizard.php';
-//			include_once 'class-lp-updater.php';
+			// include_once 'class-lp-updater.php';
 			include_once 'class-lp-install-sample-data.php';
 			include_once 'class-lp-reset-data.php';
 			include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/course/settings.php';
@@ -823,13 +871,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @author tungnx
 		 * @since  3.2.7.5
 		 */
-		public function lp_course_set_link_item_backend(
-			$post_link = '',
-			$post_id = 0,
-			$new_title = '',
-			$new_slug = '',
-			$post = null
-		) {
+		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
 			if ( ! in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
 				return $post_link;
 			}
@@ -844,14 +886,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$link_item = $course->get_item_link( $post->ID );
 
 					$post_slug           = $post->post_name;
-					$link_item_edit_slug = preg_replace( '/' . $post_slug . '(\/)/', '', $link_item );
+					$link_item_edit_slug = preg_replace( '/' . $post_slug . '$/', '', $link_item );
 
 					// For update new slug
 					if ( $new_slug ) {
 						$post_slug = $new_slug;
 					}
 
-					$post_link = '<strong>Permalink: </strong>';
+					$post_link  = '<strong>Permalink: </strong>';
 					$post_link .= '<span id="sample-permalink">';
 					$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
 					$post_link .= '</span>';
@@ -862,8 +904,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				}
 			} else {
 				// $post_link_preview = sprintf( '<a class="button" href="%s" target="_blank">%s</a>', learn_press_get_preview_url( $post_id ), __( 'Preview', 'learnpress' ) );
-				$post_link_message = '<span>' . __( 'Permalink only available if the item is already assigned to a course.',
-						'learnpress' ) . '</span>';
+				$post_link_message = '<span>' . __(
+					'Permalink only available if the item is already assigned to a course.',
+					'learnpress'
+				) . '</span>';
 				$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );
 			}
 

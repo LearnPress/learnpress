@@ -19,9 +19,10 @@ class LP_Helper_CURD {
 	 * @param string    $type - E.g: post, user, ...
 	 * @param array|int $ids
 	 * @param int       $limit
+	 * @depecated 4.1.6.4
 	 */
 	public static function update_meta_cache( $ids, $type = 'post', $limit = 500 ) {
-
+		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.1.6.4' );
 		if ( ! $ids ) {
 			return;
 		}
@@ -64,8 +65,10 @@ class LP_Helper_CURD {
 	 * @param int|array $post_ids
 	 *
 	 * @return mixed
+	 * @depecated 4.1.6.4
 	 */
 	public static function cache_posts( $post_ids ) {
+		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.1.6.4' );
 		global $wpdb;
 		settype( $post_ids, 'array' );
 
@@ -100,7 +103,7 @@ class LP_Helper_CURD {
 			}
 		}
 
-		self::update_meta_cache( $post_ids );
+		// self::update_meta_cache( $post_ids );
 		learn_press_cache_add_post_type( $post_types );
 
 		return $posts;

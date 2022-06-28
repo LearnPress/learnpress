@@ -377,3 +377,9 @@ $( window ).on( 'load', () => {
 	lpModalOverlayCompleteItem.init();
 	courseCurriculumSkeleton();
 } );
+
+// Add callback for Thimkits
+LP.Hook.addAction( 'lp_course_curriculum_skeleton', function( id ) {
+	courseCurriculumSkeleton( id );
+} );
+

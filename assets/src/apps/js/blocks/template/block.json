@@ -1,0 +1,11 @@
+{
+	"apiVersion": 2,
+	"name": "learnpress/template",
+	"category": "learnpress",
+	"attributes": {
+		"template": {
+			"type": "string",
+			"default": ""
+		}
+	}
+}

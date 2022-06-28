@@ -133,6 +133,39 @@ class LP_Install_Sample_Data {
 				throw new Exception( 'Create course failed.' );
 			}
 
+			$hooks = LP_Helper::sanitize_params_submitted( $_REQUEST['hooks'] ?? array() );
+
+			if ( ! empty( $hooks ) ) {
+				$hooks = (array) json_decode( $hooks );
+
+				/*$wpml_settings = array();
+				global $wpdb;
+				$wpml = new WPML_Admin_Post_Actions( $wpml_settings, $wpdb );
+				$wpml->save_post_actions( $course_id, get_post( $course_id ) );*/
+
+				$args = array();
+				if ( ! empty( $hooks ) ) {
+					foreach ( $hooks as $hook ) {
+						if ( isset( $hook->class ) && isset( $hook->action ) ) {
+							$class_name  = $hook->class;
+							$action_name = $hook->action;
+
+							switch ( $action_name ) {
+								case 'save_post':
+									$args = $course_id;
+									break;
+								default:
+									break;
+							}
+
+							if ( is_callable( array( $class_name, $action_name ) ) ) {
+								call_user_func( array( $class_name, $action_name ), $args );
+							}
+						}
+					}
+				}
+			}
+
 			$this->create_sections( $course_id );
 
 			$price = LP_Request::get( 'course-price' );
@@ -155,9 +188,9 @@ class LP_Install_Sample_Data {
 
 			<div class="lp-install-sample__response success">
 				<?php printf( __( 'Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
-				<a href="<?php echo esc_url( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
+				<a href="<?php echo esc_url_raw( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
 				|
-				<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
+				<a href="<?php echo esc_url_raw( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
 			</div>
 
 			<?php

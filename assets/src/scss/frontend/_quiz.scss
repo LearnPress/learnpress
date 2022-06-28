@@ -69,7 +69,6 @@
 		background: #f5f5f5;
 		font-size: 20px;
 		cursor: pointer;
-
 		@include border-radius(4px);
 		@include transition(background linear 0.25s);
 
@@ -116,10 +115,10 @@
 
 			&::after {
 				position: absolute;
-				top: 15px;
-				left: 9px;
+				top: 50%;
+				left: 50%;
+				@include transform(translate(-50%, -50%));
 				box-sizing: content-box;
-				margin-top: -10px;
 				opacity: 0;
 				color: #3db748;
 				font-family: "Font Awesome 5 Free";
@@ -204,38 +203,6 @@
 				}
 			}
 
-			//input[type="radio"],
-			//input[type="checkbox"] {
-			//    &:before,
-			//    &:after {
-			//        position: absolute;
-			//        _background: #FF0000;
-			//        border: none;
-			//        content: '';
-			//        display: inline-block;
-			//        left: 50%;
-			//        top: 50%;
-			//        @include border-radius(2px);
-			//        @include transform(rotate(-45deg));
-			//    }
-			//
-			//    &:before {
-			//        width: 2px;
-			//        height: 18px;
-			//        margin-top: -9px;
-			//        margin-left: -1px;
-			//    }
-			//
-			//    &:after {
-			//        width: 18px;
-			//        height: 2px;
-			//        margin-top: -1px;
-			//        margin-left: -9px;
-			//        border: none;
-			//        opacity: 1;
-			//    }
-			//}
-
 			input[type="radio"]:checked,
 			input[type="checkbox"]:checked {
 
@@ -256,25 +223,6 @@ button[data-counter] {
 	&::after {
 		padding-left: 5px;
 		content: "(+" attr(data-counter) ")";
-		//position: absolute;
-		//top: -10px;
-		//right: -10px;
-		//border-radius: 50%;
-		//height: 20px;
-		//background: #00adff;
-		//min-width: 20px;
-		//line-height: 20px;
-		//text-align: center;
-		//font-size: 12px;
-		//font-weight: normal;
-		//z-index: 10;
-	}
-
-	&:hover {
-
-		&::after {
-			//background: #52c8ff;
-		}
 	}
 }
 
@@ -291,7 +239,6 @@ button[data-counter] {
 
 		.result-message {
 			background: $primary-color-course-item-status;
-
 			&::after {
 				content: "\f00c";
 			}
@@ -300,12 +247,15 @@ button[data-counter] {
 
 	.result-message {
 		margin-bottom: 30px;
-		padding: 10px 0;
+		padding: 10px 0 !important;
 		color: #fff;
 		background: #f02425;
 		font-size: 16px;
+		line-height: 22px;
 		font-weight: 400;
-
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		@include border-radius(4px);
 
 		&::after {
@@ -347,18 +297,6 @@ button[data-counter] {
 		}
 	}
 
-	&.failed {
-
-		/*.result-achieved {
-            color: #c55757;
-        }
-        .result-message {
-            strong {
-                color: #c55757;
-            }
-        }*/
-	}
-
 	&.passed {
 
 		.result-achieved {
@@ -382,7 +320,9 @@ button[data-counter] {
 		.result-statistic-field {
 			display: flex;
 			margin: 0;
-
+			+ li {
+				border-top: 1px dashed #ccc;
+			}
 			span,
 			p {
 				margin: 0;
@@ -473,6 +413,10 @@ button[data-counter] {
 			display: block;
 			height: auto;
 			text-align: center;
+			padding: 15px;
+			.questions-index {
+				margin-bottom: 10px;
+			}
 		}
 
 		> div {
@@ -480,6 +424,9 @@ button[data-counter] {
 			flex-direction: row-reverse;
 			flex: 0 0 50%;
 			align-items: center;
+			@media (max-width: 480px) {
+				justify-content: center;
+			}
 		}
 
 		.current-point {
@@ -505,8 +452,6 @@ button[data-counter] {
 		min-width: 120px;
 		margin-right: 5px;
 		padding: 12px 29px;
-		//border: 1px solid var(--lp-secondary-color);
-		//border-radius: 3px;
 		color: #333;
 		background: #fff;
 		font-size: 14px;
@@ -570,7 +515,6 @@ button[data-counter] {
 		text-transform: uppercase;
 
 		&:hover {
-			//color: var(--lp-secondary-color);
 			background: var(--lp-secondary-color);
 		}
 	}
@@ -646,10 +590,6 @@ button[data-counter] {
 
 				a {
 					color: #f00;
-
-					&::after {
-						//content: "\f05e";
-					}
 				}
 			}
 
@@ -657,10 +597,6 @@ button[data-counter] {
 
 				a {
 					color: #00adff;
-
-					&::after {
-						//content: "\f00c";
-					}
 				}
 
 				&.current {
@@ -807,6 +743,7 @@ button[data-counter] {
 		height: 100%;
 		border: 10px solid #14c4ff;
 		border-radius: 50%;
+		transform: rotate(45deg);
 
 	}
 
@@ -843,14 +780,6 @@ button[data-counter] {
 	}
 }
 
-.quiz-results,
-.quiz-content,
-.quiz-questions,
-.quiz-buttons,
-.quiz-attempts {
-	margin-bottom: 60px;
-}
-
 .quiz-result {
 
 	.result-grade {
@@ -863,6 +792,7 @@ button[data-counter] {
 		padding: 50px;
 		justify-content: center;
 		align-items: center;
+		@include transform(none !important);
 
 		&::before,
 		svg {
@@ -898,13 +828,7 @@ button[data-counter] {
 		.result-grade {
 
 			svg {
-
 				@include transform(rotate(-90deg));
-
-				circle {
-					//stroke: #3eacff;
-					//stroke: #4CAF50;
-				}
 			}
 
 			.result-achieved {
@@ -1013,9 +937,6 @@ button[data-counter] {
 			}
 		}
 
-		&.answered-correct {
-		}
-
 		&.answered-wrong {
 
 			.option-title {
@@ -1030,7 +951,6 @@ button[data-counter] {
 		margin-bottom: 18px;
 		color: #333;
 		font-size: 18px;
-		font-weight: normal;
 		font-weight: 500;
 
 		.edit-link {
@@ -1179,12 +1099,6 @@ button[data-counter] {
 				}
 			}
 
-			&.paragraphs {
-
-				.blank-block {
-				}
-			}
-
 			&.ordered {
 				list-style-position: inside;
 			}
@@ -1192,14 +1106,6 @@ button[data-counter] {
 			&.one-paragraph {
 				line-height: 3;
 			}
-		}
-	}
-
-	&:not(.question-answered) {
-
-		input[type="radio"]:checked + .option-title,
-		input[type="checkbox"]:checked + .option-title {
-			//border-color: #99aee4;
 		}
 	}
 }
@@ -1210,3 +1116,4 @@ button[data-counter] {
 		background: rgba(255, 182, 6, 0.68) !important;
 	}
 }
+

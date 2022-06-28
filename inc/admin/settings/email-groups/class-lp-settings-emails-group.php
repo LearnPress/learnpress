@@ -61,7 +61,7 @@ class LP_Settings_Emails_Group extends LP_Settings {
 			if ( $current == $email->id ) {
 				echo '<li class="active"><span>' . $email . '</span></li>';
 			} else {
-				echo '<li><a href="' . add_query_arg( 'sub-section', $email->id ) . '">' . $email . '</a></li>';
+				echo '<li><a href="' . esc_url_raw( add_query_arg( 'sub-section', $email->id ) ) . '">' . $email . '</a></li>';
 			}
 		}
 

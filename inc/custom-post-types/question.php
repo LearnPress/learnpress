@@ -31,7 +31,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param $post_type
 		 * @param mixed
 		 */
-		public function __construct( $post_type, $args = '' ) {
+		public function __construct() {
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
@@ -41,7 +41,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			// $this->add_map_method( 'before_delete', 'before_delete_question' );
 
-			parent::__construct( $post_type, $args );
+			parent::__construct();
 		}
 
 		/**
@@ -72,42 +72,32 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.1
+		 * @version 1.0.1
 		 * @editor tungnx
 		 */
 		public function views_pages( array $views ): array {
-			$count_unassigned_questions = LP_Question_DB::getInstance()->get_total_question_unassigned();
+			$lp_question_db = LP_Question_DB::getInstance();
 
-			if ( $count_unassigned_questions > 0 ) {
-				$views['unassigned'] = sprintf(
-					'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
-					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
-					isset( $_GET['unassigned'] ) ? 'current' : '',
-					__( 'Unassigned', 'learnpress' ),
-					$count_unassigned_questions
-				);
-			}
+			try {
+				$filter = new LP_Question_Filter();
+				/*if ( ! current_user_can( 'administrator' ) ) {
+					$filter->where[] = $lp_question_db->wpdb->prepare( 'AND post_author = %d', get_current_user_id() );
+				}*/
 
-			// Get count question
-			/*
-			if ( ! current_user_can( 'administrator' ) ) {
-				$filter             = new LP_Question_Filter();
-				$filter->post_author   = $user_id;
+				$count_unassigned_questions = $lp_question_db->get_total_question_unassigned( $filter );
 
-				$totalPostAllStatus = LP_Database::getInstance()->get_count_post_of_user( $filter );
-				$views['all']       = wp_sprintf( '<a href="edit.php?post_type=lp_question" class="current" aria-current="page">All <span class="count">(%d)</span></a>', $totalPostAllStatus );
-
-				if ( 0 === $totalPostAllStatus ) {
-					unset( $views['publish'] );
-					unset( $views['unassigned'] );
-					unset( $views['trash'] );
-					unset( $views['draft'] );
-					unset( $views['pending'] );
-				} elseif ( isset( $views['publish'] ) ) {
-					$filter->_post_status = 'publish';
-					$totalPostPublish     = LP_Database::getInstance()->get_count_post_of_user( $filter );
-					$views['publish']     = wp_sprintf( '<a href="edit.php?post_type=lp_question&post_status=publish" class="current" aria-current="page">Published <span class="count">(%d)</span></a>', $totalPostPublish );
+				if ( $count_unassigned_questions > 0 ) {
+					$views['unassigned'] = sprintf(
+						'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
+						admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
+						isset( $_GET['unassigned'] ) ? 'current' : '',
+						__( 'Unassigned', 'learnpress' ),
+						$count_unassigned_questions
+					);
 				}
-			}*/
+			} catch ( Throwable $e ) {
+
+			}
 
 			return $views;
 		}
@@ -118,15 +108,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public function data_question_editor() {
+			global $post;
+
 			if ( LP_QUESTION_CPT !== get_post_type() ) {
 				return;
 			}
 
-			global $post, $pagenow;
-
 			$question = LP_Question::get_question( $post->ID );
-			$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
-			$type     = $question->get_type();
+			$type = $question->get_type();
+			$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 
 			if ( empty( $answers ) ) {
 				$answers = array(
@@ -279,17 +269,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public function save( int $post_id, WP_Post $post ) {
-			$question_id = $post_id;
+			/*$question_id = $post_id;
 
-			if ( $post->post_status != 'auto-draft' ) {
-				return;
-			}
+			$question_type = LP_Helper::sanitize_params_submitted( $_REQUEST['question-type'] ?? '' );
 
-			if ( empty( $_REQUEST['question-type'] ) ) {
-				$types         = array_keys( learn_press_question_types() );
+			if ( empty( $question_type ) ) {
+				$types         = array_keys( LP_Question::get_types() );
 				$question_type = reset( $types );
-			} else {
-				$question_type = LP_Helper::sanitize_params_submitted( $_REQUEST['question-type'] );
 			}
 
 			update_post_meta( $question_id, '_lp_type', $question_type );
@@ -298,7 +284,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			if ( $question->is_support( 'answer-options' ) ) {
 				$question->create_default_answers();
-			}
+			}*/
 		}
 
 		/**
@@ -311,9 +297,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function admin_editor() {
 			$question = LP_Question::get_question();
 
-			if ( $question->is_support( 'answer-options' ) ) {
-				echo learn_press_admin_view_content( 'question/editor' );
-			}
+			//if ( $question->is_support( 'answer-options' ) ) {
+			echo learn_press_admin_view_content( 'question/editor' );
+			//}
 
 			ob_start();
 			do_action( 'learn-press/question-admin-editor', $question );
@@ -373,7 +359,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					$quiz = $curd->get_quiz( $post_id );
 
 					if ( $quiz ) {
-						echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
+						echo '<div><a href="' . esc_url_raw( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
 						echo '<div class="row-actions">';
 						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), esc_html__( 'Edit', 'learnpress' ) );
 						echo '&nbsp;|&nbsp;';
@@ -531,7 +517,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'_lp_type' => 'true_or_false',
 					),
 				);*/
-				self::$_instance = new self( LP_QUESTION_CPT );
+				self::$_instance = new self();
 			}
 
 			return self::$_instance;

@@ -10,23 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LP_Debug {
-
-	/**
-	 * @var array Stores open file _handles.
-	 * @access private
-	 */
-	private $_handles;
-
 	/**
 	 * @var null
 	 */
 	private static $_instance = null;
-
 	/**
 	 * @var array
 	 */
 	private static $_time = array();
-
 	/**
 	 * Constructor for the logger.
 	 */
@@ -74,7 +65,7 @@ class LP_Debug {
 		}
 
 		$time = microtime( true ) - self::$_time[ $name ];
-		echo "{$name} execution time = " . $time . "\n";
+		echo esc_html( wp_sprintf( '%s execution time = %s', $name, $time ) );
 		unset( self::$_time[ $name ] );
 	}
 
@@ -113,12 +104,12 @@ class LP_Debug {
 	/**
 	 * Show value of variable
 	 *
-	 * @param $variable
-	 * @param $file_path
-	 * @param $line
+	 * @param mixed $variable
+	 * @param string $file_path
+	 * @param string $line
 	 */
-	public static function var_dump( $variable, $file_path, $line ) {
-		echo '<pre>' . print_r( $variable, true ) . '</pre>';
+	public static function var_dump( $variable, string $file_path = '', string $line = '' ) {
+		echo wp_kses( '<pre>' . print_r( $variable, true ) . '</pre>', true );
 		echo 'FILE:' . esc_html( $file_path ) . '<br> LINE:' . esc_html( $line );
 	}
 
@@ -130,7 +121,20 @@ class LP_Debug {
 	 * @editor tungnx
 	 */
 	public static function is_debug(): bool {
-		return LP_Settings::get_option( 'debug', 'no' ) == 'yes';
+		return LP_Settings::get_option( 'debug', 'no' ) === 'yes';
+	}
+
+	/**
+	 * Set error log
+	 *
+	 * @param string $message
+	 *
+	 * @return void
+	 */
+	public static function error_log( string $message ) {
+		if ( LP_Debug::is_debug() ) {
+			error_log( $message );
+		}
 	}
 
 	/**

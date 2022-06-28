@@ -56,7 +56,7 @@ class LP_Admin_Notice {
 	 * LP_Admin_Notice construct
 	 */
 	protected function __construct() {
-		add_action( 'init', array( $this, 'dismiss_notice' ) );
+		// add_action( 'init', array( $this, 'dismiss_notice' ) );
 		add_action( 'init', array( $this, 'load' ) );
 		add_action( 'admin_notices', array( $this, 'show_notices' ), 90 );
 	}
@@ -234,7 +234,7 @@ class LP_Admin_Notice {
 	/**
 	 * @since 3.2.6
 	 */
-	public function dismiss_notice() {
+	/*public function dismiss_notice() {
 		$id = LP_Request::get( 'lp-dismiss-notice' );
 
 		if ( ! $id ) {
@@ -265,7 +265,7 @@ class LP_Admin_Notice {
 				$id
 			)
 		);
-	}
+	}*/
 
 	/**
 	 * Update option to turn-off a notice.
@@ -424,7 +424,7 @@ class LP_Admin_Notice {
 			learn_press_update_user_option( 'hide-notice-' . $notice, 'yes' );
 		}
 
-		$redirect = apply_filters( 'learn_press_hide_notice_redirect', remove_query_arg( 'lp-hide-notice' ) );
+		$redirect = apply_filters( 'learn_press_hide_notice_redirect', esc_url_raw( remove_query_arg( 'lp-hide-notice' ) ) );
 		if ( $redirect ) {
 			wp_redirect( untrailingslashit( $redirect ) );
 			exit();

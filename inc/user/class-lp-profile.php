@@ -238,7 +238,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tabs() {
 			if ( $this->_tabs === null ) {
-				$settings        = LP()->settings();
+				$settings        = LP_Settings::instance();
 				$course_sections = array();
 
 				$this->_default_settings = array(
@@ -343,7 +343,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				update_option( 'learn_press_profile_avatar', 'yes' );
 			}
 
-			$setting_avatar = LP()->settings()->get( 'profile_endpoints.settings-avatar' );
+			$setting_avatar = LP_Settings::instance()->get( 'profile_endpoints.settings-avatar' );
 
 			if ( ! $setting_avatar ) {
 				$profile_endpoints['settings-basic-information'] = 'basic-information';
@@ -354,7 +354,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				add_rewrite_rule( '(.?.+?)/avatar(/(.*))?/?$', 'index.php?pagename=$matches[1]&section=avatar', 'top' );
 			}
 
-			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
+			return LP_Settings::instance()->get( 'profile_avatar' ) === 'yes';
 		}
 
 		/**
@@ -713,7 +713,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$query['pagination'] = learn_press_paging_nav(
 						array(
 							'num_pages' => $query['num_pages'],
-							'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP()->settings->get( 'profile_endpoints.profile-orders' ) ),
+							'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP_Settings::instance()->get( 'profile_endpoints.profile-orders' ) ),
 							'format'    => $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( '%#%', '' ) : '?paged=%#%',
 							'echo'      => false,
 							'paged'     => $args['paged'],
@@ -746,15 +746,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return LP_Query_List_Table
 		 */
 		public function query_courses( string $type = 'own', array $args = array() ): LP_Query_List_Table {
-			$courses = array();
+			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$courses          = array();
 
 			switch ( $type ) {
 				case 'purchased':
 					// $query = $this->_curd->query_purchased_courses( $this->get_user_data( 'id' ), $args );
-					$filter          = new LP_User_Items_Filter();
-					$filter->fields  = array( 'item_id' );
-					$filter->user_id = $this->get_user_data( 'id' );
-					$status          = $args['status'] ?? '';
+					$filter              = new LP_User_Items_Filter();
+					$filter->only_fields = array( 'DISTINCT (item_id) AS item_id' );
+					$filter->field_count = 'ui.item_id';
+					$filter->user_id     = $this->get_user_data( 'id' );
+					$status              = $args['status'] ?? '';
 					if ( $status != LP_COURSE_FINISHED ) {
 						$filter->graduation = $status;
 					} else {
@@ -835,9 +837,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$url = $this->get_current_url();
 
 			$defaults = array(
-				'all'     => sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'All', 'learnpress' ) ),
-				'publish' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'publish', $url ) ), esc_html__( 'Publish', 'learnpress' ) ),
-				'pending' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'pending', $url ) ), esc_html__( 'Pending', 'learnpress' ) ),
+				'all'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), esc_html__( 'All', 'learnpress' ) ),
+				'publish' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'publish', $url ) ), esc_html__( 'Publish', 'learnpress' ) ),
+				'pending' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'pending', $url ) ), esc_html__( 'Pending', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -867,11 +869,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function get_purchased_courses_filters( $current_filter = '' ) {
 			$url      = $this->get_current_url( false );
 			$defaults = array(
-				'all'          => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
-				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
-				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) ),
+				'all'          => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
+				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -901,10 +903,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function get_quizzes_filters( $current_filter = '' ) {
 			$url      = $this->get_current_url( false );
 			$defaults = array(
-				'all'       => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
-				'completed' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-graduation', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'all'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
+				'completed' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-graduation', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-graduation', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
 			);
 
 			if ( ! $current_filter ) {
@@ -932,16 +934,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function logout_url( $redirect = false ) {
 			if ( $this->enable_login() ) {
 				$profile_url = learn_press_get_page_link( 'profile' );
-				$url         = add_query_arg(
-					array(
-						'lp-logout' => 'true',
-						'nonce'     => wp_create_nonce( 'lp-logout' ),
-					),
-					untrailingslashit( $profile_url )
+				$url         = esc_url_raw(
+					add_query_arg(
+						array(
+							'lp-logout' => 'true',
+							'nonce'     => wp_create_nonce( 'lp-logout' ),
+						),
+						untrailingslashit( $profile_url )
+					)
 				);
 
 				if ( $redirect !== false ) {
-					$url = add_query_arg( 'redirect', urlencode( $redirect ), $url );
+					$url = esc_url_raw( add_query_arg( 'redirect', urlencode( $redirect ), $url ) );
 				}
 			} else {
 				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );
@@ -1014,7 +1018,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function enable_login() {
-			return 'yes' === LP()->settings()->get( 'enable_login_profile' );
+			return 'yes' === LP_Settings::instance()->get( 'enable_login_profile' );
 		}
 
 		/**
@@ -1023,7 +1027,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function enable_register() {
-			return 'yes' === LP()->settings()->get( 'enable_register_profile' );
+			return 'yes' === LP_Settings::instance()->get( 'enable_register_profile' );
 		}
 
 		/**
@@ -1062,7 +1066,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$uploaded_profile_src = $user->get_data( 'uploaded_profile_src' );
 
 			if ( empty( $uploaded_profile_src ) ) {
-				$profile_picture = $user->get_data( 'profile_picture' );
+				$profile_picture = get_user_meta( $user->get_id(), '_lp_profile_picture', true );
 
 				if ( $profile_picture ) {
 					$upload    = learn_press_user_profile_picture_upload_dir();
@@ -1120,6 +1124,61 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public static function get_option_publish_profile(): string {
 			return LP_Settings::get_option( 'publish_profile', 'no' );
+		}
+
+		/**
+		 * Get statistic info of user
+		 *
+		 * @return array
+		 * @since 4.1.6
+		 * @version 1.0.0
+		 */
+		public function get_statistic_info(): array {
+			$user      = $this->_user;
+			$statistic = array(
+				'enrolled_courses'  => 0,
+				'active_courses'    => 0,
+				'completed_courses' => 0,
+				'total_courses'     => 0,
+				'total_users'       => 0,
+			);
+
+			try {
+				if ( ! $user ) {
+					throw new Exception( 'User is invalid!' );
+				}
+
+				$user_id          = $user->get_id();
+				$lp_user_items_db = LP_User_Items_DB::getInstance();
+				$lp_course_db     = LP_Course_DB::getInstance();
+
+				// Count status
+				$filter          = new LP_User_Items_Filter();
+				$filter->user_id = $user_id;
+				$count_status    = $lp_user_items_db->count_status_by_items( $filter );
+
+				$count_users_attend_courses_of_author = 0;
+				$courses_of_author                    = 0;
+				if ( $user->can_create_course() ) {
+					// Get total users attend course of author
+					$filter_count_users                   = $lp_user_items_db->count_user_attend_courses_of_author( $user_id );
+					$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
+
+					// Get total courses publish of author
+					$filter_count_courses = $lp_course_db->count_courses_publish_of_author( $user_id );
+					$courses_of_author    = $lp_course_db->get_courses( $filter_count_courses );
+				}
+
+				$statistic['enrolled_courses']  = intval( $count_status->{LP_COURSE_PURCHASED} ?? 0 ) + intval( $count_status->{LP_COURSE_ENROLLED} ?? 0 ) + intval( $count_status->{LP_COURSE_FINISHED} ?? 0 );
+				$statistic['active_courses']    = $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
+				$statistic['completed_courses'] = $count_status->{LP_COURSE_FINISHED} ?? 0;
+				$statistic['total_courses']     = $courses_of_author;
+				$statistic['total_users']       = $count_users_attend_courses_of_author;
+			} catch ( Throwable $e ) {
+
+			}
+
+			return apply_filters( 'lp/profile/statistic', $statistic, $user );
 		}
 
 		/**

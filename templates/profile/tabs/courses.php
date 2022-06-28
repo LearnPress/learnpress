@@ -34,7 +34,7 @@ if ( ! isset( $user ) || ! isset( $tab_active ) || ! isset( $courses_enrolled_ta
 				</a>
 			</li>
 
-			<?php if ( learn_press_user_maybe_is_a_teacher() ) : ?>
+			<?php if ( $user->can_create_course() ) : ?>
 				<li>
 					<a class="<?php echo $tab_active === 'created' ? 'active' : ''; ?>" data-tab="created">
 						<?php esc_html_e( 'Created', 'learnpress' ); ?>

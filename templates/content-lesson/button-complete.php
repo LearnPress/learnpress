@@ -39,16 +39,16 @@ if ( $completed ) :
 <?php else : ?>
 
 	<form method="post" name="learn-press-form-complete-lesson"
-		  class="learn-press-form form-button <?php echo esc_attr( $completed ) ? 'completed' : ''; ?>"
-		  data-title="<?php echo esc_attr(__('Complete lesson', 'learnpress'))?>"
-		  data-confirm="<?php echo esc_attr( $message_confirm_complete_item ); ?>">
+		class="learn-press-form form-button <?php echo esc_attr( $completed ) ? 'completed' : ''; ?>"
+		data-title="<?php echo esc_attr( __( 'Complete lesson', 'learnpress' ) ); ?>"
+		data-confirm="<?php echo esc_attr( $message_confirm_complete_item ); ?>">
 
 		<?php do_action( 'learn-press/lesson/before-complete-button' ); ?>
 
 		<input type="hidden" name="id" value="<?php echo esc_attr( $item->get_id() ); ?>"/>
 		<input type="hidden" name="course_id" value="<?php echo esc_attr( $course->get_id() ); ?>"/>
 		<input type="hidden" name="complete-lesson-nonce"
-			   value="<?php echo esc_attr( $item->create_nonce( 'complete' ) ); ?>"/>
+			value="<?php echo esc_attr( wp_create_nonce( 'lesson-complete' ) ); ?>"/>
 		<input type="hidden" name="type" value="lp_lesson"/>
 		<input type="hidden" name="lp-ajax" value="complete-lesson"/>
 		<input type="hidden" name="noajax" value="yes"/>

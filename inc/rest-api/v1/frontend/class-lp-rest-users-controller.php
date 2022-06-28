@@ -225,7 +225,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function check_admin_permission() {
-		return LP_REST_Authentication::check_admin_permission();
+		return LP_Abstract_API::check_admin_permission();
 	}
 
 	/**
@@ -567,6 +567,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$user_quiz->complete();
 
+			do_action( 'learn-press/user/quiz-finished', $item_id, $course_id, $user_id );
+
 			$result['status']    = $user_quiz->get_status(); // Must be completed
 			$result['attempts']  = $user_quiz->get_attempts();
 			$result['answered']  = $result['questions'];
@@ -653,7 +655,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$settings = LP()->settings();
+		$settings = LP_Settings::instance();
 		$response = array(
 			'result' => $settings->get(),
 		);
@@ -667,7 +669,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_item( $request ) {
-		$settings = LP()->settings();
+		$settings = LP_Settings::instance();
 		$response = array(
 			'result' => $settings->get( $request['key'] ),
 		);
@@ -682,7 +684,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function update_item( $request ) {
 		$response = array();
-		$settings = LP()->settings();
+		$settings = LP_Settings::instance();
 		$option   = $settings->get( $request['key'] );
 
 		$settings->update( $request['key'], $request['data'] );

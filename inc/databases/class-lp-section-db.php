@@ -24,6 +24,28 @@ class LP_Section_DB extends LP_Database {
 	}
 
 	/**
+	 * Get sections
+	 *
+	 * @throws Exception
+	 * @since 4.1.6
+	 * @version 1.0.0
+	 */
+	public function get_sections( LP_Section_Filter $filter ) {
+		$default_fields = $this->get_cols_of_table( $this->tb_lp_sections );
+		$filter->fields = array_merge( $default_fields, $filter->fields );
+
+		if ( empty( $filter->collection ) ) {
+			$filter->collection = $this->tb_posts;
+		}
+
+		if ( empty( $filter->collection_alias ) ) {
+			$filter->collection_alias = 's';
+		}
+
+		$this->execute( $filter );
+	}
+
+	/**
 	 * Get course id by section id
 	 *
 	 * @param int $section_Id

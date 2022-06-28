@@ -118,7 +118,6 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 		public function output_courses() {
 			$attrs = $this->get_atts();
 
-			wp_enqueue_style( 'lp-font-awesome-5' );
 			wp_enqueue_style( 'learnpress' );
 			wp_enqueue_script( 'lp-courses' );
 
@@ -140,25 +139,6 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 			}
 
 			learn_press_get_template( 'shortcode/list-courses', $args_template );
-
-//			if ( $query->have_posts() ) {
-//				do_action( 'learn_press_before_courses_loop' );
-//
-//				LP()->template( 'course' )->begin_courses_loop();
-//
-//				while ( $query->have_posts() ) :
-//					$query->the_post();
-//					learn_press_get_template_part( 'content', 'course' );
-//				endwhile;
-//
-//				LP()->template( 'course' )->end_courses_loop();
-//
-//				do_action( 'learn_press_after_courses_loop' );
-//
-//				wp_reset_postdata();
-//			} else {
-//				learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' );
-//			}
 		}
 	}
 }

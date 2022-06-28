@@ -80,10 +80,6 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						'description' => esc_html__( 'Question ID.', 'learnpress' ),
 						'type'        => 'integer',
 					),
-					'answered'    => array(
-						'description' => esc_html__( 'Answer this question.', 'learnpress' ),
-						'type'        => array( 'array', 'string', 'object' ),
-					),
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
@@ -308,7 +304,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$request->set_param( 'course_id', $course_id );
 		$request->set_param( 'item_id', $quiz_id );
 
-		return $controller->submit_quiz( $request );
+		return $controller->submit_quiz_new( $request );
 	}
 
 	public function prepare_object_for_response( $object, $request ) {
@@ -452,11 +448,6 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$checked_questions = $user_quiz->get_checked_questions();
 			$expiration_time   = $user_quiz->get_expiration_time();
 
-			// If expiration time is specific then calculate total time
-			if ( $expiration_time && ! $expiration_time->is_null() ) {
-				$total_time = strtotime( $user_quiz->get_expiration_time() ) - strtotime( $user_quiz->get_start_time() );
-			}
-
 			$output = array(
 				'status'            => $status,
 				'attempts'          => $user_quiz->get_attempts(),
@@ -465,10 +456,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'retaken'           => absint( $user_quiz->get_retaken_count() ),
 			);
 
-			if ( isset( $total_time ) ) {
-				$output['total_time'] = lp_jwt_prepare_date_response( $total_time );
-				$output['endTime']    = lp_jwt_prepare_date_response( $expiration_time->toSql( false ) );
-			}
+			$output['total_time'] = $user_quiz->get_timestamp_remaining();
 
 			if ( $quiz_results ) {
 				$output['results'] = $quiz_results->get();

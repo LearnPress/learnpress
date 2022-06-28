@@ -4,12 +4,18 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
 
-if ( empty( $section ) ) {
+if ( empty( $args ) ) {
+	return;
+}
+
+if ( isset( $args['section'] ) ) {
+	$section = $args['section'];
+} else {
 	return;
 }
 ?>
@@ -33,19 +39,24 @@ if ( empty( $section ) ) {
 	</div>
 
 	<?php
-	$controller = new LP_REST_Lazy_Load_Controller();
-	$request    = new WP_REST_Request();
-	$request->set_param( 'sectionId', $section['section_id'] );
-	$response    = $controller->course_curriculum_items( $request );
-	$object_data = $response->get_data();
+	try {
+		$controller = new LP_REST_Lazy_Load_Controller();
+		$request    = new WP_REST_Request();
+		$request->set_param( 'sectionId', $section['section_id'] );
+		$response    = $controller->course_curriculum_items( $request );
+		$object_data = $response->get_data();
+	} catch ( Throwable $e ) {
+		error_log( $e );
+		return;
+	}
 	?>
 
 	<div class="section-item" data-section-id="<?php echo esc_attr( $section['section_id'] ); ?>">
 		<ul class="section-content">
-			<?php echo isset( $object_data->data ) ? wp_kses_post( $object_data->data ) : ''; ?>
+			<?php echo $object_data->data->content ?? $object_data->data ?? $object_data ? wp_kses_post( $object_data->data->content ) : ''; ?>
 		</ul>
 
-		<?php if ( ! empty( $object_data->pages ) && $object_data->pages > 1 ) : ?>
+		<?php if ( isset( $object_data ) && ! empty( $object_data->data->pages ) && $object_data->data->pages > 1 ) : ?>
 			<div class="section-item__loadmore" data-page="1">
 				<button><?php esc_html_e( 'Show more items', 'learnpress' ); ?></button>
 			</div>
