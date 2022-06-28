@@ -1563,7 +1563,7 @@ function set_post_order_in_admin( $wp_query ) {
 	global $pagenow;
 
 	if ( isset( $_GET['post_type'] ) ) {
-		$post_type = $_GET['post_type'];
+		$post_type = LP_Helper::sanitize_params_submitted( $_GET['post_type'] );
 	} else {
 		$post_type = '';
 	}

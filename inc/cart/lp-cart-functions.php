@@ -58,7 +58,7 @@ function learn_press_clear_cart_after_payment() {
 
 	if ( ! empty( $wp->query_vars['lp-order-received'] ) ) {
 		$order_id  = absint( $wp->query_vars['lp-order-received'] );
-		$order_key = $_GET['key'] ?? '';
+		$order_key = LP_Helper::sanitize_params_submitted( $_GET['key'] ?? '' );
 		$order     = learn_press_get_order( $order_id );
 
 		if ( $order_id > 0 && $order ) {

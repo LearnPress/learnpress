@@ -2107,9 +2107,9 @@ function learn_press_parse_request() {
 	// Map query vars to their keys, or get them if endpoints are not supported
 	foreach ( LP()->query_vars as $key => $var ) {
 		if ( isset( $_GET[ $var ] ) ) {
-			$wp->query_vars[ $key ] = $_GET[ $var ];
+			$wp->query_vars[ $key ] = LP_Helper::sanitize_params_submitted( $_GET[ $var ] ?? '' );
 		} elseif ( isset( $wp->query_vars[ $var ] ) ) {
-			$wp->query_vars[ $key ] = $wp->query_vars[ $var ];
+			$wp->query_vars[ $key ] = LP_Helper::sanitize_params_submitted( $wp->query_vars[ $var ] ?? '' );
 		}
 	}
 }

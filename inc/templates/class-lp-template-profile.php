@@ -115,7 +115,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		);
 
 		$courses_enrolled_tab_active = apply_filters( 'learnpress/profile/tab/enrolled/subtab-active', ! learn_press_user_maybe_is_a_teacher() ? 'in-progress' : '' );
-		$tab_active                  = $_GET['tab'] ?? '';
+		$tab_active                  = LP_Helper::sanitize_params_submitted( $_GET['tab'] ?? '' );
 		if ( ! $tab_active ) {
 			$tab_active = ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'created';
 		}
