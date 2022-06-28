@@ -596,19 +596,19 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$data['price'] = floatval( $course->get_price() );
 					break;
 				case 'price_rendered':
-					$data['price_rendered'] = $course->get_price_html();
+					$data['price_rendered'] = html_entity_decode( $course->get_price_html() );
 					break;
 				case 'origin_price':
 					$data['origin_price'] = floatval( $course->get_origin_price() );
 					break;
 				case 'origin_price_rendered':
-					$data['origin_price_rendered'] = $course->get_origin_price_html();
+					$data['origin_price_rendered'] = html_entity_decode( $course->get_origin_price_html() );
 					break;
 				case 'sale_price':
 					$data['sale_price'] = floatval( $course->get_sale_price() );
 					break;
 				case 'sale_price_rendered':
-					$data['sale_price_rendered'] = learn_press_format_price( $course->get_sale_price(), true );
+					$data['sale_price_rendered'] = html_entity_decode( learn_press_format_price( $course->get_sale_price(), true ) );
 					break;
 			}
 		}
