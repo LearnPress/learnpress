@@ -980,6 +980,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$on_popular_ids = empty( $on_popular_ids ) ? array( 0 ) : $on_popular_ids;
 
 			$args[ $on_popular_key ] += $on_popular_ids;
+
+			$args['orderby'] = 'post__in';
 		}
 
 		return $args;
