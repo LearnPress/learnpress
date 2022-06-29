@@ -69,12 +69,8 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function offline_payment_available() {
-			if ( LP()->settings->get( "{$this->id}.enable" ) != 'yes' ) {
-				return false;
-			}
-
-			return true;
+		public function offline_payment_available(): bool {
+			return LP_Settings::instance()->get( "{$this->id}.enable" ) === 'yes';
 		}
 
 		/**
@@ -89,7 +85,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		}
 
 		protected function _get( $name ) {
-			return LP()->settings->get( $this->id . '.' . $name );
+			return LP_Settings::instance()->get( $this->id . '.' . $name );
 		}
 
 		/**
@@ -98,113 +94,48 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 * @return array
 		 */
 		public function get_settings() {
-			if ( version_compare( LEARNPRESS_VERSION, '4.0.0-beta-0', '>=' ) ) {
-				return apply_filters(
-					'learn-press/gateway-payment/offline-payment/settings',
+			return apply_filters(
+				'learn-press/gateway-payment/offline-payment/settings',
+				array(
 					array(
-						array(
-							'type' => 'title',
-						),
-						array(
-							'title'   => __( 'Enable', 'learnpress' ),
-							'id'      => '[enable]',
-							'default' => 'no',
-							'type'    => 'checkbox',
-						),
-						array(
-							'title'   => __( 'Testing Mode', 'learnpress' ),
-							'id'      => '[sandbox]',
-							'default' => 'no',
-							'type'    => 'checkbox',
-							'desc'    => __( 'Auto complete the order for testing purpose.' ),
-						),
-						array(
-							'title'   => __( 'Title', 'learnpress' ),
-							'id'      => '[title]',
-							'default' => $this->title,
-							'type'    => 'text',
-						),
-						array(
-							'title'   => __( 'Instruction', 'learnpress' ),
-							'id'      => '[description]',
-							'default' => $this->description,
-							'type'    => 'textarea',
-						),
-						array(
-							'type' => 'sectionend',
-						),
-					)
-				);
-			} else {
-				return apply_filters(
-					'learn-press/gateway-payment/offline-payment/settings',
+						'type' => 'title',
+					),
 					array(
-						array(
-							'title'   => __( 'Enable', 'learnpress' ),
-							'id'      => '[enable]',
-							'default' => 'no',
-							'type'    => 'yes-no',
-						),
-						array(
-							'title'      => __( 'Testing Mode', 'learnpress' ),
-							'id'         => '[sandbox]',
-							'default'    => 'no',
-							'type'       => 'yes-no',
-							'desc'       => __( 'Auto complete the order for testing purpose.' ),
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => '[enable]',
-										'compare' => '=',
-										'value'   => 'yes',
-									),
-								),
-							),
-						),
-						array(
-							'title'      => __( 'Title', 'learnpress' ),
-							'id'         => '[title]',
-							'default'    => $this->title,
-							'type'       => 'text',
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => '[enable]',
-										'compare' => '=',
-										'value'   => 'yes',
-									),
-								),
-							),
-						),
-						array(
-							'title'      => __( 'Instruction', 'learnpress' ),
-							'id'         => '[description]',
-							'default'    => $this->description,
-							'type'       => 'textarea',
-							'editor'     => array( 'textarea_rows' => 5 ),
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => '[enable]',
-										'compare' => '=',
-										'value'   => 'yes',
-									),
-								),
-							),
-						),
-					)
-				);
-			}
+						'title'   => __( 'Enable', 'learnpress' ),
+						'id'      => '[enable]',
+						'default' => 'no',
+						'type'    => 'checkbox',
+					),
+					array(
+						'title'   => __( 'Testing Mode', 'learnpress' ),
+						'id'      => '[sandbox]',
+						'default' => 'no',
+						'type'    => 'checkbox',
+						'desc'    => __( 'Auto complete the order for testing purpose.' ),
+					),
+					array(
+						'title'   => __( 'Title', 'learnpress' ),
+						'id'      => '[title]',
+						'default' => $this->title,
+						'type'    => 'text',
+					),
+					array(
+						'title'   => __( 'Instruction', 'learnpress' ),
+						'id'      => '[description]',
+						'default' => $this->description,
+						'type'    => 'textarea',
+					),
+					array(
+						'type' => 'sectionend',
+					),
+				)
+			);
 		}
-
 		/**
 		 * Payment form.
 		 */
 		public function get_payment_form() {
-			return LP()->settings->get( $this->id . '.description' );
+			return LP_Settings::instance()->get( $this->id . '.description' );
 		}
 
 		/**
@@ -228,7 +159,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 			 *
 			 * @since 3.x.x
 			 */
-			if ( LP()->settings->get( $this->id . '.sandbox' ) === 'yes' ) {
+			if ( LP_Settings::instance()->get( $this->id . '.sandbox', 'no' ) === 'yes' ) {
 				$default_status = 'completed';
 			}
 

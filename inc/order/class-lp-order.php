@@ -1293,7 +1293,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return LP_Order
 		 */
 		public static function instance( $order, $force = true ) {
-			learn_press_deprecated_function( 'new LP_Order', '3.0', 'learn_press_get_order' );
+			// learn_press_deprecated_function( 'new LP_Order', '3.0', 'learn_press_get_order' );
 
 			return learn_press_get_order( $order );
 		}

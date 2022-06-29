@@ -8,6 +8,7 @@ class Buttons extends Component {
 		event && event.preventDefault();
 		const btn = document.querySelector( '.lp-button.start' );
 		btn && btn.setAttribute( 'disabled', 'disabled' );
+		btn.classList.add( 'loading' );
 		const { startQuiz, status } = this.props;
 
 		if ( status === 'completed' ) {
@@ -263,7 +264,7 @@ class Buttons extends Component {
 
 						{ ( ( status === 'completed' && canRetry ) || -1 !== [ '', 'viewed' ].indexOf( status ) ) && ! isReviewing && ! requiredPassword && (
 							<button className="lp-button start" onClick={ this.startQuiz }>
-								{ ( status === 'completed' ) ? `${ __( 'Retake', 'learnpress' ) } ${ ! allowRetake ? ` ${ retakeNumber ? ` (${ retakeNumber })` : '' }` : '' } ` :	__( 'Start', 'learnpress' ) }
+								{ ( status === 'completed' ) ? `${ __( 'Retake', 'learnpress' ) } ${ ! allowRetake ? ` ${ retakeNumber ? ` (${ retakeNumber })` : '' }` : '' } ` :	' ' + __( 'Start', 'learnpress' ) }
 							</button>
 						) }
 

@@ -13,8 +13,8 @@ const { camelCaseDashObjectKeys, Hook } = LP;
 /**
  * Set user data for app.
  *
- * @param key
- * @param data
+ * @param  key
+ * @param  data
  * @return {{type: string, data: *}}
  */
 export function setQuizData( key, data ) {
@@ -38,7 +38,7 @@ export function setQuizData( key, data ) {
 /**
  * Set question will display.
  *
- * @param questionId
+ * @param  questionId
  * @return {{type: string, data: *}}
  */
 export function setCurrentQuestion( questionId ) {
@@ -93,6 +93,8 @@ const startQuiz = function*() {
 		},
 	} );
 
+	const btnStart = document.querySelector( '.lp-button.start' );
+
 	if ( response.status !== 'error' ) {
 		response = Hook.applyFilters( 'request-start-quiz-response', response, itemId, courseId );
 
@@ -119,6 +121,11 @@ const startQuiz = function*() {
 		}
 
 		yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );
+	} else {
+		const elButtons = document.querySelector( '.quiz-buttons' );
+		const message = `<div class="learn-press-message error">${ response.message }</div>`;
+		elButtons.insertAdjacentHTML( 'afterend', message );
+		btnStart.classList.remove( 'loading' );
 	}
 };
 

@@ -216,7 +216,7 @@ footer {
 
 		@include transition(all 0.25s);
 
-		&.gray {
+		/*&.gray {
 			position: absolute;
 			z-index: 1;
 			top: 8px;
@@ -233,7 +233,7 @@ footer {
 				border: 0;
 				outline: 0;
 			}
-		}
+		}*/
 
 		&:hover {
 			border-color: var(--lp-primary-color);

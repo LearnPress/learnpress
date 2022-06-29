@@ -55,7 +55,6 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		return;
 	}
 
-	elArchive = document.querySelector( '.lp-archive-courses' );
 	const archiveCourse = elArchive && elArchive.querySelector( 'div.lp-archive-courses .lp-content-area' );
 	const listCourse = archiveCourse && archiveCourse.querySelector( 'ul.learn-press-courses' );
 
@@ -236,6 +235,7 @@ const lpArchiveGridListCourseHandle = () => {
 };
 
 function LPArchiveCourseInit() {
+	elArchive = document.querySelector( '.lp-archive-courses' );
 	lpArchiveCourse();
 	lpArchiveGridListCourseHandle();
 	lpArchiveGridListCourse();

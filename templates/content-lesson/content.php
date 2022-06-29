@@ -11,6 +11,13 @@
 
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_Lesson $lesson
+ */
+if ( ! isset( $lesson ) ) {
+	return;
+}
+
 $content = $lesson->get_content();
 
 if ( ! $content ) {
