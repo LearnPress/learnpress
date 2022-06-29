@@ -659,6 +659,8 @@ class LP_Database {
 			return $query;
 		} elseif ( ! empty( $filter->union ) ) {
 			$query  = implode( ' UNION ', array_unique( $filter->union ) );
+			$query .= $GROUP_BY;
+			$query .= $ORDER_BY;
 			$query .= $LIMIT;
 		}
 

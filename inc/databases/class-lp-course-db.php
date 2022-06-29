@@ -542,9 +542,8 @@ class LP_Course_DB extends LP_Database {
 		$filter_course_not_attend = clone $filter;
 
 		// Query get users total attend courses
-		// $filter_user_course->fields[]            = 'ID';
-		$filter_user_course->fields[] = 'COUNT(DISTINCT (ID)) AS total';
-		//$filter_user_course->fields              = array_merge( $filter->fields, $filter_user_course->fields );
+		$filter_user_course->fields              = array( 'ID', 'COUNT(ID) AS total' );
+		$filter_user_course->only_fields         = [];
 		$filter_user_course->join[]              = "INNER JOIN {$this->tb_lp_user_items} AS ui ON p.ID = ui.item_id";
 		$filter_user_course->where[]             = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
 		$filter_user_course->where[]             = $this->wpdb->prepare(
@@ -562,17 +561,17 @@ class LP_Course_DB extends LP_Database {
 		$filter_user_course_cl->only_fields = array( 'ID' );
 		$query_user_course_for_not_in       = LP_Course_DB::getInstance()->get_courses( $filter_user_course_cl );
 
-		//$filter_course_not_attend->fields[]            = 'ID';
-		$filter_course_not_attend->fields[] = '0 AS total';
-		//$filter_course_not_attend->fields              = array_merge( $filter->fields, $filter_course_not_attend->fields );
-		$filter_course_not_attend->where[]             = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
-		$filter_course_not_attend->order_by            = 'total';
-		$filter_course_not_attend->order               = 'DESC';
+		$filter_course_not_attend->fields      = [ 'ID', '0 AS total' ];
+		$filter_course_not_attend->only_fields = [];
+		$filter_course_not_attend->where[]     = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
+
 		$filter_course_not_attend->return_string_query = true;
 		$query_course_not_attend                       = LP_Course_DB::getInstance()->get_courses( $filter_course_not_attend );
 
-		$filter->union[] = $query_user_course;
-		$filter->union[] = $query_course_not_attend;
+		$filter->union[]  = $query_user_course;
+		$filter->union[]  = $query_course_not_attend;
+		$filter->order_by = 'total';
+		$filter->order    = 'DESC';
 
 		return $filter;
 	}
