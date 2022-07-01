@@ -1044,12 +1044,17 @@ class LP_Page_Controller {
 				$q->set( 'posts_per_archive_page', 1 );
 				$q->set( 'nopaging', true );
 			} else {
-				$limit = LP_Settings::get_option( 'archive_course_limit', 6 );
+				$filter              = new LP_Course_Filter();
+				$filter->only_fields = [ 'ID' ];
+				$filter->max_limit   = $filter->limit = 1000;
+				$limit               = LP_Settings::get_option( 'archive_course_limit', 6 );
+
 				$q->set( 'posts_per_page', $limit );
 				// $q->set( 'cache_results', true ); // it default true
 
 				// Search courses by keyword
-				$q->set( 's', $_REQUEST['c_search'] ?? '' );
+				// $q->set( 's', $_REQUEST['c_search'] ?? '' );
+				$filter->post_title = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] ?? '' );
 
 				// Meta query
 				$meta_query = [];
@@ -1097,6 +1102,12 @@ class LP_Page_Controller {
 				}
 				// End Author query
 
+				$posts_in = LP_Course::get_courses( $filter );
+				if ( ! empty( $posts_in ) ) {
+					$posts_in = LP_Database::get_values_by_key( $posts_in );
+					$q->set( 'post__in', $posts_in );
+				}
+
 				// Order query
 				if ( isset( $_REQUEST['order_by'] ) ) {
 					$order_by = LP_Helper::sanitize_params_submitted( $_REQUEST['order_by'] );
@@ -1106,6 +1117,9 @@ class LP_Page_Controller {
 						case 'post_title':
 							$order_by = 'title';
 							$order    = 'ASC';
+							break;
+						case 'popular':
+							$order_by = 'post__in';
 							break;
 						default:
 							$order_by = 'date';
