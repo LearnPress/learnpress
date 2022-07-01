@@ -120,14 +120,7 @@ body {
 				text-align: center;
 			}
 		}
-		&::before, &::after {
-			content: "";
-			height: 100%;
-			width: 100%;
-			background: var(--lp-secondary-color);
-			position: absolute;
-			top: 0;
-		}
+
 		&::before {
 			right: 100%;
 			left: auto;
