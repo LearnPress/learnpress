@@ -203,6 +203,16 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.8 (2022-07-04) =
+~ Fixed: click pagination when enable 2 option Load Courses Ajax.
+~ Fixed: error sort by popular with theme Eduma.
+~ Fixed: Wordfence denied param: "author", convert to "user" on API.
+~ Fixed: query popular courses for app.
+~ Added: return price format for app.
+~ Added: API delete account.
+~ Merged: addon Offline Payment.
+~ Fixed: styles with themes: Avada, Divi, Flastsome, Bridget, Astra, The 7.
+
 = 4.1.6.7 (2022-06-20) =
 ~ Fixed: errors quiz when call API LP remove action 'wp_loaded'.
 ~ Fixed: some minor bugs.
