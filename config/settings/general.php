@@ -9,41 +9,41 @@ foreach ( $currencies as $code => $name ) {
 return apply_filters(
 	'learn-press/general-settings-fields',
 	array(
-		'title_section'        => array(
+		array(
 			'title' => esc_html__( 'Pages setup', 'learnpress' ),
 			'type'  => 'title',
 		),
-		'page_courses'         => array(
+		array(
 			'title'   => esc_html__( 'All courses page', 'learnpress' ),
 			'id'      => 'courses_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
 		),
-		'page_profile'         => array(
+		array(
 			'title'   => esc_html__( 'Profile page', 'learnpress' ),
 			'id'      => 'profile_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
 		),
-		'page_checkout'        => array(
+		array(
 			'title'   => esc_html__( 'Checkout page', 'learnpress' ),
 			'id'      => 'checkout_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
 		),
-		'page_become_teacher'  => array(
+		array(
 			'title'   => esc_html__( 'Become instructors page', 'learnpress' ),
 			'id'      => 'become_a_teacher_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
 		),
-		'page_term_condition'  => array(
+		array(
 			'title'   => esc_html__( 'Terms and conditions', 'learnpress' ),
 			'id'      => 'term_conditions_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
 		),
-		'page_logout_redirect' => array(
+		array(
 			'title'   => esc_html__( 'Logout Redirect', 'learnpress' ),
 			'id'      => 'logout_redirect_page_id',
 			'default' => '',
