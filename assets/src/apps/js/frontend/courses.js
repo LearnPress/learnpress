@@ -126,10 +126,6 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 			firstLoad = 0;
 		}
 
-		console.log( { ...lpArchiveSkeleton, ...args } );
-
-		console.log( args );
-
 		// Save filter courses to Storage
 		window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
 		// Change url by params filter courses
@@ -141,8 +137,6 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 const lpArchiveSearchCourse = () => {
 	const searchForm = document.querySelectorAll( 'form.search-courses' );
 	const filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
-
-	console.log( filterCourses );
 
 	searchForm.forEach( ( s ) => {
 		const search = s.querySelector( 'input[name="c_search"]' );
