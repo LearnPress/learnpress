@@ -1044,17 +1044,21 @@ class LP_Page_Controller {
 				$q->set( 'posts_per_archive_page', 1 );
 				$q->set( 'nopaging', true );
 			} else {
-				$filter              = new LP_Course_Filter();
-				$filter->only_fields = [ 'ID' ];
-				$filter->max_limit   = $filter->limit = 1000;
-				$limit               = LP_Settings::get_option( 'archive_course_limit', 6 );
+				$filter               = new LP_Course_Filter();
+				$filter->only_fields  = [ 'ID' ];
+				$filter->max_limit    = $filter->limit = 1000;
+				$is_need_check_in_arr = false;
+				$limit                = LP_Settings::get_option( 'archive_course_limit', 6 );
 
 				$q->set( 'posts_per_page', $limit );
 				// $q->set( 'cache_results', true ); // it default true
 
 				// Search courses by keyword
 				// $q->set( 's', $_REQUEST['c_search'] ?? '' );
-				$filter->post_title = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] ?? '' );
+				if ( ! empty( $_REQUEST['c_search'] ) ) {
+					$filter->post_title   = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] );
+					$is_need_check_in_arr = true;
+				}
 
 				// Meta query
 				$meta_query = [];
@@ -1102,12 +1106,6 @@ class LP_Page_Controller {
 				}
 				// End Author query
 
-				$posts_in = LP_Course::get_courses( $filter );
-				if ( ! empty( $posts_in ) ) {
-					$posts_in = LP_Database::get_values_by_key( $posts_in );
-					$q->set( 'post__in', $posts_in );
-				}
-
 				// Order query
 				if ( isset( $_REQUEST['order_by'] ) ) {
 					$order_by = LP_Helper::sanitize_params_submitted( $_REQUEST['order_by'] );
@@ -1119,7 +1117,9 @@ class LP_Page_Controller {
 							$order    = 'ASC';
 							break;
 						case 'popular':
-							$order_by = 'post__in';
+							$filter->order_by     = 'popular';
+							$order_by             = 'post__in';
+							$is_need_check_in_arr = true;
 							break;
 						default:
 							$order_by = 'date';
@@ -1130,55 +1130,15 @@ class LP_Page_Controller {
 					$q->set( 'order', $order );
 				}
 
+				if ( $is_need_check_in_arr ) {
+					$posts_in = LP_Course::get_courses( $filter );
+					if ( ! empty( $posts_in ) ) {
+						$posts_in = LP_Database::get_values_by_key( $posts_in );
+						$q->set( 'post__in', $posts_in );
+					}
+				}
+
 				$q = apply_filters( 'lp/page-courses/query/legacy', $q );
-
-				/*if ( isset( $_REQUEST['isPageLoad'] ) ) {
-					$filter_courses              = new LP_Course_Filter();
-					$filter_courses->only_fields = [ 'ID' ];
-					$filter_courses->limit       = 1000;
-					$filter_courses->max_limit   = 1000;
-					$filter_courses->post_title  = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] ?? '' );
-					$fields_str                  = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['c_fields'] ?? '' ) );
-					$fields_exclude_str          = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['c_exclude_fields'] ?? '' ) );
-					if ( ! empty( $fields_str ) ) {
-						$fields                 = explode( ',', $fields_str );
-						$filter_courses->fields = $fields;
-					}
-					if ( ! empty( $fields_exclude_str ) ) {
-						$fields_exclude                 = explode( ',', $fields_exclude_str );
-						$filter_courses->exclude_fields = $fields_exclude;
-					}
-					$filter_courses->post_author = LP_Helper::sanitize_params_submitted( $_REQUEST['c_author'] ?? 0 );
-					$author_ids_str              = LP_Helper::sanitize_params_submitted( $_REQUEST['c_authors'] ?? 0 );
-					if ( ! empty( $author_ids_str ) ) {
-						$author_ids                   = explode( ',', $author_ids_str );
-						$filter_courses->post_authors = $author_ids;
-					}
-					$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['term_id'] ?? '' ) );
-					if ( ! empty( $term_ids_str ) ) {
-						$term_ids                 = explode( ',', $term_ids_str );
-						$filter_courses->term_ids = $term_ids;
-					}
-
-					$on_sale                                       = absint( $_REQUEST['on_sale'] ?? '0' );
-					1 === $on_sale ? $filter_courses->sort_by[]    = 'on_sale' : '';
-					$on_feature                                    = absint( $_REQUEST['on_feature'] ?? '0' );
-					1 === $on_feature ? $filter_courses->sort_by[] = 'on_feature' : '';
-
-					$filter_courses->order_by = LP_Helper::sanitize_params_submitted( ! empty( $_REQUEST['order_by'] ) ? $_REQUEST['order_by'] : 'post_date' );
-					$filter_courses->order    = LP_Helper::sanitize_params_submitted( ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'DESC' );
-
-					$filter_courses = apply_filters( 'lp/api/courses/filter', $filter_courses, $_REQUEST );
-
-					$courses    = LP_Course::get_courses( $filter_courses );
-					$course_ids = array( -1 ); // Set if empty $course_ids will return 'no courses found' message
-
-					if ( ! empty( $courses ) ) {
-						$course_ids = LP_Database::getInstance()->get_values_by_key( $courses );
-					}
-
-					$q->set( 'post__in', $course_ids );
-				}*/
 			}
 		}
 

@@ -419,9 +419,10 @@ class LP_Helper {
 	 * @author tungnx
 	 */
 	public static function getUrlCurrent(): string {
-		$schema = is_ssl() ? 'https://' : 'http://';
+		$schema    = is_ssl() ? 'https://' : 'http://';
+		$http_host = $_SERVER['HTTP_HOST'] ?? '';
 
-		return $schema . $_SERVER['HTTP_HOST'] . untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
+		return $schema . $http_host . untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ?? '' ) );
 	}
 
 	/**
