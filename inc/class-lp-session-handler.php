@@ -167,7 +167,9 @@ class LP_Session_Handler implements ArrayAccess {
 			$this->_has_cookie = true;
 
 			// Set the cookie
-			learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, apply_filters( 'learn_press_session_use_secure_cookie', false ) );
+			if ( ! isset( $_COOKIE[ $this->_cookie ] ) || $_COOKIE[ $this->_cookie ] !== $cookie_value ) {
+				learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, apply_filters( 'learn_press_session_use_secure_cookie', false ), true );
+			}
 		}
 	}
 

@@ -1970,10 +1970,10 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  * @editor tungnx
  * @version 1.0.2
  */
-function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
+function learn_press_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = false ) {
 	$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 
-	@setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure );
+	@setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure, $httponly );
 }
 
 /**
