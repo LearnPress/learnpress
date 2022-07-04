@@ -522,7 +522,7 @@
 		}
 		.section-item-link {
 			line-height: 1;
-
+			padding-right: 0;
 			&::before {
 				padding: 12px 0;
 				vertical-align: unset;
@@ -540,7 +540,7 @@
 
 		.course-item-meta {
 			padding: 0;
-			padding-right: 16px;
+			// padding-right: 16px;
 
 			.item-meta {
 				padding: 0;
@@ -560,14 +560,14 @@
 					line-height: 21px;
 				}
 
-				&.course-item-status {
-					position: absolute;
-					top: 50%;
-					right: 18px;
-					left: auto;
-					margin-top: -10px;
-					padding: 0;
-				}
+				// &.course-item-status {
+				// 	position: absolute;
+				// 	top: 50%;
+				// 	right: 18px;
+				// 	left: auto;
+				// 	margin-top: -10px;
+				// 	padding: 0;
+				// }
 			}
 		}
 	}

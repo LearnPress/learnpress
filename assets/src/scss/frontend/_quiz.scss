@@ -114,15 +114,16 @@
 			}
 
 			&::after {
+				margin-top: -10px;
 				position: absolute;
-				top: 50%;
-				left: 50%;
-				@include transform(translate(-50%, -50%));
+				top:18px;
+    			left: 9px;
 				box-sizing: content-box;
 				opacity: 0;
 				color: #3db748;
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
+				font-size: 16px;
 				content: "\f00c";
 			}
 
@@ -145,7 +146,14 @@
 			}
 
 		}
-
+		input[type="checkbox"]{
+			&::after {
+				margin-top: 0;
+ 				top: 50%;
+				left: 50%;
+				@include transform(translate(-50%, -50%));
+			}
+		}
 		input[type="radio"] {
 
 			@include border-radius(50%);
