@@ -1,4 +1,3 @@
-const $ = jQuery;
 import lpModalOverlay from '../utils/lp-modal-overlay';
 
 const lpModalOverlayCompleteItem = {

@@ -1,4 +1,3 @@
-const $ = jQuery;
 import SingleCurriculums from './single-curriculum/index';
 import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
 import courseCurriculumSkeleton from './single-curriculum/skeleton';

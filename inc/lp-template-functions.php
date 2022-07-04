@@ -1352,10 +1352,10 @@ function learn_press_content_item_summary_class( $more = '', $echo = true ) {
 	$classes = array( 'content-item-summary' );
 	$classes = LP_Helper::merge_class( $classes, $more );
 	$classes = apply_filters( 'learn-press/content-item-summary-class', $classes );
-	$output  = 'class="' . join( ' ', $classes ) . '"';
+	$output  = 'class="' . esc_attr( join( ' ', $classes ) ) . '"';
 
 	if ( $echo ) {
-		echo esc_attr( $output );
+		echo wp_kses_post( $output );
 	}
 
 	return $output;
