@@ -203,7 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.6.8 (2022-07-04) =
+= 4.1.6.8 (2022-07-05) =
 ~ Fixed: click pagination when enable 2 option Load Courses Ajax.
 ~ Added: loading, error message(if it has) when start quick.
 ~ Fixed: error sort by popular with theme Eduma.
@@ -213,6 +213,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: API delete account for app.
 ~ Merged: addon Offline Payment.
 ~ Fixed: styles with themes: Avada, Divi, Flastsome, Bridget, Astra, The 7.
+~ Fixed: security.
 
 = 4.1.6.7 (2022-06-20) =
 ~ Fixed: errors quiz when call API LP remove action 'wp_loaded'.
