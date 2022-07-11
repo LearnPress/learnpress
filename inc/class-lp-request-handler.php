@@ -55,6 +55,8 @@ class LP_Request {
 	public static function process_request( $template ) {
 		if ( ! empty( $_REQUEST ) ) {
 			foreach ( $_REQUEST as $key => $value ) {
+				$key   = LP_Helper::sanitize_params_submitted( $key );
+				$value = LP_Helper::sanitize_params_submitted( $value );
 				do_action( 'learn_press_request_handler_' . $key, $value, $key );
 			}
 		}
