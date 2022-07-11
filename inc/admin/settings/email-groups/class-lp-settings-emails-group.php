@@ -90,7 +90,7 @@ class LP_Settings_Emails_Group extends LP_Settings {
 	public function get_current_section() {
 		$ids = array_keys( $this->items );
 
-		return ! empty( $_REQUEST['sub-section'] ) ? $_REQUEST['sub-section'] : reset( $ids );
+		return ! empty( $_REQUEST['sub-section'] ) ? sanitize_text_field( $_REQUEST['sub-section'] ) : reset( $ids );
 	}
 
 	public function __toString() {

@@ -116,45 +116,45 @@ add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );*/
 /**
  * Update permalink structure for course
  */
-function learn_press_update_permalink_structure() {
-	global $pagenow;
+// function learn_press_update_permalink_structure() {
+// 	global $pagenow;
 
-	if ( $pagenow != 'options-permalink.php' ) {
-		return;
-	}
+// 	if ( $pagenow != 'options-permalink.php' ) {
+// 		return;
+// 	}
 
-	if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
-		return;
-	}
+// 	if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
+// 		return;
+// 	}
 
-	$rewrite_prefix      = '';
-	$permalink_structure = ! empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
+// 	$rewrite_prefix      = '';
+// 	$permalink_structure = ! empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
 
-	if ( $permalink_structure ) {
-		$rewrite_prefix = array();
-		$segs           = explode( '/', $permalink_structure );
+// 	if ( $permalink_structure ) {
+// 		$rewrite_prefix = array();
+// 		$segs           = explode( '/', $permalink_structure );
 
-		if ( sizeof( $segs ) ) {
-			foreach ( $segs as $seg ) {
-				if ( strpos( $seg, '%' ) !== false || $seg == 'archives' ) {
-					break;
-				}
-				$rewrite_prefix[] = $seg;
-			}
-		}
+// 		if ( sizeof( $segs ) ) {
+// 			foreach ( $segs as $seg ) {
+// 				if ( strpos( $seg, '%' ) !== false || $seg == 'archives' ) {
+// 					break;
+// 				}
+// 				$rewrite_prefix[] = $seg;
+// 			}
+// 		}
 
-		$rewrite_prefix = array_filter( $rewrite_prefix );
+// 		$rewrite_prefix = array_filter( $rewrite_prefix );
 
-		if ( sizeof( $rewrite_prefix ) ) {
-			$rewrite_prefix = join( '/', $rewrite_prefix ) . '/';
-		} else {
-			$rewrite_prefix = '';
-		}
-	}
+// 		if ( sizeof( $rewrite_prefix ) ) {
+// 			$rewrite_prefix = join( '/', $rewrite_prefix ) . '/';
+// 		} else {
+// 			$rewrite_prefix = '';
+// 		}
+// 	}
 
-	update_option( 'learn_press_permalink_structure', $rewrite_prefix );
-}
-add_action( 'init', 'learn_press_update_permalink_structure' );
+// 	update_option( 'learn_press_permalink_structure', $rewrite_prefix );
+// }
+// add_action( 'init', 'learn_press_update_permalink_structure' );
 
 /**
  * Active Courses menu under LearnPress

@@ -748,7 +748,7 @@ class LP_Checkout {
 							$course_id = get_transient( 'checkout_enroll_course_id' );
 
 							if ( ! $course_id ) {
-								if ( isset( $_REQUEST['enroll-course'] ) && $_REQUEST['enroll-course'] ) {
+								if ( ! empty( $_REQUEST['enroll-course'] ) ) {
 									$course_id = absint( $_REQUEST['enroll-course'] );
 								}
 							}
