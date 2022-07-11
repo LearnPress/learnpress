@@ -1141,6 +1141,8 @@ class LP_Page_Controller {
 					if ( ! empty( $posts_in ) ) {
 						$posts_in = LP_Database::get_values_by_key( $posts_in );
 						$q->set( 'post__in', $posts_in );
+					} else {
+						$q->set( 'post__in', 0 );
 					}
 				}
 
