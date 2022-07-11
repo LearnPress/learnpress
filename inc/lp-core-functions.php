@@ -1702,7 +1702,7 @@ function learn_press_posts_where_statement_search( $where ) {
  * @param WP_Query $q
  */
 function learn_press_filter_search( $q ) {
-	if ( $q->is_main_query() && $q->is_search() && ( ! empty( $_REQUEST['ref'] ) && $_REQUEST['ref'] == 'course' ) ) {
+	if ( $q->is_main_query() && $q->is_search() && ( ! empty( $_REQUEST['ref'] ) && sanitize_text_field( $_REQUEST['ref'] ) == 'course' ) ) {
 		$q->set( 'post_type', 'lp_course' );
 
 		add_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
@@ -1830,10 +1830,7 @@ function is_learnpress() {
 
 if ( ! function_exists( 'learn_press_is_search' ) ) {
 	function learn_press_is_search() {
-		return array_key_exists( 's', $_REQUEST ) && array_key_exists(
-			'ref',
-			$_REQUEST
-		) && $_REQUEST['ref'] == 'course';
+		return array_key_exists( 's', $_REQUEST ) && array_key_exists( 'ref', $_REQUEST ) && sanitize_text_field( $_REQUEST['ref'] ) == 'course';
 	}
 }
 
@@ -2309,7 +2306,7 @@ function learn_press_single_term_title( $prefix = '', $display = true ) {
  * @return string
  */
 function learn_press_search_template( $template ) {
-	if ( ! empty( $_REQUEST['ref'] ) && ( $_REQUEST['ref'] == 'course' ) ) {
+	if ( ! empty( $_REQUEST['ref'] ) && sanitize_text_field( $_REQUEST['ref'] ) == 'course' ) {
 		$template = learn_press_locate_template( 'archive-course.php' );
 	}
 

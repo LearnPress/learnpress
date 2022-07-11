@@ -470,7 +470,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return bool
 		 */
 		private function is_current() {
-			return ! empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $this->id;
+			return ! empty( $_REQUEST['section'] ) && sanitize_text_field( $_REQUEST['section'] ) == $this->id;
 		}
 
 		/**
