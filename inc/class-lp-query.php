@@ -175,7 +175,7 @@ class LP_Query {
 
 			if ( $tabs ) {
 				foreach ( $tabs as $slug => $args ) {
-					$tab_slug = isset( $args['slug'] ) ? $args['slug'] : $slug;
+					$tab_slug = $args['slug'] ?? $slug;
 					$rules[]  = array(
 						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([0-9]*)/?$',
 						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
@@ -184,7 +184,7 @@ class LP_Query {
 
 					if ( ! empty( $args['sections'] ) ) {
 						foreach ( $args['sections'] as $section_slug => $section ) {
-							$section_slug = isset( $section['slug'] ) ? $section['slug'] : $section_slug;
+							$section_slug = $section['slug'] ?? $section_slug;
 							$rules[]      = array(
 								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?([0-9]*)?$',
 								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
@@ -197,14 +197,14 @@ class LP_Query {
 		}
 
 		// Archive course
-		$course_page_id = learn_press_get_page_id( 'courses' );
+		/*$course_page_id = learn_press_get_page_id( 'courses' );
 		if ( $course_page_id ) {
 			$rules[] = array(
 				'^' . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
 				'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
 				'top',
 			);
-		}
+		}*/
 
 		global $wp_rewrite;
 

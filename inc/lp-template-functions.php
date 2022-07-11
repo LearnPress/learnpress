@@ -1729,7 +1729,7 @@ function lp_archive_skeleton_get_args() {
 	if ( learn_press_is_course_archive() ) {
 		foreach ( $params as $key => $param ) {
 			if ( isset( $_REQUEST[ $key ] ) ) {
-				$args[ $key ] = $_REQUEST[ $key ];
+				$args[ $key ] = LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] );
 			} else {
 				$args[ $key ] = $param;
 			}

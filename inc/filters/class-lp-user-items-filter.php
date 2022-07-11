@@ -25,9 +25,17 @@ if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 		 */
 		public $user_id = 0;
 		/**
+		 * @var array int
+		 */
+		public $user_ids = [];
+		/**
 		 * @var int
 		 */
 		public $item_id = 0;
+		/**
+		 * @var array int
+		 */
+		public $course_ids = [];
 		/**
 		 * @var string
 		 */

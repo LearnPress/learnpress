@@ -1060,10 +1060,16 @@ class LP_Page_Controller {
 					$is_need_check_in_arr = true;
 				}
 
+				$author_ids_str = LP_Helper::sanitize_params_submitted( $_REQUEST['c_authors'] ?? 0 );
+				if ( ! empty( $author_ids_str ) ) {
+					$q->set( 'author', $author_ids_str );
+				}
+
 				// Meta query
 				$meta_query = [];
 				if ( isset( $_REQUEST['sort_by'] ) ) {
-					if ( 'on_paid' === $_REQUEST['sort_by'] ) {
+					$sort_by = LP_Helper::sanitize_params_submitted( $_REQUEST['sort_by'] );
+					if ( 'on_paid' === $sort_by ) {
 						$meta_query[] = array(
 							'key'     => '_lp_price',
 							'value'   => 0,
@@ -1071,7 +1077,7 @@ class LP_Page_Controller {
 						);
 					}
 
-					if ( 'on_free' === $_REQUEST['sort_by'] ) {
+					if ( 'on_free' === $sort_by ) {
 						$meta_query[] = array(
 							'key'     => '_lp_price',
 							'value'   => 0,

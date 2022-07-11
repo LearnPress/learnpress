@@ -517,7 +517,7 @@ class LP_Object_Cache {
 	 *
 	 * @since 2.0.0
 	 */
-	public static function stats() {
+	/*public static function stats() {
 		$self = self::instance();
 		echo '<p>';
 		echo "<strong>Cache Hits:</strong> {$self->cache_hits}<br />";
@@ -529,7 +529,7 @@ class LP_Object_Cache {
 					2 ) . 'k )</li>';
 		}
 		echo '</ul>';
-	}
+	}*/
 
 	/**
 	 * Switches the internal blog ID.

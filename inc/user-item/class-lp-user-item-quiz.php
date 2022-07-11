@@ -612,7 +612,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		if ( $context == 'display' ) {
 			$quiz = $this->get_quiz();
 
-			if ( $interval && $quiz->get_duration() ) {
+			if ( $quiz && $interval && $quiz->get_duration() ) {
 				$interval = new LP_Duration( $interval );
 				$interval = $interval->to_timer();
 			} else {

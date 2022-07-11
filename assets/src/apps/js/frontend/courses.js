@@ -38,10 +38,8 @@ const lpArchiveCourse = () => {
 		lpArchiveRequestCourse( filterCourses );
 	}
 
-	if ( elNoLoadAjaxFirst ) {
-		lpArchivePaginationCourse();
-		lpArchiveSearchCourse();
-	}
+	lpArchivePaginationCourse();
+	lpArchiveSearchCourse();
 };
 
 window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {

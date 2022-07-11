@@ -59,9 +59,9 @@ class LP_Settings_Emails_Group extends LP_Settings {
 				continue;
 			}
 			if ( $current == $email->id ) {
-				echo '<li class="active"><span>' . $email . '</span></li>';
+				echo '<li class="active"><span>' . wp_kses_post( $email->title ) . '</span></li>';
 			} else {
-				echo '<li><a href="' . esc_url_raw( add_query_arg( 'sub-section', $email->id ) ) . '">' . $email . '</a></li>';
+				echo '<li><a href="' . esc_url_raw( add_query_arg( 'sub-section', $email->id ) ) . '">' . wp_kses_post( $email->title ) . '</a></li>';
 			}
 		}
 
