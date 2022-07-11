@@ -96,6 +96,7 @@ class LP_Helper {
 	 * @Todo: tungnx - need to review code
 	 */
 	public static function cache_posts( $ids ) {
+		_deprecated_function( __FUNCTION__, '4.1.6.9' );
 		global $wpdb;
 
 		settype( $ids, 'array' );
