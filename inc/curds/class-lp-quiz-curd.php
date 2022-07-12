@@ -193,6 +193,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					}
 				}
 
+				do_action( 'learn-press/after-duplicate', $quiz_id, $new_quiz_id, $args );
+
 				return $new_quiz_id;
 			}
 

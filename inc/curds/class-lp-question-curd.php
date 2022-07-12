@@ -183,6 +183,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				// duplicate answer
 				$this->duplicate_answer( $question_id, $new_question_id );
 
+				do_action( 'learn-press/after-duplicate', $question_id, $new_question_id, $args );
+
 				return $new_question_id;
 			}
 		}

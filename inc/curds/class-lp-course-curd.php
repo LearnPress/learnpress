@@ -214,6 +214,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						}
 					}
 
+					do_action( 'learn-press/after-duplicate', $course_id, $new_course_id, $args );
+
 					return $new_course_id;
 				}
 			}

@@ -108,8 +108,9 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 				return new WP_Error( __( '<p>Op! The lesson does not exist</p>', 'learnpress' ) );
 			}
 
+			$user_id = $args['meta_input']['_lp_user'] ?? get_current_user_id();
 			// ensure that user can create lesson
-			if ( ! current_user_can( 'edit_posts' ) ) {
+			if ( ! user_can( $user_id, 'edit_posts' ) ) {
 				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this lesson</p>', 'learnpress' ) );
 			}
 
@@ -119,6 +120,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 			if ( ! $new_lesson_id || is_wp_error( $new_lesson_id ) ) {
 				return new WP_Error( __( '<p>Sorry! Failed to duplicate lesson!</p>', 'learnpress' ) );
 			} else {
+				do_action( 'learn-press/after-duplicate', $lesson_id, $new_lesson_id, $args );
 				return $new_lesson_id;
 			}
 		}
