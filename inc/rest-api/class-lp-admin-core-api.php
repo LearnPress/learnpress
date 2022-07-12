@@ -42,7 +42,7 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 
 	public function rest_api_register_routes() {
 		$controllers = array(
-			'LP_REST_Admin_Question_Controller',
+			//'LP_REST_Admin_Question_Controller',
 			'LP_REST_Admin_Database_Controller',
 			'LP_REST_Admin_Course_Controller',
 			'LP_REST_Admin_Tools_Controller',

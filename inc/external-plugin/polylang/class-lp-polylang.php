@@ -149,7 +149,7 @@ class LP_Polylang {
 	 * @return array
 	 */
 	public function args_query_user_courses( array $args, WP_REST_Request $request ): array {
-		$pll_current_lang = $request['pll-current-lang'] ?? '';
+		$pll_current_lang = LP_Helper::sanitize_params_submitted( $request['pll-current-lang'] ?? '' );
 
 		if ( empty( $pll_current_lang ) ) {
 			return $args;
