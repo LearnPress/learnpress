@@ -570,7 +570,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
-				$redirect = $_REQUEST['redirect'];
+				$redirect = esc_url_raw( $_REQUEST['redirect'] );
 			} else {
 				$redirect = learn_press_get_current_url();
 			}

@@ -23,7 +23,7 @@ class LP_Admin_Core_API extends LP_Abstract_API {
 		parent::rest_api_includes();
 
 		$list_rest_admin = array(
-			'class-lp-admin-rest-question-controller.php',
+			// 'class-lp-admin-rest-question-controller.php',
 			'class-lp-admin-rest-database-controller.php',
 			'class-lp-admin-rest-course-controller.php',
 			'class-lp-admin-rest-tools-controller.php',

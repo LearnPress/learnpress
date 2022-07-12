@@ -104,7 +104,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 		$current = $default;
 
 		if ( ! empty( $_REQUEST['view'] ) ) {
-			$current = $_REQUEST['view'];
+			$current = sanitize_text_field( $_REQUEST['view'] );
 		} elseif ( ! empty( $wp->query_vars['view'] ) ) {
 			$current = $wp->query_vars['view'];
 		} else {
@@ -141,7 +141,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 		$current = $default;
 
 		if ( ! empty( $_REQUEST['section'] ) ) {
-			$current = $_REQUEST['section'];
+			$current = sanitize_text_field( $_REQUEST['section'] );
 		} elseif ( ! empty( $wp->query_vars['section'] ) ) {
 			$current = $wp->query_vars['section'];
 		} else {
