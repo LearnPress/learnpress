@@ -35,58 +35,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$this->namespace = 'lp/v1';
 		$this->rest_base = 'users';
 		parent::__construct();
-
-		// tungnx - 4.1.4.1 - comment - not use - run wrong
-		// add_filter( 'rest_pre_dispatch', array( $this, 'rest_pre_dispatch' ), 10, 3 );
 	}
-
-	/**
-	 * Init data prepares for callbacks of rest
-	 *
-	 * @param                 $null
-	 * @param WP_REST_Server  $server
-	 * @param WP_REST_Request $request
-	 *
-	 * @return mixed
-	 * @editor tungnx
-	 * @modify 4.1.4.1 - comment - not use - run wrong
-	 */
-	/*public function rest_pre_dispatch( $null, $server, $request ) {
-		$user_id   = get_current_user_id();
-		$item_id   = $request['item_id'] ?? 0;
-		$course_id = $request['course_id'] ?? 0;
-
-		$this->user   = learn_press_get_user( $user_id );
-		$this->course = learn_press_get_course( $course_id );
-
-		if ( $this->course ) {
-			$this->item = $this->course->get_item( $item_id );
-		}
-
-		if ( is_user_logged_in() ) {
-			$this->user_course = $this->user->get_course_data( $course_id );
-
-			if ( $this->user_course ) {
-				$this->user_item = $this->user_course->get_item( $item_id );
-			}
-		}
-
-		return $null;
-	}*/
 
 	/**
 	 * Register rest routes.
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			''               => array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'check_admin_permission' ),
-				),
-			),
-			'start-quiz'     => array(
+			'start-quiz'   => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'start_quiz' ),
@@ -95,8 +51,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
-
-			'submit-quiz'    => array(
+			'submit-quiz'  => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					// 'callback' => array( $this, 'submit_quiz' ),
@@ -106,8 +61,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
-
-			'hint-answer'    => array(
+			'hint-answer'  => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'hint_answer' ),
@@ -116,8 +70,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'args'                => $this->get_item_endpoint_args(),
 				),
 			),
-
-			'check-answer'   => array(
+			'check-answer' => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'check_answer' ),
@@ -170,26 +123,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Sanitize callback.
-	 *
-	 * @param mixed           $value
-	 * @param WP_REST_Request $request
-	 * @param string          $param
-	 *
-	 * @return mixed
-	 */
-	public function sanitize_arg( $value, $request, $param ) {
-		switch ( $param ) {
-			case 'user_id':
-			case 'item_id':
-			case 'course_id':
-				return absint( $value );
-		}
-
-		return $value;
 	}
 
 	public function check_admin_permission() {
@@ -310,122 +243,11 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return mixed|WP_REST_Response
-	 */
-	/*public function submit_quiz_bk( $request ) {
-		$user_id     = get_current_user_id();
-		$item_id     = $request['item_id'];
-		$course_id   = $request['course_id'];
-		$answered    = $request['answered'];
-		$user        = learn_press_get_user( $user_id );
-		$course      = learn_press_get_course( $course_id );
-		$user_course = $user->get_course_data( $course_id );
-		$results     = array();
-		$user_quiz   = false;
-
-		if ( $course->is_no_required_enroll() ) {
-			$no_required_enroll = new LP_Course_No_Required_Enroll();
-			// Course is no required enroll
-			$success  = true;
-			$response = array(
-				'success' => $success,
-				'message' => __( 'Success!', 'learnpress' ),
-			);
-			if ( $success ) {
-				// Use for Review Quiz.
-				$quiz = learn_press_get_quiz( $item_id );
-				if ( get_post_meta( $item_id, '_lp_review', true ) === 'yes' ) {
-
-					$question_ids = $quiz->get_question_ids();
-					if ( $question_ids ) {
-						foreach ( $question_ids as $id ) {
-							$question = learn_press_get_question( $id );
-
-							$results['questions'][ $id ] = array(
-								'explanation' => $question->get_explanation(),
-								'options'     => learn_press_get_question_options_for_js(
-									$question,
-									array(
-										'include_is_true' => get_post_meta( $item_id, '_lp_show_correct_review', true ) === 'yes',
-										'answer'          => isset( $answered[ $id ] ) ? $answered[ $id ] : '',
-									)
-								),
-							);
-						}
-					}
-				}
-
-				$results['answered'] = $no_required_enroll->guest_get_quiz_answered( $request['answered'], $item_id );
-				$results['status']   = 'completed';
-				$results['results']  = $no_required_enroll->guest_quiz_get_results( '', false, $item_id, $request['answered'], $course_id );
-				$results['attempts'] = $no_required_enroll->guest_quiz_get_attempts( $item_id, $request['answered'], $course_id );
-				$response['results'] = $results;
-
-				learn_press_setcookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '', 'completed', time() + ( 7 * DAY_IN_SECONDS ), false );
-			}
-		} else {
-			// Course required enroll
-			if ( $user_course ) {
-				$user_quiz = $user_course->get_item( $item_id );
-
-				if ( $user_quiz ) {
-					$user_quiz->add_question_answer( $answered );
-				}
-			}
-
-			$finished = $user->finish_quiz( $item_id, $course_id, true );
-			$success  = ! is_wp_error( $finished );
-
-			$response = array(
-				'success' => $success,
-				'message' => ! $success ? $finished->get_error_message() : __( 'Success!', 'learnpress' ),
-			);
-
-			if ( $success ) {
-				$user_quiz    = $user_course->get_item( $item_id );
-				$quiz_results = $user_quiz->get_results( '' );
-				$attempts     = $user_quiz->get_attempts();
-				// Use for Review Quiz.
-				if ( get_post_meta( $item_id, '_lp_review', true ) === 'yes' ) {
-					$question_ids = $quiz_results->getQuestions( 'ids' );
-					if ( $question_ids ) {
-						foreach ( $question_ids as $id ) {
-							$question = learn_press_get_question( $id );
-
-							$results['questions'][ $id ] = array(
-								'explanation' => $question->get_explanation(),
-								'options'     => learn_press_get_question_options_for_js(
-									$question,
-									array(
-										'include_is_true' => get_post_meta( $item_id, '_lp_show_correct_review', true ) === 'yes',
-										'answer'          => isset( $answered[ $id ] ) ? $answered[ $id ] : '',
-									)
-								),
-							);
-						}
-					}
-				}
-
-				$results['answered'] = $quiz_results->getQuestions();
-				$results['status']   = $quiz_results->get( 'status' );
-				$results['results']  = $quiz_results->get();
-				$results['attempts'] = $attempts;
-				$response['results'] = $results;
-
-			}
-		}
-		return rest_ensure_response( $response );
-	}*/
-
-	/**
 	 * Submit quiz answer
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @return mixed|WP_REST_Response
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @editor tungnx
 	 * @modify 4.1.4.1
 	 * @version 1.0.1
@@ -544,7 +366,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function hint_answer( $request ) {
 		$question_id = $request['question_id'];
-		$hint_count  = $this->user_item->hint( $question_id );
 		$question    = learn_press_get_question( $question_id );
 
 		$response = array(
@@ -598,65 +419,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		} catch ( Throwable $e ) {
 			$response['message'] = $e->getMessage();
 		}
-
-		return rest_ensure_response( $response );
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function get_items( $request ) {
-		$settings = LP_Settings::instance();
-		$response = array(
-			'result' => $settings->get(),
-		);
-
-		return rest_ensure_response( $response );
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function get_item( $request ) {
-		$settings = LP_Settings::instance();
-		$response = array(
-			'result' => $settings->get( $request['key'] ),
-		);
-
-		return rest_ensure_response( $response );
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function update_item( $request ) {
-		$response = array();
-		$settings = LP_Settings::instance();
-		$option   = $settings->get( $request['key'] );
-
-		$settings->update( $request['key'], $request['data'] );
-		$new_option = $settings->get( $request['key'] );
-		$success    = maybe_serialize( $option ) !== maybe_serialize( $new_option );
-
-		$response['success'] = $success;
-		$response['result']  = $success ? $new_option : $option;
-
-		return rest_ensure_response( $response );
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function delete_item( $request ) {
-		$response = array();
 
 		return rest_ensure_response( $response );
 	}
