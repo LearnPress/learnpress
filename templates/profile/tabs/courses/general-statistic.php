@@ -25,15 +25,15 @@ if ( empty( $statistic ) || empty( $user ) ) {
 
 		<div class="statistic-box">
 			<p class="statistic-box__text"><?php esc_html_e( 'Enrolled Courses', 'learnpress' ); ?></p>
-			<span class="statistic-box__number"><?php echo $statistic['enrolled_courses']; ?></span>
+			<span class="statistic-box__number"><?php echo esc_html( $statistic['enrolled_courses'] ); ?></span>
 		</div>
 		<div class="statistic-box">
 			<p class="statistic-box__text"><?php esc_html_e( 'Active Courses', 'learnpress' ); ?></p>
-			<span class="statistic-box__number"><?php echo $statistic['active_courses']; ?></span>
+			<span class="statistic-box__number"><?php echo esc_html( $statistic['active_courses'] ); ?></span>
 		</div>
 		<div class="statistic-box">
 			<p class="statistic-box__text"><?php esc_html_e( 'Completed Courses', 'learnpress' ); ?></p>
-			<span class="statistic-box__number"><?php echo $statistic['completed_courses']; ?></span>
+			<span class="statistic-box__number"><?php echo esc_html( $statistic['completed_courses'] ); ?></span>
 		</div>
 
 		<?php do_action( 'learn-press/after-profile-dashboard-user-general-statistic' ); ?>
@@ -48,7 +48,7 @@ if ( empty( $statistic ) || empty( $user ) ) {
 			<?php do_action( 'learn-press/before-profile-dashboard-instructor-general-statistic' ); ?>
 			<div class="statistic-box">
 				<p class="statistic-box__text"><?php esc_html_e( 'Total Courses', 'learnpress' ); ?></p>
-				<span class="statistic-box__number"><?php print_r( $statistic['total_courses'] ); ?></span>
+				<span class="statistic-box__number"><?php echo esc_html( $statistic['total_courses'] ); ?></span>
 			</div>
 			<div class="statistic-box">
 				<p class="statistic-box__text"><?php esc_html_e( 'Total Students', 'learnpress' ); ?></p>

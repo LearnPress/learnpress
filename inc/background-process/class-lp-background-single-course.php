@@ -30,7 +30,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * @see LP_Course_Post_Type::save
 		 */
 		protected function handle() {
-
 			try {
 				$handle_name = LP_Helper::sanitize_params_submitted( $_POST['handle_name'] ?? '' );
 				$course_id   = intval( $_POST['course_id'] ?? 0 );
@@ -67,6 +66,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$this->save_extra_info();
 			$this->review_post_author();
 
+			do_action( 'lp/background/course/save', $this->lp_course, $this->data );
+
 			/**
 			 * Clean cache courses
 			 *
@@ -82,6 +83,11 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			// End
 		}
 
+		/**
+		 * Save price course
+		 *
+		 * @return void
+		 */
 		protected function save_price() {
 			$has_sale_price = false;
 			$regular_price  = $this->data['_lp_regular_price'] ?? '';

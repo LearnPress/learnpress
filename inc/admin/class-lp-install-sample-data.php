@@ -133,39 +133,6 @@ class LP_Install_Sample_Data {
 				throw new Exception( 'Create course failed.' );
 			}
 
-			$hooks = LP_Helper::sanitize_params_submitted( $_REQUEST['hooks'] ?? array() );
-
-			if ( ! empty( $hooks ) ) {
-				$hooks = (array) json_decode( $hooks );
-
-				/*$wpml_settings = array();
-				global $wpdb;
-				$wpml = new WPML_Admin_Post_Actions( $wpml_settings, $wpdb );
-				$wpml->save_post_actions( $course_id, get_post( $course_id ) );*/
-
-				$args = array();
-				if ( ! empty( $hooks ) ) {
-					foreach ( $hooks as $hook ) {
-						if ( isset( $hook->class ) && isset( $hook->action ) ) {
-							$class_name  = $hook->class;
-							$action_name = $hook->action;
-
-							switch ( $action_name ) {
-								case 'save_post':
-									$args = $course_id;
-									break;
-								default:
-									break;
-							}
-
-							if ( is_callable( array( $class_name, $action_name ) ) ) {
-								call_user_func( array( $class_name, $action_name ), $args );
-							}
-						}
-					}
-				}
-			}
-
 			$this->create_sections( $course_id );
 
 			$price = LP_Request::get( 'course-price' );
@@ -182,6 +149,7 @@ class LP_Install_Sample_Data {
 				array(
 					'handle_name' => 'save_post',
 					'course_id'   => $course_id,
+					'data'        => [ 'data_sample' => 1 ],
 				)
 			)->dispatch();
 			?>
@@ -445,19 +413,15 @@ class LP_Install_Sample_Data {
 	 * @param int $course_id
 	 */
 	protected function create_sections( $course_id ) {
-
 		$section_length = call_user_func_array( 'rand', ( self::$section_range ) );
 
 		for ( $i = 1; $i <= $section_length; $i ++ ) {
 			$section_id = $this->create_section( 'Section ' . $i, $course_id );
 
 			if ( $section_id ) {
-
 				$this->create_section_items( $section_id, $course_id );
-
 			}
 		}
-
 	}
 
 	/**

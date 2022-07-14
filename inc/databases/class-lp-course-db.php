@@ -49,6 +49,26 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
+	 * Get all item ids' course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return array|object|stdClass[]|null
+	 */
+	public function get_items_course( int $course_id = 0 ) {
+		$query = $this->wpdb->prepare(
+			"SELECT item_id
+			FROM {$this->tb_lp_section_items} AS si
+			INNER JOIN {$this->tb_lp_sections} AS s
+			ON si.section_id = s.section_id
+			WHERE s.section_course_id = %d",
+			$course_id
+		);
+
+		return $this->wpdb->get_results( $query );
+	}
+
+	/**
 	 * Get user_item_id by order_id, course_id, user_id
 	 *
 	 * @param int $order_id
