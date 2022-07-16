@@ -59,11 +59,6 @@ $count          = 0;
 	</div>
 
 	<div class="clear"></div>
-	<ul class="chart-description">
-		<li class="all"><span><?php _e( 'All', 'learnpress' ); ?></span></li>
-		<li class="instructors"><span><?php _e( 'Completed', 'learnpress' ); ?></span></li>
-		<li class="students"><span><?php _e( 'Pending', 'learnpress' ); ?></span></li>
-	</ul>
 	<div id="learn-press-chart" class="learn-press-chart">
 	</div>
 

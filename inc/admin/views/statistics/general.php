@@ -55,13 +55,6 @@ learn_press_get_chart_general( null, 'days', 7 );
 		</li>
 	</ul>
 	<div class="clear"></div>
-	<ul class="chart-description">
-		<li class="all"><span><?php _e( 'All', 'learnpress' ); ?></span></li>
-		<li class="free"><span><?php _e( 'Public', 'learnpress' ); ?></span></li>
-		<li class="paid"><span><?php _e( 'Pending', 'learnpress' ); ?></span></li>
-		<li class="all"><span><?php _e( 'Paid', 'learnpress' ); ?></span></li>
-		<li class="free"><span><?php _e( 'Free', 'learnpress' ); ?></span></li>
-	</ul>
 	<div id="learn-press-chart" class="learn-press-chart">
 	</div>
 
