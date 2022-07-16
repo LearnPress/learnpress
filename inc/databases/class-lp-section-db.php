@@ -309,5 +309,3 @@ class LP_Section_DB extends LP_Database {
 	}
 }
 
-LP_Section_DB::getInstance();
-

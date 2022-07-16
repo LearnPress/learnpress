@@ -149,12 +149,16 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$first_item_id             = $lp_course_db->get_first_item_id( $lp_course->get_id() );
 				$extra_info->first_item_id = $first_item_id;
 
-				// Get and set total items courses
+				// Get and set total items course
 				// Clean cache
 				$key_cache_total_items = "$course_id/total_items";
 				$lp_course_cache->clear( $key_cache_total_items );
 				$total_items             = $lp_course_db->get_total_items( $lp_course->get_id() );
 				$extra_info->total_items = $total_items;
+
+				// Get and set sections, items of course
+				$sections_items             = $lp_course->get_full_sections_and_items_course();
+				$extra_info->sections_items = $sections_items;
 
 				// Save post meta
 				$lp_course->set_info_extra_for_fast_query( $extra_info );

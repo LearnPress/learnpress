@@ -212,6 +212,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Include required files Frontend.
 			$this->include_files_frontend();
 
+			/*$course = learn_press_get_course(715);
+			$m = $course->get_full_sections_and_items_course();
+			LP_Debug::var_dump($m);die;*/
+
 			$curd = new LP_Course_CURD();
 			/*$m = $curd->read_course_items(715);
 			LP_Debug::var_dump($m);die;*/

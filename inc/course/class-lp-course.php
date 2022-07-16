@@ -596,5 +596,39 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			return $course_ids;
 		}
+
+		public function get_full_sections_and_items_course(): array {
+			$sections_items = [];
+
+			try {
+				$sections_items_results = LP_Course_DB::getInstance()->get_full_sections_and_items_course( $this->_id );
+
+				$section_current = 0;
+				foreach ( $sections_items_results as $sections_item ) {
+					$section_new      = $sections_item->section_id;
+					$item             = new stdClass();
+					$item->item_id    = $sections_item->item_id;
+					$item->item_order = $sections_item->item_order;
+					$item->item_type  = $sections_item->item_type;
+
+					if ( $section_new !== $section_current ) {
+						$section_current = $section_new;
+
+						$sections_items[ $section_current ]                = new stdClass();
+						$sections_items[ $section_current ]->section_id    = $section_current;
+						$sections_items[ $section_current ]->section_order = $sections_item->section_order;
+						$sections_items[ $section_current ]->items         = [];
+					}
+
+					$sections_items[ $section_current ]->items[ $item->item_order ] = $item;
+				}
+			} catch ( Throwable $e ) {
+				if ( LP_Debug::is_debug() ) {
+					error_log( $e->getMessage() );
+				}
+			}
+
+			return $sections_items;
+		}
 	}
 }

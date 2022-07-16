@@ -127,7 +127,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return mixed|WP_Error
 		 * @since 3.0.0
 		 */
-		public function duplicate( &$course_id, $args = array() ) {
+		public function duplicate_bk( &$course_id, $args = array() ) {
 
 			if ( ! $course_id ) {
 				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
@@ -221,6 +221,107 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return false;
+		}
+
+		/**
+		 * Duplicate course.
+		 *
+		 * @param int $course_id
+		 * @param array $args
+		 *
+		 * @return int|WP_Error
+		 * @since 3.0.0
+		 * @version 1.0.2
+		 */
+		public function duplicate( &$course_id, $args = array() ) {
+			$course_id_new = 0;
+
+			try {
+				if ( ! current_user_can( 'edit_posts' ) ) {
+					throw new Exception( 'Sorry! You don\'t have permission to duplicate this course' );
+				}
+
+				$course_origin = learn_press_get_course( $course_id );
+				if ( ! $course_origin ) {
+					throw new Exception( 'Course is invalid' );
+				}
+
+				$course_id_new = learn_press_duplicate_post( $course_id, $args );
+
+				if ( is_wp_error( $course_id_new ) ) {
+					return $course_id_new;
+				}
+
+				$this->duplicate_sections_and_items( $course_id_new, $course_origin );
+
+				do_action( 'learn-press/after-duplicate', $course_id, $course_id_new, $args );
+			} catch ( Throwable $e ) {
+				$course_id_new = new WP_Error( $e->getMessage() );
+			}
+
+			return $course_id_new;
+		}
+
+		/**
+		 * Duplicate sections and items of course
+		 * @param int $course_id_new
+		 * @param LP_Course $course_origin
+		 */
+		public function duplicate_sections_and_items( $course_id_new, $course_origin ) {
+			// curriculum course
+			$curriculum = $course_origin->get_curriculum_raw();
+
+			// quiz curd
+			$quiz_curd = new LP_Quiz_CURD();
+
+			if ( is_array( $curriculum ) ) {
+				// new course section curd
+				$new_course_section_curd = new LP_Section_CURD( $course_id_new );
+				foreach ( $curriculum as $section ) {
+					$data = array(
+						'section_name'        => $section['title'],
+						'section_course_id'   => $course_id_new,
+						'section_order'       => $section['order'],
+						'section_description' => $section['description'],
+					);
+
+					// clone sections to new course
+					$new_section = $new_course_section_curd->create( $data );
+
+					// get section items of original course
+					$items = $section['items'];
+
+					$new_items = array();
+
+					// duplicate items
+					if ( ! empty( $items ) ) {
+						foreach ( $items as $key => $item ) {
+							// duplicate quiz
+							if ( $item['type'] == LP_QUIZ_CPT ) {
+								$new_item_id = $quiz_curd->duplicate(
+									$item['id'],
+									array( 'post_status' => 'publish' )
+								);
+							} else {
+								// clone lesson
+								$new_item_id = learn_press_duplicate_post(
+									$item['id'],
+									array( 'post_status' => 'publish' )
+								);
+							}
+
+							// get new items data to add to section
+							$new_items[ $key ] = array(
+								'id'   => $new_item_id,
+								'type' => $item['type'],
+							);
+						}
+
+						// add new clone items to section
+						$new_course_section_curd->add_items_section( $new_section['section_id'], $new_items );
+					}
+				}
+			}
 		}
 
 		/**
