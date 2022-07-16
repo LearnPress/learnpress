@@ -45,7 +45,10 @@
 	}
 
 	.course-description {
-
+		color: #666;
+		font-size: 16px;
+		font-weight: 300;
+		line-height: 26px;
 		h4 {
 			margin-top: 0;
 			margin-bottom: 1.125rem;
@@ -55,10 +58,8 @@
 		}
 
 		p {
-			color: #666;
-			font-size: 16px;
-			font-weight: 300;
-			line-height: 26px;
+			
+			line-height: inherit;
 		}
 
 		img {
