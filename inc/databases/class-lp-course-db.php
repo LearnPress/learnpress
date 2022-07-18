@@ -74,18 +74,35 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $course_id
 	 *
 	 * @return array|object|stdClass[]|null
+	 * @throws Exception
+	 * @since 4.1.6.9
+	 * @version 1.0.0.
 	 */
 	public function get_full_sections_and_items_course( int $course_id = 0 ) {
-		$query = $this->wpdb->prepare(
-			"SELECT si.section_id, si.item_id, si.item_order, si.item_type, s.section_order
+		// Get cache
+		$lp_course_cache = LP_Course_Cache::instance();
+		$key_cache       = "$course_id/sections_items";
+		$sections_items  = $lp_course_cache->get_cache( $key_cache );
+
+		if ( ! $sections_items ) {
+			$query = $this->wpdb->prepare(
+				"SELECT si.section_id, si.item_id, si.item_order, si.item_type, s.section_order
 			FROM {$this->tb_lp_section_items} AS si
 			INNER JOIN {$this->tb_lp_sections} AS s
 			ON si.section_id = s.section_id
 			WHERE section_course_id = %d",
-			$course_id
-		);
+				$course_id
+			);
 
-		return $this->wpdb->get_results( $query );
+			$sections_items = $this->wpdb->get_results( $query );
+
+			$this->check_execute_has_error();
+
+			// Set cache
+			$lp_course_cache->set_cache( $key_cache, $sections_items );
+		}
+
+		return $sections_items;
 	}
 
 	/**

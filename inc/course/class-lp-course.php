@@ -597,11 +597,61 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			return $course_ids;
 		}
 
+		/**
+		 * Get full sections, items of course via Cache, extra info (if it has)
+		 *
+		 * @return array
+		 * @since 4.1.6.9
+		 * @version 1.0.0
+		 * @author tungnx
+		 */
 		public function get_full_sections_and_items_course(): array {
 			$sections_items = [];
+			$course_id      = $this->get_id();
 
 			try {
-				$sections_items_results = LP_Course_DB::getInstance()->get_full_sections_and_items_course( $this->_id );
+				// Get cache
+				$lp_course_cache = LP_Course_Cache::instance();
+				$key_cache       = "$course_id/sections_items";
+				$sections_items  = $lp_course_cache->get_cache( $key_cache );
+
+				if ( ! $sections_items ) {
+					$extra_info = $this->get_info_extra_for_fast_query();
+
+					if ( ! $extra_info->sections_items ) {
+						$sections_items             = $this->get_sections_and_items_course_from_db_and_sort();
+						$extra_info->sections_items = $sections_items;
+
+						// Save post meta
+						$this->set_info_extra_for_fast_query( $extra_info );
+					} else {
+						$sections_items = $extra_info->sections_items;
+					}
+				}
+			} catch ( Throwable $e ) {
+				if ( LP_Debug::is_debug() ) {
+					error_log( $e->getMessage() );
+				}
+			}
+
+			return $sections_items;
+		}
+
+		/**
+		 * Get all sections and items from database, then handle sort
+		 * Only call when data change or not set
+		 *
+		 * @return array
+		 * @since 4.1.6.9
+		 * @version 1.0.0
+		 * @author tungnx
+		 */
+		public function get_sections_and_items_course_from_db_and_sort(): array {
+			$sections_items = [];
+			$course_id      = $this->get_id();
+
+			try {
+				$sections_items_results = LP_Course_DB::getInstance()->get_full_sections_and_items_course( $course_id );
 
 				$section_current = 0;
 				foreach ( $sections_items_results as $sections_item ) {
@@ -610,18 +660,24 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$item->item_id    = $sections_item->item_id;
 					$item->item_order = $sections_item->item_order;
 					$item->item_type  = $sections_item->item_type;
+					$section_order    = $sections_item->section_order;
 
 					if ( $section_new !== $section_current ) {
 						$section_current = $section_new;
 
-						$sections_items[ $section_current ]                = new stdClass();
-						$sections_items[ $section_current ]->section_id    = $section_current;
-						$sections_items[ $section_current ]->section_order = $sections_item->section_order;
-						$sections_items[ $section_current ]->items         = [];
+						$sections_items[ $section_order ]                = new stdClass();
+						$sections_items[ $section_order ]->section_id    = $section_current;
+						$sections_items[ $section_order ]->section_order = $sections_item->section_order;
+						$sections_items[ $section_order ]->items         = [];
 					}
 
-					$sections_items[ $section_current ]->items[ $item->item_order ] = $item;
+					$sections_items[ $section_order ]->items[ $item->item_order ] = $item;
+					// Sort by key
+					ksort( $sections_items[ $section_order ]->items );
 				}
+
+				// Sort by key
+				ksort( $sections_items );
 			} catch ( Throwable $e ) {
 				if ( LP_Debug::is_debug() ) {
 					error_log( $e->getMessage() );

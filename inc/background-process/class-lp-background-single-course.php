@@ -157,7 +157,10 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$extra_info->total_items = $total_items;
 
 				// Get and set sections, items of course
-				$sections_items             = $lp_course->get_full_sections_and_items_course();
+				// Clean cache
+				$key_cache_sections_items = "$course_id/sections_items";
+				$lp_course_cache->clear( $key_cache_sections_items );
+				$sections_items             = $lp_course->get_sections_and_items_course_from_db_and_sort();
 				$extra_info->sections_items = $sections_items;
 
 				// Save post meta

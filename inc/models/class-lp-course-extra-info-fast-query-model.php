@@ -32,7 +32,7 @@ class LP_Course_Extra_Info_Fast_Query_Model {
 		$extra_info = new self();
 
 		foreach ( $object as $key => $value ) {
-			if ( isset( $extra_info->{$key} ) ) {
+			if ( property_exists( $extra_info, $key ) ) {
 				$extra_info->{$key} = $value;
 			}
 		}
