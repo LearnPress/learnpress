@@ -70,7 +70,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$can_retake_times = $user->can_retry_course( $course->get_id() );
 
 		// Course has no items
-		if ( empty( $course->get_item_ids() ) ) {
+		if ( empty( $course->count_items() ) ) {
 			return;
 		}
 
@@ -407,7 +407,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 
 			// Course has no items
-			if ( empty( $course->get_item_ids() ) ) {
+			if ( empty( $course->count_items() ) ) {
 				throw new Exception( 'Course no any item' );
 			}
 
@@ -506,7 +506,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		// Course has no items
-		if ( empty( $course->get_item_ids() ) ) {
+		if ( empty( $course->count_items() ) ) {
 			return;
 		}
 

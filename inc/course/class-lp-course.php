@@ -401,6 +401,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				} else {
 					$total_items = $extra_info->total_items;
 				}
+
+				$lp_course_cache->set_cache( $key_cache, $total_items );
 			}
 
 			if ( ! empty( $total_items ) ) {
