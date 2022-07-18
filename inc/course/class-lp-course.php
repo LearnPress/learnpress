@@ -297,6 +297,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					} else {
 						$first_item_id = $extra_info->first_item_id;
 					}
+
+					$lp_course_cache->set_cache( $key_cache, $first_item_id );
 				}
 			} catch ( Throwable $e ) {
 				$first_item_id = 0;
@@ -629,6 +631,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					} else {
 						$sections_items = $extra_info->sections_items;
 					}
+
+					$lp_course_cache->set_cache( $key_cache, $sections_items );
 				}
 			} catch ( Throwable $e ) {
 				if ( LP_Debug::is_debug() ) {
@@ -662,7 +666,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$item->item_id    = $sections_item->item_id;
 					$item->item_order = $sections_item->item_order;
 					$item->item_type  = $sections_item->item_type;
-					$section_order    = $sections_item->section_order;
+					$section_order    = $sections_item->section_order - 1;
 
 					if ( $section_new !== $section_current ) {
 						$section_current = $section_new;

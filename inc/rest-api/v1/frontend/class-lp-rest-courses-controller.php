@@ -459,7 +459,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				$response->data->redirect = $course->get_redirect_url_after_enroll();
 
-				if ( empty( $course->get_item_ids() ) ) {
+				if ( empty( $course->count_items() ) ) {
 					$response->data->redirect = get_permalink( $course->get_id() );
 				}
 			} else {
@@ -757,11 +757,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * Rest API for Continue in single course.
 	 *
 	 * @param WP_REST_Request $request
-	 *
-	 * @throws Exception .
-	 * @editor minhpd
+	 * @author minhpd
+	 * @editor tungnx
 	 * @since 4.1.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function continue_course( WP_REST_Request $request ) {
 		$params         = $request->get_params();
@@ -771,34 +770,37 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$flag_found = false;
 			$item_link  = '';
-			$course_id  = $params['courseId'] ?? false;
-			$user_id    = $params['userId'] ?? false;
+			$course_id  = $params['courseId'] ?? 0;
+			$user_id    = $params['userId'] ?? 0;
 
-			$user        = learn_press_get_user( $user_id );
-			$course      = learn_press_get_course( $course_id );
-			$item_ids    = $course->get_item_ids();
-			$total_items = count( $item_ids );
+			$user           = learn_press_get_user( $user_id );
+			$course         = learn_press_get_course( $course_id );
+			$sections_items = $course->get_full_sections_and_items_course();
+			$total_items    = $course->count_items();
 
-			if ( ! empty( $item_ids ) ) {
-				foreach ( $item_ids as $item ) {
-					if ( ! $user->has_completed_item( $item, $course_id ) ) {
-						$item_link  = $course->get_item_link( $item );
-						$flag_found = true;
+			if ( ! empty( $total_items ) ) {
+				foreach ( $sections_items as $section_items ) {
+					if ( $flag_found ) {
 						break;
+					}
+
+					foreach ( $section_items->items as $item ) {
+						if ( ! $user->has_completed_item( $item->item_id, $course_id ) ) {
+							$item_link  = $course->get_item_link( $item->item_id );
+							$flag_found = true;
+							break;
+						}
 					}
 				}
 
 				if ( ! $flag_found ) {
-					$index_item_id_last = $total_items - 1;
-					$item_id_last       = $item_ids[ $index_item_id_last ];
-					$item_link          = $course->get_item_link( $item_id_last );
+					$item_link = $course->get_item_link( $course->get_first_item_id() );
 				}
 			}
 
 			$response->data    = $item_link;
 			$response->status  = 'success';
 			$response->message = '';
-
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
