@@ -654,9 +654,10 @@ add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
  * @param string $status
  *
  * @since 3.0.10
+ * @depecated 4.1.6.9
  *
  */
-function learn_press_force_refresh_course( $comment_id, $status ) {
+/*function learn_press_force_refresh_course( $comment_id, $status ) {
 
 	if ( empty( $_POST['comment-post-item-course'] ) ) {
 		return;
@@ -668,7 +669,7 @@ function learn_press_force_refresh_course( $comment_id, $status ) {
 	$curd->load( $course );
 }
 
-add_action( 'comment_post', 'learn_press_force_refresh_course', 1000, 2 );
+add_action( 'comment_post', 'learn_press_force_refresh_course', 1000, 2 );*/
 
 /**
  * @editor     tungnx | comment code
