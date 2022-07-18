@@ -666,24 +666,26 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$item->item_id    = $sections_item->item_id;
 					$item->item_order = $sections_item->item_order;
 					$item->item_type  = $sections_item->item_type;
-					$section_order    = $sections_item->section_order - 1;
+					$section_order    = $sections_item->section_order;
 
 					if ( $section_new !== $section_current ) {
 						$section_current = $section_new;
 
-						$sections_items[ $section_order ]                = new stdClass();
-						$sections_items[ $section_order ]->section_id    = $section_current;
-						$sections_items[ $section_order ]->section_order = $sections_item->section_order;
-						$sections_items[ $section_order ]->items         = [];
+						$sections_items[ $section_current ]                = new stdClass();
+						$sections_items[ $section_current ]->section_id    = $section_current;
+						$sections_items[ $section_current ]->section_order = $section_order;
+						$sections_items[ $section_current ]->items         = [];
 					}
 
-					$sections_items[ $section_order ]->items[ $item->item_order ] = $item;
-					// Sort by key
-					ksort( $sections_items[ $section_order ]->items );
+					$sections_items[ $section_current ]->items[ $item->item_order ] = $item;
+					// Sort item by key
+					ksort( $sections_items[ $section_current ]->items );
 				}
 
-				// Sort by key
-				ksort( $sections_items );
+				// Sort section by section_order
+				usort( $sections_items, function ( $a, $b ) {
+					return $a->section_order - $b->section_order;
+				} );
 			} catch ( Throwable $e ) {
 				if ( LP_Debug::is_debug() ) {
 					error_log( $e->getMessage() );
