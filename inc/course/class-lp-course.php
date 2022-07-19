@@ -685,5 +685,80 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			return $sections_items;
 		}
+
+		/**
+		 * Get sections of course.
+		 *
+		 * @param string $return - Optional.
+		 * @param int    $section_id - Optional.
+		 *
+		 * @return array|bool|LP_Course_Section[]|LP_Course_Section
+		 * @version 4.0.0
+		 */
+		public function get_sections( $return = 'object', $section_id = 0 ) {
+			$this->load_curriculum();
+			$sections = LP_Course_Utils::get_cached_db_sections( $this->get_id() );
+
+			if ( false === $sections ) {
+				return false;
+			}
+
+			if ( $return == 'object' && $sections ) {
+				$position        = 0;
+				$object_sections = array();
+
+				foreach ( $sections as $k => $section_data ) {
+					$sid     = $section_data->section_id;
+					$section = LP_Course_Utils::get_cached_section( $sid );
+
+					if ( false === $section ) {
+						$section = new LP_Course_Section( $section_data );
+						$section->set_position( ++ $position );
+
+						LP_Course_Utils::set_cached_section( $sid, $section );
+					}
+
+					$object_sections[ $sid ] = $section;
+				}
+				$sections = $object_sections;
+			}
+
+			if ( $section_id ) {
+				$sections = ! empty( $sections[ $section_id ] ) ? $sections[ $section_id ] : false;
+			}
+
+			return apply_filters( 'learn-press/course-sections', $sections, $this->get_id(), $return, $section_id );
+		}
+
+		/**
+		 * Get raw data curriculum.
+		 *
+		 * @return array
+		 * @since 3.0.0
+		 */
+		public function get_curriculum_raw() {
+			$sections      = $this->get_sections( 'object' );
+			$sections_data = array();
+
+			if ( is_array( $sections ) ) {
+				foreach ( $sections as $section ) {
+					$sections_data[] = $section->to_array();
+				}
+			}
+
+			return $sections_data;
+		}
+
+		/**
+		 * Get all curriculum of this course.
+		 *
+		 * @param int  $section_id
+		 * @param bool $force
+		 *
+		 * @return bool|LP_Course_Section[]
+		 */
+		public function get_curriculum( $section_id = 0, $force = false ) {
+			return $this->get_sections( 'object', $section_id );
+		}
 	}
 }
