@@ -231,9 +231,6 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				// @since 3.0.0
 				$item_not_found = apply_filters( 'learn-press/modal-search-items/not-found', __( 'No item found', 'learnpress' ), $this->_options['type'] );
 
-				// @deprecated
-				$item_not_found = apply_filters( 'learn_press_modal_search_items_not_found', $item_not_found );
-
 				echo '<li>' . $item_not_found . '</li>';
 			}
 

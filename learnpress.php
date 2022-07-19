@@ -725,28 +725,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * View log.
-		 *
-		 * @since 3.0.0
-		 * @deprecated 3.2.8
-		 * @editor tungnx
-		 */
-		/*
-		public function view_log() {
-			if ( ! empty( $_REQUEST['view-log'] ) ) {
-				$log = LP_Helper::sanitize_params_submitted( $_REQUEST['view-log'] );
-				echo '<pre>';
-				if ( is_multisite() ) {
-					$log = "{$log}-" . get_current_blog_id();
-				}
-				echo $log = learn_press_get_log_file_path( $log );
-				@readfile( $log );
-				echo '<pre>';
-				die();
-			}
-		}*/
-
-		/**
 		 * Get session object instance.
 		 *
 		 * @return mixed
