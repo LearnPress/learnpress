@@ -770,8 +770,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$flag_found = false;
 			$item_link  = '';
-			$course_id  = $params['courseId'] ?? 0;
-			$user_id    = $params['userId'] ?? 0;
+			$course_id  = absint( $params['courseId'] ?? 0 );
+			$user_id    = absint( $params['userId'] ?? 0 );
 
 			$user           = learn_press_get_user( $user_id );
 			$course         = learn_press_get_course( $course_id );

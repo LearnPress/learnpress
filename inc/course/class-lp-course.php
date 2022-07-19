@@ -585,23 +585,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		}
 
 		/**
-		 * Get course_ids
-		 *
-		 * @param array $courses Array object [{ ID: 1, post_title = '' }]
-		 * @param string $key
-		 *
-		 * @return array
-		 */
-		public static function get_course_ids( array $courses, string $key = 'ID' ): array {
-			$course_ids = array();
-			foreach ( $courses as $course ) {
-				$course_ids[] = $course->{$key};
-			}
-
-			return $course_ids;
-		}
-
-		/**
 		 * Get full sections, items of course via Cache, extra info (if it has)
 		 *
 		 * @return array
@@ -678,14 +661,22 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					}
 
 					$sections_items[ $section_current ]->items[ $item->item_order ] = $item;
-					// Sort item by key
-					ksort( $sections_items[ $section_current ]->items );
+					// Sort item by item_order
+					usort(
+						$sections_items[ $section_current ]->items,
+						function ( $item1, $item2 ) {
+							return $item1->item_order - $item2->item_order;
+						}
+					);
 				}
 
 				// Sort section by section_order
-				usort( $sections_items, function ( $a, $b ) {
-					return $a->section_order - $b->section_order;
-				} );
+				usort(
+					$sections_items,
+					function ( $section1, $section2 ) {
+						return $section1->section_order - $section2->section_order;
+					}
+				);
 			} catch ( Throwable $e ) {
 				if ( LP_Debug::is_debug() ) {
 					error_log( $e->getMessage() );

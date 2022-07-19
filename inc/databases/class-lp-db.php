@@ -683,6 +683,8 @@ class LP_Database {
 	}
 
 	/**
+	 * Get values of list object by key
+	 *
 	 * @param array $arr_object
 	 * @param string $key
 	 *

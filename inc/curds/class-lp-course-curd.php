@@ -508,7 +508,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				return false;
 			}
 
-			if ( $section_ids = $this->get_course_sections( $course_id, 'ids' ) ) {
+			if ( $this->get_course_sections( $course_id, 'ids' ) ) {
 				return $this->read_course_items( $course_id );
 			}
 

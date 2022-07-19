@@ -768,7 +768,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter         = apply_filters( 'lp/api/profile/courses/purchased/filter', $filter, $args );
 					$result_courses = LP_User_Item_Course::get_user_courses( $filter, $total_rows );
 
-					$course_ids = LP_Course::get_course_ids( $result_courses, 'item_id' );
+					$course_ids = LP_Database::get_values_by_key( $result_courses, 'item_id' );
 
 					$courses = array(
 						'total' => $total_rows,
@@ -789,7 +789,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter              = apply_filters( 'lp/api/profile/courses/own/filter', $filter, $args );
 					$result_courses      = LP_Course::get_courses( $filter, $total_rows );
 
-					$course_ids = LP_Course::get_course_ids( $result_courses );
+					$course_ids = LP_Database::get_values_by_key( $result_courses );
 
 					$courses = array(
 						'total' => $total_rows,

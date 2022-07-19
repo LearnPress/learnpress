@@ -961,7 +961,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 			$filter      = LP_Course_DB::getInstance()->get_courses_sort_by_sale( $filter );
 			$on_sale_ids = LP_Course_DB::getInstance()->get_courses( $filter );
-			$on_sale_ids = LP_course::get_course_ids( $on_sale_ids );
+			$on_sale_ids = LP_Database::get_values_by_key( $on_sale_ids );
 			$on_sale_ids = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
 
 			$args[ $on_sale_key ] += $on_sale_ids;
@@ -975,7 +975,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 			$filter         = LP_Course_DB::getInstance()->get_courses_order_by_popular( $filter );
 			$on_popular_ids = LP_Course_DB::getInstance()->get_courses( $filter );
-			$on_popular_ids = LP_course::get_course_ids( $on_popular_ids );
+			$on_popular_ids = LP_Database::get_values_by_key( $on_popular_ids );
 
 			$on_popular_ids = empty( $on_popular_ids ) ? array( 0 ) : $on_popular_ids;
 
