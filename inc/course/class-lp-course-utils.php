@@ -1,6 +1,8 @@
 <?php
 /**
  * Class LP_Course_Utils
+ *
+ * @depecated 4.1.6.9
  */
 class LP_Course_Utils {
 

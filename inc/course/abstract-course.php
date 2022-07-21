@@ -206,8 +206,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 		/**
 		 * Load course curriculum.
+		 *
+		 * @depecated 4.1.6.9
 		 */
 		public function load_curriculum() {
+			_deprecated_function( __FUNCTION__, '4.1.6.9' );
 			$item_ids      = array();
 			$item_types    = array();
 			$item_by_types = array();
@@ -243,48 +246,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			foreach ( $section_items as $section_id => $its ) {
 				LP_Course_Utils::set_section_items( $section_id, $its );
 			}
-
-			// learn_press_cache_add_post_type( $item_by_types );
-
-			/*
-			return ;
-			////
-			$item_types = array();
-			$items      = array();
-			$sections   = array();
-
-			if ( $all_items = $this->_curd->read_course_items( $this->get_id() ) ) {
-				foreach ( $all_items as $item ) {
-					if ( empty( $item_types[ $item->type ] ) ) {
-						$item_types[ $item->type ] = array();
-					}
-					$item_types[ $item->type ][] = $item->id;
-					$items[ $item->id ]          = $item->type;
-
-					if ( empty( $sections[ $item->section_id ] ) ) {
-						$sections[ $item->section_id ] = array();
-					}
-					$sections[ $item->section_id ][] = $item->id;
-				}
-			}
-
-			LP_Object_Cache::set( 'course-' . $this->get_id(), $item_types, 'learn-press/course-item-group-types' );
-			LP_Object_Cache::set( 'course-' . $this->get_id(), $items, 'learn-press/course-item-types' );
-
-			foreach ( $sections as $section_id => $section_items ) {
-				LP_Object_Cache::set( 'section-' . $section_id, $section_items, 'learn-press/section-items' );
-			}
-
-			learn_press_cache_add_post_type( $items );
-
-
-			//LP_Object_Cache::set( $this->get_id(), 'learn-press/course-curriculum' )
-
-			if ( $items = LP_Object_Cache::get( $this->get_id(), 'learn-press/course-curriculum' ) ) {
-				LP_Helper_CURD::cache_posts( $items );
-			}
-
-			return true;*/
 		}
 
 		/**
@@ -516,15 +477,21 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get all items in a course.
 		 *
+		 * @param int $section_id
+		 *
 		 * @return array
 		 */
-		public function get_item_ids(): array {
+		public function get_item_ids( int $section_id = 0 ): array {
 			$item_ids = array();
 
 			$sections_items = $this->get_full_sections_and_items_course();
 			foreach ( $sections_items as $section_items ) {
 				foreach ( $section_items->items as $item ) {
-					$item_ids[] = $item->item_id;
+					$item_ids[] = $item->id;
+				}
+
+				if ( $section_id && $section_id == $section_items->id ) {
+					break;
 				}
 			}
 

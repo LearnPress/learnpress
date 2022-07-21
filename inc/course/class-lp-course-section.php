@@ -6,18 +6,20 @@
  * @since 3.0.0
  */
 class LP_Course_Section extends LP_Abstract_Object_Data {
-
 	/**
 	 * Store section data
 	 *
 	 * @var null
 	 */
 	protected $data = null;
-
 	/**
 	 * @var int
 	 */
 	protected $course_id = 0;
+	/**
+	 * @var int
+	 */
+	protected $course    = 0;
 
 	/**
 	 * @var LP_Section_CURD
@@ -59,44 +61,37 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			$this->_data[ $k ] = $v;
 		}
 
+		$this->course = learn_press_get_course( $this->course_id );
+
 		$this->_curd = new LP_Section_CURD( 0 );
 		$this->set_id( $this->_data['id'] );
 		// Load section items
-		$this->_load_items();
+		$this->load_items();
 	}
 
 	/**
 	 * Load items from course curriculum to it section
-	 *
-	 * @return bool
 	 */
-	protected function _load_items() {
+	protected function load_items() {
 		if ( ! $this->get_id() ) {
 			return false;
 		}
 
-		// All items
-		$items = LP_Object_Cache::get( 'section-' . $this->get_id(), 'learn-press/section-items' );
-		if ( false === $items ) {
-			$items = $this->_curd->read_items( $this->get_id() );
-			LP_Object_Cache::set( 'section-' . $this->get_id(), $items, 'learn-press/section-items' );
-		}
+		$course     = $this->course;
+		$section_id = $this->get_id();
 
-		// LP_Helper_CURD::cache_posts( $items );
+		// All items
+		$items = $course->get_item_ids( $section_id );
 
 		foreach ( $items as $item ) {
-			$item_class = $this->_get_item( $item );
+			$item_class = $this->get_item( $item );
 
-			if ( $item_class ) {
-				if ( $item_class instanceof LP_Course_Item ) {
-					$item_class->set_course( $this->get_course_id() );
-					$item_class->set_section( $this );
-					$this->items[ $item ] = $item_class;
-				}
+			if ( $item_class instanceof LP_Course_Item ) {
+				$item_class->set_course( $this->get_course_id() );
+				$item_class->set_section( $this );
+				$this->items[ $item ] = $item_class;
 			}
 		}
-
-		return true;
 	}
 
 	/**
@@ -106,7 +101,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 *
 	 * @return bool|LP_Course_Item
 	 */
-	protected function _get_item( $item ) {
+	protected function get_item( $item ) {
 		if ( ! is_numeric( $item ) ) {
 			$item_id = $item->item_id;
 		} else {

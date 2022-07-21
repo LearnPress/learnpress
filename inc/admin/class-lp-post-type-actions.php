@@ -22,8 +22,8 @@ class LP_Post_Type_Actions {
 	 */
 	protected function __construct() {
 		//add_action( 'save_post', array( $this, 'save_post' ) );
-		add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 10, 3 );
-		add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_section' ), 10, 2 );
+		//add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 10, 3 );
+		//add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_section' ), 10, 2 );
 
 		add_filter( 'pre_trash_post', array( $this, 'pre_trash_post' ), 10, 2 );
 		add_filter( 'trashed_post', array( $this, 'trashed_post' ), 1000, 1 );
@@ -107,7 +107,7 @@ class LP_Post_Type_Actions {
 
 				foreach ( $course_ids as $course_id ) {
 					$curd->remove_item( $post_id, $course_id );
-					do_action( 'learn-press/removed-course-item', $course_id );
+					//do_action( 'learn-press/removed-course-item', $course_id );
 				}
 
 				$this->delete( 'item-courses-' . $post_id );
@@ -139,13 +139,13 @@ class LP_Post_Type_Actions {
 		}
 	}*/
 
-	public function added_item_to_section( $item, $section_id, $course_id ) {
+	/*public function added_item_to_section( $item, $section_id, $course_id ) {
 		do_action( 'learn-press/added-course-item', $item['id'], $course_id );
-	}
+	}*/
 
-	public function removed_item_from_section( $item, $course_id ) {
+	/*public function removed_item_from_section( $item, $course_id ) {
 		do_action( 'learn-press/removed-course-item', $course_id );
-	}
+	}*/
 
 	/**
 	 * @editor tungnx

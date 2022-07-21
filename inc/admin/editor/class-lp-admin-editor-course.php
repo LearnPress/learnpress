@@ -110,11 +110,11 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			return;
 		}
 
-		$this->course ? $this->course->get_sections() : '';
-		$this->result = $this->section_curd->sort_sections( $order );
+		//$this->course ? $this->course->get_sections() : '';
+		$this->result = $this->section_curd->update_sections_order( $order );
 
 		// update final quiz
-		$this->section_curd->update_final_item();
+		//$this->section_curd->update_final_item();
 	}
 
 	/**
@@ -284,7 +284,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		// create new lesson, quiz and add to course
 		$this->result = $this->section_curd->new_item( $section_id, $item );
 
-		$this->section_curd->update_final_item();
+		//$this->section_curd->update_final_item();
 
 		return true;
 	}
@@ -303,9 +303,10 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			return false;
 		}
 
-		$this->result = $this->section_curd->update_section_items( $section_id, $items );
+		//$this->result = $this->section_curd->update_section_items( $section_id, $items );
+		$this->result = $this->section_curd->update_section_items_order( $section_id, $items );
 
-		$this->section_curd->update_final_item();
+		//$this->section_curd->update_final_item();
 
 		return true;
 	}

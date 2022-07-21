@@ -498,7 +498,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array|mixed
 		 */
-		public function read_course_curriculum( $course_id ) {
+		/*public function read_course_curriculum( $course_id ) {
 
 			if ( learn_press_get_post_type( $course_id ) != LP_COURSE_CPT ) {
 				return false;
@@ -513,7 +513,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Get sections of course
@@ -525,14 +525,14 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @version 4.0.0
 		 *
 		 */
-		public function get_course_sections( $course_id, $return = '' ) {
+		/*public function get_course_sections( $course_id, $return = '' ) {
 			// if ( false === ( $sections = LP_Object_Cache::get( $course_id, 'learn-press/course-sections' ) ) ) {
 			$sections = $this->read_course_sections( $course_id );
 			// }
 
 			// return $return === 'ids' ? LP_Object_Cache::get( $course_id, 'learn-press/course-sections-ids' ) : $sections;
 			return $return === 'ids' ? LP_Course_Utils::get_cached_db_sections( $course_id, 'ids' ) : $sections;
-		}
+		}*/
 
 		/**
 		 * Retrieve total sections of a course.
@@ -602,8 +602,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return mixed|array
 		 * @version 4.0.0
+		 * @depecated 4.1.6.9
 		 */
-		public function read_course_sections( $course_id ) {
+		/*public function read_course_sections( $course_id ) {
 			global $wpdb;
 
 			settype( $course_id, 'array' );
@@ -639,7 +640,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return $first_course_sections;
-		}
+		}*/
 
 		/**
 		 * Remove lesson, quiz from course's curriculum.

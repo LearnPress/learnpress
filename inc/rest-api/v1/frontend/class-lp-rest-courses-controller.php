@@ -785,8 +785,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					}
 
 					foreach ( $section_items->items as $item ) {
-						if ( ! $user->has_completed_item( $item->item_id, $course_id ) ) {
-							$item_link  = $course->get_item_link( $item->item_id );
+						if ( ! $user->has_completed_item( $item->id, $course_id ) ) {
+							$item_link  = $course->get_item_link( $item->id );
 							$flag_found = true;
 							break;
 						}

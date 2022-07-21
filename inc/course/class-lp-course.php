@@ -385,9 +385,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return int
 		 */
 		public function count_items( string $type = '', bool $include_preview = true ): int {
+			$course_id = $this->get_id();
+
 			// Get cache
 			$lp_course_cache = LP_Course_Cache::instance();
-			$key_cache       = $this->get_id() . '/total_items';
+			$key_cache       = "$course_id/total_items";
 			$total_items     = $lp_course_cache->get_cache( $key_cache );
 			$count_items     = 0;
 
@@ -395,7 +397,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$extra_info = $this->get_info_extra_for_fast_query();
 
 				if ( ! $extra_info->total_items ) {
-					$total_items             = LP_Course_DB::getInstance()->get_total_items( $this->get_id() );
+					$total_items             = LP_Course_DB::getInstance()->get_total_items( $course_id );
 					$extra_info->total_items = $total_items;
 
 					// Save post meta
@@ -415,7 +417,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn-press/course/count-items', intval( $count_items ), $this->get_id() );
+			return apply_filters( 'learn-press/course/count-items', intval( $count_items ), $course_id );
 		}
 
 		/**
@@ -641,40 +643,56 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			try {
 				$sections_items_results = LP_Course_DB::getInstance()->get_full_sections_and_items_course( $course_id );
+				$count_items            = count( $sections_items_results );
+				$index_items_last       = $count_items - 1;
 
 				$section_current = 0;
-				foreach ( $sections_items_results as $sections_item ) {
-					$section_new      = $sections_item->section_id;
-					$item             = new stdClass();
-					$item->item_id    = $sections_item->item_id;
-					$item->item_order = $sections_item->item_order;
-					$item->item_type  = $sections_item->item_type;
-					$section_order    = $sections_item->section_order;
+				foreach ( $sections_items_results as $index => $sections_item ) {
+					$section_new   = $sections_item->section_id;
+					$section_order = $sections_item->section_order;
+					$item          = new stdClass();
+					$item->id      = $sections_item->item_id;
+					$item->order   = $sections_item->item_order;
+					$item->type    = $sections_item->item_type;
 
-					if ( $section_new !== $section_current ) {
+					if ( $section_new != $section_current ) {
+						$sections_items[ $section_new ]              = new stdClass();
+						$sections_items[ $section_new ]->id          = $section_new;
+						$sections_items[ $section_new ]->order       = $section_order;
+						$sections_items[ $section_new ]->title       = $sections_item->section_name;
+						$sections_items[ $section_new ]->description = $sections_item->section_description;
+						$sections_items[ $section_new ]->items       = [];
+
+						// Sort item by item_order
+						if ( $section_current != 0 ) {
+							usort(
+								$sections_items[ $section_current ]->items,
+								function ( $item1, $item2 ) {
+									return $item1->order - $item2->order;
+								}
+							);
+						}
+
 						$section_current = $section_new;
-
-						$sections_items[ $section_current ]                = new stdClass();
-						$sections_items[ $section_current ]->section_id    = $section_current;
-						$sections_items[ $section_current ]->section_order = $section_order;
-						$sections_items[ $section_current ]->items         = [];
 					}
 
-					$sections_items[ $section_current ]->items[ $item->item_order ] = $item;
-					// Sort item by item_order
-					usort(
-						$sections_items[ $section_current ]->items,
-						function ( $item1, $item2 ) {
-							return $item1->item_order - $item2->item_order;
-						}
-					);
+					$sections_items[ $section_new ]->items[ $item->id ] = $item;
+
+					if ( $index_items_last === $index ) {
+						usort(
+							$sections_items[ $section_current ]->items,
+							function ( $item1, $item2 ) {
+								return $item1->order - $item2->order;
+							}
+						);
+					}
 				}
 
 				// Sort section by section_order
 				usort(
 					$sections_items,
 					function ( $section1, $section2 ) {
-						return $section1->section_order - $section2->section_order;
+						return $section1->order - $section2->order;
 					}
 				);
 			} catch ( Throwable $e ) {
@@ -696,32 +714,27 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @version 4.0.0
 		 */
 		public function get_sections( $return = 'object', $section_id = 0 ) {
-			$this->load_curriculum();
-			$sections = LP_Course_Utils::get_cached_db_sections( $this->get_id() );
+			// $this->load_curriculum();
+			// $sections = LP_Course_Utils::get_cached_db_sections( $this->get_id() );
 
-			if ( false === $sections ) {
+			$sections_items = $this->get_full_sections_and_items_course();
+
+			/*if ( false === $sections ) {
 				return false;
+			}*/
+
+			//$position        = 0;
+			$object_sections = array();
+			foreach ( $sections_items as $section_items ) {
+				$section_items              = (array) $section_items;
+				$section_items['course_id'] = $this->get_id();
+				$sid                        = $section_items['id'];
+				$section                    = new LP_Course_Section( $section_items );
+				//$section->set_position( ++ $position );
+				$object_sections[ $sid ] = $section;
 			}
 
-			if ( $return == 'object' && $sections ) {
-				$position        = 0;
-				$object_sections = array();
-
-				foreach ( $sections as $k => $section_data ) {
-					$sid     = $section_data->section_id;
-					$section = LP_Course_Utils::get_cached_section( $sid );
-
-					if ( false === $section ) {
-						$section = new LP_Course_Section( $section_data );
-						$section->set_position( ++ $position );
-
-						LP_Course_Utils::set_cached_section( $sid, $section );
-					}
-
-					$object_sections[ $sid ] = $section;
-				}
-				$sections = $object_sections;
-			}
+			$sections = $object_sections;
 
 			if ( $section_id ) {
 				$sections = ! empty( $sections[ $section_id ] ) ? $sections[ $section_id ] : false;
@@ -735,15 +748,25 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.0
+		 * @editor tungnx
+		 * @version 1.0.1
 		 */
-		public function get_curriculum_raw() {
-			$sections      = $this->get_sections( 'object' );
+		public function get_curriculum_raw(): array {
 			$sections_data = array();
 
-			if ( is_array( $sections ) ) {
-				foreach ( $sections as $section ) {
-					$sections_data[] = $section->to_array();
+			$sections_items = $this->get_full_sections_and_items_course();
+			foreach ( $sections_items as $section_items ) {
+				$section_items_arr          = (array) $section_items;
+				$section_items_arr['items'] = [];
+
+				foreach ( $section_items->items as $item ) {
+					$itemObject                   = $this->get_item( $item->id );
+					$item_arr                     = (array) $item;
+					$item_arr['title']            = $itemObject->get_title();
+					$section_items_arr['items'][] = $item_arr;
 				}
+
+				$sections_data[] = $section_items_arr;
 			}
 
 			return $sections_data;

@@ -86,7 +86,7 @@ class LP_Course_DB extends LP_Database {
 
 		if ( ! $sections_items ) {
 			$query = $this->wpdb->prepare(
-				"SELECT si.section_id, si.item_id, si.item_order, si.item_type, s.section_order
+				"SELECT *
 				FROM {$this->tb_lp_section_items} AS si
 				INNER JOIN {$this->tb_lp_sections} AS s
 				ON si.section_id = s.section_id

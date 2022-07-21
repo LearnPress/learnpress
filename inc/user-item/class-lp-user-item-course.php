@@ -42,26 +42,28 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * LP_User_Item_Course constructor.
 	 *
-	 * @param null $item
+	 * @param object $item
 	 */
 	public function __construct( $item ) {
-		if ( is_array( $item ) ) {
-			$item['item_type'] = $this->_item_type;
-			$item['ref_type']  = $this->_ref_type;
+		if ( ! isset( $item->item_type ) || LP_COURSE_CPT !== $item->item_type ) {
+			return;
 		}
+
+		$this->_course = learn_press_get_course( $item->item_id );
+
 		parent::__construct( $item );
 
 		$this->_curd    = new LP_User_CURD();
 		$this->_changes = array();
 	}
 
-	public function load() {
+	/*public function load() {
 		if ( ! $this->_loaded ) {
 			$this->read_items();
 
 			$this->_loaded = true;
 		}
-	}
+	}*/
 
 	/**
 	 * Read items' data of course for the user.
@@ -71,19 +73,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return array|bool
 	 */
 	public function read_items( $refresh = false ) {
-		$this->_course = learn_press_get_course( $this->get_id() );
-
 		$user_course_item_id = $this->get_user_item_id();
 
 		if ( ! $this->_course || ( ! $user_course_item_id ) ) {
 			return false;
 		}
 
-		// $items = $this->cache_get_items();
-
 		$course_items = $this->_course->get_item_ids();
+		$total_items  = $this->_course->count_items();
 
-		if ( ! $course_items ) {
+		if ( empty( $total_items ) ) {
 			return false;
 		}
 
@@ -126,7 +125,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			);
 
 			if ( $course_item ) {
-				// $this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
 				$items[ $item_id ] = $course_item;
 			}
 		}
@@ -168,7 +166,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	public function offsetGet( $offset ) {
-		$items = $this->read_items( true );
+		$items = $this->read_items();
 
 		return $items && array_key_exists( $offset, $items ) ? $items[ $offset ] : false;
 	}
@@ -880,14 +878,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$total_questions     = 0;
 			$total_mark_question = 0;
 
-			// get all item by course
-			$items = $course->get_item_ids();
+			// Get all items' course
+			$sections_items = $course->get_full_sections_and_items_course();
 
-			foreach ( $items as $item_id ) {
-				$item = $course->get_item( $item_id );
-				if ( $item->get_item_type() == LP_QUIZ_CPT ) {
-					$total_questions     += count( $item->get_questions() );
-					$total_mark_question += $item->get_mark();
+			foreach ( $sections_items as $section_items ) {
+				foreach ( $section_items->items as $item ) {
+					$itemObj = $course->get_item( $item->id );
+					if ( $item->type == LP_QUIZ_CPT ) {
+						$total_questions     += count( $itemObj->get_questions() );
+						$total_mark_question += $itemObj->get_mark();
+					}
 				}
 			}
 			// End get total questions, mark
@@ -1222,7 +1222,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return LP_User_Item[]
 	 */
 	public function get_items( $refresh = false ) {
-		return $this->read_items( $refresh );
+		return $this->read_items();
 
 		/*
 		return LP_Object_Cache::get(
@@ -1563,8 +1563,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
+	 * @depecated 4.1.6.9
 	 */
 	public function get_passed_items( $type = '', $with_total = false, $section_id = 0 ) {
+		_deprecated_function( __FUNCTION__, '4.1.6.9' );
 		$this->read_items();
 
 		$key          = sprintf(

@@ -265,20 +265,34 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Update sort sections.
 	 *
-	 * @param $sections string[]
+	 * @param string[] $sections_new_order
 	 *
 	 * @return array
-	 * @version 4.0.0
+	 * @version 4.0.1
 	 */
-	public function sort_sections( $sections ) {
+	public function update_sections_order( $sections_new_order ) {
 		global $wpdb;
 
-		$current_sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
-		$new_sections     = array();
+		//$current_sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
+		//$new_sections     = array();
+		//$course = learn_press_get_course( $this->course_id );
+		//$sections_items = $course->get_full_sections_and_items_course();
 
 		$orders = array();
 
-		foreach ( $sections as $index => $section_id ) {
+		foreach ( $sections_new_order as $order_new => $section_id ) {
+			$order_new = $order_new + 1;
+
+			$wpdb->update(
+				$wpdb->learnpress_sections,
+				array( 'section_order' => $order_new ),
+				array( 'section_id' => $section_id )
+			);
+
+			// $this->get_section_items( $section_id );
+		}
+
+		/*foreach ( $sections as $index => $section_id ) {
 			$order = $index + 1;
 
 			$orders[ $section_id ] = $order;
@@ -296,9 +310,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 
 			$this->get_section_items( $section_id );
-		}
+		}*/
 
-		LP_Course_Utils::set_cache_db_sections( $this->course_id, $new_sections );
+		//LP_Course_Utils::set_cache_db_sections( $this->course_id, $new_sections );
 
 		return $orders;
 	}
@@ -328,7 +342,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $return, 'learn-press/course-section-items' );
+		// LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $return, 'learn-press/course-section-items' );
 
 		return $return;
 	}
@@ -455,7 +469,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			// $order ++;
 		}
 
-		LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'learn-press/course-section-items' );
+		// LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'learn-press/course-section-items' );
 
 		return $result;
 	}
@@ -502,9 +516,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return bool
 	 * @version 4.0.0
+	 * @depecated 4.1.6.9
 	 */
 	public function update_final_item() {
-		$sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
+		_deprecated_function( __FUNCTION__, '4.1.6.9' );
+		/*$sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
 
 		if ( ! $sections ) {
 			return false;
@@ -542,7 +558,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		return true;
+		return true;*/
 
 	}
 
@@ -581,8 +597,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 * @since 3.0.0
+	 * @depecated 4.1.6.9
 	 */
 	public function update_section_items( $section_id, $items ) {
+		_deprecated_function( __FUNCTION__, '4.1.6.9' );
 		$current_items = $this->get_section_items( $section_id );
 
 		global $wpdb;
@@ -630,9 +648,26 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $items, 'learn-press/course-section-items' );
+		// LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $items, 'learn-press/course-section-items' );
 
 		return $items;
+	}
+
+	public function update_section_items_order( $section_id, $items ) {
+		global $wpdb;
+
+		foreach ( $items as $index => $item ) {
+			$order = $index + 1;
+
+			$wpdb->update(
+				$wpdb->learnpress_section_items,
+				array( 'item_order' => $order ),
+				array(
+					'section_id' => $section_id,
+					'item_id'    => $item['id'],
+				)
+			);
+		}
 	}
 
 	/**
