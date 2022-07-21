@@ -109,7 +109,7 @@ abstract class LP_Abstract_Post_Type {
 		// add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
 		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
-		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
+		//add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 
 		$args = wp_parse_args(
 			$args,
@@ -774,6 +774,9 @@ abstract class LP_Abstract_Post_Type {
 		return $actions;
 	}
 
+	/**
+	 * @depecated 4.1.6.9
+	 */
 	public function updated_messages( $messages ) {
 		$post             = get_post();
 		$post_type        = get_post_type( $post );
@@ -807,7 +810,8 @@ abstract class LP_Abstract_Post_Type {
 			switch ( $this->_post_type ) {
 				case LP_LESSON_CPT:
 				case LP_QUIZ_CPT:
-					$view_link = learn_press_get_item_course_id( $post->ID, $post->post_type ) ? $view_link : '';
+					//$view_link = learn_press_get_item_course_id( $post->ID, $post->post_type ) ? $view_link : '';
+					$view_link = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID ) ? $view_link : '';
 					break;
 				case LP_ORDER_CPT:
 					$order     = learn_press_get_order( $post->ID );

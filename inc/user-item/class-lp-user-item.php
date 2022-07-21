@@ -416,7 +416,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		try {
 			// User is Guest
 			if ( (int) $this->get_user_id() === 0 ) {
-				throw new Exception( __( 'User is guest', 'learnpress' ) );
+				return $got_status;
 			}
 
 			$lp_user_item = LP_User_Items_DB::getInstance();
@@ -724,6 +724,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				break;
 			case LP_QUIZ_CPT:
 				$item = new LP_User_Item_Quiz( $data );
+				break;
+			default:
 				break;
 		}
 

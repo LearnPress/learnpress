@@ -42,14 +42,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * LP_User_Item_Course constructor.
 	 *
-	 * @param object $item
+	 * @param object|array $item
 	 */
 	public function __construct( $item ) {
-		if ( ! isset( $item->item_type ) || LP_COURSE_CPT !== $item->item_type ) {
-			return;
-		}
+		$item              = (array) $item;
+		$item['item_type'] = $this->_item_type;
+		$item['ref_type']  = $this->_ref_type;
 
-		$this->_course = learn_press_get_course( $item->item_id );
+		if ( isset( $item['item_id'] ) ) {
+			$this->_course = learn_press_get_course( $item['item_id'] );
+		}
 
 		parent::__construct( $item );
 
@@ -1263,7 +1265,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		// TODO: Implement __unset() method.
 	}
 
-	public function count_history_items( $item_id ) {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public function count_history_items( $item_id ) {
 
 		if ( false === ( $history = LP_Object_Cache::get(
 			'course-' . $this->get_item_id() . '-' . $this->get_user_id(),
@@ -1297,27 +1302,34 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return isset( $history[ $item_id ] ) ? $history[ $item_id ] : 0;
-	}
+	}*/
 
 	/**
 	 * @param int $item_id
 	 *
-	 * @return LP_User_Item|LP_User_Item_Quiz|bool
+	 * @return bool|LP_User_Item
 	 */
 	public function get_item( $item_id ) {
-		return $this->offsetGet( $item_id );
-	}
+		$item = false;
 
-	/**
-	 * Write again get_item
-	 *
-	 * @param int $item_id
-	 *
-	 * @return LP_User_Item|LP_User_Item_Quiz|bool
-	 * @author tungnx
-	 */
-	public function getItem( $item_id ) {
+		try {
+			$filter          = new LP_User_Items_Filter();
+			$filter->item_id = $item_id;
+			$filter->ref_id  = $this->get_course_id();
+			$filter->user_id = get_current_user_id();
+			$item_result     = LP_User_Items_DB::getInstance()->get_user_course_item( $filter );
 
+			if ( $item_result ) {
+				$item_result = (array) $item_result;
+				$item        = LP_User_Item::get_item_object( $item_result );
+			}
+		} catch ( Throwable $e ) {
+			if ( LP_Debug::is_debug() ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		return $item;
 	}
 
 	/**
@@ -1342,20 +1354,23 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param $item
 	 *
 	 * @return bool|LP_User_Item
+	 * @depecated 4.1.6.9
 	 */
-	public function set_item( $item ) {
+	/*public function set_item( $item ) {
 		if ( $item = LP_User_Item::get_item_object( $item ) ) {
 			$this->cache_set_item( $item );
 		}
 
 		return $item;
-	}
+	}*/
 
 	/**
 	 * @param LP_User_Item $item
+	 * @depecated 4.1.6.9
 	 */
-	public function cache_set_item( $item ) {
-		if ( ! $items = $this->read_items() ) {
+	/*public function cache_set_item( $item ) {
+		$items = $this->read_items();
+		if ( ! $items ) {
 			$items = array();
 		}
 		$items[ $item->get_item_id() ] = $item;
@@ -1364,14 +1379,17 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$items,
 			'learn-press/user-course-item-objects'
 		);
-	}
+	}*/
 
-	public function cache_get_items() {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public function cache_get_items() {
 		return LP_Object_Cache::get(
 			$this->get_user_id() . '-' . $this->get_id(),
 			'learn-press/user-course-item-objects'
 		);
-	}
+	}*/
 
 	/**
 	 * @param        $item_id
@@ -1428,8 +1446,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Get js settings of course.
 	 *
 	 * @return array
+	 * @depecated 4.1.6.9
 	 */
-	public function get_js_args() {
+	/*public function get_js_args() {
 		$js_args = false;
 		$course  = $this->get_course();
 
@@ -1446,9 +1465,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return apply_filters( 'learn-press/course/single-params', $js_args, $this->get_id() );
-	}
+	}*/
 
-	public function update_item_retaken_count( $item_id, $count = 0 ) {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public function update_item_retaken_count( $item_id, $count = 0 ) {
 		$items = $this->get_meta( '_retaken_items' );
 		if ( is_string( $count ) && preg_match( '#^(\+|\-)([0-9]+)#', $count, $m ) ) {
 			$last_count = ! empty( $items[ $item_id ] ) ? $items[ $item_id ] : 0;
@@ -1460,9 +1482,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_retaken_items', $items );
 
 		return $count;
-	}
+	}*/
 
-	public function get_item_retaken_count( $item_id ) {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public function get_item_retaken_count( $item_id ) {
 		$items = $this->get_meta( '_retaken_items' );
 		$count = false;
 
@@ -1471,7 +1496,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return $count;
-	}
+	}*/
 
 	/**
 	 * Get number of retaken times for user course.

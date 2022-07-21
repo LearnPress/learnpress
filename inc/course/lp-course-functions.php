@@ -765,12 +765,15 @@ if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 }
 /**
  * Get course id of an item by id
+ *
+ * @depecated 4.1.6.9
  */
 
 if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 
 	function learn_press_get_item_course_id( $post_id, $post_type ) {
-		global $wpdb;
+		_deprecated_function( __FUNCTION__, '4.1.6.9' );
+		/*global $wpdb;
 
 		// If the post is a course
 		if ( LP_COURSE_CPT == learn_press_get_post_type( $post_id ) ) {
@@ -829,7 +832,7 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 
 		}
 
-		return $course_id;
+		return $course_id;*/
 	}
 }
 

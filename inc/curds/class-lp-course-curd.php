@@ -347,13 +347,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return array
 		 */
 		public function read_course_items( $course_id, $publish_only = true, $section_ids = array() ) {
-			// Tungnx: Comment because make not work with WPML.
-			/*static $results = null;
-
-			if ( ! is_null( $results ) ) {
-				return $results;
-			}*/
-
 			global $wpdb;
 			$where = '';
 

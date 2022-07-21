@@ -31,41 +31,35 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $item_id
 	 *
 	 * @return int
+	 * @throws Exception
+	 * @
 	 */
-	public function learn_press_get_item_course( $item_id = 0 ) {
+	public function get_course_by_item_id( $item_id = 0 ): int {
+		// Get cache
+		$lp_course_cache = LP_Course_Cache::instance();
+		$key_cache       = "$item_id/course_id_of_item_id";
+		$course_id       = $lp_course_cache->get_cache( $key_cache );
 
-		$query = $this->wpdb->prepare(
-			"
-			SELECT section_course_id
-			FROM {$this->tb_lp_sections} AS s
-			INNER JOIN {$this->tb_lp_section_items} AS si
-			ON si.section_id = s.section_id
-			WHERE si.item_id = %d
-			ORDER BY section_course_id DESC",
-			$item_id
-		);
+		if ( ! $course_id ) {
+			$query = $this->wpdb->prepare(
+				"
+				SELECT section_course_id
+				FROM {$this->tb_lp_sections} AS s
+				INNER JOIN {$this->tb_lp_section_items} AS si
+				ON si.section_id = s.section_id
+				WHERE si.item_id = %d",
+				$item_id
+			);
 
-		return (int) $this->wpdb->get_var( $query );
-	}
+			$course_id = (int) $this->wpdb->get_var( $query );
 
-	/**
-	 * Get all item ids' course
-	 *
-	 * @param int $course_id
-	 *
-	 * @return array|object|stdClass[]|null
-	 */
-	public function get_items_course( int $course_id = 0 ) {
-		$query = $this->wpdb->prepare(
-			"SELECT item_id
-			FROM {$this->tb_lp_section_items} AS si
-			INNER JOIN {$this->tb_lp_sections} AS s
-			ON si.section_id = s.section_id
-			WHERE s.section_course_id = %d",
-			$course_id
-		);
+			$this->check_execute_has_error();
 
-		return $this->wpdb->get_results( $query );
+			// Set cache
+			$lp_course_cache->set_cache( $key_cache, $course_id );
+		}
+
+		return $course_id;
 	}
 
 	/**

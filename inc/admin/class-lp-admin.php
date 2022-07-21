@@ -867,48 +867,54 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @param string       $new_slug
 		 * @param WP_Post|null $post
 		 *
-		 * @return array|int|mixed|string|void
+		 * @return string
 		 * @author tungnx
 		 * @since  3.2.7.5
+		 * @version 4.0.1
 		 */
 		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
 			if ( ! in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
 				return $post_link;
 			}
 
-			$course            = null;
-			$course_id_of_item = LP_Course_DB::getInstance()->learn_press_get_item_course( $post->ID );
+			try {
+				$course_id_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID );
 
-			if ( $course_id_of_item ) {
-				$course = learn_press_get_course( $course_id_of_item );
+				if ( $course_id_of_item ) {
+					$course = learn_press_get_course( $course_id_of_item );
 
-				if ( $course ) {
-					$link_item = $course->get_item_link( $post->ID );
+					if ( $course ) {
+						$link_item = $course->get_item_link( $post->ID );
 
-					$post_slug           = $post->post_name;
-					$link_item_edit_slug = preg_replace( '/' . $post_slug . '$/', '', $link_item );
+						$post_slug           = $post->post_name;
+						$link_item_edit_slug = preg_replace( '/' . $post_slug . '$/', '', $link_item );
 
-					// For update new slug
-					if ( $new_slug ) {
-						$post_slug = $new_slug;
+						// For update new slug
+						if ( $new_slug ) {
+							$post_slug = $new_slug;
+						}
+
+						$post_link  = '<strong>Permalink: </strong>';
+						$post_link .= '<span id="sample-permalink">';
+						$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
+						$post_link .= '</span>';
+						$post_link .= '&lrm;<span id="edit-slug-buttons">';
+						$post_link .= '<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">Edit</button>';
+						$post_link .= '</span>';
+						$post_link .= '<span id="editable-post-name-full">' . $post_slug . '</span>';
 					}
-
-					$post_link  = '<strong>Permalink: </strong>';
-					$post_link .= '<span id="sample-permalink">';
-					$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
-					$post_link .= '</span>';
-					$post_link .= '&lrm;<span id="edit-slug-buttons">';
-					$post_link .= '<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">Edit</button>';
-					$post_link .= '</span>';
-					$post_link .= '<span id="editable-post-name-full">' . $post_slug . '</span>';
+				} else {
+					// $post_link_preview = sprintf( '<a class="button" href="%s" target="_blank">%s</a>', learn_press_get_preview_url( $post_id ), __( 'Preview', 'learnpress' ) );
+					$post_link_message = '<span>' . __(
+						'Permalink only available if the item is already assigned to a course.',
+						'learnpress'
+					) . '</span>';
+					$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );
 				}
-			} else {
-				// $post_link_preview = sprintf( '<a class="button" href="%s" target="_blank">%s</a>', learn_press_get_preview_url( $post_id ), __( 'Preview', 'learnpress' ) );
-				$post_link_message = '<span>' . __(
-					'Permalink only available if the item is already assigned to a course.',
-					'learnpress'
-				) . '</span>';
-				$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );
+			} catch ( Throwable $e ) {
+				if ( LP_Debug::is_debug() ) {
+					error_log( $e->getMessage() );
+				}
 			}
 
 			return $post_link;

@@ -344,7 +344,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/course/lp-course-functions.php';
 			require_once 'inc/course/abstract-course.php';
 			require_once 'inc/course/class-lp-course.php';
-			require_once 'inc/course/class-lp-course-utils.php';
+			//require_once 'inc/course/class-lp-course-utils.php';
 			require_once 'inc/quiz/lp-quiz-functions.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
 			require_once 'inc/lesson/lp-lesson-functions.php';

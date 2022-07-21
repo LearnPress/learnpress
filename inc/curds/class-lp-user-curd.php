@@ -950,157 +950,158 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int   $course_id
 	 *
 	 * @return mixed
+	 * @depecated 4.1.6.9
 	 */
-	public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
-		global $wpdb;
-
-		$user = learn_press_get_user( $user_id );
-		if ( ! $user || ( $user->get_id() != $user_id ) ) {
-			return false;
-		}
-
-		if ( array_key_exists( 'user_item_id', $item_data ) && empty( $item_data['user_item_id'] ) ) {
-			$item = false;
-		} else {
-			if ( func_num_args() == 4 ) {
-				// $item = $this->get_user_item( $user_id, $item_id, $course_id );
-				$item = $this->read_course( $user_id, $course_id );
-			} else {
-				$item = $this->get_user_item( $user_id, $item_id );
-			}
-		}
-
-		// Table fields
-		$table_fields = array(
-			'user_id'    => '%d',
-			'item_id'    => '%d',
-			'ref_id'     => '%d',
-			'start_time' => '%s',
-			'end_time'   => '%s',
-			'item_type'  => '%s',
-			'status'     => '%s',
-			'ref_type'   => '%s',
-			'parent_id'  => '%d',
-		);
-
-		// Data and format
-		$data        = array();
-		$data_format = array();
-
-		// Update it later...
-		$new_status = false;
-		if ( array_key_exists( 'status', $item_data ) && $item_data['status'] != $item['status'] ) {
-			$new_status = $item_data['status'];
-			unset( $item_data['status'] );
-		}
-
-		// Build data and data format
-		foreach ( $item_data as $field => $value ) {
-			if ( ! empty( $table_fields[ $field ] ) ) {
-				$data[ $field ]        = $value;
-				$data_format[ $field ] = $table_fields[ $field ];
-			}
-		}
-
-		$data['user_id'] = $user_id;
-		$data['item_id'] = $item_id;
-
-		if ( $course_id ) {
-			$data['ref_id']   = $course_id;
-			$data['ref_type'] = LP_COURSE_CPT;
-		} else {
-			$data['item_type'] = LP_COURSE_CPT;
-		}
-
-		foreach ( $data as $k => $v ) {
-			$data_format[ $k ] = $table_fields[ $k ];
-		}
-
-		$data_format = array_values( $data_format );
-
-		if ( ! $item || empty( $item['user_item_id'] ) ) {
-			if ( $data['ref_type'] === LP_COURSE_CPT && empty( $data['parent_id'] ) ) {
-				return false;
-			}
-
-			$wpdb->insert(
-				$wpdb->learnpress_user_items,
-				$data,
-				$data_format
-			);
-			$user_item_id = $wpdb->insert_id;
-			$item         = $this->get_user_item_by_id( $user_item_id );
-		} else {
-			$user_item_id = $item['user_item_id'];
-			$wpdb->update(
-				$wpdb->learnpress_user_items,
-				$data,
-				array( 'user_item_id' => $user_item_id ),
-				$data_format,
-				array( '%d' )
-			);
-
-			$item = array_merge( $item, $data );
-		}
-
-		$is_course = ( ! $course_id ) && ( learn_press_get_post_type( $item['item_id'] ) === LP_COURSE_CPT );
-
-		if ( $user_item_id ) {
-
-			// Track last status if it is updated new status.
-			if ( $new_status !== false ) {
-				if ( $this->update_user_item_status( $user_item_id, $new_status ) ) {
-					$item['status'] = $new_status;
-				}
-			}
-
-			if ( $is_course ) {
-				$course_id = $item['item_id'];
-				// Update cache to effect the change right way!
-				LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $item, 'learn-press/user-dcourses' );
-			} else {
-
-				$user        = learn_press_get_user( $user_id );
-				$user_course = $user->get_course_data( $course_id );
-
-				$user_course->set_item( $item );
-
-				// Update cache
-				$existed = false !== ( $items = LP_Object_Cache::get(
-					'course-item-' . $user_id . '-' . $course_id . '-' . $item_id,
-					'learn-press/user-course-items'
-				) );
-
-				if ( false === $items || ! empty( $items[ $user_item_id ] ) ) {
-					if ( is_array( $items ) ) {
-						$items[ $user_item_id ] = $item;
-					} else {
-						$items = array( $user_item_id => $item );
-					}
-				} else {
-					$items = array( $user_item_id => $item ) + $items;
-				}
-
-				LP_Object_Cache::set(
-					'course-item-' . $user_id . '-' . $course_id . '-' . $item_id,
-					$items,
-					'learn-press/user-course-items'
-				);
-
-			}
-
-			wp_cache_delete( 'course-' . $user_id . '-' . $course_id, 'learn-press/user-item-object-courses' );
-
-			/*
-			if ( $existed ) {
-				wp_cache_replace( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'learn-press/user-course-items' );
-			} else {
-				wp_cache_add( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'learn-press/user-course-items' );
-			}*/
-		}
-
-		return $user_item_id;
-	}
+//	public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
+//		global $wpdb;
+//
+//		$user = learn_press_get_user( $user_id );
+//		if ( ! $user || ( $user->get_id() != $user_id ) ) {
+//			return false;
+//		}
+//
+//		if ( array_key_exists( 'user_item_id', $item_data ) && empty( $item_data['user_item_id'] ) ) {
+//			$item = false;
+//		} else {
+//			if ( func_num_args() == 4 ) {
+//				// $item = $this->get_user_item( $user_id, $item_id, $course_id );
+//				$item = $this->read_course( $user_id, $course_id );
+//			} else {
+//				$item = $this->get_user_item( $user_id, $item_id );
+//			}
+//		}
+//
+//		// Table fields
+//		$table_fields = array(
+//			'user_id'    => '%d',
+//			'item_id'    => '%d',
+//			'ref_id'     => '%d',
+//			'start_time' => '%s',
+//			'end_time'   => '%s',
+//			'item_type'  => '%s',
+//			'status'     => '%s',
+//			'ref_type'   => '%s',
+//			'parent_id'  => '%d',
+//		);
+//
+//		// Data and format
+//		$data        = array();
+//		$data_format = array();
+//
+//		// Update it later...
+//		$new_status = false;
+//		if ( array_key_exists( 'status', $item_data ) && $item_data['status'] != $item['status'] ) {
+//			$new_status = $item_data['status'];
+//			unset( $item_data['status'] );
+//		}
+//
+//		// Build data and data format
+//		foreach ( $item_data as $field => $value ) {
+//			if ( ! empty( $table_fields[ $field ] ) ) {
+//				$data[ $field ]        = $value;
+//				$data_format[ $field ] = $table_fields[ $field ];
+//			}
+//		}
+//
+//		$data['user_id'] = $user_id;
+//		$data['item_id'] = $item_id;
+//
+//		if ( $course_id ) {
+//			$data['ref_id']   = $course_id;
+//			$data['ref_type'] = LP_COURSE_CPT;
+//		} else {
+//			$data['item_type'] = LP_COURSE_CPT;
+//		}
+//
+//		foreach ( $data as $k => $v ) {
+//			$data_format[ $k ] = $table_fields[ $k ];
+//		}
+//
+//		$data_format = array_values( $data_format );
+//
+//		if ( ! $item || empty( $item['user_item_id'] ) ) {
+//			if ( $data['ref_type'] === LP_COURSE_CPT && empty( $data['parent_id'] ) ) {
+//				return false;
+//			}
+//
+//			$wpdb->insert(
+//				$wpdb->learnpress_user_items,
+//				$data,
+//				$data_format
+//			);
+//			$user_item_id = $wpdb->insert_id;
+//			$item         = $this->get_user_item_by_id( $user_item_id );
+//		} else {
+//			$user_item_id = $item['user_item_id'];
+//			$wpdb->update(
+//				$wpdb->learnpress_user_items,
+//				$data,
+//				array( 'user_item_id' => $user_item_id ),
+//				$data_format,
+//				array( '%d' )
+//			);
+//
+//			$item = array_merge( $item, $data );
+//		}
+//
+//		$is_course = ( ! $course_id ) && ( learn_press_get_post_type( $item['item_id'] ) === LP_COURSE_CPT );
+//
+//		if ( $user_item_id ) {
+//
+//			// Track last status if it is updated new status.
+//			if ( $new_status !== false ) {
+//				if ( $this->update_user_item_status( $user_item_id, $new_status ) ) {
+//					$item['status'] = $new_status;
+//				}
+//			}
+//
+//			if ( $is_course ) {
+//				$course_id = $item['item_id'];
+//				// Update cache to effect the change right way!
+//				LP_Object_Cache::set( 'course-' . $user_id . '-' . $course_id, $item, 'learn-press/user-dcourses' );
+//			} else {
+//
+//				$user        = learn_press_get_user( $user_id );
+//				$user_course = $user->get_course_data( $course_id );
+//
+//				$user_course->set_item( $item );
+//
+//				// Update cache
+//				$existed = false !== ( $items = LP_Object_Cache::get(
+//					'course-item-' . $user_id . '-' . $course_id . '-' . $item_id,
+//					'learn-press/user-course-items'
+//				) );
+//
+//				if ( false === $items || ! empty( $items[ $user_item_id ] ) ) {
+//					if ( is_array( $items ) ) {
+//						$items[ $user_item_id ] = $item;
+//					} else {
+//						$items = array( $user_item_id => $item );
+//					}
+//				} else {
+//					$items = array( $user_item_id => $item ) + $items;
+//				}
+//
+//				LP_Object_Cache::set(
+//					'course-item-' . $user_id . '-' . $course_id . '-' . $item_id,
+//					$items,
+//					'learn-press/user-course-items'
+//				);
+//
+//			}
+//
+//			wp_cache_delete( 'course-' . $user_id . '-' . $course_id, 'learn-press/user-item-object-courses' );
+//
+//			/*
+//			if ( $existed ) {
+//				wp_cache_replace( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'learn-press/user-course-items' );
+//			} else {
+//				wp_cache_add( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'learn-press/user-course-items' );
+//			}*/
+//		}
+//
+//		return $user_item_id;
+//	}
 
 	/**
 	 * Get user item from user_items tables.
@@ -1160,22 +1161,29 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $user_item_id
 	 *
 	 * @return bool|LP_User_Item_Course
+	 * @depecated 4.1.6.9
 	 */
-	public function get_user_item_course( $user_item_id ) {
+	/*public function get_user_item_course( $user_item_id ) {
 		if ( $item = $this->get_user_item_by_id( $user_item_id, LP_COURSE_CPT ) ) {
 			return new LP_User_Item_Course( $item );
 		}
 
 		return false;
-	}
+	}*/
 
-	public function get_user_item_meta( $user_item_id, $meta_key, $single = true ) {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public function get_user_item_meta( $user_item_id, $meta_key, $single = true ) {
 		return learn_press_get_user_item_meta( $user_item_id, $meta_key, $single );
-	}
+	}*/
 
-	public function update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev = '' ) {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public function update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev = '' ) {
 		return learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev );
-	}
+	}*/
 
 	/**
 	 * Update user item data by id.
