@@ -52,11 +52,11 @@ function learn_press_get_course( $the_course = 0 ) {
  *
  * @return string
  * @since 3.0.0
- *
+ * @depecated 4.1.6.9
  */
-function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_id = 0 ) {
+/*function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_id = 0 ) {
 	return LP_Nonce_Helper::create_course( $action, $course_id, $user_id );
-}
+}*/
 
 /**
  * Verify nonce for course action.
@@ -68,11 +68,11 @@ function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_
  *
  * @return bool
  * @since 3.0.0
- *
+ * @depecated 4.1.6.9
  */
-function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0, $user_id = 0 ) {
+/*function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0, $user_id = 0 ) {
 	return LP_Nonce_Helper::verify_course( $nonce, $action, $course_id, $user_id );
-}
+}*/
 
 /**
  * Get type of items are supported in course curriculum (post types).

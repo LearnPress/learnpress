@@ -40,31 +40,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		}*/
 
 		/**
-		 * Set item is viewing in single course.
-		 *
-		 * @param LP_Course_Item $item
-		 *
-		 * @return int|LP_Course_Item
-		 */
-		public function set_viewing_item( $item ) {
-			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
-				return 0;
-			}
-
-			$user = learn_press_get_current_user();
-			if ( $user instanceof LP_User_Guest ) {
-				return 0;
-			}
-
-			$this->_viewing_item = $item;
-			$item->set_course( $this );
-
-			$user->maybe_update_item( $item->get_id(), $this->get_id() );
-
-			return $item;
-		}
-
-		/**
 		 * Get default course meta.
 		 *
 		 * @return mixed

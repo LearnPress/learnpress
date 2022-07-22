@@ -438,13 +438,11 @@ class LP_Page_Controller {
 		 */
 		global $wp, $wp_query, $lp_course_item;
 
-		$lp_course = learn_press_get_course();
-
 		if ( LP_COURSE_CPT !== $post->post_type ) {
 			return $post;
 		}
 
-		$course = learn_press_get_course( $post->ID );
+		$course = learn_press_get_course();
 		if ( ! $course ) {
 			return $post;
 		}
@@ -452,7 +450,7 @@ class LP_Page_Controller {
 		/**
 		 * @deprecated v4.1.6.1 LP()->global['course'], $GLOBALS['course']
 		 */
-		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
+		//LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
 
 		if ( wp_verify_nonce( LP_Request::get( 'preview' ), 'preview-' . $post->ID ) ) {
 			$GLOBALS['preview_course'] = $post->ID;
@@ -469,6 +467,8 @@ class LP_Page_Controller {
 		}
 
 		try {
+			$user = learn_press_get_current_user();
+
 			// If item name is set in query vars
 			if ( ! is_numeric( $vars['course-item'] ) ) {
 				$item_type = $vars['item-type'];
@@ -481,35 +481,14 @@ class LP_Page_Controller {
 				return $post;
 			}
 
-			/**
-			 * Comment for reason some page-builder run wrong
-			 *
-			 * 1. Anywhere elementor
-			 * 2. WPBakery
-			 */
-			/*$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $post_item->ID );
-
-			if ( ! $section_id ) {
-				throw new Exception( __( 'The item is not assigned to any section', 'learnpress' ) );
-			}
-
-			$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
-
-			if ( ! $course_id ) {
-				throw new Exception( __( 'The item is not assigned to any course', 'learnpress' ) );
-			}
-
-			if ( $course_id != $post->ID ) {
-				throw new Exception( __( 'The item is not assigned to this course', 'learnpress' ) );
-			}*/
-
 			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID, $course->get_id() ) );
 
 			if ( ! $lp_course_item ) {
 				return $post;
 			}
 
-			$lp_course->set_viewing_item( $lp_course_item );
+			// Set item viewing
+			$user->set_viewing_item( $lp_course_item );
 		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 		}

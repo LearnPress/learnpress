@@ -710,10 +710,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $last_user_course;
 	}
 
-	public function get_course_access_level( $user_id, $course_id ) {
-
-	}
-
 	/**
 	 * Load user items by item_id of course item
 	 *

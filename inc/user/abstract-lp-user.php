@@ -502,8 +502,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 * @since 3.0.0
 		 * @version 4.0.1
+		 * @depecated 4.1.6.9
 		 */
-		public function maybe_update_item( $item_id, $course_id ) {
+		/*public function maybe_update_item( $item_id, $course_id ) {
 			$return = false;
 
 			try {
@@ -513,6 +514,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$item = $course_data->get_item( $item_id );
 
 					if ( ! $item ) {
+						$item = LP_User_Item::get_item_object( $item_id );
+
+						if ( ! $item ) {
+							return $return;
+						}
+
 						if ( $item instanceof LP_User_Item_Quiz ) {
 							return $return;
 						}
@@ -524,11 +531,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 				}
 			} catch ( Throwable $e ) {
-
+				error_log( $e->getMessage() );
 			}
 
 			return $return;
-		}
+		}*/
 
 		/**
 		 * Get item user has accessed in last time.
@@ -539,19 +546,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function get_current_item( $course_id, $permalink = false ) {
-			if ( ! $course_data = $this->get_course_data( $course_id ) ) {
+			$course_data = $this->get_course_data( $course_id );
+			if ( ! $course_data ) {
 				return false;
 			}
 
 			$course = learn_press_get_course( $course_id );
-
-			if ( false == ( $id = learn_press_get_user_item_meta(
-				$course_data->get_user_item_id(),
-				'_current_item',
-				true
-			) ) || $this->has_completed_item( $id, $course_id ) ) {
-
-				if ( $items = $course->get_items( '', false ) ) {
+			$id     = learn_press_get_user_item_meta( $course_data->get_user_item_id(), '_current_item' );
+			if ( ! $id || $this->has_completed_item( $id, $course_id ) ) {
+				$items = $course->get_items( '', false );
+				if ( $items ) {
 					foreach ( $items as $item_id ) {
 						if ( ! $this->has_completed_item( $item_id, $course_id ) ) {
 							$id = $item_id;

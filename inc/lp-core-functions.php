@@ -3770,7 +3770,7 @@ function lp_item_course_class( $class = array() ) {
 	echo 'class="' . esc_attr( implode( ' ', apply_filters( 'lp_item_course_class', $classes ) ) ) . '"';
 }
 
-require_once dirname( __FILE__ ) . '/lp-custom-hooks.php';
+//require_once dirname( __FILE__ ) . '/lp-custom-hooks.php';
 
 
 /**

@@ -1663,6 +1663,8 @@ if ( ! function_exists( 'lp_profile_page_content' ) ) {
 }
 
 if ( ! function_exists( 'lp_archive_course_page_content' ) ) {
+	add_action( 'lp/template/archive-course/description', 'lp_archive_course_page_content' );
+
 	function lp_archive_course_page_content() {
 		if ( is_search() ) {
 			return;
@@ -1684,13 +1686,15 @@ if ( ! function_exists( 'lp_archive_course_page_content' ) ) {
 }
 
 if ( ! function_exists( 'lp_taxonomy_archive_course_description' ) ) {
+	add_action( 'lp/template/archive-course/description', 'lp_taxonomy_archive_course_description' );
+
 	function lp_taxonomy_archive_course_description() {
 
 		if ( learn_press_is_course_tax() && 0 === absint( get_query_var( 'paged' ) ) ) {
 			$term = get_queried_object();
 
 			if ( $term && ! empty( $term->description ) ) {
-				echo '<div class="lp-archive-course-term-description">' . lp_format_page_content( wp_kses_post( $term->description ) ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo '<div class="lp-archive-course-term-description">' . lp_format_page_content( wp_kses_post( $term->description ) ) . '</div>';
 			}
 		}
 	}

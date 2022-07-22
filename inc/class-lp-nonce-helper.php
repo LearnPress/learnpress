@@ -39,8 +39,9 @@ class LP_Nonce_Helper {
 	 * @since 3.0.0
 	 *
 	 * @return bool
+	 * @depecated 4.1.6.9
 	 */
-	public static function verify_course( $nonce, $action, $course_id = 0, $user_id = 0 ) {
+	/*public static function verify_course( $nonce, $action, $course_id = 0, $user_id = 0 ) {
 		if ( ! $course_id ) {
 			$course_id = get_the_ID();
 		}
@@ -50,7 +51,7 @@ class LP_Nonce_Helper {
 		}
 
 		return wp_verify_nonce( $nonce, sprintf( 'learn-press-%s-course-%s-%s', $action, $course_id, $user_id ) );
-	}
+	}*/
 
 	public static function quiz_action( $action, $quiz_id, $course_id, $ajax = false ) {
 		?>
@@ -65,7 +66,10 @@ class LP_Nonce_Helper {
 		<?php
 	}
 
-	public static function verify_quiz_action( $action, $nonce = '', $quiz_id = 0, $course_id = 0 ) {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public static function verify_quiz_action( $action, $nonce = '', $quiz_id = 0, $course_id = 0 ) {
 		if ( ! $nonce ) {
 			$nonce = LP_Request::get_post( $action . '-quiz-nonce' );
 		}
@@ -80,5 +84,5 @@ class LP_Nonce_Helper {
 		}
 
 		return wp_verify_nonce( $nonce, sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) );
-	}
+	}*/
 }

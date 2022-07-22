@@ -1997,8 +1997,10 @@ if ( ! function_exists( 'learn_press_search_form' ) ) {
 	}
 }
 
-
-if ( ! function_exists( 'learn_press_content_single_item' ) ) {
+/**
+ * @depecated 4.1.6.9
+ */
+/*if ( ! function_exists( 'learn_press_content_single_item' ) ) {
 	function learn_press_content_single_item() {
 		if ( $course_item = LP_Global::course_item() ) {
 			// remove course comment form on singler item
@@ -2006,16 +2008,19 @@ if ( ! function_exists( 'learn_press_content_single_item' ) ) {
 			learn_press_get_template( 'content-single-item.php' );
 		}
 	}
-}
+}*/
 
-if ( ! function_exists( 'learn_press_content_single_course' ) ) {
+/**
+ * @depecated 4.1.6.9
+ */
+/*if ( ! function_exists( 'learn_press_content_single_course' ) ) {
 	function learn_press_content_single_course() {
 
 		if ( ! $course_item = LP_Global::course_item() ) {
 			learn_press_get_template( 'content-single-course.php' );
 		}
 	}
-}
+}*/
 
 
 

@@ -23,13 +23,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public $course_type = null;
 
 		/**
-		 * Course item is viewing in single course.
-		 *
-		 * @var LP_Course_Item
-		 */
-		protected $_viewing_item = null;
-
-		/**
 		 * @var LP_Course_CURD|null
 		 */
 		protected $_curd = null;
@@ -506,7 +499,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_viewing_item() {
 			_deprecated_function( __FUNCTION__, '4.1.6.9' );
-			return apply_filters( 'learn-press/single-course-viewing-item', $this->_viewing_item, $this->get_id() );
+			//return apply_filters( 'learn-press/single-course-viewing-item', $this->_viewing_item, $this->get_id() );
 		}
 
 		/**

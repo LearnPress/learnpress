@@ -741,4 +741,54 @@ class LP_User extends LP_Abstract_User {
 
 		return new LP_Query_List_Table( $quizzes );
 	}
+
+	/**
+	 * Set item is viewing in single course.
+	 *
+	 * @param LP_Course_Item $item
+	 *
+	 * @return int|LP_Course_Item
+	 * @since 4.1.6.9 - move from LP_Course
+	 * @editor tungnx
+	 * @version 1.0.0
+	 */
+	public function set_viewing_item( LP_Course_Item $item ) {
+		$flag = false;
+
+		try {
+			$user = learn_press_get_current_user();
+			if ( $user instanceof LP_User_Guest ) {
+				return $flag;
+			}
+
+			$course_id   = $item->get_course_id();
+			$item_id     = $item->get_id();
+			$course_data = $this->get_course_data( $course_id );
+
+			if ( $course_data ) {
+				$item = $course_data->get_item( $item_id );
+
+				if ( ! $item ) {
+					$item = LP_User_Item::get_item_object( $item_id );
+
+					if ( ! $item ) {
+						return $flag;
+					}
+
+					if ( $item instanceof LP_User_Item_Quiz ) {
+						return $flag;
+					}
+
+					$item->set_ref_id( $course_id );
+					$item->set_parent_id( $course_data->get_user_item_id() );
+
+					$flag = $item->update();
+				}
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $flag;
+	}
 }
