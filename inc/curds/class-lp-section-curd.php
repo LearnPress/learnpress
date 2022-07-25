@@ -653,21 +653,41 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $items;
 	}
 
-	public function update_section_items_order( $section_id, $items ) {
+	/**
+	 * Update section items order in course
+	 *
+	 * @param $section_id
+	 * @param $items
+	 *
+	 * @return bool
+	 * @editor tungnx
+	 * @modify 4.1.6.9
+	 * @version 4.0.1
+	 */
+	public function update_section_items_order( $section_id, $items ): bool {
 		global $wpdb;
+		$flag = false;
 
-		foreach ( $items as $index => $item ) {
-			$order = $index + 1;
+		try {
+			foreach ( $items as $index => $item ) {
+				$order = $index + 1;
 
-			$wpdb->update(
-				$wpdb->learnpress_section_items,
-				array( 'item_order' => $order ),
-				array(
-					'section_id' => $section_id,
-					'item_id'    => $item['id'],
-				)
-			);
+				$flag = $wpdb->update(
+					$wpdb->learnpress_section_items,
+					array( 'item_order' => $order ),
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['id'],
+					)
+				);
+			}
+
+			$flag = true;
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
+
+		return $flag;
 	}
 
 	/**

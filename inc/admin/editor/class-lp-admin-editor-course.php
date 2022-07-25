@@ -40,11 +40,11 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		$args      = wp_parse_args(
 			$_REQUEST,
 			array(
-				'id'   => false,
+				'id'   => 0,
 				'type' => '',
 			)
 		);
-		$course_id = $args['id'];
+		$course_id = $args['id'] ?? 0;
 		$course    = learn_press_get_course( $course_id );
 
 		if ( ! $course ) {
@@ -57,6 +57,13 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		$this->result       = array( $args['type'] );
 
 		$this->call( $args['type'], array( $args ) );
+
+		$course_post = get_post( $course_id );
+		/**
+		 * @see LP_Course_Post_Type::save()
+		 */
+		$course_post_type = LP_Course_Post_Type::instance();
+		$course_post_type->save( $course_id, $course_post );
 
 		return $this->get_result();
 	}
@@ -217,8 +224,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function remove_section_item( $args = array() ) {
-		$section_id = $args['section_id'] ?? false;
-		$item_id    = $args['item_id'] ?? false;
+		$section_id = $args['section_id'] ?? 0;
+		$item_id    = $args['item_id'] ?? 0;
 
 		try {
 			// Instructor only remove item in my item.
@@ -246,8 +253,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function delete_section_item( $args = array() ) {
-		$section_id = $args['section_id'] ?? false;
-		$item_id    = $args['item_id'] ?? false;
+		$section_id = $args['section_id'] ?? 0;
+		$item_id    = $args['item_id'] ?? 0;
 
 		try {
 			// Instructor only remove item in my item.
@@ -273,8 +280,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return array|bool
 	 */
 	public function new_section_item( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$item       = ! empty( $args['item'] ) ? $args['item'] : false;
+		$section_id = $args['section_id'] ?? 0;
+		$item       = $args['item'] ?? '';
 		$item       = json_decode( wp_unslash( $item ), true );
 
 		if ( ! ( $section_id && $item ) ) {
@@ -295,8 +302,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function update_section_items( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$items      = ! empty( $args['items'] ) ? $args['items'] : false;
+		$section_id = $args['section_id'] ?? 0;
+		$items      = $args['items'] ?? '';
 		$items      = json_decode( wp_unslash( $items ), true );
 
 		if ( ! ( $section_id && $items ) ) {

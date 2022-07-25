@@ -175,16 +175,39 @@ abstract class LP_Abstract_Post_Type {
 	 * @param WP_Post $post
 	 * @editor tungnx
 	 * @since modify 4.0.9
+	 * @version 4.0.1
 	 */
 	final function _do_save_post( int $post_id = 0, WP_Post $post = null ) {
 		// Maybe remove
 		$this->maybe_remove_assigned( $post );
 
-		if ( ! $this->_check_post() ) {
+		/*if ( ! $this->_check_post() ) {
+			return;
+		}*/
+
+		$can_save = true;
+
+		if ( ! $post ) {
+			$post = get_post( $post_id );
+
+			if ( ! $post ) {
+				return;
+			}
+		}
+
+		if ( $this->_post_type !== $post->post_type ) {
 			return;
 		}
 
-		$this->save( $post_id, $post );
+		if ( ! current_user_can( ADMIN_ROLE ) ) {
+			if ( get_current_user_id() !== $post->post_author ) {
+				$can_save = apply_filters( 'lp/custom-post-type/can-save', false, $post );
+			}
+		}
+
+		if ( $can_save ) {
+			$this->save( $post_id, $post );
+		}
 	}
 
 	/**
