@@ -692,8 +692,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $at
 		 *
 		 * @return bool
+		 * @depecated 4.1.6.9
 		 */
-		public function get_question_at( $at = 0 ) {
+		/*public function get_question_at( $at = 0 ) {
 			$questions = $this->get_questions();
 
 			if ( $questions ) {
@@ -703,7 +704,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Get prev question from a question.
@@ -711,8 +712,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $id
 		 *
 		 * @return bool
+		 * @depecated 4.1.6.9
 		 */
-		public function get_prev_question( $id ) {
+		/*public function get_prev_question( $id ) {
 			$prev      = false;
 			$questions = $this->get_questions();
 
@@ -726,7 +728,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/prev-question-id', $prev, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Get next question from a question.
@@ -734,8 +736,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $id
 		 *
 		 * @return bool
+		 * @depecated 4.1.6.9
 		 */
-		public function get_next_question( $id ) {
+		/*public function get_next_question( $id ) {
 			$next      = false;
 			$questions = $this->get_questions();
 
@@ -749,7 +752,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/next-question-id', $next, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Get index number of a question.
@@ -758,8 +761,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $start
 		 *
 		 * @return bool|mixed
+		 * @depecated 4.1.6.9
 		 */
-		public function get_question_index( $id, $start = 0 ) {
+		/*public function get_question_index( $id, $start = 0 ) {
 			$index     = 0;
 			$questions = $this->get_questions();
 
@@ -769,7 +773,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/question-index', intval( $start ) + $index, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Check question.
@@ -1024,8 +1028,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param null $position
 		 *
 		 * @return array
+		 * @depecated 4.1.6.9
 		 */
-		public function get_question_number_class( $question_id, $position = null ) {
+		/*public function get_question_number_class( $question_id, $position = null ) {
 			if ( null === $position ) {
 				$position = $this->get_question_index( $question_id );
 			}
@@ -1046,7 +1051,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return $class;
-		}
+		}*/
 
 		/**
 		 * Implement ArrayAccess functions.

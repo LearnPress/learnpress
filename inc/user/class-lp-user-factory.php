@@ -306,7 +306,8 @@ class LP_User_Factory {
 	}
 
 	public static function get_pending_requests() {
-		if ( false === ( $pending_requests = LP_Object_Cache::get( 'pending-requests', 'lp-users' ) ) ) {
+		$pending_requests = LP_Object_Cache::get( 'pending-requests', 'lp-users' );
+		if ( false === $pending_requests ) {
 			global $wpdb;
 			$query = $wpdb->prepare(
 				"

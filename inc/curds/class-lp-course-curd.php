@@ -427,7 +427,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			return $wpdb->get_col( $query );
 		}
 
-		public static function update_items_format( $item ) {
+		/**
+		 * @depecated 4.1.6.9
+		 */
+		/*public static function update_items_format( $item ) {
 
 			if ( empty( $item['args']['course_id'] ) ) {
 				return false;
@@ -482,7 +485,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Read curriculum of a course from db into cache.

@@ -1059,7 +1059,10 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
+/**
+ * @depecated 4.1.6.9
+ */
+/*if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 	function learn_press_content_item_comments() {
 		$item = LP_Global::course_item();
 
@@ -1087,7 +1090,7 @@ if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 
 		wp_reset_postdata();
 	}
-}
+}*/
 
 function learn_press_course_comments_open( $open, $post_id ) {
 	$post = get_post( $post_id );

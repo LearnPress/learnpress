@@ -837,18 +837,19 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
-	public function lesson_comment_form() {
-		global $post;
-
-		if ( ! $course = learn_press_get_course() ) {
+	/**
+	 * @depecated 4.1.6.9
+	 */
+	/*public function lesson_comment_form() {
+		$course = learn_press_get_course();
+		if ( ! $course ) {
 			return;
 		}
 
-		if ( ! $lesson = LP_Global::course_item() ) {
+		$lesson = LP_Global::course_item();
+		if ( ! $lesson ) {
 			return;
 		}
-
-		$user = learn_press_get_current_user();
 
 		if ( $lesson->setup_postdata() ) {
 
@@ -859,8 +860,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 			$lesson->reset_postdata();
 		}
-
-	}
+	}*/
 
 	/**
 	 * Template show count items

@@ -544,8 +544,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param bool $permalink - Optional. TRUE will return permalink instead of ID.
 		 *
 		 * @return mixed
+		 * @depecated 4.1.6.9
 		 */
 		public function get_current_item( $course_id, $permalink = false ) {
+			_deprecated_function( __FUNCTION__, '4.1.6.9' );
+			return 0;
 			$course_data = $this->get_course_data( $course_id );
 			if ( ! $course_data ) {
 				return false;
@@ -593,34 +596,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param bool $permalink
 		 *
 		 * @return bool|int|string
+		 * @depecated 4.1.6.9
 		 */
-		public function get_current_question( $quiz_id, $course_id, $permalink = false ) {
+		/*public function get_current_question( $quiz_id, $course_id, $permalink = false ) {
 			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
-
-			/**
-			 * @var LP_User_Item_Quiz $quiz_item
-			 */
-			$data = $this->get_course_data( $course_id );
-
-			if ( empty( $data[ $quiz_id ] ) ) {
-				return false;
-			}
-
-			$quiz        = learn_press_get_quiz( $quiz_id );
-			$quiz_item   = $data[ $quiz_id ];
-			$question_id = $quiz_item->get_current_question();
-			if ( $question_id && $permalink ) {
-				return apply_filters(
-					'learn-press/current-user-question-permalink',
-					$quiz->get_question_link( $question_id ),
-					$quiz_id,
-					$course_id,
-					$this->get_id()
-				);
-			}
-
-			return apply_filters( 'learn-press/current-user-question', $question_id );
-		}
+		}*/
 
 		/**
 		 * Get previous Question
@@ -628,10 +608,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param null  $quiz_id
 		 * @param int   $course_id
 		 * @param false $permalink
+		 * @depecated 4.1.6.9
 		 */
-		public function get_prev_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
+		/*public function get_prev_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
 			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
-		}
+		}*/
 
 		/**
 		 * Get next Question
@@ -639,10 +620,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param null  $quiz_id
 		 * @param int   $course_id
 		 * @param false $permalink
+		 * @depecated 4.1.6.9
 		 */
-		public function get_next_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
+		/*public function get_next_question( $quiz_id = null, $course_id = 0, $permalink = false ) {
 			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
-		}
+		}*/
 
 		/**
 		 * Checks if has status of a quiz for user
@@ -691,12 +673,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $quiz_id
 		 * @param int $course_id
 		 *
-		 * @return LP_User_Item_Quiz
+		 * @return LP_User_Item_Quiz|false
 		 */
 		public function get_quiz_data( $quiz_id, $course_id = 0 ) {
-			$result = false;
-			if ( $course_result = $this->get_course_data( $course_id ) ) {
-
+			$result        = false;
+			$course_result = $this->get_course_data( $course_id );
+			if ( $course_result ) {
 				$result = $course_result->get_item( $quiz_id );
 			}
 
@@ -746,8 +728,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @since 3.0.0
 		 */
 		public function hint( $question_id, $quiz_id, $course_id ) {
-
-			if ( ! $course = learn_press_get_course( $course_id ) ) {
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course ) {
 				return false;
 			}
 
@@ -762,8 +744,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
-
-			if ( false === ( $remain = $quiz_data->hint( $question_id ) ) ) {
+			$remain    = $quiz_data->hint( $question_id );
+			if ( false === $remain ) {
 				return new WP_Error( 1001, __( 'You can not hint question.', 'learnpress' ) );
 			}
 
@@ -779,7 +761,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 * @deprecated 4.1.4.1
 		 */
-		public function can_check_answer( $quiz_id, $course_id = 0 ) {
+		/*public function can_check_answer( $quiz_id, $course_id = 0 ) {
 			_deprecated_function( __FUNCTION__, '4.1.4.1' );
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
@@ -790,7 +772,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Return true if check answer is enabled.
@@ -799,8 +781,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return bool
+		 * @depecated 4.1.6.9
 		 */
-		public function can_hint_answer( $quiz_id, $course_id = 0 ) {
+		/*public function can_hint_answer( $quiz_id, $course_id = 0 ) {
 
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
@@ -811,7 +794,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 
 		public function get_quiz_last_results( $quiz_id ) {

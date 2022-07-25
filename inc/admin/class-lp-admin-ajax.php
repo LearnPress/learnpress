@@ -382,10 +382,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function search_course_category() {
 			global $wpdb;
 			$sql   = 'SELECT `t`.`term_id` as `id`, '
-					 . ' `t`.`name` `text` '
-					 . " FROM {$wpdb->terms} t "
-					 . "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
-					 . ' WHERE `t`.`name` LIKE %s';
+					. ' `t`.`name` `text` '
+					. " FROM {$wpdb->terms} t "
+					. "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
+					. ' WHERE `t`.`name` LIKE %s';
 			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
 			$items = $wpdb->get_results( $query );

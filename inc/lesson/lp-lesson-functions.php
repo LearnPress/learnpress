@@ -40,7 +40,7 @@ if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 }
 add_filter( 'comment_post_redirect', 'learn_press_get_only_content_permalink', 10, 2 );
 
-function learn_press_lesson_comment_form() {
+/*function learn_press_lesson_comment_form() {
 	global $post;
 
 	$course = learn_press_get_course();
@@ -65,7 +65,7 @@ function learn_press_lesson_comment_form() {
 		$lesson->reset_postdata();
 	}
 
-}
+}*/
 
 /**
  * Remove data section after remove lesson

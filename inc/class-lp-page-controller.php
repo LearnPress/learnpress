@@ -451,6 +451,7 @@ class LP_Page_Controller {
 		 * @deprecated v4.1.6.1 LP()->global['course'], $GLOBALS['course']
 		 */
 		//LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
+		LP()->global['course'] = $course;
 
 		if ( wp_verify_nonce( LP_Request::get( 'preview' ), 'preview-' . $post->ID ) ) {
 			$GLOBALS['preview_course'] = $post->ID;

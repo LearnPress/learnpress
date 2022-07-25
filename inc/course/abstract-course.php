@@ -1156,8 +1156,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param LP_Course_Item|LP_User_Item|int $item
 		 *
 		 * @return mixed
+		 * @depecated 4.1.6.9
 		 */
-		public function get_item_position( $item ) {
+		/*public function get_item_position( $item ) {
 			$items = $this->get_items();
 
 			if ( ! $items ) {
@@ -1170,7 +1171,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			) ? $item->get_id() : absint( $item );
 
 			return array_search( $item_id, $items );
-		}
+		}*/
 
 		/**
 		 * @return bool|mixed
