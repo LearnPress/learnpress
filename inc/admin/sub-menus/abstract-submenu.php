@@ -315,8 +315,8 @@ abstract class LP_Abstract_Submenu {
 
 						if ( is_object( $name ) ) {
 							$obj_tab = $name;
-							$name   = $obj_tab->text;
-							$tab    = $obj_tab->id;
+							$name    = $obj_tab->text;
+							$tab     = $obj_tab->id;
 						}
 
 						$active_class = ( $tab == $active_tab ) ? ' nav-tab-active' : '';

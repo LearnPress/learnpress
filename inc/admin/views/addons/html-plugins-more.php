@@ -13,7 +13,7 @@ $last_checked = LP_Background_Query_Items::instance()->get_last_checked( 'plugin
 $check_url    = wp_nonce_url( add_query_arg( 'force-check-update', 'yes' ), 'lp-check-updates' );
 ?>
 
-<p><?php printf( __( 'Last checked %s. <a href="%s">Check again</a>', 'learnpress' ), human_time_diff( $last_checked ), $check_url ); ?></p>
+<p><?php printf( __( 'Last checked %1$s. <a href="%2$s">Check again</a>', 'learnpress' ), human_time_diff( $last_checked ), $check_url ); ?></p>
 
 <?php
 
@@ -39,23 +39,23 @@ $all_plugins = array(
 		'key'   => 'premium',
 		'title' => __( 'Premium add-ons', 'learnpress' ),
 		'items' => $tp_plugins,
-	)
+	),
 );
 
 foreach ( $all_plugins as $plugins ) {
-	if ( $plugins['items'] ) { ?>
-        <h2>
+	if ( $plugins['items'] ) {
+		?>
+		<h2>
 			<?php echo $plugins['title'] . ' (<span>' . sizeof( $plugins['items'] ) . '</span>)'; ?>
-        </h2>
-        <ul class="addons-browse widefat">
-			<?php foreach ( $plugins['items'] as $file => $add_on ) {
+		</h2>
+		<ul class="addons-browse widefat">
+			<?php
+			foreach ( $plugins['items'] as $file => $add_on ) {
 				include learn_press_get_admin_view( 'addons/html-loop-plugin' );
-			} ?>
-        </ul>
+			}
+			?>
+		</ul>
 		<?php
 	}
 }
 ?>
-
-
-

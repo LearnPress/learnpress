@@ -11,6 +11,6 @@
 
 defined( 'ABSPATH' ) || exit();
 
-echo apply_filters( 'learn_press_course_loop_end', '</ul>');
+echo apply_filters( 'learn_press_course_loop_end', '</ul>' );
 
-?>
+

@@ -345,7 +345,7 @@ class LP_Object_Cache {
 		}
 
 		if ( self::_exists( $key, $group ) ) {
-			$found            = true;
+			$found             = true;
 			$self->cache_hits += 1;
 			if ( is_object( $self->cache[ $group ][ $key ] ) ) {
 				return clone $self->cache[ $group ][ $key ];
@@ -354,7 +354,7 @@ class LP_Object_Cache {
 			}
 		}
 
-		$found              = false;
+		$found               = false;
 		$self->cache_misses += 1;
 
 		return false;
@@ -561,8 +561,10 @@ class LP_Object_Cache {
 	protected static function _exists( $key, $group ) {
 		$self = self::instance();
 
-		return isset( $self->cache[ $group ] ) && ( isset( $self->cache[ $group ][ $key ] ) || array_key_exists( $key,
-					$self->cache[ $group ] ) );
+		return isset( $self->cache[ $group ] ) && ( isset( $self->cache[ $group ][ $key ] ) || array_key_exists(
+			$key,
+			$self->cache[ $group ]
+		) );
 	}
 
 	/**

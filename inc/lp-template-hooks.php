@@ -374,8 +374,9 @@ add_action(
 /**
  * @see single-button-toggle-sidebar
  */
-add_action( 'learn-press/single-button-toggle-sidebar',
-	LP()->template( 'course' )->text( '<input type="checkbox" id="sidebar-toggle" />','single-button-toggle-sidebar' ),
+add_action(
+	'learn-press/single-button-toggle-sidebar',
+	LP()->template( 'course' )->text( '<input type="checkbox" id="sidebar-toggle" />', 'single-button-toggle-sidebar' ),
 	5
 );
 
@@ -453,10 +454,10 @@ add_action( 'learn-press/course-item-content', LP()->template( 'course' )->func(
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'sidebar' ), 10 );
 add_action( 'learn-press/user-profile', LP()->template( 'profile' )->func( 'content' ), 20 );
 
-add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->text( ' <div class="lp-profile-left">','user-profile-account-left-open' ), 5);
+add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->text( ' <div class="lp-profile-left">', 'user-profile-account-left-open' ), 5 );
 add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->func( 'avatar' ), 10 );
 add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->func( 'socials' ), 10 );
-add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->text( ' </div>','user-profile-account-left-close' ), 15);
+add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->text( ' </div>', 'user-profile-account-left-close' ), 15 );
 add_action( 'learn-press/user-profile-account', LP()->template( 'profile' )->func( 'header' ), 20 );
 
 add_action( 'learn-press/user-profile-tabs', LP()->template( 'profile' )->func( 'tabs' ), 10 );

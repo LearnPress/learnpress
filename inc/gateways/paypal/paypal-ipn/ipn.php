@@ -27,12 +27,12 @@ Here I am turning on PHP error logging to a file called "ipn_errors.log". Make
 sure your web server has permissions to write to that file. In a production
 environment it is better to have that log file outside of the web root.
 */
-ini_set('log_errors', true);
-ini_set('error_log', dirname(__FILE__).'/ipn_errors.log');
+ini_set( 'log_errors', true );
+ini_set( 'error_log', dirname( __FILE__ ) . '/ipn_errors.log' );
 
 
 // instantiate the IpnListener class
-include('ipnlistener.php');
+include( 'ipnlistener.php' );
 $listener = new IpnListener();
 
 
@@ -70,9 +70,9 @@ $verified = $listener->processIpn($my_post_data);
 try {
 	$listener->requirePostMethod();
 	$verified = $listener->processIpn();
-} catch (Exception $e) {
-	error_log($e->getMessage());
-	exit(0);
+} catch ( Exception $e ) {
+	error_log( $e->getMessage() );
+	exit( 0 );
 }
 
 
@@ -80,7 +80,7 @@ try {
 The processIpn() method returned true if the IPN was "VERIFIED" and false if it
 was "INVALID".
 */
-if ($verified) {
+if ( $verified ) {
 	/*
 	Once you have a verified IPN you need to do a few more checks on the POST
 	fields--typically against data you stored in your database during when the
@@ -97,7 +97,7 @@ if ($verified) {
 	example and just send an email using the getTextReport() method to get all
 	of the details about the IPN.
 	*/
-	mail('YOUR EMAIL ADDRESS', 'Verified IPN', $listener->getTextReport());
+	mail( 'YOUR EMAIL ADDRESS', 'Verified IPN', $listener->getTextReport() );
 
 } else {
 	/*
@@ -105,7 +105,7 @@ if ($verified) {
 	a good idea to have a developer or sys admin manually investigate any
 	invalid IPN.
 	*/
-	mail('YOUR EMAIL ADDRESS', 'Invalid IPN', $listener->getTextReport());
+	mail( 'YOUR EMAIL ADDRESS', 'Invalid IPN', $listener->getTextReport() );
 }
 
-?>
+

@@ -19,7 +19,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	/**
 	 * @var int
 	 */
-	protected $course    = 0;
+	protected $course = 0;
 
 	/**
 	 * @var LP_Section_CURD

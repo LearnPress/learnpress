@@ -1,7 +1,7 @@
 <?php
-class LP_Compress_String{
+class LP_Compress_String {
 	public static function decompressString( $compressed ) {
-		$compressed = explode( ",", $compressed );
+		$compressed = explode( ',', $compressed );
 		$dictSize   = 256;
 		$dictionary = array();
 		for ( $i = 1; $i < 256; $i ++ ) {
@@ -10,16 +10,16 @@ class LP_Compress_String{
 		$w      = chr( $compressed[0] );
 		$result = $w;
 		for ( $i = 1; $i < count( $compressed ); $i ++ ) {
-			$entry = "";
+			$entry = '';
 			$k     = $compressed[ $i ];
 			if ( isset( $dictionary[ $k ] ) ) {
 				$entry = $dictionary[ $k ];
-			} else if ( $k == $dictSize ) {
+			} elseif ( $k == $dictSize ) {
 				$entry = $w . self::charAt( $w, 0 );
 			} else {
 				return null;
 			}
-			$result                     .= $entry;
+			$result                    .= $entry;
 			$dictionary[ $dictSize ++ ] = $w . self::charAt( $entry, 0 );
 			$w                          = $entry;
 		}
@@ -35,15 +35,15 @@ class LP_Compress_String{
 		}
 	}
 
-	public static function chr($u){
-		return mb_convert_encoding('&#' . intval($u) . ';', 'UTF-8', 'HTML-ENTITIES');
+	public static function chr( $u ) {
+		return mb_convert_encoding( '&#' . intval( $u ) . ';', 'UTF-8', 'HTML-ENTITIES' );
 	}
 
-	public static function toCharCodes($c){
+	public static function toCharCodes( $c ) {
 		$x = 'charCodeAt';
 		$b = '';
 		$e = array();
-		$f = str_split($c );
+		$f = str_split( $c );
 		$d = [];
 		$a = $f[0];
 		$g = 256;
@@ -66,68 +66,66 @@ class LP_Compress_String{
 
 	public static function compressString( $c ) {
 
-		$d = self::toCharCodes($c);
+		$d = self::toCharCodes( $c );
 
 		for ( $b = 0; $b < sizeof( $d ); $b ++ ) {
 			$d[ $b ] = self::chr( $d[ $b ] );
 		}
 
-		return join( $d, "" );
+		return join( $d, '' );
 
-
-//		$dictSize   = 256;
-//		$dictionary = array();
-//		for ( $i = 0; $i < 256; $i ++ ) {
-//			$dictionary[ chr( $i ) ] = $i;
-//		}
-//		$w      = "";
-//		$result = "";
-//		for ( $i = 0; $i < strlen( $uncompressed ); $i ++ ) {
-//			$c  = self::charAt( $uncompressed, $i );
-//			$wc = $w . $c;
-//			if ( isset( $dictionary[ $wc ] ) ) {
-//				$w = $wc;
-//			} else {
-//				if ( $result != "" ) {
-//					$result .= "," . $dictionary[ $w ];
-//				} else {
-//					$result .= $dictionary[ $w ];
-//				}
-//				$dictionary[ $wc ] = $dictSize ++;
-//				$w                 = "" . $c;
-//			}
-//		}
-//		if ( $w != "" ) {
-//			if ( $result != "" ) {
-//				$result .= "," . $dictionary[ $w ];
-//			} else {
-//				$result .= $dictionary[ $w ];
-//
-//			}
-//
-//			return $result;
-//		}
+		//      $dictSize   = 256;
+		//      $dictionary = array();
+		//      for ( $i = 0; $i < 256; $i ++ ) {
+		//          $dictionary[ chr( $i ) ] = $i;
+		//      }
+		//      $w      = "";
+		//      $result = "";
+		//      for ( $i = 0; $i < strlen( $uncompressed ); $i ++ ) {
+		//          $c  = self::charAt( $uncompressed, $i );
+		//          $wc = $w . $c;
+		//          if ( isset( $dictionary[ $wc ] ) ) {
+		//              $w = $wc;
+		//          } else {
+		//              if ( $result != "" ) {
+		//                  $result .= "," . $dictionary[ $w ];
+		//              } else {
+		//                  $result .= $dictionary[ $w ];
+		//              }
+		//              $dictionary[ $wc ] = $dictSize ++;
+		//              $w                 = "" . $c;
+		//          }
+		//      }
+		//      if ( $w != "" ) {
+		//          if ( $result != "" ) {
+		//              $result .= "," . $dictionary[ $w ];
+		//          } else {
+		//              $result .= $dictionary[ $w ];
+		//
+		//          }
+		//
+		//          return $result;
+		//      }
 	}
 
-	public static function utf8_char_code_at($str, $index)
-	{
-		$char = '';
+	public static function utf8_char_code_at( $str, $index ) {
+		$char      = '';
 		$str_index = 0;
 
-		$str = self::utf8_scrub($str);
-		$len = strlen($str);
+		$str = self::utf8_scrub( $str );
+		$len = strlen( $str );
 
-		for ($i = 0; $i < $len; $i += 1) {
+		for ( $i = 0; $i < $len; $i += 1 ) {
 
-			$char .= $str[$i];
+			$char .= $str[ $i ];
 
-			if (self::utf8_check_encoding($char)) {
+			if ( self::utf8_check_encoding( $char ) ) {
 
-				if ($str_index === $index) {
-					return self::utf8_ord($char);
+				if ( $str_index === $index ) {
+					return self::utf8_ord( $char );
 				}
 
-				$char = '';
+				$char       = '';
 				$str_index += 1;
 			}
 		}
@@ -135,34 +133,31 @@ class LP_Compress_String{
 		return null;
 	}
 
-	public static function utf8_scrub($str)
-	{
-		return htmlspecialchars_decode(htmlspecialchars($str, ENT_SUBSTITUTE, 'UTF-8'));
+	public static function utf8_scrub( $str ) {
+		return htmlspecialchars_decode( htmlspecialchars( $str, ENT_SUBSTITUTE, 'UTF-8' ) );
 	}
 
-	public static function utf8_check_encoding($str)
-	{
-		return $str === self::utf8_scrub($str);
+	public static function utf8_check_encoding( $str ) {
+		return $str === self::utf8_scrub( $str );
 	}
 
-	public static function utf8_ord($char)
-	{
-		$lead = ord($char[0]);
+	public static function utf8_ord( $char ) {
+		$lead = ord( $char[0] );
 
-		if ($lead < 0x80) {
+		if ( $lead < 0x80 ) {
 			return $lead;
-		} else if ($lead < 0xE0) {
-			return (($lead & 0x1F) << 6)
-			       | (ord($char[1]) & 0x3F);
-		} else if ($lead < 0xF0) {
-			return (($lead &  0xF) << 12)
-			       | ((ord($char[1]) & 0x3F) <<  6)
-			       |  (ord($char[2]) & 0x3F);
+		} elseif ( $lead < 0xE0 ) {
+			return ( ( $lead & 0x1F ) << 6 )
+				   | ( ord( $char[1] ) & 0x3F );
+		} elseif ( $lead < 0xF0 ) {
+			return ( ( $lead & 0xF ) << 12 )
+				   | ( ( ord( $char[1] ) & 0x3F ) << 6 )
+				   | ( ord( $char[2] ) & 0x3F );
 		} else {
-			return (($lead &  0x7) << 18)
-			       | ((ord($char[1]) & 0x3F) << 12)
-			       | ((ord($char[2]) & 0x3F) <<  6)
-			       |  (ord($char[3]) & 0x3F);
+			return ( ( $lead & 0x7 ) << 18 )
+				   | ( ( ord( $char[1] ) & 0x3F ) << 12 )
+				   | ( ( ord( $char[2] ) & 0x3F ) << 6 )
+				   | ( ord( $char[3] ) & 0x3F );
 		}
 	}
 }

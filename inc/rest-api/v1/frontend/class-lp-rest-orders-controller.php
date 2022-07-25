@@ -9,7 +9,7 @@ class LP_REST_Orders_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'statistic'  => array(
+			'statistic' => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'statistic' ),
@@ -23,8 +23,8 @@ class LP_REST_Orders_Controller extends LP_Abstract_REST_Controller {
 
 	public function statistic( WP_REST_Request $request ) {
 
-		$response         = new LP_REST_Response();
-		$response->data   = '';
+		$response       = new LP_REST_Response();
+		$response->data = '';
 
 		$order_statuses    = learn_press_get_order_statuses( true, true );
 		$specific_statuses = array( 'lp-completed', 'lp-failed' );
@@ -36,7 +36,7 @@ class LP_REST_Orders_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		try {
-			$response->data   = learn_press_get_template_content( 'admin/views/dashboard/html-orders', compact( 'specific_statuses' ), '' , LP_PLUGIN_PATH . 'inc/' );
+			$response->data   = learn_press_get_template_content( 'admin/views/dashboard/html-orders', compact( 'specific_statuses' ), '', LP_PLUGIN_PATH . 'inc/' );
 			$response->status = 'success';
 
 		} catch ( Exception $e ) {

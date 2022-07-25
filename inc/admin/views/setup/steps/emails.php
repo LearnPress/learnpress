@@ -17,8 +17,8 @@ defined( 'ABSPATH' ) or exit;
 <p><?php _e( 'You can skip to next step if you don’t want to.', 'learnpress' ); ?></p>
 
 <p>
-    <label>
-        <input type="checkbox" name="settings[emails][enable]" value="yes">
+	<label>
+		<input type="checkbox" name="settings[emails][enable]" value="yes">
 		<?php _e( 'Enable emails', 'learnpress' ); ?>
-    </label>
+	</label>
 </p>

@@ -19,20 +19,20 @@ $payments = $wizard->get_payments();
 
 <ul class="browse-payments">
 	<?php foreach ( $payments as $slug => $payment ) { ?>
-        <li class="payment payment-<?php echo $slug; ?>">
-            <h3 class="payment-name">
+		<li class="payment payment-<?php echo $slug; ?>">
+			<h3 class="payment-name">
 				<?php if ( ! empty( $payment['icon'] ) ) { ?>
-                    <img src="<?php echo $payment['icon']; ?>">
+					<img src="<?php echo $payment['icon']; ?>">
 				<?php } else { ?>
 					<?php echo $payment['name']; ?>
 				<?php } ?>
-            </h3>
+			</h3>
 			<?php if ( ! empty( $payment['desc'] ) ) { ?>
-                <p class="payment-desc"><?php echo $payment['desc']; ?></p>
+				<p class="payment-desc"><?php echo $payment['desc']; ?></p>
 			<?php } ?>
-            <div class="payment-settings">
+			<div class="payment-settings">
 				<?php call_user_func( $payment['callback'] ); ?>
-            </div>
-        </li>
+			</div>
+		</li>
 	<?php } ?>
 </ul>

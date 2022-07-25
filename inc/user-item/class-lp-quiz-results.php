@@ -32,7 +32,7 @@ class LP_Quiz_Results implements ArrayAccess {
 			$questions = array();
 		}
 		$ids = array_keys( $questions );
-		$ids = apply_filters('lp-quiz/results/getquestions',$ids);
+		$ids = apply_filters( 'lp-quiz/results/getquestions', $ids );
 
 		return $return === 'ids' ? $ids : $questions;
 	}

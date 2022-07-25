@@ -127,7 +127,7 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 				$post_ids = array();
 			}
 
-			$query = new LP_Query_Course( array( 'post__in' => $post_ids) );
+			$query = new LP_Query_Course( array( 'post__in' => $post_ids ) );
 			$args  = $query->get_wp_query_vars();
 
 			$query = new WP_Query( $args );

@@ -64,10 +64,10 @@ class IpnListener {
 	 */
 	public $timeout = 30;
 
-	private $post_data = array();
-	private $post_uri = '';
+	private $post_data       = array();
+	private $post_uri        = '';
 	private $response_status = '';
-	private $response = '';
+	private $response        = '';
 
 	const PAYPAL_HOST  = 'www.paypal.com';
 	const SANDBOX_HOST = 'www.sandbox.paypal.com';
@@ -96,8 +96,11 @@ class IpnListener {
 
 		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, true );
 		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
-		curl_setopt( $ch, CURLOPT_CAINFO,
-			dirname( __FILE__ ) . "/cert/api_cert_chain.crt" );
+		curl_setopt(
+			$ch,
+			CURLOPT_CAINFO,
+			dirname( __FILE__ ) . '/cert/api_cert_chain.crt'
+		);
 		curl_setopt( $ch, CURLOPT_URL, $uri );
 		curl_setopt( $ch, CURLOPT_POST, true );
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $encoded_data );
@@ -149,10 +152,10 @@ class IpnListener {
 			throw new Exception( "fsockopen error: [$errno] $errstr" );
 		}
 
-		$header = "POST /cgi-bin/webscr HTTP/1.1\r\n";
-		$header .= "Host: " . $this->getPaypalHost() . "\r\n";
+		$header  = "POST /cgi-bin/webscr HTTP/1.1\r\n";
+		$header .= 'Host: ' . $this->getPaypalHost() . "\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . strlen( $encoded_data ) . "\r\n";
+		$header .= 'Content-Length: ' . strlen( $encoded_data ) . "\r\n";
 		$header .= "Connection: Close\r\n\r\n";
 
 		fputs( $fp, $header . $encoded_data . "\r\n\r\n" );
@@ -160,7 +163,7 @@ class IpnListener {
 		while ( ! feof( $fp ) ) {
 			if ( empty( $this->response ) ) {
 				// extract HTTP status from first line
-				$this->response .= $status = fgets( $fp, 1024 );
+				$this->response       .= $status = fgets( $fp, 1024 );
 				$this->response_status = trim( substr( $status, 9, 4 ) );
 			} else {
 				$this->response .= fgets( $fp, 1024 );
@@ -279,9 +282,9 @@ class IpnListener {
 			// use raw POST data
 			if ( ! empty( $_POST ) ) {
 				$this->post_data = $_POST;
-				$encoded_data .= '&' . file_get_contents( 'php://input' );
+				$encoded_data   .= '&' . file_get_contents( 'php://input' );
 			} else {
-				throw new Exception( "No POST data found." );
+				throw new Exception( 'No POST data found.' );
 			}
 		} else {
 			// use provided data array
@@ -299,15 +302,15 @@ class IpnListener {
 		}
 
 		if ( strpos( $this->response_status, '200' ) === false ) {
-			throw new Exception( "Invalid response status: " . $this->response_status );
+			throw new Exception( 'Invalid response status: ' . $this->response_status );
 		}
 
-		if ( strpos( $this->response, "VERIFIED" ) !== false ) {
+		if ( strpos( $this->response, 'VERIFIED' ) !== false ) {
 			return true;
-		} elseif ( strpos( $this->response, "INVALID" ) !== false ) {
+		} elseif ( strpos( $this->response, 'INVALID' ) !== false ) {
 			return false;
 		} else {
-			throw new Exception( "Unexpected response from PayPal." );
+			throw new Exception( 'Unexpected response from PayPal.' );
 		}
 	}
 
@@ -321,7 +324,7 @@ class IpnListener {
 		// require POST requests
 		if ( $_SERVER['REQUEST_METHOD'] && $_SERVER['REQUEST_METHOD'] != 'POST' ) {
 			header( 'Allow: POST', true, 405 );
-			throw new Exception( "Invalid HTTP request method." );
+			throw new Exception( 'Invalid HTTP request method.' );
 		}
 	}
 }

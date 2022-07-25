@@ -19,7 +19,7 @@ if ( ! isset( $profile ) ) {
 
 		<?php do_action( 'learn-press/before-user-profile', $profile ); ?>
 
- 		<div class="lp-content-area">
+		 <div class="lp-content-area">
 			<?php
 			if ( ! is_user_logged_in() ) {
 				learn_press_print_messages( true );

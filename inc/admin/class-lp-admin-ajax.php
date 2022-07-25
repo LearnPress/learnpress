@@ -666,7 +666,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @author hungkv
 		 */
 		public static function update_order_exports() {
-			$order_id = absint( $_POST['order_id'] );
+			$order_id        = absint( $_POST['order_id'] );
 			$order           = learn_press_get_order( $order_id );
 			$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
 

@@ -115,8 +115,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			$question = LP_Question::get_question( $post->ID );
-			$type = $question->get_type();
-			$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+			$type     = $question->get_type();
+			$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 
 			if ( empty( $answers ) ) {
 				$answers = array(

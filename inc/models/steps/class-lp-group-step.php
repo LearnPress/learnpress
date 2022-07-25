@@ -4,7 +4,7 @@
  * Class LP_Group_Step
  */
 class LP_Group_Step {
-	public $name = '';
+	public $name  = '';
 	public $label = '';
 
 	/**

@@ -84,11 +84,14 @@ class LP_Helper_CURD {
 		}
 
 		$format = array_fill( 0, sizeof( $post_ids ), '%d' );
-		$query  = $wpdb->prepare( "
+		$query  = $wpdb->prepare(
+			"
 			SELECT *
 			FROM {$wpdb->posts}
-			WHERE ID IN(" . join( ',', $format ) . ")
-		", $post_ids );
+			WHERE ID IN(" . join( ',', $format ) . ')
+			',
+			$post_ids
+		);
 
 		if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
 			$post_types = array();

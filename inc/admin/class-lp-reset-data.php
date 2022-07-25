@@ -178,10 +178,10 @@ class LP_Reset_Data {
 	}
 
 	public static function ajax_reset_user_courses() {
-		$user_id   = LP_Request::get_int( 'user_id' );
-		$course_id = LP_Request::get_int( 'course_id' );
+		$user_id      = LP_Request::get_int( 'user_id' );
+		$course_id    = LP_Request::get_int( 'course_id' );
 		$object_reset = LP_Request::get_string( 'object_reset' );
-		$user = learn_press_get_user($user_id);
+		$user         = learn_press_get_user( $user_id );
 		if ( ! current_user_can( 'administrator' ) ) {
 			return;
 		}
@@ -190,10 +190,10 @@ class LP_Reset_Data {
 
 			// Set status, start_time, end_time of course to enrolled.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-			                 ->set_start_time( current_time( 'mysql', true ) )
-			                 ->set_end_time( '' )
-			                 ->set_graduation( 'in-progress' )
-			                 ->update();
+							 ->set_start_time( current_time( 'mysql', true ) )
+							 ->set_end_time( '' )
+							 ->set_graduation( 'in-progress' )
+							 ->update();
 			// Remove items' course user learned.
 			$filter_remove            = new LP_User_Items_Filter();
 			$filter_remove->parent_id = $user_course_data->get_user_item_id();
@@ -203,11 +203,14 @@ class LP_Reset_Data {
 		}
 		if ( $object_reset == 'all' && $user_id ) {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			$query         = $wpdb->prepare(
+				"
 				SELECT item_id
 				FROM {$wpdb->learnpress_user_items}
 				WHERE user_id = %d AND item_type='lp_course'
-			", $user_id );
+				",
+				$user_id
+			);
 			$user_item_ids = $wpdb->get_col( $query );
 			if ( $user_item_ids ) {
 				foreach ( $user_item_ids as $user_item_id ) {
@@ -216,10 +219,10 @@ class LP_Reset_Data {
 
 					// Set status, start_time, end_time of course to enrolled.
 					$user_course_data->set_status( LP_COURSE_ENROLLED )
-					                 ->set_start_time( current_time( 'mysql', true ) )
-					                 ->set_end_time( '' )
-					                 ->set_graduation( 'in-progress' )
-					                 ->update();
+									 ->set_start_time( current_time( 'mysql', true ) )
+									 ->set_end_time( '' )
+									 ->set_graduation( 'in-progress' )
+									 ->update();
 					// Remove items' course user learned.
 					$filter_remove            = new LP_User_Items_Filter();
 					$filter_remove->parent_id = $user_course_data->get_user_item_id();
