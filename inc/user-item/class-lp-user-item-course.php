@@ -45,6 +45,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param object|array $item
 	 */
 	public function __construct( $item ) {
+		/**
+		 * Todo: Fix for item is course_id, will be removed when change all to array or object
+		 * @editor tungnx 4.1.6.9
+		 */
+		if ( gettype( $item ) == 'integer' ) {
+			$item_id         = $item;
+			$item            = [];
+			$item['item_id'] = $item_id;
+		}
+
 		$item              = (array) $item;
 		$item['item_type'] = $this->_item_type;
 		$item['ref_type']  = $this->_ref_type;

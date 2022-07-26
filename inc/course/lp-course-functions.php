@@ -953,50 +953,14 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 //add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
 
 /**
- * Get course of the item is assigned to.
+ * Get grade course type can translate
  *
- * @param int $item_id
+ * @param string $grade
+ * @param bool $echo
  *
- * @return int
- * @since      3.2.1
- *
- * @editor     tungnx | comment code
- * @deprecated 3.2.7.5
+ * @return mixed|void
  */
-/*function learn_press_get_item_course( $item_id ) {
-	global $wpdb;
-	$query = $wpdb->prepare( "
-		SELECT section_course_id
-		FROM {$wpdb->learnpress_sections} s
-		INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
-		WHERE si.item_id = %d
-	", $item_id );
-
-	return (int) $wpdb->get_var( $query );
-}*/
-
-
-/*add_filter( 'template_include', 'learn_press_prepare_archive_courses' );
-function learn_press_prepare_archive_courses( $template ) {
-	global $wp_query;
-	$query = ! empty( LP()->wp_query ) ? LP()->wp_query : $wp_query;
-	if ( ! $query || ! $query->is_main_query() ) {
-		return $template;
-	}
-	if ( ! empty( $query->posts ) ) {
-		$ids = array();
-		foreach ( $query->posts as $_post ) {
-			$ids[] = $_post->ID;
-			$_post = sanitize_post( $_post, 'raw' );
-			wp_cache_add( $_post->ID, $_post, 'posts' );
-		}
-	}
-
-	return $template;
-}*/
-
-function learn_press_course_grade_html( $grade, $echo = true ) {
-	$html = '';
+function learn_press_course_grade_html( string $grade = '', bool $echo = true ) {
 	switch ( $grade ) {
 		case 'passed':
 			$html = __( 'Passed', 'learnpress' );
@@ -1011,14 +975,12 @@ function learn_press_course_grade_html( $grade, $echo = true ) {
 			$html = $grade;
 			break;
 	}
-	// @deprecated
-	$html = apply_filters( 'learn_press_course_grade_html', $html, $grade );
 
 	// @since 3.0.0
 	$html = apply_filters( 'learn-press/course/grade-html', $html, $grade );
 
 	if ( $echo ) {
-		echo $html;
+		echo esc_html( $html );
 	}
 
 	return $html;

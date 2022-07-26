@@ -121,6 +121,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$object_course_data = new LP_User_Item_Course( $last_user_course );
 				} else {
 					$object_course_data = false;
+					/**
+					 * Todo: some themes still not check false, so still use below code.\
+					 * @editor tungnx 4.1.6.9
+					 */
+					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
 			} catch ( Throwable $e ) {
 				$object_course_data = false;
