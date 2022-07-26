@@ -204,7 +204,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function load_curriculum() {
 			_deprecated_function( __FUNCTION__, '4.1.6.9' );
-			$item_ids      = array();
+			/*$item_ids      = array();
 			$item_types    = array();
 			$item_by_types = array();
 			$section_items = array();
@@ -238,7 +238,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			foreach ( $section_items as $section_id => $its ) {
 				LP_Course_Utils::set_section_items( $section_id, $its );
-			}
+			}*/
 		}
 
 		/**
@@ -378,57 +378,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Return list of item's ids in course's curriculum.
-		 *
-		 * @param string|array $type
-		 * @param bool         $preview - True for including 'Preview' item
-		 *
-		 * @return array
-		 * @since 3.0.0
-		 * Todo: tungnx - should review and rewrite
+		 * @depecated 4.1.6.9
 		 */
-		public function get_items( $type = '', $preview = true ) {
-			$this->load();
-
-			if ( ! $type && $preview ) {
-				$items = apply_filters(
-					'learn-press/course-items',
-					LP_Object_Cache::get( $this->get_id(), 'learn-press/course-curriculum' )
-				);
-			} else {
-				if ( ! $type ) {
-					$type = learn_press_course_get_support_item_types( true );
-				} else {
-					settype( $type, 'array' );
-				}
-
-				$key   = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
-				$items = LP_Object_Cache::get( 'course-' . $key, 'learn-press/course-items' );
-
-				if ( false === $items ) {
-					$items      = array();
-					$item_types = $this->get_item_types( true );
-
-					foreach ( $type as $t ) {
-						if ( isset( $item_types[ $t ] ) && ! empty( $item_types[ $t ] ) ) {
-							$items = array_merge( $items, $item_types[ $t ] );
-						}
-					}
-
-					$preview_items = $this->get_preview_items();
-
-					if ( ! $preview && $preview_items ) {
-						$items = array_diff( $items, $preview_items );
-					}
-
-					LP_Object_Cache::set( 'course-' . $key, $items, 'learn-press/course-items' );
-				}
-			}
-
-			return $items;
-		}
-
-		public function get_item_types( $group = false ) {
+		/*public function get_item_types( $group = false ) {
 			$cache_key = $group ? 'course-item-group-types' : 'course-item-types';
 			$items     = LP_Object_Cache::get( 'course-' . $this->get_id(), "learn-press/{$cache_key}" );
 			$items     = false;
@@ -465,7 +417,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( "learn-press/{$cache_key}", $items, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Get all items in a course.
@@ -818,18 +770,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_origin_price_html() {
 			return $this->get_regular_price_html();
-		}
-
-		/**
-		 * Get all items in a course.
-		 *
-		 * @param string $type . Type of items, eg: lp_lesson, lp_quiz...
-		 *
-		 * @return array
-		 * @deprecated
-		 */
-		public function get_curriculum_items( $type = '' ) {
-			return $this->get_items( $type );
 		}
 
 		/**

@@ -758,5 +758,48 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		public function get_curriculum( $section_id = 0, $force = false ) {
 			return $this->get_sections( 'object', $section_id );
 		}
+
+		/**
+		 * Return list of item's ids in course's curriculum.
+		 *
+		 * @param string|array $type
+		 *
+		 * @return array
+		 * @since 3.0.0
+		 * @version 3.0.2
+		 */
+		public function get_items( $type = '' ) {
+			//$this->load();
+
+			$sections_items = $this->get_full_sections_and_items_course();
+
+			$items      = array();
+
+			foreach ( $sections_items as $section_items ) {
+				foreach ( $section_items->items as $item ) {
+					if ( ! empty( $type ) ) {
+						if ( $type === $item->type ) {
+							$items[] = $item->id;
+						}
+					} else {
+						$items[] = $item->id;
+					}
+				}
+			}
+
+			return $items;
+		}
+
+		/**
+		 * Get all items in a course.
+		 *
+		 * @param string $type . Type of items, eg: lp_lesson, lp_quiz...
+		 *
+		 * @return array
+		 * @deprecated
+		 */
+		public function get_curriculum_items( $type = '' ) {
+			return $this->get_items( $type );
+		}
 	}
 }

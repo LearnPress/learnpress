@@ -345,8 +345,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param bool $publish_only
 		 *
 		 * @return array
+		 * @depecated 4.1.6.9
 		 */
-		public function read_course_items( $course_id, $publish_only = true, $section_ids = array() ) {
+		/*public function read_course_items( $course_id, $publish_only = true, $section_ids = array() ) {
 			global $wpdb;
 			$where = '';
 
@@ -394,7 +395,28 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$results = $wpdb->get_results( $query );
 
 			return $results;
-		}
+
+			//////////////////////////////////////////// Code new - tungnx
+
+			$items = [];
+
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				return $items;
+			}
+
+			$sections_items = $course->get_full_sections_and_items_course();
+			foreach ( $sections_items as $section_items ) {
+				$section_id = $section_items->id;
+
+				foreach ( $section_items->items as $item ) {
+					$item->section_id = $section_id;
+					$items[]          = $item;
+				}
+			}
+
+			return $items;
+		}*/
 
 		/**
 		 * Get all courses that contains an item by item id.
