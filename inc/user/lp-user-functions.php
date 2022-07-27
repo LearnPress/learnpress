@@ -675,26 +675,12 @@ function learn_press_delete_user_item_meta( $object_id, $meta_key, $meta_value =
 }
 
 /**
- * Exclude the temp users from query.
- *
- * @param WP_User_Query $q
- */
-function learn_press_filter_temp_users( $q ) {
-	// if ( $temp_users = learn_press_get_temp_users() ) {
-	// $exclude = (array) $q->get( 'exclude' );
-	// $exclude = array_merge( $exclude, $temp_users );
-	// $q->set( 'exclude', $exclude );
-	// }
-}
-
-// add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
-
-/**
  * Get temp users.
  *
  * @return array
+ * @depecated 4.1.6.9
  */
-function learn_press_get_temp_users() {
+/*function learn_press_get_temp_users() {
 	return false;
 	if ( false === ( $temp_users = LP_Object_Cache::get( 'learn-press/temp-users' ) ) ) {
 		global $wpdb;
@@ -716,7 +702,7 @@ function learn_press_get_temp_users() {
 	}
 
 	return $temp_users;
-}
+}*/
 
 /**
  * Update field created_time after added user item meta
@@ -806,15 +792,17 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 		 * Get the ID of user from $id_or_email
 		 */
 		if ( ! is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
-			if ( $user = get_user_by( 'email', $id_or_email ) ) {
+			$user = get_user_by( 'email', $id_or_email );
+			if ( $user ) {
 				$user_id = $user->ID;
 			}
 		} elseif ( is_numeric( $id_or_email ) ) {
 			$user_id = $id_or_email;
 		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
 			$user_id = $id_or_email->user_id;
-		} elseif ( is_object( $id_or_email ) && $id_or_email instanceof WP_Comment ) {
-			if ( $user = get_user_by( 'email', $id_or_email->comment_author_email ) ) {
+		} elseif ( $id_or_email instanceof WP_Comment ) {
+			$user = get_user_by( 'email', $id_or_email->comment_author_email );
+			if ( $user ) {
 				$user_id = $user->ID;
 			}
 		}

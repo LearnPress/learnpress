@@ -27,7 +27,9 @@ $is_exists = $checkout->checkout_email_exists();
 			</div>
 
 			<?php
-			$signin = $signup = $divider = '';
+			$signin  = '';
+			$signup  = '';
+			$divider = '';
 
 			if ( LP()->checkout()->is_enable_login() ) {
 				$signin = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-login">%s</label></a>', esc_html( _x( 'Sign in', 'checkout sign in link', 'learnpress' ) ) );

@@ -535,7 +535,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->get_user_item_id()
 		);
 
-		if ( $results = $wpdb->get_results( $query ) ) {
+		$results = $wpdb->get_results( $query );
+		if ( $results ) {
 			foreach ( $results as $result ) {
 				$result->meta_value = LP_Helper::maybe_unserialize( $result->meta_value );
 				$this->_meta_data[] = $result;
