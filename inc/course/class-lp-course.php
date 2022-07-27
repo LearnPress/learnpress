@@ -738,6 +738,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$itemObject                   = $this->get_item( $item->id );
 					$item_arr                     = (array) $item;
 					$item_arr['title']            = $itemObject->get_title();
+					$item_arr['preview']          = $itemObject->is_preview();
 					$section_items_arr['items'][] = $item_arr;
 				}
 
@@ -773,7 +774,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			$sections_items = $this->get_full_sections_and_items_course();
 
-			$items      = array();
+			$items = array();
 
 			foreach ( $sections_items as $section_items ) {
 				foreach ( $section_items->items as $item ) {
