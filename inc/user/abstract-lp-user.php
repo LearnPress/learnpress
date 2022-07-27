@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id .
 		 *
 		 * @return LP_User_Item_Course|bool
-		 * @version  3.1.2
+		 * @version  3.1.3
 		 * @editor tungnx
 		 * @modify 4.1.3
 		 */
@@ -554,7 +554,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_current_item( $course_id, $permalink = false ) {
 			_deprecated_function( __FUNCTION__, '4.1.6.9' );
 			return 0;
-			$course_data = $this->get_course_data( $course_id );
+			/*$course_data = $this->get_course_data( $course_id );
 			if ( ! $course_data ) {
 				return false;
 			}
@@ -590,7 +590,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				);
 			} else {
 				return apply_filters( 'learn-press/current-course-item', $id, $course_id, $this->get_id() );
-			}
+			}*/
 		}
 
 		/**

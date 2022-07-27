@@ -111,7 +111,7 @@ return apply_filters(
 				array(
 					'title'   => esc_html__( 'Course Item Per Page', 'learnpress' ),
 					'id'      => 'course_item_per_page',
-					'default' => 5,
+					'default' => 10,
 					'type'    => 'number',
 					'desc'    => esc_html__( 'Number of course items displayed per page in section ( Enter -1 for display all course items).', 'learnpress' ),
 				),

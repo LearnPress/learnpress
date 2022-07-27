@@ -699,7 +699,10 @@ add_action( 'comment_post', 'learn_press_force_refresh_course', 1000, 2 );*/
 	}
 }*/
 
-if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
+/**
+ * @depecated 4.1.6.9
+ */
+/*if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 	function learn_press_get_nav_course_item_url( $course_id = null, $item_id = null, $content_only = false ) {
 
 		$course           = learn_press_get_course( $course_id );
@@ -736,7 +739,7 @@ if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 
 		return $return;
 	}
-}
+}*/
 
 if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 	/**

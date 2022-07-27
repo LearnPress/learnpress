@@ -34,9 +34,6 @@ class LP_Page_Controller {
 	protected function __construct() {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
-		// Comment by tungnx
-		// add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
-		// add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ), 30 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
@@ -392,35 +389,6 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * @editor tungnx
-	 * @modify 4.1.3 - comment - not use
-	 */
-	/*
-	public function maybe_redirect_quiz( $template ) {
-		$course   = learn_press_get_course();
-		$quiz     = LP_Global::course_item_quiz();
-		$user     = learn_press_get_current_user();
-		$redirect = false;
-
-		if ( learn_press_is_review_questions() ) {
-			if ( ! $quiz->get_review_questions() ) {
-				$redirect = $course->get_item_link( $quiz->get_id() );
-			}
-		}
-
-		if ( LP_Global::quiz_question() && ! $user->has_started_quiz( $quiz->get_id(), $course->get_id() ) ) {
-			$redirect = $course->get_item_link( $quiz->get_id() );
-		}
-
-		if ( $redirect ) {
-			wp_redirect( $redirect );
-			exit();
-		}
-
-		return $template;
-	}*/
-
-	/**
 	 * Load data for item of course
 	 *
 	 * @param $post
@@ -449,9 +417,10 @@ class LP_Page_Controller {
 
 		/**
 		 * @deprecated v4.1.6.1 LP()->global['course'], $GLOBALS['course']
+		 * Some theme still use: global $course; LP()->global['course']
 		 */
 		//LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
-		LP()->global['course'] = $course;
+		LP()->global['course'] = $GLOBALS['course'] = $course;
 
 		if ( wp_verify_nonce( LP_Request::get( 'preview' ), 'preview-' . $post->ID ) ) {
 			$GLOBALS['preview_course'] = $post->ID;
@@ -513,20 +482,6 @@ class LP_Page_Controller {
 
 	public function is_404() {
 		return apply_filters( 'learn-press/query/404', $this->_is_404 );
-	}
-
-	public function template_content_item( $template ) {
-
-		/**
-		 * @var LP_Course $lp_course
-		 * @var LP_Course_Item $lp_course_item
-		 * @var LP_User $lp_user
-		 */
-		global $lp_course, $lp_course_item, $lp_user;
-
-		do_action( 'learn-press/parse-course-item', $lp_course_item, $lp_course );
-
-		return $template;
 	}
 
 	/**
