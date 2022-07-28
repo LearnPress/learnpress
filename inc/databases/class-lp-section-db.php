@@ -307,5 +307,30 @@ class LP_Section_DB extends LP_Database {
 
 		return false;
 	}
+
+	/**
+	 * Get last section order of course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return int
+	 * @throws Exception
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 */
+	public function get_last_number_order( int $course_id = 0 ): int {
+		$query = $this->wpdb->prepare(
+			"SELECT MAX(section_order)
+			FROM $this->tb_lp_sections
+			WHERE section_course_id = %d",
+			$course_id
+		);
+
+		$number_order = intval( $this->wpdb->get_var( $query ) );
+
+		$this->check_execute_has_error();
+
+		return $number_order;
+	}
 }
 

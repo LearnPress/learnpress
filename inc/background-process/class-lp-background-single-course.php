@@ -160,6 +160,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				// Clean cache
 				$key_cache_sections_items = "$course_id/sections_items";
 				$lp_course_cache->clear( $key_cache_sections_items );
+				$key_cache_sections = "$course_id/sections";
+				$lp_course_cache->clear( $key_cache_sections );
 				$sections_items             = $lp_course->get_sections_and_items_course_from_db_and_sort();
 				$extra_info->sections_items = $sections_items;
 

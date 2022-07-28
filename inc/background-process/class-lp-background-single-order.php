@@ -23,8 +23,6 @@ if ( ! class_exists( 'LP_Background_Order' ) ) {
 
 		/**
 		 * Get params via $_POST and handle
-		 * @in_array
-		 * @see LP_Course_Post_Type::save
 		 */
 		protected function handle() {
 

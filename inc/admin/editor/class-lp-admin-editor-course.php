@@ -130,14 +130,18 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function update_section( $args = array() ) {
-		$section = ! empty( $args['section'] ) ? $args['section'] : false;
+		$section = $args['section'] ?? false;
 		$section = json_decode( wp_unslash( $section ), true );
 
 		if ( ! $section ) {
 			return false;
 		}
 
-		$update = array(
+		if ( ! isset( $section['course_id'] ) && ! isset( $section['id'] ) ) {
+			return false;
+		}
+
+		$data = array(
 			'section_id'          => $section['id'],
 			'section_name'        => $section['title'],
 			'section_description' => $section['description'],
@@ -145,7 +149,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'section_course_id'   => $section['course_id'],
 		);
 
-		$this->result = $this->section_curd->update( $update );
+		$this->result = $this->section_curd->update( $data );
 
 		return true;
 	}
@@ -173,8 +177,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function new_section( $args = array() ) {
-		$section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
-		$temp_id      = isset( $args['temp_id'] ) ? $args['temp_id'] : 0;
+		$section_name = $args['section_name'] ?? '';
+		$temp_id      = $args['temp_id'] ?? 0;
 
 		$args = array(
 			'section_course_id'   => $this->course->get_id(),
@@ -310,8 +314,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			return false;
 		}
 
-		//$this->result = $this->section_curd->update_section_items( $section_id, $items );
-		$this->result = $this->section_curd->update_section_items_order( $section_id, $items );
+		$this->result = $this->section_curd->update_section_items( $section_id, $items );
 
 		//$this->section_curd->update_final_item();
 

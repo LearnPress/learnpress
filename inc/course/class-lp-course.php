@@ -615,10 +615,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		public function get_sections_and_items_course_from_db_and_sort(): array {
 			$sections_items = [];
 			$course_id      = $this->get_id();
+			$lp_course_db   = LP_Course_DB::getInstance();
 
 			try {
-				$sections_results       = LP_Course_DB::getInstance()->get_sections( $course_id );
-				$sections_items_results = LP_Course_DB::getInstance()->get_full_sections_and_items_course( $course_id );
+				$sections_results       = $lp_course_db->get_sections( $course_id );
+				$sections_items_results = $lp_course_db->get_full_sections_and_items_course( $course_id );
 				$count_items            = count( $sections_items_results );
 				$index_items_last       = $count_items - 1;
 				$section_current        = 0;

@@ -104,7 +104,7 @@ return apply_filters(
 				array(
 					'title'   => esc_html__( 'Section Per Page', 'learnpress' ),
 					'id'      => 'section_per_page',
-					'default' => 2,
+					'default' => 1,
 					'type'    => 'number',
 					'desc'    => esc_html__( 'Number of sections displayed per page ( Enter -1 for display all sections).', 'learnpress' ),
 				),
