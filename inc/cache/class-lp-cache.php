@@ -22,10 +22,6 @@ class LP_Cache {
 	 * @var string Add key group parent with key group child
 	 */
 	protected $key_group = '';
-	/**
-	 * @var float|int default expire
-	 */
-	protected $expire = DAY_IN_SECONDS;
 
 	protected function __construct() {
 		$this->key_group = $this->key_group_parent . $this->key_group_child;
@@ -33,16 +29,12 @@ class LP_Cache {
 
 	/**
 	 * Set cache
-	 * $expire = -1 is  get default expire time on one day(DAY_IN_SECONDS)
 	 *
 	 * @param string $key
 	 * @param mixed  $data
 	 * @param int    $expire
 	 */
-	public function set_cache( string $key, $data, int $expire = -1 ) {
-		if ( -1 === $expire ) {
-			$expire = $this->expire;
-		}
+	public function set_cache( string $key, $data, int $expire = 0 ) {
 		wp_cache_set( $key, $data, $this->key_group, $expire );
 	}
 
