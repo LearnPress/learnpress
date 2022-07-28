@@ -420,11 +420,13 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}*/
 
 		/**
-		 * Get all items in a course.
+		 * Get all item's ids in a course.
 		 *
 		 * @param int $section_id
 		 *
 		 * @return array
+		 * @version 4.0.1
+		 * @modify 4.1.6.9 tungnx
 		 */
 		public function get_item_ids( int $section_id = 0 ): array {
 			$item_ids = array();
@@ -432,11 +434,15 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$sections_items = $this->get_full_sections_and_items_course();
 			foreach ( $sections_items as $section_items ) {
 				foreach ( $section_items->items as $item ) {
-					$item_ids[] = $item->id;
-				}
+					if ( $section_id ) {
+						if ( $section_id == $section_items->id ) {
+							$item_ids[] = $item->id;
+						}
 
-				if ( $section_id && $section_id == $section_items->id ) {
-					break;
+						continue;
+					}
+
+					$item_ids[] = $item->id;
 				}
 			}
 

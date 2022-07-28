@@ -617,11 +617,12 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$course_id      = $this->get_id();
 
 			try {
+				$sections_results       = LP_Course_DB::getInstance()->get_sections( $course_id );
 				$sections_items_results = LP_Course_DB::getInstance()->get_full_sections_and_items_course( $course_id );
 				$count_items            = count( $sections_items_results );
 				$index_items_last       = $count_items - 1;
+				$section_current        = 0;
 
-				$section_current = 0;
 				foreach ( $sections_items_results as $index => $sections_item ) {
 					$section_new   = $sections_item->section_id;
 					$section_order = $sections_item->section_order;
@@ -663,6 +664,22 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					}
 				}
 
+				// Check case if section empty items
+				foreach ( $sections_results as $section ) {
+					$section_id = $section->section_id;
+					if ( isset( $sections_items[ $section_id ] ) ) {
+						continue;
+					}
+
+					$section_obj                   = new stdClass();
+					$section_obj->id               = $section_id;
+					$section_obj->order            = $section->section_order;
+					$section_obj->title            = $section->section_name;
+					$section_obj->description      = $section->section_description;
+					$section_obj->items            = [];
+					$sections_items[ $section_id ] = $section_obj;
+				}
+
 				// Sort section by section_order
 				usort(
 					$sections_items,
@@ -699,20 +716,25 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			}*/
 
 			//$position        = 0;
-			$object_sections = array();
-			foreach ( $sections_items as $section_items ) {
-				$section_items              = (array) $section_items;
-				$section_items['course_id'] = $this->get_id();
-				$sid                        = $section_items['id'];
-				$section                    = new LP_Course_Section( $section_items );
-				//$section->set_position( ++ $position );
-				$object_sections[ $sid ] = $section;
+			$sections = array();
+			foreach ( $sections_items as $k => $section_items ) {
+				$position          = $k + 1;
+				$section_items_tmp = [
+					'section_id'          => $section_items->id,
+					'section_name'        => $section_items->title,
+					'section_course_id'   => $this->get_id(),
+					'section_order'       => $section_items->order,
+					'section_description' => $section_items->description,
+					'items'               => $section_items->items,
+				];
+				$sid               = $section_items->id;
+				$section           = new LP_Course_Section( $section_items_tmp );
+				$section->set_position( $position );
+				$sections[ $sid ] = $section;
 			}
 
-			$sections = $object_sections;
-
 			if ( $section_id ) {
-				$sections = ! empty( $sections[ $section_id ] ) ? $sections[ $section_id ] : false;
+				$sections = $sections[ $section_id ] ?? [];
 			}
 
 			return apply_filters( 'learn-press/course-sections', $sections, $this->get_id(), $return, $section_id );
@@ -731,8 +753,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			$sections_items = $this->get_full_sections_and_items_course();
 			foreach ( $sections_items as $section_items ) {
-				$section_items_arr          = (array) $section_items;
-				$section_items_arr['items'] = [];
+				$section_items_arr              = (array) $section_items;
+				$section_items_arr['course_id'] = $this->get_id();
+				$section_items_arr['items']     = [];
 
 				foreach ( $section_items->items as $item ) {
 					$itemObject                   = $this->get_item( $item->id );

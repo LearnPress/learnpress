@@ -101,6 +101,41 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
+	 * Get all sections' course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return array|object|stdClass[]|null
+	 * @throws Exception
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 */
+	public function get_sections( int $course_id = 0 ) {
+		// Get cache
+		$lp_course_cache = LP_Course_Cache::instance();
+		$key_cache       = "$course_id/sections";
+		$sections_items  = $lp_course_cache->get_cache( $key_cache );
+
+		if ( ! $sections_items ) {
+			$query = $this->wpdb->prepare(
+				"SELECT * FROM {$this->tb_lp_sections}
+				WHERE section_course_id = %d
+				ORDER BY section_order",
+				$course_id
+			);
+
+			$sections_items = $this->wpdb->get_results( $query, OBJECT_K );
+
+			$this->check_execute_has_error();
+
+			// Set cache
+			$lp_course_cache->set_cache( $key_cache, $sections_items );
+		}
+
+		return $sections_items;
+	}
+
+	/**
 	 * Get user_item_id by order_id, course_id, user_id
 	 *
 	 * @param int $order_id
