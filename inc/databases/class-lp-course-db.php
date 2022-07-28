@@ -73,29 +73,27 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_full_sections_and_items_course( int $course_id = 0 ) {
-		// Get cache
-		$lp_course_cache = LP_Course_Cache::instance();
-		$key_cache       = "$course_id/sections_items";
-		$sections_items  = $lp_course_cache->get_cache( $key_cache );
+		$method_called_to = debug_backtrace()[1]['function'];
 
-		if ( ! $sections_items ) {
-			$query = $this->wpdb->prepare(
-				"SELECT *
-				FROM {$this->tb_lp_section_items} AS si
-				INNER JOIN {$this->tb_lp_sections} AS s
-				ON si.section_id = s.section_id
-				WHERE section_course_id = %d
-				ORDER BY s.section_order",
-				$course_id
-			);
-
-			$sections_items = $this->wpdb->get_results( $query );
-
-			$this->check_execute_has_error();
-
-			// Set cache
-			$lp_course_cache->set_cache( $key_cache, $sections_items );
+		// Check accept call from function 'get_sections_and_items_course_from_db_and_sort'
+		if ( 'get_sections_and_items_course_from_db_and_sort' !== $method_called_to ) {
+			error_log( 'You can not call direct this function' );
+			return [];
 		}
+
+		$query = $this->wpdb->prepare(
+			"SELECT *
+			FROM {$this->tb_lp_section_items} AS si
+			INNER JOIN {$this->tb_lp_sections} AS s
+			ON si.section_id = s.section_id
+			WHERE section_course_id = %d
+			ORDER BY s.section_order",
+			$course_id
+		);
+
+		$sections_items = $this->wpdb->get_results( $query );
+
+		$this->check_execute_has_error();
 
 		return $sections_items;
 	}
@@ -111,26 +109,24 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_sections( int $course_id = 0 ) {
-		// Get cache
-		$lp_course_cache = LP_Course_Cache::instance();
-		$key_cache       = "$course_id/sections";
-		$sections_items  = $lp_course_cache->get_cache( $key_cache );
+		$method_called_to = debug_backtrace()[1]['function'];
 
-		if ( ! $sections_items ) {
-			$query = $this->wpdb->prepare(
-				"SELECT * FROM {$this->tb_lp_sections}
-				WHERE section_course_id = %d
-				ORDER BY section_order",
-				$course_id
-			);
-
-			$sections_items = $this->wpdb->get_results( $query, OBJECT_K );
-
-			$this->check_execute_has_error();
-
-			// Set cache
-			$lp_course_cache->set_cache( $key_cache, $sections_items );
+		// Check accept call from function 'get_sections_and_items_course_from_db_and_sort'
+		if ( 'get_sections_and_items_course_from_db_and_sort' !== $method_called_to ) {
+			error_log( 'You can not call direct this function' );
+			return [];
 		}
+
+		$query = $this->wpdb->prepare(
+			"SELECT * FROM {$this->tb_lp_sections}
+			WHERE section_course_id = %d
+			ORDER BY section_order",
+			$course_id
+		);
+
+		$sections_items = $this->wpdb->get_results( $query, OBJECT_K );
+
+		$this->check_execute_has_error();
 
 		return $sections_items;
 	}

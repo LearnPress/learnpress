@@ -582,7 +582,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				if ( ! $sections_items ) {
 					$extra_info = $this->get_info_extra_for_fast_query();
 
-					if ( ! $extra_info->sections_items ) {
+					if ( empty( $extra_info->sections_items ) ) {
 						$sections_items             = $this->get_sections_and_items_course_from_db_and_sort();
 						$extra_info->sections_items = $sections_items;
 
@@ -613,9 +613,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @author tungnx
 		 */
 		public function get_sections_and_items_course_from_db_and_sort(): array {
-			$sections_items = [];
-			$course_id      = $this->get_id();
-			$lp_course_db   = LP_Course_DB::getInstance();
+			$sections_items  = [];
+			$course_id       = $this->get_id();
+			$lp_course_db    = LP_Course_DB::getInstance();
+			$lp_course_cache = LP_Course_Cache::instance();
+			$key_cache       = "$course_id/sections_items";
 
 			try {
 				$sections_results       = $lp_course_db->get_sections( $course_id );
@@ -688,6 +690,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 						return $section1->order - $section2->order;
 					}
 				);
+
+				$lp_course_cache->set_cache( $key_cache, $sections_items );
 			} catch ( Throwable $e ) {
 				if ( LP_Debug::is_debug() ) {
 					error_log( $e->getMessage() );
