@@ -81,7 +81,8 @@ class LP_Abstract_Template {
 				return;
 			}
 
-			if ( ! $callbacks = $wp_filter[ $tag ]->callbacks ) {
+			$callbacks = $wp_filter[ $tag ]->callbacks;
+			if ( ! $callbacks ) {
 				return;
 			}
 

@@ -106,7 +106,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function set_order_date( $date ) {
 			if ( is_numeric( $date ) ) {
-				$date = date( 'Y-m-d H:i:s', $date );
+				$date = gmdate( 'Y-m-d H:i:s', $date );
 			}
 			$this->_set_data_date( 'order_date', $date );
 
@@ -1019,11 +1019,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * in case this order is for multi users
 		 *
 		 * @since 2.1.5
+		 * @depecated 4.1.6.9
 		 */
-		public function print_users() {
-			/**
-			 * Get meta as multiple keys for backward compatibility with older version
-			 */
+		/*public function print_users() {
 			$user_ids = get_post_meta( $this->get_id(), '_user_id' );
 			if ( $user_ids ) {
 				global $wpdb;
@@ -1044,7 +1042,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			} else {
 				_e( 'No user assigned', 'learnpress' );
 			}
-		}
+		}*/
 
 		/**
 		 * Get email of user has bought this order.

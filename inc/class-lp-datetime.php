@@ -182,7 +182,7 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @return string The date string in the specified format format.
 	 */
-	public function format( $format, $local = true ) {
+	public function format( $format = '', $local = true ) {
 		if ( '0000-00-00 00:00:00' === $this->raw_date ) {
 			return '';
 		}

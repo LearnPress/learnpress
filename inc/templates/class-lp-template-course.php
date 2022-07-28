@@ -600,7 +600,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$next_item = $prev_item = false;
+		$next_item = false;
+		$prev_item = false;
 
 		$next_id = $course->get_next_item();
 		$prev_id = $course->get_prev_item();
@@ -949,8 +950,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function faqs() {
 		$course = LP_Course::get_course( get_the_ID() );
-
-		if ( ! $faqs = $course->get_faqs() ) {
+		$faqs   = $course->get_faqs();
+		if ( ! $faqs ) {
 			return;
 		}
 
@@ -1024,12 +1025,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_item_comments() {
 		global $post;
-
-		if ( ! $course = learn_press_get_course() ) {
+		$course = learn_press_get_course();
+		if ( ! $course ) {
 			return;
 		}
 
-		if ( ! $item = LP_Global::course_item() ) {
+		$item = LP_Global::course_item();
+		if ( ! $item ) {
 			return;
 		}
 

@@ -362,7 +362,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// include template functions .
 			require_once 'inc/lp-template-functions.php';
 			require_once 'inc/templates/abstract-template.php';
-			require_once 'inc/class-lp-template.php';
+			//require_once 'inc/class-lp-template.php';
 
 			// Cart
 			require_once 'inc/cart/class-lp-cart.php';
@@ -477,7 +477,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function plugin_links( array $links ): array {
 			$links[] = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=learn-press-settings' ), __( 'Settings', 'learnpress' ) );
-			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', 'https://learnpress.io/docs/', __( 'Documentation', 'learnpress' ) );
+			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', 'https://docspress.thimpress.com/learnpress-4-0/', __( 'Documentation', 'learnpress' ) );
 			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', get_admin_url() . '/admin.php?page=learn-press-addons', __( 'Add-ons', 'learnpress' ) );
 
 			return $links;

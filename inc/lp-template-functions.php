@@ -55,7 +55,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		 * OR
 		 * 2. Course's content not empty
 		 */
-		if ( isset( $_GET['preview'] ) || $course && $course->get_content() ) {
+		if ( isset( $_GET['preview'] ) || $course ) {
 			$defaults['overview'] = array(
 				'title'    => esc_html__( 'Overview', 'learnpress' ),
 				'priority' => 10,
