@@ -29,6 +29,35 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
+	 * Get users items
+	 *
+	 * @return array|null|int|string
+	 * @throws Exception
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 */
+	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+		$default_fields = $this->get_cols_of_table( $this->tb_lp_user_items );
+		$filter->fields = array_merge( $default_fields, $filter->fields );
+
+		if ( empty( $filter->collection ) ) {
+			$filter->collection = $this->tb_lp_user_items;
+		}
+
+		if ( empty( $filter->collection_alias ) ) {
+			$filter->collection_alias = 'ui';
+		}
+
+		if ( $filter->ref_id ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.ref_id = %d', $filter->ref_id );
+		}
+
+		$filter = apply_filters( 'lp/user_items/query/filter', $filter );
+
+		return $this->execute( $filter, $total_rows );
+	}
+
+	/**
 	 * Get items by user_item_id | this is id where item_id = course_id
 	 *
 	 * @param LP_User_Items_Filter $filter

@@ -163,9 +163,65 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$sections_items             = $lp_course->get_sections_and_items_course_from_db_and_sort();
 				$extra_info->sections_items = $sections_items;
 
+				// Check items removed course, will delete on 'learnpress_user_items', 'learnpress_user_item_results' table
+				$this->delete_user_items_data( $sections_items );
+
 				// Save post meta
 				$lp_course->set_info_extra_for_fast_query( $extra_info );
 				// End set first item id
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Delete items removed on course on tables:
+		 * learnpress_user_items, learnpress_user_itemmeta, learnpress_user_item_results
+		 *
+		 * @return void
+		 * @since 4.1.6.9
+		 * @version 1.0.0
+		 */
+		private function delete_user_items_data() {
+			// Get all user_item_id
+			$lp_user_items_db        = LP_User_Items_DB::getInstance();
+			$lp_user_item_results_db = LP_User_Items_Result_DB::instance();
+
+			try {
+				$course = $this->lp_course;
+
+				// Get all items of course is attend
+				$filter_user_items              = new LP_User_Items_Filter();
+				$filter_user_items->only_fields = [ 'item_id', 'user_item_id' ];
+				$filter_user_items->ref_id      = $course->get_id();
+				$filter_user_items->ref_type    = LP_COURSE_CPT;
+				$users_items_result             = $lp_user_items_db->get_user_items( $filter_user_items );
+
+				$item_ids = $course->get_item_ids();
+
+				$users_items_ids_need_delete = [];
+				foreach ( $users_items_result as $user_item ) {
+					//$users_items[ $user_item->item_id ] = $user_item->user_item_id;
+					$item_id = $user_item->item_id;
+					if ( ! in_array( $item_id, $item_ids ) ) {
+						$users_items_ids_need_delete[] = $user_item->user_item_id;
+					}
+				}
+
+				if ( empty( $users_items_ids_need_delete ) ) {
+					return;
+				}
+
+				// Delete on tb lp_user_items
+				$filter_delete                = new LP_User_Items_Filter();
+				$filter_delete->user_item_ids = $users_items_ids_need_delete;
+				$lp_user_items_db->remove_user_item_ids( $filter_delete );
+
+				// Delete user_itemmeta
+				$lp_user_items_db->remove_user_itemmeta( $filter_delete );
+
+				// Delete user_item_results
+				$lp_user_item_results_db->remove_user_item_results( $filter_delete );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}

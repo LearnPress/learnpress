@@ -416,7 +416,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 				$filter                   = new LP_Section_Filter();
 				$filter->section_ids      = $section_ids;
-				$filter->author_id_course = $this->get_id();
+				$filter->author_id_course = $this->get_author( 'id' );
 
 				// Delete section
 				$lp_section_db->delete_section( $filter );
