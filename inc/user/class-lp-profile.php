@@ -1102,13 +1102,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				remove_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1 );
 			}
 
-			$profile_picture_src = $this->get_upload_profile_src( $size );
+			$profile_picture_src = $this->get_upload_profile_src();
 
 			if ( $profile_picture_src ) {
 				$user->set_data( 'profile_picture_src', $profile_picture_src );
 			}
 
-			$avatar = get_avatar( $user->get_id(), $size, '', esc_attr__( 'User Avatar', 'learnpress' ), $args );
+			$avatar = get_avatar( $user->get_id(), $args['width'], '', esc_attr__( 'User Avatar', 'learnpress' ), $args );
 
 			if ( $type == 'gravatar' ) {
 				add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
