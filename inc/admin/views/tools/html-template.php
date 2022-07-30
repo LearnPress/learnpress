@@ -81,17 +81,17 @@ if ( $template_dir != $stylesheet_dir ) {
 					echo 'data-filter-unversioned="yes"';
 				}
 				?>
-				class="template-row <?php echo $template_class; ?>">
-				<td class="template-file"><code><?php echo $template[0]; ?></code></td>
+				class="template-row <?php echo esc_attr( $template_class ); ?>">
+				<td class="template-file"><code><?php echo esc_html( $template[0] ); ?></code></td>
 				<td class="template-version">
-					<span><?php echo $template[1]; ?></span>
+					<span><?php echo esc_html( $template[1] ); ?></span>
 				</td>
-				<td class="core-version"><span><?php echo $template[2]; ?></span></td>
+				<td class="core-version"><span><?php echo esc_html( $template[2] ); ?></span></td>
 			</tr>
 		<?php endforeach; ?>
 	<?php endif; ?>
 
-	<tr id="learn-press-no-templates" class="<?php echo $templates ? 'hide-if-js' : ''; ?>">
+	<tr id="learn-press-no-templates" class="<?php echo esc_attr( $templates ? 'hide-if-js' : '' ); ?>">
 		<td colspan="3">
 			<p><?php _e( 'There is no template file has overwritten', 'learnpress' ); ?></p>
 		</td>

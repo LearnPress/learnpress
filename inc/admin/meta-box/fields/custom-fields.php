@@ -2,7 +2,7 @@
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo $tooltip_html; ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ); ?></label>
 	</th>
 	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?> lp-metabox__custom-fields">
 		<table class="widefat">
@@ -13,7 +13,7 @@
 					if ( $value['options'] ) {
 						foreach ( $value['options'] as $key => $val ) {
 							?>
-							<th><?php echo $value['options'][ $key ]['title']; ?> <?php echo isset( $value['options'][ $key ]['desc_tip'] ) ? learn_press_quick_tip( $value['options'][ $key ]['desc_tip'], false ) : ''; ?></th>
+							<th><?php echo wp_kses_post( $value['options'][ $key ]['title'] ); ?> <?php echo isset( $value['options'][ $key ]['desc_tip'] ) ? learn_press_quick_tip( $value['options'][ $key ]['desc_tip'], false ) : ''; ?></th>
 							<?php
 						}
 					}
@@ -44,6 +44,6 @@
 				</tr>
 			</tfoot>
 		</table>
-		<?php echo $description; ?>
+		<?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>

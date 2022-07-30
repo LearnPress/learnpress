@@ -215,14 +215,15 @@ function learn_press_item_meta_format( $item, $nonce = '' ) {
 		}
 
 		// return false to hide post format
-		if ( $format = apply_filters( 'learn_press_course_item_format', $format, $item ) ) {
+		$format = apply_filters( 'learn_press_course_item_format', $format, $item );
+		if ( $format ) {
 			printf(
 				'<label for="post-format-0" class="post-format-icon post-format-%s" title="%s"></label>',
 				$format,
 				ucfirst( $format )
 			);
 		} else {
-			echo $nonce;
+			echo esc_html( $nonce );
 		}
 	}
 }

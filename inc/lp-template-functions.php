@@ -1109,7 +1109,7 @@ function learn_press_is_content_item_only() {
 function learn_press_label_html( $label, $type = '' ) {
 	?>
 	<span class="lp-label label-<?php echo esc_attr( $type ? $type : $label ); ?>">
-		<?php echo $label; ?>
+		<?php echo esc_html( $label ); ?>
 	</span>
 	<?php
 }
@@ -1624,7 +1624,7 @@ function lp_skeleton_animation_html( $count_li = 3, $width = 'random', $styleli 
 	?>
 	<ul class="lp-skeleton-animation" style="<?php echo esc_attr( $styleul ); ?>">
 		<?php for ( $i = 0; $i < absint( $count_li ); $i ++ ) : ?>
-			<li style="width: <?php echo $width === 'random' ? wp_rand( 60, 100 ) . '%' : $width; ?>; <?php echo ! empty( $styleli ) ? $styleli : ''; ?>"></li>
+			<li style="width: <?php echo esc_attr( $width === 'random' ? wp_rand( 60, 100 ) . '%' : $width ); ?>; <?php echo ! empty( $styleli ) ? $styleli : ''; ?>"></li>
 		<?php endfor; ?>
 	</ul>
 

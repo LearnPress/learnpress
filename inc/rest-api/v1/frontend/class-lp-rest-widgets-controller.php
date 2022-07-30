@@ -40,19 +40,19 @@ class LP_REST_Widgets_Controller extends LP_Abstract_REST_Controller {
 			$hash      = $params['hash'] ?? false;
 
 			if ( empty( $widget_id ) || empty( $instance ) || empty( $hash ) ) {
-				throw new Exception( esc_html__( 'Error: No params!' ) );
+				throw new Exception( 'Error: No params!' );
 			}
 
 			$widget_object = $wp_widget_factory->get_widget_object( $widget_id );
 
 			if ( ! method_exists( $widget_object, 'lp_rest_api_content' ) ) {
-				throw new Exception( esc_html__( 'Error: No method lp_rest_api_content!' ) );
+				throw new Exception( 'Error: No method lp_rest_api_content!' );
 			}
 
 			$serialized_instance = base64_decode( $instance );
 
 			if ( ! hash_equals( wp_hash( $serialized_instance ), $hash ) ) {
-				throw new Exception( esc_html__( 'The provided instance is malformed.' ) );
+				throw new Exception( 'The provided instance is malformed.' );
 			}
 
 			$instance = unserialize( $serialized_instance );

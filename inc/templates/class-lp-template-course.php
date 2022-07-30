@@ -85,7 +85,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function course_media_preview() {
 		$course = learn_press_get_course();
 
-		echo $course->get_image();
+		echo wp_kses_post( $course->get_image() );
 	}
 
 	/**
@@ -638,7 +638,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 				$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( absint( $item_id ) );
 			}
 			?>
-			<div class="learnpress-course-curriculum" data-section="<?php echo $section_id ?? ''; ?>" data-id="<?php echo $item_id ?? ''; ?>">
+			<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>" data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
 				<ul class="lp-skeleton-animation">
 					<li style="width: 100%; height: 50px"></li>
 					<li style="width: 100%; height: 20px"></li>
@@ -716,7 +716,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( ! empty( $shortcodes_custom_css ) ) {
 			$shortcodes_custom_css = strip_tags( $shortcodes_custom_css );
 			echo '<style type="text/css" data-type="vc_shortcodes-custom-css">';
-			echo $shortcodes_custom_css;
+			echo wp_kses_post( $shortcodes_custom_css );
 			echo '</style>';
 		}
 		// End
@@ -994,7 +994,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$socials    = $instructor->get_profile_socials( $instructor->get_id() );
 
 		foreach ( $socials as $social ) {
-			echo $social;
+			echo wp_kses_post( $social );
 		}
 	}
 

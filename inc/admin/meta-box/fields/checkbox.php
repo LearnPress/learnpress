@@ -18,7 +18,7 @@ if ( isset( $value['show_if_checked'] ) ) {
 
 <?php if ( ! isset( $value['checkboxgroup'] ) || 'start' === $value['checkboxgroup'] ) : ?>
 	<tr class="<?php echo esc_attr( implode( ' ', $visibility_class ) ); ?>">
-		<th scope="row" class="titledesc"><?php echo $value['title']; ?></th>
+		<th scope="row" class="titledesc"><?php echo esc_html( $value['title'] ); ?></th>
 		<td class="forminp forminp-checkbox">
 			<fieldset>
 <?php else : ?>
@@ -26,7 +26,7 @@ if ( isset( $value['show_if_checked'] ) ) {
 <?php endif; ?>
 
 <?php if ( ! empty( $value['title'] ) ) : ?>
-	<legend class="screen-reader-text"><span><?php echo $value['title']; ?></span></legend>
+	<legend class="screen-reader-text"><span><?php echo esc_html( $value['title'] ); ?></span></legend>
 <?php endif; ?>
 
 	<label for="<?php echo esc_attr( $value['id'] ); ?>">
@@ -38,8 +38,8 @@ if ( isset( $value['show_if_checked'] ) ) {
 			value="1"
 		<?php checked( $option_value, 'yes' ); ?>
 		<?php echo implode( ' ', $custom_attributes ?? array() ); ?>
-		/> <?php echo $description ?? ''; ?>
-	</label> <?php echo $tooltip_html ?? ''; ?>
+		/> <?php echo wp_kses_post( $description ?? '' ); ?>
+	</label> <?php echo wp_kses_post( $tooltip_html ?? '' ); ?>
 
 <?php if ( ! isset( $value['checkboxgroup'] ) || 'end' === $value['checkboxgroup'] ) : ?>
 			</fieldset>

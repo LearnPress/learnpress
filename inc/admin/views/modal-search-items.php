@@ -5,7 +5,7 @@
 		</div>
 		<div class="modal-wrapper">
 			<div class="modal-container">
-				<header><?php echo $this->_options['title']; ?></header>
+				<header><?php echo wp_kses_post( $this->_options['title'] ); ?></header>
 				<article>
 					<input type="text" name="search" @keyup="doSearch" ref="term" value="" placeholder="<?php esc_html_e( 'Search items', 'learnpress' ); ?>" autocomplete="off"/>
 					<ul class="search-results" @click="selectItem"></ul>
@@ -14,10 +14,10 @@
 					<div class="search-nav" @click="loadPage" v-if="hasItems">
 					</div>
 					<button class="button"
-							@click="close"><?php echo $this->_options['close_button']; ?></button>
+							@click="close"><?php echo wp_kses_post( $this->_options['close_button'] ); ?></button>
 					<button class="button button-primary"
 							@click="addItems"
-							v-if="selected.length"><?php echo $this->_options['add_button']; ?></button>
+							v-if="selected.length"><?php echo wp_kses_post( $this->_options['add_button'] ); ?></button>
 				</footer>
 			</div>
 		</div>

@@ -81,7 +81,7 @@ $user_ip      = $order->get_user_ip_address();
 			<div class="order-users">
 				<?php if ( $order->is_multi_users() ) : ?>
 					<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
-					<ul id="list-users" class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>">
+					<ul id="list-users" class="advanced-list <?php echo esc_attr( $order->get_status() === 'completed' ? 'locked' : '' ); ?>">
 					</ul>
 
 					<?php if ( 'pending' === $order->get_status() ) : ?>
@@ -101,11 +101,11 @@ $user_ip      = $order->get_user_ip_address();
 								printf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'user_id', absint( $order->get_user_id( 'edit' ) ), admin_url( 'user-edit.php' ) ) ), esc_html__( 'Profile', 'learnpress' ) );
 							}
 						} else {
-							echo $order->get_customer_name();
+							echo wp_kses_post( $order->get_customer_name() );
 						}
 						?>
 
-						<input type="hidden" name="order-customer" id="order-customer" value="<?php echo $order->get_user( 'id' ); ?>"/>
+						<input type="hidden" name="order-customer" id="order-customer" value="<?php echo esc_attr( $order->get_user( 'id' ) ); ?>"/>
 
 						<?php if ( 'pending' === $order->get_status() ) : ?>
 							<?php echo ' |'; ?>
@@ -236,7 +236,7 @@ $user_ip      = $order->get_user_ip_address();
 		<div class="order-data-field order-data-user">
 			<label><?php esc_html_e( 'Customer', 'learnpress' ); ?></label>
 			<div class="order-users">
-				<ul id="list-users" class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>"></ul>
+				<ul id="list-users" class="advanced-list <?php echo esc_attr( $order->get_status() === 'completed' ? 'locked' : '' ); ?>"></ul>
 			</div>
 			<a href="" class="change-user" data-multiple="yes"><?php esc_html_e( 'Add multi users', 'learnpress' ); ?></a>
 		</div>

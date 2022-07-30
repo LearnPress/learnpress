@@ -110,7 +110,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 				foreach ( $this->metabox( $post->ID ) as $key => $object ) {
 					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
 						$object->id = $key;
-						echo $object->output( $post->ID );
+						echo wp_kses_post( $object->output( $post->ID ) );
 					} elseif ( is_array( $object ) ) {
 						$is_old = true;
 					}

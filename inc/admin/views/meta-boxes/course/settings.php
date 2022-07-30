@@ -517,7 +517,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 									foreach ( $tab_content['content'] as $meta_key => $object ) {
 										if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
 											$object->id = $meta_key;
-											echo $object->output( $post->ID );
+											echo wp_kses_post( $object->output( $post->ID ) );
 										}
 									}
 

@@ -54,14 +54,14 @@ class LP_Meta_Box_Question extends LP_Meta_Box {
 				foreach ( $this->metabox( $post->ID ) as $key => $object ) {
 					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
 						$object->id = $key;
-						echo $object->output( $post->ID );
+						echo wp_kses_post( $object->output( $post->ID ) );
 					} elseif ( is_array( $object ) ) {
 						$is_old = true;
 					}
 				}
 
 				if ( $is_old ) {
-					lp_meta_box_output( $this->metabox() );
+					lp_meta_box_output( $this->metabox( $post->ID ) );
 				}
 
 				do_action( 'learnpress/question-settings/after' );

@@ -229,7 +229,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 		?>
 		<div class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
 
-			<div id="the-list"<?php echo $data_attr; ?>>
+			<div id="the-list"<?php echo esc_attr( $data_attr ); ?>>
 				<?php $this->display_rows_or_placeholder(); ?>
 			</div>
 		</div>
@@ -450,7 +450,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 				<div class="plugin-card-top">
 					<a href="<?php echo esc_url_raw( $details_link ); ?>" class="thickbox plugin-icon"><img src="<?php echo esc_attr( $plugin_icon_url ); ?>" /></a>
 					<div class="name column-name">
-						<h3><a href="<?php echo esc_url_raw( $details_link ); ?>" class="thickbox"><?php echo $title; ?></a></h3>
+						<h3><a href="<?php echo esc_url_raw( $details_link ); ?>" class="thickbox"><?php echo wp_kses_post( $title ); ?></a></h3>
 					</div>
 					<div class="action-links">
 						<?php
@@ -461,8 +461,8 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 						?>
 					</div>
 					<div class="desc column-description">
-						<p><?php echo $description; ?></p>
-						<p class="authors"><?php echo $author; ?></p>
+						<p><?php echo wp_kses_post( $description ); ?></p>
+						<p class="authors"><?php echo wp_kses_post( $author ); ?></p>
 					</div>
 				</div>
 				<div class="plugin-card-bottom">

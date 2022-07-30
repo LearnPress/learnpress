@@ -315,7 +315,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						$duration_str = '--';
 					}
 
-					echo $duration_str;
+					echo esc_html( $duration_str );
 					break;
 				case 'preview':
 					printf(

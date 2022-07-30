@@ -20,9 +20,9 @@
 						<?php echo esc_html( $gateway->get_method_title() ); ?>
 					</a>
 				</td>
-				<td class="id"><?php echo $gateway->get_id(); ?></td>
-				<td class="description"><?php echo $gateway->get_method_description(); ?></td>
-				<td class="status<?php echo $gateway->is_enabled() ? ' enabled' : ''; ?>">
+				<td class="id"><?php echo esc_html( $gateway->get_id() ); ?></td>
+				<td class="description"><?php echo wp_kses_post( $gateway->get_method_description() ); ?></td>
+				<td class="status<?php echo esc_attr( $gateway->is_enabled() ? ' enabled' : '' ); ?>">
 					<span class="dashicons dashicons-yes"></span>
 					<input type="hidden" name="payment-order" value="<?php echo esc_attr( $gateway->get_id() ); ?>"/>
 				</td>

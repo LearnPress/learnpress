@@ -516,8 +516,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param mixed $params (Optional) List of keys want to get from payload.
 		 *
 		 * @return array|bool|mixed|object
+		 * @depecated 4.1.6.9
 		 */
-		public static function get_php_input( $params = '' ) {
+		/*public static function get_php_input( $params = '' ) {
 			static $data = false;
 			if ( false === $data ) {
 				try {
@@ -539,15 +540,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			return $data;
-		}
+		}*/
 
 		/**
 		 * Parse request content into var.
 		 * Normally, parse and assign to $_POST or $_GET.
 		 *
 		 * @param $var
+		 * @depecated 4.1.6.9
 		 */
-		public static function parsePhpInput( &$var ) {
+		/*public static function parsePhpInput( &$var ) {
 			$data = self::get_php_input();
 
 			if ( $data ) {
@@ -555,7 +557,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$var[ $k ] = $v;
 				}
 			}
-		}
+		}*/
 
 		public static function load_chart() {
 			if ( ! class_exists( 'LP_Submenu_Statistics' ) ) {
@@ -573,7 +575,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( method_exists( $wpdb, 'esc_like' ) ) {
 				$term = $wpdb->esc_like( $term );
 			} else {
-				$term = like_escape( $term );
+				$term = $wpdb->esc_like( $term );
 			}
 
 			$query->query_from  .= " INNER JOIN {$wpdb->usermeta} AS user_name ON {$wpdb->users}.ID = user_name.user_id AND ( user_name.meta_key = 'first_name' OR user_name.meta_key = 'last_name' ) ";

@@ -32,9 +32,9 @@
 			}
 			?>
 
-			<tr id="email-<?php echo $email->id; ?>">
-				<td class="status <?php echo $email->enable ? 'enabled' : ''; ?>">
-					<span class="change-email-status dashicons dashicons-yes" data-status="<?php echo $email->enable ? 'on' : 'off'; ?>" data-id="<?php echo $email->id; ?>"></span>
+			<tr id="email-<?php echo esc_attr( $email->id ); ?>">
+				<td class="status <?php echo esc_attr( $email->enable ? 'enabled' : '' ); ?>">
+					<span class="change-email-status dashicons dashicons-yes" data-status="<?php echo esc_attr( $email->enable ? 'on' : 'off' ); ?>" data-id="<?php echo esc_attr( $email->id ); ?>"></span>
 				</td>
 				<td class="name">
 					<a href="<?php echo esc_url_raw( $url ); ?>">
@@ -42,12 +42,12 @@
 						if ( $group ) {
 							echo join( ' &rarr; ', array( $group, $email->title ) );
 						} else {
-							echo $email->title;
+							echo wp_kses_post( $email->title );
 						}
 						?>
 					</a>
 				</td>
-				<td class="description"><?php echo $email->description; ?></td>
+				<td class="description"><?php echo wp_kses_post( $email->description ); ?></td>
 				<td class="manage"><a class="button" href="<?php echo esc_url_raw( $url ); ?>"><?php esc_html_e( 'Manage', 'learnpress' ); ?></a></td>
 			</tr>
 		<?php } ?>

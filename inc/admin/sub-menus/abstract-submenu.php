@@ -324,9 +324,9 @@ abstract class LP_Abstract_Submenu {
 						?>
 
 						<?php if ( $active_class ) { ?>
-							<span class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo $tab_title; ?></span>
+							<span class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo esc_html( $tab_title ); ?></span>
 						<?php } else { ?>
-							<a class="nav-tab" href="?page=<?php echo $this->id; ?>&tab=<?php echo $tab; ?>"><?php echo $tab_title; ?></a>
+							<a class="nav-tab" href="?page=<?php echo esc_attr( $this->id ); ?>&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
 						<?php } ?>
 					<?php } ?>
 				</h2>
@@ -407,7 +407,7 @@ abstract class LP_Abstract_Submenu {
 					<?php if ( $active_class ) { ?>
 						<span><?php echo wp_kses_post( $section_title ); ?></span>
 					<?php } else { ?>
-						<a href="<?php echo esc_url_raw( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
+						<a href="<?php echo esc_url_raw( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo wp_kses_post( $section_title ); ?></a>
 					<?php } ?>
 				</li>
 			<?php } ?>

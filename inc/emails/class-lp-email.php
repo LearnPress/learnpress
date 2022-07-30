@@ -619,7 +619,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		public function get_content_plain(): string {
 			$template      = $this->get_template( 'template_plain' );
 			$template_file = $this->template_base . $template;
-			$content       = $this->settings->get( 'email_content.plain', file_get_contents( $template_file ) );
+			$content_tmp   = LP_WP_Filesystem::instance()->file_get_contents( $template_file );
+			$content       = $this->settings->get( 'email_content.plain', $content_tmp );
 			$content       = stripslashes( $content );
 
 			return $content;
@@ -1169,10 +1170,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				]
 			);
 			$header = ob_get_clean();
-			$header = wp_kses_post( $header );
 
 			if ( $echo ) {
-				echo $header;
+				echo wp_kses_post( $header );
 			}
 
 			return $header;
@@ -1190,10 +1190,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			ob_start();
 			learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
 			$footer = ob_get_clean();
-			$footer = wp_kses_post( $footer );
 
 			if ( $echo ) {
-				echo $footer;
+				echo wp_kses_post( $footer );
 			}
 
 			return $footer;

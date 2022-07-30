@@ -32,7 +32,7 @@ global $post;
 					}
 					?>
 					<a class="submitdelete deletion" href="<?php echo get_delete_post_link( $post->ID ); ?>">
-						<?php echo $delete_text; ?>
+						<?php echo esc_html( $delete_text ); ?>
 					</a>
 				<?php endif; ?>
 			</div>

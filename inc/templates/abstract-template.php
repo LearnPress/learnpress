@@ -259,7 +259,7 @@ class LP_Template_Callback {
 	}
 
 	public function text() {
-		echo $this->template;
+		echo wp_kses_post( $this->template );
 	}
 
 	public function get_args() {

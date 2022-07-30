@@ -27,7 +27,7 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 		?>
 
 		<div class="form-field lp_course_faq_meta_box">
-			<label for="_lp_key_features"><?php echo $this->label; ?></label>
+			<label for="_lp_key_features"><?php echo wp_kses_post( $this->label ); ?></label>
 			<div class="lp_course_faq_meta_box__content">
 				<div class="lp_course_faq_meta_box__fields">
 					<?php if ( ! empty( $faqs[0][0] ) ) : ?>
@@ -39,7 +39,7 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 								</label>
 								<label>
 									<span><?php esc_attr_e( 'Content', 'learnpress' ); ?></span>
-									<textarea name="_lp_faqs_answer[]"><?php echo $faq[1]; ?></textarea>
+									<textarea name="_lp_faqs_answer[]"><?php echo wp_kses_post( $faq[1] ); ?></textarea>
 								</label>
 								<a href="#" class="delete"></a>
 								<span class="sort"></span>

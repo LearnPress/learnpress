@@ -196,14 +196,25 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
 		$output = ob_get_clean();
 
 		if ( ! $return ) {
-			// Don't set wp_kses_post on here, error with order detail backend
-			print $output;
+			learn_press_echo_vuejs_write_on_php( $output );
 		}
 
 		return $return ? $output : true;
 	}
 
 	return false;
+}
+
+/**
+ * Vue write php has script, so when sanitize will error, so use code is mask pass check sanitize, esc
+ *
+ * @param $content
+ *
+ * @return void
+ * @since 4.1.6.9
+ */
+function learn_press_echo_vuejs_write_on_php( $content ) {
+	echo ( $content );
 }
 
 /**
@@ -291,12 +302,12 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 
 		<?php echo esc_html( _x( 'or', 'drop down pages', 'learnpress' ) ); ?>
 
-		<button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button">
+		<button class="button button-quick-add-page" data-id="<?php echo esc_attr( $id ); ?>" type="button">
 			<?php esc_html_e( 'Create new', 'learnpress' ); ?>
 		</button>
 		<?php echo '</div>'; ?>
 
-		<p class="quick-add-page-inline <?php echo $id; ?> hide-if-js">
+		<p class="quick-add-page-inline <?php echo esc_attr( $id ); ?> hide-if-js">
 			<input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>"/>
 			<button class="button" type="button">
 				<?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?>
@@ -304,12 +315,12 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 			<a href=""><?php esc_html_e( 'Cancel [ESC]', 'learnpress' ); ?></a>
 		</p>
 
-		<p class="quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+		<p class="quick-add-page-actions <?php echo esc_attr( $id ); ?><?php echo esc_attr( $selected ? '' : ' hide-if-js' ); ?>">
 			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>"
-			   target="_blank"><?php esc_html_e( 'Edit page', 'learnpress' ); ?></a>
+				target="_blank"><?php esc_html_e( 'Edit page', 'learnpress' ); ?></a>
 			&#124;
 			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>"
-			   target="_blank"><?php esc_html_e( 'View page', 'learnpress' ); ?></a>
+				target="_blank"><?php esc_html_e( 'View page', 'learnpress' ); ?></a>
 		</p>
 
 		<?php
@@ -321,7 +332,21 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$output = sprintf( '<div class="learn-press-dropdown-pages">%s</div>', $output );
 
 	if ( $echo ) {
-		echo $output;
+		$allowed_html           = wp_kses_allowed_html( 'post' );
+		$allowed_html['select'] = [
+			'name' => [],
+		];
+		$allowed_html['option'] = [
+			'value'    => [],
+			'selected' => [],
+			'class'    => [],
+		];
+		$allowed_html['input']  = [
+			'type'        => [],
+			'placeholder' => [],
+		];
+
+		echo wp_kses( $output, $allowed_html );
 	}
 
 	return $output;
@@ -372,7 +397,7 @@ function learn_press_dropdown_question_types( $args = array() ) {
 	$output .= '</select>';
 
 	if ( $args['echo'] ) {
-		echo $output;
+		echo wp_kses_post( $output );
 	}
 
 	return $output;
@@ -486,7 +511,7 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 	$output .= '</select>';
 
 	if ( $args['echo'] ) {
-		echo $output;
+		echo wp_kses_post( $output );
 	}
 
 	return $output;
@@ -1525,7 +1550,7 @@ function learn_press_process_chart( $chart = array() ) {
 			'datasets' => $chart['datasets'],
 		)
 	);
-	echo $data;
+	echo wp_kses_post( $data );
 }
 
 /**

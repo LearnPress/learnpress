@@ -982,7 +982,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$class = ' class="' . implode( ' ', apply_filters( 'learn-press/profile/class', $classes ) ) . '"';
 
 			if ( $echo ) {
-				echo $class;
+				echo wp_kses_post( $class );
 			}
 
 			return $class;

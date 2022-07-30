@@ -18,9 +18,9 @@ if ( isset( $value['args'] ) ) {
 
 <tr valign="top" class="single_select_page">
 	<th scope="row" class="titledesc">
-		<label><?php echo esc_html( $value['title'] ); ?> <?php echo $tooltip_html; ?></label>
+		<label><?php echo esc_html( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ); ?></label>
 	</th>
 	<td class="forminp">
-	<?php echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'learnpress' ) . "' style='" . $value['css'] . "' class='" . $value['class'] . "' id=", wp_dropdown_pages( $args ) ); ?> <?php echo $description; ?>
+	<?php echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'learnpress' ) . "' style='" . $value['css'] . "' class='" . $value['class'] . "' id=", wp_dropdown_pages( $args ) ); ?> <?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>

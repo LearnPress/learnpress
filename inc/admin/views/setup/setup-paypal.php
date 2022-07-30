@@ -16,7 +16,8 @@ $settings = LP_Settings::instance();
 	<tr>
 		<th><?php _e( 'Paypal Email', 'learnpress' ); ?></th>
 		<td>
-			<input class="regular-text" type="email" name="settings[paypal][paypal_email]" id="settings-paypal-email" value="<?php echo $settings->get( 'paypal.paypal_email', '' ); ?>">
+			<input class="regular-text" type="email" name="settings[paypal][paypal_email]" id="settings-paypal-email"
+				value="<?php echo esc_attr( $settings->get( 'paypal.paypal_email', '' ) ); ?>">
 			<p class="description">
 				<?php _e( 'Your Paypal email in live mode.', 'learnpress' ); ?>
 			</p>
@@ -34,7 +35,7 @@ $settings = LP_Settings::instance();
 				if ( $payment_currencies ) {
 					foreach ( $payment_currencies as $code => $symbol ) {
 						?>
-						<option value="<?php echo $code; ?>" data-symbol="<?php echo learn_press_get_currency_symbol( $code ); ?>" <?php selected( $code == 'USD' ); ?>><?php echo $symbol; ?></option>
+						<option value="<?php echo esc_attr( $code ); ?>" data-symbol="<?php echo learn_press_get_currency_symbol( $code ); ?>" <?php selected( $code == 'USD' ); ?>><?php echo esc_html( $symbol ); ?></option>
 						<?php
 					}
 				}

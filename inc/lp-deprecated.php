@@ -141,24 +141,6 @@ if ( ! function_exists( 'learn_press_course_content_lesson' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_course_lesson_data' ) ) {
-	/**
-	 * Display course lesson description
-	 */
-	function learn_press_course_lesson_data() {
-		$course = LP()->course;
-		if ( ! $course ) {
-			return;
-		}
-		if ( ! ( $lesson = $course->current_lesson ) ) {
-			return;
-		}
-		?>
-		<input type="hidden" name="learn-press-lesson-viewing" value="<?php echo $lesson->id; ?>"/>
-		<?php
-	}
-}
-
 if ( ! function_exists( 'learn_press_course_lesson_description' ) ) {
 	/**
 	 * Display course lesson description

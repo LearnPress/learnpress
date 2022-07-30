@@ -498,7 +498,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					);
 				}
 
-				$data   = file_get_contents( $file['tmp_name'] );
+				$data   = LP_WP_Filesystem::instance()->file_get_contents( $file['tmp_name'] );
 				$base64 = base64_encode( $data );
 
 				$controller = new LP_REST_Profile_Controller();

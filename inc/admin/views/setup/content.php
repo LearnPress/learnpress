@@ -45,7 +45,7 @@ if ( ! isset( $steps ) ) {
 					<a class="button button-prev" href="<?php echo esc_url_raw( $wizard->get_prev_url() ); ?>">
 						<?php
 						if ( ! empty( $step['next_button'] ) ) {
-							echo $step['back_button'];
+							echo wp_kses_post( $step['back_button'] );
 						} else {
 							_e( 'Back', 'learnpress' );
 						}
@@ -56,7 +56,7 @@ if ( ! isset( $steps ) ) {
 					<a class="button button-next button-primary" href="<?php echo esc_url_raw( $wizard->get_next_url() ); ?>">
 						<?php
 						if ( ! empty( $step['next_button'] ) ) {
-							echo $step['next_button'];
+							echo wp_kses_post( $step['next_button'] );
 						} else {
 							_e( 'Continue', 'learnpress' );
 						}

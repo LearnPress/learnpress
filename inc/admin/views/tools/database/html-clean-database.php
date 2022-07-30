@@ -33,7 +33,10 @@ $clean_tables = array(
 					?>
 					<li style="background-color: <?php echo esc_attr( $color_code ); ?>">
 						<input type="checkbox" id="clean-table__<?php echo esc_attr( $clean_table ); ?>" name="clean-table__<?php echo esc_attr( $clean_table ); ?>" value="<?php echo esc_attr( $clean_table ); ?>" >
-						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>"><?php echo esc_html__( '' . $clean_table . ' (' . $lp_db_sessions->count_row_db_sessions() . ' rows expire)', 'learnpress' ); ?></label><br>
+						<label for="clean-table__<?php echo esc_attr( $clean_table ); ?>">
+							<?php echo sprintf( '%s (%d) %s', $clean_table, $lp_db_sessions->count_row_db_sessions(), __( 'rows expire', 'learnpress' ) ); ?>
+						</label>
+						<br>
 					</li>
 				<?php endforeach; ?>
 			</ul>

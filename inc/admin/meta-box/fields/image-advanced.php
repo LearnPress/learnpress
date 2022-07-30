@@ -2,7 +2,7 @@
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo $value['title']; ?> <?php echo $tooltip_html; ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo wp_kses_post( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ); ?></label>
 	</th>
 	<td class="forminp lp-metabox-field__image-advanced forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
 		<ul class="lp-metabox-field__image-advanced-images">
@@ -20,7 +20,7 @@
 					}
 					?>
 					<li class="image" data-attachment_id="<?php echo esc_attr( $attachment_id ); ?>">
-						<?php echo $attachment; ?>
+						<?php echo wp_kses_post( $attachment ); ?>
 						<ul class="actions">
 							<li><a href="#" class="delete"><?php esc_html_e( 'Delete', 'learnpress' ); ?></a></li>
 						</ul>

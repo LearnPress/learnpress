@@ -575,7 +575,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			switch ( $column ) {
 				case 'thumbnail':
-					echo $course->get_image( 'thumbnail' );
+					echo wp_kses_post( $course->get_image( 'thumbnail' ) );
 					break;
 				case 'instructor':
 					$this->column_instructor( $post->ID );
@@ -587,8 +587,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$output     = sprintf( _n( '<strong>%d</strong> section', '<strong>%d</strong> sections', $number_sections, 'learnpress' ), $number_sections );
 						$html_items = array();
 						$post_types = get_post_types( null, 'objects' );
-
-						// $stats_objects = $curd->count_items( $post_id, 'edit' );
 
 						foreach ( learn_press_get_course_item_types() as $item_type ) {
 							$count_item = $course->count_items( $item_type );
@@ -603,28 +601,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							$html_items[]     = sprintf( _n( '<strong>%d</strong> ' . $singular_name, '<strong>%d</strong> ' . $plural_name, $count_item, 'learnpress' ), $count_item );
 						}
 
-						/*
-						if ( $stats_objects ) {
-							foreach ( $stats_objects as $type => $count ) {
-								if ( ! $count || ! isset( $post_types[ $type ] ) ) {
-									continue;
-								}
-
-								$post_type_object = $post_types[ $type ];
-								$singular_name    = strtolower( $post_type_object->labels->singular_name );
-								$plural_name      = strtolower( $post_type_object->label );
-								$html_items[]     = sprintf( _n( '<strong>%d</strong> ' . $singular_name, '<strong>%d</strong> ' . $plural_name, $count, 'learnpress' ), $count );
-							}
-						}*/
-
 						$html_items = apply_filters( 'learn-press/course-count-items', $html_items );
 
 						if ( $html_items ) {
 							$output .= ' (' . implode( ', ', $html_items ) . ')';
 						}
 
-						echo $output;
-
+						echo wp_kses_post( $output );
 					} else {
 						esc_html_e( 'No content', 'learnpress' );
 					}
@@ -632,13 +615,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 
 				case 'price':
-					echo $course->get_course_price_html();
+					echo wp_kses_post( $course->get_course_price_html() );
 					break;
 				case 'students':
 					$count = $course->get_total_user_enrolled_or_purchased();
-
 					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . ( $count ? $count : 0 ) . '</span>';
-
+					break;
 			}
 		}
 

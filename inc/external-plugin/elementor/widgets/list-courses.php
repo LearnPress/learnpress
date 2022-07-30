@@ -191,7 +191,8 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 		}
 		?>
 		<div class="lp-archive-courses">
-			<ul class="learn-press-courses" data-layout="<?php echo $settings['grid_list_type']; ?>" data-size="<?php echo absint( $settings['number_posts'] ); ?>">
+			<ul class="learn-press-courses" data-layout="<?php echo esc_attr( $settings['grid_list_type'] ); ?>"
+				data-size="<?php echo absint( $settings['number_posts'] ); ?>">
 				<?php
 				global $post;
 				foreach ( $courses as $course ) {

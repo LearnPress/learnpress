@@ -2,7 +2,7 @@
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo $tooltip_html; ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ); ?></label>
 	</th>
 	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">
 		<select
@@ -10,24 +10,24 @@
 			id="<?php echo esc_attr( $value['id'] ); ?>"
 			style="<?php echo esc_attr( $value['css'] ); ?>"
 			class="<?php echo esc_attr( $value['class'] ); ?>"
-	<?php echo implode( ' ', $custom_attributes ); ?>
-	<?php echo 'multiselect' === $value['type'] ? 'multiple="multiple"' : ''; ?>
+			<?php echo esc_attr( implode( ' ', $custom_attributes ) ); ?>
+			<?php echo 'multiselect' === $value['type'] ? 'multiple="multiple"' : ''; ?>
 			>
-	<?php foreach ( $value['options'] as $key => $val ) { ?>
+			<?php foreach ( $value['options'] as $key => $val ) { ?>
 			<option value="<?php echo esc_attr( $key ); ?>"
-			<?php
+				<?php
 
-			if ( is_array( $option_value ) ) {
-				selected( in_array( (string) $key, $option_value, true ), true );
-			} else {
-				selected( $option_value, (string) $key );
-			}
+				if ( is_array( $option_value ) ) {
+					selected( in_array( (string) $key, $option_value, true ), true );
+				} else {
+					selected( $option_value, (string) $key );
+				}
 
-			?>
+				?>
 				><?php echo esc_html( $val ); ?></option>
 				<?php
-	}
-	?>
-		</select> <?php echo $description; ?>
+			}
+			?>
+		</select> <?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>
