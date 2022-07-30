@@ -2035,24 +2035,28 @@ function lp_custom_register_fields_display() {
 							?>
 							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
 							<?php
+							break;
 						case 'tel':
 							?>
-							<input name="_lp_custom_register_form[<?php echo $value; ?>]"
-								   type="<?php echo $custom_field['type']; ?>" class="regular-text"
-								   value="">
+							<label for="">
+								<input name="_lp_custom_register_form[<?php echo esc_attr( $value ); ?>]"
+									type="<?php echo esc_attr( $custom_field['type'] ); ?>" class="regular-text"
+									value="" />
+							</label>
 							<?php
 							break;
 						case 'textarea':
 							?>
-							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
-							<textarea name="_lp_custom_register_form[<?php echo $value; ?>]"></textarea>
+							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?>
+								<textarea name="_lp_custom_register_form[<?php echo esc_attr( $value ); ?>]"></textarea>
+							</label>
 							<?php
 							break;
 						case 'checkbox':
 							?>
 							<label>
-								<input name="_lp_custom_register_form[<?php echo $value; ?>]"
-									   type="<?php echo $custom_field['type']; ?>" value="1">
+								<input name="_lp_custom_register_form[<?php echo esc_attr( $value ); ?>]"
+									type="<?php echo $custom_field['type']; ?>" value="1">
 								<?php echo esc_html( $custom_field['name'] ); ?>
 							</label>
 							<?php

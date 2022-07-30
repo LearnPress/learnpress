@@ -33,7 +33,7 @@ $email_format = $meta['format'];
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label><?php echo $value['title']; ?> <?php echo $tooltip_html ?? ''; ?></label>
+		<label><?php echo wp_kses_post( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ?? '' ); ?></label>
 	</th>
 	<td class="forminp lp-metabox-field__email-content forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
 		<?php
@@ -88,7 +88,7 @@ $email_format = $meta['format'];
 				$theme_folder = basename( $theme_dir );
 				?>
 
-				<div class="<?php echo implode( ' ', $classes ); ?>">
+				<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 					<?php if ( $has_local_file ) : ?>
 						<textarea rows="10" style="width: 90%;" readonly="readonly"><?php echo stripslashes( LP_WP_Filesystem::instance()->file_get_contents( $local_file ) ); ?></textarea>
 						<p class="description">
@@ -96,7 +96,7 @@ $email_format = $meta['format'];
 						</p>
 					<?php endif; ?>
 
-					<div class="<?php echo $has_local_file ? 'hide-if-js' : ''; ?>">
+					<div class="<?php echo esc_attr( $has_local_file ? 'hide-if-js' : '' ); ?>">
 						<?php if ( $template_type == 'html' ) : ?>
 							<?php
 							wp_editor(
@@ -113,9 +113,9 @@ $email_format = $meta['format'];
 							<div class="editor">
 								<textarea
 									id="<?php echo esc_attr( sanitize_key( $field['id'] . '-' . $template_type ) ); ?>"
-									name="<?php echo $field['id'] . '[plain]'; ?>"
+									name="<?php echo esc_attr( $field['id'] . '[plain]' ); ?>"
 									class="code" cols="25" rows="20"
-									style="width: 97%;"><?php echo $content_plain; ?>
+									style="width: 97%;"><?php echo wp_kses_post( $content_plain ); ?>
 								</textarea>
 							</div>
 						<?php endif; ?>
@@ -123,11 +123,11 @@ $email_format = $meta['format'];
 
 					<?php if ( ! $has_local_file ) : ?>
 						<?php if ( $field['support_variables'] ) : ?>
-							<ol class="learn-press-email-variables<?php echo $template_type == 'html' ? ' has-editor' : ''; ?>"
+							<ol class="learn-press-email-variables<?php echo esc_html( $template_type == 'html' ? ' has-editor' : '' ); ?>"
 								data-target="<?php echo esc_attr( sanitize_key( $field['id'] . '-' . $template_type ) ); ?>">
 								<?php foreach ( $field['support_variables'] as $variable ) : ?>
 									<li data-variable="<?php echo esc_attr( $variable ); ?>">
-										<code><?php echo $variable; ?></code></li>
+										<code><?php echo esc_html( $variable ); ?></code></li>
 								<?php endforeach; ?>
 							</ol>
 

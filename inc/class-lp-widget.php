@@ -100,12 +100,12 @@ class LP_Widget extends WP_Widget {
 	 * @param array $instance Instance.
 	 */
 	public function widget_start( $args, $instance ) {
-		echo $args['before_widget'];
+		echo wp_kses_post( $args['before_widget'] );
 
 		$title = apply_filters( 'widget_title', $this->get_instance_title( $instance ), $instance, $this->id_base );
 
 		if ( $title ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo wp_kses_post( $args['before_title'] . $title . $args['after_title'] );
 		}
 	}
 
@@ -115,7 +115,7 @@ class LP_Widget extends WP_Widget {
 	 * @param  array $args Arguments.
 	 */
 	public function widget_end( $args ) {
-		echo $args['after_widget'];
+		echo wp_kses_post( $args['after_widget'] );
 	}
 
 	/**
@@ -141,7 +141,7 @@ class LP_Widget extends WP_Widget {
 			)
 		);
 
-		echo $this->lp_widget_content( $data, $args, $instance );
+		echo wp_kses_post( $this->lp_widget_content( $data, $args, $instance ) );
 	}
 
 	/**
@@ -170,9 +170,9 @@ class LP_Widget extends WP_Widget {
 			echo '<div class="learnpress-widget-wrapper">';
 
 			if ( is_wp_error( $content ) ) {
-				echo $content->get_error_message();
+				echo wp_kses_post( $content->get_error_message() );
 			} else {
-				echo $content;
+				echo wp_kses_post( $content );
 			}
 
 			echo '</div>';

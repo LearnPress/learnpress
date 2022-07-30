@@ -2,11 +2,11 @@
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo $tooltip_html; ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ); ?></label>
 	</th>
 	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">
 		<fieldset>
-			<?php echo $description; ?>
+			<?php echo wp_kses_post( $description ); ?>
 			<ul>
 			<?php
 			foreach ( $value['options'] as $key => $val ) {

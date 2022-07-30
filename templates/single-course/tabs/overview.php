@@ -36,7 +36,7 @@ if ( ! $course ) {
 	 */
 	do_action( 'learn-press/before-single-course-description' );
 
-	echo $course->get_content();
+	echo wp_kses_post( $course->get_content() );
 
 	/**
 	 * @since 3.0.0

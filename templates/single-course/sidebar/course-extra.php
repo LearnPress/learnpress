@@ -12,7 +12,7 @@ if ( ! isset( $type ) || ! isset( $content ) ) {
 }
 
 ?>
-<div class="course-extras style-checks <?php echo $type; ?>">
+<div class="course-extras style-checks <?php echo esc_attr( $type ); ?>">
 	<?php if ( isset( $title ) ) { ?>
 		<h4 class="course-extras__title"><?php echo esc_html( $title ); ?></h4>
 	<?php } ?>
@@ -21,11 +21,11 @@ if ( ! isset( $type ) || ! isset( $content ) ) {
 		<?php if ( is_array( $content ) ) { ?>
 			<ul>
 				<?php foreach ( $content as $line ) { ?>
-					<li><?php echo $line; ?></li>
+					<li><?php echo wp_kses_post( $line ); ?></li>
 				<?php } ?>
 			</ul>
 		<?php } else { ?>
-			<?php echo $content; ?>
+			<?php echo wp_kses_post( $content ); ?>
 		<?php } ?>
 	</div>
 </div>

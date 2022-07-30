@@ -852,7 +852,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				);
 				?>
 				<div class="notice notice-error">
-					<p><?php echo $message; ?></p>
+					<p><?php echo wp_kses_post( $message ); ?></p>
 				</div>
 				<?php
 				die;

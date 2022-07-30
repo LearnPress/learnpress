@@ -53,7 +53,7 @@ if ( isset( $args['section'] ) ) {
 
 	<div class="section-item" data-section-id="<?php echo esc_attr( $section['section_id'] ); ?>">
 		<ul class="section-content">
-			<?php echo $object_data->data->content ?? $object_data->data ?? $object_data ? wp_kses_post( $object_data->data->content ) : ''; ?>
+			<?php echo wp_kses_post( $object_data->data->content ?? $object_data->data ?? $object_data ? $object_data->data->content : '' ); ?>
 		</ul>
 
 		<?php if ( isset( $object_data ) && ! empty( $object_data->data->pages ) && $object_data->data->pages > 1 ) : ?>

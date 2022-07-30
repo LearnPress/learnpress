@@ -37,7 +37,7 @@ if ( ! isset( $order ) ) {
 		<?php $confirm_text = $order->get_confirm_order_received_text(); ?>
 
 		<?php if ( false !== $confirm_text ) : ?>
-			<p class="confirm-order-received-text"><?php echo $confirm_text; ?></p>
+			<p class="confirm-order-received-text"><?php echo esc_html( $confirm_text ); ?></p>
 		<?php endif; ?>
 
 		<?php do_action( 'learn-press/before-confirm-order-details', $order->get_id() ); ?>
@@ -45,7 +45,7 @@ if ( ! isset( $order ) ) {
 		<ul class="order_details">
 			<li class="order">
 				<?php esc_html_e( 'Order Number:', 'learnpress' ); ?>
-				<strong><?php echo $order->get_order_number(); ?></strong>
+				<strong><?php echo esc_html( $order->get_order_number() ); ?></strong>
 			</li>
 
 			<li class="date">
@@ -55,20 +55,20 @@ if ( ! isset( $order ) ) {
 
 			<li class="total">
 				<?php esc_html_e( 'Total:', 'learnpress' ); ?>
-				<strong><?php echo $order->get_formatted_order_total(); ?></strong>
+				<strong><?php echo esc_html( $order->get_formatted_order_total() ); ?></strong>
 			</li>
 
 			<?php $payment_method_title = $order->get_payment_method_title(); ?>
 			<?php if ( $payment_method_title ) : ?>
 				<li class="method">
 					<?php esc_html_e( 'Payment Method:', 'learnpress' ); ?>
-					<strong><?php echo $payment_method_title; ?></strong>
+					<strong><?php echo wp_kses_post( $payment_method_title ); ?></strong>
 				</li>
 			<?php endif; ?>
 
 			<li class="status">
 				<?php esc_html_e( 'Status:', 'learnpress' ); ?>
-				<strong><?php echo $order->get_status(); ?></strong>
+				<strong><?php echo esc_html( $order->get_status() ); ?></strong>
 			</li>
 		</ul>
 
@@ -80,6 +80,6 @@ if ( ! isset( $order ) ) {
 
 <?php } else { ?>
 
-	<p><?php echo $order->get_thankyou_message(); ?></p>
+	<p><?php echo esc_html( $order->get_thankyou_message() ); ?></p>
 
 <?php } ?>

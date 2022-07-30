@@ -45,11 +45,11 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 		<div class="lp_profile_course_progress__item">
 			<div>
 				<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-					<?php echo $course->get_image( 'course_thumbnail' ); ?>
+					<?php echo wp_kses_post( $course->get_image( 'course_thumbnail' ) ); ?>
 				</a>
 			</div>
 			<div><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></div>
-			<div><?php echo $course_result['result']; ?>%</div>
+			<div><?php echo esc_html( $course_result['result'] ); ?>%</div>
 			<div><?php echo ! empty( $course_data->get_expiration_time() ) ? $course_data->get_expiration_time() : '-'; ?></div>
 			<div><?php echo ! empty( $course_data->get_end_time() ) ? $course_data->get_end_time() : '-'; ?></div>
 		</div>

@@ -52,7 +52,7 @@ if ( empty( $statistic ) || empty( $user ) ) {
 			</div>
 			<div class="statistic-box">
 				<p class="statistic-box__text"><?php esc_html_e( 'Total Students', 'learnpress' ); ?></p>
-				<span class="statistic-box__number"><?php echo $statistic['total_users']; ?></span>
+				<span class="statistic-box__number"><?php echo esc_html( $statistic['total_users'] ); ?></span>
 			</div>
 
 			<?php do_action( 'learn-press/after-profile-dashboard-instructor-general-statistic' ); ?>

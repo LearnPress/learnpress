@@ -35,7 +35,7 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 				?>
 				<tr>
 					<th>
-						<label for="learn-press-custom-register-<?php echo $field['id']; ?>"><?php echo esc_html( $field['name'] ); ?></label>
+						<label for="learn-press-custom-register-<?php echo esc_attr( $field['id'] ); ?>"><?php echo esc_html( $field['name'] ); ?></label>
 					</th>
 					<td>
 					<?php
@@ -72,10 +72,13 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 			?>
 			<tr>
 				<th>
-					<label for="learn-press-user-profile-<?php echo $key; ?>"><?php echo esc_html( $label ); ?></label>
+					<label for="learn-press-user-profile-<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $label ); ?></label>
 				</th>
 				<td>
-					<input id="learn-press-user-profile-<?php echo $key; ?>" class="regular-text" type="<?php echo $type; ?>" value="<?php echo isset( $extra_profile[ $key ] ) ? $extra_profile[ $key ] : ''; ?>" name="_lp_extra_info[<?php echo $key; ?>]">
+					<input id="learn-press-user-profile-<?php echo esc_attr( $key ); ?>"
+						class="regular-text" type="<?php echo esc_attr( $type ); ?>"
+						value="<?php echo esc_attr( $extra_profile[ $key ] ?? '' ); ?>"
+						name="_lp_extra_info[<?php echo esc_attr( $key ); ?>]">
 				</td>
 			</tr>
 		<?php } ?>

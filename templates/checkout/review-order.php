@@ -47,21 +47,21 @@ if ( ! isset( $cart ) ) {
 							?>
 
 							<td class="course-thumbnail">
-								<?php echo $_course->get_image(); ?>
+								<?php echo wp_kses_post( $_course->get_image() ); ?>
 							</td>
 							<td class="course-name">
-								<a href="<?php echo apply_filters( 'learn-press/review-order/cart-item-link', get_the_permalink( $item_id ), $cart_item ); ?>">
-									<?php echo apply_filters( 'learn-press/review-order/cart-item-name', $_course->get_title(), $cart_item, $cart_item_key ); ?>
+								<a href="<?php echo esc_url_raw( apply_filters( 'learn-press/review-order/cart-item-link', get_the_permalink( $item_id ), $cart_item ) ); ?>">
+									<?php echo wp_kses_post( apply_filters( 'learn-press/review-order/cart-item-name', $_course->get_title(), $cart_item, $cart_item_key ) ); ?>
 								</a>
 
 								<?php
 								if ( $cart_item['quantity'] > 1 ) {
-									echo apply_filters( 'learn-press/review-order/cart-item-quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key );
+									echo wp_kses_post( apply_filters( 'learn-press/review-order/cart-item-quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key ) );
 								}
 								?>
 							</td>
 							<td class="course-total col-number">
-								<?php echo apply_filters( 'learn-press/review-order/cart-item-subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item, $cart_item_key ); ?>
+								<?php echo esc_html( apply_filters( 'learn-press/review-order/cart-item-subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item, $cart_item_key ) ); ?>
 							</td>
 
 							<?php
@@ -87,7 +87,7 @@ if ( ! isset( $cart ) ) {
 				<?php do_action( 'learn-press/review-order/before-subtotal-row' ); ?>
 
 				<th colspan="2"><?php _e( 'Subtotal', 'learnpress' ); ?></th>
-				<td class="col-number"><?php echo $cart->get_subtotal(); ?></td>
+				<td class="col-number"><?php echo esc_html( $cart->get_subtotal() ); ?></td>
 
 				<?php do_action( 'learn-press/review-order/after-subtotal-row' ); ?>
 			</tr>
@@ -101,7 +101,7 @@ if ( ! isset( $cart ) ) {
 				<?php do_action( 'learn-press/review-order/before-total-row' ); ?>
 
 				<th colspan="2"><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
-				<td class="col-number"><?php echo $cart->get_total(); ?></td>
+				<td class="col-number"><?php echo esc_html( $cart->get_total() ); ?></td>
 
 				<?php do_action( 'learn-press/review-order/after-total-row' ); ?>
 			</tr>

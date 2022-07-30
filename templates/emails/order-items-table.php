@@ -58,7 +58,7 @@ if ( $order->is_manual() ) {
 <table class="order-details">
 	<tr>
 		<th><?php _e( 'Order Number', 'learnpress' ); ?></th>
-		<td><?php echo $order->get_order_number(); ?></td>
+		<td><?php echo esc_html( $order->get_order_number() ); ?></td>
 	</tr>
 	<tr>
 		<th><?php _e( 'Purchase Date', 'learnpress' ); ?></th>
@@ -66,15 +66,15 @@ if ( $order->is_manual() ) {
 	</tr>
 	<tr>
 		<th><?php _e( 'Payment Method', 'learnpress' ); ?></th>
-		<td><?php echo $order->get_payment_method_title(); ?></td>
+		<td><?php echo wp_kses_post( $order->get_payment_method_title() ); ?></td>
 	</tr>
 	<tr>
 		<th><?php _e( 'Status', 'learnpress' ); ?></th>
-		<td><?php echo $order->get_order_status_html(); ?></td>
+		<td><?php echo wp_kses_post( $order->get_order_status_html() ); ?></td>
 	</tr>
 	<tr>
 		<th><?php _e( 'User Email', 'learnpress' ); ?></th>
-		<td><?php echo $email_content; ?></td>
+		<td><?php echo wp_kses_post( $email_content ); ?></td>
 	</tr>
 </table>
 
@@ -117,7 +117,7 @@ if ( $order->is_manual() ) {
 	<tr>
 		<td colspan="2" class="column-number"><?php _e( 'Total', 'learnpress' ); ?></td>
 		<td class="column-number">
-			<?php echo $order->get_formatted_order_total(); ?>
+			<?php echo esc_html( $order->get_formatted_order_total() ); ?>
 		</td>
 	</tr>
 	</tfoot>

@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -48,11 +48,11 @@ if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
 
 <div id="learn-press-course-tabs" class="course-tabs">
 	<?php foreach ( $tabs as $key => $tab ) : ?>
-		<input type="radio" name="learn-press-course-tab-radio" id="tab-<?php echo $key; ?>-input"
-			<?php checked( $active_tab === $key ); ?> value="<?php echo $key; ?>"/>
+		<input type="radio" name="learn-press-course-tab-radio" id="tab-<?php echo esc_attr( $key ); ?>-input"
+			<?php checked( $active_tab === $key ); ?> value="<?php echo esc_attr( $key ); ?>"/>
 	<?php endforeach; ?>
 
-	<ul class="learn-press-nav-tabs course-nav-tabs" data-tabs="<?php echo count( $tabs ); ?>">
+	<ul class="learn-press-nav-tabs course-nav-tabs" data-tabs="<?php echo esc_attr( count( $tabs ) ); ?>">
 		<?php foreach ( $tabs as $key => $tab ) : ?>
 			<?php
 			$classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
@@ -62,8 +62,8 @@ if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
 			}
 			?>
 
-			<li class="<?php echo implode( ' ', $classes ); ?>">
-				<label for="tab-<?php echo $key; ?>-input"><?php echo $tab['title']; ?></label>
+			<li class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+				<label for="tab-<?php echo esc_attr( $key ); ?>-input"><?php echo esc_html( $tab['title'] ); ?></label>
 			</li>
 		<?php endforeach; ?>
 

@@ -29,7 +29,7 @@ $page_title = learn_press_page_title( false );
 <div class="lp-content-area">
 	<?php if ( $page_title ) : ?>
 		<header class="learn-press-courses-header">
-			<h1><?php echo $page_title; ?></h1>
+			<h1><?php echo wp_kses_post( $page_title ); ?></h1>
 
 			<?php do_action( 'lp/template/archive-course/description' ); ?>
 		</header>

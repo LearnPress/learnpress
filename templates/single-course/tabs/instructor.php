@@ -27,18 +27,18 @@ $instructor = $course->get_instructor();
 
 	<div class="lp-course-author">
 		<div class="course-author__pull-left">
-			<?php echo $instructor->get_profile_picture(); ?>
+			<?php echo wp_kses_post( $instructor->get_profile_picture() ); ?>
 
 			<?php $socials = $instructor->get_profile_socials( $instructor->get_id() ); ?>
 			<?php if ( $socials ) : ?>
 				<div class="author-socials">
-					<?php echo implode( '', $socials ); ?>
+					<?php echo wp_kses_post( implode( '', $socials ) ); ?>
 				</div>
 			<?php endif; ?>
 		</div>
 
 		<div class="course-author__pull-right">
-			<div class="author-title"><?php echo $course->get_instructor_html(); ?></div>
+			<div class="author-title"><?php echo wp_kses_post( $course->get_instructor_html() ); ?></div>
 			<div class="author-description margin-bottom">
 
 				<?php
@@ -49,7 +49,7 @@ $instructor = $course->get_instructor();
 				 */
 				do_action( 'learn-press/begin-course-instructor-description', $instructor );
 
-				echo $instructor->get_description();
+				echo wp_kses_post( $instructor->get_description() );
 
 				/**
 				 * LP Hook

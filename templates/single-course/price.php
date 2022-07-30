@@ -17,6 +17,6 @@ if ( ! isset( $price_html ) || ! isset( $course ) ) {
 ?>
 
 <div class="course-price">
-	<?php echo $price_html; ?>
+	<?php echo wp_kses_post( $price_html ); ?>
 </div>
 

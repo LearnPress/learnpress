@@ -15,5 +15,5 @@ if ( ! isset( $object ) || ! isset( $count ) ) {
 }
 ?>
 
-<div class="meta-item meta-item-<?php echo $object; ?>"><?php echo $count; ?></div>
+<div class="meta-item meta-item-<?php echo esc_attr( $object ); ?>"><?php echo wp_kses_post( $count ); ?></div>
 

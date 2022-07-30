@@ -46,7 +46,7 @@ global $post;
 				<?php if ( ! empty( $instance['show_thumbnail'] ) && $course->get_image( 'medium' ) ) : ?>
 					<div class="lp-widget-course__image">
 						<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>">
-							<?php echo $course->get_image( 'medium' ); ?>
+							<?php echo wp_kses_post( $course->get_image( 'medium' ) ); ?>
 						</a>
 					</div>
 				<?php endif; ?>
@@ -78,9 +78,9 @@ global $post;
 						<?php if ( ! empty( $instance['show_teacher'] ) ) : ?>
 							<div class="lp-widget-course__instructor">
 								<span class="lp-widget-course__instructor__avatar">
-									<?php echo $course->get_instructor()->get_profile_picture(); ?>
+									<?php echo wp_kses_post( $course->get_instructor()->get_profile_picture() ); ?>
 								</span>
-								<?php echo $course->get_instructor_html(); ?>
+								<?php echo wp_kses_post( $course->get_instructor_html() ); ?>
 							</div>
 						<?php endif; ?>
 					</div>
@@ -94,7 +94,7 @@ global $post;
 	<div class="lp-widget-featured-courses__footer">
 		<?php if ( ! empty( $instance['bottom_link_text'] ) && learn_press_get_page_link( 'courses' ) ) : ?>
 			<a class="lp-widget-featured-courses__footer__link"
-			   href="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>" rel="nofllow">
+				href="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>" rel="nofllow">
 				<?php echo wp_kses_post( $instance['bottom_link_text'] ); ?>
 			</a>
 		<?php endif; ?>

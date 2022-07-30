@@ -99,7 +99,7 @@ class LP_Addon {
 
 		foreach ( self::$_admin_notices as $notice ) {
 			?>
-			<div class="error"><p><?php echo $notice; ?></p></div>
+			<div class="error"><p><?php echo wp_kses_post( $notice ); ?></p></div>
 			<?php
 		}
 	}

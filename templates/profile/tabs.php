@@ -58,7 +58,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 				<a href="<?php echo esc_url_raw( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
 					<?php
 					if ( ! empty( $profile_tab['icon'] ) ) {
-						echo $profile_tab['icon'];
+						echo wp_kses_post( $profile_tab['icon'] );
 					}
 					?>
 					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab['title'], $tab_key ); ?>
@@ -83,7 +83,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 								<a href="<?php echo esc_url_raw( $section_link ); ?>">
 									<?php
 									if ( ! empty( $section_data['icon'] ) ) {
-										echo $section_data['icon'];
+										echo wp_kses_post( $section_data['icon'] );
 									}
 									?>
 									<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $section_data['title'], $tab_key ); ?>

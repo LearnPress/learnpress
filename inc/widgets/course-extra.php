@@ -76,7 +76,7 @@ if ( ! class_exists( 'LP_Widget_Course_Extra' ) ) {
 			?>
 
 			<div class="<?php echo implode( ' ', $classes ); ?>">
-				<h3><?php echo $course->get_title(); ?></h3>
+				<h3><?php echo wp_kses_post( $course->get_title() ); ?></h3>
 
 				<div class="lp-widget-course-extra__content">
 					<?php

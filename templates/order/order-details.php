@@ -56,7 +56,7 @@ if ( ! isset( $order ) ) {
 						</td>
 						<td class="course-total">
 							<?php
-							echo '<span class="course-price">' . $price . '</span>';
+							echo '<span class="course-price">' . esc_html( $price ) . '</span>';
 							?>
 						</td>
 					</tr>
@@ -67,7 +67,17 @@ if ( ! isset( $order ) ) {
 
 					<tr class="<?php echo esc_attr( apply_filters( 'learn-press/order/item-class', 'order-item', $item, $order ) ); ?>">
 						<td class="course-name">
-							<?php echo apply_filters( 'learn-press/order/item-name', sprintf( '<a href="%s">%s</a>', get_permalink( $item['course_id'] ), $item['name'] ), $item ); ?>
+							<?php
+							echo apply_filters(
+								'learn-press/order/item-name',
+								sprintf(
+									'<a href="%s">%s</a>',
+									esc_url_raw( get_permalink( $item['course_id'] ) ),
+									esc_html( $item['name'] )
+								),
+								$item
+							);
+							?>
 						</td>
 
 						<td class="course-total">
@@ -75,9 +85,9 @@ if ( ! isset( $order ) ) {
 							$origin_price = $course->get_regular_price_html();
 
 							if ( $course->has_sale_price() ) {
-								echo '<span class="course-origin-price">' . $origin_price . '</span>';
+								echo '<span class="course-origin-price">' . wp_kses_post( $origin_price ) . '</span>';
 							}
-							echo '<span class="course-price">' . $price . '</span>';
+							echo '<span class="course-price">' . wp_kses_post( $price ) . '</span>';
 							?>
 						</td>
 					</tr>
@@ -94,18 +104,18 @@ if ( ! isset( $order ) ) {
 	<tfoot>
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Subtotal', 'learnpress' ); ?></th>
-			<td><?php echo $order->get_formatted_order_subtotal(); ?></td>
+			<td><?php echo esc_html( $order->get_formatted_order_subtotal() ); ?></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
-			<td><?php echo $order->get_formatted_order_total(); ?></td>
+			<td><?php echo esc_html( $order->get_formatted_order_total() ); ?></td>
 		</tr>
 	</tfoot>
 </table>
 
 <p>
 	<strong><?php echo esc_html__( 'Order key:', 'learnpress' ); ?></strong>
-	<?php echo $order->get_order_key(); ?>
+	<?php echo esc_html( $order->get_order_key() ); ?>
 </p>
 
 <p>

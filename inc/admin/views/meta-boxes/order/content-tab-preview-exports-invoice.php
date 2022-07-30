@@ -24,23 +24,23 @@ wp_enqueue_script( 'learnpress-jspdf' );
 	</div>
 	<div class="lp-invoice__hright">
 		<?php
-		if ( ! isset( $_POST['site_title'] ) || ( isset( $_POST['site_title'] ) && LP_Helper::sanitize_params_submitted( $_POST['site_title'] ) === 'check' ) ) {
+		if ( ! isset( $_POST['site_title'] ) || LP_Helper::sanitize_params_submitted( $_POST['site_title'] ) === 'check' ) {
 			echo wp_sprintf( '<p>%s</p>', esc_html( get_bloginfo( 'name' ) ) );
 		}
-		if ( ! isset( $_POST['order_date'] ) || ( isset( $_POST['order_date'] ) && LP_Helper::sanitize_params_submitted( $_POST['order_date'] ) === 'check' ) ) {
-			echo wp_sprintf( '<p class="date">%s: %s</p>', esc_html__( 'Order Date', 'learnpress' ), date( 'd-m-Y h:i:s', esc_attr( $order->get_order_date( 'timestamp' ) ) ) );
+		if ( ! isset( $_POST['order_date'] ) || LP_Helper::sanitize_params_submitted( $_POST['order_date'] ) === 'check' ) {
+			echo wp_sprintf( '<p class="date">%s: %s</p>', esc_html__( 'Order Date', 'learnpress' ), gmdate( 'd-m-Y h:i:s', esc_attr( $order->get_order_date( 'timestamp' ) ) ) );
 		}
-		if ( ! isset( $_POST['invoice_no'] ) || ( isset( $_POST['invoice_no'] ) && LP_Helper::sanitize_params_submitted( $_POST['invoice_no'] ) === 'check' ) ) {
+		if ( ! isset( $_POST['invoice_no'] ) || LP_Helper::sanitize_params_submitted( $_POST['invoice_no'] ) === 'check' ) {
 			echo wp_sprintf( '<p class="invoice-no">%s: %s</p>', esc_html__( 'Invoice No.', 'learnpress' ), esc_attr( $order->get_order_number() ) );
 		}
-		if ( ! isset( $_POST['order_customer'] ) || ( isset( $_POST['order_customer'] ) && LP_Helper::sanitize_params_submitted( $_POST['order_customer'] ) === 'check' ) ) {
+		if ( ! isset( $_POST['order_customer'] ) || LP_Helper::sanitize_params_submitted( $_POST['order_customer'] ) === 'check' ) {
 			echo wp_sprintf( '<p class="invoice-customer">%s: %s</p>', esc_html__( 'Customer', 'learnpress' ), esc_html( $order->get_customer_name() ) );
 		}
-		if ( ! isset( $_POST['order_email'] ) || ( isset( $_POST['order_email'] ) && LP_Helper::sanitize_params_submitted( $_POST['order_email'] ) === 'check' ) ) {
+		if ( ! isset( $_POST['order_email'] ) || LP_Helper::sanitize_params_submitted( $_POST['order_email'] ) === 'check' ) {
 			echo wp_sprintf( '<p class="invoice-email">%s: %s</p>', esc_html__( 'Email', 'learnpress' ), esc_html( $order->get_user( 'email' ) ) );
 		}
 		?>
-		<?php if ( ! isset( $_POST['order_payment'] ) || ( isset( $_POST['order_payment'] ) && LP_Helper::sanitize_params_submitted( $_POST['order_payment'] ) === 'check' ) ) : ?>
+		<?php if ( ! isset( $_POST['order_payment'] ) || LP_Helper::sanitize_params_submitted( $_POST['order_payment'] ) === 'check' ) : ?>
 			<p class="invoice-method">
 				<?php
 				$method_title = $order->get_payment_method_title();

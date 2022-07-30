@@ -23,7 +23,7 @@ if ( ! $course ) {
 		<div class="thumbnail-preview">
 			<div class="thumbnail">
 				<div class="centered">
-					<?php echo $course->get_image( 'course_thumbnail' ); ?>
+					<?php echo wp_kses_post( $course->get_image( 'course_thumbnail' ) ); ?>
 				</div>
 			</div>
 		</div>

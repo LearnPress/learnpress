@@ -196,7 +196,8 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
 		$output = ob_get_clean();
 
 		if ( ! $return ) {
-			echo $output;
+			// Don't set wp_kses_post on here, error with order detail backend
+			print $output;
 		}
 
 		return $return ? $output : true;

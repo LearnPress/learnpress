@@ -14,11 +14,11 @@ defined( 'ABSPATH' ) || exit();
 if ( empty( $breadcrumb ) ) {
 	return;
 }
-echo $wrap_before;
+echo wp_kses_post( $wrap_before );
 
 foreach ( $breadcrumb as $key => $crumb ) {
 
-	echo $before;
+	echo wp_kses_post( $before );
 
 	echo '<li>';
 
@@ -30,11 +30,11 @@ foreach ( $breadcrumb as $key => $crumb ) {
 
 	echo '</li>';
 
-	echo $after;
+	echo wp_kses_post( $after );
 
 	if ( sizeof( $breadcrumb ) !== $key + 1 ) {
-		echo $delimiter;
+		echo wp_kses_post( $delimiter );
 	}
 }
 
-echo $wrap_after;
+echo wp_kses_post( $wrap_after );

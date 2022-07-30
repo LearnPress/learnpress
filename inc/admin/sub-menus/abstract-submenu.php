@@ -299,11 +299,11 @@ abstract class LP_Abstract_Submenu {
 		$classes    = array( 'wrap', 'lp-submenu-page', $this->get_id() );
 		?>
 
-		<div class="<?php echo implode( ' ', $classes ); ?>">
+		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 			<?php do_action( 'learn-press/admin/heading-icon', $active_tab ); ?>
 
 			<h1 class="wp-heading-inline">
-				<?php echo $this->get_menu_title(); ?>
+				<?php echo wp_kses_post( $this->get_menu_title() ); ?>
 				<?php do_action( 'learn-press/admin/heading-title', $active_tab ); ?>
 			</h1>
 
@@ -341,7 +341,7 @@ abstract class LP_Abstract_Submenu {
 			}
 			?>
 
-			<form class="<?php echo implode( ' ', $classes ); ?>" method="post" enctype="multipart/form-data">
+			<form class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" method="post" enctype="multipart/form-data">
 				<?php $this->page_content(); ?>
 			</form>
 		</div>
@@ -403,9 +403,9 @@ abstract class LP_Abstract_Submenu {
 				$section_title = apply_filters( 'learn-press/admin/submenu-section-title', $section, $slug );
 				?>
 
-				<li class="nav-section<?php echo $active_class; ?>">
+				<li class="nav-section<?php echo esc_attr( $active_class ); ?>">
 					<?php if ( $active_class ) { ?>
-						<span><?php echo $section_title; ?></span>
+						<span><?php echo wp_kses_post( $section_title ); ?></span>
 					<?php } else { ?>
 						<a href="<?php echo esc_url_raw( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
 					<?php } ?>

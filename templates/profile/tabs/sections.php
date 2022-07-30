@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -45,10 +45,12 @@ $active_tab   = '';
 		}
 		?>
 
-		<input type="radio" name="<?php echo esc_attr( $unique_group ); ?>" class="learn-press-tabs__checker" <?php echo $checked; ?> id="<?php echo esc_attr( $unique_group . '__' . $section_key ); ?>"/>
+		<input type="radio" name="<?php echo esc_attr( $unique_group ); ?>"
+			class="learn-press-tabs__checker" <?php echo esc_attr( $checked ); ?>
+			id="<?php echo esc_attr( $unique_group . '__' . $section_key ); ?>"/>
 	<?php } ?>
 
-	<ul class="learn-press-tabs__nav" data-tabs="<?php echo count( $visible_tabs ); ?>">
+	<ul class="learn-press-tabs__nav" data-tabs="<?php echo esc_attr( count( $visible_tabs ) ); ?>">
 		<?php
 		foreach ( $sections as $section_key => $section_data ) {
 			if ( ! in_array( $section_key, $visible_tabs ) ) {

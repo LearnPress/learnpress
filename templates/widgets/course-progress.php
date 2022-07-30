@@ -18,7 +18,7 @@ if ( ! isset( $course ) || ! isset( $user ) || ! isset( $instance ) || ! isset( 
 ?>
 
 <div class="lp_widget_course_progress <?php echo esc_attr( $instance['css_class'] ); ?>">
-	<h3><?php echo $course->get_title(); ?></h3>
+	<h3><?php echo wp_kses_post( $course->get_title() ); ?></h3>
 
 	<?php
 	learn_press_get_template(

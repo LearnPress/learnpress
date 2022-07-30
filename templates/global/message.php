@@ -50,8 +50,8 @@ if ( ! isset( $messages ) ) {
 				}
 			}
 			?>
-			<div class="<?php echo join( ' ', $classes ); ?>" <?php echo $data ? join( ' ', $data ) : ''; ?>>
-				<i class="fa"></i><?php echo $content; ?>
+			<div class="<?php echo esc_attr( join( ' ', $classes ) ); ?>" <?php echo esc_attr( $data ? join( ' ', $data ) : '' ); ?>>
+				<i class="fa"></i><?php echo wp_kses_post( $content ); ?>
 			</div>
 
 		<?php } ?>

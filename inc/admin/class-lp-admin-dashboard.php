@@ -77,9 +77,9 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 								);
 								?>
 
-								<span class="count-rating">(<?php echo $eduma_data['rating']['count']; ?>)</span>
+								<span class="count-rating">(<?php echo esc_html( $eduma_data['rating']['count'] ); ?>)</span>
 								<span>
-									- <?php echo $eduma_data['number_of_sales'] . esc_html__( ' sales', 'learnpress' ); ?>
+									- <?php echo sprintf( '%d %s', esc_html( $eduma_data['number_of_sales'] ), esc_html__( ' sales', 'learnpress' ) ); ?>
 								</span>
 							</div>
 						<?php endif; ?>

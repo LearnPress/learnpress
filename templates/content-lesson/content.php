@@ -24,7 +24,7 @@ if ( ! $content ) {
 	$message = esc_html__( 'Lesson content is empty.', 'learnpress' );
 
 	if ( $lesson->current_user_can_edit() ) {
-		$message .= sprintf( '<a href="%s" class="edit-content">%s</a>', $lesson->get_edit_link(), esc_html__( 'Edit', 'learnpress' ) );
+		$message .= sprintf( '<a href="%s" class="edit-content">%s</a>', esc_url_raw( $lesson->get_edit_link() ), esc_html__( 'Edit', 'learnpress' ) );
 	}
 
 	learn_press_display_message( $message, 'notice' );
@@ -32,4 +32,4 @@ if ( ! $content ) {
 }
 ?>
 
-<div class="content-item-description lesson-description"><?php echo $content; ?></div>
+<div class="content-item-description lesson-description"><?php echo wp_kses_post( $content ); ?></div>

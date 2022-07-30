@@ -375,7 +375,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			switch ( $column_name ) {
 				case 'lp-page':
 					if ( ! empty( $pages['learnpress'][ $post ] ) ) {
-						echo $pages['learnpress'][ $post ];
+						echo wp_kses_post( $pages['learnpress'][ $post ] );
 					}
 
 					foreach ( $pages as $plugin => $plugin_pages ) {

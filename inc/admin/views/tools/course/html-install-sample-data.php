@@ -26,23 +26,23 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 			</li>
 			<li>
 				<p><?php esc_html_e( 'Random number of sections in range', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo $section_range[0]; ?>" min="1" max="20" name="section-range[]">
-				<input type="number" size="3" value="<?php echo $section_range[1]; ?>" min="1" max="20" name="section-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $section_range[0] ); ?>" min="1" max="20" name="section-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $section_range[1] ); ?>" min="1" max="20" name="section-range[]">
 			</li>
 			<li>
 				<p><?php esc_html_e( 'Random number of items in range (each section)', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo $item_range[0]; ?>" min="1" max="50" name="item-range[]">
-				<input type="number" size="3" value="<?php echo $item_range[1]; ?>" min="1" max="50" name="item-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $item_range[0] ); ?>" min="1" max="50" name="item-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $item_range[1] ); ?>" min="1" max="50" name="item-range[]">
 			</li>
 			<li>
 				<p><?php esc_html_e( 'Random number of questions in range (each quiz)', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo $question_range[0]; ?>" min="1" max="50" name="question-range[]">
-				<input type="number" size="3" value="<?php echo $question_range[1]; ?>" min="1" max="50" name="question-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $question_range[0] ); ?>" min="1" max="50" name="question-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $question_range[1] ); ?>" min="1" max="50" name="question-range[]">
 			</li>
 			<li>
 				<p><?php esc_html_e( 'Random number of answers in range (each question)', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="<?php echo $answer_range[0]; ?>" min="1" max="10" name="answer-range[]">
-				<input type="number" size="3" value="<?php echo $answer_range[1]; ?>" min="1" max="10" name="answer-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $answer_range[0] ); ?>" min="1" max="10" name="answer-range[]">
+				<input type="number" size="3" value="<?php echo esc_attr( $answer_range[1] ); ?>" min="1" max="10" name="answer-range[]">
 			</li>
 			<li>
 				<p><?php esc_html_e( 'Course price', 'learnpress' ); ?></p>
@@ -52,11 +52,17 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 	</fieldset>
 
 	<p class="lp-install-sample__buttons">
-		<a class="button button-primary lp-install-sample__install" data-text="<?php esc_attr_e( 'Install', 'learnpress' ); ?>" data-installing-text="<?php esc_attr_e( 'Installing...', 'learnpress' ); ?>" href="<?php echo wp_nonce_url( admin_url( 'index.php?page=lp-install-sample-data' ), 'install-sample-course' ); ?>">
+		<a class="button button-primary lp-install-sample__install"
+			data-text="<?php esc_attr_e( 'Install', 'learnpress' ); ?>"
+			data-installing-text="<?php esc_attr_e( 'Installing...', 'learnpress' ); ?>"
+			href="<?php echo wp_nonce_url( admin_url( 'index.php?page=lp-install-sample-data' ), 'install-sample-course' ); ?>">
 			<?php esc_html_e( 'Install', 'learnpress' ); ?>
 		</a>
 		<a href="" class="lp-install-sample__toggle-options"><?php esc_html_e( 'Show options', 'learnpress' ); ?></a>
-		<a class="button lp-install-sample__uninstall" data-text="<?php esc_attr_e( 'Delete sample course', 'learnpress' ); ?>" data-uninstalling-text="<?php esc_attr_e( 'Deleting...', 'learnpress' ); ?>" href="<?php echo wp_nonce_url( admin_url( 'index.php?page=lp-uninstall-sample-data' ), 'uninstall-sample-course' ); ?>">
+		<a class="button lp-install-sample__uninstall"
+			data-text="<?php esc_attr_e( 'Delete sample course', 'learnpress' ); ?>"
+			data-uninstalling-text="<?php esc_attr_e( 'Deleting...', 'learnpress' ); ?>"
+			href="<?php echo wp_nonce_url( admin_url( 'index.php?page=lp-uninstall-sample-data' ), 'uninstall-sample-course' ); ?>">
 			<?php esc_html_e( 'Delete sample course', 'learnpress' ); ?>
 		</a>
 	</p>

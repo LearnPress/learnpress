@@ -679,7 +679,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				)
 			);
 			$html = ob_get_clean();
-			echo $html;
+			echo wp_kses_post( $html );
 			die();
 		}
 	}

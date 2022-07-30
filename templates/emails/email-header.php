@@ -23,7 +23,7 @@ if ( ! isset( $email_heading ) ) {
 					<div id="template_header_image">
 						<p style="margin-top:0;">
 							<img src="<?php echo esc_url_raw( $image_header ); ?>"
-								 alt="<?php echo get_bloginfo( 'name', 'display' ); ?>"/>
+								alt="<?php echo get_bloginfo( 'name', 'display' ); ?>"/>
 						</p>
 					</div>
 				<?php } ?>
@@ -32,7 +32,7 @@ if ( ! isset( $email_heading ) ) {
 					<tr>
 						<td align="center" valign="top">
 							<h2 class="order-heading">
-								<?php echo $email_heading; ?>
+								<?php echo wp_kses_post( $email_heading ); ?>
 							</h2>
 						</td>
 					</tr>

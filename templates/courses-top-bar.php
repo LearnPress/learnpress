@@ -26,8 +26,12 @@ $s       = LP_Request::get( 'c_search' );
 
 	<div class="switch-layout">
 		<?php foreach ( $layouts as $layout => $value ) : ?>
-			<input type="radio" name="lp-switch-layout-btn" value="<?php echo esc_attr( $layout ); ?>" id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
-			<label class="switch-btn <?php echo $layout; ?>" title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>" for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
+			<input type="radio" name="lp-switch-layout-btn"
+				value="<?php echo esc_attr( $layout ); ?>"
+				id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
+			<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
+				title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>"
+				for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
 		<?php endforeach; ?>
 	</div>
 </div>

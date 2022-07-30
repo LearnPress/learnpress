@@ -114,7 +114,7 @@ $user = $profile->get_user();
 				}
 				?>
 
-				<li class="form-field form-field__profile-social form-field__50 form-field__<?php echo $k; ?>">
+				<li class="form-field form-field__profile-social form-field__50 form-field__<?php echo esc_attr( $k ); ?>">
 					<label for="description"><?php echo learn_press_social_profile_name( $k ); ?></label>
 					<div class="form-field-input">
 						<input type="text" value="<?php echo esc_attr( $v ); ?>" name="user_profile_social[<?php echo esc_attr( $k ); ?>]" placeholder="https://">

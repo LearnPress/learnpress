@@ -167,7 +167,7 @@ class LP_Install_Sample_Data {
 		} catch ( Exception $ex ) {
 			//LP_Debug::rollbackTransaction();
 			echo '<div class="lp-install-sample__response fail">';
-			echo $ex->getMessage();
+			echo wp_kses_post( $ex->getMessage() );
 			echo '</div>';
 		}
 

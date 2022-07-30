@@ -156,7 +156,7 @@ class LP_Query_List_Table implements ArrayAccess {
 		);
 
 		if ( $echo ) {
-			echo $output;
+			echo wp_kses_post( $output );
 		}
 
 		return $output;
@@ -172,7 +172,7 @@ class LP_Query_List_Table implements ArrayAccess {
 		}
 
 		if ( $echo ) {
-			echo $output;
+			echo wp_kses_post( $output );
 		}
 
 		return $output;

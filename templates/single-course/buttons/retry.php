@@ -30,7 +30,7 @@ $message_data_confirm = sprintf(
 <?php do_action( 'lp/tmpl/course/button-retry/form/before' ); ?>
 
 <form name="lp-form-retake-course" class="lp-form-retake-course" method="post" enctype="multipart/form-data"
-	  data-confirm="<?php echo $message_data_confirm; ?>">
+	data-confirm="<?php echo esc_attr( $message_data_confirm ); ?>">
 
 	<?php do_action( 'lp/tmpl/course/button-retry/before' ); ?>
 

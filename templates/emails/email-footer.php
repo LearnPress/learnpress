@@ -19,7 +19,7 @@ if ( ! isset( $footer_text ) ) {
 					<tfoot id="email-footer">
 					<tr>
 						<td>
-							<?php echo $footer_text; ?>
+							<?php echo wp_kses_post( $footer_text ); ?>
 						</td>
 					</tr>
 					</tfoot>

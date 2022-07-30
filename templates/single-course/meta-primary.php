@@ -18,7 +18,7 @@ if ( ! $has_meta_left && ! $has_meta_right ) {
 }
 ?>
 
-<div class="course-meta course-meta-primary<?php echo $has_meta_right && $has_meta_left ? ' two-columns' : ''; ?>">
+<div class="course-meta course-meta-primary<?php echo esc_attr( $has_meta_right && $has_meta_left ? ' two-columns' : '' ); ?>">
 
 	<?php if ( $has_meta_left ) { ?>
 
