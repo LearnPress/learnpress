@@ -765,7 +765,12 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$section_items_arr['items']     = [];
 
 				foreach ( $section_items->items as $item ) {
-					$itemObject                   = $this->get_item( $item->id );
+					$itemObject = $this->get_item( $item->id );
+
+					if ( ! $itemObject instanceof LP_Course_Item ) {
+						continue;
+					}
+
 					$item_arr                     = (array) $item;
 					$item_arr['title']            = $itemObject->get_title();
 					$item_arr['preview']          = $itemObject->is_preview();

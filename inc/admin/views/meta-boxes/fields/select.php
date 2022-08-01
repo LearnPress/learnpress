@@ -101,6 +101,10 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 	public function save( $post_id ) {
 		$multil_meta = isset( $this->extra['multil_meta'] ) ? $this->extra['multil_meta'] : false;
 
+		if ( ! isset( $_POST[ $this->id ] ) ) {
+			return;
+		}
+
 		if ( $multil_meta ) {
 			$get_values = get_post_meta( $post_id, $this->id, false ) ?? array();
 			$new_values = isset( $_POST[ $this->id ] ) ? (array) wp_unslash( $_POST[ $this->id ] ) : array();
@@ -119,10 +123,6 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				add_post_meta( $post_id, $this->id, $level_id, false );
 			}
 		} else {
-			if ( ! isset( $_POST[ $this->id ] ) ) {
-				return;
-			}
-
 			$value = ! empty( $_POST[ $this->id ] ) ? sanitize_text_field( wp_unslash( $_POST[ $this->id ] ) ) : '';
 
 			$multilple = ! empty( $this->extra['multiple'] ) ? true : false;

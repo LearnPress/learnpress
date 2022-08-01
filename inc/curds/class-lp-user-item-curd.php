@@ -630,7 +630,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		foreach ( $get_item_ids as $item_id ) {
 			$item = $course->get_item( $item_id );
 
-			if ( ! $item ) {
+			if ( ! $item instanceof LP_Course_Item ) {
 				continue;
 			}
 
