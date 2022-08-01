@@ -26,24 +26,19 @@
 		}
 	}
 }
-
+.course-tab-panels{
+	.course-tab-panel{
+		padding-top: 30px;
+	}
+}
 .course-tab-panel {
 	display: none;
-	padding-top: 30px;
-
+ 
 	&.active {
 		display: block;
 	}
 
-	&.course-tab-panel-instructor,
-	&.course-tab-panel-faqs {
-		padding-top: 30px;
-	}
-
-	&.course-tab-panel-reviews {
-		padding: 56px 0 0 0;
-	}
-
+	 
 	.course-description {
 		color: #666;
 		font-size: 16px;
