@@ -93,7 +93,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-
+			column-gap: 10px;
 			@media (max-width: 768px) {
 				flex: 1;
 			}
