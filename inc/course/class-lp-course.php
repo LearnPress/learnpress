@@ -386,7 +386,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			if ( ! empty( $total_items ) ) {
 				if ( ! empty( $type ) ) {
-					$count_items = $total_items->{$type};
+					if ( isset( $total_items->{$type} ) ) {
+						$count_items = $total_items->{$type};
+					}
 				} else {
 					$count_items = $total_items->count_items;
 				}
