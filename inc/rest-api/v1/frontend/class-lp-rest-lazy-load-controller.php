@@ -278,11 +278,13 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
 
 				if ( $course_id ) {
-					$course_item = \LP_Course_Item::get_item( absint( $section_item['ID'] ) );
+					$course = learn_press_get_course( $course_id );
 
-					if ( method_exists( $course_item, 'set_course' ) ) {
-						$course_item->set_course( absint( $course_id ) );
+					if ( ! $course ) {
+						throw new Exception( 'Course is not exists!' );
 					}
+
+					$course_item = $course->get_item( absint( $section_item['ID'] ?? 0 ) );
 
 					$can_view_item = new LP_Model_User_Can_View_Course_Item();
 

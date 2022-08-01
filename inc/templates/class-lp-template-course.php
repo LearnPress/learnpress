@@ -608,12 +608,16 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		if ( $next_id ) {
 			$next_item = $course->get_item( $next_id );
-			$next_item->set_course( $course->get_id() );
+			if ( $next_item instanceof LP_Course_Item ) {
+				$next_item->set_course( $course->get_id() );
+			}
 		}
 
 		if ( $prev_id ) {
 			$prev_item = $course->get_item( $prev_id );
-			$prev_item->set_course( $course->get_id() );
+			if ( $prev_item instanceof LP_Course_Item ) {
+				$prev_item->set_course( $course->get_id() );
+			}
 		}
 
 		if ( ! $prev_item && ! $next_item ) {

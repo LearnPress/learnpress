@@ -896,6 +896,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			foreach ( $sections_items as $section_items ) {
 				foreach ( $section_items->items as $item ) {
 					$itemObj = $course->get_item( $item->id );
+
+					if ( ! $itemObj instanceof LP_Course_Item ) {
+						continue;
+					}
+
 					if ( $item->type == LP_QUIZ_CPT ) {
 						$total_questions     += count( $itemObj->get_questions() );
 						$total_mark_question += $itemObj->get_mark();

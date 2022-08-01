@@ -63,6 +63,7 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
  * @return bool
  * @editor tungnx
  * @reason this function only get cache, not handle get user_item_id
+ * @depecated 4.1.6.9
  */
 function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* added 3.0.0 */ ) {
 	return false;

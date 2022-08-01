@@ -1016,7 +1016,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return LP_Lesson|LP_Quiz|boolean
 		 */
 		public function get_item( $item_id ) {
-			$item = LP_Course_Item::get_item( $item_id, $this->get_id() );
+			$item = LP_Course_Item::get_item( $item_id );
+			if ( $item instanceof LP_Course_Item ) {
+				$item->set_course( $this->get_id() );
+			}
 
 			return apply_filters( 'learn-press/course-item', $item, $item_id, $this->get_id() );
 		}

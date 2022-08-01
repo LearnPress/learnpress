@@ -63,6 +63,10 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 
 		$this->course = learn_press_get_course( $this->course_id );
 
+		if ( ! $this->course ) {
+			return;
+		}
+
 		$this->_curd = new LP_Section_CURD( 0 );
 		$this->set_id( $this->_data['id'] );
 		// Load section items
@@ -83,13 +87,12 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		// All items
 		$items = $course->get_item_ids( $section_id );
 
-		foreach ( $items as $item ) {
-			$item_class = $this->get_item( $item );
+		foreach ( $items as $item_id ) {
+			$item_class = $course->get_item( $item_id );
 
 			if ( $item_class instanceof LP_Course_Item ) {
-				$item_class->set_course( $this->get_course_id() );
 				$item_class->set_section( $this );
-				$this->items[ $item ] = $item_class;
+				$this->items[ $item_id ] = $item_class;
 			}
 		}
 	}
@@ -100,8 +103,9 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @param array $item
 	 *
 	 * @return bool|LP_Course_Item
+	 * @depecated 4.1.6.9
 	 */
-	protected function get_item( $item ) {
+	/*protected function get_item( $item ) {
 		if ( ! is_numeric( $item ) ) {
 			$item_id = $item->item_id;
 		} else {
@@ -109,7 +113,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		}
 
 		return LP_Course_Item::get_item( $item_id );
-	}
+	}*/
 
 	/**
 	 * Get data to array.
@@ -184,7 +188,6 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return array
 	 */
 	public function get_items( $type = '', $preview = true ) {
-
 		/**
 		 * @var LP_Course_Item[] $items
 		 */
@@ -202,7 +205,6 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			}
 
 			foreach ( $items as $item ) {
-
 				if ( ! $preview ) {
 					if ( $item->is_preview() ) {
 

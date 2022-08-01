@@ -742,7 +742,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				return false;
 			}
 
+			/**
+			 * @var $quiz LP_Quiz
+			 */
 			$quiz = $course->get_item( $quiz_id );
+			if ( ! $quiz instanceof LP_Course_Item_Quiz ) {
+				return false;
+			}
 
 			if ( ! $quiz->has_question( $question_id ) ) {
 				return false;

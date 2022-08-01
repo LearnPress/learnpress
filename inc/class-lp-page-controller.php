@@ -451,7 +451,7 @@ class LP_Page_Controller {
 				return $post;
 			}
 
-			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID, $course->get_id() ) );
+			$lp_course_item = apply_filters( 'learn-press/single-course-request-item', $course->get_item( $post_item->ID ) );
 
 			if ( ! $lp_course_item ) {
 				return $post;

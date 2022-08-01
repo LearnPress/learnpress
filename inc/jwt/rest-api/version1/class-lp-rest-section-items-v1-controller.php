@@ -93,15 +93,16 @@ class LP_Jwt_Section_Items_V1_Controller extends LP_REST_Jwt_Controller {
 	public function get_sections_data( $item_data, $context, $request ) {
 		$fields = $this->get_fields_for_response( $request );
 
-		$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $request['section_id'] );
+		$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $request['section_id'] ?? 0 );
+		$course    = learn_press_get_course( $course_id );
+
+		if ( ! $course ) {
+			return false;
+		}
 
 		$item_id = absint( $item_data['ID'] );
 
-		$course_item = \LP_Course_Item::get_item( $item_id );
-
-		if ( method_exists( $course_item, 'set_course' ) ) {
-			$course_item->set_course( absint( $course_id ) );
-		}
+		$course_item = $course->get_item( $item_id );
 
 		// Check if item is not exists or deactive add-on( Assignment, H5P, etc )
 		if ( ! $course_item instanceof LP_Course_Item ) {

@@ -23,7 +23,7 @@ if ( $prev_item && $next_item ) {
 ?>
 
 <div class="course-item-nav" data-nav="<?php echo esc_attr( $nav ); ?>">
-	<?php if ( $prev_item ) : ?>
+	<?php if ( $prev_item instanceof LP_Course_Item ) : ?>
 		<div class="prev">
 			<div class="course-item-nav__name"><?php echo esc_html( $prev_item->get_title() ); ?></div>
 			<a href="<?php echo esc_url_raw( $prev_item->get_permalink() ); ?>">
@@ -32,7 +32,7 @@ if ( $prev_item && $next_item ) {
 		</div>
 	<?php endif; ?>
 
-	<?php if ( $next_item ) : ?>
+	<?php if ( $next_item instanceof LP_Course_Item ) : ?>
 		<div class="next">
 			<div class="course-item-nav__name"><?php echo esc_html( $next_item->get_title() ); ?></div>
 			<a href="<?php echo esc_url_raw( $next_item->get_permalink() ); ?>">

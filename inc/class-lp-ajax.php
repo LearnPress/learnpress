@@ -274,12 +274,15 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'redirect' => $course->get_item_link( $item_id ),
 			);
 
-			$item         = $course->get_item( $item_id );
-			$nonce_action = $item->get_nonce_action( 'complete', $course_id, $user->get_id() );
 			try {
 				// security check
 				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, 'lesson-complete' ) ) ) {
 					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ), 8000 );
+				}
+
+				$item = $course->get_item( $item_id );
+				if ( ! $item instanceof LP_Course_Item ) {
+					throw new Exception( 'Item is invalid!' );
 				}
 
 				$result = $user->complete_lesson( $item_id );
@@ -292,7 +295,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 					learn_press_add_message( sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ), $item->get_title() ) );
 				} else {
-					learn_press_add_message( $result->get_error_message(), 'error' );
+					throw new Exception( $result->get_error_message(), 'error' );
 				}
 
 				$response = apply_filters( 'learn-press/user-completed-lesson-result', $response, $item_id, $course_id, $user->get_id() );

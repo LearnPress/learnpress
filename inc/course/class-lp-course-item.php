@@ -381,7 +381,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @Todo: tungnx - review - rewrite - set cache - check where call this function
 		 * @editor tungnx
 		 * @modify 4.1.3 - change cache
-		 * @version 4.0.1
+		 * @version 4.0.2
 		 * @since 3.x.x
 		 */
 		public static function get_item( $item_id = 0, $course_id = 0 ) {
@@ -393,13 +393,13 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			$item = false;
 
 			if ( false === $item ) {
-				$item = get_post( $item_id );
+				$item_post = get_post( $item_id );
 
-				if ( ! $item ) {
+				if ( ! $item_post ) {
 					return false;
 				}
 
-				$item_type = $item->post_type;
+				$item_type = $item_post->post_type;
 
 				if ( learn_press_is_support_course_item_type( $item_type ) ) {
 					$type = str_replace( 'lp_', '', $item_type );
@@ -429,13 +429,14 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 									$item = $class;
 								}
 							}
+
+							break;
 					}
 
-					if ( $course_id ) {
-						if ( $item instanceof LP_Course_Item ) {
-							$item->set_course( $course_id );
-						}
-					}
+					// Todo: don't know why when set course here, theme ivy still null course
+					/*if ( $item instanceof LP_Course_Item ) {
+						$item->set_course( $course_id );
+					}*/
 
 					// $lp_course_cache->set_cache( $key_cache, $item );
 				}
