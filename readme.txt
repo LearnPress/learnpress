@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 4.1.6.7
+Stable tag: 4.1.6.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -202,6 +202,21 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.1.6.9 (2022-08-03) =
+~ Modified: read items, read sections of course. (optimize read speed).
+~ Modified: 'set_viewing_item' method.
+~ Modified: set thumbnail image size on the 'Profile Page' by width setting on 'Avatar Dimensions'.
+~ Fixed: error search no courses but return all (Archive courses).
+~ Fixed: error LP_Shortcode_Course_Curriculum with Elementor.
+~ Sanitize, ESC.
+~ Deleted: folder attributes, files: 'class-lp-gdpr.php', 'class-lp-hard-cache.php', 'class-lp-repair-database.php', 'class-lp-utils.php'.
+~ Clear, optimize codes.
+~ Added: hook do_action 'lp/background/course/save'.
+~ Added: hooks for addon LP - WPML.
+~ Deprecated: methods 'load_curriculum'.
+~ Style: FAQs on single course, spacing items progress, space in single tab.
+~ Change: 'Course Item Per Page' set default is 10.
 
 = 4.1.6.8 (2022-07-05) =
 ~ Fixed: click pagination when enable 2 option Load Courses Ajax.
