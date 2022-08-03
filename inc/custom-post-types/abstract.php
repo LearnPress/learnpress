@@ -76,6 +76,8 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'save_post', array( $this, '_do_save_post' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
 		add_action( 'deleted_post', array( $this, '_deleted_post' ) );
+		add_action( 'wp_trash_post', array( $this, '_before_trash_post' ) );
+		add_action( 'trashed_post', array( $this, '_trashed_post' ) );
 
 		add_filter( 'manage_edit-' . $this->_post_type . '_sortable_columns', array( $this, 'sortable_columns' ) );
 		add_filter( 'manage_' . $this->_post_type . '_posts_columns', array( $this, 'columns_head' ) );
@@ -181,33 +183,11 @@ abstract class LP_Abstract_Post_Type {
 		// Maybe remove
 		$this->maybe_remove_assigned( $post );
 
-		/*if ( ! $this->_check_post() ) {
-			return;
-		}*/
-
-		$can_save = true;
-
-		if ( ! $post ) {
-			$post = get_post( $post_id );
-
-			if ( ! $post ) {
-				return;
-			}
-		}
-
-		if ( $this->_post_type !== $post->post_type ) {
+		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
 
-		if ( ! current_user_can( ADMIN_ROLE ) ) {
-			if ( get_current_user_id() !== $post->post_author ) {
-				$can_save = apply_filters( 'lp/custom-post-type/can-save', false, $post );
-			}
-		}
-
-		if ( $can_save ) {
-			$this->save( $post_id, $post );
-		}
+		$this->save( $post_id, $post );
 	}
 
 	/**
@@ -230,7 +210,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @since modify 4.0.9
 	 */
 	final function _before_delete_post( int $post_id ) {
-		if ( ! $this->_check_post() ) {
+		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
 
@@ -254,7 +234,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @param int $post_id
 	 */
 	final function _deleted_post( int $post_id ) {
-		if ( ! $this->_check_post() ) {
+		if ( ! $this->check_post() ) {
 			return;
 		}
 
@@ -269,6 +249,97 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function deleted_post( int $post_id ) {
 		// Implement from child
+	}
+
+	protected $course_of_item_trashed = 0;
+	/**
+	 * Hook before delete post
+	 *
+	 * @param int $post_id
+	 *
+	 * @author tungnx
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 */
+	final function _before_trash_post( int $post_id ) {
+		if ( ! $this->check_post() ) {
+			return;
+		}
+
+		$this->before_trash_post( $post_id );
+	}
+
+	/**
+	 * Before trash post
+	 *
+	 * @param int $post_id
+	 *
+	 * @return void
+	 * @author tungnx
+	 * @since 4.1.6.9
+	 * @version 1.0.0.0
+	 */
+	public function before_trash_post( int $post_id ) {
+		// Implement from child
+		// Check is item type of course
+		$course_item_types = learn_press_get_course_item_types();
+		if ( ! in_array( get_post_type( $post_id ), $course_item_types ) ) {
+			return;
+		}
+
+		try {
+			// Set course id of item when item assign on course is trashed
+			$course_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
+			if ( $course_of_item ) {
+				$this->course_of_item_trashed = $course_of_item;
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+	}
+
+	/**
+	 * Hook Trashed post
+	 *
+	 * @param int $post_id
+	 *
+	 * @return void
+	 * @author tungnx
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 */
+	final function _trashed_post( int $post_id ) {
+		if ( ! $this->check_post() ) {
+			return;
+		}
+
+		$this->trashed_post( $post_id );
+	}
+
+	/**
+	 * Method handle Trashed post
+	 *
+	 * @param int $post_id
+	 * @author tungnx
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 * @return void
+	 */
+	public function trashed_post( int $post_id ) {
+		// Implement from child
+		// Check is item type of course
+		$course_item_types = learn_press_get_course_item_types();
+		if ( ! in_array( get_post_type( $post_id ), $course_item_types ) ) {
+			return;
+		}
+
+		if ( $this->course_of_item_trashed ) {
+			// Save course when item assign on course is trashed
+			$course_id   = $this->course_of_item_trashed;
+			$course_post = get_post( $course_id );
+			LP_Course_Post_Type::instance()->save( $course_id, $course_post );
+			$this->course_of_item_trashed = 0;
+		}
 	}
 
 	public function column_instructor( $post_id = 0 ) {
@@ -565,6 +636,41 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check post is valid to handle
+	 *
+	 * @param int $post_id
+	 *
+	 * @return bool
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 */
+	public function check_post( int $post_id = 0 ):bool {
+		$can_save = true;
+
+		try {
+			$post = get_post( $post_id );
+
+			if ( ! $post ) {
+				throw new Exception( 'Post is invalid' );
+			}
+
+			if ( $this->_post_type !== $post->post_type ) {
+				throw new Exception( 'Post type is invalid' );
+			}
+
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
+				if ( get_current_user_id() !== $post->post_author ) {
+					$can_save = apply_filters( 'lp/custom-post-type/can-save', false, $post );
+				}
+			}
+		} catch ( Throwable $e ) {
+
+		}
+
+		return $can_save;
 	}
 
 	/**

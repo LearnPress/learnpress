@@ -32,7 +32,6 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return int
 	 * @throws Exception
-	 * @
 	 */
 	public function get_course_by_item_id( $item_id = 0 ): int {
 		// Get cache

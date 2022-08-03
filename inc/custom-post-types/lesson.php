@@ -202,10 +202,10 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public function before_delete_lesson( $post_id = 0 ) {
+		/*public function before_delete( int $post_id = 0 ) {
 			$curd = new LP_Lesson_CURD();
 			$curd->delete( $post_id );
-		}
+		}*/
 
 		/**
 		 * Add columns to admin manage lesson page
@@ -334,8 +334,4 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 	}
 
 	$lesson_post_type = LP_Lesson_Post_Type::instance();
-
-	// Todo: Nhamdv see to rewrite
-	// $lesson_post_type
-	// ->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'lesson_assigned', 'side', 'high' );
 }

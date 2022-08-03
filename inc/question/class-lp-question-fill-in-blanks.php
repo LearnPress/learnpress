@@ -214,7 +214,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 						$blanks = learn_press_get_question_answer_meta( $answer_id, '_blanks', true );
 
 						if ( ! empty( $blanks ) ) {
-							$is_correct = $this->check_answer( $blanks[ $ids ], $answer ) ? true : false;
+							$is_correct = $this->check_answer( $blanks[ $ids ] ?? [], $answer );
 						}
 
 						$output[ $ids ]['is_correct'] = $is_correct;
@@ -455,9 +455,9 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 		 * @return bool
 		 */
 		public function check_answer( array $blank, $user_fill ): bool {
-			$fill       = isset( $blank['fill'] ) ? trim( $blank['fill'] ) : '';
+			$fill       = trim( $blank['fill'] ?? '' );
 			$comparison = ! empty( $blank['comparison'] ) ? $blank['comparison'] : false;
-			$match_case = ! empty( $blank['match_case'] ) && ! ! $blank['match_case'];
+			$match_case = ! empty( $blank['match_case'] );
 			$user_fill  = trim( $user_fill );
 
 			$blank_correct = false;

@@ -340,6 +340,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			if ( $action == 'editpost' ) {
 				$order = learn_press_get_order( $post_id );
+				if ( ! $order ) {
+					return;
+				}
 
 				$created_via = $order->get_created_via();
 				if ( empty( $created_via ) ) {

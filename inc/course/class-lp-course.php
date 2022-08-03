@@ -551,7 +551,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 				/**
 				 * Save key cache to array to clear
-				 * @see LP_Background_Single_Course::save_post()
+				 * @see LP_Background_Single_Course::save_post() - clear cache when save post
 				 */
 				LP_Courses_Cache::instance()->save_cache_keys( $key_cache );
 				LP_Courses_Cache::instance()->save_cache_keys( $key_cache_total_rows );
