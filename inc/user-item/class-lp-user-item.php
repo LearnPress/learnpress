@@ -466,12 +466,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return LP_User|int
 	 */
 	public function get_user( $return = '' ) {
-		$uid = $this->get_data( 'user_id' );
-		if ( $return == '' ) {
-			return $uid ? learn_press_get_user( $uid ) : new LP_User();
-		}
-
-		return $uid;
+		return $this->get_data( 'user_id', 0 );
 	}
 
 	public function get_course( $return = '' ) {

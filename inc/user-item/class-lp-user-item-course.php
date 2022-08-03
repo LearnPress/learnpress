@@ -932,8 +932,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Finish course for user
 	 *
 	 * @return int
+	 * @depecated 4.1.6.9
 	 */
-	public function finish() {
+	/*public function finish() {
 		$status = apply_filters(
 			'learn-press/finish-course-status',
 			'finished',
@@ -945,7 +946,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		// $results = $this->calculate_course_results();
 
 		return parent::complete( $status );
-	}
+	}*/
 
 	/**
 	 * Check course of use has enrolled
@@ -1323,6 +1324,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param int $item_id
 	 *
 	 * @return bool|LP_User_Item
+	 * @editor tungnx
+	 * @modify 4.1.6.9
+	 * @since 3.0.0
+	 * @version 4.0.1
 	 */
 	public function get_item( $item_id ) {
 		$item = false;
@@ -1331,7 +1336,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$filter          = new LP_User_Items_Filter();
 			$filter->item_id = $item_id;
 			$filter->ref_id  = $this->get_course_id();
-			$filter->user_id = get_current_user_id();
+			$filter->user_id = $this->get_user();
 			$item_result     = LP_User_Items_DB::getInstance()->get_user_course_item( $filter );
 
 			if ( $item_result ) {
@@ -1339,9 +1344,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$item        = LP_User_Item::get_item_object( $item_result );
 			}
 		} catch ( Throwable $e ) {
-			if ( LP_Debug::is_debug() ) {
-				error_log( $e->getMessage() );
-			}
+			error_log( $e->getMessage() );
 		}
 
 		return $item;
