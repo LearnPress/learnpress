@@ -254,6 +254,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				$this->duplicate_sections_and_items( $course_id_new, $course_origin );
 
+				// Call save course duplicate
+				//$course_post = get_post( $course_id_new );
+				LP_Course_Post_Type::instance()->save( $course_id_new );
+
 				do_action( 'learn-press/after-duplicate', $course_id, $course_id_new, $args );
 			} catch ( Throwable $e ) {
 				$course_id_new = new WP_Error( $e->getMessage() );

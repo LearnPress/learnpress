@@ -646,7 +646,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @editor tungnx
 		 * @see LP_Background_Single_Course::handle()
 		 */
-		public function save( int $post_id, WP_Post $post ) {
+		public function save( int $post_id = 0, WP_Post $post = null ) {
 			// Save in background.
 			$bg = LP_Background_Single_Course::instance();
 
