@@ -10,28 +10,36 @@
 ## LearnPress Features
 
 **LearnPress LMS Plugin works with your WordPress Theme**
+
 We create LearnPress LMS Plugin to work with any WordPress Themes.
 
 **Create Course**
+
 LearnPress LMS Plugin has an excellent user interface for you to create a course with many options fit your needs. You can find it easy to create a full curriculum layout as well as edit and maintain it.
 You can export course and import to other website which also using LearnPress. We will release the feature which allows you to import course from other WordPress LMS plugins soon.  
 
 **Manage Course**
+
 With the course you've created, you can share, manage, watch statistic about number of students, etc.
 
 **Sell Course**
+
 LearnPress is free but it still allows you to sell your courses with many payment methods are supported such as PayPal, WooCommerce, Stripe.
 
 **Communicate with your Students**
+
 By supporting BuddyPess, LearnPress will help you to communicate with your student or instructor via WordPress forum. Learning is not only on your own. Study, make friends and have fun.  
 
 **LearnPress provide a bunch of Add-ons**
+
 Add-ons are used to provide extra features for LearnPress and you can also write it.
 
 **LearnPress is free and always will be**
+
 Education should be free and we want you to bring it to as many people as you can. Therefore, we created LearnPress as a free tool for you to create course and share it. We'll continue developing it as long as we can and make it better and better.  
 
 **LearnPress is actively developed**
+
 We are developing and improving LearnPress day by day and bringing new features to you because we want LearnPress to become the best WordPress plugin in LMS.
 
 **LearnPress Support WordPress Multi-Sites And Multi-Language**
@@ -46,7 +54,6 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [LearnPress Prerequisites Courses](https://wordpress.org/plugins/learnpress-prerequisites-courses) - require student to pass some courses in order to enroll other course.
 - [LearnPress bbPress Integration](https://wordpress.org/plugins/learnpress-bbpress) - add bbPress Forum support for LearnPress WordPress LMS Plugin.
 - [LearnPress BuddyPress Integration](https://wordpress.org/plugins/learnpress-buddypress) - add BuddyPress support for LearnPress WordPress LMS Plugin.
-
 
 **Premium Add-ons for LearnPress WordPress LMS Plugin:**
 
@@ -96,7 +103,6 @@ We are developing and improving LearnPress day by day and bringing new features 
 
 Any suggestions for this WordPress LMS Plugin? Send us <a href="https://thimpress.com/contact-us/" target="_blank">here.</a>
 
-
 ## Install
 
 **From your WordPress dashboard**
@@ -141,6 +147,7 @@ https://www.transifex.com/projects/p/learnpress/
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
 
 ## For Developer.
+
 1. <code>git clone https://github.com/LearnPress/learnpress.git</code>
 
 2. <code>npm install</code> *Install required packages.*
@@ -148,5 +155,5 @@ https://www.transifex.com/projects/p/learnpress/
 3. <code>npm run dev</code> *Watch changes to compile js/scss when developing.*
 
 4. <code>npm run build</code> *Build and compress js files.*
-   
+
 5. <code>npm run dev-build</code> *Build for all js, css files.*
