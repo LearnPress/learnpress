@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 4.1.6.9
+Stable tag: 4.1.6.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -202,6 +202,10 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.1.6.9.1 (2022-08-04) =
+~ Fixed: error ESC content of course, items' course make iframe, embed not working.
+~ Fixed: error complete lesson, do quiz on API for App mobile.
 
 = 4.1.6.9 (2022-08-03) =
 ~ Modified: read items, read sections of course. (optimize read speed).
