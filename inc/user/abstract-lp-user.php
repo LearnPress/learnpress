@@ -1088,11 +1088,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return false;
 		}
 
-		public function get_completed_items( $course_id ) {
+		/**
+		 * @depecated 4.1.6.9.1
+		 */
+		/*public function get_completed_items( $course_id ) {
 			$this->_curd->get_user_items( $this->get_id(), $course_id );
 
 			return $this->_curd->get_user_completed_items( $this->get_id(), $course_id );
-		}
+		}*/
 
 		/**
 		 * Finish course

@@ -883,8 +883,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $course_id
 	 *
 	 * @return mixed
+	 * @depecated 4.1.6.9.1
 	 */
-	public function get_user_items( $user_id, $course_id ) {
+	/*public function get_user_items( $user_id, $course_id ) {
 		if ( false === ( $course_data = LP_Object_Cache::get(
 			'course-' . $user_id . '-' . $course_id,
 			'learn-press/user-item-courses'
@@ -893,16 +894,19 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $course_data['items'];
-	}
+	}*/
 
-	public function get_user_completed_items( $user_id, $course_id ) {
+	/**
+	 * @depecated 4.1.6.9.1
+	 */
+	/*public function get_user_completed_items( $user_id, $course_id ) {
 		if ( ! $items = $this->get_user_items( $user_id, $course_id ) ) {
 			return false;
 		}
 		foreach ( $items as $item ) {
 
 		}
-	}
+	}*/
 
 	/**
 	 * Read meta data of an user item.
