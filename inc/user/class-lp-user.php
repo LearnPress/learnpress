@@ -765,7 +765,7 @@ class LP_User extends LP_Abstract_User {
 			$item_id     = $item->get_id();
 			$course_data = $this->get_course_data( $course_id );
 
-			if ( $course_data ) {
+			if ( $course_data && $course_data->is_enrolled() ) {
 				$item = $course_data->get_item( $item_id );
 
 				if ( ! $item ) {

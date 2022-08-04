@@ -580,7 +580,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$user        = learn_press_get_current_user();
 			$course_data = $user->get_course_data( $course_id );
 
-			if ( $course_data ) {
+			if ( $course_data && $course_data->is_enrolled() ) {
 				$item = $course_data->get_item( $item_id );
 
 				if ( ! $item ) {
