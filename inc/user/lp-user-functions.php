@@ -109,7 +109,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 * @param int  $user_id
 	 * @param bool $current
 	 *
-	 * @return LP_User|mixed
+	 * @return LP_User|LP_User_Guest|mixed
 	 * Todo: check this function - tungnx
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {

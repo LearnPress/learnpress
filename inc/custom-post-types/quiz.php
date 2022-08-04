@@ -295,22 +295,25 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						$duration_str    .= 's';
 						$duration_str_arr = explode( ' ', $duration_str );
 						$type_time        = '';
-						switch ( $duration_str_arr[1] ) {
-							case 'hours':
-								$type_time = __( 'hours', 'learnpress' );
-								break;
-							case 'minutes':
-								$type_time = __( 'minutes', 'learnpress' );
-								break;
-							case 'days':
-								$type_time = __( 'days', 'learnpress' );
-								break;
-							case 'weeks':
-								$type_time = __( 'weeks', 'learnpress' );
-								break;
-						}
 
-						$duration_str = sprintf( '%1$s %2$s', $duration_str_arr[0], $type_time );
+						if ( is_array( $duration_str_arr ) && ! empty( $duration_str_arr ) && count( $duration_str_arr ) >= 2 ) {
+							switch ( $duration_str_arr[1] ) {
+								case 'hours':
+									$type_time = __( 'hours', 'learnpress' );
+									break;
+								case 'minutes':
+									$type_time = __( 'minutes', 'learnpress' );
+									break;
+								case 'days':
+									$type_time = __( 'days', 'learnpress' );
+									break;
+								case 'weeks':
+									$type_time = __( 'weeks', 'learnpress' );
+									break;
+							}
+
+							$duration_str = sprintf( '%1$s %2$s', $duration_str_arr[0], $type_time );
+						}
 					} else {
 						$duration_str = '--';
 					}
