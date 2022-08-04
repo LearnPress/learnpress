@@ -555,4 +555,52 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		return $this->add_additional_fields_schema( $schema );
 	}
+
+	/**
+	 * API get item lesson
+	 * @since 4.1.6.9.1
+	 *
+	 * @param $request
+	 *
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 * @throws Exception
+	 */
+	public function get_item( $request ) {
+		$object = $this->get_object( (int) $request['id'] );
+
+		if ( ! $object || 0 === $object->get_id() ) {
+			return new WP_Error( "lp_rest_{$this->post_type}_invalid_id", esc_html__( 'Invalid ID.', 'learnpress' ), array( 'status' => 404 ) );
+		}
+
+		$item_id = (int) $request['id'];
+
+		$course_id = $this->get_course_by_item_id( $item_id );
+		$course    = learn_press_get_course( $course_id );
+		if ( $course && is_user_logged_in() ) {
+			$user        = learn_press_get_current_user();
+			$course_data = $user->get_course_data( $course_id );
+
+			if ( $course_data ) {
+				$item = $course_data->get_item( $item_id );
+
+				if ( ! $item ) {
+					$item = LP_User_Item::get_item_object( $item_id );
+
+					$item->set_ref_id( $course_id );
+					$item->set_parent_id( $course_data->get_user_item_id() );
+					$item->update();
+				}
+			}
+		}
+
+		$data     = $this->prepare_object_for_response( $object, $request );
+		$response = rest_ensure_response( $data );
+
+		if ( $this->public ) {
+			$response->link_header( 'alternate', $this->get_permalink( $object ), array( 'type' => 'text/html' ) );
+		}
+
+		return $response;
+	}
+
 }

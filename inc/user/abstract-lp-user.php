@@ -1256,10 +1256,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|WP_Error
 		 */
 		public function complete_lesson( $lesson_id, $course_id = 0, $return_wp_error = true ) {
-			global $wpdb;
-
 			try {
-				do_action( 'learn-press/before-complete-lesson', $lesson_id, $course_id, $this->get_id() );
 				$course_id = $this->_get_course( $course_id );
 
 				$course_data = $this->get_course_data( $course_id );
@@ -1271,28 +1268,24 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				 */
 				$item = $course_data->get_item( $lesson_id );
 				if ( $item ) {
-
 					if ( $item->is_completed() ) {
 						throw new Exception(
 							__( 'You have already completed this lesson.', 'learnpress' ),
 							LP_COMPLETE_ITEM_FAIL
 						);
 					}
-					// TODO: conflict???
-					//$time = new LP_Datetime();
+
 					$item->set_end_time( current_time( 'mysql', 1 ) );
 					$item->set_status( 'completed' );
-					$item->set_graduation( apply_filters( 'learn-press/complete-lesson-graduation', 'passed' ) );
+					$item->set_graduation( 'passed' );
 
-					$updated = $item->update( true, true );
+					$updated = $item->update();
 
 					if ( is_wp_error( $updated ) ) {
 						return $return_wp_error ? $updated : false;
 					} else {
 						$result = true;
 					}
-
-					//$result = $this->evaluate_course_results( $this->get_id() );
 				}
 
 				do_action( 'learn-press/user-completed-lesson', $lesson_id, $course_id, $this->get_id() );

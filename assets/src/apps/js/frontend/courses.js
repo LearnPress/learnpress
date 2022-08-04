@@ -110,6 +110,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		}
 	} ).catch( ( error ) => {
 		listCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/courses/archive-course' }</div>`;
+		console.log( error );
 	} ).finally( () => {
 		isLoading = false;
 		// skeleton && skeleton.remove();

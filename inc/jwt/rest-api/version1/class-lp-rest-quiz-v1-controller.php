@@ -417,7 +417,9 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	}
 
 	public function get_quiz_results( $quiz, $get_question = false ) {
-		$output = array();
+		$output = array(
+			'status' => '',
+		);
 
 		$user = learn_press_get_current_user();
 
