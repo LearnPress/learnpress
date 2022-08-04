@@ -442,7 +442,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$answered            = array();
 		$status              = '';
 		$checked_questions   = array();
-		$question_ids        = array();
+		$question_ids        = $quiz->get_question_ids();
 
 		if ( $user_quiz ) {
 			$status            = $user_quiz->get_status();
@@ -464,8 +464,6 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$output['results'] = $quiz_results->get();
 				$answered          = $quiz_results->getQuestions();
 				$question_ids      = $quiz_results->getQuestions( 'ids' );
-			} else {
-				$question_ids = $quiz->get_question_ids();
 			}
 
 			$output['answered']     = ! empty( $answered ) ? (object) $answered : new stdClass();
