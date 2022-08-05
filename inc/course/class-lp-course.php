@@ -772,7 +772,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					}
 
 					$item_arr                     = (array) $item;
-					$item_arr['title']            = $itemObject->get_title();
+					$item_arr['title']            = html_entity_decode( $itemObject->get_title() );
 					$item_arr['preview']          = $itemObject->is_preview();
 					$section_items_arr['items'][] = $item_arr;
 				}
