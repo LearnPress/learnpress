@@ -337,7 +337,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function set_info_extra_for_fast_query( LP_Course_Extra_Info_Fast_Query_Model $data_object ) {
 			try {
-				$extra_info_json = json_encode( $data_object );
+				$extra_info_json = json_encode( $data_object, JSON_UNESCAPED_UNICODE );
 
 				if ( JSON_ERROR_NONE !== json_last_error() ) {
 					throw new Exception( 'Error encode on ' . __METHOD__ );
