@@ -206,18 +206,6 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
 }
 
 /**
- * Vue write php has script, so when sanitize will error, so use code is mask pass check sanitize, esc
- *
- * @param $content
- *
- * @return void
- * @since 4.1.6.9
- */
-function learn_press_echo_vuejs_write_on_php( $content ) {
-	echo ( $content );
-}
-
-/**
  * List all pages as a dropdown with "Add New Page" option
  *
  * @param            $name

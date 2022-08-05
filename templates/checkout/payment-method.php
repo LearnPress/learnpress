@@ -32,7 +32,7 @@ $icon = $gateway->get_icon();
 
 	<?php if ( $payment_form ) : ?>
 		<div class="payment-method-form payment_method_<?php echo esc_attr( $gateway->id ); ?>">
-			<?php echo wp_kses_post( $payment_form ); ?>
+			<?php learn_press_echo_vuejs_write_on_php( $payment_form ); ?>
 		</div>
 	<?php endif; ?>
 </li>
