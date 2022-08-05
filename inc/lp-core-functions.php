@@ -10,6 +10,18 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Vue write php has script, so when sanitize will error, so use code is mask pass check sanitize, esc
+ *
+ * @param $content
+ *
+ * @return void
+ * @since 4.1.6.9
+ */
+function learn_press_echo_vuejs_write_on_php( $content ) {
+	echo ( $content );
+}
+
 function learnpress_gutenberg_disable_cpt( $can_edit, $post_type ) {
 	$post_types = array(
 		LP_COURSE_CPT   => LP_Settings::get_option( 'enable_gutenberg_course', 'no' ),
