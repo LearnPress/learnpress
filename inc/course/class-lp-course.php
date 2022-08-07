@@ -337,7 +337,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function set_info_extra_for_fast_query( LP_Course_Extra_Info_Fast_Query_Model $data_object ) {
 			try {
-				$extra_info_json = json_encode( $data_object );
+				$extra_info_json = json_encode( $data_object, JSON_UNESCAPED_UNICODE );
 
 				if ( JSON_ERROR_NONE !== json_last_error() ) {
 					throw new Exception( 'Error encode on ' . __METHOD__ );
@@ -640,8 +640,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 						$sections_items[ $section_new ]              = new stdClass();
 						$sections_items[ $section_new ]->id          = $section_new;
 						$sections_items[ $section_new ]->order       = $section_order;
-						$sections_items[ $section_new ]->title       = $sections_item->section_name;
-						$sections_items[ $section_new ]->description = $sections_item->section_description;
+						$sections_items[ $section_new ]->title       = html_entity_decode( $sections_item->section_name );
+						$sections_items[ $section_new ]->description = html_entity_decode( $sections_item->section_description );
 						$sections_items[ $section_new ]->items       = [];
 
 						// Sort item by item_order
@@ -679,8 +679,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$section_obj                   = new stdClass();
 					$section_obj->id               = $section_id;
 					$section_obj->order            = $section->section_order;
-					$section_obj->title            = $section->section_name;
-					$section_obj->description      = $section->section_description;
+					$section_obj->title            = html_entity_decode( $section->section_name );
+					$section_obj->description      = html_entity_decode( $section->section_description );
 					$section_obj->items            = [];
 					$sections_items[ $section_id ] = $section_obj;
 				}
