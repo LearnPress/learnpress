@@ -805,14 +805,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	public function get_status_label( $status = '' ) {
 		$statuses = array(
-			'enrolled'    => esc_html__( 'In Progress', 'learnpress' ),
-			'started'     => esc_html__( 'In Progress', 'learnpress' ),
-			'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
-			'purchased'   => esc_html__( 'Not Enrolled', 'learnpress' ),
-			'completed'   => esc_html__( 'Completed', 'learnpress' ),
-			'finished'    => esc_html__( 'Finished', 'learnpress' ),
-			'passed'      => esc_html__( 'Passed', 'learnpress' ),
-			'failed'      => esc_html__( 'Failed', 'learnpress' ),
+			LP_COURSE_ENROLLED  => esc_html__( 'Enrolled', 'learnpress' ),
+			LP_COURSE_PURCHASED => esc_html__( 'Purchased', 'learnpress' ),
+			LP_ITEM_COMPLETED   => esc_html__( 'Completed', 'learnpress' ),
+			LP_ITEM_STARTED     => esc_html__( 'Started', 'learnpress' ),
+			LP_COURSE_FINISHED  => esc_html__( 'Finished', 'learnpress' ),
 		);
 
 		if ( ! $status ) {
