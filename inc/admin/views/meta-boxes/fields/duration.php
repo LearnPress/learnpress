@@ -91,7 +91,7 @@ class LP_Meta_Box_Duration_Field extends LP_Meta_Box_Field {
 		$duration_keys = array_keys( $duration );
 		$default_time  = ! empty( $this->extra['default_time'] ) ? $this->extra['default_time'] : end( $duration_keys );
 
-		$duration = isset( $_POST[ $this->id ][0] ) && $_POST[ $this->id ][0] !== '' ? implode( ' ', wp_unslash( $_POST[ $this->id ] ) ) : absint( $this->default ) . ' ' . trim( $default_time );
+		$duration = isset( $_POST[ $this->id ][0] ) && $_POST[ $this->id ][0] !== '' ? absint( wp_unslash( $_POST[ $this->id ][0] ) ) . ' ' . trim( wp_unslash( $_POST[ $this->id ][1] ) ) : absint( $this->default ) . ' ' . trim( $default_time );
 
 		update_post_meta( $post_id, $this->id, $duration );
 	}
