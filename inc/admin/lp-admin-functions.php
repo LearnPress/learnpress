@@ -1888,53 +1888,35 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 }
 
 /**
+ * Duplicate post meta.
+ *
  * @editor tungnx
- * @modify 4.1.4 - fix sanitize query
+ * @sicne 3.0.0
+ * @version 4.0.1
  */
 if ( ! function_exists( 'learn_press_duplicate_post_meta' ) ) {
 	function learn_press_duplicate_post_meta( $old_post_id, $new_post_id, $excerpt = array() ) {
-		global $wpdb;
+		$lp_db = LP_Database::getInstance();
 
-		$post_meta_infos = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT meta_key, meta_value FROM $wpdb->postmeta
-				WHERE post_id = %d",
+		try {
+			$excerpt           = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
+			$excerpt_name_keys = implode( "','", $excerpt );
+			$sql_query         = $lp_db->wpdb->prepare(
+				"INSERT INTO $lp_db->tb_postmeta (post_id, meta_key, meta_value)
+				SELECT %d, pmc.meta_key, pmc.meta_value
+				FROM $lp_db->tb_postmeta AS pmc
+				WHERE post_id = %d
+				AND meta_key not in ('{$excerpt_name_keys}')
+				",
+				$new_post_id,
 				$old_post_id
-			)
-		);
-
-		if ( count( $post_meta_infos ) != 0 ) {
-			$excerpt       = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
-			$excerpt       = apply_filters(
-				'learn_press_excerpt_duplicate_post_meta',
-				$excerpt,
-				$old_post_id,
-				$new_post_id
 			);
-			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
-			$sql_query_sel = array();
 
-			foreach ( $post_meta_infos as $meta ) {
-				if ( in_array( $meta->meta_key, $excerpt ) ) {
-					continue;
-				}
+			$lp_db->check_execute_has_error();
 
-				if ( $meta->meta_key === '_lp_course_author' ) {
-					$meta->meta_value = get_current_user_id();
-				}
-
-				$meta_key        = $meta->meta_key;
-				$meta_value      = addslashes( $meta->meta_value );
-				$sql_query_sel[] = $wpdb->prepare(
-					'SELECT %d, %s, %s',
-					$new_post_id,
-					$meta_key,
-					$meta_value
-				);
-			}
-
-			$sql_query .= implode( ' UNION ALL ', $sql_query_sel );
-			$wpdb->query( $sql_query );
+			$lp_db->wpdb->query( $sql_query );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 }
