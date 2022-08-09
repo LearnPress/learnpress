@@ -9,6 +9,10 @@
 
 defined( 'ABSPATH' ) || exit();
 
+if ( ! isset( $lesson ) ) {
+	return;
+}
+
 $title = $lesson->get_title( 'display' );
 
 if ( ! $title ) {
@@ -16,4 +20,4 @@ if ( ! $title ) {
 }
 ?>
 
-<h3 class="course-item-title question-title"><?php echo esc_html( $title ); ?></h3>
+<h3 class="course-item-title lesson-title"><?php echo esc_html( $title ); ?></h3>

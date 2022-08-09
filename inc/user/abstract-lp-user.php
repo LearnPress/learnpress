@@ -2121,11 +2121,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->get_id(), $course_id );
 		}
 
-		public function evaluate_course_results( $course_id ) {
+		/**
+		 * @depecated 4.1.6.9.2
+		 */
+		/*public function evaluate_course_results( $course_id ) {
 			$user_course = $this->get_course_data( $course_id );
 
 			return isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
-		}
+		}*/
 
 		/**
 		 * @editor tungnx

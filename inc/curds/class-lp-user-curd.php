@@ -2118,10 +2118,6 @@ ORDER BY MAX(user_item_id) DESC";
 		return $order_id;
 	}
 
-	public function evaluate_course_results() {
-
-	}
-
 	public function duplicate( &$user, $args = array() ) {
 		// TODO: Implement duplicate() method.
 	}

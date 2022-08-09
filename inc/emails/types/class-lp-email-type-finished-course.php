@@ -121,7 +121,6 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 		}
 
 		$user_course_data = $user->get_course_data( $this->course_id );
-		$user_course_data->get_results();
 
 		$variables = apply_filters(
 			'lp/email/type-finished-course/variables-mapper',

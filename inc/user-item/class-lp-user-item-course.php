@@ -191,15 +191,16 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * @return LP_User_Item|bool
+	 * @depecated 4.1.6.9.2
 	 */
-	public function get_viewing_item() {
+	/*public function get_viewing_item() {
 		$item = LP_Global::course_item();
 		if ( $item ) {
 			return $this[ $item->get_id() ];
 		}
 
 		return false;
-	}
+	}*/
 
 	public function get_course( $return = '' ) {
 		$cid = $this->get_data( 'item_id' );
@@ -257,13 +258,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		);
 
 		if ( $results === false ) {
-			// $course_result = $course->get_evaluation_results_method();
-
-			// $results = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
-
-			// if ( is_array( $results ) && array_key_exists( 'result', $results ) ) {
 			$results = $this->calculate_course_results();
-			// }
 
 			LP_Object_Cache::set(
 				'course-' . $this->get_item_id() . '-' . $this->get_user_id(),
@@ -286,6 +281,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			'items'           => array(),
 			'evaluate_type'   => '',
 			'pass'            => 0,
+			'result'          => 0,
 		);
 
 		try {
@@ -329,6 +325,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					break;
 				default:
 					$results_evaluate = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $evaluate_type, $this );
+					break;
 			}
 
 			if ( ! is_array( $results_evaluate ) ) {
@@ -357,13 +354,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$results_evaluate,
 				compact( 'count_items', 'completed_items', 'items', 'evaluate_type' )
 			);
-
-			/*
-			$graduation = '';
-
-			if ( ! $this->is_purchased() ) {
-				$graduation = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
-			}*/
 
 			$results = apply_filters(
 				'learn-press/update-course-results',
@@ -707,40 +697,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
-	 * Evaluate course result by final quiz.
-	 *
-	 * @return array
+	 * @depecated 4.1.6.9.2
 	 */
-	protected function _evaluate_course_by_final_quiz() {
-		$cache_key   = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
-		$cached_data = LP_Object_Cache::get( $cache_key, 'learn-press/course-results' );
-
-		if ( false === $cached_data || ! array_key_exists( 'final-quiz', $cached_data ) ) {
-			$course     = $this->get_course();
-			$final_quiz = $course->get_final_quiz();
-			$user_quiz  = $this->get_item( $final_quiz );
-			$result     = false;
-
-			if ( $user_quiz ) {
-				$result = $user_quiz->get_results( false );
-			}
-
-			$percent = $result ? $result['result'] : 0;
-			$data    = array(
-				'result' => $percent,
-				'status' => $this->get_status(),
-			);
-
-			settype( $cached_data, 'array' );
-			$cached_data['final-quiz'] = $data;
-
-			LP_Object_Cache::set( $cache_key, $cached_data, 'learn-press/course-results' );
-		}
-
-		return isset( $cached_data['final-quiz'] ) ? $cached_data['final-quiz'] : array();
-	}
-
-	protected function _is_passed( $result ) {
+	/*protected function _is_passed( $result ) {
 		$is_passed = LP_COURSE_GRADUATION_FAILED;
 		$result    = round( $result, 2 );
 
@@ -749,7 +708,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return apply_filters( 'learnpress/user/course/is-passed', $is_passed, $result );
-	}
+	}*/
 
 	/**
 	 * Get completed items.
@@ -941,10 +900,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * @return bool
+	 * @depecated 4.1.6.9.2
 	 */
-	public function can_graduated() {
+	/*public function can_graduated() {
 		return $this->get_results( 'result' ) >= $this->get_passing_condition();
-	}
+	}*/
 
 	function __destruct() {
 		// TODO: Implement __unset() method.

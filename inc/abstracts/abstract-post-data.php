@@ -156,11 +156,12 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 						$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
 						$this->_content = $content_post;
 						wp_reset_postdata();
-					} else { // Post is previewd
+					} else { // Post is preview
 						$content_post   = get_the_content();
 						$content_post   = apply_filters( 'the_content', $content_post );
 						$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
 						$this->_content = $content_post;
+						wp_reset_postdata();
 					}
 				}
 			} else {
