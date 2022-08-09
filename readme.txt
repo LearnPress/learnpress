@@ -203,6 +203,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.9.2 (2022-08-09) =
+~ Fixed: show wrong special character (Ex: ü) on Section title, description.
+~ Fixed: error on duplicate course, item function not same content old course, item.
+~ Fixed: button sidebar toggle not show on default theme WP.
+~ Fixed: ESC make error with payment gateway.
+
 = 4.1.6.9.1 (2022-08-04) =
 ~ Fixed: error ESC content of course, items' course make iframe, embed not working.
 ~ Fixed: error complete lesson, do quiz on API for App mobile.
