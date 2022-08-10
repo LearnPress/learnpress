@@ -34,8 +34,6 @@ if ( ! $content ) {
 
 <div class="content-item-description lesson-description">
 	<?php
-	/*$content = apply_filters( 'the_content', $content );
-	echo str_replace( ']]>', ']]&gt;', $content );*/
 	learn_press_echo_vuejs_write_on_php( $content );
 	?>
 </div>

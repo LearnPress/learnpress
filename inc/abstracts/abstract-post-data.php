@@ -143,9 +143,9 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 						setup_postdata( $post );
 					}
 
-					$content_post = get_the_content();
-					/*$content_post   = apply_filters( 'the_content', $content_post );
-					$content_post   = str_replace( ']]>', ']]&gt;', $content_post );*/
+					$content_post   = get_the_content();
+					$content_post   = apply_filters( 'the_content', $content_post );
+					$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
 					$this->_content = $content_post;
 					wp_reset_postdata();
 				}
