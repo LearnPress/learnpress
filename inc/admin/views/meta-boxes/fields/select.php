@@ -79,6 +79,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>" <?php echo $this->condition ? $this->condition : ''; ?>>
 			<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
 			<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
+				<option></option>
 				<?php
 				foreach ( $field['options'] as $key => $value ) {
 					echo '<option value="' . esc_attr( $key ) . '"' . ( is_array( $field['value'] ) ? selected( in_array( (string) $key, $field['value'], true ), true ) : selected( $key, $field['value'], false ) ) . '>' . esc_html( $value ) . '</option>';
