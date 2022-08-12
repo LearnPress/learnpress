@@ -48,7 +48,7 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 				foreach ( $this->metabox( $post->ID ) as $key => $object ) {
 					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
 						$object->id = $key;
-						echo $object->output( $post->ID );
+						learn_press_echo_vuejs_write_on_php( $object->output( $post->ID ) );
 					} elseif ( is_array( $object ) ) {
 						$is_old = true;
 					}

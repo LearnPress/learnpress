@@ -62,7 +62,7 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 			}
 		}
 
-		echo '<div class="form-field ' . esc_attr( $field['id'] ) . '_field ' . $wrapper_class . '">
+		echo '<div class="form-field ' . esc_attr( $field['id'] . '_field ' . $wrapper_class ) . '">
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
 		echo '<input type="checkbox" ' . $class . ' ' . $style . ' ' . $name . ' ' . $checked . ' id="' . esc_attr( $field['id'] ) . '" ' . implode( ' ', $custom_attributes ) . '/> ';

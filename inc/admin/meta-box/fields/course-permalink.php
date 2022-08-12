@@ -11,7 +11,7 @@ if ( ! empty( $wp_post_types[ LP_COURSE_CPT ] ) ) {
 	$default_courses_slug = '';
 }
 
-$course_permalink = $settings->get( 'course_base' );
+$course_permalink = $settings->get( 'course_base', '' );
 $courses_page_id  = learn_press_get_page_id( 'courses' );
 $base_slug        = urldecode( ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' ) );
 $course_base      = _x( 'course', 'default-slug', 'learnpress' );
@@ -45,7 +45,9 @@ $is_custom = ( $base_type == 'custom' && $course_permalink != '' );
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo $value['title']; ?> <?php echo $tooltip_html; ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>">
+			<?php echo wp_kses_post( $value['title'] ); ?><?php echo wp_kses_post( $tooltip_html ); ?>
+		</label>
 	</th>
 	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
 		<ul>
@@ -67,18 +69,22 @@ $is_custom = ( $base_type == 'custom' && $course_permalink != '' );
 					}
 					?>
 					<label>
-						<input name="<?php echo $value['id']; ?>" type="radio" value="<?php echo esc_attr( $structure['value'] ); ?>" class="learn-press-course-base" <?php echo $is_checked; ?> />
-						<?php echo $structure['text']; ?>
-						<p><code><?php echo $structure['code']; ?></code></p>
+						<input name="<?php echo esc_attr( $value['id'] ); ?>" type="radio"
+							value="<?php echo esc_attr( $structure['value'] ); ?>"
+							class="learn-press-course-base"
+							<?php learn_press_echo_vuejs_write_on_php( $is_checked ); ?> />
+						<?php echo wp_kses_post( $structure['text'] ); ?>
+						<p><code><?php echo wp_kses_post( $structure['code'] ); ?></code></p>
 					</label>
 				</li>
 			<?php endforeach; ?>
 
 			<li class="learn-press-single-course-permalink custom-base">
 				<label>
-					<input name="<?php echo $value['id']; ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom, true ); ?> />
+					<input name="<?php echo esc_attr( $value['id'] ); ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom, true ); ?> />
 					<?php esc_html_e( 'Custom Base', 'learnpress' ); ?>
-					<input name="course_permalink_structure" id="course_permalink_structure" readonly="<?php echo ! $is_custom ? 'readonly' : false; ?>" type="text" value="<?php echo $course_permalink ? esc_attr( trailingslashit( $course_permalink ) ) : ''; ?>" class="regular-text code"/>
+					<input name="course_permalink_structure" id="course_permalink_structure" readonly="<?php echo ! $is_custom ? 'readonly' : false; ?>" type="text"
+						value="<?php echo esc_attr( trailingslashit( $course_permalink ) ); ?>" class="regular-text code"/>
 				</label>
 				<p class="description"><?php esc_html_e( 'Enter a custom base to use. A base must be set or WordPress will use default values instead.', 'learnpress' ); ?></p>
 			</li>

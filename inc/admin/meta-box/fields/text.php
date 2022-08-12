@@ -12,7 +12,10 @@ $option_value = $value['value'];
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo $value['title']; ?> <?php echo $tooltip_html; ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>">
+			<?php echo wp_kses_post( $value['title'] ); ?>
+			<?php echo wp_kses_post( $tooltip_html ); ?>
+		</label>
 	</th>
 	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">
 		<input
@@ -23,7 +26,7 @@ $option_value = $value['value'];
 			value="<?php echo esc_attr( $option_value ); ?>"
 			class="<?php echo esc_attr( $value['class'] ); ?>"
 			placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>"
-		<?php echo implode( ' ', $custom_attributes ); ?>
-			/><?php echo esc_html( $value['suffix'] ); ?> <?php echo $description; ?>
+			<?php echo implode( ' ', $custom_attributes ); ?>
+			/><?php echo esc_html( $value['suffix'] ); ?> <?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>

@@ -76,8 +76,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
 		?>
 
-		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>" <?php echo $this->condition ? $this->condition : ''; ?>>
-			<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>"
+			<?php learn_press_echo_vuejs_write_on_php( $this->condition ? $this->condition : '' ); ?>>
+			<label for="<?php echo esc_attr( $field['id'] ); ?>">
+				<?php echo wp_kses_post( $field['label'] ); ?>
+			</label>
 			<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
 				<option value="" hidden style="display: none"></option>
 				<?php
@@ -108,7 +111,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 
 		if ( $multiple_meta ) {
 			$get_values = get_post_meta( $post_id, $this->id ) ?? array();
-			$new_values = isset( $_POST[ $this->id ] ) ? (array) LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
+			$new_values = LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ?? [] );
 
 			$array_get_values = ! empty( $get_values ) ? array_values( $get_values ) : array();
 			$array_new_values = ! empty( $new_values ) ? array_values( $new_values ) : array();

@@ -48,7 +48,7 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 			}
 		}
 
-		echo '<div class="form-field ' . $this->id . '_field ' . $wrapper_class . '">
+		echo '<div class="form-field ' . esc_attr( $this->id . '_field ' . $wrapper_class ) . '">
 		<label for="' . esc_attr( $this->id ) . '">' . wp_kses_post( $this->label ) . '</label>';
 
 		echo '<input type="' . esc_attr( $type_input ) . '" ' . $class . ' ' . $style . ' name="' . $this->id . '" id="' . $this->id . '" value="' . $value . '" placeholder="' . esc_attr( $placeholder ) . '" ' . implode(

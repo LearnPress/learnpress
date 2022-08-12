@@ -44,7 +44,7 @@ $lp_query_items_bg->query_related_themes();
 foreach ( $all_themes as $themes ) {
 	if ( $themes['items'] ) {
 		?>
-		<h2><?php echo $themes['title'] . ' (<span>' . sizeof( $themes['items'] ) . '</span>)'; ?></h2>
+		<h2><?php echo sprintf( '%s (<span>%s</span>)', esc_html( $themes['title'] ), sizeof( $themes['items'] ) ); ?></h2>
 		<ul class="addons-browse related-themes widefat">
 			<?php
 			foreach ( $themes['items'] as $key => $item ) {

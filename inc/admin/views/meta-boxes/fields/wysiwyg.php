@@ -37,7 +37,7 @@ class LP_Meta_Box_WP_Editor_Field extends LP_Meta_Box_Field {
 		$value    = $extra['value'] ?? $value;
 		$desc_tip = $extra['desc_tip'] ?? '';
 
-		echo '<div class="lp-meta-box__wp-editor form-field ' . $this->id . '_field ' . $wrapper_class . '">
+		echo '<div class="lp-meta-box__wp-editor form-field ' . esc_attr( $this->id . '_field ' . $wrapper_class ) . '">
 		<label for="' . esc_attr( $this->id ) . '">' . wp_kses_post( $this->label ) . '</label>';
 
 		echo wp_editor(

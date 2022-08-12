@@ -10,7 +10,7 @@
 			id="<?php echo esc_attr( $value['id'] ); ?>"
 			style="<?php echo esc_attr( $value['css'] ); ?>"
 			class="<?php echo esc_attr( $value['class'] ); ?>"
-			<?php echo esc_attr( implode( ' ', $custom_attributes ) ); ?>
+			<?php echo implode( ' ', $custom_attributes ); ?>
 			<?php echo 'multiselect' === $value['type'] ? 'multiple="multiple"' : ''; ?>
 			>
 			<?php foreach ( $value['options'] as $key => $val ) { ?>
@@ -28,6 +28,6 @@
 				<?php
 			}
 			?>
-		</select> <?php echo wp_kses_post( $description ); ?>
+		</select><?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>

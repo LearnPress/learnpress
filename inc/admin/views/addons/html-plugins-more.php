@@ -46,7 +46,7 @@ foreach ( $all_plugins as $plugins ) {
 	if ( $plugins['items'] ) {
 		?>
 		<h2>
-			<?php echo $plugins['title'] . ' (<span>' . sizeof( $plugins['items'] ) . '</span>)'; ?>
+			<?php echo sprintf( '%s (<span>%s</span>)', esc_html( $plugins['title'] ), sizeof( $plugins['items'] ) ); ?>
 		</h2>
 		<ul class="addons-browse widefat">
 			<?php

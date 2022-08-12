@@ -96,7 +96,7 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal {
 
 				return $paypal_payment_url;
 			} else {
-				echo $payment_form;
+				learn_press_echo_vuejs_write_on_php( $payment_form );
 			}
 		}
 

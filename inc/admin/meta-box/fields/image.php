@@ -2,10 +2,14 @@
 
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo $value['title']; ?> <?php echo $tooltip_html; ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>">
+			<?php echo wp_kses_post( $value['title'] ); ?>
+			<?php echo wp_kses_post( $tooltip_html ); ?>
+		</label>
 	</th>
 	<td class="forminp lp-metabox-field__image forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
 		<div class="lp-metabox-field__image--image">
+			<div>
 				<?php if ( ! empty( $option_value ) ) : ?>
 					<div class="lp-metabox-field__image--inner">
 						<?php echo wp_get_attachment_image( $option_value, 'thumbnail' ); ?>

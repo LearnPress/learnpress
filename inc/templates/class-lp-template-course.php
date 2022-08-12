@@ -89,24 +89,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * @editor tungnx
-	 * @modify 4.1.3
-	 */
-	/*
-	public function loop_item_user_progress() {
-		$course = learn_press_get_course();
-		$user   = learn_press_get_current_user();
-
-		if ( ! $user || ! $course ) {
-			return;
-		}
-
-		if ( $user->has_enrolled_course( $course->get_id() ) ) {
-			echo $user->get_course_status( $course->get_id() );
-		}
-	}*/
-
-	/**
 	 * @param LP_Quiz $item
 	 */
 	public function quiz_meta_questions( $item ) {

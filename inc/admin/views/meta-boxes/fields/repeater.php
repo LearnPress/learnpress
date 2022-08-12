@@ -27,7 +27,9 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 		?>
 
 		<div class="form-field lp_repeater_meta_box">
-			<label for="_lp_key_features"><?php echo $this->label; ?></label>
+			<label for="_lp_key_features">
+				<?php echo wp_kses_post( $this->label ); ?>
+			</label>
 			<div class="lp_repeater_meta_box__wrapper">
 				<div class="lp_repeater_meta_box__fields">
 					<?php if ( ! empty( $repeaters ) ) : ?>
@@ -45,7 +47,7 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 					echo esc_attr( ob_get_clean() );
 					?>
 					">
-					<?php echo isset( $this->extra['add_text'] ) ? $this->extra['add_text'] : esc_html__( '+ Add more', 'learnpress' ); ?>
+					<?php echo wp_kses_post( $this->extra['add_text'] ?? esc_html__( '+ Add more', 'learnpress' ) ); ?>
 				</a>
 			</div>
 		</div>
@@ -77,12 +79,12 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 
 	public function repeater_html( $thepostid, $repeater, $is_attr = false, $key = 'lp_metabox_repeater_key' ) {
 		?>
-		<div class="lp_repeater_meta_box__field <?php echo $is_attr ? 'lp_repeater_meta_box__field_active' : ''; ?>">
+		<div class="lp_repeater_meta_box__field <?php echo esc_attr( $is_attr ? 'lp_repeater_meta_box__field_active' : '' ); ?>">
 			<input class="lp_repeater_meta_box__field__count" type="hidden" value="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $this->id ) . '[' . $key . ']' . '[sort]'; ?>">
 			<div class="lp_repeater_meta_box__title">
 				<span class="lp_repeater_meta_box__title__sort"></span>
 				<span class="lp_repeater_meta_box__title__title">
-					<?php echo isset( $this->extra['title_text'] ) ? $this->extra['title_text'] : esc_html__( 'Repeater', 'learnpress' ); ?>
+					<?php echo wp_kses_post( $this->extra['title_text'] ?? esc_html__( 'Repeater', 'learnpress' ) ); ?>
 					<span><?php echo esc_html( absint( $key ) + 1 ); ?></span>
 				</span>
 				<a href="#" class="lp_repeater_meta_box__title__delete"></a>
@@ -94,7 +96,7 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 					foreach ( $this->extra['fields'] as $field_key => $field ) {
 						$field->id             = $this->id . '[' . $key . '][' . $field_key . ']';
 						$field->extra['value'] = $is_attr ? '' : $repeater[ $field_key ];
-						echo $field->output( $thepostid );
+						learn_press_echo_vuejs_write_on_php( $field->output( $thepostid ) );
 					}
 				}
 				?>

@@ -26,10 +26,10 @@ defined( 'ABSPATH' ) || exit();
 			</h2>
 			<div class="theme-detail">
 				<div class="theme-price">
-					<?php echo '$' . $theme['price_cents'] / 100; ?>
+					<?php echo sprintf( '$%s', $theme['price_cents'] / 100 ); ?>
 				</div>
 				<div class="number-sale">
-					<?php echo $theme['number_of_sales'] . esc_html__( ' sales', 'learnpress' ); ?>
+					<?php echo sprintf( '%s %s', $theme['number_of_sales'], esc_html__( ' sales', 'learnpress' ) ); ?>
 				</div>
 			</div>
 

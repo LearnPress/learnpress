@@ -26,14 +26,18 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 		?>
 
 		<div class="form-field lp_course_extra_meta_box">
-			<label for="<?php echo esc_attr( $this->id ); ?>"><?php echo $this->label; ?></label>
+			<label for="<?php echo esc_attr( $this->id ); ?>">
+				<?php echo wp_kses_post( $this->label ); ?>
+			</label>
 			<div class="lp_course_extra_meta_box__content">
 				<div class="lp_course_extra_meta_box__fields">
 					<?php if ( ! empty( $fields[0][0] ) ) : ?>
 						<?php foreach ( $fields as $field ) : ?>
 							<div class="lp_course_extra_meta_box__field">
 								<span class="sort"></span>
-								<input name="<?php echo esc_attr( $this->id ); ?>[]" value="<?php echo esc_attr( $field ); ?>" type="text" class="lp_course_extra_meta_box__input">
+								<input name="<?php echo esc_attr( $this->id ); ?>[]"
+									   value="<?php echo esc_attr( $field ); ?>"
+									   type="text" class="lp_course_extra_meta_box__input">
 								<a href="#" class="delete"></a>
 							</div>
 						<?php endforeach; ?>
@@ -45,7 +49,6 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 				</a>
 			</div>
 		</div>
-
 		<?php
 	}
 
