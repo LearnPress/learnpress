@@ -407,10 +407,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @modify 4.1.3
 	 */
 	public function get_status( string $field = 'status', bool $force_cache = false ): string {
-		/*if ( ! is_null( $this->get_data( $field, null ) && ! $force_cache ) ) {
-			return $this->get_data( $field );
-		}*/
-
 		$got_status = '';
 
 		try {
@@ -446,21 +442,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	/**
-	 * @editor tungnx
-	 * @reason comment - not use
-	 */
-	/*
-	public function is_available() {
-		if ( null === $this->_is_available ) {
-			$user                = $this->get_user();
-			$order               = $user->get_course_order( $this->get_item_id() );
-			$this->_is_available = $order && ( $order->get_status() === 'completed' ) && $this->is_exists();
-		}
-
-		return $this->_is_available;
-	}*/
-
-	/**
 	 * @param string $return
 	 *
 	 * @return LP_User|int
@@ -469,13 +450,20 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $this->get_data( 'user_id', 0 );
 	}
 
-	public function get_course( $return = '' ) {
-		$cid = $this->get_data( 'ref_id' );
+	/**
+	 * Get course.
+	 *
+	 * @param string $return
+	 *
+	 * @return bool|LP_Course|int|mixed
+	 */
+	public function get_course( string $return = '' ) {
+		$course_id = $this->get_data( 'ref_id', 0 );
 		if ( $return == '' ) {
-			return $cid ? learn_press_get_course( $cid ) : false;
+			return $course_id ? learn_press_get_course( $course_id ) : false;
 		}
 
-		return $cid;
+		return $course_id;
 	}
 
 	/**
@@ -744,10 +732,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get graduation
 	 *
-	 * @return string|null
+	 * @param string $context
+	 *
+	 * @return string
 	 */
-	public function get_graduation() {
-		return $this->get_data( 'graduation', '' );
+	public function get_graduation( string $context = '' ): string {
+		$grade = $this->get_data( 'graduation', '' );
+		return $context == 'display' ? learn_press_course_grade_html( $grade, false ) : $grade;
 	}
 
 	/**
@@ -842,7 +833,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $interval;
 	}
 
-	public function get_history() {
+	/*public function get_history() {
 		return LP_Object_Cache::get(
 			sprintf(
 				'course-item-%s-%s-%s',
@@ -852,7 +843,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			),
 			'learn-press/user-course-items'
 		);
-	}
+	}*/
 
 	/**
 	 * @editor tungnx
@@ -1115,8 +1106,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param $arguments
 	 *
 	 * @return mixed
+	 * @depecated 4.1.6.9.4
 	 */
-	public function __call( $name, $arguments ) {
+	/*public function __call( $name, $arguments ) {
 		if ( ! method_exists( $this, $name ) ) {
 			$course = $this->get_course();
 
@@ -1130,7 +1122,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		return false;
-	}
+	}*/
 
 	public function offsetSet( $offset, $value ) {
 		// TODO: Implement offsetSet() method.

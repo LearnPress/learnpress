@@ -318,7 +318,7 @@ class LP_User extends LP_Abstract_User {
 			$output = $output->check;
 		}
 
-		return apply_filters( 'learn-press/user/can-enroll-course', $output, $course, $return_bool );
+		return apply_filters( 'learn-press/user/can-enroll-course', $output, $course, $return_bool, $this );
 	}
 
 	/**

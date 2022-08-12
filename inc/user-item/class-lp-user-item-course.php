@@ -202,13 +202,20 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return false;
 	}*/
 
-	public function get_course( $return = '' ) {
-		$cid = $this->get_data( 'item_id' );
+	/**
+	 * Get course.
+	 *
+	 * @param string $return
+	 *
+	 * @return bool|LP_Course|int|mixed
+	 */
+	public function get_course( string $return = '' ) {
+		$course_id = $this->get_data( 'item_id', 0 );
 		if ( $return == '' ) {
-			return $cid ? learn_press_get_course( $cid ) : false;
+			return $course_id ? learn_press_get_course( $course_id ) : false;
 		}
 
-		return $cid;
+		return $course_id;
 	}
 
 	/**
@@ -377,18 +384,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @param string $context
 	 *
 	 * @return string
+	 * @depecated 4.1.6.9.3
 	 */
-	public function get_grade( string $context = 'display' ): string {
+	public function get_grade( string $context = '' ): string {
 		$grade = $this->get_graduation() ?? '';
 
 		return $context == 'display' ? learn_press_course_grade_html( $grade, false ) : $grade;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function is_passed() {
-		return $this->get_grade() == 'passed';
 	}
 
 	/**
@@ -657,8 +658,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Check course of use has enrolled
-	 *
-	 * @throws Exception
 	 */
 	public function is_enrolled(): bool {
 		return $this->get_status() == LP_COURSE_ENROLLED;
@@ -666,8 +665,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	/**
 	 * Check course of use has purchased
-	 *
-	 * @throws Exception
 	 * @author tungnx
 	 * @since 4.1.3
 	 * @version 1.0.0

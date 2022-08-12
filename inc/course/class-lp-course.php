@@ -556,7 +556,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				LP_Courses_Cache::instance()->save_cache_keys( $key_cache );
 				LP_Courses_Cache::instance()->save_cache_keys( $key_cache_total_rows );
 			} catch ( Throwable $e ) {
-				$courses = null;
+				$courses = [];
 				error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 			}
 
