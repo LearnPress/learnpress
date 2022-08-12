@@ -243,17 +243,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
-	 * Get user quiz graduation. [passed, failed, null]
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return string
-	 */
-	public function get_graduation() {
-		return apply_filters( 'learn-press/user-quiz-graduation', $this->get_data( 'graduation' ), $this->get_item_id(), $this->get_course_id(), $this->get_user() );
-	}
-
-	/**
 	 * Get user quiz graduation text for displaying purpose. [Passed, Failed, null]
 	 *
 	 * @since 4.0.0
@@ -596,10 +585,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	protected function _get_results() {
 		return LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
-	}
-
-	public function is_passed() {
-		return $this->get_graduation();
 	}
 
 	public function get_percent_result( $decimal = 2 ) {

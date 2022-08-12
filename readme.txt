@@ -203,6 +203,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.6.9.4 (2022-08-15) =
+
+
+= 4.1.6.9.3 (2022-08-10) =
+~ Fixed: show wrong shortcode on course, item's course.
+
 = 4.1.6.9.2 (2022-08-09) =
 ~ Fixed: show wrong special character (Ex: ü) on Section title, description.
 ~ Fixed: error on duplicate course, item function not same content old course, item.

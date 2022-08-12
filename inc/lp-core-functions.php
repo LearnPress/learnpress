@@ -405,45 +405,6 @@ function learn_press_question_name_from_slug( $slug ) {
 }
 
 /**
- * Get the post types which supported to insert into course's section
- *
- * @return array
- */
-function learn_press_section_item_types() {
-	$types = array(
-		'lp_lesson' => esc_html__( 'Lesson', 'learnpress' ),
-		'lp_quiz'   => esc_html__( 'Quiz', 'learnpress' ),
-	);
-
-	return apply_filters( 'learn-press/section/support-item-type', $types );
-}
-
-/**
- * Enqueue js code to print out
- *
- * @param string $code
- * @param bool   $script_tag - wrap code between <script> tag
- * @depecated 4.1.6.8
- */
-function learn_press_enqueue_script( $code, $script_tag = false ) {
-	_deprecated_function( __FUNCTION__, '4.1.6.8' );
-	global $learn_press_queued_js, $learn_press_queued_js_tag;
-
-	if ( $script_tag ) {
-		if ( empty( $learn_press_queued_js_tag ) ) {
-			$learn_press_queued_js_tag = '';
-		}
-		$learn_press_queued_js_tag .= "\n" . $code . "\n";
-	} else {
-		if ( empty( $learn_press_queued_js ) ) {
-			$learn_press_queued_js = '';
-		}
-
-		$learn_press_queued_js .= "\n" . $code . "\n";
-	}
-}
-
-/**
  * Get terms of a course by taxonomy.
  * E.g: course_tag, course_category
  *
@@ -584,113 +545,6 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 
 	return $id ? get_post( $id ) : false;
 }
-
-/**
- * Cache static pages
- *
- * @deprecated 4.1.6.8
- */
-/*function learn_press_setup_pages() {
-	global $wpdb;
-
-	$page_ids = LP_Object_Cache::get( 'static-page-ids', 'learn-press' );
-
-	if ( false === $page_ids ) {
-		$pages    = learn_press_static_pages( true );
-		$page_ids = array();
-
-		foreach ( $pages as $page ) {
-			$id = get_option( 'learn_press_' . $page . '_page_id' );
-
-			if ( absint( $id ) > 0 ) {
-				$page_ids[] = $id;
-			}
-		}
-
-		if ( ! $page_ids ) {
-			return;
-		}
-
-		$query = $wpdb->prepare(
-			"
-			SELECT ID, post_title, post_name, post_date, post_date_gmt, post_modified, post_modified_gmt, post_content, post_parent, post_type
-			FROM {$wpdb->posts}
-			WHERE %d AND ID IN(" . join( ',', $page_ids ) . ')
-			AND post_status <> %s
-		',
-			1,
-			'trash'
-		);
-
-		if ( ! $rows = $wpdb->get_results( $query ) ) {
-			return;
-		}
-
-		foreach ( $rows as $page ) {
-			$page = sanitize_post( $page, 'raw' );
-			wp_cache_add( $page->ID, $page, 'posts' );
-		}
-	}
-}*/
-
-function learn_press_get_course_item_object( $post_type ) {
-	switch ( $post_type ) {
-		case 'lp_quiz':
-			$class = 'LP_Quiz';
-			break;
-		case 'lp_lesson':
-			$class = 'LP_Lesson';
-			break;
-		case 'lp_question':
-			$class = 'LP_Question';
-	}
-}
-
-/**
- * Print out js code in the queue
- *
- * @depecated 4.1.6.8
- */
-function learn_press_print_script() {
-	_deprecated_function( __FUNCTION__, '4.1.6.8' );
-	global $learn_press_queued_js, $learn_press_queued_js_tag;
-
-	if ( ! empty( $learn_press_queued_js ) ) {
-		?>
-		<!-- LearnPress JavaScript -->
-		<script type="text/javascript">
-			jQuery(function ($) {
-				<?php
-				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
-				$learn_press_queued_js = preg_replace( '/&#(x)?0*(?(1)27|39);?/i', "'", $learn_press_queued_js );
-				$learn_press_queued_js = str_replace( "\r", '', $learn_press_queued_js );
-
-				// echo $learn_press_queued_js;
-				?>
-			})
-		</script>
-
-		<?php
-		unset( $learn_press_queued_js );
-	}
-
-	if ( ! empty( $learn_press_queued_js_tag ) ) {
-		// echo $learn_press_queued_js_tag;
-	}
-}
-
-// add_action( 'wp_footer', 'learn_press_print_script' );
-// add_action( 'admin_footer', 'learn_press_print_script' );
-
-
-/**
- * @param string $str
- * @param int    $lines
- * @depecated 4.1.6.8
- */
-/*function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
-	echo str_repeat( $str, $lines );
-}*/
 
 if ( ! function_exists( 'learn_press_is_ajax' ) ) {
 	function learn_press_is_ajax() {
@@ -2302,7 +2156,7 @@ function learn_press_single_term_title( $prefix = '', $display = true ) {
 	}
 
 	if ( $display ) {
-		echo $prefix . $term_name;
+		echo wp_kses_post( $prefix . $term_name );
 	}
 
 	return $prefix . $term_name;

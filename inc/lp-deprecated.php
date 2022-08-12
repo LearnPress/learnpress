@@ -389,8 +389,10 @@ function learn_press_get_students_list_filter() {
 	return apply_filters( 'learn_press_get_students_list_filter', $filter );
 }
 
-
-function learn_press_get_request_args( $args = array() ) {
+/**
+ * @depecated 4.1.6.9
+ */
+/*function learn_press_get_request_args( $args = array() ) {
 	$request = array();
 	if ( $args ) {
 		foreach ( $args as $key ) {
@@ -399,7 +401,7 @@ function learn_press_get_request_args( $args = array() ) {
 	}
 
 	return $request;
-}
+}*/
 
 
 /**
@@ -1361,37 +1363,6 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 		learn_press_get_template( 'profile/mobile-menu.php' );
 	}
 }
-
-/**
- * @deprecated
- *
- * @return bool
- */
-function learn_press_is_content_only() {
-	global $wp;
-
-	return ! empty( $wp->query_vars['content-item-only'] );
-}
-
-if ( ! function_exists( 'learn_press_profile_localize_script' ) ) {
-
-	/**
-	 * @deprecated
-	 *
-	 * Translate javascript text
-	 */
-	function learn_press_profile_localize_script( $assets ) {
-		$translate = array(
-			'confirm_cancel_order' => array(
-				'message' => __( 'Are you sure you want to cancel order?', 'learnpress' ),
-				'title'   => __( 'Cancel Order', 'learnpress' ),
-			),
-		);
-		// LP_Assets::add_localize( $translate );
-	}
-}
-add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
-
 
 /**
  * Redirect back to course if the order have one course in that
