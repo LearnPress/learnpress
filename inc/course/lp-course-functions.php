@@ -984,7 +984,7 @@ function learn_press_course_grade_html( string $grade = '', bool $echo = true ) 
 	$html = apply_filters( 'learn-press/course/grade-html', $html, $grade );
 
 	if ( $echo ) {
-		echo esc_html( $html );
+		echo wp_kses_post( $html );
 	}
 
 	return $html;

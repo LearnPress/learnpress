@@ -1145,7 +1145,7 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	);
 
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
-	$update_meta = isset( $_POST['_lp_custom_register'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_custom_register'] ) : '';
+	$update_meta = LP_Helper::sanitize_params_submitted( $_POST['_lp_custom_register'] ?? '' );
 
 	$return = LP_Forms_Handler::update_user_data( $update_data, $update_meta );
 
@@ -1895,10 +1895,9 @@ function learn_press_update_extra_user_profile_fields( $user_id ) {
 	}
 
 	if ( isset( $_POST['_lp_extra_info'] ) ) {
-		update_user_meta( $user_id, '_lp_extra_info', $_POST['_lp_extra_info'] );
+		update_user_meta( $user_id, '_lp_extra_info', LP_Helper::sanitize_params_submitted( $_POST['_lp_extra_info'] ) );
 	}
 }
-
 add_action( 'personal_options_update', 'learn_press_update_extra_user_profile_fields' );
 add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_fields' );
 
@@ -1939,15 +1938,15 @@ function learn_press_social_profiles() {
 }
 
 function lp_add_default_fields( $fields ) {
-	$first_name = LP_Settings::instance()->get( 'enable_register_first_name' );
+	$first_name = LP_Settings::get_option( 'enable_register_first_name', 'no' );
 
 	if ( $first_name === 'yes' ) {
 		?>
 		<li class="form-field">
 			<label for="reg_first_name"><?php esc_html_e( 'First name', 'learnpress' ); ?></label>
 			<input id="reg_first_name" name="reg_first_name" type="text"
-				   placeholder="<?php esc_attr_e( 'First name', 'learnpress' ); ?>"
-				   value="<?php echo ( ! empty( $_POST['reg_first_name'] ) ) ? esc_attr( wp_unslash( $_POST['reg_first_name'] ) ) : ''; ?>">
+				placeholder="<?php esc_attr_e( 'First name', 'learnpress' ); ?>"
+				value="<?php echo esc_attr( wp_unslash( $_POST['reg_first_name'] ?? '' ) ); ?>">
 		</li>
 		<?php
 	}
@@ -1959,8 +1958,8 @@ function lp_add_default_fields( $fields ) {
 		<li class="form-field">
 			<label for="reg_last_name"><?php esc_html_e( 'Last name', 'learnpress' ); ?></label>
 			<input id="reg_last_name" name="reg_last_name" type="text"
-				   placeholder="<?php esc_attr_e( 'Last name', 'learnpress' ); ?>"
-				   value="<?php echo ( ! empty( $_POST['reg_last_name'] ) ) ? esc_attr( wp_unslash( $_POST['reg_last_name'] ) ) : ''; ?>">
+				placeholder="<?php esc_attr_e( 'Last name', 'learnpress' ); ?>"
+				value="<?php echo esc_attr( wp_unslash( $_POST['reg_last_name'] ?? '' ) ); ?>">
 		</li>
 		<?php
 	}
@@ -1972,8 +1971,8 @@ function lp_add_default_fields( $fields ) {
 		<li class="form-field">
 			<label for="reg_display_name"><?php esc_html_e( 'Display name', 'learnpress' ); ?></label>
 			<input id="reg_display_name" name="reg_display_name" type="text"
-				   placeholder="<?php esc_attr_e( 'Display name', 'learnpress' ); ?>"
-				   value="<?php echo ( ! empty( $_POST['reg_display_name'] ) ) ? esc_attr( wp_unslash( $_POST['reg_display_name'] ) ) : ''; ?>">
+				placeholder="<?php esc_attr_e( 'Display name', 'learnpress' ); ?>"
+				value="<?php echo esc_attr( wp_unslash( $_POST['reg_display_name'] ?? '' ) ); ?>">
 		</li>
 		<?php
 	}

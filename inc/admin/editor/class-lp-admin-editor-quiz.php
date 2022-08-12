@@ -411,10 +411,10 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function delete_question_answer( $args = array() ) {
-		$question_id = isset( $_POST['question_id'] ) ? $_POST['question_id'] : false;
-		$answer_id   = isset( $_POST['answer_id'] ) ? intval( $_POST['answer_id'] ) : false;
+		$question_id = LP_Helper::sanitize_params_submitted( $_POST['question_id'] ?? 0 );
+		$answer_id   = LP_Helper::sanitize_params_submitted( $_POST['answer_id'] ?? 0 );
 
-		if ( ! ( $question_id && $answer_id ) ) {
+		if ( ! $question_id || ! $answer_id ) {
 			return false;
 		}
 
@@ -576,12 +576,13 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function add_questions_to_quiz( $args = array() ) {
-		$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
-		$questions = json_decode( wp_unslash( $questions ), true );
+		$questions = LP_Helper::sanitize_params_submitted( $_POST['items'] ?? '' );
 
 		if ( ! $questions ) {
 			return false;
 		}
+
+		$questions = json_decode( wp_unslash( $questions ), true );
 
 		$quiz_id = $this->quiz->get_id();
 

@@ -79,7 +79,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>" <?php echo $this->condition ? $this->condition : ''; ?>>
 			<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
 			<select <?php echo lp_implode_html_attributes( $field_attributes ); ?>>
-				<option></option>
+				<option value="" hidden style="display: none"></option>
 				<?php
 				foreach ( $field['options'] as $key => $value ) {
 					echo '<option value="' . esc_attr( $key ) . '"' . ( is_array( $field['value'] ) ? selected( in_array( (string) $key, $field['value'], true ), true ) : selected( $key, $field['value'], false ) ) . '>' . esc_html( $value ) . '</option>';
@@ -100,15 +100,15 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$multil_meta = isset( $this->extra['multil_meta'] ) ? $this->extra['multil_meta'] : false;
+		$multiple_meta = $this->extra['multil_meta'] ?? false;
 
 		if ( ! isset( $_POST[ $this->id ] ) ) {
 			return;
 		}
 
-		if ( $multil_meta ) {
-			$get_values = get_post_meta( $post_id, $this->id, false ) ?? array();
-			$new_values = isset( $_POST[ $this->id ] ) ? (array) wp_unslash( $_POST[ $this->id ] ) : array();
+		if ( $multiple_meta ) {
+			$get_values = get_post_meta( $post_id, $this->id ) ?? array();
+			$new_values = isset( $_POST[ $this->id ] ) ? (array) LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
 
 			$array_get_values = ! empty( $get_values ) ? array_values( $get_values ) : array();
 			$array_new_values = ! empty( $new_values ) ? array_values( $new_values ) : array();
@@ -124,12 +124,22 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				add_post_meta( $post_id, $this->id, $level_id, false );
 			}
 		} else {
-			$value = ! empty( $_POST[ $this->id ] ) ? sanitize_text_field( wp_unslash( $_POST[ $this->id ] ) ) : '';
+			$multiple = ! empty( $this->extra['multiple'] );
 
-			$multilple = ! empty( $this->extra['multiple'] ) ? true : false;
-
-			if ( $multilple ) {
-				$value = ! empty( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
+			if ( $multiple ) {
+				$value_tmp = ! empty( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
+				// Clear item has value empty.
+				$value = [];
+				array_map(
+					function( $item ) use ( &$value ) {
+						if ( $item !== '' ) {
+							$value[] = $item;
+						}
+					},
+					$value_tmp
+				);
+			} else {
+				$value = ! empty( $_POST[ $this->id ] ) ? sanitize_text_field( wp_unslash( $_POST[ $this->id ] ) ) : '';
 			}
 
 			update_post_meta( $post_id, $this->id, $value );
