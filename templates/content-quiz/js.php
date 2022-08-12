@@ -69,6 +69,11 @@ if ( $user_quiz ) {
 		$user_js['results'] = $quiz_results;
 		$answered           = $quiz_results['questions'];
 	}
+} else {
+	// Display quiz content.
+	echo '<div class="quiz-content">';
+	learn_press_echo_vuejs_write_on_php( $quiz->get_content() );
+	echo '</div>';
 }
 
 $questions = learn_press_rest_prepare_user_questions(
@@ -90,7 +95,7 @@ $js = array(
 	'nonce'               => wp_create_nonce( sprintf( 'user-quiz-%d', get_current_user_id() ) ),
 	'id'                  => $quiz->get_id(),
 	'title'               => $quiz->get_title(),
-	'content'             => $quiz->get_content(),
+	'content'             => '',
 	'questions'           => $questions,
 	'question_ids'        => array_map( 'absint', array_values( $question_ids ) ),
 	'current_question'    => absint( reset( $question_ids ) ),

@@ -36,8 +36,9 @@ if ( ! $course ) {
 	 */
 	do_action( 'learn-press/before-single-course-description' );
 
-	$content = apply_filters( 'the_content', $course->get_content() );
-	echo str_replace( ']]>', ']]&gt;', $content );
+	/*$content = apply_filters( 'the_content', $course->get_content() );
+	echo str_replace( ']]>', ']]&gt;', $content );*/
+	learn_press_echo_vuejs_write_on_php( $course->get_content() );
 
 	/**
 	 * @since 3.0.0

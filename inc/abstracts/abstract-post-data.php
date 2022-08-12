@@ -133,35 +133,21 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 
 					// Post not preview
 					if ( ! isset( $_REQUEST['preview'] ) ) {
-						$posts = apply_filters_ref_array(
-							'the_posts',
-							array(
-								array( get_post( $this->get_id() ) ),
-								&$wp_query,
-							)
-						);
-
 						// Fix style, js if content is WP Bakery
 						if ( class_exists( 'WPBMap' ) && method_exists( 'WPBMap', 'addAllMappedShortcodes' ) ) {
 							WPBMap::addAllMappedShortcodes();
 						}
 
-						if ( $posts ) {
-							$post = $posts[0];
-						}
+						$post = get_post( $this->get_id() );
 
 						setup_postdata( $post );
-						$content_post   = get_the_content();
-						$content_post   = apply_filters( 'the_content', $content_post );
-						$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
-						$this->_content = $content_post;
-						wp_reset_postdata();
-					} else { // Post is previewd
-						$content_post   = get_the_content();
-						$content_post   = apply_filters( 'the_content', $content_post );
-						$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
-						$this->_content = $content_post;
 					}
+
+					$content_post   = get_the_content();
+					$content_post   = apply_filters( 'the_content', $content_post );
+					$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
+					$this->_content = $content_post;
+					wp_reset_postdata();
 				}
 			} else {
 				$content = get_post_field( 'post_content', $this->get_id() );

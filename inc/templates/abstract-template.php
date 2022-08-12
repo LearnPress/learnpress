@@ -259,7 +259,7 @@ class LP_Template_Callback {
 	}
 
 	public function text() {
-		echo wp_kses_post( $this->template );
+		learn_press_echo_vuejs_write_on_php( $this->template );
 	}
 
 	public function get_args() {

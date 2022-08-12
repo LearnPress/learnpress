@@ -96,30 +96,29 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		 * @return mixed|WP_Error
 		 */
 		public function duplicate( &$lesson_id, $args = array() ) {
-
 			if ( ! $lesson_id ) {
-				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
+				return new WP_Error( '0', 'Op! ID not found' );
 			}
 
 			if ( get_post_type( $lesson_id ) != LP_LESSON_CPT ) {
-				return new WP_Error( __( '<p>Op! The lesson does not exist</p>', 'learnpress' ) );
+				return new WP_Error( '1', 'Op! The lesson does not exist' );
 			}
 
 			$user_id = $args['meta_input']['_lp_user'] ?? get_current_user_id();
 			// ensure that user can create lesson
 			if ( ! user_can( $user_id, 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this lesson</p>', 'learnpress' ) );
+				return new WP_Error( '2', 'Sorry! You don\'t have permission to duplicate this lesson' );
 			}
 
 			// duplicate lesson
 			$new_lesson_id = learn_press_duplicate_post( $lesson_id, $args );
 
 			if ( ! $new_lesson_id || is_wp_error( $new_lesson_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Failed to duplicate lesson!</p>', 'learnpress' ) );
-			} else {
-				do_action( 'learn-press/after-duplicate', $lesson_id, $new_lesson_id, $args );
-				return $new_lesson_id;
+				return new WP_Error( '3', 'Sorry! Failed to duplicate lesson!' );
 			}
+
+			do_action( 'learn-press/after-duplicate', $lesson_id, $new_lesson_id, $args );
+			return $new_lesson_id;
 		}
 
 		/**
