@@ -72,7 +72,7 @@ function learn_press_process_web_hooks() {
 			} else {
 
 			}
-			$web_hooks_processed[ $param ] = $_REQUEST;
+			$web_hooks_processed[ $param ] = LP_Helper::sanitize_params_submitted( $_REQUEST );
 			break;
 		}
 	}

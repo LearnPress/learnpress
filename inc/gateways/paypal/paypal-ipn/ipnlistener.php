@@ -281,7 +281,7 @@ class IpnListener {
 		if ( $post_data === null ) {
 			// use raw POST data
 			if ( ! empty( $_POST ) ) {
-				$this->post_data = $_POST;
+				$this->post_data = LP_Helper::sanitize_params_submitted( $_POST );
 				$encoded_data   .= '&' . file_get_contents( 'php://input' );
 			} else {
 				throw new Exception( 'No POST data found.' );

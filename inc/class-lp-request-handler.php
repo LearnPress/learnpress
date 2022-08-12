@@ -212,10 +212,10 @@ class LP_Request {
 	public static function get( $var, $default = false, $type = '', $env = 'request' ) {
 		switch ( strtolower( $env ) ) {
 			case 'post':
-				$env = $_POST;
+				$env = LP_Helper::sanitize_params_submitted( $_POST );
 				break;
 			case 'get':
-				$env = $_GET;
+				$env = LP_Helper::sanitize_params_submitted( $_GET );
 				break;
 			case 'put':
 			case 'delete':
@@ -228,7 +228,7 @@ class LP_Request {
 				$env = $wp->query_vars;
 				break;
 			default:
-				$env = $_REQUEST;
+				$env = LP_Helper::sanitize_params_submitted( $_REQUEST );
 		}
 
 		$return = array_key_exists( $var, $env ) ? $env[ $var ] : $default;

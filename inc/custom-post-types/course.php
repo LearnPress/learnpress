@@ -446,67 +446,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Update course price and sale price
-		 *
-		 * @editor tungnx
-		 * @since modify 4.0.9
-		 * @reason this function of LP old, LP4 no need.
-		 */
-		/*
-		private function _update_price( WP_Post $post ) {
-			global $wpdb;
-
-			$request          = $_POST;
-			$price            = floatval( LP_Request::get( '_lp_price' ) );
-			$sale_price       = LP_Request::get( '_lp_sale_price' );
-			$sale_price_start = LP_Request::get( '_lp_sale_start' );
-			$sale_price_end   = LP_Request::get( '_lp_sale_end' );
-			$keys             = array();
-
-			if ( $price <= 0 ) {
-				$keys = array( '_lp_payment', '_lp_price', '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
-			} elseif ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || ! $this->_validate_sale_price_date() ) {
-				$keys = array( '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
-			}
-
-			if ( $keys ) {
-				$format = array_fill( 0, sizeof( $keys ), '%s' );
-				$sql    = "
-					DELETE
-					FROM {$wpdb->postmeta}
-					WHERE meta_key IN(" . join( ',', $format ) . ')
-					AND post_id = %d
-				';
-				$keys[] = $post->ID;
-				$sql    = $wpdb->prepare( $sql, $keys );
-				$wpdb->query( $sql );
-
-				foreach ( $keys as $key ) {
-					unset( $_REQUEST[ $key ] );
-					unset( $_POST[ $key ] );
-				}
-			}
-		}*/
-
-		/**
-		 * Check sale price dates are in range
-		 *
-		 * @editor tungnx
-		 * @reason not use
-		 * @return bool
-		 */
-		/*
-		private function _validate_sale_price_date() {
-			$now              = current_time( 'timestamp' );
-			$sale_price_start = learn_press_get_request( '_lp_sale_start' );
-			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
-			$end              = strtotime( $sale_price_end );
-			$start            = strtotime( $sale_price_start );
-
-			return ( ( $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
-		}*/
-
-		/**
 		 * Add columns to admin manage course page
 		 *
 		 * @param array $columns

@@ -20,8 +20,8 @@ if ( ! class_exists( 'LP_Background_Single_Email' ) ) {
 		 * Method async handle
 		 */
 		protected function handle() {
-			$params     = $_POST['params'] ?? false;
-			$class_name = $_POST['class_name'] ?? false;
+			$params     = LP_Helper::sanitize_params_submitted( $_POST['params'] ?? false );
+			$class_name = LP_Helper::sanitize_params_submitted( $_POST['class_name'] ?? false );
 
 			if ( ! $class_name || ! $params ) {
 				error_log( 'Params send email on background is invalid' );

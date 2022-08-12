@@ -1441,22 +1441,6 @@ function learn_press_seconds_to_weeks( int $secs = 0 ) {
 	return $result;
 }
 
-/**
- * @depecated since version 4.1.6.6
- */
-/*function learn_press_get_query_var( $var ) {
-	global $wp_query;
-
-	$return = null;
-	if ( ! empty( $wp_query->query_vars[ $var ] ) ) {
-		$return = $wp_query->query_vars[ $var ];
-	} elseif ( ! empty( $_REQUEST[ $var ] ) ) {
-		$return = $_REQUEST[ $var ];
-	}
-
-	return apply_filters( 'learn_press_query_var', $return, $var );
-}*/
-
 function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $course_id ) {
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {

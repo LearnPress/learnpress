@@ -117,7 +117,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 		public static function save_fields( $options, $data = null ) {
 			if ( is_null( $data ) ) {
-				$data = $_POST;
+				$data = LP_Helper::sanitize_params_submitted( $_POST );
 			}
 
 			if ( empty( $data ) ) {

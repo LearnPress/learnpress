@@ -78,7 +78,7 @@ class LP_Polylang {
 	 * @return LP_Course_Filter
 	 */
 	public function filter_query_courses( LP_Course_Filter $filter ): LP_Course_Filter {
-		$pll_current_lang = $_REQUEST['pll-current-lang'] ?? '';
+		$pll_current_lang = LP_Helper::sanitize_params_submitted( $_REQUEST['pll-current-lang'] ?? '' );
 
 		if ( empty( $pll_current_lang ) ) {
 			return $filter;
@@ -101,7 +101,7 @@ class LP_Polylang {
 	 * @return LP_User_Items_Filter
 	 */
 	public function filter_query_user_courses( LP_User_Items_Filter $filter ): LP_User_Items_Filter {
-		$pll_current_lang = $_REQUEST['pll-current-lang'] ?? '';
+		$pll_current_lang = LP_Helper::sanitize_params_submitted( $_REQUEST['pll-current-lang'] ?? '' );
 
 		if ( empty( $pll_current_lang ) ) {
 			return $filter;
