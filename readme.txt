@@ -33,13 +33,13 @@ Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.env
 
 ###LEARNPRESS MOBILE APP###
 
-**[LearnPress Mobile App](https://thimpress.com/eduma-mobile-app/?utm_source=WPORG&utm_medium=LP&utm_campaign=LPMA)**  is an LMS Mobile App for iOS & Android built with React Native Technology. If you have Online Education & LMS websites using WordPress Themes or LearnPress Plugin, LearnPress Mobile App supports you to convert your current websites to LMS Mobile App easily. Your LMS Mobile App will be on both App Store and Google Play Store. All courses will be synced immediately between your Online Education & LMS Website and your LMS Mobile App.This LMS Mobile App brings to your students a new learning experience when they can manage and track their courses as well as instructors.
+**[LearnPress Mobile App](https://thimpress.com/eduma-mobile-app/?utm_source=WPORG&utm_medium=LP&utm_campaign=LPMA)**  is an LMS Mobile App for iOS & Android built with React Native Technology. If you have Online Education & LMS websites using WordPress Themes or LearnPress Plugin, LearnPress Mobile App supports you to convert your current websites to LMS Mobile App easily. Your LMS Mobile App will be on both App Store and Google Play Store. All courses will be synced immediately between your Online Education & LMS Website and your LMS Mobile App. This LMS Mobile App brings to your students a new learning experience when they can manage and track their courses as well as instructors.
 
 ###LearnPress Tutorials###
 
-- **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)**
+- **[How to create an Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)**
 
-- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=0mJBC9IpiS0)**
+- Step-by-step YouTube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=0mJBC9IpiS0)**
 [youtube https://www.youtube.com/watch?v=0mJBC9IpiS0]
 
 Are you looking for *the best LMS WordPress Plugin*?
@@ -105,7 +105,7 @@ We are developing and improving LearnPress day by day and bringing you more new 
 - [Random Quiz add-on for LearnPress](https://thimpress.com/product/random-quiz-add-on-for-learnpress/) - allow you to create a random questions quiz. Each student will get different quiz within a same course.
 - [Paid Membership Pro add-on for LearnPress](https://thimpress.com/product/paid-membership-pro-add-learnpress/) - integrate Paid Membership Pro into LearnPress, bring membership feature to your powerful WordPress based LMS system.
 - [Announcement add-on for LearnPress](https://thimpress.com/product/announcement-add-on-for-learnpress/) - Announcement is a great way to promote your courses and update new features + contents of your courses, email notification included.
-- [Frontend Editor add-on for LearnPress](https://thimpress.com/product/frontend-editor-add-on-for-learnpress/) - Frontend Editor add-on for LearnPress enable your courses to be edited from the frontend. Your instructors doesn't need to go to the WP Dashboard to create and edit courses anymore with Frontend Editor add-on.
+- [Frontend Editor add-on for LearnPress](https://thimpress.com/product/frontend-editor-add-on-for-learnpress/) - Frontend Editor add-on for LearnPress enable your courses to be edited from the frontend. Your instructors don't need to go to the WP Dashboard to create and edit courses anymore with Frontend Editor add-on.
 
 ###LearnPress has been translated into the following languages###
 
@@ -204,7 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.1.6.9.4 (2022-08-15) =
-
+~ Fixed: IPN paypal.
 
 = 4.1.6.9.3 (2022-08-10) =
 ~ Fixed: show wrong shortcode on course, item's course.
@@ -465,7 +465,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: tool "Reset course progress"
 ~ Fixed: tool "Reset user progress"
 ~ Added: tool "Create Database Indexes"
-~ Fixed js button "Retake course" if have more than one.
+~ Fixed js button "Retake course" if you have more than one.
 ~ Added: tool "Re upgrade Database" ~ If DB upgrade not success
 ~ Fixed: show button finish when completed quiz - if assessment passed
 

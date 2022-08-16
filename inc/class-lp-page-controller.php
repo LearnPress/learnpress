@@ -50,6 +50,9 @@ class LP_Page_Controller {
 		// Set link profile to admin menu
 		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
 		add_action( 'plugins_loaded', array( $this, 'lp_rest_api_called' ) );
+
+		// Web hook detected PayPal request.
+		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
 	}
 
 	/**
@@ -65,6 +68,45 @@ class LP_Page_Controller {
 
 			// Remove hook wp_loaded because query default WP run on it (it hooks 'pre_get_posts',...)
 			remove_all_actions( 'wp_loaded' );
+		}
+	}
+
+	/**
+	 * Check notify papal call when done.
+	 *
+	 * Set in param notify_url on @see LP_Gateway_Paypal::get_paypal_args()
+	 */
+	public function check_webhook_paypal_ipn() {
+		//error_log( 'xxx:' . json_encode( $_POST, JSON_UNESCAPED_UNICODE ) );
+
+		// Paypal payment done
+		if ( ! isset( $_GET['paypal_notify'] ) ) {
+			return;
+		}
+
+		if ( ! isset( $_POST['ipn_track_id'] ) ) {
+			return;
+		}
+
+		try {
+			$paypal = new LP_Gateway_Paypal();
+			$verify = $paypal->validate_ipn();
+
+			if ( $verify ) {
+				if ( isset( $_POST['custom'] ) ) {
+					$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
+
+					if ( json_last_error() === JSON_ERROR_NONE ) {
+						$order_id = $data_order->order_id;
+
+						$lp_order = learn_press_get_order( $order_id );
+						$lp_order->set_status( 'completed' );
+						$lp_order->save();
+					}
+				}
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 
@@ -92,9 +134,12 @@ class LP_Page_Controller {
 				return $post_link;
 			}
 
-			$course    = learn_press_get_course( $course_id );
-			$post_link = $course->get_item_link( $item_id );
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				return $post_link;
+			}
 
+			$post_link = $course->get_item_link( $item_id );
 		} elseif ( LP_COURSE_CPT === $post->post_type ) {
 			// Abort early if the placeholder rewrite tag isn't in the generated URL
 			if ( false === strpos( $post_link, '%' ) ) {

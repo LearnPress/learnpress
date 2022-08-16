@@ -70,7 +70,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 * @return bool
 		 */
 		public function offline_payment_available(): bool {
-			return LP_Settings::instance()->get( "{$this->id}.enable" ) === 'yes';
+			return LP_Settings::instance()->get( "{$this->id}.enable", 'no' ) === 'yes';
 		}
 
 		/**
