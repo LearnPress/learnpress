@@ -368,18 +368,20 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return string|LP_Datetime $time
 	 * @since 3.3.0
+	 * @version 3.3.1
 	 */
-	public function get_expiration_time( $format = '' ) {
+	public function get_expiration_time( string $format = '' ) {
 		$duration   = get_post_meta( $this->get_item_id(), '_lp_duration', true );
 		$start_time = $this->get_start_time( '', false );
 
 		if ( ! absint( $duration ) || ! $start_time ) {
-			return null;
+			$expire = null;
+		} else {
+			$date   = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
+			$expire = $this->format_time( $date, $format );
 		}
 
-		$date = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
-
-		return $this->format_time( $date, $format );
+		return apply_filters( 'learn-press/user-item/expiration-time', $expire, $format, $this );
 	}
 
 	/**
@@ -1071,8 +1073,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return LP_Datetime
 	 * @since 3.3.0
+	 * @depecated 4.1.6.9.4
 	 */
-	public function set_duration( $duration ) {
+	/*public function set_duration( $duration ) {
 		if ( $duration instanceof LP_Datetime ) {
 			$period = $duration->toSql();
 		} else {
@@ -1080,15 +1083,18 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		return $this->get_expiration_time();
-	}
+	}*/
 
-	public function is_change() {
+	/**
+	 * @depecated 4.1.6.9.4
+	 */
+	/*public function is_change() {
 
 		$new_data = $this->get_mysql_data();
 		ksort( $new_data );
 
 		return $this->_data_key !== md5( serialize( $new_data ) );
-	}
+	}*/
 
 	protected function _set_data_date( $key, $value, $extra = false ) {
 		if ( $value instanceof LP_Datetime ) {
