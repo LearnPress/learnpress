@@ -832,11 +832,6 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 							$user_item = $user_course ? $user_course->get_item( $item->get_id() ) : false;
 
-							if ( $user_item ) {
-								$graduation = $user_item->get_graduation();
-								$status     = $user_item->get_status();
-							}
-
 							if ( $user ) {
 								$can_view_content_course = $user->can_view_content_course( absint( $section->get_course_id() ) );
 								$can_view_item           = $user->can_view_item( $item->get_id(), $can_view_content_course );
@@ -848,8 +843,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 								'title'      => $post->post_title,
 								'preview'    => $item->is_preview(),
 								'duration'   => $item->get_duration()->to_timer( $format, true ),
-								'graduation' => ! empty( $graduation ) ? $graduation : '',
-								'status'     => ! empty( $status ) ? $status : '',
+								'graduation' => $user_item ? $user_item->get_graduation() : '',
+								'status'     => $user_item ? $user_item->get_status() : '',
 								'locked'     => isset( $can_view_item->flag ) ? ! $can_view_item->flag : true,
 							);
 						}

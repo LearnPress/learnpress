@@ -740,6 +740,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_graduation( string $context = '' ): string {
 		$grade = $this->get_data( 'graduation', '' );
+		if ( ! $grade ) {
+			return '';
+		}
 		return $context == 'display' ? learn_press_course_grade_html( $grade, false ) : $grade;
 	}
 
