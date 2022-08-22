@@ -1066,10 +1066,6 @@ body {
 			left: 249px;
 		}
 
-		#sidebar-toggle:checked ~ #popup-sidebar {
-			flex-basis: 0;
-		}
-
 		.course-item-meta {
 
 			.item-meta {
@@ -1111,7 +1107,7 @@ body {
 		line-height: 1.5;
 	}
 
-	.content-item-summary {
+	.content-item-summary { 
 		padding-top: 50px;
 	}
 
