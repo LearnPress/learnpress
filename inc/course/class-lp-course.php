@@ -748,6 +748,40 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		}
 
 		/**
+		 * Get sections arr
+		 *
+		 * @param int $section_id
+		 *
+		 * @return array
+		 * @version 1.0.0
+		 * @sicne 4.1.6.9.4
+		 */
+		public function get_sections_data_arr( int $section_id = 0 ): array {
+			$sections_items = $this->get_full_sections_and_items_course();
+			$sections       = array();
+
+			foreach ( $sections_items as $section_items ) {
+				$section = [
+					'section_id'          => $section_items->id,
+					'section_name'        => $section_items->title,
+					'section_course_id'   => $this->get_id(),
+					'section_order'       => $section_items->order,
+					'section_description' => $section_items->description,
+					'items'               => $section_items->items,
+				];
+
+				if ( $section_id && $section_id == $section['section_id'] ) {
+					$sections = $section;
+					break;
+				}
+
+				$sections[] = $section;
+			}
+
+			return $sections;
+		}
+
+		/**
 		 * Get raw data curriculum.
 		 *
 		 * @return array

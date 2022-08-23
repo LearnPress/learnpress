@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Filter {
 	/**
-	 * @var int
+	 * @var int set -1 for no limit
 	 */
 	public $limit = 10;
 	/**
@@ -101,6 +101,10 @@ class LP_Filter {
 	 * @var bool set true to return string query
 	 */
 	public $return_string_query = false;
+	/**
+	 * @var string return string query to debug
+	 */
+	public $debug_string_query = '';
 	/**
 	 * @var string
 	 */

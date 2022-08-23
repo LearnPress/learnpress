@@ -127,7 +127,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return mixed|WP_Error
 		 * @since 3.0.0
 		 */
-		public function duplicate_bk( &$course_id, $args = array() ) {
+		/*public function duplicate_bk( &$course_id, $args = array() ) {
 
 			if ( ! $course_id ) {
 				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
@@ -221,7 +221,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Duplicate course.
@@ -252,7 +252,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 					return $course_id_new;
 				}
 
-				$this->duplicate_sections_and_items( $course_id_new, $course_origin );
+				$this->duplicate_sections( $course_id_new, $course_origin );
 
 				// Call save course duplicate
 				//$course_post = get_post( $course_id_new );
@@ -268,64 +268,83 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 		/**
 		 * Duplicate sections and items of course
+		 *
 		 * @param int $course_id_new
 		 * @param LP_Course $course_origin
 		 */
-		public function duplicate_sections_and_items( $course_id_new, $course_origin ) {
-			// curriculum course
-			$curriculum = $course_origin->get_curriculum_raw();
+		public function duplicate_sections( int $course_id_new, LP_Course $course_origin ) {
+			try {
+				$curriculum = $course_origin->get_curriculum_raw();
 
-			// quiz curd
-			$quiz_curd = new LP_Quiz_CURD();
-
-			if ( is_array( $curriculum ) ) {
 				// new course section curd
-				$new_course_section_curd = new LP_Section_CURD( $course_id_new );
-				foreach ( $curriculum as $section ) {
+				$section_curd_new = new LP_Section_CURD( $course_id_new );
+				foreach ( $curriculum as $section_origin ) {
 					$data = array(
-						'section_name'        => $section['title'],
+						'section_id'          => $section_origin['id'],
+						'section_name'        => $section_origin['title'],
 						'section_course_id'   => $course_id_new,
-						'section_order'       => $section['order'],
-						'section_description' => $section['description'],
+						'section_order'       => $section_origin['order'],
+						'section_description' => $section_origin['description'],
 					);
 
+					// Hook before insert section.
+					$can_clone = true;
+					$can_clone = apply_filters( 'lp/section/can-clone', $can_clone, $course_id_new, $course_origin, $section_origin );
+					if ( ! $can_clone ) {
+						continue;
+					}
+
 					// clone sections to new course
-					$new_section = $new_course_section_curd->create( $data );
-
-					// get section items of original course
-					$items = $section['items'];
-
-					$new_items = array();
-
-					// duplicate items
-					if ( ! empty( $items ) ) {
-						foreach ( $items as $key => $item ) {
-							// duplicate quiz
-							if ( $item['type'] == LP_QUIZ_CPT ) {
-								$new_item_id = $quiz_curd->duplicate(
-									$item['id'],
-									array( 'post_status' => 'publish' )
-								);
-							} else {
-								// clone lesson
-								$new_item_id = learn_press_duplicate_post(
-									$item['id'],
-									array( 'post_status' => 'publish' )
-								);
-							}
-
-							// get new items data to add to section
-							$new_items[ $key ] = array(
-								'id'   => $new_item_id,
-								'type' => $item['type'],
-							);
-						}
-
-						// add new clone items to section
-						$new_course_section_curd->add_items_section( $new_section['section_id'], $new_items );
+					$section_new = $section_curd_new->create( $data );
+					// clone items of section
+					if ( isset( $section_new['section_id'] ) ) {
+						$this->duplicate_section_items( $section_new['section_id'], $section_curd_new, $section_origin );
+						do_action( 'lp/section/clone/success', $section_new, $section_origin, $course_id_new, $course_origin );
 					}
 				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
+		}
+
+		/**
+		 * Duplicate items of section.
+		 *
+		 * @param int $section_id_new
+		 * @param LP_Section_CURD $section_curd_new
+		 * @param array $section_origin
+		 *
+		 * @return void
+		 */
+		public function duplicate_section_items( int $section_id_new, LP_Section_CURD $section_curd_new, array $section_origin ) {
+			$quiz_curd = new LP_Quiz_CURD();
+			$items     = $section_origin['items'] ?? array();
+			$new_items = array();
+
+			foreach ( $items as $key => $item ) {
+				// duplicate quiz
+				if ( $item['type'] === LP_QUIZ_CPT ) {
+					$new_item_id = $quiz_curd->duplicate(
+						$item['id'],
+						array( 'post_status' => 'publish' )
+					);
+				} else {
+					// clone item
+					$new_item_id = learn_press_duplicate_post(
+						$item['id'],
+						array( 'post_status' => 'publish' )
+					);
+				}
+
+				// get new items data to add to section
+				$new_items[ $key ] = array(
+					'id'   => $new_item_id,
+					'type' => $item['type'],
+				);
+			}
+
+			// add new clone items to section
+			$section_curd_new->add_items_section( $section_id_new, $new_items );
 		}
 
 		/**

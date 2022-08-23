@@ -627,20 +627,27 @@ class LP_Database {
 
 		// Limit
 		$LIMIT = '';
-		if ( ! $filter->return_string_query ) {
+		if ( $filter->limit != -1 ) {
 			$filter->limit = absint( $filter->limit );
-			if ( $filter->limit > $filter->max_limit ) {
+			/*if ( $filter->limit > $filter->max_limit ) {
 				$filter->limit = $filter->max_limit;
-			}
+			}*/
 			$offset = $filter->limit * ( $filter->page - 1 );
 			$LIMIT  = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
 		}
 
+		// For nest query
+		if ( $filter->return_string_query ) {
+			$LIMIT = '';
+		}
+
+		// From table or group select
 		$COLLECTION = '';
 		if ( ! empty( $filter->collection ) ) {
 			$COLLECTION = $filter->collection;
 		}
 
+		// Alias table
 		$ALIAS_COLLECTION = 'X';
 		if ( ! empty( $filter->collection_alias ) ) {
 			$ALIAS_COLLECTION = $filter->collection_alias;
@@ -665,6 +672,11 @@ class LP_Database {
 		}
 
 		if ( ! $filter->query_count ) {
+			// Debug string query
+			if ( $filter->debug_string_query ) {
+				return $query;
+			}
+
 			$result = $this->wpdb->get_results( $query );
 		}
 
@@ -676,6 +688,11 @@ class LP_Database {
 		$this->check_execute_has_error();
 
 		if ( $filter->query_count ) {
+			// Debug string query
+			if ( $filter->debug_string_query ) {
+				return $query_total;
+			}
+
 			return $total_rows;
 		}
 

@@ -137,10 +137,10 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	/**
 	 * Return section id
 	 *
-	 * @return mixed
+	 * @return int
 	 */
 	public function get_id() {
-		return $this->_data['id'];
+		return (int) $this->_data['id'];
 	}
 
 	/**

@@ -27,25 +27,30 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Create item and insert to database.
 	 *
-	 * @param $args array
+	 * @param $section_origin array
 	 *
-	 * @return mixed
+	 * @return array
 	 * @since 3.0.0
+	 * @version 3.0.1
 	 */
-	public function create( &$args ) {
+	public function create( &$section_origin ) {
 		global $wpdb;
 		$section = [];
 
 		try {
-			$section                   = $this->parse( $args );
-			$section                   = stripslashes_deep( $section );
+			$section = $this->parse( $section_origin );
+			//$section                   = stripslashes_deep( $section );
 			$last_section_order_number = LP_Section_DB::getInstance()->get_last_number_order( $section['section_course_id'] );
-			$section['section_order']  = $last_section_order_number + 1;
-			$insert_data               = array(
-				'section_course_id'   => $this->course_id,
-				'section_name'        => $section['section_name'],
-				'section_order'       => $section['section_order'],
-				'section_description' => $section['section_description'],
+			$section_order_new         = $last_section_order_number + 1;
+			$insert_data               = apply_filters(
+				'lp/section/data-insert',
+				array(
+					'section_course_id'   => $this->course_id,
+					'section_name'        => $section['section_name'],
+					'section_order'       => $section_order_new,
+					'section_description' => $section['section_description'],
+				),
+				$section_origin
 			);
 
 			$wpdb->insert(
@@ -54,6 +59,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				array( '%d', '%s', '%d', '%s' )
 			);
 			$section['section_id'] = $wpdb->insert_id;
+
+			do_action( 'lp/section/created', $section );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
