@@ -564,6 +564,51 @@ const initSelect2 = function initSelect2() {
 				el.val( null );
 			}
 		} );
+
+		$( '.lp_autocomplete_metabox_field' ).each( function() {
+			const dataAtts = $( this ).data( 'atts' );
+			let action = dataAtts.action;
+
+			if ( ! action ) {
+				switch ( dataAtts.data ) {
+				case 'users':
+					action = dataAtts.rest_url + 'wp/v2/users';
+					break;
+				default:
+					action = dataAtts.rest_url + 'wp/v2/' + dataAtts.data;
+					break;
+				}
+			}
+
+			$( this ).find( 'select' ).select2( {
+				placeholder: dataAtts.placeholder ? dataAtts.placeholder : 'Select',
+				ajax: {
+					url: action,
+					dataType: 'json',
+					delay: 250,
+					beforeSend( xhr ) {
+						xhr.setRequestHeader( 'X-WP-Nonce', dataAtts.nonce );
+					},
+					data( params ) {
+						return {
+							search: params.term,
+						};
+					},
+					processResults( data ) {
+						return {
+							results: data.map( ( item ) => {
+								return {
+									id: item.id,
+									text: item?.title?.rendered ? item.title.rendered : item.name,
+								};
+							} ),
+						};
+					},
+					cache: true,
+				},
+				minimumInputLength: 2,
+			} );
+		} );
 	}
 };
 
