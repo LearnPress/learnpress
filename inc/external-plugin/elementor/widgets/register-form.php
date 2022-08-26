@@ -1,6 +1,8 @@
 <?php
 namespace Elementor;
 
+use LP_Settings;
+
 class LP_Elementor_Widget_Register_Form extends LP_Elementor_Widget_Base {
 
 	public function get_name() {
@@ -27,7 +29,7 @@ class LP_Elementor_Widget_Register_Form extends LP_Elementor_Widget_Base {
 	}
 
 	public function render() {
-		if ( 'yes' !== LP_Settings::instance()->get( 'enable_register_profile' ) ) {
+		if ( 'yes' !== LP_Settings::get_option( 'enable_register_profile', 'no' ) ) {
 			learn_press_display_message( __( 'Register form is disabled', 'learnpress' ), 'error' );
 		}
 

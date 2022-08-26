@@ -78,6 +78,10 @@ class LP_Filter {
 	 */
 	public $exclude_fields = array();
 	/**
+	 * @var array for purpose run query update.
+	 */
+	public $set = array();
+	/**
 	 * @var array
 	 */
 	public $where = array();

@@ -419,12 +419,15 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$all_items = array_merge( $current_items, $items );
 		$result    = array();
 		foreach ( $all_items as $key => $item ) {
+			if ( ! isset( $item['id'] ) || ! isset( $item['type'] ) ) {
+				continue;
+			}
 
 			$item  = (array) $item;
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
 
 			if ( $exist ) {
-				$a = $wpdb->update(
+				$wpdb->update(
 					$wpdb->learnpress_section_items,
 					array( 'item_order' => $key ),
 					array(
@@ -433,7 +436,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					)
 				);
 			} else {
-				$a = $wpdb->insert(
+				$wpdb->insert(
 					$wpdb->learnpress_section_items,
 					array(
 						'section_id' => $section_id,
@@ -445,6 +448,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 			// get WP Post
 			$post = get_post( $item['id'] );
+			if ( ! $post ) {
+				continue;
+			}
+
 			$item = array_merge(
 				$item,
 				array(
@@ -462,10 +469,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 
 			$result[] = $item;
-			// $order ++;
 		}
-
-		// LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'learn-press/course-section-items' );
 
 		return $result;
 	}
@@ -595,9 +599,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @since 3.0.0
 	 */
 	public function update_section_items( $section_id, $items ) {
-		$current_items = $this->get_section_items( $section_id );
-
 		global $wpdb;
+		$current_items = $this->get_section_items( $section_id );
 
 		foreach ( $items as $index => $item ) {
 			$order = $index + 1;
@@ -628,7 +631,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		/**
 		 * Remove non-existent items.
 		 */
-		foreach ( $current_items as $item ) {
+		/*foreach ( $current_items as $item ) {
 			$find = $this->check_item_exist( $items, $item['id'] );
 
 			if ( ! $find ) {
@@ -640,7 +643,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					)
 				);
 			}
-		}
+		}*/
 
 		return $items;
 	}

@@ -700,6 +700,40 @@ class LP_Database {
 	}
 
 	/**
+	 * Query update
+	 *
+	 * @throws Exception
+	 * @since 4.1.6.9.4
+	 * @version 1.0.0
+	 */
+	public function update_execute( LP_Filter $filter ) {
+
+		$COLLECTION = $filter->collection;
+
+		// SET value
+		$SET = apply_filters( 'lp/query/set', $filter->set, $filter );
+		$SET = implode( ' ', array_unique( $SET ) );
+
+		// Where
+		$WHERE = array( 'WHERE 1=1' );
+		$WHERE = array_merge( $WHERE, $filter->where );
+		$WHERE = apply_filters( 'lp/query/where', $WHERE, $filter );
+		$WHERE = implode( ' ', array_unique( $WHERE ) );
+
+		$query = "
+			UPDATE $COLLECTION
+			SET $SET
+			$WHERE
+		";
+
+		$result = $this->wpdb->query( $query );
+
+		$this->check_execute_has_error();
+
+		return $result;
+	}
+
+	/**
 	 * Get values of list object by key
 	 *
 	 * @param array $arr_object

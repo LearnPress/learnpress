@@ -314,37 +314,70 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param LP_Section_CURD $section_curd_new
 		 * @param array $section_origin
 		 *
+		 * @version 3.0.1
+		 * @since 3.0.0
 		 * @return void
 		 */
 		public function duplicate_section_items( int $section_id_new, LP_Section_CURD $section_curd_new, array $section_origin ) {
-			$quiz_curd = new LP_Quiz_CURD();
-			$items     = $section_origin['items'] ?? array();
-			$new_items = array();
+			try {
+				$item_origins = $section_origin['items'] ?? array();
+				$new_items    = array();
 
-			foreach ( $items as $key => $item ) {
-				// duplicate quiz
-				if ( $item['type'] === LP_QUIZ_CPT ) {
-					$new_item_id = $quiz_curd->duplicate(
-						$item['id'],
-						array( 'post_status' => 'publish' )
-					);
-				} else {
-					// clone item
-					$new_item_id = learn_press_duplicate_post(
-						$item['id'],
-						array( 'post_status' => 'publish' )
-					);
+				foreach ( $item_origins as $key => $item_origin ) {
+					if ( ! isset( $item_origin['type'] ) ) {
+						continue;
+					}
+
+					// Get class CURD of item.
+					$class_item_curd_str = ucwords( $item_origin['type'], '_' ) . '_CURD';
+					/**
+					 * @var LP_Object_Data_CURD $class_item_curd_str
+					 */
+					if ( class_exists( $class_item_curd_str ) ) {
+						$can_clone = true;
+						$args      = compact( 'item_origin', 'section_id_new', 'section_curd_new', 'section_origin' );
+						$can_clone = apply_filters( 'lp/section/item/can-clone', $can_clone, $args );
+
+						if ( ! $can_clone ) {
+							continue;
+						}
+
+						$class_item_curd = new $class_item_curd_str();
+						$new_item_id     = $class_item_curd->duplicate(
+							$item_origin['id'],
+							array( 'post_status' => 'publish' )
+						);
+
+						// Prepare data to assign item to section.
+						$new_items[ $key ] = array(
+							'id'    => $new_item_id,
+							'type'  => $item_origin['type'],
+							'order' => $item_origin['order'],
+						);
+					}
+
+					// duplicate quiz
+					/*if ( $item_origin['type'] === LP_QUIZ_CPT ) {
+						$new_item_id = $quiz_curd->duplicate(
+							$item_origin['id'],
+							array( 'post_status' => 'publish' )
+						);
+					} else {
+						// clone item
+						$new_item_id = learn_press_duplicate_post(
+							$item_origin['id'],
+							array( 'post_status' => 'publish' )
+						);
+					}*/
 				}
 
-				// get new items data to add to section
-				$new_items[ $key ] = array(
-					'id'   => $new_item_id,
-					'type' => $item['type'],
-				);
+				// add new clone items to section
+				if ( ! empty( $new_items ) ) {
+					$section_curd_new->add_items_section( $section_id_new, $new_items );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
-
-			// add new clone items to section
-			$section_curd_new->add_items_section( $section_id_new, $new_items );
 		}
 
 		/**
