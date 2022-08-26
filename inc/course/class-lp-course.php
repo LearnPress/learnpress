@@ -808,7 +808,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$item_arr                     = (array) $item;
 					$item_arr['title']            = html_entity_decode( $itemObject->get_title() );
 					$item_arr['preview']          = $itemObject->is_preview();
-					$section_items_arr['items'][] = $item_arr;
+					$section_items_arr['items'][] = apply_filters( 'learn-press/item/to_array', $item_arr );
 				}
 
 				$sections_data[] = $section_items_arr;
