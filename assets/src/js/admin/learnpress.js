@@ -599,7 +599,7 @@ const initSelect2 = function initSelect2() {
 							results: data.map( ( item ) => {
 								return {
 									id: item.id,
-									text: item?.title?.rendered ? item.title.rendered : item.name,
+									text: item.title && item.title.rendered ? item.title.rendered : item.name,
 								};
 							} ),
 						};

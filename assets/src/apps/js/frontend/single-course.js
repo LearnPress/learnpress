@@ -332,7 +332,7 @@ const accordionExtraTab = () => {
 };
 
 const courseContinue = () => {
-	const formContinue = document.querySelector( 'form.continue-course' );
+	const formContinue = document.querySelectorAll( 'form.continue-course' );
 
 	if ( formContinue != null ) {
 		const getResponse = async ( ele ) => {
@@ -347,10 +347,13 @@ const courseContinue = () => {
 
 			return response;
 		};
+
 		getResponse( formContinue ).then( function( result ) {
 			if ( result.status === 'success' ) {
-				formContinue.style.display = 'block';
-				formContinue.action = result.data;
+				formContinue.forEach( ( form ) => {
+					form.style.display = 'block';
+					form.action = result.data;
+				} );
 			}
 		} );
 	}
