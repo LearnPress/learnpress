@@ -1445,14 +1445,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
+		 * Check item completed.
+		 *
 		 * @param      $item
 		 * @param int  $course_id
 		 * @param bool $force
 		 *
 		 * @return mixed|void
+		 * @version 3.0.1
+		 * @since 3.0.0
 		 */
 		public function has_completed_item( $item, $course_id = 0, $force = false ) {
-
 			$course_id = $this->_get_course( $course_id );
 
 			$return  = false;
@@ -1465,19 +1468,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$item_id = absint( $item['ID'] );
 				}
 			}
-			if ( $item_id ) {
-				if ( empty( $item['item_type'] ) ) {
-					$type = learn_press_get_post_type( $item_id );
-				} else {
-					$type = $item['item_type'];
-				}
-				if ( ! $type ) {
-					$type = learn_press_get_post_type( $item_id );
-				}
 
-				if ( $type == 'lp_lesson' || $type == 'lp_quiz' ) {
-					$return = 'completed' === $this->get_item_status( $item_id, $course_id );
-				}
+			if ( $item_id ) {
+				$return = 'completed' === $this->get_item_status( $item_id, $course_id );
 			}
 
 			return apply_filters( 'learn_press_user_has_completed_item', $return, $item );
