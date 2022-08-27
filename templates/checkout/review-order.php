@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit();
 
 // $cart = learn_press_get_checkout_cart();
 
-if ( ! isset( $cart ) ) {
+if ( ! isset( $cart ) || ! $cart ) {
 	return;
 }
 ?>
