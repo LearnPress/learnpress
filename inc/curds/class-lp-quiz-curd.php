@@ -145,72 +145,102 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param       $quiz_id
+		 * @param       $quiz_id_origin
 		 * @param array   $args
 		 *
 		 * @return mixed|WP_Error
 		 */
-		public function duplicate( &$quiz_id, $args = array() ) {
+		public function duplicate( &$quiz_id_origin, $args = array() ) {
+			$quiz_id_new = 0;
 
-			if ( ! $quiz_id ) {
-				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
-			}
-
-			if ( learn_press_get_post_type( $quiz_id ) != LP_QUIZ_CPT ) {
-				return new WP_Error( __( '<p>Op! The quiz does not exist</p>', 'learnpress' ) );
-			}
-
-			// ensure that user can create quiz
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this quiz</p>', 'learnpress' ) );
-			}
-
-			// duplicate quiz
-			$new_quiz_id = learn_press_duplicate_post( $quiz_id, $args, true );
-
-			if ( ! $new_quiz_id || is_wp_error( $new_quiz_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Failed to duplicate quiz!</p>', 'learnpress' ) );
-			} else {
-
-				$quiz      = LP_Quiz::get_quiz( $quiz_id );
-				$questions = $quiz->get_questions();
-
-				// question curd
-				$question_curd = new LP_Question_CURD();
-
-				// duplicate questions in quiz
-				if ( $questions ) {
-
-					$questions = array_keys( $questions );
-
-					foreach ( $questions as $question_id ) {
-
-						// duplicate question
-						$new_question_id = $question_curd->duplicate( $question_id, array( 'post_status' => 'publish' ) );
-
-						// add duplicate question to new quiz
-						$this->add_question( $new_quiz_id, $new_question_id );
-					}
+			try {
+				if ( ! $quiz_id_origin ) {
+					return new WP_Error( 'lp/clone/quiz/id_null', 'Op! Quiz ID not found' );
 				}
 
-				do_action( 'learn-press/after-duplicate', $quiz_id, $new_quiz_id, $args );
+				if ( learn_press_get_post_type( $quiz_id_origin ) != LP_QUIZ_CPT ) {
+					return new WP_Error( 'lp/clone/quiz/type_invalid', 'Op! The quiz does not exist' );
+				}
 
-				return $new_quiz_id;
+				// Ensure that user can create quiz
+				if ( ! current_user_can( 'edit_posts' ) ) {
+					return new WP_Error( 'lp/clone/quiz/permission', 'Sorry! You have not permission to duplicate this quiz' );
+				}
+
+				// Duplicate quiz
+				$quiz_id_new = learn_press_duplicate_post( $quiz_id_origin, $args, true );
+
+				if ( ! $quiz_id_new || is_wp_error( $quiz_id_new ) ) {
+					return new WP_Error( 'lp/clone/quiz/clone_error', 'Sorry! Failed to duplicate quiz!' );
+				} else {
+					// duplicate questions.
+					$this->duplicate_questions( $quiz_id_origin, $quiz_id_new );
+
+					do_action( 'learn-press/after-duplicate', $quiz_id_origin, $quiz_id_new, $args );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
+			return $quiz_id_new;
+		}
+
+		/**
+		 * Duplicate questions.
+		 *
+		 * @param int $quiz_id_origin
+		 * @param int $quiz_id_new
+		 *
+		 * @return void
+		 */
+		public function duplicate_questions( int $quiz_id_origin, int $quiz_id_new ) {
+			$question_curd = new LP_Question_CURD();
+
+			try {
+				$quiz_origin = learn_press_get_quiz( $quiz_id_origin );
+				if ( ! $quiz_origin ) {
+					return;
+				}
+
+				$questions_origin = $quiz_origin->get_questions();
+
+				foreach ( $questions_origin as $question_id_origin ) {
+					$can_clone = true;
+					$args      = compact( 'question_id_origin', 'quiz_origin', 'quiz_id_new' );
+					$can_clone = apply_filters( 'lp/quiz/question/can-clone', $can_clone, $args );
+
+					if ( ! $can_clone ) {
+						continue;
+					}
+
+					// duplicate question
+					$question_id_new = $question_curd->duplicate( $question_id_origin, array( 'post_status' => 'publish' ) );
+
+					if ( ! $question_id_new || is_wp_error( $question_id_new ) ) {
+						continue;
+					}
+
+					// add duplicate question to new quiz
+					$this->add_question( $quiz_id_new, $question_id_new );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 		}
 
 		/**
 		 * @param LP_Quiz $quiz
+		 *
+		 * @depecated 4.1.6.9.4
 		 */
-		protected function _load_questions( &$quiz ) {
+		/*protected function _load_questions( &$quiz ) {
 			$id        = $quiz->get_id();
 			$questions = LP_Object_Cache::get( 'questions-' . $id, 'learn-press/quizzes' );
 
 			if ( false === $questions || $quiz->get_no_cache() ) {
 				$this->load_questions( $quiz->get_id() );
 			}
-		}
+		}*/
 
 		/**
 		 * Read question of a quiz from database
@@ -533,10 +563,10 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			}
 
 			// list exist quiz question
-			$list_questions = $this->get_questions( $the_quiz );
+			//$list_questions = $this->get_questions( $the_quiz );
 			// add new question and set to cache
-			$list_questions[ $question_id ] = strval( $question_id );
-			LP_Object_Cache::set( 'questions-' . $the_quiz->get_id(), $list_questions, 'learn-press/quizzes' );
+			//$list_questions[ $question_id ] = strval( $question_id );
+			//LP_Object_Cache::set( 'questions-' . $the_quiz->get_id(), $list_questions, 'learn-press/quizzes' );
 
 			global $wpdb;
 
