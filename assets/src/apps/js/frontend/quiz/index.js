@@ -37,6 +37,15 @@ class Quiz extends Component {
 		setQuizData( settings );
 	}
 
+	componentDidUpdate( prevProps, prevState, snapshot ) {
+		const { status } = prevProps;
+		const elQuizContent = document.querySelector( '.quiz-content' );
+
+		if ( status !== undefined && elQuizContent ) {
+			elQuizContent.style.display = 'none';
+		}
+	}
+
 	startQuiz = ( event ) => {
 		this.props.startQuiz();
 	};
@@ -59,7 +68,6 @@ class Quiz extends Component {
 						) }
 
 						{ ! isReviewing && notStarted && <Meta /> }
-						{ ! isReviewing && notStarted && <Content /> }
 
 						{ 'started' === status && <Status /> }
 
