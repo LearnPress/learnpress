@@ -287,19 +287,20 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						'section_description' => $section_origin['description'],
 					);
 
-					// Hook before insert section.
+					// Hook before clone section.
 					$can_clone = true;
 					$can_clone = apply_filters( 'lp/section/can-clone', $can_clone, $course_id_new, $course_origin, $section_origin );
 					if ( ! $can_clone ) {
 						continue;
 					}
 
-					// clone sections to new course
+					// Clone section
 					$section_new = $section_curd_new->create( $data );
-					// clone items of section
+					// Clone items of section
 					if ( isset( $section_new['section_id'] ) ) {
 						$this->duplicate_section_items( $section_new['section_id'], $section_curd_new, $section_origin );
-						do_action( 'lp/section/clone/success', $section_new, $section_origin, $course_id_new, $course_origin );
+						$args = compact( 'section_new', 'section_origin', 'course_id_new', 'course_origin' );
+						do_action( 'lp/section/clone/success', $args );
 					}
 				}
 			} catch ( Throwable $e ) {

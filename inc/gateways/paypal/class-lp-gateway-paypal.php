@@ -296,8 +296,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$item_arg
 			);
 
-			$args = apply_filters( 'learn_press_paypal_args', $args );
-
 			return apply_filters( 'learn-press/paypal/args', $args );
 		}
 
