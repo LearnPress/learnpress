@@ -376,7 +376,7 @@ add_action(
  */
 add_action(
 	'learn-press/single-button-toggle-sidebar',
-	LP()->template( 'course' )->text( '<input type="checkbox" id="sidebar-toggle" />' ),
+	LP()->template( 'course' )->text( '<input type="checkbox" id="sidebar-toggle" />','single-button-toggle-sidebar' ),
 	5
 );
 
