@@ -2014,12 +2014,9 @@ function lp_custom_register_fields_display() {
 						case 'number':
 						case 'email':
 						case 'url':
-							?>
-							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
-							<?php
-							break;
 						case 'tel':
 							?>
+							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
 							<label for="">
 								<input name="_lp_custom_register_form[<?php echo esc_attr( $value ); ?>]"
 									type="<?php echo esc_attr( $custom_field['type'] ); ?>" class="regular-text"
