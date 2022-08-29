@@ -176,7 +176,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					// duplicate questions.
 					$this->duplicate_questions( $quiz_id_origin, $quiz_id_new );
 
-					do_action( 'learn-press/after-duplicate', $quiz_id_origin, $quiz_id_new, $args );
+					do_action( 'learn-press/item/after-duplicate', $quiz_id_origin, $quiz_id_new, $args );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );

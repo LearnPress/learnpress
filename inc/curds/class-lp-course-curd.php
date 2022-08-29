@@ -121,111 +121,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		/**
 		 * Duplicate course.
 		 *
-		 * @param       $course_id
-		 * @param array $args
-		 *
-		 * @return mixed|WP_Error
-		 * @since 3.0.0
-		 */
-		/*public function duplicate_bk( &$course_id, $args = array() ) {
-
-			if ( ! $course_id ) {
-				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
-			}
-
-			if ( learn_press_get_post_type( $course_id ) != LP_COURSE_CPT ) {
-				return new WP_Error( __( '<p>Op! The course does not exist</p>', 'learnpress' ) );
-			}
-
-			// ensure that user can create course
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error(
-					__(
-						'<p>Sorry! You don\'t have permission to duplicate this course</p>',
-						'learnpress'
-					)
-				);
-			}
-			// duplicate course
-			$new_course_id = learn_press_duplicate_post( $course_id, $args );
-
-			if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Failed to duplicate course!</p>', 'learnpress' ) );
-			} else {
-
-				// original course section curd
-				$course = LP_Course::get_course( $course_id );
-
-				// new course section curd
-				$new_course_section_curd = new LP_Section_CURD( $new_course_id );
-
-				// curriculum course
-				// $course->load_curriculum();
-				$curriculum = $course->get_curriculum_raw();
-
-				// quiz curd
-				$quiz_curd = new LP_Quiz_CURD();
-
-				if ( is_array( $curriculum ) ) {
-
-					foreach ( $curriculum as $section ) {
-
-						$data = array(
-							'section_name'        => $section['title'],
-							'section_course_id'   => $new_course_id,
-							'section_order'       => $section['order'],
-							'section_description' => $section['description'],
-						);
-
-						// clone sections to new course
-						$new_section = $new_course_section_curd->create( $data );
-
-						// get section items of original course
-						$items = $section['items'];
-
-						$new_items = array();
-
-						// duplicate items
-						if ( is_array( $items ) ) {
-							foreach ( $items as $key => $item ) {
-								// duplicate quiz
-								if ( $item['type'] == LP_QUIZ_CPT ) {
-									$new_item_id = $quiz_curd->duplicate(
-										$item['id'],
-										array( 'post_status' => 'publish' )
-									);
-								} else {
-									// clone lesson
-									$new_item_id = learn_press_duplicate_post(
-										$item['id'],
-										array( 'post_status' => 'publish' )
-									);
-								}
-
-								// get new items data to add to section
-								$new_items[ $key ] = array(
-									'id'   => $new_item_id,
-									'type' => $item['type'],
-								);
-							}
-
-							// add new clone items to section
-							$new_course_section_curd->add_items_section( $new_section['section_id'], $new_items );
-						}
-					}
-
-					do_action( 'learn-press/after-duplicate', $course_id, $new_course_id, $args );
-
-					return $new_course_id;
-				}
-			}
-
-			return false;
-		}*/
-
-		/**
-		 * Duplicate course.
-		 *
 		 * @param int $course_id
 		 * @param array $args
 		 *
@@ -255,10 +150,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$this->duplicate_sections( $course_id_new, $course_origin );
 
 				// Call save course duplicate
-				//$course_post = get_post( $course_id_new );
 				LP_Course_Post_Type::instance()->save( $course_id_new );
 
-				do_action( 'learn-press/after-duplicate', $course_id, $course_id_new, $args );
+				do_action( 'learn-press/item/after-duplicate', $course_id, $course_id_new, $args );
 			} catch ( Throwable $e ) {
 				$course_id_new = new WP_Error( $e->getMessage() );
 			}

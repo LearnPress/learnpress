@@ -117,7 +117,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 				return new WP_Error( '3', 'Sorry! Failed to duplicate lesson!' );
 			}
 
-			do_action( 'learn-press/after-duplicate', $lesson_id, $new_lesson_id, $args );
+			do_action( 'learn-press/item/after-duplicate', $lesson_id, $new_lesson_id, $args );
 			return $new_lesson_id;
 		}
 
