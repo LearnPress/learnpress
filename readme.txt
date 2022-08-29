@@ -206,7 +206,7 @@ https://www.transifex.com/projects/p/learnpress/
 = 4.1.6.9.4 (2022-08-15) =
 ~ Fixed: IPN paypal.
 ~ Added: hook 'learn-press/user-item/expiration-time'.
-~ Added: autocomplete metabox field.
+~ Added: autocomplete meta-box field.
 ~ Fixed: h5p error in curriculum editor.
 ~ Modified: duplicate course, sections, items.
 ~ Handle multiple button Continue course.
