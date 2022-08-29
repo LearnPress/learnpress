@@ -475,6 +475,51 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Add item to section.
+	 *
+	 * @param $section_id
+	 * @param $item
+	 *
+	 * @return void
+	 * @version 1.0.0
+	 * @since 4.1.6.9.4
+	 */
+	public function assign_item_section( $section_id, $item = array() ) {
+		global $wpdb;
+
+		if ( ! isset( $item['item_id'] ) && ! isset( $item['item_type'] ) ) {
+			return;
+		}
+
+		try {
+			$exist = $this->item_section_exist( $section_id, $item['item_id'] );
+
+			if ( $exist ) {
+				$wpdb->update(
+					$wpdb->learnpress_section_items,
+					array( 'item_order' => $item['item_order'] ?? 0 ),
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['item_id'],
+					)
+				);
+			} else {
+				$wpdb->insert(
+					$wpdb->learnpress_section_items,
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['item_id'],
+						'item_order' => $item['item_order'] ?? 0,
+						'item_type'  => $item['item_type'],
+					)
+				);
+			}
+		} catch ( Throwable $e ) {
+			return $e->getMessage();
+		}
+	}
+
+	/**
 	 * Check item was been added to any section.
 	 *
 	 * @param $section_id
