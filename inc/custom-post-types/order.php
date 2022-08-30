@@ -329,7 +329,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param WP_Post $post
 		 * @throws Exception
 		 * @editor tungnx
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function save( int $post_id, WP_Post $post ) {
 			global $action;
@@ -354,7 +354,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$order->set_user_id( $user_id );
 				}
 
-				$order->set_status( learn_press_get_request( 'order-status' ) );
+				$status = LP_Helper::sanitize_params_submitted( $_POST['order-status'] ?? '' );
+				if ( $status ) {
+					$order->set_status( learn_press_get_request( 'order-status' ) );
+				}
+
 				$order->save();
 			}
 		}

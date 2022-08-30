@@ -324,7 +324,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param string $new_status
 		 * @param string $note - Optional. Note for changing status.
 		 */
-		public function set_status( string $new_status, string $note = '' ) {
+		public function set_status( string $new_status = '', string $note = '' ) {
 			$new_status     = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
 			$valid_statuses = learn_press_get_order_statuses( false, true );
 

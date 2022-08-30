@@ -1649,11 +1649,11 @@ function learn_press_maybe_send_json( $data, $callback = null ) {
  * @return mixed
  */
 function learn_press_get_request( $key, $default = null, $hash = null ) {
-	$return = LP_Helper::sanitize_params_submitted( $default );
+	$return = $default;
 
 	if ( $hash ) {
 		if ( ! empty( $hash[ $key ] ) ) {
-			$return = LP_Helper::sanitize_params_submitted( $hash[ $key ] );
+			$return = $hash[ $key ];
 		}
 	} else {
 		if ( ! empty( $_POST[ $key ] ) ) {
