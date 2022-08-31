@@ -70,7 +70,7 @@ class LP_Meta_Box_File_Field extends LP_Meta_Box_Field {
 
 					echo '<li class="lp-meta-box__file_list-item image" data-attachment_id="' . $attachment_id . '">';
 
-					if ( in_array( $check_file['ext'], array( 'jpg', 'png', 'gif', 'bmp', 'tif' ), true ) ) {
+					if ( in_array( $check_file['ext'], array( 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tif' ), true ) ) {
 						echo wp_get_attachment_image( $attachment_id, 'thumbnail' );
 					} else {
 						echo '<img class="is_file" src="' . wp_mime_type_icon( $check_file['type'] ) . '" />';
