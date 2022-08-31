@@ -49,10 +49,12 @@ class LP_Page_Controller {
 
 		// Set link profile to admin menu
 		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
-		add_action( 'plugins_loaded', array( $this, 'lp_rest_api_called' ) );
+		add_action( 'plugins_loaded', array( $this, 'lp_rest_api_called' ), 1 );
 
 		// Web hook detected PayPal request.
 		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
+		// Set again x-wp-nonce on header when has cache with not login.
+		add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
 	}
 
 	/**
@@ -67,7 +69,16 @@ class LP_Page_Controller {
 			}
 
 			// Remove hook wp_loaded because query default WP run on it (it hooks 'pre_get_posts',...)
+			remove_all_actions( 'after_setup_theme' );
+			remove_all_actions( 'setup_theme' );
+			remove_all_actions( 'muplugins_loaded' );
+			remove_all_actions( 'network_plugin_loaded' );
+			remove_all_actions( 'mu_plugin_loaded' );
+			remove_all_actions( 'plugin_loaded' );
 			remove_all_actions( 'wp_loaded' );
+			remove_all_actions( 'plugins_loaded' );
+			remove_all_actions( 'pre_get_posts' );
+			remove_all_actions( 'parse_query' );
 		}
 	}
 
@@ -1058,6 +1069,24 @@ class LP_Page_Controller {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Set again HTTP_X_WP_NONCE when cache make 403 error.
+	 *
+	 * @param $send_no_cache_headers
+	 *
+	 * @return mixed
+	 * @since 4.1.6.9.4
+	 * @version 1.0.0
+	 */
+	public function check_x_wp_nonce_cache( $send_no_cache_headers ) {
+		if ( ! $send_no_cache_headers && ! is_admin() && $_SERVER['REQUEST_METHOD'] == 'GET' && LP_Helper::isRestApiLP() ) {
+			$nonce                      = wp_create_nonce( 'wp_rest' );
+			$_SERVER['HTTP_X_WP_NONCE'] = $nonce;
+		}
+
+		return $send_no_cache_headers;
 	}
 }
 

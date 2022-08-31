@@ -74,63 +74,65 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 	}
 
 	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...lpArchiveSkeleton, ...args } );
+	const url = lpGlobalSettings.lp_rest_url + 'lp/v1/courses/archive-course' + urlCourseArchive.search;
 
-	wp.apiFetch( {
-		path: 'lp/v1/courses/archive-course' + urlCourseArchive.search,
+	fetch( url, {
 		method: 'GET',
-	} ).then( ( response ) => {
-		if ( typeof response.data.content !== 'undefined' && listCourse ) {
-			listCourse.innerHTML = response.data.content || '';
-		}
-
-		const pagination = response.data.pagination;
-
-		// lpArchiveSearchCourse();
-
-		const paginationEle = document.querySelector( '.learn-press-pagination' );
-		if ( paginationEle ) {
-			paginationEle.remove();
-		}
-
-		if ( typeof pagination !== 'undefined' ) {
-			const paginationHTML = new DOMParser().parseFromString( pagination, 'text/html' );
-			const paginationNewNode = paginationHTML.querySelector( '.learn-press-pagination' );
-			//const paginationInnerHTML = paginationSelector && paginationSelector.innerHTML;
-
-			if ( paginationNewNode ) {
-				listCourse.after( paginationNewNode );
-				lpArchivePaginationCourse();
+	} )
+		.then( ( response ) => response.json() )
+		.then( ( response ) => {
+			if ( typeof response.data.content !== 'undefined' && listCourse ) {
+				listCourse.innerHTML = response.data.content || '';
 			}
-		}
 
-		wp.hooks.doAction( 'lp-js-get-courses', response );
+			const pagination = response.data.pagination;
 
-		if ( typeof callBackSuccess === 'function' ) {
-			callBackSuccess( response );
-		}
-	} ).catch( ( error ) => {
-		listCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/courses/archive-course' }</div>`;
-		console.log( error );
-	} ).finally( () => {
-		isLoading = false;
-		// skeleton && skeleton.remove();
+			// lpArchiveSearchCourse();
 
-		jQuery( 'form.search-courses button' ).removeClass( 'loading' );
+			const paginationEle = document.querySelector( '.learn-press-pagination' );
+			if ( paginationEle ) {
+				paginationEle.remove();
+			}
 
-		if ( ! firstLoad ) {
+			if ( typeof pagination !== 'undefined' ) {
+				const paginationHTML = new DOMParser().parseFromString( pagination, 'text/html' );
+				const paginationNewNode = paginationHTML.querySelector( '.learn-press-pagination' );
+				//const paginationInnerHTML = paginationSelector && paginationSelector.innerHTML;
+
+				if ( paginationNewNode ) {
+					listCourse.after( paginationNewNode );
+					lpArchivePaginationCourse();
+				}
+			}
+
+			wp.hooks.doAction( 'lp-js-get-courses', response );
+
+			if ( typeof callBackSuccess === 'function' ) {
+				callBackSuccess( response );
+			}
+		} ).catch( ( error ) => {
+			listCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/courses/archive-course' }</div>`;
+			console.log( error );
+		} ).finally( () => {
+			isLoading = false;
+			// skeleton && skeleton.remove();
+
+			jQuery( 'form.search-courses button' ).removeClass( 'loading' );
+
+			if ( ! firstLoad ) {
 			// Scroll to archive element
-			const optionScroll = { behavior: 'smooth' };
-			elArchive.scrollIntoView( optionScroll );
-		} else {
-			firstLoad = 0;
-		}
+				const optionScroll = { behavior: 'smooth' };
+				elArchive.scrollIntoView( optionScroll );
+			} else {
+				firstLoad = 0;
+			}
 
-		// Save filter courses to Storage
-		window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
-		// Change url by params filter courses
-		const urlPush = lpArchiveAddQueryArgs( document.location, args );
-		window.history.pushState( '', '', urlPush );
-	} );
+			// Save filter courses to Storage
+			window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
+			// Change url by params filter courses
+			const urlPush = lpArchiveAddQueryArgs( document.location, args );
+			window.history.pushState( '', '', urlPush );
+		} );
 };
 
 const lpArchiveSearchCourse = () => {

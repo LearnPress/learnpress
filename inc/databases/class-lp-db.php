@@ -746,7 +746,7 @@ class LP_Database {
 		// Where
 		$WHERE = array( 'WHERE 1=1' );
 		$WHERE = array_merge( $WHERE, $filter->where );
-		$WHERE = apply_filters( 'lp/query/where', $WHERE, $filter );
+		$WHERE = apply_filters( 'lp/query/delete/where', $WHERE, $filter );
 		$WHERE = implode( ' ', array_unique( $WHERE ) );
 
 		$query = "

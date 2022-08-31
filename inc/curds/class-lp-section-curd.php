@@ -477,14 +477,14 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Add item to section.
 	 *
-	 * @param $section_id
-	 * @param $item
+	 * @param int $section_id
+	 * @param array $item
 	 *
 	 * @return void
 	 * @version 1.0.0
 	 * @since 4.1.6.9.4
 	 */
-	public function assign_item_section( $section_id, $item = array() ) {
+	public function assign_item_section( int $section_id, array $item = array() ) {
 		global $wpdb;
 
 		if ( ! isset( $item['item_id'] ) && ! isset( $item['item_type'] ) ) {
@@ -515,7 +515,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 			}
 		} catch ( Throwable $e ) {
-			return $e->getMessage();
+			error_log( $e->getMessage() );
 		}
 	}
 

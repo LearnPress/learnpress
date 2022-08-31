@@ -34,7 +34,7 @@ class LP_Filter {
 	 */
 	public $order_by = '';
 	/**
-	 * @var string
+	 * @var string DESC|ASC
 	 */
 	public $order = '';
 	/**
@@ -106,9 +106,9 @@ class LP_Filter {
 	 */
 	public $return_string_query = false;
 	/**
-	 * @var string return string query to debug
+	 * @var false set true to return string query to debug
 	 */
-	public $debug_string_query = '';
+	public $debug_string_query = false;
 	/**
 	 * @var string
 	 */

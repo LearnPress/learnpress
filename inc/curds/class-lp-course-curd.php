@@ -244,31 +244,14 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						);
 
 						// Prepare data to assign item to section.
-						$new_items[ $key ] = array(
-							'id'    => $new_item_id,
-							'type'  => $item_origin['type'],
-							'order' => $item_origin['order'],
+						$new_item = array(
+							'item_id'    => $new_item_id,
+							'item_type'  => $item_origin['type'],
+							'item_order' => $item_origin['order'],
 						);
+
+						$section_curd_new->assign_item_section( $section_id_new, $new_item );
 					}
-
-					// duplicate quiz
-					/*if ( $item_origin['type'] === LP_QUIZ_CPT ) {
-						$new_item_id = $quiz_curd->duplicate(
-							$item_origin['id'],
-							array( 'post_status' => 'publish' )
-						);
-					} else {
-						// clone item
-						$new_item_id = learn_press_duplicate_post(
-							$item_origin['id'],
-							array( 'post_status' => 'publish' )
-						);
-					}*/
-				}
-
-				// add new clone items to section
-				if ( ! empty( $new_items ) ) {
-					$section_curd_new->add_items_section( $section_id_new, $new_items );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );

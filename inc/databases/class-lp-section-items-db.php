@@ -64,7 +64,7 @@ class LP_Section_Items_DB extends LP_Database {
 	 * @return bool|int|mysqli_result|resource|null
 	 * @throws Exception
 	 */
-	public function delete_items_by_section_id( LP_Section_Items_Filter $filter ) {
+	public function delete_items( LP_Section_Items_Filter $filter ) {
 		if ( empty( $filter->item_ids ) ) {
 			return 1;
 		}
