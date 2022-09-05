@@ -40,6 +40,18 @@ class LP_Quiz_Questions_DB extends LP_Database {
 			$filter->collection_alias = 'qq';
 		}
 
+		// Question ids
+		if ( ! empty( $filter->question_ids ) ) {
+			$question_ids_format = LP_Helper::db_format_array( $filter->question_ids, '%s' );
+			$filter->where[]     = $this->wpdb->prepare( "AND {$filter->collection_alias}.question_id IN (" . $question_ids_format . ')', $filter->question_ids );
+		}
+
+		// Quiz ids
+		if ( ! empty( $filter->quiz_ids ) ) {
+			$quiz_ids_format = LP_Helper::db_format_array( $filter->question_ids, '%s' );
+			$filter->where[] = $this->wpdb->prepare( "AND {$filter->collection_alias}.quiz_id IN (" . $quiz_ids_format . ')', $filter->quiz_ids );
+		}
+
 		return $this->execute( $filter, $total_rows );
 	}
 }

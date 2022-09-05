@@ -291,7 +291,10 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			return $lp_question_db->get_list_question_ids_of_quiz( $filter );
 		}
 
-		public function update_question_ids( $quiz_id ) {
+		/**
+		 * @depecated 4.1.6.9.4
+		 */
+		/*public function update_question_ids( $quiz_id ) {
 			wp_cache_delete( 'quiz-' . $quiz_id, 'quiz-questions' );
 
 			$quiz = learn_press_get_quiz( $quiz_id );
@@ -304,7 +307,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 			update_post_meta( $quiz_id, '_questions', $question_ids );
 			update_post_meta( $quiz_id, '_question_count', sizeof( $question_ids ) );
-		}
+		}*/
 
 		/**
 		 * Get quiz ids that contains a question.

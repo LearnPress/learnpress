@@ -22,7 +22,7 @@ class LP_Quiz_Questions_Filter extends LP_Filter {
 	/**
 	 * @var array
 	 */
-	public $quiz_question_ids = array();
+	public $question_ids = array();
 	/**
 	 * @var array
 	 */
