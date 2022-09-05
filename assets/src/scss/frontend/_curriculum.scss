@@ -33,12 +33,12 @@
 }
 .course-tab-panel {
 	display: none;
- 
+
 	&.active {
 		display: block;
 	}
 
-	 
+
 	.course-description {
 		color: #666;
 		font-size: 16px;
@@ -53,7 +53,7 @@
 		}
 
 		p {
-			
+
 			line-height: inherit;
 		}
 
@@ -1490,13 +1490,13 @@ input[name="course-faqs-box-ratio"] {
 			left: 300px;
 		}
 
-		#learn-press-content-item {
-
-			.content-item-nav-wrap,
-			.content-item-wrap {
-				width: 90%;
-			}
-		}
+		//#learn-press-content-item {
+		//
+		//	.content-item-nav-wrap,
+		//	.content-item-wrap {
+		//		width: 90%;
+		//	}
+		//}
 	}
 }
 
@@ -1514,13 +1514,13 @@ input[name="course-faqs-box-ratio"] {
 				left: 200px;
 			}
 
-			#learn-press-content-item {
-
-				.content-item-nav-wrap,
-				.content-item-wrap {
-					width: 90%;
-				}
-			}
+			//#learn-press-content-item {
+			//
+			//	.content-item-nav-wrap,
+			//	.content-item-wrap {
+			//		width: 90%;
+			//	}
+			//}
 
 			&.wpadminbar {
 
