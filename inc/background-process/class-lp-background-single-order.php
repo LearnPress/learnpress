@@ -11,8 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Order' ) ) {
-	class LP_Background_Single_Order extends WP_Async_Request {
-		protected $prefix = 'lp';
+	class LP_Background_Single_Order extends LP_Async_Request {
 		protected $action = 'background_single_order';
 		protected static $instance;
 

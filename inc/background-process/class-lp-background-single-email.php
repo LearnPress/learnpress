@@ -11,8 +11,7 @@ if ( ! class_exists( 'LP_Background_Single_Email' ) ) {
 	 * @since 4.1.1
 	 * @author tungnx
 	 */
-	class LP_Background_Single_Email extends WP_Async_Request {
-		protected $prefix = 'lp';
+	class LP_Background_Single_Email extends LP_Async_Request {
 		protected $action = 'background_single_email';
 		protected static $instance;
 

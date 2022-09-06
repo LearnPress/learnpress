@@ -27,8 +27,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		/**
 		 * Constructor
-		 *
-		 * @param string
 		 */
 		public function __construct() {
 			parent::__construct();
@@ -435,14 +433,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				ALTER TABLE {$wpdb->learnpress_sections} AUTO_INCREMENT = 1
 			"
 			);
-		}
-
-		private function _send_mail() {
-			if ( ! LP()->user->is_instructor() ) {
-				return;
-			}
-			$mail = LP()->mail;
-
 		}
 
 		/**

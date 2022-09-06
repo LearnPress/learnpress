@@ -11,8 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
-	class LP_Background_Single_Course extends WP_Async_Request {
-		protected $prefix = 'lp';
+	class LP_Background_Single_Course extends LP_Async_Request {
 		protected $action = 'background_single_course';
 		protected static $instance;
 		/**
