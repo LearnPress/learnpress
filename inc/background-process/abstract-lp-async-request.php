@@ -124,7 +124,7 @@ abstract class LP_Async_Request {
 
 		$args = array(
 			'timeout'   => 0.01,
-			'blocking'  => true,
+			'blocking'  => false,
 			'body'      => $this->data,
 			'cookies'   => $_COOKIE,
 			'sslverify' => is_ssl(),
