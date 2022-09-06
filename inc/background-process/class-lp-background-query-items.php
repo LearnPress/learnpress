@@ -7,7 +7,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Background_Query_Items extends LP_Abstract_Background_Process {
+	class LP_Background_Query_Items {
 
 		/**
 		 * @var string
@@ -30,7 +30,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 * LP_Background_Query_Items constructor.
 		 */
 		public function __construct() {
-			parent::__construct();
+			//parent::__construct();
 			$this->transient_time = DAY_IN_SECONDS / 2;
 		}
 
@@ -40,7 +40,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
-			parent::task( $data );
+			//parent::task( $data );
 
 			if ( ! isset( $data['callback'] ) ) {
 				return false;
@@ -58,61 +58,33 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		}
 
 		public function get_plugins_from_wp() {
-			$method  = 'query_free_addons';
 			$plugins = get_transient( 'lp_plugins_wp' );
 
-			if ( ! $plugins && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
-				update_option( 'doing_' . $method, 'yes', 'no' );
-				$this->clear_queue()->push_to_queue(
-					array(
-						'callback' => $method,
-					)
-				)->save()->dispatch();
+			if ( ! $plugins ) {
+				$this->query_free_addons();
 			}
 
 			return is_array( $plugins ) ? $plugins : false;
 		}
 
 		public function get_plugins_from_tp() {
-			$method  = 'query_premium_addons';
 			$plugins = get_transient( 'lp_plugins_tp' );
 
-			if ( ! $plugins && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
-				update_option( 'doing_' . $method, 'yes', 'no' );
-				$this->clear_queue()->push_to_queue(
-					array(
-						'callback' => $method,
-					)
-				)->save()->dispatch();
+			if ( ! $plugins ) {
+				$this->query_premium_addons();
 			}
 
 			return is_array( $plugins ) ? $plugins : false;
 		}
 
 		public function get_related_themes() {
-			$method = 'query_related_themes';
 			$themes = get_transient( 'lp_related_themes' );
 
-			if ( ! $themes && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
-				update_option( 'doing_' . $method, 'yes', 'no' );
-				$this->clear_queue()->push_to_queue(
-					array(
-						'callback' => $method,
-					)
-				)->save()->dispatch();
+			if ( ! $themes ) {
+				$this->query_related_themes();
 			}
 
 			return is_array( $themes ) ? $themes : false;
-		}
-
-		public function get_last_checked( $type ) {
-			$next = get_option( '_transient_timeout_' . $this->prefix . '_' . $type );
-
-			if ( $next ) {
-				return $next - $this->transient_time;
-			}
-
-			return 0;
 		}
 
 		public function force_update() {
@@ -315,7 +287,12 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 * @return LP_Background_Query_Items
 		 */
 		public static function instance() {
-			return parent::instance();
+			static $instance;
+			if ( empty( $instance ) ) {
+				$instance = new self();
+			}
+
+			return $instance;
 		}
 	}
 }

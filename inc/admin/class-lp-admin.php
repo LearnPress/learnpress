@@ -912,9 +912,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );
 				}
 			} catch ( Throwable $e ) {
-				if ( LP_Debug::is_debug() ) {
-					error_log( $e->getMessage() );
-				}
+				error_log( $e->getMessage() );
 			}
 
 			return $post_link;

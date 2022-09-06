@@ -21,6 +21,14 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	}
 
 	public function add_ons_tabs() {
+		// Check is page addons
+		$current_page = LP_Helper::getUrlCurrent();
+		$pattern = '/.*page=learn-press-addons.*/';
+		$match   = preg_match( $pattern, $current_page, $matches );
+		if ( ! $match ) {
+			return;
+		}
+
 		$tabs = array(
 			'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
 			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
