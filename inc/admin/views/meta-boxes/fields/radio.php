@@ -41,7 +41,7 @@ class LP_Meta_Box_Radio_Field extends LP_Meta_Box_Field {
 		$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
 		$field['desc_tip']      = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
 
-		echo '<fieldset class="form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '"><h4>' . wp_kses_post( $field['label'] ) . '</h4>';
+		echo '<fieldset class="form-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '" ' . $this->condition . '><h4>' . wp_kses_post( $field['label'] ) . '</h4>';
 
 		if ( ! empty( $field['description'] ) && false !== $field['desc_tip'] ) {
 			learn_press_quick_tip( $field['description'] );
