@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Database {
 	private static $_instance;
-	public $wpdb;
+	public $wpdb, $tb_users;
 	public $tb_lp_user_items, $tb_lp_user_itemmeta;
 	public $tb_posts, $tb_postmeta, $tb_options;
 	public $tb_terms, $tb_term_relationships;
@@ -29,7 +29,7 @@ class LP_Database {
 
 	protected function __construct() {
 		/**
-		 * @global wpdb
+		 * @var wpdb $wpdb
 		 */
 		global $wpdb;
 		$prefix = $wpdb->prefix;
@@ -117,7 +117,7 @@ class LP_Database {
 			"SELECT Count(ID) FROM $this->tb_posts
 			WHERE post_type = %s
 			AND post_author = %d
-			{$query_append}",
+			$query_append",
 			$filter->post_type,
 			$filter->post_author
 		);
@@ -138,9 +138,9 @@ class LP_Database {
 	 * @param string $post_type .
 	 * @param string $slug .
 	 *
-	 * @return string
+	 * @return int
 	 */
-	public function getPostAuthorByTypeAndSlug( $post_type = '', $slug = '' ) {
+	public function getPostAuthorByTypeAndSlug( string $post_type = '', string $slug = '' ): int {
 		$query = $this->wpdb->prepare(
 			"
 			SELECT post_author FROM $this->tb_posts
@@ -150,7 +150,7 @@ class LP_Database {
 			$slug
 		);
 
-		return $this->wpdb->get_var( $query );
+		return (int) $this->wpdb->get_var( $query );
 	}
 
 	/**
@@ -182,8 +182,8 @@ class LP_Database {
 		$this->drop_table( $table_bk );
 
 		// Clone table
-		$this->wpdb->query( "CREATE TABLE {$table_bk} LIKE {$name_table}" );
-		$this->wpdb->query( "INSERT INTO {$table_bk} SELECT * FROM {$name_table}" );
+		$this->wpdb->query( "CREATE TABLE $table_bk LIKE $name_table" );
+		$this->wpdb->query( "INSERT INTO $table_bk SELECT * FROM $name_table" );
 
 		/*dbDelta(
 			"CREATE TABLE $table_bk LIKE $name_table;
@@ -276,7 +276,7 @@ class LP_Database {
 	 *
 	 * @param string $name_table .
 	 *
-	 * @return bool|int
+	 * @return void
 	 * @throws Exception
 	 */
 	public function drop_indexs_table( string $name_table ) {
@@ -288,7 +288,7 @@ class LP_Database {
 				continue;
 			}
 
-			$query = $this->wpdb->prepare( "ALTER TABLE $name_table DROP INDEX $index->Key_name", 1 );
+			$query = "ALTER TABLE $name_table DROP INDEX $index->Key_name";
 
 			$this->wpdb->query( $query );
 			$this->check_execute_has_error();
@@ -320,10 +320,8 @@ class LP_Database {
 		}
 
 		$execute = $this->wpdb->query(
-			"
-			ALTER TABLE {$name_table}
-			$add_index
-			"
+			"ALTER TABLE $name_table
+			$add_index"
 		);
 
 		$this->check_execute_has_error();

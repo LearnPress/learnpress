@@ -270,7 +270,7 @@ class LP_Page_Controller {
 	 * @author tungnx
 	 * @since  3.2.7.7
 	 */
-	public function set_title_pages( $title = '' ) {
+	public function set_title_pages( string $title = '' ): string {
 		global $wp_query;
 		$flag_title_course = false;
 
@@ -278,7 +278,7 @@ class LP_Page_Controller {
 
 		// Set title course archive page
 		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&
-			 $course_archive_page_id == $wp_query->post->ID ) {
+			$course_archive_page_id == $wp_query->post->ID ) {
 			$title             = get_the_title( $course_archive_page_id );
 			$flag_title_course = true;
 		} elseif ( learn_press_is_course() ) {
@@ -300,8 +300,9 @@ class LP_Page_Controller {
 			$profile  = LP_Profile::instance();
 			$tab_slug = $profile->get_current_tab();
 			$tab      = $profile->get_tab_at( $tab_slug );
+			$page_id  = learn_press_get_page_id( 'profile' );
 
-			if ( $page_id = learn_press_get_page_id( 'profile' ) ) {
+			if ( $page_id ) {
 				$page_title = get_the_title( $page_id );
 			} else {
 				$page_title = '';
@@ -640,10 +641,10 @@ class LP_Page_Controller {
 			$name_decoded = urldecode( $object->post_name );
 
 			if ( $name_decoded !== $object->post_name ) {
-				$templates[] = "single-course-{$name_decoded}.php";
+				$templates[] = "single-course-$name_decoded.php";
 			}
 
-			$templates[] = "single-product-{$object->post_name}.php";
+			$templates[] = "single-product-$object->post_name.php";
 		}
 
 		if ( learn_press_is_course_taxonomy() ) {
@@ -915,8 +916,6 @@ class LP_Page_Controller {
 	 * Apply for user not admin, instructor, co-instructor
 	 *
 	 * @param WP_Query $q
-	 *
-	 * @return mixed
 	 * @editor tungnx
 	 * @since  3.2.7.5
 	 */
@@ -933,8 +932,6 @@ class LP_Page_Controller {
 			$post_author   = 0;
 
 			if ( $user ) {
-				$post = null;
-
 				if ( isset( $_GET['preview_id'] ) ) {
 					$post_id     = absint( $_GET['preview_id'] );
 					$post        = get_post( $post_id );
@@ -944,7 +941,7 @@ class LP_Page_Controller {
 					$post        = get_post( $post_id );
 					$post_author = $post->post_author;
 				} else {
-					$post_author = LP_Database::getInstance()->getPostAuthorByTypeAndSlug( $q->query_vars['post_type'], $q->query_vars[ $q->query_vars['post_type'] ] );
+					$post_author = LP_Database::getInstance()->getPostAuthorByTypeAndSlug( $q->query_vars['post_type'] ?? '', $q->query_vars['name'] ?? '' );
 				}
 
 				if ( $user->has_cap( 'administrator' ) ) {
@@ -958,11 +955,8 @@ class LP_Page_Controller {
 
 			if ( $flag_load_404 ) {
 				learn_press_404_page();
-				$q->set( 'post_type', '' );
 			}
 		}
-
-		return $q;
 	}
 
 	/**
