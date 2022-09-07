@@ -203,7 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.6.9.4 (2022-08-15) =
+= 4.1.6.9.4 (2022-09-1x) =
 ~ Fixed: IPN paypal.
 ~ Added: hook 'learn-press/user-item/expiration-time'.
 ~ Added: autocomplete meta-box field.
@@ -211,7 +211,14 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modified: duplicate course, sections, items.
 ~ Handle multiple button Continue course.
 ~ Modified: has_completed_item() function.
-~ Fixed: Custom fields register not show on the Profile page.
+~ Fixed: custom fields register not show on the Profile page.
+~ Fixed: save order status.
+~ Added: hook 'learn-press/user-item/expiration-time'.
+~ Added: function duplicate question answermeta when duplicate question.
+~ Fixed: error show content of quiz when user doing questions.
+~ Fixed: error fetch api has x-wp-nonce with cache expire.
+~ Fixed: sidebar toggle on mobile with theme Eduma.
+~ Added: autocomplete metabox field.
 
 = 4.1.6.9.3 (2022-08-10) =
 ~ Fixed: show wrong shortcode on course, item's course.
