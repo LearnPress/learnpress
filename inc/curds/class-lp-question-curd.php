@@ -147,16 +147,16 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function duplicate( &$question_id, $args = array() ) {
 			if ( ! $question_id ) {
-				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
+				return new WP_Error( 'lp/question/curd/duplicate/err', 'Op! ID not found' );
 			}
 
 			if ( learn_press_get_post_type( $question_id ) != LP_QUESTION_CPT ) {
-				return new WP_Error( __( '<p>Op! The question does not exist</p>', 'learnpress' ) );
+				return new WP_Error( 'lp/question/curd/duplicate/err', 'Op! The question does not exist' );
 			}
 
 			// ensure that user can create question
 			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this question</p>', 'learnpress' ) );
+				return new WP_Error( 'lp/question/curd/duplicate/err', 'Sorry! You do not have permission to duplicate this question' );
 			}
 
 			// origin question
@@ -166,7 +166,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$new_question_id = learn_press_duplicate_post( $question_id, array( 'post_status' => 'publish' ) );
 
 			if ( ! $new_question_id || is_wp_error( $new_question_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Failed to duplicate question!</p>', 'learnpress' ) );
+				return new WP_Error( 'lp/question/curd/duplicate/err', 'Sorry! Failed to duplicate question!' );
 			} else {
 
 				// init new question
@@ -193,29 +193,79 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * Duplicate answer question.
 		 *
 		 * @param $question_id     | origin question
-		 * @param $new_question_id | new question
-		 * @TODO tungnx: check duplicate question typ fill_in_blank - must clone row in learnpress_question_answermeta
+		 * @param $question_id_clone | new question
+		 * @version 3.0.1
+		 * @since 1.0.1
 		 */
-		public function duplicate_answer( $question_id, $new_question_id ) {
-			global $wpdb;
+		public function duplicate_answer( $question_id, $question_id_clone ) {
+			$lp_db                  = LP_Database::getInstance();
+			$lp_question_answers_db = LP_Question_Answers_DB::getInstance();
 
-			$query          = $wpdb->prepare( " SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d", $question_id );
-			$answer_options = $wpdb->get_results( $query );
+			try {
+				// Get all answer of question
+				$filter_get_answer_options               = new LP_Question_Answers_Filter();
+				$filter_get_answer_options->question_ids = [ $question_id ];
+				$answer_options                          = $lp_question_answers_db->get_question_asnwers( $filter_get_answer_options );
 
-			if ( $answer_options ) {
-				foreach ( $answer_options as $option ) {
-					$wpdb->insert(
-						$wpdb->learnpress_question_answers,
-						array(
-							'question_id' => $new_question_id,
-							'title'       => ! empty( $option->title ) ? $option->title : '',
-							'value'       => ! empty( $option->value ) ? $option->value : '',
-							'is_true'     => ! empty( $option->is_true ) ? $option->is_true : '',
-							'order'       => $option->order,
-						),
-						array( '%d', '%s', '%s', '%s', '%s' )
-					);
+				if ( $answer_options ) {
+					foreach ( $answer_options as $answer_option ) {
+						$question_answer_id = $answer_option->question_answer_id;
+
+						// Insert new question_answer
+						$insert_question_answer_rs = $lp_db->wpdb->insert(
+							$lp_db->tb_lp_question_answers,
+							array(
+								'question_id' => $question_id_clone,
+								'title'       => ! empty( $answer_option->title ) ? $answer_option->title : '',
+								'value'       => ! empty( $answer_option->value ) ? $answer_option->value : '',
+								'is_true'     => ! empty( $answer_option->is_true ) ? $answer_option->is_true : '',
+								'order'       => $answer_option->order,
+							),
+							array( '%d', '%s', '%s', '%s', '%s' )
+						);
+
+						if ( ! $insert_question_answer_rs ) {
+							throw new Exception( __( 'Failed to duplicate answer', 'learnpress' ) );
+						}
+
+						// Get question_answer_id have just inserted
+						$filter_question_answer_id                      = new LP_Question_Answers_Filter();
+						$filter_question_answer_id->only_fields         = [ 'MAX(question_answer_id)' ];
+						$filter_question_answer_id->question_ids        = [ $question_id_clone ];
+						$filter_question_answer_id->return_string_query = true;
+						$question_answer_id_query                       = $lp_question_answers_db->get_question_asnwers( $filter_question_answer_id );
+						$question_answer_id_new                         = (int) $lp_question_answers_db->wpdb->get_var( $question_answer_id_query );
+
+						if ( ! $question_answer_id_new ) {
+							throw new Exception( __( 'Failed to duplicate answer', 'learnpress' ) );
+						}
+
+						// Duplicate answer meta
+						// Get answer meta by question_answer_id
+						$filter_get                   = new LP_Question_Answermeta_Filter();
+						$filter_get->collection       = $lp_db->tb_lp_question_answermeta;
+						$filter_get->collection_alias = 'qam';
+						$filter_get->field_count      = 'meta_id';
+						$filter_get->limit            = -1;
+						$filter_get->where[]          = $lp_db->wpdb->prepare( 'AND qam.learnpress_question_answer_id = %d', $question_answer_id );
+						$filter_get->fields           = $lp_db->get_cols_of_table( $lp_db->tb_lp_question_answermeta );
+						$question_answermeta_rs       = $lp_db->execute( $filter_get );
+
+						foreach ( $question_answermeta_rs as $question_answermeta ) {
+							$lp_db->wpdb->insert(
+								$lp_db->tb_lp_question_answermeta,
+								array(
+									'learnpress_question_answer_id' => $question_answer_id_new,
+									'meta_key'   => $question_answermeta->meta_key,
+									'meta_value' => $question_answermeta->meta_value,
+								),
+								array( '%d', '%s', '%s' )
+							);
+						}
+					}
 				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 		}
 
@@ -923,8 +973,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * Otherwise, load from database and put to cache.
 		 *
 		 * @param $question LP_Question
+		 * @depecated 4.1.6.9.4
 		 */
-		protected function _load_answer_options( &$question ) {
+		/*protected function _load_answer_options( &$question ) {
 			$id             = $question->get_id();
 			$answer_options = LP_Object_Cache::get( 'answer-options-' . $id, 'lp-questions' );
 
@@ -950,7 +1001,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			LP_Object_Cache::set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
 
 			$question->set_data( 'answer_options', $answer_options );
-		}
+		}*/
 
 		/**
 		 * Load question answers
@@ -993,8 +1044,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @param array $answer_options
 		 *
 		 * @return mixed;
+		 * @depecated 4.1.6.9.4
 		 */
-		protected function _load_answer_option_meta( &$answer_options ) {
+		/*protected function _load_answer_option_meta( &$answer_options ) {
 			if ( ! $answer_options ) {
 				return false;
 			}
@@ -1026,7 +1078,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			}
 
 			return true;
-		}
+		}*/
 
 		public function add_meta( &$object, $meta ) {
 			// TODO: Implement add_meta() method.

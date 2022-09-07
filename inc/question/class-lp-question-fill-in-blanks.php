@@ -267,7 +267,7 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 						'_blanks',
 						true
 					);
-					$answers[ $k ]['blanks'] = $blanks ? array_values( $blanks ) : array();
+					$answers[ $k ]['blanks'] = ! empty( $blanks ) ? array_values( $blanks ) : array();
 				}
 			}
 
@@ -408,13 +408,12 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 				 * @var LP_Question_Answer_Option $answer
 				 */
 				foreach ( $answers as $key => $answer ) {
-					$blanks            = $answer->get_meta( '_blanks' );
-					$total_field_input = count( $blanks );
-
+					$blanks             = $answer->get_meta( '_blanks' );
 					$return['blanks']   = array();
 					$return['answered'] = array();
 
-					if ( $blanks ) {
+					if ( ! empty( $blanks ) ) {
+						$total_field_input    = count( $blanks );
 						$total_answer_correct = 0;
 
 						foreach ( $user_answer as $answer_id => $answer_value ) {
