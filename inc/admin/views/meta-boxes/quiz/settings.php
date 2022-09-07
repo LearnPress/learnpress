@@ -91,7 +91,8 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 					esc_html__( 'Allow students view correct answer question in review this quiz.', 'learnpress' ),
 					'yes'
 				),
-			)
+			),
+			$post_id
 		);
 	}
 

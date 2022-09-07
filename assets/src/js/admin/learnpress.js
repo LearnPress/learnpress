@@ -517,11 +517,11 @@ const lpMetaboxConditionType = ( field, conditions, typeCondition = 'show' ) => 
 			}
 
 			if ( logic == '!=' && val !== Boolean( target ? target.checked : ele.checked ) ) {
-				field.style.display = typeCondition === 'show' ? 'flex' : 'none';
+				field.style.display = typeCondition === 'show' ? '' : 'none';
 			} else if ( logic == '=' && val == Boolean( target ? target.checked : ele.checked ) ) {
-				field.style.display = typeCondition === 'show' ? 'flex' : 'none';
+				field.style.display = typeCondition === 'show' ? '' : 'none';
 			} else {
-				field.style.display = typeCondition === 'show' ? 'none' : 'flex';
+				field.style.display = typeCondition === 'show' ? 'none' : '';
 			}
 			break;
 		}
