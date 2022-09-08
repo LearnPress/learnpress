@@ -289,7 +289,7 @@ class LP_Forms_Handler {
 			do_action( 'lp/after_create_new_customer', $email, $username, $password, $confirm_password, $args, $update_meta );
 
 			if ( is_wp_error( $customer_id ) ) {
-				return $customer_id;
+				throw new Exception( $customer_id->get_error_message() );
 			} else {
 				if ( ! empty( $update_meta ) ) {
 					lp_user_custom_register_fields( $customer_id, $update_meta );

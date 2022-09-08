@@ -35,7 +35,7 @@ const Result = () => {
 		let graduation = '';
 		if ( results.graduation ) {
 			graduation = results.graduation;
-		} else if ( results.result >= passingGradeValue.replace( /[^0-9\.]+/g, '' ) ) {
+		} else if ( results.result >= passingGradeValue ) {
 			graduation = 'passed';
 		} else {
 			graduation = 'failed';
@@ -149,12 +149,14 @@ const Result = () => {
 		strokeDasharray: `${ circumference } ${ circumference }`,
 		strokeDashoffset: offset,
 	};
-	const passingGradeValue = results.passingGrade || passingGrade;
+	const passingGradeValue = parseFloat( results.passingGrade || passingGrade );
+
+	console.log( passingGradeValue );
 
 	let graduation = '';
 	if ( results.graduation ) {
 		graduation = results.graduation;
-	} else if ( percentResult >= passingGradeValue.replace( /[^0-9\.]+/g, '' ) ) {
+	} else if ( percentResult >= passingGradeValue ) {
 		graduation = 'passed';
 	} else {
 		graduation = 'failed';
