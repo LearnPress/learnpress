@@ -219,6 +219,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: error fetch api has x-wp-nonce with cache expire.
 ~ Fixed: sidebar toggle on mobile with theme Eduma.
 ~ Added: autocomplete metabox field.
+~ Fixed: error not send mail when register user on page checkout.
 
 = 4.1.6.9.3 (2022-08-10) =
 ~ Fixed: show wrong shortcode on course, item's course.
