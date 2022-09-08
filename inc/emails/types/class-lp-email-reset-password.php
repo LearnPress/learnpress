@@ -73,7 +73,7 @@ if ( ! class_exists( 'LP_Email_Reset_Password' ) ) {
 
 			$locale = get_user_locale( $user );
 
-			$variables = apply_filters(
+			$this->variables = apply_filters(
 				'lp/email/type-reset-password/variables-mapper',
 				array(
 					'{{user_login}}' => $user_login,
@@ -87,7 +87,7 @@ if ( ! class_exists( 'LP_Email_Reset_Password' ) ) {
 			$this->set_receive( $user->user_email );
 
 			$variables_common = $this->get_common_variables( $this->email_format );
-			$this->variables  = array_merge( $variables, $variables_common );
+			$this->variables  = array_merge( $this->variables, $variables_common );
 
 			return true;
 		}

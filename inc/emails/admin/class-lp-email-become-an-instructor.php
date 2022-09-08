@@ -81,7 +81,7 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 				return false;
 			}
 
-			$variables = apply_filters(
+			$this->variables = apply_filters(
 				'lp/email/type-become-an-instructor-admin/variables-mapper',
 				[
 					'{{request_email}}'      => $bat_email,
@@ -94,7 +94,7 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 			);
 
 			$variables_common = $this->get_common_variables( $this->email_format );
-			$this->variables  = array_merge( $variables, $variables_common );
+			$this->variables  = array_merge( $this->variables, $variables_common );
 
 			return true;
 		}

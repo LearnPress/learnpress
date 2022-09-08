@@ -221,6 +221,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: autocomplete metabox field.
 ~ Fixed: error not send mail when register user on page checkout.
 ~ Fixed: error wrong status graduation when set Passing Grade is 100% on Quiz.
+~ Fixed: header, footer email of LP not detect variable.
 
 = 4.1.6.9.3 (2022-08-10) =
 ~ Fixed: show wrong shortcode on course, item's course.

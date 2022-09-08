@@ -1,11 +1,12 @@
 <?php
 /**
- * Base class of LearnPress shortcodes and helper functions.
+ * Class Email.
  *
  * @author   ThimPress
  * @category Widgets
- * @package  Learnpress/Shortcodes
- * @version  3.0.0
+ * @package  Learnpress/Email
+ * @since 3.0.0
+ * @version  3.0.2
  */
 
 /**
@@ -411,38 +412,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		}
 
 		/**
-		 * @return array|null
-		 *
-		 * @editor tungnx
-		 * @model 4.1.4 comment - not use
-		 */
-		/*public function get_variable() {
-			$this->variables = $this->data_to_variables( $this->object );
-
-			return $this->variables;
-		}*/
-
-		/**
-		 * @param null  $object_id
-		 * @param array $more
-		 *
-		 * @return array|object
-		 * @editor tungnx
-		 * @model 4.1.4 comment - not use
-		 */
-		/*public function get_object( $object_id = null, $more = array() ) {
-			$this->object = $this->get_common_template_data(
-				$this->email_format
-			);
-
-			if ( is_array( $more ) ) {
-				$this->object = array_merge( $this->object, $more );
-			}
-
-			return $this->object;
-		}*/
-
-		/**
 		 * Get variables support in mail.
 		 *
 		 * @return mixed
@@ -840,82 +809,11 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @since 4.1.3
 		 */
 		public function send_email(): bool {
-			// Hooks WP
 			add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 			add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
-			// End hooks
 
 			return $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 		}
-
-		/**
-		 * Get format of email template content.
-		 *
-		 * @param string $format
-		 *
-		 * @return array
-		 */
-		public function get_template_data( $format = 'plain' ) {
-
-			return $this->object;
-			// return array( 'plain_text' => $format == 'plain' );
-		}
-
-		/**
-		 * Get common template data variables.
-		 *
-		 * @param string $format
-		 *
-		 * @editor tungnx
-		 * @reason move to use method "get_common_variables"
-		 * @return array
-		 * @deprecated 4.1.3
-		 * @modify 4.1.4 comment - not use
-		 */
-		/*public function get_common_template_data( $format = 'plain' ) {
-			_deprecated_function( __FUNCTION__, '4.1.3', 'get_common_variables' );
-			$emails = LP_Emails::instance();
-			$emails->set_current( $this );
-
-			$heading     = strip_tags( $this->get_heading() );
-			$footer_text = strip_tags( $this->get_footer_text() );
-
-			if ( $format != 'plain' ) {
-				$header = $this->email_header( $heading, false );
-				$footer = $this->email_footer( $footer_text, false );
-			} else {
-				$header = $heading;
-				$footer = $footer_text;
-			}
-
-			$admin_user = get_user_by( 'email', get_option( 'admin_email' ) );
-			$common     = array(
-				'header'           => $header,
-				'footer'           => $footer,
-				'email_heading'    => $heading,
-				'footer_text'      => $footer_text,
-				'site_url'         => get_home_url(),
-				'site_title'       => $this->get_blogname(),
-				'site_admin_email' => get_option( 'admin_email' ),
-				'site_admin_name'  => learn_press_get_profile_display_name( $admin_user ),
-				'login_url'        => learn_press_get_login_url(),
-				'plain_text'       => $format == 'plain',
-			);
-
-			$num = func_num_args();
-			if ( $num > 1 ) {
-				for ( $i = 1; $i < $num; $i ++ ) {
-					$a = func_get_arg( $i );
-					if ( is_array( $a ) ) {
-						$common = array_merge( $common, $a );
-					}
-				}
-			}
-
-			$emails->reset_current();
-
-			return $common;
-		}*/
 
 		/**
 		 * Get common variables.
@@ -953,49 +851,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					'{{plain_text}}'       => $format == 'plain',
 				]
 			);
-		}
-
-		/**
-		 * Build list of template variables from an array.
-		 *
-		 * @param array $data
-		 * @editor tungnx
-		 * @reason move to use method "map_data_to_variables"
-		 * @deprecated 4.1.3
-		 * @return array
-		 * @modify 4.1.4 comment - not use
-		 */
-		/*public function data_to_variables( $data = null ) {
-			_deprecated_function( __FUNCTION__, '4.1.3', 'map_data_to_variables' );
-			if ( ! $data ) {
-				$data = $this->get_common_template_data();
-			}
-			$variables = array();
-			if ( is_array( $data ) ) {
-				foreach ( $data as $k => $v ) {
-					$variables[ '{{' . $k . '}}' ] = $v;
-				}
-			}
-
-			return $variables;
-		}*/
-
-		/**
-		 * Build list of template variables from an array.
-		 * Convert {{name_variable}} to value
-		 *
-		 * @param array $data
-		 */
-		public function map_data_to_variables( array $data = [] ) {
-			$variables = array();
-
-			if ( is_array( $data ) ) {
-				foreach ( $data as $k => $v ) {
-					$variables[ '{{' . $k . '}}' ] = $v;
-				}
-			}
-
-			$this->variables = $variables;
 		}
 
 		/**

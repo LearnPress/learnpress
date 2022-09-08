@@ -48,13 +48,13 @@ if ( ! class_exists( 'LP_Email_Type_Become_An_Instructor' ) ) {
 				return;
 			}
 
-			$variables = apply_filters(
+			$this->variables = apply_filters(
 				'lp/email/become-an-instructor-accept-deny/variables-mapper',
 				[]
 			);
 
 			$variables_common = $this->get_common_variables( $this->email_format );
-			$this->variables  = array_merge( $variables, $variables_common );
+			$this->variables  = array_merge( $this->variables, $variables_common );
 			$this->set_receive( $user->user_email );
 			$this->send_email();
 		}
