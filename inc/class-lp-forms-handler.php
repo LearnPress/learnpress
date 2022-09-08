@@ -157,8 +157,6 @@ class LP_Forms_Handler {
 
 			if ( is_wp_error( $new_customer ) ) {
 				throw new Exception( $new_customer->get_error_message() );
-			} else {
-				wp_new_user_notification( $new_customer );
 			}
 
 			// Send email become a teacher.
@@ -293,12 +291,15 @@ class LP_Forms_Handler {
 
 		$customer_id = wp_insert_user( $new_customer_data );
 
-		if ( ! empty( $update_meta ) ) {
-			lp_user_custom_register_fields( $customer_id, $update_meta );
-		}
-
 		if ( is_wp_error( $customer_id ) ) {
 			return $customer_id;
+		} else {
+			if ( ! empty( $update_meta ) ) {
+				lp_user_custom_register_fields( $customer_id, $update_meta );
+			}
+
+			// Send mail.
+			wp_new_user_notification( $customer_id );
 		}
 
 		return $customer_id;

@@ -221,6 +221,10 @@
 		color: #666;
 		font-size: 16px;
 		font-weight: 400;
+
+		a {
+			display: inline-block;
+		}
 	}
 
 	input[name="checkout-account-switch-form"] {
