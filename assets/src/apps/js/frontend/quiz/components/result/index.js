@@ -183,7 +183,7 @@ const Result = () => {
 
 				<span className="result-achieved">{ `${ percentResult }%` }</span>
 				<span className="result-require">
-					{ passingGradeValue || '-' }
+					{ passingGradeValue + '%' || '-' }
 				</span>
 			</div>
 
