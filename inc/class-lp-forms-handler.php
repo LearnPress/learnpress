@@ -296,7 +296,7 @@ class LP_Forms_Handler {
 				}
 
 				// Send mail.
-				wp_new_user_notification( $customer_id );
+				wp_new_user_notification( $customer_id, null, 'both' );
 			}
 		} catch ( Throwable $e ) {
 			return new WP_Error( 'lp/create-new-customer/error', $e->getMessage() );
