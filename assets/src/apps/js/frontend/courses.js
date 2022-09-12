@@ -34,12 +34,12 @@ const lpArchiveCourse = () => {
 		return;
 	}
 
-	if ( skeleton && ! elNoLoadAjaxFirst ) {
+	if ( ! elNoLoadAjaxFirst ) {
 		lpArchiveRequestCourse( filterCourses );
+	} else {
+		lpArchivePaginationCourse();
+		lpArchiveSearchCourse();
 	}
-
-	lpArchivePaginationCourse();
-	lpArchiveSearchCourse();
 };
 
 window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
@@ -73,7 +73,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		// return;
 	}
 
-	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...lpArchiveSkeleton, ...args } );
+	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...lpGlobalSettings.lpArchiveSkeleton, ...args } );
 	const url = lpGlobalSettings.lp_rest_url + 'lp/v1/courses/archive-course' + urlCourseArchive.search;
 
 	fetch( url, {
@@ -236,12 +236,25 @@ const lpArchiveGridListCourseHandle = () => {
 };
 
 function LPArchiveCourseInit() {
-	elArchive = document.querySelector( '.lp-archive-courses' );
 	lpArchiveCourse();
 	lpArchiveGridListCourseHandle();
 	lpArchiveGridListCourse();
 }
 
-document.addEventListener( 'DOMContentLoaded', function( event ) {
-	LPArchiveCourseInit();
-} );
+// document.addEventListener( 'DOMContentLoaded', function( event ) {
+// 	LPArchiveCourseInit();
+// } );
+
+const detectedElArchive = setInterval( function() {
+	if ( typeof lpGlobalSettings.lpArchiveSkeleton === 'undefined' ) {
+		return;
+	}
+
+	skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+	elArchive = document.querySelector( '.lp-archive-courses' );
+
+	if ( elArchive && skeleton ) {
+		LPArchiveCourseInit();
+		clearInterval( detectedElArchive );
+	}
+}, 1 );

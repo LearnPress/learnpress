@@ -14,7 +14,14 @@ export const init = () => {
 document.addEventListener( 'DOMContentLoaded', function( event ) {
 	LP.Hook.doAction( 'course-ready' );
 	lpModalOverlayCompleteItem.init();
-	courseCurriculumSkeleton();
-	// scrollToItemCurrent.init();
+	//courseCurriculumSkeleton();
 	//init();
 } );
+
+const detectedElCurriculum = setInterval( function() {
+	const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
+	if ( elementCurriculum ) {
+		courseCurriculumSkeleton();
+		clearInterval( detectedElCurriculum );
+	}
+}, 1 );

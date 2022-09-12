@@ -1703,11 +1703,12 @@ if ( ! function_exists( 'lp_taxonomy_archive_course_description' ) ) {
 	}
 }
 
-function lp_is_archive_course_load_via_api() {
-	return apply_filters( 'lp/template/archive-course/enable_lazyload', 1 );
-}
-
-function lp_archive_skeleton_get_args() {
+/**
+ * Params to query courses on Archive Course.
+ *
+ * @return array
+ */
+function lp_archive_skeleton_get_args(): array {
 	global $post, $wp;
 
 	$args = array();
@@ -1745,11 +1746,3 @@ function lp_archive_skeleton_get_args() {
 
 	return $args;
 }
-
-add_action(
-	'learn-press/after-enqueue-scripts',
-	function() {
-		$args = lp_archive_skeleton_get_args();
-		wp_add_inline_script( 'lp-courses', 'const lpArchiveSkeleton= ' . wp_json_encode( $args ) . '' );
-	}
-);
