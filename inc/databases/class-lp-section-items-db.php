@@ -103,5 +103,3 @@ class LP_Section_Items_DB extends LP_Database {
 	}
 }
 
-LP_Section_Items_DB::getInstance();
-
