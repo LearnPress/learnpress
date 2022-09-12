@@ -86,7 +86,22 @@ class LP_Section_Items_DB extends LP_Database {
 
 		return $result;
 	}
+
+	public function get_last_number_order( int $section_id = 0 ): int {
+		$query = $this->wpdb->prepare(
+			"SELECT MAX(item_order)
+			FROM $this->tb_lp_section_items
+			WHERE section_id = %d",
+			$section_id
+		);
+
+		$number_order = intval( $this->wpdb->get_var( $query ) );
+
+		$this->check_execute_has_error();
+
+		return $number_order;
+	}
 }
 
-LP_Section_DB::getInstance();
+LP_Section_Items_DB::getInstance();
 
