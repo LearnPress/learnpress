@@ -1076,7 +1076,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return LP_Datetime
 	 * @since 3.3.0
-	 * @depecated 4.1.6.9.4
+	 * @depecated 4.1.7
 	 */
 	/*public function set_duration( $duration ) {
 		if ( $duration instanceof LP_Datetime ) {
@@ -1089,7 +1089,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}*/
 
 	/**
-	 * @depecated 4.1.6.9.4
+	 * @depecated 4.1.7
 	 */
 	/*public function is_change() {
 
@@ -1115,7 +1115,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param $arguments
 	 *
 	 * @return mixed
-	 * @depecated 4.1.6.9.4
+	 * @depecated 4.1.7
 	 */
 	/*public function __call( $name, $arguments ) {
 		if ( ! method_exists( $this, $name ) ) {

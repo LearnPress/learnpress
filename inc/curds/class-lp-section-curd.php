@@ -482,7 +482,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return void
 	 * @version 1.0.0
-	 * @since 4.1.6.9.4
+	 * @since 4.1.7
 	 */
 	public function assign_item_section( int $section_id, array $item = array() ) {
 		global $wpdb;

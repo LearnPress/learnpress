@@ -231,7 +231,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * @param LP_Quiz $quiz
 		 *
-		 * @depecated 4.1.6.9.4
+		 * @depecated 4.1.7
 		 */
 		/*protected function _load_questions( &$quiz ) {
 			$id        = $quiz->get_id();
@@ -292,7 +292,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		}
 
 		/**
-		 * @depecated 4.1.6.9.4
+		 * @depecated 4.1.7
 		 */
 		/*public function update_question_ids( $quiz_id ) {
 			wp_cache_delete( 'quiz-' . $quiz_id, 'quiz-questions' );

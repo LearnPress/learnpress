@@ -1071,7 +1071,7 @@ class LP_Page_Controller {
 	 * @param $send_no_cache_headers
 	 *
 	 * @return mixed
-	 * @since 4.1.6.9.4
+	 * @since 4.1.7
 	 * @version 1.0.0
 	 */
 	public function check_x_wp_nonce_cache( $send_no_cache_headers ) {

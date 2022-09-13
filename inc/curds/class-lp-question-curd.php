@@ -973,7 +973,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * Otherwise, load from database and put to cache.
 		 *
 		 * @param $question LP_Question
-		 * @depecated 4.1.6.9.4
+		 * @depecated 4.1.7
 		 */
 		/*protected function _load_answer_options( &$question ) {
 			$id             = $question->get_id();
@@ -1044,7 +1044,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @param array $answer_options
 		 *
 		 * @return mixed;
-		 * @depecated 4.1.6.9.4
+		 * @depecated 4.1.7
 		 */
 		/*protected function _load_answer_option_meta( &$answer_options ) {
 			if ( ! $answer_options ) {

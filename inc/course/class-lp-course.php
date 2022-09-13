@@ -754,7 +754,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @return array
 		 * @version 1.0.0
-		 * @sicne 4.1.6.9.4
+		 * @sicne 4.1.7
 		 */
 		public function get_sections_data_arr( int $section_id = 0 ): array {
 			$sections_items = $this->get_full_sections_and_items_course();
