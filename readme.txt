@@ -214,11 +214,11 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: custom fields register not show on the Profile page.
 ~ Fixed: save order status.
 ~ Added: hook 'learn-press/user-item/expiration-time'.
-~ Added: function duplicate question answermeta when duplicate question.
+~ Added: function duplicate question answer-meta when duplicate question.
 ~ Fixed: error show content of quiz when user doing questions.
 ~ Fixed: error fetch api has x-wp-nonce with cache expire.
 ~ Fixed: sidebar toggle on mobile with theme Eduma.
-~ Added: autocomplete metabox field.
+~ Added: autocomplete meta-box field.
 ~ Fixed: error not send mail when register user on page checkout.
 ~ Fixed: error wrong status graduation when set Passing Grade is 100% on Quiz.
 ~ Fixed: header, footer email of LP not detect variable.

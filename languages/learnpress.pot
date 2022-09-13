@@ -1905,7 +1905,7 @@ msgid "To&hellip;"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:335
-msgid "No requirement enroll"
+msgid "No enroll requirement"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:336

@@ -2670,7 +2670,7 @@ msgid "Do you want to move question \"{{QUESTION_NAME}}\" to trash?"
 msgstr "¿Quieres mover la pregunta \"{{QUESTION_NAME}}\" a la papelera?"
 
 #: inc/custom-post-types/course.php:643
-msgid "No requirement enroll"
+msgid "No enroll requirement"
 msgstr "No requiere registrarse"
 
 #: inc/custom-post-types/course.php:86
