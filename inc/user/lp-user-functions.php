@@ -2024,9 +2024,8 @@ function lp_custom_register_fields_display() {
 							break;
 						case 'textarea':
 							?>
-							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?>
-								<textarea name="_lp_custom_register_form[<?php echo esc_attr( $value ); ?>]"></textarea>
-							</label>
+							<label for="description"><?php echo esc_html( $custom_field['name'] ); ?></label>
+							<textarea name="_lp_custom_register_form[<?php echo esc_attr( $value ); ?>]"></textarea>
 							<?php
 							break;
 						case 'checkbox':
