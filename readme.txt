@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 4.1.6.9.4
+Stable tag: 4.1.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -203,7 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.6.9.4 (2022-09-1x) =
+= 4.1.7 (2022-09-13) =
 ~ Fixed: IPN paypal.
 ~ Added: hook 'learn-press/user-item/expiration-time'.
 ~ Added: autocomplete meta-box field.
