@@ -49,7 +49,7 @@ class LP_Page_Controller {
 
 		// Set link profile to admin menu
 		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
-		add_action( 'plugins_loaded', array( $this, 'lp_rest_api_called' ), 1 );
+		add_action( 'plugin_loaded', array( $this, 'lp_rest_api_called' ), 1 );
 
 		// Web hook detected PayPal request.
 		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
@@ -63,23 +63,21 @@ class LP_Page_Controller {
 	 * @return void
 	 */
 	public function lp_rest_api_called() {
-		if ( LP_Helper::isRestApiLP() ) {
-			if ( ! defined( 'SHORTINIT' ) ) {
-				define( 'SHORTINIT', true );
-			}
-
-			// Remove hook wp_loaded because query default WP run on it (it hooks 'pre_get_posts',...)
-			remove_all_actions( 'after_setup_theme' );
-			remove_all_actions( 'setup_theme' );
-			remove_all_actions( 'muplugins_loaded' );
-			remove_all_actions( 'network_plugin_loaded' );
-			remove_all_actions( 'mu_plugin_loaded' );
-			remove_all_actions( 'plugin_loaded' );
-			remove_all_actions( 'wp_loaded' );
-			remove_all_actions( 'plugins_loaded' );
-			remove_all_actions( 'pre_get_posts' );
-			remove_all_actions( 'parse_query' );
+		if ( ! LP_Helper::isRestApiLP() ) {
+			return;
 		}
+
+		// Remove hooks when lp rest api called.
+		remove_all_actions( 'plugin_loaded' );
+		//remove_all_actions( 'plugins_loaded' );
+		remove_all_actions( 'setup_theme' );
+		remove_all_actions( 'after_setup_theme' );
+		remove_all_actions( 'wp_loaded' );
+		remove_all_actions( 'muplugins_loaded' );
+		remove_all_actions( 'network_plugin_loaded' );
+		remove_all_actions( 'mu_plugin_loaded' );
+		remove_all_actions( 'pre_get_posts' );
+		remove_all_actions( 'parse_query' );
 	}
 
 	/**

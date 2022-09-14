@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.1.7
+ * Version: 4.1.8-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 5.6
  * Tested up to: 6.0
@@ -177,7 +177,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				'quiz_questions',
 				'question_answers',
 				'question_answermeta',
-				'review_logs',
 			);
 
 			foreach ( $tables as $short_name ) {
@@ -381,9 +380,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/rest-api/class-lp-core-api.php';
 			require_once 'inc/rest-api/class-lp-admin-core-api.php';
 
-			// include_once 'inc/theme-support/class-theme-support-base.php';
-			// include_once 'inc/class-lp-theme-support.php';
-
 			/** Jwt */
 			include_once 'inc/jwt/class-jwt-auth.php';
 
@@ -463,7 +459,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
-			// add_action( 'init', array( $this, 'wp_init' ), 10 );
 
 			// Check require version thim-core.
 			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
@@ -505,40 +500,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * Maybe flush rewrite rules
-		 */
-		public function wp_init() {
-			/*if ( LP()->session->flush_rewrite_rules ) {
-				flush_rewrite_rules();
-				unset( LP()->session->flush_rewrite_rules );
-			}*/
-		}
-
-		/**
-		 * Get base name of plugin from file.
-		 *
-		 * @return string
-		 */
-		// private function plugin_basename() {
-		// return learn_press_plugin_basename( __FILE__ );
-		// }
-
-		/**
-		 * Magic function to get Learnpress data.
-		 *
-		 * @param $key
-		 *
-		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
-		 * @deprecated since 3.0.0
-		 * @editor tungnx
-		 * @modify 4.1.3.1 - comment
-		 */
-		/*
-		public function __get( $key ) {
-			return false;
-		}*/
-
-		/**
 		 * Trigger this function while activating Learnpress.
 		 *
 		 * @since 3.0.0
@@ -546,7 +507,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_activate() {
 			LP_Install::instance()->on_activate();
-			// do_action( 'learn-press/activate', $this );
 		}
 
 		/**
@@ -612,10 +572,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			$this->init();
-
-			// Todo: tungnx - remove this code after handle ajax on page learn-press-addons
-			// require_once 'inc/background-process/class-lp-background-query-items.php';
-			// require_once 'inc/background-process/class-lp-background-installer.php';
 
 			require_once 'inc/lp-template-hooks.php';
 
@@ -703,9 +659,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function init() {
 			$this->api       = new LP_Core_API();
 			$this->admin_api = new LP_Admin_Core_API();
-			// $this->theme_support = LP_Theme_Support::instance();
-
-			// $this->view_log();
 
 			$this->get_session();
 
