@@ -5,8 +5,8 @@ let skeleton;
 let skeletonClone;
 let isLoading = false;
 let firstLoad = 1;
-let elNoLoadAjaxFirst = null;
-let elArchive = null;
+let elNoLoadAjaxFirst;
+let elArchive;
 
 if ( lpGlobalSettings.is_course_archive ) {
 	const queryString = window.location.search;
@@ -36,10 +36,10 @@ const lpArchiveCourse = () => {
 
 	if ( ! elNoLoadAjaxFirst ) {
 		lpArchiveRequestCourse( filterCourses );
-	} else {
-		lpArchivePaginationCourse();
-		lpArchiveSearchCourse();
 	}
+
+	lpArchivePaginationCourse();
+	lpArchiveSearchCourse();
 };
 
 window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {

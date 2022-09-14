@@ -44,6 +44,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @var int
 		 */
 		public $db_version = 4;
+		/**
+		 * @var int Version of mu file on folder mu-plugins
+		 */
+		public $mu_file_version = 1;
 
 		/**
 		 * The single instance of the class
@@ -147,6 +151,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Include files .
 			$this->includes();
+
+			// Copy mu plugin.
+			$this->mu_plugin();
 
 			// hooks .
 			$this->init_hooks();
@@ -834,6 +841,51 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require Addon</strong> version 4.0.0 or higher' ); ?></p>
 			</div>
 			<?php
+		}
+
+		/**
+		 * Copy class-lp-mu-plugin.php to mu_plugins folder
+		 *
+		 * @return void
+		 */
+		public function mu_plugin() {
+			try {
+				$name     = 'class-lp-mu-plugin.php';
+				$can_copy = false;
+
+				// replace the old file
+				$mu_plugin_file = LP_PLUGIN_PATH . '/mu-plugin/' . $name;
+
+				if ( defined( 'WPMU_PLUGIN_DIR' ) ) {
+					$mu_plugins_path = WPMU_PLUGIN_DIR;
+				} else {
+					$mu_plugins_path = WP_CONTENT_DIR . '/' . 'mu-plugins';
+				}
+
+				if ( ! file_exists( $mu_plugins_path ) ) {
+					mkdir( $mu_plugins_path, 0755, true );
+				}
+
+				$mu_plugin_file_path = $mu_plugins_path . '/' . $name;
+
+				// add mu file
+				if ( file_exists( $mu_plugins_path ) ) {
+					if ( file_exists( $mu_plugin_file_path ) ) {
+						if ( LP_MU_Plugin::$version < $this->mu_file_version ) {
+							$can_copy = true;
+						}
+					} else {
+						$can_copy = true;
+					}
+				}
+
+				if ( $can_copy ) {
+					update_option( 'learnpress_mu_plugin_version', $this->mu_file_version );
+					LP_WP_Filesystem::instance()->copy( $mu_plugin_file, $mu_plugin_file_path );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 		}
 	}
 }

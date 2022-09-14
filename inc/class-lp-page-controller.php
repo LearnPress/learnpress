@@ -11,12 +11,12 @@ class LP_Page_Controller {
 	 *
 	 * @var int
 	 */
-	protected $_queried_object = 0;
+	//protected $_queried_object = 0;
 
 	/**
 	 * @var int
 	 */
-	protected $_filter_content_priority = 10000;
+	//protected $_filter_content_priority = 10000;
 
 	/**
 	 * Flag for 404 content.
@@ -29,7 +29,7 @@ class LP_Page_Controller {
 	 * LP_Page_Controller constructor.
 	 */
 	protected function __construct() {
-		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
@@ -49,7 +49,7 @@ class LP_Page_Controller {
 
 		// Set link profile to admin menu
 		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
-		add_action( 'plugin_loaded', array( $this, 'lp_rest_api_called' ), 1 );
+		//add_action( 'plugin_loaded', array( $this, 'lp_rest_api_called' ), 1 );
 
 		// Web hook detected PayPal request.
 		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
@@ -708,7 +708,8 @@ class LP_Page_Controller {
 	 *
 	 * @return WP_Query
 	 * @editor tungnx
-	 * @modify 4.1.2
+	 * @since 3.0.0
+	 * @version 4.1.3
 	 * @throws Exception
 	 */
 	public function pre_get_posts( WP_Query $q ): WP_Query {
@@ -717,192 +718,159 @@ class LP_Page_Controller {
 			return $q;
 		}
 
-		// Exclude item not assign
-		if ( $q->is_search() ) {
-			// Exclude item not assign any course
-			$course_item_types = learn_press_get_course_item_types();
-			$list_ids_exclude  = array();
+		try {
+			if ( LP_Page_Controller::page_current() === LP_PAGE_COURSES ) {
+				if ( ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) ) {
+					LP()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
+					/**
+					 * If page is archive course - query set posts_per_page = 1
+					 * For fastest - because when page loaded - call API to load list courses
+					 *
+					 * Current, apply only for LP, not apply for theme Thimpress, because theme override
+					 */
+					$q->set( 'posts_per_page', 1 );
+					$q->set( 'posts_per_archive_page', 1 );
+					$q->set( 'nopaging', true );
+				} else {
+					$filter               = new LP_Course_Filter();
+					$filter->only_fields  = [ 'ID' ];
+					$filter->limit        = -1;
+					$is_need_check_in_arr = false;
+					$limit                = LP_Settings::get_option( 'archive_course_limit', 6 );
 
-			foreach ( $course_item_types as $item_type ) {
-				$filter            = new LP_Post_Type_Filter();
-				$filter->post_type = $item_type;
-				$exclude_item      = LP_Course_DB::getInstance()->get_item_ids_unassigned( $filter );
-				$exclude_item      = LP_Course_DB::get_values_by_key( $exclude_item );
+					$q->set( 'posts_per_page', $limit );
+					// $q->set( 'cache_results', true ); // it default true
 
-				$list_ids_exclude = array_merge( $list_ids_exclude, $exclude_item );
-			}
+					// Search courses by keyword
+					// $q->set( 's', $_REQUEST['c_search'] ?? '' );
+					if ( ! empty( $_REQUEST['c_search'] ) ) {
+						$filter->post_title   = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] );
+						$is_need_check_in_arr = true;
+					}
 
-			// Exclude question not assign any quiz
-			$question_ids     = LP_Question_DB::getInstance()->get_questions_not_assign_quiz();
-			$question_ids     = LP_Course_DB::get_values_by_key( $question_ids );
-			$list_ids_exclude = array_merge( $list_ids_exclude, $question_ids );
+					$author_ids_str = LP_Helper::sanitize_params_submitted( $_REQUEST['c_authors'] ?? 0 );
+					if ( ! empty( $author_ids_str ) ) {
+						$q->set( 'author', $author_ids_str );
+					}
 
-			if ( ! empty( $list_ids_exclude ) ) {
-				$q->set( 'post__not_in', $list_ids_exclude );
-			}
-		}
+					// Meta query
+					$meta_query = [];
+					if ( isset( $_REQUEST['sort_by'] ) ) {
+						$sort_by = LP_Helper::sanitize_params_submitted( $_REQUEST['sort_by'] );
+						if ( 'on_paid' === $sort_by ) {
+							$meta_query[] = array(
+								'key'     => '_lp_price',
+								'value'   => 0,
+								'compare' => '>',
+							);
+						}
 
-		$is_archive_course = false;
+						if ( 'on_free' === $sort_by ) {
+							$meta_query[] = array(
+								'key'     => '_lp_price',
+								'value'   => 0,
+								'compare' => '=',
+							);
+						}
+					}
+					$q->set( 'meta_query', $meta_query );
+					// End Meta query
 
-		// Handle 404 if user are viewing course item directly.
-		$this->set_link_item_course_default_wp_to_page_404( $q );
+					// Tax query
+					$tax_query    = [];
+					$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['term_id'] ?? '' ) );
+					if ( ! empty( $term_ids_str ) ) {
+						$term_ids = explode( ',', $term_ids_str );
 
-		$this->_queried_object = ! empty( $q->queried_object_id ) ? $q->queried_object : false;
-
-		/**
-		 * If current page is used for courses page
-		 * Set on both: "Homepage" and "Posts page" on Reading Settings
-		 */
-		$page_courses_id = learn_press_get_page_id( 'courses' );
-
-		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == $page_courses_id ) {
-			$is_archive_course = 1;
-			// $q->is_home = false;
-			// $q->set( 'page_id', get_option( 'page_on_front' ) );
-		}
-
-		/**
-		 * If current page is used for courses page and set as "Homepage"
-		 */
-		if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $page_courses_id && $q->get( 'page_id' ) == $page_courses_id ) {
-			$is_archive_course = 1;
-
-			/*
-			global $wp_post_types;
-
-			$course_page                                = get_post( $page_courses_id );
-			$this->_queried_object                      = $course_page;
-			$wp_post_types[ LP_COURSE_CPT ]->ID         = $course_page->ID;
-			$wp_post_types[ LP_COURSE_CPT ]->post_title = $course_page->post_title;
-			$wp_post_types[ LP_COURSE_CPT ]->post_name  = $course_page->post_name;
-			$wp_post_types[ LP_COURSE_CPT ]->post_type  = $course_page->post_type;
-			$wp_post_types[ LP_COURSE_CPT ]->ancestors  = get_ancestors( $course_page->ID, $course_page->post_type );*/
-		}
-
-		// Set custom posts per page
-		if ( $this->_is_archive() ) {
-			$is_archive_course = 1;
-		}
-
-		$apply_lazy_load_for_theme = apply_filters( 'lp/page/courses/query/lazy_load', false );
-
-		if ( $is_archive_course ) {
-			if ( ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) ) {
-				LP()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
-				/**
-				 * If page is archive course - query set posts_per_page = 1
-				 * For fastest - because when page loaded - call API to load list courses
-				 *
-				 * Current, apply only for LP, not apply for theme Thimpress, because theme override
-				 */
-				$q->set( 'posts_per_page', 1 );
-				$q->set( 'posts_per_archive_page', 1 );
-				$q->set( 'nopaging', true );
-			} else {
-				$filter               = new LP_Course_Filter();
-				$filter->only_fields  = [ 'ID' ];
-				$filter->max_limit    = $filter->limit = 1000;
-				$is_need_check_in_arr = false;
-				$limit                = LP_Settings::get_option( 'archive_course_limit', 6 );
-
-				$q->set( 'posts_per_page', $limit );
-				// $q->set( 'cache_results', true ); // it default true
-
-				// Search courses by keyword
-				// $q->set( 's', $_REQUEST['c_search'] ?? '' );
-				if ( ! empty( $_REQUEST['c_search'] ) ) {
-					$filter->post_title   = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] );
-					$is_need_check_in_arr = true;
-				}
-
-				$author_ids_str = LP_Helper::sanitize_params_submitted( $_REQUEST['c_authors'] ?? 0 );
-				if ( ! empty( $author_ids_str ) ) {
-					$q->set( 'author', $author_ids_str );
-				}
-
-				// Meta query
-				$meta_query = [];
-				if ( isset( $_REQUEST['sort_by'] ) ) {
-					$sort_by = LP_Helper::sanitize_params_submitted( $_REQUEST['sort_by'] );
-					if ( 'on_paid' === $sort_by ) {
-						$meta_query[] = array(
-							'key'     => '_lp_price',
-							'value'   => 0,
-							'compare' => '>',
+						$tax_query[] = array(
+							'taxonomy' => 'course_category',
+							'field'    => 'term_id',
+							'terms'    => $term_ids,
+							'operator' => 'IN',
 						);
 					}
 
-					if ( 'on_free' === $sort_by ) {
-						$meta_query[] = array(
-							'key'     => '_lp_price',
-							'value'   => 0,
-							'compare' => '=',
-						);
+					$q->set( 'tax_query', $tax_query );
+					// End Tax query
+
+					// Author query
+					if ( isset( $_REQUEST['c_author'] ) ) {
+						$author_ids = LP_Helper::sanitize_params_submitted( $_REQUEST['c_author'] );
+						$q->set( 'author__in', $author_ids );
 					}
-				}
-				$q->set( 'meta_query', $meta_query );
-				// End Meta query
+					// End Author query
 
-				// Tax query
-				$tax_query    = [];
-				$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['term_id'] ?? '' ) );
-				if ( ! empty( $term_ids_str ) ) {
-					$term_ids = explode( ',', $term_ids_str );
+					// Order query
+					if ( isset( $_REQUEST['order_by'] ) ) {
+						$order_by = LP_Helper::sanitize_params_submitted( $_REQUEST['order_by'] );
+						$order    = 'DESC';
 
-					$tax_query[] = array(
-						'taxonomy' => 'course_category',
-						'field'    => 'term_id',
-						'terms'    => $term_ids,
-						'operator' => 'IN',
-					);
-				}
+						switch ( $order_by ) {
+							case 'post_title':
+								$order_by = 'title';
+								$order    = 'ASC';
+								break;
+							case 'popular':
+								$filter->order_by     = 'popular';
+								$order_by             = 'post__in';
+								$is_need_check_in_arr = true;
+								break;
+							default:
+								$order_by = 'date';
+								break;
+						}
 
-				$q->set( 'tax_query', $tax_query );
-				// End Tax query
-
-				// Author query
-				if ( isset( $_REQUEST['c_author'] ) ) {
-					$author_ids = LP_Helper::sanitize_params_submitted( $_REQUEST['c_author'] );
-					$q->set( 'author__in', $author_ids );
-				}
-				// End Author query
-
-				// Order query
-				if ( isset( $_REQUEST['order_by'] ) ) {
-					$order_by = LP_Helper::sanitize_params_submitted( $_REQUEST['order_by'] );
-					$order    = 'DESC';
-
-					switch ( $order_by ) {
-						case 'post_title':
-							$order_by = 'title';
-							$order    = 'ASC';
-							break;
-						case 'popular':
-							$filter->order_by     = 'popular';
-							$order_by             = 'post__in';
-							$is_need_check_in_arr = true;
-							break;
-						default:
-							$order_by = 'date';
-							break;
+						$q->set( 'orderby', $order_by );
+						$q->set( 'order', $order );
 					}
 
-					$q->set( 'orderby', $order_by );
-					$q->set( 'order', $order );
-				}
-
-				if ( $is_need_check_in_arr ) {
-					$posts_in = LP_Course::get_courses( $filter );
-					if ( ! empty( $posts_in ) ) {
-						$posts_in = LP_Database::get_values_by_key( $posts_in );
-						$q->set( 'post__in', $posts_in );
-					} else {
-						$q->set( 'post__in', 0 );
+					if ( $is_need_check_in_arr ) {
+						$posts_in = LP_Course::get_courses( $filter );
+						if ( ! empty( $posts_in ) ) {
+							$posts_in = LP_Database::get_values_by_key( $posts_in );
+							$q->set( 'post__in', $posts_in );
+						} else {
+							$q->set( 'post__in', 0 );
+						}
 					}
+
+					$q = apply_filters( 'lp/page-courses/query/legacy', $q );
 				}
 
-				$q = apply_filters( 'lp/page-courses/query/legacy', $q );
+				return $q;
 			}
+
+			// Exclude item not assign
+			if ( $q->is_search() ) {
+				// Exclude item not assign any course
+				$course_item_types = learn_press_get_course_item_types();
+				$list_ids_exclude  = array();
+
+				foreach ( $course_item_types as $item_type ) {
+					$filter            = new LP_Post_Type_Filter();
+					$filter->post_type = $item_type;
+					$exclude_item      = LP_Course_DB::getInstance()->get_item_ids_unassigned( $filter );
+					$exclude_item      = LP_Course_DB::get_values_by_key( $exclude_item );
+
+					$list_ids_exclude = array_merge( $list_ids_exclude, $exclude_item );
+				}
+
+				// Exclude question not assign any quiz
+				$question_ids     = LP_Question_DB::getInstance()->get_questions_not_assign_quiz();
+				$question_ids     = LP_Course_DB::get_values_by_key( $question_ids );
+				$list_ids_exclude = array_merge( $list_ids_exclude, $question_ids );
+
+				if ( ! empty( $list_ids_exclude ) ) {
+					$q->set( 'post__not_in', $list_ids_exclude );
+				}
+
+				return $q;
+			}
+
+			// Handle 404 if user are viewing course item directly.
+			$this->set_link_item_course_default_wp_to_page_404( $q );
+		} catch (Throwable $e) {
+			error_log($e->getMessage());
 		}
 
 		return $q;
@@ -918,13 +886,13 @@ class LP_Page_Controller {
 	 * @since  3.2.7.5
 	 */
 	public function set_link_item_course_default_wp_to_page_404( $q ) {
-		if ( ! $q->is_main_query() || is_admin() ) {
-			return $q;
-		}
-
 		$post_type_apply_404 = array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' );
 
 		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
+			return $q;
+		}
+
+		try {
 			$flag_load_404 = true;
 			$user          = wp_get_current_user();
 			$post_author   = 0;
@@ -954,6 +922,8 @@ class LP_Page_Controller {
 			if ( $flag_load_404 ) {
 				learn_press_404_page();
 			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 

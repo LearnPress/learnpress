@@ -112,13 +112,8 @@ class LP_Setup_Wizard {
 		}
 
 		if ( 'finish' === LP_Request::get_string( 'step' ) ) {
-
-			// LP_Install::create_options();
-
 			update_option( 'learn_press_setup_wizard_completed', 'yes' );
 		}
-
-		// LP_Install::create_tables();
 
 		$this->save();
 
@@ -158,6 +153,9 @@ class LP_Setup_Wizard {
 		die();
 	}
 
+	/**
+	 * @TODO tungnx - need review
+	 */
 	public function save() {
 		$step = LP_Request::get_string( 'lp-setup-step' );
 

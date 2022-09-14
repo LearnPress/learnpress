@@ -18,7 +18,7 @@ class LP_Query {
 	public function __construct() {
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
-		add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
+		//add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
 		/**
 		 * Add searching post by taxonomies
 		 */
