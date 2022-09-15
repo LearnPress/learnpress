@@ -109,6 +109,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 			return;
 		}
 
+		if ( ! empty( $this->extra['custom_save'] ) ) {
+			do_action( 'learnpress/admin/metabox/select/save', $this->id, $_POST[ $this->id ], $post_id );
+			return;
+		}
+
 		if ( $multiple_meta ) {
 			$get_values = get_post_meta( $post_id, $this->id ) ?? array();
 			$new_values = LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ?? [] );
