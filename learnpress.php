@@ -47,7 +47,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * @var int Version of mu file on folder mu-plugins
 		 */
-		public $mu_file_version = 1;
+		public $mu_file_version = 2;
 
 		/**
 		 * The single instance of the class
@@ -464,7 +464,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
-			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
+			//add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
 
 			// Check require version thim-core.

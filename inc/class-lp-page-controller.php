@@ -845,8 +845,8 @@ class LP_Page_Controller {
 
 			// Handle 404 if user are viewing course item directly.
 			$this->set_link_item_course_default_wp_to_page_404( $q );
-		} catch (Throwable $e) {
-			error_log($e->getMessage());
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 
 		return $q;
@@ -862,9 +862,9 @@ class LP_Page_Controller {
 	 * @since  3.2.7.5
 	 */
 	public function set_link_item_course_default_wp_to_page_404( $q ) {
-		$post_type_apply_404 = array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' );
+		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' ) );
 
-		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
+		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
 			return $q;
 		}
 

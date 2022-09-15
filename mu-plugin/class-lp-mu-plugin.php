@@ -19,7 +19,7 @@ class LP_MU_Plugin {
 	}
 
 	private function __construct() {
-		add_action( 'option_active_plugins', [ $this, 'load_plugins' ], -1 );
+		add_filter( 'option_active_plugins', [ $this, 'load_plugins' ], -1 );
 	}
 
 	public function load_plugins( $plugins ) {
@@ -28,10 +28,16 @@ class LP_MU_Plugin {
 				return $plugins;
 			}
 
+			// Not handle if call from deactivate_plugins or is_plugin_active function.
+			$methods_called_to = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+			foreach ( $methods_called_to as $method ) {
+				if ( $method['function'] === 'deactivate_plugins' || $method['function'] === 'is_plugin_active' ) {
+					return $plugins;
+				}
+			}
+
 			remove_all_actions( 'setup_theme' );
 			remove_all_actions( 'after_setup_theme' );
-			remove_all_actions( 'pre_get_posts' );
-			remove_all_actions( 'parse_query' );
 
 			$plugins_no_load = [
 				'buddypress/bp-loader.php',
@@ -40,11 +46,6 @@ class LP_MU_Plugin {
 				'bbpress/bbpress.php',
 				'elementor/elementor.php',
 			];
-
-			if ( in_array( 'learnpress-woo-payment/learnpress-woo-payment.php', $plugins, true ) ) {
-				$index = array_search( 'woocommerce/woocommerce.php', $plugins_no_load );
-				unset( $plugins_no_load[ $index ] );
-			}
 
 			$plugins_load = [];
 
