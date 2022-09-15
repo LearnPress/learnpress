@@ -946,6 +946,15 @@ class LP_Page_Controller {
 	 * @author tungnx
 	 */
 	public static function page_current(): string {
+		/**
+		 * @var WP_Query $wp_query
+		 */
+		global $wp_query;
+
+		if ( ! is_object( $wp_query ) || ! $wp_query->get_queried_object() ) {
+			return '';
+		}
+
 		if ( learn_press_is_checkout() ) {
 			return LP_PAGE_CHECKOUT;
 		} elseif ( LP_Global::course_item_quiz() ) {

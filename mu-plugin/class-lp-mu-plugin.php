@@ -32,7 +32,7 @@ class LP_MU_Plugin {
 	 */
 	public function load_plugins( $plugins ) {
 		try {
-			if ( ! $this->isRestApiLP() ) {
+			if ( ! $this->urlRequestApply() ) {
 				return $plugins;
 			}
 
@@ -93,8 +93,28 @@ class LP_MU_Plugin {
 		return $schema . $http_host . untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ?? '' ) );
 	}
 
-	public function isRestApiLP() {
-		return strpos( $this->getUrlCurrent(), '/wp-json/lp/' );
+	/**
+	 * Check url request can apply check load plugins.
+	 *
+	 * @return bool
+	 */
+	public function urlRequestApply(): bool {
+		$apply      = false;
+		$urls_apply = [
+			'/wp-json/lp/v1/courses',
+			'/wp-json/lp/v1/lazy-load/course-curriculum',
+			'/wp-json/lp/v1/courses/continue-course',
+		];
+
+		foreach ( $urls_apply as $url ) {
+			if ( false !== strpos( self::getUrlCurrent(), $url ) ) {
+				$apply = true;
+				break;
+			}
+		}
+
+		//return strpos( $this->getUrlCurrent(), '/wp-json/lp/v1/courses' );
+		return $apply;
 	}
 }
 
