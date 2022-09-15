@@ -51,7 +51,7 @@ class LP_MU_Plugin {
 				'buddypress/bp-loader.php',
 				'woocommerce/woocommerce.php',
 				'paid-memberships-pro/paid-memberships-pro.php',
-				'learnpress-paid-membership-pro/learnpress-paid-membership-pro.php',
+				'learnpress-paid-membership-pro/learnpress-paid-memberships-pro.php',
 				'bbpress/bbpress.php',
 				'elementor/elementor.php',
 			];

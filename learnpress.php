@@ -880,7 +880,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				}
 
 				if ( $can_copy ) {
-					update_option( 'learnpress_mu_plugin_version', $this->mu_file_version );
+					//update_option( 'learnpress_mu_plugin_version', $this->mu_file_version );
 					LP_WP_Filesystem::instance()->copy( $mu_plugin_file, $mu_plugin_file_path );
 				}
 			} catch ( Throwable $e ) {
