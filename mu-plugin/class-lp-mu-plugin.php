@@ -22,6 +22,14 @@ class LP_MU_Plugin {
 		add_filter( 'option_active_plugins', [ $this, 'load_plugins' ], -1 );
 	}
 
+	/**
+	 * Handle list plugins can load in REST API LP
+	 * Not handle if called from deactivate_plugins or is_plugin_active function.
+	 *
+	 * @param $plugins
+	 *
+	 * @return array|mixed
+	 */
 	public function load_plugins( $plugins ) {
 		try {
 			if ( ! $this->isRestApiLP() ) {
@@ -43,9 +51,15 @@ class LP_MU_Plugin {
 				'buddypress/bp-loader.php',
 				'woocommerce/woocommerce.php',
 				'paid-memberships-pro/paid-memberships-pro.php',
+				'learnpress-paid-membership-pro/learnpress-paid-membership-pro.php',
 				'bbpress/bbpress.php',
 				'elementor/elementor.php',
 			];
+
+			if ( in_array( 'learnpress-woo-payment/learnpress-woo-payment.php', $plugins, true ) ) {
+				$index = array_search( 'woocommerce/woocommerce.php', $plugins_no_load );
+				unset( $plugins_no_load[ $index ] );
+			}
 
 			$plugins_load = [];
 
