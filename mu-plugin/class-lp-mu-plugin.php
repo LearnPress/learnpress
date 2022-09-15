@@ -3,7 +3,7 @@
 /**
  * Class LP_MU_Plugin
  *
- * @since 4.1.8
+ * @since 4.1.7.1
  * @version 1.0.0
  */
 class LP_MU_Plugin {
@@ -33,7 +33,13 @@ class LP_MU_Plugin {
 			remove_all_actions( 'pre_get_posts' );
 			remove_all_actions( 'parse_query' );
 
-			$plugins_no_load = [ 'buddypress/bp-loader.php', 'woocommerce/woocommerce.php', 'paid-memberships-pro.php' ];
+			$plugins_no_load = [
+				'buddypress/bp-loader.php',
+				'woocommerce/woocommerce.php',
+				'paid-memberships-pro/paid-memberships-pro.php',
+				'bbpress/bbpress.php',
+				'elementor/elementor.php',
+			];
 
 			if ( in_array( 'learnpress-woo-payment/learnpress-woo-payment.php', $plugins, true ) ) {
 				$index = array_search( 'woocommerce/woocommerce.php', $plugins_no_load );

@@ -1733,7 +1733,16 @@ if ( ! function_exists( 'learn_press_is_course_tag' ) ) {
 
 if ( ! function_exists( 'learn_press_is_course' ) ) {
 	function learn_press_is_course() {
-		return is_singular( array( LP_COURSE_CPT ) );
+		/**
+		 * @var WP_Query $wp_query
+		 */
+		global $wp_query;
+
+		if ( $wp_query->get_queried_object() ) {
+			return is_singular( array( LP_COURSE_CPT ) );
+		} else {
+			return false;
+		}
 	}
 }
 

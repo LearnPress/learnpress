@@ -49,35 +49,11 @@ class LP_Page_Controller {
 
 		// Set link profile to admin menu
 		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
-		//add_action( 'plugin_loaded', array( $this, 'lp_rest_api_called' ), 1 );
 
 		// Web hook detected PayPal request.
 		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
 		// Set again x-wp-nonce on header when has cache with not login.
 		add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
-	}
-
-	/**
-	 * Optimize when Rest API LP called
-	 *
-	 * @return void
-	 */
-	public function lp_rest_api_called() {
-		if ( ! LP_Helper::isRestApiLP() ) {
-			return;
-		}
-
-		// Remove hooks when lp rest api called.
-		remove_all_actions( 'plugin_loaded' );
-		//remove_all_actions( 'plugins_loaded' );
-		remove_all_actions( 'setup_theme' );
-		remove_all_actions( 'after_setup_theme' );
-		remove_all_actions( 'wp_loaded' );
-		remove_all_actions( 'muplugins_loaded' );
-		remove_all_actions( 'network_plugin_loaded' );
-		remove_all_actions( 'mu_plugin_loaded' );
-		remove_all_actions( 'pre_get_posts' );
-		remove_all_actions( 'parse_query' );
 	}
 
 	/**
@@ -974,7 +950,7 @@ class LP_Page_Controller {
 			return LP_PAGE_CHECKOUT;
 		} elseif ( LP_Global::course_item_quiz() ) {
 			return LP_PAGE_QUIZ;
-		} elseif ( learn_press_is_course() && is_single() && LP_Global::course_item() ) {
+		} elseif ( learn_press_is_course() && LP_Global::course_item() ) {
 			return LP_PAGE_SINGLE_COURSE_CURRICULUM;
 		} elseif ( learn_press_is_courses() ) {
 			return LP_PAGE_COURSES;
