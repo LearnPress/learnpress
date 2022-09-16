@@ -264,100 +264,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		return apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response );
 	}
 
-	/*public function archive_course( WP_REST_Request $request ) {
-		$response       = new LP_REST_Response();
-		$response->data = new stdClass();
-
-		$s        = isset( $request['s'] ) ? sanitize_text_field( $request['s'] ) : false;
-		$page     = isset( $request['paged'] ) ? absint( wp_unslash( $request['paged'] ) ) : 1;
-		$order    = isset( $request['order'] ) ? wp_unslash( $request['order'] ) : false;
-		$orderby  = isset( $request['orderby'] ) ? wp_unslash( $request['orderby'] ) : false;
-		$taxonomy = isset( $request['taxonomy'] ) ? wp_unslash( $request['taxonomy'] ) : false;
-		$term_id  = isset( $request['term_id'] ) ? wp_unslash( $request['term_id'] ) : false;
-		$user_id  = isset( $request['userID'] ) ? absint( wp_unslash( $request['userID'] ) ) : false;
-		$limit    = LP_Settings::get_option( 'archive_course_limit', -1 );
-
-		$args = array(
-			'posts_per_page' => $limit,
-			'paged'          => $page,
-			'post_type'      => LP_COURSE_CPT,
-		);
-
-		if ( ! empty( $s ) ) {
-			$args['s'] = $s;
-		}
-
-		if ( ! empty( $taxonomy ) && ! empty( $term_id ) ) {
-			$args['tax_query'] = array(
-				array(
-					'taxonomy' => $taxonomy,
-					'field'    => 'term_id',
-					'terms'    => $term_id,
-				),
-			);
-
-			$term_link = get_term_link( $term_id, $taxonomy );
-		}
-
-		if ( ! empty( $order ) ) {
-			$args['order'] = $order;
-		}
-
-		if ( ! empty( $orderby ) ) {
-			$args['orderby'] = $orderby;
-		}
-
-		if ( $user_id && learn_press_user_maybe_is_a_teacher( $user_id ) ) {
-			$args['post_status'] = array( 'publish', 'private' );
-		}
-
-		$args = apply_filters( 'lp/rest-api/frontend/course/archive_course/query_args', $args, $request );
-
-		$query = new WP_Query( $args );
-
-		$num_pages = ! empty( $query->max_num_pages ) ? $query->max_num_pages : 1;
-
-		$archive_link = get_post_type_archive_link( LP_COURSE_CPT );
-
-		if ( isset( $term_link ) && ! is_wp_error( $term_link ) ) {
-			$archive_link = $term_link;
-		}
-
-		$base = esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
-
-		global $wp;
-		$base = str_replace( home_url( $wp->request ) . '/', $archive_link, $base );
-
-		$response->data->pagination = learn_press_get_template_content(
-			'loop/course/pagination.php',
-			array(
-				'total' => $num_pages,
-				'paged' => $page,
-				'base'  => $base,
-			)
-		);
-
-		ob_start();
-
-		if ( $query->have_posts() ) {
-			global $post;
-
-			while ( $query->have_posts() ) {
-				$query->the_post();
-				learn_press_get_template_part( 'content', 'course' );
-			}
-
-			wp_reset_postdata();
-		} else {
-			LP()->template( 'course' )->no_courses_found();
-		}
-
-		$response->status        = 'success';
-		$response->data->content = ob_get_clean();
-
-		return rest_ensure_response( apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response ) );
-	}*/
-
 	/**
 	 * Rest API for Enroll in single course.
 	 *
@@ -520,21 +426,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Error: Cannot purchase course!.', 'learnpress' ) );
 			}
 
-			// Allow Repurchase.
-			/*$latest_user_item_id = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT MAX(user_item_id) user_item_id
-					FROM {$wpdb->learnpress_user_items}
-					WHERE ref_type = %s
-					AND item_type = %s
-					AND item_id = %d
-					AND user_id = %d",
-					LP_ORDER_CPT,
-					LP_COURSE_CPT,
-					$course_id,
-					$user->get_id()
-				)
-			);*/
 			$latest_user_item_id = 0;
 
 			$filter          = new LP_User_Items_Filter();
@@ -669,10 +560,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			// Set status, start_time, end_time of course to enrolled.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-							 ->set_start_time( current_time( 'mysql', true ) )
-							 ->set_end_time( '' )
-							 ->set_graduation( 'in-progress' )
-							 ->update();
+				->set_start_time( current_time( 'mysql', true ) )
+				->set_end_time( '' )
+				->set_graduation( 'in-progress' )
+				->update();
 
 			// Remove items' course user learned.
 			$filter_remove            = new LP_User_Items_Filter();
@@ -760,7 +651,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @author minhpd
 	 * @editor tungnx
 	 * @since 4.1.4
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function continue_course( WP_REST_Request $request ) {
 		$params         = $request->get_params();
@@ -773,8 +664,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$course_id  = absint( $params['courseId'] ?? 0 );
 			$user_id    = absint( $params['userId'] ?? 0 );
 
-			$user           = learn_press_get_user( $user_id );
-			$course         = learn_press_get_course( $course_id );
+			$user   = learn_press_get_user( $user_id );
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course ) {
+				throw new Exception( __( 'Invalid course', 'learnpress' ) );
+			}
+
 			$sections_items = $course->get_full_sections_and_items_course();
 			$total_items    = $course->count_items();
 

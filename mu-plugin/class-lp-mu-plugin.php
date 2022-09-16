@@ -30,53 +30,46 @@ class LP_MU_Plugin {
 	 *
 	 * @return array|mixed
 	 */
-	public function load_plugins( $plugins ) {
+	public function load_plugins( $plugins_activating ) {
 		try {
-			if ( ! $this->urlRequestApply() ) {
-				return $plugins;
+			$url_load_plugins = $this->getPluginsMustLoadInUrl();
+			if ( ! $url_load_plugins ) {
+				return $plugins_activating;
 			}
 
 			// Not handle if call from deactivate_plugins or is_plugin_active function.
 			$methods_called_to = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 			foreach ( $methods_called_to as $method ) {
 				if ( $method['function'] === 'deactivate_plugins' || $method['function'] === 'is_plugin_active' ) {
-					return $plugins;
+					return $plugins_activating;
 				}
 			}
 
 			remove_all_actions( 'setup_theme' );
 			remove_all_actions( 'after_setup_theme' );
 
-			$plugins_no_load = [
-				'buddypress/bp-loader.php',
-				'woocommerce/woocommerce.php',
-				'paid-memberships-pro/paid-memberships-pro.php',
-				'learnpress-paid-membership-pro/learnpress-paid-memberships-pro.php',
-				'bbpress/bbpress.php',
-				'elementor/elementor.php',
-			];
-
-			if ( in_array( 'learnpress-woo-payment/learnpress-woo-payment.php', $plugins, true ) ) {
-				$index = array_search( 'woocommerce/woocommerce.php', $plugins_no_load );
-				unset( $plugins_no_load[ $index ] );
-			}
-
 			$plugins_load = [];
 
-			foreach ( $plugins as $plugin ) {
-				if ( in_array( $plugin, $plugins_no_load ) ) {
-					continue;
-				} else {
+			foreach ( $url_load_plugins as $plugin => $plugin_dependencies ) {
+				if ( in_array( $plugin, $plugins_activating, true ) ) {
 					$plugins_load[] = $plugin;
+
+					foreach ( $plugin_dependencies as $dependency ) {
+						if ( in_array( $dependency, $plugins_activating, true ) ) {
+							$plugins_load[] = $dependency;
+						}
+					}
 				}
 			}
+
+			//error_log( 'plugins_load: ' . print_r( $plugins_load, true ) );
 
 			return $plugins_load;
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
 
-		return $plugins;
+		return $plugins_activating;
 	}
 
 	/**
@@ -96,25 +89,49 @@ class LP_MU_Plugin {
 	/**
 	 * Check url request can apply check load plugins.
 	 *
-	 * @return bool
+	 * @return bool|array
 	 */
-	public function urlRequestApply(): bool {
-		$apply      = false;
-		$urls_apply = [
-			'/wp-json/lp/v1/courses',
-			'/wp-json/lp/v1/lazy-load/course-curriculum',
-			'/wp-json/lp/v1/courses/continue-course',
+	public function getPluginsMustLoadInUrl() {
+		$url_load_plugins = false;
+		$urls_apply       = [
+			'wp-json/lp/v1/courses/archive-course'      => [
+				'learnpress/learnpress.php' => [],
+				'learnpress-woo-payment/learnpress-woo-payment.php' => [
+					'woocommerce/woocommerce.php',
+				],
+			],
+			'wp-json/lp/v1/profile/course-tab'          => [
+				'learnpress/learnpress.php' => [],
+				'learnpress-woo-payment/learnpress-woo-payment.php' => [
+					'woocommerce/woocommerce.php',
+				],
+			],
+			'wp-json/lp/v1/lazy-load/course-curriculum' => [
+				'learnpress/learnpress.php'         => [],
+				'learnpress-assignments/learnpress-assignments.php' => [],
+				'learnpress-h5p/learnpress-h5p.php' => [],
+			],
+			'wp-json/lp/v1/lazy-load/course-progress'   => [
+				'learnpress/learnpress.php'         => [],
+				'learnpress-assignments/learnpress-assignments.php' => [],
+				'learnpress-h5p/learnpress-h5p.php' => [],
+			],
+			'wp-json/lp/v1/lazy-load/items-progress'    => [
+				'learnpress/learnpress.php' => [],
+			],
+			'wp-json/lp/v1/profile/statistic'           => [
+				'learnpress/learnpress.php' => [],
+			],
 		];
 
-		foreach ( $urls_apply as $url ) {
+		foreach ( $urls_apply as $url => $plugins_load ) {
 			if ( false !== strpos( self::getUrlCurrent(), $url ) ) {
-				$apply = true;
+				$url_load_plugins = $plugins_load;
 				break;
 			}
 		}
 
-		//return strpos( $this->getUrlCurrent(), '/wp-json/lp/v1/courses' );
-		return $apply;
+		return $url_load_plugins;
 	}
 }
 
