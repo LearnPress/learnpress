@@ -203,6 +203,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.7.1 (2022-09-16) =
+~ Fixed: non-LP plugins causing errors.
+
 = 4.1.7 (2022-09-13) =
 ~ Fixed: IPN paypal.
 ~ Added: hook 'learn-press/user-item/expiration-time'.
