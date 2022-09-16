@@ -88,6 +88,8 @@ class LP_MU_Plugin {
 
 	/**
 	 * Check url request can apply check load plugins.
+	 * Format:
+	 * ['url' => ['plugin' => ['dependencies']]]
 	 *
 	 * @return bool|array
 	 */
