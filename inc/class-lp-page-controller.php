@@ -244,7 +244,7 @@ class LP_Page_Controller {
 	 * @author tungnx
 	 * @since  3.2.7.7
 	 */
-	public function set_title_pages( string $title = '' ): string {
+	public function set_title_pages( $title = '' ): string {
 		global $wp_query;
 		$flag_title_course = false;
 

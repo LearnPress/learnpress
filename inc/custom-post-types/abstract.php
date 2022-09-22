@@ -667,7 +667,7 @@ abstract class LP_Abstract_Post_Type {
 				}
 			}
 		} catch ( Throwable $e ) {
-
+			$can_save = false;
 		}
 
 		return $can_save;
