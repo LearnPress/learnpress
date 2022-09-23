@@ -708,7 +708,6 @@ class LP_User_Items_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_user_quizzes( LP_User_Items_Filter $filter ) {
-		@$this->wpdb->query( "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))" );
 		$offset = ( absint( $filter->page ) - 1 ) * $filter->limit;
 
 		$WHERE = '';
