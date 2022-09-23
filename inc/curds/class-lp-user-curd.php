@@ -1114,8 +1114,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param bool $last
 	 *
 	 * @return bool|mixed
+	 * @depecated 4.1.7.2
 	 */
-	public function get_user_item( $user_id, $item_id, $course_id = 0, $last = true ) {
+	/*public function get_user_item( $user_id, $item_id, $course_id = 0, $last = true ) {
 		$num_args = func_num_args();
 
 		if ( $num_args == 2 ) {
@@ -1132,7 +1133,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $item;
-	}
+	}*/
 
 	/**
 	 * @param int    $user_item_id

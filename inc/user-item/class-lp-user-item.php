@@ -833,47 +833,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $interval;
 	}
 
-	/*public function get_history() {
-		return LP_Object_Cache::get(
-			sprintf(
-				'course-item-%s-%s-%s',
-				$this->get_user_id(),
-				$this->get_course( 'id' ),
-				$this->get_id()
-			),
-			'learn-press/user-course-items'
-		);
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @modify 4.1.2
-	 * @reason comment - not use
-	 */
-	/*
-	public function count_history() {
-		if ( $items = $this->get_history() ) {
-			return sizeof( $items );
-		}
-
-		return 0;
-	}*/
-
-	/**
-	 * @editor tungnx
-	 * @modify 4.1.2
-	 * @reason comment - not use
-	 */
-	/*
-	public function remove_user_items_history( $keep = 10 ) {
-		learn_press_remove_user_items_history(
-			$this->get_item_id(),
-			$this->get_course( 'id' ),
-			$this->get_user_id(),
-			$keep
-		);
-	}*/
-
 	/**
 	 * Return number of seconds has exceeded from the expiration time to now.
 	 * If less than or equals to 0 that means the time is exceeded.
@@ -998,43 +957,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		return true;
 	}
-
-	/**
-	 * @editor tungnx
-	 * @modify 4.1.2
-	 * @reason comment - not use
-	 */
-	/*
-	public function delete_meta_data( $include = '', $exclude = '' ) {
-		global $wpdb;
-
-		$where = '';
-		if ( $include ) {
-			settype( $include, 'array' );
-			$format = array_fill( 0, sizeof( $include ), '%s' );
-			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $include );
-		}
-
-		if ( $exclude ) {
-			settype( $exclude, 'array' );
-			$format = array_fill( 0, sizeof( $exclude ), '%s' );
-			$where .= $wpdb->prepare( ' AND meta_key IN(' . join( ',', $format ) . ')', $exclude );
-		}
-
-		$query = $wpdb->prepare(
-			"
-			DELETE FROM {$wpdb->learnpress_user_itemmeta}
-			WHERE learnpress_user_item_id = %d
-			{$where}
-		",
-			$this->get_user_item_id()
-		);
-
-		$wpdb->query( $query );
-
-		$this->_meta_data = array();
-		update_meta_cache( 'learnpress_user_item', $this->get_user_item_id() );
-	}*/
 
 	/**
 	 * Get post type of item.

@@ -156,19 +156,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
-	 * Get current question ID (quiz).
-	 *
-	 * @param string $return - Optional.
-	 *
-	 * @return int|LP_Question
-	 */
-	public function get_current_question( $return = '' ) {
-		_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
-
-		learn_press_error_log( sprintf( 'Deprecated %s::%s', __CLASS__, __FUNCTION__ ) );
-	}
-
-	/**
 	 * Get ID of the course that this item assigned to.
 	 *
 	 * @return array|mixed
