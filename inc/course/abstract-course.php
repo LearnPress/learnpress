@@ -489,60 +489,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Output html for students enrolled counter
-		 *
-		 * @return string
-		 * @editor tungnx
-		 * @modify 4.1.3
-		 */
-		/*public function get_students_html() {
-			$output = '';
-			$count  = $this->get_users_enrolled();
-
-			if ( $count ) {
-				$user = learn_press_get_current_user();
-
-				if ( $user->has_enrolled_course( $this->get_id() ) ) {
-					if ( $count == 1 ) {
-						$output .= esc_html__( 'You enrolled', 'learnpress' );
-					} else {
-						$output .= sprintf(
-							_nx(
-								'You and one student enrolled',
-								'You and <span class="course-students-number">%1$s</span> students enrolled',
-								intval( $count - 1 ),
-								'students-html',
-								'learnpress'
-							),
-							$count - 1
-						);
-					}
-				} else {
-					$output = sprintf(
-						_nx(
-							'One student enrolled',
-							'<span class="course-students-number">%1$s</span> students enrolled',
-							$count,
-							'students-html',
-							'learnpress'
-						),
-						$count
-					);
-				}
-			} else {
-				$output = esc_html__( 'No student enrolled', 'learnpress' );
-			}
-
-			return apply_filters( 'learn-press/students-enrolled-html', $output, $this->get_id() );
-		}*/
-
-		/**
 		 * @param string $field
 		 *
 		 * @return LP_User|mixed
 		 */
 		public function get_instructor( $field = '' ) {
-			$user = learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
+			$user = learn_press_get_user( get_post_meta( $this->get_id(), '_lp_course_author', true ) );
 
 			return $field ? $user->get_data( $field ) : $user;
 		}
