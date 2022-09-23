@@ -97,21 +97,30 @@ class LP_MU_Plugin {
 		$url_load_plugins = false;
 		$urls_apply       = [
 			'wp-json/lp/v1/courses/archive-course'      => [
-				'learnpress/learnpress.php' => [],
+				'learnpress/learnpress.php'           => [],
 				'learnpress-woo-payment/learnpress-woo-payment.php' => [
 					'woocommerce/woocommerce.php',
+				],
+				'learnpress-wpml/learnpress-wpml.php' => [
+					'sitepress-multilingual-cms/sitepress.php',
 				],
 			],
 			'wp-json/lp/v1/profile/course-tab'          => [
-				'learnpress/learnpress.php' => [],
+				'learnpress/learnpress.php'           => [],
 				'learnpress-woo-payment/learnpress-woo-payment.php' => [
 					'woocommerce/woocommerce.php',
 				],
+				'learnpress-wpml/learnpress-wpml.php' => [
+					'sitepress-multilingual-cms/sitepress.php',
+				],
 			],
 			'wp-json/lp/v1/lazy-load/course-curriculum' => [
-				'learnpress/learnpress.php'         => [],
+				'learnpress/learnpress.php'           => [],
 				'learnpress-assignments/learnpress-assignments.php' => [],
-				'learnpress-h5p/learnpress-h5p.php' => [],
+				'learnpress-h5p/learnpress-h5p.php'   => [],
+				'learnpress-wpml/learnpress-wpml.php' => [
+					'sitepress-multilingual-cms/sitepress.php',
+				],
 			],
 			'wp-json/lp/v1/lazy-load/course-progress'   => [
 				'learnpress/learnpress.php'         => [],
