@@ -214,7 +214,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				throw new Exception( esc_html__( 'Error: No Course or User available.', 'learnpress' ) );
 			}
 
-			$result = $user->complete_lesson( $id, $course_id, true );
+			$result = $user->complete_lesson( $id, $course_id );
 
 			if ( is_wp_error( $result ) ) {
 				throw new Exception( $result->get_error_message() ?? esc_html__( 'Error: Cannot complete Lesson', 'learnpress' ) );

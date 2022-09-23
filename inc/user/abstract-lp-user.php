@@ -841,46 +841,44 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @param int  $lesson_id
 		 * @param int  $course_id
-		 * @param bool $return_wp_error
 		 *
 		 * @return bool|WP_Error
 		 */
-		public function complete_lesson( $lesson_id, $course_id = 0, $return_wp_error = true ) {
+		public function complete_lesson( $lesson_id = 0, $course_id = 0 ) {
+			$result = true;
+
 			try {
-				$course_id = $this->_get_course( $course_id );
+				$course = learn_press_get_course( $course_id );
+				if ( ! $course ) {
+					throw new Exception( __( 'Invalid course', 'learnpress' ) );
+				}
 
 				$course_data = $this->get_course_data( $course_id );
-
-				$result = false;
+				if ( ! $course_data ) {
+					throw new Exception( __( 'You must enroll course!', 'learnpress' ) );
+				}
 
 				/**
 				 * If user has stared a lesson, get user lesson information
 				 */
 				$item = $course_data->get_item( $lesson_id );
-				if ( $item ) {
-					if ( $item->is_completed() ) {
-						throw new Exception(
-							__( 'You have already completed this lesson.', 'learnpress' ),
-							LP_COMPLETE_ITEM_FAIL
-						);
-					}
-
-					$item->set_end_time( current_time( 'mysql', 1 ) );
-					$item->set_status( 'completed' );
-					$item->set_graduation( 'passed' );
-
-					$updated = $item->update();
-
-					if ( is_wp_error( $updated ) ) {
-						return $return_wp_error ? $updated : false;
-					} else {
-						$result = true;
-					}
+				if ( ! $item ) {
+					throw new Exception( __( 'Invalid lesson', 'learnpress' ) );
 				}
 
+				if ( $item->is_completed() ) {
+					throw new Exception( __( 'You have already completed this lesson.', 'learnpress' ) );
+				}
+
+				$item->set_end_time( time() );
+				$item->set_status( 'completed' );
+				$item->set_graduation( 'passed' );
+
+				$updated = $item->update();
+
 				do_action( 'learn-press/user-completed-lesson', $lesson_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
-				$result = $return_wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
+			} catch ( Throwable $e ) {
+				$result = new WP_Error( 'error_lesson_complete', $e->getMessage() );
 			}
 
 			return $result;

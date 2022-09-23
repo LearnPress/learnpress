@@ -908,6 +908,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
+	 * Get item user attend on course by item_id.
+	 *
 	 * @param int $item_id
 	 *
 	 * @return bool|LP_User_Item

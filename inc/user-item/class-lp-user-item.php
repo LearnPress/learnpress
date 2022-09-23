@@ -781,11 +781,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->_changes = array();
 		}
 
-		/*$data_course = $this->get_parent();
-		if ( $data_course ) {
-			$data_course->calculate_course_results();
-		}*/
-
 		return $return;
 	}
 
