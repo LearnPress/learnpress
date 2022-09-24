@@ -871,7 +871,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				// add mu file
 				if ( file_exists( $mu_plugins_path ) ) {
 					if ( file_exists( $mu_plugin_file_path ) ) {
-						if ( LP_MU_Plugin::$version < $this->mu_file_version ) {
+						if ( class_exists( 'LP_MU_Plugin' ) && LP_MU_Plugin::$version < $this->mu_file_version ) {
 							$can_copy = true;
 						}
 					} else {

@@ -112,6 +112,7 @@ function learn_press_get_item_types_can_purchase() {
  * @param $item
  *
  * @return mixed
+ * @Todo - tungnx need review code to rewrite.
  */
 function learn_press_get_item_courses( $item ) {
 	global $wpdb;

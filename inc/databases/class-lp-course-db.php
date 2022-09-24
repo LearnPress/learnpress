@@ -139,7 +139,7 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return int
 	 */
-	public function get_user_item_id( $order_id = 0, $course_id = 0, $user_id = 0 ) {
+	public function get_user_item_id( $order_id = 0, $course_id = 0, $user_id = 0 ): int {
 		$query = $this->wpdb->prepare(
 			"
 			SELECT user_item_id
@@ -157,7 +157,7 @@ class LP_Course_DB extends LP_Database {
 			$user_id
 		);
 
-		return $this->wpdb->get_var( $query );
+		return (int) $this->wpdb->get_var( $query );
 	}
 
 	/**
