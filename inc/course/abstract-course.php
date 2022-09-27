@@ -494,7 +494,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return LP_User|mixed
 		 */
 		public function get_instructor( $field = '' ) {
-			$user = learn_press_get_user( get_post_meta( $this->get_id(), '_lp_course_author', true ) );
+			$user = learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
 
 			return $field ? $user->get_data( $field ) : $user;
 		}

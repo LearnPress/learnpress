@@ -266,8 +266,8 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 
 			$args = array(
 				'id'                  => $quiz->get_id(),
-				'totalTime'           => $quiz->get_duration()->get(),
-				'remainingTime'       => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
+				//'totalTime'           => -1,
+				//'remainingTime'       => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
 				'status'              => $user->get_item_status( $quiz->get_id(), $course_id ),
 				'checkNorequizenroll' => $course->is_no_required_enroll(),
 				'navigationPosition'  => LP_Settings::get_option( 'navigation_position', 'yes' ),
@@ -410,11 +410,6 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 		if ( $lesson && $lesson->is_preview() ) {
 			$classes[] = 'preview-item';
 		}
-
-		/*
-		if ( $user->can_view_item( $lesson_id, $course_id )->flag ) {
-			$classes[] = 'viewable';
-		}*/
 
 		$classes = array_unique( array_merge( $classes, $class ) );
 

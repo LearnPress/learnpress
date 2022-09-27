@@ -213,7 +213,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					throw new Exception( 'Item is invalid!', 'learnpress' );
 				}
 
-				$result = $user->complete_lesson( $lesson_id, $course_id );
+				$result               = $user->complete_lesson( $lesson_id, $course_id );
+				$response['redirect'] = $course->get_item_link( $lesson_id );
 
 				if ( ! is_wp_error( $result ) ) {
 					if ( $course->get_next_item() ) {
@@ -222,9 +223,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					}
 
 					learn_press_add_message( sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ), $item->get_title() ) );
-
-					$response['result']   = 'success';
-					$response['redirect'] = $course->get_item_link( $lesson_id );
+					$response['result'] = 'success';
 				} else {
 					learn_press_add_message( $result->get_error_message(), 'error' );
 				}

@@ -113,6 +113,8 @@ class LP_MU_Plugin {
 				'learnpress-wpml/learnpress-wpml.php' => [
 					'sitepress-multilingual-cms/sitepress.php',
 				],
+				'learnpress-assignments/learnpress-assignments.php' => [],
+				'learnpress-h5p/learnpress-h5p.php'   => [],
 			],
 			'wp-json/lp/v1/lazy-load/course-curriculum' => [
 				'learnpress/learnpress.php'           => [],
