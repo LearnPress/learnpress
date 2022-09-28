@@ -444,6 +444,12 @@ class LP_Helper {
 				case 'key':
 					$value = sanitize_key( $value );
 					break;
+				case 'int':
+					$value = (int) $value;
+					break;
+				case 'float':
+					$value = (float) $value;
+					break;
 				default:
 					$value = sanitize_text_field( $value );
 			}

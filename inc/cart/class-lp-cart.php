@@ -58,8 +58,8 @@ class LP_Cart {
 			$this->_cart_session_key = $key;
 		}
 
-		LP_Request_Handler::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
-		LP_Request_Handler::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
+		LP_Request::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
+		LP_Request::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
 
 		add_action( 'learn-press/add-to-cart', array( $this, 'calculate_totals' ), 10 );
 		add_action( 'wp', array( $this, 'maybe_set_cart_cookies' ), 99 );

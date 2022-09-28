@@ -532,22 +532,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		}
 
 		/**
-		 * Try to get object if it is null.
-		 *
-		 * @editor tungnx
-		 * @reason comment - not use
-		 */
-		/*protected function _maybe_get_object() {
-			try {
-				if ( ! $this->_object_loaded && empty( $this->object ) ) {
-					$this->_object_loaded = true;
-					$this->get_object();
-				}
-			} catch ( Exception $ex ) {
-			}
-		}*/
-
-		/**
 		 * Get email heading.
 		 *
 		 * @return string
@@ -649,19 +633,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 
 			return LP_Helper::sanitize_params_submitted( $name );
 		}
-
-		/**
-		 * Get image header in general settings.
-		 *
-		 * @return string
-		 * @editor tungnx
-		 * @reason comment - write new
-		 */
-		/*public function get_image_header() {
-			$image = LP_Emails::instance()->get_image_header();
-
-			return apply_filters( 'learn-press/email-image-header-' . $this->id, $image );
-		}*/
 
 		/**
 		 * Get WP Blog name.

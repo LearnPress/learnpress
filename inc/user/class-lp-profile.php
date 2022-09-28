@@ -95,7 +95,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				 * requesting from user profile.
 				 */
 				foreach ( $this->_default_actions as $action => $message ) {
-					LP_Request_Handler::register( 'save-profile-' . $action, array( $this, 'save' ) );
+					LP_Request::register( 'save-profile-' . $action, array( $this, 'save' ) );
 				}
 			}
 
