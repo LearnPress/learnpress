@@ -409,7 +409,6 @@ add_action( 'learn-press/quiz-buttons', LP()->template( 'course' )->func( 'cours
 /**
  * @see LP_Template_Course::item_lesson_title()
  * @see LP_Template_Course::item_lesson_content()
- * @see LP_Template_Course::item_lesson_content_blocked()
  * @see LP_Template_Course::item_lesson_complete_button()
  * @see LP_Template_Course::course_finish_button()
  */
@@ -423,8 +422,6 @@ add_action(
 	LP()->template( 'course' )->func( 'item_lesson_content' ),
 	10
 );
-// add_action( 'learn-press/content-item-summary/lp_lesson',
-// LP()->template( 'course' )->func( 'item_lesson_content_blocked' ), 15 );
 add_action(
 	'learn-press/after-content-item-summary/lp_lesson',
 	LP()->template( 'course' )->func( 'item_lesson_complete_button' ),

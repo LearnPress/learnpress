@@ -338,35 +338,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * Show button retake course
-	 *
-	 * @throws Exception
-	 * @deprecated 4.0.0
-	 */
-	public function course_retake_button() {
-		_deprecated_function( __FUNCTION__, '4.0.0', 'button_retry' );
-		$user = learn_press_get_current_user();
-
-		if ( ! $user ) {
-			return;
-		}
-
-		if ( ! isset( $course ) ) {
-			$course = learn_press_get_course();
-		}
-
-		if ( ! $user->has_enrolled_course( $course->get_id() ) && $course->get_external_link() ) {
-			return;
-		}
-
-		// If user has not finished course
-		if ( ! $user->has_finished_course( $course->get_id() ) ) {
-			return;
-		}
-		learn_press_get_template( 'single-course/buttons/retake.php' );
-	}
-
-	/**
 	 * Show template "continue" button con single course
 	 *
 	 * @throws Exception
@@ -421,70 +392,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		learn_press_get_template( 'single-course/buttons/continue.php', $args );
 	}
-
-	/**
-	 * Check can show button finish course
-	 *
-	 * @param LP_Course|false $course
-	 * @param LP_User|LP_User_Guest $user
-	 *
-	 * @return array
-	 * @editor tungnx
-	 * @modify 4.1.4.1 - comment - not use - replace on function can_show_finish_course_btn on LP_User
-	 */
-	/*
-	public function can_show_finish_course_btn( $course, $user ): array {
-		$return = [
-			'flag'    => false,
-			'message' => '',
-		];
-
-		try {
-			if ( ! $course || ! $user ) {
-				throw new Exception( esc_html__( 'Error: No Course or User available.', 'learnpress' ) );
-			}
-
-			$course_id = $course->get_id();
-
-			if ( ! $user->has_enrolled_course( $course_id ) ) {
-				throw new Exception( esc_html__( 'Course is not enroll.', 'learnpress' ) );
-			}
-
-			$course_data = $user->get_course_data( $course_id );
-
-			if ( ! $user->is_course_in_progress( $course_id ) ) {
-				throw new Exception( esc_html__( 'Error: Course is not in-progress.', 'learnpress' ) );
-			}
-
-			// Get option Allow show finish button when the student has completed all items but has not passed the course assessment.
-			$has_finish = get_post_meta( $course_id, '_lp_has_finish', true ) ?? 'yes';
-			$is_passed  = $user->has_reached_passing_condition( $course_id );
-
-			if ( ! $is_passed && $has_finish === 'no' ) {
-				throw new Exception( esc_html__( 'Error: Course is not has finish.', 'learnpress' ) );
-			}
-
-			if ( $course_data ) {
-				$course_result = $course_data->get_result();
-
-				$is_all_completed = $user->is_completed_all_items( $course_id );
-
-				if ( ! $is_all_completed && $has_finish === 'yes' && ! $course_result['pass'] ) {
-					throw new Exception( esc_html__( 'Error: Cannot finish course.', 'learnpress' ) );
-				}
-			}
-
-			if ( ! apply_filters( 'lp_can_finish_course', true ) ) {
-				throw new Exception( esc_html__( 'Error: Filter disable finish course.', 'learnpress' ) );
-			}
-
-			$return['flag'] = true;
-		} catch ( Exception $e ) {
-			$return['message'] = $e->getMessage();
-		}
-
-		return $return;
-	}*/
 
 	public function course_finish_button( $course ) {
 		$user = learn_press_get_current_user();
@@ -660,7 +567,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Get template content item's course
 	 */
 	public function course_content_item() {
-		 learn_press_get_template( 'single-course/content-item' );
+		learn_press_get_template( 'single-course/content-item' );
 	}
 
 	public function courses_loop_item_meta() {
@@ -676,7 +583,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function courses_loop_item_price() {
-		 $course = learn_press_get_course();
+		$course = learn_press_get_course();
 		if ( ! $course ) {
 			return;
 		}
@@ -694,14 +601,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_item_content() {
-		 $course = learn_press_get_course();
-		$item    = LP_Global::course_item();
+		$course = learn_press_get_course();
+		if ( ! $course ) {
+			return;
+		}
 
-		// if ( $item->is_blocked() ) {
-		// learn_press_get_template( 'global/block-content.php' );
-		//
-		// return;
-		// }
+		$item = LP_Global::course_item();
 
 		/**
 		 * Fix only for WPBakery load style inline
@@ -720,14 +625,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		// End
 
-		// Get timestamp remaining duration of course
-		/*$course_item = $item->get_course();
-		if ( ! $course_item ) {
-			return;
-		}*/
-
 		$timestamp_remaining = $course->timestamp_remaining_duration();
-
 		if ( $timestamp_remaining > 0 ) {
 			echo '<input type="hidden" name="lp-course-timestamp-remaining" value="' . esc_attr( $timestamp_remaining ) . '">';
 		}
@@ -741,34 +639,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 			echo esc_html( sprintf( 'File %s not exists', $item_template_name ) );
 		}
 	}
-
-	/**
-	 * @editor tungnx
-	 * @reason comment - not use
-	 * @since 4.1.2
-	 */
-	/*
-	public function remaining_time() {
-
-		if ( ! $course = learn_press_get_course() ) {
-			return;
-		}
-
-		if ( ! $user = learn_press_get_current_user() ) {
-			return;
-		}
-
-		if ( false === ( $remain = $user->get_course_remaining_time( $course->get_id() ) ) ) {
-
-			return;
-		}
-
-		if ( $user->has_finished_course( $course->get_id() ) ) {
-			return;
-		}
-
-		learn_press_get_template( 'single-course/remaining-time.php', array( 'remaining_time' => $remain ) );
-	}*/
 
 	public function item_lesson_title() {
 		$item            = LP_Global::course_item();
@@ -784,7 +654,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function item_lesson_content() {
-		 $item           = LP_Global::course_item();
+		$item            = LP_Global::course_item();
 		$format          = $item->get_format();
 		$format_template = learn_press_locate_template( "content-lesson/{$format}/content.php" );
 
@@ -798,14 +668,20 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
 	}
 
+	/**
+	 * @depecated 4.1.7.2
+	 */
 	public function item_quiz_content() {
 		$item = LP_Global::course_item();
 
 		learn_press_get_template( 'content-quiz/js.php' );
 	}
 
+	/**
+	 * @depecated 4.1.7.2
+	 */
 	public function item_lesson_content_blocked() {
-		 $item = LP_Global::course_item();
+		$item = LP_Global::course_item();
 
 		learn_press_get_template( 'global/block-content.php' );
 	}
@@ -814,27 +690,34 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Get template button complete lesson
 	 */
 	public function item_lesson_complete_button() {
-		 $user  = learn_press_get_current_user();
+		$user   = learn_press_get_current_user();
 		$course = learn_press_get_course();
-		$item   = LP_Global::course_item();
-
-		if ( ! $user || ! $course || ! $user->is_course_in_progress( $course->get_id() ) ) {
+		if ( ! $course ) {
 			return;
 		}
 
-		// The complete button is not displayed when the course is locked --hungkv--
-		if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
-			return;
-		}
+		try {
+			$item = LP_Global::course_item();
+			if ( ! $user || ! $user->is_course_in_progress( $course->get_id() ) ) {
+				return;
+			}
 
-		learn_press_get_template(
-			'content-lesson/button-complete.php',
-			array(
-				'user'   => $user,
-				'course' => $course,
-				'item'   => $item,
-			)
-		);
+			// The complete button is not displayed when the course is locked --hungkv--
+			if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
+				return;
+			}
+
+			learn_press_get_template(
+				'content-lesson/button-complete.php',
+				array(
+					'user'   => $user,
+					'course' => $course,
+					'item'   => $item,
+				)
+			);
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
 	}
 
 	/**
@@ -987,29 +870,32 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
-	public function instructor_socials() {
+	/**
+	 * @depecated 4.1.7.2
+	 */
+	/*public function instructor_socials() {
 		$instructor = $this->course->get_instructor();
 		$socials    = $instructor->get_profile_socials( $instructor->get_id() );
 
 		foreach ( $socials as $social ) {
 			echo wp_kses_post( $social );
 		}
-	}
+	}*/
 
 	public function has_sidebar() {
-		 $actions = array(
-			 'learn-press/before-course-summary-sidebar',
-			 'learn-press/course-summary-sidebar',
-			 'learn-press/after-course-summary-sidebar',
-		 );
+		$actions = array(
+			'learn-press/before-course-summary-sidebar',
+			'learn-press/course-summary-sidebar',
+			'learn-press/after-course-summary-sidebar',
+		);
 
-		 foreach ( $actions as $action ) {
-			 if ( has_action( $action ) ) {
-				 return true;
-			 }
-		 }
+		foreach ( $actions as $action ) {
+			if ( has_action( $action ) ) {
+				return true;
+			}
+		}
 
-		 return false;
+		return false;
 	}
 
 	// button readmore in archive courses
@@ -1138,9 +1024,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_extra_boxes_position_control() {
-		 $course = LP_Course::get_course( get_the_ID() );
-		$user    = learn_press_get_current_user();
-
+		$course = LP_Course::get_course( get_the_ID() );
+		$user   = learn_press_get_current_user();
 		if ( ! $user || ! $course ) {
 			return;
 		}
