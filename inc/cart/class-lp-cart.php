@@ -291,6 +291,14 @@ class LP_Cart {
 	 * Load cart content data from session
 	 */
 	public function get_cart_from_session() {
+		// Only load on checkout page
+		$page_checkout_option = untrailingslashit( get_the_permalink( learn_press_get_page_id( 'checkout' ) ) );
+		$page_checkout_option = str_replace( '/', '\/', $page_checkout_option );
+		$pattern              = '/' . $page_checkout_option . '/';
+		if ( ! preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+			return;
+		}
+
 		if ( ! did_action( 'learn_press_get_cart_from_session' ) ) {
 			$cart = learn_press_session_get( $this->_cart_session_key );
 			$data = array();

@@ -863,7 +863,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				}
 
 				if ( ! file_exists( $mu_plugins_path ) ) {
-					mkdir( $mu_plugins_path, 0755, true );
+					//mkdir( $mu_plugins_path, 0755, true );
+					wp_mkdir_p( $mu_plugins_path );
 				}
 
 				$mu_plugin_file_path = $mu_plugins_path . '/' . $name;
