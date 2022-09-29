@@ -340,22 +340,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @depecated 4.0.0
 		 */
 		public function is_required_enroll() {
-
-			// $return = $this->get_data( 'required_enroll' ) == 'yes';
-			// @deprecated
-			// $return = apply_filters( 'learn_press_course_required_enroll', $return, $this );
-
-			/**
-			 * Since version 4.0.0 feature 'no require enroll' has deprecated
-			 */
-			$return = true;
-
-			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
+			_deprecated_function( __FUNCTION__, '4.1.7.2', 'is_no_required_enroll' );
+			return ! $this->is_no_required_enroll();
 		}
 		/**
 		 * Check if this course is required enroll or not.
 		 *
-		 * @param mixed
 		 * @author hungkv
 		 * @since 4.0.5
 		 * @return bool
@@ -811,10 +801,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function is_purchasable() {
-			$is_purchasable = $this->exists() && $this->is_required_enroll() && get_post_status( $this->get_id() ) == 'publish';
-
-			// @deprecated
-			$is_purchasable = apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->get_id() );
+			$is_purchasable = $this->exists() && ! $this->is_no_required_enroll() && get_post_status( $this->get_id() ) == 'publish';
 
 			return apply_filters( 'learn-press/is-purchasable', $is_purchasable, $this->get_id() );
 		}
