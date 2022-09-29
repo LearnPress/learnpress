@@ -29,7 +29,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				'recent_courses'      => __CLASS__ . '::recent_courses',
 				'featured_courses'    => __CLASS__ . '::featured_courses',
 				'popular_courses'     => __CLASS__ . '::popular_courses',
-				'button_enroll'       => __CLASS__ . '::button_enroll',
+				//'button_enroll'       => __CLASS__ . '::button_enroll',
 				'button_purchase'     => __CLASS__ . '::button_purchase',
 				'button_course'       => __CLASS__ . '::button_course',
 				'course_curriculum'   => __CLASS__ . '::course_curriculum',
@@ -223,16 +223,6 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 			$html .= ob_get_clean();
 
 			return $html;
-		}
-
-		/**
-		 * @param        $atts
-		 * @param string $content
-		 *
-		 * @return LP_Shortcode_Button_Enroll
-		 */
-		public static function button_enroll( $atts, $content = '' ) {
-			return new LP_Shortcode_Button_Enroll( $atts );
 		}
 
 		/**
