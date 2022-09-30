@@ -906,4 +906,4 @@ function LP() {
  * Done! entry point of the plugin
  * Create new instance of LearnPress and put it to global
  */
-$GLOBALS['LearnPress'] = LP();
+$GLOBALS['LearnPress'] = LearnPress::instance();
