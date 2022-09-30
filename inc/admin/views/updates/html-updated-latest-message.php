@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-LP()->session->remove( 'do-update-learnpress', true );
+LearnPress::instance()->session->remove( 'do-update-learnpress', true );
 ?>
 
 <div class="updated notice">

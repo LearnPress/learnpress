@@ -34,7 +34,7 @@ class LP_Elementor_Widget_Login_Form extends LP_Elementor_Widget_Base {
 		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
 			learn_press_get_template( 'global/form-login.php' );
 		} else {
-			echo LP()->template( 'profile' )->login_form();
+			echo LearnPress::instance()->template( 'profile' )->login_form();
 		}
 	}
 }

@@ -332,13 +332,13 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 			$user = learn_press_get_current_user();
 
-			$cart     = LP()->cart;
+			$cart     = LearnPress::instance()->cart;
 			$checkout = LP_Checkout::instance();
 
 			if ( ! learn_press_enable_cart() ) {
-				$order_awaiting_payment = LP()->session->order_awaiting_payment;
+				$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
 				$cart->empty_cart();
-				LP()->session->order_awaiting_payment = $order_awaiting_payment;
+				LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
 			}
 
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );

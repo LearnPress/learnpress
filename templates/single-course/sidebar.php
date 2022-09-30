@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Hide sidebar if there is no content
  */
-if ( ! is_active_sidebar( 'course-sidebar' ) && ! LP()->template( 'course' )->has_sidebar() ) {
+if ( ! is_active_sidebar( 'course-sidebar' ) && ! LearnPress::instance()->template( 'course' )->has_sidebar() ) {
 	return;
 }
 ?>

@@ -137,7 +137,7 @@ class LP_Gateways {
 				if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
 
 					// If gateway has already selected before
-					if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
+					if ( LearnPress::instance()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
 						$gateway->is_selected = true;
 						$is_selected          = $gateway;
 					}

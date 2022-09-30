@@ -302,7 +302,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		public function __construct() {
 			// Set template base path to LP templates path if it is not set.
 			if ( empty( $this->template_base ) ) {
-				$this->template_base = LP()->plugin_path( 'templates/' );
+				$this->template_base = LearnPress::instance()->plugin_path( 'templates/' );
 			}
 
 			/**

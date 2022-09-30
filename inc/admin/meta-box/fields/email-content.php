@@ -1,6 +1,6 @@
 <?php
-wp_enqueue_script( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.js' ) );
-wp_enqueue_style( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.css' ) );
+wp_enqueue_script( 'learn-press-email-content-field', LearnPress::instance()->plugin_url( 'inc/admin/meta-box/assets/email-content.js' ) );
+wp_enqueue_style( 'learn-press-email-content-field', LearnPress::instance()->plugin_url( 'inc/admin/meta-box/assets/email-content.css' ) );
 
 if ( ! isset( $value ) ) {
 	return;

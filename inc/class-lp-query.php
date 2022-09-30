@@ -283,7 +283,7 @@ class LP_Query {
 	public function get_course_item( $return = 'id' ) {
 		$course = $this->get_course( 'object' );
 		$user   = learn_press_get_current_user();
-		$item   = isset( $item ) ? $item : LP()->global['course-item'];
+		$item   = isset( $item ) ? $item : LearnPress::instance()->global['course-item'];
 		if ( $item && $return == 'object' ) {
 			$item = LP_Course::get_item( $item );
 		}

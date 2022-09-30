@@ -12,8 +12,8 @@
 
 <div id="popup-content">
 	<?php
-	LP()->template( 'course' )->course_content_item();
+	LearnPress::instance()->template( 'course' )->course_content_item();
 
-	LP()->template( 'course' )->course_item_comments();
+	LearnPress::instance()->template( 'course' )->course_item_comments();
 	?>
 </div>

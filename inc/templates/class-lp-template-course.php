@@ -1034,13 +1034,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( $enrolled ) {
 			remove_action(
 				'learn-press/course-content-summary',
-				LP()->template( 'course' )->func( 'course_extra_boxes' ),
+				LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes' ),
 				40
 			);
 		} else {
 			remove_action(
 				'learn-press/course-content-summary',
-				LP()->template( 'course' )->func( 'course_extra_boxes' ),
+				LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes' ),
 				70
 			);
 		}

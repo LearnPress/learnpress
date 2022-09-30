@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$checkout = LP()->checkout();
+$checkout = LearnPress::instance()->checkout();
 
 learn_press_print_messages();
 

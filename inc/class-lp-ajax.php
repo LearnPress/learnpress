@@ -59,7 +59,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function checkout() {
-			LP()->checkout()->process_checkout_handler();
+			LearnPress::instance()->checkout()->process_checkout_handler();
 		}
 
 		public static function request_become_a_teacher() {

@@ -29,7 +29,7 @@ if ( ! isset( $query ) ) {
 			 */
 			do_action( 'learn-press/shortcode/before-courses-loop' );
 
-			LP()->template( 'course' )->begin_courses_loop();
+			LearnPress::instance()->template( 'course' )->begin_courses_loop();
 
 			while ( $query->have_posts() ) :
 				$query->the_post();
@@ -38,7 +38,7 @@ if ( ! isset( $query ) ) {
 
 			endwhile;
 
-			LP()->template( 'course' )->end_courses_loop();
+			LearnPress::instance()->template( 'course' )->end_courses_loop();
 
 			/**
 			 * LP Hook

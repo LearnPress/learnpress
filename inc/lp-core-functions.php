@@ -165,7 +165,7 @@ function learn_press_get_post() {
  * @return string
  */
 function learn_press_plugin_url( $sub_dir = '' ) {
-	return LP()->plugin_url( $sub_dir );
+	return LearnPress::instance()->plugin_url( $sub_dir );
 }
 
 /**
@@ -176,7 +176,7 @@ function learn_press_plugin_url( $sub_dir = '' ) {
  * @return string
  */
 function learn_press_plugin_path( $sub_dir = '' ) {
-	return LP()->plugin_path( $sub_dir );
+	return LearnPress::instance()->plugin_path( $sub_dir );
 }
 
 /**
@@ -1861,7 +1861,7 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 	}
 
 	// Map endpoint to options
-	$name = isset( LP()->query_vars[ $name ] ) ? LP()->query_vars[ $name ] : $name;
+	$name = isset( LearnPress::instance()->query_vars[ $name ] ) ? LearnPress::instance()->query_vars[ $name ] : $name;
 
 	if ( get_option( 'permalink_structure' ) ) {
 		if ( strstr( $url, '?' ) ) {
@@ -1888,7 +1888,7 @@ function learn_press_add_endpoints() {
 	$endpoints = $settings->get_checkout_endpoints();
 	if ( $endpoints ) {
 		foreach ( $endpoints as $endpoint => $value ) {
-			LP()->query_vars[ $endpoint ] = $value;
+			LearnPress::instance()->query_vars[ $endpoint ] = $value;
 			add_rewrite_endpoint( $value, EP_PAGES );
 		}
 	}
@@ -1896,7 +1896,7 @@ function learn_press_add_endpoints() {
 	$endpoints = $settings->get_profile_endpoints();
 	if ( $endpoints ) {
 		foreach ( $endpoints as $endpoint => $value ) {
-			LP()->query_vars[ $endpoint ] = $value;
+			LearnPress::instance()->query_vars[ $endpoint ] = $value;
 			add_rewrite_endpoint( $value, EP_PAGES );
 		}
 	}
@@ -1905,7 +1905,7 @@ function learn_press_add_endpoints() {
 	if ( $endpoints ) {
 		foreach ( $endpoints as $endpoint => $value ) {
 			$endpoint                     = preg_replace( '!_!', '-', $endpoint );
-			LP()->query_vars[ $endpoint ] = $value;
+			LearnPress::instance()->query_vars[ $endpoint ] = $value;
 			add_rewrite_endpoint(
 				$value, /*EP_ROOT | */
 				EP_PAGES
@@ -1943,7 +1943,7 @@ function learn_press_parse_request() {
 	global $wp;
 
 	// Map query vars to their keys, or get them if endpoints are not supported
-	foreach ( LP()->query_vars as $key => $var ) {
+	foreach ( LearnPress::instance()->query_vars as $key => $var ) {
 		if ( isset( $_GET[ $var ] ) ) {
 			$wp->query_vars[ $key ] = LP_Helper::sanitize_params_submitted( $_GET[ $var ] ?? '' );
 		} elseif ( isset( $wp->query_vars[ $var ] ) ) {
@@ -1986,7 +1986,7 @@ function learn_press_get_log_file_path( $handle, $hash = false ) {
  * @return LP_Cart
  */
 function learn_press_get_checkout_cart() {
-	return apply_filters( 'learn_press_checkout_cart', LP()->cart );
+	return apply_filters( 'learn_press_checkout_cart', LearnPress::instance()->cart );
 }
 
 /*function learn_press_front_scripts() {
@@ -1995,7 +1995,7 @@ function learn_press_get_checkout_cart() {
 	}
 	$js = array(
 		'ajax'        => admin_url( 'admin-ajax.php' ),
-		'plugin_url'  => LP()->plugin_url(),
+		'plugin_url'  => LearnPress::instance()->plugin_url(),
 		'siteurl'     => home_url(),
 		'current_url' => learn_press_get_current_url(),
 		'localize'    => array(
@@ -2277,7 +2277,7 @@ function learn_press_get_checkout_url() {
  * @return string
  */
 function learn_press_checkout_needs_payment() {
-	return LP()->cart->needs_payment();
+	return LearnPress::instance()->cart->needs_payment();
 }
 
 /**
@@ -2759,7 +2759,7 @@ add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule
 function learn_press_global_script_params() {
 	$js = array(
 		'ajax'        => admin_url( 'admin-ajax.php' ),
-		'plugin_url'  => LP()->plugin_url(),
+		'plugin_url'  => LearnPress::instance()->plugin_url(),
 		'siteurl'     => home_url(),
 		'current_url' => learn_press_get_current_url(),
 		'theme'       => get_stylesheet(),

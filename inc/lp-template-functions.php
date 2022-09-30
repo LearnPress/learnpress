@@ -17,23 +17,23 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'button_retry' ), 20 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_enroll_button' ), 5 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_purchase_button' ), 10 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
 }
 
 if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 	function learn_press_remove_course_buttons() {
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		//remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'button_retry' ), 20 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_enroll_button' ), 5 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_purchase_button' ), 10 );
+		//remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
 }
 
@@ -59,27 +59,27 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			$defaults['overview'] = array(
 				'title'    => esc_html__( 'Overview', 'learnpress' ),
 				'priority' => 10,
-				'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
+				'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
 			);
 		}
 
 		$defaults['curriculum'] = array(
 			'title'    => esc_html__( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
-			'callback' => LP()->template( 'course' )->func( 'course_curriculum' ),
+			'callback' => LearnPress::instance()->template( 'course' )->func( 'course_curriculum' ),
 		);
 
 		$defaults['instructor'] = array(
 			'title'    => esc_html__( 'Instructor', 'learnpress' ),
 			'priority' => 40,
-			'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/instructor.php' ),
+			'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/instructor.php' ),
 		);
 
 		if ( $course->get_faqs() ) {
 			$defaults['faqs'] = array(
 				'title'    => esc_html__( 'FAQs', 'learnpress' ),
 				'priority' => 50,
-				'callback' => LP()->template( 'course' )->func( 'faqs' ),
+				'callback' => LearnPress::instance()->template( 'course' )->func( 'faqs' ),
 			);
 		}
 

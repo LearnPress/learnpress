@@ -53,7 +53,7 @@ class LP_Thumbnail_Helper {
 		}
 
 		if ( ! $image ) {
-			$image = LP()->image( 'no-image.png' );
+			$image = LearnPress::instance()->image( 'no-image.png' );
 			$image = sprintf(
 				'<img src="%s" alt="%s">',
 				esc_url_raw( $image ),

@@ -410,11 +410,11 @@ class LP_Page_Controller {
 		}
 
 		/**
-		 * @deprecated v4.1.6.1 LP()->global['course'], $GLOBALS['course']
-		 * Some theme still use: global $course; LP()->global['course']
+		 * @deprecated v4.1.6.1 LearnPress::instance()->global['course'], $GLOBALS['course']
+		 * Some theme still use: global $course; LearnPress::instance()->global['course']
 		 */
-		//LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
-		LP()->global['course'] = $GLOBALS['course'] = $course;
+		//LearnPress::instance()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
+		LearnPress::instance()->global['course'] = $GLOBALS['course'] = $course;
 
 		if ( wp_verify_nonce( LP_Request::get( 'preview' ), 'preview-' . $post->ID ) ) {
 			$GLOBALS['preview_course'] = $post->ID;
@@ -697,7 +697,7 @@ class LP_Page_Controller {
 		try {
 			if ( LP_Page_Controller::page_current() === LP_PAGE_COURSES ) {
 				if ( ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) ) {
-					LP()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
+					LearnPress::instance()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 					/**
 					 * If page is archive course - query set posts_per_page = 1
 					 * For fastest - because when page loaded - call API to load list courses

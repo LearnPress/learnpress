@@ -155,7 +155,7 @@ function learn_press_get_admin_view( $name, $plugin_file = null ) {
 	if ( $plugin_file ) {
 		$view = dirname( $plugin_file ) . '/inc/admin/views/' . $name;
 	} else {
-		$view = LP()->plugin_path( 'inc/admin/views/' . $name );
+		$view = LearnPress::instance()->plugin_path( 'inc/admin/views/' . $name );
 	}
 
 	return apply_filters( 'learn_press_admin_view', $view, $name );

@@ -71,7 +71,7 @@ class LP_Abstract_Template {
 	 * @param string $function_to_remove - '*' will remove all methods.
 	 * @param int    $priority
 	 *
-	 * Ex: Remove for text: LP()->template( 'course' )->remove( 'learn-press/course-content-summary', array( '<div class="course-detail-info"> <div class="lp-content-area"> <div class="course-info-left">', 'course-info-left-open' ), 10 );
+	 * Ex: Remove for text: LearnPress::instance()->template( 'course' )->remove( 'learn-press/course-content-summary', array( '<div class="course-detail-info"> <div class="lp-content-area"> <div class="course-info-left">', 'course-info-left-open' ), 10 );
 	 */
 	public function remove( $tag, $function_to_remove, $priority = 10 ) {
 		global $wp_filter;
@@ -157,7 +157,7 @@ class LP_Abstract_Template {
 	 *
 	 * @author Nhamdv <email@email.com>
 	 *
-	 * Ex: LP()->template( 'course' )->remove_callback( 'learn-press/course-content-summary', 'single-course/title', 10 );
+	 * Ex: LearnPress::instance()->template( 'course' )->remove_callback( 'learn-press/course-content-summary', 'single-course/title', 10 );
 	 *
 	 */
 	public static function remove_callback( $tag, $function, $priority ) {

@@ -430,7 +430,7 @@ class LP_Helper {
 	 * @since  3.2.7.1
 	 * @author tungnx
 	 */
-	public static function sanitize_params_submitted( $value, $type_content = 'text' ) {
+	public static function sanitize_params_submitted( $value, string $type_content = 'text' ) {
 		$value = wp_unslash( $value );
 
 		if ( is_string( $value ) ) {

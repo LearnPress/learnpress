@@ -1037,7 +1037,7 @@ add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_
  * @since 3.0.0
  */
 function learn_press_mark_user_just_logged_in() {
-	LP()->session->set( 'user_just_logged_in', 'yes' );
+	LearnPress::instance()->session->set( 'user_just_logged_in', 'yes' );
 }
 
 add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );

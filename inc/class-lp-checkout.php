@@ -94,8 +94,8 @@ class LP_Checkout {
 		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10, 3 );
 		//add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
 
-		if ( ! is_null( LP()->session ) ) {
-			$this->_checkout_email = LP()->session->get( 'checkout-email' );
+		if ( ! is_null( LearnPress::instance()->session ) ) {
+			$this->_checkout_email = LearnPress::instance()->session->get( 'checkout-email' );
 		}
 	}
 
@@ -350,13 +350,13 @@ class LP_Checkout {
 		if ( $order_id ) {
 			return $order_id;
 		}
-		$cart = LP()->cart;
+		$cart = LearnPress::instance()->cart;
 
 		try {
 			$wpdb->query( 'START TRANSACTION' );
 
 			// Insert or update the post data
-			$order_id = absint( LP()->session->get( 'order_awaiting_payment' ) );
+			$order_id = absint( LearnPress::instance()->session->get( 'order_awaiting_payment' ) );
 
 			// Resume the unpaid order if its pending
 			$order = $this->_is_resume_order( $order_id );
@@ -595,7 +595,7 @@ class LP_Checkout {
 		}
 
 		if ( $this->_checkout_email ) {
-			LP()->session->set( 'checkout-email', $this->_checkout_email );
+			LearnPress::instance()->session->set( 'checkout-email', $this->_checkout_email );
 		}
 
 		$this->process_checkout();
@@ -640,7 +640,7 @@ class LP_Checkout {
 	 * @throws Exception
 	 */
 	public function validate_payment() {
-		$cart     = LP()->cart;
+		$cart     = LearnPress::instance()->cart;
 		$validate = true;
 
 		if ( $cart->needs_payment() ) {
@@ -679,7 +679,7 @@ class LP_Checkout {
 
 			do_action( 'learn-press/before-checkout' );
 
-			$cart   = LP()->cart;
+			$cart   = LearnPress::instance()->cart;
 			$result = false;
 
 			if ( $cart->is_empty() ) {
@@ -719,7 +719,7 @@ class LP_Checkout {
 
 				if ( $this->payment_method ) {
 					// Store the order is waiting f6or payment and each payment method should clear it
-					LP()->session->order_awaiting_payment = $order_id;
+					LearnPress::instance()->session->order_awaiting_payment = $order_id;
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );
 

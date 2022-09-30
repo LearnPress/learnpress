@@ -118,19 +118,19 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
 		$is_guest = false;
-		if ( ! is_null( LP()->session ) && $user_id != LP()->session->guest_user_id ) {
+		if ( ! is_null( LearnPress::instance()->session ) && $user_id != LearnPress::instance()->session->guest_user_id ) {
 			if ( $current && ! get_user_by( 'id', $user_id ) ) {
 				$user_id = get_current_user_id();
 			}
 		}
 
-		if ( ! $user_id && isset( LP()->session ) ) {
-			if ( ! LP()->session->guest_user_id ) {
-				LP()->session->set_customer_session_cookie( 1 );
-				LP()->session->guest_user_id = time();
+		if ( ! $user_id && isset( LearnPress::instance()->session ) ) {
+			if ( ! LearnPress::instance()->session->guest_user_id ) {
+				LearnPress::instance()->session->set_customer_session_cookie( 1 );
+				LearnPress::instance()->session->guest_user_id = time();
 			}
 
-			$user_id  = LP()->session->guest_user_id;
+			$user_id  = LearnPress::instance()->session->guest_user_id;
 			$is_guest = true;
 		}
 
@@ -1340,7 +1340,7 @@ function learn_press_get_user_distraction() {
 	if ( is_user_logged_in() ) {
 		return get_user_option( 'distraction_mode', get_current_user_id() );
 	} else {
-		return LP()->session->distraction_mode;
+		return LearnPress::instance()->session->distraction_mode;
 	}
 }
 

@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! LP()->checkout()->is_enable_guest_checkout() ) {
+if ( ! LearnPress::instance()->checkout()->is_enable_guest_checkout() ) {
 	return;
 }
 

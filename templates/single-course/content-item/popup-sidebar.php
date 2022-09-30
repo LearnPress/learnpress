@@ -17,5 +17,5 @@ defined( 'ABSPATH' ) || exit;
 		<button type="button" class="clear"></button>
 	</form>
 
-	<?php LP()->template( 'course' )->course_curriculum(); ?>
+	<?php LearnPress::instance()->template( 'course' )->course_curriculum(); ?>
 </div>

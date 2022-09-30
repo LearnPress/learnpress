@@ -5,7 +5,7 @@
  * @return mixed
  */
 function learn_press_get_cart() {
-	return LP()->cart;
+	return LearnPress::instance()->cart;
 }
 
 function learn_press_enable_cart() {
@@ -18,7 +18,7 @@ function learn_press_enable_cart() {
  * @return string
  */
 function learn_press_get_cart_description() {
-	$items       = LP()->cart->get_items();
+	$items       = LearnPress::instance()->cart->get_items();
 	$description = array();
 
 	if ( $items ) {
@@ -50,7 +50,7 @@ function learn_press_get_cart_course_url() {
  * @return mixed
  */
 function learn_press_get_cart_total() {
-	return LP()->cart->total;
+	return LearnPress::instance()->cart->total;
 }
 
 function learn_press_clear_cart_after_payment() {
@@ -63,18 +63,18 @@ function learn_press_clear_cart_after_payment() {
 
 		if ( $order_id > 0 && $order ) {
 			if ( $order->order_key === $order_key ) {
-				LP()->cart->empty_cart();
+				LearnPress::instance()->cart->empty_cart();
 			}
 		}
 	}
 
-	if ( ! is_null( LP()->session ) && LP()->session->order_awaiting_payment > 0 ) {
-		$order = learn_press_get_order( LP()->session->order_awaiting_payment );
+	if ( ! is_null( LearnPress::instance()->session ) && LearnPress::instance()->session->order_awaiting_payment > 0 ) {
+		$order = learn_press_get_order( LearnPress::instance()->session->order_awaiting_payment );
 
 		if ( $order && $order->id > 0 ) {
 			if ( ! $order->has_status( array( 'failed', 'pending', 'cancelled' ) ) ) {
-				LP()->cart->empty_cart();
-				LP()->session->order_awaiting_payment = null;
+				LearnPress::instance()->cart->empty_cart();
+				LearnPress::instance()->session->order_awaiting_payment = null;
 			}
 		}
 	}

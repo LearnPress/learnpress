@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$checkout  = LP()->checkout();
+$checkout  = LearnPress::instance()->checkout();
 $is_exists = $checkout->checkout_email_exists();
 ?>
 
@@ -31,20 +31,20 @@ $is_exists = $checkout->checkout_email_exists();
 			$signup  = '';
 			$divider = '';
 
-			if ( LP()->checkout()->is_enable_login() ) {
+			if ( LearnPress::instance()->checkout()->is_enable_login() ) {
 				$signin = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-login">%s</label></a>', esc_html( _x( 'Sign in', 'checkout sign in link', 'learnpress' ) ) );
 			}
 
-			if ( LP()->checkout()->is_enable_login() && LP()->checkout()->is_enable_register() ) {
+			if ( LearnPress::instance()->checkout()->is_enable_login() && LearnPress::instance()->checkout()->is_enable_register() ) {
 				$divider = ',';
 			}
 
-			if ( LP()->checkout()->is_enable_register() ) {
+			if ( LearnPress::instance()->checkout()->is_enable_register() ) {
 				$signup = sprintf( '<a href="javascript:void(0)"><label for="checkout-account-switch-to-register">%s</label></a>', esc_html( _x( 'Sign up', 'checkout sign up link', 'learnpress' ) ) );
 			}
 			?>
 
-			<?php if ( LP()->checkout()->is_enable_login() || LP()->checkout()->is_enable_register() ) : ?>
+			<?php if ( LearnPress::instance()->checkout()->is_enable_login() || LearnPress::instance()->checkout()->is_enable_register() ) : ?>
 				<div class="lp-guest-switch-login"><?php echo sprintf( __( 'Or you can %1$s%2$s %3$s now.', 'learnpress' ), $signin, $divider, $signup ); ?></div>
 			<?php endif; ?>
 		</li>
