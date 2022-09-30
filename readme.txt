@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 4.1.7
+Stable tag: 4.1.7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -202,6 +202,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.1.7.2 (2022-10-03) =
+~ Remove file mu-plugin (move to plugin Thim Optimize).
+~ Fixed: CVE-2022-3360 security.
+~ Fixed: error quiz not auto submit when expired time.
+~ Fixed: error completed item not redirect to next item.
+~ Modified: shortcode button LP.
+~ Removed: shortcode 'learn_press_button_enroll', recommend use short code 'learn_press_button_course' replace.
+~ Fixed: error email content on one line when save.
 
 = 4.1.7.1 (2022-09-16) =
 ~ Fixed: non-LP plugins causing errors.
