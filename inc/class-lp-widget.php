@@ -130,14 +130,11 @@ class LP_Widget extends WP_Widget {
 
 		do_action( 'before_show_lp_widget_content' );
 
-		$serialized_instance = serialize( $instance );
-
 		$data = array_merge(
 			$this->widget_data_attr,
 			array(
 				'widget'   => $this->widget_id,
-				'instance' => base64_encode( $serialized_instance ),
-				'hash'     => wp_hash( $serialized_instance ),
+				'instance' => wp_json_encode( $instance ),
 			)
 		);
 
