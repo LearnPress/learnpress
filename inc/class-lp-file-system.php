@@ -11,7 +11,7 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 		/**
 		 * @var WP_Filesystem_Direct
 		 */
-		protected $lp_filesystem;
+		public $lp_filesystem;
 		/**
 		 * @var LP_WP_Filesystem
 		 */
@@ -176,26 +176,6 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 
 			return $output;
 		}
-
-		/**
-		 * @editor tungnx
-		 * @modify 4.1.3.1 comment - replace file_get_contents
-		 */
-		/*public static function get_contents( $path ) {
-			_deprecated_function( __FUNCTION__, '4.1.3.1', 'file_get_contents' );
-			$output = @file_get_contents( $path );
-
-			if ( ! $output ) {
-				global $wp_filesystem;
-				self::wp_file_system();
-
-				if ( self::file_exists( $path ) ) {
-					$output = $wp_filesystem->get_contents( $path );
-				}
-			}
-
-			return $output;
-		}*/
 
 		/**
 		 * Get content of file

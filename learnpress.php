@@ -850,39 +850,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function mu_plugin() {
 			try {
-				$name     = 'class-lp-mu-plugin.php';
-				$can_copy = false;
-
-				// replace the old file
-				$mu_plugin_file = LP_PLUGIN_PATH . '/mu-plugin/' . $name;
-
-				if ( defined( 'WPMU_PLUGIN_DIR' ) ) {
-					$mu_plugins_path = WPMU_PLUGIN_DIR;
-				} else {
-					$mu_plugins_path = WP_CONTENT_DIR . '/' . 'mu-plugins';
-				}
-
-				if ( ! file_exists( $mu_plugins_path ) ) {
-					//mkdir( $mu_plugins_path, 0755, true );
-					wp_mkdir_p( $mu_plugins_path );
-				}
-
+				// Remove file mu plugin create on version 4.1.7.
+				$name                = 'class-lp-mu-plugin.php';
+				$mu_plugins_path     = WPMU_PLUGIN_DIR;
 				$mu_plugin_file_path = $mu_plugins_path . '/' . $name;
-
-				// add mu file
-				if ( file_exists( $mu_plugins_path ) ) {
-					if ( file_exists( $mu_plugin_file_path ) ) {
-						if ( class_exists( 'LP_MU_Plugin' ) && LP_MU_Plugin::$version < $this->mu_file_version ) {
-							$can_copy = true;
-						}
-					} else {
-						$can_copy = true;
-					}
-				}
-
-				if ( $can_copy ) {
-					//update_option( 'learnpress_mu_plugin_version', $this->mu_file_version );
-					LP_WP_Filesystem::instance()->copy( $mu_plugin_file, $mu_plugin_file_path );
+				if ( file_exists( $mu_plugin_file_path ) ) {
+					LP_WP_Filesystem::instance()->lp_filesystem->delete( $mu_plugin_file_path );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );

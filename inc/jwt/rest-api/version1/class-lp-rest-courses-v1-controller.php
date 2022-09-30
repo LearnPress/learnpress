@@ -1365,37 +1365,37 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$params['orderby']['enum'] = array_merge( $params['orderby']['enum'], array( 'menu_order', 'price' ) );
 
 		$params['category']      = array(
-			'description'       => __( 'Limit result set to courses assigned a specific category ID.', 'learnpress' ),
+			'description'       => 'Limit result set to courses assigned a specific category ID.',
 			'type'              => 'string',
 			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['tag']           = array(
-			'description'       => __( 'Limit result set to courses assigned a specific tag ID.', 'learnpress' ),
+			'description'       => 'Limit result set to courses assigned a specific tag ID.',
 			'type'              => 'string',
 			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['course_filter'] = array(
-			'description'       => __( 'Filter by course to in-progress, passed, failed.', 'learnpress' ),
+			'description'       => 'Filter by course to in-progress, passed, failed.',
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
 		$params['on_sale'] = array(
-			'description'       => __( 'Get item learned by user.', 'learnpress' ),
+			'description'       => 'Get item learned by user.',
 			'type'              => 'boolean',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
 		$params['popular']  = array(
-			'description'       => __( 'Get item popularity.', 'learnpress' ),
+			'description'       => 'Get item popularity.',
 			'type'              => 'boolean',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['optimize'] = array(
-			'description'       => __( 'Disable some fields schema.', 'learnpress' ),
+			'description'       => 'Disable some fields schema.',
 			'type'              => array( 'boolean', 'string' ),
 			'validate_callback' => 'wp_parse_id_list',
 		);
