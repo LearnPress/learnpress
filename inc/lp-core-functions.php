@@ -1497,51 +1497,52 @@ add_filter( 'gettext_with_context', '_learn_press_translate_user_roles', 10, 4 )
  * @param string
  *
  * @return string
+ * @deprecated 4.1.7.2
  */
-function learn_press_posts_where_statement_search( $where ) {
-	// gets the global query var object
-	global $wp_query, $wpdb;
-
-	/**
-	 * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
-	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
-	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
-	 */
-	$a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
-	$b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
-
-	if ( $a && $b ) {
-		// append ( to the start of the block
-		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
-
-		// append ) to the end of the block
-		$where = preg_replace(
-			'!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!',
-			'$1 )',
-			$where
-		);
-	}
-	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
-
-	return $where;
-}
+//function learn_press_posts_where_statement_search( $where ) {
+//	// gets the global query var object
+//	global $wp_query, $wpdb;
+//
+//	/**
+//	 * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
+//	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
+//	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
+//	 */
+//	$a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
+//	$b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
+//
+//	if ( $a && $b ) {
+//		// append ( to the start of the block
+//		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
+//
+//		// append ) to the end of the block
+//		$where = preg_replace(
+//			'!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!',
+//			'$1 )',
+//			$where
+//		);
+//	}
+//	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
+//
+//	return $where;
+//}
 
 /**
  * Filter post type for search function
  * Only search lpr_course if see the param ref=course in request
  *
  * @param WP_Query $q
+ * @deprecated 4.1.7.2
  */
-function learn_press_filter_search( $q ) {
+/*function learn_press_filter_search( $q ) {
 	if ( $q->is_main_query() && $q->is_search() && ( ! empty( $_REQUEST['ref'] ) && sanitize_text_field( $_REQUEST['ref'] ) == 'course' ) ) {
 		$q->set( 'post_type', 'lp_course' );
 
 		add_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
 		remove_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
 	}
-}
-
-add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
+}*/
+//add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
 
 if ( ! function_exists( 'learn_press_send_json' ) ) {
 	function learn_press_send_json( $data ) {
