@@ -74,45 +74,6 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Check notify papal call when done.
-	 *
-	 * Set in param notify_url on @see LP_Gateway_Paypal::get_paypal_args()
-	 */
-	public function check_webhook_paypal_ipn() {
-		//error_log( 'xxx:' . json_encode( $_POST, JSON_UNESCAPED_UNICODE ) );
-
-		// Paypal payment done
-		if ( ! isset( $_GET['paypal_notify'] ) ) {
-			return;
-		}
-
-		if ( ! isset( $_POST['ipn_track_id'] ) ) {
-			return;
-		}
-
-		try {
-			$paypal = new LP_Gateway_Paypal();
-			$verify = $paypal->validate_ipn();
-
-			if ( $verify ) {
-				if ( isset( $_POST['custom'] ) ) {
-					$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
-
-					if ( json_last_error() === JSON_ERROR_NONE ) {
-						$order_id = $data_order->order_id;
-
-						$lp_order = learn_press_get_order( $order_id );
-						$lp_order->set_status( 'completed' );
-						$lp_order->save();
-					}
-				}
-			}
-		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
-		}
-	}
-
-	/**
 	 * Set link item course when form search default wp
 	 *
 	 * @param string $post_link
@@ -1032,6 +993,45 @@ class LP_Page_Controller {
 					'href'   => learn_press_user_profile_link( $user_id, false ),
 				)
 			);
+		}
+	}
+
+	/**
+	 * Check notify papal call when done.
+	 *
+	 * Set in param notify_url on @see LP_Gateway_Paypal::get_paypal_args()
+	 */
+	public function check_webhook_paypal_ipn() {
+		//error_log( 'xxx:' . json_encode( $_POST, JSON_UNESCAPED_UNICODE ) );
+
+		// Paypal payment done
+		if ( ! isset( $_GET['paypal_notify'] ) ) {
+			return;
+		}
+
+		if ( ! isset( $_POST['ipn_track_id'] ) ) {
+			return;
+		}
+
+		try {
+			$paypal = new LP_Gateway_Paypal();
+			$verify = $paypal->validate_ipn();
+
+			if ( $verify ) {
+				if ( isset( $_POST['custom'] ) ) {
+					$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
+
+					if ( json_last_error() === JSON_ERROR_NONE ) {
+						$order_id = $data_order->order_id;
+
+						$lp_order = learn_press_get_order( $order_id );
+						$lp_order->set_status( 'completed' );
+						$lp_order->save();
+					}
+				}
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 

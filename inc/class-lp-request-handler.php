@@ -42,6 +42,8 @@ class LP_Request {
 	}
 
 	/**
+	 * Get value by key from $_REQUEST
+	 *
 	 * @param string $key
 	 * @param mixed $default
 	 * @param string $sanitize_type
@@ -49,9 +51,7 @@ class LP_Request {
 	 * @return array|float|int|string
 	 */
 	public static function get_param( string $key, $default = '', string $sanitize_type = 'text' ) {
-		$value = LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] ?? ( $default ?: '' ), $sanitize_type );
-
-		return $value;
+		return LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] ?? $default, $sanitize_type );
 	}
 
 	public static function get_header() {
