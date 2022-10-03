@@ -1286,11 +1286,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function can_do_quiz( $quiz_id, $course_id = 0 ) {
 			$course = learn_press_get_course( $course_id );
 
-			if ( $course->is_required_enroll() ) {
-				$can = $this->has_course_status(
-					$course_id,
-					array( 'enrolled' )
-				) && ! $this->has_started_quiz( $quiz_id, $course_id );
+			if ( ! $course->is_no_required_enroll() ) {
+				$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && ! $this->has_started_quiz( $quiz_id, $course_id );
 			} else {
 				$can = ! $this->has_started_quiz( $quiz_id, $course_id );
 			}

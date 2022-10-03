@@ -340,7 +340,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @depecated 4.0.0
 		 */
 		public function is_required_enroll() {
-			_deprecated_function( __FUNCTION__, '4.1.7.2', 'is_no_required_enroll' );
+			//_deprecated_function( __FUNCTION__, '4.1.7.2', 'is_no_required_enroll' );
 			return ! $this->is_no_required_enroll();
 		}
 		/**
@@ -364,7 +364,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @deprecated
 		 */
 		public function is_require_enrollment() {
-			return $this->is_required_enroll();
+			return ! $this->is_no_required_enroll();
 		}
 
 		/**

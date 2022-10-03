@@ -542,8 +542,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @param int $question_id
 		 *
 		 * @return mixed
+		 * @depecated 4.1.7.2
 		 */
-		public function is_viewing_question( $question_id = 0 ) {
+		/*public function is_viewing_question( $question_id = 0 ) {
 			global $lp_quiz_question;
 			if ( $question_id ) {
 				$viewing = $lp_quiz_question && $lp_quiz_question->get_id() == $question_id;
@@ -552,15 +553,16 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/is-viewing-question', $viewing, $question_id, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * @param int $user_id
 		 * @param int $course_id
 		 *
 		 * @return mixed
+		 * @depecated 4.1.7.2
 		 */
-		public function get_status_classes( $user_id = 0, $course_id = 0 ) {
+		/*public function get_status_classes( $user_id = 0, $course_id = 0 ) {
 			$status_classes = array();
 			$course         = learn_press_get_course( $course_id );
 			$user           = learn_press_get_user( $user_id, ! $user_id );
@@ -568,7 +570,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			if ( $course ) {
 				if ( $this->is_preview() ) {
 					$status_classes[] = 'item-preview';
-				} elseif ( $course->is_free() && ! $course->is_required_enroll() ) {
+				} elseif ( $course->is_free() && $course->is_no_required_enroll() ) {
 					$status_classes[] = 'item-free';
 				}
 			}
@@ -596,7 +598,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$course_id,
 				$user_id
 			);
-		}
+		}*/
 
 		/**
 		 * Get duration of quiz
@@ -620,177 +622,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			return apply_filters( 'learn-press/course-item-duration', $duration, $this->get_id() );
 		}
-
-		/**
-		 * @param int $course_id
-		 * @param int $user_id
-		 *
-		 * @return bool
-		 * @editor tungnx
-		 * @modify 4.1.3 - not use - comment
-		 * @deprecated
-		 */
-		public function is_blocked( $course_id = 0, $user_id = 0 ) {
-			_deprecated_function( __FUNCTION__, '4.1.3' );
-
-			/*
-			if ( ! $user_id ) {
-				$user_id = get_current_user_id();
-			}
-
-			if ( ! $course_id ) {
-				$course_id = get_the_ID();
-			}
-
-			$course_author = learn_press_get_course_user( $course_id );
-
-			if ( $course_author ) {
-				$author_id = $course_author->get_id();
-
-				if ( $author_id == $user_id ) {
-					// return false;
-				}
-			}
-
-			$key           = 'course-item-' . $user_id . '-' . $course_id;
-			$blocked_items = LP_Object_Cache::get( $key, 'learn-press/blocked-items' );
-
-			if ( false === $blocked_items ) {
-				$blocked_items = $this->_parse_item_block_status( $course_id, $user_id, $key );
-			}
-
-			$is_blocked = isset( $blocked_items[ $this->get_id() ] ) ? $blocked_items[ $this->get_id() ] : false;
-
-			if ( false === $is_blocked ) {
-				if ( $course_id ) {
-					$course = learn_press_get_course( $course_id );
-				} else {
-					$course    = $this->get_course();
-					$course_id = $course ? $course->get_id() : 0;
-				}
-
-				if ( ! $user_id ) {
-					$user_id = get_current_user_id();
-				}
-
-				$user = learn_press_get_user( $user_id );
-
-				if ( ! $course ) {
-					$blocked = 'yes';
-				} elseif ( ! $course->is_required_enroll() || $this->is_preview() ) {
-					$blocked = 'no';
-				} else {
-					if ( $user ) {
-						$blocked = $this->_item_is_blocked( $user, $course, $user->get_course_data( $course_id ) );
-					} else {
-						$blocked = 'yes';
-					}
-				}
-
-				if ( ! is_array( $blocked_items ) ) {
-					$blocked_items = array();
-				}
-				$blocked_items[ $this->get_id() ] = $blocked;
-
-				LP_Object_Cache::set( $key, $blocked_items, 'learn-press/blocked-items' );
-				$is_blocked = $blocked;
-			}
-
-			return apply_filters(
-				'learn-press/course-item/is-blocked',
-				$is_blocked === 'yes' ? true : false,
-				$this->get_id(),
-				$course_id,
-				$user_id
-			);*/
-		}
-
-		/**
-		 * @editor tungnx
-		 * @modify 4.1.3
-		 */
-		/*
-		protected function _parse_item_block_status( $course_id, $user_id, $cache_key ) {
-			$course = learn_press_get_course( $course_id );
-
-			if ( ! $course ) {
-				return false;
-			}
-
-			$user             = learn_press_get_user( $user_id );
-			$course_items     = $course->get_item_ids();
-			$course_item_data = $user->get_course_data( $course_id );
-
-			if ( ! $course->is_required_enroll() ) {
-				$blocked_items = array_fill_keys( $course_items, 'no' );
-			} elseif ( ! $user || $user->is_guest() ) {
-				$blocked_items = array_fill_keys( $course_items, 'yes' );
-			} else {
-				$blocked       = $this->_item_is_blocked( $user, $course, $course_item_data );
-				$blocked_items = array_fill_keys( $course_items, $blocked );
-			}
-			$block_item_types = learn_press_get_block_course_item_types();
-
-			foreach ( $course_items as $course_item ) {
-				$item = $course->get_item( $course_item );
-
-				if ( $item ) {
-					if ( $item->is_preview() ) {
-						$blocked_items[ $course_item ] = 'no';
-					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array(
-						$item->get_post_type(),
-						$block_item_types
-					) ) {
-						$blocked_items[ $course_item ] = 'no';
-					}
-				}
-
-				$item_data = $course_item_data->get_item( $course_item );
-				if ( $item_data ) {
-					$access_level = $item_data->get_access_level();
-					if ( $access_level > 0 && $access_level < 50 ) {
-						$blocked_items[ $course_item ] = 'yes';
-					}
-				}
-			}
-
-			$blocked_items = apply_filters(
-				'learn-press/course-item/parse-block-statuses',
-				$blocked_items,
-				$course_id,
-				$user_id
-			);
-
-			LP_Object_Cache::set( $cache_key, $blocked_items, 'learn-press/blocked-items' );
-
-			return $blocked_items;
-		}*/
-
-		/**
-		 * @param LP_User             $user
-		 * @param LP_Course           $course
-		 * @param LP_User_Item_Course $course_item_data
-		 *
-		 * @return string
-		 * @editor tungnx
-		 * @modify 4.1.3
-		 */
-		/*
-		protected function _item_is_blocked( $user, $course, $course_item_data ) {
-			if ( in_array( 'administrator', $user->get_roles() ) ) {
-				$blocked = 'no';
-			} elseif ( $user->has_course_status( $course->get_id(), learn_press_course_enrolled_slugs() ) ) {
-				$blocked = 'no';
-
-				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() !== 'click' ) {
-					$blocked = 'yes';
-				}
-			} else {
-				$blocked = 'yes';
-			}
-
-			return $blocked;
-		}*/
 
 		public function offsetExists( $offset ) {
 		}

@@ -1267,30 +1267,27 @@ add_filter( 'body_class', 'learn_press_body_classes', 10 );
  *
  * @param int $course_id
  *
- * @return bool|mixed
+ * @return bool
  * @since 3.0
+ * @version 1.0.1
  */
-function learn_press_is_learning_course( $course_id = 0 ) {
+function learn_press_is_learning_course( int $course_id = 0 ): bool {
+	$is_learning = false;
 	$user        = learn_press_get_current_user();
 	$course      = learn_press_get_course( $course_id );
-	$is_learning = false;
-	$has_status  = false;
-
-	if ( $user && $course ) {
-		$has_status = $user->has_course_status(
-			$course->get_id(),
-			array(
-				'enrolled',
-				'finished',
-			)
-		);
+	if ( ! $course ) {
+		return $is_learning;
 	}
 
-	if ( $course && ( ! $course->is_required_enroll() || $has_status ) ) {
+	if ( $user ) {
+		return $user->has_enrolled_or_finished( $course_id );
+	}
+
+	if ( $course->is_no_required_enroll() ) {
 		$is_learning = true;
 	}
 
-	return apply_filters( 'learn-press/is-learning-course', $is_learning );
+	return apply_filters( 'lp/is-learning-course', $is_learning, $course_id );
 }
 
 /**
