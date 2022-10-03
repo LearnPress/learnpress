@@ -1972,14 +1972,15 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
  * @param bool   $hash
  *
  * @return string
+ * @depecated 4.1.7.2
  */
-function learn_press_get_log_file_path( $handle, $hash = false ) {
+/*function learn_press_get_log_file_path( $handle, $hash = false ) {
 	if ( $hash ) {
 		$hash = '-' . sanitize_file_name( wp_hash( $handle ) );
 	}
 
 	return trailingslashit( LP_LOG_PATH ) . $handle . $hash . '.log';
-}
+}*/
 
 /**
  * Get the cart object in checkout page
@@ -2085,10 +2086,11 @@ function learn_press_profile_tab_exists( $tab ) {
  * @param string $string
  *
  * @return string
+ * @depecated 4.1.7.2
  */
-function _learn_press_urlencode( $string ) {
+/*function _learn_press_urlencode( $string ) {
 	return preg_replace( '/\s/', '+', $string );
-}
+}*/
 
 /**
  * Point the archive post type link to course page if current
@@ -2099,16 +2101,16 @@ function _learn_press_urlencode( $string ) {
  * @param string $post_type
  *
  * @return string
+ * @depecated 4.1.7.2
  */
-function learn_press_post_type_archive_link( $link, $post_type ) {
+/*function learn_press_post_type_archive_link( $link, $post_type ) {
 	if ( $post_type == LP_COURSE_CPT && learn_press_get_page_id( 'courses' ) ) {
 		$link = learn_press_get_page_link( 'courses' );
 	}
 
 	return $link;
-}
-
-add_filter( 'post_type_archive_link', 'learn_press_post_type_archive_link', 10, 2 );
+}*/
+//add_filter( 'post_type_archive_link', 'learn_press_post_type_archive_link', 10, 2 );
 
 function learn_press_single_term_title( $prefix = '', $display = true ) {
 	$term = get_queried_object();

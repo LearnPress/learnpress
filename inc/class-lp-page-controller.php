@@ -29,6 +29,7 @@ class LP_Page_Controller {
 	 * LP_Page_Controller constructor.
 	 */
 	protected function __construct() {
+		add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
@@ -54,6 +55,22 @@ class LP_Page_Controller {
 		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
 		// Set again x-wp-nonce on header when has cache with not login.
 		add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
+	}
+
+	/**
+	 * Set link archive course.
+	 *
+	 * @param string $link
+	 * @param string $post_type
+	 *
+	 * @return string
+	 */
+	public function link_archive_course( string $link, string $post_type ): string {
+		if ( $post_type == LP_COURSE_CPT && learn_press_get_page_id( 'courses' ) ) {
+			$link = learn_press_get_page_link( 'courses' );
+		}
+
+		return $link;
 	}
 
 	/**
