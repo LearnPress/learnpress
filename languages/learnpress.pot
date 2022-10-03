@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-10-03T07:01:26+03:00\n"
+"POT-Creation-Date: 2022-10-03T14:13:45+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: learnpress\n"
@@ -41,7 +41,7 @@ msgid "http://thimpress.com"
 msgstr ""
 
 #: config/settings/course.php:8
-msgid "The site will be redirected to the URL added after clicking finish course button."
+msgid "The site will be redirected to the URL added after clicking the finish course button."
 msgstr ""
 
 #: config/settings/course.php:9
@@ -64,7 +64,7 @@ msgid "Review courses"
 msgstr ""
 
 #: config/settings/course.php:24
-msgid "Courses created by instructors will be pending in review first."
+msgid "Courses created by instructors will be pending review first."
 msgstr ""
 
 #: config/settings/course.php:30
@@ -72,15 +72,15 @@ msgid "Auto start"
 msgstr ""
 
 #: config/settings/course.php:34
-msgid "Students will get started courses immediately after successfully purchased."
+msgid "Students will get started on courses immediately after successfully purchasing them."
 msgstr ""
 
 #: config/settings/course.php:37
-msgid "Enable confirmation popup finish course, complete item"
+msgid "Confirmation popup"
 msgstr ""
 
 #: config/settings/course.php:38
-msgid "Show confirmation popup before finishing course or completing item."
+msgid "Show a confirmation popup before finishing the course or completing the item."
 msgstr ""
 
 #: config/settings/course.php:44
@@ -88,7 +88,7 @@ msgid "Archive page layout"
 msgstr ""
 
 #: config/settings/course.php:45
-msgid "Type display list course on Course Archive page"
+msgid "Display the List course type on the Course Archive page."
 msgstr ""
 
 #: config/settings/course.php:52
@@ -96,23 +96,23 @@ msgid "Courses per page"
 msgstr ""
 
 #: config/settings/course.php:53
-msgid "Number of courses displayed per page."
+msgid "The number of displayed courses per page."
 msgstr ""
 
 #: config/settings/course.php:63
-msgid "Enable loading ajax Courses on the Course Archive page"
+msgid "Loading ajax Courses"
 msgstr ""
 
 #: config/settings/course.php:64
-msgid "On/Off <i>loading ajax Courses</i>"
+msgid "On/Off <i>loading ajax courses on the Course Archive page </i>."
 msgstr ""
 
 #: config/settings/course.php:70
-msgid "Not run Ajax when reloading Course Archive page"
+msgid "Do not run Ajax when reloading the Course Archive page"
 msgstr ""
 
 #: config/settings/course.php:71
-msgid "Ajax is only applied when selecting pagination, filtering, searching and sorting. Not applicable when reloading Course Archive page."
+msgid "Ajax is only applied when selecting pagination, filtering, searching, and sorting. Not applicable when reloading the Course Archive page."
 msgstr ""
 
 #: config/settings/course.php:78
@@ -120,7 +120,7 @@ msgid "Thumbnail dimensions"
 msgstr ""
 
 #: config/settings/course.php:84
-msgid "Redirect when finish course"
+msgid "Redirect when finishing the course"
 msgstr ""
 
 #: config/settings/course.php:101
@@ -132,7 +132,7 @@ msgid "Section Per Page"
 msgstr ""
 
 #: config/settings/course.php:109
-msgid "Number of sections displayed per page ( Enter -1 for display all sections)."
+msgid "The number of displayed sections per page (Enter -1 to display all sections)."
 msgstr ""
 
 #: config/settings/course.php:112
@@ -140,7 +140,7 @@ msgid "Course Item Per Page"
 msgstr ""
 
 #: config/settings/course.php:116
-msgid "Number of course items displayed per page in section ( Enter -1 for display all course items)."
+msgid "The number of displayed course items per page in a section (Enter -1 to display all course items)."
 msgstr ""
 
 #: config/settings/course.php:128
@@ -1028,8 +1028,8 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1243
 #: inc/admin/lp-admin-functions.php:2317
-#: inc/course/abstract-course.php:663
-#: inc/course/abstract-course.php:692
+#: inc/course/abstract-course.php:662
+#: inc/course/abstract-course.php:691
 #: templates/order/order-details.php:43
 msgid "Free"
 msgstr ""
@@ -3146,23 +3146,23 @@ msgstr ""
 msgid "There is no options for this widget."
 msgstr ""
 
-#: inc/course/abstract-course.php:772
-#: inc/course/abstract-course.php:792
+#: inc/course/abstract-course.php:771
+#: inc/course/abstract-course.php:791
 #: inc/lesson/class-lp-lesson.php:104
 #: inc/quiz/class-lp-quiz.php:637
 msgid "The function %s doesn't exist"
 msgstr ""
 
-#: inc/course/abstract-course.php:1257
+#: inc/course/abstract-course.php:1256
 msgid "This course will end within next %s"
 msgstr ""
 
-#: inc/course/abstract-course.php:1285
+#: inc/course/abstract-course.php:1284
 msgctxt "External Link button text"
 msgid "More Info"
 msgstr ""
 
-#: inc/course/abstract-course.php:1322
+#: inc/course/abstract-course.php:1321
 msgid "Tags: "
 msgstr ""
 
@@ -5805,28 +5805,28 @@ msgid "Jersey pound"
 msgstr ""
 
 #: inc/lp-core-functions.php:1403
-#: inc/lp-template-functions.php:1549
+#: inc/lp-template-functions.php:1546
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1407
-#: inc/lp-template-functions.php:1545
+#: inc/lp-template-functions.php:1542
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1412
-#: inc/lp-template-functions.php:1540
+#: inc/lp-template-functions.php:1537
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1416
-#: inc/lp-template-functions.php:1534
+#: inc/lp-template-functions.php:1531
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -6022,36 +6022,36 @@ msgstr ""
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:1423
+#: inc/lp-template-functions.php:1420
 msgid "Course Sidebar"
 msgstr ""
 
-#: inc/lp-template-functions.php:1425
+#: inc/lp-template-functions.php:1422
 msgid "Widgets in this area will be shown in single course"
 msgstr ""
 
-#: inc/lp-template-functions.php:1434
+#: inc/lp-template-functions.php:1431
 msgid "All Courses"
 msgstr ""
 
-#: inc/lp-template-functions.php:1436
+#: inc/lp-template-functions.php:1433
 msgid "Widgets in this area will be shown in all courses page"
 msgstr ""
 
-#: inc/lp-template-functions.php:1573
-#: inc/lp-template-functions.php:1582
+#: inc/lp-template-functions.php:1570
+#: inc/lp-template-functions.php:1579
 msgid "All levels"
 msgstr ""
 
-#: inc/lp-template-functions.php:1583
+#: inc/lp-template-functions.php:1580
 msgid "Beginner"
 msgstr ""
 
-#: inc/lp-template-functions.php:1584
+#: inc/lp-template-functions.php:1581
 msgid "Intermediate"
 msgstr ""
 
-#: inc/lp-template-functions.php:1585
+#: inc/lp-template-functions.php:1582
 msgid "Expert"
 msgstr ""
 
