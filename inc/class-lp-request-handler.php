@@ -47,11 +47,23 @@ class LP_Request {
 	 * @param string $key
 	 * @param mixed $default
 	 * @param string $sanitize_type
+	 * @param string $method
 	 *
 	 * @return array|float|int|string
 	 */
-	public static function get_param( string $key, $default = '', string $sanitize_type = 'text' ) {
-		return LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] ?? $default, $sanitize_type );
+	public static function get_param( string $key, $default = '', string $sanitize_type = 'text', string $method = '' ) {
+		switch ( $method ) {
+			case 'post':
+				$values = $_POST ?? [];
+				break;
+			case 'get':
+				$values = $_GET ?? [];
+				break;
+			default:
+				$values = $_REQUEST ?? [];
+		}
+
+		return LP_Helper::sanitize_params_submitted( $values[ $key ] ?? $default, $sanitize_type );
 	}
 
 	public static function get_header() {

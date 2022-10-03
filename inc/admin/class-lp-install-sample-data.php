@@ -80,6 +80,8 @@ class LP_Install_Sample_Data {
 
 	/**
 	 * Install
+	 *
+	 * @TODO - Need write to api, not hook init.
 	 */
 	public function install() {
 		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'install-sample-course' ) ) {
@@ -89,26 +91,25 @@ class LP_Install_Sample_Data {
 		$dummy_text       = LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' );
 		$this->dummy_text = preg_split( '!\s!', $dummy_text );
 
-		$section_range = LP_Request::get( 'section-range' );
+		$section_range = LP_Request::get_param( 'section-range', 0, 'int' );
 		if ( $section_range ) {
 			self::$section_range = $section_range;
 		}
 
-		$item_range = LP_Request::get( 'item-range' );
+		$item_range = LP_Request::get_param( 'item-range', 0, 'int' );
 		if ( $item_range ) {
 			self::$item_range = $item_range;
 		}
 
-		$question_range = LP_Request::get( 'question-range' );
+		$question_range = LP_Request::get_param( 'question-range', 0, 'int' );
 		if ( $question_range ) {
 			self::$question_range = $question_range;
 		}
 
-		$answer_range = LP_Request::get( 'answer-range' );
+		$answer_range = LP_Request::get_param( 'answer-range', 0, 'int' );
 		if ( $answer_range ) {
 			self::$answer_range = $answer_range;
 		}
-		//LP_Debug::startTransaction();
 
 		try {
 			@ini_set( 'memory_limit', '2G' );
@@ -126,7 +127,7 @@ class LP_Install_Sample_Data {
 				unset( $wp_filter[ $key ] );
 			}
 
-			$name      = LP_Request::get_string( 'custom-name' );
+			$name      = LP_Request::get_param( 'custom-name' );
 			$course_id = $this->create_course( $name );
 
 			if ( ! $course_id ) {
@@ -135,8 +136,7 @@ class LP_Install_Sample_Data {
 
 			$this->create_sections( $course_id );
 
-			$price = LP_Request::get( 'course-price' );
-
+			$price = LP_Request::get_param( 'course-price', 0, 'float' );
 			if ( $price ) {
 				update_post_meta( $course_id, '_lp_regular_price', $price );
 			}
@@ -162,10 +162,7 @@ class LP_Install_Sample_Data {
 			</div>
 
 			<?php
-			//LP_Debug::commitTransaction();
-
 		} catch ( Exception $ex ) {
-			//LP_Debug::rollbackTransaction();
 			echo '<div class="lp-install-sample__response fail">';
 			echo wp_kses_post( $ex->getMessage() );
 			echo '</div>';
