@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 use LP\Helpers\Config;
@@ -47,8 +47,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * @since 4.0.0
 		 */
 		public function on_activate() {
-			// update_option( 'learn_press_status', 'activated' );
-
 			$this->create_tables();
 
 			if ( ! self::tables_install_done() ) {
@@ -74,58 +72,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
 			}
-		}
-
-		/**
-		 * Check to run installer in the first-time LP installed.
-		 *
-		 * @since 3.x.x
-		 */
-		public static function do_install() {
-			if ( ! current_user_can( 'manage_options' ) ) {
-				return;
-			}
-
-			$status = get_option( 'learn_press_status' );
-
-			switch ( $status ) {
-				case 'activated':
-					self::install();
-					update_option( 'learn_press_status', 'installed' );
-			}
-		}
-
-		/**
-		 * Run installation after LearnPress is activated.
-		 *
-		 * @depecated 4.1.6.4
-		 */
-		public static function install() {
-			_deprecated_function( __FUNCTION__, '4.1.6.4' );
-			/*self::create_options();
-			self::_create_pages();
-			self::_create_cron_jobs();
-			self::_delete_transients();
-			//self::_create_log_path();
-			self::_clear_backgrounds();
-
-			$current_version    = get_option( 'learnpress_version', null );
-			$current_db_version = get_option( 'learnpress_db_version', null );
-
-			// Fresh installation .
-			if ( is_null( $current_db_version ) ) {
-				update_option( 'learn_press_install', 'yes' );
-				set_transient( 'lp_activation_redirect', 'yes', 60 );
-			}
-
-			// Force to show notice outdated template .
-			learn_press_delete_user_option( 'hide-notice-template-files' );
-
-			LP_Admin_Notice::instance()->remove_dismissed_notice( array( 'outdated-template' ) );
-
-			//if ( ! get_option( 'learnpress_db_version' ) ) {
-			update_option( 'learnpress_db_version', (int) LEARNPRESS_VERSION );
-			//}*/
 		}
 
 		/**
