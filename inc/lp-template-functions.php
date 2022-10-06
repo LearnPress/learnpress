@@ -1419,7 +1419,7 @@ function learn_press_register_sidebars() {
 		array(
 			'name'          => esc_html__( 'Course Sidebar', 'learnpress' ),
 			'id'            => 'course-sidebar',
-			'description'   => esc_html__( 'Widgets in this area will be shown in single course', 'learnpress' ),
+			'description'   => esc_html__( 'Widgets in this area will be shown in a single course', 'learnpress' ),
 			'before_widget' => '<div id="%1$s" class="widget %2$s">',
 			'after_widget'  => '</div>',
 			'before_title'  => '<h2 class="widgettitle">',
@@ -1430,7 +1430,7 @@ function learn_press_register_sidebars() {
 		array(
 			'name'          => esc_html__( 'All Courses', 'learnpress' ),
 			'id'            => 'archive-courses-sidebar',
-			'description'   => esc_html__( 'Widgets in this area will be shown in all courses page', 'learnpress' ),
+			'description'   => esc_html__( 'Widgets in this area will be shown on all course pages', 'learnpress' ),
 			'before_widget' => '<div id="%1$s" class="widget %2$s">',
 			'after_widget'  => '</div>',
 			'before_title'  => '<h2 class="widgettitle">',

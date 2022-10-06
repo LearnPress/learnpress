@@ -26,9 +26,9 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 		public function __construct() {
 			$this->id              = 'enrolled-course-admin';
 			$this->title           = __( 'Admin', 'learnpress' );
-			$this->description     = __( 'Send this email to admin when user has enrolled course.', 'learnpress' );
-			$this->default_subject = __( '{{user_display_name}} has enrolled course', 'learnpress' );
-			$this->default_heading = __( 'User has enrolled course', 'learnpress' );
+			$this->description     = __( 'Send an email to admin when the user has enrolled in the course.', 'learnpress' );
+			$this->default_subject = __( '{{user_display_name}} has enrolled in the course', 'learnpress' );
+			$this->default_heading = __( 'The user has enrolled in the course', 'learnpress' );
 
 			$this->recipient = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 

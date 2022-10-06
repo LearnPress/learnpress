@@ -20,7 +20,7 @@ if ( ! isset( $plugin_data ) || is_wp_error( $plugin_data ) ) {
 				printf( '<span><strong>%s</strong></span>: %s', esc_html__( 'Downloaded', 'learnpress' ), number_format( $plugin_data->downloaded ) );
 			}
 			?>
-			<?php printf( '<span><strong>%s</strong></span>: %s', esc_html__( 'Active Installed', 'learnpress' ), number_format( $plugin_data->active_installs ) ); ?>
+			<?php printf( '<span><strong>%s</strong></span>: %s', esc_html__( 'Active Installation', 'learnpress' ), number_format( $plugin_data->active_installs ) ); ?>
 		</li>
 	</ul>
 </div>

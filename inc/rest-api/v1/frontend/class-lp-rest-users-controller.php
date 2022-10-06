@@ -92,13 +92,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	public function get_item_endpoint_args() {
 		return array(
 			'item_id'   => array(
-				'description'       => __( 'The ID of course item object.', 'learnpress' ),
+				'description'       => __( 'The ID of the course item object.', 'learnpress' ),
 				'type'              => 'int',
 				'validate_callback' => array( $this, 'validate_arg' ),
 				'required'          => true,
 			),
 			'course_id' => array(
-				'description'       => __( 'The ID of course object.', 'learnpress' ),
+				'description'       => __( 'The ID of the course object.', 'learnpress' ),
 				'type'              => 'int',
 				'validate_callback' => array( $this, 'validate_arg' ),
 				'required'          => true,
@@ -159,11 +159,11 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$quiz   = learn_press_get_quiz( $item_id );
 
 			if ( ! $course ) {
-				throw new Exception( __( 'Course is invalid!', 'learnpress' ) );
+				throw new Exception( __( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			if ( ! $quiz ) {
-				throw new Exception( __( 'Quiz is invalid!', 'learnpress' ) );
+				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
 			}
 
 			// For no required enroll course
@@ -269,7 +269,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$course     = learn_press_get_course( $course_id );
 
 			if ( ! $course ) {
-				throw new Exception( 'Course is invalid!' );
+				throw new Exception( 'The course is invalid!' );
 			}
 
 			// Course is no required enroll
@@ -280,7 +280,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$quiz = learn_press_get_quiz( $item_id );
 
 				if ( ! $quiz ) {
-					throw new Exception( __( 'Quiz is invalid!', 'learnpress' ) );
+					throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
 				}
 
 				$result = $no_required_enroll->get_result_quiz( $quiz, $answered );
@@ -395,7 +395,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			} else {
 				$user = learn_press_get_current_user();
 				if ( $user->is_guest() ) {
-					throw new Exception( 'User is invalid!', 'learnrpess' );
+					throw new Exception( 'The user is invalid', 'learnrpess' );
 				}
 
 				$user_course = $user->get_course_data( $course_id );

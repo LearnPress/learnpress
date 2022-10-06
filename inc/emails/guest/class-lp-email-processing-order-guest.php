@@ -20,7 +20,7 @@ if ( ! class_exists( 'LP_Email_Processing_Order_Guest' ) ) {
 		public function __construct() {
 			$this->id          = 'processing-order-guest';
 			$this->title       = __( 'Guest', 'learnpress' );
-			$this->description = __( 'Send email to user who has purchased course as a Guest when the order is processing.', 'learnpress' );
+			$this->description = __( 'When the order is processed, send an email to the user who purchased the course as a guest.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'Thank you for your order', 'learnpress' );

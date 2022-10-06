@@ -744,12 +744,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function instant_check_question( int $question_id, $answered = null ): array {
 		$question = learn_press_get_question( $question_id );
 		if ( ! $question ) {
-			throw new Exception( __( 'Question is invalid!', 'learnpress' ) );
+			throw new Exception( __( 'The question is invalid!', 'learnpress' ) );
 		}
 
 		$can_check = $this->can_check_answer( $question_id );
 		if ( ! $can_check ) {
-			throw new Exception( __( 'Cannot check answer the question.', 'learnpress' ) );
+			throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
 		}
 
 		$answered_check = array(

@@ -77,7 +77,7 @@ class LP_Forms_Handler {
 				$remember = LP_Request::get_string( 'rememberme' );
 
 				if ( empty( $username ) ) {
-					throw new Exception( '<strong>' . __( 'Error:', 'learnpress' ) . '</strong> ' . __( 'Username is required', 'learnpress' ) );
+					throw new Exception( '<strong>' . __( 'Error:', 'learnpress' ) . '</strong> ' . __( 'A username is required', 'learnpress' ) );
 				}
 
 				// On multisite, ensure user exists on current site, if not add them before allowing login.
@@ -168,7 +168,7 @@ class LP_Forms_Handler {
 					array(
 						'bat_email'   => $email,
 						'bat_phone'   => '',
-						'bat_message' => apply_filters( 'learnpress_become_instructor_message', esc_html__( 'I need become an instructor', 'learnpress' ) ),
+						'bat_message' => apply_filters( 'learnpress_become_instructor_message', esc_html__( 'I need to become an instructor', 'learnpress' ) ),
 					)
 				);
 
@@ -186,7 +186,7 @@ class LP_Forms_Handler {
 			$message_success = $username . __( ' was successfully created!', 'learnpress' );
 
 			if ( $is_become_a_teacher ) {
-				$message_success .= '<br/>' . __( 'Your request become an instructor has been sent. We will get back to you soon!', 'learnpress' );
+				$message_success .= '<br/>' . __( 'Your request to become an instructor has been sent. We will get back to you soon!', 'learnpress' );
 			}
 
 			learn_press_add_message( $message_success, 'success' );
@@ -233,7 +233,7 @@ class LP_Forms_Handler {
 			}
 
 			if ( username_exists( $username ) ) {
-				throw new Exception( __( 'An account is already registered with that username. Please choose another.', 'learnpress' ) );
+				throw new Exception( __( 'An account is already registered with that username. Please choose another one.', 'learnpress' ) );
 			}
 
 			if ( apply_filters( 'learnpress_registration_generate_password', false ) ) {
@@ -249,7 +249,7 @@ class LP_Forms_Handler {
 			}
 
 			if ( preg_match( '#\s+#', $password ) ) {
-				throw new Exception( __( 'Password can not have spacing!', 'learnpress' ) );
+				throw new Exception( __( 'Password can not contain spaces!', 'learnpress' ) );
 			}
 
 			if ( empty( $confirm_password ) ) {
@@ -257,7 +257,7 @@ class LP_Forms_Handler {
 			}
 
 			if ( $password !== $confirm_password ) {
-				throw new Exception( __( 'Confirmation password incorrect!.', 'learnpress' ) );
+				throw new Exception( __( 'Password and Confirm Password does not match!', 'learnpress' ) );
 			}
 
 			$custom_fields = LP_Settings::get_option( 'register_profile_fields', [] );
@@ -318,11 +318,11 @@ class LP_Forms_Handler {
 		}
 
 		if ( is_email( $update_data['display_name'] ) ) {
-			return new WP_Error( 'error_display_name', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
+			return new WP_Error( 'error_display_name', esc_html__( 'Due to privacy concerns, the display name cannot be changed to an email address.', 'learnpress' ) );
 		}
 
 		if ( ! is_email( $update_data['user_email'] ) ) {
-			return new WP_Error( 'error_email', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
+			return new WP_Error( 'error_email', esc_html__( 'Due to privacy concerns, the display name cannot be changed to an email address.', 'learnpress' ) );
 		} elseif ( email_exists( $update_data['user_email'] ) && $update_data['user_email'] !== $current_user->user_email ) {
 			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
 		}

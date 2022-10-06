@@ -42,7 +42,7 @@ $email_format = $meta['format'];
 				'name'        => $value['id'] . '[format]',
 				'class'       => 'lp-email-format',
 				'selected'    => $email_format,
-				'option_none' => array( '' => esc_html__( 'General Setting', 'learnpress' ) ),
+				'option_none' => array( '' => esc_html__( 'General Settings', 'learnpress' ) ),
 			)
 		);
 		?>
@@ -132,7 +132,7 @@ $email_format = $meta['format'];
 							</ol>
 
 							<p class="description">
-								<?php esc_html_e( 'Click on any variables above to insert them to the email.', 'learnpress' ); ?>
+								<?php esc_html_e( 'Click on any variables above to insert them into the email.', 'learnpress' ); ?>
 							</p>
 						<?php endif; ?>
 					<?php endif; ?>

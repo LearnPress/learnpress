@@ -111,14 +111,14 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( email_exists( $email ) ) {
 				$response['exists'] = $email;
 				$output             = '<div class="lp-guest-checkout-output">' . __(
-					'Your email is already exists. Continue with this email?',
+					'Your email already exists. Do you want to continue with this email?',
 					'learnpress'
 				) . '</div>';
 			} else {
 				$output = '<label class="lp-guest-checkout-output">
 					<input type="checkbox" name="checkout-email-option" value="new-account">
 				' . __(
-					'Create new account with this email? Account information will be sent to this email.',
+					'Create a new account with this email. The account information will be sent with this email.',
 					'learnpress'
 				) . '
 				</label>';

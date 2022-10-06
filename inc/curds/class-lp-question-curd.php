@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function __construct() {
 			$this->_error_messages = array(
-				'QUESTION_NOT_EXISTS' => __( 'Question does not exist.', 'learnpress' ),
+				'QUESTION_NOT_EXISTS' => __( 'The question does not exist.', 'learnpress' ),
 			);
 		}
 
@@ -147,7 +147,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function duplicate( &$question_id, $args = array() ) {
 			if ( ! $question_id ) {
-				return new WP_Error( 'lp/question/curd/duplicate/err', 'Op! ID not found' );
+				return new WP_Error( 'lp/question/curd/duplicate/err', 'Oops! ID not found' );
 			}
 
 			if ( learn_press_get_post_type( $question_id ) != LP_QUESTION_CPT ) {
@@ -166,7 +166,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$new_question_id = learn_press_duplicate_post( $question_id, array( 'post_status' => 'publish' ) );
 
 			if ( ! $new_question_id || is_wp_error( $new_question_id ) ) {
-				return new WP_Error( 'lp/question/curd/duplicate/err', 'Sorry! Failed to duplicate question!' );
+				return new WP_Error( 'lp/question/curd/duplicate/err', 'Sorry! Failed to duplicate the question!' );
 			} else {
 
 				// init new question

@@ -571,7 +571,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					<p>
 					<?php
 					echo sprintf(
-						__( 'User has %s to become a teacher.', 'learnpress' ),
+						__( 'A user has %s to become a teacher.', 'learnpress' ),
 						$action == 'accepted-request' ? 'accepted' : 'denied'
 					);
 					?>
@@ -683,7 +683,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				if ( ! get_option( 'learn_press_message_user_rated' ) ) {
 					$footer_text = sprintf(
 						__(
-							'If you like <strong>LearnPress</strong> please leave us a %1$s&#9733;&#9733;&#9733;&#9733;&#9733;%2$s rating. A huge thanks from LearnPress team for your generous.',
+							'If you like <strong>LearnPress</strong> please leave us a %1$s&#9733;&#9733;&#9733;&#9733;&#9733;%2$s rating. A huge thanks from the LearnPress team for your generosity.',
 							'learnpress'
 						),
 						'<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__(
@@ -755,7 +755,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 					$user = learn_press_get_current_user();
 					if ( ! $user || $user->get_email() == '' ) {
-						$data['error'] = __( 'Fail while joining newsletter! Please try again!', 'learnpress' );
+						$data['error'] = __( 'Failed while joining the newsletter! Please try again!', 'learnpress' );
 					}
 
 					$url      = 'https://thimpress.com/mailster/subscribe';
@@ -784,7 +784,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						$data['message'] = __( 'Something went wrong: ', 'learnpress' ) . $error_message;
 					} else {
 						$data['message'] = __(
-							'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.',
+							'Thank you for subscribing! Please check and click the confirmation link from the email that we\'ve just sent to your inbox.',
 							'learnpress'
 						);
 					}
@@ -906,7 +906,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				} else {
 					// $post_link_preview = sprintf( '<a class="button" href="%s" target="_blank">%s</a>', learn_press_get_preview_url( $post_id ), __( 'Preview', 'learnpress' ) );
 					$post_link_message = '<span>' . __(
-						'Permalink only available if the item is already assigned to a course.',
+						'Permalink is only available if the item is already assigned to a course.',
 						'learnpress'
 					) . '</span>';
 					$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );

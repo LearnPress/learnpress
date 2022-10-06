@@ -16,7 +16,7 @@ if ( ! class_exists( 'LP_Email_Reset_Password' ) ) {
 		public function __construct() {
 			$this->id          = 'reset-password';
 			$this->title       = esc_html__( 'Reset Password', 'learnpress' );
-			$this->description = esc_html__( 'Reset Password Email.', 'learnpress' );
+			$this->description = esc_html__( 'Password Reset Email.', 'learnpress' );
 
 			$this->default_subject = esc_html__( '[{{site_title}}] Reset Password', 'learnpress' );
 			$this->default_heading = esc_html__( 'Reset Password', 'learnpress' );

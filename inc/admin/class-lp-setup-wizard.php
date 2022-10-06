@@ -73,7 +73,7 @@ class LP_Setup_Wizard {
 			'courses_page_id'          => _x( 'LP Courses', 'static-page', 'learnpress' ),
 			'profile_page_id'          => _x( 'LP Profile', 'static-page', 'learnpress' ),
 			'checkout_page_id'         => _x( 'LP Checkout', 'static-page', 'learnpress' ),
-			'become_a_teacher_page_id' => _x( 'LP Become Teacher', 'static-page', 'learnpress' ),
+			'become_a_teacher_page_id' => _x( 'LP Become a Teacher', 'static-page', 'learnpress' ),
 			'term_conditions_page_id'  => _x( 'LP Terms and Conditions', 'static-page', 'learnpress' ),
 		);
 

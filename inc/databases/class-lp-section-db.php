@@ -89,7 +89,7 @@ class LP_Section_DB extends LP_Database {
 	public function delete_section( LP_Section_Filter $filter ) {
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->author_id_course ) ) {
-			throw new Exception( __FUNCTION__ . ': User invalid!' );
+			throw new Exception( __FUNCTION__ . ': Invalid user!' );
 		}
 
 		if ( empty( $filter->section_ids ) ) {
@@ -122,7 +122,7 @@ class LP_Section_DB extends LP_Database {
 	public function delete_section_items( LP_Section_Filter $filter ) {
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->author_id_course ) ) {
-			throw new Exception( __FUNCTION__ . ': User invalid!' );
+			throw new Exception( __FUNCTION__ . ': Invalid user!' );
 		}
 
 		if ( empty( $filter->section_ids ) ) {

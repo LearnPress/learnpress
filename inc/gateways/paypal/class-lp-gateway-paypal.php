@@ -90,7 +90,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$this->id = 'paypal';
 
 			$this->method_title       = esc_html__( 'PayPal', 'learnpress' );
-			$this->method_description = esc_html__( 'Make payment via Paypal.', 'learnpress' );
+			$this->method_description = esc_html__( 'Make a payment via Paypal.', 'learnpress' );
 			$this->icon               = '';
 
 			$this->title       = esc_html__( 'PayPal', 'learnpress' );

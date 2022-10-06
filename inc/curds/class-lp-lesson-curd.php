@@ -97,7 +97,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		 */
 		public function duplicate( &$lesson_id, $args = array() ) {
 			if ( ! $lesson_id ) {
-				return new WP_Error( '0', 'Op! ID not found' );
+				return new WP_Error( '0', 'Oops! ID not found' );
 			}
 
 			if ( get_post_type( $lesson_id ) != LP_LESSON_CPT ) {

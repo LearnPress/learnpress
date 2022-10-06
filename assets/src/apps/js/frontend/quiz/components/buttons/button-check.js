@@ -37,10 +37,10 @@ class ButtonCheck extends Component {
 				} ) } onClick={ this.checkAnswer }
 				>
 					<span className="instant-check__icon" />
-					{ __( 'Check answer', 'learnpress' ) }
+					{ __( 'Check answers', 'learnpress' ) }
 
 					{ ! answered && (
-						<div className="instant-check__info" dangerouslySetInnerHTML={ { __html: __( 'You need to answer the question before check answer.', 'learnpress' ) } } />
+						<div className="instant-check__info" dangerouslySetInnerHTML={ { __html: __( 'You need to answer the question before checking the answer key.', 'learnpress' ) } } />
 					) }
 				</button>
 			</>

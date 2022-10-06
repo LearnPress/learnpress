@@ -19,6 +19,6 @@ $slug_profile_courses = LP_Settings::instance()->get( 'profile_endpoints.courses
 $link_user_profile    = add_query_arg( [ 'tab' => 'enrolled' ], learn_press_user_profile_link( $user_id ) . $slug_profile_courses );
 ?>
 <p>
-	<b><?php _e( 'Course list of user enrolled', 'learnpress' ); ?></b>
+	<b><?php _e( 'The course list of enrolled users', 'learnpress' ); ?></b>
 	<a href="<?php echo esc_url_raw( $link_user_profile ); ?>" target="_blank"><?php _e( 'View', 'learnpress' ); ?></a>
 </p>

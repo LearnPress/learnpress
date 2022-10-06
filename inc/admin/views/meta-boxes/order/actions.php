@@ -17,7 +17,7 @@ global $post;
 			<div class="misc-pub-section">
 				<select name="trigger-order-action">
 					<option value=""><?php esc_html_e( 'Choose an action', 'learnpress' ); ?></option>
-					<option value="current-status"><?php esc_html_e( 'Trigger action of current order status', 'learnpress' ); ?></option>
+					<option value="current-status"><?php esc_html_e( 'Trigger action of the current order status', 'learnpress' ); ?></option>
 				</select>
 			</div>
 		</div>

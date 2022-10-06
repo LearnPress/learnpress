@@ -546,7 +546,7 @@ class LP_Checkout {
 					}
 
 					if ( ! username_exists( $_POST['username'] ) && ! email_exists( $_POST['username'] ) ) {
-						return new WP_Error( 'username_exists', sprintf( __( '%s is not exists.', 'learnpress' ), $field ) );
+						return new WP_Error( 'username_exists', sprintf( __( '%s is not exist.', 'learnpress' ), $field ) );
 					}
 				} elseif ( $name === 'password' ) {
 					if ( empty( $_POST['password'] ) ) {
@@ -560,7 +560,7 @@ class LP_Checkout {
 				if ( empty( $_POST['guest_email'] ) ) {
 					return new WP_Error( 'email_empty', sprintf( __( '%s is required field.', 'learnpress' ), $field ) );
 				} elseif ( ! is_email( $_POST['guest_email'] ) ) {
-					return new WP_Error( 'email_invalid', __( 'Your email is not a valid.', 'learnpress' ) );
+					return new WP_Error( 'email_invalid', __( 'Your email is not valid.', 'learnpress' ) );
 				}
 
 				$this->guest_email     = LP_Helper::maybe_unserialize( $_POST[ $name ] );

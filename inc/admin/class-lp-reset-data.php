@@ -100,7 +100,7 @@ class LP_Reset_Data {
 				}
 			}
 
-			echo __( 'Item progress deleted', 'learnpress' );
+			echo __( 'Item progress is deleted', 'learnpress' );
 		} else {
 			echo __( 'No data found', 'learnpress' );
 		}

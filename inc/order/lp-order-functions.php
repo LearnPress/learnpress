@@ -740,9 +740,9 @@ function learn_press_get_register_order_statuses() {
 function _learn_press_get_order_status_description( $status ) {
 	static $descriptions = null;
 	$descriptions        = array(
-		'pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
+		'pending'    => __( 'Order received in case a user purchases a course but doesn\'t finalize the order.', 'learnpress' ),
 		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
-		'completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
+		'completed'  => __( 'The order is fulfilled and completed.', 'learnpress' ),
 		'cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' ),
 	);
 
@@ -784,13 +784,13 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
 		} elseif ( $order->has_status( 'pending' ) ) {
 			$order->update_status( 'cancelled' );
-			$order->add_note( __( 'Order cancelled by customer', 'learnpress' ) );
+			$order->add_note( __( 'The order is cancelled by the customer', 'learnpress' ) );
 
 			// set updated message
 			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() ) );
 			$url = $order->get_cancel_order_url( true );
 		} else {
-			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> can not be cancelled', 'learnpress' ), $order->get_order_number() ), 'error' );
+			learn_press_add_message( sprintf( __( 'The order number <strong>%s</strong> can not be cancelled.', 'learnpress' ), $order->get_order_number() ), 'error' );
 		}
 		if ( ! $url ) {
 			$url = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.profile-orders', 'orders' ) );

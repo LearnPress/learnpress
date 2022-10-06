@@ -35,7 +35,7 @@
 		<input type="hidden" id="lp-gallery-images-ids" name="<?php echo esc_attr( $value['id'] ); ?>" value="<?php echo esc_attr( implode( ',', $updated_gallery_ids ) ); ?>" />
 
 		<p class="lp-metabox-field__image-advanced-upload hide-if-no-js">
-			<a href="#" data-choose="<?php esc_attr_e( 'Add images', 'learnpress' ); ?>" data-update="<?php esc_attr_e( 'Add to gallery', 'learnpress' ); ?>" data-delete="<?php esc_attr_e( 'Delete image', 'learnpress' ); ?>" data-text="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>"><?php esc_html_e( 'Add images', 'learnpress' ); ?></a>
+			<a href="#" data-choose="<?php esc_attr_e( 'Add images', 'learnpress' ); ?>" data-update="<?php esc_attr_e( 'Add to gallery', 'learnpress' ); ?>" data-delete="<?php esc_attr_e( 'Delete images', 'learnpress' ); ?>" data-text="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>"><?php esc_html_e( 'Add images', 'learnpress' ); ?></a>
 		</p>
 	</td>
 </tr>

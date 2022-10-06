@@ -55,7 +55,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			'(?P<key>[\w]+)'  => array(
 				'args'   => array(
 					'id' => array(
-						'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'string',
 					),
 				),
@@ -297,7 +297,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$can_enroll = $user->can_enroll_course( $course_id, false );
 
 			if ( ! $can_enroll->check ) {
-				throw new Exception( $can_enroll->message ?? esc_html__( 'Error: Cannot enroll course.', 'learnpress' ) );
+				throw new Exception( $can_enroll->message ?? esc_html__( 'Error: Cannot enroll in the course.', 'learnpress' ) );
 			}
 
 			$filter          = new LP_User_Items_Filter();
@@ -318,7 +318,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$result                  = $user_item_new_or_update->update();
 
 				if ( ! $result ) {
-					throw new Exception( esc_html__( 'Error: Can\'t Enroll course.', 'learnpress' ) );
+					throw new Exception( esc_html__( 'Error: Cannot Enroll in the course.', 'learnpress' ) );
 				}
 
 				do_action( 'learnpress/user/course-enrolled', $course_item->ref_id, $course_id, $user->get_id() );
@@ -337,7 +337,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$cart_id = $cart->add_to_cart( $course_id, 1, array() );
 
 				if ( ! $cart_id ) {
-					throw new Exception( esc_html__( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
+					throw new Exception( esc_html__( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 				}
 
 				if ( is_user_logged_in() ) {
@@ -359,7 +359,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$response->status = 'success';
 				// Course has no items
 				$response->message = esc_html__(
-					'Congrats! You enroll course successfully. Redirecting...',
+					'Congrats! You have enrolled in the course successfully. Redirecting...',
 					'learnpress'
 				);
 
@@ -376,7 +376,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				);
 
 				if ( empty( $redirect_url ) ) {
-					throw new Exception( __( 'Error: Please setup page for checkout.', 'learnpress' ) );
+					throw new Exception( __( 'Error: Please set up a page for checkout.', 'learnpress' ) );
 				} elseif ( ! is_user_logged_in() ) { // Fix case: cache page with user anonymous
 					$redirect_url = LP_Helper::get_link_no_cache( $redirect_url );
 				}
@@ -423,7 +423,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$user = learn_press_get_current_user();
 
 			if ( ! $user->can_purchase_course( $course_id ) ) {
-				throw new Exception( esc_html__( 'Error: Cannot purchase course!.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Error: Cannot purchase the course!', 'learnpress' ) );
 			}
 
 			$latest_user_item_id = 0;
@@ -485,7 +485,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
 
 			if ( ! $cart_id ) {
-				throw new Exception( __( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
+				throw new Exception( __( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}
 
 			if ( ! empty( $allow_repurchase_type ) ) {
@@ -500,7 +500,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			);
 
 			if ( empty( $redirect_url ) ) {
-				throw new Exception( __( 'Error: Please setup page for checkout.', 'learnpress' ) );
+				throw new Exception( __( 'Error: Please set up a page for checkout.', 'learnpress' ) );
 			} elseif ( ! is_user_logged_in() ) { // Fix case: cache page with user anonymous
 				$redirect_url = LP_Helper::get_link_no_cache( $redirect_url );
 			}
@@ -550,7 +550,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$can_retry = $user->can_retry_course( $course_id );
 
 			if ( ! $can_retry ) {
-				throw new Exception( __( 'You can\'t retry course', 'learnpress' ) );
+				throw new Exception( __( 'You can\'t retry the course', 'learnpress' ) );
 			}
 
 			$user_course_data = $user->get_course_data( $course_id );

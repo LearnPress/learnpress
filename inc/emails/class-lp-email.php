@@ -866,7 +866,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 						'type'    => 'text',
 						'default' => get_option( 'admin_email' ),
 						'id'      => $this->get_field_name( 'recipients' ),
-						'desc'    => esc_html__( 'Separate other recipients by comma.', 'learnpress' ),
+						'desc'    => esc_html__( 'Separate other recipients with commas.', 'learnpress' ),
 					),
 				) : array(),
 				array(

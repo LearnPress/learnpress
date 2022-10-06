@@ -28,12 +28,12 @@ class LP_Meta_Box_Question extends LP_Meta_Box {
 				),
 				'_lp_hint'        => new LP_Meta_Box_Textarea_Field(
 					esc_html__( 'Hint', 'learnpress' ),
-					esc_html__( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ),
+					esc_html__( 'The instructions for the user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ),
 					''
 				),
 				'_lp_explanation' => new LP_Meta_Box_Textarea_Field(
 					esc_html__( 'Explanation', 'learnpress' ),
-					esc_html__( 'Explanation will be displayed when students click button "Check Answer".', 'learnpress' ),
+					esc_html__( 'The explanation will be displayed when students click the "Check Answer" button.', 'learnpress' ),
 					''
 				),
 			)

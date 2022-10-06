@@ -76,10 +76,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$this->_default_actions = apply_filters(
 				'learn-press/profile-default-actions',
 				array(
-					'basic-information' => esc_html__( 'Account information updated successful.', 'learnpress' ),
-					'avatar'            => esc_html__( 'Account avatar updated successful.', 'learnpress' ),
-					'password'          => esc_html__( 'Password updated successful.', 'learnpress' ),
-					'privacy'           => esc_html__( 'Account privacy updated successful.', 'learnpress' ),
+					'basic-information' => esc_html__( 'Account information updated successfully.', 'learnpress' ),
+					'avatar'            => esc_html__( 'Account avatar updated successfully.', 'learnpress' ),
+					'password'          => esc_html__( 'Password updated successfully.', 'learnpress' ),
+					'privacy'           => esc_html__( 'Account privacy updated successfully.', 'learnpress' ),
 				)
 			);
 
@@ -521,7 +521,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function save( $nonce ) {
 			$user_id = get_current_user_id();
 			if ( ! $user_id ) {
-				return new WP_Error( 2, 'User is invalid!' );
+				return new WP_Error( 2, 'The user is invalid' );
 			}
 
 			$message = '';
@@ -1145,7 +1145,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			try {
 				if ( ! $user ) {
-					throw new Exception( 'User is invalid!' );
+					throw new Exception( 'The user is invalid' );
 				}
 
 				$user_id          = $user->get_id();

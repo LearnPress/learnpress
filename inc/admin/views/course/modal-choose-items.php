@@ -68,7 +68,7 @@ learn_press_admin_view( 'course/pagination' );
 			</div>
 			<div class="main">
 				<form class="search" @submit.prevent="">
-					<input type="text" class="modal-search-input" placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>" title="search" @input="onChangeQuery" v-model="query">
+					<input type="text" class="modal-search-input" placeholder="<?php esc_attr_e( 'Type here to search for an item', 'learnpress' ); ?>" title="search" @input="onChangeQuery" v-model="query">
 				</form>
 
 				<ul class="list-items">

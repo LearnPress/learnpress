@@ -2213,7 +2213,7 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 				array(
 					'title'   => __( 'Enable cart', 'learnpress' ),
 					'desc'    => __(
-						'Check this option to enable user purchase multiple courses at one time.',
+						'Check this option to enable users to purchase multiple courses at one time.',
 						'learnpress'
 					),
 					'id'      => $class->get_field_name( 'enable_cart' ),
@@ -2222,14 +2222,14 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 				),
 				array(
 					'title'   => __( 'Add to cart redirect', 'learnpress' ),
-					'desc'    => __( 'Redirect to checkout immediately after adding course to cart.', 'learnpress' ),
+					'desc'    => __( 'Redirect to checkout immediately after adding the course to the cart.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'redirect_after_add' ),
 					'default' => 'yes',
 					'type'    => 'checkbox',
 				),
 				array(
 					'title'   => __( 'AJAX add to cart', 'learnpress' ),
-					'desc'    => __( 'Using AJAX to add course to cart.', 'learnpress' ),
+					'desc'    => __( 'Using AJAX to add the course to the cart.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'ajax_add_to_cart' ),
 					'default' => 'no',
 					'type'    => 'checkbox',
@@ -2976,35 +2976,35 @@ function learn_press_course_evaluation_methods( $postid, $return = '', $final_qu
 	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $postid . '" data-loading="' . esc_attr__(
 		'Loading...',
 		'learnpress'
-	) . '">' . esc_html__( 'Get Passing Grade', 'learnpress' ) . '</a>';
+	) . '">' . esc_html__( 'Get A Passing Grade', 'learnpress' ) . '</a>';
 
 	$course_desc = array(
 		'evaluate_lesson'     => sprintf(
 			'<p>%s<br/>%s</p>',
-			__( 'Evaluate by the number of lessons completed per total number of lessons.', 'learnpress' ),
-			__( 'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 (50.%)', 'learnpress' )
+			__( 'Evaluate by the number of completed lessons per the total number of lessons.', 'learnpress' ),
+			__( 'E.g: If a course has 10 lessons and a user completes 5 lessons, then the result is 5/10 (50%).', 'learnpress' )
 		),
 		'evaluate_final_quiz' => __(
-			'Evaluate by result of final quiz in the course. You have to add a quiz to the end of the course.',
+			'Evaluate by the result of the final quiz in the course. You have to add a quiz at the end of the course.',
 			'learnpress'
 		),
 		'evaluate_quiz'       => sprintf(
 			'<p>%s<br/>%s</p>',
-			__( 'Evaluate by the number of quizzes passed per total number of quizzes.', 'learnpress' ),
+			__( 'Evaluate by the number of passed quizzes per the total number of quizzes.', 'learnpress' ),
 			__(
-				'E.g: The course has 10 quizzes and the user passed 5 quizzes then the result = 5/10 (50%).',
+				'E.g: If the course has 10 quizzes and the user passes 5 quizzes, then the result is 5/10 (50%).',
 				'learnpress'
 			)
 		),
 		'evaluate_questions'  => sprintf(
 			'<p>%s<br/>%s</p>',
-			__( 'Evaluate by total number of correct answers per total number of questions.', 'learnpress' ),
+			__( 'Evaluate by the number of correct answers per the total number of questions.', 'learnpress' ),
 			__(
-				'E.g: Course has 10 questions. User correct 5 questions. Result is 5/10 (50%).',
+				'E.g: If the course has 10 questions and the user corrects 5 questions, then the result is 5/10 (50%).',
 				'learnpress'
 			)
 		),
-		'evaluate_mark'       => __( 'Evaluate by total score achieved per total score of the questions.', 'learnpress' ),
+		'evaluate_mark'       => __( 'Evaluate by the number of achieved scores per the total score of the questions.', 'learnpress' ),
 	);
 
 	$methods = apply_filters(
@@ -3018,7 +3018,7 @@ function learn_press_course_evaluation_methods( $postid, $return = '', $final_qu
 				$course_tip,
 				$course_desc['evaluate_final_quiz']
 			) . $final_quiz_btn . $final_quizz_passing,
-			'evaluate_quiz'       => __( 'Evaluate via quizzes passed', 'learnpress' ) . sprintf(
+			'evaluate_quiz'       => __( 'Evaluate via passed quizzes', 'learnpress' ) . sprintf(
 				$course_tip,
 				$course_desc['evaluate_quiz']
 			),
@@ -3189,11 +3189,11 @@ function version_update_warning( $current_version, $new_version ) {
 	<div class="lp-update--warning">
 		<div>
 			<div class="lp-update-warning__title">
-				<?php echo esc_html__( 'Heads up, Please backup before upgrade!', 'learnpress' ); ?>
+				<?php echo esc_html__( 'Heads up! Please backup before upgrading!', 'learnpress' ); ?>
 			</div>
 			<div class="lp-update-warning__message">
 				<?php echo esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' ); ?>
-				<?php echo esc_html__( 'Learners require WordPress version ' . $info['Requires at least'] . ' or higher.', 'learnpress' ); ?>
+				<?php echo esc_html__( 'Learners require a WordPress version' . $info['Requires at least'] . ' or higher.', 'learnpress' ); ?>
 			</div>
 		</div>
 	</div>

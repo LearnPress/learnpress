@@ -495,7 +495,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					<?php
 					printf(
 						__(
-							'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)',
+							'The LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and are fully operational (currently <strong>%s</strong>)',
 							'learnpress'
 						),
 						LP_PLUGIN_BASENAME

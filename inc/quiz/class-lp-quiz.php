@@ -584,7 +584,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				),
 				'quiz_time_is_over'   => array(
 					'title'   => __( 'Time\'s up!', 'learnpress' ),
-					'message' => __( 'The time is up! Your quiz will automate come to finish', 'learnpress' ),
+					'message' => __( 'The time is up! Your quiz will automatically come to an end', 'learnpress' ),
 				),
 				'finished_quiz'       => __( 'Congrats! You have finished this quiz', 'learnpress' ),
 				'retaken_quiz'        => __( 'Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', 'learnpress' ),

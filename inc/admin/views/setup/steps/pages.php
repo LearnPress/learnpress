@@ -13,13 +13,13 @@ $settings = LP_Settings::instance();
 ?>
 <h2><?php _e( 'Static Pages', 'learnpress' ); ?></h2>
 
-<p><?php _e( 'The pages will display content of LP\'s necessary pages, such as: Courses, Checkout, Profile', 'learnpress' ); ?></p>
+<p><?php _e( 'The pages will display the content of LP\'s necessary pages, such as Courses, Checkout, and Profile', 'learnpress' ); ?></p>
 <p><?php printf( __( 'If you are not sure, click <a href="%s" id="create-pages">here</a> to create pages automatically.', 'learnpress' ), wp_nonce_url( admin_url( 'index.php?page=lp-setup&step=pages&auto-create' ) ), 'setup-create-pages' ); ?></p>
 
 <table class="form-field">
 	<tr>
 		<th>
-			<?php _e( 'Page: show list Courses', 'learnpress' ); ?>
+			<?php _e( 'Page: Show a list of courses', 'learnpress' ); ?>
 		</th>
 		<td>
 			<?php learn_press_pages_dropdown( 'settings[pages][courses_page_id]', $settings->get( 'courses_page_id' ) ); ?>

@@ -61,14 +61,14 @@ $preview_price = '';
 		</td>
 	</tr>
 	<tr>
-		<th><?php _e( 'Decimals Separator', 'learnpress' ); ?></th>
+		<th><?php _e( 'Decimal separator', 'learnpress' ); ?></th>
 		<td>
 			<input id="decimals-separator" type="text" name="settings[currency][decimals_separator]"
 				value="<?php echo esc_attr( $settings->get( 'decimals_separator', '.' ) ); ?>">
 		</td>
 	</tr>
 	<tr>
-		<th><?php _e( 'Number of Decimals', 'learnpress' ); ?></th>
+		<th><?php _e( 'The number of decimals', 'learnpress' ); ?></th>
 		<td>
 			<input id="number-of-decimals" type="text" name="settings[currency][number_of_decimals]"
 				value="<?php echo esc_attr( $settings->get( 'number_of_decimals', '2' ) ); ?>">

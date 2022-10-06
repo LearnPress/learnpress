@@ -94,7 +94,7 @@ class LP_Order_DB extends LP_Database {
 	public function delete_order_item( LP_Order_Filter $filter ) {
 		// Check valid user.
 		if ( ! current_user_can( 'administrator' ) ) {
-			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+			throw new Exception( __( 'Invalid user!', 'learnpress' ) );
 		}
 
 		if ( empty( $filter->order_item_ids ) ) {
@@ -128,7 +128,7 @@ class LP_Order_DB extends LP_Database {
 	public function delete_order_itemmeta( LP_Order_Filter $filter ) {
 		// Check valid user.
 		if ( ! current_user_can( 'administrator' ) ) {
-			throw new Exception( __( 'User invalid!', 'learnpress' ) );
+			throw new Exception( __( 'Invalid user!', 'learnpress' ) );
 		}
 
 		if ( empty( $filter->order_item_ids ) ) {

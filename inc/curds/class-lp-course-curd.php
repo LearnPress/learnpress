@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function __construct() {
 			$this->_error_messages = array(
-				'COURSE_NOT_EXISTS' => __( 'Course does not exist.', 'learnpress' ),
+				'COURSE_NOT_EXISTS' => __( 'The course does not exist.', 'learnpress' ),
 			);
 		}
 
@@ -138,7 +138,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				$course_origin = learn_press_get_course( $course_id );
 				if ( ! $course_origin ) {
-					throw new Exception( 'Course is invalid' );
+					throw new Exception( 'The course is invalid!' );
 				}
 
 				$course_id_new = learn_press_duplicate_post( $course_id, $args );

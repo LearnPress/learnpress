@@ -30,7 +30,7 @@ export default function Edit( { attributes } ) {
 					{ sprintf(
 						/* translators: %s is the template title */
 						__(
-							'This is an editor placeholder for the %s. On your store this will be replaced by the template and display with your course image(s), title, price, etc. You can move this placeholder around and add further blocks around it to extend the template.',
+							'This is an editor placeholder for the %s. This will be replaced by the template in your store and displayed with your course image(s), title, price, and so on. You can move this placeholder around and add further blocks around it to extend the template.',
 							'learnpress'
 						),
 						templateTitle

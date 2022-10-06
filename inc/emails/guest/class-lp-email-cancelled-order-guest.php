@@ -23,7 +23,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Guest' ) ) {
 		public function __construct() {
 			$this->id          = 'cancelled-order-guest';
 			$this->title       = __( 'Guest', 'learnpress' );
-			$this->description = __( 'Send email to guest when order has been cancelled.', 'learnpress' );
+			$this->description = __( 'Send an email to the guest when the order has been cancelled.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order on {{order_date}} has been cancelled', 'learnpress' );
 			$this->default_heading = __( 'Your order has been cancelled', 'learnpress' );

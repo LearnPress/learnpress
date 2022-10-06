@@ -29,7 +29,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args'   => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -55,7 +55,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args' => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -204,7 +204,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$course_id = $this->get_course_by_item_id( $id );
 
 			if ( empty( $course_id ) ) {
-				throw new Exception( esc_html__( 'Error: This lesson is not assign in Course.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Error: This lesson is not assigned in the Course.', 'learnpress' ) );
 			}
 
 			$course = learn_press_get_course( $course_id );
@@ -217,11 +217,11 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$result = $user->complete_lesson( $id, $course_id );
 
 			if ( is_wp_error( $result ) ) {
-				throw new Exception( $result->get_error_message() ?? esc_html__( 'Error: Cannot complete Lesson', 'learnpress' ) );
+				throw new Exception( $result->get_error_message() ?? esc_html__( 'Error: Cannot complete the Lesson', 'learnpress' ) );
 			}
 
 			$response->status  = 'success';
-			$response->message = esc_html__( 'Congrats! You complete lesson is successfully', 'learnpress' );
+			$response->message = esc_html__( 'Congrats! You have completed the lesson successfully', 'learnpress' );
 		} catch ( \Throwable $th ) {
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
@@ -427,7 +427,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'type'       => 'object',
 			'properties' => array(
 				'id'                => array(
-					'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
+					'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -481,7 +481,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'content'           => array(
-					'description' => __( 'Content course.', 'learnpress' ),
+					'description' => __( 'Course content.', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
@@ -491,7 +491,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'can_finish_course' => array(
-					'description' => __( 'Can finish course', 'learnpress' ),
+					'description' => __( 'Can finish the course', 'learnpress' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view' ),
 					'readonly'    => true,

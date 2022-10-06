@@ -1928,7 +1928,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			try {
 				if ( ! $orders ) {
-					throw new Exception( __( 'No item in Order', 'learnpress' ), 0 );
+					throw new Exception( __( 'There are no items in the order', 'learnpress' ), 0 );
 				}
 
 				$course_ids   = array_keys( $orders );
@@ -2139,7 +2139,7 @@ ORDER BY MAX(user_item_id) DESC";
 		}
 
 		if ( username_exists( $username ) ) {
-			return new WP_Error( 'registration-error-username-exists', __( 'An account is already registered with that username. Please choose another.', 'learnpress' ) );
+			return new WP_Error( 'registration-error-username-exists', __( 'An account is already registered with that username. Please choose another one.', 'learnpress' ) );
 		}
 
 		$new_user = wp_insert_user(
@@ -2151,7 +2151,7 @@ ORDER BY MAX(user_item_id) DESC";
 		);
 
 		if ( is_wp_error( $new_user ) ) {
-			return new WP_Error( 'registration-error', __( 'Failed to create user', 'learnpress' ) );
+			return new WP_Error( 'registration-error', __( 'Failed to create the user', 'learnpress' ) );
 		}
 
 		return $new_user;

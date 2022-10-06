@@ -74,7 +74,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 				$message = sprintf( esc_html__( 'Please %s to send your request!', 'learnpress' ), sprintf( '<strong><a href="%s">%s</a></strong>', learn_press_get_login_url(), _x( 'login', 'become-teacher-form', 'learnpress' ) ) );
 			} else {
 				if ( learn_press_become_teacher_sent() ) {
-					$message = esc_html__( 'Your have already sent the request. Please wait for approvement.', 'learnpress' );
+					$message = esc_html__( 'You have already sent the request. Please wait for the approval.', 'learnpress' );
 				} elseif ( learn_press_user_maybe_is_a_teacher() ) {
 					$message = esc_html__( 'You are a teacher!', 'learnpress' );
 				}
@@ -84,7 +84,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 				$atts = shortcode_atts(
 					array(
 						'title'                      => esc_html__( 'Become a Teacher', 'learnpress' ),
-						'description'                => esc_html__( 'Fill in your information and send us to become a teacher.', 'learnpress' ),
+						'description'                => esc_html__( 'Fill in your information and send it to us to become a teacher.', 'learnpress' ),
 						'submit_button_text'         => esc_html__( 'Submit', 'learnpress' ),
 						'submit_button_process_text' => esc_html__( 'Processing', 'learnpress' ),
 					),

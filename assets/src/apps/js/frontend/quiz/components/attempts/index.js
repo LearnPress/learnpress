@@ -12,7 +12,7 @@ const Attempts = () => {
 	return (
 		! hasAttempts ? false : <>
 			<div className="quiz-attempts">
-				<h4 className="attempts-heading">{ __( 'Last Attempted', 'learnpress' ) }</h4>
+				<h4 className="attempts-heading">{ __( 'Last Attempt', 'learnpress' ) }</h4>
 
 				{ hasAttempts && (
 					<table>

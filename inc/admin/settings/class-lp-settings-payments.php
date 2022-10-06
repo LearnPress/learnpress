@@ -82,21 +82,21 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'id'      => 'guest_checkout',
 					'default' => 'no',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Enable guest checkout', 'learnpress' ),
+					'desc'    => esc_html__( 'Enable guest checkout.', 'learnpress' ),
 				),
 				array(
 					'title'   => esc_html__( 'Account login', 'learnpress' ),
 					'id'      => 'enable_login_checkout',
 					'default' => 'yes',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Enable login form in checkout', 'learnpress' ),
+					'desc'    => esc_html__( 'Enable the login form in the checkout.', 'learnpress' ),
 				),
 				array(
 					'title'   => esc_html__( 'Account creation', 'learnpress' ),
 					'id'      => 'enable_registration_checkout',
 					'default' => 'yes',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Enable register form in checkout', 'learnpress' ),
+					'desc'    => esc_html__( 'Enable the register form in the checkout.', 'learnpress' ),
 				),
 			)
 		);

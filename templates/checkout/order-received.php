@@ -68,7 +68,7 @@ echo wp_sprintf(
 				if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 					$links[] = apply_filters(
 						'learn-press/order-item-not-course-id',
-						__( 'Course does not exist', 'learnpress' ),
+						__( 'The course does not exist', 'learnpress' ),
 						$item
 					);
 				} else {

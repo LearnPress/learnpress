@@ -65,8 +65,8 @@ class LP_Install_Sample_Data {
 		}
 
 		$i18n = array(
-			'confirm_install_sample_data'   => esc_html__( 'Are you sure you want to install sample course data?', 'learnpress' ),
-			'confirm_uninstall_sample_data' => esc_html__( 'Are you sure you want to delete sample course data?', 'learnpress' ),
+			'confirm_install_sample_data'   => esc_html__( 'Are you sure you want to install the sample course data?', 'learnpress' ),
+			'confirm_uninstall_sample_data' => esc_html__( 'Are you sure you want to delete the sample course data?', 'learnpress' ),
 		);
 
 		if ( empty( $data['i18n'] ) ) {
@@ -155,7 +155,7 @@ class LP_Install_Sample_Data {
 			?>
 
 			<div class="lp-install-sample__response success">
-				<?php printf( __( 'Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
+				<?php printf( __( 'The Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
 				<a href="<?php echo esc_url_raw( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
 				|
 				<a href="<?php echo esc_url_raw( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
@@ -205,7 +205,7 @@ class LP_Install_Sample_Data {
 			?>
 
 			<div class="lp-install-sample__response success">
-				<?php esc_html_e( 'Delete sample data successfully!', 'learnpress' ); ?>
+				<?php esc_html_e( 'The sample data was successfully deleted!', 'learnpress' ); ?>
 			</div>
 
 			<?php

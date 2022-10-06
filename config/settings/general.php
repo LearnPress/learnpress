@@ -48,7 +48,7 @@ return apply_filters(
 			'id'      => 'logout_redirect_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
-			'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' ),
+			'desc'    => __( 'The page where the user will be redirected to after logging out.', 'learnpress' ),
 		),
 		array(
 			'type' => 'sectionend',
@@ -76,14 +76,14 @@ return apply_filters(
 		),
 		array(
 			'title'    => esc_html__( 'Thousands separator', 'learnpress' ),
-			'desc_tip' => esc_html__( 'This sets the thousand separator of displayed prices.', 'learnpress' ),
+			'desc_tip' => esc_html__( 'This sets the thousands separator of displayed prices.', 'learnpress' ),
 			'id'       => 'thousands_separator',
 			'default'  => ',',
 			'type'     => 'text',
 			'css'      => 'min-width: 50px; width: 50px;',
 		),
 		array(
-			'title'    => esc_html__( 'Decimals separator', 'learnpress' ),
+			'title'    => esc_html__( 'Decimal separator', 'learnpress' ),
 			'desc_tip' => esc_html__( 'This sets the decimal separator of displayed prices.', 'learnpress' ),
 			'id'       => 'decimals_separator',
 			'default'  => '.',
@@ -91,8 +91,8 @@ return apply_filters(
 			'css'      => 'min-width: 50px; width: 50px;',
 		),
 		array(
-			'title'    => esc_html__( 'Number of decimals', 'learnpress' ),
-			'desc_tip' => esc_html__( 'This sets the number of decimal points shown in displayed prices.', 'learnpress' ),
+			'title'    => esc_html__( 'The number of decimals', 'learnpress' ),
+			'desc_tip' => esc_html__( 'This sets the number of decimal points shown in the displayed prices.', 'learnpress' ),
 			'id'       => 'number_of_decimals',
 			'default'  => '2',
 			'type'     => 'number',
@@ -110,8 +110,8 @@ return apply_filters(
 			'id'       => 'publish_profile',
 			'default'  => 'no',
 			'type'     => 'checkbox',
-			'desc_tip' => esc_html__( 'This option will add a sub-item "Privacy" under Setting tab on the Profile page. If users want to publish or hide their course, quiz tab when other users visit their profile page, they need to enable/disable that option in the Privacy section.', 'learnpress' ),
-			'desc'     => __( 'Public all user profile page (Overview tab only).', 'learnpress' ),
+			'desc_tip' => esc_html__( 'This option will add a sub-item \"Privacy\" under the Setting tab on the Profile page. If users want to publish or hide their course, or quiz tab when other users visit their profile page, they need to enable/disable that option in the Privacy section.', 'learnpress' ),
+			'desc'     => __( 'Public all user profile pages (only the overview tab).', 'learnpress' ),
 		),
 		array(
 			'title'   => esc_html__( 'Instructor registration', 'learnpress' ),

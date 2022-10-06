@@ -86,7 +86,7 @@ abstract class LP_Abstract_Settings {
 		if ( $settings ) {
 			LP_Meta_Box_Helper::output_fields( $settings );
 		} else {
-			echo esc_html__( 'No setting available.', 'learnpress' );
+			echo esc_html__( 'No settings available.', 'learnpress' );
 		}
 	}
 

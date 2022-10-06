@@ -288,7 +288,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	if ( $allow_create ) {
 		ob_start(); ?>
 
-		<?php echo esc_html( _x( 'or', 'drop down pages', 'learnpress' ) ); ?>
+		<?php echo esc_html( _x( 'or', 'dropdown pages', 'learnpress' ) ); ?>
 
 		<button class="button button-quick-add-page" data-id="<?php echo esc_attr( $id ); ?>" type="button">
 			<?php esc_html_e( 'Create new', 'learnpress' ); ?>
@@ -1474,8 +1474,8 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
  */
 function learn_press_get_chart_courses2() {
 	$labels = array(
-		__( 'Pending Courses / Publish Courses', 'learnpress' ),
-		__( 'Free Courses / Priced Courses', 'learnpress' ),
+		__( 'Pending Courses/Publish Courses', 'learnpress' ),
+		__( 'Free Courses/Paid Courses', 'learnpress' ),
 	);
 
 	$datasets            = array();
@@ -1855,7 +1855,7 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'post_parent'    => $post->post_parent,
 			'post_password'  => $post->post_password,
 			'post_status'    => 'draft',
-			'post_title'     => $post->post_title . __( ' Copy', 'learnpress' ),
+			'post_title'     => $post->post_title . __( 'Copy', 'learnpress' ),
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order,

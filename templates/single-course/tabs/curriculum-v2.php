@@ -36,7 +36,7 @@ if ( isset( $args['sections'] ) && isset( $args['filters'] ) ) {
 			</ul>
 		<?php else : ?>
 			<?php
-			echo wp_kses_post( apply_filters( 'learnpress/course/curriculum/empty', esc_html__( 'Curriculum is empty', 'learnpress' ) ) );
+			echo wp_kses_post( apply_filters( 'learnpress/course/curriculum/empty', esc_html__( 'The curriculum is empty', 'learnpress' ) ) );
 			?>
 		<?php endif; ?>
 	</div>

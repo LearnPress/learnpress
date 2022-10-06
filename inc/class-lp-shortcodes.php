@@ -217,7 +217,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 			<p>
 				<a href="<?php echo wp_lostpassword_url(); ?>"><?php esc_html_e( 'Forgot password?', 'learnpress' ); ?></a>
 				&nbsp;|&nbsp;
-				<a href="<?php echo wp_registration_url(); ?>"><?php esc_html_e( 'Create new account', 'learnpress' ); ?></a>
+				<a href="<?php echo wp_registration_url(); ?>"><?php esc_html_e( 'Create a new account', 'learnpress' ); ?></a>
 			</p>
 			<?php
 			$html .= ob_get_clean();

@@ -33,7 +33,7 @@ if ( ! isset( $profile ) ) {
 		</div>
 	<?php else : ?>
 		<div class="lp-content-area">
-			<?php esc_html_e( 'This user does not public their profile.', 'learnpress' ); ?>
+			<?php esc_html_e( 'This user does not make their profile public.', 'learnpress' ); ?>
 		</div>
 	<?php endif; ?>
 

@@ -41,7 +41,7 @@ class LP_Backward_Addons {
 			<p>
 			<?php
 			echo sprintf(
-				__( 'There are some add-ons had gone outdated and might conflict with <strong>LearnPress</strong> that need to be deactivated. Please upgrade them to the newest version to ensure stability and performance of your site.', 'learnpress' ),
+				__( 'Some add-ons have become outdated and might conflict with <strong>LearnPress</strong>, which needs to be deactivated. Please upgrade them to the newest version to ensure the stability and performance of your site.', 'learnpress' ),
 				LEARNPRESS_VERSION
 			);
 			?>
@@ -98,7 +98,7 @@ class LP_Backward_Addons {
 			if ( $invalid_slug ) {
 				wp_die(
 					sprintf(
-						__( 'LearnPress plugin slug should be <strong>%1$s</strong> to make sure it works properly. Currently, it is <strong>%2$s</strong>. Please correct it\'s name and active again. <a href="%3$s">Back</a>', 'learnpress' ),
+						__( 'The LearnPress plugin slug should be <strong>%1$s</strong> to make sure it works properly. Currently, it is <strong>%2$s</strong>. Please correct its name and activate it again. <a href=\"%3$s\">Back</a>', 'learnpress' ),
 						'learnpress/learnpress.php',
 						$invalid_slug,
 						admin_url( 'plugins.php' )

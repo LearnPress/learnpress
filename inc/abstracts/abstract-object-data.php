@@ -341,7 +341,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			// If there is at least one method failed
 			if ( $errors ) {
 				$errors = array_map( array( $this, 'prefix_set_method' ), $errors );
-				throw new Exception( sprintf( __( 'The following these functions %1$s do not exists in %2$s', 'learnpress' ), join( ',', $errors ), get_class( $this ) ) );
+				throw new Exception( sprintf( __( 'The following functions %1$s do not exist in %2$s', 'learnpress' ), join( ',', $errors ), get_class( $this ) ) );
 			}
 		}
 

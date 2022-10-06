@@ -429,7 +429,7 @@ abstract class LP_Abstract_Post_Type {
 
 			$course_id = $wpdb->get_var( $query );
 			if ( $course_id ) {
-				return __( 'This item has already assigned to course. It will be removed from course if it is not published.', 'learnpress' );
+				return __( 'This item has already been assigned to the course. It will be removed from the course if it is not published.', 'learnpress' );
 			}
 		} elseif ( LP_QUESTION_CPT === $post_type ) {
 			$query = $wpdb->prepare(
@@ -444,7 +444,7 @@ abstract class LP_Abstract_Post_Type {
 
 			$quiz_id = $wpdb->get_var( $query );
 			if ( $quiz_id ) {
-				return __( 'This question has already assigned to quiz. It will be removed from quiz if it is not published.', 'learnpress' );
+				return __( 'This question has already been assigned to the quiz. It will be removed from the quiz if it is not published.', 'learnpress' );
 			}
 		}
 
@@ -920,7 +920,7 @@ abstract class LP_Abstract_Post_Type {
 			3  => __( 'Custom field deleted.', 'learnpress' ),
 			4  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
 			/* translators: %s: date and time of the revision */
-			5  => isset( $_GET['revision'] ) ? sprintf( __( 'Lesson restored to revision from %s', 'learnpress' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			5  => isset( $_GET['revision'] ) ? sprintf( __( 'The lesson has been restored to revision from %s', 'learnpress' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
 			6  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'published.', 'learnpress' ) ),
 			7  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'saved.', 'learnpress' ) ),
 			8  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'submitted.', 'learnpress' ) ),

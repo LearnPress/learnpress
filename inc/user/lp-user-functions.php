@@ -893,7 +893,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 			learn_press_get_login_url( $return_url )
 		);
 		if ( $redirect !== false ) {
-			learn_press_add_message( __( 'Please login to enroll this course', 'learnpress' ) );
+			learn_press_add_message( __( 'Please log in to enroll in this course', 'learnpress' ) );
 
 			if ( learn_press_is_ajax() ) {
 				learn_press_send_json(
@@ -911,7 +911,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 		$user     = learn_press_get_current_user();
 		$redirect = false;
 		if ( $user->has_finished_course( $course_id ) ) {
-			learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
+			learn_press_add_message( __( 'You have already finished the course', 'learnpress' ) );
 			$redirect = true;
 		} elseif ( $user->has_purchased_course( $course_id ) ) {
 			learn_press_add_message( __( 'You have already enrolled in this course', 'learnpress' ) );
@@ -1028,7 +1028,7 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 	$user_id = get_current_user_id();
 
 	if ( ! $user_id ) {
-		return new WP_Error( 2, 'User is invalid!' );
+		return new WP_Error( 2, 'The user is invalid' );
 	}
 
 	$update_data = array(
@@ -1069,7 +1069,7 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 	$user_id = get_current_user_id();
 
 	if ( ! $user_id ) {
-		return new WP_Error( 2, 'User is invalid!' );
+		return new WP_Error( 2, 'The user is invalid' );
 	}
 
 	$old_pass       = filter_input( INPUT_POST, 'pass0' );
@@ -1087,13 +1087,13 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 
 	try {
 		if ( ! $check_old_pass ) {
-			throw new Exception( __( 'Old password incorrect!', 'learnpress' ) );
+			throw new Exception( __( 'The old password is incorrect!', 'learnpress' ) );
 		} else {
 			$new_pass  = filter_input( INPUT_POST, 'pass1' );
 			$new_pass2 = filter_input( INPUT_POST, 'pass2' );
 
 			if ( ! $new_pass || ! $new_pass2 || ( $new_pass != $new_pass2 ) ) {
-				throw new Exception( __( 'Confirmation password incorrect!', 'learnpress' ) );
+				throw new Exception( __( 'Incorrect confirmation password!', 'learnpress' ) );
 			} else {
 				$update_data = array(
 					'user_pass' => $new_pass,

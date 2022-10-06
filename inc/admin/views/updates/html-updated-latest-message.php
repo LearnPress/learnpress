@@ -13,5 +13,5 @@ LearnPress::instance()->session->remove( 'do-update-learnpress', true );
 ?>
 
 <div class="updated notice">
-	<p><?php esc_html_e( 'LearnPress has just updated to latest version.', 'learnpress' ); ?></p>
+	<p><?php esc_html_e( 'LearnPress has just updated to the latest version.', 'learnpress' ); ?></p>
 </div>

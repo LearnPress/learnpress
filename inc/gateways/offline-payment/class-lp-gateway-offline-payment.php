@@ -163,7 +163,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 				$default_status = 'completed';
 			}
 
-			$order->update_status( $default_status, __( 'Payment to be made upon delivery.', 'learnpress' ) );
+			$order->update_status( $default_status, __( 'Payment can be made upon delivery.', 'learnpress' ) );
 
 			// Remove cart
 			LearnPress::instance()->cart->empty_cart();

@@ -23,12 +23,12 @@ class LP_Handle_Steps {
 			$steps = $params['steps'] ?? array();
 
 			if ( empty( $steps ) ) {
-				throw new Exception( __( 'Steps invalid', 'learnpress' ) );
+				throw new Exception( __( 'Invalid steps', 'learnpress' ) );
 			}
 
 			$step = $params['step'] ?? '';
 			if ( empty( $step ) ) {
-				throw new Exception( __( 'Step invalid', 'learnpress' ) );
+				throw new Exception( __( 'Invalid step', 'learnpress' ) );
 			}
 
 			$data = $params['data'] ?? array();
@@ -75,6 +75,6 @@ class LP_Handle_Steps {
 			return call_user_func( $step_function, $data );
 		}
 
-		throw new Exception( __( 'Not found function', 'learnpress' ) . $step_function );
+		throw new Exception( __( 'Function not found', 'learnpress' ) . $step_function );
 	}
 }

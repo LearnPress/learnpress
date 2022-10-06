@@ -25,10 +25,10 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_User' ) ) {
 		public function __construct() {
 			$this->id          = 'enrolled-course-user';
 			$this->title       = __( 'User', 'learnpress' );
-			$this->description = __( 'Send this email to user when they have enrolled course.', 'learnpress' );
+			$this->description = __( 'Send this email to the user when they have enrolled in the course.', 'learnpress' );
 
-			$this->default_subject = __( '[{{site_title}}] You have enrolled in course', 'learnpress' );
-			$this->default_heading = __( 'You have enrolled course', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}] You have enrolled in the course', 'learnpress' );
+			$this->default_heading = __( 'You have enrolled in the course', 'learnpress' );
 
 			parent::__construct();
 		}

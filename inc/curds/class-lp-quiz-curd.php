@@ -26,7 +26,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 */
 		public function __construct() {
 			$this->_error_messages = array(
-				'QUIZ_NOT_EXISTS' => __( 'Quiz does not exist.', 'learnpress' ),
+				'QUIZ_NOT_EXISTS' => __( 'The quiz does not exist.', 'learnpress' ),
 			);
 		}
 

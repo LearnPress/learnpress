@@ -64,7 +64,7 @@ const Status = () => {
 	const submit = () => {
 		const { confirm } = select( 'learnpress/modal' );
 
-		if ( 'no' === confirm( __( 'Are you sure to submit quiz?', 'learnpress' ), submit ) ) {
+		if ( 'no' === confirm( __( 'Are you sure to submit the quiz?', 'learnpress' ), submit ) ) {
 			return;
 		}
 

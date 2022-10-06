@@ -503,11 +503,11 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$user = learn_press_get_user( $user_id );
 
 			if ( ! $user || $user instanceof LP_User_Guest ) {
-				throw new Exception( esc_html__( 'User invalid!.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Invalid User!', 'learnpress' ) );
 			}
 
 			if ( $order->get_checkout_email() !== $user->get_email() ) {
-				throw new Exception( esc_html__( 'Order key invalid with Email!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Invalid order key with Email!', 'learnpress' ) );
 			}
 
 			// Set user to order and update

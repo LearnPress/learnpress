@@ -128,9 +128,9 @@ export default function Avatar() {
 
 			let error = '';
 			if ( parseInt( fileUpload.size ) > 2097152 ) {
-				error = __( 'File size too large. You need to upload a file < 2MB', 'learnpress' );
+				error = __( 'The file size is too large. You need to upload a file < 2MB.', 'learnpress' );
 			} else if ( img.naturalWidth < width || img.naturalHeight < height ) {
-				error = sprintf( __( 'Image size must be greater than or equal to %1$sx%2$spx', 'learnpress' ), width, height );
+				error = sprintf( __( 'The image size must be greater than or equal to %1$sx%2$spx', 'learnpress' ), width, height );
 			}
 
 			if ( error ) {

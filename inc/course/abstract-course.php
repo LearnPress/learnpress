@@ -1253,7 +1253,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				if ( $start_time + $duration > $now ) {
 					$remain = $start_time + $duration - $now;
 					$remain = learn_press_seconds_to_weeks( $remain );
-					$html   = sprintf( __( 'This course will end within next %s', 'learnpress' ), $remain );
+					$html   = sprintf( __( 'This course will end within the next %s', 'learnpress' ), $remain );
 				}
 			}
 

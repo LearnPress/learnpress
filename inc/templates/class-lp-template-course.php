@@ -152,7 +152,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		try {
 			if ( $user && $user->has_enrolled_course( get_the_ID() ) ) {
-				throw new Exception( 'User has enrolled course' );
+				throw new Exception( 'The user has enrolled in the course' );
 			}
 
 			$price_html = $course->get_course_price_html();
@@ -363,7 +363,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 
 			if ( $user->has_finished_course( $course->get_id() ) ) {
-				throw new Exception( 'User has finished course' );
+				throw new Exception( 'The user has completed the course.' );
 			}
 
 			// Course has no items

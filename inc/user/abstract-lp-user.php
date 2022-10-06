@@ -560,7 +560,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
 			$remain    = $quiz_data->hint( $question_id );
 			if ( false === $remain ) {
-				return new WP_Error( 1001, __( 'You can not hint question.', 'learnpress' ) );
+				return new WP_Error( 1001, __( 'You can not hint at the question.', 'learnpress' ) );
 			}
 
 			return $remain;
@@ -627,7 +627,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( is_callable( $callback ) ) {
 				return call_user_func_array( $callback, $args );
 			} else {
-				throw new Exception( sprintf( __( 'The role %s for user doesn\'t exist', 'learnpress' ), $role ) );
+				throw new Exception( sprintf( __( 'The role %s for the user doesn\'t exist', 'learnpress' ), $role ) );
 			}
 		}
 
@@ -776,7 +776,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( is_callable( $callback ) ) {
 				return call_user_func_array( $callback, $args );
 			} else {
-				throw new Exception( sprintf( __( 'The role %s for user doesn\'t exist', 'learnpress' ), $role ) );
+				throw new Exception( sprintf( __( 'The role %s for the user doesn\'t exist', 'learnpress' ), $role ) );
 			}
 		}
 
@@ -788,7 +788,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( is_callable( $callback ) ) {
 				return call_user_func_array( $callback, $args );
 			} else {
-				throw new Exception( sprintf( __( 'The role %s for user doesn\'t exist', 'learnpress' ), $role ) );
+				throw new Exception( sprintf( __( 'The role %s for the user doesn\'t exist', 'learnpress' ), $role ) );
 			}
 		}
 

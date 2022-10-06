@@ -216,7 +216,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$post_type = learn_press_get_post_type( $post_id );
 
 			if ( ! $post_id ) {
-				learn_press_send_json_error( __( 'Ops! ID not found', 'learnpress' ) );
+				learn_press_send_json_error( __( 'Oops! ID not found', 'learnpress' ) );
 			} else {
 
 				$new_item_id = '';
@@ -259,7 +259,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 
 				if ( is_wp_error( $new_item_id ) ) {
-					learn_press_send_json_error( __( 'Duplicate post fail, please try again', 'learnpress' ) );
+					learn_press_send_json_error( __( 'Duplicate post failed. Please try again', 'learnpress' ) );
 				} else {
 					learn_press_send_json_success( admin_url( 'post.php?post=' . $new_item_id . '&action=edit' ) );
 				}
@@ -408,7 +408,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// verify nonce
 			$nonce = learn_press_get_request( 'remove_nonce' );
 			if ( ! wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
-				die( __( 'Check nonce failed', 'learnpress' ) );
+				die( __( 'Nonce check failed', 'learnpress' ) );
 			}
 
 			// validate order

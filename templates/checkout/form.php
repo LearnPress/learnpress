@@ -18,7 +18,7 @@ learn_press_print_messages();
 if ( ! is_user_logged_in() ) {
 	?>
 	<div class="learn-press-message error">
-		<?php _e( 'Please login to enroll the course!', 'learnpress' ); ?>
+		<?php _e( 'Please log in to enroll in the course!', 'learnpress' ); ?>
 	</div>
 	<?php
 }

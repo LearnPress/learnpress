@@ -108,7 +108,7 @@ class LP_User_Items_DB extends LP_Database {
 
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
-			throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+			throw new Exception( __( 'Invalid user!', 'learnpress' ) . ' | ' . __FUNCTION__ );
 		}
 
 		if ( - 1 < $filter->limit ) {
@@ -454,7 +454,7 @@ class LP_User_Items_DB extends LP_Database {
 		try {
 			// Check valid user.
 			if ( ! is_user_logged_in() ) {
-				throw new Exception( __( 'User invalid!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+				throw new Exception( __( 'Invalid user!', 'learnpress' ) . ' | ' . __FUNCTION__ );
 			}
 
 			$query = $this->wpdb->prepare(
@@ -644,7 +644,7 @@ class LP_User_Items_DB extends LP_Database {
 	public function update_user_id_by_order( LP_User_Items_Filter $filter ) {
 		// Check valid user.
 		if ( ! is_user_logged_in() || ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $filter->user_id ) ) {
-			throw new Exception( __FUNCTION__ . ': User invalid!' );
+			throw new Exception( __FUNCTION__ . ': Invalid user!' );
 		}
 
 		$query = $this->wpdb->prepare(

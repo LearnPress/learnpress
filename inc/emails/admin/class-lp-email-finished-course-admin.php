@@ -24,9 +24,9 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Admin' ) ) {
 		public function __construct() {
 			$this->id              = 'finished-course-admin';
 			$this->title           = __( 'Admin', 'learnpress' );
-			$this->description     = __( 'Send this email to admin when user has finished course.', 'learnpress' );
-			$this->default_subject = __( '{{user_display_name}} has finished course', 'learnpress' );
-			$this->default_heading = __( 'User has finished course', 'learnpress' );
+			$this->description     = __( 'Send an email to admin when the user has finished the course.', 'learnpress' );
+			$this->default_subject = __( '{{user_display_name}} has completed the course.', 'learnpress' );
+			$this->default_heading = __( 'The user has completed the course.', 'learnpress' );
 
 			$this->recipient = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 

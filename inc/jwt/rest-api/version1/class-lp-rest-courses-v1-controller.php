@@ -35,7 +35,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args'   => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -61,7 +61,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args' => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -86,7 +86,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args' => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -111,7 +111,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args' => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -259,7 +259,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$course_id = ! empty( $request['course-id'] ) ? absint( $request['course-id'] ) : 0;
 
 				if ( empty( $password ) ) {
-					throw new Exception( __( 'Secret key is empty.', 'learnpress' ) );
+					throw new Exception( __( 'The secret key is empty.', 'learnpress' ) );
 				}
 
 				$url = LP_Settings::instance()->get( 'in_app_purchase_apple_sandbox' ) === 'yes' ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
@@ -285,13 +285,13 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$body = json_decode( wp_remote_retrieve_body( $verify ) );
 
 				if ( $body->status !== 0 ) {
-					throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
+					throw new Exception( __( 'Cannot verify the receipt', 'learnpress' ) );
 				}
 
 				$latest_receipt_info = ! empty( $body->latest_receipt_info ) ? $body->latest_receipt_info : array();
 
 				if ( empty( $latest_receipt_info ) ) {
-					throw new Exception( __( 'Course id is invalid.', 'learnpress' ) );
+					throw new Exception( __( 'The course ID is invalid.', 'learnpress' ) );
 				}
 
 				$course_ids = array_map(
@@ -302,7 +302,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				);
 
 				if ( ! in_array( $course_id, $course_ids ) ) {
-					throw new Exception( __( 'Course id is invalid.', 'learnpress' ) );
+					throw new Exception( __( 'The course ID is invalid.', 'learnpress' ) );
 				}
 			} else {
 				$receipt        = json_decode( $receipt, true );
@@ -311,7 +311,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$purchase_token = $receipt['purchaseToken'] ?? '';
 
 				if ( ! function_exists( 'learnpress_in_app_purchase_get_access_token' ) ) {
-					throw new Exception( __( 'Cannot verify receipt', 'learnpress' ) );
+					throw new Exception( __( 'Cannot verify the receipt', 'learnpress' ) );
 				}
 
 				$access_token = learnpress_in_app_purchase_get_access_token();
@@ -328,7 +328,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$course = learn_press_get_course( $course_id );
 
 			if ( ! $course ) {
-				throw new Exception( __( 'Course is not exists.', 'learnpress' ) );
+				throw new Exception( __( 'The course ID is invalid.', 'learnpress' ) );
 			}
 			$user = learn_press_get_current_user();
 
@@ -344,7 +344,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
 
 			if ( ! $cart_id ) {
-				throw new Exception( esc_html__( 'Error: Can\'t add Course to cart.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}
 
 			if ( is_user_logged_in() ) {
@@ -396,7 +396,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$check  = $user->can_show_finish_course_btn( $course );
 
 			if ( $check['status'] !== 'success' ) {
-				throw new Exception( $check['message'] ?? esc_html__( 'Can not finish course.', 'learnpress' ) );
+				throw new Exception( $check['message'] ?? esc_html__( 'Cannot finish this course.', 'learnpress' ) );
 			}
 
 			$finished = $user->finish_course( $course_id );
@@ -989,7 +989,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'type'       => 'object',
 			'properties' => array(
 				'id'                    => array(
-					'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
+					'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -1046,7 +1046,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'readonly'    => true,
 				),
 				'on_sale'               => array(
-					'description' => __( 'Shows if the course is on sale.', 'learnpress' ),
+					'description' => __( 'Display courses if they are on sale.', 'learnpress' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -1059,7 +1059,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'content'               => array(
-					'description' => __( 'Content course.', 'learnpress' ),
+					'description' => __( 'Course content.', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
@@ -1074,25 +1074,25 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view' ),
 				),
 				'count_students'        => array(
-					'description' => __( 'Count student enrolled', 'learnpress' ),
+					'description' => __( 'Count the number of enrolled students.', 'learnpress' ),
 					'type'        => 'integer',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
 				'can_finish'            => array(
-					'description' => __( 'Can finish course', 'learnpress' ),
+					'description' => __( 'Can finish the course', 'learnpress' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
 				'can_retake'            => array(
-					'description' => __( 'Can retake course', 'learnpress' ),
+					'description' => __( 'Can retake the course', 'learnpress' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
 				'ratake_count'          => array(
-					'description' => __( 'Total retake', 'learnpress' ),
+					'description' => __( 'Total retakes', 'learnpress' ),
 					'type'        => 'integer',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
@@ -1365,13 +1365,13 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$params['orderby']['enum'] = array_merge( $params['orderby']['enum'], array( 'menu_order', 'price' ) );
 
 		$params['category']      = array(
-			'description'       => 'Limit result set to courses assigned a specific category ID.',
+			'description'       => 'Limit the result set to courses assigned to a specific category ID.',
 			'type'              => 'string',
 			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['tag']           = array(
-			'description'       => 'Limit result set to courses assigned a specific tag ID.',
+			'description'       => 'Limit the result set to courses assigned to a specific tag ID.',
 			'type'              => 'string',
 			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
@@ -1395,7 +1395,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['optimize'] = array(
-			'description'       => 'Disable some fields schema.',
+			'description'       => 'Disable some fields in the schema.',
 			'type'              => array( 'boolean', 'string' ),
 			'validate_callback' => 'wp_parse_id_list',
 		);

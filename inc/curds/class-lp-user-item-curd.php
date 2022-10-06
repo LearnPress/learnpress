@@ -18,7 +18,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function __construct() {
 		$this->_error_messages = array(
-			'QUIZ_NOT_EXISTS' => __( 'Quiz does not exists.', 'learnpress' ),
+			'QUIZ_NOT_EXISTS' => __( 'The quiz does not exist.', 'learnpress' ),
 		);
 	}
 

@@ -85,7 +85,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'name'               => esc_html__( 'Quizzes', 'learnpress' ),
 						'menu_name'          => esc_html__( 'Quizzes', 'learnpress' ),
 						'singular_name'      => esc_html__( 'Quiz', 'learnpress' ),
-						'add_new_item'       => esc_html__( 'Add New Quiz', 'learnpress' ),
+						'add_new_item'       => esc_html__( 'Add A New Quiz', 'learnpress' ),
 						'edit_item'          => esc_html__( 'Edit Quiz', 'learnpress' ),
 						'all_items'          => esc_html__( 'Quizzes', 'learnpress' ),
 						'view_item'          => esc_html__( 'View Quiz', 'learnpress' ),
@@ -93,7 +93,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'update_item'        => esc_html__( 'Update Quiz', 'learnpress' ),
 						'search_items'       => esc_html__( 'Search Quizzes', 'learnpress' ),
 						'not_found'          => sprintf( __( 'You haven\'t had any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
-						'not_found_in_trash' => esc_html__( 'No quiz found in Trash', 'learnpress' ),
+						'not_found_in_trash' => esc_html__( 'There was no quiz found in the trash', 'learnpress' ),
 					),
 					'public'             => true,
 					'publicly_queryable' => true,
@@ -169,12 +169,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'back'                   => esc_html__( 'Back', 'learnpress' ),
 								'selected_items'         => esc_html__( 'Selected items', 'learnpress' ),
 								'new_option'             => esc_html__( 'New Option', 'learnpress' ),
-								'confirm_trash_question' => esc_html__( 'Do you want to move question "{{QUESTION_NAME}}" to trash?', 'learnpress' ),
+								'confirm_trash_question' => esc_html__( 'Do you want to move the "{{QUESTION_NAME}}" question to the trash?', 'learnpress' ),
 								'question_labels'        => array(
 									'singular' => esc_html__( 'Question', 'learnpress' ),
 									'plural'   => esc_html__( 'Questions', 'learnpress' ),
 								),
-								'confirm_remove_blanks'  => esc_html__( 'Are you sure to remove all blanks?', 'learnpress' ),
+								'confirm_remove_blanks'  => esc_html__( 'Are you sure to remove all the blanks?', 'learnpress' ),
 							)
 						),
 						'listQuestions' => array(

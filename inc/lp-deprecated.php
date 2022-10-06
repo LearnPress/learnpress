@@ -2187,7 +2187,7 @@ if ( ! function_exists( 'learn_press_become_teacher_heading' ) ) {
 			return;
 		}
 		?>
-		<h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
+		<h3><?php _e( 'Fill out the form and send us your request', 'learnpress' ); ?></h3>
 		<?php
 	}
 }

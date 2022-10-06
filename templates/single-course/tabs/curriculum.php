@@ -53,7 +53,7 @@ $can_view_content_course = $user->can_view_content_course( $course->get_id() );
 			echo wp_kses_post(
 				apply_filters(
 					'learnpress/course/curriculum/empty',
-					esc_html__( 'Curriculum is empty', 'learnpress' )
+					esc_html__( 'The curriculum is empty', 'learnpress' )
 				)
 			);
 			?>

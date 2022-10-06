@@ -90,7 +90,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'id'      => 'debug',
 					'default' => 'no',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Enable debug mode for developer.', 'learnpress' ),
+					'desc'    => esc_html__( 'Enable debug mode for the developer.', 'learnpress' ),
 				),
 				// array(
 				// 	'title'   => esc_html__( 'Enable Jwt Rest API', 'learnpress' ),
@@ -111,7 +111,7 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'id'      => 'navigation_position',
 					'default' => 'yes',
 					'type'    => 'checkbox',
-					'desc'    => esc_html__( 'Question navigation position is sticky, if not right below the quiz content', 'learnpress' ),
+					'desc'    => esc_html__( 'The question\'s navigation position is sticky. If this option is disabled, the question navigation position will be below the quiz content', 'learnpress' ),
 				),
 				array(
 					'type' => 'sectionend',

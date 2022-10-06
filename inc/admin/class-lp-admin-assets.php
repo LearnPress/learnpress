@@ -29,7 +29,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press-meta-box-order' => apply_filters(
 				'learn-press/meta-box-order/script-data',
 				array(
-					'i18n_error' => esc_html__( 'Ooops! Error.', 'learnpress' ),
+					'i18n_error' => esc_html__( 'Oops! Error.', 'learnpress' ),
 					'i18n_guest' => esc_html__( 'Guest', 'learnpress' ),
 				)
 			),
@@ -37,7 +37,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'learn-press/upgrade/script-data',
 				array(
 					'i18n_confirm' => esc_html__(
-						'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?',
+						'Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?',
 						'learnpress'
 					),
 				)

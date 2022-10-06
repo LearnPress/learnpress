@@ -1052,19 +1052,19 @@ function learn_press_translate_course_result_required( $course ) {
 	$evaluate_type = $course->get_data( 'course_result', 'evaluate_lesson' );
 	switch ( $evaluate_type ) {
 		case 'evaluate_lesson':
-			$label = esc_html__( 'lessons completed per total number of lessons.', 'learnpress' );
+			$label = esc_html__( 'completed lessons per the total number of lessons.', 'learnpress' );
 			break;
 		case 'evaluate_quiz':
-			$label = esc_html__( 'quizzes passed per total number of quizzes.', 'learnpress' );
+			$label = esc_html__( 'passed quizzes per the total number of quizzes.', 'learnpress' );
 			break;
 		case 'evaluate_final_quiz':
 			$label = esc_html__( 'Final Quiz', 'learnpress' );
 			break;
 		case 'evaluate_questions':
-			$label = esc_html__( 'correct answers per total number of questions.', 'learnpress' );
+			$label = esc_html__( 'correct answers per the total number of questions.', 'learnpress' );
 			break;
 		case 'evaluate_mark':
-			$label = esc_html__( 'score achieved per total score of the questions.', 'learnpress' );
+			$label = esc_html__( 'score achieved per the total score of the questions.', 'learnpress' );
 			break;
 		default:
 			$label = apply_filters( 'learnpress/message/evaluate/' . $evaluate_type, $evaluate_type );

@@ -124,7 +124,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			if ( ! LP_WP_Filesystem::instance()->is_writable( $upload_dir['path'] ) ) {
-				throw new Exception( __( 'Upload directory is not writable', 'learnpress' ) );
+				throw new Exception( __( 'The upload directory is not writable', 'learnpress' ) );
 			}
 
 			// Delete old image if exists
@@ -146,7 +146,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$put_content = LP_WP_Filesystem::instance()->put_contents( $upload_dir['path'] . '/' . $file_name, $file_base64, FS_CHMOD_FILE );
 
 			if ( ! $put_content ) {
-				throw new Exception( __( 'Can not write file', 'learnpress' ) );
+				throw new Exception( __( 'Cannot write the file', 'learnpress' ) );
 			}
 
 			update_user_meta( $user_id, '_lp_profile_picture', $upload_dir['subdir'] . '/' . $file_name );
@@ -167,7 +167,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$user_id = get_current_user_id();
 
 			if ( ! $user_id ) {
-				throw new Exception( esc_html__( 'User is invalid', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The user is invalid', 'learnpress' ) );
 			}
 
 			$upload_dir = learn_press_user_profile_picture_upload_dir( true );
@@ -179,7 +179,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			if ( ! LP_WP_Filesystem::instance()->is_writable( $upload_dir['path'] ) ) {
-				throw new Exception( __( 'Upload directory is not writable', 'learnpress' ) );
+				throw new Exception( __( 'The upload directory is not writable', 'learnpress' ) );
 			}
 
 			$path_img = get_user_meta( $user_id, '_lp_profile_picture', true );
@@ -191,7 +191,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					LP_WP_Filesystem::instance()->unlink( $path );
 
 					$response->status  = 'success';
-					$response->message = esc_html__( 'Profile picture remove successfully', 'learnpress' );
+					$response->message = esc_html__( 'The profile picture has been removed successfully', 'learnpress' );
 				}
 			}
 		} catch ( \Throwable $th ) {
@@ -214,7 +214,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$user = learn_press_get_user( $user_id );
 
 			if ( ! $user ) {
-				throw new Exception( esc_html__( 'User not exists!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The user does not exist!', 'learnpress' ) );
 			}
 
 			$profile = learn_press_get_profile( $user_id );
@@ -334,7 +334,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			if ( ! $user_id ) {
-				throw new Exception( __( 'User is invalid!', 'learnpress' ) );
+				throw new Exception( __( 'The user is invalid', 'learnpress' ) );
 			}
 
 			$filter                      = new LP_User_Items_Filter();

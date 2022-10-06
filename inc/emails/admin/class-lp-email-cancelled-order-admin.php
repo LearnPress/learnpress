@@ -23,9 +23,9 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 		public function __construct() {
 			$this->id              = 'cancelled-order-admin';
 			$this->title           = __( 'Admin', 'learnpress' );
-			$this->description     = __( 'Send email to admin when order has been cancelled.', 'learnpress' );
-			$this->default_subject = __( 'Order placed on {{order_date}} has been cancelled', 'learnpress' );
-			$this->default_heading = __( 'User order has been cancelled', 'learnpress' );
+			$this->description     = __( 'Send an email to admin when the order has been canceled.', 'learnpress' );
+			$this->default_subject = __( 'The order placed on {{order_date}} has been cancelled', 'learnpress' );
+			$this->default_heading = __( 'The user order has been cancelled', 'learnpress' );
 			$this->recipient       = LP_Settings::instance()->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();

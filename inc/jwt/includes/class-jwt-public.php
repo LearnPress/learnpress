@@ -333,7 +333,7 @@ class LP_Jwt_Public {
 			if ( ! isset( $token->exp ) ) {
 				return new WP_Error(
 					'rest_authentication_missing_token_expiration',
-					esc_html__( 'Token must have an expiration.', 'learnpress' ),
+					esc_html__( 'The token must have an expiration date.', 'learnpress' ),
 					array(
 						'status' => 401,
 					)
@@ -343,7 +343,7 @@ class LP_Jwt_Public {
 			if ( time() > $token->exp ) {
 				return new WP_Error(
 					'rest_authentication_token_expired',
-					esc_html__( 'Token has expired.', 'learnpress' ),
+					esc_html__( 'The token has expired.', 'learnpress' ),
 					array(
 						'status' => 401,
 					)

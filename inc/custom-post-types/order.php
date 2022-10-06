@@ -379,7 +379,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			<script type="text/javascript">
 				jQuery(function ($) {
 					$('#post-search-input').prop('placeholder',
-						'<?php esc_attr_e( 'Order number, course name etc...', 'learnpress' ); ?>').css('width', 300)
+						'<?php esc_attr_e( 'Order number, course name, etc.', 'learnpress' ); ?>').css('width', 300)
 				})
 			</script>
 			<?php
@@ -774,7 +774,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 					foreach ( $items as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = apply_filters( 'learn-press/order-item-not-course-id', esc_html__( 'Course does not exist', 'learnpress' ), $item );
+							$links[] = apply_filters( 'learn-press/order-item-not-course-id', esc_html__( 'The course does not exist', 'learnpress' ), $item );
 						} elseif ( get_post_status( $item['course_id'] ) !== 'publish' ) {
 							$links[] = get_the_title( $item['course_id'] ) . sprintf( ' (#%d - %s)', $item['course_id'], esc_html__( 'Deleted', 'learnpress' ) );
 						} else {
@@ -823,7 +823,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					'name'               => __( 'Orders', 'learnpress' ),
 					'menu_name'          => __( 'Orders', 'learnpress' ),
 					'singular_name'      => __( 'Order', 'learnpress' ),
-					'add_new_item'       => __( 'Add New Order', 'learnpress' ),
+					'add_new_item'       => __( 'Add A New Order', 'learnpress' ),
 					'edit_item'          => __( 'Order Details', 'learnpress' ),
 					'all_items'          => __( 'Orders', 'learnpress' ),
 					'view_item'          => __( 'View Order', 'learnpress' ),
@@ -831,7 +831,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					'update_item'        => __( 'Update Order', 'learnpress' ),
 					'search_items'       => __( 'Search Orders', 'learnpress' ),
 					'not_found'          => __( 'No order found', 'learnpress' ),
-					'not_found_in_trash' => __( 'No order found in Trash', 'learnpress' ),
+					'not_found_in_trash' => __( 'There was no order found in the trash', 'learnpress' ),
 				),
 				'public'             => false,
 				'show_ui'            => true,
