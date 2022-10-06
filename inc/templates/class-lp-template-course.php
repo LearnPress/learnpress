@@ -58,7 +58,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 *
 	 * @throws Exception
 	 */
-	public function button_retry( $course ) {
+	public function button_retry( $course = null ) {
 		$user = learn_press_get_current_user();
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
@@ -177,7 +177,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @throws Exception
 	 * @version 4.0.1
 	 */
-	public function course_purchase_button( $course ) {
+	public function course_purchase_button( $course = null ) {
 		$can_show = true;
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
@@ -229,7 +229,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @throws Exception
 	 * @version 4.0.2
 	 */
-	public function course_enroll_button( $course ) {
+	public function course_enroll_button( $course = null ) {
 		$can_show = true;
 		$user     = learn_press_get_current_user();
 		if ( empty( $course ) ) {
@@ -346,7 +346,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.2
 	 * @since  4.0.0
 	 */
-	public function course_continue_button( $course ) {
+	public function course_continue_button( $course = null ) {
 		$can_show = true;
 		$user     = learn_press_get_current_user();
 		if ( empty( $course ) ) {
@@ -393,7 +393,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'single-course/buttons/continue.php', $args );
 	}
 
-	public function course_finish_button( $course ) {
+	public function course_finish_button( $course = null ) {
 		$user = learn_press_get_current_user();
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
@@ -430,7 +430,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @editor tungnx
 	 * @modify 4.1.3
 	 */
-	public function course_external_button( $course ) {
+	public function course_external_button( $course = null ) {
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
 		}
