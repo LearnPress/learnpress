@@ -200,7 +200,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Load course curriculum.
 		 *
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		public function load_curriculum() {
 			_deprecated_function( __FUNCTION__, '4.1.6.9' );
@@ -335,7 +335,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Check if this course is required enroll or not.
 		 *
 		 * @return bool
-		 * @depecated 4.0.0
+		 * @deprecated 4.0.0
 		 */
 		public function is_required_enroll(): bool {
 			//_deprecated_function( __FUNCTION__, '4.1.7.2', 'is_no_required_enroll' );
@@ -367,7 +367,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function get_item_types( $group = false ) {
 			$cache_key = $group ? 'course-item-group-types' : 'course-item-types';
@@ -442,7 +442,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * Get item is viewing in single course.
 		 *
 		 * @return LP_Course_Item
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		public function get_viewing_item() {
 			_deprecated_function( __FUNCTION__, '4.1.6.9' );
@@ -1043,7 +1043,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param LP_Course_Item|LP_User_Item|int $item
 		 *
 		 * @return mixed
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function get_item_position( $item ) {
 			$items = $this->get_items();

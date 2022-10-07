@@ -692,7 +692,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $at
 		 *
 		 * @return bool
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function get_question_at( $at = 0 ) {
 			$questions = $this->get_questions();
@@ -712,7 +712,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $id
 		 *
 		 * @return bool
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function get_prev_question( $id ) {
 			$prev      = false;
@@ -736,7 +736,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $id
 		 *
 		 * @return bool
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function get_next_question( $id ) {
 			$next      = false;
@@ -761,7 +761,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $start
 		 *
 		 * @return bool|mixed
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function get_question_index( $id, $start = 0 ) {
 			$index     = 0;
@@ -1028,7 +1028,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param null $position
 		 *
 		 * @return array
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function get_question_number_class( $question_id, $position = null ) {
 			if ( null === $position ) {

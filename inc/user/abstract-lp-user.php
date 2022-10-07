@@ -830,7 +830,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return bool
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function has_completed_quiz( $quiz_id, $course_id = 0 ): bool {
 			return $this->get_item_status( $quiz_id, $course_id ) == 'completed';
@@ -891,7 +891,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param null $course_id Course id.
 		 *
 		 * @return bool
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		public function has_completed_lesson( $lesson_id = 0, $course_id = null ): bool {
 			return 'completed' === $this->get_item_status( $lesson_id, $course_id );
@@ -919,7 +919,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param $course_id
 		 *
 		 * @return int
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		public function get_course_history_id( $course_id ) {
 			$history = $this->get_course_info( $course_id );

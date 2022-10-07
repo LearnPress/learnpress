@@ -94,7 +94,7 @@ class LP_Helper {
 	 *
 	 * @param array|int $ids
 	 * @Todo: tungnx - need to review code
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	public static function cache_posts( $ids ) {
 		//_deprecated_function( __FUNCTION__, '4.1.6.9' );

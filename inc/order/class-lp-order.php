@@ -1019,7 +1019,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * in case this order is for multi users
 		 *
 		 * @since 2.1.5
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function print_users() {
 			$user_ids = get_post_meta( $this->get_id(), '_user_id' );

@@ -390,7 +390,7 @@ function learn_press_get_students_list_filter() {
 }
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*function learn_press_get_request_args( $args = array() ) {
 	$request = array();
@@ -904,7 +904,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_countdown' ) ) {
 }
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_summary_quiz_result' ) ) {
 
@@ -919,7 +919,7 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_countdown' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_summary_quiz_question' ) ) {
 
@@ -1371,7 +1371,7 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
  * @param $order_id
  *
  * @return mixed
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*function _learn_press_checkout_success_result( $results, $order_id ) {
 	if ( $results['result'] == 'success' ) {
@@ -1398,7 +1398,7 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 	function learn_press_content_item_summary_question_hint() {
@@ -1420,7 +1420,7 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_summary_questions' ) ) {
 	function learn_press_content_item_summary_questions() {
@@ -1446,7 +1446,7 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) {
 
@@ -1471,7 +1471,7 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_quiz_nav_buttons' ) ) {
 
@@ -1493,7 +1493,7 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_quiz_start_button' ) ) {
 
@@ -1518,7 +1518,7 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_quiz_continue_button' ) ) {
 
@@ -1573,7 +1573,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_quiz_result_button' ) ) {
 
@@ -1599,7 +1599,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_quiz_summary_button' ) ) {
 
@@ -1621,7 +1621,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
 
@@ -1647,7 +1647,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 
@@ -1684,7 +1684,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_profile_order_details' ) ) {
 	function learn_press_profile_order_details() {
@@ -1699,7 +1699,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_profile_order_recover' ) ) {
 	function learn_press_profile_order_recover() {
@@ -1713,7 +1713,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_profile_order_message' ) ) {
 	function learn_press_profile_order_message() {
@@ -1727,7 +1727,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_profile_dashboard_logged_in' ) ) {
 	function learn_press_profile_dashboard_logged_in() {
@@ -1736,7 +1736,7 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_profile_dashboard_user_bio' ) ) {
 	function learn_press_profile_dashboard_user_bio() {
@@ -1767,7 +1767,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 }
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_profile_login_form' ) ) {
 	function learn_press_profile_login_form() {
@@ -1791,7 +1791,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
 	function learn_press_profile_register_form() {
@@ -1814,7 +1814,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_lesson_title' ) ) {
 	function learn_press_content_item_lesson_title() {
@@ -1830,7 +1830,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 	function learn_press_content_item_lesson_content() {
@@ -1851,7 +1851,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_lesson_content_blocked' ) ) {
 	function learn_press_content_item_lesson_content_blocked() {
@@ -1866,7 +1866,7 @@ if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
 	function learn_press_content_item_lesson_complete_button() {
@@ -1964,7 +1964,7 @@ if ( ! function_exists( 'learn_press_search_form' ) ) {
 }
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_single_item' ) ) {
 	function learn_press_content_single_item() {
@@ -1977,7 +1977,7 @@ if ( ! function_exists( 'learn_press_search_form' ) ) {
 }*/
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_single_course' ) ) {
 	function learn_press_content_single_course() {

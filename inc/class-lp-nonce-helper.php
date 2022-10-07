@@ -39,7 +39,7 @@ class LP_Nonce_Helper {
 	 * @since 3.0.0
 	 *
 	 * @return bool
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	/*public static function verify_course( $nonce, $action, $course_id = 0, $user_id = 0 ) {
 		if ( ! $course_id ) {
@@ -67,7 +67,7 @@ class LP_Nonce_Helper {
 	}
 
 	/**
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	/*public static function verify_quiz_action( $action, $nonce = '', $quiz_id = 0, $course_id = 0 ) {
 		if ( ! $nonce ) {

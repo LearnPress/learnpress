@@ -231,7 +231,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * @param LP_Quiz $quiz
 		 *
-		 * @depecated 4.1.7
+		 * @deprecated 4.1.7
 		 */
 		/*protected function _load_questions( &$quiz ) {
 			$id        = $quiz->get_id();
@@ -292,7 +292,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		}
 
 		/**
-		 * @depecated 4.1.7
+		 * @deprecated 4.1.7
 		 */
 		/*public function update_question_ids( $quiz_id ) {
 			wp_cache_delete( 'quiz-' . $quiz_id, 'quiz-questions' );
@@ -375,54 +375,6 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			// LP_Helper_CURD::cache_posts( $question_ids );
 			$question_factory = new LP_Question_CURD();
 			$question_factory->load_answer_options( $question_ids );
-		}
-
-		/**
-		 * @param LP_Quiz $quiz
-		 * @depecated 4.1.6.4
-		 */
-		protected function _update_meta_cache( &$quiz ) {
-			_deprecated_function( __FUNCTION__, '4.1.6.4' );
-			$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
-
-			if ( false === $meta_ids ) {
-				$meta_ids = array( $quiz->get_id() );
-			} else {
-				$meta_ids[] = $quiz->get_id();
-			}
-			// LP_Helper_CURD::update_meta_cache( $meta_ids );
-		}
-
-		/**
-		 * @depecated 4.1.6.4
-		 */
-		protected function _load_question_answer_meta( $meta_ids ) {
-			global $wpdb;
-
-			$format = array_fill( 0, sizeof( $meta_ids ), '%d' );
-			$query  = $wpdb->prepare(
-				"
-				SELECT *
-				FROM {$wpdb->learnpress_question_answermeta}
-				WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ')
-			',
-				$meta_ids
-			);
-
-			$metas = $wpdb->get_results( $query );
-
-			if ( $metas ) {
-				foreach ( $metas as $meta ) {
-					$key        = $meta->meta_key;
-					$option_key = $meta->learnpress_question_answer_id;
-					if ( ! empty( $answer_options[ $option_key ] ) ) {
-						if ( $key == 'checked' ) {
-							$key = 'is_true';
-						}
-						$answer_options[ $option_key ][ $key ] = $meta->meta_value;
-					}
-				}
-			}
 		}
 
 		/**

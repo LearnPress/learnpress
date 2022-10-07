@@ -63,7 +63,6 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 				wp_enqueue_script( 'lp-single-course' );
 				add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text' ) );
 				do_action( 'learn-press/course-buttons', $course );
-				LP_Global::reset();
 			}
 
 			return ob_get_clean();

@@ -84,7 +84,7 @@ class LP_Cart {
 	}
 
 	/**
-	 * @depecated 4.1.7.2
+	 * @deprecated 4.1.7.2
 	 */
 	public function maybe_set_cart_cookies() {
 
@@ -459,60 +459,6 @@ class LP_Cart {
 	 */
 	public function needs_payment() {
 		return apply_filters( 'learn_press_cart_needs_payment', $this->total > 0, $this );
-	}
-
-	/**
-	 * Process action for purchase course button
-	 *
-	 * @param $course_id
-	 * @depecated 4.1.6.8
-	 */
-	public function purchase_course_handler( $course_id ) {
-		_deprecated_function( __FUNCTION__, '4.1.6.8' );
-		do_action( 'learn_press_before_purchase_course_handler', $course_id, $this );
-
-		if ( apply_filters( 'learn_press_purchase_single_course', true ) ) {
-			$this->empty_cart();
-		}
-
-		$this->add_to_cart( $course_id, 1, $_POST );
-		$redirect      = learn_press_get_checkout_url();
-		$has_checkout  = $redirect ? true : false;
-		$need_checkout = $this->needs_payment();
-
-		// In case the course is FREE and "No checkout free course" is turn off
-		if ( ! $need_checkout ) {
-			$user = learn_press_get_current_user();
-			if ( ! $user->has_purchased_course( $course_id )/* || $user->has_finished_course( $course_id ) */ ) {
-				require_once LP_PLUGIN_PATH . '/inc/gateways/class-lp-gateway-none.php';
-				$checkout = learn_press_get_checkout( array( 'payment_method' => new LP_Gateway_None() ) );
-
-				/**
-				 * + Auto enroll
-				 */
-				// add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10, 2 );
-				$checkout->process_checkout();
-				// remove_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10 );
-			}/*
-			else {
-				if ( $user->has_finished_course( $course_id ) ) {
-					learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
-				} else {
-					learn_press_add_message( __( 'You have already enrolled course', 'learnpress' ) );
-				}
-			}*/
-		} else {
-
-			// Checkout page is not setting up
-			if ( ! $has_checkout ) {
-				learn_press_add_message( __( 'The checkout page hasn\'t been set up yet', 'learnpress' ), 'error' );
-			} else {
-				wp_redirect( apply_filters( 'learn_press_checkout_redirect', $redirect ) );
-				exit();
-			}
-		}
-
-		return;
 	}
 
 	/**

@@ -93,7 +93,7 @@ function learn_press_get_quiz_id( $id ) {
  * @param   int $quiz_id The ID of quiz need to check
  *
  * @return  boolean
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null ) {
 	$user = learn_press_get_user( $user_id );

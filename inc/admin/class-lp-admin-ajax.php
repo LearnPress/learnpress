@@ -516,7 +516,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param mixed $params (Optional) List of keys want to get from payload.
 		 *
 		 * @return array|bool|mixed|object
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public static function get_php_input( $params = '' ) {
 			static $data = false;
@@ -547,7 +547,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Normally, parse and assign to $_POST or $_GET.
 		 *
 		 * @param $var
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public static function parsePhpInput( &$var ) {
 			$data = self::get_php_input();

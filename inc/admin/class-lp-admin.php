@@ -583,18 +583,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
-		 * Redirect to setup page if we have just activated LP
-		 * @depecated 4.1.6.4
-		 */
-		/*public function admin_redirect() {
-			if ( 'yes' === get_transient( 'lp_activation_redirect' ) && current_user_can( 'install_plugins' ) ) {
-				delete_transient( 'lp_activation_redirect' );
-
-				exit( wp_safe_redirect( admin_url( 'index.php?page=lp-setup' ) ) );
-			}
-		}*/
-
-		/**
 		 * Custom admin body classes.
 		 *
 		 * @param array $classes

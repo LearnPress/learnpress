@@ -1205,28 +1205,3 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 	}
 }
-
-/*function learn_press_profile_init() {
-	$current_page = LP_Page_Controller::page_current();
-
-	if ( LP_PAGE_PROFILE !== $current_page ) {
-		return;
-	}
-
-	$profile = LP_Profile::instance();
-	$user    = $profile->get_user();
-
-	if ( ! $profile->get_tabs()->current_user_can_view() ) {
-		global $wp_query;
-
-		if ( $user->is_guest() ) {
-			wp_redirect( $profile->get_login_url() );
-			exit;
-		}
-
-		add_filter( 'redirect_canonical', '__return_false' );
-		$wp_query->set_404();
-	}
-}*/
-
-//add_filter( 'wp', 'learn_press_profile_init' );

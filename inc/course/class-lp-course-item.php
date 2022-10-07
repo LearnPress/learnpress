@@ -542,7 +542,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @param int $question_id
 		 *
 		 * @return mixed
-		 * @depecated 4.1.7.2
+		 * @deprecated 4.1.7.2
 		 */
 		/*public function is_viewing_question( $question_id = 0 ) {
 			global $lp_quiz_question;
@@ -560,7 +560,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return mixed
-		 * @depecated 4.1.7.2
+		 * @deprecated 4.1.7.2
 		 */
 		/*public function get_status_classes( $user_id = 0, $course_id = 0 ) {
 			$status_classes = array();

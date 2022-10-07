@@ -421,24 +421,28 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * Get all features are supported by question.
 		 *
 		 * @return array
+		 * @deprecated 4.1.7.3
 		 */
 		public function get_supports() {
+			_deprecated_function( __FUNCTION__, '4.1.7.3' );
 			return LP_Global::get_object_supports( $this->object_type );
 		}
 
 		/**
 		 * @param $value
+		 * @deprecated 4.1.7.3
 		 */
-		public function set_no_cache( $value ) {
+		/*public function set_no_cache( $value ) {
 			$this->_no_cache = $value;
-		}
+		}*/
 
 		/**
 		 * @return bool
+		 * @deprecated 4.1.7.3
 		 */
-		public function get_no_cache() {
+		/*public function get_no_cache() {
 			return $this->_no_cache;
-		}
+		}*/
 
 		/**
 		 * Read all metas and set to object

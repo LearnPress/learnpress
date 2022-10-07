@@ -669,7 +669,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * @depecated 4.1.7.2
+	 * @deprecated 4.1.7.2
 	 */
 	public function item_quiz_content() {
 		$item = LP_Global::course_item();
@@ -678,7 +678,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * @depecated 4.1.7.2
+	 * @deprecated 4.1.7.2
 	 */
 	public function item_lesson_content_blocked() {
 		$item = LP_Global::course_item();
@@ -721,7 +721,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	/*public function lesson_comment_form() {
 		$course = learn_press_get_course();
@@ -871,7 +871,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * @depecated 4.1.7.2
+	 * @deprecated 4.1.7.2
 	 */
 	/*public function instructor_socials() {
 		$instructor = $this->course->get_instructor();

@@ -904,7 +904,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	public function updated_messages( $messages ) {
 		$post             = get_post();

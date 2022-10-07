@@ -621,7 +621,7 @@ class LP_Page_Controller {
 	 *
 	 * @return array
 	 * @since 3.x.x
-	 * @depecated 4.1.6.9.2
+	 * @deprecated 4.1.6.9.2
 	 */
 	/*public function page_template_hierarchy( $templates ) {
 		$templates = array_merge( $templates, array( 'singular.php' ) );
@@ -882,7 +882,7 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * @depecated 4.1.6.9.2
+	 * @deprecated 4.1.6.9.2
 	 */
 	/*public function the_content_callback( $content ) {
 		if ( $this->_archive_contents ) {

@@ -46,7 +46,7 @@ add_filter( 'use_block_editor_for_post_type', 'learnpress_gutenberg_disable_cpt'
  * @param string $type
  *
  * @return bool|LP_Course_CURD|LP_User_CURD|LP_Quiz_CURD|LP_Question_CURD
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_get_curd( $type ) {
 	$curds = array(
@@ -793,7 +793,7 @@ function learn_press_human_time_to_seconds( $time, $default = '' ) {
  * @param array  $vars .
  *
  * @return bool
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_send_mail( $to = '', $action = '', $vars = array() ) {
 	$email_settings = LP_Settings::instance();
@@ -1972,7 +1972,7 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
  * @param bool   $hash
  *
  * @return string
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_get_log_file_path( $handle, $hash = false ) {
 	if ( $hash ) {
@@ -2086,7 +2086,7 @@ function learn_press_profile_tab_exists( $tab ) {
  * @param string $string
  *
  * @return string
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function _learn_press_urlencode( $string ) {
 	return preg_replace( '/\s/', '+', $string );
@@ -2101,7 +2101,7 @@ function learn_press_profile_tab_exists( $tab ) {
  * @param string $post_type
  *
  * @return string
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_post_type_archive_link( $link, $post_type ) {
 	if ( $post_type == LP_COURSE_CPT && learn_press_get_page_id( 'courses' ) ) {
@@ -2364,7 +2364,7 @@ function learn_press_debug() {
  * Get current time to user for calculate remaining time of quiz.
  *
  * @return int
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_get_current_time() {
 	$current_time = apply_filters( 'learn_press_get_current_time', 0 );
@@ -2530,7 +2530,7 @@ function learn_press_tooltip( $tooltip, $html = false ) {
  *
  * @return float|int
  * @since 3.0.0
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_timezone_offset() {
 	if ( $tz = get_option( 'timezone_string' ) ) {
@@ -2708,7 +2708,7 @@ function learn_press_get_post_type( $post ) {
  * @param string    $type
  *
  * @since 3.1.0
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_cache_add_post_type( $id, $type = '' ) {
 	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
@@ -2725,7 +2725,7 @@ function learn_press_get_post_type( $post ) {
 }*/
 
 /**
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_has_option( $name ) {
 	global $wpdb;
@@ -2747,7 +2747,7 @@ function _learn_press_schedule_enable_shuffle_themes() {
 add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule_enable_shuffle_themes' );
 
 /**
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_show_log() {
 	if ( trim( LP_Request::get( 'show_log' ) ) === md5( AUTH_KEY ) ) {
@@ -2784,7 +2784,7 @@ function learn_press_global_script_params() {
  *
  * @return string
  * @since 3.3.0
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_get_cron_url() {
 	$nonce = get_option( 'learnpress_cron_url_nonce' );
@@ -2809,7 +2809,7 @@ function learn_press_global_script_params() {
  *
  * @return array
  * @since 3.3.0
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_get_expired_courses() {
 	global $wpdb;
@@ -2884,7 +2884,7 @@ function learn_press_get_question_support_feature( $feature ) {
  * @param string $color
  *
  * @since 3.3.0
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_circle_progress_html( $percent = 0, $width = 32, $border = 4, $color = '' ) {
 	$radius        = $width / 2;
@@ -2915,7 +2915,7 @@ function learn_press_get_question_support_feature( $feature ) {
 }*/
 
 /**
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_is_page( $page_name ) {
 	$page_id = learn_press_get_page_id( $page_name );
@@ -2931,7 +2931,7 @@ function learn_press_get_question_support_feature( $feature ) {
  *
  * @return false|string
  * @since 3.x.x
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_date_end_from( $duration, $start = '' ) {
 	$format = 'Y-m-d H:i:s';
@@ -3048,7 +3048,7 @@ function learn_press_course_evaluation_methods( $postid, $return = '', $final_qu
  *
  * @return false|int|string
  * @since 4.0.0
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_time_from_gmt( $gmt_time, $format = 'Y-m-d H:i:s' ) {
 	if ( is_string( $gmt_time ) ) {
@@ -3086,7 +3086,7 @@ function learn_press_get_quiz_max_retrying( $quiz_id = 0, $course_id = 0 ) {
  *
  * @return int
  * @since 4.0.0
- * @depecated 4.1.7.2
+ * @deprecated 4.1.7.2
  */
 /*function learn_press_get_course_max_retrying( $course_id ) {
 	return apply_filters( 'learn-press/max-retry-course-allowed', 1, $course_id );

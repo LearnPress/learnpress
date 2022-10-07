@@ -279,7 +279,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param bool $publish_only
 		 *
 		 * @return array
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function read_course_items( $course_id, $publish_only = true, $section_ids = array() ) {
 			global $wpdb;
@@ -384,7 +384,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public static function update_items_format( $item ) {
 
@@ -554,7 +554,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return mixed|array
 		 * @version 4.0.0
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function read_course_sections( $course_id ) {
 			global $wpdb;

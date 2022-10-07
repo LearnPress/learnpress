@@ -47,7 +47,7 @@ abstract class LP_Abstract_API {
 	}
 
 	public function rest_api_includes() {
-		 // include_once realpath( LP_PLUGIN_PATH . 'inc/rest-api/class-lp-rest-authentication.php' );
+
 	}
 
 	/**
