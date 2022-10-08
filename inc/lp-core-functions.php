@@ -3165,7 +3165,7 @@ add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );*/
 
 add_action(
 	'in_plugin_update_message-learnpress/learnpress.php',
-	function ( $plugin_data, $response ) {
+	function ( $plugin_data ) {
 		if ( version_compare( $plugin_data['new_version'], LEARNPRESS_VERSION, '<=' ) ) {
 			return;
 		}
@@ -3178,9 +3178,7 @@ add_action(
 			<?php echo esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' ); ?>
 		</div>
 		<?php
-	},
-	10,
-	2
+	}
 );
 
 // If profile content don't have shortcode profile.
