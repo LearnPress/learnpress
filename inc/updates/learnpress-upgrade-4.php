@@ -544,7 +544,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					UPDATE $lp_db->tb_lp_user_items
 					SET graduation = %s
 					WHERE user_item_id = %d;
-				",
+					",
 					$user_item_grade->grade,
 					$user_item_grade->user_item_id
 				);

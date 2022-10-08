@@ -1905,7 +1905,7 @@ function learn_press_add_endpoints() {
 	$endpoints = $settings->get( 'quiz_endpoints' );
 	if ( $endpoints ) {
 		foreach ( $endpoints as $endpoint => $value ) {
-			$endpoint                     = preg_replace( '!_!', '-', $endpoint );
+			$endpoint                                       = preg_replace( '!_!', '-', $endpoint );
 			LearnPress::instance()->query_vars[ $endpoint ] = $value;
 			add_rewrite_endpoint(
 				$value, /*EP_ROOT | */
@@ -2819,12 +2819,12 @@ function learn_press_global_script_params() {
 			SELECT X.*
 			FROM(
 			SELECT ui.*
-                FROM {$wpdb->learnpress_user_items} ui
+				FROM {$wpdb->learnpress_user_items} ui
 				LEFT JOIN {$wpdb->learnpress_user_items} uix
 					ON ui.item_id = uix.item_id
 						AND ui.user_id = uix.user_id
 						AND ui.user_item_id < uix.user_item_id
-			    WHERE uix.user_item_id IS NULL
+				WHERE uix.user_item_id IS NULL
 			) X
 			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
 			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
@@ -2894,13 +2894,13 @@ function learn_press_get_question_support_feature( $feature ) {
 
 	printf(
 		'<svg class="circle-progress-bar" width="%d" height="%d">
-        <circle class="circle-progress-bar__circle"
-                stroke="%s"
-                stroke-width="%d"
-                style="stroke-dasharray:%s %s; stroke-dashoffset:%s;"
-                fill="transparent"
-                r="%d" cx="%d" cy="%d"></circle>
-    </svg>',
+		<circle class="circle-progress-bar__circle"
+				stroke="%s"
+				stroke-width="%d"
+				style="stroke-dasharray:%s %s; stroke-dashoffset:%s;"
+				fill="transparent"
+				r="%d" cx="%d" cy="%d"></circle>
+	</svg>',
 		$width,
 		$width,
 		$color,
@@ -3165,41 +3165,23 @@ add_filter( 'auto_update_plugin', 'learnpress_disable_auto_update', 10, 2 );*/
 
 add_action(
 	'in_plugin_update_message-learnpress/learnpress.php',
-	function ( $plugin_data ) {
-		version_update_warning( LEARNPRESS_VERSION, $plugin_data['new_version'] );
-	}
-);
-/**
- * Custom message warning have new version
- *
- * @param $current_version
- * @param $new_version
- * @author hungkv
- */
-function version_update_warning( $current_version, $new_version ) {
-	$current_version_minor_part = explode( '.', $current_version )[1];
-	$new_version_minor_part     = explode( '.', $new_version )[1];
-	if ( $current_version_minor_part === $new_version_minor_part ) {
-		return;
-	}
-
-	$info = get_plugin_data( LP_PLUGIN_FILE );
-	?>
-	<hr class="lp-update--warning__separator"/>
-	<div class="lp-update--warning">
+	function ( $plugin_data, $response ) {
+		if ( version_compare( $plugin_data['new_version'], LEARNPRESS_VERSION, '<=' ) ) {
+			return;
+		}
+		?>
+		<hr/>
+		<h3>
+			<?php echo esc_html__( 'Heads up! Please backup before upgrading!', 'learnpress' ); ?>
+		</h3>
 		<div>
-			<div class="lp-update-warning__title">
-				<?php echo esc_html__( 'Heads up! Please backup before upgrading!', 'learnpress' ); ?>
-			</div>
-			<div class="lp-update-warning__message">
-				<?php echo esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' ); ?>
-				<?php echo esc_html__( 'Learners require a WordPress version' . $info['Requires at least'] . ' or higher.', 'learnpress' ); ?>
-			</div>
+			<?php echo esc_html__( 'The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment', 'learnpress' ); ?>
 		</div>
-	</div>
-
-	<?php
-}
+		<?php
+	},
+	10,
+	2
+);
 
 // If profile content don't have shortcode profile.
 function lp_add_shortcode_profile() {
