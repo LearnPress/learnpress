@@ -55,10 +55,10 @@ class LP_Updater {
 			return false;
 		}
 
-		$db_current_version = (int) get_option( LP_KEY_DB_VERSION, false );
-		if ( ! $db_current_version ) {
+		$db_current_version = (int) get_option( LP_KEY_DB_VERSION, 0 );
+		/*if ( ! $db_current_version ) {
 			return false;
-		}
+		}*/
 
 		$db_require_version = LearnPress::instance()->db_version;
 		if ( $db_require_version <= $db_current_version ) {
@@ -66,7 +66,7 @@ class LP_Updater {
 		}
 
 		if ( array_key_exists( $db_current_version, $this->db_map_version ) ) {
-			return $this->db_map_version[ $db_current_version ];
+			return $this->db_map_version[ $db_current_version . '' ];
 		}
 
 		/**

@@ -530,7 +530,24 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
 
-			if ( empty( $user_item_grades ) || 100 === $percent ) {
+			if ( empty( $user_item_grades ) || 100 == $percent ) {
+				// Update graduation for case grade wrong (null or lesson completed but still 'in-progress').
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items
+					SET graduation = 'passed'
+					WHERE status = 'completed'
+					"
+				);
+				// Update graduation for case status empty and grade null
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items
+					SET graduation = 'in-progress'
+					WHERE (status = '' OR status = 'enrolled')
+					"
+				);
+
 				return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 			}
 
