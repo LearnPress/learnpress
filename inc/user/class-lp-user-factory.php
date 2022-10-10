@@ -305,26 +305,25 @@ class LP_User_Factory {
 		return $args;
 	}
 
+	/**
+	 * Get pending requests be come a Teacher.
+	 *
+	 * @return array
+	 */
 	public static function get_pending_requests() {
-		$pending_requests = LP_Object_Cache::get( 'pending-requests', 'lp-users' );
-		if ( false === $pending_requests ) {
-			global $wpdb;
-			$query = $wpdb->prepare(
-				"
-				SELECT ID
-				FROM {$wpdb->users} u
-				INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
-				WHERE um.meta_value = %s
+		global $wpdb;
+		$query = $wpdb->prepare(
+			"
+			SELECT ID
+			FROM {$wpdb->users} u
+			INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
+			WHERE um.meta_value = %s
 			",
-				'_requested_become_teacher',
-				'yes'
-			);
+			'_requested_become_teacher',
+			'yes'
+		);
 
-			$pending_requests = $wpdb->get_col( $query );
-			LP_Object_Cache::set( 'pending-requests', $pending_requests, 'lp-users' );
-		}
-
-		return $pending_requests;
+		return $wpdb->get_col( $query );
 	}
 
 	public static function get_guest_id() {

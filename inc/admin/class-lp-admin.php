@@ -28,13 +28,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
-			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
-			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
-			add_action( 'admin_notices', array( $this, 'admin_notices' ), 1 );
-			//add_action( 'admin_head', array( $this, 'admin_colors' ) );
-			// add_action( 'admin_init', array( $this, 'admin_redirect' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
-
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
 			add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
@@ -541,48 +536,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
-		 * Display admin notices
-		 */
-		public function admin_notices() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) {
-				return;
-			}
-
-			if ( ! get_option( 'learn_press_setup_wizard_completed', false ) ) {
-				learn_press_admin_view( 'setup/notice-setup' );
-			}
-
-			$action  = LP_Request::get( 'lp-action' );
-			$user_id = LP_Request::get_int( 'user_id' );
-
-			if ( ( in_array(
-				$action,
-				array( 'accepted-request', 'denied-request' )
-			) ) && ( $user_id ) && get_user_by(
-				'id',
-				$user_id
-			) ) {
-				if ( ! current_user_can( 'promote_user', $user_id ) ) {
-					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
-				}
-				?>
-
-				<div class="updated notice">
-					<p>
-					<?php
-					echo sprintf(
-						__( 'A user has %s to become a teacher.', 'learnpress' ),
-						$action == 'accepted-request' ? 'accepted' : 'denied'
-					);
-					?>
-							</p>
-				</div>
-
-				<?php
-			}
-		}
-
-		/**
 		 * Custom admin body classes.
 		 *
 		 * @param array $classes
@@ -608,41 +561,67 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			return $classes;
 		}
 
-		public function notice_required_permalink() {
-			if ( current_user_can( 'manage_options' ) ) {
-				if ( ! get_option( 'permalink_structure' ) ) {
-					?>
-					<div class="notice notice-error">
-						<p>
+		/**
+		 * Display notices on Backend.
+		 */
+		public function admin_notices() {
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
+				return;
+			}
+
+			// Show template file templates override.
+			$page = LP_Request::get_param( 'page' );
+			$tab  = LP_Request::get_param( 'tab' );
+			if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
+				if ( LP_Outdated_Template_Helper::detect_outdated_template() ) {
+					learn_press_admin_view( 'html-admin-notice-templates' );
+				}
+			}
+
+			// Show notice permalink structure wrong.
+			if ( ! get_option( 'permalink_structure' ) ) {
+				?>
+				<div class="notice notice-error">
+					<p>
 						<?php
 						echo sprintf(
 							'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
 							admin_url( 'options-permalink.php' )
 						)
 						?>
-						</p>
-					</div>
-					<?php
-				}
+					</p>
+				</div>
+				<?php
 			}
-		}
 
-		/**
-		 * Notices outdated templates.
-		 */
-		public function notice_outdated_templates() {
-			if ( current_user_can( 'manage_options' ) ) {
-				$page = LP_Helper::sanitize_params_submitted( $_REQUEST['page'] ?? '' );
-				$tab  = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
-
-				if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
-					return;
-				}
-
-				if ( LP_Outdated_Template_Helper::detect_outdated_template() ) {
-					learn_press_admin_view( 'html-admin-notice-templates' );
-				}
+			// Show notice setup wizard.
+			if ( ! get_option( 'learn_press_setup_wizard_completed', false ) ) {
+				learn_press_admin_view( 'setup/notice-setup' );
 			}
+
+			// Request accept/denied user can become a teacher.
+			$action_become_teacher      = LP_Request::get_param( 'lp-action' );
+			$user_id                    = LP_Request::get_param( 'user_id', 0, 'int' );
+			$type_action_become_teacher = array( 'accepted-request', 'denied-request' );
+			if ( in_array( $action_become_teacher, $type_action_become_teacher ) && $user_id && get_user_by( 'id', $user_id ) ) {
+				?>
+				<div class="updated notice">
+					<p>
+						<?php
+						echo sprintf(
+							__( 'A user has %s to become a teacher.', 'learnpress' ),
+							$action_become_teacher == 'accepted-request' ? 'accepted' : 'denied'
+						);
+						?>
+					</p>
+				</div>
+				<?php
+			}
+
+			// Show notice check wp_remote_post (background) runs.
+			?>
+			<div class="notice-check-run-background-available"></div>
+			<?php
 		}
 
 		/**
