@@ -495,19 +495,20 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @return LP_Step
 	 */
 	protected function convert_result_graduation_item( array $data ): LP_Step {
-		$response  = new LP_Step( __FUNCTION__, '' );
-		$lp_db     = LP_Database::getInstance();
-		$page      = 0;
-		$offset    = 0;
-		$limit     = 100;
-		$total_row = 0;
+		$response        = new LP_Step( __FUNCTION__, '' );
+		$lp_db           = LP_Database::getInstance();
+		$page            = 0;
+		$offset          = 0;
+		$limit           = 100;
+		$total_row       = 0;
+		$suffix_table_bk = '_bk';
 
 		try {
 			if ( empty( $data ) ) {
 				// Check total rows.
 				$query = $lp_db->wpdb->prepare(
 					"
-					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
+					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta{$suffix_table_bk}
 					WHERE meta_key = %s
 					",
 					'grade'
@@ -524,7 +525,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$query            = $lp_db->wpdb->prepare(
 				"
 				    SELECT learnpress_user_item_id AS user_item_id, meta_value AS grade
-				    FROM $lp_db->tb_lp_user_itemmeta
+				    FROM $lp_db->tb_lp_user_itemmeta{$suffix_table_bk}
 				    WHERE meta_key = %s
 					LIMIT %d, %d
 				",
@@ -533,29 +534,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				$limit
 			);
 			$user_item_grades = $lp_db->wpdb->get_results( $query );
-
-			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
-
-			if ( empty( $user_item_grades ) || 100 == $percent ) {
-				// Update graduation for case grade wrong (null or lesson completed but still 'in-progress').
-				$lp_db->wpdb->query(
-					"
-					UPDATE $lp_db->tb_lp_user_items
-					SET graduation = 'passed'
-					WHERE status = 'completed'
-					"
-				);
-				// Update graduation for case status empty and grade null
-				$lp_db->wpdb->query(
-					"
-					UPDATE $lp_db->tb_lp_user_items
-					SET graduation = 'in-progress'
-					WHERE (status = '' OR status = 'enrolled')
-					"
-				);
-
-				return $this->finish_step( $response, __FUNCTION__ . ' finished' );
-			}
 
 			/**
 			 * Copy value of meta_key "grade" table learnpress_user_itemmeta LP3
@@ -574,6 +552,29 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 
 				$lp_db->wpdb->query( $query );
 				$lp_db->check_execute_has_error();
+			}
+
+			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
+			if ( empty( $user_item_grades ) || 100 == $percent ) {
+				// Update graduation for case grade wrong (null or lesson completed but still 'in-progress').
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items
+					SET graduation = 'passed'
+					WHERE status = 'completed'
+					AND item_type = 'lp_lesson'
+					"
+				);
+				// Update graduation for case status empty and grade null
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items
+					SET graduation = 'in-progress'
+					WHERE (status = '' OR status = 'enrolled')
+					"
+				);
+
+				return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 			}
 
 			$response->status           = 'success';
@@ -606,13 +607,10 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		try {
 			if ( empty( $data ) ) {
 				// Check total rows.
-				$query = $lp_db->wpdb->prepare(
-					"
+				$query = "
 					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
-					WHERE meta_key = 'course_results_evaluate_lesson'
-					",
-					1
-				);
+					WHERE meta_key LIKE '%course_results_evaluate%'
+				";
 
 				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
 			} else {
@@ -626,7 +624,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				"
 				SELECT learnpress_user_item_id AS user_item_id, meta_value AS result
 				FROM $lp_db->tb_lp_user_itemmeta
-				WHERE meta_key = 'course_results_evaluate_lesson'
+				WHERE meta_key LIKE '%course_results_evaluate%'
 				LIMIT %d offset %d
 				",
 				$limit,

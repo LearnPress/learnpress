@@ -61,7 +61,7 @@ class LP_Updater {
 		}*/
 
 		$db_require_version = LearnPress::instance()->db_version;
-		if ( $db_require_version <= $db_current_version ) {
+		if ( version_compare( $db_require_version, $db_current_version, '<=' ) ) {
 			return false;
 		}
 
