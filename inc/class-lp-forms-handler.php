@@ -219,21 +219,24 @@ class LP_Forms_Handler {
 	public static function learnpress_create_new_customer( $email = '', $username = '', $password = '', $confirm_password = '', $args = array(), $update_meta = array() ) {
 		try {
 			if ( empty( $email ) || ! is_email( $email ) ) {
-				throw new Exception( __( 'Please provide a valid email address.', 'learnpress' ) );
+				throw new Exception( __( 'Please provide a valid email address.', 'learnpress' ), 'registration-error-invalid-email' );
 			}
 
 			if ( email_exists( $email ) ) {
-				throw new Exception( __( 'An account is already registered with your email address.', 'learnpress' ) );
+				throw new Exception( __( 'An account is already registered with your email address.', 'learnpress' ), 'registration-error-email-exists' );
 			}
 
 			$username = sanitize_user( $username );
 
 			if ( empty( $username ) || ! validate_username( $username ) ) {
-				throw new Exception( __( 'Please enter a valid account username.', 'learnpress' ) );
+				throw new Exception( __( 'Please enter a valid account username.', 'learnpress' ), 'registration-error-invalid-username' );
 			}
 
 			if ( username_exists( $username ) ) {
-				throw new Exception( __( 'An account is already registered with that username. Please choose another one.', 'learnpress' ) );
+				throw new Exception(
+					__( 'An account is already registered with that username. Please choose another one.', 'learnpress' ),
+					'registration-error-username-exists'
+				);
 			}
 
 			if ( apply_filters( 'learnpress_registration_generate_password', false ) ) {
@@ -241,31 +244,30 @@ class LP_Forms_Handler {
 			}
 
 			if ( empty( $password ) ) {
-				throw new Exception( __( 'Please enter an account password.', 'learnpress' ) );
+				throw new Exception( __( 'Please enter an account password.', 'learnpress' ), 'registration-error-missing-password' );
 			}
 
 			if ( strlen( $password ) < 6 ) {
-				throw new Exception( __( 'Password is too short!', 'learnpress' ) );
+				throw new Exception( __( 'Password is too short!', 'learnpress' ), 'registration-error-short-password' );
 			}
 
 			if ( preg_match( '#\s+#', $password ) ) {
-				throw new Exception( __( 'Password can not contain spaces!', 'learnpress' ) );
+				throw new Exception( __( 'Password can not contain spaces!', 'learnpress' ), 'registration-error-spacing-password' );
 			}
 
 			if ( empty( $confirm_password ) ) {
-				throw new Exception( __( 'Please enter confirm password.', 'learnpress' ) );
+				throw new Exception( __( 'Please enter confirm password.', 'learnpress' ), 'registration-error-confirm-password' );
 			}
 
 			if ( $password !== $confirm_password ) {
-				throw new Exception( __( 'Password and Confirm Password does not match!', 'learnpress' ) );
+				throw new Exception( __( 'Password and Confirm Password does not match!', 'learnpress' ), 'registration-error-confirm-password' );
 			}
 
 			$custom_fields = LP_Settings::get_option( 'register_profile_fields', [] );
-
 			if ( $custom_fields && ! empty( $update_meta ) ) {
 				foreach ( $custom_fields as $field ) {
 					if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
-						throw new Exception( $field['name'] . __( ' is required field.', 'learnpress' ) );
+						throw new Exception( $field['name'] . __( ' is required field.', 'learnpress' ), 'registration-custom-exists' );
 					}
 				}
 			}
@@ -299,7 +301,7 @@ class LP_Forms_Handler {
 				wp_new_user_notification( $customer_id, null, 'both' );
 			}
 		} catch ( Throwable $e ) {
-			return new WP_Error( 'lp/create-new-customer/error', $e->getMessage() );
+			return new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
 		return $customer_id;
