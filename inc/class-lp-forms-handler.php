@@ -219,23 +219,23 @@ class LP_Forms_Handler {
 	public static function learnpress_create_new_customer( $email = '', $username = '', $password = '', $confirm_password = '', $args = array(), $update_meta = array() ) {
 		try {
 			if ( empty( $email ) || ! is_email( $email ) ) {
-				throw new Exception( __( 'Please provide a valid email address.', 'learnpress' ), 'registration-error-invalid-email' );
+				throw new Exception( __( 'Please provide a valid email address.', 'learnpress' ), 101 );
 			}
 
 			if ( email_exists( $email ) ) {
-				throw new Exception( __( 'An account is already registered with your email address.', 'learnpress' ), 'registration-error-email-exists' );
+				throw new Exception( __( 'An account is already registered with your email address.', 'learnpress' ), 102 );
 			}
 
 			$username = sanitize_user( $username );
 
 			if ( empty( $username ) || ! validate_username( $username ) ) {
-				throw new Exception( __( 'Please enter a valid account username.', 'learnpress' ), 'registration-error-invalid-username' );
+				throw new Exception( __( 'Please enter a valid account username.', 'learnpress' ), 103 );
 			}
 
 			if ( username_exists( $username ) ) {
 				throw new Exception(
 					__( 'An account is already registered with that username. Please choose another one.', 'learnpress' ),
-					'registration-error-username-exists'
+					104
 				);
 			}
 
@@ -244,30 +244,30 @@ class LP_Forms_Handler {
 			}
 
 			if ( empty( $password ) ) {
-				throw new Exception( __( 'Please enter an account password.', 'learnpress' ), 'registration-error-missing-password' );
+				throw new Exception( __( 'Please enter an account password.', 'learnpress' ), 105 );
 			}
 
 			if ( strlen( $password ) < 6 ) {
-				throw new Exception( __( 'Password is too short!', 'learnpress' ), 'registration-error-short-password' );
+				throw new Exception( __( 'Password is too short!', 'learnpress' ), 106 );
 			}
 
 			if ( preg_match( '#\s+#', $password ) ) {
-				throw new Exception( __( 'Password can not contain spaces!', 'learnpress' ), 'registration-error-spacing-password' );
+				throw new Exception( __( 'Password can not contain spaces!', 'learnpress' ), 107 );
 			}
 
 			if ( empty( $confirm_password ) ) {
-				throw new Exception( __( 'Please enter confirm password.', 'learnpress' ), 'registration-error-confirm-password' );
+				throw new Exception( __( 'Please enter confirm password.', 'learnpress' ), 108 );
 			}
 
 			if ( $password !== $confirm_password ) {
-				throw new Exception( __( 'Password and Confirm Password does not match!', 'learnpress' ), 'registration-error-confirm-password' );
+				throw new Exception( __( 'Password and Confirm Password does not match!', 'learnpress' ), 108 );
 			}
 
 			$custom_fields = LP_Settings::get_option( 'register_profile_fields', [] );
 			if ( $custom_fields && ! empty( $update_meta ) ) {
 				foreach ( $custom_fields as $field ) {
 					if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
-						throw new Exception( $field['name'] . __( ' is required field.', 'learnpress' ), 'registration-custom-exists' );
+						throw new Exception( $field['name'] . __( ' is required field.', 'learnpress' ), 109 );
 					}
 				}
 			}
@@ -301,7 +301,39 @@ class LP_Forms_Handler {
 				wp_new_user_notification( $customer_id, null, 'both' );
 			}
 		} catch ( Throwable $e ) {
-			return new WP_Error( $e->getCode(), $e->getMessage() );
+			$code_str = '';
+			switch ( $e->getCode() ) {
+				case 101:
+					$code_str = 'registration-error-invalid-email';
+					break;
+				case 102:
+					$code_str = 'registration-error-email-exists';
+					break;
+				case 103:
+					$code_str = 'registration-error-invalid-username';
+					break;
+				case 104:
+					$code_str = 'registration-error-username-exists';
+					break;
+				case 105:
+					$code_str = 'registration-error-missing-password';
+					break;
+				case 106:
+					$code_str = 'registration-error-short-password';
+					break;
+				case 107:
+					$code_str = 'registration-error-spacing-password';
+					break;
+				case 108:
+					$code_str = 'registration-error-confirm-password';
+					break;
+				case 109:
+					$code_str = 'registration-custom-required-field';
+					break;
+				default:
+					break;
+			}
+			return new WP_Error( $code_str, $e->getMessage() );
 		}
 
 		return $customer_id;
