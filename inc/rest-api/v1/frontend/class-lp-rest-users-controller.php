@@ -271,17 +271,16 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			if ( ! $course ) {
 				throw new Exception( 'The course is invalid!' );
 			}
+			// Use for Review Quiz.
+			$quiz = learn_press_get_quiz( $item_id );
+			if ( ! $quiz ) {
+				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
+			}
+			$quiz->set_course($course);
 
 			// Course is no required enroll
 			if ( $course->is_no_required_enroll() ) {
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
-
-				// Use for Review Quiz.
-				$quiz = learn_press_get_quiz( $item_id );
-
-				if ( ! $quiz ) {
-					throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
-				}
 
 				$result = $no_required_enroll->get_result_quiz( $quiz, $answered );
 
