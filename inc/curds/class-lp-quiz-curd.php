@@ -202,7 +202,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					return;
 				}
 
-				$questions_origin = $quiz_origin->get_questions();
+				$questions_origin = $quiz_origin->get_question_ids();
 
 				foreach ( $questions_origin as $question_id_origin ) {
 					$can_clone = true;
@@ -267,28 +267,33 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * @param string $context
 		 *
 		 * @return array
-		 * @throws Exception
 		 */
-		public function read_question_ids( int $quiz_id = 0, string $context = 'display' ) :array {
-			$quiz = learn_press_get_quiz( $quiz_id );
-
-			if ( ! $quiz ) {
-				return array();
-			}
-
+		public function read_question_ids( int $quiz_id = 0, string $context = 'display' ): array {
 			$lp_question_db = LP_Question_DB::getInstance();
+			$question_ids   = [];
 
-			if ( $context === 'display' ) {
-				$statuses = array( 'publish' );
-			} else {
-				$statuses = array( 'publish', 'draft', 'auto-draft' );
+			try {
+				$quiz = learn_press_get_quiz( $quiz_id );
+				if ( ! $quiz ) {
+					return array();
+				}
+
+				if ( $context === 'display' ) {
+					$statuses = array( 'publish' );
+				} else {
+					$statuses = array( 'publish', 'draft', 'auto-draft' );
+				}
+
+				$filter          = new LP_Question_Filter();
+				$filter->quiz_id = $quiz_id;
+				$filter->statues = $statuses;
+
+				$question_ids = $lp_question_db->get_list_question_ids_of_quiz( $filter );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
-			$filter          = new LP_Question_Filter();
-			$filter->quiz_id = $quiz_id;
-			$filter->statues = $statuses;
-
-			return $lp_question_db->get_list_question_ids_of_quiz( $filter );
+			return $question_ids;
 		}
 
 		/**

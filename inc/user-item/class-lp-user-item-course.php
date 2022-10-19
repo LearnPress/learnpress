@@ -630,7 +630,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					}
 
 					if ( $item->type == LP_QUIZ_CPT ) {
-						$total_questions     += count( $itemObj->get_questions() );
+						$total_questions     += count( $itemObj->get_question_ids() );
 						$total_mark_question += $itemObj->get_mark();
 					}
 				}

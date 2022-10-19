@@ -480,7 +480,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				throw new Exception();
 			}
 
-			$question_ids             = $quiz->get_questions();
+			$question_ids             = $quiz->get_question_ids();
 			$result['mark']           = $quiz->get_mark();
 			$result['question_count'] = count( $question_ids );
 			$result['time_spend']     = $this->get_time_interval( 'display' );
@@ -670,7 +670,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function get_total_questions() {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
-		$questions = $quiz->get_questions();
+		$questions = $quiz->get_question_ids();
 
 		return sizeof( $questions );
 	}

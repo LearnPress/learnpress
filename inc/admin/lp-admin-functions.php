@@ -2028,10 +2028,13 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
 
 		$new_quiz_id = learn_press_duplicate_post( $quiz_id, $args, true );
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
-		$questions   = $quiz->get_questions();
+		if ( ! $quiz ) {
+			return 0;
+		}
+
+		$questions = $quiz->get_question_ids();
 
 		if ( $questions ) {
-			$questions = array_keys( $questions );
 			foreach ( $questions as $question_id ) {
 				$new_question_id = learn_press_duplicate_post( $question_id );
 

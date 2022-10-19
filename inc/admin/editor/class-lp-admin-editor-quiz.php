@@ -175,14 +175,16 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$new_question = $this->question_curd->create( $args );
 
 		if ( ! is_wp_error( $new_question ) ) {
-
 			// update hidden questions in quiz meta
 			$quiz             = LP_Quiz::get_quiz( $quiz_id );
-			$hidden_questions = $quiz->get_questions();
+			$hidden_questions = $quiz->get_question_ids();
 
 			if ( $hidden_questions ) {
-				unset( $hidden_questions[ $new_question->get_id() ] );
-				$hidden_questions = array_keys( $hidden_questions );
+				$index = array_search( $new_question->get_id(), $hidden_questions );
+				if ( $index !== false ) {
+					unset( $hidden_questions[ $index ] );
+				}
+				//$hidden_questions = array_keys( $hidden_questions );
 			}
 
 			update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );

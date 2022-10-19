@@ -451,7 +451,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $context );
+			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $this->get_course_id(), $context );
 		}
 
 		/**
@@ -461,48 +461,46 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function quiz_editor_get_questions() {
 			// list questions
-			$questions = $this->get_questions( 'edit' );
+			$questions = $this->get_question_ids( 'edit' );
 			// order questions in quiz
 			$question_order = learn_press_quiz_get_questions_order( $questions );
 
 			$result = array();
-			if ( is_array( $questions ) ) {
-				foreach ( $questions as $index => $id ) {
 
-					$question = LP_Question::get_question( $id );
+			foreach ( $questions as $id ) {
+				$question = LP_Question::get_question( $id );
 
-					$answers = array();
-					// handle question answer
-					if ( is_array( $question->get_data( 'answer_options' ) ) ) {
-						foreach ( $question->get_data( 'answer_options' ) as $answer ) {
-							$answers[] = $answer;
-						}
+				$answers = array();
+				// handle question answer
+				if ( is_array( $question->get_data( 'answer_options' ) ) ) {
+					foreach ( $question->get_data( 'answer_options' ) as $answer ) {
+						$answers[] = $answer;
 					}
-
-					$post     = get_post( $id );
-					$result[] = apply_filters(
-						'learn-press/quiz-editor/question-data',
-						array(
-							'id'       => $id,
-							'open'     => false,
-							'title'    => $post->post_title,
-							'type'     => array(
-								'key'   => $question->get_type(),
-								'label' => $question->get_type_label(),
-							),
-							'answers'  => apply_filters( 'learn-press/quiz-editor/question-answers-data', $answers, $id, $this->get_id() ),
-							'settings' => array(
-								'content'     => $post->post_content,
-								'mark'        => get_post_meta( $id, '_lp_mark', true ),
-								'explanation' => get_post_meta( $id, '_lp_explanation', true ),
-								'hint'        => get_post_meta( $id, '_lp_hint', true ),
-							),
-							'order'    => $question_order[ $index ],
-						),
-						$id,
-						$this->get_id()
-					);
 				}
+
+				$post     = get_post( $id );
+				$result[] = apply_filters(
+					'learn-press/quiz-editor/question-data',
+					array(
+						'id'       => $id,
+						'open'     => false,
+						'title'    => $post->post_title,
+						'type'     => array(
+							'key'   => $question->get_type(),
+							'label' => $question->get_type_label(),
+						),
+						'answers'  => apply_filters( 'learn-press/quiz-editor/question-answers-data', $answers, $id, $this->get_id() ),
+						'settings' => array(
+							'content'     => $post->post_content,
+							'mark'        => get_post_meta( $id, '_lp_mark', true ),
+							'explanation' => get_post_meta( $id, '_lp_explanation', true ),
+							'hint'        => get_post_meta( $id, '_lp_hint', true ),
+						),
+						'order'    => $question_order[ $id ],
+					),
+					$id,
+					$this->get_id()
+				);
 			}
 
 			return apply_filters( 'learn-press/quiz/quiz_editor_questions', $result, $this->get_id() );
@@ -531,7 +529,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function count_questions() {
 			$size      = 0;
-			$questions = $this->get_questions();
+			$questions = $this->get_question_ids();
 
 			if ( $questions ) {
 				$size = sizeof( $questions );
@@ -547,10 +545,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return int[]
 		 * @editor tungnx
-		 * @throws Exception
 		 * @version 1.0.1
 		 * @since 3.2.0
-		 *
 		 */
 		public function get_question_ids( string $context = 'display' ): array {
 			$ids = $this->_curd->read_question_ids( $this->get_id(), $context );
@@ -646,9 +642,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool
 		 */
 		public function has_question( $question_id ) {
-			$questions = $this->get_questions();
+			$questions = $this->get_question_ids();
 
-			return apply_filters( 'learn-press/quiz/has-question', is_array( $questions ) && ( false !== array_search( $question_id, $questions ) ), $question_id, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/has-question', in_array( $question_id, $questions ), $question_id, $this->get_id() );
 		}
 
 		/**
@@ -829,8 +825,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				$questions = (array) $results->questions;
 
 			} else {
-				$questions = (array) $this->get_questions();
-				$questions = array_keys( $questions );
+				$questions = $this->get_question_ids();
 			}
 
 			$position = array_search( $question, $questions );

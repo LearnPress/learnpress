@@ -58,8 +58,10 @@ function learn_press_get_question_answer_meta( $item_id, $meta_key, $single = tr
  * @param   boolean $only_ids return an array of questions with IDs only or as post objects
  *
  * @return  array|null
+ * @deprecated 4.1.7.3
  */
 function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
+	_deprecated_function( __FUNCTION__, '4.1.7.3' );
 	if ( ! $quiz_id ) {
 		$quiz_id = get_the_ID();
 	}

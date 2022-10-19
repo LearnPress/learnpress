@@ -251,14 +251,15 @@ add_action( 'init', 'learn_press_add_user_roles' );
  * @param array $args
  *
  * @return mixed
+ * @deprecated 4.1.7.3
  */
-function learn_press_get_user_questions( $user_id = null, $args = array() ) {
+/*function learn_press_get_user_questions( $user_id = null, $args = array() ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
 	}
 
 	return learn_press_get_user( $user_id )->get_questions( $args );
-}
+}*/
 
 /**
  * Get the type of current user
