@@ -820,7 +820,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 						'total'     => $order->get_total(),
 						'currency'  => $order->get_currency(),
 						'status'    => $order->get_status(),
-						'date'      => lp_jwt_prepare_date_response( $order->get_order_date() ),
+						'date'      => $order->get_order_date( 'timestamp' ) ? lp_jwt_prepare_date_response( get_date_from_gmt( gmdate( 'Y-m-d H:i:s', $order->get_order_date( 'timestamp' ) ), 'Y-m-d H:i:s' ) ) : '',
 					);
 				}
 			}
