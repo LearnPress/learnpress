@@ -204,6 +204,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$lp_quiz_cache->clear( $key_cache );
 			// End
 
+			$quiz->set_course( $course );
+
 			$show_check          = $quiz->get_instant_check();
 			$duration            = $quiz->get_duration();
 			$show_correct_review = $quiz->get_show_correct_review();
