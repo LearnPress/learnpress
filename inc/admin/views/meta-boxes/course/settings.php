@@ -208,7 +208,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() ),
 					$regular_price,
 					array(
-						'type_input'        => 'number',
+						'type_input'        => 'text',
 						'custom_attributes' => array(
 							'min'  => '0',
 							'step' => '0.01',
@@ -222,7 +222,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'<a href="#" class="lp_sale_price_schedule">' . esc_html__( 'Schedule', 'learnpress' ) . '</a>',
 					$sale_price,
 					array(
-						'type_input'        => 'number',
+						'type_input'        => 'text',
 						'custom_attributes' => array(
 							'min'  => '0',
 							'step' => '0.01',
