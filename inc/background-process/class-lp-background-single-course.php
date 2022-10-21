@@ -239,7 +239,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$user            = learn_press_get_current_user();
 			$required_review = LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
 
-			if ( $user->is_instructor() && $required_review ) {
+			if ( $user->is_instructor() && $required_review && $lp_course->get_status() === 'publish' ) {
 				wp_update_post(
 					array(
 						'ID'          => $lp_course->get_id(),
