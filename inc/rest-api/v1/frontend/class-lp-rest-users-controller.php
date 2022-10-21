@@ -166,6 +166,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
 			}
 
+			do_action( 'learn-press/user/before/start-quiz', $item_id, $course_id, $user_id );
+
 			// For no required enroll course
 			if ( $user->is_guest() && $course->is_no_required_enroll() ) {
 				if ( $quiz->get_retake_count() >= 0 ) {
