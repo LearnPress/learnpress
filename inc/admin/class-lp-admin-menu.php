@@ -45,25 +45,35 @@ class LP_Admin_Menu {
 		include_once 'sub-menus/abstract-submenu.php';
 	}
 
+	/**
+	 * Admin bar menu.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar
+	 *
+	 * @return void
+	 */
 	public function admin_bar_menus( $wp_admin_bar ) {
 		if ( ! is_admin() || ! is_user_logged_in() ) {
 			return;
 		}
 
-		if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
-			return;
-		}
-
-		if ( get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
-			return;
-		}
-
+		// Add link view archive courses.
 		$wp_admin_bar->add_node(
 			array(
 				'parent' => 'site-name',
 				'id'     => 'courses-page',
 				'title'  => esc_html__( 'View Courses', 'learnpress' ),
 				'href'   => learn_press_get_page_link( 'courses' ),
+			)
+		);
+
+		// Ad link view profile.
+		$wp_admin_bar->add_node(
+			array(
+				'id'     => 'course_profile',
+				'parent' => 'user-actions',
+				'title'  => esc_html__( 'View Profile', 'learnpress' ),
+				'href'   => learn_press_get_page_link( 'profile' ),
 			)
 		);
 	}

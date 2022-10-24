@@ -834,14 +834,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			return self::$_instance;
 		}
 
-		public function admin_notice_require_addon_version() {
-			?>
-			<div class="notice notice-error">
-				<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require Addon</strong> version 4.0.0 or higher' ); ?></p>
-			</div>
-			<?php
-		}
-
 		/**
 		 * Copy class-lp-mu-plugin.php to mu_plugins folder
 		 *

@@ -49,7 +49,7 @@ class LP_Page_Controller {
 		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
 
 		// Set link profile to admin menu
-		add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
+		//add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
 
 		// Web hook detected PayPal request.
 		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
@@ -970,6 +970,7 @@ class LP_Page_Controller {
 	 * @editor tungnx
 	 * @version 1.0.1
 	 * @since  3.0.0
+	 * @deprecated 4.1.7.3
 	 */
 	public function learn_press_edit_admin_bar() {
 		global $wp_admin_bar;
@@ -981,7 +982,6 @@ class LP_Page_Controller {
 		}
 
 		$page_profile_id = learn_press_get_page_id( 'profile' );
-
 		if ( $page_profile_id && get_post_status( $page_profile_id ) != 'trash' ) {
 			$user_id = $current_user->ID;
 
