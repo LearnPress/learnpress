@@ -18,6 +18,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->menu_title = esc_html__( 'Settings', 'learnpress' );
 		$this->page_title = esc_html__( 'LearnPress Settings', 'learnpress' );
 		$this->priority   = 30;
+		$this->callback   = [ $this, 'display' ];
 
 		$this->tabs = apply_filters(
 			'learn-press/admin/settings-tabs-array',

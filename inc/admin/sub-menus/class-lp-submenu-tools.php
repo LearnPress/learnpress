@@ -12,6 +12,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		$this->menu_title = __( 'Tools', 'learnpress' );
 		$this->page_title = __( 'LearnPress Tools', 'learnpress' );
 		$this->priority   = 40;
+		$this->callback   = [ $this, 'display' ];
 
 		$this->tabs = apply_filters(
 			'learn-press/admin/tools-tabs',
@@ -19,22 +20,19 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 				'course'   => __( 'Course Data', 'learnpress' ),
 				'database' => __( 'Database', 'learnpress' ),
 				'template' => __( 'Templates', 'learnpress' ),
-				//'cron'     => __( 'Cron Jobs', 'learnpress' ),
-				//'cache'    => __( 'Caches', 'learnpress' ),
 			)
 		);
 
 		parent::__construct();
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-		$this->_process_actions();
+		//$this->_process_actions();
 	}
 
-	public function admin_scripts() {
-		learn_press_admin_assets()->enqueue_script( 'lp-update' );
-	}
-
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	protected function _process_actions() {
-		$has_action = true;
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$has_action = true;
 		switch ( LP_Request::get( 'page' ) ) {
 			default:
 				$has_action = false;
@@ -53,7 +51,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 
 		if ( $has_action ) {
 			die();
-		}
+		}*/
 	}
 
 	public function page_content_database() {
@@ -64,17 +62,9 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		learn_press_admin_view( 'tools/html-template' );
 	}
 
-	/*public function page_content_cache() {
-		learn_press_admin_view( 'tools/html-cache' );
-	}*/
-
 	public function page_content_course() {
 		learn_press_admin_view( 'tools/html-course' );
 	}
-
-	/*public function page_content_cron() {
-		learn_press_admin_view( 'tools/html-cron' );
-	}*/
 
 	/**
 	 * Display page

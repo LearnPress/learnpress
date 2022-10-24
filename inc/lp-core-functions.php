@@ -2046,6 +2046,14 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	global $wp_query, $wp;
 	$current = '';
 
+	// Only load on profile page.
+	$page_profile_option = untrailingslashit( get_the_permalink( learn_press_get_page_id( 'profile' ) ) );
+	$page_profile_option = str_replace( '/', '\/', $page_profile_option );
+	$pattern             = '/' . $page_profile_option . '/';
+	if ( ! preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+		return false;
+	}
+
 	if ( ! empty( $_REQUEST['tab'] ) ) {
 		$current = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] );
 	} elseif ( ! empty( $wp_query->query_vars['tab'] ) ) {

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-10-20T13:05:51+03:00\n"
+"POT-Creation-Date: 2022-10-22T11:58:01+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: learnpress\n"
@@ -391,11 +391,11 @@ msgstr ""
 msgid "Created by: "
 msgstr ""
 
-#: inc/admin/class-lp-admin-menu.php:66
+#: inc/admin/class-lp-admin-menu.php:65
 msgid "View Courses"
 msgstr ""
 
-#: inc/admin/class-lp-admin-menu.php:87
+#: inc/admin/class-lp-admin-menu.php:86
 msgid "Learning Management System"
 msgstr ""
 
@@ -869,11 +869,15 @@ msgid "Buy Now"
 msgstr ""
 
 #: inc/admin/lp-admin-actions.php:222
+#: inc/admin/sub-menus/class-lp-submenu-categories.php:11
+#: inc/admin/sub-menus/class-lp-submenu-categories.php:12
 #: inc/custom-post-types/course.php:485
 msgid "Categories"
 msgstr ""
 
 #: inc/admin/lp-admin-actions.php:227
+#: inc/admin/sub-menus/class-lp-submenu-tags.php:11
+#: inc/admin/sub-menus/class-lp-submenu-tags.php:12
 msgid "Tags"
 msgstr ""
 
@@ -6407,7 +6411,7 @@ msgid "%s was not registered as a request argument."
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:166
-#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:279
+#: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:281
 msgid "The quiz is invalid!"
 msgstr ""
 

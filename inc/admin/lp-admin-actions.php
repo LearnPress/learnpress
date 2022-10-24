@@ -218,12 +218,12 @@ function learn_press_admin_course_tabs() {
 				'id'   => 'edit-lp_course',
 			),
 			20 => array(
-				'link' => 'edit-tags.php?taxonomy=course_category&post_type=lp_course',
+				'link' => 'edit-tags.php?taxonomy=course_category',
 				'name' => esc_html__( 'Categories', 'learnpress' ),
 				'id'   => 'edit-course_category',
 			),
 			30 => array(
-				'link' => 'edit-tags.php?taxonomy=course_tag&post_type=lp_course',
+				'link' => 'edit-tags.php?taxonomy=course_tag',
 				'name' => esc_html__( 'Tags', 'learnpress' ),
 				'id'   => 'edit-course_tag',
 			),
@@ -301,10 +301,4 @@ if ( ! function_exists( 'lp_remove_admin_warning' ) ) {
 	}
 }
 add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
-
-// 3.3.0
-function learn_press_fill_in_blanks_admin_editor( $question ) {
-	learn_press_admin_view( 'question/fill-in-blanks', array( 'question' => $question ) );
-}
-add_action( 'learn-press/question-admin-editor', 'learn_press_fill_in_blanks_admin_editor' );
 

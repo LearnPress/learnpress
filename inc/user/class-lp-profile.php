@@ -103,9 +103,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		/**
 		 * Prevent access view owned course in non admin, instructor profile page.
+		 * @deprecated 4.1.7.3
 		 */
 		public function init() {
-			$profile = self::instance();
+			_deprecated_function( __FUNCTION__, '4.1.7.3' );
+			/*$profile = self::instance();
 			$user    = $profile->get_user();
 			$role    = $user->get_role();
 
@@ -114,7 +116,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 				$data_tabs   = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
 				$this->_tabs = new LP_Profile_Tabs( $data_tabs, self::instance() );
-			}
+			}*/
 		}
 
 		public function is_guest() {
@@ -237,7 +239,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return LP_Profile_Tabs
 		 */
 		public function get_tabs() {
-			if ( $this->_tabs === null ) {
+			//if ( $this->_tabs === null ) {
 				$settings        = LP_Settings::instance();
 				$course_sections = array();
 
@@ -320,11 +322,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'icon'     => '<i class="fas fa-user-secret"></i>',
 					);
 				}
-			}
+				//}
 
-			$tabs = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
+				$tabs = $this->_default_settings;
+				$tabs = apply_filters( 'learn-press/profile-tabs', $tabs );
 
-			return $this->_tabs = new LP_Profile_Tabs( $tabs, $this );
+				return $this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 		}
 
 		public function get_slug( $data, $default = '' ) {

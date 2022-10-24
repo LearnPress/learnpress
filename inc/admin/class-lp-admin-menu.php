@@ -33,7 +33,6 @@ class LP_Admin_Menu {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		//add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
 
 		if ( apply_filters( 'learn_press_show_admin_bar_courses_page', true ) ) {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );
@@ -94,23 +93,37 @@ class LP_Admin_Menu {
 		);
 
 		// Default submenu items
-		$menu_items              = array();
-		$menu_items['statistic'] = include_once 'sub-menus/class-lp-submenu-statistics.php';
-		$menu_items['addons']    = include_once 'sub-menus/class-lp-submenu-addons.php';
-		$menu_items['settings']  = include_once 'sub-menus/class-lp-submenu-settings.php';
-		$menu_items['tools']     = include_once 'sub-menus/class-lp-submenu-tools.php';
-
-		// Deprecated hooks
-		$menu_items = apply_filters( 'learn_press_menu_items', $menu_items );
+		$menu_items               = array();
+		$menu_items['statistic']  = include_once 'sub-menus/class-lp-submenu-statistics.php';
+		$menu_items['addons']     = include_once 'sub-menus/class-lp-submenu-addons.php';
+		$menu_items['settings']   = include_once 'sub-menus/class-lp-submenu-settings.php';
+		$menu_items['tools']      = include_once 'sub-menus/class-lp-submenu-tools.php';
+		$menu_items['categories'] = include_once 'sub-menus/class-lp-submenu-categories.php';
+		$menu_items['tags']       = include_once 'sub-menus/class-lp-submenu-tags.php';
 
 		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
 		// Sort menu items by it's priority
-		// uasort( $menu_items, array( $this, 'sort_menu_items' ) );
 		uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
 
+		add_action(
+			'parent_file',
+			function( $parent_file ) {
+				global $current_screen;
+
+				$taxonomy = $current_screen->taxonomy;
+				if ( $taxonomy == 'course_tag' ) {
+					$parent_file = 'learn_press';
+				} elseif ( $taxonomy == 'course_category' ) {
+					$parent_file = 'learn_press';
+				}
+
+				return $parent_file;
+			}
+		);
+
 		if ( $menu_items ) {
-			foreach ( $menu_items as $item ) {
+			foreach ( $menu_items as $k => $item ) {
 				if ( is_string( $item ) && class_exists( $item ) ) {
 					$item = new $item();
 				}
@@ -119,15 +132,20 @@ class LP_Admin_Menu {
 					continue;
 				}
 
+				if ( in_array( $k, [ 'tags', 'categories' ] ) ) {
+					$callback = false;
+				} else {
+					$callback = $item->get_callback();
+				}
+
 				add_submenu_page(
 					'learn_press',
 					$item->get_page_title(),
 					$item->get_menu_title(),
 					$item->get_capability(),
 					$item->get_id(),
-					array( $item, 'display' )
+					$callback
 				);
-
 			}
 			$this->menu_items = $menu_items;
 		}
@@ -149,22 +167,6 @@ class LP_Admin_Menu {
 
 	public function get_menu_items() {
 		return $this->menu_items;
-	}
-
-	/*
-	 * Notify an administrator with pending courses
-	 */
-	public function notify_new_course() {
-		global $menu;
-
-		$current_user = wp_get_current_user();
-		if ( ! in_array( 'administrator', $current_user->roles ) ) {
-			return;
-		}
-
-		$count_courses    = wp_count_posts( LP_COURSE_CPT );
-		$awaiting_mod     = $count_courses->pending;
-		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . '</span></span>';
 	}
 
 	public static function instance() {

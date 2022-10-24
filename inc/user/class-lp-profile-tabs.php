@@ -23,7 +23,6 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 */
 	public function __construct( $tabs, $profile ) {
 		parent::__construct( $tabs );
-
 		$this->profile = $profile;
 
 		$this->_sanitize();
