@@ -634,7 +634,6 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		$user_course_data = $user->get_course_data( $id );
-
 		if ( ! $user_course_data ) {
 			return 0;
 		}

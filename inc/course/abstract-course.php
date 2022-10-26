@@ -332,13 +332,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Check if this course is required enroll or not.
+		 * Check this course is required enroll.
 		 *
 		 * @return bool
-		 * @deprecated 4.0.0
 		 */
 		public function is_required_enroll(): bool {
-			//_deprecated_function( __FUNCTION__, '4.1.7.2', 'is_no_required_enroll' );
 			return ! $this->is_no_required_enroll();
 		}
 
@@ -356,14 +354,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$return = true;
 			}
 			return apply_filters( 'learn-press/course/require-enrollment', $return, $this->get_id() );
-		}
-
-		/**
-		 * @return mixed
-		 * @deprecated
-		 */
-		public function is_require_enrollment() {
-			return ! $this->is_no_required_enroll();
 		}
 
 		/**

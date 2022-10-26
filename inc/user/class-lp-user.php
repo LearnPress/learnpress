@@ -159,7 +159,6 @@ class LP_User extends LP_Abstract_User {
 				}
 
 				$user_course_data = $this->get_course_data( $course_id );
-
 				if ( $user_course_data instanceof LP_User_Item_Course ) {
 					$retaken          = $user_course_data->get_retaken_count();
 					$can_retake_times = $retake_option - $retaken;

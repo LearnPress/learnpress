@@ -996,8 +996,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Update course item and it's child.
 	 *
 	 * @TODO: tungnx - review to modify
+	 * @deprecated 4.1.7.3
 	 */
 	public function save() {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		/**
 		 * @var LP_User_Item $item
 		 */
@@ -1008,16 +1010,14 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		foreach ( $items as $item_id => $item ) {
-
 			if ( ! $item->get_status() ) {
 				continue;
 			}
 
 			/**
-			 * Auto fill the end-time if it isn't already set
+			 * Autofill the end-time if it isn't already set
 			 */
 			if ( in_array( $item->get_status(), array( 'completed', 'finished' ) ) ) {
-
 				if ( ! $item->get_end_time() || $item->get_end_time()->is_null() ) {
 					$item->set_end_time( current_time( 'mysql', 1 ) );
 				}

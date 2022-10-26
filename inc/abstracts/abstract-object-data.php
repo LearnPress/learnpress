@@ -15,7 +15,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 	 * Class LP_Abstract_Object_Data
 	 */
 	abstract class LP_Abstract_Object_Data {
-
 		/**
 		 * @var int
 		 */
@@ -246,12 +245,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 					$this->_set_data( $key, $value, $extra );
 				}
 			} elseif ( $key_or_data ) {
-				$data    = $extra ? $this->_extra_data : $this->_data;
-				$changes = $extra ? $this->_extra_data_changes : $this->_changes;
-
-				if ( $key_or_data === 'total' ) {
-				}
-
 				if ( $extra ) {
 					// Do not allow to add extra data with the same key in data
 					if ( ! array_key_exists( $key_or_data, $this->_data ) ) {
@@ -262,16 +255,15 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 						if ( ! is_string( $key_or_data ) && ! is_numeric( $key_or_data ) ) {
 							throw new Exception( 'error' );
 						}
+
 						// Only change the data is already existed
-						if ( array_key_exists( $key_or_data, $this->_data ) ) {
+						//                      if ( array_key_exists( $key_or_data, $this->_data ) ) {
 							$this->_data[ $key_or_data ] = $value;
-						} else {
-							$this->_extra_data[ $key_or_data ] = $value;
-						}
-					} catch ( Exception $ex ) {
-						print_r( $key_or_data );
-						print_r( $ex->getMessage() );
-						die( __FILE__ . '::' . __FUNCTION__ );
+						//                      } else {
+						//                          $this->_extra_data[ $key_or_data ] = $value;
+						//                      }
+					} catch ( Throwable $ex ) {
+						error_log( $ex->getMessage() );
 					}
 				}
 			}
@@ -281,39 +273,46 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * Set extra data
 		 *
 		 * @param array|string $key_or_data
-		 * @param string       $value
+		 * @param string|mixed       $value
 		 * @return $this
 		 */
 		public function set_data( $key_or_data, $value = '' ) {
-			$this->_set_data( $key_or_data, $value, true );
+			$this->_set_data( $key_or_data, $value );
 			return $this;
 		}
 
 		/**
 		 * @param $key
 		 * @param $value
+		 *
+		 * @return LP_Abstract_Object_Data
 		 */
-		public function set_data_date( $key, $value ) {
-			if ( ! $value instanceof LP_Datetime ) {
-				$value = new LP_Datetime( $value );
+		public function set_data_date( $key, $value ): LP_Abstract_Object_Data {
+			$lp_date = '';
+			if ( ! empty( $value ) ) {
+				$lp_date = new LP_Datetime( $value );
 			}
 
-			$this->_set_data( $key, $value, true );
+			$this->set_data( $key, $lp_date );
+
+			return $this;
 		}
 
 		/**
 		 * @param $key
 		 * @param $value
+		 * @deprecated 4.1.7.3
 		 */
 		protected function _set_data_date( $key, $value, $extra = false ) {
-			if ( ! $value instanceof LP_Datetime ) {
-				$value = new LP_Datetime( $value );
-			}
-
-			$this->_set_data( $key, $value, $extra );
+			_deprecated_function( __FUNCTION__, '4.1.7.3', 'set_data_date' );
+			$this->set_data_date( $key, $value );
 		}
 
+		/**
+		 * @deprecated 4.1.7.3
+		 */
 		public function set_data_null_date( $key ) {
+			_deprecated_function( __METHOD__, '4.1.7.3' );
 			$this->_set_data( $key, LP_Datetime::getSqlNullDate() );
 		}
 

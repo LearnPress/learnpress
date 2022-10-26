@@ -400,11 +400,12 @@ add_action( 'register_form', 'learn_press_user_become_teacher_registration_form'
  *
  * @return mixed
  */
-function learn_press_update_user_item_field( $fields, $where = false, $update_cache = true, $update_extra_fields_as_meta = false ) {
+function learn_press_update_user_item_field( array $fields = [], $where = false, $update_cache = true, $update_extra_fields_as_meta = false ) {
 	global $wpdb;
 
-	// Table fields
+	// Table fields format.
 	$table_fields = array(
+		'user_item_id' => '%d',
 		'user_id'      => '%d',
 		'item_id'      => '%d',
 		'ref_id'       => '%d',
@@ -435,22 +436,20 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		}
 	}
 
-	$data             = array();
-	$data_format      = array();
-	$date_time_fields = array(
-		'start_time',
-		'end_time',
-	);
-
+	$data        = array();
+	$data_format = array();
 	foreach ( $fields as $field => $value ) {
 		if ( ! empty( $table_fields[ $field ] ) ) {
 			$data[ $field ] = $value;
 
 			// Do not format the date-time field if it's value is NULL
-			if ( in_array( $field, $date_time_fields ) && ! $value ) {
+			if ( in_array( $field, [ 'start_time', 'end_time' ] ) && empty( $value ) ) {
 				$data[ $field ] = null;
 				$data_format[]  = '';
 			} else {
+				if ( $value instanceof LP_Datetime ) {
+					$data[ $field ] = $value->toSql();
+				}
 				$data_format[] = $table_fields[ $field ];
 			}
 		}
@@ -463,16 +462,15 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		);
 	}
 
-	if ( $where && empty( $where['user_id'] ) ) {
-		$where['user_id'] = ! empty( $fields['user_id'] ) ? $fields['user_id'] : learn_press_get_current_user_id();
-	}
-
+	// Set where and where format
 	$where_format = array();
+	if ( is_array( $where ) && ! empty( $where ) ) {
+		if ( empty( $where['user_id'] ) ) {
+			$where['user_id'] = ! empty( $fields['user_id'] ) ? $fields['user_id'] : learn_press_get_current_user_id();
+		}
 
-	// Build where and where format
-	if ( $where ) {
 		foreach ( $where as $field => $value ) {
-			if ( ! empty( $table_fields[ $field ] ) ) {
+			if ( isset( $table_fields[ $field ] ) ) {
 				$where_format[] = $table_fields[ $field ];
 			}
 		}
@@ -485,15 +483,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	$inserted = false;
 	$updated  = false;
 
-	// Ensure all fields are instance of LP_Datetime have to
-	// convert to string of datetime.
-	foreach ( $data as $k => $v ) {
-		if ( $v instanceof LP_Datetime ) {
-			$data[ $k ] = $v->toSql();
-		}
-	}
-
-	// If $where is not empty consider we are updating
+	// Update to database.
 	if ( $where ) {
 		$updated = $wpdb->update(
 			$wpdb->learnpress_user_items,
@@ -503,14 +493,12 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 			$where_format
 		);
 	} else {
-
-		// Otherwise, insert a new one
+		// Insert to database.
 		if ( $wpdb->insert(
 			$wpdb->learnpress_user_items,
 			$data,
 			$data_format
-		)
-		) {
+		) ) {
 			$inserted = $wpdb->insert_id;
 		}
 	}
@@ -533,9 +521,10 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 
 	/**
 	 * If there is some fields does not contain in the main table
-	 * then consider update them as meta data.
+	 * then consider update them as metadata.
+	 * @comment by tungnx - 4.1.7.3
 	 */
-	if ( $updated_item && $update_extra_fields_as_meta ) {
+	/*if ( $updated_item && $update_extra_fields_as_meta ) {
 		$extra_fields = array_diff_key( $fields, $table_fields );
 		if ( $extra_fields ) {
 			foreach ( $extra_fields as $meta_key => $meta_value ) {
@@ -554,7 +543,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 				}
 			}
 		}
-	}
+	}*/
 
 	do_action( 'learn-press/updated-user-item-meta', $updated_item );
 
@@ -606,7 +595,7 @@ function learn_press_get_user_item( $where, $single = true ) {
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE " . join( ' AND ', $where_str ) . '
 			ORDER BY user_item_id DESC
-		',
+			',
 			$where
 		);
 		if ( $single || ! empty( $where['user_item_id'] ) ) {
@@ -1472,8 +1461,6 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
  * @return bool|array|LP_User_Item|WP_Error
  */
 function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = false ) {
-	global $wpdb;
-
 	$item_data = wp_parse_args(
 		$args,
 		array(
@@ -1488,7 +1475,7 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 
 	if ( $user_item && ! is_wp_error( $user_item ) ) {
 		$user_item = new LP_User_Item_Quiz( $user_item->get_data() );
-		$user_item->update( true );
+		$user_item->update();
 	}
 
 	return $user_item;
@@ -1573,7 +1560,7 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	}
 
 	// Reset first cache
-	$user_quiz->get_status( 'status', true );
+	//$user_quiz->get_status( 'status', true );
 
 	return $user_quiz;
 }
@@ -1642,13 +1629,13 @@ function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $
 	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
 
 	$user_item->set_status( LP_ITEM_STARTED )
-				->set_start_time( current_time( 'mysql', 1 ) ) // Error Retake when change timezone - Nhamdv
-				->set_end_time( '' )
+				->set_start_time( time() ) // Error Retake when change timezone - Nhamdv
+				->set_end_time()
 				->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
 				->update();
 
 	// Reset first cache
-	$user_item->get_status( 'status', true );
+	//$user_item->get_status( 'status', true );
 
 	// Error Retake when change timezone - Nhamdv
 	//  learn_press_update_user_item_field(

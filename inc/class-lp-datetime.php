@@ -5,22 +5,22 @@
  */
 class LP_Datetime extends DateTime {
 	/**
-	 * @var    string
+	 * @var string $format.
 	 */
 	public static $format = 'Y-m-d H:i:s';
 
 	/**
-	 * @var    object
+	 * @var object
 	 */
 	protected static $gmt;
 
 	/**
-	 * @var    object
+	 * @var object
 	 */
 	protected static $stz;
 
 	/**
-	 * @var    DateTimeZone
+	 * @var DateTimeZone
 	 */
 	protected $tz;
 
@@ -37,36 +37,18 @@ class LP_Datetime extends DateTime {
 	 * @throws
 	 */
 	public function __construct( $date = '', $tz = null ) {
-		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
-			self::$gmt = new DateTimeZone( 'GMT' );
-			self::$stz = new DateTimeZone( @date_default_timezone_get() ); // phpcs:ignore
-		}
-
 		if ( $date instanceof LP_Datetime ) {
 			$this->raw_date = $date->get_raw_date();
 		} else {
-			$this->raw_date = is_numeric( $date ) ? gmdate( 'Y-m-d H:i:s', $date ) : $date;
+			$this->raw_date = is_numeric( $date ) ? gmdate( self::$format, $date ) : $date;
 		}
 
-		if ( empty( $date ) ) {
-			$date = current_time( 'mysql' );
-		}
+//		if ( empty( $this->raw_date ) ) {
+//			$this->raw_date = current_time( 'mysql', 1 );
+//		}
 
-		if ( ! ( $tz instanceof DateTimeZone ) ) {
-			$tz = self::get_default_timezone( $tz );
-		}
-
-		if ( ! $tz ) {
-			$tz = null;
-		}
-
-		date_default_timezone_set( 'UTC' );
-
-		parent::__construct( $this->raw_date, $tz );
-
-		date_default_timezone_set( self::$stz->getName() ); // phpcs:ignore
-
-		$this->tz = $tz;
+		//date_default_timezone_set( 'UTC' );
+		parent::__construct( $this->raw_date );
 	}
 
 	/**
@@ -75,8 +57,10 @@ class LP_Datetime extends DateTime {
 	 * @param mixed $tz
 	 *
 	 * @return DateTimeZone|null|string
+	 * @deprecated 4.1.7.3
 	 */
 	public static function get_default_timezone( $tz ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		if ( empty( self::$def_timezone ) ) {
 			if ( $tz === null ) {
 				$tz = wp_timezone();
@@ -91,6 +75,8 @@ class LP_Datetime extends DateTime {
 
 	/**
 	 * Check if time is exceeded with current time
+	 *
+	 * using by Addon Content Drip.
 	 */
 	public function is_exceeded( $interval = 0 ) {
 		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval; // phpcs:ignore
@@ -108,9 +94,11 @@ class LP_Datetime extends DateTime {
 	 * @param string $name The name of the property.
 	 *
 	 * @return  mixed
+	 * @deprecated 4.1.7.3
 	 */
 	public function __get( $name ) {
-		$value = null;
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$value = null;
 
 		switch ( $name ) {
 			case 'daysinmonth':
@@ -164,7 +152,7 @@ class LP_Datetime extends DateTime {
 			default:
 		}
 
-		return $value;
+		return $value;*/
 	}
 
 	/**
@@ -201,7 +189,6 @@ class LP_Datetime extends DateTime {
 				$return = $this->getTimestamp( $local );
 				break;
 			case 'human':
-				$time      = $this->getTimestamp( true );// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
 				$time1     = $this->getTimestamp( false );// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
 				$time_diff = ( time() ) - $time1;
 
@@ -213,18 +200,20 @@ class LP_Datetime extends DateTime {
 				$return = $this->format( 'Y-m-d H:i:s', $local );
 				break;
 			default:
-				if ( ! $local && ! empty( self::$gmt ) ) {
-					parent::setTimezone( self::$gmt );
-				}
-
 				$return = parent::format( $format );
-
-				if ( ! $local && ! empty( $this->tz ) ) {
-					parent::setTimezone( $this->tz );
-				}
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Get format date time by settings of WP
+	 *
+	 * @since 4.1.7.3
+	 * @return void
+	 */
+	public function get_local_date_time() {
+
 	}
 
 	/**
@@ -240,20 +229,24 @@ class LP_Datetime extends DateTime {
 	 * @param DateTimeZone $tz The new DateTimeZone object.
 	 *
 	 * @return void
+	 * @deprecated 4.1.7.3
 	 */
-	public function setTimezone( $tz ) {
+	/*public function setTimezone( $tz ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		$this->tz = $tz;
 
 		parent::setTimezone( $tz );
-	}
+	}*/
 
 	/**
 	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
 	 * @return  string
+	 * @deprecated 4.1.7.3
 	 */
 	public function toISO8601( $local = true ) {
-		return $this->format( DateTime::RFC3339, $local );
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		//return $this->format( DateTime::RFC3339, $local );
 	}
 
 	/**
@@ -275,8 +268,10 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @return int|string
 	 * @since 4.0.0
+	 * @deprecated 4.1.7.3
 	 */
 	public function toLocal( $format = 'Y-m-d H:i:s' ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		$time = $this->getTimestamp() + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
 
 		if ( $format ) {
@@ -302,15 +297,15 @@ class LP_Datetime extends DateTime {
 	 * Gets the date as UNIX time stamp.
 	 *
 	 * @return  integer  The date as a UNIX timestamp.
+	 * @deprecated 4.1.7.3
 	 */
 	public function toUnix() {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		return (int) parent::format( 'U' );
 	}
 
 	public function getTimestamp( $local = true ) {
-		$this->setGMT( $local );
 		$timestamp = parent::getTimestamp();
-		$this->setGMT( $local, false );
 
 		if ( $local ) {
 			$timestamp += $this->getOffset();
@@ -319,8 +314,12 @@ class LP_Datetime extends DateTime {
 		return $timestamp;
 	}
 
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	protected function setGMT( $local = false, $gmt = true ) {
-		if ( $gmt ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*if ( $gmt ) {
 			if ( $local == false && ! empty( self::$gmt ) ) {
 				parent::setTimezone( self::$gmt );
 			}
@@ -328,10 +327,14 @@ class LP_Datetime extends DateTime {
 			if ( $local == false && ! empty( $this->tz ) ) {
 				parent::setTimezone( $this->tz );
 			}
-		}
+		}*/
 	}
 
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	public static function getSqlNullDate() {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		return '0000-00-00 00:00:00';
 	}
 
@@ -343,8 +346,10 @@ class LP_Datetime extends DateTime {
 	 * @throws
 	 *
 	 * @since 3.3.0
+	 * @deprecated 4.1.7.3
 	 */
 	public function addDuration( $seconds ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		$timestamp = $this->getTimestamp();
 		parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz ); // phpcs:ignore
 	}

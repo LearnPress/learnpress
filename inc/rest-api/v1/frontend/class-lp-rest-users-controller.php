@@ -280,7 +280,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			if ( ! $quiz ) {
 				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
 			}
-			$quiz->set_course($course);
+			$quiz->set_course( $course );
 
 			// Course is no required enroll
 			if ( $course->is_no_required_enroll() ) {
@@ -301,8 +301,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$response['status']  = 'success';
 				$response['results'] = $result;
 
-				//learn_press_setcookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '', 'completed', time() + ( 7 * DAY_IN_SECONDS ), false );
-
 				return rest_ensure_response( $response );
 			}
 
@@ -319,8 +317,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception();
 			}
 
-			$end_time = gmdate( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
-			$user_quiz->set_end_time( $end_time );
+			/*$end_time = gmdate( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
+			$user_quiz->set_end_time( $end_time );*/
 
 			// For case save result when check instant answer
 			$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );

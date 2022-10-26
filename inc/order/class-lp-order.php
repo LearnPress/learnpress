@@ -104,12 +104,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @param int|string $date
 		 */
-		public function set_order_date( $date ) {
-			if ( is_numeric( $date ) ) {
-				$date = gmdate( 'Y-m-d H:i:s', $date );
-			}
-			$this->_set_data_date( 'order_date', $date );
+		public function set_order_date( $date ): LP_Order {
+			$this->set_data_date( 'order_date', $date );
 
+			return $this;
 		}
 
 		/**

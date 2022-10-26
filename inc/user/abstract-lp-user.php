@@ -701,6 +701,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			if ( $course ) {
 				$user_course = $this->get_course_data( $course_id );
+				if ( ! $user_course ) {
+					return $return;
+				}
 
 				$result = $user_course->calculate_course_results();
 
@@ -714,9 +717,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				$user_course->set_graduation( $graduation );
-				$user_course->save();
-
-				$return = $user_course->complete( 'finished' );
+				//$user_course->save();
+				$return = $user_course->complete( LP_COURSE_FINISHED );
 
 				if ( $return ) {
 					do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
@@ -870,11 +872,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( __( 'You have already completed this lesson.', 'learnpress' ) );
 				}
 
-				$item->set_end_time( time() );
-				$item->set_status( 'completed' );
 				$item->set_graduation( 'passed' );
-
-				$updated = $item->update();
+				$updated = $item->complete();
 
 				do_action( 'learn-press/user-completed-lesson', $lesson_id, $course_id, $this->get_id() );
 			} catch ( Throwable $e ) {

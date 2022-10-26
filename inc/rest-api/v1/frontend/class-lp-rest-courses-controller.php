@@ -554,15 +554,18 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$user_course_data = $user->get_course_data( $course_id );
+			if ( ! $user_course_data ) {
+				throw new Exception( __( 'Invalid course data of user', 'learnpress' ) );
+			}
 
 			// Up retaken.
 			$user_course_data->increase_retake_count();
 
-			// Set status, start_time, end_time of course to enrolled.
+			// Set status, start_time, end_time of course to enrol.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-				->set_start_time( current_time( 'mysql', true ) )
-				->set_end_time( '' )
-				->set_graduation( 'in-progress' )
+				->set_start_time( time() )
+				->set_end_time()
+				->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
 				->update();
 
 			// Remove items' course user learned.

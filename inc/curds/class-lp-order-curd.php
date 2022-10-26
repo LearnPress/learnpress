@@ -29,7 +29,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
-		$order->set_order_date( current_time( 'mysql' ) );
+		$order->set_order_date( time() );
 		$order->set_order_key( learn_press_generate_order_key() );
 
 		$order_data = array(
