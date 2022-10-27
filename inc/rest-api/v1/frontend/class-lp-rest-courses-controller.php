@@ -311,7 +311,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'user_item_id' => $course_item->user_item_id,
 					'graduation'   => LP_COURSE_GRADUATION_IN_PROGRESS,
 					'status'       => LP_COURSE_ENROLLED,
-					'start_time'   => current_time( 'mysql', true ),
+					'start_time'   => time(),
 				];
 
 				$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );

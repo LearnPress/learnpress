@@ -847,7 +847,7 @@ function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0
 	$datasets = array();
 
 	if ( is_null( $from ) ) {
-		$from = current_time( 'mysql' );
+		$from = current_time( 'mysql', 1 );
 	}
 
 	if ( is_null( $by ) ) {
@@ -901,7 +901,7 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
 	$datasets = array();
 
 	if ( is_null( $from ) ) {
-		$from = current_time( 'mysql' );
+		$from = current_time( 'mysql', 1 );
 	}
 
 	if ( is_null( $by ) ) {
@@ -1053,7 +1053,7 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 	$datasets = array();
 
 	if ( is_null( $from ) ) {
-		$from = current_time( 'mysql' );
+		$from = current_time( 'mysql', 1 );
 	}
 
 	if ( is_null( $by ) ) {
@@ -1261,7 +1261,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 	$labels   = array();
 	$datasets = array();
 	if ( is_null( $from ) ) {
-		$from = current_time( 'mysql' );
+		$from = current_time( 'mysql', 1 );
 	}
 	if ( is_null( $by ) ) {
 		$by = 'days';
@@ -2116,7 +2116,7 @@ function learn_press_get_chart_general( $from = null, $by = null, $time_ago = 0 
 	$datasets = array();
 
 	if ( is_null( $from ) ) {
-		$from = current_time( 'mysql' );
+		$from = current_time( 'mysql', 1 );
 	}
 
 	if ( is_null( $by ) ) {

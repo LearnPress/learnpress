@@ -271,7 +271,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$user_quiz           = LP_User_Items_DB::getInstance()->get_user_course_item( $filter, true );
 			$course_start_time   = $user_quiz->start_time;
 			$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
-			$timestamp_current   = strtotime( current_time( 'mysql', 1 ) );
+			$timestamp_current   = time();
 			$timestamp_remaining = $timestamp_expire - $timestamp_current;
 
 			if ( $timestamp_remaining < 0 ) {

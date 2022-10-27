@@ -708,8 +708,9 @@ function learn_press_delete_user_item_meta( $object_id, $meta_key, $meta_value =
  * @param $object_id
  * @param $meta_key
  * @param $_meta_value
+ * @deprecated 4.1.7.3
  */
-function _learn_press_update_created_time_user_item_meta( $meta_id, $object_id, $meta_key, $_meta_value ) {
+/*function _learn_press_update_created_time_user_item_meta( $meta_id, $object_id, $meta_key, $_meta_value ) {
 	global $wpdb;
 	$wpdb->update(
 		$wpdb->learnpress_user_itemmeta,
@@ -718,7 +719,7 @@ function _learn_press_update_created_time_user_item_meta( $meta_id, $object_id, 
 		array( '%s' ),
 		array( '%d' )
 	);
-}
+}*/
 
 // add_action( 'added_learnpress_user_item_meta', '_learn_press_update_created_time_user_item_meta', 10, 4 );
 
@@ -731,8 +732,9 @@ function _learn_press_update_created_time_user_item_meta( $meta_id, $object_id, 
  * @param $object_id
  * @param $meta_key
  * @param $_meta_value
+ * @deprecated
  */
-function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, $meta_key, $_meta_value ) {
+/*function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, $meta_key, $_meta_value ) {
 	global $wpdb;
 	$wpdb->update(
 		$wpdb->learnpress_user_itemmeta,
@@ -741,7 +743,7 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 		array( '%s' ),
 		array( '%d' )
 	);
-}
+}*/
 
 // add_action( 'updated_learnpress_user_item_meta', '_learn_press_update_updated_time_user_item_meta', 10, 4 );
 
@@ -752,12 +754,13 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
  * @param int    $course_id
  *
  * @return bool|mixed
+ * @deprecated 4.1.7.3
  */
-function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, $course_id = 0 ) {
+/*function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, $course_id = 0 ) {
 	$user = learn_press_get_user( $user_id );
 
 	return $user->has_quiz_status( $status, $quiz_id, $course_id );
-}
+}*/
 
 if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	/**
@@ -1360,13 +1363,13 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	$defaults = array(
 		'user_id'     => get_current_user_id(),
 		'item_id'     => '',
-		'start_time'  => current_time( 'mysql', true ),
+		'start_time'  => time(),
 		'end_time'    => '',
 		'graduation'  => '',
 		'item_type'   => '',
 		'status'      => '',
 		'ref_id'      => 0,
-		'ref_type'    => 0,
+		'ref_type'    => '',
 		'parent_id'   => 0,
 		'create_meta' => array(),
 	);
@@ -1382,7 +1385,8 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 		return 0;
 	}
 
-	if ( empty( $item_data['item_type'] ) && $post_type = learn_press_get_post_type( $item_data['item_id'] ) ) {
+	$post_type = learn_press_get_post_type( $item_data['item_id'] );
+	if ( empty( $item_data['item_type'] ) && $post_type ) {
 		$item_data['item_type'] = $post_type;
 	}
 
@@ -1407,7 +1411,8 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	}
 
 	// Filter
-	if ( ! $item_data = apply_filters( 'learn-press/create-user-item-data', $item_data ) ) {
+	$item_data = apply_filters( 'learn-press/create-user-item-data', $item_data );
+	if ( ! $item_data ) {
 		if ( $wp_error ) {
 			return new WP_Error( 'invalid_item_data', __( 'Invalid item data.', 'learnpress' ) );
 		}
@@ -1424,11 +1429,8 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	}
 
 	$user_item = new LP_User_Item( $item_data );
-
-	$result = $user_item->update( true, false );
-
+	$result    = $user_item->update();
 	if ( ! $result || is_wp_error( $result ) ) {
-
 		if ( $wp_error && is_wp_error( $result ) ) {
 			return $result;
 		}

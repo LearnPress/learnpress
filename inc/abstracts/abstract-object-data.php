@@ -282,9 +282,13 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		}
 
 		/**
+		 * Set data datetime
+		 * if $value is empty, not set is LP_Datetime object
+		 *
 		 * @param $key
 		 * @param $value
 		 *
+		 * @version 4.0.1
 		 * @return LP_Abstract_Object_Data
 		 */
 		public function set_data_date( $key, $value ): LP_Abstract_Object_Data {

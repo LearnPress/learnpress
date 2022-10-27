@@ -24,6 +24,11 @@ class LP_Datetime extends DateTime {
 	 */
 	protected $tz;
 
+	/**
+	 * String date time.
+	 *
+	 * @var string $raw_date.
+	 */
 	protected $raw_date = null;
 
 	protected static $def_timezone = null;
@@ -43,9 +48,9 @@ class LP_Datetime extends DateTime {
 			$this->raw_date = is_numeric( $date ) ? gmdate( self::$format, $date ) : $date;
 		}
 
-//		if ( empty( $this->raw_date ) ) {
-//			$this->raw_date = current_time( 'mysql', 1 );
-//		}
+		if ( empty( $this->raw_date ) ) {
+			$this->raw_date = current_time( 'mysql', 1 );
+		}
 
 		//date_default_timezone_set( 'UTC' );
 		parent::__construct( $this->raw_date );

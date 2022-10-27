@@ -49,6 +49,8 @@ class LP_Request {
 	 * @param string $sanitize_type
 	 * @param string $method
 	 *
+	 * @since 4.1.7.2
+	 * @version 1.0.0
 	 * @return array|float|int|string
 	 */
 	public static function get_param( string $key, $default = '', string $sanitize_type = 'text', string $method = '' ) {

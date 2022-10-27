@@ -204,7 +204,7 @@ class LP_User_Factory {
 				if ( $allow_repurchase_type === 'keep' ) {
 					// Set data for update user item
 					$user_item_data['user_item_id'] = $latest_user_item_id;
-					$user_item_data['start_time']   = current_time( 'mysql', true );
+					$user_item_data['start_time']   = time();
 					$user_item_data['end_time']     = null;
 					$user_item_data['status']       = LP_COURSE_ENROLLED;
 					$user_item_data['graduation']   = LP_COURSE_GRADUATION_IN_PROGRESS;
