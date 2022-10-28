@@ -652,11 +652,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @since 3.3.0
 		 */
 		public function template( $type = '' ) {
-			if ( ! $this->template ) {
-				$this->template = LP_Template::instance();
-			}
+			$this->template = LP_Template::instance();
+			$templates      = (array) $this->template->get_templates();
 
-			return isset( $this->template[ $type ] ) ? $this->template[ $type ] : $this->template;
+			return $templates[ $type ] ?? $this->template;
 		}
 
 		/**

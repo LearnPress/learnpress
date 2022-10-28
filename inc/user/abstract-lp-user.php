@@ -451,16 +451,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
-			}
-
-			if ( ! $course_id ) {
-				return $status;
+				if ( ! $course_id ) {
+					return $status;
+				}
 			}
 
 			$item = $this->get_item( $item_id, $course_id, true );
-
-			if ( false !== $item ) {
-				$status = $item['status'];
+			if ( $item instanceof LP_User_Item ) {
+				$status = $item->get_status();
 			}
 
 			return apply_filters( 'learn-press/user-item-status', $status, $item_id, $this->get_id(), $course_id );

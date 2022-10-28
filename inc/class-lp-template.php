@@ -5,7 +5,7 @@
  *
  * @since 3.3.0
  */
-class LP_Template implements ArrayAccess {
+class LP_Template {
 	/**
 	 * @var LP_Template
 	 */
@@ -17,15 +17,28 @@ class LP_Template implements ArrayAccess {
 	 * LP_Template constructor.
 	 */
 	protected function __construct() {
+		include_once 'templates/class-lp-template-general.php';
+		include_once 'templates/class-lp-template-course.php';
+		include_once 'templates/class-lp-template-checkout.php';
+		include_once 'templates/class-lp-template-profile.php';
+
 		$this->templates = apply_filters(
 			'learn-press/templates-classes',
 			array(
-				'general'  => include_once 'templates/class-lp-template-general.php',
-				'course'   => include_once 'templates/class-lp-template-course.php',
-				'checkout' => include_once 'templates/class-lp-template-checkout.php',
-				'profile'  => include_once 'templates/class-lp-template-profile.php',
+				'general'  => new LP_Template_General(),
+				'course'   => new LP_Template_Course(),
+				'checkout' => new LP_Template_Checkout(),
+				'profile'  => new LP_Template_Profile(),
 			)
 		);
+	}
+
+	public function get_templates() {
+		return $this->templates;
+	}
+
+	public function get_template( $name ) {
+		return $this->templates[ $name ] ?? '';
 	}
 
 	public function has_content( $where ) {

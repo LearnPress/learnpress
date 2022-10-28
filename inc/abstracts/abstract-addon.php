@@ -314,6 +314,10 @@ class LP_Addon {
 	 * Load text domain
 	 */
 	public function load_text_domain() {
+		if ( empty( $this->plugin_file ) ) {
+			return;
+		}
+
 		$plugin_path   = dirname( $this->plugin_file );
 		$plugin_folder = basename( $plugin_path );
 		$text_domain   = empty( $this->text_domain ) ? $plugin_folder : $this->text_domain;
