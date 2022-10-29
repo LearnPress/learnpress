@@ -13,7 +13,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 	/**
 	 * Class LP_Course_Item.
 	 */
-	class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
+	class LP_Course_Item extends LP_Abstract_Post_Data {
 
 		/**
 		 * The icon maybe used somewhere.

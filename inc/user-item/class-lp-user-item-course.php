@@ -3,7 +3,7 @@
  * Class LP_User_Item_Course
  */
 
-class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
+class LP_User_Item_Course extends LP_User_Item {
 	public $_item_type = LP_COURSE_CPT;
 	public $_ref_type  = LP_ORDER_CPT;
 

@@ -3,7 +3,7 @@
 /**
  * Class LP_Datetime
  */
-class LP_Datetime extends DateTime {
+class LP_Datetime {
 	/**
 	 * @var string $format.
 	 */
@@ -53,7 +53,7 @@ class LP_Datetime extends DateTime {
 		}
 
 		//date_default_timezone_set( 'UTC' );
-		parent::__construct( $this->raw_date );
+		//parent::__construct( $this->raw_date );
 	}
 
 	/**
@@ -205,7 +205,7 @@ class LP_Datetime extends DateTime {
 				$return = $this->format( 'Y-m-d H:i:s', $local );
 				break;
 			default:
-				$return = parent::format( $format );
+				//$return = parent::format( $format );
 		}
 
 		return $return;
@@ -306,11 +306,11 @@ class LP_Datetime extends DateTime {
 	 */
 	public function toUnix() {
 		_deprecated_function( __METHOD__, '4.1.7.3' );
-		return (int) parent::format( 'U' );
+		//return (int) parent::format( 'U' );
 	}
 
 	public function getTimestamp( $local = true ) {
-		$timestamp = parent::getTimestamp();
+		$timestamp = time();
 
 		if ( $local ) {
 			$timestamp += $this->getOffset();
@@ -356,7 +356,7 @@ class LP_Datetime extends DateTime {
 	public function addDuration( $seconds ) {
 		_deprecated_function( __METHOD__, '4.1.7.3' );
 		$timestamp = $this->getTimestamp();
-		parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz ); // phpcs:ignore
+		//parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz ); // phpcs:ignore
 	}
 
 	public function getPeriod( $seconds, $local = true ) {

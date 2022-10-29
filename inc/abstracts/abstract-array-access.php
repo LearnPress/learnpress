@@ -3,7 +3,7 @@
 /**
  * Class LP_Array_Access
  */
-class LP_Array_Access implements ArrayAccess, Iterator, Countable {
+class LP_Array_Access {
 
 	/**
 	 * @var array

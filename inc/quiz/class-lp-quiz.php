@@ -14,7 +14,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 	/**
 	 * Class LP_Quiz
 	 */
-	class LP_Quiz extends LP_Course_Item implements ArrayAccess {
+	class LP_Quiz extends LP_Course_Item {
 
 
 		/**

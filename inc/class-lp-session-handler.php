@@ -3,7 +3,7 @@
 /**
  * Class LP_Session_Handler
  */
-class LP_Session_Handler implements ArrayAccess {
+class LP_Session_Handler {
 
 	/**
 	 * @var int $_customer_id

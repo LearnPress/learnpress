@@ -5,7 +5,7 @@
  *
  * @since 3.0.0
  */
-class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
+class LP_User_Item extends LP_Abstract_Object_Data {
 	/**
 	 * Auto increment
 	 *
