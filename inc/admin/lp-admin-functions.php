@@ -579,7 +579,7 @@ if ( ! function_exists( 'learn_press_get_item_referral' ) ) {
 			21680592 => 'https://1.envato.market/qqO6y',
 		);
 
-		return isset( $affiliate_links[ $item_id ] ) ? $affiliate_links[ $item_id ] : 'https://themeforest.net/user/thimpress/portfolio/';
+		return $affiliate_links[ $item_id ] ?? 'https://themeforest.net/user/thimpress/portfolio/';
 	}
 }
 
@@ -1252,8 +1252,8 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
  */
 function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
-	// var_dump( current_user_can(LP_TEACHER_ROLE) );
-	// exit();
+	$sql_join = '';
+
 	$report_sales_by = learn_press_get_request( 'report_sales_by' );
 	$course_id       = learn_press_get_request( 'course_id' );
 	$cat_id          = learn_press_get_request( 'cat_id' );

@@ -256,13 +256,13 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 		if ( $quiz && $course ) {
 			$user      = learn_press_get_current_user();
 			$course_id = $course->get_id();
-			$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
+			//$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
 
-			if ( $user_quiz ) {
+			/*if ( $user_quiz ) {
 				$remaining_time = $user_quiz->get_time_remaining();
 			} else {
 				$remaining_time = false;
-			}
+			}*/
 
 			$args = array(
 				'id'                  => $quiz->get_id(),

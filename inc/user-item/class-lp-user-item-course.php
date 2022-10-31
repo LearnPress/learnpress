@@ -154,8 +154,12 @@ class LP_User_Item_Course extends LP_User_Item {
 		return $this->get_data( 'item_id' );
 	}
 
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	public function get_finishing_type() {
-		$type = $this->get_meta( 'finishing_type' );
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$type = $this->get_meta( 'finishing_type' );
 
 		if ( ! $type ) {
 			$type = $this->is_exceeded() <= 0 ? 'exceeded' : 'click';
@@ -165,7 +169,7 @@ class LP_User_Item_Course extends LP_User_Item {
 			$this->set_meta( 'finishing_type', $type );
 		}
 
-		return $type;
+		return $type;*/
 	}
 
 	public function offsetSet( $offset, $value ) {

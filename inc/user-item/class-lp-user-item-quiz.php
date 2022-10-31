@@ -687,11 +687,13 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param string $return - Optional.
 	 *
 	 * @return LP_Duration
+	 * @deprecated 4.1.7.3
 	 */
 	public function get_time_remaining( $return = 'object' ) {
-		$time = parent::get_time_remaining( $return );
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$time = parent::get_time_remaining( $return );
 
-		return apply_filters( 'learn-press/quiz/time-remaining', $time, $this->get_item_id(), $this->get_course_id(), $this->get_user_id() );
+		return apply_filters( 'learn-press/quiz/time-remaining', $time, $this->get_item_id(), $this->get_course_id(), $this->get_user_id() );*/
 	}
 
 	/**

@@ -1018,9 +1018,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return bool|int|string
+		 * @deprecated 4.1.7.3
 		 */
 		public function get_course_remaining_time( $course_id ) {
-			$course = learn_press_get_course( $course_id );
+			_deprecated_function( __FUNCTION__, '4.1.7.3' );
+			/*$course = learn_press_get_course( $course_id );
 			$remain = false;
 
 			if ( $course && $course->get_id() ) {
@@ -1030,7 +1032,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			return $remain > 0 ? learn_press_seconds_to_weeks( $remain ) : false;
+			return $remain > 0 ? learn_press_seconds_to_weeks( $remain ) : false;*/
 		}
 
 		/**

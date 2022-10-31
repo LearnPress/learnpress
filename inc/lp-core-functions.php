@@ -2650,14 +2650,14 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
 /**
  * Localize date with custom format.
  *
- * @param string $timestamp
+ * @param int|bool $timestamp
  * @param string $format
  * @param bool   $gmt
  *
  * @return string
  * @since 3.0.0
  */
-function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
+function learn_press_date_i18n( $timestamp = 0, string $format = '', bool $gmt = false ): string {
 	if ( ! $format ) {
 		$format = get_option( 'date_format' );
 	}
