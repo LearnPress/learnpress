@@ -59,16 +59,16 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 			if ( $answers ) {
 				$correct = true;
 				foreach ( $answers as $key => $option ) {
-					$selected = $this->is_selected_option( $option, $user_answer );
+					$data     = $option->get_data();
+					$selected = $this->is_selected_option( $data, $user_answer );
 
-					// If the option is FALSE but user selected => WRONG
 					if ( $selected && ! $option->is_true() ) {
 						$correct = false;
-					} elseif ( ! $selected && $option->is_true() ) { // If option is TRUE but user did not select => WRONG
+					} elseif ( ! $selected && $option->is_true() ) {
 						$correct = false;
 					}
 
-					// Only one option is selected wrong
+					// Only one option is selected wrong will wrong the answer.
 					if ( ! $correct ) {
 						break;
 					}

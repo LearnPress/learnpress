@@ -780,7 +780,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 *
 	 * @param string $context
 	 *
-	 * @return bool|float|int
+	 * @return bool|int
 	 */
 	public function get_time_interval( $context = '' ) {
 		$start = $this->get_start_time();

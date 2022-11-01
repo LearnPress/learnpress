@@ -2,7 +2,7 @@
 /**
  * Class LP_Query_List_Table
  */
-class LP_Query_List_Table implements ArrayAccess {
+class LP_Query_List_Table {
 	/**
 	 * @var array|null
 	 */

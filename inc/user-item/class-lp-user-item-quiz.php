@@ -336,9 +336,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @version 4.0.0
 	 */
 	public function calculate_results(): array {
-		$quiz          = learn_press_get_quiz( $this->get_item_id() );
-		$last_results  = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
-		$is_has_change = 0;
+		$quiz         = learn_press_get_quiz( $this->get_item_id() );
+		$last_results = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 
 		if ( ! $last_results ) {
 			$last_results = array();
@@ -413,7 +412,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$result['question_count'] = count( $questions );
 
 			if ( $grade ) {
-				$is_has_change = 1;
 				learn_press_update_user_item_field(
 					array(
 						'graduation' => $grade,
@@ -423,10 +421,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					)
 				);
 			}
-		}
-
-		if ( $is_has_change ) {
-			// LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $result ) );
 		}
 
 		return $result;

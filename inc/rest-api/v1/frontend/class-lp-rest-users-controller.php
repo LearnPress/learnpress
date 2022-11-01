@@ -311,14 +311,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( 'User not enrolled course!' );
 			}
 
+			/**
+			 * @var LP_User_Item_Quiz $user_quiz
+			 */
 			$user_quiz = $user_course->get_item( $item_id );
-
 			if ( ! $user_quiz ) {
 				throw new Exception();
 			}
-
-			/*$end_time = gmdate( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
-			$user_quiz->set_end_time( $end_time );*/
 
 			// For case save result when check instant answer
 			$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
@@ -330,7 +329,11 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			// Calculate quiz result and save
+			// Set end time.
+			$start_time = $user_quiz->get_start_time()->getTimestamp();
+			$user_quiz->set_end_time( $start_time + $time_spend );
+
+			// Calculate quiz result and save.
 			$result = $user_quiz->calculate_quiz_result( $answered );
 			// Save
 			LP_User_Items_Result_DB::instance()->update( $user_quiz->get_user_item_id(), wp_json_encode( $result ) );
