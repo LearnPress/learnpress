@@ -1422,6 +1422,7 @@ function learn_press_seconds_to_weeks( int $secs = 0 ) {
 	return $result;
 }
 
+add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
 function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $course_id ) {
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
@@ -1436,7 +1437,11 @@ function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $
 	return $permalink;
 }
 
+/**
+ * @deprecated 4.1.7.3
+ */
 function learn_press_course_question_permalink_friendly( $permalink, $lesson_id, $course_id ) {
+	_deprecated_function( __FUNCTION__, '4.1.7.3' );
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
 			$permalink = preg_replace(
@@ -1449,8 +1454,6 @@ function learn_press_course_question_permalink_friendly( $permalink, $lesson_id,
 
 	return $permalink;
 }
-
-add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
 
 function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	if ( ! $user ) {

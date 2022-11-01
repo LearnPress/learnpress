@@ -54,7 +54,10 @@ class LP_Meta_Box_Question extends LP_Meta_Box {
 				foreach ( $this->metabox( $post->ID ) as $key => $object ) {
 					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
 						$object->id = $key;
-						echo wp_kses_post( $object->output( $post->ID ) );
+						$output     = $object->output( $post->ID );
+						if ( ! empty( $output ) ) {
+							echo wp_kses_post( $object->output( $post->ID ) );
+						}
 					} elseif ( is_array( $object ) ) {
 						$is_old = true;
 					}

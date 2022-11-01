@@ -730,9 +730,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Get question name.
 		 *
 		 * @return string
+		 * @deprecated 4.1.7.3
 		 */
 		public function get_name() {
-			return $this->_options['name'] ?? ucfirst(
+			_deprecated_function( __METHOD__, '4.1.7.3' );
+			/*return $this->_options['name'] ?? ucfirst(
 				preg_replace_callback(
 					'!_([a-z])!',
 					array(
@@ -741,7 +743,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					),
 					$this->get_type()
 				)
-			);
+			);*/
 		}
 
 		/**

@@ -933,9 +933,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param bool $redirect
 		 *
 		 * @return string
+		 * @deprecated 4.1.7.3
 		 */
 		public function logout_url( $redirect = false ) {
-			if ( $this->enable_login() ) {
+			_deprecated_function( __FUNCTION__, '4.1.7.3' );
+			/*if ( $this->enable_login() ) {
 				$profile_url = learn_press_get_page_link( 'profile' );
 				$url         = esc_url_raw(
 					add_query_arg(
@@ -954,7 +956,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );
 			}
 
-			return apply_filters( 'learn-press/logout-url', $url );
+			return apply_filters( 'learn-press/logout-url', $url );*/
 		}
 
 		/**
