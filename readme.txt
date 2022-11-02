@@ -203,6 +203,16 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.7.3 (2022-11-02) =
+~ Updated: text grammar.
+~ Modified: LP_DateTime class.
+~ Added: Course category and tag to menu.
+~ Changed: input type regular price, sale price to text.
+~ Call quiz get_questions function to get_question_ids.
+~ Fixed: upgrade LP3 to LP4 missing result of lesson.
+~ Remove file class-lp-backward-plugins.php, class-lp-factory.php, class-lp-query-search.php, class-lp-course-utils.php, class-lp-rest-authentication.php
+~ Remove code deprecated before.
+
 = 4.1.7.2 (2022-10-03) =
 ~ Removed: delete file mu-plugin (Moved to the plugin Thim Optimize).
 ~ Fixed: CVE-2022-3360 security.
