@@ -718,7 +718,7 @@ class LP_Checkout {
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
 				if ( $this->payment_method ) {
-					// Store the order is waiting f6or payment and each payment method should clear it
+					// Store the order is waiting for payment and each payment method should clear it
 					LearnPress::instance()->session->order_awaiting_payment = $order_id;
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );

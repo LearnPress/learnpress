@@ -332,10 +332,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		if ( empty( $screen_id ) ) {
 			return;
 		}
-		wp_enqueue_media();
 
+		wp_enqueue_media(); //Todo: tungnx need check why call for that using.
 		$this->handle_js( $screen_id );
-
 		$this->handle_style( $screen_id );
 
 		do_action( 'learn-press/admin/after-enqueue-scripts' );

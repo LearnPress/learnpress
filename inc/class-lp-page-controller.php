@@ -280,6 +280,10 @@ class LP_Page_Controller {
 			$title .= ' - ' . get_bloginfo( 'name', 'display' );
 		}
 
+		if ( empty( $title ) ) {
+			$title = get_bloginfo( 'name', 'display' );
+		}
+
 		return apply_filters( 'learn-press/title-page', $title );
 	}
 

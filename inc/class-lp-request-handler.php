@@ -534,6 +534,10 @@ class LP_Request {
 LP_Request::init();
 
 // Backward compatibility for 2.x.x
-class LP_Request_Handler extends LP_Request {
 
-}
+/**
+ * @deprecated 4.1.7.3
+ */
+//class LP_Request_Handler extends LP_Request {
+//
+//}

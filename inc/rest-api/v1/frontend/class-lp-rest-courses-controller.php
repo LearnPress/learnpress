@@ -418,13 +418,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$course = learn_press_get_course( $course_id );
-
 			if ( ! $course ) {
 				throw new Exception( __( 'Error: No Course available.', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_current_user();
-
 			if ( ! $user->can_purchase_course( $course_id ) ) {
 				throw new Exception( esc_html__( 'Error: Cannot purchase the course!', 'learnpress' ) );
 			}
@@ -475,7 +473,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
 
 			$cart     = LearnPress::instance()->cart;
-			$checkout = LP_Checkout::instance();
+			//$checkout = LP_Checkout::instance();
 
 			if ( ! learn_press_enable_cart() ) {
 				$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
@@ -486,7 +484,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );
 
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
-
 			if ( ! $cart_id ) {
 				throw new Exception( __( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}
