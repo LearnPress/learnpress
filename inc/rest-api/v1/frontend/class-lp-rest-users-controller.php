@@ -254,7 +254,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @editor tungnx
 	 * @modify 4.1.4.1
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function submit_quiz_new( WP_REST_Request $request ) {
 		//$response = new LP_REST_Response();
