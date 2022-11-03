@@ -282,18 +282,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			if ( empty( absint( $request['id'] ) ) ) {
-				throw new Exception( esc_html__( 'Error: No course available!.', 'learnpress' ) );
-			}
-
-			$course_id = absint( $request['id'] );
+			$course_id = absint( $request['id'] ?? 0 );
 			$course    = learn_press_get_course( $course_id );
-			$user      = learn_press_get_current_user();
-
 			if ( ! $course ) {
 				throw new Exception( esc_html__( 'Invalid course!', 'learnpress' ) );
 			}
 
+			$user       = learn_press_get_current_user();
 			$can_enroll = $user->can_enroll_course( $course_id, false );
 
 			if ( ! $can_enroll->check ) {
