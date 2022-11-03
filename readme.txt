@@ -203,6 +203,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.7.3.1 (2022-11-03) =
+~ Fixed: error build missing styles.
+
 = 4.1.7.3 (2022-11-02) =
 ~ Updated: text grammar.
 ~ Modified: LP_DateTime class.
