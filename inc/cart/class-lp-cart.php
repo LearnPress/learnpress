@@ -320,7 +320,6 @@ class LP_Cart {
 	 */
 	public function get_cart_from_session() {
 		$session_data = LearnPress::instance()->session->get_session_data();
-
 		$cart = maybe_unserialize($session_data['cart'] ?? '');
 		$this->_cart_content = $cart;
 		return $this->_cart_content;

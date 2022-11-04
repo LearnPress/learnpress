@@ -2,6 +2,8 @@
 
 /**
  * Class LP_Session_Handler
+ *
+ * Only set COOKIE for user guest
  */
 class LP_Session_Handler {
 
@@ -31,7 +33,8 @@ class LP_Session_Handler {
 	private $_session_expiration;
 
 	/**
-	 * $var bool Bool based on whether a cookie exists
+	 * $var bool based on whether a cookie exists
+	 * @deprecated 4.1.7.4
 	 */
 	private $_has_cookie = false;
 
@@ -68,12 +71,14 @@ class LP_Session_Handler {
 	 *
 	 * @param mixed $key
 	 * @param mixed $value
+	 * @deprecated 4.1.7.4
 	 */
 	public function __set( $key, $value ) {
+		_deprecated_function( 'LP_Session::__set', '4.1.7.4' );
 		// if ( $key === 'order_awaiting_payment' ) {
 
 		// }
-		$this->set( $key, $value );
+		//$this->set( $key, $value );
 	}
 
 	/**
@@ -82,24 +87,28 @@ class LP_Session_Handler {
 	 * @param mixed $key
 	 *
 	 * @return bool
+	 * @deprecated 4.1.7.4
 	 */
 	public function __isset( $key ) {
-		return isset( $this->_data[ sanitize_key( $key ) ] );
+		_deprecated_function( __METHOD__, '4.1.7.4' );
+		//return isset( $this->_data[ sanitize_key( $key ) ] );
 	}
 
 	/**
 	 * __unset function.
 	 *
 	 * @param mixed $key
+	 * @deprecated 4.1.7.4
 	 */
 	public function __unset( $key ) {
+		_deprecated_function( __METHOD__, '4.1.7.4' );
 		if ( isset( $this->_data[ $key ] ) ) {
 			unset( $this->_data[ $key ] );
 			$this->_changed = true;
 		}
 	}
 
-	protected $schedule_id = 'learn-press/clear-expired-session';
+	//protected $schedule_id = 'learn-press/clear-expired-session';
 
 	/**
 	 * LP_Session_Handler constructor.
@@ -129,53 +138,42 @@ class LP_Session_Handler {
 		 * Delete session of user guest before.
 		 * Set again cookie for user.
 		 */
-		if ( $user_id && $this->get('guest_user_id' ) ) {
+		if ( $user_id ) {
 			$customer_id = $this->get_customer_id();
-			learn_press_remove_cookie($this->_cookie);
-			$this->delete_session($customer_id);
+			$user_before = learn_press_get_user($customer_id);
+			if ( $user_before->is_guest() ) {
+				learn_press_remove_cookie($this->_cookie);
+				$this->delete_session($customer_id);
+			}
 
 			$this->_customer_id = $user_id;
-			$this->set_customer_session_cookie(1);
+			//$this->set_customer_session_cookie();
 		}
-
-		// Set
-//		$this->set_session_expiration();
-//		$this->_customer_id = $user->ID;
-//		//$lp_session->set('data', $lp_session->get_session_data());
-//		//$lp_session->set('user_id', $user->ID);
-
-//		$this->_changed = true;
-//		$this->save_data();
 	}
 
 	protected function init() {
 		global $wpdb;
-		$this->_cookie = '_learn_press_session_' . COOKIEHASH;
 		$this->_table  = $wpdb->prefix . 'learnpress_sessions';
-
-		// Check cookie ...
-		if ( ! isset( $_COOKIE ) || sizeof( $_COOKIE ) == 0 ) {
-			$this->_has_browser_cookie = false;
-		}
-
-		// ...and user-agent to ensure user a viewing in a web browser
-		if ( empty( $_SERVER['HTTP_USER_AGENT'] ) || strpos( $_SERVER['HTTP_USER_AGENT'], 'Mozilla' ) === false ) {
-			$this->_has_browser_cookie = false;
-		}
-
+		$this->_cookie = '_learn_press_session_' . COOKIEHASH;
 		$cookie = $this->get_session_cookie();
+		// If cookie exists, set data from cookie for guest
 		if ( $cookie ) {
 			$this->_customer_id        = $cookie[0];
 			$this->_session_expiration = $cookie[1];
-			$this->_has_cookie         = true;
+			//$this->_has_cookie         = true;
 			if ( time() > $this->_session_expiration - HOUR_IN_SECONDS ) {
-				$this->set_session_expiration();
+				$this->set_session_expiration( 2 * DAY_IN_SECONDS );
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
-		} else {
-			$this->set_session_expiration();
-			$this->_customer_id = $this->generate_customer_id();
+		} elseif ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
+			$this->set_session_expiration( 2 * DAY_IN_SECONDS );
+			$this->_customer_id = $this->generate_guest_id();
+			$this->set_customer_session_cookie();
+		} else { // Set data for user logged.
+			$this->set_session_expiration( 6 * DAY_IN_SECONDS );
+			$this->_customer_id = get_current_user_id();
 		}
+
 		$this->_data = $this->get_session_data();
 	}
 
@@ -185,42 +183,55 @@ class LP_Session_Handler {
 		}
 	}*/
 
-	public function set_customer_session_cookie( $set ) {
-		if ( $set ) {
-			// Set/renew our cookie
-			$to_hash           = $this->_customer_id . '|' . $this->_session_expiration;
-			$cookie_hash       = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-			$cookie_value      = $this->_customer_id . '||' . $this->_session_expiration . '||' . $cookie_hash;
-			$this->_has_cookie = true;
+	/**
+	 * Set cookie for user guest.
+	 *
+	 * @return void
+	 */
+	public function set_customer_session_cookie() {
+		// Set/renew our cookie
+		$to_hash           = $this->_customer_id . '|' . $this->_session_expiration;
+		$cookie_hash       = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
+		$cookie_value      = $this->_customer_id . '||' . $this->_session_expiration . '||' . $cookie_hash;
+		//$this->_has_cookie = true;
 
-			// Set the cookie
-			if ( ! isset( $_COOKIE[ $this->_cookie ] ) || $_COOKIE[ $this->_cookie ] !== $cookie_value ) {
-				learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, apply_filters( 'learn_press_session_use_secure_cookie', false ), true );
-			}
+		// Set the cookie
+		if ( ! isset( $_COOKIE[ $this->_cookie ] ) || $_COOKIE[ $this->_cookie ] !== $cookie_value ) {
+			learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration,  is_ssl(), true );
 		}
 	}
 
+	/**
+	 * @deprecated 4.1.7.4
+	 */
 	public function has_cookie() {
-		return $this->_has_cookie && $this->_has_browser_cookie;
+		_deprecated_function( __METHOD__, '4.1.7.4');
+		//return $this->_has_cookie && $this->_has_browser_cookie;
 	}
 
-	public function has_session() {
-		return isset( $_COOKIE[ $this->_cookie ] ) || $this->_has_cookie || is_user_logged_in();
+	/**
+	 * Check has session.
+	 *
+	 * @return bool
+	 */
+	public function has_session(): bool {
+		return isset( $_COOKIE[ $this->_cookie ] ) || is_user_logged_in();
 	}
 
-	public function set_session_expiration() {
-		$this->_session_expiration = time() + intval( apply_filters( 'learn_press_session_expiration', 60 * 60 * 48 ) );
+	public function set_session_expiration( int $duration = 0 ) {
+		$this->_session_expiration = time() + $duration;
 	}
 
-	public function generate_customer_id() {
-		if ( is_user_logged_in() ) {
-			return get_current_user_id();
-		} else {
-			require_once ABSPATH . 'wp-includes/class-phpass.php';
-			$hasher = new PasswordHash( 12, false );
+	/**
+	 * Generate string customer id for guest
+	 *
+	 * @return string
+	 */
+	public function generate_guest_id(): string {
+		require_once ABSPATH . 'wp-includes/class-phpass.php';
+		$hasher = new PasswordHash( 12, false );
 
-			return md5( $hasher->get_random_bytes( 32 ) );
-		}
+		return md5( $hasher->get_random_bytes( 32 ) );
 	}
 
 	public function get_session_cookie() {
@@ -232,7 +243,6 @@ class LP_Session_Handler {
 
 		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-
 		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
 			return false;
 		}
@@ -252,7 +262,7 @@ class LP_Session_Handler {
 			$customer_id = $this->get_customer_id();
 		}
 
-		return $this->has_session() ? (array) $this->get_session( $customer_id, array() ) : array();
+		return (array) $this->get_session( $customer_id, array() );
 	}
 
 	public function get_cache_prefix( $group = LP_SESSION_CACHE_GROUP ) {
@@ -284,10 +294,10 @@ class LP_Session_Handler {
 		$res = false;
 
 		try {
-			if ( $this->_changed && $this->has_session() && $this->has_cookie() ) {
+			if ( $this->_changed && $this->has_session() ) {
 				$lp_session_db = LP_Sessions_DB::getInstance();
 
-				//Check exists on DB.
+				// Check exists on DB.
 				$filter = new LP_Session_filter();
 				$filter->collection = $lp_session_db->tb_lp_sessions;
 				$filter->field_count = 'session_id';
@@ -346,7 +356,7 @@ class LP_Session_Handler {
 		// Clear data
 		$this->_data        = array();
 		$this->_changed     = false;
-		$this->_customer_id = $this->generate_customer_id();
+		//$this->_customer_id = $this->generate_customer_id();
 
 		$logout_redirect_page_id = LP_Settings::get_option( 'logout_redirect_page_id', false );
 		if ( $logout_redirect_page_id ) {
@@ -478,8 +488,11 @@ class LP_Session_Handler {
 		}
 	}
 
-	public function get_customer_id() {
-		return $this->_customer_id;
+	/**
+	 * Get customer id.
+	 */
+	public function get_customer_id(): string {
+		return ( string ) $this->_customer_id;
 	}
 
 	public function get_session_expiration() {
@@ -494,20 +507,36 @@ class LP_Session_Handler {
 		return self::$_instance;
 	}
 
+	/**
+	 * @deprecated 4.1.7.4
+	 */
 	public function offsetExists( $offset ) {
+		_deprecated_function( __METHOD__, '4.1.7.4' );
 		return array_key_exists( $offset, $this->_data );
 	}
 
+	/**
+	 * @deprecated 4.1.7.4
+	 */
 	public function offsetGet( $offset ) {
-		return $this->get( $offset );
+		_deprecated_function( __METHOD__, '4.1.7.4' );
+		//return $this->get( $offset );
 	}
 
+	/**
+	 * @deprecated 4.1.7.4
+	 */
 	public function offsetUnset( $offset ) {
-		$this->remove( $offset );
+		_deprecated_function( __METHOD__, '4.1.7.4' );
+		//$this->remove( $offset );
 	}
 
+	/**
+	 * @deprecated 4.1.7.4
+	 */
 	public function offsetSet( $offset, $value ) {
-		$this->set( $offset, $value );
+		_deprecated_function( __METHOD__, '4.1.7.4' );
+		//$this->set( $offset, $value );
 	}
 }
 

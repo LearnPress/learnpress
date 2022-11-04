@@ -90,7 +90,7 @@ function learn_press_get_current_user_id(): int {
  *
  * @param bool $create_temp - Optional. Create temp user if user is not logged in.
  *
- * @return bool|LP_User|LP_User_Guest
+ * @return LP_User|LP_User_Guest
  * @editor tungnx
  * @modify 4.1.4
  * @version 1.0.1
@@ -118,7 +118,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 * @version 4.0.1
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
-		$userClass = $user_id ? 'LP_User_Guest' : 'LP_User';
+		$userClass = $user_id ? 'LP_User' : 'LP_User_Guest';
 
 		return new $userClass( $user_id );
 	}
