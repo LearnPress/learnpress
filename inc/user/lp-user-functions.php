@@ -108,54 +108,19 @@ function learn_press_get_current_user( $create_temp = true ) {
 
 if ( ! function_exists( 'learn_press_get_user' ) ) {
 	/**
-	 * Get user by ID. Return false if the user does not exists.
+	 * Get user by ID. Return false if the user does not exist.
 	 *
 	 * @param int  $user_id
 	 * @param bool $current
 	 *
-	 * @return LP_User|LP_User_Guest|mixed
-	 * Todo: check this function - tungnx
+	 * @return LP_User|LP_User_Guest
+	 * @since 3.0.0
+	 * @version 4.0.1
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
-		$is_guest = false;
-		if ( ! is_null( LearnPress::instance()->session ) && $user_id != LearnPress::instance()->session->guest_user_id ) {
-			if ( $current && ! get_user_by( 'id', $user_id ) ) {
-				$user_id = get_current_user_id();
-			}
-		}
+		$userClass = $user_id ? 'LP_User_Guest' : 'LP_User';
 
-		if ( ! $user_id && isset( LearnPress::instance()->session ) ) {
-			if ( ! LearnPress::instance()->session->guest_user_id ) {
-				LearnPress::instance()->session->set_customer_session_cookie( 1 );
-				LearnPress::instance()->session->guest_user_id = time();
-			}
-
-			$user_id  = LearnPress::instance()->session->guest_user_id;
-			$is_guest = true;
-		}
-
-		if ( ! $user_id ) {
-			return false;
-		}
-
-		$user_id = '' . $user_id;
-
-		if ( $force_new || ! array_key_exists( $user_id, LP_Global::$users ) ) {
-			/**
-			 * LP Hook.
-			 *
-			 * Filter the default class name to get LP user.
-			 *
-			 * @since 3.3.0
-			 */
-			$userClass = apply_filters( 'learn-press/user-class', $is_guest ? 'LP_User_Guest' : 'LP_User', $is_guest );
-
-			LP_Global::$users[ $user_id ] = new $userClass( $user_id );
-
-			do_action( 'learn-press/get-user', LP_Global::$users[ $user_id ], $user_id );
-		}
-
-		return LP_Global::$users[ $user_id ];
+		return new $userClass( $user_id );
 	}
 }
 
@@ -1163,7 +1128,7 @@ function learn_press_set_user_cookie_for_guest() {
 	}
 }
 
-add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );
+//add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );
 
 function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
 	$user = learn_press_get_user( $user_id );

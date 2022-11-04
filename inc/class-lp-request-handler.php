@@ -519,7 +519,7 @@ class LP_Request {
 		return $cookie[ $name ] ?? $def;
 	}
 
-	public static function set_cookie( $name, $value, $expires = '', $domain = '', $path = '', $secure = false ) {
+	/*public static function set_cookie( $name, $value, $expires = '', $domain = '', $path = '', $secure = false ) {
 		if ( func_num_args() > 2 ) {
 			learn_press_setcookie( $name, $value, $expires, $secure );
 		} else {
@@ -528,7 +528,7 @@ class LP_Request {
 			$cookie[ $name ] = $value;
 			learn_press_setcookie( 'LP', $value );
 		}
-	}
+	}*/
 }
 
 LP_Request::init();

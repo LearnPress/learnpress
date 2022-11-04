@@ -8,7 +8,7 @@ class LP_Session_Handler {
 	/**
 	 * @var int $_customer_id
 	 */
-	protected $_customer_id;
+	public $_customer_id;
 
 	/**
 	 * @var array $_data
@@ -106,18 +106,46 @@ class LP_Session_Handler {
 	 *
 	 * @version 3.2.2
 	 */
-	public function __construct() {
+	protected function __construct() {
 		$this->init();
 		$this->init_hooks();
 	}
 
 	protected function init_hooks() {
-		add_action( 'learn_press_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
+		//add_action( 'learn_press_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
 		add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
-		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
+		//add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 		//add_action( 'wp', array( $this, 'schedule_event' ) );
 		//add_action( $this->schedule_id, array( $this, 'cleanup_sessions' ), 10 );
+		add_action( 'wp_login', [$this, 'set_cookie_session_for_user'], 10, 2 );
+	}
+
+	public function set_cookie_session_for_user($user_name, $user) {
+		wp_set_current_user($user->ID);
+		$user_id = get_current_user_id();
+
+		/**
+		 * Delete session of user guest before.
+		 * Set again cookie for user.
+		 */
+		if ( $user_id && $this->get('guest_user_id' ) ) {
+			$customer_id = $this->get_customer_id();
+			learn_press_remove_cookie($this->_cookie);
+			$this->delete_session($customer_id);
+
+			$this->_customer_id = $user_id;
+			$this->set_customer_session_cookie(1);
+		}
+
+		// Set
+//		$this->set_session_expiration();
+//		$this->_customer_id = $user->ID;
+//		//$lp_session->set('data', $lp_session->get_session_data());
+//		//$lp_session->set('user_id', $user->ID);
+
+//		$this->_changed = true;
+//		$this->save_data();
 	}
 
 	protected function init() {
@@ -147,7 +175,6 @@ class LP_Session_Handler {
 		} else {
 			$this->set_session_expiration();
 			$this->_customer_id = $this->generate_customer_id();
-
 		}
 		$this->_data = $this->get_session_data();
 	}
@@ -197,7 +224,6 @@ class LP_Session_Handler {
 	}
 
 	public function get_session_cookie() {
-
 		if ( empty( $_COOKIE[ $this->_cookie ] ) || ! is_string( $_COOKIE[ $this->_cookie ] ) ) {
 			return false;
 		}
@@ -207,15 +233,6 @@ class LP_Session_Handler {
 		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 
-		// LP_Debug::instance()->add( array(
-		// $this->_customer_id,
-		// $_COOKIE,
-		// $_REQUEST,
-		// $_POST,
-		// $_GET,
-		// $_SERVER
-		// ), 'sessions-cookie' );
-
 		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
 			return false;
 		}
@@ -223,8 +240,19 @@ class LP_Session_Handler {
 		return array( $customer_id, $session_expiration, $cookie_hash );
 	}
 
-	public function get_session_data() {
-		return $this->has_session() ? (array) $this->get_session( $this->_customer_id, array() ) : array();
+	/**
+	 * Get session data
+	 *
+	 * @return array
+	 */
+	public function get_session_data(): array {
+		if ( is_user_logged_in() ) {
+			$customer_id = get_current_user_id();
+		} else {
+			$customer_id = $this->get_customer_id();
+		}
+
+		return $this->has_session() ? (array) $this->get_session( $customer_id, array() ) : array();
 	}
 
 	public function get_cache_prefix( $group = LP_SESSION_CACHE_GROUP ) {
@@ -247,55 +275,73 @@ class LP_Session_Handler {
 		wp_cache_incr( 'learn_press_' . $group . '_cache_prefix', 1, $group );
 	}
 
+	/**
+	 * Save session data to the database.
+	 *
+	 * @return bool
+	 */
+	public function save_data(): bool {
+		$res = false;
 
-	public function save_data() {
-		// var_dump($this->_changed , $this->has_session() , $this->has_cookie() );
-		if ( $this->_changed && $this->has_session() && $this->has_cookie() ) {
-			global $wpdb;
-			$wpdb->replace(
-				$this->_table,
-				array(
-					'session_key'    => $this->_customer_id,
+		try {
+			if ( $this->_changed && $this->has_session() && $this->has_cookie() ) {
+				$lp_session_db = LP_Sessions_DB::getInstance();
+
+				//Check exists on DB.
+				$filter = new LP_Session_filter();
+				$filter->collection = $lp_session_db->tb_lp_sessions;
+				$filter->field_count = 'session_id';
+				$filter->limit = 1;
+				$filter->where[] = $lp_session_db->wpdb->prepare("AND session_key = %s", $this->_customer_id);
+				$get = $lp_session_db->execute($filter);
+
+				$data = [
+					'session_key'    => (string) $this->_customer_id,
 					'session_value'  => maybe_serialize( $this->_data ),
 					'session_expiry' => $this->_session_expiration,
-				),
-				array(
-					'%s',
-					'%s',
-					'%d',
-				)
-			);
-			// LP_Debug::instance()->add( array(
-			// $this->_customer_id,
-			// $_COOKIE,
-			// $_REQUEST,
-			// $_POST,
-			// $_GET,
-			// $_SERVER
-			// ), __FUNCTION__ );
+				];
+				if ( !empty($get) ) {
+					// Update
+					$lp_session_db->wpdb->update(
+						$lp_session_db->tb_lp_sessions,
+						$data,
+						[ 'session_key' => $this->_customer_id ],
+						[ '%s', '%s', '%d' ],
+						[ '%s' ]
+					);
+				} else {
+					// Insert
+					$lp_session_db->wpdb->insert(
+						$lp_session_db->tb_lp_sessions,
+						$data,
+						[ '%s', '%s', '%d' ]
+					);
+				}
 
-			// Set cache
-			LP_Object_Cache::set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
-
-			// Mark session clean after saving
-			$this->_changed = false;
+				$this->_changed = false;
+				$res = true;
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
+
+		return $res;
 	}
 
 	public function destroy_session() {
-		$id = $this->get( 'temp_user' );
+		/*$id = $this->get( 'temp_user' );
 		if ( $id ) {
 			delete_user_meta( $id, '_lp_expiration' );
-		}
+		}*/
 
 		// Clear cookie
 		learn_press_setcookie( $this->_cookie, '', time() - YEAR_IN_SECONDS, apply_filters( 'learn_press_session_secure_cookie', false ) );
 
-		$this->delete_session( $this->_customer_id );
+		//$this->delete_session( $this->_customer_id );
 
 		// Clear cart
 		$this->set( 'cart', '' );
-		$this->set( 'temp_user', '' );
+		//$this->set( 'temp_user', '' );
 
 		// Clear data
 		$this->_data        = array();
@@ -319,22 +365,27 @@ class LP_Session_Handler {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) ); // phpcs:ignore
 
 			// Invalidate cache
-			$this->incr_cache_prefix( LP_SESSION_CACHE_GROUP );
+			//$this->incr_cache_prefix( LP_SESSION_CACHE_GROUP );
 		}
 	}
 
+	/**
+	 * Get session on DB.
+	 *
+	 * @param $customer_id
+	 * @param $default
+	 *
+	 * @return false|mixed|string
+	 */
 	public function get_session( $customer_id, $default = false ) {
 		global $wpdb;
 
-		if ( defined( 'WP_SETUP_CONFIG' ) ) {
-			return false;
-		}
-
 		// Try get it from the cache, it will return false if not present or if object cache not in use
-		$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
+		//$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
+		$value = false;
 		// echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
 
-		if ( false === $value && $wpdb->get_var( "SHOW TABLES LIKE '$this->_table'" ) == $this->_table ) {
+		//if ( false === $value && $wpdb->get_var( "SHOW TABLES LIKE '$this->_table'" ) == $this->_table ) {
 			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id ); // phpcs:ignore
 			$value = $wpdb->get_var( $q );
 
@@ -342,8 +393,8 @@ class LP_Session_Handler {
 				$value = $default;
 			}
 
-			wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
-		}
+			//wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
+		//}
 
 		return LP_Helper::maybe_unserialize( $value );
 	}
@@ -351,7 +402,7 @@ class LP_Session_Handler {
 	public function delete_session( $customer_id ) {
 		global $wpdb;
 
-		wp_cache_delete( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
+		//wp_cache_delete( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
 
 		$wpdb->delete(
 			$this->_table,
@@ -436,7 +487,7 @@ class LP_Session_Handler {
 	}
 
 	public static function instance() {
-		if ( ! self::$_instance ) {
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}
 

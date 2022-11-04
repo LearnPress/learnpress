@@ -66,5 +66,3 @@ class LP_Sessions_DB extends LP_Database {
 	}
 }
 
-LP_Sessions_DB::getInstance();
-

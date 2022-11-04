@@ -312,6 +312,7 @@ function learn_press_delete_transient_transaction( $method, $temp_id ) {
  * @param array $args
  *
  * @return int
+ * @deprecated 4.1.7.4
  */
 function learn_press_add_transaction( $args = null ) {
 	// _deprecated_function( 'learn_press_add_transaction', '1.0', 'learn_press_add_order' );
@@ -322,10 +323,12 @@ function learn_press_add_transaction( $args = null ) {
  * @param null $args
  *
  * @return mixed
+ * @deprecated 4.1.7.4
  */
 function learn_press_add_order( $args = null ) {
+	_deprecated_function( __FUNCTION__, '4.1.7.4' );
 	// $method, $method_id, $status = 'Pending', $customer_id = false, $transaction_object = false, $args = array()
-	$default_args = array(
+	/*$default_args = array(
 		'method'             => '',
 		'method_id'          => '',
 		'status'             => '',
@@ -407,7 +410,7 @@ function learn_press_add_order( $args = null ) {
 		return $transaction_id;
 	}
 
-	return false;
+	return false;*/
 
 	// do_action( 'learn_press_add_transaction_fail', $args );// $method, $method_id, $status, $customer_id, $transaction_object, $args );
 }
@@ -418,8 +421,12 @@ function learn_press_payment_method_from_slug( $order_id ) {
 	return apply_filters( 'learn_press_payment_method_from_slug_' . $slug, $slug );
 }
 
+/**
+ * @deprecated 4.1.7.4
+ */
 function learn_press_generate_transaction_object() {
-	$cart     = learn_press_get_cart();
+	_deprecated_function( __FUNCTION__, '4.1.7.4' );
+	/*$cart     = learn_press_get_cart();
 	$products = $cart->get_items();
 
 	if ( $products ) {
@@ -443,7 +450,7 @@ function learn_press_generate_transaction_object() {
 
 	$transaction_object = apply_filters( 'learn_press_generate_transaction_object', $transaction_object );
 
-	return $transaction_object;
+	return $transaction_object;*/
 }
 
 /**

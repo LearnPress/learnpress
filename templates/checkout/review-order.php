@@ -13,6 +13,9 @@ defined( 'ABSPATH' ) || exit();
 
 // $cart = learn_press_get_checkout_cart();
 
+/**
+ * @var LP_Cart $cart
+ */
 if ( ! isset( $cart ) || ! $cart ) {
 	return;
 }

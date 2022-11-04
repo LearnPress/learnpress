@@ -1461,7 +1461,7 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	} elseif ( is_numeric( $user ) ) {
 		$user = learn_press_get_user( $user );
 	}
-	if ( ! $user ) {
+	if ( ! $user || $user instanceof LP_User_Guest) {
 		return false;
 	}
 
@@ -1989,8 +1989,10 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
  * Get the cart object in checkout page
  *
  * @return LP_Cart
+ * @deprecated 4.1.7.4
  */
 function learn_press_get_checkout_cart() {
+	_deprecated_function( __FUNCTION__, '4.1.7.4', 'LearnPress::instance()->cart');
 	return apply_filters( 'learn_press_checkout_cart', LearnPress::instance()->cart );
 }
 

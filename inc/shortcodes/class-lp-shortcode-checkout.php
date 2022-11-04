@@ -39,12 +39,13 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 				$this->_order_received( $wp->query_vars['lp-order-received'] );
 			} else {
-				$checkout_cart = learn_press_get_checkout_cart();
+				$checkout_cart = LearnPress::instance()->cart;
 
 				// Check cart has contents
-				if ( $checkout_cart && $checkout_cart->is_empty() ) {
+				if ( $checkout_cart->is_empty() ) {
 					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
+					$checkout_cart->calculate_totals();
 					learn_press_get_template( 'checkout/form.php' );
 				}
 			}

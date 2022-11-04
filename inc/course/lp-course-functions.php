@@ -1008,11 +1008,10 @@ add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_
  *
  * @since 3.0.0
  */
-function learn_press_mark_user_just_logged_in() {
+/*function learn_press_mark_user_just_logged_in() {
 	LearnPress::instance()->session->set( 'user_just_logged_in', 'yes' );
 }
-
-add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
+add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );*/
 
 function learn_press_translate_course_result_required( $course ) {
 	if ( ! $course ) {

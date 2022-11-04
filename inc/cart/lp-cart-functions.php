@@ -2,9 +2,9 @@
 /**
  * Return LP_Cart object instance
  *
- * @return mixed
+ * @return LP_Cart
  */
-function learn_press_get_cart() {
+function learn_press_get_cart(): LP_Cart {
 	return LearnPress::instance()->cart;
 }
 

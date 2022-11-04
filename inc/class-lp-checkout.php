@@ -345,12 +345,8 @@ class LP_Checkout {
 	public function create_order() {
 		global $wpdb;
 
-		$order_id = apply_filters( 'learn-press/checkout/create-order', null, $this );
-
-		if ( $order_id ) {
-			return $order_id;
-		}
 		$cart = LearnPress::instance()->cart;
+		$cart->calculate_totals();
 
 		try {
 			$wpdb->query( 'START TRANSACTION' );
@@ -672,7 +668,6 @@ class LP_Checkout {
 		$has_error = false;
 
 		try {
-
 			if ( function_exists( 'set_time_limit' ) ) {
 				@set_time_limit( 0 ); // @codingStandardsIgnoreLine
 			}
@@ -680,8 +675,6 @@ class LP_Checkout {
 			do_action( 'learn-press/before-checkout' );
 
 			$cart   = LearnPress::instance()->cart;
-			$result = false;
-
 			if ( $cart->is_empty() ) {
 				throw new Exception( __( 'Your cart is currently empty.', 'learnpress' ) );
 			}
@@ -704,12 +697,12 @@ class LP_Checkout {
 					$messages[ $key ] = array( $error, 'error' );
 				}
 			} else {
+				LearnPress::instance()->cart->calculate_totals();
 				// maybe throw new exception
 				$this->validate_payment();
 
 				// Create order.
 				$order_id = $this->create_order();
-
 				if ( is_wp_error( $order_id ) ) {
 					throw new Exception( $order_id->get_error_message() );
 				}
@@ -717,9 +710,8 @@ class LP_Checkout {
 				// allow Third-party hook: send email and more...
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
-				if ( $this->payment_method ) {
-					// Store the order is waiting for payment and each payment method should clear it
-					LearnPress::instance()->session->order_awaiting_payment = $order_id;
+				if ( $this->payment_method && $this instanceof LP_Gateway_Abstract ) {
+					LearnPress::instance()->session->set( 'order_awaiting_payment', $order_id );
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );
 
@@ -736,12 +728,10 @@ class LP_Checkout {
 						}
 					}
 				} else {
-					// ensure that no order is waiting for payment
+					// For case enroll course free.
 					$order = new LP_Order( $order_id );
-
-					if ( $order && $order->payment_complete() ) {
-
-						$is_guest_checkout = $this->guest_email ? true : false;
+					if ( $order->payment_complete() ) {
+						$is_guest_checkout = (bool) $this->guest_email;
 						$redirect          = $order->get_checkout_order_received_url();
 
 						if ( ! $is_guest_checkout ) {

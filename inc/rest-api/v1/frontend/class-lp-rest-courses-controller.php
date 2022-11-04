@@ -471,15 +471,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			//$checkout = LP_Checkout::instance();
 
 			if ( ! learn_press_enable_cart() ) {
-				$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
+				//$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
 				$cart->empty_cart();
-				LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
+				//LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
 			}
 
 			do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );
 
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
-			if ( ! $cart_id ) {
+			if ( empty( $cart_id ) ) {
 				throw new Exception( __( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}
 
