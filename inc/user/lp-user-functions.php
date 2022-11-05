@@ -1111,8 +1111,10 @@ function learn_press_get_course_thumbnail_dimensions() {
 
 /**
  * Set a fake cookie to
+ * @deprecated 4.1.7.4
  */
 function learn_press_set_user_cookie_for_guest() {
+	_deprecated_function( __METHOD__, '4.1.7.4' );
 	if ( ! is_admin() && ! headers_sent() ) {
 		$guest_key = '_wordpress_lp_guest';
 

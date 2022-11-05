@@ -1461,7 +1461,7 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	} elseif ( is_numeric( $user ) ) {
 		$user = learn_press_get_user( $user );
 	}
-	if ( ! $user || $user instanceof LP_User_Guest) {
+	if ( ! $user || $user instanceof LP_User_Guest ) {
 		return false;
 	}
 
@@ -1821,9 +1821,12 @@ function learn_press_setcookie( $name, $value, $expire = 0, $secure = false, $ht
 /**
  * Clear cookie
  *
- * @param $name
+ * @param string $name
  */
-function learn_press_remove_cookie( $name ) {
+function learn_press_remove_cookie( string $name = '' ) {
+	if ( ! empty( $name ) ) {
+		setcookie( $name, '', time() - YEAR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
+	}
 	setcookie( $name, '', time() - YEAR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
 
 	if ( array_key_exists( $name, $_COOKIE ) ) {
@@ -1992,7 +1995,7 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
  * @deprecated 4.1.7.4
  */
 function learn_press_get_checkout_cart() {
-	_deprecated_function( __FUNCTION__, '4.1.7.4', 'LearnPress::instance()->cart');
+	_deprecated_function( __FUNCTION__, '4.1.7.4', 'LearnPress::instance()->cart' );
 	return apply_filters( 'learn_press_checkout_cart', LearnPress::instance()->cart );
 }
 

@@ -73,6 +73,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param int   $course_id
 		 *
 		 * @return mixed|bool|LP_Course
+		 * @Todo - Tungnx review to rewrite this method.
 		 */
 		public static function get_course( int $course_id = 0 ) {
 			if ( isset( LP_Global::$courses[ $course_id ] ) ) {

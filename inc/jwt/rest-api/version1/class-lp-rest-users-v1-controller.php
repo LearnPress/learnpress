@@ -1130,7 +1130,15 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return $output;
 	}*/
 
-	public function get_lp_data_tabs( $user, $request ) {
+	/**
+	 * Get data tabs.
+	 *
+	 * @param $user
+	 * @param $request
+	 *
+	 * @return array
+	 */
+	public function get_lp_data_tabs( $user, $request ): array {
 		$output = array();
 
 		if ( get_current_user_id() === $user->ID || current_user_can( 'list_users' ) ) {

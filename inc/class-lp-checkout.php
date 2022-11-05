@@ -778,7 +778,7 @@ class LP_Checkout {
 			)
 		);
 
-		learn_press_maybe_send_json( $result, 'learn_press_remove_messages' );
+		wp_send_json( $result );
 	}
 
 	/**

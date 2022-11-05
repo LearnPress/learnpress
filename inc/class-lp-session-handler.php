@@ -25,12 +25,12 @@ class LP_Session_Handler {
 	/**
 	 * @var string cookie name
 	 */
-	private $_cookie;
+	private $_cookie = '';
 
 	/**
-	 * @var string session expiration timestamp
+	 * @var int session expiration timestamp
 	 */
-	private $_session_expiration;
+	private $_session_expiration = 0;
 
 	/**
 	 * $var bool based on whether a cookie exists
@@ -47,6 +47,7 @@ class LP_Session_Handler {
 
 	/**
 	 * @var string Custom session table name
+	 * @deprecated 4.1.7.4
 	 */
 	private $_table;
 
@@ -121,60 +122,79 @@ class LP_Session_Handler {
 	}
 
 	protected function init_hooks() {
-		//add_action( 'learn_press_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
-		add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
-		//add_action( 'shutdown', array( $this, 'save_data' ), 20 );
+		add_action( 'wp_login', [ $this, 'handle_when_user_logged' ], 10, 2 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
+		//add_action( 'learn_press_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
+		//add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
+		//add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 		//add_action( 'wp', array( $this, 'schedule_event' ) );
 		//add_action( $this->schedule_id, array( $this, 'cleanup_sessions' ), 10 );
-		add_action( 'wp_login', [ $this, 'set_cookie_session_for_user' ], 10, 2 );
 	}
 
-	public function set_cookie_session_for_user( $user_name, $user ) {
+	/**
+	 * Set COOKIE for only user guest
+	 * Set data: customer_id, session_expiration
+	 *
+	 * @return self
+	 * @since 3.0.0
+	 * @version 4.0.1
+	 * @modify Tungnx
+	 */
+	protected function init(): LP_Session_Handler {
+		$expire_time_for_guest = 2 * DAY_IN_SECONDS;
+		$expire_time_for_user  = 6 * DAY_IN_SECONDS;
+
+		// If cookie exists, set data from cookie for guest
+		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
+			$this->_cookie = '_learn_press_session_' . COOKIEHASH;
+			$cookie        = $this->get_cookie_data();
+			if ( ! empty( $cookie ) ) {
+				$this->_customer_id        = (string) $cookie[0];
+				$this->_session_expiration = (int) $cookie[1];
+				//$this->_has_cookie         = true;
+				if ( time() > $this->_session_expiration - HOUR_IN_SECONDS ) {
+					$this->set_session_expiration( $expire_time_for_guest );
+					$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
+				}
+			} else {
+				$this->set_session_expiration( $expire_time_for_guest );
+				$this->_customer_id = $this->generate_guest_id();
+				$this->set_customer_session_cookie();
+			}
+		} else { // Set data for user logged.
+			$this->set_session_expiration( $expire_time_for_user );
+			$this->_customer_id = get_current_user_id();
+		}
+
+		//$this->_data = $this->get_session_data();
+
+		return $this;
+	}
+
+	/**
+	 * Handle when user logged in.
+	 *
+	 * @param $user_name
+	 * @param $user
+	 *
+	 * @return void
+	 */
+	public function handle_when_user_logged( $user_name, $user ) {
 		wp_set_current_user( $user->ID );
 		$user_id = get_current_user_id();
 
 		/**
 		 * Delete session of user guest before.
-		 * Set again cookie for user.
 		 */
 		if ( $user_id ) {
 			$customer_id = $this->get_customer_id();
 			$user_before = learn_press_get_user( $customer_id );
 			if ( $user_before->is_guest() ) {
-				learn_press_remove_cookie( $this->_cookie );
-				$this->delete_session( $customer_id );
+				$this->delete_session( (string) $customer_id );
 			}
 
 			$this->_customer_id = $user_id;
-			//$this->set_customer_session_cookie();
 		}
-	}
-
-	protected function init() {
-		global $wpdb;
-		$this->_table  = $wpdb->prefix . 'learnpress_sessions';
-		$this->_cookie = '_learn_press_session_' . COOKIEHASH;
-		$cookie        = $this->get_session_cookie();
-		// If cookie exists, set data from cookie for guest
-		if ( $cookie ) {
-			$this->_customer_id        = $cookie[0];
-			$this->_session_expiration = $cookie[1];
-			//$this->_has_cookie         = true;
-			if ( time() > $this->_session_expiration - HOUR_IN_SECONDS ) {
-				$this->set_session_expiration( 2 * DAY_IN_SECONDS );
-				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
-			}
-		} elseif ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
-			$this->set_session_expiration( 2 * DAY_IN_SECONDS );
-			$this->_customer_id = $this->generate_guest_id();
-			$this->set_customer_session_cookie();
-		} else { // Set data for user logged.
-			$this->set_session_expiration( 6 * DAY_IN_SECONDS );
-			$this->_customer_id = get_current_user_id();
-		}
-
-		$this->_data = $this->get_session_data();
 	}
 
 	/*public function schedule_event() {
@@ -186,10 +206,9 @@ class LP_Session_Handler {
 	/**
 	 * Set cookie for user guest.
 	 *
-	 * @return void
+	 * @return LP_Session_Handler
 	 */
-	public function set_customer_session_cookie() {
-		// Set/renew our cookie
+	public function set_customer_session_cookie(): LP_Session_Handler {
 		$to_hash      = $this->_customer_id . '|' . $this->_session_expiration;
 		$cookie_hash  = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 		$cookie_value = $this->_customer_id . '||' . $this->_session_expiration . '||' . $cookie_hash;
@@ -199,6 +218,8 @@ class LP_Session_Handler {
 		if ( ! isset( $_COOKIE[ $this->_cookie ] ) || $_COOKIE[ $this->_cookie ] !== $cookie_value ) {
 			learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, is_ssl(), true );
 		}
+
+		return $this;
 	}
 
 	/**
@@ -218,8 +239,17 @@ class LP_Session_Handler {
 		return isset( $_COOKIE[ $this->_cookie ] ) || is_user_logged_in();
 	}
 
-	public function set_session_expiration( int $duration = 0 ) {
+	/**
+	 * Set session expiration.
+	 *
+	 * @param int $duration
+	 *
+	 * @return LP_Session_Handler
+	 */
+	public function set_session_expiration( int $duration = 0 ): LP_Session_Handler {
 		$this->_session_expiration = time() + $duration;
+
+		return $this;
 	}
 
 	/**
@@ -234,9 +264,14 @@ class LP_Session_Handler {
 		return md5( $hasher->get_random_bytes( 32 ) );
 	}
 
-	public function get_session_cookie() {
+	/**
+	 * Get cookie of guest.
+	 *
+	 * @return array
+	 */
+	public function get_cookie_data(): array {
 		if ( empty( $_COOKIE[ $this->_cookie ] ) || ! is_string( $_COOKIE[ $this->_cookie ] ) ) {
-			return false;
+			return [];
 		}
 
 		list( $customer_id, $session_expiration, $cookie_hash ) = explode( '||', $_COOKIE[ $this->_cookie ] );
@@ -244,7 +279,7 @@ class LP_Session_Handler {
 		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
-			return false;
+			return [];
 		}
 
 		return array( $customer_id, $session_expiration, $cookie_hash );
@@ -262,7 +297,7 @@ class LP_Session_Handler {
 			$customer_id = $this->get_customer_id();
 		}
 
-		return (array) $this->get_session( $customer_id, array() );
+		return (array) $this->get_session_by_customer_id( (string) $customer_id );
 	}
 
 	public function get_cache_prefix( $group = LP_SESSION_CACHE_GROUP ) {
@@ -280,9 +315,11 @@ class LP_Session_Handler {
 	 * Increment group cache prefix (invalidates cache).
 	 *
 	 * @param string $group
+	 * @deprecated 4.1.7.4
 	 */
 	public function incr_cache_prefix( $group ) {
-		wp_cache_incr( 'learn_press_' . $group . '_cache_prefix', 1, $group );
+		_deprecated_function( __METHOD__, '4.1.7.4' );
+		//wp_cache_incr( 'learn_press_' . $group . '_cache_prefix', 1, $group );
 	}
 
 	/**
@@ -338,105 +375,130 @@ class LP_Session_Handler {
 		return $res;
 	}
 
+	/**
+	 * Destroy session.
+	 */
 	public function destroy_session() {
 		/*$id = $this->get( 'temp_user' );
 		if ( $id ) {
 			delete_user_meta( $id, '_lp_expiration' );
 		}*/
 
-		// Clear cookie
-		learn_press_setcookie( $this->_cookie, '', time() - YEAR_IN_SECONDS, apply_filters( 'learn_press_session_secure_cookie', false ) );
+		// Clear cookie.
+		if ( ! empty( $this->_cookie ) ) {
+			learn_press_remove_cookie( $this->_cookie );
+		}
 
-		//$this->delete_session( $this->_customer_id );
+		// Clear session expire.
+		$this->cleanup_sessions_expire();
 
-		// Clear cart
-		$this->set( 'cart', '' );
-		//$this->set( 'temp_user', '' );
-
-		// Clear data
-		$this->_data    = array();
-		$this->_changed = false;
-		//$this->_customer_id = $this->generate_customer_id();
-
-		$logout_redirect_page_id = LP_Settings::get_option( 'logout_redirect_page_id', false );
+		$logout_redirect_page_id = LP_Settings::get_option( 'logout_redirect_page_id' );
 		if ( $logout_redirect_page_id ) {
-
 			wp_safe_redirect( get_the_permalink( $logout_redirect_page_id ) );
 			die;
 		}
 	}
 
-	public function cleanup_sessions() {
-		global $wpdb;
+	/**
+	 * Clear session expired.
+	 *
+	 * @return bool
+	 */
+	public function cleanup_sessions_expire(): bool {
+		$res = true;
 
-		if ( ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-
-			// Delete expired sessions
-			$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) ); // phpcs:ignore
-
-			// Invalidate cache
-			//$this->incr_cache_prefix( LP_SESSION_CACHE_GROUP );
+		try {
+			$lp_session_db      = LP_Sessions_DB::getInstance();
+			$filter             = new LP_Session_Filter();
+			$filter->collection = $lp_session_db->tb_lp_sessions;
+			$filter->where[]    = $lp_session_db->wpdb->prepare( 'AND session_expiry < %d', time() );
+			$lp_session_db->delete_execute( $filter );
+		} catch ( Throwable $e ) {
+			$res = false;
+			error_log( $e->getMessage() );
 		}
+
+		return $res;
 	}
 
 	/**
 	 * Get session on DB.
 	 *
-	 * @param $customer_id
-	 * @param $default
+	 * @param string $customer_id
 	 *
 	 * @return false|mixed|string
+	 * @Todo - Tungnx should handle data when save type json instead serialize.
 	 */
-	public function get_session( $customer_id, $default = false ) {
-		global $wpdb;
+	public function get_session_by_customer_id( string $customer_id = '' ) {
+		$lp_session_db = LP_Sessions_DB::getInstance();
+		$session       = [];
 
-		// Try get it from the cache, it will return false if not present or if object cache not in use
-		//$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
-		$value = false;
-		// echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
+		//Todo: handle set cache.
+		try {
+			$filter              = new LP_Session_Filter();
+			$filter->session_key = $customer_id;
+			$filter->limit       = 1;
+			$res                 = $lp_session_db->get_sessions( $filter );
+			if ( ! empty( $res ) ) {
+				$session = $res[0]->session_value;
+			}
 
-		//if ( false === $value && $wpdb->get_var( "SHOW TABLES LIKE '$this->_table'" ) == $this->_table ) {
-			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id ); // phpcs:ignore
-			$value = $wpdb->get_var( $q );
-
-		if ( is_null( $value ) ) {
-			$value = $default;
+			$session = LP_Helper::maybe_unserialize( $session );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 
-			//wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
-		//}
-
-		return LP_Helper::maybe_unserialize( $value );
+		return $session;
 	}
 
-	public function delete_session( $customer_id ) {
+	/**
+	 * Delete session by customer_id on DB.
+	 *
+	 * @param string $customer_id
+	 *
+	 * @return bool
+	 */
+	public function delete_session( string $customer_id ): bool {
 		global $wpdb;
+		$rs = true;
 
-		//wp_cache_delete( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
+		try {
+			$wpdb->delete(
+				LP_Sessions_DB::getInstance()->tb_lp_sessions,
+				array(
+					'session_key' => $customer_id,
+				)
+			);
+		} catch ( Throwable $e ) {
+			$rs = false;
+			error_log( $e->getMessage() );
+		}
 
-		$wpdb->delete(
-			$this->_table,
-			array(
-				'session_key' => $customer_id,
-			)
-		);
+		return $rs;
 	}
 
+	/**
+	 * Get session id.
+	 *
+	 * @return string
+	 */
 	public function update_session_timestamp( $customer_id, $timestamp ) {
 		global $wpdb;
-		$wpdb->update(
-			$this->_table,
-			array(
-				'session_expiry' => $timestamp,
-			),
-			array(
-				'session_key' => $customer_id,
-			),
-			array(
-				'%d',
-			)
-		);
-		// LP_Debug::instance()->add( $customer_id, __FUNCTION__ );
+		$res = true;
+
+		try {
+			$wpdb->update(
+				LP_Sessions_DB::getInstance()->tb_lp_sessions,
+				[ 'session_expiry' => $timestamp ],
+				[ 'session_key' => $customer_id ],
+				[ '%d' ]
+			);
+		} catch ( Throwable $e ) {
+			$res = false;
+			error_log( $e->getMessage() );
+		}
+
+		return $res;
 	}
 
 	/**

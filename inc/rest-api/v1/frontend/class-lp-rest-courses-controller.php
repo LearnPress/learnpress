@@ -467,7 +467,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
 
-			$cart     = LearnPress::instance()->cart;
+			$cart = LearnPress::instance()->cart;
 			//$checkout = LP_Checkout::instance();
 
 			if ( ! learn_press_enable_cart() ) {

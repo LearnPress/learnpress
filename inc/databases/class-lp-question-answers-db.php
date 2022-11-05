@@ -31,10 +31,10 @@ class LP_Question_Answers_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_question_asnwers( LP_Question_Answers_Filter $filter, &$total_rows = 0 ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_lp_question_answers );
-		$filter->fields = array_merge( $default_fields, $filter->fields );
+		$default_fields           = $this->get_cols_of_table( $this->tb_lp_question_answers );
+		$filter->fields           = array_merge( $default_fields, $filter->fields );
 		$filter->exclude_fields[] = 'order';
-		$filter->fields[] = '`order`';
+		$filter->fields[]         = '`order`';
 
 		if ( empty( $filter->collection ) ) {
 			$filter->collection = $this->tb_lp_question_answers;

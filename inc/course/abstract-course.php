@@ -341,10 +341,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @return mixed
-		 * @deprecated
+		 * @deprecated 4.1.7.4
 		 */
 		public function is_require_enrollment() {
+			_deprecated_function( __METHOD__, '4.1.7.4' );
 			return ! $this->is_no_required_enroll();
 		}
 
