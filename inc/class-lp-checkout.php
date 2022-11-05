@@ -674,7 +674,7 @@ class LP_Checkout {
 
 			do_action( 'learn-press/before-checkout' );
 
-			$cart   = LearnPress::instance()->cart;
+			$cart = LearnPress::instance()->cart;
 			if ( $cart->is_empty() ) {
 				throw new Exception( __( 'Your cart is currently empty.', 'learnpress' ) );
 			}
