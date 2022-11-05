@@ -266,7 +266,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			);
 
 			// LP_User_Item_Course.
-			$course_item_objects = ! empty( $query['items'] ) ? $query['items'] : false;
+			$course_item_objects = ! empty( $query->get_items() ) ? $query->get_items() : false;
 
 			if ( empty( $course_item_objects ) ) {
 				throw new Exception( esc_html__( 'No Course available!', 'learnpress' ) );

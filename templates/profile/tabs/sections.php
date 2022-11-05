@@ -18,13 +18,13 @@ if ( ! isset( $tab_key, $tab_data ) ) {
 	return;
 }
 
-if ( empty( $tab_data['sections'] ) || ( sizeof( $tab_data['sections'] ) < 2 ) ) {
+if ( empty( $tab_data->get('sections') ) || ( sizeof( $tab_data->get('sections') ) < 2 ) ) {
 	return;
 }
 
 $link         = $profile->get_tab_link( $tab_key );
 $unique_group = uniqid( 'course-tab-' );
-$sections     = $tab_data['sections'];
+$sections     = $tab_data->get('sections');
 $visible_tabs = array();
 $active_tab   = '';
 ?>

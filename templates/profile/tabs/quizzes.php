@@ -23,6 +23,9 @@ $filter->user_id    = $user_profile->get_id();
 $filter->limit      = apply_filters( 'learnpress/user/quizzes/limit', 5 );
 $filter->status     = LP_Helper::sanitize_params_submitted( $_GET['filter-status'] ?? '' );
 $filter->graduation = LP_Helper::sanitize_params_submitted( $_GET['filter-graduation'] ?? '' );
+/**
+ * @var LP_Query_List_Table $query
+ */
 $query              = $user_profile->get_user_quizzes( $filter );
 
 $current_filter = '';
@@ -47,7 +50,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 		</ul>
 	<?php endif; ?>
 
-	<?php if ( $query['items'] ) : ?>
+	<?php if ( $query->get_items() ) : ?>
 		<table class="lp-list-table profile-list-quizzes profile-list-table">
 			<thead>
 				<tr>
@@ -63,7 +66,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 				/**
 				 * @var LP_User_Item_Quiz $user_quiz
 				 */
-				foreach ( $query['items'] as $user_quiz ) :
+				foreach ( $query->get_items() as $user_quiz ) :
 					$result_quiz = $user_quiz->get_result();
 					$quiz        = learn_press_get_quiz( $user_quiz->get_id() );
 					$courses     = learn_press_get_item_courses( array( $user_quiz->get_id() ) );

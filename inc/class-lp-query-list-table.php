@@ -70,6 +70,10 @@ class LP_Query_List_Table {
 		return $this->_data['items'];
 	}
 
+	public function get( string $key = '' ) {
+		return empty( $key ) ? $this->_data : $this->_data[$key];
+	}
+
 	/**
 	 * @return int
 	 */

@@ -109,7 +109,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 		} else {
 			if ( $this->get_tab_at() ) {
 				$tab     = $this->get_tab_at();
-				$current = $tab['slug'];
+				$current = $tab->get( 'slug' );
 			}
 		}
 
@@ -153,13 +153,13 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			if ( $this->get_tab_at( $current_tab ) ) {
 				$tab = $this->get_tab_at( $current_tab );
 
-				if ( ! empty( $tab['sections'] ) ) {
-					$sections = $tab['sections'];
+				if ( ! empty( $tab->get( 'sections' ) ) ) {
+					$sections = $tab->get( 'sections' );
 					$section  = reset( $sections );
 					if ( array_key_exists( 'slug', $section ) ) {
-						$current = $section['slug'];
+						$current = $tab->get( 'slug' );
 					} else {
-						$sections = array_keys( $tab['sections'] );
+						$sections = array_keys( $tab->get( 'sections' ) );
 						$current  = reset( $sections );
 					}
 				}
@@ -171,11 +171,11 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			$current         = false;
 
 			foreach ( $this->get() as $_slug => $data ) {
-				if ( empty( $data['sections'] ) ) {
+				if ( empty( $data->get( 'sections' ) ) ) {
 					continue;
 				}
 
-				foreach ( $data['sections'] as $_slug => $data ) {
+				foreach ( $data->get( 'sections' ) as $_slug => $data ) {
 					if ( array_key_exists( 'slug', $data ) && ( $data['slug'] === $current_display ) ) {
 						$current = $_slug;
 						break 2;
@@ -208,8 +208,12 @@ class LP_Profile_Tabs extends LP_Array_Access {
 				$tab = $this->get_current_tab( null, false );
 			}
 
-			$tab_data = $this->get_tab_at( $tab );
-			$tab      = $this->get_slug( $tab_data, $tab );
+			/**
+			 * @var LP_Profile_Tab $tab_obj
+			 */
+			$tab_obj = $this->get_tab_at( $tab );
+			$tab     = $tab_obj->get();
+			$tab     = $this->get_slug( $tab, $tab );
 
 			if ( $tab ) {
 				$args['tab'] = $tab;
@@ -217,11 +221,11 @@ class LP_Profile_Tabs extends LP_Array_Access {
 				unset( $args['user'] );
 			}
 
-			if ( $with_section && ! empty( $tab_data['sections'] ) ) {
+			if ( $with_section && ! empty( $tab['sections'] ) ) {
 				if ( $with_section === true ) {
-					$section_keys  = array_keys( $tab_data['sections'] );
+					$section_keys  = array_keys( $tab['sections'] );
 					$first_section = reset( $section_keys );
-					$with_section  = $this->get_slug( $tab_data['sections'][ $first_section ], $first_section );
+					$with_section  = $this->get_slug( $tab['sections'][ $first_section ], $first_section );
 				}
 				$args['section'] = $with_section;
 			}
@@ -279,7 +283,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	public function get_current_url( $args = '', $with_permalink = false ) {
 		$current_tab = $this->get_current_tab();
 		$tab         = $this->get_tab_at( $current_tab );
-		$sections    = isset( $tab['sections'] ) ? $tab['sections'] : array();
+		$sections    = $tab->get( 'sections' ) ? $tab->get( 'sections' ) : array();
 
 		$current_section_slug = $this->get_current_section();
 		$section              = array();
@@ -325,7 +329,16 @@ class LP_Profile_Tabs extends LP_Array_Access {
 		}
 
 		if ( $this->get() ) {
-			$tabs = $this->get();
+			$tabsx = (array) $this->get();
+
+			if ( is_object( $tabsx ) ) {
+				$tabs = [];
+				foreach ( $tabsx as $key => $tab ) {
+						$tabs[ $key ] = $tab;
+				}
+			} else {
+				$tabs = $tabsx;
+			}
 
 			if ( is_numeric( $position ) ) {
 				$tabs = array_values( $tabs );

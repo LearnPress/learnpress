@@ -314,7 +314,11 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 		} elseif ( learn_press_is_profile() ) {
 			$profile  = LP_Profile::instance();
 			$tab_slug = $profile->get_current_tab();
-			$tab      = $profile->get_tab_at( $tab_slug );
+			/**
+			 * @var LP_Profile_Tab $tab_obj
+			 */
+			$tab_obj      = $profile->get_tab_at( $tab_slug );
+			$tab      = $tab_obj->get();
 			$page_id  = learn_press_get_page_id( 'profile' );
 
 			if ( $page_id ) {
