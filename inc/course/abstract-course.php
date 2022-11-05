@@ -341,6 +341,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * @return mixed
+		 * @deprecated
+		 */
+		public function is_require_enrollment() {
+			return ! $this->is_no_required_enroll();
+		}
+
+		/**
 		 * Check if this course is required enroll or not.
 		 *
 		 * @author hungkv
