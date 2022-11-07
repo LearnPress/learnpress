@@ -193,6 +193,8 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 * @param bool    $with_section
 	 * @param LP_User $user
 	 *
+	 * @version 4.0.0
+	 * @since 3.0.0
 	 * @return string
 	 */
 	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
@@ -208,24 +210,20 @@ class LP_Profile_Tabs extends LP_Array_Access {
 				$tab = $this->get_current_tab( null, false );
 			}
 
-			/**
-			 * @var LP_Profile_Tab $tab_obj
-			 */
-			$tab_obj = $this->get_tab_at( $tab );
-			$tab     = $tab_obj->get();
-			$tab     = $this->get_slug( $tab, $tab );
+			$tab_data = $this->get_tab_at( $tab );
+			$slug     = $this->get_slug( $tab_data, $tab );
 
-			if ( $tab ) {
-				$args['tab'] = $tab;
+			if ( $slug ) {
+				$args['tab'] = $slug;
 			} else {
 				unset( $args['user'] );
 			}
 
-			if ( $with_section && ! empty( $tab['sections'] ) ) {
+			if ( $with_section && ! empty( $tab_data->get( 'sections' ) ) ) {
 				if ( $with_section === true ) {
-					$section_keys  = array_keys( $tab['sections'] );
+					$section_keys  = array_keys( $tab_data->get( 'sections' ) );
 					$first_section = reset( $section_keys );
-					$with_section  = $this->get_slug( $tab['sections'][ $first_section ], $first_section );
+					$with_section  = $this->get_slug( $tab_data->get( 'sections' )[ $first_section ], $first_section );
 				}
 				$args['section'] = $with_section;
 			}
@@ -321,7 +319,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 *
 	 * @param int $position Optional. Indexed number or slug.
 	 *
-	 * @return mixed
+	 * @return false|LP_Profile_Tab
 	 */
 	public function get_tab_at( $position = 0 ) {
 		if ( ! $position ) {
@@ -329,16 +327,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 		}
 
 		if ( $this->get() ) {
-			$tabsx = (array) $this->get();
-
-			if ( is_object( $tabsx ) ) {
-				$tabs = [];
-				foreach ( $tabsx as $key => $tab ) {
-						$tabs[ $key ] = $tab;
-				}
-			} else {
-				$tabs = $tabsx;
-			}
+			$tabs = $this->get();
 
 			if ( is_numeric( $position ) ) {
 				$tabs = array_values( $tabs );

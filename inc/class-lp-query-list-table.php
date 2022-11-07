@@ -1,8 +1,13 @@
 <?php
 /**
  * Class LP_Query_List_Table
+ *
+ * @since 3.0.0
+ * @version 3.0.1
+ * Addons: Assignments, H5P is using.
+ * Update all before not implements ArrayAccess
  */
-class LP_Query_List_Table {
+class LP_Query_List_Table implements ArrayAccess {
 	/**
 	 * @var array|null
 	 */
@@ -71,7 +76,7 @@ class LP_Query_List_Table {
 	}
 
 	public function get( string $key = '' ) {
-		return empty( $key ) ? $this->_data : $this->_data[$key];
+		return empty( $key ) ? $this->_data : $this->_data[ $key ];
 	}
 
 	/**

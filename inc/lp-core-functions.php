@@ -1827,7 +1827,6 @@ function learn_press_remove_cookie( string $name = '' ) {
 	if ( ! empty( $name ) ) {
 		setcookie( $name, '', time() - YEAR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
 	}
-	setcookie( $name, '', time() - YEAR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
 
 	if ( array_key_exists( $name, $_COOKIE ) ) {
 		unset( $_COOKIE[ $name ] );
@@ -1835,7 +1834,7 @@ function learn_press_remove_cookie( string $name = '' ) {
 }
 
 /**
- * Filter the login url so third-party can be customize
+ * Filter the login url so third-party can be customized
  *
  * @param string $redirect
  *

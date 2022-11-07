@@ -4,7 +4,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -21,14 +21,10 @@ $user_profile = learn_press_get_user( $profile->get_user_data( 'id' ) );
 $filter             = new LP_User_Items_Filter();
 $filter->user_id    = $user_profile->get_id();
 $filter->limit      = apply_filters( 'learnpress/user/quizzes/limit', 5 );
-$filter->status     = LP_Helper::sanitize_params_submitted( $_GET['filter-status'] ?? '' );
-$filter->graduation = LP_Helper::sanitize_params_submitted( $_GET['filter-graduation'] ?? '' );
-/**
- * @var LP_Query_List_Table $query
- */
+$filter->status     = LP_Request::get_param( 'filter-status' );
+$filter->graduation = LP_Request::get_param( 'filter-graduation' );
 $query              = $user_profile->get_user_quizzes( $filter );
-
-$current_filter = '';
+$current_filter     = '';
 
 if ( ! empty( $filter->status ) ) {
 	$current_filter = $filter->status;
@@ -111,7 +107,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 						<?php echo wp_kses_post( $query->get_offset_text() ); ?>
 					</td>
 					<td colspan="2" class="nav-pages">
-						<?php $query->get_nav_numbers( true ); ?>
+						<?php $query->get_nav_numbers(); ?>
 					</td>
 				</tr>
 			</tfoot>
