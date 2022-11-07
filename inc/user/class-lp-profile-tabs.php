@@ -3,8 +3,11 @@
 /**
  * Class LP_Profile_Tabs
  */
-class LP_Profile_Tabs extends LP_Array_Access {
-
+class LP_Profile_Tabs {
+	/**
+	 * @var array
+	 */
+	protected $_data = array();
 	/**
 	 * @var LP_Profile_Tabs
 	 */
@@ -22,7 +25,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile ) {
-		parent::__construct( $tabs );
+		$this->_data = $tabs;
 		$this->profile = $profile;
 
 		$this->_sanitize();
@@ -399,8 +402,8 @@ class LP_Profile_Tabs extends LP_Array_Access {
  *
  * @since 3.0.0
  */
-class LP_Profile_Tab extends LP_Array_Access {
-
+class LP_Profile_Tab {
+	protected $_data = array();
 	/**
 	 * @var LP_Profile
 	 */
@@ -419,7 +422,8 @@ class LP_Profile_Tab extends LP_Array_Access {
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $id, $data, $profile ) {
-		parent::__construct( $data );
+		//parent::__construct( $data );
+		$this->_data = is_array( $data ) ? $data : (array) $data;
 
 		$this->profile = $profile;
 		$this->id      = $id;

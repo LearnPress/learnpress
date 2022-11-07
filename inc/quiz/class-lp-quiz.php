@@ -606,12 +606,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param string $key
 		 *
 		 * @return mixed
+		 * @deprecated 4.0.8
 		 */
 		public function __get( $key ) {
-			echo '@deprecated[' . $key . ']';
+			_deprecated_function( __METHOD__, '4.0.8' );
+			/*echo '@deprecated[' . $key . ']';
 			learn_press_debug( debug_backtrace() );
 
-			return false;
+			return false;*/
 		}
 
 		/**
