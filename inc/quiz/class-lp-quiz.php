@@ -621,6 +621,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return mixed
 		 * @throws Exception
+		 * @deprecated 3.0.8
 		 */
 		public function has( $feature ) {
 			_deprecated_function( __FUNCTION__, '3.0.8' );
@@ -658,9 +659,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $question_id
 		 *
 		 * @return string
+		 * @deprecated 4.1.7.4
 		 */
 		public function get_question_link( $question_id = null ) {
-			$course = learn_press_get_course();
+			_deprecated_function( __METHOD__, '4.1.7.4' );
+			/*$course = learn_press_get_course();
 			if ( ! $course ) {
 				return '';
 			}
@@ -683,7 +686,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			// @deprecated
 			$permalink = apply_filters( 'learn_press_quiz_question_permalink', $permalink, $question_id, $this );
 
-			return apply_filters( 'learn-press/quiz/question-permalink', $permalink, $question_id, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/question-permalink', $permalink, $question_id, $this->get_id() );*/
 		}
 
 		/**
@@ -780,9 +783,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param $user_id
 		 *
 		 * @return bool
+		 * @deprecated 4.1.7.4
 		 */
 		public function check_question( $question_id, $user_id ) {
-			$question = LP_Question::get_question( $question_id );
+			_deprecated_function( __METHOD__, '4.1.7.4' );
+			/*$question = LP_Question::get_question( $question_id );
 
 			if ( ! $question ) {
 				return false;
@@ -803,7 +808,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				$checked[] = $question_id;
 			}
 
-			return true;
+			return true;*/
 
 		}
 
@@ -814,9 +819,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int      $user_id
 		 *
 		 * @return false|int|string
+		 * @deprecated 4.1.7.4
 		 */
 		public function get_question_position( $question, $user_id = 0 ) {
-			if ( ! $user_id ) {
+			_deprecated_function( __METHOD__, '4.1.7.4' );
+			/*if ( ! $user_id ) {
 				$user_id = learn_press_get_current_user_id();
 			}
 
@@ -832,7 +839,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 			$position = array_search( $question, $questions );
 
-			return $position;
+			return $position;*/
 		}
 
 		/**
@@ -840,14 +847,15 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return bool|LP_Question
+		 * @deprecated 4.0.0
 		 */
 		public function get_current_question( $user_id = 0, $course_id = 0 ) {
 			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
 
-			$user = learn_press_get_user( $user_id );
+			/*$user = learn_press_get_user( $user_id );
 			$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
 
-			return LP_Question::get_question( $id );
+			return LP_Question::get_question( $id );*/
 		}
 
 		/**
@@ -973,13 +981,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$this->_set_data( 'show_hide_question', $show_or_hide );
 		}
 
+		/**
+		 * @deprecated 4.1.7.4
+		 */
 		public function set_preview( $preview ) {
-			$this->_set_data( 'preview', $preview );
+			_deprecated_function( __METHOD__, '4.1.7.4' );
+			//$this->_set_data( 'preview', $preview );
 		}
-
-		// public function set_minus_points( $points ) {
-		// $this->_set_data( 'minus_points', $points );
-		// }
 
 		/**
 		 * @deprecated
@@ -990,19 +998,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$this->_set_data( 'minus_skip_questions', $skip );
 		}
 
-		public function get_preview() {
-			return 'yes' === $this->get_data( 'preview' );
-		}
-
 		/**
-		 * @deprecated
-		 *
-		 * @return bool
+		 * @deprecated 4.1.7.4
 		 */
-		public function get_show_hide_question() {
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-
-			return 'yes' === $this->get_data( 'show_hide_question' );
+		public function get_preview() {
+			_deprecated_function( __METHOD__, '4.1.7.4' );
+			//return 'yes' === $this->get_data( 'preview' );
 		}
 
 		// public function get_minus_points() {
@@ -1051,28 +1052,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}*/
 
 		/**
-		 * Implement ArrayAccess functions.
-		 *
-		 * @param mixed $offset
-		 * @param mixed $value
-		 */
-		public function offsetSet( $offset, $value ) {
-			// Do not allow to set value directly!
-		}
-
-		/**
-		 * @param mixed $offset
-		 */
-		public function offsetUnset( $offset ) {
-			// Do not allow to unset value directly!
-		}
-
-		/**
 		 * @param mixed $offset
 		 *
 		 * @return bool|mixed
+		 * @deprecated 4.1.7.4
 		 */
 		public function offsetGet( $offset ) {
+			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.1.7.4' );
 			return $this->offsetExists( $offset ) ? $this->_questions[ $offset ] : false;
 		}
 
@@ -1080,9 +1066,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param mixed $offset
 		 *
 		 * @return bool
+		 * @deprecated 4.1.7.4
 		 */
 		public function offsetExists( $offset ) {
-			return array_key_exists( $offset, $this->_questions );
+			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.1.7.4' );
+			/*return array_key_exists( $offset, $this->_questions );*/
 		}
 	}
 }
