@@ -25,9 +25,6 @@ define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
 // Turn on/off cart.
 const LP_ENABLE_CART = false;
 
-// Cache group id.
-const LP_SESSION_CACHE_GROUP = 'learn_press_session_id';
-
 // Table prefix.
 const LP_TABLE_PREFIX = 'learnpress_';
 

@@ -278,6 +278,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache/class-lp-course-cache.php';
 			require_once 'inc/cache/class-lp-quiz-cache.php';
 			require_once 'inc/cache/class-lp-question-cache.php';
+			require_once 'inc/cache/class-lp-session-cache.php';
 
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';

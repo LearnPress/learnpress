@@ -6,11 +6,10 @@
  * Only set COOKIE for user guest
  */
 class LP_Session_Handler {
-
 	/**
-	 * @var int $_customer_id
+	 * @var string $_customer_id
 	 */
-	public $_customer_id;
+	public $_customer_id = '';
 
 	/**
 	 * @var array $_data
@@ -62,9 +61,11 @@ class LP_Session_Handler {
 	 * @param mixed $key
 	 *
 	 * @return mixed
+	 * @deprecated 4.1.7.4
 	 */
 	public function __get( $key ) {
-		return $this->get( $key );
+		_deprecated_function( __METHOD__, '4.1.7.4' );
+		//return $this->get( $key );
 	}
 
 	/**
@@ -122,7 +123,7 @@ class LP_Session_Handler {
 	}
 
 	protected function init_hooks() {
-		add_action( 'wp_login', [ $this, 'handle_when_user_logged' ], 10, 2 );
+		add_action( 'wp_login', [ $this, 'handle_when_user_login_success' ], 10, 2 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 		//add_action( 'learn_press_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
 		//add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
@@ -179,7 +180,12 @@ class LP_Session_Handler {
 	 *
 	 * @return void
 	 */
-	public function handle_when_user_logged( $user_name, $user ) {
+	public function handle_when_user_login_success( $user_name, $user ) {
+		/**
+		 * Must set wp_set_current_user to get_current_user_id and is_user_logged_in work correctly.
+		 * Don't know why WP 6.3 and lower run wrong.
+		 * If version WP after run correctly, remove wp_set_current_user.
+		 */
 		wp_set_current_user( $user->ID );
 		$user_id = get_current_user_id();
 
@@ -300,17 +306,6 @@ class LP_Session_Handler {
 		return (array) $this->get_session_by_customer_id( (string) $customer_id );
 	}
 
-	public function get_cache_prefix( $group = LP_SESSION_CACHE_GROUP ) {
-		$prefix = LP_Object_Cache::get( 'learn_press_' . $group . '_cache_prefix', $group );
-
-		if ( false === $prefix ) {
-			$prefix = 1;
-			LP_Object_Cache::set( 'learn_press_' . $group . '_cache_prefix', $prefix, $group );
-		}
-
-		return 'learn_press_cache_' . $prefix . '_';
-	}
-
 	/**
 	 * Increment group cache prefix (invalidates cache).
 	 *
@@ -356,6 +351,8 @@ class LP_Session_Handler {
 						[ '%s', '%s', '%d' ],
 						[ '%s' ]
 					);
+					// Clear cache.
+					LP_Session_Cache::instance()->clear( $this->_customer_id );
 				} else {
 					// Insert
 					$lp_session_db->wpdb->insert(
@@ -405,10 +402,20 @@ class LP_Session_Handler {
 	 * @return bool
 	 */
 	public function cleanup_sessions_expire(): bool {
-		$res = true;
+		$res           = true;
+		$lp_session_db = LP_Sessions_DB::getInstance();
 
 		try {
-			$lp_session_db      = LP_Sessions_DB::getInstance();
+			// Get session expired.
+			$filter_get          = new LP_Session_Filter();
+			$filter_get->where[] = $lp_session_db->wpdb->prepare( 'AND session_expiry < %d', time() );
+			$sessions            = $lp_session_db->get_sessions( $filter_get );
+			// Clear cache.
+			foreach ( $sessions as $session ) {
+				LP_Session_Cache::instance()->clear( $session->session_key );
+			}
+
+			// Delete session expired.
 			$filter             = new LP_Session_Filter();
 			$filter->collection = $lp_session_db->tb_lp_sessions;
 			$filter->where[]    = $lp_session_db->wpdb->prepare( 'AND session_expiry < %d', time() );
@@ -433,8 +440,15 @@ class LP_Session_Handler {
 		$lp_session_db = LP_Sessions_DB::getInstance();
 		$session       = [];
 
-		//Todo: handle set cache.
 		try {
+			// Get cache.
+			$session_cache = LP_Session_Cache::instance();
+			$key_cache     = $customer_id;
+			$session       = $session_cache->get_cache( $key_cache );
+			if ( $session !== false ) {
+				return $session;
+			}
+
 			$filter              = new LP_Session_Filter();
 			$filter->session_key = $customer_id;
 			$filter->limit       = 1;
@@ -444,6 +458,8 @@ class LP_Session_Handler {
 			}
 
 			$session = LP_Helper::maybe_unserialize( $session );
+			// Set cache.
+			$session_cache->set_cache( $key_cache, $session );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
@@ -469,6 +485,8 @@ class LP_Session_Handler {
 					'session_key' => $customer_id,
 				)
 			);
+			// Clear cache.
+			LP_Session_Cache::instance()->clear( $customer_id );
 		} catch ( Throwable $e ) {
 			$rs = false;
 			error_log( $e->getMessage() );
@@ -480,9 +498,12 @@ class LP_Session_Handler {
 	/**
 	 * Get session id.
 	 *
-	 * @return string
+	 * @param $customer_id
+	 * @param $timestamp
+	 *
+	 * @return bool
 	 */
-	public function update_session_timestamp( $customer_id, $timestamp ) {
+	public function update_session_timestamp( $customer_id, $timestamp ): bool {
 		global $wpdb;
 		$res = true;
 
@@ -493,6 +514,8 @@ class LP_Session_Handler {
 				[ 'session_key' => $customer_id ],
 				[ '%d' ]
 			);
+			// Clear cache.
+			LP_Session_Cache::instance()->clear( $customer_id );
 		} catch ( Throwable $e ) {
 			$res = false;
 			error_log( $e->getMessage() );
