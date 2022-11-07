@@ -982,11 +982,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @deprecated 4.1.7.4
+		 * Set quiz is preview or not.
+		 * using
 		 */
 		public function set_preview( $preview ) {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
-			//$this->_set_data( 'preview', $preview );
+			$this->_set_data( 'preview', $preview );
 		}
 
 		/**
@@ -999,11 +999,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @deprecated 4.1.7.4
+		 * Get quiz is preview or not.
+		 * using
 		 */
 		public function get_preview() {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
-			//return 'yes' === $this->get_data( 'preview' );
+			return 'yes' === $this->get_data( 'preview' );
 		}
 
 		// public function get_minus_points() {
