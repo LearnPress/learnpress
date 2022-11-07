@@ -7,7 +7,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 	/**
 	 * Class LP_Profile
 	 *
-	 * Main class to controls the profile of a user
+	 * Main class to control the profile of a user
 	 */
 	class LP_Profile {
 		/**

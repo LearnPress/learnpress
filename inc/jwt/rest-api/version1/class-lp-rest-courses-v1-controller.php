@@ -846,7 +846,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 								'duration'   => $item->get_duration()->to_timer( $format, true ),
 								'graduation' => $user_item ? $user_item->get_graduation() : '',
 								'status'     => $user_item ? $user_item->get_status() : '',
-								'locked'     => isset( $can_view_item->flag ) ? ! $can_view_item->flag : true,
+								'locked'     => ! isset( $can_view_item->flag ) || ! $can_view_item->flag,
 							);
 						}
 					}
