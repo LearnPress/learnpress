@@ -80,8 +80,8 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		public function get_related_themes() {
 			$themes = get_transient( 'lp_related_themes' );
 
-			if ( ! $themes ) {
-				$this->query_related_themes();
+			if ( ! is_array( $themes ) || empty( $themes ) ) {
+				$themes = $this->query_related_themes();
 			}
 
 			return is_array( $themes ) ? $themes : false;

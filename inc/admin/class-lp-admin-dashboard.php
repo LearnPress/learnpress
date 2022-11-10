@@ -48,11 +48,8 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 				<?php
 				$eduma_data = $this->_get_theme_info( 14058034 );
 
-				if ( function_exists( 'learn_press_get_item_referral' ) ) {
-					$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
-				}
-
 				if ( ! empty( $eduma_data ) ) {
+					$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
 					?>
 
 					<li class="clear"></li>
