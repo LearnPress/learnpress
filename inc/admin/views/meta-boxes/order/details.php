@@ -56,7 +56,7 @@ $user_ip      = $order->get_user_ip_address();
 			<input type="number" class="order-minute" name="mn" min="0" max="59" value="<?php echo esc_attr( $order->get_order_date( 'm' ) ); ?>">
 		</div>
 
-		<div class="order-data-field order-data-status <?php echo sanitize_title( $order->post_status ); ?>">
+		<div class="order-data-field order-data-status <?php echo sanitize_title( $order->get_post_status() ); ?>">
 			<label><?php esc_html_e( 'Status:', 'learnpress' ); ?></label>
 			<select name="order-status" data-status="<?php echo 'lp-' . $order->get_status(); ?>">
 				<?php
@@ -184,7 +184,7 @@ $user_ip      = $order->get_user_ip_address();
 					</td>
 					<td width="100" class="align-right">
 						<span class="order-subtotal">
-							<?php echo learn_press_format_price( $order->order_subtotal, $currency_symbol ); ?>
+							<?php echo learn_press_format_price( $order->get_data( 'order_subtotal' ), $currency_symbol ); ?>
 						</span>
 					</td>
 				</tr>
@@ -194,7 +194,7 @@ $user_ip      = $order->get_user_ip_address();
 					</td>
 					<td class="align-right total">
 						<span class="order-total">
-							<?php echo learn_press_format_price( $order->order_total, $currency_symbol ); ?>
+							<?php echo learn_press_format_price( $order->get_data( 'order_total' ), $currency_symbol ); ?>
 						</span>
 					</td>
 				</tr>

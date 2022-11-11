@@ -202,9 +202,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param string $prop
 		 *
 		 * @return int|mixed|null
-		 * @deprecated
+		 * @deprecated 4.1.7.4
+		 * @note Tungnx when change all direct access from $this->{key} to $this->get_data({key}), can remove this method
 		 */
 		public function __get( $prop ) {
+			_deprecated_function( __METHOD__, '4.1.7.4' );
 			if ( $prop == 'post' ) {
 				// print_r( debug_backtrace() );
 				// die( '$post is deprecated' );
@@ -270,8 +272,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * update it to database.
 		 *
 		 * @param LP_Gateway_Abstract|string $payment_method
+		 * @deprecated 4.1.7.4
 		 */
 		public function set_payment_method( $payment_method ) {
+			_deprecated_function( __METHOD__, '4.1.7.4' );
 			if ( $payment_method instanceof LP_Gateway_Abstract ) {
 				update_post_meta( $this->get_id(), '_payment_method', $payment_method->get_id() );
 				update_post_meta( $this->get_id(), '_payment_method_title', $payment_method->get_title() );
@@ -692,7 +696,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return int|float
 		 */
 		public function get_total() {
-			return $this->get_data( 'total' );
+			return $this->get_data( 'total', 0 );
 		}
 
 		/**
@@ -863,10 +867,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function get_payment_method_title() {
-			if ( $this->order_total == 0 ) {
+			if ( $this->get_data( 'order_total' ) == 0 ) {
 				$title = '';
 			} else {
-				$title = $this->payment_method_title;
+				$title = $this->get_data( 'payment_method_title' );
 			}
 
 			return $title;

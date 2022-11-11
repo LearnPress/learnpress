@@ -154,12 +154,20 @@ class LP_Checkout {
 	}*/
 
 	/**
+	 * Create account when checking out with user guest and tick create account.
+	 *
 	 * @return int|WP_Error
 	 */
-	protected function _create_account() {
-		$email    = $this->get_checkout_email();
-		$password = wp_generate_password( 12, true );
-		$user_id  = wp_create_user( $email, $password, $email );
+	protected function create_account(): int {
+		$user_id = 0;
+
+		try {
+			$email    = $this->get_checkout_email();
+			$password = wp_generate_password();
+			$user_id  = wp_create_user( $email, $password, $email );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
 
 		return $user_id;
 	}
@@ -262,7 +270,6 @@ class LP_Checkout {
 		}
 
 		$user = get_user_by( 'email', $email );
-
 		if ( ! $user ) {
 			return false;
 		}
@@ -343,15 +350,11 @@ class LP_Checkout {
 	 * @throws Exception
 	 */
 	public function create_order() {
-		global $wpdb;
-
 		$cart = LearnPress::instance()->cart;
-		$cart->calculate_totals();
+		$cart_data = $cart->calculate_totals();
 
 		try {
-			$wpdb->query( 'START TRANSACTION' );
-
-			// Insert or update the post data
+			/*// Insert or update the post data
 			$order_id = absint( LearnPress::instance()->session->get( 'order_awaiting_payment' ) );
 
 			// Resume the unpaid order if its pending
@@ -374,48 +377,46 @@ class LP_Checkout {
 
 				$order_id = $order->get_id();
 				do_action( 'learn-press/checkout/new-order', $order_id );
-			}
+			}*/
 
+			$order   = new LP_Order();
 			$user_id = 0;
+
 			if ( is_user_logged_in() ) {
 				$user_id = get_current_user_id();
 			} else {
-				$checkout_option = LP_Helper::sanitize_params_submitted( $_POST['checkout-email-option'] ?? '' );
+				$checkout_option = LP_Request::get_param( 'checkout-email-option' );
+				// Set user id for Order if buy with Guest and email exists on the user
+				$user_id = $this->checkout_email_exists();
 
 				// Create new user if buy with Guest and tick "Create new Account"
 				if ( $checkout_option === 'new-account' ) {
-					if ( $this->checkout_email_exists() ) {
-						throw new Exception( 'NEW ACCOUNT EMAIL IS EXISTED', 0 );
+					if ( $user_id ) {
+						throw new Exception( __( 'New account email is existed', 'learnpress' ), 0 );
 					}
 
-					$order->set_meta( '_create_account', 'yes' );
+					//$order->set_meta( '_create_account', 'yes' );
 
-					$user_id = $this->_create_account();
-
-					if ( ! is_wp_error( $user_id ) ) {
+					$user_id = $this->create_account();
+					if ( $user_id ) {
+						// Notify mail create user success
 						wp_new_user_notification( $user_id, null, apply_filters( 'learn-press/email-create-new-user-when-checkout', 'user' ) );
+					} else {
+						throw new Exception( __( 'Create account failed', 'learnpress' ), 0 );
 					}
-				} else { // Set user id for Order if buy with Guest and email exists on the user
-					$user = get_user_by( 'email', $this->get_checkout_email() );
-
-					if ( $order->is_guest() && $user ) {
-						$user_id = $user->ID;
-					}
-				}
-
-				if ( $user_id ) {
-					$order->set_user_id( $user_id );
 				}
 			}
 
 			$order->set_customer_note( $this->order_comment );
 			$order->set_status( learn_press_default_order_status( 'lp-' ) );
-			$order->set_total( $cart->total );
-			$order->set_subtotal( $cart->subtotal );
+			$order->set_total( $cart_data->total );
+			$order->set_subtotal( $cart_data->subtotal );
 			$order->set_user_ip_address( learn_press_get_ip() );
 			$order->set_user_agent( learn_press_get_user_agent() );
 			$order->set_created_via( 'checkout' );
 			$order->set_user_id( apply_filters( 'learn-press/checkout/default-user', $user_id ) );
+			$order->set_data( 'payment_method', $this->payment_method->get_id() );
+			$order->set_data( 'payment_method_title', $this->payment_method->get_title() );
 
 			if ( $this->is_enable_guest_checkout() && $this->get_checkout_email() ) {
 				$order->set_checkout_email( $this->get_checkout_email() );
@@ -423,7 +424,7 @@ class LP_Checkout {
 
 			$order_id = $order->save();
 
-			// Store the line items to the new/resumed order
+			// Store the line items to the order
 			foreach ( $cart->get_items() as $item ) {
 				$item_type = get_post_type( $item['item_id'] );
 
@@ -440,8 +441,6 @@ class LP_Checkout {
 				do_action( 'learn-press/checkout/add-order-item-meta', $item_id, $item );
 			}
 
-			$order->set_payment_method( $this->payment_method );
-
 			if ( ! empty( $this->user_id ) ) {
 				do_action( 'learn-press/checkout/update-user-meta', $this->user_id );
 			}
@@ -451,11 +450,7 @@ class LP_Checkout {
 			if ( ! $order_id || is_wp_error( $order_id ) ) {
 				learn_press_add_message( __( 'Unable to checkout. Order creation failed.', 'learnpress' ) );
 			}
-
-			$wpdb->query( 'COMMIT' );
-
 		} catch ( Exception $e ) {
-			$wpdb->query( 'ROLLBACK' );
 			learn_press_add_message( $e->getMessage() );
 
 			return false;
@@ -710,12 +705,15 @@ class LP_Checkout {
 				// allow Third-party hook: send email and more...
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
-				if ( $this->payment_method && $this instanceof LP_Gateway_Abstract ) {
-					LearnPress::instance()->session->set( 'order_awaiting_payment', $order_id );
+				if ( $this->payment_method instanceof LP_Gateway_Abstract ) {
+					//LearnPress::instance()->session->set( 'order_awaiting_payment', $order_id );
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );
 
 					if ( isset( $result['result'] ) ) {
+						// Clear cart.
+						LearnPress::instance()->get_cart()->empty_cart();
+
 						if ( 'success' === $result['result'] ) {
 							$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
 						}
@@ -748,6 +746,9 @@ class LP_Checkout {
 								$redirect = get_the_permalink( $course_id );
 							}
 						}
+
+						// Clear cart.
+						LearnPress::instance()->get_cart()->empty_cart();
 
 						$result = array(
 							'result'   => 'success',

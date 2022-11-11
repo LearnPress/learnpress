@@ -97,9 +97,11 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Get total value of LP orders has completed.
 		 *
 		 * @return int|string
+		 * @deprecated 4.1.7.4
 		 */
 		private function _get_order_total_raised() {
-			$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
+			_deprecated_function( __METHOD__, '4.1.7.4' );
+			/*$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
 			$total  = 0;
 
 			if ( $orders ) {
@@ -109,7 +111,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 				}
 			}
 
-			return learn_press_format_price( $total, true );
+			return learn_press_format_price( $total, true );*/
 		}
 
 		/**

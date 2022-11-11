@@ -75,7 +75,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'_order_subtotal'       => $order->get_subtotal(),
 			'_order_total'          => $order->get_total(),
 			'_order_key'            => $order->get_order_key(),
-			'_payment_method'       => $order->get_payment_method_title(),
+			'_payment_method'       => $order->get_data( 'payment_method', '' ),
 			'_payment_method_title' => $order->get_payment_method_title(),
 			'_user_ip_address'      => $order->get_user_ip_address(),
 			'_user_agent'           => $order->get_user_agent(),
@@ -471,7 +471,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'currency'        => get_post_meta( $post->ID, '_order_currency', true ),
 				)
 			);
-
+			$order->set_data( 'order_subtotal', get_post_meta( $post->ID, '_order_subtotal', true ) );
+			$order->set_data( 'order_total', get_post_meta( $post->ID, '_order_total', true ) );
+			$order->set_data( 'payment_method', get_post_meta( $post->ID, '_payment_method', true ) );
+			$order->set_data( 'payment_method_title', get_post_meta( $post->ID, '_payment_method_title', true ) );
 			$order->get_items();
 			$order->read_meta();
 		}

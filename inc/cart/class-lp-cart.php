@@ -237,11 +237,11 @@ class LP_Cart {
 	 */
 	public function calculate_totals() {
 		$data           = new stdClass();
-		$data->total    = 0;
-		$data->subtotal = 0;
-		$total          = $subtotal = 0;
-		//$this->total = $this->subtotal = 0;
-		$items = $this->get_cart();
+		$total          = 0;
+		$subtotal       = 0;
+		$this->total    = 0;
+		$this->subtotal = 0;
+		$items          = $this->get_cart();
 
 		if ( $items ) {
 			foreach ( $items as $cart_id => $item ) {

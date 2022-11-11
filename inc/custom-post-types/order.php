@@ -802,7 +802,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					if ( $title ) {
 						?>
 						<div class="payment-method-title">
-							<?php echo wp_kses_post( $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $title, $the_order ), $the_order ) ); ?>
+							<?php echo wp_kses_post( $the_order->get_total() == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $title, $the_order ), $the_order ) ); ?>
 						</div>
 						<?php
 					}

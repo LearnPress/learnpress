@@ -52,7 +52,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 				return;
 			}
 
-			add_action( 'learn-press/order/received', array( $this, 'instructions' ), 99 );
+			//add_action( 'learn-press/order/received', array( $this, 'instructions' ), 99 );
 			add_filter(
 				'learn-press/payment-gateway/' . $this->id . '/available',
 				array(
@@ -79,9 +79,10 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 * @param $order
 		 */
 		public function instructions( $order ) {
-			if ( $order && ( $this->id == $order->payment_method ) && $this->instructions ) {
+			_deprecated_function( __METHOD__, '4.1.7.4' );
+			/*if ( $order && ( $this->id == $order->payment_method ) && $this->instructions ) {
 				echo stripcslashes( wpautop( wptexturize( $this->instructions ) ) );
-			}
+			}*/
 		}
 
 		protected function _get( $name ) {
