@@ -275,6 +275,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
+				'lp-admin-notices'                  => new LP_Asset_Key(
+					self::url( 'js/dist/admin/admin-notices' . self::$_min_assets . '.js' ),
+					['wp-api-fetch']
+				),
 			)
 		);
 

@@ -414,6 +414,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				return;
 			}
 
+			require_once 'inc/admin/class-lp-admin-ajax.php';
+
 			require_once 'inc/admin/class-lp-admin-notice.php';
 
 			// File handle install LP
@@ -424,8 +426,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/admin/class-lp-admin.php';
 			// require_once 'inc/admin/settings/abstract-settings-page.php';
-
-			require_once 'inc/admin/class-lp-admin-ajax.php';
 		}
 
 		/**

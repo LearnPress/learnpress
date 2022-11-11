@@ -5,7 +5,7 @@
  *
  * @since 4.0.3
  * @author tungnx
- * @version 1.0.0
+ * @version 1.0.1
  */
 class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
@@ -191,7 +191,32 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function admin_notices( WP_REST_Request $request ) {
 		$response            = new LP_REST_Response();
 		try {
+			$params = $request->get_params();
 
+			$rules = [
+				'check_wp_remote' => [
+					'class'    => 'notice-error',
+					'template' => 'admin-notices/wp-remote.php',
+					'display'  => call_user_func( [ 'LP_Admin_Ajax', 'check_wp_remote' ] ),
+				],
+				'check_right_plugin_base' => [
+					'class'    => 'notice-error',
+					'template' => 'admin-notices/wrong-name-plugin.php',
+					'display'  => call_user_func( [ 'LP_Admin_Notice', 'check_right_plugin_base' ] ),
+				],
+			];
+
+			foreach ( $rules as $rule => $template_data ) {
+				if ( $template_data[ 'display' ] ) {
+					if ( is_wp_error( $template_data[ 'display' ] ) ) {
+						$template_data[ 'error' ] = $template_data[ 'display' ]->get_error_message();
+					}
+
+					learn_press_admin_view( $template_data[ 'template' ] ?? '', [ 'data' => $template_data ], true );
+				}
+			}
+
+			$response->data->content = ob_get_clean();
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}

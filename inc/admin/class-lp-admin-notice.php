@@ -58,7 +58,7 @@ class LP_Admin_Notice {
 	protected function __construct() {
 		//add_action( 'init', array( $this, 'dismiss_notice' ) );
 		//add_action( 'init', array( $this, 'load' ) );
-		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+		//add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 	}
 
 	/**
