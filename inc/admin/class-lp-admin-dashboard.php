@@ -122,7 +122,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		private function _get_theme_info( $item_id ) {
 			$alls = LP_Plugins_Helper::get_related_themes();
 
-			if ( ! $alls ) {
+			if ( empty( $alls ) ) {
 				return false;
 			}
 
