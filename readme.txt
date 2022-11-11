@@ -89,7 +89,7 @@ We are developing and improving LearnPress day by day and bringing you more new 
 
 ###Premium add-ons for LearnPress WordPress LMS Plugin###
 
-- [WPML add-on for LearnPress](https://thimpress.com/product/wpml-add-on-for-learnpress/) - With the help from WPML, WPLM add-on for LearnPress is the perfect solution for LearnPress users to translate anything flashily. Now, LearnPress users can focus on creating amazing contents without the worries about language restrictions.
+- [WPML add-on for LearnPress](https://thimpress.com/product/wpml-add-on-for-learnpress/) - With the help from WPML, WPML add-on for LearnPress is the perfect solution for LearnPress users to translate anything flashily. Now, LearnPress users can focus on creating amazing contents without the worries about language restrictions.
 - [Assignments add-on for LearnPress](https://thimpress.com/product/assignments-add-on-for-learnpress/) - Allow instructors to give assignments, homework for students and they can grade the students' work later on. The Assignments add-on is a great supplement to LearnPress and will make your courses more interactive.
 - [myCRED add-on for LearnPress](https://thimpress.com/product/mycred-add-on-for-learnpress/) - add myCRED support for LearnPress WordPress LMS plugin, you can add point system to your eLearning WordPress site using LearnPress + myCRED add-on.
 - [Certificates add-on for LearnPress](https://thimpress.com/product/certificates-add-on-for-learnpress/) -  add drag & drop certificates builder as well as select designed certificate for each LMS course, your students will get particular certificates when they finished their courses.
