@@ -40,6 +40,13 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => '__return_true',
 				),
 			),
+			'admin-notices'      => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'admin_notices' ),
+					'permission_callback' => '__return_true',
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -178,6 +185,17 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
+		wp_send_json( $response );
+	}
+
+	public function admin_notices( WP_REST_Request $request ) {
+		$response            = new LP_REST_Response();
+		try {
+
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
 		wp_send_json( $response );
 	}
 }

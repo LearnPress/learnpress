@@ -447,10 +447,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function init_hooks() {
-			if ( 0 !== strcmp( LP_PLUGIN_BASENAME, 'learnpress/learnpress.php' ) ) {
-				add_action( 'admin_notices', array( $this, 'error' ) );
-			}
-
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
 
@@ -485,24 +481,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', get_admin_url() . '/admin.php?page=learn-press-addons', __( 'Add-ons', 'learnpress' ) );
 
 			return $links;
-		}
-
-		public function error() {
-			?>
-			<div class="error">
-				<p>
-					<?php
-					printf(
-						__(
-							'The LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and are fully operational (currently <strong>%s</strong>)',
-							'learnpress'
-						),
-						LP_PLUGIN_BASENAME
-					);
-					?>
-				</p>
-			</div>
-			<?php
 		}
 
 		/**
