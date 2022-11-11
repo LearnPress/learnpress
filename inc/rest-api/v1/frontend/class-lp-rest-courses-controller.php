@@ -321,15 +321,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				do_action( 'learnpress/user/course-enrolled', $course_item->ref_id, $course_id, $user->get_id() );
 			} else { // Case enroll course free
-				LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
+				//LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
 
 				$cart     = LearnPress::instance()->cart;
 				$checkout = LP_Checkout::instance();
 
 				if ( ! learn_press_enable_cart() ) {
-					$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
+					//$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
 					$cart->empty_cart();
-					LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
+					//LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
 				}
 
 				$cart_id = $cart->add_to_cart( $course_id, 1, array() );
@@ -465,7 +465,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
+			//LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
 
 			$cart = LearnPress::instance()->cart;
 			//$checkout = LP_Checkout::instance();

@@ -533,11 +533,10 @@ class LP_Request {
 
 LP_Request::init();
 
-// Backward compatibility for 2.x.x
-
 /**
  * @deprecated 4.1.7.3
+ * using in the addon course review 4.0.3, wishlist 4.0.3
  */
-//class LP_Request_Handler extends LP_Request {
-//
-//}
+class LP_Request_Handler extends LP_Request {
+
+}

@@ -1301,8 +1301,10 @@ add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz',
  *
  * @return mixed
  * @since 3.1.0
+ * @deprecated 4.1.7.4
  */
 function learn_press_get_user_distraction() {
+	_deprecated_function( __FUNCTION__, '4.1.7.4' );
 	if ( is_user_logged_in() ) {
 		return get_user_option( 'distraction_mode', get_current_user_id() );
 	} else {
@@ -1310,7 +1312,11 @@ function learn_press_get_user_distraction() {
 	}
 }
 
+/**
+ * @deprecated 4.1.7.4
+ */
 function learn_press_get_user_role( $user_id ) {
+	_deprecated_function( __FUNCTION__, '4.1.7.4' );
 	if ( $user = learn_press_get_user( $user_id ) ) {
 		return $user->get_role();
 	}

@@ -62,6 +62,8 @@ class LP_Session_Handler {
 	 *
 	 * @return mixed
 	 * @deprecated 4.1.7.4
+	incs\class-lp-zoom-rest-api.php	 * Addon Stripe, 2Checkout, Authorize, Certificate is using this method via call session->order_awaiting_payment
+	 * After change all to session->set('order_awaiting_payment') we can remove this method.
 	 */
 	public function __get( $key ) {
 		_deprecated_function( __METHOD__, '4.1.7.4' );
@@ -74,6 +76,8 @@ class LP_Session_Handler {
 	 * @param mixed $key
 	 * @param mixed $value
 	 * @deprecated 4.1.7.4
+	 * Addon Stripe, 2Checkout, Authorize, Certificate is using this method via call session->order_awaiting_payment
+	 * After change all to session->set('order_awaiting_payment') we can remove this method.
 	 */
 	public function __set( $key, $value ) {
 		_deprecated_function( 'LP_Session::__set', '4.1.7.4' );

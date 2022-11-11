@@ -48,8 +48,10 @@ function learn_press_get_cart_course_url() {
  * Return total of cart
  *
  * @return mixed
+ * @deprecated 4.1.7.4
  */
 function learn_press_get_cart_total() {
+	_deprecated_function( __FUNCTION__, '4.1.7.4' );
 	return LearnPress::instance()->cart->total;
 }
 
@@ -68,18 +70,18 @@ function learn_press_clear_cart_after_payment() {
 		}
 	}
 
-	if ( ! is_null( LearnPress::instance()->session ) && LearnPress::instance()->session->order_awaiting_payment > 0 ) {
-		$order = learn_press_get_order( LearnPress::instance()->session->order_awaiting_payment );
+	if ( ! is_null( LearnPress::instance()->session ) && LearnPress::instance()->session->get( 'order_awaiting_payment' ) > 0 ) {
+		$order = learn_press_get_order( LearnPress::instance()->session->get( 'order_awaiting_payment' ) );
 
 		if ( $order && $order->id > 0 ) {
 			if ( ! $order->has_status( array( 'failed', 'pending', 'cancelled' ) ) ) {
 				LearnPress::instance()->cart->empty_cart();
-				LearnPress::instance()->session->order_awaiting_payment = null;
+				LearnPress::instance()->session->remove( 'order_awaiting_payment' );
 			}
 		}
 	}
 }
-add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
+//add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
 
 /**
  * @param LP_Cart $cart

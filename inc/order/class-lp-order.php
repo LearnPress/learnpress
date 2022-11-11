@@ -356,16 +356,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Mark order as complete
 		 *
-		 * @param string - transaction ID provided payment gateway
+		 * @param string $transaction_id
 		 *
 		 * @return bool
 		 * @throws Exception
 		 */
 		public function payment_complete( $transaction_id = '' ): bool {
 			do_action( 'learn-press/payment-pre-complete', $this->get_id() );
-
-			//TODO: tungnx - check to change code below - use LearnPress::instance()->session->set()
-			LearnPress::instance()->session->remove( 'order_awaiting_payment' );
 
 			$valid_order_statuses = apply_filters(
 				'learn-press/valid-order-statuses-for-payment-complete',
