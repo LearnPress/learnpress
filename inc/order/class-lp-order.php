@@ -276,12 +276,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function set_payment_method( $payment_method ) {
 			_deprecated_function( __METHOD__, '4.1.7.4' );
-			if ( $payment_method instanceof LP_Gateway_Abstract ) {
+			/*if ( $payment_method instanceof LP_Gateway_Abstract ) {
 				update_post_meta( $this->get_id(), '_payment_method', $payment_method->get_id() );
 				update_post_meta( $this->get_id(), '_payment_method_title', $payment_method->get_title() );
 			}
 
-			$this->payment_method = $payment_method;
+			$this->payment_method = $payment_method;*/
 		}
 
 		/**

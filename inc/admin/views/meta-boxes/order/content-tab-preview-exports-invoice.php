@@ -3,7 +3,7 @@
  * Admin View: Content tab preview export invoice
  * @author hungkv
  * @since 3.2.7.8
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -65,10 +65,10 @@ wp_enqueue_script( 'learnpress-jspdf' );
 	<div class="order-items">
 		<table id="tab_customers" class="table table-striped list-order-items">
 			<colgroup>
-				<col width="40%">
-				<col width="20%">
-				<col width="20%">
-				<col width="20%">
+				<col>
+				<col>
+				<col>
+				<col>
 			</colgroup>
 			<thead>
 			<tr class='warning'>

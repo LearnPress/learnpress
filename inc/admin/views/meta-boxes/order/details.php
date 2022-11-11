@@ -4,7 +4,7 @@
  *
  * @author  ThimPress (Nhamdv)
  * @package LearnPress/Admin/Views
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 if ( isset( $order_items ) ) {

@@ -344,13 +344,15 @@ class LP_Checkout {
 	}
 
 	/**
-	 * Creates temp new order if needed
+	 * Create LP Order.
 	 *
+	 * @since 3.0.0
+	 * @version 4.0.1
 	 * @return mixed|WP_Error
 	 * @throws Exception
 	 */
 	public function create_order() {
-		$cart = LearnPress::instance()->cart;
+		$cart      = LearnPress::instance()->cart;
 		$cart_data = $cart->calculate_totals();
 
 		try {
@@ -692,7 +694,7 @@ class LP_Checkout {
 					$messages[ $key ] = array( $error, 'error' );
 				}
 			} else {
-				LearnPress::instance()->cart->calculate_totals();
+				//LearnPress::instance()->cart->calculate_totals();
 				// maybe throw new exception
 				$this->validate_payment();
 

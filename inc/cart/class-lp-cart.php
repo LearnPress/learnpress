@@ -234,6 +234,9 @@ class LP_Cart {
 
 	/**
 	 * Re-calculate cart totals and update data to session
+	 *
+	 * @since 3.0.0
+	 * @version 4.0.1
 	 */
 	public function calculate_totals() {
 		$data           = new stdClass();
@@ -441,8 +444,8 @@ class LP_Cart {
 	 * @return mixed
 	 */
 	public function needs_payment() {
-		$this->calculate_totals();
-		return apply_filters( 'learn_press_cart_needs_payment', $this->total > 0, $this );
+		$cart_data = $this->calculate_totals();
+		return apply_filters( 'learn_press_cart_needs_payment', $cart_data->total > 0, $this );
 	}
 
 	/**
