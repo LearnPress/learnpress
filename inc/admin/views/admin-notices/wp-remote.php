@@ -14,6 +14,6 @@ if ( ! isset( $data ) || ! isset( $data['error'] ) ) {
 
 <div class="notice <?php echo esc_attr( $data['class'] ?? '' ); ?>">
 	<p>
-		<?php echo 'wp_remote_get: ' . $data['error'] ?? ''; ?>
+		<?php echo sprintf( '%s %s', '<strong>wp_remote_get</strong>: ', $data['error'] ?? '' ); ?>
 	</p>
 </div>

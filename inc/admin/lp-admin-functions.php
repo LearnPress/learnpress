@@ -1240,6 +1240,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 
 	$query_join  = '';
 	$query_where = '';
+	$sql_join    = '';
 	if ( 'course' === $report_sales_by ) {
 		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
 					 . ' ON o.ID=lpoi.order_id '

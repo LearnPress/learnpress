@@ -162,8 +162,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		if ( $item_before_process == 0 ) {
-			$response->data->percent == 100;
-			$response->status = 'finished';
+			$response->data->percent = 100;
+			$response->status        = 'finished';
 			wp_send_json( $response );
 		}
 
@@ -188,13 +188,22 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		wp_send_json( $response );
 	}
 
+	/**
+	 * Show admin notices.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return void
+	 */
 	public function admin_notices( WP_REST_Request $request ) {
-		$response            = new LP_REST_Response();
+		$response = new LP_REST_Response();
+		$content  = '';
+
 		try {
 			$params = $request->get_params();
 
 			$rules = [
-				'check_wp_remote' => [
+				'check_wp_remote'         => [
 					'class'    => 'notice-error',
 					'template' => 'admin-notices/wp-remote.php',
 					'display'  => call_user_func( [ 'LP_Admin_Ajax', 'check_wp_remote' ] ),
@@ -207,16 +216,17 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			];
 
 			foreach ( $rules as $rule => $template_data ) {
-				if ( $template_data[ 'display' ] ) {
-					if ( is_wp_error( $template_data[ 'display' ] ) ) {
-						$template_data[ 'error' ] = $template_data[ 'display' ]->get_error_message();
+				if ( $template_data['display'] ) {
+					if ( is_wp_error( $template_data['display'] ) ) {
+						$template_data['error'] = $template_data['display']->get_error_message();
 					}
 
-					learn_press_admin_view( $template_data[ 'template' ] ?? '', [ 'data' => $template_data ], true );
+					$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
 				}
 			}
 
-			$response->data->content = ob_get_clean();
+			$response->status        = 'success';
+			$response->data->content = $content;
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
