@@ -213,6 +213,11 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'template' => 'admin-notices/wrong-name-plugin.php',
 					'display'  => call_user_func( [ 'LP_Admin_Notice', 'check_right_plugin_base' ] ),
 				],
+				'show_beta_version'       => [
+					'class'    => 'notice-warning is-dismissible',
+					'template' => 'admin-notices/beta-version.php',
+					'display'  => 1,
+				],
 			];
 
 			foreach ( $rules as $rule => $template_data ) {
