@@ -46,10 +46,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 /*** Events ***/
 document.addEventListener( 'click', ( e ) => {
-	e.preventDefault();
 	const el = e.target;
 
 	if ( el.classList.contains( 'btn-lp-notice-dismiss' ) ) {
+		e.preventDefault();
 		const parent = el.closest( '.lp-admin-notice' );
 		callAdminNotices( `dismiss=${ el.getAttribute( 'data' ) }` );
 		parent.closest( '.lp-admin-notice' ).remove();
