@@ -7,12 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! isset( $data ) ) {
+if ( ! isset( $data ) || ! isset( $data['display'] ) || ! $data['display'] ) {
 	return;
 }
 ?>
 
-<div id="lp-mes-beta-version">
+<div id="lp-mes-beta-version" class="lp-admin-notice">
 	<p>
 		The LearnPress plugin has new the beta version.
 	</p>
@@ -24,5 +24,7 @@ if ( ! isset( $data ) ) {
 		);
 		?>
 	</p>
-	<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
+	<button type="button" class="notice-dismiss btn-lp-notice-dismiss" data="lp-beta-version">
+		<span class="screen-reader-text">Dismiss this notice.</span>
+	</button>
 </div>

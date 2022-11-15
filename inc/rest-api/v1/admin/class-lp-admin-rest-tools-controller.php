@@ -194,40 +194,42 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return void
+	 * @since 4.1.7.3.2
+	 * @version 1.0.0
 	 */
 	public function admin_notices( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		$content  = '';
 
 		try {
-			$params = $request->get_params();
+			$params        = $request->get_params();
+			$admin_notices = $_SESSION['lp_admin_notices_dismiss'] ?? [];
 
-			$rules = [
-				'check_wp_remote'         => [
-					'class'    => 'notice-error',
-					'template' => 'admin-notices/wp-remote.php',
-					'display'  => call_user_func( [ 'LP_Admin_Ajax', 'check_wp_remote' ] ),
-				],
-				'check_right_plugin_base' => [
-					'class'    => 'notice-error',
-					'template' => 'admin-notices/wrong-name-plugin.php',
-					'display'  => call_user_func( [ 'LP_Admin_Notice', 'check_right_plugin_base' ] ),
-				],
-				'show_beta_version'       => [
-					'class'    => 'notice-warning is-dismissible',
-					'template' => 'admin-notices/beta-version.php',
-					'display'  => 1,
-				],
-			];
+			if ( isset( $params['dismiss'] ) ) {
+				$admin_notices[]                      = $params['dismiss'];
+				$_SESSION['lp_admin_notices_dismiss'] = $admin_notices;
+			}
 
-			foreach ( $rules as $rule => $template_data ) {
-				if ( $template_data['display'] ) {
-					if ( is_wp_error( $template_data['display'] ) ) {
-						$template_data['error'] = $template_data['display']->get_error_message();
-					}
+			$rules = apply_filters(
+				'learn-press/admin-notices',
+				[
+					'check_wp_remote'         => [
+						'template' => 'admin-notices/wp-remote.php',
+						'check'    => call_user_func( [ 'LP_Admin_Ajax', 'check_wp_remote' ] ),
+					],
+					'check_right_plugin_base' => [
+						'template' => 'admin-notices/wrong-name-plugin.php',
+						'check'    => call_user_func( [ 'LP_Admin_Notice', 'check_right_plugin_base' ] ),
+					],
+					'lp-beta-version'         => [
+						'template' => 'admin-notices/beta-version.php',
+						'display'  => 1 && ! in_array( 'lp-beta-version', $admin_notices ),
+					],
+				]
+			);
 
-					$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
-				}
+			foreach ( $rules as $template_data ) {
+				$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
 			}
 
 			$response->status        = 'success';

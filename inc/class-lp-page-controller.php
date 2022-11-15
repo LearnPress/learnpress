@@ -1002,6 +1002,12 @@ class LP_Page_Controller {
 	 * Set in param notify_url on @see LP_Gateway_Paypal::get_paypal_args()
 	 */
 	public function check_webhook_paypal_ipn() {
+		// Start session, code temporary, will rewrite on hook init.
+		if ( ! session_id() ) {
+			session_start();
+		}
+		// End - tungnx
+
 		//error_log( 'xxx:' . json_encode( $_POST, JSON_UNESCAPED_UNICODE ) );
 
 		// Paypal payment done

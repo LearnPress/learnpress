@@ -7,12 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! isset( $data ) ) {
+if ( ! isset( $data ) || ! isset( $data['check'] ) || ! $data['check'] ) {
 	return;
 }
 ?>
 
-<div class="notice <?php echo esc_attr( $data['class'] ?? '' ); ?>">
+<div class="lp-admin-notice">
 	<p>
 		<?php
 		printf(

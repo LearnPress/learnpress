@@ -204,8 +204,6 @@
 	}
 }
 
-
-
 .lp-upgrade-message {
 
 	.learn-press-message {
@@ -298,5 +296,11 @@
 	background: #dba617;
 	padding: 10px 0;
 	text-align: center;
+	display: none;
+}
+
+/*** Admin notices ***/
+.lp-admin-notices {
+	position: relative;
 	display: none;
 }

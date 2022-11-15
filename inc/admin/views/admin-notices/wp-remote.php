@@ -7,12 +7,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! isset( $data ) || ! isset( $data['error'] ) ) {
+if ( ! isset( $data ) || ! isset( $data['check'] ) ) {
+	return;
+}
+
+if ( ! is_wp_error( $data['check'] ) ) {
 	return;
 }
 ?>
 
-<div class="notice <?php echo esc_attr( $data['class'] ?? '' ); ?>">
+<div class="lp-admin-notice">
 	<p>
 		<?php echo sprintf( '%s %s', '<strong>wp_remote_get</strong>: ', $data['error'] ?? '' ); ?>
 	</p>
