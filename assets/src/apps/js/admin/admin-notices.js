@@ -3,7 +3,7 @@ let elBtnDismiss;
 let dataHtml = null;
 
 const urlApiAdminNotices = lpGlobalSettings.rest + 'lp/v1/admin/tools/admin-notices';
-const callAdminNotices = ( set ) => {
+const callAdminNotices = ( set = '' ) => {
 	fetch( urlApiAdminNotices + `?${ set }`, {
 		method: 'GET',
 	} ).then( ( res ) =>
@@ -51,7 +51,10 @@ document.addEventListener( 'click', ( e ) => {
 	if ( el.classList.contains( 'btn-lp-notice-dismiss' ) ) {
 		e.preventDefault();
 		const parent = el.closest( '.lp-admin-notice' );
-		callAdminNotices( `dismiss=${ el.getAttribute( 'data' ) }` );
-		parent.closest( '.lp-admin-notice' ).remove();
+		callAdminNotices( `dismiss=${ el.getAttribute( 'data-dismiss' ) }` );
+		parent.remove();
+		if ( elLPAdminNotices.querySelectorAll( '.lp-admin-notice' ).length === 0 ) {
+			elLPAdminNotices.style.display = 'none';
+		}
 	}
 } );

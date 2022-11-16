@@ -3,15 +3,11 @@
  * Notice Out of date template.
  *
  * @author ThimPress (nhamdv)
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-}
-
-if ( LP_Admin_Notice::instance()->has_dismissed_notice( 'outdated-template' ) == 'yes' ) {
-	return;
 }
 
 $template_dir   = get_template_directory();
