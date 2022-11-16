@@ -239,6 +239,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 							'template' => 'admin-notices/beta-version.php',
 							'check'    => $show_notice_lp_beta_version,
 							'info'     => $lp_beta_version_info,
+							'dismiss'  => 1,
 						],
 					]
 				);
