@@ -50,11 +50,15 @@ document.addEventListener( 'click', ( e ) => {
 
 	if ( el.classList.contains( 'btn-lp-notice-dismiss' ) ) {
 		e.preventDefault();
-		const parent = el.closest( '.lp-admin-notice' );
-		callAdminNotices( `dismiss=${ el.getAttribute( 'data-dismiss' ) }` );
-		parent.remove();
-		if ( elLPAdminNotices.querySelectorAll( '.lp-admin-notice' ).length === 0 ) {
-			elLPAdminNotices.style.display = 'none';
+
+		// eslint-disable-next-line no-alert
+		if ( confirm( 'Are you sure you want to dismiss this notice?' ) ) {
+			const parent = el.closest( '.lp-admin-notice' );
+			callAdminNotices( `dismiss=${ el.getAttribute( 'data-dismiss' ) }` );
+			parent.remove();
+			if ( elLPAdminNotices.querySelectorAll( '.lp-admin-notice' ).length === 0 ) {
+				elLPAdminNotices.style.display = 'none';
+			}
 		}
 	}
 } );

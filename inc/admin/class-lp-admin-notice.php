@@ -141,21 +141,27 @@ class LP_Admin_Notice {
 	 *
 	 * @param array $config
 	 *
-	 * @return string
+	 * @return array
 	 */
-	public static function get_description_lp_beta( array $config = [] ): string {
+	public static function get_data_lp_beta( array $config = [] ): array {
 		try {
 			$keys        = array_keys( $config );
+			$title       = $config['title'] ?? '';
 			$description = $config['description'] ?? '';
 			foreach ( $keys as $key ) {
 				$description = str_replace( '[[' . $key . ']]', $config[ $key ], $description );
+				$title       = str_replace( '[[' . $key . ']]', $config[ $key ], $title );
 			}
 		} catch ( Throwable $e ) {
+			$title       = '';
 			$description = '';
 			error_log( $e->getMessage() );
 		}
 
-		return $description;
+		return [
+			'title'       => $title,
+			'description' => $description,
+		];
 	}
 
 	/**

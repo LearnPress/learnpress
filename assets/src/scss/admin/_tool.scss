@@ -311,8 +311,15 @@
 	}
 
 	.lp-mes-beta-version {
-		//background: rgba(0, 128, 0, 0.77);
-		//color: #fff0f6;
-		color: green;
+		background: #4299e1;
+		color: whitesmoke;
+
+		h3, a, a:visited {
+			color: white;
+		}
+
+		.btn-lp-notice-dismiss::before {
+			color: #fff0f6;
+		}
 	}
 }
