@@ -578,27 +578,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				}
 			}
 
-			// Show notice permalink structure wrong.
-			if ( ! get_option( 'permalink_structure' ) ) {
-				?>
-				<div class="notice notice-error">
-					<p>
-						<?php
-						echo sprintf(
-							'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
-							admin_url( 'options-permalink.php' )
-						)
-						?>
-					</p>
-				</div>
-				<?php
-			}
-
-			// Show notice setup wizard.
-			if ( ! get_option( 'learn_press_setup_wizard_completed', false ) ) {
-				learn_press_admin_view( 'setup/notice-setup' );
-			}
-
 			// Request accept/denied user can become a teacher.
 			$action_become_teacher      = LP_Request::get_param( 'lp-action' );
 			$user_id                    = LP_Request::get_param( 'user_id', 0, 'int' );
