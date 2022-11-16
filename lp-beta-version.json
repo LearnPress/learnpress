@@ -1,0 +1,6 @@
+{
+	"version": "4.2.0-beta-1",
+	"link_download": "<a href='https://downloads.wordpress.org/plugin/learnpress.4.2.0.zip' target='_blank' ref='noopener'>here</a>",
+	"link_changelog": "<a href='http://lp/wp-admin/#'>View changelog</a>",
+	"description": "<p>The LearnPress plugin has new the beta version [[version]].<p><p>Please download and install it from here [[link_download]]</p><p>You should install beta version on test site(staging, dev...). If have any errors, please send us to ...</p><p>[[link_changelog]]</p>"
+}
