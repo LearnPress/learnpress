@@ -102,6 +102,63 @@ class LP_Admin_Notice {
 	}
 
 	/**
+	 * Check LP has beta version.
+	 *
+	 * @return bool|[]
+	 */
+	public static function check_lp_beta_version() {
+		$url    = 'https://learnpress.github.io/learnpress/lp-beta-version.json';
+		$config = [];
+
+		try {
+			$res = wp_remote_get( $url );
+			if ( is_wp_error( $res ) ) {
+				throw new Exception( $res->get_error_message() );
+			}
+
+			$config = json_decode( wp_remote_retrieve_body( $res ), true );
+			if ( json_last_error() ) {
+				throw new Exception( json_last_error_msg() );
+			}
+
+			$version = $config['version'] ?? 0;
+			if ( ! $version ) {
+				throw new Exception( 'Version LP beta is invalid!' );
+			}
+
+			if ( ! version_compare( $version, LEARNPRESS_VERSION, '>' ) ) {
+				return false;
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $config;
+	}
+
+	/**
+	 * Get description of beta version.
+	 *
+	 * @param array $config
+	 *
+	 * @return string
+	 */
+	public static function get_description_lp_beta( array $config = [] ): string {
+		try {
+			$keys        = array_keys( $config );
+			$description = $config['description'] ?? '';
+			foreach ( $keys as $key ) {
+				$description = str_replace( '[[' . $key . ']]', $config[ $key ], $description );
+			}
+		} catch ( Throwable $e ) {
+			$description = '';
+			error_log( $e->getMessage() );
+		}
+
+		return $description;
+	}
+
+	/**
 	 * @deprecated 4.1.7.3.2
 	 */
 	/*public function load() {
@@ -318,6 +375,7 @@ class LP_Admin_Notice {
 	 * @param string $name
 	 * @param string $value
 	 * @param int    $expired
+	 * @deprecated 4.1.7.3.2
 	 */
 	public function dismiss_notice_2( $name, $value, $expired = 0 ) {
 		if ( $expired ) {
@@ -342,6 +400,7 @@ class LP_Admin_Notice {
 	 * @param string $name
 	 *
 	 * @return bool
+	 * @deprecated 4.1.7.3.2
 	 */
 	public function has_dismissed_notice( $name ) {
 
@@ -362,6 +421,7 @@ class LP_Admin_Notice {
 	 * @param string[] $notice
 	 *
 	 * @return bool
+	 * @deprecated 4.1.7.3.2
 	 */
 	public function restore_dismissed_notice( $notice ) {
 		$dismissed = get_option( $this->dismissed_option_id );
@@ -389,6 +449,7 @@ class LP_Admin_Notice {
 	 * Clear all notices has dismissed.
 	 *
 	 * @since 3.2.6
+	 * @deprecated 4.1.7.3.2
 	 */
 	public function clear_dismissed_notice() {
 		delete_option( $this->dismissed_option_id );
@@ -403,6 +464,7 @@ class LP_Admin_Notice {
 	 * @param bool         $expired - Optional. TRUE if dismiss notice as transient (in case $name passed).
 	 *
 	 * @return bool
+	 * @deprecated 4.1.7.3.2
 	 */
 	public function remove_dismissed_notice( $name = '' ) {
 		if ( ! $name ) {
@@ -450,7 +512,7 @@ class LP_Admin_Notice {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated 3.2.6
 	 */
 	public function dismiss_notice_deprecated() {
 		$notice = learn_press_get_request( 'lp-hide-notice' );
@@ -477,7 +539,7 @@ class LP_Admin_Notice {
 	/**
 	 * Add new notice to queue
 	 *
-	 * @deprecated
+	 * @deprecated 3.2.6
 	 *
 	 * @param string $message The message want to display
 	 * @param string $type    The class name of WP message type updated|update-nag|error
@@ -505,6 +567,9 @@ class LP_Admin_Notice {
 		}
 	}
 
+	/**
+	 * @deprecated 4.1.7.3.2
+	 */
 	public static function add_redirect_reprecated( $message, $type = 'updated', $id = '' ) {
 		self::add( $message, $type, $id, true );
 	}
@@ -512,7 +577,7 @@ class LP_Admin_Notice {
 	/**
 	 * Show all notices has registered
 	 *
-	 * @deprecated
+	 * @deprecated 3.2.6
 	 */
 	public static function show_notices_deprecated() {
 		if ( self::$_notices ) {

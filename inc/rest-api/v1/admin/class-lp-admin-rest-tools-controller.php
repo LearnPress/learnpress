@@ -42,7 +42,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			),
 			'admin-notices'      => array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'admin_notices' ),
 					'permission_callback' => '__return_true',
 				),
@@ -168,7 +168,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		try {
-			// Delete resuilt in table select
+			// Delete result in table select
 			if ( $tables == 'learnpress_sessions' ) {
 				$lp_db_sessions->delete_rows();
 				// check the number of lines remaining after each query
@@ -202,34 +202,50 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$content  = '';
 
 		try {
-			$params        = $request->get_params();
-			$admin_notices = $_SESSION['lp_admin_notices_dismiss'] ?? [];
+			$params               = $request->get_params();
+			$admin_notices        = $_SESSION['lp_admin_notices_dismiss'] ?? [];
+			$lp_beta_version_info = LP_Admin_Notice::check_lp_beta_version();
 
 			if ( isset( $params['dismiss'] ) ) {
-				$admin_notices[]                      = $params['dismiss'];
+				if ( $lp_beta_version_info ) {
+					// Store version of LP beta to session.
+					$_SESSION['lp_beta_version'] = $lp_beta_version_info['version'] ?? 0;
+				}
+				$admin_notices[ $params['dismiss'] ]  = $params['dismiss'];
 				$_SESSION['lp_admin_notices_dismiss'] = $admin_notices;
-			}
+				$response->message                    = __( 'Dismissed!', 'learnpress' );
+			} else {
+				$show_notice_lp_beta_version = false;
+				/**
+				 * Check if LP beta version is not dismissed or dismissed version lower than current version, will bet to so
+				 */
+				if ( $lp_beta_version_info &&
+					( ! isset( $_SESSION['lp_beta_version'] ) || version_compare( $_SESSION['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
+					$show_notice_lp_beta_version = true;
+				}
 
-			$rules = apply_filters(
-				'learn-press/admin-notices',
-				[
-					'check_wp_remote'         => [
-						'template' => 'admin-notices/wp-remote.php',
-						'check'    => call_user_func( [ 'LP_Admin_Ajax', 'check_wp_remote' ] ),
-					],
-					'check_right_plugin_base' => [
-						'template' => 'admin-notices/wrong-name-plugin.php',
-						'check'    => call_user_func( [ 'LP_Admin_Notice', 'check_right_plugin_base' ] ),
-					],
-					'lp-beta-version'         => [
-						'template' => 'admin-notices/beta-version.php',
-						'display'  => 1 && ! in_array( 'lp-beta-version', $admin_notices ),
-					],
-				]
-			);
+				$rules = apply_filters(
+					'learn-press/admin-notices',
+					[
+						'check_wp_remote'         => [
+							'template' => 'admin-notices/wp-remote.php',
+							'check'    => LP_Admin_Ajax::check_wp_remote(),
+						],
+						'check_right_plugin_base' => [
+							'template' => 'admin-notices/wrong-name-plugin.php',
+							'check'    => LP_Admin_Notice::check_right_plugin_base(),
+						],
+						'lp-beta-version'         => [
+							'template' => 'admin-notices/beta-version.php',
+							'check'    => $show_notice_lp_beta_version,
+							'info'     => $lp_beta_version_info,
+						],
+					]
+				);
 
-			foreach ( $rules as $template_data ) {
-				$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
+				foreach ( $rules as $template_data ) {
+					$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
+				}
 			}
 
 			$response->status        = 'success';
