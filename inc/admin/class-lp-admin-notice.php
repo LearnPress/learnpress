@@ -56,12 +56,55 @@ class LP_Admin_Notice {
 	 * LP_Admin_Notice construct
 	 */
 	protected function __construct() {
-		// add_action( 'init', array( $this, 'dismiss_notice' ) );
-		add_action( 'init', array( $this, 'load' ) );
-		add_action( 'admin_notices', array( $this, 'show_notices' ), 90 );
+		//add_action( 'init', array( $this, 'dismiss_notice' ) );
+		//add_action( 'init', array( $this, 'load' ) );
+		//add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 	}
 
-	public function load() {
+	/**
+	 * Show notices in admin
+	 *
+	 * @return void
+	 * @deprecated 4.1.7.3.2
+	 */
+	public function admin_notices() {
+		try {
+			$rules = [
+				'check_right_plugin_base' => [
+					'class'    => 'notice-error',
+					'template' => 'admin-notices/wrong-name-plugin.php',
+					'display'  => call_user_func( [ $this, 'check_right_plugin_base' ] ),
+				],
+				'notices'                 => [
+					'class'    => 'notice-error',
+					'template' => 'admin-notices/wrong-name-plugin.php',
+					'display'  => call_user_func( [ $this, 'check_right_plugin_base' ] ),
+				],
+			];
+
+			foreach ( $rules as $rule => $template_data ) {
+				if ( $template_data['display'] ) {
+					learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true );
+				}
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+	}
+
+	/**
+	 * Check is right plugin base.
+	 *
+	 * @return bool
+	 */
+	public static function check_right_plugin_base(): bool {
+		return 0 !== strcmp( LP_PLUGIN_BASENAME, 'learnpress/learnpress.php' );
+	}
+
+	/**
+	 * @deprecated 4.1.7.3.2
+	 */
+	/*public function load() {
 		$notices = get_option( $this->option_id );
 
 		if ( ! $notices ) {
@@ -73,7 +116,7 @@ class LP_Admin_Notice {
 		delete_option( $this->option_id );
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Add new notice to show in admin page.

@@ -1,0 +1,14 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../assets/src/apps/js/frontend/quiz/components/questions/question.js:87
+msgid "Edit"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/questions/question.js:163
+msgid "Explanation"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/questions/question.js:177
+msgid "Hint"
+msgstr ""

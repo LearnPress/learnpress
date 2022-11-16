@@ -1,0 +1,34 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:118
+msgid "Reset course progress"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:120
+msgid "This action will reset progress of a course for all users have enrolled."
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:121
+msgid "Search results only show course have user data."
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:124
+msgid "Search course by name"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:154
+msgid "ID"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:155
+msgid "Name"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:156
+msgid "Students"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/pages/tools/reset-data/course.js:185
+msgid "Reset now"
+msgstr ""

@@ -19,12 +19,35 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 	 * Class LP_Admin_Ajax
 	 */
 	class LP_Admin_Ajax {
+		public function __construct() {
+			add_action(
+				'wp_ajax_nopriv_check_wp_remote',
+				function () {
+					echo '[TEST_REMOTE]';
+					exit;
+				}
+			);
+		}
+
+		/**
+		 * Tests the background handler's connection.
+		 *
+		 * @since 4.1.7.3.2
+		 *
+		 * @return bool|WP_Error
+		 */
+		public static function check_wp_remote() {
+			$test_url = add_query_arg( 'action', 'check_wp_remote', admin_url( 'admin-ajax.php' ) );
+			$result   = wp_safe_remote_get( $test_url );
+			$body     = ! is_wp_error( $result ) ? wp_remote_retrieve_body( $result ) : $result;
+
+			return $body === '[TEST_REMOTE]' ? true : $result;
+		}
 
 		/**
 		 * Add action ajax
 		 */
 		public static function init() {
-
 			if ( ! is_user_logged_in() ) {
 				return;
 			}
@@ -688,3 +711,5 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 	add_action( 'init', array( 'LP_Admin_Ajax', 'init' ) );
 }
+
+new LP_Admin_Ajax();

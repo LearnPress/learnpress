@@ -5,7 +5,7 @@
  *
  * @since 4.0.3
  * @author tungnx
- * @version 1.0.0
+ * @version 1.0.1
  */
 class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
@@ -37,6 +37,13 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'clean_tables' ),
+					'permission_callback' => '__return_true',
+				),
+			),
+			'admin-notices'      => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'admin_notices' ),
 					'permission_callback' => '__return_true',
 				),
 			),
@@ -155,8 +162,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		if ( $item_before_process == 0 ) {
-			$response->data->percent == 100;
-			$response->status = 'finished';
+			$response->data->percent = 100;
+			$response->status        = 'finished';
 			wp_send_json( $response );
 		}
 
@@ -178,6 +185,59 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Show admin notices.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return void
+	 * @since 4.1.7.3.2
+	 * @version 1.0.0
+	 */
+	public function admin_notices( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+		$content  = '';
+
+		try {
+			$params        = $request->get_params();
+			$admin_notices = $_SESSION['lp_admin_notices_dismiss'] ?? [];
+
+			if ( isset( $params['dismiss'] ) ) {
+				$admin_notices[]                      = $params['dismiss'];
+				$_SESSION['lp_admin_notices_dismiss'] = $admin_notices;
+			}
+
+			$rules = apply_filters(
+				'learn-press/admin-notices',
+				[
+					'check_wp_remote'         => [
+						'template' => 'admin-notices/wp-remote.php',
+						'check'    => call_user_func( [ 'LP_Admin_Ajax', 'check_wp_remote' ] ),
+					],
+					'check_right_plugin_base' => [
+						'template' => 'admin-notices/wrong-name-plugin.php',
+						'check'    => call_user_func( [ 'LP_Admin_Notice', 'check_right_plugin_base' ] ),
+					],
+					'lp-beta-version'         => [
+						'template' => 'admin-notices/beta-version.php',
+						'display'  => 1 && ! in_array( 'lp-beta-version', $admin_notices ),
+					],
+				]
+			);
+
+			foreach ( $rules as $template_data ) {
+				$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
+			}
+
+			$response->status        = 'success';
+			$response->data->content = $content;
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
 		wp_send_json( $response );
 	}
 }

@@ -1,0 +1,30 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../assets/src/apps/js/frontend/quiz/components/status/index.js:67
+msgid "Are you sure to submit the quiz?"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/status/index.js:105
+msgid "Question <span>%d to %d of %d</span>"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/status/index.js:107
+msgid "Question <span>%d of %d</span>"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/status/index.js:110
+msgid "Question <span>%d to %d</span>"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/status/index.js:119
+msgid "Earned Point: %s"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/status/index.js:128
+msgid "Finish Quiz"
+msgstr ""
+
+#: ../../assets/src/apps/js/frontend/quiz/components/status/index.js:128
+msgid "Submitting..."
+msgstr ""

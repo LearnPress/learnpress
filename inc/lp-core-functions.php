@@ -2787,7 +2787,7 @@ function learn_press_global_script_params() {
 			'button_yes'    => __( 'Yes', 'learnpress' ),
 			'button_no'     => __( 'No', 'learnpress' ),
 		),
-		'root'        => esc_url_raw( rest_url() ),
+		'rest'        => esc_url_raw( rest_url() ),
 		'nonce'       => wp_create_nonce( 'wp_rest' ),
 	);
 

@@ -618,10 +618,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				<?php
 			}
 
-			// Show notice check wp_remote_post (background) runs.
-			?>
-			<div class="notice-check-run-background-available"></div>
-			<?php
+			learn_press_admin_view( 'admin-notices.php', [], true );
 		}
 
 		/**

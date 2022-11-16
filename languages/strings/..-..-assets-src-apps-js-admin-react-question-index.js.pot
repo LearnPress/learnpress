@@ -1,0 +1,18 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../assets/src/apps/js/admin/react/question/index.js:288
+msgid "Words fill"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/react/question/index.js:306
+msgid "Tip"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/react/question/index.js:313
+msgid "Remove"
+msgstr ""
+
+#: ../../assets/src/apps/js/admin/react/question/index.js:319
+msgid "Add Blank"
+msgstr ""
