@@ -1,0 +1,6 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../assets/src/apps/js/frontend/quiz/components/buttons/button-hint.js:22
+msgid "Hint"
+msgstr ""

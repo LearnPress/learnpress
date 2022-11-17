@@ -28,18 +28,6 @@ class LP_Updater {
 				'4' => 5, // DB v4 need up DB v5
 			)
 		);
-		add_action( 'admin_notices', array( $this, 'check_update_database_message' ), 0 );
-	}
-
-	/**
-	 * Show message needs upgrades database compatible with LP version current.
-	 */
-	public function check_update_database_message() {
-		if ( ! $this->check_lp_db_need_upgrade() ) {
-			return;
-		}
-
-		learn_press_admin_view( 'updates/html-update-message' );
 	}
 
 	/**

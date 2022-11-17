@@ -1,0 +1,6 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../assets/src/apps/js/blocks/category.js:8
+msgid "LearnPress"
+msgstr ""

@@ -1,0 +1,6 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../assets/src/js/admin/admin.js:107
+msgid "Search by user"
+msgstr ""

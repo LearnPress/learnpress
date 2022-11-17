@@ -565,10 +565,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display notices on Backend.
 		 */
 		public function admin_notices() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) {
-				return;
-			}
-
 			// Show template file templates override.
 			$page = LP_Request::get_param( 'page' );
 			$tab  = LP_Request::get_param( 'tab' );
@@ -576,27 +572,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				if ( LP_Outdated_Template_Helper::detect_outdated_template() ) {
 					learn_press_admin_view( 'html-admin-notice-templates' );
 				}
-			}
-
-			// Show notice permalink structure wrong.
-			if ( ! get_option( 'permalink_structure' ) ) {
-				?>
-				<div class="notice notice-error">
-					<p>
-						<?php
-						echo sprintf(
-							'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.',
-							admin_url( 'options-permalink.php' )
-						)
-						?>
-					</p>
-				</div>
-				<?php
-			}
-
-			// Show notice setup wizard.
-			if ( ! get_option( 'learn_press_setup_wizard_completed', false ) ) {
-				learn_press_admin_view( 'setup/notice-setup' );
 			}
 
 			// Request accept/denied user can become a teacher.
@@ -618,10 +593,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				<?php
 			}
 
-			// Show notice check wp_remote_post (background) runs.
-			?>
-			<div class="notice-check-run-background-available"></div>
-			<?php
+			learn_press_admin_view( 'admin-notices.php', [], true );
 		}
 
 		/**

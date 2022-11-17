@@ -204,8 +204,6 @@
 	}
 }
 
-
-
 .lp-upgrade-message {
 
 	.learn-press-message {
@@ -299,4 +297,30 @@
 	padding: 10px 0;
 	text-align: center;
 	display: none;
+}
+
+/*** Admin notices ***/
+.lp-admin-notices {
+	background: transparent;
+	display: none;
+	padding: 0;
+	border: none;
+
+	.lp-admin-notice {
+		position: relative;
+		padding: 1px 10px;
+	}
+
+	.lp-mes-beta-version {
+		background: #4299e1;
+		color: whitesmoke;
+
+		h3, a, a:visited {
+			color: white;
+		}
+
+		.btn-lp-notice-dismiss::before {
+			color: #fff0f6;
+		}
+	}
 }

@@ -120,56 +120,6 @@ return apply_filters(
 					'id'   => 'lp_metabox_curriculum_setting',
 				),
 			)
-		),
-		apply_filters(
-			'learn-press/course-settings-fields/single',
-			array(
-				array(
-					'title' => esc_html__( 'Permalinks', 'learnpress' ),
-					'type'  => 'title',
-				),
-				array(
-					'title'   => esc_html__( 'Course', 'learnpress' ),
-					'type'    => 'course-permalink',
-					'default' => '',
-					'id'      => 'course_base',
-				),
-				array(
-					'title'       => esc_html__( 'Lesson', 'learnpress' ),
-					'type'        => 'text',
-					'id'          => 'lesson_slug',
-					'desc'        => sprintf( 'e.g. %s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ),
-					'default'     => 'lessons',
-					'placeholder' => 'lesson',
-				),
-				array(
-					'title'       => esc_html__( 'Quiz', 'learnpress' ),
-					'type'        => 'text',
-					'id'          => 'quiz_slug',
-					'desc'        => sprintf( 'e.g. %s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ),
-					'default'     => 'quizzes',
-					'placeholder' => 'quizzes',
-				),
-				array(
-					'title'       => esc_html__( 'Category base', 'learnpress' ),
-					'id'          => 'course_category_base',
-					'default'     => 'course-category',
-					'type'        => 'text',
-					'placeholder' => 'course-category',
-					'desc'        => sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-category</code>' ),
-				),
-				array(
-					'title'       => esc_html__( 'Tag base', 'learnpress' ),
-					'id'          => 'course_tag_base',
-					'default'     => 'course-tag',
-					'type'        => 'text',
-					'placeholder' => 'course-tag',
-					'desc'        => sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-tag</code>' ),
-				),
-				array(
-					'type' => 'sectionend',
-				),
-			)
 		)
 	)
 );

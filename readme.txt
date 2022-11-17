@@ -204,6 +204,14 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.1.7.3.2 (2022-11-18) =
+~ Added: tab permalink option.
+~ Modified: remove border style on the tab single course.
+~ Modified: style popup complete item.
+~ Show: notice check wp_remote_get if the call fail.
+~ Show: notice if LearnPress has beta version.
+~ Changed: text 'Enable' to 'Sticky Quiz Paging' on the Advanced Settings.
+
 = 4.1.7.3.1 (2022-11-03) =
 ~ Fixed: error build missing styles.
 

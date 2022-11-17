@@ -929,6 +929,71 @@ function learn_press_override_templates() {
 	return apply_filters( 'learn-press/override-templates', false );
 }
 
+/**
+ * Get html view path for admin to display
+ *
+ * @param $name
+ * @param $plugin_file
+ *
+ * @return mixed
+ */
+function learn_press_get_admin_view( $name, $plugin_file = null ) {
+	if ( ! preg_match( '/\.(html|php)$/', $name ) ) {
+		$name .= '.php';
+	}
+	if ( $plugin_file ) {
+		$view = dirname( $plugin_file ) . '/inc/admin/views/' . $name;
+	} else {
+		$view = LearnPress::instance()->plugin_path( 'inc/admin/views/' . $name );
+	}
+
+	return apply_filters( 'learn_press_admin_view', $view, $name );
+}
+
+function learn_press_admin_view_content( $name, $args = array() ) {
+	return learn_press_admin_view( $name, $args, false, true );
+}
+
+/**
+ * Find a full path of a view and display the content in admin
+ *
+ * @param            $name
+ * @param array      $args
+ * @param bool|false $include_once
+ * @param bool
+ *
+ * @return bool
+ */
+function learn_press_admin_view( $name, $args = array(), $include_once = false, $return = false ) {
+	$view = learn_press_get_admin_view( $name, ! empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
+
+	if ( file_exists( $view ) ) {
+
+		ob_start();
+
+		is_array( $args ) && extract( $args );
+
+		do_action( 'learn_press_before_display_admin_view', $name, $args );
+
+		if ( $include_once ) {
+			include_once $view;
+		} else {
+			include $view;
+		}
+
+		do_action( 'learn_press_after_display_admin_view', $name, $args );
+		$output = ob_get_clean();
+
+		if ( ! $return ) {
+			learn_press_echo_vuejs_write_on_php( $output );
+		}
+
+		return $return ? $output : true;
+	}
+
+	return false;
+}
+
 if ( ! function_exists( 'learn_press_is_404' ) ) {
 	/**
 	 * Set header is 404
