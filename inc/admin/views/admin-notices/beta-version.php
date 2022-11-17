@@ -11,7 +11,12 @@ if ( ! isset( $data ) || ! isset( $data['check'] ) || ! $data['check'] ) {
 	return;
 }
 
-$info      = is_array( $data['info'] ) ? $data['info'] : [];
+$info = is_array( $data['info'] ) ? $data['info'] : [];
+if ( empty( $info ) ) {
+	echo '<p>No beta version</p>';
+	return;
+}
+
 $data_info = LP_Admin_Notice::get_data_lp_beta( $info );
 ?>
 
