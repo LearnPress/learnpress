@@ -92,22 +92,8 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'type'    => 'checkbox',
 					'desc'    => esc_html__( 'Enable debug mode for the developer.', 'learnpress' ),
 				),
-				// array(
-				// 	'title'   => esc_html__( 'Enable Jwt Rest API', 'learnpress' ),
-				// 	'id'      => 'enable_jwt_rest_api',
-				// 	'default' => 'no',
-				// 	'type'    => 'checkbox',
-				// 	'desc'    => esc_html__( 'Enable Rest API build for app, mobile...etc.', 'learnpress' ),
-				// ),
-				/*array(
-					'title'   => esc_html__( 'Hard Cache', 'learnpress' ),
-					'id'      => 'enable_hard_cache',
-					'default' => 'no',
-					'type'    => 'checkbox',
-					'desc'    => sprintf( __( 'Enable cache for static content such as content and settings of course, lesson, quiz. <a href="%1$s">%2$s</a>', 'learnpress' ), admin_url( 'admin.php?page=learn-press-tools&tab=cache' ), esc_html__( 'Advanced', 'learnpress' ) ),
-				),*/
 				array(
-					'title'   => esc_html__( 'Enable', 'learnpress' ),
+					'title'   => esc_html__( 'Sticky Quiz Paging', 'learnpress' ),
 					'id'      => 'navigation_position',
 					'default' => 'yes',
 					'type'    => 'checkbox',

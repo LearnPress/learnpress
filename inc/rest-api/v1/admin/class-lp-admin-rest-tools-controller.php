@@ -227,6 +227,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$rules = apply_filters(
 					'learn-press/admin-notices',
 					[
+						// Check wp_remote call success.
 						'check_wp_remote'         => [
 							'template' => 'admin-notices/wp-remote.php',
 							'check'    => LP_Admin_Ajax::check_wp_remote(),
@@ -239,6 +240,23 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 							'template' => 'admin-notices/beta-version.php',
 							'check'    => $show_notice_lp_beta_version,
 							'info'     => $lp_beta_version_info,
+							'dismiss'  => 1,
+						],
+						// Show message needs upgrades database compatible with LP version current.
+						'lp-upgrade-db'           => [
+							'template' => 'admin-notices/upgrade-db.php',
+							'check'    => LP_Updater::instance()->check_lp_db_need_upgrade(),
+						],
+						// Show message wrong permalink structure.
+						'lp-permalink'            => [
+							'template' => 'admin-notices/permalink-wrong.php',
+							'check'    => ! get_option( 'permalink_structure' ),
+						],
+						// Show notice setup wizard.
+						'lp-setup-wizard'         => [
+							'template' => 'admin-notices/setup-wizard.php',
+							'check'    => ! get_option( 'learn_press_setup_wizard_completed', false ) && ! isset( $admin_notices['lp-setup-wizard'] ),
+							'dismiss'  => 1,
 						],
 					]
 				);
