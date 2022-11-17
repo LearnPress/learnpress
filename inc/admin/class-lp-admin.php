@@ -565,10 +565,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display notices on Backend.
 		 */
 		public function admin_notices() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) {
-				return;
-			}
-
 			// Show template file templates override.
 			$page = LP_Request::get_param( 'page' );
 			$tab  = LP_Request::get_param( 'tab' );
