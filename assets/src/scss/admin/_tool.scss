@@ -301,12 +301,13 @@
 
 /*** Admin notices ***/
 .lp-admin-notices {
-	position: relative;
+	background: transparent;
 	display: none;
 	padding: 0;
 	border: none;
 
 	.lp-admin-notice {
+		position: relative;
 		padding: 1px 10px;
 	}
 

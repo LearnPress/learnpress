@@ -97,7 +97,7 @@ class LP_Admin_Notice {
 	 *
 	 * @return bool
 	 */
-	public static function check_right_plugin_base(): bool {
+	public static function check_plugin_base(): bool {
 		return 0 !== strcmp( LP_PLUGIN_BASENAME, 'learnpress/learnpress.php' );
 	}
 
@@ -586,7 +586,7 @@ class LP_Admin_Notice {
 	 * @deprecated 3.2.6
 	 */
 	public static function show_notices_deprecated() {
-		if ( self::$_notices ) {
+		/*if ( self::$_notices ) {
 			foreach ( self::$_notices as $notice ) {
 				if ( empty( $notice ) ) {
 					continue;
@@ -606,7 +606,7 @@ class LP_Admin_Notice {
 			}
 
 			delete_transient( 'learn_press_redirect_notices' );
-		}
+		}*/
 	}
 
 	/**

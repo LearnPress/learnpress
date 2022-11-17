@@ -1,10 +1,14 @@
 let elLPAdminNotices = null;
 let elBtnDismiss;
 let dataHtml = null;
-
+const queryString = window.location.search;
+const urlParams = new URLSearchParams( queryString );
+const tab = urlParams.get( 'tab' );
 const urlApiAdminNotices = lpGlobalSettings.rest + 'lp/v1/admin/tools/admin-notices';
+
 const callAdminNotices = ( set = '' ) => {
-	fetch( urlApiAdminNotices + `?${ set }`, {
+	const params = tab ? `?tab=${ tab }` : `?${ set }`;
+	fetch( urlApiAdminNotices + params, {
 		method: 'GET',
 	} ).then( ( res ) =>
 		res.json()

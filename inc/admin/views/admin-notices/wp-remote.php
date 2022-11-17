@@ -14,10 +14,12 @@ if ( ! isset( $data ) || ! isset( $data['check'] ) ) {
 if ( ! is_wp_error( $data['check'] ) ) {
 	return;
 }
+
+$message_error = $data['check'] instanceof WP_Error ? $data['check']->get_error_message() : 'Result do not match!';
 ?>
 
-<div class="lp-admin-notice">
+<div class="lp-admin-notice notice notice-error">
 	<p>
-		<?php echo sprintf( '%s %s', '<strong>wp_remote_get</strong>: ', $data['error'] ?? '' ); ?>
+		<?php echo sprintf( '%s %s', '<strong>wp_remote_get</strong>: ', $message_error ); ?>
 	</p>
 </div>
