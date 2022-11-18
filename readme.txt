@@ -204,7 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.7.3.2 (2022-11-18) =
+= 4.1.7.3.2 (2022-11-18) - <a href='https://thimpress.com/learnpress-v4-1-7-3-2-update/' target='_blank' rel='noopener'>View detail</a> =
 ~ Added: tab permalink option.
 ~ Modified: remove border style on the tab single course.
 ~ Modified: style popup complete item.
