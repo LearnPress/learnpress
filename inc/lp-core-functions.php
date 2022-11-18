@@ -2669,7 +2669,12 @@ function learn_press_date_i18n( $timestamp = 0, string $format = '', bool $gmt =
 		$format = get_option( 'date_format' );
 	}
 
-	return date_i18n( $format, $timestamp, $gmt );
+	$date_str = date_i18n( $format, $timestamp, $gmt );
+	if ( ! is_string( $date_str ) ) {
+		$date_str = '';
+	}
+
+	return $date_str;
 }
 
 /**

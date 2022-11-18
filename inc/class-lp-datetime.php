@@ -84,7 +84,7 @@ class LP_Datetime {
 	 *
 	 * using by Addon Content Drip.
 	 *
-	 * @since 3.0.01
+	 * @since 3.0.1
 	 * @version 4.0.1
 	 */
 	public function is_exceeded(): bool {
@@ -217,6 +217,10 @@ class LP_Datetime {
 				break;
 			default:
 				$date_str = gmdate( $format, $this->getTimestamp() );
+		}
+
+		if ( ! is_string( $date_str ) ) {
+			$date_str = '';
 		}
 
 		return $date_str;

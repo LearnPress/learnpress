@@ -204,6 +204,26 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.0 (2022-12-xx) - <a href='https://thimpress.com/learnpress-v4-2-0-update/' target='_blank' rel='noopener'>View detail</a> =
+~ Fixed: compatibility with WordPress PHP 8.1.
+~ Not implements ArrayAccess, Iterator, Countable of PHP on classes: LP_Datetime, LP_Session_Handler, LP_User_Item_Course,
+LP_User_Item, LP_Quiz_Results, LP_Course_Item, LP_Quiz, LP_Array_Access.
+~ Except class LP_Query_List_Table we still keep implements ArrayAccess (will notice the warning, but don't worry, you only need to disable WP_DEBUG mode),
+because plugins learnpress-h5p(version 4.0.1 and lower), learnpress-assignment(version 4.0.7 and lower) require it.
+So you need to update to the latest version of these plugins to make sure.
+~ Modified: LP_Datetime, deprecated method: toLocal, toRFC822, toUnix, setGMT, getSqlNullDate, addDuration, getPeriod.
+~ Deprecated: get_time_remaining, get_time of the class LP_User_Item, get_finishing_type of the class LP_User_Item_Course.
+~ Deprecated: get_course_remaining_time on the class LP_Abstract_User.
+~ Modified: get_expiration_time, deprecated param $format (<a href='https://github.com/LearnPress/learnpress/commit/17502a02d5328c399f33ea1219f0c9e71f1a257d'>17502a0</a>).
+~ Modified: class LP_Question_True_Or_False, LP_Question_Single_Choice, LP_Question_Multi_Choice,
+LP_Question_Fill_In_Blanks (<a href='https://github.com/LearnPress/learnpress/commit/3af1d1c78d3097f3d3b053ceecaf4264840eb1dc'>3af1d1c</a>).
+~ Modified: class LP_Question, deprecated method: _get_default_answers, _filter_meta_box_meta, update_answer_orders (<a href='https://github.com/LearnPress/learnpress/commit/3af1d1c78d3097f3d3b053ceecaf4264840eb1dc'>3af1d1c</a>)
+~ Modified: method 'get_answers' of class LP_Question (<a href='https://github.com/LearnPress/learnpress/commit/3af1d1c78d3097f3d3b053ceecaf4264840eb1dc#diff-24bccff44021f19220835ca960719a15beb4bbc8d3ffea086cccd6d42054ec7cR633'>3af1d1c</a>)
+~ Deprecated: 'learn_press_course_question_permalink_friendly' function.
+~ Added: 'LP_Question_Cache' class.
+~ Modified: 'LP_Cart', optimize how to set session for cart, get cart items when called, instance of set on hook 'init' always call.
+~ Modified: cookie,
+
 = 4.1.7.3.2 (2022-11-18) - <a href='https://thimpress.com/learnpress-v4-1-7-3-2-update/' target='_blank' rel='noopener'>View detail</a> =
 ~ Added: tab permalink option.
 ~ Modified: remove border style on the tab single course.
