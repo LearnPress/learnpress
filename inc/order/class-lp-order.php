@@ -206,7 +206,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @note Tungnx when change all direct access from $this->{key} to $this->get_data({key}), can remove this method
 		 */
 		public function __get( $prop ) {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
+			_deprecated_function( __METHOD__, '4.1.7.4', 'get_data({key})' );
 			if ( $prop == 'post' ) {
 				// print_r( debug_backtrace() );
 				// die( '$post is deprecated' );

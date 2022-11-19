@@ -62,7 +62,7 @@ class LP_Session_Handler {
 	 *
 	 * @return mixed
 	 * @deprecated 4.1.7.4
-	incs\class-lp-zoom-rest-api.php	 * Addon Stripe, 2Checkout, Authorize, Certificate is using this method via call session->order_awaiting_payment
+	 * Addon Stripe, 2Checkout, Authorize, Certificate is using this method via call session->order_awaiting_payment
 	 * After change all to session->set('order_awaiting_payment') we can remove this method.
 	 */
 	public function __get( $key ) {
@@ -149,10 +149,11 @@ class LP_Session_Handler {
 		$expire_time_for_guest = 2 * DAY_IN_SECONDS;
 		$expire_time_for_user  = 6 * DAY_IN_SECONDS;
 
-		// If cookie exists, set data from cookie for guest
+		// Set data for user Guest.
 		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
 			$this->_cookie = '_learn_press_session_' . COOKIEHASH;
 			$cookie        = $this->get_cookie_data();
+			// If cookie exists, set data from cookie for guest
 			if ( ! empty( $cookie ) ) {
 				$this->_customer_id        = (string) $cookie[0];
 				$this->_session_expiration = (int) $cookie[1];
@@ -161,7 +162,7 @@ class LP_Session_Handler {
 					$this->set_session_expiration( $expire_time_for_guest );
 					$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 				}
-			} else {
+			} else { // Create new cookie and session for user Guest.
 				$this->set_session_expiration( $expire_time_for_guest );
 				$this->_customer_id = $this->generate_guest_id();
 				$this->set_customer_session_cookie();
@@ -198,9 +199,9 @@ class LP_Session_Handler {
 		 */
 		if ( $user_id ) {
 			$customer_id = $this->get_customer_id();
-			$user_before = learn_press_get_user( $customer_id );
-			if ( $user_before->is_guest() ) {
-				$this->delete_session( (string) $customer_id );
+			$user_before = get_user_by( 'ID', $customer_id );
+			if ( ! $user_before ) {
+				$this->delete_session( $customer_id . '' );
 			}
 
 			$this->_customer_id = $user_id;
@@ -485,9 +486,8 @@ class LP_Session_Handler {
 		try {
 			$wpdb->delete(
 				LP_Sessions_DB::getInstance()->tb_lp_sessions,
-				array(
-					'session_key' => $customer_id,
-				)
+				[ 'session_key' => $customer_id ],
+				[ '%s' ]
 			);
 			// Clear cache.
 			LP_Session_Cache::instance()->clear( $customer_id );

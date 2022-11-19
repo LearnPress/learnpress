@@ -109,16 +109,20 @@ function learn_press_get_current_user( $create_temp = true ) {
 if ( ! function_exists( 'learn_press_get_user' ) ) {
 	/**
 	 * Get user by ID. Return false if the user does not exist.
+	 * If user_id = 0, return a guest user.
 	 *
 	 * @param int  $user_id
 	 * @param bool $current
 	 *
-	 * @return LP_User|LP_User_Guest
+	 * @return LP_User|LP_User_Guest|false
 	 * @since 3.0.0
 	 * @version 4.0.1
 	 */
-	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
-		$userClass = $user_id ? 'LP_User' : 'LP_User_Guest';
+	function learn_press_get_user( $user_id = 0, $current = false, $force_new = false ) {
+		$userClass = $user_id && get_user_by( 'ID', $user_id ) ? 'LP_User' : ( $user_id == 0 ? 'LP_User_Guest' : false );
+		if ( false === $userClass ) {
+			return false;
+		}
 
 		return new $userClass( $user_id );
 	}
