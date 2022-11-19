@@ -16,7 +16,7 @@ if ( ! class_exists( 'LP_Email_Reset_Password' ) ) {
 		public function __construct() {
 			$this->id          = 'reset-password';
 			$this->title       = esc_html__( 'Reset Password', 'learnpress' );
-			$this->description = esc_html__( 'Reset Password Email.', 'learnpress' );
+			$this->description = esc_html__( 'Password Reset Email.', 'learnpress' );
 
 			$this->default_subject = esc_html__( '[{{site_title}}] Reset Password', 'learnpress' );
 			$this->default_heading = esc_html__( 'Reset Password', 'learnpress' );
@@ -73,7 +73,7 @@ if ( ! class_exists( 'LP_Email_Reset_Password' ) ) {
 
 			$locale = get_user_locale( $user );
 
-			$variables = apply_filters(
+			$this->variables = apply_filters(
 				'lp/email/type-reset-password/variables-mapper',
 				array(
 					'{{user_login}}' => $user_login,
@@ -87,7 +87,7 @@ if ( ! class_exists( 'LP_Email_Reset_Password' ) ) {
 			$this->set_receive( $user->user_email );
 
 			$variables_common = $this->get_common_variables( $this->email_format );
-			$this->variables  = array_merge( $variables, $variables_common );
+			$this->variables  = array_merge( $this->variables, $variables_common );
 
 			return true;
 		}

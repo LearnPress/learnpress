@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 <div class="notice notice-warning lp-notice-update-database do-updating">
 	<p>
-		<?php _e( '<strong>LearnPress update</strong> – We are running updater to upgrade your database to the latest version.', 'learnpress' ); ?>
+		<?php _e( '<strong>LearnPress update</strong> – We are running an update to upgrade your database to the latest version.', 'learnpress' ); ?>
 	</p>
 </div>
 

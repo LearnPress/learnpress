@@ -139,7 +139,7 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return int
 	 */
-	public function get_user_item_id( $order_id = 0, $course_id = 0, $user_id = 0 ) {
+	public function get_user_item_id( $order_id = 0, $course_id = 0, $user_id = 0 ): int {
 		$query = $this->wpdb->prepare(
 			"
 			SELECT user_item_id
@@ -157,7 +157,7 @@ class LP_Course_DB extends LP_Database {
 			$user_id
 		);
 
-		return $this->wpdb->get_var( $query );
+		return (int) $this->wpdb->get_var( $query );
 	}
 
 	/**
@@ -202,41 +202,6 @@ class LP_Course_DB extends LP_Database {
 
 		return $first_item_id;
 	}
-
-	/**
-	 * Get popular courses.
-	 *
-	 * @param LP_Course_Filter $filter
-	 *
-	 * @return array
-	 * @author tungnx
-	 * @version 1.0.0
-	 * @depecated 4.1.6.4
-	 */
-	/*public function get_popular_courses( LP_Course_Filter $filter ): array {
-		$offset    = ( absint( $filter->page ) - 1 ) * $filter->limit;
-		$sql_limit = $this->wpdb->prepare( 'LIMIT %d, %d', $offset, $filter->limit );
-
-		$query = apply_filters(
-			'learn-press/course-curd/query-popular-courses',
-			$this->wpdb->prepare(
-				"SELECT DISTINCT(item_id), COUNT(item_id) as total
-					FROM $this->tb_lp_user_items
-					WHERE item_type = %s
-					AND ( status = %s OR status = %s OR status = %s )
-					GROUP BY item_id
-					ORDER BY total DESC
-					{$sql_limit}
-				",
-				LP_COURSE_CPT,
-				LP_COURSE_ENROLLED,
-				LP_COURSE_FINISHED,
-				LP_COURSE_PURCHASED
-			)
-		);
-
-		return $this->wpdb->get_col( $query );
-	}*/
 
 	public function get_recent_courses( LP_Course_Filter $filter ) : array {
 		global $wpdb;

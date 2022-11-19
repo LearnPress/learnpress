@@ -38,7 +38,7 @@ if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
 			);
 		} elseif ( LP_BLOCK_COURSE_DURATION_EXPIRE === $can_view_course->key ) {
 			learn_press_display_message(
-				esc_html__( 'This course has been blocked reason by expire', 'learnpress' ),
+				esc_html__( 'This course has been blocked for expiration', 'learnpress' ),
 				'warning'
 			);
 		}

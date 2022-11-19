@@ -52,7 +52,7 @@ function learn_press_get_course( $the_course = 0 ) {
  *
  * @return string
  * @since 3.0.0
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_id = 0 ) {
 	return LP_Nonce_Helper::create_course( $action, $course_id, $user_id );
@@ -68,7 +68,7 @@ function learn_press_get_course( $the_course = 0 ) {
  *
  * @return bool
  * @since 3.0.0
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0, $user_id = 0 ) {
 	return LP_Nonce_Helper::verify_course( $nonce, $action, $course_id, $user_id );
@@ -112,6 +112,7 @@ function learn_press_get_item_types_can_purchase() {
  * @param $item
  *
  * @return mixed
+ * @Todo - tungnx need review code to rewrite.
  */
 function learn_press_get_item_courses( $item ) {
 	global $wpdb;
@@ -655,7 +656,7 @@ add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
  * @param string $status
  *
  * @since 3.0.10
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  *
  */
 /*function learn_press_force_refresh_course( $comment_id, $status ) {
@@ -673,35 +674,7 @@ add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
 add_action( 'comment_post', 'learn_press_force_refresh_course', 1000, 2 );*/
 
 /**
- * @editor     tungnx | comment code
- * @deprecated 3.2.7.5
- */
-/*if ( ! function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
-
-	function learn_press_get_sample_link_course_item_url( $item_id = null ) {
-
-		if ( ! $item_id ) {
-			return;
-		}
-
-
-		$permalink = get_the_permalink( $item_id );
-		$post_name = get_post_field( 'post_name', $item_id );
-
-		if ( '' != get_option( 'permalink_structure' ) ) {
-			$permalink = $post_name;
-		} else {
-			$key       = preg_replace( '!lp_!', '', learn_press_get_post_type( $item_id ) );
-			$permalink = add_query_arg( array( $key => $post_name ), $permalink );
-		}
-
-		return $permalink;
-
-	}
-}*/
-
-/**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 	function learn_press_get_nav_course_item_url( $course_id = null, $item_id = null, $content_only = false ) {
@@ -770,7 +743,7 @@ if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 /**
  * Get course id of an item by id
  *
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 
 if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
@@ -1036,7 +1009,7 @@ add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_
  * @since 3.0.0
  */
 function learn_press_mark_user_just_logged_in() {
-	LP()->session->set( 'user_just_logged_in', 'yes' );
+	LearnPress::instance()->session->set( 'user_just_logged_in', 'yes' );
 }
 
 add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
@@ -1051,19 +1024,19 @@ function learn_press_translate_course_result_required( $course ) {
 	$evaluate_type = $course->get_data( 'course_result', 'evaluate_lesson' );
 	switch ( $evaluate_type ) {
 		case 'evaluate_lesson':
-			$label = esc_html__( 'lessons completed per total number of lessons.', 'learnpress' );
+			$label = esc_html__( 'completed lessons per the total number of lessons.', 'learnpress' );
 			break;
 		case 'evaluate_quiz':
-			$label = esc_html__( 'quizzes passed per total number of quizzes.', 'learnpress' );
+			$label = esc_html__( 'passed quizzes per the total number of quizzes.', 'learnpress' );
 			break;
 		case 'evaluate_final_quiz':
 			$label = esc_html__( 'Final Quiz', 'learnpress' );
 			break;
 		case 'evaluate_questions':
-			$label = esc_html__( 'correct answers per total number of questions.', 'learnpress' );
+			$label = esc_html__( 'correct answers per the total number of questions.', 'learnpress' );
 			break;
 		case 'evaluate_mark':
-			$label = esc_html__( 'score achieved per total score of the questions.', 'learnpress' );
+			$label = esc_html__( 'score achieved per the total score of the questions.', 'learnpress' );
 			break;
 		default:
 			$label = apply_filters( 'learnpress/message/evaluate/' . $evaluate_type, $evaluate_type );

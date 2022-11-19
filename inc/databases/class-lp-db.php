@@ -701,7 +701,7 @@ class LP_Database {
 	 * Query update
 	 *
 	 * @throws Exception
-	 * @since 4.1.6.9.4
+	 * @since 4.1.7
 	 * @version 1.0.0
 	 */
 	public function update_execute( LP_Filter $filter ) {
@@ -735,7 +735,7 @@ class LP_Database {
 	 * Query delete
 	 *
 	 * @throws Exception
-	 * @since 4.1.6.9.4
+	 * @since 4.1.7
 	 * @version 1.0.0
 	 */
 	public function delete_execute( LP_Filter $filter ) {

@@ -12,4 +12,4 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<p class="learn-press-message error"><?php esc_html_e( 'No courses were found matching your selection.', 'learnpress' ); ?></p>
+<p class="learn-press-message error"><?php esc_html_e( 'No courses were found to match your selection.', 'learnpress' ); ?></p>

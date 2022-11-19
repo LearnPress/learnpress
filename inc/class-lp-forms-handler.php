@@ -77,7 +77,7 @@ class LP_Forms_Handler {
 				$remember = LP_Request::get_string( 'rememberme' );
 
 				if ( empty( $username ) ) {
-					throw new Exception( '<strong>' . __( 'Error:', 'learnpress' ) . '</strong> ' . __( 'Username is required', 'learnpress' ) );
+					throw new Exception( '<strong>' . __( 'Error:', 'learnpress' ) . '</strong> ' . __( 'A username is required', 'learnpress' ) );
 				}
 
 				// On multisite, ensure user exists on current site, if not add them before allowing login.
@@ -157,8 +157,6 @@ class LP_Forms_Handler {
 
 			if ( is_wp_error( $new_customer ) ) {
 				throw new Exception( $new_customer->get_error_message() );
-			} else {
-				wp_new_user_notification( $new_customer );
 			}
 
 			// Send email become a teacher.
@@ -170,7 +168,7 @@ class LP_Forms_Handler {
 					array(
 						'bat_email'   => $email,
 						'bat_phone'   => '',
-						'bat_message' => apply_filters( 'learnpress_become_instructor_message', esc_html__( 'I need become an instructor', 'learnpress' ) ),
+						'bat_message' => apply_filters( 'learnpress_become_instructor_message', esc_html__( 'I need to become an instructor', 'learnpress' ) ),
 					)
 				);
 
@@ -188,7 +186,7 @@ class LP_Forms_Handler {
 			$message_success = $username . __( ' was successfully created!', 'learnpress' );
 
 			if ( $is_become_a_teacher ) {
-				$message_success .= '<br/>' . __( 'Your request become an instructor has been sent. We will get back to you soon!', 'learnpress' );
+				$message_success .= '<br/>' . __( 'Your request to become an instructor has been sent. We will get back to you soon!', 'learnpress' );
 			}
 
 			learn_press_add_message( $message_success, 'success' );
@@ -215,90 +213,127 @@ class LP_Forms_Handler {
 	 * New create customer.
 	 *
 	 * @author ThimPress <nhamdv>
+	 * @version 1.0.1
+	 * @since 4.0.0
 	 */
-	public static function learnpress_create_new_customer( $email, $username = '', $password = '', $confirm_password = '', $args = array(), $update_meta = array() ) {
-		if ( empty( $email ) || ! is_email( $email ) ) {
-			return new WP_Error( 'registration-error-invalid-email', __( 'Please provide a valid email address.', 'learnpress' ) );
-		}
+	public static function learnpress_create_new_customer( $email = '', $username = '', $password = '', $confirm_password = '', $args = array(), $update_meta = array() ) {
+		try {
+			if ( empty( $email ) || ! is_email( $email ) ) {
+				throw new Exception( __( 'Please provide a valid email address.', 'learnpress' ), 101 );
+			}
 
-		if ( email_exists( $email ) ) {
-			return new WP_Error( 'registration-error-email-exists', apply_filters( 'learnpress_registration_error_email_exists', __( 'An account is already registered with your email address.', 'learnpress' ), $email ) );
-		}
+			if ( email_exists( $email ) ) {
+				throw new Exception( __( 'An account is already registered with your email address.', 'learnpress' ), 102 );
+			}
 
-		$username = sanitize_user( $username );
+			$username = sanitize_user( $username );
 
-		if ( empty( $username ) || ! validate_username( $username ) ) {
-			return new WP_Error( 'registration-error-invalid-username', __( 'Please enter a valid account username.', 'learnpress' ) );
-		}
+			if ( empty( $username ) || ! validate_username( $username ) ) {
+				throw new Exception( __( 'Please enter a valid account username.', 'learnpress' ), 103 );
+			}
 
-		if ( username_exists( $username ) ) {
-			return new WP_Error( 'registration-error-username-exists', __( 'An account is already registered with that username. Please choose another.', 'learnpress' ) );
-		}
+			if ( username_exists( $username ) ) {
+				throw new Exception(
+					__( 'An account is already registered with that username. Please choose another one.', 'learnpress' ),
+					104
+				);
+			}
 
-		if ( apply_filters( 'learnpress_registration_generate_password', false ) ) {
-			$password = wp_generate_password();
-		}
+			if ( apply_filters( 'learnpress_registration_generate_password', false ) ) {
+				$password = wp_generate_password();
+			}
 
-		if ( empty( $password ) ) {
-			return new WP_Error( 'registration-error-missing-password', __( 'Please enter an account password.', 'learnpress' ) );
-		}
+			if ( empty( $password ) ) {
+				throw new Exception( __( 'Please enter an account password.', 'learnpress' ), 105 );
+			}
 
-		if ( strlen( $password ) < 6 ) {
-			return new WP_Error( 'registration-error-short-password', __( 'Password is too short!', 'learnpress' ) );
-		}
+			if ( strlen( $password ) < 6 ) {
+				throw new Exception( __( 'Password is too short!', 'learnpress' ), 106 );
+			}
 
-		if ( preg_match( '#\s+#', $password ) ) {
-			return new WP_Error( 'registration-error-spacing-password', __( 'Password can not have spacing!', 'learnpress' ) );
-		}
+			if ( preg_match( '#\s+#', $password ) ) {
+				throw new Exception( __( 'Password can not contain spaces!', 'learnpress' ), 107 );
+			}
 
-		if ( empty( $confirm_password ) ) {
-			return new WP_Error( 'registration-error-missing-confirm-password', __( 'Please enter confirm password.', 'learnpress' ) );
-		}
+			if ( empty( $confirm_password ) ) {
+				throw new Exception( __( 'Please enter confirm password.', 'learnpress' ), 108 );
+			}
 
-		if ( $password !== $confirm_password ) {
-			return new WP_Error( 'registration-error-confirm-password', __( 'Confirmation password incorrect!.', 'learnpress' ) );
-		}
+			if ( $password !== $confirm_password ) {
+				throw new Exception( __( 'Password and Confirm Password does not match!', 'learnpress' ), 108 );
+			}
 
-		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
-
-		if ( $custom_fields && ! empty( $update_meta ) ) {
-			foreach ( $custom_fields as $field ) {
-				if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
-					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
+			$custom_fields = LP_Settings::get_option( 'register_profile_fields', [] );
+			if ( $custom_fields && ! empty( $update_meta ) ) {
+				foreach ( $custom_fields as $field ) {
+					if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
+						throw new Exception( $field['name'] . __( ' is required field.', 'learnpress' ), 109 );
+					}
 				}
 			}
-		}
 
-		$errors = new WP_Error();
+			do_action( 'lp/before_create_new_customer', $email, $username, $password, $confirm_password, $args, $update_meta );
 
-		do_action( 'learnpress_register_post', $username, $email, $errors );
-
-		$errors = apply_filters( 'learnpress_registration_errors', $errors, $username, $email );
-
-		if ( $errors->get_error_code() ) {
-			return $errors;
-		}
-
-		$new_customer_data = apply_filters(
-			'learnpress_new_customer_data',
-			array_merge(
-				$args,
-				array(
-					'user_login' => $username,
-					'user_pass'  => $password,
-					'user_email' => $email,
+			$new_customer_data = apply_filters(
+				'learnpress_new_customer_data',
+				array_merge(
+					$args,
+					array(
+						'user_login' => $username,
+						'user_pass'  => $password,
+						'user_email' => $email,
+					)
 				)
-			)
-		);
+			);
 
-		$customer_id = wp_insert_user( $new_customer_data );
+			$customer_id = wp_insert_user( $new_customer_data );
 
-		if ( ! empty( $update_meta ) ) {
-			lp_user_custom_register_fields( $customer_id, $update_meta );
-		}
+			do_action( 'lp/after_create_new_customer', $email, $username, $password, $confirm_password, $args, $update_meta );
 
-		if ( is_wp_error( $customer_id ) ) {
-			return $customer_id;
+			if ( is_wp_error( $customer_id ) ) {
+				throw new Exception( $customer_id->get_error_message() );
+			} else {
+				if ( ! empty( $update_meta ) ) {
+					lp_user_custom_register_fields( $customer_id, $update_meta );
+				}
+
+				// Send mail.
+				wp_new_user_notification( $customer_id, null, 'both' );
+			}
+		} catch ( Throwable $e ) {
+			$code_str = '';
+			switch ( $e->getCode() ) {
+				case 101:
+					$code_str = 'registration-error-invalid-email';
+					break;
+				case 102:
+					$code_str = 'registration-error-email-exists';
+					break;
+				case 103:
+					$code_str = 'registration-error-invalid-username';
+					break;
+				case 104:
+					$code_str = 'registration-error-username-exists';
+					break;
+				case 105:
+					$code_str = 'registration-error-missing-password';
+					break;
+				case 106:
+					$code_str = 'registration-error-short-password';
+					break;
+				case 107:
+					$code_str = 'registration-error-spacing-password';
+					break;
+				case 108:
+					$code_str = 'registration-error-confirm-password';
+					break;
+				case 109:
+					$code_str = 'registration-custom-required-field';
+					break;
+				default:
+					break;
+			}
+			return new WP_Error( $code_str, $e->getMessage() );
 		}
 
 		return $customer_id;
@@ -317,11 +352,11 @@ class LP_Forms_Handler {
 		}
 
 		if ( is_email( $update_data['display_name'] ) ) {
-			return new WP_Error( 'error_display_name', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
+			return new WP_Error( 'error_display_name', esc_html__( 'Due to privacy concerns, the display name cannot be changed to an email address.', 'learnpress' ) );
 		}
 
 		if ( ! is_email( $update_data['user_email'] ) ) {
-			return new WP_Error( 'error_email', esc_html__( 'Display name cannot be changed to email address due to privacy concern.', 'learnpress' ) );
+			return new WP_Error( 'error_email', esc_html__( 'Due to privacy concerns, the display name cannot be changed to an email address.', 'learnpress' ) );
 		} elseif ( email_exists( $update_data['user_email'] ) && $update_data['user_email'] !== $current_user->user_email ) {
 			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
 		}

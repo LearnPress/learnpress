@@ -23,7 +23,6 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 */
 	public function __construct( $tabs, $profile ) {
 		parent::__construct( $tabs );
-
 		$this->profile = $profile;
 
 		$this->_sanitize();
@@ -228,7 +227,12 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			}
 		}
 
-		$args         = array_map( '_learn_press_urlencode', $args );
+		/*$args         = array_map(
+			function ( $string ) {
+				return preg_replace( '/\s/', '+', $string );
+			},
+			$args
+		);*/
 		$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 
 		if ( $profile_link ) {

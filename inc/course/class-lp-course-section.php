@@ -103,7 +103,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @param array $item
 	 *
 	 * @return bool|LP_Course_Item
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	/*protected function get_item( $item ) {
 		if ( ! is_numeric( $item ) ) {

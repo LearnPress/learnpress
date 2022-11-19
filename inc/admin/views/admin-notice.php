@@ -1,6 +1,7 @@
 <?php
 /**
  * Template for display a notice in admin
+ * @deprecated 4.1.7.3.2
  */
 
 defined( 'ABSPATH' ) || exit;

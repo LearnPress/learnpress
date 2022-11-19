@@ -23,10 +23,10 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 		public function __construct() {
 			$this->id          = 'finished-course-instructor';
 			$this->title       = __( 'Instructor', 'learnpress' );
-			$this->description = __( 'Send this email to instructor when they have finished course.', 'learnpress' );
+			$this->description = __( 'Send this email to the instructor when they have finished the course.', 'learnpress' );
 
-			$this->default_subject = __( '{{user_display_name}} has finished course', 'learnpress' );
-			$this->default_heading = __( 'User has finished course', 'learnpress' );
+			$this->default_subject = __( '{{user_display_name}} has completed the course.', 'learnpress' );
+			$this->default_heading = __( 'The user has completed the course.', 'learnpress' );
 
 			parent::__construct();
 		}

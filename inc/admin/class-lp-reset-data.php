@@ -100,7 +100,7 @@ class LP_Reset_Data {
 				}
 			}
 
-			echo __( 'Item progress deleted', 'learnpress' );
+			echo __( 'Item progress is deleted', 'learnpress' );
 		} else {
 			echo __( 'No data found', 'learnpress' );
 		}
@@ -187,13 +187,16 @@ class LP_Reset_Data {
 		}
 		if ( $course_id && $object_reset == 'single' ) {
 			$user_course_data = $user->get_course_data( $course_id );
+			if ( ! $user_course_data ) {
+				return;
+			}
 
-			// Set status, start_time, end_time of course to enrolled.
+			// Set status, start_time, end_time of course to enrol.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-							 ->set_start_time( current_time( 'mysql', true ) )
-							 ->set_end_time( '' )
-							 ->set_graduation( 'in-progress' )
-							 ->update();
+				->set_start_time( time() )
+				->set_end_time()
+				->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
+				->update();
 			// Remove items' course user learned.
 			$filter_remove            = new LP_User_Items_Filter();
 			$filter_remove->parent_id = $user_course_data->get_user_item_id();
@@ -216,13 +219,16 @@ class LP_Reset_Data {
 				foreach ( $user_item_ids as $user_item_id ) {
 					$course_id        = $user_item_id;
 					$user_course_data = $user->get_course_data( $course_id );
+					if ( ! $user_course_data ) {
+						continue;
+					}
 
 					// Set status, start_time, end_time of course to enrolled.
 					$user_course_data->set_status( LP_COURSE_ENROLLED )
-									 ->set_start_time( current_time( 'mysql', true ) )
-									 ->set_end_time( '' )
-									 ->set_graduation( 'in-progress' )
-									 ->update();
+						->set_start_time( time() )
+						->set_end_time()
+						->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
+						->update();
 					// Remove items' course user learned.
 					$filter_remove            = new LP_User_Items_Filter();
 					$filter_remove->parent_id = $user_course_data->get_user_item_id();

@@ -24,14 +24,14 @@
 				<div class="action preview-item lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Enable/Disable Preview', 'learnpress' ); ?>">
 					<a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
 				</div>
-				<div class="action edit-item lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Edit item', 'learnpress' ); ?>">
+				<div class="action edit-item lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Edit an item', 'learnpress' ); ?>">
 					<a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
 				</div>
 				<div class="action delete-item" v-if="!disableCurriculum">
 					<a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
 					<ul>
 						<li>
-							<a @click.prevent="remove"><?php esc_html_e( 'Remove from course', 'learnpress' ); ?></a>
+							<a @click.prevent="remove"><?php esc_html_e( 'Remove from the course', 'learnpress' ); ?></a>
 						</li>
 						<li>
 							<a @click.prevent="deletePermanently" class="delete-permanently"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a>

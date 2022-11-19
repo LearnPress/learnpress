@@ -2801,7 +2801,7 @@ msgstr "¿Quieres mover la pregunta «{{QUESTION_NAME}}» a la papelera?"
 
 #: inc/admin/views/meta-boxes/course/settings.php:256
 #: inc/custom-post-types/course.php:643
-msgid "No requirement enroll"
+msgid "No enroll requirement"
 msgstr "Ningún requerimiento para inscribirse"
 
 #: inc/custom-post-types/course.php:86

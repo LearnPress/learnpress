@@ -31,7 +31,6 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 
 	foreach ( $course_ids as $id ) {
 		$course = learn_press_get_course( $id );
-
 		if ( ! $course ) {
 			continue;
 		}
@@ -39,7 +38,10 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 		$post = get_post( $id );
 		setup_postdata( $post );
 
-		$course_data   = $user->get_course_data( $id );
+		$course_data = $user->get_course_data( $id );
+		if ( ! $course_data ) {
+			continue;
+		}
 		$course_result = $course_data->get_result();
 		?>
 		<div class="lp_profile_course_progress__item">

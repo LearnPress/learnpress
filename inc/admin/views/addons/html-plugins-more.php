@@ -15,7 +15,7 @@ $wp_plugins = LP_Plugins_Helper::get_plugins( 'free' );
 $tp_plugins = LP_Plugins_Helper::get_plugins( 'premium' );
 
 if ( ! ( $wp_plugins || $tp_plugins ) ) {
-	_e( 'There is no available add-ons.', 'learnpress' );
+	_e( 'There are no add-ons available.', 'learnpress' );
 
 	return;
 }

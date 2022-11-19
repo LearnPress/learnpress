@@ -11,6 +11,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 module.exports = {
 	...defaultConfig,
 	entry: {
+		'./assets/js/dist/admin/admin-notices': './assets/src/apps/js/admin/admin-notices.js',
 		'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
 		'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
 		'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',

@@ -86,8 +86,9 @@ class LP_Global {
 	 * @param string $type
 	 *
 	 * @return bool
+	 * @deprecated 4.1.7.3
 	 */
-	public static function is_course_item_type( $type ) {
+	/*public static function is_course_item_type( $type ) {
 		$item = self::course_item();
 
 		if ( $item ) {
@@ -95,7 +96,7 @@ class LP_Global {
 		}
 
 		return false;
-	}
+	}*/
 
 	/**
 	 * @param bool $get_only_id
@@ -122,7 +123,11 @@ class LP_Global {
 		}
 	}
 
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	public static function set_course( $course ) {
+		_deprecated_function( __FUNCTION__, '4.1.7.3' );
 		global $lp_course;
 
 		if ( self::$_course === false ) {
@@ -142,23 +147,6 @@ class LP_Global {
 
 		return $lp_user;
 	}
-
-	/**
-	 * Set global user
-	 *
-	 * @param LP_User $user
-	 */
-	//  public static function set_user( $user = null ) {
-	//      global $lp_user;
-	//
-	//      var_dump(debug_backtrace());
-	//
-	//      if ( false === self::$_user ) {
-	//          self::$_user = $lp_user;
-	//      }
-	//
-	//      $lp_user = $user;
-	//  }
 
 	/**
 	 * Alias of course item for highlighting in dev
@@ -182,8 +170,10 @@ class LP_Global {
 
 	/**
 	 * Reset global variables to default
+	 * @deprecated 4.1.7.3
 	 */
 	public static function reset() {
+		_deprecated_function( __FUNCTION__, '4.1.7.3' );
 		global $lp_user, $lp_course, $lp_course_item, $lp_quiz_question;
 
 		if ( self::$_user ) {
@@ -208,28 +198,7 @@ class LP_Global {
 	public static function profile( $global = false, $reset = false ) {
 		global $profile;
 
-		if ( ! $profile ) {
-			//self::$_profile = $profile = LP_Profile::instance( get_current_user_id() );
-		}
-
 		return LP_Profile::instance();
-
-		/**
-		 * Get origin global $profile (stored in class) if $global = TRUE
-		 */
-		if ( $global ) {
-
-			/**
-			 * If $reset = TRUE then set global $profile to origin global $profile (stored in class)
-			 */
-			if ( ! $reset ) {
-				return self::$_profile;
-			}
-
-			$profile = self::$_profile;
-		}
-
-		return $profile;
 	}
 
 	public static function init() {
@@ -348,15 +317,5 @@ class LP_Global {
 		}
 
 		return self::$object_support_features[ $object_type ];
-	}
-
-	/**
-	 * @param $user
-	 *
-	 * @return false
-	 * @deprecated 4.0.0
-	 */
-	public function set_user( $user ) {
-		return false;
 	}
 }

@@ -28,14 +28,14 @@
 				<div class="lp-toolbar-btn lp-title-attr-tip" v-if="!disableUpdateList" data-content-tip="<?php esc_attr_e( 'Duplicate', 'learnpress' ); ?>">
 					<a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"></a>
 				</div>
-				<div class="lp-toolbar-btn lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Edit item', 'learnpress' ); ?>">
+				<div class="lp-toolbar-btn lp-title-attr-tip" data-content-tip="<?php esc_attr_e( 'Edit an item', 'learnpress' ); ?>">
 					<a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
 				</div>
 				<div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown" v-if="!disableUpdateList">
 					<a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
 					<ul>
 						<li>
-							<a @click.prevent="remove" class="remove"><?php esc_html_e( 'Remove from quiz', 'learnpress' ); ?></a>
+							<a @click.prevent="remove" class="remove"><?php esc_html_e( 'Removed from the quiz', 'learnpress' ); ?></a>
 						</li>
 						<li>
 							<a @click.prevent="deletePermanently" class="delete"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a>

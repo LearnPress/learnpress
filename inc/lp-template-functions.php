@@ -17,23 +17,23 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'button_retry' ), 20 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_enroll_button' ), 5 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_purchase_button' ), 10 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
+		add_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
 }
 
 if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 	function learn_press_remove_course_buttons() {
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
-		//remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'button_retry' ), 20 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_enroll_button' ), 5 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_purchase_button' ), 10 );
+		//remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_external_button' ), 15 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'button_retry' ), 20 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_continue_button' ), 25 );
+		remove_action( 'learn-press/course-buttons', LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
 }
 
@@ -59,27 +59,27 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			$defaults['overview'] = array(
 				'title'    => esc_html__( 'Overview', 'learnpress' ),
 				'priority' => 10,
-				'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
+				'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
 			);
 		}
 
 		$defaults['curriculum'] = array(
 			'title'    => esc_html__( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
-			'callback' => LP()->template( 'course' )->func( 'course_curriculum' ),
+			'callback' => LearnPress::instance()->template( 'course' )->func( 'course_curriculum' ),
 		);
 
 		$defaults['instructor'] = array(
 			'title'    => esc_html__( 'Instructor', 'learnpress' ),
 			'priority' => 40,
-			'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/instructor.php' ),
+			'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/instructor.php' ),
 		);
 
 		if ( $course->get_faqs() ) {
 			$defaults['faqs'] = array(
 				'title'    => esc_html__( 'FAQs', 'learnpress' ),
 				'priority' => 50,
-				'callback' => LP()->template( 'course' )->func( 'faqs' ),
+				'callback' => LearnPress::instance()->template( 'course' )->func( 'faqs' ),
 			);
 		}
 
@@ -266,8 +266,8 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 
 			$args = array(
 				'id'                  => $quiz->get_id(),
-				'totalTime'           => $quiz->get_duration()->get(),
-				'remainingTime'       => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
+				//'totalTime'           => -1,
+				//'remainingTime'       => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
 				'status'              => $user->get_item_status( $quiz->get_id(), $course_id ),
 				'checkNorequizenroll' => $course->is_no_required_enroll(),
 				'navigationPosition'  => LP_Settings::get_option( 'navigation_position', 'yes' ),
@@ -410,11 +410,6 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 		if ( $lesson && $lesson->is_preview() ) {
 			$classes[] = 'preview-item';
 		}
-
-		/*
-		if ( $user->can_view_item( $lesson_id, $course_id )->flag ) {
-			$classes[] = 'viewable';
-		}*/
 
 		$classes = array_unique( array_merge( $classes, $class ) );
 
@@ -725,23 +720,6 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 }
 
 /**
- * @depecated 4.1.6.4
- */
-function learn_press_template_redirect() {
-	_deprecated_function( __FUNCTION__, '4.1.6.4' );
-	global $wp_query, $wp;
-
-	// When default permalinks are enabled, redirect shop page to post type archive url
-	if ( ! empty( $_GET['page_id'] ) && get_option( 'permalink_structure' ) == '' && $_GET['page_id'] == learn_press_get_page_id( 'courses' ) ) {
-		wp_safe_redirect( get_post_type_archive_link( 'lp_course' ) );
-		exit;
-	}
-}
-
-// add_action( 'template_redirect', 'learn_press_template_redirect' );
-
-
-/**
  * Get template part.
  *
  * @param string $slug
@@ -946,6 +924,71 @@ function learn_press_override_templates() {
 	return apply_filters( 'learn-press/override-templates', false );
 }
 
+/**
+ * Get html view path for admin to display
+ *
+ * @param $name
+ * @param $plugin_file
+ *
+ * @return mixed
+ */
+function learn_press_get_admin_view( $name, $plugin_file = null ) {
+	if ( ! preg_match( '/\.(html|php)$/', $name ) ) {
+		$name .= '.php';
+	}
+	if ( $plugin_file ) {
+		$view = dirname( $plugin_file ) . '/inc/admin/views/' . $name;
+	} else {
+		$view = LearnPress::instance()->plugin_path( 'inc/admin/views/' . $name );
+	}
+
+	return apply_filters( 'learn_press_admin_view', $view, $name );
+}
+
+function learn_press_admin_view_content( $name, $args = array() ) {
+	return learn_press_admin_view( $name, $args, false, true );
+}
+
+/**
+ * Find a full path of a view and display the content in admin
+ *
+ * @param            $name
+ * @param array      $args
+ * @param bool|false $include_once
+ * @param bool
+ *
+ * @return bool
+ */
+function learn_press_admin_view( $name, $args = array(), $include_once = false, $return = false ) {
+	$view = learn_press_get_admin_view( $name, ! empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
+
+	if ( file_exists( $view ) ) {
+
+		ob_start();
+
+		is_array( $args ) && extract( $args );
+
+		do_action( 'learn_press_before_display_admin_view', $name, $args );
+
+		if ( $include_once ) {
+			include_once $view;
+		} else {
+			include $view;
+		}
+
+		do_action( 'learn_press_after_display_admin_view', $name, $args );
+		$output = ob_get_clean();
+
+		if ( ! $return ) {
+			learn_press_echo_vuejs_write_on_php( $output );
+		}
+
+		return $return ? $output : true;
+	}
+
+	return false;
+}
+
 if ( ! function_exists( 'learn_press_is_404' ) ) {
 	/**
 	 * Set header is 404
@@ -1060,7 +1103,7 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 }
 
 /**
- * @depecated 4.1.6.9
+ * @deprecated 4.1.6.9
  */
 /*if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 	function learn_press_content_item_comments() {
@@ -1115,7 +1158,7 @@ function learn_press_label_html( $label, $type = '' ) {
 }
 
 /**
- * @depecated 4.1.6.4
+ * @deprecated 4.1.6.4
  */
 function learn_press_get_course_redirect( $link ) {
 	_deprecated_function( __FUNCTION__, '4.1.6.4' );
@@ -1272,30 +1315,27 @@ add_filter( 'body_class', 'learn_press_body_classes', 10 );
  *
  * @param int $course_id
  *
- * @return bool|mixed
+ * @return bool
  * @since 3.0
+ * @version 1.0.1
  */
-function learn_press_is_learning_course( $course_id = 0 ) {
+function learn_press_is_learning_course( int $course_id = 0 ): bool {
+	$is_learning = false;
 	$user        = learn_press_get_current_user();
 	$course      = learn_press_get_course( $course_id );
-	$is_learning = false;
-	$has_status  = false;
-
-	if ( $user && $course ) {
-		$has_status = $user->has_course_status(
-			$course->get_id(),
-			array(
-				'enrolled',
-				'finished',
-			)
-		);
+	if ( ! $course ) {
+		return $is_learning;
 	}
 
-	if ( $course && ( ! $course->is_required_enroll() || $has_status ) ) {
+	if ( $user ) {
+		return $user->has_enrolled_or_finished( $course_id );
+	}
+
+	if ( $course->is_no_required_enroll() ) {
 		$is_learning = true;
 	}
 
-	return apply_filters( 'learn-press/is-learning-course', $is_learning );
+	return apply_filters( 'lp/is-learning-course', $is_learning, $course_id );
 }
 
 /**
@@ -1427,7 +1467,7 @@ function learn_press_register_sidebars() {
 		array(
 			'name'          => esc_html__( 'Course Sidebar', 'learnpress' ),
 			'id'            => 'course-sidebar',
-			'description'   => esc_html__( 'Widgets in this area will be shown in single course', 'learnpress' ),
+			'description'   => esc_html__( 'Widgets in this area will be shown in a single course', 'learnpress' ),
 			'before_widget' => '<div id="%1$s" class="widget %2$s">',
 			'after_widget'  => '</div>',
 			'before_title'  => '<h2 class="widgettitle">',
@@ -1438,7 +1478,7 @@ function learn_press_register_sidebars() {
 		array(
 			'name'          => esc_html__( 'All Courses', 'learnpress' ),
 			'id'            => 'archive-courses-sidebar',
-			'description'   => esc_html__( 'Widgets in this area will be shown in all courses page', 'learnpress' ),
+			'description'   => esc_html__( 'Widgets in this area will be shown on all course pages', 'learnpress' ),
 			'before_widget' => '<div id="%1$s" class="widget %2$s">',
 			'after_widget'  => '</div>',
 			'before_title'  => '<h2 class="widgettitle">',
@@ -1703,11 +1743,12 @@ if ( ! function_exists( 'lp_taxonomy_archive_course_description' ) ) {
 	}
 }
 
-function lp_is_archive_course_load_via_api() {
-	return apply_filters( 'lp/template/archive-course/enable_lazyload', 1 );
-}
-
-function lp_archive_skeleton_get_args() {
+/**
+ * Params to query courses on Archive Course.
+ *
+ * @return array
+ */
+function lp_archive_skeleton_get_args(): array {
 	global $post, $wp;
 
 	$args = array();
@@ -1745,11 +1786,3 @@ function lp_archive_skeleton_get_args() {
 
 	return $args;
 }
-
-add_action(
-	'learn-press/after-enqueue-scripts',
-	function() {
-		$args = lp_archive_skeleton_get_args();
-		wp_add_inline_script( 'lp-courses', 'const lpArchiveSkeleton= ' . wp_json_encode( $args ) . '' );
-	}
-);

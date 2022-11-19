@@ -71,14 +71,14 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'      => 'enable_login_profile',
 							'default' => 'no',
 							'type'    => 'checkbox',
-							'desc'    => esc_html__( 'Enable login from profile if the user is not logged in.', 'learnpress' ),
+							'desc'    => esc_html__( 'If the user is not logged in, enable login from profile.', 'learnpress' ),
 						),
 						array(
 							'title'   => esc_html__( 'Enable register form', 'learnpress' ),
 							'id'      => 'enable_register_profile',
 							'default' => 'no',
 							'type'    => 'checkbox',
-							'desc'    => esc_html__( 'Enable register from profile if the user is not logged in.', 'learnpress' ),
+							'desc'    => esc_html__( 'If the user is not logged in, enable register from profile.', 'learnpress' ),
 						),
 						array(
 							'title'         => esc_html__( 'Enable default fields', 'learnpress' ),
@@ -130,7 +130,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 									'type'  => 'checkbox',
 								),
 							),
-							'desc'    => esc_html__( 'Custom fields for form register.', 'learnpress' ),
+							'desc'    => esc_html__( 'Custom fields to the registration form.', 'learnpress' ),
 						),
 						array(
 							'type' => 'sectionend',

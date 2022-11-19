@@ -130,14 +130,11 @@ class LP_Widget extends WP_Widget {
 
 		do_action( 'before_show_lp_widget_content' );
 
-		$serialized_instance = serialize( $instance );
-
 		$data = array_merge(
 			$this->widget_data_attr,
 			array(
 				'widget'   => $this->widget_id,
-				'instance' => base64_encode( $serialized_instance ),
-				'hash'     => wp_hash( $serialized_instance ),
+				'instance' => wp_json_encode( $instance ),
 			)
 		);
 
@@ -247,7 +244,7 @@ class LP_Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		if ( empty( $this->settings ) ) {
-			echo '<p>' . esc_html_e( 'There is no options for this widget.', 'learnpress' ) . '</p>';
+			echo '<p>' . esc_html_e( 'There are no options for this widget.', 'learnpress' ) . '</p>';
 			return;
 		}
 

@@ -19,7 +19,7 @@ class LP_User extends LP_Abstract_User {
 	public function can_view_content_course( int $course_id = 0 ): LP_Model_User_Can_View_Course_Item {
 		$view          = new LP_Model_User_Can_View_Course_Item();
 		$view->message = esc_html__(
-			'This content is protected, please enroll course to view this content!',
+			'This content is protected. Please enroll in the course to view this content!',
 			'learnpress'
 		);
 
@@ -43,7 +43,7 @@ class LP_User extends LP_Abstract_User {
 			return $view;
 		} elseif ( ! is_user_logged_in() ) {
 			$view->message = __(
-				'This content is protected, please login, enroll course to view this content!',
+				'This content is protected. Please log in or enroll in the course to view this content!',
 				'learnpress'
 			);
 
@@ -60,19 +60,19 @@ class LP_User extends LP_Abstract_User {
 				if ( $is_finished_course && $enable_block_item_when_finish ) {
 					$view->key     = LP_BLOCK_COURSE_FINISHED;
 					$view->message = __(
-						'You finished this course. This content is protected, please enroll course to view this content!',
+						'You finished this course. This content is protected. Please enroll in the course to view this content!',
 						'learnpress'
 					);
 				} elseif ( 0 === $course->timestamp_remaining_duration() ) {
 					$view->key     = LP_BLOCK_COURSE_DURATION_EXPIRE;
 					$view->message = __(
-						'Content of this item has blocked because the course has exceeded duration.',
+						'The content of this item has been blocked because the course has exceeded its duration.',
 						'learnpress'
 					);
 				} elseif ( $this->get_course_status( $course_id ) === LP_COURSE_PURCHASED ) {
 					$view->key     = LP_BLOCK_COURSE_PURCHASE;
 					$view->message = __(
-						'This content is protected, please enroll course to view this content!',
+						'This content is protected. Please enroll in the course to view this content!',
 						'learnpress'
 					);
 				} else {
@@ -159,7 +159,6 @@ class LP_User extends LP_Abstract_User {
 				}
 
 				$user_course_data = $this->get_course_data( $course_id );
-
 				if ( $user_course_data instanceof LP_User_Item_Course ) {
 					$retaken          = $user_course_data->get_retaken_count();
 					$can_retake_times = $retake_option - $retaken;
@@ -219,7 +218,7 @@ class LP_User extends LP_Abstract_User {
 			$user_course = $this->get_course_data( $course_id );
 
 			if ( ! $user_course || ! $user_course->is_enrolled() ) {
-				throw new Exception( esc_html__( 'Course is not enrolled', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is not enrolled.', 'learnpress' ) );
 			}
 		} catch ( Throwable $th ) {
 			$result_check->check   = false;
@@ -287,23 +286,23 @@ class LP_User extends LP_Abstract_User {
 			}
 
 			if ( ! $course->is_publish() ) {
-				throw new Exception( esc_html__( 'Course is not public', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is not public', 'learnpress' ) );
 			}
 
 			if ( $course->get_external_link() && ! $this->has_purchased_course( $course_id ) ) {
-				throw new Exception( esc_html__( 'Course is External', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is external', 'learnpress' ) );
 			}
 
 			if ( ! $course->is_in_stock() ) {
-				throw new Exception( esc_html__( 'Course is full students', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is full of students.', 'learnpress' ) );
 			}
 
 			if ( $course->is_no_required_enroll() ) {
-				throw new Exception( esc_html__( 'Course is not require enrolling.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is not required to enroll.', 'learnpress' ) );
 			}
 
 			if ( ! $course->is_free() && ! $this->has_purchased_course( $course_id ) ) {
-				throw new Exception( esc_html__( 'Course is not purchased.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is not purchased.', 'learnpress' ) );
 			}
 
 			if ( $this->has_enrolled_course( $course_id ) ) {
@@ -438,15 +437,15 @@ class LP_User extends LP_Abstract_User {
 			$course_id = $course->get_id();
 
 			if ( $this->has_finished_course( $course_id ) ) {
-				throw new Exception( esc_html__( 'Course is has finished.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course has finished.', 'learnpress' ) );
 			}
 
 			if ( ! $this->has_enrolled_course( $course_id ) ) {
-				throw new Exception( esc_html__( 'Course is not enroll.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is not enrolled.', 'learnpress' ) );
 			}
 
 			if ( ! $this->is_course_in_progress( $course_id ) ) {
-				throw new Exception( esc_html__( 'Error: Course is not in-progress.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Error: The course is not in progress.', 'learnpress' ) );
 			}
 
 			$course_data = $this->get_course_data( $course_id );
@@ -471,7 +470,7 @@ class LP_User extends LP_Abstract_User {
 			}
 
 			if ( ! apply_filters( 'lp_can_finish_course', true ) ) {
-				throw new Exception( esc_html__( 'Error: Filter disable finish course.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Error: Filter the disabled finished courses.', 'learnpress' ) );
 			}
 		} catch ( Exception $e ) {
 			$return['status']  = 'false';
@@ -505,7 +504,7 @@ class LP_User extends LP_Abstract_User {
 			$course_id = $this->_verify_course_item( $quiz_id, $course_id );
 			if ( ! $course_id ) {
 				throw new Exception(
-					__( 'Course does not exist or does not contain the quiz', 'learnpress' ),
+					__( 'The course does not exist or does not contain a quiz.', 'learnpress' ),
 					LP_INVALID_QUIZ_OR_COURSE
 				);
 			}
@@ -524,7 +523,7 @@ class LP_User extends LP_Abstract_User {
 			if ( ! $this->has_enrolled_course( $course_id ) || ! $this->is_course_in_progress( $course_id ) ) {
 				if ( ! $course->is_no_required_enroll() ) {
 					throw new Exception(
-						__( 'Please enroll course before starting quiz.', 'learnpress' ),
+						__( 'Please enroll in the course before starting the quiz.', 'learnpress' ),
 						LP_COURSE_IS_FINISHED
 					);
 				}
@@ -533,7 +532,7 @@ class LP_User extends LP_Abstract_User {
 			// Check if user has already started or completed quiz
 			if ( $this->has_item_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
 				throw new Exception(
-					__( 'User has started or completed quiz', 'learnpress' ),
+					__( 'The user has started or completed the quiz.', 'learnpress' ),
 					LP_QUIZ_HAS_STARTED_OR_COMPLETED
 				);
 			}
@@ -542,7 +541,7 @@ class LP_User extends LP_Abstract_User {
 			if ( $user->is_guest() ) {
 				// if course required enroll => print message "You have to login for starting quiz"
 				if ( ! $course->is_no_required_enroll() ) {
-					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
+					throw new Exception( __( 'You have to log in to start the quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
 				}
 			}
 
@@ -597,7 +596,7 @@ class LP_User extends LP_Abstract_User {
 			// If user has already finished the course
 			if ( $this->has_finished_course( $course_id ) ) {
 				throw new Exception(
-					__( 'User has already finished course of this quiz', 'learnpress' ),
+					__( 'The user has already finished the course of this quiz.', 'learnpress' ),
 					LP_COURSE_IS_FINISHED
 				);
 
@@ -606,7 +605,7 @@ class LP_User extends LP_Abstract_User {
 			// Check if user has already started or completed quiz
 			if ( $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
 				throw new Exception(
-					__( 'User has completed quiz', 'learnpress' ),
+					__( 'The user has completed the quiz', 'learnpress' ),
 					LP_QUIZ_HAS_STARTED_OR_COMPLETED
 				);
 			}
@@ -646,7 +645,7 @@ class LP_User extends LP_Abstract_User {
 				throw new Exception(
 					sprintf(
 						__(
-							'Course does not exist or does not contain the quiz.',
+							'The course does not exist or does not contain a quiz.',
 							'learnpress'
 						),
 						__CLASS__,
@@ -673,7 +672,7 @@ class LP_User extends LP_Abstract_User {
 			if ( ! $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
 				throw new Exception(
 					sprintf(
-						__( '%1$s::%2$s - User has not completed quiz.', 'learnpress' ),
+						__( '%1$s::%2$s - The ser has not completed the quiz.', 'learnpress' ),
 						__CLASS__,
 						__FUNCTION__
 					),
@@ -686,7 +685,7 @@ class LP_User extends LP_Abstract_User {
 			if ( ! $this->has_retake_quiz( $quiz_id, $course_id ) ) {
 				throw new Exception(
 					sprintf(
-						__( '%1$s::%2$s - Your Quiz can\'t retake.', 'learnpress' ),
+						__( '%1$s::%2$s - Your quiz can\'t be retaken.', 'learnpress' ),
 						__CLASS__,
 						__FUNCTION__
 					),

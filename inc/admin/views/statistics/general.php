@@ -14,7 +14,7 @@ $sections_count = sizeof( $sections );
 $count          = 0;
 
 gmdate( 'Y-m-d H:i:s', ( time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) ) );
-$now         = current_time( 'timestamp' );
+$now         = time();
 $now_mysql   = current_time( 'mysql' );
 $last_sunday = strtotime( 'Last Sunday', $now );
 

@@ -23,7 +23,7 @@ if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( 
 
 		<?php
 		if ( empty( $profile_tab['sections'] ) ) {
-			if ( is_callable( $profile_tab['callback'] ) ) {
+			if ( isset( $profile_tab['callback'] ) && is_callable( $profile_tab['callback'] ) ) {
 				echo call_user_func_array( $profile_tab['callback'], array( $tab_key, $profile_tab, $user ) );
 			} else {
 				do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );

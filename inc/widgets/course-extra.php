@@ -82,13 +82,13 @@ if ( ! class_exists( 'LP_Widget_Course_Extra' ) ) {
 					<?php
 					switch ( $instance['type'] ) {
 						case 'key_features':
-							LP()->template( 'course' )->course_extra_key_features( $course_id );
+							LearnPress::instance()->template( 'course' )->course_extra_key_features( $course_id );
 							break;
 						case 'target_audience':
-							LP()->template( 'course' )->course_extra_target_audiences( $course_id );
+							LearnPress::instance()->template( 'course' )->course_extra_target_audiences( $course_id );
 							break;
 						case 'requirements':
-							LP()->template( 'course' )->course_extra_requirements( $course_id );
+							LearnPress::instance()->template( 'course' )->course_extra_requirements( $course_id );
 							break;
 					}
 					?>

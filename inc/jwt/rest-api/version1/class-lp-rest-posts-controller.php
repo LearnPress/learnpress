@@ -11,7 +11,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 	protected $hierarchical = false;
 
 	protected function get_object( $id ) {
-		return new WP_Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass.", 'learnpress' ), __METHOD__ ), array( 'status' => 405 ) );
+		return new WP_Error( 'invalid-method', sprintf( __( "The method '%s' not implemented. It must be overridden in the subclass.", 'learnpress' ), __METHOD__ ), array( 'status' => 405 ) );
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -472,7 +472,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 	}
 
 	protected function prepare_object_for_response( $object, $request ) {
-		return new WP_Error( 'invalid-method', sprintf( __( "Method '%s' not implemented. Must be overridden in subclass.", 'learnpress' ), __METHOD__ ), array( 'status' => 405 ) );
+		return new WP_Error( 'invalid-method', sprintf( __( "The method '%s' not implemented. It must be overridden in the subclass.", 'learnpress' ), __METHOD__ ), array( 'status' => 405 ) );
 	}
 
 	protected function prepare_items_query( $prepared_args = array(), $request = null ) {
@@ -503,7 +503,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 		$params['context']['default'] = 'view';
 
 		$params['page']           = array(
-			'description'       => __( 'Current page of the collection.', 'learnpress' ),
+			'description'       => __( 'The current page of the collection.', 'learnpress' ),
 			'type'              => 'integer',
 			'default'           => 1,
 			'sanitize_callback' => 'absint',
@@ -511,7 +511,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'minimum'           => 1,
 		);
 		$params['per_page']       = array(
-			'description'       => __( 'Maximum number of items to be returned in result set.', 'learnpress' ),
+			'description'       => __( 'The maximum number of items to be returned in the result set.', 'learnpress' ),
 			'type'              => 'integer',
 			'default'           => 10,
 			'minimum'           => 1,
@@ -538,7 +538,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['exclude']        = array(
-			'description'       => __( 'Ensure result set excludes specific IDs.', 'learnpress' ),
+			'description'       => __( 'Ensure the result set excludes specific IDs.', 'learnpress' ),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'integer',
@@ -547,7 +547,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'sanitize_callback' => 'wp_parse_id_list',
 		);
 		$params['include']        = array(
-			'description'       => __( 'Limit result set to specific ids.', 'learnpress' ),
+			'description'       => __( 'Limit the result set to specific IDs.', 'learnpress' ),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'integer',
@@ -562,14 +562,14 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['order']          = array(
-			'description'       => __( 'Order sort attribute ascending or descending.', 'learnpress' ),
+			'description'       => __( 'Sorting attributes in ascending or descending order.', 'learnpress' ),
 			'type'              => 'string',
 			'default'           => 'desc',
 			'enum'              => array( 'asc', 'desc' ),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['orderby']        = array(
-			'description'       => __( 'Sort collection by object attribute.', 'learnpress' ),
+			'description'       => __( 'Sort collections by the object attribute.', 'learnpress' ),
 			'type'              => 'string',
 			'default'           => 'date',
 			'enum'              => array(
@@ -583,7 +583,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['author']         = array(
-			'description' => __( 'Limit result set to posts assigned to specific authors.', 'learnpress' ),
+			'description' => __( 'Limit the result set to posts assigned to specific authors.', 'learnpress' ),
 			'type'        => 'array',
 			'items'       => array(
 				'type' => 'integer',
@@ -591,7 +591,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'default'     => array(),
 		);
 		$params['author_exclude'] = array(
-			'description' => __( 'Ensure result set excludes posts assigned to specific authors.', 'learnpress' ),
+			'description' => __( 'Ensure the result set excludes posts assigned to specific authors.', 'learnpress' ),
 			'type'        => 'array',
 			'items'       => array(
 				'type' => 'integer',
@@ -599,7 +599,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			'default'     => array(),
 		);
 		$params['user']           = array(
-			'description' => __( 'Limit result set to posts assigned to specific authors.', 'learnpress' ),
+			'description' => __( 'Limit the result set to posts assigned to specific authors.', 'learnpress' ),
 			'type'        => 'array',
 			'items'       => array(
 				'type' => 'integer',
@@ -615,7 +615,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 
 		if ( $this->hierarchical ) {
 			$params['parent']         = array(
-				'description'       => __( 'Limit result set to those of particular parent IDs.', 'learnpress' ),
+				'description'       => __( 'Limit the result set to those of particular parent IDs.', 'learnpress' ),
 				'type'              => 'array',
 				'items'             => array(
 					'type' => 'integer',
@@ -624,7 +624,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 				'default'           => array(),
 			);
 			$params['parent_exclude'] = array(
-				'description'       => __( 'Limit result set to all items except those of a particular parent ID.', 'learnpress' ),
+				'description'       => __( 'Limit the result set to all items except those of a particular parent ID.', 'learnpress' ),
 				'type'              => 'array',
 				'items'             => array(
 					'type' => 'integer',

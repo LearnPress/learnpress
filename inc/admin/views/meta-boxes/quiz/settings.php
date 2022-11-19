@@ -15,7 +15,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 			array(
 				'_lp_duration'             => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
-					esc_html__( 'Set 0 for no limit, larger than 0 for limit', 'learnpress' ),
+					esc_html__( 'Set to 0 for no limit, greater than 0 for a limit.', 'learnpress' ),
 					'0',
 					array(
 						'default_time'      => 'minute',
@@ -27,7 +27,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 				),
 				'_lp_passing_grade'        => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Passing Grade(%)', 'learnpress' ),
-					esc_html__( 'The condition that must be achieved in order to be passed the quiz.', 'learnpress' ),
+					esc_html__( 'The conditions that must be achieved in order to pass the quiz.', 'learnpress' ),
 					'80',
 					array(
 						'type_input'        => 'number',
@@ -46,17 +46,17 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 				),
 				'_lp_negative_marking'     => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Negative Marking', 'learnpress' ),
-					esc_html__( 'For each question which students answer wrongly, the total point is deducted exactly the question\'s point', 'learnpress' ),
+					esc_html__( 'For each question that students answer wrongly, the total point is deducted exactly from the question\'s point.', 'learnpress' ),
 					'no'
 				),
 				'_lp_minus_skip_questions' => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Minus for skip', 'learnpress' ),
-					esc_html__( 'For each question which students answer skip, the total point is deducted exactly the question\'s point', 'learnpress' ),
+					esc_html__( 'For each question that students answer skip, the total point is deducted exactly from the question\'s point.', 'learnpress' ),
 					'no'
 				),
 				'_lp_retake_count'         => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Retake', 'learnpress' ),
-					esc_html__( 'How many times the user can re-take this quiz. Set 0 to disable. Set -1 to infinite.', 'learnpress' ),
+					esc_html__( 'How many times can the user re-take this quiz? Set 0 to disable. Set -1 to infinite.', 'learnpress' ),
 					'',
 					array(
 						'type_input'        => 'number',
@@ -69,7 +69,7 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 				),
 				'_lp_pagination'           => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Pagination', 'learnpress' ),
-					esc_html__( 'The number of questions displayed on each page.', 'learnpress' ),
+					esc_html__( 'The number of displayed questions on each page.', 'learnpress' ),
 					'1',
 					array(
 						'type_input'        => 'number',
@@ -87,8 +87,8 @@ class LP_Meta_Box_Quiz extends LP_Meta_Box {
 					'yes'
 				),
 				'_lp_show_correct_review'  => new LP_Meta_Box_Checkbox_Field(
-					esc_html__( 'Show correct answer', 'learnpress' ),
-					esc_html__( 'Allow students view correct answer question in review this quiz.', 'learnpress' ),
+					esc_html__( 'Show the correct answer', 'learnpress' ),
+					esc_html__( 'Allow students to view the correct answer to the question in reviewing this quiz.', 'learnpress' ),
 					'yes'
 				),
 			),

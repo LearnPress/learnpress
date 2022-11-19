@@ -103,6 +103,10 @@ const upgradeDB = () => {
 		const scrollToStepCurrent = ( stepCurrent ) => {
 			elItemStepCurrent = elGroupStep.find( 'input[value=' + stepCurrent + ']' ).closest( '.lp-item-step' );
 
+			if ( ! elItemStepCurrent.length ) {
+				return;
+			}
+
 			const offset = elItemStepCurrent.offset().top - lpModalOverlay.elMainContent.offset().top +
 				lpModalOverlay.elMainContent.scrollTop();
 

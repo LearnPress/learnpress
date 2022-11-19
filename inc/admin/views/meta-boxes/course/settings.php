@@ -73,7 +73,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			array(
 				'_lp_duration'                 => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
-					esc_html__( 'Set 0 for lifetime access.', 'learnpress' ),
+					esc_html__( 'Set to 0 for the lifetime access.', 'learnpress' ),
 					'10',
 					array(
 						'default_time'      => 'week',
@@ -85,17 +85,17 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_block_expire_duration'    => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Block content', 'learnpress' ),
-					esc_html__( 'Block course when duration expires.', 'learnpress' ),
+					esc_html__( 'When the duration expires, the course is blocked.', 'learnpress' ),
 					'no'
 				),
 				'_lp_block_finished'           => new LP_Meta_Box_Checkbox_Field(
 					'',
-					esc_html__( 'Block course after student finished this course.', 'learnpress' ),
+					esc_html__( 'Block the course after the student finished this course.', 'learnpress' ),
 					'yes'
 				),
 				'_lp_allow_course_repurchase'  => new LP_Meta_Box_Checkbox_Field(
 					__( 'Allow Repurchase', 'learnpress' ),
-					esc_html__( 'Allow users to repurchase this course after course finished or blocked ( Do not apply to free courses ).', 'learnpress' ),
+					esc_html__( 'Allow users to repurchase this course after it has been finished or blocked (Do not apply to free courses).', 'learnpress' ),
 					'no'
 				),
 				'_lp_course_repurchase_option' => new LP_Meta_Box_Select_Field(
@@ -121,7 +121,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_students'                 => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Fake Students Enrolled', 'learnpress' ),
-					esc_html__( 'How many students have taken this course', 'learnpress' ),
+					esc_html__( 'How many students have taken this course?', 'learnpress' ),
 					0,
 					array(
 						'type_input'        => 'number',
@@ -134,7 +134,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_max_students'             => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Max student', 'learnpress' ),
-					esc_html__( 'Maximum students can join the course. Set 0 for unlimited.', 'learnpress' ),
+					esc_html__( 'The maximum number of students that can join a course. Set 0 for unlimited.', 'learnpress' ),
 					0,
 					array(
 						'type_input'        => 'number',
@@ -147,7 +147,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_retake_count'             => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Re-take Course', 'learnpress' ),
-					esc_html__( 'The number of times a user can learn again this course. Set 0 to disable.', 'learnpress' ),
+					esc_html__( 'The number of times a user can learn again from this course. To disable, set to 0.', 'learnpress' ),
 					0,
 					array(
 						'type_input'        => 'number',
@@ -160,12 +160,12 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_has_finish'               => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Finish button', 'learnpress' ),
-					esc_html__( 'Allow show finish button when the student has completed all items but has not passed the course assessment.', 'learnpress' ),
+					esc_html__( 'Allow showing the finish button when the student has completed all items but has not passed the course assessment yet.', 'learnpress' ),
 					'yes'
 				),
 				'_lp_featured'                 => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Featured list', 'learnpress' ),
-					esc_html__( 'Add the course to Featured List.', 'learnpress' ),
+					esc_html__( 'Add the course to the Featured List.', 'learnpress' ),
 					'no'
 				),
 				'_lp_featured_review'          => new LP_Meta_Box_Textarea_Field(
@@ -174,7 +174,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_external_link_buy_course' => new LP_Meta_Box_Text_Field(
 					esc_html__( 'External link', 'learnpress' ),
-					esc_html__( 'Normally use for offline classes, Ex: link to a contact page. Format: https://google.com', 'learnpress' ),
+					esc_html__( 'Normally used for offline classes. Ex: link to a contact page. Format: https://google.com', 'learnpress' ),
 					'',
 					array(
 						'desc_tip' => 'You can apply for case: user register form.<br> You accept for user can learn courses by add manual order on backend',
@@ -183,87 +183,6 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			)
 		);
 	}
-
-	/**
-	 * @editor tungnx
-	 * @modify 4.1.5 - replace to lp_price function
-	 */
-	/*public function price( $thepostid ) {
-		$post = get_post( $thepostid );
-
-		$thepostid = ! empty( $thepostid ) ? $thepostid : absint( $post->ID );
-
-		$message    = '';
-		$price      = get_post_meta( $thepostid, '_lp_price', true );
-		$payment    = get_post_meta( $thepostid, '_lp_payment', true );
-		$sale_price = '';
-		$start_date = '';
-		$end_date   = '';
-
-		if ( $payment != 'free' ) {
-			$sale_price = get_post_meta( $thepostid, '_lp_sale_price', true );
-			$start_date = get_post_meta( $thepostid, '_lp_sale_start', true );
-			$end_date   = get_post_meta( $thepostid, '_lp_sale_end', true );
-		}
-
-		return apply_filters(
-			'lp/course/meta-box/fields/price',
-			array(
-				'_lp_price'              => new LP_Meta_Box_Text_Field(
-					esc_html__( 'Regular price', 'learnpress' ),
-					sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() ),
-					$price,
-					array(
-						'type_input'        => 'number',
-						'custom_attributes' => array(
-							'min'  => '0',
-							'step' => '0.01',
-						),
-						'style'             => 'width: 70px;',
-						'class'             => 'lp_meta_box_regular_price',
-					)
-				),
-				'_lp_sale_price'         => new LP_Meta_Box_Text_Field(
-					esc_html__( 'Sale price', 'learnpress' ),
-					'<a href="#" class="lp_sale_price_schedule">' . esc_html__( 'Schedule', 'learnpress' ) . '</a>',
-					$sale_price,
-					array(
-						'type_input'        => 'number',
-						'custom_attributes' => array(
-							'min'  => '0',
-							'step' => '0.01',
-						),
-						'style'             => 'width: 70px;',
-						'class'             => 'lp_meta_box_sale_price',
-					)
-				),
-				'_lp_sale_start'         => new LP_Meta_Box_Date_Field(
-					esc_html__( 'Sale start dates', 'learnpress' ),
-					'',
-					'',
-					array(
-						'wrapper_class' => 'lp_sale_start_dates_fields',
-						'placeholder'   => _x( 'From&hellip;', 'placeholder', 'learnpress' ),
-					)
-				),
-				'_lp_sale_end'           => new LP_Meta_Box_Date_Field(
-					esc_html__( 'Sale end dates', 'learnpress' ),
-					'',
-					'',
-					array(
-						'wrapper_class' => 'lp_sale_end_dates_fields',
-						'placeholder'   => _x( 'To&hellip;', 'placeholder', 'learnpress' ),
-						'cancel'        => true,
-					)
-				),
-				'_lp_no_required_enroll' => new LP_Meta_Box_Checkbox_Field(
-					esc_html__( 'No requirement enroll', 'learnpress' ),
-					esc_html__( 'Students can see the content of all course items and do the quiz without login.', 'learnpress' ),
-					'no'
-				),
-			)
-		);
-	}*/
 
 	/**
 	 * Setting course price
@@ -289,7 +208,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() ),
 					$regular_price,
 					array(
-						'type_input'        => 'number',
+						'type_input'        => 'text',
 						'custom_attributes' => array(
 							'min'  => '0',
 							'step' => '0.01',
@@ -303,7 +222,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'<a href="#" class="lp_sale_price_schedule">' . esc_html__( 'Schedule', 'learnpress' ) . '</a>',
 					$sale_price,
 					array(
-						'type_input'        => 'number',
+						'type_input'        => 'text',
 						'custom_attributes' => array(
 							'min'  => '0',
 							'step' => '0.01',
@@ -332,8 +251,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					)
 				),
 				'_lp_no_required_enroll' => new LP_Meta_Box_Checkbox_Field(
-					esc_html__( 'No requirement enroll', 'learnpress' ),
-					esc_html__( 'Students can see the content of all course items and do the quiz without login.', 'learnpress' ),
+					esc_html__( 'There is no enrollment requirement', 'learnpress' ),
+					esc_html__( 'Students can see the content of all course items and take the quiz without logging in.', 'learnpress' ),
 					'no'
 				),
 			)
@@ -382,10 +301,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$course_result_desc = '';
 		$course_results     = get_post_meta( $thepostid, '_lp_course_result', true );
 
-		$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
+		$course_result_desc .= __( 'The method of evaluating a student\'s performance in a course.', 'learnpress' );
 
 		if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $thepostid, '_lp_final_quiz', true ) ) {
-			$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
+			$course_result_desc .= __( '<br /><strong>Note! </strong>There is no final quiz in the course. Please add a final quiz.', 'learnpress' );
 		}
 
 		$final_quizz_passing = '';
@@ -427,7 +346,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_passing_condition' => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Passing Grade(%)', 'learnpress' ),
-					esc_html__( 'The condition that must be achieved to finish the course.', 'learnpress' ),
+					esc_html__( 'The conditions that must be achieved to finish the course.', 'learnpress' ),
 					'80',
 					array(
 						'type_input'        => 'number',

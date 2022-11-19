@@ -307,12 +307,12 @@
 			.on( 'click', '.plugin-action-buttons a', pluginActions )
 			.on( 'click', '[data-remove-confirm]', preventDefault )
 			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
-			$( 'html, body' ).addClass( 'lp-item-moving' );
-			$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );
-		} ).on( 'mouseup', function( e ) {
-			$( 'html, body' ).removeClass( 'lp-item-moving' );
-			$( '.lp-sortable-handle' ).css( 'cursor', '' );
-		} );
+				$( 'html, body' ).addClass( 'lp-item-moving' );
+				$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );
+			} ).on( 'mouseup', function( e ) {
+				$( 'html, body' ).removeClass( 'lp-item-moving' );
+				$( '.lp-sortable-handle' ).css( 'cursor', '' );
+			} );
 
 		/**
 		 * Function Export invoice LP Order
@@ -498,18 +498,26 @@
 		}
 
 		// Show/hide meta-box field with type checkbox
-		$( 'input' ).on( 'click' , function ( e ) {
+		$( 'input' ).on( 'click', function( e ) {
 			const el = $( e.target );
-			const id = el.attr( 'id' );
-			const classHide = id.replace('learn_press_', '');
-			const elHide = $(`.show_if_${classHide}`);
+			if ( ! el.length ) {
+				return;
+			}
 
-			if ( el.is(':checked') ) {
+			const id = el.attr( 'id' );
+			if ( ! id ) {
+				return;
+			}
+
+			const classHide = id.replace( 'learn_press_', '' );
+			const elHide = $( `.show_if_${ classHide }` );
+
+			if ( el.is( ':checked' ) ) {
 				elHide.show();
 			} else {
 				elHide.hide();
 			}
-		});
+		} );
 	};
 
 	$( document ).ready( onReady );

@@ -41,7 +41,7 @@ class LP_Elementor_Widget_Become_A_Teacher extends LP_Elementor_Widget_Base {
 			array(
 				'label'   => esc_html__( 'Description', 'learnpress' ),
 				'type'    => Controls_Manager::TEXTAREA,
-				'default' => esc_html__( 'Fill in your information and send us to become a teacher.', 'learnpress' ),
+				'default' => esc_html__( 'Fill in your information and send it to us to become a teacher.', 'learnpress' ),
 			)
 		);
 

@@ -92,13 +92,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	public function get_item_endpoint_args() {
 		return array(
 			'item_id'   => array(
-				'description'       => __( 'The ID of course item object.', 'learnpress' ),
+				'description'       => __( 'The ID of the course item object.', 'learnpress' ),
 				'type'              => 'int',
 				'validate_callback' => array( $this, 'validate_arg' ),
 				'required'          => true,
 			),
 			'course_id' => array(
-				'description'       => __( 'The ID of course object.', 'learnpress' ),
+				'description'       => __( 'The ID of the course object.', 'learnpress' ),
 				'type'              => 'int',
 				'validate_callback' => array( $this, 'validate_arg' ),
 				'required'          => true,
@@ -159,12 +159,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$quiz   = learn_press_get_quiz( $item_id );
 
 			if ( ! $course ) {
-				throw new Exception( __( 'Course is invalid!', 'learnpress' ) );
+				throw new Exception( __( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			if ( ! $quiz ) {
-				throw new Exception( __( 'Quiz is invalid!', 'learnpress' ) );
+				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
 			}
+
+			do_action( 'learn-press/user/before/start-quiz', $item_id, $course_id, $user_id );
 
 			// For no required enroll course
 			if ( $user->is_guest() && $course->is_no_required_enroll() ) {
@@ -203,6 +205,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$key_cache     = sprintf( '%d/user/%d/course/%d', $item_id, $user_id, $course_id );
 			$lp_quiz_cache->clear( $key_cache );
 			// End
+
+			$quiz->set_course( $course );
 
 			$show_check          = $quiz->get_instant_check();
 			$duration            = $quiz->get_duration();
@@ -250,7 +254,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 * @editor tungnx
 	 * @modify 4.1.4.1
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function submit_quiz_new( WP_REST_Request $request ) {
 		//$response = new LP_REST_Response();
@@ -269,19 +273,18 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$course     = learn_press_get_course( $course_id );
 
 			if ( ! $course ) {
-				throw new Exception( 'Course is invalid!' );
+				throw new Exception( 'The course is invalid!' );
 			}
+			// Use for Review Quiz.
+			$quiz = learn_press_get_quiz( $item_id );
+			if ( ! $quiz ) {
+				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
+			}
+			$quiz->set_course( $course );
 
 			// Course is no required enroll
 			if ( $course->is_no_required_enroll() ) {
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
-
-				// Use for Review Quiz.
-				$quiz = learn_press_get_quiz( $item_id );
-
-				if ( ! $quiz ) {
-					throw new Exception( __( 'Quiz is invalid!', 'learnpress' ) );
-				}
 
 				$result = $no_required_enroll->get_result_quiz( $quiz, $answered );
 
@@ -298,8 +301,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$response['status']  = 'success';
 				$response['results'] = $result;
 
-				//learn_press_setcookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '', 'completed', time() + ( 7 * DAY_IN_SECONDS ), false );
-
 				return rest_ensure_response( $response );
 			}
 
@@ -310,14 +311,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( 'User not enrolled course!' );
 			}
 
+			/**
+			 * @var LP_User_Item_Quiz $user_quiz
+			 */
 			$user_quiz = $user_course->get_item( $item_id );
-
 			if ( ! $user_quiz ) {
 				throw new Exception();
 			}
-
-			$end_time = gmdate( 'Y-m-d H:i:s', strtotime( $user_quiz->get_start_time( 'mysql' ) . " + $time_spend second" ) );
-			$user_quiz->set_end_time( $end_time );
 
 			// For case save result when check instant answer
 			$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $user_quiz->get_user_item_id() );
@@ -329,7 +329,11 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			// Calculate quiz result and save
+			// Set end time.
+			$start_time = $user_quiz->get_start_time()->getTimestamp();
+			$user_quiz->set_end_time( $start_time + $time_spend );
+
+			// Calculate quiz result and save.
 			$result = $user_quiz->calculate_quiz_result( $answered );
 			// Save
 			LP_User_Items_Result_DB::instance()->update( $user_quiz->get_user_item_id(), wp_json_encode( $result ) );
@@ -395,7 +399,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			} else {
 				$user = learn_press_get_current_user();
 				if ( $user->is_guest() ) {
-					throw new Exception( 'User is invalid!', 'learnrpess' );
+					throw new Exception( 'The user is invalid', 'learnrpess' );
 				}
 
 				$user_course = $user->get_course_data( $course_id );

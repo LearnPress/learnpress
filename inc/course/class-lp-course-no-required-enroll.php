@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		/**
 		 * Get result do quiz
 		 *
-		 * @param $quiz
+		 * @param LP_Quiz $quiz
 		 * @param null $answered
 		 *
 		 * @return array
@@ -48,7 +48,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				'pass'              => 0,
 			);
 
-			$question_ids             = $quiz->get_questions();
+			$question_ids             = $quiz->get_question_ids();
 			$result['question_count'] = count( $question_ids );
 
 			$questions = learn_press_rest_prepare_user_questions( $question_ids );

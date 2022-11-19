@@ -64,11 +64,11 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
-				throw new Exception( esc_html__( 'Course is invalid!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			if ( $course->is_no_required_enroll() ) {
-				throw new Exception( esc_html__( 'Course is no require enroll!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is not required to enroll!', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_user( $user_id );
@@ -115,14 +115,14 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		if ( $course_id && $user_id ) {
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
-				$response->message = __( 'Course is invalid', 'learnpress' );
+				$response->message = __( 'The course is invalid!', 'learnpress' );
 
 				return $response;
 			}
 
 			$user = learn_press_get_user( $user_id );
 			if ( $user->is_guest() ) {
-				$response->message = __( 'You are Guest', 'learnpress' );
+				$response->message = __( 'You are a Guest', 'learnpress' );
 
 				return $response;
 			}
@@ -170,12 +170,12 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			if ( empty( $course_id ) ) {
-				throw new Exception( esc_html__( 'Course is invalid!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
-				throw new Exception( esc_html__( 'Course is invalid!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			$filters                    = new LP_Section_Filter();
@@ -254,7 +254,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			if ( empty( $section_id ) ) {
-				throw new Exception( esc_html__( 'Section is invalid!', 'learnpress' ) );
+				throw new Exception( esc_html__( 'The section is invalid!', 'learnpress' ) );
 			}
 
 			$filters               = new LP_Section_Items_Filter();

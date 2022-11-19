@@ -127,13 +127,12 @@ const submitQuiz = ( state, action ) => {
 
 	const questions = state.questions.map( ( question ) => {
 		const newArgs = {};
-
 		if ( state.reviewQuestions ) {
-			if ( action.results.questions[ question.id ].explanation ) {
+			if ( action.results.questions[ question.id ]?.explanation ) {
 				newArgs.explanation = action.results.questions[ question.id ].explanation;
 			}
 
-			if ( action.results.questions[ question.id ].options ) {
+			if ( action.results.questions[ question.id ]?.options ) {
 				newArgs.options = action.results.questions[ question.id ].options;
 			}
 		}

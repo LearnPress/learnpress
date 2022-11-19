@@ -22,7 +22,7 @@ if ( ! $course ) {
 
 $message_data_confirm = sprintf(
 	'%s "%s"',
-	esc_html__( 'Do you want to retake course', 'learnpress' ),
+	esc_html__( 'Do you want to retake the course', 'learnpress' ),
 	$course->get_title()
 );
 ?>

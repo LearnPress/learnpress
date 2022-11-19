@@ -1,11 +1,11 @@
 === LearnPress - WordPress LMS Plugin ===
-Contributors: thimpress, tungnx89, nhamdv, hungkv, manhnl, tunnhn, phonglq.foobla, thongta, kendy73, leehld
+Contributors: thimpress, tungnx89, nhamdv, hungkv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: elearning, education, course, lms, learning management system
-Requires at least: 5.6
-Tested up to: 6.0
+Requires at least: 5.8
+Tested up to: 6.1.1
 Requires PHP: 7.0
-Stable tag: 4.1.6.9.1
+Stable tag: 4.1.7.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 <a href="https://thimpress.com/eduma-mobile-app/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress Mobile App</a>
 <a href="https://thimpress.com/product/learnpress-pro/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress PRO Bundle</a>
 
-LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Just try and see how it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
+LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Also, LearnPress is highly recommended by WPML as the <a href="https://wpml.org/plugin-functionality/lms/" target="_blank">Learning Management System plugin for multilingual sites</a>. Just try and see how amazing it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
 > Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have Premium LearnPress Add-Ons included already.
 > [Eduma | Education WordPress Theme](https://1.envato.market/G5Ook) (#1 Selling Education WordPress Theme).
@@ -89,6 +89,7 @@ We are developing and improving LearnPress day by day and bringing you more new 
 
 ###Premium add-ons for LearnPress WordPress LMS Plugin###
 
+- [WPML add-on for LearnPress](https://thimpress.com/product/wpml-add-on-for-learnpress/) - With the help from WPML, WPML add-on for LearnPress is the perfect solution for LearnPress users to translate anything flashily. Now, LearnPress users can focus on creating amazing contents without the worries about language restrictions.
 - [Assignments add-on for LearnPress](https://thimpress.com/product/assignments-add-on-for-learnpress/) - Allow instructors to give assignments, homework for students and they can grade the students' work later on. The Assignments add-on is a great supplement to LearnPress and will make your courses more interactive.
 - [myCRED add-on for LearnPress](https://thimpress.com/product/mycred-add-on-for-learnpress/) - add myCRED support for LearnPress WordPress LMS plugin, you can add point system to your eLearning WordPress site using LearnPress + myCRED add-on.
 - [Certificates add-on for LearnPress](https://thimpress.com/product/certificates-add-on-for-learnpress/) -  add drag & drop certificates builder as well as select designed certificate for each LMS course, your students will get particular certificates when they finished their courses.
@@ -203,9 +204,41 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.1.6.9.4 (2022-09-1x) =
+= 4.1.7.3.2 (2022-11-18) - <a href='https://thimpress.com/learnpress-v4-1-7-3-2-update/' target='_blank' rel='noopener'>View detail</a> =
+~ Added: tab permalink option.
+~ Modified: remove border style on the tab single course.
+~ Modified: style popup complete item.
+~ Show: notice check wp_remote_get if the call fail.
+~ Show: notice if LearnPress has beta version.
+~ Changed: text 'Enable' to 'Sticky Quiz Paging' on the Advanced Settings.
+
+= 4.1.7.3.1 (2022-11-03) =
+~ Fixed: error build missing styles.
+
+= 4.1.7.3 (2022-11-02) =
+~ Updated: text grammar.
+~ Modified: LP_DateTime class.
+~ Added: Course category and tag to menu.
+~ Changed: input type regular price, sale price to text.
+~ Call quiz get_questions function to get_question_ids.
+~ Fixed: upgrade LP3 to LP4 missing result of lesson.
+~ Remove file class-lp-backward-plugins.php, class-lp-factory.php, class-lp-query-search.php, class-lp-course-utils.php, class-lp-rest-authentication.php
+~ Remove code deprecated before.
+
+= 4.1.7.2 (2022-10-03) =
+~ Removed: delete file mu-plugin (Moved to the plugin Thim Optimize).
+~ Fixed: CVE-2022-3360 security.
+~ Fixed: error "Quiz is not auto submitted when the time is expired".
+~ Fixed: error "Completed item is not redirected to the next item".
+~ Modified: Shortcode button LP.
+~ Removed: delete shortcode 'learn_press_button_enroll'. We recommend using the shortcode 'learn_press_button_course' instead.
+~ Fixed: error "Email content on one line when you save".
+
+= 4.1.7.1 (2022-09-16) =
+~ Fixed: non-LP plugins causing errors.
+
+= 4.1.7 (2022-09-13) =
 ~ Fixed: IPN paypal.
-~ Added: hook 'learn-press/user-item/expiration-time'.
 ~ Added: autocomplete meta-box field.
 ~ Fixed: h5p error in curriculum editor.
 ~ Modified: duplicate course, sections, items.
@@ -214,11 +247,15 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: custom fields register not show on the Profile page.
 ~ Fixed: save order status.
 ~ Added: hook 'learn-press/user-item/expiration-time'.
-~ Added: function duplicate question answermeta when duplicate question.
+~ Added: function duplicate question answer-meta when duplicate question.
 ~ Fixed: error show content of quiz when user doing questions.
 ~ Fixed: error fetch api has x-wp-nonce with cache expire.
 ~ Fixed: sidebar toggle on mobile with theme Eduma.
-~ Added: autocomplete metabox field.
+~ Added: autocomplete meta-box field.
+~ Fixed: error not send mail when register user on page checkout.
+~ Fixed: error wrong status graduation when set Passing Grade is 100% on Quiz.
+~ Fixed: header, footer email of LP not detect variable.
+~ Fixed: error duplicated items, section when double click.
 
 = 4.1.6.9.3 (2022-08-10) =
 ~ Fixed: show wrong shortcode on course, item's course.

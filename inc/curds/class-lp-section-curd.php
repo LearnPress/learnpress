@@ -235,7 +235,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $section_id
 	 *
 	 * @return array
-	 * @depecated 4.1.6.9 Remove when release Addon Frontend Editor 4.0.1
+	 * @deprecated 4.1.6.9 Remove when release Addon Frontend Editor 4.0.1
 	 */
 	public function read_items( $section_id ) {
 		global $wpdb;
@@ -482,7 +482,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return void
 	 * @version 1.0.0
-	 * @since 4.1.6.9.4
+	 * @since 4.1.7
 	 */
 	public function assign_item_section( int $section_id, array $item = array() ) {
 		global $wpdb;
@@ -561,7 +561,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return bool
 	 * @version 4.0.0
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	public function update_final_item() {
 		_deprecated_function( __FUNCTION__, '4.1.6.9' );

@@ -14,7 +14,7 @@ class Buttons extends Component {
 		if ( status === 'completed' ) {
 			const { confirm, isOpen } = select( 'learnpress/modal' );
 
-			if ( 'no' === confirm( __( 'Are you sure you want to retake quiz?', 'learnpress' ), this.startQuiz ) ) {
+			if ( 'no' === confirm( __( 'Are you sure you want to retake the quiz?', 'learnpress' ), this.startQuiz ) ) {
 				! isOpen() && btn && btn.removeAttribute( 'disabled' );
 				return;
 			}
@@ -102,7 +102,7 @@ class Buttons extends Component {
 
 		const { confirm } = select( 'learnpress/modal' );
 
-		if ( 'no' === confirm( __( 'Are you sure to submit quiz?', 'learnpress' ), this.submit ) ) {
+		if ( 'no' === confirm( __( 'Are you sure to submit the quiz?', 'learnpress' ), this.submit ) ) {
 			return;
 		}
 		submitQuiz();

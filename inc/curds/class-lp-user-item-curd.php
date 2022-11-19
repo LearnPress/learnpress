@@ -18,7 +18,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function __construct() {
 		$this->_error_messages = array(
-			'QUIZ_NOT_EXISTS' => __( 'Quiz does not exists.', 'learnpress' ),
+			'QUIZ_NOT_EXISTS' => __( 'The quiz does not exist.', 'learnpress' ),
 		);
 	}
 
@@ -74,7 +74,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	protected function _load_questions( &$quiz ) {
 		$id        = $quiz->get_id();
 		$questions = LP_Object_Cache::get( 'questions-' . $id, 'learn-press/quizzes' );
-		if ( false === $questions || $quiz->get_no_cache() ) {
+		if ( false === $questions ) {
 			global $wpdb;
 			$questions = array();
 			$query     = $wpdb->prepare(
@@ -108,7 +108,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * @param LP_Quiz $quiz
 	 *
-	 * @depecated 4.1.6.4
+	 * @deprecated 4.1.6.4
 	 */
 	protected function _update_meta_cache( &$quiz ) {
 		_deprecated_function( __FUNCTION__, '4.1.6.4' );

@@ -22,10 +22,10 @@ if ( ! class_exists( 'LP_Email_Instructor_Denied' ) ) {
 		public function __construct() {
 			$this->id          = 'instructor-denied';
 			$this->title       = __( 'Denied', 'learnpress' );
-			$this->description = __( 'Become an instructor email denied.', 'learnpress' );
+			$this->description = __( 'Your email requesting to become an instructor has been denied.', 'learnpress' );
 
-			$this->default_subject = __( '[{{site_title}}] Your request to become an instructor denied', 'learnpress' );
-			$this->default_heading = __( 'Become an instructor denied', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}] Your request to become an instructor has been denied', 'learnpress' );
+			$this->default_heading = __( 'Your request to become an instructor has been denied', 'learnpress' );
 
 			parent::__construct();
 		}

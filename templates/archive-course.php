@@ -40,7 +40,7 @@ $page_title = learn_press_page_title( false );
 	 * LP Hook
 	 */
 	do_action( 'learn-press/before-courses-loop' );
-	LP()->template( 'course' )->begin_courses_loop();
+	LearnPress::instance()->template( 'course' )->begin_courses_loop();
 
 	if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
 		echo '<div class="lp-archive-course-skeleton" style="width:100%">';
@@ -55,7 +55,7 @@ $page_title = learn_press_page_title( false );
 
 			endwhile;
 		} else {
-			LP()->template( 'course' )->no_courses_found();
+			LearnPress::instance()->template( 'course' )->no_courses_found();
 		}
 
 		if ( LP_Settings_Courses::is_ajax_load_courses() ) {
@@ -65,7 +65,7 @@ $page_title = learn_press_page_title( false );
 		}
 	}
 
-	LP()->template( 'course' )->end_courses_loop();
+	LearnPress::instance()->template( 'course' )->end_courses_loop();
 	do_action( 'learn-press/after-courses-loop' );
 
 

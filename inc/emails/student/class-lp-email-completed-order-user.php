@@ -28,7 +28,7 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 			$this->id          = 'completed-order-user';
 			$this->title       = __( 'User', 'learnpress' );
 			$this->description = __(
-				'Send email to the user who has bought course when order is completed.',
+				'Send an email to the user who has bought the course when the order is completed.',
 				'learnpress'
 			);
 

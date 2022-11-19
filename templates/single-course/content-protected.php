@@ -20,7 +20,7 @@ $message = '';
 if ( ! is_user_logged_in() ) {
 	$message = sprintf(
 		__(
-			'This content is protected, please <a class="lp-link-login" href="%s">login</a> and enroll course to view this content!',
+			'This content is protected, please <a class=\"lp-link-login\" href=\"%s\">login</a> and enroll in the course to view this content!',
 			'learnpress'
 		),
 		learn_press_get_login_url( learn_press_get_current_url() )

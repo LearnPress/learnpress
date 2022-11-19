@@ -29,7 +29,7 @@ class LP_Jwt_Questions_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args'   => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -194,7 +194,7 @@ class LP_Jwt_Questions_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'type'       => 'object',
 			'properties' => array(
 				'id'                => array(
-					'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
+					'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -248,7 +248,7 @@ class LP_Jwt_Questions_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'content'           => array(
-					'description' => __( 'Content course.', 'learnpress' ),
+					'description' => __( 'Course content.', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),

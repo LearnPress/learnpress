@@ -104,12 +104,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @param int|string $date
 		 */
-		public function set_order_date( $date ) {
-			if ( is_numeric( $date ) ) {
-				$date = gmdate( 'Y-m-d H:i:s', $date );
-			}
-			$this->_set_data_date( 'order_date', $date );
+		public function set_order_date( $date ): LP_Order {
+			$this->set_data_date( 'order_date', $date );
 
+			return $this;
 		}
 
 		/**
@@ -366,8 +364,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function payment_complete( $transaction_id = '' ): bool {
 			do_action( 'learn-press/payment-pre-complete', $this->get_id() );
 
-			//TODO: tungnx - check to change code below - use LP()->session->set()
-			LP()->session->order_awaiting_payment = null;
+			//TODO: tungnx - check to change code below - use LearnPress::instance()->session->set()
+			LearnPress::instance()->session->order_awaiting_payment = null;
 
 			$valid_order_statuses = apply_filters(
 				'learn-press/valid-order-statuses-for-payment-complete',
@@ -1019,7 +1017,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * in case this order is for multi users
 		 *
 		 * @since 2.1.5
-		 * @depecated 4.1.6.9
+		 * @deprecated 4.1.6.9
 		 */
 		/*public function print_users() {
 			$user_ids = get_post_meta( $this->get_id(), '_user_id' );

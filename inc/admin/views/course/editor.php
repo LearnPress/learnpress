@@ -38,7 +38,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
 		<div v-else>
 			<div class="lp-place-holder">
 				<?php learn_press_admin_view( 'placeholder-animation' ); ?>
-				<div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to continue editing curriculum.', 'learnpress' ); ?></div>
+				<div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to continue editing the curriculum.', 'learnpress' ); ?></div>
 			</div>
 		</div>
 	</div>

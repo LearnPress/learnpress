@@ -42,7 +42,7 @@ if ( ! isset( $section ) ) {
 			<label for="pass2"><?php esc_html_e( 'Confirm new password', 'learnpress' ); ?></label>
 			<div class="form-field-input">
 				<input name="pass2" type="password" id="pass2" class="regular-text" value=""/>
-				<p id="lp-password-not-match" class="description lp-field-error-message hide-if-js"><?php esc_html_e( 'New password does not match!', 'learnpress' ); ?></p>
+				<p id="lp-password-not-match" class="description lp-field-error-message hide-if-js"><?php esc_html_e( 'The new password does not match!', 'learnpress' ); ?></p>
 			</div>
 		</li>
 

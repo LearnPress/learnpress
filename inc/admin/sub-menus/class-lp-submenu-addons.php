@@ -14,6 +14,7 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		$this->menu_title = __( 'Add-ons', 'learnpress' );
 		$this->page_title = __( 'LearnPress Add-ons', 'learnpress' );
 		$this->priority   = 20;
+		$this->callback   = [ $this, 'display' ];
 
 		$this->add_ons_tabs();
 
@@ -23,8 +24,8 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	public function add_ons_tabs() {
 		// Check is page addons
 		$current_page = LP_Helper::getUrlCurrent();
-		$pattern = '/.*page=learn-press-addons.*/';
-		$match   = preg_match( $pattern, $current_page, $matches );
+		$pattern      = '/.*page=learn-press-addons.*/';
+		$match        = preg_match( $pattern, $current_page, $matches );
 		if ( ! $match ) {
 			return;
 		}

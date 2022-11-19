@@ -30,13 +30,13 @@ class LP_Elementor_Widget_Register_Form extends LP_Elementor_Widget_Base {
 
 	public function render() {
 		if ( 'yes' !== LP_Settings::get_option( 'enable_register_profile', 'no' ) ) {
-			learn_press_display_message( __( 'Register form is disabled', 'learnpress' ), 'error' );
+			learn_press_display_message( __( 'The registration form is disabled', 'learnpress' ), 'error' );
 		}
 
 		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
 			learn_press_get_template( 'global/form-register.php' );
 		} else {
-			echo LP()->template( 'profile' )->register_form();
+			echo LearnPress::instance()->template( 'profile' )->register_form();
 		}
 	}
 }

@@ -291,6 +291,15 @@ abstract class LP_Abstract_Submenu {
 	}
 
 	/**
+	 * Callback return template.
+	 *
+	 * @return bool|array|mixed
+	 */
+	public function get_callback() {
+		return $this->callback;
+	}
+
+	/**
 	 * Display menu content
 	 */
 	public function display() {

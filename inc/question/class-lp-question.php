@@ -130,16 +130,16 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			return LP_Global::object_is_support_feature( $this->object_type . '.' . $this->get_type(), $feature, $type );
 		}*/
 
+		/**
+		 * @deprecated 4.1.7.3
+		 */
 		public function get_supports() {
+			_deprecated_function( __FUNCTION__, '4.1.7.3' );
 			if ( empty( LP_Global::$object_support_features ) ) {
 				return false;
 			}
 
 			return LP_Global::get_object_supports( $this->object_type . '.' . $this->get_type() );
-		}
-
-		public static function get_type_support_answer_options() {
-
 		}
 
 		/**

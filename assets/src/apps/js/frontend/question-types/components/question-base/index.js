@@ -144,7 +144,7 @@ class QuestionBase extends Component {
 	};
 
 	getWarningMessage = () => {
-		return <>{ __( 'Render function should be overwritten from base.', 'learnpress' ) }</>;
+		return <>{ __( 'The render function should be overwritten from the base.', 'learnpress' ) }</>;
 	};
 
 	getOptionClass = ( option ) => {

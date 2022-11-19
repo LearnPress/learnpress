@@ -29,7 +29,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				'args'   => array(
 					'id' => array(
-						'description' => esc_html__( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => esc_html__( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -99,7 +99,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 						'type'        => 'integer',
 					),
 					'answered' => array(
-						'description' => esc_html__( 'Answer all question.', 'learnpress' ),
+						'description' => esc_html__( 'Answer all questions.', 'learnpress' ),
 						'type'        => 'object',
 					),
 				),
@@ -228,7 +228,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		if ( empty( $quiz_id ) || empty( $course_id ) ) {
 			$response->status  = 'error';
-			$response->message = esc_html__( 'No Quiz ID or Quiz is not assigned in Course.', 'learnpress' );
+			$response->message = esc_html__( 'There is no Quiz ID or Quiz assigned in the course.', 'learnpress' );
 
 			return rest_ensure_response( $response );
 		}
@@ -254,7 +254,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		if ( empty( $quiz_id ) || empty( $course_id ) ) {
 			$response->status  = 'error';
-			$response->message = esc_html__( 'No Quiz ID or Quiz is not assigned in Course.', 'learnpress' );
+			$response->message = esc_html__( 'There is no Quiz ID or Quiz assigned in the course.', 'learnpress' );
 
 			return rest_ensure_response( $response );
 		}
@@ -282,14 +282,14 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		if ( empty( $quiz_id ) || empty( $course_id ) ) {
 			$response->status  = 'error';
-			$response->message = esc_html__( 'No Quiz ID or Quiz is not assigned in Course.', 'learnpress' );
+			$response->message = esc_html__( 'There is no Quiz ID or Quiz assigned in the course.', 'learnpress' );
 
 			return rest_ensure_response( $response );
 		}
 
 		if ( ! isset( $request['answered'] ) ) {
 			$response->status  = 'error';
-			$response->message = esc_html__( 'No Answed param.', 'learnpress' );
+			$response->message = esc_html__( 'No Answer param.', 'learnpress' );
 
 			return rest_ensure_response( $response );
 		}
@@ -563,7 +563,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'type'       => 'object',
 			'properties' => array(
 				'id'                => array(
-					'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
+					'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -617,7 +617,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'content'           => array(
-					'description' => __( 'Content course.', 'learnpress' ),
+					'description' => __( 'Course content.', 'learnpress' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
@@ -627,7 +627,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'can_finish_course' => array(
-					'description' => __( 'Can finish course', 'learnpress' ),
+					'description' => __( 'Can finish the course', 'learnpress' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
@@ -670,7 +670,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					),
 				),
 				'questions'         => array(
-					'description' => __( 'List all Question in Quiz.', 'learnpress' ),
+					'description' => __( 'List all of the Quiz Questions.', 'learnpress' ),
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
 					'items'       => array(

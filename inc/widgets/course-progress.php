@@ -53,7 +53,7 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 			$user_id = get_current_user_id();
 
 			if ( empty( $user_id ) ) {
-				return new WP_Error( 'no_user', esc_html__( 'You need login to view Course Progress', 'learnpress' ) );
+				return new WP_Error( 'no_user', esc_html__( 'You need to log in to view the Course Progress', 'learnpress' ) );
 			}
 
 			if ( empty( $instance['course_id'] ) ) {
@@ -62,7 +62,7 @@ if ( ! class_exists( 'LP_Widget_Course_Progress' ) ) {
 
 			$course = learn_press_get_course( $instance['course_id'] );
 			if ( ! $course ) {
-				return new WP_Error( 'no_course', esc_html__( 'Course is invalid', 'learnpress' ) );
+				return new WP_Error( 'no_course', esc_html__( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_user( $user_id );

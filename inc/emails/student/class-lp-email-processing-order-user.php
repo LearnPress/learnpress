@@ -20,7 +20,7 @@ if ( ! class_exists( 'LP_Email_Processing_Order_User' ) ) {
 		public function __construct() {
 			$this->id          = 'processing-order-user';
 			$this->title       = __( 'User', 'learnpress' );
-			$this->description = __( 'Notify users when their course orders are in processing.', 'learnpress' );
+			$this->description = __( 'Notify users when their course orders are being processed.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'Thank you for your order', 'learnpress' );

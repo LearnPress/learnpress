@@ -13,5 +13,5 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="learn-press-content-protected-message content-item-block">
-	<?php esc_html_e( 'Content of this item has blocked because the course has exceeded duration.', 'learnpress' ); ?>
+	<?php esc_html_e( 'The content of this item has been blocked because the course has exceeded its duration.', 'learnpress' ); ?>
 </div>

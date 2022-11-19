@@ -215,7 +215,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$course_start_time   = $course_item_data->get_start_time()->get_raw_date();
 			$duration            = $this->get_data( 'duration' );
 			$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
-			$timestamp_current   = strtotime( current_time( 'mysql' ) );
+			$timestamp_current   = time();
 			$timestamp_remaining = $timestamp_expire - $timestamp_current;
 
 			if ( $timestamp_remaining < 0 ) {
@@ -754,7 +754,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @return array
 		 * @version 1.0.0
-		 * @sicne 4.1.6.9.4
+		 * @sicne 4.1.7
 		 */
 		public function get_sections_data_arr( int $section_id = 0 ): array {
 			$sections_items = $this->get_full_sections_and_items_course();

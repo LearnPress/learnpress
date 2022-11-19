@@ -90,7 +90,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$this->id = 'paypal';
 
 			$this->method_title       = esc_html__( 'PayPal', 'learnpress' );
-			$this->method_description = esc_html__( 'Make payment via Paypal.', 'learnpress' );
+			$this->method_description = esc_html__( 'Make a payment via Paypal.', 'learnpress' );
 			$this->icon               = '';
 
 			$this->title       = esc_html__( 'PayPal', 'learnpress' );
@@ -257,7 +257,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @return array
 		 */
 		public function get_paypal_args( LP_Order $order ): array {
-			$checkout = LP()->checkout();
+			$checkout = LearnPress::instance()->checkout();
 			$custom   = array(
 				'order_id'       => $order->get_id(),
 				'order_key'      => $order->get_order_key(),
@@ -265,7 +265,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			// Item
-			$items    = LP()->get_cart()->get_items();
+			$items    = LearnPress::instance()->get_cart()->get_items();
 			$item_arg = [
 				'item_name_1' => $order->get_order_number(),
 				'quantity_1'  => 0,
@@ -349,7 +349,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function get_icon() {
 			if ( empty( $this->icon ) ) {
-				$this->icon = LP()->plugin_url( 'assets/images/paypal-logo-preview.png' );
+				$this->icon = LearnPress::instance()->plugin_url( 'assets/images/paypal-logo-preview.png' );
 			}
 
 			return parent::get_icon();

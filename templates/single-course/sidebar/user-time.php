@@ -9,15 +9,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * @var string      $status
- * @var LP_Datetime $start_time
- * @var LP_Datetime $end_time
- * @var LP_Datetime $expiration_time
- */
-$time   = current_time( 'mysql', true );
-$user   = learn_press_get_current_user();
-$course = learn_press_get_course();
+if ( ! isset( $data ) || ! isset( $data['start_time'] ) || ! isset( $data['end_time'] )
+	|| ! isset( $data['status'] ) || ! isset( $data['expiration_time'] ) ) {
+	return;
+}
+
+$start_time      = $data['start_time'];
+$end_time        = $data['end_time'];
+$status          = $data['status'];
+$expiration_time = $data['expiration_time'];
 ?>
 
 <div class="course-time">

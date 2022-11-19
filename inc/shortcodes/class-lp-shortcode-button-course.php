@@ -5,7 +5,7 @@
  * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
- * @version  3.0.0
+ * @version  3.0.1
  * @extends  LP_Abstract_Shortcode
  */
 
@@ -35,13 +35,14 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 					'id'            => 0,
 					'enroll_text'   => '',
 					'purchase_text' => '',
+					'btn_label'     => '',
 				),
 				$this->_atts
 			);
 		}
 
 		/**
-		 * Output form.
+		 * Output button course.
 		 *
 		 * @return string
 		 */
@@ -56,47 +57,67 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 				$course_id = $atts['id'];
 			}
 
-			$course = learn_press_get_course( $course_id );
+			try {
+				$course = learn_press_get_course( $course_id );
+				if ( ! $course ) {
+					return '';
+				}
 
-			if ( $course_id && $course ) {
-				LP_Global::set_course( $course );
-				global $post;
+				// Load js button course.
+				wp_enqueue_script( 'lp-single-course' );
 
-				$post = get_post( $course_id );
+				if ( $course->is_free() ) {
+					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_enroll' ) );
+				} elseif ( $course->get_external_link() ) {
+					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_external_link' ) );
+				} elseif ( $course->is_no_required_enroll() ) {
 
-				setup_postdata( $post );
-				do_action( 'learn-press/course-buttons' );
-				wp_reset_postdata();
-				LP_Global::reset();
+				} else {
+					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_purchase' ) );
+				}
+
+				do_action( 'learn-press/course-buttons', $course );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
 			return ob_get_clean();
 		}
 
 		/**
+		 * Label button purchase.
+		 *
 		 * @param string $text
 		 *
 		 * @return string
 		 */
-		public function purchase_button_text( $text ) {
+		public function button_text_purchase( string $text ): string {
 			if ( $this->_atts['purchase_text'] ) {
 				$text = $this->_atts['purchase_text'];
+			} elseif ( $this->_atts['btn_label'] ) {
+				$text = $this->_atts['btn_label'];
 			}
 
 			return $text;
 		}
 
 		/**
+		 * Label button enroll.
+		 *
 		 * @param string $text
 		 *
 		 * @return string
 		 */
-		public function enroll_button_text( $text ) {
+		public function button_text_enroll( string $text ): string {
 			if ( $this->_atts['enroll_text'] ) {
 				$text = $this->_atts['enroll_text'];
+			} elseif ( $this->_atts['btn_label'] ) {
+				$text = $this->_atts['btn_label'];
 			}
 
 			return $text;
 		}
 	}
 }
+
+new LP_Shortcode_Button_Course();

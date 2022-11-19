@@ -22,10 +22,10 @@ defined( 'ABSPATH' ) || exit();
 	<?php if ( ! learn_press_get_page_link( 'checkout' ) && ( $user->is_admin() || $user->is_instructor() ) ) { ?>
 
 		<?php
-		$message = __( 'LearnPress <strong>Checkout</strong> page is not set up. ', 'learnpress' );
+		$message = __( 'The LearnPress <strong>Checkout</strong> page is not set up.', 'learnpress' );
 
 		if ( $user->is_instructor() ) {
-			$message .= __( 'Please contact administrator for setting up this page.', 'learnpress' );
+			$message .= __( 'Please contact the administrator to set up this page.', 'learnpress' );
 		} else {
 			$message .= sprintf( __( 'Please <a href=\"%s\" target=\"_blank\">setup</a> it so users can purchase courses.', 'learnpress' ), admin_url( 'admin.php?page=learn-press-settings&tab=checkout' ) );
 		}

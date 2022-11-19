@@ -41,6 +41,33 @@ class LP_Request {
 		add_action( 'wp_loaded', array( 'LP_Forms_Handler', 'init' ), 10 );
 	}
 
+	/**
+	 * Get value by key from $_REQUEST
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @param string $sanitize_type
+	 * @param string $method
+	 *
+	 * @since 4.1.7.2
+	 * @version 1.0.0
+	 * @return array|float|int|string
+	 */
+	public static function get_param( string $key, $default = '', string $sanitize_type = 'text', string $method = '' ) {
+		switch ( $method ) {
+			case 'post':
+				$values = $_POST ?? [];
+				break;
+			case 'get':
+				$values = $_GET ?? [];
+				break;
+			default:
+				$values = $_REQUEST ?? [];
+		}
+
+		return LP_Helper::sanitize_params_submitted( $values[ $key ] ?? $default, $sanitize_type );
+	}
+
 	public static function get_header() {
 		ob_start();
 	}

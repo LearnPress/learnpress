@@ -47,7 +47,7 @@ if ( is_user_logged_in() ) {
 	</p>
 
 	<p class="lp-checkout-sign-up-link">
-		<?php if ( LP()->checkout()->is_enable_register() ) : ?>
+		<?php if ( LearnPress::instance()->checkout()->is_enable_register() ) : ?>
 			<?php esc_html_e( 'Don\'t have an account?', 'learnpress' ); ?>
 			<a href="javascript: void(0);">
 				<label for="checkout-account-switch-to-register"><?php echo esc_html_x( 'Sign up', 'checkout sign up link', 'learnpress' ); ?></label>

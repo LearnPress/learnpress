@@ -19,7 +19,7 @@ $settings = LP_Settings::instance();
 			<input class="regular-text" type="email" name="settings[paypal][paypal_email]" id="settings-paypal-email"
 				value="<?php echo esc_attr( $settings->get( 'paypal.paypal_email', '' ) ); ?>">
 			<p class="description">
-				<?php _e( 'Your Paypal email in live mode.', 'learnpress' ); ?>
+				<?php _e( 'Your Paypal email is in live mode.', 'learnpress' ); ?>
 			</p>
 			<input type="hidden" name="settings[paypal][enable]" value="yes"/>
 		</td>

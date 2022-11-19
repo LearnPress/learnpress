@@ -88,5 +88,5 @@ if ( ! $check_lp_need_upgrade_db ) {
 		<?php lp_skeleton_animation_html( 7 ); ?>
 	</div>
 	<input type="hidden" name="message-when-upgrading"
-		   value="<?php esc_html_e( 'Please don\'t close this tab until the completed upgrade', 'learnpress' ); ?>"/>
+		value="<?php esc_html_e( 'Please don\'t close this tab until the completed upgrade', 'learnpress' ); ?>"/>
 </div>

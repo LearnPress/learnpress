@@ -117,7 +117,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 		public static function save_fields( $options, $data = null ) {
 			if ( is_null( $data ) ) {
-				$data = LP_Helper::sanitize_params_submitted( $_POST );
+				$data = LP_Helper::sanitize_params_submitted( $_POST, 'html' );
 			}
 
 			if ( empty( $data ) ) {
@@ -149,7 +149,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 						$value = '1' === $raw_value || 'yes' === $raw_value ? 'yes' : 'no';
 						break;
 					case 'textarea':
-						$value = LP_Helper::sanitize_params_submitted( trim( $raw_value ), 'html' );
+						$value = trim( $raw_value );
 						break;
 					case 'multiselect':
 					case 'multi_select_countries':
@@ -193,7 +193,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 							}
 						}
 
-						$value = LP_Helper::sanitize_params_submitted( $value );
+						//$value = LP_Helper::sanitize_params_submitted( $value );
 						break;
 
 					case 'image_advanced':
@@ -204,13 +204,13 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 						break;
 					case 'email-content':
 						$value = ! empty( $raw_value ) ? $raw_value : array();
-						$value = LP_Helper::sanitize_params_submitted( $value, 'html' );
+						//$value = LP_Helper::sanitize_params_submitted( $value, 'html' );
 						break;
 					case 'url':
 						$value = ! empty( $raw_value ) ? esc_url_raw( $raw_value ) : '';
 						break;
 					default:
-						$value = LP_Helper::sanitize_params_submitted( $raw_value );
+						$value = $raw_value;
 						break;
 				}
 

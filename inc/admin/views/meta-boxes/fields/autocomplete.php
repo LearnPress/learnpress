@@ -4,7 +4,7 @@
  *
  * @author nhamdv
  * @version 1.0.0
- * @since 4.1.6.9.4-beta-1
+ * @since 4.1.7
  */
 class LP_Meta_Box_Autocomplete_Field extends LP_Meta_Box_Field {
 
@@ -19,6 +19,9 @@ class LP_Meta_Box_Autocomplete_Field extends LP_Meta_Box_Field {
 	}
 
 	public function output( $thepostid ) {
+		// Enqueue scripts here for future use everywhere called.
+		wp_enqueue_script( 'lp-admin-learnpress' );
+
 		if ( empty( $this->id ) ) {
 			return;
 		}

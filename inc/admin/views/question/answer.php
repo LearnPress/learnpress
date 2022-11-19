@@ -24,7 +24,7 @@ learn_press_admin_view( 'question/option' );
 			</tbody>
 		</table>
 		<p class="add-answer" v-if="addable">
-			<button class="button add-question-option-button" type="button" @click="newAnswer"><?php esc_html_e( 'Add new Answer', 'learnpress' ); ?></button>
+			<button class="button add-question-option-button" type="button" @click="newAnswer"><?php esc_html_e( 'Add a new Answer', 'learnpress' ); ?></button>
 		</p>
 	</div>
 </script>

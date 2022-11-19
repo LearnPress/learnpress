@@ -19,7 +19,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 		public function __construct() {
 			$this->id          = 'new-order-instructor';
 			$this->title       = __( 'Instructor', 'learnpress' );
-			$this->description = __( 'Notify instructors when a user enroll their courses.', 'learnpress' );
+			$this->description = __( 'Notify instructors when a user enrolls in one of their courses.', 'learnpress' );
 
 			$this->default_subject = __( 'New order placed on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'New user order', 'learnpress' );

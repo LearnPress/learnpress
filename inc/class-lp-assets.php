@@ -78,10 +78,11 @@ class LP_Assets extends LP_Abstract_Assets {
 				'nonce'                              => wp_create_nonce( 'wp_rest' ),
 				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ),
 				'is_course_archive'                  => learn_press_is_courses(),
+				'lpArchiveSkeleton'                  => lp_archive_skeleton_get_args(),
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'            => home_url( '/' ),
-				'user_checkout'      => LP()->checkout()->get_checkout_email(),
+				'user_checkout'      => LearnPress::instance()->checkout()->get_checkout_email(),
 				'i18n_processing'    => esc_html__( 'Processing', 'learnpress' ),
 				'i18n_redirecting'   => esc_html__( 'Redirecting', 'learnpress' ),
 				'i18n_invalid_field' => esc_html__( 'Invalid field', 'learnpress' ),
@@ -127,6 +128,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'js/dist/frontend/modal' . self::$_min_assets . '.js' ),
 					array( 'jquery' )
 				),
+				// lp-plugins-all use only for FE, when FE 2 release will remove it.
 				'lp-plugins-all'       => new LP_Asset_Key( self::url( 'js/vendor/plugins.all.min.js' ) ),
 				'lp-global'            => new LP_Asset_Key(
 					self::url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
@@ -206,10 +208,10 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'wp-hooks' ),
+					array( 'lp-global', 'lp-utils', 'wp-hooks' ),
 					array( LP_PAGE_COURSES ),
 					0,
-					1
+					0
 				),
 				'lp-profile'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),

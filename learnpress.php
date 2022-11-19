@@ -4,10 +4,10 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.1.6.9.4-beta-4
+ * Version: 4.1.7.3.2
  * Author URI: http://thimpress.com
- * Requires at least: 5.6
- * Tested up to: 6.0
+ * Requires at least: 5.8
+ * Tested up to: 6.1.1
  * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
@@ -29,7 +29,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 	/**
 	 * Class LearnPress
 	 *
-	 * Version 3.0.0
+	 * Version 3.0.1
 	 */
 	class LearnPress {
 		/**
@@ -44,6 +44,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @var int
 		 */
 		public $db_version = 4;
+		/**
+		 * @var int Version of mu file on folder mu-plugins
+		 */
+		public $mu_file_version = 2;
 
 		/**
 		 * The single instance of the class
@@ -148,6 +152,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Include files .
 			$this->includes();
 
+			// Copy mu plugin.
+			$this->mu_plugin();
+
 			// hooks .
 			$this->init_hooks();
 		}
@@ -177,7 +184,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				'quiz_questions',
 				'question_answers',
 				'question_answermeta',
-				'review_logs',
 			);
 
 			foreach ( $tables as $short_name ) {
@@ -342,7 +348,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/course/lp-course-functions.php';
 			require_once 'inc/course/abstract-course.php';
 			require_once 'inc/course/class-lp-course.php';
-			//require_once 'inc/course/class-lp-course-utils.php';
 			require_once 'inc/quiz/lp-quiz-functions.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
 			require_once 'inc/lesson/lp-lesson-functions.php';
@@ -381,9 +386,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/rest-api/class-lp-core-api.php';
 			require_once 'inc/rest-api/class-lp-admin-core-api.php';
 
-			// include_once 'inc/theme-support/class-theme-support-base.php';
-			// include_once 'inc/class-lp-theme-support.php';
-
 			/** Jwt */
 			include_once 'inc/jwt/class-jwt-auth.php';
 
@@ -412,6 +414,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				return;
 			}
 
+			require_once 'inc/admin/class-lp-admin-ajax.php';
+
 			require_once 'inc/admin/class-lp-admin-notice.php';
 
 			// File handle install LP
@@ -422,8 +426,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/admin/class-lp-admin.php';
 			// require_once 'inc/admin/settings/abstract-settings-page.php';
-
-			require_once 'inc/admin/class-lp-admin-ajax.php';
 		}
 
 		/**
@@ -445,10 +447,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function init_hooks() {
-			if ( 0 !== strcmp( LP_PLUGIN_BASENAME, 'learnpress/learnpress.php' ) ) {
-				add_action( 'admin_notices', array( $this, 'error' ) );
-			}
-
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
 
@@ -461,9 +459,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
-			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
+			//add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
-			// add_action( 'init', array( $this, 'wp_init' ), 10 );
 
 			// Check require version thim-core.
 			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
@@ -486,58 +483,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			return $links;
 		}
 
-		public function error() {
-			?>
-			<div class="error">
-				<p>
-					<?php
-					printf(
-						__(
-							'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)',
-							'learnpress'
-						),
-						LP_PLUGIN_BASENAME
-					);
-					?>
-				</p>
-			</div>
-			<?php
-		}
-
-		/**
-		 * Maybe flush rewrite rules
-		 */
-		public function wp_init() {
-			/*if ( LP()->session->flush_rewrite_rules ) {
-				flush_rewrite_rules();
-				unset( LP()->session->flush_rewrite_rules );
-			}*/
-		}
-
-		/**
-		 * Get base name of plugin from file.
-		 *
-		 * @return string
-		 */
-		// private function plugin_basename() {
-		// return learn_press_plugin_basename( __FILE__ );
-		// }
-
-		/**
-		 * Magic function to get Learnpress data.
-		 *
-		 * @param $key
-		 *
-		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
-		 * @deprecated since 3.0.0
-		 * @editor tungnx
-		 * @modify 4.1.3.1 - comment
-		 */
-		/*
-		public function __get( $key ) {
-			return false;
-		}*/
-
 		/**
 		 * Trigger this function while activating Learnpress.
 		 *
@@ -546,7 +491,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_activate() {
 			LP_Install::instance()->on_activate();
-			// do_action( 'learn-press/activate', $this );
 		}
 
 		/**
@@ -612,10 +556,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			$this->init();
-
-			// Todo: tungnx - remove this code after handle ajax on page learn-press-addons
-			// require_once 'inc/background-process/class-lp-background-query-items.php';
-			// require_once 'inc/background-process/class-lp-background-installer.php';
 
 			require_once 'inc/lp-template-hooks.php';
 
@@ -690,11 +630,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @since 3.3.0
 		 */
 		public function template( $type = '' ) {
-			if ( ! $this->template ) {
-				$this->template = LP_Template::instance();
-			}
+			$this->template = LP_Template::instance();
+			$templates      = (array) $this->template->get_templates();
 
-			return isset( $this->template[ $type ] ) ? $this->template[ $type ] : $this->template;
+			return $templates[ $type ] ?? $this->template;
 		}
 
 		/**
@@ -703,9 +642,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function init() {
 			$this->api       = new LP_Core_API();
 			$this->admin_api = new LP_Admin_Core_API();
-			// $this->theme_support = LP_Theme_Support::instance();
-
-			// $this->view_log();
 
 			$this->get_session();
 
@@ -875,12 +811,23 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			return self::$_instance;
 		}
 
-		public function admin_notice_require_addon_version() {
-			?>
-			<div class="notice notice-error">
-				<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require Addon</strong> version 4.0.0 or higher' ); ?></p>
-			</div>
-			<?php
+		/**
+		 * Copy class-lp-mu-plugin.php to mu_plugins folder
+		 *
+		 * @return void
+		 */
+		public function mu_plugin() {
+			try {
+				// Remove file mu plugin create on version 4.1.7.
+				$name                = 'class-lp-mu-plugin.php';
+				$mu_plugins_path     = WPMU_PLUGIN_DIR;
+				$mu_plugin_file_path = $mu_plugins_path . '/' . $name;
+				if ( file_exists( $mu_plugin_file_path ) ) {
+					LP_WP_Filesystem::instance()->lp_filesystem->delete( $mu_plugin_file_path );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 		}
 	}
 }
@@ -900,4 +847,4 @@ function LP() {
  * Done! entry point of the plugin
  * Create new instance of LearnPress and put it to global
  */
-$GLOBALS['LearnPress'] = LP();
+$GLOBALS['LearnPress'] = LearnPress::instance();

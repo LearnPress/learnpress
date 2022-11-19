@@ -6,7 +6,6 @@
  * @since 3.0.0
  */
 class LP_Submenu_Statistics extends LP_Abstract_Submenu {
-
 	/**
 	 * LP_Submenu_Statistics constructor.
 	 */
@@ -15,6 +14,7 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 		$this->menu_title = __( 'Statistics', 'learnpress' );
 		$this->page_title = __( 'LearnPress Statistics', 'learnpress' );
 		$this->priority   = 10;
+		$this->callback   = [ $this, 'display' ];
 
 		if ( current_user_can( LP_TEACHER_ROLE ) ) {
 			$tabs = array(

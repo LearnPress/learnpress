@@ -35,7 +35,7 @@ const Result = () => {
 		let graduation = '';
 		if ( results.graduation ) {
 			graduation = results.graduation;
-		} else if ( results.result >= passingGradeValue.replace( /[^0-9\.]+/g, '' ) ) {
+		} else if ( results.result >= passingGradeValue ) {
 			graduation = 'passed';
 		} else {
 			graduation = 'failed';
@@ -149,12 +149,12 @@ const Result = () => {
 		strokeDasharray: `${ circumference } ${ circumference }`,
 		strokeDashoffset: offset,
 	};
-	const passingGradeValue = results.passingGrade || passingGrade;
+	const passingGradeValue = parseFloat( results.passingGrade || passingGrade );
 
 	let graduation = '';
 	if ( results.graduation ) {
 		graduation = results.graduation;
-	} else if ( percentResult >= passingGradeValue.replace( /[^0-9\.]+/g, '' ) ) {
+	} else if ( percentResult >= passingGradeValue ) {
 		graduation = 'passed';
 	} else {
 		graduation = 'failed';
@@ -171,14 +171,6 @@ const Result = () => {
 
 	const classNames = [ 'quiz-result', graduation ];
 
-	//Re-write value to results.timeSpend
-	/*if ( lpQuizSettings.checkNorequizenroll === 1 ) {
-		const timespendStart = window.localStorage.getItem( 'quiz_start_' + QuizID ),
-			timespendEnd = window.localStorage.getItem( 'quiz_end_' + QuizID );
-		if ( timespendStart && timespendEnd ) {
-			results.timeSpend = timeDifference( timespendStart, timespendEnd ).duration;
-		}
-	}*/
 	return (
 		<div className={ classNames.join( ' ' ) }>
 			<h3 className="result-heading">{ __( 'Your Result', 'learnpress' ) }</h3>
@@ -191,7 +183,7 @@ const Result = () => {
 
 				<span className="result-achieved">{ `${ percentResult }%` }</span>
 				<span className="result-require">
-					{ passingGradeValue || '-' }
+					{ passingGradeValue + '%' || '-' }
 				</span>
 			</div>
 

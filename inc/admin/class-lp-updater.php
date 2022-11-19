@@ -28,18 +28,6 @@ class LP_Updater {
 				'4' => 5, // DB v4 need up DB v5
 			)
 		);
-		add_action( 'admin_notices', array( $this, 'check_update_database_message' ), 0 );
-	}
-
-	/**
-	 * Show message needs upgrades database compatible with LP version current.
-	 */
-	public function check_update_database_message() {
-		if ( ! $this->check_lp_db_need_upgrade() ) {
-			return;
-		}
-
-		learn_press_admin_view( 'updates/html-update-message' );
 	}
 
 	/**
@@ -55,18 +43,18 @@ class LP_Updater {
 			return false;
 		}
 
-		$db_current_version = (int) get_option( LP_KEY_DB_VERSION, false );
-		if ( ! $db_current_version ) {
+		$db_current_version = (int) get_option( LP_KEY_DB_VERSION, 0 );
+		/*if ( ! $db_current_version ) {
 			return false;
-		}
+		}*/
 
 		$db_require_version = LearnPress::instance()->db_version;
-		if ( $db_require_version <= $db_current_version ) {
+		if ( version_compare( $db_require_version, $db_current_version, '<=' ) ) {
 			return false;
 		}
 
 		if ( array_key_exists( $db_current_version, $this->db_map_version ) ) {
-			return $this->db_map_version[ $db_current_version ];
+			return $this->db_map_version[ $db_current_version . '' ];
 		}
 
 		/**

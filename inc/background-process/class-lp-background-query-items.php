@@ -125,7 +125,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			);
 			$plugins    = array();
 
-			set_transient( 'lp_plugins_wp', __( 'There is no items found!', 'learnpress' ), $this->transient_time );
+			set_transient( 'lp_plugins_wp', __( 'No items found!', 'learnpress' ), $this->transient_time );
 
 			try {
 				$api = plugins_api( 'query_plugins', $query_args );
@@ -179,7 +179,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			$url      = 'https://thimpress.com/?thimpress_get_addons=premium';
 			$response = wp_remote_get( esc_url_raw( $url ), array( 'decompress' => false ) );
 
-			set_transient( 'lp_plugins_tp', __( 'There is no items found!', 'learnpress' ), $this->transient_time );
+			set_transient( 'lp_plugins_tp', __( 'No items found!', 'learnpress' ), $this->transient_time );
 
 			if ( is_wp_error( $response ) ) {
 				return false;
@@ -229,7 +229,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 */
 		public function query_related_themes() {
 
-			set_transient( 'lp_related_themes', __( 'There is no item found!', 'learnpress' ), $this->transient_time );
+			set_transient( 'lp_related_themes', __( 'No item found!', 'learnpress' ), $this->transient_time );
 
 			$themes   = array();
 			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';

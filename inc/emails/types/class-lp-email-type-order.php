@@ -67,7 +67,7 @@ class LP_Email_Type_Order extends LP_Email {
 			$user_id_str = implode( ',', $user_ids );
 		}
 
-		$variables = apply_filters(
+		$this->variables = apply_filters(
 			'lp/email/type-order/variables-mapper',
 			[
 				'{{order_id}}'          => $order->get_id(),
@@ -87,6 +87,6 @@ class LP_Email_Type_Order extends LP_Email {
 		);
 
 		$variables_common = $this->get_common_variables( $this->email_format );
-		$this->variables  = array_merge( $variables, $variables_common );
+		$this->variables  = array_merge( $this->variables, $variables_common );
 	}
 }

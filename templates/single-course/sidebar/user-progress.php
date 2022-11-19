@@ -4,7 +4,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -14,16 +14,11 @@ if ( ! isset( $user ) || ! isset( $course ) || ! isset( $course_data ) || ! isse
 }
 
 $passing_condition = $course->get_passing_condition();
-$quiz_false        = 0;
-
-if ( ! empty( $course_results['items'] ) ) {
-	$quiz_false = $course_results['items']['quiz']['completed'] - $course_results['items']['quiz']['passed'];
-}
 ?>
 
 <div class="course-results-progress">
 	<?php
-	if ( $course_results['items']['lesson']['total'] ) :
+	if ( ! empty( $course_results['items'] ) && $course_results['items']['lesson']['total'] ) :
 		?>
 		<div class="items-progress">
 			<h4 class="items-progress__heading">
@@ -34,7 +29,8 @@ if ( ! empty( $course_results['items'] ) ) {
 	<?php endif; ?>
 
 	<?php
-	if ( $course_results['items']['quiz']['total'] ) :
+	if ( ! empty( $course_results['items'] ) && $course_results['items']['quiz']['total'] ) :
+		$quiz_false = $course_results['items']['quiz']['completed'] - $course_results['items']['quiz']['passed'];
 		?>
 		<div class="items-progress">
 			<h4 class="items-progress__heading">

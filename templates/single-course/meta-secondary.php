@@ -9,8 +9,8 @@
 
 defined( 'ABSPATH' ) or die;
 
-$has_meta_left  = LP()->template()->has_content( 'learn-press/course-meta-secondary-left' );
-$has_meta_right = LP()->template()->has_content( 'learn-press/course-meta-secondary-right' );
+$has_meta_left  = LearnPress::instance()->template()->has_content( 'learn-press/course-meta-secondary-left' );
+$has_meta_right = LearnPress::instance()->template()->has_content( 'learn-press/course-meta-secondary-right' );
 
 // Do not echo anything if there is no content hooked
 if ( ! $has_meta_left && ! $has_meta_right ) {

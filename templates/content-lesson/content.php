@@ -21,7 +21,7 @@ if ( ! isset( $lesson ) ) {
 $content = $lesson->get_content();
 
 if ( ! $content ) {
-	$message = esc_html__( 'Lesson content is empty.', 'learnpress' );
+	$message = esc_html__( 'The lesson content is empty.', 'learnpress' );
 
 	if ( $lesson->current_user_can_edit() ) {
 		$message .= sprintf( '<a href="%s" class="edit-content">%s</a>', esc_url_raw( $lesson->get_edit_link() ), esc_html__( 'Edit', 'learnpress' ) );

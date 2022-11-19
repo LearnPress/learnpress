@@ -94,7 +94,7 @@ class LP_Helper {
 	 *
 	 * @param array|int $ids
 	 * @Todo: tungnx - need to review code
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	public static function cache_posts( $ids ) {
 		//_deprecated_function( __FUNCTION__, '4.1.6.9' );
@@ -403,10 +403,11 @@ class LP_Helper {
 	 * @author tungnx
 	 */
 	public static function getUrlCurrent(): string {
-		$schema    = is_ssl() ? 'https://' : 'http://';
-		$http_host = $_SERVER['HTTP_HOST'] ?? '';
+		$schema      = is_ssl() ? 'https://' : 'http://';
+		$http_host   = LP_Helper::sanitize_params_submitted( filter_input( INPUT_SERVER, 'HTTP_HOST' ) ?? '' );
+		$request_uri = LP_Helper::sanitize_params_submitted( filter_input( INPUT_SERVER, 'REQUEST_URI' ) ?? '' );
 
-		return $schema . $http_host . untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ?? '' ) );
+		return $schema . untrailingslashit( esc_url_raw( $http_host . $request_uri ) );
 	}
 
 	/**
@@ -430,7 +431,7 @@ class LP_Helper {
 	 * @since  3.2.7.1
 	 * @author tungnx
 	 */
-	public static function sanitize_params_submitted( $value, $type_content = 'text' ) {
+	public static function sanitize_params_submitted( $value, string $type_content = 'text' ) {
 		$value = wp_unslash( $value );
 
 		if ( is_string( $value ) ) {
@@ -443,6 +444,12 @@ class LP_Helper {
 					break;
 				case 'key':
 					$value = sanitize_key( $value );
+					break;
+				case 'int':
+					$value = (int) $value;
+					break;
+				case 'float':
+					$value = (float) $value;
 					break;
 				default:
 					$value = sanitize_text_field( $value );

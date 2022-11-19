@@ -20,7 +20,7 @@ class LP_REST_Settings_Controller extends LP_Abstract_REST_Controller {
 			'(?P<key>[\w]+)' => array(
 				'args'   => array(
 					'id' => array(
-						'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
+						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'string',
 					),
 				),

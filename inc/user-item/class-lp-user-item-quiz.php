@@ -156,19 +156,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
-	 * Get current question ID (quiz).
-	 *
-	 * @param string $return - Optional.
-	 *
-	 * @return int|LP_Question
-	 */
-	public function get_current_question( $return = '' ) {
-		_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
-
-		learn_press_error_log( sprintf( 'Deprecated %s::%s', __CLASS__, __FUNCTION__ ) );
-	}
-
-	/**
 	 * Get ID of the course that this item assigned to.
 	 *
 	 * @return array|mixed
@@ -284,7 +271,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$user_quiz           = LP_User_Items_DB::getInstance()->get_user_course_item( $filter, true );
 			$course_start_time   = $user_quiz->start_time;
 			$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
-			$timestamp_current   = strtotime( current_time( 'mysql', 1 ) );
+			$timestamp_current   = time();
 			$timestamp_remaining = $timestamp_expire - $timestamp_current;
 
 			if ( $timestamp_remaining < 0 ) {
@@ -493,7 +480,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				throw new Exception();
 			}
 
-			$question_ids             = $quiz->get_questions();
+			$question_ids             = $quiz->get_question_ids();
 			$result['mark']           = $quiz->get_mark();
 			$result['question_count'] = count( $question_ids );
 			$result['time_spend']     = $this->get_time_interval( 'display' );
@@ -683,7 +670,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function get_total_questions() {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
-		$questions = $quiz->get_questions();
+		$questions = $quiz->get_question_ids();
 
 		return sizeof( $questions );
 	}
@@ -757,12 +744,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function instant_check_question( int $question_id, $answered = null ): array {
 		$question = learn_press_get_question( $question_id );
 		if ( ! $question ) {
-			throw new Exception( __( 'Question is invalid!', 'learnpress' ) );
+			throw new Exception( __( 'The question is invalid!', 'learnpress' ) );
 		}
 
 		$can_check = $this->can_check_answer( $question_id );
 		if ( ! $can_check ) {
-			throw new Exception( __( 'Cannot check answer the question.', 'learnpress' ) );
+			throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
 		}
 
 		$answered_check = array(

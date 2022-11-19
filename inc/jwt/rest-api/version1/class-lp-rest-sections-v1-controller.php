@@ -37,7 +37,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 		$post_status_obj = get_post_status_object( $post->post_status );
 
 		if ( ! $post_status_obj || ! $post_status_obj->public ) {
-			return new WP_Error( 'lp_section_not_public', __( 'Course is not public', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
+			return new WP_Error( 'lp_section_not_public', __( 'The course is not public', 'learnpress' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -113,7 +113,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 			'type'       => 'object',
 			'properties' => array(
 				'id'          => array(
-					'description' => __( 'Unique identifier for the resource.', 'learnpress' ),
+					'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -140,7 +140,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 		$params['context']['default'] = 'view';
 
 		$params['page']     = array(
-			'description'       => __( 'Current page of the collection.', 'learnpress' ),
+			'description'       => __( 'The current page of the collection.', 'learnpress' ),
 			'type'              => 'integer',
 			'default'           => 1,
 			'sanitize_callback' => 'absint',
@@ -148,7 +148,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 			'minimum'           => 1,
 		);
 		$params['per_page'] = array(
-			'description'       => __( 'Maximum number of items to be returned in result set.', 'learnpress' ),
+			'description'       => __( 'The maximum number of items to be returned in the result set.', 'learnpress' ),
 			'type'              => 'integer',
 			'default'           => 10,
 			'minimum'           => 1,
@@ -157,7 +157,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['order']    = array(
-			'description'       => __( 'Order sort attribute ascending or descending.', 'learnpress' ),
+			'description'       => __( 'Sorting attributes in ascending or descending order.', 'learnpress' ),
 			'type'              => 'string',
 			'default'           => 'asc',
 			'enum'              => array( 'asc', 'desc' ),
@@ -170,7 +170,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['exclude']  = array(
-			'description'       => __( 'Ensure result set excludes specific IDs.', 'learnpress' ),
+			'description'       => __( 'Ensure the result set excludes specific IDs.', 'learnpress' ),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'integer',
@@ -179,7 +179,7 @@ class LP_Jwt_Sections_V1_Controller extends LP_REST_Jwt_Controller {
 			'sanitize_callback' => 'wp_parse_id_list',
 		);
 		$params['include']  = array(
-			'description'       => __( 'Limit result set to specific ids.', 'learnpress' ),
+			'description'       => __( 'Limit the result set to specific IDs.', 'learnpress' ),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'integer',

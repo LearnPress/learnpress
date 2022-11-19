@@ -12,29 +12,28 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		$this->menu_title = __( 'Tools', 'learnpress' );
 		$this->page_title = __( 'LearnPress Tools', 'learnpress' );
 		$this->priority   = 40;
+		$this->callback   = [ $this, 'display' ];
 
 		$this->tabs = apply_filters(
 			'learn-press/admin/tools-tabs',
 			array(
-				'course'   => __( 'Course Data', 'learnpress' ),
-				'database' => __( 'Database', 'learnpress' ),
-				'template' => __( 'Templates', 'learnpress' ),
-				//'cron'     => __( 'Cron Jobs', 'learnpress' ),
-				//'cache'    => __( 'Caches', 'learnpress' ),
+				'course'          => __( 'Course Data', 'learnpress' ),
+				'database'        => __( 'Database', 'learnpress' ),
+				'template'        => __( 'Templates', 'learnpress' ),
+				'lp_beta_version' => __( 'LearnPress Beta Version', 'learnpress' ),
 			)
 		);
 
 		parent::__construct();
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-		$this->_process_actions();
+		//$this->_process_actions();
 	}
 
-	public function admin_scripts() {
-		learn_press_admin_assets()->enqueue_script( 'lp-update' );
-	}
-
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	protected function _process_actions() {
-		$has_action = true;
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$has_action = true;
 		switch ( LP_Request::get( 'page' ) ) {
 			default:
 				$has_action = false;
@@ -53,28 +52,53 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 
 		if ( $has_action ) {
 			die();
-		}
+		}*/
 	}
 
+	/**
+	 * Show tools for database.
+	 *
+	 * @return void
+	 */
 	public function page_content_database() {
 		learn_press_admin_view( 'tools/html-database' );
 	}
 
+	/**
+	 * Show template override by theme.
+	 *
+	 * @return void
+	 */
 	public function page_content_template() {
 		learn_press_admin_view( 'tools/html-template' );
 	}
 
-	/*public function page_content_cache() {
-		learn_press_admin_view( 'tools/html-cache' );
-	}*/
-
+	/**
+	 * Show tools course data.
+	 *
+	 * @return void
+	 */
 	public function page_content_course() {
 		learn_press_admin_view( 'tools/html-course' );
 	}
 
-	/*public function page_content_cron() {
-		learn_press_admin_view( 'tools/html-cron' );
-	}*/
+	/**
+	 * Show beta version LP.
+	 *
+	 * @return void
+	 */
+	public function page_content_lp_beta_version() {
+		$lp_beta_version_info = LP_Admin_Notice::check_lp_beta_version();
+		learn_press_admin_view(
+			'admin-notices/beta-version',
+			[
+				'data' => [
+					'check' => 1,
+					'info'  => $lp_beta_version_info,
+				],
+			]
+		);
+	}
 
 	/**
 	 * Display page

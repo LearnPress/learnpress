@@ -115,14 +115,16 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 	public function set_data_content() {
 		$course = learn_press_get_course( $this->course_id );
 		$user   = learn_press_get_user( $this->user_id );
-
 		if ( ! $course || ! $user ) {
 			return;
 		}
 
 		$user_course_data = $user->get_course_data( $this->course_id );
+		if ( ! $user_course_data ) {
+			return;
+		}
 
-		$variables = apply_filters(
+		$this->variables = apply_filters(
 			'lp/email/type-finished-course/variables-mapper',
 			[
 				'{{course_id}}'             => $this->course_id,
@@ -138,6 +140,6 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 		);
 
 		$variables_common = $this->get_common_variables( $this->email_format );
-		$this->variables  = array_merge( $variables, $variables_common );
+		$this->variables  = array_merge( $this->variables, $variables_common );
 	}
 }

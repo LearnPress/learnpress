@@ -18,16 +18,18 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->menu_title = esc_html__( 'Settings', 'learnpress' );
 		$this->page_title = esc_html__( 'LearnPress Settings', 'learnpress' );
 		$this->priority   = 30;
+		$this->callback   = [ $this, 'display' ];
 
 		$this->tabs = apply_filters(
 			'learn-press/admin/settings-tabs-array',
 			array(
-				'general'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-general.php',
-				'courses'  => new LP_Settings_Courses(),
-				'profile'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-profile.php',
-				'payments' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
-				'emails'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',
-				'advanced' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
+				'general'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-general.php',
+				'courses'   => new LP_Settings_Courses(),
+				'profile'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-profile.php',
+				'payments'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
+				'emails'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',
+				'permalink' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-permalink.php',
+				'advanced'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 			)
 		);
 

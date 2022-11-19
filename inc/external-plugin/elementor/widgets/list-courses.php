@@ -187,7 +187,7 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 		}
 
 		if ( empty( $courses ) ) {
-			LP()->template( 'course' )->no_courses_found();
+			LearnPress::instance()->template( 'course' )->no_courses_found();
 		}
 		?>
 		<div class="lp-archive-courses">

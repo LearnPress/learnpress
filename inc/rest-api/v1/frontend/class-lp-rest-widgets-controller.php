@@ -37,9 +37,8 @@ class LP_REST_Widgets_Controller extends LP_Abstract_REST_Controller {
 			$params    = $request->get_params();
 			$widget_id = $params['widget'] ?? false; // LP_Widget.
 			$instance  = $params['instance'] ?? false;
-			$hash      = $params['hash'] ?? false;
 
-			if ( empty( $widget_id ) || empty( $instance ) || empty( $hash ) ) {
+			if ( empty( $widget_id ) || empty( $instance ) ) {
 				throw new Exception( 'Error: No params!' );
 			}
 
@@ -49,13 +48,7 @@ class LP_REST_Widgets_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( 'Error: No method lp_rest_api_content!' );
 			}
 
-			$serialized_instance = base64_decode( $instance );
-
-			if ( ! hash_equals( wp_hash( $serialized_instance ), $hash ) ) {
-				throw new Exception( 'The provided instance is malformed.' );
-			}
-
-			$instance = unserialize( $serialized_instance );
+			$instance = json_decode( $instance, true );
 
 			unset( $params['instance'] );
 			unset( $params['hash'] );

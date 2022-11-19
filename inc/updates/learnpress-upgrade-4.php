@@ -36,6 +36,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @see modify_tb_lp_user_items
 	 * @see remove_course_status_cancelled
 	 * @see convert_result_graduation_item
+	 * @see convert_result_items
 	 * @see convert_result_questions
 	 * @see convert_retake_quiz
 	 * @see create_col_extra_value_on_tb_lp_user_itemmeta
@@ -88,6 +89,11 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 						),
 						'convert_result_graduation_item'   => new LP_Step(
 							'convert_result_graduation_item',
+							'Convert Data Graduation items of courses',
+							''
+						),
+						'convert_result_items'             => new LP_Step(
+							'convert_result_items',
 							'Convert Data Result courses, items\' courses',
 							''
 						),
@@ -489,19 +495,20 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 	 * @return LP_Step
 	 */
 	protected function convert_result_graduation_item( array $data ): LP_Step {
-		$response  = new LP_Step( __FUNCTION__, '' );
-		$lp_db     = LP_Database::getInstance();
-		$page      = 0;
-		$offset    = 0;
-		$limit     = 100;
-		$total_row = 0;
+		$response        = new LP_Step( __FUNCTION__, '' );
+		$lp_db           = LP_Database::getInstance();
+		$page            = 0;
+		$offset          = 0;
+		$limit           = 100;
+		$total_row       = 0;
+		$suffix_table_bk = '_bk';
 
 		try {
 			if ( empty( $data ) ) {
 				// Check total rows.
 				$query = $lp_db->wpdb->prepare(
 					"
-					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
+					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta{$suffix_table_bk}
 					WHERE meta_key = %s
 					",
 					'grade'
@@ -518,7 +525,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 			$query            = $lp_db->wpdb->prepare(
 				"
 				    SELECT learnpress_user_item_id AS user_item_id, meta_value AS grade
-				    FROM $lp_db->tb_lp_user_itemmeta
+				    FROM $lp_db->tb_lp_user_itemmeta{$suffix_table_bk}
 				    WHERE meta_key = %s
 					LIMIT %d, %d
 				",
@@ -527,12 +534,6 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				$limit
 			);
 			$user_item_grades = $lp_db->wpdb->get_results( $query );
-
-			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
-
-			if ( empty( $user_item_grades ) || 100 === $percent ) {
-				return $this->finish_step( $response, __FUNCTION__ . ' finished' );
-			}
 
 			/**
 			 * Copy value of meta_key "grade" table learnpress_user_itemmeta LP3
@@ -544,7 +545,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 					UPDATE $lp_db->tb_lp_user_items
 					SET graduation = %s
 					WHERE user_item_id = %d;
-				",
+					",
 					$user_item_grade->grade,
 					$user_item_grade->user_item_id
 				);
@@ -553,12 +554,127 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				$lp_db->check_execute_has_error();
 			}
 
+			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
+			if ( empty( $user_item_grades ) || 100 == $percent ) {
+				// Update graduation for case grade wrong (null or lesson completed but still 'in-progress').
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items
+					SET graduation = 'passed'
+					WHERE status = 'completed'
+					AND item_type = 'lp_lesson'
+					"
+				);
+				// Update graduation for case status empty and grade null
+				$lp_db->wpdb->query(
+					"
+					UPDATE $lp_db->tb_lp_user_items
+					SET graduation = 'in-progress'
+					WHERE (status = '' OR status = 'enrolled')
+					"
+				);
+
+				return $this->finish_step( $response, __FUNCTION__ . ' finished' );
+			}
+
 			$response->status           = 'success';
 			$response->message          = 'Insert success';
 			$response->percent          = $percent;
 			$response->data->p          = ++ $page;
 			$response->data->total_rows = $total_row;
 		} catch ( Exception $e ) {
+			$response->message = $this->error_step( $response->name, $e->getMessage() );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Convert result items (lesson).
+	 *
+	 * @param array $data
+	 *
+	 * @return LP_Step
+	 */
+	protected function convert_result_items( array $data ): LP_Step {
+		$response  = new LP_Step( __FUNCTION__, '' );
+		$lp_db     = LP_Database::getInstance();
+		$page      = 0;
+		$offset    = 0;
+		$limit     = 100;
+		$total_row = 0;
+
+		try {
+			if ( empty( $data ) ) {
+				// Check total rows.
+				$query = "
+					SELECT COUNT(learnpress_user_item_id) FROM $lp_db->tb_lp_user_itemmeta
+					WHERE meta_key LIKE '%course_results_evaluate%'
+				";
+
+				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
+			} else {
+				$page      = $data['p'];
+				$offset    = $limit * $page;
+				$total_row = $data['total_rows'];
+			}
+
+			// Convert rows.
+			$query = $lp_db->wpdb->prepare(
+				"
+				SELECT learnpress_user_item_id AS user_item_id, meta_value AS result
+				FROM $lp_db->tb_lp_user_itemmeta
+				WHERE meta_key LIKE '%course_results_evaluate%'
+				LIMIT %d offset %d
+				",
+				$limit,
+				$offset
+			);
+
+			$result_lessons = $lp_db->wpdb->get_results( $query );
+			if ( 0 === count( $result_lessons ) ) {
+				return $this->finish_step( $response, 'Convert result question success' );
+			}
+
+			foreach ( $result_lessons as $result_lesson_obj ) {
+				$result_lesson = maybe_unserialize( ( $result_lesson_obj->result ) );
+				if ( ! $result_lesson ) {
+					continue;
+				}
+
+				$result_json = json_encode( $result_lesson );
+
+				// Check exists user_item_id value on table learnpress_user_item_results.
+				$check = $lp_db->wpdb->get_var(
+					$lp_db->wpdb->prepare(
+						"
+						SELECT user_item_id FROM $lp_db->tb_lp_user_item_results
+						WHERE user_item_id = %d
+						",
+						$result_lesson_obj->user_item_id
+					)
+				);
+
+				if ( empty( $check ) ) {
+					$lp_db->wpdb->insert(
+						$lp_db->tb_lp_user_item_results,
+						array(
+							'result'       => $result_json,
+							'user_item_id' => $result_lesson_obj->user_item_id,
+						)
+					);
+					$lp_db->check_execute_has_error();
+				}
+			}
+
+			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
+
+			$response->status           = 'success';
+			$response->message          = 'Insert lesson result success';
+			$response->percent          = $percent;
+			$response->data->p          = ++ $page;
+			$response->data->total_rows = $total_row;
+		} catch ( Throwable $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
 		}
 

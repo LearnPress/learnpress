@@ -174,7 +174,7 @@ class LP_REST_Admin_Reset_Data_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'status'     => LP_COURSE_ENROLLED,
 					'graduation' => 'in-progress',
-					'start_time' => current_time( 'mysql', true ),
+					'start_time' => current_time( 'mysql', 1 ),
 					'end_time'   => null,
 				),
 				array(

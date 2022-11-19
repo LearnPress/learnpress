@@ -6,6 +6,8 @@ import scrollToItemCurrent from './scrolltoitem';
 import { searchCourseContent } from './components/search';
 
 export default function courseCurriculumSkeleton( courseID = '' ) {
+	let isLoadingItems = false;
+	let isLoadingSections = false;
 	const Sekeleton = () => {
 		const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 
@@ -150,6 +152,8 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			}
 		}
 
+		isLoadingItems = false;
+
 		return { data3: returnData, pages3: pages || data.pages, status3: status, message3: message, page: page || 0 };
 	};
 
@@ -183,6 +187,8 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			}
 		}
 
+		isLoadingSections = false;
+
 		return { data2: returnData, pages2: pages || data.pages, page2: page, status2: status, message2: message };
 	};
 
@@ -192,7 +198,8 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		const sectionBtns = document.querySelectorAll( '.section-item__loadmore' );
 
 		[ ...sectionBtns ].map( async ( sectionBtn ) => {
-			if ( sectionBtn.contains( e.target ) ) {
+			if ( sectionBtn.contains( e.target ) && ! isLoadingItems ) {
+				isLoadingItems = true;
 				const sectionItem = sectionBtn.parentNode;
 				const sectionId = sectionItem.getAttribute( 'data-section-id' );
 				const sectionContent = sectionItem.querySelector( '.section-content' );
@@ -231,7 +238,8 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		const moreSections = document.querySelectorAll( '.curriculum-more__button' );
 
 		[ ...moreSections ].map( async ( moreSection ) => {
-			if ( moreSection.contains( e.target ) ) {
+			if ( moreSection.contains( e.target ) && ! isLoadingSections ) {
+				isLoadingSections = true;
 				const paged = parseInt( moreSection.dataset.page );
 
 				const sections = moreSection.parentNode.parentNode.querySelector( '.curriculum-sections' );

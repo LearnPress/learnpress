@@ -50,7 +50,7 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			}
 
 			if ( ! $viewing_user ) {
-				return new WP_Error( 'cannot-view-profile', esc_html__( 'You can\'t viewing user profile', 'learnpress' ) );
+				return new WP_Error( 'cannot-view-profile', esc_html__( 'You can\'t view the user profile', 'learnpress' ) );
 			}
 		}
 

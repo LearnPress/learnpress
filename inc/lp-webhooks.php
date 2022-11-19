@@ -87,7 +87,7 @@ function learn_press_process_web_hooks() {
 			echo "</pre>\n===============================================================\n";
 		}
 		$output = ob_get_clean();
-		wp_die( $output, __( 'LearnPress webhook process Complete', 'learnpress' ), array( 'response' => 200 ) );
+		wp_die( $output, __( 'The LearnPress webhook process is complete', 'learnpress' ), array( 'response' => 200 ) );
 	}
 }
 

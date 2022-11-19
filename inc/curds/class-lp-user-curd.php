@@ -883,7 +883,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $course_id
 	 *
 	 * @return mixed
-	 * @depecated 4.1.6.9.1
+	 * @deprecated 4.1.6.9.1
 	 */
 	/*public function get_user_items( $user_id, $course_id ) {
 		if ( false === ( $course_data = LP_Object_Cache::get(
@@ -897,7 +897,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}*/
 
 	/**
-	 * @depecated 4.1.6.9.1
+	 * @deprecated 4.1.6.9.1
 	 */
 	/*public function get_user_completed_items( $user_id, $course_id ) {
 		if ( ! $items = $this->get_user_items( $user_id, $course_id ) ) {
@@ -950,7 +950,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int   $course_id
 	 *
 	 * @return mixed
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	//  public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
 	//      global $wpdb;
@@ -1114,8 +1114,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param bool $last
 	 *
 	 * @return bool|mixed
+	 * @deprecated 4.1.7.2
 	 */
-	public function get_user_item( $user_id, $item_id, $course_id = 0, $last = true ) {
+	/*public function get_user_item( $user_id, $item_id, $course_id = 0, $last = true ) {
 		$num_args = func_num_args();
 
 		if ( $num_args == 2 ) {
@@ -1132,7 +1133,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $item;
-	}
+	}*/
 
 	/**
 	 * @param int    $user_item_id
@@ -1161,7 +1162,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $user_item_id
 	 *
 	 * @return bool|LP_User_Item_Course
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	/*public function get_user_item_course( $user_item_id ) {
 		if ( $item = $this->get_user_item_by_id( $user_item_id, LP_COURSE_CPT ) ) {
@@ -1172,14 +1173,14 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}*/
 
 	/**
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	/*public function get_user_item_meta( $user_item_id, $meta_key, $single = true ) {
 		return learn_press_get_user_item_meta( $user_item_id, $meta_key, $single );
 	}*/
 
 	/**
-	 * @depecated 4.1.6.9
+	 * @deprecated 4.1.6.9
 	 */
 	/*public function update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev = '' ) {
 		return learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev );
@@ -1927,7 +1928,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			try {
 				if ( ! $orders ) {
-					throw new Exception( __( 'No item in Order', 'learnpress' ), 0 );
+					throw new Exception( __( 'There are no items in the order', 'learnpress' ), 0 );
 				}
 
 				$course_ids   = array_keys( $orders );
@@ -2138,7 +2139,7 @@ ORDER BY MAX(user_item_id) DESC";
 		}
 
 		if ( username_exists( $username ) ) {
-			return new WP_Error( 'registration-error-username-exists', __( 'An account is already registered with that username. Please choose another.', 'learnpress' ) );
+			return new WP_Error( 'registration-error-username-exists', __( 'An account is already registered with that username. Please choose another one.', 'learnpress' ) );
 		}
 
 		$new_user = wp_insert_user(
@@ -2150,7 +2151,7 @@ ORDER BY MAX(user_item_id) DESC";
 		);
 
 		if ( is_wp_error( $new_user ) ) {
-			return new WP_Error( 'registration-error', __( 'Failed to create user', 'learnpress' ) );
+			return new WP_Error( 'registration-error', __( 'Failed to create the user', 'learnpress' ) );
 		}
 
 		return $new_user;

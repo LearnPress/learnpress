@@ -163,7 +163,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 							'learn-press/question-editor/i18n',
 							array(
 								'new_option_label'      => esc_html__( 'New Option', 'learnpress' ),
-								'confirm_remove_blanks' => esc_html__( 'Are you sure to remove all blanks?', 'learnpress' ),
+								'confirm_remove_blanks' => esc_html__( 'Are you sure to remove all the blanks?', 'learnpress' ),
 							)
 						),
 					)
@@ -183,7 +183,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'name'          => esc_html__( 'Question Tag', 'learnpress' ),
 						'menu_name'     => esc_html__( 'Tag', 'learnpress' ),
 						'singular_name' => esc_html__( 'Tag', 'learnpress' ),
-						'add_new_item'  => esc_html__( 'Add New Tag', 'learnpress' ),
+						'add_new_item'  => esc_html__( 'Add A New Tag', 'learnpress' ),
 						'all_items'     => esc_html__( 'All Tags', 'learnpress' ),
 					),
 					'public'            => true,
@@ -207,13 +207,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'singular_name'      => esc_html__( 'Question', 'learnpress' ),
 					'all_items'          => esc_html__( 'Questions', 'learnpress' ),
 					'view_item'          => esc_html__( 'View Question', 'learnpress' ),
-					'add_new_item'       => esc_html__( 'Add New Question', 'learnpress' ),
+					'add_new_item'       => esc_html__( 'Add A New Question', 'learnpress' ),
 					'add_new'            => esc_html__( 'Add New', 'learnpress' ),
 					'edit_item'          => esc_html__( 'Edit Question', 'learnpress' ),
 					'update_item'        => esc_html__( 'Update Question', 'learnpress' ),
 					'search_items'       => esc_html__( 'Search Questions', 'learnpress' ),
 					'not_found'          => esc_html__( 'No questions found', 'learnpress' ),
-					'not_found_in_trash' => esc_html__( 'No questions found in trash', 'learnpress' ),
+					'not_found_in_trash' => esc_html__( 'There was no questions found in the trash', 'learnpress' ),
 				),
 				'public'             => true,
 				'publicly_queryable' => true,
