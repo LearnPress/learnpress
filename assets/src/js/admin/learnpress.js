@@ -245,10 +245,6 @@ const lpGetFinalQuiz = () => {
 	} );
 
 	const getResponse = async ( btn ) => {
-		if ( ! lpGlobalSettings.root ) {
-			return;
-		}
-
 		const response = await wp.apiFetch( {
 			path: 'lp/v1/admin/course/get_final_quiz',
 			method: 'POST',

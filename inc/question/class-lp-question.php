@@ -655,12 +655,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}
 
 			return $answers_option_tmp;
-
-			/*if ( $answers_option ) {
-				$answers_option = new LP_Question_Answers( $this, $answers_option );
-			}*/
-
-			return apply_filters( 'learn-press/questions/answers', $answers_option, $this->get_id() );
 		}
 
 		/**

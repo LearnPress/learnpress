@@ -518,7 +518,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$course_ids = array();
 				foreach ( $items as $item ) {
 					if ( isset( $item['course_id'] ) ) {
-						$course_ids[] = $item['course_id'];
+						$course_ids[] = (int) $item['course_id'];
 					}
 				}
 
@@ -817,6 +817,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$users = $this->get_user_id();
 			if ( $users !== -1 ) {
 				settype( $users, 'array' );
+
+				$users = array_map(
+					function ( $user ) {
+						return absint( $user );
+					},
+					$users
+				);
+
 				$users = array_unique( $users );
 			} else {
 				$users = array();

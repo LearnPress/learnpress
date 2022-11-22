@@ -417,8 +417,10 @@ class LP_Checkout {
 			$order->set_user_agent( learn_press_get_user_agent() );
 			$order->set_created_via( 'checkout' );
 			$order->set_user_id( apply_filters( 'learn-press/checkout/default-user', $user_id ) );
-			$order->set_data( 'payment_method', $this->payment_method->get_id() );
-			$order->set_data( 'payment_method_title', $this->payment_method->get_title() );
+			if ( $this->payment_method instanceof LP_Gateway_Abstract ) {
+				$order->set_data( 'payment_method', $this->payment_method->get_id() );
+				$order->set_data( 'payment_method_title', $this->payment_method->get_title() );
+			}
 
 			if ( $this->is_enable_guest_checkout() && $this->get_checkout_email() ) {
 				$order->set_checkout_email( $this->get_checkout_email() );
