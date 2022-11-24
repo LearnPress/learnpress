@@ -272,14 +272,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @throws Exception .
+	 * @return LP_REST_Response
 	 * @author Nhamdv
 	 * @editor tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.0.0
-	 * @modify 4.1.2
 	 */
-	public function enroll_courses( WP_REST_Request $request ) {
+	public function enroll_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response         = new LP_REST_Response();
 		$response->data   = new stdClass();
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
@@ -386,7 +385,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 		}
 
-		wp_send_json( $response );
+		return $response;
 	}
 
 	/**
