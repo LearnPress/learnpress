@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class LP_REST_Lazy_Load_Controller
+ */
 class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
 		$this->namespace = 'lp/v1';
@@ -112,24 +115,24 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
-		if ( $course_id && $user_id ) {
+		try {
+			if ( ! $course_id || ! $user_id ) {
+				throw new Exception( __( 'Params is invalid!', 'learnpress' ) );
+			}
+
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
-				$response->message = __( 'The course is invalid!', 'learnpress' );
-
-				return $response;
+				throw new Exception( __( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_user( $user_id );
-			if ( $user->is_guest() ) {
-				$response->message = __( 'You are a Guest', 'learnpress' );
-
-				return $response;
+			if ( ! $user || $user->is_guest() ) {
+				throw new Exception( __( 'You are a Guest', 'learnpress' ) );
 			}
 
 			$course_data = $user->get_course_data( $course->get_id() );
 			if ( ! $course_data ) {
-				return $response;
+				throw new Exception( __( 'You are a not enroll course', 'learnpress' ) );
 			}
 
 			$course_results = $course_data->calculate_course_results();
@@ -139,6 +142,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				'single-course/sidebar/user-progress',
 				compact( 'user', 'course', 'course_data', 'course_results' )
 			);
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			$response->message = $e->getMessage();
 		}
 
 		return $response;
@@ -222,8 +228,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				$response->data        = $content;
 				$response->section_ids = wp_list_pluck( $sections['results'], 'section_id' );
 			}
-		} catch ( \Throwable $th ) {
-			$response->message = $th->getMessage();
+		} catch ( \Throwable $e ) {
+			ob_end_clean();
+			$response->message = $e->getMessage();
 		}
 
 		return $response;
@@ -318,8 +325,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				$response->data     = $content;
 				$response->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
 			}
-		} catch ( \Throwable $th ) {
-			$response->message = $th->getMessage();
+		} catch ( \Throwable $e ) {
+			ob_end_clean();
+			$response->message = $e->getMessage();
 		}
 
 		return rest_ensure_response( $response );
