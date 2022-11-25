@@ -222,6 +222,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
+			require_once 'inc/Helper/Singleton.php';
 			require_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
@@ -261,6 +262,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// File helper
 			require_once 'inc/class-lp-helper.php';
+			require_once 'inc/Helper/Template.php';
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';
