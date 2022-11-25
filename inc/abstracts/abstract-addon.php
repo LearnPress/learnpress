@@ -75,24 +75,17 @@ class LP_Addon {
 	 * LP_Addon constructor.
 	 */
 	public function __construct() {
-
 		$this->_define_constants();
-
-		//      if ( ! $this->_check_version() ) {
-		//          return;
-		//      }
-
-		/**
-		 * After all addons lp config by key "Require_LP_Version" can remove hook
-		 */
-		//add_action( 'plugins_loaded', array( $this, 'check_require_version_lp' ), - 9 );
-
 		$this->_includes();
 
 		add_action( 'init', array( $this, 'init' ) );
 	}
 
+	/**
+	 * @deprecated 4.2.0
+	 */
 	public static function admin_errors() {
+		_deprecated_function( __METHOD__, '4.2.0' );
 		if ( ! self::$_admin_notices ) {
 			return;
 		}
@@ -120,10 +113,6 @@ class LP_Addon {
 	 * Init
 	 */
 	public function init() {
-		//      if ( ! $this->_check_version() ) {
-		//          return;
-		//      }
-
 		$this->load_text_domain();
 
 		add_filter(
@@ -354,7 +343,7 @@ class LP_Addon {
 	 *
 	 * @return void|mixed
 	 */
-	public static function load( $instance, $path, $plugin_file = '' ) {
+	public static function load( string $instance = '', string $path = '', string $plugin_file = '' ) {
 		$plugin_folder = '';
 
 		if ( $plugin_file ) {
@@ -366,9 +355,11 @@ class LP_Addon {
 		}
 
 		if ( ! file_exists( $path ) ) {
-			self::$_admin_notices['add-on-file-no-exists'] = sprintf(
-				__( '%s plugin file does not exist.', 'learnpress' ),
-				$path
+			error_log(
+				sprintf(
+					__( '%s plugin file does not exist.', 'learnpress' ),
+					$path
+				)
 			);
 
 			return;
@@ -377,29 +368,28 @@ class LP_Addon {
 		include_once $path;
 		$addon_instance = null;
 
-		if ( class_exists( $instance ) ) {
-			$addon_instance = null;
-			if ( is_callable( array( $instance, 'instance' ) ) ) {
-				$addon_instance = call_user_func( array( $instance, 'instance' ) );
-			} else {
+		if ( ! array_key_exists( $instance, self::$instances ) ) {
+			if ( class_exists( $instance ) ) {
 				$addon_instance = new $instance();
 			}
+
+			if ( ! $addon_instance ) {
+				error_log(
+					sprintf(
+						__( '%s plugin class does not exist.', 'learnpress' ),
+						$instance
+					)
+				);
+
+				return;
+			}
+
+			$addon_instance->plugin_file = $plugin_file;
+
+			self::$instances[ $instance ] = $addon_instance;
 		}
 
-		if ( ! $addon_instance ) {
-			self::$_admin_notices['add-on-class-no-exists'] = sprintf(
-				__( '%s plugin class does not exist.', 'learnpress' ),
-				$instance
-			);
-
-			return;
-		}
-
-		$addon_instance->plugin_file = $plugin_file;
-
-		self::$instances[ $instance ] = $addon_instance;
-
-		return $addon_instance;
+		return self::$instances[ $instance ];
 	}
 
 	public function get_plugin_url( $sub = '/' ) {
@@ -484,6 +474,8 @@ class LP_Addon {
 
 	/**
 	 * @return mixed
+	 * @deprecated 4.2.0
+	 * using on the addons: co-instructor(4.0.1), wishlist(4.0.4), announcements(4.0.3), course-review, coming-soon ...
 	 */
 	public static function instance() {
 		$name = self::_get_called_class();
@@ -500,6 +492,7 @@ class LP_Addon {
 
 	/**
 	 * @return bool|string
+	 * @deprecated 4.2.0
 	 */
 	protected static function _get_called_class() {
 		if ( function_exists( 'get_called_class' ) ) {
@@ -520,4 +513,4 @@ class LP_Addon {
 	}
 }
 
-add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );
+//add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );
