@@ -1,6 +1,5 @@
 import { dispatch, select, apiFetch } from '@learnpress/data-controls';
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
-import { useSelect } from '@wordpress/data';
 
 function _dispatch() {
 	const args = [].slice.call( arguments, 2 );
@@ -15,7 +14,6 @@ const { camelCaseDashObjectKeys, Hook } = LP;
  *
  * @param  key
  * @param  data
- * @return {{type: string, data: *}}
  */
 export function setQuizData( key, data ) {
 	if ( typeof key === 'string' ) {
@@ -23,11 +21,6 @@ export function setQuizData( key, data ) {
 	} else {
 		data = key;
 	}
-
-	// Save all data for no required enroll available
-	/*if ( lpQuizSettings.checkNorequizenroll === 1 && window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) !== null ) {
-		data = JSON.parse( window.localStorage.getItem( 'quiz_userdata_' + lpQuizSettings.id ) );
-	}*/
 
 	return {
 		type: 'SET_QUIZ_DATA',
@@ -39,7 +32,6 @@ export function setQuizData( key, data ) {
  * Set question will display.
  *
  * @param  questionId
- * @return {{type: string, data: *}}
  */
 export function setCurrentQuestion( questionId ) {
 	return {
@@ -97,12 +89,19 @@ const startQuiz = function*() {
 
 	if ( response.status !== 'error' ) {
 		response = Hook.applyFilters( 'request-start-quiz-response', response, itemId, courseId );
+		const { results } = response;
+		const { duration, status, question_ids, questions } = results;
 
 		// No require enroll
 		if ( lpQuizSettings.checkNorequizenroll === 1 ) {
 			const keyQuizOff = 'quiz_off_' + lpQuizSettings.id;
 			window.localStorage.removeItem( keyQuizOff );
-			const quizDataOff = { endTime: ( Date.now() + response.results.duration * 1000 ), status: response.results.status };
+			const quizDataOff = {
+				endTime: ( Date.now() + ( duration * 1000 ) ),
+				status,
+				question_ids,
+				questions,
+			};
 
 			window.localStorage.setItem( keyQuizOff, JSON.stringify( quizDataOff ) );
 
@@ -166,6 +165,9 @@ export function* submitQuiz() {
 	const answered = getQuestionsSelectedAnswers();
 
 	if ( lpQuizSettings.checkNorequizenroll === 1 ) {
+		const keyQuizOff = `quiz_off_${ lpQuizSettings.id }`;
+		const quizDataOffStr = window.localStorage.getItem( keyQuizOff );
+		const quizDataOff = JSON.parse( quizDataOffStr );
 		const keyAnswer = `LP_Quiz_${ itemId }_Answered`;
 		const answerDataStr = localStorage.getItem( keyAnswer );
 
@@ -176,6 +178,13 @@ export function* submitQuiz() {
 				answered[ k ] = v.answered;
 			}
 		}
+
+		// Added questions not answered
+		quizDataOff.question_ids.forEach( ( question_id ) => {
+			if ( ! answered[ question_id ] ) {
+				answered[ question_id ] = '';
+			}
+		} );
 	}
 
 	// Get time spend did quiz - tungnx
@@ -215,14 +224,8 @@ export function* submitQuiz() {
 			}
 		}
 
-		//console.log( response.results );
-
 		yield _dispatch( 'learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys( response.results ), itemId, courseId );
 	}
-
-	/*if ( lpQuizSettings.checkNorequizenroll == '1' ) {
-		localStorage.setItem( 'quiz_userdata_' + lpQuizSettings.id, JSON.stringify( wpSelect( 'learnpress/quiz' ).getData() ) );
-	}*/
 }
 
 export function updateUserQuestionAnswers( questionId, answers, quizId, courseId = 0, userId = 0 ) {

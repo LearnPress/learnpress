@@ -510,7 +510,6 @@ class LP_User extends LP_Abstract_User {
 			}
 
 			$course = learn_press_get_course( $course_id );
-			//$access_level = $this->get_course_access_level( $course_id );
 
 			// If user has already finished the course
 			if ( $this->has_finished_course( $course_id ) ) {

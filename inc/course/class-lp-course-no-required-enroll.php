@@ -26,11 +26,13 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * Get result do quiz
 		 *
 		 * @param LP_Quiz $quiz
-		 * @param null $answered
+		 * @param array $answered
 		 *
+		 * @since 4.0.0
+		 * @version 1.0.1
 		 * @return array
 		 */
-		public function get_result_quiz( $quiz, $answered = null ): array {
+		public function get_result_quiz( LP_Quiz $quiz, array $answered = [] ): array {
 			$result = array(
 				'questions'         => array(),
 				'mark'              => $quiz->get_mark(),
@@ -48,10 +50,13 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				'pass'              => 0,
 			);
 
-			$question_ids             = $quiz->get_question_ids();
-			$result['question_count'] = count( $question_ids );
+			if ( empty( $answered ) ) {
+				return $result;
+			}
 
-			$questions = learn_press_rest_prepare_user_questions( $question_ids );
+			$question_ids             = array_keys( $answered );
+			$result['question_count'] = count( $question_ids );
+			$questions                = learn_press_rest_prepare_user_questions( $question_ids );
 
 			foreach ( $questions as $key => $question_info ) {
 				$question_id = $question_info['id'];
@@ -64,12 +69,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 				$point = floatval( $question->get_mark() );
 
-				//if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
 				$result['questions'][ $question_id ]            = $question_info;
 				$result['answered'][ $question_id ]             = [];
 				$result['answered'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
-
-				//}
 
 				if ( isset( $answered[ $question_id ] ) ) { // User's answer
 					$result['question_answered']++;
@@ -130,54 +132,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			return $result;
 		}
-
-		/**
-		 * @param $answered
-		 * @param $quiz_id
-		 *
-		 * @return array
-		 */
-		public function guest_get_quiz_answered( $answered, $quiz_id ) {
-			$quiz         = learn_press_get_quiz( $quiz_id );
-			$question_ids = $quiz->get_question_ids();
-			foreach ( $question_ids as $question_id ) {
-				$question               = learn_press_get_question( $question_id );
-				$result[ $question_id ] = array(
-					'correct'  => $question->show_correct_answers(),
-					'mark'     => $question->get_mark(),
-					'answered' => $answered[ $question_id ] ?? array(),
-				);
-			}
-			return $result;
-		}
-
-		/**
-		 * @param $quiz_id
-		 * @param $answered
-		 * @param $course_id
-		 *
-		 * @return array
-		 */
-		/*public function guest_quiz_get_attempts( $quiz_id, $answered, $course_id ) {
-			$conclude = $this->guest_calculate_results_quiz( $quiz_id, $answered, $course_id );
-			// object initialization
-			$result_obj = new StdClass();
-			// push value to obj
-			$result_obj->mark              = $conclude['mark'];
-			$result_obj->user_mark         = $conclude['user_mark'];
-			$result_obj->question_count    = $conclude['question_count'];
-			$result_obj->question_empty    = $conclude['question_empty'];
-			$result_obj->question_answered = $conclude['question_answered'];
-			$result_obj->question_wrong    = $conclude['question_wrong'];
-			$result_obj->question_correct  = $conclude['question_correct'];
-			$result_obj->status            = $conclude['status'];
-			$result_obj->result            = $conclude['result'];
-			$result_obj->time_spend        = $conclude['time_spend'];
-			$result_obj->passing_grade     = $conclude['passing_grade'];
-			$result                        = array();
-			$result[]                      = $result_obj;
-			return $result;
-		}*/
 
 		/**
 		 * @param $question_id

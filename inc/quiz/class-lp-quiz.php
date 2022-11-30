@@ -399,15 +399,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return int
 		 */
 		public function get_mark() {
-			$mark = $this->get_data( 'mark' );
-
+			$mark = $this->get_data( 'mark', false );
 			if ( false === $mark || '' === $mark ) {
-				$questions = $this->get_questions();
+				$questions = $this->get_question_ids();
 				$mark      = 0;
 
 				foreach ( $questions as $question_id ) {
 					$question = LP_Question::get_question( $question_id );
-
 					if ( $question ) {
 						$mark += $question->get_mark();
 					}
@@ -437,13 +435,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return mixed
 		 * @editor tungnx
-		 * @throws Exception
 		 * @since 3.x.x
 		 * @version 1.0.1
+		 * @deprecated 4.2.0
 		 */
 		public function get_questions( $context = 'display' ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.2.0' );
 			$questions = array();
-			$ids       = $this->_curd->read_question_ids( $this->get_id(), $context );
+			$ids       = $this->_curd->read_question_ids( $this->get_id() );
 
 			if ( $ids ) {
 				foreach ( $ids as $id ) {
@@ -527,7 +526,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return int
 		 */
-		public function count_questions() {
+		public function count_questions(): int {
 			$size      = 0;
 			$questions = $this->get_question_ids();
 
@@ -535,7 +534,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				$size = sizeof( $questions );
 			}
 
-			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
+			return (int) apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
 		}
 
 		/**
@@ -549,9 +548,22 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @since 3.2.0
 		 */
 		public function get_question_ids( string $context = 'display' ): array {
-			$ids = $this->_curd->read_question_ids( $this->get_id(), $context );
+			$question_ids = $this->_curd->read_question_ids( $this->get_id(), $context );
+			$question_ids = apply_filters( 'learn-press/quiz/get-question-ids', $question_ids, $this->get_id(), $this->get_course_id(), $context );
+			if ( ! is_array( $question_ids ) ) {
+				$question_ids = array();
+			}
 
-			return apply_filters( 'learn-press/quiz/get-question-ids', $ids, $this->get_id(), $this->get_course_id(), $context );
+			return $question_ids;
+		}
+
+		/**
+		 * Get number questions for user do it.
+		 *
+		 * @return mixed|null
+		 */
+		public function get_number_questions_to_do() {
+			return apply_filters( 'learn-press/quiz/number-questions-show', $this->count_questions(), $this );
 		}
 
 		/**
@@ -876,7 +888,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return LP_Quiz|bool
 		 */
 		public static function get_quiz( $the_quiz = false, $args = array() ) {
-
 			if ( is_numeric( $the_quiz ) && isset( LP_Global::$quizzes[ $the_quiz ] ) ) {
 				return LP_Global::$quizzes[ $the_quiz ];
 			}

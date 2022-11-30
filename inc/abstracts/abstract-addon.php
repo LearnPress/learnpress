@@ -337,8 +337,8 @@ class LP_Addon {
 	/**
 	 * Load Addon
 	 *
-	 * @param        $instance
-	 * @param        $path
+	 * @param string $instance
+	 * @param string $path
 	 * @param string $plugin_file
 	 *
 	 * @return void|mixed

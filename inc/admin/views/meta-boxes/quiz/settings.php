@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * Class LP_Meta_Box_Quiz.
+ *
+ * Meta box for quiz settings.
+ */
 class LP_Meta_Box_Quiz extends LP_Meta_Box {
 
 	private static $_instance = null;

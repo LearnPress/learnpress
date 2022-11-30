@@ -276,9 +276,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					if ( property_exists( $post, 'question_count' ) ) {
 						$count = $post->question_count;
 					} else {
-						$quiz      = LP_Quiz::get_quiz( $post_id );
-						$questions = $quiz->get_questions();
-						$count     = sizeof( $questions );
+						$quiz  = LP_Quiz::get_quiz( $post_id );
+						$count = $quiz->count_questions();
 					}
 
 					printf(
@@ -497,9 +496,4 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 	// LP_Quiz_Post_Type
 	$quiz_post_type = LP_Quiz_Post_Type::instance();
-
-	//Todo: Nhamdv see to rewrite
-	// $quiz_post_type
-	// 	->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' )
-	// 	->add_meta_box( 'quiz-editor', esc_html__( 'Questions', 'learnpress' ), 'admin_editor', 'normal', 'high' );
 }

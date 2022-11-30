@@ -1007,7 +1007,7 @@ class LP_Page_Controller {
 	 */
 	public function check_webhook_paypal_ipn() {
 		// Start session, code temporary, will rewrite on hook init.
-		if ( ! session_id() ) {
+		if ( ! session_id() && ! headers_sent() ) {
 			session_start();
 		}
 		// End - tungnx

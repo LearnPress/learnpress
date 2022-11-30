@@ -66,7 +66,7 @@ function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
 		$quiz_id = get_the_ID();
 	}
 
-	return ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) ? $quiz->get_questions() : false;
+	return ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) ? $quiz->get_question_ids() : false;
 }
 
 /**

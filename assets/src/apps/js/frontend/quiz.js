@@ -14,11 +14,12 @@ export const init = ( elem, settings ) => {
 		if ( null !== quizDataOffStr ) {
 			const quizDataOff = JSON.parse( quizDataOffStr );
 			settings.status = quizDataOff.status;
+			settings.questions = quizDataOff.questions;
 
 			if ( 'started' === quizDataOff.status ) {
 				const now = Date.now();
 
-				settings.total_time = Math.floor(( quizDataOff.endTime - now ) / 1000);
+				settings.total_time = Math.floor( ( quizDataOff.endTime - now ) / 1000 );
 			} else if ( 'completed' === quizDataOff.status ) {
 				settings.results = quizDataOff.results;
 				settings.answered = quizDataOff.results.answered;
@@ -33,7 +34,7 @@ export const init = ( elem, settings ) => {
 				//settings.checked_questions = quizDataOff.checked_questions;
 
 				for ( const i in settings.questions ) {
-					let question = settings.questions[ i ];
+					const question = settings.questions[ i ];
 
 					if ( undefined !== quizDataOff.question_options[ question.id ] ) {
 						question.options = quizDataOff.question_options[ question.id ];

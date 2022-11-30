@@ -476,7 +476,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			$question_ids             = $quiz->get_question_ids();
 			$result['mark']           = $quiz->get_mark();
-			$result['question_count'] = count( $question_ids );
+			$result['question_count'] = $quiz->count_questions();
 			$result['time_spend']     = $this->get_time_interval( 'display' );
 			$result['passing_grade']  = $quiz->get_passing_grade();
 			$checked_questions        = $this->get_checked_questions();
@@ -662,7 +662,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $return;
 	}
 
+	/**
+	 * @deprecated 4.2.0
+	 */
 	public function get_total_questions() {
+		_deprecated_function( __METHOD__, '4.2.0' );
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$questions = $quiz->get_question_ids();
 

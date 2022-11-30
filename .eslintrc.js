@@ -6,7 +6,7 @@ module.exports = {
 	rules: {
 		indent: [ 'error', 'tab' ],
 		'space-in-parens': [ 'error', 'always' ],
-		camelcase: [ 2, { properties: 'never' } ],
+		camelcase: 0,
 		'no-undef': 0,
 		eqeqeq: 0,
 		'no-unused-expressions': [ 'error', { allowShortCircuit: true } ],
