@@ -259,7 +259,7 @@ class LP_Page_Controller {
 			} else {
 				$page_title = '';
 			}
-			if ( $tab ) {
+			if ( $tab instanceof LP_Profile_Tab ) {
 				$title = join(
 					' ',
 					apply_filters(

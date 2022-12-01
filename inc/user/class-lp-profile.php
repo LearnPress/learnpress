@@ -230,7 +230,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		public function get_login_url( $redirect = false ) {
-			return learn_press_get_login_url( $redirect !== false ? $redirect : $this->get_current_url() );
+			return learn_press_get_login_url( $redirect !== false ? $redirect : LP_Helper::getUrlCurrent() );
 		}
 
 		/**
@@ -835,8 +835,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param string $current_filter
 		 *
 		 * @return array
+		 * @deprecated 4.2.0
 		 */
 		public function get_own_courses_filters( $current_filter = '' ) {
+			_deprecated_function( __METHOD__, '4.2.0' );
 			$url = $this->get_current_url();
 
 			$defaults = array(
@@ -868,8 +870,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param string $current_filter
 		 *
 		 * @return array
+		 * @deprecated 4.2.0
 		 */
 		public function get_purchased_courses_filters( $current_filter = '' ) {
+			_deprecated_function( __METHOD__, '4.2.0' );
 			$url      = $this->get_current_url( false );
 			$defaults = array(
 				'all'          => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
@@ -904,7 +908,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return array
 		 */
 		public function get_quizzes_filters( $current_filter = '' ) {
-			$url      = $this->get_current_url( false );
+			$url = $this->get_tab_link( 'quizzes' );
 			$defaults = array(
 				'all'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
 				'completed' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),

@@ -324,7 +324,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 				$page_title = '';
 			}
 
-			if ( $tab ) {
+			if ( $tab instanceof LP_Profile_Tab ) {
 				$title['title'] = join(
 					' ',
 					apply_filters(

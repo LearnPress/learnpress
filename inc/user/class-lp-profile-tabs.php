@@ -110,8 +110,8 @@ class LP_Profile_Tabs {
 		} elseif ( ! empty( $wp->query_vars['view'] ) ) {
 			$current = $wp->query_vars['view'];
 		} else {
-			if ( $this->get_tab_at() ) {
-				$tab     = $this->get_tab_at();
+			$tab = $this->get_tab_at();
+			if ( $tab instanceof LP_Profile_Tab ) {
 				$current = $tab->get( 'slug' );
 			}
 		}
@@ -153,9 +153,8 @@ class LP_Profile_Tabs {
 				$current_tab = $tab;
 			}
 
-			if ( $this->get_tab_at( $current_tab ) ) {
-				$tab = $this->get_tab_at( $current_tab );
-
+			$tab = $this->get_tab_at( $current_tab );
+			if ( $tab instanceof LP_Profile_Tab ) {
 				if ( ! empty( $tab->get( 'sections' ) ) ) {
 					$sections = $tab->get( 'sections' );
 					$section  = reset( $sections );
@@ -214,30 +213,25 @@ class LP_Profile_Tabs {
 			}
 
 			$tab_data = $this->get_tab_at( $tab );
-			$slug     = $this->get_slug( $tab_data, $tab );
+			if ( $tab_data instanceof LP_Profile_Tab ) {
+				$slug     = $this->get_slug( $tab_data, $tab );
 
-			if ( $slug ) {
-				$args['tab'] = $slug;
-			} else {
-				unset( $args['user'] );
-			}
-
-			if ( $with_section && ! empty( $tab_data->get( 'sections' ) ) ) {
-				if ( $with_section === true ) {
-					$section_keys  = array_keys( $tab_data->get( 'sections' ) );
-					$first_section = reset( $section_keys );
-					$with_section  = $this->get_slug( $tab_data->get( 'sections' )[ $first_section ], $first_section );
+				if ( $slug ) {
+					$args['tab'] = $slug;
+				} else {
+					unset( $args['user'] );
 				}
-				$args['section'] = $with_section;
+
+				if ( $with_section && ! empty( $tab_data->get( 'sections' ) ) ) {
+					if ( $with_section === true ) {
+						$section_keys  = array_keys( $tab_data->get( 'sections' ) );
+						$first_section = reset( $section_keys );
+						$with_section  = $this->get_slug( $tab_data->get( 'sections' )[ $first_section ], $first_section );
+					}
+					$args['section'] = $with_section;
+				}
 			}
 		}
-
-		/*$args         = array_map(
-			function ( $string ) {
-				return preg_replace( '/\s/', '+', $string );
-			},
-			$args
-		);*/
 		$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 
 		if ( $profile_link ) {
@@ -280,6 +274,7 @@ class LP_Profile_Tabs {
 	 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
 	 *
 	 * @return mixed|string
+	 * @Todo tungnx - need check this function
 	 */
 	public function get_current_url( $args = '', $with_permalink = false ) {
 		$current_tab = $this->get_current_tab();
@@ -290,7 +285,7 @@ class LP_Profile_Tabs {
 		$section              = array();
 
 		if ( isset( $sections[ $current_section_slug ] ) ) {
-			$sections[ $current_section_slug ];
+
 		} elseif ( $sections && ! empty( $sections ) ) {
 			reset( $sections );
 		}
