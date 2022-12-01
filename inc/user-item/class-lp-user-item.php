@@ -144,11 +144,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			$this->set_data( 'access_level', $item['access_level'] );
 		}
 
-		$this->set_data( 'graduation', $item['graduation'] ?? LP_COURSE_GRADUATION_IN_PROGRESS );
-
-		//      $new_data = $this->get_mysql_data();
-		//      ksort( $new_data );
-		//      $this->_data_key = md5( serialize( $new_data ) );
+		$this->set_data( 'graduation', $item['graduation'] ?? '' );
 	}
 
 	public function set_user_id( $user_id ) {

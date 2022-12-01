@@ -102,6 +102,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_course_data( int $course_id = 0 ) {
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$object_course_data = false;
 
 			try {
 				if ( ! $course_id ) {
