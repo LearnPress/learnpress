@@ -251,15 +251,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-dashboard'                      => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),
-					array(
-						'jquery',
-						'wp-element',
-						'wp-compose',
-						'wp-data',
-						'wp-hooks',
-						'wp-api-fetch',
-						'lodash',
-					),
+					[],
 					array( 'dashboard' ),
 					0,
 					1

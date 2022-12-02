@@ -2776,11 +2776,14 @@ add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule
 }*/
 
 /**
+ * Return localize script data for admin.
+ *
  * @return array
  * @since 3.2.6
+ * @version 1.0.1
  */
-function learn_press_global_script_params() {
-	$js = array(
+function learn_press_global_script_params(): array {
+	$localize = [
 		'ajax'        => admin_url( 'admin-ajax.php' ),
 		'plugin_url'  => LearnPress::instance()->plugin_url(),
 		'siteurl'     => home_url(),
@@ -2794,9 +2797,10 @@ function learn_press_global_script_params() {
 		),
 		'rest'        => esc_url_raw( rest_url() ),
 		'nonce'       => wp_create_nonce( 'wp_rest' ),
-	);
+		'is_admin'    => current_user_can( ADMIN_ROLE ),
+	];
 
-	return $js;
+	return apply_filters( 'lp/admin/localize/scripts', $localize );
 }
 
 /**
