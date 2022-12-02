@@ -245,6 +245,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Deprecated: 'offsetExists', 'offsetGet', 'get_current_question', 'get_question_position', 'check_question', 'get_question_link' methods LP_Quiz class.
 ~ Modified: 'create_order' method on class 'LP_Checkout'.
 ~ Deprecated: 'instructions' method on 'LP_Gateway_Offline_Payment' class.
+~ Moved: settings permalink Profile to tab Permalinks.
 
 = 4.1.7.3.2 (2022-11-18) - <a href='https://thimpress.com/learnpress-v4-1-7-3-2-update/' target='_blank' rel='noopener'>View detail</a> =
 ~ Added: tab permalink option.

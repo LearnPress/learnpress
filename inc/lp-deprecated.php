@@ -2271,3 +2271,10 @@ function learn_press_get_become_a_teacher_form_fields() {
 
 	return $fields;
 }
+
+/**
+ * Use in addon Authorize.net 4.0.0
+ */
+function learn_press_enqueue_script( $scripts ) {
+	_deprecated_function( __FUNCTION__, '4.2.0 call from ' . debug_backtrace()[0]['function'] );
+}
