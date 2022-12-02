@@ -289,6 +289,11 @@ class LP_Cart {
 		$cart = $this->get_cart();
 
 		// Only save data item_id and quantity.
+		/**
+		 * Current certificate is not compatible with type $data_cart_save,
+		 * because certificate override hook 'learn-press/review-order/cart-item-product' to set course.
+		 * Need rewrite certificate to compatible with new cart.
+		 */
 		$data_cart_save = array_map(
 			function ( $item ) {
 				return array(
@@ -298,7 +303,8 @@ class LP_Cart {
 			},
 			$cart
 		);
-		LearnPress::instance()->session->set( $this->_cart_session_key, $data_cart_save, true );
+
+		LearnPress::instance()->session->set( $this->_cart_session_key, $cart, true );
 	}
 
 	/**
