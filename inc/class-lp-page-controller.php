@@ -221,6 +221,7 @@ class LP_Page_Controller {
 	 * @return string
 	 * @author tungnx
 	 * @since  3.2.7.7
+	 * @version 1.0.1
 	 */
 	public function set_title_pages( $title = '' ): string {
 		global $wp_query;
@@ -228,19 +229,15 @@ class LP_Page_Controller {
 
 		$course_archive_page_id = LP_Settings::get_option( 'courses_page_id', 0 );
 
-		// Set title course archive page
-		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&
-			$course_archive_page_id == $wp_query->post->ID ) {
-			$title             = get_the_title( $course_archive_page_id );
-			$flag_title_course = true;
-		} elseif ( learn_press_is_course() ) {
+		// Set title single course.
+		if ( learn_press_is_course() ) {
 			$item = LP_Global::course_item();
 			if ( $item ) {
 				$title = apply_filters( 'learn-press/document-course-title-parts', get_the_title() . ' &rarr; ' . $item->get_title(), $item );
 
 				$flag_title_course = true;
 			}
-		} elseif ( learn_press_is_courses() ) {
+		} elseif ( learn_press_is_courses() ) { // Set title course archive page.
 			if ( learn_press_is_search() ) {
 				$title = __( 'Course Search Results', 'learnpress' );
 			} else {

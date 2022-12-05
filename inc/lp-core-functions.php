@@ -546,14 +546,16 @@ if ( ! function_exists( 'learn_press_is_ajax' ) ) {
  *
  * @param string $name
  *
+ * @since 3.0.0
+ * @version 1.0.2
  * @return int
  */
 function learn_press_get_page_id( string $name ): int {
-	$page_id = LP_Settings::instance()->get( "{$name}_page_id", false );
+	$page_id = LP_Settings::get_option( "{$name}_page_id", false );
 
-	if ( function_exists( 'icl_object_id' ) ) {
+	/*if ( function_exists( 'icl_object_id' ) ) {
 		$page_id = icl_object_id( $page_id, 'page', false, defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '' );
-	}
+	}*/
 
 	$page_id = (int) $page_id;
 
@@ -1682,12 +1684,11 @@ if ( ! function_exists( 'learn_press_is_course_archive' ) ) {
 		global $wp_query;
 
 		$queried_object_id = ! empty( $wp_query->queried_object ) ? $wp_query->queried_object : 0;
-		$is_courses        = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
 		$is_tag            = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG || is_tax( 'course_tag' );
 		$is_category       = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY || is_tax( 'course_category' );
 		$page_id           = learn_press_get_page_id( 'courses' );
 
-		return ( $is_courses || $is_category || $is_tag ) || is_post_type_archive( 'lp_course' ) || ( $page_id && ( $queried_object_id && is_page( $page_id ) ) );
+		return ( $is_category || $is_tag ) || is_post_type_archive( 'lp_course' ) || ( $page_id && ( $queried_object_id && is_page( $page_id ) ) );
 	}
 }
 
