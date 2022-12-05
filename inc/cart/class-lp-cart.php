@@ -169,7 +169,7 @@ class LP_Cart {
 						throw new Exception( __( 'Sorry! The number of enrolled students has reached its limit', 'learnpress' ) );
 					}
 
-					$item_data['data'] = $course;
+					//$item_data['data'] = $course;
 					break;
 				default:
 					$item_data = apply_filters( 'learnpress/cart/add-item/item_type_' . $item_type, $item_data, $item_id, $quantity );
@@ -186,7 +186,7 @@ class LP_Cart {
 					array(
 						'item_id'  => $item_id,
 						'quantity' => $quantity,
-						'data'     => array(),
+						//'data'     => array(),
 					),
 					$item_data
 				)
@@ -276,13 +276,16 @@ class LP_Cart {
 			}
 		}
 
-		return $data;
+		return apply_filters( 'lp/cart/calculate_total', $data );
 
 		//$this->update_session();
 	}
 
 	/**
 	 * Update cart content to session
+	 *
+	 * @since 3.0.0
+	 * @version 1.0.1
 	 */
 	public function update_session() {
 		//learn_press_session_set( $this->_cart_session_key, $this->get_cart_for_session() );
@@ -311,8 +314,10 @@ class LP_Cart {
 	 * Get cart id
 	 *
 	 * @return mixed
+	 * @deprecated 4.2.0
 	 */
 	public function get_cart_id() {
+		_deprecated_function( __METHOD__, '4.2.0' );
 		return ! empty( $_SESSION['learn_press_cart']['cart_id'] ) ? $_SESSION['learn_press_cart']['cart_id'] : 0;
 	}
 

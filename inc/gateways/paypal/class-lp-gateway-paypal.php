@@ -255,30 +255,24 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param LP_Order $order
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 * @version 1.0.1
 		 */
 		public function get_paypal_args( LP_Order $order ): array {
-			$checkout = LearnPress::instance()->checkout();
-			$custom   = array(
+			$checkout   = LearnPress::instance()->checkout();
+			$custom     = array(
 				'order_id'       => $order->get_id(),
 				'order_key'      => $order->get_order_key(),
 				'checkout_email' => $checkout->get_checkout_email(),
 			);
-
-			// Item
-			$items    = LearnPress::instance()->get_cart()->get_items();
-			$item_arg = [
+			$lp_cart    = LearnPress::instance()->get_cart();
+			$cart_total = $lp_cart->calculate_totals();
+			$item_arg   = [
 				'item_name_1' => $order->get_order_number(),
-				'quantity_1'  => 0,
-				'amount_1'    => 0,
+				'quantity_1'  => 1,
+				'amount_1'    => $cart_total->total,
 			];
-			if ( $items ) {
-				foreach ( $items as $item ) {
-					$item_arg['quantity_1'] += $item['quantity'];
-					$item_arg['amount_1']   += $item['total'];
-				}
-			}
-
-			$args = array_merge(
+			$args       = array_merge(
 				array(
 					'cmd'           => '_cart',
 					'business'      => $this->paypal_email,
@@ -288,7 +282,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'rm'            => is_ssl() ? 2 : 1,
 					'upload'        => 1,
 					'return'        => esc_url_raw( $this->get_return_url( $order ) ),
-					'cancel_return' => esc_url_raw( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() /* SITE_URL */ ),
+					'cancel_return' => esc_url_raw( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() ),
 					'bn'            => 'LearnPress_Cart',
 					'custom'        => json_encode( $custom ),
 					'notify_url'    => get_home_url() . '/?paypal_notify=1',
