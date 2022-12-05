@@ -31,12 +31,16 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$order->set_order_date( time() );
 		$order->set_order_key( learn_press_generate_order_key() );
+		$status = $order->get_status() ? $order->get_status() : LP_ORDER_PENDING;
+		if ( ! preg_match( '/^lp-/', $status ) ) {
+			$status = 'lp-' . $status;
+		}
 
 		$order_data = array(
 			'post_author'   => get_current_user_id(),
 			'post_parent'   => $order->get_parent_id(),
 			'post_type'     => LP_ORDER_CPT,
-			'post_status'   => $order->get_order_status(),
+			'post_status'   => $status,
 			'ping_status'   => 'closed',
 			'post_title'    => $order->get_title(),
 			'post_date'     => $order->get_order_date( 'edit' )->toSql( true ),
@@ -279,17 +283,16 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return int
 	 */
 	public function update( &$order ) {
-
 		// If there is no items in the order then set it status to Pending
-		$status = $order->get_status() ? $order->get_status() : learn_press_default_order_status();
-		/*if ( in_array( $status, array( 'completed', 'processing' ) ) && ! $order->get_items() ) {
-			$status = 'pending';
-		}*/
+		$status = $order->get_status() ? $order->get_status() : LP_ORDER_PENDING;
+		if ( ! preg_match( '/^lp-/', $status ) ) {
+			$status = 'lp-' . $status;
+		}
 
 		$post_data = array(
 			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
 			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
-			'post_status'   => 'lp-' . $status,
+			'post_status'   => $status,
 			'post_parent'   => $order->get_parent_id(),
 		);
 

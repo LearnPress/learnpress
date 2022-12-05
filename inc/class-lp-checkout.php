@@ -352,8 +352,8 @@ class LP_Checkout {
 	 * @throws Exception
 	 */
 	public function create_order() {
-		$cart      = LearnPress::instance()->cart;
-		$cart_data = $cart->calculate_totals();
+		$cart       = LearnPress::instance()->cart;
+		$cart_total = $cart->calculate_totals();
 
 		try {
 			/*// Insert or update the post data
@@ -410,9 +410,9 @@ class LP_Checkout {
 			}
 
 			$order->set_customer_note( $this->order_comment );
-			$order->set_status( learn_press_default_order_status( 'lp-' ) );
-			$order->set_total( $cart_data->total );
-			$order->set_subtotal( $cart_data->subtotal );
+			$order->set_status( LP_ORDER_PENDING );
+			$order->set_total( $cart_total->total );
+			$order->set_subtotal( $cart_total->subtotal );
 			$order->set_user_ip_address( learn_press_get_ip() );
 			$order->set_user_agent( learn_press_get_user_agent() );
 			$order->set_created_via( 'checkout' );
