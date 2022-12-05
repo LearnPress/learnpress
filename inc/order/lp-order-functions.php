@@ -642,8 +642,10 @@ function learn_press_transaction_order_number( $order_number ) {
  * @param int|string $order_id - Optional. ID of an order or status.
  *
  * @return string|bool
+ * @deprecated 4.2.0
  */
 function learn_press_get_order_status_label( $order_id = 0 ) {
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	$statuses = learn_press_get_order_statuses();
 	if ( is_numeric( $order_id ) ) {
 		$status = get_post_status( $order_id );

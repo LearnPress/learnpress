@@ -42,6 +42,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			// add_filter( 'wp_count_posts', array( $this, 'filter_count_posts' ), 100, 3 );
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
 			// add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
+			// LP Order title
+			add_filter( 'the_title', array( $this, 'order_title' ), 5, 2 );
 
 			parent::__construct();
 		}
@@ -660,8 +662,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				unset( $existing['builder_layout'] );
 			}
 
-			add_filter( 'the_title', array( $this, 'order_title' ), 5, 2 );
-
 			$columns['cb']            = '<input type="checkbox" />';
 			$columns['title']         = esc_html__( 'Order', 'learnpress' );
 			$columns['order_student'] = esc_html__( 'Student', 'learnpress' );
@@ -677,7 +677,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		public function order_title( $title, $post_id ) {
 			$order = learn_press_get_order( $post_id );
-
 			if ( $order ) {
 				$title = $order->get_order_number();
 			}
@@ -688,16 +687,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Render column data
 		 *
-		 * @param string
-		 * @param int
+		 * @since 3.0.0
+		 * @version 1.0.1
 		 */
 		public function columns_content( $column, $post_id = 0 ) {
 			global $post;
-			$the_order = learn_press_get_order( $post->ID );
+			$lp_order = learn_press_get_order( $post->ID );
 
 			switch ( $column ) {
 				case 'order_student':
-					$user_ids = $the_order->get_users();
+					$user_ids = $lp_order->get_users();
 					if ( $user_ids ) {
 						$outputs = array();
 						foreach ( $user_ids as $user_id ) {
@@ -712,7 +711,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 								);
 							} else {
 								if ( sizeof( $user_ids ) == 1 ) {
-									$outputs[] = $the_order->get_customer_name();
+									$outputs[] = $lp_order->get_customer_name();
 								}
 							}
 						}
@@ -723,40 +722,37 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					break;
 				case 'order_status':
 					$icon = '';
-					switch ( $the_order->get_status() ) {
+					switch ( $lp_order->get_status() ) {
 						case 'pending':
-							$icon = '<i class="fas fa-flag"></i>';
+							$icon = '<i class="dashicons dashicons-flag"></i>';
 							break;
 						case 'processing':
-							$icon = '<i class="far fa-clock"></i>';
+							$icon = '<i class="dashicons dashicons-clock"></i>';
 							break;
 						case 'completed':
-							$icon = '<i class="far fa-check-circle"></i>';
+							$icon = '<i class="dashicons dashicons-yes-alt"></i>';
 							break;
 						case 'failed':
-							$icon = '<i class="far fa-times-circle"></i>';
+							$icon = '<i class="dashicons dashicons-warning"></i>';
 							break;
 						case 'cancelled':
-							$icon = '<i class="fas fa-ban"></i>';
+							$icon = '<i class="dashicons dashicons-dismiss"></i>';
 							break;
 					}
 
-					$icon  = apply_filters( 'learn-press/order-status-icon', $icon, $the_order->get_status() );
-					$label = learn_press_get_order_status_label( $the_order->get_id() );
+					$icon = apply_filters( 'learn-press/order-status-icon', $icon, $lp_order->get_status() );
 					echo sprintf(
-						'<span class="learn-press-tooltip %s" data-tooltip="%s">%s %s</span>',
-						$the_order->get_status(),
-						$label,
+						'<span class="lp-order-status %s">%s%s</span>',
+						$lp_order->get_status(),
 						$icon,
-						$label
+						$lp_order->get_status_label()
 					);
 					break;
 				case 'order_date':
-					$t_time = get_the_time( 'Y/m/d g:i:s a' );
-					$m_time = $post->post_date;
-					$time   = get_post_time( 'G', true, $post );
-
-					$time_diff = current_time( 'timestamp' ) - $time;
+					$t_time    = get_the_time( 'Y/m/d g:i:s a' );
+					$m_time    = $post->post_date;
+					$time      = get_post_time( 'G', true, $post );
+					$time_diff = time() - $time;
 
 					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
 						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
@@ -764,12 +760,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						$h_time = mysql2date( 'Y/m/d', $m_time );
 					}
 
-					echo '<abbr title="' . esc_attr( $t_time ) . '">' . esc_html( apply_filters( 'learn_press_order_column_time', $h_time, $the_order ) ) . '</abbr>';
+					echo '<abbr title="' . esc_attr( $t_time ) . '">' . esc_html( apply_filters( 'learn_press_order_column_time', $h_time, $lp_order ) ) . '</abbr>';
 
 					break;
 				case 'order_items':
 					$links = array();
-					$items = $the_order->get_items();
+					$items = $lp_order->get_items();
 					$count = sizeof( $items );
 
 					foreach ( $items as $item ) {
@@ -796,13 +792,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					break;
 				case 'order_total':
-					echo wp_kses_post( $the_order->get_formatted_order_total() );
-					$title = $the_order->get_payment_method_title();
+					echo wp_kses_post( $lp_order->get_formatted_order_total() );
+					$method_title = $lp_order->get_payment_method_title();
 
-					if ( $title ) {
+					if ( $method_title ) {
 						?>
 						<div class="payment-method-title">
-							<?php echo wp_kses_post( $the_order->get_total() == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $title, $the_order ), $the_order ) ); ?>
+							<?php echo wp_kses_post( $lp_order->get_total() == 0 ? $method_title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $method_title, $lp_order ), $lp_order ) ); ?>
 						</div>
 						<?php
 					}

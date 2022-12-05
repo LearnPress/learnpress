@@ -312,10 +312,54 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_status() {
-			$status = $this->get_data( 'status', '' );
-			$status = apply_filters( 'learn_press_order_status', $status, $this );
+			return $this->get_data( 'status', '' );
+		}
 
-			apply_filters( 'learn-press/order/status', $status, $this->get_id() );
+		/**
+		 * Get label of lp order status
+		 *
+		 * @return string
+		 * @since 4.2.0
+		 * @version 1.0.0
+		 */
+		public function get_status_label(): string {
+			$status = $this->get_status();
+
+			switch ( $status ) {
+				case 'completed':
+				case LP_ORDER_COMPLETED:
+					$status = __( 'Completed', 'learnpress' );
+					break;
+				case 'pending':
+				case LP_ORDER_PENDING:
+					$status = __( 'Pending', 'learnpress' );
+					break;
+				case 'processing':
+				case LP_ORDER_PROCESSING:
+					$status = __( 'Processing', 'learnpress' );
+					break;
+				case 'cancelled':
+				case LP_ORDER_CANCELLED:
+					$status = __( 'Cancelled', 'learnpress' );
+					break;
+				case 'failed':
+				case LP_ORDER_FAILED:
+					$status = __( 'Failed', 'learnpress' );
+					break;
+				case 'on-hold':
+					$status = __( 'On hold', 'learnpress' );
+					break;
+				case 'refunded':
+					$status = __( 'Refunded', 'learnpress' );
+					break;
+				default:
+					$status = '';
+					break;
+			}
+
+			if ( ! is_string( $status ) ) {
+				$status = '';
+			}
 
 			return $status;
 		}
@@ -1348,7 +1392,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return bool
 		 */
 		public function is_completed(): bool {
-			return $this->get_order_status() === 'completed';
+			return $this->get_status() === 'completed';
 		}
 
 		/**
