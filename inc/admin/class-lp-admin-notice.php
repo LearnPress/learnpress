@@ -165,6 +165,24 @@ class LP_Admin_Notice {
 	}
 
 	/**
+	 * Tests the background handler's connection.
+	 *
+	 * @since 4.1.7.3.2
+	 *
+	 * @return bool|WP_Error
+	 */
+	public static function check_wp_remote() {
+		$test_url = add_query_arg( 'lp_test_wp_remote', 1, home_url() );
+		$args = [
+			'timeout' => 30,
+		];
+		$result   = wp_safe_remote_get( $test_url, $args );
+		$body     = ! is_wp_error( $result ) ? wp_remote_retrieve_body( $result ) : $result;
+
+		return $body === '[TEST_REMOTE]' ? true : $result;
+	}
+
+	/**
 	 * @deprecated 4.1.7.3.2
 	 */
 	/*public function load() {

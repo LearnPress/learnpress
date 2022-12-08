@@ -554,6 +554,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function plugin_loaded() {
 			do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
 
+			// For check wp_remote call normally of WP
+			if ( ! empty( LP_Request::get_param('lp_test_wp_remote') ) ) {
+				echo '[TEST_REMOTE]';
+				die;
+			}
+
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {
 				require_once 'inc/external-plugin/polylang/class-lp-polylang.php';
