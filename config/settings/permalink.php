@@ -22,7 +22,7 @@ if ( learn_press_get_page_id( 'profile' ) ) {
 
 $profile_url = site_url() . '/' . $profile_slug . '/' . $username;
 
-return array_merge(
+return apply_filters( 'lp/settings/permalinks', array_merge(
 	apply_filters(
 		'learn-press/course-settings-fields/single',
 		[
@@ -165,4 +165,4 @@ return array_merge(
 			),
 		)
 	)
-);
+) );
