@@ -96,6 +96,7 @@
 				width: 100%;
 			}
 		}
+
 		.number {
 			display: block;
 			margin: 0;
@@ -113,15 +114,15 @@
 		text-align: center;
 
 		.origin-price {
-			color: #666;
-			font-size: 18px;
+			color: var(--lp-primary-color);
+			font-size: 1.3em;
 			font-weight: 300;
 			font-style: unset;
 		}
 
 		.price {
-			color: #333;
-			font-size: 1.8rem;
+			color: var(--lp-primary-color);
+			font-size: 1.6em;
 			font-weight: 500;
 		}
 	}
@@ -129,7 +130,7 @@
 	.media-preview {
 		overflow: hidden;
 		position: relative;
-		margin: -20px -20px 20px;
+		margin: -20px -20px 10px;
 
 		img {
 			max-width: 100%;
