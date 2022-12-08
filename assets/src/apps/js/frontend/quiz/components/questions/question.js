@@ -41,7 +41,7 @@ class Question extends Component {
 
 		LP.Hook.doAction( 'lp-question-compatible-builder' );
 
-		if ( typeof MathJax !== 'undefined' ) {
+		if ( typeof MathJax !== 'undefined' && typeof MathJax.Hub !== 'undefined' ) {
 			MathJax.Hub.Queue( [ 'Typeset', MathJax.Hub ] );
 		}
 
