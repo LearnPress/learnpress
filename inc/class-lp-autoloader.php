@@ -92,8 +92,6 @@ class LP_Autoloader {
 				$file = 'class-' . substr( str_replace( '_', '-', $class ), 5 ) . '.php';
 				$path = $this->include_path . 'admin/meta-boxes/';
 
-			} elseif ( strpos( $class, 'lp_statistic_' ) === 0 ) {
-				$path = $this->include_path . 'admin/dashboard-statistics/';
 			} else {
 				$file = 'class-' . str_replace( '_', '-', $class ) . '.php';
 				$path = dirname( __FILE__ ) . '/';
