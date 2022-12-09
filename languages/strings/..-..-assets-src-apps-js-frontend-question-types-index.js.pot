@@ -1,6 +1,0 @@
-msgid ""
-msgstr "Content-Type: text/plain; charset=utf-8\n"
-
-#: ../../assets/src/apps/js/frontend/question-types/index.js:34
-msgid "Question <code>%s</code> invalid!"
-msgstr ""
