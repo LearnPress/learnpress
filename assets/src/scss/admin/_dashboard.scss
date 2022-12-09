@@ -1,29 +1,27 @@
 .lp-order-statuses {
 	margin: 0;
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-gap: 10px;
+
+	.lp-skeleton-animation {
+		grid-column: 1/3;
+	}
 
 	li {
-		float: left;
+		//float: left;
 		width: 100%;
 		margin: 0;
 		background: #fff;
 
-		strong {
-			display: block;
-			margin-bottom: 5px;
-			color: #0073aa;
-			font-size: 20px;
-			font-weight: normal;
-
-			&::before {
-				display: inline-block;
-				width: 25px;
-				height: 25px;
-				font-family: dashicons;
-				font-size: 25px;
-				line-height: 25px;
-				vertical-align: middle;
-				content: "";
-			}
+		span {
+			font-size: 1.1rem;
+			display: flex;
+			text-align: center;
+			justify-content: center;
+			align-items: center;
+			column-gap: 10px;
+			font-weight: 400;
 		}
 
 		p {
@@ -34,22 +32,18 @@
 		}
 
 		&.counter-number {
-			width: 50%;
-			padding: 10px 0 0;
+			//width: 50%;
+			//padding: 10px 0 0;
 			text-align: center;
 
 			.counter-inner {
-				margin: 0 5px;
+				//margin: 0 5px;
 				padding: 10px 0;
 				border: 1px solid #f3f3f3;
 				background: #f9f9f9;
-
-				p {
-					text-transform: lowercase;
-				}
 			}
 
-			&.order-completed {
+			/*&.order-completed {
 
 				strong::before {
 					color: #0085ba;
@@ -80,7 +74,7 @@
 					color: #f00;
 					content: "\f153";
 				}
-			}
+			}*/
 
 			&:hover {
 			}
@@ -91,8 +85,8 @@
 		}
 
 		&.featured-theme {
-			float: none;
-			clear: both;
+			//float: none;
+			//clear: both;
 			width: auto;
 			margin: 12px -12px 0 -12px;
 			padding: 8px 12px 0 12px;
@@ -136,24 +130,20 @@
 		}
 
 		&.total-raised {
+			grid-column: 1/3;
 			box-sizing: border-box;
 			padding: 10px 0;
 			border: 1px solid #f3f3f3;
 			background: #f9f9f9;
 			text-align: center;
+			color: #0073aa;
 
-			strong {
+			span {
 				margin-bottom: 10px;
 				font-size: 26px;
 
-				&::before {
-					width: 30px;
-					height: 30px;
-					margin-top: -3px;
-					margin-right: 7px;
-					font-size: 30px;
-					line-height: 30px;
-					content: "\f185";
+				i {
+					font-size: 25px;
 				}
 			}
 		}
@@ -162,5 +152,31 @@
 	&::after {
 
 		@include clear-fix();
+	}
+}
+
+.featured-theme {
+	border-top: 1px solid #eee;
+	margin-top: 10px;
+	padding-top: 10px;
+
+	p {
+		margin: 0;
+		font-size: 12px
+	}
+
+	.star-rating {
+		display: inline-block;
+		line-height: 12px;
+
+		.star {
+			font-size: 13px;
+			width: 13px;
+			height: 13px;
+		}
+	}
+
+	span {
+		font-size: 11px;
 	}
 }
