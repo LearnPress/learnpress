@@ -1805,10 +1805,11 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
 /**
  * Set user's cookie
  *
- * @param      $name
- * @param      $value
- * @param int   $expire
- * @param bool  $secure
+ * @param string $name
+ * @param mixed $value
+ * @param int $expire
+ * @param bool $secure
+ * @param bool $httponly
  *
  * @editor tungnx
  * @version 1.0.2
@@ -1816,7 +1817,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = false ) {
 	$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 
-	@setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure, $httponly );
+	@setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure, true );
 }
 
 /**

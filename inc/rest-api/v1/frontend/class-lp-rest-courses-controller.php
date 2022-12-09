@@ -163,6 +163,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$response->data->total_pages = $total_pages;
 			} else {
 				// For return data has html
+				ob_start();
 				if ( $courses ) {
 					global $wp, $post;
 
@@ -190,7 +191,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					// End Pagination
 
 					// Content items
-					ob_start();
 					$template_path_item = urldecode( $request['template_path_item'] ?? '' );
 					$template_path      = urldecode( $request['template_path'] ?? '' ); // For wrapper all items, no foreach
 					$args_custom        = json_decode( wp_unslash( $request['args_custom'] ?? '' ), true );
@@ -261,7 +261,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
-			ob_clean();
+			ob_end_clean();
 			$response->data->content = $e->getMessage();
 			$response->message       = $e->getMessage();
 		}

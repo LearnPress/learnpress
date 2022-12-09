@@ -40,18 +40,12 @@ if ( isset( $args['section'] ) ) {
 	</div>
 
 	<?php
-	try {
 		$controller = new LP_REST_Lazy_Load_Controller();
 		$request    = new WP_REST_Request();
 		$request->set_param( 'sectionId', $section['section_id'] );
 		$response    = $controller->course_curriculum_items( $request );
 		$object_data = $response->get_data();
-	} catch ( Throwable $e ) {
-		error_log( $e );
-		return;
-	}
 	?>
-
 	<div class="section-item" data-section-id="<?php echo esc_attr( $section['section_id'] ); ?>">
 		<ul class="section-content">
 			<?php echo wp_kses_post( $object_data->data->content ?? $object_data->data ?? $object_data ? $object_data->data->content : '' ); ?>
