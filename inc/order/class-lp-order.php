@@ -239,9 +239,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Check if order has a status as wp default.
 		 *
 		 * @return bool
+		 * @deprecated 4.2.0
 		 */
 		public function has_invalid_status() {
-			return ! $this->has_status( learn_press_get_order_statuses( false, true ) );
+			_deprecated_function( __METHOD__, '4.2.0' );
+			return true;
+			//return ! $this->has_status( learn_press_get_order_statuses( false, true ) );
 		}
 
 		/**
@@ -251,17 +254,22 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param bool  $manual Is this a manual order status change?.
 		 *
 		 * @return bool
-		 * @throws Exception
 		 */
-		public function update_status( $new_status = 'pending', $manual = false ) {
-			$old_status = $this->get_status();
+		public function update_status( $new_status = 'pending', $manual = false ): bool {
+			$result = false;
 
-			do_action( 'learn-press/before-update-status-lp-order', $new_status, $old_status, $this, $manual );
+			try {
+				$old_status = $this->get_status();
 
-			$this->set_status( $new_status );
-			$result = $this->save();
+				//do_action( 'learn-press/before-update-status-lp-order', $new_status, $old_status, $this, $manual );
 
-			do_action( 'learn-press/after-update-status-lp-order', $new_status, $old_status, $this, $manual );
+				$this->set_status( $new_status );
+				$result = $this->save();
+
+				//do_action( 'learn-press/after-update-status-lp-order', $new_status, $old_status, $this, $manual );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 
 			return $result;
 		}
@@ -318,31 +326,26 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get label of lp order status
 		 *
+		 * @param string $status
+		 *
 		 * @return string
 		 * @since 4.2.0
 		 * @version 1.0.0
 		 */
-		public function get_status_label(): string {
-			$status = $this->get_status();
-
+		public static function get_status_label( string $status ): string {
 			switch ( $status ) {
-				case 'completed':
 				case LP_ORDER_COMPLETED:
 					$status = __( 'Completed', 'learnpress' );
 					break;
-				case 'pending':
 				case LP_ORDER_PENDING:
 					$status = __( 'Pending', 'learnpress' );
 					break;
-				case 'processing':
 				case LP_ORDER_PROCESSING:
 					$status = __( 'Processing', 'learnpress' );
 					break;
-				case 'cancelled':
 				case LP_ORDER_CANCELLED:
 					$status = __( 'Cancelled', 'learnpress' );
 					break;
-				case 'failed':
 				case LP_ORDER_FAILED:
 					$status = __( 'Failed', 'learnpress' );
 					break;
@@ -365,38 +368,47 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/**
+		 * Get icons of lp order status
+		 *
+		 * @return array
+		 * @since 4.2.0
+		 * @version 1.0.0
+		 */
+		public static function get_icons_status(): array {
+			$icons = [
+				LP_ORDER_COMPLETED  => "<i class='dashicons dashicons-yes-alt'></i>",
+				LP_ORDER_PENDING    => "<i class='dashicons dashicons-flag'></i>",
+				LP_ORDER_PROCESSING => "<i class='dashicons dashicons-clock'></i>",
+				LP_ORDER_CANCELLED  => "<i class='dashicons dashicons-dismiss'></i>",
+				LP_ORDER_FAILED     => "<i class='dashicons dashicons-warning'></i>",
+			];
+
+			return apply_filters( 'lp/order/status/icons', $icons );
+		}
+
+		/**
 		 * Set order status.
 		 *
 		 * @param string $new_status
 		 * @param string $note - Optional. Note for changing status.
+		 * @sicne 3.0.0
+		 * @version 1.0.1
 		 */
 		public function set_status( string $new_status = '', string $note = '' ) {
 			$new_status     = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
-			$valid_statuses = learn_press_get_order_statuses( false, true );
-
+			$valid_statuses = array_values( LP_Order::get_order_statuses() );
 			if ( ! in_array( $new_status, $valid_statuses ) && 'trash' !== $new_status ) {
-				$new_status = 'pending';
+				$new_status = LP_ORDER_PENDING;
 			}
 
 			$this->_set_data( 'status', $new_status );
 		}
 
 		public function get_order_status_html() {
-			$statuses     = learn_press_get_order_statuses();
 			$order_status = $this->get_status();
-
-			if ( ! empty( $statuses[ $order_status ] ) ) {
-				$status = $statuses[ $order_status ];
-			} elseif ( ! empty( $statuses[ 'lp-' . $order_status ] ) ) {
-				$status = $statuses[ 'lp-' . $order_status ];
-			} elseif ( $order_status == 'trash' ) {
-				$status = __( 'Removed', 'learnpress' );
-			} else {
-				$status = ucfirst( $order_status );
-			}
-
-			$class = 'order-status order-status-' . sanitize_title( $status );
-			$html  = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status );
+			$status       = ucfirst( $order_status );
+			$class        = 'order-status order-status-' . sanitize_title( $status );
+			$html         = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status );
 
 			return apply_filters( 'learn_press_order_status_html', $html, $this );
 		}
@@ -1318,14 +1330,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			$new_status = str_replace( 'lp-', '', get_post_status( $this->get_id() ) );
-
-			$order_id = $this->get_id();
+			$order_id   = $this->get_id();
 
 			if ( $new_status !== $old_status ) {
 				do_action( 'learn-press/order/status-' . $new_status, $order_id, $old_status );
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $order_id );
 				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );
-				//do_action( 'learn_press_update_order_status', $new_status, $order_id );
 			}
 
 			//$this->_save_status();
@@ -1453,6 +1463,23 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			return apply_filters( 'learnpress/order/can_delete_old_item', $can_delete, $course );
+		}
+
+		/**
+		 * Get list status of LP Order
+		 *
+		 * @return array
+		 */
+		public static function get_order_statuses(): array {
+			$order_statuses = [
+				LP_ORDER_COMPLETED_DB  => LP_ORDER_COMPLETED,
+				LP_ORDER_PROCESSING_DB => LP_ORDER_PROCESSING,
+				LP_ORDER_PENDING_DB    => LP_ORDER_PENDING,
+				LP_ORDER_CANCELLED_DB  => LP_ORDER_CANCELLED,
+				LP_ORDER_FAILED_DB     => LP_ORDER_FAILED,
+			];
+
+			return apply_filters( 'lp/order/statuses', $order_statuses );
 		}
 	}
 }

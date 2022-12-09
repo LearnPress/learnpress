@@ -1560,8 +1560,12 @@ function learn_press_plugin_basename_from_slug( $slug ) {
 	return $slug;
 }
 
+/**
+ * @deprecated 4.2.0
+ */
 function learn_press_request_query( $vars = array() ) {
-	global $typenow, $wp_query, $wp_post_statuses;
+	_deprecated_function( __FUNCTION__, '4.2.0' );
+	/*global $typenow, $wp_query, $wp_post_statuses;
 
 	if ( LP_ORDER_CPT === $typenow ) {
 		if ( ! isset( $vars['post_status'] ) ) {
@@ -1576,12 +1580,12 @@ function learn_press_request_query( $vars = array() ) {
 			$vars['post_status'] = array_keys( $post_statuses );
 
 		}
-	}
+	}*/
 
 	return $vars;
 }
 
-add_filter( 'request', 'learn_press_request_query', 0 );
+//add_filter( 'request', 'learn_press_request_query', 0 );
 
 function _learn_press_reset_course_data() {
 	if ( empty( $_REQUEST['reset-course-data'] ) ) {
@@ -2421,8 +2425,12 @@ function learn_press_is_admin_page() {
 	return apply_filters( 'learn-press/is-admin-page', $is_learnpress, $screen_id );
 }*/
 
+/**
+ * @deprecated 4.2.0
+ */
 function learn_press_get_orders_status_chart_data() {
-	$data = array(
+	_deprecated_function( __FUNCTION__, '4.2.0' );
+	/*$data = array(
 		'type'    => 'pie',
 		'data'    => array(
 			'labels'   => array(),
@@ -2476,9 +2484,10 @@ function learn_press_get_orders_status_chart_data() {
 	foreach ( $counts as $k => $v ) {
 		$data['data']['labels'][]              = isset( $labels[ $k ] ) ? $labels[ $k ] : 'Untitled';
 		$data['data']['datasets'][0]['data'][] = $v;
-	}
+	}*/
 
-	return $data;
+	//return $data;
+	return [];
 }
 
 require_once 'class-lp-post-type-actions.php';

@@ -4,7 +4,7 @@
  *
  * @author  ThimPress (Nhamdv)
  * @package LearnPress/Admin/Views
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 if ( isset( $order_items ) ) {
@@ -60,9 +60,15 @@ $user_ip      = $order->get_user_ip_address();
 			<label><?php esc_html_e( 'Status:', 'learnpress' ); ?></label>
 			<select name="order-status" data-status="<?php echo 'lp-' . $order->get_status(); ?>">
 				<?php
-				$statuses = learn_press_get_order_statuses();
+				$statuses = LP_Order::get_order_statuses();
 				foreach ( $statuses as $status => $status_name ) {
-					echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' . esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
+					?>
+					<option data-desc="<?php echo esc_attr( _learn_press_get_order_status_description( $status ) ); ?>"
+							value="<?php echo esc_attr( $status ); ?>"
+						<?php echo selected( $status, 'lp-' . $order->get_status(), false ); ?>>
+						<?php echo esc_html( LP_Order::get_status_label( $status_name ) ); ?>
+					</option>;
+					<?php
 				}
 				?>
 			</select>

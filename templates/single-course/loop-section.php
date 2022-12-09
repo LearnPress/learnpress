@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit();
  * @var LP_Course_Section $section
  */
 if ( ! isset( $section ) || ! isset( $can_view_content_course )
-	 || ! isset( $user_course ) || ! isset( $user ) ) {
+	|| ! isset( $user_course ) || ! isset( $user ) ) {
 	return;
 }
 

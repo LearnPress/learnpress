@@ -40,15 +40,19 @@ class Template {
 	 * @param string $file_name
 	 * @param array $args
 	 *
-	 * @return void
+	 * @return void|string
 	 * @since 1.0.0
 	 * @version 1.0.0
 	 */
 	public function get_admin_template( string $file_name = '', array $args = array() ) {
 		$file_name = str_replace( '.php', '', $file_name );
-		$path_file = REALPRESS_VIEWS . "admin/{$file_name}.php";
+		$path_file = LP_PLUGIN_PATH . "inc/admin/views/{$file_name}.php";
 
-		$this->get_template( $path_file, $args );
+		$template = $this->get_template( $path_file, $args );
+
+		if ( ! $this->include ) {
+			return $template;
+		}
 	}
 
 	/**

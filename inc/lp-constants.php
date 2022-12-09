@@ -72,12 +72,19 @@ const LP_COURSE_PURCHASED = 'purchased';
 const LP_ITEM_COMPLETED   = 'completed';
 const LP_ITEM_STARTED     = 'started';
 
-// Status LP Order.
-const LP_ORDER_COMPLETED  = 'lp-completed';
-const LP_ORDER_PENDING    = 'lp-pending';
-const LP_ORDER_PROCESSING = 'lp-processing';
-const LP_ORDER_CANCELLED  = 'lp-cancelled';
-const LP_ORDER_FAILED     = 'lp-failed';
+// Status LP Order to compare.
+const LP_ORDER_COMPLETED  = 'completed';
+const LP_ORDER_PENDING    = 'pending';
+const LP_ORDER_PROCESSING = 'processing';
+const LP_ORDER_CANCELLED  = 'cancelled';
+const LP_ORDER_FAILED     = 'failed';
+
+// Status LP Order to set DB.
+const LP_ORDER_COMPLETED_DB  = 'lp-completed';
+const LP_ORDER_PENDING_DB    = 'lp-pending';
+const LP_ORDER_PROCESSING_DB = 'lp-processing';
+const LP_ORDER_CANCELLED_DB  = 'lp-cancelled';
+const LP_ORDER_FAILED_DB     = 'lp-failed';
 
 // Graduation user item course
 const LP_COURSE_GRADUATION_IN_PROGRESS = 'in-progress';

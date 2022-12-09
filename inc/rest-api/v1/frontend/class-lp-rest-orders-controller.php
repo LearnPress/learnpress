@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 class LP_REST_Orders_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
 		$this->namespace = 'lp/v1';
@@ -21,29 +24,35 @@ class LP_REST_Orders_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
-	public function statistic( WP_REST_Request $request ) {
-
+	/**
+	 * Get statistic of orders.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @since 4.0.0
+	 * @version 1.0.1
+	 */
+	public function statistic( WP_REST_Request $request ): LP_REST_Response {
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
-		$order_statuses    = learn_press_get_order_statuses( true, true );
-		$specific_statuses = array( 'lp-completed', 'lp-failed' );
-
-		foreach ( $order_statuses as $status ) {
-			if ( ! in_array( $status, $specific_statuses ) ) {
-				$specific_statuses[] = $status;
-			}
-		}
-
 		try {
-			$response->data   = learn_press_get_template_content( 'admin/views/dashboard/html-orders', compact( 'specific_statuses' ), '', LP_PLUGIN_PATH . 'inc/' );
-			$response->status = 'success';
+			//$order_statuses    = learn_press_get_order_statuses( true, true );
+			$order_statuses = LP_Order::get_order_statuses();
+			$lp_order_icons = LP_Order::get_icons_status();
 
-		} catch ( Exception $e ) {
+			ob_start();
+			$data = compact( 'order_statuses', 'lp_order_icons' );
+			Template::instance()->get_admin_template( 'dashboard/html-orders', $data );
+			$response->data   = ob_get_clean();
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			ob_end_clean();
 			$response->message = $e->getMessage();
 		}
 
-		return rest_ensure_response( $response );
+		return $response;
 	}
 
 }

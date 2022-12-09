@@ -555,7 +555,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
 
 			// For check wp_remote call normally of WP
-			if ( ! empty( LP_Request::get_param('lp_test_wp_remote') ) ) {
+			if ( ! empty( LP_Request::get_param( 'lp_test_wp_remote' ) ) ) {
 				echo '[TEST_REMOTE]';
 				die;
 			}

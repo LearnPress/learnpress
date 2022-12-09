@@ -507,8 +507,7 @@ function learn_press_count_orders( $args = array() ) {
 	$statuses = $args['status'];
 
 	if ( ! $statuses ) {
-		$statuses = learn_press_get_register_order_statuses();
-		$statuses = array_keys( $statuses );
+		$statuses = array_keys( LP_Order::get_order_statuses() );
 	}
 
 	settype( $statuses, 'array' );
@@ -665,8 +664,10 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
  * @since 2.1.7
  *
  * @return array
+ * @deprecated 4.2.0
  */
 function learn_press_get_order_statuses( $prefix = true, $status_only = false ) {
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	$register_statues = learn_press_get_register_order_statuses();
 
 	if ( ! $prefix ) {
@@ -781,10 +782,12 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	 * in their profile.
 	 */
 	function learn_press_cancel_order_process() {
-		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || ! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) ||
+			! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
 			return;
 		}
 
+		$url      = '';
 		$order_id = absint( $_REQUEST['cancel-order'] );
 		$order    = learn_press_get_order( $order_id );
 		$user     = learn_press_get_current_user();
@@ -792,7 +795,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		if ( ! $order ) {
 			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
 		} elseif ( $order->has_status( 'pending' ) ) {
-			$order->update_status( 'cancelled' );
+			$order->update_status( LP_ORDER_CANCELLED );
 			$order->add_note( __( 'The order is cancelled by the customer', 'learnpress' ) );
 
 			// set updated message
@@ -801,6 +804,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		} else {
 			learn_press_add_message( sprintf( __( 'The order number <strong>%s</strong> can not be cancelled.', 'learnpress' ), $order->get_order_number() ), 'error' );
 		}
+
 		if ( ! $url ) {
 			$url = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.profile-orders', 'orders' ) );
 		}

@@ -44,53 +44,47 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 			<ul class="lp-order-statuses lp_append_data">
 				<?php lp_skeleton_animation_html( 4, 100, 'height: 30px;border-radius:4px;' ); ?>
 			</ul>
-			<ul class="lp-order-statuses">
-				<?php
-				$eduma_data = $this->_get_theme_info( 14058034 );
-
-				if ( ! empty( $eduma_data ) ) {
-					$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
-					?>
-
-					<li class="clear"></li>
-					<li class="featured-theme">
-						<?php if ( isset( $eduma_data['name'] ) && isset( $eduma_data['price_cents'] ) ) : ?>
-							<p>
-								<a href="<?php echo esc_url_raw( $eduma_data['url'] ); ?>">
-									<?php echo esc_html( $eduma_data['name'] ); ?>
-								</a> - <?php printf( '%s%s', '$', $eduma_data['price_cents'] / 100 ); ?>
-							</p>
-						<?php endif; ?>
-
-						<?php if ( isset( $eduma_data['rating']['count'] ) && isset( $eduma_data['rating']['rating'] ) ) : ?>
-							<div>
-								<?php
-								wp_star_rating(
-									array(
-										'rating' => $eduma_data['rating']['rating'],
-										'type'   => 'rating',
-										'number' => $eduma_data['rating']['count'],
-									)
-								);
-								?>
-
-								<span class="count-rating">(<?php echo esc_html( $eduma_data['rating']['count'] ); ?>)</span>
-								<span>
-									- <?php echo sprintf( '%d %s', esc_html( $eduma_data['number_of_sales'] ), esc_html__( ' sales', 'learnpress' ) ); ?>
-								</span>
-							</div>
-						<?php endif; ?>
-
-						<?php if ( isset( $eduma_data['author_username'] ) ) : ?>
-							<p>
-								<?php esc_html_e( 'Created by: ', 'learnpress' ); ?>
-								<a href="https://thimpress.com/" class="author"><?php echo esc_html( $eduma_data['author_username'] ); ?></a>
-							</p>
-						<?php endif; ?>
-					</li>
-				<?php } ?>
-			</ul>
 			<?php
+			$eduma_data = $this->_get_theme_info( 14058034 );
+			if ( ! empty( $eduma_data ) ) {
+				$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
+				?>
+				<div class="featured-theme">
+					<?php if ( isset( $eduma_data['name'] ) && isset( $eduma_data['price_cents'] ) ) : ?>
+						<p>
+							<a href="<?php echo esc_url_raw( $eduma_data['url'] ); ?>">
+								<?php echo esc_html( $eduma_data['name'] ); ?>
+							</a> - <?php printf( '%s%s', '$', $eduma_data['price_cents'] / 100 ); ?>
+						</p>
+					<?php endif; ?>
+
+					<?php if ( isset( $eduma_data['rating']['count'] ) && isset( $eduma_data['rating']['rating'] ) ) : ?>
+						<div>
+							<?php
+							wp_star_rating(
+								array(
+									'rating' => $eduma_data['rating']['rating'],
+									'type'   => 'rating',
+									'number' => $eduma_data['rating']['count'],
+								)
+							);
+							?>
+							<span class="count-rating">(<?php echo esc_html( $eduma_data['rating']['count'] ); ?>)</span>
+							<span>
+								- <?php echo sprintf( '%d %s', esc_html( $eduma_data['number_of_sales'] ), esc_html__( ' sales', 'learnpress' ) ); ?>
+							</span>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( isset( $eduma_data['author_username'] ) ) : ?>
+						<p>
+							<?php esc_html_e( 'Created by: ', 'learnpress' ); ?>
+							<a href="https://thimpress.com/" class="author"><?php echo esc_html( $eduma_data['author_username'] ); ?></a>
+						</p>
+					<?php endif; ?>
+				</div>
+				<?php
+			}
 		}
 
 		/**

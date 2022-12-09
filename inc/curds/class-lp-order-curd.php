@@ -31,10 +31,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$order->set_order_date( time() );
 		$order->set_order_key( learn_press_generate_order_key() );
-		$status = $order->get_status() ? $order->get_status() : LP_ORDER_PENDING;
-		if ( ! preg_match( '/^lp-/', $status ) ) {
-			$status = 'lp-' . $status;
-		}
+		$status = $this->format_status_save_db( $order );
 
 		$order_data = array(
 			'post_author'   => get_current_user_id(),
@@ -58,6 +55,63 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $id;
+	}
+
+	/**
+	 * Update order.
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return int
+	 * @Todo tungnx - check method
+	 */
+	public function update( &$order ) {
+		if ( ! $order instanceof LP_Order ) {
+			return false;
+		}
+
+		$status    = $this->format_status_save_db( $order );
+		$post_data = array(
+			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
+			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
+			'post_status'   => $status,
+			'post_parent'   => $order->get_parent_id(),
+		);
+		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );
+
+		/**
+		 * When updating this object, to prevent infinite loops, use $wpdb
+		 * to update data, since wp_update_post spawns more calls to the
+		 * save_post action.
+		 *
+		 * This ensures hooks are fired by either WP itself (admin screen save),
+		 * or an update purely from CRUD.
+		 */
+		if ( doing_action( 'save_post' ) ) {
+			$GLOBALS['wpdb']->update( $GLOBALS['wpdb']->posts, $post_data, array( 'ID' => $order->get_id() ) );
+			clean_post_cache( $order->get_id() );
+		} else {
+			wp_update_post( array_merge( array( 'ID' => $order->get_id() ), $post_data ) );
+		}
+		$this->_updates( $order );
+
+		return $order->get_id();
+	}
+
+	/**
+	 * Format status of LP Order before save DB.
+	 *
+	 * @param LP_Order $lp_order
+	 *
+	 * @return string
+	 */
+	private function format_status_save_db( LP_Order $lp_order ): string {
+		$status = ! empty( $lp_order->get_status() ) ? $lp_order->get_status() : LP_ORDER_PENDING;
+		if ( ! preg_match( '/^lp-/', $status ) ) {
+			$status = 'lp-' . $status;
+		}
+
+		return $status;
 	}
 
 	/**
@@ -273,48 +327,6 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$item[ preg_replace( '!^_!', '', $k ) ] = LP_Helper::maybe_unserialize( $v[0] );
 			}
 		};
-	}
-
-	/**
-	 * Update order.
-	 *
-	 * @param LP_Order $order
-	 *
-	 * @return int
-	 */
-	public function update( &$order ) {
-		// If there is no items in the order then set it status to Pending
-		$status = $order->get_status() ? $order->get_status() : LP_ORDER_PENDING;
-		if ( ! preg_match( '/^lp-/', $status ) ) {
-			$status = 'lp-' . $status;
-		}
-
-		$post_data = array(
-			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
-			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
-			'post_status'   => $status,
-			'post_parent'   => $order->get_parent_id(),
-		);
-
-		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );
-
-		/**
-		 * When updating this object, to prevent infinite loops, use $wpdb
-		 * to update data, since wp_update_post spawns more calls to the
-		 * save_post action.
-		 *
-		 * This ensures hooks are fired by either WP itself (admin screen save),
-		 * or an update purely from CRUD.
-		 */
-		if ( doing_action( 'save_post' ) ) {
-			$GLOBALS['wpdb']->update( $GLOBALS['wpdb']->posts, $post_data, array( 'ID' => $order->get_id() ) );
-			clean_post_cache( $order->get_id() );
-		} else {
-			wp_update_post( array_merge( array( 'ID' => $order->get_id() ), $post_data ) );
-		}
-		$this->_updates( $order );
-
-		return $order->get_id();
 	}
 
 	public function delete( &$object ) {

@@ -173,7 +173,7 @@ class LP_Admin_Notice {
 	 */
 	public static function check_wp_remote() {
 		$test_url = add_query_arg( 'lp_test_wp_remote', 1, home_url() );
-		$args = [
+		$args     = [
 			'timeout' => 30,
 		];
 		$result   = wp_safe_remote_get( $test_url, $args );
