@@ -230,7 +230,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						// Check wp_remote call success.
 						'check_wp_remote'   => [
 							'template' => 'admin-notices/wp-remote.php',
-							'check'    => LP_Admin_Ajax::check_wp_remote(),
+							'check'    => LP_Admin_Notice::check_wp_remote(),
 						],
 						// Check name plugin base.
 						'check_plugin_base' => [
