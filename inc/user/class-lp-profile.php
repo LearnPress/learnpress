@@ -908,7 +908,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return array
 		 */
 		public function get_quizzes_filters( $current_filter = '' ) {
-			$url = $this->get_tab_link( 'quizzes' );
+			$url      = $this->get_tab_link( 'quizzes' );
 			$defaults = array(
 				'all'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
 				'completed' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),

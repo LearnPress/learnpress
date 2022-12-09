@@ -25,7 +25,7 @@ class LP_Profile_Tabs {
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile ) {
-		$this->_data = $tabs;
+		$this->_data   = $tabs;
 		$this->profile = $profile;
 
 		$this->_sanitize();
@@ -214,8 +214,7 @@ class LP_Profile_Tabs {
 
 			$tab_data = $this->get_tab_at( $tab );
 			if ( $tab_data instanceof LP_Profile_Tab ) {
-				$slug     = $this->get_slug( $tab_data, $tab );
-
+				$slug = $this->get_slug( $tab_data, $tab );
 				if ( $slug ) {
 					$args['tab'] = $slug;
 				} else {

@@ -101,7 +101,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @modify 4.1.3
 		 */
 		public function get_course_data( int $course_id = 0 ) {
-			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$lp_user_items_db   = LP_User_Items_DB::getInstance();
 			$object_course_data = false;
 
 			try {
