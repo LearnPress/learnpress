@@ -476,6 +476,19 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 		$course = learn_press_get_course( $post_id );
 
+		// Check price is valid.
+		$price_regular = LP_Request::get( '_lp_regular_price', 0, 'float' );
+		$price_sale = LP_Request::get( '_lp_sale_price', 0, 'float' );
+		if ( $price_regular <= 0 ) {
+			$price_sale = 0;
+			update_post_meta( $post_id, '_lp_regular_price', '' );
+		}
+
+		if ( $price_sale >= $price_regular ) {
+			update_post_meta( $post_id, '_lp_sale_price', '' );
+		}
+		// End check price.
+
 		$evalution         = isset( $_POST['_lp_course_result'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_course_result'] ) : '';
 		$passing_condition = isset( $_POST['_lp_passing_condition'] ) ? absint( wp_unslash( $_POST['_lp_passing_condition'] ) ) : 0;
 
@@ -501,7 +514,6 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		}
 
 		$author = isset( $_POST['_lp_course_author'] ) ? wp_unslash( $_POST['_lp_course_author'] ) : '';
-
 		if ( ! empty( $author ) ) {
 			global $wpdb;
 
