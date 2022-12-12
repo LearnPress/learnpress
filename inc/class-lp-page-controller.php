@@ -1024,10 +1024,8 @@ class LP_Page_Controller {
 
 					if ( json_last_error() === JSON_ERROR_NONE ) {
 						$order_id = $data_order->order_id;
-
 						$lp_order = learn_press_get_order( $order_id );
-						$lp_order->set_status( 'completed' );
-						$lp_order->save();
+						$lp_order->update_status( LP_ORDER_COMPLETED );
 					}
 				}
 			}

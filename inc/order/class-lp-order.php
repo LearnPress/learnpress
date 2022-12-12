@@ -395,7 +395,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.1
 		 */
 		public function set_status( string $new_status = '', string $note = '' ) {
-			$new_status     = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
+			// Ensure status not has prefix 'lp-'.
+			$new_status     = str_replace( 'lp-', '', $new_status );
 			$valid_statuses = array_values( LP_Order::get_order_statuses() );
 			if ( ! in_array( $new_status, $valid_statuses ) && 'trash' !== $new_status ) {
 				$new_status = LP_ORDER_PENDING;
