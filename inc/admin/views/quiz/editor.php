@@ -112,9 +112,9 @@ learn_press_admin_view( 'quiz/question-fib-editor' );
 				}
 			},
 			created: function () {
-				setInterval(function () {
+				/*setInterval(function () {
 					$store.dispatch('heartbeat');
-				}, 60 * 1000);
+				}, 60 * 1000);*/
 			},
 			computed: {
 				heartbeat: function () {

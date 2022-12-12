@@ -53,9 +53,9 @@ learn_press_admin_view( 'course/modal-choose-items' );
 			$Vue.component( 'lp-course-editor', {
 				template: '#tmpl-lp-course-editor',
 				created: function() {
-					setInterval( function() {
+					/*setInterval( function() {
 						$store.dispatch( 'heartbeat' );
-					}, 60 * 1000);
+					}, 60 * 1000);*/
 				},
 				computed: {
 					heartbeat: function() {
