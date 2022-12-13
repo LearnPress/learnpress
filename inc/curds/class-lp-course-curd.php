@@ -705,15 +705,16 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param array $args
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 * @version 1.0.1
 		 */
 		public function get_recent_courses( $args = array() ) {
 			global $wpdb;
 
-			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
-			$order = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
-
-			if ( $limit <= 0 ) {
-				$limit = 0;
+			$limit = absint( $args['limit'] ?? 5 );
+			$order = LP_Helper::sanitize_params_submitted( $args['order'] ?? 'DESC' );
+			if ( ! in_array( $order, array( 'ASC', 'DESC' ) ) ) {
+				$order = 'DESC';
 			}
 
 			$query = apply_filters(
@@ -721,12 +722,12 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$wpdb->prepare(
 					"
 					SELECT DISTINCT p.ID
-						FROM $wpdb->posts AS p
-						WHERE p.post_type = %s
-						AND p.post_status = %s
-						ORDER BY p.post_date {$order}
-						LIMIT %d
-				",
+					FROM $wpdb->posts AS p
+					WHERE p.post_type = %s
+					AND p.post_status = %s
+					ORDER BY p.post_date {$order}
+					LIMIT %d
+					",
 					LP_COURSE_CPT,
 					'publish',
 					$limit
@@ -757,7 +758,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				WHERE user_item.item_id = %d
 				AND user_item.item_type = %s
 				LIMIT %d
-			",
+				",
 				$course_id,
 				LP_COURSE_CPT,
 				$limit
@@ -815,40 +816,54 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @param array $args
 		 *
 		 * @return array
+		 * @version 1.0.1
+		 * @since 3.0.0
+		 * @Todo: should call LP_Course_DB
 		 */
 		public function get_featured_courses( $args = array() ) {
 			global $wpdb;
+			$lp_course_db = LP_Course_DB::getInstance();
+			$courses = [];
 
-			$limit    = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
-			$order_by = ! empty( $args['order_by'] ) ? $args['order_by'] : 'post_date';
-			$order    = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
+			try {
+				$limit = absint( $args['limit'] ?? 5 );
+				$order = LP_Helper::sanitize_params_submitted( $args['order'] ?? 'DESC' );
+				$order = in_array( $order, array( 'ASC', 'DESC' ) ) ? $order : 'DESC';
+				$order_by = LP_Helper::sanitize_params_submitted( $args['order_by'] ?? 'post_date' );
+				$cols = $lp_course_db->get_cols_of_table( $lp_course_db->tb_posts );
+				$order_by = in_array( $order_by, $cols ) ? $order_by : 'post_date'; // For security
 
-			if ( $limit <= 0 ) {
-				$limit = 0;
+				if ( $limit <= 0 ) {
+					$limit = 0;
+				}
+
+				$query = apply_filters(
+					'learn-press/course-curd/query-featured-courses',
+					$wpdb->prepare(
+						"
+						SELECT DISTINCT p.ID
+						FROM {$wpdb->posts} p
+	                    LEFT JOIN {$wpdb->postmeta} as pmeta ON p.ID=pmeta.post_id AND pmeta.meta_key = %s
+	                    WHERE p.post_type = %s
+							AND p.post_status = %s
+							AND pmeta.meta_value = %s
+	                    ORDER BY p.{$order_by} {$order}
+	                    LIMIT %d
+                		",
+						'_lp_featured',
+						LP_COURSE_CPT,
+						'publish',
+						'yes',
+						$limit
+					)
+				);
+
+				$courses = $wpdb->get_col( $query );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
-			$query = apply_filters(
-				'learn-press/course-curd/query-featured-courses',
-				$wpdb->prepare(
-					"
-					SELECT DISTINCT p.ID
-					FROM {$wpdb->posts} p
-                    LEFT JOIN {$wpdb->postmeta} as pmeta ON p.ID=pmeta.post_id AND pmeta.meta_key = %s
-                    WHERE p.post_type = %s
-						AND p.post_status = %s
-						AND pmeta.meta_value = %s
-                    ORDER BY p.{$order_by} {$order}
-                    LIMIT %d
-                ",
-					'_lp_featured',
-					LP_COURSE_CPT,
-					'publish',
-					'yes',
-					$limit
-				)
-			);
-
-			return $wpdb->get_col( $query );
+			return $courses;
 		}
 	}
 }
