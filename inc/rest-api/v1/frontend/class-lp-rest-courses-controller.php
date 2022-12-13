@@ -3,6 +3,9 @@
 /**
  * Class LP_REST_Courses_Controller
  */
+
+use LearnPress\Helpers\Template;
+
 class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * LP_REST_Courses_Controller constructor.
@@ -167,69 +170,26 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				if ( $courses ) {
 					global $wp, $post;
 
-					// Pagination
-					$archive_link = get_post_type_archive_link( LP_COURSE_CPT );
-
-					if ( isset( $term_link ) && ! is_wp_error( $term_link ) ) {
-						$archive_link = $term_link;
-					}
-
-					$template_pagination_path = $request['template_pagination_path'] ?? '';
-					if ( ! isset( $request['no_pagination'] ) ) {
-						if ( ! empty( $template_pagination_path ) ) {
-							$response->data->pagination = include $template_pagination_path;
-						} else {
-							$response->data->pagination = learn_press_get_template_content(
-								'loop/course/pagination.php',
-								array(
-									'total' => $total_pages,
-									'paged' => $filter->page,
-								)
-							);
-						}
-					}
+					// Template Pagination.
+					$response->data->pagination = learn_press_get_template_content(
+						'loop/course/pagination.php',
+						array(
+							'total' => $total_pages,
+							'paged' => $filter->page,
+						)
+					);
 					// End Pagination
 
-					// Content items
-					$template_path_item = urldecode( $request['template_path_item'] ?? '' );
-					$template_path      = urldecode( $request['template_path'] ?? '' ); // For wrapper all items, no foreach
-					$args_custom        = json_decode( wp_unslash( $request['args_custom'] ?? '' ), true );
-
 					// For custom template return all list courses no foreach
+					$template_path = sanitize_file_name( apply_filters( 'lp/api/courses/template', '' ) );
 					if ( ! empty( $template_path ) ) {
-						if ( is_array( $args_custom ) && ! empty( $args_custom ) ) {
-							extract( $args_custom );
-						}
-
-						if ( file_exists( $template_path ) ) {
-							include $template_path;
-						}
+						Template::instance()->get_frontend_template( $template_path, compact( 'courses', 'total_pages' ) );
 					} else {
-						// For custom template return all list courses foreach
-						if ( ! empty( $template_path_item ) ) {
-							if ( isset( $request['args_custom'] ) ) {
-								$args_custom = json_decode( $request['args_custom'], true );
-							}
-
-							$template_path_item = urldecode( $template_path_item );
-						}
-
 						// Todo: tungnx - should rewrite call template
 						foreach ( $courses as $course ) {
 							$post = get_post( $course->ID );
 							setup_postdata( $post );
-
-							if ( ! empty( $template_path_item ) ) {
-								if ( $args_custom ) {
-									extract( $args_custom );
-								}
-
-								if ( file_exists( $template_path_item ) ) {
-									include $template_path_item;
-								}
-							} else {
-								learn_press_get_template_part( 'content', 'course' );
-							}
+							learn_press_get_template_part( 'content', 'course' );
 						}
 
 						wp_reset_postdata();
