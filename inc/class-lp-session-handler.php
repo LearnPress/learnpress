@@ -227,7 +227,7 @@ class LP_Session_Handler {
 
 		// Set the cookie
 		if ( ! isset( $_COOKIE[ $this->_cookie ] ) || $_COOKIE[ $this->_cookie ] !== $cookie_value ) {
-			learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, is_ssl(), true );
+			learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration );
 		}
 
 		return $this;

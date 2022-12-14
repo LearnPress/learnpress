@@ -1808,16 +1808,15 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  * @param string $name
  * @param mixed $value
  * @param int $expire
- * @param bool $secure
  * @param bool $httponly
  *
  * @editor tungnx
- * @version 1.0.2
+ * @version 1.0.3
  */
-function learn_press_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = false ) {
+function learn_press_setcookie( string $name = '', string $value = '', int $expire = 0, bool $httponly = true ) {
 	$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 
-	@setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure, true );
+	@setcookie( $name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure, $httponly );
 }
 
 /**
