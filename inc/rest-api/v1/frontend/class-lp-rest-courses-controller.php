@@ -180,16 +180,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					);
 					// End Pagination
 
-					// For custom template return all list courses no foreach
-					$template_path = sanitize_file_name( apply_filters( 'lp/api/courses/template', '' ) );
+					// For custom template
+					$template_path = apply_filters( 'lp/api/courses/template', '' );
 					if ( ! empty( $template_path ) ) {
-						Template::instance()->get_frontend_template( $template_path, compact( 'courses', 'total_pages' ) );
+						Template::instance()->get_template( $template_path, compact( 'courses', 'total_pages' ) );
 					} else {
-						// Todo: tungnx - should rewrite call template
 						foreach ( $courses as $course ) {
 							$post = get_post( $course->ID );
 							setup_postdata( $post );
-							learn_press_get_template_part( 'content', 'course' );
+							Template::instance()->get_frontend_template( 'content-course.php' );
 						}
 
 						wp_reset_postdata();

@@ -7,7 +7,7 @@ namespace LearnPress\Helpers;
  *
  * @package LearnPress\Helpers
  * @since 1.0.0
- * @version 1.0.0
+ * @version 1.0.1
  */
 class Template {
 	/**
@@ -67,7 +67,7 @@ class Template {
 	 */
 	public function get_frontend_template( string $file_name = '', array $args = array() ) {
 		$default_path        = LP_PLUGIN_PATH . "templates/{$file_name}";
-		$folder_name_rewrite = apply_filters( 'learn-press/folder-name-override', LP_PLUGIN_FOLDER_NAME );
+		$folder_name_rewrite = apply_filters( 'learn_press_template_path', LP_PLUGIN_FOLDER_NAME );
 
 		$from_theme_path = get_template_directory() . DIRECTORY_SEPARATOR . $folder_name_rewrite . DIRECTORY_SEPARATOR . $file_name;
 		$path_load       = file_exists( $from_theme_path ) ? $from_theme_path : $default_path;
@@ -76,61 +76,6 @@ class Template {
 
 		if ( ! $this->include ) {
 			return $template;
-		}
-	}
-
-	/**
-	 * Get frontend template block file
-	 *
-	 * @param string $file_name
-	 * @param array $args
-	 *
-	 * @return string|void
-	 */
-	public function get_frontend_template_type_block( string $file_name = '', array $args = array() ) {
-		$file_name = "block/{$file_name}";
-		$template  = $this->get_frontend_template( $file_name, $args );
-
-		if ( ! $this->include ) {
-			return $template;
-		}
-	}
-
-	/**
-	 * Get frontend template file
-	 *
-	 * @param string $file_name
-	 * @param array $args
-	 *
-	 * @return string|void
-	 */
-	public function get_frontend_template_type_classic( string $file_name = '', array $args = array() ) {
-		$file_name = "classic/{$file_name}";
-		$template  = $this->get_frontend_template( $file_name, $args );
-
-		if ( ! $this->include ) {
-			return $template;
-		}
-	}
-
-	/**
-	 * Get frontend group template files
-	 *
-	 * @param array $file_names
-	 * @param array $args
-	 *
-	 * @return void
-	 * @version 1.0.0
-	 * @since 1.0.1
-	 */
-	public function get_frontend_templates_type_classic( array $file_names = array(), array $args = array() ) {
-		foreach ( $file_names as $file_name ) {
-			$search_extension = strrpos( $file_name, '.php' );
-			if ( ! $search_extension ) {
-				$file_name .= '.php';
-			}
-
-			$this->get_frontend_template_type_classic( $file_name, $args );
 		}
 	}
 
@@ -144,7 +89,7 @@ class Template {
 	 * @since 1.0.0
 	 * @version 1.0.0
 	 */
-	protected function get_template( string $path_file, array $args = array() ) {
+	public function get_template( string $path_file, array $args = array() ) {
 		extract( $args );
 		if ( file_exists( $path_file ) ) {
 			if ( $this->include ) {
