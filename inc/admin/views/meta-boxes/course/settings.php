@@ -478,7 +478,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 		// Check price is valid.
 		$price_regular = LP_Request::get( '_lp_regular_price', 0, 'float' );
-		$price_sale = LP_Request::get( '_lp_sale_price', 0, 'float' );
+		$price_sale    = LP_Request::get( '_lp_sale_price', 0, 'float' );
 		if ( $price_regular <= 0 ) {
 			$price_sale = 0;
 			update_post_meta( $post_id, '_lp_regular_price', '' );

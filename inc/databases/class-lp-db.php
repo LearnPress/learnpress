@@ -619,11 +619,11 @@ class LP_Database {
 		// Order by
 		$ORDER_BY = '';
 		if ( ! $filter->return_string_query && $filter->order_by ) {
-			if ( ! in_array( $filter->order, [ 'DESC', 'ESC' ] ) ) {
-				$filter->order = 'DESC' ;
+			if ( ! in_array( $filter->order, [ 'DESC', 'ASC' ] ) ) {
+				$filter->order = 'DESC';
 			}
 
-			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order . ' ';
+			$ORDER_BY .= 'ORDER BY ' . sanitize_sql_orderby( $filter->order_by ) . ' ' . $filter->order . ' ';
 			$ORDER_BY  = apply_filters( 'lp/query/order_by', $ORDER_BY, $filter );
 		}
 

@@ -823,14 +823,14 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		public function get_featured_courses( $args = array() ) {
 			global $wpdb;
 			$lp_course_db = LP_Course_DB::getInstance();
-			$courses = [];
+			$courses      = [];
 
 			try {
-				$limit = absint( $args['limit'] ?? 5 );
-				$order = LP_Helper::sanitize_params_submitted( $args['order'] ?? 'DESC' );
-				$order = in_array( $order, array( 'ASC', 'DESC' ) ) ? $order : 'DESC';
+				$limit    = absint( $args['limit'] ?? 5 );
+				$order    = LP_Helper::sanitize_params_submitted( $args['order'] ?? 'DESC' );
+				$order    = in_array( $order, array( 'ASC', 'DESC' ) ) ? $order : 'DESC';
 				$order_by = LP_Helper::sanitize_params_submitted( $args['order_by'] ?? 'post_date' );
-				$cols = $lp_course_db->get_cols_of_table( $lp_course_db->tb_posts );
+				$cols     = $lp_course_db->get_cols_of_table( $lp_course_db->tb_posts );
 				$order_by = in_array( $order_by, $cols ) ? $order_by : 'post_date'; // For security
 
 				if ( $limit <= 0 ) {

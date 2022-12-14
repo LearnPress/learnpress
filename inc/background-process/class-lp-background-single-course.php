@@ -94,10 +94,10 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				return;
 			}
 
-			$sale_price     = $this->data['_lp_sale_price'] ?? '';
-			$start_date     = $this->data['_lp_sale_start'] ?? '';
-			$end_date       = $this->data['_lp_sale_end'] ?? '';
-			$price          = 0;
+			$sale_price = $this->data['_lp_sale_price'] ?? '';
+			$start_date = $this->data['_lp_sale_start'] ?? '';
+			$end_date   = $this->data['_lp_sale_end'] ?? '';
+			$price      = 0;
 
 			if ( '' != $regular_price ) {
 				$price = $regular_price;
