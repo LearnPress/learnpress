@@ -246,6 +246,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modified: 'create_order' method on class 'LP_Checkout'.
 ~ Deprecated: 'instructions' method on 'LP_Gateway_Offline_Payment' class.
 ~ Moved: settings permalink Profile to tab Permalinks.
+~ Fixed security: inject SQL (CVE-2022-45820).
+~ Fixed security: XSS.
 
 = 4.1.7.3.2 (2022-11-18) - <a href='https://thimpress.com/learnpress-v4-1-7-3-2-update/' target='_blank' rel='noopener'>View detail</a> =
 ~ Added: tab permalink option.
