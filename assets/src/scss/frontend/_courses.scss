@@ -131,7 +131,7 @@ a {
 
 		.course-instructor {
 			float: left;
-			margin-bottom: 16px;
+			margin-bottom: 10px;
 			font-size: 14px;
 			font-weight: 300;
 			line-height: 25px;
@@ -257,7 +257,7 @@ a {
 		.course-excerpt {
 			display: -webkit-box;
 			overflow: hidden;
-			margin-bottom: 25px;
+			margin-bottom: 20px;
 			color: #666;
 			font-size: 16px;
 			font-weight: 300;
@@ -826,8 +826,8 @@ a {
 
 		.course-wrap-meta {
 			display: flex;
-			padding-top: 12px;
-			padding-bottom: 18px;
+			padding-top: 10px;
+			padding-bottom: 15px;
 			color: #333;
 			font-size: 14px;
 			font-weight: 400;
@@ -887,14 +887,16 @@ a {
 		}
 
 		.course-wrap-thumbnail {
-			//float: left;
-			//width: 35.8%;
-			flex-basis: 35%;
-			@media (max-width: 767px) {
-				flex-basis: unset;
-			}
+ 			width: 40%;
+ 		}
+		.course-content{
+			width: 60%;
 		}
-
+		@media (max-width: 767px) {
+			.course-wrap-thumbnail ,.course-content{
+ 				width: 100%;
+ 			}
+ 		}
 		.course-title {
 			font-size: 18px;
 		}
