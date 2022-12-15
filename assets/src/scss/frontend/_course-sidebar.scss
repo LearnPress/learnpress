@@ -31,18 +31,16 @@
 			}
 
 			&.button-enroll-course {
-				border-color: var(--lp-primary-color);
+				//border-color: var(--lp-primary-color);
 				color: #fff;
-				background: var(--lp-primary-color);
-
-				&:hover {
-					opacity: 0.5;
+				//background: var(--lp-primary-color);
+ 				&:hover {
+					//opacity: 0.5;
 					background: var(--lp-primary-color);
 				}
 
 				&.loading {
-
-					&::before {
+ 					&::before {
 						display: inline-block;
 						font-family: "Font Awesome 5 Free";
 						font-weight: 900;
