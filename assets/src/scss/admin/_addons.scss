@@ -1,5 +1,4 @@
 .learn-press-addons {
-
 	.lp-search-addon {
 		width: 280px;
 		height: 32px;
@@ -114,9 +113,17 @@
 }
 
 .related-themes {
+	display: grid;
+	grid-template-columns: repeat( auto-fit, minmax( 400px, 1fr ) );
+	grid-gap: 20px;
+
+	li {
+		margin: 0;
+	}
 
 	.plugin-card-top {
 		padding-bottom: 0;
+		background: #fff;
 	}
 
 	.theme-content {
@@ -125,6 +132,8 @@
 
 	.image-thumbnail img {
 		width: 100%;
+		height: auto;
+		vertical-align: middle;
 	}
 
 	.theme-description {
