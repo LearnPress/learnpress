@@ -267,12 +267,8 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					$this->_get_item_course( $post_id );
 					break;
 				case 'preview':
-					printf(
-						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-item-preview" %s value="%s" data-nonce="%s" />',
-						get_post_meta( $post_id, '_lp_preview', true ) == 'yes' ? ' checked="checked"' : '',
-						$post_id,
-						wp_create_nonce( 'learn-press-toggle-item-preview' )
-					);
+					$lesson_is_preview = 'yes' === get_post_meta( $post_id, '_lp_preview', true );
+					echo $lesson_is_preview ? '<span class="dashicons dashicons-saved" style="color: #00c700"></span>' : '';
 					break;
 				case 'format':
 					learn_press_item_meta_format( $post_id, __( 'Standard', 'learnpress' ) );

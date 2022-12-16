@@ -1,5 +1,5 @@
 ( function( $ ) {
-	const updateItemPreview = function updateItemPreview() {
+	/*const updateItemPreview = function updateItemPreview() {
 		$.ajax( {
 			url: '',
 			data: {
@@ -13,7 +13,7 @@
 				response = LP.parseJSON( response );
 			},
 		} );
-	};
+	};*/
 	/**
 	 * Callback event for button to creating pages inside error message.
 	 *
@@ -299,7 +299,7 @@
 		updateDb();
 		$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
 		$( '.learn-press-advertisement-slider' ).LP( 'Advertisement', 'a', 's' ).appendTo( $( '#wpbody-content' ) );
-		$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
+		//$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
 		$( '.learn-press-tip' ).LP( 'QuickTip' ); //$('.learn-press-tabs').LP('AdminTab');
 
 		$( document ).on( 'click', '#learn-press-create-pages', createPages )
