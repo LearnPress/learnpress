@@ -335,7 +335,7 @@ class LP_Cart {
 	 *
 	 * @since 3.0.0
 	 * @version 3.0.2
-	 * @modify 4.1.7.4 - tungnx
+	 * @modify 4.2.0 - tungnx
 	 */
 	public function get_cart_from_session() {
 		$session_data        = LearnPress::instance()->session->get_session_data();

@@ -33,7 +33,7 @@ class LP_Session_Handler {
 
 	/**
 	 * $var bool based on whether a cookie exists
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	private $_has_cookie = false;
 
@@ -46,7 +46,7 @@ class LP_Session_Handler {
 
 	/**
 	 * @var string Custom session table name
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	private $_table;
 
@@ -61,12 +61,12 @@ class LP_Session_Handler {
 	 * @param mixed $key
 	 *
 	 * @return mixed
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 * Addon Stripe, 2Checkout, Authorize, Certificate is using this method via call session->order_awaiting_payment
 	 * After change all to session->set('order_awaiting_payment') we can remove this method.
 	 */
 	public function __get( $key ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		//return $this->get( $key );
 	}
 
@@ -75,12 +75,12 @@ class LP_Session_Handler {
 	 *
 	 * @param mixed $key
 	 * @param mixed $value
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 * Addon Stripe, 2Checkout, Authorize, Certificate is using this method via call session->order_awaiting_payment
 	 * After change all to session->set('order_awaiting_payment') we can remove this method.
 	 */
 	public function __set( $key, $value ) {
-		_deprecated_function( 'LP_Session::__set', '4.1.7.4' );
+		_deprecated_function( 'LP_Session::__set', '4.2.0' );
 		// if ( $key === 'order_awaiting_payment' ) {
 
 		// }
@@ -93,10 +93,10 @@ class LP_Session_Handler {
 	 * @param mixed $key
 	 *
 	 * @return bool
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function __isset( $key ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		//return isset( $this->_data[ sanitize_key( $key ) ] );
 	}
 
@@ -104,10 +104,10 @@ class LP_Session_Handler {
 	 * __unset function.
 	 *
 	 * @param mixed $key
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function __unset( $key ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		if ( isset( $this->_data[ $key ] ) ) {
 			unset( $this->_data[ $key ] );
 			$this->_changed = true;
@@ -234,10 +234,10 @@ class LP_Session_Handler {
 	}
 
 	/**
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function has_cookie() {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		//return $this->_has_cookie && $this->_has_browser_cookie;
 	}
 
@@ -315,10 +315,10 @@ class LP_Session_Handler {
 	 * Increment group cache prefix (invalidates cache).
 	 *
 	 * @param string $group
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function incr_cache_prefix( $group ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		//wp_cache_incr( 'learn_press_' . $group . '_cache_prefix', 1, $group );
 	}
 
@@ -597,34 +597,34 @@ class LP_Session_Handler {
 	}
 
 	/**
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function offsetExists( $offset ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		return array_key_exists( $offset, $this->_data );
 	}
 
 	/**
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function offsetGet( $offset ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		//return $this->get( $offset );
 	}
 
 	/**
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function offsetUnset( $offset ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		//$this->remove( $offset );
 	}
 
 	/**
-	 * @deprecated 4.1.7.4
+	 * @deprecated 4.2.0
 	 */
 	public function offsetSet( $offset, $value ) {
-		_deprecated_function( __METHOD__, '4.1.7.4' );
+		_deprecated_function( __METHOD__, '4.2.0' );
 		//$this->set( $offset, $value );
 	}
 }

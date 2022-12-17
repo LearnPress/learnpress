@@ -202,11 +202,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param string $prop
 		 *
 		 * @return int|mixed|null
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 * @note Tungnx when change all direct access from $this->{key} to $this->get_data({key}), can remove this method
 		 */
 		public function __get( $prop ) {
-			_deprecated_function( __METHOD__, '4.1.7.4', 'get_data({key})' );
+			_deprecated_function( __METHOD__, '4.2.0', 'get_data({key})' );
 			if ( $prop == 'post' ) {
 				// print_r( debug_backtrace() );
 				// die( '$post is deprecated' );
@@ -280,10 +280,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * update it to database.
 		 *
 		 * @param LP_Gateway_Abstract|string $payment_method
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 */
 		public function set_payment_method( $payment_method ) {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
+			_deprecated_function( __METHOD__, '4.2.0' );
 			/*if ( $payment_method instanceof LP_Gateway_Abstract ) {
 				update_post_meta( $this->get_id(), '_payment_method', $payment_method->get_id() );
 				update_post_meta( $this->get_id(), '_payment_method_title', $payment_method->get_title() );

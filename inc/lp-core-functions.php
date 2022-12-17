@@ -1992,10 +1992,10 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
  * Get the cart object in checkout page
  *
  * @return LP_Cart
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_get_checkout_cart() {
-	_deprecated_function( __FUNCTION__, '4.1.7.4', 'LearnPress::instance()->cart' );
+	_deprecated_function( __FUNCTION__, '4.2.0', 'LearnPress::instance()->cart' );
 	return apply_filters( 'learn_press_checkout_cart', LearnPress::instance()->cart );
 }
 

@@ -48,15 +48,15 @@ function learn_press_get_cart_course_url() {
  * Return total of cart
  *
  * @return mixed
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_get_cart_total() {
-	_deprecated_function( __FUNCTION__, '4.1.7.4' );
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	return LearnPress::instance()->cart->total;
 }
 
 /**
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_clear_cart_after_payment() {
 	global $wp;
@@ -90,7 +90,7 @@ function learn_press_clear_cart_after_payment() {
  * @param LP_Cart $cart
  *
  * @return mixed
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_custom_checkout_cart( $cart ) {
 	if ( empty( $_REQUEST['single-item'] ) ) {

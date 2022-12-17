@@ -671,10 +671,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $question_id
 		 *
 		 * @return string
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 */
 		public function get_question_link( $question_id = null ) {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
+			_deprecated_function( __METHOD__, '4.2.0' );
 			/*$course = learn_press_get_course();
 			if ( ! $course ) {
 				return '';
@@ -795,10 +795,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param $user_id
 		 *
 		 * @return bool
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 */
 		public function check_question( $question_id, $user_id ) {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
+			_deprecated_function( __METHOD__, '4.2.0' );
 			/*$question = LP_Question::get_question( $question_id );
 
 			if ( ! $question ) {
@@ -831,10 +831,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int      $user_id
 		 *
 		 * @return false|int|string
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 */
 		public function get_question_position( $question, $user_id = 0 ) {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
+			_deprecated_function( __METHOD__, '4.2.0' );
 			/*if ( ! $user_id ) {
 				$user_id = learn_press_get_current_user_id();
 			}
@@ -1066,10 +1066,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param mixed $offset
 		 *
 		 * @return bool|mixed
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 */
 		public function offsetGet( $offset ) {
-			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.1.7.4' );
+			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.2.0' );
 			return $this->offsetExists( $offset ) ? $this->_questions[ $offset ] : false;
 		}
 
@@ -1077,10 +1077,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param mixed $offset
 		 *
 		 * @return bool
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 */
 		public function offsetExists( $offset ) {
-			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.1.7.4' );
+			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.2.0' );
 			/*return array_key_exists( $offset, $this->_questions );*/
 		}
 	}

@@ -312,7 +312,7 @@ function learn_press_delete_transient_transaction( $method, $temp_id ) {
  * @param array $args
  *
  * @return int
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_add_transaction( $args = null ) {
 	// _deprecated_function( 'learn_press_add_transaction', '1.0', 'learn_press_add_order' );
@@ -323,10 +323,10 @@ function learn_press_add_transaction( $args = null ) {
  * @param null $args
  *
  * @return mixed
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_add_order( $args = null ) {
-	_deprecated_function( __FUNCTION__, '4.1.7.4' );
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	// $method, $method_id, $status = 'Pending', $customer_id = false, $transaction_object = false, $args = array()
 	/*$default_args = array(
 		'method'             => '',
@@ -422,10 +422,10 @@ function learn_press_payment_method_from_slug( $order_id ) {
 }
 
 /**
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_generate_transaction_object() {
-	_deprecated_function( __FUNCTION__, '4.1.7.4' );
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	/*$cart     = learn_press_get_cart();
 	$products = $cart->get_items();
 

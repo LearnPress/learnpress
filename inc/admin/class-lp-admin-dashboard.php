@@ -91,10 +91,10 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Get total value of LP orders has completed.
 		 *
 		 * @return int|string
-		 * @deprecated 4.1.7.4
+		 * @deprecated 4.2.0
 		 */
 		private function _get_order_total_raised() {
-			_deprecated_function( __METHOD__, '4.1.7.4' );
+			_deprecated_function( __METHOD__, '4.2.0' );
 			/*$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
 			$total  = 0;
 

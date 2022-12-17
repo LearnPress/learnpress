@@ -659,10 +659,10 @@ function learn_press_print_messages( $clear = true ) {
 }
 
 /**
- * @deprecated 4.1.7.4
+ * @deprecated 4.2.0
  */
 function learn_press_message_count( $type = '' ) {
-	_deprecated_function( __FUNCTION__, '4.1.7.4' );
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	$count    = 0;
 	$messages = learn_press_session_get( learn_press_session_message_id(), array() );
 

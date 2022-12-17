@@ -4,7 +4,7 @@
  * Class LP_Quiz_Cache
  *
  * @author tungnx
- * @since 4.1.7.4
+ * @since 4.2.0
  * @version 1.0.0
  */
 defined( 'ABSPATH' ) || exit();
