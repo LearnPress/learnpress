@@ -909,14 +909,19 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 }
 
 /**
- * Returns the name of folder contains template files in theme
- *
- * @param bool
+ * Returns the name of folder contains override template files in theme
  *
  * @return string
+ * @since 3.0.0
+ * @version 1.0.1
  */
-function learn_press_template_path( $slash = false ) {
-	return apply_filters( 'learn_press_template_path', 'learnpress', $slash ) . ( $slash ? '/' : '' );
+function learn_press_template_path(): string {
+	$lp_folder_name_override = apply_filters( 'learn_press_template_path', LP_PLUGIN_FOLDER_NAME );
+	if ( ! is_string( $lp_folder_name_override ) ) {
+		$lp_folder_name_override = LP_PLUGIN_FOLDER_NAME;
+	}
+
+	return $lp_folder_name_override;
 }
 
 /**

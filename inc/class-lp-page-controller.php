@@ -603,13 +603,13 @@ class LP_Page_Controller {
 		if ( learn_press_is_course_taxonomy() ) {
 			$object      = get_queried_object();
 			$templates[] = 'taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
-			$templates[] = learn_press_template_path( true ) . 'taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
+			$templates[] = learn_press_template_path() . '/taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
 			$templates[] = 'taxonomy-' . $object->taxonomy . '.php';
-			$templates[] = learn_press_template_path( true ) . 'taxonomy-' . $object->taxonomy . '.php';
+			$templates[] = learn_press_template_path() . '/taxonomy-' . $object->taxonomy . '.php';
 		}
 
 		$templates[] = $default_template;
-		$templates[] = learn_press_template_path( true ) . $default_template;
+		$templates[] = learn_press_template_path() . $default_template;
 
 		return array_unique( $templates );
 	}

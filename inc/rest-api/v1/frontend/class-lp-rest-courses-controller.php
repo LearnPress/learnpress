@@ -603,15 +603,17 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Rest API for Continue in single course.
+	 * Rest API for get item continue in single course.
 	 *
 	 * @param WP_REST_Request $request
+	 *
 	 * @author minhpd
 	 * @editor tungnx
 	 * @since 4.1.4
 	 * @version 1.0.2
+	 * @return LP_REST_Response
 	 */
-	public function continue_course( WP_REST_Request $request ) {
+	public function continue_course( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
 		$response       = new LP_REST_Response();
 		$response->data = '';
@@ -666,7 +668,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 		}
 
-		wp_send_json( $response );
+		return $response;
 	}
 
 }

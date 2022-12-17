@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_Addon
  */
@@ -9,61 +11,67 @@ class LP_Addon {
 	 *
 	 * @var string
 	 */
-	public $version = null;
-
+	public $version = 0;
 	/**
-	 * Learnpress require addon version
-	 * Case:
+	 * LearnPress require addon version
 	 *
 	 * @var array
 	 */
 	private $lp_require_addon_version = '4.0.0';
-
 	/**
 	 * Required version for current version of addon.
 	 *
 	 * @var string
 	 */
-	public $require_version = null;
-
+	public $require_version = 0;
 	/**
-	 * Path to addon.
+	 * Path to root file of addon.
 	 *
 	 * @var string
 	 */
-	public $plugin_file = null;
-
+	public $plugin_file = '';
 	/**
-	 * Base addon.
+	 * @var string folder path root of addon.
+	 */
+	public $plugin_folder_path = '';
+	/**
+	 * Root folder name addon.
 	 *
 	 * @var string
 	 */
-	public $plugin_base = null;
-
+	public $plugin_folder_name = '';
 	/**
-	 * Addon textdomain name.
+	 * Plugin base addon.
+	 *
+	 * @var string contain root folder path and root file of addon
+	 */
+	public $plugin_base = '';
+	/**
+	 * Base name addon.
+	 *
+	 * @var string root file name php of addon
+	 */
+	public $plugin_base_name = '';
+	/**
+	 * Addon text-domain name.
 	 *
 	 * @var string
 	 */
 	public $text_domain = '';
-
 	/**
 	 * @var null
 	 */
 	protected $_valid = null;
-
 	/**
 	 * Singleton instance of the addon.
 	 *
 	 * @var array
 	 */
 	public static $instances = array();
-
 	/**
 	 * @var array
 	 */
 	protected static $_admin_notices = array();
-
 	/**
 	 * @var string
 	 */
@@ -75,9 +83,12 @@ class LP_Addon {
 	 * LP_Addon constructor.
 	 */
 	public function __construct() {
+		$this->plugin_base        = plugin_basename( $this->plugin_file );
+		$this->plugin_base_name   = basename( $this->plugin_file );
+		$this->plugin_folder_path = dirname( $this->plugin_file );
+		$this->plugin_folder_name = str_replace( array( '/', $this->plugin_base_name ), '', $this->plugin_base );
 		$this->_define_constants();
 		$this->_includes();
-
 		remove_action( 'plugins_loaded', array( 'LP_Addon_Announcements', 'instance' ) );
 		add_action( 'init', array( $this, 'init' ) );
 	}
@@ -117,7 +128,7 @@ class LP_Addon {
 		$this->load_text_domain();
 
 		add_filter(
-			"plugin_action_links_{$this->get_plugin_slug()}",
+			"plugin_action_links_$this->plugin_base",
 			array(
 				$this,
 				'_plugin_links',
@@ -160,16 +171,11 @@ class LP_Addon {
 	 * Get plugin slug from plugin file.
 	 *
 	 * @return bool|string
+	 * @deprecated 4.2.0
 	 */
 	public function get_plugin_slug() {
-		if ( empty( $this->plugin_file ) ) {
-			return false;
-		}
-
-		$dir      = dirname( $this->plugin_file );
-		$basename = basename( $dir );
-
-		return $basename . '/' . basename( $this->plugin_file );
+		_deprecated_function( __METHOD__, '4.2.0' );
+		return $this->plugin_base;
 	}
 
 	/**
@@ -315,12 +321,12 @@ class LP_Addon {
 		$domain_files  = array();
 
 		if ( is_admin() ) {
-			$domain_files[] = WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo";
-			$domain_files[] = WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo";
+			$domain_files[] = WP_LANG_DIR . "/$plugin_folder/$plugin_folder-admin-$locale.mo";
+			$domain_files[] = WP_LANG_DIR . "/plugins/$plugin_folder-admin-$locale.mo";
 		}
 
-		$domain_files[] = WP_CONTENT_DIR . "/plugins/{$plugin_folder}/languages/{$plugin_folder}-{$locale}.mo";
-		$domain_files[] = WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo";
+		$domain_files[] = WP_CONTENT_DIR . "/plugins/$plugin_folder/languages/$plugin_folder-$locale.mo";
+		$domain_files[] = WP_LANG_DIR . "/$plugin_folder/$plugin_folder-$locale.mo";
 
 		foreach ( $domain_files as $file ) {
 			if ( ! file_exists( $file ) ) {
@@ -352,7 +358,7 @@ class LP_Addon {
 		}
 
 		if ( $plugin_folder ) {
-			$path = "{$plugin_folder}/$path";
+			$path = "$plugin_folder/$path";
 		}
 
 		if ( ! file_exists( $path ) ) {
@@ -401,13 +407,15 @@ class LP_Addon {
 	 * Get template path.
 	 *
 	 * @return string
+	 * @deprecated 4.2.0
 	 */
 	public function get_template_path() {
+		_deprecated_function( __FUNCTION__, '4.2.0', 'LP_Addon::get_template' );
 		if ( empty( $this->_template_path ) ) {
 			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace(
 				'!^learnpress-!',
 				'',
-				dirname( $this->get_plugin_slug() )
+				$this->plugin_folder_name
 			);
 		}
 
@@ -415,18 +423,26 @@ class LP_Addon {
 	}
 
 	/**
-	 * Get content template of addon in theme or inside itself.
+	 * Get content template of addon.
 	 *
 	 * @param string $template_name
-	 * @param array  $args
+	 * @param mixed  $args
+	 * @since 3.0.0
+	 * @version 1.0.1
 	 */
-	public function get_template( $template_name, $args = array() ) {
-		learn_press_get_template(
-			$template_name,
-			$args,
-			$this->get_template_path(),
-			dirname( $this->plugin_file ) . '/templates/'
+	public function get_template( string $template_name = '', $args = [] ) {
+		$default_path        = $this->plugin_folder_path . "/templates/$template_name";
+		$folder_name_rewrite = learn_press_template_path();
+		$from_theme_path     = sprintf(
+			'%s/%s/%s/%s/%s',
+			get_template_directory(),
+			$folder_name_rewrite,
+			'addons',
+			str_replace( 'learnpress-', '', $this->plugin_folder_name ),
+			$template_name
 		);
+		$path_load           = file_exists( $from_theme_path ) ? $from_theme_path : $default_path;
+		Template::instance()->get_template( $path_load, $args );
 	}
 
 	/**
@@ -435,8 +451,10 @@ class LP_Addon {
 	 * @param string $template_name
 	 *
 	 * @return string
+	 * @deprecated 4.2.0
 	 */
 	public function locate_template( $template_name ) {
+		_deprecated_function( __FUNCTION__, '4.2.0', 'LP_Addon::get_template' );
 		return learn_press_locate_template(
 			$template_name,
 			$this->get_template_path(),
