@@ -639,7 +639,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					}
 
 					foreach ( $section_items->items as $item ) {
-						if ( ! $user->has_completed_item( $item->id, $course_id ) ) {
+						$item_now_condition = apply_filters(
+							'lp/course/item-continue/condition',
+							! $user->has_completed_item( $item->id, $course_id ),
+							$item,
+							$course,
+							$user
+						);
+						if ( $item_now_condition ) {
 							$item_link  = $course->get_item_link( $item->id );
 							$flag_found = true;
 							break;
