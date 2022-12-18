@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: LearnPress
+ * Plugin Name: LearnPress Testing
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
