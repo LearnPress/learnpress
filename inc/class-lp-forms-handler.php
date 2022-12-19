@@ -112,11 +112,20 @@ class LP_Forms_Handler {
 						$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
 					}
 
+					$message_data = [
+						'status'  => 'success',
+						'content' => __( 'Login successfully!', 'learnpress' ),
+					];
+					learn_press_set_message( $message_data );
 					wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
 					exit();
 				}
 			} catch ( Exception $e ) {
-				learn_press_add_message( $e->getMessage(), 'error' );
+				$message_data = [
+					'status'  => 'error',
+					'content' => $e->getMessage(),
+				];
+				learn_press_set_message( $message_data );
 			}
 		}
 	}

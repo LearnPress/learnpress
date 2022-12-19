@@ -6,6 +6,9 @@
  * @package LearnPress/Functions
  * @version 1.0
  */
+
+use LearnPress\Helpers\Template;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -603,6 +606,44 @@ function learn_press_get_message( $message, $type = 'success' ) {
 }
 
 /**
+ * Set LP message to COOKIE.
+ *
+ * @param array $message_data
+ * @since 4.2.0
+ * @version 1.0.0
+ * @return void
+ */
+function learn_press_set_message( array $message_data = [] ) {
+	if ( ! isset( $message_data ['status'] ) ) {
+		error_log( 'Message data must have status' );
+		return;
+	}
+	if ( ! isset( $message_data ['content'] ) ) {
+		error_log( 'Message data must have content' );
+		return;
+	}
+
+	// Set cookie for lp-message, allow get,set cookie on js.
+	add_option( 'lp-message', $message_data );
+}
+
+/**
+ * Show message only one time.
+ * @since 4.2.0
+ * @version 1.0.0
+ * @return void
+ */
+function learn_press_show_message() {
+	try {
+		$message_data = get_option( 'lp-message' );
+		delete_option( 'lp-message' );
+		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'message_data' ) );
+	} catch ( Throwable $e ) {
+		error_log( $e->getMessage() );
+	}
+}
+
+/**
  * Remove message added into queue by id and/or type.
  *
  * @param string       $id
@@ -683,8 +724,11 @@ function learn_press_session_message_id() {
 
 /**
  * Displays messages before main content
+ *
+ * @deprecated 4.2.0
  */
 function _learn_press_print_messages() {
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	$item = LP_Global::course_item();
 	if ( ( 'learn_press_before_main_content' == current_action() ) && $item ) {
 		return;
