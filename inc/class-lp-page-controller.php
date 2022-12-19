@@ -609,7 +609,7 @@ class LP_Page_Controller {
 		}
 
 		$templates[] = $default_template;
-		$templates[] = learn_press_template_path() . $default_template;
+		$templates[] = learn_press_template_path() . '/' . $default_template;
 
 		return array_unique( $templates );
 	}
