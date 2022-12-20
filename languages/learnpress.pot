@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.0-beta-9\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lp-doing\n"
+"Project-Id-Version: LearnPress 4.2.0-beta-11\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-12-16T10:55:22+03:00\n"
+"POT-Creation-Date: 2022-12-19T12:28:42+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -267,7 +267,7 @@ msgstr ""
 #: inc/admin/settings/class-lp-settings-advanced.php:72
 #: inc/course/lp-course-functions.php:450
 #: inc/custom-post-types/lesson.php:158
-#: inc/lp-template-functions.php:1054
+#: inc/lp-template-functions.php:1103
 msgid "Lesson"
 msgstr ""
 
@@ -276,7 +276,7 @@ msgstr ""
 #: inc/course/lp-course-functions.php:451
 #: inc/custom-post-types/question.php:320
 #: inc/custom-post-types/quiz.php:87
-#: inc/lp-template-functions.php:1044
+#: inc/lp-template-functions.php:1093
 #: templates/profile/tabs/quizzes.php:53
 msgid "Quiz"
 msgstr ""
@@ -301,7 +301,7 @@ msgstr ""
 #: inc/class-lp-page-controller.php:244
 #: inc/custom-post-types/course.php:106
 #: inc/custom-post-types/course.php:108
-#: inc/lp-template-functions.php:313
+#: inc/lp-template-functions.php:316
 #: inc/settings/class-lp-settings-courses.php:16
 #: inc/user/class-lp-profile.php:248
 #: inc/user/class-lp-profile.php:600
@@ -460,15 +460,15 @@ msgstr ""
 msgid "No settings available."
 msgstr ""
 
-#: inc/abstracts/abstract-addon.php:274
+#: inc/abstracts/abstract-addon.php:280
 msgid "<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher %4$s"
 msgstr ""
 
-#: inc/abstracts/abstract-addon.php:361
+#: inc/abstracts/abstract-addon.php:367
 msgid "%s plugin file does not exist."
 msgstr ""
 
-#: inc/abstracts/abstract-addon.php:380
+#: inc/abstracts/abstract-addon.php:386
 msgid "%s plugin class does not exist."
 msgstr ""
 
@@ -1982,7 +1982,7 @@ msgid "Key Features"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:385
-#: inc/lp-template-functions.php:80
+#: inc/lp-template-functions.php:83
 msgid "FAQs"
 msgstr ""
 
@@ -2033,7 +2033,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:960
 #: inc/custom-post-types/lesson.php:130
 #: inc/custom-post-types/lesson.php:230
-#: inc/lp-template-functions.php:1057
+#: inc/lp-template-functions.php:1106
 #: templates/loop/single-course/loop-section-item.php:32
 #: templates/single-course/section/item-meta.php:32
 msgid "Preview"
@@ -2969,13 +2969,13 @@ msgid "Type item buy invalid!"
 msgstr ""
 
 #: inc/class-lp-forms-handler.php:30
-#: inc/class-lp-forms-handler.php:232
+#: inc/class-lp-forms-handler.php:247
 #: inc/curds/class-lp-user-curd.php:2138
 msgid "Please enter a valid account username."
 msgstr ""
 
 #: inc/class-lp-forms-handler.php:37
-#: inc/class-lp-forms-handler.php:222
+#: inc/class-lp-forms-handler.php:237
 #: inc/curds/class-lp-user-curd.php:2128
 msgid "Please provide a valid email address."
 msgstr ""
@@ -2996,79 +2996,83 @@ msgstr ""
 msgid "A username is required"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:171
+#: inc/class-lp-forms-handler.php:117
+msgid "Login successfully!"
+msgstr ""
+
+#: inc/class-lp-forms-handler.php:180
 msgid "I need to become an instructor"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:186
+#: inc/class-lp-forms-handler.php:195
 msgid " was successfully created!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:189
+#: inc/class-lp-forms-handler.php:198
 msgid "Your request to become an instructor has been sent. We will get back to you soon!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:226
+#: inc/class-lp-forms-handler.php:241
 msgid "An account is already registered with your email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:237
+#: inc/class-lp-forms-handler.php:252
 #: inc/curds/class-lp-user-curd.php:2142
 msgid "An account is already registered with that username. Please choose another one."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:247
+#: inc/class-lp-forms-handler.php:262
 msgid "Please enter an account password."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:251
-msgid "Password is too short!"
-msgstr ""
-
-#: inc/class-lp-forms-handler.php:255
-msgid "Password can not contain spaces!"
-msgstr ""
-
-#: inc/class-lp-forms-handler.php:259
-msgid "Please enter confirm password."
-msgstr ""
-
-#: inc/class-lp-forms-handler.php:263
-msgid "Password and Confirm Password does not match!"
+#: inc/class-lp-forms-handler.php:266
+msgid "Password must contain at least six characters."
 msgstr ""
 
 #: inc/class-lp-forms-handler.php:270
-#: inc/class-lp-forms-handler.php:369
+msgid "Password can not contain spaces!"
+msgstr ""
+
+#: inc/class-lp-forms-handler.php:274
+msgid "Please enter confirm password."
+msgstr ""
+
+#: inc/class-lp-forms-handler.php:278
+msgid "Password and Confirm Password does not match!"
+msgstr ""
+
+#: inc/class-lp-forms-handler.php:285
+#: inc/class-lp-forms-handler.php:384
 msgid " is required field."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:347
+#: inc/class-lp-forms-handler.php:362
 msgid "Email is required"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:351
+#: inc/class-lp-forms-handler.php:366
 msgid "Display name is required"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:355
-#: inc/class-lp-forms-handler.php:359
+#: inc/class-lp-forms-handler.php:370
+#: inc/class-lp-forms-handler.php:374
 msgid "Due to privacy concerns, the display name cannot be changed to an email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:361
+#: inc/class-lp-forms-handler.php:376
 msgid "This email address is already registered."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:393
+#: inc/class-lp-forms-handler.php:408
 msgid "Enter a username or email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:413
-#: inc/class-lp-forms-handler.php:417
+#: inc/class-lp-forms-handler.php:428
+#: inc/class-lp-forms-handler.php:432
 msgid "Invalid username or email."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:428
+#: inc/class-lp-forms-handler.php:443
 msgid "Password reset is not allowed for this user."
 msgstr ""
 
@@ -3079,7 +3083,7 @@ msgid "uncategorized"
 msgstr ""
 
 #: inc/class-lp-page-controller.php:242
-#: inc/lp-template-functions.php:311
+#: inc/lp-template-functions.php:314
 msgid "Course Search Results"
 msgstr ""
 
@@ -3587,7 +3591,7 @@ msgid "No content"
 msgstr ""
 
 #: inc/custom-post-types/course.php:560
-#: inc/lp-template-functions.php:67
+#: inc/lp-template-functions.php:70
 msgid "Curriculum"
 msgstr ""
 
@@ -4054,7 +4058,7 @@ msgstr ""
 #: inc/emails/instructor/class-lp-email-enrolled-course-instructor.php:25
 #: inc/emails/instructor/class-lp-email-finished-course-instructor.php:25
 #: inc/emails/instructor/class-lp-email-new-order-instructor.php:21
-#: inc/lp-template-functions.php:73
+#: inc/lp-template-functions.php:76
 #: templates/single-course/meta/instructor.php:23
 msgid "Instructor"
 msgstr ""
@@ -5800,28 +5804,28 @@ msgid "Jersey pound"
 msgstr ""
 
 #: inc/lp-core-functions.php:1405
-#: inc/lp-template-functions.php:1596
+#: inc/lp-template-functions.php:1645
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1409
-#: inc/lp-template-functions.php:1592
+#: inc/lp-template-functions.php:1641
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1414
-#: inc/lp-template-functions.php:1587
+#: inc/lp-template-functions.php:1636
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1418
-#: inc/lp-template-functions.php:1581
+#: inc/lp-template-functions.php:1630
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -6003,46 +6007,46 @@ msgstr ""
 msgid "Your message"
 msgstr ""
 
-#: inc/lp-template-functions.php:60
+#: inc/lp-template-functions.php:63
 msgid "Overview"
 msgstr ""
 
-#: inc/lp-template-functions.php:1048
-#: inc/lp-template-functions.php:1234
+#: inc/lp-template-functions.php:1097
+#: inc/lp-template-functions.php:1283
 #: inc/templates/class-lp-template-course.php:132
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:1470
+#: inc/lp-template-functions.php:1519
 msgid "Course Sidebar"
 msgstr ""
 
-#: inc/lp-template-functions.php:1472
+#: inc/lp-template-functions.php:1521
 msgid "Widgets in this area will be shown in a single course"
 msgstr ""
 
-#: inc/lp-template-functions.php:1481
+#: inc/lp-template-functions.php:1530
 msgid "All Courses"
 msgstr ""
 
-#: inc/lp-template-functions.php:1483
+#: inc/lp-template-functions.php:1532
 msgid "Widgets in this area will be shown on all course pages"
 msgstr ""
 
-#: inc/lp-template-functions.php:1620
-#: inc/lp-template-functions.php:1629
+#: inc/lp-template-functions.php:1669
+#: inc/lp-template-functions.php:1678
 msgid "All levels"
 msgstr ""
 
-#: inc/lp-template-functions.php:1630
+#: inc/lp-template-functions.php:1679
 msgid "Beginner"
 msgstr ""
 
-#: inc/lp-template-functions.php:1631
+#: inc/lp-template-functions.php:1680
 msgid "Intermediate"
 msgstr ""
 
-#: inc/lp-template-functions.php:1632
+#: inc/lp-template-functions.php:1681
 msgid "Expert"
 msgstr ""
 
@@ -6347,7 +6351,7 @@ msgid "Invalid params"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:496
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:629
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:631
 #: inc/user/abstract-lp-user.php:854
 msgid "Invalid course"
 msgstr ""
@@ -6483,7 +6487,7 @@ msgstr ""
 msgid "Your are logged in as %1$s. <a href=\"%2$s\">Log out</a>?"
 msgstr ""
 
-#: inc/shortcodes/class-lp-shortcode-profile.php:53
+#: inc/shortcodes/class-lp-shortcode-profile.php:55
 msgid "You can't view the user profile"
 msgstr ""
 
