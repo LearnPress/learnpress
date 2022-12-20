@@ -57,9 +57,14 @@ $user = $profile->get_user();
 		<li class="form-field form-field__bio form-field__clear">
 			<label for="description"><?php esc_html_e( 'Biographical Info', 'learnpress' ); ?></label>
 			<div class="form-field-input">
-				<textarea name="description" id="description" rows="5" cols="30">
-					<?php echo esc_html( $user->get_data( 'description' ) ); ?>
-				</textarea>
+				<?php
+				echo sprintf(
+					'%s%s%s',
+					'<textarea name="description" id="description" rows="5" cols="30">',
+					esc_html( $user->get_data( 'description' ) ),
+					'</textarea>'
+				);
+				?>
 				<p class="description"><?php esc_html_e( 'Share a little biographical information to fill out your profile. This may be shown publicly.', 'learnpress' ); ?></p>
 			</div>
 		</li>
