@@ -316,7 +316,16 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 				$access_token = learnpress_in_app_purchase_get_access_token();
 
-				$verify = wp_remote_get( 'https://androidpublisher.googleapis.com/androidpublisher/v3/applications/' . $package_name . '/purchases/products/' . $course_id . '/tokens/' . $purchase_token . '?access_token=' . $access_token );
+				$verify = wp_remote_get(
+					'https://androidpublisher.googleapis.com/androidpublisher/v3/applications/' . $package_name . '/purchases/products/' . $course_id . '/tokens/' . $purchase_token,
+					array(
+						'headers' => array(
+							'Content-Type'  => 'application/json',
+							'Authorization' => 'Bearer ' . $access_token,
+						),
+						'timeout' => 60,
+					)
+				);
 
 				$body = json_decode( wp_remote_retrieve_body( $verify ) );
 
@@ -336,9 +345,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$checkout = LP_Checkout::instance();
 
 			if ( ! learn_press_enable_cart() ) {
-				//$order_awaiting_payment = LearnPress::instance()->session->get( 'order_awaiting_payment' );
+				// $order_awaiting_payment = LearnPress::instance()->session->get( 'order_awaiting_payment' );
 				$cart->empty_cart();
-				//LearnPress::instance()->session->set( 'order_awaiting_payment', $order_awaiting_payment );
+				// LearnPress::instance()->session->set( 'order_awaiting_payment', $order_awaiting_payment );
 			}
 
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
