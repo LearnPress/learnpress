@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.0-beta-11\n"
+"Project-Id-Version: LearnPress 4.2.0-beta-12\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-12-19T12:28:42+03:00\n"
+"POT-Creation-Date: 2022-12-20T05:18:43+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -338,7 +338,7 @@ msgstr ""
 #: config/settings/permalink.php:123
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/user/class-lp-profile.php:276
-#: learnpress.php:484
+#: learnpress.php:480
 msgid "Settings"
 msgstr ""
 
@@ -1498,7 +1498,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:486
+#: learnpress.php:482
 msgid "Add-ons"
 msgstr ""
 
@@ -6942,7 +6942,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:485
+#: learnpress.php:481
 msgid "Documentation"
 msgstr ""
 

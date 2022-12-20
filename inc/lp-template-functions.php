@@ -728,7 +728,7 @@ function learn_press_session_message_id() {
  * @deprecated 4.2.0
  */
 function _learn_press_print_messages() {
-	_deprecated_function( __FUNCTION__, '4.2.0' );
+	//_deprecated_function( __FUNCTION__, '4.2.0' );
 	$item = LP_Global::course_item();
 	if ( ( 'learn_press_before_main_content' == current_action() ) && $item ) {
 		return;
@@ -736,8 +736,8 @@ function _learn_press_print_messages() {
 	learn_press_print_messages( true );
 }
 
-add_action( 'learn_press_before_main_content', '_learn_press_print_messages', 50 );
-add_action( 'learn-press/before-course-item-content', '_learn_press_print_messages', 50 );
+//add_action( 'learn_press_before_main_content', '_learn_press_print_messages', 50 );
+add_action( 'learn-press/before-course-item-content', 'learn_press_show_message', 50 );
 
 if ( ! function_exists( 'learn_press_page_title' ) ) {
 
