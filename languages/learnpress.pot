@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.0-beta-12\n"
+"Project-Id-Version: LearnPress 4.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-12-20T05:18:43+03:00\n"
+"POT-Creation-Date: 2022-12-20T06:59:59+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -2799,7 +2799,7 @@ msgstr ""
 msgid "Course is invalid!."
 msgstr ""
 
-#: inc/class-lp-ajax.php:225
+#: inc/class-lp-ajax.php:227
 msgid "Congrats! You have completed \"%s\"."
 msgstr ""
 
@@ -7327,11 +7327,11 @@ msgstr ""
 msgid "Biographical Info"
 msgstr ""
 
-#: templates/profile/tabs/settings/basic-information.php:63
+#: templates/profile/tabs/settings/basic-information.php:68
 msgid "Share a little biographical information to fill out your profile. This may be shown publicly."
 msgstr ""
 
-#: templates/profile/tabs/settings/basic-information.php:137
+#: templates/profile/tabs/settings/basic-information.php:142
 #: templates/profile/tabs/settings/change-password.php:59
 #: templates/profile/tabs/settings/privacy.php:51
 msgid "Save changes"

@@ -204,7 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.0 (2022-12-20) - <a href='https://thimpress.com/learnpress-v4-2-0-update/' target='_blank' rel='noopener'>View detail</a> =
+= 4.2.0 (2022-12-20) =
 ~ Fixed: compatibility with WordPress PHP 8.1.
 ~ Not implements ArrayAccess, Iterator, Countable of PHP on classes: LP_Datetime, LP_Session_Handler, LP_User_Item_Course, LP_User_Item, LP_Quiz_Results, LP_Course_Item, LP_Quiz, LP_Array_Access, LP_Profile_Tabs.
 ~ Except class LP_Query_List_Table we still keep implements ArrayAccess (will notice the warning, but don't worry, you only need to disable WP_DEBUG mode), because addons: learnpress-h5p(version 4.0.1 and lower), learnpress-assignment(version 4.0.7 and lower) require it. So you need to update to the higher version of these plugins to make sure.
