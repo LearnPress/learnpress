@@ -64,7 +64,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		$settings = $this->sanitize_settings( $settings );
 
 		if ( $settings ) {
-			LP_Meta_Box_Helper::save_fields( $settings );
+			LP_Meta_Box_Helper::save_fields( $settings, $_POST );
 		}
 	}
 
