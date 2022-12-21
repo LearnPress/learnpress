@@ -31,12 +31,12 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		}
 
 		$tabs = array(
-			'all'       => sprintf( __( 'All (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
-			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
-			'paid'      => sprintf( __( 'Paid (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
-			'free'      => sprintf( __( 'Free (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
-			'update'    => sprintf( __( 'Update (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
-			'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
+			'all'       => sprintf( __( 'All (%d)', 'learnpress' ), '<span class="count-addons-all"></span>' ),
+			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), '<span class="count-addons-installed"></span>' ),
+			'paid'      => sprintf( __( 'Paid (%d)', 'learnpress' ), '<span class="count-addons-paid"></span>' ),
+			'free'      => sprintf( __( 'Free (%d)', 'learnpress' ), '<span class="count-addons-free"></span>' ),
+			'update'    => sprintf( __( 'Update (%d)', 'learnpress' ), '<span class="count-addons-update"></span>' ),
+			'more'      => __( 'Get more', 'learnpress' ),
 			//'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() ),
 		);
 

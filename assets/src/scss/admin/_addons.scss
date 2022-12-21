@@ -228,7 +228,7 @@
 
 		&__content {
 			text-align: center;
-			min-height: 250px;
+			min-height: 290px;
 
 			img {
 				width: 50px;
@@ -252,6 +252,17 @@
 			border-top: 1px solid rgba(151, 71, 255, 1);
 			padding: 20px 20px 0;
 			margin: 0 -20px;
+			display: flex;
+
+			&__left {
+				flex: 3;
+				display: flex;
+				gap: 5px;
+			}
+
+			&__right {
+
+			}
 
 			button {
 				padding: 5px 15px;
@@ -262,5 +273,99 @@
 				cursor: pointer;
 			}
 		}
+	}
+
+	/***** Toggle *****/
+	.thim-toggle-switch-label{
+		height: 20px;
+		align-items: center;
+		margin-bottom: 0;
+		background: #b4b9be;
+		cursor: pointer;
+		display: inline-flex;
+		justify-content: space-between;
+		position: relative;
+		transition: left 0.15s ease-out;
+		border-radius: 100px;
+
+		&:after {
+			background: #FFFFFF;
+			content: "";
+			display: block;
+			position: absolute;
+			left: 4px;
+			width: 12px;
+			height: 12px;
+			transition: all 0.25s ease-in-out;
+			border-radius: 50%;
+		}
+
+		&::before {
+			left: 0;
+		}
+	}
+
+	.toggle-on,
+	.toggle-off {
+		opacity: 1;
+		padding-left: 6px;
+		padding-right: 6px;
+		font-size: 14px;
+		line-height: 18px;
+	}
+
+	.toggle-on {
+		color: #fff;
+		opacity: 0;
+		padding-right: 0;
+		width: 12px;
+	}
+
+	.toggle-off {
+		width: 12px;
+		color: #777;
+		padding-left: 0;
+	}
+
+	.thim-switch{
+		border: none;
+		margin-bottom: 0;
+		outline: 0;
+		padding: 0;
+		user-select: none;
+		border-radius: 3rem;
+	}
+
+	input{
+
+		&:checked{
+			+ label{
+				background: #0073aa;
+
+				&:after {
+					left: auto;
+					right: 5px;
+					background: #ffffff;
+				}
+				.toggle-on {
+					opacity: 1;
+				}
+
+				.toggle-off {
+					opacity: 0;
+				}
+			}
+		}
+	}
+
+	.screen-reader-text:focus {
+		clip-path: inset(50%);
+		-webkit-clip-path: inset(50%);
+	}
+
+	.thim-toggle {
+		align-items: flex-start;
+		display: flex;
+		justify-content: space-between;
 	}
 }

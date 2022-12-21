@@ -6,7 +6,6 @@
  */
 import adminAPI from '../api';
 let elAdminTabContent = null;
-let elBtnDismiss;
 let dataHtml = null;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
