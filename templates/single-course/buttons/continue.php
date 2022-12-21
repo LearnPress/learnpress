@@ -6,20 +6,16 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-$user = LP_Global::user();
+$user = learn_press_get_current_user();
 ?>
 
-<form name="continue-course" class="continue-course form-button lp-form" method="post"
-      action="<?php echo $user->get_current_item( get_the_ID(), true ); ?>">
-
-    <button type="submit" class="lp-button button"><?php _e( 'Continue', 'learnpress' ); ?></button>
-
+<form name="continue-course" class="continue-course form-button lp-form" method="post" action="" style="display:none">
+	<button type="submit" class="lp-button button">
+		<?php esc_html_e( 'Continue', 'learnpress' ); ?>
+	</button>
 </form>

@@ -4,6 +4,8 @@
  * Class LP_User_Item_Quiz
  */
 class LP_User_Item_Quiz extends LP_User_Item {
+	public $_item_type = LP_QUIZ_CPT;
+	public $_ref_type  = LP_COURSE_CPT;
 	/**
 	 * @var array
 	 */
@@ -26,63 +28,103 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	protected function _parse_answers() {
 		foreach ( array( '_question_answers', 'question_answers' ) as $k ) {
-			if ( $answers = learn_press_get_user_item_meta( $this->get_user_item_id(), $k, true ) ) {
+			$answers = learn_press_get_user_item_meta( $this->get_user_item_id(), $k, true );
+
+			if ( $answers ) {
 				$this->_answers = $answers;
 				break;
 			}
 		}
 	}
 
+	/**
+	 * Add user answer to DB.
+	 *
+	 * @param int|array $id
+	 * @param mixed $values
+	 *
+	 * @return array|bool|LP_Quiz_Results|mixed
+	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.4.1 - comment - not use
+	 */
+	/*
 	public function add_question_answer( $id, $values = null ) {
-		if ( ! $this->_answers ) {
-			//$this->_parse_answers();
+		$results = $this->get_results( '' );
+
+		if ( ! $results ) {
+			return false;
 		}
 
-		if ( is_array( $id ) ) {
-			foreach ( $id as $k => $v ) {
-				if ( is_object( $v ) ) {
-					$v = array( $v );
-				}
-				$this->add_question_answer( $k, $v );
-			}
+		$questions = $results->get( 'questions', array() );
+
+		if ( is_numeric( $id ) ) {
+			$values = array( $id => $values );
 		} else {
-			// User has not used checking answer feature
-			if ( ! $this->get_user()->has_checked_answer( $id, $this->get_id(), $this->get_course_id() ) ) {
-				$this->_answers[ $id ] = $values;
-				$this->set_meta( '_question_answers', $this->_answers );
+			$values = (array) $id;
+		}
+
+		foreach ( $values as $id => $answer ) {
+			if ( ! $this->has_checked_question( $id ) ) {
+				if ( ! empty( $questions[ $id ] ) ) {
+					$questions[ $id ]['answered'] = $answer;
+				} else {
+					$questions[ $id ] = array( 'answered' => $answer );
+				}
 			}
 		}
-	}
+
+		$results['questions'] = $questions;
+
+		//LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $results->get() ) );
+
+		$this->calculate_results();
+
+		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
+
+		LP_Object_Cache::set( $cache_key, false, 'learn-press/quiz-result' );
+
+		return $this->get_results( '' );
+	}*/
 
 	public function get_question_answer( $id ) {
-		if ( ! $this->_answers ) {
-			//$this->_parse_answers();
+		$results = $this->get_results( '' );
+
+		if ( ! $results ) {
+			return false;
 		}
 
-		return ! empty( $this->_answers[ $id ] ) ? $this->_answers[ $id ] : false;
+		$questions = $results->get( 'questions', false );
+
+		if ( $questions && is_array( $questions[ $id ] ) ) {
+			return $questions[ $id ]['answered'];
+		}
+
+		return false;
 	}
 
 	/**
 	 * Update data to database
 	 *
 	 * @param bool $force
+	 * @param bool $wp_error
 	 *
 	 * @return bool|mixed
 	 */
-	public function update( $force = false ) {
-		$return = parent::update();
-		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
+	/*
+	public function update( $force = false, $wp_error = false ) {
+		$return = parent::update( $force, $wp_error );
 		$this->calculate_results();
 
 		return $return;
-	}
+	}*/
 
 	/**
 	 * Get list of data to update to database
 	 *
-	 * @return array
 	 * @since 3.1.0
 	 *
+	 * @return array
 	 */
 	public function get_mysql_data() {
 		$columns = parent::get_mysql_data();
@@ -103,7 +145,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'in-progress' => __( 'In Progress', 'learnpress' ),
 			'completed'   => __( 'Completed', 'learnpress' ),
 			'passed'      => __( 'Passed', 'learnpress' ),
-			'failed'      => __( 'Failed', 'learnpress' )
+			'failed'      => __( 'Failed', 'learnpress' ),
 		);
 
 		if ( ! $status ) {
@@ -111,39 +153,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not Started', 'learnpress' );
-	}
-
-	/**
-	 * Get current question ID (quiz).
-	 *
-	 * @param string $return - Optional.
-	 *
-	 * @return int|LP_Question
-	 */
-	public function get_current_question( $return = '' ) {
-		$question_id = $this->get_meta( '_current_question', true );
-		$question    = false;
-		if ( learn_press_get_post_type( $question_id ) === LP_QUESTION_CPT ) {
-			$question = learn_press_get_question( $question_id );
-		}
-
-		if ( ! $question || ! $question->is_publish() ) {
-			if ( $questions = $this->get_quiz()->get_questions() ) {
-				$question_id = reset( $questions );
-				$this->set_meta( '_current_question', $question_id );
-				$this->update_meta();
-			} else {
-				$question_id = 0;
-			}
-		}
-
-		if ( $question_id ) {
-			if ( $return == 'object' ) {
-				return learn_press_get_question( $question_id );
-			}
-		}
-
-		return $question_id;
 	}
 
 	/**
@@ -155,8 +164,26 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $this->get_data( 'ref_id' );
 	}
 
-	public function get_result( $prop = 'result', $force = false ) {
-		return $this->get_results( $prop, $force );
+	/**
+	 * Get result
+	 *
+	 * @param string $prop
+	 *
+	 * @return array|bool|mixed
+	 */
+	public function get_result( $prop = '' ) {
+		$result = $this->calculate_quiz_result();
+
+		// Fix temporary for case call 'grade' - addons called
+		if ( 'grade' === $prop ) {
+			if ( $result['pass'] ) {
+				$result['grade'] = 'passed';
+			} else {
+				$result['grade'] = 'failed';
+			}
+		}
+
+		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
 	}
 
 	/**
@@ -165,39 +192,158 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param string $prop
 	 * @param bool   $force - Optional. Force to refresh cache.
 	 *
-	 * @return array|bool|mixed
+	 *   Clear cache on
+	 * @see LP_REST_Users_Controller::start_quiz() | retake quiz
+	 *
+	 * @return LP_Quiz_Results|bool|mixed
+	 * @throws Exception
+	 * @editor tungnx
+	 * @modify 4.1.3
+	 * @version 4.0.1
 	 */
-	public function get_results( $prop = 'result', $force = false ) {
-		/**
-		 * Do nothing if user is not started quiz
-		 */
-		if ( in_array( $this->get_status(), array( '', 'viewed' ) ) ) {
+	public function get_results( string $prop = 'result', bool $force = false ) {
+		if ( ! $this->get_status() ) {
 			return false;
 		}
 
-		$quiz      = learn_press_get_quiz( $this->get_item_id() );
-		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
+		$lp_quiz_cache = LP_Quiz_Cache::instance();
 
+		$key_cache = sprintf( '%d/user/%d/course/%d', $this->get_item_id(), $this->get_user_id(), $this->get_course_id() );
+		$result    = $lp_quiz_cache->get_cache( $key_cache );
 
-		if ( false === ( $result = LP_Object_Cache::get( $cache_key, 'learn-press/quiz-result' ) ) || $force ) {
-			if ( false === ( $result = $this->_get_results() ) ) {
-				$result = $this->calculate_results();
-			}
-			LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
+		if ( false === $result || $force ) {
+			// $result = $this->_get_results();
+
+			// if ( false === $result ) {
+			$result = $this->calculate_results();
+			// }
+
+			$lp_quiz_cache->set_cache( $key_cache, $result );
 		}
 
-		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
+		$result['user_item_id']   = $this->get_user_item_id();
+		$result['interval']       = array( $this->get_start_time(), $this->get_end_time() );
+		$result['graduation']     = $this->get_graduation();
+		$result['graduationText'] = $this->get_graduation_text();
+
+		return $prop ? $result[ $prop ] : new LP_Quiz_Results( $result );
+	}
+
+	/**
+	 * Get user quiz graduation text for displaying purpose. [Passed, Failed, null]
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return mixed
+	 */
+	public function get_graduation_text() {
+		$graduation = $this->get_graduation();
+
+		return apply_filters( 'learn-press/user-quiz-graduation-text', learn_press_get_graduation_text( $graduation ) );
+	}
+
+	/**
+	 * Get Timestamp remaining when user doing quiz
+	 *
+	 * @author tungnx
+	 * @version 1.0.0
+	 * @sicne 4.1.4.1
+	 * @return int
+	 */
+	public function get_timestamp_remaining(): int {
+		$timestamp_remaining = - 1;
+
+		try {
+			$quiz = learn_press_get_quiz( $this->get_item_id() );
+
+			if ( ! $quiz || LP_ITEM_STARTED != $this->get_status() ) {
+				return $timestamp_remaining;
+			}
+
+			$parent_id = $this->get_parent_id();
+
+			$duration = $quiz->get_duration()->get() . ' second';
+
+			$filter              = new LP_User_Items_Filter();
+			$filter->parent_id   = $parent_id;
+			$filter->item_id     = $this->get_item_id();
+			$filter->user_id     = get_current_user_id();
+			$user_quiz           = LP_User_Items_DB::getInstance()->get_user_course_item( $filter, true );
+			$course_start_time   = $user_quiz->start_time;
+			$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
+			$timestamp_current   = time();
+			$timestamp_remaining = $timestamp_expire - $timestamp_current;
+
+			if ( $timestamp_remaining < 0 ) {
+				$timestamp_remaining = 0;
+			}
+		} catch ( Throwable $e ) {
+
+		}
+
+		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+	}
+
+	/**
+	 * Get all attempts of a quiz.
+	 *
+	 * @param string $args
+	 *
+	 * @return array
+	 */
+	public function get_attempts( $limit = 3 ) {
+		$limit = $limit ?? 3;
+
+		$limit = absint( apply_filters( 'lp/quiz/get-attempts/limit', $limit ) );
+
+		$results = LP_User_Items_Result_DB::instance()->get_results( $this->get_user_item_id(), $limit, true );
+		$output  = array();
+
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $result ) {
+				if ( $result && is_string( $result ) ) {
+					$result = json_decode( $result );
+
+					unset( $result->questions );
+
+					$output[] = $result;
+				}
+			}
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Get question ids user has started inside quiz.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool|array
+	 */
+	public function get_questions() {
+		$quiz = learn_press_get_quiz( $this->get_item_id() );
+		$ids  = $quiz->get_question_ids();
+
+		return apply_filters( 'learn-press/user-item-quiz-questions', $ids, $this->get_user_id(), $this );
 	}
 
 	/**
 	 * Calculate results of quiz.
 	 *
 	 * @return array
-	 * @since 3.1.0
-	 *
+	 * @throws Exception
+	 * @version 4.0.0
 	 */
-	public function calculate_results() {
-		$quiz = learn_press_get_quiz( $this->get_item_id() );
+	public function calculate_results(): array {
+		$quiz         = learn_press_get_quiz( $this->get_item_id() );
+		$last_results = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+
+		if ( ! $last_results ) {
+			$last_results = array();
+		}
+
+		$questions = $last_results['questions'] ?? array_fill_keys( $quiz->get_question_ids(), array() );
 
 		$result = array(
 			'questions'         => array(),
@@ -209,91 +355,230 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'question_wrong'    => 0,
 			'question_correct'  => 0,
 			'status'            => $this->get_status(),
-			'grade'             => '',
 			'result'            => 0,
 			'time_spend'        => $this->get_time_interval( 'display' ),
-			'retake_count'      => 0
+			'passing_grade'     => $quiz->get_passing_grade(),
 		);
 
-		if ( $questions = $quiz->get_questions() ) {
-
-			foreach ( $questions as $question_id ) {
-
+		if ( $questions ) {
+			foreach ( $questions as $question_id => $last_checked ) {
 				$question = LP_Question::get_question( $question_id );
-
 				if ( ! $question ) {
 					continue;
 				}
 
-				$answered          = $this->get_question_answer( $question_id );
+				$answered          = array_key_exists( 'answered', $last_checked ) ? $last_checked['answered'] : '';
 				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
-				$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
-				$check['answered'] = ! isset( $check['answered'] ) ? $answered !== false : $check['answered'];
+				$check['answered'] = $answered;
 
-				if ( false !== $check['answered'] && $check['correct'] ) {
+				if ( $check['answered'] && $check['correct'] ) {
 					$result['question_correct'] ++;
 					$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 				} else {
-					if ( false === $check['answered'] ) {
-						if ( $quiz->get_minus_skip_questions() ) {
-							// minus for each wrong, empty question
-							$result['user_mark'] -= intval( $quiz->get_minus_points() );
+					$negative_marking = apply_filters( 'learn-press/get-negative-marking-value', floatval( $question->get_mark() ), $question_id, $quiz->get_id() );
+
+					// If answered is empty consider user has skipped question
+					if ( ! $check['answered'] ) {
+						if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
+							$result['user_mark'] -= $negative_marking;
 						}
 						$result['question_empty'] ++;
 					} else {
-						// minus for each wrong, empty question
-						$result['user_mark'] -= intval( $quiz->get_minus_points() );
+						if ( $quiz->get_negative_marking() ) {
+							$result['user_mark'] -= $negative_marking;
+						}
 						$result['question_wrong'] ++;
 					}
 				}
 
-				$result['questions'][ $question_id ] = $check;
+				$result['questions'][ $question_id ] = apply_filters( 'learn-press/question-results-data', $last_checked ? array_merge( $last_checked, $check ) : $check, $question_id, $quiz->get_id() );
 
 				if ( $check['answered'] ) {
 					$result['question_answered'] ++;
 				}
 			}
 
-			// make sure user mark greater than 0
 			$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;
 
-			$percent                  = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
-			$result['result']         = $percent;
-			$result['grade']          = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
-			$result['grade_text']     = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
-			$result['question_count'] = sizeof( $questions );
+			$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
+			$result['result'] = $percent;
+			$grade            = '';
 
-			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
-				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
+			if ( $this->get_status() === 'completed' ) {
+				$grade = $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed';
+				$this->_set_data( 'graduation', $grade );
+			}
+
+			$result['question_count'] = count( $questions );
+
+			if ( $grade ) {
+				learn_press_update_user_item_field(
+					array(
+						'graduation' => $grade,
+					),
+					array(
+						'user_item_id' => $this->get_user_item_id(),
+					)
+				);
 			}
 		}
-
-		$this->update_meta( 'results', $result );
 
 		return $result;
 	}
 
-	protected function _get_results() {
-		if ( metadata_exists( 'learnpress_user_item', $this->get_user_item_id(), 'results' ) ) {
-			return $this->get_meta( 'results' );
+	/**
+	 * Calculate result of quiz.
+	 *
+	 * @param array $answered [question_id => answered, 'instant_check' => 0]
+	 *
+	 * @return array
+	 * @version 1.0.0
+	 * @author tungnx
+	 * @since 4.1.4.1
+	 */
+	public function calculate_quiz_result( array $answered = array() ): array {
+		$result = array(
+			'questions'         => array(),
+			'mark'              => 0,
+			'user_mark'         => 0,
+			'question_count'    => 0,
+			'question_empty'    => 0,
+			'question_answered' => 0,
+			'question_wrong'    => 0,
+			'question_correct'  => 0,
+			'status'            => '',
+			'result'            => 0,
+			'time_spend'        => '',
+			'passing_grade'     => '',
+			'pass'              => 0,
+		);
+
+		try {
+			if ( LP_ITEM_COMPLETED === $this->get_status() ) {
+				$result_tmp = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+
+				if ( $result_tmp ) {
+					if ( isset( $result_tmp['user_mark'] ) && $result_tmp['user_mark'] < 0 ) {
+						$result_tmp['user_mark'] = 0;
+					}
+
+					$result = $result_tmp;
+				}
+
+				return $result;
+			}
+
+			$quiz = learn_press_get_quiz( $this->get_item_id() );
+
+			if ( ! $quiz ) {
+				throw new Exception();
+			}
+
+			$question_ids             = $quiz->get_question_ids();
+			$result['mark']           = $quiz->get_mark();
+			$result['question_count'] = $quiz->count_questions();
+			$result['time_spend']     = $this->get_time_interval( 'display' );
+			$result['passing_grade']  = $quiz->get_passing_grade();
+			$checked_questions        = $this->get_checked_questions();
+
+			foreach ( $question_ids as $question_id ) {
+				$question = LP_Question::get_question( $question_id );
+				$point    = floatval( $question->get_mark() );
+
+				// if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
+				$result['questions'][ $question_id ]             = array();
+				$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
+
+				// }
+
+				if ( isset( $answered[ $question_id ] ) ) { // User's answer
+					$result['question_answered']++;
+
+					$check = $question->check( $answered[ $question_id ] );
+					if ( $check['correct'] ) {
+						$result['question_correct']++;
+						$result['user_mark'] += $point;
+
+						$result['questions'][ $question_id ]['correct'] = true;
+						$result['questions'][ $question_id ]['mark']    = $point;
+					} else {
+						if ( $quiz->get_negative_marking() ) {
+							$result['user_mark'] -= $point;
+						}
+						$result['question_wrong']++;
+
+						$result['questions'][ $question_id ]['correct'] = false;
+						$result['questions'][ $question_id ]['mark']    = 0;
+					}
+				} elseif ( ! array_key_exists( 'instant_check', $answered ) ) { // User skip question
+					if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
+						$result['user_mark'] -= $point;
+					}
+					$result['question_empty']++;
+
+					$result['questions'][ $question_id ]['correct'] = false;
+					$result['questions'][ $question_id ]['mark']    = 0;
+				}
+
+				$can_review_quiz = get_post_meta( $quiz->get_id(), '_lp_review', true ) === 'yes';
+				if ( $can_review_quiz && ! array_key_exists( 'instant_check', $answered ) ) {
+
+					$result['questions'][ $question_id ]['explanation'] = $question->get_explanation();
+					$result['questions'][ $question_id ]['options']     = learn_press_get_question_options_for_js(
+						$question,
+						array(
+							'include_is_true' => in_array( $question_id, $checked_questions ) || get_post_meta( $quiz->get_id(), '_lp_show_correct_review', true ) === 'yes',
+							'answer'          => $answered[ $question_id ] ?? '',
+						)
+					);
+				}
+			}
+
+			if ( $result['user_mark'] < 0 ) {
+				$result['user_mark'] = 0;
+			}
+
+			if ( $result['user_mark'] > 0 && $result['mark'] > 0 ) {
+				$result['result'] = round( $result['user_mark'] * 100 / $result['mark'], 2, PHP_ROUND_HALF_DOWN );
+			}
+
+			$passing_grade = $quiz->get_data( 'passing_grade', 0 );
+			if ( $result['result'] >= $passing_grade ) {
+				$result['pass'] = 1;
+			} else {
+				$result['pass'] = 0;
+			}
+
+			// $result['answered'] = $answered;
+			// $results['status']   = $quiz->get_status();
+			// $result['results']  = $result;
+			// $result['attempts'] = $this->get_attempts();
+		} catch ( Throwable $e ) {
+
 		}
 
-		return false;
+		return $result;
 	}
 
-	public function is_passed() {
-		return $this->get_results( 'grade' ) === 'passed';
+	public function get_option_answer() {
+
 	}
 
-	public function get_percent_result( $decimal = 1 ) {
-		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
+	protected function _get_results() {
+		return LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+	}
+
+	public function get_percent_result( $decimal = 2 ) {
+		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
 	}
 
 	public function get_time_interval( $context = '' ) {
 		$interval = parent::get_time_interval();
+
 		if ( $context == 'display' ) {
 			$quiz = $this->get_quiz();
-			if ( $interval && $quiz->get_duration() ) {
+
+			if ( $quiz && $interval && $quiz->get_duration() ) {
 				$interval = new LP_Duration( $interval );
 				$interval = $interval->to_timer();
 			} else {
@@ -317,6 +602,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function is_answered( $question_id ) {
 		$result = $this->get_results();
+
 		if ( ! empty( $result['questions'][ $question_id ] ) ) {
 			return $result['questions'][ $question_id ]['answered'];
 		}
@@ -343,18 +629,15 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_questions_answered( $percent = false ) {
 		$result = $this->get_results( '' );
-		$return = 0;
 
-		if ( $result ) {
-			if ( $percent ) {
-				if ( $result['question_count'] ) {
-					$return = 0;
-				} else {
-					$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
-				}
+		if ( $percent ) {
+			if ( $result['question_count'] ) {
+				$return = 0;
 			} else {
-				$return = $result['question_answered'];
+				$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
 			}
+		} else {
+			$return = $result['question_answered'];
 		}
 
 		return $return;
@@ -369,6 +652,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_mark( $percent = false ) {
 		$result = $this->get_results();
+
 		if ( $percent ) {
 			$return = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
 		} else {
@@ -378,9 +662,13 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $return;
 	}
 
+	/**
+	 * @deprecated 4.2.0
+	 */
 	public function get_total_questions() {
+		_deprecated_function( __METHOD__, '4.2.0' );
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
-		$questions = $quiz->get_questions();
+		$questions = $quiz->get_question_ids();
 
 		return sizeof( $questions );
 	}
@@ -394,23 +682,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Return time remaining.
 	 *
+	 * @param string $return - Optional.
+	 *
 	 * @return LP_Duration
+	 * @deprecated 4.1.7.3
 	 */
-	public function get_time_remaining() {
-		$quiz          = learn_press_get_quiz( $this->get_item_id() );
-		$quiz_duration = $quiz->get_duration();
-		$diff          = false;
-		if ( $quiz_duration && $quiz_duration->get_seconds() >= 0 ) {
-			$diff = current_time( 'timestamp' ) - $this->get_start_time()->getTimestamp();
-			$diff = $quiz_duration->diff( $diff )->get_seconds();
-			if ( $diff <= 0 ) {
-				$diff = 0;
-			}
-		}
+	public function get_time_remaining( $return = 'object' ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$time = parent::get_time_remaining( $return );
 
-		$remaining = $diff !== false ? new LP_Duration( $diff ) : false;
-
-		return apply_filters( 'learn-press/quiz/time-remaining', $remaining, $this->get_item_id(), $this->get_course_id() );
+		return apply_filters( 'learn-press/quiz/time-remaining', $time, $this->get_item_id(), $this->get_course_id(), $this->get_user_id() );*/
 	}
 
 	/**
@@ -418,8 +699,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 * @return array
 	 */
-	public function get_checked_questions() {
+	public function get_checked_questions(): array {
 		$value = $this->get_meta( '_lp_question_checked', true );
+
 		if ( $value ) {
 			$value = (array) $value;
 		} else {
@@ -427,6 +709,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		return $value;
+	}
+
+	public function add_checked_question( $id ) {
+		settype( $id, 'array' );
+		$checked = $this->get_checked_questions();
+		$checked = array_merge( $checked, $id );
+
+		$this->update_meta( '_lp_question_checked', $checked );
+
+		return $checked;
 	}
 
 	/**
@@ -441,33 +733,50 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
-	 * @param int $question_id
+	 * Instant check question
 	 *
-	 * @return int|WP_Error
+	 * @param int   $question_id
+	 * @param mixed $answered
+	 *
+	 * @return array
+	 * @throws Exception
 	 */
-	public function check_question( $question_id ) {
-		try {
-			$checked = false;
-			if ( ( $remain = $this->can_check_answer() ) && ( ! $checked = $this->has_checked_question( $question_id ) ) ) {
-				$checked   = $this->get_checked_questions();
-				$checked[] = $question_id;
-				$this->read_meta();
-				$this->set_meta( '_lp_question_checked', $checked );
-				$this->update_meta();
-				$remain --;
-			} else {
-				if ( ! $remain ) {
-					throw new Exception( __( 'Check question has reached limit.', 'learnpress' ), 1000 );
-				} elseif ( $checked ) {
-					throw new Exception( __( 'You have already checked this question.', 'learnpress' ), 1010 );
+	public function instant_check_question( int $question_id, $answered = null ): array {
+		$question = learn_press_get_question( $question_id );
+		if ( ! $question ) {
+			throw new Exception( __( 'The question is invalid!', 'learnpress' ) );
+		}
+
+		$can_check = $this->can_check_answer( $question_id );
+		if ( ! $can_check ) {
+			throw new Exception( __( 'Cannot check the answer to the question.', 'learnpress' ) );
+		}
+
+		$answered_check = array(
+			'instant_check' => 1,
+			$question_id    => $answered,
+		);
+
+		// For case save result when check instant answer
+		$result_instant_check = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
+		if ( $result_instant_check ) {
+			foreach ( $result_instant_check['questions'] as $question_answer_id => $question_answer ) {
+				if ( ! empty( $question_answer['answered'] ) ) {
+					$answered_check[ $question_answer_id ] = $question_answer['answered'];
 				}
 			}
 		}
-		catch ( Exception $ex ) {
-			return new WP_Error( $ex->getCode(), $ex->getMessage() );
-		}
 
-		return $remain;
+		$result_answer = $this->calculate_quiz_result( $answered_check );
+
+		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), json_encode( $result_answer ) );
+		$this->add_checked_question( $question_id );
+
+		$checked['answered'] = $answered;
+		$checked['mark']     = $result_answer['questions'][ $question_id ]['mark'];
+		$checked['correct']  = $result_answer['questions'][ $question_id ]['correct'];
+
+		return $checked;
 	}
 
 	/**
@@ -476,14 +785,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return int
 	 */
 	public function hint( $question_id ) {
-		if ( ( $remain = $this->can_hint_answer() ) /*&& ! $this->has_hint_question( $question_id ) */ ) {
+		$remain = $this->can_hint_answer();
+
+		if ( $remain ) {
 			if ( ! $this->has_hinted_question( $question_id ) ) {
 				$checked   = $this->get_hint_questions();
 				$checked[] = $question_id;
 				$this->set_meta( '_lp_question_hint', $checked );
 			}
+
 			$count = $this->get_count_hint();
-			//$this->set_meta( '_lp_hint_count', ++ $count );
 			$this->update_meta();
 			$remain --;
 		} else {
@@ -505,28 +816,48 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function get_check_answer_count() {
-		return @sizeof( $this->get_checked_questions() );// absint( $this->get_meta( '_lp_check_answer_count' ) );
+		return count( $this->get_checked_questions() );
 	}
 
-	public function can_check_answer() {
+	/**
+	 * @param int $question_id - Added since 3.3.0
+	 *
+	 * @return bool
+	 */
+	public function can_check_answer( int $question_id = 0 ) : bool {
+		$can  = false;
 		$quiz = learn_press_get_quiz( $this->get_item_id() );
 
-		$value = $quiz->get_show_check_answer();
-		if ( ! is_numeric( $value ) ) {
-			$can = $value === 'yes';
-		} else {
-			$value = intval( $value );
-			if ( $value == 0 ) {
-				$can = false;
-			} elseif ( $value < 0 ) {
-				$can = true;
-			} else {
-				$checked = $this->get_check_answer_count();
-				$can     = $value - $checked;
-			}
+		if ( ! $quiz ) {
+			return $can;
 		}
 
-		return apply_filters( 'learn-press/user-quiz/can-check-answer', $can, $this->get_item_id(), $this->get_course_id() );
+		if ( $quiz->get_instant_check() && $this->get_status() === 'started' ) {
+			$can = ! $this->has_checked_question( $question_id );
+		}
+
+		return apply_filters( 'learn-press/can-instant-check-question', $can, $question_id, $this->get_item_id(), $this->get_course_id() );
+	}
+
+	/**
+	 * Get number retaken count.
+	 *
+	 * @return integer
+	 */
+	public function get_retaken_count(): int {
+		return absint( learn_press_get_user_item_meta( $this->get_user_item_id(), '_lp_retaken_count' ) );
+	}
+
+	/**
+	 * Update learnpress_user_itemmeta retaken
+	 *
+	 * @return void
+	 */
+	public function update_retake_count() {
+		$count = $this->get_retaken_count();
+		$count ++;
+
+		return $this->update_meta( '_lp_retaken_count', $count );
 	}
 
 	/**
@@ -536,6 +867,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_hint_questions() {
 		$value = $this->get_meta( '_lp_question_hint', true );
+
 		if ( $value ) {
 			$value = (array) $value;
 		} else {
@@ -546,7 +878,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function get_count_hint() {
-		return @sizeof( $this->get_hint_questions() );// intval( $this->get_meta( '_lp_hint_count' ) );
+		return count( $this->get_hint_questions() );
 	}
 
 	/**
@@ -555,39 +887,13 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return bool
 	 */
 	public function can_hint_answer() {
-		$quiz = learn_press_get_quiz( $this->get_item_id() );
-
-		$value = $quiz->get_show_hint();
-		if ( ! is_numeric( $value ) ) {
-			$can = ( $value === 'yes' );
-		} else {
-			$value = intval( $value );
-			if ( $value == 0 ) {
-				$can = false;
-			} elseif ( $value < 0 ) {
-				$can = true;
-			} else {
-				$hint = $this->get_count_hint();
-				$can  = $value - $hint;
-			}
-		}
-
-		return apply_filters( 'learn-press/user-quiz/can-hint-answer', $can, $this->get_id(), $this->get_course_id() );
+		return apply_filters( 'learn-press/user-quiz/can-hint-answer', true, $this->get_id(), $this->get_course_id() );
 	}
 
-	public function finish() {
-		$time = new LP_Datetime();
-		$this->set_end_time( $time->toSql() );
-		$this->set_end_time_gmt( $time->toSql( false ) );
-		$this->set_status( 'completed' );
-		$this->update();
-	}
-
-	public function is_review_questions() {
+	/**
+	 * @return bool
+	 */
+	public function is_review_questions(): bool {
 		return LP_Global::quiz_question() && ( $this->get_status() === 'completed' );
-	}
-
-	public function can_retake_quiz() {
-		return $this->get_user()->can_retake_quiz( $this->get_id(), $this->get_course() );
 	}
 }

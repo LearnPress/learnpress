@@ -12,10 +12,12 @@ class LP_Settings_Enrolled_Course_Emails extends LP_Settings_Emails_Group {
 
 		$this->group_id = 'enrolled-course-emails';
 
-		$this->items = apply_filters( 'learn-press/emails/enrolled-course', array(
+		$this->items = apply_filters(
+			'learn-press/emails/enrolled-course',
+			array(
 				'enrolled-course-admin',
 				'enrolled-course-instructor',
-				'enrolled-course-user'
+				'enrolled-course-user',
 			)
 		);
 
@@ -23,7 +25,7 @@ class LP_Settings_Enrolled_Course_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __( 'Enrolled Course', 'learnpress' );
+		return esc_html__( 'Enrolled Course', 'learnpress' );
 	}
 }
 

@@ -2,21 +2,22 @@
 /**
  * Template for displaying title of lesson.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/content-lesson/title.php.
- *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.1
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $title ) ) {
+if ( ! isset( $lesson ) ) {
+	return;
+}
+
+$title = $lesson->get_title( 'display' );
+
+if ( ! $title ) {
 	return;
 }
 ?>
 
-<h3 class="course-item-title question-title"><?php echo $title; ?></h3>
+<h3 class="course-item-title lesson-title"><?php echo esc_html( $title ); ?></h3>

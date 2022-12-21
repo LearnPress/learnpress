@@ -1,10 +1,13 @@
 <?php
 /**
  * Template for display a notice in admin
+ * @deprecated 4.1.7.3.2
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+defined( 'ABSPATH' ) || exit;
+
+if ( ! isset( $message ) ) {
+	return;
 }
 
 if ( ! isset( $type ) ) {
@@ -20,15 +23,12 @@ if ( strpos( $type, 'notice-' ) === false ) {
 }
 
 $classes = array( 'lp-notice', 'notice', $type );
-
-if ( $dismissible ) {
-}
 ?>
-<div<?php if ( ! empty( $id ) ) {
-	echo ' id="' . $id . '"';
-} ?> class="<?php echo join( ' ', $classes ); ?>">
-    <p><?php echo $message; ?></p>
-	<?php if ( $dismissible ) { ?>
-        <button class="notice-dismiss" data-dismiss-notice="<?php echo $id;?>"></button>
-	<?php } ?>
+
+<div id="<?php echo esc_attr( $id ?? '' ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+	<p><?php echo esc_html( $message ); ?></p>
+
+	<?php if ( $dismissible ) : ?>
+		<button class="notice-dismiss" data-dismiss-notice="<?php echo esc_attr( $id ?? '' ); ?>"></button>
+	<?php endif; ?>
 </div>

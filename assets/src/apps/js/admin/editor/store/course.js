@@ -6,24 +6,25 @@ import mutations from '../mutations/course';
 import actions from '../actions/course';
 
 const $ = window.jQuery;
-const Course = function Course(data) {
-    var state = $.extend({}, data.root);
 
-    state.status = 'success';
-    state.heartbeat = true;
-    state.countCurrentRequest = 0;
+const Course = function Course( data ) {
+	var state = $.extend( {}, data.root );
 
-    return {
-        state: state,
-        getters: getters,
-        mutations: mutations,
-        actions: actions,
-        modules: {
-            ci: ModalCourseItems(data),
-            i18n: i18n(data.i18n),
-            ss: CourseSection(data)
-        }
-    }
+	state.status = 'success';
+	state.heartbeat = true;
+	state.countCurrentRequest = 0;
+
+	return {
+		state: state,
+		getters: getters,
+		mutations: mutations,
+		actions: actions,
+		modules: {
+			ci: ModalCourseItems( data ),
+			i18n: i18n( data.i18n ),
+			ss: CourseSection( data ),
+		},
+	};
 };
 
 export default Course;

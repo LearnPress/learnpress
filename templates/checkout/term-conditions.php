@@ -4,23 +4,30 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/checkout/term-conditions.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.11
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $page_link ) ) {
-    return;
+$term_link = learn_press_get_page_link( 'term_conditions' );
+$term_text = learn_press_get_page_title( 'term_conditions' );
+
+if ( ! $term_link ) {
+	return;
+}
+
+if ( ! $term_text ) {
+	$term_text = esc_html__( 'Terms of Service', 'learnpress' );
 }
 ?>
-<p class="learn-press-terms learn-press-terms-and-conditions">
-	<input type="checkbox" class="input-checkbox" name="terms_conditions" id="terms_conditions">
-	<label for="terms_conditions" class="checkbox"><?php echo apply_filters( 'learn_press_content_item_protected_message',
-			sprintf( __( 'I’ve read and accept the <a href="%s">terms &amp; conditions.</a>', 'learnpress' ), $page_link ) );?> <span class="required">*</span></label>
-	<input type="hidden" name="terms_conditions_field" value="1">
+
+<p class="lp-terms-and-conditions">
+	<?php
+	echo apply_filters(
+		'learn_press_content_item_protected_message',
+		sprintf( __( 'By completing your purchase you agree to those <a href="%1$s" target="_blank">%2$s</a>.', 'learnpress' ), $term_link, $term_text )
+	);
+	?>
 </p>

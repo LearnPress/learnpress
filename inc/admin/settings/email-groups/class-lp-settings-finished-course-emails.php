@@ -12,10 +12,12 @@ class LP_Settings_Finished_Course_Emails extends LP_Settings_Emails_Group {
 
 		$this->group_id = 'finished-course-emails';
 
-		$this->items = apply_filters( 'learn-press/emails/finished-course', array(
+		$this->items = apply_filters(
+			'learn-press/emails/finished-course',
+			array(
 				'finished-course-admin',
 				'finished-course-instructor',
-				'finished-course-user'
+				'finished-course-user',
 			)
 		);
 
@@ -23,7 +25,7 @@ class LP_Settings_Finished_Course_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __( 'Finished Course', 'learnpress' );
+		return esc_html__( 'Finished Course', 'learnpress' );
 	}
 }
 

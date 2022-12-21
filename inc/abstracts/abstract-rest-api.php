@@ -11,7 +11,7 @@ abstract class LP_Abstract_API {
 	/**
 	 * @var string
 	 */
-	public $version = '';
+	public $version = 'v1';
 
 	/**
 	 * @var string
@@ -47,7 +47,7 @@ abstract class LP_Abstract_API {
 	}
 
 	public function rest_api_includes() {
-		include_once LP_PLUGIN_PATH . 'inc/rest-api/class-lp-rest-authentication.php';
+
 	}
 
 	/**
@@ -65,7 +65,7 @@ abstract class LP_Abstract_API {
 		foreach ( $this->controllers as $name => $controller ) {
 
 			if ( is_string( $controller ) ) {
-				$name                       = $controller;
+				$name                 = $controller;
 				$controllers[ $name ] = new $controller();
 			} else {
 				$controllers[ $name ] = $controller;
@@ -75,5 +75,14 @@ abstract class LP_Abstract_API {
 		}
 
 		$this->controllers = $controllers;
+	}
+
+	/**
+	 * Check permission if user is administrator.
+	 *
+	 * @return bool
+	 */
+	public static function check_admin_permission(): bool {
+		return current_user_can( ADMIN_ROLE );
 	}
 }

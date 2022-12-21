@@ -4,15 +4,11 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/loop/course/loop-begin.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<ul class="learn-press-courses">
+echo wp_kses_post( apply_filters( 'learn_press_course_loop_begin', '<ul class="learn-press-courses" data-layout="' . learn_press_get_courses_layout() . '">' ) );

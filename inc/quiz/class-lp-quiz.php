@@ -7,9 +7,6 @@
  * @version 3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Quiz' ) ) {
@@ -17,7 +14,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 	/**
 	 * Class LP_Quiz
 	 */
-	class LP_Quiz extends LP_Course_Item implements ArrayAccess {
+	class LP_Quiz extends LP_Course_Item {
 
 
 		/**
@@ -25,7 +22,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @deprecated
 		 */
-		static protected $_meta = array();
+		protected static $_meta = array();
 
 		/**
 		 * @var string
@@ -41,19 +38,23 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @var array
 		 */
 		protected $_data = array(
-			'retake_count'         => 0,
-			'show_result'          => 'no',
+			// 'show_result'        => 'no',
 			'passing_grade_type'   => '',
 			'passing_grade'        => 0,
-			'show_check_answer'    => 'no',
-			'count_check_answer'   => 0,
-			'show_hint'            => 'no',
-			'count_hint'           => 0,
-			'archive_history'      => 'no',
-			'show_hide_question'   => 'yes',
-			'preview'              => 'no',
-			'minus_points'         => 0,
-			'minus_skip_questions' => 'no'
+			// 'show_check_answer'  => 'no',
+			// 'count_check_answer' => 0,
+			// 'show_hint'          => 'no',
+			// 'count_hint'         => 0,
+			// 'archive_history'    => 'no',
+			// 'show_hide_question' => 'yes',
+			// 'preview'            => 'no',
+			// 'minus_points'         => 0,
+			'minus_skip_questions' => 'no',
+
+			'negative_marking'     => 'no',
+			'instant_check'        => 'no',
+			'retake_count'         => 0,
+			'show_correct_review'  => 'yes',
 		);
 
 		/**
@@ -68,9 +69,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param mixed $args
 		 */
 		public function __construct( $the_quiz, $args = array() ) {
-
-			//parent::__construct( $the_quiz, $args );
-
 			$this->_curd = new LP_Quiz_CURD();
 
 			if ( is_numeric( $the_quiz ) && $the_quiz > 0 ) {
@@ -93,11 +91,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Log debug data.
 		 *
+		 * @since 3.0.0
+		 *
 		 * @param $data
 		 *
 		 * @return array
-		 * @since 3.0.0
-		 *
 		 */
 		public static function log( $data ) {
 			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
@@ -124,24 +122,20 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get default quiz meta.
 		 *
-		 * @return mixed
 		 * @since 3.0.0
 		 *
+		 * @return mixed
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'preview'              => 'no',
-				'minus_points'         => 0,
-				'minus_skip_questions' => 'no',
-				'show_hide_question'   => 'yes',
-				'review_questions'     => 'no',
-				'show_result'          => 'no',
-				'duration'             => '10 minute',
-				'passing_grade'        => 80,
-				'retake_count'         => 0,
-				'archive_history'      => 'no',
-				'show_check_answer'    => 0,
-				'show_hint'            => 0
+				'review'              => 'no',
+				'duration'            => '10 minute',
+				'passing_grade'       => 80,
+				'negative_marking'    => 'no',
+				'instant_check'       => 'no',
+				'retake_count'        => '0',
+				'pagination'          => 1,
+				'show_correct_review' => 'yes',
 			);
 
 			return apply_filters( 'learn-press/quiz/default-meta', $meta );
@@ -164,51 +158,85 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			return $return;
 		}
 
-		/**
-		 * Set quiz retake count.
-		 *
-		 * @param $count
-		 *
-		 * @since 3.0.0
-		 *
-		 */
+		public function get_negative_marking() {
+			return $this->get_data( 'negative_marking' ) === 'yes';
+		}
+
+		public function set_negative_marking( $set ) {
+			$this->_set_data( 'negative_marking', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
+		}
+
+		public function get_show_correct_review() {
+			return $this->get_data( 'show_correct_review' ) === 'yes';
+		}
+
+		public function set_show_correct_review( $set ) {
+			$this->_set_data( 'show_correct_review', $set );
+		}
+
+		public function get_instant_check() {
+			return $this->get_data( 'instant_check' ) === 'yes';
+		}
+
+		public function set_instant_check( $set ) {
+			$this->_set_data( 'instant_check', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
+		}
+
 		public function set_retake_count( $count ) {
 			$this->_set_data( 'retake_count', $count );
 		}
 
-		/**
-		 * @return array|mixed
-		 */
 		public function get_retake_count() {
 			return $this->get_data( 'retake_count' );
 		}
 
+		public function get_pagination() {
+			return ( $n = $this->get_data( 'pagination' ) ) > 1 ? $n : 0;
+		}
+
+		public function set_pagination( $set ) {
+			$this->_set_data( 'pagination', absint( $set ) );
+		}
+
 		/**
+		 * @deprecated
+		 *
 		 * @param $show_result
 		 */
 		public function set_show_result( $show_result ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			$this->_set_data( 'show_result', $show_result );
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @return array|mixed
 		 */
 		public function get_show_result() {
+
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			return $this->get_data( 'show_result' ) === 'yes';
 		}
 
 		/**
+		 *
 		 * @param $review_questions
 		 */
 		public function set_review_questions( $review_questions ) {
+
 			$this->_set_data( 'review_questions', $review_questions );
 		}
 
 		/**
-		 * @return array|mixed
+		 * Enable review quiz
+		 *
+		 * @return bool
 		 */
-		public function get_review_questions() {
-			return $this->get_data( 'review_questions' ) === 'yes';
+		public function get_review_questions(): bool {
+			return 'yes' === $this->get_data( 'review_questions', 'yes' );
 		}
 
 		/**
@@ -222,7 +250,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_passing_grade_type() {
-			return $this->get_data( 'passing_grade_type' );
+			return $this->get_data( 'passing_grade_type', 'percentage' );
 		}
 
 		/**
@@ -237,7 +265,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function get_passing_grade() {
 			$type  = $this->get_passing_grade_type();
-			$value = $this->get_data( 'passing_grade' );
+			$value = $this->get_data( 'passing_grade', 0 );
 
 			switch ( $type ) {
 				case 'point':
@@ -252,76 +280,116 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @param $value
 		 */
 		public function set_show_check_answer( $value ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			$this->_set_data( 'show_check_answer', $value );
 		}
 
 		/**
-		 * @return array|mixed
+		 * @deprecated
+		 *
+		 * @return int|bool
 		 */
 		public function get_show_check_answer() {
-			return $this->get_data( 'show_check_answer' );
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
+			return intval( $this->get_data( 'show_check_answer' ) );
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @param $count
 		 */
 		public function set_count_check_answer( $count ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			$this->_set_data( 'count_check_answer', $count );
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @return int
 		 */
 		public function get_check_answer_count() {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			return intval( $this->get_data( 'check_answer_count' ) );
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @param $value
 		 */
 		public function set_show_hint( $value ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			$this->_set_data( 'show_hint', $value );
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @return int
 		 */
 		public function get_show_hint() {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			return intval( $this->get_data( 'show_hint' ) );
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @param $count
 		 */
 		public function set_count_hint( $count ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			$this->_set_data( 'count_hint', $count );
 		}
 
 		/**
 		 * Return true if hint answer is enabled.
 		 *
+		 * @deprecated
+		 *
 		 * @return bool
 		 */
 		public function enable_show_hint() {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			return apply_filters( 'learn-press/quiz/enable-show-hint', $this->get_data( 'show_hint' ) == 'yes', $this->get_id() );
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @param $value
 		 */
 		public function set_archive_history( $value ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			$this->_set_data( 'archive_history', $value );
 		}
 
 		/**
 		 * Return true if archive history is enabled.
 		 *
+		 * @deprecated
+		 *
 		 * @return bool
 		 */
 		public function enable_archive_history() {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 			return apply_filters( 'learn-press/quiz/enable-archive-history', $this->get_data( 'archive_history' ) == 'yes', $this->get_id() );
 		}
 
@@ -331,15 +399,18 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return int
 		 */
 		public function get_mark() {
-			$mark = $this->get_data( 'mark' );
+			$mark = $this->get_data( 'mark', false );
 			if ( false === $mark || '' === $mark ) {
-				$questions = $this->get_questions();
+				$questions = $this->get_question_ids();
 				$mark      = 0;
+
 				foreach ( $questions as $question_id ) {
-					if ( $question = LP_Question::get_question( $question_id ) ) {
+					$question = LP_Question::get_question( $question_id );
+					if ( $question ) {
 						$mark += $question->get_mark();
 					}
 				}
+
 				$this->_set_data( 'mark', $mark );
 			}
 
@@ -363,22 +434,23 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param string $context
 		 *
 		 * @return mixed
+		 * @editor tungnx
+		 * @since 3.x.x
+		 * @version 1.0.1
+		 * @deprecated 4.2.0
 		 */
 		public function get_questions( $context = 'display' ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.2.0' );
+			$questions = array();
+			$ids       = $this->_curd->read_question_ids( $this->get_id() );
 
-			if ( false === ( $questions = LP_Object_Cache::get( $this->get_id(), 'quiz-questions-' . $context ) ) ) {
-				$questions = array();
-
-				if ( $ids = $this->_curd->read_questions( $this->get_id(), $context ) ) {
-					foreach ( $ids as $id ) {
-						$questions[ $id ] = $id;
-					}
+			if ( $ids ) {
+				foreach ( $ids as $id ) {
+					$questions[ $id ] = $id;
 				}
-
-				LP_Object_Cache::set( $this->get_id(), $questions, 'quiz-questions-' . $context );
 			}
 
-			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $context );
+			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $this->get_course_id(), $context );
 		}
 
 		/**
@@ -388,43 +460,46 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function quiz_editor_get_questions() {
 			// list questions
-			$questions = $this->get_questions( 'edit' );
+			$questions = $this->get_question_ids( 'edit' );
 			// order questions in quiz
 			$question_order = learn_press_quiz_get_questions_order( $questions );
 
 			$result = array();
-			if ( is_array( $questions ) ) {
-				foreach ( $questions as $index => $id ) {
 
-					$question = LP_Question::get_question( $id );
+			foreach ( $questions as $id ) {
+				$question = LP_Question::get_question( $id );
 
-					$answers = array();
-					// handle question answer
-					if ( is_array( $question->get_data( 'answer_options' ) ) ) {
-						foreach ( $question->get_data( 'answer_options' ) as $answer ) {
-							$answers[] = $answer;
-						}
+				$answers = array();
+				// handle question answer
+				if ( is_array( $question->get_data( 'answer_options' ) ) ) {
+					foreach ( $question->get_data( 'answer_options' ) as $answer ) {
+						$answers[] = $answer;
 					}
+				}
 
-					$post     = get_post( $id );
-					$result[] = apply_filters( 'learn-press/quiz-editor/question-data', array(
+				$post     = get_post( $id );
+				$result[] = apply_filters(
+					'learn-press/quiz-editor/question-data',
+					array(
 						'id'       => $id,
 						'open'     => false,
 						'title'    => $post->post_title,
 						'type'     => array(
 							'key'   => $question->get_type(),
-							'label' => $question->get_type_label()
+							'label' => $question->get_type_label(),
 						),
 						'answers'  => apply_filters( 'learn-press/quiz-editor/question-answers-data', $answers, $id, $this->get_id() ),
 						'settings' => array(
 							'content'     => $post->post_content,
 							'mark'        => get_post_meta( $id, '_lp_mark', true ),
 							'explanation' => get_post_meta( $id, '_lp_explanation', true ),
-							'hint'        => get_post_meta( $id, '_lp_hint', true )
+							'hint'        => get_post_meta( $id, '_lp_hint', true ),
 						),
-						'order'    => $question_order[ $index ]
-					), $id, $this->get_id() );
-				}
+						'order'    => $question_order[ $id ],
+					),
+					$id,
+					$this->get_id()
+				);
 			}
 
 			return apply_filters( 'learn-press/quiz/quiz_editor_questions', $result, $this->get_id() );
@@ -451,14 +526,15 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return int
 		 */
-		public function count_questions() {
-			$size = 0;
+		public function count_questions(): int {
+			$size      = 0;
+			$questions = $this->get_question_ids();
 
-			if ( ( $questions = $this->get_questions() ) ) {
+			if ( $questions ) {
 				$size = sizeof( $questions );
 			}
 
-			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
+			return (int) apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
 		}
 
 		/**
@@ -467,19 +543,27 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param string $context
 		 *
 		 * @return int[]
+		 * @editor tungnx
+		 * @version 1.0.1
 		 * @since 3.2.0
-		 *
 		 */
-		public function get_question_ids( $context = 'display' ) {
-
-			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids-' . $context ) ) ) {
-				$ids = $this->_curd->read_question_ids( $this->get_id(), $context );
-				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids-' . $context );
+		public function get_question_ids( string $context = 'display' ): array {
+			$question_ids = $this->_curd->read_question_ids( $this->get_id(), $context );
+			$question_ids = apply_filters( 'learn-press/quiz/get-question-ids', $question_ids, $this->get_id(), $this->get_course_id(), $context );
+			if ( ! is_array( $question_ids ) ) {
+				$question_ids = array();
 			}
 
-			$ids = apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id(), $context );
+			return $question_ids;
+		}
 
-			return apply_filters( 'learn-press/quiz/get-question-ids', $ids, $this->get_id(), $this->get_course_id(), $context );
+		/**
+		 * Get number questions for user do it.
+		 *
+		 * @return mixed|null
+		 */
+		public function get_number_questions_to_do() {
+			return apply_filters( 'learn-press/quiz/number-questions-show', $this->count_questions(), $this );
 		}
 
 		/**
@@ -500,18 +584,18 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$localize = array(
 				'confirm_finish_quiz' => array(
 					'title'   => __( 'Finish quiz', 'learnpress' ),
-					'message' => __( 'Are you sure you want to finish this quiz?', 'learnpress' )
+					'message' => __( 'Are you sure you want to finish this quiz?', 'learnpress' ),
 				),
 				'confirm_retake_quiz' => array(
 					'title'   => __( 'Retake quiz', 'learnpress' ),
-					'message' => __( 'Are you sure you want to retake this quiz?', 'learnpress' )
+					'message' => __( 'Are you sure you want to retake this quiz?', 'learnpress' ),
 				),
 				'quiz_time_is_over'   => array(
 					'title'   => __( 'Time\'s up!', 'learnpress' ),
-					'message' => __( 'The time is up! Your quiz will automate come to finish', 'learnpress' )
+					'message' => __( 'The time is up! Your quiz will automatically come to an end', 'learnpress' ),
 				),
 				'finished_quiz'       => __( 'Congrats! You have finished this quiz', 'learnpress' ),
-				'retaken_quiz'        => __( 'Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', 'learnpress' )
+				'retaken_quiz'        => __( 'Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', 'learnpress' ),
 			);
 
 			return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
@@ -534,12 +618,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param string $key
 		 *
 		 * @return mixed
+		 * @deprecated 4.0.8
 		 */
 		public function __get( $key ) {
-			echo '@deprecated[' . $key . ']';
+			_deprecated_function( __METHOD__, '4.0.8' );
+			/*echo '@deprecated[' . $key . ']';
 			learn_press_debug( debug_backtrace() );
 
-			return false;
+			return false;*/
 		}
 
 		/**
@@ -547,6 +633,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return mixed
 		 * @throws Exception
+		 * @deprecated 3.0.8
 		 */
 		public function has( $feature ) {
 			_deprecated_function( __FUNCTION__, '3.0.8' );
@@ -570,9 +657,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool
 		 */
 		public function has_question( $question_id ) {
-			$questions = $this->get_questions();
+			$questions = $this->get_question_ids();
 
-			return apply_filters( 'learn-press/quiz/has-question', is_array( $questions ) && ( false !== array_search( $question_id, $questions ) ), $question_id, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/has-question', in_array( $question_id, $questions ), $question_id, $this->get_id() );
 		}
 
 		/**
@@ -584,9 +671,15 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $question_id
 		 *
 		 * @return string
+		 * @deprecated 4.2.0
 		 */
 		public function get_question_link( $question_id = null ) {
-			$course    = LP_Global::course();
+			_deprecated_function( __METHOD__, '4.2.0' );
+			/*$course = learn_press_get_course();
+			if ( ! $course ) {
+				return '';
+			}
+
 			$permalink = $course->get_item_link( $this->get_id() );
 			if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
 				if ( get_post_type( $question_id ) === LP_QUESTION_CPT ) {
@@ -599,29 +692,32 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 					}
 				}
 			} else {
-				$permalink = add_query_arg( array( 'question', $question_id ), $permalink );
+				$permalink = esc_url_raw( add_query_arg( array( 'question', $question_id ), $permalink ) );
 			}
 
 			// @deprecated
 			$permalink = apply_filters( 'learn_press_quiz_question_permalink', $permalink, $question_id, $this );
 
-			return apply_filters( 'learn-press/quiz/question-permalink', $permalink, $question_id, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/question-permalink', $permalink, $question_id, $this->get_id() );*/
 		}
 
 		/**
 		 * @param int $at
 		 *
 		 * @return bool
+		 * @deprecated 4.1.6.9
 		 */
-		public function get_question_at( $at = 0 ) {
-			if ( $questions = $this->get_questions() ) {
+		/*public function get_question_at( $at = 0 ) {
+			$questions = $this->get_questions();
+
+			if ( $questions ) {
 				$questions = array_values( $questions );
 
 				return @$questions[ $at ];
 			}
 
 			return false;
-		}
+		}*/
 
 		/**
 		 * Get prev question from a question.
@@ -629,18 +725,23 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $id
 		 *
 		 * @return bool
+		 * @deprecated 4.1.6.9
 		 */
-		public function get_prev_question( $id ) {
-			$prev = false;
-			if ( ( $questions = $this->get_questions() ) ) {
+		/*public function get_prev_question( $id ) {
+			$prev      = false;
+			$questions = $this->get_questions();
+
+			if ( $questions ) {
 				$questions = array_values( $questions );
-				if ( 0 < ( $at = array_search( $id, $questions ) ) ) {
+				$at        = array_search( $id, $questions );
+
+				if ( 0 < $at ) {
 					$prev = $questions[ $at - 1 ];
 				}
 			}
 
 			return apply_filters( 'learn-press/quiz/prev-question-id', $prev, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Get next question from a question.
@@ -648,18 +749,23 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $id
 		 *
 		 * @return bool
+		 * @deprecated 4.1.6.9
 		 */
-		public function get_next_question( $id ) {
-			$next = false;
-			if ( ( $questions = $this->get_questions() ) ) {
+		/*public function get_next_question( $id ) {
+			$next      = false;
+			$questions = $this->get_questions();
+
+			if ( $questions ) {
 				$questions = array_values( $questions );
-				if ( sizeof( $questions ) - 1 > ( $at = array_search( $id, $questions ) ) ) {
+				$at        = array_search( $id, $questions );
+
+				if ( sizeof( $questions ) - 1 > $at ) {
 					$next = $questions[ $at + 1 ];
 				}
 			}
 
 			return apply_filters( 'learn-press/quiz/next-question-id', $next, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Get index number of a question.
@@ -668,17 +774,19 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $start
 		 *
 		 * @return bool|mixed
+		 * @deprecated 4.1.6.9
 		 */
-		public function get_question_index( $id, $start = 0 ) {
-			$index = 0;
+		/*public function get_question_index( $id, $start = 0 ) {
+			$index     = 0;
+			$questions = $this->get_questions();
 
-			if ( ( $questions = $this->get_questions() ) ) {
+			if ( $questions ) {
 				$questions = array_values( $questions );
 				$index     = array_search( $id, $questions );
 			}
 
 			return apply_filters( 'learn-press/quiz/question-index', intval( $start ) + $index, $this->get_id() );
-		}
+		}*/
 
 		/**
 		 * Check question.
@@ -687,28 +795,32 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param $user_id
 		 *
 		 * @return bool
+		 * @deprecated 4.2.0
 		 */
 		public function check_question( $question_id, $user_id ) {
+			_deprecated_function( __METHOD__, '4.2.0' );
+			/*$question = LP_Question::get_question( $question_id );
 
-			if ( ! $question = LP_Question::get_question( $question_id ) ) {
+			if ( ! $question ) {
 				return false;
 			}
 
 			$user = learn_press_get_user( $user_id );
 
 			$history = $user->get_quiz_results( $this->get_id() );
+
 			if ( ! $history ) {
 				return false;
 			}
-			$checked = array();// learn_press_get_user_quiz_meta( $history->history_id, 'checked' );
+
+			$checked = array();
 			$checked = array_filter( $checked );
+
 			if ( ! in_array( $question_id, $checked ) ) {
 				$checked[] = $question_id;
 			}
 
-			//learn_press_update_user_quiz_meta( $history->history_id, 'checked', $checked );
-
-			return true;
+			return true;*/
 
 		}
 
@@ -716,25 +828,30 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Get question position in quiz.
 		 *
 		 * @param     $question
-		 * @param int $user_id
+		 * @param int      $user_id
 		 *
 		 * @return false|int|string
+		 * @deprecated 4.2.0
 		 */
 		public function get_question_position( $question, $user_id = 0 ) {
-			if ( ! $user_id ) {
+			_deprecated_function( __METHOD__, '4.2.0' );
+			/*if ( ! $user_id ) {
 				$user_id = learn_press_get_current_user_id();
 			}
-			$user = learn_press_get_user( $user_id );
-			if ( $user && ( $results = $user->get_quiz_results( $this->get_id(), '', '' ) ) ) {
+
+			$user    = learn_press_get_user( $user_id );
+			$results = $user->get_quiz_results( $this->get_id(), '', '' );
+
+			if ( $user && $results ) {
 				$questions = (array) $results->questions;
 
 			} else {
-				$questions = (array) $this->get_questions();
-				$questions = array_keys( $questions );
+				$questions = $this->get_question_ids();
 			}
+
 			$position = array_search( $question, $questions );
 
-			return $position;
+			return $position;*/
 		}
 
 		/**
@@ -742,12 +859,15 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param int $course_id
 		 *
 		 * @return bool|LP_Question
+		 * @deprecated 4.0.0
 		 */
 		public function get_current_question( $user_id = 0, $course_id = 0 ) {
-			$user = learn_press_get_user( $user_id );
+			_deprecated_function( sprintf( '%s::%s', __CLASS__, __FUNCTION__ ), '4.0.0' );
+
+			/*$user = learn_press_get_user( $user_id );
 			$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
 
-			return LP_Question::get_question( $id );
+			return LP_Question::get_question( $id );*/
 		}
 
 		/**
@@ -768,7 +888,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return LP_Quiz|bool
 		 */
 		public static function get_quiz( $the_quiz = false, $args = array() ) {
-
 			if ( is_numeric( $the_quiz ) && isset( LP_Global::$quizzes[ $the_quiz ] ) ) {
 				return LP_Global::$quizzes[ $the_quiz ];
 			}
@@ -789,7 +908,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			} else {
 				$force = false;
 			}
-			$key_args = wp_parse_args( $args, array( 'id' => $the_quiz->ID, 'type' => $the_quiz->post_type ) );
+			$key_args = wp_parse_args(
+				$args,
+				array(
+					'id'   => $the_quiz->ID,
+					'type' => $the_quiz->post_type,
+				)
+			);
 
 			$key = LP_Helper::array_to_md5( $key_args );
 
@@ -815,7 +940,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @param string $quiz_type
+		 * @param  string $quiz_type
 		 *
 		 * @return string|false
 		 */
@@ -826,8 +951,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get the lesson class name
 		 *
-		 * @param WP_Post $the_quiz
-		 * @param array   $args (default: array())
+		 * @param  WP_Post $the_quiz
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -844,10 +969,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get the quiz object
 		 *
-		 * @param mixed $the_quiz
+		 * @param  mixed $the_quiz
 		 *
-		 * @return WP_Post|bool false on failure
 		 * @uses   WP_Post
+		 * @return WP_Post|bool false on failure
 		 */
 		private static function get_quiz_object( $the_quiz ) {
 			if ( false === $the_quiz ) {
@@ -867,32 +992,42 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$this->_set_data( 'show_hide_question', $show_or_hide );
 		}
 
+		/**
+		 * Set quiz is preview or not.
+		 * using
+		 */
 		public function set_preview( $preview ) {
 			$this->_set_data( 'preview', $preview );
 		}
 
-		public function set_minus_points( $points ) {
-			$this->_set_data( 'minus_points', $points );
-		}
-
+		/**
+		 * @deprecated
+		 *
+		 * @param $skip
+		 */
 		public function set_minus_skip_questions( $skip ) {
 			$this->_set_data( 'minus_skip_questions', $skip );
 		}
 
+		/**
+		 * Get quiz is preview or not.
+		 * using
+		 */
 		public function get_preview() {
 			return 'yes' === $this->get_data( 'preview' );
 		}
 
-		public function get_show_hide_question() {
-			return 'yes' === $this->get_data( 'show_hide_question' );
-		}
+		// public function get_minus_points() {
+		// return $this->get_data( 'minus_points' );
+		// }
 
-		public function get_minus_points() {
-			return $this->get_data( 'minus_points' );
-		}
-
-		public function get_minus_skip_questions() {
-			return 'yes' === $this->get_data( 'minus_skip_questions' );
+		/**
+		 * Get option skip question will be minus points
+		 *
+		 * @return bool
+		 */
+		public function get_minus_skip_questions(): bool {
+			return 'yes' === $this->get_data( 'minus_skip_questions', 'no' );
 		}
 
 		/**
@@ -902,53 +1037,39 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param null $position
 		 *
 		 * @return array
+		 * @deprecated 4.1.6.9
 		 */
-		public function get_question_number_class( $question_id, $position = null ) {
-
+		/*public function get_question_number_class( $question_id, $position = null ) {
 			if ( null === $position ) {
 				$position = $this->get_question_index( $question_id );
 			}
 
-			$class = array( "question-" . $position );
+			$class = array( 'question-' . $position );
 
 			if ( $this->is_viewing_question( $question_id ) ) {
 				$class[] = 'current';
 			}
 
-			$user = learn_press_get_current_user();
+			$user      = learn_press_get_current_user();
+			$quiz_data = $user->get_quiz_data( $this->get_id() );
 
-			if ( $quiz_data = $user->get_quiz_data( $this->get_id() ) ) {
+			if ( $quiz_data ) {
 				if ( $quiz_data->is_skipped( $question_id ) ) {
 					$class[] = 'skipped';
 				}
 			}
 
 			return $class;
-		}
-
-		/**
-		 * Implement ArrayAccess functions.
-		 *
-		 * @param mixed $offset
-		 * @param mixed $value
-		 */
-		public function offsetSet( $offset, $value ) {
-			// Do not allow to set value directly!
-		}
-
-		/**
-		 * @param mixed $offset
-		 */
-		public function offsetUnset( $offset ) {
-			// Do not allow to unset value directly!
-		}
+		}*/
 
 		/**
 		 * @param mixed $offset
 		 *
 		 * @return bool|mixed
+		 * @deprecated 4.2.0
 		 */
 		public function offsetGet( $offset ) {
+			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.2.0' );
 			return $this->offsetExists( $offset ) ? $this->_questions[ $offset ] : false;
 		}
 
@@ -956,9 +1077,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @param mixed $offset
 		 *
 		 * @return bool
+		 * @deprecated 4.2.0
 		 */
 		public function offsetExists( $offset ) {
-			return array_key_exists( $offset, $this->_questions );
+			_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.2.0' );
+			/*return array_key_exists( $offset, $this->_questions );*/
 		}
 	}
 }

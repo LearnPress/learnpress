@@ -1,8 +1,7 @@
-const $ = window.jQuery;
 const _ = window._;
 window.$Vue = window.$Vue || window.Vue;
 
-$( document ).ready( function() {
+jQuery( document ).ready( function( $ ) {
 	const $VueHTTP = $Vue ? $Vue.http : false;
 
 	document.getElementById( 'vue-modal-search-items' ) && $Vue && ( function() {

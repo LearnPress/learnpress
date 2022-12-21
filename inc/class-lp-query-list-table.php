@@ -1,7 +1,11 @@
 <?php
-
 /**
  * Class LP_Query_List_Table
+ *
+ * @since 3.0.0
+ * @version 3.0.1
+ * Addons: Assignments, H5P is using.
+ * Update all before not implements ArrayAccess
  */
 class LP_Query_List_Table implements ArrayAccess {
 	/**
@@ -15,9 +19,9 @@ class LP_Query_List_Table implements ArrayAccess {
 	 * @param $data
 	 */
 	public function __construct( $data ) {
-
 		$this->_data = wp_parse_args(
-			$data, array(
+			$data,
+			array(
 				'pages'      => 0,
 				'total'      => 0,
 				'items'      => null,
@@ -27,7 +31,7 @@ class LP_Query_List_Table implements ArrayAccess {
 				'nav_base'   => '',
 				'single'     => __( 'item', 'learnpress' ),
 				'plural'     => __( 'items', 'learnpress' ),
-				'format'     => ''
+				'format'     => '',
 			)
 		);
 
@@ -71,6 +75,10 @@ class LP_Query_List_Table implements ArrayAccess {
 		return $this->_data['items'];
 	}
 
+	public function get( string $key = '' ) {
+		return empty( $key ) ? $this->_data : $this->_data[ $key ];
+	}
+
 	/**
 	 * @return int
 	 */
@@ -92,8 +100,8 @@ class LP_Query_List_Table implements ArrayAccess {
 	 *
 	 * @return string
 	 */
-	public function get_nav_numbers( $echo = true, $base_url='' ) {
-		if( !$base_url ) {
+	public function get_nav_numbers( $echo = true, $base_url = '' ) {
+		if ( ! $base_url ) {
 			$base_url = learn_press_get_current_url();
 		}
 		if ( ! empty( $this->_data['nav_base'] ) ) {
@@ -112,7 +120,7 @@ class LP_Query_List_Table implements ArrayAccess {
 				'paged'     => $this->get_paged(),
 				'echo'      => $echo,
 				'format'    => $this->_data['nav_format'],
-				'base'      => $base
+				'base'      => $base,
 			)
 		);
 	}
@@ -151,13 +159,13 @@ class LP_Query_List_Table implements ArrayAccess {
 				$offset[0],
 				$offset[1],
 				$this->get_total(),
-				$this->get_total() < 2 ? $this->_data['single'] : $this->_data['plural']
+				$this->get_total() < 2 ? $this->_data['single'] : $this->_data['plural'],
 			),
 			$format
 		);
 
 		if ( $echo ) {
-			echo $output;
+			echo wp_kses_post( $output );
 		}
 
 		return $output;
@@ -173,7 +181,7 @@ class LP_Query_List_Table implements ArrayAccess {
 		}
 
 		if ( $echo ) {
-			echo $output;
+			echo wp_kses_post( $output );
 		}
 
 		return $output;

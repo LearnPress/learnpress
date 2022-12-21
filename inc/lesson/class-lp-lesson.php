@@ -136,7 +136,13 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 				$force = false;
 			}
 
-			$key_args = wp_parse_args( $args, array( 'id' => $the_lesson->ID, 'type' => $the_lesson->post_type ) );
+			$key_args = wp_parse_args(
+				$args,
+				array(
+					'id'   => $the_lesson->ID,
+					'type' => $the_lesson->post_type,
+				)
+			);
 
 			$key = LP_Helper::array_to_md5( $key_args );
 
@@ -171,7 +177,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		public static function get_default_meta() {
 			$meta = array(
 				'duration' => '0 minute',
-				'preview'  => 'no'
+				'preview'  => 'no',
 			);
 
 			return apply_filters( 'learn-press/course/lesson/default-meta', $meta );

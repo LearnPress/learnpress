@@ -8,29 +8,28 @@
  */
 
 const $ = window.jQuery;
-var exp;
+let exp;
 
-(function () {
+( function() {
+	if ( $ === undefined ) {
+		return;
+	}
 
-    if ($ === undefined) {
-        return;
-    }
+	$.fn.LP = exp = function( widget, fn ) {
+		if ( typeof fn === 'function' ) {
+			$.fn[ 'LP_' + widget ] = fn;
+		} else if ( widget ) {
+			const args = [];
+			if ( arguments.length > 1 ) {
+				for ( let i = 1; i < arguments.length; i++ ) {
+					args.push( arguments[ i ] );
+				}
+			}
 
-    $.fn.LP = exp = function (widget, fn) {
-        if ($.isFunction(fn)) {
-            $.fn['LP_' + widget] = fn;
-        } else if (widget) {
-            var args = [];
-            if (arguments.length > 1) {
-                for (var i = 1; i < arguments.length; i++) {
-                    args.push(arguments[i]);
-                }
-            }
-
-            return $.isFunction($(this)['LP_' + widget]) ? $(this)['LP_' + widget].apply(this, args) : this;
-        }
-        return this
-    };
-})();
+			return typeof ( $( this )[ 'LP_' + widget ] ) === 'function' ? $( this )[ 'LP_' + widget ].apply( this, args ) : this;
+		}
+		return this;
+	};
+}() );
 
 export default exp;

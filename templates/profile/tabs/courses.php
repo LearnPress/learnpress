@@ -6,64 +6,95 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.11
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-$profile = learn_press_get_profile();
-$query   = $profile->query_courses();
-
-if ( ! $query['total'] ) {
-	learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) );
-
+if ( ! isset( $user ) || ! isset( $tab_active ) || ! isset( $courses_enrolled_tab ) ||
+	! isset( $courses_created_tab ) || ! isset( $courses_enrolled_tab_active ) ||
+	! isset( $args_query_user_courses_attend ) || ! isset( $args_query_user_courses_created ) ||
+	! isset( $args_query_user_courses_statistic ) ) {
 	return;
-} ?>
+}
+?>
 
 <div class="learn-press-subtab-content">
-    <h3 class="profile-heading"><?php _e( 'My Courses', 'learnpress' ); ?></h3>
+	<div class="learn-press-profile-course__statistic">
+		<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
+		<input type="hidden" name="args_query_user_courses_statistic"
+			value="<?php echo sanitize_text_field( htmlentities( wp_json_encode( $args_query_user_courses_statistic ) ) ); ?>">
+	</div>
 
-    <table class="lp-list-table profile-list-courses profile-list-table">
-        <thead>
-        <tr>
-            <th class="column-course"><?php _e( 'Course', 'learnpress' ); ?></th>
-            <th class="column-date"><?php _e( 'Date', 'learnpress' ); ?></th>
-            <th class="column-passing-grade"><?php _e( 'Passing Grade', 'learnpress' ); ?></th>
-            <th class="column-status"><?php _e( 'Progress', 'learnpress' ); ?></th>
-        </tr>
-        </thead>
-        <tbody>
-		<?php foreach ( $query['items'] as $user_course ) { ?>
-			<?php $course = learn_press_get_course( $user_course->get_id() ); ?>
-            <tr>
-                <td class="column-course">
-                    <a href="<?php echo $course->get_permalink(); ?>">
-						<?php echo $course->get_title(); ?>
-                    </a>
-                </td>
-                <td class="column-date"><?php echo $user_course->get_start_time( 'd M Y' ); ?></td>
-                <td class="column-passing-grade"><?php echo $course->get_passing_condition( true ); ?></td>
-                <td class="column-status">
-                    <span class="result-percent"><?php echo $user_course->get_percent_result(); ?></span>
-                    <span class="lp-label label-<?php echo esc_attr( $user_course->get_results( 'status' ) ); ?>">
-                            <?php echo $user_course->get_status_label( $user_course->get_results( 'status' ) ); ?>
-                        </span>
-                </td>
-            </tr>
-		<?php } ?>
-        </tbody>
-        <tfoot>
-        <tr class="list-table-nav">
-            <td colspan="2" class="nav-text">
-				<?php echo $query->get_offset_text(); ?>
-            </td>
-            <td colspan="2" class="nav-pages">
-				<?php $query->get_nav_numbers( true ); ?>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
+	<div class="learn-press-profile-course__tab">
+		<ul class="learn-press-profile-course__tab__inner">
+			<li>
+				<a class="<?php echo esc_attr( $tab_active === 'enrolled' ? 'active' : '' ); ?>" data-tab="enrolled">
+					<?php esc_html_e( 'Enrolled', 'learnpress' ); ?>
+				</a>
+			</li>
+
+			<?php if ( $user->can_create_course() ) : ?>
+				<li>
+					<a class="<?php echo esc_attr( $tab_active === 'created' ? 'active' : '' ); ?>" data-tab="created">
+						<?php esc_html_e( 'Created', 'learnpress' ); ?>
+					</a>
+				</li>
+			<?php endif; ?>
+		</ul>
+
+		<div class="learn-press-course-tab-enrolled learn-press-course-tab-filters" data-tab="enrolled"
+			style="<?php echo esc_attr( $tab_active !== 'enrolled' ? 'display: none;' : '' ); ?>">
+			<ul class="learn-press-filters">
+				<?php foreach ( $courses_enrolled_tab as $key => $enrolled ) : ?>
+					<li>
+						<a class="<?php echo esc_attr( $key === $courses_enrolled_tab_active ? 'active' : '' ); ?>"
+							data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>">
+							<?php echo esc_html( $enrolled ); ?>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+
+			<div class="learn-press-profile-course__progress">
+				<?php foreach ( $courses_enrolled_tab as $key => $enrolled ) : ?>
+					<div class="learn-press-course-tab__filter__content"
+						data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>"
+						style="<?php echo esc_attr( $key !== $courses_enrolled_tab_active ? 'display: none' : '' ); ?>">
+						<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
+					</div>
+				<?php endforeach; ?>
+				<input class="lp_profile_tab_input_param" type="hidden" name="args_query_user_courses_attend"
+					value="<?php echo sanitize_text_field( htmlentities( wp_json_encode( $args_query_user_courses_attend ) ) ); ?>">
+			</div>
+		</div>
+
+		<?php if ( learn_press_user_maybe_is_a_teacher() ) : ?>
+			<div class="learn-press-course-tab-created learn-press-course-tab-filters" data-tab="created"
+				style="<?php echo esc_attr( $tab_active !== 'created' ? 'display: none;' : '' ); ?>">
+				<ul class="learn-press-filters">
+					<?php foreach ( $courses_created_tab as $key => $created ) : ?>
+						<li>
+							<a class="<?php echo esc_attr( $key === '' ? 'active' : '' ); ?>"
+								data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>">
+								<?php echo esc_html( $created ); ?>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+
+				<div class="learn-press-profile-course__progress">
+					<?php foreach ( $courses_created_tab as $key => $created ) : ?>
+						<div class="learn-press-course-tab__filter__content"
+							data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>"
+							style="<?php echo esc_attr( $key !== '' ? 'display: none' : '' ); ?>">
+							<?php lp_skeleton_animation_html( 4, 'random', 'height: 30px;border-radius:4px;' ); ?>
+						</div>
+					<?php endforeach; ?>
+					<input class="lp_profile_tab_input_param" type="hidden" name="args_query_user_courses_created"
+						value="<?php echo sanitize_text_field( htmlentities( wp_json_encode( $args_query_user_courses_created ) ) ); ?>">
+				</div>
+			</div>
+		<?php endif; ?>
+	</div>
 </div>

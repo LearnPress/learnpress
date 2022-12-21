@@ -7,17 +7,16 @@
  * @version 3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question_Answers' ) ) {
 
 	/**
 	 * Class LP_Question_Answers
+	 *
+	 * @deprecated 4.1.7.3
 	 */
-	class LP_Question_Answers implements ArrayAccess, Iterator {
+	class LP_Question_Answers {
 		/**
 		 * Answers
 		 *
@@ -53,7 +52,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 * LP_Question_Answers constructor.
 		 *
 		 * @param LP_Question $question
-		 * @param mixed $raw
+		 * @param mixed       $raw
 		 *
 		 * @param             $raw
 		 */
@@ -106,10 +105,17 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		}
 
 		/**
+		 * @return array
+		 */
+		public function get_answers(): array {
+			return $this->_answers;
+		}
+
+		/**
 		 * Set new option for an answer
 		 *
 		 * @param int|array $id
-		 * @param mixed $options
+		 * @param mixed     $options
 		 */
 		public function set_answer_option( $id, $options = '' ) {
 			if ( is_array( $id ) && func_num_args() == 1 ) {
@@ -185,7 +191,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 * Set answer option by offset.
 		 *
 		 * @param int|string $offset
-		 * @param mixed $value
+		 * @param mixed      $value
 		 */
 		public function offsetSet( $offset, $value ) {
 			$this->_answers[ $offset ] = $value;
@@ -293,6 +299,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 
 		/**
 		 * @param string $more
+		 * @deprecated 4.1.7.3
 		 */
 		public function answers_class( $more = '' ) {
 			$classes = $this->get_class( $more );
@@ -307,7 +314,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Question_Answer_Option implements ArrayAccess {
+	class LP_Question_Answer_Option {
 		/**
 		 * Option data
 		 *
@@ -324,7 +331,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * LP_Question_Answer_Option constructor.
 		 *
 		 * @param LP_Question $question
-		 * @param mixed $data
+		 * @param mixed       $data
 		 */
 		public function __construct( $question, $data ) {
 			$this->_data     = $data;
@@ -339,7 +346,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * @return string
 		 */
 		public function get_title( $context = '' ) {
-			$title = array_key_exists( 'text', $this->_data ) ? $this->_data['text'] : '';
+			$title = array_key_exists( 'title', $this->_data ) ? $this->_data['title'] : '';
 			if ( $context == 'display' ) {
 				$title = do_shortcode( $title );
 			}
@@ -360,14 +367,15 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 
 		/**
 		 * Return true if option is TRUE
+		 *
 		 * @return bool
 		 */
-		public function is_true() {
+		public function is_true(): bool {
 			return apply_filters( 'learn-press/question/option-is-true', array_key_exists( 'is_true', $this->_data ) && $this->_data['is_true'] === 'yes', $this );
 		}
 
 		public function get_id() {
-			return isset( $this->_data['question_answer_id'] ) ? $this->_data['question_answer_id'] : 0;
+			return $this->_data['question_answer_id'] ?? 0;
 		}
 
 		/**
@@ -406,14 +414,14 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 				} elseif ( ! $is_checked && $is_true ) {
 					$classes[] = 'answered-wrong';
 				}
-
-			} else if ( learn_press_is_review_questions() ) {
+			}
+			/*elseif ( learn_press_is_review_questions() ) {
 				if ( $is_checked && $is_true ) {
 					$classes[] = 'answered-correct';
 				} elseif ( $is_checked && ! $is_true ) {
 					$classes[] = 'answered-wrong';
 				}
-			}
+			}*/
 
 			// sanitize unwanted classes
 			$classes = LP_Helper::sanitize_array( $classes );
@@ -498,7 +506,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		}
 
 		public function __toString() {
-			return (string) $this->_data['text'];
+			return (string) $this->_data['title'];
 		}
 
 		/**

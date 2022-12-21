@@ -83,14 +83,14 @@ abstract class LP_Abstract_Submenu {
 	public function __construct() {
 		add_action( 'learn-press/admin/page-content-sections', array( $this, 'output_section_nav' ) );
 		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
-		//add_action('admin_enqueue_scripts', array($this))
 
 		if ( $this->is_displaying() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		}
 	}
 
-	public function enqueue_assets(){}
+	public function enqueue_assets() {
+	}
 
 	public function is_displaying() {
 		return $this->get_id() === LP_Request::get_string( 'page' );
@@ -223,8 +223,8 @@ abstract class LP_Abstract_Submenu {
 		if ( ! $tabs ) {
 			return false;
 		}
-		$tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : false;
-		if ( ! $tab || empty( $tabs[ $tab ] ) ) {
+		$tab = LP_Helper::sanitize_params_submitted( $_REQUEST['tab'] ?? '' );
+		if ( empty( $tab ) || empty( $tabs[ $tab ] ) ) {
 			$tab_keys = array_keys( $tabs );
 			$tab      = reset( $tab_keys );
 		}
@@ -244,6 +244,7 @@ abstract class LP_Abstract_Submenu {
 	 */
 	public function get_sections() {
 		$active_tab = $this->get_active_tab();
+
 		if ( ! empty( $this->tabs[ $active_tab ] ) ) {
 			if ( is_callable( array( $this->tabs[ $active_tab ], 'get_sections' ) ) ) {
 				$this->sections = call_user_func( array( $this->tabs[ $active_tab ], 'get_sections' ) );
@@ -262,7 +263,7 @@ abstract class LP_Abstract_Submenu {
 	 */
 	public function get_active_page( $prefix = true ) {
 		if ( false === $this->page ) {
-			$this->page = ! empty ( $_REQUEST['page'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : null;
+			$this->page = LP_Request::get_param( 'page' );
 		}
 
 		return $prefix ? $this->page : str_replace( 'learn-press-', '', $this->page );
@@ -275,18 +276,27 @@ abstract class LP_Abstract_Submenu {
 	 */
 	public function get_active_section() {
 		$sections = $this->get_sections();
+
 		if ( ! $sections ) {
 			return false;
 		}
 
-		$section = ! empty( $_REQUEST['section'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['section'] ) ) : false;
-
-		if ( ! $section || empty( $sections[ $section ] ) ) {
+		$section = LP_Helper::sanitize_params_submitted( $_REQUEST['section'] ?? '' );
+		if ( empty( $section ) || empty( $sections[ $section ] ) ) {
 			$section_keys = array_keys( $sections );
 			$section      = reset( $section_keys );
 		}
 
 		return $section;
+	}
+
+	/**
+	 * Callback return template.
+	 *
+	 * @return bool|array|mixed
+	 */
+	public function get_callback() {
+		return $this->callback;
 	}
 
 	/**
@@ -296,43 +306,54 @@ abstract class LP_Abstract_Submenu {
 		$tabs       = $this->get_tabs();
 		$active_tab = $this->get_active_tab();
 		$classes    = array( 'wrap', 'lp-submenu-page', $this->get_id() );
-
 		?>
-        <div class="<?php echo join( ' ', $classes ); ?>">
-            <div id="icon-themes" class="icon32"><br></div>
-            <h1 class="wp-heading-inline"><?php echo $this->get_menu_title(); ?></h1>
+
+		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+			<?php do_action( 'learn-press/admin/heading-icon', $active_tab ); ?>
+
+			<h1 class="wp-heading-inline">
+				<?php echo wp_kses_post( $this->get_menu_title() ); ?>
+				<?php do_action( 'learn-press/admin/heading-title', $active_tab ); ?>
+			</h1>
+
 			<?php if ( $tabs ) { ?>
-                <h2 class="nav-tab-wrapper">
+				<h2 class="nav-tab-wrapper">
 					<?php foreach ( $tabs as $tab => $name ) { ?>
 						<?php
-						$objTab = false;
+						$obj_tab = false;
+
 						if ( is_object( $name ) ) {
-							$objTab = $name;
-							$name   = $objTab->text;
-							$tab    = $objTab->id;
+							$obj_tab = $name;
+							$name    = $obj_tab->text;
+							$tab     = $obj_tab->id;
 						}
+
 						$active_class = ( $tab == $active_tab ) ? ' nav-tab-active' : '';
 						$tab_title    = apply_filters( 'learn-press/admin/submenu-heading-tab-title', $name, $tab );
 						?>
+
 						<?php if ( $active_class ) { ?>
-                            <span class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo $tab_title; ?></span>
+							<span class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo esc_html( $tab_title ); ?></span>
 						<?php } else { ?>
-                            <a class="nav-tab"
-                               href="?page=<?php echo $this->id; ?>&tab=<?php echo $tab; ?>"><?php echo $tab_title; ?></a>
+							<a class="nav-tab" href="?page=<?php echo esc_attr( $this->id ); ?>&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
 						<?php } ?>
 					<?php } ?>
-                </h2>
+				</h2>
 			<?php } ?>
+
 			<?php
-			$classes = array( 'lp-admin-tabs' );
-			if ( ( $sections = $this->get_sections() ) && sizeof( $sections ) > 1 ) {
+			$classes  = array( 'lp-admin-tabs' );
+			$sections = $this->get_sections();
+
+			if ( $sections && sizeof( $sections ) > 1 ) {
 				$classes[] = 'has-sections';
 			}
 			?>
-            <form class="<?php echo join( ' ', $classes ); ?>" method="post" enctype="multipart/form-data">
+
+			<form class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" method="post" enctype="multipart/form-data">
 				<?php $this->page_content(); ?>
-            </form>
-        </div>
+			</form>
+		</div>
 		<?php
 	}
 
@@ -345,19 +366,26 @@ abstract class LP_Abstract_Submenu {
 		do_action( 'learn-press/admin/page-content-sections', $this );
 
 		echo '<div class="lp-admin-tab-content">';
+
 		if ( $this->has_tabs() ) {
 			$page = $this->_get_page();
 			$tab  = $this->get_active_tab();
+
+			do_action( 'learn-press/admin/before-page-content-sections', $page, $tab, $this );
+
 			// If I have a function named 'page_content_TAB_SLUG' then call it.
 			$callback = array( $this, sprintf( 'page_content_%s', $tab ) );
+
 			if ( is_callable( $callback ) ) {
 				call_user_func_array( $callback, array() );
 			} else {
-				// Otherwise, do a actions.
 				do_action( 'learn-press/admin/page-content-' . $page, $tab );
 				do_action( 'learn-press/admin/page-content-' . $page . '/' . $tab );
 			}
+
+			do_action( 'learn-press/admin/after-page-content-sections', $page, $tab, $this );
 		}
+
 		echo '</div>';
 	}
 
@@ -370,25 +398,30 @@ abstract class LP_Abstract_Submenu {
 		}
 
 		$active_section = $this->get_active_section();
-		if ( ! $sections = $this->get_sections() ) {
+		$sections       = $this->get_sections();
+
+		if ( ! $sections ) {
 			return;
 		}
 		?>
-        <ul class="lp-admin-tab-navs">
+
+		<ul class="lp-admin-tab-navs">
 			<?php foreach ( $sections as $slug => $section ) { ?>
 				<?php
 				$active_class  = ( $slug == $active_section ) ? ' nav-section-active' : '';
 				$section_title = apply_filters( 'learn-press/admin/submenu-section-title', $section, $slug );
 				?>
-                <li class="nav-section<?php echo $active_class; ?>">
+
+				<li class="nav-section<?php echo esc_attr( $active_class ); ?>">
 					<?php if ( $active_class ) { ?>
-                        <span><?php echo $section_title; ?></span>
+						<span><?php echo wp_kses_post( $section_title ); ?></span>
 					<?php } else { ?>
-                        <a href="<?php echo esc_url( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
+						<a href="<?php echo esc_url_raw( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo wp_kses_post( $section_title ); ?></a>
 					<?php } ?>
-                </li>
+				</li>
 			<?php } ?>
-        </ul>
+		</ul>
+
 		<?php
 	}
 
@@ -396,11 +429,15 @@ abstract class LP_Abstract_Submenu {
 	 * Display section content
 	 */
 	public function display_section() {
-		if ( ! $section = $this->get_active_section() ) {
+		$section = $this->get_active_section();
+
+		if ( ! $section ) {
 			return false;
 		}
 
-		if ( ! $sectionClass = $this->sections[ $section ] ) {
+		$section_class = $this->sections[ $section ];
+
+		if ( ! $section_class ) {
 			return false;
 		}
 
@@ -432,12 +469,15 @@ abstract class LP_Abstract_Submenu {
 	 * @return array|string
 	 */
 	public function body_class( $classes ) {
-		if ( $page = $this->get_active_page( false ) ) {
+		$page = $this->get_active_page( false );
+
+		if ( $page ) {
 			if ( $classes ) {
 				$classes = explode( ' ', $classes );
 			} else {
 				$classes = array();
 			}
+
 			$classes[] = 'learnpress';
 			$classes[] = 'lp-submenu-' . $page;
 			$classes   = array_filter( $classes );

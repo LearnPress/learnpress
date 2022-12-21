@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Submenu_Addons
  *
@@ -15,24 +14,31 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		$this->menu_title = __( 'Add-ons', 'learnpress' );
 		$this->page_title = __( 'LearnPress Add-ons', 'learnpress' );
 		$this->priority   = 20;
+		$this->callback   = [ $this, 'display' ];
 
-		//add_action( 'plugins_loaded', array( $this, 'add_ons_tabs' ) );
-        $this->add_ons_tabs();
-//
-		//$this->sections = apply_filters( 'learn-press/admin/page-addons/sections', $sections );
+		$this->add_ons_tabs();
+
 		parent::__construct();
 	}
 
 	public function add_ons_tabs() {
- 	    $tabs = array(
- 	        'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
- 	        'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
- 	        'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() )
- 	    );
+		// Check is page addons
+		$current_page = LP_Helper::getUrlCurrent();
+		$pattern      = '/.*page=learn-press-addons.*/';
+		$match        = preg_match( $pattern, $current_page, $matches );
+		if ( ! $match ) {
+			return;
+		}
+
+		$tabs = array(
+			'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
+			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
+			'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() ),
+		);
 
 		$this->tabs = apply_filters(
 			'learn-press/admin/page-addons-tabs',
- 			$tabs
+			$tabs
 		);
 	}
 
@@ -53,9 +59,11 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 
 	public function page_content_search_form() {
 		?>
-        <p class="search-box">
-            <input type="text" class="lp-search-addon" value="" placeholder="<?php _e( 'Search...', 'learnpress' ); ?>">
-        </p>
+
+		<p class="search-box">
+			<input type="text" class="lp-search-addon" value="" placeholder="<?php esc_attr_e( 'Search...', 'learnpress' ); ?>">
+		</p>
+
 		<?php
 	}
 }

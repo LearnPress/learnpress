@@ -5,7 +5,7 @@
  * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
- * @version  3.0.0
+ * @version  3.0.1
  * @extends  LP_Abstract_Shortcode
  */
 
@@ -35,13 +35,14 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 					'id'            => 0,
 					'enroll_text'   => '',
 					'purchase_text' => '',
+					'btn_label'     => '',
 				),
 				$this->_atts
 			);
 		}
 
 		/**
-		 * Output form.
+		 * Output button course.
 		 *
 		 * @return string
 		 */
@@ -50,57 +51,73 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 
 			$atts = $this->_atts;
 
-			if ( '@current' === $atts['id'] ) {
+			if ( 'current' === $atts['id'] ) {
 				$course_id = learn_press_is_course() ? get_the_ID() : 0;
 			} else {
 				$course_id = $atts['id'];
 			}
 
-			if ( $course_id && $course = learn_press_get_course( $course_id ) ) {
-				LP_Global::set_course( $course );
-				global $post;
-				$post = get_post( $course_id );
+			try {
+				$course = learn_press_get_course( $course_id );
+				if ( ! $course ) {
+					return '';
+				}
 
-				setup_postdata( $post );
-				add_filter( 'learn-press/enroll-course-button-text', array( $this, 'enroll_button_text' ) );
-				add_filter( 'learn-press/purchase-course-button-text', array( $this, 'purchase_button_text' ) );
+				// Load js button course.
+				wp_enqueue_script( 'lp-single-course' );
 
-				learn_press_course_enroll_button();
-				learn_press_course_purchase_button();
+				if ( $course->is_free() ) {
+					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_enroll' ) );
+				} elseif ( $course->get_external_link() ) {
+					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_external_link' ) );
+				} elseif ( $course->is_no_required_enroll() ) {
 
-				remove_filter( 'learn-press/purchase-course-button-text', array( $this, 'purchase_button_text' ) );
-				remove_filter( 'learn-press/enroll-course-button-text', array( $this, 'enroll_button_text' ) );
-				wp_reset_postdata();
-				LP_Global::reset();
+				} else {
+					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_purchase' ) );
+				}
+
+				do_action( 'learn-press/course-buttons', $course );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
 			return ob_get_clean();
 		}
 
 		/**
+		 * Label button purchase.
+		 *
 		 * @param string $text
 		 *
 		 * @return string
 		 */
-		public function purchase_button_text( $text ) {
+		public function button_text_purchase( string $text ): string {
 			if ( $this->_atts['purchase_text'] ) {
 				$text = $this->_atts['purchase_text'];
+			} elseif ( $this->_atts['btn_label'] ) {
+				$text = $this->_atts['btn_label'];
 			}
 
 			return $text;
 		}
 
 		/**
+		 * Label button enroll.
+		 *
 		 * @param string $text
 		 *
 		 * @return string
 		 */
-		public function enroll_button_text( $text ) {
+		public function button_text_enroll( string $text ): string {
 			if ( $this->_atts['enroll_text'] ) {
 				$text = $this->_atts['enroll_text'];
+			} elseif ( $this->_atts['btn_label'] ) {
+				$text = $this->_atts['btn_label'];
 			}
 
 			return $text;
 		}
 	}
 }
+
+new LP_Shortcode_Button_Course();

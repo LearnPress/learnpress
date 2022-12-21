@@ -1,37 +1,18 @@
 <?php
-/**
- * @author  ThimPress
- * @package LearnPress/Classes
- * @version 3.0.0
- */
+$option_value = $value['value'];
 
-// Prevent loading this file directly
-defined( 'ABSPATH' ) || exit;
+$page_dropdown_args = array(
+	'echo'     => true,
+	'name'     => $value['id'],
+	'selected' => $option_value,
+);
+?>
 
-if ( ! class_exists( 'RWMB_Pages_Dropdown_Field' ) ) {
-	class RWMB_Pages_Dropdown_Field extends RWMB_Field {
-		/**
-		 * Get field HTML
-		 *
-		 * @param mixed $meta
-		 * @param mixed $field
-		 *
-		 * @return string
-		 */
-		static function html( $meta, $field = '' ) {
-			if( $field['std'] && function_exists('icl_object_id') ) {
-				$field_std = icl_object_id($field['std'],'page', false,ICL_LANGUAGE_CODE);
-				if( $field_std ) {
-					$field['std'] = $field_std;
-				}
-			}
-
-			$args = array(
-				'echo'     => false,
-				'name'     => $field['id'],
-				'selected' => $field['std']
-			);
-			return learn_press_pages_dropdown( $args );
-		}
-	}
-}
+<tr valign="top">
+	<th scope="row" class="titledesc">
+		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo wp_kses_post( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ); ?></label>
+	</th>
+	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
+		<?php learn_press_pages_dropdown( $page_dropdown_args ); ?>
+	</td>
+</tr>

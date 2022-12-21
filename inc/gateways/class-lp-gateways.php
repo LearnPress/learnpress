@@ -40,7 +40,8 @@ class LP_Gateways {
 	public function init() {
 		if ( ! $this->payment_gateways ) {
 			$gateways = array(
-				'paypal' => 'LP_Gateway_Paypal'
+				'paypal'          => 'LP_Gateway_Paypal',
+				'offline-payment' => 'LP_Gateway_Offline_Payment',
 			);
 			// Filter
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
@@ -67,19 +68,22 @@ class LP_Gateways {
 	 */
 	public function get_gateways( $with_order = false ) {
 		$gateways = array();
+
 		if ( count( $this->payment_gateways ) ) {
 			foreach ( $this->payment_gateways as $gateway ) {
 				if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 					$gateway = new $gateway();
 				}
+
 				if ( ! is_object( $gateway ) ) {
 					continue;
 				}
+
 				$gateways[ $gateway->id ] = $gateway;
 			}
 		}
 
-		if ( $with_order && $ordered = get_option( 'learn_press_payment_order' ) ) {
+		if ( $with_order && get_option( 'learn_press_payment_order' ) ) {
 			// Sort gateways by the keys stored.
 			usort( $gateways, array( $this, '_sort_gateways_callback' ) );
 		}
@@ -97,7 +101,9 @@ class LP_Gateways {
 	 * @return bool|int
 	 */
 	public function _sort_gateways_callback( $a, $b ) {
-		if ( $ordered = get_option( 'learn_press_payment_order' ) ) {
+		$ordered = get_option( 'learn_press_payment_order' );
+
+		if ( $ordered ) {
 			return array_search( $a->id, $ordered ) > array_search( $b->id, $ordered );
 		}
 
@@ -115,7 +121,12 @@ class LP_Gateways {
 		$is_selected         = false;
 
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
-
+			if ( ! is_object( $gateway ) ) {
+				continue;
+			}
+			if ( $slug == 'woocommerce' ) {
+				continue;
+			}
 			/**
 			 * @deprecated
 			 */
@@ -126,14 +137,13 @@ class LP_Gateways {
 				if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
 
 					// If gateway has already selected before
-					if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
+					if ( LearnPress::instance()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
 						$gateway->is_selected = true;
 						$is_selected          = $gateway;
 					}
 					$_available_gateways[ $slug ] = $gateway;
 				}
 			}
-
 		}
 
 		// Set default payment if there is no payment is selected
@@ -160,12 +170,14 @@ class LP_Gateways {
 	/**
 	 * @param string $id
 	 *
+	 * @return bool|LP_Gateway_Abstract
 	 * @since 3.0.0
 	 *
-	 * @return bool|LP_Gateway_Abstract
 	 */
 	public function get_gateway( $id ) {
-		if ( $gateways = $this->get_gateways() ) {
+		$gateways = $this->get_gateways();
+
+		if ( $gateways ) {
 			if ( isset( $gateways[ $id ] ) ) {
 				return $gateways[ $id ];
 			}
@@ -176,6 +188,7 @@ class LP_Gateways {
 
 	/**
 	 * Ensure that only one instance of LP_Gateways is loaded
+	 *
 	 * @return LP_Gateways|null
 	 */
 	public static function instance() {

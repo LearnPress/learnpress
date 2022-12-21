@@ -4,39 +4,42 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.0
+ * @version 4.0.1
  */
 
-defined( 'ABSPATH' ) or die();
-
-/**
- * @var LP_Course_Item $next_item
- * @var LP_Course_Item $prev_item
- */
+defined( 'ABSPATH' ) || exit;
 
 if ( ! isset( $prev_item ) && ! isset( $next_item ) ) {
 	return;
 }
+
+if ( $prev_item && $next_item ) {
+	$nav = 'all';
+} elseif ( $prev_item ) {
+	$nav = 'prev';
+} else {
+	$nav = 'next';
+}
 ?>
 
-<div class="course-item-nav">
-	<?php if ( $prev_item ) { ?>
-        <div class="prev">
-            <span><?php echo esc_html_x( 'Prev', 'course-item-navigation', 'learnpress' ); ?></span>
-            <a href="<?php echo $prev_item->get_permalink(); ?>">
-				<?php echo $prev_item->get_title(); ?>
-            </a>
-        </div>
-	<?php } ?>
+<div class="course-item-nav" data-nav="<?php echo esc_attr( $nav ); ?>">
+	<?php if ( $prev_item instanceof LP_Course_Item ) : ?>
+		<div class="prev">
+			<div class="course-item-nav__name"><?php echo esc_html( $prev_item->get_title() ); ?></div>
+			<a href="<?php echo esc_url_raw( $prev_item->get_permalink() ); ?>">
+				<?php echo esc_html_x( 'Prev', 'course-item-navigation', 'learnpress' ); ?>
+			</a>
+		</div>
+	<?php endif; ?>
 
-	<?php if ( $next_item ) { ?>
-        <div class="next">
-            <span><?php echo esc_html_x( 'Next', 'course-item-navigation', 'learnpress' ); ?></span>
-            <a href="<?php echo $next_item->get_permalink(); ?>">
-				<?php echo $next_item->get_title(); ?>
-            </a>
-        </div>
-	<?php } ?>
+	<?php if ( $next_item instanceof LP_Course_Item ) : ?>
+		<div class="next">
+			<div class="course-item-nav__name"><?php echo esc_html( $next_item->get_title() ); ?></div>
+			<a href="<?php echo esc_url_raw( $next_item->get_permalink() ); ?>">
+				<?php echo esc_html_x( 'Next', 'course-item-navigation', 'learnpress' ); ?>
+			</a>
+		</div>
+	<?php endif; ?>
 </div>
 
 

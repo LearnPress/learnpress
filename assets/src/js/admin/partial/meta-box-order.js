@@ -1,11 +1,12 @@
 ( function( $ ) {
 	'use strict';
-
 	window.$Vue = window.$Vue || Vue;
-	$( document ).ready( function() {
-		const $listUsers = $( '#list-users' );
-		const $listItems = $( '.list-order-items' ).find( 'tbody' ),
-			template = function template( templateHTML, data ) {
+
+	jQuery( function() {
+		// eslint-disable-next-line no-var
+		var $listItems = $( '.list-order-items' ).find( 'tbody' ),
+			$listUsers = $( '#list-users' ),
+			template = function( templateHTML, data ) {
 				return _.template( templateHTML, {
 					evaluate: /<#([\s\S]+?)#>/g,
 					interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
@@ -14,21 +15,20 @@
 			},
 			advancedListOptions = {
 				template: '#tmpl-order-advanced-list-item',
-				onRemove: function onRemove() {
+				onRemove() {
 					if ( this.$el.children().length === 0 ) {
 						this.$el.append( '<li class="user-guest">' + orderOptions.i18n_guest + '</li>' );
 					}
-
 					console.log( this.$el );
 				},
-				onAdd: function onAdd() {
+				onAdd() {
 					this.$el.find( '.user-guest' ).remove();
 				},
 			},
 			orderOptions = lpMetaBoxOrderSettings;
 
 		function getAddedUsers() {
-			return $listUsers.children().map( function() {
+			return $( '#list-users' ).children().map( function() {
 				return $( this ).data( 'id' );
 			} ).get();
 		}
@@ -41,37 +41,43 @@
 
 		if ( $listUsers.length ) {
 			$listUsers.LP( 'AdvancedList', advancedListOptions );
-
 			if ( orderOptions.users ) {
 				_.forEach( orderOptions.users, function( userData, userId ) {
-					$listUsers.LP( 'AdvancedList', 'add', [ template( orderOptions.userTextFormat, userData ), userId ] );
+					$listUsers.LP( 'AdvancedList', 'add', [
+						template( orderOptions.userTextFormat, userData ),
+						userId,
+					] );
 				} );
 			}
 		}
 
 		$listItems.on( 'click', '.remove-order-item', function( e ) {
 			e.preventDefault();
-			const $item = $( this ).closest( 'tr' );
-			const itemId = $item.data( 'item_id' );
-			$item.remove();
+			const $item = $( this ).closest( 'tr' ),
+				item_id = $item.data( 'item_id' );
 
+			$item.remove();
 			if ( $listItems.children( ':not(.no-order-items)' ).length === 0 ) {
 				$listItems.find( '.no-order-items' ).show();
 			}
 
-			$Vue.http.post( window.location.href, {
-				order_id: $( '#post_ID' ).val(),
-				items: [ itemId ],
-				'lp-ajax': 'remove_items_from_order',
-			}, {
-				emulateJSON: true,
-				params: {},
-			} ).then( function( response ) {
+			$Vue.http.post(
+				window.location.href, {
+					order_id: $( '#post_ID' ).val(),
+					items: [ item_id ],
+					'lp-ajax': 'remove_items_from_order',
+					remove_nonce: $( this ).closest( '.order-item-row' ).data( 'remove_nonce' ),
+				}, {
+					emulateJSON: true,
+					params: {},
+				}
+			).then( function( response ) {
 				const result = LP.parseJSON( response.body || response.bodyText );
 				$( '.order-subtotal' ).html( result.order_data.subtotal_html );
 				$( '.order-total' ).html( result.order_data.total_html );
 			} );
 		} );
+
 		$( '.order-date.date-picker-backendorder' ).on( 'change', function() {
 			const m = this.value.split( '-' );
 			[ 'aa', 'mm', 'jj' ].forEach( function( v, k ) {
@@ -81,10 +87,11 @@
 			dateFormat: 'yy-mm-dd',
 			numberOfMonths: 1,
 			showButtonPanel: true,
-			select: function select() {
+			select() {
 				console.log( arguments );
 			},
 		} );
+
 		$( '#learn-press-add-order-item' ).on( 'click', function() {
 			LP.$modalSearchItems.open( {
 				data: {
@@ -95,16 +102,18 @@
 					show: true,
 				},
 				callbacks: {
-					addItems: function addItems() {
+					addItems() {
 						const that = this;
-						$Vue.http.post( window.location.href, {
-							order_id: this.contextId,
-							items: this.selected,
-							'lp-ajax': 'add_items_to_order',
-						}, {
-							emulateJSON: true,
-							params: {},
-						} ).then( function( response ) {
+						$Vue.http.post(
+							window.location.href, {
+								order_id: this.contextId,
+								items: this.selected,
+								'lp-ajax': 'add_items_to_order',
+							}, {
+								emulateJSON: true,
+								params: {},
+							}
+						).then( function( response ) {
 							const result = LP.parseJSON( response.body || response.bodyText ),
 								$noItem = $listItems.find( '.no-order-items' ).hide();
 							$( result.item_html ).insertBefore( $noItem );
@@ -116,6 +125,7 @@
 				},
 			} );
 		} );
+
 		$( document ).on( 'click', '.change-user', function( e ) {
 			e.preventDefault();
 			LP.$modalSearchUsers.open( {
@@ -128,25 +138,23 @@
 					textFormat: orderOptions.userTextFormat,
 				},
 				callbacks: {
-					addUsers: function addUsers( data ) {
+					addUsers( data ) {
 						if ( this.multiple ) {
-							let $listUserss = $listUsers;
 							if ( ! $listUsers.length ) {
-								$listUserss = $( LP.template( 'tmpl-order-data-user' )( {
-									multiple: true,
-								} ) );
-								$listUserss.LP( 'AdvancedList', advancedListOptions );
-								$( '.order-data-user' ).replaceWith( $listUserss );
-							}
+								$listUsers = $( LP.template( 'tmpl-order-data-user' )( { multiple: true } ) );
+								$listUsers.LP( 'AdvancedList', advancedListOptions );
 
+								$( '.order-data-user' ).replaceWith( $listUsers );
+							}
 							for ( let i = 0; i < this.selected.length; i++ ) {
-								$listUserss.LP( 'AdvancedList', 'add', [ template( this.textFormat, this.selected[ i ] ), this.selected[ i ].id ] );
+								$listUsers.LP( 'AdvancedList', 'add', [ template( this.textFormat, this.selected[ i ] ), this.selected[ i ].id ] );
 							}
 						} else {
 							const $html = LP.template( 'tmpl-order-data-user' )( {
 								name: template( this.textFormat, this.selected[ 0 ] ),
 								id: this.selected[ 0 ].id,
 							} );
+
 							$( '.order-data-user' ).replaceWith( $html );
 						}
 

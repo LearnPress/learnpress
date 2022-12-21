@@ -9,54 +9,49 @@ learn_press_admin_view( 'course/sections' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-course-curriculum">
-
-    <div class="lp-course-curriculum">
-        <div class="heading">
-            <h4><?php _e( 'Curriculum', 'learnpress' ); ?> <span :class="['status', status]"></span></h4>
-            <div class="section-item-counts"><span>{{countAllItems()}}</span></div>
-            <span class="collapse-sections" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
-        </div>
-
-        <lp-list-sections></lp-list-sections>
-    </div>
-
+	<div class="lp-course-curriculum">
+		<div class="heading">
+			<h4><?php esc_html_e( 'Details', 'learnpress' ); ?> <span :class="['status', status]"></span></h4>
+			<div class="section-item-counts"><span>{{countAllItems()}}</span></div>
+			<span class="collapse-sections" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
+		</div>
+		<lp-list-sections></lp-list-sections>
+	</div>
 </script>
 
 <script type="text/javascript">
-    window.$Vue = Vue;
-    jQuery(function ($) {
 
-        (function ( $store) {
+	window.$Vue = window.$Vue = Vue;
 
-            $Vue.component('lp-curriculum', {
-                template: '#tmpl-lp-course-curriculum',
-                computed: {
-                    status: function () {
-                        return $store.getters.status;
-                    },
-                    isOpen: function () {
-                        return !$store.getters['ss/isHiddenAllSections'];
-                    }
-                },
-                methods: {
-                    // toggle all sections
-                    toggle: function () {
-                        $store.dispatch('ss/toggleAllSections');
-                    },
+	jQuery( function( $ ) {
+		( function( $store ) {
+			$Vue.component( 'lp-curriculum', {
+				template: '#tmpl-lp-course-curriculum',
+				computed: {
+					status: function() {
+						return $store.getters.status;
+					},
+					isOpen: function() {
+						return ! $store.getters['ss/isHiddenAllSections'];
+					}
+				},
+				methods: {
+					toggle: function() {
+						$store.dispatch( 'ss/toggleAllSections' );
+					},
+					countAllItems: function() {
+						var count = 0,
+							labels = $store.getters['i18n/all'].item_labels;
 
-                    countAllItems: function () {
-                        var count = 0,
-                            labels = $store.getters['i18n/all'].item_labels;
-                        $.each($store.getters['ss/sections'], function (i, section) {
-                            count += section.items.length;
-                        });
+						$.each( $store.getters['ss/sections'], function ( i, section ) {
+							count += section.items.length;
+						});
 
-                        return count + ' ' + (count <= 1 ? labels.singular : labels.plural);
-                    }
-                }
-            });
+						return count + ' ' + (count <= 1 ? labels.singular : labels.plural);
+					}
+				}
+			});
 
-        })(LP_Curriculum_Store);
-
-    })
+		})( LP_Curriculum_Store );
+	});
 </script>

@@ -10,8 +10,11 @@ import QuickTip from './quick-tip';
 import MessageBox from './message-box';
 import Event_Callback from './event-callback';
 import Hook from './hook';
-
+import Cookies from './cookies';
+import _localStorage from './local-storage';
 import * as jplugins from './jquery.plugins';
+import IframeSubmit from './iframe-submit';
+import showPass from './show-password';
 
 const $ = jQuery;
 
@@ -109,19 +112,24 @@ const _default = {
 	},
 
 	parseResponse( response, type ) {
-		const m = response.match( /<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/ );
+		const m = response.match( /<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/s );
 		if ( m ) {
 			response = m[ 1 ];
 		}
 		return ( type || 'json' ) === 'json' ? this.parseJSON( response ) : response;
 	},
 	parseJSON( data ) {
-		const m = ( data + '' ).match( /<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/ );
+		if ( typeof data !== 'string' ) {
+			return data;
+		}
+
+		const m = String.raw( { raw: data } ).match( /<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/s );
+
 		try {
 			if ( m ) {
-				data = $.parseJSON( m[ 1 ] );
+				data = JSON.parse( m[ 1 ].replace( /(?:\r\n|\r|\n)/g, '' ) );
 			} else {
-				data = $.parseJSON( data );
+				data = JSON.parse( data );
 			}
 		} catch ( e ) {
 			data = {};
@@ -144,10 +152,10 @@ const _default = {
 			beforeSend: beforeSend.apply( null, args ),
 			success( raw ) {
 				const response = LP.parseResponse( raw, dataType );
-				$.isFunction( args.success ) && args.success( response, raw );
+				typeof ( args.success ) === 'function' && args.success( response, raw );
 			},
 			error() {
-				$.isFunction( args.error ) && args.error.apply( null, LP.funcArgs2Array() );
+				typeof ( args.error ) === 'function' && args.error.apply( null, LP.funcArgs2Array() );
 			},
 		} );
 	},
@@ -164,10 +172,10 @@ const _default = {
 			dataType: 'html',
 			success( raw ) {
 				const response = LP.parseResponse( raw, dataType );
-				$.isFunction( args.success ) && args.success( response, raw );
+				typeof ( args.success ) === 'function' && args.success( response, raw );
 			},
 			error() {
-				$.isFunction( args.error ) && args.error.apply( null, LP.funcArgs2Array() );
+				typeof ( args.error ) === 'function' && args.error.apply( null, LP.funcArgs2Array() );
 			},
 		} );
 	},
@@ -433,6 +441,41 @@ const _default = {
 		}
 		LP.Hook.doAction( 'learn_press_receive_message', data, target );
 	},
+
+	camelCaseDashObjectKeys( obj, deep = true ) {
+		const self = LP;
+		const isArray = function( a ) {
+			return Array.isArray( a );
+		};
+		const isObject = function( o ) {
+			return o === Object( o ) && ! isArray( o ) && typeof o !== 'function';
+		};
+		const toCamel = ( s ) => {
+			return s.replace( /([-_][a-z])/ig, ( $1 ) => {
+				return $1.toUpperCase()
+					.replace( '-', '' )
+					.replace( '_', '' );
+			} );
+		};
+
+		if ( isObject( obj ) ) {
+			const n = {};
+
+			Object.keys( obj )
+				.forEach( ( k ) => {
+					n[ toCamel( k ) ] = deep ? self.camelCaseDashObjectKeys( obj[ k ] ) : obj[ k ];
+				} );
+
+			return n;
+		} else if ( isArray( obj ) ) {
+			return obj.map( ( i ) => {
+				return self.camelCaseDashObjectKeys( i );
+			} );
+		}
+
+		return obj;
+	},
+	IframeSubmit,
 };
 
 $( document ).ready( function() {
@@ -459,16 +502,6 @@ $( document ).ready( function() {
 			}
 		}( $el, options ) );
 	} );
-
-	$( 'body' )
-		.on( 'click', '.learn-press-nav-tabs li a', function( e ) {
-			e.preventDefault();
-			const $tab = $( this ),
-				url = '';
-			$tab.closest( 'li' ).addClass( 'active' ).siblings().removeClass( 'active' );
-			$( $tab.attr( 'data-tab' ) ).addClass( 'active' ).siblings().removeClass( 'active' );
-			$( document ).trigger( 'learn-press/nav-tabs/clicked', $tab );
-		} );
 
 	setTimeout( function() {
 		$( '.learn-press-nav-tabs li.active:not(.default) a' ).trigger( 'click' );
@@ -520,10 +553,15 @@ $( document ).ready( function() {
 extend( {
 	Event_Callback,
 	MessageBox,
+	Cookies,
+	localStorage: _localStorage,
 	..._default,
 } );
 
 export default {
 	fn,
 	QuickTip,
+	Cookies,
+	localStorage: _localStorage,
+	showPass,
 };

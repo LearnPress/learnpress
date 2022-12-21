@@ -9,10 +9,8 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
-?>
 
-</ul>
+echo apply_filters( 'learn_press_course_loop_end', '</ul>' );
+
+

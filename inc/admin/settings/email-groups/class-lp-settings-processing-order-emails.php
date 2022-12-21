@@ -12,14 +12,14 @@ class LP_Settings_Processing_Order_Emails extends LP_Settings_Emails_Group {
 		$this->group_id = 'processing-order-emails';
 		$this->items    = array(
 			'processing-order-user',
-			'processing-order-guest'
+			'processing-order-guest',
 		);
 
 		parent::__construct();
 	}
 
 	public function __toString() {
-		return __('Processing Order', 'learnpress');
+		return esc_html__( 'Processing Order', 'learnpress' );
 	}
 }
 

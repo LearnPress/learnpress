@@ -14,14 +14,14 @@ class LP_Settings_Cancelled_Order_Emails extends LP_Settings_Emails_Group {
 			'cancelled-order-admin',
 			'cancelled-order-instructor',
 			'cancelled-order-user',
-			'cancelled-order-guest'
+			'cancelled-order-guest',
 		);
 
 		parent::__construct();
 	}
 
 	public function __toString() {
-		return __('Cancelled Order', 'learnpress');
+		return esc_html__( 'Cancelled Order', 'learnpress' );
 	}
 }
 

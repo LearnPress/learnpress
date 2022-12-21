@@ -1,0 +1,3 @@
+export const ENROLL_COURSE = 'ENROLL_COURSE';
+export const LEAVE_COURSE = 'LEAVE_COURSE';
+export const SET_COURSE_DATA = 'SET_COURSE_DATA';

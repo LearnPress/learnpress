@@ -1,11 +1,11 @@
 <?php
-
 /**
  * Class LP_Forms_Handler
  *
  * Process action for submitting forms
  *
- * @since 3.0
+ * @since 4.0.0
+ * @author ThimPress <nhamdv>
  */
 class LP_Forms_Handler {
 
@@ -13,294 +13,452 @@ class LP_Forms_Handler {
 	 * Become a teacher form
 	 */
 	public static function process_become_teacher() {
+		$args = array(
+			'bat_name'    => LP_Helper::sanitize_params_submitted( $_POST['bat_name'] ?? '' ),
+			'bat_email'   => LP_Helper::sanitize_params_submitted( $_POST['bat_email'] ?? '' ),
+			'bat_phone'   => LP_Helper::sanitize_params_submitted( $_POST['bat_phone'] ?? '' ),
+			'bat_message' => LP_Helper::sanitize_params_submitted( $_POST['bat_message'] ?? '' ),
+		);
 
-		add_filter( 'learn-press/become-teacher-validate-field', array(
-			__CLASS__,
-			'become_teacher_validate_field'
-		), 10, 3 );
+		$result = array(
+			'message' => array(),
+			'result'  => 'success',
+		);
 
-		$fields      = learn_press_get_become_a_teacher_form_fields();
-		$field_names = wp_list_pluck( $fields, 'id' );
-		$args = call_user_func_array( array( 'LP_Request', 'get_list' ), array_keys( $field_names ) );
-
-		$result = new LP_REST_Response();
-
-		foreach ( $fields as $field ) {
-			$name     = $field['id'];
-			$validate = apply_filters( 'learn-press/become-teacher-validate-field', $name, $field, $args[ $name ] );
-
-			if ( is_wp_error( $validate ) ) {
-				$result->message = learn_press_get_message( $validate->get_error_message(), 'error' );
-
-				wp_send_json( $result );
-			} elseif ( ! $validate ) {
-				$result->message = learn_press_get_message( sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) ), 'error' );
-
-				wp_send_json( $result );
-			}
+		if ( ( empty( $args['bat_name'] ) ) && $result['result'] !== 'error' ) {
+			$result = array(
+				'message' => learn_press_get_message( __( 'Please enter a valid account username.', 'learnpress' ), 'error' ),
+				'result'  => 'error',
+			);
 		}
 
-		remove_filter( 'learn-press/become-teacher-validate-field', array(
-			__CLASS__,
-			'become_teacher_validate_field'
-		) );
+		if ( ( empty( $args['bat_email'] ) || ! is_email( $args['bat_email'] ) ) && $result['result'] !== 'error' ) {
+			$result = array(
+				'message' => learn_press_get_message( __( 'Please provide a valid email address.', 'learnpress' ), 'error' ),
+				'result'  => 'error',
+			);
+		}
 
-		$user = get_user_by( 'email', $args['bat_email'] );
-		update_user_meta( $user->ID, '_requested_become_teacher', 'yes' );
-		do_action( 'learn-press/become-a-teacher-sent', $args );
+		if ( ( ! email_exists( $args['bat_email'] ) ) && $result['result'] !== 'error' ) {
+			$result = array(
+				'message' => learn_press_get_message( __( 'Your email does not exist!', 'learnpress' ), 'error' ),
+				'result'  => 'error',
+			);
+		}
 
-		$result->status  = 'success';
-		$result->message = learn_press_get_message( __( 'Thank you! Your message has been sent.', 'learnpress' ), 'success' );
+		$result = apply_filters( 'learn-press/become-teacher-request-result', $result );
 
-		wp_send_json( $result );
+		if ( $result['result'] === 'success' ) {
+			$result['message'][] = learn_press_get_message( __( 'Thank you! Your message has been sent.', 'learnpress' ), 'success' );
+			$user                = get_user_by( 'email', $args['bat_email'] );
+
+			update_user_meta( $user->ID, '_requested_become_teacher', 'yes' );
+			do_action( 'learn-press/become-a-teacher-sent', $args );
+		}
+
+		learn_press_maybe_send_json( $result );
 	}
 
 	/**
-	 * Basic filtering for become-teacher fields if it is required.
+	 * Process the login form.
 	 *
-	 * @param string $name
-	 * @param array $field
-	 * @param mixed $value
-	 *
-	 * @return bool|WP_Error
+	 * @throws Exception On login error.
+	 * @author Thimpress <nhamdv>
 	 */
-	public static function become_teacher_validate_field( $name, $field, $value ) {
-		try {
-			$validate = ! ( ! empty( $field['required'] ) && $field['required'] && empty( $value ) );
-
-			if ( ( 'bat_email' === $name ) && $validate ) {
-				if ( ! $validate = get_user_by( 'email', $value ) ) {
-					throw new Exception( __( 'Your email does not exist!', 'learnpress' ) );
-				}
-			}
-		} catch ( Exception $ex ) {
-			$validate = new WP_Error( 'invalid_email', $ex->getMessage() );
-		}
-
-		return $validate;
-	}
-
 	public static function process_login() {
-
 		if ( ! LP_Request::verify_nonce( 'learn-press-login' ) ) {
 			return;
 		}
 
-		add_filter( 'learn-press/login-validate-field', array(
-			__CLASS__,
-			'login_validate_field'
-		), 10, 3 );
+		if ( isset( $_POST['username'], $_POST['password'] ) ) {
+			try {
+				$username = trim( LP_Helper::sanitize_params_submitted( $_POST['username'] ) );
+				$password = LP_Helper::sanitize_params_submitted( $_POST['password'] );
+				$remember = LP_Request::get_string( 'rememberme' );
 
-		$fields      = LP_Shortcode_Login_Form::get_login_fields();
-		$field_names = wp_list_pluck( $fields, 'id' );
-		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), array_values($field_names) );
-
-		$result = array(
-			'message' => array(),
-			'result'  => 'success'
-		);
-
-		foreach ( $fields as $field ) {
-			$name     = $field['id'];
-			$validate = apply_filters( 'learn-press/login-validate-field', $name, $field, $args[ $name ] );
-
-			if ( is_wp_error( $validate ) ) {
-				learn_press_add_message( $validate->get_error_message(), 'error' );
-
-				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
-				$result['result']           = 'error';
-			} elseif ( ! $validate ) {
-				$message = sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) );
-
-				learn_press_add_message( $message, 'error' );
-
-				$result['message'][ $name ] = learn_press_get_message( $message, 'error' );
-				$result['result']           = 'error';
-			}
-		}
-
-		remove_filter( 'learn-press/login-validate-field', array(
-			__CLASS__,
-			'login_validate_field'
-		) );
-
-		if ( $result['result'] === 'success' ) {
-			$logged = wp_signon( array(
-				'user_login'    => $args['username'],
-				'user_password' => $args['password'],
-				'remember'    => LP_Request::get_string( 'rememberme' )
-			) );
-
-			if ( is_wp_error( $logged ) ) {
-				$result['result'] = 'error';
-				foreach ( $logged->get_error_messages() as $code => $message ) {
-					$result['message'][ $code ] = learn_press_get_message( $message, 'error' );
-
-					learn_press_add_message( $message, 'error' );
+				if ( empty( $username ) ) {
+					throw new Exception( '<strong>' . __( 'Error:', 'learnpress' ) . '</strong> ' . __( 'A username is required', 'learnpress' ) );
 				}
+
+				// On multisite, ensure user exists on current site, if not add them before allowing login.
+				if ( is_multisite() ) {
+					$user_data = get_user_by( is_email( $username ) ? 'email' : 'login', $username );
+
+					if ( $user_data && ! is_user_member_of_blog( $user_data->ID, get_current_blog_id() ) ) {
+						add_user_to_blog( get_current_blog_id(), $user_data->ID, 'customer' );
+					}
+				}
+
+				$user = wp_signon(
+					apply_filters(
+						'learnpress_login_credentials',
+						array(
+							'user_login'    => $username,
+							'user_password' => $password,
+							'remember'      => $remember,
+						)
+					),
+					is_ssl()
+				);
+
+				if ( is_wp_error( $user ) ) {
+					throw new Exception( $user->get_error_message() );
+				} else {
+					if ( ! empty( $_POST['redirect'] ) ) {
+						$redirect = LP_Helper::sanitize_params_submitted( $_POST['redirect'] );
+					} elseif ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
+						$redirect = LP_Helper::sanitize_params_submitted( $_REQUEST['_wp_http_referer'] );
+					} else {
+						$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
+					}
+
+					$message_data = [
+						'status'  => 'success',
+						'content' => __( 'Login successfully!', 'learnpress' ),
+					];
+					learn_press_set_message( $message_data );
+					wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
+					exit();
+				}
+			} catch ( Exception $e ) {
+				$message_data = [
+					'status'  => 'error',
+					'content' => $e->getMessage(),
+				];
+				learn_press_set_message( $message_data );
 			}
 		}
-
-		$result = apply_filters( 'learn-press/login-request-result', $result );
-
-		if ( $result['result'] === 'success' ) {
-			$message             = __( 'Login successfully.', 'learnpress' );
-			$result['message'][] = learn_press_get_message( $message, 'success' );
-
-			learn_press_add_message( $message, 'success' );
-		}
-		if ( ! $redirect = LP_Request::get( 'redirect_to' ) ) {
-			$redirect = LP_Request::get_redirect( learn_press_get_current_url() );
-		}
-
-		learn_press_maybe_send_json( $result, 'learn_press_print_messages' );
-
-		if ( ( $result['result'] === 'success' ) && $redirect ) {
-			wp_redirect( $redirect );
-			exit();
-		}
 	}
 
-	public static function login_validate_field( $name, $field, $value ) {
-		return ! ! $value;
-	}
-
+	/**
+	 * Process register form.
+	 *
+	 * @throws Exception On Error register.
+	 * @author ThimPress <nhamdv>
+	 */
 	public static function process_register() {
 		if ( ! LP_Request::verify_nonce( 'learn-press-register' ) ) {
 			return;
 		}
 
-		add_filter( 'learn-press/register-validate-field', array(
-			__CLASS__,
-			'register_validate_field'
-		), 10, 3 );
+		$username         = LP_Helper::sanitize_params_submitted( $_POST['reg_username'] ?? '' );
+		$email            = LP_Helper::sanitize_params_submitted( $_POST['reg_email'] ?? '' );
+		$password         = LP_Helper::sanitize_params_submitted( $_POST['reg_password'] ?? '' );
+		$confirm_password = LP_Helper::sanitize_params_submitted( $_POST['reg_password2'] ?? '' );
+		$first_name       = LP_Helper::sanitize_params_submitted( $_POST['reg_first_name'] ?? '' );
+		$last_name        = LP_Helper::sanitize_params_submitted( $_POST['reg_last_name'] ?? '' );
+		$display_name     = LP_Helper::sanitize_params_submitted( $_POST['reg_display_name'] ?? '' );
+		$update_meta      = LP_Helper::sanitize_params_submitted( $_POST['_lp_custom_register_form'] ?? '' );
 
-		$fields      = LP_Shortcode_Register_Form::get_register_fields();
-		$field_names = wp_list_pluck( $fields, 'id' );
-		$args = call_user_func_array( array( 'LP_Request', 'get_list' ), array_keys( $field_names ) );
+		try {
+			$new_customer = self::learnpress_create_new_customer(
+				sanitize_email( $email ),
+				$username,
+				$password,
+				$confirm_password,
+				array(
+					'first_name'   => $first_name,
+					'last_name'    => $last_name,
+					'display_name' => $display_name,
+				),
+				$update_meta
+			);
 
-		$result = array(
-			'message' => array(),
-			'result'  => 'success'
-		);
-
-		foreach ( $fields as $field ) {
-			$name     = $field['id'];
-			$validate = apply_filters( 'learn-press/register-validate-field', $name, $field, $args[ $name ] );
-
-			if ( is_wp_error( $validate ) ) {
-				learn_press_add_message( $validate->get_error_message(), 'error' );
-
-				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
-				$result['result']           = 'error';
-			} elseif ( ! $validate ) {
-				$message = sprintf( '%s "%s" %s', __( 'Field', 'learnpress' ), $field['title'], __( 'is required.', 'learnpress' ) );
-
-				learn_press_add_message( $message, 'error' );
-
-				$result['message'][ $name ] = learn_press_get_message( $message, 'error' );
-				$result['result']           = 'error';
+			if ( is_wp_error( $new_customer ) ) {
+				throw new Exception( $new_customer->get_error_message() );
 			}
-		}
 
-		remove_filter( 'learn-press/register-validate-field', array(
-			__CLASS__,
-			'register_validate_field'
-		) );
-
-		if ( $result['result'] === 'success' ) {
-
-			$new_user = apply_filters( 'learn-press/new-user-data', array(
-				'user_login' => $args['reg_username'],
-				'user_pass'  => isset( $args['reg_password'] ) ? $args['reg_password'] : '',
-				'user_email' => $args['reg_email']
-			) );
-
-			$user_id = wp_insert_user( $new_user );
-
-			if ( is_wp_error( $user_id ) ) {
-				$result['result'] = 'error';
-				foreach ( $user_id->get_error_messages() as $code => $message ) {
-					$result['message'][ $code ] = learn_press_get_message( $message, 'error' );
-
-					learn_press_add_message( $message, 'error' );
-				}
-			} else {
-				wp_new_user_notification( $user_id );
-			}
-		}
-
-		$result = apply_filters( 'learn-press/register-request-result', $result );
-
-		if ( $result['result'] === 'success' ) {
-			$message             = __( 'Register successfully.', 'learnpress' );
-			$result['message'][] = learn_press_get_message( $message, 'success' );
-
-			learn_press_add_message( $message, 'success' );
-
-			$logged = wp_signon( array(
-				'user_login'    => $args['reg_username'],
-				'user_password' => $args['reg_password']
-			) );
-
-			// Send email require become to teacher of user to Admin mail.
-			if ( LP()->settings->get( 'instructor_registration' ) == 'yes' && isset( $_POST['become_teacher'] ) ) {
-				update_user_meta( $user_id, '_requested_become_teacher', 'yes' );
+			// Send email become a teacher.
+			$is_become_a_teacher = false;
+			if ( LP_Settings::get_option( 'instructor_registration', 'no' ) == 'yes' && isset( $_POST['become_teacher'] ) ) {
+				update_user_meta( $new_customer, '_requested_become_teacher', 'yes' );
 				do_action(
 					'learn-press/become-a-teacher-sent',
 					array(
-						'bat_email'   => $args['reg_email'],
+						'bat_email'   => $email,
 						'bat_phone'   => '',
-						'bat_message' => apply_filters( 'learnpress_become_instructor_message', esc_html__( 'I need become a instructor', 'learnpress' ) ),
+						'bat_message' => apply_filters( 'learnpress_become_instructor_message', esc_html__( 'I need to become an instructor', 'learnpress' ) ),
 					)
 				);
 
-				learn_press_add_message( __( 'Your request become a instructor has been sent. We will get back to you soon!', 'learnpress' ), 'success' );
+				$is_become_a_teacher = true;
 			}
-		}
 
-		learn_press_maybe_send_json( $result, 'learn_press_print_messages' );
+			/**
+			 * Auto login user
+			 * Must set code below after Send email become a teacher
+			 * because 'none' check by "check_ajax_referer" will not valid for send mail background on WP_Async_Request
+			 */
+			wp_set_current_user( $new_customer );
+			wp_set_auth_cookie( $new_customer, true );
 
-		if ( ( $result['result'] === 'success' ) && $redirect = LP_Request::get_redirect( learn_press_get_current_url() ) ) {
-			wp_redirect( $redirect );
+			$message_success = $username . __( ' was successfully created!', 'learnpress' );
+
+			if ( $is_become_a_teacher ) {
+				$message_success .= '<br/>' . __( 'Your request to become an instructor has been sent. We will get back to you soon!', 'learnpress' );
+			}
+
+			$message_data = [
+				'status'  => 'success',
+				'content' => $message_success,
+			];
+			learn_press_set_message( $message_data );
+
+			if ( ! empty( $_POST['redirect'] ) ) {
+				$redirect = wp_sanitize_redirect( wp_unslash( $_POST['redirect'] ) );
+			} elseif ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
+				$redirect = wp_unslash( $_REQUEST['_wp_http_referer'] );
+			} else {
+				$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
+			}
+
+			wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
 			exit();
+
+		} catch ( Throwable $e ) {
+			$message_data = [
+				'status'  => 'error',
+				'content' => $e->getMessage(),
+			];
+			learn_press_set_message( $message_data );
 		}
 	}
 
-	public static function register_validate_field( $name, $field, $value ) {
-		$validate = ! ! $value;
+	/**
+	 * New create customer.
+	 *
+	 * @author ThimPress <nhamdv>
+	 * @version 1.0.1
+	 * @since 4.0.0
+	 */
+	public static function learnpress_create_new_customer( $email = '', $username = '', $password = '', $confirm_password = '', $args = array(), $update_meta = array() ) {
+		try {
+			if ( empty( $email ) || ! is_email( $email ) ) {
+				throw new Exception( __( 'Please provide a valid email address.', 'learnpress' ), 101 );
+			}
 
-		if ( $validate && $name === 'reg_password' ) {
-			try {
-				if ( strlen( $value ) < 6 ) {
-					throw new Exception( __( 'Password is too short!', 'learnpress' ), 100 );
+			if ( email_exists( $email ) ) {
+				throw new Exception( __( 'An account is already registered with your email address.', 'learnpress' ), 102 );
+			}
+
+			$username = sanitize_user( $username );
+
+			if ( empty( $username ) || ! validate_username( $username ) ) {
+				throw new Exception( __( 'Please enter a valid account username.', 'learnpress' ), 103 );
+			}
+
+			if ( username_exists( $username ) ) {
+				throw new Exception(
+					__( 'An account is already registered with that username. Please choose another one.', 'learnpress' ),
+					104
+				);
+			}
+
+			if ( apply_filters( 'learnpress_registration_generate_password', false ) ) {
+				$password = wp_generate_password();
+			}
+
+			if ( empty( $password ) ) {
+				throw new Exception( __( 'Please enter an account password.', 'learnpress' ), 105 );
+			}
+
+			if ( strlen( $password ) <= 5 ) {
+				throw new Exception( __( 'Password must contain at least six characters.', 'learnpress' ), 106 );
+			}
+
+			if ( preg_match( '#\s+#', $password ) ) {
+				throw new Exception( __( 'Password can not contain spaces!', 'learnpress' ), 107 );
+			}
+
+			if ( empty( $confirm_password ) ) {
+				throw new Exception( __( 'Please enter confirm password.', 'learnpress' ), 108 );
+			}
+
+			if ( $password !== $confirm_password ) {
+				throw new Exception( __( 'Password and Confirm Password does not match!', 'learnpress' ), 108 );
+			}
+
+			$custom_fields = LP_Settings::get_option( 'register_profile_fields', [] );
+			if ( $custom_fields && ! empty( $update_meta ) ) {
+				foreach ( $custom_fields as $field ) {
+					if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
+						throw new Exception( $field['name'] . __( ' is required field.', 'learnpress' ), 109 );
+					}
+				}
+			}
+
+			do_action( 'lp/before_create_new_customer', $email, $username, $password, $confirm_password, $args, $update_meta );
+
+			$new_customer_data = apply_filters(
+				'learnpress_new_customer_data',
+				array_merge(
+					$args,
+					array(
+						'user_login' => $username,
+						'user_pass'  => $password,
+						'user_email' => $email,
+					)
+				)
+			);
+
+			$customer_id = wp_insert_user( $new_customer_data );
+
+			do_action( 'lp/after_create_new_customer', $email, $username, $password, $confirm_password, $args, $update_meta );
+
+			if ( is_wp_error( $customer_id ) ) {
+				throw new Exception( $customer_id->get_error_message() );
+			} else {
+				if ( ! empty( $update_meta ) ) {
+					lp_user_custom_register_fields( $customer_id, $update_meta );
 				}
 
-				if ( preg_match( '#\s+#', $value ) ) {
-					throw new Exception( __( 'Password can not have spacing!', 'learnpress' ), 110 );
-				}
+				// Send mail.
+				wp_new_user_notification( $customer_id, null, 'both' );
+			}
+		} catch ( Throwable $e ) {
+			$code_str = '';
+			switch ( $e->getCode() ) {
+				case 101:
+					$code_str = 'registration-error-invalid-email';
+					break;
+				case 102:
+					$code_str = 'registration-error-email-exists';
+					break;
+				case 103:
+					$code_str = 'registration-error-invalid-username';
+					break;
+				case 104:
+					$code_str = 'registration-error-username-exists';
+					break;
+				case 105:
+					$code_str = 'registration-error-missing-password';
+					break;
+				case 106:
+					$code_str = 'registration-error-short-password';
+					break;
+				case 107:
+					$code_str = 'registration-error-spacing-password';
+					break;
+				case 108:
+					$code_str = 'registration-error-confirm-password';
+					break;
+				case 109:
+					$code_str = 'registration-custom-required-field';
+					break;
+				default:
+					break;
+			}
+			return new WP_Error( $code_str, $e->getMessage() );
+		}
 
-				if ( ! preg_match( "#[a-zA-Z]+#", $value ) ) {
-					throw new Exception( __( 'Password must include at least one letter!', 'learnpress' ), 120 );
-				}
+		return $customer_id;
+	}
 
-				if ( ! preg_match( "#[A-Z]+#", $value ) ) {
-					throw new Exception( __( 'Password must include at least one capitalized letter!', 'learnpress' ), 125 );
-				}
+	public static function update_user_data( $update_data, $update_meta ) {
+		$user_id      = get_current_user_id();
+		$current_user = get_user_by( 'id', $user_id );
 
-				if ( ! preg_match( "#[0-9]+#", $value ) ) {
-					throw new Exception( __( 'Password must include at least one number!', 'learnpress' ), 125 );
-				}
+		if ( empty( $update_data['user_email'] ) ) {
+			return new WP_Error( 'exist_email', esc_html__( 'Email is required', 'learnpress' ) );
+		}
 
-				if ( ! preg_match( '#[~!@\#$%^&*()]#', $value ) ) {
-					throw new Exception( __( 'Password must include at least one of these characters ~!@#$%^&*() !', 'learnpress' ), 125 );
+		if ( empty( $update_data['display_name'] ) ) {
+			return new WP_Error( 'exist_display_name', esc_html__( 'Display name is required', 'learnpress' ) );
+		}
+
+		if ( is_email( $update_data['display_name'] ) ) {
+			return new WP_Error( 'error_display_name', esc_html__( 'Due to privacy concerns, the display name cannot be changed to an email address.', 'learnpress' ) );
+		}
+
+		if ( ! is_email( $update_data['user_email'] ) ) {
+			return new WP_Error( 'error_email', esc_html__( 'Due to privacy concerns, the display name cannot be changed to an email address.', 'learnpress' ) );
+		} elseif ( email_exists( $update_data['user_email'] ) && $update_data['user_email'] !== $current_user->user_email ) {
+			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
+		}
+
+		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
+
+		if ( $custom_fields && ! empty( $update_meta ) ) {
+			foreach ( $custom_fields as $field ) {
+				if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
+					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
 				}
-			} catch ( Exception $ex ) {
-				$validate = new WP_Error( $ex->getCode(), $ex->getMessage() );
 			}
 		}
 
-		return $validate;
+		$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
+
+		$return = wp_update_user( $update_data );
+
+		if ( ! empty( $update_meta ) ) {
+			lp_user_custom_register_fields( $user_id, $update_meta );
+		}
+
+		if ( is_wp_error( $return ) ) {
+			return $return;
+		}
+
+		return $return;
+	}
+
+	public static function retrieve_password( $user_login ) {
+		$login = isset( $user_login ) ? sanitize_user( wp_unslash( $user_login ) ) : '';
+
+		if ( empty( $login ) ) {
+			return new WP_Error( 'error_santize_login', esc_html__( 'Enter a username or email address.', 'learnpress' ) );
+		} else {
+			// Check on username first, as customers can use emails as usernames.
+			$user_data = get_user_by( 'login', $login );
+		}
+
+		// If no user found, check if it login is email and lookup user based on email.
+		if ( ! $user_data && is_email( $login ) && apply_filters( 'learnpress_get_username_from_email', true ) ) {
+			$user_data = get_user_by( 'email', $login );
+		}
+
+		$errors = new WP_Error();
+
+		do_action( 'lostpassword_post', $errors, $user_data );
+
+		if ( $errors->get_error_code() ) {
+			return $errors;
+		}
+
+		if ( ! $user_data ) {
+			return new WP_Error( 'error_not_user', esc_html__( 'Invalid username or email.', 'learnpress' ) );
+		}
+
+		if ( is_multisite() && ! is_user_member_of_blog( $user_data->ID, get_current_blog_id() ) ) {
+			return new WP_Error( 'error_not_user', esc_html__( 'Invalid username or email.', 'learnpress' ) );
+		}
+
+		// Redefining user_login ensures we return the right case in the email.
+		$user_login = $user_data->user_login;
+
+		do_action( 'retrieve_password', $user_login );
+
+		$allow = apply_filters( 'allow_password_reset', true, $user_data->ID );
+
+		if ( ! $allow ) {
+			return new WP_Error( 'error_not_allow', esc_html__( 'Password reset is not allowed for this user.', 'learnpress' ) );
+		} elseif ( is_wp_error( $allow ) ) {
+			return $allow;
+		}
+
+		$key = get_password_reset_key( $user_data );
+
+		if ( class_exists( 'LP_Email_Reset_Password' ) ) {
+			$email = new LP_Email_Reset_Password();
+
+			$email->handle(
+				array(
+					'reset_key'  => $key,
+					'user_login' => $user_login,
+				)
+			);
+		}
+
+		return true;
 	}
 
 	public static function init() {

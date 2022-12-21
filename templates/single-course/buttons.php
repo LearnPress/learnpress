@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/buttons.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -16,16 +16,17 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="lp-course-buttons">
-
-	<?php do_action( 'learn-press/before-course-buttons' ); ?>
 	<?php
+	do_action( 'learn-press/before-course-buttons' );
+
 	/**
-	 * @see learn_press_course_purchase_button - 10
-	 * @see learn_press_course_enroll_button - 10
+	 * @see LP_Template_Course::course_purchase_button - 10
+	 * @see LP_Template_Course::course_enroll_button - 10
 	 * @see learn_press_course_retake_button - 10
 	 */
 	do_action( 'learn-press/course-buttons' );
+
+	do_action( 'learn-press/after-course-buttons' );
 	?>
-	<?php do_action( 'learn-press/after-course-buttons' ); ?>
 
 </div>

@@ -13,14 +13,14 @@ class LP_Settings_Completed_Order_Emails extends LP_Settings_Emails_Group {
 		$this->items    = array(
 			'completed-order-admin',
 			'completed-order-user',
-			'completed-order-guest'
+			'completed-order-guest',
 		);
 
 		parent::__construct();
 	}
 
 	public function __toString() {
-		return __('Completed Order', 'learnpress');
+		return esc_html__( 'Completed Order', 'learnpress' );
 	}
 }
 

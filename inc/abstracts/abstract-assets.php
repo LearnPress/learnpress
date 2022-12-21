@@ -23,16 +23,30 @@ abstract class LP_Abstract_Assets {
 	 * @var array
 	 */
 	protected $_script_data = array();
-
+	/**
+	 * Path file min
+	 *
+	 * @var string
+	 */
 	public static $_min_assets = '.min';
+	/**
+	 * Version file asset
+	 *
+	 * @var mixed|string
+	 */
 	public static $_version_assets = LEARNPRESS_VERSION;
+	/**
+	 * Path file
+	 *
+	 * @var string
+	 */
 	public static $_folder_source = '';
 
 	/**
 	 * LP_Abstract_Assets constructor.
 	 */
 	protected function __construct() {
-		$priory = 1000;
+		$priority = 1000;
 
 		if ( LP_Debug::is_debug() ) {
 			self::$_min_assets     = '';
@@ -43,11 +57,10 @@ abstract class LP_Abstract_Assets {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ) );
 			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_admin_scripts' ) );
-
 		} else {
-			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
-			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priority );
+			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priority + 10 );
+			//add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priority + 10 );
 		}
 	}
 
@@ -58,7 +71,7 @@ abstract class LP_Abstract_Assets {
 	 *
 	 * @return array
 	 */
-	protected function _get_scripts() {
+	protected function _get_scripts(): array {
 		return array();
 	}
 
@@ -67,8 +80,130 @@ abstract class LP_Abstract_Assets {
 	 *
 	 * @return array
 	 */
-	protected function _get_styles() {
+	protected function _get_styles(): array {
 		return array();
+	}
+
+	/**
+	 * Register/Enqueue script
+	 *
+	 * @param string $page_current
+	 * @author tungnx
+	 * @since 4.0.0
+	 * @version 1.0.1
+	 */
+	protected function handle_js( string $page_current = '' ) {
+		$scripts = $this->_get_scripts();
+		/**
+		 * @var LP_Asset_Key[] $scripts
+		 */
+		foreach ( $scripts as $handle => $script ) {
+			if ( ! $script instanceof LP_Asset_Key ) {
+				continue;
+			}
+
+			// For version addon.
+			if ( ! LP_Debug::is_debug() && ! empty( $script->_version ) ) {
+				self::$_version_assets = $script->_version;
+			}
+			// End
+
+			wp_register_script( $handle, $script->_url, $script->_deps, self::$_version_assets, $script->_in_footer );
+
+			if ( ! $script->_only_register ) {
+				$can_load_js = $this->check_can_load_asset( $handle, $page_current, $script->_screens, $script->_exclude_screens );
+
+				if ( $can_load_js ) {
+					wp_enqueue_script( $handle );
+				}
+			}
+		}
+
+		/**
+		 * Set translate on file js of folder js/dist
+		 * Path translate of a string on file ".pot" if have must map to js/dist
+		 */
+		wp_set_script_translations( 'lp-quiz', 'learnpress' );
+		wp_set_script_translations( 'lp-admin', 'learnpress' );
+	}
+
+	/**
+	 * Register/Enqueue style
+	 *
+	 * @param string $page_current
+	 * @author tungnx
+	 * @since 4.1.3
+	 * @version 1.0.0
+	 */
+	protected function handle_style( string $page_current = '' ) {
+		$styles = $this->_get_styles();
+		if ( $styles ) {
+			/**
+			 * @var LP_Asset_Key[] $style
+			 */
+			foreach ( $styles as $handle => $style ) {
+				if ( ! $style instanceof LP_Asset_Key ) {
+					continue;
+				}
+
+				// For version addon.
+				if ( ! LP_Debug::is_debug() && ! empty( $style->_version ) ) {
+					self::$_version_assets = $style->_version;
+				}
+				// End
+
+				wp_register_style( $handle, $style->_url, $style->_deps, self::$_version_assets );
+
+				if ( ! $style->_only_register ) {
+					$can_load_style = $this->check_can_load_asset( $handle, $page_current, $style->_screens, $style->_exclude_screens );
+
+					if ( $can_load_style ) {
+						wp_enqueue_style( $handle );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Check file assets can load on pages
+	 *
+	 * @param string $handle
+	 * @param string $page_current
+	 * @param array $include_screens
+	 * @param array $exclude_screens
+	 * @author tungnx
+	 * @since 4.1.3
+	 * @version 1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function check_can_load_asset( string $handle, string $page_current, array $include_screens, array $exclude_screens ): bool {
+		$can_load = false;
+
+		if ( ! empty( $include_screens ) ) {
+			if ( in_array( $page_current, $include_screens ) ) {
+				$can_load = true;
+			}
+		} elseif ( ! empty( $exclude_screens ) ) {
+			if ( ! in_array( $page_current, $exclude_screens ) ) {
+				$can_load = true;
+			}
+		} else {
+			$can_load = true;
+		}
+
+		$is_on = 'admin';
+		if ( ! is_admin() ) {
+			$is_on = 'frontend';
+		}
+
+		return apply_filters(
+			'learnpress/' . $is_on . '/can-load-assets/' . $handle,
+			$can_load,
+			$page_current,
+			$include_screens
+		);
 	}
 
 	/**
@@ -166,98 +301,47 @@ abstract class LP_Abstract_Assets {
 	}
 
 	/**
-	 * Register scripts and styles for admin.
+	 * @param $handle
 	 *
-	 * @editor tungnx
-	 * @reason not user
+	 * @return string
 	 */
-//	protected function _register_scripts() {
-//		$wp_scripts = $this->_get_wp_scripts();
-//		$wp_styles  = $this->_get_wp_styles();
-//
-//		// No use cache if debug mode is turn on
-//		$no_cache = '';
-//		if ( learn_press_is_debug() ) {
-//			$no_cache = microtime( true );
-//		}
-//
-//		if ( $default_scripts = $this->_get_scripts() ) {
-//			foreach ( $default_scripts as $handle => $data ) {
-//				if ( empty( $data['url'] ) ) {
-//					continue;
-//				}
-//
-//				$data = wp_parse_args(
-//					$data,
-//					array(
-//						'deps' => null,
-//						'ver'  => LEARNPRESS_VERSION
-//					)
-//				);
-//				$wp_scripts->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
-//			}
-//
-//		}
-//
-//		if ( $default_styles = $this->_get_styles() ) {
-//
-//			foreach ( $default_styles as $handle => $data ) {
-//				if ( is_string( $data ) ) {
-//					$data = array( 'url' => $data );
-//				}
-//
-//				$data = wp_parse_args(
-//					$data,
-//					array(
-//						'deps' => null,
-//						'ver'  => LEARNPRESS_VERSION
-//					)
-//				);
-//				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
-//			}
-//
-//		}
-//	}
-
 	public function get_script_var_name( $handle ) {
-		$handle = str_replace( array( 'learn-press', '_', '-', 'lp' ), ' ', $handle );
+		$handle = str_replace( array( 'learn-press', 'lp', '_', '-' ), ' ', $handle );
 		$handle = ucwords( $handle );
 
 		return 'lp' . str_replace( ' ', '', $handle ) . 'Settings';
 	}
 
-	public function _get_admin_script_data() {
-		return false;
-	}
-
 	public function localize_printed_scripts( $side = '' ) {
-		$scripts_data = ( $side == 'admin' ) ? $this->_get_script_data() : $this->_get_script_data();
+		$scripts_data = $this->_get_script_data();
 
 		if ( is_array( $scripts_data ) && is_array( $this->_script_data ) ) {
 			$scripts_data = LP_Helper::array_merge_recursive( $scripts_data, $this->_script_data );
 		} elseif ( is_array( $this->_script_data ) ) {
 			$scripts_data = $this->_script_data;
 		}
+
 		if ( ! $scripts_data ) {
 			return;
 		}
+
 		global $wp_scripts;
 
 		if ( ! $wp_scripts ) {
 			$wp_scripts = new WP_Scripts();
 		}
+
 		foreach ( $scripts_data as $handle => $data ) {
 			$data = apply_filters( 'learn-press/script-data', $data, $handle );
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 
-			// todo: check and rewrite this code - make addon certificate run not right if comment that code
+			// comment by tungnx
+			// Edit: Use in certificate - Nhamdv.
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
-					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
-							$this,
-							'_valid_json_number'
-						), $data );
+					if ( $wp_scripts->registered[ $handle ]->extra['data'] ) {
+						$data = $wp_scripts->registered[ $handle ]->extra['data'];
+						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array( $this, '_valid_json_number' ), $data );
 
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}
@@ -268,6 +352,7 @@ abstract class LP_Abstract_Assets {
 				$wp_scripts->print_extra_script( $handle );
 			}
 		}
+
 	}
 
 	public function localize_printed_admin_scripts() {
@@ -294,44 +379,17 @@ abstract class LP_Abstract_Assets {
 	}
 
 	/**
-	 * Shortcut to plugin file url.
+	 * Shortcut to Addon file url.
 	 *
 	 * @param string $file
 	 *
 	 * @return string
 	 */
-	public function url( $file = '' ) {
+	public function url( string $file = '' ): string {
 		return LP_PLUGIN_URL . "assets/{$file}";
 	}
 
-	/**
-	 * Get url with param nocache if debug mode is turn on.
-	 *
-	 * @param $url
-	 *
-	 * @return string
-	 */
-	protected function _get_url( $url ) {
-		if ( learn_press_is_debug() ) {
-			$url = add_query_arg( 'nocache', $this->_cache, $url );
-		}
+	/*public static function add_param() {
 
-		return $url;
-	}
-
-	public function get_compressible_assets() {
-		return array();
-	}
-
-	public static function add_param() {
-
-	}
-
-	public static function add_var() {
-
-	}
-
-	public static function add_script_tag() {
-
-	}
+	}*/
 }

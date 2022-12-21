@@ -6,34 +6,34 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $item ) && ! isset( $section ) ) {
+if ( ! isset( $item ) ) {
 	return;
 }
+
+$course = learn_press_get_course();
+if ( ! $course ) {
+	return;
+}
+
+$user = learn_press_get_current_user();
 ?>
 
 <div class="course-item-meta">
 
-	<?php
-	do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item );
+	<?php do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item ); ?>
 
-	if ( $item->is_preview() ) {
-		$course_id = $section->get_course_id();
-		if ( get_post_meta( $course_id, '_lp_required_enroll', true ) == 'yes' ) {
-			echo '<i class="item-meta course-item-status"
-			   data-preview="' . esc_html__( 'Preview', 'learnpress' ) . '"></i>';
-		}
-	} else {
-		echo '<i class="fa item-meta course-item-status trans"></i>';
-	}
+	<?php if ( $item->is_preview() && $user && ! $user->has_completed_item( $item->get_id(), $course->get_id() ) ) : ?>
+		<span class="item-meta course-item-preview"
+			  data-preview="<?php esc_attr_e( 'Preview', 'learnpress' ); ?>"></span>
 
-	do_action( 'learn-press/course-section-item/after-' . $item->get_item_type() . '-meta', $item );
-	?>
+	<?php else : ?>
+		<span class="item-meta course-item-status" title="<?php echo esc_attr( $item->get_status_title() ); ?>"></span>
+	<?php endif; ?>
+
+	<?php do_action( 'learn-press/course-section-item/after-' . $item->get_item_type() . '-meta', $item ); ?>
 </div>

@@ -9,17 +9,13 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="profile-recover-order">
-
-    <p><?php _e( 'If you have a valid order key you can recover it here.', 'learnpress' ); ?></p>
+	<p class="recover-order__title"><?php esc_html_e( 'If you have a valid order key, you can recover it here.', 'learnpress' ); ?></p>
+	<p class="recover-order__description"><?php esc_html_e( 'When you checkout as a Guest, an order key will be sent to your email. You can use the order key to create an order.', 'learnpress' ); ?></p>
 
 	<?php learn_press_get_template( 'order/recover-form.php' ); ?>
-
 </div>
 

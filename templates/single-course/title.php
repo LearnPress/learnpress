@@ -6,14 +6,10 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
-
 ?>
 
-<h1 itemprop="name" class="course-title entry-title"><?php the_title(); ?></h1>
+<h1 class="course-title"><?php the_title(); ?></h1>

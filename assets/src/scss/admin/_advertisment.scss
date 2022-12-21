@@ -1,0 +1,175 @@
+#wpfooter{
+    z-index: 20;
+}
+.learn-press-advertisement-slider {
+    margin: 50px 20px 0 0;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 10;
+    .slider-items {
+        &:after {
+            @include clear-fix();
+        }
+    }
+    .slide-item {
+        position: relative;
+        float: left;
+        width: 100%;
+        margin-right: -100%;
+        padding: 20px;
+        opacity: 0;
+        background: #FFF;
+        @include box-sizing(border-box);
+        -webkit-transition: opacity 0.5s linear;
+        transition: opacity 0.5s linear;
+        .slide-thumbnail {
+            float: left;
+            width: 35%;
+            a {
+                display: block;
+                line-height: 1;
+                margin-bottom: 0;
+            }
+            img {
+                max-width: 100%;
+            }
+        }
+        .slide-detail {
+            margin-left: 35%;
+            padding-left: 20px;
+            h2 {
+                margin-top: 0;
+            }
+            .description-short {
+                display: none;
+            }
+        }
+        &.slide-active {
+            opacity: 1;
+        }
+    }
+    .slider-controls {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        .next-item,
+        .prev-item {
+            font-family: 'dashicons';
+            width: 40px;
+            height: 40px;
+            border: 1px solid #DDD;
+            line-height: 40px;
+            font-size: 16px;
+            cursor: pointer;
+            float: left;
+            margin-left: 10px;
+            text-align: center;
+            color: #DDD;
+            &:hover {
+                border-color: #0085ba;
+                &:before {
+                    color: #0085ba;
+                }
+            }
+        }
+        .next-item:before {
+            content: "\f345";
+        }
+        .prev-item:before {
+            content: "\f341";
+        }
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .learn-press-advertisement-slider {
+        .slide-item {
+            .slide-thumbnail{
+                width: 50%;
+            }
+            .slide-detail{
+                margin-left: 50%;
+            }
+            .slide-detail {
+                .description-short {
+                    display: block;
+                }
+                .description-full {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 960px) {
+    .learn-press-advertisement-slider {
+        margin-left: 56px;
+        .slide-item {
+            .slide-thumbnail{
+                width: 100%;
+                float: none;
+                img{
+                    width: 100%;
+                }
+            }
+            .slide-detail{
+                margin-left: 0;
+                padding-left: 0;
+            }
+            .slide-detail {
+                h2{
+                    padding-top: 20px;
+                }
+                .description-short {
+                    display: block;
+                }
+                .description-full {
+                    display: none;
+                }
+                .slide-controls{
+                    margin-bottom: 0;
+                    .button{
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+    .wp-responsive-open{
+        .learn-press-advertisement-slider {
+            margin-left: 56px;
+            .slide-item {
+                .slide-thumbnail{
+                    width: 100%;
+                    float: none;
+                    img{
+                        width: 100%;
+                    }
+                }
+                .slide-detail{
+                    margin-left: 0;
+                    padding-left: 0;
+                }
+                .slide-detail {
+                    h2{
+                        padding-top: 20px;
+                    }
+                    .description-short {
+                        display: block;
+                    }
+                    .description-full {
+                        display: none;
+                    }
+                    .slide-controls{
+                        margin-bottom: 0;
+                        .button{
+                            margin-bottom: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

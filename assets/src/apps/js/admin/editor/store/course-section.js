@@ -2,30 +2,31 @@ import Actions from '../actions/course-section';
 import Mutations from '../mutations/course-section';
 import Getters from '../getters/course-section';
 
-const $ = jQuery;
+const $ = window.jQuery;
 
-export default function (data) {
-    var state = $.extend({}, data.sections);
+export default function( data ) {
+	var state = $.extend( {}, data.sections );
 
-    state.statusUpdateSection = {};
-    state.statusUpdateSectionItem = {};
+	state.statusUpdateSection = {};
+	state.statusUpdateSectionItem = {};
 
-    state.sections = state.sections.map(function (section) {
-        var hiddenSections = state.hidden_sections;
-        var find = hiddenSections.find(function (sectionId) {
-            return parseInt(section.id) === parseInt(sectionId);
-        });
+	state.sections = state.sections.map( function( section ) {
+		var hiddenSections = state.hidden_sections;
 
-        section.open = !find;
+		var find = hiddenSections.find( function( sectionId ) {
+			return parseInt( section.id ) === parseInt( sectionId );
+		} );
 
-        return section;
-    });
+		section.open = ! find;
 
-    return {
-        namespaced: true,
-        state: state,
-        getters: Getters,
-        mutations: Mutations,
-        actions: Actions
-    };
+		return section;
+	} );
+
+	return {
+		namespaced: true,
+		state: state,
+		getters: Getters,
+		mutations: Mutations,
+		actions: Actions,
+	};
 }

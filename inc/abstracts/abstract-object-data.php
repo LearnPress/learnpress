@@ -7,9 +7,6 @@
  * @version 3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
@@ -18,7 +15,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 	 * Class LP_Abstract_Object_Data
 	 */
 	abstract class LP_Abstract_Object_Data {
-
 		/**
 		 * @var int
 		 */
@@ -82,6 +78,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		protected $_setup_postdata = false;
 
+		public $object_type = 'object-data';
+
 		/**
 		 * LP_Abstract_Object_Data constructor.
 		 *
@@ -126,8 +124,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Get post object assigned to this class.
 		 *
-		 * @since 3.0.0
 		 * @return array|null|WP_Post
+		 * @since 3.0.0
 		 */
 		public function get_post() {
 			return get_post( $this->get_id() );
@@ -136,14 +134,15 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Get global $post object and set it up with new data
 		 *
-		 * @since 3.0.0
-		 *
 		 * @return bool|WP_Post
+		 * @since 3.0.0
 		 */
 		public function setup_postdata() {
 			global $post;
 
-			if ( $post = $this->get_post() ) {
+			$post = $this->get_post();
+
+			if ( $post ) {
 				setup_postdata( $post );
 				$this->_setup_postdata = true;
 
@@ -156,9 +155,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Reset global $post to WP default.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @return bool
+		 * @since 3.0.0
 		 */
 		public function reset_postdata() {
 			if ( $this->_setup_postdata ) {
@@ -183,12 +181,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		public function get_data( $name = '', $default = '' ) {
 			if ( is_string( $name ) && $name ) {
-				// Check in data first then check in extra data
-				return
-					array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
-						( array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default );
+				return array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] : ( array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default );
 			} elseif ( is_array( $name ) ) {
 				$data = array();
+
 				foreach ( $name as $key ) {
 					$data[ $key ] = $this->get_data( $key, $default );
 				}
@@ -202,11 +198,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Get data as LP_Datetime object
 		 *
-		 * @since 3.2.0
-		 *
 		 * @param string $name
 		 *
 		 * @return array|LP_Datetime|mixed
+		 * @since 3.2.0
 		 */
 		public function get_data_date( $name ) {
 			$data = $this->get_data( $name );
@@ -217,14 +212,13 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 		/**
 		 * @param string $name
-		 * @param string $default
+		 * @param mixed $default
 		 *
 		 * @return array|bool|mixed|string
 		 */
-		public function get_extra_data( $name = '', $default = '' ) {
+		public function get_extra_data( string $name = '', $default = false ) {
 			if ( is_string( $name ) ) {
-				// Check in data first then check in extra data
-				return array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default;
+				return array_key_exists( $name, $this->_extra_data ) && ! empty( $this->_extra_data[ $name ] ) ? $this->_extra_data[ $name ] : $default;
 			} elseif ( is_array( $name ) ) {
 				$data = array();
 				foreach ( $name as $key ) {
@@ -232,11 +226,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				}
 
 				return $data;
-			} elseif ( true === $name ) {
-				return $this->_extra_data;
 			}
 
-			return false;
+			return $default;
 		}
 
 		/**
@@ -252,35 +244,25 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 					$this->_set_data( $key, $value, $extra );
 				}
 			} elseif ( $key_or_data ) {
-				$data    = $extra ? $this->_extra_data : $this->_data;
-				$changes = $extra ? $this->_extra_data_changes : $this->_changes;
-
-				if ( $key_or_data === 'total' ) {
-				}
 				if ( $extra ) {
 					// Do not allow to add extra data with the same key in data
 					if ( ! array_key_exists( $key_or_data, $this->_data ) ) {
 						$this->_extra_data[ $key_or_data ] = $value;
 					}
-
 				} else {
 					try {
 						if ( ! is_string( $key_or_data ) && ! is_numeric( $key_or_data ) ) {
 							throw new Exception( 'error' );
 						}
+
 						// Only change the data is already existed
-						if ( array_key_exists( $key_or_data, $this->_data ) ) {
+						//                      if ( array_key_exists( $key_or_data, $this->_data ) ) {
 							$this->_data[ $key_or_data ] = $value;
-						} else {
-							$this->_extra_data[ $key_or_data ] = $value;
-						}
-
-
-					}
-					catch ( Exception $ex ) {
-						print_r( $key_or_data );
-						print_r( $ex->getMessage() );
-						die( __FILE__ . '::' . __FUNCTION__ );;
+						//                      } else {
+						//                          $this->_extra_data[ $key_or_data ] = $value;
+						//                      }
+					} catch ( Throwable $ex ) {
+						error_log( $ex->getMessage() );
 					}
 				}
 			}
@@ -290,25 +272,50 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * Set extra data
 		 *
 		 * @param array|string $key_or_data
-		 * @param string       $value
+		 * @param string|mixed       $value
+		 * @return $this
 		 */
 		public function set_data( $key_or_data, $value = '' ) {
-			$this->_set_data( $key_or_data, $value, true );
+			$this->_set_data( $key_or_data, $value );
+			return $this;
+		}
+
+		/**
+		 * Set data datetime
+		 * if $value is empty, not set is LP_Datetime object
+		 *
+		 * @param $key
+		 * @param $value
+		 *
+		 * @version 4.0.1
+		 * @return LP_Abstract_Object_Data
+		 */
+		public function set_data_date( $key, $value ): LP_Abstract_Object_Data {
+			$lp_date = '';
+			if ( ! empty( $value ) ) {
+				$lp_date = new LP_Datetime( $value );
+			}
+
+			$this->set_data( $key, $lp_date );
+
+			return $this;
 		}
 
 		/**
 		 * @param $key
 		 * @param $value
+		 * @deprecated 4.1.7.3
 		 */
-		public function set_data_date( $key, $value ) {
-			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
-				$value = new LP_Datetime( $value );
-			}
-
-			$this->_set_data( $key, $value );
+		protected function _set_data_date( $key, $value, $extra = false ) {
+			_deprecated_function( __FUNCTION__, '4.1.7.3', 'set_data_date' );
+			$this->set_data_date( $key, $value );
 		}
 
+		/**
+		 * @deprecated 4.1.7.3
+		 */
 		public function set_data_null_date( $key ) {
+			_deprecated_function( __METHOD__, '4.1.7.3' );
 			$this->_set_data( $key, LP_Datetime::getSqlNullDate() );
 		}
 
@@ -323,9 +330,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			$errors = array_keys( $data );
 			foreach ( $data as $prop => $value ) {
 				$setter = "set_$prop";
-				if ( /*! is_null( $value ) && */
-				is_callable( array( $this, $setter ) )
-				) {
+				if ( is_callable( array( $this, $setter ) ) ) {
 					$reflection = new ReflectionMethod( $this, $setter );
 
 					if ( $reflection->isPublic() ) {
@@ -338,8 +343,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			// If there is at least one method failed
 			if ( $errors ) {
 				$errors = array_map( array( $this, 'prefix_set_method' ), $errors );
-				// translators: %s: error message.
-				throw new Exception( sprintf( __( 'The following these functions %s do not exists in %s', 'learnpress' ), join( ',', $errors ), get_class( $this ) ) );
+				throw new Exception( sprintf( __( 'The following functions %1$s do not exist in %2$s', 'learnpress' ), join( ',', $errors ), get_class( $this ) ) );
 			}
 		}
 
@@ -389,24 +393,21 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return bool
 		 */
 		public function is_support( $feature, $type = '' ) {
-			$feature    = $this->_sanitize_feature_key( $feature );
-			$is_support = array_key_exists( $feature, $this->_supports ) ? true : false;
-			if ( $type && $is_support ) {
-				return $this->_supports[ $feature ] === $type;
-			}
+			$feature = $this->_sanitize_feature_key( $feature );
 
-			return $is_support;
+			return LP_Global::object_is_support_feature( $this->object_type, $feature, $type );
 		}
 
 		/**
 		 * Add a feature that question is supported
 		 *
 		 * @param        $feature
-		 * @param string $type
+		 * @param string  $type
 		 */
 		public function add_support( $feature, $type = 'yes' ) {
-			$feature                     = $this->_sanitize_feature_key( $feature );
-			$this->_supports[ $feature ] = $type === null ? 'yes' : $type;
+
+			$feature = $this->_sanitize_feature_key( $feature );
+			LP_Global::add_object_feature( $this->object_type, $feature, $type );
 		}
 
 		/**
@@ -422,31 +423,36 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * Get all features are supported by question.
 		 *
 		 * @return array
+		 * @deprecated 4.1.7.3
 		 */
 		public function get_supports() {
-			return $this->_supports;
+			_deprecated_function( __FUNCTION__, '4.1.7.3' );
+			return LP_Global::get_object_supports( $this->object_type );
 		}
 
 		/**
 		 * @param $value
+		 * @deprecated 4.1.7.3
 		 */
-		public function set_no_cache( $value ) {
+		/*public function set_no_cache( $value ) {
 			$this->_no_cache = $value;
-		}
+		}*/
 
 		/**
 		 * @return bool
+		 * @deprecated 4.1.7.3
 		 */
-		public function get_no_cache() {
+		/*public function get_no_cache() {
 			return $this->_no_cache;
-		}
+		}*/
 
 		/**
 		 * Read all metas and set to object
 		 */
 		public function read_meta() {
-			if ( $meta_data = $this->_curd->read_meta( $this ) ) {
+			$meta_data = $this->_curd->read_meta( $this );
 
+			if ( $meta_data ) {
 				$external_metas = array_filter( $meta_data, array( $this, 'exclude_metas' ) );
 
 				foreach ( $external_metas as $meta ) {
@@ -482,7 +488,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			} elseif ( is_string( $key_or_array ) ) {
 				$this->_meta_data[] = (object) array(
 					'meta_key'   => $key_or_array,
-					'meta_value' => $value
+					'meta_value' => $value,
 				);
 			} else {
 				$this->_meta_data[] = $key_or_array;
@@ -566,7 +572,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				if ( ! is_bool( $update ) && $update ) {
 					$this->_meta_data = (object) array(
 						'meta_key'   => $key,
-						'meta_value' => $value
+						'meta_value' => $value,
 					);
 				}
 			}

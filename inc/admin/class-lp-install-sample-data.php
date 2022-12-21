@@ -31,6 +31,11 @@ class LP_Install_Sample_Data {
 	public static $answer_range = array( 3, 5 );
 
 	/**
+	 * @var int
+	 */
+	public static $max_content_paragraph = 5;
+
+	/**
 	 * @var string
 	 */
 	protected $dummy_text = '';
@@ -39,30 +44,29 @@ class LP_Install_Sample_Data {
 	 * LP_Install_Sample_Data constructor.
 	 */
 	public function __construct() {
-
 		add_filter( 'learn-press/script-data', array( $this, 'i18n' ), 10, 2 );
 
 		$actions = array(
 			'lp-install-sample-data',
-			'lp-uninstall-sample-data'
+			'lp-uninstall-sample-data',
 		);
 
 		if ( ! in_array( LP_Request::get( 'page' ), $actions ) ) {
 			return;
 		}
+
 		add_action( 'init', array( $this, 'install' ) );
 		add_action( 'init', array( $this, 'uninstall' ) );
 	}
 
 	public function i18n( $data, $handle ) {
-
 		if ( 'learn-press-global' !== $handle ) {
 			return $data;
 		}
 
 		$i18n = array(
-			'confirm_install_sample_data'   => __( 'Are you sure you want to install sample course data?', 'learnpress' ),
-			'confirm_uninstall_sample_data' => __( 'Are you sure you want to delete sample course data?', 'learnpress' )
+			'confirm_install_sample_data'   => esc_html__( 'Are you sure you want to install the sample course data?', 'learnpress' ),
+			'confirm_uninstall_sample_data' => esc_html__( 'Are you sure you want to delete the sample course data?', 'learnpress' ),
 		);
 
 		if ( empty( $data['i18n'] ) ) {
@@ -76,70 +80,94 @@ class LP_Install_Sample_Data {
 
 	/**
 	 * Install
+	 *
+	 * @TODO - Need write to api, not hook init.
 	 */
 	public function install() {
-		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( '_wpnonce' ) ), 'install-sample-course' ) ) {
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'install-sample-course' ) ) {
 			return;
 		}
 
-		if ( $dummy_text = @file_get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' ) ) {
-			$this->dummy_text = preg_split( '!\s!', $dummy_text );
-		}
+		$dummy_text       = LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' );
+		$this->dummy_text = preg_split( '!\s!', $dummy_text );
 
-		if ( $section_range = LP_Request::get( 'section-range' ) ) {
+		$section_range = LP_Request::get_param( 'section-range', 0, 'int' );
+		if ( $section_range ) {
 			self::$section_range = $section_range;
 		}
 
-		if ( $item_range = LP_Request::get( 'item-range' ) ) {
+		$item_range = LP_Request::get_param( 'item-range', 0, 'int' );
+		if ( $item_range ) {
 			self::$item_range = $item_range;
 		}
 
-		if ( $question_range = LP_Request::get( 'question-range' ) ) {
+		$question_range = LP_Request::get_param( 'question-range', 0, 'int' );
+		if ( $question_range ) {
 			self::$question_range = $question_range;
 		}
 
-		if ( $answer_range = LP_Request::get( 'answer-range' ) ) {
+		$answer_range = LP_Request::get_param( 'answer-range', 0, 'int' );
+		if ( $answer_range ) {
 			self::$answer_range = $answer_range;
 		}
-		LP_Debug::startTransaction();
 
 		try {
-			ini_set( 'memory_limit', '2G' );
+			@ini_set( 'memory_limit', '2G' );
+
 			global $wp_filter;
+
 			$keys        = array_keys( $wp_filter );
 			$ignore_keys = array( 'sanitize_title' );
+
 			foreach ( $keys as $key ) {
 				if ( in_array( $key, $ignore_keys ) ) {
 					continue;
 				}
+
 				unset( $wp_filter[ $key ] );
 			}
 
-			$name = LP_Request::get_string( 'custom-name' );
+			$name      = LP_Request::get_param( 'custom-name' );
+			$course_id = $this->create_course( $name );
 
-			if ( ! $course_id = $this->create_course( $name ) ) {
-				throw new Exception( 'Create course failed' );
+			if ( ! $course_id ) {
+				throw new Exception( 'Create course failed.' );
 			}
 
 			$this->create_sections( $course_id );
 
+			$price = LP_Request::get_param( 'course-price', 0, 'float' );
+			if ( $price ) {
+				update_post_meta( $course_id, '_lp_regular_price', $price );
+			}
+
+			/**
+			 * Save info course in background.
+			 */
+			$bg = LP_Background_Single_Course::instance();
+			$bg->data(
+				array(
+					'handle_name' => 'save_post',
+					'course_id'   => $course_id,
+					'data'        => [ 'data_sample' => 1 ],
+				)
+			)->dispatch();
 			?>
-            <div class="lp-install-sample-data-response">
-				<?php printf( __( 'Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
-                <a href="<?php echo esc_url( get_the_permalink( $course_id ) ); ?>"
-                   target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
-                <a href="<?php echo esc_url( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>"
-                   target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
-            </div>
+
+			<div class="lp-install-sample__response success">
+				<?php printf( __( 'The Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
+				<a href="<?php echo esc_url_raw( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
+				|
+				<a href="<?php echo esc_url_raw( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
+			</div>
+
 			<?php
-
-			LP_Debug::commitTransaction();
-
 		} catch ( Exception $ex ) {
-			LP_Debug::rollbackTransaction();
-
-			echo $ex->getMessage();
+			echo '<div class="lp-install-sample__response fail">';
+			echo wp_kses_post( $ex->getMessage() );
+			echo '</div>';
 		}
+
 		die();
 	}
 
@@ -147,20 +175,18 @@ class LP_Install_Sample_Data {
 	 * Un-install
 	 */
 	public function uninstall() {
-		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( '_wpnonce' ) ), 'uninstall-sample-course' ) ) {
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'uninstall-sample-course' ) ) {
 			return;
 		}
 
 		global $wpdb;
 
 		$posts = $this->get_sample_posts();
-
-		if ( ! $posts ) {
-			die();
-		}
-
-		LP_Debug::startTransaction();
 		try {
+			if ( ! $posts ) {
+				throw new Exception( esc_html__( 'No data sample.', 'learnpress' ) );
+			}
+
 			foreach ( $posts as $post ) {
 				switch ( $post->post_type ) {
 					case LP_COURSE_CPT:
@@ -176,11 +202,19 @@ class LP_Install_Sample_Data {
 
 				$this->_delete_post( $post->ID );
 			}
+			?>
+
+			<div class="lp-install-sample__response success">
+				<?php esc_html_e( 'The sample data was successfully deleted!', 'learnpress' ); ?>
+			</div>
+
+			<?php
 		} catch ( Exception $ex ) {
-			LP_Debug::rollbackTransaction();
-			echo "Error: " . $ex->getMessage();
+
+			echo '<div class="lp-install-sample__response fail">';
+			echo 'Error: ' . $ex->getMessage();
+			echo '</div>';
 		}
-		LP_Debug::commitTransaction();
 
 		die();
 	}
@@ -192,26 +226,35 @@ class LP_Install_Sample_Data {
 	 */
 	public function get_sample_posts() {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+
+		$query = $wpdb->prepare(
+			"
 	        SELECT p.ID, post_type
 	        FROM {$wpdb->posts} p
 	        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %s
-	    ", '_lp_sample_data', 'yes' );
+	    ",
+			'_lp_sample_data',
+			'yes'
+		);
 
 		return $wpdb->get_results( $query );
 	}
 
 	protected function _delete_course( $id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 	        SELECT section_id
 	        FROM {$wpdb->learnpress_sections}
 	        WHERE section_course_id = %d
-	    ", $id );
+	    ",
+			$id
+		);
 
-		if ( $section_ids = $wpdb->get_col( $query ) ) {
-			$wpdb->query( "DELETE FROM {$wpdb->learnpress_section_items} WHERE section_id IN(" . join( ',', $section_ids ) . ")" );
-			$wpdb->query( "DELETE FROM {$wpdb->learnpress_sections} WHERE section_id IN(" . join( ',', $section_ids ) . ")" );
+		$section_ids = $wpdb->get_col( $query );
+		if ( $section_ids ) {
+			$wpdb->query( "DELETE FROM {$wpdb->learnpress_section_items} WHERE section_id IN(" . join( ',', $section_ids ) . ')' );
+			$wpdb->query( "DELETE FROM {$wpdb->learnpress_sections} WHERE section_id IN(" . join( ',', $section_ids ) . ')' );
 		}
 	}
 
@@ -234,11 +277,14 @@ class LP_Install_Sample_Data {
 	protected function _delete_user_items( $ids ) {
 		global $wpdb;
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$query  = $wpdb->prepare( "
-	        DELETE 
+		$query  = $wpdb->prepare(
+			"
+	        DELETE
 	        FROM {$wpdb->learnpress_user_items}
-	        WHERE item_id IN(" . join( ',', $format ) . ")
-	    ", $ids );
+	        WHERE item_id IN(" . join( ',', $format ) . ')
+	    ',
+			$ids
+		);
 
 		$wpdb->query( $query );
 	}
@@ -248,24 +294,32 @@ class LP_Install_Sample_Data {
 	 *
 	 * @param int $min
 	 * @param int $max
+	 * @param int $paragraphs
 	 *
 	 * @return string
 	 */
-	protected function generate_content( $min = 100, $max = 500 ) {
+	protected function generate_content( $min = 100, $max = 500, $paragraphs = 10 ) {
 		$length = rand( $min, $max );
 		$max    = sizeof( $this->dummy_text ) - 1;
 		$words  = array();
+
 		for ( $i = 0; $i < $length; $i ++ ) {
 			$words[] = $this->dummy_text[ rand( 0, $max ) ];
 		}
-		$p = '';
-		while ( $words ) {
-			$len = rand( 10, 20 );
-			$cut = array_splice( $words, 0, $len );
-			$p   .= '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
+
+		$p = array();
+
+		if ( ! $paragraphs ) {
+			$paragraphs = self::$max_content_paragraph;
 		}
 
-		return $p;
+		while ( $words && sizeof( $p ) < $paragraphs ) {
+			$len = rand( 10, 20 );
+			$cut = array_splice( $words, 0, $len );
+			$p[] = '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
+		}
+
+		return join( '', $p );
 	}
 
 	/**
@@ -300,7 +354,7 @@ class LP_Install_Sample_Data {
 			'post_title'   => strlen( $name ) ? $name : __( 'Sample course', 'learnpress' ),
 			'post_type'    => LP_COURSE_CPT,
 			'post_status'  => 'publish',
-			'post_content' => $this->generate_content()
+			'post_content' => $this->generate_content( 25, 40, 5 ),
 		);
 
 		$course_id = wp_insert_post( $data );
@@ -312,17 +366,42 @@ class LP_Install_Sample_Data {
 				'_lp_students'          => '0',
 				'_lp_retake_count'      => '0',
 				'_lp_featured'          => 'no',
+				'_lp_has_finish'        => 'yes',
 				'_lp_course_result'     => 'evaluate_lesson',
 				'_lp_passing_condition' => '80',
-				'_lp_required_enroll'   => 'yes',
-				'_lp_sample_data'       => 'yes'
+				'_lp_sample_data'       => 'yes',
 			);
 			foreach ( $metas as $key => $value ) {
 				update_post_meta( $course_id, $key, $value );
 			}
+
+			$this->add_extra_info( $course_id );
 		}
 
 		return $course_id;
+	}
+
+	protected function add_extra_info( $course_id ) {
+		$features = array( 'requirements', 'target_audiences', 'key_features' );
+
+		// Requirements, Target audiences, Key Features
+		foreach ( $features as $feature ) {
+			$feature_data = array();
+			for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i ++ ) {
+				$feature_data[] = $this->generate_title();
+			}
+			update_post_meta( $course_id, '_lp_' . $feature, $feature_data );
+		}
+
+		// FAQs
+		$feature_data = array();
+		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i ++ ) {
+			$feature_data[] = array( $this->generate_title() . '?', $this->generate_content( 20, 30, 3 ) );
+		}
+		update_post_meta( $course_id, '_lp_faqs', $feature_data );
+
+		// Featured review
+		update_post_meta( $course_id, '_lp_featured_review', $this->generate_title( 30, 40 ) );
 	}
 
 	/**
@@ -331,26 +410,22 @@ class LP_Install_Sample_Data {
 	 * @param int $course_id
 	 */
 	protected function create_sections( $course_id ) {
-
 		$section_length = call_user_func_array( 'rand', ( self::$section_range ) );
 
 		for ( $i = 1; $i <= $section_length; $i ++ ) {
 			$section_id = $this->create_section( 'Section ' . $i, $course_id );
 
 			if ( $section_id ) {
-
 				$this->create_section_items( $section_id, $course_id );
-
 			}
 		}
-
 	}
 
 	/**
 	 * Create section.
 	 *
 	 * @param string $name
-	 * @param int $course_id
+	 * @param int    $course_id
 	 *
 	 * @return int
 	 */
@@ -363,7 +438,7 @@ class LP_Install_Sample_Data {
 			'section_name'        => $name,
 			'section_course_id'   => $course_id,
 			'section_order'       => $order,
-			'section_description' => $this->generate_title()
+			'section_description' => $this->generate_title(),
 		);
 
 		$wpdb->insert(
@@ -390,40 +465,48 @@ class LP_Install_Sample_Data {
 	protected function create_section_items( $section_id, $course_id ) {
 
 		static $lesson_count = 1;
-		static $quiz_count = 1;
+		static $quiz_count   = 1;
+
+		$order = 0;
 
 		$item_length = call_user_func_array( 'rand', self::$item_range );
 
 		for ( $i = 1; $i < $item_length; $i ++ ) {
-			$lesson_id = $this->create_lesson( 'Lesson ' . $lesson_count ++, $section_id, $course_id );
+			$lesson_id = $this->create_lesson( 'Lesson ' . $lesson_count ++, $section_id, $course_id, $order );
 
 			if ( $lesson_id ) {
+				$order ++;
+
 				if ( $i == 1 ) {
 					update_post_meta( $lesson_id, '_lp_preview', 'yes' );
 				}
 			}
 		}
 
-		$this->create_quiz( 'Quiz ' . $quiz_count ++, $section_id, $course_id );
+		$quiz_id = $this->create_quiz( 'Quiz ' . $quiz_count ++, $section_id, $course_id, $order );
+
+		if ( $quiz_id ) {
+			$order ++;
+		}
 	}
 
 	/**
 	 * Create lesson.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
-	protected function create_lesson( $name, $section_id, $course_id ) {
+	protected function create_lesson( $name, $section_id, $course_id, $order ) {
 		global $wpdb;
 
 		$data = array(
 			'post_title'   => $name,
 			'post_type'    => LP_LESSON_CPT,
 			'post_status'  => 'publish',
-			'post_content' => $this->generate_content()
+			'post_content' => $this->generate_content(),
 		);
 
 		$lesson_id = wp_insert_post( $data );
@@ -435,13 +518,14 @@ class LP_Install_Sample_Data {
 			$section_data = array(
 				'section_id' => $section_id,
 				'item_id'    => $lesson_id,
-				'item_type'  => LP_LESSON_CPT
+				'item_type'  => LP_LESSON_CPT,
+				'item_order' => absint( $order ),
 			);
 
 			$wpdb->insert(
 				$wpdb->learnpress_section_items,
 				$section_data,
-				array( '%d', '%d', '%s' )
+				array( '%d', '%d', '%s', '%d' )
 			);
 		}
 
@@ -452,19 +536,19 @@ class LP_Install_Sample_Data {
 	 * Create quiz.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
-	protected function create_quiz( $name, $section_id, $course_id ) {
+	protected function create_quiz( $name, $section_id, $course_id, $order ) {
 		global $wpdb;
 
 		$data = array(
 			'post_title'   => $name,
 			'post_type'    => LP_QUIZ_CPT,
 			'post_status'  => 'publish',
-			'post_content' => $this->generate_content()
+			'post_content' => $this->generate_content( 25, 40, 2 ),
 		);
 
 		$quiz_id = wp_insert_post( $data );
@@ -473,18 +557,24 @@ class LP_Install_Sample_Data {
 
 			$metas = array(
 				'_lp_preview'              => 'no',
-				'_lp_minus_points'         => 0,
-				'_lp_minus_skip_questions' => 'no',
-				'_lp_show_hide_question'   => 'no',
-				'_lp_review_questions'     => 'yes',
-				'_lp_show_result'          => 'yes',
+				// '_lp_minus_points'         => 0,
+				// '_lp_show_hide_question'   => 'no',
+				// '_lp_review_questions'     => 'yes',
+				// '_lp_show_result'          => 'yes',
 				'_lp_duration'             => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
 				'_lp_passing_grade'        => rand( 5, 9 ) * 10,
-				'_lp_retake_count'         => rand( 0, 10 ),
-				'_lp_archive_history'      => 'no',
-				'_lp_show_check_answer'    => '0',
-				'_lp_show_hint'            => '0',
-				'_lp_sample_data'          => 'yes'
+				// '_lp_retake_count'         => rand( 0, 10 ),
+				// '_lp_archive_history'      => 'no',
+				// '_lp_show_check_answer'    => '0',
+				// '_lp_show_hint'            => '0',
+				'_lp_sample_data'          => 'yes',
+				'_lp_negative_marking'     => 'no',
+				'_lp_minus_skip_questions' => 'no',
+				'_lp_instant_check'        => 'no',
+				'_lp_retake_count'         => '0',
+				'_lp_pagination'           => '1',
+				'_lp_review'               => 'yes',
+				'_lp_show_correct_review'  => 'yes',
 			);
 
 			foreach ( $metas as $key => $value ) {
@@ -494,13 +584,14 @@ class LP_Install_Sample_Data {
 			$section_data = array(
 				'section_id' => $section_id,
 				'item_id'    => $quiz_id,
-				'item_type'  => LP_QUIZ_CPT
+				'item_type'  => LP_QUIZ_CPT,
+				'item_order' => absint( $order ),
 			);
 
 			$wpdb->insert(
 				$wpdb->learnpress_section_items,
 				$section_data,
-				array( '%d', '%d', '%s' )
+				array( '%d', '%d', '%s', '%d' )
 			);
 
 			$this->create_quiz_questions( $quiz_id );
@@ -524,7 +615,7 @@ class LP_Install_Sample_Data {
 				'post_title'   => 'Question ' . $question_index ++,
 				'post_type'    => LP_QUESTION_CPT,
 				'post_status'  => 'publish',
-				'post_content' => $this->generate_content()
+				'post_content' => $this->generate_content( 25, 40, 2 ),
 			);
 
 			$question_id = wp_insert_post( $data );
@@ -540,7 +631,7 @@ class LP_Install_Sample_Data {
 
 			$quiz_question_data = array(
 				'quiz_id'     => $quiz_id,
-				'question_id' => $question_id
+				'question_id' => $question_id,
 			);
 
 			$wpdb->insert(
@@ -551,6 +642,8 @@ class LP_Install_Sample_Data {
 
 			if ( $wpdb->insert_id ) {
 				$this->create_question_answers( $question_id, $type );
+			} else {
+				error_log( 'create_quiz_questions => ', $wpdb->last_error );
 			}
 		}
 	}
@@ -558,23 +651,26 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create answers for a question.
 	 *
-	 * @param int $question_id
+	 * @param int    $question_id
 	 * @param string $type
 	 */
 	protected function create_question_answers( $question_id, $type ) {
 		global $wpdb;
 
 		$answers = $this->get_answers( $type );
-		foreach ( $answers as $answer ) {
+		foreach ( $answers as $order => $answer ) {
 			$data = array(
 				'question_id' => $question_id,
-				'answer_data' => maybe_serialize( $answer )
+				'title'       => $answer['title'],
+				'value'       => $answer['value'],
+				'is_true'     => $answer['is_true'],
+				'order'       => $order + 1,
 			);
 
 			$wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				$data,
-				array( '%d', '%s' )
+				array( '%d', '%s', '%s', '%s', '%d' )
 			);
 		}
 	}
@@ -593,9 +689,9 @@ class LP_Install_Sample_Data {
 
 		for ( $i = 1; $i <= $option_count; $i ++ ) {
 			$answers[] = array(
-				'text'    => $this->generate_title(),
-				'value'   => md5( uniqid() ),
-				'is_true' => 'no'
+				'title'   => $this->generate_title(),
+				'value'   => learn_press_random_value(),
+				'is_true' => 'no',
 			);
 		}
 
@@ -603,7 +699,7 @@ class LP_Install_Sample_Data {
 		if ( $type !== 'multi_choice' ) {
 			$at                        = rand( 0, sizeof( $answers ) - 1 );
 			$answers[ $at ]['is_true'] = 'yes';
-			$answers[ $at ]['text']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+			$answers[ $at ]['title']   = _x( '[TRUE] - ', 'install-sample-course', 'learnpress' ) . $answers[ $at ]['title'];
 		} else {
 			$has_true_option = false;
 			while ( ! $has_true_option ) {
@@ -611,8 +707,8 @@ class LP_Install_Sample_Data {
 					$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
 
 					if ( $answers[ $k ]['is_true'] === 'yes' ) {
-						$answers[ $k ]['text'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
-						$has_true_option       = true;
+						$answers[ $k ]['title'] = _x( ' [TRUE] - ', 'install-sample-course', 'learnpress' ) . $answers[ $k ]['title'];
+						$has_true_option        = true;
 					}
 				}
 			}
@@ -630,7 +726,7 @@ class LP_Install_Sample_Data {
 		$types = array(
 			'true_or_false',
 			'single_choice',
-			'multi_choice'
+			'multi_choice',
 		);
 
 		return $types[ rand( 0, sizeof( $types ) - 1 ) ];

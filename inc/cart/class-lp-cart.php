@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Cart
  *
@@ -19,14 +18,14 @@ class LP_Cart {
 	 *
 	 * @var LP_Cart object
 	 */
-	private static $instances = array();
+	private static $instance = null;
 
 	/**
 	 * Hold the content of the cart
 	 *
 	 * @var array
 	 */
-	protected $_cart_content = array();
+	protected $_cart_content = [];
 
 	/**
 	 * Key of cart content stored in session
@@ -51,19 +50,21 @@ class LP_Cart {
 
 	/**
 	 * Constructor
+	 *
+	 * @param string $key . Added since 3.3.0
 	 */
-	public function __construct() {
+	public function __construct( $key = '' ) {
+		if ( $key ) {
+			$this->_cart_session_key = $key;
+		}
 
-		LP_Request_Handler::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
-		LP_Request_Handler::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
+		LP_Request::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
+		LP_Request::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
 
-		add_action( 'learn-press/add-to-cart', array( $this, 'calculate_totals' ), 10 );
-		add_action( 'wp', array( $this, 'maybe_set_cart_cookies' ), 99 ); // Set cookies
-		add_action( 'shutdown', array(
-			$this,
-			'maybe_set_cart_cookies'
-		), 0 ); // Set cookies before shutdown and ob flushing
-		add_action( 'wp_loaded', array( $this, 'init' ) );
+		//add_action( 'learn-press/add-to-cart', array( $this, 'calculate_totals' ), 10 );
+		//add_action( 'wp', array( $this, 'maybe_set_cart_cookies' ), 99 );
+		//add_action( 'shutdown', array( $this, 'maybe_set_cart_cookies' ), 0 );
+		//add_action( 'wp_loaded', array( $this, 'init' ) );
 	}
 
 	/**
@@ -71,13 +72,24 @@ class LP_Cart {
 	 * Get data from session and put to cart content.
 	 */
 	function init() {
-		$this->get_cart_from_session();
+		// Only load on checkout page
+		$page_checkout_option = untrailingslashit( get_the_permalink( learn_press_get_page_id( 'checkout' ) ) );
+		$page_checkout_option = str_replace( '/', '\/', $page_checkout_option );
+		$pattern              = '/' . $page_checkout_option . '/';
+		if ( ! preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+			return;
+		}
+
+		//$this->get_cart_from_session();
 	}
 
+	/**
+	 * @deprecated 4.1.7.2
+	 */
 	public function maybe_set_cart_cookies() {
 
 		if ( ! headers_sent()/* && did_action( 'wp_loaded' )*/ ) {
-			//$this->set_cart_cookies( ! $this->is_empty() );
+			// $this->set_cart_cookies( ! $this->is_empty() );
 		}
 	}
 
@@ -87,6 +99,7 @@ class LP_Cart {
 		} elseif ( isset( $_COOKIE['wordpress_lp_cart'] ) ) {
 			learn_press_setcookie( 'wordpress_lp_cart', 0, time() - HOUR_IN_SECONDS );
 		}
+
 		do_action( 'learn_press_set_cart_cookies', $set );
 	}
 
@@ -94,14 +107,16 @@ class LP_Cart {
 	 * Get data from session
 	 *
 	 * @return array
+	 * @deprecated 4.1.7.3
 	 */
 	public function get_cart_for_session() {
+		_deprecated_function( __FUNCTION__, '4.1.7.3', 'get_cart' );
 		$cart_session = array();
 
 		if ( $this->get_cart() ) {
 			foreach ( $this->get_cart() as $key => $values ) {
 				$cart_session[ $key ] = $values;
-				unset( $cart_session[ $key ]['data'] ); // Unset product object
+				unset( $cart_session[ $key ]['data'] );
 			}
 		}
 
@@ -113,15 +128,14 @@ class LP_Cart {
 	 *
 	 * @return array
 	 */
-	public function get_cart() {
-		if ( ! did_action( 'wp_loaded' ) ) {
-			learn_press_debug( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
+	public function get_cart(): array {
+		/*if ( ! did_action( 'wp_loaded' ) ) {
 			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'learnpress' ), '2.3' );
-		}
+		}*/
 
-		if ( ! did_action( 'learn_press_cart_loaded_from_session' ) ) {
-			$this->get_cart_from_session();
-		}
+		/*if ( ! did_action( 'learn_press_cart_loaded_from_session' ) ) {
+			return $this->get_cart_from_session();
+		}*/
 
 		return array_filter( (array) $this->_cart_content );
 	}
@@ -129,57 +143,64 @@ class LP_Cart {
 	/**
 	 * Add course to cart.
 	 *
-	 * @param int   $course_id
+	 * @param int   $item_id
 	 * @param int   $quantity
 	 * @param array $item_data
 	 *
-	 * @return mixed
+	 * @return string|false
 	 */
-	public function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
+	public function add_to_cart( int $item_id = 0, int $quantity = 1, array $item_data = array() ) {
 		try {
-			$course = learn_press_get_course( $course_id );
+			$item_type = get_post_type( $item_id );
 
-			// Check if course can be purchased
-			if ( ! $course->is_purchasable() ) {
-				throw new Exception( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
+			if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
+				throw new Exception( 'Item type is invalid!', 'learnpress' );
 			}
 
-			// Check if course is in stock
-			if ( ! $course->is_in_stock() ) {
-				throw new Exception( __( 'Sorry! The number of enrolled students has reached limit', 'learnpress' ) );
+			switch ( $item_type ) {
+				case LP_COURSE_CPT:
+					$course = learn_press_get_course( $item_id );
+
+					if ( ! $course->is_purchasable() ) {
+						throw new Exception( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
+					}
+
+					if ( ! $course->is_in_stock() ) {
+						throw new Exception( __( 'Sorry! The number of enrolled students has reached its limit', 'learnpress' ) );
+					}
+
+					//$item_data['data'] = $course;
+					break;
+				default:
+					$item_data = apply_filters( 'learnpress/cart/add-item/item_type_' . $item_type, $item_data, $item_id, $quantity );
+					break;
 			}
 
-			$item_data = apply_filters( 'learn-press/cart-item-data', sanitize_post( $item_data, 'raw' ), $course_id );
+			// $item_data = apply_filters( 'learnpress/cart/item-data', $item_data, $item_id );
 
-			$cart_id = $this->generate_cart_id( $course_id, $item_data );
+			$cart_id = $this->generate_cart_id( $item_id, $item_data );
 
-			$this->_cart_content[ $cart_id ] = apply_filters( 'learn_press_add_cart_item',
+			$this->_cart_content[ $cart_id ] = apply_filters(
+				'learn_press_add_cart_item',
 				array_merge(
-					$item_data,
 					array(
-						'item_id'  => $course_id,
+						'item_id'  => $item_id,
 						'quantity' => $quantity,
-						'data'     => $course
-					)
+						//'data'     => array(),
+					),
+					$item_data
 				)
 			);
 
-			if ( did_action( 'wp' ) ) {
-				$this->set_cart_cookies( true );
-			}
+			// Update cart to session DB.
+			$this->update_session();
 
-			// @deprecated
-			do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
+			//$this->set_cart_cookies( true );
 
-			/**
-			 * @see LP_Cart::calculate_totals()
-			 */
-			do_action( 'learn-press/add-to-cart', $course_id, $quantity, $item_data, $cart_id );
-
+			do_action( 'learn-press/add-to-cart', $item_id, $quantity, $item_data, $cart_id );
 			return $cart_id;
-		}
-		catch ( Exception $e ) {
-			if ( $message = $e->getMessage() ) {
+		} catch ( Exception $e ) {
+			if ( $e->getMessage() ) {
 				learn_press_add_message( $e->getMessage(), 'error' );
 			}
 
@@ -203,7 +224,7 @@ class LP_Cart {
 
 			do_action( 'learn_press_cart_item_removed', $item_id, $this );
 
-			$this->calculate_totals();
+			$this->update_session();
 
 			return true;
 		}
@@ -213,45 +234,90 @@ class LP_Cart {
 
 	/**
 	 * Re-calculate cart totals and update data to session
+	 *
+	 * @since 3.0.0
+	 * @version 4.0.1
 	 */
 	public function calculate_totals() {
+		$data           = new stdClass();
+		$total          = 0;
+		$data->subtotal = $total;
+		$data->total    = $total;
+		$subtotal       = $total;
+		$this->total    = $total;
+		$this->subtotal = $total;
+		$items          = $this->get_cart();
 
-		$this->total = $this->subtotal = 0;
-
-		if ( $items = $this->get_cart() ) {
+		if ( $items ) {
 			foreach ( $items as $cart_id => $item ) {
-				$course = learn_press_get_course( $item['item_id'] );
-				if ( ! $course ) {
+				$item_type = get_post_type( $item['item_id'] );
+				if ( ! in_array( $item_type, learn_press_get_item_types_can_purchase() ) ) {
 					continue;
 				}
-				$subtotal = apply_filters( 'learn-press/calculate_sub_total', $course->get_price() * $item['quantity'], $item);
-				$total    = $subtotal;
 
-				$this->_cart_content[ $cart_id ]['subtotal'] = $subtotal;
-				$this->_cart_content[ $cart_id ]['total']    = $total;
+				switch ( $item_type ) {
+					case LP_COURSE_CPT:
+						$course   = learn_press_get_course( $item['item_id'] );
+						$subtotal = $course->get_price() * absint( $item['quantity'] );
+						break;
+					default:
+						$subtotal = apply_filters( 'learnpress/cart/calculate_sub_total/item_type_' . $item_type, $subtotal, $item );
+						break;
+				}
 
-				$this->subtotal += $subtotal;
-				$this->total    += $total;
+				$total = $subtotal;
+
+				$data->subtotal += $subtotal;
+				$data->total    += $total;
+
+				// For template old use.
+				LearnPress::instance()->cart->subtotal += $subtotal;
+				LearnPress::instance()->cart->total    += $total;
 			}
 		}
 
-		// Update cart content to session
-		$this->update_session();
+		return apply_filters( 'lp/cart/calculate_total', $data );
+
+		//$this->update_session();
 	}
 
 	/**
 	 * Update cart content to session
+	 *
+	 * @since 3.0.0
+	 * @version 1.0.1
 	 */
 	public function update_session() {
-		learn_press_session_set( $this->_cart_session_key, $this->get_cart_for_session() );
+		//learn_press_session_set( $this->_cart_session_key, $this->get_cart_for_session() );
+		$cart = $this->get_cart();
+
+		// Only save data item_id and quantity.
+		/**
+		 * Current certificate is not compatible with type $data_cart_save,
+		 * because certificate override hook 'learn-press/review-order/cart-item-product' to set course.
+		 * Need rewrite certificate to compatible with new cart.
+		 */
+		$data_cart_save = array_map(
+			function ( $item ) {
+				return array(
+					'item_id'  => $item['item_id'],
+					'quantity' => $item['quantity'],
+				);
+			},
+			$cart
+		);
+
+		LearnPress::instance()->session->set( $this->_cart_session_key, $cart, true );
 	}
 
 	/**
 	 * Get cart id
 	 *
 	 * @return mixed
+	 * @deprecated 4.2.0
 	 */
 	public function get_cart_id() {
+		_deprecated_function( __METHOD__, '4.2.0' );
 		return ! empty( $_SESSION['learn_press_cart']['cart_id'] ) ? $_SESSION['learn_press_cart']['cart_id'] : 0;
 	}
 
@@ -260,42 +326,22 @@ class LP_Cart {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
-		$items = $this->get_cart();
-
-		return $items;
+	public function get_items(): array {
+		return $this->get_cart();
 	}
 
 	/**
 	 * Load cart content data from session
+	 *
+	 * @since 3.0.0
+	 * @version 3.0.2
+	 * @modify 4.2.0 - tungnx
 	 */
 	public function get_cart_from_session() {
-		if ( ! did_action( 'learn_press_get_cart_from_session' ) ) {
-
-			if ( $cart = learn_press_session_get( $this->_cart_session_key ) ) {
-				foreach ( $cart as $cart_id => $values ) {
-					if ( ! empty( $values['item_id'] ) ) {
-						$course = learn_press_get_course( $values['item_id'] );
-						if ( $course && $course->exists() && $values['quantity'] > 0 ) {
-							if ( ! $course->is_purchasable() ) {
-								learn_press_add_message( sprintf( __( '%s has been removed from your cart because it can no longer be purchased.', 'learnpress' ), $course->get_title() ), 'error' );
-								do_action( 'learn-press/remove-cart-item-from-session', $cart, $values );
-							} else {
-								$data                            = array_merge( $values, array( 'data' => $course ) );
-								$this->_cart_content[ $cart_id ] = apply_filters( 'learn-press/get-cart-item-from-session', $data, $values, $cart_id );
-							}
-						}
-					}
-				}
-			}
-
-			do_action( 'learn_press_cart_loaded_from_session' );
-			LP()->session->set( 'cart', $this->get_cart_for_session() );
-			do_action( 'learn_press_get_cart_from_session' );
-
-			// Update total
-			$this->calculate_totals();
-		}
+		$session_data        = LearnPress::instance()->session->get_session_data();
+		$cart                = maybe_unserialize( $session_data['cart'] ?? '' );
+		$this->_cart_content = $cart;
+		return $this->_cart_content;
 	}
 
 	/**
@@ -304,10 +350,7 @@ class LP_Cart {
 	 * @return mixed
 	 */
 	public function get_subtotal() {
-		$subtotal = learn_press_format_price( $this->subtotal, true );
-
-		// @deprecated
-		$subtotal = apply_filters( 'learn_press_get_cart_subtotal', $subtotal );
+		$subtotal = apply_filters( 'learn_press_get_cart_subtotal', learn_press_format_price( $this->subtotal, true ) );
 
 		return apply_filters( 'learn-press/cart-subtotal', $subtotal );
 	}
@@ -318,10 +361,7 @@ class LP_Cart {
 	 * @return mixed
 	 */
 	public function get_total() {
-		$total = learn_press_format_price( $this->total, true );
-
-		// @deprecated
-		$total = apply_filters( 'learn_press_get_cart_total', $total );
+		$total = apply_filters( 'learn_press_get_cart_total', learn_press_format_price( $this->total, true ) );
 
 		return apply_filters( 'learn-press/cart-total', $total );
 	}
@@ -336,33 +376,36 @@ class LP_Cart {
 	 */
 	public function generate_cart_id( $course_id, $data = '' ) {
 		$cart_id = array( $course_id );
+
 		if ( is_array( $data ) ) {
 			foreach ( $data as $key => $value ) {
 				$cart_id[1] = '';
+
 				if ( is_array( $value ) || is_object( $value ) ) {
 					$value = http_build_query( $value );
 				}
+
 				$cart_id[1] .= trim( $key ) . trim( $value );
 			}
 		}
 
-		return apply_filters( 'learn-press/cart-id', md5( join( '_', $cart_id ) ), $cart_id, sanitize_post( $data, 'raw' ) );
+		return apply_filters( 'learn-press/cart-id', md5( join( '_', $cart_id ) ), $cart_id, $data );
 	}
 
 	/**
-	 * Return sub-total of cart content
+	 * Return subtotal of cart content
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|LP_Certificate $item
 	 * @param int       $quantity
 	 *
 	 * @return mixed
 	 */
-	public function get_item_subtotal( $course, $quantity = 1 ) {
-		$price           = $course->get_price();
+	public function get_item_subtotal( $item, int $quantity = 1 ) {
+		$price           = $item->get_price();
 		$row_price       = $price * $quantity;
 		$course_subtotal = learn_press_format_price( $row_price, true );
 
-		return apply_filters( 'learn-press/cart/item-subtotal', $course_subtotal, $course, $quantity, $this );
+		return apply_filters( 'learn-press/cart/item-subtotal', $course_subtotal, $item, $quantity, $this );
 	}
 
 	/**
@@ -370,14 +413,15 @@ class LP_Cart {
 	 *
 	 * @return $this
 	 */
-	public function empty_cart() {
+	public function empty_cart(): LP_Cart {
 
 		do_action( 'learn-press/cart/before-empty' );
 
 		$this->_cart_content = array();
-
-		unset( LP()->session->order_awaiting_payment );
-		unset( LP()->session->cart );
+		$lp_session          = LearnPress::instance()->session;
+		$lp_session->set( 'cart', '', true );
+		//unset( LearnPress::instance()->session->order_awaiting_payment );
+		//unset( LearnPress::instance()->session->cart );
 
 		do_action( 'learn-press/cart/emptied' );
 
@@ -389,8 +433,9 @@ class LP_Cart {
 	 *
 	 * @return bool
 	 */
-	public function is_empty() {
-		return sizeof( $this->get_cart() ) === 0; //!$this->_cart_content['items'];
+	public function is_empty(): bool {
+		$this->get_cart_from_session();
+		return sizeof( $this->get_cart() ) === 0;
 	}
 
 	/**
@@ -412,59 +457,8 @@ class LP_Cart {
 	 * @return mixed
 	 */
 	public function needs_payment() {
-		return apply_filters( 'learn_press_cart_needs_payment', $this->total > 0, $this );
-	}
-
-	/**
-	 * Process action for purchase course button
-	 *
-	 * @param $course_id
-	 */
-	public function purchase_course_handler( $course_id ) {
-
-		do_action( 'learn_press_before_purchase_course_handler', $course_id, $this );
-
-		if ( apply_filters( 'learn_press_purchase_single_course', true ) ) {
-			$this->empty_cart();
-		}
-		$this->add_to_cart( $course_id, 1, $_POST );
-		$redirect      = learn_press_get_checkout_url();
-		$has_checkout  = $redirect ? true : false;
-		$need_checkout = $this->needs_payment();
-
-		// In case the course is FREE and "No checkout free course" is turn off
-		if ( ! $need_checkout ) {
-			$user = learn_press_get_current_user();
-			if ( ! $user->has_purchased_course( $course_id )/* || $user->has_finished_course( $course_id ) */ ) {
-				require_once LP_PLUGIN_PATH . '/inc/gateways/class-lp-gateway-none.php';
-				$checkout = learn_press_get_checkout( array( 'payment_method' => new LP_Gateway_None() ) );
-
-				/**
-				 * + Auto enroll
-				 */
-				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10, 2 );
-				$checkout->process_checkout();
-				remove_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10 );
-			}/* else {
-				if ( $user->has_finished_course( $course_id ) ) {
-					learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
-				} else {
-					learn_press_add_message( __( 'You have already enrolled course', 'learnpress' ) );
-				}
-			}*/
-		} else {
-
-			// Checkout page is not setting up
-			if ( ! $has_checkout ) {
-				learn_press_add_message( __( 'Checkout page hasn\'t been setup', 'learnpress' ), 'error' );
-			} else {
-				wp_redirect( apply_filters( 'learn_press_checkout_redirect', $redirect ) );
-				exit();
-			}
-
-		}
-
-		return;
+		$cart_data = $this->calculate_totals();
+		return apply_filters( 'learn_press_cart_needs_payment', $cart_data->total > 0, $this );
 	}
 
 	/**
@@ -478,28 +472,13 @@ class LP_Cart {
 	/**
 	 * Get unique instance of LP_Cart object
 	 *
-	 * @return LP_Cart|mixed
+	 * @return LP_Cart
 	 */
 	public static function instance() {
-		$class = __CLASS__;
-		if ( function_exists( 'get_called_class' ) ) {
-			$class = get_called_class();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
 
-		$backtrace = debug_backtrace();
-
-		if ( isset( $backtrace[2]['function'] ) ) {
-			if ( 'call_user_func' === $backtrace[2]['function'] ) {
-				$class = $backtrace[2]['args'][0][0];
-			}
-		} elseif ( isset( $backtrace[2]['class'] ) ) {
-			$class = $backtrace[2]['class'];
-		}
-
-		if ( empty( self::$instances[ $class ] ) ) {
-			self::$instances[ $class ] = new $class();
-		}
-
-		return self::$instances[ $class ];
+		return self::$instance;
 	}
 }

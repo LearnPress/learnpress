@@ -35,12 +35,17 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 */
 	public function dispatch() {
 		check_ajax_referer( 'learnpress_admin_quiz_editor', 'nonce' );
-		$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+		$args = wp_parse_args(
+			$_REQUEST,
+			array(
+				'id'   => false,
+				'type' => '',
+			)
+		);
 
 		// get quiz
-		$quiz_id = absint( $args['id'] );
+		$quiz_id = $args['id'];
 		$quiz    = learn_press_get_quiz( $quiz_id );
-		$type    = sanitize_text_field( wp_unslash( $args['type'] ) );
 
 		if ( ! $quiz ) {
 			return new WP_Error( 'INVALID_QUIZ', __( 'Invalid quiz', 'learnpress' ) );
@@ -51,7 +56,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$this->question_curd = new LP_Question_CURD();
 		$this->result        = array( 'status' => false );
 
-		$this->call( $type, array( $args ) );
+		$this->call( $args['type'], array( $args ) );
 
 		return $this->get_result();
 	}
@@ -63,7 +68,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 *
 	 * @param       $question
 	 * @param       $object | if true, input in question object, do not need init LP_Question::get_question()
-	 * @param array $args
+	 * @param array                                                                                    $args
 	 *
 	 * @return array
 	 */
@@ -89,22 +94,25 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			}
 		}
 		$answers = array_values( $answer );
-		$data    = wp_parse_args( $args, array(
-			'id'       => $question_id,
-			'open'     => false,
-			'title'    => get_the_title( $question_id ),
-			'type'     => array(
-				'key'   => $question->get_type(),
-				'label' => $question->get_type_label()
-			),
-			'answers'  => $answers,
-			'settings' => array(
-				'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
-				'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
-				'hint'        => get_post_meta( $question_id, '_lp_hint', true )
-			),
-			'order'    => count( $answers )
-		) );
+		$data    = wp_parse_args(
+			$args,
+			array(
+				'id'       => $question_id,
+				'open'     => false,
+				'title'    => get_the_title( $question_id ),
+				'type'     => array(
+					'key'   => $question->get_type(),
+					'label' => $question->get_type_label(),
+				),
+				'answers'  => $answers,
+				'settings' => array(
+					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
+					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
+					'hint'        => get_post_meta( $question_id, '_lp_hint', true ),
+				),
+				'order'    => count( $answers ),
+			)
+		);
 
 		return $data;
 	}
@@ -127,7 +135,6 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function new_question( $args = array() ) {
-		// new question
 		$question = ! empty( $args['question'] ) ? $args['question'] : false;
 		$question = json_decode( wp_unslash( $question ), true );
 
@@ -147,7 +154,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 				'id'      => $this->quiz->get_id(),
 				'title'   => $draft_quiz['title'] ? $draft_quiz['title'] : __( 'New Quiz', 'learnpress' ),
 				'content' => $draft_quiz['content'],
-				'status'  => 'draft'
+				'status'  => 'draft',
 			);
 
 			$quiz_id = $this->quiz_curd->create( $quiz_args );
@@ -168,14 +175,16 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$new_question = $this->question_curd->create( $args );
 
 		if ( ! is_wp_error( $new_question ) ) {
-
 			// update hidden questions in quiz meta
 			$quiz             = LP_Quiz::get_quiz( $quiz_id );
-			$hidden_questions = $quiz->get_questions();
+			$hidden_questions = $quiz->get_question_ids();
 
 			if ( $hidden_questions ) {
-				unset( $hidden_questions[ $new_question->get_id() ] );
-				$hidden_questions = array_keys( $hidden_questions );
+				$index = array_search( $new_question->get_id(), $hidden_questions );
+				if ( $index !== false ) {
+					unset( $hidden_questions[ $index ] );
+				}
+				//$hidden_questions = array_keys( $hidden_questions );
 			}
 
 			update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
@@ -224,7 +233,12 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
-		wp_update_post( array( 'ID' => $question['id'], 'post_title' => $question['title'] ) );
+		wp_update_post(
+			array(
+				'ID'         => $question['id'],
+				'post_title' => $question['title'],
+			)
+		);
 
 		$this->result['status'] = true;
 
@@ -246,7 +260,6 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 		$question = LP_Question::get_question( $question_id );
 
-		// change question type
 		$question = $this->question_curd->change_question_type( $question, $type );
 
 		$this->result = $this->get_question_data_to_quiz_editor( $question, true );
@@ -336,7 +349,6 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$order = ! empty( $args['order'] ) ? $args['order'] : false;
 		$order = json_decode( wp_unslash( $order ), true );
 
-
 		if ( ! ( $question_id && $order ) ) {
 			return false;
 		}
@@ -401,10 +413,10 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function delete_question_answer( $args = array() ) {
-		$question_id = isset( $_POST['question_id'] ) ? absint( $_POST['question_id'] ) : false;
-		$answer_id   = isset( $_POST['answer_id'] ) ? absint( $_POST['answer_id'] ) : false;
+		$question_id = LP_Helper::sanitize_params_submitted( $_POST['question_id'] ?? 0 );
+		$answer_id   = LP_Helper::sanitize_params_submitted( $_POST['answer_id'] ?? 0 );
 
-		if ( ! ( $question_id && $answer_id ) ) {
+		if ( ! $question_id || ! $answer_id ) {
 			return false;
 		}
 
@@ -425,20 +437,20 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
-		// new answer
-		$answer = LP_Question::get_default_answer();
-		// add new
+		$answer        = LP_Question::get_default_answer();
 		$new_answer_id = $this->question_curd->new_answer( $question_id, $answer );
-
-		$question = LP_Question::get_question( $question_id );
+		$question      = LP_Question::get_question( $question_id );
 
 		if ( $new_answer_id ) {
-			$this->result = array_merge( $answer, array(
-				'temp_id'            => isset( $args['question_answer_id'] ) ? $args['question_answer_id'] : 0,
-				'question_answer_id' => $new_answer_id,
-				'question_id'        => $question_id,
-				'answer_order'       => count( $question->get_data( 'answer_options' ) )
-			) );
+			$this->result = array_merge(
+				$answer,
+				array(
+					'temp_id'            => isset( $args['question_answer_id'] ) ? $args['question_answer_id'] : 0,
+					'question_answer_id' => $new_answer_id,
+					'question_id'        => $question_id,
+					'order'              => count( $question->get_data( 'answer_options' ) ),
+				)
+			);
 
 			return true;
 		}
@@ -448,7 +460,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 	public function update_quiz_questions_hidden( $args = array() ) {
 		$id        = $args['id'];
-		$questions = $args['hidden'];
+		$questions = isset( $args['hidden'] ) ? $args['hidden'] : false;
 
 		if ( $questions ) {
 			update_post_meta( $id, '_hidden_questions_settings', $questions );
@@ -472,10 +484,12 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
-		wp_update_post( array(
-			'ID'           => $question['id'],
-			'post_content' => $question['settings']['content']
-		) );
+		wp_update_post(
+			array(
+				'ID'           => $question['id'],
+				'post_content' => $question['settings']['content'],
+			)
+		);
 
 		$this->result['status'] = true;
 
@@ -525,15 +539,17 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			}
 		}
 
-		$search = new LP_Modal_Search_Items( array(
-			'type'       => 'lp_question',
-			'context'    => 'quiz',
-			'context_id' => $this->quiz->get_id(),
-			'term'       => $query,
-			'limit'      => apply_filters( 'learn-press/quiz-editor/choose-items-limit', 10 ),
-			'paged'      => $page,
-			'exclude'    => $ids_exclude
-		) );
+		$search = new LP_Modal_Search_Items(
+			array(
+				'type'       => 'lp_question',
+				'context'    => 'quiz',
+				'context_id' => $this->quiz->get_id(),
+				'term'       => $query,
+				'limit'      => apply_filters( 'learn-press/quiz-editor/choose-items-limit', 10 ),
+				'paged'      => $page,
+				'exclude'    => $ids_exclude,
+			)
+		);
 
 		$ids_item = $search->get_items();
 
@@ -544,13 +560,13 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			$items[] = array(
 				'id'    => $post->ID,
 				'title' => $post->post_title,
-				'type'  => $post->post_type
+				'type'  => $post->post_type,
 			);
 		}
 
 		$this->result = array(
 			'items'      => $items,
-			'pagination' => $search->get_pagination( false )
+			'pagination' => $search->get_pagination( false ),
 		);
 
 		return true;
@@ -562,26 +578,25 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function add_questions_to_quiz( $args = array() ) {
-		// added questions
-		$questions = isset( $_POST['items'] ) ? LP_Helper::sanitize_params_submitted( $_POST['items'] ) : false;
-		$questions = json_decode( $questions, true );
+		$questions = LP_Helper::sanitize_params_submitted( $_POST['items'] ?? '' );
 
 		if ( ! $questions ) {
 			return false;
 		}
 
+		$questions = json_decode( wp_unslash( $questions ), true );
+
 		$quiz_id = $this->quiz->get_id();
 
-		// draft quiz
 		if ( get_post_status( $quiz_id ) == 'auto-draft' ) {
-			$draft_quiz = ! empty( $args['draft_quiz'] ) ? sanitize_text_field( wp_unslash( $args['draft_quiz'] ) ) : '';
-			$draft_quiz = (array) ( json_decode( $draft_quiz, '' ) );
+			$draft_quiz = ! empty( $args['draft_quiz'] ) ? $args['draft_quiz'] : '';
+			$draft_quiz = (array) ( json_decode( wp_unslash( $draft_quiz ), '' ) );
 
 			$quiz_args = array(
 				'id'      => $quiz_id,
 				'title'   => $draft_quiz['title'],
 				'content' => $draft_quiz['content'],
-				'status'  => 'draft'
+				'status'  => 'draft',
 			);
 
 			$quiz_id = $this->quiz_curd->create( $quiz_args );
@@ -594,7 +609,6 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		}
 
 		if ( $questions ) {
-			// add question to hidden questions in quiz meta
 			$hidden_questions = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
 
 			if ( ! $hidden_questions ) {
@@ -602,9 +616,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			}
 
 			foreach ( $questions as $key => $question ) {
-				// add question to hidden questions in quiz meta
 				$hidden_questions[] = $question['id'];
-				// add question to quiz
 				$this->quiz_curd->add_question( $quiz_id, $question['id'] );
 			}
 

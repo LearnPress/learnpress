@@ -39,8 +39,9 @@ class LP_Nonce_Helper {
 	 * @since 3.0.0
 	 *
 	 * @return bool
+	 * @deprecated 4.1.6.9
 	 */
-	public static function verify_course( $nonce, $action, $course_id = 0, $user_id = 0 ) {
+	/*public static function verify_course( $nonce, $action, $course_id = 0, $user_id = 0 ) {
 		if ( ! $course_id ) {
 			$course_id = get_the_ID();
 		}
@@ -49,24 +50,26 @@ class LP_Nonce_Helper {
 			$user_id = get_current_user_id();
 		}
 
-		return wp_verify_nonce( sanitize_key( $nonce ), sprintf( 'learn-press-%s-course-%s-%s', $action, $course_id, $user_id ) );
-	}
+		return wp_verify_nonce( $nonce, sprintf( 'learn-press-%s-course-%s-%s', $action, $course_id, $user_id ) );
+	}*/
 
 	public static function quiz_action( $action, $quiz_id, $course_id, $ajax = false ) {
 		?>
-        <input type="hidden" name="quiz-id" value="<?php echo $quiz_id; ?>">
-        <input type="hidden" name="course-id" value="<?php echo $course_id; ?>">
+		<input type="hidden" name="quiz-id" value="<?php echo esc_attr( $quiz_id ); ?>">
+		<input type="hidden" name="course-id" value="<?php echo esc_attr( $course_id ); ?>">
 		<?php if ( $ajax ) { ?>
-            <input type="hidden" name="lp-ajax" value="<?php echo $action; ?>-quiz">
+			<input type="hidden" name="lp-ajax" value="<?php echo esc_attr( $action ); ?>-quiz">
 		<?php } else { ?>
-            <input type="hidden" name="lp-<?php echo $action; ?>-quiz" value="<?php echo $quiz_id; ?>">
+			<input type="hidden" name="lp-<?php echo esc_attr( $action ); ?>-quiz" value="<?php echo esc_attr( $quiz_id ); ?>">
 		<?php } ?>
-        <input type="hidden" name="<?php echo $action; ?>-quiz-nonce"
-               value="<?php echo wp_create_nonce( sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) ); ?>">
+		<input type="hidden" name="<?php echo esc_attr( $action ); ?>-quiz-nonce" value="<?php echo wp_create_nonce( sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) ); ?>">
 		<?php
 	}
 
-	public static function verify_quiz_action( $action, $nonce = '', $quiz_id = 0, $course_id = 0 ) {
+	/**
+	 * @deprecated 4.1.6.9
+	 */
+	/*public static function verify_quiz_action( $action, $nonce = '', $quiz_id = 0, $course_id = 0 ) {
 		if ( ! $nonce ) {
 			$nonce = LP_Request::get_post( $action . '-quiz-nonce' );
 		}
@@ -80,6 +83,6 @@ class LP_Nonce_Helper {
 			$course_id = get_the_ID();
 		}
 
-		return wp_verify_nonce( sanitize_key( $nonce ), sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) );
-	}
+		return wp_verify_nonce( $nonce, sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) );
+	}*/
 }

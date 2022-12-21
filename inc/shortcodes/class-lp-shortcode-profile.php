@@ -5,13 +5,12 @@
  * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
- * @version  3.0.0
+ * @version  4.0.0
  * @extends  LP_Abstract_Shortcode
  */
 
-/**
- * Prevent loading this file directly
- */
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
@@ -29,16 +28,63 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			parent::__construct( $atts );
 		}
 
+
+		public function can_view_profile() {
+			global $wp;
+
+			$current_user = learn_press_get_current_user();
+			$viewing_user = true;
+
+			if ( current_user_can( ADMIN_ROLE ) ) {
+				$viewing_user = true;
+			} elseif ( empty( $wp->query_vars['user'] ) ) {
+				$viewing_user = $current_user;
+			} else {
+				$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );
+
+				if ( $wp_user ) {
+					$viewing_user = learn_press_get_user( $wp_user->ID );
+
+					if ( $viewing_user->is_guest() ) {
+						$viewing_user = false;
+					}
+				}
+			}
+
+			if ( ! $viewing_user ) {
+				return new WP_Error( 'cannot-view-profile', esc_html__( 'You can\'t view the user profile', 'learnpress' ) );
+			}
+		}
+
 		/**
 		 * Shortcode content.
 		 *
 		 * @return string
 		 */
 		public function output() {
+			$profile = LP_Global::profile();
+
+			wp_enqueue_style( 'learnpress' );
 
 			ob_start();
-			learn_press_print_messages();
-			learn_press_get_template( 'profile/profile.php' );
+
+			if ( is_wp_error( $this->can_view_profile() ) ) {
+				$messages = array(
+					'error' => array(
+						'content' => ! empty( $this->can_view_profile()->get_error_message() ) ? $this->can_view_profile()->get_error_message() : 'LearnPress Profile: Error',
+					),
+				);
+
+				echo '<div class="lp-content-area">';
+				learn_press_get_template( 'global/message.php', array( 'messages' => $messages ) );
+				echo '</div>';
+			} else {
+				//learn_press_print_messages();
+				learn_press_show_message();
+				//learn_press_get_template( 'pages/profile.php', array( 'profile' => $profile ) );
+				Template::instance()->get_frontend_template( 'pages/profile.php', array( 'profile' => $profile ) );
+			}
+
 			$output = ob_get_clean();
 
 			return $output;

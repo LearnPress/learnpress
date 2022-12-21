@@ -30,18 +30,12 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		protected $_content = '';
 
 		/**
-		 * @var null
-		 */
-		protected $_video = null;
-
-		/**
 		 * LP_Abstract_Post_Data constructor.
 		 *
 		 * @param mixed $post
 		 * @param array $args
 		 *
 		 * @since 3.0.0
-		 *
 		 */
 		public function __construct( $post, $args = null ) {
 			$id = 0;
@@ -63,7 +57,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return array|mixed
 		 * @since 3.0.0
-		 *
 		 */
 		public function get_status() {
 			return $this->get_data( 'status' );
@@ -74,7 +67,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return bool
 		 * @since 3.0.0
-		 *
 		 */
 		public function is_exists() {
 			return get_post_type( $this->get_id() ) === $this->_post_type;
@@ -85,7 +77,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return bool
 		 * @since 3.0.0
-		 *
 		 */
 		public function is_trashed() {
 			return get_post_status( $this->get_id() ) === 'trash';
@@ -96,11 +87,12 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return mixed
 		 * @since 3.0.0
-		 *
 		 */
 		public function is_publish() {
-			return apply_filters( 'learn-press/' . $this->_post_type . '/is-publish',
-				get_post_status( $this->get_id() ) === 'publish' );
+			return apply_filters(
+				'learn-press/' . $this->_post_type . '/is-publish',
+				get_post_status( $this->get_id() ) === 'publish'
+			);
 		}
 
 		/**
@@ -110,7 +102,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return string
 		 * @since 3.0.0
-		 *
 		 */
 		public function get_title( $context = '' ) {
 			$title = get_the_title( $this->get_id() );
@@ -123,35 +114,41 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		}
 
 		/**
-		 * Get the content.
+		 * Get the content of course, course's item
 		 *
 		 * @param string $context
 		 * @param int $length
 		 * @param string $more
 		 *
 		 * @return string
-		 * @since 3.0.0
-		 *
+		 * @since 4.0.0
+		 * @editor tungnx
+		 * todo: should rewrite this
+		 * @reason Current all post type is item of course ex: lesson, quiz... use same page is course single
 		 */
 		public function get_content( $context = 'display', $length = - 1, $more = '' ) {
 			if ( 'display' === $context ) {
-				global $post, $wp_query;
+				if ( ! $this->_content ) {
+					global $post, $wp_query;
 
-				$posts = apply_filters_ref_array( 'the_posts', array(
-					array( get_post( $this->get_id() ) ),
-					&$wp_query
-				) );
+					// Post not preview
+					if ( ! isset( $_REQUEST['preview'] ) ) {
+						// Fix style, js if content is WP Bakery
+						if ( class_exists( 'WPBMap' ) && method_exists( 'WPBMap', 'addAllMappedShortcodes' ) ) {
+							WPBMap::addAllMappedShortcodes();
+						}
 
-				if ( $posts ) {
-					$post = $posts[0];
+						$post = get_post( $this->get_id() );
+
+						setup_postdata( $post );
+					}
+
+					$content_post   = get_the_content();
+					$content_post   = apply_filters( 'the_content', $content_post );
+					$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
+					$this->_content = $content_post;
+					wp_reset_postdata();
 				}
-
-				setup_postdata( $post );
-				$content_post   = get_the_content();
-				$content_post   = apply_filters( 'the_content', $content_post );
-				$content_post   = str_replace( ']]>', ']]&gt;', $content_post );
-				$this->_content = $content_post;
-				wp_reset_postdata();
 			} else {
 				$content = get_post_field( 'post_content', $this->get_id() );
 				if ( $length > 1 ) {
@@ -162,35 +159,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 			}
 
 			return $this->_content;
-		}
-
-		public function get_video() {
-
-			if ( 'yes' !== LP()->settings->get( 'enable_lesson_video' ) ) {
-				return false;
-			}
-
-			if ( ( $content = $this->get_content() ) && ( $this->_video === null ) ) {
-				$video = get_media_embedded_in_content( $content, array( 'video', 'object', 'embed', 'iframe' ) );
-
-				if ( $video ) {
-					$this->_video = $video;
-				} else {
-					$this->_video = '';
-				}
-			}
-
-			return $this->_video;
-		}
-
-		public function get_content_video() {
-			$content = $this->get_content();
-
-			if ( $this->get_video() ) {
-				return str_replace( $this->_video[0], '', $content );
-			}
-
-			return $content;
 		}
 
 		/*
@@ -207,7 +175,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return false|string
 		 * @since 3.0.0
-		 *
 		 */
 		public function get_post_type() {
 			return get_post_type( $this->get_id() );
@@ -218,7 +185,6 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.0
-		 *
 		 */
 		public static function get_default_meta() {
 			return array();
@@ -228,7 +194,12 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 			return get_edit_post_link( $this->get_id() );
 		}
 
-		public function current_user_can_edit() {
+		/**
+		 * Check user can edit item
+		 *
+		 * @return bool
+		 */
+		public function current_user_can_edit(): bool {
 			return learn_press_get_current_user()->can_edit( $this->get_id() );
 		}
 

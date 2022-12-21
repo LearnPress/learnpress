@@ -1,0 +1,11 @@
+.twentyseventeen {
+    #primary {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 48em) {
+    .has-sidebar:not(.error404) #primary {
+        width: 100%;
+    }
+}

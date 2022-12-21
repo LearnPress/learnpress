@@ -1,0 +1,17 @@
+#course-editor {
+	margin-bottom: 10px;
+
+	.inside {
+
+		.rwmb-custom_html-wrapper {
+
+			> .rwmb-label {
+				display: none;
+			}
+
+			> .rwmb-input {
+				margin-left: 0;
+			}
+		}
+	}
+}

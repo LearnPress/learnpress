@@ -17,7 +17,7 @@
 				watch: {
 					show: function show( value ) {
 						if ( value ) {
-							$( this.$refs.search ).focus();
+							$( this.$refs.search ).trigger( 'focus' );
 						}
 					},
 				},
@@ -139,7 +139,7 @@
 						this.show = false;
 					},
 					focusSearch: _.debounce( function() {
-						$( 'input[name="search"]', this.$el ).focus();
+						$( 'input[name="search"]', this.$el ).trigger( 'focus' );
 					}, 200 ),
 				},
 			} );

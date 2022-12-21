@@ -6,60 +6,74 @@
  * @package LearnPress/Admin/Views
  * @version 3.0.8
  */
-defined( 'ABSPATH' ) or die();
 
+defined( 'ABSPATH' ) || exit;
 ?>
+
 <div class="notice notice-warning lp-notice-update-database do-updating">
-    <p>
-		<?php _e( '<strong>LearnPress update</strong> – We are running updater to upgrade your database to the latest version.', 'learnpress' ); ?>
-    </p>
+	<p>
+		<?php _e( '<strong>LearnPress update</strong> – We are running an update to upgrade your database to the latest version.', 'learnpress' ); ?>
+	</p>
 </div>
 
-<script type="text/javascript">
-    (function (win, doc) {
-        var t = null;
+<script>
+	(function( win, doc ) {
+		var t = null;
+		var $ = jQuery;
 
-        function parseJSON(data) {
-            var m = (data + '').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
-            try {
-                if (m) {
-                    data = $.parseJSON(m[1]);
-                } else {
-                    data = $.parseJSON(data);
-                }
-            } catch (e) {
-                data = {};
-            }
-            return data;
-        }
+		function parseJSON( data ) {
+			if ( typeof data !== 'string' ) {
+				return data;
+			}
 
-        function sendRequest() {
-            t = setTimeout(function () {
-                var $ = jQuery;
-                $.ajax({
-                    url: '',
-                    data: {
-                        'lp-ajax': 'check-updated'
-                    },
-                    success: function (response) {
-                        response = parseJSON(response);
-                        if (response.result === 'success') {
-                            clearInterval(t);
-                            $('.lp-notice-update-database.do-updating').replaceWith($(response.message));
-                            return;
-                        }
+			var m = String.raw({raw: data}).match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/s);
 
-                        sendRequest();
-                    }
-                });
-            }, 3000);
-        }
+			try {
+				if (m) {
+					data = $.parseJSON(m[1].replace(/(?:\r\n|\r|\n)/g, ''));
+				} else {
+					data = $.parseJSON(data);
+				}
+			} catch (e) {
+				data = {};
+			}
+			return data;
+		}
 
-        if (document.readyState === "complete") {
-            sendRequest.apply(win);
-        } else {
-            window.addEventListener('load', sendRequest);
-        }
-    })(window, document)
+		function sendRequest() {
+			t = setTimeout( function() {
+				var $ = jQuery;
+				$.ajax({
+					url: '',
+					data: {
+						'lp-ajax': 'check-updated'
+					},
+					success: function( response ) {
+						response = parseJSON( response );
+
+						if ( response.result === 'success' ) {
+							clearTimeout(t);
+							$('.lp-notice-update-database.do-updating').replaceWith( $( response.message ) );
+							window.onbeforeunload = null;
+							return;
+						}
+						sendRequest();
+					}
+				});
+			}, 1000 );
+
+			window.addEventListener( 'beforeunload', function( e ) {
+				e.preventDefault();
+
+				e.returnValue = 'Warning! Please don\'t close or reload this page.';
+			} );
+		}
+
+		if ( document.readyState === "complete" ) {
+			sendRequest.apply( win );
+		} else {
+			window.addEventListener( 'load', sendRequest );
+		}
+	})( window, document );
 
 </script>

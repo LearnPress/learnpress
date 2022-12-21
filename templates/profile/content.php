@@ -6,60 +6,44 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.1
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $user ) ) {
-	$user = learn_press_get_current_user();
+/**
+ * @var LP_Profile_Tab $profile_tab
+ */
+if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( $profile_tab ) ) {
+	return;
 }
-
-$profile = learn_press_get_profile();
-$tabs    = $profile->get_tabs();
-$current = $profile->get_current_tab();
-
 ?>
-<div id="learn-press-profile-content" class="lp-profile-content">
 
-	<?php foreach ( $tabs as $tab_key => $tab_data ) {
+<article id="profile-content" class="lp-profile-content">
+	<?php learn_press_print_messages( true ); ?>
+	<div id="profile-content-<?php echo esc_attr( $tab_key ); ?>">
+		<?php do_action( 'learn-press/before-profile-content', $tab_key, $profile_tab, $user ); ?>
 
-		if ( ! $profile->tab_is_visible_for_user( $tab_key ) ) {
-			continue;
+		<?php
+		if ( empty( $profile_tab->get( 'sections' ) ) ) {
+			if ( $profile_tab->get( 'callback' ) && is_callable( $profile_tab->get( 'callback' ) ) ) {
+				echo call_user_func_array( $profile_tab->get( 'callback' ), array( $tab_key, $profile_tab, $user ) );
+			} else {
+				do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );
+			}
+		} else {
+			foreach ( $profile_tab->get( 'sections' ) as $key => $section ) {
+				if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
+					if ( isset( $section['callback'] ) && is_callable( $section['callback'] ) ) {
+						echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );
+					} else {
+						do_action( 'learn-press/profile-section-content', $key, $section, $user );
+					}
+				}
+			}
 		}
 		?>
 
-        <div id="profile-content-<?php echo esc_attr( $tab_key ); ?>">
-			<?php
-			learn_press_print_messages( true );
-
-			// show profile sections
-			do_action( 'learn-press/before-profile-content', $tab_key, $tab_data, $user ); ?>
-
-			<?php if ( empty( $tab_data['sections'] ) ) {
-				if ( is_callable( $tab_data['callback'] ) ) {
-					echo call_user_func_array( $tab_data['callback'], array( $tab_key, $tab_data, $user ) );
-				} else {
-					do_action( 'learn-press/profile-content', $tab_key, $tab_data, $user );
-				}
-			} else {
-				foreach ( $tab_data['sections'] as $key => $section ) {
-					if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
-						if ( isset( $section['callback'] ) && is_callable( $section['callback'] ) ) {
-							echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );
-						} else {
-							do_action( 'learn-press/profile-section-content', $key, $section, $user );
-						}
-					}
-				}
-			} ?>
-
-			<?php do_action( 'learn-press/after-profile-content' ); ?>
-        </div>
-
-	<?php } ?>
-
-</div>
+		<?php do_action( 'learn-press/after-profile-content' ); ?>
+	</div>
+</article>

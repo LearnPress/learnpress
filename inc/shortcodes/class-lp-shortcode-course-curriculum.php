@@ -40,6 +40,8 @@ if ( ! class_exists( 'LP_Shortcode_Course_Curriculum' ) ) {
 			global $post;
 			$post = get_post( $this->_atts['id'] );
 
+			require_once realpath( LP_PLUGIN_PATH . '/inc/course/class-model-user-can-view-course-item.php' );
+
 			if ( ! $post || ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) ) {
 				learn_press_display_message( __( 'Invalid course.', 'learnpress' ), 'error' );
 			} else {

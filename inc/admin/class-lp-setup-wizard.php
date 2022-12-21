@@ -25,8 +25,9 @@ class LP_Setup_Wizard {
 
 		$actions = array(
 			'setup-create-pages' => 'create_pages',
-			'get-price-format'   => 'get_price_format'
+			'get-price-format'   => 'get_price_format',
 		);
+
 		foreach ( $actions as $action => $callback ) {
 			LP_Request::register_ajax( $action, array( $this, $callback ) );
 		}
@@ -36,17 +37,14 @@ class LP_Setup_Wizard {
 	 * Create static pages action
 	 */
 	public function create_pages() {
-		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( '_wpnonce', 'setup-create-pages' ) ) ) ) {
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce', 'setup-create-pages' ) ) ) {
 			die();
 		}
 
 		$settings = LP_Request::get( 'settings' );
-
-		if ( ! empty( $settings ) ) {
-			foreach ( $settings['pages'] as $page => $page_id ) {
-				if ( empty( $page_id ) ) {
-					$_REQUEST['settings']['pages'][ $page ] = $this->create_page( $page );
-				}
+		foreach ( $settings['pages'] as $page => $page_id ) {
+			if ( empty( $page_id ) ) {
+				$_REQUEST['settings']['pages'][ $page ] = $this->create_page( $page );
 			}
 		}
 
@@ -57,8 +55,8 @@ class LP_Setup_Wizard {
 	 * Get sample format price
 	 */
 	public static function get_price_format() {
-		LP_Setup_Wizard::instance()->save();
-		LP()->settings()->refresh();
+		self::instance()->save();
+		// LP_Settings::instance()->refresh();
 		echo learn_press_format_price( 1234.56, true );
 		die();
 	}
@@ -75,14 +73,22 @@ class LP_Setup_Wizard {
 			'courses_page_id'          => _x( 'LP Courses', 'static-page', 'learnpress' ),
 			'profile_page_id'          => _x( 'LP Profile', 'static-page', 'learnpress' ),
 			'checkout_page_id'         => _x( 'LP Checkout', 'static-page', 'learnpress' ),
-			'become_a_teacher_page_id' => _x( 'LP Become Teacher', 'static-page', 'learnpress' ),
+			'become_a_teacher_page_id' => _x( 'LP Become a Teacher', 'static-page', 'learnpress' ),
+			'term_conditions_page_id'  => _x( 'LP Terms and Conditions', 'static-page', 'learnpress' ),
 		);
+
+		if ( $page === 'profile_page_id' ) {
+			$page_content = '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+		} else {
+			$page_content = '';
+		}
 
 		return wp_insert_post(
 			array(
-				'post_title'  => $page_titles[ $page ],
-				'post_status' => 'publish',
-				'post_type'   => 'page'
+				'post_title'   => $page_titles[ $page ],
+				'post_status'  => 'publish',
+				'post_type'    => 'page',
+				'post_content' => isset( $page_content ) ? $page_content : '',
 			)
 		);
 	}
@@ -106,23 +112,23 @@ class LP_Setup_Wizard {
 		}
 
 		if ( 'finish' === LP_Request::get_string( 'step' ) ) {
-			delete_option( 'learn_press_install' );
-
-			LP_Install::create_options();
+			update_option( 'learn_press_setup_wizard_completed', 'yes' );
 		}
-
-		LP_Install::create_tables();
 
 		$this->save();
 
 		// Refresh new changes
-		LP()->settings()->refresh();
+		// LP_Settings::instance()->refresh();
 
 		$assets = learn_press_admin_assets();
 
-		@do_action( 'admin_enqueue_scripts' );
+		// tungnx: fix error with Woocommerce
+		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ) );
+		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'load_scripts' ), 15 );
+		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Features\Features', 'load_scripts' ), 15 );
+		// End fix
+		// @do_action( 'admin_enqueue_scripts' );
 
-		// TODO: move handle enqueue style on class-lp-admin-assets.php
 		wp_enqueue_style( 'buttons' );
 		wp_enqueue_style( 'common' );
 		wp_enqueue_style( 'forms' );
@@ -131,27 +137,36 @@ class LP_Setup_Wizard {
 		wp_enqueue_style( 'widgets' );
 		wp_enqueue_style( 'lp-admin', $assets->url( 'css/admin/admin.css' ) );
 		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
-		wp_enqueue_style( 'lp-select2', $assets->url( '../inc/libraries/meta-box/css/select2/select2.css' ) );
-		// TODO: move handle enqueue style on class-lp-admin-assets.php
+		wp_enqueue_style( 'lp-select2', $assets->url( 'src/css/vendor/select2.min.css' ) );
 
+		wp_enqueue_script( 'lp-select2', $assets->url( 'src/js/vendor/select2.full.min.js' ) );
+		wp_enqueue_script( 'lp-utils', $assets->url( 'js/dist/utils.js' ) );
+		wp_enqueue_script( 'lp-admin', $assets->url( 'src/js/admin/admin.js' ), uniqid(), true );
+		wp_enqueue_script( 'drop-down-page', $assets->url( 'src/js/admin/share/dropdown-pages.js' ), uniqid(), true );
+		wp_register_script( 'lp-setup', $assets->url( 'js/dist/admin/pages/setup.js' ), array( 'jquery', 'lp-admin' ), uniqid(), true );
+		wp_localize_script( 'lp-setup', 'lpGlobalSettings', learn_press_global_script_params() );
+		wp_enqueue_script( 'lp-setup' );
 		learn_press_admin_view( 'setup/header' );
 		learn_press_admin_view( 'setup/content', array( 'steps' => $this->get_steps() ) );
 		learn_press_admin_view( 'setup/footer' );
+
 		die();
 	}
 
+	/**
+	 * @TODO tungnx - need review
+	 */
 	public function save() {
 		$step = LP_Request::get_string( 'lp-setup-step' );
 
-//		if ( ! wp_verify_nonce( sanitize_key( LP_Request::get_string( 'lp-setup-nonce' ) ), 'lp-setup-step-' . $step ) ) {
-//			return;
-//		}
+		if ( ! wp_verify_nonce( LP_Request::get_string( 'lp-setup-nonce' ), 'lp-setup-step-' . $step ) ) {
+			return;
+		}
 
 		$postdata = LP_Request::get_array( 'settings' );
 		$steps    = array( 'payment', 'pages', 'currency', 'emails' );
 
 		if ( ( 'yes' !== LP_Request::get( 'skip' ) ) && in_array( $step, $steps ) ) {
-
 			if ( array_key_exists( 'paypal', $postdata ) ) {
 				update_option( 'learn_press_paypal', $postdata['paypal'] );
 			}
@@ -169,17 +184,15 @@ class LP_Setup_Wizard {
 			}
 
 			if ( array_key_exists( 'emails', $postdata ) ) {
-
 				if ( ! empty( $postdata['emails']['enable'] ) && ( $postdata['emails']['enable'] === 'yes' ) ) {
+					$emails = LP_Emails::instance()->emails;
 
-					if ( $emails = LP_Emails::instance()->emails ) {
+					if ( $emails ) {
 						foreach ( $emails as $email ) {
 							$response[ $email->id ] = $email->enable( true );
 						}
 					}
-
 				}
-
 			}
 		}
 
@@ -197,33 +210,33 @@ class LP_Setup_Wizard {
 			$steps = apply_filters(
 				'learn-press/setup-wizard/steps',
 				array(
-					'welcome'  => array(
+					'welcome'     => array(
 						'title'       => __( 'Welcome', 'learnpress' ),
 						'callback'    => array( $this, 'step_welcome' ),
-						'next_button' => __( 'Run setup wizard', 'learnpress' )
+						'next_button' => __( 'Run Setup Wizard', 'learnpress' ),
 					),
-					'currency' => array(
-						'title'            => __( 'Currency', 'learnpress' ),
-						'callback'         => array( $this, 'step_currency' ),
-						'back_button'      => false,
-						'skip_prev_button' => false
-					),
-					'pages'    => array(
-						'title'    => __( 'Static Pages', 'learnpress' ),
+					'pages'       => array(
+						'title'    => __( 'Pages', 'learnpress' ),
 						'callback' => array( $this, 'step_pages' ),
 					),
-					'payment'  => array(
-						'title'    => __( 'Payment', 'learnpress' ),
-						'callback' => array( $this, 'step_payment' )
-					),
-					'emails'   => array(
-						'title'    => __( 'Emails', 'learnpress' ),
-						'callback' => array( $this, 'step_emails' )
-					),
-					'finish'   => array(
-						'title'    => __( 'Finish', 'learnpress' ),
-						'callback' => array( $this, 'step_finish' )
-					)
+					// 'currency' => array(
+					// 'title'            => __( 'Currency', 'learnpress' ),
+					// 'callback'         => array( $this, 'step_currency' ),
+					// 'back_button'      => false,
+					// 'skip_prev_button' => false
+					// ),
+						'payment' => array(
+							'title'    => __( 'Payment', 'learnpress' ),
+							'callback' => array( $this, 'step_payment' ),
+						),
+					// 'emails'   => array(
+					// 'title'    => __( 'Emails', 'learnpress' ),
+					// 'callback' => array( $this, 'step_emails' )
+					// ),
+						'finish'  => array(
+							'title'    => __( 'Finish', 'learnpress' ),
+							'callback' => array( $this, 'step_finish' ),
+						),
 				)
 			);
 		}
@@ -299,7 +312,7 @@ class LP_Setup_Wizard {
 			$at ++;
 		}
 
-		return add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) );
+		return esc_url_raw( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );
 	}
 
 	/**
@@ -315,7 +328,7 @@ class LP_Setup_Wizard {
 			$at --;
 		}
 
-		return add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) );
+		return esc_url_raw( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );
 	}
 
 	/**
@@ -338,11 +351,10 @@ class LP_Setup_Wizard {
 	public function get_payments() {
 		return array(
 			'paypal' => array(
-				'name'     => __( 'Paypal', 'learnpress' ),
-				'desc'     => __( 'Enter your Paypal email address to accept payment via Paypal.', 'learnpress' ),
-				'icon'     => LP()->plugin_url( '/assets/images/paypal-2.png' ),
-				'callback' => array( $this, 'setup_paypal' )
-			)
+				'name'     => __( 'PayPal', 'learnpress' ),
+				'icon'     => LearnPress::instance()->plugin_url( '/assets/images/paypal-2.png' ),
+				'callback' => array( $this, 'setup_paypal' ),
+			),
 		);
 	}
 
@@ -402,6 +414,4 @@ class LP_Setup_Wizard {
 		return $instance;
 	}
 }
-
-// Init
 return LP_Setup_Wizard::instance();

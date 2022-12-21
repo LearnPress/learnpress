@@ -5,14 +5,14 @@
  * @version 3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+defined( 'ABSPATH' ) || die();
 ?>
 
 <div class="card">
 	<h2><?php _e( 'Remove current Data', 'learnpress' ); ?></h2>
 	<p><?php _e( 'Remove all courses, lessons, quizzes and questions.', 'learnpress' ); ?></p>
 	<form method="post" name="learn-press-form-remove-data">
-		<div class="learn-press-message lp-error">
+		<div class="">
 			<p><?php _e( 'Be careful before using this action!', 'learnpress' ); ?></p>
 		</div>
 		<label class="hide-if-js">

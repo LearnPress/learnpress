@@ -9,14 +9,9 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="profile-orders">
-
 	<?php do_action( 'learn-press/profile/orders' ); ?>
-
 </div>

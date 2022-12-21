@@ -79,10 +79,7 @@
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
             <wp:postmeta>
                 <wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
                 <wp:meta_value><![CDATA[]]></wp:meta_value>
@@ -90,11 +87,6 @@
             <wp:postmeta>
                 <wp:meta_key>_lp_course_status</wp:meta_key>
                 <wp:meta_value><![CDATA[publish]]></wp:meta_value>
-            </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_curriculum</wp:meta_key>
-                <wp:meta_value>
-                    <![CDATA[a:1:{i:0;a:3:{s:4:"name";s:10:"Section #1";s:11:"description";s:0:"";s:5:"items";a:2:{i:614;a:5:{s:4:"name";s:18:"word wide web 2222";s:8:"old_name";s:13:"word wide web";s:7:"item_id";s:4:"1232";s:15:"section_item_id";s:3:"614";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}}]]></wp:meta_value>
             </wp:postmeta>
             <wp:section>
                 <wp:section_id>207</wp:section_id>
@@ -188,11 +180,6 @@ Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
             <wp:postmeta>
                 <wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
                 <wp:meta_value><![CDATA[]]></wp:meta_value>
-            </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_curriculum</wp:meta_key>
-                <wp:meta_value>
-                    <![CDATA[a:6:{i:0;a:3:{s:4:"name";s:10:"Section #1";s:11:"description";s:33:"asd asd asdasd asdasd asdasd asda";s:5:"items";a:15:{i:615;a:5:{s:4:"name";s:12:"333333333333";s:8:"old_name";s:12:"333333333333";s:7:"item_id";s:4:"1146";s:15:"section_item_id";s:3:"615";s:9:"post_type";s:7:"lp_quiz";}i:616;a:5:{s:4:"name";s:18:"where are you now?";s:8:"old_name";s:18:"where are you now?";s:7:"item_id";s:4:"1148";s:15:"section_item_id";s:3:"616";s:9:"post_type";s:9:"lp_lesson";}i:617;a:5:{s:4:"name";s:21:"I am here, beside you";s:8:"old_name";s:21:"I am here, beside you";s:7:"item_id";s:4:"1149";s:15:"section_item_id";s:3:"617";s:9:"post_type";s:7:"lp_quiz";}i:618;a:5:{s:4:"name";s:9:"asdasdasd";s:8:"old_name";s:9:"asdasdasd";s:7:"item_id";s:4:"1143";s:15:"section_item_id";s:3:"618";s:9:"post_type";s:9:"lp_lesson";}i:619;a:5:{s:4:"name";s:9:"dsfsdfsdf";s:8:"old_name";s:9:"dsfsdfsdf";s:7:"item_id";s:4:"1144";s:15:"section_item_id";s:3:"619";s:9:"post_type";s:9:"lp_lesson";}i:620;a:5:{s:4:"name";s:8:"Lesson 1";s:8:"old_name";s:8:"Lesson 1";s:7:"item_id";s:4:"1139";s:15:"section_item_id";s:3:"620";s:9:"post_type";s:9:"lp_lesson";}i:621;a:5:{s:4:"name";s:8:"Lesson 2";s:8:"old_name";s:8:"Lesson 2";s:7:"item_id";s:4:"1140";s:15:"section_item_id";s:3:"621";s:9:"post_type";s:9:"lp_lesson";}i:622;a:5:{s:4:"name";s:8:"Lesson 3";s:8:"old_name";s:8:"Lesson 3";s:7:"item_id";s:4:"1142";s:15:"section_item_id";s:3:"622";s:9:"post_type";s:9:"lp_lesson";}i:623;a:5:{s:4:"name";s:17:"qqqqqqqqqqqqqqqqq";s:8:"old_name";s:17:"qqqqqqqqqqqqqqqqq";s:7:"item_id";s:4:"1153";s:15:"section_item_id";s:3:"623";s:9:"post_type";s:9:"lp_lesson";}i:624;a:5:{s:4:"name";s:10:"trau va bo";s:8:"old_name";s:10:"trau va bo";s:7:"item_id";s:4:"1154";s:15:"section_item_id";s:3:"624";s:9:"post_type";s:9:"lp_lesson";}i:625;a:5:{s:4:"name";s:19:"adasdasdasda asd as";s:8:"old_name";s:19:"adasdasdasda asd as";s:7:"item_id";s:4:"1164";s:15:"section_item_id";s:3:"625";s:9:"post_type";s:9:"lp_lesson";}i:626;a:5:{s:4:"name";s:19:"asd asda sdasdas da";s:8:"old_name";s:19:"asd asda sdasdas da";s:7:"item_id";s:4:"1165";s:15:"section_item_id";s:3:"626";s:9:"post_type";s:9:"lp_lesson";}i:627;a:5:{s:4:"name";s:16:"asdasdasdasdasda";s:8:"old_name";s:16:"asdasdasdasdasda";s:7:"item_id";s:4:"1166";s:15:"section_item_id";s:3:"627";s:9:"post_type";s:9:"lp_lesson";}i:628;a:5:{s:4:"name";s:18:"assasdasdasdasdasd";s:8:"old_name";s:18:"assasdasdasdasdasd";s:7:"item_id";s:4:"1167";s:15:"section_item_id";s:3:"628";s:9:"post_type";s:9:"lp_lesson";}s:7:"item-14";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:1;a:3:{s:4:"name";s:10:"Section #2";s:11:"description";s:49:"asdas das d asdas das asdasd asdas dasdas dasdasd";s:5:"items";a:5:{i:629;a:5:{s:4:"name";s:22:"How to create a course";s:8:"old_name";s:22:"How to create a course";s:7:"item_id";s:4:"1169";s:15:"section_item_id";s:3:"629";s:9:"post_type";s:9:"lp_lesson";}i:630;a:5:{s:4:"name";s:17:"What is your name";s:8:"old_name";s:17:"What is your name";s:7:"item_id";s:4:"1170";s:15:"section_item_id";s:3:"630";s:9:"post_type";s:9:"lp_lesson";}i:631;a:5:{s:4:"name";s:20:"My name is Tu Nguyen";s:8:"old_name";s:20:"My name is Tu Nguyen";s:7:"item_id";s:4:"1171";s:15:"section_item_id";s:3:"631";s:9:"post_type";s:9:"lp_lesson";}i:632;a:5:{s:4:"name";s:23:"sdfsdfsdf sdf sdf sdf s";s:8:"old_name";s:23:"sdfsdfsdf sdf sdf sdf s";s:7:"item_id";s:4:"1168";s:15:"section_item_id";s:3:"632";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-4";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:2;a:3:{s:4:"name";s:10:"Section #3";s:11:"description";s:0:"";s:5:"items";a:2:{i:633;a:5:{s:4:"name";s:14:"sdfsd fsd fsdf";s:8:"old_name";s:14:"sdfsd fsd fsdf";s:7:"item_id";s:4:"1172";s:15:"section_item_id";s:3:"633";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:3;a:3:{s:4:"name";s:10:"Section #4";s:11:"description";s:0:"";s:5:"items";a:2:{i:634;a:5:{s:4:"name";s:22:"sdf sdfsd fsdf sdfsd f";s:8:"old_name";s:22:"sdf sdfsd fsdf sdfsd f";s:7:"item_id";s:4:"1173";s:15:"section_item_id";s:3:"634";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:4;a:3:{s:4:"name";s:10:"Section #5";s:11:"description";s:0:"";s:5:"items";a:6:{i:635;a:5:{s:4:"name";s:15:"happy new year!";s:8:"old_name";s:15:"happy new year!";s:7:"item_id";s:4:"1228";s:15:"section_item_id";s:3:"635";s:9:"post_type";s:9:"lp_lesson";}i:636;a:5:{s:4:"name";s:15:"happy new year!";s:8:"old_name";s:15:"happy new year!";s:7:"item_id";s:4:"1229";s:15:"section_item_id";s:3:"636";s:9:"post_type";s:9:"lp_lesson";}i:637;a:5:{s:4:"name";s:8:"Lesson 1";s:8:"old_name";s:8:"Lesson 1";s:7:"item_id";s:4:"1136";s:15:"section_item_id";s:3:"637";s:9:"post_type";s:9:"lp_lesson";}i:638;a:5:{s:4:"name";s:8:"Lesson 2";s:8:"old_name";s:8:"Lesson 2";s:7:"item_id";s:4:"1137";s:15:"section_item_id";s:3:"638";s:9:"post_type";s:9:"lp_lesson";}i:639;a:5:{s:4:"name";s:18:"oi troi oi la troi";s:8:"old_name";s:18:"oi troi oi la troi";s:7:"item_id";s:4:"1230";s:15:"section_item_id";s:3:"639";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-5";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:5;a:3:{s:4:"name";s:10:"Section #6";s:11:"description";s:0:"";s:5:"items";a:4:{i:640;a:5:{s:4:"name";s:12:"333333333333";s:8:"old_name";s:12:"333333333333";s:7:"item_id";s:4:"1145";s:15:"section_item_id";s:3:"640";s:9:"post_type";s:9:"lp_lesson";}i:641;a:5:{s:4:"name";s:8:"44444444";s:8:"old_name";s:8:"44444444";s:7:"item_id";s:4:"1227";s:15:"section_item_id";s:3:"641";s:9:"post_type";s:9:"lp_lesson";}i:642;a:5:{s:4:"name";s:6:"cookie";s:8:"old_name";s:6:"cookie";s:7:"item_id";s:4:"1231";s:15:"section_item_id";s:3:"642";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-3";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}}]]></wp:meta_value>
             </wp:postmeta>
             <wp:postmeta>
                 <wp:meta_key>_lp_duration</wp:meta_key>
@@ -553,10 +540,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
             <wp:postmeta>
                 <wp:meta_key>_lp_is_previewable</wp:meta_key>
                 <wp:meta_value><![CDATA[no]]></wp:meta_value>
@@ -616,10 +600,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
             <wp:postmeta>
                 <wp:meta_key>_edit_lock</wp:meta_key>
                 <wp:meta_value><![CDATA[1452319835:1]]></wp:meta_value>
@@ -879,10 +860,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
             <wp:postmeta>
                 <wp:meta_key>_lp_is_previewable</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
@@ -1046,10 +1024,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
         </item>
         <item>
             <title>asd asda sdasdas da</title>
@@ -1169,10 +1144,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
         </item>
         <item>
             <title>What is your name</title>
@@ -1299,10 +1271,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
         </item>
         <item>
             <title>sdf sdfsd fsdf sdfsd f</title>
@@ -1436,10 +1405,7 @@ Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc
                 <wp:meta_key>_lp_enroll_requirement</wp:meta_key>
                 <wp:meta_value><![CDATA[yes]]></wp:meta_value>
             </wp:postmeta>
-            <wp:postmeta>
-                <wp:meta_key>_lp_payment</wp:meta_key>
-                <wp:meta_value><![CDATA[free]]></wp:meta_value>
-            </wp:postmeta>
+
             <wp:postmeta>
                 <wp:meta_key>_lp_is_previewable</wp:meta_key>
                 <wp:meta_value><![CDATA[no]]></wp:meta_value>

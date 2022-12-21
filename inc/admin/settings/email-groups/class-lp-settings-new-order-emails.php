@@ -14,14 +14,14 @@ class LP_Settings_New_Order_Emails extends LP_Settings_Emails_Group {
 			'new-order-admin',
 			'new-order-instructor',
 			'new-order-user',
-			'new-order-guest'
+			'new-order-guest',
 		);
 
 		parent::__construct();
 	}
 
 	public function __toString() {
-		return __('New Order', 'learnpress');
+		return esc_html__( 'New Order', 'learnpress' );
 	}
 }
 

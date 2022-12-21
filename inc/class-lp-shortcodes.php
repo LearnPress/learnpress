@@ -3,14 +3,11 @@
  * Base class of LearnPress shortcodes and helper functions.
  *
  * @author   ThimPress
- * @category Widgets
+ * @category Shortcode
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcodes' ) ) {
@@ -22,7 +19,6 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		 * Init shortcodes
 		 */
 		public static function init() {
-
 			$shortcodes = array(
 				'confirm_order'       => __CLASS__ . '::confirm_order',
 				'profile'             => __CLASS__ . '::profile',
@@ -33,10 +29,10 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				'recent_courses'      => __CLASS__ . '::recent_courses',
 				'featured_courses'    => __CLASS__ . '::featured_courses',
 				'popular_courses'     => __CLASS__ . '::popular_courses',
-				'button_enroll'       => __CLASS__ . '::button_enroll',
+				//'button_enroll'       => __CLASS__ . '::button_enroll',
 				'button_purchase'     => __CLASS__ . '::button_purchase',
 				'button_course'       => __CLASS__ . '::button_course',
-				'course_curriculum'   => __CLASS__ . '::course_curriculum'
+				'course_curriculum'   => __CLASS__ . '::course_curriculum',
 			);
 
 			foreach ( $shortcodes as $shortcode => $function ) {
@@ -61,11 +57,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				return $template;
 			}
 
-			if ( $post->ID == learn_press_get_page_id( 'profile' ) ) {
-				if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
-					$post->post_content .= '[learn_press_profile]';
-				}
-			} elseif ( $post->ID == learn_press_get_page_id( 'checkout' ) ) {
+			if ( $post->ID == learn_press_get_page_id( 'checkout' ) ) {
 				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
 				}
@@ -92,8 +84,8 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 
 			try {
 				$html .= $content->output();
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
+				$html .= $ex->getMessage();
 			}
 
 			return '<div class="learnpress">' . $html . '</div>';
@@ -186,14 +178,15 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		public static function confirm_order( $atts = null ) {
 			$atts = shortcode_atts(
 				array(
-					'order_id' => ! empty( $_REQUEST['order_id'] ) ? intval( $_REQUEST['order_id'] ) : 0
+					'order_id' => ! empty( $_REQUEST['order_id'] ) ? intval( $_REQUEST['order_id'] ) : 0,
 				),
 				$atts
 			);
 
 			$order_id = null;
 
-			extract( $atts );
+			extract( $atts ); // phpcs:ignore
+
 			ob_start();
 
 			$order = learn_press_get_order( $order_id );
@@ -208,7 +201,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		public static function login_form( $atts, $content = '' ) {
 			$atts = shortcode_atts(
 				array(
-					'redirect' => ''
+					'redirect' => '',
 				),
 				$atts
 			);
@@ -221,24 +214,15 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		public static function login_form_bottom( $html, $args ) {
 			ob_start();
 			?>
-            <p>
-                <a href="<?php echo wp_lostpassword_url(); ?>"><?php _e( 'Forgot password?', 'learnpress' ); ?></a>
-                &nbsp;|&nbsp;
-                <a href="<?php echo wp_registration_url(); ?>"><?php _e( 'Create new account', 'learnpress' ); ?></a>
-            </p>
-			<?php $html .= ob_get_clean();
+			<p>
+				<a href="<?php echo wp_lostpassword_url(); ?>"><?php esc_html_e( 'Forgot password?', 'learnpress' ); ?></a>
+				&nbsp;|&nbsp;
+				<a href="<?php echo wp_registration_url(); ?>"><?php esc_html_e( 'Create a new account', 'learnpress' ); ?></a>
+			</p>
+			<?php
+			$html .= ob_get_clean();
 
 			return $html;
-		}
-
-		/**
-		 * @param        $atts
-		 * @param string $content
-		 *
-		 * @return LP_Shortcode_Button_Enroll
-		 */
-		public static function button_enroll( $atts, $content = '' ) {
-			return new LP_Shortcode_Button_Enroll( $atts );
 		}
 
 		/**
@@ -272,4 +256,5 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		}
 	}
 }
-LP_Shortcodes::init();
+
+add_action( 'init', array( 'LP_Shortcodes', 'init' ) );

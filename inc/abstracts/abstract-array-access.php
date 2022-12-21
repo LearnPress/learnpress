@@ -3,7 +3,7 @@
 /**
  * Class LP_Array_Access
  */
-class LP_Array_Access implements ArrayAccess, Iterator, Countable {
+class LP_Array_Access {
 
 	/**
 	 * @var array
@@ -94,6 +94,6 @@ class LP_Array_Access implements ArrayAccess, Iterator, Countable {
 	}
 
 	public function count() {
-		return sizeof($this->_data);
+		return sizeof( $this->_data );
 	}
 }

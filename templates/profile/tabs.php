@@ -6,40 +6,44 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.0.2
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-$profile = LP_Profile::instance();
+if ( ! isset( $user ) || ! isset( $profile ) ) {
+	return;
+}
 ?>
 
-<div id="learn-press-profile-nav">
+<div id="profile-nav">
 
 	<?php do_action( 'learn-press/before-profile-nav', $profile ); ?>
 
-    <ul class="learn-press-tabs tabs">
+	<ul class="lp-profile-nav-tabs">
 
 		<?php
-		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
-
-            /**
-             * @var $tab_data LP_Profile_Tab
-             */
-			if ( $tab_data->is_hidden() || ! $tab_data->user_can_view() ) {
+		/**
+		 * @var LP_Profile_Tab $profile_tab
+		 */
+		foreach ( $profile->get_tabs()->tabs() as $tab_key => $profile_tab ) {
+			if ( ! is_object( $profile_tab ) || ! $profile_tab || $profile_tab->is_hidden() || ! $profile_tab->user_can_view() ) {
 				continue;
 			}
 
-			$slug        = $profile->get_slug( $tab_data, $tab_key );
+			// Admin view another user profile
+			if ( $profile->get_user()->get_id() !== get_current_user_id() && current_user_can( ADMIN_ROLE ) ) {
+				$tab_key_hidden_admin_view_user = [ 'settings', 'logout', 'orders', 'gradebook' ];
+				if ( in_array( $tab_key, $tab_key_hidden_admin_view_user ) ) {
+					continue;
+				}
+			}
+
+			$slug        = $profile->get_slug( $profile_tab, $tab_key );
 			$link        = $profile->get_tab_link( $tab_key, true );
 			$tab_classes = array( esc_attr( $tab_key ) );
-			/**
-			 * @var $tab_data LP_Profile_Tab
-			 */
-			$sections    = $tab_data->sections();
+
+			$sections = $profile_tab->sections();
 
 			if ( $sections && sizeof( $sections ) > 1 ) {
 				$tab_classes[] = 'has-child';
@@ -47,19 +51,24 @@ $profile = LP_Profile::instance();
 
 			if ( $profile->is_current_tab( $tab_key ) ) {
 				$tab_classes[] = 'active';
-			} ?>
+			}
+			?>
 
-            <li class="<?php echo join( ' ', $tab_classes ) ?>">
-                <!--tabs-->
-                <a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
-					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', esc_html( $tab_data['title'] ), $tab_key ); ?>
-                </a>
-                <!--section-->
+			<li class="<?php echo implode( ' ', $tab_classes ); ?>">
+				<a href="<?php echo esc_url_raw( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
+					<?php
+					if ( ! empty( $profile_tab->get( 'icon' ) ) ) {
+						echo wp_kses_post( $profile_tab->get( 'icon' ) );
+					}
+					?>
+					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab->get( 'title' ), $tab_key ); ?>
+				</a>
 
 				<?php if ( $sections && sizeof( $sections ) > 1 ) { ?>
 
-                    <ul class="profile-tab-sections">
-						<?php foreach ( $sections as $section_key => $section_data ) {
+					<ul class="profile-tab-sections">
+						<?php
+						foreach ( $sections as $section_key => $section_data ) {
 
 							$classes = array( esc_attr( $section_key ) );
 							if ( $profile->is_current_section( $section_key, $section_key ) ) {
@@ -70,20 +79,27 @@ $profile = LP_Profile::instance();
 							$section_link = $profile->get_tab_link( $tab_key, $section_slug );
 							?>
 
-                            <li class="<?php echo join( ' ', $classes ); ?>">
-                                <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>
-                            </li>
+							<li class="<?php echo implode( ' ', $classes ); ?>">
+								<a href="<?php echo esc_url_raw( $section_link ); ?>">
+									<?php
+									if ( ! empty( $section_data['icon'] ) ) {
+										echo wp_kses_post( $section_data['icon'] );
+									}
+									?>
+									<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $section_data['title'], $tab_key ); ?>
+								</a>
+							</li>
 
 						<?php } ?>
 
-                    </ul>
+					</ul>
 
 				<?php } ?>
 
-            </li>
+			</li>
 		<?php } ?>
 
-    </ul>
+	</ul>
 
 	<?php do_action( 'learn-press/after-profile-nav', $profile ); ?>
 

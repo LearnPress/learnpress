@@ -3,6 +3,7 @@
 __*.php
 node_modules/
 cache/
+languages/strings
 /assets/fonts/iconfont.ttf
 /assets/fonts/iconfont.woff
 /assets/fonts/icons.eot
@@ -15,6 +16,8 @@ cache/
 /assets/fonts/icon.woff
 /assets/fonts/iconfont.eot
 /assets/fonts/iconfont.svg
+/assets/js/dist/
+/assets/css/
 /inc/test.php
 /local-debug.php
 /languages/learnpress-vi.mo
@@ -36,4 +39,5 @@ script.sh
 /.buildpath
 /.settings
 /yarn-error.log
+/yarn.lock
 

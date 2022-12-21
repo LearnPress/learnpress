@@ -4,41 +4,37 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/global/breadcrumb.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
+if ( empty( $breadcrumb ) ) {
+	return;
+}
+echo wp_kses_post( $wrap_before );
 
-if ( ! empty( $breadcrumb ) ) {
+foreach ( $breadcrumb as $key => $crumb ) {
 
-	echo $wrap_before;
+	echo wp_kses_post( $before );
 
-	foreach ( $breadcrumb as $key => $crumb ) {
+	echo '<li>';
 
-		echo $before;
-
-		if ( ! empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
-			echo '<a href="' . esc_url( $crumb[1] ) . '">' . esc_html( $crumb[0] ) . '</a>';
-		} else {
-			echo esc_html( $crumb[0] );
-		}
-
-		echo $after;
-
-		if ( sizeof( $breadcrumb ) !== $key + 1 ) {
-			echo $delimiter;
-		}
-
+	if ( ! empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
+		echo '<a href="' . esc_url_raw( $crumb[1] ) . '"><span>' . esc_html( $crumb[0] ) . '</span></a>';
+	} else {
+		echo '<span>' . esc_html( $crumb[0] ) . '</span>';
 	}
 
-	echo $wrap_after;
+	echo '</li>';
 
+	echo wp_kses_post( $after );
+
+	if ( sizeof( $breadcrumb ) !== $key + 1 ) {
+		echo wp_kses_post( $delimiter );
+	}
 }
+
+echo wp_kses_post( $wrap_after );

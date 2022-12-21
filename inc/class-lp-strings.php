@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Strings
  */
@@ -14,17 +13,20 @@ class LP_Strings {
 
 	/**
 	 * @since 3.2.0
+	 * @TODO should remove - tungnx, no important
 	 */
 	public static function load() {
-		$strings = apply_filters( 'learn-press/messages', array(
-			'confirm-redo-quiz'                => __( 'Do you want to redo quiz "%s"?', 'learnpress' ),
-			'confirm-complete-quiz'            => __( 'Do you want to complete quiz "%s"?', 'learnpress' ),
-			'confirm-complete-lesson'          => __( 'Do you want to complete lesson "%s"?', 'learnpress' ),
-			'confirm-finish-course'            => __( 'Do you want to finish course "%s"?', 'learnpress' ),
-			'confirm-retake-course'            => __( 'Do you want to retake course "%s"?', 'learnpress' ),
-			'confirm-finish-course-not-passed' => __( 'You have not passed the course\' assessment (%s), are you sure to finish this course?', 'learnpress' ),
-			'you_have_completed_quiz'          => __( 'You have completed quiz', 'learnpress' )
-		) );
+		$strings = apply_filters(
+			'learnpress/strings',
+			array(
+				'you_have_completed_quiz' => __( 'You\'ve already completed the quiz.', 'learnpress' ),
+				'confirm-redo-quiz'       => __( 'Do you want to redo the quiz "%s"?', 'learnpress' ),
+				'confirm-complete-quiz'   => __( 'Do you want to complete the quiz "%s"?', 'learnpress' ),
+				'confirm-complete-lesson' => __( 'Do you want to complete the lesson "%s"?', 'learnpress' ),
+				'confirm-finish-course'   => __( 'Do you want to finish the course "%s"?', 'learnpress' ),
+				'confirm-retake-course'   => __( 'Do you want to retake the course "%s"?', 'learnpress' ),
+			)
+		);
 
 		self::$strings = $strings;
 	}
@@ -38,7 +40,10 @@ class LP_Strings {
 	 */
 	public static function get( $str, $context = '', $args = '' ) {
 		$string = $str;
-		if ( $strings = self::$strings ) {
+
+		$strings = self::$strings;
+
+		if ( $strings ) {
 			if ( array_key_exists( $str, $strings ) ) {
 				$texts = $strings[ $str ];
 
@@ -60,7 +65,7 @@ class LP_Strings {
 	}
 
 	public static function esc_attr_e( $str, $context = '', $args = '' ) {
-		esc_attr_e( self::get( $str, $context, $args ) );
+		echo esc_attr( self::get( $str, $context, $args ) );
 	}
 
 	public static function output( $str, $context = '', $args = '' ) {

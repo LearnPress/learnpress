@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Abstract_Settings
  */
@@ -9,12 +8,12 @@ abstract class LP_Abstract_Settings {
 	 * LP_Abstract_Settings constructor.
 	 */
 	public function __construct() {
-		// TODO: init anything here
 		add_filter( 'learn-press/update-settings/redirect', array( $this, '_do_save' ) );
 	}
 
-	public function _do_save($url) {
+	public function _do_save( $url ) {
 		$this->save();
+
 		return $url;
 	}
 
@@ -37,9 +36,26 @@ abstract class LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_admin_field_name( $name ) {
+		$items   = LP_Admin_Menu::instance()->get_menu_items();
+		$section = '';
+
+		if ( ! empty( $items['settings'] ) ) {
+			$tab     = $items['settings']->get_active_tab();
+			$section = $items['settings']->get_active_section();
+		}
+
+		if ( $tab === 'payments' && $section !== 'general' && ! empty( $name ) ) {
+			if ( strpos( $name, '[' ) === 0 ) {
+				$name = $section . $name;
+			} else {
+				$name = $section . '_' . $name;
+			}
+		}
+
 		if ( empty( $name ) ) {
 			$name = md5( microtime( true ) );
 		}
+
 		$field_name = apply_filters( 'learn_press_settings_field_name_' . $name, "learn_press_{$name}" );
 
 		return $field_name;
@@ -58,15 +74,19 @@ abstract class LP_Abstract_Settings {
 
 	/**
 	 * Print admin fields options.
+	 *
+	 * @version 4.0.0
 	 */
-	public function admin_options() {
+	public function admin_option_settings() {
 		$settings = $this->get_settings();
 		$settings = $this->sanitize_settings( $settings );
+
 		do_action( 'learn-press/settings-render' );
+
 		if ( $settings ) {
-			LP_Meta_Box_Helper::render_fields( $settings );
+			LP_Meta_Box_Helper::output_fields( $settings );
 		} else {
-			echo __( 'No setting available.', 'learnpress' );
+			echo esc_html__( 'No settings available.', 'learnpress' );
 		}
 	}
 
@@ -97,7 +117,8 @@ abstract class LP_Abstract_Settings {
 					}
 
 					// Get value from option
-					if ( false === ( $std = get_option( $option_name ) ) ) {
+					$std = get_option( $option_name );
+					if ( false === $std ) {
 						$std = array_key_exists( 'default', $field ) ? $field['default'] : '';
 					}
 
@@ -118,7 +139,6 @@ abstract class LP_Abstract_Settings {
 					$this->parse_conditional( $field );
 					$settings[ $k ] = $field;
 				}
-
 			}
 		}
 
@@ -132,9 +152,10 @@ abstract class LP_Abstract_Settings {
 
 			if ( ! array_key_exists( 0, $conditional['conditional'] ) ) {
 				$conditional['conditional'] = array(
-					$conditional['conditional']
+					$conditional['conditional'],
 				);
 			}
+
 			foreach ( $conditional['conditional'] as $kk => $conditional_field ) {
 				$conditional['conditional'][ $kk ]['field'] = $this->get_admin_field_name( $conditional_field['field'] );
 			}
@@ -147,7 +168,7 @@ abstract class LP_Abstract_Settings {
 
 	/**
 	 * @param      $option_name
-	 * @param null $default
+	 * @param null        $default
 	 *
 	 * @return array|null|string
 	 */
@@ -171,7 +192,7 @@ abstract class LP_Abstract_Settings {
 
 			// Single value
 		} else {
-			$option_value = LP()->settings->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
+			$option_value = LP_Settings::instance()->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
 		}
 
 		if ( is_array( $option_value ) ) {

@@ -8,12 +8,9 @@
  * @extends LP_Question
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
+if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 
 	/**
 	 * Class LP_Question_True_Or_False
@@ -49,14 +46,14 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 					'question_answer_id' => - 1,
 					'is_true'            => 'yes',
 					'value'              => 'true',
-					'text'               => __( 'True', 'learnpress' )
+					'title'              => esc_html__( 'True', 'learnpress' ),
 				),
 				array(
 					'question_answer_id' => - 2,
 					'is_true'            => 'no',
 					'value'              => 'false',
-					'text'               => __( 'False', 'learnpress' )
-				)
+					'title'              => esc_html__( 'False', 'learnpress' ),
+				),
 			);
 
 			return $answers;
@@ -71,15 +68,20 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 		 */
 		public function check( $user_answer = null ) {
 			$return = parent::check();
-
-			if ( $answers = $this->get_answers() ) {
-				foreach ( $answers as $key => $option ) {
-					if ( ( $option['is_true'] == 'yes' ) && ( $option['value'] == $user_answer ) ) {
-						$return['correct'] = true;
-						$return['mark']    = floatval( $this->get_mark() );
-						break;
+			try {
+				$answers = $this->get_answers();
+				if ( $answers ) {
+					foreach ( $answers as $key => $option ) {
+						$data = $option->get_data();
+						if ( $data['is_true'] == 'yes' && $data['value'] == $user_answer ) {
+							$return['correct'] = true;
+							$return['mark']    = floatval( $this->get_mark() );
+							break;
+						}
 					}
 				}
+			} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ': ' . $e->getMessage() );
 			}
 
 			return $return;

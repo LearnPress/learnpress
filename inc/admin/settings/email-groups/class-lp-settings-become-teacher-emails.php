@@ -20,7 +20,7 @@ class LP_Settings_Become_Teacher_Emails extends LP_Settings_Emails_Group {
 	}
 
 	public function __toString() {
-		return __('Become an Instructor', 'learnpress');
+		return esc_html__( 'Become an Instructor', 'learnpress' );
 	}
 }
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Outdated_Template_Helper
  *
@@ -16,7 +15,7 @@ class LP_Outdated_Template_Helper {
 		'all'         => 0,
 		'outdated'    => 0,
 		'unversioned' => 0,
-		'up-to-date'  => 0
+		'up-to-date'  => 0,
 	);
 
 	/**
@@ -34,7 +33,10 @@ class LP_Outdated_Template_Helper {
 		$t_folder        = basename( $template_dir );
 		$s_folder        = basename( $stylesheet_dir );
 
-		$found_files        = array( $t_folder => array(), $s_folder => array() );
+		$found_files        = array(
+			$t_folder => array(),
+			$s_folder => array(),
+		);
 		$outdated_templates = false;
 
 		$scanned_files = self::scan_template_files( $template_path );
@@ -61,7 +63,7 @@ class LP_Outdated_Template_Helper {
 				self::$counts['all'] ++;
 				$core_version  = self::get_file_version( $template_path . $file );
 				$theme_version = self::get_file_version( $theme_file );
-				// If core-template define version number then compare with it.
+
 				if ( $core_version && ( empty( $theme_version ) || version_compare( $theme_version, $core_version, '<' ) ) ) {
 					if ( ! $outdated_templates ) {
 						$outdated_templates = true;
@@ -70,7 +72,7 @@ class LP_Outdated_Template_Helper {
 						str_replace( WP_CONTENT_DIR . '/themes/', '', $theme_file ),
 						$theme_version ? $theme_version : '-',
 						$core_version,
-						true
+						true,
 					);
 					if ( empty( $theme_version ) ) {
 						self::$counts['unversioned'] ++;
@@ -81,7 +83,7 @@ class LP_Outdated_Template_Helper {
 						str_replace( WP_CONTENT_DIR . '/themes/', '', $theme_file ),
 						$theme_version ? $theme_version : '?',
 						$core_version ? $core_version : '?',
-						null
+						null,
 					);
 				}
 			}
@@ -155,11 +157,11 @@ class LP_Outdated_Template_Helper {
 				}
 			}
 		}
-		if ( ! empty( $child_item ) || ! empty( $parent_item ) ) {
 
+		if ( ! empty( $child_item ) || ! empty( $parent_item ) ) {
 			return array(
 				'parent_item' => $parent_item,
-				'child_item'  => $child_item
+				'child_item'  => $child_item,
 			);
 		}
 
@@ -174,17 +176,15 @@ class LP_Outdated_Template_Helper {
 	 * @return array
 	 */
 	public static function scan_template_files( $template_path ) {
-
 		$files  = @scandir( $template_path );
 		$result = array();
 
 		if ( ! empty( $files ) ) {
 			foreach ( $files as $key => $value ) {
-				// Ignore special files
-				if ( ! in_array( $value, array( ".", "..", 'index.php', 'index.html' ) ) ) {
-					// If path is a folder, discover it.
+				if ( ! in_array( $value, array( '.', '..', 'index.php', 'index.html' ) ) ) {
 					if ( is_dir( $template_path . '/' . $value ) ) {
 						$sub_files = self::scan_template_files( $template_path . '/' . $value );
+
 						foreach ( $sub_files as $sub_file ) {
 							$result[] = $value . '/' . $sub_file;
 						}
@@ -209,11 +209,13 @@ class LP_Outdated_Template_Helper {
 		if ( ! file_exists( $file ) ) {
 			return '';
 		}
+
 		$fp        = fopen( $file, 'r' );
 		$file_data = fread( $fp, 8192 );
 		fclose( $fp );
 		$file_data = str_replace( "\r", "\n", $file_data );
 		$version   = '';
+
 		if ( preg_match( '/^[ \t\/*#@]*' . preg_quote( '@version', '/' ) . '(.*)$/mi', $file_data, $match ) && $match[1] ) {
 			$version = _cleanup_header_comment( $match[1] );
 		}
@@ -233,9 +235,11 @@ class LP_Outdated_Template_Helper {
 		if ( $a[3] && $b[3] ) {
 			return 0;
 		}
+
 		if ( $a[3] ) {
 			return - 1;
 		}
+
 		if ( $b[3] ) {
 			return 1;
 		}

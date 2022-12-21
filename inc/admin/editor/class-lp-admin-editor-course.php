@@ -37,8 +37,14 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	public function dispatch() {
 		check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-		$args      = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
-		$course_id = $args['id'];
+		$args      = wp_parse_args(
+			$_REQUEST,
+			array(
+				'id'   => 0,
+				'type' => '',
+			)
+		);
+		$course_id = $args['id'] ?? 0;
 		$course    = learn_press_get_course( $course_id );
 
 		if ( ! $course ) {
@@ -51,6 +57,9 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		$this->result       = array( $args['type'] );
 
 		$this->call( $args['type'], array( $args ) );
+
+		$course_post = get_post( $course_id );
+		LP_Course_Post_Type::instance()->save( $course_id, $course_post );
 
 		return $this->get_result();
 	}
@@ -75,7 +84,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'id'      => $this->course->get_id(),
 			'status'  => 'draft',
 			'title'   => $title,
-			'content' => $content
+			'content' => $content,
 		);
 
 		$this->course_curd->create( $args );
@@ -87,9 +96,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @param array $args
 	 */
 	public function hidden_sections( $args ) {
-		// get hidden sections id
 		$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
-		// update course post meta
 		update_post_meta( $this->course->get_id(), '_admin_hidden_sections', $hidden );
 	}
 
@@ -106,10 +113,11 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			return;
 		}
 
-		$this->result = $this->section_curd->sort_sections( $order );
+		//$this->course ? $this->course->get_sections() : '';
+		$this->result = $this->section_curd->update_sections_order( $order );
 
 		// update final quiz
-		$this->section_curd->update_final_item();
+		//$this->section_curd->update_final_item();
 	}
 
 	/**
@@ -118,14 +126,18 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function update_section( $args = array() ) {
-		$section = ! empty( $args['section'] ) ? $args['section'] : false;
+		$section = $args['section'] ?? false;
 		$section = json_decode( wp_unslash( $section ), true );
 
 		if ( ! $section ) {
 			return false;
 		}
 
-		$update = array(
+		if ( ! isset( $section['course_id'] ) && ! isset( $section['id'] ) ) {
+			return false;
+		}
+
+		$data = array(
 			'section_id'          => $section['id'],
 			'section_name'        => $section['title'],
 			'section_description' => $section['description'],
@@ -133,7 +145,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'section_course_id'   => $section['course_id'],
 		);
 
-		$this->result = $this->section_curd->update( $update );
+		$this->result = $this->section_curd->update( $data );
 
 		return true;
 	}
@@ -161,8 +173,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function new_section( $args = array() ) {
-		$section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
-		$temp_id      = isset( $args['temp_id'] ) ? $args['temp_id'] : 0;
+		$section_name = $args['section_name'] ?? '';
+		$temp_id      = $args['temp_id'] ?? 0;
 
 		$args = array(
 			'section_course_id'   => $this->course->get_id(),
@@ -171,8 +183,6 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'items'               => array(),
 		);
 
-
-		// create section
 		$section = $this->section_curd->create( $args );
 
 		$this->result = array(
@@ -214,17 +224,27 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function remove_section_item( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+		$section_id = $args['section_id'] ?? 0;
+		$item_id    = $args['item_id'] ?? 0;
 
-		if ( ! ( $section_id && $item_id ) ) {
-			return false;
+		try {
+			// Instructor only remove item in my item.
+			if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
+				throw new Exception( __( 'You can not delete this item!', 'learnpress' ) );
+			}
+
+			if ( ! ( $section_id && $item_id ) ) {
+				throw new Exception( __( 'Invalid params!', 'learnpress' ) );
+			}
+
+			// remove item from course
+			$this->course_curd->remove_item( $item_id );
+			$this->result = true;
+		} catch ( Throwable $e ) {
+			$this->result = new WP_Error( '2', $e->getMessage() );
 		}
 
-		// remove item from course
-		$this->course_curd->remove_item( $item_id );
-
-		return true;
+		return $this->result;
 	}
 
 	/**
@@ -233,16 +253,25 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function delete_section_item( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+		$section_id = $args['section_id'] ?? 0;
+		$item_id    = $args['item_id'] ?? 0;
 
-		if ( ! ( $section_id && $item_id ) ) {
-			return false;
+		try {
+			// Instructor only remove item in my item.
+			if ( absint( get_post_field( 'post_author', $item_id ) ) !== absint( get_current_user_id() ) && ! current_user_can( 'administrator' ) ) {
+				throw new Exception( __( 'You can not delete this item!', 'learnpress' ) );
+			}
+
+			if ( ! ( $section_id && $item_id ) ) {
+				throw new Exception( __( 'Invalid params!', 'learnpress' ) );
+			}
+
+			$this->result = wp_trash_post( $item_id );
+		} catch ( Throwable $e ) {
+			$this->result = new WP_Error( '2', $e->getMessage() );
 		}
 
-		$this->result = wp_trash_post( $item_id );
-
-		return true;
+		return $this->result;
 	}
 
 	/**
@@ -251,8 +280,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return array|bool
 	 */
 	public function new_section_item( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$item       = ! empty( $args['item'] ) ? $args['item'] : false;
+		$section_id = $args['section_id'] ?? 0;
+		$item       = $args['item'] ?? '';
 		$item       = json_decode( wp_unslash( $item ), true );
 
 		if ( ! ( $section_id && $item ) ) {
@@ -262,7 +291,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		// create new lesson, quiz and add to course
 		$this->result = $this->section_curd->new_item( $section_id, $item );
 
-		$this->section_curd->update_final_item();
+		//$this->section_curd->update_final_item();
 
 		return true;
 	}
@@ -273,8 +302,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function update_section_items( $args = array() ) {
-		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$items      = ! empty( $args['items'] ) ? $args['items'] : false;
+		$section_id = $args['section_id'] ?? 0;
+		$items      = $args['items'] ?? '';
 		$items      = json_decode( wp_unslash( $items ), true );
 
 		if ( ! ( $section_id && $items ) ) {
@@ -283,7 +312,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 
 		$this->result = $this->section_curd->update_section_items( $section_id, $items );
 
-		$this->section_curd->update_final_item();
+		//$this->section_curd->update_final_item();
 
 		return true;
 	}
@@ -311,15 +340,17 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			}
 		}
 
-		$search = new LP_Modal_Search_Items( array(
-			'type'       => $type,
-			'context'    => 'course',
-			'context_id' => $this->course->get_id(),
-			'term'       => $query,
-			'limit'      => apply_filters( 'learn-press/course-editor/choose-items-limit', 10 ),
-			'paged'      => $page,
-			'exclude'    => $ids_exclude,
-		) );
+		$search = new LP_Modal_Search_Items(
+			array(
+				'type'       => $type,
+				'context'    => 'course',
+				'context_id' => $this->course->get_id(),
+				'term'       => $query,
+				'limit'      => apply_filters( 'learn-press/course-editor/choose-items-limit', 10 ),
+				'paged'      => $page,
+				'exclude'    => $ids_exclude,
+			)
+		);
 
 		$id_items = $search->get_items();
 
@@ -336,7 +367,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 
 		$this->result = array(
 			'items'      => $items,
-			'pagination' => $search->get_pagination( false )
+			'pagination' => $search->get_pagination( false ),
 		);
 
 		return true;

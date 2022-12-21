@@ -1,0 +1,6 @@
+{
+	"name": "@learnpress/dependency-extraction-webpack-plugin",
+	"private": true,
+	"license": "MIT",
+	"main": "index.js"
+  }

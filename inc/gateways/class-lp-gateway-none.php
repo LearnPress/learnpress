@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -19,7 +19,9 @@ class LP_Gateway_None extends LP_Gateway_Abstract {
 	 */
 	public function process_payment( $order_id ) {
 		$order = new LP_Order( $order_id );
+
 		$order->payment_complete();
+
 		return array( 'result' => 'success' );
 	}
 }

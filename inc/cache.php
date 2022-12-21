@@ -1,4 +1,7 @@
 <?php
+/**
+ * Class LP_Object_Cache
+ */
 
 class LP_Object_Cache {
 
@@ -72,21 +75,31 @@ class LP_Object_Cache {
 	}
 
 	public static function init() {
-		add_action( 'shutdown', array( __CLASS__, 'wp_cache_flush' ), 9999 );
+		// add_action( 'shutdown', array( __CLASS__, 'wp_cache_flush' ), 9999 );
 	}
 
 	public static function wp_cache_flush() {
 
 	}
 
+	public static function get_group( $group ) {
+		if ( self::$_use_core ) {
+			if ( false === strpos( $group, 'learn-press/' ) ) {
+				return "learn-press/{$group}";
+			}
+		}
+
+		return $group;
+	}
+
 	/**
 	 * Makes private properties readable for backward compatibility.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $name Property to get.
+	 * @param string $name  Property to get.
 	 *
 	 * @return mixed Property.
+	 * @since 4.0.0
+	 *
 	 */
 	public function __get( $name ) {
 		return $this->$name;
@@ -95,12 +108,12 @@ class LP_Object_Cache {
 	/**
 	 * Makes private properties settable for backward compatibility.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @param string $name  Property to set.
-	 * @param mixed  $value Property value.
+	 * @param mixed $value  Property value.
 	 *
 	 * @return mixed Newly-set property.
+	 * @since 4.0.0
+	 *
 	 */
 	public function __set( $name, $value ) {
 		return $this->$name = $value;
@@ -109,11 +122,11 @@ class LP_Object_Cache {
 	/**
 	 * Makes private properties checkable for backward compatibility.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $name Property to check if set.
+	 * @param string $name  Property to check if set.
 	 *
 	 * @return bool Whether the property is set.
+	 * @since 4.0.0
+	 *
 	 */
 	public function __isset( $name ) {
 		return isset( $this->$name );
@@ -122,9 +135,10 @@ class LP_Object_Cache {
 	/**
 	 * Makes private properties un-settable for backward compatibility.
 	 *
+	 * @param string $name  Property to unset.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $name Property to unset.
 	 */
 	public function __unset( $name ) {
 		unset( $this->$name );
@@ -133,20 +147,22 @@ class LP_Object_Cache {
 	/**
 	 * Adds data to the cache if it doesn't already exist.
 	 *
-	 * @since 2.0.0
+	 * @param int|string $key  What to call the contents in the cache.
+	 * @param mixed $data  The contents to store in the cache.
+	 * @param string $group  Optional. Where to group the cache contents. Default 'default'.
+	 * @param int $expire  Optional. When to expire the cache contents. Default 0 (no expiration).
 	 *
-	 * @uses  WP_Object_Cache::_exists() Checks to see if the cache already has data.
+	 * @return bool False if cache key and group already exist, true on success
 	 * @uses  WP_Object_Cache::set()     Sets the data after the checking the cache
 	 *                                    contents existence.
 	 *
-	 * @param int|string $key    What to call the contents in the cache.
-	 * @param mixed      $data   The contents to store in the cache.
-	 * @param string     $group  Optional. Where to group the cache contents. Default 'default'.
-	 * @param int        $expire Optional. When to expire the cache contents. Default 0 (no expiration).
+	 * @since 2.0.0
 	 *
-	 * @return bool False if cache key and group already exist, true on success
+	 * @uses  WP_Object_Cache::_exists() Checks to see if the cache already has data.
 	 */
 	public static function add( $key, $data, $group = 'default', $expire = 0 ) {
+
+		$group = self::get_group( $group );
 
 		if ( self::$_use_core ) {
 			return wp_cache_add( $key, $data, $group, $expire );
@@ -177,9 +193,10 @@ class LP_Object_Cache {
 	/**
 	 * Sets the list of global cache groups.
 	 *
+	 * @param array $groups  List of groups that are global.
+	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $groups List of groups that are global.
 	 */
 	public static function add_global_groups( $groups ) {
 		$groups = (array) $groups;
@@ -192,13 +209,13 @@ class LP_Object_Cache {
 	/**
 	 * Decrements numeric cache item's value.
 	 *
-	 * @since 3.3.0
-	 *
-	 * @param int|string $key    The cache key to decrement.
-	 * @param int        $offset Optional. The amount by which to decrement the item's value. Default 1.
-	 * @param string     $group  Optional. The group the key is in. Default 'default'.
+	 * @param int|string $key  The cache key to decrement.
+	 * @param int $offset  Optional. The amount by which to decrement the item's value. Default 1.
+	 * @param string $group  Optional. The group the key is in. Default 'default'.
 	 *
 	 * @return false|int False on failure, the item's new value on success.
+	 * @since 3.3.0
+	 *
 	 */
 	public static function decr( $key, $offset = 1, $group = 'default' ) {
 		if ( empty( $group ) ) {
@@ -235,15 +252,17 @@ class LP_Object_Cache {
 	 *
 	 * If the cache key does not exist in the group, then nothing will happen.
 	 *
-	 * @since 2.0.0
-	 *
-	 * @param int|string $key        What the contents in the cache are called.
-	 * @param string     $group      Optional. Where the cache contents are grouped. Default 'default'.
-	 * @param bool       $deprecated Optional. Unused. Default false.
+	 * @param int|string $key  What the contents in the cache are called.
+	 * @param string $group  Optional. Where the cache contents are grouped. Default 'default'.
+	 * @param bool $deprecated  Optional. Unused. Default false.
 	 *
 	 * @return bool False if the contents weren't deleted and true on success.
+	 * @since 2.0.0
+	 *
 	 */
 	public static function delete( $key, $group = 'default', $deprecated = false ) {
+
+		$group = self::get_group( $group );
 
 		if ( self::$_use_core ) {
 			return wp_cache_delete( $key, $group );
@@ -271,13 +290,14 @@ class LP_Object_Cache {
 	/**
 	 * Clears the object cache of all data.
 	 *
+	 * @return true Always returns true.
 	 * @since 2.0.0
 	 *
-	 * @return true Always returns true.
 	 */
 	public static function flush() {
+
 		if ( self::$_use_core ) {
-			return wp_cache_flush();
+			// return wp_cache_flush();
 		}
 
 		$self = self::instance();
@@ -296,18 +316,19 @@ class LP_Object_Cache {
 	 *
 	 * On failure, the number of cache misses will be incremented.
 	 *
-	 * @since 2.0.0
-	 *
-	 * @param int|string $key     What the contents in the cache are called.
-	 * @param string     $group   Optional. Where the cache contents are grouped. Default 'default'.
-	 * @param string     $force   Optional. Unused. Whether to force a refetch rather than relying on the local
+	 * @param int|string $key  What the contents in the cache are called.
+	 * @param string $group  Optional. Where the cache contents are grouped. Default 'default'.
+	 * @param string $force  Optional. Unused. Whether to force a refetch rather than relying on the local
 	 *                            cache. Default false.
-	 * @param bool       $found   Optional. Whether the key was found in the cache (passed by reference).
+	 * @param bool $found  Optional. Whether the key was found in the cache (passed by reference).
 	 *                            Disambiguates a return of false, a storable value. Default null.
 	 *
 	 * @return false|mixed False on failure to retrieve contents or the cache contents on success.
+	 * @since 2.0.0
+	 *
 	 */
 	public static function get( $key, $group = 'default', $force = false, &$found = null ) {
+		$group = self::get_group( $group );
 
 		if ( self::$_use_core ) {
 			return wp_cache_get( $key, $group, $force, $found );
@@ -324,7 +345,7 @@ class LP_Object_Cache {
 		}
 
 		if ( self::_exists( $key, $group ) ) {
-			$found            = true;
+			$found             = true;
 			$self->cache_hits += 1;
 			if ( is_object( $self->cache[ $group ][ $key ] ) ) {
 				return clone $self->cache[ $group ][ $key ];
@@ -333,7 +354,7 @@ class LP_Object_Cache {
 			}
 		}
 
-		$found              = false;
+		$found               = false;
 		$self->cache_misses += 1;
 
 		return false;
@@ -342,13 +363,13 @@ class LP_Object_Cache {
 	/**
 	 * Increments numeric cache item's value.
 	 *
-	 * @since 3.3.0
-	 *
-	 * @param int|string $key    The cache key to increment
-	 * @param int        $offset Optional. The amount by which to increment the item's value. Default 1.
-	 * @param string     $group  Optional. The group the key is in. Default 'default'.
+	 * @param int|string $key  The cache key to increment
+	 * @param int $offset  Optional. The amount by which to increment the item's value. Default 1.
+	 * @param string $group  Optional. The group the key is in. Default 'default'.
 	 *
 	 * @return false|int False on failure, the item's new value on success.
+	 * @since 3.3.0
+	 *
 	 */
 	public static function incr( $key, $offset = 1, $group = 'default' ) {
 		if ( empty( $group ) ) {
@@ -382,18 +403,20 @@ class LP_Object_Cache {
 	/**
 	 * Replaces the contents in the cache, if contents already exist.
 	 *
-	 * @since 2.0.0
-	 *
-	 * @see   WP_Object_Cache::set()
-	 *
-	 * @param int|string $key    What to call the contents in the cache.
-	 * @param mixed      $data   The contents to store in the cache.
-	 * @param string     $group  Optional. Where to group the cache contents. Default 'default'.
-	 * @param int        $expire Optional. When to expire the cache contents. Default 0 (no expiration).
+	 * @param int|string $key  What to call the contents in the cache.
+	 * @param mixed $data  The contents to store in the cache.
+	 * @param string $group  Optional. Where to group the cache contents. Default 'default'.
+	 * @param int $expire  Optional. When to expire the cache contents. Default 0 (no expiration).
 	 *
 	 * @return bool False if not exists, true if contents were replaced.
+	 * @see   WP_Object_Cache::set()
+	 *
+	 * @since 2.0.0
+	 *
 	 */
 	public static function replace( $key, $data, $group = 'default', $expire = 0 ) {
+
+		$group = self::get_group( $group );
 
 		if ( self::$_use_core ) {
 			return wp_cache_replace( $key, $data, $group, $expire );
@@ -451,16 +474,17 @@ class LP_Object_Cache {
 	 * expire for each time a page is accessed and PHP finishes. The method is
 	 * more for cache plugins which use files.
 	 *
-	 * @since 2.0.0
-	 *
-	 * @param int|string $key    What to call the contents in the cache.
-	 * @param mixed      $data   The contents to store in the cache.
-	 * @param string     $group  Optional. Where to group the cache contents. Default 'default'.
-	 * @param int        $expire Not Used.
+	 * @param int|string $key  What to call the contents in the cache.
+	 * @param mixed $data  The contents to store in the cache.
+	 * @param string $group  Optional. Where to group the cache contents. Default 'default'.
+	 * @param int $expire  Not Used.
 	 *
 	 * @return true Always returns true.
+	 * @since 2.0.0
+	 *
 	 */
 	public static function set( $key, $data, $group = 'default', $expire = 0 ) {
+		$group = self::get_group( $group );
 
 		if ( self::$_use_core ) {
 			return wp_cache_set( $key, $data, $group, $expire );
@@ -493,27 +517,29 @@ class LP_Object_Cache {
 	 *
 	 * @since 2.0.0
 	 */
-	public static function stats() {
+	/*public static function stats() {
 		$self = self::instance();
-		echo "<p>";
+		echo '<p>';
 		echo "<strong>Cache Hits:</strong> {$self->cache_hits}<br />";
 		echo "<strong>Cache Misses:</strong> {$self->cache_misses}<br />";
-		echo "</p>";
+		echo '</p>';
 		echo '<ul>';
 		foreach ( $self->cache as $group => $cache ) {
-			echo "<li><strong>Group:</strong> $group - ( " . number_format( strlen( serialize( $cache ) ) / KB_IN_BYTES, 2 ) . 'k )</li>';
+			echo "<li><strong>Group:</strong> $group - ( " . number_format( strlen( serialize( $cache ) ) / KB_IN_BYTES,
+					2 ) . 'k )</li>';
 		}
 		echo '</ul>';
-	}
+	}*/
 
 	/**
 	 * Switches the internal blog ID.
 	 *
 	 * This changes the blog ID used to create keys in blog specific groups.
 	 *
+	 * @param int $blog_id  Blog ID.
+	 *
 	 * @since 3.5.0
 	 *
-	 * @param int $blog_id Blog ID.
 	 */
 	public static function switch_to_blog( $blog_id ) {
 		$self = self::instance();
@@ -525,17 +551,20 @@ class LP_Object_Cache {
 	/**
 	 * Serves as a utility function to determine whether a key exists in the cache.
 	 *
-	 * @since 3.4.0
-	 *
-	 * @param int|string $key   Cache key to check for existence.
-	 * @param string     $group Cache group for the key existence check.
+	 * @param int|string $key  Cache key to check for existence.
+	 * @param string $group  Cache group for the key existence check.
 	 *
 	 * @return bool Whether the key exists in the cache for the given group.
+	 * @since 3.4.0
+	 *
 	 */
 	protected static function _exists( $key, $group ) {
 		$self = self::instance();
 
-		return isset( $self->cache[ $group ] ) && ( isset( $self->cache[ $group ][ $key ] ) || array_key_exists( $key, $self->cache[ $group ] ) );
+		return isset( $self->cache[ $group ] ) && ( isset( $self->cache[ $group ][ $key ] ) || array_key_exists(
+			$key,
+			$self->cache[ $group ]
+		) );
 	}
 
 	/**
@@ -546,7 +575,6 @@ class LP_Object_Cache {
 	public function __construct() {
 		$this->multisite   = is_multisite();
 		$this->blog_prefix = $this->multisite ? get_current_blog_id() . ':' : '';
-
 
 		/**
 		 * @todo This should be moved to the PHP4 style constructor, PHP5
@@ -560,9 +588,9 @@ class LP_Object_Cache {
 	 *
 	 * Called upon object destruction, which should be when PHP ends.
 	 *
+	 * @return true Always returns true.
 	 * @since 2.0.8
 	 *
-	 * @return true Always returns true.
 	 */
 	public function __destruct() {
 		return true;

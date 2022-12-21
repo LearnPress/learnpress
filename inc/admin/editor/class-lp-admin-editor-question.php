@@ -26,7 +26,13 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	public function dispatch() {
 		check_ajax_referer( 'learnpress_admin_question_editor', 'nonce' );
 
-		$args        = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+		$args        = wp_parse_args(
+			$_REQUEST,
+			array(
+				'id'   => false,
+				'type' => '',
+			)
+		);
 		$question_id = $args['id'];
 		$question    = LP_Question::get_question( $question_id );
 
@@ -54,13 +60,11 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	 * @return array
 	 */
 	public function get_question_data_to_question_editor( $question, $object = false ) {
-
 		if ( ! $object ) {
 			if ( get_post_type( $question ) !== LP_QUESTION_CPT ) {
 				return array();
 			}
 
-			// get question
 			$question = LP_Question::get_question( $question );
 		}
 
@@ -68,7 +72,6 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 			return array();
 		}
 
-		// question id
 		$question_id = $question->get_id();
 
 		$data = array(
@@ -77,9 +80,9 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 			'title'   => get_the_title( $question_id ),
 			'type'    => array(
 				'key'   => $question->get_type(),
-				'label' => $question->get_type_label()
+				'label' => $question->get_type_label(),
 			),
-			'answers' => is_array( $question->get_data( 'answer_options' ) ) ? array_values( $question->get_data( 'answer_options' ) ) : array()
+			'answers' => is_array( $question->get_data( 'answer_options' ) ) ? array_values( $question->get_data( 'answer_options' ) ) : array(),
 		);
 
 		return $data;
@@ -91,7 +94,7 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	 * @since 3.0.0
 	 *
 	 * @param       $question_id
-	 * @param array $args
+	 * @param array       $args
 	 *
 	 * @return bool|int|LP_Question
 	 */
@@ -103,13 +106,16 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 
 		$curd = new LP_Question_CURD();
 
-		$args = wp_parse_args( $args, array(
-			'id'             => $question_id,
-			'title'          => __( 'New Question', 'learnpress' ),
-			'content'        => '',
-			'status'         => 'draft',
-			'create_answers' => false
-		) );
+		$args = wp_parse_args(
+			$args,
+			array(
+				'id'             => $question_id,
+				'title'          => __( 'New Question', 'learnpress' ),
+				'content'        => '',
+				'status'         => 'draft',
+				'create_answers' => false,
+			)
+		);
 
 		$question = $curd->create( $args );
 
@@ -133,21 +139,18 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 		}
 
 		$question = $this->question;
-		// draft question args
-		$args = $args['draft_question'] ? $args['draft_question'] : '';
+		$args     = $args['draft_question'] ? $args['draft_question'] : '';
 
 		if ( $args ) {
 			$args  = (array) ( json_decode( wp_unslash( $args ), '' ) );
 			$draft = $this->draft_question( $this->question->get_id(), $args );
 
-			// check if draft question false or question exist
 			if ( $draft ) {
 				$question = $draft;
 			}
 		}
 
 		if ( isset( $question ) ) {
-			// change question type
 			$question     = $this->question_curd->change_question_type( $question, $type );
 			$this->result = $this->get_question_data_to_question_editor( $question, true );
 
@@ -184,9 +187,8 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function update_answer_title( $args = array() ) {
-		// answers
 		$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
-		$answer = json_decode( wp_unslash( $answer ), true );
+		$answer = is_string( $answer ) ? json_decode( wp_unslash( $answer ), true ) : $answer;
 
 		if ( ! $answer ) {
 			return false;
@@ -204,7 +206,6 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function change_correct( $args = array() ) {
-		// correct answer
 		$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
 		$correct = json_decode( wp_unslash( $correct ), true );
 
@@ -212,7 +213,6 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 			return false;
 		}
 
-		// update correct answer
 		$this->question = $this->question_curd->change_correct_answer( $this->question, $correct );
 
 		$this->result = $this->_get_answers();
@@ -226,14 +226,12 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function delete_answer( $args = array() ) {
-		// answer id
 		$answer_id = ! empty( $args['answer_id'] ) ? $args['answer_id'] : false;
 
 		if ( ! $answer_id ) {
 			return false;
 		}
 
-		// delete answer
 		$this->question_curd->delete_answer( $this->question->get_id(), $answer_id );
 
 		$this->result = $this->_get_answers();
@@ -253,9 +251,8 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	 * @return bool
 	 */
 	public function new_answer( $args = array() ) {
-		// new answer
 		$answer = LP_Question::get_default_answer();
-		// add new
+
 		$this->question_curd->new_answer( $this->question->get_id(), $answer );
 
 		$this->result = $this->_get_answers();

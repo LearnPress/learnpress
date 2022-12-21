@@ -9,32 +9,13 @@
  * @version  3.0.1
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
-
-if ( ! $course ) {
+if ( ! isset( $course ) || ! isset( $price_html ) ) {
 	return;
 }
 ?>
 
 <div class="course-price">
-
-	<?php if ( $price_html = $course->get_price_html() ) { ?>
-
-		<?php if ( $course->get_origin_price() != $course->get_price() ) { ?>
-
-			<?php $origin_price_html = $course->get_origin_price_html(); ?>
-
-            <span class="origin-price"><?php echo $origin_price_html; ?></span>
-
-		<?php } ?>
-
-        <span class="price"><?php echo $price_html; ?></span>
-
-	<?php } ?>
-
+	<?php echo wp_kses_post( $price_html ); ?>
 </div>

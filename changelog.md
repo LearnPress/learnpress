@@ -1,20 +1,3 @@
-**3.2.7.8**
-~ Fix save author id when add item when edit course
-~ Fix title, description item course when install yoast seo plugin
-~ Fix Retake when not enable duration expire
-~ Fix function 'Instructors Registration'
-~ Fix function Export order invoice PDF
-
-**3.2.7.5**
-+ Fix run Elementor with question
-+ Fix lesson preview not show button complete when user enrolled
-+ Add tag apply_filter 'learn-press/order-item-not-course-id' on received-order
-+ Add tag apply_filter 'learn-press/tmpl-button-purchase-course' before return button purchase course
-+ Optimize (permalink of items course)
-+ Show finish course button when items of course completed but course not passed.
-+ Show explanation when user completed quiz
-+ Allow re-viewing questions after completing the quiz. Unless otherwise have Retake
-
 ** 3.0.0 **
 + Reset courses data for an user has enrolled course
 + Reset course data for users has enrolled course

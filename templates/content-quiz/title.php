@@ -9,16 +9,15 @@
  * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-$quiz = LP_Global::course_item_quiz();
+$quiz   = LP_Global::course_item_quiz();
+$course = learn_press_get_course();
+$title  = $quiz->get_heading_title( 'display' );
 
-if ( ! $title = $quiz->get_heading_title( 'display' ) ) {
+if ( ! $title ) {
 	return;
 }
 ?>
 
-<h3 class="course-item-title quiz-title"><?php echo $title; ?></h3>
+<h3 class="course-item-title quiz-title"><?php echo esc_html( $title ); ?></h3>

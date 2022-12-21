@@ -12,7 +12,7 @@ class LP_Plugins_Helper {
 	public static $plugins = array(
 		'installed' => false,
 		'free'      => false,
-		'premium'   => false
+		'premium'   => false,
 	);
 
 	/**
@@ -25,13 +25,14 @@ class LP_Plugins_Helper {
 	 */
 	public static $themes = array(
 		'education' => false,
-		'other'     => false
+		'other'     => false,
 	);
 
 	public static function require_plugins_api() {
 		global $pagenow;
+
 		if ( ! function_exists( 'plugins_api' ) && 'plugin-install.php' !== $pagenow ) {
-			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+			include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 		}
 	}
 
@@ -48,7 +49,7 @@ class LP_Plugins_Helper {
 		$plugins = array();
 
 		if ( ! function_exists( 'get_plugins' ) ) {
-			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			require_once ABSPATH . '/wp-admin/includes/plugin.php';
 		}
 		/*
 		 * Delete cache so hook for extra plugin headers works
@@ -65,7 +66,7 @@ class LP_Plugins_Helper {
 		$wp_installed      = array();
 		$premium_installed = array();
 
-		//learn_press_debug( wp_list_pluck( $wp_plugins, 'name' ) );
+		// learn_press_debug( wp_list_pluck( $wp_plugins, 'name' ) );
 		foreach ( $all_plugins as $plugin_file => $plugin_data ) {
 
 			// If there is a tag
@@ -86,7 +87,7 @@ class LP_Plugins_Helper {
 				$plugins[ $plugin_file ]['source'] = 'wp';
 
 				$wp_installed[ $plugin_file ] = true;
-			} else if ( isset( $premium_plugins[ $plugin_file ] ) ) {
+			} elseif ( isset( $premium_plugins[ $plugin_file ] ) ) {
 				$plugins[ $plugin_file ]           = (array) $premium_plugins[ $plugin_file ];
 				$plugins[ $plugin_file ]['source'] = 'tp';
 				$premium_installed[ $plugin_file ] = true;
@@ -101,7 +102,7 @@ class LP_Plugins_Helper {
 					'contributors'      => array(),
 					'homepage'          => $plugin_data['PluginURI'],
 					'short_description' => $plugin_data['Description'],
-					'icons'             => self::get_add_on_icons( $plugin_data, $plugin_file )
+					'icons'             => self::get_add_on_icons( $plugin_data, $plugin_file ),
 				);
 				if ( ! empty( $plugin_data['Requires at least'] ) ) {
 					$plugins[ $plugin_file ]['requires'] = $plugin_data['Requires at least'];
@@ -157,7 +158,7 @@ class LP_Plugins_Helper {
 	 * Get our related themes.
 	 *
 	 * @param string $type
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @return array|mixed
 	 */
@@ -175,6 +176,7 @@ class LP_Plugins_Helper {
 		if ( $type && self::$themes && array_key_exists( $type, self::$themes ) ) {
 			$themes = self::$themes[ $type ];
 			$args   = wp_parse_args( $args, array( 'include' => '' ) );
+
 			if ( $themes && $args['include'] ) {
 				$search_results = array();
 				foreach ( $themes as $theme ) {
@@ -182,12 +184,12 @@ class LP_Plugins_Helper {
 						$search_results[] = $theme;
 					}
 				}
+
 				$themes = $search_results;
 			}
 		} else {
 			$themes = self::$themes;
 		}
-
 
 		return $themes;
 	}
@@ -201,9 +203,10 @@ class LP_Plugins_Helper {
 	 * @return int
 	 */
 	public static function count_themes( $type = '' ) {
-		$count = 0;
+		$count  = 0;
+		$themes = self::get_related_themes();
 
-		if ( $themes = self::get_related_themes() ) {
+		if ( $themes ) {
 			if ( array_key_exists( $type, $themes ) ) {
 				$count = ! empty( $themes[ $type ] ) ? sizeof( $themes[ $type ] ) : 0;
 			} else {
@@ -235,38 +238,37 @@ class LP_Plugins_Helper {
 					case 'install':
 						if ( $status['url'] ) {
 							/* translators: 1: Plugin name and version. */
-							$action_links[] = '<a class="install-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '" data-success="Installed"><span>' . __( 'Install Now' ) . '</span></a>';
+							$action_links[] = '<a class="install-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '" data-success="Installed"><span>' . __( 'Install Now' ) . '</span></a>';
 						}
 
 						break;
 					case 'update_available':
 						if ( $status['url'] ) {
 							/* translators: 1: Plugin name and version */
-							$action_links[] = '<a class="update-now button" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Update Now' ) . '</span></a>';
+							$action_links[] = '<a class="update-now button" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Update Now' ) . '</span></a>';
 						}
 
 						break;
 				}
 				if ( learn_press_is_plugin_install( $file ) ) {
 					if ( is_plugin_active( $file ) ) {
-						$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
+						$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
 					} else {
-						$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
+						$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
 					}
 				}
-
 			} else {
 				// action links for premium add-ons installed
 				if ( learn_press_is_plugin_install( $file ) ) {
 					if ( is_plugin_active( $file ) ) {
-						$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
+						$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
 					} else {
-						$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
+						$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
 					}
 				} else {
 					// buy now button for premium add-ons
 					if ( isset( $plugin['permarklink'] ) ) {
-						$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $plugin['permarklink'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now', 'learnpress' ) . '</a>';
+						$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( $plugin['permarklink'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now', 'learnpress' ) . '</a>';
 					}
 				}
 			}
@@ -302,13 +304,19 @@ class LP_Plugins_Helper {
 	 * @return array
 	 */
 	public static function get_add_on_icons( $plugin_data, $plugin_file ) {
-		$plugin_path = ABSPATH . '/wp-content/plugins/' . $plugin_file;
+		$plugin_path = ABSPATH . basename( WP_CONTENT_DIR ) . '/plugins/' . $plugin_file;
 		$icon_path   = dirname( $plugin_path ) . '/assets/images';
 		$icons       = array(
 			'2x' => '',
-			'1x' => ''
+			'1x' => '',
 		);
-		foreach ( array( '2x' => 'icon-256x256', '1x' => 'icon-128x128' ) as $s => $name ) {
+
+		$icons_tmp = array(
+			'2x' => 'icon-256x256',
+			'1x' => 'icon-128x128',
+		);
+
+		foreach ( $icons_tmp as $s => $name ) {
 			foreach ( array( 'png', 'svg' ) as $t ) {
 				if ( file_exists( $icon_path . "/{$name}.{$t}" ) ) {
 					$icons[ $s ] = plugins_url( '/', $plugin_path ) . "assets/images/{$name}.{$t}";
@@ -347,15 +355,12 @@ class LP_Plugins_Helper {
 	 * @return bool
 	 */
 	public static function _filter_plugin( $plugin ) {
-		/**
-		 * Editor tungnx
-		 * Check more case $plugin->slug null
-		 */
-		if ( ! empty( $plugin ) && isset( $plugin->slug ) ) {
-			return $plugin && preg_match( '!^learnpress-.*!', $plugin->slug );
-		} else {
-			return false;
+		$slug = '';
+		if ( $plugin ) {
+			$slug = is_array( $plugin ) ? $plugin['slug'] : $plugin->slug;
 		}
+
+		return $slug && preg_match( '!^learnpress-.*!', $slug );
 	}
 
 	/**
@@ -409,22 +414,6 @@ class LP_Plugins_Helper {
 
 		return $headers;
 	}
-
-	/**
-	 * Initialize
-	 */
-	public static function init() {
-		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
-
-		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' )
-			|| ! wp_verify_nonce( sanitize_key( LP_Request::get( '_wpnonce' ) ), 'lp-check-updates' ) ) {
-			return;
-		}
-
-		LP_Background_Query_Items::instance()->force_update();
-		wp_redirect( remove_query_arg( array( 'force-check-update', '_wpnonce' ) ) );
-		exit();
-	}
 }
 
 /**
@@ -435,4 +424,4 @@ class LP_Plugins_Helper {
 add_filter( 'extra_plugin_headers', array( 'LP_Plugins_Helper', 'add_on_header' ) );
 
 // Init hooks, etc...
-add_action( 'init', array( 'LP_Plugins_Helper', 'init' ) );
+// add_action( 'init', array( 'LP_Plugins_Helper', 'init' ) );

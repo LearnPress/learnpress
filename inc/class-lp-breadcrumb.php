@@ -32,7 +32,7 @@ class LP_Breadcrumb {
 	public function add_crumb( $name, $link = '' ) {
 		$this->crumbs[] = array(
 			$name,
-			$link
+			$link,
 		);
 	}
 
@@ -148,11 +148,17 @@ class LP_Breadcrumb {
 		}
 		if ( LP_COURSE_CPT === get_post_type( $post ) ) {
 			$this->prepend_courses_page();
-			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array(
-				'orderby' => 'parent',
-				'order'   => 'DESC'
-			) )
-			) {
+
+			$terms = learn_press_get_course_terms(
+				$post->ID,
+				'course_category',
+				array(
+					'orderby' => 'parent',
+					'order'   => 'DESC',
+				)
+			);
+
+			if ( $terms ) {
 				$main_term = apply_filters( 'learn_press_breadcrumb_main_term', $terms[0], $terms );
 				$this->term_ancestors( $main_term->term_id, 'course_category' );
 				$this->add_crumb( $main_term->name, get_term_link( $main_term ) );
@@ -220,7 +226,7 @@ class LP_Breadcrumb {
 		$current_term = $this->get_queried_object();
 
 		$this->prepend_courses_page();
-		$this->add_crumb( sprintf( '%s &ldquo;%s&rdquo;', __( 'Courses tagged', 'learnpress' ), $current_term->name ) );
+		$this->add_crumb( sprintf( __( 'Courses tagged &ldquo;%s&rdquo;', 'learnpress' ), $current_term->name ) );
 	}
 
 	/**
@@ -235,7 +241,9 @@ class LP_Breadcrumb {
 		$_name = $course_page_id ? get_the_title( $course_page_id ) : '';
 
 		if ( ! $_name ) {
-			if ( $course_post_type = get_post_type_object( LP_COURSE_CPT ) ) {
+			$course_post_type = get_post_type_object( LP_COURSE_CPT );
+
+			if ( $course_post_type ) {
 				$_name = $course_post_type->labels->singular_name;
 			}
 		}
@@ -274,8 +282,9 @@ class LP_Breadcrumb {
 	 */
 	private function add_crumbs_tag() {
 		global $wp_query;
+
 		$queried_object = $this->get_queried_object();
-		$this->add_crumb( sprintf( '%s &ldquo;%s&rdquo;', __( 'Posts tagged', 'learnpress' ), single_tag_title( '', false ) ), get_tag_link( $queried_object->term_id ) );
+		$this->add_crumb( sprintf( __( 'Posts tagged &ldquo;%s&rdquo;', 'learnpress' ), single_tag_title( '', false ) ), get_tag_link( $queried_object->term_id ) );
 	}
 
 	/**
@@ -298,6 +307,7 @@ class LP_Breadcrumb {
 	 */
 	private function add_crumbs_tax() {
 		global $wp_query;
+
 		$this_term = $this->get_queried_object();
 		$taxonomy  = get_taxonomy( $this_term->taxonomy );
 
@@ -315,9 +325,9 @@ class LP_Breadcrumb {
 	 * Get default queried object by WP.
 	 * Fixed issue when viewing course category the text in breadcrumb is blank.
 	 *
-	 * @return object
 	 * @since 3.0.0
 	 *
+	 * @return object
 	 */
 	private function get_queried_object() {
 		static $default_queried_object;
@@ -352,7 +362,7 @@ class LP_Breadcrumb {
 		global $author;
 
 		$userdata = get_userdata( $author );
-		$this->add_crumb( sprintf( '%s: %s', __( 'Author', 'learnpress' ), $userdata->display_name ) );
+		$this->add_crumb( sprintf( __( 'Author: %s', 'learnpress' ), $userdata->display_name ) );
 	}
 
 	/**
@@ -385,7 +395,7 @@ class LP_Breadcrumb {
 	 */
 	private function search_trail() {
 		if ( is_search() ) {
-			$this->add_crumb( sprintf( '%s &ldquo;%s&rdquo;', __( 'Search results for', 'learnpress' ), get_search_query() ), remove_query_arg( 'paged' ) );
+			$this->add_crumb( sprintf( __( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() ), esc_url_raw( remove_query_arg( 'paged' ) ) );
 		}
 	}
 
@@ -394,7 +404,7 @@ class LP_Breadcrumb {
 	 */
 	private function paged_trail() {
 		if ( get_query_var( 'paged' ) ) {
-			$this->add_crumb( sprintf( '%s %d', __( 'Page', 'learnpress' ), get_query_var( 'paged' ) ) );
+			$this->add_crumb( sprintf( __( 'Page %d', 'learnpress' ), get_query_var( 'paged' ) ) );
 		}
 	}
 }

@@ -6,15 +6,12 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.1
+ * @version  3.0.0
  */
 
-/**
- * Prevent loading this file directly
- */
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
+$course = learn_press_get_course();
 
 if ( ! $course ) {
 	return;
@@ -22,17 +19,13 @@ if ( ! $course ) {
 ?>
 
 <div class="course-thumbnail">
-
-	<?php
-	/**
-	 * Editor tungnx
-	 * Check case $course->get_image return boolean
-	 */
-	$el_image = $course->get_image( 'course_thumbnail' );
-
-	if ( is_string( $el_image ) ) {
-		echo $el_image;
-	}
-	?>
-
+	<a href="<?php the_permalink(); ?>">
+		<div class="thumbnail-preview">
+			<div class="thumbnail">
+				<div class="centered">
+					<?php echo wp_kses_post( $course->get_image( 'course_thumbnail' ) ); ?>
+				</div>
+			</div>
+		</div>
+	</a>
 </div>

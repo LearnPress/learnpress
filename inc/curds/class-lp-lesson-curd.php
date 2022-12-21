@@ -27,24 +27,27 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		 * @return int|WP_Error
 		 */
 		public function create( &$args ) {
-
-			$args = wp_parse_args( $args, array(
+			$args = wp_parse_args(
+				$args,
+				array(
 					'id'      => '',
 					'status'  => 'publish',
-					'title'   => __( 'New Lesson', 'learnpress' ),
+					'title'   => esc_html__( 'New Lesson', 'learnpress' ),
 					'content' => '',
-					'author'  => learn_press_get_current_user_id()
+					'author'  => learn_press_get_current_user_id(),
 				)
 			);
 
-			$lesson_id = wp_insert_post( array(
-				'ID'           => $args['id'],
-				'post_type'    => LP_LESSON_CPT,
-				'post_status'  => $args['status'],
-				'post_title'   => $args['title'],
-				'post_content' => $args['content'],
-				'post_author'  => $args['author']
-			) );
+			$lesson_id = wp_insert_post(
+				array(
+					'ID'           => $args['id'],
+					'post_type'    => LP_LESSON_CPT,
+					'post_status'  => $args['status'],
+					'post_title'   => $args['title'],
+					'post_content' => $args['content'],
+					'post_author'  => $args['author'],
+				)
+			);
 
 			if ( $lesson_id ) {
 				// add default meta for new lesson
@@ -78,9 +81,6 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 			// course curd
 			$curd = new LP_Course_CURD();
 
-			// allow hook
-			do_action( 'learn-press/before-delete-lesson', $lesson_id );
-
 			// remove lesson from course items
 			$curd->remove_item( $lesson_id );
 		}
@@ -91,33 +91,34 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param $lesson_id
-		 * @param array $args
+		 * @param array     $args
 		 *
 		 * @return mixed|WP_Error
 		 */
 		public function duplicate( &$lesson_id, $args = array() ) {
-
 			if ( ! $lesson_id ) {
-				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
+				return new WP_Error( '0', 'Oops! ID not found' );
 			}
 
 			if ( get_post_type( $lesson_id ) != LP_LESSON_CPT ) {
-				return new WP_Error( __( '<p>Op! The lesson does not exist</p>', 'learnpress' ) );
+				return new WP_Error( '1', 'Op! The lesson does not exist' );
 			}
 
+			$user_id = $args['meta_input']['_lp_user'] ?? get_current_user_id();
 			// ensure that user can create lesson
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this lesson</p>', 'learnpress' ) );
+			if ( ! user_can( $user_id, 'edit_posts' ) ) {
+				return new WP_Error( '2', 'Sorry! You don\'t have permission to duplicate this lesson' );
 			}
 
 			// duplicate lesson
 			$new_lesson_id = learn_press_duplicate_post( $lesson_id, $args );
 
 			if ( ! $new_lesson_id || is_wp_error( $new_lesson_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Failed to duplicate lesson!</p>', 'learnpress' ) );
-			} else {
-				return $new_lesson_id;
+				return new WP_Error( '3', 'Sorry! Failed to duplicate lesson!' );
 			}
+
+			do_action( 'learn-press/item/after-duplicate', $lesson_id, $new_lesson_id, $args );
+			return $new_lesson_id;
 		}
 
 		/**
@@ -140,7 +141,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 
 			$lesson->set_data(
 				array(
-					'preview' => get_post_meta( $id, '_lp_preview', true )
+					'preview' => get_post_meta( $id, '_lp_preview', true ),
 				)
 			);
 
