@@ -1,1 +1,16 @@
-
+{
+  "learnpress-assignments": {
+    "name": "LearnPress - Assignments",
+    "version": "4.0.8",
+    "require_lp": "4.0.0",
+    "description": "",
+    "order": 1
+  },
+  "learnpress-h5p": {
+    "name": "LearnPress - H5P",
+    "version": "4.0.8",
+    "require_lp": "4.0.0",
+    "description": "",
+    "order": 2
+  }
+}
