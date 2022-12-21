@@ -619,6 +619,7 @@ class LP_Database {
 		// Order by
 		$ORDER_BY = '';
 		if ( ! $filter->return_string_query && $filter->order_by ) {
+			$filter->order = strtoupper( $filter->order );
 			if ( ! in_array( $filter->order, [ 'DESC', 'ASC' ] ) ) {
 				$filter->order = 'DESC';
 			}
