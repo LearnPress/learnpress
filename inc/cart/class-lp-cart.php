@@ -93,14 +93,18 @@ class LP_Cart {
 		}
 	}
 
+	/**
+	 * @deprecated 4.2.1
+	 */
 	private function set_cart_cookies( $set = true ) {
-		if ( $set ) {
+		_deprecated_function( __METHOD__, '4.2.1' );
+		/*if ( $set ) {
 			learn_press_setcookie( 'wordpress_lp_cart', 1 );
 		} elseif ( isset( $_COOKIE['wordpress_lp_cart'] ) ) {
 			learn_press_setcookie( 'wordpress_lp_cart', 0, time() - HOUR_IN_SECONDS );
 		}
 
-		do_action( 'learn_press_set_cart_cookies', $set );
+		do_action( 'learn_press_set_cart_cookies', $set );*/
 	}
 
 	/**

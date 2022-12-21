@@ -29,6 +29,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'class-lp-rest-profile-controller.php',
 			'class-lp-rest-orders-controller.php',
 			'class-lp-rest-widgets-controller.php',
+			'class-lp-rest-addon-controller.php',
 		);
 
 		$path_version  = $this->version . '/frontend/';
@@ -50,6 +51,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'LP_REST_Profile_Controller',
 			'LP_REST_Orders_Controller',
 			'LP_REST_Widgets_Controller',
+			'LP_REST_Addon_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );

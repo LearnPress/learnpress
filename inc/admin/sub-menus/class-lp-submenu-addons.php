@@ -31,9 +31,13 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		}
 
 		$tabs = array(
-			'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
+			'all'       => sprintf( __( 'All (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
 			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
-			'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() ),
+			'paid'      => sprintf( __( 'Paid (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
+			'free'      => sprintf( __( 'Free (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
+			'update'    => sprintf( __( 'Update (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
+			'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
+			//'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() ),
 		);
 
 		$this->tabs = apply_filters(

@@ -83,12 +83,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
 					array( 'jquery-ui-datepicker' )
 				),
-				'themes-addons'                     => new LP_Asset_Key(
-					$this->url( 'js/dist/admin/pages/themes-addons' . self::$_min_assets . '.js' ),
+				'lp-addons'                     => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/pages/addons' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
 					array( 'learnpress_page_learn-press-addons' ),
 					0,
-					1
+					0
 				),
 				'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
 				'learn-press-global'                => new LP_Asset_Key(
